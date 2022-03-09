@@ -22,7 +22,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -291,31 +290,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	 */
 	public boolean isValid (Object key)
 	{
-		if (key == null)
-			return true;
-		//	try cache
-		KeyNamePair keyVal =  m_lookup.get(key);
-		MLocator loc = null;
-		if (keyVal == null)
-			loc = getMLocator(key, null);
-		else 
-			loc = MLocator.get(Integer.parseInt(key.toString()));
-		return isValid(loc);
-	}	//	isValid
-
-	/**
-	 * 	Is Locator with key valid (Warehouse)
-	 *	@param locator locator
-	 *	@return true if valid
-	 */
-	public boolean isValid (MLocator locator)
-	{
-		if (locator == null || getOnly_Warehouse_ID() == 0)
-			return true;
-		//	Warehouse OK - Product check
-		if (getOnly_Warehouse_ID() == locator.getM_Warehouse_ID())
-			return locator.isCanStoreProduct(getOnly_Product_ID());
-		return false;
+		return true;
 	}	//	isValid
 
 	private boolean isNeedRefresh()
@@ -373,7 +348,6 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		{
 			//	Set Info	- see VLocator.actionText
 			int local_only_warehouse_id = getOnly_Warehouse_ID(); // [ 1674891 ] MLocatorLookup - weird error 
-			int local_only_product_id = getOnly_Product_ID();
 			
 			StringBuilder sql = new StringBuilder("SELECT M_Locator.M_Locator_ID, M_Locator.Value FROM M_Locator ")
 				.append(" INNER JOIN M_Warehouse wh ON (wh.M_Warehouse_ID=M_Locator.M_Warehouse_ID) ")
@@ -384,12 +358,6 @@ public final class MLocatorLookup extends Lookup implements Serializable
 				sql.append(" AND M_Locator.M_Warehouse_ID=?");
 			else
 				m_warehouseActiveCount = DB.getSQLValue(null, "SELECT Count(*) FROM M_Warehouse WHERE IsActive='Y' AND AD_Client_ID=?", Env.getAD_Client_ID(m_ctx));
-			if (local_only_product_id != 0)
-				sql.append(" AND (M_Locator.IsDefault='Y' ")	//	Default Locator
-					.append("OR EXISTS (SELECT * FROM M_Product p ")	//	Product Locator
-					.append("WHERE p.M_Locator_ID=M_Locator.M_Locator_ID AND p.M_Product_ID=?)")
-					.append("OR EXISTS (SELECT * FROM M_Storage s ")	//	Storage Locator
-					.append("WHERE s.M_Locator_ID=M_Locator.M_Locator_ID AND s.M_Product_ID=?))");
 			m_parsedValidation = null;
 			if (!Util.isEmpty(m_validationCode))
 			{
@@ -425,11 +393,6 @@ public final class MLocatorLookup extends Lookup implements Serializable
 				int index = 1;
 				if (local_only_warehouse_id != 0)
 					pstmt.setInt(index++, getOnly_Warehouse_ID());
-				if (local_only_product_id != 0)
-				{
-					pstmt.setInt(index++, getOnly_Product_ID());
-					pstmt.setInt(index++, getOnly_Product_ID());
-				}
 				rs = pstmt.executeQuery();
 				//
 				while (rs.next())
@@ -488,15 +451,6 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		//	create list
 		Collection<KeyNamePair> collection = getData();
 		ArrayList<Object> list = new ArrayList<Object>(collection);
-		Iterator<KeyNamePair> it = collection.iterator();
-		while (it.hasNext())
-		{
-			KeyNamePair locPair = it.next();
-			MLocator loc = MLocator.get(locPair.getKey());
-			if (isValid(loc))				//	only valid warehouses
-				list.add(loc);
-		}
-
 		return list;
 	}	//	getArray
 
