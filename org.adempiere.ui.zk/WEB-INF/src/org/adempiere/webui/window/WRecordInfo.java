@@ -60,6 +60,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.util.Notification;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
@@ -353,6 +354,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 								.append(ticketURL)
 								.append("\");");
 							Clients.evalJavaScript(sb.toString());
+							Notification.show(Msg.getMsg(Env.getCtx(), "Copied"), Notification.TYPE_INFO, m_permalink, "end_before", 1000);
 						}
 					});
 				}
@@ -365,6 +367,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 							.append(po.get_WhereClause(true));
 						query.append("\");");
 						Clients.evalJavaScript(query.toString());
+						Notification.show(Msg.getMsg(Env.getCtx(), "Copied"), Notification.TYPE_INFO, m_copySelect, "end_before", 1000);
 					}
 				});
 				m_copySelect.setVisible(true);
