@@ -6,6 +6,8 @@ UPDATE AD_Element SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH2
 
 UPDATE AD_Element SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Clients', 'Tenants') WHERE AD_Element_ID<1000000 AND Description~'\mClients\M';
 
+UPDATE AD_Element SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Tenant/Tenant', 'Tenant') WHERE AD_Element_ID<1000000 AND Description~'\mTenant/Tenant\M';
+
 UPDATE AD_Element SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'client', 'tenant') WHERE AD_Element_ID<1000000 AND Help~'\mclient\M' AND Help NOT LIKE '%client-%';
 
 UPDATE AD_Element SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'clients', 'tenants') WHERE AD_Element_ID<1000000 AND Help~'\mclients\M';
@@ -13,6 +15,8 @@ UPDATE AD_Element SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH2
 UPDATE AD_Element SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'Client', 'Tenant') WHERE AD_Element_ID<1000000 AND Help~'\mClient\M';
 
 UPDATE AD_Element SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'Clients', 'Tenants') WHERE AD_Element_ID<1000000 AND Help~'\mClients\M';
+
+UPDATE AD_Element SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, ' Tenant is a synonym for Tenant.', '') WHERE AD_Element_ID<1000000 AND Help LIKE '% Tenant is a synonym for Tenant.%';
 
 UPDATE AD_Element SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Name=REPLACE(Name, 'client', 'tenant') WHERE AD_Element_ID<1000000 AND Name~'\mclient\M' AND Name NOT LIKE '%client-%';
 
@@ -54,6 +58,8 @@ UPDATE AD_Form SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:M
 
 UPDATE AD_Form SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Clients', 'Tenants') WHERE AD_Form_ID<1000000 AND Description~'\mClients\M';
 
+UPDATE AD_Form SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Tenant/Tenant', 'Tenant') WHERE AD_Form_ID<1000000 AND Description~'\mTenant/Tenant\M';
+
 UPDATE AD_Form SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'client', 'tenant') WHERE AD_Form_ID<1000000 AND Help~'\mclient\M' AND Help NOT LIKE '%client-%';
 
 UPDATE AD_Form SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'clients', 'tenants') WHERE AD_Form_ID<1000000 AND Help~'\mclients\M';
@@ -61,6 +67,8 @@ UPDATE AD_Form SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:M
 UPDATE AD_Form SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'Client', 'Tenant') WHERE AD_Form_ID<1000000 AND Help~'\mClient\M';
 
 UPDATE AD_Form SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'Clients', 'Tenants') WHERE AD_Form_ID<1000000 AND Help~'\mClients\M';
+
+UPDATE AD_Form SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'Tenant/Tenant', 'Tenant') WHERE AD_Form_ID<1000000 AND Help~'\mTenant/Tenant\M';
 
 UPDATE AD_Form SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Name=REPLACE(Name, 'client', 'tenant') WHERE AD_Form_ID<1000000 AND Name~'\mclient\M' AND Name NOT LIKE '%client-%';
 
@@ -134,6 +142,8 @@ UPDATE AD_Process_Para SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-D
 
 UPDATE AD_Process_Para SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Clients', 'Tenants') WHERE AD_Process_Para_ID<1000000 AND Description~'\mClients\M' AND IsCentrallyMaintained='N';
 
+UPDATE AD_Process_Para SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Tenant/Tenant', 'Tenant') WHERE AD_Process_Para_ID<1000000 AND Description~'\mTenant/Tenant\M';
+
 UPDATE AD_Process_Para SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'client', 'tenant') WHERE AD_Process_Para_ID<1000000 AND Help~'\mclient\M' AND Help NOT LIKE '%client-%' AND IsCentrallyMaintained='N';
 
 UPDATE AD_Process_Para SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'clients', 'tenants') WHERE AD_Process_Para_ID<1000000 AND Help~'\mclients\M' AND IsCentrallyMaintained='N';
@@ -141,6 +151,8 @@ UPDATE AD_Process_Para SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-D
 UPDATE AD_Process_Para SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'Client', 'Tenant') WHERE AD_Process_Para_ID<1000000 AND Help~'\mClient\M' AND IsCentrallyMaintained='N';
 
 UPDATE AD_Process_Para SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'Clients', 'Tenants') WHERE AD_Process_Para_ID<1000000 AND Help~'\mClients\M' AND IsCentrallyMaintained='N';
+
+UPDATE AD_Process_Para SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, ' Tenant is a synonym for Tenant.', '') WHERE AD_Process_Para_ID<1000000 AND Help LIKE '% Tenant is a synonym for Tenant.%';
 
 UPDATE AD_Process_Para SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Name=REPLACE(Name, 'client', 'tenant') WHERE AD_Process_Para_ID<1000000 AND Name~'\mclient\M' AND Name NOT LIKE '%client-%' AND IsCentrallyMaintained='N';
 
@@ -182,6 +194,8 @@ UPDATE AD_Tab SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI
 
 UPDATE AD_Tab SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Clients', 'Tenants') WHERE AD_Tab_ID<1000000 AND Description~'\mClients\M';
 
+UPDATE AD_Tab SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Tenant/Tenant', 'Tenant') WHERE AD_Tab_ID<1000000 AND Description~'\mTenant/Tenant\M';
+
 UPDATE AD_Tab SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'client', 'tenant') WHERE AD_Tab_ID<1000000 AND Help~'\mclient\M' AND Help NOT LIKE '%client-%';
 
 UPDATE AD_Tab SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'clients', 'tenants') WHERE AD_Tab_ID<1000000 AND Help~'\mclients\M';
@@ -206,6 +220,8 @@ UPDATE AD_WF_Node SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH2
 
 UPDATE AD_WF_Node SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Clients', 'Tenants') WHERE AD_WF_Node_ID<1000000 AND Description~'\mClients\M';
 
+UPDATE AD_WF_Node SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Tenants/Tenants', 'Tenants') WHERE AD_WF_Node_ID<1000000 AND Description~'\mTenants/Tenants\M';
+
 UPDATE AD_WF_Node SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'client', 'tenant') WHERE AD_WF_Node_ID<1000000 AND Help~'\mclient\M' AND Help NOT LIKE '%client-%';
 
 UPDATE AD_WF_Node SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'clients', 'tenants') WHERE AD_WF_Node_ID<1000000 AND Help~'\mclients\M';
@@ -229,6 +245,8 @@ UPDATE AD_Window SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24
 UPDATE AD_Window SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Client', 'Tenant') WHERE AD_Window_ID<1000000 AND Description~'\mClient\M';
 
 UPDATE AD_Window SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Clients', 'Tenants') WHERE AD_Window_ID<1000000 AND Description~'\mClients\M';
+
+UPDATE AD_Window SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'Tenants/Tenants', 'Tenants') WHERE AD_Window_ID<1000000 AND Description~'\mTenants/Tenants\M';
 
 UPDATE AD_Window SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Help=REPLACE(Help, 'client', 'tenant') WHERE AD_Window_ID<1000000 AND Help~'\mclient\M' AND Help NOT LIKE '%client-%';
 
