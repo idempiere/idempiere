@@ -212,6 +212,14 @@ UPDATE AD_Tab SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI
 
 UPDATE AD_Tab SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Name=REPLACE(Name, 'Clients', 'Tenants') WHERE AD_Tab_ID<1000000 AND Name~'\mClients\M';
 
+UPDATE AD_Tab SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), CommitWarning=REPLACE(CommitWarning, 'client', 'tenant') WHERE AD_Tab_ID<1000000 AND CommitWarning~'\mclient\M' AND CommitWarning NOT LIKE '%client-%';
+
+UPDATE AD_Tab SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), CommitWarning=REPLACE(CommitWarning, 'clients', 'tenants') WHERE AD_Tab_ID<1000000 AND CommitWarning~'\mclients\M';
+
+UPDATE AD_Tab SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), CommitWarning=REPLACE(CommitWarning, 'Client', 'Tenant') WHERE AD_Tab_ID<1000000 AND CommitWarning~'\mClient\M';
+
+UPDATE AD_Tab SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), CommitWarning=REPLACE(CommitWarning, 'Clients', 'Tenants') WHERE AD_Tab_ID<1000000 AND CommitWarning~'\mClients\M';
+
 UPDATE AD_WF_Node SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'client', 'tenant') WHERE AD_WF_Node_ID<1000000 AND Description~'\mclient\M' AND Description NOT LIKE '%client-%';
 
 UPDATE AD_WF_Node SET Updated=TO_TIMESTAMP('2022-03-10 00:00:00','YYYY-MM-DD HH24:MI:SS'), Description=REPLACE(Description, 'clients', 'tenants') WHERE AD_WF_Node_ID<1000000 AND Description~'\mclients\M';
