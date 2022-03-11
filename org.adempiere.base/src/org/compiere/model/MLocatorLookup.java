@@ -287,6 +287,7 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	 * 	Is Locator with key valid (Warehouse)
 	 *	@param key key
 	 *	@return true if valid
+	 *  @deprecated
 	 */
 	public boolean isValid (Object key)
 	{
