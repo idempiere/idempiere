@@ -161,7 +161,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 					seedClientValue = clientValue.split("-")[2];
 					seedClientIDs = getClientIDs(seedClientValue);				
 					if (seedClientIDs.length == 0) {
-						logger.log(Level.WARNING, "Seed client does not exist: " + seedClientValue);
+						logger.log(Level.WARNING, "Seed tenant does not exist: " + seedClientValue);
 						return false;
 					}
 				}
@@ -183,7 +183,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 			} else {
 				clientIDs = getClientIDs(clientValue);
 				if (clientIDs.length == 0) {
-					logger.log(Level.WARNING, "Client does not exist: " + clientValue);
+					logger.log(Level.WARNING, "Tenant does not exist: " + clientValue);
 					return false;
 				}
 			}
@@ -191,7 +191,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 			for (int clientID : clientIDs) {
 				MClient client = MClient.get(Env.getCtx(), clientID);
 				if  (allClients) {
-					String message = "Installing " + fileName + " in client " + client.getValue() + "/" + client.getName();
+					String message = "Installing " + fileName + " in tenant " + client.getValue() + "/" + client.getName();
 					statusUpdate(message);
 				}
 				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, client.getAD_Client_ID());
