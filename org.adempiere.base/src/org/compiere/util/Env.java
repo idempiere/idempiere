@@ -45,6 +45,7 @@ import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextProvider;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
+import org.compiere.model.GridTab;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
@@ -1587,7 +1588,19 @@ public final class Env
 				token = token.substring(0, idx);
 			}
 
-			String ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
+			String ctxInfo = null;
+			
+			if (token.equalsIgnoreCase(GridTab.CTX_Record_ID))
+			{
+				String keycolumnName = Env.getContext(Env.getCtx(), WindowNo, tabNo, GridTab.CTX_KeyColumnName,
+						onlyTab);
+				ctxInfo = Env.getContext(Env.getCtx(), WindowNo, tabNo, keycolumnName, onlyTab);
+			}
+			else
+			{
+				ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
+			}
+
 			if (ctxInfo.length() == 0 && (token.startsWith("#") || token.startsWith("$")) )
 				ctxInfo = getContext(ctx, token);	// get global context
 

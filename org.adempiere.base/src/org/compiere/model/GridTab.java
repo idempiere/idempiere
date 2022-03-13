@@ -113,7 +113,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2091725732178841608L;
+	private static final long serialVersionUID = 2604313946261586651L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -230,6 +230,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String CTX_FindSQL = "_TabInfo_FindSQL";
 	public static final String CTX_SQL = "_TabInfo_SQL";
 	public static final String CTX_IsSortTab = "_TabInfo_IsSortTab";
+	public static final String CTX_Record_ID = "_TabInfo_Record_ID";
 	public static final String CTX_IsLookupOnlySelection = "_TabInfo_IsLookupOnlySelection";
 	public static final String CTX_IsAllowAdvancedLookup = "_TabInfo_IsAllowAdvancedLookup";
 
