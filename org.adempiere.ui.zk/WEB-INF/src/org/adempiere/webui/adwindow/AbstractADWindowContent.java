@@ -1199,7 +1199,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
 	 * Invoke when quick form is click
 	 */
-	public void onQuickForm()
+	public void onQuickForm() {
+		onQuickForm(false);
+	}
+
+	/**
+	 * Invoke when quick form is click
+	 * @param focusTabAtEnd the tab to return when finished
+	 */
+	public void onQuickForm(boolean stayInParent)
 	{
 		logger.log(Level.FINE, "Invoke Quick Form");
 		// Prevent to open Quick Form if already opened.
@@ -1227,6 +1235,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		form.setMaximizable(true);
 		form.setMaximized(true);
 		form.setPosition("center");
+		form.setStayInParent(stayInParent);
 		ZKUpdateUtil.setWindowHeightX(form, 550);
 		ZKUpdateUtil.setWindowWidthX(form, 900);
 		ZkCssHelper.appendStyle(form, "z-index: 900;");
@@ -3995,6 +4004,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public GridWindow getGridWindow() {
 		return gridWindow;
 	}
+
 	
 	/**
 	 * set component of last focus editor.
