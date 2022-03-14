@@ -42,7 +42,7 @@ public class DefaultLookupFactory implements ILookupFactory{
 		}
 		else if (gridFieldVO.displayType == DisplayType.Locator)
 		{
-			lookup = new MLocatorLookup (gridFieldVO.ctx, gridFieldVO.WindowNo, gridFieldVO.ValidationCode, true);
+			lookup = new MLocatorLookup (gridFieldVO.ctx, gridFieldVO.WindowNo, gridFieldVO.ValidationCode);
 		}
 		else if (gridFieldVO.displayType == Account)    //  not cached
 		{

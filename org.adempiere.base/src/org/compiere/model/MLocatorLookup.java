@@ -70,27 +70,9 @@ public final class MLocatorLookup extends Lookup implements Serializable
 	 */
 	public MLocatorLookup(Properties ctx, int WindowNo, String validationCode)
 	{
-		this(ctx, WindowNo, validationCode, false);
-	}
-	
-	/**
-	 *	Constructor
-	 *  @param ctx context
-	 *  @param WindowNo window no
-	 *  @param validationCode Lookup validation code
-	 *  @param lazyLoading
-	 */
-	public MLocatorLookup(Properties ctx, int WindowNo, String validationCode, boolean lazyLoading)
-	{
 		super (DisplayType.TableDir, WindowNo);
 		m_ctx = ctx;
 		m_validationCode = validationCode;
-		//
-		if (!lazyLoading)
-		{
-			m_loader = new Loader();
-			m_loader.start();
-		}
 	}	//	MLocator
 
 	/**	Context						*/
