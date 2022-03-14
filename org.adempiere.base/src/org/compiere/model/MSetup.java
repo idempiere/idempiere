@@ -149,7 +149,7 @@ public final class MSetup
 		m_client.setName(m_clientName);
 		if (!m_client.save())
 		{
-			String err = "Client NOT created";
+			String err = "Tenant NOT created";
 			log.log(Level.SEVERE, err);
 			m_info.append(err);
 			m_trx.rollback();
@@ -179,7 +179,7 @@ public final class MSetup
 		//  Trees and Client Info
 		if (!m_client.setupClientInfo(m_lang))
 		{
-			String err = "Client Info NOT created";
+			String err = "Tenant Info NOT created";
 			log.log(Level.SEVERE, err);
 			m_info.append(err);
 			m_trx.rollback();

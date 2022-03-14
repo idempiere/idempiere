@@ -110,7 +110,7 @@ public class POFinder {
     			Query query = new Query(ctx.ctx, tableName, idColumn+"=?", getTrxName(ctx));
     			/* Allow reading from a different tenant to show user a clearer error message below
     			 * This is, instead of "Cross tenant PO reading request" the user will see a message
-    			 * "2Pack cannot update/access record that belongs to another client" which is more explanatory */
+    			 * "2Pack cannot update/access record that belongs to another tenant" which is more explanatory */
     			try {
     				PO.setCrossTenantSafe();
     				po = query.setParameters(Integer.valueOf(id.trim())).firstOnly();
@@ -119,7 +119,7 @@ public class POFinder {
     			}
     			if (po != null && po.getAD_Client_ID() > 0) {
     				if (po.getAD_Client_ID() != Env.getAD_Client_ID(ctx.ctx)) {
-    					throw new IllegalStateException("2Pack cannot update/access record that belongs to another client. TableName="+po.get_TableName()
+    					throw new IllegalStateException("2Pack cannot update/access record that belongs to another tenant. TableName="+po.get_TableName()
     						+", Record_ID="+po.get_ID() + ", AD_Client_ID="+po.getAD_Client_ID()+" Context AD_Client_ID="+Env.getAD_Client_ID(ctx.ctx));
     				}
     			}

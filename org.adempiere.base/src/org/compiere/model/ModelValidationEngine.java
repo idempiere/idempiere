@@ -144,7 +144,7 @@ public class ModelValidationEngine
 			{
 				//logging to db will try to init ModelValidationEngine again!
 				e.printStackTrace();
-				missingModelValidationMessage = missingModelValidationMessage + e.toString() + " on client " + client.getName() + '\n';
+				missingModelValidationMessage = missingModelValidationMessage + e.toString() + " on tenant " + client.getName() + '\n';
 			}
 		}
 	}
@@ -159,7 +159,7 @@ public class ModelValidationEngine
 			if (validator == null)
 			{
 				missingModelValidationMessage = missingModelValidationMessage + " Missing class " + className +
-						 (client != null ? (" on client " + client.getName()) : " global") + '\n';
+						 (client != null ? (" on tenant " + client.getName()) : " global") + '\n';
 			}
 			else
 			{
@@ -171,7 +171,7 @@ public class ModelValidationEngine
 			//logging to db will try to init ModelValidationEngine again!
 			e.printStackTrace();
 			missingModelValidationMessage = missingModelValidationMessage + e.toString() +
-					 (client != null ? (" on client " + client.getName()) : " global") + '\n';
+					 (client != null ? (" on tenant " + client.getName()) : " global") + '\n';
 		}
 	}
 
