@@ -1414,7 +1414,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
     			"SELECT invoiceDiscount(?,?,?) FROM DUAL",
     			getC_Invoice_ID(), paymentDate, 0);
     	return retValue;
-    }    //    getOpenAmt
+    }
 
 	/**
 	 * 	Get Document Status
