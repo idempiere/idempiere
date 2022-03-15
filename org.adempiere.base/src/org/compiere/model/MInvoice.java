@@ -72,7 +72,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -261338363319970683L;
+	private static final long serialVersionUID = -303676612533389278L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -1402,6 +1402,18 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
             		getC_Invoice_ID(), 0, paymentDate);
     	}
         return retValue;
+    }    //    getOpenAmt
+
+    /*
+     *    Get discount amt depending on payment date
+     *    @return discount Amt
+     */
+    public BigDecimal getDiscountAmt(Timestamp paymentDate)
+    {
+    	BigDecimal retValue = DB.getSQLValueBDEx(get_TrxName(),
+    			"SELECT invoiceDiscount(?,?,?) FROM DUAL",
+    			getC_Invoice_ID(), paymentDate, 0);
+    	return retValue;
     }    //    getOpenAmt
 
 	/**
