@@ -102,7 +102,7 @@ WHERE	Status != 'ENABLED'
 --	Constraint Info
 SELECT	Constraint_Name AS Constraint_Problem, Status, Validated, Table_Name, Search_Condition, R_Constraint_Name 
 FROM	User_Constraints 
-WHERE	Status <> 'ENABLED' OR Validated <> 'VALIDATED'
+WHERE	Status <> 'ENABLED'
 /
 SELECT	* 
 FROM	USER_ERRORS
