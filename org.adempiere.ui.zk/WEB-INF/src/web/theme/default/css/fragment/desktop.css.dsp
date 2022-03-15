@@ -113,6 +113,10 @@
 	background-color: #E4E4E4;
 }
 
+.z-flex-column, .z-tree-body {
+	scrollbar-width: thin;
+}
+
 .desktop-tabpanel {
 	margin: 0;
 	padding: 0;
@@ -159,13 +163,15 @@
 	border-top: none;
 }
 
-.desktop-left-column .z-anchorlayout, .desktop-right-column .z-anchorlayout {
+.desktop-left-column .z-anchorlayout, .desktop-right-column .z-anchorlayout, .desktop-center .z-anchorlayout {
 	overflow-x: hidden;
+	scrollbar-width: thin;
 }
 
-.z-anchorlayout { overflow:auto }
- 
-.z-anchorchildren { overflow:visible }
+.z-anchorchildren { 
+	overflow:visible 
+	scrollbar-width: thin;
+}
 
 .desktop-hometab {
 }

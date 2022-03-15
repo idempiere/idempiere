@@ -22,6 +22,7 @@
 .find-window .z-toolbar,
 .find-window .z-south-body>.z-hbox {
 	width: calc(100% - 1px);
+	scrollbar-width: thin !important;
 }
 .find-window .z-toolbar {
 	border-bottom: 0px;

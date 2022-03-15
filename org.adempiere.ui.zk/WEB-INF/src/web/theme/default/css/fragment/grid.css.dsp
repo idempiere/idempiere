@@ -118,3 +118,10 @@ div.z-listbox-body .z-listcell {
 	height: 20px;
 }
 
+.z-grid-body {
+	scrollbar-width: thin;
+}
+
+.z-listbox-body {
+	scrollbar-width: thin;
+}

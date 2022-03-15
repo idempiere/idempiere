@@ -74,6 +74,10 @@
 	width: 100%;
 }
 
+.menu-panel .z-tree-body {
+	scrollbar-width: thin !important;
+}
+
 .menu-search-toggle-box {
 	display: inline-block;
 	border: 1px solid #ababab;			
