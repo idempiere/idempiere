@@ -697,9 +697,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			table.setNeedClosingTag(false);
 			PrintWriter w = new PrintWriter(writer);
 			XhtmlDocument doc = null;
-					
+			boolean minify = MSysConfig.getBooleanValue(MSysConfig.HTML_REPORT_MINIFY, false, Env.getAD_Client_ID(getCtx()));
+						
 			if (onlyTable)
-				w.print(compress(table.toString()));
+				w.print(compress(table.toString(), minify));
 			else
 			{
 				doc = new XhtmlDocument();
@@ -787,14 +788,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				styleBuild = new StringBuilder(styleBuild.toString().replaceAll(";", "!important;"));
 				appendInlineCss (doc, styleBuild);
 				
-				w.print(compress(doc.toString()));
+				w.print(compress(doc.toString(), minify));
 				
 				w.print("<div class='"+cssPrefix+"-flex-container'>");
 				String paraWrapId = null;
 				if (parameterTable != null) {
 					paraWrapId = cssPrefix + "-para-table-wrap";
 					w.print("<div id='" + paraWrapId + "'>");
-					w.print(compress(parameterTable.toString()));
+					w.print(compress(parameterTable.toString(), minify));
 					
 					tr tr = new tr();
 					tr.setClass("tr-parameter");
@@ -827,7 +828,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						tr.addElement(td);
 						td.addElement(query.getInfoDisplayAll(r));
 						
-						w.print(compress(tr.toString()));
+						w.print(compress(tr.toString(), minify));
 					}
 										
 					w.print("</table>");
@@ -843,8 +844,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				}
 				tableWrapDiv.append(" >");
 				
-				w.print(compress(tableWrapDiv.toString()));
-				w.print(compress(table.toString()));
+				w.print(compress(tableWrapDiv.toString(), minify));
+				w.print(compress(table.toString(), minify));
 			}
 			
 			thead thead = new thead();
@@ -1090,12 +1091,12 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				
 				/* output table header */
 				if (row == -1){
-					w.print(compress(thead.toString()));
+					w.print(compress(thead.toString(), minify));
 					// output open of tbody
-					w.print(compress(tbody.toString()));
+					w.print(compress(tbody.toString(), minify));
 				}else{
 					// output row by row 
-					w.print(compress(tr.toString()));
+					w.print(compress(tr.toString(), minify));
 				}
 				
 			}	//	for all rows
@@ -1114,7 +1115,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				st.append(" {\n\t\tdisplay:none;\n\t}");
 				style styleTag = new style();
 				styleTag.addElement(st.toString());
-				w.print(compress(styleTag.toString()));
+				w.print(compress(styleTag.toString(), minify));
 			}
 			if (!onlyTable)
 			{
@@ -2576,27 +2577,34 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), item.getDisplayLogic());
 	}
 
-	public String compress(String src) {
-	    HtmlCompressor compressor = new HtmlCompressor();
-	    compressor.setEnabled(true);
-	    compressor.setCompressCss(true);
-	    compressor.setCompressJavaScript(true);
-	    compressor.setRemoveComments(true);
-	    compressor.setRemoveMultiSpaces(true);
-	    compressor.setRemoveIntertagSpaces(true);
-//	    compressor.setGenerateStatistics(false);
-//	    compressor.setRemoveQuotes(false);
-//	    compressor.setSimpleDoctype(false);
-//	    compressor.setRemoveScriptAttributes(false);
-//	    compressor.setRemoveStyleAttributes(false);
-//	    compressor.setRemoveLinkAttributes(false);
-//	    compressor.setRemoveFormAttributes(false);
-//	    compressor.setRemoveInputAttributes(false);
-//	    compressor.setSimpleBooleanAttributes(false);
-//	    compressor.setRemoveJavaScriptProtocol(false);
-//	    compressor.setRemoveHttpProtocol(false);
-//	    compressor.setRemoveHttpsProtocol(false);
-//	    compressor.setPreserveLineBreaks(false);
-	    return compressor.compress(src);
+	public String compress(String src, boolean minify) {
+		
+		if(minify) {
+			HtmlCompressor compressor = new HtmlCompressor();
+		    compressor.setEnabled(true);
+		    compressor.setCompressCss(true);
+		    compressor.setCompressJavaScript(true);
+		    compressor.setRemoveComments(true);
+		    compressor.setRemoveMultiSpaces(true);
+		    compressor.setRemoveIntertagSpaces(true);
+//		    compressor.setGenerateStatistics(false);
+//		    compressor.setRemoveQuotes(false);
+//		    compressor.setSimpleDoctype(false);
+//		    compressor.setRemoveScriptAttributes(false);
+//		    compressor.setRemoveStyleAttributes(false);
+//		    compressor.setRemoveLinkAttributes(false);
+//		    compressor.setRemoveFormAttributes(false);
+//		    compressor.setRemoveInputAttributes(false);
+//		    compressor.setSimpleBooleanAttributes(false);
+//		    compressor.setRemoveJavaScriptProtocol(false);
+//		    compressor.setRemoveHttpProtocol(false);
+//		    compressor.setRemoveHttpsProtocol(false);
+//		    compressor.setPreserveLineBreaks(false);
+		    
+		    return compressor.compress(src);
+		}
+		else {
+			return src;
+		}
 	}
 }	//	ReportEngine
