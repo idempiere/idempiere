@@ -43,6 +43,16 @@
 									<artifactId>avalon-framework-api</artifactId>
 									<version>4.3.1</version>
 								</artifactItem>
+								<artifactItem>
+								    <groupId>com.googlecode.htmlcompressor</groupId>
+								    <artifactId>htmlcompressor</artifactId>
+								    <version>1.5.2</version>
+								</artifactItem>
+								<artifactItem>
+								    <groupId>com.yahoo.platform.yui</groupId>
+								    <artifactId>yuicompressor</artifactId>
+								    <version>2.4.8</version>
+								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>
 							<stripVersion>true</stripVersion>
