@@ -174,6 +174,12 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private Popup westPopup;
 	
 	private ToolBarButton westBtn;
+	
+    // For quick info optimization
+    private GridTab    gridTab;
+
+    // Right side Quick info is visible
+    private boolean    isQuickInfoOpen    = true;
 
     public DefaultDesktop()
     {
@@ -259,6 +265,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			@Override
 			public void onEvent(Event event) throws Exception {
 				OpenEvent oe = (OpenEvent) event;
+                isQuickInfoOpen = oe.isOpen();
 				updateHelpCollapsedPreference(!oe.isOpen());
 				HtmlBasedComponent comp = windowContainer.getComponent();
 				if (comp != null) {
@@ -331,7 +338,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	eastPopup = new Popup();
         	ToolBarButton btn = new ToolBarButton();
         	btn.setIconSclass("z-icon-remove");
-        	btn.addEventListener(Events.ON_CLICK, evt -> eastPopup.close());
+        	btn.addEventListener(Events.ON_CLICK, evt -> {
+				eastPopup.close();
+				isQuickInfoOpen = false;
+			});
         	eastPopup.appendChild(btn);
         	btn.setStyle("position: absolute; top: 20px; right: 0px; padding: 2px 0px;");
         	eastPopup.setStyle("padding-top: 20px;");
@@ -339,6 +349,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	eastPopup.setPage(getComponent().getPage());
         	eastPopup.setHeight("100%");        	
         	helpController.setupFieldTooltip();
+        	eastPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
+				isQuickInfoOpen = oe.isOpen();
+			});
         	
         	westPopup = new Popup();        	
         	westPopup.setStyle("padding-top: 10px;");
@@ -424,6 +437,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         contextHelp.setSclass("window-container-toolbar-btn context-help-btn");
         contextHelp.setTooltiptext(Util.cleanAmp(Msg.getElement(Env.getCtx(), "AD_CtxHelp_ID")));
         contextHelp.setVisible(!e.isVisible());
+        isQuickInfoOpen = e.isVisible();
         
         if (!mobile) {
 	        boolean headerCollapsed= pref.isPropertyBool(UserPreference.P_HEADER_COLLAPSED);
@@ -654,6 +668,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         		if (mobile && eastPopup != null)
         		{
         			eastPopup.open(layout.getCenter(), "overlap_end");
+        			isQuickInfoOpen = true;
+            		updateHelpQuickInfo(gridTab);
         		}
         		else
         		{
@@ -662,6 +678,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	        		LayoutUtils.removeSclass("slide", layout.getEast());
 	        		contextHelp.setVisible(false);
 	        		updateHelpCollapsedPreference(false);
+	        		isQuickInfoOpen = true;
+	        		updateHelpQuickInfo(gridTab);
         		}
         	}
         	else if (comp == westBtn)
@@ -971,7 +989,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		Component window = getActiveWindow();
 		ADWindow adwindow = ADWindow.findADWindow(window);
 		if (adwindow != null) {
-			gridTab = adwindow.getADWindowContent().getActiveGridTab();
+            gridTab = adwindow.getADWindowContent().getActiveGridTab();
 		}
 		updateHelpQuickInfo(gridTab);
 	}
@@ -988,7 +1006,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	@Override
 	public void updateHelpQuickInfo(GridTab gridTab) {
-		helpController.renderQuickInfo(gridTab);
+        this.gridTab = gridTab;
+        if (isQuickInfoOpen)
+            helpController.renderQuickInfo(gridTab);
 	}
 
 	@Override
