@@ -158,6 +158,7 @@ public class ServerReportCtl {
 	public static boolean runJasperProcess(int Record_ID, ReportEngine re, boolean IsDirectPrint, String printerName, ProcessInfo pi) {
 		MPrintFormat format = re.getPrintFormat();
 		ProcessInfo jasperProcessInfo = new ProcessInfo ("", format.getJasperProcess_ID());
+		PrintInfo printInfo = re.getPrintInfo();
 		if (pi != null) {
 			jasperProcessInfo.setPrintPreview(pi.isPrintPreview());
 			jasperProcessInfo.setIsBatch(pi.isBatch());
@@ -165,6 +166,7 @@ public class ServerReportCtl {
 			jasperProcessInfo.setPrintPreview( !IsDirectPrint );
 		}
 		jasperProcessInfo.setRecord_ID ( Record_ID );
+		jasperProcessInfo.setTable_ID(printInfo.getAD_Table_ID());
 		ArrayList<ProcessInfoParameter> jasperPrintParams = new ArrayList<ProcessInfoParameter>();
 		ProcessInfoParameter pip;
 		if (printerName!=null && printerName.trim().length()>0) {
