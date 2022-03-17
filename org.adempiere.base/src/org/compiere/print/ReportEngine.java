@@ -697,7 +697,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 			table.setNeedClosingTag(false);
 			PrintWriter w = new PrintWriter(writer);
 			XhtmlDocument doc = null;
-			boolean minify = MSysConfig.getBooleanValue(MSysConfig.HTML_REPORT_MINIFY, false, Env.getAD_Client_ID(getCtx()));
+			boolean minify = MSysConfig.getBooleanValue(MSysConfig.HTML_REPORT_MINIFY, true, Env.getAD_Client_ID(getCtx()));
 						
 			if (onlyTable)
 				w.print(compress(table.toString(), minify));
