@@ -48,7 +48,7 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	 */
 	public static MOrg[] getOfClient (PO po)
 	{
-		return getOfClient(po.getCtx(), po.getAD_Client_ID());
+		return getOfClient(po.getAD_Client_ID());
 	}	//	getOfClient
 
 	/**
@@ -57,7 +57,7 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	 */
 	public static MOrg[] getOfClient ()
 	{
-		return getOfClient(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));		
+		return getOfClient(Env.getAD_Client_ID(Env.getCtx()));		
 	}
 
 	/**
@@ -66,9 +66,9 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	 *	@param int clientID
 	 *	@return array of orgs
 	 */
-	public static MOrg[] getOfClient (Properties ctx, int clientID)
+	public static MOrg[] getOfClient (int clientID)
 	{
-		List<MOrg> list = new Query(ctx, Table_Name, "AD_Client_ID=?", null)
+		List<MOrg> list = new Query(Env.getCtx(), Table_Name, "AD_Client_ID=?", null)
 								.setOrderBy(COLUMNNAME_Value)
 								.setOnlyActiveRecords(true)
 								.setParameters(clientID)
