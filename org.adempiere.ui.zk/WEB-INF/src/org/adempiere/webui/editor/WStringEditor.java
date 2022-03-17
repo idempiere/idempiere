@@ -17,12 +17,14 @@
 
 package org.adempiere.webui.editor;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
+import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -30,15 +32,24 @@ import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.I_R_MailText;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.util.Notification;
+import org.zkoss.zul.Timer;
 
 /**
  *
@@ -48,6 +59,10 @@ import org.zkoss.zk.ui.event.Events;
  */
 public class WStringEditor extends WEditor implements ContextMenuListener
 {
+	private static final String INPUT_COMPONENT = "InputComponent";
+
+	private static final String SHARE_COPY_TEXT_BUTTON = "ShareCopyTextButton";
+
 	private static final String[] LISTENER_EVENTS = {Events.ON_CHANGE, Events.ON_OK};
 
     private String oldValue;
@@ -188,8 +203,77 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        if (gridField != null)
 	        	getComponent().setPlaceholder(gridField.getPlaceholder());
 		}
+		
+		getComponent().addEventListener(Events.ON_MOUSE_OVER, e -> {
+			Button btn = getOrCreateDesktopCopyTextButton(getComponent().getDesktop());
+			if (btn.getAttribute(INPUT_COMPONENT) == getComponent())
+				return;
+			getComponent().getParent().appendChild(btn);
+			btn.setStyle("position:absolute;z-index:999;right:3px;");
+			btn.setVisible(true);
+			StringBuffer sb = new StringBuffer("var w=zk('#")
+					.append(getComponent().getUuid()).append("');")
+					.append("var b=jq('#").append(btn.getUuid()).append("');")
+					.append("b.css('top',")
+					.append("w.offsetTop()+1+'px');");
+			Clients.evalJavaScript(sb.toString());
+			Iterable<EventListener<? extends Event>> onClicks = btn.getEventListeners(Events.ON_CLICK);
+			Iterator<EventListener<? extends Event>> iterator = onClicks.iterator();
+			while(iterator.hasNext()) {
+				iterator.next();
+				iterator.remove();
+			}
+			btn.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {				
+					if (!Util.isEmpty((String) getValue())) {
+						StringBuffer sb = new StringBuffer("var w=zk.Widget.$('#")
+								.append(getComponent().getUuid()).append("');")
+								.append("navigator.clipboard.writeText(w.getText());");
+						Clients.evalJavaScript(sb.toString());
+						Notification.show(Msg.getMsg(Env.getCtx(), "Copied"), Notification.TYPE_INFO, btn, "end_before", 1000);					
+					}
+					getComponent().focus();				
+				}
+			});
+			getComponent().setAttribute(SHARE_COPY_TEXT_BUTTON, btn);
+			Timer timer = new Timer();
+			getComponent().getParent().appendChild(timer);
+			btn.setAttribute(INPUT_COMPONENT, getComponent());
+			timer.setDelay(5000);
+			timer.setRepeats(false);
+			timer.addEventListener(Events.ON_TIMER, e1 -> {
+				Object b = getComponent().removeAttribute(SHARE_COPY_TEXT_BUTTON);
+				if (b != null && b instanceof Button) {
+					Button b1  = (Button) b;
+					if (b1.getAttribute(INPUT_COMPONENT) == getComponent()) {
+						b1.detach();
+						b1.removeAttribute(INPUT_COMPONENT);
+					}
+				}
+				timer.detach();
+			});
+			timer.start();
+		});				
     }
 
+	private Button getOrCreateDesktopCopyTextButton(Desktop desktop) {
+		Button btn = (Button) desktop.getAttribute(SHARE_COPY_TEXT_BUTTON);
+		if (btn == null) {
+			btn = new Button();
+			if (ThemeManager.isUseFontIconForImage())
+				btn.setIconSclass("z-icon-Copy");
+			else
+				btn.setImage(ThemeManager.getThemeResource("images/Copy16.png"));
+			btn.setTabindex(-1);
+			btn.setVisible(false);
+			ZKUpdateUtil.setHflex(btn, "0");
+			LayoutUtils.addSclass("editor-button", btn);
+			desktop.setAttribute(SHARE_COPY_TEXT_BUTTON, btn);
+		}
+		return btn;
+	}
+	
 	public void onEvent(Event event)
     {
 		boolean isStartEdit = INIT_EDIT_EVENT.equalsIgnoreCase (event.getName());
