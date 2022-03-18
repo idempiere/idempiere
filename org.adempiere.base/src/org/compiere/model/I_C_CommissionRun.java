@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_CommissionRun
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_C_CommissionRun 
 {
@@ -44,8 +44,8 @@ public interface I_C_CommissionRun
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_C_CommissionRun
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -98,6 +98,21 @@ public interface I_C_CommissionRun
 
 	/** Get C_CommissionRun_UU	  */
 	public String getC_CommissionRun_UU();
+
+    /** Column name C_Invoice_ID */
+    public static final String COLUMNNAME_C_Invoice_ID = "C_Invoice_ID";
+
+	/** Set Invoice.
+	  * Invoice Identifier
+	  */
+	public void setC_Invoice_ID (int C_Invoice_ID);
+
+	/** Get Invoice.
+	  * Invoice Identifier
+	  */
+	public int getC_Invoice_ID();
+
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
