@@ -1327,8 +1327,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		if (adtab == adTabbox.getSelectedTabpanel()) {
     			toolbar.enableProcessButton(adtab.isEnableProcessButton());
     			toolbar.dynamicDisplay();
-    			toolbar.pressedLogic();
-    			toolbar.readOnlyLogic();
     		}
     	}
     	else if (event.getTarget() == getComponent() && event.getName().equals(LayoutUtils.ON_REDRAW_EVENT)) {

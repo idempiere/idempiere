@@ -898,8 +898,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		ADWindow adwindow = ADWindow.findADWindow(this);
 
 		dynamicDisplay();
-		pressedLogic();
-		readOnlyLogic();
 		// If no workflow set for the table => disable btnWorkflow
 		if (!btnActiveWorkflows.isDisabled()) {
 			GridTab gridTab = adwindow.getADWindowContent().getActiveGridTab();
@@ -980,9 +978,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 				}
 			}
 		}
+		pressedLogic();
+		readOnlyLogic();
 	}
 	
-	public void pressedLogic()
+	private void pressedLogic()
 	{
 		for (ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons)
 		{
@@ -990,7 +990,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		}
 	}
 
-	public void readOnlyLogic()
+	private void readOnlyLogic()
 	{
 		for (ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons)
 		{
