@@ -32,12 +32,32 @@ public class X_M_StorageReservationLog extends PO implements I_M_StorageReservat
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_StorageReservationLog (Properties ctx, int M_StorageReservationLog_ID, String trxName)
     {
       super (ctx, M_StorageReservationLog_ID, trxName);
+      /** if (M_StorageReservationLog_ID == 0)
+        {
+			setAD_Table_ID (0);
+			setDeltaQty (Env.ZERO);
+			setIsSOTrx (false);
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+			setM_StorageReservationLog_ID (0);
+			setM_StorageReservationLog_UU (null);
+			setM_Warehouse_ID (0);
+			setNewQty (Env.ZERO);
+			setOldQty (Env.ZERO);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_StorageReservationLog (Properties ctx, int M_StorageReservationLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_StorageReservationLog_ID, trxName, virtualColumns);
       /** if (M_StorageReservationLog_ID == 0)
         {
 			setAD_Table_ID (0);

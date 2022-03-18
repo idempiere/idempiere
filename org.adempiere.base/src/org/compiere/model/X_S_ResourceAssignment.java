@@ -34,12 +34,26 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_S_ResourceAssignment (Properties ctx, int S_ResourceAssignment_ID, String trxName)
     {
       super (ctx, S_ResourceAssignment_ID, trxName);
+      /** if (S_ResourceAssignment_ID == 0)
+        {
+			setAssignDateFrom (new Timestamp( System.currentTimeMillis() ));
+			setIsConfirmed (false);
+			setName (null);
+			setS_ResourceAssignment_ID (0);
+			setS_Resource_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_ResourceAssignment (Properties ctx, int S_ResourceAssignment_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_ResourceAssignment_ID, trxName, virtualColumns);
       /** if (S_ResourceAssignment_ID == 0)
         {
 			setAssignDateFrom (new Timestamp( System.currentTimeMillis() ));

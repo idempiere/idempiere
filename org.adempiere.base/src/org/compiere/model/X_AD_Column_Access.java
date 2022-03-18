@@ -31,12 +31,26 @@ public class X_AD_Column_Access extends PO implements I_AD_Column_Access, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Column_Access (Properties ctx, int AD_Column_Access_ID, String trxName)
     {
       super (ctx, AD_Column_Access_ID, trxName);
+      /** if (AD_Column_Access_ID == 0)
+        {
+			setAD_Column_ID (0);
+			setAD_Role_ID (0);
+			setIsExclude (true);
+// Y
+			setIsReadOnly (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Column_Access (Properties ctx, int AD_Column_Access_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Column_Access_ID, trxName, virtualColumns);
       /** if (AD_Column_Access_ID == 0)
         {
 			setAD_Column_ID (0);

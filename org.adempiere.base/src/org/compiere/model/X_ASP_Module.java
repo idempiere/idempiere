@@ -31,12 +31,24 @@ public class X_ASP_Module extends PO implements I_ASP_Module, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_ASP_Module (Properties ctx, int ASP_Module_ID, String trxName)
     {
       super (ctx, ASP_Module_ID, trxName);
+      /** if (ASP_Module_ID == 0)
+        {
+			setASP_Module_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Module (Properties ctx, int ASP_Module_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Module_ID, trxName, virtualColumns);
       /** if (ASP_Module_ID == 0)
         {
 			setASP_Module_ID (0);

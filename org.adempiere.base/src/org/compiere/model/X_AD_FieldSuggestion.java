@@ -30,12 +30,35 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_FieldSuggestion (Properties ctx, int AD_FieldSuggestion_ID, String trxName)
     {
       super (ctx, AD_FieldSuggestion_ID, trxName);
+      /** if (AD_FieldSuggestion_ID == 0)
+        {
+			setAD_Field_ID (0);
+			setAD_FieldSuggestion_ID (0);
+			setAD_FieldSuggestion_UU (null);
+			setAD_Language (null);
+			setAD_UserClient_ID (0);
+			setAD_User_ID (0);
+			setFieldSuggestionTarget (null);
+// E
+			setIsApproved (false);
+// N
+			setIsUpdateBaseLanguage (true);
+// Y
+			setProcessed (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_FieldSuggestion (Properties ctx, int AD_FieldSuggestion_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_FieldSuggestion_ID, trxName, virtualColumns);
       /** if (AD_FieldSuggestion_ID == 0)
         {
 			setAD_Field_ID (0);

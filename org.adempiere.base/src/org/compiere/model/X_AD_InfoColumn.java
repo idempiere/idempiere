@@ -31,12 +31,44 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
     {
       super (ctx, AD_InfoColumn_ID, trxName);
+      /** if (AD_InfoColumn_ID == 0)
+        {
+			setAD_InfoColumn_ID (0);
+			setAD_InfoWindow_ID (0);
+			setAD_Reference_ID (0);
+			setColumnName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsAutocomplete (false);
+// N
+			setIsCentrallyMaintained (true);
+// Y
+			setIsDisplayed (true);
+// Y
+			setIsIdentifier (false);
+// N
+			setIsMandatory (false);
+// N
+			setIsQueryCriteria (false);
+			setIsReadOnly (true);
+// Y
+			setName (null);
+			setSelectClause (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_InfoColumn WHERE AD_InfoWindow_ID=@AD_InfoWindow_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_InfoColumn_ID, trxName, virtualColumns);
       /** if (AD_InfoColumn_ID == 0)
         {
 			setAD_InfoColumn_ID (0);

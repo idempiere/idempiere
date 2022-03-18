@@ -33,12 +33,26 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationAccount (Properties ctx, int AD_AuthorizationAccount_ID, String trxName)
     {
       super (ctx, AD_AuthorizationAccount_ID, trxName);
+      /** if (AD_AuthorizationAccount_ID == 0)
+        {
+			setAD_AuthorizationAccount_ID (0);
+			setIsAccessRevoked (false);
+// N
+			setIsAuthorized (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AuthorizationAccount (Properties ctx, int AD_AuthorizationAccount_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AuthorizationAccount_ID, trxName, virtualColumns);
       /** if (AD_AuthorizationAccount_ID == 0)
         {
 			setAD_AuthorizationAccount_ID (0);

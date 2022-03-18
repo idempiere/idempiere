@@ -49,6 +49,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Window;
 
 /**
  * @author hengsin
@@ -290,8 +291,12 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		pathLabel.addEventListener(Events.ON_MOUSE_OVER, listener);
 		pathLabel.addEventListener(Events.ON_MOUSE_OUT, listener);
 		pathLabel.addEventListener(ON_MOUSE_OVER_ECHO_EVENT, listener);
-		String imageUrl = Executions.getCurrent().encodeURL(ThemeManager.getThemeResource("images/downarrow.png"));		
-		ZkCssHelper.appendStyle(pathLabel, "background: transparent url('" + imageUrl + "') no-repeat right center");
+		if (ThemeManager.isUseFontIconForImage()) {
+			pathLabel.setSclass("adwindow-breadcrumb-menu");
+		} else {
+			String imageUrl = Executions.getCurrent().encodeURL(ThemeManager.getThemeResource("images/downarrow.png"));		
+			ZkCssHelper.appendStyle(pathLabel, "background: transparent url('" + imageUrl + "') no-repeat right center");
+		}
 	}
 
 	@Override
@@ -303,7 +308,12 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 				return;
 
 			String title = Msg.getMsg(Env.getCtx(), "Who") + m_text;
-			new WRecordInfo (title, m_dse, m_gridTab);
+			WRecordInfo winfo = new WRecordInfo (title, m_dse, m_gridTab);
+			winfo.addCallback(Window.AFTER_PAGE_DETACHED, t -> {
+				ADWindow adwindow = ADWindow.findADWindow(BreadCrumb.this);
+				if (adwindow != null)
+					adwindow.getADWindowContent().focusToLastFocusEditor();
+			});
 		} else if (event.getTarget() == btnFirst) {
 			if (toolbarListener != null)
 				toolbarListener.onFirst();

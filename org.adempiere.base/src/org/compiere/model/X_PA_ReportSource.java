@@ -31,12 +31,48 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_ReportSource (Properties ctx, int PA_ReportSource_ID, String trxName)
     {
       super (ctx, PA_ReportSource_ID, trxName);
+      /** if (PA_ReportSource_ID == 0)
+        {
+			setElementType (null);
+			setIsIncludeNullsActivity (false);
+// N
+			setIsIncludeNullsBPartner (false);
+// N
+			setIsIncludeNullsCampaign (false);
+// N
+			setIsIncludeNullsElementValue (false);
+// N
+			setIsIncludeNullsLocation (false);
+// N
+			setIsIncludeNullsOrg (false);
+// N
+			setIsIncludeNullsOrgTrx (false);
+// N
+			setIsIncludeNullsProduct (false);
+// N
+			setIsIncludeNullsProject (false);
+// N
+			setIsIncludeNullsSalesRegion (false);
+// N
+			setIsIncludeNullsUserElement1 (false);
+// N
+			setIsIncludeNullsUserElement2 (false);
+// N
+			setPA_ReportLine_ID (0);
+			setPA_ReportSource_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_ReportSource (Properties ctx, int PA_ReportSource_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_ReportSource_ID, trxName, virtualColumns);
       /** if (PA_ReportSource_ID == 0)
         {
 			setElementType (null);

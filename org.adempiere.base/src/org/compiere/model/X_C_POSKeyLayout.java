@@ -31,12 +31,23 @@ public class X_C_POSKeyLayout extends PO implements I_C_POSKeyLayout, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_POSKeyLayout (Properties ctx, int C_POSKeyLayout_ID, String trxName)
     {
       super (ctx, C_POSKeyLayout_ID, trxName);
+      /** if (C_POSKeyLayout_ID == 0)
+        {
+			setC_POSKeyLayout_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_POSKeyLayout (Properties ctx, int C_POSKeyLayout_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_POSKeyLayout_ID, trxName, virtualColumns);
       /** if (C_POSKeyLayout_ID == 0)
         {
 			setC_POSKeyLayout_ID (0);

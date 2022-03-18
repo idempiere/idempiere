@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Tab
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_Tab 
 {
@@ -161,6 +161,15 @@ public interface I_AD_Tab
 	  */
 	public int getAD_Tab_ID();
 
+    /** Column name AD_Tab_UU */
+    public static final String COLUMNNAME_AD_Tab_UU = "AD_Tab_UU";
+
+	/** Set AD_Tab_UU	  */
+	public void setAD_Tab_UU (String AD_Tab_UU);
+
+	/** Get AD_Tab_UU	  */
+	public String getAD_Tab_UU();
+
     /** Column name AD_Table_ID */
     public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
 
@@ -188,15 +197,6 @@ public interface I_AD_Tab
 	  * Defines Tab Type
 	  */
 	public String getAD_TabType();
-
-    /** Column name AD_Tab_UU */
-    public static final String COLUMNNAME_AD_Tab_UU = "AD_Tab_UU";
-
-	/** Set AD_Tab_UU	  */
-	public void setAD_Tab_UU (String AD_Tab_UU);
-
-	/** Get AD_Tab_UU	  */
-	public String getAD_Tab_UU();
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
@@ -371,6 +371,19 @@ public interface I_AD_Tab
 
 	/** Get Allow Advanced Lookup	  */
 	public boolean isAllowAdvancedLookup();
+
+    /** Column name IsHighVolume */
+    public static final String COLUMNNAME_IsHighVolume = "IsHighVolume";
+
+	/** Set High Volume.
+	  * Use Search instead of Pick list
+	  */
+	public void setIsHighVolume (String IsHighVolume);
+
+	/** Get High Volume.
+	  * Use Search instead of Pick list
+	  */
+	public String getIsHighVolume();
 
     /** Column name IsInfoTab */
     public static final String COLUMNNAME_IsInfoTab = "IsInfoTab";

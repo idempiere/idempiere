@@ -21,6 +21,34 @@
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
         <listEntry value="4"/>
     </listAttribute>
+    <listAttribute key="org.eclipse.eclemma.core.SCOPE_IDS">
+        <listEntry value="=org.adempiere.install/src"/>
+        <listEntry value="=org.adempiere.server/src\/main\/server"/>
+        <listEntry value="=org.idempiere.printformat.editor/src"/>
+        <listEntry value="=org.idempiere.keikai/src"/>
+        <listEntry value="=org.adempiere.replication/src"/>
+        <listEntry value="=org.adempiere.plugin.utils/src"/>
+        <listEntry value="=org.compiere.db.oracle.provider/src"/>
+        <listEntry value="=org.adempiere.ui/src"/>
+        <listEntry value="=org.adempiere.pipo.handlers/src"/>
+        <listEntry value="=org.compiere.db.postgresql.provider/src"/>
+        <listEntry value="=org.adempiere.report.jasper/src"/>
+        <listEntry value="=org.adempiere.ui.zk/WEB-INF\/src"/>
+        <listEntry value="=org.apache.ecs/src"/>
+        <listEntry value="=org.idempiere.felix.webconsole/src"/>
+        <listEntry value="=org.idempiere.webservices/WEB-INF\/src"/>
+        <listEntry value="=org.adempiere.pipo/src"/>
+        <listEntry value="=org.adempiere.payment.processor/src"/>
+        <listEntry value="=org.adempiere.webstore/src"/>
+        <listEntry value="=org.adempiere.server/src\/main\/home"/>
+        <listEntry value="=org.adempiere.base.callout/src"/>
+        <listEntry value="=org.adempiere.base/src"/>
+        <listEntry value="=org.adempiere.base.process/src"/>
+        <listEntry value="=org.idempiere.hazelcast.service/src"/>
+        <listEntry value="=org.adempiere.eclipse.equinox.http.servlet/src"/>
+        <listEntry value="=org.adempiere.replication.server/src"/>
+        <listEntry value="=org.adempiere.server/src\/main\/servlet"/>
+    </listAttribute>
     <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=org.idempiere.test"/>
     <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
     <stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
@@ -84,6 +112,7 @@
         <setEntry value="groovy-sql@default:false"/>
         <setEntry value="groovy-xml@default:false"/>
         <setEntry value="groovy@default:default"/>
+        <setEntry value="io.github.classgraph.classgraph@default:default"/>
         <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="jakarta.jws-api@default:default"/>
         <setEntry value="jakarta.persistence-api@default:default"/>

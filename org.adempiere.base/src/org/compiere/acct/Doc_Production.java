@@ -273,6 +273,7 @@ public class Doc_Production extends Doc
 
 			}
 			
+			int stdPrecision = as.getStdPrecision();
 			BigDecimal bomCost = Env.ZERO;	
 			BigDecimal qtyProduced = null;
 			if (line.isProductionBOM())
@@ -320,7 +321,7 @@ public class Doc_Production extends Doc
 										costMap.put(line0.get_ID()+ "_"+ ma.getM_AttributeSetInstance_ID(),maCost);
 										costs0 = costs0.add(maCost);
 									}						
-									bomCost = bomCost.add(costs0.setScale(2,RoundingMode.HALF_UP));
+									bomCost = bomCost.add(costs0);
 								} 
 								else
 									p_Error = "Failed to post - No Attribute Set for line";
@@ -341,7 +342,7 @@ public class Doc_Production extends Doc
 									costs0 = line0.getProductCosts(as, line0.getAD_Org_ID(), false);
 								}
 								costMap.put(line0.get_ID()+ "_"+ line0.getM_AttributeSetInstance_ID(),costs0);
-								bomCost = bomCost.add(costs0.setScale(2,RoundingMode.HALF_UP));	
+								bomCost = bomCost.add(costs0);
 							}
 							
 						}  
@@ -360,7 +361,7 @@ public class Doc_Production extends Doc
 								costs0 = line0.getProductCosts(as, line0.getAD_Org_ID(), false);
 							}
 							costMap.put(line0.get_ID()+ "_"+ line0.getM_AttributeSetInstance_ID(),costs0);
-							bomCost = bomCost.add(costs0.setScale(2,RoundingMode.HALF_UP));
+							bomCost = bomCost.add(costs0);
 						}
 					}
 				}
@@ -369,7 +370,7 @@ public class Doc_Production extends Doc
 				if (line.getQty().compareTo(qtyProduced) != 0) 
 				{
 					BigDecimal factor = line.getQty().divide(qtyProduced, 12, RoundingMode.HALF_UP);
-					bomCost = bomCost.multiply(factor).setScale(2,RoundingMode.HALF_UP);
+					bomCost = bomCost.multiply(factor);
 				}
 				
 				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
@@ -377,7 +378,7 @@ public class Doc_Production extends Doc
 					//post roll-up  
 					fl = fact.createLine(line, 
 							line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-							as.getC_Currency_ID(), bomCost.negate()); 
+							as.getC_Currency_ID(), bomCost.negate().setScale(stdPrecision, RoundingMode.HALF_UP));
 					if (fl == null) 
 					{ 
 						p_Error = "Couldn't post roll-up " + line.getLine() + " - " + line; 
@@ -387,8 +388,7 @@ public class Doc_Production extends Doc
 				} 
 				else if (MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 				{					
-					int precision = as.getStdPrecision();
-					BigDecimal variance = (costs.setScale(precision, RoundingMode.HALF_UP)).subtract(bomCost.negate());
+					BigDecimal variance = costs.subtract(bomCost.negate()).setScale(stdPrecision, RoundingMode.HALF_UP);
 					// only post variance if it's not zero 
 					if (variance.signum() != 0) 
 					{
@@ -417,7 +417,7 @@ public class Doc_Production extends Doc
 				}
 				fl = fact.createLine(line,
 					line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-					as.getC_Currency_ID(), factLineAmt);
+					as.getC_Currency_ID(), factLineAmt.setScale(stdPrecision, RoundingMode.HALF_UP));
 				if (fl == null)
 				{
 					p_Error = "No Costs for Line " + line.getLine() + " - " + line;

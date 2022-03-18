@@ -30,12 +30,23 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)
     {
       super (ctx, AD_Tab_Customization_ID, trxName);
+      /** if (AD_Tab_Customization_ID == 0)
+        {
+			setAD_User_ID (0);
+			setCustom (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Tab_Customization_ID, trxName, virtualColumns);
       /** if (AD_Tab_Customization_ID == 0)
         {
 			setAD_User_ID (0);

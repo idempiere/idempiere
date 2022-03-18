@@ -1,11 +1,5 @@
 <center>
 
-# COMPIERE PUBLIC LICENSE
-
-**Version 1.2**
-
-Contact [info@compiere.org](mailto:info@compiere.org).org for licensing alternatives.
-
 # GNU General Public License
 
 Version 2, June 1991

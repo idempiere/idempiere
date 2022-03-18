@@ -152,7 +152,7 @@ public class TranslationImpExp extends SvrProcess {
 				String tableName = table.getTableName();
 				if ("import".equals(p_ImportOrExport)) {
 					statusUpdate(Msg.parseTranslation(getCtx(), "@Import@ " + tableName + " ..."));
-					msgProc = translation.importTrl(p_Folder, p_AD_Client_ID, p_AD_Language, tableName);
+					msgProc = translation.importTrl(p_Folder, p_AD_Client_ID, p_AD_Language, tableName, get_TrxName());
 				} else {
 					statusUpdate(Msg.parseTranslation(getCtx(), "@Export@ " + tableName + " ..."));
 					msgProc = translation.exportTrl(p_Folder, p_AD_Client_ID, p_AD_Language, tableName, p_IsOnlyCentralizedData);

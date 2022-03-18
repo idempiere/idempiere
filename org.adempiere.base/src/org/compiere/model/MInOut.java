@@ -304,7 +304,11 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 */
 	public MInOut (Properties ctx, int M_InOut_ID, String trxName)
 	{
-		super (ctx, M_InOut_ID, trxName);
+		this (ctx, M_InOut_ID, trxName, (String[]) null);
+	}	//	MInOut
+
+	public MInOut(Properties ctx, int M_InOut_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_InOut_ID, trxName, virtualColumns);
 		if (M_InOut_ID == 0)
 		{
 			setIsSOTrx (false);
@@ -327,7 +331,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			setProcessing(false);
 			setPosted(false);
 		}
-	}	//	MInOut
+	}
 
 	/**
 	 *  Load Constructor

@@ -248,7 +248,7 @@ public class ModelInterfaceGenerator
 				+ "FROM AD_Column c "
 				+ "WHERE c.AD_Table_ID=?"
 
-				+ " AND c.IsActive='Y'"
+				+ " AND c.IsActive='Y' AND (c.ColumnSQL IS NULL OR c.ColumnSQL NOT LIKE '@SQL%') "
 				+ (!Util.isEmpty(entityTypeFilter) ? " AND c." + entityTypeFilter : "")
 				+ " ORDER BY c.ColumnName";
 		PreparedStatement pstmt = null;

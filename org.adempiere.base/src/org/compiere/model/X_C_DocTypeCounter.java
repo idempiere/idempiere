@@ -31,12 +31,28 @@ public class X_C_DocTypeCounter extends PO implements I_C_DocTypeCounter, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_DocTypeCounter (Properties ctx, int C_DocTypeCounter_ID, String trxName)
     {
       super (ctx, C_DocTypeCounter_ID, trxName);
+      /** if (C_DocTypeCounter_ID == 0)
+        {
+			setC_DocTypeCounter_ID (0);
+			setC_DocType_ID (0);
+			setCounter_C_DocType_ID (0);
+			setIsCreateCounter (true);
+// Y
+			setIsValid (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_DocTypeCounter (Properties ctx, int C_DocTypeCounter_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_DocTypeCounter_ID, trxName, virtualColumns);
       /** if (C_DocTypeCounter_ID == 0)
         {
 			setC_DocTypeCounter_ID (0);

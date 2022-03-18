@@ -34,7 +34,11 @@ public class MOpportunity extends X_C_Opportunity {
 	public MOpportunity(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
-	
+
+	public MOpportunity(Properties ctx, int C_Opportunity_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Opportunity_ID, trxName, virtualColumns);
+	}
+
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		if ( getC_Order_ID() > 0 )

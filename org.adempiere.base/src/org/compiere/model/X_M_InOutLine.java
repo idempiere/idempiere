@@ -33,12 +33,36 @@ public class X_M_InOutLine extends PO implements I_M_InOutLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_InOutLine (Properties ctx, int M_InOutLine_ID, String trxName)
     {
       super (ctx, M_InOutLine_ID, trxName);
+      /** if (M_InOutLine_ID == 0)
+        {
+			setC_UOM_ID (0);
+// @#C_UOM_ID@
+			setIsDescription (false);
+// N
+			setIsInvoiced (false);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_InOutLine WHERE M_InOut_ID=@M_InOut_ID@
+			setM_AttributeSetInstance_ID (0);
+			setM_InOut_ID (0);
+			setM_InOutLine_ID (0);
+			setMovementQty (Env.ZERO);
+// 1
+			setProcessed (false);
+			setQtyEntered (Env.ZERO);
+// 1
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_InOutLine (Properties ctx, int M_InOutLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_InOutLine_ID, trxName, virtualColumns);
       /** if (M_InOutLine_ID == 0)
         {
 			setC_UOM_ID (0);

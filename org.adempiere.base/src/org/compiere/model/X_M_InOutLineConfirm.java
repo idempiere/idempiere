@@ -33,12 +33,27 @@ public class X_M_InOutLineConfirm extends PO implements I_M_InOutLineConfirm, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_InOutLineConfirm (Properties ctx, int M_InOutLineConfirm_ID, String trxName)
     {
       super (ctx, M_InOutLineConfirm_ID, trxName);
+      /** if (M_InOutLineConfirm_ID == 0)
+        {
+			setConfirmedQty (Env.ZERO);
+			setM_InOutConfirm_ID (0);
+			setM_InOutLineConfirm_ID (0);
+			setM_InOutLine_ID (0);
+			setProcessed (false);
+			setTargetQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_InOutLineConfirm (Properties ctx, int M_InOutLineConfirm_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_InOutLineConfirm_ID, trxName, virtualColumns);
       /** if (M_InOutLineConfirm_ID == 0)
         {
 			setConfirmedQty (Env.ZERO);

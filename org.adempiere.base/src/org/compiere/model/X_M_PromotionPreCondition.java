@@ -31,12 +31,26 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_PromotionPreCondition (Properties ctx, int M_PromotionPreCondition_ID, String trxName)
     {
       super (ctx, M_PromotionPreCondition_ID, trxName);
+      /** if (M_PromotionPreCondition_ID == 0)
+        {
+			setM_Promotion_ID (0);
+			setM_PromotionPreCondition_ID (0);
+			setSeqNo (0);
+// 0
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PromotionPreCondition (Properties ctx, int M_PromotionPreCondition_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PromotionPreCondition_ID, trxName, virtualColumns);
       /** if (M_PromotionPreCondition_ID == 0)
         {
 			setM_Promotion_ID (0);

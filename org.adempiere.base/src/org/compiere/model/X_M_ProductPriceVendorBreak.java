@@ -32,12 +32,28 @@ public class X_M_ProductPriceVendorBreak extends PO implements I_M_ProductPriceV
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ProductPriceVendorBreak (Properties ctx, int M_ProductPriceVendorBreak_ID, String trxName)
     {
       super (ctx, M_ProductPriceVendorBreak_ID, trxName);
+      /** if (M_ProductPriceVendorBreak_ID == 0)
+        {
+			setBreakValue (Env.ZERO);
+			setM_PriceList_Version_ID (0);
+			setM_Product_ID (0);
+			setM_ProductPriceVendorBreak_ID (0);
+			setPriceLimit (Env.ZERO);
+			setPriceList (Env.ZERO);
+			setPriceStd (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductPriceVendorBreak (Properties ctx, int M_ProductPriceVendorBreak_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductPriceVendorBreak_ID, trxName, virtualColumns);
       /** if (M_ProductPriceVendorBreak_ID == 0)
         {
 			setBreakValue (Env.ZERO);

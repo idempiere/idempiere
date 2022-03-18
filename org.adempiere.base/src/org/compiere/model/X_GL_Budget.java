@@ -31,12 +31,24 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_GL_Budget (Properties ctx, int GL_Budget_ID, String trxName)
     {
       super (ctx, GL_Budget_ID, trxName);
+      /** if (GL_Budget_ID == 0)
+        {
+			setGL_Budget_ID (0);
+			setIsPrimary (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_Budget (Properties ctx, int GL_Budget_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_Budget_ID, trxName, virtualColumns);
       /** if (GL_Budget_ID == 0)
         {
 			setGL_Budget_ID (0);

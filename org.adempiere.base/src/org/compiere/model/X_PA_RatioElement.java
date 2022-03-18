@@ -33,12 +33,28 @@ public class X_PA_RatioElement extends PO implements I_PA_RatioElement, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_RatioElement (Properties ctx, int PA_RatioElement_ID, String trxName)
     {
       super (ctx, PA_RatioElement_ID, trxName);
+      /** if (PA_RatioElement_ID == 0)
+        {
+			setName (null);
+			setPA_RatioElement_ID (0);
+			setPA_Ratio_ID (0);
+			setRatioElementType (null);
+			setRatioOperand (null);
+// P
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_RatioElement (Properties ctx, int PA_RatioElement_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_RatioElement_ID, trxName, virtualColumns);
       /** if (PA_RatioElement_ID == 0)
         {
 			setName (null);

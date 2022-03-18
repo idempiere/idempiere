@@ -33,6 +33,7 @@ import org.compiere.Adempiere;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MRole;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Trx;
@@ -225,5 +226,6 @@ public abstract class AbstractTestCase {
 	 */
 	static void shutdown() {
 		Adempiere.stop();
+		DB.getDatabase().close();
 	}
 }

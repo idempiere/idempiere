@@ -31,12 +31,25 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_AttributeValue (Properties ctx, int M_AttributeValue_ID, String trxName)
     {
       super (ctx, M_AttributeValue_ID, trxName);
+      /** if (M_AttributeValue_ID == 0)
+        {
+			setM_Attribute_ID (0);
+			setM_AttributeValue_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_AttributeValue (Properties ctx, int M_AttributeValue_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_AttributeValue_ID, trxName, virtualColumns);
       /** if (M_AttributeValue_ID == 0)
         {
 			setM_Attribute_ID (0);

@@ -24,7 +24,14 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MAccount;
+import org.compiere.model.MAttributeSetInstance;
+import org.compiere.model.MChart;
+import org.compiere.model.MImage;
+import org.compiere.model.MLocation;
+import org.compiere.model.MLocator;
 import org.compiere.model.MQuery;
+import org.compiere.model.MResourceAssignment;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTab;
@@ -32,6 +39,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -98,8 +106,22 @@ public class GenericZoomProvider implements IZoomProvider {
 			+ "	AND t.IsView='N' "); // not views
 		if (detailedZoom) {
 			sqlb.append(
-					  " AND (    ( c.ColumnName=? AND c.AD_Reference_ID=19) " 
-					+ "       OR ( c.ColumnName=? AND c.AD_Reference_ID=30 AND c.AD_Reference_Value_ID IS NULL ) "
+					  " AND (    ( c.ColumnName=? AND c.AD_Reference_ID=19) ");
+			if (MLocation.COLUMNNAME_C_Location_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Location);
+			else if (MAccount.COLUMNNAME_C_ValidCombination_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Account);
+			else if (MLocator.COLUMNNAME_M_Locator_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Locator);
+			else if (MImage.COLUMNNAME_AD_Image_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Image);
+			else if (MResourceAssignment.COLUMNNAME_S_ResourceAssignment_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Assignment);
+			else if (MAttributeSetInstance.COLUMNNAME_M_AttributeSetInstance_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.PAttribute);
+			else if (MChart.COLUMNNAME_AD_Chart_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Chart);
+			sqlb.append("     OR ( c.ColumnName=? AND c.AD_Reference_ID=30 AND c.AD_Reference_Value_ID IS NULL ) "
 					+ "       OR ( c.AD_Reference_ID IN (18, 30) AND c.AD_Reference_Value_ID=r.AD_Reference_ID AND tr.TableName=? ) ) "); 
 		} else  {
 			sqlb.append(" AND c.ColumnName=? ");

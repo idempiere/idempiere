@@ -33,12 +33,31 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
     {
       super (ctx, PA_DashboardContent_ID, trxName);
+      /** if (PA_DashboardContent_ID == 0)
+        {
+			setIsCollapsedByDefault (false);
+// N
+			setIsCollapsible (true);
+// Y
+			setIsEmbedReportContent (false);
+// N
+			setIsShowInDashboard (true);
+// 'Y'
+			setName (null);
+			setPA_DashboardContent_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_DashboardContent_ID, trxName, virtualColumns);
       /** if (PA_DashboardContent_ID == 0)
         {
 			setIsCollapsedByDefault (false);

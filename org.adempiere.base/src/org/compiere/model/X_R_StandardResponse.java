@@ -31,12 +31,24 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_StandardResponse (Properties ctx, int R_StandardResponse_ID, String trxName)
     {
       super (ctx, R_StandardResponse_ID, trxName);
+      /** if (R_StandardResponse_ID == 0)
+        {
+			setName (null);
+			setResponseText (null);
+			setR_StandardResponse_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_StandardResponse (Properties ctx, int R_StandardResponse_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_StandardResponse_ID, trxName, virtualColumns);
       /** if (R_StandardResponse_ID == 0)
         {
 			setName (null);

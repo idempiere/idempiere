@@ -21,6 +21,8 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 
 /**
@@ -44,7 +46,7 @@ public class MPaymentValidate
 	{
 		String exp = checkNumeric(mmyy);
 		if (exp.length() != 4)
-			return "CreditCardExpFormat";
+			return Msg.getMsg(Env.getCtx(), "CreditCardExpFormat");
 		//
 		String mmStr = exp.substring(0,2);
 		String yyStr = exp.substring(2,4);
@@ -58,7 +60,7 @@ public class MPaymentValidate
 		}
 		catch (Exception e)
 		{
-			return "CreditCardExpFormat";
+			return Msg.getMsg(Env.getCtx(), "CreditCardExpFormat");
 		}
 		return validateCreditCardExp(mm,yy);
 	}   //  validateCreditCardExp
@@ -110,7 +112,7 @@ public class MPaymentValidate
 	public static String validateCreditCardExp (int mm, int yy)
 	{
 		if (mm < 1 || mm > 12)
-			return "CreditCardExpMonth";
+			return Msg.getMsg(Env.getCtx(), "CreditCardExpMonth");
 
 		//  Today's date
 		Calendar cal = Calendar.getInstance();
@@ -118,9 +120,9 @@ public class MPaymentValidate
 		int month = cal.get(Calendar.MONTH) + 1;    //  zero based
 		//
 		if (yy < year)
-			return "CreditCardExpired";
+			return Msg.getMsg(Env.getCtx(), "CreditCardExpired");
 		else if (yy == year && mm < month)
-			return "CreditCardExpired";
+			return Msg.getMsg(Env.getCtx(), "CreditCardExpired");
 		return "";
 	}   //  validateCreditCardExp
 
@@ -134,7 +136,7 @@ public class MPaymentValidate
 	public static String validateCreditCardNumber (String creditCardNumber)
 	{
 		if (creditCardNumber == null || creditCardNumber.length() == 0)
-			return "CreditCardNumberError";
+			return Msg.getMsg(Env.getCtx(), "CreditCardNumberError");
 
 		/**
 		 *  1:  Double the value of alternate digits beginning with
@@ -186,7 +188,7 @@ public class MPaymentValidate
 
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("validateCreditCardNumber - " + creditCardNumber + " -> "
 			+ ccNumber + ", Luhn=" + sum);
-		return "CreditCardNumberError";
+		return Msg.getMsg(Env.getCtx(), "CreditCardNumberError");
 	}   //  validateCreditCardNumber
 
 	/**
@@ -199,7 +201,7 @@ public class MPaymentValidate
 	public static String validateCreditCardNumber (String creditCardNumber, String creditCardType)
 	{
 		if (creditCardNumber == null || creditCardType == null)
-			return "CreditCardNumberError";
+			return Msg.getMsg(Env.getCtx(), "CreditCardNumberError");
 
 		//  http://www.beachnet.com/~hstiles/cardtype.html
 		//	http://staff.semel.fi/~kribe/document/luhn.htm
@@ -264,7 +266,7 @@ public class MPaymentValidate
 		{
 			if (s_log.isLoggable(Level.FINE)) s_log.fine("validateCreditCardNumber Length="
 				+ ccLength + " <> " + ccLengthList);
-			return "CreditCardNumberError";
+			return Msg.getMsg(Env.getCtx(), "CreditCardNumberError");
 		}
 
 		/**
@@ -286,7 +288,7 @@ public class MPaymentValidate
 		if (check.length() != 0)
 			return check;
 		if (!ccIdentified)
-			return "CreditCardNumberProblem?";
+			return Msg.getMsg(Env.getCtx(), "CreditCardNumberProblem?");
 		return "";
 	}   //  validateCreditCardNumber
 	
@@ -313,7 +315,7 @@ public class MPaymentValidate
 			if (s_log.isLoggable(Level.FINE)) s_log.fine("validateCreditCardVV - " + ex);
 		}
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("validateCreditCardVV - length=" + length);
-		return "CreditCardVVError";
+		return Msg.getMsg(Env.getCtx(), "CreditCardVVError");
 	}   //  validateCreditCardVV
 
 	/**
@@ -347,7 +349,7 @@ public class MPaymentValidate
 				}
 			}
 			if (s_log.isLoggable(Level.FINE)) s_log.fine("validateCreditCardVV(4) CC=" + creditCardType + ", length=" + length);
-			return "CreditCardVVError";
+			return Msg.getMsg(Env.getCtx(), "CreditCardVVError");
 		}
 		//	Visa & MasterCard - 3 digits
 		if (creditCardType.equals(X_C_Payment.CREDITCARDTYPE_Visa) 
@@ -366,7 +368,7 @@ public class MPaymentValidate
 				}
 			}
 			if (s_log.isLoggable(Level.FINE)) s_log.fine("validateCreditCardVV(3) CC=" + creditCardType + ", length=" + length);
-			return "CreditCardVVError";
+			return Msg.getMsg(Env.getCtx(), "CreditCardVVError");
 		}
 
 		//	Other
@@ -389,7 +391,7 @@ public class MPaymentValidate
 		//	Issue: Bank account country
 		if (length > 0)
 			return "";
-		return "PaymentBankRoutingNotValid";
+		return Msg.getMsg(Env.getCtx(), "PaymentBankRoutingNotValid");
 	}   //  validateBankRoutingNo
 
 	/**
@@ -402,7 +404,7 @@ public class MPaymentValidate
 		int length = checkNumeric(AccountNo).length();
 		if (length > 0)
 			return "";
-		return "PaymentBankAccountNotValid";
+		return Msg.getMsg(Env.getCtx(), "PaymentBankAccountNotValid");
 	}   //  validateBankAccountNo
 
 	/**
@@ -415,7 +417,7 @@ public class MPaymentValidate
 		int length = checkNumeric(CheckNo).length();
 		if (length > 0)
 			return "";
-		return "PaymentBankCheckNotValid";
+		return Msg.getMsg(Env.getCtx(), "PaymentBankCheckNotValid");
 	}   //  validateBankCheckNo
 	
 	/**

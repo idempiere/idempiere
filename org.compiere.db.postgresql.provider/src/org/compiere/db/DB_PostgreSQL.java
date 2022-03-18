@@ -434,19 +434,19 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 *  @param  time Date to be converted
 	 *  @param  dayOnly true if time set to 00:00:00
 	 *
-	 *  @return TO_DATE('2001-01-30 18:10:20',''YYYY-MM-DD HH24:MI:SS')
-	 *      or  TO_DATE('2001-01-30',''YYYY-MM-DD')
+	 *  @return TO_TIMESTAMP('2001-01-30 18:10:20',''YYYY-MM-DD HH24:MI:SS')
+	 *      or  TO_TIMESTAMP('2001-01-30',''YYYY-MM-DD')
 	 */
 	public String TO_DATE (Timestamp time, boolean dayOnly)
 	{
 		if (time == null)
 		{
 			if (dayOnly)
-				return "current_date()";
-			return "current_date()";
+				return "current_date";
+			return "current_timestamp";
 		}
 
-		StringBuilder dateString = new StringBuilder("TO_DATE('");
+		StringBuilder dateString = new StringBuilder("TO_TIMESTAMP('");
 		//  YYYY-MM-DD HH24:MI:SS.mmmm  JDBC Timestamp format
 		String myDate = time.toString();
 		if (dayOnly)
@@ -1043,21 +1043,23 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	}
 
 	/**
-	 * Implemented using the limit and offset feature. use 1 base index for start and end parameter
+	 * Implemented using the fetch first and offset feature. use 1 base index for start and end parameter
 	 * @param sql
 	 * @param start
 	 * @param end
 	 */
 	public String addPagingSQL(String sql, int start, int end) {
 		StringBuilder newSql = new StringBuilder(sql);
-		if (end > 0) {
-			newSql.append(" ")
-				.append(markNativeKeyword("LIMIT "))
-				.append(( end - start + 1 ));
+		if (start > 1) {
+			newSql.append(" OFFSET ")
+				.append((start - 1))
+				.append( " ROWS");
 		}
-		newSql.append(" ")
-			.append(markNativeKeyword("OFFSET "))
-			.append((start - 1));
+		if (end > 0) {
+			newSql.append(" FETCH FIRST ")
+				.append(( end - start + 1 ))
+				.append(" ROWS ONLY");
+		}
 		return newSql.toString();
 	}
 

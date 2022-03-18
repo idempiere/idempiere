@@ -32,12 +32,24 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_WS_WebServiceMethod (Properties ctx, int WS_WebServiceMethod_ID, String trxName)
     {
       super (ctx, WS_WebServiceMethod_ID, trxName);
+      /** if (WS_WebServiceMethod_ID == 0)
+        {
+			setName (null);
+			setValue (null);
+			setWS_WebServiceMethod_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_WS_WebServiceMethod (Properties ctx, int WS_WebServiceMethod_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, WS_WebServiceMethod_ID, trxName, virtualColumns);
       /** if (WS_WebServiceMethod_ID == 0)
         {
 			setName (null);

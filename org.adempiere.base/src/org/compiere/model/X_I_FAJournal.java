@@ -34,12 +34,23 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_FAJournal (Properties ctx, int I_FAJournal_ID, String trxName)
     {
       super (ctx, I_FAJournal_ID, trxName);
+      /** if (I_FAJournal_ID == 0)
+        {
+			setI_FAJournal_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_FAJournal (Properties ctx, int I_FAJournal_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_FAJournal_ID, trxName, virtualColumns);
       /** if (I_FAJournal_ID == 0)
         {
 			setI_FAJournal_ID (0);

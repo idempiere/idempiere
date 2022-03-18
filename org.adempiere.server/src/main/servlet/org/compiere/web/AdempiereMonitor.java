@@ -1200,7 +1200,7 @@ public class AdempiereMonitor extends HttpServlet
 		//	
 		line = new tr();
 		MClient[] clients = MClient.getAll(Env.getCtx(), "AD_Client_ID");
-		line.addElement(new th().addElement("Client #" + clients.length + " - EMail Test:"));
+		line.addElement(new th().addElement("Tenant #" + clients.length + " - EMail Test:"));
 		p = new p();
 		for (int i = 0; i < clients.length; i++)
 		{
@@ -1270,7 +1270,7 @@ public class AdempiereMonitor extends HttpServlet
 
 		p = new p();
 		if (isSystemInMaintenance)
-			p.addElement("All clients are in maintenance mode");
+			p.addElement("All tenants are in maintenance mode");
 		else if (inMaintenanceClients.size() > 0) {
 			boolean first = true;
 			for (int clientID : inMaintenanceClients) {
@@ -1284,7 +1284,7 @@ public class AdempiereMonitor extends HttpServlet
 			}
 		}
 		else
-			p.addElement("All clients are in normal operation mode");
+			p.addElement("All tenants are in normal operation mode");
 		if (clients.length == 0)
 			p.addElement("&nbsp;");
 		line.addElement(new td().addElement(p));

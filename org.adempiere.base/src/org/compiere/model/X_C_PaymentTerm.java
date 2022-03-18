@@ -33,12 +33,35 @@ public class X_C_PaymentTerm extends PO implements I_C_PaymentTerm, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_PaymentTerm (Properties ctx, int C_PaymentTerm_ID, String trxName)
     {
       super (ctx, C_PaymentTerm_ID, trxName);
+      /** if (C_PaymentTerm_ID == 0)
+        {
+			setAfterDelivery (false);
+			setC_PaymentTerm_ID (0);
+			setDiscount (Env.ZERO);
+			setDiscount2 (Env.ZERO);
+			setDiscountDays (0);
+			setDiscountDays2 (0);
+			setGraceDays (0);
+			setIsDueFixed (false);
+			setIsValid (false);
+			setName (null);
+			setNetDays (0);
+			setPaymentTermUsage (null);
+// B
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaymentTerm (Properties ctx, int C_PaymentTerm_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaymentTerm_ID, trxName, virtualColumns);
       /** if (C_PaymentTerm_ID == 0)
         {
 			setAfterDelivery (false);

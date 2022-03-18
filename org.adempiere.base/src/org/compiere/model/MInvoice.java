@@ -72,7 +72,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -261338363319970683L;
+	private static final long serialVersionUID = -303676612533389278L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -275,7 +275,11 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	 */
 	public MInvoice (Properties ctx, int C_Invoice_ID, String trxName)
 	{
-		super (ctx, C_Invoice_ID, trxName);
+		this (ctx, C_Invoice_ID, trxName, (String[]) null);
+	}	//	MInvoice
+
+	public MInvoice(Properties ctx, int C_Invoice_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Invoice_ID, trxName, virtualColumns);
 		if (C_Invoice_ID == 0)
 		{
 			setDocStatus (DOCSTATUS_Drafted);		//	Draft
@@ -305,7 +309,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			super.setProcessed (false);
 			setProcessing(false);
 		}
-	}	//	MInvoice
+	}
 
 	/**
 	 *  Load Constructor
@@ -1399,6 +1403,18 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
     	}
         return retValue;
     }    //    getOpenAmt
+
+    /*
+     *    Get discount amt depending on payment date
+     *    @return discount Amt
+     */
+    public BigDecimal getDiscountAmt(Timestamp paymentDate)
+    {
+    	BigDecimal retValue = DB.getSQLValueBDEx(get_TrxName(),
+    			"SELECT invoiceDiscount(?,?,?) FROM DUAL",
+    			getC_Invoice_ID(), paymentDate, 0);
+    	return retValue;
+    }
 
 	/**
 	 * 	Get Document Status

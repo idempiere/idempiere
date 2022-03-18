@@ -34,12 +34,36 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_Fact_Acct (Properties ctx, int Fact_Acct_ID, String trxName)
     {
       super (ctx, Fact_Acct_ID, trxName);
+      /** if (Fact_Acct_ID == 0)
+        {
+			setAccount_ID (0);
+			setAD_Table_ID (0);
+			setAmtAcctCr (Env.ZERO);
+			setAmtAcctDr (Env.ZERO);
+			setAmtSourceCr (Env.ZERO);
+			setAmtSourceDr (Env.ZERO);
+			setC_AcctSchema_ID (0);
+			setC_Currency_ID (0);
+			setC_Period_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setFact_Acct_ID (0);
+			setGL_Category_ID (0);
+			setPostingType (null);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_Fact_Acct (Properties ctx, int Fact_Acct_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, Fact_Acct_ID, trxName, virtualColumns);
       /** if (Fact_Acct_ID == 0)
         {
 			setAccount_ID (0);

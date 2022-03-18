@@ -34,12 +34,33 @@ public class X_M_Production extends PO implements I_M_Production, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_Production (Properties ctx, int M_Production_ID, String trxName)
     {
       super (ctx, M_Production_ID, trxName);
+      /** if (M_Production_ID == 0)
+        {
+			setDocumentNo (null);
+			setIsCreated (null);
+// N
+			setIsUseProductionPlan (false);
+// N
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setM_Production_ID (0);
+			setPosted (false);
+			setProcessed (false);
+			setProductionQty (Env.ZERO);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Production (Properties ctx, int M_Production_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Production_ID, trxName, virtualColumns);
       /** if (M_Production_ID == 0)
         {
 			setDocumentNo (null);

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.adempiere.webui.theme.ThemeManager;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Comboitem;
 
@@ -185,7 +186,10 @@ public class AutoComplete extends Combobox
 
 				if (images != null && i < images.length && images[i] != null && images[i].trim().length() > 0)
 				{
-					comboitem.setImage(images[i]);
+					if (ThemeManager.isUseFontIconForImage())
+						comboitem.setIconSclass(ThemeManager.getIconSclass(images[i]));
+					else
+						comboitem.setImage(images[i]);
 				}
 				if (contents != null && i < contents.length && contents[i] != null && contents[i].trim().length() > 0)
 				{

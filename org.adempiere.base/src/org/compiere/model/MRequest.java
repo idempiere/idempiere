@@ -87,7 +87,11 @@ public class MRequest extends X_R_Request
 	 */
 	public MRequest(Properties ctx, int R_Request_ID, String trxName)
 	{
-		super (ctx, R_Request_ID, trxName);
+		this (ctx, R_Request_ID, trxName, (String[]) null);
+	}	//	MRequest
+
+	public MRequest(Properties ctx, int R_Request_ID, String trxName, String... virtualColumns) {
+		super(ctx, R_Request_ID, trxName, virtualColumns);
 		if (R_Request_ID == 0)
 		{
 			setDueType (DUETYPE_Due);
@@ -100,7 +104,7 @@ public class MRequest extends X_R_Request
 			setIsSelfService (false);
 			setIsInvoiced (false);
 		}
-	}	//	MRequest
+	}
 
 	/**
 	 * 	SelfService Constructor

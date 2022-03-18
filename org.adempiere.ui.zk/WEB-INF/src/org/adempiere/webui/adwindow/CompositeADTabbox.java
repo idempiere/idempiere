@@ -188,7 +188,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 							if (result)
 							{
 								onEditDetail(row, formView);
-								adWindowPanel.onQuickForm();
+								adWindowPanel.onQuickForm(true);
 							}
 						}
 					});
@@ -388,6 +388,10 @@ public class CompositeADTabbox extends AbstractADTabbox
 				if (tabPanel != headerTab && headerTab.getDetailPane() != null) {
 					if (b != null && b.booleanValue()) {
 						onActivateDetail(tabPanel);
+						if (headerTab instanceof ADTabpanel) {
+							if (!((ADTabpanel) headerTab).getADWindowContent().focusToLastFocusEditor(true))
+								((ADTabpanel) headerTab).getADWindowContent().focusToActivePanel();
+						}
 					}
 				}
 			}
@@ -1094,6 +1098,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 					}
 					if (adtab.getGridTab().getCurrentRow() != currentRow)
 						adtab.getGridTab().setCurrentRow(currentRow, true);
+					Executions.schedule(getComponent().getDesktop(), e->((ADTabpanel)headerTab).focusToFirstEditor(), new Event("onFocusToHeaderTab"));
 					break;
 				}
 			}

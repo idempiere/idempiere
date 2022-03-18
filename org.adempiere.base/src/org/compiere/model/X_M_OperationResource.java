@@ -33,12 +33,27 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_OperationResource (Properties ctx, int M_OperationResource_ID, String trxName)
     {
       super (ctx, M_OperationResource_ID, trxName);
+      /** if (M_OperationResource_ID == 0)
+        {
+			setM_OperationResource_ID (0);
+			setM_ProductOperation_ID (0);
+			setName (null);
+			setSetupTime (Env.ZERO);
+			setTeardownTime (Env.ZERO);
+			setUnitRuntime (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_OperationResource (Properties ctx, int M_OperationResource_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_OperationResource_ID, trxName, virtualColumns);
       /** if (M_OperationResource_ID == 0)
         {
 			setM_OperationResource_ID (0);

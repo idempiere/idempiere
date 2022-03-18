@@ -31,12 +31,26 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_Demand (Properties ctx, int M_Demand_ID, String trxName)
     {
       super (ctx, M_Demand_ID, trxName);
+      /** if (M_Demand_ID == 0)
+        {
+			setC_Calendar_ID (0);
+			setC_Year_ID (0);
+			setIsDefault (false);
+			setM_Demand_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Demand (Properties ctx, int M_Demand_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Demand_ID, trxName, virtualColumns);
       /** if (M_Demand_ID == 0)
         {
 			setC_Calendar_ID (0);

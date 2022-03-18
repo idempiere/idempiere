@@ -34,12 +34,56 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Workfile (Properties ctx, int A_Depreciation_Workfile_ID, String trxName)
     {
       super (ctx, A_Depreciation_Workfile_ID, trxName);
+      /** if (A_Depreciation_Workfile_ID == 0)
+        {
+			setA_Accumulated_Depr (Env.ZERO);
+// 0
+			setA_Accumulated_Depr_F (Env.ZERO);
+// 0
+			setA_Asset_Cost (Env.ZERO);
+// 0
+			setA_Asset_ID (0);
+			setA_Asset_Life_Current_Year (Env.ZERO);
+// 0
+			setA_Asset_Life_Years (0);
+// 0
+			setA_Asset_Life_Years_F (0);
+// 0
+			setA_Curr_Dep_Exp (Env.ZERO);
+// 0
+			setA_Depreciation_Workfile_ID (0);
+			setA_Life_Period (0);
+// 0
+			setA_Life_Period_F (0);
+// 0
+			setA_QTY_Current (Env.ZERO);
+			setA_Salvage_Value (Env.ZERO);
+// 0
+			setA_Tip_Finantare (null);
+// 'P'
+			setProcessed (false);
+// N
+			setUseLifeMonths (0);
+// 0
+			setUseLifeMonths_F (0);
+// 0
+			setUseLifeYears (0);
+// 0
+			setUseLifeYears_F (0);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Depreciation_Workfile (Properties ctx, int A_Depreciation_Workfile_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Depreciation_Workfile_ID, trxName, virtualColumns);
       /** if (A_Depreciation_Workfile_ID == 0)
         {
 			setA_Accumulated_Depr (Env.ZERO);

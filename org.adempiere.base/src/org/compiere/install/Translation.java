@@ -52,7 +52,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
-import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.eclipse.equinox.app.IApplication;
@@ -122,7 +121,6 @@ public class Translation implements IApplication
 	/** Properties					*/
 	private Properties		m_ctx = null;
 
-	
 	/**
 	 * 	Import Translation.
 	 * 	Uses TranslationHandler to update translation
@@ -133,6 +131,21 @@ public class Translation implements IApplication
 	 * 	@return status message
 	 */
 	public String importTrl (String directory, int AD_Client_ID, String AD_Language, String Trl_Table)
+	{
+		return importTrl(directory, AD_Client_ID, AD_Language, Trl_Table, null);
+	}
+
+	/**
+	 * 	Import Translation.
+	 * 	Uses TranslationHandler to update translation
+	 *	@param directory file directory
+	 * 	@param AD_Client_ID only certain client if id &gt;= 0
+	 * 	@param AD_Language language
+	 * 	@param Trl_Table table
+	 *  @param trxName Transaction
+	 * 	@return status message
+	 */
+	public String importTrl (String directory, int AD_Client_ID, String AD_Language, String Trl_Table, String trxName)
 	{
 		String fileName = directory + File.separator + Trl_Table + "_" + AD_Language + ".xml";
 		log.info(fileName);
@@ -146,7 +159,7 @@ public class Translation implements IApplication
 
 		try
 		{
-			TranslationHandler handler = new TranslationHandler(AD_Client_ID);
+			TranslationHandler handler = new TranslationHandler(AD_Client_ID, trxName);
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 		//	factory.setValidating(true);
 			SAXParser parser = factory.newSAXParser();
@@ -574,34 +587,5 @@ public class Translation implements IApplication
 	public void stop() {
 		// IApplication implementation method - (only start method used)
 	}
-
-	/**************************************************************************
-	 * 	Batch Interface
-	 * 	@param args directory AD_Language import/export
-	 */
-	public static void main (String[] args)
-	{
-		if (args.length != 3)
-		{
-			System.out.println("format : java Translation directory AD_Language import|export");
-			System.out.println("example: java Translation /Adempiere/data/de_DE de_DE import");
-			System.out.println("example: java Translation /Adempiere/data/fr_FR fr_FR export");
-			System.exit(1);
-		}
-		//
-		Login.initTest (false);
-		String directory = args[0];
-		String AD_Language = args[1];
-		String mode = args[2];
-
-		Translation trl = new Translation(Env.getCtx());
-		String msg = trl.validateLanguage (AD_Language);
-		if (msg.length() > 0)
-			System.err.println(msg);
-		else
-			trl.process (directory, AD_Language, mode);
-
-		System.exit(0);
-	}	//	main
 
 }	//	Translation

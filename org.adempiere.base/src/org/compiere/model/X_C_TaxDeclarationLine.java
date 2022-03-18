@@ -33,12 +33,32 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_TaxDeclarationLine (Properties ctx, int C_TaxDeclarationLine_ID, String trxName)
     {
       super (ctx, C_TaxDeclarationLine_ID, trxName);
+      /** if (C_TaxDeclarationLine_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_Currency_ID (0);
+			setC_TaxDeclaration_ID (0);
+			setC_TaxDeclarationLine_ID (0);
+			setC_Tax_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsManual (true);
+// Y
+			setLine (0);
+			setTaxAmt (Env.ZERO);
+			setTaxBaseAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxDeclarationLine (Properties ctx, int C_TaxDeclarationLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxDeclarationLine_ID, trxName, virtualColumns);
       /** if (C_TaxDeclarationLine_ID == 0)
         {
 			setC_BPartner_ID (0);

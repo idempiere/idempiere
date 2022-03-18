@@ -271,6 +271,10 @@ public class MAsset extends X_A_Asset {
 		this.m_DateAcct = copy.m_DateAcct;
 	}
 
+	public MAsset(Properties ctx, int A_Asset_ID, String trxName, String... virtualColumns) {
+		super(ctx, A_Asset_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * Set Asset Group; also it sets other default fields
 	 * @param assetGroup

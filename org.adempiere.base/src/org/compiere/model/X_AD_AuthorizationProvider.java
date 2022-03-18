@@ -31,12 +31,26 @@ public class X_AD_AuthorizationProvider extends PO implements I_AD_Authorization
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationProvider (Properties ctx, int AD_AuthorizationProvider_ID, String trxName)
     {
       super (ctx, AD_AuthorizationProvider_ID, trxName);
+      /** if (AD_AuthorizationProvider_ID == 0)
+        {
+			setAD_AuthorizationProvider_ID (0);
+			setAD_AuthorizationType (null);
+			setAuthorizationEndpoint (null);
+			setName (null);
+			setTokenEndpoint (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AuthorizationProvider (Properties ctx, int AD_AuthorizationProvider_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AuthorizationProvider_ID, trxName, virtualColumns);
       /** if (AD_AuthorizationProvider_ID == 0)
         {
 			setAD_AuthorizationProvider_ID (0);

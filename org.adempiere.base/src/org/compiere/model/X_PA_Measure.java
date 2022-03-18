@@ -33,12 +33,27 @@ public class X_PA_Measure extends PO implements I_PA_Measure, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_Measure (Properties ctx, int PA_Measure_ID, String trxName)
     {
       super (ctx, PA_Measure_ID, trxName);
+      /** if (PA_Measure_ID == 0)
+        {
+			setMeasureDataType (null);
+// T
+			setMeasureType (null);
+// M
+			setName (null);
+			setPA_Measure_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_Measure (Properties ctx, int PA_Measure_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_Measure_ID, trxName, virtualColumns);
       /** if (PA_Measure_ID == 0)
         {
 			setMeasureDataType (null);

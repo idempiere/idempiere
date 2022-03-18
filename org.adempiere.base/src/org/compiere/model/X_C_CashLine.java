@@ -33,12 +33,29 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CashLine (Properties ctx, int C_CashLine_ID, String trxName)
     {
       super (ctx, C_CashLine_ID, trxName);
+      /** if (C_CashLine_ID == 0)
+        {
+			setAmount (Env.ZERO);
+			setCashType (null);
+// E
+			setC_Cash_ID (0);
+			setC_CashLine_ID (0);
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_CashLine WHERE C_Cash_ID=@C_Cash_ID@
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CashLine (Properties ctx, int C_CashLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CashLine_ID, trxName, virtualColumns);
       /** if (C_CashLine_ID == 0)
         {
 			setAmount (Env.ZERO);

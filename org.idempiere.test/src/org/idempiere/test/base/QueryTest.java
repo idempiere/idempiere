@@ -30,15 +30,21 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.adempiere.exceptions.DBException;
+import org.adempiere.model.POWrapper;
+import org.compiere.model.I_Test;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
+import org.compiere.model.MTest;
+import org.compiere.model.PO;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Element;
@@ -224,7 +230,41 @@ public class QueryTest extends AbstractTestCase {
 			.firstIdOnly();
 		});
 	}
-	
+
+	@Test
+	public void testPaging() {
+		DB.executeUpdateEx("DELETE FROM Test WHERE Name LIKE 'QueryTest%'", getTrxName());
+		for (int i=101; i<=130; i++) {
+			PO testPo = new MTest(Env.getCtx(), "QueryTest", i);
+			testPo.save();
+		}
+		Query query = new Query(Env.getCtx(), MTest.Table_Name, "Name LIKE 'QueryTest%'", getTrxName())
+				.setClient_ID()
+				.setOrderBy(MTest.COLUMNNAME_T_Integer);
+		List<MTest> list;
+		list = query.list();
+		assertEquals(list.size(), 30, "Query list without paging brought more records than expected");
+		MTest test = query.first();
+		assertEquals(test.getT_Integer(), 101, "Query first get wrong record");
+		query.setPageSize(10);
+		list = query.list();
+		assertEquals(list.size(), 10, "Query list with paging no skip brought more records than expected");
+		assertEquals(list.get(0).getT_Integer(), 101, "Query list with paging no skip get wrong first record");
+		query.setRecordstoSkip(10);
+		list = query.list();
+		assertEquals(list.size(), 10, "Query list with paging and skip brought more records than expected");
+		assertEquals(list.get(0).getT_Integer(), 111, "Query list with paging and skip get wrong first record");
+		query.setRecordstoSkip(25);
+		list = query.list();
+		assertEquals(list.size(), 5, "Query list last page with paging and skipbrought more records than expected");
+		assertEquals(list.get(0).getT_Integer(), 126, "Query list last page with paging and skip get wrong first record");
+		query.setPageSize(0);
+		query.setRecordstoSkip(10);
+		list = query.list();
+		assertEquals(list.size(), 20, "Query list with skip without paging brought more records than expected");
+		assertEquals(list.get(0).getT_Integer(), 111, "Query list with skip without paging get wrong first record");
+	}
+
 	@Test
 	public void testSetClient_ID() throws Exception
 	{
@@ -333,4 +373,34 @@ public class QueryTest extends AbstractTestCase {
 			assertEquals(expected, ids[i], "Element "+i+" not equals");
 		}
 	}
+
+	@Test
+	public void testVirtualColumnLoad() {
+		// create bogus record
+		PO testPo = new MTest(Env.getCtx(), getClass().getName(), 1);
+		testPo.save();
+
+		BigDecimal expected = new BigDecimal("123.45");
+
+		// virtual column lazy loading
+		Query query = new Query(Env.getCtx(), MTest.Table_Name, MTest.COLUMNNAME_Test_ID + "=?", getTrxName());
+		testPo = query.setParameters(testPo.get_ID()).first();
+		I_Test testRecord = POWrapper.create(testPo, I_Test.class);
+		assertTrue(null == testPo.get_ValueOld(MTest.COLUMNNAME_TestVirtualQty));
+		assertEquals(expected, testRecord.getTestVirtualQty().setScale(2, RoundingMode.HALF_UP), "Wrong value returned");
+
+		// without virtual column lazy loading
+		testPo = query.setNoVirtualColumn(false).setParameters(testPo.get_ID()).first();
+		assertTrue(null != testPo.get_ValueOld(MTest.COLUMNNAME_TestVirtualQty));
+		testRecord = POWrapper.create(testPo, I_Test.class);
+		assertEquals(expected, testRecord.getTestVirtualQty().setScale(2, RoundingMode.HALF_UP), "Wrong value returned");
+
+		// single virtual column without lazy loading
+		testPo = query.setVirtualColumns(I_Test.COLUMNNAME_TestVirtualQty)
+				.setParameters(testPo.get_ID()).first();
+		assertTrue(null != testPo.get_ValueOld(MTest.COLUMNNAME_TestVirtualQty));
+		testRecord = POWrapper.create(testPo, I_Test.class);
+		assertEquals(expected, testRecord.getTestVirtualQty().setScale(2, RoundingMode.HALF_UP), "Wrong value returned");
+	}
+
 }

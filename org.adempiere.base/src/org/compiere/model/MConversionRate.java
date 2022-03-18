@@ -340,6 +340,10 @@ public class MConversionRate extends X_C_Conversion_Rate
 		setValidFrom(ValidFrom);
 	}	//	MConversionRate
 
+	public MConversionRate(Properties ctx, int C_Conversion_Rate_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Conversion_Rate_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * 	Set Multiply Rate
 	 * 	Sets also Divide Rate

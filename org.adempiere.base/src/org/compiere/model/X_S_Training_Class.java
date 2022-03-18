@@ -32,12 +32,26 @@ public class X_S_Training_Class extends PO implements I_S_Training_Class, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_S_Training_Class (Properties ctx, int S_Training_Class_ID, String trxName)
     {
       super (ctx, S_Training_Class_ID, trxName);
+      /** if (S_Training_Class_ID == 0)
+        {
+			setEndDate (new Timestamp( System.currentTimeMillis() ));
+			setM_Product_ID (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+			setS_Training_Class_ID (0);
+			setS_Training_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_Training_Class (Properties ctx, int S_Training_Class_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_Training_Class_ID, trxName, virtualColumns);
       /** if (S_Training_Class_ID == 0)
         {
 			setEndDate (new Timestamp( System.currentTimeMillis() ));

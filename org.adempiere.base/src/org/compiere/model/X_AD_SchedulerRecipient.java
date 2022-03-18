@@ -31,12 +31,25 @@ public class X_AD_SchedulerRecipient extends PO implements I_AD_SchedulerRecipie
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_SchedulerRecipient (Properties ctx, int AD_SchedulerRecipient_ID, String trxName)
     {
       super (ctx, AD_SchedulerRecipient_ID, trxName);
+      /** if (AD_SchedulerRecipient_ID == 0)
+        {
+			setAD_Scheduler_ID (0);
+			setAD_SchedulerRecipient_ID (0);
+			setIsUpload (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_SchedulerRecipient (Properties ctx, int AD_SchedulerRecipient_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_SchedulerRecipient_ID, trxName, virtualColumns);
       /** if (AD_SchedulerRecipient_ID == 0)
         {
 			setAD_Scheduler_ID (0);

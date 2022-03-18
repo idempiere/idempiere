@@ -32,12 +32,26 @@ public class X_C_DunningRun extends PO implements I_C_DunningRun, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_DunningRun (Properties ctx, int C_DunningRun_ID, String trxName)
     {
       super (ctx, C_DunningRun_ID, trxName);
+      /** if (C_DunningRun_ID == 0)
+        {
+			setC_Dunning_ID (0);
+			setC_DunningRun_ID (0);
+			setDunningDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_DunningRun (Properties ctx, int C_DunningRun_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_DunningRun_ID, trxName, virtualColumns);
       /** if (C_DunningRun_ID == 0)
         {
 			setC_Dunning_ID (0);

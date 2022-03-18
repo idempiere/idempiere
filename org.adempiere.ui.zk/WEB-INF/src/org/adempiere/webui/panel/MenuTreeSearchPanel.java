@@ -83,7 +83,10 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 
 	protected void createOpenButton() {
 		openBtn = new Toolbarbutton();
-		openBtn.setImage(ThemeManager.getThemeResource("images/Open16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			openBtn.setIconSclass("z-icon-Open");
+		else
+			openBtn.setImage(ThemeManager.getThemeResource("images/Open16.png"));
 		openBtn.setSclass("menu-search-toggle-on");
 		openBtn.setDisabled(true);
 		openBtn.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
@@ -102,7 +105,10 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 
 	protected void createNewButton() {
 		newBtn = new Toolbarbutton();
-		newBtn.setImage(ThemeManager.getThemeResource("images/New16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			newBtn.setIconSclass("z-icon-New");
+		else
+			newBtn.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		newBtn.setSclass("menu-search-toggle-off");
 		newBtn.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override
@@ -154,14 +160,14 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
         			continue;
         		
         		if (isNew) {
-        			if (!"window".equals(treeItem.getAttribute("menu.type"))) {
+        			if (!"window".equals(treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE))) {
         				continue;
         			}
         		}
         		
         		valueList.add(getLabel(treeItem));
         		descriptionList.add(treeItem.getTooltiptext());
-        		typeList.add(String.valueOf(treeItem.getAttribute("menu.type")));
+        		typeList.add(String.valueOf(treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE)));
         		String image = getImage(treeItem);
         		if (image == null || image.length() == 0)
         		{

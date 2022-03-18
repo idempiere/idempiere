@@ -31,12 +31,36 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Sequence (Properties ctx, int AD_Sequence_ID, String trxName)
     {
       super (ctx, AD_Sequence_ID, trxName);
+      /** if (AD_Sequence_ID == 0)
+        {
+			setAD_Sequence_ID (0);
+			setCurrentNext (0);
+// 1000000
+			setCurrentNextSys (0);
+// 100
+			setIncrementNo (0);
+// 1
+			setIsAutoSequence (false);
+			setIsOrgLevelSequence (false);
+// N
+			setName (null);
+			setStartNewMonth (false);
+// N
+			setStartNo (0);
+// 1000000
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Sequence (Properties ctx, int AD_Sequence_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Sequence_ID, trxName, virtualColumns);
       /** if (AD_Sequence_ID == 0)
         {
 			setAD_Sequence_ID (0);

@@ -426,6 +426,13 @@ public class GridTable extends AbstractTableModel
 		{
 			m_SQL += " ORDER BY " + m_orderClause;
 		}
+		
+		//IDEMPIERE-5193 Add Limit to Query
+		if(m_maxRows > 0 && DB.getDatabase().isPagingSupported())
+		{
+			m_SQL = DB.getDatabase().addPagingSQL(m_SQL, 1, m_maxRows);
+		}
+		
 		//
 		if (log.isLoggable(Level.FINE))
 			log.fine(m_SQL_Count);
@@ -2529,6 +2536,54 @@ public class GridTable extends AbstractTableModel
 		return sb.toString();
 	}	//	getMandatory
 
+	/**
+	 * 
+	 * @return true if need save and all mandatory field has value
+	 */
+	public boolean isNeedSaveAndMandatoryFill() {
+		if (!m_open)
+		{
+			return false;
+		}
+		//	no need - not changed - row not positioned - no Value changed
+		if (m_rowChanged == -1)
+		{
+			return false;
+		}
+		//  Value not changed
+		if (m_rowData == null)
+		{
+			return false;
+		}
+
+		if (m_readOnly)
+		{
+			return false;
+		}
+
+		//	row not positioned - no Value changed
+		if (m_rowChanged == -1)
+		{
+			if (m_newRow != -1)     //  new row and nothing changed - might be OK
+				m_rowChanged = m_newRow;
+			else
+			{
+				return false;
+			}
+		}
+		
+		//	get updated row data
+		Object[] rowData = getDataAtRow(m_rowChanged);
+
+		//	Check Mandatory
+		String missingColumns = getMandatory(rowData);
+		if (missingColumns.length() != 0) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 	/*************************************************************************/
 
 	/**	LOB Info				*/
@@ -3012,13 +3067,13 @@ public class GridTable extends AbstractTableModel
 		close(false);
 		if (retainedWhere != null)
 		{
-			// String whereClause = m_whereClause;
 			if (m_whereClause != null && m_whereClause.trim().length() > 0)
 			{
-				m_whereClause = "((" + m_whereClause + ") OR (" + retainedWhere + ")) ";
+				StringBuilder orRetainedWhere = new StringBuilder(") OR (").append(retainedWhere).append(")) ");
+				if (! m_whereClause.contains(orRetainedWhere.toString()))
+					m_whereClause = "((" + m_whereClause + orRetainedWhere.toString();
 			}
 			open(m_maxRows);
-			// m_whereClause = whereClause;
 		}
 		else
 		{

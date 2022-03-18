@@ -63,6 +63,10 @@ import org.zkoss.zul.Treerow;
  */
 public abstract class AbstractMenuPanel extends Panel implements EventListener<Event> {
 
+	public static final String MENU_TYPE_ATTRIBUTE = "menu.type";
+	
+	public static final String MENU_LABEL_ATTRIBUTE = "menu.label";
+
 	/**
 	 * 
 	 */
@@ -174,7 +178,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 		link.setIconSclass("z-icon-Report");
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mReport.png"));
-                	treeitem.setAttribute("menu.type", "report");
+                	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "report");
                 }
                 else if (mChildNode.isProcess() || mChildNode.isTask())
                 {
@@ -182,7 +186,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 		link.setIconSclass("z-icon-Process");
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mProcess.png"));
-                	treeitem.setAttribute("menu.type", "process");
+                	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "process");
                 }
                 else if (mChildNode.isWorkFlow())
                 {
@@ -190,7 +194,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 		link.setIconSclass("z-icon-Workflow");
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mWorkFlow.png"));
-                	treeitem.setAttribute("menu.type", "workflow");
+                	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "workflow");
                 }
                 else if (mChildNode.isForm())
                 {
@@ -198,7 +202,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 		link.setIconSclass("z-icon-Form");
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mForm.png"));
-                	treeitem.setAttribute("menu.type", "form");
+                	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "form");
                 }
                 else if (mChildNode.isInfo())
                 {
@@ -206,7 +210,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 		link.setIconSclass("z-icon-Info");
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mInfo.png"));
-                	treeitem.setAttribute("menu.type", "info");
+                	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "info");
                 }
                 else // Window
                 {
@@ -214,7 +218,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 		link.setIconSclass("z-icon-Window");
                 	else
                 		link.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
-                	treeitem.setAttribute("menu.type", "window");
+                	treeitem.setAttribute(MENU_TYPE_ATTRIBUTE, "window");
 
                 	Toolbarbutton newBtn = createNewButton();
                 	treeCell.appendChild(newBtn);
@@ -222,6 +226,7 @@ public abstract class AbstractMenuPanel extends Panel implements EventListener<E
                 }
                 treeitem.addEventListener(Events.ON_OK, this);
                 link.setLabel(mChildNode.getName());
+                treeitem.setAttribute(MENU_LABEL_ATTRIBUTE, link.getLabel());
                 
                 link.addEventListener(Events.ON_CLICK, this);
                 link.setSclass("menu-href");

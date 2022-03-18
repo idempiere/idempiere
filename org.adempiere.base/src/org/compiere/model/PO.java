@@ -33,9 +33,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -147,19 +149,31 @@ public abstract class PO
 	 */
 	public PO (Properties ctx)
 	{
-		this (ctx, 0, null, null);
+		this (ctx, 0, null, null, (String[]) null);
 	}   //  PO
 
 	/**
 	 *  Create and Load existing Persistent Object
-	 *  @param ID  The unique ID of the object
+	 *  @param ID The unique ID of the object
 	 *  @param ctx context
 	 *  @param trxName transaction name
 	 */
 	public PO (Properties ctx, int ID, String trxName)
 	{
-		this (ctx, ID, trxName, null);
+		this (ctx, ID, trxName, null, (String[]) null);
 	}   //  PO
+
+	/**
+	 * Create and load existing Persistent Object
+	 * @param ctx Context
+	 * @param ID Unique ID of the object
+	 * @param trxName Transaction name
+	 * @param virtualColumns names of virtual columns to load along with the regular table columns
+	 */
+	public PO (Properties ctx, int ID, String trxName, String ... virtualColumns)
+	{
+		this (ctx, ID, trxName, null, virtualColumns);
+	}
 
 	/**
 	 *  Create and Load existing Persistent Object.
@@ -190,8 +204,9 @@ public abstract class PO
 	 *  @param ID the ID if 0, the record defaults are applied - ignored if re exists
 	 *  @param trxName transaction name
 	 *  @param rs optional - load from current result set position (no navigation, not closed)
+	 *  @param virtualColumns optional - names of virtual columns to load along with the regular table columns
 	 */
-	public PO (Properties ctx, int ID, String trxName, ResultSet rs)
+	public PO (Properties ctx, int ID, String trxName, ResultSet rs, String ... virtualColumns)
 	{
 		p_ctx = ctx != null ? ctx : Env.getCtx();
 		m_trxName = trxName;
@@ -207,9 +222,9 @@ public abstract class PO
 		m_setErrorsFilled = false;
 
 		if (rs != null)
-			load(rs);		//	will not have virtual columns
+			load(rs);
 		else
-			load(ID, trxName);
+			load(ID, trxName, virtualColumns);
 
 		checkCrossTenant(false);
 	}   //  PO
@@ -223,7 +238,7 @@ public abstract class PO
 	 */
 	public PO (Properties ctx, PO source, int AD_Client_ID, int AD_Org_ID)
 	{
-		this (ctx, 0, null, null);	//	create new
+		this (ctx, 0, null, (String[]) null);	//	create new
 		//
 		if (source != null)
 			copyValues (source, this);
@@ -295,6 +310,9 @@ public abstract class PO
 	
 	private String[] m_optimisticLockingColumns = new String[] {"Updated"};
 	private Boolean m_useOptimisticLocking = null;
+
+	/** Indices of virtual columns that were already resolved */
+	private Set<Integer> loadedVirtualColumns = new HashSet<>();
 
 	/** Access Level S__ 100	4	System info			*/
 	public static final int ACCESSLEVEL_SYSTEM = 4;
@@ -487,6 +505,8 @@ public abstract class PO
 				return null;
 			return m_newValues[index];
 		}
+		if(p_info.isVirtualColumn(index) && p_info.isVirtualDBColumn(index))
+			loadVirtualColumn(index);
 		return m_oldValues[index];
 	}   //  get_Value
 
@@ -1325,8 +1345,9 @@ public abstract class PO
 	 *  Load record with ID
 	 * 	@param ID ID
 	 * 	@param trxName transaction name
+	 *  @param virtualColumns names of virtual columns to load along with the regular table columns
 	 */
-	protected void load (int ID, String trxName)
+	protected void load (int ID, String trxName, String ... virtualColumns)
 	{
 		checkImmutable();
 		
@@ -1335,7 +1356,7 @@ public abstract class PO
 		{
 			setKeyInfo();
 			m_IDs = new Object[] {Integer.valueOf(ID)};
-			load(trxName);
+			load(trxName, virtualColumns);
 		}
 		else	//	new
 		{
@@ -1349,10 +1370,11 @@ public abstract class PO
 	/**
 	 * Load record with UUID
 	 * 
-	 * @param uuID    UUID
+	 * @param uuID universally unique identifier
 	 * @param trxName transaction name
+	 * @param virtualColumns names of virtual columns to load along with the regular table columns
 	 */
-	public void loadByUU(String uuID, String trxName)
+	public void loadByUU(String uuID, String trxName, String ... virtualColumns)
 	{
 		if (Util.isEmpty(uuID, true))
 		{
@@ -1366,25 +1388,27 @@ public abstract class PO
 		if (log.isLoggable(Level.FINEST))
 			log.finest("uuID=" + uuID);
 			
-		load(uuID,trxName);
+		load(uuID,trxName, virtualColumns);
 	} // loadByUU
 
 	/**
 	 *  (re)Load record with m_ID[*]
 	 *  @param trxName transaction
+	 *  @param virtualColumns names of virtual columns to load along with the regular table columns
 	 *  @return true if loaded
 	 */
-	public boolean load (String trxName) {
-		return load(null, trxName);
+	public boolean load (String trxName, String ... virtualColumns) {
+		return load(null, trxName, virtualColumns);
 	}
 	
 	/**
 	 *  (re)Load record with uuID
 	 *  @param uuID RecrodUU
 	 *  @param trxName transaction
+	 *  @param virtualColumns names of virtual columns to load along with the regular table columns
 	 *  @return true if loaded
 	 */
-	protected boolean load (String uuID,String trxName)
+	protected boolean load (String uuID, String trxName, String ... virtualColumns)
 	{
 		m_trxName = trxName;
 		boolean success = true;
@@ -1392,14 +1416,33 @@ public abstract class PO
 		int size = get_ColumnCount();
 		for (int i = 0; i < size; i++)
 		{
-			if (i != 0)
-				sql.append(",");
 			String columnSQL = p_info.getColumnSQL(i);
-			if (!p_info.isVirtualColumn(i))
+			if (p_info.isVirtualColumn(i))
+			{
+				boolean lazyLoad = true;
+				if(virtualColumns != null)
+				{
+					for(String virtualColumn : virtualColumns)
+					{
+						if(p_info.getColumnName(i).equalsIgnoreCase(virtualColumn))
+						{
+							lazyLoad = false;
+							break;
+						}
+					}
+				}
+
+				if(lazyLoad)
+					continue;
+
+			}
+			else
 			{
 				columnSQL = DB.getDatabase().quoteColumnName(columnSQL);
 			}
-			sql.append(columnSQL);	//	Normal and Virtual Column
+			if (i != 0)
+				sql.append(",");
+			sql.append(columnSQL);
 		}
 		sql.append(" FROM ").append(p_info.getTableName())
 			.append(" WHERE ")
@@ -1480,67 +1523,115 @@ public abstract class PO
 		boolean success = true;
 		int index = 0;
 		log.finest("(rs)");
+		loadedVirtualColumns.clear();
 		//  load column values
 		for (index = 0; index < size; index++)
 		{
-			String columnName = p_info.getColumnName(index);
-			Class<?> clazz = p_info.getColumnClass(index);
-			int dt = p_info.getColumnDisplayType(index);
-			try
-			{
-				if (clazz == Integer.class)
-					m_oldValues[index] = decrypt(index, Integer.valueOf(rs.getInt(columnName)));
-				else if (clazz == BigDecimal.class)
-					m_oldValues[index] = decrypt(index, rs.getBigDecimal(columnName));
-				else if (clazz == Boolean.class)
-					m_oldValues[index] = Boolean.valueOf("Y".equals(decrypt(index, rs.getString(columnName))));
-				else if (clazz == Timestamp.class)
-					m_oldValues[index] = decrypt(index, rs.getTimestamp(columnName));
-				else if (DisplayType.isLOB(dt))
-					m_oldValues[index] = get_LOB (rs.getObject(columnName));
-				else if (clazz == String.class)
-				{
-					String value = (String)decrypt(index, rs.getString(columnName));
-					if (value != null)
-					{
-						if (get_Table_ID() == I_AD_Column.Table_ID || get_Table_ID() == I_AD_Element.Table_ID
-							|| get_Table_ID() == I_AD_Field.Table_ID)
-						{
-							if ("Description".equals(columnName) || "Help".equals(columnName))
-							{
-								value = value.intern();
-							}
-						}
-					}
-					m_oldValues[index] = value;
-				}
-				else
-					m_oldValues[index] = loadSpecial(rs, index);
-				//	NULL
-				if (rs.wasNull() && m_oldValues[index] != null)
-					m_oldValues[index] = null;
-				//
-				if (CLogMgt.isLevelAll())
-					log.finest(String.valueOf(index) + ": " + p_info.getColumnName(index)
-						+ "(" + p_info.getColumnClass(index) + ") = " + m_oldValues[index]);
-			}
-			catch (SQLException e)
-			{
-				if (p_info.isVirtualColumn(index)) {	//	if rs constructor used
-					if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Virtual Column not loaded: " + columnName);
-				} else {
-					log.log(Level.SEVERE, "(rs) - " + String.valueOf(index)
-						+ ": " + p_info.getTableName() + "." + p_info.getColumnName(index)
-						+ " (" + p_info.getColumnClass(index) + ") - " + e);
-					success = false;
-				}
-			}
+			if(!loadColumn(rs, index) && success)
+				success = false;
 		}
 		m_createNew = false;
 		setKeyInfo();
 		loadComplete(success);
 		return success;
 	}	//	load
+
+	/**
+	 * Load column value coming from a {@link ResultSet}.
+	 * @param rs {@link ResultSet} with its position set according to the model class instance.
+	 * @param index Column index. Might not coincide with the index of the column within the {@link ResultSet}.
+	 * @return
+	 * @see #m_oldValues
+	 * @see POInfo#getColumnIndex(String)
+	 */
+	private boolean loadColumn(ResultSet rs, int index) {
+		boolean success = true;
+		String columnName = p_info.getColumnName(index);
+		Class<?> clazz = p_info.getColumnClass(index);
+		int dt = p_info.getColumnDisplayType(index);
+		try
+		{
+			if (clazz == Integer.class)
+				m_oldValues[index] = decrypt(index, Integer.valueOf(rs.getInt(columnName)));
+			else if (clazz == BigDecimal.class)
+				m_oldValues[index] = decrypt(index, rs.getBigDecimal(columnName));
+			else if (clazz == Boolean.class)
+				m_oldValues[index] = Boolean.valueOf("Y".equals(decrypt(index, rs.getString(columnName))));
+			else if (clazz == Timestamp.class)
+				m_oldValues[index] = decrypt(index, rs.getTimestamp(columnName));
+			else if (DisplayType.isLOB(dt))
+				m_oldValues[index] = get_LOB (rs.getObject(columnName));
+			else if (clazz == String.class)
+			{
+				String value = (String)decrypt(index, rs.getString(columnName));
+				if (value != null)
+				{
+					if (get_Table_ID() == I_AD_Column.Table_ID || get_Table_ID() == I_AD_Element.Table_ID
+						|| get_Table_ID() == I_AD_Field.Table_ID)
+					{
+						if ("Description".equals(columnName) || "Help".equals(columnName))
+						{
+							value = value.intern();
+						}
+					}
+				}
+				m_oldValues[index] = value;
+			}
+			else
+				m_oldValues[index] = loadSpecial(rs, index);
+			//	NULL
+			if (rs.wasNull() && m_oldValues[index] != null)
+				m_oldValues[index] = null;
+
+			// flag virtual column as loaded
+			if(p_info.isVirtualColumn(index))
+				loadedVirtualColumns.add(index);
+			//
+			if (CLogMgt.isLevelAll())
+				log.finest(String.valueOf(index) + ": " + p_info.getColumnName(index)
+					+ "(" + p_info.getColumnClass(index) + ") = " + m_oldValues[index]);
+		}
+		catch (SQLException e)
+		{
+			if (p_info.isVirtualColumn(index)) {
+				if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Virtual Column not loaded: " + columnName);
+			} else {
+				log.log(Level.SEVERE, "(rs) - " + String.valueOf(index)
+					+ ": " + p_info.getTableName() + "." + p_info.getColumnName(index)
+					+ " (" + p_info.getColumnClass(index) + ") - " + e);
+				success = false;
+			}
+		}
+		return success;
+	}
+
+	/**
+	 * Load value for virtual column, only if it wasn't loaded previously.
+	 * @param index Column index (see {@link POInfo#getColumnIndex(String)}).
+	 */
+	private void loadVirtualColumn(int index) {
+		if(!m_createNew && !loadedVirtualColumns.contains(index)) {
+			StringBuilder sql = new StringBuilder("SELECT ").append(p_info.getColumnSQL(index))
+				.append(" FROM ").append(p_info.getTableName()).append(" WHERE ")
+				.append(get_WhereClause(true, null));
+			ResultSet rs = null;
+			PreparedStatement pstmt = null;
+			try
+			{
+				pstmt = DB.prepareStatement(sql.toString(), m_trxName);
+				rs = pstmt.executeQuery();
+				if (rs.next())
+					loadColumn(rs, index);
+				loadedVirtualColumns.add(index);
+			}catch(Exception e){
+				log.log(Level.SEVERE, "(rs) - " + String.valueOf(index)
+				+ ": " + p_info.getTableName() + "." + p_info.getColumnName(index)
+				+ " (" + p_info.getColumnClass(index) + ") - " + e);
+			}finally {
+				DB.close(rs, pstmt);
+			}
+		}
+	}
 
 	/**
 	 * 	Load from HashMap
@@ -1587,7 +1678,7 @@ public abstract class PO
 			}
 			catch (Exception e)
 			{
-				if (p_info.isVirtualColumn(index)) {	//	if rs constructor used
+				if (p_info.isVirtualColumn(index)) {
 					if (log.isLoggable(Level.FINER))log.log(Level.FINER, "Virtual Column not loaded: " + columnName);
 				} else {
 					log.log(Level.SEVERE, "(ht) - " + String.valueOf(index)

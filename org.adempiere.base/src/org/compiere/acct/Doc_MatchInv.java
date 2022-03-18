@@ -44,6 +44,7 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MOrderLandedCostAllocation;
+import org.compiere.model.MUOM;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
 import org.compiere.model.X_M_Cost;
@@ -201,7 +202,7 @@ public class Doc_MatchInv extends Doc
 		dr.setQty(getQty());
 		BigDecimal temp = dr.getAcctBalance();
 		//	Set AmtAcctCr/Dr from Receipt (sets also Project)
-		if (m_matchInv.getReversal_ID() > 0) 
+		if (m_matchInv.isReversal())
 		{
 			if (!dr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
 					m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
@@ -250,7 +251,7 @@ public class Doc_MatchInv extends Doc
 				cr.setAmtSourceCr(BigDecimal.ZERO);
 			}
 			temp = cr.getAcctBalance();
-			if (m_matchInv.getReversal_ID() > 0)
+			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
 						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
@@ -284,7 +285,7 @@ public class Doc_MatchInv extends Doc
 					invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
 			cr = fact.createLine (null, expense,
 				as.getC_Currency_ID(), null, LineNetAmt);
-			if (m_matchInv.getReversal_ID() > 0)
+			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
 						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
@@ -295,7 +296,8 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				cr.setQty(getQty().multiply(multiplier).negate());
+				int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+				cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
 			}
 		}
 		
@@ -339,20 +341,17 @@ public class Doc_MatchInv extends Doc
 				return null;
 		}
 		
-		if (m_matchInv.getReversal_ID() == 0) 
+		cr.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
+		cr.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
+		cr.setC_Project_ID(m_invoiceLine.getC_Project_ID());
+		cr.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
+		cr.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
+		cr.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
+		cr.setUser1_ID(m_invoiceLine.getUser1_ID());
+		cr.setUser2_ID(m_invoiceLine.getUser2_ID());
+		if (m_matchInv.isReversal())
 		{
-			cr.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
-			cr.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
-			cr.setC_Project_ID(m_invoiceLine.getC_Project_ID());
-			cr.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
-			cr.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
-			cr.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
-			cr.setUser1_ID(m_invoiceLine.getUser1_ID());
-			cr.setUser2_ID(m_invoiceLine.getUser2_ID());
-		}
-		else
-		{
-			updateFactLine(cr);
+			cr.setQty(getQty().negate());
 		}
 
 		//AZ Goodwill
@@ -467,6 +466,7 @@ public class Doc_MatchInv extends Doc
 					m_pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as),
 					as.getC_Currency_ID(), ipv.negate());
 			updateFactLine(line);
+			line.setQty(getQty().negate());
 			
 			line = fact.createLine(null, account, as.getC_Currency_ID(), ipv);
 			updateFactLine(line);
@@ -475,6 +475,7 @@ public class Doc_MatchInv extends Doc
 					m_pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as),
 					as.getC_Currency_ID(), ipv.negate());
 			updateFactLine(line);
+			line.setQty(getQty().negate());
 			
 			line = fact.createLine(null, account, as.getC_Currency_ID(), ipv);
 			updateFactLine(line);
@@ -663,7 +664,7 @@ public class Doc_MatchInv extends Doc
 		dr.setQty(getQty());
 		BigDecimal temp = dr.getAcctBalance();
 		//	Set AmtAcctCr/Dr from Receipt (sets also Project)
-		if (m_matchInv.getReversal_ID() > 0) 
+		if (m_matchInv.isReversal())
 		{
 			if (!dr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
 					m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
@@ -713,7 +714,7 @@ public class Doc_MatchInv extends Doc
 				cr.setAmtSourceCr(BigDecimal.ZERO);
 			}
 			temp = cr.getAcctBalance();
-			if (m_matchInv.getReversal_ID() > 0)
+			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
 						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
@@ -747,7 +748,7 @@ public class Doc_MatchInv extends Doc
 					invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
 			cr = fact.createLine (null, expense,
 				as.getC_Currency_ID(), LineNetAmt, null);
-			if (m_matchInv.getReversal_ID() > 0)
+			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
 						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
@@ -758,7 +759,8 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				cr.setQty(getQty().multiply(multiplier).negate());
+				int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+				cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
 			}
 		}
 		
@@ -803,7 +805,7 @@ public class Doc_MatchInv extends Doc
 				return null;
 		}
 		
-		if (m_matchInv.getReversal_ID() == 0) 
+		if (!m_matchInv.isReversal())
 		{
 			cr.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
 			cr.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
@@ -931,7 +933,7 @@ public class Doc_MatchInv extends Doc
 				dr.setAmtSourceCr(BigDecimal.ZERO);
 			}
 			BigDecimal temp = dr.getAcctBalance();
-			if (m_matchInv.getReversal_ID() > 0)
+			if (m_matchInv.isReversal())
 			{
 				if (!dr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
 						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
@@ -965,7 +967,7 @@ public class Doc_MatchInv extends Doc
 					invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
 			dr = fact.createLine (null, expense,
 				as.getC_Currency_ID(), LineNetAmt, null);
-			if (m_matchInv.getReversal_ID() > 0)
+			if (m_matchInv.isReversal())
 			{
 				if (!dr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
 						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
@@ -976,10 +978,11 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				dr.setQty(getQty().multiply(multiplier).negate());
+				int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+				dr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
 			}
 		}
-		if (m_matchInv.getReversal_ID() == 0) 
+		if (!m_matchInv.isReversal())
 		{
 			dr.setC_Activity_ID(refInvLine.getC_Activity_ID());
 			dr.setC_Campaign_ID(refInvLine.getC_Campaign_ID());
@@ -1020,7 +1023,7 @@ public class Doc_MatchInv extends Doc
 				cr.setAmtSourceCr(BigDecimal.ZERO);
 			}
 			BigDecimal temp = cr.getAcctBalance();
-			if (m_matchInv.getReversal_ID() > 0)
+			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
 						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
@@ -1054,7 +1057,7 @@ public class Doc_MatchInv extends Doc
 					invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
 			cr = fact.createLine (null, expense,
 				as.getC_Currency_ID(), LineNetAmt, null);
-			if (m_matchInv.getReversal_ID() > 0)
+			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
 						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
@@ -1065,7 +1068,8 @@ public class Doc_MatchInv extends Doc
 			}
 			else
 			{
-				cr.setQty(getQty().multiply(multiplier).negate());
+				int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+				cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
 			}
 		}
 		
@@ -1111,7 +1115,7 @@ public class Doc_MatchInv extends Doc
 				return null;
 		}
 		
-		if (m_matchInv.getReversal_ID() == 0) 
+		if (!m_matchInv.isReversal())
 		{
 			cr.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
 			cr.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
@@ -1213,7 +1217,7 @@ public class Doc_MatchInv extends Doc
 			MInvoice invoice, BigDecimal matchInvSource, BigDecimal matchInvAccounted, 
 			ArrayList<FactLine> invGainLossFactLines, HashMap<Integer, ArrayList<FactLine>> htFactLineInv)
 	{
-		if (m_matchInv.getReversal_ID() > 0 && m_matchInv.get_ID() > m_matchInv.getReversal_ID())
+		if (m_matchInv.isReversal())
 			return createReversalInvoiceGainLossRoundingCorrection(as, fact, acct);
 		
 		BigDecimal invoiceSource = null;
@@ -1296,7 +1300,7 @@ public class Doc_MatchInv extends Doc
 	 */
 	private String createReversalInvoiceGainLossRoundingCorrection(MAcctSchema as, Fact fact, MAccount acct)
 	{
-		if (m_matchInv.getReversal_ID() == 0)
+		if (!m_matchInv.isReversal())
 			return null;
 		
 		MAccount gain = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedGain_Acct());
@@ -1339,7 +1343,7 @@ public class Doc_MatchInv extends Doc
 			ArrayList<FactLine> invGainLossFactLines, ArrayList<MInvoice> invList, ArrayList<MInvoiceLine> invLineList,
 			HashMap<Integer, ArrayList<FactLine>> htFactLineInv) 
 	{
-		if (m_matchInv.getReversal_ID() > 0 && m_matchInv.get_ID() > m_matchInv.getReversal_ID())
+		if (m_matchInv.isReversal())
 			return null;
 		
 		HashMap<Integer, ArrayList<FactLine>> htRoundingLineInvLine = new HashMap<Integer, ArrayList<FactLine>>();
@@ -1523,7 +1527,7 @@ public class Doc_MatchInv extends Doc
 				skipMatchInvIdList.add(m_matchInv.get_ID());
 				for (MMatchInv matchInv : matchInvs)
 				{
-					if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+					if (matchInv.isReversal())
 						skipMatchInvIdList.add(matchInv.get_ID());
 				}
 				
@@ -1543,9 +1547,9 @@ public class Doc_MatchInv extends Doc
 						.append(" AND PostingType='A'")
 						.append(" AND Account_ID=?");
 					
-					if (m_matchInv.getReversal_ID() > 0)
+					if (m_matchInv.isReversal())
 					{
-						if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+						if (matchInv.isReversal())
 							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
 						sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
 					}
@@ -1595,9 +1599,9 @@ public class Doc_MatchInv extends Doc
 						.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
 						.append(" AND Description LIKE 'Invoice%'");
 					
-					if (m_matchInv.getReversal_ID() > 0)
+					if (m_matchInv.isReversal())
 					{
-						if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+						if (matchInv.isReversal())
 							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
 						sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
 					}
@@ -1825,7 +1829,7 @@ public class Doc_MatchInv extends Doc
 				skipMatchInvIdList.add(m_matchInv.get_ID());
 				for (MMatchInv matchInv : matchInvs)
 				{
-					if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+					if (matchInv.isReversal())
 						skipMatchInvIdList.add(matchInv.get_ID());
 				}
 				
@@ -1845,9 +1849,9 @@ public class Doc_MatchInv extends Doc
 						.append(" AND PostingType='A'")
 						.append(" AND Account_ID=?");
 					
-					if (m_matchInv.getReversal_ID() > 0)
+					if (m_matchInv.isReversal())
 					{
-						if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+						if (matchInv.isReversal())
 							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
 						sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
 					}
@@ -1904,9 +1908,9 @@ public class Doc_MatchInv extends Doc
 						.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
 						.append(" AND Description LIKE 'Invoice Line%'");
 					
-					if (m_matchInv.getReversal_ID() > 0)
+					if (m_matchInv.isReversal())
 					{
-						if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+						if (matchInv.isReversal())
 							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
 						sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
 					}
@@ -2029,7 +2033,7 @@ public class Doc_MatchInv extends Doc
 			MInOut receipt, BigDecimal matchInvSource, BigDecimal matchInvAccounted,
 			ArrayList<FactLine> mrGainLossFactLines, ArrayList<FactLine> mrFactLines)
 	{
-		if (m_matchInv.getReversal_ID() > 0 && m_matchInv.get_ID() > m_matchInv.getReversal_ID())
+		if (m_matchInv.isReversal())
 			return createReversalReceiptGainLossRoundingCorrection(as, fact, acct);
 		
 		BigDecimal receiptSource = null;
@@ -2104,7 +2108,7 @@ public class Doc_MatchInv extends Doc
 	 */
 	private String createReversalReceiptGainLossRoundingCorrection(MAcctSchema as, Fact fact, MAccount acct)
 	{
-		if (m_matchInv.getReversal_ID() == 0)
+		if (!m_matchInv.isReversal())
 			return null;
 		
 		MAccount gain = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedGain_Acct());
@@ -2144,7 +2148,7 @@ public class Doc_MatchInv extends Doc
 	private String createReceiptRoundingCorrection(MAcctSchema as, Fact fact, MAccount acct, 
 			ArrayList<FactLine> mrGainLossFactLines, ArrayList<FactLine> mrFactLines) 
 	{
-		if (m_matchInv.getReversal_ID() > 0 && m_matchInv.get_ID() > m_matchInv.getReversal_ID())
+		if (m_matchInv.isReversal())
 			return null;
 		
 		ArrayList<FactLine> mrLineRoundingLines = new ArrayList<FactLine>();
@@ -2249,7 +2253,7 @@ public class Doc_MatchInv extends Doc
 		skipMatchInvIdList.add(m_matchInv.get_ID());
 		for (MMatchInv matchInv : matchInvs)
 		{
-			if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+			if (matchInv.isReversal())
 				skipMatchInvIdList.add(matchInv.get_ID());
 		}
 		
@@ -2269,9 +2273,9 @@ public class Doc_MatchInv extends Doc
 				.append(" AND PostingType='A'")
 				.append(" AND Account_ID=?");
 			
-			if (m_matchInv.getReversal_ID() > 0)
+			if (m_matchInv.isReversal())
 			{
-				if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+				if (matchInv.isReversal())
 					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
 				sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
 			}
@@ -2313,9 +2317,9 @@ public class Doc_MatchInv extends Doc
 				.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
 				.append(" AND Description LIKE 'InOut%'");
 			
-			if (m_matchInv.getReversal_ID() > 0)
+			if (m_matchInv.isReversal())
 			{
-				if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+				if (matchInv.isReversal())
 					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
 				sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
 			}
@@ -2484,7 +2488,7 @@ public class Doc_MatchInv extends Doc
 		skipMatchInvIdList.add(m_matchInv.get_ID());
 		for (MMatchInv matchInv : matchInvs)
 		{
-			if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+			if (matchInv.isReversal())
 				skipMatchInvIdList.add(matchInv.get_ID());
 		}
 		
@@ -2504,9 +2508,9 @@ public class Doc_MatchInv extends Doc
 				.append(" AND PostingType='A'")
 				.append(" AND Account_ID=?");
 			
-			if (m_matchInv.getReversal_ID() > 0)
+			if (m_matchInv.isReversal())
 			{
-				if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+				if (matchInv.isReversal())
 					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
 				sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
 			}
@@ -2546,9 +2550,9 @@ public class Doc_MatchInv extends Doc
 				.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
 				.append(" AND Description LIKE 'InOut Line%'");
 			
-			if (m_matchInv.getReversal_ID() > 0)
+			if (m_matchInv.isReversal())
 			{
-				if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
+				if (matchInv.isReversal())
 					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
 				sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
 			}

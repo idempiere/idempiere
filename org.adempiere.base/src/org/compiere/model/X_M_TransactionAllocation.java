@@ -32,12 +32,30 @@ public class X_M_TransactionAllocation extends PO implements I_M_TransactionAllo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_TransactionAllocation (Properties ctx, int M_TransactionAllocation_ID, String trxName)
     {
       super (ctx, M_TransactionAllocation_ID, trxName);
+      /** if (M_TransactionAllocation_ID == 0)
+        {
+			setAllocationStrategyType (null);
+			setIsAllocated (false);
+// N
+			setIsManual (false);
+// N
+			setM_AttributeSetInstance_ID (0);
+			setM_Product_ID (0);
+			setM_Transaction_ID (0);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_TransactionAllocation (Properties ctx, int M_TransactionAllocation_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_TransactionAllocation_ID, trxName, virtualColumns);
       /** if (M_TransactionAllocation_ID == 0)
         {
 			setAllocationStrategyType (null);

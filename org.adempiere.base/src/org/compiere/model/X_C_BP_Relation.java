@@ -31,12 +31,31 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BP_Relation (Properties ctx, int C_BP_Relation_ID, String trxName)
     {
       super (ctx, C_BP_Relation_ID, trxName);
+      /** if (C_BP_Relation_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartnerRelation_ID (0);
+			setC_BPartnerRelation_Location_ID (0);
+			setC_BP_Relation_ID (0);
+			setIsBillTo (false);
+			setIsPayFrom (false);
+			setIsRemitTo (false);
+			setIsShipTo (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BP_Relation (Properties ctx, int C_BP_Relation_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BP_Relation_ID, trxName, virtualColumns);
       /** if (C_BP_Relation_ID == 0)
         {
 			setC_BPartner_ID (0);

@@ -31,12 +31,26 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Preference (Properties ctx, int AD_Preference_ID, String trxName)
     {
       super (ctx, AD_Preference_ID, trxName);
+      /** if (AD_Preference_ID == 0)
+        {
+			setAD_Preference_ID (0);
+			setAttribute (null);
+			setPreferenceFor (null);
+// W
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Preference (Properties ctx, int AD_Preference_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Preference_ID, trxName, virtualColumns);
       /** if (AD_Preference_ID == 0)
         {
 			setAD_Preference_ID (0);

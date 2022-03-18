@@ -34,12 +34,23 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Info_Lic (Properties ctx, int A_Asset_Info_Lic_ID, String trxName)
     {
       super (ctx, A_Asset_Info_Lic_ID, trxName);
+      /** if (A_Asset_Info_Lic_ID == 0)
+        {
+			setA_Asset_ID (0);
+			setA_Asset_Info_Lic_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Info_Lic (Properties ctx, int A_Asset_Info_Lic_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Info_Lic_ID, trxName, virtualColumns);
       /** if (A_Asset_Info_Lic_ID == 0)
         {
 			setA_Asset_ID (0);

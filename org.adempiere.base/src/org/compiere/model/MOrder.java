@@ -167,7 +167,11 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public MOrder(Properties ctx, int C_Order_ID, String trxName)
 	{
-		super (ctx, C_Order_ID, trxName);
+		this (ctx, C_Order_ID, trxName, (String[]) null);
+	}	//	MOrder
+
+	public MOrder(Properties ctx, int C_Order_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Order_ID, trxName, virtualColumns);
 		//  New
 		if (C_Order_ID == 0)
 		{
@@ -209,7 +213,7 @@ public class MOrder extends X_C_Order implements DocAction
 			setTotalLines (Env.ZERO);
 			setGrandTotal (Env.ZERO);
 		}
-	}	//	MOrder
+	}
 
 	/**************************************************************************
 	 *  Project Constructor
@@ -1477,7 +1481,7 @@ public class MOrder extends X_C_Order implements DocAction
 		MClientInfo ci = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
 		if (ci.getC_ChargeFreight_ID() == 0 && ci.getM_ProductFreight_ID() == 0)
 		{
-			m_processMsg = "Product or Charge for Freight is not defined at Client window > Client Info tab";
+			m_processMsg = "Product or Charge for Freight is not defined at Tenant window > Tenant Info tab";
 			return false;
 		}
 		
@@ -1525,7 +1529,7 @@ public class MOrder extends X_C_Order implements DocAction
 				else if (ci.getM_ProductFreight_ID() > 0)
 					freightLine.setM_Product_ID(ci.getM_ProductFreight_ID());
 				else
-					throw new AdempiereException("Product or Charge for Freight is not defined at Client window > Client Info tab");
+					throw new AdempiereException("Product or Charge for Freight is not defined at Tenant window > Tenant Info tab");
 			}
 			
 			freightLine.setC_BPartner_Location_ID(getC_BPartner_Location_ID());
@@ -1538,12 +1542,12 @@ public class MOrder extends X_C_Order implements DocAction
 		{
 			if (ci.getC_UOM_Weight_ID() == 0)
 			{
-				m_processMsg = "UOM for Weight is not defined at Client window > Client Info tab";
+				m_processMsg = "UOM for Weight is not defined at Tenant window > Tenant Info tab";
 				return false;
 			}
 			if (ci.getC_UOM_Length_ID() == 0)
 			{
-				m_processMsg = "UOM for Length is not defined at Client window > Client Info ta";
+				m_processMsg = "UOM for Length is not defined at Tenant window > Tenant Info ta";
 				return false;
 			}
 			
@@ -1591,7 +1595,7 @@ public class MOrder extends X_C_Order implements DocAction
 					else if (ci.getM_ProductFreight_ID() > 0)
 						freightLine.setM_Product_ID(ci.getM_ProductFreight_ID());
 					else
-						throw new AdempiereException("Product or Charge for Freight is not defined at Client window > Client Info tab");
+						throw new AdempiereException("Product or Charge for Freight is not defined at Tenant window > Tenant Info tab");
 				}
 				
 				freightLine.setC_BPartner_Location_ID(getC_BPartner_Location_ID());

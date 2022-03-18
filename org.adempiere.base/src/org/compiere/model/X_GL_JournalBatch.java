@@ -34,12 +34,35 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_GL_JournalBatch (Properties ctx, int GL_JournalBatch_ID, String trxName)
     {
       super (ctx, GL_JournalBatch_ID, trxName);
+      /** if (GL_JournalBatch_ID == 0)
+        {
+			setC_DocType_ID (0);
+			setDescription (null);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setGL_JournalBatch_ID (0);
+			setPostingType (null);
+// A
+			setProcessed (false);
+			setProcessing (false);
+			setTotalCr (Env.ZERO);
+			setTotalDr (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_JournalBatch (Properties ctx, int GL_JournalBatch_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_JournalBatch_ID, trxName, virtualColumns);
       /** if (GL_JournalBatch_ID == 0)
         {
 			setC_DocType_ID (0);

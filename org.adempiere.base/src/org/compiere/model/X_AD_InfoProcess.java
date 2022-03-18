@@ -31,12 +31,30 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_InfoProcess (Properties ctx, int AD_InfoProcess_ID, String trxName)
     {
       super (ctx, AD_InfoProcess_ID, trxName);
+      /** if (AD_InfoProcess_ID == 0)
+        {
+			setAD_InfoProcess_ID (0);
+			setAD_InfoProcess_UU (null);
+			setAD_Process_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setLayoutType (null);
+// B
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_InfoProcess WHERE AD_InfoWindow_ID=@AD_InfoWindow_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_InfoProcess (Properties ctx, int AD_InfoProcess_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_InfoProcess_ID, trxName, virtualColumns);
       /** if (AD_InfoProcess_ID == 0)
         {
 			setAD_InfoProcess_ID (0);

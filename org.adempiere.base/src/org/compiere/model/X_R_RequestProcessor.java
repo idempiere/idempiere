@@ -32,12 +32,35 @@ public class X_R_RequestProcessor extends PO implements I_R_RequestProcessor, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_RequestProcessor (Properties ctx, int R_RequestProcessor_ID, String trxName)
     {
       super (ctx, R_RequestProcessor_ID, trxName);
+      /** if (R_RequestProcessor_ID == 0)
+        {
+			setAD_Schedule_ID (0);
+			setInactivityAlertDays (0);
+// 0
+			setKeepLogDays (0);
+// 7
+			setName (null);
+			setOverdueAlertDays (0);
+// 0
+			setOverdueAssignDays (0);
+// 0
+			setRemindDays (0);
+// 0
+			setR_RequestProcessor_ID (0);
+			setSupervisor_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestProcessor (Properties ctx, int R_RequestProcessor_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestProcessor_ID, trxName, virtualColumns);
       /** if (R_RequestProcessor_ID == 0)
         {
 			setAD_Schedule_ID (0);

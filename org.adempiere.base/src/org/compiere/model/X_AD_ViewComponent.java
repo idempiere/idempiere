@@ -31,12 +31,29 @@ public class X_AD_ViewComponent extends PO implements I_AD_ViewComponent, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ViewComponent (Properties ctx, int AD_ViewComponent_ID, String trxName)
     {
       super (ctx, AD_ViewComponent_ID, trxName);
+      /** if (AD_ViewComponent_ID == 0)
+        {
+			setAD_Table_ID (0);
+			setAD_ViewComponent_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setFromClause (null);
+			setIsUnionAll (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ViewComponent (Properties ctx, int AD_ViewComponent_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ViewComponent_ID, trxName, virtualColumns);
       /** if (AD_ViewComponent_ID == 0)
         {
 			setAD_Table_ID (0);

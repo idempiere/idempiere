@@ -30,12 +30,34 @@ public class X_M_Product_Acct extends PO implements I_M_Product_Acct, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_Product_Acct (Properties ctx, int M_Product_Acct_ID, String trxName)
     {
       super (ctx, M_Product_Acct_ID, trxName);
+      /** if (M_Product_Acct_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setM_Product_ID (0);
+			setP_Asset_Acct (0);
+			setP_COGS_Acct (0);
+			setP_CostAdjustment_Acct (0);
+			setP_Expense_Acct (0);
+			setP_InventoryClearing_Acct (0);
+			setP_InvoicePriceVariance_Acct (0);
+			setP_PurchasePriceVariance_Acct (0);
+			setP_RateVariance_Acct (0);
+			setP_Revenue_Acct (0);
+			setP_TradeDiscountGrant_Acct (0);
+			setP_TradeDiscountRec_Acct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Product_Acct (Properties ctx, int M_Product_Acct_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Product_Acct_ID, trxName, virtualColumns);
       /** if (M_Product_Acct_ID == 0)
         {
 			setC_AcctSchema_ID (0);

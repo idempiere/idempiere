@@ -32,12 +32,30 @@ public class X_M_PromotionDistribution extends PO implements I_M_PromotionDistri
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_PromotionDistribution (Properties ctx, int M_PromotionDistribution_ID, String trxName)
     {
       super (ctx, M_PromotionDistribution_ID, trxName);
+      /** if (M_PromotionDistribution_ID == 0)
+        {
+			setDistributionType (null);
+			setM_PromotionDistribution_ID (0);
+			setM_Promotion_ID (0);
+			setM_PromotionLine_ID (0);
+			setOperation (null);
+			setQty (Env.ZERO);
+// 0
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM M_PromotionDistribution WHERE M_Promotion_ID=@M_Promotion_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PromotionDistribution (Properties ctx, int M_PromotionDistribution_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PromotionDistribution_ID, trxName, virtualColumns);
       /** if (M_PromotionDistribution_ID == 0)
         {
 			setDistributionType (null);

@@ -31,12 +31,24 @@ public class X_AD_Org extends PO implements I_AD_Org, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Org (Properties ctx, int AD_Org_ID, String trxName)
     {
       super (ctx, AD_Org_ID, trxName);
+      /** if (AD_Org_ID == 0)
+        {
+			setIsSummary (false);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Org (Properties ctx, int AD_Org_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Org_ID, trxName, virtualColumns);
       /** if (AD_Org_ID == 0)
         {
 			setIsSummary (false);

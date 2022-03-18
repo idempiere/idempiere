@@ -33,12 +33,29 @@ public class X_M_RequisitionLine extends PO implements I_M_RequisitionLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_RequisitionLine (Properties ctx, int M_RequisitionLine_ID, String trxName)
     {
       super (ctx, M_RequisitionLine_ID, trxName);
+      /** if (M_RequisitionLine_ID == 0)
+        {
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM M_RequisitionLine WHERE M_Requisition_ID=@M_Requisition_ID@
+			setLineNetAmt (Env.ZERO);
+			setM_Requisition_ID (0);
+			setM_RequisitionLine_ID (0);
+			setPriceActual (Env.ZERO);
+			setQty (Env.ZERO);
+// 1
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_RequisitionLine (Properties ctx, int M_RequisitionLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_RequisitionLine_ID, trxName, virtualColumns);
       /** if (M_RequisitionLine_ID == 0)
         {
 			setLine (0);

@@ -34,12 +34,48 @@ public class X_A_Asset_Disposed extends PO implements I_A_Asset_Disposed, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Disposed (Properties ctx, int A_Asset_Disposed_ID, String trxName)
     {
       super (ctx, A_Asset_Disposed_ID, trxName);
+      /** if (A_Asset_Disposed_ID == 0)
+        {
+			setA_Accumulated_Depr (Env.ZERO);
+// 0
+			setA_Accumulated_Depr_Delta (Env.ZERO);
+// 0
+			setA_Activation_Method (null);
+// 'AA'
+			setA_Asset_Disposed_ID (0);
+			setA_Asset_ID (0);
+			setA_Disposal_Amt (Env.ZERO);
+// 0
+			setA_Disposed_Date (new Timestamp( System.currentTimeMillis() ));
+			setA_Disposed_Method (null);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @Date@
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @Date@
+			setDocumentNo (null);
+			setExpense (Env.ZERO);
+// 0
+			setIsApproved (false);
+// N
+			setPosted (false);
+// N
+			setPostingType (null);
+// A
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Disposed (Properties ctx, int A_Asset_Disposed_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Disposed_ID, trxName, virtualColumns);
       /** if (A_Asset_Disposed_ID == 0)
         {
 			setA_Accumulated_Depr (Env.ZERO);

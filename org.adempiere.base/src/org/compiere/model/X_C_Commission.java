@@ -32,12 +32,30 @@ public class X_C_Commission extends PO implements I_C_Commission, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Commission (Properties ctx, int C_Commission_ID, String trxName)
     {
       super (ctx, C_Commission_ID, trxName);
+      /** if (C_Commission_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_Commission_ID (0);
+			setC_Currency_ID (0);
+			setDocBasisType (null);
+// I
+			setFrequencyType (null);
+// M
+			setListDetails (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Commission (Properties ctx, int C_Commission_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Commission_ID, trxName, virtualColumns);
       /** if (C_Commission_ID == 0)
         {
 			setC_BPartner_ID (0);

@@ -34,12 +34,29 @@ public class X_C_CashPlanLine extends PO implements I_C_CashPlanLine, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CashPlanLine (Properties ctx, int C_CashPlanLine_ID, String trxName)
     {
       super (ctx, C_CashPlanLine_ID, trxName);
+      /** if (C_CashPlanLine_ID == 0)
+        {
+			setC_CashPlan_ID (0);
+			setC_CashPlanLine_ID (0);
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_CashPlanLine WHERE C_CashPlanLine_ID=@C_CashPlanLine_ID@
+			setProcessed (false);
+			setQtyEntered (Env.ZERO);
+// 1
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CashPlanLine (Properties ctx, int C_CashPlanLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CashPlanLine_ID, trxName, virtualColumns);
       /** if (C_CashPlanLine_ID == 0)
         {
 			setC_CashPlan_ID (0);

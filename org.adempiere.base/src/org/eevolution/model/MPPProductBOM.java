@@ -275,7 +275,11 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 		copyPO(copy);
 		this.m_lines = copy.m_lines != null ? copy.m_lines.stream().map(e -> {return new MPPProductBOMLine(ctx, e, trxName);}).collect(Collectors.toCollection(ArrayList::new)) : null;
 	}
-	
+
+	public MPPProductBOM(Properties ctx, int PP_Product_BOM_ID, String trxName, String... virtualColumns) {
+		super(ctx, PP_Product_BOM_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * 	Get BOM Lines valid date for Product BOM
 	 *  @param valid Date to Validate

@@ -30,12 +30,25 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_OrgInfo (Properties ctx, int AD_OrgInfo_ID, String trxName)
     {
       super (ctx, AD_OrgInfo_ID, trxName);
+      /** if (AD_OrgInfo_ID == 0)
+        {
+			setDUNS (null);
+			setReceiptFooterMsg (null);
+// 1
+			setTaxID (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_OrgInfo (Properties ctx, int AD_OrgInfo_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_OrgInfo_ID, trxName, virtualColumns);
       /** if (AD_OrgInfo_ID == 0)
         {
 			setDUNS (null);

@@ -33,12 +33,28 @@ public class X_I_InOutLineConfirm extends PO implements I_I_InOutLineConfirm, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_InOutLineConfirm (Properties ctx, int I_InOutLineConfirm_ID, String trxName)
     {
       super (ctx, I_InOutLineConfirm_ID, trxName);
+      /** if (I_InOutLineConfirm_ID == 0)
+        {
+			setConfirmationNo (null);
+			setConfirmedQty (Env.ZERO);
+			setDifferenceQty (Env.ZERO);
+			setI_InOutLineConfirm_ID (0);
+			setI_IsImported (false);
+			setM_InOutLineConfirm_ID (0);
+			setScrappedQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_InOutLineConfirm (Properties ctx, int I_InOutLineConfirm_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_InOutLineConfirm_ID, trxName, virtualColumns);
       /** if (I_InOutLineConfirm_ID == 0)
         {
 			setConfirmationNo (null);

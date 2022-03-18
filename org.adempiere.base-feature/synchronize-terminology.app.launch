@@ -54,6 +54,7 @@
         <setEntry value="groovy-sql@default:false"/>
         <setEntry value="groovy-xml@default:false"/>
         <setEntry value="groovy@default:default"/>
+        <setEntry value="io.github.classgraph.classgraph@default:default"/>
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="net.sf.supercsv.super-csv@default:default"/>
         <setEntry value="org.antlr.antlr4-runtime@default:default"/>

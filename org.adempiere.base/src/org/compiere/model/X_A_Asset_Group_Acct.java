@@ -33,12 +33,39 @@ public class X_A_Asset_Group_Acct extends PO implements I_A_Asset_Group_Acct, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Group_Acct (Properties ctx, int A_Asset_Group_Acct_ID, String trxName)
     {
       super (ctx, A_Asset_Group_Acct_ID, trxName);
+      /** if (A_Asset_Group_Acct_ID == 0)
+        {
+			setA_Accumdepreciation_Acct (0);
+			setA_Asset_Acct (0);
+			setA_Asset_Group_Acct_ID (0);
+			setA_Asset_Group_ID (0);
+			setA_Depreciation_Acct (0);
+			setA_Depreciation_F_ID (0);
+			setA_Depreciation_ID (0);
+			setA_Disposal_Loss_Acct (0);
+			setA_Disposal_Revenue_Acct (0);
+			setA_Split_Percent (Env.ZERO);
+// 1
+			setC_AcctSchema_ID (0);
+			setPostingType (null);
+// 'A'
+			setUseLifeMonths_F (0);
+// 0
+			setUseLifeYears_F (0);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Group_Acct (Properties ctx, int A_Asset_Group_Acct_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Group_Acct_ID, trxName, virtualColumns);
       /** if (A_Asset_Group_Acct_ID == 0)
         {
 			setA_Accumdepreciation_Acct (0);

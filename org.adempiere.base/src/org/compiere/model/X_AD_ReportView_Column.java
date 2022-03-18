@@ -30,12 +30,23 @@ public class X_AD_ReportView_Column extends PO implements I_AD_ReportView_Column
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ReportView_Column (Properties ctx, int AD_ReportView_Column_ID, String trxName)
     {
       super (ctx, AD_ReportView_Column_ID, trxName);
+      /** if (AD_ReportView_Column_ID == 0)
+        {
+			setAD_Column_ID (0);
+			setAD_ReportView_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ReportView_Column (Properties ctx, int AD_ReportView_Column_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ReportView_Column_ID, trxName, virtualColumns);
       /** if (AD_ReportView_Column_ID == 0)
         {
 			setAD_Column_ID (0);
