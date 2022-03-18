@@ -48,6 +48,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
 
@@ -779,7 +780,18 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 			if (localTrx != null)
 				localTrx.rollback();
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			pi.setSummary(e.getMessage(), true);
+			StringBuilder msg = new StringBuilder();
+			if (retValue != null)
+			{
+				StateEngine state = retValue.getState();
+				if (!Util.isEmpty(retValue.getProcessMsg()) && (state.isTerminated() || state.isAborted()))
+				{
+					msg.append(retValue.getProcessMsg());
+					msg.append("\n");
+				}				
+			}
+			msg.append(e.getMessage());
+			pi.setSummary(msg.toString(), true);
 			retValue = null;
 		}
 		finally 
