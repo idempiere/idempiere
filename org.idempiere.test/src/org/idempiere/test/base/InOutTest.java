@@ -50,13 +50,18 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
+import org.compiere.model.MShipper;
+import org.compiere.model.MShippingProcessor;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.X_C_BP_ShippingAcct;
+import org.compiere.model.X_M_ShippingProcessorCfg;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
@@ -66,6 +71,8 @@ import org.junit.jupiter.api.Test;
  */
 public class InOutTest extends AbstractTestCase {
 	
+	private final static int BP_JOE_BLOCK_ID = 118;
+
 	public InOutTest() {
 	}
 	
@@ -457,5 +464,61 @@ public class InOutTest extends AbstractTestCase {
 		}
 		po.load(getTrxName());
 		assertTrue(po.get_ValueAsBoolean("Posted"));
+	}
+	
+	@Test
+	public void testFreightCostRuleCustomerAccount() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK_ID));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+		
+		X_M_ShippingProcessorCfg cfg = new X_M_ShippingProcessorCfg(Env.getCtx(), 0, getTrxName());
+		cfg.setHostAddress("0.0.0.0");
+		cfg.setName("Test Shipping Processor Config");
+		cfg.setHostPort(0);
+		cfg.saveEx();
+		
+		MShippingProcessor processor = new MShippingProcessor(Env.getCtx(), 0, getTrxName());
+		processor.setM_ShippingProcessorCfg_ID(cfg.get_ID());
+		processor.setUserID("-");
+		processor.setConnectionPassword("-");		
+		processor.setName("Test Shipping Processor");
+		processor.saveEx();
+
+		MShipper shipper = new MShipper(Env.getCtx(), 0, getTrxName());
+		shipper.setName("Test Shipper");
+		shipper.setM_ShipperCfg_ID(cfg.get_ID());
+		shipper.setM_ShippingProcessor_ID(processor.get_ID());
+		shipper.saveEx();
+		
+		final String shipperAccount = "testFreightCostRuleCustomerAccount";
+		
+		MBPartner bp = new MBPartner(Env.getCtx(), BP_JOE_BLOCK_ID, getTrxName());
+		X_C_BP_ShippingAcct acct = new X_C_BP_ShippingAcct(Env.getCtx(), 0, getTrxName());
+		acct.setC_BPartner_ID(bp.getC_BPartner_ID());		
+		acct.setShipperAccount(shipperAccount);
+		acct.setM_ShippingProcessor_ID(processor.get_ID());
+		acct.saveEx();
+		
+		MInOut inout = new MInOut(Env.getCtx(), 0, getTrxName());				
+		inout.setBPartner(bp);
+		inout.setIsSOTrx(true);
+		inout.setC_Order_ID(order.getC_Order_ID());
+		inout.setM_Warehouse_ID(getM_Warehouse_ID());
+		inout.setC_DocType_ID();
+		inout.setDeliveryViaRule(MInOut.DELIVERYVIARULE_Shipper);
+		inout.setM_Shipper_ID(shipper.get_ID());
+		inout.setFreightCostRule(MInOut.FREIGHTCOSTRULE_CustomerAccount);
+		inout.saveEx();
+		
+		assertEquals(shipperAccount, inout.getShipperAccount(), "Unexpected shipper account");
+		assertEquals(MInOut.FREIGHTCHARGES_Collect, inout.getFreightCharges(), "Unexpected freight charges rule");
 	}
 }

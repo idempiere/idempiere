@@ -35,6 +35,7 @@ import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
+import org.adempiere.util.ShippingUtil;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -47,6 +48,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *  Shipment Model
@@ -1068,6 +1070,21 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
             setC_DocType_ID(docType.getC_DocTypeShipment_ID());
         }
                 
+        if (newRecord && isSOTrx())
+        {
+        	if (MInOut.FREIGHTCOSTRULE_CustomerAccount.equals(getFreightCostRule()))
+    		{
+        		if (Util.isEmpty(getShipperAccount()))
+        		{
+        			String shipperAccount = ShippingUtil.getBPShipperAccount(getM_Shipper_ID(), getC_BPartner_ID(), getC_BPartner_Location_ID(), getAD_Org_ID(), get_TrxName());
+        			setShipperAccount(shipperAccount);
+        		}
+        		
+        		if (Util.isEmpty(getFreightCharges()))
+        			setFreightCharges(MInOut.FREIGHTCHARGES_Collect);
+    		}
+        }
+
 		return true;
 	}	//	beforeSave
 
