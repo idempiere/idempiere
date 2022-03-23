@@ -47,6 +47,7 @@ import org.passay.PropertiesMessageResolver;
 import org.passay.RepeatCharacterRegexRule;
 import org.passay.Rule;
 import org.passay.RuleResult;
+import org.passay.RuleResultDetail;
 import org.passay.UsernameRule;
 import org.passay.WhitespaceRule;
 import org.passay.dictionary.ArrayWordList;
@@ -64,6 +65,8 @@ public class MPasswordRule extends X_AD_PasswordRule {
 	 * 
 	 */
 	private static final long serialVersionUID = 5454698615095632059L;
+
+	private static final String passay_prefix = "PASSAY_";
 
 	/**
 	 * @param ctx
@@ -217,13 +220,36 @@ public class MPasswordRule extends X_AD_PasswordRule {
 			if (!result.isValid()) {
 				StringBuilder error = new StringBuilder(Msg.getMsg(getCtx(), "PasswordErrors"));
 				error.append(": [");
-				for (String msg : validator.getMessages(result)) {
-					error.append(" ").append(msg);
+				for(RuleResultDetail detail : result.getDetails()){
+					error.append(" ").append(resolveMessage(detail));
 				}
 				error.append(" ]");
 				throw new AdempiereException(error.toString());
 			}
 		}
+	}
+
+	/**
+	 * Resolve & translate validation message returned by Passay
+	 * @param detail
+	 * @return error message
+	 */
+	private String resolveMessage(final RuleResultDetail detail)
+	{
+		final String key = passay_prefix + detail.getErrorCode();
+		final String message = Msg.translate(Env.getAD_Language(getCtx()), key);
+
+		String format;
+		if (!message.equals(key)) {
+			format = String.format(message, detail.getValues());
+		} else {
+			if (!detail.getParameters().isEmpty()) {
+				format = String.format("%s:%s", key, detail.getParameters());
+			} else {
+				format = String.format("%s", key);
+			}
+		}
+		return format;
 	}
 
 	private MessageResolver getCustomResolver() {
