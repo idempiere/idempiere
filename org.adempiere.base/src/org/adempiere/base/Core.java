@@ -1068,7 +1068,7 @@ public class Core {
 	 * @return ITaxLookup service
 	 */
 	public static ITaxLookup getTaxLookup() {
-		String service = MSysConfig.getValue(MSysConfig.TAX_LOOKUP_SERVICE, Env.getAD_Client_ID(Env.getCtx()));
+		String service = MSysConfig.getValue(MSysConfig.TAX_LOOKUP_SERVICE, DefaultTaxLookup.class.getName(), Env.getAD_Client_ID(Env.getCtx()));
 		IServiceHolder<ITaxLookup> serviceHolder = Service.locator().locate(ITaxLookup.class, service, null);
 		if (serviceHolder != null)
 			return serviceHolder.getService();
