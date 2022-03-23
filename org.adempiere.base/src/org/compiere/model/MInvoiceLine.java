@@ -477,10 +477,18 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		//
 		int M_Warehouse_ID = Env.getContextAsInt(getCtx(), Env.M_WAREHOUSE_ID);
 		//
-		int C_Tax_ID = Tax.get(getCtx(), getM_Product_ID(), getC_Charge_ID() , m_DateInvoiced, m_DateInvoiced,
+		String deliveryViaRule = null;
+		if (getC_OrderLine_ID() > 0) {
+			deliveryViaRule = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName()).getParent().getDeliveryViaRule();
+		} else if (getM_InOutLine_ID() > 0) {
+			deliveryViaRule = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName()).getParent().getDeliveryViaRule();
+		} else if (getParent().getC_Order_ID() > 0) {
+			deliveryViaRule = new MOrder(getCtx(), getParent().getC_Order_ID(), get_TrxName()).getDeliveryViaRule();
+		}
+		int C_Tax_ID = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID() , m_DateInvoiced, m_DateInvoiced,
 			getAD_Org_ID(), M_Warehouse_ID,
 			m_C_BPartner_Location_ID,		//	should be bill to
-			m_C_BPartner_Location_ID, m_IsSOTrx, get_TrxName());
+			m_C_BPartner_Location_ID, m_IsSOTrx, deliveryViaRule, get_TrxName());
 		if (C_Tax_ID == 0)
 		{
 			log.log(Level.SEVERE, "No Tax found");
