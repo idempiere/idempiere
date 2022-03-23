@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Order
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_Order")
 public class X_C_Order extends PO implements I_C_Order, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220321L;
 
     /** Standard Constructor */
     public X_C_Order (Properties ctx, int C_Order_ID, String trxName)
@@ -1282,6 +1282,8 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	public static final String FREIGHTCOSTRULE_FreightIncluded = "I";
 	/** Line = L */
 	public static final String FREIGHTCOSTRULE_Line = "L";
+	/** Customer Account = U */
+	public static final String FREIGHTCOSTRULE_CustomerAccount = "U";
 	/** Set Freight Cost Rule.
 		@param FreightCostRule Method for charging Freight
 	*/
