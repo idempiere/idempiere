@@ -25,8 +25,12 @@
 package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.adempiere.base.Core;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MTax;
+import org.compiere.model.Tax;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.test.AbstractTestCase;
@@ -41,6 +45,9 @@ public class MTaxTest extends AbstractTestCase {
 
 	private static final int STANDARD_TAX_ID = 104;
 	private static final int STANDARD_TAX_CATEGORY_ID=107;
+	
+	private final static int BP_JOE_BLOCK = 118;
+	private static final int PRODUCT_MULCH = 137;
 	
 	public MTaxTest() {
 	}
@@ -59,5 +66,27 @@ public class MTaxTest extends AbstractTestCase {
 		tax.setIsSummary(true);
 		tax.saveEx();
 		assertEquals(0, tax.getParent_Tax_ID(), "Unexpected parent tax id");
+	}
+	
+	@Test
+	public void testTaxLookup() {
+		int taxExemptId = Tax.getExemptTax(Env.getCtx(), getAD_Org_ID(), getTrxName());
+		assertTrue(taxExemptId>0, "Fail to get tax exempt Id");
+		
+		MBPartner bp = new MBPartner(Env.getCtx(), BP_JOE_BLOCK, getTrxName());
+		bp.setIsTaxExempt(true);
+		bp.saveEx();
+		
+		int id = Core.getTaxLookup().get(Env.getCtx(), PRODUCT_MULCH, 0, getLoginDate(), getLoginDate(), getAD_Org_ID(), getM_Warehouse_ID(), 
+				bp.getPrimaryC_BPartner_Location_ID(), bp.getPrimaryC_BPartner_Location_ID(), true, null, getTrxName());
+		assertEquals(taxExemptId, id, "Unexpected tax id");
+		
+		bp.setIsTaxExempt(false);
+		bp.saveEx();
+		
+		id = Core.getTaxLookup().get(Env.getCtx(), PRODUCT_MULCH, 0, getLoginDate(), getLoginDate(), getAD_Org_ID(), getM_Warehouse_ID(), 
+				bp.getPrimaryC_BPartner_Location_ID(), bp.getPrimaryC_BPartner_Location_ID(), true, null, getTrxName());
+		assertTrue(id != taxExemptId, "Unexpected tax id: " + id);
+		assertEquals(STANDARD_TAX_ID, id, "Unexpected tax id");
 	}
 }
