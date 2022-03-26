@@ -42,6 +42,10 @@ UPDATE AD_Column SET FieldLength=1,Updated=TO_TIMESTAMP('2022-03-26 19:02:56','Y
 UPDATE AD_Column SET FieldLength=510, SeqNoSelection=10,Updated=TO_TIMESTAMP('2022-03-26 19:06:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=2011
 ;
 
+-- 26/03/2022, 8:24:05 p. m. GMT+01:00
+INSERT INTO t_alter_column values('m_product','Value','VARCHAR(510)',null,null)
+;
+
 -- 26/03/2022, 7:08:38 p. m. GMT+01:00
 INSERT INTO t_alter_column values('r_issueproject','Name','VARCHAR(120)',null,null)
 ;
