@@ -379,7 +379,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 		String processFileNamePattern = m_printFormat.get_Translation("FileNamePattern", language.getAD_Language());
 	 	if (m_info.getAD_Process_ID()>0) {
 			MProcess process = new MProcess(Env.getCtx(), m_info.getAD_Process_ID(), m_trxName);
-			if (process !=null && process.getFileNamePattern().length()>1) {
+			if (process !=null && !Util.isEmpty(process.getFileNamePattern())) {
 				processFileNamePattern = process.getFileNamePattern();
 			}
 		}  
