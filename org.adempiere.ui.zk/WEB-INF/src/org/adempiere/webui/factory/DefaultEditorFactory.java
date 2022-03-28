@@ -41,6 +41,7 @@ import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.editor.WTimeEditor;
+import org.adempiere.webui.editor.WTimeZoneEditor;
 import org.adempiere.webui.editor.WUnknownEditor;
 import org.adempiere.webui.editor.WUrlEditor;
 import org.adempiere.webui.editor.WYesNoEditor;
@@ -224,6 +225,10 @@ public class DefaultEditorFactory implements IEditorFactory {
         else if (displayType == DisplayType.RadiogroupList)
         {
         	editor = new WRadioGroupEditor(gridField, tableEditor, editorConfiguration);
+        }
+        else if (displayType == DisplayType.TimeZoneId)
+        {
+        	editor = new WTimeZoneEditor(gridField, tableEditor);
         }
         else
         {

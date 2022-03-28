@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.component.DatetimeBox;
@@ -25,8 +26,10 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
@@ -115,6 +118,25 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 		addChangeLogMenu(popupMenu);
 		if (gridField != null)
 			getComponent().getDatebox().setPlaceholder(gridField.getPlaceholder());
+		
+		if (gridField != null) 
+		{
+			int displayType = gridField.getDisplayType();
+			if (DisplayType.isTimestampWithTimeZone(displayType))
+			{
+				String timezoneId = Env.getContext(Env.getCtx(), Env.CLIENT_INFO_TIME_ZONE);
+				if (!Util.isEmpty(timezoneId, true))
+				{
+					TimeZone tz = TimeZone.getTimeZone(timezoneId);
+					if (tz != null && timezoneId.equals(tz.getID()))
+					{
+						getComponent().getDatebox().setTimeZone(tz);
+						getComponent().getTimebox().setTimeZone(tz);
+						getComponent().getTimebox().setFormat("hh:mm a z");
+					}
+				}
+			}
+		}
 	}
 
 	public void onEvent(Event event)

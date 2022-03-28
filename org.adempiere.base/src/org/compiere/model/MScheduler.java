@@ -325,7 +325,9 @@ public class MScheduler extends X_AD_Scheduler
 		}
 		
 		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
-			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern());
+			MClientInfo clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID());
+			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern(),
+					clientInfo.getTimeZone());
 			if (nextWork > 0)
 				setDateNextRun(new Timestamp(nextWork));
 		}
