@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for RV_BPartner
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="RV_BPartner")
 public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220321L;
 
     /** Standard Constructor */
     public X_RV_BPartner (Properties ctx, int RV_BPartner_ID, String trxName)
@@ -1950,6 +1950,8 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public static final String FREIGHTCOSTRULE_FreightIncluded = "I";
 	/** Line = L */
 	public static final String FREIGHTCOSTRULE_Line = "L";
+	/** Customer Account = U */
+	public static final String FREIGHTCOSTRULE_CustomerAccount = "U";
 	/** Set Freight Cost Rule.
 		@param FreightCostRule Method for charging Freight
 	*/

@@ -39,7 +39,7 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -696173265471741122L;
+	private static final long serialVersionUID = -8501438599288536080L;
 
 	/**
 	 * 	Get Active Organizations Of Client
@@ -48,10 +48,30 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	 */
 	public static MOrg[] getOfClient (PO po)
 	{
-		List<MOrg> list = new Query(po.getCtx(), Table_Name, "AD_Client_ID=?", null)
+		return getOfClient(po.getAD_Client_ID());
+	}	//	getOfClient
+
+	/**
+	 * 	Get Active Organizations Of current Client
+	 *	@return array of orgs
+	 */
+	public static MOrg[] getOfClient ()
+	{
+		return getOfClient(Env.getAD_Client_ID(Env.getCtx()));		
+	}
+
+	/**
+	 * 	Get Active Organizations Of Client
+	 *	@param ctx context
+	 *	@param int clientID
+	 *	@return array of orgs
+	 */
+	public static MOrg[] getOfClient (int clientID)
+	{
+		List<MOrg> list = new Query(Env.getCtx(), Table_Name, "AD_Client_ID=?", null)
 								.setOrderBy(COLUMNNAME_Value)
 								.setOnlyActiveRecords(true)
-								.setParameters(po.getAD_Client_ID())
+								.setParameters(clientID)
 								.list();
 		for (MOrg org : list)
 		{
@@ -59,7 +79,7 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 		}
 		return list.toArray(new MOrg[list.size()]);
 	}	//	getOfClient
-	
+
 	/**
 	 * 	Get Org from Cache (immutable)
 	 *	@param AD_Org_ID id

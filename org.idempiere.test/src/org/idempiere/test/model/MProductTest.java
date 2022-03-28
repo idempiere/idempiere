@@ -231,8 +231,9 @@ public class MProductTest extends AbstractTestCase {
 		product.setIsActive(false);
 		assertThrows(AdempiereException.class, () -> product.saveEx());
 		
-		//clear on hand so that we can deactivate product
+		//clear on hand and reservation so that we can deactivate product
 		DB.executeUpdateEx("UPDATE M_StorageOnHand SET QtyOnHand=0 WHERE M_Product_ID=?", new Object[] {product.get_ID()}, getTrxName());
+		DB.executeUpdateEx("UPDATE M_StorageReservation SET Qty=0 WHERE M_Product_ID=?", new Object[] {product.get_ID()}, getTrxName());
 		product.setIsActive(false);
 		product.saveEx();
 		

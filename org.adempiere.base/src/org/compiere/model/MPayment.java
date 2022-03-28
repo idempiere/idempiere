@@ -2693,6 +2693,14 @@ public class MPayment extends X_C_Payment
 		}
 		MPeriod.testPeriodOpen(getCtx(), dateAcct, getC_DocType_ID(), getAD_Org_ID());
 		
+		if (getC_BankStatementLine_ID() > 0 && isReconciled()) {
+			boolean allow = MSysConfig.getBooleanValue(MSysConfig.ALLOW_REVERSAL_OF_RECONCILED_PAYMENT, true, Env.getAD_Client_ID(getCtx()));
+			if (!allow) {
+				m_processMsg = Msg.getMsg(getCtx(), "NotAllowReversalOfReconciledPayment");
+				return null;
+			}
+		}
+		
 		//	Create Reversal
 		MPayment reversal = new MPayment (getCtx(), 0, get_TrxName());
 		copyValues(this, reversal);

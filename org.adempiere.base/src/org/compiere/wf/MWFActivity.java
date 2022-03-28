@@ -990,7 +990,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				if (m_process != null)
 				{
 					m_process.setProcessMsg(this.getTextMsg());
-					m_process.saveEx();
+					try {
+						m_process.saveEx();
+					} catch (Exception ex) {
+						log.log(Level.SEVERE, ex.getMessage(), ex);
+					}
 				}
 			} finally {
 				if (contextLost)

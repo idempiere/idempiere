@@ -102,7 +102,7 @@ public class MWFProcess extends X_AD_WF_Process
 		if (!TimeUtil.isValid(wf.getValidFrom(), wf.getValidTo()))
 			throw new IllegalStateException("Workflow not valid");
 		m_wf = wf;
-//TODO  m_pi = pi; red1 - never used  -check later	
+		m_pi = pi;	
 		setAD_Workflow_ID (wf.getAD_Workflow_ID());
 		setPriority(wf.getPriority());
 		super.setWFState (WFSTATE_NotStarted);
@@ -132,9 +132,6 @@ public class MWFProcess extends X_AD_WF_Process
 		//	Lock Entity
 		getPO();
 		setAD_Org_ID(m_po.getAD_Org_ID());//Add by Hideaki Hagiwara
-		//hengsin: remove lock/unlock which is causing deadlock
-		//if (m_po != null)
-			//m_po.lock();
 	}	//	MWFProcess
 
 	/**	State Machine				*/
@@ -144,10 +141,7 @@ public class MWFProcess extends X_AD_WF_Process
 	/**	Workflow					*/
 	private MWorkflow			m_wf = null;
 	/**	Process Info				*/
-/*TODO red1 - never used
- * 
 	private ProcessInfo			m_pi = null;
- */
 	/**	Persistent Object			*/
 	private PO					m_po = null;
 	/** Message from Activity		*/
@@ -625,6 +619,15 @@ public class MWFProcess extends X_AD_WF_Process
 		return m_po;
 	}	//	getPO
 
+	/**
+	 * 
+	 * @return {@link ProcessInfo}
+	 */
+	public ProcessInfo getProcessInfo()
+	{
+		return m_pi;
+	}
+	
 	/**
 	 * 	Set Text Msg (add to existing)
 	 *	@param po base object

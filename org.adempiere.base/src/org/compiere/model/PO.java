@@ -543,7 +543,7 @@ public abstract class PO
 		int index = get_ColumnIndex(columnName);
 		if (index < 0)
 		{
-			log.log(Level.WARNING, "Column not found - " + columnName);
+			log.log(Level.WARNING, "Column not found - " + get_TableName() + "." + columnName);
 			Trace.printStack();
 			return null;
 		}
@@ -614,7 +614,7 @@ public abstract class PO
 		int index = get_ColumnIndex(columnName);
 		if (index < 0)
 		{
-			log.log(Level.WARNING, "Column not found - " + columnName);
+			log.log(Level.WARNING, "Column not found - " + get_TableName() + "." + columnName);
 			return null;
 		}
 		return get_ValueOld (index);
@@ -672,7 +672,7 @@ public abstract class PO
 		int index = get_ColumnIndex(columnName);
 		if (index < 0)
 		{
-			log.log(Level.WARNING, "Column not found - " + columnName);
+			log.log(Level.WARNING, "Column not found - " + get_TableName() + "." + columnName);
 			return false;
 		}
 		return is_ValueChanged (index);
@@ -730,7 +730,7 @@ public abstract class PO
 		int index = get_ColumnIndex(columnName);
 		if (index < 0)
 		{
-			log.log(Level.WARNING, "Column not found - " + columnName);
+			log.log(Level.WARNING, "Column not found - " + get_TableName() + "." + columnName);
 			return null;
 		}
 		return get_ValueDifference (index);
@@ -766,8 +766,8 @@ public abstract class PO
 		int index = get_ColumnIndex(ColumnName);
 		if (index < 0)
 		{
-			log.log(Level.SEVERE, "Column not found - " + ColumnName);
-			log.saveError("ColumnNotFound", "Column not found - " + ColumnName);
+			log.log(Level.SEVERE, "Column not found - " + get_TableName() + "." + ColumnName);
+			log.saveError("ColumnNotFound", get_TableName() + "." + ColumnName);
 			return false;
 		}
 		if (ColumnName.endsWith("_ID") && value instanceof String )

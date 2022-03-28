@@ -51,6 +51,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ALLOCATION_DESCRIPTION = "ALLOCATION_DESCRIPTION";
     public static final String ALLOW_APPLY_PAYMENT_TO_CREDITMEMO = "ALLOW_APPLY_PAYMENT_TO_CREDITMEMO";
     public static final String ALLOW_OVER_APPLIED_PAYMENT = "ALLOW_OVER_APPLIED_PAYMENT";
+    public static final String ALLOW_REVERSAL_OF_RECONCILED_PAYMENT = "ALLOW_REVERSAL_OF_RECONCILED_PAYMENT";
     public static final String ALogin_ShowDate = "ALogin_ShowDate";
     public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole"; // deprecated
     public static final String APPLICATION_DATABASE_VERSION = "APPLICATION_DATABASE_VERSION";
@@ -101,6 +102,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String FEEDBACK_EMAIL_CC = "FEEDBACK_EMAIL_CC";
     public static final String FEEDBACK_EMAIL_TO = "FEEDBACK_EMAIL_TO";
     public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
+    public static final String HTML_REPORT_MINIFY = "HTML_REPORT_MINIFY";
     public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
     public static final String IBAN_VALIDATION = "IBAN_VALIDATION";
     public static final String IDENTIFIER_SEPARATOR = "IDENTIFIER_SEPARATOR";
@@ -159,6 +161,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String SYSTEM_IN_MAINTENANCE_MODE = "SYSTEM_IN_MAINTENANCE_MODE";
     public static final String SYSTEM_INSERT_CHANGELOG = "SYSTEM_INSERT_CHANGELOG";
     public static final String SYSTEM_NATIVE_SEQUENCE = "SYSTEM_NATIVE_SEQUENCE";
+    public static final String TAX_LOOKUP_SERVICE="TAX_LOOKUP_SERVICE";
     public static final String TOP_MARGIN_PIXELS_FOR_HEADER = "TOP_MARGIN_PIXELS_FOR_HEADER";
     public static final String TRACE_ALL_TRX_CONNECTION_GET = "TRACE_ALL_TRX_CONNECTION_GET";
     public static final String TWOPACK_COMMIT_DDL = "2PACK_COMMIT_DDL";
