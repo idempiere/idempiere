@@ -39,7 +39,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -97,6 +99,7 @@ import org.compiere.print.layout.PrintDataEvaluatee;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.ServerProcessCtl;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -194,6 +197,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 		m_printFormat = pf;
 		m_info = info;
 		m_trxName = trxName;
+		initName();
 		setQuery(query);		//	loads Data
 		
 	}	//	ReportEngine
@@ -226,6 +230,8 @@ public class ReportEngine implements PrintServiceAttributeListener
 	private int m_language_id = 0;
 	
 	private boolean m_summary = false;
+	
+	private String m_name = null;
 	
 	/**
 	 * store all column has same css rule into a list
@@ -360,12 +366,42 @@ public class ReportEngine implements PrintServiceAttributeListener
 	}	//	getLayout
 
 	/**
+	 * 	Initialize Report Name
+	 */
+	public void initName()
+	{
+		Language language = m_printFormat.getLanguage();
+		String processFileNamePattern = m_printFormat.get_Translation("FileNamePattern", language.getAD_Language());
+	 	if (m_info.getAD_Process_ID()>0) {
+			MProcess process = new MProcess(Env.getCtx(), m_info.getAD_Process_ID(), m_trxName);
+			if (process !=null && !Util.isEmpty(process.getFileNamePattern())) {
+				processFileNamePattern = process.getFileNamePattern();
+			}
+		}  
+
+		if(Util.isEmpty(processFileNamePattern)) {
+
+	        Calendar cal = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+			String dt = sdf.format(cal.getTime());
+
+			m_name = m_printFormat.get_Translation("Name") + "_" + dt;
+ 
+
+		} else {
+			m_name = FileUtil.parseTitle(m_ctx, processFileNamePattern, m_info.getAD_Table_ID(), m_info.getRecord_ID(), m_windowNo, m_trxName);
+		}
+	}	//	initName
+	
+	/**
 	 * 	Get PrintFormat (Report) Name
 	 * 	@return name
 	 */
 	public String getName()
 	{
-		return m_printFormat.get_Translation("Name");
+		if (m_name==null)
+			initName();
+		return m_name;
 	}	//	getName
 
 	/**
@@ -1366,7 +1402,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		try
 		{
 			if (file == null)
-				file = File.createTempFile (makePrefix(getName()), ".pdf");
+				file = FileUtil.createTempFile (makePrefix(getName()), ".pdf");
 		}
 		catch (IOException e)
 		{
@@ -1397,7 +1433,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		try
 		{
 			if (file == null)
-				file = File.createTempFile (makePrefix(getName()), ".html");
+				file = FileUtil.createTempFile (makePrefix(getName()), ".html");
 		}
 		catch (IOException e)
 		{
@@ -1428,7 +1464,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		try
 		{
 			if (file == null)
-				file = File.createTempFile (makePrefix(getName()), ".csv");
+				file = FileUtil.createTempFile (makePrefix(getName()), ".csv");
 		}
 		catch (IOException e)
 		{
@@ -1459,7 +1495,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		try
 		{
 			if (file == null)
-				file = File.createTempFile (makePrefix(getName()), ".xls");
+				file = FileUtil.createTempFile (makePrefix(getName()), ".xls");
 		}
 		catch (IOException e)
 		{
@@ -1497,7 +1533,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		try
 		{
 			if (file == null)
-				file = File.createTempFile (makePrefix(getName()), ".xlsx");
+				file = FileUtil.createTempFile (makePrefix(getName()), ".xlsx");
 		}
 		catch (IOException e)
 		{
@@ -1528,7 +1564,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		try
 		{
 			if (file == null)
-				file = File.createTempFile ("ReportEngine", ".pdf");
+				file = FileUtil.createTempFile ("ReportEngine", ".pdf");
 			fileName = file.getAbsolutePath();
 			uri = file.toURI();
 			if (file.exists())
