@@ -1379,7 +1379,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		PO po = table.getPO(recordId, null);
 		MAttachment attachment = po.createAttachment();
 		byte[] data = media.isBinary() ? media.getByteData() : media.getStringData().getBytes();
-		String fileName = m_reportEngine.getName().replace(" ", "_") + "_" + m_reportEngine.getPrintInfo().getName() + "." + media.getFormat();
+		String fileName = m_reportEngine.getName().replace(" ", "_") + "." + media.getFormat();
 		attachment.addEntry(fileName, data);
 		success = attachment.save();
 		if (success)
