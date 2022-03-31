@@ -2,11 +2,11 @@
 SELECT register_migration_script('202203301514_IDEMPIERE-5243.sql') FROM dual;
 
 -- 30/03/2022, 3:14:20 p. m. GMT+02:00
-UPDATE AD_Column SET FieldLength=4000,Updated=TO_TIMESTAMP('2022-03-30 15:14:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=210569
+UPDATE AD_Column SET AD_Reference_ID=10,FieldLength=4000,Updated=TO_TIMESTAMP('2022-03-30 15:14:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=210569
 ;
 
 -- 30/03/2022, 3:14:30 p. m. GMT+02:00
-INSERT INTO t_alter_column values('ad_viewcomponent','FromClause','TEXT',null,null)
+INSERT INTO t_alter_column values('ad_viewcomponent','FromClause','VARCHAR(4000)',null,null)
 ;
 
 -- 30/03/2022, 3:17:36 p. m. GMT+02:00
