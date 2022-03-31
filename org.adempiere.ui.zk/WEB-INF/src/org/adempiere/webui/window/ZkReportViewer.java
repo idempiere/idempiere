@@ -275,7 +275,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				if (prefix.length() < 3)
 					prefix += "_".repeat(3-prefix.length());
 				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = File.createTempFile(prefix, "."+PDF_FILE_EXT, new File(path));
+				File file = FileUtil.createTempFile(prefix, "."+PDF_FILE_EXT, new File(path));
 				m_reportEngine.createPDF(file);
 				return new AMedia(file.getName(), PDF_FILE_EXT, PDF_MIME_TYPE, file, true);
 			} catch (Exception e) {
@@ -293,7 +293,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				if (prefix.length() < 3)
 					prefix += "_".repeat(3-prefix.length());
 				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = File.createTempFile(prefix, "."+HTML_FILE_EXT, new File(path));
+				File file = FileUtil.createTempFile(prefix, "."+HTML_FILE_EXT, new File(path));
 				String contextPath = Executions.getCurrent().getContextPath();
 				m_reportEngine.createHTML(file, false, m_reportEngine.getPrintFormat().getLanguage(), new HTMLExtension(contextPath, "rp", getUuid()));
 				return new AMedia(file.getName(), HTML_FILE_EXT, HTML_MIME_TYPE, file, false);
@@ -312,7 +312,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				if (prefix.length() < 3)
 					prefix += "_".repeat(3-prefix.length());
 				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = File.createTempFile(prefix, "."+EXCEL_FILE_EXT, new File(path));
+				File file = FileUtil.createTempFile(prefix, "."+EXCEL_FILE_EXT, new File(path));
 				m_reportEngine.createXLS(file, m_reportEngine.getPrintFormat().getLanguage());
 				return new AMedia(file.getName(), EXCEL_FILE_EXT, EXCEL_MIME_TYPE, file, true);
 			} catch (Exception e) {
@@ -331,7 +331,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				{
 					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				}
-				File file = File.createTempFile(prefix, "."+CSV_FILE_EXT, new File(path));
+				File file = FileUtil.createTempFile(prefix, "."+CSV_FILE_EXT, new File(path));
 				m_reportEngine.createCSV(file, ',', AEnv.getLanguage(Env.getCtx()));
 				return new AMedia(file.getName(), CSV_FILE_EXT, CSV_MIME_TYPE, file, false);
 			} catch (Exception e) {
@@ -350,7 +350,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				{
 					log.log(Level.FINE, "Path=" + path + " Prefix=" + prefix);
 				}
-				File file = File.createTempFile(prefix, "."+EXCEL_XML_FILE_EXT, new File(path));
+				File file = FileUtil.createTempFile(prefix, "."+EXCEL_XML_FILE_EXT, new File(path));
 				m_reportEngine.createXLSX(file, m_reportEngine.getPrintFormat().getLanguage());
 				return new AMedia(file.getName(), EXCEL_XML_FILE_EXT, EXCEL_XML_MIME_TYPE, file, true);
 			} catch (Exception e) {

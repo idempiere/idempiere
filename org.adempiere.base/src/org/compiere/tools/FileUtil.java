@@ -32,9 +32,13 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.model.GenericPO;
 import org.compiere.model.MAttachment;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -431,12 +435,78 @@ public class FileUtil
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String dt = sdf.format(cal.getTime());
 		String cleanName = subject.replaceAll("[ &/]", "");
-		String localFile = System.getProperty("java.io.tmpdir")
-				+ System.getProperty("file.separator") + cleanName + "_" + dt + "_" + Env.getContext(Env.getCtx(), Env.AD_SESSION_ID)
-				+ extension;
+		String dir = System.getProperty("java.io.tmpdir")
+				+ System.getProperty("file.separator") + "rpttmp_" + dt + "_" + Env.getContext(Env.getCtx(), Env.AD_SESSION_ID) + System.getProperty("file.separator");
+		String localFile = dir 
+				+ cleanName	+ extension;
+		new File(dir ).mkdirs();
 		return localFile;
 	}
 
+	/**
+	 * 
+	 * @param title
+	 * @param table_ID
+	 * @param record_ID
+	 * @param ctx
+	 * @param m_WindowNo
+	 * @param trxName
+	 * @return
+	 */
+	public static String parseTitle(Properties ctx, String title, int table_ID, int record_ID, int m_WindowNo, String trxName) {
+		if (title.contains("@") && record_ID>0 && table_ID>0) {
+			MTable table=new MTable(ctx,table_ID,trxName );
+			PO po = new GenericPO(table.getTableName(), ctx, record_ID, trxName);
+			title=Env.parseVariable(title, po, trxName, true);
+		}
+		else 
+			title=  Env.parseContext (ctx, m_WindowNo, title,
+					true, true);
+		return title;
+	}
+
+    public static File createTempFile(String prefix, String suffix, File directory) throws IOException
+	{
+        if (prefix.length() < 3) {
+            throw new IllegalArgumentException("Prefix string \"" + prefix +
+                "\" too short: length must be at least 3");
+        }
+        if (suffix == null)
+            suffix = ".tmp";
+
+        Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String dt = sdf.format(cal.getTime());
+		String tmpdirname = (directory != null) ? directory.getCanonicalPath() : System.getProperty("java.io.tmpdir");
+		tmpdirname += System.getProperty("file.separator") + "rpttmp_" + dt + "_" + Env.getContext(Env.getCtx(), Env.AD_SESSION_ID) + System.getProperty("file.separator");
+
+		File tmpdir = new File(tmpdirname);
+		tmpdir.mkdirs();
+
+		String fileName = prefix + suffix;
+
+        SecurityManager sm = System.getSecurityManager();
+        File f = new File(tmpdirname, fileName);
+
+        if (sm != null) {
+            try {
+                sm.checkWrite(f.getPath());
+            } catch (SecurityException se) {
+                // don't reveal temporary directory location
+                if (directory == null)
+                    throw new SecurityException("Unable to create temporary file");
+                throw se;
+            }
+        }
+
+        return f;	
+	}
+
+    public static File createTempFile(String prefix, String suffix) throws IOException
+    {
+        return createTempFile(prefix, suffix, null);
+    }
+	
 	/**
 	 * 
 	 * @param path
