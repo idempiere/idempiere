@@ -38,7 +38,7 @@ INSERT INTO AD_Column (AD_Column_ID,SeqNoSelection,IsSyncDatabase,Version,IsMand
 ;
 
 -- Mar 24, 2022 3:41:15 PM MYT
-ALTER TABLE AD_ClientInfo ADD TimeZone VARCHAR2(60) DEFAULT NULL 
+ALTER TABLE AD_ClientInfo ADD TimeZone VARCHAR2(60 CHAR) DEFAULT NULL 
 ;
 
 -- Mar 24, 2022 3:42:03 PM MYT
