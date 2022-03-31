@@ -397,8 +397,14 @@ public class ReportStarter implements ProcessCall, ClientProcess
         	}
 			if (pi.getAD_Process_ID()>0) {
 				MProcess process = new MProcess(Env.getCtx(), processInfo.getAD_Process_ID(), processInfo.getTransactionName());
-				Language language = printFormat.getLanguage();
-				String processFileNamePattern = printFormat.get_Translation("FileNamePattern", language.getAD_Language());
+				String processFileNamePattern = null;
+				if (printFormat != null) {
+					Language language = printFormat.getLanguage();
+					processFileNamePattern = printFormat.get_Translation("FileNamePattern", language.getAD_Language());
+				}
+				if (processFileNamePattern == null && process.getFileNamePattern() != null) {
+					processFileNamePattern = process.getFileNamePattern();
+				}
 				if (process !=null && !Util.isEmpty(processFileNamePattern)) {
 					String filename=FileUtil.parseTitle(Env.getCtx(), processFileNamePattern, pi.getTable_ID(), Record_ID, 0, trxName);
 					pi.setTitle(filename);

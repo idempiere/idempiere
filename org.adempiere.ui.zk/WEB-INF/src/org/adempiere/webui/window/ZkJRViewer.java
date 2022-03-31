@@ -887,7 +887,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		MTable table = MTable.get(tableId);
 		PO po = table.getPO(recordId, null);
 		MAttachment attachment = po.createAttachment();
-		String fileName = m_title.replace(" ", "_")+ "_" + m_printInfo.getName() + "." + media.getFormat();
+		String fileName = m_title.replace(" ", "_") + "." + media.getFormat();
 		byte[] data = media.isBinary() ? media.getByteData() : media.getStringData().getBytes();
 		attachment.addEntry(fileName, data);
 		success = attachment.save();
