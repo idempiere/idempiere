@@ -265,4 +265,149 @@ public class MTaxTest extends AbstractTestCase {
 				category.deleteEx(true);			
 		}
 	}
+	
+	@Test
+	public void testSeparateTaxPosting() {
+		MProduct product = null;
+		MTaxCategory category = null;
+		MTax tax = null;
+		try {
+			category = new MTaxCategory(Env.getCtx(), 0, null);
+			category.setName("testSeparateTaxPosting");
+			category.saveEx();
+			
+			//need to create tax without trx as tax is cache
+			tax = new MTax(Env.getCtx(), 0, null);
+			tax.setC_TaxCategory_ID(category.get_ID());
+			tax.setIsDocumentLevel(false);
+			tax.setIsSummary(false);
+			tax.setRate(new BigDecimal("5.00"));
+			tax.setTaxPostingIndicator(MTax.TAXPOSTINGINDICATOR_SeparateTaxPosting);
+			tax.setSOPOType(MTax.SOPOTYPE_PurchaseTax);
+			tax.setName("testSeparateTaxPosting");
+			tax.saveEx();
+			CacheMgt.get().reset();
+			
+			//need to create product with trx as order line get product from cache
+			MProduct p = MProduct.get(PRODUCT_MULCH_ID);
+			product = new MProduct(Env.getCtx(), 0, null);
+			product.setM_Product_Category_ID(p.getM_Product_Category_ID());
+			product.setC_TaxCategory_ID(category.get_ID());
+			product.setIsStocked(true);
+			product.setIsPurchased(true);
+			product.setIsSold(true);
+			product.setIsStocked(true);
+			product.setProductType(MProduct.PRODUCTTYPE_Item);
+			product.setName("testSeparateTaxPosting");
+			product.setC_UOM_ID(p.getC_UOM_ID());
+			product.saveEx();
+			
+			MPriceList priceList = MPriceList.get(PURCHASE_PRICE_LIST_ID);
+			MPriceListVersion priceListVersion = priceList.getPriceListVersion(null);
+			MProductPrice productPrice = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			productPrice.setM_PriceList_Version_ID(priceListVersion.get_ID());
+			productPrice.setM_Product_ID(product.getM_Product_ID());
+			productPrice.setPrices(new BigDecimal("2.00"), new BigDecimal("2.00"), new BigDecimal("2.00"));
+			productPrice.saveEx();
+			
+			//purchase price of 2
+			BigDecimal expectedCost = new BigDecimal("2.00").setScale(2, RoundingMode.HALF_EVEN);
+			//purchase price of 2 + 5% tax
+			BigDecimal expectedTotal = new BigDecimal("2.00").add(new BigDecimal("2.00").multiply(new BigDecimal("0.05"))).setScale(2, RoundingMode.HALF_EVEN);
+			
+			MBPartner bpartner = MBPartner.get(Env.getCtx(), BP_PATIO_ID);
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			order.setBPartner(bpartner);
+			order.setIsSOTrx(false);
+			order.setC_DocTypeTarget_ID();
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			order.saveEx();
+			
+			MOrderLine orderLine = new MOrderLine(order);
+			orderLine.setLine(10);
+			orderLine.setProduct(product);
+			orderLine.setQty(new BigDecimal("1"));
+			orderLine.setTax();
+			orderLine.saveEx();
+			
+			assertEquals(tax.get_ID(), orderLine.getC_Tax_ID(), "Un-expected tax id");
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(getTrxName());		
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+			assertEquals(expectedTotal, order.getGrandTotal().setScale(2, RoundingMode.HALF_EVEN), "Un-expected order grand total");
+			
+			MInOut receipt = new MInOut(order, MM_RECEIPT_DOCTYPE_ID, order.getDateOrdered()); // MM Receipt
+			receipt.saveEx();
+			
+			MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
+			int M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
+			
+			MInOutLine receiptLine = new MInOutLine(receipt);
+			receiptLine.setOrderLine(orderLine, M_Locator_ID, new BigDecimal("1"));
+			receiptLine.setLine(10);
+			receiptLine.setQty(new BigDecimal("1"));
+			receiptLine.saveEx();
+			
+			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			receipt.load(getTrxName());		
+			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+			MInvoice invoice = new MInvoice(order, MDocType.getOfDocBaseType(Env.getCtx(), MDocType.DOCBASETYPE_APInvoice)[0].getC_DocType_ID(), order.getDateAcct());
+			invoice.setDocStatus(DocAction.STATUS_Drafted);
+			invoice.setDocAction(DocAction.ACTION_Complete);
+			invoice.saveEx();
+			
+			MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+			invoiceLine.setShipLine(receiptLine);
+			invoiceLine.setLine(10);
+			invoiceLine.setProduct(product);
+			invoiceLine.setQty(new BigDecimal("1"));
+			invoiceLine.saveEx();
+			
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			invoice.load(getTrxName());		
+			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+			
+			//ensure match po have been posted
+			MMatchPO[] matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
+			assertNotNull(matchPOs, "Can't retrive match po for order line");
+			assertEquals(1, matchPOs.length, "Un-expected number of match po record for order line");
+			if (!matchPOs[0].isPosted())
+				DocumentEngine.postImmediate(Env.getCtx(), getAD_Client_ID(), MMatchPO.Table_ID, matchPOs[0].get_ID(), true, getTrxName());
+			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			productCost.setQty(new BigDecimal("1"));
+			MAcctSchema schema = MClientInfo.get().getMAcctSchema1();
+			BigDecimal averageCost = productCost.getProductCosts(schema, getAD_Org_ID(), MCost.COSTINGMETHOD_AveragePO, 0, true);	
+			if (averageCost == null)
+				averageCost = BigDecimal.ZERO;
+			averageCost = averageCost.setScale(2, RoundingMode.HALF_EVEN);
+			assertEquals(expectedCost, averageCost, "Un-expected average cost");
+			
+			MAccount acctAsset = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, schema);
+			String whereClause = MFactAcct.COLUMNNAME_AD_Table_ID + "=" + MInOut.Table_ID 
+					+ " AND " + MFactAcct.COLUMNNAME_Record_ID + "=" + receipt.get_ID()
+					+ " AND " + MFactAcct.COLUMNNAME_C_AcctSchema_ID + "=" + schema.getC_AcctSchema_ID();
+			int[] ids = MFactAcct.getAllIDs(MFactAcct.Table_Name, whereClause, getTrxName());
+			BigDecimal totalDebit = new BigDecimal("0.00");
+			for(int id : ids) {
+				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
+				if (fa.getAccount_ID() == acctAsset.getAccount_ID()) {
+					totalDebit = totalDebit.add(fa.getAmtAcctDr());
+				}
+			}
+			assertEquals(expectedCost, totalDebit.setScale(2, RoundingMode.HALF_EVEN), "Un-expected product asset account posted amount");
+		} finally {
+			rollback();
+			if (product != null && product.get_ID() > 0)
+				product.deleteEx(true);
+			if (tax != null && tax.get_ID() > 0)
+				tax.deleteEx(true);
+			if (category != null && category.get_ID() > 0)
+				category.deleteEx(true);			
+		}
+	}
 }
