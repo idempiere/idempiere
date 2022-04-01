@@ -378,22 +378,69 @@ public class MRMALine extends X_M_RMALine
 		return true;
 	}
     
+    /**
+     * 
+     * @param oldTax true if the old C_Tax_ID should be used
+     * @return true if success, false otherwise
+     */
     protected boolean updateOrderTax(boolean oldTax) 
     {
-		MRMATax tax = MRMATax.get (this, getPrecision(), oldTax, get_TrxName());
-		if (tax != null) 
+    	int C_Tax_ID = getC_Tax_ID();
+		boolean isOldTax = oldTax && is_ValueChanged(MRMALine.COLUMNNAME_C_Tax_ID); 
+		if (isOldTax)
 		{
-			if (!tax.calculateTaxFromLines())
-				return false;
-			if (tax.getTaxAmt().signum() != 0) 
+			Object old = get_ValueOld(MRMALine.COLUMNNAME_C_Tax_ID);
+			if (old == null)
 			{
-				if (!tax.save(get_TrxName()))
-					return false;
+				return true;
 			}
-			else 
+			C_Tax_ID = ((Integer)old).intValue();
+		}
+		if (C_Tax_ID == 0)
+		{
+			return true;
+		}
+		
+		MTax t = MTax.get(C_Tax_ID);
+		if (t.isSummary())
+		{
+			MRMATax[] taxes = MRMATax.getChildTaxes(this, getPrecision(), oldTax, get_TrxName());
+			if (taxes != null && taxes.length > 0)
 			{
-				if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+				for(MRMATax tax : taxes)
+				{
+					if (!tax.calculateTaxFromLines())
+						return false;
+					if (tax.getTaxAmt().signum() != 0) 
+					{
+						if (!tax.save(get_TrxName()))
+							return false;
+					}
+					else 
+					{
+						if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+							return false;
+					}
+				}
+			}
+		}
+		else
+		{
+			MRMATax tax = MRMATax.get (this, getPrecision(), oldTax, get_TrxName());
+			if (tax != null) 
+			{
+				if (!tax.calculateTaxFromLines())
 					return false;
+				if (tax.getTaxAmt().signum() != 0) 
+				{
+					if (!tax.save(get_TrxName()))
+						return false;
+				}
+				else 
+				{
+					if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+						return false;
+				}
 			}
 		}
 		return true;
