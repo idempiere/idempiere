@@ -24,6 +24,10 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAllocationHdr;
+import org.compiere.model.MAssetAddition;
+import org.compiere.model.MAssetDisposed;
+import org.compiere.model.MAssetReval;
+import org.compiere.model.MAssetTransfer;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MCash;
 import org.compiere.model.MClient;
@@ -37,6 +41,7 @@ import org.compiere.model.MMovement;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPayment;
 import org.compiere.model.MPeriodControl;
+import org.compiere.model.MProduction;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MRequisition;
 import org.compiere.model.X_M_Production;
@@ -62,6 +67,8 @@ public class FactAcctReset extends SvrProcess
 	private int		p_AD_Table_ID = 0;
 	/**	Delete Parameter		*/
 	private boolean	p_DeletePosting = false;
+	/**	Also Without Postings		*/
+	private boolean	p_AlsoWithoutPostings = false;
 	
 	private int		m_countReset = 0;
 	private int		m_countDelete = 0;
@@ -90,6 +97,8 @@ public class FactAcctReset extends SvrProcess
 				p_DateAcct_From = (Timestamp)para[i].getParameter();
 				p_DateAcct_To = (Timestamp)para[i].getParameter_To();
 			}
+			else if (name.equals("AlsoWithoutPostings"))
+				p_AlsoWithoutPostings = "Y".equals(para[i].getParameter());
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
@@ -189,7 +198,6 @@ public class FactAcctReset extends SvrProcess
 		}
 
 		reset(TableName);
-		m_countReset = 0;
 		//
 		String docBaseType = null;
 		if (AD_Table_ID == MInvoice.Table_ID)
@@ -215,7 +223,7 @@ public class FactAcctReset extends SvrProcess
 			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_CashJournal + "'";
 		else if (AD_Table_ID == MAllocationHdr.Table_ID)
 			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_PaymentAllocation + "'";
-		else if (AD_Table_ID == MJournal.Table_ID)
+		else if (AD_Table_ID == MJournal.Table_ID || AD_Table_ID == MAssetReval.Table_ID || AD_Table_ID == MAssetTransfer.Table_ID)
 			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_GLJournal + "'";
 		else if (AD_Table_ID == MMovement.Table_ID)
 			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_MaterialMovement + "'";
@@ -239,6 +247,8 @@ public class FactAcctReset extends SvrProcess
 			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_Payroll+ "'";
 		else if (AD_Table_ID == X_PP_Cost_Collector.Table_ID)
 			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_ManufacturingCostCollector+ "'";
+		else if (AD_Table_ID == MAssetAddition.Table_ID || AD_Table_ID == MAssetDisposed.Table_ID)
+			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_GLDocument+ "'";
 		//
 		if (docBaseType == null)
 		{
@@ -291,11 +301,57 @@ public class FactAcctReset extends SvrProcess
 		
 		int deleted = DB.executeUpdate(sql2, get_TrxName());
 		//
-		if (log.isLoggable(Level.INFO)) log.info(TableName + "(" + AD_Table_ID + ") - Reset=" + reset + " - Deleted=" + deleted);
-		String s = TableName + " - Reset=" + reset + " - Deleted=" + deleted;
-		addLog(s);
-		//
 		m_countReset += reset;
+
+		String dateColumn = "DateAcct";
+		switch (AD_Table_ID) {
+		case MInventory.Table_ID:
+		case MMovement.Table_ID:
+		case MProduction.Table_ID:
+		case MProjectIssue.Table_ID:
+			dateColumn = "MovementDate";
+			break;
+		case MRequisition.Table_ID:
+			dateColumn = "DateDoc";
+			break;
+		case X_DD_Order.Table_ID:
+		case X_PP_Order.Table_ID:
+			dateColumn = "DateOrdered";
+			break;
+		}
+
+		int reset3 = 0;
+		if (p_AlsoWithoutPostings) {
+			//	Docs without Fact_Acct
+			String sql3 = "UPDATE " + TableName
+				+ " SET Posted='N', Processing='N' "
+				+ "WHERE AD_Client_ID=" + p_AD_Client_ID
+				+ " AND IsActive='Y'"
+				+ " AND (Posted<>'N' OR Posted IS NULL OR Processing<>'N' OR Processing IS NULL)"
+				+ " AND NOT EXISTS (SELECT 1 FROM Fact_Acct fact"
+				+ " WHERE fact.AD_Table_ID=" + AD_Table_ID
+				+ " AND fact.Record_ID=" + TableName + "." + TableName + "_ID)";
+			if ( !autoPeriod )
+				sql3 += " AND EXISTS (SELECT 1 FROM C_PeriodControl pc"
+					+ " JOIN C_Period p ON (pc.C_Period_ID=p.C_Period_ID)"
+					+ " WHERE TRUNC(" + TableName + "." + dateColumn + ") BETWEEN p.StartDate AND p.EndDate"
+					+ " AND pc.PeriodStatus = 'O'" + docBaseType + ")";
+			if (p_DateAcct_From != null)
+				sql3 += " AND TRUNC(" + TableName + "." + dateColumn + ") >= " + DB.TO_DATE(p_DateAcct_From);
+			if (p_DateAcct_To != null)
+				sql3 += " AND TRUNC(" + TableName + "." + dateColumn + ") <= " + DB.TO_DATE(p_DateAcct_To);
+
+			if (log.isLoggable(Level.FINE))log.log(Level.FINE, sql3);
+			reset3 = DB.executeUpdate(sql3, get_TrxName());
+		}
+
+		//
+		if (log.isLoggable(Level.INFO)) log.info(TableName + "(" + AD_Table_ID + ") - Reset=" + (reset+reset3) + " - Deleted=" + deleted);
+		String s = TableName + " - Reset=" + (reset+reset3) + " - Deleted=" + deleted;
+		addLog(s);
+
+		m_countReset += reset3;
+
 		m_countDelete += deleted;
 	}	//	delete
 

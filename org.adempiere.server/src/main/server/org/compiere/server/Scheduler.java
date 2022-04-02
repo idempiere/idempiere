@@ -412,7 +412,7 @@ public class Scheduler extends AdempiereServer
 							
 								UploadResponse response = handlers[0].uploadMedia(new UploadMedia(fileName, contentType, new FileInputStream(file), file.length()), account);
 								if (response.getLink() != null) {
-									MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID), Msg.getMsg(Env.getCtx(), "UploadSucess"));
+									MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID), Msg.getMsg(Env.getCtx(), "UploadSuccess"));
 									pLog.setTextMsg("User: " + upload.getAD_User().getName() + " Account: " + account.getEMail() + 
 											" Link: " + response.getLink());
 									pLog.setIsError(false);

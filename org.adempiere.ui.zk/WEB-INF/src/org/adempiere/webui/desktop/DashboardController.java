@@ -64,6 +64,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.MSysConfig;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -888,7 +889,7 @@ public class DashboardController implements EventListener<Event> {
 	public AMedia generateReport(int AD_Process_ID, String parameters) throws Exception {
 		ReportEngine re = runReport(AD_Process_ID, parameters);
 
-		File file = File.createTempFile(re.getName(), ".html");		
+		File file = FileUtil.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(Executions.getCurrent().getContextPath(), "rp", 
 				SessionManager.getAppDesktop().getComponent().getUuid()));
 		return new AMedia(re.getName(), "html", "text/html", file, false);
