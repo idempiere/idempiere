@@ -132,7 +132,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         {
         	if (displayType == DisplayType.Time)
         		editor = new WTimeEditor(gridField, tableEditor, editorConfiguration);
-        	else if (displayType == DisplayType.DateTime)
+        	else if (displayType == DisplayType.DateTime || displayType == DisplayType.TimestampWithTimeZone)
         		editor = new WDatetimeEditor(gridField, tableEditor, editorConfiguration);
         	else
         		editor = new WDateEditor(gridField, tableEditor, editorConfiguration);

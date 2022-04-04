@@ -50,6 +50,7 @@ import org.compiere.util.ValueNamePair;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menuitem;
 
@@ -122,7 +123,7 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 		List<Integer> rawOffsets = new ArrayList<Integer>();
 		Map<Integer, List<NamePair>> map = new HashMap<Integer, List<NamePair>>();
 		for(String id : ids) {
-			if (id.startsWith("Etc/") || id.startsWith("SystemV/") || id.indexOf("/") < 0)
+			if (!id.startsWith("Etc/GMT") && (id.startsWith("Etc/") || id.startsWith("SystemV/") || id.indexOf("/") < 0))
 				continue;
 			TimeZone tz = TimeZone.getTimeZone(ZoneId.of(id));
 			String label = getLabel(tz);
@@ -145,6 +146,41 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 				getComponent().appendItem(namePair.getName(), namePair.getID());
 			}
 		}
+		
+		getComponent().addEventListener(Events.ON_BLUR, e -> onBlur());
+	}
+	
+	private void onBlur() {
+		Comboitem item = getComponent().getSelectedItem();
+		if (item == null) 
+		{
+			setValue(oldValue);
+		}
+		else 
+		{
+			//on select not fire for empty label item
+			if (Util.isEmpty(item.getLabel(),true))
+			{
+				String newValue = getValue();
+				if (isValueChange(newValue)) {
+					try {
+		        		if (gridField != null) 
+		        			gridField.setLookupEditorSettingValue(true);
+	    				ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, newValue);
+	    		        super.fireValueChange(changeEvent);
+	    		        oldValue = newValue;
+					} finally {
+						if (gridField != null) 
+		        			gridField.setLookupEditorSettingValue(false);
+					}
+				}
+			}
+		}
+	}
+
+	private boolean isValueChange(String newValue) {
+		return (oldValue == null && newValue != null) || (oldValue != null && newValue == null) 
+			|| ((oldValue != null && newValue != null) && !oldValue.equals(newValue));
 	}
 	
 	/* (non-Javadoc)
@@ -197,6 +233,8 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 		if (value == null || value.toString().trim().length() == 0) {
     		oldValue = null;
     		getComponent().setValue((Object)null);
+    		getComponent().setSelectedItem(null);
+    		getComponent().setText("");
     	} else if (value instanceof TimeZone) {
     		TimeZone tz = (TimeZone)value;
             getComponent().setValue((Object)tz.getID());
@@ -214,7 +252,7 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 	 * @see org.adempiere.webui.editor.WEditor#getValue()
 	 */
 	@Override
-	public Object getValue() {
+	public String getValue() {
 		return getComponent().getValue();
 	}
 
