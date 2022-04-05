@@ -1730,6 +1730,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		protected void doRun() {
 			try {
+				viewer.m_reportEngine.initName();
 				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
 					log.warning("Cannot archive Document");
 				viewer.createNewMedia(PDF_MIME_TYPE, PDF_FILE_EXT);
@@ -1767,6 +1768,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		protected void doRun() {
 			try {
+				viewer.m_reportEngine.initName();
 				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
 					log.warning("Cannot archive Document");
 				viewer.createNewMedia(HTML_MIME_TYPE, HTML_FILE_EXT);
@@ -1805,6 +1807,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		protected void doRun() {
 			try {
+				viewer.m_reportEngine.initName();
 				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
 					log.warning("Cannot archive Document");
 				viewer.createNewMedia(EXCEL_MIME_TYPE, EXCEL_FILE_EXT);
@@ -1842,6 +1845,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		protected void doRun() {
 			try {
+				viewer.m_reportEngine.initName();
 				viewer.createNewMedia(CSV_MIME_TYPE,CSV_FILE_EXT);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
@@ -1881,6 +1885,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		{
 			try
 			{
+				viewer.m_reportEngine.initName();
 				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
 					log.warning("Cannot archive Document");
 				viewer.createNewMedia(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT);
