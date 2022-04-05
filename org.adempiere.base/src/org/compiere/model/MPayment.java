@@ -2337,7 +2337,7 @@ public class MPayment extends X_C_Payment
 				aLine = new MAllocationLine (alloc, allocationAmt.negate(),
 					pa.getDiscountAmt().negate(), pa.getWriteOffAmt().negate(), pa.getOverUnderAmt().negate());
 			aLine.setDocInfo(pa.getC_BPartner_ID(), 0, pa.getC_Invoice_ID());
-			aLine.setPaymentInfo(getC_Payment_ID(), 0);
+			aLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
 			if (!aLine.save(get_TrxName()))
 				log.warning("P.Allocations - line not saved");
 			else
@@ -2780,7 +2780,7 @@ public class MPayment extends X_C_Payment
 		aLine = new MAllocationLine (alloc, reversal.getPayAmt(true), 
 			Env.ZERO, Env.ZERO, Env.ZERO);
 		aLine.setDocInfo(reversal.getC_BPartner_ID(), 0, 0);
-		aLine.setPaymentInfo(reversal.getC_Payment_ID(), 0);
+		aLine.setPaymentInfo(reversal.getC_Payment_ID(), 0, reversal.getC_BankTransfer_ID());
 		if (!aLine.save(get_TrxName()))
 			log.warning("Automatic allocation - reversal line not saved");
 		
