@@ -242,7 +242,8 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	protected boolean beforeSave(boolean newRecord)
 	{
 		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
-			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern());
+			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern(),
+					MClientInfo.get(getCtx(), getAD_Client_ID()).getTimeZone());
 			if (nextWork > 0)
 				setDateNextRun(new Timestamp(nextWork));
 		}

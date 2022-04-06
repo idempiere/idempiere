@@ -256,6 +256,7 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	 *  @param frequency
 	 *  @param cronPattern
 	 *	@return next run in MS
+	 *  @deprecated
 	 */
 	public static long getNextRunMS (long last, String scheduleType, String frequencyType, int frequency, String cronPattern)
 	{
