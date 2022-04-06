@@ -535,8 +535,7 @@ public class DataEngine
 					}
 					// 	TableName.ColumnName,
 					sqlSELECT.append(lookupSQL).append(" AS ").append(ColumnName).append(",");
-					if (!IsGroupFunction)
-						groupByColumns.add(ColumnName); 
+					groupByColumns.add(lookupSQL); 
 					pdc = new PrintDataColumn(AD_PrintFormatItem_ID, AD_Column_ID, ColumnName, AD_Reference_ID, FieldLength, orderName, isPageBreak);
 					synonymNext();
 				}
