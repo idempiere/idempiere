@@ -68,7 +68,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6317084960843429042L;
+	private static final long serialVersionUID = 7597852750014990009L;
 
 	/**
 	 * 	Get Default (Client) Role
@@ -1455,7 +1455,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return false;
 	}	//	isTableAccessLevel
 
-
 	/**
 	 * 	Access to Column
 	 *	@param AD_Table_ID table
@@ -1465,12 +1464,25 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 */
 	public boolean isColumnAccess (int AD_Table_ID, int AD_Column_ID, boolean ro)
 	{
+		return isColumnAccess(AD_Table_ID, AD_Column_ID, ro, null);
+	}
+
+	/**
+	 * 	Access to Column
+	 *	@param AD_Table_ID table
+	 *	@param AD_Column_ID column
+	 *	@param ro read only
+	 *  @param trxName
+	 *	@return true if access
+	 */
+	public boolean isColumnAccess (int AD_Table_ID, int AD_Column_ID, boolean ro, String trxName)
+	{
 		if (!isTableAccess(AD_Table_ID, ro))		//	No Access to Table		
 			return false;
 		loadColumnAccess(false);
 
 		// Verify access to process for buttons
-		MColumn column = MColumn.get(Env.getCtx(), AD_Column_ID);
+		MColumn column = MColumn.get(Env.getCtx(), AD_Column_ID, trxName);
 		if (column.getAD_Reference_ID() == DisplayType.Button && column.getAD_Process_ID() > 0) {
 			Boolean access = MRole.getDefault().getProcessAccess(column.getAD_Process_ID());
 			if (access == null)
