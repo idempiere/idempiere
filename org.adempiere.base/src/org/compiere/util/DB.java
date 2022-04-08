@@ -1364,8 +1364,18 @@ public final class DB
     	String retValue = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -1382,6 +1392,10 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
     }
@@ -1445,8 +1459,18 @@ public final class DB
     	BigDecimal retValue = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -1464,6 +1488,10 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
     }
@@ -1528,8 +1556,18 @@ public final class DB
     	Timestamp retValue = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -1546,6 +1584,10 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
     }
