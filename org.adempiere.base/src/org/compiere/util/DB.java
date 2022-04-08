@@ -727,11 +727,7 @@ public final class DB
 	 */
 	public static CPreparedStatement prepareStatement (String sql)
 	{
-		int concurrency = ResultSet.CONCUR_READ_ONLY;
-		String upper = sql.toUpperCase();
-		if (upper.startsWith("UPDATE ") || upper.startsWith("DELETE "))
-			concurrency = ResultSet.CONCUR_UPDATABLE;
-		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, concurrency, null);
+		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
 	}	//	prepareStatement
 
 	/**
@@ -742,11 +738,7 @@ public final class DB
 	 */
 	public static CPreparedStatement prepareStatement (String sql, String trxName)
 	{
-		int concurrency = ResultSet.CONCUR_READ_ONLY;
-		String upper = sql.toUpperCase();
-		if (upper.startsWith("UPDATE ") || upper.startsWith("DELETE "))
-			concurrency = ResultSet.CONCUR_UPDATABLE;
-		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, concurrency, trxName);
+		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, trxName);
 	}	//	prepareStatement
 
 	/**
@@ -1277,8 +1269,18 @@ public final class DB
     	int retValue = -1;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -1295,6 +1297,10 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
     }
@@ -2512,11 +2518,7 @@ public final class DB
 	 *  @return Prepared Statement (from replica if possible, otherwise normal statement)
 	 */
 	public static PreparedStatement prepareNormalReadReplicaStatement(String sql, String trxName) {
-		int concurrency = ResultSet.CONCUR_READ_ONLY;
-		String upper = sql.toUpperCase();
-		if (upper.startsWith("UPDATE ") || upper.startsWith("DELETE "))
-			concurrency = ResultSet.CONCUR_UPDATABLE;
-		return prepareNormalReadReplicaStatement(sql, ResultSet.TYPE_FORWARD_ONLY, concurrency, trxName);
+		return prepareNormalReadReplicaStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, trxName);
 	}
 
 	/**
