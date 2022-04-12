@@ -165,7 +165,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	}	//	getColumnName
 	
 	/**	Cache						*/
-	private static ImmutableIntPOCache<Integer,MColumn>	s_cache	= new ImmutableIntPOCache<Integer,MColumn>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MColumn>	s_cache	= new ImmutableIntPOCache<Integer,MColumn>(Table_Name, 20, 60, false, 15000);
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MColumn.class);
