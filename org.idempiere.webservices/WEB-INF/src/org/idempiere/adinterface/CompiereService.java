@@ -288,10 +288,10 @@ public class CompiereService {
 		Env.setContext(getCtx(), Env.LANGUAGE, m_language.getAD_Language());
 		
 		// Create session
-		MSession session = MSession.get (getCtx(), false);
+		MSession session = MSession.get (getCtx(), false, false);
 		if (session == null){
 			log.fine("No Session found");
-			session = MSession.get (getCtx(), true);    	
+			session = MSession.get (getCtx(), true, false);    	
 		}
 		session.setWebSession("WebService");
 		
