@@ -255,7 +255,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			while (rs.next())
 			{
 				MPrintFormatItem pfi = new MPrintFormatItem(p_ctx, rs, get_TrxName());
-				if (role.isColumnAccess(getAD_Table_ID(), pfi.getAD_Column_ID(), true))
+				if (role.isColumnAccess(getAD_Table_ID(), pfi.getAD_Column_ID(), true, get_TrxName()))
 					list.add (pfi);
 			}
 		}
