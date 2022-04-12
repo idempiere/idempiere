@@ -123,7 +123,7 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 		List<Integer> rawOffsets = new ArrayList<Integer>();
 		Map<Integer, List<NamePair>> map = new HashMap<Integer, List<NamePair>>();
 		for(String id : ids) {
-			if (!id.startsWith("Etc/GMT") && (id.startsWith("Etc/") || id.startsWith("SystemV/") || id.indexOf("/") < 0))
+			if (id.startsWith("Etc/") || id.startsWith("SystemV/") || id.indexOf("/") < 0)
 				continue;
 			TimeZone tz = TimeZone.getTimeZone(ZoneId.of(id));
 			String label = getLabel(tz);
@@ -194,7 +194,12 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 
 	        if (id != null) {
 	            newValue = id;
+	        } else if (!Util.isEmpty(getComponent().getText(), true)) {
+	        	String customId = getComponent().getText();
+	        	if (processCustomZoneId(customId))
+	        		newValue = customId;
 	        }
+	        
 	        if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
 	    	    return;
 	    	}
@@ -209,6 +214,16 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
 		}
 	}
 
+	private boolean processCustomZoneId(String customId) {
+    	TimeZone timeZone = TimeZone.getTimeZone(customId);
+    	if (timeZone != null && timeZone.getID().equals(customId)) {
+    		getComponent().appendItem(customId, customId);
+    		getComponent().setSelectedIndex(getComponent().getItemCount()-1);
+    		return true;
+    	}
+    	return false;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.adempiere.webui.editor.WEditor#setReadWrite(boolean)
 	 */
@@ -241,10 +256,14 @@ public class WTimeZoneEditor extends WEditor implements ContextMenuListener {
             oldValue = tz.getID();
         } else {
     		getComponent().setValue(value);
-    		if (getComponent().getSelectedItem() != null)
+    		if (getComponent().getSelectedItem() != null) {
     			oldValue = getComponent().getSelectedItem().getValue();
-    		else
-    			oldValue = null;
+    		} else {
+    			if (processCustomZoneId(value.toString()))
+    				oldValue = getComponent().getSelectedItem().getValue();
+    			else
+    				oldValue = null;
+    		}
     	}
 	}
 
