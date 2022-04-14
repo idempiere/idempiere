@@ -722,9 +722,9 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 			return success;
 		//	Sync Table ID
 		MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
-		if (seq == null || seq.get_ID() == 0)
+		if ((seq == null || seq.get_ID() == 0) && !isView())
 			MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
-		else if (!seq.getName().equals(getTableName()))
+		else if ((seq != null) && (!seq.getName().equals(getTableName())))
 		{
 			seq.setName(getTableName());
 			seq.saveEx();
