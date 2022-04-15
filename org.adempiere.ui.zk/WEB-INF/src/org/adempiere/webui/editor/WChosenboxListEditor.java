@@ -257,8 +257,8 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     		addChangeLogMenu(popupMenu);
 
     		Menuitem editor = new Menuitem();
-    		editor.setAttribute("EVENT", WEditorPopupMenu.WIZARD_EVENT);
-    		editor.setLabel("Wizard"); // TODO AD_Message
+    		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
+    		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
     		if (ThemeManager.isUseFontIconForImage())
     			editor.setIconSclass("z-icon-Wizard");
     		else
@@ -538,9 +538,9 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		{
 			WFieldRecordInfo.start(gridField);
 		}
-		else if (WEditorPopupMenu.WIZARD_EVENT.equals(evt.getContextEvent())) {
+		else if (WEditorPopupMenu.ASSISTANT_EVENT.equals(evt.getContextEvent())) {
 
-			final WChosenboxListWizard wdc = new WChosenboxListWizard();
+			final WChosenboxListassistante wdc = new WChosenboxListassistante();
 			wdc.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
 					
@@ -681,22 +681,22 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		}
 	}
 	
-	private class WChosenboxListWizard extends Window implements EventListener<Event> {
+	private class WChosenboxListassistante extends Window implements EventListener<Event> {
 		private static final long serialVersionUID = 1223690858387209211L;
 		private Button bAdd, bRemove, bUp, bDown;
-		SimpleListModel availableModel = new SimpleListModel();
-		SimpleListModel selectedModel = new SimpleListModel();
-		Listbox availableList = new Listbox();
-		Listbox selectedList = new Listbox();
+		private SimpleListModel availableModel = new SimpleListModel();
+		private SimpleListModel selectedModel = new SimpleListModel();
+		private Listbox availableList = new Listbox();
+		private Listbox selectedList = new Listbox();
 		private Hlayout hlayout;
 		private Button bOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK, false, true);
 		private int refID = 0;
-		String m_newValue = "";
+		private String m_newValue = "";
 
-		public WChosenboxListWizard() {
+		public WChosenboxListassistante() {
 			super();
 			refID = MColumn.get(Env.getCtx(), gridTab.getTableName(), gridField.getColumnName()).getAD_Reference_Value_ID();
-			setTitle(gridField.getHeader() + " " + "Wizard"); // TODO AD_Message
+			setTitle(gridField.getHeader() + " " + Msg.getMsg(Env.getCtx(), "Assistant"));
 			init();
 			load();
 			setClosable(true);
@@ -708,7 +708,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			setWidth("700px");
 		}
 
-		void init() {
+		private void init() {
 			m_newValue = getValue() != null ? getValue().toString() : "";
 
 			Borderlayout mainLayout = new Borderlayout();
@@ -749,7 +749,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			Hlayout yesButtonLayout = createHlayoutBtn(new Button[] {bUp, bDown});
 			Hlayout noButtonLayout = createHlayoutBtn(new Button[] {bRemove, bAdd});
 
-			initListboxAndModel(selectedList, selectedModel, mouseListener, crossListMouseListener, true, "SelectedItems", yesButtonLayout); // TODO AD_Message
+			initListboxAndModel(selectedList, selectedModel, mouseListener, crossListMouseListener, true, Msg.getMsg(Env.getCtx(), "SelectedItems"), yesButtonLayout);
 			initListboxAndModel(availableList, availableModel, mouseListener, crossListMouseListener, true, Msg.getMsg(Env.getCtx(), "Available"), noButtonLayout);
 
 			hlayout = createHlayoutLine(new Component[] {availableList, selectedList});
@@ -765,7 +765,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			south.appendChild(confirmPanel);
 		}
 
-		void load() {
+		private void load() {
 			selectedModel.removeAllElements();
 			availableModel.removeAllElements();
 
@@ -811,7 +811,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			}
 		}
 
-		Button createButton(String image, EventListener<Event> actionListener) {
+		private Button createButton(String image, EventListener<Event> actionListener) {
 			Button btn = ButtonFactory.createButton(null, ThemeManager.getThemeResource("images/" + image + ".png"), null);
 			LayoutUtils.addSclass("btn-small", btn);
 			LayoutUtils.addSclass("btn-sorttab small-img-btn", btn);
@@ -819,7 +819,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			return btn;
 		}
 
-		void initListboxAndModel(Listbox lb, SimpleListModel model, EventListener<Event> mouseListener, EventListener<Event> crossListMouseListener, boolean isItemDraggable, String headerLabel, Hlayout buttonsLayout) {
+		private void initListboxAndModel(Listbox lb, SimpleListModel model, EventListener<Event> mouseListener, EventListener<Event> crossListMouseListener, boolean isItemDraggable, String headerLabel, Hlayout buttonsLayout) {
 			lb.addEventListener(Events.ON_RIGHT_CLICK, this);
 			ZKUpdateUtil.setHflex(lb, "1");
 			lb.setRows(15);
@@ -841,7 +841,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			listHeader.appendChild(buttonsLayout);
 		}
 
-		Hlayout createHlayoutBtn(Button[] btns) {
+		private Hlayout createHlayoutBtn(Button[] btns) {
 			Hlayout hl = new Hlayout();
 			for (Button btn : btns)
 				hl.appendChild(btn);
@@ -849,7 +849,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			return hl;
 		}
 
-		Hlayout createHlayoutLine(Component[] comps) {
+		private Hlayout createHlayoutLine(Component[] comps) {
 
 			Hlayout	hl = new Hlayout();
 			hl.setValign("middle");
@@ -858,7 +858,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			return hl;
 		}
 
-		Listbox getListboxFrom(Object source) {
+		private Listbox getListboxFrom(Object source) {
 			Listbox retValue = null;
 			if (source == bAdd || source == availableList)
 				retValue = availableList;
@@ -868,7 +868,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			return retValue;
 		}
 
-		Listbox getListboxTo(Object source) {
+		private Listbox getListboxTo(Object source) {
 			Listbox retValue = null;
 			if (source == bAdd || source == availableList)
 				retValue = selectedList;
@@ -877,7 +877,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			return retValue;
 		}
 
-		SimpleListModel getModel(Listbox listbox) {
+		private SimpleListModel getModel(Listbox listbox) {
 
 			SimpleListModel retValue = null;
 
@@ -889,7 +889,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			return retValue;
 		}
 
-		SimpleListModel getModel(SimpleListModel model) {
+		private SimpleListModel getModel(SimpleListModel model) {
 
 			SimpleListModel retValue = null;
 
@@ -901,7 +901,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			return retValue;
 		}
 
-		void migrateValueAcrossLists (Event event) {
+		private void migrateValueAcrossLists (Event event) {
 			Object source = event.getTarget();
 			if (source instanceof ListItem)
 				source = ((ListItem)source).getListbox();
@@ -916,7 +916,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			migrateLists (listFrom, listTo, endIndex);
 		}	//	migrateValueAcrossLists
 
-		void migrateLists (final Listbox listFrom, final Listbox listTo, final int endIndex) {
+		private void migrateLists (final Listbox listFrom, final Listbox listTo, final int endIndex) {
 			int index = 0; 
 			final SimpleListModel lmFrom = getModel(listFrom);
 			final SimpleListModel lmTo = getModel(lmFrom);
@@ -933,7 +933,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			doTransfer(index, selObjects, lmFrom, lmTo, listFrom, listTo, endIndex);
 		}
 
-		void doTransfer(int index, List<ListElement> selObjects, SimpleListModel lmFrom, SimpleListModel lmTo, Listbox listFrom , Listbox listTo , int endIndex) {
+		private void doTransfer(int index, List<ListElement> selObjects, SimpleListModel lmFrom, SimpleListModel lmTo, Listbox listFrom , Listbox listTo , int endIndex) {
 
 			index = 0;
 			Arrays.sort(selObjects.toArray());	
@@ -985,7 +985,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			}
 		}
 
-		void migrateValueWithinSelectedList (SimpleListModel selModel, Listbox selListbox, int endIndex, List<ListElement> selObjects) {
+		private void migrateValueWithinSelectedList (SimpleListModel selModel, Listbox selListbox, int endIndex, List<ListElement> selObjects) {
 			int iniIndex =0;
 			Arrays.sort(selObjects.toArray());	
 			ListElement selObject= null;
@@ -1005,7 +1005,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			}
 		}
 
-		void migrateValueWithinSelectedList (Event event) {
+		private void migrateValueWithinSelectedList (Event event) {
 			Object[] selObjects = selectedList.getSelectedItems().toArray();
 			if (selObjects == null)
 				return;
@@ -1057,7 +1057,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			}
 		}
 
-		String getNewValue() {
+		private String getNewValue() {
 			return m_newValue;
 		}
 
