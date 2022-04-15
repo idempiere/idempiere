@@ -32,6 +32,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.WrongValueException;
 
+@Deprecated
 public class BankTransferParameterListener implements IProcessParameterListener {
 
 	@Override

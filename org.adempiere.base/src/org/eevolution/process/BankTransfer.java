@@ -38,6 +38,7 @@ import org.compiere.util.Util;
  *	
  **/
 @org.adempiere.base.annotation.Process
+@Deprecated
 public class BankTransfer extends SvrProcess
 {
 	private String 		p_DocumentNo= "";				// Document No

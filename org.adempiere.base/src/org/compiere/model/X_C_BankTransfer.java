@@ -33,7 +33,7 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220405L;
+	private static final long serialVersionUID = 20220414L;
 
     /** Standard Constructor */
     public X_C_BankTransfer (Properties ctx, int C_BankTransfer_ID, String trxName)
@@ -42,6 +42,8 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
       /** if (C_BankTransfer_ID == 0)
         {
 			setC_BankTransfer_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
 			setDocAction (null);
 // CO
 			setDocStatus (null);
@@ -55,6 +57,8 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 			setFrom_C_Currency_ID (0);
 			setFrom_TenderType (null);
 // A
+			setIsOverrideCurrencyRate (false);
+// N
 			setPayDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
 			setProcessed (false);
@@ -77,6 +81,8 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
       /** if (C_BankTransfer_ID == 0)
         {
 			setC_BankTransfer_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
 			setDocAction (null);
 // CO
 			setDocStatus (null);
@@ -90,6 +96,8 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 			setFrom_C_Currency_ID (0);
 			setFrom_TenderType (null);
 // A
+			setIsOverrideCurrencyRate (false);
+// N
 			setPayDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
 			setProcessed (false);
@@ -168,6 +176,50 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	public String getC_BankTransfer_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BankTransfer_UU);
+	}
+
+	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_ID)
+			.getPO(getC_ConversionType_ID(), get_TrxName());
+	}
+
+	/** Set Currency Type.
+		@param C_ConversionType_ID Currency Conversion Rate Type
+	*/
+	public void setC_ConversionType_ID (int C_ConversionType_ID)
+	{
+		if (C_ConversionType_ID < 1)
+			set_Value (COLUMNNAME_C_ConversionType_ID, null);
+		else
+			set_Value (COLUMNNAME_C_ConversionType_ID, Integer.valueOf(C_ConversionType_ID));
+	}
+
+	/** Get Currency Type.
+		@return Currency Conversion Rate Type
+	  */
+	public int getC_ConversionType_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_ConversionType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Account Date.
+		@param DateAcct Accounting Date
+	*/
+	public void setDateAcct (Timestamp DateAcct)
+	{
+		set_Value (COLUMNNAME_DateAcct, DateAcct);
+	}
+
+	/** Get Account Date.
+		@return Accounting Date
+	  */
+	public Timestamp getDateAcct()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** Set Description.
@@ -468,6 +520,29 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	public String getFrom_TenderType()
 	{
 		return (String)get_Value(COLUMNNAME_From_TenderType);
+	}
+
+	/** Set Override Currency Conversion Rate.
+		@param IsOverrideCurrencyRate Override Currency Conversion Rate
+	*/
+	public void setIsOverrideCurrencyRate (boolean IsOverrideCurrencyRate)
+	{
+		set_Value (COLUMNNAME_IsOverrideCurrencyRate, Boolean.valueOf(IsOverrideCurrencyRate));
+	}
+
+	/** Get Override Currency Conversion Rate.
+		@return Override Currency Conversion Rate
+	  */
+	public boolean isOverrideCurrencyRate()
+	{
+		Object oo = get_Value(COLUMNNAME_IsOverrideCurrencyRate);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Payment date.

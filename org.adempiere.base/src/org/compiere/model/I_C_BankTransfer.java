@@ -84,6 +84,21 @@ public interface I_C_BankTransfer
 	/** Get C_BankTransfer_UU	  */
 	public String getC_BankTransfer_UU();
 
+    /** Column name C_ConversionType_ID */
+    public static final String COLUMNNAME_C_ConversionType_ID = "C_ConversionType_ID";
+
+	/** Set Currency Type.
+	  * Currency Conversion Rate Type
+	  */
+	public void setC_ConversionType_ID (int C_ConversionType_ID);
+
+	/** Get Currency Type.
+	  * Currency Conversion Rate Type
+	  */
+	public int getC_ConversionType_ID();
+
+	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -99,6 +114,19 @@ public interface I_C_BankTransfer
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name DateAcct */
+    public static final String COLUMNNAME_DateAcct = "DateAcct";
+
+	/** Set Account Date.
+	  * Accounting Date
+	  */
+	public void setDateAcct (Timestamp DateAcct);
+
+	/** Get Account Date.
+	  * Accounting Date
+	  */
+	public Timestamp getDateAcct();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -239,6 +267,19 @@ public interface I_C_BankTransfer
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsOverrideCurrencyRate */
+    public static final String COLUMNNAME_IsOverrideCurrencyRate = "IsOverrideCurrencyRate";
+
+	/** Set Override Currency Conversion Rate.
+	  * Override Currency Conversion Rate
+	  */
+	public void setIsOverrideCurrencyRate (boolean IsOverrideCurrencyRate);
+
+	/** Get Override Currency Conversion Rate.
+	  * Override Currency Conversion Rate
+	  */
+	public boolean isOverrideCurrencyRate();
 
     /** Column name PayDate */
     public static final String COLUMNNAME_PayDate = "PayDate";

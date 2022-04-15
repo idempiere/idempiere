@@ -1,22 +1,27 @@
-/******************************************************************************
- * Project: Trek Global ERP                                                   *                       
- * Copyright (C) 2009-2018 Trek Global Corporation                            *
- *                                                                            *
- * Product: Adempiere ERP & CRM Smart Business Solution                       *
- * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
- * This program is free software; you can redistribute it and/or modify it    *
- * under the terms version 2 of the GNU General Public License as published   *
- * by the Free Software Foundation. This program is distributed in the hope   *
- * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied *
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           *
- * See the GNU General Public License for more details.                       *
- * You should have received a copy of the GNU General Public License along    *
- * with this program; if not, write to the Free Software Foundation, Inc.,    *
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
- * For the text or an alternative of this public license, you may reach us    *
- * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
- * or via info@compiere.org or http://www.compiere.org/license.html           *
- *****************************************************************************/
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - hengsin                         								   *
+ **********************************************************************/
 package org.compiere.model;
 
 import java.io.File;
@@ -33,6 +38,11 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
+/**
+ * 
+ * @author hengsin
+ *
+ */
 public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 
 	/**
@@ -40,6 +50,12 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 	 */
 	private static final long serialVersionUID = -4627319422026564157L;
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param C_BankTransfer_ID
+	 * @param trxName
+	 */
 	public MBankTransfer(Properties ctx, int C_BankTransfer_ID, String trxName) {
 		super(ctx, C_BankTransfer_ID, trxName);
 		if (C_BankTransfer_ID == 0)
@@ -51,6 +67,12 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
         }
 	}
 	
+	/**
+	 * 
+	 * @param ctx
+	 * @param rs
+	 * @param trxName
+	 */
 	public MBankTransfer(Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
@@ -103,8 +125,11 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 					+ "WHERE bp.AD_OrgBP_ID IN (SELECT ba.AD_Org_ID FROM C_BankAccount ba WHERE ba.C_BankAccount_ID = ?)) "
 					+ "AND bp.IsActive = 'Y'";
 			int C_BPartner_ID = DB.getSQLValue(get_TrxName(), sql, getTo_C_BankAccount_ID());
-			if (C_BPartner_ID > 0)
+			if (C_BPartner_ID > 0) {
 				setTo_C_BPartner_ID(C_BPartner_ID);
+			} else if (getFrom_AD_Org_ID() == getTo_AD_Org_ID() && getFrom_C_BPartner_ID() > 0) {
+				setTo_C_BPartner_ID(getFrom_C_BPartner_ID());
+			}
 		}
 		
 		if (getRate().doubleValue() == 0) {
@@ -121,6 +146,10 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 					toAmt = toAmt.setScale(cur.getStdPrecision(), RoundingMode.HALF_UP);
 			}
 			setTo_Amt(toAmt);
+		}
+		
+		if (getTo_C_Charge_ID() == 0 && getFrom_C_Charge_ID() > 0) {
+			setTo_C_Charge_ID(getFrom_C_Charge_ID());
 		}
 		
 		return true;
@@ -201,7 +230,7 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		paymentBankFrom.setC_BankAccount_ID(getFrom_C_BankAccount_ID());
 		paymentBankFrom.setAD_Org_ID(getFrom_AD_Org_ID());
 		paymentBankFrom.setDocumentNo(getDocumentNo());
-		paymentBankFrom.setDateAcct(getPayDate());
+		paymentBankFrom.setDateAcct(getDateAcct());
 		paymentBankFrom.setDateTrx(getPayDate());
 		paymentBankFrom.setTenderType(getFrom_TenderType());
 		paymentBankFrom.setDescription(getDescription());
@@ -212,10 +241,12 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		paymentBankFrom.setC_DocType_ID(false);
 		paymentBankFrom.setC_Charge_ID(getFrom_C_Charge_ID());
 		if (as.getC_Currency_ID() != getFrom_C_Currency_ID()) {
-			paymentBankFrom.setC_ConversionType_ID(MConversionType.TYPE_SPOT);
-			paymentBankFrom.setIsOverrideCurrencyRate(true);
-			paymentBankFrom.setCurrencyRate(getRate());
-			paymentBankFrom.setConvertedAmt(getTo_Amt());
+			paymentBankFrom.setC_ConversionType_ID(getC_ConversionType_ID());
+			paymentBankFrom.setIsOverrideCurrencyRate(isOverrideCurrencyRate());
+			if (isOverrideCurrencyRate()) {
+				paymentBankFrom.setCurrencyRate(getRate());
+				paymentBankFrom.setConvertedAmt(getTo_Amt());
+			}
 		}
 		paymentBankFrom.saveEx();
 		if (!paymentBankFrom.processIt(MPayment.DOCACTION_Complete)) {
@@ -229,7 +260,7 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		paymentBankTo.setC_BankAccount_ID(getTo_C_BankAccount_ID());
 		paymentBankTo.setAD_Org_ID(getTo_AD_Org_ID());
 		paymentBankTo.setDocumentNo(getDocumentNo());
-		paymentBankTo.setDateAcct(getPayDate());
+		paymentBankTo.setDateAcct(getDateAcct());
 		paymentBankTo.setDateTrx(getPayDate());
 		paymentBankTo.setTenderType(getTo_TenderType());
 		paymentBankTo.setDescription(getDescription());
@@ -240,11 +271,13 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		paymentBankTo.setC_DocType_ID(true);
 		paymentBankTo.setC_Charge_ID(getTo_C_Charge_ID());
 		if (as.getC_Currency_ID() != getTo_C_Currency_ID()) {
-			paymentBankTo.setC_ConversionType_ID(MConversionType.TYPE_SPOT);
-			paymentBankTo.setIsOverrideCurrencyRate(true);
-			double dd = 1 / getRate().doubleValue();
-			paymentBankTo.setCurrencyRate(BigDecimal.valueOf(dd));
-			paymentBankTo.setConvertedAmt(getFrom_Amt());
+			paymentBankTo.setC_ConversionType_ID(getC_ConversionType_ID());
+			paymentBankTo.setIsOverrideCurrencyRate(isOverrideCurrencyRate());
+			if (isOverrideCurrencyRate()) {
+				double dd = 1 / getRate().doubleValue();
+				paymentBankTo.setCurrencyRate(BigDecimal.valueOf(dd));
+				paymentBankTo.setConvertedAmt(getFrom_Amt());
+			}
 		}
 		paymentBankTo.saveEx();
 		if (!paymentBankTo.processIt(MPayment.DOCACTION_Complete)) {

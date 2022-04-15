@@ -12,10 +12,6 @@ INSERT INTO AD_Table (IsSecurityEnabled,AccessLevel,AD_Table_UU,AD_Table_ID,IsHi
 INSERT INTO AD_Sequence (StartNewYear,AD_Sequence_ID,IsTableID,IsAudited,IsAutoSequence,AD_Org_ID,Description,Name,IncrementNo,AD_Sequence_UU,CreatedBy,Updated,IsActive,StartNo,AD_Client_ID,Created,UpdatedBy,CurrentNextSys,CurrentNext) VALUES ('N',200310,'Y','N','Y',0,'Table C_BankTransfer','C_BankTransfer',1,'ed113f92-24cd-49f6-97a0-ceff1f7d787d',100,TO_DATE('2022-04-03 15:36:01','YYYY-MM-DD HH24:MI:SS'),'Y',1000000,0,TO_DATE('2022-04-03 15:36:01','YYYY-MM-DD HH24:MI:SS'),100,200000,1000000)
 ;
 
--- Apr 3, 2022 3:36:02 PM SGT
-CREATE SEQUENCE C_BANKTRANSFER_SQ INCREMENT BY 1 MINVALUE 1000000 MAXVALUE 2147483647 START WITH 1000000
-;
-
 -- Apr 3, 2022 3:36:03 PM SGT
 INSERT INTO AD_Element (AD_Element_ID,ColumnName,Updated,Name,Description,PrintName,AD_Element_UU,IsActive,Created,AD_Org_ID,CreatedBy,UpdatedBy,AD_Client_ID,EntityType) VALUES (203246,'C_BankTransfer_ID',TO_DATE('2022-04-03 15:36:02','YYYY-MM-DD HH24:MI:SS'),'Bank Transfer','Bank Transfer','Bank Transfer','78e34c62-2a4e-4d51-a970-9e698ced9f58','Y',TO_DATE('2022-04-03 15:36:02','YYYY-MM-DD HH24:MI:SS'),0,100,100,0,'D')
 ;
@@ -65,7 +61,7 @@ INSERT INTO AD_Column (AD_Column_ID,SeqNoSelection,IsSyncDatabase,Version,IsMand
 ;
 
 -- Apr 3, 2022 3:36:05 PM SGT
-ALTER TABLE C_BankTransfer ADD Description VARCHAR2(255) DEFAULT NULL 
+ALTER TABLE C_BankTransfer ADD Description VARCHAR2(255 CHAR) DEFAULT NULL 
 ;
 
 -- Apr 3, 2022 3:36:05 PM SGT
@@ -121,7 +117,7 @@ INSERT INTO AD_Column (AD_Column_ID,SeqNoSelection,IsSyncDatabase,Version,IsMand
 ;
 
 -- Apr 3, 2022 3:36:09 PM SGT
-ALTER TABLE C_BankTransfer ADD DocStatus VARCHAR2(2) DEFAULT 'DR' NOT NULL
+ALTER TABLE C_BankTransfer ADD DocStatus CHAR(2) DEFAULT 'DR' NOT NULL
 ;
 
 -- Apr 3, 2022 3:36:09 PM SGT
@@ -131,7 +127,7 @@ If the document type of your document has no automatic document sequence defined
 ;
 
 -- Apr 3, 2022 3:36:09 PM SGT
-ALTER TABLE C_BankTransfer ADD DocumentNo VARCHAR2(30) NOT NULL
+ALTER TABLE C_BankTransfer ADD DocumentNo VARCHAR2(30 CHAR) NOT NULL
 ;
 
 -- Apr 3, 2022 3:36:09 PM SGT
@@ -154,7 +150,7 @@ INSERT INTO AD_Column (AD_Column_ID,SeqNoSelection,IsSyncDatabase,Version,IsMand
 ;
 
 -- Apr 3, 2022 3:36:10 PM SGT
-ALTER TABLE C_BankTransfer ADD C_BankTransfer_UU VARCHAR2(36) DEFAULT NULL 
+ALTER TABLE C_BankTransfer ADD C_BankTransfer_UU VARCHAR2(36 CHAR) DEFAULT NULL 
 ;
 
 -- Apr 3, 2022 3:36:10 PM SGT
@@ -286,7 +282,7 @@ ALTER TABLE C_BankTransfer ADD To_AD_Org_ID NUMBER(10) NOT NULL
 ;
 
 -- Apr 3, 2022 3:36:14 PM SGT
-INSERT INTO AD_Element (AD_Element_ID,ColumnName,Updated,Name,PrintName,AD_Element_UU,IsActive,Created,AD_Org_ID,CreatedBy,UpdatedBy,AD_Client_ID,EntityType) VALUES (203253,'To_C_Charge_ID',TO_DATE('2022-04-03 15:36:14','YYYY-MM-DD HH24:MI:SS'),'To Charge','To Charge','048dd4f0-a55f-42f2-ac75-507f28c761d3','Y',TO_DATE('2022-04-03 15:36:14','YYYY-MM-DD HH24:MI:SS'),0,100,100,0,'U')
+INSERT INTO AD_Element (AD_Element_ID,ColumnName,Updated,Name,PrintName,AD_Element_UU,IsActive,Created,AD_Org_ID,CreatedBy,UpdatedBy,AD_Client_ID,EntityType) VALUES (203253,'To_C_Charge_ID',TO_DATE('2022-04-03 15:36:14','YYYY-MM-DD HH24:MI:SS'),'To Charge','To Charge','048dd4f0-a55f-42f2-ac75-507f28c761d3','Y',TO_DATE('2022-04-03 15:36:14','YYYY-MM-DD HH24:MI:SS'),0,100,100,0,'D')
 ;
 
 -- Apr 3, 2022 3:36:14 PM SGT
@@ -364,30 +360,30 @@ INSERT INTO AD_Tab (Processing,SeqNo,IsTranslationTab,IsSortTab,IsReadOnly,HasTr
 ;
 
 -- Apr 3, 2022 3:36:23 PM SGT
-INSERT INTO AD_Field (AD_Field_ID,IsEncrypted,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,IsReadOnly,Help,AD_Org_ID,Updated,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,CreatedBy,UpdatedBy,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,Created,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,AD_Tab_ID) VALUES (205707,'N',26,'N','N',0,'Y','N','A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),'Identifies a Business Partner','Business Partner ','1b616b04-9bd1-4c17-9b1a-75be205708e4','N','N',100,100,'Y','N',0,1,'N',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),2,1,'N','N',5494,'U',200257)
+INSERT INTO AD_Field (AD_Field_ID,IsEncrypted,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,IsReadOnly,Help,AD_Org_ID,Updated,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,CreatedBy,UpdatedBy,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,Created,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,AD_Tab_ID) VALUES (205707,'N',26,'N','N',0,'Y','N','A Business Partner is anyone with whom you transact.  This can include Vendor, Customer, Employee or Salesperson',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),'Identifies a Business Partner','Business Partner ','1b616b04-9bd1-4c17-9b1a-75be205708e4','N','N',100,100,'Y','N',0,1,'N',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),2,1,'N','N',5494,'D',200257)
 ;
 
 -- Apr 3, 2022 3:36:23 PM SGT
 INSERT INTO AD_Field (AD_Field_ID,IsEncrypted,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,IsReadOnly,Help,AD_Org_ID,Updated,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,CreatedBy,UpdatedBy,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,Created,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,AD_Tab_ID) VALUES (205711,'N',1,'N','N',0,'Y','N','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
 There are two reasons for de-activating and not deleting records:
 (1) The system requires the record for audit purposes.
-(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),'The record is active in the system','Active','8fa65c8a-ef25-4c30-ac48-e6cd92c22b64','N','N',100,100,'Y','N',0,2,'N',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),2,1,'N','N',4877,'U',200257)
+(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),'The record is active in the system','Active','8fa65c8a-ef25-4c30-ac48-e6cd92c22b64','N','N',100,100,'Y','N',0,2,'N',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),2,1,'N','N',4877,'D',200257)
 ;
 
 -- Apr 3, 2022 3:36:23 PM SGT
-INSERT INTO AD_Field (AD_Field_ID,IsEncrypted,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,IsReadOnly,AD_Org_ID,Updated,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,CreatedBy,UpdatedBy,IsActive,IsDisplayedGrid,XPosition,IsQuickEntry,AD_Client_ID,Created,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,AD_Tab_ID) VALUES (205723,'N',36,'N','N',0,'Y','N',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),'C_AllocationLine_UU','13730248-401c-49e5-b024-3b744c44fabd','N','N',100,100,'Y','N',1,'N',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),2,1,'N','N',60596,'U',200257)
+INSERT INTO AD_Field (AD_Field_ID,IsEncrypted,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,IsReadOnly,AD_Org_ID,Updated,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,CreatedBy,UpdatedBy,IsActive,IsDisplayedGrid,XPosition,IsQuickEntry,AD_Client_ID,Created,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,AD_Tab_ID) VALUES (205723,'N',36,'N','N',0,'Y','N',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),'C_AllocationLine_UU','13730248-401c-49e5-b024-3b744c44fabd','N','N',100,100,'Y','N',1,'N',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),2,1,'N','N',60596,'D',200257)
 ;
 
 -- Apr 3, 2022 3:36:24 PM SGT
-INSERT INTO AD_Field (AD_Field_ID,IsEncrypted,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,IsReadOnly,Help,AD_Org_ID,Updated,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,CreatedBy,UpdatedBy,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,Created,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,AD_Tab_ID) VALUES (205708,'N',14,'N','N',0,'Y','N','Allocation of Cash/Payment to Invoice',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),'Allocation Line','Allocation Line','593c12b3-0bbd-47cf-b4b0-ee8217f87457','N','N',100,100,'Y','N',0,1,'N',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),2,1,'N','N',12331,'U',200257)
+INSERT INTO AD_Field (AD_Field_ID,IsEncrypted,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,IsReadOnly,Help,AD_Org_ID,Updated,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,CreatedBy,UpdatedBy,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,Created,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,AD_Tab_ID) VALUES (205708,'N',14,'N','N',0,'Y','N','Allocation of Cash/Payment to Invoice',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),'Allocation Line','Allocation Line','593c12b3-0bbd-47cf-b4b0-ee8217f87457','N','N',100,100,'Y','N',0,1,'N',0,TO_DATE('2022-04-03 15:36:23','YYYY-MM-DD HH24:MI:SS'),2,1,'N','N',12331,'D',200257)
 ;
 
 -- Apr 3, 2022 3:36:24 PM SGT
-INSERT INTO AD_Field (AD_Field_ID,IsEncrypted,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,IsReadOnly,Help,AD_Org_ID,Updated,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,CreatedBy,UpdatedBy,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,Created,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,AD_Tab_ID) VALUES (205709,'N',1,'N','N',0,'Y','N','The Manual check box indicates if the process will done manually.',0,TO_DATE('2022-04-03 15:36:24','YYYY-MM-DD HH24:MI:SS'),'This is a manual process','Manual','88e94e4d-a4a8-4474-8660-7a1b2e67fab0','N','N',100,100,'Y','N',0,2,'N',0,TO_DATE('2022-04-03 15:36:24','YYYY-MM-DD HH24:MI:SS'),2,1,'N','N',5520,'U',200257)
+INSERT INTO AD_Field (AD_Field_ID,IsEncrypted,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,IsReadOnly,Help,AD_Org_ID,Updated,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,CreatedBy,UpdatedBy,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,Created,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,AD_Tab_ID) VALUES (205709,'N',1,'N','N',0,'Y','N','The Manual check box indicates if the process will done manually.',0,TO_DATE('2022-04-03 15:36:24','YYYY-MM-DD HH24:MI:SS'),'This is a manual process','Manual','88e94e4d-a4a8-4474-8660-7a1b2e67fab0','N','N',100,100,'Y','N',0,2,'N',0,TO_DATE('2022-04-03 15:36:24','YYYY-MM-DD HH24:MI:SS'),2,1,'N','N',5520,'D',200257)
 ;
 
 -- Apr 3, 2022 3:36:24 PM SGT
-INSERT INTO AD_Field (AD_Field_ID,IsEncrypted,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,IsReadOnly,Help,AD_Org_ID,Updated,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,IsAllowCopy,CreatedBy,UpdatedBy,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,Created,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,AD_Tab_ID) VALUES (205710,'N',26,'N','N',0,'Y','N','The Cash Journal Line indicates a unique line in a cash journal.',0,TO_DATE('2022-04-03 15:36:24','YYYY-MM-DD HH24:MI:SS'),'Cash Journal Line','Cash Journal Line','192ecdc3-7f62-4d62-9989-10e6fc31e8b4','N','N','N',100,100,'Y','N',0,1,'N',0,TO_DATE('2022-04-03 15:36:24','YYYY-MM-DD HH24:MI:SS'),2,1,'N','N',5210,'U',200257)
+INSERT INTO AD_Field (AD_Field_ID,IsEncrypted,DisplayLength,IsSameLine,IsHeading,SeqNo,IsCentrallyMaintained,IsReadOnly,Help,AD_Org_ID,Updated,Description,Name,AD_Field_UU,IsDisplayed,IsFieldOnly,IsAllowCopy,CreatedBy,UpdatedBy,IsActive,IsDisplayedGrid,SeqNoGrid,XPosition,IsQuickEntry,AD_Client_ID,Created,ColumnSpan,NumLines,IsAdvancedField,IsDefaultFocus,AD_Column_ID,EntityType,AD_Tab_ID) VALUES (205710,'N',26,'N','N',0,'Y','N','The Cash Journal Line indicates a unique line in a cash journal.',0,TO_DATE('2022-04-03 15:36:24','YYYY-MM-DD HH24:MI:SS'),'Cash Journal Line','Cash Journal Line','192ecdc3-7f62-4d62-9989-10e6fc31e8b4','N','N','N',100,100,'Y','N',0,1,'N',0,TO_DATE('2022-04-03 15:36:24','YYYY-MM-DD HH24:MI:SS'),2,1,'N','N',5210,'D',200257)
 ;
 
 -- Apr 3, 2022 3:36:24 PM SGT
@@ -980,11 +976,7 @@ ALTER TABLE C_BankTransfer ADD From_TenderType CHAR(1) DEFAULT 'A' NOT NULL
 ;
 
 -- Apr 4, 2022 12:42:40 PM SGT
-INSERT INTO AD_Column (AD_Column_ID,SeqNoSelection,IsSyncDatabase,Version,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,Updated,IsUpdateable,ColumnName,DefaultValue,Name,IsAllowCopy,IsActive,CreatedBy,UpdatedBy,IsAlwaysUpdateable,AD_Client_ID,Created,IsSecure,EntityType,IsEncrypted,FKConstraintType,AD_Element_ID,AD_Reference_Value_ID,AD_Table_ID,AD_Reference_ID,IsToolbarButton,AD_Org_ID,IsHtml) VALUES (213675,0,'N',0,'Y','N','N',0,'N',1,'N','N','N','Y','246cf8c2-bfc0-4176-b36e-5fad9ae50ab4',TO_DATE('2022-04-04 12:42:39','YYYY-MM-DD HH24:MI:SS'),'Y','To_TenderType','D','To Tender Type','Y','Y',100,100,'N',0,TO_DATE('2022-04-04 12:42:39','YYYY-MM-DD HH24:MI:SS'),'N','U','N','N',203260,214,200246,17,'N',0,'N')
-;
-
--- Apr 4, 2022 12:42:46 PM SGT
-UPDATE AD_Column SET EntityType='D',Updated=TO_DATE('2022-04-04 12:42:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=213675
+INSERT INTO AD_Column (AD_Column_ID,SeqNoSelection,IsSyncDatabase,Version,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsParent,FieldLength,IsSelectionColumn,IsKey,IsAutocomplete,IsAllowLogging,AD_Column_UU,Updated,IsUpdateable,ColumnName,DefaultValue,Name,IsAllowCopy,IsActive,CreatedBy,UpdatedBy,IsAlwaysUpdateable,AD_Client_ID,Created,IsSecure,EntityType,IsEncrypted,FKConstraintType,AD_Element_ID,AD_Reference_Value_ID,AD_Table_ID,AD_Reference_ID,IsToolbarButton,AD_Org_ID,IsHtml) VALUES (213675,0,'N',0,'Y','N','N',0,'N',1,'N','N','N','Y','246cf8c2-bfc0-4176-b36e-5fad9ae50ab4',TO_DATE('2022-04-04 12:42:39','YYYY-MM-DD HH24:MI:SS'),'Y','To_TenderType','D','To Tender Type','Y','Y',100,100,'N',0,TO_DATE('2022-04-04 12:42:39','YYYY-MM-DD HH24:MI:SS'),'N','D','N','N',203260,214,200246,17,'N',0,'N')
 ;
 
 -- Apr 4, 2022 12:42:49 PM SGT
@@ -1020,43 +1012,43 @@ UPDATE AD_Tab SET IsActive='N',Updated=TO_DATE('2022-04-04 13:20:46','YYYY-MM-DD
 ;
 
 -- Apr 4, 2022 1:22:32 PM SGT
-UPDATE AD_Field SET SeqNo=190,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205735
+UPDATE AD_Field SET SeqNo=190,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205735
 ;
 
 -- Apr 4, 2022 1:28:34 PM SGT
-UPDATE AD_Field SET SeqNo=130,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205784
+UPDATE AD_Field SET SeqNo=130,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205784
 ;
 
 -- Apr 4, 2022 1:28:34 PM SGT
-UPDATE AD_Field SET SeqNo=140,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205799
+UPDATE AD_Field SET SeqNo=140,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205799
 ;
 
 -- Apr 4, 2022 1:28:34 PM SGT
-UPDATE AD_Field SET SeqNo=150,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205800
+UPDATE AD_Field SET SeqNo=150,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205800
 ;
 
 -- Apr 4, 2022 1:28:34 PM SGT
-UPDATE AD_Field SET SeqNo=160,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205801
+UPDATE AD_Field SET SeqNo=160,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205801
 ;
 
 -- Apr 4, 2022 1:28:34 PM SGT
-UPDATE AD_Field SET SeqNo=170,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205788
+UPDATE AD_Field SET SeqNo=170,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205788
 ;
 
 -- Apr 4, 2022 1:28:34 PM SGT
-UPDATE AD_Field SET SeqNo=180,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205802
+UPDATE AD_Field SET SeqNo=180,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205802
 ;
 
 -- Apr 4, 2022 1:28:34 PM SGT
-UPDATE AD_Field SET SeqNo=190,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205803
+UPDATE AD_Field SET SeqNo=190,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205803
 ;
 
 -- Apr 4, 2022 1:28:34 PM SGT
-UPDATE AD_Field SET SeqNo=200,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205775
+UPDATE AD_Field SET SeqNo=200,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205775
 ;
 
 -- Apr 4, 2022 1:28:34 PM SGT
-UPDATE AD_Field SET SeqNo=210,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205735
+UPDATE AD_Field SET SeqNo=210,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205735
 ;
 
 -- Apr 4, 2022 1:28:50 PM SGT
@@ -1172,99 +1164,99 @@ UPDATE AD_Field SET AD_Val_Rule_ID=NULL, SeqNoGrid=240, AD_Reference_Value_ID=NU
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205784
+UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205784
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205789
+UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205789
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205735
+UPDATE AD_Field SET SeqNoGrid=0,IsDisplayedGrid='N', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205735
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=10,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205790
+UPDATE AD_Field SET SeqNoGrid=10,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205790
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=20,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205805
+UPDATE AD_Field SET SeqNoGrid=20,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205805
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=30,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205804
+UPDATE AD_Field SET SeqNoGrid=30,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205804
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=40,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205791
+UPDATE AD_Field SET SeqNoGrid=40,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205791
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=50,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205792
+UPDATE AD_Field SET SeqNoGrid=50,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205792
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=60,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205793
+UPDATE AD_Field SET SeqNoGrid=60,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205793
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=70,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205794
+UPDATE AD_Field SET SeqNoGrid=70,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205794
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=80,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205795
+UPDATE AD_Field SET SeqNoGrid=80,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205795
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=90,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205796
+UPDATE AD_Field SET SeqNoGrid=90,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205796
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=100,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205797
+UPDATE AD_Field SET SeqNoGrid=100,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205797
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=110,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205798
+UPDATE AD_Field SET SeqNoGrid=110,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205798
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=120,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205799
+UPDATE AD_Field SET SeqNoGrid=120,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205799
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=130,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205812
+UPDATE AD_Field SET SeqNoGrid=130,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205812
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=140,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205813
+UPDATE AD_Field SET SeqNoGrid=140,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205813
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=150,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205814
+UPDATE AD_Field SET SeqNoGrid=150,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205814
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=160,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205800
+UPDATE AD_Field SET SeqNoGrid=160,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205800
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=170,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205801
+UPDATE AD_Field SET SeqNoGrid=170,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205801
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=180,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205788
+UPDATE AD_Field SET SeqNoGrid=180,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205788
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=190,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205802
+UPDATE AD_Field SET SeqNoGrid=190,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205802
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=200,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205803
+UPDATE AD_Field SET SeqNoGrid=200,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205803
 ;
 
 -- Apr 4, 2022 1:34:37 PM SGT
-UPDATE AD_Field SET SeqNoGrid=210,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205775
+UPDATE AD_Field SET SeqNoGrid=210,IsDisplayedGrid='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205775
 ;
 
 -- Apr 4, 2022 4:08:27 PM SGT
