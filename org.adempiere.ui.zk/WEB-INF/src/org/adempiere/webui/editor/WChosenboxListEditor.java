@@ -782,9 +782,9 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			// available (data - available)
 			String validationCode = gridField.getVO().ValidationCode;
 			if (!Util.isEmpty(validationCode))
-				; // TODO add a 'filter' parameter to MRefList.getList (to display only required items)
+				validationCode = Env.parseContext(Env.getCtx(), gridField.getWindowNo(), validationCode, true, true);
 
-			for (ValueNamePair vnp : MRefList.getList(Env.getCtx(), refID, false)) {
+			for (ValueNamePair vnp : MRefList.getList(Env.getCtx(), refID, false, validationCode, "")) {
 
 				if (listSelected.contains(vnp.getValue()))
 					continue;
