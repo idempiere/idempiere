@@ -410,7 +410,7 @@ public class DataEngine
 					{
 						if (script.startsWith("@SQL="))
 						{
-							script = "(" + script.replace("@SQL=", "") + ")";
+							script = "(" + script.replace("@SQL=", "").trim() + ")";
 							script = Env.parseContext(Env.getCtx(), 0, script, false);
 						}
 						else
