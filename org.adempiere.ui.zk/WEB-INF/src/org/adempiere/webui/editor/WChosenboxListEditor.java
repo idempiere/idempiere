@@ -540,7 +540,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		}
 		else if (WEditorPopupMenu.ASSISTANT_EVENT.equals(evt.getContextEvent())) {
 
-			final WChosenboxListassistante wdc = new WChosenboxListassistante();
+			final WChosenboxListAssistant wdc = new WChosenboxListAssistant();
 			wdc.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
 					
@@ -681,7 +681,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		}
 	}
 	
-	private class WChosenboxListassistante extends Window implements EventListener<Event> {
+	private class WChosenboxListAssistant extends Window implements EventListener<Event> {
 		private static final long serialVersionUID = 1223690858387209211L;
 		private Button bAdd, bRemove, bUp, bDown;
 		private SimpleListModel availableModel = new SimpleListModel();
@@ -693,7 +693,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		private int refID = 0;
 		private String m_newValue = "";
 
-		public WChosenboxListassistante() {
+		public WChosenboxListAssistant() {
 			super();
 			refID = MColumn.get(Env.getCtx(), gridTab.getTableName(), gridField.getColumnName()).getAD_Reference_Value_ID();
 			setTitle(gridField.getHeader() + " " + Msg.getMsg(Env.getCtx(), "Assistant"));
@@ -704,8 +704,8 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			setShadow(true);
 			setMaximizable(true);
 			setSizable(true);
-			setHeight("600px");
-			setWidth("700px");
+			ZKUpdateUtil.setWindowHeightX(this, 600);
+			ZKUpdateUtil.setWindowWidthX(this, 700);
 		}
 
 		private void init() {
