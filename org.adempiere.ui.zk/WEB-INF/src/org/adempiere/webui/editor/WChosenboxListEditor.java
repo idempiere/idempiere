@@ -704,8 +704,19 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			setShadow(true);
 			setMaximizable(true);
 			setSizable(true);
-			ZKUpdateUtil.setWindowHeightX(this, 600);
-			ZKUpdateUtil.setWindowWidthX(this, 700);
+
+			if (!ThemeManager.isUseCSSForWindowSize()) {			
+				ZKUpdateUtil.setWindowHeightX(this, 600);
+				ZKUpdateUtil.setWindowWidthX(this, 700);
+			}
+			else
+			{
+				addCallback(AFTER_PAGE_ATTACHED, t -> {
+					ZKUpdateUtil.setCSSHeight(this);
+					ZKUpdateUtil.setCSSWidth(this);
+				});
+			}
+			setSclass("chosenbox-assistant-dialog");
 		}
 
 		private void init() {
