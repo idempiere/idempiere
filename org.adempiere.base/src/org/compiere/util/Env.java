@@ -176,9 +176,11 @@ public final class Env
 		//hengsin, avoid unncessary query of session when exit without log in
 		if (DB.isConnected(false)) {
 			//	End Session
-			MSession session = MSession.get(Env.getCtx(), false, false);	//	finish
-			if (session != null)
+			MSession session = MSession.get(Env.getCtx());	//	finish
+			if (session != null) {
+				session = new MSession(getCtx(), session.getAD_Session_ID(), null);
 				session.logout();
+			}
 		}
 		//
 		reset(true);	// final cache reset
@@ -195,9 +197,11 @@ public final class Env
 	public static void logout()
 	{
 		//	End Session
-		MSession session = MSession.get(Env.getCtx(), false, false);	//	finish
-		if (session != null)
+		MSession session = MSession.get(Env.getCtx());	//	finish
+		if (session != null) {
+			session = new MSession(getCtx(), session.getAD_Session_ID(), null);
 			session.logout();
+		}
 		//
 		reset(true);	// final cache reset
 		//

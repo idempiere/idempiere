@@ -53,26 +53,27 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	 *	@param ctx context
 	 *	@param createNew create if not found
 	 *	@return session session
-	 *	@deprecated get (Properties ctx, boolean createNew, boolean isCache) for caching support
+	 *	@deprecated use Get and Create functions.
 	 */
 	public static MSession get (Properties ctx, boolean createNew)
 	{
-		return get(ctx, createNew, false);
+		MSession session = get(ctx);
+		if(session == null && createNew)
+			return MSession.create(ctx);
+		return session;
 	}	//	get
 	
 	/**
-	 * 	Get existing or create local session
+	 * 	Get existing local session
 	 *	@param ctx context
-	 *	@param createNew create if not found
-	 *	@param isImmutable return Immutable Session Object (from Cache)
 	 *	@return session session
 	 */
-	public static MSession get (Properties ctx, boolean createNew, boolean isImmutable)
+	public static MSession get (Properties ctx)
 	{
 		int AD_Session_ID = Env.getContextAsInt(ctx, Env.AD_SESSION_ID);
-		MSession session = isImmutable ? s_sessions.get(ctx, AD_Session_ID, e -> new MSession(ctx, e)) : new MSession(ctx, AD_Session_ID, null);
+		MSession session = s_sessions.get(ctx, AD_Session_ID, e -> new MSession(ctx, e));
 		// Try to load
-		if (isImmutable && session == null && AD_Session_ID > 0)
+		if (session == null && AD_Session_ID > 0)
 		{
 			session = new MSession(ctx, AD_Session_ID, null);
 			if (session.get_ID () == AD_Session_ID)
@@ -83,17 +84,22 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 				session = null;
 			}
 		}
-		// Create New
-		if (session == null && createNew)
-		{
-			session = new MSession (ctx, (String)null);	//	local session
-			session.saveEx();
-			AD_Session_ID = session.getAD_Session_ID();
-			Env.setContext (ctx, Env.AD_SESSION_ID, AD_Session_ID);
-			if(isImmutable)
-				s_sessions.put (AD_Session_ID, session, e -> new MSession(Env.getCtx(), e));
-		}
-		
+		return session;
+	}	//	get
+	
+	/**
+	 * 	Get existing or create local session
+	 *	@param ctx context
+	 *	@param createNew create if not found
+	 *	@param isImmutable return Immutable Session Object (from Cache)
+	 *	@return session session
+	 */
+	public static MSession create (Properties ctx)
+	{
+		MSession session = new MSession (ctx, (String)null);	//	local session
+		session.saveEx();
+		int AD_Session_ID = session.getAD_Session_ID();
+		Env.setContext (ctx, Env.AD_SESSION_ID, AD_Session_ID);
 		return session;
 	}	//	get
 	
@@ -104,26 +110,11 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	 *	@param Remote_Host remote host
 	 *	@param WebSession web session
 	 *	@return session
-	 *	@deprecated use get (Properties ctx, String Remote_Addr, String Remote_Host, String WebSession, boolean isCache)
 	 */
 	public static MSession get (Properties ctx, String Remote_Addr, String Remote_Host, String WebSession)
 	{
-		return get(ctx, Remote_Addr, Remote_Host, WebSession, false);
-	}	//	get
-	
-	/**
-	 * 	Get existing or create remote session
-	 *	@param ctx context
-	 *	@param Remote_Addr remote address
-	 *	@param Remote_Host remote host
-	 *	@param WebSession web session
-	 *	@param isImmutable return Immutable Object (from Cache)
-	 *	@return session
-	 */
-	public static MSession get (Properties ctx, String Remote_Addr, String Remote_Host, String WebSession, boolean isImmutable)
-	{
 		int AD_Session_ID = Env.getContextAsInt(ctx, Env.AD_SESSION_ID);
-		MSession session = get(ctx, false,  isImmutable);
+		MSession session = get(ctx);
 
 		if (session == null)
 		{
@@ -131,8 +122,8 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 			session.saveEx();
 			AD_Session_ID = session.getAD_Session_ID();
 			Env.setContext(ctx, Env.AD_SESSION_ID, AD_Session_ID);
-			if(isImmutable)
-				s_sessions.put (AD_Session_ID, session, e -> new MSession(Env.getCtx(), e));
+		} else {
+			session = new MSession(ctx, session.getAD_Session_ID(), null);
 		}
 		
 		return session;
