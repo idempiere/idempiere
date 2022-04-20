@@ -2661,7 +2661,7 @@ public abstract class PO
 		lobReset();
 
 		//	Change Log
-		MSession session = MSession.get (p_ctx, false, true);
+		MSession session = MSession.get (p_ctx);
 		if (session == null)
 			log.fine("No Session found");
 		int AD_ChangeLog_ID = 0;
@@ -3123,7 +3123,7 @@ public abstract class PO
 		lobReset();
 
 		//	Change Log
-		MSession session = MSession.get (p_ctx, false, true);
+		MSession session = MSession.get (p_ctx);
 		if (session == null)
 			log.fine("No Session found");
 		int AD_ChangeLog_ID = 0;
@@ -3719,7 +3719,7 @@ public abstract class PO
 					if( p_info.isChangeLog())
 					{
 						//	Change Log
-						MSession session = MSession.get (p_ctx, false, true);
+						MSession session = MSession.get (p_ctx);
 						if (session == null)
 							log.fine("No Session found");
 						else if (m_IDs.length == 1)
