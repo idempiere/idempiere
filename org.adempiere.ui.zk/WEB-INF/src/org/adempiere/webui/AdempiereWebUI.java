@@ -273,7 +273,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
         
 		MSession mSession = MSession.get (ctx, x_Forward_IP!=null ? x_Forward_IP : Executions.getCurrent().getRemoteAddr(),
-			Executions.getCurrent().getRemoteHost(), httpSess.getId() );
+			Executions.getCurrent().getRemoteHost(), httpSess.getId());
 		if (clientInfo.userAgent != null) {
 			mSession.setDescription(mSession.getDescription() + "\n" + clientInfo.toString());
 			mSession.saveEx();

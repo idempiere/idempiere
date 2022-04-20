@@ -411,7 +411,7 @@ public class DataEngine
 					{
 						if (script.startsWith("@SQL="))
 						{
-							script = "(" + script.replace("@SQL=", "") + ")";
+							script = "(" + script.replace("@SQL=", "").trim() + ")";
 							script = Env.parseContext(Env.getCtx(), 0, script, false);
 						}
 						else
@@ -535,6 +535,7 @@ public class DataEngine
 					}
 					// 	TableName.ColumnName,
 					sqlSELECT.append(lookupSQL).append(" AS ").append(ColumnName).append(",");
+					groupByColumns.add(lookupSQL); 
 					pdc = new PrintDataColumn(AD_PrintFormatItem_ID, AD_Column_ID, ColumnName, AD_Reference_ID, FieldLength, orderName, isPageBreak);
 					synonymNext();
 				}
