@@ -721,13 +721,15 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		if (!success)
 			return success;
 		//	Sync Table ID
-		MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
-		if (seq == null || seq.get_ID() == 0)
-			MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
-		else if (!seq.getName().equals(getTableName()))
-		{
-			seq.setName(getTableName());
-			seq.saveEx();
+		if(!isView()) {
+			MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
+			if (seq == null || seq.get_ID() == 0)
+				MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
+			else if (!seq.getName().equals(getTableName()))
+			{
+				seq.setName(getTableName());
+				seq.saveEx();
+			}
 		}
 		if (newRecord || is_ValueChanged(COLUMNNAME_IsChangeLog)) {
 			MChangeLog.resetLoggedList();
