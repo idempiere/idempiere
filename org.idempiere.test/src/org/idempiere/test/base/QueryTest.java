@@ -36,9 +36,13 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.model.POWrapper;
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.compiere.model.I_Test;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
@@ -53,14 +57,18 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * @author hengsin
  *
  */
-
+@ExtendWith(SoftAssertionsExtension.class)
 public class QueryTest extends AbstractTestCase {
 
+	@InjectSoftAssertions
+	SoftAssertions softly;
+	
 	/**
 	 * 
 	 */
@@ -87,6 +95,41 @@ public class QueryTest extends AbstractTestCase {
 	}
 	
 	@Test
+	public void testStream() throws Exception
+	{
+		Stream<MTable> stream = new Query(Env.getCtx(), "AD_Table", "TableName IN (?,?)", getTrxName())
+								.setParameters("C_Invoice", "M_InOut")
+								.setOrderBy("TableName")
+								.stream();
+		softly.assertThat(stream.map(MTable::getTableName)).containsExactly("C_Invoice", "M_InOut");
+	}
+	
+	@Test
+	public void testIterable() throws Exception {
+		Iterable<MTable> query = new Query(Env.getCtx(), "AD_Table", "TableName IN (?,?)", getTrxName())
+									.setParameters("C_Invoice", "M_InOut")
+									.setOrderBy("TableName")
+									.iterable();
+		int i = 0;
+		for (MTable t : query) {
+			if (i == 0)
+			{
+				softly.assertThat(t.getTableName()).as("element 0").isEqualTo("C_Invoice");
+			}
+			else if (i == 1)
+			{
+				softly.assertThat(t.getTableName()).as("element 1").isEqualTo("M_InOut");
+			}
+			else
+			{
+				softly.fail("More objects retrieved than expected: " + t.get_TableName());
+				break;
+			}
+			i++;
+		}
+	}
+	
+	@Test
 	public void testScroll() throws Exception
 	{
 		POResultSet<MTable> rs = new Query(Env.getCtx(), "AD_Table", "TableName IN (?,?)", getTrxName())
@@ -109,7 +152,7 @@ public class QueryTest extends AbstractTestCase {
 				}
 				else
 				{
-					fail("More objects retrived than expected");
+					fail("More objects retrieved than expected");
 				}
 				i++;
 			}
@@ -142,7 +185,7 @@ public class QueryTest extends AbstractTestCase {
 			}
 			else
 			{
-				fail("More objects retrived than expected");
+				fail("More objects retrieved than expected");
 			}
 			i++;
 		}
