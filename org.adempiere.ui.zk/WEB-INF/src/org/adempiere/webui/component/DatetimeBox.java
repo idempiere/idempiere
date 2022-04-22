@@ -111,9 +111,14 @@ public class DatetimeBox extends Panel {
 	 */
 	public Date getValue() {
 		Date d = null;
-		if (timeZone != null) {			
-			d = Date.from(dateBox.getValueInZonedDateTime().toInstant().atZone(timeZone.toZoneId()).toInstant());
-			Date t = Date.from(timeBox.getValueInZonedDateTime().toInstant().atZone(timeZone.toZoneId()).toInstant());
+		if (timeZone != null) {
+			ZonedDateTime zonedDate = dateBox.getValueInZonedDateTime();
+			if (zonedDate != null)
+				d = Date.from(zonedDate.toInstant().atZone(timeZone.toZoneId()).toInstant());
+			Date t = null;
+			ZonedDateTime zonedTime = timeBox.getValueInZonedDateTime();
+			if (zonedTime != null)
+				t = Date.from(zonedTime.toInstant().atZone(timeZone.toZoneId()).toInstant());
 			
 			if (d != null && t != null) {
 				Calendar cd = Calendar.getInstance();
