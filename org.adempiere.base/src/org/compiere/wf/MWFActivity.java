@@ -1766,12 +1766,23 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		MMailText text = new MMailText (getCtx(), m_node.getR_MailText_ID(), null);
 		text.setPO(m_po, true);
 		//
-		String subject = doc.getDocumentInfo()
-			+ ": " + text.getMailHeader();
-		String message = text.getMailText(true)
-			+ "\n-----\n" + doc.getDocumentInfo()
-			+ "\n" + doc.getSummary();
-		File pdf = doc.createPDF();
+		String subject = null;
+		String raw = text.getMailHeader(false);
+		int first = raw != null ? raw.indexOf("@") : -1;
+		if (raw != null &&  first >= 0 && raw.indexOf("@", first) > first)
+			subject = text.getMailHeader();
+		else
+			subject = doc.getDocumentInfo() + ": " + text.getMailHeader();
+		String message = null;
+		raw = text.getMailText(true, false);
+		if (raw != null && (raw.contains("@=DocumentInfo") || raw.contains("@=documentInfo")
+				|| raw.contains("@=Summary") || raw.contains("@=summary")))
+			message = text.getMailText(true);
+		else
+			message = text.getMailText(true)
+				+ "\n-----\n" + doc.getDocumentInfo()
+				+ "\n" + doc.getSummary();
+		File pdf = doc != null && m_node.isAttachedDocumentToEmail() ? doc.createPDF() : null;
 		//
 		MClient client = MClient.get(doc.getCtx(), doc.getAD_Client_ID());
 

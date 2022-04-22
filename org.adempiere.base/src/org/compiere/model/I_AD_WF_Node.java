@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_WF_Node
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_WF_Node 
 {
@@ -57,8 +57,8 @@ public interface I_AD_WF_Node
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -137,12 +137,12 @@ public interface I_AD_WF_Node
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -472,6 +472,19 @@ public interface I_AD_WF_Node
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsAttachedDocumentToEmail */
+    public static final String COLUMNNAME_IsAttachedDocumentToEmail = "IsAttachedDocumentToEmail";
+
+	/** Set Attached Document.
+	  * Attached document to Email
+	  */
+	public void setIsAttachedDocumentToEmail (boolean IsAttachedDocumentToEmail);
+
+	/** Get Attached Document.
+	  * Attached document to Email
+	  */
+	public boolean isAttachedDocumentToEmail();
 
     /** Column name IsCentrallyMaintained */
     public static final String COLUMNNAME_IsCentrallyMaintained = "IsCentrallyMaintained";
