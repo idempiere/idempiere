@@ -86,6 +86,13 @@ public class CalloutInOut extends CalloutEngine
 				mTab.setValue("AD_User_ID", Integer.valueOf(order.getAD_User_ID()));
 			else
 				mTab.setValue("AD_User_ID", null);
+
+			if (order.isDropShip()) {
+				mTab.setValue(MInOut.COLUMNNAME_IsDropShip, order.isDropShip());
+				mTab.setValue(MInOut.COLUMNNAME_DropShip_BPartner_ID, order.getDropShip_BPartner_ID());
+				mTab.setValue(MInOut.COLUMNNAME_DropShip_Location_ID, order.getDropShip_Location_ID());
+				mTab.setValue(MInOut.COLUMNNAME_DropShip_User_ID, order.getDropShip_User_ID());
+			}
 		}
         /**
          * Modification: set corresponding document type
