@@ -79,7 +79,7 @@ public class MSchedulerTest extends AbstractTestCase {
 			cal1.setTimeZone(tz1);
 			cal1.setTimeInMillis(System.currentTimeMillis());
 			int hour = cal1.get(Calendar.HOUR_OF_DAY);
-			if (hour > 17) {
+			if (hour >= 17) {
 				cal1.add(Calendar.DAY_OF_MONTH, 1);
 			}
 			cal1.set(Calendar.HOUR_OF_DAY, 17);
