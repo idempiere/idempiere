@@ -345,7 +345,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 			if (   (getComponent().getText() == null || getComponent().getText().length() == 0)
 				&& !isQuickFormComp
-				&& (gridField != null && gridField.isEditable(true)))
+				&& isReadWrite())
 			{
 				// open Info window similar to swing client
 				if (infoPanel != null)
