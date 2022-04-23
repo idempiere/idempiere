@@ -342,8 +342,10 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			boolean isQuickFormComp = false;
 			if (getComponent().getAttribute(QuickGridTabRowRenderer.IS_QUICK_FORM_COMPONENT) != null)
 				isQuickFormComp = (boolean) getComponent().getAttribute(QuickGridTabRowRenderer.IS_QUICK_FORM_COMPONENT);
-			
-			if ((getComponent().getText() == null || getComponent().getText().length() == 0) && !isQuickFormComp)
+
+			if (   (getComponent().getText() == null || getComponent().getText().length() == 0)
+				&& !isQuickFormComp
+				&& isReadWrite())
 			{
 				// open Info window similar to swing client
 				if (infoPanel != null)
