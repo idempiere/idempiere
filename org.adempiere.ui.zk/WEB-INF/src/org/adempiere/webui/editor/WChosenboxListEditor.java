@@ -54,7 +54,6 @@ import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
-import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.addon.chosenbox.Chosenbox;
@@ -460,7 +459,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     	}
     }
     
-    void updateValue(Object newValue) {
+    private void updateValue(Object newValue) {
     	try {
 			onselecting = true;
 
@@ -785,7 +784,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			ArrayList<String> listSelected = new ArrayList<String>();
 			if (values != null && !Util.isEmpty((String) values)) {
 				for (String value : ((String) values).split(",")) {
-					selectedModel.addElement(new ListElement(value, MRefList.getListName(Env.getCtx(), refID, value)));
+					selectedModel.addElement(new ValueNamePair (value, MRefList.getListName(Env.getCtx(), refID, value)));
 					listSelected.add(value);
 				}	
 			}
@@ -800,7 +799,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 				if (listSelected.contains(vnp.getValue()))
 					continue;
 
-				availableModel.addElement(new ListElement(vnp.getValue(), MRefList.getListName(Env.getCtx(), refID, vnp.getValue())));
+				availableModel.addElement(new ValueNamePair (vnp.getValue(), MRefList.getListName(Env.getCtx(), refID, vnp.getValue())));
 				listSelected.add(vnp.getValue());
 			}
 		}
@@ -812,11 +811,12 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 
 				for (Listitem le : selectedList.getItems()) {
 					int index = selectedList.getIndexOfItem(le);
-					ListElement selObject = (ListElement) selectedModel.getElementAt(index);
+					ValueNamePair  selObject = (ValueNamePair ) selectedModel.getElementAt(index);
 					value.append(selObject.getID()).append(",");
 				}
 
-				value = value.deleteCharAt(value.length() - 1);
+				if (value.length() > 0)
+					value = value.deleteCharAt(value.length() - 1);
 				m_newValue = value.toString();
 				this.detach();
 			}
@@ -932,23 +932,23 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			final SimpleListModel lmFrom = getModel(listFrom);
 			final SimpleListModel lmTo = getModel(lmFrom);
 			Set<?> selectedItems = listFrom.getSelectedItems();
-			List<ListElement> selObjects = new ArrayList<ListElement>();
+			List<ValueNamePair > selObjects = new ArrayList<ValueNamePair >();
 
 			for (Object obj : selectedItems) {
 				ListItem listItem = (ListItem) obj;
 				index = listFrom.getIndexOfItem(listItem);
-				ListElement selObject = (ListElement)lmFrom.getElementAt(index);
+				ValueNamePair  selObject = (ValueNamePair )lmFrom.getElementAt(index);
 				selObjects.add(selObject);
 			}
 
 			doTransfer(index, selObjects, lmFrom, lmTo, listFrom, listTo, endIndex);
 		}
 
-		private void doTransfer(int index, List<ListElement> selObjects, SimpleListModel lmFrom, SimpleListModel lmTo, Listbox listFrom , Listbox listTo , int endIndex) {
+		private void doTransfer(int index, List<ValueNamePair > selObjects, SimpleListModel lmFrom, SimpleListModel lmTo, Listbox listFrom , Listbox listTo , int endIndex) {
 
 			index = 0;
 			Arrays.sort(selObjects.toArray());	
-			for (ListElement selObject : selObjects) {
+			for (ValueNamePair  selObject : selObjects) {
 				lmFrom.removeElement(selObject);
 				lmTo.add(endIndex, selObject);
 			}
@@ -982,12 +982,12 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 						endIndex = selListbox.getIndexOfItem(endItem);
 						migrateLists (listFrom, listTo, endIndex);
 					} else if (startItem.getListbox() == endItem.getListbox() && startItem.getListbox() == selListbox) {
-						List<ListElement> selObjects = new ArrayList<ListElement>();
+						List<ValueNamePair > selObjects = new ArrayList<ValueNamePair >();
 						endIndex = selListbox.getIndexOfItem(endItem);	
 						for (Object obj : selListbox.getSelectedItems()) {
 							ListItem listItem = (ListItem) obj;
 							int index = selListbox.getIndexOfItem(listItem);
-							ListElement selObject = (ListElement) selModel.getElementAt(index);				
+							ValueNamePair  selObject = (ValueNamePair ) selModel.getElementAt(index);				
 							selObjects.add(selObject);						
 						}
 						migrateValueWithinSelectedList (selModel, selListbox, endIndex, selObjects);
@@ -996,14 +996,14 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			}
 		}
 
-		private void migrateValueWithinSelectedList (SimpleListModel selModel, Listbox selListbox, int endIndex, List<ListElement> selObjects) {
+		private void migrateValueWithinSelectedList (SimpleListModel selModel, Listbox selListbox, int endIndex, List<ValueNamePair > selObjects) {
 			int iniIndex =0;
 			Arrays.sort(selObjects.toArray());	
-			ListElement selObject= null;
-			ListElement endObject = (ListElement) selModel.getElementAt(endIndex);
-			for (ListElement selected : selObjects) {
+			ValueNamePair  selObject= null;
+			ValueNamePair  endObject = (ValueNamePair ) selModel.getElementAt(endIndex);
+			for (ValueNamePair  selected : selObjects) {
 				iniIndex = selModel.indexOf(selected);
-				selObject = (ListElement) selModel.getElementAt(iniIndex);
+				selObject = (ValueNamePair ) selModel.getElementAt(iniIndex);
 				selModel.removeElement(selObject);
 				endIndex = selModel.indexOf(endObject);
 				selModel.add(endIndex, selObject);			
@@ -1011,7 +1011,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 
 			selListbox.removeAllItems();
 			for(int i=0 ; i<selModel.getSize(); i++) { 	
-				ListElement pp = (ListElement) selModel.getElementAt(i);
+				ValueNamePair  pp = (ValueNamePair ) selModel.getElementAt(i);
 				selListbox.addItem(new ValueNamePair(pp.getID(), pp.getName()));
 			}
 		}
@@ -1034,8 +1034,8 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 					int index = indices[i];
 					if (index == 0)
 						break;
-					ListElement selObject = (ListElement) selectedModel.getElementAt(index);
-					ListElement newObject = (ListElement) selectedModel.getElementAt(index - 1);
+					ValueNamePair  selObject = (ValueNamePair ) selectedModel.getElementAt(index);
+					ValueNamePair  newObject = (ValueNamePair ) selectedModel.getElementAt(index - 1);
 					selectedModel.setElementAt(newObject, index);
 					selectedModel.setElementAt(selObject, index - 1);
 					indices[i] = index - 1;
@@ -1048,8 +1048,8 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 					int index = indices[i];
 					if (index  >= selectedModel.getSize() - 1)
 						break;
-					ListElement selObject = (ListElement) selectedModel.getElementAt(index);
-					ListElement newObject = (ListElement) selectedModel.getElementAt(index + 1);
+					ValueNamePair  selObject = (ValueNamePair ) selectedModel.getElementAt(index);
+					ValueNamePair  newObject = (ValueNamePair ) selectedModel.getElementAt(index + 1);
 					selectedModel.setElementAt(newObject, index);
 					selectedModel.setElementAt(selObject, index + 1);
 					selectedList.setSelectedIndex(index + 1);
@@ -1070,20 +1070,6 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 
 		private String getNewValue() {
 			return m_newValue;
-		}
-
-		private class ListElement extends NamePair {
-			private static final long serialVersionUID = 5399675004361331697L;
-			private String m_value;
-
-			public ListElement(String value, String name) {
-				super(name);
-				m_value = value;
-			}
-			@Override
-			public String getID() {
-				return m_value;
-			}
 		}
 	}
 }
