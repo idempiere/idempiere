@@ -138,7 +138,7 @@ public class LabelAction implements IAction {
 			m_tableID = tableID;
 			m_recordID = recordID;
 			m_windowNo = panel.getWindowNo();
-			setTitle("Label : " + panel.getTitle()); // TODO AD_Message
+			setTitle(Msg.getMsg(ctx, "LabelPanelTitle") + panel.getTitle());
 			try {
 				dynInit();
 				zkInit();
@@ -177,7 +177,7 @@ public class LabelAction implements IAction {
 			bDelete.setTooltiptext(Msg.getMsg(Env.getCtx(), "Delete"));
 			bDelete.addEventListener(Events.ON_CLICK, this);
 			bDelete.setEnabled(false);
-			fComments.getComponent().setPlaceholder("OptionalComment"); // TODO AD_Message
+			fComments.getComponent().setPlaceholder(Msg.getMsg(Env.getCtx(), "LabelPanelOptionalComment"));
 
 			Panel panel = new Panel();
 			panel.appendChild(bNew);
@@ -317,18 +317,19 @@ public class LabelAction implements IAction {
 
 				Menuitem menuItem = (Menuitem) event.getTarget();
 				if (menuItem.getValue() == POPUP_NEW_LABEL) {
-					
-					if (fLabelCat.isNullOrEmpty() // TODO replace sql with Cache
-							&& DB.getSQLValueEx(null, "SELECT C_LabelCategory_ID FROM C_LabelCategory WHERE AD_Client_ID = ? AND IsDefault ='Y' AND IsActive ='Y'", Env.getAD_Client_ID(Env.getCtx())) <= 0) {
+
+					int categoryID = getCategoryID();
+					if (categoryID <= 0) {
 						FDialog.error(m_windowNo, "Error", "Impossible to add label as there is no Label Category");
 						return;
 					}
 
-					FDialog.askForInput(m_windowNo, null, "Label of new label", new Callback<String>() { // TODO AD_Message
+					FDialog.askForInput(m_windowNo, null, "LabelPanelAddPopupTitle", new Callback<String>() {
 						public void onCallback(String result) {
+
 							MLabel l = new MLabel(Env.getCtx(), 0, null);
 							l.setAD_Org_ID(0);
-							l.setC_LabelCategory_ID((Integer) fLabelCat.getValue());
+							l.setC_LabelCategory_ID(categoryID);
 							l.setName(result);
 							l.saveEx();
 
@@ -344,6 +345,13 @@ public class LabelAction implements IAction {
 			}
 		}
 
+		/** Returns the category to be used for new labels */
+		int getCategoryID() {
+			if (!fLabelCat.isNullOrEmpty())
+				return (Integer) fLabelCat.getValue();
+			return MLabelCategory.getDefaultID(Env.getCtx());
+		}
+		
 		void onNew()
 		{
 			if (fLabelCat.getValue() == null)
@@ -371,7 +379,7 @@ public class LabelAction implements IAction {
 						fLabel.addItem(key);
 					}
 				} 
-				// si aucune ligne dans la grille, c'est qu'il s'agit du 1er enregistrement, donc on autorise la modification
+				// if no line in the grid, is the first record, so we allow to update
 				fLabel.setEnabled(table.getRowCount() == 0);
 				fComments.setReadWrite(table.getRowCount() == 0);
 			}
@@ -403,7 +411,7 @@ public class LabelAction implements IAction {
 
 			table.prepareTable(getLayout(), "", "", true , "osef");
 			table.addEventListener(Events.ON_SELECT, this);
-			table.addEventListener(Events.ON_RIGHT_CLICK, this); // sert juste à pas afficher le clic droit standard du navigateur
+			table.addEventListener(Events.ON_RIGHT_CLICK, this); // cosmetic purpose to not show the right clic popup from browser
 			tableModel = new ListModelTable(data);
 			table.setModel(tableModel);
 			table.repaint();
@@ -444,12 +452,12 @@ public class LabelAction implements IAction {
 					if (fLabelCat.getValue() == null)
 						line.add(tag.getC_LabelCategory().getName());
 
-					// ID et Nom du tag item
+					// ID / Name of label assignment
 					MLabel l = new MLabel(Env.getCtx(), tag.getC_Label_ID(), null);
 					KeyNamePair knp = new KeyNamePair(l.getC_Label_ID(), l.getName());
 					line.add(knp);
 
-					// ID et comment du tag
+					// ID / Comment of the label assignment
 					knp = new KeyNamePair(tag.getC_LabelAssignment_ID(), tag.getComments());
 					line.add(knp);
 

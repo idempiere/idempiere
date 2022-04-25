@@ -839,3 +839,14 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 INSERT INTO AD_ToolBarButton (AD_Client_ID,AD_Org_ID,Created,CreatedBy,ComponentName,IsActive,AD_ToolBarButton_ID,Name,Updated,UpdatedBy,IsCustomization,ActionClassName,KeyStroke_KeyCode,KeyStroke_Modifiers,AD_ToolBarButton_UU,"action",SeqNo,IsAdvancedButton,IsAddSeparator,EntityType,IsShowMore) VALUES (0,0,TO_TIMESTAMP('2022-04-15 15:01:25','YYYY-MM-DD HH24:MI:SS'),100,'LabelEditor','Y',200118,'Label Editor',TO_TIMESTAMP('2022-04-15 15:01:25','YYYY-MM-DD HH24:MI:SS'),100,'Y','org.adempiere.webui.window.LabelAction',0,0,'b75cd084-f59d-4541-bbad-c8a01d359608','W',310,'N','N','D','N')
 ;
 
+-- Apr 25, 2022, 10:18:29 AM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Labels: ',0,0,'Y',TO_TIMESTAMP('2022-04-25 10:18:29','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-25 10:18:29','YYYY-MM-DD HH24:MI:SS'),100,200746,'LabelPanelTitle','D','ff05c43d-e10b-4d5c-bba9-fb105b83ec76')
+;
+
+-- Apr 25, 2022, 10:19:02 AM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Optional Comment',0,0,'Y',TO_TIMESTAMP('2022-04-25 10:19:01','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-25 10:19:01','YYYY-MM-DD HH24:MI:SS'),100,200747,'LabelPanelOptionalComment','D','4f842979-2f31-4360-9af3-556787be0e7f')
+;
+
+-- Apr 25, 2022, 10:21:10 AM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Name of new label',0,0,'Y',TO_TIMESTAMP('2022-04-25 10:21:09','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-25 10:21:09','YYYY-MM-DD HH24:MI:SS'),100,200748,'LabelPanelAddPopupTitle','D','ba88ecb6-4193-4463-954a-5c03e6b527c9')
+;
