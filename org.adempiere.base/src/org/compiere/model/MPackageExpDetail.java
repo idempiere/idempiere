@@ -39,8 +39,9 @@ public class MPackageExpDetail extends X_AD_Package_Exp_Detail
 
 	/**
 	 * 	MPackageExpDetail
-	 *	@param ctx
-	 *	@param int
+	 * @param ctx
+	 * @param AD_Package_Exp_ID
+	 * @param trxName
 	 */
 	public MPackageExpDetail (Properties ctx, int AD_Package_Exp_ID, String trxName)
 	{
@@ -87,10 +88,6 @@ public class MPackageExpDetail extends X_AD_Package_Exp_Detail
 		String type = getType();
 		if (TYPE_ApplicationOrModule.equals(type)) {
 			return getAD_Menu_ID();
-		} else if (TYPE_CodeSnipit.equals(type)) {
-			return 0;
-		} else if (TYPE_Data.equals(type)) {
-			return 0;
 		} else if (TYPE_DynamicValidationRule.equals(type)) {
 			return getAD_Val_Rule_ID();
 		} else if (TYPE_Form.equals(type)) {

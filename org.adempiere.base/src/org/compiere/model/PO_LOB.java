@@ -60,6 +60,19 @@ public class PO_LOB implements Serializable
 		m_value = value;
 	}	//	PO_LOB
 
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public PO_LOB (PO_LOB copy)
+	{
+		this.m_columnName = copy.m_columnName;
+		this.m_displayType = copy.m_displayType;
+		this.m_tableName = copy.m_tableName;
+		this.m_value = copy.m_value;
+		this.m_whereClause = copy.m_whereClause;
+	}
+	
 	/**	Logger					*/
 	protected CLogger	log = CLogger.getCLogger (getClass());
 	/**	Table Name				*/
@@ -100,7 +113,7 @@ public class PO_LOB implements Serializable
 			|| (m_value instanceof byte[] && ((byte[])m_value).length == 0)
 			)
 		{
-			StringBuffer sql = new StringBuffer ("UPDATE ")
+			StringBuilder sql = new StringBuilder ("UPDATE ")
 				.append(m_tableName)
 				.append(" SET ").append(m_columnName)
 				.append("=null WHERE ").append(m_whereClause);
@@ -111,12 +124,12 @@ public class PO_LOB implements Serializable
 			return true;
 		}
 		
-		StringBuffer sql = new StringBuffer ("UPDATE ")
+		StringBuilder sql = new StringBuilder ("UPDATE ")
 			.append(m_tableName)
 			.append(" SET ").append(m_columnName)
 			.append("=? WHERE ").append(m_whereClause);
 		if (!DB.isPostgreSQL() && !DB.isOracle())
-			sql = new StringBuffer(DB.getDatabase().convertStatement(sql.toString()));
+			sql = new StringBuilder(DB.getDatabase().convertStatement(sql.toString()));
 		//
 		
 		if (log.isLoggable(Level.FINE)) log.fine("[" + trxName + "] - Local - " + m_value);

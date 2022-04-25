@@ -24,7 +24,14 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MAccount;
+import org.compiere.model.MAttributeSetInstance;
+import org.compiere.model.MChart;
+import org.compiere.model.MImage;
+import org.compiere.model.MLocation;
+import org.compiere.model.MLocator;
 import org.compiere.model.MQuery;
+import org.compiere.model.MResourceAssignment;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTab;
@@ -32,11 +39,12 @@ import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
 /**
- * Generic provider of zoom targets. Contains pieces of {@link org.compiere.apps.AZoomAcross}
+ * Generic provider of zoom targets. Contains pieces of {@link org.adempiere.webui.WZoomAcross}
  * methods <code>getZoomTargets</code> and <code>addTarget</code>
  * 
  * @author Tobias Schoeneberg, www.metas.de - FR [ 2897194  ] Advanced Zoom and RelationTypes
@@ -98,8 +106,22 @@ public class GenericZoomProvider implements IZoomProvider {
 			+ "	AND t.IsView='N' "); // not views
 		if (detailedZoom) {
 			sqlb.append(
-					  " AND (    ( c.ColumnName=? AND c.AD_Reference_ID=19) " 
-					+ "       OR ( c.ColumnName=? AND c.AD_Reference_ID=30 AND c.AD_Reference_Value_ID IS NULL ) "
+					  " AND (    ( c.ColumnName=? AND c.AD_Reference_ID=19) ");
+			if (MLocation.COLUMNNAME_C_Location_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Location);
+			else if (MAccount.COLUMNNAME_C_ValidCombination_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Account);
+			else if (MLocator.COLUMNNAME_M_Locator_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Locator);
+			else if (MImage.COLUMNNAME_AD_Image_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Image);
+			else if (MResourceAssignment.COLUMNNAME_S_ResourceAssignment_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Assignment);
+			else if (MAttributeSetInstance.COLUMNNAME_M_AttributeSetInstance_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.PAttribute);
+			else if (MChart.COLUMNNAME_AD_Chart_ID.equals(po.get_KeyColumns()[0]))
+				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Chart);
+			sqlb.append("     OR ( c.ColumnName=? AND c.AD_Reference_ID=30 AND c.AD_Reference_Value_ID IS NULL ) "
 					+ "       OR ( c.AD_Reference_ID IN (18, 30) AND c.AD_Reference_Value_ID=r.AD_Reference_ID AND tr.TableName=? ) ) "); 
 		} else  {
 			sqlb.append(" AND c.ColumnName=? ");
@@ -165,13 +187,13 @@ public class GenericZoomProvider implements IZoomProvider {
 		
 		final MQuery query = new MQuery();
 		MTable table = MTable.get(ctx, targetTableName);
-		if (table.getColumnIndex("AD_Client_ID") < 0) // table doesn't have AD_Client_ID
+		if (! table.columnExistsInDB("AD_Client_ID")) // table doesn't have AD_Client_ID
 			return null;
 
 		int tabIDLoop = AD_Tab_ID;
 		int levelUp = 0;
 		while (true) {
-			MTab tab = new MTab(ctx, tabIDLoop, null);
+			MTab tab = MTab.get(tabIDLoop);
 			String whereCtx = tab.getWhereClause();
 			if (!Util.isEmpty(whereCtx, true)) {
 				if (whereCtx.indexOf("@") != -1)
@@ -204,7 +226,7 @@ public class GenericZoomProvider implements IZoomProvider {
 				break;
 		}
 
-		query.addRestriction(targetColumnName + "=" + po.get_ID());
+		query.addRestriction(targetTableName + "." + targetColumnName + "=" + po.get_ID());
 		query.setZoomTableName(targetTableName);
 		query.setZoomColumnName(targetColumnName);
 		query.setZoomValue(po.get_ID());
@@ -217,9 +239,9 @@ public class GenericZoomProvider implements IZoomProvider {
 		if (   clientID != 0
 			&& ( MTable.ACCESSLEVEL_All.equals(accessLevel)
 			  || MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel))) {
-			query.addRestriction("AD_Client_ID IN (0, " + clientID + ")");
+			query.addRestriction(targetTableName+".AD_Client_ID IN (0, " + clientID + ")");
 		} else {
-			query.addRestriction("AD_Client_ID=" + clientID);
+			query.addRestriction(targetTableName+".AD_Client_ID=" + clientID);
 		}
 
 		StringBuilder sqlb = new StringBuilder("SELECT COUNT(*) FROM ")

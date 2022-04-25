@@ -83,13 +83,43 @@ public class WButtonEditor extends WEditor implements IProcessButton
 
 	private IADTabpanel adTabpanel;
     
+	/**
+	 * 
+	 * @param gridField
+	 */
     public WButtonEditor(GridField gridField)
     {
         this(gridField, -1);
     }
 
+    /**
+     * 
+     * @param gridField
+     * @param rowIndex
+     */
     public WButtonEditor(GridField gridField, int rowIndex) {
-        super(new Button(), gridField, rowIndex);
+    	this(gridField, rowIndex, false, null);
+    }
+    
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     */
+    public WButtonEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+    	this(gridField, -1, tableEditor, editorConfiguration);
+    }
+    
+    /**
+     * 
+     * @param gridField
+     * @param rowIndex
+     * @param tableEditor
+     * @param editorConfiguration
+     */
+    public WButtonEditor(GridField gridField, int rowIndex, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+        super(new Button(), gridField, rowIndex, tableEditor, editorConfiguration);
         m_text = gridField.getHeader();
         AD_Process_ID = gridField.getAD_Process_ID();
         gridfield = gridField;
@@ -147,6 +177,7 @@ public class WButtonEditor extends WEditor implements IProcessButton
         		getComponent().setIconSclass("z-icon-Zoom");
         	else
         		getComponent().setImage(ThemeManager.getThemeResource("images/Zoom16.png"));       //  16*16
+        	// NOTE the label of Record_ID button is overwritten in setValue
             getComponent().setLabel(Msg.getMsg(Env.getCtx(), "ZoomDocument"));
         }
         else if (columnName.equals("Posted"))
@@ -205,9 +236,13 @@ public class WButtonEditor extends WEditor implements IProcessButton
         String text = m_text;
 
         //  Nothing to show or Record_ID
-        if (value == null || super.getColumnName().equals("Record_ID"))
+        if (value == null)
         {
             ;
+        }
+        else if (super.getColumnName().equals("Record_ID"))
+        {
+            text = m_text + " (" + value.toString() + ")";
         }
         else if (super.getColumnName().equals("DocAction")
         		&& !MSysConfig.getBooleanValue(MSysConfig.DOCACTIONBUTTON_SHOWACTIONNAME, false, Env.getAD_Client_ID(Env.getCtx())))

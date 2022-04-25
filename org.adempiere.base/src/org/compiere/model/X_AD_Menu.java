@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Menu
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Menu")
 public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Menu (Properties ctx, int AD_Menu_ID, String trxName)
@@ -40,7 +41,25 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
         {
 			setAD_Menu_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsReadOnly (false);
+// N
+			setIsSOTrx (true);
+// Y
+			setIsSummary (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Menu (Properties ctx, int AD_Menu_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Menu_ID, trxName, virtualColumns);
+      /** if (AD_Menu_ID == 0)
+        {
+			setAD_Menu_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsReadOnly (false);
 // N
 			setIsSOTrx (true);
@@ -73,35 +92,34 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Menu[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_Menu[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Action AD_Reference_ID=104 */
 	public static final int ACTION_AD_Reference_ID=104;
-	/** Window = W */
-	public static final String ACTION_Window = "W";
-	/** Task = T */
-	public static final String ACTION_Task = "T";
+	/** Workbench = B */
+	public static final String ACTION_Workbench = "B";
+	/** Detail = D */
+	public static final String ACTION_Detail = "D";
 	/** WorkFlow = F */
 	public static final String ACTION_WorkFlow = "F";
+	/** Info = I */
+	public static final String ACTION_Info = "I";
 	/** Process = P */
 	public static final String ACTION_Process = "P";
 	/** Report = R */
 	public static final String ACTION_Report = "R";
+	/** Task = T */
+	public static final String ACTION_Task = "T";
+	/** Window = W */
+	public static final String ACTION_Window = "W";
 	/** Form = X */
 	public static final String ACTION_Form = "X";
-	/** Workbench = B */
-	public static final String ACTION_Workbench = "B";
-	/** Info = I */
-	public static final String ACTION_Info = "I";
-	/** Detail = D */
-	public static final String ACTION_Detail = "D";
 	/** Set Action.
-		@param Action 
-		Indicates the Action to be performed
-	  */
+		@param Action Indicates the Action to be performed
+	*/
 	public void setAction (String Action)
 	{
 
@@ -111,32 +129,32 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Action.
 		@return Indicates the Action to be performed
 	  */
-	public String getAction () 
+	public String getAction()
 	{
 		return (String)get_Value(COLUMNNAME_Action);
 	}
 
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_Name)
-			.getPO(getAD_Form_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
+			.getPO(getAD_Form_ID(), get_TrxName());
+	}
 
 	/** Set Special Form.
-		@param AD_Form_ID 
-		Special Form
-	  */
+		@param AD_Form_ID Special Form
+	*/
 	public void setAD_Form_ID (int AD_Form_ID)
 	{
-		if (AD_Form_ID < 1) 
+		if (AD_Form_ID < 1)
 			set_Value (COLUMNNAME_AD_Form_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Form_ID, Integer.valueOf(AD_Form_ID));
 	}
 
 	/** Get Special Form.
 		@return Special Form
 	  */
-	public int getAD_Form_ID () 
+	public int getAD_Form_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Form_ID);
 		if (ii == null)
@@ -145,26 +163,26 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
 
 	/** Set Info Window.
-		@param AD_InfoWindow_ID 
-		Info and search/select Window
-	  */
+		@param AD_InfoWindow_ID Info and search/select Window
+	*/
 	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
 	{
-		if (AD_InfoWindow_ID < 1) 
+		if (AD_InfoWindow_ID < 1)
 			set_Value (COLUMNNAME_AD_InfoWindow_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
 	}
 
 	/** Get Info Window.
 		@return Info and search/select Window
 	  */
-	public int getAD_InfoWindow_ID () 
+	public int getAD_InfoWindow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
 		if (ii == null)
@@ -173,21 +191,20 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Menu.
-		@param AD_Menu_ID 
-		Identifies a Menu
-	  */
+		@param AD_Menu_ID Identifies a Menu
+	*/
 	public void setAD_Menu_ID (int AD_Menu_ID)
 	{
-		if (AD_Menu_ID < 1) 
+		if (AD_Menu_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Menu_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Menu_ID, Integer.valueOf(AD_Menu_ID));
 	}
 
 	/** Get Menu.
 		@return Identifies a Menu
 	  */
-	public int getAD_Menu_ID () 
+	public int getAD_Menu_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Menu_ID);
 		if (ii == null)
@@ -196,7 +213,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set AD_Menu_UU.
-		@param AD_Menu_UU AD_Menu_UU	  */
+		@param AD_Menu_UU AD_Menu_UU
+	*/
 	public void setAD_Menu_UU (String AD_Menu_UU)
 	{
 		set_Value (COLUMNNAME_AD_Menu_UU, AD_Menu_UU);
@@ -204,32 +222,32 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 
 	/** Get AD_Menu_UU.
 		@return AD_Menu_UU	  */
-	public String getAD_Menu_UU () 
+	public String getAD_Menu_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Menu_UU);
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
-		@param AD_Process_ID 
-		Process or Report
-	  */
+		@param AD_Process_ID Process or Report
+	*/
 	public void setAD_Process_ID (int AD_Process_ID)
 	{
-		if (AD_Process_ID < 1) 
+		if (AD_Process_ID < 1)
 			set_Value (COLUMNNAME_AD_Process_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
 	}
 
 	/** Get Process.
 		@return Process or Report
 	  */
-	public int getAD_Process_ID () 
+	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
@@ -238,26 +256,26 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_Name)
-			.getPO(getAD_Task_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_ID)
+			.getPO(getAD_Task_ID(), get_TrxName());
+	}
 
 	/** Set OS Task.
-		@param AD_Task_ID 
-		Operation System Task
-	  */
+		@param AD_Task_ID Operation System Task
+	*/
 	public void setAD_Task_ID (int AD_Task_ID)
 	{
-		if (AD_Task_ID < 1) 
+		if (AD_Task_ID < 1)
 			set_Value (COLUMNNAME_AD_Task_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Task_ID, Integer.valueOf(AD_Task_ID));
 	}
 
 	/** Get OS Task.
 		@return Operation System Task
 	  */
-	public int getAD_Task_ID () 
+	public int getAD_Task_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Task_ID);
 		if (ii == null)
@@ -266,26 +284,26 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_Value (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -294,26 +312,26 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getAD_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getAD_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
-		@param AD_Workflow_ID 
-		Workflow or combination of tasks
-	  */
+		@param AD_Workflow_ID Workflow or combination of tasks
+	*/
 	public void setAD_Workflow_ID (int AD_Workflow_ID)
 	{
-		if (AD_Workflow_ID < 1) 
+		if (AD_Workflow_ID < 1)
 			set_Value (COLUMNNAME_AD_Workflow_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Workflow_ID, Integer.valueOf(AD_Workflow_ID));
 	}
 
 	/** Get Workflow.
 		@return Workflow or combination of tasks
 	  */
-	public int getAD_Workflow_ID () 
+	public int getAD_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Workflow_ID);
 		if (ii == null)
@@ -322,9 +340,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -333,7 +350,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -341,9 +358,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -353,15 +369,14 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Centrally maintained.
-		@param IsCentrallyMaintained 
-		Information maintained in System Element table
-	  */
+		@param IsCentrallyMaintained Information maintained in System Element table
+	*/
 	public void setIsCentrallyMaintained (boolean IsCentrallyMaintained)
 	{
 		set_Value (COLUMNNAME_IsCentrallyMaintained, Boolean.valueOf(IsCentrallyMaintained));
@@ -370,7 +385,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Centrally maintained.
 		@return Information maintained in System Element table
 	  */
-	public boolean isCentrallyMaintained () 
+	public boolean isCentrallyMaintained()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCentrallyMaintained);
 		if (oo != null) 
@@ -383,9 +398,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Read Only.
-		@param IsReadOnly 
-		Field is read only
-	  */
+		@param IsReadOnly Field is read only
+	*/
 	public void setIsReadOnly (boolean IsReadOnly)
 	{
 		set_Value (COLUMNNAME_IsReadOnly, Boolean.valueOf(IsReadOnly));
@@ -394,7 +408,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Read Only.
 		@return Field is read only
 	  */
-	public boolean isReadOnly () 
+	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
 		if (oo != null) 
@@ -407,9 +421,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Sales Transaction.
-		@param IsSOTrx 
-		This is a Sales Transaction
-	  */
+		@param IsSOTrx This is a Sales Transaction
+	*/
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
 		set_Value (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
@@ -418,7 +431,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Sales Transaction.
 		@return This is a Sales Transaction
 	  */
-	public boolean isSOTrx () 
+	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
 		if (oo != null) 
@@ -431,9 +444,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Summary Level.
-		@param IsSummary 
-		This is a summary entity
-	  */
+		@param IsSummary This is a summary entity
+	*/
 	public void setIsSummary (boolean IsSummary)
 	{
 		set_Value (COLUMNNAME_IsSummary, Boolean.valueOf(IsSummary));
@@ -442,7 +454,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Summary Level.
 		@return This is a summary entity
 	  */
-	public boolean isSummary () 
+	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
 		if (oo != null) 
@@ -455,9 +467,8 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -466,7 +477,7 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -478,4 +489,20 @@ public class X_AD_Menu extends PO implements I_AD_Menu, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Predefined Context Variables.
+		@param PredefinedContextVariables Predefined context variables to inject when opening a menu entry or a window
+	*/
+	public void setPredefinedContextVariables (String PredefinedContextVariables)
+	{
+		set_Value (COLUMNNAME_PredefinedContextVariables, PredefinedContextVariables);
+	}
+
+	/** Get Predefined Context Variables.
+		@return Predefined context variables to inject when opening a menu entry or a window
+	  */
+	public String getPredefinedContextVariables()
+	{
+		return (String)get_Value(COLUMNNAME_PredefinedContextVariables);
+	}
 }

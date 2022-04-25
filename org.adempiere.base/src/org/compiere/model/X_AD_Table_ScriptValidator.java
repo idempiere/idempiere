@@ -23,19 +23,35 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Table_ScriptValidator
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Table_ScriptValidator")
 public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptValidator, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Table_ScriptValidator (Properties ctx, int AD_Table_ScriptValidator_ID, String trxName)
     {
       super (ctx, AD_Table_ScriptValidator_ID, trxName);
+      /** if (AD_Table_ScriptValidator_ID == 0)
+        {
+			setAD_Rule_ID (0);
+			setAD_Table_ID (0);
+			setAD_Table_ScriptValidator_ID (0);
+			setEventModelValidator (null);
+			setSeqNo (0);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Table_ScriptValidator (Properties ctx, int AD_Table_ScriptValidator_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Table_ScriptValidator_ID, trxName, virtualColumns);
       /** if (AD_Table_ScriptValidator_ID == 0)
         {
 			setAD_Rule_ID (0);
@@ -70,29 +86,31 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Table_ScriptValidator[")
+      StringBuilder sb = new StringBuilder ("X_AD_Table_ScriptValidator[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Rule getAD_Rule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Rule.Table_Name)
-			.getPO(getAD_Rule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Rule)MTable.get(getCtx(), org.compiere.model.I_AD_Rule.Table_ID)
+			.getPO(getAD_Rule_ID(), get_TrxName());
+	}
 
 	/** Set Rule.
-		@param AD_Rule_ID Rule	  */
+		@param AD_Rule_ID Rule
+	*/
 	public void setAD_Rule_ID (int AD_Rule_ID)
 	{
-		if (AD_Rule_ID < 1) 
+		if (AD_Rule_ID < 1)
 			set_Value (COLUMNNAME_AD_Rule_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Rule_ID, Integer.valueOf(AD_Rule_ID));
 	}
 
 	/** Get Rule.
 		@return Rule	  */
-	public int getAD_Rule_ID () 
+	public int getAD_Rule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Rule_ID);
 		if (ii == null)
@@ -101,26 +119,26 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -129,18 +147,19 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	}
 
 	/** Set Table Script Validator.
-		@param AD_Table_ScriptValidator_ID Table Script Validator	  */
+		@param AD_Table_ScriptValidator_ID Table Script Validator
+	*/
 	public void setAD_Table_ScriptValidator_ID (int AD_Table_ScriptValidator_ID)
 	{
-		if (AD_Table_ScriptValidator_ID < 1) 
+		if (AD_Table_ScriptValidator_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ScriptValidator_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ScriptValidator_ID, Integer.valueOf(AD_Table_ScriptValidator_ID));
 	}
 
 	/** Get Table Script Validator.
 		@return Table Script Validator	  */
-	public int getAD_Table_ScriptValidator_ID () 
+	public int getAD_Table_ScriptValidator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ScriptValidator_ID);
 		if (ii == null)
@@ -149,7 +168,8 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	}
 
 	/** Set AD_Table_ScriptValidator_UU.
-		@param AD_Table_ScriptValidator_UU AD_Table_ScriptValidator_UU	  */
+		@param AD_Table_ScriptValidator_UU AD_Table_ScriptValidator_UU
+	*/
 	public void setAD_Table_ScriptValidator_UU (String AD_Table_ScriptValidator_UU)
 	{
 		set_Value (COLUMNNAME_AD_Table_ScriptValidator_UU, AD_Table_ScriptValidator_UU);
@@ -157,65 +177,66 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 
 	/** Get AD_Table_ScriptValidator_UU.
 		@return AD_Table_ScriptValidator_UU	  */
-	public String getAD_Table_ScriptValidator_UU () 
+	public String getAD_Table_ScriptValidator_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Table_ScriptValidator_UU);
 	}
 
 	/** EventModelValidator AD_Reference_ID=53237 */
 	public static final int EVENTMODELVALIDATOR_AD_Reference_ID=53237;
-	/** Table Before New = TBN */
-	public static final String EVENTMODELVALIDATOR_TableBeforeNew = "TBN";
-	/** Table Before Change = TBC */
-	public static final String EVENTMODELVALIDATOR_TableBeforeChange = "TBC";
-	/** Table Before Delete = TBD */
-	public static final String EVENTMODELVALIDATOR_TableBeforeDelete = "TBD";
-	/** Table After New = TAN */
-	public static final String EVENTMODELVALIDATOR_TableAfterNew = "TAN";
-	/** Table After Change = TAC */
-	public static final String EVENTMODELVALIDATOR_TableAfterChange = "TAC";
-	/** Table After Delete = TAD */
-	public static final String EVENTMODELVALIDATOR_TableAfterDelete = "TAD";
-	/** Document Before Prepare = DBPR */
-	public static final String EVENTMODELVALIDATOR_DocumentBeforePrepare = "DBPR";
-	/** Document Before Void = DBVO */
-	public static final String EVENTMODELVALIDATOR_DocumentBeforeVoid = "DBVO";
-	/** Document Before Close = DBCL */
-	public static final String EVENTMODELVALIDATOR_DocumentBeforeClose = "DBCL";
-	/** Document Before Reactivate = DBAC */
-	public static final String EVENTMODELVALIDATOR_DocumentBeforeReactivate = "DBAC";
-	/** Document Before Reverse Correct = DBRC */
-	public static final String EVENTMODELVALIDATOR_DocumentBeforeReverseCorrect = "DBRC";
-	/** Document Before Reverse Accrual = DBRA */
-	public static final String EVENTMODELVALIDATOR_DocumentBeforeReverseAccrual = "DBRA";
-	/** Document Before Complete = DBCO */
-	public static final String EVENTMODELVALIDATOR_DocumentBeforeComplete = "DBCO";
-	/** Document Before Post = DBPO */
-	public static final String EVENTMODELVALIDATOR_DocumentBeforePost = "DBPO";
-	/** Document After Prepare = DAPR */
-	public static final String EVENTMODELVALIDATOR_DocumentAfterPrepare = "DAPR";
-	/** Document After Void = DAVO */
-	public static final String EVENTMODELVALIDATOR_DocumentAfterVoid = "DAVO";
-	/** Document After Close = DACL */
-	public static final String EVENTMODELVALIDATOR_DocumentAfterClose = "DACL";
 	/** Document After Reactivate = DAAC */
 	public static final String EVENTMODELVALIDATOR_DocumentAfterReactivate = "DAAC";
-	/** Document After Reverse Correct = DARC */
-	public static final String EVENTMODELVALIDATOR_DocumentAfterReverseCorrect = "DARC";
-	/** Document After Reverse Accrual = DARA */
-	public static final String EVENTMODELVALIDATOR_DocumentAfterReverseAccrual = "DARA";
+	/** Document After Close = DACL */
+	public static final String EVENTMODELVALIDATOR_DocumentAfterClose = "DACL";
 	/** Document After Complete = DACO */
 	public static final String EVENTMODELVALIDATOR_DocumentAfterComplete = "DACO";
 	/** Document After Post = DAPO */
 	public static final String EVENTMODELVALIDATOR_DocumentAfterPost = "DAPO";
-	/** Table After New Replication = TANR */
-	public static final String EVENTMODELVALIDATOR_TableAfterNewReplication = "TANR";
+	/** Document After Prepare = DAPR */
+	public static final String EVENTMODELVALIDATOR_DocumentAfterPrepare = "DAPR";
+	/** Document After Reverse Accrual = DARA */
+	public static final String EVENTMODELVALIDATOR_DocumentAfterReverseAccrual = "DARA";
+	/** Document After Reverse Correct = DARC */
+	public static final String EVENTMODELVALIDATOR_DocumentAfterReverseCorrect = "DARC";
+	/** Document After Void = DAVO */
+	public static final String EVENTMODELVALIDATOR_DocumentAfterVoid = "DAVO";
+	/** Document Before Reactivate = DBAC */
+	public static final String EVENTMODELVALIDATOR_DocumentBeforeReactivate = "DBAC";
+	/** Document Before Close = DBCL */
+	public static final String EVENTMODELVALIDATOR_DocumentBeforeClose = "DBCL";
+	/** Document Before Complete = DBCO */
+	public static final String EVENTMODELVALIDATOR_DocumentBeforeComplete = "DBCO";
+	/** Document Before Post = DBPO */
+	public static final String EVENTMODELVALIDATOR_DocumentBeforePost = "DBPO";
+	/** Document Before Prepare = DBPR */
+	public static final String EVENTMODELVALIDATOR_DocumentBeforePrepare = "DBPR";
+	/** Document Before Reverse Accrual = DBRA */
+	public static final String EVENTMODELVALIDATOR_DocumentBeforeReverseAccrual = "DBRA";
+	/** Document Before Reverse Correct = DBRC */
+	public static final String EVENTMODELVALIDATOR_DocumentBeforeReverseCorrect = "DBRC";
+	/** Document Before Void = DBVO */
+	public static final String EVENTMODELVALIDATOR_DocumentBeforeVoid = "DBVO";
+	/** Table After Change = TAC */
+	public static final String EVENTMODELVALIDATOR_TableAfterChange = "TAC";
 	/** Table After Change Replication = TACR */
 	public static final String EVENTMODELVALIDATOR_TableAfterChangeReplication = "TACR";
+	/** Table After Delete = TAD */
+	public static final String EVENTMODELVALIDATOR_TableAfterDelete = "TAD";
+	/** Table After New = TAN */
+	public static final String EVENTMODELVALIDATOR_TableAfterNew = "TAN";
+	/** Table After New Replication = TANR */
+	public static final String EVENTMODELVALIDATOR_TableAfterNewReplication = "TANR";
+	/** Table Before Change = TBC */
+	public static final String EVENTMODELVALIDATOR_TableBeforeChange = "TBC";
+	/** Table Before Delete = TBD */
+	public static final String EVENTMODELVALIDATOR_TableBeforeDelete = "TBD";
 	/** Table Before Delete Replication = TBDR */
 	public static final String EVENTMODELVALIDATOR_TableBeforeDeleteReplication = "TBDR";
+	/** Table Before New = TBN */
+	public static final String EVENTMODELVALIDATOR_TableBeforeNew = "TBN";
 	/** Set Event Model Validator.
-		@param EventModelValidator Event Model Validator	  */
+		@param EventModelValidator Event Model Validator
+	*/
 	public void setEventModelValidator (String EventModelValidator)
 	{
 
@@ -224,7 +245,7 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 
 	/** Get Event Model Validator.
 		@return Event Model Validator	  */
-	public String getEventModelValidator () 
+	public String getEventModelValidator()
 	{
 		return (String)get_Value(COLUMNNAME_EventModelValidator);
 	}
@@ -238,9 +259,8 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
     }
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -249,7 +269,7 @@ public class X_AD_Table_ScriptValidator extends PO implements I_AD_Table_ScriptV
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

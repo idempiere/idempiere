@@ -21,7 +21,6 @@ import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Listbox;
@@ -69,6 +68,7 @@ import org.zkoss.zul.Treeitem;
  *  @author Jorg Janke (modify: Sergio Oropeza sergioropeza@gmail.com, soropeza@dcsla.com	06/03/2014)
  *  @version $Id: VTreeMaintenance.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VTreeMaintenance")
 public class WTreeMaintenance extends TreeMaintenance implements IFormController, EventListener<Event>
 {
 	private CustomForm form = new CustomForm();	
@@ -98,7 +98,6 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 			preInit();
 			jbInit ();
 			action_loadTree();
-			LayoutUtils.sendDeferLayoutEvent(mainLayout, 100);
 		}
 		catch (Exception ex)
 		{
@@ -118,6 +117,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		//
 		centerTree = new Tree();
 		centerTree.addEventListener(Events.ON_SELECT, this);
+		centerTree.addEventListener(Events.ON_DOUBLE_CLICK, this);
 	}	//	preInit
 	
 	/**
@@ -126,10 +126,17 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	 */
 	private void jbInit () throws Exception
 	{
-		bAddAll.setImage(ThemeManager.getThemeResource("images/FastBack24.png"));
-		bAdd.setImage(ThemeManager.getThemeResource("images/StepBack24.png"));
-		bDelete.setImage(ThemeManager.getThemeResource("images/StepForward24.png"));
-		bDeleteAll.setImage(ThemeManager.getThemeResource("images/FastForward24.png"));
+		if (ThemeManager.isUseFontIconForImage()) {
+			bAddAll.setIconSclass("z-icon-FastBack");
+			bAdd.setIconSclass("z-icon-StepBack");
+			bDelete.setIconSclass("z-icon-StepForward");
+			bDeleteAll.setIconSclass("z-icon-FastForward");
+		} else {
+			bAddAll.setImage(ThemeManager.getThemeResource("images/FastBack24.png"));
+			bAdd.setImage(ThemeManager.getThemeResource("images/StepBack24.png"));
+			bDelete.setImage(ThemeManager.getThemeResource("images/StepForward24.png"));
+			bDeleteAll.setImage(ThemeManager.getThemeResource("images/FastForward24.png"));
+		}
 		
 		ZKUpdateUtil.setWidth(form,"100%");
 		ZKUpdateUtil.setHeight(form, "100%");
@@ -224,7 +231,17 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		ZKUpdateUtil.setVflex(centerList, true);
 		centerList.setSizedByContent(false);
 		centerList.addEventListener(Events.ON_SELECT, this);
+		centerList.addDoubleClickListener(centerListListener);
 	}	//	jbInit
+	
+	EventListener<Event> centerListListener = new EventListener<Event>() {
+		public void onEvent(Event event) throws Exception {
+			if (Events.ON_DOUBLE_CLICK.equals(event.getName())) {
+				add();
+				bAdd.setDisabled(true);
+			}
+		}
+	};
 
 	/**
 	 * 	Dispose
@@ -243,36 +260,50 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		if (e.getTarget() == treeField)
 		{
 			action_loadTree();
-			LayoutUtils.sendDeferLayoutEvent(mainLayout, 100);
 		}
 		else if (e.getTarget() == bAddAll)
 			action_treeAddAll();
 		else if (e.getTarget() == bAdd)
 		{
-			SimpleListModel model = (SimpleListModel) centerList.getModel();
-			int i = centerList.getSelectedIndex();
-			if (i >= 0) {
-				action_treeAdd((ListItem)model.getElementAt(i));
-			}
+			add();
 		}
-			
 		else if (e.getTarget() == bDelete)
 		{
-			SimpleListModel model = (SimpleListModel) centerList.getModel();
-			int i = centerList.getSelectedIndex();
-			if (i >= 0) {
-				action_treeDelete((ListItem)model.getElementAt(i));
-			}
+			remove();
 		}			
 		else if (e.getTarget() == bDeleteAll)
 			action_treeDeleteAll();
 		else if (e.getTarget() == centerList)
 			onListSelection(e);
-		else if (e.getTarget() == centerTree)
-			onTreeSelection(e);
+		else if (e.getTarget() == centerTree) {
+			if (e.getName().equals(Events.ON_DOUBLE_CLICK))
+				remove();
+			else
+				onTreeSelection(e);	
+		}
 		else if (e.getTarget() == searchBox.getButton() || e.getTarget() == searchBox.getTextbox())
 			searchElement();
 	}	//	actionPerformed
+
+	void add() {
+		SimpleListModel model = (SimpleListModel) centerList.getModel();
+		int i = centerList.getSelectedIndex();
+		if (i >= 0) {
+			action_treeAdd((ListItem)model.getElementAt(i));
+		}
+	}
+
+	void remove() {
+
+		if (cbAllNodes.isChecked())
+			return;
+
+		SimpleListModel model = (SimpleListModel) centerList.getModel();
+		int i = centerList.getSelectedIndex();
+		if (i >= 0) {
+			action_treeDelete((ListItem)model.getElementAt(i));
+		}
+	}
 
 	private void searchElement() {
 		String filter = searchBox.getText() == null ? "" : searchBox.getText();
@@ -422,9 +453,10 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 				stn = new DefaultTreeNode<Object>(new MTreeNode(item.id, 0, item.name, item.description, 0, item.isSummary,
 						item.imageIndicator, false, null), new ArrayList<TreeNode<Object>>());
 				model.addNode(stn);
+				//	May cause Error if in tree
+				addNode(item);
 			}
-			//	May cause Error if in tree
-			addNode(item);
+			
 		}
 	}	//	action_treeAdd
 	

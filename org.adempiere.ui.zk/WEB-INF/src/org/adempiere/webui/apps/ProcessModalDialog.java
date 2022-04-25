@@ -59,7 +59,6 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	private String orientation;
 
 	/**
-	 * @param aProcess
 	 * @param WindowNo
 	 * @param pi
 	 * @param autoStart
@@ -70,7 +69,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	}
 	
 	/**
-	 * @param aProcess
+	 * @param listener
 	 * @param WindowNo
 	 * @param pi
 	 * @param autoStart
@@ -97,6 +96,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 			if (topParameterLayout != null)
 			{
 				topParameterLayout.setStyle("max-height:" + (ClientInfo.get().desktopHeight-130) + "px");
+				ZKUpdateUtil.setVflex(topParameterLayout, "1");
 			}
 			if (bottomParameterLayout != null)
 			{
@@ -106,7 +106,9 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 						ZKUpdateUtil.setVflex((HtmlBasedComponent) c, "min");
 				}
 			}			
-			this.setSclass("popup-dialog process-modal-dialog");
+			this.setSclass("popup-dialog process-modal-dialog z-flex z-flex-column");
+			this.setSizable(true);
+			this.setMaximizable(true);
 			if (ClientInfo.isMobile())
 			{
 				orientation = ClientInfo.get().orientation;
@@ -118,6 +120,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 			log.log(Level.SEVERE, "", ex);
 		}
 		addEventListener(ON_OK_ECHO, this);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 
 	public ProcessModalDialog (int WindowNo, int AD_Process_ID, int tableId, int recordId, boolean autoStart)
@@ -140,7 +143,6 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 
 	/**
 	 * Dialog to start a process/report
-	 * @param ctx
 	 * @param parent not used
 	 * @param title not used
 	 * @param WindowNo
@@ -176,6 +178,15 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		getParameterPanel().restoreContext();
 		this.detach();
 	}	//	dispose
+	
+	@Override
+	public void autoStart() 	
+	{	
+		this.setBorder("none");	
+		this.setTitle(null);
+		this.getFirstChild().setVisible(false);	
+		super.autoStart();	
+	}	
 
 	@Override
 	public void showBusyDialog() {
@@ -210,10 +221,14 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 			onOk();
 		} else if (component.equals(bCancel)) {
 			super.onEvent(event);
-			cancelProcess();
+			onCancel();
 		}else {
 			super.onEvent(event);
 		}
+	}
+
+	private void onCancel() {
+		cancelProcess();
 	}
 
 	private void onOk() {

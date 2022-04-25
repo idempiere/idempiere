@@ -80,7 +80,7 @@ public class RModel implements Serializable
 	 * Get column by column name
 	 * @param columnName
 	 * @return column or null if not found
-	 * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+	 * author Teo Sarca, SC ARHIPAC SERVICE SRL
 	 */
 	public RColumn getRColumn (String columnName)
 	{
@@ -394,7 +394,7 @@ public class RModel implements Serializable
 	 * Returns the ArrayList of ArrayLists that contains the table's data values.
 	 * The ArrayLists contained in the outer vector are each a single row of values.
 	 * @return the ArrayList of ArrayLists containing the tables data values
-	 * @author Teo Sarca [ 1734327 ]
+	 * author Teo Sarca [ 1734327 ]
 	 */
 	public ArrayList<ArrayList<Object>> getRows() {
 		return m_data.rows;

@@ -25,19 +25,37 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CashLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_CashLine")
 public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CashLine (Properties ctx, int C_CashLine_ID, String trxName)
     {
       super (ctx, C_CashLine_ID, trxName);
+      /** if (C_CashLine_ID == 0)
+        {
+			setAmount (Env.ZERO);
+			setCashType (null);
+// E
+			setC_Cash_ID (0);
+			setC_CashLine_ID (0);
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM C_CashLine WHERE C_Cash_ID=@C_Cash_ID@
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CashLine (Properties ctx, int C_CashLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CashLine_ID, trxName, virtualColumns);
       /** if (C_CashLine_ID == 0)
         {
 			setAmount (Env.ZERO);
@@ -74,15 +92,14 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_CashLine[")
+      StringBuilder sb = new StringBuilder ("X_C_CashLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set Amount.
-		@param Amount 
-		Amount in a defined currency
-	  */
+		@param Amount Amount in a defined currency
+	*/
 	public void setAmount (BigDecimal Amount)
 	{
 		set_Value (COLUMNNAME_Amount, Amount);
@@ -91,7 +108,7 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	/** Get Amount.
 		@return Amount in a defined currency
 	  */
-	public BigDecimal getAmount () 
+	public BigDecimal getAmount()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Amount);
 		if (bd == null)
@@ -101,22 +118,21 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 
 	/** CashType AD_Reference_ID=217 */
 	public static final int CASHTYPE_AD_Reference_ID=217;
-	/** Bank Account Transfer = T */
-	public static final String CASHTYPE_BankAccountTransfer = "T";
-	/** Invoice = I */
-	public static final String CASHTYPE_Invoice = "I";
-	/** General Expense = E */
-	public static final String CASHTYPE_GeneralExpense = "E";
-	/** General Receipts = R */
-	public static final String CASHTYPE_GeneralReceipts = "R";
 	/** Charge = C */
 	public static final String CASHTYPE_Charge = "C";
 	/** Difference = D */
 	public static final String CASHTYPE_Difference = "D";
+	/** General Expense = E */
+	public static final String CASHTYPE_GeneralExpense = "E";
+	/** Invoice = I */
+	public static final String CASHTYPE_Invoice = "I";
+	/** General Receipts = R */
+	public static final String CASHTYPE_GeneralReceipts = "R";
+	/** Bank Account Transfer = T */
+	public static final String CASHTYPE_BankAccountTransfer = "T";
 	/** Set Cash Type.
-		@param CashType 
-		Source of Cash
-	  */
+		@param CashType Source of Cash
+	*/
 	public void setCashType (String CashType)
 	{
 
@@ -126,32 +142,32 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	/** Get Cash Type.
 		@return Source of Cash
 	  */
-	public String getCashType () 
+	public String getCashType()
 	{
 		return (String)get_Value(COLUMNNAME_CashType);
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
-			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Bank Account.
-		@param C_BankAccount_ID 
-		Account at the Bank
-	  */
+		@param C_BankAccount_ID Account at the Bank
+	*/
 	public void setC_BankAccount_ID (int C_BankAccount_ID)
 	{
-		if (C_BankAccount_ID < 1) 
+		if (C_BankAccount_ID < 1)
 			set_Value (COLUMNNAME_C_BankAccount_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
 	}
 
 	/** Get Bank Account.
 		@return Account at the Bank
 	  */
-	public int getC_BankAccount_ID () 
+	public int getC_BankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
 		if (ii == null)
@@ -160,26 +176,26 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Cash getC_Cash() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Cash)MTable.get(getCtx(), org.compiere.model.I_C_Cash.Table_Name)
-			.getPO(getC_Cash_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Cash)MTable.get(getCtx(), org.compiere.model.I_C_Cash.Table_ID)
+			.getPO(getC_Cash_ID(), get_TrxName());
+	}
 
 	/** Set Cash Journal.
-		@param C_Cash_ID 
-		Cash Journal
-	  */
+		@param C_Cash_ID Cash Journal
+	*/
 	public void setC_Cash_ID (int C_Cash_ID)
 	{
-		if (C_Cash_ID < 1) 
+		if (C_Cash_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Cash_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Cash_ID, Integer.valueOf(C_Cash_ID));
 	}
 
 	/** Get Cash Journal.
 		@return Cash Journal
 	  */
-	public int getC_Cash_ID () 
+	public int getC_Cash_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Cash_ID);
 		if (ii == null)
@@ -196,21 +212,20 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
     }
 
 	/** Set Cash Journal Line.
-		@param C_CashLine_ID 
-		Cash Journal Line
-	  */
+		@param C_CashLine_ID Cash Journal Line
+	*/
 	public void setC_CashLine_ID (int C_CashLine_ID)
 	{
-		if (C_CashLine_ID < 1) 
+		if (C_CashLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CashLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CashLine_ID, Integer.valueOf(C_CashLine_ID));
 	}
 
 	/** Get Cash Journal Line.
 		@return Cash Journal Line
 	  */
-	public int getC_CashLine_ID () 
+	public int getC_CashLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CashLine_ID);
 		if (ii == null)
@@ -219,7 +234,8 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	/** Set C_CashLine_UU.
-		@param C_CashLine_UU C_CashLine_UU	  */
+		@param C_CashLine_UU C_CashLine_UU
+	*/
 	public void setC_CashLine_UU (String C_CashLine_UU)
 	{
 		set_Value (COLUMNNAME_C_CashLine_UU, C_CashLine_UU);
@@ -227,32 +243,32 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 
 	/** Get C_CashLine_UU.
 		@return C_CashLine_UU	  */
-	public String getC_CashLine_UU () 
+	public String getC_CashLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_CashLine_UU);
 	}
 
 	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
-			.getPO(getC_Charge_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
 
 	/** Set Charge.
-		@param C_Charge_ID 
-		Additional document charges
-	  */
+		@param C_Charge_ID Additional document charges
+	*/
 	public void setC_Charge_ID (int C_Charge_ID)
 	{
-		if (C_Charge_ID < 1) 
+		if (C_Charge_ID < 1)
 			set_Value (COLUMNNAME_C_Charge_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
 	}
 
 	/** Get Charge.
 		@return Additional document charges
 	  */
-	public int getC_Charge_ID () 
+	public int getC_Charge_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
 		if (ii == null)
@@ -261,26 +277,26 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -289,26 +305,26 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
-		@param C_Invoice_ID 
-		Invoice Identifier
-	  */
+		@param C_Invoice_ID Invoice Identifier
+	*/
 	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_Invoice_ID < 1) 
+		if (C_Invoice_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
 	/** Get Invoice.
 		@return Invoice Identifier
 	  */
-	public int getC_Invoice_ID () 
+	public int getC_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
@@ -317,26 +333,26 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
-		@param C_Payment_ID 
-		Payment identifier
-	  */
+		@param C_Payment_ID Payment identifier
+	*/
 	public void setC_Payment_ID (int C_Payment_ID)
 	{
-		if (C_Payment_ID < 1) 
+		if (C_Payment_ID < 1)
 			set_Value (COLUMNNAME_C_Payment_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
 	}
 
 	/** Get Payment.
 		@return Payment identifier
 	  */
-	public int getC_Payment_ID () 
+	public int getC_Payment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
 		if (ii == null)
@@ -345,9 +361,8 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -356,15 +371,14 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Discount Amount.
-		@param DiscountAmt 
-		Calculated amount of discount
-	  */
+		@param DiscountAmt Calculated amount of discount
+	*/
 	public void setDiscountAmt (BigDecimal DiscountAmt)
 	{
 		set_Value (COLUMNNAME_DiscountAmt, DiscountAmt);
@@ -373,7 +387,7 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	/** Get Discount Amount.
 		@return Calculated amount of discount
 	  */
-	public BigDecimal getDiscountAmt () 
+	public BigDecimal getDiscountAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DiscountAmt);
 		if (bd == null)
@@ -382,9 +396,8 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	/** Set Generated.
-		@param IsGenerated 
-		This Line is generated
-	  */
+		@param IsGenerated This Line is generated
+	*/
 	public void setIsGenerated (boolean IsGenerated)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsGenerated, Boolean.valueOf(IsGenerated));
@@ -393,7 +406,7 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	/** Get Generated.
 		@return This Line is generated
 	  */
-	public boolean isGenerated () 
+	public boolean isGenerated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsGenerated);
 		if (oo != null) 
@@ -406,9 +419,8 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -417,7 +429,7 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -426,9 +438,8 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -437,7 +448,7 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -450,9 +461,8 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	}
 
 	/** Set Write-off Amount.
-		@param WriteOffAmt 
-		Amount to write-off
-	  */
+		@param WriteOffAmt Amount to write-off
+	*/
 	public void setWriteOffAmt (BigDecimal WriteOffAmt)
 	{
 		set_Value (COLUMNNAME_WriteOffAmt, WriteOffAmt);
@@ -461,7 +471,7 @@ public class X_C_CashLine extends PO implements I_C_CashLine, I_Persistent
 	/** Get Write-off Amount.
 		@return Amount to write-off
 	  */
-	public BigDecimal getWriteOffAmt () 
+	public BigDecimal getWriteOffAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_WriteOffAmt);
 		if (bd == null)

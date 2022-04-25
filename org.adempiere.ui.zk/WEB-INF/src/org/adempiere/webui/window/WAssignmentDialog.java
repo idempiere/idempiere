@@ -42,6 +42,7 @@ import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.Timebox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -59,7 +60,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Timebox;
 
 /**
  *	Resource Assignment Dialog
@@ -82,7 +82,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 	 * 	<pre>
 	 * 		Creates a new assignment oor displays an assignment
 	 * 		Create new:	(ID == 0)
-	 * 			check availability & create assignment
+	 * 			check availability and create assignment
 	 * 			(confirmed when order/incoice/timeExpense is processed)
 	 * 			alternatively let InfoResource do the assignment
 	 * 			return ID
@@ -130,7 +130,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 	private boolean		m_setting = false;
 	/**	Logger							*/
 	private static final CLogger log = CLogger.getCLogger(WAssignmentDialog.class);
-	/**	Lookup with Resource & UOM		*/
+	/**	Lookup with Resource and UOM		*/
 	private HashMap<KeyNamePair,KeyNamePair>	m_lookup = new HashMap<KeyNamePair,KeyNamePair>();
 	
 	//
@@ -206,7 +206,6 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		fDescription.setMultiline(true);
 		fDescription.setRows(3);
 		ZKUpdateUtil.setWidth(fDescription, "100%");
-		ZKUpdateUtil.setHeight(fDescription, "100%");
 		rows.appendChild(row);
 		
 		row = new Row();
@@ -216,6 +215,8 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		row = new Row();
 		row.appendCellChild(confirmPanel, 3);
 		rows.appendChild(row);
+		
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 		//
 	}	//	jbInit
 
@@ -398,8 +399,7 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 		//	cancel - return
 		else if (e.getTarget().getId().equals("Cancel"))
 		{
-			m_cancel = true;
-			detach();
+			onCancel();
 		}
 
 		//	delete - delete and return
@@ -421,6 +421,11 @@ public class WAssignmentDialog extends Window implements EventListener<Event>
 			if (cmd_save())
 				detach();
 		}		
+	}
+
+	private void onCancel() {
+		m_cancel = true;
+		detach();
 	}
 
 	public void onShowSchedule() 

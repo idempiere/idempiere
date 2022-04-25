@@ -23,19 +23,33 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product_QualityTest
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_Product_QualityTest")
 public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTest, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_Product_QualityTest (Properties ctx, int M_Product_QualityTest_ID, String trxName)
     {
       super (ctx, M_Product_QualityTest_ID, trxName);
+      /** if (M_Product_QualityTest_ID == 0)
+        {
+			setExpectedResult (null);
+			setM_Product_ID (0);
+			setM_Product_QualityTest_ID (0);
+			setM_QualityTest_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Product_QualityTest (Properties ctx, int M_Product_QualityTest_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Product_QualityTest_ID, trxName, virtualColumns);
       /** if (M_Product_QualityTest_ID == 0)
         {
 			setExpectedResult (null);
@@ -68,13 +82,14 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_Product_QualityTest[")
+      StringBuilder sb = new StringBuilder ("X_M_Product_QualityTest[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set Expected Result.
-		@param ExpectedResult Expected Result	  */
+		@param ExpectedResult Expected Result
+	*/
 	public void setExpectedResult (String ExpectedResult)
 	{
 		set_Value (COLUMNNAME_ExpectedResult, ExpectedResult);
@@ -82,32 +97,32 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 
 	/** Get Expected Result.
 		@return Expected Result	  */
-	public String getExpectedResult () 
+	public String getExpectedResult()
 	{
 		return (String)get_Value(COLUMNNAME_ExpectedResult);
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -116,18 +131,19 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 	}
 
 	/** Set Product Quality Test.
-		@param M_Product_QualityTest_ID Product Quality Test	  */
+		@param M_Product_QualityTest_ID Product Quality Test
+	*/
 	public void setM_Product_QualityTest_ID (int M_Product_QualityTest_ID)
 	{
-		if (M_Product_QualityTest_ID < 1) 
+		if (M_Product_QualityTest_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_QualityTest_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_QualityTest_ID, Integer.valueOf(M_Product_QualityTest_ID));
 	}
 
 	/** Get Product Quality Test.
 		@return Product Quality Test	  */
-	public int getM_Product_QualityTest_ID () 
+	public int getM_Product_QualityTest_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_QualityTest_ID);
 		if (ii == null)
@@ -136,7 +152,8 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 	}
 
 	/** Set M_Product_QualityTest_UU.
-		@param M_Product_QualityTest_UU M_Product_QualityTest_UU	  */
+		@param M_Product_QualityTest_UU M_Product_QualityTest_UU
+	*/
 	public void setM_Product_QualityTest_UU (String M_Product_QualityTest_UU)
 	{
 		set_Value (COLUMNNAME_M_Product_QualityTest_UU, M_Product_QualityTest_UU);
@@ -144,29 +161,31 @@ public class X_M_Product_QualityTest extends PO implements I_M_Product_QualityTe
 
 	/** Get M_Product_QualityTest_UU.
 		@return M_Product_QualityTest_UU	  */
-	public String getM_Product_QualityTest_UU () 
+	public String getM_Product_QualityTest_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Product_QualityTest_UU);
 	}
 
 	public org.compiere.model.I_M_QualityTest getM_QualityTest() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_QualityTest)MTable.get(getCtx(), org.compiere.model.I_M_QualityTest.Table_Name)
-			.getPO(getM_QualityTest_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_QualityTest)MTable.get(getCtx(), org.compiere.model.I_M_QualityTest.Table_ID)
+			.getPO(getM_QualityTest_ID(), get_TrxName());
+	}
 
 	/** Set Quality Test.
-		@param M_QualityTest_ID Quality Test	  */
+		@param M_QualityTest_ID Quality Test
+	*/
 	public void setM_QualityTest_ID (int M_QualityTest_ID)
 	{
-		if (M_QualityTest_ID < 1) 
+		if (M_QualityTest_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_QualityTest_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_QualityTest_ID, Integer.valueOf(M_QualityTest_ID));
 	}
 
 	/** Get Quality Test.
 		@return Quality Test	  */
-	public int getM_QualityTest_ID () 
+	public int getM_QualityTest_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_QualityTest_ID);
 		if (ii == null)

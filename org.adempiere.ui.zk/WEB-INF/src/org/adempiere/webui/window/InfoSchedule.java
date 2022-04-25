@@ -62,7 +62,7 @@ import org.zkoss.zul.Vbox;
 
 
 /**
- *	Schedule - Resource availability & assigment.
+ *	Schedule - Resource availability and assigment.
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: InfoSchedule.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
@@ -103,7 +103,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	 *  Constructor
 	 *  @param mAssignment optional assignment
 	 *  @param createNew if true, allows to create new assignments
-	 *  @param listener
+	 *  @param parent
+	 *  @param callback
 	 */
 	public InfoSchedule (MResourceAssignment mAssignment, boolean createNew, Component parent, Callback<MResourceAssignment> callback)
 	{
@@ -236,7 +237,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		}
 		
 		fieldResourceType.setMold("select");
-		fieldResource.setMold("select");				
+		fieldResource.setMold("select");
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}	//	jbInit
 
 	/**
@@ -431,7 +433,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	 * 	Callback.
 	 * 	Called from WSchedule after WAssignmentDialog finished
 	 * 	@param assignment New/Changed Assignment
-	 * @param b 
+	 *  @param createNew
+	 *  @param cancelled
 	 */
 	public void mAssignmentCallback (MResourceAssignment assignment, boolean createNew, boolean cancelled)
 	{
@@ -465,8 +468,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			m_cancel = false;
 			dispose();
 		} else if (event.getTarget().getId().equals("Cancel")) {
-			m_cancel = true;
-			dispose();
+			onCancel();
 		//
 		} else if (event.getTarget() == fieldResourceType)
 		{
@@ -479,6 +481,11 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		else if (event.getTarget() == fieldResource)
 			displayCalendar();
 		//
+	}
+
+	private void onCancel() {
+		m_cancel = true;
+		dispose();
 	}
 	
 	private void doEdit(CalendarsEvent event) {

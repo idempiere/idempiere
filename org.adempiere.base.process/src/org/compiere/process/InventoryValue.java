@@ -34,6 +34,7 @@ import org.compiere.util.DB;
  *  @author 	Michael Judd (mjudd) Akuna Ltd - BF [ 2685127 ]
  *  
  */
+@org.adempiere.base.annotation.Process
 public class InventoryValue extends SvrProcess
 {
 	/** Price List Used         */
@@ -114,9 +115,6 @@ public class InventoryValue extends SvrProcess
 			.append("WHERE w.M_Warehouse_ID=").append(p_M_Warehouse_ID);
 		int noInsertStd = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Inserted Std=" + noInsertStd);
-		//IDEMPIERE-2500 - This may be invalid check. Removing still some one not admit reason
-		/*if (noInsertStd == 0)
-			return "No Standard Costs found";*/
 
 		//	Insert addl Costs
 		int noInsertCost = 0;
@@ -167,8 +165,12 @@ public class InventoryValue extends SvrProcess
 		//  Update Constants
 		//  YYYY-MM-DD HH24:MI:SS.mmmm  JDBC Timestamp format
 		String myDate = p_DateValue.toString();
-		sql = new StringBuilder ("UPDATE T_InventoryValue SET ")
-			.append("DateValue=TO_DATE('").append(myDate.substring(0,10))
+		sql = new StringBuilder ("UPDATE T_InventoryValue SET DateValue=");
+		if (DB.isPostgreSQL())
+			sql.append("TO_TIMESTAMP('");
+		else
+			sql.append("TO_DATE('");
+		sql.append(myDate.substring(0,10))
 			.append(" 23:59:59','YYYY-MM-DD HH24:MI:SS'),")
 			.append("M_PriceList_Version_ID=").append(p_M_PriceList_Version_ID).append(",")
 			.append("C_Currency_ID=").append(p_C_Currency_ID)
@@ -201,7 +203,7 @@ public class InventoryValue extends SvrProcess
 		//  Adjust for Valuation Date
 		sql = new StringBuilder("UPDATE T_InventoryValue iv ")
 			.append("SET QtyOnHand=")
-				.append("(SELECT iv.QtyOnHand - COALESCE(SUM(t.MovementQty), 0) ")
+				.append("(SELECT iv.QtyOnHand - NVL(SUM(t.MovementQty), 0) ")
 				.append("FROM M_Transaction t")
 				.append(" INNER JOIN M_Locator l ON (t.M_Locator_ID=l.M_Locator_ID) ")
 				.append("WHERE t.M_Product_ID=iv.M_Product_ID")
@@ -215,7 +217,7 @@ public class InventoryValue extends SvrProcess
 		//
 		sql = new StringBuilder("UPDATE T_InventoryValue iv ")
 			.append("SET QtyOnHand=")
-				.append("(SELECT iv.QtyOnHand - COALESCE(SUM(t.MovementQty), 0) ")
+				.append("(SELECT iv.QtyOnHand - NVL(SUM(t.MovementQty), 0) ")
 				.append("FROM M_Transaction t")
 				.append(" INNER JOIN M_Locator l ON (t.M_Locator_ID=l.M_Locator_ID) ")
 				.append("WHERE t.M_Product_ID=iv.M_Product_ID")

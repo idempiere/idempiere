@@ -280,17 +280,17 @@ public abstract class CreateFromShipment extends CreateFrom
 	    StringBuilder sqlStmt = new StringBuilder();
 	    sqlStmt.append("SELECT rl.M_RMALine_ID, rl.line, rl.Qty - rl.QtyDelivered, p.M_Product_ID, COALESCE(p.Name, c.Name), uom.C_UOM_ID, COALESCE(uom.UOMSymbol,uom.Name) ");
 	    sqlStmt.append("FROM M_RMALine rl INNER JOIN M_InOutLine iol ON rl.M_InOutLine_ID=iol.M_InOutLine_ID ");
+	    sqlStmt.append("LEFT OUTER JOIN M_Product p ON p.M_Product_ID=iol.M_Product_ID ");
 	          
 	    if (Env.isBaseLanguage(Env.getCtx(), "C_UOM"))
         {
-	        sqlStmt.append("LEFT OUTER JOIN C_UOM uom ON (uom.C_UOM_ID=iol.C_UOM_ID) ");
+	        sqlStmt.append("LEFT OUTER JOIN C_UOM uom ON (uom.C_UOM_ID=COALESCE(p.C_UOM_ID,iol.C_UOM_ID)) ");
         }
 	    else
         {
-	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=iol.C_UOM_ID AND uom.AD_Language='");
+	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=COALESCE(p.C_UOM_ID,iol.C_UOM_ID) AND uom.AD_Language='");
 	        sqlStmt.append(Env.getAD_Language(Env.getCtx())).append("') ");
         }
-	    sqlStmt.append("LEFT OUTER JOIN M_Product p ON p.M_Product_ID=iol.M_Product_ID ");
 	    sqlStmt.append("LEFT OUTER JOIN C_Charge c ON c.C_Charge_ID=iol.C_Charge_ID ");
 	    sqlStmt.append("WHERE rl.M_RMA_ID=? ");
 	    sqlStmt.append("AND rl.M_InOutLine_ID IS NOT NULL");
@@ -381,7 +381,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder("SELECT " // Entered UOM
-				+ "l.QtyInvoiced-SUM(COALESCE(mi.Qty,0)),l.QtyEntered/l.QtyInvoiced,"
+				+ "l.QtyInvoiced-SUM(NVL(mi.Qty,0)),l.QtyEntered/l.QtyInvoiced,"
 				+ " l.C_UOM_ID,COALESCE(uom.UOMSymbol,uom.Name)," // 3..4
 				+ " p.M_Locator_ID, loc.Value, " // 5..6
 				+ " l.M_Product_ID,p.Name, po.VendorProductNo, l.C_InvoiceLine_ID,l.Line," // 7..11
@@ -473,6 +473,14 @@ public abstract class CreateFromShipment extends CreateFrom
 			}
 		}
 		
+		// Try to get from locator field
+		if (locator == null)
+		{
+			if (defaultLocator_ID > 0)
+			{
+				locator = MLocator.get(Env.getCtx(), defaultLocator_ID);
+			}
+		}
 		// Try to use default locator from Order Warehouse
 		if (locator == null && p_order != null && p_order.getM_Warehouse_ID() == getM_Warehouse_ID())
 		{
@@ -480,14 +488,6 @@ public abstract class CreateFromShipment extends CreateFrom
 			if (wh != null)
 			{
 				locator = wh.getDefaultLocator();
-			}
-		}
-		// Try to get from locator field
-		if (locator == null)
-		{
-			if (defaultLocator_ID > 0)
-			{
-				locator = MLocator.get(Env.getCtx(), defaultLocator_ID);
 			}
 		}
 		// Validate Warehouse
@@ -640,7 +640,7 @@ public abstract class CreateFromShipment extends CreateFrom
 				{
 					if (il.getQtyEntered().compareTo(il.getQtyInvoiced()) != 0)
 					{
-						iol.setQtyEntered(QtyEntered
+						iol.setMovementQty(QtyEntered
 								.multiply(il.getQtyInvoiced())
 								.divide(il.getQtyEntered(), 12, RoundingMode.HALF_UP));
 						iol.setC_UOM_ID(il.getC_UOM_ID());

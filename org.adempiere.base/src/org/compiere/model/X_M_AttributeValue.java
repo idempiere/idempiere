@@ -23,19 +23,33 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeValue
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_AttributeValue")
 public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_AttributeValue (Properties ctx, int M_AttributeValue_ID, String trxName)
     {
       super (ctx, M_AttributeValue_ID, trxName);
+      /** if (M_AttributeValue_ID == 0)
+        {
+			setM_Attribute_ID (0);
+			setM_AttributeValue_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_AttributeValue (Properties ctx, int M_AttributeValue_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_AttributeValue_ID, trxName, virtualColumns);
       /** if (M_AttributeValue_ID == 0)
         {
 			setM_Attribute_ID (0);
@@ -68,15 +82,14 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_AttributeValue[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_M_AttributeValue[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -85,32 +98,32 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	public org.compiere.model.I_M_Attribute getM_Attribute() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_Name)
-			.getPO(getM_Attribute_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Attribute)MTable.get(getCtx(), org.compiere.model.I_M_Attribute.Table_ID)
+			.getPO(getM_Attribute_ID(), get_TrxName());
+	}
 
 	/** Set Attribute.
-		@param M_Attribute_ID 
-		Product Attribute
-	  */
+		@param M_Attribute_ID Product Attribute
+	*/
 	public void setM_Attribute_ID (int M_Attribute_ID)
 	{
-		if (M_Attribute_ID < 1) 
+		if (M_Attribute_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
 	}
 
 	/** Get Attribute.
 		@return Product Attribute
 	  */
-	public int getM_Attribute_ID () 
+	public int getM_Attribute_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
 		if (ii == null)
@@ -119,21 +132,20 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 	}
 
 	/** Set Attribute Value.
-		@param M_AttributeValue_ID 
-		Product Attribute Value
-	  */
+		@param M_AttributeValue_ID Product Attribute Value
+	*/
 	public void setM_AttributeValue_ID (int M_AttributeValue_ID)
 	{
-		if (M_AttributeValue_ID < 1) 
+		if (M_AttributeValue_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeValue_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeValue_ID, Integer.valueOf(M_AttributeValue_ID));
 	}
 
 	/** Get Attribute Value.
 		@return Product Attribute Value
 	  */
-	public int getM_AttributeValue_ID () 
+	public int getM_AttributeValue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeValue_ID);
 		if (ii == null)
@@ -142,7 +154,8 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 	}
 
 	/** Set M_AttributeValue_UU.
-		@param M_AttributeValue_UU M_AttributeValue_UU	  */
+		@param M_AttributeValue_UU M_AttributeValue_UU
+	*/
 	public void setM_AttributeValue_UU (String M_AttributeValue_UU)
 	{
 		set_Value (COLUMNNAME_M_AttributeValue_UU, M_AttributeValue_UU);
@@ -150,15 +163,14 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 
 	/** Get M_AttributeValue_UU.
 		@return M_AttributeValue_UU	  */
-	public String getM_AttributeValue_UU () 
+	public String getM_AttributeValue_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_AttributeValue_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -167,7 +179,7 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -181,9 +193,8 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -192,7 +203,7 @@ public class X_M_AttributeValue extends PO implements I_M_AttributeValue, I_Pers
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

@@ -17,6 +17,8 @@
 
 package org.adempiere.webui.event;
 
+import org.zkoss.zk.ui.Component;
+
 /**
  *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
@@ -26,14 +28,39 @@ package org.adempiere.webui.event;
 public class ContextMenuEvent
 {
     private String contextEvent;
+	private Component target;
     
+	/**
+	 * 
+	 * @param event
+	 */
     public ContextMenuEvent(String event)
     {
         this.contextEvent = event;
     }
     
+    /**
+     * 
+     * @return event name
+     */
     public String getContextEvent()
     {
         return contextEvent;
     }
+    
+    /**
+     * 
+     * @param target
+     */
+    public void setTarget(Component target) {
+		this.target = target;
+	}
+	
+    /**
+     * 
+     * @return target component
+     */
+	public Component getTarget() {
+		return this.target;
+	}
 }

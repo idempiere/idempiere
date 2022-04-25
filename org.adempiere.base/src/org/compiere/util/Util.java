@@ -16,16 +16,20 @@
  *****************************************************************************/
 package org.compiere.util;
 
-import java.awt.Color;
-import java.awt.font.TextAttribute;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -36,6 +40,13 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  *  General Utilities
@@ -217,7 +228,7 @@ public class Util
 	/**
 	 * Is String Empty
 	 * @param str string
-	 * @return true if >= 1 char
+	 * @return true if &gt;= 1 char
 	 */
 	public static boolean isEmpty (String str)
 	{
@@ -228,7 +239,7 @@ public class Util
 	 * Is String Empty
 	 * @param str string
 	 * @param trimWhitespaces trim whitespaces
-	 * @return true if >= 1 char
+	 * @return true if &gt;= 1 char
 	 */
 	public static boolean isEmpty (String str, boolean trimWhitespaces)
 	{
@@ -242,7 +253,7 @@ public class Util
 
 	/**
 	 * Remove accents from string
-	 * @param str string
+	 * @param text string
 	 * @return Unaccented String
 	 */
 	public static String deleteAccents(String text) {
@@ -546,7 +557,7 @@ public class Util
 	/**
 	 * Is 8 Bit
 	 * @param str string
-	 * @return true if string contains chars > 255
+	 * @return true if string contains chars &gt; 255
 	 */
 	public static boolean is8Bit (String str)
 	{
@@ -654,26 +665,6 @@ public class Util
 		return str;
 	}	//	trimSize
 
-
-	/**************************************************************************
-	 * Test
-	 * @param args args
-	 */
-	public static void main (String[] args)
-	{
-		String str = "a�b�c?d?e?f?g?";
-		System.out.println(str + " = " + str.length() + " - " + size(str));
-		String str1 = trimLength(str, 10);
-		System.out.println(str1 + " = " + str1.length() + " - " + size(str1));
-		String str2 = trimSize(str, 10);
-		System.out.println(str2 + " = " + str2.length() + " - " + size(str2));
-		//
-		AttributedString aString = new AttributedString ("test test");
-		aString.addAttribute(TextAttribute.FOREGROUND, Color.blue);
-		aString.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON, 2, 4);
-		getIterator (aString, new AttributedCharacterIterator.Attribute[] {TextAttribute.UNDERLINE});
-	}	//	main
-
 	/**
 	 * String diacritics from given string
 	 * @param s	original string
@@ -688,7 +679,7 @@ public class Util
 		}
 		String normStr = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD);
 		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < normStr.length(); i++) {
 			char ch = normStr.charAt(i);
 			if (ch < 255)
@@ -707,4 +698,54 @@ public class Util
         cal.set(Calendar.MILLISECOND, 0);
         return new Timestamp(cal.getTimeInMillis());
     }
+	
+	/**
+    *
+    * @param pdfList
+    * @param outFile
+    * @throws IOException
+    * @throws DocumentException
+    * @throws FileNotFoundException
+    */
+	public static void mergePdf(List<File> pdfList, File outFile) throws IOException,
+			DocumentException, FileNotFoundException {
+		Document document = null;
+		PdfWriter copy = null;
+		
+		List<PdfReader> pdfReaders = new ArrayList<PdfReader>();
+		
+		try
+		{		
+			for (File f : pdfList)
+			{
+				PdfReader reader = new PdfReader(f.getAbsolutePath());
+				
+				pdfReaders.add(reader);
+				
+				if (document == null)
+				{
+					document = new Document(reader.getPageSizeWithRotation(1));
+					copy = PdfWriter.getInstance(document, new FileOutputStream(outFile));
+					document.open();
+				}
+				int pages = reader.getNumberOfPages();
+				PdfContentByte cb = copy.getDirectContent();
+				for (int i = 1; i <= pages; i++) {
+					document.newPage();
+					copy.newPage();
+					PdfImportedPage page = copy.getImportedPage(reader, i);
+					cb.addTemplate(page, 0, 0);
+					copy.releaseTemplate(page);
+				}
+			}
+			document.close();
+		}
+		finally
+		{
+			for(PdfReader reader:pdfReaders)
+			{
+				reader.close();
+			}
+		}
+	}
 }   //  Util

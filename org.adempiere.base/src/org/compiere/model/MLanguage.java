@@ -29,11 +29,12 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
-import org.compiere.Adempiere;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Language Model
@@ -44,12 +45,17 @@ import org.compiere.util.Msg;
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 2444851 ] MLanguage should throw an exception if there is an error
  */
-public class MLanguage extends X_AD_Language
-{
+public class MLanguage extends X_AD_Language implements ImmutablePOSupport
+{	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6415602943484245447L;
+	private static final long serialVersionUID = 6553711529361500744L;
+	
+	/**
+	 * MLanguage cache key by AD_Language value
+	 */
+	private static final ImmutablePOCache<String, MLanguage> s_cache = new ImmutablePOCache<String, MLanguage>(Table_Name, Table_Name+"|AD_Language", 100, false);
 
 	/**
 	 * 	Get Language Model from Language
@@ -70,9 +76,16 @@ public class MLanguage extends X_AD_Language
 	 */
 	public static MLanguage get (Properties ctx, String AD_Language)
 	{
-		return new Query(ctx, Table_Name, COLUMNNAME_AD_Language+"=?", null)
+		MLanguage retValue = s_cache.get(ctx, AD_Language, e -> new MLanguage(ctx, e));
+		if (retValue != null)
+			return retValue;
+		
+		retValue = new Query(ctx, Table_Name, COLUMNNAME_AD_Language+"=?", null)
 					.setParameters(AD_Language)
 					.firstOnly();
+		if (retValue != null)
+			s_cache.put(AD_Language, retValue, e -> new MLanguage(ctx, e));
+		return retValue;
 	}	//	get
 
 	/**
@@ -104,10 +117,6 @@ public class MLanguage extends X_AD_Language
 		}
 	}	//	maintain
 
-//	/**	Logger						*/
-//	private static CLogger		s_log = CLogger.getCLogger (MLanguage.class);
-
-	
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -150,6 +159,27 @@ public class MLanguage extends X_AD_Language
 		setCountryCode(CountryCode);	//	US
 		setLanguageISO(LanguageISO);	//	en
 	}	//	MLanguage
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MLanguage(Properties ctx, MLanguage copy) {
+		this(ctx, copy, (String)null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MLanguage(Properties ctx, MLanguage copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_dateFormat = copy.m_dateFormat != null ? new SimpleDateFormat(copy.m_dateFormat.toPattern()) : null; 
+	}
 
 	/**	Locale						*/
 	private Locale				m_locale = null;
@@ -260,7 +290,7 @@ public class MLanguage extends X_AD_Language
 		int AD_Language_ID = getAD_Language_ID();
 		if (AD_Language_ID == 0)
 		{
-			String sql = "SELECT COALESCE(MAX(AD_Language_ID), 999999) FROM AD_Language WHERE AD_Language_ID > 1000";
+			String sql = "SELECT NVL(MAX(AD_Language_ID), 999999) FROM AD_Language WHERE AD_Language_ID > 1000";
 			AD_Language_ID = DB.getSQLValue (get_TrxName(), sql);
 			setAD_Language_ID(AD_Language_ID+1);
 		}
@@ -466,54 +496,38 @@ public class MLanguage extends X_AD_Language
 							.append(" WHERE ").append(keyColumn).append(" NOT IN (SELECT ").append(keyColumn)
 							.append(" FROM ").append(tableName)
 							.append(" WHERE AD_Language='").append(getAD_Language()).append("')");
-		//	+ " WHERE (" + keyColumn + ",'" + getAD_Language()+ "') NOT IN (SELECT " 
-		//		+ keyColumn + ",AD_Language FROM " + tableName + ")";
 		int no = DB.executeUpdateEx(insert.toString(), null, get_TrxName());
 		// IDEMPIERE-99 Language Maintenance does not create UUIDs
+		String uucolname = PO.getUUIDColumnName(tableName);
 		MTable table = MTable.get(getCtx(), tableName);
-		MColumn column = table.getColumn(PO.getUUIDColumnName(tableName));
-		if (column != null)
-			UUIDGenerator.updateUUID(column, get_TrxName());
+		MColumn column = table.getColumn(uucolname);
+		if (column != null) {
+			if (DB.isGenerateUUIDSupported()) {
+				StringBuilder upduuid = new StringBuilder("UPDATE ")
+						.append(tableName)
+						.append(" SET ")
+						.append(uucolname)
+						.append("=generate_uuid() WHERE ")
+						.append(uucolname)
+						.append(" IS NULL");
+				DB.executeUpdateEx(upduuid.toString(), get_TrxName());
+			} else {
+				UUIDGenerator.updateUUID(column, get_TrxName());
+			}
+		}
 		//
 		StringBuilder msglog = new StringBuilder().append(tableName).append(" #").append(no);
 		if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 		return no;
 	}	//	addTable
 
-
-	/**************************************************************************
-	 * 	Setup
-	 *	@param args args
-	 */
-	public static void main(String[] args)
-	{
-		System.out.println("Language");
-		Adempiere.startup(true);
-
-		System.out.println(MLanguage.get(Env.getCtx(), "de_DE"));
-		System.out.println(MLanguage.get(Env.getCtx(), "en_US"));
-
-		/**
-		Locale[] locales = Locale.getAvailableLocales();
-		for (int i = 0; i < locales.length; i++)
-		{
-			Locale loc = locales[i];
-			if (loc.getVariant() != null && loc.getVariant().length() != 0)
-				continue;
-			if (loc.getCountry() != null && loc.getCountry().length() != 0)
-				continue;
-
-			System.out.println(loc.toString()
-				+ " - " + loc.getDisplayName()
-				+ " + " + loc.getCountry()
-				+ " + " + loc.getLanguage()
-			);
-			MLanguage lang = new MLanguage (Env.getCtx(), loc.toString(),
-				loc.getDisplayName(), loc.getCountry(), loc.getLanguage());
-			lang.saveEx();
-			System.out.println(lang);
-		}
-	   /**/
-	}	//	main
+	@Override
+	public MLanguage markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		return this;
+	}
 
 }	//	MLanguage

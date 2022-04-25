@@ -23,19 +23,32 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_Budget
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="GL_Budget")
 public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_GL_Budget (Properties ctx, int GL_Budget_ID, String trxName)
     {
       super (ctx, GL_Budget_ID, trxName);
+      /** if (GL_Budget_ID == 0)
+        {
+			setGL_Budget_ID (0);
+			setIsPrimary (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_Budget (Properties ctx, int GL_Budget_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_Budget_ID, trxName, virtualColumns);
       /** if (GL_Budget_ID == 0)
         {
 			setGL_Budget_ID (0);
@@ -67,21 +80,20 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_GL_Budget[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_GL_Budget[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** BudgetStatus AD_Reference_ID=178 */
 	public static final int BUDGETSTATUS_AD_Reference_ID=178;
-	/** Draft = D */
-	public static final String BUDGETSTATUS_Draft = "D";
 	/** Approved = A */
 	public static final String BUDGETSTATUS_Approved = "A";
+	/** Draft = D */
+	public static final String BUDGETSTATUS_Draft = "D";
 	/** Set Budget Status.
-		@param BudgetStatus 
-		Indicates the current status of this budget
-	  */
+		@param BudgetStatus Indicates the current status of this budget
+	*/
 	public void setBudgetStatus (String BudgetStatus)
 	{
 
@@ -91,15 +103,14 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
 	/** Get Budget Status.
 		@return Indicates the current status of this budget
 	  */
-	public String getBudgetStatus () 
+	public String getBudgetStatus()
 	{
 		return (String)get_Value(COLUMNNAME_BudgetStatus);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -108,27 +119,26 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Budget.
-		@param GL_Budget_ID 
-		General Ledger Budget
-	  */
+		@param GL_Budget_ID General Ledger Budget
+	*/
 	public void setGL_Budget_ID (int GL_Budget_ID)
 	{
-		if (GL_Budget_ID < 1) 
+		if (GL_Budget_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_GL_Budget_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_GL_Budget_ID, Integer.valueOf(GL_Budget_ID));
 	}
 
 	/** Get Budget.
 		@return General Ledger Budget
 	  */
-	public int getGL_Budget_ID () 
+	public int getGL_Budget_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Budget_ID);
 		if (ii == null)
@@ -137,7 +147,8 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
 	}
 
 	/** Set GL_Budget_UU.
-		@param GL_Budget_UU GL_Budget_UU	  */
+		@param GL_Budget_UU GL_Budget_UU
+	*/
 	public void setGL_Budget_UU (String GL_Budget_UU)
 	{
 		set_Value (COLUMNNAME_GL_Budget_UU, GL_Budget_UU);
@@ -145,15 +156,14 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
 
 	/** Get GL_Budget_UU.
 		@return GL_Budget_UU	  */
-	public String getGL_Budget_UU () 
+	public String getGL_Budget_UU()
 	{
 		return (String)get_Value(COLUMNNAME_GL_Budget_UU);
 	}
 
 	/** Set Primary.
-		@param IsPrimary 
-		Indicates if this is the primary budget
-	  */
+		@param IsPrimary Indicates if this is the primary budget
+	*/
 	public void setIsPrimary (boolean IsPrimary)
 	{
 		set_Value (COLUMNNAME_IsPrimary, Boolean.valueOf(IsPrimary));
@@ -162,7 +172,7 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
 	/** Get Primary.
 		@return Indicates if this is the primary budget
 	  */
-	public boolean isPrimary () 
+	public boolean isPrimary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrimary);
 		if (oo != null) 
@@ -175,9 +185,8 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -186,7 +195,7 @@ public class X_GL_Budget extends PO implements I_GL_Budget, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

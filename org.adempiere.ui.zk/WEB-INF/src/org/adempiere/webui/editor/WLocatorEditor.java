@@ -17,11 +17,14 @@
 
 package org.adempiere.webui.editor;
 
+import static org.compiere.model.SystemIDs.WINDOW_WAREHOUSE_LOCATOR;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.webui.ClientInfo;
@@ -44,7 +47,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MWarehouse;
-import static org.compiere.model.SystemIDs.*;
+import org.compiere.model.X_M_MovementLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -86,7 +89,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 	 *	@param isReadOnly read only
 	 *	@param isUpdateable updateable
 	 *	@param mLocator locator (lookup) model
-	 * 	@param WindowNo window no
+	 * 	@param windowNo window no
 	 */
 	
 	public WLocatorEditor(	String columnName, boolean mandatory, boolean isReadOnly, 
@@ -107,10 +110,21 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 	}
 	
 	/**
+	 * 
 	 * @param gridField
 	 */
 	public WLocatorEditor(GridField gridField) {
-		super(new EditorBox(), gridField);
+		this(gridField, false, null);
+	}
+	
+	/**
+	 * 
+	 * @param gridField
+	 * @param tableEditor
+	 * @param editorConfiguration
+	 */
+	public WLocatorEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+		super(new EditorBox(), gridField, tableEditor, editorConfiguration);
 		m_mLocator = (MLocatorLookup)gridField.getLookup();
 		
 		if (ThemeManager.isUseFontIconForImage())
@@ -424,6 +438,14 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 			pstmt = null;
 		}
 		
+		if (M_Locator_ID > 0)
+		{
+			m_mLocator.refreshIfNeeded();
+			boolean valid = m_mLocator.containsKey(M_Locator_ID);
+			if (!valid)
+				M_Locator_ID = 0;
+		}
+		
 		if (M_Locator_ID == 0)
 			return false;
 
@@ -447,7 +469,23 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 	
 	private int getOnly_Warehouse_ID()
 	{
-		String only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, "M_Warehouse_ID", true);
+		//IDEMPIERE-4882 : Load Locator To field value as per Warehouse TO field value
+		String only_Warehouse=null;
+		if (gridField!=null && X_M_MovementLine.COLUMNNAME_M_LocatorTo_ID.equals(gridField.getColumnName()))
+		{
+			if(gridField.getVO().TabNo>0) 
+				only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, gridField.getVO().TabNo, "M_WarehouseTo_ID", false, true);
+			else
+				only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, "M_WarehouseTo_ID", true);
+		}
+		else
+		{
+			if(gridField!=null && gridField.getVO().TabNo>0) 
+				only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, gridField.getVO().TabNo, "M_Warehouse_ID", false, true);
+			else
+				only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, "M_Warehouse_ID", true);
+		}
+		
 		int only_Warehouse_ID = 0;
 	
 		try
@@ -472,7 +510,11 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		if (!Env.isSOTrx(Env.getCtx(), m_WindowNo))
 			return 0; // No product restrictions for PO
 
-		String only_Product = Env.getContext(Env.getCtx(), m_WindowNo, "M_Product_ID", true);
+		String only_Product = null;
+		if (gridField != null && gridField.getVO().TabNo > 0)
+			only_Product = Env.getContext(Env.getCtx(), m_WindowNo, gridField.getVO().TabNo, "M_Product_ID", false, true);
+		else
+			only_Product = Env.getContext(Env.getCtx(), m_WindowNo, "M_Product_ID", true);
 		int only_Product_ID = 0;
 		
 		try
@@ -551,5 +593,9 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		getComponent().setTableEditorMode(b);
 	}
     
-    
+	@Override
+	public void dynamicDisplay(Properties ctx) {
+		super.dynamicDisplay(ctx);
+		m_mLocator.dynamicDisplay(ctx);
+	}
 }

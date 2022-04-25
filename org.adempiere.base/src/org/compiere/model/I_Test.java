@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for Test
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 9
  */
 public interface I_Test 
 {
@@ -89,12 +89,12 @@ public interface I_Test
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -347,6 +347,19 @@ public interface I_Test
 
 	/** Get Test_UU	  */
 	public String getTest_UU();
+
+    /** Column name TestVirtualQty */
+    public static final String COLUMNNAME_TestVirtualQty = "TestVirtualQty";
+
+	/** Set Virtual Quantity.
+	  * Used only for testing purposes
+	  */
+	public void setTestVirtualQty (BigDecimal TestVirtualQty);
+
+	/** Get Virtual Quantity.
+	  * Used only for testing purposes
+	  */
+	public BigDecimal getTestVirtualQty();
 
     /** Column name T_Integer */
     public static final String COLUMNNAME_T_Integer = "T_Integer";

@@ -22,19 +22,33 @@ import java.util.Properties;
 
 /** Generated Model for IMP_ProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="IMP_ProcessorLog")
 public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorLog (Properties ctx, int IMP_ProcessorLog_ID, String trxName)
     {
       super (ctx, IMP_ProcessorLog_ID, trxName);
+      /** if (IMP_ProcessorLog_ID == 0)
+        {
+			setIMP_Processor_ID (0);
+			setIMP_ProcessorLog_ID (0);
+			setIsError (true);
+// 'Y'
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_IMP_ProcessorLog (Properties ctx, int IMP_ProcessorLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, IMP_ProcessorLog_ID, trxName, virtualColumns);
       /** if (IMP_ProcessorLog_ID == 0)
         {
 			setIMP_Processor_ID (0);
@@ -67,15 +81,14 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_IMP_ProcessorLog[")
+      StringBuilder sb = new StringBuilder ("X_IMP_ProcessorLog[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set Binary Data.
-		@param BinaryData 
-		Binary Data
-	  */
+		@param BinaryData Binary Data
+	*/
 	public void setBinaryData (byte[] BinaryData)
 	{
 		set_Value (COLUMNNAME_BinaryData, BinaryData);
@@ -84,15 +97,14 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	/** Get Binary Data.
 		@return Binary Data
 	  */
-	public byte[] getBinaryData () 
+	public byte[] getBinaryData()
 	{
 		return (byte[])get_Value(COLUMNNAME_BinaryData);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -101,15 +113,14 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -118,29 +129,31 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	public org.compiere.model.I_IMP_Processor getIMP_Processor() throws RuntimeException
-    {
-		return (org.compiere.model.I_IMP_Processor)MTable.get(getCtx(), org.compiere.model.I_IMP_Processor.Table_Name)
-			.getPO(getIMP_Processor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_IMP_Processor)MTable.get(getCtx(), org.compiere.model.I_IMP_Processor.Table_ID)
+			.getPO(getIMP_Processor_ID(), get_TrxName());
+	}
 
 	/** Set Import Processor.
-		@param IMP_Processor_ID Import Processor	  */
+		@param IMP_Processor_ID Import Processor
+	*/
 	public void setIMP_Processor_ID (int IMP_Processor_ID)
 	{
-		if (IMP_Processor_ID < 1) 
+		if (IMP_Processor_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_IMP_Processor_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_IMP_Processor_ID, Integer.valueOf(IMP_Processor_ID));
 	}
 
 	/** Get Import Processor.
 		@return Import Processor	  */
-	public int getIMP_Processor_ID () 
+	public int getIMP_Processor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IMP_Processor_ID);
 		if (ii == null)
@@ -149,18 +162,19 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	}
 
 	/** Set Import Processor Log.
-		@param IMP_ProcessorLog_ID Import Processor Log	  */
+		@param IMP_ProcessorLog_ID Import Processor Log
+	*/
 	public void setIMP_ProcessorLog_ID (int IMP_ProcessorLog_ID)
 	{
-		if (IMP_ProcessorLog_ID < 1) 
+		if (IMP_ProcessorLog_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_IMP_ProcessorLog_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_IMP_ProcessorLog_ID, Integer.valueOf(IMP_ProcessorLog_ID));
 	}
 
 	/** Get Import Processor Log.
 		@return Import Processor Log	  */
-	public int getIMP_ProcessorLog_ID () 
+	public int getIMP_ProcessorLog_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IMP_ProcessorLog_ID);
 		if (ii == null)
@@ -169,7 +183,8 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	}
 
 	/** Set IMP_ProcessorLog_UU.
-		@param IMP_ProcessorLog_UU IMP_ProcessorLog_UU	  */
+		@param IMP_ProcessorLog_UU IMP_ProcessorLog_UU
+	*/
 	public void setIMP_ProcessorLog_UU (String IMP_ProcessorLog_UU)
 	{
 		set_Value (COLUMNNAME_IMP_ProcessorLog_UU, IMP_ProcessorLog_UU);
@@ -177,15 +192,14 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 
 	/** Get IMP_ProcessorLog_UU.
 		@return IMP_ProcessorLog_UU	  */
-	public String getIMP_ProcessorLog_UU () 
+	public String getIMP_ProcessorLog_UU()
 	{
 		return (String)get_Value(COLUMNNAME_IMP_ProcessorLog_UU);
 	}
 
 	/** Set Error.
-		@param IsError 
-		An Error occurred in the execution
-	  */
+		@param IsError An Error occurred in the execution
+	*/
 	public void setIsError (boolean IsError)
 	{
 		set_Value (COLUMNNAME_IsError, Boolean.valueOf(IsError));
@@ -194,7 +208,7 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	/** Get Error.
 		@return An Error occurred in the execution
 	  */
-	public boolean isError () 
+	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
 		if (oo != null) 
@@ -207,9 +221,8 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	}
 
 	/** Set Reference.
-		@param Reference 
-		Reference for this record
-	  */
+		@param Reference Reference for this record
+	*/
 	public void setReference (String Reference)
 	{
 		set_Value (COLUMNNAME_Reference, Reference);
@@ -218,15 +231,14 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	/** Get Reference.
 		@return Reference for this record
 	  */
-	public String getReference () 
+	public String getReference()
 	{
 		return (String)get_Value(COLUMNNAME_Reference);
 	}
 
 	/** Set Summary.
-		@param Summary 
-		Textual summary of this request
-	  */
+		@param Summary Textual summary of this request
+	*/
 	public void setSummary (String Summary)
 	{
 		set_Value (COLUMNNAME_Summary, Summary);
@@ -235,15 +247,14 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	/** Get Summary.
 		@return Textual summary of this request
 	  */
-	public String getSummary () 
+	public String getSummary()
 	{
 		return (String)get_Value(COLUMNNAME_Summary);
 	}
 
 	/** Set Text Message.
-		@param TextMsg 
-		Text Message
-	  */
+		@param TextMsg Text Message
+	*/
 	public void setTextMsg (String TextMsg)
 	{
 		set_Value (COLUMNNAME_TextMsg, TextMsg);
@@ -252,7 +263,7 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	/** Get Text Message.
 		@return Text Message
 	  */
-	public String getTextMsg () 
+	public String getTextMsg()
 	{
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}

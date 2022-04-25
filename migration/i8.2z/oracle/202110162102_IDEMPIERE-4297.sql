@@ -1,0 +1,84 @@
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- IDEMPIERE-4297 Improve test data
+-- Oct 16, 2021, 9:01:25 PM AEDT
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=15, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=105
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=15, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=106
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=10, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=107
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=15, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=108
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=12, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=109
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=20, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=110
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=40, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=111
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=12, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=112
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=20, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=113
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=50, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=114
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=15, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=115
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=20, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=116
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=8, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=117
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=12, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=118
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=30, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=119
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=30, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=120
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=30, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=121
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=12, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=122
+;
+
+-- Oct 16, 2021, 9:02:23 PM AEDT
+UPDATE C_OrderLine SET QtyDelivered=15, Updated=TO_DATE('2021-10-16 21:02:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_OrderLine_ID=123
+;
+
+SELECT register_migration_script('202110162102_IDEMPIERE-4297.sql') FROM dual
+;

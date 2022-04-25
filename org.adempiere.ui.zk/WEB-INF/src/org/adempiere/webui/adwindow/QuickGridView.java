@@ -27,7 +27,7 @@ import org.adempiere.base.Core;
 import org.adempiere.model.MTabCustomization;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.apps.form.WQuickForm;
+import org.adempiere.webui.apps.form.IQuickForm;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Combobox;
@@ -105,8 +105,11 @@ public class QuickGridView extends Vbox
 
 	private static final String ATTR_ON_POST_SELECTED_ROW_CHANGED = "org.adempiere.webui.adwindow.GridView.onPostSelectedRowChanged";
 
-	public static final String  CNTRL_KEYS  = "#left#right#up#down#home@k@r";
-	
+	public static final String		CNTRL_KEYS							= "#left#right#up#down#home@k@r";
+
+	// 'Enter' Work as Down key
+	private static final int		KEYBOARD_KEY_ENTER					= 13;
+
 	// Event Listeners
 	public static final String		EVENT_ON_SELECT_ROW					= "onSelectRow";
 	public static final String		EVENT_ON_CUSTOMIZE_GRID				= "onCustomizeGrid";
@@ -168,26 +171,7 @@ public class QuickGridView extends Vbox
 	// To prevent 'onFocus' event fire twice on same component.
 	private Component preEventComponent;
 
-	// 'Alt + K' for Save and Close
-	private static final int		KEYBOARD_KEY_K						= 75;
-	// 'Alt + S' for Save
-	private static final int		KEYBOARD_KEY_S						= 83;
-	// 'Alt + Z' for Ignore
-	private static final int		KEYBOARD_KEY_Z						= 90;
-	// 'Alt + E' for Refresh
-	private static final int		KEYBOARD_KEY_E						= 69;
-	// 'Enter' Work as Down key
-	private static final int		KEYBOARD_KEY_ENTER					= 13;
-	// 'Alt + D' for Delete
-	private static final int		KEYBOARD_KEY_D						= 68;
-	// 'Alt + X' for Close
-	private static final int		KEYBOARD_KEY_X						= 88;
-	// 'Alt + L' for opening Customize grid panel
-	private static final int		KEYBOARD_KEY_L						= 76;
-	// 'Alt + R' for UnSort
-	private static final int		KEYBOARD_KEY_R						= 82;
-
-	public WQuickForm				quickForm;
+	public IQuickForm				quickForm;
 
 	public GridField[] getGridField() {
 		return gridFields;
@@ -235,7 +219,7 @@ public class QuickGridView extends Vbox
 		}
 		//default true for better UI experience
 		if (ClientInfo.isMobile())
-			modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_EDIT_MODELESS, false);
+			modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_EDIT_MODELESS, false) && MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_EDITABLE, false);
 		else
 			modeless = MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_EDIT_MODELESS, true);
 		
@@ -255,7 +239,7 @@ public class QuickGridView extends Vbox
 		addEventListener(EVENT_ONFOCUS_AFTER_SAVE, this);
 	}
 
-	public QuickGridView(AbstractADWindowContent abstractADWindowContent, GridTab gridTab, WQuickForm wQuickForm)
+	public QuickGridView(AbstractADWindowContent abstractADWindowContent, GridTab gridTab, IQuickForm wQuickForm)
 	{
 		this(abstractADWindowContent.getWindowNo());
 		setADWindowPanel(abstractADWindowContent);
@@ -950,36 +934,36 @@ public class QuickGridView extends Vbox
 			}
 			else if (!isCtrl && isAlt && !isShift)
 			{
-				if (code == KEYBOARD_KEY_K)
+				if (code == ADWindowToolbar.VK_K)
 				{
 					quickForm.onSave();
 					quickForm.dispose();
 				}
-				else if (code == KEYBOARD_KEY_S)
+				else if (code == ADWindowToolbar.VK_S)
 				{
 					quickForm.onSave();
 				}
-				else if (code == KEYBOARD_KEY_D)
+				else if (code == ADWindowToolbar.VK_D)
 				{
 					quickForm.onDelete();
 				}
-				else if (code == KEYBOARD_KEY_Z)
+				else if (code == ADWindowToolbar.VK_Z)
 				{
 					quickForm.onIgnore();
 				}
-				else if (code == KEYBOARD_KEY_E)
+				else if (code == ADWindowToolbar.VK_E)
 				{
 					quickForm.onRefresh();
 				}
-				else if (code == KEYBOARD_KEY_X)
+				else if (code == ADWindowToolbar.VK_X)
 				{
 					quickForm.onCancel();
 				}
-				else if (code == KEYBOARD_KEY_L)
+				else if (code == ADWindowToolbar.VK_L)
 				{
 					quickForm.onCustomize();
 				}
-				else if (code == KEYBOARD_KEY_R)
+				else if (code == ADWindowToolbar.VK_R)
 				{
 					quickForm.onUnSort();
 				}

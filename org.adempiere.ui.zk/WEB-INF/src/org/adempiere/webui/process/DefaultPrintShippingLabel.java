@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.adempiere.process.IPrintShippingLabel;
 import org.adempiere.webui.FedexLabelWindow;
-import org.adempiere.webui.LabelAppletWindow;
 import org.adempiere.webui.UPSHtmlLabelWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Window;
@@ -36,29 +35,7 @@ public class DefaultPrintShippingLabel implements IPrintShippingLabel
 {
 	public String printToLabelPrinter(MAttachment attachment, MShipperLabels labelType) throws Exception
 	{
-		MAttachmentEntry[] entries = attachment.getEntries();
-		List<byte[]> list = new ArrayList<byte[]>();
-		if (entries != null && entries.length > 0) 
-		{
-			for (MAttachmentEntry entry : entries) 
-			{
-				if (entry.getName().startsWith("shipping_label"))
-					list.add(entry.getData());
-			}
-			if (list.size() > 0) 
-			{
-				final List<byte[]> dataList = list;
-				AEnv.executeAsyncDesktopTask(new Runnable() {
-					@Override
-					public void run() {
-						LabelAppletWindow law = new LabelAppletWindow(dataList);
-						law.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-						SessionManager.getAppDesktop().showWindow(law);
-					}
-				});
-			}
-		}
-		return list.size() + " labels loaded.";
+		throw new UnsupportedOperationException();
 	}
 
 	public String printImageLabel(MAttachment attachment, MShipperLabels labelType, String title) throws Exception

@@ -18,7 +18,6 @@ package org.compiere.model;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -53,6 +52,8 @@ public class CalloutEngine implements Callout
 	protected CLogger		log = CLogger.getCLogger(getClass());
 	private GridTab m_mTab;
 	private GridField m_mField;
+	protected String[] additionalArgs;
+	public static final String ARG_SEPARATOR = ",";
 
 	/**
 	 *	Start Callout.
@@ -82,7 +83,7 @@ public class CalloutEngine implements Callout
 		
 		//
 		String retValue = "";
-		StringBuffer msg = new StringBuffer(methodName).append(" - ")
+		StringBuilder msg = new StringBuilder(methodName).append(" - ")
 			.append(mField.getColumnName())
 			.append("=").append(value)
 			.append(" (old=").append(oldValue)
@@ -133,17 +134,27 @@ public class CalloutEngine implements Callout
 	 *	Conversion Rules.
 	 *	Convert a String
 	 *
-	 *	@param methodName   method name
+	 *	@param methodAndArgs   method name and additional arguments (in brackets, separated by commas)
 	 *  @param value    the value
 	 *	@return converted String or Null if no method found
 	 */
-	public String convert (String methodName, String value)
+	public String convert (String methodAndArgs, String value)
 	{
+		String methodName;
+		//find '(' and ')'
+		if(methodAndArgs.contains("(") && methodAndArgs.substring(methodAndArgs.indexOf("(")).contains(")")) {
+			methodName = methodAndArgs.substring(0, methodAndArgs.indexOf('('));
+			additionalArgs = methodAndArgs.substring(methodAndArgs.indexOf("(")+1, methodAndArgs.indexOf(")"))
+					.split(ARG_SEPARATOR); //Everything between the brackets, separated by commas, is considered additional arguments
+		} else {
+			methodName = methodAndArgs;
+		}
+		
 		if (methodName == null || methodName.length() == 0)
 			throw new IllegalArgumentException ("No Method Name");
 		//
 		String retValue = null;
-		StringBuffer msg = new StringBuffer(methodName).append(" - ").append(value);
+		StringBuilder msg = new StringBuilder(methodName).append(" - ").append(value);
 		if (log.isLoggable(Level.INFO)) log.info (msg.toString());
 		//
 		//	Find Method
@@ -304,7 +315,7 @@ public class CalloutEngine implements Callout
 		BigDecimal rate2 = Env.ZERO;
 
 		if (rate1.signum() != 0.0)	//	no divide by zero
-			rate2 = Env.ONE.divide(rate1, 12, RoundingMode.HALF_UP);
+			rate2 = MUOMConversion.getOppositeRate(rate1);
 		//
 		if (mField.getColumnName().equals("MultiplyRate"))
 			mTab.setValue("DivideRate", rate2);

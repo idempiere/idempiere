@@ -26,19 +26,30 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_Conversion_Rate
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="I_Conversion_Rate")
 public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_Conversion_Rate (Properties ctx, int I_Conversion_Rate_ID, String trxName)
     {
       super (ctx, I_Conversion_Rate_ID, trxName);
+      /** if (I_Conversion_Rate_ID == 0)
+        {
+			setI_Conversion_Rate_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_Conversion_Rate (Properties ctx, int I_Conversion_Rate_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_Conversion_Rate_ID, trxName, virtualColumns);
       /** if (I_Conversion_Rate_ID == 0)
         {
 			setI_Conversion_Rate_ID (0);
@@ -68,32 +79,32 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_I_Conversion_Rate[")
+      StringBuilder sb = new StringBuilder ("X_I_Conversion_Rate[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_Conversion_Rate getC_Conversion_Rate() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Conversion_Rate)MTable.get(getCtx(), org.compiere.model.I_C_Conversion_Rate.Table_Name)
-			.getPO(getC_Conversion_Rate_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Conversion_Rate)MTable.get(getCtx(), org.compiere.model.I_C_Conversion_Rate.Table_ID)
+			.getPO(getC_Conversion_Rate_ID(), get_TrxName());
+	}
 
 	/** Set Conversion Rate.
-		@param C_Conversion_Rate_ID 
-		Rate used for converting currencies
-	  */
+		@param C_Conversion_Rate_ID Rate used for converting currencies
+	*/
 	public void setC_Conversion_Rate_ID (int C_Conversion_Rate_ID)
 	{
-		if (C_Conversion_Rate_ID < 1) 
+		if (C_Conversion_Rate_ID < 1)
 			set_Value (COLUMNNAME_C_Conversion_Rate_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Conversion_Rate_ID, Integer.valueOf(C_Conversion_Rate_ID));
 	}
 
 	/** Get Conversion Rate.
 		@return Rate used for converting currencies
 	  */
-	public int getC_Conversion_Rate_ID () 
+	public int getC_Conversion_Rate_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Conversion_Rate_ID);
 		if (ii == null)
@@ -102,26 +113,26 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	public org.compiere.model.I_C_ConversionType getC_ConversionType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_Name)
-			.getPO(getC_ConversionType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ConversionType)MTable.get(getCtx(), org.compiere.model.I_C_ConversionType.Table_ID)
+			.getPO(getC_ConversionType_ID(), get_TrxName());
+	}
 
 	/** Set Currency Type.
-		@param C_ConversionType_ID 
-		Currency Conversion Rate Type
-	  */
+		@param C_ConversionType_ID Currency Conversion Rate Type
+	*/
 	public void setC_ConversionType_ID (int C_ConversionType_ID)
 	{
-		if (C_ConversionType_ID < 1) 
+		if (C_ConversionType_ID < 1)
 			set_Value (COLUMNNAME_C_ConversionType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ConversionType_ID, Integer.valueOf(C_ConversionType_ID));
 	}
 
 	/** Get Currency Type.
 		@return Currency Conversion Rate Type
 	  */
-	public int getC_ConversionType_ID () 
+	public int getC_ConversionType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ConversionType_ID);
 		if (ii == null)
@@ -130,26 +141,26 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -158,14 +169,14 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency_To() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID_To(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID_To(), get_TrxName());
+	}
 
 	/** Set Currency To.
-		@param C_Currency_ID_To 
-		Target currency
-	  */
+		@param C_Currency_ID_To Target currency
+	*/
 	public void setC_Currency_ID_To (int C_Currency_ID_To)
 	{
 		set_Value (COLUMNNAME_C_Currency_ID_To, Integer.valueOf(C_Currency_ID_To));
@@ -174,7 +185,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/** Get Currency To.
 		@return Target currency
 	  */
-	public int getC_Currency_ID_To () 
+	public int getC_Currency_ID_To()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID_To);
 		if (ii == null)
@@ -183,9 +194,8 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	/** Set Currency Type Key.
-		@param ConversionTypeValue 
-		Key value for the Currency Conversion Rate Type
-	  */
+		@param ConversionTypeValue Key value for the Currency Conversion Rate Type
+	*/
 	public void setConversionTypeValue (String ConversionTypeValue)
 	{
 		set_Value (COLUMNNAME_ConversionTypeValue, ConversionTypeValue);
@@ -194,15 +204,14 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/** Get Currency Type Key.
 		@return Key value for the Currency Conversion Rate Type
 	  */
-	public String getConversionTypeValue () 
+	public String getConversionTypeValue()
 	{
 		return (String)get_Value(COLUMNNAME_ConversionTypeValue);
 	}
 
 	/** Set Create Reciprocal Rate.
-		@param CreateReciprocalRate 
-		Create Reciprocal Rate from current information
-	  */
+		@param CreateReciprocalRate Create Reciprocal Rate from current information
+	*/
 	public void setCreateReciprocalRate (boolean CreateReciprocalRate)
 	{
 		set_Value (COLUMNNAME_CreateReciprocalRate, Boolean.valueOf(CreateReciprocalRate));
@@ -211,7 +220,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/** Get Create Reciprocal Rate.
 		@return Create Reciprocal Rate from current information
 	  */
-	public boolean isCreateReciprocalRate () 
+	public boolean isCreateReciprocalRate()
 	{
 		Object oo = get_Value(COLUMNNAME_CreateReciprocalRate);
 		if (oo != null) 
@@ -224,9 +233,8 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	/** Set Divide Rate.
-		@param DivideRate 
-		To convert Source number to Target number, the Source is divided
-	  */
+		@param DivideRate To convert Source number to Target number, the Source is divided
+	*/
 	public void setDivideRate (BigDecimal DivideRate)
 	{
 		set_Value (COLUMNNAME_DivideRate, DivideRate);
@@ -235,7 +243,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/** Get Divide Rate.
 		@return To convert Source number to Target number, the Source is divided
 	  */
-	public BigDecimal getDivideRate () 
+	public BigDecimal getDivideRate()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DivideRate);
 		if (bd == null)
@@ -244,21 +252,20 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	/** Set Import Conversion Rate.
-		@param I_Conversion_Rate_ID 
-		Import Currency Conversion Rate
-	  */
+		@param I_Conversion_Rate_ID Import Currency Conversion Rate
+	*/
 	public void setI_Conversion_Rate_ID (int I_Conversion_Rate_ID)
 	{
-		if (I_Conversion_Rate_ID < 1) 
+		if (I_Conversion_Rate_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_I_Conversion_Rate_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_I_Conversion_Rate_ID, Integer.valueOf(I_Conversion_Rate_ID));
 	}
 
 	/** Get Import Conversion Rate.
 		@return Import Currency Conversion Rate
 	  */
-	public int getI_Conversion_Rate_ID () 
+	public int getI_Conversion_Rate_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_I_Conversion_Rate_ID);
 		if (ii == null)
@@ -275,7 +282,8 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
     }
 
 	/** Set I_Conversion_Rate_UU.
-		@param I_Conversion_Rate_UU I_Conversion_Rate_UU	  */
+		@param I_Conversion_Rate_UU I_Conversion_Rate_UU
+	*/
 	public void setI_Conversion_Rate_UU (String I_Conversion_Rate_UU)
 	{
 		set_Value (COLUMNNAME_I_Conversion_Rate_UU, I_Conversion_Rate_UU);
@@ -283,15 +291,14 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 
 	/** Get I_Conversion_Rate_UU.
 		@return I_Conversion_Rate_UU	  */
-	public String getI_Conversion_Rate_UU () 
+	public String getI_Conversion_Rate_UU()
 	{
 		return (String)get_Value(COLUMNNAME_I_Conversion_Rate_UU);
 	}
 
 	/** Set Import Error Message.
-		@param I_ErrorMsg 
-		Messages generated from import process
-	  */
+		@param I_ErrorMsg Messages generated from import process
+	*/
 	public void setI_ErrorMsg (String I_ErrorMsg)
 	{
 		set_Value (COLUMNNAME_I_ErrorMsg, I_ErrorMsg);
@@ -300,15 +307,14 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/** Get Import Error Message.
 		@return Messages generated from import process
 	  */
-	public String getI_ErrorMsg () 
+	public String getI_ErrorMsg()
 	{
 		return (String)get_Value(COLUMNNAME_I_ErrorMsg);
 	}
 
 	/** Set Imported.
-		@param I_IsImported 
-		Has this import been processed
-	  */
+		@param I_IsImported Has this import been processed
+	*/
 	public void setI_IsImported (boolean I_IsImported)
 	{
 		set_Value (COLUMNNAME_I_IsImported, Boolean.valueOf(I_IsImported));
@@ -317,7 +323,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/** Get Imported.
 		@return Has this import been processed
 	  */
-	public boolean isI_IsImported () 
+	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
 		if (oo != null) 
@@ -330,9 +336,8 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	/** Set ISO Currency Code.
-		@param ISO_Code 
-		Three letter ISO 4217 Code of the Currency
-	  */
+		@param ISO_Code Three letter ISO 4217 Code of the Currency
+	*/
 	public void setISO_Code (String ISO_Code)
 	{
 		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
@@ -341,15 +346,14 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/** Get ISO Currency Code.
 		@return Three letter ISO 4217 Code of the Currency
 	  */
-	public String getISO_Code () 
+	public String getISO_Code()
 	{
 		return (String)get_Value(COLUMNNAME_ISO_Code);
 	}
 
 	/** Set ISO Currency To Code.
-		@param ISO_Code_To 
-		Three letter ISO 4217 Code of the To Currency
-	  */
+		@param ISO_Code_To Three letter ISO 4217 Code of the To Currency
+	*/
 	public void setISO_Code_To (String ISO_Code_To)
 	{
 		set_Value (COLUMNNAME_ISO_Code_To, ISO_Code_To);
@@ -358,15 +362,14 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/** Get ISO Currency To Code.
 		@return Three letter ISO 4217 Code of the To Currency
 	  */
-	public String getISO_Code_To () 
+	public String getISO_Code_To()
 	{
 		return (String)get_Value(COLUMNNAME_ISO_Code_To);
 	}
 
 	/** Set Multiply Rate.
-		@param MultiplyRate 
-		Rate to multiple the source by to calculate the target.
-	  */
+		@param MultiplyRate Rate to multiple the source by to calculate the target.
+	*/
 	public void setMultiplyRate (BigDecimal MultiplyRate)
 	{
 		set_Value (COLUMNNAME_MultiplyRate, MultiplyRate);
@@ -375,7 +378,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/** Get Multiply Rate.
 		@return Rate to multiple the source by to calculate the target.
 	  */
-	public BigDecimal getMultiplyRate () 
+	public BigDecimal getMultiplyRate()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MultiplyRate);
 		if (bd == null)
@@ -384,9 +387,8 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -395,7 +397,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -408,7 +410,8 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -416,7 +419,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -429,9 +432,8 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -440,15 +442,14 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -457,7 +458,7 @@ public class X_I_Conversion_Rate extends PO implements I_I_Conversion_Rate, I_Pe
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}

@@ -28,6 +28,8 @@ import org.compiere.util.Msg;
 /**
  * 	BOM Product/Component Model
  *	
+ *  Never leave beta and drop
+ *  @deprecated
  *  @author Jorg Janke
  *  @version $Id: MBOMProduct.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
  */
@@ -72,12 +74,10 @@ public class MBOMProduct extends X_M_BOMProduct
 		super (ctx, M_BOMProduct_ID, trxName);
 		if (M_BOMProduct_ID == 0)
 		{
-		//	setM_BOM_ID (0);
 			setBOMProductType (BOMPRODUCTTYPE_StandardProduct);	// S
 			setBOMQty (Env.ONE);
 			setIsPhantom (false);
 			setLeadTimeOffset (0);
-		//	setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_BOMProduct WHERE M_BOM_ID=@M_BOM_ID@
 		}
 	}	//	MBOMProduct
 
@@ -113,7 +113,7 @@ public class MBOMProduct extends X_M_BOMProduct
 	private MBOM getBOM()
 	{
 		if (m_bom == null && getM_BOM_ID() != 0)
-			m_bom = MBOM.get(getCtx(), getM_BOM_ID());
+			m_bom = MBOM.getCopy(getCtx(), getM_BOM_ID(), get_TrxName());
 		return m_bom;
 	}	//	getBOM
 	
@@ -190,7 +190,7 @@ public class MBOMProduct extends X_M_BOMProduct
 		//	Set Line Number
 		if (getLine() == 0)
 		{
-			String sql = "SELECT COALESCE(MAX(Line),0)+10 FROM M_BOMProduct WHERE M_BOM_ID=?";
+			String sql = "SELECT NVL(MAX(Line),0)+10 FROM M_BOMProduct WHERE M_BOM_ID=?";
 			int ii = DB.getSQLValue (get_TrxName(), sql, getM_BOM_ID());
 			setLine (ii);
 		}

@@ -22,6 +22,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
@@ -29,6 +31,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
@@ -36,8 +39,9 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.Adempiere;
 import org.compiere.db.Database;
-import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -51,12 +55,12 @@ import org.compiere.util.Ini;
  *  
  *  @author Teo Sarca, www.arhipac.ro
  *  		<li>BF [ 2782095 ] Do not log *Access records
- *  			https://sourceforge.net/tracker/?func=detail&aid=2782095&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/1867/
  *  		<li>TODO: BF [ 2782611 ] Migration scripts are not UTF8
- *  			https://sourceforge.net/tracker/?func=detail&aid=2782611&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/1869/
  *  @author Teo Sarca
  *  		<li>BF [ 3137355 ] PG query not valid when contains quotes and backslashes
- *  			https://sourceforge.net/tracker/?func=detail&aid=3137355&group_id=176962&atid=879332	
+ *  			https://sourceforge.net/p/adempiere/bugs/2560/	
  */
 public abstract class Convert
 {
@@ -77,9 +81,9 @@ public abstract class Convert
 	/**	Logger	*/
 	private static final CLogger	log	= CLogger.getCLogger (Convert.class);
 	
-    private static FileOutputStream tempFileOr = null;
+    private static FileOutputStream fosScriptOr = null;
     private static Writer writerOr;
-    private static FileOutputStream tempFilePg = null;
+    private static FileOutputStream fosScriptPg = null;
     private static Writer writerPg;
 
     /**
@@ -290,27 +294,29 @@ public abstract class Convert
 	
 	/**
 	 * Utility method to replace quoted string with a predefined marker
-	 * @param retValue
+
+	 * @param inputValue
 	 * @param retVars
+	 * @param nonce
 	 * @return string
 	 */
-	protected String replaceQuotedStrings(String inputValue, Vector<String>retVars) {
+	protected String replaceQuotedStrings(String inputValue, Vector<String>retVars, String nonce) {
 		// save every value  
 		// Carlos Ruiz - globalqss - better matching regexp
 		retVars.clear();
 		
 		// First we need to replace double quotes to not be matched by regexp - Teo Sarca BF [3137355 ]
-		final String quoteMarker = "<--QUOTE"+System.currentTimeMillis()+"-->";
+		final String quoteMarker = "<--QUOTE"+nonce+"-->";
 		inputValue = inputValue.replace("''", quoteMarker);
 		
 		Pattern p = Pattern.compile("'[[^']*]*'");
 		Matcher m = p.matcher(inputValue);
 		int i = 0;
-		StringBuffer retValue = new StringBuffer(inputValue.length());
+		StringBuilder retValue = new StringBuilder(inputValue.length());
 		while (m.find()) {
 			String var = inputValue.substring(m.start(), m.end()).replace(quoteMarker, "''"); // Put back quotes, if any
 			retVars.addElement(var);
-			m.appendReplacement(retValue, "<--" + i + "-->");
+			m.appendReplacement(retValue, "<--QS" + i + "QS" + nonce + "-->");
 			i++;
 		}
 		m.appendTail(retValue);
@@ -325,12 +331,12 @@ public abstract class Convert
 	 * @param retVars
 	 * @return string
 	 */
-	protected String recoverQuotedStrings(String retValue, Vector<String>retVars) {
+	protected String recoverQuotedStrings(String retValue, Vector<String>retVars, String nonce) {
 		for (int i = 0; i < retVars.size(); i++) {
 			//hengsin, special character in replacement can cause exception
 			String replacement = (String) retVars.get(i);
 			replacement = escapeQuotedString(replacement);
-			retValue = retValue.replace("<--" + i + "-->", replacement);
+			retValue = retValue.replace("<--QS" + i + "QS" + nonce + "-->", replacement);
 		}
 		return retValue;
 	}
@@ -385,7 +391,7 @@ public abstract class Convert
 	
 				} catch (Exception e) {
 					String error = "Error expression: " + regex + " - " + e;
-					log.info(error);
+					log.warning(error);
 					m_conversionError = error;
 				}
 			}
@@ -442,34 +448,65 @@ public abstract class Convert
 		if (logMigrationScript) {
 			if (dontLog(oraStatement))
 				return;
-			// Log oracle and postgres migration scripts in temp directory
-			// migration_script_oracle.sql and migration_script_postgresql.sql
+			// Log oracle and postgres migration scripts in migration/iD[version]/[oracle|postgresql] directory
+			// [timestamp]_[ticket].sql
+			String fileName = null;
+			String folderOr = null;
+			String folderPg = null;
+			String prm_COMMENT = null;
 			try {
-				if (tempFileOr == null) {
-		            File fileNameOr = File.createTempFile("migration_script_", "_oracle.sql");
-		            tempFileOr = new FileOutputStream(fileNameOr, true);
-		            writerOr = new BufferedWriter(new OutputStreamWriter(tempFileOr, "UTF8"));
-		            writerOr.append("SET SQLBLANKLINES ON\nSET DEFINE OFF\n\n");
+				if (fosScriptOr == null || fosScriptPg == null) {
+					String now = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+					prm_COMMENT = Env.getContext(Env.getCtx(), "MigrationScriptComment");
+					String pattern = "(IDEMPIERE-[0-9]*)";
+					Pattern p = Pattern.compile(pattern);
+					Matcher m = p.matcher(prm_COMMENT);
+					String ticket = null;
+					if (m.find())
+						ticket = m.group(1);
+					if (ticket == null)
+						ticket = "PlaceholderForTicket";
+					fileName = now + "_" + ticket + ".sql";
+					String version = Adempiere.MAIN_VERSION.substring(8);
+					boolean isIDE = Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base"));
+					String homeScript;
+					if (isIDE)
+						homeScript = Adempiere.getAdempiereHome() + File.separator;
+					else
+						homeScript = System.getProperty("java.io.tmpdir") + File.separator;
+					folderOr = homeScript + "migration" + File.separator + "iD" + version + File.separator + "oracle" + File.separator;
+					folderPg = homeScript + "migration" + File.separator + "iD" + version + File.separator + "postgresql" + File.separator;
+					Files.createDirectories(Paths.get(folderOr));
+					Files.createDirectories(Paths.get(folderPg));
+				}
+				if (fosScriptOr == null) {
+					File fileOr = new File(folderOr + fileName);
+					fosScriptOr = new FileOutputStream(fileOr, true);
+					writerOr = new BufferedWriter(new OutputStreamWriter(fosScriptOr, "UTF8"));
+					writerOr.append("-- ");
+					writerOr.append(prm_COMMENT);
+					writerOr.append("\nSELECT register_migration_script('").append(fileName).append("') FROM dual;\n\n");
+					// adding these in prevention because some oracle scripts have multiline strings or @ that are misinterpreted by sqlplus
+					writerOr.append("SET SQLBLANKLINES ON\nSET DEFINE OFF\n\n");
 				}
 				writeLogMigrationScript(writerOr, oraStatement);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
 				if (pgStatement == null) {
 					// if oracle call convert for postgres before logging
 					Convert convert = Database.getDatabase(Database.DB_POSTGRESQL).getConvert();
 					String[] r = convert.convert(oraStatement);
 					pgStatement = r[0];
 				}
-				if (tempFilePg == null) {
-		            File fileNamePg = File.createTempFile("migration_script_", "_postgresql.sql");
-		            tempFilePg = new FileOutputStream(fileNamePg, true);
-		            writerPg = new BufferedWriter(new OutputStreamWriter(tempFilePg, "UTF8"));
+				if (fosScriptPg == null) {
+					File filePg = new File(folderPg + fileName);
+					fosScriptPg = new FileOutputStream(filePg, true);
+					writerPg = new BufferedWriter(new OutputStreamWriter(fosScriptPg, "UTF8"));
+					writerPg.append("-- ");
+					writerPg.append(prm_COMMENT);
+					writerPg.append("\nSELECT register_migration_script('").append(fileName).append("') FROM dual;\n\n");
 				}
 				writeLogMigrationScript(writerPg, pgStatement);
 			} catch (IOException e) {
-				e.printStackTrace();
+				throw new AdempiereException(e);
 			}
 		}
 	}
@@ -513,8 +550,10 @@ public abstract class Convert
 			"AD_SCHEDULERLOG",
 			"AD_SESSION",
 			"AD_WINDOW_ACCESS",
+			"AD_WLISTBOX_CUSTOMIZATION",
 			"AD_WORKFLOW_ACCESS",
 			"AD_WORKFLOWPROCESSORLOG",
+			"AD_USERPREFERENCE",
 			"CM_WEBACCESSLOG",
 			"C_ACCTPROCESSORLOG",
 			"K_INDEXLOG",
@@ -549,6 +588,9 @@ public abstract class Convert
 			return true;
 		if (uppStmt.startsWith("UPDATE R_REQUESTPROCESSOR SET DATELASTRUN"))
 			return true;
+		// don't log sequence updates
+		if (uppStmt.startsWith("UPDATE AD_SEQUENCE SET CURRENTNEXT"))
+			return true;
 		// Don't log DELETE FROM Some_Table WHERE AD_Table_ID=? AND Record_ID=?
 		if (uppStmt.startsWith("DELETE FROM ") && uppStmt.endsWith(" WHERE AD_TABLE_ID=? AND RECORD_ID=?"))
 			return true;
@@ -577,25 +619,8 @@ public abstract class Convert
 		return false;
 	}
 
-	private static String m_oldprm_COMMENT = "";
-
 	private static void writeLogMigrationScript(Writer w, String statement) throws IOException
 	{
-		boolean isUseCentralizedID = "Y".equals(MSysConfig.getValue(MSysConfig.DICTIONARY_ID_USE_CENTRALIZED_ID, "Y")); // defaults to Y
-		boolean isUseProjectCentralizedID = "Y".equals(MSysConfig.getValue(MSysConfig.PROJECT_ID_USE_CENTRALIZED_ID, "N")); // defaults to N
-		String prm_COMMENT;
-		if (!isUseCentralizedID && isUseProjectCentralizedID)
-			prm_COMMENT = MSysConfig.getValue(MSysConfig.PROJECT_ID_COMMENTS);
-		else
-			prm_COMMENT = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_COMMENTS);
-		if (prm_COMMENT != null && ! m_oldprm_COMMENT.equals(prm_COMMENT)) {
-			// log sysconfig comment
-			w.append("-- ");
-			w.append(prm_COMMENT);
-			w.append("\n");
-			if (w == writerPg)
-				m_oldprm_COMMENT = prm_COMMENT;
-		}
 		// log time and date
 		SimpleDateFormat format = DisplayType.getDateFormat(DisplayType.DateTime);
 		String dateTimeText = format.format(new Timestamp(System.currentTimeMillis()));

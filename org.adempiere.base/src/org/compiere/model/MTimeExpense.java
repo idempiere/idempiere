@@ -39,7 +39,7 @@ import org.compiere.util.Msg;
  *
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *	@version $Id: MTimeExpense.java,v 1.4 2006/07/30 00:51:03 jjanke Exp $
  */
 public class MTimeExpense extends X_S_TimeExpense implements DocAction
@@ -61,12 +61,8 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 		super (ctx, S_TimeExpense_ID, trxName);
 		if (S_TimeExpense_ID == 0)
 		{
-		//	setC_BPartner_ID (0);
 			setDateReport (new Timestamp (System.currentTimeMillis ()));
-		//	setDocumentNo (null);
 			setIsApproved (false);
-		//	setM_PriceList_ID (0);
-		//	setM_Warehouse_ID (0);
 			super.setProcessed (false);
 			setProcessing(false);
 		}
@@ -115,7 +111,7 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 		int C_Currency_ID = getC_Currency_ID();
 		ArrayList<MTimeExpenseLine> list = new ArrayList<MTimeExpenseLine>();
 		//
-		String sql = "SELECT * FROM S_TimeExpenseLine WHERE S_TimeExpense_ID=? ORDER BY Line";
+		String sql = "SELECT * FROM S_TimeExpenseLine WHERE S_TimeExpense_ID=? ORDER BY Line,S_TimeExpenseLine_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -447,8 +443,6 @@ public class MTimeExpense extends X_S_TimeExpense implements DocAction
 		if (m_processMsg != null)
 			return false;
 
-		//	Close Not delivered Qty
-	//	setDocAction(DOCACTION_None);
 		return true;
 	}	//	closeIt
 	

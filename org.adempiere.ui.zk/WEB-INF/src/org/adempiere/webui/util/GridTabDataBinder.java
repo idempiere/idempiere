@@ -183,7 +183,7 @@ public class GridTabDataBinder implements ValueChangeListener {
 	 * @param trxName Transaction
 	 * @throws Exception If error is occured when loading the PO or saving clones
 	 * 
-	 * @author ashley
+	 * author ashley
 	 */
 	protected void saveMultipleRecords(Properties ctx, String tableName, 
 			String columnName, int recordId, Integer[] values, 

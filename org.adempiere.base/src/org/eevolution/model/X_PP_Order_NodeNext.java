@@ -23,19 +23,36 @@ import org.compiere.model.*;
 
 /** Generated Model for PP_Order_NodeNext
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="PP_Order_NodeNext")
 public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Order_NodeNext (Properties ctx, int PP_Order_NodeNext_ID, String trxName)
     {
       super (ctx, PP_Order_NodeNext_ID, trxName);
+      /** if (PP_Order_NodeNext_ID == 0)
+        {
+			setAD_WF_Node_ID (0);
+			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+			setPP_Order_ID (0);
+			setPP_Order_Node_ID (0);
+			setSeqNo (0);
+// 10
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_NodeNext (Properties ctx, int PP_Order_NodeNext_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_NodeNext_ID, trxName, virtualColumns);
       /** if (PP_Order_NodeNext_ID == 0)
         {
 			setAD_WF_Node_ID (0);
@@ -71,32 +88,32 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PP_Order_NodeNext[")
+      StringBuilder sb = new StringBuilder ("X_PP_Order_NodeNext[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Next() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Next_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Next_ID(), get_TrxName());
+	}
 
 	/** Set Next Node.
-		@param AD_WF_Next_ID 
-		Next Node in workflow
-	  */
+		@param AD_WF_Next_ID Next Node in workflow
+	*/
 	public void setAD_WF_Next_ID (int AD_WF_Next_ID)
 	{
-		if (AD_WF_Next_ID < 1) 
+		if (AD_WF_Next_ID < 1)
 			set_Value (COLUMNNAME_AD_WF_Next_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_WF_Next_ID, Integer.valueOf(AD_WF_Next_ID));
 	}
 
 	/** Get Next Node.
 		@return Next Node in workflow
 	  */
-	public int getAD_WF_Next_ID () 
+	public int getAD_WF_Next_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Next_ID);
 		if (ii == null)
@@ -105,26 +122,26 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	}
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Node_ID(), get_TrxName());
+	}
 
 	/** Set Node.
-		@param AD_WF_Node_ID 
-		Workflow Node (activity), step or process
-	  */
+		@param AD_WF_Node_ID Workflow Node (activity), step or process
+	*/
 	public void setAD_WF_Node_ID (int AD_WF_Node_ID)
 	{
-		if (AD_WF_Node_ID < 1) 
+		if (AD_WF_Node_ID < 1)
 			set_Value (COLUMNNAME_AD_WF_Node_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_WF_Node_ID, Integer.valueOf(AD_WF_Node_ID));
 	}
 
 	/** Get Node.
 		@return Workflow Node (activity), step or process
 	  */
-	public int getAD_WF_Node_ID () 
+	public int getAD_WF_Node_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Node_ID);
 		if (ii == null)
@@ -133,9 +150,8 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -144,7 +160,7 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -152,9 +168,8 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -164,15 +179,14 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Std User Workflow.
-		@param IsStdUserWorkflow 
-		Standard Manual User Approval Workflow
-	  */
+		@param IsStdUserWorkflow Standard Manual User Approval Workflow
+	*/
 	public void setIsStdUserWorkflow (boolean IsStdUserWorkflow)
 	{
 		set_Value (COLUMNNAME_IsStdUserWorkflow, Boolean.valueOf(IsStdUserWorkflow));
@@ -181,7 +195,7 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	/** Get Std User Workflow.
 		@return Standard Manual User Approval Workflow
 	  */
-	public boolean isStdUserWorkflow () 
+	public boolean isStdUserWorkflow()
 	{
 		Object oo = get_Value(COLUMNNAME_IsStdUserWorkflow);
 		if (oo != null) 
@@ -194,26 +208,26 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	}
 
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_Name)
-			.getPO(getPP_Order_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_ID)
+			.getPO(getPP_Order_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order.
-		@param PP_Order_ID 
-		Manufacturing Order
-	  */
+		@param PP_Order_ID Manufacturing Order
+	*/
 	public void setPP_Order_ID (int PP_Order_ID)
 	{
-		if (PP_Order_ID < 1) 
+		if (PP_Order_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, Integer.valueOf(PP_Order_ID));
 	}
 
 	/** Get Manufacturing Order.
 		@return Manufacturing Order
 	  */
-	public int getPP_Order_ID () 
+	public int getPP_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_ID);
 		if (ii == null)
@@ -222,23 +236,25 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	}
 
 	public org.eevolution.model.I_PP_Order_Node getPP_Order_Next() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order_Node)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Node.Table_Name)
-			.getPO(getPP_Order_Next_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order_Node)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Node.Table_ID)
+			.getPO(getPP_Order_Next_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order Activity Next.
-		@param PP_Order_Next_ID Manufacturing Order Activity Next	  */
+		@param PP_Order_Next_ID Manufacturing Order Activity Next
+	*/
 	public void setPP_Order_Next_ID (int PP_Order_Next_ID)
 	{
-		if (PP_Order_Next_ID < 1) 
+		if (PP_Order_Next_ID < 1)
 			set_Value (COLUMNNAME_PP_Order_Next_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PP_Order_Next_ID, Integer.valueOf(PP_Order_Next_ID));
 	}
 
 	/** Get Manufacturing Order Activity Next.
 		@return Manufacturing Order Activity Next	  */
-	public int getPP_Order_Next_ID () 
+	public int getPP_Order_Next_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_Next_ID);
 		if (ii == null)
@@ -247,26 +263,26 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	}
 
 	public org.eevolution.model.I_PP_Order_Node getPP_Order_Node() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order_Node)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Node.Table_Name)
-			.getPO(getPP_Order_Node_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order_Node)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Node.Table_ID)
+			.getPO(getPP_Order_Node_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order Activity.
-		@param PP_Order_Node_ID 
-		Workflow Node (activity), step or process
-	  */
+		@param PP_Order_Node_ID Workflow Node (activity), step or process
+	*/
 	public void setPP_Order_Node_ID (int PP_Order_Node_ID)
 	{
-		if (PP_Order_Node_ID < 1) 
+		if (PP_Order_Node_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Node_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Node_ID, Integer.valueOf(PP_Order_Node_ID));
 	}
 
 	/** Get Manufacturing Order Activity.
 		@return Workflow Node (activity), step or process
 	  */
-	public int getPP_Order_Node_ID () 
+	public int getPP_Order_Node_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_Node_ID);
 		if (ii == null)
@@ -275,18 +291,19 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	}
 
 	/** Set Manufacturing Order Activity Next.
-		@param PP_Order_NodeNext_ID Manufacturing Order Activity Next	  */
+		@param PP_Order_NodeNext_ID Manufacturing Order Activity Next
+	*/
 	public void setPP_Order_NodeNext_ID (int PP_Order_NodeNext_ID)
 	{
-		if (PP_Order_NodeNext_ID < 1) 
+		if (PP_Order_NodeNext_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_NodeNext_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_NodeNext_ID, Integer.valueOf(PP_Order_NodeNext_ID));
 	}
 
 	/** Get Manufacturing Order Activity Next.
 		@return Manufacturing Order Activity Next	  */
-	public int getPP_Order_NodeNext_ID () 
+	public int getPP_Order_NodeNext_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_NodeNext_ID);
 		if (ii == null)
@@ -295,7 +312,8 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	}
 
 	/** Set PP_Order_NodeNext_UU.
-		@param PP_Order_NodeNext_UU PP_Order_NodeNext_UU	  */
+		@param PP_Order_NodeNext_UU PP_Order_NodeNext_UU
+	*/
 	public void setPP_Order_NodeNext_UU (String PP_Order_NodeNext_UU)
 	{
 		set_Value (COLUMNNAME_PP_Order_NodeNext_UU, PP_Order_NodeNext_UU);
@@ -303,15 +321,14 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 
 	/** Get PP_Order_NodeNext_UU.
 		@return PP_Order_NodeNext_UU	  */
-	public String getPP_Order_NodeNext_UU () 
+	public String getPP_Order_NodeNext_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PP_Order_NodeNext_UU);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -320,7 +337,7 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -329,9 +346,8 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	}
 
 	/** Set Transition Code.
-		@param TransitionCode 
-		Code resulting in TRUE of FALSE
-	  */
+		@param TransitionCode Code resulting in TRUE of FALSE
+	*/
 	public void setTransitionCode (String TransitionCode)
 	{
 		set_Value (COLUMNNAME_TransitionCode, TransitionCode);
@@ -340,7 +356,7 @@ public class X_PP_Order_NodeNext extends PO implements I_PP_Order_NodeNext, I_Pe
 	/** Get Transition Code.
 		@return Code resulting in TRUE of FALSE
 	  */
-	public String getTransitionCode () 
+	public String getTransitionCode()
 	{
 		return (String)get_Value(COLUMNNAME_TransitionCode);
 	}

@@ -20,6 +20,7 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.IModelFactory;
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.model.GenericPO;
 import org.compiere.db.AdempiereDatabase;
@@ -41,6 +43,8 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Persistent Table Model
@@ -55,20 +59,30 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @author Teo Sarca, teo.sarca@gmail.com
  *  		<li>BF [ 3017117 ] MTable.getClass returns bad class
- *  			https://sourceforge.net/tracker/?func=detail&aid=3017117&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2433/
  *  @version $Id: MTable.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
  */
-public class MTable extends X_AD_Table
+public class MTable extends X_AD_Table implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4736882280922026772L;
+	private static final long serialVersionUID = -7981455044208282721L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
 	/**
-	 * 	Get Table from Cache
+	 * 	Get Table from Cache (immutable)
+	 *	@param AD_Table_ID id
+	 *	@return MTable
+	 */
+	public static MTable get (int AD_Table_ID)
+	{
+		return get(Env.getCtx(), AD_Table_ID);
+	}
+	
+	/** 
+	 * 	Get Table from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Table_ID id
 	 *	@return MTable
@@ -79,28 +93,43 @@ public class MTable extends X_AD_Table
 	}	//	get
 
 	/**
-	 * 	Get Table from Cache
+	 * 	Get Table from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Table_ID id
 	 *	@param trxName transaction
 	 *	@return MTable
 	 */
-	public static MTable get (Properties ctx, int AD_Table_ID, String trxName)
+	public static synchronized MTable get (Properties ctx, int AD_Table_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(AD_Table_ID);
-		MTable retValue = s_cache.get (key);
-		if (retValue != null && retValue.getCtx() == ctx) {
-			if (trxName != null)
-				retValue.set_TrxName(trxName);
+		MTable retValue = s_cache.get (ctx, key, e -> new MTable(ctx, e));
+		if (retValue != null) 
+			return retValue;
+		
+		retValue = new MTable (ctx, AD_Table_ID, trxName);
+		if (retValue.get_ID () == AD_Table_ID) 
+		{
+			s_cache.put (key, retValue, e -> new MTable(Env.getCtx(), e));
 			return retValue;
 		}
-		retValue = new MTable (ctx, AD_Table_ID, trxName);
-		if (retValue.get_ID () != 0) {
-			s_cache.put (key, retValue);
-		}
-		return retValue;
+		return null;
 	}	//	get
 
+	/**
+	 * Get updateable copy of MTable from cache
+	 * @param ctx
+	 * @param AD_Table_ID
+	 * @param trxName
+	 * @return MTable
+	 */
+	public static MTable getCopy(Properties ctx, int AD_Table_ID, String trxName)
+	{
+		MTable table = get(ctx, AD_Table_ID, trxName);
+		if (table != null)
+			table = new MTable(ctx, table, trxName);
+		return table;
+	}
+	
 	/**
 	 * 	Get Table from Cache
 	 *	@param ctx context
@@ -126,12 +155,10 @@ public class MTable extends X_AD_Table
 		while (it.hasNext())
 		{
 			MTable retValue = it.next();
-			if (tableName.equalsIgnoreCase(retValue.getTableName())
-					&& retValue.getCtx() == ctx
-				)
+			if (tableName.equalsIgnoreCase(retValue.getTableName()))
 			{
-				return retValue;
-		}
+				return s_cache.get (ctx, retValue.get_ID(), e -> new MTable(ctx, e));
+			}
 		}
 		//
 		MTable retValue = null;
@@ -159,7 +186,7 @@ public class MTable extends X_AD_Table
 		if (retValue != null)
 		{
 			Integer key = Integer.valueOf(retValue.getAD_Table_ID());
-			s_cache.put (key, retValue);
+			s_cache.put (key, retValue, e -> new MTable(Env.getCtx(), e));
 		}
 		return retValue;
 	}	//	get
@@ -177,12 +204,12 @@ public class MTable extends X_AD_Table
 
 
 	/**	Cache						*/
-	private static CCache<Integer,MTable> s_cache = new CCache<Integer,MTable>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MTable> s_cache = new ImmutableIntPOCache<Integer,MTable>(Table_Name, 20);
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MTable.class);
 
-
+	private static final CCache<String, IServiceReferenceHolder<IModelFactory>> s_modelFactoryCache = new CCache<>(null, "IModelFactory", 100, 120, false, 2000);
 
 	/**
 	 * 	Get Persistence Class for Table
@@ -191,13 +218,32 @@ public class MTable extends X_AD_Table
 	 */
 	public static Class<?> getClass (String tableName)
 	{
-		List<IModelFactory> factoryList = Service.locator().list(IModelFactory.class).getServices();
+		IServiceReferenceHolder<IModelFactory> cache = s_modelFactoryCache.get(tableName);
+		if (cache != null)
+		{
+			IModelFactory service = cache.getService();
+			if (service != null)
+			{
+				Class<?> clazz = service.getClass(tableName);
+				if (clazz != null)
+					return clazz;
+			}
+			s_modelFactoryCache.remove(tableName);
+		}
+		
+		List<IServiceReferenceHolder<IModelFactory>> factoryList = Service.locator().list(IModelFactory.class).getServiceReferences();
 		if (factoryList == null)
 			return null;
-		for(IModelFactory factory : factoryList) {
-			Class<?> clazz = factory.getClass(tableName);
-			if (clazz != null)
-				return clazz;
+		for(IServiceReferenceHolder<IModelFactory> factory : factoryList) {
+			IModelFactory service = factory.getService();
+			if (service != null) {
+				Class<?> clazz = service.getClass(tableName);
+				if (clazz != null)
+				{
+					s_modelFactoryCache.put(tableName, factory);
+					return clazz;
+				}
+			}
 		}
 		return null;
 	}	//	getClass
@@ -213,8 +259,6 @@ public class MTable extends X_AD_Table
 		super (ctx, AD_Table_ID, trxName);
 		if (AD_Table_ID == 0)
 		{
-		//	setName (null);
-		//	setTableName (null);
 			setAccessLevel (ACCESSLEVEL_SystemOnly);	// 4
 			setEntityType (ENTITYTYPE_UserMaintained);	// U
 			setIsChangeLog (false);
@@ -236,6 +280,43 @@ public class MTable extends X_AD_Table
 	{
 		super(ctx, rs, trxName);
 	}	//	MTable
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MTable(MTable copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MTable(Properties ctx, MTable copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MTable(Properties ctx, MTable copy, String trxName) 
+	{
+		//-1 to avoid infinite loop
+		this(ctx, -1, trxName);
+		copyPO(copy);
+		this.m_columns = copy.m_columns != null ? Arrays.stream(copy.m_columns).map(e -> {return new MColumn(ctx, e, trxName);}).toArray(MColumn[]::new): null;
+		this.m_columnNameMap = copy.m_columnNameMap != null ? new HashMap<String, Integer>(copy.m_columnNameMap) : null;
+		this.m_columnIdMap = copy.m_columnIdMap != null ? new HashMap<Integer, Integer>(copy.m_columnIdMap) : null;
+		this.m_viewComponents = copy.m_viewComponents != null ? Arrays.stream(copy.m_viewComponents).map(e -> {return new MViewComponent(ctx, e, trxName);}).toArray(MViewComponent[]::new) : null;
+	}
+
 
 	/**	Columns				*/
 	private MColumn[]	m_columns = null;
@@ -268,6 +349,8 @@ public class MTable extends X_AD_Table
 			rs = pstmt.executeQuery ();
 			while (rs.next ()) {
 				MColumn column = new MColumn (getCtx(), rs, get_TrxName());
+				if (is_Immutable())
+					column.markImmutable();
 				list.add (column);
 				m_columnNameMap.put(column.getColumnName().toUpperCase(), list.size() - 1);
 				m_columnIdMap.put(column.getAD_Column_ID(), list.size() - 1);
@@ -283,6 +366,8 @@ public class MTable extends X_AD_Table
 			rs = null; pstmt = null;
 		}
 		//
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		m_columns = new MColumn[list.size ()];
 		list.toArray (m_columns);
 		return m_columns;
@@ -297,14 +382,10 @@ public class MTable extends X_AD_Table
 	{
 		if (columnName == null || columnName.length() == 0)
 			return null;
-		getColumns(false);
-		//
-		for (int i = 0; i < m_columns.length; i++)
-		{
-			if (columnName.equalsIgnoreCase(m_columns[i].getColumnName()))
-				return m_columns[i];
-		}
-		return null;
+		int idx = getColumnIndex(columnName);
+		if (idx < 0)
+			return null;
+		return m_columns[idx];
 	}	//	getColumn
 
 	/**
@@ -324,6 +405,27 @@ public class MTable extends X_AD_Table
 	}   //  getColumnIndex
 
 	/**
+	 *  Column exists and is not virtual?
+	 *  @param ColumnName column name
+	 *  @return boolean - true indicating that the column exists in the table and is not virtual
+	 */
+	public synchronized boolean columnExistsInDB (String ColumnName)
+	{
+		MColumn column = getColumn(ColumnName);
+		return column != null && ! column.isVirtualColumn();
+	}   //  columnExistsInDB
+
+	/**
+	 *  Column exists?
+	 *  @param ColumnName column name
+	 *  @return boolean - true indicating that the column exists in dictionary
+	 */
+	public synchronized boolean columnExistsInDictionary (String ColumnName)
+	{
+		return getColumnIndex(ColumnName) >= 0;
+	}   //  columnExistsInDictionary
+
+	/**
 	 *  Get Column Index
 	 *  @param AD_Column_ID column
 	 *  @return index of column with ColumnName or -1 if not found
@@ -338,7 +440,7 @@ public class MTable extends X_AD_Table
 		
 		return -1;
 	}   //  getColumnIndex
-	
+
 	/**
 	 * 	Table has a single Key
 	 *	@return true if table has single key column
@@ -415,18 +517,43 @@ public class MTable extends X_AD_Table
 		}
 
 		PO po = null;
-		List<IModelFactory> factoryList = Service.locator().list(IModelFactory.class).getServices();
-		if (factoryList != null)
+		IServiceReferenceHolder<IModelFactory> cache = s_modelFactoryCache.get(tableName);
+		if (cache != null)
 		{
-			for(IModelFactory factory : factoryList)
+			IModelFactory service = cache.getService();
+			if (service != null)
 			{
-				po = factory.getPO(tableName, Record_ID, trxName);
+				po = service.getPO(tableName, Record_ID, trxName);
 				if (po != null)
 				{
 					if (po.get_ID() != Record_ID && Record_ID > 0)
 						po = null;
 					else
-						break;
+						return po;
+				}
+			}
+			s_modelFactoryCache.remove(tableName);
+		}
+		
+		List<IServiceReferenceHolder<IModelFactory>> factoryList = Service.locator().list(IModelFactory.class).getServiceReferences();
+		if (factoryList != null)
+		{
+			for(IServiceReferenceHolder<IModelFactory> factory : factoryList)
+			{
+				IModelFactory service = factory.getService();
+				if (service != null)
+				{
+					po = service.getPO(tableName, Record_ID, trxName);
+					if (po != null)
+					{
+						if (po.get_ID() != Record_ID && Record_ID > 0)
+							po = null;
+						else
+						{
+							s_modelFactoryCache.put(tableName, factory);
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -452,13 +579,32 @@ public class MTable extends X_AD_Table
 		String tableName = getTableName();
 
 		PO po = null;
-		List<IModelFactory> factoryList = Service.locator().list(IModelFactory.class).getServices();
+		IServiceReferenceHolder<IModelFactory> cache = s_modelFactoryCache.get(tableName);
+		if (cache != null)
+		{
+			IModelFactory service = cache.getService();
+			if (service != null)
+			{
+				po = service.getPO(tableName, rs, trxName);
+				if (po != null)
+					return po;
+			}
+			s_modelFactoryCache.remove(tableName);
+		}
+		List<IServiceReferenceHolder<IModelFactory>> factoryList = Service.locator().list(IModelFactory.class).getServiceReferences();
 		if (factoryList != null)
 		{
-			for(IModelFactory factory : factoryList) {
-				po = factory.getPO(tableName, rs, trxName);
-				if (po != null)
-					break;
+			for(IServiceReferenceHolder<IModelFactory> factory : factoryList) {
+				IModelFactory service = factory.getService();
+				if (service != null)
+				{
+					po = service.getPO(tableName, rs, trxName);
+					if (po != null)
+					{
+						s_modelFactoryCache.put(tableName, factory);
+						break;
+					}
+				}
 			}
 		}
 
@@ -469,6 +615,21 @@ public class MTable extends X_AD_Table
 
 		return po;
 	}	//	getPO
+
+	/**
+	 * Get PO Class Instance
+	 * 
+	 * @param  uuID    UUID
+	 * @param  trxName transaction
+	 * @return         PO for Record
+	 */
+	public PO getPOByUU (String uuID, String trxName)
+	{
+		PO po = getPO(0, trxName);
+		po.loadByUU(uuID, trxName);
+
+		return po;
+	} // getPOByUU
 
 	/**
 	 * 	Get PO Class Instance
@@ -560,13 +721,18 @@ public class MTable extends X_AD_Table
 		if (!success)
 			return success;
 		//	Sync Table ID
-		MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
-		if (seq == null || seq.get_ID() == 0)
-			MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
-		else if (!seq.getName().equals(getTableName()))
-		{
-			seq.setName(getTableName());
-			seq.saveEx();
+		if(!isView()) {
+			MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
+			if (seq == null || seq.get_ID() == 0)
+				MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
+			else if (!seq.getName().equals(getTableName()))
+			{
+				seq.setName(getTableName());
+				seq.saveEx();
+			}
+		}
+		if (newRecord || is_ValueChanged(COLUMNNAME_IsChangeLog)) {
+			MChangeLog.resetLoggedList();
 		}
 		
 		return success;
@@ -591,7 +757,8 @@ public class MTable extends X_AD_Table
 	}
 	/**
 	 * 	Grant independence to GenerateModel from AD_Table_ID
-	 *	@param String tableName
+	 *	@param tableName String
+	 *  @param trxName
 	 *	@return int retValue
 	 */
 	public static int getTable_ID(String tableName, String trxName) {
@@ -627,7 +794,9 @@ public class MTable extends X_AD_Table
 		query.setParameters(getAD_Table_ID());
 		query.setOrderBy(MViewComponent.COLUMNNAME_SeqNo);
 		query.setOnlyActiveRecords(true);
-		List<MTableIndex> list = query.<MTableIndex>list();
+		List<MViewComponent> list = query.list();
+		if (list.size() > 0 && is_Immutable())
+			list.stream().forEach(e -> e.markImmutable());
 		
 		m_viewComponents = new MViewComponent[list.size()];
 		list.toArray(m_viewComponents);
@@ -666,4 +835,18 @@ public class MTable extends X_AD_Table
 				tablename.equals("M_AttributeSetInstance"));
 	}
 
+	@Override
+	public MTable markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_columns != null && m_columns.length > 0)
+			Arrays.stream(m_columns).forEach(e -> e.markImmutable());
+		if (m_viewComponents != null && m_viewComponents.length > 0)
+			Arrays.stream(m_viewComponents).forEach(e -> e.markImmutable());
+		return this;
+	}
+
+	
 }	//	MTable

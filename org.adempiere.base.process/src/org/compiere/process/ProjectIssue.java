@@ -29,6 +29,7 @@ import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MTimeExpense;
 import org.compiere.model.MTimeExpenseLine;
 import org.compiere.util.Env;
+import org.compiere.wf.MWorkflow;
 
 /**
  *  Issue to Project.
@@ -36,6 +37,7 @@ import org.compiere.util.Env;
  *	@author Jorg Janke
  *	@version $Id: ProjectIssue.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ProjectIssue extends SvrProcess
 {
 	/**	Project - Mandatory Parameter		*/
@@ -173,7 +175,11 @@ public class ProjectIssue extends SvrProcess
 			else if (inOut.getDescription() != null)
 				pi.setDescription(inOut.getDescription());
 			pi.setM_InOutLine_ID(inOutLines[i].getM_InOutLine_ID());
-			pi.process();
+			pi.saveEx();
+			ProcessInfo processInfo = MWorkflow.runDocumentActionWorkflow(pi, DocAction.ACTION_Complete);
+			if (processInfo.isError())
+				throw new RuntimeException(processInfo.getSummary());
+			pi.saveEx();
 
 			//	Find/Create Project Line
 			MProjectLine pl = null;
@@ -232,9 +238,7 @@ public class ProjectIssue extends SvrProcess
 
 			//	Find Location
 			int M_Locator_ID = 0;
-		//	MProduct product = new MProduct (getCtx(), expenseLines[i].getM_Product_ID());
-		//	if (product.isStocked())
-				M_Locator_ID = MStorageOnHand.getM_Locator_ID(expense.getM_Warehouse_ID(), 
+			M_Locator_ID = MStorageOnHand.getM_Locator_ID(expense.getM_Warehouse_ID(), 
 					expenseLines[i].getM_Product_ID(), 0, 	//	no ASI
 					expenseLines[i].getQty(), null);
 			if (M_Locator_ID == 0)	//	Service/Expense - get default (and fallback)
@@ -250,7 +254,12 @@ public class ProjectIssue extends SvrProcess
 			else if (expenseLines[i].getDescription() != null)
 				pi.setDescription(expenseLines[i].getDescription());
 			pi.setS_TimeExpenseLine_ID(expenseLines[i].getS_TimeExpenseLine_ID());
-			pi.process();
+			pi.saveEx();
+			ProcessInfo processInfo = MWorkflow.runDocumentActionWorkflow(pi, DocAction.ACTION_Complete);
+			if (processInfo.isError())
+				throw new RuntimeException(processInfo.getSummary());
+			pi.saveEx();
+			
 			//	Find/Create Project Line
 			MProjectLine pl = new MProjectLine(m_project);
 			pl.setMProjectIssue(pi);		//	setIssue
@@ -289,7 +298,11 @@ public class ProjectIssue extends SvrProcess
 			pi.setDescription(m_Description);
 		else if (pl.getDescription() != null)
 			pi.setDescription(pl.getDescription());
-		pi.process();
+		pi.saveEx();
+		ProcessInfo processInfo = MWorkflow.runDocumentActionWorkflow(pi, DocAction.ACTION_Complete);
+		if (processInfo.isError())
+			throw new RuntimeException(processInfo.getSummary());
+		pi.saveEx();
 
 		//	Update Line
 		pl.setMProjectIssue(pi);
@@ -319,7 +332,11 @@ public class ProjectIssue extends SvrProcess
 			pi.setMovementDate(m_MovementDate);
 		if (m_Description != null && m_Description.length() > 0)
 			pi.setDescription(m_Description);
-		pi.process();
+		pi.saveEx();
+		ProcessInfo processInfo = MWorkflow.runDocumentActionWorkflow(pi, DocAction.ACTION_Complete);
+		if (processInfo.isError())
+			throw new RuntimeException(processInfo.getSummary());
+		pi.saveEx();
 
 		//	Create Project Line
 		MProjectLine pl = new MProjectLine(m_project);
@@ -340,7 +357,8 @@ public class ProjectIssue extends SvrProcess
 			m_projectIssues = m_project.getIssues();
 		for (int i = 0; i < m_projectIssues.length; i++)
 		{
-			if (m_projectIssues[i].getS_TimeExpenseLine_ID() == S_TimeExpenseLine_ID)
+			if (m_projectIssues[i].getS_TimeExpenseLine_ID() == S_TimeExpenseLine_ID
+				&& (m_projectIssues[i].getDocStatus().equals(DocAction.STATUS_Completed) || m_projectIssues[i].getDocStatus().equals(DocAction.STATUS_Closed)))
 				return true;
 		}
 		return false;
@@ -357,7 +375,8 @@ public class ProjectIssue extends SvrProcess
 			m_projectIssues = m_project.getIssues();
 		for (int i = 0; i < m_projectIssues.length; i++)
 		{
-			if (m_projectIssues[i].getM_InOutLine_ID() == M_InOutLine_ID)
+			if (m_projectIssues[i].getM_InOutLine_ID() == M_InOutLine_ID 
+				&& (m_projectIssues[i].getDocStatus().equals(DocAction.STATUS_Completed) || m_projectIssues[i].getDocStatus().equals(DocAction.STATUS_Closed)))
 				return true;
 		}
 		return false;

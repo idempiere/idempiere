@@ -57,11 +57,11 @@ public class WPostIt extends Window implements EventListener<Event>{
 	private MPostIt m_postIt;
 
 	/**
-	 * 
 	 * @param title
-	 * @param text
-	 * @param editable
-	 * @param maxSize
+	 * @param postItID
+	 * @param tableID
+	 * @param recordID
+	 * @param trxName
 	 */
 	public WPostIt(String title, int postItID, int tableID, int recordID, /*String created, String updated,*/ String trxName) {
 		super();
@@ -108,7 +108,7 @@ public class WPostIt extends Window implements EventListener<Event>{
 		tabPanels.appendChild(tabPanel);
 		textBox = new Textbox(note);
 		textBox.setCols(80);
-		textBox.setRows(30);
+		textBox.setMultiline(true);
 		textBox.setEnabled(editable);
 		if (ClientInfo.minWidth(730))
 			textBox.setWidth("700px");
@@ -168,6 +168,7 @@ public class WPostIt extends Window implements EventListener<Event>{
 		}		
 
 		tabbox.addEventListener(Events.ON_SELECT, this);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 
 	/**
@@ -175,7 +176,7 @@ public class WPostIt extends Window implements EventListener<Event>{
 	 */
 	public void onEvent(Event event) throws Exception {
 		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)) {
-			detach();
+			onCancel();
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			if (editable) {
 				m_postIt.setText(textBox.getText());
@@ -199,6 +200,10 @@ public class WPostIt extends Window implements EventListener<Event>{
 				updateStatus(editor.getValue().length());
 			}
 		}		
+	}
+
+	private void onCancel() {
+		detach();
 	}
 
 	private void updateStatus(int newLength) {

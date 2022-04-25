@@ -67,7 +67,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      * @return ProcessDialog
      */
 	public ProcessDialog openProcessDialog(int processId, boolean soTrx) {
-		ProcessDialog pd = new ProcessDialog (processId, soTrx);
+		ProcessDialog pd = new ProcessDialog (processId, soTrx, getPredefinedContextVariables());
+
 		if (pd.isValid()) {
 			DesktopTabpanel tabPanel = new DesktopTabpanel();
 			pd.setParent(tabPanel);
@@ -86,7 +87,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      * @return ADWindow
      */
 	public ADForm openForm(int formId) {
-		ADForm form = ADForm.openForm(formId);
+		ADForm form = ADForm.openForm(formId, null, null, getPredefinedContextVariables(), isMenuSOTrx());
 
 		if (Window.Mode.EMBEDDED == form.getWindowMode()) {
 			DesktopTabpanel tabPanel = new DesktopTabpanel();
@@ -110,7 +111,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	 */
 	@Override
 	public void openInfo(int infoId) {
-		InfoPanel infoPanel = InfoManager.create(infoId);
+		InfoPanel infoPanel = InfoManager.create(infoId, getPredefinedContextVariables());
 		
 		if (infoPanel != null) {
 			DesktopTabpanel tabPanel = new DesktopTabpanel();
@@ -141,9 +142,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	
 	/**
 	 *
-	 * @param <T>
 	 * @param windowId
-	 * @return ADWindow
+	 * @param callback
 	 */
 	public void openWindow(int windowId, Callback<ADWindow> callback) {
 		openWindow(windowId, null, callback);
@@ -153,18 +153,20 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	 *
 	 * @param windowId
      * @param query
-	 * @return ADWindow
+     * @param callback
 	 */
 	public void openWindow(int windowId, MQuery query, Callback<ADWindow> callback) {
 		final ADWindow adWindow = new ADWindow(Env.getCtx(), windowId, query);
 
 		final DesktopTabpanel tabPanel = new DesktopTabpanel();		
 		String id = AdempiereIdGenerator.escapeId(adWindow.getTitle());
-		tabPanel.setId(id+"_"+adWindow.getADWindowContent().getWindowNo());
+		int windowNo = adWindow.getADWindowContent().getWindowNo();
+		tabPanel.setId(id+"_"+windowNo);
 		final Tab tab = windowContainer.addWindow(tabPanel, adWindow.getTitle(), true, DecorateInfo.get(adWindow));
-		
+
 		tab.setClosable(false);		
 		final OpenWindowRunnable runnable = new OpenWindowRunnable(adWindow, tab, tabPanel, callback);
+		Env.setPredefinedVariables(Env.getCtx(), windowNo, getPredefinedContextVariables());
 		preOpenNewTab();
 		runnable.run();
 	}

@@ -31,6 +31,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.IReservationTracer;
+import org.adempiere.util.IReservationTracerFactory;
+import org.compiere.acct.Doc;
 import org.compiere.process.DocAction;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -59,7 +64,7 @@ import org.compiere.util.ValueNamePair;
  *
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  */
 public class MMatchPO extends X_M_MatchPO
 {
@@ -479,11 +484,11 @@ public class MMatchPO extends X_M_MatchPO
 						MMatchPO[] matchPOs = MMatchPO.getOrderLine(retValue.getCtx(), sLine.getC_OrderLine_ID(), retValue.get_TrxName());
 						for (MMatchPO matchPO : matchPOs)
 						{
-							if (matchPO.getC_InvoiceLine_ID() > 0 && matchPO.getM_InOutLine_ID() == 0)
+							if (matchPO.getC_InvoiceLine_ID() > 0 && matchPO.getM_InOutLine_ID() == 0 && matchPO.getReversal_ID() == 0 && matchPO.getQty().compareTo(retValue.getQty()) >=0 )
 							{
-								//m_matchinv not created yet
+								//check m_matchinv not created with different qty
 								int cnt = DB.getSQLValueEx(sLine.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+sLine.getM_InOutLine_ID()
-										+" AND C_InvoiceLine_ID="+ matchPO.getC_InvoiceLine_ID());
+										+" AND C_InvoiceLine_ID="+ matchPO.getC_InvoiceLine_ID() + "AND Qty != ?", retValue.getQty());
 								if (cnt <= 0) {
 									if (!matchPO.isPosted() && matchPO.getQty().compareTo(retValue.getQty()) >=0 )  // greater than or equal quantity
 									{
@@ -504,8 +509,24 @@ public class MMatchPO extends X_M_MatchPO
 						//auto create matchinv
 						if (otherMatchPO != null)
 						{
-							MMatchInv matchInv = createMatchInv(retValue, otherMatchPO.getC_InvoiceLine_ID(), retValue.getM_InOutLine_ID(), retValue.getQty(), dateTrx, trxName);
-							retValue.setMatchInvCreated(matchInv);
+							//verify m_matchinv not created yet
+							int cnt = DB.getSQLValue(retValue.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+retValue.getM_InOutLine_ID()
+									+" AND C_InvoiceLine_ID="+otherMatchPO.getC_InvoiceLine_ID());
+							if (cnt <= 0)
+							{
+								MMatchInv matchInv = createMatchInv(retValue, otherMatchPO.getC_InvoiceLine_ID(), retValue.getM_InOutLine_ID(), retValue.getQty(), dateTrx, trxName);
+								if (matchInv == null)
+								{
+									String msg = "Failed to create match inv.";
+									ValueNamePair error = CLogger.retrieveError();
+									if (error != null)
+									{
+										msg = msg + " " + error.getName();
+									}
+									throw new RuntimeException(msg);
+								}
+								retValue.setMatchInvCreated(matchInv);
+							}
 							if (otherMatchPO.getQty().signum() == 0 )
 								otherMatchPO.deleteEx(true);
 						}
@@ -636,10 +657,14 @@ public class MMatchPO extends X_M_MatchPO
 							}
 							if (autoMatchQty != null && autoMatchQty.signum() > 0)
 							{
-								MMatchInv matchInv = createMatchInv(retValue, retValue.getC_InvoiceLine_ID(), matchPO.getM_InOutLine_ID(), autoMatchQty, dateTrx, trxName);
-								retValue.setMatchInvCreated(matchInv);
-								if (matchInv == null)
-									break;
+								MMatchInv[] matchInvoices = MMatchInv.get(Env.getCtx(), matchPO.getM_InOutLine_ID(), retValue.getC_InvoiceLine_ID(), trxName);
+								if (matchInvoices == null || matchInvoices.length == 0)
+								{
+									MMatchInv matchInv = createMatchInv(retValue, retValue.getC_InvoiceLine_ID(), matchPO.getM_InOutLine_ID(), autoMatchQty, dateTrx, trxName);
+									retValue.setMatchInvCreated(matchInv);
+									if (matchInv == null)
+										break;
+								}
 							}
 						}
 						if (toMatch.signum() <= 0)
@@ -722,7 +747,6 @@ public class MMatchPO extends X_M_MatchPO
 	/**
 	 * Get the match inv created for immediate accounting purposes
 	 * Is cleared after read, so if you read twice second time it returns null
-	 * @param matchInv
 	 */
 	public MMatchInv getMatchInvCreated() {
 		MMatchInv tmp = m_matchInv;
@@ -745,12 +769,7 @@ public class MMatchPO extends X_M_MatchPO
 		super (ctx, M_MatchPO_ID, trxName);
 		if (M_MatchPO_ID == 0)
 		{
-		//	setC_OrderLine_ID (0);
-		//	setDateTrx (new Timestamp(System.currentTimeMillis()));
-		//	setM_InOutLine_ID (0);
-		//	setM_Product_ID (0);
 			setM_AttributeSetInstance_ID(0);
-		//	setQty (Env.ZERO);
 			setPosted (false);
 			setProcessed (false);
 			setProcessing (false);
@@ -914,6 +933,10 @@ public class MMatchPO extends X_M_MatchPO
 			priceActual = MConversionRate.convert(getCtx(), priceActual, invoiceCurrency_ID, orderCurrency_ID,
 										invoice.getDateInvoiced(), invoice.getC_ConversionType_ID(),
 										getAD_Client_ID(), getAD_Org_ID());
+			
+			if (priceActual == null)
+				throw new AdempiereException(MConversionRateUtil.getErrorMessage(getCtx(), "ErrorConvertingCurrencyToBaseCurrency",
+						invoiceCurrency_ID, orderCurrency_ID, invoice.getC_ConversionType_ID(), invoice.getDateInvoiced(), get_TrxName()));
 		}
 		return priceActual;
 	}
@@ -1097,16 +1120,24 @@ public class MMatchPO extends X_M_MatchPO
 				if (validateOrderedQty)
 				{
 					MOrderLine line = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName());
+					BigDecimal qtyOrdered = line.getQtyOrdered();
 					BigDecimal invoicedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID > 0 and C_OrderLine_ID=? AND Reversal_ID IS NULL" , getC_OrderLine_ID());
-					if (invoicedQty != null && invoicedQty.compareTo(line.getQtyOrdered()) > 0)
+					if (    invoicedQty != null
+						&& (   (qtyOrdered.signum() > 0 && invoicedQty.compareTo(qtyOrdered) > 0)
+						    || (qtyOrdered.signum() < 0 && invoicedQty.compareTo(qtyOrdered) < 0)
+						   )
+					   )
 					{
-						throw new IllegalStateException("Total matched invoiced qty > ordered qty. MatchedInvoicedQty="+invoicedQty+", OrderedQty="+line.getQtyOrdered()+", Line="+line);
+						throw new IllegalStateException("Total matched invoiced qty > ordered qty. MatchedInvoicedQty="+invoicedQty+", OrderedQty="+qtyOrdered+", Line="+line);
 					}
-					
 					BigDecimal deliveredQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE M_InOutLine_ID > 0 and C_OrderLine_ID=? AND Reversal_ID IS NULL" , getC_OrderLine_ID());
-					if (deliveredQty != null && deliveredQty.compareTo(line.getQtyOrdered()) > 0)
+					if (   deliveredQty != null
+						&& (   (qtyOrdered.signum() > 0 && deliveredQty.compareTo(qtyOrdered) > 0)
+						    || (qtyOrdered.signum() < 0 && deliveredQty.compareTo(qtyOrdered) < 0)
+						   )
+					   )
 					{
-						throw new IllegalStateException("Total matched delivered qty > ordered qty. MatchedDeliveredQty="+deliveredQty+", OrderedQty="+line.getQtyOrdered()+", Line="+line);
+						throw new IllegalStateException("Total matched delivered qty > ordered qty. MatchedDeliveredQty="+deliveredQty+", OrderedQty="+qtyOrdered+", Line="+line);
 					}
 				}
 			}
@@ -1251,83 +1282,11 @@ public class MMatchPO extends X_M_MatchPO
 			.append (",C_OrderLine_ID=").append (getC_OrderLine_ID())
 			.append (",M_InOutLine_ID=").append (getM_InOutLine_ID())
 			.append (",C_InvoiceLine_ID=").append (getC_InvoiceLine_ID())
+			.append (",Processed=").append(isProcessed())
+			.append (",Posted=").append(isPosted())
 			.append ("]");
 		return sb.toString ();
 	}	//	toString
-	
-	/**
-	 * 	Consolidate MPO entries.
-	 * 	(data conversion issue)
-	 * 	@param ctx context
-	 */
-	public static void consolidate(Properties ctx)
-	{
-		String sql = "SELECT * FROM M_MatchPO po "
-			+ "WHERE EXISTS (SELECT 1 FROM M_MatchPO x "
-				+ "WHERE po.C_OrderLine_ID=x.C_OrderLine_ID AND po.Qty=x.Qty "
-				+ "GROUP BY C_OrderLine_ID, Qty "
-				+ "HAVING COUNT(*) = 2) "
-			+ " AND AD_Client_ID=?"
-			+ "ORDER BY C_OrderLine_ID, M_InOutLine_ID";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		int success = 0;
-		int errors = 0;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt(1, Env.getAD_Client_ID(ctx));
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-			{
-				MMatchPO po1 = new MMatchPO (ctx, rs, null);
-				if (rs.next())
-				{
-					MMatchPO po2 = new MMatchPO (ctx, rs, null);
-					if (po1.getM_InOutLine_ID() != 0 && po1.getC_InvoiceLine_ID() == 0 
-						&& po2.getM_InOutLine_ID() == 0 && po2.getC_InvoiceLine_ID() != 0)
-					{
-						StringBuilder s1 = new StringBuilder("UPDATE M_MatchPO SET C_InvoiceLine_ID=") 
-							.append(po2.getC_InvoiceLine_ID()) 
-							.append(" WHERE M_MatchPO_ID=").append(po1.getM_MatchPO_ID());
-						int no1 = DB.executeUpdate(s1.toString(), null);
-						if (no1 != 1)
-						{
-							errors++;
-							s_log.warning("Not updated M_MatchPO_ID=" + po1.getM_MatchPO_ID());
-							continue;
-						}
-						//
-						String s2 = "DELETE FROM Fact_Acct WHERE AD_Table_ID=473 AND Record_ID=?";
-						int no2 = DB.executeUpdate(s2, po2.getM_MatchPO_ID(), null);
-						String s3 = "DELETE FROM M_MatchPO WHERE M_MatchPO_ID=?";
-						int no3 = DB.executeUpdate(s3, po2.getM_MatchPO_ID(), null);
-						if (no2 == 0 && no3 == 1)
-							success++;
-						else
-						{
-							s_log.warning("M_MatchPO_ID=" + po2.getM_MatchPO_ID()
-								+ " - Deleted=" + no2 + ", Acct=" + no3); 
-							errors++;
-						}
-					}
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			s_log.log (Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		if (errors == 0 && success == 0)
-			;
-		else
-			if (s_log.isLoggable(Level.INFO)) s_log.info("Success #" + success + " - Error #" + errors);
-	}	//	consolidate
 	
 	/**
 	 * 	Reverse MatchPO.
@@ -1336,7 +1295,20 @@ public class MMatchPO extends X_M_MatchPO
 	 *	@throws Exception
 	 */
 
-	public boolean reverse(Timestamp reversalDate)  
+	public boolean reverse(Timestamp reversalDate)
+	{
+		return reverse(reversalDate, false);
+	}
+	
+	/**
+	 * 	Reverse MatchPO.
+	 *  @param reversalDate
+	 *  @param reverseMatchingOnly true if MR is not reverse
+	 *	@return boolean
+	 *	@throws Exception
+	 */
+
+	public boolean reverse(Timestamp reversalDate, boolean reverseMatchingOnly)  
 	{
 		if (this.isProcessed() && this.getReversal_ID() == 0)
 		{		
@@ -1366,6 +1338,50 @@ public class MMatchPO extends X_M_MatchPO
 			this.setReversal_ID(reversal.getM_MatchPO_ID());
 			this.saveEx();
 
+			//update qtyOrdered
+			if (reverseMatchingOnly && reversal.getM_InOutLine_ID() > 0 && reversal.getC_OrderLine_ID() > 0)
+			{
+				MInOutLine sLine = new MInOutLine(Env.getCtx(), reversal.getM_InOutLine_ID(), get_TrxName());
+				if (sLine.getMovementQty().compareTo(this.getQty()) == 0 && sLine.getC_OrderLine_ID() == reversal.getC_OrderLine_ID())
+				{
+					//clear c_orderline from shipment so we can match the shipment again (to the same or different order line)
+					sLine.setC_OrderLine_ID(0);
+					sLine.saveEx();					
+				}
+				//add back qtyOrdered
+				MOrderLine oLine = new MOrderLine(Env.getCtx(), reversal.getC_OrderLine_ID(), get_TrxName());
+				BigDecimal storageReservationToUpdate = oLine.getQtyReserved();
+				oLine.setQtyReserved(oLine.getQtyReserved().add(getQty()));
+				BigDecimal reservedAndDelivered = oLine.getQtyDelivered().add(oLine.getQtyReserved());
+				if (reservedAndDelivered.compareTo(oLine.getQtyOrdered()) > 0) 
+				{
+					oLine.setQtyReserved(oLine.getQtyReserved().subtract(reservedAndDelivered.subtract(oLine.getQtyOrdered())));
+					if (oLine.getQtyReserved().signum()==-1)
+						oLine.setQtyReserved(Env.ZERO);
+				}
+				oLine.saveEx();
+				storageReservationToUpdate = storageReservationToUpdate.subtract(oLine.getQtyReserved());
+				if (storageReservationToUpdate.signum() != 0)
+				{
+					IReservationTracer tracer = null;
+					IReservationTracerFactory factory = Core.getReservationTracerFactory();
+					if (factory != null) 
+					{
+						int docTypeId = DB.getSQLValue((String)null, Doc.DOC_TYPE_BY_DOC_BASE_TYPE_SQL, getAD_Client_ID(), Doc.DOCTYPE_MatMatchPO);
+						tracer = factory.newTracer(docTypeId, reversal.getDocumentNo(), 10, 
+								reversal.get_Table_ID(), reversal.get_ID(), oLine.getM_Warehouse_ID(), 
+								oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), oLine.getParent().isSOTrx(), 
+								get_TrxName());
+					}
+					boolean success = MStorageReservation.add (Env.getCtx(), oLine.getM_Warehouse_ID(),
+						oLine.getM_Product_ID(),
+						oLine.getM_AttributeSetInstance_ID(),
+						storageReservationToUpdate.negate(), oLine.getParent().isSOTrx(), get_TrxName(), tracer);
+					if (!success)
+						return false;
+				}
+			}
+			
 			// auto create new matchpo if have invoice line
 			if ( reversal.getC_InvoiceLine_ID() > 0 && reversal.getM_InOutLine_ID() > 0 )
 			{

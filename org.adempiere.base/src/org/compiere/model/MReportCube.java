@@ -174,8 +174,6 @@ public class MReportCube extends X_PA_ReportCube {
 			if ( isProjectTaskDim() )
 				values.add("C_ProjectTask_ID");
 			
-			//  --(CASE v.IsGL_Category_ID WHEN 'Y' THEN f."GL_Category_ID END) GL_Category_ID
-
 			Iterator<String> iter = values.iterator();
 			while ( iter.hasNext() )
 			{

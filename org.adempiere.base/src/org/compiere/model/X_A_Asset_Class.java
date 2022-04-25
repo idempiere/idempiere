@@ -22,19 +22,34 @@ import java.util.Properties;
 
 /** Generated Model for A_Asset_Class
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="A_Asset_Class")
 public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Class (Properties ctx, int A_Asset_Class_ID, String trxName)
     {
       super (ctx, A_Asset_Class_ID, trxName);
+      /** if (A_Asset_Class_ID == 0)
+        {
+			setA_Asset_Class_ID (0);
+			setA_Life_Period_Max (0);
+			setA_Life_Period_Min (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Class (Properties ctx, int A_Asset_Class_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Class_ID, trxName, virtualColumns);
       /** if (A_Asset_Class_ID == 0)
         {
 			setA_Asset_Class_ID (0);
@@ -68,24 +83,25 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Asset_Class[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_A_Asset_Class[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Asset class.
-		@param A_Asset_Class_ID Asset class	  */
+		@param A_Asset_Class_ID Asset class
+	*/
 	public void setA_Asset_Class_ID (int A_Asset_Class_ID)
 	{
-		if (A_Asset_Class_ID < 1) 
+		if (A_Asset_Class_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Class_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Class_ID, Integer.valueOf(A_Asset_Class_ID));
 	}
 
 	/** Get Asset class.
 		@return Asset class	  */
-	public int getA_Asset_Class_ID () 
+	public int getA_Asset_Class_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Class_ID);
 		if (ii == null)
@@ -94,7 +110,8 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 	}
 
 	/** Set A_Asset_Class_UU.
-		@param A_Asset_Class_UU A_Asset_Class_UU	  */
+		@param A_Asset_Class_UU A_Asset_Class_UU
+	*/
 	public void setA_Asset_Class_UU (String A_Asset_Class_UU)
 	{
 		set_Value (COLUMNNAME_A_Asset_Class_UU, A_Asset_Class_UU);
@@ -102,13 +119,14 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 
 	/** Get A_Asset_Class_UU.
 		@return A_Asset_Class_UU	  */
-	public String getA_Asset_Class_UU () 
+	public String getA_Asset_Class_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_Asset_Class_UU);
 	}
 
 	/** Set Life Periods 2004 (min).
-		@param A_Life_Period_2004 Life Periods 2004 (min)	  */
+		@param A_Life_Period_2004 Life Periods 2004 (min)
+	*/
 	public void setA_Life_Period_2004 (int A_Life_Period_2004)
 	{
 		set_Value (COLUMNNAME_A_Life_Period_2004, Integer.valueOf(A_Life_Period_2004));
@@ -116,7 +134,7 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 
 	/** Get Life Periods 2004 (min).
 		@return Life Periods 2004 (min)	  */
-	public int getA_Life_Period_2004 () 
+	public int getA_Life_Period_2004()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Life_Period_2004);
 		if (ii == null)
@@ -125,7 +143,8 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 	}
 
 	/** Set Life periods (max).
-		@param A_Life_Period_Max Life periods (max)	  */
+		@param A_Life_Period_Max Life periods (max)
+	*/
 	public void setA_Life_Period_Max (int A_Life_Period_Max)
 	{
 		set_Value (COLUMNNAME_A_Life_Period_Max, Integer.valueOf(A_Life_Period_Max));
@@ -133,7 +152,7 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 
 	/** Get Life periods (max).
 		@return Life periods (max)	  */
-	public int getA_Life_Period_Max () 
+	public int getA_Life_Period_Max()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Life_Period_Max);
 		if (ii == null)
@@ -142,7 +161,8 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 	}
 
 	/** Set Life periods (min).
-		@param A_Life_Period_Min Life periods (min)	  */
+		@param A_Life_Period_Min Life periods (min)
+	*/
 	public void setA_Life_Period_Min (int A_Life_Period_Min)
 	{
 		set_Value (COLUMNNAME_A_Life_Period_Min, Integer.valueOf(A_Life_Period_Min));
@@ -150,7 +170,7 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 
 	/** Get Life periods (min).
 		@return Life periods (min)	  */
-	public int getA_Life_Period_Min () 
+	public int getA_Life_Period_Min()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Life_Period_Min);
 		if (ii == null)
@@ -159,7 +179,8 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 	}
 
 	/** Set Value 2004.
-		@param A_Value_2004 Value 2004	  */
+		@param A_Value_2004 Value 2004
+	*/
 	public void setA_Value_2004 (String A_Value_2004)
 	{
 		set_Value (COLUMNNAME_A_Value_2004, A_Value_2004);
@@ -167,15 +188,14 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 
 	/** Get Value 2004.
 		@return Value 2004	  */
-	public String getA_Value_2004 () 
+	public String getA_Value_2004()
 	{
 		return (String)get_Value(COLUMNNAME_A_Value_2004);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_ValueNoCheck (COLUMNNAME_Description, Description);
@@ -184,13 +204,14 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Fixed Asset Class.
-		@param MFX_Clasa Fixed Asset Class	  */
+		@param MFX_Clasa Fixed Asset Class
+	*/
 	public void setMFX_Clasa (int MFX_Clasa)
 	{
 		set_Value (COLUMNNAME_MFX_Clasa, Integer.valueOf(MFX_Clasa));
@@ -198,7 +219,7 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 
 	/** Get Fixed Asset Class.
 		@return Fixed Asset Class	  */
-	public int getMFX_Clasa () 
+	public int getMFX_Clasa()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MFX_Clasa);
 		if (ii == null)
@@ -207,7 +228,8 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 	}
 
 	/** Set Fixed Asset Group.
-		@param MFX_Grupa Fixed Asset Group	  */
+		@param MFX_Grupa Fixed Asset Group
+	*/
 	public void setMFX_Grupa (int MFX_Grupa)
 	{
 		set_Value (COLUMNNAME_MFX_Grupa, Integer.valueOf(MFX_Grupa));
@@ -215,7 +237,7 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 
 	/** Get Fixed Asset Group.
 		@return Fixed Asset Group	  */
-	public int getMFX_Grupa () 
+	public int getMFX_Grupa()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MFX_Grupa);
 		if (ii == null)
@@ -224,7 +246,8 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 	}
 
 	/** Set Fixed Asset Subclass.
-		@param MFX_SubClasa Fixed Asset Subclass	  */
+		@param MFX_SubClasa Fixed Asset Subclass
+	*/
 	public void setMFX_SubClasa (int MFX_SubClasa)
 	{
 		set_Value (COLUMNNAME_MFX_SubClasa, Integer.valueOf(MFX_SubClasa));
@@ -232,7 +255,7 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 
 	/** Get Fixed Asset Subclass.
 		@return Fixed Asset Subclass	  */
-	public int getMFX_SubClasa () 
+	public int getMFX_SubClasa()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MFX_SubClasa);
 		if (ii == null)
@@ -241,7 +264,8 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 	}
 
 	/** Set Fixed Asset Subgroup.
-		@param MFX_SubGrupa Fixed Asset Subgroup	  */
+		@param MFX_SubGrupa Fixed Asset Subgroup
+	*/
 	public void setMFX_SubGrupa (int MFX_SubGrupa)
 	{
 		set_Value (COLUMNNAME_MFX_SubGrupa, Integer.valueOf(MFX_SubGrupa));
@@ -249,7 +273,7 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 
 	/** Get Fixed Asset Subgroup.
 		@return Fixed Asset Subgroup	  */
-	public int getMFX_SubGrupa () 
+	public int getMFX_SubGrupa()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MFX_SubGrupa);
 		if (ii == null)
@@ -258,9 +282,8 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -269,15 +292,14 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -286,7 +308,7 @@ public class X_A_Asset_Class extends PO implements I_A_Asset_Class, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

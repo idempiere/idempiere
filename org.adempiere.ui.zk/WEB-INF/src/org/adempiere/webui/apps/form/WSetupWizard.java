@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.model.MWizardProcess;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -77,6 +76,7 @@ import org.zkoss.zul.Vbox;
  * @author Carlos Ruiz
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VSetupWizard")
 public class WSetupWizard extends SetupWizard implements IFormController, EventListener<Event>
 {
 	private CustomForm form = null;
@@ -134,7 +134,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		{
 			preInit();
 			jbInit ();
-			LayoutUtils.sendDeferLayoutEvent(mainLayout, 100);
 		}
 		catch (Exception ex)
 		{
@@ -458,7 +457,6 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		
 		divNote.appendChild(notesField);
 		notesField.setRows(4);
-		ZKUpdateUtil.setHeight(notesField, "100%");
 		ZKUpdateUtil.setWidth(notesField, "99%");
 
 		MLookup lookup = MLookupFactory.get(Env.getCtx(), form.getWindowNo(),

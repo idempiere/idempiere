@@ -43,9 +43,10 @@ import org.zkoss.zk.ui.event.EventListener;
 public abstract class ADForm extends Window implements EventListener<Event>, IHelpContext
 {
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -5183711788893823434L;
+	private static final long serialVersionUID = -2238655179806815227L;
+
 	/** The class' logging enabler */
     protected static final CLogger logger;
     
@@ -69,9 +70,6 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 
     /**
      * Constructor
-     *
-     * @param ctx		the context into which the form is being placed
-     * @param adFormId	the Adempiere form identifier
      */
     protected ADForm()
     {
@@ -134,33 +132,58 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 	 */
 	public static ADForm openForm (int adFormID)
 	{
-        return openForm(adFormID, null, null);
+        return openForm(adFormID, null, null, null, false);
 	}
 	
-    /**
+	/**
+	 * Open a form based on it's ID with the predefined context variables from menu
+	 *
+	 * @param formId
+	 * @param predefinedContextVariables
+	 * @return The created form
+	 */
+	public static ADForm openForm(int formId, String predefinedContextVariables) {
+		return openForm(formId, null, null, predefinedContextVariables, false);
+	}
+
+	/**
      * Open a form base on it's ID
      *
      * @param adFormID
      * @param gridTab
-     * @return
+     * @return The created form
      */
 	public static ADForm openForm (int adFormID, GridTab gridTab)
 	{
-        return openForm(adFormID, gridTab, null);
+        return openForm(adFormID, gridTab, null, null, false);
+    }
+
+	/**
+     * Open a form base on it's ID and a Process Info parameters
+     *
+	 * @param adFormID
+	 * @param gridTab
+	 * @param pi
+	 * @return The created form
+	 */
+	public static ADForm openForm (int adFormID, GridTab gridTab, ProcessInfo pi)
+	{
+        return openForm(adFormID, gridTab, pi, null, false);
     }
 
     /**
-     * Open a form base on it's ID and a Process Info parameters
+     * Open a form base on it's ID and a Process Info parameters with the predefined context variables from menu
      *
      * @param adFormID
      * @param gridTab
      * @param pi
-     * @return
+     * @param predefinedContextVariables
+     * @return The created form
      */
-    public static ADForm openForm (int adFormID, GridTab gridTab, ProcessInfo pi)
+    public static ADForm openForm (int adFormID, GridTab gridTab, ProcessInfo pi, String predefinedContextVariables, boolean isSOTrx)
     {
 		ADForm form;
-		MForm mform = new MForm(Env.getCtx(), adFormID, null);
+		MForm mform = MForm.get(adFormID);
     	String formName = mform.getClassname();
     	String name = mform.get_Translation(MForm.COLUMNNAME_Name);
 
@@ -177,6 +200,8 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
     		{
     			form.gridTab = gridTab;
                 form.setProcessInfo(pi);
+        		Env.setPredefinedVariables(Env.getCtx(), form.getWindowNo(), predefinedContextVariables);
+        		Env.setContext(Env.getCtx(), form.getWindowNo(), "IsSOTrx", isSOTrx);
 				form.init(adFormID, name);
 				return form;
     		}

@@ -1,0 +1,146 @@
+
+target "idempiere-220124"
+
+with source configurePhase allEnvironments
+
+location "https://idempiere.github.io/binary.file/p2.zk/9.6.1" {
+	zcommon
+	zel
+	zhtml
+	zjavassist
+	zk
+	zkbind
+	zkplus
+	zkwebfragment
+	zul
+	zweb
+	zweb-dsp
+}
+
+location "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
+	jakarta.xml.ws-api
+	org.atmosphere.runtime
+	com.google.guava
+	com.google.http-client.google-http-client
+	com.sun.xml.fastinfoset.FastInfoset
+	org.apache.felix.webconsole
+	org.apache.poi.ooxml-schemas	
+}
+
+location "https://download.eclipse.org/eclipse/updates/4.20" {
+	// equinox core framework
+	org.eclipse.osgi
+	//<< equinox framework starter kit
+	org.apache.felix.gogo.command
+	org.apache.felix.gogo.runtime
+	org.apache.felix.gogo.shell
+	org.apache.felix.scr
+	org.apache.httpcomponents.httpclient
+	org.apache.httpcomponents.httpcore
+	org.eclipse.core.jobs
+	org.eclipse.ecf
+	org.eclipse.ecf.filetransfer
+	org.eclipse.ecf.identity
+	org.eclipse.ecf.provider.filetransfer
+	org.eclipse.ecf.provider.filetransfer.httpclient45
+	org.eclipse.ecf.provider.filetransfer.ssl
+	org.eclipse.equinox.app
+	org.eclipse.equinox.common
+	org.eclipse.equinox.concurrent
+	org.eclipse.equinox.console
+	org.eclipse.equinox.frameworkadmin
+	org.eclipse.equinox.frameworkadmin.equinox
+	org.eclipse.equinox.launcher
+	//org.eclipse.equinox.launcher.gtk.linux.x86
+	org.eclipse.equinox.p2.artifact.repository
+	org.eclipse.equinox.p2.console
+	org.eclipse.equinox.p2.core
+	org.eclipse.equinox.p2.director
+	org.eclipse.equinox.p2.engine
+	org.eclipse.equinox.p2.garbagecollector
+	org.eclipse.equinox.p2.jarprocessor
+	org.eclipse.equinox.p2.metadata
+	org.eclipse.equinox.p2.metadata.repository
+    org.eclipse.equinox.p2.operations
+	org.eclipse.equinox.p2.repository
+	org.eclipse.equinox.p2.touchpoint.eclipse
+	org.eclipse.equinox.p2.touchpoint.natives
+	org.eclipse.equinox.p2.transport.ecf
+	org.eclipse.equinox.preferences
+	org.eclipse.equinox.registry
+	org.eclipse.equinox.security
+	//org.eclipse.equinox.security.linux.x86
+	org.eclipse.equinox.simpleconfigurator
+	org.eclipse.equinox.simpleconfigurator.manipulator
+	org.eclipse.osgi.services
+	org.eclipse.osgi.util
+	org.sat4j.core
+	org.sat4j.pb
+	org.tukaani.xz
+	//<< equinox add-on
+	// feature for launcher all environment
+	org.eclipse.equinox.executable.feature.group
+	org.eclipse.equinox.http.registry
+	org.eclipse.osgi.compatibility.state
+	org.eclipse.core.runtime
+	org.eclipse.equinox.http.servlet
+	org.eclipse.equinox.servletbridge
+	org.eclipse.equinox.p2.director.app
+	org.eclipse.equinox.cm
+	org.eclipse.equinox.event
+	org.eclipse.equinox.http.servletbridge
+	org.eclipse.equinox.metatype
+	org.eclipse.ant.core
+	org.eclipse.core.commands
+	org.eclipse.core.contenttype
+	org.eclipse.core.expressions
+	org.eclipse.core.filesystem
+	org.eclipse.core.net
+	org.eclipse.core.resources
+	org.eclipse.core.variables
+	org.eclipse.jdt.core
+	org.eclipse.text	
+}
+
+location "https://download.eclipse.org/eclipse/updates/4.22" {
+	//<< for test
+	org.opentest4j
+	org.apiguardian	
+	org.junit
+	org.junit.jupiter.api
+	org.junit.jupiter.params
+	org.junit.jupiter.engine
+	org.junit.jupiter.migrationsupport
+	org.junit.vintage.engine
+	org.junit.platform.engine
+	org.junit.platform.commons
+	org.junit.platform.launcher
+	org.junit.platform.runner
+	org.junit.platform.suite.api
+	org.junit.platform.suite.commons
+	org.junit.platform.suite.engine
+	org.eclipse.pde.junit.runtime
+	org.eclipse.jdt.junit.runtime
+	org.eclipse.jdt.junit5.runtime
+}
+
+location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository" {
+	org.apache.ant
+	org.apache.xml.resolver
+	org.w3c.css.sac
+	org.w3c.dom.smil
+	org.w3c.dom.svg
+	org.w3c.dom.events
+	org.hamcrest.core
+	javax.xml
+	org.apache.xalan
+	org.apache.xml.serializer
+	org.apache.commons.discovery	
+}	
+
+location "https://sourceforge.net/projects/jasperstudio/files/updatesite/6.17.0" {
+    com.jaspersoft.studio.bundles.barbecue
+    com.jaspersoft.studio.bundles.itext
+    org.w3c.dom.svg.patch
+    org.krysalis.barcode4j
+}

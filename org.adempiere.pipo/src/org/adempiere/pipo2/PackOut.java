@@ -85,6 +85,8 @@ public class PackOut
 
 	public static final int MAX_OFFICIAL_ID = MTable.MAX_OFFICIAL_ID;
 
+	public static final String PACKOUT_BLOB_FILE_EXTENSION = ".dat";
+
 	public static void addTextElement(TransformerHandler handler, String qName, String text, AttributesImpl atts) throws SAXException {
 		handler.startElement("", "", qName, atts);
 		append(handler, text);
@@ -223,7 +225,7 @@ public class PackOut
 		atts.addAttribute("","","UpdateDictionary","CDATA", isExportDictionaryEntity ? "true" : "false");
 
 		MClient client = MClient.get(pipoContext.ctx);
-		StringBuffer sb = new StringBuffer ()
+		StringBuilder sb = new StringBuilder ()
 			.append(client.get_ID())
 			.append("-")
 			.append(client.getValue())
@@ -283,7 +285,7 @@ public class PackOut
 		addTextElement(docHandler, "filenotes", "Notes: Contains all application/object settings for package", atts);
 
 		MClient client = MClient.get(pipoContext.ctx);
-		StringBuffer sb = new StringBuffer ()
+		StringBuilder sb = new StringBuilder ()
 			.append(client.get_ID())
 			.append("-")
 			.append(client.getValue())
@@ -381,7 +383,7 @@ public class PackOut
 	 */
 	public String writeBlob(byte[] data) throws IOException {
 		blobCount++;
-		String fileName = blobCount + ".dat";
+		String fileName = blobCount + PACKOUT_BLOB_FILE_EXTENSION;
 		File path = new File(packageDirectory+File.separator+"blobs"+File.separator);
 		path.mkdirs();
 		File file = new File(path, fileName);

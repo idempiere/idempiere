@@ -26,6 +26,7 @@ import org.compiere.model.MRecurring;
  *	@author Jorg Janke
  *	@version $Id: Recurring.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class Recurring extends SvrProcess
 {
 	/**

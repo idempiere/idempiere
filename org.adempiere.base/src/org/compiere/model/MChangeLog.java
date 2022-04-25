@@ -37,15 +37,14 @@ public class MChangeLog extends X_AD_ChangeLog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7156972859181201446L;
-
+	private static final long serialVersionUID = 7262833610411402160L;
 
 	/**
 	 * 	Do we track changes for this table
 	 *	@param AD_Table_ID table
 	 *	@return true if changes are tracked
 	 */
-	public static boolean isLogged (int AD_Table_ID)
+	public static synchronized boolean isLogged (int AD_Table_ID)
 	{
 		if (s_changeLog == null || s_changeLog.length == 0)
 			fillChangeLog();
@@ -53,6 +52,10 @@ public class MChangeLog extends X_AD_ChangeLog
 		int index = Arrays.binarySearch(s_changeLog, AD_Table_ID);
 		return index >= 0;
 	}	//	trackChanges
+
+	public static synchronized void resetLoggedList() {
+		s_changeLog = null;
+	}
 	
 	/**
 	 *	Fill Log with tables to be logged 
@@ -178,9 +181,6 @@ public class MChangeLog extends X_AD_ChangeLog
 		setOldValue (OldValue);
 		setNewValue (NewValue);
 		setEventChangeLog(event);
-		//	EVENT / Release 3.3.1t_2007-12-05 ADempiere
-		// Drop description from AD_ChangeLog - pass it to AD_Session to save disk space
-		// setDescription(Adempiere.MAIN_VERSION + "_" + Adempiere.DATE_VERSION + " " + Adempiere.getImplementationVersion());
 	}	//	MChangeLog
 
 	

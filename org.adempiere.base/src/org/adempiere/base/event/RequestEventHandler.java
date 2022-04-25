@@ -125,7 +125,7 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 		if (checkChange(r, ra, "SalesRep_ID"))
 		{
 			//	Sender
-			int AD_User_ID = Env.getContextAsInt(r.getCtx(), "#AD_User_ID");
+			int AD_User_ID = Env.getContextAsInt(r.getCtx(), Env.AD_USER_ID);
 			if (AD_User_ID == 0)
 				AD_User_ID = r.getUpdatedBy();
 			//	Old
@@ -167,8 +167,6 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 		checkChange(r, ra, "C_Payment_ID");
 		checkChange(r, ra, "M_InOut_ID");
 		checkChange(r, ra, "M_RMA_ID");
-	//	checkChange(ra, "C_Campaign_ID");
-	//	checkChange(ra, "RequestAmt");
 		checkChange(r, ra, "IsInvoiced");
 		checkChange(r, ra, "C_Activity_ID");
 		checkChange(r, ra, "DateNextAction");
@@ -204,15 +202,11 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 			r.setLastResult(r.getResult());
 			//	Reset
 			r.setConfidentialTypeEntry (r.getConfidentialType());
-			// r.setStartDate(null);  //red1 - bug [ 1743159 ] Requests - Start Date is not retained.
+
 			r.setEndTime(null);
 			r.setR_StandardResponse_ID(0);
 			r.setR_MailText_ID(0);
 			r.setResult(null);
-			// globalqss - these fields must be cleared (waiting to open bug in sf)
-		//	r.setM_ProductSpent_ID(0);
-		//	r.setQtySpent(null);
-		//	r.setQtyInvoiced(null);
 		}
 		
 		return null;
@@ -333,10 +327,6 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 				if (rs.wasNull())
 					AD_Role_ID = -1;
 				
-				//	Don't send mail to oneself
-		//		if (AD_User_ID == UpdatedBy)
-		//			continue;
-				
 				//	No confidential to externals
 				if (AD_Role_ID == -1 
 					&& (r.getConfidentialTypeEntry().equals(MRequest.CONFIDENTIALTYPE_Internal)
@@ -412,7 +402,7 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 	 */
 	private String getMailTrailer(MRequest r, String serverAddress)
 	{
-		StringBuffer sb = new StringBuffer("\n").append(MRequest.SEPARATOR)
+		StringBuilder sb = new StringBuilder("\n").append(MRequest.SEPARATOR)
 			.append(Msg.translate(r.getCtx(), "R_Request_ID"))
 			.append(": ").append(r.getDocumentNo())
 			.append("  ").append(r.getMailTag())

@@ -26,19 +26,22 @@ public class MProduction extends X_M_Production implements DocAction {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4650232602150964606L;
+	private static final long serialVersionUID = 6714776372370644208L;
 
 	/**
 	 * 
 	 */
 	/** Log								*/
-	@SuppressWarnings("unused")
 	protected static CLogger		m_log = CLogger.getCLogger (MProduction.class);
 	protected int lineno;
 	protected int count;
 
 	public MProduction(Properties ctx, int M_Production_ID, String trxName) {
-		super(ctx, M_Production_ID, trxName);
+		this (ctx, M_Production_ID, trxName, (String[]) null);
+	}
+
+	public MProduction(Properties ctx, int M_Production_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_Production_ID, trxName, virtualColumns);
 		if (M_Production_ID == 0) {
 			setDocStatus(DOCSTATUS_Drafted);
 			setDocAction (DOCACTION_Prepare);
@@ -82,7 +85,7 @@ public class MProduction extends X_M_Production implements DocAction {
 		setC_Activity_ID(project.getC_Activity_ID());
 		setC_ProjectPhase_ID(line.getC_ProjectPhase_ID());
 		setC_ProjectTask_ID(line.getC_ProjectTask_ID());
-		setMovementDate( Env.getContextAsDate(p_ctx, "#Date"));
+		setMovementDate( Env.getContextAsDate(p_ctx, Env.DATE));
 	}
 
 	@Override
@@ -185,7 +188,8 @@ public class MProduction extends X_M_Production implements DocAction {
 		
 		String sql = "SELECT pl.M_ProductionLine_ID "
 			+ "FROM M_ProductionLine pl "
-			+ "WHERE pl.M_Production_ID = ?";
+			+ "WHERE pl.M_Production_ID = ? "
+			+ "ORDER BY pl.Line, pl.M_ProductionLine_ID ";
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -223,6 +227,10 @@ public class MProduction extends X_M_Production implements DocAction {
 	}// deleteLines
 
 	public int createLines(boolean mustBeStocked) {
+		return createLines(mustBeStocked, 0);
+	}
+	
+	public int createLines(boolean mustBeStocked, int PP_Product_BOM_ID) {
 		
 		lineno = 100;
 
@@ -242,12 +250,16 @@ public class MProduction extends X_M_Production implements DocAction {
 		line.saveEx();
 		count++;
 		
-		createLines(mustBeStocked, finishedProduct, getProductionQty());
+		if (PP_Product_BOM_ID > 0) {
+			setPP_Product_BOM_ID(PP_Product_BOM_ID);
+			saveEx();
+		}
+		createLines(mustBeStocked, finishedProduct, getProductionQty(), PP_Product_BOM_ID);
 		
 		return count;
 	}
 
-	protected int createLines(boolean mustBeStocked, MProduct finishedProduct, BigDecimal requiredQty) {
+	protected int createLines(boolean mustBeStocked, MProduct finishedProduct, BigDecimal requiredQty, int PP_Product_BOM_ID) {
 		
 		int defaultLocator = 0;
 		
@@ -255,19 +267,20 @@ public class MProduction extends X_M_Production implements DocAction {
 		
 		int M_Warehouse_ID = finishedLocator.getM_Warehouse_ID();
 		
-		int asi = 0;
-
 		// products used in production
-		String sql = "SELECT M_ProductBom_ID, BOMQty" + " FROM M_Product_BOM"
-				+ " WHERE M_Product_ID=" + finishedProduct.getM_Product_ID() + " ORDER BY Line";
+		String sql = " SELECT bl.M_Product_ID, bl.QtyBOM" + " FROM PP_Product_BOMLine bl"
+				+ " JOIN PP_Product_BOM b ON b.PP_Product_BOM_ID = bl.PP_Product_BOM_ID "
+				+ " WHERE b.M_Product_ID=" + finishedProduct.getM_Product_ID() + " AND b.IsActive='Y' AND bl.IsActive='Y' ";				
+		if (PP_Product_BOM_ID > 0) {
+			sql += " AND b.PP_Product_BOM_ID=" + PP_Product_BOM_ID;
+		} else {
+			sql += " AND b.BOMType='A' AND b.BOMUse='A' ";
+		}
+		sql += " ORDER BY bl.Line";
+		
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, get_TrxName());) {			
 
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try {
-			pstmt = DB.prepareStatement(sql, get_TrxName());
-
-			rs = pstmt.executeQuery();
+			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				
 				lineno = lineno + 10;
@@ -280,7 +293,7 @@ public class MProduction extends X_M_Production implements DocAction {
 
 				if ( bomproduct.isBOM() && bomproduct.isPhantom() )
 				{
-					createLines(mustBeStocked, bomproduct, BOMMovementQty);
+					createLines(mustBeStocked, bomproduct, BOMMovementQty, 0);
 				}
 				else
 				{
@@ -343,7 +356,6 @@ public class MProduction extends X_M_Production implements DocAction {
 
 						MProductionLine BOMLine = null;
 						int prevLoc = -1;
-						int previousAttribSet = -1;
 						// Create lines from storage until qty is reached
 						for (int sl = 0; sl < storages.length; sl++) {
 
@@ -354,13 +366,9 @@ public class MProduction extends X_M_Production implements DocAction {
 
 
 								int loc = storages[sl].getM_Locator_ID();
-								int slASI = storages[sl].getM_AttributeSetInstance_ID();
-								int locAttribSet = new MAttributeSetInstance(getCtx(), asi,
-										get_TrxName()).getM_AttributeSet_ID();
 
-								// roll up costing attributes if in the same locator
-								if (locAttribSet == 0 && previousAttribSet == 0
-										&& prevLoc == loc) {
+								// same locator
+								if (prevLoc == loc) {
 									BOMLine.setQtyUsed(BOMLine.getQtyUsed()
 											.add(lineQty));
 									BOMLine.setPlannedQty(BOMLine.getQtyUsed());
@@ -375,15 +383,12 @@ public class MProduction extends X_M_Production implements DocAction {
 									BOMLine.setM_Locator_ID( loc );
 									BOMLine.setQtyUsed( lineQty);
 									BOMLine.setPlannedQty( lineQty);
-									if ( slASI != 0 && locAttribSet != 0 )  // ie non costing attribute
-										BOMLine.setM_AttributeSetInstance_ID(slASI);
 									BOMLine.saveEx(get_TrxName());
 
 									lineno = lineno + 10;
 									count++;
 								}
 								prevLoc = loc;
-								previousAttribSet = locAttribSet;
 								// enough ?
 								BOMMovementQty = BOMMovementQty.subtract(lineQty);
 								if (BOMMovementQty.signum() == 0)
@@ -396,9 +401,8 @@ public class MProduction extends X_M_Production implements DocAction {
 							if (!mustBeStocked)
 							{
 
-								// roll up costing attributes if in the same locator
-								if ( previousAttribSet == 0
-										&& prevLoc == defaultLocator) {
+								// same locator
+								if (prevLoc == defaultLocator) {
 									BOMLine.setQtyUsed(BOMLine.getQtyUsed()
 											.add(BOMMovementQty));
 									BOMLine.setPlannedQty(BOMLine.getQtyUsed());
@@ -431,9 +435,6 @@ public class MProduction extends X_M_Production implements DocAction {
 			} // for all bom products
 		} catch (Exception e) {
 			throw new AdempiereException("Failed to create production lines", e);
-		}
-		finally {
-			DB.close(rs, pstmt);
 		}
 
 		return count;
@@ -513,7 +514,12 @@ public class MProduction extends X_M_Production implements DocAction {
 		return DocAction.STATUS_InProgress;
 	}
 
-	protected String validateEndProduct(int M_Product_ID) {
+	/**
+	 * 
+	 * @param M_Product_ID
+	 * @return error message (if any)
+	 */
+	public String validateEndProduct(int M_Product_ID) {
 		String msg = isBom(M_Product_ID);
 		if (!Util.isEmpty(msg))
 			return msg;
@@ -537,25 +543,26 @@ public class MProduction extends X_M_Production implements DocAction {
 		{
 			return "Attempt to create product line for Non Bill Of Materials";
 		}
-		int materials = DB.getSQLValue(get_TrxName(), "SELECT count(M_Product_BOM_ID) FROM M_Product_BOM WHERE M_Product_ID = ?", M_Product_ID);
+		int materials = DB.getSQLValue(get_TrxName(), "SELECT count(bl.PP_Product_BOMLine_ID) FROM PP_Product_BOMLine bl JOIN PP_Product_BOM b ON b.PP_Product_BOM_ID = bl.PP_Product_BOM_ID WHERE b.M_Product_ID = ? " +
+				" AND bl.IsActive='Y' AND b.IsActive='Y' AND b.BOMType='A' AND b.BOMUse='A' ", M_Product_ID );
 		if (materials == 0)
 		{
-			return "Attempt to create product line for Bill Of Materials with no BOM Products";
+			return "Attempt to create product line for Bill Of Materials with no BOM Components";
 		}
 		return null;
 	}
 
 	protected boolean costsOK(int M_Product_ID) throws AdempiereUserError {
-		MProduct product = MProduct.get(getCtx(), M_Product_ID);
+		MProduct product = MProduct.get(getCtx(), M_Product_ID, get_TrxName());
 		String costingMethod=product.getCostingMethod(MClient.get(getCtx()).getAcctSchema());
 		// will not work if non-standard costing is used
 		if (MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
-		{			
-			String sql = "SELECT ABS(((cc.currentcostprice-(SELECT SUM(c.currentcostprice*bom.bomqty)"
+		{	
+			String sql = "SELECT ABS(((cc.currentcostprice-(SELECT SUM(c.currentcostprice*bom.qtybom)"
 					+ " FROM m_cost c"
-					+ " INNER JOIN m_product_bom bom ON (c.m_product_id=bom.m_productbom_id)"
-					+ " INNER JOIN m_costelement ce ON (c.m_costelement_id = ce.m_costelement_id AND ce.costingmethod = 'S')"
-					+ " WHERE bom.m_product_id = pp.m_product_id)"
+					+ " INNER JOIN pp_product_bomline bom ON (c.m_product_id=bom.m_product_id AND bom.IsActive='Y')"
+					+ " JOIN pp_product_bom b ON (b.pp_product_bom_id = bom.pp_product_bom_id)"
+					+ " WHERE b.m_product_id = pp.m_product_id and b.bomuse='A' and b.bomtype='A' AND b.IsActive='Y')"
 					+ " )/cc.currentcostprice))"
 					+ " FROM m_product pp"
 					+ " INNER JOIN m_cost cc on (cc.m_product_id=pp.m_product_id)"
@@ -704,7 +711,7 @@ public class MProduction extends X_M_Production implements DocAction {
 	}
 
 	protected MProduction reverse(boolean accrual) {
-		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getMovementDate();
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), Env.DATE) : getMovementDate();
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}
@@ -915,4 +922,17 @@ public class MProduction extends X_M_Production implements DocAction {
 		}
 		return true;
 	}
+
+	/**
+	 * 	Document Status is Complete or Closed
+	 *	@return true if CO, CL or RE
+	 */
+	public boolean isStatusComplete()
+	{
+		String ds = getDocStatus();
+		return DOCSTATUS_Completed.equals(ds)
+			|| DOCSTATUS_Closed.equals(ds)
+			|| DOCSTATUS_Reversed.equals(ds);
+	}	//	isStatusComplete
+
 }

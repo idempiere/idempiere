@@ -37,7 +37,7 @@ import org.compiere.util.Util;
  *
  *  @author Teo Sarca, www.arhipac.ro
  *  		<li>BF [ 2784194 ] Check Warehouse-Locator conflict
- *  			https://sourceforge.net/tracker/?func=detail&aid=2784194&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/1871/
  */
 public class MInOutLine extends X_M_InOutLine
 {
@@ -103,15 +103,14 @@ public class MInOutLine extends X_M_InOutLine
 	 */
 	public MInOutLine (Properties ctx, int M_InOutLine_ID, String trxName)
 	{
-		super (ctx, M_InOutLine_ID, trxName);
+		this (ctx, M_InOutLine_ID, trxName, (String[]) null);
+	}	//	MInOutLine
+
+	public MInOutLine(Properties ctx, int M_InOutLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_InOutLine_ID, trxName, virtualColumns);
 		if (M_InOutLine_ID == 0)
 		{
-		//	setLine (0);
-		//	setM_Locator_ID (0);
-		//	setC_UOM_ID (0);
-		//	setM_Product_ID (0);
 			setM_AttributeSetInstance_ID(0);
-		//	setMovementQty (Env.ZERO);
 			setConfirmedQty(Env.ZERO);
 			setPickedQty(Env.ZERO);
 			setScrappedQty(Env.ZERO);
@@ -119,7 +118,7 @@ public class MInOutLine extends X_M_InOutLine
 			setIsInvoiced (false);
 			setIsDescription (false);
 		}
-	}	//	MInOutLine
+	}
 
 	/**
 	 *  Load Constructor
@@ -363,7 +362,7 @@ public class MInOutLine extends X_M_InOutLine
 	public MProduct getProduct()
 	{
 		if (m_product == null && getM_Product_ID() != 0)
-			m_product = MProduct.get (getCtx(), getM_Product_ID());
+			m_product = MProduct.getCopy(getCtx(), getM_Product_ID(), get_TrxName());
 		return m_product;
 	}	//	getProduct
 
@@ -510,16 +509,65 @@ public class MInOutLine extends X_M_InOutLine
 	protected boolean beforeSave (boolean newRecord)
 	{
 		log.fine("");
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOutLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOut_ID"));
 			return false;
+		}
+		if (getParent().pendingConfirmations()) {
+			if (  newRecord ||
+				(is_ValueChanged(COLUMNNAME_MovementQty) && !is_ValueChanged(COLUMNNAME_TargetQty))) {
+
+				if (getMovementQty().signum() == 0)
+				{
+					String docAction = getParent().getDocAction();
+					String docStatus = getParent().getDocStatus();
+					if (   MInOut.DOCACTION_Void.equals(docAction)
+						&& (   MInOut.DOCSTATUS_Drafted.equals(docStatus)
+							|| MInOut.DOCSTATUS_Invalid.equals(docStatus)
+							|| MInOut.DOCSTATUS_InProgress.equals(docStatus)
+							|| MInOut.DOCSTATUS_Approved.equals(docStatus)
+							|| MInOut.DOCSTATUS_NotApproved.equals(docStatus)
+						   )
+						)
+					{
+						// OK to save qty=0 when voiding
+					} else if (   MInOut.DOCACTION_Complete.equals(docAction)
+							   && MInOut.DOCSTATUS_InProgress.equals(docStatus))
+					{
+						// IDEMPIERE-2624 Cant confirm 0 qty on Movement Confirmation
+						// zero allowed in this case (action Complete and status In Progress)
+					} else {
+						log.saveError("SaveError", Msg.parseTranslation(getCtx(), "@Open@: @M_InOutConfirm_ID@"));
+						return false;
+					}
+				}
+			}
 		}
 		// Locator is mandatory if no charge is defined - teo_sarca BF [ 2757978 ]
 		if(getProduct() != null && MProduct.PRODUCTTYPE_Item.equals(getProduct().getProductType()))
 		{
 			if (getM_Locator_ID() <= 0 && getC_Charge_ID() <= 0)
 			{
-				throw new FillMandatoryException(COLUMNNAME_M_Locator_ID);
+				// Try to load Default Locator
+
+				MWarehouse warehouse = MWarehouse.get(getM_Warehouse_ID());
+				
+				if(warehouse != null) {
+					
+					int m_Locator_ID = getProduct().getM_Locator_ID();
+					
+					if(m_Locator_ID > 0 && MLocator.get(m_Locator_ID).getM_Warehouse_ID() == warehouse.getM_Warehouse_ID()) {
+						setM_Locator_ID(m_Locator_ID);
+					} 
+					else {
+						MLocator defaultLocator = warehouse.getDefaultLocator();
+						if(defaultLocator != null) 
+							setM_Locator_ID(defaultLocator.getM_Locator_ID());
+					}
+				}
+
+				if (getM_Locator_ID() <= 0)
+					throw new FillMandatoryException(COLUMNNAME_M_Locator_ID);
 			}
 		}
 
@@ -532,7 +580,7 @@ public class MInOutLine extends X_M_InOutLine
 		}
 		//	UOM
 		if (getC_UOM_ID() == 0)
-			setC_UOM_ID (Env.getContextAsInt(getCtx(), "#C_UOM_ID"));
+			setC_UOM_ID (Env.getContextAsInt(getCtx(), Env.C_UOM_ID));
 		if (getC_UOM_ID() == 0)
 		{
 			int C_UOM_ID = MUOM.getDefault_UOM_ID(getCtx());
@@ -550,7 +598,7 @@ public class MInOutLine extends X_M_InOutLine
 		{
 			if (getParent().isSOTrx())
 			{
-				log.saveError("FillMandatory", Msg.translate(getCtx(), "C_Order_ID"));
+				log.saveError("FillMandatory", Msg.translate(getCtx(), "C_OrderLine_ID"));
 				return false;
 			}
 		}
@@ -591,37 +639,6 @@ public class MInOutLine extends X_M_InOutLine
 			MAttributeSetInstance asi = MAttributeSetInstance.generateLot(getCtx(), (MProduct)getM_Product(), get_TrxName());
 			setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
 		}
-	//	if (getC_Charge_ID() == 0 && getM_Product_ID() == 0)
-	//		;
-
-		/**	 Qty on instance ASI
-		if (getM_AttributeSetInstance_ID() != 0)
-		{
-			MProduct product = getProduct();
-			int M_AttributeSet_ID = product.getM_AttributeSet_ID();
-			boolean isInstance = M_AttributeSet_ID != 0;
-			if (isInstance)
-			{
-				MAttributeSet mas = MAttributeSet.get(getCtx(), M_AttributeSet_ID);
-				isInstance = mas.isInstanceAttribute();
-			}
-			//	Max
-			if (isInstance)
-			{
-				MStorage storage = MStorage.get(getCtx(), getM_Locator_ID(),
-					getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
-				if (storage != null)
-				{
-					BigDecimal qty = storage.getQtyOnHand();
-					if (getMovementQty().compareTo(qty) > 0)
-					{
-						log.warning("Qty - Stock=" + qty + ", Movement=" + getMovementQty());
-						log.saveError("QtyInsufficient", "=" + qty);
-						return false;
-					}
-				}
-			}
-		}	/**/
 
 		/* Carlos Ruiz - globalqss
 		 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
@@ -632,7 +649,19 @@ public class MInOutLine extends X_M_InOutLine
 				return false;
 			}
 		}
-		
+
+		if (MSysConfig.getBooleanValue(MSysConfig.VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT, true, Env.getAD_Client_ID(getCtx()))) {
+			if (getC_OrderLine_ID() > 0) {
+				MOrderLine orderLine = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName());
+				if (orderLine.getM_Product_ID() != getM_Product_ID()) {
+					log.saveError("MInOutLineAndOrderLineProductDifferent", (getM_Product_ID() > 0 ? MProduct.get(getM_Product_ID()).getValue() : "")
+							+ " <> " + (orderLine.getM_Product_ID() > 0 ? MProduct.get(orderLine.getM_Product_ID()).getValue() : ""));
+					return false;
+				}
+			}
+			
+		}
+
 		return true;
 	}	//	beforeSave
 
@@ -644,6 +673,10 @@ public class MInOutLine extends X_M_InOutLine
 	{
 		if (! getParent().getDocStatus().equals(MInOut.DOCSTATUS_Drafted)) {
 			log.saveError("Error", Msg.getMsg(getCtx(), "CannotDelete"));
+			return false;
+		}
+		if (getParent().pendingConfirmations()) {
+			log.saveError("DeleteError", Msg.parseTranslation(getCtx(), "@Open@: @M_InOutConfirm_ID@"));
 			return false;
 		}
 		// IDEMPIERE-3391 Not possible to delete a line in the Material Receipt window

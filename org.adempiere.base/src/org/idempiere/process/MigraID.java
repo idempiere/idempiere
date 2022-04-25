@@ -42,6 +42,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Util;
 
+@org.adempiere.base.annotation.Process
 public class MigraID extends SvrProcess {
 
 	// Process to change the ID of a record in the whole database

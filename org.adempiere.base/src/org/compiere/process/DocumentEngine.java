@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -68,11 +69,16 @@ import org.osgi.service.event.Event;
  *
  *  @author Jorg Janke
  *  @author Karsten Thiemann FR [ 1782412 ]
- *  @author victor.perez@e-evolution.com www.e-evolution.com FR [ 1866214 ]  http://sourceforge.net/tracker/index.php?func=detail&aid=1866214&group_id=176962&atid=879335
+ *  @author victor.perez@e-evolution.com www.e-evolution.com FR [ 1866214 ]  https://sourceforge.net/p/adempiere/feature-requests/298/
  *  @version $Id: DocumentEngine.java,v 1.2 2006/07/30 00:54:44 jjanke Exp $
  */
 public class DocumentEngine implements DocAction
 {
+	/**
+	 * When client accounting is immediate, set this PO attribute to override the default of immediate posting after complete of document
+	 */
+	public static final String DOCUMENT_POST_IMMEDIATE_AFTER_COMPLETE = "Document.PostImmediateAfterComplete";
+
 	/**
 	 * 	Doc Engine (Drafted)
 	 * 	@param po document
@@ -277,10 +283,10 @@ public class DocumentEngine implements DocAction
 			throw new IllegalStateException("Status=" + getDocStatus()
 				+ " - Invalid Actions: Process="  + processAction + ", Doc=" + docAction);
 		}
-		if (m_document != null)
-			m_document.get_Logger().info ("**** Action=" + m_action + " (Prc=" + processAction + "/Doc=" + docAction + ") " + m_document);
+		if (m_document != null && m_document.get_Logger().isLoggable(Level.INFO))
+				m_document.get_Logger().info ("**** Action=" + m_action + " (Prc=" + processAction + "/Doc=" + docAction + ") " + m_document);
 		boolean success = processIt (m_action);
-		if (m_document != null)
+		if (m_document != null && m_document.get_Logger().isLoggable(Level.FINE))
 			m_document.get_Logger().fine("**** Action=" + m_action + " - Success=" + success);
 		return success;
 	}	//	process
@@ -323,15 +329,9 @@ public class DocumentEngine implements DocAction
 			if (m_document != null && ok)
 			{
 				// PostProcess documents when invoice or inout (this is to postprocess the generated MatchPO and MatchInv if any)
-				ArrayList<PO> docsPostProcess = new ArrayList<PO>();
-				if (m_document instanceof MInvoice || m_document instanceof MInOut || m_document instanceof MPayment) {
-					if (m_document instanceof MInvoice) {
-						docsPostProcess  = ((MInvoice) m_document).getDocsPostProcess();
-					} else if (m_document instanceof MInOut) {
-						docsPostProcess  = ((MInOut) m_document).getDocsPostProcess();
-					} else if (m_document instanceof MPayment) {
-						docsPostProcess  = ((MPayment) m_document).getDocsPostProcess();
-					}
+				List<PO> docsPostProcess = new ArrayList<PO>();
+				if (m_document instanceof IDocsPostProcess) {
+					docsPostProcess = ((IDocsPostProcess) m_document).getDocsPostProcess(); 
 				}
 				if (m_document instanceof PO && docsPostProcess.size() > 0) {
 					// Process (this is to update the ProcessedOn flag with a timestamp after the original document)
@@ -343,13 +343,32 @@ public class DocumentEngine implements DocAction
 
 				if (STATUS_Completed.equals(status) && MClient.isClientAccountingImmediate())
 				{
-					m_document.saveEx();
-					postIt();
-
-					if (m_document instanceof PO && docsPostProcess.size() > 0) {
-						for (PO docafter : docsPostProcess) {
-							@SuppressWarnings("unused")
-							String ignoreError = DocumentEngine.postImmediate(docafter.getCtx(), docafter.getAD_Client_ID(), docafter.get_Table_ID(), docafter.get_ID(), true, docafter.get_TrxName());
+					boolean postNow = true;
+					if (m_document instanceof PO)
+					{
+						Object attribute = ((PO) m_document).get_Attribute(DOCUMENT_POST_IMMEDIATE_AFTER_COMPLETE);
+						if (attribute != null && attribute instanceof Boolean)
+						{
+							postNow = (boolean) attribute;
+						}
+					}
+					
+					if (postNow)
+					{
+						m_document.saveEx();
+						postIt();
+	
+						if (m_document instanceof PO && docsPostProcess.size() > 0) {
+							for (PO docafter : docsPostProcess) {								
+								if (docafter.get_ValueAsBoolean("Posted"))
+									continue;
+								String ignoreError = DocumentEngine.postImmediate(docafter.getCtx(), docafter.getAD_Client_ID(), docafter.get_Table_ID(), docafter.get_ID(), true, docafter.get_TrxName());
+								if (!Util.isEmpty(ignoreError, true)) {
+									log.warning("Error posting " + docafter + ". Error="+ignoreError);
+								} else {
+									docafter.load(docafter.get_TrxName());
+								}
+							}
 						}
 					}
 				}
@@ -832,7 +851,6 @@ public class DocumentEngine implements DocAction
 
 	/**
 	 * 	Save Document
-	 *	@return throw exception
 	 */
 	public void saveEx() throws AdempiereException
 	{
@@ -940,17 +958,17 @@ public class DocumentEngine implements DocAction
 			options[index++] = DocumentEngine.ACTION_Prepare;
 			options[index++] = DocumentEngine.ACTION_Void;
 		}
-		//	Draft/Invalid				..  DR/IN
+		//	Draft/In Process/Invalid	..  DR/IP/IN
 		else if (docStatus.equals(DocumentEngine.STATUS_Drafted)
+			|| docStatus.equals(DocumentEngine.STATUS_InProgress)
 			|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 		{
 			options[index++] = DocumentEngine.ACTION_Complete;
-		//	options[index++] = DocumentEngine.ACTION_Prepare;
+			options[index++] = DocumentEngine.ACTION_Prepare;
 			options[index++] = DocumentEngine.ACTION_Void;
 		}
-		//	In Process                  ..  IP
-		else if (docStatus.equals(DocumentEngine.STATUS_InProgress)
-			|| docStatus.equals(DocumentEngine.STATUS_Approved))
+		//	Approved                  ..  AP
+		else if (docStatus.equals(DocumentEngine.STATUS_Approved))
 		{
 			options[index++] = DocumentEngine.ACTION_Complete;
 			options[index++] = DocumentEngine.ACTION_Void;
@@ -985,8 +1003,6 @@ public class DocumentEngine implements DocAction
 				|| docStatus.equals(DocumentEngine.STATUS_InProgress)
 				|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 			{
-				options[index++] = DocumentEngine.ACTION_Prepare;
-				options[index++] = DocumentEngine.ACTION_Close;
 				//	Draft Sales Order Quote/Proposal - Process
 				if ("Y".equals(isSOTrx)
 					&& ("OB".equals(orderType) || "ON".equals(orderType)))
@@ -1124,7 +1140,6 @@ public class DocumentEngine implements DocAction
 					|| docStatus.equals(DocumentEngine.STATUS_InProgress)
 					|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 				{
-					options[index++] = DocumentEngine.ACTION_Prepare;
 					options[index++] = DocumentEngine.ACTION_Close;
 				}
 				//	Complete                    ..  CO
@@ -1139,15 +1154,8 @@ public class DocumentEngine implements DocAction
 		 */
 		else if (AD_Table_ID == MProduction.Table_ID)
 		{
-			//	Draft                       ..  DR/IP/IN
-			if (docStatus.equals(DocumentEngine.STATUS_Drafted)
-					|| docStatus.equals(DocumentEngine.STATUS_InProgress)
-					|| docStatus.equals(DocumentEngine.STATUS_Invalid))
-			{
-				options[index++] = DocumentEngine.ACTION_Prepare;
-			}
 			//	Complete                    ..  CO
-			else if (docStatus.equals(DocumentEngine.STATUS_Completed))
+			if (docStatus.equals(DocumentEngine.STATUS_Completed))
 			{
 				if (periodOpen) {
 					options[index++] = DocumentEngine.ACTION_Reverse_Correct;
@@ -1165,7 +1173,6 @@ public class DocumentEngine implements DocAction
 					|| docStatus.equals(DocumentEngine.STATUS_InProgress)
 					|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 				{
-					options[index++] = DocumentEngine.ACTION_Prepare;
 					options[index++] = DocumentEngine.ACTION_Close;
 				}
 				//	Complete                    ..  CO
@@ -1184,7 +1191,6 @@ public class DocumentEngine implements DocAction
 					|| docStatus.equals(DocumentEngine.STATUS_InProgress)
 					|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 				{
-					options[index++] = DocumentEngine.ACTION_Prepare;
 					options[index++] = DocumentEngine.ACTION_Close;
 				}
 				//	Complete                    ..  CO
@@ -1203,7 +1209,6 @@ public class DocumentEngine implements DocAction
 					|| docStatus.equals(DocumentEngine.STATUS_InProgress)
 					|| docStatus.equals(DocumentEngine.STATUS_Invalid))
 				{
-					options[index++] = DocumentEngine.ACTION_Prepare;
 					options[index++] = DocumentEngine.ACTION_Close;
 				}
 				//	Complete                    ..  CO
@@ -1235,7 +1240,7 @@ public class DocumentEngine implements DocAction
 		DocActionEventData eventData = new DocActionEventData(docStatus, processing, orderType, isSOTrx, AD_Table_ID, docActionsArray, optionsArray, indexObj, po);
 		Event event = EventManager.newEvent(IEventTopics.DOCACTION,
 				new EventProperty(EventManager.EVENT_DATA, eventData),
-				new EventProperty("tableName", po.get_TableName()));
+				new EventProperty(EventManager.TABLE_NAME_PROPERTY, po.get_TableName()));
 		EventManager.getInstance().sendEvent(event);
 		index = indexObj.get();
 		for (int i = 0; i < optionsArray.size(); i++)

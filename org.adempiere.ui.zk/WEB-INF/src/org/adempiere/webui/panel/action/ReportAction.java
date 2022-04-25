@@ -38,6 +38,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
@@ -58,10 +59,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Tabpanel;
-import org.zkoss.zul.Vbox;
+import org.zkoss.zul.impl.LabelImageElement;
 
 /**
  * @author Elaine
@@ -101,6 +104,7 @@ public class ReportAction implements EventListener<Event>
 			winReport.setBorder("normal");
 			winReport.setStyle("position:absolute");
 			winReport.addEventListener("onValidate", this);
+			winReport.addCallback(Window.AFTER_PAGE_DETACHED, t -> panel.focusToLastFocusEditor());
 			
 			cboPrintFormat.setMold("select");
 			cboPrintFormat.getItems().clear();
@@ -141,22 +145,24 @@ public class ReportAction implements EventListener<Event>
 				chkAllColumns.setVisible(AD_PrintFormat_ID == -1);
 			}
 
-			Vbox vb = new Vbox();
+			Div vb = new Div();
+			ZkCssHelper.appendStyle(vb, "display: flex; flex-direction: column;");
 			ZKUpdateUtil.setWidth(vb, "100%");
+			ZKUpdateUtil.setHeight(vb, "200px");
 			winReport.appendChild(vb);
 			winReport.setSclass("toolbar-popup-window");
 			vb.setSclass("toolbar-popup-window-cnt");
-			vb.setAlign("stretch");
 			
 			Grid grid = GridFactory.newGridLayout();
+			ZkCssHelper.appendStyle(grid, "flex-grow: 1;");
 			vb.appendChild(grid);
 	        
 	        Columns columns = new Columns();
 	        Column column = new Column();
-	        ZKUpdateUtil.setHflex(column, "min");
+	        column.setWidth("25%");
 	        columns.appendChild(column);
 	        column = new Column();
-	        ZKUpdateUtil.setHflex(column, "1");
+	        column.setWidth("75%");
 	        columns.appendChild(column);
 	        grid.appendChild(columns);
 	        
@@ -167,7 +173,7 @@ public class ReportAction implements EventListener<Event>
 			rows.appendChild(row);
 			row.appendChild(new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID")));
 			row.appendChild(cboPrintFormat);
-			ZKUpdateUtil.setHflex(cboPrintFormat, "1");
+			cboPrintFormat.setWidth("100%");
 			cboPrintFormat.addEventListener(Events.ON_SELECT, this);
 			
 			row = new Row();
@@ -200,9 +206,15 @@ public class ReportAction implements EventListener<Event>
 			vb.appendChild(confirmPanel);
 			LayoutUtils.addSclass("dialog-footer", confirmPanel);
 			confirmPanel.addActionListener(this);
+			ZkCssHelper.appendStyle(confirmPanel, "flex-grow: 0;");
 		}
 
-		LayoutUtils.openPopupWindow(panel.getToolbar().getToolbarItem("Report"), winReport, "after_start");
+		LabelImageElement toolbarItem = panel.getToolbar().getToolbarItem("Report");
+		Popup popup = LayoutUtils.findPopup(toolbarItem);
+		if (popup != null)
+			popup.appendChild(winReport);
+		LayoutUtils.openPopupWindow(toolbarItem, winReport, "after_start");
+		winReport.setFocus(true);
 	}
 	
 	@Override

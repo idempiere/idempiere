@@ -57,7 +57,7 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 
 	/**
 	 * 	Constructor
-	 *	@param goal goal model
+	 *	@param documentStatus
 	 */
 	public WDocumentStatusIndicator(MDocumentStatus documentStatus)
 	{
@@ -162,6 +162,10 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 	}
 
 	public void refresh() {
+		MDocumentStatus refresh_documentStatus = MDocumentStatus.get(Env.getCtx(), m_documentStatus.getPA_DocumentStatus_ID());
+		if(refresh_documentStatus != null) {
+			m_documentStatus = 	refresh_documentStatus;
+		}
 		statusCount = MDocumentStatus.evaluate(m_documentStatus);		
 	}
 

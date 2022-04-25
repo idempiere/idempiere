@@ -35,6 +35,7 @@ import org.compiere.util.DisplayType;
  *  @author Jorg Janke
  *  @version $Id: ChangeLogProcess.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ChangeLogProcess extends SvrProcess
 {
 	/** The Change Log (when applied directly)		*/
@@ -198,7 +199,6 @@ public class ChangeLogProcess extends SvrProcess
 			m_oldRecord_ID = cLog.getRecord_ID();
 			
 			//	Insert - new value is null and UnDo only
-			// m_isInsert = cLog.isNewNull() && p_CheckNewValue != null;
 			m_isInsert = MChangeLog.EVENTCHANGELOG_Insert.equals(cLog.getEventChangeLog());
 			if (m_isInsert)
 			{
@@ -311,7 +311,6 @@ public class ChangeLogProcess extends SvrProcess
 			no = DB.executeUpdate(m_sqlInsert.toString(), get_TrxName());
 			if (no == -1)
 			{
-			//	log.warning("Insert failed - " + m_sqlInsert);
 				m_errors++;
 			}
 			else if (no == 0)
@@ -330,7 +329,6 @@ public class ChangeLogProcess extends SvrProcess
 			no = DB.executeUpdate(m_sqlUpdate.toString(), get_TrxName());
 			if (no == -1)
 			{
-			//	log.warning("Failed - " + m_sqlUpdate);
 				m_errors++;
 			}
 			else if (no == 0)

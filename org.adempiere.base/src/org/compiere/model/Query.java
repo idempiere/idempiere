@@ -49,9 +49,9 @@ import org.compiere.util.Util;
  * 			<li>FR [ 2546052 ] Introduce Query aggregate methods
  * 			<li>FR [ 2726447 ] Query aggregate methods for all return types
  * 			<li>FR [ 2818547 ] Implement Query.setOnlySelection
- * 				https://sourceforge.net/tracker/?func=detail&aid=2818547&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/759/
  * 			<li>FR [ 2818646 ] Implement Query.firstId/firstIdOnly
- * 				https://sourceforge.net/tracker/?func=detail&aid=2818646&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/760/
  * @author Redhuan D. Oon
  * 			<li>FR: [ 2214883 ] Remove SQL code and Replace for Query // introducing SQL String prompt in log.info 
  *			<li>FR: [ 2214883 ] - to introduce .setClient_ID
@@ -72,6 +72,12 @@ public class Query
 	private String orderBy = null;
 	private String trxName = null;
 	private Object[] parameters = null;
+
+	/**
+	 * Name of virtual columns to be included in the query
+	 */
+	private String[] virtualColumns = null;
+
 	private boolean applyAccessFilter = false;
 	private boolean applyAccessFilterRW = false;
 	private boolean applyAccessFilterFullyQualified = true;
@@ -79,7 +85,13 @@ public class Query
 	private boolean onlyClient_ID = false;
 	private int onlySelection_ID = -1;
 	private boolean forUpdate = false;
-	private boolean noVirtualColumn = false;
+
+	/**
+	 * Whether to load (<code>false</code> value) all declared virtual columns at once or use 
+	 * lazy loading (<code>true</code> value).
+	 */
+	private boolean noVirtualColumn = true;
+
 	private int queryTimeout = 0;
 	private List<String> joinClauseList = new ArrayList<String>();
 	
@@ -89,10 +101,10 @@ public class Query
     private int pageSize;
 
     /**
-     * Number of pages will be skipped on query run.
+     * Number of records will be skipped on query run.
      */
-    private int pagesToSkip;
-	
+    private int recordsToSkip;
+
 	/**
 	 * 
 	 * @param table
@@ -188,7 +200,9 @@ public class Query
 
 	/**
 	 * Turn on data access filter with controls
-	 * @param flag
+	 * @param fullyQualified
+	 * @param RW
+	 * @return
 	 */
 	public Query setApplyAccessFilter(boolean fullyQualified, boolean RW)
 	{
@@ -245,7 +259,14 @@ public class Query
 		this.forUpdate = forUpdate;
 		return this;
 	}
-	
+
+	/**
+	 * Virtual columns are lazy loaded by default. In case lazy loading is not desired use this method with
+	 * the <code>false</code> value.  
+	 * @param noVirtualColumn Whether to load (<code>false</code> value) all declared virtual columns at once or use lazy loading (<code>true</code> value).
+	 * @return
+	 * @see #setVirtualColumns(String...)
+	 */
 	public Query setNoVirtualColumn(boolean noVirtualColumn)
 	{
 		this.noVirtualColumn = noVirtualColumn;
@@ -307,12 +328,19 @@ public class Query
 	public <T extends PO> T first() throws DBException
 	{
 		T po = null;
-		String sql = buildSQL(null, true);
+		
+		int oldPageSize = this.pageSize;
+		if(DB.getDatabase().isPagingSupported())
+			setPageSize(1);	// Limit to One record
+		
+		String sql = null;
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
+			sql = buildSQL(null, true);
+			
 			pstmt = DB.prepareStatement (sql, trxName);
 			rs = createResultSet(pstmt);
 			if (rs.next ())
@@ -327,6 +355,7 @@ public class Query
 		} finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
+			setPageSize(oldPageSize);
 		}
 		return po;
 	}
@@ -342,12 +371,19 @@ public class Query
 	public <T extends PO> T firstOnly() throws DBException
 	{
 		T po = null;
-		String sql = buildSQL(null, true);
+		
+		int oldPageSize = this.pageSize;
+		if(DB.getDatabase().isPagingSupported())
+			setPageSize(2);	// Limit to 2 Records
+		
+		String sql = null;
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
+			sql = buildSQL(null, true);
+			
 			pstmt = DB.prepareStatement (sql, trxName);
 			rs = createResultSet(pstmt);
 			if (rs.next())
@@ -368,6 +404,7 @@ public class Query
 		{
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
+			setPageSize(oldPageSize);
 		}
 		return po;
 	}
@@ -406,13 +443,20 @@ public class Query
 			selectClause.append(table.getTableName()).append(".");
 		selectClause.append(keys[0]);
 		selectClause.append(" FROM ").append(table.getTableName());
-		String sql = buildSQL(selectClause, true);
+		
+		int oldPageSize = this.pageSize;
+		if(DB.getDatabase().isPagingSupported())
+			setPageSize(assumeOnlyOneResult ? 2 : 1);
 
+		String sql = null;
+		
 		int id = -1;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
+			sql = buildSQL(selectClause, true);
+			
 			pstmt = DB.prepareStatement(sql, trxName);
 			rs = createResultSet(pstmt);
 			if (rs.next())
@@ -432,6 +476,7 @@ public class Query
 		{
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
+			setPageSize(oldPageSize);
 		}
 		//
 		return id;
@@ -683,8 +728,8 @@ public class Query
 	}
 	
 	/**
-	 * Build SQL Clause
-	 * @param selectClause optional; if null the select clause will be build according to POInfo
+	 * Build SQL SELECT statement.
+	 * @param selectClause optional; if null the select statement will be built by {@link POInfo}
 	 * @return final SQL
 	 */
 	private final String buildSQL(StringBuilder selectClause, boolean useOrderByClause)
@@ -696,7 +741,11 @@ public class Query
 			{
 				throw new IllegalStateException("No POInfo found for AD_Table_ID="+table.getAD_Table_ID());
 			}
-			selectClause = info.buildSelect(!joinClauseList.isEmpty(), noVirtualColumn);
+			boolean isFullyQualified = !joinClauseList.isEmpty();
+			if(virtualColumns == null)
+				selectClause = info.buildSelect(isFullyQualified, noVirtualColumn);
+			else
+				selectClause = info.buildSelect(isFullyQualified, virtualColumns);
 		}
 		if (!joinClauseList.isEmpty()) 
 		{
@@ -765,7 +814,7 @@ public class Query
 		}
 		
 		// If have pagination
-        if (pageSize > 0) {
+        if (pageSize > 0 || recordsToSkip > 0) {
             sql = appendPagination(sql);
         }
 
@@ -800,8 +849,25 @@ public class Query
      * @return current Query
      */
     public Query setPage(int pPageSize, int pPagesToSkip) {
-        this.pageSize = pPageSize;
-        this.pagesToSkip = pPagesToSkip;
+    	if (pPageSize > 0) {
+            this.pageSize = pPageSize;
+            this.recordsToSkip = pPagesToSkip * pageSize;
+    	} else {
+    		log.warning("Wrong PageSize <= 0");
+    	}
+        return this;
+    }
+
+    /**
+     * Set the number of records to skip (a.k.a. OFFSET)
+     * 
+     * @param pRecordsToSkip
+     *            Limit current query rows return.
+     * 
+     * @return current Query
+     */
+    public Query setRecordstoSkip(int pRecordsToSkip) {
+        this.recordsToSkip = pRecordsToSkip;
         return this;
     }
 
@@ -819,9 +885,9 @@ public class Query
 
         String query = pQuery;
 
-        if (pageSize > 0) {
+        if (pageSize > 0 || recordsToSkip > 0) {
         	if (DB.getDatabase().isPagingSupported()) {
-        		query = DB.getDatabase().addPagingSQL(query, (pageSize*pagesToSkip) + 1, pageSize * (pagesToSkip+1));
+        		query = DB.getDatabase().addPagingSQL(query, recordsToSkip+1, pageSize <= 0 ? 0 : recordsToSkip + pageSize);
         	} else {
         		throw new IllegalArgumentException("Pagination not supported by database");
         	}
@@ -906,5 +972,14 @@ public class Query
 		}
 		return retValue;
 	}	//	get_IDs
+
+	/**
+	 * Virtual columns to be included in the query.
+	 * @param virtualColumns virtual column names
+	 */
+	public Query setVirtualColumns(String ... virtualColumns) {
+		this.virtualColumns = virtualColumns;
+		return this;
+	}
 
 }

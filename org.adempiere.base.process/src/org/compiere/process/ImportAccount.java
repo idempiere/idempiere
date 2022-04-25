@@ -29,6 +29,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MElementValue;
 import org.compiere.model.X_I_ElementValue;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Import Accounts from I_ElementValue
@@ -36,6 +37,7 @@ import org.compiere.util.DB;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: ImportAccount.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ImportAccount extends SvrProcess
 {
 	/**	Client to be imported to		*/
@@ -374,7 +376,6 @@ public class ImportAccount extends SvrProcess
 			String updateSQL = "UPDATE AD_TreeNode SET Parent_ID=?, SeqNo=? "
 				+ "WHERE AD_Tree_ID=? AND Node_ID=?";
 			//begin e-evolution vpj-cd 15 nov 2005 PostgreSQL
-			//PreparedStatement updateStmt = DB.prepareStatement(updateSQL, get_TrxName());
 			PreparedStatement updateStmt = DB.prepareStatement(updateSQL, ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE, get_TrxName());
 			//end	
 			//
@@ -605,7 +606,7 @@ public class ImportAccount extends SvrProcess
 				{
 					if (m_createNewCombination)
 					{
-						MAccount acct = MAccount.get(getCtx(), C_ValidCombination_ID);
+						MAccount acct = new MAccount(Env.getCtx(), C_ValidCombination_ID, (String)null);
 						acct.setAccount_ID(C_ElementValue_ID);
 						if (acct.save())
 						{

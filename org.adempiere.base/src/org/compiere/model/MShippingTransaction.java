@@ -69,7 +69,10 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 			MShipperFacade sf = new MShipperFacade(getMShipper());
 			IShipmentProcessor processor = Core.getShipmentProcessor(sf);
 			if (processor == null)
+			{
 				setErrorMessage(Msg.getMsg(Env.getCtx(), "ShippingNoProcessor"));
+				return false;
+			}
 			else
 			{
 				if (getAction().equals(ACTION_ProcessShipment))
@@ -82,7 +85,7 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 					throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ActionNotSupported"));
 				
 				if (!processed)
-					setErrorMessage("From " + getMShipper().getName() + ": " + getShippingRespMessage());
+					setErrorMessage(Msg.parseTranslation(getCtx(), "** @Error@ ** @From@ ") + getMShipper().getName() + ": " + getShippingRespMessage());
 			}
 		}
 		catch (Exception e)
@@ -91,7 +94,7 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 			setErrorMessage(Msg.getMsg(Env.getCtx(), "ShippingNotProcessed") + ":\n" + e.getMessage());
 		}
 		
-		MOnlineTrxHistory history = new MOnlineTrxHistory(getCtx(), 0, get_TrxName());
+		MOnlineTrxHistory history = new MOnlineTrxHistory(getCtx(), 0, null); // out of transaction - save history even if the process fails
 		history.setAD_Table_ID(MShippingTransaction.Table_ID);
 		history.setRecord_ID(getM_ShippingTransaction_ID());
 		history.setIsError(!processed);
@@ -101,7 +104,7 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		if (processed)
 			msg.append(getShippingRespMessage());
 		else
-			msg.append("ERROR: " + getErrorMessage());
+			msg.append(getErrorMessage());
 		msg.append("\nAction: " + getAction());
 		history.setTextMsg(msg.toString());
 		
@@ -317,37 +320,6 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 		
 		PartyInfo partyInfo = null;
 		
-/*		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT CompanyName, ContactName, PhoneNumber, EMail, C_Location_ID ");
-		sql.append("FROM M_ShippingSenderInfo_V ");
-		sql.append("WHERE M_ShippingTransaction_ID = ?");
-		
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql.toString(), null);
-			pstmt.setInt(1, getM_ShippingTransaction_ID());
-			rs = pstmt.executeQuery ();
-			if (rs.next ())
-			{
-				partyInfo = new PartyInfo();
-				partyInfo.setCompanyName(rs.getString("CompanyName"));
-				partyInfo.setContactName(rs.getString("ContactName"));
-				partyInfo.setPhoneNumber(rs.getString("PhoneNumber"));
-				partyInfo.setEmail(rs.getString("EMail"));
-				partyInfo.setLocationId(rs.getInt("C_Location_ID"));
-			}
- 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-		}
-*/		
 		if (partyInfo == null)
 		{
 			MOrg sender = new MOrg(getCtx(), getAD_Org_ID(), get_TrxName());
@@ -373,38 +345,6 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 			return recipientInfo;
 
 		PartyInfo partyInfo = null;
-		
-/*		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT CompanyName, ContactName, PhoneNumber, EMail, C_Location_ID ");
-		sql.append("FROM M_ShippingRecipientInfo_V ");
-		sql.append("WHERE M_ShippingTransaction_ID = ?");
-		
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql.toString(), null);
-			pstmt.setInt(1, getM_ShippingTransaction_ID());
-			rs = pstmt.executeQuery ();
-			if (rs.next ())
-			{
-				partyInfo = new PartyInfo();
-				partyInfo.setCompanyName(rs.getString("CompanyName"));
-				partyInfo.setContactName(rs.getString("ContactName"));
-				partyInfo.setPhoneNumber(rs.getString("PhoneNumber"));
-				partyInfo.setEmail(rs.getString("EMail"));
-				partyInfo.setLocationId(rs.getInt("C_Location_ID"));
-			}
- 		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-		}
-*/		
 		if (partyInfo == null)
 		{
 			MBPartner recipient = new MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName());

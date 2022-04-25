@@ -26,19 +26,34 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ResourceAssignment
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="S_ResourceAssignment")
 public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_S_ResourceAssignment (Properties ctx, int S_ResourceAssignment_ID, String trxName)
     {
       super (ctx, S_ResourceAssignment_ID, trxName);
+      /** if (S_ResourceAssignment_ID == 0)
+        {
+			setAssignDateFrom (new Timestamp( System.currentTimeMillis() ));
+			setIsConfirmed (false);
+			setName (null);
+			setS_ResourceAssignment_ID (0);
+			setS_Resource_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_ResourceAssignment (Properties ctx, int S_ResourceAssignment_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_ResourceAssignment_ID, trxName, virtualColumns);
       /** if (S_ResourceAssignment_ID == 0)
         {
 			setAssignDateFrom (new Timestamp( System.currentTimeMillis() ));
@@ -72,15 +87,14 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_S_ResourceAssignment[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_S_ResourceAssignment[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Assign From.
-		@param AssignDateFrom 
-		Assign resource from
-	  */
+		@param AssignDateFrom Assign resource from
+	*/
 	public void setAssignDateFrom (Timestamp AssignDateFrom)
 	{
 		set_ValueNoCheck (COLUMNNAME_AssignDateFrom, AssignDateFrom);
@@ -89,15 +103,14 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	/** Get Assign From.
 		@return Assign resource from
 	  */
-	public Timestamp getAssignDateFrom () 
+	public Timestamp getAssignDateFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_AssignDateFrom);
 	}
 
 	/** Set Assign To.
-		@param AssignDateTo 
-		Assign resource until
-	  */
+		@param AssignDateTo Assign resource until
+	*/
 	public void setAssignDateTo (Timestamp AssignDateTo)
 	{
 		set_ValueNoCheck (COLUMNNAME_AssignDateTo, AssignDateTo);
@@ -106,15 +119,14 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	/** Get Assign To.
 		@return Assign resource until
 	  */
-	public Timestamp getAssignDateTo () 
+	public Timestamp getAssignDateTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_AssignDateTo);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -123,15 +135,14 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Confirmed.
-		@param IsConfirmed 
-		Assignment is confirmed
-	  */
+		@param IsConfirmed Assignment is confirmed
+	*/
 	public void setIsConfirmed (boolean IsConfirmed)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsConfirmed, Boolean.valueOf(IsConfirmed));
@@ -140,7 +151,7 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	/** Get Confirmed.
 		@return Assignment is confirmed
 	  */
-	public boolean isConfirmed () 
+	public boolean isConfirmed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsConfirmed);
 		if (oo != null) 
@@ -153,9 +164,8 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -164,15 +174,14 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_ValueNoCheck (COLUMNNAME_Qty, Qty);
@@ -181,7 +190,7 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -190,21 +199,20 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	}
 
 	/** Set Resource Assignment.
-		@param S_ResourceAssignment_ID 
-		Resource Assignment
-	  */
+		@param S_ResourceAssignment_ID Resource Assignment
+	*/
 	public void setS_ResourceAssignment_ID (int S_ResourceAssignment_ID)
 	{
-		if (S_ResourceAssignment_ID < 1) 
+		if (S_ResourceAssignment_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_S_ResourceAssignment_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_S_ResourceAssignment_ID, Integer.valueOf(S_ResourceAssignment_ID));
 	}
 
 	/** Get Resource Assignment.
 		@return Resource Assignment
 	  */
-	public int getS_ResourceAssignment_ID () 
+	public int getS_ResourceAssignment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_ResourceAssignment_ID);
 		if (ii == null)
@@ -213,7 +221,8 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 	}
 
 	/** Set S_ResourceAssignment_UU.
-		@param S_ResourceAssignment_UU S_ResourceAssignment_UU	  */
+		@param S_ResourceAssignment_UU S_ResourceAssignment_UU
+	*/
 	public void setS_ResourceAssignment_UU (String S_ResourceAssignment_UU)
 	{
 		set_Value (COLUMNNAME_S_ResourceAssignment_UU, S_ResourceAssignment_UU);
@@ -221,32 +230,32 @@ public class X_S_ResourceAssignment extends PO implements I_S_ResourceAssignment
 
 	/** Get S_ResourceAssignment_UU.
 		@return S_ResourceAssignment_UU	  */
-	public String getS_ResourceAssignment_UU () 
+	public String getS_ResourceAssignment_UU()
 	{
 		return (String)get_Value(COLUMNNAME_S_ResourceAssignment_UU);
 	}
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
-			.getPO(getS_Resource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
 
 	/** Set Resource.
-		@param S_Resource_ID 
-		Resource
-	  */
+		@param S_Resource_ID Resource
+	*/
 	public void setS_Resource_ID (int S_Resource_ID)
 	{
-		if (S_Resource_ID < 1) 
+		if (S_Resource_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_S_Resource_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_S_Resource_ID, Integer.valueOf(S_Resource_ID));
 	}
 
 	/** Get Resource.
 		@return Resource
 	  */
-	public int getS_Resource_ID () 
+	public int getS_Resource_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_Resource_ID);
 		if (ii == null)

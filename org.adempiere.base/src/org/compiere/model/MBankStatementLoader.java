@@ -59,7 +59,7 @@ import org.compiere.util.Util;
  	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4096456424277340847L;
+	private static final long serialVersionUID = 8482717913976119270L;
 
 	/**	Number of statement lines imported			*/
 	private int loadCount = 0;
@@ -81,6 +81,9 @@ import org.compiere.util.Util;
 	
 	/** Map of currency ISO-Codes to lookup id */
 	private HashMap<String,Integer> currencyMap;
+
+	/* Last saved line, to be retrieved on loaders */
+	private X_I_BankStatement m_lastSavedLine;
 	
 	/**
 	 * 	Create a Statement Loader
@@ -178,12 +181,18 @@ import org.compiere.util.Util;
 		}
 		// Initialize lookup lists
 		MTable table = MTable.get(Env.getCtx(), X_C_BankAccount.Table_ID);
-		Query query = table.createQuery("IsActive='Y'", null);
-		bankAccountList = query.list();
+		Query query = table.createQuery(null, get_TrxName());
+		bankAccountList = query
+				.setOnlyActiveRecords(true)
+				.setClient_ID()
+				.list();
 
 		table = MTable.get(Env.getCtx(), X_C_Currency.Table_ID);
-		query = table.createQuery("IsActive='Y'", null);
-		List<X_C_Currency> currencyList = query.list();
+		query = table.createQuery("AD_Client_ID IN (0, ?)", get_TrxName());
+		List<X_C_Currency> currencyList = query
+				.setOnlyActiveRecords(true)
+				.setParameters(getAD_Client_ID())
+				.list();
 		currencyMap = new HashMap<String,Integer>() ;
 		
 		for (X_C_Currency currency : currencyList) {
@@ -251,7 +260,6 @@ import org.compiere.util.Util;
 		imp.setEftTrxID(m_loader.getTrxID());
 		if (log.isLoggable(Level.CONFIG))log.config( "MBankStatementLoader.importLine Statement Line Date=" + m_loader.getStatementLineDate());
 		imp.setStatementLineDate(m_loader.getStatementLineDate());
-		imp.setStatementLineDate(m_loader.getStatementLineDate());
 		imp.setEftStatementLineDate(m_loader.getStatementLineDate());
 		if (log.isLoggable(Level.CONFIG))log.config( "MBankStatementLoader.importLine Valuta Date=" + m_loader.getValutaDate());
 		imp.setValutaDate(m_loader.getValutaDate());
@@ -305,6 +313,7 @@ import org.compiere.util.Util;
 		imp.setI_IsImported(false);
 		
 		result = imp.save();
+		m_lastSavedLine = imp;
 		if (result)
 		{
 			loadCount ++;
@@ -315,7 +324,15 @@ import org.compiere.util.Util;
 		}
 		imp = null;
 		return result;
-	}	//	importLine
+	}	//	saveLine
+
+	/**
+	 * Return the last saved line
+	 * @return
+	 */
+	public X_I_BankStatement getLastSavedLine() {
+		return m_lastSavedLine;
+	}
 
 	/**
 	 * 	Return the most recent error

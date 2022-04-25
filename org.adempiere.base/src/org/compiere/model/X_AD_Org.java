@@ -23,19 +23,32 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Org
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Org")
 public class X_AD_Org extends PO implements I_AD_Org, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Org (Properties ctx, int AD_Org_ID, String trxName)
     {
       super (ctx, AD_Org_ID, trxName);
+      /** if (AD_Org_ID == 0)
+        {
+			setIsSummary (false);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Org (Properties ctx, int AD_Org_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Org_ID, trxName, virtualColumns);
       /** if (AD_Org_ID == 0)
         {
 			setIsSummary (false);
@@ -67,13 +80,14 @@ public class X_AD_Org extends PO implements I_AD_Org, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Org[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_Org[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set AD_Org_UU.
-		@param AD_Org_UU AD_Org_UU	  */
+		@param AD_Org_UU AD_Org_UU
+	*/
 	public void setAD_Org_UU (String AD_Org_UU)
 	{
 		set_Value (COLUMNNAME_AD_Org_UU, AD_Org_UU);
@@ -81,32 +95,32 @@ public class X_AD_Org extends PO implements I_AD_Org, I_Persistent
 
 	/** Get AD_Org_UU.
 		@return AD_Org_UU	  */
-	public String getAD_Org_UU () 
+	public String getAD_Org_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Org_UU);
 	}
 
 	public org.compiere.model.I_AD_ReplicationStrategy getAD_ReplicationStrategy() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_ReplicationStrategy)MTable.get(getCtx(), org.compiere.model.I_AD_ReplicationStrategy.Table_Name)
-			.getPO(getAD_ReplicationStrategy_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_ReplicationStrategy)MTable.get(getCtx(), org.compiere.model.I_AD_ReplicationStrategy.Table_ID)
+			.getPO(getAD_ReplicationStrategy_ID(), get_TrxName());
+	}
 
 	/** Set Replication Strategy.
-		@param AD_ReplicationStrategy_ID 
-		Data Replication Strategy
-	  */
+		@param AD_ReplicationStrategy_ID Data Replication Strategy
+	*/
 	public void setAD_ReplicationStrategy_ID (int AD_ReplicationStrategy_ID)
 	{
-		if (AD_ReplicationStrategy_ID < 1) 
+		if (AD_ReplicationStrategy_ID < 1)
 			set_Value (COLUMNNAME_AD_ReplicationStrategy_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_ReplicationStrategy_ID, Integer.valueOf(AD_ReplicationStrategy_ID));
 	}
 
 	/** Get Replication Strategy.
 		@return Data Replication Strategy
 	  */
-	public int getAD_ReplicationStrategy_ID () 
+	public int getAD_ReplicationStrategy_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ReplicationStrategy_ID);
 		if (ii == null)
@@ -115,9 +129,8 @@ public class X_AD_Org extends PO implements I_AD_Org, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -126,15 +139,14 @@ public class X_AD_Org extends PO implements I_AD_Org, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Summary Level.
-		@param IsSummary 
-		This is a summary entity
-	  */
+		@param IsSummary This is a summary entity
+	*/
 	public void setIsSummary (boolean IsSummary)
 	{
 		set_Value (COLUMNNAME_IsSummary, Boolean.valueOf(IsSummary));
@@ -143,7 +155,7 @@ public class X_AD_Org extends PO implements I_AD_Org, I_Persistent
 	/** Get Summary Level.
 		@return This is a summary entity
 	  */
-	public boolean isSummary () 
+	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
 		if (oo != null) 
@@ -156,9 +168,8 @@ public class X_AD_Org extends PO implements I_AD_Org, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -167,7 +178,7 @@ public class X_AD_Org extends PO implements I_AD_Org, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -181,9 +192,8 @@ public class X_AD_Org extends PO implements I_AD_Org, I_Persistent
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -192,7 +202,7 @@ public class X_AD_Org extends PO implements I_AD_Org, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

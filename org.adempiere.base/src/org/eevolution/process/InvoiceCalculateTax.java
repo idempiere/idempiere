@@ -30,9 +30,10 @@ import org.compiere.process.SvrProcess;
  * Re-calculate Invoice Tax (and unpost the document)
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 				<li>FR [ 2520591 ] Support multiples calendar for Org 
- * 				@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+ * 				@see https://sourceforge.net/p/adempiere/feature-requests/631/
  * @author Teo Sarca, www.arhipac.ro
  */
+@org.adempiere.base.annotation.Process
 public class InvoiceCalculateTax extends SvrProcess
 {
 	public static final String PARAM_C_Invoice_ID = "C_Invoice_ID";

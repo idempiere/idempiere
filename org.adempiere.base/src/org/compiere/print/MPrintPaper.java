@@ -26,19 +26,19 @@ import javax.print.attribute.standard.MediaSize;
 import javax.print.attribute.standard.MediaSizeName;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.PO;
 import org.compiere.model.X_AD_PrintPaper;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	AD_PrintPaper Print Paper Model
  *
  *  Change log:
  *  <ul>
- *  <li>2009-02-10 - armen - [ 2580531 ] Custom Paper Support - https://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2580531&group_id=176962
+ *  <li>2009-02-10 - armen - [ 2580531 ] Custom Paper Support - https://sourceforge.net/p/adempiere/feature-requests/655/
  *  </ul>
  *  
  * 	@author 	Jorg Janke
@@ -46,28 +46,29 @@ import org.compiere.util.Language;
  * 
  * @author Teo Sarca
  * 			<li>FR [ 2829019 ] Check PrintPaper on save
- * 			https://sourceforge.net/tracker/?func=detail&aid=2829019&group_id=176962&atid=879335
+ * 			https://sourceforge.net/p/adempiere/feature-requests/782/
  */
-public class MPrintPaper extends X_AD_PrintPaper
+public class MPrintPaper extends X_AD_PrintPaper implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3609557177958141344L;
+	private static final long serialVersionUID = -4968342903056251506L;
 
 	/**
-	 * 	Get Paper
+	 * 	Get Paper from cache (immutable)
 	 * 	@param AD_PrintPaper_ID id
 	 * 	@return Paper
 	 */
 	static public MPrintPaper get (int AD_PrintPaper_ID)
 	{
 		Integer key = Integer.valueOf(AD_PrintPaper_ID);
-		MPrintPaper pp = (MPrintPaper)s_papers.get(key);
+		MPrintPaper pp = s_papers.get(key);
 		if (pp == null)
 		{
 			pp = new MPrintPaper (Env.getCtx(), AD_PrintPaper_ID, null);
 			s_papers.put(key, pp);
+			return pp;
 		}
 		else
 			if (s_log.isLoggable(Level.CONFIG)) s_log.config("AD_PrintPaper_ID=" + AD_PrintPaper_ID);
@@ -92,8 +93,8 @@ public class MPrintPaper extends X_AD_PrintPaper
 	/**	Logger				*/
 	private static CLogger s_log = CLogger.getCLogger(MPrintPaper.class);
 	/** Cached Fonts						*/
-	static private CCache<Integer,MPrintPaper> s_papers 
-		= new CCache<Integer,MPrintPaper>(Table_Name, 5);
+	static private ImmutableIntPOCache<Integer,MPrintPaper> s_papers 
+		= new ImmutableIntPOCache<Integer,MPrintPaper>(Table_Name, 5);
 	
 	
 	/**************************************************************************
@@ -128,7 +129,38 @@ public class MPrintPaper extends X_AD_PrintPaper
 		super (ctx, rs, trxName);
 	}	//	MPrintPaper
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPrintPaper(MPrintPaper copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPrintPaper(Properties ctx, MPrintPaper copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPrintPaper(Properties ctx, MPrintPaper copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_mediaSize = copy.m_mediaSize;
+	}
+	
 	/** Media Size			*/
 	private MediaSize		m_mediaSize = null;
 
@@ -244,7 +276,14 @@ public class MPrintPaper extends X_AD_PrintPaper
 		return true;
 	}
 
+	@Override
+	public MPrintPaper markImmutable() {
+		if (is_Immutable())
+			return this;
 
+		makeImmutable();
+		return this;
+	}
 
 	/**
 	 * 	Media Size Name 
@@ -284,25 +323,4 @@ public class MPrintPaper extends X_AD_PrintPaper
 		}
 	}	//	CMediaSizeName	
 	
-	/**************************************************************************
-	 * 	Test
-	 * 	@param args args
-	 */
-	public static void main(String[] args)
-	{
-		org.compiere.Adempiere.startupEnvironment(true);
-
-	//	create ("Standard Landscape", true);
-	//	create ("Standard Portrait", false);
-
-		//	Read All Papers
-		int[] IDs = PO.getAllIDs ("AD_PrintPaper", null, null);
-		for (int i = 0; i < IDs.length; i++)
-		{
-			System.out.println("--");
-			MPrintPaper pp = new MPrintPaper(Env.getCtx(), IDs[i], null);
-			pp.dump();
-		}
-
-	}
 }	//	MPrintPaper

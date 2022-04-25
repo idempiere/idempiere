@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Process_Para
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 9
  */
 public interface I_AD_Process_Para 
 {
@@ -63,6 +63,21 @@ public interface I_AD_Process_Para
 	public int getAD_Element_ID();
 
 	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException;
+
+    /** Column name AD_FieldGroup_ID */
+    public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
+
+	/** Set Field Group.
+	  * Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID);
+
+	/** Get Field Group.
+	  * Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID();
+
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -294,6 +309,19 @@ public interface I_AD_Process_Para
 	  */
 	public boolean isActive();
 
+    /** Column name IsAutocomplete */
+    public static final String COLUMNNAME_IsAutocomplete = "IsAutocomplete";
+
+	/** Set Autocomplete.
+	  * Automatic completion for textfields
+	  */
+	public void setIsAutocomplete (boolean IsAutocomplete);
+
+	/** Get Autocomplete.
+	  * Automatic completion for textfields
+	  */
+	public boolean isAutocomplete();
+
     /** Column name IsCentrallyMaintained */
     public static final String COLUMNNAME_IsCentrallyMaintained = "IsCentrallyMaintained";
 
@@ -386,6 +414,19 @@ public interface I_AD_Process_Para
 	/** Get Placeholder2	  */
 	public String getPlaceholder2();
 
+    /** Column name Query */
+    public static final String COLUMNNAME_Query = "Query";
+
+	/** Set Query.
+	  * SQL
+	  */
+	public void setQuery (String Query);
+
+	/** Get Query.
+	  * SQL
+	  */
+	public String getQuery();
+
     /** Column name ReadOnlyLogic */
     public static final String COLUMNNAME_ReadOnlyLogic = "ReadOnlyLogic";
 
@@ -461,13 +502,17 @@ public interface I_AD_Process_Para
 
 	/** Set Value Format.
 	  * Format of the value;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+
 	  */
 	public void setVFormat (String VFormat);
 
 	/** Get Value Format.
 	  * Format of the value;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+
 	  */
 	public String getVFormat();
 }

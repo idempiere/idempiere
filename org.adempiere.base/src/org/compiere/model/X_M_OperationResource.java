@@ -25,19 +25,35 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_OperationResource
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_OperationResource")
 public class X_M_OperationResource extends PO implements I_M_OperationResource, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_OperationResource (Properties ctx, int M_OperationResource_ID, String trxName)
     {
       super (ctx, M_OperationResource_ID, trxName);
+      /** if (M_OperationResource_ID == 0)
+        {
+			setM_OperationResource_ID (0);
+			setM_ProductOperation_ID (0);
+			setName (null);
+			setSetupTime (Env.ZERO);
+			setTeardownTime (Env.ZERO);
+			setUnitRuntime (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_OperationResource (Properties ctx, int M_OperationResource_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_OperationResource_ID, trxName, virtualColumns);
       /** if (M_OperationResource_ID == 0)
         {
 			setM_OperationResource_ID (0);
@@ -72,32 +88,32 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_OperationResource[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_M_OperationResource[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
-			.getPO(getA_Asset_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Asset_ID(), get_TrxName());
+	}
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_Value (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -106,26 +122,26 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	}
 
 	public org.compiere.model.I_C_Job getC_Job() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_Name)
-			.getPO(getC_Job_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Job)MTable.get(getCtx(), org.compiere.model.I_C_Job.Table_ID)
+			.getPO(getC_Job_ID(), get_TrxName());
+	}
 
 	/** Set Position.
-		@param C_Job_ID 
-		Job Position
-	  */
+		@param C_Job_ID Job Position
+	*/
 	public void setC_Job_ID (int C_Job_ID)
 	{
-		if (C_Job_ID < 1) 
+		if (C_Job_ID < 1)
 			set_Value (COLUMNNAME_C_Job_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Job_ID, Integer.valueOf(C_Job_ID));
 	}
 
 	/** Get Position.
 		@return Job Position
 	  */
-	public int getC_Job_ID () 
+	public int getC_Job_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Job_ID);
 		if (ii == null)
@@ -134,9 +150,8 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -145,15 +160,14 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -162,27 +176,26 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Operation Resource.
-		@param M_OperationResource_ID 
-		Product Operation Resource
-	  */
+		@param M_OperationResource_ID Product Operation Resource
+	*/
 	public void setM_OperationResource_ID (int M_OperationResource_ID)
 	{
-		if (M_OperationResource_ID < 1) 
+		if (M_OperationResource_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_OperationResource_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_OperationResource_ID, Integer.valueOf(M_OperationResource_ID));
 	}
 
 	/** Get Operation Resource.
 		@return Product Operation Resource
 	  */
-	public int getM_OperationResource_ID () 
+	public int getM_OperationResource_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_OperationResource_ID);
 		if (ii == null)
@@ -191,7 +204,8 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	}
 
 	/** Set M_OperationResource_UU.
-		@param M_OperationResource_UU M_OperationResource_UU	  */
+		@param M_OperationResource_UU M_OperationResource_UU
+	*/
 	public void setM_OperationResource_UU (String M_OperationResource_UU)
 	{
 		set_Value (COLUMNNAME_M_OperationResource_UU, M_OperationResource_UU);
@@ -199,32 +213,32 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 
 	/** Get M_OperationResource_UU.
 		@return M_OperationResource_UU	  */
-	public String getM_OperationResource_UU () 
+	public String getM_OperationResource_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_OperationResource_UU);
 	}
 
 	public org.compiere.model.I_M_ProductOperation getM_ProductOperation() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ProductOperation)MTable.get(getCtx(), org.compiere.model.I_M_ProductOperation.Table_Name)
-			.getPO(getM_ProductOperation_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ProductOperation)MTable.get(getCtx(), org.compiere.model.I_M_ProductOperation.Table_ID)
+			.getPO(getM_ProductOperation_ID(), get_TrxName());
+	}
 
 	/** Set Product Operation.
-		@param M_ProductOperation_ID 
-		Product Manufacturing Operation
-	  */
+		@param M_ProductOperation_ID Product Manufacturing Operation
+	*/
 	public void setM_ProductOperation_ID (int M_ProductOperation_ID)
 	{
-		if (M_ProductOperation_ID < 1) 
+		if (M_ProductOperation_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ProductOperation_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ProductOperation_ID, Integer.valueOf(M_ProductOperation_ID));
 	}
 
 	/** Get Product Operation.
 		@return Product Manufacturing Operation
 	  */
-	public int getM_ProductOperation_ID () 
+	public int getM_ProductOperation_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductOperation_ID);
 		if (ii == null)
@@ -233,9 +247,8 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -244,7 +257,7 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -258,9 +271,8 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
     }
 
 	/** Set Setup Time.
-		@param SetupTime 
-		Setup time before starting Production
-	  */
+		@param SetupTime Setup time before starting Production
+	*/
 	public void setSetupTime (BigDecimal SetupTime)
 	{
 		set_Value (COLUMNNAME_SetupTime, SetupTime);
@@ -269,7 +281,7 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	/** Get Setup Time.
 		@return Setup time before starting Production
 	  */
-	public BigDecimal getSetupTime () 
+	public BigDecimal getSetupTime()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SetupTime);
 		if (bd == null)
@@ -278,9 +290,8 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	}
 
 	/** Set Teardown Time.
-		@param TeardownTime 
-		Time at the end of the operation
-	  */
+		@param TeardownTime Time at the end of the operation
+	*/
 	public void setTeardownTime (BigDecimal TeardownTime)
 	{
 		set_Value (COLUMNNAME_TeardownTime, TeardownTime);
@@ -289,7 +300,7 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	/** Get Teardown Time.
 		@return Time at the end of the operation
 	  */
-	public BigDecimal getTeardownTime () 
+	public BigDecimal getTeardownTime()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TeardownTime);
 		if (bd == null)
@@ -298,9 +309,8 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	}
 
 	/** Set Runtime per Unit.
-		@param UnitRuntime 
-		Time to produce one unit
-	  */
+		@param UnitRuntime Time to produce one unit
+	*/
 	public void setUnitRuntime (BigDecimal UnitRuntime)
 	{
 		set_Value (COLUMNNAME_UnitRuntime, UnitRuntime);
@@ -309,7 +319,7 @@ public class X_M_OperationResource extends PO implements I_M_OperationResource, 
 	/** Get Runtime per Unit.
 		@return Time to produce one unit
 	  */
-	public BigDecimal getUnitRuntime () 
+	public BigDecimal getUnitRuntime()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_UnitRuntime);
 		if (bd == null)

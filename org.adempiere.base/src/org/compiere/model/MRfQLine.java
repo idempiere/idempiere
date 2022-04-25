@@ -19,11 +19,12 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 
 /**
@@ -37,10 +38,31 @@ public class MRfQLine extends X_C_RfQLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5090299865266992874L;
+	private static final long serialVersionUID = -387372215148731148L;
 
 	/**
-	 * 	Get MRfQLine from Cache
+	 * 	Get MRfQLine from db
+	 *	@param C_RfQLine_ID id
+	 *	@return MRfQLine
+	 */
+	public static MRfQLine get (int C_RfQLine_ID)
+	{
+		return get(C_RfQLine_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get MRfQLine from db
+	 *	@param C_RfQLine_ID id
+	 *	@param trxName transaction
+	 *	@return MRfQLine
+	 */
+	public static MRfQLine get (int C_RfQLine_ID, String trxName)
+	{
+		return get(Env.getCtx(), C_RfQLine_ID, trxName);
+	}
+	
+	/**
+	 * 	Get MRfQLine from db
 	 *	@param ctx context
 	 *	@param C_RfQLine_ID id
 	 *	@param trxName transaction
@@ -48,19 +70,14 @@ public class MRfQLine extends X_C_RfQLine
 	 */
 	public static MRfQLine get (Properties ctx, int C_RfQLine_ID, String trxName)
 	{
-		Integer key = Integer.valueOf(C_RfQLine_ID);
-		MRfQLine retValue = (MRfQLine) s_cache.get (key);
-		if (retValue != null)
+		MRfQLine retValue = new MRfQLine (ctx, C_RfQLine_ID, trxName);
+		if (retValue.get_ID () == C_RfQLine_ID)
+		{
 			return retValue;
-		retValue = new MRfQLine (ctx, C_RfQLine_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	} //	get
 
-	/**	Cache						*/
-	private static CCache<Integer,MRfQLine>	s_cache	= new CCache<Integer,MRfQLine>(Table_Name, 20);
-	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -98,6 +115,38 @@ public class MRfQLine extends X_C_RfQLine
 		setC_RfQ_ID(rfq.getC_RfQ_ID());
 	}	//	MRfQLine
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MRfQLine(MRfQLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRfQLine(Properties ctx, MRfQLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRfQLine(Properties ctx, MRfQLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_qtys = copy.m_qtys != null ? Arrays.stream(copy.m_qtys).map(e -> {return new MRfQLineQty(ctx, e, trxName);}).toArray(MRfQLineQty[]::new) : null;
+	}
+	
 	/**	Qyantities				*/
 	private MRfQLineQty[] 	m_qtys = null;
 	

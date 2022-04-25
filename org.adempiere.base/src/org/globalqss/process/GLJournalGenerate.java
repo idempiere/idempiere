@@ -65,6 +65,7 @@ import org.compiere.util.Msg;
  *
  * 	@author 	Carlos Ruiz - Quality Systems & Solutions - globalqss
  */
+@org.adempiere.base.annotation.Process
 public class GLJournalGenerate extends SvrProcess
 {
 	/**	Processing date from/to */

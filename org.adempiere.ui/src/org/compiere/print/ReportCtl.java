@@ -31,6 +31,7 @@ import static org.compiere.model.SystemIDs.PROCESS_RPT_M_MOVEMENT;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IProcessUI;
@@ -119,7 +120,6 @@ public class ReportCtl
 	 *  @param parent The window which invoked the printing
 	 *  @param WindowNo The windows number which invoked the printing
 	 *  @param pi process info
-	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if created
 	 */
 	static public boolean start (IProcessUI parent, int WindowNo, ProcessInfo pi)
@@ -182,7 +182,7 @@ public class ReportCtl
 
 	/**************************************************************************
 	 *	Start Standard Report.
-	 *  - Get Table Info & submit
+	 *  - Get Table Info and submit
 	 *  @param pi Process Info
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if OK
@@ -194,7 +194,7 @@ public class ReportCtl
 	
 	/**************************************************************************
 	 *	Start Standard Report.
-	 *  - Get Table Info & submit
+	 *  - Get Table Info and submit
 	 *  @param pi Process Info
 	 *  @param WindowNo The windows number which invoked the printing
 	 *  @param IsDirectPrint if true, prints directly - otherwise View
@@ -208,14 +208,13 @@ public class ReportCtl
 
 	/**************************************************************************
 	 *	Start Standard Report.
-	 *  - Get Table Info & submit.<br>
+	 *  - Get Table Info and submit.<br>
 	 *  A report can be created from:
 	 *  <ol>
 	 *  <li>attached MPrintFormat, if any (see {@link ProcessInfo#setTransientObject(Object)}, {@link ProcessInfo#setSerializableObject(java.io.Serializable)}
 	 *  <li>process information (AD_Process.AD_PrintFormat_ID, AD_Process.AD_ReportView_ID)
 	 *  </ol>
 	 *  @param pi Process Info
-	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if OK
 	 */
 	static public boolean startStandardReport (ProcessInfo pi)
@@ -225,7 +224,7 @@ public class ReportCtl
 	
 	/**************************************************************************
 	 *	Start Standard Report.
-	 *  - Get Table Info & submit.<br>
+	 *  - Get Table Info and submit.<br>
 	 *  A report can be created from:
 	 *  <ol>
 	 *  <li>attached MPrintFormat, if any (see {@link ProcessInfo#setTransientObject(Object)}, {@link ProcessInfo#setSerializableObject(java.io.Serializable)}
@@ -233,7 +232,6 @@ public class ReportCtl
 	 *  </ol>
 	 *  @param pi Process Info
 	 *  @param WindowNo The windows number which invoked the printing
-	 *  @param IsDirectPrint if true, prints directly - otherwise View
 	 *  @return true if OK
 	 */
 	static public boolean startStandardReport (ProcessInfo pi, int WindowNo)
@@ -463,8 +461,29 @@ public class ReportCtl
 	 */
 	public static void preview(ReportEngine re)
 	{
-		ReportViewerProvider viewer = Service.locator().locate(ReportViewerProvider.class).getService();
+		ReportViewerProvider viewer = getReportViewerProvider();
 		viewer.openViewer(re);
+	}
+
+	private static IServiceReferenceHolder<ReportViewerProvider> s_reportViewerProviderReference = null;
+	
+	/**
+	 * 
+	 * @return {@link ReportViewerProvider}
+	 */
+	public static synchronized ReportViewerProvider getReportViewerProvider() {
+		ReportViewerProvider viewer = null;
+		if (s_reportViewerProviderReference != null) {
+			viewer = s_reportViewerProviderReference.getService();
+			if (viewer != null)
+				return viewer;
+		}
+		IServiceReferenceHolder<ReportViewerProvider> viewerReference = Service.locator().locate(ReportViewerProvider.class).getServiceReference();
+		if (viewerReference != null) {
+			s_reportViewerProviderReference = viewerReference;
+			viewer = viewerReference.getService();
+		}
+		return viewer;
 	}
 
 }	//	ReportCtl

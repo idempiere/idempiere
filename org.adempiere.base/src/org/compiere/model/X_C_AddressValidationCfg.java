@@ -23,19 +23,33 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AddressValidationCfg
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_AddressValidationCfg")
 public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidationCfg, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_AddressValidationCfg (Properties ctx, int C_AddressValidationCfg_ID, String trxName)
     {
       super (ctx, C_AddressValidationCfg_ID, trxName);
+      /** if (C_AddressValidationCfg_ID == 0)
+        {
+			setC_AddressValidationCfg_ID (0);
+			setHostAddress (null);
+			setHostPort (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AddressValidationCfg (Properties ctx, int C_AddressValidationCfg_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AddressValidationCfg_ID, trxName, virtualColumns);
       /** if (C_AddressValidationCfg_ID == 0)
         {
 			setC_AddressValidationCfg_ID (0);
@@ -68,13 +82,14 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_AddressValidationCfg[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_AddressValidationCfg[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Address Validation Class.
-		@param AddressValidationClass Address Validation Class	  */
+		@param AddressValidationClass Address Validation Class
+	*/
 	public void setAddressValidationClass (String AddressValidationClass)
 	{
 		set_Value (COLUMNNAME_AddressValidationClass, AddressValidationClass);
@@ -82,24 +97,25 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 
 	/** Get Address Validation Class.
 		@return Address Validation Class	  */
-	public String getAddressValidationClass () 
+	public String getAddressValidationClass()
 	{
 		return (String)get_Value(COLUMNNAME_AddressValidationClass);
 	}
 
 	/** Set Address Validation Configuration.
-		@param C_AddressValidationCfg_ID Address Validation Configuration	  */
+		@param C_AddressValidationCfg_ID Address Validation Configuration
+	*/
 	public void setC_AddressValidationCfg_ID (int C_AddressValidationCfg_ID)
 	{
-		if (C_AddressValidationCfg_ID < 1) 
+		if (C_AddressValidationCfg_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AddressValidationCfg_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AddressValidationCfg_ID, Integer.valueOf(C_AddressValidationCfg_ID));
 	}
 
 	/** Get Address Validation Configuration.
 		@return Address Validation Configuration	  */
-	public int getC_AddressValidationCfg_ID () 
+	public int getC_AddressValidationCfg_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AddressValidationCfg_ID);
 		if (ii == null)
@@ -108,7 +124,8 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	}
 
 	/** Set C_AddressValidationCfg_UU.
-		@param C_AddressValidationCfg_UU C_AddressValidationCfg_UU	  */
+		@param C_AddressValidationCfg_UU C_AddressValidationCfg_UU
+	*/
 	public void setC_AddressValidationCfg_UU (String C_AddressValidationCfg_UU)
 	{
 		set_Value (COLUMNNAME_C_AddressValidationCfg_UU, C_AddressValidationCfg_UU);
@@ -116,15 +133,14 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 
 	/** Get C_AddressValidationCfg_UU.
 		@return C_AddressValidationCfg_UU	  */
-	public String getC_AddressValidationCfg_UU () 
+	public String getC_AddressValidationCfg_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_AddressValidationCfg_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -133,15 +149,14 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Host Address.
-		@param HostAddress 
-		Host Address URL or DNS
-	  */
+		@param HostAddress Host Address URL or DNS
+	*/
 	public void setHostAddress (String HostAddress)
 	{
 		set_Value (COLUMNNAME_HostAddress, HostAddress);
@@ -150,15 +165,14 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	/** Get Host Address.
 		@return Host Address URL or DNS
 	  */
-	public String getHostAddress () 
+	public String getHostAddress()
 	{
 		return (String)get_Value(COLUMNNAME_HostAddress);
 	}
 
 	/** Set Host port.
-		@param HostPort 
-		Host Communication Port
-	  */
+		@param HostPort Host Communication Port
+	*/
 	public void setHostPort (int HostPort)
 	{
 		set_Value (COLUMNNAME_HostPort, Integer.valueOf(HostPort));
@@ -167,7 +181,7 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	/** Get Host port.
 		@return Host Communication Port
 	  */
-	public int getHostPort () 
+	public int getHostPort()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HostPort);
 		if (ii == null)
@@ -176,9 +190,8 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -187,7 +200,7 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -201,9 +214,8 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
     }
 
 	/** Set Proxy address.
-		@param ProxyAddress 
-		 Address of your proxy server
-	  */
+		@param ProxyAddress  Address of your proxy server
+	*/
 	public void setProxyAddress (String ProxyAddress)
 	{
 		set_Value (COLUMNNAME_ProxyAddress, ProxyAddress);
@@ -212,15 +224,14 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	/** Get Proxy address.
 		@return  Address of your proxy server
 	  */
-	public String getProxyAddress () 
+	public String getProxyAddress()
 	{
 		return (String)get_Value(COLUMNNAME_ProxyAddress);
 	}
 
 	/** Set Proxy logon.
-		@param ProxyLogon 
-		Logon of your proxy server
-	  */
+		@param ProxyLogon Logon of your proxy server
+	*/
 	public void setProxyLogon (String ProxyLogon)
 	{
 		set_Value (COLUMNNAME_ProxyLogon, ProxyLogon);
@@ -229,15 +240,14 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	/** Get Proxy logon.
 		@return Logon of your proxy server
 	  */
-	public String getProxyLogon () 
+	public String getProxyLogon()
 	{
 		return (String)get_Value(COLUMNNAME_ProxyLogon);
 	}
 
 	/** Set Proxy password.
-		@param ProxyPassword 
-		Password of your proxy server
-	  */
+		@param ProxyPassword Password of your proxy server
+	*/
 	public void setProxyPassword (String ProxyPassword)
 	{
 		set_Value (COLUMNNAME_ProxyPassword, ProxyPassword);
@@ -246,15 +256,14 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	/** Get Proxy password.
 		@return Password of your proxy server
 	  */
-	public String getProxyPassword () 
+	public String getProxyPassword()
 	{
 		return (String)get_Value(COLUMNNAME_ProxyPassword);
 	}
 
 	/** Set Proxy port.
-		@param ProxyPort 
-		Port of your proxy server
-	  */
+		@param ProxyPort Port of your proxy server
+	*/
 	public void setProxyPort (int ProxyPort)
 	{
 		set_Value (COLUMNNAME_ProxyPort, Integer.valueOf(ProxyPort));
@@ -263,7 +272,7 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	/** Get Proxy port.
 		@return Port of your proxy server
 	  */
-	public int getProxyPort () 
+	public int getProxyPort()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ProxyPort);
 		if (ii == null)
@@ -272,7 +281,8 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 	}
 
 	/** Set Service Path.
-		@param ServicePath Service Path	  */
+		@param ServicePath Service Path
+	*/
 	public void setServicePath (String ServicePath)
 	{
 		set_Value (COLUMNNAME_ServicePath, ServicePath);
@@ -280,7 +290,7 @@ public class X_C_AddressValidationCfg extends PO implements I_C_AddressValidatio
 
 	/** Get Service Path.
 		@return Service Path	  */
-	public String getServicePath () 
+	public String getServicePath()
 	{
 		return (String)get_Value(COLUMNNAME_ServicePath);
 	}

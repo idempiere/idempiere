@@ -199,14 +199,14 @@ public class CLogger extends Logger
 	{
 		ValueNamePair vp = (ValueNamePair) Env.getCtx().get(LAST_ERROR);
 		return vp;
-	}   //  retrieveError
+	}   //  peekError
 	
 	/**
 	 * Get Error message from stack
 	 * @param defaultMsg default message (used when there are no errors on stack)
 	 * @return error message, or defaultMsg if there is not error message saved
 	 * @see #retrieveError()
-	 * @author Teo Sarca, SC ARHIPAC SERVICE SRL
+	 * author Teo Sarca, SC ARHIPAC SERVICE SRL
 	 */
 	public static String retrieveErrorString(String defaultMsg) {
 		ValueNamePair vp = retrieveError();
@@ -225,6 +225,16 @@ public class CLogger extends Logger
 		return ex;
 	}   //  retrieveError
 
+	/**
+	 *  Peek Exception from Stack
+	 *  @return last exception
+	 */
+	public static Exception peekException()
+	{
+		Exception ex = (Exception) Env.getCtx().get(LAST_EXCEPTION);
+		return ex;
+	}   //  peekException
+	
 	/**
 	 *  Save Warning as ValueNamePair.
 	 *  @param AD_Message message key

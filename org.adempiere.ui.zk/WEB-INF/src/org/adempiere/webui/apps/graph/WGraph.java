@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.adempiere.apps.graph.GraphColumn;
-import org.adempiere.base.Service;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.graph.model.GoalModel;
 import org.adempiere.webui.editor.WTableDirEditor;
@@ -39,6 +39,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zhtml.A;
 import org.zkoss.zhtml.Br;
 import org.zkoss.zhtml.Table;
@@ -127,10 +128,10 @@ public class WGraph extends Div implements IdSpace {
 	 * 
 	 * @param goal
 	 * @param zoom
-	 * @param userSelection
+	 * @param chartSelection
 	 * @param hideTitle
-	 * @param showTable
-	 * @param showChart
+	 * @param renderTable
+	 * @param renderChart
 	 */
 	public WGraph(MGoal goal, int zoom, boolean chartSelection,
 			boolean hideTitle, boolean renderTable, boolean renderChart) {
@@ -277,7 +278,7 @@ public class WGraph extends Div implements IdSpace {
 		goalModel.xAxisLabel = m_xAxisLabel;
 		goalModel.yAxisLabel = m_yAxisLabel;
 		goalModel.zoomFactor = zoomFactor;
-		List<IChartRendererService> list = Service.locator().list(IChartRendererService.class).getServices();
+		List<IChartRendererService> list = Extensions.getChartRendererServices();
 		for (IChartRendererService renderer : list) {
 			if (renderer.renderPerformanceGraph(panel.getPanelchildren(), width, height, goalModel))
 				break;
@@ -506,12 +507,14 @@ public class WGraph extends Div implements IdSpace {
 	}
 
 	private String stripHtml(String htmlString, boolean all) {
-		htmlString = htmlString.replace("<html>", "").replace("</html>", "")
-				.replace("<body>", "").replace("</body>", "").replace("<head>",
-						"").replace("</head>", "");
-
-		if (all)
-			htmlString = htmlString.replace(">", "&gt;").replace("<", "&lt;");
+		if (!Util.isEmpty(htmlString, true)) {
+			htmlString = htmlString.replace("<html>", "").replace("</html>", "")
+					.replace("<body>", "").replace("</body>", "").replace("<head>",
+							"").replace("</head>", "");
+	
+			if (all)
+				htmlString = htmlString.replace(">", "&gt;").replace("<", "&lt;");
+		}
 		return htmlString;
 	}
 } // BarGraph

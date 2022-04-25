@@ -47,8 +47,6 @@ public class MCommissionAmt extends X_C_CommissionAmt
 		super(ctx, C_CommissionAmt_ID, trxName);
 		if (C_CommissionAmt_ID == 0)
 		{
-		//	setC_CommissionRun_ID (0);
-		//	setC_CommissionLine_ID (0);
 			setActualQty (Env.ZERO);
 			setCommissionAmt (Env.ZERO);
 			setConvertedAmt (Env.ZERO);
@@ -78,6 +76,10 @@ public class MCommissionAmt extends X_C_CommissionAmt
 	{
 		super(ctx, rs, trxName);
 	}	//	MCommissionAmt
+
+	public MCommissionAmt(Properties ctx, int C_CommissionAmt_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_CommissionAmt_ID, trxName, virtualColumns);
+	}
 
 	/**
 	 * 	Get Details

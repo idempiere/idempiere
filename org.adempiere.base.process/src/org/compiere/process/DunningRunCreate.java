@@ -41,6 +41,7 @@ import org.compiere.util.Env;
  *  
  *  FR 2872010 - Dunning Run for a complete Dunning (not just level) - Developer: Carlos Ruiz - globalqss - Sponsor: Metas
  */
+@org.adempiere.base.annotation.Process
 public class DunningRunCreate extends SvrProcess
 {
 	private boolean 	p_IncludeInDispute = false;
@@ -168,7 +169,6 @@ public class DunningRunCreate extends SvrProcess
 			sql.append(" AND i.C_Currency_ID=").append(p_C_Currency_ID);
 		if ( p_AD_Org_ID != 0 )
 			sql.append(" AND i.AD_Org_ID=").append(p_AD_Org_ID);
-	//	if (log.isLoggable(Level.INFO)) log.info(sql);
 		
 		String sql2= "";
 		

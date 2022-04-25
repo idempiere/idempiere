@@ -124,20 +124,13 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	public MOrderLine (Properties ctx, int C_OrderLine_ID, String trxName)
 	{
-		super (ctx, C_OrderLine_ID, trxName);
+		this (ctx, C_OrderLine_ID, trxName, (String[]) null);
+	}	//	MOrderLine
+
+	public MOrderLine(Properties ctx, int C_OrderLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_OrderLine_ID, trxName, virtualColumns);
 		if (C_OrderLine_ID == 0)
 		{
-		//	setC_Order_ID (0);
-		//	setLine (0);
-		//	setM_Warehouse_ID (0);	// @M_Warehouse_ID@
-		//	setC_BPartner_ID(0);
-		//	setC_BPartner_Location_ID (0);	// @C_BPartner_Location_ID@
-		//	setC_Currency_ID (0);	// @C_Currency_ID@
-		//	setDateOrdered (new Timestamp(System.currentTimeMillis()));	// @DateOrdered@
-			//
-		//	setC_Tax_ID (0);
-		//	setC_UOM_ID (0);
-			//
 			setFreightAmt (Env.ZERO);
 			setLineNetAmt (Env.ZERO);
 			//
@@ -158,8 +151,8 @@ public class MOrderLine extends X_C_OrderLine
 			setProcessed (false);
 			setLine (0);
 		}
-	}	//	MOrderLine
-	
+	}
+
 	/**
 	 *  Parent Constructor.
 	 		ol.setM_Product_ID(wbl.getM_Product_ID());
@@ -336,10 +329,10 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	public boolean setTax()
 	{
-		int ii = Tax.get(getCtx(), getM_Product_ID(), getC_Charge_ID(), getDateOrdered(), getDateOrdered(),
+		int ii = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID(), getDateOrdered(), getDateOrdered(),
 			getAD_Org_ID(), getM_Warehouse_ID(),
 			getC_BPartner_Location_ID(),		//	should be bill to
-			getC_BPartner_Location_ID(), m_IsSOTrx, get_TrxName());
+			getC_BPartner_Location_ID(), m_IsSOTrx, getParent().getDeliveryViaRule(), get_TrxName());
 		if (ii == 0)
 		{
 			log.log(Level.SEVERE, "No Tax found");
@@ -369,11 +362,11 @@ public class MOrderLine extends X_C_OrderLine
 	public MCharge getCharge()
 	{
 		if (m_charge == null && getC_Charge_ID() != 0)
-			m_charge =  MCharge.get (getCtx(), getC_Charge_ID());
+			m_charge =  MCharge.getCopy(getCtx(), getC_Charge_ID(), get_TrxName());
 		return m_charge;
 	}
 	/**
-	 * 	Get Tax
+	 * 	Get Tax (immutable)
 	 *	@return tax
 	 */
 	protected MTax getTax()
@@ -472,7 +465,7 @@ public class MOrderLine extends X_C_OrderLine
 	public MProduct getProduct()
 	{
 		if (m_product == null && getM_Product_ID() != 0)
-			m_product =  MProduct.get (getCtx(), getM_Product_ID());
+			m_product =  MProduct.getCopy(getCtx(), getM_Product_ID(), get_TrxName());
 		return m_product;
 	}	//	getProduct
 	
@@ -605,7 +598,7 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MOrderLine[")
+		StringBuilder sb = new StringBuilder ("MOrderLine[")
 			.append(get_ID())
 			.append(", Line=").append(getLine())
 			.append(", Ordered=").append(getQtyOrdered())
@@ -786,8 +779,8 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_OrderLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_Order_ID"));
 			return false;
 		}
 		//	Get Defaults from Parent
@@ -801,7 +794,8 @@ public class MOrderLine extends X_C_OrderLine
 		
 		//	R/O Check - Product/Warehouse Change
 		if (!newRecord 
-			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID"))) 
+			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID") || 
+			(!getParent().isProcessed() && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)))) 
 		{
 			if (!canChangeWarehouse())
 				return false;
@@ -836,70 +830,23 @@ public class MOrderLine extends X_C_OrderLine
 				log.saveError("UnderLimitPrice", "PriceEntered=" + getPriceEntered() + ", PriceLimit=" + getPriceLimit()); 
 				return false;
 			}
+			int C_DocType_ID = getParent().getDocTypeID();
+			MDocType docType = MDocType.get(getCtx(), C_DocType_ID);
 			//
-			if (!m_productPrice.isCalculated())
+			if (!docType.isNoPriceListCheck() && !m_productPrice.isCalculated())
 			{
 				throw new ProductNotOnPriceListException(m_productPrice, getLine());
 			}
 		}
 
 		//	UOM
-		if (getC_UOM_ID() == 0 
-			&& (getM_Product_ID() != 0 
-				|| getPriceEntered().compareTo(Env.ZERO) != 0
-				|| getC_Charge_ID() != 0))
-		{
-			int C_UOM_ID = MUOM.getDefault_UOM_ID(getCtx());
-			if (C_UOM_ID > 0)
-				setC_UOM_ID (C_UOM_ID);
-		}
+		if (getC_UOM_ID() == 0)
+			setDefaultC_UOM_ID();
 		//	Qty Precision
 		if (newRecord || is_ValueChanged("QtyEntered"))
 			setQtyEntered(getQtyEntered());
 		if (newRecord || is_ValueChanged("QtyOrdered"))
 			setQtyOrdered(getQtyOrdered());
-		
-		/* IDEMPIERE-4095 - it is a valid use case to reserve a serialized item on sales (same as reserving non existing inventory)
-		//	Qty on instance ASI for SO
-		if (m_IsSOTrx 
-			&& getM_AttributeSetInstance_ID() != 0
-			&& (newRecord || is_ValueChanged("M_Product_ID")
-				|| is_ValueChanged("M_AttributeSetInstance_ID")
-				|| is_ValueChanged("M_Warehouse_ID")))
-		{
-			MProduct product = getProduct();
-			if (product.isStocked())
-			{
-				int M_AttributeSet_ID = product.getM_AttributeSet_ID();
-				boolean isInstance = M_AttributeSet_ID != 0;
-				if (isInstance)
-				{
-					MAttributeSet mas = MAttributeSet.get(getCtx(), M_AttributeSet_ID);
-					isInstance = mas.isInstanceAttribute();
-				}
-				//	Max
-				if (isInstance)
-				{
-					MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 
-						getM_Warehouse_ID(), getM_Product_ID(), getM_AttributeSetInstance_ID(), 
-						null, true, false, 0, get_TrxName());
-					BigDecimal qty = Env.ZERO;
-					for (int i = 0; i < storages.length; i++)
-					{
-						if (storages[i].getM_AttributeSetInstance_ID() == getM_AttributeSetInstance_ID())
-							qty = qty.add(storages[i].getQtyOnHand());
-					}
-					
-					if (getQtyOrdered().compareTo(qty) > 0)
-					{
-						log.warning("Qty - Stock=" + qty + ", Ordered=" + getQtyOrdered());
-						log.saveError("QtyInsufficient", "=" + qty); 
-						return false;
-					}
-				}
-			}	//	stocked
-		}	//	SO instance
-		-- commented out because of IDEMPIERE-4095 */
 		
 		//	FreightAmt Not used
 		if (Env.ZERO.compareTo(getFreightAmt()) != 0)
@@ -933,7 +880,24 @@ public class MOrderLine extends X_C_OrderLine
 		
 		return true;
 	}	//	beforeSave
+	
+	/***
+	 * Sets the default unit of measure
+	 * If there's a product, it sets the UOM of the product
+	 * If not, it sets the default UOM of the client
+	 */
+	private void setDefaultC_UOM_ID() {
+		int C_UOM_ID = 0;
+		
+		if (MProduct.get(getCtx(), getM_Product_ID()) != null) {
+			C_UOM_ID = MProduct.get(getCtx(), getM_Product_ID()).getC_UOM_ID();	
+		} else {
+			C_UOM_ID = MUOM.getDefault_UOM_ID(getCtx());
+		}
 
+		if (C_UOM_ID > 0)
+			setC_UOM_ID (C_UOM_ID);
+	}
 	
 	/**
 	 * 	Before Delete
@@ -1013,7 +977,7 @@ public class MOrderLine extends X_C_OrderLine
 	 * @param oldTax true if the old C_Tax_ID should be used
 	 * @return true if success, false otherwise
 	 * 
-	 * @author teo_sarca [ 1583825 ]
+	 * author teo_sarca [ 1583825 ]
 	 */
 	public boolean updateOrderTax(boolean oldTax) {
 		MOrderTax tax = MOrderTax.get (this, getPrecision(), oldTax, get_TrxName());
@@ -1033,7 +997,7 @@ public class MOrderLine extends X_C_OrderLine
 	}
 	
 	/**
-	 *	Update Tax & Header
+	 *	Update Tax and Header
 	 *	@return true if header updated
 	 */
 	public boolean updateHeaderTax()

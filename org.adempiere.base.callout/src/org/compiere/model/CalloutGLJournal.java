@@ -316,4 +316,27 @@ public class CalloutGLJournal extends CalloutEngine
 		
 		return "";
 	}
+
+	/**
+	 *  Journal - Doc Type
+	 *  Set GL Category from C_DocType_ID
+	 *	@param ctx context
+	 *	@param WindowNo window no
+	 *	@param mTab tab
+	 *	@param mField field
+	 *	@param value value
+	 *	@return null or error message
+	 */
+	public String docType(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		if (value == null)
+			return "";
+		
+		int C_DocType_ID = Env.getContextAsInt(ctx, WindowNo, "C_DocType_ID");
+		MDocType dt = MDocType.get (ctx, C_DocType_ID);
+		mTab.setValue("GL_Category_ID", dt.getGL_Category_ID());
+		
+		return "";
+	}
+
 }	//	CalloutGLJournal

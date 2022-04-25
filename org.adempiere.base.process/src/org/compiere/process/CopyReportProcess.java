@@ -29,6 +29,7 @@ import org.compiere.util.Msg;
  * overwrites existing data (including translations)
  *
  */
+@org.adempiere.base.annotation.Process
 public class CopyReportProcess extends SvrProcess {
 
 	private int sourceId = 0;

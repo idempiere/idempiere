@@ -20,6 +20,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Popup;
 
 /**
  *	Archive Button Consequences.
@@ -142,7 +143,16 @@ public class WArchive implements EventListener<Event>
 			m_popup.appendChild(new Menuitem(Msg.getMsg(Env.getCtx(), "ArchivedNone")));
 		//
 			
-		m_popup.setPage(invoker.getPage());
+		Popup popup = LayoutUtils.findPopup(invoker);
+		if (popup != null)
+		{
+			popup.appendChild(m_popup);
+		}
+		else
+		{
+			m_popup.setPage(invoker.getPage());
+			LayoutUtils.autoDetachOnClose(m_popup);
+		}
 		m_popup.open(invoker, "after_start");
 	}	//	getZoomTargets
 	
@@ -165,6 +175,10 @@ public class WArchive implements EventListener<Event>
 				av.query(true, m_AD_Table_ID, m_Record_ID);
 			else	//	all Reports
 				av.query(true, m_AD_Table_ID, 0);
+			
+			if (m_popup.getParent() instanceof Popup) {
+				((Popup)m_popup.getParent()).close();
+			}
 
 			form.setAttribute(Window.MODE_KEY, form.getWindowMode());
 			SessionManager.getAppDesktop().showWindow(form);

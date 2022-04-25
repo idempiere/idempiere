@@ -28,6 +28,7 @@ import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 
+@org.adempiere.base.annotation.Process
 public class CopyFromCashPlan  extends SvrProcess {
 
 	private int p_C_CashPlanSource_ID = 0;
@@ -59,7 +60,7 @@ public class CopyFromCashPlan  extends SvrProcess {
     		throw new IllegalArgumentException ("Source Cash Plan does not exist");
     	
     	int insertNo = 0;
-    	int lineNo = DB.getSQLValue(get_TrxName(), "SELECT COALESCE(MAX(Line),0)+10 FROM C_CashPlanLine WHERE C_CashPlan_ID=?", p_C_CashPlanTarget_ID);
+    	int lineNo = DB.getSQLValue(get_TrxName(), "SELECT NVL(MAX(Line),0)+10 FROM C_CashPlanLine WHERE C_CashPlan_ID=?", p_C_CashPlanTarget_ID);
     	
     	for (MCashPlanLine cpls : cpsource.getLines()) {
         	MCashPlanLine cplt = new MCashPlanLine(getCtx(), 0, get_TrxName());

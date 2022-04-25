@@ -64,7 +64,7 @@ public class MChatEntry extends X_CM_ChatEntry
 
 	/**
 	 * 	Thread Constructor
-	 *	@param entry peer
+	 *	@param peer entry
 	 *	@param data text
 	 */
 	public MChatEntry (MChatEntry peer, String data)

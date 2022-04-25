@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -31,6 +33,9 @@ import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
+import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Info Window Model
@@ -38,13 +43,16 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: MInfoWindow.java,v 1.2 2006/07/30 00:51:03 jjanke Exp $
  */
-public class MInfoWindow extends X_AD_InfoWindow
+public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1619434756919905441L;
+	private static final long serialVersionUID = 6723480469706009814L;
 
+	/**	Cache						*/
+	private static ImmutablePOCache<String,MInfoWindow> s_cache = new ImmutablePOCache<String,MInfoWindow>(Table_Name, 20);
+	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -67,6 +75,29 @@ public class MInfoWindow extends X_AD_InfoWindow
 		super (ctx, rs, trxName);
 	}	//	MInfoWindow
 
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MInfoWindow(MInfoWindow copy)
+	{
+		this(copy, (String) null);
+	}
+	
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MInfoWindow(MInfoWindow copy, String trxName)
+	{
+		this(Env.getCtx(), 0, trxName);
+		copyPO(copy);
+		this.m_validateEachColumn = copy.m_validateEachColumn;
+		this.m_infocolumns = copy.m_infocolumns != null ? Arrays.stream(copy.m_infocolumns).map(MInfoColumn::new).toArray(MInfoColumn[]::new) : null;
+		this.m_infoProcess = copy.m_infoProcess != null ? Arrays.stream(copy.m_infoProcess).map(MInfoProcess::new).toArray(MInfoProcess[]::new) : null;
+		this.m_infoRelated = copy.m_infoRelated != null ? Arrays.stream(copy.m_infoRelated).map(MInfoRelated::new).toArray(MInfoRelated[]::new) : null;
+	}
+	
 	public static MInfoWindow get(String tableName, String trxName) {
 		Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), MInfoWindow.Table_ID), MInfoWindow.COLUMNNAME_AD_Table_ID+"=? AND IsValid='Y' ", null);
 		MTable table = MTable.get(Env.getCtx(), tableName);
@@ -87,30 +118,30 @@ public class MInfoWindow extends X_AD_InfoWindow
 	}
 
 	/**
-	 * @author xolali
+	 * author xolali
 	 * @param AD_InfoWindow_ID
-	 * @return
+	 * @return {@link MInfoWindow}
 	 */
 	public static MInfoWindow getInfoWindow(int AD_InfoWindow_ID) {
-
-		if (AD_InfoWindow_ID != 0) {
-
-			MInfoWindow infoWin =  (MInfoWindow)new Query(Env.getCtx(), Table_Name, "AD_InfoWindow_ID=?", null)
+		if (AD_InfoWindow_ID > 0) {
+			String key = String.valueOf(AD_InfoWindow_ID) + "|" + Env.getAD_Role_ID(Env.getCtx());
+			MInfoWindow infoWin =  s_cache.get(key);
+			if (infoWin != null)
+				return infoWin;
+			
+			infoWin =  (MInfoWindow)new Query(Env.getCtx(), Table_Name, "AD_InfoWindow_ID=?", null)
 				.setParameters(AD_InfoWindow_ID)
 				.first();
 
-			if (infoWin != null)
+			if (infoWin != null) {
+				s_cache.put(key, infoWin);
 				return infoWin;
+			}
 		}
 
 		return null;
 	}
 
-	/**
-	 * @author xolali
-	 * @param requery
-	 * @return
-	 */
 	private MInfoRelated[] m_infoRelated;
 
 	/**
@@ -119,6 +150,11 @@ public class MInfoWindow extends X_AD_InfoWindow
 	 */
 	private MInfoProcess[]  m_infoProcess;
 
+	/**
+	 * author xolali
+	 * @param requery
+	 * @return
+	 */
 	public MInfoRelated[] getInfoRelated(boolean requery) {
 		if ((this.m_infoRelated != null) && (!requery)) {
 			set_TrxName(this.m_infoRelated, get_TrxName());
@@ -179,67 +215,72 @@ public class MInfoWindow extends X_AD_InfoWindow
 		
 	}
 
-	/** return true if the current role can access to the specified info window ; otherwise return null */
+	/**
+	 * @param infoWindowID
+	 * @param trxName 
+	 * return MInfoWindow if the current role can access to the specified info window ; otherwise return null 
+	 * */
 	public static MInfoWindow get(int infoWindowID, String trxName) {
-		MInfoWindow iw = new MInfoWindow(Env.getCtx(), infoWindowID, null);
+		MInfoWindow iw = getInfoWindow(infoWindowID);		
 		Boolean access = MRole.getDefault().getInfoAccess(iw.getAD_InfoWindow_ID());
-		if (access != null && access.booleanValue())
+		if (access != null && access.booleanValue()) {
+			if (!Util.isEmpty(trxName, true))
+				iw = new MInfoWindow(iw, trxName);
 			return iw;
+		}
 		return null;
 	}
 
-	public MInfoColumn[] getInfoColumns(TableInfo[] tableInfos) {
-		Query query = new Query(getCtx(), MTable.get(getCtx(), I_AD_InfoColumn.Table_ID), I_AD_InfoColumn.COLUMNNAME_AD_InfoWindow_ID+"=?", get_TrxName());
-		List<MInfoColumn> list = query.setParameters(getAD_InfoWindow_ID())
-				.setOnlyActiveRecords(true)
-				.setOrderBy("SeqNo, AD_InfoColumn_ID")
-				.list();
-		for(int i = list.size() - 1; i >= 0; i--) {
-			MInfoColumn infoColumn = list.get(i);
-			if (!infoColumn.isColumnAccess(tableInfos))
-				list.remove(i);
+	public synchronized MInfoColumn[] getInfoColumns(TableInfo[] tableInfos) {
+		getInfoColumns();
+		List<MInfoColumn> list = new ArrayList<MInfoColumn>();
+		for(MInfoColumn ic : m_infocolumns) {
+			if (ic.isColumnAccess(tableInfos))
+				list.add(ic);
 		}
 		return list.toArray(new MInfoColumn[0]);
 	}
 	
-	public MInfoColumn[] getInfoColumns() {
-		Query query = new Query(getCtx(), MTable.get(getCtx(), I_AD_InfoColumn.Table_ID), I_AD_InfoColumn.COLUMNNAME_AD_InfoWindow_ID+"=?", get_TrxName());
-		List<MInfoColumn> list = query.setParameters(getAD_InfoWindow_ID())
-				.setOnlyActiveRecords(true)
-				.setOrderBy("SeqNo, AD_InfoColumn_ID")
-				.list();
-		return list.toArray(new MInfoColumn[0]);
+	public synchronized MInfoColumn[] getInfoColumns() {
+		if (m_infocolumns == null) {
+			Query query = new Query(getCtx(), MTable.get(getCtx(), I_AD_InfoColumn.Table_ID), I_AD_InfoColumn.COLUMNNAME_AD_InfoWindow_ID+"=?", get_TrxName());
+			List<MInfoColumn> list = query.setParameters(getAD_InfoWindow_ID())
+					.setOnlyActiveRecords(true)
+					.setOrderBy("SeqNo, AD_InfoColumn_ID")
+					.list();
+			m_infocolumns = list.toArray(new MInfoColumn[0]);
+		}
+		
+		if (get_TrxName() != null)
+			set_TrxName(m_infocolumns, get_TrxName());
+		return m_infocolumns;
 	}
 
 	/**
-	 * @author xolali
+	 * author xolali
 	 */
 	private MInfoColumn[] m_infocolumns = null;
 
-	public MInfoColumn[] getInfoColumns(boolean requery, boolean checkDisplay) {
-		if ((this.m_infocolumns != null) && (!requery)) {
-			set_TrxName(this.m_infocolumns, get_TrxName());
-			return this.m_infocolumns;
+	public synchronized MInfoColumn[] getInfoColumns(boolean requery, boolean checkDisplay) {
+		if (m_infocolumns == null || requery) {
+			m_infocolumns = null;
+			getInfoColumns();
 		}
+			
 		if (checkDisplay) {
-			List<MInfoColumn> list = new Query(getCtx(), MInfoColumn.Table_Name, "AD_InfoWindow_ID=? AND IsDisplayed='Y'", get_TrxName())
-				.setParameters(get_ID())
-				.setOrderBy("SeqNo")
-				.list();
-			this.m_infocolumns = list.toArray(new MInfoColumn[list.size()]);
+			List<MInfoColumn> list = new ArrayList<MInfoColumn>();
+			for(MInfoColumn ic : m_infocolumns) {
+				if (ic.isDisplayed())
+					list.add(ic);
+			}
+			return list.toArray(new MInfoColumn[list.size()]);
 		} else {
-			List<MInfoColumn> list = new Query(getCtx(), MInfoColumn.Table_Name, "AD_InfoWindow_ID=?", get_TrxName())
-				.setParameters(get_ID())
-				.setOrderBy("SeqNo")
-				.list();
-			this.m_infocolumns = list.toArray(new MInfoColumn[list.size()]);
+			return m_infocolumns;
 		}
-
-		return this.m_infocolumns;
 	}
 
 	/**
-	 * @author xolali
+	 * author xolali
 	 * @return
 	 */
 	public String getSql(){
@@ -257,18 +298,11 @@ public class MInfoWindow extends X_AD_InfoWindow
 		{
 			if (i != 0) // can also use if i>0
 				sql.append(",");
-			sql.append(mColumns[i].getSelectClause());//getColumnSQL());	//	Normal and Virtual Column
+			sql.append(mColumns[i].getSelectClause());	//	Normal and Virtual Column
 		}
-		sql.append(" FROM ").append(fromsql)//getTableName())
-		//.append(" WHERE ")
-		//.append(getWhereClause(false))
+		sql.append(" FROM ").append(fromsql)
 		.append(oclause);
-		//.append("ORDER BY SeqNo"); //.append(get_WhereClause(false));
 
-		//
-		//	int index = -1;
-		//if (CLogMgt.isLevelFinest())
-		//log.finest(getWhereClause(true));
 		log.info("Generated SQL -- getSql: "+ sql.toString());
 
 		return sql.toString();
@@ -285,7 +319,6 @@ public class MInfoWindow extends X_AD_InfoWindow
 					MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 
 			pstmt = DB.prepareStatement(countSql, null);
-			//	pstmt.setString(1, p_tableName);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -294,10 +327,7 @@ public class MInfoWindow extends X_AD_InfoWindow
 		}
 		catch (SQLException e)
 		{
-			//ADialog.error(WindowNo, c, AD_Message)
-			//Env.getUi().showError(0, null, sql.toString() + "<br> " + e.getMessage());
 			log.log(Level.SEVERE, sql, e);
-			// String error = e.toString();
 			// show error to user and return: TODO
 			return false;
 		}
@@ -468,6 +498,34 @@ public class MInfoWindow extends X_AD_InfoWindow
 	boolean isValidateEachColumn() {
 		return m_validateEachColumn;
 	}
+
+	@Override
+	public MInfoWindow markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_infocolumns != null && m_infocolumns.length > 0)
+			Arrays.stream(m_infocolumns).forEach(e -> e.markImmutable());
+		if (m_infoProcess != null && m_infoProcess.length > 0)
+			Arrays.stream(m_infoProcess).forEach(e -> e.markImmutable());
+		if (m_infoRelated != null && m_infoRelated.length > 0)
+			Arrays.stream(m_infoRelated).forEach(e -> e.markImmutable());
+		
+		return this;
+	}
+
+	@Override
+	public I_AD_Table getAD_Table() throws RuntimeException {
+		return MTable.get(Env.getCtx(), getAD_Table_ID(), get_TrxName());
+	}
 	
-	
+	/**
+	 * 
+	 * @return array of {@link TableInfo}
+	 */
+	public TableInfo[] getTableInfos() {
+		AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + getFromClause());
+		return sqlParser.getTableInfo(0);
+	}
 }	//	MInfoWindow

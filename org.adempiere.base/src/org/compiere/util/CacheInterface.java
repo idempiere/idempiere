@@ -31,7 +31,8 @@ public interface CacheInterface
 	public int reset();
 	
 	/**
-	 *	Reset Cache
+	 *	Reset Cache by record id
+	 *  @param recordId
 	 *	@return number of items reset
 	 */
 	public int reset(int recordId);

@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_SysConfig
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_SysConfig")
 public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_SysConfig (Properties ctx, int AD_SysConfig_ID, String trxName)
@@ -40,7 +41,21 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
         {
 			setAD_SysConfig_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_SysConfig (Properties ctx, int AD_SysConfig_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_SysConfig_ID, trxName, virtualColumns);
+      /** if (AD_SysConfig_ID == 0)
+        {
+			setAD_SysConfig_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
 			setValue (null);
         } */
@@ -69,24 +84,25 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_SysConfig[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_SysConfig[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set System Configurator.
-		@param AD_SysConfig_ID System Configurator	  */
+		@param AD_SysConfig_ID System Configurator
+	*/
 	public void setAD_SysConfig_ID (int AD_SysConfig_ID)
 	{
-		if (AD_SysConfig_ID < 1) 
+		if (AD_SysConfig_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_SysConfig_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_SysConfig_ID, Integer.valueOf(AD_SysConfig_ID));
 	}
 
 	/** Get System Configurator.
 		@return System Configurator	  */
-	public int getAD_SysConfig_ID () 
+	public int getAD_SysConfig_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_SysConfig_ID);
 		if (ii == null)
@@ -95,7 +111,8 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 	}
 
 	/** Set AD_SysConfig_UU.
-		@param AD_SysConfig_UU AD_SysConfig_UU	  */
+		@param AD_SysConfig_UU AD_SysConfig_UU
+	*/
 	public void setAD_SysConfig_UU (String AD_SysConfig_UU)
 	{
 		set_Value (COLUMNNAME_AD_SysConfig_UU, AD_SysConfig_UU);
@@ -103,23 +120,22 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 
 	/** Get AD_SysConfig_UU.
 		@return AD_SysConfig_UU	  */
-	public String getAD_SysConfig_UU () 
+	public String getAD_SysConfig_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_SysConfig_UU);
 	}
 
 	/** ConfigurationLevel AD_Reference_ID=53222 */
 	public static final int CONFIGURATIONLEVEL_AD_Reference_ID=53222;
-	/** System = S */
-	public static final String CONFIGURATIONLEVEL_System = "S";
 	/** Client = C */
 	public static final String CONFIGURATIONLEVEL_Client = "C";
 	/** Organization = O */
 	public static final String CONFIGURATIONLEVEL_Organization = "O";
+	/** System = S */
+	public static final String CONFIGURATIONLEVEL_System = "S";
 	/** Set Configuration Level.
-		@param ConfigurationLevel 
-		Configuration Level for this parameter
-	  */
+		@param ConfigurationLevel Configuration Level for this parameter
+	*/
 	public void setConfigurationLevel (String ConfigurationLevel)
 	{
 
@@ -129,15 +145,14 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 	/** Get Configuration Level.
 		@return Configuration Level for this parameter
 	  */
-	public String getConfigurationLevel () 
+	public String getConfigurationLevel()
 	{
 		return (String)get_Value(COLUMNNAME_ConfigurationLevel);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -146,7 +161,7 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -154,9 +169,8 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -166,15 +180,14 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -183,7 +196,7 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -197,9 +210,8 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -208,7 +220,7 @@ public class X_AD_SysConfig extends PO implements I_AD_SysConfig, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

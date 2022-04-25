@@ -24,19 +24,33 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_User_Substitute
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_User_Substitute")
 public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_User_Substitute (Properties ctx, int AD_User_Substitute_ID, String trxName)
     {
       super (ctx, AD_User_Substitute_ID, trxName);
+      /** if (AD_User_Substitute_ID == 0)
+        {
+			setAD_User_ID (0);
+			setAD_User_Substitute_ID (0);
+			setName (null);
+			setSubstitute_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_User_Substitute (Properties ctx, int AD_User_Substitute_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_User_Substitute_ID, trxName, virtualColumns);
       /** if (AD_User_Substitute_ID == 0)
         {
 			setAD_User_ID (0);
@@ -69,32 +83,32 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_User_Substitute[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_User_Substitute[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -103,21 +117,20 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
 	}
 
 	/** Set User Substitute.
-		@param AD_User_Substitute_ID 
-		Substitute of the user
-	  */
+		@param AD_User_Substitute_ID Substitute of the user
+	*/
 	public void setAD_User_Substitute_ID (int AD_User_Substitute_ID)
 	{
-		if (AD_User_Substitute_ID < 1) 
+		if (AD_User_Substitute_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_Substitute_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_Substitute_ID, Integer.valueOf(AD_User_Substitute_ID));
 	}
 
 	/** Get User Substitute.
 		@return Substitute of the user
 	  */
-	public int getAD_User_Substitute_ID () 
+	public int getAD_User_Substitute_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_Substitute_ID);
 		if (ii == null)
@@ -126,7 +139,8 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
 	}
 
 	/** Set AD_User_Substitute_UU.
-		@param AD_User_Substitute_UU AD_User_Substitute_UU	  */
+		@param AD_User_Substitute_UU AD_User_Substitute_UU
+	*/
 	public void setAD_User_Substitute_UU (String AD_User_Substitute_UU)
 	{
 		set_Value (COLUMNNAME_AD_User_Substitute_UU, AD_User_Substitute_UU);
@@ -134,15 +148,14 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
 
 	/** Get AD_User_Substitute_UU.
 		@return AD_User_Substitute_UU	  */
-	public String getAD_User_Substitute_UU () 
+	public String getAD_User_Substitute_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_User_Substitute_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -151,15 +164,14 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -168,7 +180,7 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -182,26 +194,26 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
     }
 
 	public org.compiere.model.I_AD_User getSubstitute() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSubstitute_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSubstitute_ID(), get_TrxName());
+	}
 
 	/** Set Substitute.
-		@param Substitute_ID 
-		Entity which can be used in place of this entity
-	  */
+		@param Substitute_ID Entity which can be used in place of this entity
+	*/
 	public void setSubstitute_ID (int Substitute_ID)
 	{
-		if (Substitute_ID < 1) 
+		if (Substitute_ID < 1)
 			set_Value (COLUMNNAME_Substitute_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Substitute_ID, Integer.valueOf(Substitute_ID));
 	}
 
 	/** Get Substitute.
 		@return Entity which can be used in place of this entity
 	  */
-	public int getSubstitute_ID () 
+	public int getSubstitute_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Substitute_ID);
 		if (ii == null)
@@ -210,9 +222,8 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -221,15 +232,14 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -238,7 +248,7 @@ public class X_AD_User_Substitute extends PO implements I_AD_User_Substitute, I_
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}

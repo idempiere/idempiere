@@ -31,6 +31,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MSession;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -43,14 +44,16 @@ import org.compiere.util.Util;
  *  @author     Jorg Janke
  *  @version    $Id: ProcessInfo.java,v 1.2 2006/07/30 00:54:44 jjanke Exp $
  *  @author victor.perez@e-evolution.com 
- *  @see FR 1906632 http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1906632&group_id=176962
+ *  see FR 1906632 https://sourceforge.net/p/adempiere/feature-requests/382/
  */
 public class ProcessInfo implements Serializable
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4600747909096993053L;
+	private static final long serialVersionUID = -4648764346588157872L;
+
+	private static final CLogger logger = CLogger.getCLogger(ProcessInfo.class);
 
 	/**
 	 *  Constructor
@@ -397,7 +400,7 @@ public class ProcessInfo implements Serializable
 	}
 	/**
 	 * 
-	 * @param AD_PInstance_ID int
+	 * @param infoWindowID int
 	 */
 	public void setAD_InfoWindow_ID(int infoWindowID)
 	{
@@ -763,7 +766,7 @@ public class ProcessInfo implements Serializable
 	//FR 1906632
 	/**
 	 * Set PDF file generate to Jasper Report
-	 * @param PDF File 
+	 * @param f PDF File 
 	 */
 	public void setPDFReport(File f)
 	{
@@ -772,7 +775,6 @@ public class ProcessInfo implements Serializable
 	
 	/**
 	 * Get PDF file generate to Jasper Report
-	 * @param f
 	 */
 	public File getPDFReport()
 	{
@@ -808,7 +810,7 @@ public class ProcessInfo implements Serializable
 	
 	/**
 	 * Set Export File Extension
-	 * @param exportFileOfType
+	 * @param exportFileExtension
 	 */
 	public void setExportFileExtension(String exportFileExtension)
 	{
@@ -910,7 +912,7 @@ public class ProcessInfo implements Serializable
 	}
 	
 	private Timestamp getLastServerRebootDate() {
-		MSession currentSession = MSession.get(Env.getCtx(), false);
+		MSession currentSession = MSession.get(Env.getCtx());
 		if (currentSession == null)
 			return null;
 		
@@ -920,6 +922,10 @@ public class ProcessInfo implements Serializable
 				.setOnlyActiveRecords(true)
 				.first();
 
+		if (lastServerSession == null) {
+			logger.severe("There is no 'Server' record in AD_Session, this can indicate that the server plugin didn't start correctly.  Please verify, this can affect scheduled processes, idempiereMonitor, etc.");
+			return null;
+		}
 		return lastServerSession.getCreated();
 	}
 

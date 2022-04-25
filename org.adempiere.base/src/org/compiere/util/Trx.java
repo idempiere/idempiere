@@ -54,10 +54,10 @@ import org.compiere.model.PO;
  *  @author Teo Sarca, http://www.arhipac.ro
  *  			<li>FR [ 2080217 ] Implement TrxRunnable
  *  			<li>BF [ 2876927 ] Oracle JDBC driver problem
- *  				https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2876927&group_id=176962
+ *  				https://sourceforge.net/p/adempiere/bugs/2173/
  *  @author Teo Sarca, teo.sarca@gmail.com
  *  		<li>BF [ 2849122 ] PO.AfterSave is not rollback on error - add releaseSavepoint method
- *  			https://sourceforge.net/tracker/index.php?func=detail&aid=2849122&group_id=176962&atid=879332#
+ *  			https://sourceforge.net/p/adempiere/bugs/2073/
  */
 public class Trx
 {
@@ -81,6 +81,27 @@ public class Trx
 		return retValue;
 	}	//	get
 	
+	/**
+	 * 	Get Transaction in a Connection
+	 *	@param trxName trx name
+	 *	@param createNew if false, null is returned if not found
+	 *	@param con Connection
+	 *	@return Transaction or null
+	 */
+	public static Trx get (String trxName, boolean createNew, Connection con)
+	{
+		if (trxName == null || trxName.length() == 0)
+			throw new IllegalArgumentException ("No Transaction Name");
+
+		Trx retValue = (Trx)s_cache.get(trxName);
+		if (retValue == null && createNew)
+		{
+			retValue = new Trx (trxName, con);
+			s_cache.put(trxName, retValue);
+		}
+		return retValue;
+	}	//	get
+	
 	/**	Transaction Cache					*/
 	private static final Map<String,Trx> s_cache = new ConcurrentHashMap<String, Trx>(); 
 	
@@ -91,6 +112,8 @@ public class Trx
 	protected Exception trace;
 	
 	private String m_displayName;
+	
+	private boolean m_changesMadeByEventListener = false;
 
 	public static void startTrxMonitor()
 	{
@@ -253,6 +276,7 @@ public class Trx
 		}
 		m_active = true;
 		m_startTime = System.currentTimeMillis();
+		m_changesMadeByEventListener = false;
 		return true;
 	}	//	startTrx
 
@@ -329,8 +353,9 @@ public class Trx
 
 	/**
 	 * 	Rollback
-	 *  @param throwException if true, re-throws exception
+	 *  @param savepoint
 	 *	@return true if success, false if failed or transaction already rollback
+	 *  @throws SQLException
 	 */
 	public boolean rollback(Savepoint savepoint) throws SQLException
 	{
@@ -341,6 +366,7 @@ public class Trx
 			{
 				m_connection.rollback(savepoint);
 				if (log.isLoggable(Level.INFO)) log.info ("**** " + m_trxName);
+				m_changesMadeByEventListener = false;
 				return true;
 			}
 		}
@@ -513,7 +539,17 @@ public class Trx
 			return null;
 		}
 	}
-	
+
+	private Savepoint m_lastWFSavepoint = null; 
+
+	public synchronized void setLastWFSavepoint(Savepoint savepoint) {
+		m_lastWFSavepoint = savepoint;
+	}
+
+	public synchronized Savepoint getLastWFSavepoint() {
+		return m_lastWFSavepoint;
+	}
+
 	/**
 	 * Release Savepoint
 	 * @param savepoint
@@ -697,6 +733,24 @@ public class Trx
 	public void setDisplayName(String displayName)
 	{
 		m_displayName = displayName;
+	}
+	
+	/**
+	 * Indicate additional db changes have been made by event listener
+	 * @param changesMade
+	 */
+	public void setChangesMadeByEventListener(boolean changesMade)
+	{
+		m_changesMadeByEventListener = changesMade;
+	}
+	
+	/**
+	 * 
+	 * @return true if event listener(s) has flag that additional db changes have been made 
+	 */
+	public boolean hasChangesMadeByEventListener()
+	{
+		return m_changesMadeByEventListener;
 	}
 	
 	static class TrxMonitor implements Runnable

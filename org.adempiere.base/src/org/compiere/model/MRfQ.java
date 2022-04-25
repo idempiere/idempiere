@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 
 /**
@@ -38,11 +38,31 @@ public class MRfQ extends X_C_RfQ
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8318627400543638950L;
-
+	private static final long serialVersionUID = 5332116213254863257L;
 
 	/**
-	 * 	Get MRfQ from Cache
+	 * 	Get MRfQ from Cache (immutable)
+	 *	@param C_RfQ_ID id
+	 *	@return MRfQ
+	 */
+	public static MRfQ get (int C_RfQ_ID)
+	{
+		return get(C_RfQ_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get MRfQ from db
+	 *	@param C_RfQ_ID id
+	 *	@param trxName transaction
+	 *	@return MRfQ
+	 */
+	public static MRfQ get (int C_RfQ_ID, String trxName)
+	{
+		return get(Env.getCtx(), C_RfQ_ID, trxName);
+	}
+	
+	/**
+	 * 	Get MRfQ from db
 	 *	@param ctx context
 	 *	@param C_RfQ_ID id
 	 *	@param trxName transaction
@@ -50,20 +70,14 @@ public class MRfQ extends X_C_RfQ
 	 */
 	public static MRfQ get (Properties ctx, int C_RfQ_ID, String trxName)
 	{
-		Integer key = Integer.valueOf(C_RfQ_ID);
-		MRfQ retValue = (MRfQ) s_cache.get (key);
-		if (retValue != null)
+		MRfQ retValue = new MRfQ (ctx, C_RfQ_ID, trxName);
+		if (retValue.get_ID () == C_RfQ_ID) 
+		{
 			return retValue;
-		retValue = new MRfQ (ctx, C_RfQ_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		}
+		return null;
 	}	//	get
 
-	/**	Cache						*/
-	private static CCache<Integer,MRfQ>	s_cache	= new CCache<Integer,MRfQ>(Table_Name, 10);
-	
-	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -75,11 +89,6 @@ public class MRfQ extends X_C_RfQ
 		super (ctx, C_RfQ_ID, trxName);
 		if (C_RfQ_ID == 0)
 		{
-		//	setC_RfQ_Topic_ID (0);
-		//	setName (null);
-		//	setC_Currency_ID (0);	// @$C_Currency_ID @
-		//	setSalesRep_ID (0);
-			//
 			setDateResponse (new Timestamp(System.currentTimeMillis()));
 			setDateWorkStart (new Timestamp(System.currentTimeMillis()));
 			setIsInvitedVendorsOnly (false);
@@ -104,6 +113,37 @@ public class MRfQ extends X_C_RfQ
 	}	//	MRfQ
 	
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MRfQ(MRfQ copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRfQ(Properties ctx, MRfQ copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRfQ(Properties ctx, MRfQ copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * 	Get active Lines
 	 *	@return array of lines
 	 */
@@ -112,7 +152,7 @@ public class MRfQ extends X_C_RfQ
 		ArrayList<MRfQLine> list = new ArrayList<MRfQLine>();
 		String sql = "SELECT * FROM C_RfQLine "
 			+ "WHERE C_RfQ_ID=? AND IsActive='Y' "
-			+ "ORDER BY Line";
+			+ "ORDER BY Line,C_RfQLine_ID ";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

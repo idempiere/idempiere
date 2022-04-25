@@ -49,9 +49,6 @@ public class MCommissionRun extends X_C_CommissionRun
 		super(ctx, C_CommissionRun_ID, trxName);
 		if (C_CommissionRun_ID == 0)
 		{
-		//	setC_Commission_ID (0);
-		//	setDocumentNo (null);
-		//	setStartDate (new Timestamp(System.currentTimeMillis()));
 			setGrandTotal (Env.ZERO);
 			setProcessed (false);
 		}
@@ -94,6 +91,10 @@ public class MCommissionRun extends X_C_CommissionRun
 		list.toArray(retValue);
 		return retValue;
 	}	//	getAmts
+
+	public MCommissionRun(Properties ctx, int C_CommissionRun_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_CommissionRun_ID, trxName, virtualColumns);
+	}
 
 	/**
 	 * 	Update From Amt

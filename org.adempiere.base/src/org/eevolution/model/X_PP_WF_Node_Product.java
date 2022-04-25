@@ -25,14 +25,15 @@ import org.compiere.util.Env;
 
 /** Generated Model for PP_WF_Node_Product
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="PP_WF_Node_Product")
 public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_WF_Node_Product (Properties ctx, int PP_WF_Node_Product_ID, String trxName)
@@ -42,7 +43,21 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
         {
 			setAD_WF_Node_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setM_Product_ID (0);
+			setPP_WF_Node_Product_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_WF_Node_Product (Properties ctx, int PP_WF_Node_Product_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_WF_Node_Product_ID, trxName, virtualColumns);
+      /** if (PP_WF_Node_Product_ID == 0)
+        {
+			setAD_WF_Node_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setM_Product_ID (0);
 			setPP_WF_Node_Product_ID (0);
         } */
@@ -71,32 +86,32 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PP_WF_Node_Product[")
+      StringBuilder sb = new StringBuilder ("X_PP_WF_Node_Product[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Node_ID(), get_TrxName());
+	}
 
 	/** Set Node.
-		@param AD_WF_Node_ID 
-		Workflow Node (activity), step or process
-	  */
+		@param AD_WF_Node_ID Workflow Node (activity), step or process
+	*/
 	public void setAD_WF_Node_ID (int AD_WF_Node_ID)
 	{
-		if (AD_WF_Node_ID < 1) 
+		if (AD_WF_Node_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, Integer.valueOf(AD_WF_Node_ID));
 	}
 
 	/** Get Node.
 		@return Workflow Node (activity), step or process
 	  */
-	public int getAD_WF_Node_ID () 
+	public int getAD_WF_Node_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Node_ID);
 		if (ii == null)
@@ -106,16 +121,15 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 
 	/** ConfigurationLevel AD_Reference_ID=53222 */
 	public static final int CONFIGURATIONLEVEL_AD_Reference_ID=53222;
-	/** System = S */
-	public static final String CONFIGURATIONLEVEL_System = "S";
 	/** Client = C */
 	public static final String CONFIGURATIONLEVEL_Client = "C";
 	/** Organization = O */
 	public static final String CONFIGURATIONLEVEL_Organization = "O";
+	/** System = S */
+	public static final String CONFIGURATIONLEVEL_System = "S";
 	/** Set Configuration Level.
-		@param ConfigurationLevel 
-		Configuration Level for this parameter
-	  */
+		@param ConfigurationLevel Configuration Level for this parameter
+	*/
 	public void setConfigurationLevel (String ConfigurationLevel)
 	{
 
@@ -125,7 +139,7 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	/** Get Configuration Level.
 		@return Configuration Level for this parameter
 	  */
-	public String getConfigurationLevel () 
+	public String getConfigurationLevel()
 	{
 		return (String)get_Value(COLUMNNAME_ConfigurationLevel);
 	}
@@ -133,9 +147,8 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -145,13 +158,14 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Is Subcontracting.
-		@param IsSubcontracting Is Subcontracting	  */
+		@param IsSubcontracting Is Subcontracting
+	*/
 	public void setIsSubcontracting (boolean IsSubcontracting)
 	{
 		set_Value (COLUMNNAME_IsSubcontracting, Boolean.valueOf(IsSubcontracting));
@@ -159,7 +173,7 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 
 	/** Get Is Subcontracting.
 		@return Is Subcontracting	  */
-	public boolean isSubcontracting () 
+	public boolean isSubcontracting()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSubcontracting);
 		if (oo != null) 
@@ -172,26 +186,26 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -200,18 +214,19 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	}
 
 	/** Set Workflow Node Product.
-		@param PP_WF_Node_Product_ID Workflow Node Product	  */
+		@param PP_WF_Node_Product_ID Workflow Node Product
+	*/
 	public void setPP_WF_Node_Product_ID (int PP_WF_Node_Product_ID)
 	{
-		if (PP_WF_Node_Product_ID < 1) 
+		if (PP_WF_Node_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_WF_Node_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_WF_Node_Product_ID, Integer.valueOf(PP_WF_Node_Product_ID));
 	}
 
 	/** Get Workflow Node Product.
 		@return Workflow Node Product	  */
-	public int getPP_WF_Node_Product_ID () 
+	public int getPP_WF_Node_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_WF_Node_Product_ID);
 		if (ii == null)
@@ -220,7 +235,8 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	}
 
 	/** Set PP_WF_Node_Product_UU.
-		@param PP_WF_Node_Product_UU PP_WF_Node_Product_UU	  */
+		@param PP_WF_Node_Product_UU PP_WF_Node_Product_UU
+	*/
 	public void setPP_WF_Node_Product_UU (String PP_WF_Node_Product_UU)
 	{
 		set_Value (COLUMNNAME_PP_WF_Node_Product_UU, PP_WF_Node_Product_UU);
@@ -228,15 +244,14 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 
 	/** Get PP_WF_Node_Product_UU.
 		@return PP_WF_Node_Product_UU	  */
-	public String getPP_WF_Node_Product_UU () 
+	public String getPP_WF_Node_Product_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PP_WF_Node_Product_UU);
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -245,7 +260,7 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -254,9 +269,8 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -265,7 +279,7 @@ public class X_PP_WF_Node_Product extends PO implements I_PP_WF_Node_Product, I_
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

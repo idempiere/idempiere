@@ -46,7 +46,6 @@ public class MCommissionLine extends X_C_CommissionLine
 		super(ctx, C_CommissionLine_ID, trxName);
 		if (C_CommissionLine_ID == 0)
 		{
-		//	setC_Commission_ID (0);
 			setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_CommissionLine WHERE C_Commission_ID=@C_Commission_ID@
 			setAmtMultiplier (Env.ZERO);
 			setAmtSubtract (Env.ZERO);
@@ -68,6 +67,8 @@ public class MCommissionLine extends X_C_CommissionLine
 		super(ctx, rs, trxName);
 	}	//	MCommissionLine
 
-	
-	
+	public MCommissionLine(Properties ctx, int C_CommissionLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_CommissionLine_ID, trxName, virtualColumns);
+	}
+
 }	//	MCommissionLine

@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_NodeNext
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_WF_NodeNext")
 public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_WF_NodeNext (Properties ctx, int AD_WF_NodeNext_ID, String trxName)
@@ -43,7 +44,25 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 // @1|AD_WF_Node_ID@
 			setAD_WF_NodeNext_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsStdUserWorkflow (false);
+			setSeqNo (0);
+// 10
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_NodeNext (Properties ctx, int AD_WF_NodeNext_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_NodeNext_ID, trxName, virtualColumns);
+      /** if (AD_WF_NodeNext_ID == 0)
+        {
+			setAD_WF_Next_ID (0);
+			setAD_WF_Node_ID (0);
+// @1|AD_WF_Node_ID@
+			setAD_WF_NodeNext_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsStdUserWorkflow (false);
 			setSeqNo (0);
 // 10
@@ -73,32 +92,32 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_WF_NodeNext[")
+      StringBuilder sb = new StringBuilder ("X_AD_WF_NodeNext[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Next() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Next_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Next_ID(), get_TrxName());
+	}
 
 	/** Set Next Node.
-		@param AD_WF_Next_ID 
-		Next Node in workflow
-	  */
+		@param AD_WF_Next_ID Next Node in workflow
+	*/
 	public void setAD_WF_Next_ID (int AD_WF_Next_ID)
 	{
-		if (AD_WF_Next_ID < 1) 
+		if (AD_WF_Next_ID < 1)
 			set_Value (COLUMNNAME_AD_WF_Next_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_WF_Next_ID, Integer.valueOf(AD_WF_Next_ID));
 	}
 
 	/** Get Next Node.
 		@return Next Node in workflow
 	  */
-	public int getAD_WF_Next_ID () 
+	public int getAD_WF_Next_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Next_ID);
 		if (ii == null)
@@ -107,26 +126,26 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	}
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Node_ID(), get_TrxName());
+	}
 
 	/** Set Node.
-		@param AD_WF_Node_ID 
-		Workflow Node (activity), step or process
-	  */
+		@param AD_WF_Node_ID Workflow Node (activity), step or process
+	*/
 	public void setAD_WF_Node_ID (int AD_WF_Node_ID)
 	{
-		if (AD_WF_Node_ID < 1) 
+		if (AD_WF_Node_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, Integer.valueOf(AD_WF_Node_ID));
 	}
 
 	/** Get Node.
 		@return Workflow Node (activity), step or process
 	  */
-	public int getAD_WF_Node_ID () 
+	public int getAD_WF_Node_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Node_ID);
 		if (ii == null)
@@ -143,21 +162,20 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
     }
 
 	/** Set Node Transition.
-		@param AD_WF_NodeNext_ID 
-		Workflow Node Transition
-	  */
+		@param AD_WF_NodeNext_ID Workflow Node Transition
+	*/
 	public void setAD_WF_NodeNext_ID (int AD_WF_NodeNext_ID)
 	{
-		if (AD_WF_NodeNext_ID < 1) 
+		if (AD_WF_NodeNext_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_NodeNext_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_NodeNext_ID, Integer.valueOf(AD_WF_NodeNext_ID));
 	}
 
 	/** Get Node Transition.
 		@return Workflow Node Transition
 	  */
-	public int getAD_WF_NodeNext_ID () 
+	public int getAD_WF_NodeNext_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_NodeNext_ID);
 		if (ii == null)
@@ -166,7 +184,8 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	}
 
 	/** Set AD_WF_NodeNext_UU.
-		@param AD_WF_NodeNext_UU AD_WF_NodeNext_UU	  */
+		@param AD_WF_NodeNext_UU AD_WF_NodeNext_UU
+	*/
 	public void setAD_WF_NodeNext_UU (String AD_WF_NodeNext_UU)
 	{
 		set_Value (COLUMNNAME_AD_WF_NodeNext_UU, AD_WF_NodeNext_UU);
@@ -174,15 +193,14 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 
 	/** Get AD_WF_NodeNext_UU.
 		@return AD_WF_NodeNext_UU	  */
-	public String getAD_WF_NodeNext_UU () 
+	public String getAD_WF_NodeNext_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_WF_NodeNext_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -191,7 +209,7 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -199,9 +217,8 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -211,15 +228,14 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Std User Workflow.
-		@param IsStdUserWorkflow 
-		Standard Manual User Approval Workflow
-	  */
+		@param IsStdUserWorkflow Standard Manual User Approval Workflow
+	*/
 	public void setIsStdUserWorkflow (boolean IsStdUserWorkflow)
 	{
 		set_Value (COLUMNNAME_IsStdUserWorkflow, Boolean.valueOf(IsStdUserWorkflow));
@@ -228,7 +244,7 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	/** Get Std User Workflow.
 		@return Standard Manual User Approval Workflow
 	  */
-	public boolean isStdUserWorkflow () 
+	public boolean isStdUserWorkflow()
 	{
 		Object oo = get_Value(COLUMNNAME_IsStdUserWorkflow);
 		if (oo != null) 
@@ -241,9 +257,8 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -252,7 +267,7 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -261,9 +276,8 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	}
 
 	/** Set Transition Code.
-		@param TransitionCode 
-		Code resulting in TRUE of FALSE
-	  */
+		@param TransitionCode Code resulting in TRUE of FALSE
+	*/
 	public void setTransitionCode (String TransitionCode)
 	{
 		set_Value (COLUMNNAME_TransitionCode, TransitionCode);
@@ -272,7 +286,7 @@ public class X_AD_WF_NodeNext extends PO implements I_AD_WF_NodeNext, I_Persiste
 	/** Get Transition Code.
 		@return Code resulting in TRUE of FALSE
 	  */
-	public String getTransitionCode () 
+	public String getTransitionCode()
 	{
 		return (String)get_Value(COLUMNNAME_TransitionCode);
 	}

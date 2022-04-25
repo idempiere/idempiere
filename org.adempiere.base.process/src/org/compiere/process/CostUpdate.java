@@ -47,6 +47,7 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @version $Id: CostUpdate.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class CostUpdate extends SvrProcess
 {
 	/**	Product Category		*/
@@ -91,7 +92,6 @@ public class CostUpdate extends SvrProcess
 		for (int i = 0; i < para.length; i++)
 		{
 			String name = para[i].getParameterName();
-		//	log.fine("prepare - " + para[i]);
 			if (para[i].getParameter() == null)
 				;
 			else if (name.equals("M_Product_Category_ID"))

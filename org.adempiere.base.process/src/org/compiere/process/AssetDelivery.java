@@ -39,6 +39,7 @@ import org.compiere.util.EMail;
  * 	@version 	$Id: AssetDelivery.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  * 	@author 	Michael Judd BF [ 2736995 ] - toURL() in java.io.File has been deprecated
  */
+@org.adempiere.base.annotation.Process
 public class AssetDelivery extends SvrProcess
 {
 	private MClient		m_client = null;
@@ -100,9 +101,9 @@ public class AssetDelivery extends SvrProcess
 
 		//	Test
 		if (m_client.getSMTPHost() == null || m_client.getSMTPHost().length() == 0)
-			throw new Exception ("No Client SMTP Info");
+			throw new Exception ("No Tenant SMTP Info");
 		if (m_client.getRequestEMail() == null)
-			throw new Exception ("No Client Request User");
+			throw new Exception ("No Tenant Request User");
 
 		//	Asset selected
 		if (m_A_Asset_ID != 0)

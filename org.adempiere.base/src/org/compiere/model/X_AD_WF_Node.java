@@ -26,14 +26,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Node
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_WF_Node")
 public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_WF_Node (Properties ctx, int AD_WF_Node_ID, String trxName)
@@ -48,7 +49,36 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 			setCost (Env.ZERO);
 			setDuration (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsCentrallyMaintained (true);
+// Y
+			setJoinElement (null);
+// X
+			setLimit (0);
+			setName (null);
+			setSplitElement (null);
+// X
+			setValue (null);
+			setWaitingTime (0);
+			setXPosition (0);
+			setYPosition (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_Node (Properties ctx, int AD_WF_Node_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_Node_ID, trxName, virtualColumns);
+      /** if (AD_WF_Node_ID == 0)
+        {
+			setAction (null);
+// Z
+			setAD_WF_Node_ID (0);
+			setAD_Workflow_ID (0);
+			setCost (Env.ZERO);
+			setDuration (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsCentrallyMaintained (true);
 // Y
 			setJoinElement (null);
@@ -87,43 +117,42 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_WF_Node[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_WF_Node[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Action AD_Reference_ID=302 */
 	public static final int ACTION_AD_Reference_ID=302;
-	/** Wait (Sleep) = Z */
-	public static final String ACTION_WaitSleep = "Z";
+	/** User Workbench = B */
+	public static final String ACTION_UserWorkbench = "B";
 	/** User Choice = C */
 	public static final String ACTION_UserChoice = "C";
+	/** Document Action = D */
+	public static final String ACTION_DocumentAction = "D";
 	/** Sub Workflow = F */
 	public static final String ACTION_SubWorkflow = "F";
+	/** User Info = I */
+	public static final String ACTION_UserInfo = "I";
+	/** EMail = M */
+	public static final String ACTION_EMail = "M";
+	/** Apps Process = P */
+	public static final String ACTION_AppsProcess = "P";
+	/** Apps Report = R */
+	public static final String ACTION_AppsReport = "R";
+	/** Apps Task = T */
+	public static final String ACTION_AppsTask = "T";
 	/** Set Variable = V */
 	public static final String ACTION_SetVariable = "V";
 	/** User Window = W */
 	public static final String ACTION_UserWindow = "W";
 	/** User Form = X */
 	public static final String ACTION_UserForm = "X";
-	/** Apps Task = T */
-	public static final String ACTION_AppsTask = "T";
-	/** Apps Report = R */
-	public static final String ACTION_AppsReport = "R";
-	/** Apps Process = P */
-	public static final String ACTION_AppsProcess = "P";
-	/** Document Action = D */
-	public static final String ACTION_DocumentAction = "D";
-	/** EMail = M */
-	public static final String ACTION_EMail = "M";
-	/** User Workbench = B */
-	public static final String ACTION_UserWorkbench = "B";
-	/** User Info = I */
-	public static final String ACTION_UserInfo = "I";
+	/** Wait (Sleep) = Z */
+	public static final String ACTION_WaitSleep = "Z";
 	/** Set Action.
-		@param Action 
-		Indicates the Action to be performed
-	  */
+		@param Action Indicates the Action to be performed
+	*/
 	public void setAction (String Action)
 	{
 
@@ -133,32 +162,32 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Action.
 		@return Indicates the Action to be performed
 	  */
-	public String getAction () 
+	public String getAction()
 	{
 		return (String)get_Value(COLUMNNAME_Action);
 	}
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -167,23 +196,25 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_Name)
-			.getPO(getAD_CtxHelp_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_CtxHelp)MTable.get(getCtx(), org.compiere.model.I_AD_CtxHelp.Table_ID)
+			.getPO(getAD_CtxHelp_ID(), get_TrxName());
+	}
 
 	/** Set Context Help.
-		@param AD_CtxHelp_ID Context Help	  */
+		@param AD_CtxHelp_ID Context Help
+	*/
 	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID)
 	{
-		if (AD_CtxHelp_ID < 1) 
+		if (AD_CtxHelp_ID < 1)
 			set_Value (COLUMNNAME_AD_CtxHelp_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_CtxHelp_ID, Integer.valueOf(AD_CtxHelp_ID));
 	}
 
 	/** Get Context Help.
 		@return Context Help	  */
-	public int getAD_CtxHelp_ID () 
+	public int getAD_CtxHelp_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelp_ID);
 		if (ii == null)
@@ -192,26 +223,26 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_Name)
-			.getPO(getAD_Form_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
+			.getPO(getAD_Form_ID(), get_TrxName());
+	}
 
 	/** Set Special Form.
-		@param AD_Form_ID 
-		Special Form
-	  */
+		@param AD_Form_ID Special Form
+	*/
 	public void setAD_Form_ID (int AD_Form_ID)
 	{
-		if (AD_Form_ID < 1) 
+		if (AD_Form_ID < 1)
 			set_Value (COLUMNNAME_AD_Form_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Form_ID, Integer.valueOf(AD_Form_ID));
 	}
 
 	/** Get Special Form.
 		@return Special Form
 	  */
-	public int getAD_Form_ID () 
+	public int getAD_Form_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Form_ID);
 		if (ii == null)
@@ -220,26 +251,26 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Image getAD_Image() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_Name)
-			.getPO(getAD_Image_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Image)MTable.get(getCtx(), org.compiere.model.I_AD_Image.Table_ID)
+			.getPO(getAD_Image_ID(), get_TrxName());
+	}
 
 	/** Set Image.
-		@param AD_Image_ID 
-		Image or Icon
-	  */
+		@param AD_Image_ID Image or Icon
+	*/
 	public void setAD_Image_ID (int AD_Image_ID)
 	{
-		if (AD_Image_ID < 1) 
+		if (AD_Image_ID < 1)
 			set_Value (COLUMNNAME_AD_Image_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Image_ID, Integer.valueOf(AD_Image_ID));
 	}
 
 	/** Get Image.
 		@return Image or Icon
 	  */
-	public int getAD_Image_ID () 
+	public int getAD_Image_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Image_ID);
 		if (ii == null)
@@ -248,26 +279,26 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
 
 	/** Set Info Window.
-		@param AD_InfoWindow_ID 
-		Info and search/select Window
-	  */
+		@param AD_InfoWindow_ID Info and search/select Window
+	*/
 	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
 	{
-		if (AD_InfoWindow_ID < 1) 
+		if (AD_InfoWindow_ID < 1)
 			set_Value (COLUMNNAME_AD_InfoWindow_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
 	}
 
 	/** Get Info Window.
 		@return Info and search/select Window
 	  */
-	public int getAD_InfoWindow_ID () 
+	public int getAD_InfoWindow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
 		if (ii == null)
@@ -276,26 +307,26 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getAD_Process_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
 
 	/** Set Process.
-		@param AD_Process_ID 
-		Process or Report
-	  */
+		@param AD_Process_ID Process or Report
+	*/
 	public void setAD_Process_ID (int AD_Process_ID)
 	{
-		if (AD_Process_ID < 1) 
+		if (AD_Process_ID < 1)
 			set_Value (COLUMNNAME_AD_Process_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
 	}
 
 	/** Get Process.
 		@return Process or Report
 	  */
-	public int getAD_Process_ID () 
+	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
@@ -304,26 +335,26 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Task getAD_Task() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_Name)
-			.getPO(getAD_Task_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Task)MTable.get(getCtx(), org.compiere.model.I_AD_Task.Table_ID)
+			.getPO(getAD_Task_ID(), get_TrxName());
+	}
 
 	/** Set OS Task.
-		@param AD_Task_ID 
-		Operation System Task
-	  */
+		@param AD_Task_ID Operation System Task
+	*/
 	public void setAD_Task_ID (int AD_Task_ID)
 	{
-		if (AD_Task_ID < 1) 
+		if (AD_Task_ID < 1)
 			set_Value (COLUMNNAME_AD_Task_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Task_ID, Integer.valueOf(AD_Task_ID));
 	}
 
 	/** Get OS Task.
 		@return Operation System Task
 	  */
-	public int getAD_Task_ID () 
+	public int getAD_Task_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Task_ID);
 		if (ii == null)
@@ -332,26 +363,26 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_WF_Block getAD_WF_Block() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Block)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Block.Table_Name)
-			.getPO(getAD_WF_Block_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Block)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Block.Table_ID)
+			.getPO(getAD_WF_Block_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Block.
-		@param AD_WF_Block_ID 
-		Workflow Transaction Execution Block
-	  */
+		@param AD_WF_Block_ID Workflow Transaction Execution Block
+	*/
 	public void setAD_WF_Block_ID (int AD_WF_Block_ID)
 	{
-		if (AD_WF_Block_ID < 1) 
+		if (AD_WF_Block_ID < 1)
 			set_Value (COLUMNNAME_AD_WF_Block_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_WF_Block_ID, Integer.valueOf(AD_WF_Block_ID));
 	}
 
 	/** Get Workflow Block.
 		@return Workflow Transaction Execution Block
 	  */
-	public int getAD_WF_Block_ID () 
+	public int getAD_WF_Block_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Block_ID);
 		if (ii == null)
@@ -360,21 +391,20 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Node.
-		@param AD_WF_Node_ID 
-		Workflow Node (activity), step or process
-	  */
+		@param AD_WF_Node_ID Workflow Node (activity), step or process
+	*/
 	public void setAD_WF_Node_ID (int AD_WF_Node_ID)
 	{
-		if (AD_WF_Node_ID < 1) 
+		if (AD_WF_Node_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Node_ID, Integer.valueOf(AD_WF_Node_ID));
 	}
 
 	/** Get Node.
 		@return Workflow Node (activity), step or process
 	  */
-	public int getAD_WF_Node_ID () 
+	public int getAD_WF_Node_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Node_ID);
 		if (ii == null)
@@ -383,7 +413,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set AD_WF_Node_UU.
-		@param AD_WF_Node_UU AD_WF_Node_UU	  */
+		@param AD_WF_Node_UU AD_WF_Node_UU
+	*/
 	public void setAD_WF_Node_UU (String AD_WF_Node_UU)
 	{
 		set_Value (COLUMNNAME_AD_WF_Node_UU, AD_WF_Node_UU);
@@ -391,32 +422,32 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 
 	/** Get AD_WF_Node_UU.
 		@return AD_WF_Node_UU	  */
-	public String getAD_WF_Node_UU () 
+	public String getAD_WF_Node_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_WF_Node_UU);
 	}
 
 	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_Name)
-			.getPO(getAD_WF_Responsible_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_ID)
+			.getPO(getAD_WF_Responsible_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Responsible.
-		@param AD_WF_Responsible_ID 
-		Responsible for Workflow Execution
-	  */
+		@param AD_WF_Responsible_ID Responsible for Workflow Execution
+	*/
 	public void setAD_WF_Responsible_ID (int AD_WF_Responsible_ID)
 	{
-		if (AD_WF_Responsible_ID < 1) 
+		if (AD_WF_Responsible_ID < 1)
 			set_Value (COLUMNNAME_AD_WF_Responsible_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_WF_Responsible_ID, Integer.valueOf(AD_WF_Responsible_ID));
 	}
 
 	/** Get Workflow Responsible.
 		@return Responsible for Workflow Execution
 	  */
-	public int getAD_WF_Responsible_ID () 
+	public int getAD_WF_Responsible_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Responsible_ID);
 		if (ii == null)
@@ -425,26 +456,26 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_Value (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -453,26 +484,26 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getAD_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getAD_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
-		@param AD_Workflow_ID 
-		Workflow or combination of tasks
-	  */
+		@param AD_Workflow_ID Workflow or combination of tasks
+	*/
 	public void setAD_Workflow_ID (int AD_Workflow_ID)
 	{
-		if (AD_Workflow_ID < 1) 
+		if (AD_Workflow_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Workflow_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Workflow_ID, Integer.valueOf(AD_Workflow_ID));
 	}
 
 	/** Get Workflow.
 		@return Workflow or combination of tasks
 	  */
-	public int getAD_Workflow_ID () 
+	public int getAD_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Workflow_ID);
 		if (ii == null)
@@ -481,9 +512,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Attribute Name.
-		@param AttributeName 
-		Name of the Attribute
-	  */
+		@param AttributeName Name of the Attribute
+	*/
 	public void setAttributeName (String AttributeName)
 	{
 		set_Value (COLUMNNAME_AttributeName, AttributeName);
@@ -492,15 +522,14 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Attribute Name.
 		@return Name of the Attribute
 	  */
-	public String getAttributeName () 
+	public String getAttributeName()
 	{
 		return (String)get_Value(COLUMNNAME_AttributeName);
 	}
 
 	/** Set Attribute Value.
-		@param AttributeValue 
-		Value of the Attribute
-	  */
+		@param AttributeValue Value of the Attribute
+	*/
 	public void setAttributeValue (String AttributeValue)
 	{
 		set_Value (COLUMNNAME_AttributeValue, AttributeValue);
@@ -509,32 +538,32 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Attribute Value.
 		@return Value of the Attribute
 	  */
-	public String getAttributeValue () 
+	public String getAttributeValue()
 	{
 		return (String)get_Value(COLUMNNAME_AttributeValue);
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -543,9 +572,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Cost.
-		@param Cost 
-		Cost information
-	  */
+		@param Cost Cost information
+	*/
 	public void setCost (BigDecimal Cost)
 	{
 		set_Value (COLUMNNAME_Cost, Cost);
@@ -554,7 +582,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Cost.
 		@return Cost information
 	  */
-	public BigDecimal getCost () 
+	public BigDecimal getCost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Cost);
 		if (bd == null)
@@ -563,9 +591,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -574,45 +601,44 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** Complete = CO */
-	public static final String DOCACTION_Complete = "CO";
+	/** &lt;None&gt; = -- */
+	public static final String DOCACTION_None = "--";
 	/** Approve = AP */
 	public static final String DOCACTION_Approve = "AP";
-	/** Reject = RJ */
-	public static final String DOCACTION_Reject = "RJ";
-	/** Post = PO */
-	public static final String DOCACTION_Post = "PO";
-	/** Void = VO */
-	public static final String DOCACTION_Void = "VO";
 	/** Close = CL */
 	public static final String DOCACTION_Close = "CL";
-	/** Reverse - Correct = RC */
-	public static final String DOCACTION_Reverse_Correct = "RC";
-	/** Reverse - Accrual = RA */
-	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
 	/** Invalidate = IN */
 	public static final String DOCACTION_Invalidate = "IN";
-	/** Re-activate = RE */
-	public static final String DOCACTION_Re_Activate = "RE";
-	/** <None> = -- */
-	public static final String DOCACTION_None = "--";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
 	/** Prepare = PR */
 	public static final String DOCACTION_Prepare = "PR";
-	/** Unlock = XL */
-	public static final String DOCACTION_Unlock = "XL";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
 	/** Wait Complete = WC */
 	public static final String DOCACTION_WaitComplete = "WC";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
-		@param DocAction 
-		The targeted status of the document
-	  */
+		@param DocAction The targeted status of the document
+	*/
 	public void setDocAction (String DocAction)
 	{
 
@@ -622,15 +648,14 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Document Action.
 		@return The targeted status of the document
 	  */
-	public String getDocAction () 
+	public String getDocAction()
 	{
 		return (String)get_Value(COLUMNNAME_DocAction);
 	}
 
 	/** Set Duration.
-		@param Duration 
-		Normal Duration in Duration Unit
-	  */
+		@param Duration Normal Duration in Duration Unit
+	*/
 	public void setDuration (int Duration)
 	{
 		set_Value (COLUMNNAME_Duration, Integer.valueOf(Duration));
@@ -639,7 +664,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Duration.
 		@return Normal Duration in Duration Unit
 	  */
-	public int getDuration () 
+	public int getDuration()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Duration);
 		if (ii == null)
@@ -648,9 +673,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Dynamic Priority Change.
-		@param DynPriorityChange 
-		Change of priority when Activity is suspended waiting for user
-	  */
+		@param DynPriorityChange Change of priority when Activity is suspended waiting for user
+	*/
 	public void setDynPriorityChange (BigDecimal DynPriorityChange)
 	{
 		set_Value (COLUMNNAME_DynPriorityChange, DynPriorityChange);
@@ -659,7 +683,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Dynamic Priority Change.
 		@return Change of priority when Activity is suspended waiting for user
 	  */
-	public BigDecimal getDynPriorityChange () 
+	public BigDecimal getDynPriorityChange()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DynPriorityChange);
 		if (bd == null)
@@ -669,16 +693,15 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 
 	/** DynPriorityUnit AD_Reference_ID=221 */
 	public static final int DYNPRIORITYUNIT_AD_Reference_ID=221;
-	/** Minute = M */
-	public static final String DYNPRIORITYUNIT_Minute = "M";
-	/** Hour = H */
-	public static final String DYNPRIORITYUNIT_Hour = "H";
 	/** Day = D */
 	public static final String DYNPRIORITYUNIT_Day = "D";
+	/** Hour = H */
+	public static final String DYNPRIORITYUNIT_Hour = "H";
+	/** Minute = M */
+	public static final String DYNPRIORITYUNIT_Minute = "M";
 	/** Set Dynamic Priority Unit.
-		@param DynPriorityUnit 
-		Change of priority when Activity is suspended waiting for user
-	  */
+		@param DynPriorityUnit Change of priority when Activity is suspended waiting for user
+	*/
 	public void setDynPriorityUnit (String DynPriorityUnit)
 	{
 
@@ -688,15 +711,14 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Dynamic Priority Unit.
 		@return Change of priority when Activity is suspended waiting for user
 	  */
-	public String getDynPriorityUnit () 
+	public String getDynPriorityUnit()
 	{
 		return (String)get_Value(COLUMNNAME_DynPriorityUnit);
 	}
 
 	/** Set EMail Address.
-		@param EMail 
-		Electronic Mail Address
-	  */
+		@param EMail Electronic Mail Address
+	*/
 	public void setEMail (String EMail)
 	{
 		set_Value (COLUMNNAME_EMail, EMail);
@@ -705,23 +727,22 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get EMail Address.
 		@return Electronic Mail Address
 	  */
-	public String getEMail () 
+	public String getEMail()
 	{
 		return (String)get_Value(COLUMNNAME_EMail);
 	}
 
 	/** EMailRecipient AD_Reference_ID=363 */
 	public static final int EMAILRECIPIENT_AD_Reference_ID=363;
-	/** Document Owner = D */
-	public static final String EMAILRECIPIENT_DocumentOwner = "D";
 	/** Document Business Partner = B */
 	public static final String EMAILRECIPIENT_DocumentBusinessPartner = "B";
+	/** Document Owner = D */
+	public static final String EMAILRECIPIENT_DocumentOwner = "D";
 	/** WF Responsible = R */
 	public static final String EMAILRECIPIENT_WFResponsible = "R";
 	/** Set EMail Recipient.
-		@param EMailRecipient 
-		Recipient of the EMail
-	  */
+		@param EMailRecipient Recipient of the EMail
+	*/
 	public void setEMailRecipient (String EMailRecipient)
 	{
 
@@ -731,7 +752,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get EMail Recipient.
 		@return Recipient of the EMail
 	  */
-	public String getEMailRecipient () 
+	public String getEMailRecipient()
 	{
 		return (String)get_Value(COLUMNNAME_EMailRecipient);
 	}
@@ -739,9 +760,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -751,7 +771,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
@@ -763,9 +783,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Manual = M */
 	public static final String FINISHMODE_Manual = "M";
 	/** Set Finish Mode.
-		@param FinishMode 
-		Workflow Activity Finish Mode
-	  */
+		@param FinishMode Workflow Activity Finish Mode
+	*/
 	public void setFinishMode (String FinishMode)
 	{
 
@@ -775,15 +794,14 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Finish Mode.
 		@return Workflow Activity Finish Mode
 	  */
-	public String getFinishMode () 
+	public String getFinishMode()
 	{
 		return (String)get_Value(COLUMNNAME_FinishMode);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -792,15 +810,14 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Centrally maintained.
-		@param IsCentrallyMaintained 
-		Information maintained in System Element table
-	  */
+		@param IsCentrallyMaintained Information maintained in System Element table
+	*/
 	public void setIsCentrallyMaintained (boolean IsCentrallyMaintained)
 	{
 		set_Value (COLUMNNAME_IsCentrallyMaintained, Boolean.valueOf(IsCentrallyMaintained));
@@ -809,7 +826,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Centrally maintained.
 		@return Information maintained in System Element table
 	  */
-	public boolean isCentrallyMaintained () 
+	public boolean isCentrallyMaintained()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCentrallyMaintained);
 		if (oo != null) 
@@ -822,7 +839,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Is Milestone.
-		@param IsMilestone Is Milestone	  */
+		@param IsMilestone Is Milestone
+	*/
 	public void setIsMilestone (boolean IsMilestone)
 	{
 		set_Value (COLUMNNAME_IsMilestone, Boolean.valueOf(IsMilestone));
@@ -830,7 +848,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 
 	/** Get Is Milestone.
 		@return Is Milestone	  */
-	public boolean isMilestone () 
+	public boolean isMilestone()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMilestone);
 		if (oo != null) 
@@ -843,7 +861,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Is Subcontracting.
-		@param IsSubcontracting Is Subcontracting	  */
+		@param IsSubcontracting Is Subcontracting
+	*/
 	public void setIsSubcontracting (boolean IsSubcontracting)
 	{
 		set_Value (COLUMNNAME_IsSubcontracting, Boolean.valueOf(IsSubcontracting));
@@ -851,7 +870,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 
 	/** Get Is Subcontracting.
 		@return Is Subcontracting	  */
-	public boolean isSubcontracting () 
+	public boolean isSubcontracting()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSubcontracting);
 		if (oo != null) 
@@ -870,9 +889,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** XOR = X */
 	public static final String JOINELEMENT_XOR = "X";
 	/** Set Join Element.
-		@param JoinElement 
-		Semantics for multiple incoming Transitions
-	  */
+		@param JoinElement Semantics for multiple incoming Transitions
+	*/
 	public void setJoinElement (String JoinElement)
 	{
 
@@ -882,15 +900,14 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Join Element.
 		@return Semantics for multiple incoming Transitions
 	  */
-	public String getJoinElement () 
+	public String getJoinElement()
 	{
 		return (String)get_Value(COLUMNNAME_JoinElement);
 	}
 
 	/** Set Duration Limit.
-		@param Limit 
-		Maximum Duration in Duration Unit
-	  */
+		@param Limit Maximum Duration in Duration Unit
+	*/
 	public void setLimit (int Limit)
 	{
 		set_Value (COLUMNNAME_Limit, Integer.valueOf(Limit));
@@ -899,7 +916,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Duration Limit.
 		@return Maximum Duration in Duration Unit
 	  */
-	public int getLimit () 
+	public int getLimit()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Limit);
 		if (ii == null)
@@ -908,7 +925,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Moving Time.
-		@param MovingTime Moving Time	  */
+		@param MovingTime Moving Time
+	*/
 	public void setMovingTime (int MovingTime)
 	{
 		set_Value (COLUMNNAME_MovingTime, Integer.valueOf(MovingTime));
@@ -916,7 +934,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 
 	/** Get Moving Time.
 		@return Moving Time	  */
-	public int getMovingTime () 
+	public int getMovingTime()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MovingTime);
 		if (ii == null)
@@ -925,9 +943,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -936,7 +953,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -950,9 +967,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
     }
 
 	/** Set Overlap Units.
-		@param OverlapUnits 
-		Overlap Units are number of units that must be completed before they are moved the next activity
-	  */
+		@param OverlapUnits Overlap Units are number of units that must be completed before they are moved the next activity
+	*/
 	public void setOverlapUnits (int OverlapUnits)
 	{
 		set_Value (COLUMNNAME_OverlapUnits, Integer.valueOf(OverlapUnits));
@@ -961,7 +977,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Overlap Units.
 		@return Overlap Units are number of units that must be completed before they are moved the next activity
 	  */
-	public int getOverlapUnits () 
+	public int getOverlapUnits()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_OverlapUnits);
 		if (ii == null)
@@ -970,9 +986,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Priority.
-		@param Priority 
-		Indicates if this request is of a high, medium or low priority.
-	  */
+		@param Priority Indicates if this request is of a high, medium or low priority.
+	*/
 	public void setPriority (int Priority)
 	{
 		set_Value (COLUMNNAME_Priority, Integer.valueOf(Priority));
@@ -981,7 +996,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Priority.
 		@return Indicates if this request is of a high, medium or low priority.
 	  */
-	public int getPriority () 
+	public int getPriority()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Priority);
 		if (ii == null)
@@ -990,9 +1005,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Queuing Time.
-		@param QueuingTime 
-		Queue time is the time a job waits at a work center before begin handled.
-	  */
+		@param QueuingTime Queue time is the time a job waits at a work center before begin handled.
+	*/
 	public void setQueuingTime (int QueuingTime)
 	{
 		set_Value (COLUMNNAME_QueuingTime, Integer.valueOf(QueuingTime));
@@ -1001,7 +1015,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Queuing Time.
 		@return Queue time is the time a job waits at a work center before begin handled.
 	  */
-	public int getQueuingTime () 
+	public int getQueuingTime()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_QueuingTime);
 		if (ii == null)
@@ -1010,26 +1024,26 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_Name)
-			.getPO(getR_MailText_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_MailText)MTable.get(getCtx(), org.compiere.model.I_R_MailText.Table_ID)
+			.getPO(getR_MailText_ID(), get_TrxName());
+	}
 
 	/** Set Mail Template.
-		@param R_MailText_ID 
-		Text templates for mailings
-	  */
+		@param R_MailText_ID Text templates for mailings
+	*/
 	public void setR_MailText_ID (int R_MailText_ID)
 	{
-		if (R_MailText_ID < 1) 
+		if (R_MailText_ID < 1)
 			set_Value (COLUMNNAME_R_MailText_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_R_MailText_ID, Integer.valueOf(R_MailText_ID));
 	}
 
 	/** Get Mail Template.
 		@return Text templates for mailings
 	  */
-	public int getR_MailText_ID () 
+	public int getR_MailText_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_MailText_ID);
 		if (ii == null)
@@ -1038,9 +1052,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Setup Time.
-		@param SetupTime 
-		Setup time before starting Production
-	  */
+		@param SetupTime Setup time before starting Production
+	*/
 	public void setSetupTime (int SetupTime)
 	{
 		set_Value (COLUMNNAME_SetupTime, Integer.valueOf(SetupTime));
@@ -1049,7 +1062,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Setup Time.
 		@return Setup time before starting Production
 	  */
-	public int getSetupTime () 
+	public int getSetupTime()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SetupTime);
 		if (ii == null)
@@ -1064,9 +1077,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** XOR = X */
 	public static final String SPLITELEMENT_XOR = "X";
 	/** Set Split Element.
-		@param SplitElement 
-		Semantics for multiple outgoing Transitions
-	  */
+		@param SplitElement Semantics for multiple outgoing Transitions
+	*/
 	public void setSplitElement (String SplitElement)
 	{
 
@@ -1076,32 +1088,32 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Split Element.
 		@return Semantics for multiple outgoing Transitions
 	  */
-	public String getSplitElement () 
+	public String getSplitElement()
 	{
 		return (String)get_Value(COLUMNNAME_SplitElement);
 	}
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
-			.getPO(getS_Resource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
 
 	/** Set Resource.
-		@param S_Resource_ID 
-		Resource
-	  */
+		@param S_Resource_ID Resource
+	*/
 	public void setS_Resource_ID (int S_Resource_ID)
 	{
-		if (S_Resource_ID < 1) 
+		if (S_Resource_ID < 1)
 			set_Value (COLUMNNAME_S_Resource_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_S_Resource_ID, Integer.valueOf(S_Resource_ID));
 	}
 
 	/** Get Resource.
 		@return Resource
 	  */
-	public int getS_Resource_ID () 
+	public int getS_Resource_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_Resource_ID);
 		if (ii == null)
@@ -1116,9 +1128,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Manual = M */
 	public static final String STARTMODE_Manual = "M";
 	/** Set Start Mode.
-		@param StartMode 
-		Workflow Activity Start Mode 
-	  */
+		@param StartMode Workflow Activity Start Mode 
+	*/
 	public void setStartMode (String StartMode)
 	{
 
@@ -1128,7 +1139,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Start Mode.
 		@return Workflow Activity Start Mode 
 	  */
-	public String getStartMode () 
+	public String getStartMode()
 	{
 		return (String)get_Value(COLUMNNAME_StartMode);
 	}
@@ -1140,9 +1151,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Synchronously = S */
 	public static final String SUBFLOWEXECUTION_Synchronously = "S";
 	/** Set Subflow Execution.
-		@param SubflowExecution 
-		Mode how the sub-workflow is executed
-	  */
+		@param SubflowExecution Mode how the sub-workflow is executed
+	*/
 	public void setSubflowExecution (String SubflowExecution)
 	{
 
@@ -1152,15 +1162,14 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Subflow Execution.
 		@return Mode how the sub-workflow is executed
 	  */
-	public String getSubflowExecution () 
+	public String getSubflowExecution()
 	{
 		return (String)get_Value(COLUMNNAME_SubflowExecution);
 	}
 
 	/** Set Units by Cycles.
-		@param UnitsCycles 
-		The Units by Cycles are defined for process type  Flow Repetitive Dedicated and  indicated the product to be manufactured on a production line for duration unit.
-	  */
+		@param UnitsCycles The Units by Cycles are defined for process type  Flow Repetitive Dedicated and  indicated the product to be manufactured on a production line for duration unit.
+	*/
 	public void setUnitsCycles (BigDecimal UnitsCycles)
 	{
 		set_Value (COLUMNNAME_UnitsCycles, UnitsCycles);
@@ -1169,7 +1178,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Units by Cycles.
 		@return The Units by Cycles are defined for process type  Flow Repetitive Dedicated and  indicated the product to be manufactured on a production line for duration unit.
 	  */
-	public BigDecimal getUnitsCycles () 
+	public BigDecimal getUnitsCycles()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_UnitsCycles);
 		if (bd == null)
@@ -1178,9 +1187,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -1189,15 +1197,14 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -1206,15 +1213,14 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -1223,15 +1229,14 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
 	/** Set Waiting Time.
-		@param WaitingTime 
-		Workflow Simulation Waiting time
-	  */
+		@param WaitingTime Workflow Simulation Waiting time
+	*/
 	public void setWaitingTime (int WaitingTime)
 	{
 		set_Value (COLUMNNAME_WaitingTime, Integer.valueOf(WaitingTime));
@@ -1240,7 +1245,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Waiting Time.
 		@return Workflow Simulation Waiting time
 	  */
-	public int getWaitingTime () 
+	public int getWaitingTime()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WaitingTime);
 		if (ii == null)
@@ -1249,9 +1254,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Wait Time.
-		@param WaitTime 
-		Time in minutes to wait (sleep)
-	  */
+		@param WaitTime Time in minutes to wait (sleep)
+	*/
 	public void setWaitTime (int WaitTime)
 	{
 		set_Value (COLUMNNAME_WaitTime, Integer.valueOf(WaitTime));
@@ -1260,7 +1264,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Wait Time.
 		@return Time in minutes to wait (sleep)
 	  */
-	public int getWaitTime () 
+	public int getWaitTime()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WaitTime);
 		if (ii == null)
@@ -1269,26 +1273,26 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_Workflow getWorkflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getWorkflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getWorkflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
-		@param Workflow_ID 
-		Workflow or tasks
-	  */
+		@param Workflow_ID Workflow or tasks
+	*/
 	public void setWorkflow_ID (int Workflow_ID)
 	{
-		if (Workflow_ID < 1) 
+		if (Workflow_ID < 1)
 			set_Value (COLUMNNAME_Workflow_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Workflow_ID, Integer.valueOf(Workflow_ID));
 	}
 
 	/** Get Workflow.
 		@return Workflow or tasks
 	  */
-	public int getWorkflow_ID () 
+	public int getWorkflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Workflow_ID);
 		if (ii == null)
@@ -1297,9 +1301,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Working Time.
-		@param WorkingTime 
-		Workflow Simulation Execution Time
-	  */
+		@param WorkingTime Workflow Simulation Execution Time
+	*/
 	public void setWorkingTime (int WorkingTime)
 	{
 		set_Value (COLUMNNAME_WorkingTime, Integer.valueOf(WorkingTime));
@@ -1308,7 +1311,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Working Time.
 		@return Workflow Simulation Execution Time
 	  */
-	public int getWorkingTime () 
+	public int getWorkingTime()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WorkingTime);
 		if (ii == null)
@@ -1317,9 +1320,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set X Position.
-		@param XPosition 
-		Absolute X (horizontal) position in 1/72 of an inch
-	  */
+		@param XPosition Absolute X (horizontal) position in 1/72 of an inch
+	*/
 	public void setXPosition (int XPosition)
 	{
 		set_Value (COLUMNNAME_XPosition, Integer.valueOf(XPosition));
@@ -1328,7 +1330,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get X Position.
 		@return Absolute X (horizontal) position in 1/72 of an inch
 	  */
-	public int getXPosition () 
+	public int getXPosition()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_XPosition);
 		if (ii == null)
@@ -1337,9 +1339,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Yield %.
-		@param Yield 
-		The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
-	  */
+		@param Yield The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
+	*/
 	public void setYield (int Yield)
 	{
 		set_Value (COLUMNNAME_Yield, Integer.valueOf(Yield));
@@ -1348,7 +1349,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Yield %.
 		@return The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
 	  */
-	public int getYield () 
+	public int getYield()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Yield);
 		if (ii == null)
@@ -1357,9 +1358,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	}
 
 	/** Set Y Position.
-		@param YPosition 
-		Absolute Y (vertical) position in 1/72 of an inch
-	  */
+		@param YPosition Absolute Y (vertical) position in 1/72 of an inch
+	*/
 	public void setYPosition (int YPosition)
 	{
 		set_Value (COLUMNNAME_YPosition, Integer.valueOf(YPosition));
@@ -1368,7 +1368,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/** Get Y Position.
 		@return Absolute Y (vertical) position in 1/72 of an inch
 	  */
-	public int getYPosition () 
+	public int getYPosition()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_YPosition);
 		if (ii == null)

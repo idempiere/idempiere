@@ -145,9 +145,9 @@ public class WProcessCtl extends AbstractProcessCtl {
 	 *  <br>
 	 *	Called from ProcessDialog.actionPerformed
 	 *
-	 *  @param aProcessUI ASyncProcess & Container
+	 *  @param aProcessUI ASyncProcess and Container
 	 *  @param WindowNo window no
-	 *  @param paraPanel Process Parameter Panel
+	 *  @param parameter Process Parameter Panel
 	 *  @param pi ProcessInfo process info
 	 *  @param trx Transaction
 	 */
@@ -182,6 +182,8 @@ public class WProcessCtl extends AbstractProcessCtl {
 			return;
 		}
 		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+	  } else {
+		  instance = new MPInstance(Env.getCtx(), pi.getAD_PInstance_ID(), null);
 	  }
 
 		//	Get Parameters
@@ -207,7 +209,7 @@ public class WProcessCtl extends AbstractProcessCtl {
 	}
 
 	/**
-	 * @param parent
+	 * @param aProcessUI
 	 * @param WindowNo
 	 * @param pi
 	 * @param trx

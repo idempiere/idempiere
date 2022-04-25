@@ -24,19 +24,32 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankStatementLoader
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_BankStatementLoader")
 public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoader, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BankStatementLoader (Properties ctx, int C_BankStatementLoader_ID, String trxName)
     {
       super (ctx, C_BankStatementLoader_ID, trxName);
+      /** if (C_BankStatementLoader_ID == 0)
+        {
+			setC_BankAccount_ID (0);
+			setC_BankStatementLoader_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BankStatementLoader (Properties ctx, int C_BankStatementLoader_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BankStatementLoader_ID, trxName, virtualColumns);
       /** if (C_BankStatementLoader_ID == 0)
         {
 			setC_BankAccount_ID (0);
@@ -68,15 +81,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BankStatementLoader[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_BankStatementLoader[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Account No.
-		@param AccountNo 
-		Account Number
-	  */
+		@param AccountNo Account Number
+	*/
 	public void setAccountNo (String AccountNo)
 	{
 		set_Value (COLUMNNAME_AccountNo, AccountNo);
@@ -85,15 +97,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Account No.
 		@return Account Number
 	  */
-	public String getAccountNo () 
+	public String getAccountNo()
 	{
 		return (String)get_Value(COLUMNNAME_AccountNo);
 	}
 
 	/** Set Branch ID.
-		@param BranchID 
-		Bank Branch ID
-	  */
+		@param BranchID Bank Branch ID
+	*/
 	public void setBranchID (String BranchID)
 	{
 		set_Value (COLUMNNAME_BranchID, BranchID);
@@ -102,32 +113,32 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Branch ID.
 		@return Bank Branch ID
 	  */
-	public String getBranchID () 
+	public String getBranchID()
 	{
 		return (String)get_Value(COLUMNNAME_BranchID);
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
-			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Bank Account.
-		@param C_BankAccount_ID 
-		Account at the Bank
-	  */
+		@param C_BankAccount_ID Account at the Bank
+	*/
 	public void setC_BankAccount_ID (int C_BankAccount_ID)
 	{
-		if (C_BankAccount_ID < 1) 
+		if (C_BankAccount_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BankAccount_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
 	}
 
 	/** Get Bank Account.
 		@return Account at the Bank
 	  */
-	public int getC_BankAccount_ID () 
+	public int getC_BankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
 		if (ii == null)
@@ -136,21 +147,20 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	}
 
 	/** Set Bank Statement Loader.
-		@param C_BankStatementLoader_ID 
-		Definition of Bank Statement Loader (SWIFT, OFX)
-	  */
+		@param C_BankStatementLoader_ID Definition of Bank Statement Loader (SWIFT, OFX)
+	*/
 	public void setC_BankStatementLoader_ID (int C_BankStatementLoader_ID)
 	{
-		if (C_BankStatementLoader_ID < 1) 
+		if (C_BankStatementLoader_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BankStatementLoader_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BankStatementLoader_ID, Integer.valueOf(C_BankStatementLoader_ID));
 	}
 
 	/** Get Bank Statement Loader.
 		@return Definition of Bank Statement Loader (SWIFT, OFX)
 	  */
-	public int getC_BankStatementLoader_ID () 
+	public int getC_BankStatementLoader_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankStatementLoader_ID);
 		if (ii == null)
@@ -159,7 +169,8 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	}
 
 	/** Set C_BankStatementLoader_UU.
-		@param C_BankStatementLoader_UU C_BankStatementLoader_UU	  */
+		@param C_BankStatementLoader_UU C_BankStatementLoader_UU
+	*/
 	public void setC_BankStatementLoader_UU (String C_BankStatementLoader_UU)
 	{
 		set_Value (COLUMNNAME_C_BankStatementLoader_UU, C_BankStatementLoader_UU);
@@ -167,15 +178,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 
 	/** Get C_BankStatementLoader_UU.
 		@return C_BankStatementLoader_UU	  */
-	public String getC_BankStatementLoader_UU () 
+	public String getC_BankStatementLoader_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BankStatementLoader_UU);
 	}
 
 	/** Set Date Format.
-		@param DateFormat 
-		Date format used in the input format
-	  */
+		@param DateFormat Date format used in the input format
+	*/
 	public void setDateFormat (String DateFormat)
 	{
 		set_Value (COLUMNNAME_DateFormat, DateFormat);
@@ -184,15 +194,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Date Format.
 		@return Date format used in the input format
 	  */
-	public String getDateFormat () 
+	public String getDateFormat()
 	{
 		return (String)get_Value(COLUMNNAME_DateFormat);
 	}
 
 	/** Set Date last run.
-		@param DateLastRun 
-		Date the process was last run.
-	  */
+		@param DateLastRun Date the process was last run.
+	*/
 	public void setDateLastRun (Timestamp DateLastRun)
 	{
 		set_Value (COLUMNNAME_DateLastRun, DateLastRun);
@@ -201,15 +210,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Date last run.
 		@return Date the process was last run.
 	  */
-	public Timestamp getDateLastRun () 
+	public Timestamp getDateLastRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateLastRun);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -218,15 +226,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set File Name.
-		@param FileName 
-		Name of the local file or URL
-	  */
+		@param FileName Name of the local file or URL
+	*/
 	public void setFileName (String FileName)
 	{
 		set_Value (COLUMNNAME_FileName, FileName);
@@ -235,15 +242,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get File Name.
 		@return Name of the local file or URL
 	  */
-	public String getFileName () 
+	public String getFileName()
 	{
 		return (String)get_Value(COLUMNNAME_FileName);
 	}
 
 	/** Set Financial Institution ID.
-		@param FinancialInstitutionID 
-		The ID of the Financial Institution / Bank
-	  */
+		@param FinancialInstitutionID The ID of the Financial Institution / Bank
+	*/
 	public void setFinancialInstitutionID (String FinancialInstitutionID)
 	{
 		set_Value (COLUMNNAME_FinancialInstitutionID, FinancialInstitutionID);
@@ -252,15 +258,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Financial Institution ID.
 		@return The ID of the Financial Institution / Bank
 	  */
-	public String getFinancialInstitutionID () 
+	public String getFinancialInstitutionID()
 	{
 		return (String)get_Value(COLUMNNAME_FinancialInstitutionID);
 	}
 
 	/** Set Host Address.
-		@param HostAddress 
-		Host Address URL or DNS
-	  */
+		@param HostAddress Host Address URL or DNS
+	*/
 	public void setHostAddress (String HostAddress)
 	{
 		set_Value (COLUMNNAME_HostAddress, HostAddress);
@@ -269,15 +274,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Host Address.
 		@return Host Address URL or DNS
 	  */
-	public String getHostAddress () 
+	public String getHostAddress()
 	{
 		return (String)get_Value(COLUMNNAME_HostAddress);
 	}
 
 	/** Set Host port.
-		@param HostPort 
-		Host Communication Port
-	  */
+		@param HostPort Host Communication Port
+	*/
 	public void setHostPort (int HostPort)
 	{
 		set_Value (COLUMNNAME_HostPort, Integer.valueOf(HostPort));
@@ -286,7 +290,7 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Host port.
 		@return Host Communication Port
 	  */
-	public int getHostPort () 
+	public int getHostPort()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HostPort);
 		if (ii == null)
@@ -295,9 +299,8 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -306,7 +309,7 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -320,9 +323,8 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
     }
 
 	/** Set Password.
-		@param Password 
-		Password of any length (case sensitive)
-	  */
+		@param Password Password of any length (case sensitive)
+	*/
 	public void setPassword (String Password)
 	{
 		set_Value (COLUMNNAME_Password, Password);
@@ -331,15 +333,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Password.
 		@return Password of any length (case sensitive)
 	  */
-	public String getPassword () 
+	public String getPassword()
 	{
 		return (String)get_Value(COLUMNNAME_Password);
 	}
 
 	/** Set PIN.
-		@param PIN 
-		Personal Identification Number
-	  */
+		@param PIN Personal Identification Number
+	*/
 	public void setPIN (String PIN)
 	{
 		set_Value (COLUMNNAME_PIN, PIN);
@@ -348,15 +349,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get PIN.
 		@return Personal Identification Number
 	  */
-	public String getPIN () 
+	public String getPIN()
 	{
 		return (String)get_Value(COLUMNNAME_PIN);
 	}
 
 	/** Set Proxy address.
-		@param ProxyAddress 
-		 Address of your proxy server
-	  */
+		@param ProxyAddress  Address of your proxy server
+	*/
 	public void setProxyAddress (String ProxyAddress)
 	{
 		set_Value (COLUMNNAME_ProxyAddress, ProxyAddress);
@@ -365,15 +365,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Proxy address.
 		@return  Address of your proxy server
 	  */
-	public String getProxyAddress () 
+	public String getProxyAddress()
 	{
 		return (String)get_Value(COLUMNNAME_ProxyAddress);
 	}
 
 	/** Set Proxy logon.
-		@param ProxyLogon 
-		Logon of your proxy server
-	  */
+		@param ProxyLogon Logon of your proxy server
+	*/
 	public void setProxyLogon (String ProxyLogon)
 	{
 		set_Value (COLUMNNAME_ProxyLogon, ProxyLogon);
@@ -382,15 +381,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Proxy logon.
 		@return Logon of your proxy server
 	  */
-	public String getProxyLogon () 
+	public String getProxyLogon()
 	{
 		return (String)get_Value(COLUMNNAME_ProxyLogon);
 	}
 
 	/** Set Proxy password.
-		@param ProxyPassword 
-		Password of your proxy server
-	  */
+		@param ProxyPassword Password of your proxy server
+	*/
 	public void setProxyPassword (String ProxyPassword)
 	{
 		set_Value (COLUMNNAME_ProxyPassword, ProxyPassword);
@@ -399,15 +397,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Proxy password.
 		@return Password of your proxy server
 	  */
-	public String getProxyPassword () 
+	public String getProxyPassword()
 	{
 		return (String)get_Value(COLUMNNAME_ProxyPassword);
 	}
 
 	/** Set Proxy port.
-		@param ProxyPort 
-		Port of your proxy server
-	  */
+		@param ProxyPort Port of your proxy server
+	*/
 	public void setProxyPort (int ProxyPort)
 	{
 		set_Value (COLUMNNAME_ProxyPort, Integer.valueOf(ProxyPort));
@@ -416,7 +413,7 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Proxy port.
 		@return Port of your proxy server
 	  */
-	public int getProxyPort () 
+	public int getProxyPort()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ProxyPort);
 		if (ii == null)
@@ -425,9 +422,8 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	}
 
 	/** Set Statement Loader Class.
-		@param StmtLoaderClass 
-		Class name of the bank statement loader
-	  */
+		@param StmtLoaderClass Class name of the bank statement loader
+	*/
 	public void setStmtLoaderClass (String StmtLoaderClass)
 	{
 		set_Value (COLUMNNAME_StmtLoaderClass, StmtLoaderClass);
@@ -436,15 +432,14 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get Statement Loader Class.
 		@return Class name of the bank statement loader
 	  */
-	public String getStmtLoaderClass () 
+	public String getStmtLoaderClass()
 	{
 		return (String)get_Value(COLUMNNAME_StmtLoaderClass);
 	}
 
 	/** Set User ID.
-		@param UserID 
-		User ID or account number
-	  */
+		@param UserID User ID or account number
+	*/
 	public void setUserID (String UserID)
 	{
 		set_Value (COLUMNNAME_UserID, UserID);
@@ -453,7 +448,7 @@ public class X_C_BankStatementLoader extends PO implements I_C_BankStatementLoad
 	/** Get User ID.
 		@return User ID or account number
 	  */
-	public String getUserID () 
+	public String getUserID()
 	{
 		return (String)get_Value(COLUMNNAME_UserID);
 	}

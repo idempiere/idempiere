@@ -14,9 +14,12 @@
 package org.compiere.install.console;
 
 import java.io.File;
+import java.util.logging.Level;
 
 import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
+import org.compiere.util.CLogMgt;
+import org.compiere.util.CLogger;
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -32,6 +35,20 @@ public class ConsoleInstallApplication implements IApplication {
 	 */
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
+		CLogMgt.initialize(false);
+		String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
+
+		//	Log Level
+		Level logLevel = Level.INFO;
+		if (args.length > 0) {
+			try {
+				logLevel = Level.parse(args[0]);
+			} catch (IllegalArgumentException e) {
+				CLogger.get().warning("Unrecognized log level: " + args[0] + " defaulting to: " + logLevel);
+			}
+		}
+		CLogMgt.setLevel(logLevel);
+
 		ConfigurationConsole console = new ConfigurationConsole();
 		console.doSetup();
 		String path = System.getProperty("user.dir") + "/org.adempiere.install/build.xml";

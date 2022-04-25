@@ -24,6 +24,7 @@ import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabpanels;
 
@@ -162,6 +163,10 @@ public class Tabs extends org.zkoss.zul.Tabs implements EventListener<Event>
 		
 		insertBefore(draggComp, dropComp);
 		tabpanels.insertBefore(draggPanel, dropPanel);
+		if (draggPanel.getPage() != null) {
+			StringBuilder script = new StringBuilder("zk.Widget.$('#").append(draggPanel.getUuid()).append("').rerender(0);");
+			Clients.evalJavaScript(script.toString());
+		}
 	}
 	
 	/**

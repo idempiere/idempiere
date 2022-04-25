@@ -97,7 +97,6 @@ public class BaseActivator implements BundleActivator {
 			        key = (String) enumeration.nextElement();
 			        value = props.getProperty(key);
 			        System.setProperty(key,value) ;
-			        //System.out.println("Loaded Key: "+ key + "- Value :"+value);                        
 	            }			
 			}
 		}

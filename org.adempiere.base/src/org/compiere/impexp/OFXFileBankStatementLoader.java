@@ -39,7 +39,6 @@ public final class OFXFileBankStatementLoader extends OFXBankStatementHandler im
 	 */
 	//m_stream is not closed because the BufferedReader in the parent class is closed and according to the Java docs: 
 	//Calling close() on the BufferedReader closes the underlying stream by default implementation
-	@SuppressWarnings("resource")  
 	public boolean init(MBankStatementLoader controller)
 	{
 		boolean result = false;

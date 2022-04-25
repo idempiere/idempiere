@@ -29,10 +29,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.zkoss.lang.Objects;
 import org.zkoss.xel.VariableResolver;
 import org.zkoss.zk.au.out.AuSetAttribute;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.WrongValueException;
@@ -723,7 +725,8 @@ public class Chosenbox<T> extends HtmlBasedComponent {
 			addEventListener("onSearching", _eventListener);
 	}
 	
-	private Integer getIndexFromValue(String value, boolean checkSubList) {
+	private Integer getIndexFromValue(String valueHTML, boolean checkSubList) {
+		String value = StringEscapeUtils.unescapeHtml4(valueHTML);
 		for (int i = 0; i < _model.getSize(); i++) {
 			if (value.equals(_model.getElementAt(i).toString()))
 				return Integer.valueOf(i);
@@ -806,6 +809,12 @@ public class Chosenbox<T> extends HtmlBasedComponent {
 			final Set<T> objects = getSelectedObjects();
 			Events.postEvent(new SelectEvent<Component, T>(Events.ON_SELECT, this, null, null, null, 
 					objects, null, null, null, index, 0));
+			if (selItems.size() < (getSubListModel() != null ? getSubListModel().getSize() : getModel().getSize())) {
+				StringBuilder script = new StringBuilder();
+				script.append("var w=zk.Widget.$('#").append(getUuid()).append("');");
+				script.append("w.$n('inp').focus();");
+				Executions.schedule(getDesktop(), e -> {setOpen(true);Clients.evalJavaScript(script.toString());}, new Event("onPostSelect"));
+			}
 			_onSelectTimestamp = System.currentTimeMillis();
 		} else if (cmd.equals(Events.ON_OPEN)) {
 			_open = (Boolean)request.getData().get("open");

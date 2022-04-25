@@ -22,19 +22,33 @@ import java.util.Properties;
 
 /** Generated Model for EXP_Processor_Type
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="EXP_Processor_Type")
 public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_EXP_Processor_Type (Properties ctx, int EXP_Processor_Type_ID, String trxName)
     {
       super (ctx, EXP_Processor_Type_ID, trxName);
+      /** if (EXP_Processor_Type_ID == 0)
+        {
+			setEXP_Processor_Type_ID (0);
+			setJavaClass (null);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_EXP_Processor_Type (Properties ctx, int EXP_Processor_Type_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, EXP_Processor_Type_ID, trxName, virtualColumns);
       /** if (EXP_Processor_Type_ID == 0)
         {
 			setEXP_Processor_Type_ID (0);
@@ -67,15 +81,14 @@ public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_EXP_Processor_Type[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_EXP_Processor_Type[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -84,24 +97,25 @@ public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Export Processor Type.
-		@param EXP_Processor_Type_ID Export Processor Type	  */
+		@param EXP_Processor_Type_ID Export Processor Type
+	*/
 	public void setEXP_Processor_Type_ID (int EXP_Processor_Type_ID)
 	{
-		if (EXP_Processor_Type_ID < 1) 
+		if (EXP_Processor_Type_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_EXP_Processor_Type_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_EXP_Processor_Type_ID, Integer.valueOf(EXP_Processor_Type_ID));
 	}
 
 	/** Get Export Processor Type.
 		@return Export Processor Type	  */
-	public int getEXP_Processor_Type_ID () 
+	public int getEXP_Processor_Type_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_EXP_Processor_Type_ID);
 		if (ii == null)
@@ -110,7 +124,8 @@ public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_
 	}
 
 	/** Set EXP_Processor_Type_UU.
-		@param EXP_Processor_Type_UU EXP_Processor_Type_UU	  */
+		@param EXP_Processor_Type_UU EXP_Processor_Type_UU
+	*/
 	public void setEXP_Processor_Type_UU (String EXP_Processor_Type_UU)
 	{
 		set_Value (COLUMNNAME_EXP_Processor_Type_UU, EXP_Processor_Type_UU);
@@ -118,15 +133,14 @@ public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_
 
 	/** Get EXP_Processor_Type_UU.
 		@return EXP_Processor_Type_UU	  */
-	public String getEXP_Processor_Type_UU () 
+	public String getEXP_Processor_Type_UU()
 	{
 		return (String)get_Value(COLUMNNAME_EXP_Processor_Type_UU);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -135,13 +149,14 @@ public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Java Class.
-		@param JavaClass Java Class	  */
+		@param JavaClass Java Class
+	*/
 	public void setJavaClass (String JavaClass)
 	{
 		set_Value (COLUMNNAME_JavaClass, JavaClass);
@@ -149,15 +164,14 @@ public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_
 
 	/** Get Java Class.
 		@return Java Class	  */
-	public String getJavaClass () 
+	public String getJavaClass()
 	{
 		return (String)get_Value(COLUMNNAME_JavaClass);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -166,15 +180,14 @@ public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -183,7 +196,7 @@ public class X_EXP_Processor_Type extends PO implements I_EXP_Processor_Type, I_
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

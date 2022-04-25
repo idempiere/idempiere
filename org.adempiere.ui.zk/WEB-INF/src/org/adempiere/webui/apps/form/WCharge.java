@@ -67,6 +67,7 @@ import org.zkoss.zul.Separator;
  * @author Andrew Kimball
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VCharge")
 public class WCharge extends Charge implements IFormController, EventListener<Event>
 {
     /**
@@ -186,9 +187,6 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
 
     /**
      * Initialises the panel.
-     *
-     * @param adFormId  The Adempiere identifier for the form
-     * @param name      The name of the form
      */
     protected void initForm()
     {

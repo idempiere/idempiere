@@ -22,19 +22,32 @@ import java.util.Properties;
 
 /** Generated Model for U_RoleMenu
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="U_RoleMenu")
 public class X_U_RoleMenu extends PO implements I_U_RoleMenu, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_U_RoleMenu (Properties ctx, int U_RoleMenu_ID, String trxName)
     {
       super (ctx, U_RoleMenu_ID, trxName);
+      /** if (U_RoleMenu_ID == 0)
+        {
+			setAD_Role_ID (0);
+			setU_RoleMenu_ID (0);
+			setU_WebMenu_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_U_RoleMenu (Properties ctx, int U_RoleMenu_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, U_RoleMenu_ID, trxName, virtualColumns);
       /** if (U_RoleMenu_ID == 0)
         {
 			setAD_Role_ID (0);
@@ -66,32 +79,32 @@ public class X_U_RoleMenu extends PO implements I_U_RoleMenu, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_U_RoleMenu[")
+      StringBuilder sb = new StringBuilder ("X_U_RoleMenu[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_Value (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -100,18 +113,19 @@ public class X_U_RoleMenu extends PO implements I_U_RoleMenu, I_Persistent
 	}
 
 	/** Set Role Menu.
-		@param U_RoleMenu_ID Role Menu	  */
+		@param U_RoleMenu_ID Role Menu
+	*/
 	public void setU_RoleMenu_ID (int U_RoleMenu_ID)
 	{
-		if (U_RoleMenu_ID < 1) 
+		if (U_RoleMenu_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_U_RoleMenu_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_U_RoleMenu_ID, Integer.valueOf(U_RoleMenu_ID));
 	}
 
 	/** Get Role Menu.
 		@return Role Menu	  */
-	public int getU_RoleMenu_ID () 
+	public int getU_RoleMenu_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_U_RoleMenu_ID);
 		if (ii == null)
@@ -120,7 +134,8 @@ public class X_U_RoleMenu extends PO implements I_U_RoleMenu, I_Persistent
 	}
 
 	/** Set U_RoleMenu_UU.
-		@param U_RoleMenu_UU U_RoleMenu_UU	  */
+		@param U_RoleMenu_UU U_RoleMenu_UU
+	*/
 	public void setU_RoleMenu_UU (String U_RoleMenu_UU)
 	{
 		set_Value (COLUMNNAME_U_RoleMenu_UU, U_RoleMenu_UU);
@@ -128,29 +143,31 @@ public class X_U_RoleMenu extends PO implements I_U_RoleMenu, I_Persistent
 
 	/** Get U_RoleMenu_UU.
 		@return U_RoleMenu_UU	  */
-	public String getU_RoleMenu_UU () 
+	public String getU_RoleMenu_UU()
 	{
 		return (String)get_Value(COLUMNNAME_U_RoleMenu_UU);
 	}
 
 	public org.compiere.model.I_U_WebMenu getU_WebMenu() throws RuntimeException
-    {
-		return (org.compiere.model.I_U_WebMenu)MTable.get(getCtx(), org.compiere.model.I_U_WebMenu.Table_Name)
-			.getPO(getU_WebMenu_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_U_WebMenu)MTable.get(getCtx(), org.compiere.model.I_U_WebMenu.Table_ID)
+			.getPO(getU_WebMenu_ID(), get_TrxName());
+	}
 
 	/** Set Web Menu.
-		@param U_WebMenu_ID Web Menu	  */
+		@param U_WebMenu_ID Web Menu
+	*/
 	public void setU_WebMenu_ID (int U_WebMenu_ID)
 	{
-		if (U_WebMenu_ID < 1) 
+		if (U_WebMenu_ID < 1)
 			set_Value (COLUMNNAME_U_WebMenu_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_U_WebMenu_ID, Integer.valueOf(U_WebMenu_ID));
 	}
 
 	/** Get Web Menu.
 		@return Web Menu	  */
-	public int getU_WebMenu_ID () 
+	public int getU_WebMenu_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_U_WebMenu_ID);
 		if (ii == null)

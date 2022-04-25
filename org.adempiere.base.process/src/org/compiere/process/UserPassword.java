@@ -20,6 +20,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.Util;
 /**
  *	Reset Password
@@ -27,6 +28,7 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @version $Id: UserPassword.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class UserPassword extends SvrProcess
 {
 	private int		p_AD_User_ID = -1;
@@ -79,8 +81,7 @@ public class UserPassword extends SvrProcess
 	{
 		if (log.isLoggable(Level.INFO)) log.info ("AD_User_ID=" + p_AD_User_ID + " from " + getAD_User_ID());
 		
-		MUser user = MUser.get(getCtx(), p_AD_User_ID);
-		user.load(get_TrxName());
+		MUser user = new MUser(getCtx(), p_AD_User_ID, get_TrxName());
 		MUser operator = MUser.get(getCtx(), getAD_User_ID());
 		if (log.isLoggable(Level.FINE)) log.fine("User=" + user + ", Operator=" + operator);
 		
@@ -89,8 +90,8 @@ public class UserPassword extends SvrProcess
 		//	Do we need a password ?
 		if (Util.isEmpty(p_OldPassword))		//	Password required
 		{
-			if (p_AD_User_ID == 0			//	change of System
-					|| p_AD_User_ID == 100		//	change of SuperUser
+			if (p_AD_User_ID == SystemIDs.USER_SYSTEM			//	change of System
+					|| p_AD_User_ID == SystemIDs.USER_SUPERUSER		//	change of SuperUser
 					|| !operator.isAdministrator())
 				throw new IllegalArgumentException("@OldPasswordMandatory@");
 		} else {

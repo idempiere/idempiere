@@ -36,6 +36,7 @@ public class CalloutWindowCustomization extends CalloutEngine
 	 *	@param value value
 	 *	@return null or error message
 	 */
+	@Deprecated // removed from the column definition
 	public String window (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		Integer AD_Window_ID = (Integer)value;
@@ -70,6 +71,7 @@ public class CalloutWindowCustomization extends CalloutEngine
 	 *	@param value value
 	 *	@return null or error message
 	 */
+	@Deprecated // removed from the column definition
 	public String tab (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		Integer p_AD_Tab_ID = (Integer)value;
@@ -84,9 +86,6 @@ public class CalloutWindowCustomization extends CalloutEngine
 		ud_tab.setName(tab.get_Translation("Name", lang));
 		ud_tab.setDescription(tab.get_Translation("Description", lang));
 		ud_tab.setHelp(tab.get_Translation("Help", lang));
-		
-		ud_tab.setIsSingleRow(tab.isSingleRow()); 
-		ud_tab.setIsReadOnly(tab.isReadOnly()); 
 
 		return NO_ERROR;
 	}	//	tab
@@ -100,6 +99,7 @@ public class CalloutWindowCustomization extends CalloutEngine
 	 *	@param value value
 	 *	@return null or error message
 	 */
+	@Deprecated // removed from the column definition
 	public String field (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		Integer p_AD_Field_ID = (Integer)value;

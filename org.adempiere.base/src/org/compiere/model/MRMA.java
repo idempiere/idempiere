@@ -60,10 +60,6 @@ public class MRMA extends X_M_RMA implements DocAction
 		super (ctx, M_RMA_ID, trxName);
 		if (M_RMA_ID == 0)
 		{
-		//	setName (null);
-		//	setSalesRep_ID (0);
-		//	setC_DocType_ID (0);
-		//	setM_InOut_ID (0);
 			setDocAction (DOCACTION_Complete);	// CO
 			setDocStatus (DOCSTATUS_Drafted);	// DR
 			setIsApproved(false);
@@ -103,7 +99,7 @@ public class MRMA extends X_M_RMA implements DocAction
 		}
 		List<MRMALine> list = new Query(getCtx(), I_M_RMALine.Table_Name, "M_RMA_ID=?", get_TrxName())
 		.setParameters(getM_RMA_ID())
-		.setOrderBy(MRMALine.COLUMNNAME_Line)
+		.setOrderBy(MRMALine.COLUMNNAME_Line+","+MRMALine.COLUMNNAME_M_RMALine_ID)
 		.list();
 
 		m_lines = new MRMALine[list.size ()];
@@ -234,10 +230,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 
@@ -442,15 +435,6 @@ public class MRMA extends X_M_RMA implements DocAction
 		if (!isApproved())
 			approveIt();
 		if (log.isLoggable(Level.INFO)) log.info("completeIt - " + toString());
-		//
-		/*
-		Flow for the creation of the credit memo document changed
-        if (true)
-		{
-			m_processMsg = "Need to code creating the credit memo";
-			return DocAction.STATUS_InProgress;
-		}
-        */
 
 		//		Counter Documents
 		MRMA counter = createCounterDoc();
@@ -476,11 +460,6 @@ public class MRMA extends X_M_RMA implements DocAction
 	 */
 	protected void setDefiniteDocumentNo() {
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		/* No Document Date on RMA
-		if (dt.isOverwriteDateOnComplete()) {
-			setDate???(new Timestamp (System.currentTimeMillis()));
-		}
-		*/
 		if (dt.isOverwriteSeqOnComplete()) {
 			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
 			if (value != null)
@@ -505,7 +484,7 @@ public class MRMA extends X_M_RMA implements DocAction
 			return null;
 		//	Business Partner needs to be linked to Org
 		MBPartner bp = new MBPartner (getCtx(), getC_BPartner_ID(), get_TrxName());
-		int counterAD_Org_ID = bp.getAD_OrgBP_ID_Int();
+		int counterAD_Org_ID = bp.getAD_OrgBP_ID();
 		if (counterAD_Org_ID == 0)
 			return null;
 
@@ -624,7 +603,6 @@ public class MRMA extends X_M_RMA implements DocAction
 	 * 	Copy Lines From other RMA
 	 *	@param otherRMA
 	 *	@param counter set counter info
-	 *	@param setOrder set order link
 	 *	@return number of lines copied
 	 */
 	public int copyLinesFrom (MRMA otherRMA, boolean counter)

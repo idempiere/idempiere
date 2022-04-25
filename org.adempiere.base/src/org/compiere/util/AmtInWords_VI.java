@@ -28,8 +28,8 @@ package org.compiere.util;
  *		'zero hundred', eg:
  *			1020 - one thousand zero hundred twenty
  *			1010030 - one million zero hundred ten thousand zero hundred thirty
- *		3)Change of tone for tens+1 for tens >20, eg:
- *			1 - "một" but 21 -> "hai mươi mốt"
+ *		3)Change of tone for tens+1 for tens &gt;20, eg:
+ *			1 - "một" but 21 -&gt; "hai mươi mốt"
  *		4) Change of words for tens+4 (optional) and tens+5, eg:
  *			4 - "bốn" but 24 = "hai mươi bốn" or "hai mươi tư". We choose not to change
  *			the word

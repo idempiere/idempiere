@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package name="org.idempiere.commons" language="xul/html">
+	<script src="calc.js" />
+	<script src="layout.js" />
+	<script src="report.js" />
+	<script src="window.js" />
+	<script src="tree.js" />
+</package>

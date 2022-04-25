@@ -23,6 +23,8 @@ import java.util.logging.Level;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Messagebox;
+import org.adempiere.webui.editor.WChosenboxListEditor;
+import org.adempiere.webui.editor.WChosenboxSearchEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WSearchEditor;
@@ -35,7 +37,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trace;
-
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -100,15 +102,14 @@ public class FDialog
 	/**
 	 *	Display warning with warning icon
 	 *	@param	windowNo	Number of Window
+     *  @param comp
 	 *	@param	adMessage	Message to be translated
 	 *	@param	message		Additional message
-	 *	@param	title		If none then one will be generated
 	 *
 	 * @see #warn(int, String)
 	 * @see #warn(int, String, String)
 	 * @see #warn(int, Component, String, String, String)
 	 */
-    
     public static void warn(int windowNo, Component comp, String adMessage, String message)
     {
     	warn(windowNo, comp, adMessage, message, null);
@@ -198,13 +199,12 @@ public class FDialog
 	 *	Display error with error icon
 	 *	@param	windowNo	Number of Window
 	 *	@param	adMessage	Message to be translated
-	 *	@param	adMessage	Additional message
+	 *	@param	msg         Additional message
 	 *
 	 *  @see #error(int, String)
 	 *  @see #error(int, Component, String)
 	 *  @see #error(int, Component, String, String)
 	 */
-	
     public static void error(int windowNo, String adMessage, String msg)
     {
         error(windowNo, null, adMessage, msg);
@@ -288,11 +288,10 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
 	 *	@param	msg			Additional clear text message
-	 *
 	 *	@return true, if OK
 	 */    
     public static boolean ask(int windowNo, Component comp, String adMessage, String msg)
@@ -303,11 +302,11 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
 	 *	@param	msg			Additional clear text message
-	 *
+     *  @param callback
 	 *	@return true, if OK
 	 */    
     public static boolean ask(int windowNo, Component comp, String adMessage, String msg, final Callback<Boolean> callback)
@@ -340,13 +339,11 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
-	 *
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
 	 *	@return true, if OK
 	 */
-    
     public static boolean ask(int windowNo, Component comp, String adMessage)
     {
     	return ask(windowNo, comp, adMessage, (Callback<Boolean>)null);
@@ -358,7 +355,11 @@ public class FDialog
     }
     
 	public static void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback, Desktop desktop, int windowNo) {
-		@SuppressWarnings("unused")
+		askForInput(message, lookup, editorType, callback, desktop, windowNo, "", null);
+	}
+	
+	public static void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback, Desktop desktop, int windowNo, String title, Object defaultValue) {
+		
 		final WEditor weditor;
 
 		switch (editorType) {
@@ -374,19 +375,35 @@ public class FDialog
 		case DisplayType.Search:
 			weditor = new WSearchEditor(lookup, "", "", true, false, true);
 			break;
+		case DisplayType.ChosenMultipleSelectionSearch:
+			weditor = new WChosenboxSearchEditor(lookup, "", "", true, false, true);
+			break;
+		case DisplayType.ChosenMultipleSelectionList:
+		case DisplayType.ChosenMultipleSelectionTable:
+			weditor = new WChosenboxListEditor(lookup, "", "", true, false, true);
+			break;
 		default:
 			weditor = null;
 			break;
 		}
+
+		if (weditor != null && defaultValue != null)
+			weditor.setValue(defaultValue);
+
 		Executions.schedule(desktop, new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				FDialog.askForInput(windowNo, weditor, message, callback);
+				FDialog.askForInput(windowNo, weditor, message, title, callback);
 			}
 		}, new Event("onAskForInput"));
 	}
 
     public static void askForInput(int windowNo, WEditor weditor, String adMessage, final Callback<Object> callback)
+    {
+    	askForInput(windowNo, weditor, adMessage, "", callback);
+    }
+    
+    public static void askForInput(int windowNo, WEditor weditor, String adMessage, String title, final Callback<Object> callback) // ok
     {
     	Callback<Object> msgCallback = null;
     	if (callback != null)
@@ -399,11 +416,15 @@ public class FDialog
 			};
     	}
     	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
-        Messagebox.showDialog(s, AEnv.getDialogHeader(Env.getCtx(), windowNo),
+        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title,
         		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
     }
 
-    public static void askForInput(int windowNo, Component comp, String adMessage, final Callback<String> callback)
+    public static void askForInput(int windowNo, Component comp, String adMessage, final Callback<String> callback) {
+    	askForInput(windowNo, comp, adMessage, "", callback);
+    }
+
+    public static void askForInput(int windowNo, Component comp, String adMessage, String title, final Callback<String> callback)
     {
     	Callback<String> msgCallback = null;
     	if (callback != null) 
@@ -416,20 +437,21 @@ public class FDialog
 			};
     	}
     	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
-        Messagebox.showDialog(s, AEnv.getDialogHeader(Env.getCtx(), windowNo), 
+        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title, 
         		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, msgCallback, (msgCallback == null));
     }
 
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
-	 *
+     *  @param  title
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
+     *  @param  callback
+     *  @param  args
 	 *	@return true, if OK
 	 */
-    
     public static boolean ask(String title, int windowNo, Component comp, String adMessage, final Callback<Boolean> callback, Object ... args)
     {
     	Callback<Integer> msgCallback = null;
@@ -531,12 +553,12 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
 	 *	@param	title		Title of the dialog panel
-	 *	@param	AD_Message	Message to be translated
+	 *	@param	adMessage   Message to be translated
 	 *	@param	msg			Additional clear text message
-	 *
+     *  @param callback
 	 *	@return true, if OK
 	 */        
     public static boolean ask(int windowNo, Component comp, String title, String adMessage, String msg, final Callback<Boolean> callback)

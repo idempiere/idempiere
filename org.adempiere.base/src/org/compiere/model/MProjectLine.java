@@ -47,11 +47,13 @@ public class MProjectLine extends X_C_ProjectLine
 	 */
 	public MProjectLine (Properties ctx, int C_ProjectLine_ID, String trxName)
 	{
-		super (ctx, C_ProjectLine_ID, trxName);
+		this (ctx, C_ProjectLine_ID, trxName, (String[]) null);
+	}	//	MProjectLine
+
+	public MProjectLine(Properties ctx, int C_ProjectLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_ProjectLine_ID, trxName, virtualColumns);
 		if (C_ProjectLine_ID == 0)
 		{
-		//  setC_Project_ID (0);
-		//	setC_ProjectLine_ID (0);
 			setLine (0);
 			setIsPrinted(true);
 			setProcessed(false);
@@ -63,7 +65,7 @@ public class MProjectLine extends X_C_ProjectLine
 			setPlannedPrice (Env.ZERO);
 			setPlannedQty (Env.ONE);
 		}
-	}	//	MProjectLine
+	}
 
 	/**
 	 * 	Load Constructor

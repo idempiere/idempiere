@@ -21,11 +21,13 @@ import java.beans.VetoableChangeSupport;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.idempiere.distributed.ICacheService;
 
 /**
@@ -43,16 +45,37 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	 */
 	private static final long serialVersionUID = -2268565219001179841L;
 
-	private Map<K, V> cache = null;
+	protected Map<K, V> cache = null;
 	
-	private Set<K> nullList = null;
+	protected Set<K> nullList = null;
 
 	private String m_tableName;
 
-	@SuppressWarnings("unused")
 	private boolean m_distributed;
 	
 	private int m_maxSize = 0;
+	
+	/** Default cache expire time in minutes **/
+	public static final int DEFAULT_EXPIRE_MINUTE = getDefaultExpireMinute();
+	
+	private static int getDefaultExpireMinute() 
+	{
+		try 
+		{
+			String property = System.getProperty("Cache.ExpireMinute");
+			if (property != null && property.trim().length() > 0)
+			{
+				int expireMinute = 0;
+				try
+				{
+					expireMinute = Integer.parseInt(property.trim());
+				} catch (Throwable t) {}
+				if (expireMinute > 0)
+					return expireMinute;
+			}
+		} catch (Throwable t) {}
+		return 60;
+	}
 	
 	public CCache (String name, int initialCapacity)
 	{
@@ -86,7 +109,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 
 	public CCache (String tableName, String name, int initialCapacity, boolean distributed)
 	{
-		this (tableName, name, initialCapacity, 60, distributed);
+		this (tableName, name, initialCapacity, DEFAULT_EXPIRE_MINUTE, distributed);
 	}		
 	
 	public CCache (String tableName, String name, int initialCapacity, int expireMinutes, boolean distributed)
@@ -111,7 +134,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		cache = CacheMgt.get().register(this, distributed);
 		m_distributed = distributed;
 		if (distributed) {
-			ICacheService provider = Service.locator().locate(ICacheService.class).getService();
+			ICacheService provider = Core.getCacheService();
 			if (provider != null) {
 				nullList = provider.getSet(name);
 			}
@@ -135,6 +158,9 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	private VetoableChangeSupport	m_changeSupport = null;
 	/** Vetoable Change Support	Name	*/
 	private static String		PROPERTYNAME = "cache"; 
+	
+	private final AtomicLong m_hit = new AtomicLong();
+	private final AtomicLong m_miss = new AtomicLong();
 	
 	/**
 	 * 	Get (table) Name
@@ -227,7 +253,10 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	{
 		return "CCache[" + m_name 
 			+ ",Exp=" + getExpireMinutes()  
-			+ ", #" + cache.size() + "]";
+			+ ", #" + cache.size()
+			+ ", Hit=" + getHit()
+			+ ", Miss=" + getMiss()
+			+ "]";
 	}	//	toString
 
 	/**
@@ -291,10 +320,19 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 *	@see java.util.Map#get(java.lang.Object)
 	 */
+	@Override
 	public V get(Object key)
 	{
 		expire();
-		return cache.get(key);
+		V v = cache.get(key);
+		if (v == null)
+			if (nullList.contains(key))
+				m_hit.getAndAdd(1);
+			else
+				m_miss.getAndAdd(1);
+		else
+			m_hit.getAndAdd(1);
+		return v;
 	}	//	get
 
 	/**
@@ -412,23 +450,69 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	public int reset(int recordId) {
 		if (recordId <= 0)
 			return reset();
-				
-		if (!nullList.isEmpty()) {
-			if (nullList.remove(recordId)) return 1;
+		
+		if (cache.isEmpty() && nullList.isEmpty())
+			return 0;
+
+		K firstKey = null;
+		try {
+			if (!cache.isEmpty())
+				firstKey = cache.keySet().iterator().next();
+			else if (!nullList.isEmpty())
+				firstKey = nullList.iterator().next();
+		} catch (ConcurrentModificationException e) {}
+		if (firstKey != null && firstKey instanceof Integer) {
+			if (!nullList.isEmpty()) {
+				if (nullList.remove(recordId)) return 1;
+			}
+			V removed = cache.remove(recordId);
+			return removed != null ? 1 : 0;
+		} else {
+			return reset();
 		}
-		V removed = cache.remove(recordId);
-		return removed != null ? 1 : 0;
 	}
 
 	@Override
 	public void newRecord(int record_ID) {
 	}
 
+	/**
+	 * 
+	 * @return max size of cache
+	 */
 	public int getMaxSize() {
 		return m_maxSize;
 	}
 	
+	/**
+	 * 
+	 * @return true if cache is distributed (using hazelcast)
+	 */
 	public boolean isDistributed() {
 		return m_distributed;
+	}
+	
+	/**
+	 * 
+	 * @return cache hit count
+	 */
+	public long getHit() {
+		return m_hit.get();
+	}
+	
+	/**
+	 * 
+	 * @return cache miss count
+	 */
+	public long getMiss() {
+		return m_miss.get();
+	}	
+	
+	/**
+	 * 
+	 * @return true if cache has expire
+	 */
+	public boolean isExpire() {
+		return m_expire > 0 && m_timeExp > 0 && m_timeExp < System.currentTimeMillis();
 	}
 }	//	CCache

@@ -23,19 +23,34 @@ import java.util.Properties;
 
 /** Generated Model for AD_BroadcastMessage
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_BroadcastMessage")
 public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName)
     {
       super (ctx, AD_BroadcastMessage_ID, trxName);
+      /** if (AD_BroadcastMessage_ID == 0)
+        {
+			setAD_BroadcastMessage_ID (0);
+			setBroadcastFrequency (null);
+			setBroadcastMessage (null);
+			setBroadcastType (null);
+			setTarget (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_BroadcastMessage_ID, trxName, virtualColumns);
       /** if (AD_BroadcastMessage_ID == 0)
         {
 			setAD_BroadcastMessage_ID (0);
@@ -69,27 +84,26 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_BroadcastMessage[")
+      StringBuilder sb = new StringBuilder ("X_AD_BroadcastMessage[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set Broadcast Message.
-		@param AD_BroadcastMessage_ID 
-		Broadcast Message
-	  */
+		@param AD_BroadcastMessage_ID Broadcast Message
+	*/
 	public void setAD_BroadcastMessage_ID (int AD_BroadcastMessage_ID)
 	{
-		if (AD_BroadcastMessage_ID < 1) 
+		if (AD_BroadcastMessage_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_BroadcastMessage_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_BroadcastMessage_ID, Integer.valueOf(AD_BroadcastMessage_ID));
 	}
 
 	/** Get Broadcast Message.
 		@return Broadcast Message
 	  */
-	public int getAD_BroadcastMessage_ID () 
+	public int getAD_BroadcastMessage_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_BroadcastMessage_ID);
 		if (ii == null)
@@ -98,7 +112,8 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	/** Set AD_BroadcastMessage_UU.
-		@param AD_BroadcastMessage_UU AD_BroadcastMessage_UU	  */
+		@param AD_BroadcastMessage_UU AD_BroadcastMessage_UU
+	*/
 	public void setAD_BroadcastMessage_UU (String AD_BroadcastMessage_UU)
 	{
 		set_Value (COLUMNNAME_AD_BroadcastMessage_UU, AD_BroadcastMessage_UU);
@@ -106,32 +121,32 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 
 	/** Get AD_BroadcastMessage_UU.
 		@return AD_BroadcastMessage_UU	  */
-	public String getAD_BroadcastMessage_UU () 
+	public String getAD_BroadcastMessage_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_BroadcastMessage_UU);
 	}
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_Value (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -140,26 +155,26 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -169,18 +184,17 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 
 	/** BroadcastFrequency AD_Reference_ID=200020 */
 	public static final int BROADCASTFREQUENCY_AD_Reference_ID=200020;
-	/** Just Once = J */
-	public static final String BROADCASTFREQUENCY_JustOnce = "J";
-	/** Until Expiration = E */
-	public static final String BROADCASTFREQUENCY_UntilExpiration = "E";
 	/** Until Acknowledge = A */
 	public static final String BROADCASTFREQUENCY_UntilAcknowledge = "A";
+	/** Until Expiration = E */
+	public static final String BROADCASTFREQUENCY_UntilExpiration = "E";
+	/** Just Once = J */
+	public static final String BROADCASTFREQUENCY_JustOnce = "J";
 	/** Until Expiration or Acknowledge = O */
 	public static final String BROADCASTFREQUENCY_UntilExpirationOrAcknowledge = "O";
 	/** Set Broadcast Frequency.
-		@param BroadcastFrequency 
-		How Many Times Message Should be Broadcasted
-	  */
+		@param BroadcastFrequency How Many Times Message Should be Broadcasted
+	*/
 	public void setBroadcastFrequency (String BroadcastFrequency)
 	{
 
@@ -190,15 +204,14 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** Get Broadcast Frequency.
 		@return How Many Times Message Should be Broadcasted
 	  */
-	public String getBroadcastFrequency () 
+	public String getBroadcastFrequency()
 	{
 		return (String)get_Value(COLUMNNAME_BroadcastFrequency);
 	}
 
 	/** Set Broadcast Message.
-		@param BroadcastMessage 
-		Broadcast Message
-	  */
+		@param BroadcastMessage Broadcast Message
+	*/
 	public void setBroadcastMessage (String BroadcastMessage)
 	{
 		set_Value (COLUMNNAME_BroadcastMessage, BroadcastMessage);
@@ -207,7 +220,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** Get Broadcast Message.
 		@return Broadcast Message
 	  */
-	public String getBroadcastMessage () 
+	public String getBroadcastMessage()
 	{
 		return (String)get_Value(COLUMNNAME_BroadcastMessage);
 	}
@@ -221,9 +234,8 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** Login = L */
 	public static final String BROADCASTTYPE_Login = "L";
 	/** Set Broadcast Type.
-		@param BroadcastType 
-		Type of Broadcast
-	  */
+		@param BroadcastType Type of Broadcast
+	*/
 	public void setBroadcastType (String BroadcastType)
 	{
 
@@ -233,15 +245,14 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** Get Broadcast Type.
 		@return Type of Broadcast
 	  */
-	public String getBroadcastType () 
+	public String getBroadcastType()
 	{
 		return (String)get_Value(COLUMNNAME_BroadcastType);
 	}
 
 	/** Set Expire On.
-		@param Expiration 
-		Expire On
-	  */
+		@param Expiration Expire On
+	*/
 	public void setExpiration (Timestamp Expiration)
 	{
 		set_Value (COLUMNNAME_Expiration, Expiration);
@@ -250,13 +261,14 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** Get Expire On.
 		@return Expire On
 	  */
-	public Timestamp getExpiration () 
+	public Timestamp getExpiration()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_Expiration);
 	}
 
 	/** Set Expired.
-		@param Expired Expired	  */
+		@param Expired Expired
+	*/
 	public void setExpired (boolean Expired)
 	{
 		set_Value (COLUMNNAME_Expired, Boolean.valueOf(Expired));
@@ -264,7 +276,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 
 	/** Get Expired.
 		@return Expired	  */
-	public boolean isExpired () 
+	public boolean isExpired()
 	{
 		Object oo = get_Value(COLUMNNAME_Expired);
 		if (oo != null) 
@@ -277,9 +289,8 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	/** Set Expire Now.
-		@param ExpireNow 
-		Expire the broadcast message
-	  */
+		@param ExpireNow Expire the broadcast message
+	*/
 	public void setExpireNow (String ExpireNow)
 	{
 		set_Value (COLUMNNAME_ExpireNow, ExpireNow);
@@ -288,15 +299,14 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** Get Expire Now.
 		@return Expire the broadcast message
 	  */
-	public String getExpireNow () 
+	public String getExpireNow()
 	{
 		return (String)get_Value(COLUMNNAME_ExpireNow);
 	}
 
 	/** Set Published.
-		@param IsPublished 
-		The Topic is published and can be viewed
-	  */
+		@param IsPublished The Topic is published and can be viewed
+	*/
 	public void setIsPublished (boolean IsPublished)
 	{
 		set_Value (COLUMNNAME_IsPublished, Boolean.valueOf(IsPublished));
@@ -305,7 +315,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** Get Published.
 		@return The Topic is published and can be viewed
 	  */
-	public boolean isPublished () 
+	public boolean isPublished()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPublished);
 		if (oo != null) 
@@ -318,9 +328,8 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	/** Set Log Acknowledge.
-		@param LogAcknowledge 
-		Want to Log the Acknowledgement of Message?
-	  */
+		@param LogAcknowledge Want to Log the Acknowledgement of Message?
+	*/
 	public void setLogAcknowledge (boolean LogAcknowledge)
 	{
 		set_Value (COLUMNNAME_LogAcknowledge, Boolean.valueOf(LogAcknowledge));
@@ -329,7 +338,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** Get Log Acknowledge.
 		@return Want to Log the Acknowledgement of Message?
 	  */
-	public boolean isLogAcknowledge () 
+	public boolean isLogAcknowledge()
 	{
 		Object oo = get_Value(COLUMNNAME_LogAcknowledge);
 		if (oo != null) 
@@ -342,21 +351,20 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	/** Set Notification Client.
-		@param Notification_Client_ID 
-		Notification Client
-	  */
+		@param Notification_Client_ID Notification Client
+	*/
 	public void setNotification_Client_ID (int Notification_Client_ID)
 	{
-		if (Notification_Client_ID < 1) 
+		if (Notification_Client_ID < 1)
 			set_Value (COLUMNNAME_Notification_Client_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Notification_Client_ID, Integer.valueOf(Notification_Client_ID));
 	}
 
 	/** Get Notification Client.
 		@return Notification Client
 	  */
-	public int getNotification_Client_ID () 
+	public int getNotification_Client_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Notification_Client_ID);
 		if (ii == null)
@@ -365,9 +373,8 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -376,7 +383,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -389,9 +396,8 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	/** Set Publish.
-		@param Publish 
-		Publish Broadcast Message
-	  */
+		@param Publish Publish Broadcast Message
+	*/
 	public void setPublish (String Publish)
 	{
 		set_Value (COLUMNNAME_Publish, Publish);
@@ -400,7 +406,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** Get Publish.
 		@return Publish Broadcast Message
 	  */
-	public String getPublish () 
+	public String getPublish()
 	{
 		return (String)get_Value(COLUMNNAME_Publish);
 	}
@@ -416,9 +422,8 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** User = U */
 	public static final String TARGET_User = "U";
 	/** Set Target.
-		@param Target 
-		Target client
-	  */
+		@param Target Target client
+	*/
 	public void setTarget (String Target)
 	{
 
@@ -428,15 +433,14 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** Get Target.
 		@return Target client
 	  */
-	public String getTarget () 
+	public String getTarget()
 	{
 		return (String)get_Value(COLUMNNAME_Target);
 	}
 
 	/** Set Test Message.
-		@param TestMessage 
-		Test broadcast message
-	  */
+		@param TestMessage Test broadcast message
+	*/
 	public void setTestMessage (String TestMessage)
 	{
 		set_Value (COLUMNNAME_TestMessage, TestMessage);
@@ -445,8 +449,24 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** Get Test Message.
 		@return Test broadcast message
 	  */
-	public String getTestMessage () 
+	public String getTestMessage()
 	{
 		return (String)get_Value(COLUMNNAME_TestMessage);
+	}
+
+	/** Set Title.
+		@param Title Name this entity is referred to as
+	*/
+	public void setTitle (String Title)
+	{
+		set_Value (COLUMNNAME_Title, Title);
+	}
+
+	/** Get Title.
+		@return Name this entity is referred to as
+	  */
+	public String getTitle()
+	{
+		return (String)get_Value(COLUMNNAME_Title);
 	}
 }

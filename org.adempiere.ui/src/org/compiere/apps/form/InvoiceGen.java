@@ -132,9 +132,12 @@ public class InvoiceGen extends GenForm
 		sql.append("AND EXISTS (SELECT * from C_InvoiceLine il inner join M_InOutLine iol ");
 		sql.append("on il.M_InOutLine_ID=iol.M_InOutLine_ID inner join C_Invoice i ");
 		sql.append("on i.C_Invoice_ID=il.C_Invoice_ID where i.DocStatus IN ('CO', 'CL') ");
-		sql.append("AND iol.M_InOutLine_ID IN ");
-		sql.append("(SELECT M_InOutLine_ID from M_RMALine rl where rl.M_RMA_ID=rma.M_RMA_ID ");
-		sql.append("AND rl.M_InOutLine_ID IS NOT NULL)) ");
+		//MPo, 23/07/2020
+		//sql.append("AND iol.M_InOutLine_ID IN ");
+		//sql.append("(SELECT M_InOutLine_ID from M_RMALine rl where rl.M_RMA_ID=rma.M_RMA_ID ");
+		//sql.append("AND rl.M_InOutLine_ID IS NOT NULL)) ");
+		sql.append("AND EXISTS (SELECT 1 FROM m_rmaline rl WHERE rl.m_rma_id = rma.m_rma_id AND iol.m_inoutline_id = rl.m_inoutline_id AND rl.m_inoutline_id IS NOT null)) ");
+		//
 		sql.append("AND rma.AD_Client_ID=?");
 
         if (m_AD_Org_ID != null)
@@ -212,8 +215,7 @@ public class InvoiceGen extends GenForm
 	}   //  executeQuery
 	
 	/**
-	 *	Save Selection & return selecion Query or ""
-	 *  @return where clause like C_Order_ID IN (...)
+	 *	Save Selection and return selection Query or ""
 	 */
 	public void saveSelection(IMiniTable miniTable)
 	{

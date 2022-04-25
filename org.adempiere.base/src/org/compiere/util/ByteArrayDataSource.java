@@ -157,7 +157,7 @@ public class ByteArrayDataSource
 	}	//	setName
 
 	/**
-	 * 	Return Name or Class Name & Content Type
+	 * 	Return Name or Class Name and Content Type
 	 * 	@return dummy
 	 */
 	public String getName ()

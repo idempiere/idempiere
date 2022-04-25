@@ -36,4 +36,9 @@ public class MPromotionDistribution extends X_M_PromotionDistribution {
 		super(ctx, rs, trxName);
 	}
 
+	public MPromotionDistribution(Properties ctx, int M_PromotionDistribution_ID, String trxName,
+			String... virtualColumns) {
+		super(ctx, M_PromotionDistribution_ID, trxName, virtualColumns);
+	}
+
 }

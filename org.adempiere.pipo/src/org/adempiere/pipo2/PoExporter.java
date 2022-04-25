@@ -1,11 +1,20 @@
 package org.adempiere.pipo2;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.I_AD_Org;
+import org.compiere.model.MArchive;
+import org.compiere.model.MAttachment;
+import org.compiere.model.MClientInfo;
+import org.compiere.model.MImage;
+import org.compiere.model.MStorageProvider;
 import org.compiere.model.MTable;
 import org.compiere.model.MTree;
 import org.compiere.model.PO;
@@ -14,6 +23,7 @@ import org.compiere.model.X_AD_Client;
 import org.compiere.model.X_AD_Image;
 import org.compiere.model.X_AD_Org;
 import org.compiere.model.X_C_Location;
+import org.compiere.model.X_M_AttributeSetInstance;
 import org.compiere.model.X_M_Locator;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -29,6 +39,9 @@ public class PoExporter {
 	private PIPOContext ctx;
 
 	private TransformerHandler transformerHandler;
+
+	public static final String POEXPORTER_BLOB_TYPE_STRING = "string";
+	public static final String POEXPORTER_BLOB_TYPE_BYTEARRAY = "byte[]";
 
 	private void addTextElement(String qName, String text, AttributesImpl atts) {
 		try {
@@ -96,19 +109,17 @@ public class PoExporter {
 
 
 	/**
-	 *
-	 * @param name
 	 * @param columnName
+	 * @param atts
 	 */
 	public void add(String columnName, AttributesImpl atts) {
 		add(columnName, "", atts);
 	}
 
 	/**
-	 *
-	 * @param name
 	 * @param columnName
 	 * @param defaultValue
+	 * @param atts
 	 */
 	public void add(String columnName, String defaultValue, AttributesImpl atts) {
 		Object value = po.get_Value(columnName);
@@ -183,12 +194,12 @@ public class PoExporter {
 		if (AD_Client_ID == 0)
 		{
 			addString("AD_Client_ID", "0", new AttributesImpl());
-			if (excludes == null || !excludes.contains("AD_Org_ID"))
+			if (excludes == null || !excludes.contains("ad_org_id"))
 				addString("AD_Org_ID", "0", new AttributesImpl());
 		}
 		else
 		{
-			if (excludes == null || !excludes.contains("AD_Org_ID"))
+			if (excludes == null || !excludes.contains("ad_org_id"))
 			{
 				int AD_Org_ID = po.getAD_Org_ID();
 				if (AD_Org_ID == 0)
@@ -201,7 +212,8 @@ public class PoExporter {
 						addString("AD_Org_ID", "@AD_Org_ID@", new AttributesImpl());
 					else {
 						addTableReference("AD_Client_ID", X_AD_Client.Table_Name, new AttributesImpl());
-						addTableReference("AD_Org_ID", X_AD_Org.Table_Name, new AttributesImpl());
+						if (!(I_AD_Org.Table_Name.equals(po.get_TableName())))
+							addTableReference("AD_Org_ID", X_AD_Org.Table_Name, new AttributesImpl());
 					}
 				}
 			}
@@ -253,7 +265,7 @@ public class PoExporter {
 					tableName = columnName.substring(0, columnName.length() - 3);
 				}
 				addTableReference(columnName, tableName, new AttributesImpl());
-			} else if (DisplayType.List == displayType) {
+			} else if (DisplayType.isList(displayType)) {
 				add(columnName, "", new AttributesImpl());
 			} else if (DisplayType.isLookup(displayType)) {
 				String tableName = null;
@@ -279,6 +291,8 @@ public class PoExporter {
 			    addTableReference(columnName, X_C_Location.Table_Name, new AttributesImpl());
 			} else if (DisplayType.Image == displayType) {
 				addTableReference(columnName, X_AD_Image.Table_Name, new AttributesImpl());
+			} else if (DisplayType.PAttribute == displayType) {
+			    addTableReference(columnName, X_M_AttributeSetInstance.Table_Name, new AttributesImpl());
 			} else {
 				add(columnName, "", new AttributesImpl());
 			}
@@ -292,17 +306,50 @@ public class PoExporter {
 			return;
 		}
 
+		if ("BinaryData".equals(columnName)) {
+			MClientInfo ci = MClientInfo.get(po.getAD_Client_ID());
+			if (po.get_Table_ID() == MAttachment.Table_ID && ci.getAD_StorageProvider_ID() > 0) {
+				MStorageProvider sp = MStorageProvider.get(po.getCtx(), ci.getAD_StorageProvider_ID());
+				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
+					MAttachment att = new MAttachment(po.getCtx(), po.get_ID(), po.get_TrxName());
+					File tmpfile = att.saveAsZip();
+					try {
+						value = Files.readAllBytes(tmpfile.toPath());
+					} catch (IOException e) {
+						throw new AdempiereException(e);
+					}
+				}
+			} else if (po.get_Table_ID() == MImage.Table_ID && ci.getStorageImage_ID() > 0) {
+				MStorageProvider sp = MStorageProvider.get(po.getCtx(), ci.getStorageImage_ID());
+				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
+					MImage image = new MImage(po.getCtx(), po.get_ID(), po.get_TrxName());
+					value = image.getBinaryData();
+				}
+			} else if (po.get_Table_ID() == MArchive.Table_ID && ci.getStorageArchive_ID() > 0) {
+				MStorageProvider sp = MStorageProvider.get(po.getCtx(), ci.getStorageArchive_ID());
+				if (! MStorageProvider.METHOD_Database.equals(sp.getMethod())) {
+					MArchive archive = new MArchive(po.getCtx(), po.get_ID(), po.get_TrxName());
+					File tmpfile = archive.saveAsZip();
+					try {
+						value = Files.readAllBytes(tmpfile.toPath());
+					} catch (IOException e) {
+						throw new AdempiereException(e);
+					}
+				}
+			}
+		}
+		
 		PackOut packOut = ctx.packOut;
 		byte[] data = null;
-		String dataType = null;
+		String dataType = null; // see PoFiller.isBlobOnPackinFile
 		String fileName = null;
 		try {
 			if (value instanceof String) {
 				data = ((String)value).getBytes("UTF-8");
-				dataType = "string";
+				dataType = POEXPORTER_BLOB_TYPE_STRING;
 			} else {
 				data = (byte[]) value;
-				dataType = "byte[]";
+				dataType = POEXPORTER_BLOB_TYPE_BYTEARRAY;
 			}
 
 			fileName = packOut.writeBlob(data);

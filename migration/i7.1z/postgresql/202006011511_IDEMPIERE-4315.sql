@@ -1,0 +1,24 @@
+-- IDEMPIERE-4315 Allow showing Change Log for extension tables
+-- Jun 1, 2020, 3:09:46 PM CEST
+UPDATE AD_Table SET IsChangeLog='Y',Updated=TO_TIMESTAMP('2020-06-01 15:09:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=227
+;
+
+-- Jun 1, 2020, 3:09:52 PM CEST
+UPDATE AD_Table SET IsChangeLog='Y',Updated=TO_TIMESTAMP('2020-06-01 15:09:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=228
+;
+
+-- Jun 1, 2020, 3:09:57 PM CEST
+UPDATE AD_Table SET IsChangeLog='Y',Updated=TO_TIMESTAMP('2020-06-01 15:09:57','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=103
+;
+
+-- Jun 1, 2020, 3:10:01 PM CEST
+UPDATE AD_Table SET IsChangeLog='Y',Updated=TO_TIMESTAMP('2020-06-01 15:10:01','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=315
+;
+
+-- Jun 1, 2020, 3:10:06 PM CEST
+UPDATE AD_Table SET IsChangeLog='Y',Updated=TO_TIMESTAMP('2020-06-01 15:10:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=266
+;
+
+SELECT register_migration_script('202006011511_IDEMPIERE-4315.sql') FROM dual
+;
+

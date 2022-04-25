@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -134,7 +133,7 @@ public class ReportEngineEx { //extends  ReportEngine  {
 						{
 							td td = new td();
 							tr.addElement(td);
-							Object obj = m_printData.getNode(Integer.valueOf(item.getAD_Column_ID()));
+							Object obj = m_printData.getNodeByPrintFormatItem(item);
 							if (obj == null)
 								td.addElement("&nbsp;");
 							else if (obj instanceof PrintDataElement)

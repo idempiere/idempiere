@@ -25,7 +25,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.acct.Doc;
-import org.compiere.model.X_M_CostHistory;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -37,11 +36,11 @@ import org.compiere.util.Env;
  *  @author Armen Rizal, Goodwill Consulting
  *  	<li>BF: 2431123 Return Trx changes weighted average cost
  *  	<li>BF: 1568752 Average invoice costing: landed costs incorrectly applied
- *  @author Armen Rizal & Bayu Cahya
+ *  @author Armen Rizal and Bayu Cahya
  *  	<li>BF [ 2129781 ] Cost Detail not created properly for multi acc schema
  *  @author Teo Sarca
- *  	<li>BF [ 2847648 ] Manufacture & shipment cost errors
- *  		https://sourceforge.net/tracker/?func=detail&aid=2847648&group_id=176962&atid=934929
+ *  	<li>BF [ 2847648 ] Manufacture and shipment cost errors
+ *  		https://sourceforge.net/p/adempiere/libero/237/
  * 	@author red1 FR: [ 2214883 ] Remove SQL code and Replace for Query
  *  @version $Id: MCostDetail.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  *  
@@ -705,12 +704,7 @@ public class MCostDetail extends X_M_CostDetail
 		super (ctx, M_CostDetail_ID, trxName);
 		if (M_CostDetail_ID == 0)
 		{
-		//	setC_AcctSchema_ID (0);
-		//	setM_Product_ID (0);
 			setM_AttributeSetInstance_ID (0);
-		//	setC_OrderLine_ID (0);
-		//	setM_InOutLine_ID(0);
-		//	setC_InvoiceLine_ID (0);
 			setProcessed (false);
 			setAmt (Env.ZERO);
 			setQty (Env.ZERO);
@@ -1001,10 +995,6 @@ public class MCostDetail extends X_M_CostDetail
 		
 		DB.getDatabase().forUpdate(cost, 120);
 		
-	//	if (cost == null)
-	//		cost = new MCost(product, M_ASI_ID, 
-	//			as, Org_ID, ce.getM_CostElement_ID());
-		
 		//save history for m_cost
 		X_M_CostHistory history = new X_M_CostHistory(getCtx(), 0, get_TrxName());
 		history.setM_AttributeSetInstance_ID(cost.getM_AttributeSetInstance_ID());
@@ -1049,18 +1039,6 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal price = amt;
 		if (qty.signum() != 0)
 			price = amt.divide(qty, precision, RoundingMode.HALF_UP);
-		
-		/** All Costing Methods
-		if (ce.isAverageInvoice())
-		else if (ce.isAveragePO())
-		else if (ce.isFifo())
-		else if (ce.isLifo())
-		else if (ce.isLastInvoice())
-		else if (ce.isLastPOPrice())
-		else if (ce.isStandardCosting())
-		else if (ce.isUserDefined())
-		else if (!ce.isCostingMethod())
-		**/
 		
 		//	*** Purchase Order Detail Record ***
 		if (getC_OrderLine_ID() != 0)
@@ -1113,8 +1091,6 @@ public class MCostDetail extends X_M_CostDetail
 			{
 				if (log.isLoggable(Level.FINER)) log.finer("PO - " + ce + " - " + cost);
 			}
-		//	else
-		//		log.warning("PO - " + ce + " - " + cost);
 		}
 		
 		//	*** AP Invoice Detail Record ***
@@ -1186,8 +1162,6 @@ public class MCostDetail extends X_M_CostDetail
 				cost.add(amt, qty);
 				if (log.isLoggable(Level.FINER)) log.finer("Inv - UserDef - " + cost);
 			}			
-		//	else
-		//		log.warning("Inv - " + ce + " - " + cost);
 		}
 		else if (getM_InOutLine_ID() != 0 && costAdjustment)
 		{

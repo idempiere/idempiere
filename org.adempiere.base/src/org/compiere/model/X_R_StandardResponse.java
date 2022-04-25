@@ -23,19 +23,32 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_StandardResponse
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="R_StandardResponse")
 public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_StandardResponse (Properties ctx, int R_StandardResponse_ID, String trxName)
     {
       super (ctx, R_StandardResponse_ID, trxName);
+      /** if (R_StandardResponse_ID == 0)
+        {
+			setName (null);
+			setResponseText (null);
+			setR_StandardResponse_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_StandardResponse (Properties ctx, int R_StandardResponse_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_StandardResponse_ID, trxName, virtualColumns);
       /** if (R_StandardResponse_ID == 0)
         {
 			setName (null);
@@ -67,15 +80,14 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_StandardResponse[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_R_StandardResponse[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -84,7 +96,7 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -98,9 +110,8 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
     }
 
 	/** Set Response Text.
-		@param ResponseText 
-		Request Response Text
-	  */
+		@param ResponseText Request Response Text
+	*/
 	public void setResponseText (String ResponseText)
 	{
 		set_Value (COLUMNNAME_ResponseText, ResponseText);
@@ -109,27 +120,26 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
 	/** Get Response Text.
 		@return Request Response Text
 	  */
-	public String getResponseText () 
+	public String getResponseText()
 	{
 		return (String)get_Value(COLUMNNAME_ResponseText);
 	}
 
 	/** Set Standard Response.
-		@param R_StandardResponse_ID 
-		Request Standard Response 
-	  */
+		@param R_StandardResponse_ID Request Standard Response 
+	*/
 	public void setR_StandardResponse_ID (int R_StandardResponse_ID)
 	{
-		if (R_StandardResponse_ID < 1) 
+		if (R_StandardResponse_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_StandardResponse_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_StandardResponse_ID, Integer.valueOf(R_StandardResponse_ID));
 	}
 
 	/** Get Standard Response.
 		@return Request Standard Response 
 	  */
-	public int getR_StandardResponse_ID () 
+	public int getR_StandardResponse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_StandardResponse_ID);
 		if (ii == null)
@@ -138,7 +148,8 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
 	}
 
 	/** Set R_StandardResponse_UU.
-		@param R_StandardResponse_UU R_StandardResponse_UU	  */
+		@param R_StandardResponse_UU R_StandardResponse_UU
+	*/
 	public void setR_StandardResponse_UU (String R_StandardResponse_UU)
 	{
 		set_Value (COLUMNNAME_R_StandardResponse_UU, R_StandardResponse_UU);
@@ -146,7 +157,7 @@ public class X_R_StandardResponse extends PO implements I_R_StandardResponse, I_
 
 	/** Get R_StandardResponse_UU.
 		@return R_StandardResponse_UU	  */
-	public String getR_StandardResponse_UU () 
+	public String getR_StandardResponse_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_StandardResponse_UU);
 	}

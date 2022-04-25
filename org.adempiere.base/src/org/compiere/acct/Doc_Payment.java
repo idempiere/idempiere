@@ -25,6 +25,7 @@ import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBankAccount;
 import org.compiere.model.MCharge;
+import org.compiere.model.MClientInfo;
 import org.compiere.model.MPayment;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
@@ -42,7 +43,7 @@ public class Doc_Payment extends Doc
 {
 	/**
 	 *  Constructor
-	 * 	@param ass accounting schema
+	 * 	@param as accounting schema
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
@@ -82,7 +83,6 @@ public class Doc_Payment extends Doc
 	public BigDecimal getBalance()
 	{
 		BigDecimal retValue = Env.ZERO;
-	//	log.config( toString() + " Balance=" + retValue);
 		return retValue;
 	}   //  getBalance
 
@@ -185,4 +185,34 @@ public class Doc_Payment extends Doc
 		return ba.getAD_Org_ID();
 	}	//	getBank_Org_ID
 
+
+	@Override
+	public BigDecimal getCurrencyRate() {
+		if (getC_Currency_ID() == getAcctSchema().getC_Currency_ID())
+			return null;
+		
+		MPayment pay = (MPayment)getPO();
+		int baseCurrencyId = MClientInfo.get(getCtx(), pay.getAD_Client_ID()).getC_Currency_ID();
+		if (baseCurrencyId != getAcctSchema().getC_Currency_ID())
+			return null;
+		
+		if (pay.isOverrideCurrencyRate()) {
+			return pay.getCurrencyRate();
+		} else {
+			return null;
+		}		
+	}	
+	
+	@Override
+	public boolean isConvertible (MAcctSchema acctSchema) {
+		MPayment pay = (MPayment)getPO();
+		if (pay.getC_Currency_ID() != acctSchema.getC_Currency_ID()) {
+			int baseCurrencyId = MClientInfo.get(getCtx(), pay.getAD_Client_ID()).getC_Currency_ID();
+			if (baseCurrencyId == acctSchema.getC_Currency_ID() && pay.isOverrideCurrencyRate()) {
+				return true;
+			}
+		}
+		
+		return super.isConvertible(acctSchema);
+	}
 }   //  Doc_Payment

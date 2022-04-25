@@ -32,6 +32,7 @@ import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.DataElementParameters;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
+import org.adempiere.pipo2.IHandlerRegistry;
 import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PackoutItem;
@@ -50,6 +51,7 @@ import org.compiere.model.PO;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -131,13 +133,10 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		int tableId = Env.getContextAsInt(ctx.ctx, DataElementParameters.AD_TABLE_ID);
 		String tableName = MTable.getTableName(ctx.ctx, tableId);
 		List<String> excludes = defaultExcludeList(tableName);
-		boolean checkExcluded = ! sql.toLowerCase().startsWith("select *");
-		Statement stmt = null;
-		ResultSet rs = null;
-		try {
-			sql = MRole.getDefault().addAccessSQL(sql, tableName, true, true);
-			stmt = DB.createStatement();
-			rs = stmt.executeQuery(sql);
+		boolean checkExcluded = ! sql.toLowerCase().startsWith("select *");				
+		try (Statement stmt = DB.createStatement();) {
+			sql = MRole.getDefault().addAccessSQL(sql, tableName, true, true);			
+			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				GenericPO po = new GenericPO(tableName, ctx.ctx, rs, getTrxName(ctx));
 				int AD_Client_ID = po.getAD_Client_ID();
@@ -172,7 +171,9 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 				}
 
 				if (createElement) {
-					if (po.get_KeyColumns() != null && po.get_KeyColumns().length == 1 && po.get_ID() > 0) {
+					// 
+					if (po.get_KeyColumns() != null && po.get_KeyColumns().length == 1 && po.get_ID() > 0
+						&& ! IHandlerRegistry.TABLE_GENERIC_SINGLE_HANDLER.equals(ctx.packOut.getCurrentPackoutItem().getType())) {
 						ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());
 						if (handler != null && !handler.getClass().equals(this.getClass()) ) {
 							handler.packOut(ctx.packOut, document, ctx.logDocument, po.get_ID());
@@ -184,6 +185,10 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						addTypeName(atts, "table");
 						document.startElement("","", tableName, atts);
 						PoExporter filler = new PoExporter(ctx, document, po);
+						if (MColumn.Table_Name.equals(po.get_TableName())) {
+							filler.addString("IsSyncDatabase", "Y", new AttributesImpl());
+							excludes.add("IsSyncDatabase");
+						}
 						filler.export(excludes, true);
 						ctx.packOut.getCtx().ctx.put("Table_Name",tableName);
 						try {
@@ -196,6 +201,9 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 
 				for (int i = 1; i < components.length; i++) {
 					String tables[] = components[i].split("[>]");
+					for (int nameIndex = 0; nameIndex < tables.length; nameIndex++) {
+						tables [nameIndex] = tables[nameIndex].trim();
+					}
 					exportDetail(ctx, document, po, tables);
 				}
 
@@ -205,8 +213,6 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 			}
 		} catch (Exception e)	{
 			throw new AdempiereException(e);
-		} finally {
-			DB.close(rs, stmt);
 		}
 	}
 
@@ -229,13 +235,21 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 
 				boolean createElement = isPackOutElement(ctx, po);
 				if (createElement) {
-					if (po.get_ID() > 0) {
-						ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());
-						if (handler != null && !handler.getClass().equals(this.getClass()) ) {
+
+					ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());
+					if (handler != null && !handler.getClass().equals(this.getClass())) {
+						if (po.get_ID() > 0 && po.get_KeyColumns().length==1) {
 							handler.packOut(ctx.packOut, document, ctx.logDocument, po.get_ID());
 							createElement = false;
+						} else {
+							String uuid = po.get_ValueAsString(po.getUUIDColumnName());
+							if (!Util.isEmpty(uuid, true)) {
+								handler.packOut(ctx.packOut, document, ctx.logDocument, -1, uuid);
+								createElement = false;
+							}
 						}
 					}
+
 					if (createElement) {
 						verifyPackOutRequirement(po);
 						List<String> excludes = defaultExcludeList(mainTable);

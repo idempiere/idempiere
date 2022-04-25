@@ -22,19 +22,32 @@ import java.util.Properties;
 
 /** Generated Model for AD_SchedulerLog
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_SchedulerLog")
 public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_SchedulerLog (Properties ctx, int AD_SchedulerLog_ID, String trxName)
     {
       super (ctx, AD_SchedulerLog_ID, trxName);
+      /** if (AD_SchedulerLog_ID == 0)
+        {
+			setAD_Scheduler_ID (0);
+			setAD_SchedulerLog_ID (0);
+			setIsError (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_SchedulerLog (Properties ctx, int AD_SchedulerLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_SchedulerLog_ID, trxName, virtualColumns);
       /** if (AD_SchedulerLog_ID == 0)
         {
 			setAD_Scheduler_ID (0);
@@ -66,32 +79,32 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_SchedulerLog[")
+      StringBuilder sb = new StringBuilder ("X_AD_SchedulerLog[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Scheduler getAD_Scheduler() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Scheduler)MTable.get(getCtx(), org.compiere.model.I_AD_Scheduler.Table_Name)
-			.getPO(getAD_Scheduler_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Scheduler)MTable.get(getCtx(), org.compiere.model.I_AD_Scheduler.Table_ID)
+			.getPO(getAD_Scheduler_ID(), get_TrxName());
+	}
 
 	/** Set Scheduler.
-		@param AD_Scheduler_ID 
-		Schedule Processes
-	  */
+		@param AD_Scheduler_ID Schedule Processes
+	*/
 	public void setAD_Scheduler_ID (int AD_Scheduler_ID)
 	{
-		if (AD_Scheduler_ID < 1) 
+		if (AD_Scheduler_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Scheduler_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Scheduler_ID, Integer.valueOf(AD_Scheduler_ID));
 	}
 
 	/** Get Scheduler.
 		@return Schedule Processes
 	  */
-	public int getAD_Scheduler_ID () 
+	public int getAD_Scheduler_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Scheduler_ID);
 		if (ii == null)
@@ -100,21 +113,20 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 	}
 
 	/** Set Scheduler Log.
-		@param AD_SchedulerLog_ID 
-		Result of the execution of the Scheduler
-	  */
+		@param AD_SchedulerLog_ID Result of the execution of the Scheduler
+	*/
 	public void setAD_SchedulerLog_ID (int AD_SchedulerLog_ID)
 	{
-		if (AD_SchedulerLog_ID < 1) 
+		if (AD_SchedulerLog_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_SchedulerLog_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_SchedulerLog_ID, Integer.valueOf(AD_SchedulerLog_ID));
 	}
 
 	/** Get Scheduler Log.
 		@return Result of the execution of the Scheduler
 	  */
-	public int getAD_SchedulerLog_ID () 
+	public int getAD_SchedulerLog_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_SchedulerLog_ID);
 		if (ii == null)
@@ -123,7 +135,8 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 	}
 
 	/** Set AD_SchedulerLog_UU.
-		@param AD_SchedulerLog_UU AD_SchedulerLog_UU	  */
+		@param AD_SchedulerLog_UU AD_SchedulerLog_UU
+	*/
 	public void setAD_SchedulerLog_UU (String AD_SchedulerLog_UU)
 	{
 		set_Value (COLUMNNAME_AD_SchedulerLog_UU, AD_SchedulerLog_UU);
@@ -131,15 +144,14 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 
 	/** Get AD_SchedulerLog_UU.
 		@return AD_SchedulerLog_UU	  */
-	public String getAD_SchedulerLog_UU () 
+	public String getAD_SchedulerLog_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_SchedulerLog_UU);
 	}
 
 	/** Set Binary Data.
-		@param BinaryData 
-		Binary Data
-	  */
+		@param BinaryData Binary Data
+	*/
 	public void setBinaryData (byte[] BinaryData)
 	{
 		set_Value (COLUMNNAME_BinaryData, BinaryData);
@@ -148,15 +160,14 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 	/** Get Binary Data.
 		@return Binary Data
 	  */
-	public byte[] getBinaryData () 
+	public byte[] getBinaryData()
 	{
 		return (byte[])get_Value(COLUMNNAME_BinaryData);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -165,15 +176,14 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Error.
-		@param IsError 
-		An Error occurred in the execution
-	  */
+		@param IsError An Error occurred in the execution
+	*/
 	public void setIsError (boolean IsError)
 	{
 		set_Value (COLUMNNAME_IsError, Boolean.valueOf(IsError));
@@ -182,7 +192,7 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 	/** Get Error.
 		@return An Error occurred in the execution
 	  */
-	public boolean isError () 
+	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
 		if (oo != null) 
@@ -195,9 +205,8 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 	}
 
 	/** Set Reference.
-		@param Reference 
-		Reference for this record
-	  */
+		@param Reference Reference for this record
+	*/
 	public void setReference (String Reference)
 	{
 		set_Value (COLUMNNAME_Reference, Reference);
@@ -206,15 +215,14 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 	/** Get Reference.
 		@return Reference for this record
 	  */
-	public String getReference () 
+	public String getReference()
 	{
 		return (String)get_Value(COLUMNNAME_Reference);
 	}
 
 	/** Set Summary.
-		@param Summary 
-		Textual summary of this request
-	  */
+		@param Summary Textual summary of this request
+	*/
 	public void setSummary (String Summary)
 	{
 		set_Value (COLUMNNAME_Summary, Summary);
@@ -223,15 +231,14 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 	/** Get Summary.
 		@return Textual summary of this request
 	  */
-	public String getSummary () 
+	public String getSummary()
 	{
 		return (String)get_Value(COLUMNNAME_Summary);
 	}
 
 	/** Set Text Message.
-		@param TextMsg 
-		Text Message
-	  */
+		@param TextMsg Text Message
+	*/
 	public void setTextMsg (String TextMsg)
 	{
 		set_Value (COLUMNNAME_TextMsg, TextMsg);
@@ -240,7 +247,7 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 	/** Get Text Message.
 		@return Text Message
 	  */
-	public String getTextMsg () 
+	public String getTextMsg()
 	{
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}

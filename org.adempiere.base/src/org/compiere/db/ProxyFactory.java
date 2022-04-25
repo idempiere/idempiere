@@ -103,4 +103,19 @@ public class ProxyFactory {
 				new Class[]{CCallableStatement.class}, 
 				new CallableStatementProxy(info));
 	}
+	
+	/**
+	 * new proxy instance for read replica prepared statement
+	 * @param resultSetType
+	 * @param resultSetConcurrency
+	 * @param sql
+	 * @return {@link CPreparedStatement}
+	 */
+	public static CPreparedStatement newReadReplicaPreparedStatement(int resultSetType, int resultSetConcurrency, String sql) {
+		ReadReplicaPreparedStatementProxy handler = new ReadReplicaPreparedStatementProxy(resultSetType, resultSetConcurrency, sql);
+		if (handler.isValid())
+			return (CPreparedStatement)Proxy.newProxyInstance(CPreparedStatement.class.getClassLoader(), new Class[]{CPreparedStatement.class}, handler);
+		else
+			return null;
+	}
 }

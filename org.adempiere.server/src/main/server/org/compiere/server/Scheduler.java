@@ -17,6 +17,7 @@
 package org.compiere.server;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,7 +31,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.upload.IUploadHandler;
+import org.adempiere.base.upload.IUploadService;
+import org.adempiere.base.upload.UploadMedia;
+import org.adempiere.base.upload.UploadResponse;
 import org.compiere.model.MAttachment;
+import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
 import org.compiere.model.MMailText;
 import org.compiere.model.MNote;
@@ -42,19 +49,23 @@ import org.compiere.model.MRole;
 import org.compiere.model.MScheduler;
 import org.compiere.model.MSchedulerLog;
 import org.compiere.model.MSchedulerPara;
+import org.compiere.model.MSchedulerRecipient;
+import org.compiere.model.MSession;
 import org.compiere.model.MUser;
+import org.compiere.model.PO;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.process.ServerProcessCtl;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.EMail;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
-
+import org.idempiere.cache.ImmutableIntPOCache;
 
 /**
  *	Scheduler
@@ -84,8 +95,10 @@ public class Scheduler extends AdempiereServer
 	protected Trx					m_trx = null;
 
 	protected int AD_Scheduler_ID;
+	
+	protected ProcessInfo pi;
 
-	private static CCache<Integer,MScheduler> s_cache = new CCache<Integer,MScheduler>(MScheduler.Table_Name, 10, 60, true);
+	private static ImmutableIntPOCache<Integer,MScheduler> s_cache = new ImmutableIntPOCache<Integer,MScheduler>(MScheduler.Table_Name, 10, 60);
 
 	/**
 	 * 	Work
@@ -95,28 +108,36 @@ public class Scheduler extends AdempiereServer
 		MScheduler scheduler = get(getCtx(), AD_Scheduler_ID);
 		m_summary = new StringBuffer(scheduler.toString())
 			.append(" - ");
+		pi = null;
 
 		// Prepare a ctx for the report/process - BF [1966880]
 		MClient schedclient = MClient.get(getCtx(), scheduler.getAD_Client_ID());
-		Env.setContext(getCtx(), "#AD_Client_ID", schedclient.getAD_Client_ID());
-		Env.setContext(getCtx(), "#AD_Language", schedclient.getAD_Language());
-		Env.setContext(getCtx(), "#AD_Org_ID", scheduler.getAD_Org_ID());
+		Env.setContext(getCtx(), Env.AD_CLIENT_ID, schedclient.getAD_Client_ID());
+		Env.setContext(getCtx(), Env.LANGUAGE, schedclient.getAD_Language());
+		Env.setContext(getCtx(), Env.AD_ORG_ID, scheduler.getAD_Org_ID());
 		if (scheduler.getAD_Org_ID() != 0) {
 			MOrgInfo schedorg = MOrgInfo.get(getCtx(), scheduler.getAD_Org_ID(), null);
 			if (schedorg.getM_Warehouse_ID() > 0)
-				Env.setContext(getCtx(), "#M_Warehouse_ID", schedorg.getM_Warehouse_ID());
+				Env.setContext(getCtx(), Env.M_WAREHOUSE_ID, schedorg.getM_Warehouse_ID());
 		}
-		Env.setContext(getCtx(), "#AD_User_ID", getAD_User_ID());
-		Env.setContext(getCtx(), "#SalesRep_ID", getAD_User_ID());
+		Env.setContext(getCtx(), Env.AD_USER_ID, getAD_User_ID());
+		Env.setContext(getCtx(), Env.SALESREP_ID, getAD_User_ID());
 		// TODO: It can be convenient to add  AD_Scheduler.AD_Role_ID
 		MUser scheduser = MUser.get(getCtx(), getAD_User_ID());
 		MRole[] schedroles = scheduser.getRoles(scheduler.getAD_Org_ID());
 		if (schedroles != null && schedroles.length > 0)
-			Env.setContext(getCtx(), "#AD_Role_ID", schedroles[0].getAD_Role_ID()); // first role, ordered by AD_Role_ID
+			Env.setContext(getCtx(), Env.AD_ROLE_ID, schedroles[0].getAD_Role_ID()); // first role, ordered by AD_Role_ID
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat("yyyy-MM-dd"); 
-		Env.setContext(getCtx(), "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
+		Env.setContext(getCtx(), Env.DATE, dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
 
+		//Create new Session and set #AD_Session_ID to context
+		MSession session = MSession.get(Env.getCtx());
+		if(session == null) {
+			session = MSession.create(Env.getCtx());
+		} else {
+			session = new MSession(Env.getCtx(), session.getAD_Session_ID(), null);
+		}
 		MProcess process = new MProcess(getCtx(), scheduler.getAD_Process_ID(), null);
 		try
 		{
@@ -136,6 +157,9 @@ public class Scheduler extends AdempiereServer
 		{
 			if (m_trx != null)
 				m_trx.close();
+			m_trx = null;
+			session.logout();
+			getCtx().remove(Env.AD_SESSION_ID);
 		}
 		
 		//
@@ -144,7 +168,9 @@ public class Scheduler extends AdempiereServer
 		//
 		MSchedulerLog pLog = new MSchedulerLog(scheduler, m_summary.toString());
 		pLog.setReference("#" + String.valueOf(p_runCount)
-			+ " - " + TimeUtil.formatElapsed(new Timestamp(p_startWork)));
+			+ " - " + TimeUtil.formatElapsed(new Timestamp(p_startWork))
+			+ (pi != null ? " AD_PInstance_ID="+pi.getAD_PInstance_ID() : ""));
+		pi = null;
 		pLog.saveEx();
 	}	//	doWork
 
@@ -169,7 +195,7 @@ public class Scheduler extends AdempiereServer
 		MPInstance pInstance = new MPInstance(process, Record_ID);
 		fillParameter(pInstance);
 		//
-		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), AD_Table_ID, Record_ID);
+		pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), AD_Table_ID, Record_ID);
 		pi.setAD_User_ID(getAD_User_ID());
 		pi.setAD_Client_ID(scheduler.getAD_Client_ID());
 		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
@@ -238,8 +264,9 @@ public class Scheduler extends AdempiereServer
 			}
 		}
 		
+		List<String> sendErrors = new ArrayList<>();
 		// always notify recipients
-		Integer[] userIDs = scheduler.getRecipientAD_User_IDs();
+		Integer[] userIDs = scheduler.getRecipientAD_User_IDs(true);
 		if (userIDs.length > 0) 
 		{
 			ProcessInfoUtil.setLogFromDB(pi);
@@ -307,7 +334,7 @@ public class Scheduler extends AdempiereServer
 						mailContent = scheduler.getDescription();
 					}else{
 						mailTemplate.setUser(user);
-						mailTemplate.setLanguage(Env.getContext(getCtx(), "#AD_Language"));
+						mailTemplate.setLanguage(Env.getContext(getCtx(), Env.LANGUAGE));
 						// if user has bpartner link. maybe use language depend user
 						mailContent = mailTemplate.getMailText(true);
 						schedulerName = mailTemplate.getMailHeader();
@@ -315,9 +342,33 @@ public class Scheduler extends AdempiereServer
 
 					MClient client = MClient.get(scheduler.getCtx(), scheduler.getAD_Client_ID());
 					if (fileList != null && !fileList.isEmpty()) {
-						client.sendEMailAttachments(from, user, schedulerName, mailContent, fileList);
+						if (!client.sendEMailAttachments(from, user, schedulerName, mailContent, fileList)) {
+							StringBuilder summary = new StringBuilder(Msg.getMsg(Env.getCtx(), "SchedulerSendAttachmentFailed"));
+							summary.append(user.getName());
+							String error = (String) Env.getCtx().remove(EMail.EMAIL_SEND_MSG);
+							if (!Util.isEmpty(error)) {
+								summary.append(". Error: ").append(error);
+							}
+							sendErrors.add(summary.toString());
+							MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID),  summary.toString());
+							pLog.setTextMsg("From: " + from.getName() + " (" + from.getEMail() + ") To: " + user.getName() + " (" + user.getEMail() + ")");
+							pLog.setIsError(true);
+							pLog.saveEx();
+						}
 					} else {
-						client.sendEMail(from, user, schedulerName, mailContent + "\n" + pi.getSummary() + " " + pi.getLogInfo(), null);
+						if (!client.sendEMail(from, user, schedulerName, mailContent + "\n" + pi.getSummary() + " " + pi.getLogInfo(), null)) {
+							StringBuilder summary = new StringBuilder(Msg.getMsg(Env.getCtx(), "SchedulerSendNotificationFailed"));
+							summary.append(user.getName());
+							String error = (String) Env.getCtx().remove(EMail.EMAIL_SEND_MSG);
+							if (!Util.isEmpty(error)) {
+								summary.append(". Error: ").append(error);
+							}
+							sendErrors.add(summary.toString());
+							MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID), summary.toString());
+							pLog.setTextMsg("From: " + from.getName() + " (" + from.getEMail() + ") To: " + user.getName() + " (" + user.getEMail() + ")");
+							pLog.setIsError(true);
+							pLog.saveEx();
+						}
 					}
 					
 				}
@@ -329,6 +380,111 @@ public class Scheduler extends AdempiereServer
 			{
 				if(file.exists() && !file.delete())
 					file.deleteOnExit();
+			}
+		}
+		
+		//cloud upload
+		List<String> uploadErrors = new ArrayList<>();
+		MSchedulerRecipient[] uploads = scheduler.getUploadRecipients();
+		if (uploads.length > 0) {
+			File file = pi.getPDFReport();
+			String contentType = "application/pdf";
+			if (file == null) {
+				file = pi.getExportFile();
+				String extension = pi.getExportFileExtension();
+				if ("xls".equals(extension))
+					contentType = "application/vnd.ms-excel";
+				else if ("csv".equals(extension))
+					contentType = "text/csv";
+				else if ("html".equals(extension))
+					contentType = "text/html";
+			}
+			if (file != null) {
+				for(MSchedulerRecipient upload : uploads) {
+					MAuthorizationAccount account = new MAuthorizationAccount(Env.getCtx(), upload.getAD_AuthorizationAccount_ID(), null);
+					IUploadService service = Core.getUploadService(account);					
+					if (service != null) {
+						try {
+							IUploadHandler[] handlers = service.getUploadHandlers(contentType);
+							if (handlers.length > 0) {
+								String fileName = null;
+								fileName = upload.getFileName();
+								if (fileName != null && fileName.contains("@")) {
+									fileName = parseFileName(upload, fileName);
+								}
+								if (Util.isEmpty(fileName))
+									fileName = file.getName();
+							
+								UploadResponse response = handlers[0].uploadMedia(new UploadMedia(fileName, contentType, new FileInputStream(file), file.length()), account);
+								if (response.getLink() != null) {
+									MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID), Msg.getMsg(Env.getCtx(), "UploadSuccess"));
+									pLog.setTextMsg("User: " + upload.getAD_User().getName() + " Account: " + account.getEMail() + 
+											" Link: " + response.getLink());
+									pLog.setIsError(false);
+									pLog.saveEx();
+								} else {
+									MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID), Msg.getMsg(Env.getCtx(), "UploadFailed"));
+									pLog.setTextMsg("User: " + upload.getAD_User().getName() + " Account: " + account.getEMail());
+									pLog.setIsError(true);
+									pLog.saveEx();
+									uploadErrors.add(pLog.getTextMsg());
+								}
+							}
+						} catch (Throwable e) {
+							log.log(Level.WARNING, process.toString(), e);
+							MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID), Msg.getMsg(Env.getCtx(), "UploadFailed"));
+							pLog.setTextMsg("User: " + upload.getAD_User().getName() + " Account: " + account.getEMail() + 
+									" Error: " + e.getMessage());
+							pLog.setIsError(true);
+							pLog.saveEx();
+							uploadErrors.add(pLog.getTextMsg());
+						}
+					}
+				}
+			}
+		}
+		
+		//notify supervisor if there are errors
+		int supervisor = get(getCtx(), AD_Scheduler_ID).getSupervisor_ID();
+		if (supervisor > 0 && (sendErrors.size()>0 || uploadErrors.size()>0)) {
+			MUser user = new MUser(getCtx(), supervisor, null);
+			boolean email = user.isNotificationEMail();
+			boolean notice = user.isNotificationNote();
+			StringBuilder errors = new StringBuilder();
+			for(String error : sendErrors) {
+				if (errors.length() > 0)
+					errors.append("\r\n\r\n");
+				errors.append(error);
+			}
+			for(String error : uploadErrors) {
+				if (errors.length() > 0)
+					errors.append("\r\n\r\n");
+				errors.append(error);
+			}
+			if (email)
+			{
+				MClient client = MClient.get(get(getCtx(), AD_Scheduler_ID).getCtx(), get(getCtx(), AD_Scheduler_ID).getAD_Client_ID());
+				if (!client.sendEMail(from, user, schedulerName + ": " + Msg.getMsg(Env.getCtx(), "SchedulerSendAttachmentFailed"), errors.toString(), null, false))
+				{
+					StringBuilder summary = new StringBuilder(Msg.getMsg(Env.getCtx(), "SchedulerSendNotificationFailed"));
+					summary.append(user.getName());
+					String error = (String) Env.getCtx().remove(EMail.EMAIL_SEND_MSG);
+					if (!Util.isEmpty(error)) {
+						summary.append(". Error: ").append(error);
+					}
+					MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID), summary.toString());
+					pLog.setTextMsg("From: " + from.getName() + " (" + from.getEMail() + ") To: " + user.getName() + " (" + user.getEMail() + ")");
+					pLog.setIsError(true);
+					pLog.saveEx();
+				}
+			}
+			if (notice) {
+				int AD_Message_ID = 442; // HARDCODED ProcessRunError
+				MNote note = new MNote(getCtx(), AD_Message_ID, supervisor, null);
+				note.setClientOrg(get(getCtx(), AD_Scheduler_ID).getAD_Client_ID(), get(getCtx(), AD_Scheduler_ID).getAD_Org_ID());
+				note.setTextMsg(schedulerName+"\n"+errors.toString());
+				note.setRecord(MPInstance.Table_ID, pi.getAD_PInstance_ID());
+				note.saveEx();
 			}
 		}
 		
@@ -483,7 +639,34 @@ public class Scheduler extends AdempiereServer
 		return bd;
 	}
 
-	private Object parseVariable(MSchedulerPara sPara, String variable) {
+	private String parseFileName(PO source, String inStr) {
+		StringBuilder outStr = new StringBuilder();
+		int i = inStr.indexOf('@');
+		while (i != -1)
+		{
+			outStr.append(inStr.substring(0, i));			// up to @
+			inStr = inStr.substring(i+1, inStr.length());	// from first @
+
+			int j = inStr.indexOf('@');						// next @
+			if (j < 0)
+			{
+				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "No second tag: " + inStr);
+				//not context variable, add back @ and break
+				outStr.append("@");
+				break;
+			}
+			
+			String token = inStr.substring(0, j);
+			Object value = parseVariable(source, "@"+token+"@");
+			outStr.append(value != null ? value.toString() : " ");				// replace context with Context
+
+			inStr = inStr.substring(j+1, inStr.length());	// from second @
+			i = inStr.indexOf('@');
+		}
+		return outStr.toString();
+	}
+	
+	private Object parseVariable(PO source, String variable) {
 		Object value = variable;
 		if (variable == null
 			|| (variable != null && variable.length() == 0))
@@ -495,7 +678,7 @@ public class Scheduler extends AdempiereServer
 			//hengsin, capture unparseable error to avoid subsequent sql exception
 			sql = Env.parseContext(getCtx(), 0, sql, false, false);	//	replace variables
 			if (sql.equals(""))
-				log.log(Level.WARNING, "(" + sPara.getColumnName() + ") - Default SQL variable parse failed: " + variable);
+				log.log(Level.WARNING, "(" + source.toString() + ") - Default SQL variable parse failed: " + variable);
 			else {
 				PreparedStatement stmt = null;
 				ResultSet rs = null;
@@ -506,11 +689,11 @@ public class Scheduler extends AdempiereServer
 						defStr = rs.getString(1);
 					else {
 						if (log.isLoggable(Level.INFO))
-							log.log(Level.INFO, "(" + sPara.getColumnName() + ") - no Result: " + sql);
+							log.log(Level.INFO, "(" + source.toString() + ") - no Result: " + sql);
 					}
 				}
 				catch (SQLException e) {
-					log.log(Level.WARNING, "(" + sPara.getColumnName() + ") " + sql, e);
+					log.log(Level.WARNING, "(" + source.toString() + ") " + sql, e);
 				}
 				finally{
 					DB.close(rs, stmt);
@@ -530,7 +713,7 @@ public class Scheduler extends AdempiereServer
 			index = columnName.indexOf('@');
 			if (index == -1)
 			{
-				log.warning(sPara.getColumnName()
+				log.warning(source.toString()
 					+ " - cannot evaluate=" + variable);
 				return null;
 			}
@@ -542,7 +725,7 @@ public class Scheduler extends AdempiereServer
 				env = Env.getContext(getCtx(), columnName);
 			if (env.length() == 0)
 			{
-				log.warning(sPara.getColumnName()
+				log.warning(source.toString()
 					+ " - not in environment =" + columnName
 					+ "(" + variable + ")");
 				return null;
@@ -550,7 +733,7 @@ public class Scheduler extends AdempiereServer
 			else
 				value = env;
 			
-			if (tail != null && columnName.equals("#Date"))
+			if (tail != null && columnName.equals(Env.DATE))
 			{
 				tail = tail.trim();
 				if (tail.startsWith("-") || tail.startsWith("+"))
@@ -605,6 +788,7 @@ public class Scheduler extends AdempiereServer
 	}	//	getServerInfo
 
 	/**
+	 * Get MScheduler from cache (immutable)
 	 * @param ctx
 	 * @param AD_Scheduler_ID
 	 * @return MScheduler
@@ -612,16 +796,21 @@ public class Scheduler extends AdempiereServer
 	protected static MScheduler get(Properties ctx, int AD_Scheduler_ID)
 	{
 		Integer key = Integer.valueOf(AD_Scheduler_ID);
-		MScheduler retValue = (MScheduler)s_cache.get(key);
+		MScheduler retValue = s_cache.get(ctx, key, e -> new MScheduler(ctx, e));
 		if (retValue == null)
 		{
-			retValue = new MScheduler(ctx, AD_Scheduler_ID, null);
+			retValue = new MScheduler(ctx, AD_Scheduler_ID, (String)null);
 			if (AD_Scheduler_ID == 0)
 			{
 				String trxName = null;
 				retValue.load(trxName);	//	load System Record
 			}
-			s_cache.put(key, retValue);
+			if (retValue.get_ID() == AD_Scheduler_ID)
+			{
+				s_cache.put(key, retValue, e -> new MScheduler(Env.getCtx(), e));
+				return retValue;
+			}
+			return null;
 		}
 		return retValue;
 	}	//	get

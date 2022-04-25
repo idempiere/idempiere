@@ -25,19 +25,30 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_BankRegister
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="T_BankRegister")
 public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_T_BankRegister (Properties ctx, int T_BankRegister_ID, String trxName)
     {
       super (ctx, T_BankRegister_ID, trxName);
+      /** if (T_BankRegister_ID == 0)
+        {
+			setAD_PInstance_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_BankRegister (Properties ctx, int T_BankRegister_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_BankRegister_ID, trxName, virtualColumns);
       /** if (T_BankRegister_ID == 0)
         {
 			setAD_PInstance_ID (0);
@@ -67,13 +78,14 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_T_BankRegister[")
+      StringBuilder sb = new StringBuilder ("X_T_BankRegister[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set Account.
-		@param Account Account	  */
+		@param Account Account
+	*/
 	public void setAccount (String Account)
 	{
 		set_Value (COLUMNNAME_Account, Account);
@@ -81,32 +93,32 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 
 	/** Get Account.
 		@return Account	  */
-	public String getAccount () 
+	public String getAccount()
 	{
 		return (String)get_Value(COLUMNNAME_Account);
 	}
 
 	public org.compiere.model.I_AD_PInstance getAD_PInstance() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_Name)
-			.getPO(getAD_PInstance_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PInstance)MTable.get(getCtx(), org.compiere.model.I_AD_PInstance.Table_ID)
+			.getPO(getAD_PInstance_ID(), get_TrxName());
+	}
 
 	/** Set Process Instance.
-		@param AD_PInstance_ID 
-		Instance of the process
-	  */
+		@param AD_PInstance_ID Instance of the process
+	*/
 	public void setAD_PInstance_ID (int AD_PInstance_ID)
 	{
-		if (AD_PInstance_ID < 1) 
+		if (AD_PInstance_ID < 1)
 			set_Value (COLUMNNAME_AD_PInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PInstance_ID, Integer.valueOf(AD_PInstance_ID));
 	}
 
 	/** Get Process Instance.
 		@return Instance of the process
 	  */
-	public int getAD_PInstance_ID () 
+	public int getAD_PInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PInstance_ID);
 		if (ii == null)
@@ -115,9 +127,8 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	}
 
 	/** Set Accounted Credit.
-		@param AmtAcctCr 
-		Accounted Credit Amount
-	  */
+		@param AmtAcctCr Accounted Credit Amount
+	*/
 	public void setAmtAcctCr (BigDecimal AmtAcctCr)
 	{
 		set_Value (COLUMNNAME_AmtAcctCr, AmtAcctCr);
@@ -126,7 +137,7 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	/** Get Accounted Credit.
 		@return Accounted Credit Amount
 	  */
-	public BigDecimal getAmtAcctCr () 
+	public BigDecimal getAmtAcctCr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtAcctCr);
 		if (bd == null)
@@ -135,9 +146,8 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	}
 
 	/** Set Accounted Debit.
-		@param AmtAcctDr 
-		Accounted Debit Amount
-	  */
+		@param AmtAcctDr Accounted Debit Amount
+	*/
 	public void setAmtAcctDr (BigDecimal AmtAcctDr)
 	{
 		set_Value (COLUMNNAME_AmtAcctDr, AmtAcctDr);
@@ -146,7 +156,7 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	/** Get Accounted Debit.
 		@return Accounted Debit Amount
 	  */
-	public BigDecimal getAmtAcctDr () 
+	public BigDecimal getAmtAcctDr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtAcctDr);
 		if (bd == null)
@@ -155,7 +165,8 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	}
 
 	/** Set Balance.
-		@param Balance Balance	  */
+		@param Balance Balance
+	*/
 	public void setBalance (BigDecimal Balance)
 	{
 		set_Value (COLUMNNAME_Balance, Balance);
@@ -163,7 +174,7 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 
 	/** Get Balance.
 		@return Balance	  */
-	public BigDecimal getBalance () 
+	public BigDecimal getBalance()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Balance);
 		if (bd == null)
@@ -172,7 +183,8 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	}
 
 	/** Set Bank Name.
-		@param BankName Bank Name	  */
+		@param BankName Bank Name
+	*/
 	public void setBankName (String BankName)
 	{
 		set_Value (COLUMNNAME_BankName, BankName);
@@ -180,13 +192,14 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 
 	/** Get Bank Name.
 		@return Bank Name	  */
-	public String getBankName () 
+	public String getBankName()
 	{
 		return (String)get_Value(COLUMNNAME_BankName);
 	}
 
 	/** Set Business Partner.
-		@param BPartner Business Partner	  */
+		@param BPartner Business Partner
+	*/
 	public void setBPartner (String BPartner)
 	{
 		set_Value (COLUMNNAME_BPartner, BPartner);
@@ -194,32 +207,32 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 
 	/** Get Business Partner.
 		@return Business Partner	  */
-	public String getBPartner () 
+	public String getBPartner()
 	{
 		return (String)get_Value(COLUMNNAME_BPartner);
 	}
 
 	public org.compiere.model.I_C_Bank getC_Bank() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Bank)MTable.get(getCtx(), org.compiere.model.I_C_Bank.Table_Name)
-			.getPO(getC_Bank_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Bank)MTable.get(getCtx(), org.compiere.model.I_C_Bank.Table_ID)
+			.getPO(getC_Bank_ID(), get_TrxName());
+	}
 
 	/** Set Bank.
-		@param C_Bank_ID 
-		Bank
-	  */
+		@param C_Bank_ID Bank
+	*/
 	public void setC_Bank_ID (int C_Bank_ID)
 	{
-		if (C_Bank_ID < 1) 
+		if (C_Bank_ID < 1)
 			set_Value (COLUMNNAME_C_Bank_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Bank_ID, Integer.valueOf(C_Bank_ID));
 	}
 
 	/** Get Bank.
 		@return Bank
 	  */
-	public int getC_Bank_ID () 
+	public int getC_Bank_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Bank_ID);
 		if (ii == null)
@@ -228,26 +241,26 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -256,9 +269,8 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	}
 
 	/** Set Account Date.
-		@param DateAcct 
-		Accounting Date
-	  */
+		@param DateAcct Accounting Date
+	*/
 	public void setDateAcct (Timestamp DateAcct)
 	{
 		set_Value (COLUMNNAME_DateAcct, DateAcct);
@@ -267,15 +279,14 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	/** Get Account Date.
 		@return Accounting Date
 	  */
-	public Timestamp getDateAcct () 
+	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -284,13 +295,14 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
 
 	/** Set T_BankRegister_UU.
-		@param T_BankRegister_UU T_BankRegister_UU	  */
+		@param T_BankRegister_UU T_BankRegister_UU
+	*/
 	public void setT_BankRegister_UU (String T_BankRegister_UU)
 	{
 		set_Value (COLUMNNAME_T_BankRegister_UU, T_BankRegister_UU);
@@ -298,7 +310,7 @@ public class X_T_BankRegister extends PO implements I_T_BankRegister, I_Persiste
 
 	/** Get T_BankRegister_UU.
 		@return T_BankRegister_UU	  */
-	public String getT_BankRegister_UU () 
+	public String getT_BankRegister_UU()
 	{
 		return (String)get_Value(COLUMNNAME_T_BankRegister_UU);
 	}

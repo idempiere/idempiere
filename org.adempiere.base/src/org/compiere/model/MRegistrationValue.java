@@ -88,7 +88,7 @@ public class MRegistrationValue extends X_A_RegistrationValue
 		if (m_registrationAttribute == null)
 		{
 			int A_RegistrationAttribute_ID = getA_RegistrationAttribute_ID();
-			MRegistrationAttribute att = MRegistrationAttribute.get (getCtx(), A_RegistrationAttribute_ID, get_TrxName());
+			MRegistrationAttribute att = MRegistrationAttribute.getCopy(getCtx(), A_RegistrationAttribute_ID, get_TrxName());
 			m_registrationAttribute = att.getName();
 			m_registrationAttributeDescription = att.getDescription();
 			m_seqNo = att.getSeqNo();

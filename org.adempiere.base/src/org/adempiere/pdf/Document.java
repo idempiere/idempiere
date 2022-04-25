@@ -24,12 +24,13 @@ import java.io.OutputStream;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MSysConfig;
 
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.awt.DefaultFontMapper;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfTemplate;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.DefaultFontMapper;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfGraphics2D;
+import com.lowagie.text.pdf.PdfTemplate;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Generate PDF document using iText
@@ -47,8 +48,8 @@ public class Document {
 		try {
             final PageFormat pf = pageable.getPageFormat(0);
             
-            final com.itextpdf.text.Document document =
-            	new com.itextpdf.text.Document(new Rectangle(
+            final com.lowagie.text.Document document =
+            	new com.lowagie.text.Document(new Rectangle(
             			(int) pf.getWidth(), (int) pf.getHeight()));
             final PdfWriter writer = PdfWriter.getInstance(
                     document, output);
@@ -76,7 +77,7 @@ public class Document {
             	}
             	
 	            PdfTemplate tp = cb.createTemplate(w, h);
-	            Graphics2D g2 = tp.createGraphics(w, h, mapper);
+	            Graphics2D g2 = new PdfGraphics2D(tp, w, h, mapper, false, false, 1f);
 	            tp.setWidth(w);
 	            tp.setHeight(h);
 	            pageable.getPrintable(page).print(g2, pf, page);

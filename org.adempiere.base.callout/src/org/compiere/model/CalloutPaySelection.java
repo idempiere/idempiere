@@ -79,7 +79,7 @@ public class CalloutPaySelection extends CalloutEngine
 	/**
 	 *	Payment Selection Line - Invoice.
 	 *		- called from C_PaySelectionLine.C_Invoice_ID
-	 *		- update PayAmt & DifferenceAmt
+	 *		- update PayAmt and DifferenceAmt
 	 *  @param ctx context
 	 *  @param WindowNo current Window No
 	 *  @param mTab Grid Tab
@@ -105,9 +105,8 @@ public class CalloutPaySelection extends CalloutEngine
 		BigDecimal DiscountAmt = Env.ZERO;
 		Boolean IsSOTrx = Boolean.FALSE;
 		String sql = "SELECT"
-			+ " currencyConvert("
-				+ "invoiceOpen(i.C_Invoice_ID, 0)"
-				+ ", i.C_Currency_ID,ba.C_Currency_ID, i.DateInvoiced, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID),"
+			+ " currencyConvertInvoice("
+				+ "i.C_Invoice_ID, ba.C_Currency_ID, invoiceOpen(i.C_Invoice_ID, 0), i.DateInvoiced),"
 			+ " currencyConvert("
 			    + "paymentTermDiscount(i.GrandTotal,i.C_Currency_ID,i.C_PaymentTerm_ID,i.DateInvoiced, ?)"
 			    + ", i.C_Currency_ID, ba.C_Currency_ID, i.DateInvoiced, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID)"

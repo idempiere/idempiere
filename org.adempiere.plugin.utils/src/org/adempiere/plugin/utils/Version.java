@@ -40,10 +40,22 @@ public class Version implements Comparable<Version> {
         String[] thatParts = that.get().split("\\.");
         int length = Math.max(thisParts.length, thatParts.length);
         for(int i = 0; i < length; i++) {
-            int thisPart = i < thisParts.length ?
-                Integer.parseInt(thisParts[i]) : 0;
-            int thatPart = i < thatParts.length ?
-                Integer.parseInt(thatParts[i]) : 0;
+            if (i < thisParts.length && i < thatParts.length && thisParts[i].equals(thatParts[i]))
+            	continue;
+            int thisPart;
+            try {
+            	thisPart = i < thisParts.length ?
+            			Integer.parseInt(thisParts[i]) : 0;
+            } catch (NumberFormatException e) {
+            	thisPart = -1;
+            }
+            int thatPart;
+            try {
+            	thatPart = i < thatParts.length ?
+            			Integer.parseInt(thatParts[i]) : 0;
+            } catch (NumberFormatException e) {
+            	thatPart = -2; // above was determined that both parts are different
+            }
             if(thisPart < thatPart)
                 return -1;
             if(thisPart > thatPart)

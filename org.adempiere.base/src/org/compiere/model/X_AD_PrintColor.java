@@ -23,19 +23,33 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintColor
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_PrintColor")
 public class X_AD_PrintColor extends PO implements I_AD_PrintColor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_PrintColor (Properties ctx, int AD_PrintColor_ID, String trxName)
     {
       super (ctx, AD_PrintColor_ID, trxName);
+      /** if (AD_PrintColor_ID == 0)
+        {
+			setAD_PrintColor_ID (0);
+			setCode (null);
+			setIsDefault (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintColor (Properties ctx, int AD_PrintColor_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintColor_ID, trxName, virtualColumns);
       /** if (AD_PrintColor_ID == 0)
         {
 			setAD_PrintColor_ID (0);
@@ -68,27 +82,26 @@ public class X_AD_PrintColor extends PO implements I_AD_PrintColor, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_PrintColor[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_PrintColor[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Print Color.
-		@param AD_PrintColor_ID 
-		Color used for printing and display
-	  */
+		@param AD_PrintColor_ID Color used for printing and display
+	*/
 	public void setAD_PrintColor_ID (int AD_PrintColor_ID)
 	{
-		if (AD_PrintColor_ID < 1) 
+		if (AD_PrintColor_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PrintColor_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PrintColor_ID, Integer.valueOf(AD_PrintColor_ID));
 	}
 
 	/** Get Print Color.
 		@return Color used for printing and display
 	  */
-	public int getAD_PrintColor_ID () 
+	public int getAD_PrintColor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintColor_ID);
 		if (ii == null)
@@ -97,7 +110,8 @@ public class X_AD_PrintColor extends PO implements I_AD_PrintColor, I_Persistent
 	}
 
 	/** Set AD_PrintColor_UU.
-		@param AD_PrintColor_UU AD_PrintColor_UU	  */
+		@param AD_PrintColor_UU AD_PrintColor_UU
+	*/
 	public void setAD_PrintColor_UU (String AD_PrintColor_UU)
 	{
 		set_Value (COLUMNNAME_AD_PrintColor_UU, AD_PrintColor_UU);
@@ -105,15 +119,14 @@ public class X_AD_PrintColor extends PO implements I_AD_PrintColor, I_Persistent
 
 	/** Get AD_PrintColor_UU.
 		@return AD_PrintColor_UU	  */
-	public String getAD_PrintColor_UU () 
+	public String getAD_PrintColor_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_PrintColor_UU);
 	}
 
 	/** Set Validation code.
-		@param Code 
-		Validation Code
-	  */
+		@param Code Validation Code
+	*/
 	public void setCode (String Code)
 	{
 		set_Value (COLUMNNAME_Code, Code);
@@ -122,15 +135,14 @@ public class X_AD_PrintColor extends PO implements I_AD_PrintColor, I_Persistent
 	/** Get Validation code.
 		@return Validation Code
 	  */
-	public String getCode () 
+	public String getCode()
 	{
 		return (String)get_Value(COLUMNNAME_Code);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -139,7 +151,7 @@ public class X_AD_PrintColor extends PO implements I_AD_PrintColor, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -152,9 +164,8 @@ public class X_AD_PrintColor extends PO implements I_AD_PrintColor, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -163,7 +174,7 @@ public class X_AD_PrintColor extends PO implements I_AD_PrintColor, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

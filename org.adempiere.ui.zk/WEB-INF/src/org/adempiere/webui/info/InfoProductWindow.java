@@ -34,6 +34,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.model.MDocType;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -41,7 +42,6 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.SwipeEvent;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 
@@ -53,7 +53,7 @@ public class InfoProductWindow extends InfoWindow {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7892916038089331016L;
+	private static final long serialVersionUID = -640644572459126094L;
 
 	protected Tabbox tabbedPane;
 	protected WListbox warehouseTbl;
@@ -115,6 +115,24 @@ public class InfoProductWindow extends InfoWindow {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID, lookup);
 	}
+	
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
+	 * @param whereClause
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param predefinedContextVariables
+	 */
+	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
+			String queryValue, boolean multipleSelection, String whereClause,
+			int AD_InfoWindow_ID, boolean lookup, String predefinedContextVariables) {
+		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
+				whereClause, AD_InfoWindow_ID, lookup, null, predefinedContextVariables);
+	}
 
 	@Override
 	protected String getSQLWhere() {
@@ -135,6 +153,11 @@ public class InfoProductWindow extends InfoWindow {
 		}
 		// IDEMPIERE-1979
 		prevWhereClause = where.toString();
+		if (MSysConfig.getBooleanValue(MSysConfig.INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE, false, Env.getAD_Client_ID(Env.getCtx()))) {
+			prevWhereClause = prevWhereClause.replaceAll(
+					"AND pr.M_PriceList_Version_ID = \\?",
+					"AND (pr.M_PriceList_Version_ID=? OR pr.M_PriceList_Version_ID IS NULL)");
+		}
 		return prevWhereClause;
 	}
 
@@ -157,10 +180,10 @@ public class InfoProductWindow extends InfoWindow {
 	@Override
 	protected void renderContentPane(Center center) {
 		ColumnInfo[] s_layoutWarehouse = new ColumnInfo[]{
-        		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "Warehouse", String.class),
-        		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyAvailable"), "sum(QtyAvailable)", Double.class),
-        		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "sum(QtyOnHand)", Double.class),
-        		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "sum(QtyReserved)", Double.class)};
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "Warehouse", String.class, true, "Warehouse"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyAvailable"), "sum(QtyAvailable)", Double.class, true, "QtyAvailable"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "sum(QtyOnHand)", Double.class, true, "QtyOnHand"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "sum(QtyReserved)", Double.class, true, "QtyReserved")};
         /**	From Clause							*/
         String s_sqlFrom = " M_PRODUCT_STOCK_V ";
         /** Where Clause						*/
@@ -171,62 +194,77 @@ public class InfoProductWindow extends InfoWindow {
 		warehouseTbl.setMultiSelection(false);
 		warehouseTbl.setShowTotals(true);
 		warehouseTbl.autoSize();
+		warehouseTbl.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() +"|stock");
 //        warehouseTbl.getModel().addTableModelListener(this);
 
         ColumnInfo[] s_layoutSubstitute = new ColumnInfo[]{
-        		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "orgname", String.class),
-        		new ColumnInfo(
-    					Msg.translate(Env.getCtx(), "Value"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "orgname", String.class, true, "orgname"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "Value"),
     					"(Select Value from M_Product p where p.M_Product_ID=M_PRODUCT_SUBSTITUTERELATED_V.Substitute_ID)",
-    					String.class),
-    			new ColumnInfo(Msg.translate(Env.getCtx(), "Name"), "Name", String.class),
-    			new ColumnInfo(Msg.translate(Env.getCtx(), "QtyAvailable"), "QtyAvailable", Double.class),
-  	        	new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "QtyOnHand", Double.class),
-    	        new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "QtyReserved", Double.class),
-  	        	new ColumnInfo(Msg.translate(Env.getCtx(), "PriceStd"), "PriceStd", Double.class)};
+    					String.class , true, "Value"),
+    			new ColumnInfo(Msg.translate(Env.getCtx(), "Name"), "Name", String.class, true, "Name"),
+    			new ColumnInfo(Msg.translate(Env.getCtx(), "QtyAvailable"), "QtyAvailable", Double.class, true, "QtyAvailable"),
+  	        	new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "QtyOnHand", Double.class, true, "QtyOnHand"),
+    	        new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "QtyReserved", Double.class, true, "QtyReserved"),
+  	        	new ColumnInfo(Msg.translate(Env.getCtx(), "PriceStd"), "PriceStd", Double.class, true, "PriceStd")};
         s_sqlFrom = "M_PRODUCT_SUBSTITUTERELATED_V";
         s_sqlWhere = "M_Product_ID = ? AND M_PriceList_Version_ID = ? and RowType = 'S'";
         substituteTbl = ListboxFactory.newDataTableAutoSize();
         m_sqlSubstitute = substituteTbl.prepareTable(s_layoutSubstitute, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_SUBSTITUTERELATED_V");        
         substituteTbl.setMultiSelection(false);
         substituteTbl.autoSize();
+        substituteTbl.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() + "|substitute");
 //        substituteTbl.getModel().addTableModelListener(this);
 
         ColumnInfo[] s_layoutRelated = new ColumnInfo[]{
-        		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "orgname", String.class),
+           		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "orgname", String.class, true, "orgname"),
         		new ColumnInfo(
     					Msg.translate(Env.getCtx(), "Value"),
     					"(Select Value from M_Product p where p.M_Product_ID=M_PRODUCT_SUBSTITUTERELATED_V.Substitute_ID)",
-    					String.class),
-    			new ColumnInfo(Msg.translate(Env.getCtx(), "Name"), "Name", String.class),
-    			new ColumnInfo(Msg.translate(Env.getCtx(), "QtyAvailable"), "QtyAvailable", Double.class),
-  	        	new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "QtyOnHand", Double.class),
-    	        new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "QtyReserved", Double.class),
-  	        	new ColumnInfo(Msg.translate(Env.getCtx(), "PriceStd"), "PriceStd", Double.class)};
+    					String.class, true, "Value"),
+    			new ColumnInfo(Msg.translate(Env.getCtx(), "Name"), "Name", String.class, true, "Name"),
+    			new ColumnInfo(Msg.translate(Env.getCtx(), "QtyAvailable"), "QtyAvailable", Double.class, true, "QtyAvailable"),
+  	        	new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "QtyOnHand", Double.class, true, "QtyOnHand"),
+    	        new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "QtyReserved", Double.class, true, "QtyReserved"),
+  	        	new ColumnInfo(Msg.translate(Env.getCtx(), "PriceStd"), "PriceStd", Double.class, true, "PriceStd")};
         s_sqlFrom = "M_PRODUCT_SUBSTITUTERELATED_V";
         s_sqlWhere = "M_Product_ID = ? AND M_PriceList_Version_ID = ? and RowType = 'R'";
         relatedTbl = ListboxFactory.newDataTableAutoSize();
         m_sqlRelated = relatedTbl.prepareTable(s_layoutRelated, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_SUBSTITUTERELATED_V");
         relatedTbl.setMultiSelection(false);
         relatedTbl.autoSize();
-//        relatedTbl.getModel().addTableModelListener(this);
-
+        relatedTbl.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() + "|related");
         //Available to Promise Tab
+
+        //	Header
+        ColumnInfo[] s_LayoutAtp =   new ColumnInfo[]{ 
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "Date"), "Date", String.class, true, "Date"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOnHand"), "QtyOnHand", Double.class, true, "QtyOnHand"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "C_BPartner_ID"), "C_BPartner_ID", Double.class, true, "C_BPartner_ID"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyOrdered"), "QtyOrdered", Double.class, true, "QtyOrdered"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "QtyReserved"), "QtyReserved", Double.class, true, "QtyReserved"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "M_Locator_ID"), "M_Locator_ID", Double.class, true, "M_Locator_ID"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "M_AttributeSetInstance_ID"), "M_AttributeSetInstance_ID", Double.class, true, "M_AttributeSetInstance_ID"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "DocumentNo"), "DocumentNo", Double.class, true, "DocumentNo"),
+        		new ColumnInfo(Msg.translate(Env.getCtx(), "M_Warehouse_ID"), "M_Warehouse_ID", Double.class, true, "M_Warehouse_ID")};
+
         m_tableAtp = ListboxFactory.newDataTableAutoSize();
         m_tableAtp.setMultiSelection(false);
-
+        m_tableAtp.prepareTable(s_LayoutAtp, "M_Storage", null , false, "M_Storage");
+		m_tableAtp.setwListBoxName("AD_InfoWindow_UU|" + infoWindow.getAD_InfoWindow_UU() +"|ATP");
+		
         //IDEMPIERE-337
         ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
-        list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceListVersion"), "plv.Name", String.class));
-        list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "ValidFrom"), "plv.ValidFrom", Timestamp.class));
+        list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceListVersion"), "plv.Name", String.class, true, "PriceListVersion"));
+        list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "ValidFrom"), "plv.ValidFrom", Timestamp.class, true, "ValidFrom"));
         if (MRole.getDefault().isColumnAccess(251 /*M_ProductPrice*/, 3027/*PriceList*/, false))
-        		list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceList"), "bomPriceList(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS PriceList", Double.class));
+        		list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceList"), "bomPriceList(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS PriceList", Double.class, true, "PriceList"));
         if (MRole.getDefault().isColumnAccess(251 /*M_ProductPrice*/, 3028/*PriceStd*/, false))
-        		list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceStd"), "bomPriceStd(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS PriceStd", Double.class));
+        		list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceStd"), "bomPriceStd(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS PriceStd", Double.class, true, "PriceStd"));
         if (MRole.getDefault().isColumnAccess(251 /*M_ProductPrice*/, 3028/*PriceStd*/, false) && MRole.getDefault().isColumnAccess(251 /*M_ProductPrice*/, 3029/*PriceLimit*/, false))
-        	list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "Margin"), "bomPriceStd(pp.M_Product_ID, pp.M_PriceList_Version_ID)-bomPriceLimit(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS Margin", Double.class));
+        	list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "Margin"), "bomPriceStd(pp.M_Product_ID, pp.M_PriceList_Version_ID)-bomPriceLimit(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS Margin", Double.class, true, "Margin"));
         if (MRole.getDefault().isColumnAccess(251 /*M_ProductPrice*/, 3029/*PriceLimit*/, false))
-        	list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceLimit"), "bomPriceLimit(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS PriceLimit", Double.class));
+        	list.add(new ColumnInfo(Msg.translate(Env.getCtx(), "PriceLimit"), "bomPriceLimit(pp.M_Product_ID, pp.M_PriceList_Version_ID) AS PriceLimit", Double.class, true, "PriceLimit"));
         ColumnInfo[] s_layoutProductPrice = new ColumnInfo[list.size()];
         list.toArray(s_layoutProductPrice);
         s_sqlFrom = "M_ProductPrice pp INNER JOIN M_PriceList_Version plv ON (pp.M_PriceList_Version_ID = plv.M_PriceList_Version_ID)";
@@ -235,6 +273,7 @@ public class InfoProductWindow extends InfoWindow {
         m_sqlProductprice = productpriceTbl.prepareTable(s_layoutProductPrice, s_sqlFrom, s_sqlWhere, false, "pp") + " ORDER BY plv.ValidFrom DESC";
         productpriceTbl.setMultiSelection(false);
         productpriceTbl.autoSize();
+        productpriceTbl.setwListBoxName("AD_InfoWindow_UU|" + infoWindow.getAD_InfoWindow_UU() + "|price");
 //        productpriceTbl.getModel().addTableModelListener(this);
         
         tabbedPane = new Tabbox();
@@ -327,15 +366,6 @@ public class InfoProductWindow extends InfoWindow {
 		south.setSplittable(true);
 		south.setTitle(Msg.translate(Env.getCtx(), "WarehouseStock"));
 		south.setTooltiptext(Msg.translate(Env.getCtx(), "WarehouseStock"));
-		south.addEventListener(Events.ON_SWIPE, new EventListener<SwipeEvent>() {
-			@Override
-			public void onEvent(SwipeEvent event) throws Exception {
-				South south = (South) event.getTarget();
-				if ("down".equals(event.getSwipeDirection())) {
-					south.setOpen(false);
-				}
-			}
-		});
 		south.setSclass("south-collapsible-with-title");
 		if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
 		{
@@ -367,15 +397,22 @@ public class InfoProductWindow extends InfoWindow {
 						}
 					}
 					
-					Object value = contentPanel.getValueAt(row, findColumnIndex("IsInstanceAttribute"));
-					if (value != null && value.toString().equals("true")) {
-						m_PAttributeButton.setEnabled(true);
-					} else {
-						m_PAttributeButton.setEnabled(false);
+					m_PAttributeButton.setEnabled(false);
+					int colIdx = findColumnIndex("IsInstanceAttribute");
+
+					if (colIdx >= 0) {
+						Object value = contentPanel.getValueAt(row, colIdx);
+						if (value != null && value.toString().equals("true"))
+							m_PAttributeButton.setEnabled(true);
 					}
 				}
 			}
 		});
+		warehouseTbl.repaint();
+		substituteTbl.repaint();
+		relatedTbl.repaint();
+		productpriceTbl.repaint();
+		m_tableAtp.repaint();
 	}
 
 	protected void onPAttributeClick() {
@@ -451,17 +488,53 @@ public class InfoProductWindow extends InfoWindow {
 	@Override
 	protected void initParameters() {
 		int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_Warehouse_ID");
-		int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_PriceList_ID");
-		
-		int M_PriceList_Version_ID = findPLV (M_PriceList_ID);
+
+		String usePriceList=Env.getContext(Env.getCtx(), p_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE+"UsePriceListInProductInfo");
+		int M_PriceList_Version_ID = 0;
+		if ("Y".equalsIgnoreCase(usePriceList))
+		{
+			int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_PriceList_ID");
+
+			M_PriceList_Version_ID = findPLV(M_PriceList_ID);
+		}
 		//	Set Warehouse
 		if (M_Warehouse_ID == 0)
-			M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), "#M_Warehouse_ID");
+			M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), Env.M_WAREHOUSE_ID);
 		if (M_Warehouse_ID != 0)
 			setWarehouse (M_Warehouse_ID);
+		else {
+			// check for default value of field
+			for(WEditor editor : editors) {
+				if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_Warehouse_ID")) {
+					if (editor.getValue() != null) {
+						M_Warehouse_ID = (Integer) editor.getValue();
+						if (M_Warehouse_ID > 0) {
+							Env.setContext(infoContext, p_WindowNo, "M_Warehouse_ID", M_Warehouse_ID);
+							Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, "M_Warehouse_ID", Integer.toString(M_Warehouse_ID));
+						}
+					}
+					break;
+				}
+			}
+		}
 		// 	Set PriceList Version
 		if (M_PriceList_Version_ID != 0)
 			setPriceListVersion (M_PriceList_Version_ID);
+		else {
+			// check for default value of field
+			for(WEditor editor : editors) {
+				if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_PriceList_Version_ID")) {
+					if (editor.getValue() != null) {
+						M_PriceList_Version_ID = (Integer) editor.getValue();
+						if (M_PriceList_Version_ID > 0) {
+							Env.setContext(infoContext, p_WindowNo, "M_PriceList_Version_ID", M_PriceList_Version_ID);
+							Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, "M_PriceList_Version_ID", Integer.toString(M_PriceList_Version_ID));
+						}
+					}
+					break;
+				}
+			}
+		}
 	}
 	
 	/**
@@ -652,18 +725,6 @@ public class InfoProductWindow extends InfoWindow {
 	 */
 	protected void initAtpTab (int  m_M_Warehouse_ID, int m_M_Product_ID)
 	{
-		//	Header
-		Vector<String> columnNames = new Vector<String>();
-		columnNames.add(Msg.translate(Env.getCtx(), "Date"));
-		columnNames.add(Msg.translate(Env.getCtx(), "QtyOnHand"));
-		columnNames.add(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
-		columnNames.add(Msg.translate(Env.getCtx(), "QtyOrdered"));
-		columnNames.add(Msg.translate(Env.getCtx(), "QtyReserved"));
-		columnNames.add(Msg.translate(Env.getCtx(), "M_Locator_ID"));
-		columnNames.add(Msg.translate(Env.getCtx(), "M_AttributeSetInstance_ID"));
-		columnNames.add(Msg.translate(Env.getCtx(), "DocumentNo"));
-		columnNames.add(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
-
 		//	Fill Storage Data
 		boolean showDetail = isShowDetailATP();
 		String sql = "SELECT s.QtyOnHand, s.QtyReserved, s.QtyOrdered,"
@@ -798,21 +859,20 @@ public class InfoProductWindow extends InfoWindow {
 
 		//  Table
 		ListModelTable model = new ListModelTable(data);
-		m_tableAtp.setData(model, columnNames);
-		//
-		m_tableAtp.setColumnClass(0, Timestamp.class, true);   //  Date
-		m_tableAtp.setColumnClass(1, Double.class, true);      //  Quantity
-		m_tableAtp.setColumnClass(2, String.class, true);      //  Partner
-		m_tableAtp.setColumnClass(3, Double.class, true);      //  Quantity
-		m_tableAtp.setColumnClass(4, Double.class, true);      //  Quantity
-		m_tableAtp.setColumnClass(5, String.class, true);   	  //  Locator
-		m_tableAtp.setColumnClass(6, String.class, true);   	  //  ASI
-		m_tableAtp.setColumnClass(7, String.class, true);      //  DocNo
-		m_tableAtp.setColumnClass(8, String.class, true);   	  //  Warehouse
-		//
-		m_tableAtp.autoSize();
-	}	//	initAtpTab
 
+		Vector<String> columnNames = new Vector<String>();
+		columnNames.add(Msg.translate(Env.getCtx(), "Date"));
+		columnNames.add(Msg.translate(Env.getCtx(), "QtyOnHand"));
+		columnNames.add(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
+		columnNames.add(Msg.translate(Env.getCtx(), "QtyOrdered"));
+		columnNames.add(Msg.translate(Env.getCtx(), "QtyReserved"));
+		columnNames.add(Msg.translate(Env.getCtx(), "M_Locator_ID"));
+		columnNames.add(Msg.translate(Env.getCtx(), "M_AttributeSetInstance_ID"));
+		columnNames.add(Msg.translate(Env.getCtx(), "DocumentNo"));
+		columnNames.add(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));		
+		m_tableAtp.setData(model, columnNames);
+	}	//	initAtpTab
+	
 	public boolean isShowDetailATP() {
 		return chbShowDetailAtp.isChecked();
 	}

@@ -22,19 +22,31 @@ import java.util.Properties;
 
 /** Generated Model for AD_User_Roles
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_User_Roles")
 public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_User_Roles (Properties ctx, int AD_User_Roles_ID, String trxName)
     {
       super (ctx, AD_User_Roles_ID, trxName);
+      /** if (AD_User_Roles_ID == 0)
+        {
+			setAD_Role_ID (0);
+			setAD_User_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_User_Roles (Properties ctx, int AD_User_Roles_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_User_Roles_ID, trxName, virtualColumns);
       /** if (AD_User_Roles_ID == 0)
         {
 			setAD_Role_ID (0);
@@ -65,32 +77,32 @@ public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_User_Roles[")
+      StringBuilder sb = new StringBuilder ("X_AD_User_Roles[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -99,26 +111,26 @@ public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -127,7 +139,8 @@ public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent
 	}
 
 	/** Set AD_User_Roles_UU.
-		@param AD_User_Roles_UU AD_User_Roles_UU	  */
+		@param AD_User_Roles_UU AD_User_Roles_UU
+	*/
 	public void setAD_User_Roles_UU (String AD_User_Roles_UU)
 	{
 		set_Value (COLUMNNAME_AD_User_Roles_UU, AD_User_Roles_UU);
@@ -135,7 +148,7 @@ public class X_AD_User_Roles extends PO implements I_AD_User_Roles, I_Persistent
 
 	/** Get AD_User_Roles_UU.
 		@return AD_User_Roles_UU	  */
-	public String getAD_User_Roles_UU () 
+	public String getAD_User_Roles_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_User_Roles_UU);
 	}

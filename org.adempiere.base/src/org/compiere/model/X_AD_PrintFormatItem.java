@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintFormatItem
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 10 - $Id$ */
+@org.adempiere.base.Model(table="AD_PrintFormatItem")
 public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220225L;
 
     /** Standard Constructor */
     public X_AD_PrintFormatItem (Properties ctx, int AD_PrintFormatItem_ID, String trxName)
@@ -39,8 +40,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
       /** if (AD_PrintFormatItem_ID == 0)
         {
 			setAD_PrintFormatChild_ID (0);
-			setAD_PrintFormat_ID (0);
 			setAD_PrintFormatItem_ID (0);
+			setAD_PrintFormat_ID (0);
 			setFieldAlignmentType (null);
 // D
 			setImageIsAttached (false);
@@ -66,6 +67,74 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 			setIsPageBreak (false);
 			setIsPrintBarcodeText (true);
 // Y
+			setIsPrintInstanceAttributes (false);
+// N
+			setIsPrinted (true);
+// Y
+			setIsRelativePosition (true);
+// Y
+			setIsRunningTotal (false);
+			setIsSetNLPosition (false);
+			setIsSummarized (false);
+			setIsSuppressNull (false);
+			setIsSuppressRepeats (false);
+// N
+			setIsVarianceCalc (false);
+			setLineAlignmentType (null);
+// X
+			setMaxHeight (0);
+			setMaxWidth (0);
+			setName (null);
+			setPrintAreaType (null);
+// C
+			setPrintFormatType (null);
+// F
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_PrintFormatItem WHERE AD_PrintFormat_ID=@AD_PrintFormat_ID@
+			setSortNo (0);
+			setXPosition (0);
+			setXSpace (0);
+			setYPosition (0);
+			setYSpace (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintFormatItem (Properties ctx, int AD_PrintFormatItem_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintFormatItem_ID, trxName, virtualColumns);
+      /** if (AD_PrintFormatItem_ID == 0)
+        {
+			setAD_PrintFormatChild_ID (0);
+			setAD_PrintFormatItem_ID (0);
+			setAD_PrintFormat_ID (0);
+			setFieldAlignmentType (null);
+// D
+			setImageIsAttached (false);
+			setIsAveraged (false);
+			setIsCentrallyMaintained (false);
+			setIsCounted (false);
+			setIsDesc (false);
+// N
+			setIsDeviationCalc (false);
+			setIsFilledRectangle (false);
+// N
+			setIsFixedWidth (false);
+			setIsGroupBy (false);
+			setIsHeightOneLine (true);
+// Y
+			setIsImageField (false);
+			setIsMaxCalc (false);
+			setIsMinCalc (false);
+			setIsNextLine (true);
+// Y
+			setIsNextPage (false);
+			setIsOrderBy (false);
+			setIsPageBreak (false);
+			setIsPrintBarcodeText (true);
+// Y
+			setIsPrintInstanceAttributes (false);
+// N
 			setIsPrinted (true);
 // Y
 			setIsRelativePosition (true);
@@ -119,32 +188,32 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_PrintFormatItem[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_PrintFormatItem[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -152,27 +221,55 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Style)MTable.get(getCtx(), org.compiere.model.I_AD_Style.Table_ID)
+			.getPO(getAD_FieldStyle_ID(), get_TrxName());
+	}
+
+	/** Set Field Style.
+		@param AD_FieldStyle_ID Field CSS Style 
+	*/
+	public void setAD_FieldStyle_ID (int AD_FieldStyle_ID)
+	{
+		if (AD_FieldStyle_ID < 1)
+			set_Value (COLUMNNAME_AD_FieldStyle_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_FieldStyle_ID, Integer.valueOf(AD_FieldStyle_ID));
+	}
+
+	/** Get Field Style.
+		@return Field CSS Style 
+	  */
+	public int getAD_FieldStyle_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldStyle_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_PrintColor getAD_PrintColor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_Name)
-			.getPO(getAD_PrintColor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
+			.getPO(getAD_PrintColor_ID(), get_TrxName());
+	}
 
 	/** Set Print Color.
-		@param AD_PrintColor_ID 
-		Color used for printing and display
-	  */
+		@param AD_PrintColor_ID Color used for printing and display
+	*/
 	public void setAD_PrintColor_ID (int AD_PrintColor_ID)
 	{
-		if (AD_PrintColor_ID < 1) 
+		if (AD_PrintColor_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintColor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintColor_ID, Integer.valueOf(AD_PrintColor_ID));
 	}
 
 	/** Get Print Color.
 		@return Color used for printing and display
 	  */
-	public int getAD_PrintColor_ID () 
+	public int getAD_PrintColor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintColor_ID);
 		if (ii == null)
@@ -181,26 +278,26 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	public org.compiere.model.I_AD_PrintFont getAD_PrintFont() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_Name)
-			.getPO(getAD_PrintFont_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFont)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFont.Table_ID)
+			.getPO(getAD_PrintFont_ID(), get_TrxName());
+	}
 
 	/** Set Print Font.
-		@param AD_PrintFont_ID 
-		Maintain Print Font
-	  */
+		@param AD_PrintFont_ID Maintain Print Font
+	*/
 	public void setAD_PrintFont_ID (int AD_PrintFont_ID)
 	{
-		if (AD_PrintFont_ID < 1) 
+		if (AD_PrintFont_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintFont_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintFont_ID, Integer.valueOf(AD_PrintFont_ID));
 	}
 
 	/** Get Print Font.
 		@return Maintain Print Font
 	  */
-	public int getAD_PrintFont_ID () 
+	public int getAD_PrintFont_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFont_ID);
 		if (ii == null)
@@ -209,26 +306,26 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormatChild() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormatChild_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormatChild_ID(), get_TrxName());
+	}
 
 	/** Set Included Print Format.
-		@param AD_PrintFormatChild_ID 
-		Print format that is included here.
-	  */
+		@param AD_PrintFormatChild_ID Print format that is included here.
+	*/
 	public void setAD_PrintFormatChild_ID (int AD_PrintFormatChild_ID)
 	{
-		if (AD_PrintFormatChild_ID < 1) 
+		if (AD_PrintFormatChild_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintFormatChild_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintFormatChild_ID, Integer.valueOf(AD_PrintFormatChild_ID));
 	}
 
 	/** Get Included Print Format.
 		@return Print format that is included here.
 	  */
-	public int getAD_PrintFormatChild_ID () 
+	public int getAD_PrintFormatChild_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormatChild_ID);
 		if (ii == null)
@@ -236,50 +333,21 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return ii.intValue();
 	}
 
-	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
-
-	/** Set Print Format.
-		@param AD_PrintFormat_ID 
-		Data Print Format
-	  */
-	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
-	{
-		if (AD_PrintFormat_ID < 1) 
-			set_ValueNoCheck (COLUMNNAME_AD_PrintFormat_ID, null);
-		else 
-			set_ValueNoCheck (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
-	}
-
-	/** Get Print Format.
-		@return Data Print Format
-	  */
-	public int getAD_PrintFormat_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Print Format Item.
-		@param AD_PrintFormatItem_ID 
-		Item/Column in the Print format
-	  */
+		@param AD_PrintFormatItem_ID Item/Column in the Print format
+	*/
 	public void setAD_PrintFormatItem_ID (int AD_PrintFormatItem_ID)
 	{
-		if (AD_PrintFormatItem_ID < 1) 
+		if (AD_PrintFormatItem_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PrintFormatItem_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PrintFormatItem_ID, Integer.valueOf(AD_PrintFormatItem_ID));
 	}
 
 	/** Get Print Format Item.
 		@return Item/Column in the Print format
 	  */
-	public int getAD_PrintFormatItem_ID () 
+	public int getAD_PrintFormatItem_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormatItem_ID);
 		if (ii == null)
@@ -288,7 +356,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set AD_PrintFormatItem_UU.
-		@param AD_PrintFormatItem_UU AD_PrintFormatItem_UU	  */
+		@param AD_PrintFormatItem_UU AD_PrintFormatItem_UU
+	*/
 	public void setAD_PrintFormatItem_UU (String AD_PrintFormatItem_UU)
 	{
 		set_Value (COLUMNNAME_AD_PrintFormatItem_UU, AD_PrintFormatItem_UU);
@@ -296,32 +365,60 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 
 	/** Get AD_PrintFormatItem_UU.
 		@return AD_PrintFormatItem_UU	  */
-	public String getAD_PrintFormatItem_UU () 
+	public String getAD_PrintFormatItem_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_PrintFormatItem_UU);
 	}
 
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
+
+	/** Set Print Format.
+		@param AD_PrintFormat_ID Data Print Format
+	*/
+	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
+	{
+		if (AD_PrintFormat_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_PrintFormat_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
+	}
+
+	/** Get Print Format.
+		@return Data Print Format
+	  */
+	public int getAD_PrintFormat_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_PrintGraph getAD_PrintGraph() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintGraph)MTable.get(getCtx(), org.compiere.model.I_AD_PrintGraph.Table_Name)
-			.getPO(getAD_PrintGraph_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintGraph)MTable.get(getCtx(), org.compiere.model.I_AD_PrintGraph.Table_ID)
+			.getPO(getAD_PrintGraph_ID(), get_TrxName());
+	}
 
 	/** Set Graph.
-		@param AD_PrintGraph_ID 
-		Graph included in Reports
-	  */
+		@param AD_PrintGraph_ID Graph included in Reports
+	*/
 	public void setAD_PrintGraph_ID (int AD_PrintGraph_ID)
 	{
-		if (AD_PrintGraph_ID < 1) 
+		if (AD_PrintGraph_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintGraph_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintGraph_ID, Integer.valueOf(AD_PrintGraph_ID));
 	}
 
 	/** Get Graph.
 		@return Graph included in Reports
 	  */
-	public int getAD_PrintGraph_ID () 
+	public int getAD_PrintGraph_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintGraph_ID);
 		if (ii == null)
@@ -330,9 +427,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Arc Diameter.
-		@param ArcDiameter 
-		Arc Diameter for rounded Rectangles
-	  */
+		@param ArcDiameter Arc Diameter for rounded Rectangles
+	*/
 	public void setArcDiameter (int ArcDiameter)
 	{
 		set_Value (COLUMNNAME_ArcDiameter, Integer.valueOf(ArcDiameter));
@@ -341,7 +437,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Arc Diameter.
 		@return Arc Diameter for rounded Rectangles
 	  */
-	public int getArcDiameter () 
+	public int getArcDiameter()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ArcDiameter);
 		if (ii == null)
@@ -351,22 +447,36 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 
 	/** BarcodeType AD_Reference_ID=377 */
 	public static final int BARCODETYPE_AD_Reference_ID=377;
-	/** Codabar 2 of 7 linear = 2o9 */
-	public static final String BARCODETYPE_Codabar2Of7Linear = "2o9";
-	/** Code 39  3 of 9 linear w/o Checksum = 3o9 */
-	public static final String BARCODETYPE_Code393Of9LinearWOChecksum = "3o9";
-	/** Codeabar linear = COD */
-	public static final String BARCODETYPE_CodeabarLinear = "COD";
-	/** Code 128 dynamically switching = C28 */
-	public static final String BARCODETYPE_Code128DynamicallySwitching = "C28";
 	/** Code 128 A character set = 28A */
 	public static final String BARCODETYPE_Code128ACharacterSet = "28A";
 	/** Code 128 B character set = 28B */
 	public static final String BARCODETYPE_Code128BCharacterSet = "28B";
 	/** Code 128 C character set = 28C */
 	public static final String BARCODETYPE_Code128CCharacterSet = "28C";
+	/** Codabar 2 of 7 linear = 2o9 */
+	public static final String BARCODETYPE_Codabar2Of7Linear = "2o9";
+	/** Code 39 with Checksum = 39C */
+	public static final String BARCODETYPE_Code39WithChecksum = "39C";
+	/** Code 39 w/o Checksum = 39c */
+	public static final String BARCODETYPE_Code39WOChecksum = "39c";
+	/** Code 39  3 of 9 linear with Checksum = 3O9 */
+	public static final String BARCODETYPE_Code393Of9LinearWithChecksum = "3O9";
+	/** Code 39  3 of 9 linear w/o Checksum = 3o9 */
+	public static final String BARCODETYPE_Code393Of9LinearWOChecksum = "3o9";
+	/** PDF417 two dimensional = 417 */
+	public static final String BARCODETYPE_PDF417TwoDimensional = "417";
+	/** SCC-14 shipping code UCC/EAN 128 = C14 */
+	public static final String BARCODETYPE_SCC_14ShippingCodeUCCEAN128 = "C14";
+	/** SSCC-18 number UCC/EAN 128 = C18 */
+	public static final String BARCODETYPE_SSCC_18NumberUCCEAN128 = "C18";
+	/** Code 128 dynamically switching = C28 */
+	public static final String BARCODETYPE_Code128DynamicallySwitching = "C28";
 	/** Code 39 linear with Checksum = C39 */
 	public static final String BARCODETYPE_Code39LinearWithChecksum = "C39";
+	/** Codeabar linear = COD */
+	public static final String BARCODETYPE_CodeabarLinear = "COD";
+	/** EAN 13 = E13 */
+	public static final String BARCODETYPE_EAN13 = "E13";
 	/** EAN 128 = E28 */
 	public static final String BARCODETYPE_EAN128 = "E28";
 	/** Global Trade Item No GTIN UCC/EAN 128 = GTN */
@@ -375,42 +485,27 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final String BARCODETYPE_CodabarMonarchLinear = "MON";
 	/** Codabar NW-7 linear = NW7 */
 	public static final String BARCODETYPE_CodabarNW_7Linear = "NW7";
-	/** PDF417 two dimensional = 417 */
-	public static final String BARCODETYPE_PDF417TwoDimensional = "417";
-	/** SCC-14 shipping code UCC/EAN 128 = C14 */
-	public static final String BARCODETYPE_SCC_14ShippingCodeUCCEAN128 = "C14";
+	/** QR Code = QRC */
+	public static final String BARCODETYPE_QRCode = "QRC";
 	/** Shipment ID number UCC/EAN 128 = SID */
 	public static final String BARCODETYPE_ShipmentIDNumberUCCEAN128 = "SID";
 	/** UCC 128 = U28 */
 	public static final String BARCODETYPE_UCC128 = "U28";
+	/** UPC-A = UPA */
+	public static final String BARCODETYPE_UPC_A = "UPA";
 	/** Code 39 USD3 with Checksum = US3 */
 	public static final String BARCODETYPE_Code39USD3WithChecksum = "US3";
 	/** Codabar USD-4 linear = US4 */
 	public static final String BARCODETYPE_CodabarUSD_4Linear = "US4";
 	/** US Postal Service UCC/EAN 128 = USP */
 	public static final String BARCODETYPE_USPostalServiceUCCEAN128 = "USP";
-	/** SSCC-18 number UCC/EAN 128 = C18 */
-	public static final String BARCODETYPE_SSCC_18NumberUCCEAN128 = "C18";
-	/** Code 39 USD3 w/o Checksum = us3 */
-	public static final String BARCODETYPE_Code39USD3WOChecksum = "us3";
-	/** Code 39  3 of 9 linear with Checksum = 3O9 */
-	public static final String BARCODETYPE_Code393Of9LinearWithChecksum = "3O9";
 	/** Code 39 linear w/o Checksum = c39 */
 	public static final String BARCODETYPE_Code39LinearWOChecksum = "c39";
-	/** EAN 13 = E13 */
-	public static final String BARCODETYPE_EAN13 = "E13";
-	/** UPC-A = UPA */
-	public static final String BARCODETYPE_UPC_A = "UPA";
-	/** Code 39 with Checksum = 39C */
-	public static final String BARCODETYPE_Code39WithChecksum = "39C";
-	/** Code 39 w/o Checksum = 39c */
-	public static final String BARCODETYPE_Code39WOChecksum = "39c";
-	/** QR Code = QRC */
-	public static final String BARCODETYPE_QRCode = "QRC";
+	/** Code 39 USD3 w/o Checksum = us3 */
+	public static final String BARCODETYPE_Code39USD3WOChecksum = "us3";
 	/** Set Barcode Type.
-		@param BarcodeType 
-		Type of barcode
-	  */
+		@param BarcodeType Type of barcode
+	*/
 	public void setBarcodeType (String BarcodeType)
 	{
 
@@ -420,15 +515,14 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Barcode Type.
 		@return Type of barcode
 	  */
-	public String getBarcodeType () 
+	public String getBarcodeType()
 	{
 		return (String)get_Value(COLUMNNAME_BarcodeType);
 	}
 
 	/** Set Below Column.
-		@param BelowColumn 
-		Print this column below the column index entered
-	  */
+		@param BelowColumn Print this column below the column index entered
+	*/
 	public void setBelowColumn (int BelowColumn)
 	{
 		set_Value (COLUMNNAME_BelowColumn, Integer.valueOf(BelowColumn));
@@ -437,7 +531,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Below Column.
 		@return Print this column below the column index entered
 	  */
-	public int getBelowColumn () 
+	public int getBelowColumn()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_BelowColumn);
 		if (ii == null)
@@ -446,9 +540,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Display Logic.
-		@param DisplayLogic 
-		If the Field is displayed, the result determines if the field is actually displayed
-	  */
+		@param DisplayLogic If the Field is displayed, the result determines if the field is actually displayed
+	*/
 	public void setDisplayLogic (String DisplayLogic)
 	{
 		set_Value (COLUMNNAME_DisplayLogic, DisplayLogic);
@@ -457,27 +550,26 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Display Logic.
 		@return If the Field is displayed, the result determines if the field is actually displayed
 	  */
-	public String getDisplayLogic () 
+	public String getDisplayLogic()
 	{
 		return (String)get_Value(COLUMNNAME_DisplayLogic);
 	}
 
 	/** FieldAlignmentType AD_Reference_ID=253 */
 	public static final int FIELDALIGNMENTTYPE_AD_Reference_ID=253;
+	/** Block = B */
+	public static final String FIELDALIGNMENTTYPE_Block = "B";
+	/** Center = C */
+	public static final String FIELDALIGNMENTTYPE_Center = "C";
 	/** Default = D */
 	public static final String FIELDALIGNMENTTYPE_Default = "D";
 	/** Leading (left) = L */
 	public static final String FIELDALIGNMENTTYPE_LeadingLeft = "L";
 	/** Trailing (right) = T */
 	public static final String FIELDALIGNMENTTYPE_TrailingRight = "T";
-	/** Block = B */
-	public static final String FIELDALIGNMENTTYPE_Block = "B";
-	/** Center = C */
-	public static final String FIELDALIGNMENTTYPE_Center = "C";
 	/** Set Field Alignment.
-		@param FieldAlignmentType 
-		Field Text Alignment
-	  */
+		@param FieldAlignmentType Field Text Alignment
+	*/
 	public void setFieldAlignmentType (String FieldAlignmentType)
 	{
 
@@ -487,15 +579,14 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Field Alignment.
 		@return Field Text Alignment
 	  */
-	public String getFieldAlignmentType () 
+	public String getFieldAlignmentType()
 	{
 		return (String)get_Value(COLUMNNAME_FieldAlignmentType);
 	}
 
 	/** Set Format Pattern.
-		@param FormatPattern 
-		The pattern used to format a number or date.
-	  */
+		@param FormatPattern The pattern used to format a number or date.
+	*/
 	public void setFormatPattern (String FormatPattern)
 	{
 		set_Value (COLUMNNAME_FormatPattern, FormatPattern);
@@ -504,15 +595,14 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Format Pattern.
 		@return The pattern used to format a number or date.
 	  */
-	public String getFormatPattern () 
+	public String getFormatPattern()
 	{
 		return (String)get_Value(COLUMNNAME_FormatPattern);
 	}
 
 	/** Set Image attached.
-		@param ImageIsAttached 
-		The image to be printed is attached to the record
-	  */
+		@param ImageIsAttached The image to be printed is attached to the record
+	*/
 	public void setImageIsAttached (boolean ImageIsAttached)
 	{
 		set_Value (COLUMNNAME_ImageIsAttached, Boolean.valueOf(ImageIsAttached));
@@ -521,7 +611,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Image attached.
 		@return The image to be printed is attached to the record
 	  */
-	public boolean isImageIsAttached () 
+	public boolean isImageIsAttached()
 	{
 		Object oo = get_Value(COLUMNNAME_ImageIsAttached);
 		if (oo != null) 
@@ -534,9 +624,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Image URL.
-		@param ImageURL 
-		URL of  image
-	  */
+		@param ImageURL URL of  image
+	*/
 	public void setImageURL (String ImageURL)
 	{
 		set_Value (COLUMNNAME_ImageURL, ImageURL);
@@ -545,24 +634,23 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Image URL.
 		@return URL of  image
 	  */
-	public String getImageURL () 
+	public String getImageURL()
 	{
 		return (String)get_Value(COLUMNNAME_ImageURL);
 	}
 
-	/** Set Calculate Mean (μ).
-		@param IsAveraged 
-		Calculate Average of numeric content or length
-	  */
+	/** Set Calculate Mean (&#956;).
+		@param IsAveraged Calculate Average of numeric content or length
+	*/
 	public void setIsAveraged (boolean IsAveraged)
 	{
 		set_Value (COLUMNNAME_IsAveraged, Boolean.valueOf(IsAveraged));
 	}
 
-	/** Get Calculate Mean (μ).
+	/** Get Calculate Mean (&#956;).
 		@return Calculate Average of numeric content or length
 	  */
-	public boolean isAveraged () 
+	public boolean isAveraged()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAveraged);
 		if (oo != null) 
@@ -575,9 +663,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Centrally maintained.
-		@param IsCentrallyMaintained 
-		Information maintained in System Element table
-	  */
+		@param IsCentrallyMaintained Information maintained in System Element table
+	*/
 	public void setIsCentrallyMaintained (boolean IsCentrallyMaintained)
 	{
 		set_Value (COLUMNNAME_IsCentrallyMaintained, Boolean.valueOf(IsCentrallyMaintained));
@@ -586,7 +673,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Centrally maintained.
 		@return Information maintained in System Element table
 	  */
-	public boolean isCentrallyMaintained () 
+	public boolean isCentrallyMaintained()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCentrallyMaintained);
 		if (oo != null) 
@@ -598,19 +685,18 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return false;
 	}
 
-	/** Set Calculate Count (№).
-		@param IsCounted 
-		Count number of not empty elements
-	  */
+	/** Set Calculate Count (&#8470;).
+		@param IsCounted Count number of not empty elements
+	*/
 	public void setIsCounted (boolean IsCounted)
 	{
 		set_Value (COLUMNNAME_IsCounted, Boolean.valueOf(IsCounted));
 	}
 
-	/** Get Calculate Count (№).
+	/** Get Calculate Count (&#8470;).
 		@return Count number of not empty elements
 	  */
-	public boolean isCounted () 
+	public boolean isCounted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCounted);
 		if (oo != null) 
@@ -623,9 +709,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Descending.
-		@param IsDesc 
-		Sort your data using a SQL Desc Order By statement
-	  */
+		@param IsDesc Sort your data using a SQL Desc Order By statement
+	*/
 	public void setIsDesc (boolean IsDesc)
 	{
 		set_Value (COLUMNNAME_IsDesc, Boolean.valueOf(IsDesc));
@@ -634,7 +719,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Descending.
 		@return Sort your data using a SQL Desc Order By statement
 	  */
-	public boolean isDesc () 
+	public boolean isDesc()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDesc);
 		if (oo != null) 
@@ -646,19 +731,18 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return false;
 	}
 
-	/** Set Calculate Deviation (σ).
-		@param IsDeviationCalc 
-		Calculate Standard Deviation
-	  */
+	/** Set Calculate Deviation (&#963;).
+		@param IsDeviationCalc Calculate Standard Deviation
+	*/
 	public void setIsDeviationCalc (boolean IsDeviationCalc)
 	{
 		set_Value (COLUMNNAME_IsDeviationCalc, Boolean.valueOf(IsDeviationCalc));
 	}
 
-	/** Get Calculate Deviation (σ).
+	/** Get Calculate Deviation (&#963;).
 		@return Calculate Standard Deviation
 	  */
-	public boolean isDeviationCalc () 
+	public boolean isDeviationCalc()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDeviationCalc);
 		if (oo != null) 
@@ -671,9 +755,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Fill Shape.
-		@param IsFilledRectangle 
-		Fill the shape with the color selected
-	  */
+		@param IsFilledRectangle Fill the shape with the color selected
+	*/
 	public void setIsFilledRectangle (boolean IsFilledRectangle)
 	{
 		set_Value (COLUMNNAME_IsFilledRectangle, Boolean.valueOf(IsFilledRectangle));
@@ -682,7 +765,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Fill Shape.
 		@return Fill the shape with the color selected
 	  */
-	public boolean isFilledRectangle () 
+	public boolean isFilledRectangle()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFilledRectangle);
 		if (oo != null) 
@@ -695,9 +778,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Fixed Width.
-		@param IsFixedWidth 
-		Column has a fixed width
-	  */
+		@param IsFixedWidth Column has a fixed width
+	*/
 	public void setIsFixedWidth (boolean IsFixedWidth)
 	{
 		set_Value (COLUMNNAME_IsFixedWidth, Boolean.valueOf(IsFixedWidth));
@@ -706,7 +788,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Fixed Width.
 		@return Column has a fixed width
 	  */
-	public boolean isFixedWidth () 
+	public boolean isFixedWidth()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFixedWidth);
 		if (oo != null) 
@@ -719,9 +801,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Group by.
-		@param IsGroupBy 
-		After a group change, totals, etc. are printed
-	  */
+		@param IsGroupBy After a group change, totals, etc. are printed
+	*/
 	public void setIsGroupBy (boolean IsGroupBy)
 	{
 		set_Value (COLUMNNAME_IsGroupBy, Boolean.valueOf(IsGroupBy));
@@ -730,7 +811,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Group by.
 		@return After a group change, totals, etc. are printed
 	  */
-	public boolean isGroupBy () 
+	public boolean isGroupBy()
 	{
 		Object oo = get_Value(COLUMNNAME_IsGroupBy);
 		if (oo != null) 
@@ -743,9 +824,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set One Line Only.
-		@param IsHeightOneLine 
-		If selected, only one line is printed
-	  */
+		@param IsHeightOneLine If selected, only one line is printed
+	*/
 	public void setIsHeightOneLine (boolean IsHeightOneLine)
 	{
 		set_Value (COLUMNNAME_IsHeightOneLine, Boolean.valueOf(IsHeightOneLine));
@@ -754,7 +834,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get One Line Only.
 		@return If selected, only one line is printed
 	  */
-	public boolean isHeightOneLine () 
+	public boolean isHeightOneLine()
 	{
 		Object oo = get_Value(COLUMNNAME_IsHeightOneLine);
 		if (oo != null) 
@@ -767,9 +847,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Image Field.
-		@param IsImageField 
-		The image is retrieved from the data column
-	  */
+		@param IsImageField The image is retrieved from the data column
+	*/
 	public void setIsImageField (boolean IsImageField)
 	{
 		set_Value (COLUMNNAME_IsImageField, Boolean.valueOf(IsImageField));
@@ -778,7 +857,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Image Field.
 		@return The image is retrieved from the data column
 	  */
-	public boolean isImageField () 
+	public boolean isImageField()
 	{
 		Object oo = get_Value(COLUMNNAME_IsImageField);
 		if (oo != null) 
@@ -790,19 +869,18 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return false;
 	}
 
-	/** Set Calculate Maximum (↑).
-		@param IsMaxCalc 
-		Calculate the maximum amount
-	  */
+	/** Set Calculate Maximum (&#8593;).
+		@param IsMaxCalc Calculate the maximum amount
+	*/
 	public void setIsMaxCalc (boolean IsMaxCalc)
 	{
 		set_Value (COLUMNNAME_IsMaxCalc, Boolean.valueOf(IsMaxCalc));
 	}
 
-	/** Get Calculate Maximum (↑).
+	/** Get Calculate Maximum (&#8593;).
 		@return Calculate the maximum amount
 	  */
-	public boolean isMaxCalc () 
+	public boolean isMaxCalc()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMaxCalc);
 		if (oo != null) 
@@ -814,19 +892,18 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return false;
 	}
 
-	/** Set Calculate Minimum (↓).
-		@param IsMinCalc 
-		Calculate the minimum amount
-	  */
+	/** Set Calculate Minimum (&#8595;).
+		@param IsMinCalc Calculate the minimum amount
+	*/
 	public void setIsMinCalc (boolean IsMinCalc)
 	{
 		set_Value (COLUMNNAME_IsMinCalc, Boolean.valueOf(IsMinCalc));
 	}
 
-	/** Get Calculate Minimum (↓).
+	/** Get Calculate Minimum (&#8595;).
 		@return Calculate the minimum amount
 	  */
-	public boolean isMinCalc () 
+	public boolean isMinCalc()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMinCalc);
 		if (oo != null) 
@@ -839,9 +916,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Next Line.
-		@param IsNextLine 
-		Print item on next line
-	  */
+		@param IsNextLine Print item on next line
+	*/
 	public void setIsNextLine (boolean IsNextLine)
 	{
 		set_Value (COLUMNNAME_IsNextLine, Boolean.valueOf(IsNextLine));
@@ -850,7 +926,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Next Line.
 		@return Print item on next line
 	  */
-	public boolean isNextLine () 
+	public boolean isNextLine()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNextLine);
 		if (oo != null) 
@@ -863,9 +939,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Next Page.
-		@param IsNextPage 
-		The column is printed on the next page
-	  */
+		@param IsNextPage The column is printed on the next page
+	*/
 	public void setIsNextPage (boolean IsNextPage)
 	{
 		set_Value (COLUMNNAME_IsNextPage, Boolean.valueOf(IsNextPage));
@@ -874,7 +949,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Next Page.
 		@return The column is printed on the next page
 	  */
-	public boolean isNextPage () 
+	public boolean isNextPage()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNextPage);
 		if (oo != null) 
@@ -887,9 +962,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Order by.
-		@param IsOrderBy 
-		Include in sort order
-	  */
+		@param IsOrderBy Include in sort order
+	*/
 	public void setIsOrderBy (boolean IsOrderBy)
 	{
 		set_Value (COLUMNNAME_IsOrderBy, Boolean.valueOf(IsOrderBy));
@@ -898,7 +972,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Order by.
 		@return Include in sort order
 	  */
-	public boolean isOrderBy () 
+	public boolean isOrderBy()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOrderBy);
 		if (oo != null) 
@@ -911,9 +985,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Page break.
-		@param IsPageBreak 
-		Start with new page
-	  */
+		@param IsPageBreak Start with new page
+	*/
 	public void setIsPageBreak (boolean IsPageBreak)
 	{
 		set_Value (COLUMNNAME_IsPageBreak, Boolean.valueOf(IsPageBreak));
@@ -922,7 +995,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Page break.
 		@return Start with new page
 	  */
-	public boolean isPageBreak () 
+	public boolean isPageBreak()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPageBreak);
 		if (oo != null) 
@@ -935,9 +1008,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Print Barcode Text.
-		@param IsPrintBarcodeText 
-		Print barcode text at the bottom of barcode
-	  */
+		@param IsPrintBarcodeText Print barcode text at the bottom of barcode
+	*/
 	public void setIsPrintBarcodeText (boolean IsPrintBarcodeText)
 	{
 		set_Value (COLUMNNAME_IsPrintBarcodeText, Boolean.valueOf(IsPrintBarcodeText));
@@ -946,7 +1018,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Print Barcode Text.
 		@return Print barcode text at the bottom of barcode
 	  */
-	public boolean isPrintBarcodeText () 
+	public boolean isPrintBarcodeText()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrintBarcodeText);
 		if (oo != null) 
@@ -958,10 +1030,32 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return false;
 	}
 
-	/** Set Printed.
-		@param IsPrinted 
-		Indicates if this document / line is printed
+	/** Set Print Attributes.
+		@param IsPrintInstanceAttributes Print each attributes as report column instead of printing the description of attribute set instance
+	*/
+	public void setIsPrintInstanceAttributes (boolean IsPrintInstanceAttributes)
+	{
+		set_Value (COLUMNNAME_IsPrintInstanceAttributes, Boolean.valueOf(IsPrintInstanceAttributes));
+	}
+
+	/** Get Print Attributes.
+		@return Print each attributes as report column instead of printing the description of attribute set instance
 	  */
+	public boolean isPrintInstanceAttributes()
+	{
+		Object oo = get_Value(COLUMNNAME_IsPrintInstanceAttributes);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Printed.
+		@param IsPrinted Indicates if this document / line is printed
+	*/
 	public void setIsPrinted (boolean IsPrinted)
 	{
 		set_Value (COLUMNNAME_IsPrinted, Boolean.valueOf(IsPrinted));
@@ -970,7 +1064,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Printed.
 		@return Indicates if this document / line is printed
 	  */
-	public boolean isPrinted () 
+	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
 		if (oo != null) 
@@ -983,9 +1077,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Relative Position.
-		@param IsRelativePosition 
-		The item is relative positioned (not absolute)
-	  */
+		@param IsRelativePosition The item is relative positioned (not absolute)
+	*/
 	public void setIsRelativePosition (boolean IsRelativePosition)
 	{
 		set_Value (COLUMNNAME_IsRelativePosition, Boolean.valueOf(IsRelativePosition));
@@ -994,7 +1087,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Relative Position.
 		@return The item is relative positioned (not absolute)
 	  */
-	public boolean isRelativePosition () 
+	public boolean isRelativePosition()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRelativePosition);
 		if (oo != null) 
@@ -1007,9 +1100,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Running Total.
-		@param IsRunningTotal 
-		Create a running total (sum)
-	  */
+		@param IsRunningTotal Create a running total (sum)
+	*/
 	public void setIsRunningTotal (boolean IsRunningTotal)
 	{
 		set_Value (COLUMNNAME_IsRunningTotal, Boolean.valueOf(IsRunningTotal));
@@ -1018,7 +1110,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Running Total.
 		@return Create a running total (sum)
 	  */
-	public boolean isRunningTotal () 
+	public boolean isRunningTotal()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRunningTotal);
 		if (oo != null) 
@@ -1031,9 +1123,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Set NL Position.
-		@param IsSetNLPosition 
-		Set New Line Position
-	  */
+		@param IsSetNLPosition Set New Line Position
+	*/
 	public void setIsSetNLPosition (boolean IsSetNLPosition)
 	{
 		set_Value (COLUMNNAME_IsSetNLPosition, Boolean.valueOf(IsSetNLPosition));
@@ -1042,7 +1133,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Set NL Position.
 		@return Set New Line Position
 	  */
-	public boolean isSetNLPosition () 
+	public boolean isSetNLPosition()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSetNLPosition);
 		if (oo != null) 
@@ -1054,19 +1145,18 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return false;
 	}
 
-	/** Set Calculate Sum (Σ).
-		@param IsSummarized 
-		Calculate the Sum of numeric content or length
-	  */
+	/** Set Calculate Sum (&#931;).
+		@param IsSummarized Calculate the Sum of numeric content or length
+	*/
 	public void setIsSummarized (boolean IsSummarized)
 	{
 		set_Value (COLUMNNAME_IsSummarized, Boolean.valueOf(IsSummarized));
 	}
 
-	/** Get Calculate Sum (Σ).
+	/** Get Calculate Sum (&#931;).
 		@return Calculate the Sum of numeric content or length
 	  */
-	public boolean isSummarized () 
+	public boolean isSummarized()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummarized);
 		if (oo != null) 
@@ -1079,9 +1169,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Suppress Null.
-		@param IsSuppressNull 
-		Suppress columns or elements with NULL value
-	  */
+		@param IsSuppressNull Suppress columns or elements with NULL value
+	*/
 	public void setIsSuppressNull (boolean IsSuppressNull)
 	{
 		set_Value (COLUMNNAME_IsSuppressNull, Boolean.valueOf(IsSuppressNull));
@@ -1090,7 +1179,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Suppress Null.
 		@return Suppress columns or elements with NULL value
 	  */
-	public boolean isSuppressNull () 
+	public boolean isSuppressNull()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSuppressNull);
 		if (oo != null) 
@@ -1103,9 +1192,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Suppress Repeats.
-		@param IsSuppressRepeats 
-		Suppress repeated elements in column.
-	  */
+		@param IsSuppressRepeats Suppress repeated elements in column.
+	*/
 	public void setIsSuppressRepeats (boolean IsSuppressRepeats)
 	{
 		set_Value (COLUMNNAME_IsSuppressRepeats, Boolean.valueOf(IsSuppressRepeats));
@@ -1114,7 +1202,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Suppress Repeats.
 		@return Suppress repeated elements in column.
 	  */
-	public boolean isSuppressRepeats () 
+	public boolean isSuppressRepeats()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSuppressRepeats);
 		if (oo != null) 
@@ -1126,19 +1214,18 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return false;
 	}
 
-	/** Set Calculate Variance (σ²).
-		@param IsVarianceCalc 
-		Calculate Variance
-	  */
+	/** Set Calculate Variance (&#963;²).
+		@param IsVarianceCalc Calculate Variance
+	*/
 	public void setIsVarianceCalc (boolean IsVarianceCalc)
 	{
 		set_Value (COLUMNNAME_IsVarianceCalc, Boolean.valueOf(IsVarianceCalc));
 	}
 
-	/** Get Calculate Variance (σ²).
+	/** Get Calculate Variance (&#963;²).
 		@return Calculate Variance
 	  */
-	public boolean isVarianceCalc () 
+	public boolean isVarianceCalc()
 	{
 		Object oo = get_Value(COLUMNNAME_IsVarianceCalc);
 		if (oo != null) 
@@ -1152,18 +1239,17 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 
 	/** LineAlignmentType AD_Reference_ID=254 */
 	public static final int LINEALIGNMENTTYPE_AD_Reference_ID=254;
-	/** Leading (left) = L */
-	public static final String LINEALIGNMENTTYPE_LeadingLeft = "L";
 	/** Center = C */
 	public static final String LINEALIGNMENTTYPE_Center = "C";
+	/** Leading (left) = L */
+	public static final String LINEALIGNMENTTYPE_LeadingLeft = "L";
 	/** Trailing (right) = T */
 	public static final String LINEALIGNMENTTYPE_TrailingRight = "T";
 	/** None = X */
 	public static final String LINEALIGNMENTTYPE_None = "X";
 	/** Set Line Alignment.
-		@param LineAlignmentType 
-		Line Alignment
-	  */
+		@param LineAlignmentType Line Alignment
+	*/
 	public void setLineAlignmentType (String LineAlignmentType)
 	{
 
@@ -1173,15 +1259,14 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Line Alignment.
 		@return Line Alignment
 	  */
-	public String getLineAlignmentType () 
+	public String getLineAlignmentType()
 	{
 		return (String)get_Value(COLUMNNAME_LineAlignmentType);
 	}
 
 	/** Set Line Width.
-		@param LineWidth 
-		Width of the lines
-	  */
+		@param LineWidth Width of the lines
+	*/
 	public void setLineWidth (int LineWidth)
 	{
 		set_Value (COLUMNNAME_LineWidth, Integer.valueOf(LineWidth));
@@ -1190,7 +1275,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Line Width.
 		@return Width of the lines
 	  */
-	public int getLineWidth () 
+	public int getLineWidth()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LineWidth);
 		if (ii == null)
@@ -1199,9 +1284,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Max Height.
-		@param MaxHeight 
-		Maximum Height in 1/72 if an inch - 0 = no restriction
-	  */
+		@param MaxHeight Maximum Height in 1/72 if an inch - 0 = no restriction
+	*/
 	public void setMaxHeight (int MaxHeight)
 	{
 		set_Value (COLUMNNAME_MaxHeight, Integer.valueOf(MaxHeight));
@@ -1210,7 +1294,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Max Height.
 		@return Maximum Height in 1/72 if an inch - 0 = no restriction
 	  */
-	public int getMaxHeight () 
+	public int getMaxHeight()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MaxHeight);
 		if (ii == null)
@@ -1219,9 +1303,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Max Width.
-		@param MaxWidth 
-		Maximum Width in 1/72 if an inch - 0 = no restriction
-	  */
+		@param MaxWidth Maximum Width in 1/72 if an inch - 0 = no restriction
+	*/
 	public void setMaxWidth (int MaxWidth)
 	{
 		set_Value (COLUMNNAME_MaxWidth, Integer.valueOf(MaxWidth));
@@ -1230,7 +1313,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Max Width.
 		@return Maximum Width in 1/72 if an inch - 0 = no restriction
 	  */
-	public int getMaxWidth () 
+	public int getMaxWidth()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MaxWidth);
 		if (ii == null)
@@ -1239,9 +1322,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -1250,7 +1332,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -1267,14 +1349,13 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final int PRINTAREATYPE_AD_Reference_ID=256;
 	/** Content = C */
 	public static final String PRINTAREATYPE_Content = "C";
-	/** Header = H */
-	public static final String PRINTAREATYPE_Header = "H";
 	/** Footer = F */
 	public static final String PRINTAREATYPE_Footer = "F";
+	/** Header = H */
+	public static final String PRINTAREATYPE_Header = "H";
 	/** Set Area.
-		@param PrintAreaType 
-		Print Area
-	  */
+		@param PrintAreaType Print Area
+	*/
 	public void setPrintAreaType (String PrintAreaType)
 	{
 
@@ -1284,7 +1365,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Area.
 		@return Print Area
 	  */
-	public String getPrintAreaType () 
+	public String getPrintAreaType()
 	{
 		return (String)get_Value(COLUMNNAME_PrintAreaType);
 	}
@@ -1293,20 +1374,21 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final int PRINTFORMATTYPE_AD_Reference_ID=255;
 	/** Field = F */
 	public static final String PRINTFORMATTYPE_Field = "F";
-	/** Text = T */
-	public static final String PRINTFORMATTYPE_Text = "T";
-	/** Print Format = P */
-	public static final String PRINTFORMATTYPE_PrintFormat = "P";
 	/** Image = I */
 	public static final String PRINTFORMATTYPE_Image = "I";
-	/** Rectangle = R */
-	public static final String PRINTFORMATTYPE_Rectangle = "R";
 	/** Line = L */
 	public static final String PRINTFORMATTYPE_Line = "L";
+	/** Print Format = P */
+	public static final String PRINTFORMATTYPE_PrintFormat = "P";
+	/** Rectangle = R */
+	public static final String PRINTFORMATTYPE_Rectangle = "R";
+	/** Script = S */
+	public static final String PRINTFORMATTYPE_Script = "S";
+	/** Text = T */
+	public static final String PRINTFORMATTYPE_Text = "T";
 	/** Set Format Type.
-		@param PrintFormatType 
-		Print Format Type
-	  */
+		@param PrintFormatType Print Format Type
+	*/
 	public void setPrintFormatType (String PrintFormatType)
 	{
 
@@ -1316,15 +1398,14 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Format Type.
 		@return Print Format Type
 	  */
-	public String getPrintFormatType () 
+	public String getPrintFormatType()
 	{
 		return (String)get_Value(COLUMNNAME_PrintFormatType);
 	}
 
 	/** Set Print Text.
-		@param PrintName 
-		The label text to be printed on a document or correspondence.
-	  */
+		@param PrintName The label text to be printed on a document or correspondence.
+	*/
 	public void setPrintName (String PrintName)
 	{
 		set_Value (COLUMNNAME_PrintName, PrintName);
@@ -1333,15 +1414,14 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Print Text.
 		@return The label text to be printed on a document or correspondence.
 	  */
-	public String getPrintName () 
+	public String getPrintName()
 	{
 		return (String)get_Value(COLUMNNAME_PrintName);
 	}
 
 	/** Set Print Label Suffix.
-		@param PrintNameSuffix 
-		The label text to be printed on a document or correspondence after the field
-	  */
+		@param PrintNameSuffix The label text to be printed on a document or correspondence after the field
+	*/
 	public void setPrintNameSuffix (String PrintNameSuffix)
 	{
 		set_Value (COLUMNNAME_PrintNameSuffix, PrintNameSuffix);
@@ -1350,15 +1430,14 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Print Label Suffix.
 		@return The label text to be printed on a document or correspondence after the field
 	  */
-	public String getPrintNameSuffix () 
+	public String getPrintNameSuffix()
 	{
 		return (String)get_Value(COLUMNNAME_PrintNameSuffix);
 	}
 
 	/** Set Running Total Lines.
-		@param RunningTotalLines 
-		Create Running Total Lines (page break) every x lines
-	  */
+		@param RunningTotalLines Create Running Total Lines (page break) every x lines
+	*/
 	public void setRunningTotalLines (int RunningTotalLines)
 	{
 		set_Value (COLUMNNAME_RunningTotalLines, Integer.valueOf(RunningTotalLines));
@@ -1367,7 +1446,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Running Total Lines.
 		@return Create Running Total Lines (page break) every x lines
 	  */
-	public int getRunningTotalLines () 
+	public int getRunningTotalLines()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_RunningTotalLines);
 		if (ii == null)
@@ -1375,10 +1454,25 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return ii.intValue();
 	}
 
-	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
+	/** Set Script.
+		@param Script Dynamic Java Language Script to calculate result
+	*/
+	public void setScript (String Script)
+	{
+		set_Value (COLUMNNAME_Script, Script);
+	}
+
+	/** Get Script.
+		@return Dynamic Java Language Script to calculate result
 	  */
+	public String getScript()
+	{
+		return (String)get_Value(COLUMNNAME_Script);
+	}
+
+	/** Set Sequence.
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -1387,7 +1481,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -1399,16 +1493,15 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final int SHAPETYPE_AD_Reference_ID=333;
 	/** 3D Rectangle = 3 */
 	public static final String SHAPETYPE_3DRectangle = "3";
+	/** Normal Rectangle = N */
+	public static final String SHAPETYPE_NormalRectangle = "N";
 	/** Oval = O */
 	public static final String SHAPETYPE_Oval = "O";
 	/** Round Rectangle = R */
 	public static final String SHAPETYPE_RoundRectangle = "R";
-	/** Normal Rectangle = N */
-	public static final String SHAPETYPE_NormalRectangle = "N";
 	/** Set Shape Type.
-		@param ShapeType 
-		Type of the shape to be painted
-	  */
+		@param ShapeType Type of the shape to be painted
+	*/
 	public void setShapeType (String ShapeType)
 	{
 
@@ -1418,15 +1511,14 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Shape Type.
 		@return Type of the shape to be painted
 	  */
-	public String getShapeType () 
+	public String getShapeType()
 	{
 		return (String)get_Value(COLUMNNAME_ShapeType);
 	}
 
 	/** Set Record Sort No.
-		@param SortNo 
-		Determines in what order the records are displayed
-	  */
+		@param SortNo Determines in what order the records are displayed
+	*/
 	public void setSortNo (int SortNo)
 	{
 		set_Value (COLUMNNAME_SortNo, Integer.valueOf(SortNo));
@@ -1435,7 +1527,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Record Sort No.
 		@return Determines in what order the records are displayed
 	  */
-	public int getSortNo () 
+	public int getSortNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SortNo);
 		if (ii == null)
@@ -1444,9 +1536,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set X Position.
-		@param XPosition 
-		Absolute X (horizontal) position in 1/72 of an inch
-	  */
+		@param XPosition Absolute X (horizontal) position in 1/72 of an inch
+	*/
 	public void setXPosition (int XPosition)
 	{
 		set_Value (COLUMNNAME_XPosition, Integer.valueOf(XPosition));
@@ -1455,7 +1546,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get X Position.
 		@return Absolute X (horizontal) position in 1/72 of an inch
 	  */
-	public int getXPosition () 
+	public int getXPosition()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_XPosition);
 		if (ii == null)
@@ -1464,9 +1555,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set X Space.
-		@param XSpace 
-		Relative X (horizontal) space in 1/72 of an inch
-	  */
+		@param XSpace Relative X (horizontal) space in 1/72 of an inch
+	*/
 	public void setXSpace (int XSpace)
 	{
 		set_Value (COLUMNNAME_XSpace, Integer.valueOf(XSpace));
@@ -1475,7 +1565,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get X Space.
 		@return Relative X (horizontal) space in 1/72 of an inch
 	  */
-	public int getXSpace () 
+	public int getXSpace()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_XSpace);
 		if (ii == null)
@@ -1484,9 +1574,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Y Position.
-		@param YPosition 
-		Absolute Y (vertical) position in 1/72 of an inch
-	  */
+		@param YPosition Absolute Y (vertical) position in 1/72 of an inch
+	*/
 	public void setYPosition (int YPosition)
 	{
 		set_Value (COLUMNNAME_YPosition, Integer.valueOf(YPosition));
@@ -1495,7 +1584,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Y Position.
 		@return Absolute Y (vertical) position in 1/72 of an inch
 	  */
-	public int getYPosition () 
+	public int getYPosition()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_YPosition);
 		if (ii == null)
@@ -1504,9 +1593,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	}
 
 	/** Set Y Space.
-		@param YSpace 
-		Relative Y (vertical) space in 1/72 of an inch
-	  */
+		@param YSpace Relative Y (vertical) space in 1/72 of an inch
+	*/
 	public void setYSpace (int YSpace)
 	{
 		set_Value (COLUMNNAME_YSpace, Integer.valueOf(YSpace));
@@ -1515,7 +1603,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/** Get Y Space.
 		@return Relative Y (vertical) space in 1/72 of an inch
 	  */
-	public int getYSpace () 
+	public int getYSpace()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_YSpace);
 		if (ii == null)

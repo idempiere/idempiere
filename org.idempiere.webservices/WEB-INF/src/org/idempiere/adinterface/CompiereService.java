@@ -34,6 +34,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Login;
+import org.compiere.util.Util;
 import org.idempiere.adInterface.x10.ADLoginRequest;
 
 /**
@@ -122,7 +123,7 @@ public class CompiereService {
 		CompiereUtil.initWeb();
 
 		ServerContext.setCurrentInstance(new Properties());
-		Env.setContext(getCtx(), "#AD_Language", "en_US" );
+		Env.setContext(getCtx(), Env.LANGUAGE, "en_US" );
 		m_language = Language.getLanguage("en_US");
 
 		dateFormat = DisplayType.getDateFormat(DisplayType.Date, m_language);
@@ -182,22 +183,25 @@ public class CompiereService {
 		//  Get Login Info
 		String loginInfo = null;
 		//  Verify existence of User/Client/Org/Role and User's acces to Client & Org
-		String sql = "SELECT u.Name || '@' || c.Name || '.' || o.Name AS Text "
-			+ "FROM AD_User u, AD_Client c, AD_Org o, AD_User_Roles ur, AD_Role r "
-			+ "WHERE u.AD_User_ID=?"    //  #1
-			+ " AND c.AD_Client_ID=?"   //  #2
-			+ " AND o.AD_Org_ID=?"      //  #3
-			+ " AND ur.AD_Role_ID=?"    //  #4
-			+ " AND ur.AD_User_ID=u.AD_User_ID"
-			+ " AND ur.AD_Role_ID=r.AD_Role_ID"
-			+ " AND (o.AD_Client_ID = 0 OR o.AD_Client_ID=c.AD_Client_ID)"
-			+ " AND (r.IsAccessAllOrgs='Y' OR (c.AD_Client_ID IN (SELECT AD_Client_ID FROM AD_Role_OrgAccess ca WHERE ca.AD_Role_ID=ur.AD_Role_ID)"
-			+ " AND o.AD_Org_ID IN (SELECT AD_Org_ID FROM AD_Role_OrgAccess ca WHERE ca.AD_Role_ID=ur.AD_Role_ID)))";
+
+		StringBuilder sql = new StringBuilder("SELECT u.Name || '@' || c.Name || '.' || o.Name AS Text")
+		.append(" FROM AD_User u, AD_Client c, AD_Org o, AD_Role r")
+		.append(" WHERE u.AD_User_ID = ?")    //  #1
+		.append(" AND c.AD_Client_ID = ?")    //  #2
+		.append(" AND o.AD_Org_ID = ?")       //  #3
+		.append(" AND r.AD_Role_ID = ?")      //  #4
+		.append(" AND (o.AD_Client_ID = 0 OR o.AD_Client_ID=c.AD_Client_ID)")
+		.append(" AND ( ")
+		.append(" 	r.IsAccessAllOrgs='Y'")
+		.append(" 	OR (r.IsUseUserOrgAccess='N' AND o.AD_Org_ID IN (SELECT AD_Org_ID FROM AD_Role_OrgAccess ra WHERE ra.AD_Role_ID=r.AD_Role_ID AND ra.IsActive='Y'))")
+		.append(" 	OR (r.IsUseUserOrgAccess='Y' AND o.AD_Org_ID IN (SELECT AD_Org_ID FROM AD_User_OrgAccess ua WHERE ua.AD_User_ID=u.AD_User_ID AND ua.IsActive='Y'))")
+		.append(")");
+
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, AD_User_ID);
 			pstmt.setInt(2, AD_Client_ID);
 			pstmt.setInt(3, AD_Org_ID);
@@ -260,9 +264,9 @@ public class CompiereService {
 		if (email_login)
 			m_userName = user.getEMail();
 		else
-			m_userName = user.getName();
-		
-		Env.setContext( getCtx(), "#AD_Language", Lang);
+			m_userName = Util.isEmpty(user.getLDAPUser()) ? user.getName() : user.getLDAPUser();
+
+		Env.setContext( getCtx(), Env.LANGUAGE, Lang);
 		m_language = Language.getLanguage(Lang);
 		Env.verifyLanguage( getCtx(), m_language );
 
@@ -277,18 +281,21 @@ public class CompiereService {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		SimpleDateFormat dateFormat4Timestamp = new SimpleDateFormat( dateFormatOnlyForCtx ); 
-		Env.setContext( getCtx(), "#Date", dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
-		if (log.isLoggable(Level.INFO)) log.info(" #Date = "+ Env.getContextAsDate( getCtx(), "#Date"));
+		Env.setContext( getCtx(), Env.DATE, dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
+		if (log.isLoggable(Level.INFO)) log.info(" #Date = "+ Env.getContextAsDate( getCtx(), Env.DATE));
 
-		Env.setContext( getCtx(), "#M_Warehouse_ID", M_Warehouse_ID );
+		Env.setContext( getCtx(), Env.M_WAREHOUSE_ID, M_Warehouse_ID );
 		Env.setContext(getCtx(), Env.LANGUAGE, m_language.getAD_Language());
 		
 		// Create session
-		MSession session = MSession.get (getCtx(), false);
+		MSession session = MSession.get (getCtx());
 		if (session == null){
 			log.fine("No Session found");
-			session = MSession.get (getCtx(), true);    	
+			session = MSession.create (getCtx());
+		} else {
+			session = new MSession(getCtx(), session.getAD_Session_ID(), null);
 		}
+
 		session.setWebSession("WebService");
 		
 		session.setDescription(session.getDescription() + "\nUser Agent: " + getCtx().getProperty("#UserAgent"));
@@ -360,7 +367,7 @@ public class CompiereService {
 	}
 
 	/**
-	 * @return set password
+	 * @param pass
 	 */
 	public synchronized void setPassword(String pass) {
 		m_password = pass;
@@ -374,7 +381,7 @@ public class CompiereService {
 	}
 
 	/**
-	 * @return set expiry minutes
+	 * @param expiryMinutes
 	 */
 	public synchronized void setExpiryMinutes(int expiryMinutes) {
 		m_expiryMinutes = expiryMinutes;

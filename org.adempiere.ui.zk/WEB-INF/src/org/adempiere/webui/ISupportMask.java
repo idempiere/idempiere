@@ -21,10 +21,10 @@ import org.zkoss.zk.ui.Component;
  * interface for any component want support show other window over it with a
  * mask. object manage component as AbstractUIPart also implement this interface
  * consider below case.
- * 1. show a dialog => show mask
+ * 1. show a dialog =&gt; show mask
  * 2. process a event
- *     2.1. show other dialog => show mask
- *     2.1. hidden dialog in step 1 => hidden mask
+ *     2.1. show other dialog =&gt; show mask
+ *     2.1. hidden dialog in step 1 =&gt; hidden mask
  * 3. result dialog show without mask
  * to void this case process as below
  * in {@link #showMask()} set a flag to request scope by call: {@link Component#setAttribute(String, Object, int)} 
@@ -39,7 +39,7 @@ public interface ISupportMask {
 	 * show mask over this component
 	 * when override, remember call {@link Component#setAttribute(String, Object, int)} with 
 	 * key is {@link #READY_SHOW_MASK_FLAG} value is Integer(1) and scope is {@link Component#REQUEST_SCOPE}
-	 * by call {@link LayoutUtils#setFlagShowMask(Component)}
+	 * by call {@link LayoutUtils}
 	 */
 	public void showMask();
 
@@ -47,7 +47,7 @@ public interface ISupportMask {
 	 * Hide mask. at code call showMask will hand reference to this object. and
 	 * call this function in handle close event of window
 	 * when override, remember check exists of key {@link #READY_SHOW_MASK_FLAG} at scope {@link Component#REQUEST_SCOPE} in attribute
-	 * by call {@link LayoutUtils#hasFlagShowMask(Component)}
+	 * by call {@link LayoutUtils}
 	 * if exists flag, don't hidden mask 
 	 */
 	public void hideMask();

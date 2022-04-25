@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.model.MDocType;
-import org.compiere.model.MPeriod;
-import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
@@ -34,20 +31,6 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 	public MDepreciationExp(Properties ctx, int A_Depreciation_Exp_ID, String trxName)
 	{
 		super (ctx, A_Depreciation_Exp_ID, trxName);
-		/** 
-		if (A_Depreciation_Exp_ID == 0)
-		{
-			setA_Account_Number (0);
-			setA_Asset_ID (0);
-			setA_Depreciation_Exp_ID (0);
-			setA_Entry_Type (null);
-			setA_Period (0);
-			setDescription (null);
-			setExpense (Env.ZERO);
-			setIsDepreciated (false);
-			setProcessed (false);
-		}
-		*/
 	}
 	
 	/** Load Constructor */
@@ -212,7 +195,6 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 			Collection<MDepreciationWorkfile> workFiles = MDepreciationWorkfile.forA_Asset_ID(getCtx(), getA_Asset_ID(), get_TrxName());
 			for(MDepreciationWorkfile assetwk : workFiles) {	
 				// TODO : check if we can reverse it (check period, check dateacct etc)
-				//MDepreciationWorkfile assetwk = getA_Depreciation_Workfile();
 				assetwk.adjustAccumulatedDepr(getA_Accumulated_Depr().negate(), getA_Accumulated_Depr_F().negate(), false);
 				assetwk.saveEx();
 			}
@@ -239,7 +221,6 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 		{
 			Collection<MDepreciationWorkfile> workFiles = MDepreciationWorkfile.forA_Asset_ID(getCtx(), getA_Asset_ID(), get_TrxName());
 			for(MDepreciationWorkfile wk : workFiles) {	
-				//MDepreciationWorkfile wk = getA_Depreciation_Workfile();
 				wk.setA_Current_Period();
 				wk.saveEx();
 			}

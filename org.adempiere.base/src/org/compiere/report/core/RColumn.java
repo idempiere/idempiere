@@ -121,7 +121,7 @@ public class RColumn
 		else if (displayType == DisplayType.Integer)
 			m_colClass = Integer.class;
 		//  List
-		else if (displayType == DisplayType.List)
+		else if (DisplayType.isList(displayType))
 		{
 			Language language = Language.getLanguage(Env.getAD_Language(ctx));
 			m_colSQL = "(" + MLookupFactory.getLookup_ListEmbed(
@@ -261,7 +261,7 @@ public class RColumn
 		return m_displaySQL;
 	}
 	/**
-	 *  This column is an ID Column (i.e. two values - int & String are read)
+	 *  This column is an ID Column (i.e. two values - int and String are read)
 	 */
 	public boolean isIDcol()
 	{

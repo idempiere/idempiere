@@ -89,9 +89,6 @@ public class MProject extends X_C_Project
 		super (ctx, C_Project_ID, trxName);
 		if (C_Project_ID == 0)
 		{
-		//	setC_Project_ID(0);
-		//	setValue (null);
-		//	setC_Currency_ID (0);
 			setCommittedAmt (Env.ZERO);
 			setCommittedQty (Env.ZERO);
 			setInvoicedAmt (Env.ZERO);
@@ -100,7 +97,6 @@ public class MProject extends X_C_Project
 			setPlannedMarginAmt (Env.ZERO);
 			setPlannedQty (Env.ZERO);
 			setProjectBalanceAmt (Env.ZERO);
-		//	setProjectCategory(PROJECTCATEGORY_General);
 			setProjInvoiceRule(PROJINVOICERULE_None);
 			setProjectLineLevel(PROJECTLINELEVEL_Project);
 			setIsCommitCeiling (false);
@@ -127,35 +123,12 @@ public class MProject extends X_C_Project
 	/**
 	 * 	Get Project Type as Int (is Button).
 	 *	@return C_ProjectType_ID id
+	 *  @deprecated
 	 */
 	public int getC_ProjectType_ID_Int()
 	{
-		String pj = super.getC_ProjectType_ID();
-		if (pj == null)
-			return 0;
-		int C_ProjectType_ID = 0;
-		try
-		{
-			C_ProjectType_ID = Integer.parseInt (pj);
-		}
-		catch (Exception ex)
-		{
-			log.log(Level.SEVERE, pj, ex);
-		}
-		return C_ProjectType_ID;
+		return getC_ProjectType_ID();		
 	}	//	getC_ProjectType_ID_Int
-
-	/**
-	 * 	Set Project Type (overwrite r/o)
-	 *	@param C_ProjectType_ID id
-	 */
-	public void setC_ProjectType_ID (int C_ProjectType_ID)
-	{
-		if (C_ProjectType_ID == 0)
-			super.setC_ProjectType_ID (null);
-		else
-			super.set_Value("C_ProjectType_ID", C_ProjectType_ID);
-	}	//	setC_ProjectType_ID
 
 	/**
 	 *	String Representation
@@ -163,7 +136,7 @@ public class MProject extends X_C_Project
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MProject[").append(get_ID())
+		StringBuilder sb = new StringBuilder ("MProject[").append(get_ID())
 			.append("-").append(getValue()).append(",ProjectCategory=").append(getProjectCategory())
 			.append("]");
 		return sb.toString();
@@ -206,7 +179,7 @@ public class MProject extends X_C_Project
 		final String whereClause = "C_Project_ID=?";
 		List <MProjectLine> list = new Query(getCtx(), I_C_ProjectLine.Table_Name, whereClause, get_TrxName())
 			.setParameters(getC_Project_ID())
-			.setOrderBy("Line")
+			.setOrderBy("Line,C_ProjectLine_ID")
 			.list();
 		//
 		MProjectLine[] retValue = new MProjectLine[list.size()];
@@ -476,7 +449,7 @@ public class MProject extends X_C_Project
 	/**
 	 * 	Return the Invoices Generated for this Project
 	 *	@return invoices
-	 *	@author monhate
+	 *	author monhate
 	 */	
 	public MInvoice[] getMInvoices(){
 		StringBuilder sb = new StringBuilder();

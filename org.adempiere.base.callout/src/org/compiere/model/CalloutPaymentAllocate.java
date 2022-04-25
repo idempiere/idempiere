@@ -129,9 +129,9 @@ public class CalloutPaymentAllocate extends CalloutEngine
 	/**
 	 *  Payment_Amounts.
 	 *	Change of:
-	 *		- IsOverUnderPayment -> set OverUnderAmt to 0
-	 *		- C_Currency_ID, C_ConvesionRate_ID -> convert all
-	 *		- PayAmt, DiscountAmt, WriteOffAmt, OverUnderAmt -> PayAmt
+	 *		- IsOverUnderPayment -&gt; set OverUnderAmt to 0
+	 *		- C_Currency_ID, C_ConvesionRate_ID -&gt; convert all
+	 *		- PayAmt, DiscountAmt, WriteOffAmt, OverUnderAmt -&gt; PayAmt
 	 *			make sure that add up to InvoiceOpenAmt
 	 *  @param ctx context
 	 *  @param WindowNo current Window No

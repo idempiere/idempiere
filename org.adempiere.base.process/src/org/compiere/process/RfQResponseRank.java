@@ -27,6 +27,7 @@ import org.compiere.model.MRfQResponse;
 import org.compiere.model.MRfQResponseLine;
 import org.compiere.model.MRfQResponseLineQty;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	Rank RfQ Responses	
@@ -36,8 +37,9 @@ import org.compiere.util.Env;
  *  
  *  @author Teo Sarca, teo.sarca@gmail.com
  *  	<li>BF [ 2892595 ] RfQResponseRank - ranking is not good
- *  		https://sourceforge.net/tracker/?func=detail&aid=2892595&group_id=176962&atid=879332
+ *  		https://sourceforge.net/p/adempiere/bugs/2205/
  */
+@org.adempiere.base.annotation.Process
 public class RfQResponseRank extends SvrProcess
 {
 	/**	RfQ 			*/
@@ -89,7 +91,7 @@ public class RfQResponseRank extends SvrProcess
 		{
 			responses[0].setIsSelectedWinner(true);
 			responses[0].saveEx();
-			return "Only one completed RfQ Response found";
+			return	Msg.getMsg(Env.getCtx(), "OnlyOneRfQResponse");
 		}
 			
 		//	Rank
@@ -216,10 +218,10 @@ public class RfQResponseRank extends SvrProcess
 						&& respQty.getRfQLineQty().isPurchaseQty())
 					{
 						respLine.setIsSelectedWinner(true);
-						respLine.saveEx();
 						break;
 					}
 				}
+				respLine.saveEx();
 			}
 			response.setRanking(ranking);
 			response.saveEx();

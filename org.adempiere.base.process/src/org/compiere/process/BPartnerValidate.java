@@ -37,6 +37,7 @@ import org.compiere.util.Msg;
  *  @version $Id: BPartnerValidate.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  *  FR: [ 2214883 ] Remove SQL code and Replace for Query - red1, teo_sarca
  */
+@org.adempiere.base.annotation.Process
 public class BPartnerValidate extends SvrProcess
 {
 	/**	BPartner ID			*/
@@ -74,13 +75,13 @@ public class BPartnerValidate extends SvrProcess
 	{
 		if (log.isLoggable(Level.INFO)) log.info("C_BPartner_ID=" + p_C_BPartner_ID + ", C_BP_Group_ID=" + p_C_BP_Group_ID); 
 		if (p_C_BPartner_ID == 0 && p_C_BP_Group_ID == 0)
-			throw new AdempiereUserError ("No Business Partner/Group selected");
+			throw new AdempiereUserError (Msg.getMsg(getCtx(), "BPartnerGroupNotSelected"));
 		
 		if (p_C_BP_Group_ID == 0)
 		{
 			MBPartner bp = new MBPartner (getCtx(), p_C_BPartner_ID, get_TrxName());
 			if (bp.get_ID() == 0)
-				throw new AdempiereUserError ("Business Partner not found - C_BPartner_ID=" + p_C_BPartner_ID);
+				throw new AdempiereUserError (Msg.getMsg(getCtx(), "BPartnerNotFound") + " - C_BPartner_ID=" + p_C_BPartner_ID);
 			checkBP (bp);
 		}
 		else
@@ -115,7 +116,6 @@ public class BPartnerValidate extends SvrProcess
 		bp.setActualLifeTimeValue();
 		bp.saveEx();
 		//
-	//	if (bp.getSO_CreditUsed().signum() != 0)
 		addLog(0, null, bp.getSO_CreditUsed(), Msg.getElement(getCtx(), "SO_CreditUsed"));
 		addLog(0, null, bp.getTotalOpenBalance(), Msg.getElement(getCtx(), "TotalOpenBalance"));
 		addLog(0, null, bp.getActualLifeTimeValue(), Msg.getElement(getCtx(), "ActualLifeTimeValue"));

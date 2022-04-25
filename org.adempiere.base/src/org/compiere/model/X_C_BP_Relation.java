@@ -23,19 +23,39 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_Relation
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_BP_Relation")
 public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BP_Relation (Properties ctx, int C_BP_Relation_ID, String trxName)
     {
       super (ctx, C_BP_Relation_ID, trxName);
+      /** if (C_BP_Relation_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartnerRelation_ID (0);
+			setC_BPartnerRelation_Location_ID (0);
+			setC_BP_Relation_ID (0);
+			setIsBillTo (false);
+			setIsPayFrom (false);
+			setIsRemitTo (false);
+			setIsShipTo (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BP_Relation (Properties ctx, int C_BP_Relation_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BP_Relation_ID, trxName, virtualColumns);
       /** if (C_BP_Relation_ID == 0)
         {
 			setC_BPartner_ID (0);
@@ -74,32 +94,32 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BP_Relation[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_BP_Relation[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -108,26 +128,26 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
 
 	/** Set Partner Location.
-		@param C_BPartner_Location_ID 
-		Identifies the (ship to) address for this Business Partner
-	  */
+		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
+	*/
 	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
 	{
-		if (C_BPartner_Location_ID < 1) 
+		if (C_BPartner_Location_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
 	}
 
 	/** Get Partner Location.
 		@return Identifies the (ship to) address for this Business Partner
 	  */
-	public int getC_BPartner_Location_ID () 
+	public int getC_BPartner_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
 		if (ii == null)
@@ -136,26 +156,26 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartnerRelation() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartnerRelation_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartnerRelation_ID(), get_TrxName());
+	}
 
 	/** Set Related Partner.
-		@param C_BPartnerRelation_ID 
-		Related Business Partner
-	  */
+		@param C_BPartnerRelation_ID Related Business Partner
+	*/
 	public void setC_BPartnerRelation_ID (int C_BPartnerRelation_ID)
 	{
-		if (C_BPartnerRelation_ID < 1) 
+		if (C_BPartnerRelation_ID < 1)
 			set_Value (COLUMNNAME_C_BPartnerRelation_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartnerRelation_ID, Integer.valueOf(C_BPartnerRelation_ID));
 	}
 
 	/** Get Related Partner.
 		@return Related Business Partner
 	  */
-	public int getC_BPartnerRelation_ID () 
+	public int getC_BPartnerRelation_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartnerRelation_ID);
 		if (ii == null)
@@ -164,26 +184,26 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getC_BPartnerRelation_Location() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getC_BPartnerRelation_Location_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartnerRelation_Location_ID(), get_TrxName());
+	}
 
 	/** Set Related Partner Location.
-		@param C_BPartnerRelation_Location_ID 
-		Location of the related Business Partner
-	  */
+		@param C_BPartnerRelation_Location_ID Location of the related Business Partner
+	*/
 	public void setC_BPartnerRelation_Location_ID (int C_BPartnerRelation_Location_ID)
 	{
-		if (C_BPartnerRelation_Location_ID < 1) 
+		if (C_BPartnerRelation_Location_ID < 1)
 			set_Value (COLUMNNAME_C_BPartnerRelation_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartnerRelation_Location_ID, Integer.valueOf(C_BPartnerRelation_Location_ID));
 	}
 
 	/** Get Related Partner Location.
 		@return Location of the related Business Partner
 	  */
-	public int getC_BPartnerRelation_Location_ID () 
+	public int getC_BPartnerRelation_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartnerRelation_Location_ID);
 		if (ii == null)
@@ -192,21 +212,20 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	}
 
 	/** Set Partner Relation.
-		@param C_BP_Relation_ID 
-		Business Partner Relation
-	  */
+		@param C_BP_Relation_ID Business Partner Relation
+	*/
 	public void setC_BP_Relation_ID (int C_BP_Relation_ID)
 	{
-		if (C_BP_Relation_ID < 1) 
+		if (C_BP_Relation_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BP_Relation_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BP_Relation_ID, Integer.valueOf(C_BP_Relation_ID));
 	}
 
 	/** Get Partner Relation.
 		@return Business Partner Relation
 	  */
-	public int getC_BP_Relation_ID () 
+	public int getC_BP_Relation_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Relation_ID);
 		if (ii == null)
@@ -215,7 +234,8 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	}
 
 	/** Set C_BP_Relation_UU.
-		@param C_BP_Relation_UU C_BP_Relation_UU	  */
+		@param C_BP_Relation_UU C_BP_Relation_UU
+	*/
 	public void setC_BP_Relation_UU (String C_BP_Relation_UU)
 	{
 		set_Value (COLUMNNAME_C_BP_Relation_UU, C_BP_Relation_UU);
@@ -223,15 +243,14 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 
 	/** Get C_BP_Relation_UU.
 		@return C_BP_Relation_UU	  */
-	public String getC_BP_Relation_UU () 
+	public String getC_BP_Relation_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BP_Relation_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -240,15 +259,14 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Invoice Address.
-		@param IsBillTo 
-		Business Partner Invoice/Bill Address
-	  */
+		@param IsBillTo Business Partner Invoice/Bill Address
+	*/
 	public void setIsBillTo (boolean IsBillTo)
 	{
 		set_Value (COLUMNNAME_IsBillTo, Boolean.valueOf(IsBillTo));
@@ -257,7 +275,7 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	/** Get Invoice Address.
 		@return Business Partner Invoice/Bill Address
 	  */
-	public boolean isBillTo () 
+	public boolean isBillTo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBillTo);
 		if (oo != null) 
@@ -270,18 +288,17 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	}
 
 	/** Set Pay-From Address.
-		@param IsPayFrom 
-		Business Partner pays from that address and we'll send dunning letters there
-	  */
+		@param IsPayFrom Business Partner pays from that address and we&#039;ll send dunning letters there
+	*/
 	public void setIsPayFrom (boolean IsPayFrom)
 	{
 		set_Value (COLUMNNAME_IsPayFrom, Boolean.valueOf(IsPayFrom));
 	}
 
 	/** Get Pay-From Address.
-		@return Business Partner pays from that address and we'll send dunning letters there
+		@return Business Partner pays from that address and we&#039;ll send dunning letters there
 	  */
-	public boolean isPayFrom () 
+	public boolean isPayFrom()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPayFrom);
 		if (oo != null) 
@@ -294,9 +311,8 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	}
 
 	/** Set Remit-To Address.
-		@param IsRemitTo 
-		Business Partner payment address
-	  */
+		@param IsRemitTo Business Partner payment address
+	*/
 	public void setIsRemitTo (boolean IsRemitTo)
 	{
 		set_Value (COLUMNNAME_IsRemitTo, Boolean.valueOf(IsRemitTo));
@@ -305,7 +321,7 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	/** Get Remit-To Address.
 		@return Business Partner payment address
 	  */
-	public boolean isRemitTo () 
+	public boolean isRemitTo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRemitTo);
 		if (oo != null) 
@@ -318,9 +334,8 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	}
 
 	/** Set Ship Address.
-		@param IsShipTo 
-		Business Partner Shipment Address
-	  */
+		@param IsShipTo Business Partner Shipment Address
+	*/
 	public void setIsShipTo (boolean IsShipTo)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsShipTo, Boolean.valueOf(IsShipTo));
@@ -329,7 +344,7 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	/** Get Ship Address.
 		@return Business Partner Shipment Address
 	  */
-	public boolean isShipTo () 
+	public boolean isShipTo()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShipTo);
 		if (oo != null) 
@@ -342,9 +357,8 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -353,7 +367,7 @@ public class X_C_BP_Relation extends PO implements I_C_BP_Relation, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

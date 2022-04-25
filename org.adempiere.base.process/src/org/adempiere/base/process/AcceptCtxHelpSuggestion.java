@@ -21,6 +21,7 @@ import org.compiere.util.Util;
  * @author hengsin
  *
  */
+@org.adempiere.base.annotation.Process
 public class AcceptCtxHelpSuggestion extends SvrProcess {
 
 	private boolean p_isSaveAsTenantCustomization;

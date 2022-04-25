@@ -23,11 +23,11 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.WebUtil;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Session Model.
@@ -40,7 +40,7 @@ import org.compiere.util.WebUtil;
  * 			<li>BF [ 1810182 ] Session lost after cache reset 
  * 			<li>BF [ 1892156 ] MSession is not really cached 
  */
-public class MSession extends X_AD_Session
+public class MSession extends X_AD_Session implements ImmutablePOSupport
 {
 	/**
 	 * 
@@ -53,31 +53,53 @@ public class MSession extends X_AD_Session
 	 *	@param ctx context
 	 *	@param createNew create if not found
 	 *	@return session session
+	 *	@deprecated use Get and Create functions.
 	 */
 	public static MSession get (Properties ctx, boolean createNew)
 	{
-		int AD_Session_ID = Env.getContextAsInt(ctx, "#AD_Session_ID");
-		MSession session = null;
-		if (AD_Session_ID > 0)
-			session = (MSession)s_sessions.get(Integer.valueOf(AD_Session_ID));
+		MSession session = get(ctx);
+		if(session == null && createNew)
+			return MSession.create(ctx);
+		return session;
+	}	//	get
+	
+	/**
+	 * 	Get existing local session
+	 *	@param ctx context
+	 *	@return session session
+	 */
+	public static MSession get (Properties ctx)
+	{
+		int AD_Session_ID = Env.getContextAsInt(ctx, Env.AD_SESSION_ID);
+		MSession session = s_sessions.get(ctx, AD_Session_ID, e -> new MSession(ctx, e));
 		// Try to load
 		if (session == null && AD_Session_ID > 0)
 		{
 			session = new MSession(ctx, AD_Session_ID, null);
-			if (session.get_ID() != AD_Session_ID) {
-				Env.setContext (ctx, "#AD_Session_ID", AD_Session_ID);
+			if (session.get_ID () == AD_Session_ID)
+			{
+				s_sessions.put (AD_Session_ID, session, e -> new MSession(Env.getCtx(), e));
+			} else 
+			{
+				session = null;
 			}
-			s_sessions.put(AD_Session_ID, session);
 		}
-		// Create New
-		if (session == null && createNew)
-		{
-			session = new MSession (ctx, null);	//	local session
-			session.saveEx();
-			AD_Session_ID = session.getAD_Session_ID();
-			Env.setContext (ctx, "#AD_Session_ID", AD_Session_ID);
-			s_sessions.put (Integer.valueOf(AD_Session_ID), session);
-		}	
+		return session;
+	}	//	get
+	
+	/**
+	 * 	Get existing or create local session
+	 *	@param ctx context
+	 *	@param createNew create if not found
+	 *	@param isImmutable return Immutable Session Object (from Cache)
+	 *	@return session session
+	 */
+	public static MSession create (Properties ctx)
+	{
+		MSession session = new MSession (ctx, (String)null);	//	local session
+		session.saveEx();
+		int AD_Session_ID = session.getAD_Session_ID();
+		Env.setContext (ctx, Env.AD_SESSION_ID, AD_Session_ID);
 		return session;
 	}	//	get
 	
@@ -91,25 +113,24 @@ public class MSession extends X_AD_Session
 	 */
 	public static MSession get (Properties ctx, String Remote_Addr, String Remote_Host, String WebSession)
 	{
-		int AD_Session_ID = Env.getContextAsInt(ctx, "#AD_Session_ID");
-		MSession session = null;
-		if (AD_Session_ID > 0)
-			session = (MSession)s_sessions.get(Integer.valueOf(AD_Session_ID));
+		int AD_Session_ID = Env.getContextAsInt(ctx, Env.AD_SESSION_ID);
+		MSession session = get(ctx);
+
 		if (session == null)
 		{
 			session = new MSession (ctx, Remote_Addr, Remote_Host, WebSession, null);	//	remote session
 			session.saveEx();
 			AD_Session_ID = session.getAD_Session_ID();
-			Env.setContext(ctx, "#AD_Session_ID", AD_Session_ID);
-			s_sessions.put(Integer.valueOf(AD_Session_ID), session);
-		}	
+			Env.setContext(ctx, Env.AD_SESSION_ID, AD_Session_ID);
+		} else {
+			session = new MSession(ctx, session.getAD_Session_ID(), null);
+		}
+		
 		return session;
 	}	//	get
 
-	/**	Sessions					*/
-	private static CCache<Integer, MSession> s_sessions = Ini.isClient() 
-		? new CCache<Integer, MSession>(null, "AD_Session_ID", 1, 0, false)		//	one client session 
-		: new CCache<Integer, MSession>(null, "AD_Session_ID", 30, 0, false);	//	no time-out	
+	/**	Session Cache				*/
+	private static ImmutableIntPOCache<Integer,MSession>	s_sessions = new ImmutableIntPOCache<Integer,MSession>(Table_Name, 20);
 	
 	
 	/**************************************************************************
@@ -160,8 +181,8 @@ public class MSession extends X_AD_Session
 		setDescription(Adempiere.MAIN_VERSION + "_"
 				+ Adempiere.DATE_VERSION + " "
 				+ Adempiere.getImplementationVersion());
-		setAD_Role_ID(Env.getContextAsInt(ctx, "#AD_Role_ID"));
-		setLoginDate(Env.getContextAsDate(ctx, "#Date"));
+		setAD_Role_ID(Env.getContextAsInt(ctx, Env.AD_ROLE_ID));
+		setLoginDate(Env.getContextAsDate(ctx, Env.DATE));
 	}	//	MSession
 
 	/**
@@ -181,14 +202,45 @@ public class MSession extends X_AD_Session
 			setDescription(Adempiere.MAIN_VERSION + "_"
 					+ Adempiere.DATE_VERSION + " "
 					+ Adempiere.getImplementationVersion());
-			setAD_Role_ID(Env.getContextAsInt(ctx, "#AD_Role_ID"));
-			setLoginDate(Env.getContextAsDate(ctx, "#Date"));
+			setAD_Role_ID(Env.getContextAsInt(ctx, Env.AD_ROLE_ID));
+			setLoginDate(Env.getContextAsDate(ctx, Env.DATE));
 		}
 		catch (UnknownHostException e)
 		{
 			log.log(Level.SEVERE, "No Local Host", e);
 		}
 	}	//	MSession
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MSession(MSession copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MSession(Properties ctx, MSession copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MSession(Properties ctx, MSession copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 
 	/**	Web Store Session		*/
 	private boolean		m_webStoreSession = false;
@@ -217,7 +269,7 @@ public class MSession extends X_AD_Session
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MSession[")
+		StringBuilder sb = new StringBuilder("MSession[")
 			.append(getAD_Session_ID())
 			.append(",AD_User_ID=").append(getCreatedBy())
 			.append(",").append(getCreated())
@@ -325,6 +377,15 @@ public class MSession extends X_AD_Session
 	 */
 	public static int getCachedSessionCount() {
 		return s_sessions.size()-1;
+	}
+	
+	@Override
+	public MSession markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 }	//	MSession
 

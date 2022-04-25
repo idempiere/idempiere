@@ -20,9 +20,7 @@ import org.compiere.util.Msg;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  */
 @SuppressWarnings("serial")
-public class MAsset extends X_A_Asset
-	//implements MAssetType.Model //commented by @win
-{
+public class MAsset extends X_A_Asset {
 	/** ChangeType - Asset Group changed */
 	public static final int CHANGETYPE_setAssetGroup = Table_ID * 100 + 1;
 	
@@ -67,12 +65,6 @@ public class MAsset extends X_A_Asset
 		if (A_Asset_ID == 0)
 		{
 			setA_Asset_Status(A_ASSET_STATUS_New);
-			//commented out by @win
-			/*
-			setA_Asset_Type("MFX");
-			setA_Asset_Type_ID(1); // MFX
-			*/
-			//end comment by @win
 		}
 	}	//	MAsset
 
@@ -129,7 +121,7 @@ public class MAsset extends X_A_Asset
 
 	/**
 	 * Construct from MIFixedAsset (import)
-	 * @param match match invoice
+	 * @param ifa
 	 */
 	protected MAsset (MIFixedAsset ifa)
 	{
@@ -146,10 +138,6 @@ public class MAsset extends X_A_Asset
 			setValue(inventoryNo);
 		}
 		setA_Asset_CreateDate(ifa.getAssetServiceDate());
-		//setAssetServiceDate(ifa.getAssetServiceDate()); //commented by @win
-		/* commented by @win
-		setA_Asset_Class_ID(ifa.getA_Asset_Class_ID());
-		*/ // commented by @win
 		MProduct product = ifa.getProduct();
 		if (product != null) {
 			setM_Product_ID(product.getM_Product_ID());
@@ -161,10 +149,12 @@ public class MAsset extends X_A_Asset
 		setDateAcct(ifa.getDateAcct());
 		setName(ifa.getName());
 		setDescription(ifa.getDescription());
+
+		setI_FixedAsset(ifa);
 	}
 
 	/**
-	 * @author Edwin Ang
+	 * author Edwin Ang
 	 * @param project
 	 */
 	protected MAsset (MProject project)
@@ -193,10 +183,9 @@ public class MAsset extends X_A_Asset
 	 * Create Asset from Inventory
 	 * @param inventory	inventory
 	 * @param invLine 	inventory line
-	 * @param deliveryCount 0 or number of delivery
-	 * @return A_Asset_ID
+	 * @param qty
+	 * @param costs
 	 */
-	
 	public MAsset (MInventory inventory, MInventoryLine invLine, BigDecimal qty, BigDecimal costs)
 	{
 		super(invLine.getCtx(), 0, invLine.get_TrxName());
@@ -220,8 +209,6 @@ public class MAsset extends X_A_Asset
 		
 		//	Product
 		setM_Product_ID(product.getM_Product_ID());
-		//	Guarantee & Version
-		//setGuaranteeDate(TimeUtil.addDays(shipment.getMovementDate(), product.getGuaranteeDays()));
 		setVersionNo(product.getVersionNo());
 		// ASI
 		if (invLine.getM_AttributeSetInstance_ID() != 0)
@@ -232,14 +219,6 @@ public class MAsset extends X_A_Asset
 		//setSerNo(invLine.getSerNo());
 		setQty(qty);
 		
-		// Costs:
-		//setA_Asset_Cost(costs);  //commented by @win, set at asset addition
-		
-		// Activity
-		/*
-		if (invLine.getC_Activity_ID() > 0)
-			setC_Activity_ID(invLine.getC_Activity_ID());
-		*/
 		if (inventory.getC_Activity_ID() > 0)
 			setC_Activity_ID(inventory.getC_Activity_ID());
 		
@@ -261,22 +240,51 @@ public class MAsset extends X_A_Asset
 	}
 	
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MAsset(MAsset copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAsset(Properties ctx, MAsset copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAsset(Properties ctx, MAsset copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_DateAcct = copy.m_DateAcct;
+	}
+
+	public MAsset(Properties ctx, int A_Asset_ID, String trxName, String... virtualColumns) {
+		super(ctx, A_Asset_ID, trxName, virtualColumns);
+	}
+
+	/**
 	 * Set Asset Group; also it sets other default fields
 	 * @param assetGroup
 	 */
 	public void setAssetGroup(MAssetGroup assetGroup) {
 		setA_Asset_Group_ID(assetGroup.getA_Asset_Group_ID());
-		
-		/* commented out by @win
-		setA_Asset_Type_ID(assetGroup.getA_Asset_Type_ID());
-		setGZ_TipComponenta(assetGroup.getGZ_TipComponenta()); // TODO: move to GZ
-		MAssetType assetType = MAssetType.get(getCtx(), assetGroup.getA_Asset_Type_ID());
-		assetType.update(SetGetUtil.wrap(this), true);
-		*/ //end commet by @win
 	}
 	
 	public MAssetGroup getAssetGroup() {
-		return MAssetGroup.get(getCtx(), getA_Asset_Group_ID());
+		return MAssetGroup.getCopy(getCtx(), getA_Asset_Group_ID(), get_TrxName());
 	}
 	
 	/**
@@ -313,14 +321,6 @@ public class MAsset extends X_A_Asset
 		{
 			setA_Asset_Group_ID(MAssetGroup.getDefault_ID(SetGetUtil.wrap(this)));
 		}
-		/* @win temporary commented out
-		
-		if (getA_Asset_Class_ID() <= 0 && getA_Asset_Group_ID() > 0)
-		{
-			MAssetGroup.updateAsset(SetGetUtil.wrap(this), getA_Asset_Group_ID());
-		}
-		*/
-		//end @win comment
 		
 		// Copy fields from C_BPartner_Location
 		if (is_ValueChanged(COLUMNNAME_C_BPartner_Location_ID) && getC_BPartner_Location_ID() > 0)
@@ -341,27 +341,9 @@ public class MAsset extends X_A_Asset
 			asi.saveEx();
 			setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
 		}
-		// TODO: With the lines below, after creating the asset, the whole system goes much slower ??? 
-//		else if (is_ValueChanged(COLUMNNAME_SerNo) && getM_AttributeSetInstance_ID() > 0) {
-//			asi = new MAttributeSetInstance(getCtx(), getM_AttributeSetInstance_ID(), get_TrxName());
-//			asi.setSerNo(getSerNo());
-//			asi.setDescription();
-//			asi.saveEx();
-//		}
-//		else if ((newRecord || is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)) && getM_AttributeSetInstance_ID() > 0) {
-//			asi = new MAttributeSetInstance(getCtx(), getM_AttributeSetInstance_ID(), get_TrxName());
-//			setASI(asi);
-//		}
-		//
 		
 		// Update status
 		updateStatus();
-		
-		// Validate AssetType
-		//@win commented out
-		//MAssetType.validate(this);
-		//@win end
-		//
 		
 		return true;
 	}	//	beforeSave
@@ -413,6 +395,9 @@ public class MAsset extends X_A_Asset
 			{			
 				if (assetgrpacct.getAD_Org_ID() == 0 || assetgrpacct.getAD_Org_ID() == getAD_Org_ID()) 
 				{
+					if (getI_FixedAsset() != null && assetgrpacct.getC_AcctSchema_ID() != getI_FixedAsset().getC_AcctSchema_ID())
+						continue;
+					
 					// Asset Accounting
 					MAssetAcct assetacct = new MAssetAcct(this, assetgrpacct);
 					assetacct.setAD_Org_ID(getAD_Org_ID()); //added by @win
@@ -481,20 +466,12 @@ public class MAsset extends X_A_Asset
 	{
 		String status = getA_Asset_Status();
 		setProcessed(!status.equals(A_ASSET_STATUS_New));
-//		setIsDisposed(!status.equals(A_ASSET_STATUS_New) && !status.equals(A_ASSET_STATUS_Activated));
 		setIsDisposed(status.equals(A_ASSET_STATUS_Disposed));
 		setIsFullyDepreciated(status.equals(A_ASSET_STATUS_Depreciated));
 		if(isFullyDepreciated() || status.equals(A_ASSET_STATUS_Disposed))
 		{
 			setIsDepreciated(false);
 		}
-		/* commented by @win 
-		MAssetClass assetClass = MAssetClass.get(getCtx(), getA_Asset_Class_ID());
-		if (assetClass != null && assetClass.isDepreciated())
-		{
-			setIsDepreciated(true);
-		}
-		*/ //end comment by @win
 		if (status.equals(A_ASSET_STATUS_Activated) || getAssetActivationDate() == null)
 		{
 			setAssetActivationDate(getAssetServiceDate());
@@ -514,7 +491,7 @@ public class MAsset extends X_A_Asset
 		//
 		// If date is null, use context #Date
 		if(date == null) {
-			date = Env.getContextAsDate(getCtx(), "#Date");
+			date = Env.getContextAsDate(getCtx(), Env.DATE);
 		}
 		
 		//
@@ -576,6 +553,10 @@ public class MAsset extends X_A_Asset
 	public void setA_Accumulated_Depr(BigDecimal A_Accumulated_Depr)		{	m_A_Accumulated_Depr = A_Accumulated_Depr; }
 	public BigDecimal getA_Accumulated_Depr_F()								{	return m_A_Accumulated_Depr_F;	}
 	public void setA_Accumulated_Depr_F(BigDecimal A_Accumulated_Depr_F)	{	m_A_Accumulated_Depr_F = A_Accumulated_Depr_F; }
+	
+	private MIFixedAsset m_I_FixedAsset = null;
+	public MIFixedAsset getI_FixedAsset()										{	return m_I_FixedAsset;	}
+	public void setI_FixedAsset(MIFixedAsset I_FixedAsset)					{	m_I_FixedAsset = I_FixedAsset; }
 
 	public MAssetDelivery confirmDelivery(EMail email, int ad_User_ID) {
 		// TODO Auto-generated method stub

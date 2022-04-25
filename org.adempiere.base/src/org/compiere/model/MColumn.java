@@ -31,16 +31,19 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.expression.logic.LogicEvaluator;
 
 /**
  *	Persistent Column Model
@@ -48,20 +51,36 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @version $Id: MColumn.java,v 1.6 2006/08/09 05:23:49 jjanke Exp $
  */
-public class MColumn extends X_AD_Column
+public class MColumn extends X_AD_Column implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6905852892037761285L;
+	private static final long serialVersionUID = 4379933682905553553L;
 
+	/**
+	 * 	Get MColumn from Cache (immutable)
+	 * 	@param AD_Column_ID id
+	 *	@return MColumn
+	 */
+	public static MColumn get (int AD_Column_ID)
+	{
+		return get(Env.getCtx(), AD_Column_ID);
+	}
+	
+	/**
+	 * 	Get MColumn from Cache (immutable)
+	 *	@param ctx context
+	 * 	@param AD_Column_ID id
+	 *	@return MColumn
+	 */
 	public static MColumn get (Properties ctx, int AD_Column_ID)
 	{
 		return get(ctx, AD_Column_ID, null);
 	}
 
 	/**
-	 * 	Get MColumn from Cache
+	 * 	Get MColumn from Cache (immutable)
 	 *	@param ctx context
 	 * 	@param AD_Column_ID id
 	 * 	@param trxName trx
@@ -70,28 +89,59 @@ public class MColumn extends X_AD_Column
 	public static MColumn get(Properties ctx, int AD_Column_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(AD_Column_ID);
-		MColumn retValue = (MColumn) s_cache.get (key);
-		if (retValue != null) {
-			retValue.set_TrxName(trxName);
+		MColumn retValue = (MColumn) s_cache.get (ctx, key, e -> new MColumn(ctx, e));
+		if (retValue != null) 
+			return retValue;
+		
+		retValue = new MColumn (ctx, AD_Column_ID, trxName);
+		if (retValue.get_ID () == AD_Column_ID)
+		{
+			s_cache.put (key, retValue, e -> new MColumn(Env.getCtx(), e));
 			return retValue;
 		}
-		retValue = new MColumn (ctx, AD_Column_ID, trxName);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		return null;
 	}	//	get
 
 	/**
+	 * Get updateable copy of MColumn from cache
+	 * @param ctx
+	 * @param AD_Column_ID
+	 * @param trxName
+	 * @return MColumn
+	 */
+	public static MColumn getCopy(Properties ctx, int AD_Column_ID, String trxName)
+	{
+		MColumn column = get(ctx, AD_Column_ID, trxName);
+		if (column != null)
+			column = new MColumn(ctx, column, trxName);
+		return column;
+	}
+	
+	/**
 	 * 	Get MColumn given TableName and ColumnName
 	 *	@param ctx context
-	 * 	@param TableName
-	 * 	@param ColumnName
+	 * 	@param tableName
+	 * 	@param columnName
 	 *	@return MColumn
 	 */
 	public static MColumn get (Properties ctx, String tableName, String columnName)
 	{
 		MTable table = MTable.get(ctx, tableName);
 		return  table.getColumn(columnName);
+	}	//	get
+
+	/**
+	 * 	Get MColumn given TableName and ColumnName
+	 *	@param ctx context
+	 *  @param tableName
+	 *  @param columnName
+	 *  @param trxName
+	 *	@return MColumn
+	 */
+	public static MColumn get (Properties ctx, String tableName, String columnName, String trxName)
+	{
+		MTable table = MTable.get(ctx, tableName, trxName);
+		return table.getColumn(columnName);
 	}	//	get
 
 	public static String getColumnName (Properties ctx, int AD_Column_ID)
@@ -115,7 +165,7 @@ public class MColumn extends X_AD_Column
 	}	//	getColumnName
 	
 	/**	Cache						*/
-	private static CCache<Integer,MColumn>	s_cache	= new CCache<Integer,MColumn>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MColumn>	s_cache	= new ImmutableIntPOCache<Integer,MColumn>(Table_Name, 20);
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MColumn.class);
@@ -131,11 +181,6 @@ public class MColumn extends X_AD_Column
 		super (ctx, AD_Column_ID, trxName);
 		if (AD_Column_ID == 0)
 		{
-		//	setAD_Element_ID (0);
-		//	setAD_Reference_ID (0);
-		//	setColumnName (null);
-		//	setName (null);
-		//	setEntityType (null);	// U
 			setIsAlwaysUpdateable (false);	// N
 			setIsEncrypted (false);
 			setIsIdentifier (false);
@@ -172,7 +217,36 @@ public class MColumn extends X_AD_Column
 		setEntityType(parent.getEntityType());
 	}	//	MColumn
 	
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MColumn(MColumn copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MColumn(Properties ctx, MColumn copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MColumn(Properties ctx, MColumn copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	/**
 	 * 	Is Standard Column
 	 *	@return true for AD_Client_ID, etc.
@@ -287,7 +361,7 @@ public class MColumn extends X_AD_Column
 			if (getFieldLength() != 0)
 				setFieldLength(0);
 		}
-		else if (getFieldLength() == 0) 
+		else if (getFieldLength() == 0 && displayType != DisplayType.Text) 
 		{
 			if (DisplayType.isID(displayType))
 				setFieldLength(10);
@@ -301,22 +375,6 @@ public class MColumn extends X_AD_Column
 				return false;
 			}
 		}
-
-		/* IDEMPIERE-3509, IDEMPIERE-3902
-		 * removing this validation
-		 * it affects adversely PackIn process that can create the table later
-		if ( displayType == DisplayType.TableDir ||
-			(displayType == DisplayType.Search && getAD_Reference_Value_ID() <= 0))
-		{
-			// verify the foreign table exists
-			String foreignTableName = getReferenceTableName();
-			MTable foreignTable = MTable.get(getCtx(), foreignTableName);
-			if (foreignTable == null || foreignTable.getAD_Table_ID() <= 0) {
-				log.saveError("Error", Msg.getMsg(getCtx(), "NotReferenceTable", new Object[] {getColumnName()}));
-				return false;
-			}
-		}
-		*/
 
 		if (displayType == DisplayType.Table && getAD_Reference_Value_ID() <= 0)
 		{
@@ -345,13 +403,6 @@ public class MColumn extends X_AD_Column
 			} catch (Exception e){}
 		}
 		
-		/** Views are not updateable
-		UPDATE AD_Column c
-		SET IsUpdateable='N', IsAlwaysUpdateable='N'
-		WHERE AD_Table_ID IN (SELECT AD_Table_ID FROM AD_Table WHERE IsView='Y')
-		**/
-		
-		/* Diego Ruiz - globalqss - BF [1651899] - AD_Column: Avoid dup. SeqNo for IsIdentifier='Y' */
 		if (isIdentifier())
 		{
 			int cnt = DB.getSQLValue(get_TrxName(),"SELECT COUNT(*) FROM AD_Column "+
@@ -444,6 +495,11 @@ public class MColumn extends X_AD_Column
 			}
 		}
 
+		// IDEMPIERE-4714
+		if (isSecure() && isAllowLogging()) {
+			setIsAllowLogging(false);
+		}
+
 		// IDEMPIERE-1615 Multiple key columns lead to data corruption or data loss
 		if ((is_ValueChanged(COLUMNNAME_IsKey) || is_ValueChanged(COLUMNNAME_IsActive)) && isKey() && isActive()) {
 			int cnt = DB.getSQLValueEx(get_TrxName(),
@@ -462,6 +518,27 @@ public class MColumn extends X_AD_Column
 			setSeqNoSelection(next);
 		}
 
+		//validate readonly logic expression
+		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
+			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getReadOnlyLogic());
+			}
+		}
+
+		// IDEMPIERE-4911
+		MTable table = MTable.get(getCtx(), getAD_Table_ID(), get_TrxName());
+		String tableName = table.getTableName();
+		if (tableName.toLowerCase().endsWith("_trl")) {
+			String parentTable = tableName.substring(0, tableName.length()-4);
+			MColumn column = MColumn.get(getCtx(), parentTable, colname, get_TrxName());
+			if (column != null && column.isTranslated()) {
+				if (getFieldLength() < column.getFieldLength()) {
+					log.saveWarning("Warning", "Size increased to " + column.getFieldLength() + " in translated column " + tableName + "." + colname);
+					setFieldLength(column.getFieldLength());
+				}
+			}
+		}
+
 		return true;
 	}	//	beforeSave
 	
@@ -476,27 +553,30 @@ public class MColumn extends X_AD_Column
 		if (!success)
 			return success;
 
-		/* Fields must inherit translation from element, not from column
-		 * changing it here is useless as SynchronizeTerminology get trl from column */
-		/*
-		//	Update Fields
-		if (!newRecord)
-		{
-			if (   is_ValueChanged(MColumn.COLUMNNAME_Name)
-				|| is_ValueChanged(MColumn.COLUMNNAME_Description)
-				|| is_ValueChanged(MColumn.COLUMNNAME_Help)
-				) {
-				StringBuilder sql = new StringBuilder("UPDATE AD_Field SET Name=")
-					.append(DB.TO_STRING(getName()))
-					.append(", Description=").append(DB.TO_STRING(getDescription()))
-					.append(", Help=").append(DB.TO_STRING(getHelp()))
-					.append(" WHERE AD_Column_ID=").append(get_ID())
-					.append(" AND IsCentrallyMaintained='Y'");
-				int no = DB.executeUpdate(sql.toString(), get_TrxName());
-				if (log.isLoggable(Level.FINE)) log.fine("afterSave - Fields updated #" + no);
+		if ((newRecord || is_ValueChanged(COLUMNNAME_ColumnName))
+			&& (   "EntityType".equals(getColumnName())
+				|| "EntityType".equals(get_ValueOld(COLUMNNAME_ColumnName).toString()))) {
+			MChangeLog.resetLoggedList();
+		}
+
+		// IDEMPIERE-4911
+		if (isTranslated()) {
+			MTable table = MTable.get(getAD_Table_ID());
+			String trlTableName = table.getTableName() + "_Trl";
+			MTable trlTable = MTable.get(getCtx(), trlTableName);
+			if (trlTable == null) {
+				log.saveWarning("Warning", Msg.getMsg(getCtx(), "WarnCreateTrlTable", new Object[] {trlTableName, getColumnName()}));
+			} else {
+				MColumn trlColumn = MColumn.get(getCtx(), trlTableName, getColumnName());
+				if (trlColumn == null) {
+					log.saveWarning("Warning", Msg.getMsg(getCtx(), "WarnCreateTrlColumn", new Object[] {trlTableName, getColumnName()}));
+				} else {
+					if (trlColumn.getFieldLength() < getFieldLength()) {
+						log.saveWarning("Warning", Msg.getMsg(getCtx(), "WarnUpdateSizeTrlTable", new Object[] {trlTableName, getColumnName(), getFieldLength()}));
+					}
+				}
 			}
 		}
-		*/
 
 		return success;
 	}	//	afterSave
@@ -558,37 +638,6 @@ public class MColumn extends X_AD_Column
 	}	//	getSQLDataType
 	
 	/**
-	 * 	Get SQL Data Type
-	 *	@return e.g. NVARCHAR2(60)
-	 */
-	/*
-	private String getSQLDataType()
-	{
-		int dt = getAD_Reference_ID();
-		if (DisplayType.isID(dt) || dt == DisplayType.Integer)
-			return "NUMBER(10)";
-		if (DisplayType.isDate(dt))
-			return "DATE";
-		if (DisplayType.isNumeric(dt))
-			return "NUMBER";
-		if (dt == DisplayType.Binary)
-			return "BLOB";
-		if (dt == DisplayType.TextLong)
-			return "CLOB";
-		if (dt == DisplayType.YesNo)
-			return "CHAR(1)";
-		if (dt == DisplayType.List)
-			return "NVARCHAR2(" + getFieldLength() + ")";
-		if (dt == DisplayType.Button)
-			return "CHAR(" + getFieldLength() + ")";
-		else if (!DisplayType.isText(dt))
-			log.severe("Unhandled Data Type = " + dt);
-			
-		return "NVARCHAR2(" + getFieldLength() + ")";
-	}	//	getSQLDataType
-	*/
-	
-	/**
 	 * 	Get Table Constraint
 	 *	@param tableName table name
 	 *	@return table constraint
@@ -639,8 +688,8 @@ public class MColumn extends X_AD_Column
 	//begin vpj-cd e-evolution
 	/**
 	 * 	get Column ID
-	 *  @param String windowName
-	 *	@param String columnName
+	 *  @param TableName
+	 *	@param columnName
 	 *	@return int retValue
 	 */
 	public static int getColumn_ID(String TableName,String columnName) {
@@ -721,8 +770,13 @@ public class MColumn extends X_AD_Column
 				int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Ref_Table WHERE AD_Reference_ID=?", getAD_Reference_Value_ID());
 				if (cnt == 1) {
 					MRefTable rt = MRefTable.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
-					if (rt != null)
-						foreignTable = rt.getAD_Table().getTableName();
+					if (rt != null) {
+						MTable table = MTable.get(getCtx(), rt.getAD_Table_ID(), get_TrxName());
+						if (table == null) {
+							throw new AdempiereException("Table " + rt.getAD_Table_ID() + " not found");
+						}
+						foreignTable = table.getTableName();
+					}
 				}
 			}
 		} else if (DisplayType.Button == refid) {
@@ -731,7 +785,7 @@ public class MColumn extends X_AD_Column
 				foreignTable = "AD_Org";
 			else if ("C_ProjectType_ID".equalsIgnoreCase(getColumnName()))
 				foreignTable = "C_ProjectType";
-		} else if (DisplayType.List == refid || DisplayType.Payment == refid) {
+		} else if (DisplayType.isList(refid)) {
 			foreignTable = "AD_Ref_List";
 		} else if (DisplayType.Location == refid) {
 			foreignTable = "C_Location";
@@ -861,7 +915,7 @@ public class MColumn extends X_AD_Column
 
 	@Override
 	public I_AD_Table getAD_Table() throws RuntimeException {
-		MTable table = MTable.get(getCtx(), getAD_Table_ID(), get_TrxName());
+		MTable table = MTable.getCopy(getCtx(), getAD_Table_ID(), get_TrxName());
 		return table;
 	}
 
@@ -872,7 +926,7 @@ public class MColumn extends X_AD_Column
 		if (!column.isKey() && !column.getColumnName().equals(PO.getUUIDColumnName(table.getTableName())) && !column.isVirtualColumn())
 		{
 			int refid = column.getAD_Reference_ID();
-			if (refid != DisplayType.List && refid != DisplayType.Payment)
+			if (!DisplayType.isList(refid))
 			{
 				String referenceTableName = column.getReferenceTableName();
 				if (referenceTableName != null)
@@ -1084,7 +1138,7 @@ public class MColumn extends X_AD_Column
 				return "";
 
 			int refid = column.getAD_Reference_ID();
-			if (refid != DisplayType.List && refid != DisplayType.Payment)
+			if (!DisplayType.isList(refid))
 			{
 				String referenceTableName = column.getReferenceTableName();
 				if (referenceTableName != null)
@@ -1173,6 +1227,29 @@ public class MColumn extends X_AD_Column
 				query = query.substring(9);
 		}
 		return query;
+	}
+
+	public String renameDBColumn(String newColumnName) {
+		int rvalue = -1;
+		String sql;
+		if (! newColumnName.toLowerCase().equals(getColumnName().toLowerCase())) {
+			MTable table = new MTable(getCtx(), getAD_Table_ID(), get_TrxName());
+			sql = "ALTER TABLE " + table.getTableName() + " RENAME COLUMN " + getColumnName() + " TO " + newColumnName;
+			rvalue = DB.executeUpdateEx(sql, get_TrxName());
+		} else {
+			sql = getColumnName() + " - rename not required";
+		}
+		setColumnName(newColumnName);
+		return rvalue + " - " + sql;
+	}
+
+	@Override
+	public MColumn markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MColumn

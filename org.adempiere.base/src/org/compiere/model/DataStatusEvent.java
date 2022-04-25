@@ -220,7 +220,7 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	/**
 	 *	String representation of Status.
 	 *  @return Examples:	+*1?/20
-	 *		1/256->2000
+	 *		1/256-&gt;2000
 	 */
 	public String toString()
 	{
@@ -235,14 +235,14 @@ public final class DataStatusEvent extends EventObject implements Serializable
 
 	/**
 	 *	String representation of Status.
-	 *  <pre>
+	 *  <pre>{@code
 	 *		*1/20 		Change - automatic commit
 	 *		?1/20		Change - manual confirm
 	 *		 1/56->200	Loading
 	 *		 1/20		Normal
 	 *     +*1/20       Inserting, changed - automatic commit
 	 *  The row number is converted from zero based representation
-	 *  </pre>
+	 *  }</pre>
 	 *  @return Status info
 	 */
 	public String getMessage()
@@ -354,7 +354,8 @@ public final class DataStatusEvent extends EventObject implements Serializable
 			   Util.equals(e.m_AD_Message, m_AD_Message) &&
 			   e.m_changedColumn == m_changedColumn &&
 			   Util.equals(e.m_columnName, m_columnName) &&
-			   e.m_currentRow == m_currentRow;
+			   e.m_currentRow == m_currentRow &&
+			   e.isInitEdit == isInitEdit;
 	}
 
 
@@ -366,7 +367,7 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	}
 
 	/**
-	 * @param indicate this event is by user start edit this field but not yet complete edit
+	 * @param isInitEdit indicate this event is by user start edit this field but not yet complete edit
 	 */
 	public void setIsInitEdit(boolean isInitEdit) {
 		this.isInitEdit = isInitEdit;

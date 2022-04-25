@@ -39,7 +39,7 @@ public class MMovementLine extends X_M_MovementLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5753062311388766921L;
+	private static final long serialVersionUID = -5614562023263896756L;
 
 	/**
 	 * 	Standard Cosntructor
@@ -52,11 +52,6 @@ public class MMovementLine extends X_M_MovementLine
 		super (ctx, M_MovementLine_ID, trxName);
 		if (M_MovementLine_ID == 0)
 		{
-		//	setM_LocatorTo_ID (0);	// @M_LocatorTo_ID@
-		//	setM_Locator_ID (0);	// @M_Locator_ID@
-		//	setM_MovementLine_ID (0);			
-		//	setLine (0);	
-		//	setM_Product_ID (0);
 			setM_AttributeSetInstance_ID(0);	//	ID
 			setMovementQty (Env.ZERO);	// 1
 			setTargetQty (Env.ZERO);	// 0
@@ -121,7 +116,7 @@ public class MMovementLine extends X_M_MovementLine
 	public MProduct getProduct()
 	{
 		if (getM_Product_ID() != 0)
-			return MProduct.get(getCtx(), getM_Product_ID());
+			return MProduct.getCopy(getCtx(), getM_Product_ID(), get_TrxName());
 		return null;
 	}	//	getProduct
 	
@@ -167,9 +162,16 @@ public class MMovementLine extends X_M_MovementLine
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_MovementLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_Movement_ID"));
 			return false;
+		}
+		if (getParent().pendingConfirmations()) {
+			if (  newRecord ||
+				(is_ValueChanged(COLUMNNAME_MovementQty) && !is_ValueChanged(COLUMNNAME_TargetQty))) {
+				log.saveError("SaveError", Msg.parseTranslation(getCtx(), "@Open@: @M_MovementConfirm_ID@"));
+				return false;
+			}
 		}
 		//	Set Line No
 		if (getLine() == 0)
@@ -188,17 +190,24 @@ public class MMovementLine extends X_M_MovementLine
 
 		if (getMovementQty().signum() == 0)
 		{
-			if (   MMovement.DOCACTION_Void.equals(getParent().getDocAction())
-				&& (   MMovement.DOCSTATUS_Drafted.equals(getParent().getDocStatus())
-					|| MMovement.DOCSTATUS_Invalid.equals(getParent().getDocStatus())
-					|| MMovement.DOCSTATUS_InProgress.equals(getParent().getDocStatus())
-					|| MMovement.DOCSTATUS_Approved.equals(getParent().getDocStatus())
-					|| MMovement.DOCSTATUS_NotApproved.equals(getParent().getDocStatus())
+			String docAction = getParent().getDocAction();
+			String docStatus = getParent().getDocStatus();
+			if (   MMovement.DOCACTION_Void.equals(docAction)
+				&& (   MMovement.DOCSTATUS_Drafted.equals(docStatus)
+					|| MMovement.DOCSTATUS_Invalid.equals(docStatus)
+					|| MMovement.DOCSTATUS_InProgress.equals(docStatus)
+					|| MMovement.DOCSTATUS_Approved.equals(docStatus)
+					|| MMovement.DOCSTATUS_NotApproved.equals(docStatus)
 				   )
-				) 
+				)
 			{
 				// [ 2092198 ] Error voiding an Inventory Move - globalqss
 				// zero allowed in this case (action Void and status Draft)
+			} else if (   MMovement.DOCACTION_Complete.equals(docAction)
+					   && MMovement.DOCSTATUS_InProgress.equals(docStatus))
+			{
+				// IDEMPIERE-2624 Cant confirm 0 qty on Movement Confirmation
+				// zero allowed in this case (action Complete and status In Progress)
 			} else {
 				log.saveError("FillMandatory", Msg.getElement(getCtx(), "MovementQty"));
 				return false;
@@ -222,19 +231,32 @@ public class MMovementLine extends X_M_MovementLine
 
 		return true;
 	}	//	beforeSave
-	
+
+	/**
+	 * 	Before Delete
+	 *	@return true if it can be deleted
+	 */
+	@Override
+	protected boolean beforeDelete() {
+		if (getParent().pendingConfirmations()) {
+			log.saveError("DeleteError", Msg.parseTranslation(getCtx(), "@Open@: @M_MovementConfirm_ID@"));
+			return false;
+		}
+		return super.beforeDelete();
+	}
+
 	/** 
 	 *      Set Distribution Order Line. 
 	 *      Does not set Quantity! 
 	 *      @param oLine order line 
-	 *      @param M_Locator_ID locator 
 	 *      @param Qty used only to find suitable locator 
+	 *      @param isReceipt 
 	 */ 
 	public void setOrderLine (MDDOrderLine oLine, BigDecimal Qty, boolean isReceipt) 
 	{ 
 		setDD_OrderLine_ID(oLine.getDD_OrderLine_ID()); 
 		setLine(oLine.getLine()); 
-		//setC_UOM_ID(oLine.getC_UOM_ID()); 
+
 		MProduct product = oLine.getProduct(); 
 		if (product == null) 
 		{ 

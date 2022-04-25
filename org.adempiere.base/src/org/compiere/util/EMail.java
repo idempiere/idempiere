@@ -46,8 +46,11 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
+import org.compiere.model.MSMTP;
 import org.compiere.model.MSysConfig;
+
 import com.sun.mail.smtp.SMTPMessage;
 
 /**
@@ -76,6 +79,10 @@ public final class EMail implements Serializable
 
 	//use in server bean
 	public final static String HTML_MAIL_MARKER = "ContentType=text/html;";
+	
+	//log last email send error message in context
+	public final static String EMAIL_SEND_MSG = "EmailSendMsg";
+	
 	/**
 	 *	Full Constructor
 	 *  @param client the client
@@ -233,26 +240,44 @@ public final class EMail implements Serializable
 	/**	Logger							*/
 	protected transient static CLogger		log = CLogger.getCLogger (EMail.class);
 
+	/** Set it to true if you need to use the SMTP defined at tenant level - otherwise will try to use a SMTP from AD_SMTP table */
+	private boolean m_forceUseTenantSmtp = false; 
+
 	/**
 	 *	Send Mail direct
 	 *	@return OK or error message
 	 */
 	public String send ()
 	{
+		if (!m_forceUseTenantSmtp && getFrom() != null) {
+			MSMTP smtp = MSMTP.get(m_ctx, Env.getAD_Client_ID(m_ctx), getFrom().getAddress());
+			if (smtp != null) {
+				setSmtpHost(smtp.getSMTPHost());
+				setSmtpPort(smtp.getSMTPPort());
+				setSecureSmtp(smtp.isSecureSMTP());
+				createAuthenticator(smtp.getRequestUser(), smtp.getRequestUserPW());
+				if (log.isLoggable(Level.FINE)) log.fine("sending email using from " + getFrom().getAddress() + " using " + smtp.toString());
+			}
+		}
+
 		if (log.isLoggable(Level.INFO)){
 			log.info("(" + m_smtpHost + ") " + m_from + " -> " + m_to);
 			log.info("(m_auth) " + m_auth);
 		}
 		
 		m_sentMsg = null;
+		Env.getCtx().remove(EMAIL_SEND_MSG);
+		
 		//
 		if (!isValid(true))
 		{
 			m_sentMsg = "Invalid Data";
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return m_sentMsg;
 		}
 		//
-		Properties props = System.getProperties();
+		Properties props = new Properties();
+		props.putAll(System.getProperties());
 		props.put("mail.store.protocol", "smtp");
 		props.put("mail.transport.protocol", "smtp");
 		props.put("mail.host", m_smtpHost);
@@ -262,6 +287,14 @@ public final class EMail implements Serializable
 		if (CLogMgt.isLevelFinest())
 			props.put("mail.debug", "true");
 		//
+
+		MAuthorizationAccount authAccount = null;
+		boolean isOAuth2 = false;
+		if (m_auth != null) {
+			authAccount = MAuthorizationAccount.getEMailAccount(m_auth.getPasswordAuthentication().getUserName());
+			isOAuth2 = (authAccount != null);
+		}
+
 		Session session = null;
 		try
 		{
@@ -279,27 +312,35 @@ public final class EMail implements Serializable
 			{
 				props.put("mail.smtp.starttls.enable", "true");
 			}
-
-			session = Session.getInstance(props, m_auth);
+			if (isOAuth2) {
+				props.put("mail.smtp.auth.mechanisms", "XOAUTH2");
+			    props.put("mail.smtp.starttls.required", "true");
+			    props.put("mail.smtp.auth.login.disable","true");
+			    props.put("mail.smtp.auth.plain.disable","true");
+			    props.put("mail.debug.auth", "true");
+				m_auth = new EMailAuthenticator (m_auth.getPasswordAuthentication().getUserName(), authAccount.refreshAndGetAccessToken());
+			}
+			session = Session.getInstance(props);
 			session.setDebug(CLogMgt.isLevelFinest());
 		}
 		catch (SecurityException se)
 		{
 			log.log(Level.WARNING, "Auth=" + m_auth + " - " + se.toString());
 			m_sentMsg = se.toString();
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return se.toString();
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "Auth=" + m_auth, e);
 			m_sentMsg = e.toString();
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return e.toString();
 		}
 
 		Transport t = null;
 		try
 		{
-		//	m_msg = new MimeMessage(session);
 			m_msg = new SMTPMessage(session);
 			//	Addresses
 			m_msg.setFrom(m_from);
@@ -352,14 +393,8 @@ public final class EMail implements Serializable
 			m_msg.setHeader("Comments", "iDempiereMail");
 			if (m_acknowledgementReceipt)
 				m_msg.setHeader("Disposition-Notification-To", m_from.getAddress());
-		//	m_msg.setDescription("Description");
-			//	SMTP specifics
-			//m_msg.setAllow8bitMIME(true);
-			//	Send notification on Failure & Success - no way to set envid in Java yet
-		//	m_msg.setNotifyOptions (SMTPMessage.NOTIFY_FAILURE | SMTPMessage.NOTIFY_SUCCESS);
 			//	Bounce only header
 			m_msg.setReturnOption (SMTPMessage.RETURN_HDRS);
-		//	m_msg.setHeader("X-Mailer", "msgsend");
 			if (additionalHeaders.size() > 0) {
 				for (ValueNamePair vnp : additionalHeaders) {
 					m_msg.setHeader(vnp.getName(), vnp.getValue());
@@ -368,26 +403,24 @@ public final class EMail implements Serializable
 			//
 			setContent();
 			m_msg.saveChanges();
-		//	log.fine("message =" + m_msg);
-			//
-		//	Transport.send(msg);
 			t = session.getTransport("smtp");
-		//	log.fine("transport=" + t);
-			t.connect();
-		//	t.connect(m_smtpHost, user, password);
-		//	log.fine("transport connected");
+			if (m_auth != null) {
+				t.connect(m_smtpHost, m_smtpPort, m_auth.getPasswordAuthentication().getUserName(), m_auth.getPasswordAuthentication().getPassword());
+			} else {
+				t.connect();
+			}
 			ClassLoader tcl = Thread.currentThread().getContextClassLoader();
 			try {
 				Thread.currentThread().setContextClassLoader(javax.mail.Session.class.getClassLoader());
-				Transport.send(m_msg);
+				t.sendMessage(m_msg, m_msg.getAllRecipients());
 			} finally {
 				Thread.currentThread().setContextClassLoader(tcl);
 			}
-		//	t.sendMessage(msg, msg.getAllRecipients());
 			if (log.isLoggable(Level.FINE)) log.fine("Success - MessageID=" + m_msg.getMessageID());
 		}
 		catch (MessagingException me)
 		{
+			me.printStackTrace();
 			Exception ex = me;
 			StringBuilder sb = new StringBuilder("(ME)");
 			boolean printed = false;
@@ -443,7 +476,7 @@ public final class EMail implements Serializable
 								msg = msg.substring(0, index);
 							String cc = "??";
 							if (m_ctx != null)
-								cc = m_ctx.getProperty("#AD_Client_ID");
+								cc = m_ctx.getProperty(Env.AD_CLIENT_ID);
 							msg += " - AD_Client_ID=" + cc;
 						}
 						String className = ex.getClass().getName();
@@ -466,12 +499,14 @@ public final class EMail implements Serializable
 			else
 				log.log(Level.WARNING, sb.toString());
 			m_sentMsg = sb.toString();
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return sb.toString();
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
 			m_sentMsg = e.getLocalizedMessage();
+			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
 			return e.getLocalizedMessage();
 		}
 		finally
@@ -550,8 +585,8 @@ public final class EMail implements Serializable
 
 	/**
 	 * 	Get Message ID or null
-	 * 	@return Message ID e.g. <20030130004739.15377.qmail@web13506.mail.yahoo.com>
-	 *  <25699763.1043887247538.JavaMail.jjanke@main>
+	 * 	@return Message ID e.g. &lt;20030130004739.15377.qmail@web13506.mail.yahoo.com&gt;
+	 *  &lt;25699763.1043887247538.JavaMail.jjanke@main&gt;
 	 */
 	public String getMessageID()
 	{
@@ -579,7 +614,7 @@ public final class EMail implements Serializable
 	{
 		if (username == null || password == null)
 		{
-			log.warning("Ignored - " +  username + "/" + password);
+			log.fine("Ignored - " +  username + "/" + password);
 			m_auth = null;
 		}
 		else
@@ -880,7 +915,7 @@ public final class EMail implements Serializable
 	public void setMessageHTML (String subject, String message)
 	{
 		m_subject = subject;
-		StringBuffer sb = new StringBuffer("<HTML>\n")
+		StringBuilder sb = new StringBuilder("<HTML>\n")
 				.append("<HEAD>\n")
 				.append("<TITLE>\n")
 				.append(subject + "\n")
@@ -931,7 +966,7 @@ public final class EMail implements Serializable
 
 	/**
 	 *	Add url based file Attachment
-	 * 	@param uri url content to attach
+	 * 	@param url url content to attach
 	 */
 	public void addAttachment (URI url)
 	{
@@ -1248,4 +1283,7 @@ public final class EMail implements Serializable
 		return ia;
 	}
 
+	public void setForTenantSmtp(boolean forceTenantSmtp) {
+		m_forceUseTenantSmtp = forceTenantSmtp;	
+	}
 }	//	EMail

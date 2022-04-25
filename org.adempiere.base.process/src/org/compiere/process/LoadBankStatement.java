@@ -22,6 +22,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MBankStatementLoader;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 
 /**
@@ -30,6 +31,7 @@ import org.compiere.util.Env;
  *	@author Maarten Klinker, Eldir Tomassen
  *	@version $Id: LoadBankStatement.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class LoadBankStatement extends SvrProcess
 {
 	public LoadBankStatement()
@@ -102,13 +104,15 @@ public class LoadBankStatement extends SvrProcess
 			log.log(Level.SEVERE, "Invalid Loader");
 
 		// Start loading bank statement lines
-		else if (!m_controller.loadLines())
+		else if (!m_controller.loadLines()) {
+			message += m_controller.getErrorMessage() + " - " + m_controller.getErrorDescription();
 			log.log(Level.SEVERE, m_controller.getErrorMessage() + " - " + m_controller.getErrorDescription());
+		}
 		
 		else
 		{
 			if (log.isLoggable(Level.INFO)) log.info("Imported=" + m_controller.getLoadCount());
-			addLog (0, null, new BigDecimal (m_controller.getLoadCount()), "@Loaded@");
+			addLog (0, null, new BigDecimal (m_controller.getLoadCount()), Msg.getMsg(m_ctx, "Inserted"));
 			message = "@OK@";
 		}
 

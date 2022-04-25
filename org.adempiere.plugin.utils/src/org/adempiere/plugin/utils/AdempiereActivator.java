@@ -95,8 +95,13 @@ public class AdempiereActivator extends AbstractActivator {
 	protected void packIn() {
 		URL packout = context.getBundle().getEntry("/META-INF/2Pack.zip");
 		if (packout != null && service != null) {
+			MSession localSession = null;
 			//Create Session to be able to create records in AD_ChangeLog
-			MSession.get(Env.getCtx(), true);
+			if (Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID) <= 0) {
+				localSession = MSession.create(Env.getCtx());
+				localSession.setWebSession("AdempiereActivator");
+				localSession.saveEx();
+			}
 			FileOutputStream zipstream = null;
 			try {
 				// copy the resource to a temporary file to process it with 2pack
@@ -119,6 +124,8 @@ public class AdempiereActivator extends AbstractActivator {
 						zipstream.close();
 					} catch (Exception e2) {}
 				}
+				if (localSession != null)
+					localSession.logout();
 			}
 		} 
 	}
@@ -136,7 +143,7 @@ public class AdempiereActivator extends AbstractActivator {
 
 	protected void setupPackInContext() {
 		Properties serverContext = new Properties();
-		serverContext.setProperty("#AD_Client_ID", "0");
+		serverContext.setProperty(Env.AD_CLIENT_ID, "0");
 		ServerContext.setCurrentInstance(serverContext);
 	};
 	

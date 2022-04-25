@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import com.google.common.net.MediaType;
 
 /**
  * 	Mime - Content type map.
@@ -217,6 +218,7 @@ public class MimeType
 		{ ".csh", "text/x-script.csh"},
 	//	{ ".css", "application/x-pointplus"}, 
 		{ ".css", "text/css"},
+		{ ".csv", MediaType.CSV_UTF_8.toString()},
 		{ ".cvs", "application/vnd.ms-excel"},
 		{ ".cxx", "text/plain"},
 		
@@ -355,6 +357,7 @@ public class MimeType
 	//	{ ".jpg", "image/pjpeg"},
 		{ ".jps", "image/x-jps"}, 
 		{ ".js", "application/x-javascript"},
+		{ ".json", "application/json"},
 		{ ".jut", "image/jutvision"},
 		
 		{ ".kar", "audio/midi"},
@@ -760,6 +763,7 @@ public class MimeType
 	//	{ ".xlm", "application/x-excel"}, 
 	//	{ ".xls", "application/excel"},
 		{ ".xls", "application/vnd.ms-excel"},
+		{ ".xlsx", MediaType.OOXML_SHEET.toString()},
 	//	{ ".xls", "application/x-excel"}, 
 	//	{ ".xls", "application/x-msexcel"},
 	//	{ ".xlt", "application/excel"}, 

@@ -24,19 +24,35 @@ import org.compiere.model.*;
 
 /** Generated Model for HR_Year
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="HR_Year")
 public class X_HR_Year extends PO implements I_HR_Year, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_HR_Year (Properties ctx, int HR_Year_ID, String trxName)
     {
       super (ctx, HR_Year_ID, trxName);
+      /** if (HR_Year_ID == 0)
+        {
+			setC_Year_ID (0);
+			setHR_Payroll_ID (0);
+			setHR_Year_ID (0);
+			setNetDays (0);
+			setQty (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Year (Properties ctx, int HR_Year_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Year_ID, trxName, virtualColumns);
       /** if (HR_Year_ID == 0)
         {
 			setC_Year_ID (0);
@@ -71,32 +87,32 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_HR_Year[")
+      StringBuilder sb = new StringBuilder ("X_HR_Year[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_Name)
-			.getPO(getC_Year_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_ID)
+			.getPO(getC_Year_ID(), get_TrxName());
+	}
 
 	/** Set Year.
-		@param C_Year_ID 
-		Calendar Year
-	  */
+		@param C_Year_ID Calendar Year
+	*/
 	public void setC_Year_ID (int C_Year_ID)
 	{
-		if (C_Year_ID < 1) 
+		if (C_Year_ID < 1)
 			set_Value (COLUMNNAME_C_Year_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Year_ID, Integer.valueOf(C_Year_ID));
 	}
 
 	/** Get Year.
 		@return Calendar Year
 	  */
-	public int getC_Year_ID () 
+	public int getC_Year_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Year_ID);
 		if (ii == null)
@@ -105,23 +121,25 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_Name)
-			.getPO(getHR_Payroll_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_ID)
+			.getPO(getHR_Payroll_ID(), get_TrxName());
+	}
 
 	/** Set Payroll.
-		@param HR_Payroll_ID Payroll	  */
+		@param HR_Payroll_ID Payroll
+	*/
 	public void setHR_Payroll_ID (int HR_Payroll_ID)
 	{
-		if (HR_Payroll_ID < 1) 
+		if (HR_Payroll_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Payroll_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Payroll_ID, Integer.valueOf(HR_Payroll_ID));
 	}
 
 	/** Get Payroll.
 		@return Payroll	  */
-	public int getHR_Payroll_ID () 
+	public int getHR_Payroll_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Payroll_ID);
 		if (ii == null)
@@ -130,18 +148,19 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	}
 
 	/** Set Payroll Year.
-		@param HR_Year_ID Payroll Year	  */
+		@param HR_Year_ID Payroll Year
+	*/
 	public void setHR_Year_ID (int HR_Year_ID)
 	{
-		if (HR_Year_ID < 1) 
+		if (HR_Year_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Year_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Year_ID, Integer.valueOf(HR_Year_ID));
 	}
 
 	/** Get Payroll Year.
 		@return Payroll Year	  */
-	public int getHR_Year_ID () 
+	public int getHR_Year_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Year_ID);
 		if (ii == null)
@@ -150,7 +169,8 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	}
 
 	/** Set HR_Year_UU.
-		@param HR_Year_UU HR_Year_UU	  */
+		@param HR_Year_UU HR_Year_UU
+	*/
 	public void setHR_Year_UU (String HR_Year_UU)
 	{
 		set_Value (COLUMNNAME_HR_Year_UU, HR_Year_UU);
@@ -158,15 +178,14 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 
 	/** Get HR_Year_UU.
 		@return HR_Year_UU	  */
-	public String getHR_Year_UU () 
+	public String getHR_Year_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_Year_UU);
 	}
 
 	/** Set Net Days.
-		@param NetDays 
-		Net Days in which payment is due
-	  */
+		@param NetDays Net Days in which payment is due
+	*/
 	public void setNetDays (int NetDays)
 	{
 		set_Value (COLUMNNAME_NetDays, Integer.valueOf(NetDays));
@@ -175,7 +194,7 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	/** Get Net Days.
 		@return Net Days in which payment is due
 	  */
-	public int getNetDays () 
+	public int getNetDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_NetDays);
 		if (ii == null)
@@ -184,9 +203,8 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -195,7 +213,7 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -208,7 +226,8 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -216,7 +235,7 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -229,9 +248,8 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (int Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Integer.valueOf(Qty));
@@ -240,7 +258,7 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public int getQty () 
+	public int getQty()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Qty);
 		if (ii == null)
@@ -249,9 +267,8 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	}
 
 	/** Set Start Date.
-		@param StartDate 
-		First effective day (inclusive)
-	  */
+		@param StartDate First effective day (inclusive)
+	*/
 	public void setStartDate (Timestamp StartDate)
 	{
 		set_Value (COLUMNNAME_StartDate, StartDate);
@@ -260,7 +277,7 @@ public class X_HR_Year extends PO implements I_HR_Year, I_Persistent
 	/** Get Start Date.
 		@return First effective day (inclusive)
 	  */
-	public Timestamp getStartDate () 
+	public Timestamp getStartDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}

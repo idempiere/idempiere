@@ -20,6 +20,8 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+
 /**
  * Partner Location Model
  * 
@@ -27,9 +29,7 @@ import java.util.Properties;
  * @version $Id: MBPartnerLocation.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  * @author Teo Sarca, www.arhipac.ro <li>FR [ 2788465 ]
  *         MBPartnerLocation.getForBPartner method add trxName
- *         https://sourceforge
- *         .net/tracker/index.php?func=detail&aid=2788465&group_id
- *         =176962&atid=879335
+ *         https://sourceforge.net/p/adempiere/feature-requests/715/
  */
 public class MBPartnerLocation extends X_C_BPartner_Location {
 	/**
@@ -122,6 +122,44 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 		super(ctx, rs, trxName);
 	} // MBPartner_Location
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MBPartnerLocation(MBPartnerLocation copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MBPartnerLocation(Properties ctx, MBPartnerLocation copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MBPartnerLocation(Properties ctx, MBPartnerLocation copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_location = copy.m_location != null ? new MLocation(ctx, copy.m_location, trxName) : null;
+		this.m_uniqueName = copy.m_uniqueName;
+		this.m_unique = copy.m_unique;
+	}
+
+	public MBPartnerLocation(Properties ctx, int C_BPartner_Location_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_BPartner_Location_ID, trxName, virtualColumns);
+	}
+
 	/** Cached Location */
 	private MLocation m_location = null;
 	/** Unique Name */
@@ -136,7 +174,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	 */
 	public MLocation getLocation(boolean requery) {
 		if (requery || m_location == null)
-			m_location = MLocation.get(getCtx(), getC_Location_ID(), get_TrxName());
+			m_location = MLocation.getCopy(getCtx(), getC_Location_ID(), get_TrxName());
 		return m_location;
 	} // getLocation
 
@@ -233,7 +271,7 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 				getAD_Client_ID(), getAD_Org_ID());
 		if (m_unique < 0 || m_unique > 4)
 			m_unique = 0;
-		if (m_uniqueName != null) { // && m_uniqueName.equals(".")) {
+		if (m_uniqueName != null) { 
 			// default
 			m_uniqueName = null;
 			makeUnique(address);
@@ -250,7 +288,6 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 				if (location.getC_BPartner_Location_ID() == get_ID())
 					continue;
 				if (m_uniqueName.equals(location.getName())) {
-					// m_uniqueName = null;
 					m_unique++;
 					makeUnique(address);
 					unique = false;

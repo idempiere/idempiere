@@ -18,33 +18,26 @@ package org.compiere.util;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import javax.jnlp.BasicService;
-import javax.jnlp.FileContents;
-import javax.jnlp.PersistenceService;
-import javax.jnlp.ServiceManager;
-import javax.jnlp.UnavailableServiceException;
-
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.ModelValidationEngine;
 
 /**
- *	Load & Save INI Settings from property file
+ *	Load and Save INI Settings from property file
  *	Initiated in Adempiere.startup
  *	Settings activated in ALogin.getIni
  *
@@ -73,10 +66,10 @@ public final class Ini implements Serializable
 	private static final String	DEFAULT_UID = 		"GardenAdmin";
 	/** Apps Password		*/
 	public static final String	P_PWD = 			"ApplicationPassword";
-	private static final String	DEFAULT_PWD = 		"GardenAdmin";
+	private static final String	DEFAULT_PWD = 		"";
 	/** Store Password		*/
 	public static final String	P_STORE_PWD = 		"StorePassword";
-	private static final boolean DEFAULT_STORE_PWD = true;
+	private static final boolean DEFAULT_STORE_PWD = false;
 	/** Trace Level			*/
 	public static final String	P_TRACELEVEL = 		"TraceLevel";
 	private static final String DEFAULT_TRACELEVEL = "WARNING";
@@ -95,7 +88,7 @@ public final class Ini implements Serializable
 	/** Data Source			*/
 	public static final String  P_CONTEXT = 		"DataSource";
 	private static final String	DEFAULT_CONTEXT	= 	"java:adempiereDB";
-	/** Look & Feel			*/
+	/** Look and Feel			*/
 	public static final String	P_UI_LOOK =			"UILookFeel";
 
     private static final String	DEFAULT_UI_LOOK =	"Adempiere";
@@ -238,35 +231,28 @@ public final class Ini implements Serializable
 			ModelValidationEngine.get().beforeSaveProperties();
 		}
 
-		if (isWebStartClient())
+		String fileName = getFileName (tryUserHome);
+		FileOutputStream fos = null;
+		try
 		{
-			saveWebStartProperties();
+			File f = new File(fileName);
+			f.getAbsoluteFile().getParentFile().mkdirs(); // Create all dirs if not exist - teo_sarca FR [ 2406123 ]
+			fos = new FileOutputStream(f);
+			s_prop.store(fos, "Adempiere");
+			fos.flush();
+			fos.close();
 		}
-		else
+		catch (Exception e)
 		{
-			String fileName = getFileName (tryUserHome);
-			FileOutputStream fos = null;
-			try
-			{
-				File f = new File(fileName);
-				f.getAbsoluteFile().getParentFile().mkdirs(); // Create all dirs if not exist - teo_sarca FR [ 2406123 ]
-				fos = new FileOutputStream(f);
-				s_prop.store(fos, "Adempiere");
-				fos.flush();
-				fos.close();
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + e.toString());
-				return;
-			}
-			catch (Throwable t)
-			{
-				log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + t.toString());
-				return;
-			}
-			if (log.isLoggable(Level.FINER)) log.finer(fileName);
+			log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + e.toString());
+			return;
 		}
+		catch (Throwable t)
+		{
+			log.log(Level.SEVERE, "Cannot save Properties to " + fileName + " - " + t.toString());
+			return;
+		}
+		if (log.isLoggable(Level.FINER)) log.finer(fileName);
 	}	//	save
 
 	/**
@@ -277,132 +263,9 @@ public final class Ini implements Serializable
 	{
 		if (reload || s_prop.size() == 0)
 		{
-			if (isWebStartClient())
-			{
-				loadWebStartProperties();
-			}
-			else
-			{
-				loadProperties(getFileName(s_client));
-			}
+			loadProperties(getFileName(s_client));
 		}
 	}	//	loadProperties
-
-	private static boolean loadWebStartProperties() {
-		boolean loadOK = true;
-		boolean firstTime = false;
-		s_prop = new Properties();
-
-		PersistenceService ps;
-
-	    try {
-	        ps = (PersistenceService)ServiceManager.lookup("javax.jnlp.PersistenceService");
-	    } catch (UnavailableServiceException e) {
-	        ps = null;
-	        log.log(Level.SEVERE, e.toString());
-	        return false;
-	    }
-
-	    FileContents fc = null;
-	    try {
-			fc = ps.get(getCodeBase());
-		} catch (MalformedURLException e) {
-			log.log(Level.SEVERE, e.toString());
-			return false;
-		} catch (FileNotFoundException e) {
-			try {
-				ps.create(getCodeBase(), 16 * 1024);
-				ps.setTag(getCodeBase(), PersistenceService.DIRTY);
-				fc = ps.get(getCodeBase());
-			} catch (Exception e1) {
-
-			}
-		} catch (IOException e) {
-			log.log(Level.SEVERE, e.toString());
-			return false;
-		}
-
-		try
-		{
-			if (fc != null) {
-				InputStream is = fc.getInputStream();
-				s_prop.load(is);
-				is.close();
-			}			
-		}
-		catch (Throwable t)
-		{
-			log.log(Level.SEVERE, t.toString());
-			loadOK = false;
-		}
-		if (!loadOK || s_prop.getProperty(P_TODAY, "").equals(""))
-		{
-			firstTime = true;
-		}
-
-		checkProperties();
-
-		//  Save if not exist or could not be read
-		if (!loadOK || firstTime)
-			saveWebStartProperties();
-		s_loaded = true;
-		s_propertyFileName = getCodeBase().toString();
-
-		return firstTime;
-
-	}
-
-	private static void saveWebStartProperties() {
-		PersistenceService ps;
-
-	    try {
-	        ps = (PersistenceService)ServiceManager.lookup("javax.jnlp.PersistenceService");
-	    } catch (UnavailableServiceException e) {
-	        ps = null;
-	        log.log(Level.SEVERE, e.toString());
-	        return;
-	    }
-
-	    try
-		{
-	    	OutputStream os = ps.get(getCodeBase()).getOutputStream(true);
-			s_prop.store(os, "Adempiere");
-			os.flush();
-			os.close();
-		}
-		catch (Throwable t)
-		{
-			log.log(Level.SEVERE, "Cannot save Properties to " + getCodeBase() + " - " + t.toString());
-			return;
-		}
-
-	}
-
-	/**
-	 * 	Get JNLP CodeBase
-	 *	@return code base or null
-	 */
-	public static URL getCodeBase()
-	{
-		try
-		{
-			BasicService bs = (BasicService)ServiceManager.lookup("javax.jnlp.BasicService");
-			URL url = bs.getCodeBase();
-	        return url;
-		}
-		catch(UnavailableServiceException ue)
-		{
-			return null;
-		}
-	}	//	getCodeBase
-
-	/**
-	 * @return True if client is started using web start
-	 */
-	public static boolean isWebStartClient()
-	{
-		return getCodeBase() != null;
-	}
 
 	/**
 	 *  Load INI parameters from filename.
@@ -935,4 +798,73 @@ public final class Ini implements Serializable
 	{
 		return s_propertyFileName;
 	}
+
+	public static String getVar(String secretVar) {
+		String cmd = getUtilsCmd("getVar");
+		String[] command = new String[] {
+				cmd,
+				secretVar
+		};
+		String retValue = runCommand(command);
+		return retValue;
+	}
+
+	public static void setVar(String secretVar, String secretValue) {
+		String cmd = getUtilsCmd("setVar");
+		String[] command = new String[] {
+				cmd,
+				secretVar,
+				secretValue
+		};
+		runCommand(command);
+	}
+
+	private static String getUtilsCmd(String script) {
+		File utilsFolder = new File(getAdempiereHome() + File.separator + "utils");
+		if (! utilsFolder.exists()) {
+			// /utils does not exist, probably running on eclipse
+			if (Env.isWindows()) {
+				utilsFolder = new File(getAdempiereHome() + File.separator + "org.adempiere.server-feature" + File.separator + "utils.windows");
+			} else {
+				utilsFolder = new File(getAdempiereHome() + File.separator + "org.adempiere.server-feature" + File.separator + "utils.unix");
+			}
+			if (! utilsFolder.exists()) {
+				throw new AdempiereException("Folder utils does not exist");
+			}
+		}
+		File cmd = new File(utilsFolder, script + (Env.isWindows() ? ".bat" : ".sh"));
+		if (! cmd.exists() || ! cmd.canExecute()) {
+			throw new AdempiereException("File does not exist or canno execute " + cmd.getAbsolutePath());
+		}
+		return cmd.getAbsolutePath();
+	}
+
+	public static String runCommand(String[] command) {
+		StringBuilder msg = new StringBuilder();
+		try {
+			String s;
+			Process p = Runtime.getRuntime().exec(command);
+			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			// read the output from the command
+			while ((s = stdInput.readLine()) != null) {
+				msg.append(s);
+			}
+			// read any errors from the attempted command
+			while ((s = stdError.readLine()) != null) {
+				msg.append(s);
+			}
+			if ( !p.waitFor(5, TimeUnit.SECONDS)) {
+				throw new AdempiereException("Timeout waiting 5 seconds for " + command[0]);
+			} 
+			if (p.exitValue() != 0) {
+				throw new Exception(msg.toString());
+			}
+		}
+		catch (Exception e) {
+			throw new AdempiereException("Could not execute " + command[0], e);
+		}
+		return msg.toString();
+	}
+
 }	//	Ini

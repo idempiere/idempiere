@@ -1,0 +1,52 @@
+{
+	"info": {
+		"_postman_id": "1223b193-dce3-405c-8cf5-be7ba996bbe2",
+		"name": "idempiere-soap-as-rest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "query_data",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ModelCRUDRequest\": {\n        \"ModelCRUD\": {\n            \"serviceType\": \"QueryBPartner\",\n            \"TableName\": \"C_BPartner\",\n            \"Filter\": \"name < 'S'\",\n            \"Action\": \"Read\",\n            \"DataRow\": { //optional filter by column values\n                \"field\": [\n                    {\n                        \"@column\": \"C_BP_Group_ID\",\n                        \"val\": \"103\"\n                    }\n                ]\n            }\n        },\n        \"ADLoginRequest\": {\n            \"user\": \"{{userName}}\",\n            \"pass\": \"{{password}}\",\n            \"lang\": \"{{language}}\",\n            \"ClientID\": \"{{clientId}}\",\n            \"RoleID\": \"{{roleId}}\",\n            \"OrgID\": \"{{organizationId}}\",\n            \"WarehouseID\": \"{{warehouseId}}\",\n            \"stage\": \"9\"\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{protocol}}://{{host}}:{{port}}/ADInterface/services/rest/model_adservice/query_data",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"ADInterface",
+						"services",
+						"rest",
+						"model_adservice",
+						"query_data"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

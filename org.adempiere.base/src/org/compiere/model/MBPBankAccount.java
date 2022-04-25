@@ -74,7 +74,6 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 		super (ctx, C_BP_BankAccount_ID, trxName);
 		if (C_BP_BankAccount_ID == 0)
 		{
-		//	setC_BPartner_ID (0);
 			setIsACH (false);
 			setBPBankAcctUse(BPBANKACCTUSE_Both);
 		}
@@ -115,6 +114,38 @@ public class MBPBankAccount extends X_C_BP_BankAccount
 		setA_Country(location.getCountryName());
 	}	//	MBP_BankAccount
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MBPBankAccount(MBPBankAccount copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MBPBankAccount(Properties ctx, MBPBankAccount copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MBPBankAccount(Properties ctx, MBPBankAccount copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_bank = copy.m_bank != null ? new MBank(ctx, copy.m_bank, trxName) : null;
+	}
+	
 	/** Bank Link			*/
 	private MBank		m_bank = null;
 

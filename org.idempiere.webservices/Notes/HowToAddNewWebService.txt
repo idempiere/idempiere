@@ -12,7 +12,7 @@ the new webservice will have the following parameters:
 Note, if you need to define new datatypes you need to define them in  WEB-INF/xsd/idempiere-schema.xsd
 and generate the idempiere-xmlbeans.jar again with this command:
 
-  scomp -out ./WEB-INF/lib/idempiere-xmlbeans.jar ./WEB-INF/xsd/idempiere-schema.xsd
+  scomp -out ./lib/idempiere-xmlbeans.jar ./WEB-INF/xsd/idempiere-schema.xsd
   
 scomp will generate the corresponding classes to manipulate the xml objects from the messages
 

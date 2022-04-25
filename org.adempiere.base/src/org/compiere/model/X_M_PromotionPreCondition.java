@@ -23,19 +23,34 @@ import java.util.Properties;
 
 /** Generated Model for M_PromotionPreCondition
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_PromotionPreCondition")
 public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCondition, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_PromotionPreCondition (Properties ctx, int M_PromotionPreCondition_ID, String trxName)
     {
       super (ctx, M_PromotionPreCondition_ID, trxName);
+      /** if (M_PromotionPreCondition_ID == 0)
+        {
+			setM_Promotion_ID (0);
+			setM_PromotionPreCondition_ID (0);
+			setSeqNo (0);
+// 0
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PromotionPreCondition (Properties ctx, int M_PromotionPreCondition_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PromotionPreCondition_ID, trxName, virtualColumns);
       /** if (M_PromotionPreCondition_ID == 0)
         {
 			setM_Promotion_ID (0);
@@ -69,32 +84,32 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_PromotionPreCondition[")
+      StringBuilder sb = new StringBuilder ("X_M_PromotionPreCondition[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
-		@param C_Activity_ID 
-		Business Activity
-	  */
+		@param C_Activity_ID Business Activity
+	*/
 	public void setC_Activity_ID (int C_Activity_ID)
 	{
-		if (C_Activity_ID < 1) 
+		if (C_Activity_ID < 1)
 			set_Value (COLUMNNAME_C_Activity_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Activity_ID, Integer.valueOf(C_Activity_ID));
 	}
 
 	/** Get Activity.
 		@return Business Activity
 	  */
-	public int getC_Activity_ID () 
+	public int getC_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Activity_ID);
 		if (ii == null)
@@ -103,26 +118,26 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -131,26 +146,26 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	}
 
 	public org.compiere.model.I_C_BP_Group getC_BP_Group() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_Name)
-			.getPO(getC_BP_Group_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BP_Group)MTable.get(getCtx(), org.compiere.model.I_C_BP_Group.Table_ID)
+			.getPO(getC_BP_Group_ID(), get_TrxName());
+	}
 
 	/** Set Business Partner Group.
-		@param C_BP_Group_ID 
-		Business Partner Group
-	  */
+		@param C_BP_Group_ID Business Partner Group
+	*/
 	public void setC_BP_Group_ID (int C_BP_Group_ID)
 	{
-		if (C_BP_Group_ID < 1) 
+		if (C_BP_Group_ID < 1)
 			set_Value (COLUMNNAME_C_BP_Group_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BP_Group_ID, Integer.valueOf(C_BP_Group_ID));
 	}
 
 	/** Get Business Partner Group.
 		@return Business Partner Group
 	  */
-	public int getC_BP_Group_ID () 
+	public int getC_BP_Group_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Group_ID);
 		if (ii == null)
@@ -159,9 +174,8 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	}
 
 	/** Set End Date.
-		@param EndDate 
-		Last effective date (inclusive)
-	  */
+		@param EndDate Last effective date (inclusive)
+	*/
 	public void setEndDate (Timestamp EndDate)
 	{
 		set_Value (COLUMNNAME_EndDate, EndDate);
@@ -170,32 +184,32 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	/** Get End Date.
 		@return Last effective date (inclusive)
 	  */
-	public Timestamp getEndDate () 
+	public Timestamp getEndDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_EndDate);
 	}
 
 	public org.compiere.model.I_M_PriceList getM_PriceList() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_Name)
-			.getPO(getM_PriceList_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PriceList)MTable.get(getCtx(), org.compiere.model.I_M_PriceList.Table_ID)
+			.getPO(getM_PriceList_ID(), get_TrxName());
+	}
 
 	/** Set Price List.
-		@param M_PriceList_ID 
-		Unique identifier of a Price List
-	  */
+		@param M_PriceList_ID Unique identifier of a Price List
+	*/
 	public void setM_PriceList_ID (int M_PriceList_ID)
 	{
-		if (M_PriceList_ID < 1) 
+		if (M_PriceList_ID < 1)
 			set_Value (COLUMNNAME_M_PriceList_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_PriceList_ID, Integer.valueOf(M_PriceList_ID));
 	}
 
 	/** Get Price List.
 		@return Unique identifier of a Price List
 	  */
-	public int getM_PriceList_ID () 
+	public int getM_PriceList_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PriceList_ID);
 		if (ii == null)
@@ -204,23 +218,25 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	}
 
 	public org.compiere.model.I_M_Promotion getM_Promotion() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Promotion)MTable.get(getCtx(), org.compiere.model.I_M_Promotion.Table_Name)
-			.getPO(getM_Promotion_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Promotion)MTable.get(getCtx(), org.compiere.model.I_M_Promotion.Table_ID)
+			.getPO(getM_Promotion_ID(), get_TrxName());
+	}
 
 	/** Set Promotion.
-		@param M_Promotion_ID Promotion	  */
+		@param M_Promotion_ID Promotion
+	*/
 	public void setM_Promotion_ID (int M_Promotion_ID)
 	{
-		if (M_Promotion_ID < 1) 
+		if (M_Promotion_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Promotion_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Promotion_ID, Integer.valueOf(M_Promotion_ID));
 	}
 
 	/** Get Promotion.
 		@return Promotion	  */
-	public int getM_Promotion_ID () 
+	public int getM_Promotion_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Promotion_ID);
 		if (ii == null)
@@ -229,18 +245,19 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	}
 
 	/** Set Promotion Pre Condition.
-		@param M_PromotionPreCondition_ID Promotion Pre Condition	  */
+		@param M_PromotionPreCondition_ID Promotion Pre Condition
+	*/
 	public void setM_PromotionPreCondition_ID (int M_PromotionPreCondition_ID)
 	{
-		if (M_PromotionPreCondition_ID < 1) 
+		if (M_PromotionPreCondition_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_PromotionPreCondition_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_PromotionPreCondition_ID, Integer.valueOf(M_PromotionPreCondition_ID));
 	}
 
 	/** Get Promotion Pre Condition.
 		@return Promotion Pre Condition	  */
-	public int getM_PromotionPreCondition_ID () 
+	public int getM_PromotionPreCondition_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PromotionPreCondition_ID);
 		if (ii == null)
@@ -249,7 +266,8 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	}
 
 	/** Set M_PromotionPreCondition_UU.
-		@param M_PromotionPreCondition_UU M_PromotionPreCondition_UU	  */
+		@param M_PromotionPreCondition_UU M_PromotionPreCondition_UU
+	*/
 	public void setM_PromotionPreCondition_UU (String M_PromotionPreCondition_UU)
 	{
 		set_Value (COLUMNNAME_M_PromotionPreCondition_UU, M_PromotionPreCondition_UU);
@@ -257,32 +275,32 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 
 	/** Get M_PromotionPreCondition_UU.
 		@return M_PromotionPreCondition_UU	  */
-	public String getM_PromotionPreCondition_UU () 
+	public String getM_PromotionPreCondition_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_PromotionPreCondition_UU);
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_Value (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -291,9 +309,8 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	}
 
 	/** Set Promotion Code.
-		@param PromotionCode 
-		User entered promotion code at sales time
-	  */
+		@param PromotionCode User entered promotion code at sales time
+	*/
 	public void setPromotionCode (String PromotionCode)
 	{
 		set_Value (COLUMNNAME_PromotionCode, PromotionCode);
@@ -302,15 +319,14 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	/** Get Promotion Code.
 		@return User entered promotion code at sales time
 	  */
-	public String getPromotionCode () 
+	public String getPromotionCode()
 	{
 		return (String)get_Value(COLUMNNAME_PromotionCode);
 	}
 
 	/** Set Usage Counter.
-		@param PromotionCounter 
-		Usage counter
-	  */
+		@param PromotionCounter Usage counter
+	*/
 	public void setPromotionCounter (int PromotionCounter)
 	{
 		set_ValueNoCheck (COLUMNNAME_PromotionCounter, Integer.valueOf(PromotionCounter));
@@ -319,7 +335,7 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	/** Get Usage Counter.
 		@return Usage counter
 	  */
-	public int getPromotionCounter () 
+	public int getPromotionCounter()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PromotionCounter);
 		if (ii == null)
@@ -328,9 +344,8 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	}
 
 	/** Set Usage Limit.
-		@param PromotionUsageLimit 
-		Maximum usage limit
-	  */
+		@param PromotionUsageLimit Maximum usage limit
+	*/
 	public void setPromotionUsageLimit (int PromotionUsageLimit)
 	{
 		set_Value (COLUMNNAME_PromotionUsageLimit, Integer.valueOf(PromotionUsageLimit));
@@ -339,7 +354,7 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	/** Get Usage Limit.
 		@return Maximum usage limit
 	  */
-	public int getPromotionUsageLimit () 
+	public int getPromotionUsageLimit()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PromotionUsageLimit);
 		if (ii == null)
@@ -348,9 +363,8 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -359,7 +373,7 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -368,9 +382,8 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	}
 
 	/** Set Start Date.
-		@param StartDate 
-		First effective day (inclusive)
-	  */
+		@param StartDate First effective day (inclusive)
+	*/
 	public void setStartDate (Timestamp StartDate)
 	{
 		set_Value (COLUMNNAME_StartDate, StartDate);
@@ -379,7 +392,7 @@ public class X_M_PromotionPreCondition extends PO implements I_M_PromotionPreCon
 	/** Get Start Date.
 		@return First effective day (inclusive)
 	  */
-	public Timestamp getStartDate () 
+	public Timestamp getStartDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}

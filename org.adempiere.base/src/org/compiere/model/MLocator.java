@@ -22,24 +22,26 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Warehouse Locator Object
  *
  *  @author 	Jorg Janke
  *  @author victor.perez@e-evolution.com
- *  @see [ 1966333 ] New Method to get the Default Locator based in Warehouse http://sourceforge.net/tracker/index.php?func=detail&aid=1966333&group_id=176962&atid=879335
+ *  @see [ 1966333 ] New Method to get the Default Locator based in Warehouse https://sourceforge.net/p/adempiere/feature-requests/429/
  *  @version 	$Id: MLocator.java,v 1.3 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MLocator extends X_M_Locator
+public class MLocator extends X_M_Locator implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4502919527066173270L;
+	private static final long serialVersionUID = 539879105479299988L;
 
 	/**
 	 * 	Get oldest Default Locator of warehouse with locator
@@ -82,8 +84,7 @@ public class MLocator extends X_M_Locator
 	/**
 	 *  FR  [ 1966333 ]
 	 * 	Get oldest Default Locator of warehouse with locator
-	 *	@param ctx context
-	 *	@param M_Locator_ID locator
+	 *  @param warehouse
 	 *	@return locator or null
 	 */
 	public static MLocator getDefault (MWarehouse warehouse)
@@ -123,14 +124,14 @@ public class MLocator extends X_M_Locator
 	 }
 
 	 /**
-	 * 	Get the Locator with the combination or create new one
+	 * 	Get the Locator with the combination or create new one (when user has permission)
 	 *	@param ctx Context
 	 *	@param M_Warehouse_ID warehouse
 	 *	@param Value value
 	 *	@param X x
 	 *	@param Y y
 	 *	@param Z z
-	 * 	@return locator
+	 * 	@return locator (or null when no insert permission on MLocator)
 	 */
 	 public static MLocator get (Properties ctx, int M_Warehouse_ID, String Value,
 		 String X, String Y, String Z, int M_LocatorType_ID)
@@ -161,37 +162,77 @@ public class MLocator extends X_M_Locator
 		//
 		if (retValue == null)
 		{
-			MWarehouse wh = MWarehouse.get (ctx, M_Warehouse_ID);
-			retValue = new MLocator (wh, Value);
-			retValue.setXYZ(X, Y, Z);
-			retValue.setM_LocatorType_ID(M_LocatorType_ID);
-			retValue.saveEx();
+			if (MRole.getDefault().isTableAccess(MLocator.Table_ID, false)) {
+				MWarehouse wh = MWarehouse.get (ctx, M_Warehouse_ID);
+				retValue = new MLocator (wh, Value);
+				retValue.setXYZ(X, Y, Z);
+				retValue.setM_LocatorType_ID(M_LocatorType_ID);
+				retValue.saveEx();
+			}
 		}
 		return retValue;
-	 }	//	get
+	}	//	get
 
 	/**
-	 * 	Get Locator from Cache
-	 *	@param ctx context
+	 * 	Get Locator from Cache (immutable)
+	 *	@param M_Locator_ID id
+	 *	@return MLocator
+	 */
+	public static MLocator get (int M_Locator_ID)
+	{
+		return get(Env.getCtx(), M_Locator_ID);
+	}
+	
+	/**
+	 * 	Get Locator from Cache (immutable)
+	 *  @param ctx context
 	 *	@param M_Locator_ID id
 	 *	@return MLocator
 	 */
 	public static MLocator get (Properties ctx, int M_Locator_ID)
 	{
-		if (s_cache == null)
-			s_cache	= new CCache<Integer,MLocator>(Table_Name, 20);
+		return get(ctx, M_Locator_ID, (String)null);
+	}
+	
+	/**
+	 * 	Get Locator from Cache (immutable)
+	 *  @param ctx context
+	 *	@param M_Locator_ID id
+	 *  @param trxName
+	 *	@return MLocator
+	 */
+	public static MLocator get (Properties ctx, int M_Locator_ID, String trxName)
+	{
 		Integer key = Integer.valueOf(M_Locator_ID);
-		MLocator retValue = (MLocator) s_cache.get (key);
+		MLocator retValue = s_cache.get (ctx, key, e -> new MLocator(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MLocator (ctx, M_Locator_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MLocator (ctx, M_Locator_ID, trxName);
+		if (retValue.get_ID () == M_Locator_ID)
+		{
+			s_cache.put (key, retValue, e -> new MLocator(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	} //	get
 
+	/**
+	 * Get updateable copy of MLocator from cache
+	 * @param ctx
+	 * @param M_Locator_ID
+	 * @param trxName
+	 * @return MLocator
+	 */
+	public static MLocator getCopy(Properties ctx, int M_Locator_ID, String trxName)
+	{
+		MLocator locator = get(M_Locator_ID);
+		if (locator != null)
+			locator = new MLocator(ctx, locator, trxName);
+		return locator;
+	}
+	
 	/**	Cache						*/
-	protected volatile static CCache<Integer,MLocator> s_cache; 
+	private final static ImmutableIntPOCache<Integer,MLocator> s_cache = new ImmutableIntPOCache<Integer,MLocator>(Table_Name, 20); 
 	 
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MLocator.class);
@@ -208,14 +249,8 @@ public class MLocator extends X_M_Locator
 		super (ctx, M_Locator_ID, trxName);
 		if (M_Locator_ID == 0)
 		{
-		//	setM_Locator_ID (0);		//	PK
-		//	setM_Warehouse_ID (0);		//	Parent
 			setIsDefault (false);
 			setPriorityNo (50);
-		//	setValue (null);
-		//	setX (null);
-		//	setY (null);
-		//	setZ (null);
 		}
 	}	//	MLocator
 
@@ -244,6 +279,37 @@ public class MLocator extends X_M_Locator
 		super(ctx, rs, trxName);
 	}	//	MLocator
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MLocator(MLocator copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MLocator(Properties ctx, MLocator copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MLocator(Properties ctx, MLocator copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 *	Get String Representation
 	 * 	@return Value
@@ -296,66 +362,15 @@ public class MLocator extends X_M_Locator
 		// This implies that every time you create a new product you must create initial inventory zero for all locators where the product can be stored.
 		// A good enhancement could be a new table to indicate when a locator is exclusive for some products, but I consider current approach not working.
 		return true;
-
-		/*
-		//	Default Locator
-		if (M_Product_ID == 0 || isDefault())
-			return true;
-		
-		int count = 0;
-		PreparedStatement pstmt = null;
-		//	Already Stored
-		String sql = "SELECT COUNT(*) FROM M_Storage s WHERE s.M_Locator_ID=? AND s.M_Product_ID=?";
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, getM_Locator_ID());
-			pstmt.setInt (2, M_Product_ID);
-			ResultSet rs = pstmt.executeQuery ();
-			if (rs.next ())
-				count = rs.getInt(1);
-			rs.close ();
-			pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			log.log (Level.SEVERE, sql, e);
-		}
-		//	Default Product Locator
-		if (count == 0)
-		{
-			sql = "SELECT COUNT(*) FROM M_Product s WHERE s.M_Locator_ID=? AND s.M_Product_ID=?";
-			try
-			{
-				pstmt = DB.prepareStatement (sql, null);
-				pstmt.setInt (1, getM_Locator_ID());
-				pstmt.setInt (2, M_Product_ID);
-				ResultSet rs = pstmt.executeQuery ();
-				if (rs.next ())
-					count = rs.getInt(1);
-				rs.close ();
-				pstmt.close ();
-				pstmt = null;
-			}
-			catch (Exception e)
-			{
-				log.log (Level.SEVERE, sql, e);
-			}
-		}
-		try
-		{
-			if (pstmt != null)
-				pstmt.close ();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
-		}
-		
-		return count != 0;
-		*/
 	}	//	isCanStoreProduct
 	
+	@Override
+	public MLocator markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MLocator

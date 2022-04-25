@@ -20,9 +20,13 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Trx;
+import org.compiere.util.TrxEventListener;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Organization Model
@@ -30,13 +34,12 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MOrg.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
  */
-public class MOrg extends X_AD_Org
+public class MOrg extends X_AD_Org implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5604686137606338725L;
-
+	private static final long serialVersionUID = -8501438599288536080L;
 
 	/**
 	 * 	Get Active Organizations Of Client
@@ -45,10 +48,30 @@ public class MOrg extends X_AD_Org
 	 */
 	public static MOrg[] getOfClient (PO po)
 	{
-		List<MOrg> list = new Query(po.getCtx(), Table_Name, "AD_Client_ID=?", null)
+		return getOfClient(po.getAD_Client_ID());
+	}	//	getOfClient
+
+	/**
+	 * 	Get Active Organizations Of current Client
+	 *	@return array of orgs
+	 */
+	public static MOrg[] getOfClient ()
+	{
+		return getOfClient(Env.getAD_Client_ID(Env.getCtx()));		
+	}
+
+	/**
+	 * 	Get Active Organizations Of Client
+	 *	@param ctx context
+	 *	@param int clientID
+	 *	@return array of orgs
+	 */
+	public static MOrg[] getOfClient (int clientID)
+	{
+		List<MOrg> list = new Query(Env.getCtx(), Table_Name, "AD_Client_ID=?", null)
 								.setOrderBy(COLUMNNAME_Value)
 								.setOnlyActiveRecords(true)
-								.setParameters(po.getAD_Client_ID())
+								.setParameters(clientID)
 								.list();
 		for (MOrg org : list)
 		{
@@ -56,26 +79,38 @@ public class MOrg extends X_AD_Org
 		}
 		return list.toArray(new MOrg[list.size()]);
 	}	//	getOfClient
+
+	/**
+	 * 	Get Org from Cache (immutable)
+	 *	@param AD_Org_ID id
+	 *	@return MOrg
+	 */
+	public static MOrg get (int AD_Org_ID)
+	{
+		return get(Env.getCtx(), AD_Org_ID);
+	}
 	
 	/**
-	 * 	Get Org from Cache
-	 *	@param ctx context
+	 * 	Get Org from Cache (immutable)
 	 *	@param AD_Org_ID id
 	 *	@return MOrg
 	 */
 	public static MOrg get (Properties ctx, int AD_Org_ID)
 	{
-		MOrg retValue = s_cache.get (AD_Org_ID);
+		MOrg retValue = s_cache.get (ctx, AD_Org_ID, e -> new MOrg(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MOrg (ctx, AD_Org_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (AD_Org_ID, retValue);
-		return retValue;
+		retValue = new MOrg (ctx, AD_Org_ID, (String)null);
+		if (retValue.get_ID () == AD_Org_ID)
+		{
+			s_cache.put (AD_Org_ID, retValue, e -> new MOrg(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MOrg>	s_cache	= new CCache<Integer,MOrg>(Table_Name, 50);
+	private static ImmutableIntPOCache<Integer,MOrg>	s_cache	= new ImmutableIntPOCache<Integer,MOrg>(Table_Name, 50);
 	
 	
 	/**************************************************************************
@@ -119,6 +154,38 @@ public class MOrg extends X_AD_Org
 		setName (name);
 	}	//	MOrg
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MOrg(MOrg copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MOrg(Properties ctx, MOrg copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MOrg(Properties ctx, MOrg copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_linkedBPartner = copy.m_linkedBPartner;
+	}
+	
 	/**	Linked Business Partner			*/
 	private Integer 	m_linkedBPartner = null;
 
@@ -128,7 +195,8 @@ public class MOrg extends X_AD_Org
 	 */
 	public MOrgInfo getInfo()
 	{
-		return MOrgInfo.get(getCtx(), getAD_Org_ID(), get_TrxName());
+		MOrgInfo orgInfo = MOrgInfo.getCopy(Env.getCtx(), getAD_Org_ID(), get_TrxName());
+		return orgInfo;
 	}	//	getMOrgInfo
 
 
@@ -151,7 +219,7 @@ public class MOrg extends X_AD_Org
 			//	Access
 			MRoleOrgAccess.createForOrg (this);
 			MRole role = MRole.getDefault(getCtx(), true);	//	reload
-			role.set_TrxName(get_TrxName());
+			role = new MRole(getCtx(), role, get_TrxName());
 			role.loadAccess(true); // reload org access within transaction
 			//	TreeNode
 			insert_Tree(MTree_Base.TREETYPE_Organization);
@@ -165,7 +233,23 @@ public class MOrg extends X_AD_Org
 			if ("Y".equals(Env.getContext(getCtx(), "$Element_OT"))) 
 				MAccount.updateValueDescription(getCtx(), "AD_OrgTrx_ID=" + getAD_Org_ID(), get_TrxName());
 		}
-		
+
+		Trx.get(get_TrxName(), false).addTrxEventListener(new TrxEventListener() {
+			@Override
+			public void afterRollback(Trx trx, boolean success) {
+			}
+
+			@Override
+			public void afterCommit(Trx trx, boolean success) {
+				MRole.getDefault().loadAccess(true);
+				CacheMgt.get().reset();
+			}
+
+			@Override
+			public void afterClose(Trx trx) {
+			}
+		});
+
 		return true;
 	}	//	afterSave
 	
@@ -199,5 +283,14 @@ public class MOrg extends X_AD_Org
 		}
 		return m_linkedBPartner.intValue();
 	}	//	getLinkedC_BPartner_ID
-	
+
+	@Override
+	public MOrg markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MOrg

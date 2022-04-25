@@ -103,11 +103,8 @@ public class MChat extends X_CM_Chat
 		super (ctx, CM_Chat_ID, trxName);
 		if (CM_Chat_ID == 0)
 		{
-		//	setAD_Table_ID (0);
-		//	setRecord_ID (0);
 			setConfidentialType (CONFIDENTIALTYPE_PublicInformation);
 			setModerationType (MODERATIONTYPE_NotModerated);
-		//	setDescription (null);
 		}
 	}	//	MChat
 
@@ -229,7 +226,6 @@ public class MChat extends X_CM_Chat
 				m_format = DisplayType.getDateFormat(DisplayType.DateTime);
 			b.addElement(m_format.format(created));
 			history.addElement(b);
-		//	history.addElement(new br());
 			//
 			p p = new p();
 			String data = entry.getCharacterData();
@@ -244,7 +240,7 @@ public class MChat extends X_CM_Chat
 	/**
 	 * IDEMPIERE-530
 	 * Get the chat ID based on table_id and record_id
-	 * @param AD_Table_ID
+	 * @param Table_ID
 	 * @param Record_ID
 	 * @return CM_Chat_ID 
 	 */

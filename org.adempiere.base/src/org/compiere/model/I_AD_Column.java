@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Column
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 9
  */
 public interface I_AD_Column 
 {
@@ -184,6 +184,21 @@ public interface I_AD_Column
 	public int getAD_Val_Rule_ID();
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule() throws RuntimeException;
+
+    /** Column name AD_Val_Rule_Lookup_ID */
+    public static final String COLUMNNAME_AD_Val_Rule_Lookup_ID = "AD_Val_Rule_Lookup_ID";
+
+	/** Set Dynamic Validation (Lookup).
+	  * Override Dynamic Validation Rule for Lookup Window
+	  */
+	public void setAD_Val_Rule_Lookup_ID (int AD_Val_Rule_Lookup_ID);
+
+	/** Get Dynamic Validation (Lookup).
+	  * Override Dynamic Validation Rule for Lookup Window
+	  */
+	public int getAD_Val_Rule_Lookup_ID();
+
+	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException;
 
     /** Column name Callout */
     public static final String COLUMNNAME_Callout = "Callout";
@@ -704,13 +719,17 @@ public interface I_AD_Column
 
 	/** Set Value Format.
 	  * Format of the value;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+
 	  */
 	public void setVFormat (String VFormat);
 
 	/** Get Value Format.
 	  * Format of the value;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+
 	  */
 	public String getVFormat();
 }

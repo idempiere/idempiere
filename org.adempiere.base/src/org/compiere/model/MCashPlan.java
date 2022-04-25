@@ -50,20 +50,6 @@ public class MCashPlan extends X_C_CashPlan
 	public MCashPlan (Properties ctx, int C_CashPlan_ID, String trxName)
 	{
 	      super (ctx, C_CashPlan_ID, trxName);
-	      /** if (C_CashPlan_ID == 0)
-	        {
-				setC_Activity_ID (0);
-				setC_CashPlan_ID (0);
-				setC_Project_ID (0);
-				setDateDoc (new Timestamp(System.currentTimeMillis()));
-	// @#Date@
-				setDocumentNo (null);
-				setGrandTotal (Env.ZERO);
-				setIsApproved (false);
-	// @IsApproved@
-				setIsSOTrx (false);
-				setProcessed (false);
-	        } */
 	}	//	MCashPlan
 
 	/**
@@ -83,16 +69,6 @@ public class MCashPlan extends X_C_CashPlan
 	 */
 	protected boolean beforeDelete ()
 	{
-		/*
-		// delete the lines using model classes
-		boolean success = true;
-		for (MCashPlanLine cpl : getLines()) {
-			success = cpl.delete(true, get_TrxName());
-			if (! success)
-				break;
-		}
-		return success;
-		*/
 		// delete the lines using direct SQL (to avoid logging and updating of header on every step) - same as cascade foreign key
 		int nodel = DB.executeUpdate("DELETE FROM C_CashPlanLine WHERE C_CashPlan_ID=?", getC_CashPlan_ID(), get_TrxName());
 		return (nodel >= 0);
@@ -105,7 +81,7 @@ public class MCashPlan extends X_C_CashPlan
 	public MCashPlanLine[] getLines ()
 	{
 		ArrayList<MCashPlanLine> list = new ArrayList<MCashPlanLine>();
-		String sql = "SELECT * FROM C_CashPlanLine WHERE C_CashPlan_ID=? ORDER BY Line";
+		String sql = "SELECT * FROM C_CashPlanLine WHERE C_CashPlan_ID=? ORDER BY Line,C_CashPlanLine_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

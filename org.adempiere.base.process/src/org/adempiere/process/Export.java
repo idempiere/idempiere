@@ -62,6 +62,7 @@ import org.w3c.dom.Text;
  *  @author Trifon Trifonov
  *  @version $Id: $
  */
+@org.adempiere.base.annotation.Process
 public class Export extends SvrProcess
 {
 	private static final String TOTAL_SEGMENTS = "${totalSegments}";
@@ -197,7 +198,7 @@ public class Export extends SvrProcess
 			
 			outbandProcessor.process(getCtx(), ediProcessor, result.toString(), "C_Invoice-"+p_Record_ID+".txt",  Trx.get( get_TrxName(), false ));
 		} catch (Exception e) {
-			result = new StringBuffer( e.toString() );
+			result = new StringBuilder( e.toString() );
 		}
 */		
 		addLog(0, null, null, Msg.getMsg (getCtx(), "ExportProcessResult") + "\n" + outDocument.toString());

@@ -17,11 +17,6 @@
 
 package org.compiere.model;
 
-import org.compiere.model.MClient;
-import org.compiere.model.MOrderLine;
-import org.compiere.model.ModelValidationEngine;
-import org.compiere.model.ModelValidator;
-import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 
 
@@ -62,9 +57,6 @@ public class SalesMgmtValidator implements ModelValidator
 		engine.addModelChange(MOrder.Table_Name, this);
 		engine.addModelChange(MOrderLine.Table_Name, this);
 		
-		//	Documents to be monitored
-	//	engine.addDocValidate(MInvoice.Table_Name, this);
-
 	}	//	initialize
 
     /**
@@ -162,7 +154,7 @@ public class SalesMgmtValidator implements ModelValidator
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("SalesMgmtValidator");
+		StringBuilder sb = new StringBuilder ("SalesMgmtValidator");
 		return sb.toString ();
 	}	//	toString
 	

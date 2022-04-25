@@ -42,12 +42,9 @@ public class MRecurring extends X_C_Recurring
 		super (ctx, C_Recurring_ID, trxName);
 		if (C_Recurring_ID == 0)
 		{
-		//	setC_Recurring_ID (0);		//	PK
 			setDateNextRun (new Timestamp(System.currentTimeMillis()));
 			setFrequencyType (FREQUENCYTYPE_Monthly);
 			setFrequency(1);
-		//	setName (null);
-		//	setRecurringType (null);
 			setRunsMax (1);
 			setRunsRemaining (0);
 		}
@@ -64,7 +61,7 @@ public class MRecurring extends X_C_Recurring
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("MRecurring[")
+		StringBuilder sb = new StringBuilder ("MRecurring[")
 			.append(get_ID()).append("-").append(getName());
 		if (getRecurringType().equals(MRecurring.RECURRINGTYPE_Order))
 			sb.append(",C_Order_ID=").append(getC_Order_ID());

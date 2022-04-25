@@ -24,19 +24,34 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ContactActivity
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_ContactActivity")
 public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_ContactActivity (Properties ctx, int C_ContactActivity_ID, String trxName)
     {
       super (ctx, C_ContactActivity_ID, trxName);
+      /** if (C_ContactActivity_ID == 0)
+        {
+			setC_ContactActivity_ID (0);
+			setContactActivityType (null);
+			setDescription (null);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+// @SQL=SELECT SYSDATE AS DefaultValue FROM DUAL
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ContactActivity (Properties ctx, int C_ContactActivity_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ContactActivity_ID, trxName, virtualColumns);
       /** if (C_ContactActivity_ID == 0)
         {
 			setC_ContactActivity_ID (0);
@@ -70,32 +85,32 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_ContactActivity[")
+      StringBuilder sb = new StringBuilder ("X_C_ContactActivity[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -104,21 +119,20 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	}
 
 	/** Set Contact Activity.
-		@param C_ContactActivity_ID 
-		Events, tasks, communications related to a contact
-	  */
+		@param C_ContactActivity_ID Events, tasks, communications related to a contact
+	*/
 	public void setC_ContactActivity_ID (int C_ContactActivity_ID)
 	{
-		if (C_ContactActivity_ID < 1) 
+		if (C_ContactActivity_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_ContactActivity_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_ContactActivity_ID, Integer.valueOf(C_ContactActivity_ID));
 	}
 
 	/** Get Contact Activity.
 		@return Events, tasks, communications related to a contact
 	  */
-	public int getC_ContactActivity_ID () 
+	public int getC_ContactActivity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ContactActivity_ID);
 		if (ii == null)
@@ -127,7 +141,8 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	}
 
 	/** Set C_ContactActivity_UU.
-		@param C_ContactActivity_UU C_ContactActivity_UU	  */
+		@param C_ContactActivity_UU C_ContactActivity_UU
+	*/
 	public void setC_ContactActivity_UU (String C_ContactActivity_UU)
 	{
 		set_Value (COLUMNNAME_C_ContactActivity_UU, C_ContactActivity_UU);
@@ -135,15 +150,14 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 
 	/** Get C_ContactActivity_UU.
 		@return C_ContactActivity_UU	  */
-	public String getC_ContactActivity_UU () 
+	public String getC_ContactActivity_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_ContactActivity_UU);
 	}
 
 	/** Set Comments.
-		@param Comments 
-		Comments or additional information
-	  */
+		@param Comments Comments or additional information
+	*/
 	public void setComments (String Comments)
 	{
 		set_Value (COLUMNNAME_Comments, Comments);
@@ -152,7 +166,7 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	/** Get Comments.
 		@return Comments or additional information
 	  */
-	public String getComments () 
+	public String getComments()
 	{
 		return (String)get_Value(COLUMNNAME_Comments);
 	}
@@ -161,16 +175,15 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	public static final int CONTACTACTIVITYTYPE_AD_Reference_ID=53423;
 	/** Email = EM */
 	public static final String CONTACTACTIVITYTYPE_Email = "EM";
-	/** Phone call = PC */
-	public static final String CONTACTACTIVITYTYPE_PhoneCall = "PC";
 	/** Meeting = ME */
 	public static final String CONTACTACTIVITYTYPE_Meeting = "ME";
+	/** Phone call = PC */
+	public static final String CONTACTACTIVITYTYPE_PhoneCall = "PC";
 	/** Task = TA */
 	public static final String CONTACTACTIVITYTYPE_Task = "TA";
 	/** Set Activity Type.
-		@param ContactActivityType 
-		Type of activity, e.g. task, email, phone call
-	  */
+		@param ContactActivityType Type of activity, e.g. task, email, phone call
+	*/
 	public void setContactActivityType (String ContactActivityType)
 	{
 
@@ -180,29 +193,31 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	/** Get Activity Type.
 		@return Type of activity, e.g. task, email, phone call
 	  */
-	public String getContactActivityType () 
+	public String getContactActivityType()
 	{
 		return (String)get_Value(COLUMNNAME_ContactActivityType);
 	}
 
 	public org.compiere.model.I_C_Opportunity getC_Opportunity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Opportunity)MTable.get(getCtx(), org.compiere.model.I_C_Opportunity.Table_Name)
-			.getPO(getC_Opportunity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Opportunity)MTable.get(getCtx(), org.compiere.model.I_C_Opportunity.Table_ID)
+			.getPO(getC_Opportunity_ID(), get_TrxName());
+	}
 
 	/** Set Sales Opportunity.
-		@param C_Opportunity_ID Sales Opportunity	  */
+		@param C_Opportunity_ID Sales Opportunity
+	*/
 	public void setC_Opportunity_ID (int C_Opportunity_ID)
 	{
-		if (C_Opportunity_ID < 1) 
+		if (C_Opportunity_ID < 1)
 			set_Value (COLUMNNAME_C_Opportunity_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Opportunity_ID, Integer.valueOf(C_Opportunity_ID));
 	}
 
 	/** Get Sales Opportunity.
 		@return Sales Opportunity	  */
-	public int getC_Opportunity_ID () 
+	public int getC_Opportunity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Opportunity_ID);
 		if (ii == null)
@@ -211,9 +226,8 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -222,7 +236,7 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -236,9 +250,8 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
     }
 
 	/** Set End Date.
-		@param EndDate 
-		Last effective date (inclusive)
-	  */
+		@param EndDate Last effective date (inclusive)
+	*/
 	public void setEndDate (Timestamp EndDate)
 	{
 		set_Value (COLUMNNAME_EndDate, EndDate);
@@ -247,15 +260,14 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	/** Get End Date.
 		@return Last effective date (inclusive)
 	  */
-	public Timestamp getEndDate () 
+	public Timestamp getEndDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_EndDate);
 	}
 
 	/** Set Complete.
-		@param IsComplete 
-		It is complete
-	  */
+		@param IsComplete It is complete
+	*/
 	public void setIsComplete (boolean IsComplete)
 	{
 		set_Value (COLUMNNAME_IsComplete, Boolean.valueOf(IsComplete));
@@ -264,7 +276,7 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	/** Get Complete.
 		@return It is complete
 	  */
-	public boolean isComplete () 
+	public boolean isComplete()
 	{
 		Object oo = get_Value(COLUMNNAME_IsComplete);
 		if (oo != null) 
@@ -277,26 +289,26 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	}
 
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSalesRep_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSalesRep_ID(), get_TrxName());
+	}
 
 	/** Set Sales Representative.
-		@param SalesRep_ID 
-		Sales Representative or Company Agent
-	  */
+		@param SalesRep_ID Sales Representative or Company Agent
+	*/
 	public void setSalesRep_ID (int SalesRep_ID)
 	{
-		if (SalesRep_ID < 1) 
+		if (SalesRep_ID < 1)
 			set_Value (COLUMNNAME_SalesRep_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_SalesRep_ID, Integer.valueOf(SalesRep_ID));
 	}
 
 	/** Get Sales Representative.
 		@return Sales Representative or Company Agent
 	  */
-	public int getSalesRep_ID () 
+	public int getSalesRep_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SalesRep_ID);
 		if (ii == null)
@@ -305,9 +317,8 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	}
 
 	/** Set Start Date.
-		@param StartDate 
-		First effective day (inclusive)
-	  */
+		@param StartDate First effective day (inclusive)
+	*/
 	public void setStartDate (Timestamp StartDate)
 	{
 		set_Value (COLUMNNAME_StartDate, StartDate);
@@ -316,7 +327,7 @@ public class X_C_ContactActivity extends PO implements I_C_ContactActivity, I_Pe
 	/** Get Start Date.
 		@return First effective day (inclusive)
 	  */
-	public Timestamp getStartDate () 
+	public Timestamp getStartDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}

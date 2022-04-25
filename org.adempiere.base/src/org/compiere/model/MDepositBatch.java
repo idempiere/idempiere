@@ -54,10 +54,10 @@ public class MDepositBatch extends X_C_DepositBatch
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -977397802747749777L;
+	private static final long serialVersionUID = 7691820074981291939L;
 
 	/**
-	 *  Create & Load existing Persistent Object
+	 *  Create and Load existing Persistent Object
 	 *  @param ctx context
 	 *  @param C_DepositBatch_ID  The unique ID of the object
 	 *  @param trxName transaction name	
@@ -130,8 +130,6 @@ public class MDepositBatch extends X_C_DepositBatch
 
 	/**	Process Message 			*/
 	private String		m_processMsg = null;
-	/**	Just Prepared Flag			*/
-//	private boolean		m_justPrepared = false;
 
 	/**
 	 * 	Unlock Document.
@@ -182,7 +180,7 @@ public class MDepositBatch extends X_C_DepositBatch
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MDepositBatch[");
+		StringBuilder sb = new StringBuilder ("MDepositBatch[");
 		sb.append(get_ID()).append(",").append(getDescription())
 			.append(",Amount=").append(getDepositAmt())
 			.append ("]");
@@ -224,10 +222,7 @@ public class MDepositBatch extends X_C_DepositBatch
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	
@@ -284,7 +279,7 @@ public class MDepositBatch extends X_C_DepositBatch
 	public MDepositBatchLine[] getLines()
 	{
 		ArrayList<MDepositBatchLine> list = new ArrayList<MDepositBatchLine>();
-		String sql = "SELECT * FROM C_DepositBatchLine WHERE C_DepositBatch_ID=? ORDER BY Line";
+		String sql = "SELECT * FROM C_DepositBatchLine WHERE C_DepositBatch_ID=? ORDER BY Line,C_DepositBatchLine_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -309,5 +304,17 @@ public class MDepositBatch extends X_C_DepositBatch
 		list.toArray(retValue);
 		return retValue;
 	}	//	getLines
+
+	/**
+	 * 	Document Status is Complete or Closed
+	 *	@return true if CO, CL or RE
+	 */
+	public boolean isComplete()
+	{
+		String ds = getDocStatus();
+		return DOCSTATUS_Completed.equals(ds)
+			|| DOCSTATUS_Closed.equals(ds)
+			|| DOCSTATUS_Reversed.equals(ds);
+	}	//	isComplete
 
 }	//	MDepositBatch

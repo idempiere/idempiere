@@ -90,4 +90,8 @@ public class MToolBarButton extends X_AD_ToolBarButton {
 		
 		return buttons;
 	}
+	
+	public boolean isSearchQueryComponent() {
+		return "b01e8ec6-1a3c-4f94-928b-4582e2c33f81".equals(getAD_ToolBarButton_UU());
+	}
 }

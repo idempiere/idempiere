@@ -18,10 +18,12 @@ import java.util.Properties;
 
 import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MPreference;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Util;
 
 /**
  *
@@ -104,23 +106,31 @@ public final class UserPreference implements Serializable {
 	 */
 	public void savePreference() {
 		if (m_AD_User_ID >= 0) {
-			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "COALESCE(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
+			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "NVL(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
 			for (int i = 0; i < PROPERTIES.length; i++) {
 				String attribute = PROPERTIES[i];
 				String value = props.getProperty(attribute);
 
-				MPreference preference = query.setParameters(new Object[]{m_AD_User_ID, attribute}).firstOnly();
-				if (preference == null) {
-					preference = new MUserPreference(Env.getCtx(), 0, null);
-					preference.setAD_User_ID(m_AD_User_ID);
-					preference.setAttribute(attribute);
-				} else {
-					if (preference.getAD_Client_ID() > 0 || preference.getAD_Org_ID() > 0) {
-						preference = new MUserPreference(Env.getCtx(), preference.getAD_Preference_ID(), null);
+				if (!Util.isEmpty(value)) {
+					MPreference preference = query.setParameters(new Object[]{m_AD_User_ID, attribute}).firstOnly();
+					if (preference == null) {
+						preference = new MUserPreference(Env.getCtx(), 0, null);
+						preference.setAD_User_ID(m_AD_User_ID);
+						preference.setAttribute(attribute);
+					} else {
+						if (preference.getAD_Client_ID() > 0 || preference.getAD_Org_ID() > 0) {
+							preference = new MUserPreference(Env.getCtx(), preference.getAD_Preference_ID(), null);
+						}
+					}
+
+					try {
+						PO.setCrossTenantSafe();
+						preference.setValue(value);
+						preference.saveEx();
+					} finally {
+						PO.clearCrossTenantSafe();
 					}
 				}
-				preference.setValue(value);
-				preference.saveEx();
 			}
 		}
 	}
@@ -134,7 +144,7 @@ public final class UserPreference implements Serializable {
 			m_AD_User_ID = AD_User_ID;
 			props = new Properties();
 
-			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "COALESCE(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
+			Query query = new Query(Env.getCtx(), I_AD_Preference.Table_Name, "NVL(AD_User_ID,0) = ? AND Attribute = ? AND AD_Window_ID Is NULL AND AD_Process_ID IS NULL AND PreferenceFor = 'W'", null);
 
 			for (int i = 0; i < PROPERTIES.length; i++) {
 				String attribute = PROPERTIES[i];
@@ -144,7 +154,6 @@ public final class UserPreference implements Serializable {
 				if (preference != null && preference.getValue() != null) {
 					value = preference.getValue();
 				}
-
 				props.setProperty(attribute, value);
 			}
 		}

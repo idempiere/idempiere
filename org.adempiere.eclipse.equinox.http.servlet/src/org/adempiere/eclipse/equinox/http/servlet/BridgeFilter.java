@@ -19,9 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 
- * {@link BridgeServlet} which implements HTTP {@link Filter} to declare "BridgeServlet" as an HTTP Filter (see >=2.3 Servlet spec): 
+ * {@link BridgeServlet} which implements HTTP {@link Filter} to declare "BridgeServlet" as an HTTP Filter (see &gt;=2.3 Servlet spec): 
  * 
- *  <pre>
+ *  <pre>{@code
  *   <filter id="bridge">
  *     <filter-name>equinoxbridgeservlet</filter-name>
  *     <filter-class>org.eclipse.equinox.servletbridge.BridgeFilter</filter-class>
@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 		<filter-name>equinoxbridgeservlet</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
- *  </pre>
+ *  }</pre>
  *
  */
 public class BridgeFilter extends BridgeServlet implements Filter {

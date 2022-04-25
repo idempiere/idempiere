@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Tab
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 10
  */
 public interface I_AD_Tab 
 {
@@ -161,6 +161,15 @@ public interface I_AD_Tab
 	  */
 	public int getAD_Tab_ID();
 
+    /** Column name AD_Tab_UU */
+    public static final String COLUMNNAME_AD_Tab_UU = "AD_Tab_UU";
+
+	/** Set AD_Tab_UU	  */
+	public void setAD_Tab_UU (String AD_Tab_UU);
+
+	/** Get AD_Tab_UU	  */
+	public String getAD_Tab_UU();
+
     /** Column name AD_Table_ID */
     public static final String COLUMNNAME_AD_Table_ID = "AD_Table_ID";
 
@@ -176,14 +185,18 @@ public interface I_AD_Tab
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
 
-    /** Column name AD_Tab_UU */
-    public static final String COLUMNNAME_AD_Tab_UU = "AD_Tab_UU";
+    /** Column name AD_TabType */
+    public static final String COLUMNNAME_AD_TabType = "AD_TabType";
 
-	/** Set AD_Tab_UU	  */
-	public void setAD_Tab_UU (String AD_Tab_UU);
+	/** Set Tab Type.
+	  * Defines Tab Type
+	  */
+	public void setAD_TabType (String AD_TabType);
 
-	/** Get AD_Tab_UU	  */
-	public String getAD_Tab_UU();
+	/** Get Tab Type.
+	  * Defines Tab Type
+	  */
+	public String getAD_TabType();
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
@@ -350,6 +363,28 @@ public interface I_AD_Tab
 	  */
 	public boolean isAdvancedTab();
 
+    /** Column name IsAllowAdvancedLookup */
+    public static final String COLUMNNAME_IsAllowAdvancedLookup = "IsAllowAdvancedLookup";
+
+	/** Set Allow Advanced Lookup	  */
+	public void setIsAllowAdvancedLookup (boolean IsAllowAdvancedLookup);
+
+	/** Get Allow Advanced Lookup	  */
+	public boolean isAllowAdvancedLookup();
+
+    /** Column name IsHighVolume */
+    public static final String COLUMNNAME_IsHighVolume = "IsHighVolume";
+
+	/** Set High Volume.
+	  * Use Search instead of Pick list
+	  */
+	public void setIsHighVolume (String IsHighVolume);
+
+	/** Get High Volume.
+	  * Use Search instead of Pick list
+	  */
+	public String getIsHighVolume();
+
     /** Column name IsInfoTab */
     public static final String COLUMNNAME_IsInfoTab = "IsInfoTab";
 
@@ -375,6 +410,19 @@ public interface I_AD_Tab
 	  * The user can insert a new Record
 	  */
 	public boolean isInsertRecord();
+
+    /** Column name IsLookupOnlySelection */
+    public static final String COLUMNNAME_IsLookupOnlySelection = "IsLookupOnlySelection";
+
+	/** Set Lookup Only Selection Columns.
+	  * When defined to true Lookup panel will display only selection columns. Default to false.
+	  */
+	public void setIsLookupOnlySelection (boolean IsLookupOnlySelection);
+
+	/** Get Lookup Only Selection Columns.
+	  * When defined to true Lookup panel will display only selection columns. Default to false.
+	  */
+	public boolean isLookupOnlySelection();
 
     /** Column name IsReadOnly */
     public static final String COLUMNNAME_IsReadOnly = "IsReadOnly";

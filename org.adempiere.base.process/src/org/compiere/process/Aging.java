@@ -34,11 +34,12 @@ import org.compiere.util.TimeUtil;
  *	Based on RV_Aging.
  *  @author Jorg Janke
  *  @author victor.perez@e-evolution.com  FR 1933937  Is necessary a new Aging to Date
- *  @see http://sourceforge.net/tracker/index.php?func=detail&aid=1933937&group_id=176962&atid=879335 
+ *  @see https://sourceforge.net/p/adempiere/feature-requests/408/ 
  *  @author Carlos Ruiz - globalqss  BF 2655587  Multi-org not supported in Aging
- *  @see https://sourceforge.net/tracker2/?func=detail&aid=2655587&group_id=176962&atid=879332 
+ *  @see https://sourceforge.net/p/adempiere/bugs/1786/ 
  *  @version $Id: Aging.java,v 1.5 2006/10/07 00:58:44 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class Aging extends SvrProcess
 {
 	/** The date to calculate the days due from			*/
@@ -124,17 +125,19 @@ public class Aging extends SvrProcess
 		}
 		else
 		{
-			String s = ",oi.C_Currency_ID," + p_ConvertCurrencyTo_ID + ",oi.DateAcct,oi.C_ConversionType_ID,oi.AD_Client_ID,oi.AD_Org_ID)";
-			sql.append("currencyConvert(oi.GrandTotal").append(s);		//	11
+			String s = "," + p_ConvertCurrencyTo_ID;
+			sql.append("currencyConvertInvoice(oi.C_Invoice_ID").append(s).append(")");		//	11
 			if (!p_DateAcct)
 			{
-				sql.append(", currencyConvert(oi.PaidAmt").append(s)  // 12
-				.append(", currencyConvert(oi.OpenAmt").append(s);  // 13
+				sql.append(", currencyConvertInvoice(oi.C_Invoice_ID").append(s)  // 12
+				.append(",oi.PaidAmt), currencyConvertInvoice(oi.C_Invoice_ID").append(s).append(",oi.OpenAmt)");  // 13
 			}
 			else
 			{
-				sql.append(", currencyConvert(invoicePaidToDate(oi.C_Invoice_ID, oi.C_Currency_ID, 1,"+dateacct+")").append(s) // 12
-				.append(", currencyConvert(invoiceOpenToDate(oi.C_Invoice_ID,oi.C_InvoicePaySchedule_ID,"+dateacct+")").append(s);  // 13
+				sql.append(", currencyConvertInvoice(oi.C_Invoice_ID").append(s) // 12
+				.append(",invoicePaidToDate(oi.C_Invoice_ID, oi.C_Currency_ID, 1,"+dateacct+")), "
+						+ "currencyConvertInvoice(oi.C_Invoice_ID").append(s)
+				.append(",invoiceOpenToDate(oi.C_Invoice_ID,oi.C_InvoicePaySchedule_ID,"+dateacct+"))");  // 13
 			}
 		}
 		sql.append(",oi.C_Activity_ID,oi.C_Campaign_ID,oi.C_Project_ID,oi.AD_Org_ID ");	//	14..17
@@ -195,15 +198,12 @@ public class Aging extends SvrProcess
 				int C_Currency_ID = rs.getInt(5);
 				boolean IsSOTrx = "Y".equals(rs.getString(6));
 				//
-				//Timestamp DateInvoiced = rs.getTimestamp(7);
-				//int NetDays = rs.getInt(8);
 				Timestamp DueDate = rs.getTimestamp(9);
 				//	Days Due
 				int DaysDue = rs.getInt(10)		//	based on today
 					+ m_statementOffset;
 				//
 				BigDecimal GrandTotal = rs.getBigDecimal(11);
-				//BigDecimal PaidAmt = rs.getBigDecimal(12);
 				BigDecimal OpenAmt = rs.getBigDecimal(13);
 				//
 				int C_Activity_ID = p_IsListInvoices ? rs.getInt(14) : 0;

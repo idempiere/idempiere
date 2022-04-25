@@ -24,19 +24,55 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_BankAccount_Processor
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_BankAccount_Processor")
 public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Processor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BankAccount_Processor (Properties ctx, int C_BankAccount_Processor_ID, String trxName)
     {
       super (ctx, C_BankAccount_Processor_ID, trxName);
+      /** if (C_BankAccount_Processor_ID == 0)
+        {
+			setAcceptAMEX (false);
+// N
+			setAcceptATM (false);
+// N
+			setAcceptCheck (false);
+// N
+			setAcceptCorporate (false);
+// N
+			setAcceptDiners (false);
+// N
+			setAcceptDirectDebit (false);
+// N
+			setAcceptDirectDeposit (false);
+// N
+			setAcceptDiscover (false);
+// N
+			setAcceptMC (false);
+// N
+			setAcceptVisa (false);
+// N
+			setC_BankAccount_ID (0);
+			setC_PaymentProcessor_ID (0);
+			setPassword (null);
+			setRequireVV (false);
+// N
+			setUserID (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BankAccount_Processor (Properties ctx, int C_BankAccount_Processor_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BankAccount_Processor_ID, trxName, virtualColumns);
       /** if (C_BankAccount_Processor_ID == 0)
         {
 			setAcceptAMEX (false);
@@ -91,15 +127,14 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BankAccount_Processor[")
+      StringBuilder sb = new StringBuilder ("X_C_BankAccount_Processor[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set Accept AMEX.
-		@param AcceptAMEX 
-		Accept American Express Card
-	  */
+		@param AcceptAMEX Accept American Express Card
+	*/
 	public void setAcceptAMEX (boolean AcceptAMEX)
 	{
 		set_Value (COLUMNNAME_AcceptAMEX, Boolean.valueOf(AcceptAMEX));
@@ -108,7 +143,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Accept AMEX.
 		@return Accept American Express Card
 	  */
-	public boolean isAcceptAMEX () 
+	public boolean isAcceptAMEX()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptAMEX);
 		if (oo != null) 
@@ -121,9 +156,8 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept ATM.
-		@param AcceptATM 
-		Accept Bank ATM Card
-	  */
+		@param AcceptATM Accept Bank ATM Card
+	*/
 	public void setAcceptATM (boolean AcceptATM)
 	{
 		set_Value (COLUMNNAME_AcceptATM, Boolean.valueOf(AcceptATM));
@@ -132,7 +166,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Accept ATM.
 		@return Accept Bank ATM Card
 	  */
-	public boolean isAcceptATM () 
+	public boolean isAcceptATM()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptATM);
 		if (oo != null) 
@@ -145,9 +179,8 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Electronic Check.
-		@param AcceptCheck 
-		Accept ECheck (Electronic Checks)
-	  */
+		@param AcceptCheck Accept ECheck (Electronic Checks)
+	*/
 	public void setAcceptCheck (boolean AcceptCheck)
 	{
 		set_Value (COLUMNNAME_AcceptCheck, Boolean.valueOf(AcceptCheck));
@@ -156,7 +189,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Accept Electronic Check.
 		@return Accept ECheck (Electronic Checks)
 	  */
-	public boolean isAcceptCheck () 
+	public boolean isAcceptCheck()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptCheck);
 		if (oo != null) 
@@ -169,9 +202,8 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Corporate.
-		@param AcceptCorporate 
-		Accept Corporate Purchase Cards
-	  */
+		@param AcceptCorporate Accept Corporate Purchase Cards
+	*/
 	public void setAcceptCorporate (boolean AcceptCorporate)
 	{
 		set_Value (COLUMNNAME_AcceptCorporate, Boolean.valueOf(AcceptCorporate));
@@ -180,7 +212,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Accept Corporate.
 		@return Accept Corporate Purchase Cards
 	  */
-	public boolean isAcceptCorporate () 
+	public boolean isAcceptCorporate()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptCorporate);
 		if (oo != null) 
@@ -193,18 +225,17 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Diners.
-		@param AcceptDiners 
-		Accept Diner's Club
-	  */
+		@param AcceptDiners Accept Diner&#039;s Club
+	*/
 	public void setAcceptDiners (boolean AcceptDiners)
 	{
 		set_Value (COLUMNNAME_AcceptDiners, Boolean.valueOf(AcceptDiners));
 	}
 
 	/** Get Accept Diners.
-		@return Accept Diner's Club
+		@return Accept Diner&#039;s Club
 	  */
-	public boolean isAcceptDiners () 
+	public boolean isAcceptDiners()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptDiners);
 		if (oo != null) 
@@ -217,9 +248,8 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Direct Debit.
-		@param AcceptDirectDebit 
-		Accept Direct Debits (vendor initiated)
-	  */
+		@param AcceptDirectDebit Accept Direct Debits (vendor initiated)
+	*/
 	public void setAcceptDirectDebit (boolean AcceptDirectDebit)
 	{
 		set_Value (COLUMNNAME_AcceptDirectDebit, Boolean.valueOf(AcceptDirectDebit));
@@ -228,7 +258,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Accept Direct Debit.
 		@return Accept Direct Debits (vendor initiated)
 	  */
-	public boolean isAcceptDirectDebit () 
+	public boolean isAcceptDirectDebit()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptDirectDebit);
 		if (oo != null) 
@@ -241,9 +271,8 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Direct Deposit.
-		@param AcceptDirectDeposit 
-		Accept Direct Deposit (payee initiated)
-	  */
+		@param AcceptDirectDeposit Accept Direct Deposit (payee initiated)
+	*/
 	public void setAcceptDirectDeposit (boolean AcceptDirectDeposit)
 	{
 		set_Value (COLUMNNAME_AcceptDirectDeposit, Boolean.valueOf(AcceptDirectDeposit));
@@ -252,7 +281,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Accept Direct Deposit.
 		@return Accept Direct Deposit (payee initiated)
 	  */
-	public boolean isAcceptDirectDeposit () 
+	public boolean isAcceptDirectDeposit()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptDirectDeposit);
 		if (oo != null) 
@@ -265,9 +294,8 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Discover.
-		@param AcceptDiscover 
-		Accept Discover Card
-	  */
+		@param AcceptDiscover Accept Discover Card
+	*/
 	public void setAcceptDiscover (boolean AcceptDiscover)
 	{
 		set_Value (COLUMNNAME_AcceptDiscover, Boolean.valueOf(AcceptDiscover));
@@ -276,7 +304,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Accept Discover.
 		@return Accept Discover Card
 	  */
-	public boolean isAcceptDiscover () 
+	public boolean isAcceptDiscover()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptDiscover);
 		if (oo != null) 
@@ -289,9 +317,8 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept MasterCard.
-		@param AcceptMC 
-		Accept Master Card
-	  */
+		@param AcceptMC Accept Master Card
+	*/
 	public void setAcceptMC (boolean AcceptMC)
 	{
 		set_Value (COLUMNNAME_AcceptMC, Boolean.valueOf(AcceptMC));
@@ -300,7 +327,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Accept MasterCard.
 		@return Accept Master Card
 	  */
-	public boolean isAcceptMC () 
+	public boolean isAcceptMC()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptMC);
 		if (oo != null) 
@@ -313,9 +340,8 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Visa.
-		@param AcceptVisa 
-		Accept Visa Cards
-	  */
+		@param AcceptVisa Accept Visa Cards
+	*/
 	public void setAcceptVisa (boolean AcceptVisa)
 	{
 		set_Value (COLUMNNAME_AcceptVisa, Boolean.valueOf(AcceptVisa));
@@ -324,7 +350,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Accept Visa.
 		@return Accept Visa Cards
 	  */
-	public boolean isAcceptVisa () 
+	public boolean isAcceptVisa()
 	{
 		Object oo = get_Value(COLUMNNAME_AcceptVisa);
 		if (oo != null) 
@@ -337,26 +363,26 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
-			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Bank Account.
-		@param C_BankAccount_ID 
-		Account at the Bank
-	  */
+		@param C_BankAccount_ID Account at the Bank
+	*/
 	public void setC_BankAccount_ID (int C_BankAccount_ID)
 	{
-		if (C_BankAccount_ID < 1) 
+		if (C_BankAccount_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BankAccount_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
 	}
 
 	/** Get Bank Account.
 		@return Account at the Bank
 	  */
-	public int getC_BankAccount_ID () 
+	public int getC_BankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
 		if (ii == null)
@@ -365,7 +391,8 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set C_BankAccount_Processor_UU.
-		@param C_BankAccount_Processor_UU C_BankAccount_Processor_UU	  */
+		@param C_BankAccount_Processor_UU C_BankAccount_Processor_UU
+	*/
 	public void setC_BankAccount_Processor_UU (String C_BankAccount_Processor_UU)
 	{
 		set_Value (COLUMNNAME_C_BankAccount_Processor_UU, C_BankAccount_Processor_UU);
@@ -373,32 +400,32 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 
 	/** Get C_BankAccount_Processor_UU.
 		@return C_BankAccount_Processor_UU	  */
-	public String getC_BankAccount_Processor_UU () 
+	public String getC_BankAccount_Processor_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BankAccount_Processor_UU);
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -407,26 +434,26 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	public org.compiere.model.I_C_PaymentProcessor getC_PaymentProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_Name)
-			.getPO(getC_PaymentProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentProcessor)MTable.get(getCtx(), org.compiere.model.I_C_PaymentProcessor.Table_ID)
+			.getPO(getC_PaymentProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Payment Processor.
-		@param C_PaymentProcessor_ID 
-		Payment processor for electronic payments
-	  */
+		@param C_PaymentProcessor_ID Payment processor for electronic payments
+	*/
 	public void setC_PaymentProcessor_ID (int C_PaymentProcessor_ID)
 	{
-		if (C_PaymentProcessor_ID < 1) 
+		if (C_PaymentProcessor_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_PaymentProcessor_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_PaymentProcessor_ID, Integer.valueOf(C_PaymentProcessor_ID));
 	}
 
 	/** Get Payment Processor.
 		@return Payment processor for electronic payments
 	  */
-	public int getC_PaymentProcessor_ID () 
+	public int getC_PaymentProcessor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentProcessor_ID);
 		if (ii == null)
@@ -435,14 +462,15 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept AMEX.
-		@param IsPPAcceptAMEX Accept AMEX	  */
+		@param IsPPAcceptAMEX Accept AMEX
+	*/
 	public void setIsPPAcceptAMEX (boolean IsPPAcceptAMEX)
 	{
 		throw new IllegalArgumentException ("IsPPAcceptAMEX is virtual column");	}
 
 	/** Get Accept AMEX.
 		@return Accept AMEX	  */
-	public boolean isPPAcceptAMEX () 
+	public boolean isPPAcceptAMEX()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptAMEX);
 		if (oo != null) 
@@ -455,14 +483,15 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept ATM.
-		@param IsPPAcceptATM Accept ATM	  */
+		@param IsPPAcceptATM Accept ATM
+	*/
 	public void setIsPPAcceptATM (boolean IsPPAcceptATM)
 	{
 		throw new IllegalArgumentException ("IsPPAcceptATM is virtual column");	}
 
 	/** Get Accept ATM.
 		@return Accept ATM	  */
-	public boolean isPPAcceptATM () 
+	public boolean isPPAcceptATM()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptATM);
 		if (oo != null) 
@@ -475,14 +504,15 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Check.
-		@param IsPPAcceptCheck Accept Check	  */
+		@param IsPPAcceptCheck Accept Check
+	*/
 	public void setIsPPAcceptCheck (boolean IsPPAcceptCheck)
 	{
 		throw new IllegalArgumentException ("IsPPAcceptCheck is virtual column");	}
 
 	/** Get Accept Check.
 		@return Accept Check	  */
-	public boolean isPPAcceptCheck () 
+	public boolean isPPAcceptCheck()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptCheck);
 		if (oo != null) 
@@ -495,14 +525,15 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Corporate.
-		@param IsPPAcceptCorporate Accept Corporate	  */
+		@param IsPPAcceptCorporate Accept Corporate
+	*/
 	public void setIsPPAcceptCorporate (boolean IsPPAcceptCorporate)
 	{
 		throw new IllegalArgumentException ("IsPPAcceptCorporate is virtual column");	}
 
 	/** Get Accept Corporate.
 		@return Accept Corporate	  */
-	public boolean isPPAcceptCorporate () 
+	public boolean isPPAcceptCorporate()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptCorporate);
 		if (oo != null) 
@@ -515,14 +546,15 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Diners.
-		@param IsPPAcceptDiners Accept Diners	  */
+		@param IsPPAcceptDiners Accept Diners
+	*/
 	public void setIsPPAcceptDiners (boolean IsPPAcceptDiners)
 	{
 		throw new IllegalArgumentException ("IsPPAcceptDiners is virtual column");	}
 
 	/** Get Accept Diners.
 		@return Accept Diners	  */
-	public boolean isPPAcceptDiners () 
+	public boolean isPPAcceptDiners()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptDiners);
 		if (oo != null) 
@@ -535,14 +567,15 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Direct Debit.
-		@param IsPPAcceptDirectDebit Accept Direct Debit	  */
+		@param IsPPAcceptDirectDebit Accept Direct Debit
+	*/
 	public void setIsPPAcceptDirectDebit (boolean IsPPAcceptDirectDebit)
 	{
 		throw new IllegalArgumentException ("IsPPAcceptDirectDebit is virtual column");	}
 
 	/** Get Accept Direct Debit.
 		@return Accept Direct Debit	  */
-	public boolean isPPAcceptDirectDebit () 
+	public boolean isPPAcceptDirectDebit()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptDirectDebit);
 		if (oo != null) 
@@ -555,14 +588,15 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Direct Deposit.
-		@param IsPPAcceptDirectDeposit Accept Direct Deposit	  */
+		@param IsPPAcceptDirectDeposit Accept Direct Deposit
+	*/
 	public void setIsPPAcceptDirectDeposit (boolean IsPPAcceptDirectDeposit)
 	{
 		throw new IllegalArgumentException ("IsPPAcceptDirectDeposit is virtual column");	}
 
 	/** Get Accept Direct Deposit.
 		@return Accept Direct Deposit	  */
-	public boolean isPPAcceptDirectDeposit () 
+	public boolean isPPAcceptDirectDeposit()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptDirectDeposit);
 		if (oo != null) 
@@ -575,14 +609,15 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Discover.
-		@param IsPPAcceptDiscover Accept Discover	  */
+		@param IsPPAcceptDiscover Accept Discover
+	*/
 	public void setIsPPAcceptDiscover (boolean IsPPAcceptDiscover)
 	{
 		throw new IllegalArgumentException ("IsPPAcceptDiscover is virtual column");	}
 
 	/** Get Accept Discover.
 		@return Accept Discover	  */
-	public boolean isPPAcceptDiscover () 
+	public boolean isPPAcceptDiscover()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptDiscover);
 		if (oo != null) 
@@ -595,14 +630,15 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept MasterCard.
-		@param IsPPAcceptMC Accept MasterCard	  */
+		@param IsPPAcceptMC Accept MasterCard
+	*/
 	public void setIsPPAcceptMC (boolean IsPPAcceptMC)
 	{
 		throw new IllegalArgumentException ("IsPPAcceptMC is virtual column");	}
 
 	/** Get Accept MasterCard.
 		@return Accept MasterCard	  */
-	public boolean isPPAcceptMC () 
+	public boolean isPPAcceptMC()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptMC);
 		if (oo != null) 
@@ -615,14 +651,15 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Accept Visa.
-		@param IsPPAcceptVisa Accept Visa	  */
+		@param IsPPAcceptVisa Accept Visa
+	*/
 	public void setIsPPAcceptVisa (boolean IsPPAcceptVisa)
 	{
 		throw new IllegalArgumentException ("IsPPAcceptVisa is virtual column");	}
 
 	/** Get Accept Visa.
 		@return Accept Visa	  */
-	public boolean isPPAcceptVisa () 
+	public boolean isPPAcceptVisa()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPPAcceptVisa);
 		if (oo != null) 
@@ -635,9 +672,8 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Minimum Amt.
-		@param MinimumAmt 
-		Minimum Amount in Document Currency
-	  */
+		@param MinimumAmt Minimum Amount in Document Currency
+	*/
 	public void setMinimumAmt (BigDecimal MinimumAmt)
 	{
 		set_Value (COLUMNNAME_MinimumAmt, MinimumAmt);
@@ -646,7 +682,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Minimum Amt.
 		@return Minimum Amount in Document Currency
 	  */
-	public BigDecimal getMinimumAmt () 
+	public BigDecimal getMinimumAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MinimumAmt);
 		if (bd == null)
@@ -655,9 +691,8 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set Partner ID.
-		@param PartnerID 
-		Partner ID or Account for the Payment Processor
-	  */
+		@param PartnerID Partner ID or Account for the Payment Processor
+	*/
 	public void setPartnerID (String PartnerID)
 	{
 		set_Value (COLUMNNAME_PartnerID, PartnerID);
@@ -666,15 +701,14 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Partner ID.
 		@return Partner ID or Account for the Payment Processor
 	  */
-	public String getPartnerID () 
+	public String getPartnerID()
 	{
 		return (String)get_Value(COLUMNNAME_PartnerID);
 	}
 
 	/** Set Password.
-		@param Password 
-		Password of any length (case sensitive)
-	  */
+		@param Password Password of any length (case sensitive)
+	*/
 	public void setPassword (String Password)
 	{
 		set_Value (COLUMNNAME_Password, Password);
@@ -683,15 +717,14 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Password.
 		@return Password of any length (case sensitive)
 	  */
-	public String getPassword () 
+	public String getPassword()
 	{
 		return (String)get_Value(COLUMNNAME_Password);
 	}
 
 	/** Set Require CreditCard Verification Code.
-		@param RequireVV 
-		Require 3/4 digit Credit Verification Code
-	  */
+		@param RequireVV Require 3/4 digit Credit Verification Code
+	*/
 	public void setRequireVV (boolean RequireVV)
 	{
 		set_Value (COLUMNNAME_RequireVV, Boolean.valueOf(RequireVV));
@@ -700,7 +733,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Require CreditCard Verification Code.
 		@return Require 3/4 digit Credit Verification Code
 	  */
-	public boolean isRequireVV () 
+	public boolean isRequireVV()
 	{
 		Object oo = get_Value(COLUMNNAME_RequireVV);
 		if (oo != null) 
@@ -713,9 +746,8 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	}
 
 	/** Set User ID.
-		@param UserID 
-		User ID or account number
-	  */
+		@param UserID User ID or account number
+	*/
 	public void setUserID (String UserID)
 	{
 		set_Value (COLUMNNAME_UserID, UserID);
@@ -724,15 +756,14 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get User ID.
 		@return User ID or account number
 	  */
-	public String getUserID () 
+	public String getUserID()
 	{
 		return (String)get_Value(COLUMNNAME_UserID);
 	}
 
 	/** Set Vendor ID.
-		@param VendorID 
-		Vendor ID for the Payment Processor
-	  */
+		@param VendorID Vendor ID for the Payment Processor
+	*/
 	public void setVendorID (String VendorID)
 	{
 		set_Value (COLUMNNAME_VendorID, VendorID);
@@ -741,7 +772,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/** Get Vendor ID.
 		@return Vendor ID for the Payment Processor
 	  */
-	public String getVendorID () 
+	public String getVendorID()
 	{
 		return (String)get_Value(COLUMNNAME_VendorID);
 	}

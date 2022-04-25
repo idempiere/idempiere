@@ -48,10 +48,6 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 		super (ctx, C_RfQResponseLineQty_ID, trxName);
 		if (C_RfQResponseLineQty_ID == 0)
 		{
-		//	setC_RfQResponseLineQty_ID (0);		//	PK
-		//	setC_RfQLineQty_ID (0);
-		//	setC_RfQResponseLine_ID (0);
-			//
 			setPrice (Env.ZERO);
 			setDiscount(Env.ZERO);
 		}

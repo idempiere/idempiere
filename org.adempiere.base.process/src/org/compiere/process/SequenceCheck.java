@@ -22,10 +22,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.Adempiere;
 import org.compiere.model.MClient;
 import org.compiere.model.MSequence;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -37,6 +35,7 @@ import org.compiere.util.Trx;
  *  @author Jorg Janke
  *  @version $Id: SequenceCheck.java,v 1.3 2006/07/30 00:54:44 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class SequenceCheck extends SvrProcess
 {
 	/**	Static Logger	*/
@@ -100,13 +99,10 @@ public class SequenceCheck extends SvrProcess
 			+ "FROM AD_Table t "
 			+ "WHERE IsActive='Y' AND IsView='N'"
 			+ " AND NOT EXISTS (SELECT * FROM AD_Sequence s "
-			+ "WHERE UPPER(s.Name)=UPPER(t.TableName) AND s.IsTableID='Y')";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, trxName);
-			rs = pstmt.executeQuery();
+			+ "WHERE UPPER(s.Name)=UPPER(t.TableName) AND s.IsTableID='Y')";		
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, trxName);)
+		{			
+			ResultSet rs = pstmt.executeQuery();
 			while (rs.next())
 			{
 				String tableName = rs.getString(1);
@@ -127,11 +123,6 @@ public class SequenceCheck extends SvrProcess
 		{
 			s_log.log(Level.SEVERE, sql, e);
 			throw new AdempiereException(e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 		}
 		
 		//	Sync Table Name case
@@ -161,10 +152,9 @@ public class SequenceCheck extends SvrProcess
 			+ "WHERE t.IsActive='Y' AND t.IsView='N'"
 			+ " AND UPPER(s.Name)=UPPER(t.TableName) AND s.Name<>t.TableName";
 		//
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			rs = pstmt.executeQuery ();
+		try (PreparedStatement pstmt = DB.prepareStatement (sql, null);)
+		{			
+			ResultSet rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
 				String TableName = rs.getString(1);
@@ -177,11 +167,6 @@ public class SequenceCheck extends SvrProcess
 		{
 			s_log.log (Level.SEVERE, sql, e);
 			throw new AdempiereException(e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 		}
 	}	//	checkTableSequences
 	
@@ -278,21 +263,4 @@ public class SequenceCheck extends SvrProcess
 		
 	}	//	checkClientSequences
 	
-	//add main method, preparing for nightly build
-	public static void main(String[] args) 
-	{
-		Adempiere.startupEnvironment(false);
-		CLogMgt.setLevel(Level.FINE);
-		s_log.info("Sequence Check");
-		s_log.info("--------------");
-		ProcessInfo pi = new ProcessInfo("Sequence Check", 258);
-		pi.setAD_Client_ID(0);
-		pi.setAD_User_ID(100);
-		
-		SequenceCheck sc = new SequenceCheck();
-		sc.startProcess(Env.getCtx(), pi, null);
-		
-		StringBuilder msgout = new StringBuilder("Process=").append(pi.getTitle()).append(" Error=").append(pi.isError()).append(" Summary=").append(pi.getSummary());
-		System.out.println(msgout.toString());
-	}
 }	//	SequenceCheck

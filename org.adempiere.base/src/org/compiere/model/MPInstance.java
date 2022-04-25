@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.Service;
+import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -46,14 +47,14 @@ import org.osgi.service.event.Event;
  * 
  * @author Teo Sarca, www.arhipac.ro
  * 		<li>FR [ 2818478 ] Introduce MPInstance.createParameter helper method
- * 			https://sourceforge.net/tracker/?func=detail&aid=2818478&group_id=176962&atid=879335
+ * 			https://sourceforge.net/p/adempiere/feature-requests/756/
  */
 public class MPInstance extends X_AD_PInstance
 {
-    /**
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 558778359873793799L;
+	private static final long serialVersionUID = 3756494717528301224L;
 
 	public static final String ON_RUNNING_JOB_CHANGED_TOPIC = "onRunningJobChanged";
 
@@ -71,8 +72,6 @@ public class MPInstance extends X_AD_PInstance
 		//	New Process
 		if (AD_PInstance_ID == 0)
 		{
-		//	setAD_Process_ID (0);	//	parent
-		//	setRecord_ID (0);
 			setIsProcessing (false);
 		}
 	}	//	MPInstance
@@ -155,7 +154,7 @@ public class MPInstance extends X_AD_PInstance
 	/**
 	 * Validate that a set of process instance parameters are equal or not
 	 * to the current instance parameter
-	 * @param param array of parameters to compare
+	 * @param params array of parameters to compare
 	 * @return true if the process instance parameters are the same as the  array ones
 	 */
 	public boolean equalParameters(MPInstancePara[] params) {		
@@ -229,16 +228,29 @@ public class MPInstance extends X_AD_PInstance
 	 *	@param P_Number number
 	 *	@param P_Msg msg
 	 */
-	public void addLog (Timestamp P_Date, int P_ID, BigDecimal P_Number, String P_Msg)
+	public MPInstanceLog addLog (Timestamp P_Date, int P_ID, BigDecimal P_Number, String P_Msg)
 	{
-		MPInstanceLog logEntry = new MPInstanceLog (getAD_PInstance_ID(), m_log.size()+1,
-			P_Date, P_ID, P_Number, P_Msg);
-		m_log.add(logEntry);
-		//	save it to DB ?
-	//	log.saveEx();
+		return addLog(P_Date, P_ID, P_Number, P_Msg, 0, 0);
 	}	//	addLog
 
-	
+	/**
+	 * @param P_Date date
+	 * @param P_ID id
+	 * @param P_Number number
+	 * @param P_Msg msg
+	 * @param AD_Table_ID tableID
+	 * @param Record_ID recordID
+	 * @return
+	 */
+	public MPInstanceLog addLog (Timestamp P_Date, int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID)
+	{
+		MPInstanceLog logEntry = new MPInstanceLog (getAD_PInstance_ID(), m_log.size()+1,
+			P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID);
+		m_log.add(logEntry);
+		//	save it to DB ?
+		return logEntry;
+	}	//	addLog
+
 	/**
 	 * 	Set AD_Process_ID.
 	 * 	Check Role if process can be performed
@@ -286,7 +298,7 @@ public class MPInstance extends X_AD_PInstance
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MPInstance[")
+		StringBuilder sb = new StringBuilder ("MPInstance[")
 			.append (get_ID())
 			.append(",OK=").append(isOK());
 		String msg = getErrorMsg();
@@ -401,8 +413,14 @@ public class MPInstance extends X_AD_PInstance
 		return ip;
 	}
 	
+	
+	@Override
+	public I_AD_Process getAD_Process() throws RuntimeException {
+		return MProcess.get(getAD_Process_ID());
+	}
+
 	public static void publishChangedEvent(int AD_User_ID) {
-		IMessageService service = Service.locator().locate(IMessageService.class).getService();
+		IMessageService service = Core.getMessageService();
 		if (service != null) {
 			ITopic<Integer> topic = service.getTopic(ON_RUNNING_JOB_CHANGED_TOPIC);
 			topic.publish(AD_User_ID);
@@ -436,13 +454,15 @@ public class MPInstance extends X_AD_PInstance
 		// unnamed instances
 		int lastRunCount = MSysConfig.getIntValue(MSysConfig.LASTRUN_RECORD_COUNT, 5, Env.getAD_Client_ID(ctx));
 		if (lastRunCount > 0) {
+			int maxLoopCount = 10 * lastRunCount;
 			// using JDBC instead of Query for performance reasons, AD_PInstance can be huge
 			String sql = "SELECT * FROM AD_PInstance "
 					+ " WHERE AD_Process_ID=? AND AD_User_ID=? AND IsActive='Y' AND AD_Client_ID=? AND Name IS NULL" 
 					+ " ORDER BY Created DESC";
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
-			int cnt = 0;
+			int runCount = 0;
+			int loopCount = 0;
 			try {
 				pstmt = DB.prepareStatement(sql, null);
 				pstmt.setFetchSize(lastRunCount);
@@ -451,16 +471,19 @@ public class MPInstance extends X_AD_PInstance
 				pstmt.setInt(3, Env.getAD_Client_ID(ctx));
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
+					loopCount++;
 					MPInstance unnamedInstance = new MPInstance(ctx, rs, null);
 					String paramsStr = unnamedInstance.getParamsStr();
 					if (! paramsStrAdded.contains(paramsStr)) {
 						unnamedInstance.setName(Msg.getMsg(ctx, "LastRun") + " " + unnamedInstance.getCreated());
 						list.add(unnamedInstance);
 						paramsStrAdded.add(paramsStr);
-						cnt++;
-						if (cnt == lastRunCount)
+						runCount++;
+						if (runCount == lastRunCount)
 							break;
 					}
+					if (loopCount == maxLoopCount)
+						break;
 				}
 			} catch (Exception e)
 			{
@@ -499,4 +522,93 @@ public class MPInstance extends X_AD_PInstance
 		return cksum.toString();
 	}
 
+	/**
+	 * 
+	 * @param AD_PInstance_ID
+	 * @return {@link PInstanceInfo}
+	 * @throws SQLException
+	 */
+	public static PInstanceInfo getPInstanceInfo(int AD_PInstance_ID) throws SQLException {
+		PInstanceInfo info = null;
+		
+		//	Get Process Information: Name, Procedure Name, ClassName, IsReport, IsDirectPrint
+		String sql = "SELECT p.Name, p.ProcedureName,p.ClassName, p.AD_Process_ID,"		//	1..4
+			+ " p.isReport,p.IsDirectPrint,p.AD_ReportView_ID,p.AD_Workflow_ID,"		//	5..8
+			+ " CASE WHEN COALESCE(p.Statistic_Count,0)=0 THEN 0 ELSE p.Statistic_Seconds/p.Statistic_Count END," 	//	9
+			+ " p.JasperReport, p.AD_Process_UU "  	//	10..11
+			+ "FROM AD_Process p"
+			+ " INNER JOIN AD_PInstance i ON (p.AD_Process_ID=i.AD_Process_ID) "
+			+ "WHERE p.IsActive='Y'"
+			+ " AND i.AD_PInstance_ID=?";
+		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Process"))
+			sql = "SELECT t.Name, p.ProcedureName,p.ClassName, p.AD_Process_ID,"		//	1..4
+				+ " p.isReport, p.IsDirectPrint,p.AD_ReportView_ID,p.AD_Workflow_ID,"	//	5..8
+				+ " CASE WHEN COALESCE(p.Statistic_Count,0)=0 THEN 0 ELSE p.Statistic_Seconds/p.Statistic_Count END," 	//	9
+				+ " p.JasperReport, p.AD_Process_UU " 	//	10..11
+				+ "FROM AD_Process p"
+				+ " INNER JOIN AD_PInstance i ON (p.AD_Process_ID=i.AD_Process_ID) "
+				+ " INNER JOIN AD_Process_Trl t ON (p.AD_Process_ID=t.AD_Process_ID"
+					+ " AND t.AD_Language='" + Env.getAD_Language(Env.getCtx()) + "') "
+				+ "WHERE p.IsActive='Y'"
+				+ " AND i.AD_PInstance_ID=?";
+		//
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{			
+			pstmt = DB.prepareStatement(sql, 
+				ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
+			pstmt.setInt(1, AD_PInstance_ID);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				info = new PInstanceInfo();
+				info.name = rs.getString(1);
+				info.procedureName = rs.getString(2);
+				info.className = rs.getString(3);
+				info.AD_Process_ID = rs.getInt(4);
+				info.AD_Process_UU = rs.getString(11);
+				//	Report
+				if ("Y".equals(rs.getString(5)))
+				{
+					info.isReport = true;
+				}
+				if ("Y".equals(rs.getString(6)))
+				{
+					info.isDirectPrint = true;
+				}
+				info.AD_ReportView_ID = rs.getInt(7);
+				info.AD_Workflow_ID = rs.getInt(8);
+				//
+				info.estimate = rs.getInt(9);
+				info.jasperReport = rs.getString(10);
+			}
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+		}
+		
+		return info;
+	}
+	
+	/**
+	 * Record class with fields from AD_PInstance+AD_Process
+	 * @author hengsin
+	 *
+	 */
+	public static class PInstanceInfo {
+		public int AD_Process_ID;
+		public String AD_Process_UU;
+		public int AD_ReportView_ID = 0;
+		public int	AD_Workflow_ID = 0;	
+		//translated name for current env context
+		public String name;
+		public String className;		
+		public String procedureName = "";
+		public String jasperReport = "";
+		public boolean isReport = false;
+		public boolean isDirectPrint = false;
+		public int estimate;
+	}
 }	//	MPInstance

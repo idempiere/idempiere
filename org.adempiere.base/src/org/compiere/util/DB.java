@@ -33,7 +33,6 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -84,14 +83,14 @@ import org.compiere.process.ProcessInfoParameter;
  *		<li>FR [ 2448461 ] Introduce DB.getSQLValue*Ex methods
  *		<li>FR [ 2781053 ] Introduce DB.getValueNamePairs
  *		<li>FR [ 2818480 ] Introduce DB.createT_Selection helper method
- *			https://sourceforge.net/tracker/?func=detail&aid=2818480&group_id=176962&atid=879335
+ *			https://sourceforge.net/p/adempiere/feature-requests/757/
  * @author Teo Sarca, teo.sarca@gmail.com
  * 		<li>BF [ 2873324 ] DB.TO_NUMBER should be a static method
- * 			https://sourceforge.net/tracker/?func=detail&aid=2873324&group_id=176962&atid=879332
+ * 			https://sourceforge.net/p/adempiere/bugs/2160/
  * 		<li>FR [ 2873891 ] DB.getKeyNamePairs should use trxName
- * 			https://sourceforge.net/tracker/?func=detail&aid=2873891&group_id=176962&atid=879335
+ * 			https://sourceforge.net/p/adempiere/feature-requests/847/
  *  @author Paul Bowden, phib BF 2900767 Zoom to child tab - inefficient queries
- *  @see https://sourceforge.net/tracker/?func=detail&aid=2900767&group_id=176962&atid=879332
+ *  @see https://sourceforge.net/p/adempiere/bugs/2222/
  */
 public final class DB
 {
@@ -219,11 +218,15 @@ public final class DB
 		String mailUser = env.getProperty("ADEMPIERE_MAIL_USER");
 		if (mailUser == null || mailUser.length() == 0)
 			return;
-		String mailPassword = env.getProperty("ADEMPIERE_MAIL_PASSWORD");
+		String mailPassword;
+		if (!env.containsKey("ADEMPIERE_MAIL_PASSWORD") && MSystem.isSecureProps())
+			mailPassword = Ini.getVar("ADEMPIERE_MAIL_PASSWORD");
+		else
+			mailPassword = env.getProperty("ADEMPIERE_MAIL_PASSWORD");
 	//	if (mailPassword == null || mailPassword.length() == 0)
 	//		return;
 		//
-		StringBuffer sql = new StringBuffer("UPDATE AD_Client SET")
+		StringBuilder sql = new StringBuilder("UPDATE AD_Client SET")
 			.append(" SMTPHost=").append(DB.TO_STRING(server))
 			.append(", RequestEMail=").append(DB.TO_STRING(adminEMail))
 			.append(", RequestUser=").append(DB.TO_STRING(mailUser))
@@ -232,7 +235,7 @@ public final class DB
 		int no = DB.executeUpdate(sql.toString(), null);
 		if (log.isLoggable(Level.FINE)) log.fine("Client #"+no);
 		//
-		sql = new StringBuffer("UPDATE AD_User SET ")
+		sql = new StringBuilder("UPDATE AD_User SET ")
 			.append(" EMail=").append(DB.TO_STRING(adminEMail))
 			.append(", EMailUser=").append(DB.TO_STRING(mailUser))
 			.append(", EMailUserPW=").append(DB.TO_STRING(mailPassword))
@@ -240,13 +243,11 @@ public final class DB
 		no = DB.executeUpdate(sql.toString(), null);
 		if (log.isLoggable(Level.FINE)) log.fine("User #"+no);
 		//
-		try
+		try (FileOutputStream out = new FileOutputStream(envFile))
 		{
 			env.setProperty("ADEMPIERE_MAIL_UPDATED", "Y");
-			FileOutputStream out = new FileOutputStream(envFile);
 			env.store(out, "");
 			out.flush();
-			out.close();
 		}
 		catch (Exception e)
 		{
@@ -339,11 +340,6 @@ public final class DB
 
 		//direct connection
 		boolean success = false;
-		CLogErrorBuffer eb = CLogErrorBuffer.get(false);
-		if (eb != null && eb.isIssueError())
-			eb.setIssueError(false);
-		else
-			eb = null;	//	don't reset
 		try
 		{
             Connection conn = getConnectionRW(createNew);   //  try to get a connection
@@ -358,8 +354,6 @@ public final class DB
 		{
 			success = false;
 		}
-		if (eb != null)
-			eb.setIssueError(true);
 		return success;
 	}   //  isConnected
 
@@ -400,6 +394,18 @@ public final class DB
 	{
         return createConnection(true, true, Connection.TRANSACTION_READ_COMMITTED);     //  see below
 	}	//	getConnectionRO
+
+	/**
+	 *	Return a replica connection if possible, otherwise read committed, read/only from pool.
+	 *  @return Connection (r/o)
+	 */
+	public static Connection getReportingConnectionRO ()
+	{
+		Connection conn = DBReadReplica.getConnectionRO();
+		if (conn == null)
+			conn = getConnectionRO();
+        return conn;
+	}	//	getReportingConnectionRO
 
 	/**
 	 *	Create new Connection.
@@ -689,7 +695,7 @@ public final class DB
 
 	/**************************************************************************
 	 *	Prepare Forward Read Only Call
-	 *  @param SQL sql
+	 *  @param sql SQL
 	 *  @return Callable Statement
 	 */
 	public static CallableStatement prepareCall(String sql)
@@ -700,7 +706,7 @@ public final class DB
 	/**************************************************************************
 	 *	Prepare Call
 	 *  @param SQL sql
-	 *  @param readOnly
+	 *  @param resultSetConcurrency
 	 *  @param trxName
 	 *  @return Callable Statement
 	 */
@@ -1246,7 +1252,6 @@ public final class DB
 	 * 	When a Rowset is closed, it also closes the underlying connection.
 	 * 	If the created RowSet is transfered by RMI, closing it makes no difference
 	 *	@param sql sql
-	 *	@param local local RowSet (own connection)
 	 *	@return row set or null
 	 */
 	public static RowSet getRowSet (String sql)
@@ -1743,7 +1748,7 @@ public final class DB
         if (noIsSOTrxColumn && TableName.endsWith("Line")) {
         	noIsSOTrxColumn = false;
         	String hdr = TableName.substring(0, TableName.indexOf("Line"));
-        	if (MTable.get(Env.getCtx(), hdr).getColumn("IsSOTrx") == null) {
+        	if (MTable.get(Env.getCtx(), hdr) == null || MTable.get(Env.getCtx(), hdr).getColumn("IsSOTrx") == null) {
         		noIsSOTrxColumn = true;
         	} else {
         		// use IN instead of EXISTS as the subquery should be highly selective
@@ -1811,33 +1816,8 @@ public final class DB
 	 * 	@param trxName optional Transaction Name
 	 *  @return next no
 	 */
-	@SuppressWarnings("deprecation")
 	public static int getNextID (int AD_Client_ID, String TableName, String trxName)
 	{
-		boolean SYSTEM_NATIVE_SEQUENCE = MSysConfig.getBooleanValue(MSysConfig.SYSTEM_NATIVE_SEQUENCE,false);
-		//	Check AdempiereSys
-		boolean adempiereSys = false;
-		if (Ini.isClient()) 
-		{
-			adempiereSys = Ini.isPropertyBool(Ini.P_ADEMPIERESYS);
-		} 
-		else
-		{
-			String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
-			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
-		}
-
-		if(SYSTEM_NATIVE_SEQUENCE && !adempiereSys)
-		{
-			int m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ", trxName);
-			if (m_sequence_id == -1) {
-				// try to create the sequence and try again
-				MSequence.createTableSequence(Env.getCtx(), TableName, trxName, true);
-				m_sequence_id = CConnection.get().getDatabase().getNextID(TableName+"_SQ", trxName);
-			}
-			return m_sequence_id;
-		}
-
 		return MSequence.getNextID (AD_Client_ID, TableName, trxName); // it is ok to call deprecated method here
 	}	//	getNextID
 
@@ -1869,7 +1849,7 @@ public final class DB
 	 *	@param C_DocType_ID document type
 	 * 	@param trxName optional Transaction Name
 	 *  @param definite asking for a definitive or temporary sequence
-	 *  @param PO
+	 *  @param po PO
 	 *	@return document no or null
 	 */
 	public static String getDocumentNo(int C_DocType_ID, String trxName, boolean definite, PO po)
@@ -2115,15 +2095,6 @@ public final class DB
         } catch (SQLException e) {
             ;
         }
-    	if (readReplicaStatements.contains(st)) {
-			try {
-				DBReadReplica.closeReadReplicaStatement(st);
-			} catch (Exception e) {
-				;
-			} finally {
-				readReplicaStatements.remove(st);
-			}
-    	}
     }
 
     /**
@@ -2342,7 +2313,7 @@ public final class DB
 	 * saveKeys is map with key is rowID, value is list value of all viewID
 	 * viewIDIndex is index of viewID need save.
 	 * @param AD_PInstance_ID
-	 * @param selection
+	 * @param saveKeys
 	 * @param trxName
 	 */
 	public static void createT_SelectionNew (int AD_PInstance_ID, Collection<KeyNamePair> saveKeys, String trxName)
@@ -2534,9 +2505,6 @@ public final class DB
     	return rowsArray;
 	}
 
-	/**	Read Replica Statements List	*/
-	private static final List<PreparedStatement> readReplicaStatements = Collections.synchronizedList(new ArrayList<PreparedStatement>());
-
 	/**
 	 *	Prepare Read Replica Statement
 	 *  @param sql sql statement
@@ -2568,9 +2536,8 @@ public final class DB
 			&& resultSetType == ResultSet.TYPE_FORWARD_ONLY
 			&& resultSetConcurrency == ResultSet.CONCUR_READ_ONLY) {
 			// this is a candidate for a read replica connection (read-only, forward-only, no-trx), try to obtain one, otherwise fallback to normal
-			PreparedStatement stmt = DBReadReplica.prepareNormalReadReplicaStatement(sql, resultSetType, resultSetConcurrency, trxName);
+			CPreparedStatement stmt = ProxyFactory.newReadReplicaPreparedStatement(resultSetType, resultSetConcurrency, sql);
 			if (stmt != null) {
-				readReplicaStatements.add(stmt);
 				return stmt;
 			}
 		}
@@ -2631,4 +2598,21 @@ public final class DB
 	{
 		return getDatabase().intersectClauseForCSV(columnName, csv);
 	}
+	
+	/**
+	 * 
+	 * @param sql
+	 * @return true if it is select sql statement
+	 */
+	public static boolean isSelectStatement(String sql) {
+		String removeComments = "/\\*(?:.|[\\n\\r])*?\\*/";
+		String removeQuotedStrings = "'(?:.|[\\n\\r])*?'";
+		String removeLeadingSpaces = "^\\s+";
+		String cleanSql = sql.toLowerCase().replaceAll(removeComments, "").replaceAll(removeQuotedStrings, "").replaceFirst(removeLeadingSpaces, "");
+		if(cleanSql.matches("^select\\s.*$") && !cleanSql.contains(";"))
+			return true;
+		else
+			return false;
+	}
+
 }	//	DB

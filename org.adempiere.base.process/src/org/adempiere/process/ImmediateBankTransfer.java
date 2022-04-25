@@ -58,6 +58,7 @@ import org.compiere.util.Env;
  *	@author Alejandro Falcone
  *	
  **/
+@org.adempiere.base.annotation.Process
 public class ImmediateBankTransfer extends SvrProcess
 {
 	 /** DocAction          */
@@ -139,7 +140,7 @@ public class ImmediateBankTransfer extends SvrProcess
 
 		//	Login Date
 		if (p_StatementDate == null)
-			p_StatementDate = Env.getContextAsDate(getCtx(), "#Date");
+			p_StatementDate = Env.getContextAsDate(getCtx(), Env.DATE);
 		if (p_StatementDate == null)
 			p_StatementDate = new Timestamp(System.currentTimeMillis());			
 

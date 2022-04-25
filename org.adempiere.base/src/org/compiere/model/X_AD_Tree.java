@@ -23,19 +23,41 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Tree
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Tree")
 public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Tree (Properties ctx, int AD_Tree_ID, String trxName)
     {
       super (ctx, AD_Tree_ID, trxName);
+      /** if (AD_Tree_ID == 0)
+        {
+			setAD_Tree_ID (0);
+			setIsAllNodes (false);
+			setIsDefault (false);
+// N
+			setIsLoadAllNodesImmediately (true);
+// Y
+			setIsTreeDrivenByValue (false);
+// N
+			setIsValueDisplayed (false);
+// N
+			setName (null);
+			setTreeType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Tree (Properties ctx, int AD_Tree_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Tree_ID, trxName, virtualColumns);
       /** if (AD_Tree_ID == 0)
         {
 			setAD_Tree_ID (0);
@@ -76,32 +98,32 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Tree[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_Tree[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -110,21 +132,20 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	}
 
 	/** Set Tree.
-		@param AD_Tree_ID 
-		Identifies a Tree
-	  */
+		@param AD_Tree_ID Identifies a Tree
+	*/
 	public void setAD_Tree_ID (int AD_Tree_ID)
 	{
-		if (AD_Tree_ID < 1) 
+		if (AD_Tree_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Tree_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Tree_ID, Integer.valueOf(AD_Tree_ID));
 	}
 
 	/** Get Tree.
 		@return Identifies a Tree
 	  */
-	public int getAD_Tree_ID () 
+	public int getAD_Tree_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_ID);
 		if (ii == null)
@@ -133,7 +154,8 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	}
 
 	/** Set AD_Tree_UU.
-		@param AD_Tree_UU AD_Tree_UU	  */
+		@param AD_Tree_UU AD_Tree_UU
+	*/
 	public void setAD_Tree_UU (String AD_Tree_UU)
 	{
 		set_Value (COLUMNNAME_AD_Tree_UU, AD_Tree_UU);
@@ -141,15 +163,14 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 
 	/** Get AD_Tree_UU.
 		@return AD_Tree_UU	  */
-	public String getAD_Tree_UU () 
+	public String getAD_Tree_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Tree_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -158,15 +179,14 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set All Nodes.
-		@param IsAllNodes 
-		All Nodes are included (Complete Tree)
-	  */
+		@param IsAllNodes All Nodes are included (Complete Tree)
+	*/
 	public void setIsAllNodes (boolean IsAllNodes)
 	{
 		set_Value (COLUMNNAME_IsAllNodes, Boolean.valueOf(IsAllNodes));
@@ -175,7 +195,7 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	/** Get All Nodes.
 		@return All Nodes are included (Complete Tree)
 	  */
-	public boolean isAllNodes () 
+	public boolean isAllNodes()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllNodes);
 		if (oo != null) 
@@ -188,9 +208,8 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -199,7 +218,7 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -212,9 +231,8 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	}
 
 	/** Set Loads directly all nodes.
-		@param IsLoadAllNodesImmediately 
-		If checked, all nodes are loaded before tree is displayed
-	  */
+		@param IsLoadAllNodesImmediately If checked, all nodes are loaded before tree is displayed
+	*/
 	public void setIsLoadAllNodesImmediately (boolean IsLoadAllNodesImmediately)
 	{
 		set_Value (COLUMNNAME_IsLoadAllNodesImmediately, Boolean.valueOf(IsLoadAllNodesImmediately));
@@ -223,7 +241,7 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	/** Get Loads directly all nodes.
 		@return If checked, all nodes are loaded before tree is displayed
 	  */
-	public boolean isLoadAllNodesImmediately () 
+	public boolean isLoadAllNodesImmediately()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLoadAllNodesImmediately);
 		if (oo != null) 
@@ -236,7 +254,8 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	}
 
 	/** Set Driven by Search Key.
-		@param IsTreeDrivenByValue Driven by Search Key	  */
+		@param IsTreeDrivenByValue Driven by Search Key
+	*/
 	public void setIsTreeDrivenByValue (boolean IsTreeDrivenByValue)
 	{
 		set_Value (COLUMNNAME_IsTreeDrivenByValue, Boolean.valueOf(IsTreeDrivenByValue));
@@ -244,7 +263,7 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 
 	/** Get Driven by Search Key.
 		@return Driven by Search Key	  */
-	public boolean isTreeDrivenByValue () 
+	public boolean isTreeDrivenByValue()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTreeDrivenByValue);
 		if (oo != null) 
@@ -257,9 +276,8 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	}
 
 	/** Set Display Value.
-		@param IsValueDisplayed 
-		Displays Value column with the Display column
-	  */
+		@param IsValueDisplayed Displays Value column with the Display column
+	*/
 	public void setIsValueDisplayed (boolean IsValueDisplayed)
 	{
 		set_Value (COLUMNNAME_IsValueDisplayed, Boolean.valueOf(IsValueDisplayed));
@@ -268,7 +286,7 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	/** Get Display Value.
 		@return Displays Value column with the Display column
 	  */
-	public boolean isValueDisplayed () 
+	public boolean isValueDisplayed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValueDisplayed);
 		if (oo != null) 
@@ -281,9 +299,8 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -292,7 +309,7 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -306,26 +323,26 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
     }
 
 	public org.compiere.model.I_AD_Column getParent_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getParent_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getParent_Column_ID(), get_TrxName());
+	}
 
 	/** Set Parent Column.
-		@param Parent_Column_ID 
-		The link column on the parent tab.
-	  */
+		@param Parent_Column_ID The link column on the parent tab.
+	*/
 	public void setParent_Column_ID (int Parent_Column_ID)
 	{
-		if (Parent_Column_ID < 1) 
+		if (Parent_Column_ID < 1)
 			set_Value (COLUMNNAME_Parent_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Parent_Column_ID, Integer.valueOf(Parent_Column_ID));
 	}
 
 	/** Get Parent Column.
 		@return The link column on the parent tab.
 	  */
-	public int getParent_Column_ID () 
+	public int getParent_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Parent_Column_ID);
 		if (ii == null)
@@ -334,7 +351,8 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -342,7 +360,7 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -356,28 +374,38 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 
 	/** TreeType AD_Reference_ID=120 */
 	public static final int TREETYPE_AD_Reference_ID=120;
-	/** Menu = MM */
-	public static final String TREETYPE_Menu = "MM";
-	/** Element Value = EV */
-	public static final String TREETYPE_ElementValue = "EV";
-	/** Product = PR */
-	public static final String TREETYPE_Product = "PR";
-	/** BPartner = BP */
-	public static final String TREETYPE_BPartner = "BP";
-	/** Organization = OO */
-	public static final String TREETYPE_Organization = "OO";
-	/** BoM = BB */
-	public static final String TREETYPE_BoM = "BB";
-	/** Project = PJ */
-	public static final String TREETYPE_Project = "PJ";
-	/** Sales Region = SR */
-	public static final String TREETYPE_SalesRegion = "SR";
-	/** Product Category = PC */
-	public static final String TREETYPE_ProductCategory = "PC";
-	/** Campaign = MC */
-	public static final String TREETYPE_Campaign = "MC";
 	/** Activity = AY */
 	public static final String TREETYPE_Activity = "AY";
+	/** BoM = BB */
+	public static final String TREETYPE_BoM = "BB";
+	/** BPartner = BP */
+	public static final String TREETYPE_BPartner = "BP";
+	/** CM Container = CC */
+	public static final String TREETYPE_CMContainer = "CC";
+	/** CM Media = CM */
+	public static final String TREETYPE_CMMedia = "CM";
+	/** CM Container Stage = CS */
+	public static final String TREETYPE_CMContainerStage = "CS";
+	/** CM Template = CT */
+	public static final String TREETYPE_CMTemplate = "CT";
+	/** Element Value = EV */
+	public static final String TREETYPE_ElementValue = "EV";
+	/** Campaign = MC */
+	public static final String TREETYPE_Campaign = "MC";
+	/** Menu = MM */
+	public static final String TREETYPE_Menu = "MM";
+	/** Organization = OO */
+	public static final String TREETYPE_Organization = "OO";
+	/** Product Category = PC */
+	public static final String TREETYPE_ProductCategory = "PC";
+	/** Project = PJ */
+	public static final String TREETYPE_Project = "PJ";
+	/** Product = PR */
+	public static final String TREETYPE_Product = "PR";
+	/** Sales Region = SR */
+	public static final String TREETYPE_SalesRegion = "SR";
+	/** Custom Table = TL */
+	public static final String TREETYPE_CustomTable = "TL";
 	/** User 1 = U1 */
 	public static final String TREETYPE_User1 = "U1";
 	/** User 2 = U2 */
@@ -386,20 +414,9 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	public static final String TREETYPE_User3 = "U3";
 	/** User 4 = U4 */
 	public static final String TREETYPE_User4 = "U4";
-	/** CM Container = CC */
-	public static final String TREETYPE_CMContainer = "CC";
-	/** CM Container Stage = CS */
-	public static final String TREETYPE_CMContainerStage = "CS";
-	/** CM Template = CT */
-	public static final String TREETYPE_CMTemplate = "CT";
-	/** CM Media = CM */
-	public static final String TREETYPE_CMMedia = "CM";
-	/** Custom Table = TL */
-	public static final String TREETYPE_CustomTable = "TL";
 	/** Set Type | Area.
-		@param TreeType 
-		Element this tree is built on (i.e Product, Business Partner)
-	  */
+		@param TreeType Element this tree is built on (i.e Product, Business Partner)
+	*/
 	public void setTreeType (String TreeType)
 	{
 
@@ -409,7 +426,7 @@ public class X_AD_Tree extends PO implements I_AD_Tree, I_Persistent
 	/** Get Type | Area.
 		@return Element this tree is built on (i.e Product, Business Partner)
 	  */
-	public String getTreeType () 
+	public String getTreeType()
 	{
 		return (String)get_Value(COLUMNNAME_TreeType);
 	}

@@ -33,7 +33,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.Random;
@@ -205,6 +204,7 @@ public class DB_Oracle implements AdempiereDatabase
      */
     public String getConnectionURL (CConnection connection)
     {
+        System.setProperty("oracle.jdbc.v$session.program", "iDempiere");
         StringBuilder sb = null;
         //  Server Connections (bequeath)
         if (connection.isBequeath())
@@ -371,8 +371,13 @@ public class DB_Oracle implements AdempiereDatabase
     public String convertStatement (String oraStatement)
     {
     	Convert.logMigrationScript(oraStatement, null);
-		if ("true".equals(System.getProperty("org.idempiere.db.oracle.debug"))) {
-			log.warning("Oracle -> " + oraStatement);
+		if ("true".equals(System.getProperty("org.idempiere.db.debug"))) {
+			String filterOrDebug = System.getProperty("org.idempiere.db.debug.filter");
+			boolean print = true;
+			if (filterOrDebug != null)
+				print = oraStatement.matches(filterOrDebug);
+			if (print)
+				log.warning("Oracle -> " + oraStatement);
 		}
         return oraStatement;
     }   //  convertStatement
@@ -987,7 +992,6 @@ public class DB_Oracle implements AdempiereDatabase
             Text1   NVARCHAR2(2000) NULL,
             Text2   VARCHAR2(2000)  NULL
         );
-        **/
         try
         {
             String myString1 = "123456789 12345678";
@@ -1002,13 +1006,13 @@ public class DB_Oracle implements AdempiereDatabase
             System.out.println(Util.size(myString.toString()));
             //
             Connection conn2 = db.getCachedConnection(cc, true, Connection.TRANSACTION_READ_COMMITTED);
-            /** **/
+            //
             PreparedStatement pstmt = conn2.prepareStatement
                 ("INSERT INTO X_Test(Text1, Text2) values(?,?)");
             pstmt.setString(1, myString.toString()); // NVARCHAR2 column
             pstmt.setString(2, myString.toString()); // VARCHAR2 column
             System.out.println(pstmt.executeUpdate());
-            /** **/
+            //
             Statement stmt = conn2.createStatement();
             System.out.println(stmt.executeUpdate
                 ("INSERT INTO X_Test(Text1, Text2) values('" + myString + "','" + myString + "')"));
@@ -1019,6 +1023,7 @@ public class DB_Oracle implements AdempiereDatabase
         }
         db.cleanup();
         System.out.println("--------------------------------------------------");
+        **/
         System.exit(0);
 
 
@@ -1204,16 +1209,24 @@ public class DB_Oracle implements AdempiereDatabase
 		return true;
 	}
 
+	/**
+	 * Implemented using the fetch first and offset feature. use 1 base index for start and end parameter
+	 * @param sql
+	 * @param start
+	 * @param end
+	 */
 	public String addPagingSQL(String sql, int start, int end) {
-		StringBuilder newSql = new StringBuilder("select * from (")
-				.append("   select tb.*, ROWNUM oracle_native_rownum_ from (")
-				.append(sql)
-				.append(") tb) where oracle_native_rownum_ >= ")
-				.append(start)
-				.append(" AND oracle_native_rownum_ <= ")
-				.append(end)
-				.append(" order by oracle_native_rownum_");
-
+		StringBuilder newSql = new StringBuilder(sql);
+		if (start > 1) {
+			newSql.append(" OFFSET ")
+				.append((start - 1))
+				.append( " ROWS");
+		}
+		if (end > 0) {
+			newSql.append(" FETCH FIRST ")
+				.append(( end - start + 1 ))
+				.append(" ROWS ONLY");
+		}
 		return newSql.toString();
 	}
 
@@ -1335,9 +1348,9 @@ public class DB_Oracle implements AdempiereDatabase
 			.append(columnName)
 			.append(")");
 		builder.append(" submultiset of ")
-			.append("toTableOfVarchar2('")
-			.append(csv)
-			.append("')");
+			.append("toTableOfVarchar2(")
+			.append(DB.TO_STRING(csv))
+			.append(")");
 		
 		return builder.toString();
 	}
@@ -1349,9 +1362,9 @@ public class DB_Oracle implements AdempiereDatabase
 			.append(columnName)
 			.append(")");
 		builder.append(" MULTISET INTERSECT ")
-			.append("toTableOfVarchar2('")
-			.append(csv)
-			.append("') IS NOT EMPTY");
+			.append("toTableOfVarchar2(")
+			.append(DB.TO_STRING(csv))
+			.append(") IS NOT EMPTY");
 		
 		return builder.toString();
 	}
@@ -1371,6 +1384,13 @@ public class DB_Oracle implements AdempiereDatabase
 		return "VARCHAR2";
 	}
 
+	/**
+	 * @return variable length character data type suffix
+	 */
+	public String getVarcharLengthSuffix() {
+		return " CHAR";
+	};
+
 	@Override
 	public String getBlobDataType() {
 		return "BLOB";
@@ -1387,6 +1407,11 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 
 	@Override
+	public String getTimestampWithTimezoneDataType() {
+		return "TIMESTAMP WITH TIME ZONE";
+	}
+
+	@Override
 	public String getSQLDDL(MColumn column) {				
 		StringBuilder sql = new StringBuilder ().append(column.getColumnName())
 			.append(" ").append(column.getSQLDataType());
@@ -1399,7 +1424,7 @@ public class DB_Oracle implements AdempiereDatabase
 				&& ( ! (DisplayType.isID(column.getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
 		{
 			if (DisplayType.isText(column.getAD_Reference_ID()) 
-					|| column.getAD_Reference_ID() == DisplayType.List
+					|| DisplayType.isList(column.getAD_Reference_ID())
 					|| column.getAD_Reference_ID() == DisplayType.YesNo
 					// Two special columns: Defined as Table but DB Type is String 
 					|| column.getColumnName().equals("EntityType") || column.getColumnName().equals("AD_Language")
@@ -1466,14 +1491,16 @@ public class DB_Oracle implements AdempiereDatabase
 		StringBuilder sqlDefault = new StringBuilder(sqlBase)
 			.append(" ").append(column.getSQLDataType());
 		String defaultValue = column.getDefaultValue();
+		String originalDefaultValue = defaultValue;
 		if (defaultValue != null 
 			&& defaultValue.length() > 0
 			&& defaultValue.indexOf('@') == -1		//	no variables
 			&& ( ! (DisplayType.isID(column.getAD_Reference_ID()) && defaultValue.equals("-1") ) ) )  // not for ID's with default -1
 		{
 			if (DisplayType.isText(column.getAD_Reference_ID()) 
-				|| column.getAD_Reference_ID() == DisplayType.List
+				|| DisplayType.isList(column.getAD_Reference_ID())
 				|| column.getAD_Reference_ID() == DisplayType.YesNo
+				|| column.getAD_Reference_ID() == DisplayType.Payment
 				// Two special columns: Defined as Table but DB Type is String 
 				|| column.getColumnName().equals("EntityType") || column.getColumnName().equals("AD_Language")
 				|| (column.getAD_Reference_ID() == DisplayType.Button &&
@@ -1497,6 +1524,17 @@ public class DB_Oracle implements AdempiereDatabase
 		//	Null Values
 		if (column.isMandatory() && defaultValue != null && defaultValue.length() > 0)
 		{
+			if (!(DisplayType.isText(column.getAD_Reference_ID()) 
+					|| DisplayType.isList(column.getAD_Reference_ID())
+					|| column.getAD_Reference_ID() == DisplayType.YesNo
+					|| column.getAD_Reference_ID() == DisplayType.Payment
+					// Two special columns: Defined as Table but DB Type is String 
+					|| column.getColumnName().equals("EntityType") || column.getColumnName().equals("AD_Language")
+					|| (column.getAD_Reference_ID() == DisplayType.Button &&
+							!(column.getColumnName().endsWith("_ID")))))
+			{
+				defaultValue = originalDefaultValue;
+			}
 			StringBuilder sqlSet = new StringBuilder("UPDATE ")
 				.append(table.getTableName())
 				.append(" SET ").append(column.getColumnName())
@@ -1518,4 +1556,12 @@ public class DB_Oracle implements AdempiereDatabase
 		//
 		return sql.toString();
 	}	//	getSQLModify
+
+	@Override
+	public boolean isQueryTimeout(SQLException ex) {
+		//java.sql.SQLTimeoutException: ORA-01013: user requested cancel of current operation
+		return "72000".equals(ex.getSQLState()) && ex.getErrorCode() == 1013;
+	}
+	
+	
 }   //  DB_Oracle

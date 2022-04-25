@@ -26,19 +26,47 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Reval
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="A_Asset_Reval")
 public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Reval (Properties ctx, int A_Asset_Reval_ID, String trxName)
     {
       super (ctx, A_Asset_Reval_ID, trxName);
+      /** if (A_Asset_Reval_ID == 0)
+        {
+			setA_Asset_Cost_Change (Env.ZERO);
+// 0
+			setA_Asset_ID (0);
+			setA_Asset_Reval_ID (0);
+			setA_Change_Acumulated_Depr (Env.ZERO);
+// 0
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setPostingType (null);
+// A
+			setProcessed (false);
+// N
+			setProcessing (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Reval (Properties ctx, int A_Asset_Reval_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Reval_ID, trxName, virtualColumns);
       /** if (A_Asset_Reval_ID == 0)
         {
 			setA_Asset_Cost_Change (Env.ZERO);
@@ -85,13 +113,14 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Asset_Reval[")
+      StringBuilder sb = new StringBuilder ("X_A_Asset_Reval[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set Accumulated Depreciation.
-		@param A_Accumulated_Depr Accumulated Depreciation	  */
+		@param A_Accumulated_Depr Accumulated Depreciation
+	*/
 	public void setA_Accumulated_Depr (BigDecimal A_Accumulated_Depr)
 	{
 		set_Value (COLUMNNAME_A_Accumulated_Depr, A_Accumulated_Depr);
@@ -99,7 +128,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 
 	/** Get Accumulated Depreciation.
 		@return Accumulated Depreciation	  */
-	public BigDecimal getA_Accumulated_Depr () 
+	public BigDecimal getA_Accumulated_Depr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Accumulated_Depr);
 		if (bd == null)
@@ -108,7 +137,8 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	}
 
 	/** Set Asset Cost.
-		@param A_Asset_Cost Asset Cost	  */
+		@param A_Asset_Cost Asset Cost
+	*/
 	public void setA_Asset_Cost (BigDecimal A_Asset_Cost)
 	{
 		set_Value (COLUMNNAME_A_Asset_Cost, A_Asset_Cost);
@@ -116,7 +146,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 
 	/** Get Asset Cost.
 		@return Asset Cost	  */
-	public BigDecimal getA_Asset_Cost () 
+	public BigDecimal getA_Asset_Cost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Asset_Cost);
 		if (bd == null)
@@ -125,7 +155,8 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	}
 
 	/** Set Asset Cost Change.
-		@param A_Asset_Cost_Change Asset Cost Change	  */
+		@param A_Asset_Cost_Change Asset Cost Change
+	*/
 	public void setA_Asset_Cost_Change (BigDecimal A_Asset_Cost_Change)
 	{
 		set_Value (COLUMNNAME_A_Asset_Cost_Change, A_Asset_Cost_Change);
@@ -133,7 +164,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 
 	/** Get Asset Cost Change.
 		@return Asset Cost Change	  */
-	public BigDecimal getA_Asset_Cost_Change () 
+	public BigDecimal getA_Asset_Cost_Change()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Asset_Cost_Change);
 		if (bd == null)
@@ -142,26 +173,26 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	}
 
 	public org.compiere.model.I_A_Asset getA_Asset() throws RuntimeException
-    {
-		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_Name)
-			.getPO(getA_Asset_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_A_Asset)MTable.get(getCtx(), org.compiere.model.I_A_Asset.Table_ID)
+			.getPO(getA_Asset_ID(), get_TrxName());
+	}
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -170,18 +201,19 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	}
 
 	/** Set Asset Revaluation.
-		@param A_Asset_Reval_ID Asset Revaluation	  */
+		@param A_Asset_Reval_ID Asset Revaluation
+	*/
 	public void setA_Asset_Reval_ID (int A_Asset_Reval_ID)
 	{
-		if (A_Asset_Reval_ID < 1) 
+		if (A_Asset_Reval_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Reval_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Reval_ID, Integer.valueOf(A_Asset_Reval_ID));
 	}
 
 	/** Get Asset Revaluation.
 		@return Asset Revaluation	  */
-	public int getA_Asset_Reval_ID () 
+	public int getA_Asset_Reval_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Reval_ID);
 		if (ii == null)
@@ -198,7 +230,8 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
     }
 
 	/** Set A_Asset_Reval_UU.
-		@param A_Asset_Reval_UU A_Asset_Reval_UU	  */
+		@param A_Asset_Reval_UU A_Asset_Reval_UU
+	*/
 	public void setA_Asset_Reval_UU (String A_Asset_Reval_UU)
 	{
 		set_Value (COLUMNNAME_A_Asset_Reval_UU, A_Asset_Reval_UU);
@@ -206,13 +239,14 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 
 	/** Get A_Asset_Reval_UU.
 		@return A_Asset_Reval_UU	  */
-	public String getA_Asset_Reval_UU () 
+	public String getA_Asset_Reval_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_Asset_Reval_UU);
 	}
 
 	/** Set Change Acumulated Depreciation.
-		@param A_Change_Acumulated_Depr Change Acumulated Depreciation	  */
+		@param A_Change_Acumulated_Depr Change Acumulated Depreciation
+	*/
 	public void setA_Change_Acumulated_Depr (BigDecimal A_Change_Acumulated_Depr)
 	{
 		set_Value (COLUMNNAME_A_Change_Acumulated_Depr, A_Change_Acumulated_Depr);
@@ -220,7 +254,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 
 	/** Get Change Acumulated Depreciation.
 		@return Change Acumulated Depreciation	  */
-	public BigDecimal getA_Change_Acumulated_Depr () 
+	public BigDecimal getA_Change_Acumulated_Depr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Change_Acumulated_Depr);
 		if (bd == null)
@@ -229,9 +263,8 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	}
 
 	/** Set Account Date.
-		@param DateAcct 
-		Accounting Date
-	  */
+		@param DateAcct Accounting Date
+	*/
 	public void setDateAcct (Timestamp DateAcct)
 	{
 		set_Value (COLUMNNAME_DateAcct, DateAcct);
@@ -240,15 +273,14 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/** Get Account Date.
 		@return Accounting Date
 	  */
-	public Timestamp getDateAcct () 
+	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** Set Document Date.
-		@param DateDoc 
-		Date of the Document
-	  */
+		@param DateDoc Date of the Document
+	*/
 	public void setDateDoc (Timestamp DateDoc)
 	{
 		set_Value (COLUMNNAME_DateDoc, DateDoc);
@@ -257,45 +289,44 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/** Get Document Date.
 		@return Date of the Document
 	  */
-	public Timestamp getDateDoc () 
+	public Timestamp getDateDoc()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateDoc);
 	}
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** Complete = CO */
-	public static final String DOCACTION_Complete = "CO";
+	/** &lt;None&gt; = -- */
+	public static final String DOCACTION_None = "--";
 	/** Approve = AP */
 	public static final String DOCACTION_Approve = "AP";
-	/** Reject = RJ */
-	public static final String DOCACTION_Reject = "RJ";
-	/** Post = PO */
-	public static final String DOCACTION_Post = "PO";
-	/** Void = VO */
-	public static final String DOCACTION_Void = "VO";
 	/** Close = CL */
 	public static final String DOCACTION_Close = "CL";
-	/** Reverse - Correct = RC */
-	public static final String DOCACTION_Reverse_Correct = "RC";
-	/** Reverse - Accrual = RA */
-	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Complete = CO */
+	public static final String DOCACTION_Complete = "CO";
 	/** Invalidate = IN */
 	public static final String DOCACTION_Invalidate = "IN";
-	/** Re-activate = RE */
-	public static final String DOCACTION_Re_Activate = "RE";
-	/** <None> = -- */
-	public static final String DOCACTION_None = "--";
+	/** Post = PO */
+	public static final String DOCACTION_Post = "PO";
 	/** Prepare = PR */
 	public static final String DOCACTION_Prepare = "PR";
-	/** Unlock = XL */
-	public static final String DOCACTION_Unlock = "XL";
+	/** Reverse - Accrual = RA */
+	public static final String DOCACTION_Reverse_Accrual = "RA";
+	/** Reverse - Correct = RC */
+	public static final String DOCACTION_Reverse_Correct = "RC";
+	/** Re-activate = RE */
+	public static final String DOCACTION_Re_Activate = "RE";
+	/** Reject = RJ */
+	public static final String DOCACTION_Reject = "RJ";
+	/** Void = VO */
+	public static final String DOCACTION_Void = "VO";
 	/** Wait Complete = WC */
 	public static final String DOCACTION_WaitComplete = "WC";
+	/** Unlock = XL */
+	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
-		@param DocAction 
-		The targeted status of the document
-	  */
+		@param DocAction The targeted status of the document
+	*/
 	public void setDocAction (String DocAction)
 	{
 
@@ -305,41 +336,40 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/** Get Document Action.
 		@return The targeted status of the document
 	  */
-	public String getDocAction () 
+	public String getDocAction()
 	{
 		return (String)get_Value(COLUMNNAME_DocAction);
 	}
 
 	/** DocStatus AD_Reference_ID=131 */
 	public static final int DOCSTATUS_AD_Reference_ID=131;
-	/** Drafted = DR */
-	public static final String DOCSTATUS_Drafted = "DR";
-	/** Completed = CO */
-	public static final String DOCSTATUS_Completed = "CO";
-	/** Approved = AP */
-	public static final String DOCSTATUS_Approved = "AP";
-	/** Not Approved = NA */
-	public static final String DOCSTATUS_NotApproved = "NA";
-	/** Voided = VO */
-	public static final String DOCSTATUS_Voided = "VO";
-	/** Invalid = IN */
-	public static final String DOCSTATUS_Invalid = "IN";
-	/** Reversed = RE */
-	public static final String DOCSTATUS_Reversed = "RE";
-	/** Closed = CL */
-	public static final String DOCSTATUS_Closed = "CL";
 	/** Unknown = ?? */
 	public static final String DOCSTATUS_Unknown = "??";
+	/** Approved = AP */
+	public static final String DOCSTATUS_Approved = "AP";
+	/** Closed = CL */
+	public static final String DOCSTATUS_Closed = "CL";
+	/** Completed = CO */
+	public static final String DOCSTATUS_Completed = "CO";
+	/** Drafted = DR */
+	public static final String DOCSTATUS_Drafted = "DR";
+	/** Invalid = IN */
+	public static final String DOCSTATUS_Invalid = "IN";
 	/** In Progress = IP */
 	public static final String DOCSTATUS_InProgress = "IP";
-	/** Waiting Payment = WP */
-	public static final String DOCSTATUS_WaitingPayment = "WP";
+	/** Not Approved = NA */
+	public static final String DOCSTATUS_NotApproved = "NA";
+	/** Reversed = RE */
+	public static final String DOCSTATUS_Reversed = "RE";
+	/** Voided = VO */
+	public static final String DOCSTATUS_Voided = "VO";
 	/** Waiting Confirmation = WC */
 	public static final String DOCSTATUS_WaitingConfirmation = "WC";
+	/** Waiting Payment = WP */
+	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
-		@param DocStatus 
-		The current status of the document
-	  */
+		@param DocStatus The current status of the document
+	*/
 	public void setDocStatus (String DocStatus)
 	{
 
@@ -349,15 +379,14 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/** Get Document Status.
 		@return The current status of the document
 	  */
-	public String getDocStatus () 
+	public String getDocStatus()
 	{
 		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -366,15 +395,14 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
 
 	/** Set Posted.
-		@param Posted 
-		Posting status
-	  */
+		@param Posted Posting status
+	*/
 	public void setPosted (boolean Posted)
 	{
 		set_Value (COLUMNNAME_Posted, Boolean.valueOf(Posted));
@@ -383,7 +411,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/** Get Posted.
 		@return Posting status
 	  */
-	public boolean isPosted () 
+	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
 		if (oo != null) 
@@ -403,14 +431,13 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	public static final String POSTINGTYPE_Budget = "B";
 	/** Commitment = E */
 	public static final String POSTINGTYPE_Commitment = "E";
-	/** Statistical = S */
-	public static final String POSTINGTYPE_Statistical = "S";
 	/** Reservation = R */
 	public static final String POSTINGTYPE_Reservation = "R";
+	/** Statistical = S */
+	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
-		@param PostingType 
-		The type of posted amount for the transaction
-	  */
+		@param PostingType The type of posted amount for the transaction
+	*/
 	public void setPostingType (String PostingType)
 	{
 
@@ -420,15 +447,14 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/** Get PostingType.
 		@return The type of posted amount for the transaction
 	  */
-	public String getPostingType () 
+	public String getPostingType()
 	{
 		return (String)get_Value(COLUMNNAME_PostingType);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -437,7 +463,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -450,9 +476,8 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	}
 
 	/** Set Processed On.
-		@param ProcessedOn 
-		The date+time (expressed in decimal format) when the document has been processed
-	  */
+		@param ProcessedOn The date+time (expressed in decimal format) when the document has been processed
+	*/
 	public void setProcessedOn (BigDecimal ProcessedOn)
 	{
 		set_Value (COLUMNNAME_ProcessedOn, ProcessedOn);
@@ -461,7 +486,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	/** Get Processed On.
 		@return The date+time (expressed in decimal format) when the document has been processed
 	  */
-	public BigDecimal getProcessedOn () 
+	public BigDecimal getProcessedOn()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ProcessedOn);
 		if (bd == null)
@@ -470,7 +495,8 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -478,7 +504,7 @@ public class X_A_Asset_Reval extends PO implements I_A_Asset_Reval, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

@@ -28,6 +28,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Account Schema Element Object
@@ -35,23 +36,18 @@ import org.compiere.util.Msg;
  *  @author 	Jorg Janke
  *  @version 	$Id: MAcctSchemaElement.java,v 1.4 2006/08/10 01:00:44 jjanke Exp $
  * 
- * @author Teo Sarca, SC ARHIPAC SERVICE SRL
- * 				<li>BF [ 1795817 ] Acct Schema Elements "Account" and "Org" should be mandatory
  * @author victor.perez@e-evolution.com, www.e-evolution.com
- *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query http://sourceforge.net/tracker/index.php?func=detail&aid=2214883&group_id=176962&atid=879335
+ *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query https://sourceforge.net/p/adempiere/feature-requests/557/
  */
-public class MAcctSchemaElement extends X_C_AcctSchema_Element
+public class MAcctSchemaElement extends X_C_AcctSchema_Element implements ImmutablePOSupport
 {
-
-
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 4215184252533527719L;
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -747934131394469553L;
 
 	/**
-	 * Factory: Return ArrayList of Account Schema Elements
+	 * Get ArrayList of Account Schema Elements from cache
 	 * @param as Accounting Schema
 	 * @return ArrayList with Elements
 	 */
@@ -76,12 +72,13 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 			if (s_log.isLoggable(Level.FINE)) s_log.fine(" - " + ase);
 			if (ase.isMandatory() && ase.getDefaultValue() == 0)
 				s_log.log(Level.SEVERE, "No default value for " + ase.getName());
+			ase.markImmutable();
 			list.add(ase);
 		}
 		
 		retValue = new MAcctSchemaElement[list.size()];
 		list.toArray(retValue);
-		s_cache.put (key, retValue);
+		s_cache.put(key, retValue);
 		return retValue;
 	}   //  getAcctSchemaElements
 
@@ -203,15 +200,8 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		super (ctx, C_AcctSchema_Element_ID, trxName);
 		if (C_AcctSchema_Element_ID == 0)
 		{
-		//	setC_AcctSchema_Element_ID (0);
-		//	setC_AcctSchema_ID (0);
-		//	setC_Element_ID (0);
-		//	setElementType (null);
 			setIsBalanced (false);
 			setIsMandatory (false);
-		//	setName (null);
-		//	setOrg_ID (0);
-		//	setSeqNo (0);
 		}
 	}	//	MAcctSchemaElement
 
@@ -235,13 +225,39 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		this (as.getCtx(), 0, as.get_TrxName());
 		setClientOrg(as);
 		setC_AcctSchema_ID (as.getC_AcctSchema_ID());
-		
-		//	setC_Element_ID (0);
-		//	setElementType (null);
-		//	setName (null);
-		//	setSeqNo (0);
-		
 	}	//	MAcctSchemaElement
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAcctSchemaElement(MAcctSchemaElement copy)
+	{
+		this(Env.getCtx(), copy);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAcctSchemaElement(Properties ctx, MAcctSchemaElement copy)
+	{
+		this(ctx, copy, (String)null);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAcctSchemaElement(Properties ctx, MAcctSchemaElement copy, String trxName) 
+	{
+		super(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_ColumnName = copy.m_ColumnName;
+	}
 
 	/** User Element Column Name		*/
 	private String		m_ColumnName = null;
@@ -429,14 +445,6 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 			(ELEMENTTYPE_UserElementList1.equals(et) || ELEMENTTYPE_UserElementList2.equals(et)
 			|| ELEMENTTYPE_UserColumn1.equals(et) || ELEMENTTYPE_UserColumn2.equals(et)))
 			setIsMandatory(false);
-		// Acct Schema Elements "Account" and "Org" should be mandatory - teo_sarca BF [ 1795817 ]
-		if (ELEMENTTYPE_Account.equals(et) || ELEMENTTYPE_Organization.equals(et)) {
-			if (!isMandatory())
-				setIsMandatory(true);
-			if (!isActive())
-				setIsActive(true);
-		}
-		//
 		else if (isMandatory())
 		{
 			String errorField = null;
@@ -533,19 +541,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		StringBuilder msguvd = new StringBuilder(element).append("=").append(id);
 		MAccount.updateValueDescription(getCtx(),msguvd.toString(), get_TrxName());
 	}	//	updateData
-	
-	@Override
-	protected boolean beforeDelete ()
-	{
-		String et = getElementType();
-		// Acct Schema Elements "Account" and "Org" should be mandatory - teo_sarca BF [ 1795817 ] 
-		if (ELEMENTTYPE_Account.equals(et) || ELEMENTTYPE_Organization.equals(et)) {
-			log.saveError("Error", Msg.parseTranslation(getCtx(), "@DeleteError@ @IsMandatory@"));
-			return false;
-		}
-		return true;
-	}
-	
+
 	/**
 	 * After Delete
 	 * @param success success
@@ -563,5 +559,14 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element
 		s_cache.clear();
 		return success;
 	}	//	afterDelete
-	
+
+	@Override
+	public MAcctSchemaElement markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }   //  AcctSchemaElement

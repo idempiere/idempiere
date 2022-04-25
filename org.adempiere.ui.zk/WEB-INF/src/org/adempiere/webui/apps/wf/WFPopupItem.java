@@ -5,8 +5,9 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
-import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MEntityType;
 import org.compiere.model.MQuery;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -81,6 +82,9 @@ public class WFPopupItem extends Menuitem {
 			int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 			MWFNodeNext newLine = new MWFNodeNext(m_node, m_AD_WF_NodeTo_ID);
 			newLine.setClientOrg(AD_Client_ID, 0);
+			newLine.setSeqNo(0);
+			if (AD_Client_ID > 11)
+				newLine.setEntityType(MSysConfig.getValue(MSysConfig.DEFAULT_ENTITYTYPE, MEntityType.ENTITYTYPE_UserMaintained));
 			newLine.saveEx();
 			log.info("Add Line to " + m_node + " -> " + newLine);
 			wfp.reload(m_AD_Workflow_ID, true);
@@ -160,7 +164,6 @@ public class WFPopupItem extends Menuitem {
 			}
 		});
 		
-		ZKUpdateUtil.setWidth(w, "250px");
 		w.setBorder("normal");
 		w.setPage(this.getPage());
 		w.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
@@ -173,7 +176,7 @@ public class WFPopupItem extends Menuitem {
 					m_node.setName(name);
 					m_node.setDescription(textDescription.getText());
 					m_node.saveEx();
-					wfp.reload(m_AD_Workflow_ID, false);
+					wfp.reload(m_AD_Workflow_ID, true);
 				}				
 			}
 		});

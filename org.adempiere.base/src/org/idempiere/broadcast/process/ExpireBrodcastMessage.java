@@ -25,6 +25,7 @@ import org.compiere.util.Env;
  * @author Deepak Pansheriya
  *
  */
+@org.adempiere.base.annotation.Process
 public class ExpireBrodcastMessage extends SvrProcess{
 
 	@Override
@@ -33,7 +34,7 @@ public class ExpireBrodcastMessage extends SvrProcess{
 
 	@Override
 	protected String doIt() throws Exception {
-		MBroadcastMessage mbMessage = MBroadcastMessage.get(Env.getCtx(), getRecord_ID());
+		MBroadcastMessage mbMessage = new MBroadcastMessage(Env.getCtx(), getRecord_ID(), get_TrxName());
 		if (MBroadcastMessage.BROADCASTFREQUENCY_UntilExpiration.equals(mbMessage.getBroadcastFrequency())
 				&& !mbMessage.isExpired() && mbMessage.isPublished()){
 			String sql = "UPDATE AD_Note SET Processed='Y' WHERE AD_BroadcastMessage_ID = ?";

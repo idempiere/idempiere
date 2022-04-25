@@ -41,6 +41,7 @@ import org.compiere.util.Msg;
  * 
  * Based on org.compiere.process.InvoiceGenerate
  */
+@org.adempiere.base.annotation.Process
 public class InvoiceGenerateRMA extends SvrProcess
 {
     /** Manual Selection        */
@@ -73,7 +74,7 @@ public class InvoiceGenerateRMA extends SvrProcess
                 log.log(Level.SEVERE, "Unknown Parameter: " + name);
         }
         
-        m_dateinvoiced = Env.getContextAsDate(getCtx(), "#Date");
+        m_dateinvoiced = Env.getContextAsDate(getCtx(), Env.DATE);
         if (m_dateinvoiced == null)
         {
             m_dateinvoiced = new Timestamp(System.currentTimeMillis());

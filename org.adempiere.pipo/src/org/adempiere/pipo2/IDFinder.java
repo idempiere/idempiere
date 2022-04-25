@@ -50,12 +50,13 @@ public class IDFinder {
 
 	/**
 	 * Get ID from column value for a table.
-	 *
 	 * @param tableName
-	 * @param columName
+	 * @param columnName
 	 * @param value
 	 * @param AD_Client_ID
+	 * @param ignorecase
 	 * @param trxName
+	 * @return
 	 */
 	public static int findIdByColumn (String tableName, String columnName, Object value, int AD_Client_ID, boolean ignorecase, String trxName) {
 		if (value == null)
@@ -76,7 +77,7 @@ public class IDFinder {
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
 
-		StringBuffer sqlB = new StringBuffer ("SELECT ")
+		StringBuilder sqlB = new StringBuilder ("SELECT ")
 		 	.append(tableName)
 		 	.append("_ID FROM ")
 		 	.append(tableName)
@@ -203,7 +204,7 @@ public class IDFinder {
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
 
-		StringBuffer parentSql = new StringBuffer("SELECT ")
+		StringBuilder parentSql = new StringBuilder("SELECT ")
 				.append(tableNameMaster)
 				.append("_ID FROM ")
 				.append(tableNameMaster)
@@ -212,7 +213,7 @@ public class IDFinder {
 		int parentId = DB.getSQLValue(trxName, parentSql.toString(), name, Env.getAD_Client_ID(Env.getCtx()));
 
 		if (parentId > 0) {
-			StringBuffer sqlB = new StringBuffer ("SELECT ")
+			StringBuilder sqlB = new StringBuilder ("SELECT ")
 				.append(tableName)
 				.append("_ID FROM ")
 				.append(tableName)
@@ -247,13 +248,15 @@ public class IDFinder {
 	/**
      * Get ID from column value for a table with a parent id reference.
      *
-     * @param tableName
-     * @param name
-     * @param tableNameMaster
-     * @param masterID
-     * @param trx
-     */
-
+	 * @param tableName
+	 * @param columnName
+	 * @param name
+	 * @param tableNameMaster
+	 * @param masterID
+	 * @param AD_Client_ID
+	 * @param trxName
+	 * @return
+	 */
 	public static int findIdByColumnAndParentId (String tableName, String columnName, String name, String tableNameMaster, int masterID, int AD_Client_ID, String trxName) {
 		return findIdByColumnAndParentId(tableName, columnName, name, tableNameMaster, masterID, AD_Client_ID, false, trxName);
 	}
@@ -277,7 +280,7 @@ public class IDFinder {
 		if (idCache.containsKey(key))
 			return idCache.get(key);
 
-		StringBuffer sqlB = new StringBuffer ("SELECT ")
+		StringBuilder sqlB = new StringBuilder ("SELECT ")
 			.append(tableName)
 			.append("_ID FROM ")
 			.append(tableName)
@@ -354,7 +357,7 @@ public class IDFinder {
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
 
-		StringBuffer sqlB = new StringBuffer ("SELECT ")
+		StringBuilder sqlB = new StringBuilder ("SELECT ")
 			.append(tableName)
 			.append("_ID FROM ")
 			.append(tableName)
@@ -410,7 +413,7 @@ public class IDFinder {
 		if (idCache.containsKey(key.toString()))
 			return idCache.get(key.toString());
 
-		StringBuffer sql = new StringBuffer("SELECT ")
+		StringBuilder sql = new StringBuilder("SELECT ")
 			.append(tableName)
 			.append("_ID ")
 			.append("FROM ")

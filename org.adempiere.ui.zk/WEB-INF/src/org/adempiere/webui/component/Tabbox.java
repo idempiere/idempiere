@@ -77,7 +77,7 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 	}
 
     /**
-     * let support drag&drop {@link Tab}
+     * let support drag&amp;drop {@link Tab}
      * @param isSupportTabDragDrop
      */
 	public void setSupportTabDragDrop(boolean isSupportTabDragDrop) {
@@ -158,7 +158,7 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 	
 	/**
 	 * activeTabSeq is maintain by selected tab event, so when close by code or close on unselected state should call this function to save memory<br/>
-	 * in case don't call it, it still manage from {@link #getNextActiveBySeq()}
+	 * in case don't call it, it still manage from {@link #getNextActiveBySeq(Tab)}
 	 * @param closeTab
 	 */
 	public void removeTabFromActiveSeq (Tab closeTab) {

@@ -81,7 +81,17 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
      * @param gridField
      */
     public WLocationEditor(GridField gridField) {
-		super(new Locationbox(), gridField);
+    	this(gridField, false, null);
+    }
+    
+    /**
+     * 
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     */
+    public WLocationEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+		super(new Locationbox(), gridField, tableEditor, editorConfiguration);
 		m_Location = (MLocationLookup)gridField.getLookup();
         init();
 	}

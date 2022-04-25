@@ -23,19 +23,33 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Level
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="ASP_Level")
 public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_ASP_Level (Properties ctx, int ASP_Level_ID, String trxName)
     {
       super (ctx, ASP_Level_ID, trxName);
+      /** if (ASP_Level_ID == 0)
+        {
+			setASP_Level_ID (0);
+			setASP_Module_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Level (Properties ctx, int ASP_Level_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Level_ID, trxName, virtualColumns);
       /** if (ASP_Level_ID == 0)
         {
 			setASP_Level_ID (0);
@@ -68,24 +82,25 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_ASP_Level[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_ASP_Level[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set ASP Level.
-		@param ASP_Level_ID ASP Level	  */
+		@param ASP_Level_ID ASP Level
+	*/
 	public void setASP_Level_ID (int ASP_Level_ID)
 	{
-		if (ASP_Level_ID < 1) 
+		if (ASP_Level_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Level_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Level_ID, Integer.valueOf(ASP_Level_ID));
 	}
 
 	/** Get ASP Level.
 		@return ASP Level	  */
-	public int getASP_Level_ID () 
+	public int getASP_Level_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Level_ID);
 		if (ii == null)
@@ -94,7 +109,8 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 	}
 
 	/** Set ASP_Level_UU.
-		@param ASP_Level_UU ASP_Level_UU	  */
+		@param ASP_Level_UU ASP_Level_UU
+	*/
 	public void setASP_Level_UU (String ASP_Level_UU)
 	{
 		set_Value (COLUMNNAME_ASP_Level_UU, ASP_Level_UU);
@@ -102,29 +118,31 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 
 	/** Get ASP_Level_UU.
 		@return ASP_Level_UU	  */
-	public String getASP_Level_UU () 
+	public String getASP_Level_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Level_UU);
 	}
 
 	public org.compiere.model.I_ASP_Module getASP_Module() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Module)MTable.get(getCtx(), org.compiere.model.I_ASP_Module.Table_Name)
-			.getPO(getASP_Module_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Module)MTable.get(getCtx(), org.compiere.model.I_ASP_Module.Table_ID)
+			.getPO(getASP_Module_ID(), get_TrxName());
+	}
 
 	/** Set ASP Module.
-		@param ASP_Module_ID ASP Module	  */
+		@param ASP_Module_ID ASP Module
+	*/
 	public void setASP_Module_ID (int ASP_Module_ID)
 	{
-		if (ASP_Module_ID < 1) 
+		if (ASP_Module_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Module_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Module_ID, Integer.valueOf(ASP_Module_ID));
 	}
 
 	/** Get ASP Module.
 		@return ASP Module	  */
-	public int getASP_Module_ID () 
+	public int getASP_Module_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Module_ID);
 		if (ii == null)
@@ -133,9 +151,8 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -144,15 +161,14 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -161,15 +177,14 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -178,7 +193,7 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -192,7 +207,8 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -200,7 +216,7 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -213,9 +229,8 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -224,7 +239,7 @@ public class X_ASP_Level extends PO implements I_ASP_Level, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

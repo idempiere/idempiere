@@ -25,19 +25,32 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductOperation
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_ProductOperation")
 public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ProductOperation (Properties ctx, int M_ProductOperation_ID, String trxName)
     {
       super (ctx, M_ProductOperation_ID, trxName);
+      /** if (M_ProductOperation_ID == 0)
+        {
+			setM_Product_ID (0);
+			setM_ProductOperation_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductOperation (Properties ctx, int M_ProductOperation_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductOperation_ID, trxName, virtualColumns);
       /** if (M_ProductOperation_ID == 0)
         {
 			setM_Product_ID (0);
@@ -69,15 +82,14 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_ProductOperation[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_M_ProductOperation[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -86,15 +98,14 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -103,32 +114,32 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -137,21 +148,20 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	}
 
 	/** Set Product Operation.
-		@param M_ProductOperation_ID 
-		Product Manufacturing Operation
-	  */
+		@param M_ProductOperation_ID Product Manufacturing Operation
+	*/
 	public void setM_ProductOperation_ID (int M_ProductOperation_ID)
 	{
-		if (M_ProductOperation_ID < 1) 
+		if (M_ProductOperation_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ProductOperation_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ProductOperation_ID, Integer.valueOf(M_ProductOperation_ID));
 	}
 
 	/** Get Product Operation.
 		@return Product Manufacturing Operation
 	  */
-	public int getM_ProductOperation_ID () 
+	public int getM_ProductOperation_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductOperation_ID);
 		if (ii == null)
@@ -160,7 +170,8 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	}
 
 	/** Set M_ProductOperation_UU.
-		@param M_ProductOperation_UU M_ProductOperation_UU	  */
+		@param M_ProductOperation_UU M_ProductOperation_UU
+	*/
 	public void setM_ProductOperation_UU (String M_ProductOperation_UU)
 	{
 		set_Value (COLUMNNAME_M_ProductOperation_UU, M_ProductOperation_UU);
@@ -168,15 +179,14 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 
 	/** Get M_ProductOperation_UU.
 		@return M_ProductOperation_UU	  */
-	public String getM_ProductOperation_UU () 
+	public String getM_ProductOperation_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ProductOperation_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -185,7 +195,7 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -199,9 +209,8 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
     }
 
 	/** Set Setup Time.
-		@param SetupTime 
-		Setup time before starting Production
-	  */
+		@param SetupTime Setup time before starting Production
+	*/
 	public void setSetupTime (BigDecimal SetupTime)
 	{
 		set_Value (COLUMNNAME_SetupTime, SetupTime);
@@ -210,7 +219,7 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	/** Get Setup Time.
 		@return Setup time before starting Production
 	  */
-	public BigDecimal getSetupTime () 
+	public BigDecimal getSetupTime()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SetupTime);
 		if (bd == null)
@@ -219,9 +228,8 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	}
 
 	/** Set Teardown Time.
-		@param TeardownTime 
-		Time at the end of the operation
-	  */
+		@param TeardownTime Time at the end of the operation
+	*/
 	public void setTeardownTime (BigDecimal TeardownTime)
 	{
 		set_Value (COLUMNNAME_TeardownTime, TeardownTime);
@@ -230,7 +238,7 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	/** Get Teardown Time.
 		@return Time at the end of the operation
 	  */
-	public BigDecimal getTeardownTime () 
+	public BigDecimal getTeardownTime()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TeardownTime);
 		if (bd == null)
@@ -239,9 +247,8 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	}
 
 	/** Set Runtime per Unit.
-		@param UnitRuntime 
-		Time to produce one unit
-	  */
+		@param UnitRuntime Time to produce one unit
+	*/
 	public void setUnitRuntime (BigDecimal UnitRuntime)
 	{
 		set_Value (COLUMNNAME_UnitRuntime, UnitRuntime);
@@ -250,7 +257,7 @@ public class X_M_ProductOperation extends PO implements I_M_ProductOperation, I_
 	/** Get Runtime per Unit.
 		@return Time to produce one unit
 	  */
-	public BigDecimal getUnitRuntime () 
+	public BigDecimal getUnitRuntime()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_UnitRuntime);
 		if (bd == null)

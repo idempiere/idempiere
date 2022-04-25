@@ -24,19 +24,35 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_BPartner_Product
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_BPartner_Product")
 public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BPartner_Product (Properties ctx, int C_BPartner_Product_ID, String trxName)
     {
       super (ctx, C_BPartner_Product_ID, trxName);
+      /** if (C_BPartner_Product_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setIsManufacturer (false);
+// N
+			setM_Product_ID (0);
+			setShelfLifeMinDays (0);
+			setShelfLifeMinPct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BPartner_Product (Properties ctx, int C_BPartner_Product_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BPartner_Product_ID, trxName, virtualColumns);
       /** if (C_BPartner_Product_ID == 0)
         {
 			setC_BPartner_ID (0);
@@ -71,32 +87,32 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BPartner_Product[")
+      StringBuilder sb = new StringBuilder ("X_C_BPartner_Product[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -105,7 +121,8 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	}
 
 	/** Set C_BPartner_Product_UU.
-		@param C_BPartner_Product_UU C_BPartner_Product_UU	  */
+		@param C_BPartner_Product_UU C_BPartner_Product_UU
+	*/
 	public void setC_BPartner_Product_UU (String C_BPartner_Product_UU)
 	{
 		set_Value (COLUMNNAME_C_BPartner_Product_UU, C_BPartner_Product_UU);
@@ -113,15 +130,14 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 
 	/** Get C_BPartner_Product_UU.
 		@return C_BPartner_Product_UU	  */
-	public String getC_BPartner_Product_UU () 
+	public String getC_BPartner_Product_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BPartner_Product_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -130,15 +146,14 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Is Manufacturer.
-		@param IsManufacturer 
-		Indicate role of this Business partner as Manufacturer
-	  */
+		@param IsManufacturer Indicate role of this Business partner as Manufacturer
+	*/
 	public void setIsManufacturer (boolean IsManufacturer)
 	{
 		set_Value (COLUMNNAME_IsManufacturer, Boolean.valueOf(IsManufacturer));
@@ -147,7 +162,7 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	/** Get Is Manufacturer.
 		@return Indicate role of this Business partner as Manufacturer
 	  */
-	public boolean isManufacturer () 
+	public boolean isManufacturer()
 	{
 		Object oo = get_Value(COLUMNNAME_IsManufacturer);
 		if (oo != null) 
@@ -160,9 +175,8 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	}
 
 	/** Set Manufacturer.
-		@param Manufacturer 
-		Manufacturer of the Product
-	  */
+		@param Manufacturer Manufacturer of the Product
+	*/
 	public void setManufacturer (String Manufacturer)
 	{
 		set_Value (COLUMNNAME_Manufacturer, Manufacturer);
@@ -171,32 +185,32 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	/** Get Manufacturer.
 		@return Manufacturer of the Product
 	  */
-	public String getManufacturer () 
+	public String getManufacturer()
 	{
 		return (String)get_Value(COLUMNNAME_Manufacturer);
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -205,9 +219,8 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	}
 
 	/** Set Quality Rating.
-		@param QualityRating 
-		Method for rating vendors
-	  */
+		@param QualityRating Method for rating vendors
+	*/
 	public void setQualityRating (BigDecimal QualityRating)
 	{
 		set_Value (COLUMNNAME_QualityRating, QualityRating);
@@ -216,7 +229,7 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	/** Get Quality Rating.
 		@return Method for rating vendors
 	  */
-	public BigDecimal getQualityRating () 
+	public BigDecimal getQualityRating()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QualityRating);
 		if (bd == null)
@@ -225,9 +238,8 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	}
 
 	/** Set Min Shelf Life Days.
-		@param ShelfLifeMinDays 
-		Minimum Shelf Life in days based on Product Instance Guarantee Date
-	  */
+		@param ShelfLifeMinDays Minimum Shelf Life in days based on Product Instance Guarantee Date
+	*/
 	public void setShelfLifeMinDays (int ShelfLifeMinDays)
 	{
 		set_Value (COLUMNNAME_ShelfLifeMinDays, Integer.valueOf(ShelfLifeMinDays));
@@ -236,7 +248,7 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	/** Get Min Shelf Life Days.
 		@return Minimum Shelf Life in days based on Product Instance Guarantee Date
 	  */
-	public int getShelfLifeMinDays () 
+	public int getShelfLifeMinDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ShelfLifeMinDays);
 		if (ii == null)
@@ -245,9 +257,8 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	}
 
 	/** Set Min Shelf Life %.
-		@param ShelfLifeMinPct 
-		Minimum Shelf Life in percent based on Product Instance Guarantee Date
-	  */
+		@param ShelfLifeMinPct Minimum Shelf Life in percent based on Product Instance Guarantee Date
+	*/
 	public void setShelfLifeMinPct (int ShelfLifeMinPct)
 	{
 		set_Value (COLUMNNAME_ShelfLifeMinPct, Integer.valueOf(ShelfLifeMinPct));
@@ -256,7 +267,7 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	/** Get Min Shelf Life %.
 		@return Minimum Shelf Life in percent based on Product Instance Guarantee Date
 	  */
-	public int getShelfLifeMinPct () 
+	public int getShelfLifeMinPct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ShelfLifeMinPct);
 		if (ii == null)
@@ -265,9 +276,8 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	}
 
 	/** Set Partner Category.
-		@param VendorCategory 
-		Product Category of the Business Partner
-	  */
+		@param VendorCategory Product Category of the Business Partner
+	*/
 	public void setVendorCategory (String VendorCategory)
 	{
 		set_Value (COLUMNNAME_VendorCategory, VendorCategory);
@@ -276,15 +286,14 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	/** Get Partner Category.
 		@return Product Category of the Business Partner
 	  */
-	public String getVendorCategory () 
+	public String getVendorCategory()
 	{
 		return (String)get_Value(COLUMNNAME_VendorCategory);
 	}
 
 	/** Set Partner Product Key.
-		@param VendorProductNo 
-		Product Key of the Business Partner
-	  */
+		@param VendorProductNo Product Key of the Business Partner
+	*/
 	public void setVendorProductNo (String VendorProductNo)
 	{
 		set_Value (COLUMNNAME_VendorProductNo, VendorProductNo);
@@ -293,7 +302,7 @@ public class X_C_BPartner_Product extends PO implements I_C_BPartner_Product, I_
 	/** Get Partner Product Key.
 		@return Product Key of the Business Partner
 	  */
-	public String getVendorProductNo () 
+	public String getVendorProductNo()
 	{
 		return (String)get_Value(COLUMNNAME_VendorProductNo);
 	}

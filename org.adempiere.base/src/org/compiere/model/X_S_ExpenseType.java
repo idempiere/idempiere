@@ -23,19 +23,36 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ExpenseType
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="S_ExpenseType")
 public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_S_ExpenseType (Properties ctx, int S_ExpenseType_ID, String trxName)
     {
       super (ctx, S_ExpenseType_ID, trxName);
+      /** if (S_ExpenseType_ID == 0)
+        {
+			setC_TaxCategory_ID (0);
+			setC_UOM_ID (0);
+			setIsInvoiced (false);
+			setM_Product_Category_ID (0);
+			setName (null);
+			setS_ExpenseType_ID (0);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_S_ExpenseType (Properties ctx, int S_ExpenseType_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, S_ExpenseType_ID, trxName, virtualColumns);
       /** if (S_ExpenseType_ID == 0)
         {
 			setC_TaxCategory_ID (0);
@@ -71,32 +88,32 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_S_ExpenseType[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_S_ExpenseType[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_TaxCategory getC_TaxCategory() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_Name)
-			.getPO(getC_TaxCategory_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_TaxCategory)MTable.get(getCtx(), org.compiere.model.I_C_TaxCategory.Table_ID)
+			.getPO(getC_TaxCategory_ID(), get_TrxName());
+	}
 
 	/** Set Tax Category.
-		@param C_TaxCategory_ID 
-		Tax Category
-	  */
+		@param C_TaxCategory_ID Tax Category
+	*/
 	public void setC_TaxCategory_ID (int C_TaxCategory_ID)
 	{
-		if (C_TaxCategory_ID < 1) 
+		if (C_TaxCategory_ID < 1)
 			set_Value (COLUMNNAME_C_TaxCategory_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_TaxCategory_ID, Integer.valueOf(C_TaxCategory_ID));
 	}
 
 	/** Get Tax Category.
 		@return Tax Category
 	  */
-	public int getC_TaxCategory_ID () 
+	public int getC_TaxCategory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxCategory_ID);
 		if (ii == null)
@@ -105,26 +122,26 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
-		@param C_UOM_ID 
-		Unit of Measure
-	  */
+		@param C_UOM_ID Unit of Measure
+	*/
 	public void setC_UOM_ID (int C_UOM_ID)
 	{
-		if (C_UOM_ID < 1) 
+		if (C_UOM_ID < 1)
 			set_Value (COLUMNNAME_C_UOM_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
 	}
 
 	/** Get UOM.
 		@return Unit of Measure
 	  */
-	public int getC_UOM_ID () 
+	public int getC_UOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
 		if (ii == null)
@@ -133,9 +150,8 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -144,15 +160,14 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Invoiced.
-		@param IsInvoiced 
-		Is this invoiced?
-	  */
+		@param IsInvoiced Is this invoiced?
+	*/
 	public void setIsInvoiced (boolean IsInvoiced)
 	{
 		set_Value (COLUMNNAME_IsInvoiced, Boolean.valueOf(IsInvoiced));
@@ -161,7 +176,7 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 	/** Get Invoiced.
 		@return Is this invoiced?
 	  */
-	public boolean isInvoiced () 
+	public boolean isInvoiced()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInvoiced);
 		if (oo != null) 
@@ -174,26 +189,26 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_Name)
-			.getPO(getM_Product_Category_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
+			.getPO(getM_Product_Category_ID(), get_TrxName());
+	}
 
 	/** Set Product Category.
-		@param M_Product_Category_ID 
-		Category of a Product
-	  */
+		@param M_Product_Category_ID Category of a Product
+	*/
 	public void setM_Product_Category_ID (int M_Product_Category_ID)
 	{
-		if (M_Product_Category_ID < 1) 
+		if (M_Product_Category_ID < 1)
 			set_Value (COLUMNNAME_M_Product_Category_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_Category_ID, Integer.valueOf(M_Product_Category_ID));
 	}
 
 	/** Get Product Category.
 		@return Category of a Product
 	  */
-	public int getM_Product_Category_ID () 
+	public int getM_Product_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_Category_ID);
 		if (ii == null)
@@ -202,9 +217,8 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -213,7 +227,7 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -227,21 +241,20 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
     }
 
 	/** Set Expense Type.
-		@param S_ExpenseType_ID 
-		Expense report type
-	  */
+		@param S_ExpenseType_ID Expense report type
+	*/
 	public void setS_ExpenseType_ID (int S_ExpenseType_ID)
 	{
-		if (S_ExpenseType_ID < 1) 
+		if (S_ExpenseType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_S_ExpenseType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_S_ExpenseType_ID, Integer.valueOf(S_ExpenseType_ID));
 	}
 
 	/** Get Expense Type.
 		@return Expense report type
 	  */
-	public int getS_ExpenseType_ID () 
+	public int getS_ExpenseType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_ExpenseType_ID);
 		if (ii == null)
@@ -250,7 +263,8 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 	}
 
 	/** Set S_ExpenseType_UU.
-		@param S_ExpenseType_UU S_ExpenseType_UU	  */
+		@param S_ExpenseType_UU S_ExpenseType_UU
+	*/
 	public void setS_ExpenseType_UU (String S_ExpenseType_UU)
 	{
 		set_Value (COLUMNNAME_S_ExpenseType_UU, S_ExpenseType_UU);
@@ -258,15 +272,14 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 
 	/** Get S_ExpenseType_UU.
 		@return S_ExpenseType_UU	  */
-	public String getS_ExpenseType_UU () 
+	public String getS_ExpenseType_UU()
 	{
 		return (String)get_Value(COLUMNNAME_S_ExpenseType_UU);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -275,7 +288,7 @@ public class X_S_ExpenseType extends PO implements I_S_ExpenseType, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

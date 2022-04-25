@@ -26,21 +26,24 @@ import java.sql.ResultSet;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.compiere.util.CCache;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
-public class MSchedule extends X_AD_Schedule 
+public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3319184522988847237L;
-
+	private static final long serialVersionUID = 7183417983901074702L;
 	private static Pattern VALID_IPV4_PATTERN = null;
 	private static Pattern VALID_IPV6_PATTERN = null;
 	private static final String ipv4Pattern = "(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
@@ -54,6 +57,34 @@ public class MSchedule extends X_AD_Schedule
 	public MSchedule(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 		// TODO Auto-generated constructor stub
+	}
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MSchedule(MSchedule copy) {
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MSchedule(Properties ctx, MSchedule copy) {
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MSchedule(Properties ctx, MSchedule copy, String trxName) {
+		this(ctx, 0, trxName);
+		copyPO(copy);
 	}
 	
 	@Override
@@ -89,6 +120,9 @@ public class MSchedule extends X_AD_Schedule
 	 */
 	public boolean isOKtoRunOnIP()
 	{
+		if (!isActive()) {
+			return false;
+		}
 		String ipOnly = getRunOnlyOnIP();
 		// 0.0.0.0 = all ip address
 		if ((ipOnly == null) || (ipOnly.length() == 0) || "0.0.0.0".equals(ipOnly))
@@ -138,26 +172,56 @@ public class MSchedule extends X_AD_Schedule
 					}
 				}
 			}
+			if (!chekIPFormat(ipOnly)) {
+				// verify with the local hostname
+				String retVal = InetAddress.getLocalHost().getHostName();
+				retVal = InetAddress.getLocalHost().getCanonicalHostName();
+				if (ipOnly.equals(retVal)) {
+					if (log.isLoggable(Level.INFO)) log.info("Allowed here - IP=" + retVal+ " match");
+					return true;
+				} else {
+					if (log.isLoggable(Level.INFO)) log.info("Not Allowed here - IP=" + retVal+ " does not match " + ipOnly);
+				}
+			}
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "", e);
 		}
 		return false;
 	} // checkIP
 
+	/**
+	 * Get MSchedule from cache (immutable)
+	 * @param AD_Schedule_ID
+	 * @return MSchedule
+	 */
+	public static MSchedule get(int AD_Schedule_ID) 
+	{
+		return get(Env.getCtx(), AD_Schedule_ID);
+	}
+	
+	/**
+	 * Get MSchedule from cache (immutable)
+	 * @param ctx
+	 * @param AD_Schedule_ID
+	 * @return MSchedule
+	 */
 	public static MSchedule get(Properties ctx, int AD_Schedule_ID) 
 	{
 		Integer key = Integer.valueOf(AD_Schedule_ID);
-		MSchedule retValue = (MSchedule)s_cache.get (key);
+		MSchedule retValue = s_cache.get (ctx, key, e -> new MSchedule(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MSchedule (ctx, AD_Schedule_ID, null);
-		if (retValue.get_ID() != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MSchedule (ctx, AD_Schedule_ID, (String)null);
+		if (retValue.get_ID() == AD_Schedule_ID)
+		{
+			s_cache.put (key, retValue, e -> new MSchedule(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}
 
 	/**	Cache						*/
-	private static CCache<Integer, MSchedule> s_cache = new CCache<Integer, MSchedule> (Table_Name, 10);
+	private static ImmutableIntPOCache<Integer, MSchedule> s_cache = new ImmutableIntPOCache<Integer, MSchedule> (Table_Name, 10);
 
 	public boolean chekIPFormat(String ipOnly)
 	{
@@ -187,9 +251,29 @@ public class MSchedule extends X_AD_Schedule
 	/**
 	 * 	Get Next Run
 	 *	@param last in MS
+	 *  @param scheduleType
+	 *  @param frequencyType
+	 *  @param frequency
+	 *  @param cronPattern
 	 *	@return next run in MS
+	 *  @deprecated
 	 */
 	public static long getNextRunMS (long last, String scheduleType, String frequencyType, int frequency, String cronPattern)
+	{
+		return getNextRunMS(last, scheduleType, frequencyType, frequency, cronPattern, null);
+	}
+	
+	/**
+	 * 	Get Next Run
+	 *	@param last in MS
+	 *  @param scheduleType
+	 *  @param frequencyType
+	 *  @param frequency
+	 *  @param cronPattern
+	 *  @param timeZone
+	 *	@return next run in MS
+	 */
+	public static long getNextRunMS (long last, String scheduleType, String frequencyType, int frequency, String cronPattern, String timeZone)
 	{
 		long now = System.currentTimeMillis();
 		if (MSchedule.SCHEDULETYPE_Frequency.equals(scheduleType))
@@ -219,11 +303,22 @@ public class MSchedule extends X_AD_Schedule
 		{
 			if (cronPattern != null && cronPattern.trim().length() > 0
 					&& SchedulingPattern.validate(cronPattern)) {
+				TimeZone tz = null;
+				if (!Util.isEmpty(timeZone)) {
+					tz = TimeZone.getTimeZone(timeZone);
+					if (tz != null && !tz.getID().equals(timeZone)) {
+						tz = null;
+					}
+				}
 				Predictor predictor = new Predictor(cronPattern, last);
+				if (tz != null)
+					predictor.setTimeZone(tz);
 				long next = predictor.nextMatchingTime();
 				while (next < now)
 				{
 					predictor = new Predictor(cronPattern, next);
+					if (tz != null)
+						predictor.setTimeZone(tz);
 					next = predictor.nextMatchingTime();
 				}
 				return next;
@@ -233,5 +328,14 @@ public class MSchedule extends X_AD_Schedule
 		
 		return 0;
 	}	//	getNextRunMS
+
+	@Override
+	public MSchedule markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }

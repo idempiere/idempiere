@@ -873,6 +873,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					this.setFloating_(true);
 					this.setTopmost();
 					ppstyle.zIndex = n.style.zIndex;
+					ppstyle.display = 'block';
 					if (opts) {
 						var inp = this.$n();
 						zk(pp).position(inp, "after_start");

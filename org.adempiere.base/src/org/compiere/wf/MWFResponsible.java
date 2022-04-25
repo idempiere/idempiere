@@ -21,8 +21,10 @@ import java.util.Properties;
 
 import org.compiere.model.MRole;
 import org.compiere.model.X_AD_WF_Responsible;
-import org.compiere.util.CCache;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -31,15 +33,25 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: MWFResponsible.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MWFResponsible extends X_AD_WF_Responsible
+public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSupport
 {
-	/**
-     * long - serialVersionUID.
-     */
-    private static final long serialVersionUID = 4167967243996935999L;
-
     /**
-	 * 	Get WF Responsible from Cache
+	 * 
+	 */
+	private static final long serialVersionUID = -5073542640376766737L;
+
+	/**
+	 * 	Get WF Responsible from Cache (immutable)
+	 *	@param AD_WF_Responsible_ID id
+	 *	@return MWFResponsible
+	 */
+	public static MWFResponsible get (int AD_WF_Responsible_ID)
+	{
+		return get(Env.getCtx(), AD_WF_Responsible_ID);
+	}
+	
+    /**
+	 * 	Get WF Responsible from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_WF_Responsible_ID id
 	 *	@return MWFResponsible
@@ -47,17 +59,35 @@ public class MWFResponsible extends X_AD_WF_Responsible
 	public static MWFResponsible get (Properties ctx, int AD_WF_Responsible_ID)
 	{
 		Integer key = Integer.valueOf(AD_WF_Responsible_ID);
-		MWFResponsible retValue = (MWFResponsible) s_cache.get (key);
+		MWFResponsible retValue = s_cache.get (ctx, key, e -> new MWFResponsible(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MWFResponsible (ctx, AD_WF_Responsible_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MWFResponsible (ctx, AD_WF_Responsible_ID, (String)null);
+		if (retValue.get_ID () == AD_WF_Responsible_ID)
+		{
+			s_cache.put (key, retValue, e -> new MWFResponsible(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	} //	get
 
+	/**
+	 * Get updateable copy of MWFResponsible from cache
+	 * @param ctx
+	 * @param AD_WF_Responsible_ID
+	 * @param trxName
+	 * @return MWFResponsible 
+	 */
+	public static MWFResponsible getCopy(Properties ctx, int AD_WF_Responsible_ID, String trxName)
+	{
+		MWFResponsible r = get(AD_WF_Responsible_ID);
+		if (r != null)
+			r = new MWFResponsible(ctx, r, trxName);
+		return r;
+	}
+	
 	/**	Cache						*/
-	private static CCache<Integer,MWFResponsible>	s_cache	= new CCache<Integer,MWFResponsible>(Table_Name, 10);
+	private static ImmutableIntPOCache<Integer,MWFResponsible>	s_cache	= new ImmutableIntPOCache<Integer,MWFResponsible>(Table_Name, 10);
 
 	
 	/**************************************************************************
@@ -81,6 +111,37 @@ public class MWFResponsible extends X_AD_WF_Responsible
 	{
 		super(ctx, rs, trxName);
 	}	//	MWFResponsible
+	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MWFResponsible(MWFResponsible copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MWFResponsible(Properties ctx, MWFResponsible copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MWFResponsible(Properties ctx, MWFResponsible copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * 	Invoker - return true if no user and no role 
@@ -185,4 +246,13 @@ public class MWFResponsible extends X_AD_WF_Responsible
 	    return RESPONSIBLETYPE_Manual.equals(getResponsibleType());
 	}
 	
+	@Override
+	public MWFResponsible markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MWFResponsible

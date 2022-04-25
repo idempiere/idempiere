@@ -32,7 +32,7 @@ import org.compiere.util.Msg;
  *	@author Jorg Janke
  *	@author Cristina Ghita
  *  	<li>BF [ 2855807 ] AD_Org_ID from account 
- *  		https://sourceforge.net/tracker/?func=detail&aid=2855807&group_id=176962&atid=879332
+ *  		https://sourceforge.net/p/adempiere/bugs/2084/
  *	@version $Id: MJournalLine.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
 public class MJournalLine extends X_GL_JournalLine
@@ -53,17 +53,12 @@ public class MJournalLine extends X_GL_JournalLine
 		super (ctx, GL_JournalLine_ID, trxName);
 		if (GL_JournalLine_ID == 0)
 		{
-		//	setGL_JournalLine_ID (0);		//	PK
-		//	setGL_Journal_ID (0);			//	Parent
-		//	setC_Currency_ID (0);
-		//	setC_ValidCombination_ID (0);
 			setLine (0);
 			setAmtAcctCr (Env.ZERO);
 			setAmtAcctDr (Env.ZERO);
 			setAmtSourceCr (Env.ZERO);
 			setAmtSourceDr (Env.ZERO);
 			setCurrencyRate (Env.ONE);
-		//	setC_ConversionType_ID (0);
 			setDateAcct (new Timestamp(System.currentTimeMillis()));
 			setIsGenerated (true);
 		}
@@ -155,7 +150,7 @@ public class MJournalLine extends X_GL_JournalLine
 	
 	/**
 	 * 	Set Currency Rate
-	 *	@param CurrencyRate check for null (->one)
+	 *	@param CurrencyRate check for null (-&gt;one)
 	 */
 	public void setCurrencyRate (BigDecimal CurrencyRate)
 	{
@@ -290,10 +285,20 @@ public class MJournalLine extends X_GL_JournalLine
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "GL_JournalLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "GL_Journal_ID"));
 			return false;
 		}
+
+		if (getAD_Org_ID() <= 0) //	Set Line Org to Doc Org if still not set 
+			setAD_Org_ID(getParent().getAD_Org_ID()); 
+		if (getLine() == 0)
+			setLine(DB.getSQLValueEx(get_TrxName(), "SELECT COALESCE(MAX(Line), 0) + 10 FROM GL_JournalLine WHERE GL_Journal_ID = ?", getGL_Journal_ID()));
+		if (getC_Currency_ID() == 0)
+			setC_Currency_ID(getParent().getC_Currency_ID());
+		if (getC_ConversionType_ID() == 0)
+			setC_ConversionType_ID(getParent().getC_ConversionType_ID());
+
 		// idempiere 344 - nmicoud
 		if (!getOrCreateCombination())
 			return false;
@@ -305,9 +310,6 @@ public class MJournalLine extends X_GL_JournalLine
 		fillDimensionsFromCombination();
 		// end idempiere 344 - nmicoud
 
-		if (getLine() == 0)
-			setLine(DB.getSQLValueEx(get_TrxName(), "SELECT COALESCE(MAX(Line), 0) + 10 FROM GL_JournalLine WHERE GL_Journal_ID = ?", getGL_Journal_ID()));
-
 		//	Acct Amts
 		BigDecimal rate = getCurrencyRate();
 		BigDecimal amt = rate.multiply(getAmtSourceDr());
@@ -318,11 +320,7 @@ public class MJournalLine extends X_GL_JournalLine
 		if (amt.scale() > getPrecision())
 			amt = amt.setScale(getPrecision(), RoundingMode.HALF_UP);
 		setAmtAcctCr(amt);
-		//	Set Line Org to Doc Org if still not set
-		if(getAD_Org_ID() <= 0) 
-		{ 
-			setAD_Org_ID(getParent().getAD_Org_ID()); 
-		} 
+ 
 		return true;
 	}	//	beforeSave
 	

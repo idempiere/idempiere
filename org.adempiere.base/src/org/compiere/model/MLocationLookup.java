@@ -127,7 +127,7 @@ public final class MLocationLookup extends Lookup
 	 */
 	public MLocation getLocation (int C_Location_ID, String trxName)
 	{
-		return MLocation.get(m_ctx, C_Location_ID, trxName);
+		return MLocation.getCopy(m_ctx, C_Location_ID, trxName);
 	}	//	getC_Location_ID
 
 	/**

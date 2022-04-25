@@ -33,7 +33,7 @@ BEGIN
          || r.ad_role_id
          || ','||r.ad_client_id||','||r.ad_org_id||',''Y'', statement_timestamp(),0, statement_timestamp(),0,''Y'' FROM AD_Window w INNER JOIN AD_Tab t ON (w.AD_Window_ID=t.AD_Window_ID) INNER JOIN AD_Table tt ON (t.AD_Table_ID=tt.AD_Table_ID) LEFT JOIN AD_Window_Access wa ON (wa.AD_Role_ID='
 	 || r.ad_role_id
-	 || ' AND w.AD_Window_ID = wa.AD_Window_ID) WHERE wa.AD_Window_ID IS NULL AND t.SeqNo=(SELECT MIN(SeqNo) FROM AD_Tab xt WHERE xt.AD_Window_ID=w.AD_Window_ID) AND tt.AccessLevel IN '
+	 || ' AND w.AD_Window_ID = wa.AD_Window_ID) WHERE w.IsActive = ''Y'' AND wa.AD_Window_ID IS NULL AND t.SeqNo=(SELECT MIN(SeqNo) FROM AD_Tab xt WHERE xt.AD_Window_ID=w.AD_Window_ID) AND tt.AccessLevel IN '
          || roleaccesslevelwin;
 
       EXECUTE sqlins;
@@ -43,7 +43,7 @@ BEGIN
          || r.ad_role_id
          || ','||r.ad_client_id||','||r.ad_org_id||',''Y'', statement_timestamp(),0, statement_timestamp(),0,''Y'' FROM AD_Process p LEFT JOIN AD_Process_Access pa ON (pa.AD_Role_ID='
 	 || r.ad_role_id
-	 || ' AND p.AD_Process_ID = pa.AD_Process_ID) WHERE pa.AD_Process_ID IS NULL AND AccessLevel IN '
+	 || ' AND p.AD_Process_ID = pa.AD_Process_ID) WHERE p.IsActive = ''Y'' AND pa.AD_Process_ID IS NULL AND AccessLevel IN '
          || roleaccesslevel;
 
       EXECUTE sqlins;
@@ -53,7 +53,7 @@ BEGIN
          || r.ad_role_id
          || ','||r.ad_client_id||','||r.ad_org_id||',''Y'', statement_timestamp(),0, statement_timestamp(),0,''Y'' FROM AD_Form f LEFT JOIN AD_Form_Access fa ON (fa.AD_Role_ID='
 	 || r.ad_role_id
-	 || ' AND f.AD_Form_ID = fa.AD_Form_ID) WHERE fa.AD_Form_ID IS NULL AND AccessLevel IN '
+	 || ' AND f.AD_Form_ID = fa.AD_Form_ID) WHERE f.IsActive = ''Y'' AND fa.AD_Form_ID IS NULL AND AccessLevel IN '
          || roleaccesslevel;
 
       EXECUTE sqlins;
@@ -63,7 +63,7 @@ BEGIN
          || r.ad_role_id
          || ','||r.ad_client_id||','||r.ad_org_id||',''Y'', statement_timestamp(),0, statement_timestamp(),0,''Y'' FROM AD_WorkFlow w LEFT JOIN AD_WorkFlow_Access wa ON (wa.AD_Role_ID='
 	 || r.ad_role_id
-	 || ' AND w.AD_WorkFlow_ID = wa.AD_WorkFlow_ID) WHERE w.AD_Client_ID IN (0,'||r.ad_client_id||') AND wa.AD_WorkFlow_ID IS NULL AND AccessLevel IN '
+	 || ' AND w.AD_WorkFlow_ID = wa.AD_WorkFlow_ID) WHERE w.IsActive = ''Y'' AND w.AD_Client_ID IN (0,'||r.ad_client_id||') AND wa.AD_WorkFlow_ID IS NULL AND AccessLevel IN '
          || roleaccesslevel;
 
       EXECUTE sqlins;
@@ -76,7 +76,7 @@ BEGIN
 	 || r.ad_role_id
          || ') LEFT JOIN AD_Document_Action_Access da ON (da.AD_Role_ID='
 	 || r.ad_role_id
-	 || ' AND da.C_DocType_ID=doctype.C_DocType_ID AND da.AD_Ref_List_ID=action.AD_Ref_List_ID) WHERE (da.C_DocType_ID IS NULL AND da.AD_Ref_List_ID IS NULL))';
+	 || ' AND da.C_DocType_ID=doctype.C_DocType_ID AND da.AD_Ref_List_ID=action.AD_Ref_List_ID) WHERE doctype.IsActive = ''Y'' AND (da.C_DocType_ID IS NULL AND da.AD_Ref_List_ID IS NULL))';
 
       EXECUTE sqlins;
 
@@ -85,11 +85,18 @@ BEGIN
          || r.ad_role_id
          || ','||r.ad_client_id||','||r.ad_org_id||',''Y'', statement_timestamp(),0, statement_timestamp(),0 FROM AD_InfoWindow i LEFT JOIN AD_InfoWindow_Access ia ON (ia.AD_Role_ID='
 	 || r.ad_role_id
-	 || ' AND i.AD_InfoWindow_ID = ia.AD_InfoWindow_ID) INNER JOIN AD_Table tt ON (i.AD_Table_ID=tt.AD_Table_ID) WHERE i.AD_Client_ID IN (0,'||r.ad_client_id||') AND ia.AD_InfoWindow_ID IS NULL AND tt.AccessLevel IN '
+	 || ' AND i.AD_InfoWindow_ID = ia.AD_InfoWindow_ID) INNER JOIN AD_Table tt ON (i.AD_Table_ID=tt.AD_Table_ID) WHERE i.IsActive = ''Y'' AND i.AD_Client_ID IN (0,'||r.ad_client_id||') AND ia.AD_InfoWindow_ID IS NULL AND tt.AccessLevel IN '
          || roleaccesslevel;
 
 
       EXECUTE sqlins;
+
+      UPDATE AD_Window_Access SET AD_Window_Access_UU=generate_uuid() WHERE AD_Window_Access_UU IS NULL;
+      UPDATE AD_Process_Access SET AD_Process_Access_UU=generate_uuid() WHERE AD_Process_Access_UU IS NULL;
+      UPDATE AD_Form_Access SET AD_Form_Access_UU=generate_uuid() WHERE AD_Form_Access_UU IS NULL;
+      UPDATE AD_Workflow_Access SET AD_Workflow_Access_UU=generate_uuid() WHERE AD_Workflow_Access_UU IS NULL;
+      UPDATE AD_Document_Action_Access SET AD_Document_Action_Access_UU=generate_uuid() WHERE AD_Document_Action_Access_UU IS NULL;
+      UPDATE AD_InfoWindow_Access SET AD_InfoWindow_Access_UU=generate_uuid() WHERE AD_InfoWindow_Access_UU IS NULL;
 
    END LOOP;
 

@@ -45,17 +45,17 @@ public class MTransaction extends X_M_Transaction
 	 */
 	public MTransaction (Properties ctx, int M_Transaction_ID, String trxName)
 	{
-		super (ctx, M_Transaction_ID, trxName);
+		this (ctx, M_Transaction_ID, trxName, (String[]) null);
+	}	//	MTransaction
+
+	public MTransaction(Properties ctx, int M_Transaction_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_Transaction_ID, trxName, virtualColumns);
 		if (M_Transaction_ID == 0)
 		{
-		//	setM_Transaction_ID (0);		//	PK
-		//	setM_Locator_ID (0);
-		//	setM_Product_ID (0);
 			setMovementDate (new Timestamp(System.currentTimeMillis()));
 			setMovementQty (Env.ZERO);
-		//	setMovementType (MOVEMENTTYPE_CustomerShipment);
 		}
-	}	//	MTransaction
+	}
 
 	/**
 	 * 	Load Constructor

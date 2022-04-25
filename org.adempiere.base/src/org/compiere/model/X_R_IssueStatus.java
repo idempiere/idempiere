@@ -23,19 +23,31 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueStatus
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="R_IssueStatus")
 public class X_R_IssueStatus extends PO implements I_R_IssueStatus, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_IssueStatus (Properties ctx, int R_IssueStatus_ID, String trxName)
     {
       super (ctx, R_IssueStatus_ID, trxName);
+      /** if (R_IssueStatus_ID == 0)
+        {
+			setName (null);
+			setR_IssueStatus_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_IssueStatus (Properties ctx, int R_IssueStatus_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_IssueStatus_ID, trxName, virtualColumns);
       /** if (R_IssueStatus_ID == 0)
         {
 			setName (null);
@@ -66,15 +78,14 @@ public class X_R_IssueStatus extends PO implements I_R_IssueStatus, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_IssueStatus[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_R_IssueStatus[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -83,15 +94,14 @@ public class X_R_IssueStatus extends PO implements I_R_IssueStatus, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -100,7 +110,7 @@ public class X_R_IssueStatus extends PO implements I_R_IssueStatus, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -114,21 +124,20 @@ public class X_R_IssueStatus extends PO implements I_R_IssueStatus, I_Persistent
     }
 
 	/** Set Issue Status.
-		@param R_IssueStatus_ID 
-		Status of an Issue
-	  */
+		@param R_IssueStatus_ID Status of an Issue
+	*/
 	public void setR_IssueStatus_ID (int R_IssueStatus_ID)
 	{
-		if (R_IssueStatus_ID < 1) 
+		if (R_IssueStatus_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_IssueStatus_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_IssueStatus_ID, Integer.valueOf(R_IssueStatus_ID));
 	}
 
 	/** Get Issue Status.
 		@return Status of an Issue
 	  */
-	public int getR_IssueStatus_ID () 
+	public int getR_IssueStatus_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueStatus_ID);
 		if (ii == null)
@@ -137,7 +146,8 @@ public class X_R_IssueStatus extends PO implements I_R_IssueStatus, I_Persistent
 	}
 
 	/** Set R_IssueStatus_UU.
-		@param R_IssueStatus_UU R_IssueStatus_UU	  */
+		@param R_IssueStatus_UU R_IssueStatus_UU
+	*/
 	public void setR_IssueStatus_UU (String R_IssueStatus_UU)
 	{
 		set_Value (COLUMNNAME_R_IssueStatus_UU, R_IssueStatus_UU);
@@ -145,7 +155,7 @@ public class X_R_IssueStatus extends PO implements I_R_IssueStatus, I_Persistent
 
 	/** Get R_IssueStatus_UU.
 		@return R_IssueStatus_UU	  */
-	public String getR_IssueStatus_UU () 
+	public String getR_IssueStatus_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_IssueStatus_UU);
 	}

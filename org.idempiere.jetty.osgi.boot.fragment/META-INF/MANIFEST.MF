@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jetty OSGI  Boot Fragment
+Bundle-SymbolicName: org.idempiere.jetty.osgi.boot.fragment
+Bundle-Version: 10.0.0.qualifier
+Fragment-Host: org.eclipse.jetty.osgi.boot;bundle-version="10.0.7"
+Automatic-Module-Name: org.idempiere.jetty.logging.fragment
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: org.adempiere.base;bundle-version="10.0.0"
+Bundle-Vendor: iDempiere.org

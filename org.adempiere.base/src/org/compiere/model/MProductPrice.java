@@ -22,6 +22,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Product Price
@@ -29,12 +31,12 @@ import org.compiere.util.CLogger;
  *  @author Jorg Janke
  *  @version $Id: MProductPrice.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
  */
-public class MProductPrice extends X_M_ProductPrice
+public class MProductPrice extends X_M_ProductPrice implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9187555438223385521L;
+	private static final long serialVersionUID = 6052691522260506413L;
 
 	/**
 	 * 	Get Product Price
@@ -130,6 +132,37 @@ public class MProductPrice extends X_M_ProductPrice
 	}	//	MProductPrice
 	
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MProductPrice(MProductPrice copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProductPrice(Properties ctx, MProductPrice copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProductPrice(Properties ctx, MProductPrice copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * 	Set Prices
 	 *	@param PriceList list price
 	 *	@param PriceStd standard price
@@ -156,4 +189,13 @@ public class MProductPrice extends X_M_ProductPrice
 		return sb.toString ();
 	} //	toString
 	
+	@Override
+	public MProductPrice markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MProductPrice

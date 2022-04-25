@@ -44,7 +44,7 @@ import org.compiere.util.Msg;
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3809130336412385420L;
+	private static final long serialVersionUID = -4479911757321927051L;
 
 	/**
 	 * 	Standard Constructor
@@ -57,17 +57,11 @@ import org.compiere.util.Msg;
 		super (ctx, C_BankStatementLine_ID, trxName);
 		if (C_BankStatementLine_ID == 0)
 		{
-		//	setC_BankStatement_ID (0);		//	Parent
-		//	setC_Charge_ID (0);
-		//	setC_Currency_ID (0);	//	Bank Acct Currency
-		//	setLine (0);	// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_BankStatementLine WHERE C_BankStatement_ID=@C_BankStatement_ID@
 			setStmtAmt(Env.ZERO);
 			setTrxAmt(Env.ZERO);
 			setInterestAmt(Env.ZERO);
 			setChargeAmt(Env.ZERO);
 			setIsReversal (false);
-		//	setValutaDate (new Timestamp(System.currentTimeMillis()));	// @StatementDate@
-		//	setDateAcct (new Timestamp(System.currentTimeMillis()));	// @StatementDate@
 		}
 	}	//	MBankStatementLine
 	
@@ -105,6 +99,9 @@ import org.compiere.util.Msg;
 		setLine(lineNo);
 	}	//	MBankStatementLine
 
+	public MBankStatementLine(Properties ctx, int C_BankStatementLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_BankStatementLine_ID, trxName, virtualColumns);
+	}
 
 	/**
 	 * 	Set Statement Line Date and all other dates (Valuta, Acct)
@@ -162,10 +159,19 @@ import org.compiere.util.Msg;
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_BankStatementLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_BankStatement_ID"));
 			return false;
 		}
+
+		// Make sure date is on the same period as header if used for posting
+		if (newRecord || is_ValueChanged(COLUMNNAME_DateAcct)) {
+			if (!isDateConsistentIfUsedForPosting()) {
+				log.saveError("SaveError", Msg.getMsg(getCtx(), "BankStatementLinePeriodNotSameAsHeader", new Object[] {getLine()}));
+				return false;				
+			}
+		}
+
 		//	Calculate Charge = Statement - trx - Interest  
 		BigDecimal amt = getStmtAmt();
 		amt = amt.subtract(getTrxAmt());
@@ -272,5 +278,19 @@ import org.compiere.util.Msg;
 		}
 		return true;
 	}	//	updateHeader
+
+
+	/**
+	 * If the posting is based on the date of the line (ie SysConfig BANK_STATEMENT_POST_WITH_DATE_FROM_LINE = Y), make sure line and header dates are on the same period
+	 */
+	public boolean isDateConsistentIfUsedForPosting() {
+		if (MBankStatement.isPostWithDateFromLine(getAD_Client_ID())) {
+			MPeriod headerPeriod = MPeriod.get(getCtx(), getParent().getDateAcct(), getParent().getAD_Org_ID(), get_TrxName());
+			MPeriod linePeriod = MPeriod.get(getCtx(), getDateAcct(), getParent().getAD_Org_ID(), get_TrxName());
+
+			return headerPeriod != null && linePeriod != null && headerPeriod.getC_Period_ID() == linePeriod.getC_Period_ID();	
+		}
+		return true;
+	}
 	
  }	//	MBankStatementLine

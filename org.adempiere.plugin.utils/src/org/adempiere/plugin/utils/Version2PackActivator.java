@@ -146,10 +146,20 @@ public class Version2PackActivator extends AbstractActivator{
 			}
 		});		
 				
+		MSession localSession = null;
 		try {
 			if (getDBLock()) {
 				//Create Session to be able to create records in AD_ChangeLog
-				MSession.get(Env.getCtx(), true);
+				if (Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID) <= 0) {
+					localSession = MSession.get(Env.getCtx());
+					if(localSession == null) {
+						localSession = MSession.create(Env.getCtx());
+					} else {
+						localSession = new MSession(Env.getCtx(), localSession.getAD_Session_ID(), null);
+					}
+					localSession.setWebSession("Version2PackActivator");
+					localSession.saveEx();
+				}
 				for(TwoPackEntry entry : list) {
 					if (!packIn(entry.url)) {
 						// stop processing further packages if one fail
@@ -163,6 +173,8 @@ public class Version2PackActivator extends AbstractActivator{
 			e.printStackTrace();
 		} finally {
 			releaseLock();
+			if (localSession != null)
+				localSession.logout();
 		}
 	}
 
@@ -223,7 +235,7 @@ public class Version2PackActivator extends AbstractActivator{
 
 	protected void setupPackInContext() {
 		Properties serverContext = new Properties();
-		serverContext.setProperty("#AD_Client_ID", "0");
+		serverContext.setProperty(Env.AD_CLIENT_ID, "0");
 		ServerContext.setCurrentInstance(serverContext);
 	};
 

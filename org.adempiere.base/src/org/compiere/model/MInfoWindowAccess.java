@@ -26,11 +26,6 @@ public class MInfoWindowAccess extends X_AD_InfoWindow_Access {
 		super(ctx, 0, trxName);
 		if (ignored != 0)
 			throw new IllegalArgumentException("Multi-Key");
-		else
-		{
-		//	setAD_InfoWindow_ID (0);
-		//	setAD_Role_ID (0);
-		}
 	}
 
 	/**

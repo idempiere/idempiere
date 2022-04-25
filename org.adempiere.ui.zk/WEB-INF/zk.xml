@@ -23,6 +23,11 @@
 	    <listener-class>org.adempiere.webui.util.LogEventInterceptor</listener-class>
 	</listener -->
 
+	<listener>
+		<description>[Optional] Mointor the statistic</description>
+		<listener-class>org.adempiere.webui.util.Statistic</listener-class>
+	</listener>
+
 	<!--  false to use compress js which is much smaller. change to true if you need to debug -->
 	<client-config>
 		<processing-prompt-delay>500</processing-prompt-delay>
@@ -38,8 +43,13 @@
 
 	<session-config>
 		<device-type>ajax</device-type>
-		<automatic-timeout/> <!-- the same as <automatic-timeout>true</automatic-timeout> -->
+		<automatic-timeout>true</automatic-timeout>
 		<timeout-uri>/timeout.zul</timeout-uri>
+		<!--
+		Comment out timeout-uri above and un-comment timeout-message below if you prefer timeout 
+		message alert over a timeout page
+		<timeout-message>script:<![CDATA[jawwa.atmosphere.sessionTimeout();]]></timeout-message>
+		 -->		
 	</session-config>
 
 	<!--
@@ -79,22 +89,22 @@
 	<library-property>
 		<name>org.zkoss.zul.theme.fontSizeM
 		</name>
-		<value>11px</value>
+		<value>14px</value>
 	</library-property>
 	<library-property>
 		<name>org.zkoss.zul.theme.fontSizeS
 		</name>
-		<value>10px</value>
+		<value>12px</value>
 	</library-property>
 	<library-property>
 		<name>org.zkoss.zul.theme.fontSizeXS
 		</name>
-		<value>9px</value>
+		<value>10px</value>
 	</library-property>
 	<library-property>
 		<name>org.zkoss.zul.theme.fontSizeMS
 		</name>
-		<value>11px</value>
+		<value>12px</value>
 	</library-property>	
 	<!-- turn off borderlayout animation -->	
 	<library-property>
@@ -125,4 +135,8 @@
     	<name>org.zkoss.zk.ui.WebApp.name</name>
     	<value>iDempiere</value>
 	</preference>
+    <library-property>
+        <name>org.zkoss.zk.ui.uuidRecycle.disabled</name>
+        <value>true</value>
+    </library-property>
 </zk>

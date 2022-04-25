@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Payment
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 9
  */
 public interface I_C_Payment 
 {
@@ -238,12 +238,12 @@ public interface I_C_Payment
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -406,6 +406,19 @@ public interface I_C_Payment
 	public int getC_Invoice_ID();
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException;
+
+    /** Column name ConvertedAmt */
+    public static final String COLUMNNAME_ConvertedAmt = "ConvertedAmt";
+
+	/** Set Converted Amount.
+	  * Converted Amount
+	  */
+	public void setConvertedAmt (BigDecimal ConvertedAmt);
+
+	/** Get Converted Amount.
+	  * Converted Amount
+	  */
+	public BigDecimal getConvertedAmt();
 
     /** Column name C_Order_ID */
     public static final String COLUMNNAME_C_Order_ID = "C_Order_ID";
@@ -580,6 +593,19 @@ public interface I_C_Payment
 	  * Credit Card Verification code on credit card
 	  */
 	public String getCreditCardVV();
+
+    /** Column name CurrencyRate */
+    public static final String COLUMNNAME_CurrencyRate = "CurrencyRate";
+
+	/** Set Rate.
+	  * Currency Conversion Rate
+	  */
+	public void setCurrencyRate (BigDecimal CurrencyRate);
+
+	/** Get Rate.
+	  * Currency Conversion Rate
+	  */
+	public BigDecimal getCurrencyRate();
 
     /** Column name CustomerAddressID */
     public static final String COLUMNNAME_CustomerAddressID = "CustomerAddressID";
@@ -776,6 +802,19 @@ public interface I_C_Payment
 	  * Can be accessed online 
 	  */
 	public boolean isOnline();
+
+    /** Column name IsOverrideCurrencyRate */
+    public static final String COLUMNNAME_IsOverrideCurrencyRate = "IsOverrideCurrencyRate";
+
+	/** Set Override Currency Conversion Rate.
+	  * Override Currency Conversion Rate
+	  */
+	public void setIsOverrideCurrencyRate (boolean IsOverrideCurrencyRate);
+
+	/** Get Override Currency Conversion Rate.
+	  * Override Currency Conversion Rate
+	  */
+	public boolean isOverrideCurrencyRate();
 
     /** Column name IsOverUnderPayment */
     public static final String COLUMNNAME_IsOverUnderPayment = "IsOverUnderPayment";

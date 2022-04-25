@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintFormat
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 10
  */
 public interface I_AD_PrintFormat 
 {
@@ -44,8 +44,8 @@ public interface I_AD_PrintFormat
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_AD_PrintFormat
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -113,6 +113,17 @@ public interface I_AD_PrintFormat
 
 	/** Get AD_PrintFormat_UU	  */
 	public String getAD_PrintFormat_UU();
+
+    /** Column name AD_PrintHeaderFooter_ID */
+    public static final String COLUMNNAME_AD_PrintHeaderFooter_ID = "AD_PrintHeaderFooter_ID";
+
+	/** Set Print Header/Footer	  */
+	public void setAD_PrintHeaderFooter_ID (int AD_PrintHeaderFooter_ID);
+
+	/** Get Print Header/Footer	  */
+	public int getAD_PrintHeaderFooter_ID();
+
+	public org.compiere.model.I_AD_PrintHeaderFooter getAD_PrintHeaderFooter() throws RuntimeException;
 
     /** Column name AD_PrintPaper_ID */
     public static final String COLUMNNAME_AD_PrintPaper_ID = "AD_PrintPaper_ID";
@@ -189,28 +200,6 @@ public interface I_AD_PrintFormat
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
-    /** Column name Args */
-    public static final String COLUMNNAME_Args = "Args";
-
-	/** Set Args	  */
-	public void setArgs (String Args);
-
-	/** Get Args	  */
-	public String getArgs();
-
-    /** Column name Classname */
-    public static final String COLUMNNAME_Classname = "Classname";
-
-	/** Set Classname.
-	  * Java Classname
-	  */
-	public void setClassname (String Classname);
-
-	/** Get Classname.
-	  * Java Classname
-	  */
-	public String getClassname();
-
     /** Column name CreateCopy */
     public static final String COLUMNNAME_CreateCopy = "CreateCopy";
 
@@ -248,6 +237,15 @@ public interface I_AD_PrintFormat
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name FileNamePattern */
+    public static final String COLUMNNAME_FileNamePattern = "FileNamePattern";
+
+	/** Set File Name Pattern	  */
+	public void setFileNamePattern (String FileNamePattern);
+
+	/** Get File Name Pattern	  */
+	public String getFileNamePattern();
 
     /** Column name FooterMargin */
     public static final String COLUMNNAME_FooterMargin = "FooterMargin";

@@ -266,9 +266,6 @@ public class MGoal extends X_PA_Goal
 		super (ctx, PA_Goal_ID, trxName);
 		if (PA_Goal_ID == 0)
 		{
-		//	setName (null);
-		//	setAD_User_ID (0);
-		//	setPA_ColorSchema_ID (0);
 			setSeqNo (0);
 			setIsSummary (false);
 			setMeasureScope (MEASUREDISPLAY_Year);
@@ -359,7 +356,7 @@ public class MGoal extends X_PA_Goal
 	public MMeasure getMeasure()
 	{
 		if (getPA_Measure_ID() != 0)
-			return MMeasure.get(getCtx(), getPA_Measure_ID());
+			return MMeasure.get(getPA_Measure_ID());
 		return null;
 	}	//	getMeasure
 	
@@ -372,7 +369,7 @@ public class MGoal extends X_PA_Goal
 	public boolean updateGoal(boolean force)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Force=" + force);
-		MMeasure measure = MMeasure.get(getCtx(), getPA_Measure_ID());
+		MMeasure measure = MMeasure.get(getPA_Measure_ID());
 		
 		boolean isUpdateByInterfal = false;
 		if (getDateLastRun() != null){
@@ -385,7 +382,7 @@ public class MGoal extends X_PA_Goal
 			|| getDateLastRun() == null
 			|| isUpdateByInterfal)
 		{
-			measure.set_TrxName(get_TrxName());
+			measure = new MMeasure(Env.getCtx(), measure, get_TrxName());
 			if (measure.updateGoals())		//	saves
 			{
 				load(get_ID(), get_TrxName());
@@ -464,7 +461,7 @@ public class MGoal extends X_PA_Goal
      */
     public MColorSchema getColorSchema()
     {
-    	return MColorSchema.get(getCtx(), getPA_ColorSchema_ID());
+    	return MColorSchema.getCopy(getCtx(), getPA_ColorSchema_ID(), get_TrxName());
     }
 	
 	/**
@@ -536,9 +533,6 @@ public class MGoal extends X_PA_Goal
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-	//	if (getMultiplier(this) == null)	//	error
-	//		setMeasureDisplay(getMeasureScope());
-		
 		//	Measure required if nor Summary
 		if (!isSummary() && getPA_Measure_ID() == 0)
 		{

@@ -23,19 +23,40 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Alert
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Alert")
 public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Alert (Properties ctx, int AD_Alert_ID, String trxName)
     {
       super (ctx, AD_Alert_ID, trxName);
+      /** if (AD_Alert_ID == 0)
+        {
+			setAD_Alert_ID (0);
+			setAD_AlertProcessor_ID (0);
+			setAlertMessage (null);
+			setAlertSubject (null);
+			setEnforceClientSecurity (true);
+// Y
+			setEnforceRoleSecurity (true);
+// Y
+			setIsValid (true);
+// Y
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Alert (Properties ctx, int AD_Alert_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Alert_ID, trxName, virtualColumns);
       /** if (AD_Alert_ID == 0)
         {
 			setAD_Alert_ID (0);
@@ -75,27 +96,26 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Alert[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_Alert[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Alert.
-		@param AD_Alert_ID 
-		iDempiere Alert
-	  */
+		@param AD_Alert_ID iDempiere Alert
+	*/
 	public void setAD_Alert_ID (int AD_Alert_ID)
 	{
-		if (AD_Alert_ID < 1) 
+		if (AD_Alert_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Alert_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Alert_ID, Integer.valueOf(AD_Alert_ID));
 	}
 
 	/** Get Alert.
 		@return iDempiere Alert
 	  */
-	public int getAD_Alert_ID () 
+	public int getAD_Alert_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Alert_ID);
 		if (ii == null)
@@ -104,26 +124,26 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	}
 
 	public org.compiere.model.I_AD_AlertProcessor getAD_AlertProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_AlertProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_AlertProcessor.Table_Name)
-			.getPO(getAD_AlertProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_AlertProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_AlertProcessor.Table_ID)
+			.getPO(getAD_AlertProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Alert Processor.
-		@param AD_AlertProcessor_ID 
-		Alert Processor/Server Parameter
-	  */
+		@param AD_AlertProcessor_ID Alert Processor/Server Parameter
+	*/
 	public void setAD_AlertProcessor_ID (int AD_AlertProcessor_ID)
 	{
-		if (AD_AlertProcessor_ID < 1) 
+		if (AD_AlertProcessor_ID < 1)
 			set_Value (COLUMNNAME_AD_AlertProcessor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_AlertProcessor_ID, Integer.valueOf(AD_AlertProcessor_ID));
 	}
 
 	/** Get Alert Processor.
 		@return Alert Processor/Server Parameter
 	  */
-	public int getAD_AlertProcessor_ID () 
+	public int getAD_AlertProcessor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AlertProcessor_ID);
 		if (ii == null)
@@ -132,7 +152,8 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	}
 
 	/** Set AD_Alert_UU.
-		@param AD_Alert_UU AD_Alert_UU	  */
+		@param AD_Alert_UU AD_Alert_UU
+	*/
 	public void setAD_Alert_UU (String AD_Alert_UU)
 	{
 		set_Value (COLUMNNAME_AD_Alert_UU, AD_Alert_UU);
@@ -140,15 +161,14 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 
 	/** Get AD_Alert_UU.
 		@return AD_Alert_UU	  */
-	public String getAD_Alert_UU () 
+	public String getAD_Alert_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Alert_UU);
 	}
 
 	/** Set Alert Message.
-		@param AlertMessage 
-		Message of the Alert
-	  */
+		@param AlertMessage Message of the Alert
+	*/
 	public void setAlertMessage (String AlertMessage)
 	{
 		set_Value (COLUMNNAME_AlertMessage, AlertMessage);
@@ -157,15 +177,14 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	/** Get Alert Message.
 		@return Message of the Alert
 	  */
-	public String getAlertMessage () 
+	public String getAlertMessage()
 	{
 		return (String)get_Value(COLUMNNAME_AlertMessage);
 	}
 
 	/** Set Alert Subject.
-		@param AlertSubject 
-		Subject of the Alert
-	  */
+		@param AlertSubject Subject of the Alert
+	*/
 	public void setAlertSubject (String AlertSubject)
 	{
 		set_Value (COLUMNNAME_AlertSubject, AlertSubject);
@@ -174,15 +193,14 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	/** Get Alert Subject.
 		@return Subject of the Alert
 	  */
-	public String getAlertSubject () 
+	public String getAlertSubject()
 	{
 		return (String)get_Value(COLUMNNAME_AlertSubject);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -191,15 +209,14 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Enforce Client Security.
-		@param EnforceClientSecurity 
-		Send alerts to recipient only if the client security rules of the role allows
-	  */
+		@param EnforceClientSecurity Send alerts to recipient only if the client security rules of the role allows
+	*/
 	public void setEnforceClientSecurity (boolean EnforceClientSecurity)
 	{
 		set_Value (COLUMNNAME_EnforceClientSecurity, Boolean.valueOf(EnforceClientSecurity));
@@ -208,7 +225,7 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	/** Get Enforce Client Security.
 		@return Send alerts to recipient only if the client security rules of the role allows
 	  */
-	public boolean isEnforceClientSecurity () 
+	public boolean isEnforceClientSecurity()
 	{
 		Object oo = get_Value(COLUMNNAME_EnforceClientSecurity);
 		if (oo != null) 
@@ -221,9 +238,8 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	}
 
 	/** Set Enforce Role Security.
-		@param EnforceRoleSecurity 
-		Send alerts to recipient only if the data security rules of the role allows
-	  */
+		@param EnforceRoleSecurity Send alerts to recipient only if the data security rules of the role allows
+	*/
 	public void setEnforceRoleSecurity (boolean EnforceRoleSecurity)
 	{
 		set_Value (COLUMNNAME_EnforceRoleSecurity, Boolean.valueOf(EnforceRoleSecurity));
@@ -232,7 +248,7 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	/** Get Enforce Role Security.
 		@return Send alerts to recipient only if the data security rules of the role allows
 	  */
-	public boolean isEnforceRoleSecurity () 
+	public boolean isEnforceRoleSecurity()
 	{
 		Object oo = get_Value(COLUMNNAME_EnforceRoleSecurity);
 		if (oo != null) 
@@ -245,9 +261,8 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -256,15 +271,14 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Valid.
-		@param IsValid 
-		Element is valid
-	  */
+		@param IsValid Element is valid
+	*/
 	public void setIsValid (boolean IsValid)
 	{
 		set_Value (COLUMNNAME_IsValid, Boolean.valueOf(IsValid));
@@ -273,7 +287,7 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	/** Get Valid.
 		@return Element is valid
 	  */
-	public boolean isValid () 
+	public boolean isValid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValid);
 		if (oo != null) 
@@ -286,9 +300,8 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -297,7 +310,7 @@ public class X_AD_Alert extends PO implements I_AD_Alert, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

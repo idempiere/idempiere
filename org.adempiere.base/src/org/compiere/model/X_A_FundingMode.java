@@ -23,19 +23,32 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_FundingMode
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="A_FundingMode")
 public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_FundingMode (Properties ctx, int A_FundingMode_ID, String trxName)
     {
       super (ctx, A_FundingMode_ID, trxName);
+      /** if (A_FundingMode_ID == 0)
+        {
+			setA_FundingMode_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_FundingMode (Properties ctx, int A_FundingMode_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_FundingMode_ID, trxName, virtualColumns);
       /** if (A_FundingMode_ID == 0)
         {
 			setA_FundingMode_ID (0);
@@ -67,24 +80,25 @@ public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_FundingMode[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_A_FundingMode[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Asset Funding Mode.
-		@param A_FundingMode_ID Asset Funding Mode	  */
+		@param A_FundingMode_ID Asset Funding Mode
+	*/
 	public void setA_FundingMode_ID (int A_FundingMode_ID)
 	{
-		if (A_FundingMode_ID < 1) 
+		if (A_FundingMode_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_FundingMode_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_FundingMode_ID, Integer.valueOf(A_FundingMode_ID));
 	}
 
 	/** Get Asset Funding Mode.
 		@return Asset Funding Mode	  */
-	public int getA_FundingMode_ID () 
+	public int getA_FundingMode_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_FundingMode_ID);
 		if (ii == null)
@@ -93,7 +107,8 @@ public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent
 	}
 
 	/** Set A_FundingMode_UU.
-		@param A_FundingMode_UU A_FundingMode_UU	  */
+		@param A_FundingMode_UU A_FundingMode_UU
+	*/
 	public void setA_FundingMode_UU (String A_FundingMode_UU)
 	{
 		set_Value (COLUMNNAME_A_FundingMode_UU, A_FundingMode_UU);
@@ -101,15 +116,14 @@ public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent
 
 	/** Get A_FundingMode_UU.
 		@return A_FundingMode_UU	  */
-	public String getA_FundingMode_UU () 
+	public String getA_FundingMode_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_FundingMode_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -118,15 +132,14 @@ public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -135,15 +148,14 @@ public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -152,7 +164,7 @@ public class X_A_FundingMode extends PO implements I_A_FundingMode, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

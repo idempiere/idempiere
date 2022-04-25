@@ -37,12 +37,12 @@ public class BankTransferParameterListener implements IProcessParameterListener 
 	@Override
 	public void onChange(ProcessParameterPanel parameterPanel, String columnName, WEditor editor) {
 		if (editor.getValue() != null) {
-			if ("StatementDate".equals(editor.getColumnName())) {
+			if ("StatementDate".equals(columnName)) {
 				// set Accounting Date when StatementDate changes
 				WEditor dateAcctEditor = parameterPanel.getEditor("DateAcct");
 				dateAcctEditor.setValue(editor.getValue());
-			} else if (   "From_C_BankAccount_ID".equals(editor.getColumnName())
-					   || "To_C_BankAccount_ID".equals(editor.getColumnName())) {
+			} else if (   "From_C_BankAccount_ID".equals(columnName)
+					   || "To_C_BankAccount_ID".equals(columnName)) {
 				WEditor toBankEditor = parameterPanel.getEditor("To_C_BankAccount_ID");
 				WEditor fromBankEditor = parameterPanel.getEditor("From_C_BankAccount_ID");
 				if (   toBankEditor.getValue() != null && fromBankEditor.getValue() != null 

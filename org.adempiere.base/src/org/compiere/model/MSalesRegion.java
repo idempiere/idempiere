@@ -19,7 +19,9 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
 /**
@@ -28,15 +30,26 @@ import org.compiere.util.CCache;
  *  @author Jorg Janke
  *  @version $Id: MSalesRegion.java,v 1.3 2006/07/30 00:54:54 jjanke Exp $
  */
-public class MSalesRegion extends X_C_SalesRegion
+public class MSalesRegion extends X_C_SalesRegion implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6166934441386906620L;
+	private static final long serialVersionUID = -1958080117315345389L;
+
 
 	/**
-	 * 	Get SalesRegion from Cache
+	 * 	Get SalesRegion from Cache (immutable)
+	 *	@param C_SalesRegion_ID id
+	 *	@return MSalesRegion
+	 */
+	public static MSalesRegion get (int C_SalesRegion_ID)
+	{
+		return get(Env.getCtx(), C_SalesRegion_ID);
+	}
+	
+	/**
+	 * 	Get SalesRegion from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_SalesRegion_ID id
 	 *	@return MSalesRegion
@@ -44,17 +57,20 @@ public class MSalesRegion extends X_C_SalesRegion
 	public static MSalesRegion get (Properties ctx, int C_SalesRegion_ID)
 	{
 		Integer key = Integer.valueOf(C_SalesRegion_ID);
-		MSalesRegion retValue = (MSalesRegion) s_cache.get (key);
+		MSalesRegion retValue = (MSalesRegion) s_cache.get (ctx, key, e -> new MSalesRegion(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MSalesRegion (ctx, C_SalesRegion_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MSalesRegion (ctx, C_SalesRegion_ID, (String)null);
+		if (retValue.get_ID () == C_SalesRegion_ID)
+		{
+			s_cache.put (key, retValue, e -> new MSalesRegion(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer,MSalesRegion>	s_cache	= new CCache<Integer,MSalesRegion>(Table_Name, 10);
+	private static ImmutableIntPOCache<Integer,MSalesRegion>	s_cache	= new ImmutableIntPOCache<Integer,MSalesRegion>(Table_Name, 10);
 	
 	
 	/**************************************************************************
@@ -79,6 +95,37 @@ public class MSalesRegion extends X_C_SalesRegion
 		super(ctx, rs, trxName);
 	}	//	MSalesRegion
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MSalesRegion(MSalesRegion copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MSalesRegion(Properties ctx, MSalesRegion copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MSalesRegion(Properties ctx, MSalesRegion copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	After Save.
 	 * 	Insert
@@ -113,5 +160,14 @@ public class MSalesRegion extends X_C_SalesRegion
 			delete_Tree(MTree_Base.TREETYPE_SalesRegion);
 		return success;
 	}	//	afterDelete
-	
+
+	@Override
+	public MSalesRegion markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MSalesRegion

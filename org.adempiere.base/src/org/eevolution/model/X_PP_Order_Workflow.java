@@ -27,19 +27,48 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_Workflow
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="PP_Order_Workflow")
 public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Order_Workflow (Properties ctx, int PP_Order_Workflow_ID, String trxName)
     {
       super (ctx, PP_Order_Workflow_ID, trxName);
+      /** if (PP_Order_Workflow_ID == 0)
+        {
+			setAccessLevel (null);
+			setAD_Workflow_ID (0);
+			setAuthor (null);
+			setCost (Env.ZERO);
+			setDuration (0);
+// 0
+			setDurationUnit (null);
+// h
+			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+			setLimit (0);
+			setName (null);
+			setPP_Order_ID (0);
+			setPP_Order_Workflow_ID (0);
+			setPriority (0);
+			setPublishStatus (null);
+// U
+			setVersion (0);
+			setWaitingTime (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_Workflow (Properties ctx, int PP_Order_Workflow_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_Workflow_ID, trxName, virtualColumns);
       /** if (PP_Order_Workflow_ID == 0)
         {
 			setAccessLevel (null);
@@ -87,8 +116,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PP_Order_Workflow[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_PP_Order_Workflow[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
@@ -96,20 +125,19 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	public static final int ACCESSLEVEL_AD_Reference_ID=5;
 	/** Organization = 1 */
 	public static final String ACCESSLEVEL_Organization = "1";
+	/** Client only = 2 */
+	public static final String ACCESSLEVEL_ClientOnly = "2";
 	/** Client+Organization = 3 */
 	public static final String ACCESSLEVEL_ClientPlusOrganization = "3";
 	/** System only = 4 */
 	public static final String ACCESSLEVEL_SystemOnly = "4";
-	/** All = 7 */
-	public static final String ACCESSLEVEL_All = "7";
 	/** System+Client = 6 */
 	public static final String ACCESSLEVEL_SystemPlusClient = "6";
-	/** Client only = 2 */
-	public static final String ACCESSLEVEL_ClientOnly = "2";
+	/** All = 7 */
+	public static final String ACCESSLEVEL_All = "7";
 	/** Set Data Access Level.
-		@param AccessLevel 
-		Access Level required
-	  */
+		@param AccessLevel Access Level required
+	*/
 	public void setAccessLevel (String AccessLevel)
 	{
 
@@ -119,32 +147,32 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Data Access Level.
 		@return Access Level required
 	  */
-	public String getAccessLevel () 
+	public String getAccessLevel()
 	{
 		return (String)get_Value(COLUMNNAME_AccessLevel);
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -153,26 +181,26 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.compiere.model.I_AD_WF_Node getAD_WF_Node() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_Name)
-			.getPO(getAD_WF_Node_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Node)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Node.Table_ID)
+			.getPO(getAD_WF_Node_ID(), get_TrxName());
+	}
 
 	/** Set Node.
-		@param AD_WF_Node_ID 
-		Workflow Node (activity), step or process
-	  */
+		@param AD_WF_Node_ID Workflow Node (activity), step or process
+	*/
 	public void setAD_WF_Node_ID (int AD_WF_Node_ID)
 	{
-		if (AD_WF_Node_ID < 1) 
+		if (AD_WF_Node_ID < 1)
 			set_Value (COLUMNNAME_AD_WF_Node_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_WF_Node_ID, Integer.valueOf(AD_WF_Node_ID));
 	}
 
 	/** Get Node.
 		@return Workflow Node (activity), step or process
 	  */
-	public int getAD_WF_Node_ID () 
+	public int getAD_WF_Node_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Node_ID);
 		if (ii == null)
@@ -181,26 +209,26 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.compiere.model.I_AD_WF_Responsible getAD_WF_Responsible() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_Name)
-			.getPO(getAD_WF_Responsible_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WF_Responsible)MTable.get(getCtx(), org.compiere.model.I_AD_WF_Responsible.Table_ID)
+			.getPO(getAD_WF_Responsible_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Responsible.
-		@param AD_WF_Responsible_ID 
-		Responsible for Workflow Execution
-	  */
+		@param AD_WF_Responsible_ID Responsible for Workflow Execution
+	*/
 	public void setAD_WF_Responsible_ID (int AD_WF_Responsible_ID)
 	{
-		if (AD_WF_Responsible_ID < 1) 
+		if (AD_WF_Responsible_ID < 1)
 			set_Value (COLUMNNAME_AD_WF_Responsible_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_WF_Responsible_ID, Integer.valueOf(AD_WF_Responsible_ID));
 	}
 
 	/** Get Workflow Responsible.
 		@return Responsible for Workflow Execution
 	  */
-	public int getAD_WF_Responsible_ID () 
+	public int getAD_WF_Responsible_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Responsible_ID);
 		if (ii == null)
@@ -209,26 +237,26 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getAD_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getAD_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
-		@param AD_Workflow_ID 
-		Workflow or combination of tasks
-	  */
+		@param AD_Workflow_ID Workflow or combination of tasks
+	*/
 	public void setAD_Workflow_ID (int AD_Workflow_ID)
 	{
-		if (AD_Workflow_ID < 1) 
+		if (AD_Workflow_ID < 1)
 			set_Value (COLUMNNAME_AD_Workflow_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Workflow_ID, Integer.valueOf(AD_Workflow_ID));
 	}
 
 	/** Get Workflow.
 		@return Workflow or combination of tasks
 	  */
-	public int getAD_Workflow_ID () 
+	public int getAD_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Workflow_ID);
 		if (ii == null)
@@ -237,26 +265,26 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.compiere.model.I_AD_WorkflowProcessor getAD_WorkflowProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_WorkflowProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_WorkflowProcessor.Table_Name)
-			.getPO(getAD_WorkflowProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_WorkflowProcessor)MTable.get(getCtx(), org.compiere.model.I_AD_WorkflowProcessor.Table_ID)
+			.getPO(getAD_WorkflowProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Workflow Processor.
-		@param AD_WorkflowProcessor_ID 
-		Workflow Processor Server
-	  */
+		@param AD_WorkflowProcessor_ID Workflow Processor Server
+	*/
 	public void setAD_WorkflowProcessor_ID (int AD_WorkflowProcessor_ID)
 	{
-		if (AD_WorkflowProcessor_ID < 1) 
+		if (AD_WorkflowProcessor_ID < 1)
 			set_Value (COLUMNNAME_AD_WorkflowProcessor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_WorkflowProcessor_ID, Integer.valueOf(AD_WorkflowProcessor_ID));
 	}
 
 	/** Get Workflow Processor.
 		@return Workflow Processor Server
 	  */
-	public int getAD_WorkflowProcessor_ID () 
+	public int getAD_WorkflowProcessor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WorkflowProcessor_ID);
 		if (ii == null)
@@ -265,9 +293,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set Author.
-		@param Author 
-		Author/Creator of the Entity
-	  */
+		@param Author Author/Creator of the Entity
+	*/
 	public void setAuthor (String Author)
 	{
 		set_Value (COLUMNNAME_Author, Author);
@@ -276,15 +303,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Author.
 		@return Author/Creator of the Entity
 	  */
-	public String getAuthor () 
+	public String getAuthor()
 	{
 		return (String)get_Value(COLUMNNAME_Author);
 	}
 
 	/** Set Cost.
-		@param Cost 
-		Cost information
-	  */
+		@param Cost Cost information
+	*/
 	public void setCost (BigDecimal Cost)
 	{
 		set_Value (COLUMNNAME_Cost, Cost);
@@ -293,7 +319,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Cost.
 		@return Cost information
 	  */
-	public BigDecimal getCost () 
+	public BigDecimal getCost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Cost);
 		if (bd == null)
@@ -302,9 +328,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -313,15 +338,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -330,15 +354,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
 
 	/** Set Duration.
-		@param Duration 
-		Normal Duration in Duration Unit
-	  */
+		@param Duration Normal Duration in Duration Unit
+	*/
 	public void setDuration (int Duration)
 	{
 		set_Value (COLUMNNAME_Duration, Integer.valueOf(Duration));
@@ -347,7 +370,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Duration.
 		@return Normal Duration in Duration Unit
 	  */
-	public int getDuration () 
+	public int getDuration()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Duration);
 		if (ii == null)
@@ -357,22 +380,21 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 
 	/** DurationUnit AD_Reference_ID=299 */
 	public static final int DURATIONUNIT_AD_Reference_ID=299;
-	/** Year = Y */
-	public static final String DURATIONUNIT_Year = "Y";
-	/** Month = M */
-	public static final String DURATIONUNIT_Month = "M";
 	/** Day = D */
 	public static final String DURATIONUNIT_Day = "D";
 	/** hour = h */
 	public static final String DURATIONUNIT_Hour = "h";
 	/** minute = m */
 	public static final String DURATIONUNIT_Minute = "m";
+	/** Month = M */
+	public static final String DURATIONUNIT_Month = "M";
 	/** second = s */
 	public static final String DURATIONUNIT_Second = "s";
+	/** Year = Y */
+	public static final String DURATIONUNIT_Year = "Y";
 	/** Set Duration Unit.
-		@param DurationUnit 
-		Unit of Duration
-	  */
+		@param DurationUnit Unit of Duration
+	*/
 	public void setDurationUnit (String DurationUnit)
 	{
 
@@ -382,7 +404,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Duration Unit.
 		@return Unit of Duration
 	  */
-	public String getDurationUnit () 
+	public String getDurationUnit()
 	{
 		return (String)get_Value(COLUMNNAME_DurationUnit);
 	}
@@ -390,9 +412,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -402,15 +423,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -419,15 +439,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -436,7 +455,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -449,9 +468,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set Duration Limit.
-		@param Limit 
-		Maximum Duration in Duration Unit
-	  */
+		@param Limit Maximum Duration in Duration Unit
+	*/
 	public void setLimit (int Limit)
 	{
 		set_Value (COLUMNNAME_Limit, Integer.valueOf(Limit));
@@ -460,7 +478,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Duration Limit.
 		@return Maximum Duration in Duration Unit
 	  */
-	public int getLimit () 
+	public int getLimit()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Limit);
 		if (ii == null)
@@ -469,7 +487,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set Moving Time.
-		@param MovingTime Moving Time	  */
+		@param MovingTime Moving Time
+	*/
 	public void setMovingTime (int MovingTime)
 	{
 		set_Value (COLUMNNAME_MovingTime, Integer.valueOf(MovingTime));
@@ -477,7 +496,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 
 	/** Get Moving Time.
 		@return Moving Time	  */
-	public int getMovingTime () 
+	public int getMovingTime()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MovingTime);
 		if (ii == null)
@@ -486,9 +505,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -497,7 +515,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -511,9 +529,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
     }
 
 	/** Set Overlap Units.
-		@param OverlapUnits 
-		Overlap Units are number of units that must be completed before they are moved the next activity
-	  */
+		@param OverlapUnits Overlap Units are number of units that must be completed before they are moved the next activity
+	*/
 	public void setOverlapUnits (BigDecimal OverlapUnits)
 	{
 		set_Value (COLUMNNAME_OverlapUnits, OverlapUnits);
@@ -522,7 +539,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Overlap Units.
 		@return Overlap Units are number of units that must be completed before they are moved the next activity
 	  */
-	public BigDecimal getOverlapUnits () 
+	public BigDecimal getOverlapUnits()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_OverlapUnits);
 		if (bd == null)
@@ -531,26 +548,26 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.eevolution.model.I_PP_Order getPP_Order() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_Name)
-			.getPO(getPP_Order_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order)MTable.get(getCtx(), org.eevolution.model.I_PP_Order.Table_ID)
+			.getPO(getPP_Order_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order.
-		@param PP_Order_ID 
-		Manufacturing Order
-	  */
+		@param PP_Order_ID Manufacturing Order
+	*/
 	public void setPP_Order_ID (int PP_Order_ID)
 	{
-		if (PP_Order_ID < 1) 
+		if (PP_Order_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, Integer.valueOf(PP_Order_ID));
 	}
 
 	/** Get Manufacturing Order.
 		@return Manufacturing Order
 	  */
-	public int getPP_Order_ID () 
+	public int getPP_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_ID);
 		if (ii == null)
@@ -559,26 +576,26 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.eevolution.model.I_PP_Order_Node getPP_Order_Node() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Order_Node)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Node.Table_Name)
-			.getPO(getPP_Order_Node_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Order_Node)MTable.get(getCtx(), org.eevolution.model.I_PP_Order_Node.Table_ID)
+			.getPO(getPP_Order_Node_ID(), get_TrxName());
+	}
 
 	/** Set Manufacturing Order Activity.
-		@param PP_Order_Node_ID 
-		Workflow Node (activity), step or process
-	  */
+		@param PP_Order_Node_ID Workflow Node (activity), step or process
+	*/
 	public void setPP_Order_Node_ID (int PP_Order_Node_ID)
 	{
-		if (PP_Order_Node_ID < 1) 
+		if (PP_Order_Node_ID < 1)
 			set_Value (COLUMNNAME_PP_Order_Node_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PP_Order_Node_ID, Integer.valueOf(PP_Order_Node_ID));
 	}
 
 	/** Get Manufacturing Order Activity.
 		@return Workflow Node (activity), step or process
 	  */
-	public int getPP_Order_Node_ID () 
+	public int getPP_Order_Node_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_Node_ID);
 		if (ii == null)
@@ -587,18 +604,19 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set Manufacturing Order Workflow.
-		@param PP_Order_Workflow_ID Manufacturing Order Workflow	  */
+		@param PP_Order_Workflow_ID Manufacturing Order Workflow
+	*/
 	public void setPP_Order_Workflow_ID (int PP_Order_Workflow_ID)
 	{
-		if (PP_Order_Workflow_ID < 1) 
+		if (PP_Order_Workflow_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Workflow_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Workflow_ID, Integer.valueOf(PP_Order_Workflow_ID));
 	}
 
 	/** Get Manufacturing Order Workflow.
 		@return Manufacturing Order Workflow	  */
-	public int getPP_Order_Workflow_ID () 
+	public int getPP_Order_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_Workflow_ID);
 		if (ii == null)
@@ -607,7 +625,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set PP_Order_Workflow_UU.
-		@param PP_Order_Workflow_UU PP_Order_Workflow_UU	  */
+		@param PP_Order_Workflow_UU PP_Order_Workflow_UU
+	*/
 	public void setPP_Order_Workflow_UU (String PP_Order_Workflow_UU)
 	{
 		set_Value (COLUMNNAME_PP_Order_Workflow_UU, PP_Order_Workflow_UU);
@@ -615,15 +634,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 
 	/** Get PP_Order_Workflow_UU.
 		@return PP_Order_Workflow_UU	  */
-	public String getPP_Order_Workflow_UU () 
+	public String getPP_Order_Workflow_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PP_Order_Workflow_UU);
 	}
 
 	/** Set Priority.
-		@param Priority 
-		Indicates if this request is of a high, medium or low priority.
-	  */
+		@param Priority Indicates if this request is of a high, medium or low priority.
+	*/
 	public void setPriority (int Priority)
 	{
 		set_Value (COLUMNNAME_Priority, Integer.valueOf(Priority));
@@ -632,7 +650,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Priority.
 		@return Indicates if this request is of a high, medium or low priority.
 	  */
-	public int getPriority () 
+	public int getPriority()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Priority);
 		if (ii == null)
@@ -655,7 +673,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Plant = PL */
 	public static final String PROCESSTYPE_Plant = "PL";
 	/** Set Process Type.
-		@param ProcessType Process Type	  */
+		@param ProcessType Process Type
+	*/
 	public void setProcessType (String ProcessType)
 	{
 
@@ -664,7 +683,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 
 	/** Get Process Type.
 		@return Process Type	  */
-	public String getProcessType () 
+	public String getProcessType()
 	{
 		return (String)get_Value(COLUMNNAME_ProcessType);
 	}
@@ -680,9 +699,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Void = V */
 	public static final String PUBLISHSTATUS_Void = "V";
 	/** Set Publication Status.
-		@param PublishStatus 
-		Status of Publication
-	  */
+		@param PublishStatus Status of Publication
+	*/
 	public void setPublishStatus (String PublishStatus)
 	{
 
@@ -692,13 +710,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Publication Status.
 		@return Status of Publication
 	  */
-	public String getPublishStatus () 
+	public String getPublishStatus()
 	{
 		return (String)get_Value(COLUMNNAME_PublishStatus);
 	}
 
 	/** Set Qty Batch Size.
-		@param QtyBatchSize Qty Batch Size	  */
+		@param QtyBatchSize Qty Batch Size
+	*/
 	public void setQtyBatchSize (BigDecimal QtyBatchSize)
 	{
 		set_Value (COLUMNNAME_QtyBatchSize, QtyBatchSize);
@@ -706,7 +725,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 
 	/** Get Qty Batch Size.
 		@return Qty Batch Size	  */
-	public BigDecimal getQtyBatchSize () 
+	public BigDecimal getQtyBatchSize()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBatchSize);
 		if (bd == null)
@@ -715,9 +734,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set Queuing Time.
-		@param QueuingTime 
-		Queue time is the time a job waits at a work center before begin handled.
-	  */
+		@param QueuingTime Queue time is the time a job waits at a work center before begin handled.
+	*/
 	public void setQueuingTime (int QueuingTime)
 	{
 		set_Value (COLUMNNAME_QueuingTime, Integer.valueOf(QueuingTime));
@@ -726,7 +744,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Queuing Time.
 		@return Queue time is the time a job waits at a work center before begin handled.
 	  */
-	public int getQueuingTime () 
+	public int getQueuingTime()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_QueuingTime);
 		if (ii == null)
@@ -735,9 +753,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set Setup Time.
-		@param SetupTime 
-		Setup time before starting Production
-	  */
+		@param SetupTime Setup time before starting Production
+	*/
 	public void setSetupTime (int SetupTime)
 	{
 		set_Value (COLUMNNAME_SetupTime, Integer.valueOf(SetupTime));
@@ -746,7 +763,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Setup Time.
 		@return Setup time before starting Production
 	  */
-	public int getSetupTime () 
+	public int getSetupTime()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SetupTime);
 		if (ii == null)
@@ -755,26 +772,26 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
-			.getPO(getS_Resource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
 
 	/** Set Resource.
-		@param S_Resource_ID 
-		Resource
-	  */
+		@param S_Resource_ID Resource
+	*/
 	public void setS_Resource_ID (int S_Resource_ID)
 	{
-		if (S_Resource_ID < 1) 
+		if (S_Resource_ID < 1)
 			set_Value (COLUMNNAME_S_Resource_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_S_Resource_ID, Integer.valueOf(S_Resource_ID));
 	}
 
 	/** Get Resource.
 		@return Resource
 	  */
-	public int getS_Resource_ID () 
+	public int getS_Resource_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_Resource_ID);
 		if (ii == null)
@@ -783,9 +800,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set Units by Cycles.
-		@param UnitsCycles 
-		The Units by Cycles are defined for process type  Flow Repetitive Dedicated and  indicated the product to be manufactured on a production line for duration unit.
-	  */
+		@param UnitsCycles The Units by Cycles are defined for process type  Flow Repetitive Dedicated and  indicated the product to be manufactured on a production line for duration unit.
+	*/
 	public void setUnitsCycles (BigDecimal UnitsCycles)
 	{
 		set_Value (COLUMNNAME_UnitsCycles, UnitsCycles);
@@ -794,7 +810,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Units by Cycles.
 		@return The Units by Cycles are defined for process type  Flow Repetitive Dedicated and  indicated the product to be manufactured on a production line for duration unit.
 	  */
-	public BigDecimal getUnitsCycles () 
+	public BigDecimal getUnitsCycles()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_UnitsCycles);
 		if (bd == null)
@@ -803,7 +819,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set Validate Workflow.
-		@param ValidateWorkflow Validate Workflow	  */
+		@param ValidateWorkflow Validate Workflow
+	*/
 	public void setValidateWorkflow (String ValidateWorkflow)
 	{
 		set_Value (COLUMNNAME_ValidateWorkflow, ValidateWorkflow);
@@ -811,15 +828,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 
 	/** Get Validate Workflow.
 		@return Validate Workflow	  */
-	public String getValidateWorkflow () 
+	public String getValidateWorkflow()
 	{
 		return (String)get_Value(COLUMNNAME_ValidateWorkflow);
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -828,15 +844,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -845,15 +860,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -862,15 +876,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
 	/** Set Version.
-		@param Version 
-		Version of the table definition
-	  */
+		@param Version Version of the table definition
+	*/
 	public void setVersion (int Version)
 	{
 		set_Value (COLUMNNAME_Version, Integer.valueOf(Version));
@@ -879,7 +892,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Version.
 		@return Version of the table definition
 	  */
-	public int getVersion () 
+	public int getVersion()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Version);
 		if (ii == null)
@@ -888,9 +901,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set Waiting Time.
-		@param WaitingTime 
-		Workflow Simulation Waiting time
-	  */
+		@param WaitingTime Workflow Simulation Waiting time
+	*/
 	public void setWaitingTime (int WaitingTime)
 	{
 		set_Value (COLUMNNAME_WaitingTime, Integer.valueOf(WaitingTime));
@@ -899,7 +911,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Waiting Time.
 		@return Workflow Simulation Waiting time
 	  */
-	public int getWaitingTime () 
+	public int getWaitingTime()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WaitingTime);
 		if (ii == null)
@@ -909,18 +921,17 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 
 	/** WorkflowType AD_Reference_ID=108 */
 	public static final int WORKFLOWTYPE_AD_Reference_ID=108;
-	/** Single Record = S */
-	public static final String WORKFLOWTYPE_SingleRecord = "S";
 	/** Maintain = M */
 	public static final String WORKFLOWTYPE_Maintain = "M";
-	/** Transaction = T */
-	public static final String WORKFLOWTYPE_Transaction = "T";
 	/** Query Only = Q */
 	public static final String WORKFLOWTYPE_QueryOnly = "Q";
+	/** Single Record = S */
+	public static final String WORKFLOWTYPE_SingleRecord = "S";
+	/** Transaction = T */
+	public static final String WORKFLOWTYPE_Transaction = "T";
 	/** Set Workflow Type.
-		@param WorkflowType 
-		Type of Workflow
-	  */
+		@param WorkflowType Type of Workflow
+	*/
 	public void setWorkflowType (String WorkflowType)
 	{
 
@@ -930,15 +941,14 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Workflow Type.
 		@return Type of Workflow
 	  */
-	public String getWorkflowType () 
+	public String getWorkflowType()
 	{
 		return (String)get_Value(COLUMNNAME_WorkflowType);
 	}
 
 	/** Set Working Time.
-		@param WorkingTime 
-		Workflow Simulation Execution Time
-	  */
+		@param WorkingTime Workflow Simulation Execution Time
+	*/
 	public void setWorkingTime (int WorkingTime)
 	{
 		set_Value (COLUMNNAME_WorkingTime, Integer.valueOf(WorkingTime));
@@ -947,7 +957,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Working Time.
 		@return Workflow Simulation Execution Time
 	  */
-	public int getWorkingTime () 
+	public int getWorkingTime()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WorkingTime);
 		if (ii == null)
@@ -956,9 +966,8 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	}
 
 	/** Set Yield %.
-		@param Yield 
-		The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
-	  */
+		@param Yield The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
+	*/
 	public void setYield (int Yield)
 	{
 		set_Value (COLUMNNAME_Yield, Integer.valueOf(Yield));
@@ -967,7 +976,7 @@ public class X_PP_Order_Workflow extends PO implements I_PP_Order_Workflow, I_Pe
 	/** Get Yield %.
 		@return The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
 	  */
-	public int getYield () 
+	public int getYield()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Yield);
 		if (ii == null)

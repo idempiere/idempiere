@@ -24,6 +24,7 @@ import java.util.Properties;
 import org.compiere.model.AdempiereProcessor;
 import org.compiere.model.AdempiereProcessor2;
 import org.compiere.model.AdempiereProcessorLog;
+import org.compiere.model.MClientInfo;
 import org.compiere.model.MSchedule;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WorkflowProcessor;
@@ -142,7 +143,8 @@ public class MWorkflowProcessor extends X_AD_WorkflowProcessor
 	protected boolean beforeSave(boolean newRecord)
 	{
 		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
-			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern());
+			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern(),
+					MClientInfo.get(getCtx(), getAD_Client_ID()).getTimeZone());
 			if (nextWork > 0)
 				setDateNextRun(new Timestamp(nextWork));
 		}

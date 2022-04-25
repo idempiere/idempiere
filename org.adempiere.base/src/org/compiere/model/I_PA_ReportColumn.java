@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ReportColumn
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 9
  */
 public interface I_PA_ReportColumn 
 {
@@ -102,12 +102,12 @@ public interface I_PA_ReportColumn
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -685,6 +685,19 @@ public interface I_PA_ReportColumn
 	  * Period offset (0 is current)
 	  */
 	public BigDecimal getRelativePeriod();
+
+    /** Column name RelativePeriodTo */
+    public static final String COLUMNNAME_RelativePeriodTo = "RelativePeriodTo";
+
+	/** Set Relative Period To.
+	  * Period offset (0 is current)
+	  */
+	public void setRelativePeriodTo (BigDecimal RelativePeriodTo);
+
+	/** Get Relative Period To.
+	  * Period offset (0 is current)
+	  */
+	public BigDecimal getRelativePeriodTo();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

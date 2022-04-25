@@ -33,7 +33,9 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
+import org.compiere.model.MEntityType;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -68,6 +70,7 @@ import org.zkoss.zul.Vbox;
  * @author Low Heng Sin
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.wf.WFPanel")
 public class WFEditor extends ADForm {
 	/**
 	 * 
@@ -204,10 +207,13 @@ public class WFEditor extends ADForm {
 			if (AD_WF_Node_ID != null) {
 				WFNodeWidget widget = (WFNodeWidget) nodeContainer.getGraphScene().findWidget(AD_WF_Node_ID);
 				if (widget != null) {
-					widget.getModel().setXPosition(xPosition);
-					widget.getModel().setYPosition(yPosition);
-					widget.getModel().saveEx();
-					reload(m_workflowId, true);
+					MWFNode node = widget.getModel();
+					if (node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx())) {
+						node.setXPosition(xPosition);
+						node.setYPosition(yPosition);
+						node.saveEx();
+						reload(m_workflowId, true);
+					}
 				}
 			}
 		}
@@ -240,7 +246,6 @@ public class WFEditor extends ADForm {
 			}
 		});
 		
-		ZKUpdateUtil.setWidth(w, "250px");
 		w.setBorder("normal");
 		w.setPage(this.getPage());
 		w.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
@@ -253,6 +258,8 @@ public class WFEditor extends ADForm {
 					int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 					MWFNode node = new MWFNode(m_wf, name, name);
 					node.setClientOrg(AD_Client_ID, 0);
+					if (AD_Client_ID > 11)
+						node.setEntityType(MSysConfig.getValue(MSysConfig.DEFAULT_ENTITYTYPE, MEntityType.ENTITYTYPE_UserMaintained));
 					node.saveEx();
 					reload(m_wf.getAD_Workflow_ID(), true);
 				}
@@ -270,7 +277,7 @@ public class WFEditor extends ADForm {
 
 	private void load(int workflowId, boolean reread) {
 		//	Get Workflow
-		m_wf = MWorkflow.get(Env.getCtx(), workflowId);
+		m_wf = MWorkflow.getCopy(Env.getCtx(), workflowId, (String)null);
 		m_workflowId = workflowId;
 		nodeContainer = new WFNodeContainer();
 		nodeContainer.setWorkflow(m_wf);
@@ -382,10 +389,10 @@ public class WFEditor extends ADForm {
 			if (widget != null) {
 				MWFNode node = widget.getModel();
 				Menupopup popupMenu = new Menupopup();
+				// Zoom
+				addMenuItem(popupMenu, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")), node, WFPopupItem.WFPOPUPITEM_ZOOM);
 				if (node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx()))
 				{
-					// Zoom
-					addMenuItem(popupMenu, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")), node, WFPopupItem.WFPOPUPITEM_ZOOM);
 					// Properties
 					addMenuItem(popupMenu, Msg.getMsg(Env.getCtx(), "Properties"), node, WFPopupItem.WFPOPUPITEM_PROPERTIES);
 					// Delete node

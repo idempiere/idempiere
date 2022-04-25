@@ -25,19 +25,31 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_List
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="HR_List")
 public class X_HR_List extends PO implements I_HR_List, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_HR_List (Properties ctx, int HR_List_ID, String trxName)
     {
       super (ctx, HR_List_ID, trxName);
+      /** if (HR_List_ID == 0)
+        {
+			setHR_List_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_List (Properties ctx, int HR_List_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_List_ID, trxName, virtualColumns);
       /** if (HR_List_ID == 0)
         {
 			setHR_List_ID (0);
@@ -68,15 +80,14 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_HR_List[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_HR_List[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -85,29 +96,31 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	public org.eevolution.model.I_HR_Department getHR_Department() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_Name)
-			.getPO(getHR_Department_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Department)MTable.get(getCtx(), org.eevolution.model.I_HR_Department.Table_ID)
+			.getPO(getHR_Department_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Department.
-		@param HR_Department_ID Payroll Department	  */
+		@param HR_Department_ID Payroll Department
+	*/
 	public void setHR_Department_ID (int HR_Department_ID)
 	{
-		if (HR_Department_ID < 1) 
+		if (HR_Department_ID < 1)
 			set_Value (COLUMNNAME_HR_Department_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Department_ID, Integer.valueOf(HR_Department_ID));
 	}
 
 	/** Get Payroll Department.
 		@return Payroll Department	  */
-	public int getHR_Department_ID () 
+	public int getHR_Department_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Department_ID);
 		if (ii == null)
@@ -116,23 +129,25 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_Employee getHR_Employee() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Employee)MTable.get(getCtx(), org.eevolution.model.I_HR_Employee.Table_Name)
-			.getPO(getHR_Employee_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Employee)MTable.get(getCtx(), org.eevolution.model.I_HR_Employee.Table_ID)
+			.getPO(getHR_Employee_ID(), get_TrxName());
+	}
 
 	/** Set Payroll Employee.
-		@param HR_Employee_ID Payroll Employee	  */
+		@param HR_Employee_ID Payroll Employee
+	*/
 	public void setHR_Employee_ID (int HR_Employee_ID)
 	{
-		if (HR_Employee_ID < 1) 
+		if (HR_Employee_ID < 1)
 			set_Value (COLUMNNAME_HR_Employee_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Employee_ID, Integer.valueOf(HR_Employee_ID));
 	}
 
 	/** Get Payroll Employee.
 		@return Payroll Employee	  */
-	public int getHR_Employee_ID () 
+	public int getHR_Employee_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Employee_ID);
 		if (ii == null)
@@ -141,18 +156,19 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	}
 
 	/** Set Payroll List.
-		@param HR_List_ID Payroll List	  */
+		@param HR_List_ID Payroll List
+	*/
 	public void setHR_List_ID (int HR_List_ID)
 	{
-		if (HR_List_ID < 1) 
+		if (HR_List_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_List_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_List_ID, Integer.valueOf(HR_List_ID));
 	}
 
 	/** Get Payroll List.
 		@return Payroll List	  */
-	public int getHR_List_ID () 
+	public int getHR_List_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_List_ID);
 		if (ii == null)
@@ -161,23 +177,25 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	}
 
 	public org.eevolution.model.I_HR_ListType getHR_ListType() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_ListType)MTable.get(getCtx(), org.eevolution.model.I_HR_ListType.Table_Name)
-			.getPO(getHR_ListType_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_ListType)MTable.get(getCtx(), org.eevolution.model.I_HR_ListType.Table_ID)
+			.getPO(getHR_ListType_ID(), get_TrxName());
+	}
 
 	/** Set Payroll List Type.
-		@param HR_ListType_ID Payroll List Type	  */
+		@param HR_ListType_ID Payroll List Type
+	*/
 	public void setHR_ListType_ID (int HR_ListType_ID)
 	{
-		if (HR_ListType_ID < 1) 
+		if (HR_ListType_ID < 1)
 			set_Value (COLUMNNAME_HR_ListType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_ListType_ID, Integer.valueOf(HR_ListType_ID));
 	}
 
 	/** Get Payroll List Type.
 		@return Payroll List Type	  */
-	public int getHR_ListType_ID () 
+	public int getHR_ListType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_ListType_ID);
 		if (ii == null)
@@ -186,7 +204,8 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	}
 
 	/** Set HR_List_UU.
-		@param HR_List_UU HR_List_UU	  */
+		@param HR_List_UU HR_List_UU
+	*/
 	public void setHR_List_UU (String HR_List_UU)
 	{
 		set_Value (COLUMNNAME_HR_List_UU, HR_List_UU);
@@ -194,29 +213,31 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 
 	/** Get HR_List_UU.
 		@return HR_List_UU	  */
-	public String getHR_List_UU () 
+	public String getHR_List_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_List_UU);
 	}
 
 	public org.eevolution.model.I_HR_Payroll getHR_Payroll() throws RuntimeException
-    {
-		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_Name)
-			.getPO(getHR_Payroll_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_HR_Payroll)MTable.get(getCtx(), org.eevolution.model.I_HR_Payroll.Table_ID)
+			.getPO(getHR_Payroll_ID(), get_TrxName());
+	}
 
 	/** Set Payroll.
-		@param HR_Payroll_ID Payroll	  */
+		@param HR_Payroll_ID Payroll
+	*/
 	public void setHR_Payroll_ID (int HR_Payroll_ID)
 	{
-		if (HR_Payroll_ID < 1) 
+		if (HR_Payroll_ID < 1)
 			set_Value (COLUMNNAME_HR_Payroll_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Payroll_ID, Integer.valueOf(HR_Payroll_ID));
 	}
 
 	/** Get Payroll.
 		@return Payroll	  */
-	public int getHR_Payroll_ID () 
+	public int getHR_Payroll_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Payroll_ID);
 		if (ii == null)
@@ -225,9 +246,8 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	}
 
 	/** Set Employee.
-		@param IsEmployee 
-		Indicates if  this Business Partner is an employee
-	  */
+		@param IsEmployee Indicates if  this Business Partner is an employee
+	*/
 	public void setIsEmployee (boolean IsEmployee)
 	{
 		set_Value (COLUMNNAME_IsEmployee, Boolean.valueOf(IsEmployee));
@@ -236,7 +256,7 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	/** Get Employee.
 		@return Indicates if  this Business Partner is an employee
 	  */
-	public boolean isEmployee () 
+	public boolean isEmployee()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEmployee);
 		if (oo != null) 
@@ -249,9 +269,8 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -260,7 +279,7 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -274,9 +293,8 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
     }
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -285,15 +303,14 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -302,7 +319,7 @@ public class X_HR_List extends PO implements I_HR_List, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

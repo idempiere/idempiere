@@ -28,6 +28,7 @@ import org.compiere.util.AdempiereUserError;
  *  @author Jorg Janke
  *  @version $Id: YearCreatePeriods.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class YearCreatePeriods extends SvrProcess
 {
 	private int	p_C_Year_ID = 0;

@@ -29,15 +29,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.compiere.Adempiere;
 import org.compiere.model.MEXPFormat;
 import org.compiere.model.MReplicationStrategy;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.X_AD_ReplicationTable;
-import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
-import org.compiere.util.CLogMgt;
 import org.compiere.util.Env;
 import org.w3c.dom.Document;
 
@@ -45,9 +42,10 @@ import org.w3c.dom.Document;
  * 
   * @author victor.perez@e-evolution.com 
  * FB  [1963487 ] Is necessary new process to export and import with an Export
- * @see  http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1963487&group_id=176962
+ * @see  https://sourceforge.net/p/adempiere/feature-requests/423/
  * @version $Id:$
  */
+@org.adempiere.base.annotation.Process
 public class ModelExporter extends SvrProcess {
 
 	/** Client Parameter */
@@ -77,7 +75,7 @@ public class ModelExporter extends SvrProcess {
 			p_AD_Client_ID = Env.getAD_Client_ID(getCtx());
 		AD_Table_ID = getTable_ID();
 
-		StringBuffer sb = new StringBuffer("AD_Table_ID=").append(AD_Table_ID);
+		StringBuilder sb = new StringBuilder("AD_Table_ID=").append(AD_Table_ID);
 		sb.append("; Record_ID=").append(getRecord_ID());
 		// Parameter
 		ProcessInfoParameter[] paras = getParameter();
@@ -146,20 +144,5 @@ public class ModelExporter extends SvrProcess {
         	throw ex;
         }
 		return "Exported";
-	}
-	
-	public static void main(String[] args) 
-	{
-		CLogMgt.setLoggerLevel(Level.INFO, null);
-		CLogMgt.setLevel(Level.INFO);
-		
-		Adempiere.startupEnvironment(true);
-		ProcessInfo pi = new ProcessInfo("Test Import Model", 1000000);
-		pi.setAD_Client_ID(11);
-		pi.setAD_User_ID(100);
-		
-		ModelExporter modelExporter = new ModelExporter();
-		modelExporter.startProcess(Env.getCtx(), pi, null);
-	}
-
+	}	
 }

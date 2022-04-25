@@ -47,10 +47,6 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 		super (ctx, M_InOutLineConfirm_ID, trxName);
 		if (M_InOutLineConfirm_ID == 0)
 		{
-		//	setM_InOutConfirm_ID (0);
-		//	setM_InOutLine_ID (0);
-		//	setTargetQty (Env.ZERO);
-		//	setConfirmedQty (Env.ZERO);
 			setDifferenceQty(Env.ZERO);
 			setScrappedQty(Env.ZERO);
 			setProcessed (false);
@@ -144,7 +140,7 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 		{
 			line.setTargetQty(getTargetQty());
 			BigDecimal qty = getConfirmedQty();
-			if (!isSOTrx)	//	In PO, we have the responsibility for scapped
+			if (!isSOTrx)	//	In PO, we have the responsibility for scrapped
 				qty = qty.add(getScrappedQty());
 			line.setMovementQty(qty);				//	Entered NOT changed
 			//
@@ -186,6 +182,11 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		MInOutConfirm parent = new MInOutConfirm(getCtx(), getM_InOutConfirm_ID(), get_TrxName());
+		if (newRecord && parent.isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOutConfirm_ID"));
+			return false;
+		}
 		//	Calculate Difference = Target - Confirmed - Scrapped
 		BigDecimal difference = getTargetQty();
 		difference = difference.subtract(getConfirmedQty());

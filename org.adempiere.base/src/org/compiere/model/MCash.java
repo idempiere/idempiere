@@ -40,9 +40,9 @@ import org.compiere.util.TimeUtil;
  *  @version $Id: MCash.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  *  <li>FR [ 1866214 ]  
- *  @see http://sourceforge.net/tracker/index.php?func=detail&aid=1866214&group_id=176962&atid=879335
+ *  @see https://sourceforge.net/p/adempiere/feature-requests/298/
  * 	<li> FR [ 2520591 ] Support multiples calendar for Org 
- *	@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 	
+ *	@see https://sourceforge.net/p/adempiere/feature-requests/631/ 	
  *  @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 			<li>BF [ 1831997 ] Cash journal allocation reversed
  * 			<li>BF [ 1894524 ] Pay an reversed invoice
@@ -150,7 +150,6 @@ public class MCash extends X_C_Cash implements DocAction
 		super (ctx, C_Cash_ID, trxName);
 		if (C_Cash_ID == 0)
 		{
-		//	setC_CashBook_ID (0);		//	FK
 			setBeginningBalance (Env.ZERO);
 			setEndingBalance (Env.ZERO);
 			setStatementDifference(Env.ZERO);
@@ -201,7 +200,11 @@ public class MCash extends X_C_Cash implements DocAction
 		}
 		m_book = cb;
 	}	//	MCash
-	
+
+	public MCash(Properties ctx, int C_Cash_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Cash_ID, trxName, virtualColumns);
+	}
+
 	/**	Lines					*/
 	protected MCashLine[]		m_lines = null;
 	/** CashBook				*/
@@ -222,7 +225,7 @@ public class MCash extends X_C_Cash implements DocAction
 		final String whereClause =MCashLine.COLUMNNAME_C_Cash_ID+"=?"; 
 		List<MCashLine> list = new Query(getCtx(),I_C_CashLine.Table_Name,  whereClause, get_TrxName())
 								.setParameters(getC_Cash_ID())
-								.setOrderBy(I_C_CashLine.COLUMNNAME_Line)
+								.setOrderBy(I_C_CashLine.COLUMNNAME_Line+","+I_C_CashLine.COLUMNNAME_C_CashLine_ID)
 								.setOnlyActiveRecords(true)
 								.list();
 		
@@ -237,7 +240,7 @@ public class MCash extends X_C_Cash implements DocAction
 	public MCashBook getCashBook()
 	{
 		if (m_book == null)
-			m_book = MCashBook.get(getCtx(), getC_CashBook_ID());
+			m_book = MCashBook.getCopy(getCtx(), getC_CashBook_ID(), get_TrxName());
 		return m_book;
 	}	//	getCashBook
 	
@@ -286,10 +289,7 @@ public class MCash extends X_C_Cash implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	/**
@@ -397,7 +397,6 @@ public class MCash extends X_C_Cash implements DocAction
 			}
 		}
 		setStatementDifference(difference);
-	//	setEndingBalance(getBeginningBalance().add(getStatementDifference()));
 
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)

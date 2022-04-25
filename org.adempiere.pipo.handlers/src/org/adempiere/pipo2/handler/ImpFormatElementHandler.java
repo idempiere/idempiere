@@ -18,6 +18,7 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -120,7 +121,7 @@ public class ImpFormatElementHandler extends AbstractElementHandler {
 				createImpFormatRow(ctx, document, rs
 						.getInt("AD_ImpFormat_Row_ID"));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			log.log(Level.SEVERE, "ImpFormat", e);
 			throw new DatabaseAccessException("Failed to export Import Format.", e);
 		} finally {

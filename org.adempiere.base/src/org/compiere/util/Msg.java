@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import org.compiere.Adempiere;
 import org.compiere.model.I_AD_Element;
 import org.compiere.model.I_AD_Message;
+import org.compiere.model.MSysConfig;
 
 /**
  *	Reads all Messages and stores them in a HashMap
@@ -54,7 +55,7 @@ public final class Msg
 	 * 	Get Message Object
 	 *	@return Msg
 	 */
-	private static synchronized Msg get()
+	public static synchronized Msg get()
 	{
 		if (s_msg == null)
 			s_msg = new Msg();
@@ -81,7 +82,7 @@ public final class Msg
 	 *  @param ad_language Language Key
 	 *  @return HashMap of Language
 	 */
-	private synchronized CCache<String,String> getMsgMap (String ad_language)
+	public synchronized CCache<String,String> getMsgMap (String ad_language)
 	{
 		String AD_Language = ad_language;
 		if (AD_Language == null || AD_Language.length() == 0)
@@ -101,7 +102,12 @@ public final class Msg
 		return retValue;
 	}   //  getMsgMap
 	
-	private synchronized CCache<String,String> getElementMap (String ad_language)
+	/**
+	 * Get language specific translation map for AD_Element
+	 * @param ad_language
+	 * @return ad_element map
+	 */
+	public synchronized CCache<String,String> getElementMap (String ad_language)
 	{
 		String AD_Language = ad_language;
 		if (AD_Language == null || AD_Language.length() == 0)
@@ -139,29 +145,31 @@ public final class Msg
 		try
 		{
 			if (AD_Language == null || AD_Language.length() == 0 || Env.isBaseLanguage(AD_Language, "AD_Language"))
-				pstmt = DB.prepareStatement("SELECT Value, MsgText, MsgTip FROM AD_Message",  null);
+				pstmt = DB.prepareStatement("SELECT Value, MsgText, MsgTip FROM AD_Message WHERE IsActive ='Y'",  null);
 			else
 			{
 				pstmt = DB.prepareStatement("SELECT m.Value, t.MsgText, t.MsgTip "
 					+ "FROM AD_Message_Trl t, AD_Message m "
 					+ "WHERE m.AD_Message_ID=t.AD_Message_ID"
+					+ " AND t.AD_Client_ID = 0" // load only translated messages at System level (using Value as key)
+					+ " AND m.IsActive ='Y' AND t.IsActive ='Y'"
 					+ " AND t.AD_Language=?", null);
 				pstmt.setString(1, AD_Language);
 			}
 			rs = pstmt.executeQuery();
+			addMessagesInCache(rs, msg);
+			DB.close(rs, pstmt);
 
-			//	get values
-			while (rs.next())
-			{
-				String AD_Message = rs.getString(1);
-				StringBuilder MsgText = new StringBuilder();
-				MsgText.append(rs.getString(2));
-				String MsgTip = rs.getString(3);
-				//
-				if (MsgTip != null)			//	messageTip on next line, if exists
-					MsgText.append(" ").append(SEPARATOR).append(MsgTip);
-				msg.put(AD_Message, MsgText.toString());
-			}
+			// load translated messages at tenant level (using AD_Client_ID|Value as key)
+			pstmt = DB.prepareStatement("SELECT t.AD_Client_ID || '|' || m.Value, t.MsgText, t.MsgTip"
+					+ " FROM AD_Message_Trl t, AD_Message m"
+					+ " WHERE m.AD_Message_ID=t.AD_Message_ID"
+					+ " AND t.AD_Client_ID != 0"
+					+ " AND m.IsActive ='Y' AND t.IsActive ='Y'"
+					+ " AND t.AD_Language=?", null);
+			pstmt.setString(1, AD_Language);
+			rs = pstmt.executeQuery();
+			addMessagesInCache(rs, msg);
 		}
 		catch (SQLException e)
 		{
@@ -183,6 +191,26 @@ public final class Msg
 		return msg;
 	}	//	initMsg
 
+	/**
+	 * @param rs
+	 * @param msg
+	 * @throws SQLException
+	 */
+	private void addMessagesInCache(ResultSet rs, CCache<String,String> msg) throws SQLException {
+		//	get values
+		while (rs.next())
+		{
+			String AD_Message = rs.getString(1);
+			StringBuilder MsgText = new StringBuilder();
+			MsgText.append(rs.getString(2));
+			String MsgTip = rs.getString(3);
+			//
+			if (MsgTip != null)			//	messageTip on next line, if exists
+				MsgText.append(" ").append(SEPARATOR).append(MsgTip);
+			msg.put(AD_Message, MsgText.toString());
+		}
+	}
+	
 	/**
 	 *  Reset Message cache
 	 */
@@ -256,6 +284,13 @@ public final class Msg
 		CCache<String, String> langMap = getMsgMap(AD_Language);
 		if (langMap == null)
 			return null;
+
+		if (MSysConfig.getBooleanValue(MSysConfig.MESSAGES_AT_TENANT_LEVEL, false, Env.getAD_Client_ID(Env.getCtx()))) {
+			String msg = (String) langMap.get(Env.getAD_Client_ID(Env.getCtx()) + "|" + text);
+			if (!Util.isEmpty(msg))
+				return msg;
+		}
+
 		return (String)langMap.get(text);
 	}   //  lookup
 
@@ -564,10 +599,10 @@ public final class Msg
 
 	/**************************************************************************
 	 *	"Translate" text.
-	 *  <pre>
+	 *  <pre>{@code
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
-	 *  </pre>
+	 *  }</pre>
 	 *  If checking AD_Element, the SO terminology is used.
 	 *  @param ad_language  Language
 	 *  @param isSOTrx sales order context
@@ -600,10 +635,10 @@ public final class Msg
 
 	/***
 	 *	"Translate" text (SO Context).
-	 *  <pre>
+	 *  <pre>{@code
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
-	 *  </pre>
+	 *  }</pre>
 	 *  If checking AD_Element, the SO terminology is used.
 	 *  @param ad_language  Language
 	 *  @param text	Text - MsgText or Element Name
@@ -616,10 +651,10 @@ public final class Msg
 
 	/**
 	 *	"Translate" text.
-	 *  <pre>
+	 *  <pre>{@code
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
-	 *  </pre>
+	 *  }</pre>
 	 *  @param ctx  Context
 	 *  @param text	Text - MsgText or Element Name
 	 *  @return translated text or original text if not found
@@ -636,10 +671,10 @@ public final class Msg
 
 	/**
 	 *	"Translate" text.
-	 *  <pre>
+	 *  <pre>{@code
 	 *		- Check AD_Message.AD_Message 	->	MsgText
 	 *		- Check AD_Element.ColumnName	->	Name
-	 *  </pre>
+	 *  }</pre>
 	 *  @param language Language
 	 *  @param text     Text
 	 *  @return translated text or original text if not found
@@ -688,11 +723,37 @@ public final class Msg
 		return outStr.toString();
 	}   //  parseTranslation
 
+	/**
+	 * 
+	 * @param adLanguage
+	 * @param text
+	 * @return true if translation exists for text and adLanguage
+	 */
+	public static boolean hasTranslation(String adLanguage, String text)
+	{
+		if (Util.isEmpty(text, true))
+			return false;
+		
+		String AD_Language = adLanguage;
+		if (AD_Language == null || AD_Language.length() == 0)
+			AD_Language = Language.getBaseAD_Language();
 
+		//	Check AD_Message
+		String retStr = get().lookup (AD_Language, text);
+		if (!Util.isEmpty(retStr, true))
+			return true;
+
+		//	Check AD_Element
+		retStr = getElement(AD_Language, text, false);
+		if (!Util.isEmpty(retStr, true))
+			return true;
+		
+		return false;
+	}
 	/**
 	 *  Get translated text message for AD_Message, ampersand cleaned (used to indicate shortcut)
 	 *  @param  ctx Context to retrieve language
-	 *  @param	AD_Message - Message Key
+	 *  @param	string AD_Message - Message Key
 	 *  @return translated text
 	 */
 	public static String getCleanMsg(Properties ctx, String string) {

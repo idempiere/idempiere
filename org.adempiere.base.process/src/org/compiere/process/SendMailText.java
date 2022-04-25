@@ -37,6 +37,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: SendMailText.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class SendMailText extends SvrProcess
 {
 	/** What to send			*/
@@ -246,6 +247,9 @@ public class SendMailText extends SvrProcess
 		//
 		MUser to = new MUser (getCtx(), AD_User_ID, null);
 		m_MailText.setUser(AD_User_ID);		//	parse context
+		if (to.getC_BPartner_ID() > 0)
+			m_MailText.setBPartner(to.getC_BPartner_ID()); //	parse context - translate
+
 		StringBuilder message = new StringBuilder(m_MailText.getMailText(true));
 		//	Unsubscribe
 		if (unsubscribe != null)
@@ -275,7 +279,7 @@ public class SendMailText extends SvrProcess
 		} else {
 			log.warning("FAILURE - " + to.getEMail());
 		}
-		StringBuilder msglog = new StringBuilder((OK ? "@OK@" : "@ERROR@")).append(" - ").append(to.getEMail());
+		StringBuilder msglog = new StringBuilder(Msg.parseTranslation(getCtx(), OK ? "@OK@" : "@ERROR@")).append(" - ").append(to.getEMail());
 		addLog(0, null, null, msglog.toString());
 		return Boolean.valueOf(OK);
 	}	//	sendIndividualMail

@@ -58,6 +58,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 import org.compiere.wf.MWFActivity;
 import org.compiere.wf.MWFNode;
+import org.compiere.wf.MWFProcess;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -76,6 +77,7 @@ import org.zkoss.zul.Html;
  * @author hengsin
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.wf.WFActivity")
 public class WWFActivity extends ADForm implements EventListener<Event>
 {
 	/**
@@ -133,14 +135,13 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
         fAnswerList.setMold("select");
 
-        if (ThemeManager.isUseFontIconForImage())
+        if (ThemeManager.isUseFontIconForImage()) {
         	bZoom.setIconSclass("z-icon-Zoom");
-        else
-        	bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
-        if (ThemeManager.isUseFontIconForImage())
         	bOK.setIconSclass("z-icon-Ok");
-        else
+        } else {
+        	bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
         	bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
+        }
 
         MLookup lookup = MLookupFactory.get(Env.getCtx(), m_WindowNo,
                 0, 10443, DisplayType.Search);
@@ -197,7 +198,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		fHelp.setMultiline(true);
 		fHelp.setRows(3);
 		ZKUpdateUtil.setWidth(fHelp, "100%");
-		ZKUpdateUtil.setHeight(fHelp, "100%");
 		ZKUpdateUtil.setHflex(fHelp, "true");
 		fHelp.setReadonly(true);
 		row.appendChild(new Label());
@@ -263,7 +263,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		north.setSplittable(true);
 		ZKUpdateUtil.setVflex(listbox, "1");
 		ZKUpdateUtil.setHflex(listbox, "1");
-		ZKUpdateUtil.setHeight(north, "50%");
+		ZKUpdateUtil.setHeight(north, "49%");
 		layout.appendChild(north);
 		north.setStyle("background-color: transparent");
 		listbox.addEventListener(Events.ON_SELECT, this);
@@ -271,7 +271,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		Center center = new Center();
 		center.appendChild(grid);
 		layout.appendChild(center);
-		center.setStyle("background-color: transparent");
+		center.setStyle("background-color: transparent; overflow:auto");
 		ZKUpdateUtil.setVflex(grid, "1");
 		ZKUpdateUtil.setHflex(grid, "1");
 
@@ -440,7 +440,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		model.setNoColumns(columns.length);
 		listbox.setModel(model);
 		listbox.setItemRenderer(renderer);
-		listbox.repaint();
+		listbox.initialiseHeader();
 		listbox.setSizedByContent(false);
 
 		return m_activities.length;
@@ -502,7 +502,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 			fDescription.setText ("");
 			fHelp.setText ("");
 			fHistory.setContent(HISTORY_DIV_START_TAG + "&nbsp;</div>");
-			statusBar.setStatusDB("0/0");
+			statusBar.setStatusDB("0/" + m_activities.length);
 			statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "WFNoActivities"));
 		}
 		return m_activity;
@@ -548,7 +548,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 					}
 					fAnswerList.setVisible(true);
 				}
-				else if (dt == DisplayType.List)
+				else if (DisplayType.isList(dt))
 				{
 					ValueNamePair[] values = MRefList.getList(Env.getCtx(), m_column.getAD_Reference_Value_ID(), false);
 					for(int i = 0; i < values.length; i++)
@@ -682,7 +682,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				//	Do we have an answer?
 				int dt = m_column.getAD_Reference_ID();
 				String value = fAnswerText.getText();
-				if (dt == DisplayType.YesNo || dt == DisplayType.List)
+				if (dt == DisplayType.YesNo || DisplayType.isList(dt))
 				{
 					ListItem li = fAnswerList.getSelectedItem();
 					if(li != null) value = li.getValue().toString();
@@ -699,6 +699,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				try
 				{
 					m_activity.setUserChoice(AD_User_ID, value, dt, textMsg);
+					MWFProcess wfpr = new MWFProcess(m_activity.getCtx(), m_activity.getAD_WF_Process_ID(), m_activity.get_TrxName());
+					wfpr.checkCloseActivities(m_activity.get_TrxName());
 				}
 				catch (Exception e)
 				{
@@ -717,6 +719,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				{
 					// ensure activity is ran within a transaction
 					m_activity.setUserConfirmation(AD_User_ID, textMsg);
+					MWFProcess wfpr = new MWFProcess(m_activity.getCtx(), m_activity.getAD_WF_Process_ID(), m_activity.get_TrxName());
+					wfpr.checkCloseActivities(m_activity.get_TrxName());
 				}
 				catch (Exception e)
 				{

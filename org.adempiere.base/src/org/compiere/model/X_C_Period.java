@@ -24,19 +24,36 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Period
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_Period")
 public class X_C_Period extends PO implements I_C_Period, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Period (Properties ctx, int C_Period_ID, String trxName)
     {
       super (ctx, C_Period_ID, trxName);
+      /** if (C_Period_ID == 0)
+        {
+			setC_Period_ID (0);
+			setC_Year_ID (0);
+			setName (null);
+			setPeriodNo (0);
+			setPeriodType (null);
+// S
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Period (Properties ctx, int C_Period_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Period_ID, trxName, virtualColumns);
       /** if (C_Period_ID == 0)
         {
 			setC_Period_ID (0);
@@ -72,27 +89,26 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_Period[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_Period[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Period.
-		@param C_Period_ID 
-		Period of the Calendar
-	  */
+		@param C_Period_ID Period of the Calendar
+	*/
 	public void setC_Period_ID (int C_Period_ID)
 	{
-		if (C_Period_ID < 1) 
+		if (C_Period_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Period_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
 	}
 
 	/** Get Period.
 		@return Period of the Calendar
 	  */
-	public int getC_Period_ID () 
+	public int getC_Period_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Period_ID);
 		if (ii == null)
@@ -101,7 +117,8 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 	}
 
 	/** Set C_Period_UU.
-		@param C_Period_UU C_Period_UU	  */
+		@param C_Period_UU C_Period_UU
+	*/
 	public void setC_Period_UU (String C_Period_UU)
 	{
 		set_Value (COLUMNNAME_C_Period_UU, C_Period_UU);
@@ -109,32 +126,32 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 
 	/** Get C_Period_UU.
 		@return C_Period_UU	  */
-	public String getC_Period_UU () 
+	public String getC_Period_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Period_UU);
 	}
 
 	public org.compiere.model.I_C_Year getC_Year() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_Name)
-			.getPO(getC_Year_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Year)MTable.get(getCtx(), org.compiere.model.I_C_Year.Table_ID)
+			.getPO(getC_Year_ID(), get_TrxName());
+	}
 
 	/** Set Year.
-		@param C_Year_ID 
-		Calendar Year
-	  */
+		@param C_Year_ID Calendar Year
+	*/
 	public void setC_Year_ID (int C_Year_ID)
 	{
-		if (C_Year_ID < 1) 
+		if (C_Year_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Year_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Year_ID, Integer.valueOf(C_Year_ID));
 	}
 
 	/** Get Year.
 		@return Calendar Year
 	  */
-	public int getC_Year_ID () 
+	public int getC_Year_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Year_ID);
 		if (ii == null)
@@ -143,9 +160,8 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 	}
 
 	/** Set End Date.
-		@param EndDate 
-		Last effective date (inclusive)
-	  */
+		@param EndDate Last effective date (inclusive)
+	*/
 	public void setEndDate (Timestamp EndDate)
 	{
 		set_Value (COLUMNNAME_EndDate, EndDate);
@@ -154,15 +170,14 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 	/** Get End Date.
 		@return Last effective date (inclusive)
 	  */
-	public Timestamp getEndDate () 
+	public Timestamp getEndDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_EndDate);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -171,7 +186,7 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -185,9 +200,8 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
     }
 
 	/** Set Period No.
-		@param PeriodNo 
-		Unique Period Number
-	  */
+		@param PeriodNo Unique Period Number
+	*/
 	public void setPeriodNo (int PeriodNo)
 	{
 		set_Value (COLUMNNAME_PeriodNo, Integer.valueOf(PeriodNo));
@@ -196,7 +210,7 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 	/** Get Period No.
 		@return Unique Period Number
 	  */
-	public int getPeriodNo () 
+	public int getPeriodNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PeriodNo);
 		if (ii == null)
@@ -206,14 +220,13 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 
 	/** PeriodType AD_Reference_ID=115 */
 	public static final int PERIODTYPE_AD_Reference_ID=115;
-	/** Standard Calendar Period = S */
-	public static final String PERIODTYPE_StandardCalendarPeriod = "S";
 	/** Adjustment Period = A */
 	public static final String PERIODTYPE_AdjustmentPeriod = "A";
+	/** Standard Calendar Period = S */
+	public static final String PERIODTYPE_StandardCalendarPeriod = "S";
 	/** Set Period Type.
-		@param PeriodType 
-		Period Type
-	  */
+		@param PeriodType Period Type
+	*/
 	public void setPeriodType (String PeriodType)
 	{
 
@@ -223,13 +236,14 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 	/** Get Period Type.
 		@return Period Type
 	  */
-	public String getPeriodType () 
+	public String getPeriodType()
 	{
 		return (String)get_Value(COLUMNNAME_PeriodType);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -237,7 +251,7 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -250,9 +264,8 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 	}
 
 	/** Set Start Date.
-		@param StartDate 
-		First effective day (inclusive)
-	  */
+		@param StartDate First effective day (inclusive)
+	*/
 	public void setStartDate (Timestamp StartDate)
 	{
 		set_Value (COLUMNNAME_StartDate, StartDate);
@@ -261,7 +274,7 @@ public class X_C_Period extends PO implements I_C_Period, I_Persistent
 	/** Get Start Date.
 		@return First effective day (inclusive)
 	  */
-	public Timestamp getStartDate () 
+	public Timestamp getStartDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}

@@ -23,19 +23,37 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Language
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Language")
 public class X_AD_Language extends PO implements I_AD_Language, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Language (Properties ctx, int AD_Language_ID, String trxName)
     {
       super (ctx, AD_Language_ID, trxName);
+      /** if (AD_Language_ID == 0)
+        {
+			setAD_Language (null);
+			setAD_Language_ID (0);
+// @SQL=SELECT NVL(MAX(AD_Language_ID),0)+1 AS DefaultValue FROM AD_Language
+			setIsBaseLanguage (false);
+// N
+			setIsSystemLanguage (false);
+			setName (null);
+			setPrintName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Language (Properties ctx, int AD_Language_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Language_ID, trxName, virtualColumns);
       /** if (AD_Language_ID == 0)
         {
 			setAD_Language (null);
@@ -72,15 +90,14 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Language[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_Language[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Language.
-		@param AD_Language 
-		Language for this entity
-	  */
+		@param AD_Language Language for this entity
+	*/
 	public void setAD_Language (String AD_Language)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_Language, AD_Language);
@@ -89,24 +106,25 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/** Get Language.
 		@return Language for this entity
 	  */
-	public String getAD_Language () 
+	public String getAD_Language()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Language);
 	}
 
 	/** Set Language ID.
-		@param AD_Language_ID Language ID	  */
+		@param AD_Language_ID Language ID
+	*/
 	public void setAD_Language_ID (int AD_Language_ID)
 	{
-		if (AD_Language_ID < 1) 
+		if (AD_Language_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Language_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Language_ID, Integer.valueOf(AD_Language_ID));
 	}
 
 	/** Get Language ID.
 		@return Language ID	  */
-	public int getAD_Language_ID () 
+	public int getAD_Language_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Language_ID);
 		if (ii == null)
@@ -115,7 +133,8 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	}
 
 	/** Set AD_Language_UU.
-		@param AD_Language_UU AD_Language_UU	  */
+		@param AD_Language_UU AD_Language_UU
+	*/
 	public void setAD_Language_UU (String AD_Language_UU)
 	{
 		set_Value (COLUMNNAME_AD_Language_UU, AD_Language_UU);
@@ -123,32 +142,32 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 
 	/** Get AD_Language_UU.
 		@return AD_Language_UU	  */
-	public String getAD_Language_UU () 
+	public String getAD_Language_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Language_UU);
 	}
 
 	public org.compiere.model.I_AD_PrintPaper getAD_PrintPaper() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintPaper)MTable.get(getCtx(), org.compiere.model.I_AD_PrintPaper.Table_Name)
-			.getPO(getAD_PrintPaper_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintPaper)MTable.get(getCtx(), org.compiere.model.I_AD_PrintPaper.Table_ID)
+			.getPO(getAD_PrintPaper_ID(), get_TrxName());
+	}
 
 	/** Set Print Paper.
-		@param AD_PrintPaper_ID 
-		Printer paper definition
-	  */
+		@param AD_PrintPaper_ID Printer paper definition
+	*/
 	public void setAD_PrintPaper_ID (int AD_PrintPaper_ID)
 	{
-		if (AD_PrintPaper_ID < 1) 
+		if (AD_PrintPaper_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintPaper_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintPaper_ID, Integer.valueOf(AD_PrintPaper_ID));
 	}
 
 	/** Get Print Paper.
 		@return Printer paper definition
 	  */
-	public int getAD_PrintPaper_ID () 
+	public int getAD_PrintPaper_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintPaper_ID);
 		if (ii == null)
@@ -157,9 +176,8 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	}
 
 	/** Set ISO Country Code.
-		@param CountryCode 
-		Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
-	  */
+		@param CountryCode Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	*/
 	public void setCountryCode (String CountryCode)
 	{
 		set_Value (COLUMNNAME_CountryCode, CountryCode);
@@ -168,15 +186,14 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/** Get ISO Country Code.
 		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
 	  */
-	public String getCountryCode () 
+	public String getCountryCode()
 	{
 		return (String)get_Value(COLUMNNAME_CountryCode);
 	}
 
 	/** Set Date Pattern.
-		@param DatePattern 
-		Java Date Pattern
-	  */
+		@param DatePattern Java Date Pattern
+	*/
 	public void setDatePattern (String DatePattern)
 	{
 		set_Value (COLUMNNAME_DatePattern, DatePattern);
@@ -185,15 +202,14 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/** Get Date Pattern.
 		@return Java Date Pattern
 	  */
-	public String getDatePattern () 
+	public String getDatePattern()
 	{
 		return (String)get_Value(COLUMNNAME_DatePattern);
 	}
 
 	/** Set Base Language.
-		@param IsBaseLanguage 
-		The system information is maintained in this language
-	  */
+		@param IsBaseLanguage The system information is maintained in this language
+	*/
 	public void setIsBaseLanguage (boolean IsBaseLanguage)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsBaseLanguage, Boolean.valueOf(IsBaseLanguage));
@@ -202,7 +218,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/** Get Base Language.
 		@return The system information is maintained in this language
 	  */
-	public boolean isBaseLanguage () 
+	public boolean isBaseLanguage()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBaseLanguage);
 		if (oo != null) 
@@ -215,9 +231,8 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	}
 
 	/** Set Decimal Point.
-		@param IsDecimalPoint 
-		The number notation has a decimal point (no decimal comma)
-	  */
+		@param IsDecimalPoint The number notation has a decimal point (no decimal comma)
+	*/
 	public void setIsDecimalPoint (boolean IsDecimalPoint)
 	{
 		set_Value (COLUMNNAME_IsDecimalPoint, Boolean.valueOf(IsDecimalPoint));
@@ -226,7 +241,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/** Get Decimal Point.
 		@return The number notation has a decimal point (no decimal comma)
 	  */
-	public boolean isDecimalPoint () 
+	public boolean isDecimalPoint()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDecimalPoint);
 		if (oo != null) 
@@ -239,7 +254,8 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	}
 
 	/** Set Login Locale.
-		@param IsLoginLocale Login Locale	  */
+		@param IsLoginLocale Login Locale
+	*/
 	public void setIsLoginLocale (boolean IsLoginLocale)
 	{
 		set_Value (COLUMNNAME_IsLoginLocale, Boolean.valueOf(IsLoginLocale));
@@ -247,7 +263,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 
 	/** Get Login Locale.
 		@return Login Locale	  */
-	public boolean isLoginLocale () 
+	public boolean isLoginLocale()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLoginLocale);
 		if (oo != null) 
@@ -260,9 +276,8 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	}
 
 	/** Set System Language.
-		@param IsSystemLanguage 
-		The screens, etc. are maintained in this Language
-	  */
+		@param IsSystemLanguage The screens, etc. are maintained in this Language
+	*/
 	public void setIsSystemLanguage (boolean IsSystemLanguage)
 	{
 		set_Value (COLUMNNAME_IsSystemLanguage, Boolean.valueOf(IsSystemLanguage));
@@ -271,7 +286,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/** Get System Language.
 		@return The screens, etc. are maintained in this Language
 	  */
-	public boolean isSystemLanguage () 
+	public boolean isSystemLanguage()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSystemLanguage);
 		if (oo != null) 
@@ -284,9 +299,8 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	}
 
 	/** Set ISO Language Code.
-		@param LanguageISO 
-		Lower-case two-letter ISO-3166 code - http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt 
-	  */
+		@param LanguageISO Lower-case two-letter ISO-3166 code - http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt 
+	*/
 	public void setLanguageISO (String LanguageISO)
 	{
 		set_Value (COLUMNNAME_LanguageISO, LanguageISO);
@@ -295,15 +309,14 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/** Get ISO Language Code.
 		@return Lower-case two-letter ISO-3166 code - http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt 
 	  */
-	public String getLanguageISO () 
+	public String getLanguageISO()
 	{
 		return (String)get_Value(COLUMNNAME_LanguageISO);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -312,7 +325,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -326,9 +339,8 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
     }
 
 	/** Set Print Text.
-		@param PrintName 
-		The label text to be printed on a document or correspondence.
-	  */
+		@param PrintName The label text to be printed on a document or correspondence.
+	*/
 	public void setPrintName (String PrintName)
 	{
 		set_Value (COLUMNNAME_PrintName, PrintName);
@@ -337,13 +349,14 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/** Get Print Text.
 		@return The label text to be printed on a document or correspondence.
 	  */
-	public String getPrintName () 
+	public String getPrintName()
 	{
 		return (String)get_Value(COLUMNNAME_PrintName);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -351,7 +364,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -364,9 +377,8 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	}
 
 	/** Set Time Pattern.
-		@param TimePattern 
-		Java Time Pattern
-	  */
+		@param TimePattern Java Time Pattern
+	*/
 	public void setTimePattern (String TimePattern)
 	{
 		set_Value (COLUMNNAME_TimePattern, TimePattern);
@@ -375,7 +387,7 @@ public class X_AD_Language extends PO implements I_AD_Language, I_Persistent
 	/** Get Time Pattern.
 		@return Java Time Pattern
 	  */
-	public String getTimePattern () 
+	public String getTimePattern()
 	{
 		return (String)get_Value(COLUMNNAME_TimePattern);
 	}

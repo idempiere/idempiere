@@ -14,10 +14,12 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MField;
 import org.compiere.model.MFieldSuggestion;
+import org.compiere.model.PO;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Label;
@@ -94,7 +96,6 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		row.appendCellChild(new Label(Msg.getElement(Env.getCtx(), "Description")));
 		descriptionTextbox = new Textbox(field.get_Translation("Description"));
 		descriptionTextbox.setRows(4);
-		descriptionTextbox.setHeight("100%");
 		descriptionTextbox.setMaxlength(255);
 		descriptionTextbox.setHflex("1");
 		descriptionTextbox.setMultiline(true);
@@ -104,7 +105,6 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		row.appendCellChild(new Label(Msg.getElement(Env.getCtx(), "Help")));
 		helpTextbox = new Textbox(field.get_Translation("Help"));
 		helpTextbox.setRows(8);
-		helpTextbox.setHeight("100%");
 		helpTextbox.setMultiline(true);
 		helpTextbox.setMaxlength(2000);
 		helpTextbox.setHflex("1");
@@ -126,6 +126,7 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		this.setSizable(true);
 		this.setMaximizable(true);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 
 	@Override
@@ -133,8 +134,12 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_OK)) {
 			onSave();
 		} else if (event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_CANCEL)) {
-			this.detach();
+			onCancel();
 		}		
+	}
+
+	private void onCancel() {
+		this.detach();
 	}
 
 	private void onSave() {
@@ -151,8 +156,12 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		suggestion.setIsApproved(false);
 		suggestion.setIsUpdateBaseLanguage(false);
 		suggestion.setProcessed(false);
-		
-		suggestion.saveEx();
+		try {
+			PO.setCrossTenantSafe();
+			suggestion.saveEx();
+		}finally {
+			PO.clearCrossTenantSafe();
+		}
 		FDialog.info(0, this, Msg.getMsg(Env.getCtx(),"Your suggestions have been submitted for review"));
 		this.detach();
 	}

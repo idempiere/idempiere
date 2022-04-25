@@ -17,6 +17,7 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.compiere.report.MReportLine;
@@ -29,6 +30,7 @@ import org.compiere.report.MReportSource;
  *  @author Jorg Janke
  *  @version $Id: ReportLineSet_Copy.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class ReportLineSet_Copy extends SvrProcess
 {
 	/**
@@ -75,10 +77,15 @@ public class ReportLineSet_Copy extends SvrProcess
 		MReportLineSet to = new MReportLineSet(getCtx(), to_ID, get_TrxName());
 		MReportLineSet rlSet = new MReportLineSet(getCtx(), m_PA_ReportLineSet_ID, get_TrxName());
 		MReportLine[] rls = rlSet.getLiness();
+		
+		HashMap<Integer, Integer> mapLines = new HashMap<Integer, Integer>();
+		
 		for (int i = 0; i < rls.length; i++)
 		{
 			MReportLine rl = MReportLine.copy (getCtx(), to.getAD_Client_ID(), to.getAD_Org_ID(), to_ID, rls[i], get_TrxName());
 			rl.saveEx();
+			mapLines.put(rls[i].getPA_ReportLine_ID(), rl.getPA_ReportLine_ID());
+
 			MReportSource[] rss = rls[i].getSources();
 			if (rss != null)
 			{
@@ -88,8 +95,24 @@ public class ReportLineSet_Copy extends SvrProcess
 					rs.saveEx();
 				}
 			}
-			//	Oper 1/2 were set to Null ! 
 		}
+
+		for (int i = 0; i < rls.length; i++)
+		{
+			if (rls[i].getOper_1_ID() > 0 || rls[i].getOper_2_ID() > 0) {
+				
+				int toID = mapLines.get(rls[i].getPA_ReportLine_ID());
+				MReportLine rl = new MReportLine(getCtx(), toID, get_TrxName());
+				
+				if (rls[i].getOper_1_ID() > 0)
+					rl.setOper_1_ID(mapLines.get(rls[i].getOper_1_ID()));
+				if (rls[i].getOper_2_ID() > 0)
+					rl.setOper_2_ID(mapLines.get(rls[i].getOper_2_ID()));
+				
+				rl.saveEx();
+			}
+		}
+
 		StringBuilder msgreturn = new StringBuilder("@Copied@=").append(rls.length);
 		return msgreturn.toString();
 	}	//	doIt

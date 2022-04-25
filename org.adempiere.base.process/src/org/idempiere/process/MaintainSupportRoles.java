@@ -39,6 +39,7 @@ import org.compiere.util.DB;
 /**
  * @author Carlos Ruiz - globalqss
  */
+@org.adempiere.base.annotation.Process
 public class MaintainSupportRoles extends SvrProcess {
 
 	private String p_IsActive;
@@ -105,7 +106,6 @@ public class MaintainSupportRoles extends SvrProcess {
 					} else if (ACTION_DELETE.equals(p_IsActive)) {
 						if (ur != null) {
 							ur.deleteEx(true);
-							ur.saveEx();
 							cnt++;
 						}
 					}

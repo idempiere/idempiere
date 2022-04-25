@@ -56,8 +56,6 @@ public class MCashLine extends X_C_CashLine
 		super (ctx, C_CashLine_ID, trxName);
 		if (C_CashLine_ID == 0)
 		{
-		//	setLine (0);
-		//	setCashType (CASHTYPE_GeneralExpense);
 			setAmount (Env.ZERO);
 			setDiscountAmt(Env.ZERO);
 			setWriteOffAmt(Env.ZERO);
@@ -86,13 +84,14 @@ public class MCashLine extends X_C_CashLine
 		setClientOrg(cash);
 		setC_Cash_ID(cash.getC_Cash_ID());
 		m_parent = cash;
-		m_cashBook = m_parent.getCashBook();
 	}	//	MCashLine
+
+	public MCashLine(Properties ctx, int C_CashLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_CashLine_ID, trxName, virtualColumns);
+	}
 
 	/** Parent					*/
 	protected MCash		m_parent = null;
-	/** Cash Book				*/
-	protected MCashBook 	m_cashBook = null;
 	/** Bank Account			*/
 	protected MBankAccount 	m_bankAccount = null;
 	/** Invoice					*/
@@ -241,9 +240,7 @@ public class MCashLine extends X_C_CashLine
 	 */
 	public MCashBook getCashBook()
 	{
-		if (m_cashBook == null)
-			m_cashBook = MCashBook.get(getCtx(), getParent().getC_CashBook_ID());
-		return m_cashBook;
+		return getParent().getCashBook();
 	}	//	getCashBook
 	
 	/**
@@ -253,7 +250,7 @@ public class MCashLine extends X_C_CashLine
 	public MBankAccount getBankAccount()
 	{
 		if (m_bankAccount == null && getC_BankAccount_ID() != 0)
-			m_bankAccount = MBankAccount.get(getCtx(), getC_BankAccount_ID());
+			m_bankAccount = MBankAccount.getCopy(getCtx(), getC_BankAccount_ID(), get_TrxName());
 		return m_bankAccount;
 	}	//	getBankAccount
 	
@@ -307,8 +304,8 @@ public class MCashLine extends X_C_CashLine
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		if (newRecord && getParent().isComplete()) {
-			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_CashLine"));
+		if (newRecord && getParent().isProcessed()) {
+			log.saveError("ParentComplete", Msg.translate(getCtx(), "C_Cash_ID"));
 			return false;
 		}
 		//	Cannot change generated Invoices

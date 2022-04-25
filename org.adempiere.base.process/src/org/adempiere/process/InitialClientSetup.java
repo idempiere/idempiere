@@ -54,6 +54,7 @@ import org.compiere.util.Util;
  *  @author Carlos Ruiz
  *    [ 2598506 ] FR - Implement Initial Client Setup
  */
+@org.adempiere.base.annotation.Process
 public class InitialClientSetup extends SvrProcess
 {
 	
@@ -172,6 +173,7 @@ public class InitialClientSetup extends SvrProcess
 	 */
 	protected String doIt () throws Exception
 	{
+		boolean isDryRun = "Y".equalsIgnoreCase(Env.getContext(Env.getCtx(), Env.RUNNING_UNIT_TESTING_TEST_CASE));
 		
 		StringBuilder msglog = new StringBuilder("InitialClientSetup")
 								.append(": ClientName=").append(p_ClientName)
@@ -215,13 +217,13 @@ public class InitialClientSetup extends SvrProcess
 		// Validate Uniqueness of client and users name
 		//	Unique Client Name
 		if (DB.executeUpdate("UPDATE AD_Client SET CreatedBy=0 WHERE Name=?", new Object[] {p_ClientName}, false, null) != 0)
-			throw new AdempiereException("@" + Msg.getMsg(Env.getCtx(), "NotUnique") + "@ " + p_ClientName);
+			throw new AdempiereException(Msg.parseTranslation(getCtx(), "@NotUnique@ @ClientName@ = " + p_ClientName));
 
 		//	Unique User Names
 		if (DB.executeUpdate("UPDATE AD_User SET CreatedBy=0 WHERE Name=?", new Object[] {p_AdminUserName}, false, null) != 0)
-			throw new AdempiereException("@" + Msg.getMsg(Env.getCtx(), "NotUnique") + "@ " + p_AdminUserName);
+			throw new AdempiereException(Msg.parseTranslation(getCtx(), "@NotUnique@ @AdminUserName@ = " + p_AdminUserName));
 		if (DB.executeUpdate("UPDATE AD_User SET CreatedBy=0 WHERE Name=?", new Object[] {p_NormalUserName}, false, null) != 0)
-			throw new AdempiereException("@" + Msg.getMsg(Env.getCtx(), "NotUnique") + "@ " + p_NormalUserName);
+			throw new AdempiereException(Msg.parseTranslation(getCtx(), "@NotUnique@ @NormalUserName@ = " + p_NormalUserName));
 
 		// City_ID overrides CityName if both used
 		if (p_C_City_ID > 0) {
@@ -261,7 +263,7 @@ public class InitialClientSetup extends SvrProcess
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "CoaFile") +  " " + p_CoAFile + " " + Msg.getMsg(Env.getCtx(), "is empty"));
 
 		// Process
-		MSetup ms = new MSetup(Env.getCtx(), WINDOW_THIS_PROCESS);
+		MSetup ms = new MSetup(Env.getCtx(), WINDOW_THIS_PROCESS, isDryRun);
 		try {
 			if (! ms.createClient(p_ClientName, p_OrgValue, p_OrgName, p_AdminUserName, p_NormalUserName
 					, p_Phone, p_Phone2, p_Fax, p_EMail, p_TaxID, p_AdminUserEmail, p_NormalUserEmail, p_IsSetInitialPassword)) {
@@ -278,18 +280,20 @@ public class InitialClientSetup extends SvrProcess
 				p_IsUseProductDimension, p_IsUseBPDimension, p_IsUseProjectDimension, p_IsUseCampaignDimension, p_IsUseSalesRegionDimension, p_IsUseActivityDimension,
 				coaFile, p_UseDefaultCoA, p_InactivateDefaults)) {
 				ms.rollback();
-				throw new AdempiereException("@" + Msg.getMsg(Env.getCtx(), "AccountSetupError")+ "@");
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccountSetupError"));
 			}
 
 			//  Generate Entities
 			if (!ms.createEntities(p_C_Country_ID, p_CityName, p_C_Region_ID, p_C_Currency_ID, p_Postal, p_Address1)) {
 				ms.rollback();
-				throw new AdempiereException("@" +  Msg.getMsg(Env.getCtx(), "AccountSetupError") + "@");
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccountSetupError"));
 			}
 			addLog(ms.getInfo());
 
 			//	Create Print Documents
-			PrintUtil.setupPrintForm(ms.getAD_Client_ID());
+			PrintUtil.setupPrintForm(ms.getAD_Client_ID(), isDryRun ? ms.getTrxName() : null);
+			if (isDryRun)
+				ms.rollback();
 		} catch (Exception e) {
 			ms.rollback();
 			throw e;

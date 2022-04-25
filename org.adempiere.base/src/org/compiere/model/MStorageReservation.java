@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.util.IReservationTracer;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -120,7 +121,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 * @param m_Warehouse_ID
 	 * @param m_Product_ID
 	 * @param i
-	 * @param get_TrxName
+	 * @param trxName
 	 * @return
 	 */
 	public static MStorageReservation[] get(Properties ctx, int m_Warehouse_ID,
@@ -158,15 +159,15 @@ public class MStorageReservation extends X_M_StorageReservation {
 	}	//	getOfProduct
 
 	/**
-	 * Get Quantity Reserved of Warehouse
+	 * Get Quantity Reserved/Ordered of Warehouse
 	 * @param M_Product_ID
 	 * @param M_Warehouse_ID
 	 * @param M_AttributeSetInstance_ID
 	 * @param isSOTrx - true to get reserved, false to get ordered
 	 * @param trxName
-	 * @return
+	 * @return quantity reserved/ordered
 	 */
-	private static BigDecimal getQty(int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID, boolean isSOTrx, String trxName) {
+	public static BigDecimal getQty(int M_Product_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID, boolean isSOTrx, String trxName) {
 		ArrayList<Object> params = new ArrayList<Object>();
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT SUM(Qty) FROM M_StorageReservation sr")
@@ -183,7 +184,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 			params.add(M_AttributeSetInstance_ID);
 		}
 
-		BigDecimal qty = DB.getSQLValueBD(trxName, sql.toString(), params);
+		BigDecimal qty = DB.getSQLValueBDEx(trxName, sql.toString(), params);
 		if (qty==null)
 			qty = Env.ZERO;
 
@@ -218,11 +219,31 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 * @param diffQty
 	 * @param isSOTrx
 	 * @param trxName
-	 * @return
+	 * @return true if ok
+	 * @deprecated
 	 */
 	public static boolean add (Properties ctx, int M_Warehouse_ID, 
 			int M_Product_ID, int M_AttributeSetInstance_ID,
-			BigDecimal diffQty, boolean isSOTrx, String trxName){
+			BigDecimal diffQty, boolean isSOTrx, String trxName)
+	{
+		return add(ctx, M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID, diffQty, isSOTrx, trxName, (IReservationTracer)null);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param M_Warehouse_ID
+	 * @param M_Product_ID
+	 * @param M_AttributeSetInstance_ID
+	 * @param diffQty
+	 * @param isSOTrx
+	 * @param trxName
+	 * @param tracer
+	 * @return true if ok
+	 */
+	public static boolean add (Properties ctx, int M_Warehouse_ID, 
+			int M_Product_ID, int M_AttributeSetInstance_ID,
+			BigDecimal diffQty, boolean isSOTrx, String trxName, IReservationTracer tracer){
 		
 		if (diffQty == null || diffQty.signum() == 0)
 			return true;
@@ -248,7 +269,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 			return false;
 		}
 
-		storage.addQty(diffQty);
+		storage.addQty(diffQty, tracer);
 		if (s_log.isLoggable(Level.FINE)) {
 			StringBuilder diffText = new StringBuilder("(Qty=").append(diffQty).append(") -> ").append(storage.toString());
 			s_log.fine(diffText.toString());
@@ -259,14 +280,27 @@ public class MStorageReservation extends X_M_StorageReservation {
 	/**
 	 * Add quantity on hand directly - not using cached value - solving IDEMPIERE-2629
 	 * @param addition
+	 * @deprecated
 	 */
 	public void addQty(BigDecimal addition) {
+		addQty(addition, null);
+	}
+	
+	/**
+	 * Add quantity on hand directly - not using cached value - solving IDEMPIERE-2629
+	 * @param addition
+	 */
+	public void addQty(BigDecimal addition, IReservationTracer tracer) {
 		final String sql = "UPDATE M_StorageReservation SET Qty=Qty+?, Updated=getDate(), UpdatedBy=? " +
 				"WHERE M_Product_ID=? AND M_Warehouse_ID=? AND M_AttributeSetInstance_ID=? AND IsSOTrx=?";
 		DB.executeUpdateEx(sql, 
 			new Object[] {addition, Env.getAD_User_ID(Env.getCtx()), getM_Product_ID(), getM_Warehouse_ID(), getM_AttributeSetInstance_ID(), isSOTrx()}, 
 			get_TrxName());
 		load(get_TrxName());
+		if (tracer != null) {
+			BigDecimal oldQty = getQty().subtract(addition);
+			tracer.trace(oldQty, addition);
+		}
 	}
 
 	/**
@@ -294,9 +328,10 @@ public class MStorageReservation extends X_M_StorageReservation {
 	/**
 	 * 	Create or Get Storage Info
 	 *	@param ctx context
-	 *	@param M_Locator_ID locator
+	 *	@param M_Warehouse_ID
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID instance
+	 *  @param isSOTrx
 	 *	@param trxName transaction
 	 *	@return existing/new or null
 	 */
@@ -328,7 +363,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer("MStorageReservation[")
+		StringBuilder sb = new StringBuilder("MStorageReservation[")
 			.append("M_Warehouse_ID=").append(getM_Warehouse_ID())
 			.append(",M_Product_ID=").append(getM_Product_ID())
 			.append(",M_AttributeSetInstance_ID=").append(getM_AttributeSetInstance_ID())

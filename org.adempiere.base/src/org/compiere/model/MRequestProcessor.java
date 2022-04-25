@@ -88,14 +88,10 @@ public class MRequestProcessor extends X_R_RequestProcessor
 		super (ctx, R_RequestProcessor_ID, trxName);
 		if (R_RequestProcessor_ID == 0)
 		{
-		//	setName (null);
-			//setFrequencyType (FREQUENCYTYPE_Day);
-			//setFrequency (0);
 			setKeepLogDays (7);
 			setOverdueAlertDays (0);
 			setOverdueAssignDays (0);
 			setRemindDays (0);
-		//	setSupervisor_ID (0);
 		}	
 	}	//	MRequestProcessor
 
@@ -246,7 +242,11 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	protected boolean beforeSave(boolean newRecord)
 	{
 		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
-			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern());
+			MClientInfo clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID());
+			if (clientInfo == null)
+				clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
+			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern(),
+					clientInfo.getTimeZone());
 			if (nextWork > 0)
 				setDateNextRun(new Timestamp(nextWork));
 		}

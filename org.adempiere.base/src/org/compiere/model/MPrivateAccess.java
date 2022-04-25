@@ -78,56 +78,10 @@ public class MPrivateAccess extends X_AD_Private_Access
 	 * 	Get Where Clause of Locked Records for Table
 	 *	@param AD_Table_ID table
 	 *	@param AD_User_ID user requesting info
-	 *	@return "<>1" or " NOT IN (1,2)" or null
+	 *	@return "&lt;&gt;1" or " NOT IN (1,2)" or null
 	 */
 	public static String getLockedRecordWhere (int AD_Table_ID, int AD_User_ID)
 	{
-		//[ 1644094 ] MPrivateAccess.getLockedRecordWhere inefficient
-		/*
-		ArrayList<Integer> list = new ArrayList<Integer>();
-		PreparedStatement pstmt = null;
-		String sql = "SELECT Record_ID FROM AD_Private_Access WHERE AD_Table_ID=? AND AD_User_ID<>? AND IsActive='Y'";
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, AD_Table_ID);
-			pstmt.setInt(2, AD_User_ID);
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next())
-				list.add(Integer.valueOf(rs.getInt(1))); 
-			rs.close();
-			pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			s_log.log(Level.SEVERE, sql, e);
-		}
-		try
-		{
-			if (pstmt != null)
-				pstmt.close();
-			pstmt = null;
-		}
-		catch (Exception e)
-		{
-			pstmt = null;
-		}
-		//
-		if (list.size() == 0)
-			return null;
-		if (list.size() == 1)
-			return "<>" + list.get(0);
-		//
-		StringBuffer sb = new StringBuffer(" NOT IN(");
-		for (int i = 0; i < list.size(); i++)
-		{
-			if (i > 0)
-				sb.append(",");
-			sb.append(list.get(i));
-		}
-		sb.append(")");
-		return sb.toString();*/
 		String whereClause = " NOT IN ( SELECT Record_ID FROM AD_Private_Access WHERE AD_Table_ID = "
 			+AD_Table_ID+" AND AD_User_ID <> "+AD_User_ID+" AND IsActive = 'Y' )";
 		return whereClause;

@@ -21,9 +21,11 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
+import org.adempiere.process.UUIDGenerator;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Document Type Model
@@ -36,12 +38,12 @@ import org.compiere.util.Env;
  *  							See https://sourceforge.net/forum/message.php?msg_id=6499893
  *  @version $Id: MDocType.java,v 1.3 2006/07/30 00:54:54 jjanke Exp $
  */
-public class MDocType extends X_C_DocType
+public class MDocType extends X_C_DocType implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6556521509479670059L;
+	private static final long serialVersionUID = 1830844263371227816L;
 
 	/**
 	 * Return the first Doc Type for this BaseType
@@ -86,24 +88,38 @@ public class MDocType extends X_C_DocType
 	}	//	getOfClient
 	
 	/**
-	 * 	Get Document Type (cached)
+	 * 	Get Document Type (cached) (immutable)
+	 *	@param C_DocType_ID id
+	 *	@return document type
+	 */
+	static public MDocType get (int C_DocType_ID)
+	{
+		return get(Env.getCtx(), C_DocType_ID);
+	}
+	
+	/**
+	 * 	Get Document Type (cached) (immutable)
 	 *	@param ctx context
 	 *	@param C_DocType_ID id
 	 *	@return document type
 	 */
 	static public MDocType get (Properties ctx, int C_DocType_ID)
 	{
-		MDocType retValue = (MDocType)s_cache.get(C_DocType_ID);
-		if (retValue == null)
+		MDocType retValue = s_cache.get(ctx, C_DocType_ID, e -> new MDocType(ctx, e));
+		if (retValue != null)
+			return retValue;
+		
+		retValue = new MDocType (ctx, C_DocType_ID, (String)null);
+		if (retValue.getC_DocType_ID() == C_DocType_ID)
 		{
-			retValue = new MDocType (ctx, C_DocType_ID, null);
-			s_cache.put(C_DocType_ID, retValue);
+			s_cache.put(C_DocType_ID, retValue, e -> new MDocType(Env.getCtx(), e));
+			return retValue;
 		}
-		return retValue; 
+		return null;		 
 	} 	//	get
 	
 	/**	Cache					*/
-	static private CCache<Integer,MDocType>	s_cache = new CCache<Integer,MDocType>(Table_Name, 20);
+	static private ImmutableIntPOCache<Integer,MDocType>	s_cache = new ImmutableIntPOCache<Integer,MDocType>(Table_Name, 20);
 	
 	/**************************************************************************
 	 * 	Standard Constructor
@@ -116,10 +132,6 @@ public class MDocType extends X_C_DocType
 		super(ctx, C_DocType_ID, trxName);
 		if (C_DocType_ID == 0)
 		{
-		//	setName (null);
-		//	setPrintName (null);
-		//	setDocBaseType (null);
-		//	setGL_Category_ID (0);
 			setDocumentCopies (0);
 			setHasCharges (false);
 			setIsDefault (false);
@@ -128,7 +140,6 @@ public class MDocType extends X_C_DocType
 			setIsPickQAConfirm(false);
 			setIsShipConfirm(false);
 			setIsSplitWhenDifference(false);
-			//
 			setIsCreateCounter(true);
 			setIsDefaultCounterDoc(false);
 			setIsIndexed(true);
@@ -163,6 +174,37 @@ public class MDocType extends X_C_DocType
 		setGL_Category_ID ();
 	}	//	MDocType
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDocType(MDocType copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDocType(Properties ctx, MDocType copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDocType(Properties ctx, MDocType copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/**
 	 * 	Set Default GL Category
 	 */
@@ -251,8 +293,6 @@ public class MDocType extends X_C_DocType
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		/*if (getAD_Org_ID() != 0)
-			setAD_Org_ID(0);*/
 		return true;
 	}	//	beforeSave
 	
@@ -285,6 +325,12 @@ public class MDocType extends X_C_DocType
 			
 			int docact = DB.executeUpdate(sqlDocAction.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("AD_Document_Action_Access=" + docact);
+
+			if (DB.isGenerateUUIDSupported())
+				DB.executeUpdateEx("UPDATE AD_Document_Action_Access SET AD_Document_Action_Access_UU=generate_uuid() WHERE AD_Document_Action_Access_UU IS NULL", get_TrxName());
+			else
+				UUIDGenerator.updateUUID(MColumn.get(getCtx(), MDocumentActionAccess.Table_Name, PO.getUUIDColumnName(MDocumentActionAccess.Table_Name)), get_TrxName());
+		
 		}
 		return success;
 	}	//	afterSave
@@ -314,7 +360,7 @@ public class MDocType extends X_C_DocType
         int relatedDocTypeId = 0;
         if (docTypeId != 0)
         {
-            MDocType docType = MDocType.get(Env.getCtx(), docTypeId);
+            MDocType docType = MDocType.get(docTypeId);
             // FIXME: Should refactor code and remove the hard coded name
             // Should change document type to allow query the value
             if ("Return Material".equals(docType.getName()) ||
@@ -367,5 +413,14 @@ public class MDocType extends X_C_DocType
 		// warning: to cache this translation you need to change the cache to include language (see i.e. MWFNode)
 		return get_Translation (COLUMNNAME_Name, Env.getAD_Language(getCtx()));
 	}	//	getNameTrl
+
+	@Override
+	public MDocType markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MDocType

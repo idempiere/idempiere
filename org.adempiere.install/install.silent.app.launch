@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
+    <booleanAttribute key="append.args" value="true"/>
+    <stringAttribute key="application" value="org.adempiere.install.silent-application"/>
+    <booleanAttribute key="askclear" value="true"/>
+    <booleanAttribute key="automaticAdd" value="false"/>
+    <booleanAttribute key="automaticValidate" value="true"/>
+    <stringAttribute key="bootstrap" value=""/>
+    <stringAttribute key="checked" value="[NONE]"/>
+    <booleanAttribute key="clearConfig" value="true"/>
+    <booleanAttribute key="clearws" value="false"/>
+    <booleanAttribute key="clearwslog" value="false"/>
+    <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/install.silent.app"/>
+    <booleanAttribute key="default" value="false"/>
+    <setAttribute key="deselected_workspace_bundles"/>
+    <booleanAttribute key="includeOptional" value="false"/>
+    <stringAttribute key="location" value="${workspace_loc}/runtime-install.silent.app"/>
+    <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+        <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+    </listAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
+    <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
+    <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dosgi.compatibility.bootdelegation=true"/>
+    <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${project_loc:org.adempiere.base}/.."/>
+    <stringAttribute key="pde.version" value="3.3"/>
+    <stringAttribute key="product" value="org.adempiere.server.server_product"/>
+    <setAttribute key="selected_target_bundles">
+        <setEntry value="bcpkix@default:default"/>
+        <setEntry value="bcprov@default:default"/>
+        <setEntry value="bcutil@default:default"/>
+        <setEntry value="com.github.librepdf.openpdf-fonts-extra@default:default"/>
+        <setEntry value="com.github.librepdf.openpdf@default:default"/>
+        <setEntry value="com.google.gson@default:default"/>
+        <setEntry value="com.google.guava.failureaccess@default:default"/>
+        <setEntry value="com.google.guava@default:default"/>
+        <setEntry value="com.google.http-client.google-http-client@default:default"/>
+        <setEntry value="com.google.oauth-client@default:default"/>
+        <setEntry value="com.google.zxing.core@default:default"/>
+        <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
+        <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
+        <setEntry value="com.sun.mail.gimap@default:default"/>
+        <setEntry value="com.sun.mail.jakarta.mail@default:default"/>
+        <setEntry value="groovy@default:default"/>
+        <setEntry value="io.github.classgraph.classgraph@default:default"/>
+        <setEntry value="jakarta.annotation-api@default:default"/>
+        <setEntry value="jakarta.xml.bind-api@default:default"/>
+        <setEntry value="net.sf.supercsv.super-csv@default:default"/>
+        <setEntry value="org.antlr.antlr4-runtime@default:default"/>
+        <setEntry value="org.apache.activemq.activemq-client@default:default"/>
+        <setEntry value="org.apache.ant@default:default"/>
+        <setEntry value="org.apache.commons.collections@default:default"/>
+        <setEntry value="org.apache.commons.commons-codec@default:default"/>
+        <setEntry value="org.apache.commons.commons-collections4@default:default"/>
+        <setEntry value="org.apache.commons.commons-compress@default:default"/>
+        <setEntry value="org.apache.commons.commons-net@default:default"/>
+        <setEntry value="org.apache.commons.logging@default:default"/>
+        <setEntry value="org.apache.felix.scr@1:true"/>
+        <setEntry value="org.apache.geronimo.specs.geronimo-j2ee-management_1.1_spec@default:default"/>
+        <setEntry value="org.apache.geronimo.specs.geronimo-jms_1.1_spec@default:default"/>
+        <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
+        <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
+        <setEntry value="org.apache.poi.ooxml-schemas@default:default"/>
+        <setEntry value="org.apache.servicemix.bundles.cglib@default:default"/>
+        <setEntry value="org.cryptacular@default:default"/>
+        <setEntry value="org.eclipse.ant.core@default:default"/>
+        <setEntry value="org.eclipse.core.contenttype@default:default"/>
+        <setEntry value="org.eclipse.core.jobs@default:default"/>
+        <setEntry value="org.eclipse.core.runtime@default:true"/>
+        <setEntry value="org.eclipse.core.variables@default:default"/>
+        <setEntry value="org.eclipse.equinox.app@default:default"/>
+        <setEntry value="org.eclipse.equinox.common@2:true"/>
+        <setEntry value="org.eclipse.equinox.event@default:default"/>
+        <setEntry value="org.eclipse.equinox.preferences@default:default"/>
+        <setEntry value="org.eclipse.equinox.registry@default:default"/>
+        <setEntry value="org.eclipse.jetty.servlet-api@default:default"/>
+        <setEntry value="org.eclipse.jetty.util@default:default"/>
+        <setEntry value="org.eclipse.osgi.compatibility.state@default:false"/>
+        <setEntry value="org.eclipse.osgi.services@default:default"/>
+        <setEntry value="org.eclipse.osgi.util@default:default"/>
+        <setEntry value="org.eclipse.osgi@-1:true"/>
+        <setEntry value="org.fusesource.hawtbuf.hawtbuf@default:default"/>
+        <setEntry value="org.hamcrest.core@default:default"/>
+        <setEntry value="org.jsr-305@default:default"/>
+        <setEntry value="org.junit@default:default"/>
+        <setEntry value="org.krysalis.barcode4j@default:default"/>
+        <setEntry value="org.passay@default:default"/>
+        <setEntry value="slf4j.api*1.7.30@default:default"/>
+        <setEntry value="slf4j.jcl@default:false"/>
+        <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
+        <setEntry value="wrapped.com.google.zxing.javase@default:default"/>
+        <setEntry value="wrapped.dev.samstevens.totp.totp@default:default"/>
+        <setEntry value="wrapped.io.grpc.grpc-context@default:default"/>
+        <setEntry value="wrapped.io.opencensus.opencensus-api@default:default"/>
+        <setEntry value="wrapped.io.opencensus.opencensus-contrib-http-util@default:default"/>
+        <setEntry value="wrapped.org.apache.activemq.activemq-kahadb-store@default:default"/>
+        <setEntry value="wrapped.org.apache.poi.poi-ooxml@default:default"/>
+        <setEntry value="wrapped.org.apache.poi.poi@default:default"/>
+        <setEntry value="wrapped.org.apache.xmlbeans.xmlbeans@default:default"/>
+        <setEntry value="wrapped.org.jfree.jcommon@default:default"/>
+        <setEntry value="wrapped.org.jfree.jfreechart@default:default"/>
+        <setEntry value="xstream@default:default"/>
+    </setAttribute>
+    <setAttribute key="selected_workspace_bundles">
+        <setEntry value="org.adempiere.base@default:default"/>
+        <setEntry value="org.adempiere.install@default:default"/>
+        <setEntry value="org.apache.ecs@default:default"/>
+        <setEntry value="org.compiere.db.oracle.provider@default:default"/>
+        <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
+    </setAttribute>
+    <booleanAttribute key="show_selected_only" value="false"/>
+    <stringAttribute key="templateConfig" value="${target_home}/configuration/config.ini"/>
+    <booleanAttribute key="tracing" value="false"/>
+    <booleanAttribute key="useCustomFeatures" value="false"/>
+    <booleanAttribute key="useDefaultConfig" value="true"/>
+    <booleanAttribute key="useDefaultConfigArea" value="true"/>
+    <booleanAttribute key="useProduct" value="false"/>
+</launchConfiguration>

@@ -27,6 +27,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.eevolution.model.MPPProductBOM;
+import org.eevolution.model.MPPProductBOMLine;
 
 
 /**
@@ -70,13 +72,14 @@ public class MPackage extends X_M_Package
 				MProduct product = new MProduct(shipment.getCtx(), sLine.getM_Product_ID(), shipment.get_TrxName());
 				if(product.isBOM() && product.isVerified() && product.isPickListPrintDetails())
 				{
-					MProductBOM[] bomLines = MProductBOM.getBOMLines(product);
-					for(MProductBOM bomLine : bomLines)
+					MPPProductBOM bom = MPPProductBOM.getDefault(product, shipment.get_TrxName());
+					MPPProductBOMLine[] bomLines = bom.getLines();
+					for(MPPProductBOMLine bomLine : bomLines)
 					{
 						MPackageLine pLine = new MPackageLine(retValue);
 						pLine.setInOutLine(sLine);
-						pLine.setM_Product_ID(bomLine.getM_ProductBOM_ID());
-						pLine.setQty(sLine.getQtyEntered().multiply(bomLine.getBOMQty()));
+						pLine.setM_Product_ID(bomLine.getM_Product_ID());
+						pLine.setQty(sLine.getQtyEntered().multiply(bomLine.getQtyBOM()));
 						pLine.setM_PackageMPS_ID(packageMPS.getM_PackageMPS_ID());
 						pLine.saveEx();
 					}
@@ -121,9 +124,6 @@ public class MPackage extends X_M_Package
 		super (ctx, M_Package_ID, trxName);
 		if (M_Package_ID == 0)
 		{
-		//	setM_Shipper_ID (0);
-		//	setDocumentNo (null);
-		//	setM_InOut_ID (0);
 			setShipDate (new Timestamp(System.currentTimeMillis()));
 			
 			MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
@@ -577,7 +577,6 @@ public class MPackage extends X_M_Package
 		st.setSalesRep_ID(ioOut.getSalesRep_ID());
 		st.setShipDate(getShipDate());
 		st.setShipperAccount(getShipperAccount());
-//		st.setShippingRespMessage(ShippingRespMessage);
 		st.setSurcharges(getSurcharges());
 		st.setTrackingInfo(getTrackingInfo());
 		st.setTrackingNo(getTrackingNo());

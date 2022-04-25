@@ -17,19 +17,21 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
 
-public class MViewComponent extends X_AD_ViewComponent {
-
+public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8915166706061086737L;
+	private static final long serialVersionUID = 1580063310233871896L;
 
 	/**
 	 * Standard constructor
@@ -64,6 +66,38 @@ public class MViewComponent extends X_AD_ViewComponent {
 		setAD_Table_ID(parent.getAD_Table_ID());
 	}
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MViewComponent(MViewComponent copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MViewComponent(Properties ctx, MViewComponent copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MViewComponent(Properties ctx, MViewComponent copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_columns = copy.m_columns != null ? Arrays.stream(copy.m_columns).map(e -> {return new MViewColumn(ctx, e, trxName);}).toArray(MViewColumn[]::new) : null;
+	}
+	
 	/** Columns				*/
 	private MViewColumn[]	m_columns = null;
 	
@@ -82,6 +116,8 @@ public class MViewComponent extends X_AD_ViewComponent {
 		query.setOnlyActiveRecords(true);
 		query.setOrderBy("SeqNo, AD_ViewColumn_ID");
 		List<MViewColumn> list = query.<MViewColumn>list();
+		if (list.size() > 0)
+			list.stream().forEach(e -> e.markImmutable());
 		
 		m_columns = new MViewColumn[list.size()];
 		list.toArray(m_columns);
@@ -133,10 +169,11 @@ public class MViewComponent extends X_AD_ViewComponent {
 					if (dt.equals(MViewColumn.DBDATATYPE_CharacterFixed) || 
 							dt.equals(MViewColumn.DBDATATYPE_CharacterVariable))
 						colSQL = "NULLIF('a','a')";
-					else if (dt.equals(MViewColumn.DBDATATYPE_Decimal) || 
-							dt.equals(MViewColumn.DBDATATYPE_Integer) ||
-							dt.equals(MViewColumn.DBDATATYPE_Number))
+					else if (dt.equals(MViewColumn.DBDATATYPE_Integer))
 						colSQL = "NULLIF(1,1)";
+					else if (dt.equals(MViewColumn.DBDATATYPE_Decimal) || 
+							dt.equals(MViewColumn.DBDATATYPE_Number))
+						colSQL = "NULLIF(1.0,1.0)";
 					else if (dt.equals(MViewColumn.DBDATATYPE_Timestamp))
 						colSQL = "NULL";
 				}
@@ -160,6 +197,18 @@ public class MViewComponent extends X_AD_ViewComponent {
 		return sb.toString();
 	}
 	
+	
+	@Override
+	public MViewComponent markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		if (m_columns != null && m_columns.length > 0)
+			Arrays.stream(m_columns).forEach(e -> e.markImmutable());
+		return this;
+	}
+
 	/**
      * 	String representation
      *	@return info
@@ -167,7 +216,7 @@ public class MViewComponent extends X_AD_ViewComponent {
     @Override
 	public String toString()
     {
-	    StringBuffer sb = new StringBuffer("MViewComponent[")
+    	StringBuilder sb = new StringBuilder("MViewComponent[")
 	    	.append(get_ID())
 	        .append("-").append(getName());
 	    sb.append("]");

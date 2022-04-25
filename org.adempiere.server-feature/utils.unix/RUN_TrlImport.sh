@@ -1,20 +1,21 @@
 #!/bin/sh
 
-if [ $IDEMPIERE_HOME ]; then
-    cd $IDEMPIERE_HOME/utils
+if [ "$IDEMPIERE_HOME" ]; then
+    cd "$IDEMPIERE_HOME"/utils || (echo "Cannot cd $IDEMPIERE_HOME/utils"; exit 1)
 else
-    cd "`dirname $0`"
+    cd "$(dirname "$0")" || (echo "Cannot cd"; exit 1)
 fi
-. ./myEnvironment.sh Server
+export ID_ENV=Server
+. ./myEnvironment.sh
 
-if [ $JAVA_HOME ]; then
+if [ "$JAVA_HOME" ]; then
   JAVA=$JAVA_HOME/bin/java
 else
   JAVA=java
 fi
 
 # $Id: RUN_TrlImport.sh,v 1.3 2005/01/22 21:59:15 jjanke Exp $
-echo    Import idempiere Translation - $IDEMPIERE_HOME \($ADEMPIERE_DB_NAME\)
+echo    Import idempiere Translation - "$IDEMPIERE_HOME" \("$ADEMPIERE_DB_NAME"\)
 
 if [ $# -gt 0 ]
 then
@@ -33,9 +34,9 @@ fi
 
 cd ..
 
-echo    This Procedure imports language $AD_LANGUAGE from directory $DIRECTORY
+echo    This Procedure imports language $AD_LANGUAGE from directory "$DIRECTORY"
 
-$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=false -jar plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.install.translation import $DIRECTORY $AD_LANGUAGE
+$JAVA -Dosgi.compatibility.bootdelegation=true -Dosgi.noShutdown=false -jar plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.install.translation import "$DIRECTORY" $AD_LANGUAGE
 
 echo    Done
 echo .

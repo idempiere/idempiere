@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.DB;
+import org.compiere.util.Msg;
 
 
 /**
@@ -33,8 +34,7 @@ public class MAttributeUse extends X_M_AttributeUse
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3727204159034073907L;
-
+	private static final long serialVersionUID = -9159120094145438975L;
 
 	/**
 	 * 	Persistency Constructor
@@ -60,7 +60,33 @@ public class MAttributeUse extends X_M_AttributeUse
 		super(ctx, rs, trxName);
 	}	//	MAttributeUse
 
-	
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true if can be saved
+	 */
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if ((newRecord || is_ValueChanged(COLUMNNAME_M_Attribute_ID))
+				&& ! MRole.getDefault().isAccessAdvanced()) {
+			// not advanced roles cannot assign for use a reference attribute
+			MAttribute att = MAttribute.get(getCtx(), getM_Attribute_ID());
+			if (MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(att.getAttributeValueType())) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
+				return false;
+			}
+		}
+		
+		// Get Sequence No
+		if (getSeqNo() == 0) {
+			String sql = "SELECT COALESCE(MAX(SeqNo),0)+10 FROM M_AttributeUse WHERE M_AttributeSet_ID=?";
+			int seqNo = DB.getSQLValue (get_TrxName(), sql, getM_AttributeSet_ID());
+			setSeqNo(seqNo);
+		}
+			
+		return true;
+	}
+
 	/**
 	 * 	After Save
 	 *	@param newRecord new

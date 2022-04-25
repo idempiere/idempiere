@@ -3,9 +3,9 @@
 echo Set Unix Environment
 # $Id: RUN_UnixEnvTemplate.sh,v 1.3 2004/03/11 05:41:13 jjanke Exp $
 
-echo ===================================
-echo Setup Client Environment
-echo ===================================
+echo "==================================="
+echo "Setup Client Environment"
+echo "==================================="
 
 JAVA_HOME=@JAVA_HOME@
 export JAVA_HOME

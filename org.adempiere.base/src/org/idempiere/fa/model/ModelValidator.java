@@ -22,7 +22,6 @@ import org.compiere.model.SetGetModel;
 import org.compiere.model.SetGetUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
-import org.idempiere.fa.exceptions.AssetInvoiceWithMixedLines_LRO;
 import org.idempiere.fa.exceptions.AssetProductStockedException;
 
 
@@ -57,7 +56,6 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 		engine.addDocValidate(MInvoice.Table_Name, this);
 		engine.addModelChange(MMatchInv.Table_Name, this);
 		//
-//		engine.addFactsValidate(MDepreciationEntry.Table_Name, this);
 	}
 
 	public String login(int AD_Org_ID, int AD_Role_ID, int AD_User_ID)
@@ -105,12 +103,6 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 		// TABLE C_Invoice
 		String tableName = po.get_TableName();
 		if(tableName.equals(MInvoice.Table_Name)){
-			// Invoice - Validate Fixed Assets Invoice (LRO)
-			if (timing==TIMING_AFTER_PREPARE)
-			{
-				MInvoice invoice = (MInvoice)po;
-				validateFixedAssetsInvoice_LRO(invoice);
-			}
 			
 			if(timing==TIMING_AFTER_COMPLETE){
 				MInvoice mi = (MInvoice)po;
@@ -134,7 +126,7 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 	 * @param m model 
 	 * @param changeType set when called from model validator (See TYPE_*); else -1, when called from callout
 	 */
-	public static void modelChange_InvoiceLine(SetGetModel m, int changeType) {
+	public void modelChange_InvoiceLine(SetGetModel m, int changeType) {
 		//
 		// Set Asset Related Fields:
 		if (-1 == changeType || TYPE_BEFORE_NEW == changeType || TYPE_BEFORE_CHANGE == changeType) {
@@ -201,7 +193,7 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 				//
 				// Check Product - fixed assets products shouldn't be stocked (but inventory objects are allowed)
 				MProduct product = line.getProduct();
-				if (product.isStocked() && line.get_ValueAsBoolean("IsFixedAssetInvoice")) {
+				if (product.isStocked() && line.isFixedAssetInvoice()) {
 					throw new AssetProductStockedException(product);
 				}
 			}
@@ -222,48 +214,8 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 			DB.executeUpdateEx(sql, new Object[]{invoice_id}, m.get_TrxName());
 		}
 	}
-	
-	/**
-	 * Check if is a valid fixed asset related invoice (LRO)
-	 * @param invoice
-	 */
-	private void validateFixedAssetsInvoice_LRO(MInvoice invoice)
-	{
-		if (invoice.get_ValueAsBoolean("IsFixedAssetInvoice"))
-		{
-			boolean hasFixedAssetLines = false;
-			boolean hasNormalLines = false;
-			for (MInvoiceLine line : invoice.getLines())
-			{
-				if (line.get_ValueAsBoolean("IsFixedAssetInvoice"))
-				{
-					hasFixedAssetLines = true;
-				}
-				else if (line.getM_Product_ID() > 0)
-				{
-					MProduct product = MProduct.get(line.getCtx(), line.getM_Product_ID());
-					if (product.isItem())
-					{
-						// Only items are forbiden for FA invoices because in Romania these should use
-						// V_Liability vendor account and not V_Liability_FixedAssets vendor account
-						hasNormalLines = true;
-					}
-				}
-				//
-				// No mixed lines are allowed
-				if (hasFixedAssetLines && hasNormalLines)
-				{
-					throw new AssetInvoiceWithMixedLines_LRO();
-				}
-			}
-		}
-	}
 
-	
-
-	
 	public String factsValidate(MAcctSchema schema, List<Fact> facts, PO po) {
-		// TODO: implement it
 		return null;
 	}
 }

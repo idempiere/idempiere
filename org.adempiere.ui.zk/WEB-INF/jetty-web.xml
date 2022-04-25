@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd">
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+	<!-- IDEMPIERE-2490 -->
+	<Set name="maxFormContentSize">1048576</Set>
+	<Set name="maxFormKeys">2000</Set>
+</Configure>

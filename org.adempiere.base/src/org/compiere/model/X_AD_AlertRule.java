@@ -23,19 +23,36 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AlertRule
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_AlertRule")
 public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_AlertRule (Properties ctx, int AD_AlertRule_ID, String trxName)
     {
       super (ctx, AD_AlertRule_ID, trxName);
+      /** if (AD_AlertRule_ID == 0)
+        {
+			setAD_Alert_ID (0);
+			setAD_AlertRule_ID (0);
+			setFromClause (null);
+			setIsValid (true);
+// Y
+			setName (null);
+			setSelectClause (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AlertRule (Properties ctx, int AD_AlertRule_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AlertRule_ID, trxName, virtualColumns);
       /** if (AD_AlertRule_ID == 0)
         {
 			setAD_Alert_ID (0);
@@ -71,32 +88,32 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_AlertRule[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_AlertRule[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Alert getAD_Alert() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Alert)MTable.get(getCtx(), org.compiere.model.I_AD_Alert.Table_Name)
-			.getPO(getAD_Alert_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Alert)MTable.get(getCtx(), org.compiere.model.I_AD_Alert.Table_ID)
+			.getPO(getAD_Alert_ID(), get_TrxName());
+	}
 
 	/** Set Alert.
-		@param AD_Alert_ID 
-		iDempiere Alert
-	  */
+		@param AD_Alert_ID iDempiere Alert
+	*/
 	public void setAD_Alert_ID (int AD_Alert_ID)
 	{
-		if (AD_Alert_ID < 1) 
+		if (AD_Alert_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Alert_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Alert_ID, Integer.valueOf(AD_Alert_ID));
 	}
 
 	/** Get Alert.
 		@return iDempiere Alert
 	  */
-	public int getAD_Alert_ID () 
+	public int getAD_Alert_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Alert_ID);
 		if (ii == null)
@@ -105,21 +122,20 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	}
 
 	/** Set Alert Rule.
-		@param AD_AlertRule_ID 
-		Definition of the alert element
-	  */
+		@param AD_AlertRule_ID Definition of the alert element
+	*/
 	public void setAD_AlertRule_ID (int AD_AlertRule_ID)
 	{
-		if (AD_AlertRule_ID < 1) 
+		if (AD_AlertRule_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_AlertRule_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_AlertRule_ID, Integer.valueOf(AD_AlertRule_ID));
 	}
 
 	/** Get Alert Rule.
 		@return Definition of the alert element
 	  */
-	public int getAD_AlertRule_ID () 
+	public int getAD_AlertRule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AlertRule_ID);
 		if (ii == null)
@@ -128,7 +144,8 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	}
 
 	/** Set AD_AlertRule_UU.
-		@param AD_AlertRule_UU AD_AlertRule_UU	  */
+		@param AD_AlertRule_UU AD_AlertRule_UU
+	*/
 	public void setAD_AlertRule_UU (String AD_AlertRule_UU)
 	{
 		set_Value (COLUMNNAME_AD_AlertRule_UU, AD_AlertRule_UU);
@@ -136,32 +153,32 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 
 	/** Get AD_AlertRule_UU.
 		@return AD_AlertRule_UU	  */
-	public String getAD_AlertRule_UU () 
+	public String getAD_AlertRule_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AlertRule_UU);
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -170,7 +187,8 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	}
 
 	/** Set Error Msg.
-		@param ErrorMsg Error Msg	  */
+		@param ErrorMsg Error Msg
+	*/
 	public void setErrorMsg (String ErrorMsg)
 	{
 		set_Value (COLUMNNAME_ErrorMsg, ErrorMsg);
@@ -178,15 +196,14 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 
 	/** Get Error Msg.
 		@return Error Msg	  */
-	public String getErrorMsg () 
+	public String getErrorMsg()
 	{
 		return (String)get_Value(COLUMNNAME_ErrorMsg);
 	}
 
 	/** Set Sql FROM.
-		@param FromClause 
-		SQL FROM clause
-	  */
+		@param FromClause SQL FROM clause
+	*/
 	public void setFromClause (String FromClause)
 	{
 		set_Value (COLUMNNAME_FromClause, FromClause);
@@ -195,15 +212,14 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	/** Get Sql FROM.
 		@return SQL FROM clause
 	  */
-	public String getFromClause () 
+	public String getFromClause()
 	{
 		return (String)get_Value(COLUMNNAME_FromClause);
 	}
 
 	/** Set Valid.
-		@param IsValid 
-		Element is valid
-	  */
+		@param IsValid Element is valid
+	*/
 	public void setIsValid (boolean IsValid)
 	{
 		set_Value (COLUMNNAME_IsValid, Boolean.valueOf(IsValid));
@@ -212,7 +228,7 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	/** Get Valid.
 		@return Element is valid
 	  */
-	public boolean isValid () 
+	public boolean isValid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValid);
 		if (oo != null) 
@@ -225,9 +241,8 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -236,7 +251,7 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -250,9 +265,8 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
     }
 
 	/** Set Other SQL Clause.
-		@param OtherClause 
-		Other SQL Clause
-	  */
+		@param OtherClause Other SQL Clause
+	*/
 	public void setOtherClause (String OtherClause)
 	{
 		set_Value (COLUMNNAME_OtherClause, OtherClause);
@@ -261,15 +275,14 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	/** Get Other SQL Clause.
 		@return Other SQL Clause
 	  */
-	public String getOtherClause () 
+	public String getOtherClause()
 	{
 		return (String)get_Value(COLUMNNAME_OtherClause);
 	}
 
 	/** Set Post Processing.
-		@param PostProcessing 
-		Process SQL after executing the query
-	  */
+		@param PostProcessing Process SQL after executing the query
+	*/
 	public void setPostProcessing (String PostProcessing)
 	{
 		set_Value (COLUMNNAME_PostProcessing, PostProcessing);
@@ -278,15 +291,14 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	/** Get Post Processing.
 		@return Process SQL after executing the query
 	  */
-	public String getPostProcessing () 
+	public String getPostProcessing()
 	{
 		return (String)get_Value(COLUMNNAME_PostProcessing);
 	}
 
 	/** Set Pre Processing.
-		@param PreProcessing 
-		Process SQL before executing the query
-	  */
+		@param PreProcessing Process SQL before executing the query
+	*/
 	public void setPreProcessing (String PreProcessing)
 	{
 		set_Value (COLUMNNAME_PreProcessing, PreProcessing);
@@ -295,15 +307,14 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	/** Get Pre Processing.
 		@return Process SQL before executing the query
 	  */
-	public String getPreProcessing () 
+	public String getPreProcessing()
 	{
 		return (String)get_Value(COLUMNNAME_PreProcessing);
 	}
 
 	/** Set Sql SELECT.
-		@param SelectClause 
-		SQL SELECT clause
-	  */
+		@param SelectClause SQL SELECT clause
+	*/
 	public void setSelectClause (String SelectClause)
 	{
 		set_Value (COLUMNNAME_SelectClause, SelectClause);
@@ -312,15 +323,14 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	/** Get Sql SELECT.
 		@return SQL SELECT clause
 	  */
-	public String getSelectClause () 
+	public String getSelectClause()
 	{
 		return (String)get_Value(COLUMNNAME_SelectClause);
 	}
 
 	/** Set Sql WHERE.
-		@param WhereClause 
-		Fully qualified SQL WHERE clause
-	  */
+		@param WhereClause Fully qualified SQL WHERE clause
+	*/
 	public void setWhereClause (String WhereClause)
 	{
 		set_Value (COLUMNNAME_WhereClause, WhereClause);
@@ -329,7 +339,7 @@ public class X_AD_AlertRule extends PO implements I_AD_AlertRule, I_Persistent
 	/** Get Sql WHERE.
 		@return Fully qualified SQL WHERE clause
 	  */
-	public String getWhereClause () 
+	public String getWhereClause()
 	{
 		return (String)get_Value(COLUMNNAME_WhereClause);
 	}

@@ -217,12 +217,14 @@ public class FileImportAction implements EventListener<Event>
 			LayoutUtils.addSclass("dialog-footer", confirmPanel);
 			vb.appendChild(confirmPanel);
 			confirmPanel.addActionListener(this);
+			winImportFile.addEventListener(Events.ON_CANCEL, e -> onCancel());
 		}
 		
 		panel.getComponent().getParent().appendChild(winImportFile);
 		panel.showBusyMask(winImportFile);
 		LayoutUtils.openOverlappedWindow(panel.getComponent(), winImportFile, "middle_center");
 		winImportFile.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
+		winImportFile.focus();
 	}
 
 	@Override
@@ -232,7 +234,7 @@ public class FileImportAction implements EventListener<Event>
 			UploadEvent ue = (UploadEvent) event;
 			processUploadMedia(ue.getMedia());
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)) {
-			winImportFile.onClose();
+			onCancel();
 		} else if (event.getTarget() == fCharset) {
 			if (m_file_istream != null) {
 				m_file_istream.close();
@@ -250,7 +252,12 @@ public class FileImportAction implements EventListener<Event>
 			importFile();
 		} else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
 			panel.hideBusyMask();
+			panel.focusToLastFocusEditor();
 		}
+	}
+
+	private void onCancel() {
+		winImportFile.onClose();
 	}
 
 	private void processUploadMedia(Media media) {

@@ -23,19 +23,31 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Group
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="R_Group")
 public class X_R_Group extends PO implements I_R_Group, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_Group (Properties ctx, int R_Group_ID, String trxName)
     {
       super (ctx, R_Group_ID, trxName);
+      /** if (R_Group_ID == 0)
+        {
+			setName (null);
+			setR_Group_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_Group (Properties ctx, int R_Group_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_Group_ID, trxName, virtualColumns);
       /** if (R_Group_ID == 0)
         {
 			setName (null);
@@ -66,15 +78,14 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_Group[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_R_Group[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -83,15 +94,14 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -100,32 +110,32 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_Name)
-			.getPO(getM_ChangeNotice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_ID)
+			.getPO(getM_ChangeNotice_ID(), get_TrxName());
+	}
 
 	/** Set Change Notice.
-		@param M_ChangeNotice_ID 
-		Bill of Materials (Engineering) Change Notice (Version)
-	  */
+		@param M_ChangeNotice_ID Bill of Materials (Engineering) Change Notice (Version)
+	*/
 	public void setM_ChangeNotice_ID (int M_ChangeNotice_ID)
 	{
-		if (M_ChangeNotice_ID < 1) 
+		if (M_ChangeNotice_ID < 1)
 			set_Value (COLUMNNAME_M_ChangeNotice_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ChangeNotice_ID, Integer.valueOf(M_ChangeNotice_ID));
 	}
 
 	/** Get Change Notice.
 		@return Bill of Materials (Engineering) Change Notice (Version)
 	  */
-	public int getM_ChangeNotice_ID () 
+	public int getM_ChangeNotice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ChangeNotice_ID);
 		if (ii == null)
@@ -134,9 +144,8 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -145,7 +154,7 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -159,26 +168,26 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
     }
 
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_Name)
-			.getPO(getPP_Product_BOM_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)
+			.getPO(getPP_Product_BOM_ID(), get_TrxName());
+	}
 
-	/** Set BOM & Formula.
-		@param PP_Product_BOM_ID 
-		BOM & Formula
-	  */
+	/** Set BOM &amp; Formula.
+		@param PP_Product_BOM_ID BOM &amp; Formula
+	*/
 	public void setPP_Product_BOM_ID (int PP_Product_BOM_ID)
 	{
-		if (PP_Product_BOM_ID < 1) 
+		if (PP_Product_BOM_ID < 1)
 			set_Value (COLUMNNAME_PP_Product_BOM_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PP_Product_BOM_ID, Integer.valueOf(PP_Product_BOM_ID));
 	}
 
-	/** Get BOM & Formula.
-		@return BOM & Formula
+	/** Get BOM &amp; Formula.
+		@return BOM &amp; Formula
 	  */
-	public int getPP_Product_BOM_ID () 
+	public int getPP_Product_BOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Product_BOM_ID);
 		if (ii == null)
@@ -187,21 +196,20 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 	}
 
 	/** Set Group.
-		@param R_Group_ID 
-		Request Group
-	  */
+		@param R_Group_ID Request Group
+	*/
 	public void setR_Group_ID (int R_Group_ID)
 	{
-		if (R_Group_ID < 1) 
+		if (R_Group_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Group_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Group_ID, Integer.valueOf(R_Group_ID));
 	}
 
 	/** Get Group.
 		@return Request Group
 	  */
-	public int getR_Group_ID () 
+	public int getR_Group_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Group_ID);
 		if (ii == null)
@@ -210,7 +218,8 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 	}
 
 	/** Set R_Group_UU.
-		@param R_Group_UU R_Group_UU	  */
+		@param R_Group_UU R_Group_UU
+	*/
 	public void setR_Group_UU (String R_Group_UU)
 	{
 		set_Value (COLUMNNAME_R_Group_UU, R_Group_UU);
@@ -218,7 +227,7 @@ public class X_R_Group extends PO implements I_R_Group, I_Persistent
 
 	/** Get R_Group_UU.
 		@return R_Group_UU	  */
-	public String getR_Group_UU () 
+	public String getR_Group_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_Group_UU);
 	}

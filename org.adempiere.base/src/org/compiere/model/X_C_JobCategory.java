@@ -23,19 +23,31 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_JobCategory
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_JobCategory")
 public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_JobCategory (Properties ctx, int C_JobCategory_ID, String trxName)
     {
       super (ctx, C_JobCategory_ID, trxName);
+      /** if (C_JobCategory_ID == 0)
+        {
+			setC_JobCategory_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_JobCategory (Properties ctx, int C_JobCategory_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_JobCategory_ID, trxName, virtualColumns);
       /** if (C_JobCategory_ID == 0)
         {
 			setC_JobCategory_ID (0);
@@ -66,27 +78,26 @@ public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_JobCategory[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_JobCategory[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Position Category.
-		@param C_JobCategory_ID 
-		Job Position Category
-	  */
+		@param C_JobCategory_ID Job Position Category
+	*/
 	public void setC_JobCategory_ID (int C_JobCategory_ID)
 	{
-		if (C_JobCategory_ID < 1) 
+		if (C_JobCategory_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_JobCategory_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_JobCategory_ID, Integer.valueOf(C_JobCategory_ID));
 	}
 
 	/** Get Position Category.
 		@return Job Position Category
 	  */
-	public int getC_JobCategory_ID () 
+	public int getC_JobCategory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_JobCategory_ID);
 		if (ii == null)
@@ -95,7 +106,8 @@ public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent
 	}
 
 	/** Set C_JobCategory_UU.
-		@param C_JobCategory_UU C_JobCategory_UU	  */
+		@param C_JobCategory_UU C_JobCategory_UU
+	*/
 	public void setC_JobCategory_UU (String C_JobCategory_UU)
 	{
 		set_Value (COLUMNNAME_C_JobCategory_UU, C_JobCategory_UU);
@@ -103,15 +115,14 @@ public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent
 
 	/** Get C_JobCategory_UU.
 		@return C_JobCategory_UU	  */
-	public String getC_JobCategory_UU () 
+	public String getC_JobCategory_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_JobCategory_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -120,15 +131,14 @@ public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -137,15 +147,14 @@ public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -154,7 +163,7 @@ public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

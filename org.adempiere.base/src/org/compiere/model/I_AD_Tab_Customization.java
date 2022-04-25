@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Tab_Customization
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 9
  */
 public interface I_AD_Tab_Customization 
 {
@@ -147,6 +147,15 @@ public interface I_AD_Tab_Customization
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsAutoHideEmptyColumn */
+    public static final String COLUMNNAME_IsAutoHideEmptyColumn = "IsAutoHideEmptyColumn";
+
+	/** Set Auto Hide Empty Column	  */
+	public void setIsAutoHideEmptyColumn (String IsAutoHideEmptyColumn);
+
+	/** Get Auto Hide Empty Column	  */
+	public String getIsAutoHideEmptyColumn();
 
     /** Column name IsDisplayedGrid */
     public static final String COLUMNNAME_IsDisplayedGrid = "IsDisplayedGrid";

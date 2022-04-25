@@ -36,14 +36,14 @@ import org.compiere.util.Msg;
 *  @author Eldir Tomassen/Jorg Janke
 *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
 *   <li> BF [ 1933645 ] Wrong balance Bank Statement
-*   @see http://sourceforge.net/tracker/?func=detail&atid=879332&aid=1933645&group_id=176962
+*   @see https://sourceforge.net/p/adempiere/bugs/1145/
 * 	<li> FR [ 2520591 ] Support multiples calendar for Org 
-*	@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+*	@see https://sourceforge.net/p/adempiere/feature-requests/631/
 * 	<li> BF [ 2824951 ] The payments is not release when Bank Statement is void 
-*	@see http://sourceforge.net/tracker/?func=detail&aid=2824951&group_id=176962&atid=879332
+*	@see https://sourceforge.net/p/adempiere/bugs/1990/
 *  @author Teo Sarca, http://www.arhipac.ro
 * 	<li>FR [ 2616330 ] Use MPeriod.testPeriodOpen instead of isOpen
-* 		https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2616330&group_id=176962
+* 		https://sourceforge.net/p/adempiere/feature-requests/666/
 *  
 *   @version $Id: MBankStatement.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
 */
@@ -52,7 +52,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4286511528899179483L;
+	private static final long serialVersionUID = -5635804381201264475L;
 
 	/**
 	 * 	Standard Constructor
@@ -65,7 +65,6 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		super (ctx, C_BankStatement_ID, trxName);
 		if (C_BankStatement_ID == 0)
 		{ 
-		//	setC_BankAccount_ID (0);	//	parent
 			setStatementDate (new Timestamp(System.currentTimeMillis()));	// @Date@
 			setDocAction (DOCACTION_Complete);	// CO
 			setDocStatus (DOCSTATUS_Drafted);	// DR
@@ -134,7 +133,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		final String whereClause = I_C_BankStatementLine.COLUMNNAME_C_BankStatement_ID+"=?";
 		List<MBankStatementLine> list = new Query(getCtx(),I_C_BankStatementLine.Table_Name,whereClause,get_TrxName())
 		.setParameters(getC_BankStatement_ID())
-		.setOrderBy("Line")
+		.setOrderBy("Line,C_BankStatementLine_ID")
 		.list();
 		MBankStatementLine[] retValue = new MBankStatementLine[list.size()];
 		list.toArray(retValue);
@@ -180,7 +179,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	public MBankAccount getBankAccount()
 	{
-		return MBankAccount.get(getCtx(), getC_BankAccount_ID());
+		return MBankAccount.getCopy(getCtx(), getC_BankAccount_ID(), (String)null);
 	}	//	getBankAccount
 	
 	/**
@@ -228,10 +227,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	
@@ -312,25 +308,21 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		}
 		//	Lines
 		BigDecimal total = Env.ZERO;
-		// IDEMPIERE-480 changed the way accounting is posted, now lines post just with the accounting date of the statement header
-		// so, it is unnecessary to validate the period of lines
-		// Timestamp minDate = getStatementDate();
-		// Timestamp maxDate = minDate;
 		for (int i = 0; i < lines.length; i++)
 		{
 			MBankStatementLine line = lines[i];
 			if (!line.isActive())
 				continue;
+
+			if (!line.isDateConsistentIfUsedForPosting()) {
+				m_processMsg = Msg.getMsg(getCtx(), "BankStatementLinePeriodNotSameAsHeader", new Object[] {line.getLine()});
+				return DocAction.STATUS_Invalid;
+			}
+
 			total = total.add(line.getStmtAmt());
-			// if (line.getDateAcct().before(minDate))
-				// minDate = line.getDateAcct(); 
-			// if (line.getDateAcct().after(maxDate))
-				// maxDate = line.getDateAcct(); 
 		}
 		setStatementDifference(total);
 		setEndingBalance(getBeginningBalance().add(total));
-		// MPeriod.testPeriodOpen(getCtx(), minDate, MDocType.DOCBASETYPE_BankStatement, getAD_Org_ID());
-		// MPeriod.testPeriodOpen(getCtx(), maxDate, MDocType.DOCBASETYPE_BankStatement, getAD_Org_ID());
 
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
@@ -644,8 +636,6 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	public int getC_Currency_ID()
 	{
-	//	MPriceList pl = MPriceList.get(getCtx(), getM_PriceList_ID());
-	//	return pl.getC_Currency_ID();
 		return 0;
 	}	//	getC_Currency_ID
 
@@ -660,5 +650,9 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			|| DOCSTATUS_Closed.equals(ds)
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
+
+	public static boolean isPostWithDateFromLine(int clientID) {
+		return MSysConfig.getBooleanValue(MSysConfig.BANK_STATEMENT_POST_WITH_DATE_FROM_LINE, false, Env.getAD_Client_ID(Env.getCtx()));
+	}
 	
 }	//	MBankStatement

@@ -32,11 +32,11 @@ import org.zkoss.zk.ui.sys.ComponentCtrl;
  * @author Low Heng Sin
  *
  */
-public class ClientInfo implements Serializable {
+public class ClientInfo implements Serializable {	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -713195891415378500L;
+	private static final long serialVersionUID = -2686811277627911861L;
 	
 	public int colorDepth;
 	public int desktopWidth;
@@ -96,7 +96,7 @@ public class ClientInfo implements Serializable {
 	 * @return true if mobile browser
 	 */
 	public static boolean isMobile() {
-		return "Y".equals(Env.getContext(Env.getCtx(), "#clientInfo_mobile"));
+		return "Y".equals(Env.getContext(Env.getCtx(), Env.CLIENT_INFO_MOBILE));
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class ClientInfo implements Serializable {
 	/**
 	 * 
 	 * @param minWidth
-	 * @return true if desktopWidth >= minWidth
+	 * @return true if desktopWidth &gt;= minWidth
 	 */
 	public static boolean minWidth(int minWidth) {
 		return ClientInfo.get().desktopWidth > 0 && ClientInfo.get().desktopWidth >= minWidth;
@@ -118,7 +118,7 @@ public class ClientInfo implements Serializable {
 	/**
 	 * 
 	 * @param maxWidth
-	 * @return true if desktopWidth <= maxWidth
+	 * @return true if desktopWidth &lt;= maxWidth
 	 */
 	public static boolean maxWidth(int maxWidth) {
 		return ClientInfo.get().desktopWidth > 0 && ClientInfo.get().desktopWidth <= maxWidth;
@@ -127,7 +127,7 @@ public class ClientInfo implements Serializable {
 	/**
 	 * 
 	 * @param minHeight
-	 * @return true if desktopHeight >= minHeight
+	 * @return true if desktopHeight &gt;= minHeight
 	 */
 	public static boolean minHeight(int minHeight) {
 		return ClientInfo.get().desktopHeight > 0 && ClientInfo.get().desktopHeight >= minHeight;
@@ -136,7 +136,7 @@ public class ClientInfo implements Serializable {
 	/**
 	 * 
 	 * @param maxHeight
-	 * @return true if desktopHeight <= maxHeight
+	 * @return true if desktopHeight &lt;= maxHeight
 	 */
 	public static boolean maxHeight(int maxHeight) {
 		return ClientInfo.get().desktopHeight > 0 && ClientInfo.get().desktopHeight <= maxHeight;
@@ -156,5 +156,12 @@ public class ClientInfo implements Serializable {
 		Component root = SessionManager.getAppDesktop().getComponent().getRoot();
 		root.addEventListener(Events.ON_CLIENT_INFO, eventListener);
 		ctrl.addCallback(AFTER_PAGE_DETACHED, t -> root.removeEventListener(Events.ON_CLIENT_INFO, eventListener));
+	}
+	
+	/**
+	 * @return true if screen orientation is portrait, false otherwise
+	 */
+	public boolean isPortrait() {
+		return "portrait".equalsIgnoreCase(orientation);
 	}
 }

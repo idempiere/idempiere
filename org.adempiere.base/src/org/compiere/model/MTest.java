@@ -84,13 +84,13 @@ public class MTest extends X_Test
 		setC_Currency_ID(100);		//	USD
 		setC_Location_ID(109);		//	Monroe
 		setC_UOM_ID(100);			//	Each
-	//	setC_BPartner_ID(C_BPartner_ID);
-	//	setC_Payment_ID(C_Payment_ID);
-	//	setM_Locator_ID(M_Locator_ID);
-	//	setM_Product_ID(M_Product_ID);
 	}	//	MTest
 
 	
+	public MTest(Properties ctx, int Test_ID, String trxName, String... virtualColumns) {
+		super(ctx, Test_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * 	Before Delete
 	 *	@return true if it can be deleted
@@ -158,14 +158,6 @@ public class MTest extends X_Test
 		System.out.println("->" + t2.getCharacterData() + "<-");
 		
 		t2.delete(true);
-		
-		
-		/**	Volume Test 
-		for (int i = 1; i < 20000; i++)
-		{
-			new MTest (ctx, "test", i).saveEx();
-		}		
-		/** */	
 	}	//	main
 	
 }	//	MTest

@@ -9,8 +9,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
-import org.apache.commons.collections.keyvalue.MultiKey;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -38,7 +36,8 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
-	 *	@param M_InventoryLine_ID line
+	 *	@param A_Depreciation_Workfile_ID line
+	 *  @param trxName
 	 */
 	public MDepreciationWorkfile (Properties ctx, int A_Depreciation_Workfile_ID, String trxName)
 	{
@@ -108,21 +107,6 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		}
 		return asset.getAssetServiceDate();
 	}
-	
-	
-	/**	Gets asset's class
-	 *	@return asset class id
-	 */
-	/* commented out by @win
-	public int getA_Asset_Class_ID()
-	{
-		MAsset asset = getAsset();
-		if (asset == null) {
-			return 0;
-		}
-		return asset.getA_Asset_Class_ID();
-	}
-	*/ // end comment by @win
 	
 	/**	After save
 	 *	@param	newRecord
@@ -276,6 +260,38 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		dump();
 	}
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDepreciationWorkfile(MDepreciationWorkfile copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDepreciationWorkfile(Properties ctx, MDepreciationWorkfile copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDepreciationWorkfile(Properties ctx, MDepreciationWorkfile copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_asset = copy.m_asset != null ? new MAsset(ctx, copy.m_asset, trxName) : null;
+	}
+
 	/** Logger										*/
 	private CLogger log = CLogger.getCLogger(getClass());
 
@@ -305,7 +321,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	 * @param A_Asset_ID
 	 * @param postingType
 	 * @param trxName
-	 * @param Account Schema
+	 * @param C_AcctSchema_ID Account Schema
 	 * @return workfile
 	 * @see #get(Properties, int, String, String)
 	 */
@@ -316,20 +332,6 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 			return null;
 		}
 		
-		final MultiKey key = new MultiKey(A_Asset_ID, postingType);
-		if (trxName == null)
-		{
-			MDepreciationWorkfile wk = s_cacheAsset.get(key);
-			if (wk != null)
-				return wk;
-		}
-		/* @win temporary change as this code is causing duplicate create MDepreciationWorkfile on asset addition
-		final String whereClause = COLUMNNAME_A_Asset_ID+"=?"
-									+" AND "+COLUMNNAME_PostingType+"=? AND "+COLUMNNAME_A_QTY_Current+">?";
-		MDepreciationWorkfile wk = new Query(ctx, MDepreciationWorkfile.Table_Name, whereClause, trxName)
-											.setParameters(new Object[]{A_Asset_ID, postingType, 0})
-											.firstOnly();
-		*/
 		final String whereClause = COLUMNNAME_A_Asset_ID+"=?"
 									+" AND "+COLUMNNAME_PostingType+"=? AND " +  COLUMNNAME_C_AcctSchema_ID + "=?" ;
 
@@ -337,12 +339,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		MDepreciationWorkfile wk = new Query(ctx, MDepreciationWorkfile.Table_Name, whereClause, trxName)
 				.setParameters(new Object[]{A_Asset_ID, postingType,acctSchemaId})
 				.firstOnly();
-		
-		
-		if (trxName == null && wk != null)
-		{
-			s_cacheAsset.put(key, wk);
-		}
+				
 		return wk;
 	}
 	
@@ -358,9 +355,6 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	{
 		return get(ctx, A_Asset_ID, postingType, trxName, 0);		
 	}
-	/** Static cache: Asset/PostingType -> Workfile */
-	private static CCache<MultiKey, MDepreciationWorkfile>
-	s_cacheAsset = new CCache<MultiKey, MDepreciationWorkfile>(Table_Name, Table_Name+"_Asset", 10); 
 	
 	/**	Returns the date of the last action
 	 */
@@ -422,32 +416,6 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		}
 		newCost = newCost.add(deltaAmt);
 		newQty = newQty.add(deltaQty);
-		
-		// TODO: crashes if I cancel an Issue:
-//		if (newQty.signum() < 0) {
-//			throw new ArhRuntimeException(getCtx(), "@A_QTY_Current@ < 0");
-//		}
-
-		//
-		// There must be verified that the remaining value to be greater than the amount diminished
-		// total devaluation because if the entire asset value (A_Asset_Cost) must be brought to 0. 
-//		if (deltaAmt.signum() < 0)
-//		{
-//			BigDecimal remainingAmt_C = getRemainingCost(null, false);
-//			if (remainingAmt_C.compareTo(deltaAmt.negate()) < 0)
-//			{
-//				throw new ArhRuntimeException(getCtx(), "@A_Asset_Remaining@ < @DeltaAmt@")
-//					.addInfo("@A_Asset_Cost@=", getA_Asset_Cost())
-//					.addInfo("@A_Accumulated_Depr@=", getA_Accumulated_Depr());
-//			}
-//			BigDecimal remainingAmt_F = getRemainingCost(null, true);
-//			if (remainingAmt_F.compareTo(deltaAmt.negate()) < 0)
-//			{
-//				throw new ArhRuntimeException(getCtx(), "@A_Asset_Remaining_F@ < @DeltaAmt@")
-//					.addInfo("@A_Asset_Cost=@", getA_Asset_Cost())
-//					.addInfo("@A_Accumulated_Depr@=", getA_Accumulated_Depr_F());
-//			}
-//		}
 		
 		setA_Asset_Cost(newCost);
 		setA_QTY_Current(newQty);
@@ -631,8 +599,6 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		// TODO: teo_sarca: need to evaluate what happens when we change Depreciation method !!!
 		MDepreciation depreciation_C = MDepreciation.get(getCtx(), assetacct.getA_Depreciation_ID());
 		MDepreciation depreciation_F = MDepreciation.get(getCtx(), assetacct.getA_Depreciation_F_ID());
-		//~ int offset_C = depreciation_C.getFixMonthOffset();
-		//~ int offset_F = depreciation_F.getFixMonthOffset();
 		int offset_C = 0, offset_F = 0;
 		
 		BigDecimal assetCost = getActualCost();
@@ -647,7 +613,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 		//logging
 		if(CLogMgt.isLevelFine())
 		{
-			sb.append("currentPeriod=" + getA_Current_Period() + ", AssetServiceDate=" + getAssetDepreciationDate() + "\n");
+			sb.append("currentPeriod=" + getA_Current_Period() + ", AssetServiceDate=" + getAssetServiceDate() + "\n");
 			sb.append("offset: C|F=" + offset_C + "|" + offset_F + "\n");
 			sb.append("life: C|F=" + lifePeriods_C + "|" + lifePeriods_F + " + offset =" + lifePeriods + "\n");
 		}
@@ -675,6 +641,20 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 			lifePeriods_F = lifePeriods;
 		}
 		
+		Timestamp startDateAcct = getDateAcct();
+		if (getAssetDepreciationDate() != null)
+		{
+			if (getAssetDepreciationDate().compareTo(getDateAcct()) >= 0)
+			{
+				if (TimeUtil.getMonthLastDay(startDateAcct).compareTo(getAssetDepreciationDate()) == 0)
+				{
+					startDateAcct = TimeUtil.addMonths(getAssetDepreciationDate(), 1);
+					++A_Current_Period;
+				}
+				else
+					startDateAcct = getAssetDepreciationDate();					
+			}
+		}
 		
 		for (int currentPeriod = A_Current_Period, cnt = 1; currentPeriod <= lifePeriods; currentPeriod++, cnt++)
 		{
@@ -721,7 +701,7 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 			int months = 0; 
 			
 			months = months + (currentPeriod - A_Current_Period);
-			Timestamp dateAcct = TimeUtil.getMonthLastDay(TimeUtil.addMonths(getDateAcct(), months));
+			Timestamp dateAcct = TimeUtil.getMonthLastDay(TimeUtil.addMonths(startDateAcct, months));
 			
 			MDepreciationExp.createDepreciation (this, currentPeriod, dateAcct,
 													exp_C, exp_F,

@@ -89,8 +89,7 @@ public class MMailText extends X_R_MailText
 	 */
 	public String getMailText(boolean all)
 	{
-		if (m_MailText == null)
-			translate();
+		translate();
 		if (!all)
 			return parse(m_MailText);
 		//
@@ -112,8 +111,7 @@ public class MMailText extends X_R_MailText
 	 */
 	public String getMailText()
 	{
-		if (m_MailText == null)
-			translate();
+		translate();
 		return parse (m_MailText);
 	}	//	getMailText
 	
@@ -123,8 +121,7 @@ public class MMailText extends X_R_MailText
 	 */
 	public String getMailText2()
 	{
-		if (m_MailText == null)
-			translate();
+		translate();
 		return parse (m_MailText2);
 	}	//	getMailText2
 
@@ -134,8 +131,7 @@ public class MMailText extends X_R_MailText
 	 */
 	public String getMailText3()
 	{
-		if (m_MailText == null)
-			translate();
+		translate();
 		return parse (m_MailText3);
 	}	//	getMailText3
 
@@ -145,8 +141,7 @@ public class MMailText extends X_R_MailText
 	 */
 	public String getMailHeader()
 	{
-		if (m_MailHeader == null)
-			translate();
+		translate();
 		return parse(m_MailHeader);
 	}	//	getMailHeader
 	
@@ -219,6 +214,13 @@ public class MMailText extends X_R_MailText
 		if (variable.contains("<") && variable.contains(">")) { // IDEMPIERE-3096
 			return Env.parseVariable("@"+variable+"@", po, get_TrxName(), true);
 		}
+
+		String defaultValue = "";
+		if (variable.contains(":")) {
+			defaultValue = variable.substring(variable.indexOf(":") + 1, variable.length());
+			variable = variable.substring(0, variable.indexOf(":"));
+		}
+
 		// special default formatting cases for dates/times/boolean in mail text not covered by Env.parseVariable
 		int index = po.get_ColumnIndex(variable);
 		if (index == -1){
@@ -242,7 +244,7 @@ public class MMailText extends X_R_MailText
 			value = po.get_Value(index);
 		}
 		if (value == null)
-			return "";
+			return defaultValue;
 		return value.toString();
 	}	//	translate
 	

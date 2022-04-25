@@ -8,9 +8,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
-import org.compiere.model.MClient;
-import org.compiere.model.MProduct;
-import org.compiere.model.MUOM;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -57,7 +54,7 @@ public class MIFixedAsset extends X_I_FixedAsset
 		
 		int M_Product_ID = getM_Product_ID();
 		if (M_Product_ID <= 0) {
-			StringBuffer whereClause = new StringBuffer();
+			StringBuilder whereClause = new StringBuilder();
 			String key = getProductValue();
 			if (key == null || key.trim().length() == 0) {
 				key = getName();
@@ -115,29 +112,25 @@ public class MIFixedAsset extends X_I_FixedAsset
 	/**
 	 */
 	private void fixAmount(int idx) {
-		//~ try {
-			BigDecimal amt = (BigDecimal)get_Value(idx);
-			if (amt == null)
-				return;
-			
-			int precision = getStdPrecision();
-			BigDecimal newAmt = amt.setScale(getStdPrecision(), RoundingMode.HALF_UP);
-			set_Value(idx, newAmt);
-			if (log.isLoggable(Level.FINE)) log.fine(getInventoryNo() + ": " + get_ColumnName(idx) + "=" + amt + "->" + newAmt + " (precision=" + precision + ")");
-		//~ } catch (Exception e) {}
+		BigDecimal amt = (BigDecimal)get_Value(idx);
+		if (amt == null)
+			return;
+		
+		int precision = getStdPrecision();
+		BigDecimal newAmt = amt.setScale(getStdPrecision(), RoundingMode.HALF_UP);
+		set_Value(idx, newAmt);
+		if (log.isLoggable(Level.FINE)) log.fine(getInventoryNo() + ": " + get_ColumnName(idx) + "=" + amt + "->" + newAmt + " (precision=" + precision + ")");
 	}
 	
 	/**
 	 */
 	private void fixKeyValue(int idx) {
-		//~ try {
-			String name = (String)get_Value(idx);
-			if (name == null)
-				return;
-			String newName = name.trim().replaceAll("[ ]+", " ");
-			if (log.isLoggable(Level.FINE)) log.fine(getInventoryNo() + ": " + get_ColumnName(idx) + "=[" + name + "]->[" + newName + "]");
-			set_Value(idx, newName);
-		//~ } catch (Exception e) {}
+		String name = (String)get_Value(idx);
+		if (name == null)
+			return;
+		String newName = name.trim().replaceAll("[ ]+", " ");
+		if (log.isLoggable(Level.FINE)) log.fine(getInventoryNo() + ": " + get_ColumnName(idx) + "=[" + name + "]->[" + newName + "]");
+		set_Value(idx, newName);
 	}
 	
 	/**
@@ -153,16 +146,6 @@ public class MIFixedAsset extends X_I_FixedAsset
 			{
 				throw new FillMandatoryException(COLUMNNAME_UseLifeMonths);
 			}
-			/*//comment by @win
-			if (getA_Asset_Class_ID() <= 0)
-			{
-				throw new FillMandatoryException(COLUMNNAME_A_Asset_Class_ID);
-			}
-			
-			// Fix Asset Class
-			MAssetClass assetClass = MAssetClass.get(getCtx(), getA_Asset_Class_ID());
-			setA_Asset_Class_Value(assetClass.getValue());
-			*/ //end comment by @win
 			
 			// Round amounts:
 			int col_count = get_ColumnCount();
@@ -212,7 +195,7 @@ public class MIFixedAsset extends X_I_FixedAsset
 				Timestamp dateAcct = getDateAcct();
 				if (dateAcct == null)
 				{
-					dateAcct = Env.getContextAsDate(getCtx(), "#Date");
+					dateAcct = Env.getContextAsDate(getCtx(), Env.DATE);
 					setDateAcct(dateAcct);
 				}
 			}
@@ -252,12 +235,6 @@ public class MIFixedAsset extends X_I_FixedAsset
 	 */
 	public boolean isDepreciating()
 	{
-		/* commented by @win
-		MAssetClass assetClass = MAssetClass.get(getCtx(), getA_Asset_Class_ID());
-		if (assetClass == null)
-			return false;
-		return assetClass.isDepreciated();
-		*/ 
 		//change logic to assetGroup
 		MAssetGroup assetGroup = MAssetGroup.get(getCtx(), getA_Asset_Group_ID());
 		if (assetGroup == null)

@@ -23,19 +23,33 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Window
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="ASP_Window")
 public class X_ASP_Window extends PO implements I_ASP_Window, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_ASP_Window (Properties ctx, int ASP_Window_ID, String trxName)
     {
       super (ctx, ASP_Window_ID, trxName);
+      /** if (ASP_Window_ID == 0)
+        {
+			setAD_Window_ID (0);
+			setASP_Level_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Window (Properties ctx, int ASP_Window_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Window_ID, trxName, virtualColumns);
       /** if (ASP_Window_ID == 0)
         {
 			setAD_Window_ID (0);
@@ -68,32 +82,32 @@ public class X_ASP_Window extends PO implements I_ASP_Window, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_ASP_Window[")
+      StringBuilder sb = new StringBuilder ("X_ASP_Window[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_Name)
-			.getPO(getAD_Window_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
+			.getPO(getAD_Window_ID(), get_TrxName());
+	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -102,23 +116,25 @@ public class X_ASP_Window extends PO implements I_ASP_Window, I_Persistent
 	}
 
 	public org.compiere.model.I_ASP_Level getASP_Level() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_Name)
-			.getPO(getASP_Level_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Level)MTable.get(getCtx(), org.compiere.model.I_ASP_Level.Table_ID)
+			.getPO(getASP_Level_ID(), get_TrxName());
+	}
 
 	/** Set ASP Level.
-		@param ASP_Level_ID ASP Level	  */
+		@param ASP_Level_ID ASP Level
+	*/
 	public void setASP_Level_ID (int ASP_Level_ID)
 	{
-		if (ASP_Level_ID < 1) 
+		if (ASP_Level_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Level_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Level_ID, Integer.valueOf(ASP_Level_ID));
 	}
 
 	/** Get ASP Level.
 		@return ASP Level	  */
-	public int getASP_Level_ID () 
+	public int getASP_Level_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Level_ID);
 		if (ii == null)
@@ -143,7 +159,8 @@ public class X_ASP_Window extends PO implements I_ASP_Window, I_Persistent
 	/** Undefined = U */
 	public static final String ASP_STATUS_Undefined = "U";
 	/** Set ASP Status.
-		@param ASP_Status ASP Status	  */
+		@param ASP_Status ASP Status
+	*/
 	public void setASP_Status (String ASP_Status)
 	{
 
@@ -152,24 +169,25 @@ public class X_ASP_Window extends PO implements I_ASP_Window, I_Persistent
 
 	/** Get ASP Status.
 		@return ASP Status	  */
-	public String getASP_Status () 
+	public String getASP_Status()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Status);
 	}
 
 	/** Set ASP Window.
-		@param ASP_Window_ID ASP Window	  */
+		@param ASP_Window_ID ASP Window
+	*/
 	public void setASP_Window_ID (int ASP_Window_ID)
 	{
-		if (ASP_Window_ID < 1) 
+		if (ASP_Window_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Window_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Window_ID, Integer.valueOf(ASP_Window_ID));
 	}
 
 	/** Get ASP Window.
 		@return ASP Window	  */
-	public int getASP_Window_ID () 
+	public int getASP_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Window_ID);
 		if (ii == null)
@@ -178,7 +196,8 @@ public class X_ASP_Window extends PO implements I_ASP_Window, I_Persistent
 	}
 
 	/** Set ASP_Window_UU.
-		@param ASP_Window_UU ASP_Window_UU	  */
+		@param ASP_Window_UU ASP_Window_UU
+	*/
 	public void setASP_Window_UU (String ASP_Window_UU)
 	{
 		set_Value (COLUMNNAME_ASP_Window_UU, ASP_Window_UU);
@@ -186,7 +205,7 @@ public class X_ASP_Window extends PO implements I_ASP_Window, I_Persistent
 
 	/** Get ASP_Window_UU.
 		@return ASP_Window_UU	  */
-	public String getASP_Window_UU () 
+	public String getASP_Window_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Window_UU);
 	}

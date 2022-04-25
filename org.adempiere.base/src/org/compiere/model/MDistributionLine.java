@@ -49,9 +49,6 @@ public class MDistributionLine extends X_GL_DistributionLine
 		super (ctx, GL_DistributionLine_ID, trxName);
 		if (GL_DistributionLine_ID == 0)
 		{
-		//	setGL_Distribution_ID (0);		//	Parent
-		//	setLine (0);
-			//
 			setOverwriteAcct (false);
 			setOverwriteActivity (false);
 			setOverwriteBPartner (false);
@@ -80,6 +77,41 @@ public class MDistributionLine extends X_GL_DistributionLine
 	{
 		super(ctx, rs, trxName);
 	}	//	MDistributionLine
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDistributionLine(MDistributionLine copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDistributionLine(Properties ctx, MDistributionLine copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDistributionLine(Properties ctx, MDistributionLine copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_parent = null;
+		this.m_amt = copy.m_amt;
+		this.m_qty = copy.m_qty;
+		this.m_account = copy.m_account != null ? new MAccount(ctx, copy.m_account, trxName) : null;
+	}
 
 	/**	The Parent						*/
 	private MDistribution		m_parent = null;

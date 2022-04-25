@@ -117,6 +117,8 @@ public class WorkflowProcessor extends AdempiereServer
 				activity.setWFState (StateEngine.STATE_Completed);
 				// saves and calls MWFProcess.checkActivities();
 				count++;
+				MWFProcess wfpr = new MWFProcess(activity.getCtx(), activity.getAD_WF_Process_ID(), activity.get_TrxName());
+				wfpr.checkCloseActivities(activity.get_TrxName());
 			}
 		}
 		catch (Exception e)
@@ -244,7 +246,7 @@ public class WorkflowProcessor extends AdempiereServer
 		String sql = "SELECT * "
 			+ "FROM AD_WF_Activity a "
 			+ "WHERE Processed='N' AND WFState='OS'"	//	suspended
-			+ " AND EndWaitTime > getDate()"
+			+ " AND EndWaitTime < getDate()"
 			+ " AND (DateLastAlert IS NULL";
 		if (m_model.getRemindDays() > 0)
 			sql += " OR (DateLastAlert+" + m_model.getRemindDays() 

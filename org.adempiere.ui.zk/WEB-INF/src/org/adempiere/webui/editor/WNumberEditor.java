@@ -46,7 +46,7 @@ import org.zkoss.zk.ui.event.Events;
  * @author Low Heng Sin
  * @author Cristina Ghita, www.arhipac.ro
  *  	   <li> BF [3058780] WNumberEditor allow only BigDecimal
- *  	   @see https://sourceforge.net/tracker/?func=detail&aid=3058780&group_id=176962&atid=955896
+ *  	   @see https://sourceforge.net/p/adempiere/zk-web-client/433/
  */
 public class WNumberEditor extends WEditor implements ContextMenuListener
 {
@@ -58,8 +58,6 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     private Object oldValue;
 
 	private int displayType;
-
-	private boolean tableEditor;
 
 	private String originalStyle;
 
@@ -74,21 +72,40 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     */
     public WNumberEditor(GridField gridField)
     {
-    	this(false, gridField);
+    	this(gridField, false, null);
     }
    
     /**
-     *
+     * 
      * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
      */
-    public WNumberEditor(boolean tableEditor, GridField gridField)
+    public WNumberEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
-        super(new NumberBox(gridField.getDisplayType() == DisplayType.Integer, tableEditor),
-                gridField);
+        super(newNumberBox(gridField, tableEditor, editorConfiguration), 
+                gridField, tableEditor, editorConfiguration);
         this.displayType = gridField.getDisplayType();
-        this.tableEditor = tableEditor;
+        if (editorConfiguration != null && editorConfiguration instanceof INumberEditorConfiguration) {
+        	INumberEditorConfiguration config = (INumberEditorConfiguration) editorConfiguration;
+			if (config.getIntegral() != null) {
+				if (config.getIntegral())
+					this.displayType = DisplayType.Integer;
+				else 
+					this.displayType = DisplayType.Number;
+			}
+        }
         init();
     }
+
+	protected static NumberBox newNumberBox(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+		if (editorConfiguration != null && editorConfiguration instanceof INumberEditorConfiguration) {
+			INumberEditorConfiguration config = (INumberEditorConfiguration) editorConfiguration;
+			if (config.getIntegral() != null)
+				return new NumberBox(config.getIntegral(), tableEditor);
+		}
+		return new NumberBox(gridField.getDisplayType() == DisplayType.Integer, tableEditor);
+	}
 
     /**
      *
@@ -97,9 +114,12 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
      */
     public WNumberEditor(GridField gridField, boolean integral)
     {
-        super(new NumberBox(integral), gridField);
-        this.displayType = integral ? DisplayType.Integer : DisplayType.Number;
-        init();
+        this(gridField, false, new INumberEditorConfiguration() {
+        	@Override
+        	public Boolean getIntegral() {
+        		return Boolean.valueOf(integral);
+        	}
+		});        
     }
 
     /**

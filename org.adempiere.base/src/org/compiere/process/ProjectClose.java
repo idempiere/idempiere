@@ -30,8 +30,9 @@ import org.compiere.model.MProjectLine;
  *
  * @author Teo Sarca, wwww.arhipac.ro
  * 			<li>FR [ 2791635 ] Use saveEx whenever is possible
- * 				https://sourceforge.net/tracker/?func=detail&aid=2791635&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/722/
  */
+@org.adempiere.base.annotation.Process
 public class ProjectClose extends SvrProcess
 {
 	/**	Project from Record			*/

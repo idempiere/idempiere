@@ -25,19 +25,43 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DunningLevel
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_DunningLevel")
 public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_DunningLevel (Properties ctx, int C_DunningLevel_ID, String trxName)
     {
       super (ctx, C_DunningLevel_ID, trxName);
+      /** if (C_DunningLevel_ID == 0)
+        {
+			setC_Dunning_ID (0);
+			setC_DunningLevel_ID (0);
+			setChargeFee (false);
+			setChargeInterest (false);
+			setDaysAfterDue (Env.ZERO);
+			setDaysBetweenDunning (0);
+			setIsSetCreditStop (false);
+			setIsSetPaymentTerm (false);
+			setIsShowAllDue (false);
+			setIsShowNotDue (false);
+			setIsStatement (false);
+// N
+			setName (null);
+			setPrintName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_DunningLevel (Properties ctx, int C_DunningLevel_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_DunningLevel_ID, trxName, virtualColumns);
       /** if (C_DunningLevel_ID == 0)
         {
 			setC_Dunning_ID (0);
@@ -80,32 +104,32 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_DunningLevel[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_DunningLevel[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_Dunning getC_Dunning() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Dunning)MTable.get(getCtx(), org.compiere.model.I_C_Dunning.Table_Name)
-			.getPO(getC_Dunning_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Dunning)MTable.get(getCtx(), org.compiere.model.I_C_Dunning.Table_ID)
+			.getPO(getC_Dunning_ID(), get_TrxName());
+	}
 
 	/** Set Dunning.
-		@param C_Dunning_ID 
-		Dunning Rules for overdue invoices
-	  */
+		@param C_Dunning_ID Dunning Rules for overdue invoices
+	*/
 	public void setC_Dunning_ID (int C_Dunning_ID)
 	{
-		if (C_Dunning_ID < 1) 
+		if (C_Dunning_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, Integer.valueOf(C_Dunning_ID));
 	}
 
 	/** Get Dunning.
 		@return Dunning Rules for overdue invoices
 	  */
-	public int getC_Dunning_ID () 
+	public int getC_Dunning_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Dunning_ID);
 		if (ii == null)
@@ -114,18 +138,19 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set Dunning Level.
-		@param C_DunningLevel_ID Dunning Level	  */
+		@param C_DunningLevel_ID Dunning Level
+	*/
 	public void setC_DunningLevel_ID (int C_DunningLevel_ID)
 	{
-		if (C_DunningLevel_ID < 1) 
+		if (C_DunningLevel_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_DunningLevel_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DunningLevel_ID, Integer.valueOf(C_DunningLevel_ID));
 	}
 
 	/** Get Dunning Level.
 		@return Dunning Level	  */
-	public int getC_DunningLevel_ID () 
+	public int getC_DunningLevel_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DunningLevel_ID);
 		if (ii == null)
@@ -134,7 +159,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set C_DunningLevel_UU.
-		@param C_DunningLevel_UU C_DunningLevel_UU	  */
+		@param C_DunningLevel_UU C_DunningLevel_UU
+	*/
 	public void setC_DunningLevel_UU (String C_DunningLevel_UU)
 	{
 		set_Value (COLUMNNAME_C_DunningLevel_UU, C_DunningLevel_UU);
@@ -142,15 +168,14 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 
 	/** Get C_DunningLevel_UU.
 		@return C_DunningLevel_UU	  */
-	public String getC_DunningLevel_UU () 
+	public String getC_DunningLevel_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_DunningLevel_UU);
 	}
 
 	/** Set Charge fee.
-		@param ChargeFee 
-		Indicates if fees will be charged for overdue invoices
-	  */
+		@param ChargeFee Indicates if fees will be charged for overdue invoices
+	*/
 	public void setChargeFee (boolean ChargeFee)
 	{
 		set_Value (COLUMNNAME_ChargeFee, Boolean.valueOf(ChargeFee));
@@ -159,7 +184,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Charge fee.
 		@return Indicates if fees will be charged for overdue invoices
 	  */
-	public boolean isChargeFee () 
+	public boolean isChargeFee()
 	{
 		Object oo = get_Value(COLUMNNAME_ChargeFee);
 		if (oo != null) 
@@ -172,9 +197,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set Charge Interest.
-		@param ChargeInterest 
-		Indicates if interest will be charged on overdue invoices
-	  */
+		@param ChargeInterest Indicates if interest will be charged on overdue invoices
+	*/
 	public void setChargeInterest (boolean ChargeInterest)
 	{
 		set_Value (COLUMNNAME_ChargeInterest, Boolean.valueOf(ChargeInterest));
@@ -183,7 +207,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Charge Interest.
 		@return Indicates if interest will be charged on overdue invoices
 	  */
-	public boolean isChargeInterest () 
+	public boolean isChargeInterest()
 	{
 		Object oo = get_Value(COLUMNNAME_ChargeInterest);
 		if (oo != null) 
@@ -196,26 +220,26 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	public org.compiere.model.I_C_PaymentTerm getC_PaymentTerm() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_Name)
-			.getPO(getC_PaymentTerm_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_PaymentTerm)MTable.get(getCtx(), org.compiere.model.I_C_PaymentTerm.Table_ID)
+			.getPO(getC_PaymentTerm_ID(), get_TrxName());
+	}
 
 	/** Set Payment Term.
-		@param C_PaymentTerm_ID 
-		The terms of Payment (timing, discount)
-	  */
+		@param C_PaymentTerm_ID The terms of Payment (timing, discount)
+	*/
 	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID)
 	{
-		if (C_PaymentTerm_ID < 1) 
+		if (C_PaymentTerm_ID < 1)
 			set_Value (COLUMNNAME_C_PaymentTerm_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_PaymentTerm_ID, Integer.valueOf(C_PaymentTerm_ID));
 	}
 
 	/** Get Payment Term.
 		@return The terms of Payment (timing, discount)
 	  */
-	public int getC_PaymentTerm_ID () 
+	public int getC_PaymentTerm_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentTerm_ID);
 		if (ii == null)
@@ -224,9 +248,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set Days after due date.
-		@param DaysAfterDue 
-		Days after due date to dun (if negative days until due)
-	  */
+		@param DaysAfterDue Days after due date to dun (if negative days until due)
+	*/
 	public void setDaysAfterDue (BigDecimal DaysAfterDue)
 	{
 		set_Value (COLUMNNAME_DaysAfterDue, DaysAfterDue);
@@ -235,7 +258,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Days after due date.
 		@return Days after due date to dun (if negative days until due)
 	  */
-	public BigDecimal getDaysAfterDue () 
+	public BigDecimal getDaysAfterDue()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DaysAfterDue);
 		if (bd == null)
@@ -244,9 +267,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set Days between dunning.
-		@param DaysBetweenDunning 
-		Days between sending dunning notices
-	  */
+		@param DaysBetweenDunning Days between sending dunning notices
+	*/
 	public void setDaysBetweenDunning (int DaysBetweenDunning)
 	{
 		set_Value (COLUMNNAME_DaysBetweenDunning, Integer.valueOf(DaysBetweenDunning));
@@ -255,7 +277,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Days between dunning.
 		@return Days between sending dunning notices
 	  */
-	public int getDaysBetweenDunning () 
+	public int getDaysBetweenDunning()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DaysBetweenDunning);
 		if (ii == null)
@@ -264,9 +286,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -275,32 +296,32 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getDunning_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getDunning_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getDunning_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Dunning Print Format.
-		@param Dunning_PrintFormat_ID 
-		Print Format for printing Dunning Letters
-	  */
+		@param Dunning_PrintFormat_ID Print Format for printing Dunning Letters
+	*/
 	public void setDunning_PrintFormat_ID (int Dunning_PrintFormat_ID)
 	{
-		if (Dunning_PrintFormat_ID < 1) 
+		if (Dunning_PrintFormat_ID < 1)
 			set_Value (COLUMNNAME_Dunning_PrintFormat_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Dunning_PrintFormat_ID, Integer.valueOf(Dunning_PrintFormat_ID));
 	}
 
 	/** Get Dunning Print Format.
 		@return Print Format for printing Dunning Letters
 	  */
-	public int getDunning_PrintFormat_ID () 
+	public int getDunning_PrintFormat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Dunning_PrintFormat_ID);
 		if (ii == null)
@@ -309,9 +330,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set Fee Amount.
-		@param FeeAmt 
-		Fee amount in invoice currency
-	  */
+		@param FeeAmt Fee amount in invoice currency
+	*/
 	public void setFeeAmt (BigDecimal FeeAmt)
 	{
 		set_Value (COLUMNNAME_FeeAmt, FeeAmt);
@@ -320,7 +340,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Fee Amount.
 		@return Fee amount in invoice currency
 	  */
-	public BigDecimal getFeeAmt () 
+	public BigDecimal getFeeAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_FeeAmt);
 		if (bd == null)
@@ -329,9 +349,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set Interest in percent.
-		@param InterestPercent 
-		Percentage interest to charge on overdue invoices
-	  */
+		@param InterestPercent Percentage interest to charge on overdue invoices
+	*/
 	public void setInterestPercent (BigDecimal InterestPercent)
 	{
 		set_Value (COLUMNNAME_InterestPercent, InterestPercent);
@@ -340,7 +359,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Interest in percent.
 		@return Percentage interest to charge on overdue invoices
 	  */
-	public BigDecimal getInterestPercent () 
+	public BigDecimal getInterestPercent()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_InterestPercent);
 		if (bd == null)
@@ -350,18 +369,17 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 
 	/** InvoiceCollectionType AD_Reference_ID=394 */
 	public static final int INVOICECOLLECTIONTYPE_AD_Reference_ID=394;
-	/** Dunning = D */
-	public static final String INVOICECOLLECTIONTYPE_Dunning = "D";
 	/** Collection Agency = C */
 	public static final String INVOICECOLLECTIONTYPE_CollectionAgency = "C";
+	/** Dunning = D */
+	public static final String INVOICECOLLECTIONTYPE_Dunning = "D";
 	/** Legal Procedure = L */
 	public static final String INVOICECOLLECTIONTYPE_LegalProcedure = "L";
 	/** Uncollectable = U */
 	public static final String INVOICECOLLECTIONTYPE_Uncollectable = "U";
 	/** Set Collection Status.
-		@param InvoiceCollectionType 
-		Invoice Collection Status
-	  */
+		@param InvoiceCollectionType Invoice Collection Status
+	*/
 	public void setInvoiceCollectionType (String InvoiceCollectionType)
 	{
 
@@ -371,15 +389,14 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Collection Status.
 		@return Invoice Collection Status
 	  */
-	public String getInvoiceCollectionType () 
+	public String getInvoiceCollectionType()
 	{
 		return (String)get_Value(COLUMNNAME_InvoiceCollectionType);
 	}
 
 	/** Set Credit Stop.
-		@param IsSetCreditStop 
-		Set the business partner to credit stop
-	  */
+		@param IsSetCreditStop Set the business partner to credit stop
+	*/
 	public void setIsSetCreditStop (boolean IsSetCreditStop)
 	{
 		set_Value (COLUMNNAME_IsSetCreditStop, Boolean.valueOf(IsSetCreditStop));
@@ -388,7 +405,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Credit Stop.
 		@return Set the business partner to credit stop
 	  */
-	public boolean isSetCreditStop () 
+	public boolean isSetCreditStop()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSetCreditStop);
 		if (oo != null) 
@@ -401,9 +418,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set Set Payment Term.
-		@param IsSetPaymentTerm 
-		Set the payment term of the Business Partner
-	  */
+		@param IsSetPaymentTerm Set the payment term of the Business Partner
+	*/
 	public void setIsSetPaymentTerm (boolean IsSetPaymentTerm)
 	{
 		set_Value (COLUMNNAME_IsSetPaymentTerm, Boolean.valueOf(IsSetPaymentTerm));
@@ -412,7 +428,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Set Payment Term.
 		@return Set the payment term of the Business Partner
 	  */
-	public boolean isSetPaymentTerm () 
+	public boolean isSetPaymentTerm()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSetPaymentTerm);
 		if (oo != null) 
@@ -425,9 +441,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set Show All Due.
-		@param IsShowAllDue 
-		Show/print all due invoices
-	  */
+		@param IsShowAllDue Show/print all due invoices
+	*/
 	public void setIsShowAllDue (boolean IsShowAllDue)
 	{
 		set_Value (COLUMNNAME_IsShowAllDue, Boolean.valueOf(IsShowAllDue));
@@ -436,7 +451,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Show All Due.
 		@return Show/print all due invoices
 	  */
-	public boolean isShowAllDue () 
+	public boolean isShowAllDue()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowAllDue);
 		if (oo != null) 
@@ -449,9 +464,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set Show Not Due.
-		@param IsShowNotDue 
-		Show/print all invoices which are not due (yet).
-	  */
+		@param IsShowNotDue Show/print all invoices which are not due (yet).
+	*/
 	public void setIsShowNotDue (boolean IsShowNotDue)
 	{
 		set_Value (COLUMNNAME_IsShowNotDue, Boolean.valueOf(IsShowNotDue));
@@ -460,7 +474,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Show Not Due.
 		@return Show/print all invoices which are not due (yet).
 	  */
-	public boolean isShowNotDue () 
+	public boolean isShowNotDue()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowNotDue);
 		if (oo != null) 
@@ -473,9 +487,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set Is Statement.
-		@param IsStatement 
-		Dunning Level is a definition of a statement
-	  */
+		@param IsStatement Dunning Level is a definition of a statement
+	*/
 	public void setIsStatement (boolean IsStatement)
 	{
 		set_Value (COLUMNNAME_IsStatement, Boolean.valueOf(IsStatement));
@@ -484,7 +497,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Is Statement.
 		@return Dunning Level is a definition of a statement
 	  */
-	public boolean isStatement () 
+	public boolean isStatement()
 	{
 		Object oo = get_Value(COLUMNNAME_IsStatement);
 		if (oo != null) 
@@ -497,9 +510,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -508,7 +520,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -522,9 +534,8 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
     }
 
 	/** Set Note.
-		@param Note 
-		Optional additional user defined information
-	  */
+		@param Note Optional additional user defined information
+	*/
 	public void setNote (String Note)
 	{
 		set_Value (COLUMNNAME_Note, Note);
@@ -533,15 +544,14 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Note.
 		@return Optional additional user defined information
 	  */
-	public String getNote () 
+	public String getNote()
 	{
 		return (String)get_Value(COLUMNNAME_Note);
 	}
 
 	/** Set Print Text.
-		@param PrintName 
-		The label text to be printed on a document or correspondence.
-	  */
+		@param PrintName The label text to be printed on a document or correspondence.
+	*/
 	public void setPrintName (String PrintName)
 	{
 		set_Value (COLUMNNAME_PrintName, PrintName);
@@ -550,7 +560,7 @@ public class X_C_DunningLevel extends PO implements I_C_DunningLevel, I_Persiste
 	/** Get Print Text.
 		@return The label text to be printed on a document or correspondence.
 	  */
-	public String getPrintName () 
+	public String getPrintName()
 	{
 		return (String)get_Value(COLUMNNAME_PrintName);
 	}

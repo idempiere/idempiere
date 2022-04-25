@@ -20,12 +20,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Tab Model
@@ -33,16 +37,39 @@ import org.compiere.util.DB;
  *  @author Jorg Janke
  *  @author victor.perez@e-evolution.com, e-Evolution
  * <li>RF [2826384] The Order and Included Columns should be to fill mandatory
- * <li>http://sourceforge.net/tracker/?func=detail&atid=879335&aid=2826384&group_id=176962
+ * <li>https://sourceforge.net/p/adempiere/feature-requests/775/
  *  @version $Id: MTab.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MTab extends X_AD_Tab
+public class MTab extends X_AD_Tab implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2964171360368660043L;
+	private static final long serialVersionUID = -8111075325920938135L;
 
+	/**	Cache						*/
+	private static ImmutableIntPOCache<Integer,MTab> s_cache = new ImmutableIntPOCache<Integer,MTab>(Table_Name, 20);
+	
+	/**
+	 * 
+	 * @param AD_Tab_ID
+	 * @return {@link MTab}
+	 */
+	public static MTab get(int AD_Tab_ID)
+	{
+		Integer key = Integer.valueOf(AD_Tab_ID);
+		MTab retValue = s_cache.get (Env.getCtx(), key, e -> new MTab(Env.getCtx(), e));
+		if (retValue != null) 
+			return retValue;
+		
+		retValue = new MTab (Env.getCtx(), AD_Tab_ID, (String)null);
+		if (retValue.get_ID () == AD_Tab_ID) {
+			s_cache.put (key, retValue);
+			return retValue;
+		}
+		return null;
+	}
+	
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -54,9 +81,6 @@ public class MTab extends X_AD_Tab
 		super (ctx, AD_Tab_ID, trxName);
 		if (AD_Tab_ID == 0)
 		{
-		//	setAD_Window_ID (0);
-		//	setAD_Table_ID (0);
-		//	setName (null);
 			setEntityType (ENTITYTYPE_UserMaintained);	// U
 			setHasTree (false);
 			setIsReadOnly (false);
@@ -107,6 +131,37 @@ public class MTab extends X_AD_Tab
 		setEntityType(parent.getEntityType());
 	}	//	M_Tab
 	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MTab(MTab copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MTab(Properties ctx, MTab copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MTab(Properties ctx, MTab copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_fields = copy.m_fields != null ? Arrays.stream(copy.m_fields).map(e -> {return new MField(ctx, e, trxName);}).toArray(MField[]::new) : null;
+	}
 	
 	/**	The Fields						*/
 	private MField[]		m_fields	= null;
@@ -159,9 +214,10 @@ public class MTab extends X_AD_Tab
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-	//	UPDATE AD_Tab SET IsInsertRecord='N' WHERE IsInsertRecord='Y' AND IsReadOnly='Y'
 		if (isReadOnly() && isInsertRecord())
 			setIsInsertRecord(false);
+		if (is_new() || is_ValueChanged(COLUMNNAME_AD_TabType))
+			setIsSortTab(AD_TABTYPE_Sort.equals(getAD_TabType())); // preserve this redundant flag for backward compatibility
 		//RF[2826384]
 		if(isSortTab())
 		{
@@ -176,8 +232,8 @@ public class MTab extends X_AD_Tab
 	// begin e-evolution vpj-cd
 	/**
 	 * 	get Tab ID
-	 *	@param String AD_Window_ID
-	 *	@param String TabName
+	 *	@param AD_Window_ID String
+	 *	@param TabName String
 	 *	@return int retValue
 	 */
 	public static int getTab_ID(int AD_Window_ID , String TabName) {
@@ -226,5 +282,13 @@ public class MTab extends X_AD_Tab
     	return parentTabID;
     }
 
+    @Override
+	public MTab markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	M_Tab

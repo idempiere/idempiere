@@ -24,19 +24,38 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Subscription
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_Subscription")
 public class X_C_Subscription extends PO implements I_C_Subscription, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Subscription (Properties ctx, int C_Subscription_ID, String trxName)
     {
       super (ctx, C_Subscription_ID, trxName);
+      /** if (C_Subscription_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_Subscription_ID (0);
+			setC_SubscriptionType_ID (0);
+			setIsDue (false);
+			setM_Product_ID (0);
+			setName (null);
+			setPaidUntilDate (new Timestamp( System.currentTimeMillis() ));
+			setRenewalDate (new Timestamp( System.currentTimeMillis() ));
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Subscription (Properties ctx, int C_Subscription_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Subscription_ID, trxName, virtualColumns);
       /** if (C_Subscription_ID == 0)
         {
 			setC_BPartner_ID (0);
@@ -74,32 +93,32 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_Subscription[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_Subscription[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -108,21 +127,20 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 	}
 
 	/** Set Subscription.
-		@param C_Subscription_ID 
-		Subscription of a Business Partner of a Product to renew
-	  */
+		@param C_Subscription_ID Subscription of a Business Partner of a Product to renew
+	*/
 	public void setC_Subscription_ID (int C_Subscription_ID)
 	{
-		if (C_Subscription_ID < 1) 
+		if (C_Subscription_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Subscription_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Subscription_ID, Integer.valueOf(C_Subscription_ID));
 	}
 
 	/** Get Subscription.
 		@return Subscription of a Business Partner of a Product to renew
 	  */
-	public int getC_Subscription_ID () 
+	public int getC_Subscription_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Subscription_ID);
 		if (ii == null)
@@ -131,26 +149,26 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 	}
 
 	public org.compiere.model.I_C_SubscriptionType getC_SubscriptionType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_SubscriptionType)MTable.get(getCtx(), org.compiere.model.I_C_SubscriptionType.Table_Name)
-			.getPO(getC_SubscriptionType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_SubscriptionType)MTable.get(getCtx(), org.compiere.model.I_C_SubscriptionType.Table_ID)
+			.getPO(getC_SubscriptionType_ID(), get_TrxName());
+	}
 
 	/** Set Subscription Type.
-		@param C_SubscriptionType_ID 
-		Type of subscription
-	  */
+		@param C_SubscriptionType_ID Type of subscription
+	*/
 	public void setC_SubscriptionType_ID (int C_SubscriptionType_ID)
 	{
-		if (C_SubscriptionType_ID < 1) 
+		if (C_SubscriptionType_ID < 1)
 			set_Value (COLUMNNAME_C_SubscriptionType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_SubscriptionType_ID, Integer.valueOf(C_SubscriptionType_ID));
 	}
 
 	/** Get Subscription Type.
 		@return Type of subscription
 	  */
-	public int getC_SubscriptionType_ID () 
+	public int getC_SubscriptionType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_SubscriptionType_ID);
 		if (ii == null)
@@ -159,7 +177,8 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 	}
 
 	/** Set C_Subscription_UU.
-		@param C_Subscription_UU C_Subscription_UU	  */
+		@param C_Subscription_UU C_Subscription_UU
+	*/
 	public void setC_Subscription_UU (String C_Subscription_UU)
 	{
 		set_Value (COLUMNNAME_C_Subscription_UU, C_Subscription_UU);
@@ -167,15 +186,14 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 
 	/** Get C_Subscription_UU.
 		@return C_Subscription_UU	  */
-	public String getC_Subscription_UU () 
+	public String getC_Subscription_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Subscription_UU);
 	}
 
 	/** Set Due.
-		@param IsDue 
-		Subscription Renewal is Due
-	  */
+		@param IsDue Subscription Renewal is Due
+	*/
 	public void setIsDue (boolean IsDue)
 	{
 		set_Value (COLUMNNAME_IsDue, Boolean.valueOf(IsDue));
@@ -184,7 +202,7 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 	/** Get Due.
 		@return Subscription Renewal is Due
 	  */
-	public boolean isDue () 
+	public boolean isDue()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDue);
 		if (oo != null) 
@@ -197,26 +215,26 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -225,9 +243,8 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -236,7 +253,7 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -250,9 +267,8 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
     }
 
 	/** Set Paid Until.
-		@param PaidUntilDate 
-		Subscription is paid/valid until this date
-	  */
+		@param PaidUntilDate Subscription is paid/valid until this date
+	*/
 	public void setPaidUntilDate (Timestamp PaidUntilDate)
 	{
 		set_Value (COLUMNNAME_PaidUntilDate, PaidUntilDate);
@@ -261,13 +277,14 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 	/** Get Paid Until.
 		@return Subscription is paid/valid until this date
 	  */
-	public Timestamp getPaidUntilDate () 
+	public Timestamp getPaidUntilDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_PaidUntilDate);
 	}
 
 	/** Set Renewal Date.
-		@param RenewalDate Renewal Date	  */
+		@param RenewalDate Renewal Date
+	*/
 	public void setRenewalDate (Timestamp RenewalDate)
 	{
 		set_Value (COLUMNNAME_RenewalDate, RenewalDate);
@@ -275,15 +292,14 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 
 	/** Get Renewal Date.
 		@return Renewal Date	  */
-	public Timestamp getRenewalDate () 
+	public Timestamp getRenewalDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_RenewalDate);
 	}
 
 	/** Set Start Date.
-		@param StartDate 
-		First effective day (inclusive)
-	  */
+		@param StartDate First effective day (inclusive)
+	*/
 	public void setStartDate (Timestamp StartDate)
 	{
 		set_Value (COLUMNNAME_StartDate, StartDate);
@@ -292,7 +308,7 @@ public class X_C_Subscription extends PO implements I_C_Subscription, I_Persiste
 	/** Get Start Date.
 		@return First effective day (inclusive)
 	  */
-	public Timestamp getStartDate () 
+	public Timestamp getStartDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}

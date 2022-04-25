@@ -23,19 +23,31 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_ElementValue
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="I_ElementValue")
 public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_ElementValue (Properties ctx, int I_ElementValue_ID, String trxName)
     {
       super (ctx, I_ElementValue_ID, trxName);
+      /** if (I_ElementValue_ID == 0)
+        {
+			setI_ElementValue_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_ElementValue (Properties ctx, int I_ElementValue_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_ElementValue_ID, trxName, virtualColumns);
       /** if (I_ElementValue_ID == 0)
         {
 			setI_ElementValue_ID (0);
@@ -66,23 +78,22 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_I_ElementValue[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_I_ElementValue[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** AccountSign AD_Reference_ID=118 */
 	public static final int ACCOUNTSIGN_AD_Reference_ID=118;
-	/** Natural = N */
-	public static final String ACCOUNTSIGN_Natural = "N";
-	/** Debit = D */
-	public static final String ACCOUNTSIGN_Debit = "D";
 	/** Credit = C */
 	public static final String ACCOUNTSIGN_Credit = "C";
+	/** Debit = D */
+	public static final String ACCOUNTSIGN_Debit = "D";
+	/** Natural = N */
+	public static final String ACCOUNTSIGN_Natural = "N";
 	/** Set Account Sign.
-		@param AccountSign 
-		Indicates the Natural Sign of the Account as a Debit or Credit
-	  */
+		@param AccountSign Indicates the Natural Sign of the Account as a Debit or Credit
+	*/
 	public void setAccountSign (String AccountSign)
 	{
 
@@ -92,7 +103,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Account Sign.
 		@return Indicates the Natural Sign of the Account as a Debit or Credit
 	  */
-	public String getAccountSign () 
+	public String getAccountSign()
 	{
 		return (String)get_Value(COLUMNNAME_AccountSign);
 	}
@@ -101,20 +112,19 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	public static final int ACCOUNTTYPE_AD_Reference_ID=117;
 	/** Asset = A */
 	public static final String ACCOUNTTYPE_Asset = "A";
-	/** Liability = L */
-	public static final String ACCOUNTTYPE_Liability = "L";
-	/** Revenue = R */
-	public static final String ACCOUNTTYPE_Revenue = "R";
 	/** Expense = E */
 	public static final String ACCOUNTTYPE_Expense = "E";
-	/** Owner's Equity = O */
-	public static final String ACCOUNTTYPE_OwnerSEquity = "O";
+	/** Liability = L */
+	public static final String ACCOUNTTYPE_Liability = "L";
 	/** Memo = M */
 	public static final String ACCOUNTTYPE_Memo = "M";
+	/** Owner&#039;s Equity = O */
+	public static final String ACCOUNTTYPE_OwnerSEquity = "O";
+	/** Revenue = R */
+	public static final String ACCOUNTTYPE_Revenue = "R";
 	/** Set Account Type.
-		@param AccountType 
-		Indicates the type of account
-	  */
+		@param AccountType Indicates the type of account
+	*/
 	public void setAccountType (String AccountType)
 	{
 
@@ -124,32 +134,32 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Account Type.
 		@return Indicates the type of account
 	  */
-	public String getAccountType () 
+	public String getAccountType()
 	{
 		return (String)get_Value(COLUMNNAME_AccountType);
 	}
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -158,26 +168,26 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	public org.compiere.model.I_C_Element getC_Element() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Element)MTable.get(getCtx(), org.compiere.model.I_C_Element.Table_Name)
-			.getPO(getC_Element_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Element)MTable.get(getCtx(), org.compiere.model.I_C_Element.Table_ID)
+			.getPO(getC_Element_ID(), get_TrxName());
+	}
 
 	/** Set Element.
-		@param C_Element_ID 
-		Accounting Element
-	  */
+		@param C_Element_ID Accounting Element
+	*/
 	public void setC_Element_ID (int C_Element_ID)
 	{
-		if (C_Element_ID < 1) 
+		if (C_Element_ID < 1)
 			set_Value (COLUMNNAME_C_Element_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Element_ID, Integer.valueOf(C_Element_ID));
 	}
 
 	/** Get Element.
 		@return Accounting Element
 	  */
-	public int getC_Element_ID () 
+	public int getC_Element_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Element_ID);
 		if (ii == null)
@@ -186,26 +196,26 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getC_ElementValue_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getC_ElementValue_ID(), get_TrxName());
+	}
 
 	/** Set Account Element.
-		@param C_ElementValue_ID 
-		Account Element
-	  */
+		@param C_ElementValue_ID Account Element
+	*/
 	public void setC_ElementValue_ID (int C_ElementValue_ID)
 	{
-		if (C_ElementValue_ID < 1) 
+		if (C_ElementValue_ID < 1)
 			set_Value (COLUMNNAME_C_ElementValue_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ElementValue_ID, Integer.valueOf(C_ElementValue_ID));
 	}
 
 	/** Get Account Element.
 		@return Account Element
 	  */
-	public int getC_ElementValue_ID () 
+	public int getC_ElementValue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValue_ID);
 		if (ii == null)
@@ -214,9 +224,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	/** Set Default Account.
-		@param Default_Account 
-		Name of the Default Account Column
-	  */
+		@param Default_Account Name of the Default Account Column
+	*/
 	public void setDefault_Account (String Default_Account)
 	{
 		set_Value (COLUMNNAME_Default_Account, Default_Account);
@@ -225,15 +234,14 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Default Account.
 		@return Name of the Default Account Column
 	  */
-	public String getDefault_Account () 
+	public String getDefault_Account()
 	{
 		return (String)get_Value(COLUMNNAME_Default_Account);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -242,15 +250,14 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Element Name.
-		@param ElementName 
-		Name of the Element
-	  */
+		@param ElementName Name of the Element
+	*/
 	public void setElementName (String ElementName)
 	{
 		set_Value (COLUMNNAME_ElementName, ElementName);
@@ -259,27 +266,26 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Element Name.
 		@return Name of the Element
 	  */
-	public String getElementName () 
+	public String getElementName()
 	{
 		return (String)get_Value(COLUMNNAME_ElementName);
 	}
 
 	/** Set Import Account.
-		@param I_ElementValue_ID 
-		Import Account Value
-	  */
+		@param I_ElementValue_ID Import Account Value
+	*/
 	public void setI_ElementValue_ID (int I_ElementValue_ID)
 	{
-		if (I_ElementValue_ID < 1) 
+		if (I_ElementValue_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_I_ElementValue_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_I_ElementValue_ID, Integer.valueOf(I_ElementValue_ID));
 	}
 
 	/** Get Import Account.
 		@return Import Account Value
 	  */
-	public int getI_ElementValue_ID () 
+	public int getI_ElementValue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_I_ElementValue_ID);
 		if (ii == null)
@@ -288,7 +294,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	/** Set I_ElementValue_UU.
-		@param I_ElementValue_UU I_ElementValue_UU	  */
+		@param I_ElementValue_UU I_ElementValue_UU
+	*/
 	public void setI_ElementValue_UU (String I_ElementValue_UU)
 	{
 		set_Value (COLUMNNAME_I_ElementValue_UU, I_ElementValue_UU);
@@ -296,15 +303,14 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 
 	/** Get I_ElementValue_UU.
 		@return I_ElementValue_UU	  */
-	public String getI_ElementValue_UU () 
+	public String getI_ElementValue_UU()
 	{
 		return (String)get_Value(COLUMNNAME_I_ElementValue_UU);
 	}
 
 	/** Set Import Error Message.
-		@param I_ErrorMsg 
-		Messages generated from import process
-	  */
+		@param I_ErrorMsg Messages generated from import process
+	*/
 	public void setI_ErrorMsg (String I_ErrorMsg)
 	{
 		set_Value (COLUMNNAME_I_ErrorMsg, I_ErrorMsg);
@@ -313,15 +319,14 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Import Error Message.
 		@return Messages generated from import process
 	  */
-	public String getI_ErrorMsg () 
+	public String getI_ErrorMsg()
 	{
 		return (String)get_Value(COLUMNNAME_I_ErrorMsg);
 	}
 
 	/** Set Imported.
-		@param I_IsImported 
-		Has this import been processed
-	  */
+		@param I_IsImported Has this import been processed
+	*/
 	public void setI_IsImported (boolean I_IsImported)
 	{
 		set_Value (COLUMNNAME_I_IsImported, Boolean.valueOf(I_IsImported));
@@ -330,7 +335,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Imported.
 		@return Has this import been processed
 	  */
-	public boolean isI_IsImported () 
+	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
 		if (oo != null) 
@@ -343,9 +348,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	/** Set Document Controlled.
-		@param IsDocControlled 
-		Control account - If an account is controlled by a document, you cannot post manually to it
-	  */
+		@param IsDocControlled Control account - If an account is controlled by a document, you cannot post manually to it
+	*/
 	public void setIsDocControlled (boolean IsDocControlled)
 	{
 		set_Value (COLUMNNAME_IsDocControlled, Boolean.valueOf(IsDocControlled));
@@ -354,7 +358,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Document Controlled.
 		@return Control account - If an account is controlled by a document, you cannot post manually to it
 	  */
-	public boolean isDocControlled () 
+	public boolean isDocControlled()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDocControlled);
 		if (oo != null) 
@@ -367,9 +371,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	/** Set Summary Level.
-		@param IsSummary 
-		This is a summary entity
-	  */
+		@param IsSummary This is a summary entity
+	*/
 	public void setIsSummary (boolean IsSummary)
 	{
 		set_Value (COLUMNNAME_IsSummary, Boolean.valueOf(IsSummary));
@@ -378,7 +381,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Summary Level.
 		@return This is a summary entity
 	  */
-	public boolean isSummary () 
+	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
 		if (oo != null) 
@@ -391,9 +394,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -402,32 +404,32 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	public org.compiere.model.I_C_ElementValue getParentElementValue() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getParentElementValue_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getParentElementValue_ID(), get_TrxName());
+	}
 
 	/** Set Parent Account.
-		@param ParentElementValue_ID 
-		The parent (summary) account
-	  */
+		@param ParentElementValue_ID The parent (summary) account
+	*/
 	public void setParentElementValue_ID (int ParentElementValue_ID)
 	{
-		if (ParentElementValue_ID < 1) 
+		if (ParentElementValue_ID < 1)
 			set_Value (COLUMNNAME_ParentElementValue_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_ParentElementValue_ID, Integer.valueOf(ParentElementValue_ID));
 	}
 
 	/** Get Parent Account.
 		@return The parent (summary) account
 	  */
-	public int getParentElementValue_ID () 
+	public int getParentElementValue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ParentElementValue_ID);
 		if (ii == null)
@@ -436,9 +438,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	/** Set Parent Key.
-		@param ParentValue 
-		Key if the Parent
-	  */
+		@param ParentValue Key if the Parent
+	*/
 	public void setParentValue (String ParentValue)
 	{
 		set_Value (COLUMNNAME_ParentValue, ParentValue);
@@ -447,15 +448,14 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Parent Key.
 		@return Key if the Parent
 	  */
-	public String getParentValue () 
+	public String getParentValue()
 	{
 		return (String)get_Value(COLUMNNAME_ParentValue);
 	}
 
 	/** Set Post Actual.
-		@param PostActual 
-		Actual Values can be posted
-	  */
+		@param PostActual Actual Values can be posted
+	*/
 	public void setPostActual (boolean PostActual)
 	{
 		set_Value (COLUMNNAME_PostActual, Boolean.valueOf(PostActual));
@@ -464,7 +464,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Post Actual.
 		@return Actual Values can be posted
 	  */
-	public boolean isPostActual () 
+	public boolean isPostActual()
 	{
 		Object oo = get_Value(COLUMNNAME_PostActual);
 		if (oo != null) 
@@ -477,9 +477,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	/** Set Post Budget.
-		@param PostBudget 
-		Budget values can be posted
-	  */
+		@param PostBudget Budget values can be posted
+	*/
 	public void setPostBudget (boolean PostBudget)
 	{
 		set_Value (COLUMNNAME_PostBudget, Boolean.valueOf(PostBudget));
@@ -488,7 +487,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Post Budget.
 		@return Budget values can be posted
 	  */
-	public boolean isPostBudget () 
+	public boolean isPostBudget()
 	{
 		Object oo = get_Value(COLUMNNAME_PostBudget);
 		if (oo != null) 
@@ -501,9 +500,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	/** Set Post Encumbrance.
-		@param PostEncumbrance 
-		Post commitments to this account
-	  */
+		@param PostEncumbrance Post commitments to this account
+	*/
 	public void setPostEncumbrance (boolean PostEncumbrance)
 	{
 		set_Value (COLUMNNAME_PostEncumbrance, Boolean.valueOf(PostEncumbrance));
@@ -512,7 +510,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Post Encumbrance.
 		@return Post commitments to this account
 	  */
-	public boolean isPostEncumbrance () 
+	public boolean isPostEncumbrance()
 	{
 		Object oo = get_Value(COLUMNNAME_PostEncumbrance);
 		if (oo != null) 
@@ -525,9 +523,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	/** Set Post Statistical.
-		@param PostStatistical 
-		Post statistical quantities to this account?
-	  */
+		@param PostStatistical Post statistical quantities to this account?
+	*/
 	public void setPostStatistical (boolean PostStatistical)
 	{
 		set_Value (COLUMNNAME_PostStatistical, Boolean.valueOf(PostStatistical));
@@ -536,7 +533,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Post Statistical.
 		@return Post statistical quantities to this account?
 	  */
-	public boolean isPostStatistical () 
+	public boolean isPostStatistical()
 	{
 		Object oo = get_Value(COLUMNNAME_PostStatistical);
 		if (oo != null) 
@@ -549,9 +546,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -560,7 +556,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -573,7 +569,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -581,7 +578,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -594,9 +591,8 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -605,7 +601,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

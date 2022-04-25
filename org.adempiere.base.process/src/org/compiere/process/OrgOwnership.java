@@ -28,6 +28,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: OrgOwnership.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class OrgOwnership extends SvrProcess
 {
 	/**	Organization Parameter		*/
@@ -193,9 +194,14 @@ public class OrgOwnership extends SvrProcess
 		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "C_AcctSchema_ID"));
 		
 		//	BOM
-		sql = new StringBuilder("UPDATE M_Product_BOM x ").append(set);
+		sql = new StringBuilder("UPDATE PP_Product_BOM x ").append(set);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "M_Product_BOM_ID"));
+		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "PP_Product_BOM_ID"));
+		
+		//BOM Line
+		sql = new StringBuilder("UPDATE PP_Product_BOMLine x ").append(set);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		addLog (0,null, new BigDecimal(no), Msg.translate(getCtx(), "PP_Product_BOMLine_ID"));
 		
 		//	PO
 		sql = new StringBuilder("UPDATE M_Product_PO x ").append(set);

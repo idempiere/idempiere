@@ -24,19 +24,35 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AlertProcessor
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_AlertProcessor")
 public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_AlertProcessor (Properties ctx, int AD_AlertProcessor_ID, String trxName)
     {
       super (ctx, AD_AlertProcessor_ID, trxName);
+      /** if (AD_AlertProcessor_ID == 0)
+        {
+			setAD_AlertProcessor_ID (0);
+			setAD_Schedule_ID (0);
+			setKeepLogDays (0);
+// 7
+			setName (null);
+			setSupervisor_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AlertProcessor (Properties ctx, int AD_AlertProcessor_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AlertProcessor_ID, trxName, virtualColumns);
       /** if (AD_AlertProcessor_ID == 0)
         {
 			setAD_AlertProcessor_ID (0);
@@ -71,27 +87,26 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_AlertProcessor[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_AlertProcessor[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Alert Processor.
-		@param AD_AlertProcessor_ID 
-		Alert Processor/Server Parameter
-	  */
+		@param AD_AlertProcessor_ID Alert Processor/Server Parameter
+	*/
 	public void setAD_AlertProcessor_ID (int AD_AlertProcessor_ID)
 	{
-		if (AD_AlertProcessor_ID < 1) 
+		if (AD_AlertProcessor_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_AlertProcessor_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_AlertProcessor_ID, Integer.valueOf(AD_AlertProcessor_ID));
 	}
 
 	/** Get Alert Processor.
 		@return Alert Processor/Server Parameter
 	  */
-	public int getAD_AlertProcessor_ID () 
+	public int getAD_AlertProcessor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AlertProcessor_ID);
 		if (ii == null)
@@ -100,7 +115,8 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	}
 
 	/** Set AD_AlertProcessor_UU.
-		@param AD_AlertProcessor_UU AD_AlertProcessor_UU	  */
+		@param AD_AlertProcessor_UU AD_AlertProcessor_UU
+	*/
 	public void setAD_AlertProcessor_UU (String AD_AlertProcessor_UU)
 	{
 		set_Value (COLUMNNAME_AD_AlertProcessor_UU, AD_AlertProcessor_UU);
@@ -108,29 +124,31 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 
 	/** Get AD_AlertProcessor_UU.
 		@return AD_AlertProcessor_UU	  */
-	public String getAD_AlertProcessor_UU () 
+	public String getAD_AlertProcessor_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AlertProcessor_UU);
 	}
 
 	public org.compiere.model.I_AD_Schedule getAD_Schedule() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_Name)
-			.getPO(getAD_Schedule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Schedule)MTable.get(getCtx(), org.compiere.model.I_AD_Schedule.Table_ID)
+			.getPO(getAD_Schedule_ID(), get_TrxName());
+	}
 
 	/** Set Schedule.
-		@param AD_Schedule_ID Schedule	  */
+		@param AD_Schedule_ID Schedule
+	*/
 	public void setAD_Schedule_ID (int AD_Schedule_ID)
 	{
-		if (AD_Schedule_ID < 1) 
+		if (AD_Schedule_ID < 1)
 			set_Value (COLUMNNAME_AD_Schedule_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Schedule_ID, Integer.valueOf(AD_Schedule_ID));
 	}
 
 	/** Get Schedule.
 		@return Schedule	  */
-	public int getAD_Schedule_ID () 
+	public int getAD_Schedule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Schedule_ID);
 		if (ii == null)
@@ -139,9 +157,8 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	}
 
 	/** Set Date last run.
-		@param DateLastRun 
-		Date the process was last run.
-	  */
+		@param DateLastRun Date the process was last run.
+	*/
 	public void setDateLastRun (Timestamp DateLastRun)
 	{
 		set_Value (COLUMNNAME_DateLastRun, DateLastRun);
@@ -150,15 +167,14 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	/** Get Date last run.
 		@return Date the process was last run.
 	  */
-	public Timestamp getDateLastRun () 
+	public Timestamp getDateLastRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateLastRun);
 	}
 
 	/** Set Date next run.
-		@param DateNextRun 
-		Date the process will run next
-	  */
+		@param DateNextRun Date the process will run next
+	*/
 	public void setDateNextRun (Timestamp DateNextRun)
 	{
 		set_Value (COLUMNNAME_DateNextRun, DateNextRun);
@@ -167,15 +183,14 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	/** Get Date next run.
 		@return Date the process will run next
 	  */
-	public Timestamp getDateNextRun () 
+	public Timestamp getDateNextRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateNextRun);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -184,15 +199,14 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Days to keep Log.
-		@param KeepLogDays 
-		Number of days to keep the log entries
-	  */
+		@param KeepLogDays Number of days to keep the log entries
+	*/
 	public void setKeepLogDays (int KeepLogDays)
 	{
 		set_Value (COLUMNNAME_KeepLogDays, Integer.valueOf(KeepLogDays));
@@ -201,7 +215,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	/** Get Days to keep Log.
 		@return Number of days to keep the log entries
 	  */
-	public int getKeepLogDays () 
+	public int getKeepLogDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_KeepLogDays);
 		if (ii == null)
@@ -210,9 +224,8 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -221,7 +234,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -235,7 +248,8 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -243,7 +257,7 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -256,26 +270,26 @@ public class X_AD_AlertProcessor extends PO implements I_AD_AlertProcessor, I_Pe
 	}
 
 	public org.compiere.model.I_AD_User getSupervisor() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSupervisor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSupervisor_ID(), get_TrxName());
+	}
 
 	/** Set Supervisor.
-		@param Supervisor_ID 
-		Supervisor for this user/organization - used for escalation and approval
-	  */
+		@param Supervisor_ID Supervisor for this user/organization - used for escalation and approval
+	*/
 	public void setSupervisor_ID (int Supervisor_ID)
 	{
-		if (Supervisor_ID < 1) 
+		if (Supervisor_ID < 1)
 			set_Value (COLUMNNAME_Supervisor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Supervisor_ID, Integer.valueOf(Supervisor_ID));
 	}
 
 	/** Get Supervisor.
 		@return Supervisor for this user/organization - used for escalation and approval
 	  */
-	public int getSupervisor_ID () 
+	public int getSupervisor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Supervisor_ID);
 		if (ii == null)

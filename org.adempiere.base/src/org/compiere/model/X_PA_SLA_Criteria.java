@@ -23,19 +23,33 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_SLA_Criteria
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="PA_SLA_Criteria")
 public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_SLA_Criteria (Properties ctx, int PA_SLA_Criteria_ID, String trxName)
     {
       super (ctx, PA_SLA_Criteria_ID, trxName);
+      /** if (PA_SLA_Criteria_ID == 0)
+        {
+			setIsManual (true);
+// Y
+			setName (null);
+			setPA_SLA_Criteria_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_SLA_Criteria (Properties ctx, int PA_SLA_Criteria_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_SLA_Criteria_ID, trxName, virtualColumns);
       /** if (PA_SLA_Criteria_ID == 0)
         {
 			setIsManual (true);
@@ -68,15 +82,14 @@ public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persis
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_SLA_Criteria[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_PA_SLA_Criteria[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Classname.
-		@param Classname 
-		Java Classname
-	  */
+		@param Classname Java Classname
+	*/
 	public void setClassname (String Classname)
 	{
 		set_Value (COLUMNNAME_Classname, Classname);
@@ -85,15 +98,14 @@ public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persis
 	/** Get Classname.
 		@return Java Classname
 	  */
-	public String getClassname () 
+	public String getClassname()
 	{
 		return (String)get_Value(COLUMNNAME_Classname);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -102,15 +114,14 @@ public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -119,15 +130,14 @@ public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persis
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Manual.
-		@param IsManual 
-		This is a manual process
-	  */
+		@param IsManual This is a manual process
+	*/
 	public void setIsManual (boolean IsManual)
 	{
 		set_Value (COLUMNNAME_IsManual, Boolean.valueOf(IsManual));
@@ -136,7 +146,7 @@ public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persis
 	/** Get Manual.
 		@return This is a manual process
 	  */
-	public boolean isManual () 
+	public boolean isManual()
 	{
 		Object oo = get_Value(COLUMNNAME_IsManual);
 		if (oo != null) 
@@ -149,9 +159,8 @@ public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persis
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -160,7 +169,7 @@ public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -174,21 +183,20 @@ public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persis
     }
 
 	/** Set SLA Criteria.
-		@param PA_SLA_Criteria_ID 
-		Service Level Agreement Criteria
-	  */
+		@param PA_SLA_Criteria_ID Service Level Agreement Criteria
+	*/
 	public void setPA_SLA_Criteria_ID (int PA_SLA_Criteria_ID)
 	{
-		if (PA_SLA_Criteria_ID < 1) 
+		if (PA_SLA_Criteria_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_SLA_Criteria_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_SLA_Criteria_ID, Integer.valueOf(PA_SLA_Criteria_ID));
 	}
 
 	/** Get SLA Criteria.
 		@return Service Level Agreement Criteria
 	  */
-	public int getPA_SLA_Criteria_ID () 
+	public int getPA_SLA_Criteria_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_SLA_Criteria_ID);
 		if (ii == null)
@@ -197,7 +205,8 @@ public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persis
 	}
 
 	/** Set PA_SLA_Criteria_UU.
-		@param PA_SLA_Criteria_UU PA_SLA_Criteria_UU	  */
+		@param PA_SLA_Criteria_UU PA_SLA_Criteria_UU
+	*/
 	public void setPA_SLA_Criteria_UU (String PA_SLA_Criteria_UU)
 	{
 		set_Value (COLUMNNAME_PA_SLA_Criteria_UU, PA_SLA_Criteria_UU);
@@ -205,7 +214,7 @@ public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persis
 
 	/** Get PA_SLA_Criteria_UU.
 		@return PA_SLA_Criteria_UU	  */
-	public String getPA_SLA_Criteria_UU () 
+	public String getPA_SLA_Criteria_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_SLA_Criteria_UU);
 	}

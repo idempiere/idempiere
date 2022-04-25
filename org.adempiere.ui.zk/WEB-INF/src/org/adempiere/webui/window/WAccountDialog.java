@@ -308,6 +308,8 @@ public final class WAccountDialog extends Window
 		if (ClientInfo.isMobile()) {
 			ClientInfo.onClientInfo(this, this::onClientInfo);
 		}
+		
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}	//	jbInit
 
 	/**
@@ -357,7 +359,7 @@ public final class WAccountDialog extends Window
 		}
 
 		//  GridController
-		m_adTabPanel.init(null, m_WindowNo, m_mTab, null);
+		m_adTabPanel.init(null, m_mTab);
 
 		//  Prepare Parameter
 		parameterLayout.makeNoStrip();
@@ -777,8 +779,7 @@ public final class WAccountDialog extends Window
 		}
 		else if (event.getTarget().getId().equals("Cancel"))
 		{
-			m_changed = false;
-			dispose();
+			onCancel();
 		}
 		//
 		else if (event.getTarget() == bSave)
@@ -788,6 +789,11 @@ public final class WAccountDialog extends Window
 		//	all other
 		else
 			action_Find (true);
+	}
+
+	private void onCancel() {
+		m_changed = false;
+		dispose();
 	}
 
 	boolean needConfirm(WEditor editor, MAccount combiOrg)

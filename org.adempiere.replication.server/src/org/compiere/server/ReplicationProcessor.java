@@ -38,7 +38,6 @@ import org.compiere.model.MOrgInfo;
 import org.compiere.model.X_IMP_Processor_Type;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
-import org.compiere.server.AdempiereServer;
 import org.compiere.model.MIMPProcessor;
 import org.compiere.model.MIMPProcessorLog;
 
@@ -99,14 +98,14 @@ public class ReplicationProcessor extends AdempiereServer {
 		    // process is not started!
 			
 			// Prepare a ctx
-			Env.setContext(mImportProcessor.getCtx(), "#AD_Client_ID", mImportProcessor.getAD_Client_ID());
-			Env.setContext(mImportProcessor.getCtx(), "#AD_Org_ID", mImportProcessor.getAD_Org_ID());
+			Env.setContext(mImportProcessor.getCtx(), Env.AD_CLIENT_ID, mImportProcessor.getAD_Client_ID());
+			Env.setContext(mImportProcessor.getCtx(), Env.AD_ORG_ID, mImportProcessor.getAD_Org_ID());
 			if (mImportProcessor.getAD_Org_ID() != 0) {
 				MOrgInfo schedorg = MOrgInfo.get(getCtx(), mImportProcessor.getAD_Org_ID(), null);
 				if (schedorg.getM_Warehouse_ID() > 0)
-					Env.setContext(mImportProcessor.getCtx(), "#M_Warehouse_ID", schedorg.getM_Warehouse_ID());
+					Env.setContext(mImportProcessor.getCtx(), Env.M_WAREHOUSE_ID, schedorg.getM_Warehouse_ID());
 				}
-			Env.setContext(mImportProcessor.getCtx(), "#AD_User_ID", getAD_User_ID());
+			Env.setContext(mImportProcessor.getCtx(), Env.AD_USER_ID, getAD_User_ID());
 		    
 		    m_summary = new StringBuffer();
 		    String trxName = mImportProcessor.get_TrxName();

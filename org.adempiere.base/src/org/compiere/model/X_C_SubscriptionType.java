@@ -23,19 +23,33 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_SubscriptionType
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_SubscriptionType")
 public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_SubscriptionType (Properties ctx, int C_SubscriptionType_ID, String trxName)
     {
       super (ctx, C_SubscriptionType_ID, trxName);
+      /** if (C_SubscriptionType_ID == 0)
+        {
+			setC_SubscriptionType_ID (0);
+			setFrequency (0);
+			setFrequencyType (null);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_SubscriptionType (Properties ctx, int C_SubscriptionType_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_SubscriptionType_ID, trxName, virtualColumns);
       /** if (C_SubscriptionType_ID == 0)
         {
 			setC_SubscriptionType_ID (0);
@@ -68,27 +82,26 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_SubscriptionType[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_SubscriptionType[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Subscription Type.
-		@param C_SubscriptionType_ID 
-		Type of subscription
-	  */
+		@param C_SubscriptionType_ID Type of subscription
+	*/
 	public void setC_SubscriptionType_ID (int C_SubscriptionType_ID)
 	{
-		if (C_SubscriptionType_ID < 1) 
+		if (C_SubscriptionType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_SubscriptionType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_SubscriptionType_ID, Integer.valueOf(C_SubscriptionType_ID));
 	}
 
 	/** Get Subscription Type.
 		@return Type of subscription
 	  */
-	public int getC_SubscriptionType_ID () 
+	public int getC_SubscriptionType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_SubscriptionType_ID);
 		if (ii == null)
@@ -97,7 +110,8 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
 	}
 
 	/** Set C_SubscriptionType_UU.
-		@param C_SubscriptionType_UU C_SubscriptionType_UU	  */
+		@param C_SubscriptionType_UU C_SubscriptionType_UU
+	*/
 	public void setC_SubscriptionType_UU (String C_SubscriptionType_UU)
 	{
 		set_Value (COLUMNNAME_C_SubscriptionType_UU, C_SubscriptionType_UU);
@@ -105,15 +119,14 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
 
 	/** Get C_SubscriptionType_UU.
 		@return C_SubscriptionType_UU	  */
-	public String getC_SubscriptionType_UU () 
+	public String getC_SubscriptionType_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_SubscriptionType_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -122,15 +135,14 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Frequency.
-		@param Frequency 
-		Frequency of events
-	  */
+		@param Frequency Frequency of events
+	*/
 	public void setFrequency (int Frequency)
 	{
 		set_Value (COLUMNNAME_Frequency, Integer.valueOf(Frequency));
@@ -139,7 +151,7 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
 	/** Get Frequency.
 		@return Frequency of events
 	  */
-	public int getFrequency () 
+	public int getFrequency()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Frequency);
 		if (ii == null)
@@ -149,16 +161,15 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
 
 	/** FrequencyType AD_Reference_ID=221 */
 	public static final int FREQUENCYTYPE_AD_Reference_ID=221;
-	/** Minute = M */
-	public static final String FREQUENCYTYPE_Minute = "M";
-	/** Hour = H */
-	public static final String FREQUENCYTYPE_Hour = "H";
 	/** Day = D */
 	public static final String FREQUENCYTYPE_Day = "D";
+	/** Hour = H */
+	public static final String FREQUENCYTYPE_Hour = "H";
+	/** Minute = M */
+	public static final String FREQUENCYTYPE_Minute = "M";
 	/** Set Frequency Type.
-		@param FrequencyType 
-		Frequency of event
-	  */
+		@param FrequencyType Frequency of event
+	*/
 	public void setFrequencyType (String FrequencyType)
 	{
 
@@ -168,15 +179,14 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
 	/** Get Frequency Type.
 		@return Frequency of event
 	  */
-	public String getFrequencyType () 
+	public String getFrequencyType()
 	{
 		return (String)get_Value(COLUMNNAME_FrequencyType);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -185,7 +195,7 @@ public class X_C_SubscriptionType extends PO implements I_C_SubscriptionType, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

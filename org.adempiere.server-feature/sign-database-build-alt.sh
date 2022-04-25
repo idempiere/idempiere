@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-if [ $JAVA_HOME ]; then
+if [ "$JAVA_HOME" ]; then
   JAVA=$JAVA_HOME/bin/java
 else
   JAVA=java

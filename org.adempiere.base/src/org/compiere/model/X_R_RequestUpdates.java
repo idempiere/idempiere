@@ -22,19 +22,32 @@ import java.util.Properties;
 
 /** Generated Model for R_RequestUpdates
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="R_RequestUpdates")
 public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_RequestUpdates (Properties ctx, int R_RequestUpdates_ID, String trxName)
     {
       super (ctx, R_RequestUpdates_ID, trxName);
+      /** if (R_RequestUpdates_ID == 0)
+        {
+			setAD_User_ID (0);
+			setIsSelfService (false);
+			setR_Request_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestUpdates (Properties ctx, int R_RequestUpdates_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestUpdates_ID, trxName, virtualColumns);
       /** if (R_RequestUpdates_ID == 0)
         {
 			setAD_User_ID (0);
@@ -66,32 +79,32 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_RequestUpdates[")
+      StringBuilder sb = new StringBuilder ("X_R_RequestUpdates[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getAD_User_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User_ID(), get_TrxName());
+	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -100,9 +113,8 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
 	}
 
 	/** Set Self-Service.
-		@param IsSelfService 
-		This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
+		@param IsSelfService This is a Self-Service entry or this entry can be changed via Self-Service
+	*/
 	public void setIsSelfService (boolean IsSelfService)
 	{
 		set_Value (COLUMNNAME_IsSelfService, Boolean.valueOf(IsSelfService));
@@ -111,7 +123,7 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
 	/** Get Self-Service.
 		@return This is a Self-Service entry or this entry can be changed via Self-Service
 	  */
-	public boolean isSelfService () 
+	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
 		if (oo != null) 
@@ -124,26 +136,26 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
 	}
 
 	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException
-    {
-		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_Name)
-			.getPO(getR_Request_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_R_Request)MTable.get(getCtx(), org.compiere.model.I_R_Request.Table_ID)
+			.getPO(getR_Request_ID(), get_TrxName());
+	}
 
 	/** Set Request.
-		@param R_Request_ID 
-		Request from a Business Partner or Prospect
-	  */
+		@param R_Request_ID Request from a Business Partner or Prospect
+	*/
 	public void setR_Request_ID (int R_Request_ID)
 	{
-		if (R_Request_ID < 1) 
+		if (R_Request_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Request_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Request_ID, Integer.valueOf(R_Request_ID));
 	}
 
 	/** Get Request.
 		@return Request from a Business Partner or Prospect
 	  */
-	public int getR_Request_ID () 
+	public int getR_Request_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Request_ID);
 		if (ii == null)
@@ -152,7 +164,8 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
 	}
 
 	/** Set R_RequestUpdates_UU.
-		@param R_RequestUpdates_UU R_RequestUpdates_UU	  */
+		@param R_RequestUpdates_UU R_RequestUpdates_UU
+	*/
 	public void setR_RequestUpdates_UU (String R_RequestUpdates_UU)
 	{
 		set_Value (COLUMNNAME_R_RequestUpdates_UU, R_RequestUpdates_UU);
@@ -160,7 +173,7 @@ public class X_R_RequestUpdates extends PO implements I_R_RequestUpdates, I_Pers
 
 	/** Get R_RequestUpdates_UU.
 		@return R_RequestUpdates_UU	  */
-	public String getR_RequestUpdates_UU () 
+	public String getR_RequestUpdates_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_RequestUpdates_UU);
 	}

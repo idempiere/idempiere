@@ -131,7 +131,7 @@ public class GenerateModelJPA
 		//String className = "X_" + tableName;
                 String className = "" + tableName;
 		//
-		StringBuffer start = new StringBuffer ()
+		StringBuilder start = new StringBuilder ()
 			.append (COPY)
 			.append ("package " + packageName + ";\n"
 				+ "/** Generated Model JPA - DO NOT CHANGE */\n");
@@ -162,12 +162,6 @@ public class GenerateModelJPA
 			+ "/** if (").append(keyColumn).append(" == 0)"
 			+ "{").append(mandatory).append("} */\n"
 			+ "}"	//	Constructor End
-			//	Short Constructor
-//			+ "/** Short Constructor */\n"
-//			+ "public ").append(className).append(" (Properties ctx, int ").append(keyColumn).append(")"
-//			+ "{"
-//			+ "this (ctx, ").append(keyColumn).append(", null);"
-//			+ "}"	//	Constructor End
 			
 			//	Load Constructor
 			+ "/** Load Constructor \n@param ctx context\n@param rs result set \n@param trxName transaction\n*/\n"
@@ -200,12 +194,12 @@ public class GenerateModelJPA
 			+ "/** Info\n@return info\n*/\n"
 			+ "public String toString()"
 			+ "{"
-			+ "StringBuffer sb = new StringBuffer (\"").append(className).append("[\")"
+			+ "StringBuilder sb = new StringBuilder (\"").append(className).append("[\")"
 			+ ".append(get_ID()).append(\"]\");"
 			+ "return sb.toString();"
 			+ "}");
 
-		StringBuffer end = new StringBuffer ("}");
+		StringBuilder end = new StringBuilder ("}");
 		//
 		sb.insert(0, start);
 		sb.append(end);
@@ -538,9 +532,9 @@ public class GenerateModelJPA
 			.append("_AD_Reference_ID=").append(AD_Reference_ID).append(";");
 		//
 		boolean found = false;
-		StringBuffer values = new StringBuffer("Reference_ID=")
+		StringBuilder values = new StringBuilder("Reference_ID=")
 			.append(AD_Reference_ID);
-		StringBuffer statement = new StringBuffer();
+		StringBuilder statement = new StringBuilder();
 		if (nullable)
 			statement.append("if (").append(columnName).append(" == null");
 		//
@@ -573,7 +567,7 @@ public class GenerateModelJPA
 				//	Name (SmallTalkNotation)
 				String name = rs.getString(2);
 				char[] nameArray = name.toCharArray();
-				StringBuffer nameClean = new StringBuffer();
+				StringBuilder nameClean = new StringBuilder();
 				boolean initCap = true;
 				for (int i = 0; i < nameArray.length; i++)
 				{
@@ -708,7 +702,7 @@ public class GenerateModelJPA
 	 */
 	public String toString()
 	{
-		StringBuffer sb = new StringBuffer ("GenerateModel[")
+		StringBuilder sb = new StringBuilder ("GenerateModel[")
 			.append("]");
 		return sb.toString();
 	}	//	toString
@@ -732,7 +726,6 @@ public class GenerateModelJPA
 	{
 		org.compiere.Adempiere.startupEnvironment(true);
 		CLogMgt.setLevel(Level.FINE);
-	//	CLogMgt.setLevel(Level.ALL);
 		log.info("Generate Model   $Revision: 1.5 $");
 		log.info("----------------------------------");
 		//	first parameter
@@ -766,7 +759,7 @@ public class GenerateModelJPA
 			System.err.println("No EntityType");
 			System.exit(1);
 		}
-		StringBuffer sql = new StringBuffer("EntityType IN (")
+		StringBuilder sql = new StringBuilder("EntityType IN (")
 			.append(entityType).append(")");
 		if (log.isLoggable(Level.INFO)) log.info(sql.toString());
 		log.info("----------------------------------");

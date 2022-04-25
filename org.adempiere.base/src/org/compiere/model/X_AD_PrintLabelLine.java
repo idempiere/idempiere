@@ -23,19 +23,38 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintLabelLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_PrintLabelLine")
 public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_PrintLabelLine (Properties ctx, int AD_PrintLabelLine_ID, String trxName)
     {
       super (ctx, AD_PrintLabelLine_ID, trxName);
+      /** if (AD_PrintLabelLine_ID == 0)
+        {
+			setAD_LabelPrinterFunction_ID (0);
+			setAD_PrintLabel_ID (0);
+			setAD_PrintLabelLine_ID (0);
+			setLabelFormatType (null);
+// F
+			setName (null);
+			setSeqNo (0);
+			setXPosition (0);
+			setYPosition (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintLabelLine (Properties ctx, int AD_PrintLabelLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintLabelLine_ID, trxName, virtualColumns);
       /** if (AD_PrintLabelLine_ID == 0)
         {
 			setAD_LabelPrinterFunction_ID (0);
@@ -73,32 +92,32 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_PrintLabelLine[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_PrintLabelLine[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -107,26 +126,26 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	}
 
 	public org.compiere.model.I_AD_LabelPrinterFunction getAD_LabelPrinterFunction() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_LabelPrinterFunction)MTable.get(getCtx(), org.compiere.model.I_AD_LabelPrinterFunction.Table_Name)
-			.getPO(getAD_LabelPrinterFunction_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_LabelPrinterFunction)MTable.get(getCtx(), org.compiere.model.I_AD_LabelPrinterFunction.Table_ID)
+			.getPO(getAD_LabelPrinterFunction_ID(), get_TrxName());
+	}
 
 	/** Set Label printer Function.
-		@param AD_LabelPrinterFunction_ID 
-		Function of Label Printer
-	  */
+		@param AD_LabelPrinterFunction_ID Function of Label Printer
+	*/
 	public void setAD_LabelPrinterFunction_ID (int AD_LabelPrinterFunction_ID)
 	{
-		if (AD_LabelPrinterFunction_ID < 1) 
+		if (AD_LabelPrinterFunction_ID < 1)
 			set_Value (COLUMNNAME_AD_LabelPrinterFunction_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_LabelPrinterFunction_ID, Integer.valueOf(AD_LabelPrinterFunction_ID));
 	}
 
 	/** Get Label printer Function.
 		@return Function of Label Printer
 	  */
-	public int getAD_LabelPrinterFunction_ID () 
+	public int getAD_LabelPrinterFunction_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_LabelPrinterFunction_ID);
 		if (ii == null)
@@ -135,26 +154,26 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	}
 
 	public org.compiere.model.I_AD_PrintLabel getAD_PrintLabel() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintLabel)MTable.get(getCtx(), org.compiere.model.I_AD_PrintLabel.Table_Name)
-			.getPO(getAD_PrintLabel_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintLabel)MTable.get(getCtx(), org.compiere.model.I_AD_PrintLabel.Table_ID)
+			.getPO(getAD_PrintLabel_ID(), get_TrxName());
+	}
 
 	/** Set Print Label.
-		@param AD_PrintLabel_ID 
-		Label Format to print
-	  */
+		@param AD_PrintLabel_ID Label Format to print
+	*/
 	public void setAD_PrintLabel_ID (int AD_PrintLabel_ID)
 	{
-		if (AD_PrintLabel_ID < 1) 
+		if (AD_PrintLabel_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PrintLabel_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PrintLabel_ID, Integer.valueOf(AD_PrintLabel_ID));
 	}
 
 	/** Get Print Label.
 		@return Label Format to print
 	  */
-	public int getAD_PrintLabel_ID () 
+	public int getAD_PrintLabel_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintLabel_ID);
 		if (ii == null)
@@ -163,21 +182,20 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	}
 
 	/** Set Print Label Line.
-		@param AD_PrintLabelLine_ID 
-		Print Label Line Format
-	  */
+		@param AD_PrintLabelLine_ID Print Label Line Format
+	*/
 	public void setAD_PrintLabelLine_ID (int AD_PrintLabelLine_ID)
 	{
-		if (AD_PrintLabelLine_ID < 1) 
+		if (AD_PrintLabelLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PrintLabelLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PrintLabelLine_ID, Integer.valueOf(AD_PrintLabelLine_ID));
 	}
 
 	/** Get Print Label Line.
 		@return Print Label Line Format
 	  */
-	public int getAD_PrintLabelLine_ID () 
+	public int getAD_PrintLabelLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintLabelLine_ID);
 		if (ii == null)
@@ -186,7 +204,8 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	}
 
 	/** Set AD_PrintLabelLine_UU.
-		@param AD_PrintLabelLine_UU AD_PrintLabelLine_UU	  */
+		@param AD_PrintLabelLine_UU AD_PrintLabelLine_UU
+	*/
 	public void setAD_PrintLabelLine_UU (String AD_PrintLabelLine_UU)
 	{
 		set_Value (COLUMNNAME_AD_PrintLabelLine_UU, AD_PrintLabelLine_UU);
@@ -194,7 +213,7 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 
 	/** Get AD_PrintLabelLine_UU.
 		@return AD_PrintLabelLine_UU	  */
-	public String getAD_PrintLabelLine_UU () 
+	public String getAD_PrintLabelLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_PrintLabelLine_UU);
 	}
@@ -206,9 +225,8 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	/** Text = T */
 	public static final String LABELFORMATTYPE_Text = "T";
 	/** Set Label Format Type.
-		@param LabelFormatType 
-		Label Format Type
-	  */
+		@param LabelFormatType Label Format Type
+	*/
 	public void setLabelFormatType (String LabelFormatType)
 	{
 
@@ -218,15 +236,14 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	/** Get Label Format Type.
 		@return Label Format Type
 	  */
-	public String getLabelFormatType () 
+	public String getLabelFormatType()
 	{
 		return (String)get_Value(COLUMNNAME_LabelFormatType);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -235,15 +252,14 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Print Text.
-		@param PrintName 
-		The label text to be printed on a document or correspondence.
-	  */
+		@param PrintName The label text to be printed on a document or correspondence.
+	*/
 	public void setPrintName (String PrintName)
 	{
 		set_Value (COLUMNNAME_PrintName, PrintName);
@@ -252,15 +268,14 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	/** Get Print Text.
 		@return The label text to be printed on a document or correspondence.
 	  */
-	public String getPrintName () 
+	public String getPrintName()
 	{
 		return (String)get_Value(COLUMNNAME_PrintName);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -269,7 +284,7 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -286,9 +301,8 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
     }
 
 	/** Set X Position.
-		@param XPosition 
-		Absolute X (horizontal) position in 1/72 of an inch
-	  */
+		@param XPosition Absolute X (horizontal) position in 1/72 of an inch
+	*/
 	public void setXPosition (int XPosition)
 	{
 		set_Value (COLUMNNAME_XPosition, Integer.valueOf(XPosition));
@@ -297,7 +311,7 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	/** Get X Position.
 		@return Absolute X (horizontal) position in 1/72 of an inch
 	  */
-	public int getXPosition () 
+	public int getXPosition()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_XPosition);
 		if (ii == null)
@@ -306,9 +320,8 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	}
 
 	/** Set Y Position.
-		@param YPosition 
-		Absolute Y (vertical) position in 1/72 of an inch
-	  */
+		@param YPosition Absolute Y (vertical) position in 1/72 of an inch
+	*/
 	public void setYPosition (int YPosition)
 	{
 		set_Value (COLUMNNAME_YPosition, Integer.valueOf(YPosition));
@@ -317,7 +330,7 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	/** Get Y Position.
 		@return Absolute Y (vertical) position in 1/72 of an inch
 	  */
-	public int getYPosition () 
+	public int getYPosition()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_YPosition);
 		if (ii == null)

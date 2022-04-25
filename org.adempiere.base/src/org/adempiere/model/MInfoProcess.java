@@ -23,6 +23,7 @@ import org.compiere.model.X_AD_InfoProcess;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * Contain info of process in info window
@@ -30,14 +31,14 @@ import org.compiere.util.Evaluator;
  * @author hieplq
  *
  */
-public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn {
+public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn, ImmutablePOSupport {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5586972894900686397L;
+	private static final long serialVersionUID = 7833442401205258074L;
 
 	/**
-	 * {@inheritDoc}
 	 * @param ctx
 	 * @param AD_InfoProcess_ID
 	 * @param trxName
@@ -48,7 +49,6 @@ public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn {
 	}
 
 	/**
-	 * {@inheritDoc}
 	 * @param ctx
 	 * @param rs
 	 * @param trxName
@@ -56,6 +56,16 @@ public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn {
 	public MInfoProcess(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 
+	}
+	
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MInfoProcess(MInfoProcess copy) {
+		this(Env.getCtx(), 0, (String)null);
+		copyPO(copy);
+		this.m_viewIDName = copy.m_viewIDName;
 	}
 	
 	protected String m_viewIDName;
@@ -104,6 +114,16 @@ public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn {
 	@Override
 	public MInfoColumn getAD_InfoColumn (){
 		return (MInfoColumn)super.getAD_InfoColumn();
+	}
+
+	@Override
+	public MInfoProcess markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		
+		return this;
 	}
 	
 }

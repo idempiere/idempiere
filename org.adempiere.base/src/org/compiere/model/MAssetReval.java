@@ -10,10 +10,6 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.MDocType;
-import org.compiere.model.MPeriod;
-import org.compiere.model.ModelValidationEngine;
-import org.compiere.model.ModelValidator;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.Env;
@@ -133,9 +129,6 @@ implements DocAction
 				return status;
 		}
 
-		// Set the definite document number after completed (if needed)
-		//setDefiniteDocumentNo();
-
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -147,10 +140,6 @@ implements DocAction
 		MAsset asset = MAsset.get(getCtx(), getA_Asset_ID(), get_TrxName());
 		asset.setA_Asset_RevalDate(this.getDateDoc());
 		asset.saveEx();
-		//rebuild depreciation
-		/* commented out by @win, deprecating existing design
-		assetwk.buildDepreciation();
-		*/
 		
         //	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
@@ -249,13 +238,4 @@ implements DocAction
 	{
 		return null;
 	}
-	/**	Before save
-	 *	@param	newRecord
-	 *	@return true on success
-	 */
-	//protected boolean beforeSave (boolean newRecord)
-	//{
-		//return true;
-	//}
- 
 }

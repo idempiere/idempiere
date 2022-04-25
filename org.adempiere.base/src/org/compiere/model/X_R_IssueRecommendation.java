@@ -23,19 +23,31 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueRecommendation
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="R_IssueRecommendation")
 public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendation, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_IssueRecommendation (Properties ctx, int R_IssueRecommendation_ID, String trxName)
     {
       super (ctx, R_IssueRecommendation_ID, trxName);
+      /** if (R_IssueRecommendation_ID == 0)
+        {
+			setName (null);
+			setR_IssueRecommendation_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_IssueRecommendation (Properties ctx, int R_IssueRecommendation_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_IssueRecommendation_ID, trxName, virtualColumns);
       /** if (R_IssueRecommendation_ID == 0)
         {
 			setName (null);
@@ -66,15 +78,14 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_IssueRecommendation[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_R_IssueRecommendation[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -83,15 +94,14 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -100,15 +110,14 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -117,7 +126,7 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -131,21 +140,20 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
     }
 
 	/** Set Issue Recommendation.
-		@param R_IssueRecommendation_ID 
-		Recommendations how to fix an Issue
-	  */
+		@param R_IssueRecommendation_ID Recommendations how to fix an Issue
+	*/
 	public void setR_IssueRecommendation_ID (int R_IssueRecommendation_ID)
 	{
-		if (R_IssueRecommendation_ID < 1) 
+		if (R_IssueRecommendation_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_IssueRecommendation_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_IssueRecommendation_ID, Integer.valueOf(R_IssueRecommendation_ID));
 	}
 
 	/** Get Issue Recommendation.
 		@return Recommendations how to fix an Issue
 	  */
-	public int getR_IssueRecommendation_ID () 
+	public int getR_IssueRecommendation_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_IssueRecommendation_ID);
 		if (ii == null)
@@ -154,7 +162,8 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
 	}
 
 	/** Set R_IssueRecommendation_UU.
-		@param R_IssueRecommendation_UU R_IssueRecommendation_UU	  */
+		@param R_IssueRecommendation_UU R_IssueRecommendation_UU
+	*/
 	public void setR_IssueRecommendation_UU (String R_IssueRecommendation_UU)
 	{
 		set_Value (COLUMNNAME_R_IssueRecommendation_UU, R_IssueRecommendation_UU);
@@ -162,7 +171,7 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
 
 	/** Get R_IssueRecommendation_UU.
 		@return R_IssueRecommendation_UU	  */
-	public String getR_IssueRecommendation_UU () 
+	public String getR_IssueRecommendation_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_IssueRecommendation_UU);
 	}

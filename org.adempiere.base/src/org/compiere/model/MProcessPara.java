@@ -20,10 +20,14 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
+import org.adempiere.process.UUIDGenerator;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.expression.logic.LogicEvaluator;
 
 
 /**
@@ -32,15 +36,25 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MProcessPara.java,v 1.3 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MProcessPara extends X_AD_Process_Para
+public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4580303034897910371L;
+	private static final long serialVersionUID = -770944613761780314L;
 
 	/**
-	 * 	Get MProcessPara from Cache
+	 * 	Get MProcessPara from Cache (immutable)
+	 *	@param AD_Process_Para_ID id
+	 *	@return MProcessPara
+	 */
+	public static MProcessPara get (int AD_Process_Para_ID)
+	{
+		return get(Env.getCtx(), AD_Process_Para_ID);
+	}
+	
+	/**
+	 * 	Get MProcessPara from Cache (immutable)
 	 *	@param ctx context
 	 *	@param AD_Process_Para_ID id
 	 *	@return MProcessPara
@@ -48,18 +62,21 @@ public class MProcessPara extends X_AD_Process_Para
 	public static MProcessPara get (Properties ctx, int AD_Process_Para_ID)
 	{
 		Integer key = Integer.valueOf(AD_Process_Para_ID);
-		MProcessPara retValue = (MProcessPara)s_cache.get (key);
+		MProcessPara retValue = s_cache.get (ctx, key, e -> new MProcessPara(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MProcessPara (ctx, AD_Process_Para_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MProcessPara (ctx, AD_Process_Para_ID, (String)null);
+		if (retValue.get_ID () == AD_Process_Para_ID)
+		{
+			s_cache.put (key, retValue, e -> new MProcessPara(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
 
 	/**	Cache						*/
-	private static CCache<Integer, MProcessPara> s_cache 
-		= new CCache<Integer, MProcessPara> (Table_Name, 20);
+	private static ImmutableIntPOCache<Integer, MProcessPara> s_cache 
+		= new ImmutableIntPOCache<Integer, MProcessPara> (Table_Name, 20);
 	
 	
 	/**************************************************************************
@@ -73,13 +90,8 @@ public class MProcessPara extends X_AD_Process_Para
 		super (ctx, AD_Process_Para_ID, trxName);
 		if (AD_Process_Para_ID == 0)
 		{
-		//	setAD_Process_ID (0);	Parent
-		//	setName (null);
-		//	setColumnName (null);
-			
 			setFieldLength (0);
 			setSeqNo (0);
-		//	setAD_Reference_ID (0);
 			setIsCentrallyMaintained (true);
 			setIsRange (false);
 			setIsMandatory (false);
@@ -110,6 +122,37 @@ public class MProcessPara extends X_AD_Process_Para
 		setEntityType(parent.getEntityType());
 	}
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MProcessPara(MProcessPara copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MProcessPara(Properties ctx, MProcessPara copy)
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MProcessPara(Properties ctx, MProcessPara copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
 	/** Virtual Window No - 999	*/
 	public static int		WINDOW_NO = 999;
 	/** Virtual Tab No - 0		*/
@@ -210,7 +253,7 @@ public class MProcessPara extends X_AD_Process_Para
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MProcessPara[")
+		StringBuilder sb = new StringBuilder ("MProcessPara[")
 			.append (get_ID ())
 			.append ("]");
 		return sb.toString ();
@@ -264,6 +307,10 @@ public class MProcessPara extends X_AD_Process_Para
 				" FROM AD_Process_Para_Trl WHERE AD_Process_Para_ID = ? ";
 		count = DB.executeUpdateEx(sql, new Object[] { getAD_Process_Para_ID(), source.getAD_Process_Para_ID() }, get_TrxName());
 		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "AD_Process_Para_Trl inserted: " + count);
+		if (DB.isGenerateUUIDSupported())
+			DB.executeUpdateEx("UPDATE AD_Process_Para_Trl SET AD_Process_Para_Trl_UU=generate_uuid() WHERE AD_Process_Para_Trl_UU IS NULL", get_TrxName());
+		else
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), "AD_Process_Para_Trl", "AD_Process_Para_Trl_UU"), get_TrxName());		
 		
 	}
 
@@ -288,6 +335,18 @@ public class MProcessPara extends X_AD_Process_Para
 			setHelp (element.getHelp());
 		}
 
+		//validate logic expression
+		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
+			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getReadOnlyLogic());
+			}
+		}
+		if (newRecord || is_ValueChanged(COLUMNNAME_DisplayLogic)) {
+			if (isActive() && !Util.isEmpty(getDisplayLogic(), true) && !getDisplayLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getDisplayLogic());
+			}
+		}
+		
 		return true;
 	}	//	beforeSave
 
@@ -303,11 +362,20 @@ public class MProcessPara extends X_AD_Process_Para
 				if (rt != null)
 					foreignTable = rt.getAD_Table().getTableName();
 			}
-		} else 	if (DisplayType.List == getAD_Reference_ID()) {
+		} else 	if (DisplayType.isList(getAD_Reference_ID())) {
 			foreignTable = "AD_Ref_List";
 		}
 
 		return foreignTable;
+	}
+
+	@Override
+	public MProcessPara markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MProcessPara

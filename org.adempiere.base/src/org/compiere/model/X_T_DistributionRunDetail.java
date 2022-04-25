@@ -25,19 +25,39 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for T_DistributionRunDetail
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="T_DistributionRunDetail")
 public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRunDetail, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_T_DistributionRunDetail (Properties ctx, int T_DistributionRunDetail_ID, String trxName)
     {
       super (ctx, T_DistributionRunDetail_ID, trxName);
+      /** if (T_DistributionRunDetail_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setM_DistributionList_ID (0);
+			setM_DistributionListLine_ID (0);
+			setM_DistributionRun_ID (0);
+			setM_DistributionRunLine_ID (0);
+			setMinQty (Env.ZERO);
+			setM_Product_ID (0);
+			setQty (Env.ZERO);
+			setRatio (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_DistributionRunDetail (Properties ctx, int T_DistributionRunDetail_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_DistributionRunDetail_ID, trxName, virtualColumns);
       /** if (T_DistributionRunDetail_ID == 0)
         {
 			setC_BPartner_ID (0);
@@ -76,32 +96,32 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_T_DistributionRunDetail[")
+      StringBuilder sb = new StringBuilder ("X_T_DistributionRunDetail[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -110,26 +130,26 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	}
 
 	public org.compiere.model.I_C_BPartner_Location getC_BPartner_Location() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_Name)
-			.getPO(getC_BPartner_Location_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner_Location)MTable.get(getCtx(), org.compiere.model.I_C_BPartner_Location.Table_ID)
+			.getPO(getC_BPartner_Location_ID(), get_TrxName());
+	}
 
 	/** Set Partner Location.
-		@param C_BPartner_Location_ID 
-		Identifies the (ship to) address for this Business Partner
-	  */
+		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
+	*/
 	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
 	{
-		if (C_BPartner_Location_ID < 1) 
+		if (C_BPartner_Location_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
 	}
 
 	/** Get Partner Location.
 		@return Identifies the (ship to) address for this Business Partner
 	  */
-	public int getC_BPartner_Location_ID () 
+	public int getC_BPartner_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
 		if (ii == null)
@@ -138,26 +158,26 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	}
 
 	public org.compiere.model.I_M_DistributionList getM_DistributionList() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_DistributionList)MTable.get(getCtx(), org.compiere.model.I_M_DistributionList.Table_Name)
-			.getPO(getM_DistributionList_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_DistributionList)MTable.get(getCtx(), org.compiere.model.I_M_DistributionList.Table_ID)
+			.getPO(getM_DistributionList_ID(), get_TrxName());
+	}
 
 	/** Set Distribution List.
-		@param M_DistributionList_ID 
-		Distribution Lists allow to distribute products to a selected list of partners
-	  */
+		@param M_DistributionList_ID Distribution Lists allow to distribute products to a selected list of partners
+	*/
 	public void setM_DistributionList_ID (int M_DistributionList_ID)
 	{
-		if (M_DistributionList_ID < 1) 
+		if (M_DistributionList_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_DistributionList_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_DistributionList_ID, Integer.valueOf(M_DistributionList_ID));
 	}
 
 	/** Get Distribution List.
 		@return Distribution Lists allow to distribute products to a selected list of partners
 	  */
-	public int getM_DistributionList_ID () 
+	public int getM_DistributionList_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_DistributionList_ID);
 		if (ii == null)
@@ -166,26 +186,26 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	}
 
 	public org.compiere.model.I_M_DistributionListLine getM_DistributionListLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_DistributionListLine)MTable.get(getCtx(), org.compiere.model.I_M_DistributionListLine.Table_Name)
-			.getPO(getM_DistributionListLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_DistributionListLine)MTable.get(getCtx(), org.compiere.model.I_M_DistributionListLine.Table_ID)
+			.getPO(getM_DistributionListLine_ID(), get_TrxName());
+	}
 
 	/** Set Distribution List Line.
-		@param M_DistributionListLine_ID 
-		Distribution List Line with Business Partner and Quantity/Percentage
-	  */
+		@param M_DistributionListLine_ID Distribution List Line with Business Partner and Quantity/Percentage
+	*/
 	public void setM_DistributionListLine_ID (int M_DistributionListLine_ID)
 	{
-		if (M_DistributionListLine_ID < 1) 
+		if (M_DistributionListLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_DistributionListLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_DistributionListLine_ID, Integer.valueOf(M_DistributionListLine_ID));
 	}
 
 	/** Get Distribution List Line.
 		@return Distribution List Line with Business Partner and Quantity/Percentage
 	  */
-	public int getM_DistributionListLine_ID () 
+	public int getM_DistributionListLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_DistributionListLine_ID);
 		if (ii == null)
@@ -194,26 +214,26 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	}
 
 	public org.compiere.model.I_M_DistributionRun getM_DistributionRun() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_DistributionRun)MTable.get(getCtx(), org.compiere.model.I_M_DistributionRun.Table_Name)
-			.getPO(getM_DistributionRun_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_DistributionRun)MTable.get(getCtx(), org.compiere.model.I_M_DistributionRun.Table_ID)
+			.getPO(getM_DistributionRun_ID(), get_TrxName());
+	}
 
 	/** Set Distribution Run.
-		@param M_DistributionRun_ID 
-		Distribution Run create Orders to distribute products to a selected list of partners
-	  */
+		@param M_DistributionRun_ID Distribution Run create Orders to distribute products to a selected list of partners
+	*/
 	public void setM_DistributionRun_ID (int M_DistributionRun_ID)
 	{
-		if (M_DistributionRun_ID < 1) 
+		if (M_DistributionRun_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_DistributionRun_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_DistributionRun_ID, Integer.valueOf(M_DistributionRun_ID));
 	}
 
 	/** Get Distribution Run.
 		@return Distribution Run create Orders to distribute products to a selected list of partners
 	  */
-	public int getM_DistributionRun_ID () 
+	public int getM_DistributionRun_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_DistributionRun_ID);
 		if (ii == null)
@@ -230,26 +250,26 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
     }
 
 	public org.compiere.model.I_M_DistributionRunLine getM_DistributionRunLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_DistributionRunLine)MTable.get(getCtx(), org.compiere.model.I_M_DistributionRunLine.Table_Name)
-			.getPO(getM_DistributionRunLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_DistributionRunLine)MTable.get(getCtx(), org.compiere.model.I_M_DistributionRunLine.Table_ID)
+			.getPO(getM_DistributionRunLine_ID(), get_TrxName());
+	}
 
 	/** Set Distribution Run Line.
-		@param M_DistributionRunLine_ID 
-		Distribution Run Lines define Distribution List, the Product and Quantities
-	  */
+		@param M_DistributionRunLine_ID Distribution Run Lines define Distribution List, the Product and Quantities
+	*/
 	public void setM_DistributionRunLine_ID (int M_DistributionRunLine_ID)
 	{
-		if (M_DistributionRunLine_ID < 1) 
+		if (M_DistributionRunLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_DistributionRunLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_DistributionRunLine_ID, Integer.valueOf(M_DistributionRunLine_ID));
 	}
 
 	/** Get Distribution Run Line.
 		@return Distribution Run Lines define Distribution List, the Product and Quantities
 	  */
-	public int getM_DistributionRunLine_ID () 
+	public int getM_DistributionRunLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_DistributionRunLine_ID);
 		if (ii == null)
@@ -258,9 +278,8 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	}
 
 	/** Set Minimum Quantity.
-		@param MinQty 
-		Minimum quantity for the business partner
-	  */
+		@param MinQty Minimum quantity for the business partner
+	*/
 	public void setMinQty (BigDecimal MinQty)
 	{
 		set_Value (COLUMNNAME_MinQty, MinQty);
@@ -269,7 +288,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	/** Get Minimum Quantity.
 		@return Minimum quantity for the business partner
 	  */
-	public BigDecimal getMinQty () 
+	public BigDecimal getMinQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MinQty);
 		if (bd == null)
@@ -278,26 +297,26 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -306,9 +325,8 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -317,7 +335,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -326,9 +344,8 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	}
 
 	/** Set Ratio.
-		@param Ratio 
-		Relative Ratio for Distributions
-	  */
+		@param Ratio Relative Ratio for Distributions
+	*/
 	public void setRatio (BigDecimal Ratio)
 	{
 		set_Value (COLUMNNAME_Ratio, Ratio);
@@ -337,7 +354,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	/** Get Ratio.
 		@return Relative Ratio for Distributions
 	  */
-	public BigDecimal getRatio () 
+	public BigDecimal getRatio()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Ratio);
 		if (bd == null)
@@ -346,7 +363,8 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 	}
 
 	/** Set T_DistributionRunDetail_UU.
-		@param T_DistributionRunDetail_UU T_DistributionRunDetail_UU	  */
+		@param T_DistributionRunDetail_UU T_DistributionRunDetail_UU
+	*/
 	public void setT_DistributionRunDetail_UU (String T_DistributionRunDetail_UU)
 	{
 		set_Value (COLUMNNAME_T_DistributionRunDetail_UU, T_DistributionRunDetail_UU);
@@ -354,7 +372,7 @@ public class X_T_DistributionRunDetail extends PO implements I_T_DistributionRun
 
 	/** Get T_DistributionRunDetail_UU.
 		@return T_DistributionRunDetail_UU	  */
-	public String getT_DistributionRunDetail_UU () 
+	public String getT_DistributionRunDetail_UU()
 	{
 		return (String)get_Value(COLUMNNAME_T_DistributionRunDetail_UU);
 	}

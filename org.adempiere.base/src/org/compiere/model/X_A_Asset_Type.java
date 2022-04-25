@@ -23,19 +23,38 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Type
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="A_Asset_Type")
 public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Type (Properties ctx, int A_Asset_Type_ID, String trxName)
     {
       super (ctx, A_Asset_Type_ID, trxName);
+      /** if (A_Asset_Type_ID == 0)
+        {
+			setA_Asset_Type_ID (0);
+			setIsDepreciable (null);
+// 'XX'
+			setIsInPosession (null);
+// 'XX'
+			setIsOwned (null);
+// 'XX'
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Type (Properties ctx, int A_Asset_Type_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Type_ID, trxName, virtualColumns);
       /** if (A_Asset_Type_ID == 0)
         {
 			setA_Asset_Type_ID (0);
@@ -73,24 +92,25 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_A_Asset_Type[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_A_Asset_Type[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Asset Type.
-		@param A_Asset_Type_ID Asset Type	  */
+		@param A_Asset_Type_ID Asset Type
+	*/
 	public void setA_Asset_Type_ID (int A_Asset_Type_ID)
 	{
-		if (A_Asset_Type_ID < 1) 
+		if (A_Asset_Type_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Type_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Type_ID, Integer.valueOf(A_Asset_Type_ID));
 	}
 
 	/** Get Asset Type.
 		@return Asset Type	  */
-	public int getA_Asset_Type_ID () 
+	public int getA_Asset_Type_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Type_ID);
 		if (ii == null)
@@ -99,7 +119,8 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 	}
 
 	/** Set A_Asset_Type_UU.
-		@param A_Asset_Type_UU A_Asset_Type_UU	  */
+		@param A_Asset_Type_UU A_Asset_Type_UU
+	*/
 	public void setA_Asset_Type_UU (String A_Asset_Type_UU)
 	{
 		set_Value (COLUMNNAME_A_Asset_Type_UU, A_Asset_Type_UU);
@@ -107,15 +128,14 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 
 	/** Get A_Asset_Type_UU.
 		@return A_Asset_Type_UU	  */
-	public String getA_Asset_Type_UU () 
+	public String getA_Asset_Type_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_Asset_Type_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -124,7 +144,7 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -142,9 +162,8 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 	/** Yes = YX */
 	public static final String ISDEPRECIABLE_Yes = "YX";
 	/** Set Is Depreciable.
-		@param IsDepreciable 
-		This asset CAN be depreciated
-	  */
+		@param IsDepreciable This asset CAN be depreciated
+	*/
 	public void setIsDepreciable (String IsDepreciable)
 	{
 
@@ -154,7 +173,7 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 	/** Get Is Depreciable.
 		@return This asset CAN be depreciated
 	  */
-	public String getIsDepreciable () 
+	public String getIsDepreciable()
 	{
 		return (String)get_Value(COLUMNNAME_IsDepreciable);
 	}
@@ -172,9 +191,8 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 	/** Yes = YX */
 	public static final String ISINPOSESSION_Yes = "YX";
 	/** Set In Possession.
-		@param IsInPosession 
-		The asset is in the possession of the organization
-	  */
+		@param IsInPosession The asset is in the possession of the organization
+	*/
 	public void setIsInPosession (String IsInPosession)
 	{
 
@@ -184,7 +202,7 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 	/** Get In Possession.
 		@return The asset is in the possession of the organization
 	  */
-	public String getIsInPosession () 
+	public String getIsInPosession()
 	{
 		return (String)get_Value(COLUMNNAME_IsInPosession);
 	}
@@ -202,9 +220,8 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 	/** Yes = YX */
 	public static final String ISOWNED_Yes = "YX";
 	/** Set Owned.
-		@param IsOwned 
-		The asset is owned by the organization
-	  */
+		@param IsOwned The asset is owned by the organization
+	*/
 	public void setIsOwned (String IsOwned)
 	{
 
@@ -214,15 +231,14 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 	/** Get Owned.
 		@return The asset is owned by the organization
 	  */
-	public String getIsOwned () 
+	public String getIsOwned()
 	{
 		return (String)get_Value(COLUMNNAME_IsOwned);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -231,7 +247,7 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -245,9 +261,8 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -256,7 +271,7 @@ public class X_A_Asset_Type extends PO implements I_A_Asset_Type, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

@@ -23,19 +23,39 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ImpFormat_Row
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_ImpFormat_Row")
 public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ImpFormat_Row (Properties ctx, int AD_ImpFormat_Row_ID, String trxName)
     {
       super (ctx, AD_ImpFormat_Row_ID, trxName);
+      /** if (AD_ImpFormat_Row_ID == 0)
+        {
+			setAD_Column_ID (0);
+			setAD_ImpFormat_ID (0);
+			setAD_ImpFormat_Row_ID (0);
+			setDataType (null);
+			setDecimalPoint (null);
+// .
+			setDivideBy100 (false);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_ImpFormat_Row WHERE AD_ImpFormat_ID=@AD_ImpFormat_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ImpFormat_Row (Properties ctx, int AD_ImpFormat_Row_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ImpFormat_Row_ID, trxName, virtualColumns);
       /** if (AD_ImpFormat_Row_ID == 0)
         {
 			setAD_Column_ID (0);
@@ -74,32 +94,32 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_ImpFormat_Row[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_ImpFormat_Row[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_Name)
-			.getPO(getAD_Column_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
+	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -108,23 +128,25 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	}
 
 	public org.compiere.model.I_AD_ImpFormat getAD_ImpFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_ImpFormat)MTable.get(getCtx(), org.compiere.model.I_AD_ImpFormat.Table_Name)
-			.getPO(getAD_ImpFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_ImpFormat)MTable.get(getCtx(), org.compiere.model.I_AD_ImpFormat.Table_ID)
+			.getPO(getAD_ImpFormat_ID(), get_TrxName());
+	}
 
 	/** Set Import Format.
-		@param AD_ImpFormat_ID Import Format	  */
+		@param AD_ImpFormat_ID Import Format
+	*/
 	public void setAD_ImpFormat_ID (int AD_ImpFormat_ID)
 	{
-		if (AD_ImpFormat_ID < 1) 
+		if (AD_ImpFormat_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ImpFormat_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ImpFormat_ID, Integer.valueOf(AD_ImpFormat_ID));
 	}
 
 	/** Get Import Format.
 		@return Import Format	  */
-	public int getAD_ImpFormat_ID () 
+	public int getAD_ImpFormat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ImpFormat_ID);
 		if (ii == null)
@@ -133,18 +155,19 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	}
 
 	/** Set Format Field.
-		@param AD_ImpFormat_Row_ID Format Field	  */
+		@param AD_ImpFormat_Row_ID Format Field
+	*/
 	public void setAD_ImpFormat_Row_ID (int AD_ImpFormat_Row_ID)
 	{
-		if (AD_ImpFormat_Row_ID < 1) 
+		if (AD_ImpFormat_Row_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ImpFormat_Row_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ImpFormat_Row_ID, Integer.valueOf(AD_ImpFormat_Row_ID));
 	}
 
 	/** Get Format Field.
 		@return Format Field	  */
-	public int getAD_ImpFormat_Row_ID () 
+	public int getAD_ImpFormat_Row_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ImpFormat_Row_ID);
 		if (ii == null)
@@ -153,7 +176,8 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	}
 
 	/** Set AD_ImpFormat_Row_UU.
-		@param AD_ImpFormat_Row_UU AD_ImpFormat_Row_UU	  */
+		@param AD_ImpFormat_Row_UU AD_ImpFormat_Row_UU
+	*/
 	public void setAD_ImpFormat_Row_UU (String AD_ImpFormat_Row_UU)
 	{
 		set_Value (COLUMNNAME_AD_ImpFormat_Row_UU, AD_ImpFormat_Row_UU);
@@ -161,15 +185,14 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 
 	/** Get AD_ImpFormat_Row_UU.
 		@return AD_ImpFormat_Row_UU	  */
-	public String getAD_ImpFormat_Row_UU () 
+	public String getAD_ImpFormat_Row_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_ImpFormat_Row_UU);
 	}
 
 	/** Set Callout.
-		@param Callout 
-		Fully qualified class names and method - separated by semicolons
-	  */
+		@param Callout Fully qualified class names and method - separated by semicolons
+	*/
 	public void setCallout (String Callout)
 	{
 		set_Value (COLUMNNAME_Callout, Callout);
@@ -178,15 +201,14 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	/** Get Callout.
 		@return Fully qualified class names and method - separated by semicolons
 	  */
-	public String getCallout () 
+	public String getCallout()
 	{
 		return (String)get_Value(COLUMNNAME_Callout);
 	}
 
 	/** Set Constant Value.
-		@param ConstantValue 
-		Constant value
-	  */
+		@param ConstantValue Constant value
+	*/
 	public void setConstantValue (String ConstantValue)
 	{
 		set_Value (COLUMNNAME_ConstantValue, ConstantValue);
@@ -195,15 +217,14 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	/** Get Constant Value.
 		@return Constant value
 	  */
-	public String getConstantValue () 
+	public String getConstantValue()
 	{
 		return (String)get_Value(COLUMNNAME_ConstantValue);
 	}
 
 	/** Set Data Format.
-		@param DataFormat 
-		Format String in Java Notation, e.g. ddMMyy
-	  */
+		@param DataFormat Format String in Java Notation, e.g. ddMMyy
+	*/
 	public void setDataFormat (String DataFormat)
 	{
 		set_Value (COLUMNNAME_DataFormat, DataFormat);
@@ -212,25 +233,24 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	/** Get Data Format.
 		@return Format String in Java Notation, e.g. ddMMyy
 	  */
-	public String getDataFormat () 
+	public String getDataFormat()
 	{
 		return (String)get_Value(COLUMNNAME_DataFormat);
 	}
 
 	/** DataType AD_Reference_ID=210 */
 	public static final int DATATYPE_AD_Reference_ID=210;
-	/** String = S */
-	public static final String DATATYPE_String = "S";
-	/** Number = N */
-	public static final String DATATYPE_Number = "N";
-	/** Date = D */
-	public static final String DATATYPE_Date = "D";
 	/** Constant = C */
 	public static final String DATATYPE_Constant = "C";
+	/** Date = D */
+	public static final String DATATYPE_Date = "D";
+	/** Number = N */
+	public static final String DATATYPE_Number = "N";
+	/** String = S */
+	public static final String DATATYPE_String = "S";
 	/** Set Data Type.
-		@param DataType 
-		Type of data
-	  */
+		@param DataType Type of data
+	*/
 	public void setDataType (String DataType)
 	{
 
@@ -240,15 +260,14 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	/** Get Data Type.
 		@return Type of data
 	  */
-	public String getDataType () 
+	public String getDataType()
 	{
 		return (String)get_Value(COLUMNNAME_DataType);
 	}
 
 	/** Set Decimal Point.
-		@param DecimalPoint 
-		Decimal Point in the data file - if any
-	  */
+		@param DecimalPoint Decimal Point in the data file - if any
+	*/
 	public void setDecimalPoint (String DecimalPoint)
 	{
 		set_Value (COLUMNNAME_DecimalPoint, DecimalPoint);
@@ -257,15 +276,14 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	/** Get Decimal Point.
 		@return Decimal Point in the data file - if any
 	  */
-	public String getDecimalPoint () 
+	public String getDecimalPoint()
 	{
 		return (String)get_Value(COLUMNNAME_DecimalPoint);
 	}
 
 	/** Set Divide by 100.
-		@param DivideBy100 
-		Divide number by 100 to get correct amount
-	  */
+		@param DivideBy100 Divide number by 100 to get correct amount
+	*/
 	public void setDivideBy100 (boolean DivideBy100)
 	{
 		set_Value (COLUMNNAME_DivideBy100, Boolean.valueOf(DivideBy100));
@@ -274,7 +292,7 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	/** Get Divide by 100.
 		@return Divide number by 100 to get correct amount
 	  */
-	public boolean isDivideBy100 () 
+	public boolean isDivideBy100()
 	{
 		Object oo = get_Value(COLUMNNAME_DivideBy100);
 		if (oo != null) 
@@ -287,7 +305,8 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	}
 
 	/** Set End No.
-		@param EndNo End No	  */
+		@param EndNo End No
+	*/
 	public void setEndNo (int EndNo)
 	{
 		set_Value (COLUMNNAME_EndNo, Integer.valueOf(EndNo));
@@ -295,7 +314,7 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 
 	/** Get End No.
 		@return End No	  */
-	public int getEndNo () 
+	public int getEndNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_EndNo);
 		if (ii == null)
@@ -303,10 +322,25 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 		return ii.intValue();
 	}
 
-	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
+	/** Set Import prefix.
+		@param ImportPrefix This prefix will be added in front of import string if they are not empty
+	*/
+	public void setImportPrefix (String ImportPrefix)
+	{
+		set_Value (COLUMNNAME_ImportPrefix, ImportPrefix);
+	}
+
+	/** Get Import prefix.
+		@return This prefix will be added in front of import string if they are not empty
 	  */
+	public String getImportPrefix()
+	{
+		return (String)get_Value(COLUMNNAME_ImportPrefix);
+	}
+
+	/** Set Name.
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -315,7 +349,7 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -329,9 +363,8 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
     }
 
 	/** Set Script.
-		@param Script 
-		Dynamic Java Language Script to calculate result
-	  */
+		@param Script Dynamic Java Language Script to calculate result
+	*/
 	public void setScript (String Script)
 	{
 		set_Value (COLUMNNAME_Script, Script);
@@ -340,15 +373,14 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	/** Get Script.
 		@return Dynamic Java Language Script to calculate result
 	  */
-	public String getScript () 
+	public String getScript()
 	{
 		return (String)get_Value(COLUMNNAME_Script);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -357,7 +389,7 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -366,9 +398,8 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	}
 
 	/** Set Start No.
-		@param StartNo 
-		Starting number/position
-	  */
+		@param StartNo Starting number/position
+	*/
 	public void setStartNo (int StartNo)
 	{
 		set_Value (COLUMNNAME_StartNo, Integer.valueOf(StartNo));
@@ -377,7 +408,7 @@ public class X_AD_ImpFormat_Row extends PO implements I_AD_ImpFormat_Row, I_Pers
 	/** Get Start No.
 		@return Starting number/position
 	  */
-	public int getStartNo () 
+	public int getStartNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_StartNo);
 		if (ii == null)

@@ -72,7 +72,6 @@ public class MLookupCache
 		//
 		StringBuilder sb = new StringBuilder();
 		sb.append(info.WindowNo).append(":")
-		//	.append(info.Column_ID)
 			.append(info.KeyColumn)
 			.append(info.AD_Reference_Value_ID)
 			.append(info.Query)
@@ -102,9 +101,6 @@ public class MLookupCache
 			s_loadedLookups.remove(key);
 			return false;
 		}
-
-		//  Copy Asynchronously to speed things up
-	//	if (cache.size() > ?) copyAsync
 
 		//  copy cache
 		//  we can use iterator, as the lookup loading is complete (i.e. no additional entries)

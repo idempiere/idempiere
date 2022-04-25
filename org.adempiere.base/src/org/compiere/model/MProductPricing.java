@@ -237,47 +237,6 @@ public class MProductPricing extends AbstractProductPricing
 		if (m_M_Product_ID == 0)
 			return false;
 
-		//	Get Price List
-		/**
-		if (m_M_PriceList_ID == 0)
-		{
-			String sql = "SELECT M_PriceList_ID, IsTaxIncluded "
-				+ "FROM M_PriceList pl"
-				+ " INNER JOIN M_Product p ON (pl.AD_Client_ID=p.AD_Client_ID) "
-				+ "WHERE M_Product_ID=? "
-				+ "ORDER BY IsDefault DESC";
-			PreparedStatement pstmt = null;
-			try
-			{
-				pstmt = DB.prepareStatement(sql);
-				pstmt.setInt(1, m_M_Product_ID);
-				ResultSet rs = pstmt.executeQuery();
-				if (rs.next())
-				{
-					m_M_PriceList_ID = rs.getInt(1);
-					m_isTaxIncluded = "Y".equals(rs.getString(2));
-				}
-				rs.close();
-				pstmt.close();
-				pstmt = null;
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, "calculatePL (PL)", e);
-			}
-			finally
-			{
-				try
-				{
-					if (pstmt != null)
-						pstmt.close ();
-				}
-				catch (Exception e)
-				{}
-				pstmt = null;
-			}
-		}
-		/** **/
 		if (m_M_PriceList_ID == 0)
 		{
 			log.log(Level.SEVERE, "No PriceList");
@@ -520,47 +479,6 @@ public class MProductPricing extends AbstractProductPricing
 		if (m_M_Product_ID == 0)
 			return false;
 
-		//	Get Price List
-		/**
-		if (m_M_PriceList_ID == 0)
-		{
-			String sql = "SELECT M_PriceList_ID, IsTaxIncluded "
-				+ "FROM M_PriceList pl"
-				+ " INNER JOIN M_Product p ON (pl.AD_Client_ID=p.AD_Client_ID) "
-				+ "WHERE M_Product_ID=? "
-				+ "ORDER BY IsDefault DESC";
-			PreparedStatement pstmt = null;
-			try
-			{
-				pstmt = DB.prepareStatement(sql);
-				pstmt.setInt(1, m_M_Product_ID);
-				ResultSet rs = pstmt.executeQuery();
-				if (rs.next())
-				{
-					m_M_PriceList_ID = rs.getInt(1);
-					m_isTaxIncluded = "Y".equals(rs.getString(2));
-				}
-				rs.close();
-				pstmt.close();
-				pstmt = null;
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, "calculatePL (PL)", e);
-			}
-			finally
-			{
-				try
-				{
-					if (pstmt != null)
-						pstmt.close ();
-				}
-				catch (Exception e)
-				{}
-				pstmt = null;
-			}
-		}
-		/** **/
 		if (m_M_PriceList_ID == 0)
 		{
 			log.log(Level.SEVERE, "No PriceList");
@@ -800,7 +718,7 @@ public class MProductPricing extends AbstractProductPricing
 		if (M_DiscountSchema_ID == 0)
 			return;
 		
-		MDiscountSchema sd = MDiscountSchema.get(Env.getCtx(), M_DiscountSchema_ID);	//	not correct
+		MDiscountSchema sd = MDiscountSchema.get(M_DiscountSchema_ID);	//	not correct
 		if (sd.get_ID() == 0 || (MDiscountSchema.DISCOUNTTYPE_Breaks.equals(sd.getDiscountType()) && !MDiscountSchema.CUMULATIVELEVEL_Line.equals(sd.getCumulativeLevel())))
 			return;
 		//
@@ -818,7 +736,7 @@ public class MProductPricing extends AbstractProductPricing
 	public BigDecimal getDiscount()
 	{
 		BigDecimal Discount = Env.ZERO;
-		if (m_PriceList.intValue() != 0)
+		if (m_PriceList.compareTo(Env.ZERO) != 0)
 			Discount = BigDecimal.valueOf((m_PriceList.doubleValue() - m_PriceStd.doubleValue())
 				/ m_PriceList.doubleValue() * 100.0);
 		if (Discount.scale() > 2)

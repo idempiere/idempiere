@@ -127,7 +127,6 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	/**
 	 *  Detail Protected Constructor
 	 *
-	 *  @param modal modal
 	 *  @param WindowNo window no
 	 *  @param value query value
 	 *  @param multiSelection multiple selections
@@ -142,11 +141,11 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	/**
 	 *  Detail Protected Constructor
 	 *
-	 *  @param modal modal
 	 *  @param WindowNo window no
 	 *  @param value query value
 	 *  @param multiSelection multiple selections
 	 *  @param whereClause where clause
+	 *  @param lookup
 	 */
 	public InfoPaymentPanel(int WindowNo, String value,
 			boolean multiSelection, String whereClause, boolean lookup)

@@ -22,7 +22,12 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
+import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.expression.logic.LogicEvaluator;
 
 
 /**
@@ -30,13 +35,16 @@ import org.compiere.util.Msg;
  *  @author Dirk Niemeyer, action42 GmbH
  *  @version $Id$
  */
-public class MUserDefField extends X_AD_UserDef_Field
+public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2522038599257589829L;
 
+	/**	Cache of selected MUserDefField entries 					**/
+	private static ImmutablePOCache<String,MUserDefField> s_cache = new ImmutablePOCache<String,MUserDefField>(Table_Name, 10);
+	
 	/**
 	 * 	Standard constructor.
 	 * 	You must implement this constructor for Adempiere Persistency
@@ -65,6 +73,37 @@ public class MUserDefField extends X_AD_UserDef_Field
 	}	//	MyModelExample
 
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MUserDefField(MUserDefField copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MUserDefField(Properties ctx, MUserDefField copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MUserDefField(Properties ctx, MUserDefField copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * Get matching MUserDefField related to current field and user definition for window and tab
 	 * @param ctx
 	 * @param AD_Field_ID
@@ -74,6 +113,20 @@ public class MUserDefField extends X_AD_UserDef_Field
 	 */
 	public static MUserDefField get (Properties ctx, int AD_Field_ID, int AD_Tab_ID, int AD_Window_ID )
 	{
+		return get(ctx, AD_Field_ID, AD_Tab_ID, AD_Window_ID, false);
+	}
+
+	/**
+	 * Get matching MUserDefField related to current field and user definition for window and tab
+	 * @param ctx
+	 * @param AD_Field_ID
+	 * @param AD_Tab_ID
+	 * @param AD_Window_ID
+	 * @param reload
+	 * @return
+	 */
+	public static MUserDefField get (Properties ctx, int AD_Field_ID, int AD_Tab_ID, int AD_Window_ID , boolean reload)
+	{
 
 		MUserDefWin userdefWin = MUserDefWin.getBestMatch(ctx, AD_Window_ID);
 		if (userdefWin == null)
@@ -81,6 +134,13 @@ public class MUserDefField extends X_AD_UserDef_Field
 		MUserDefTab userdefTab = MUserDefTab.getMatch(ctx, AD_Tab_ID, userdefWin.getAD_UserDef_Win_ID());
 		if (userdefTab == null)
 			return null;
+		
+		//  Check Cache
+		String key = new StringBuilder().append(AD_Field_ID).append("_")
+				.append(userdefTab.getAD_UserDef_Tab_ID())
+				.toString();
+		if (!reload && s_cache.containsKey(key))
+			return s_cache.get(ctx, key, e -> new MUserDefField(ctx, e));
 		
 		MUserDefField retValue = null;
 
@@ -103,6 +163,7 @@ public class MUserDefField extends X_AD_UserDef_Field
 			{
 				retValue = new MUserDefField(ctx,rs,null);
 			}
+			s_cache.put(key, retValue, e -> new MUserDefField(Env.getCtx(), e));
 		}
 		catch (SQLException ex)
 		{
@@ -139,7 +200,34 @@ public class MUserDefField extends X_AD_UserDef_Field
 			setAD_Val_Rule_ID(0);
 			setIsToolbarButton(null);
 		}
+		
+		//validate logic expression
+		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
+			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getReadOnlyLogic());
+			}
+		}
+		if (newRecord || is_ValueChanged(COLUMNNAME_DisplayLogic)) {
+			if (isActive() && !Util.isEmpty(getDisplayLogic(), true) && !getDisplayLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getDisplayLogic());
+			}
+		}
+		if (newRecord || is_ValueChanged(COLUMNNAME_MandatoryLogic)) {
+			if (isActive() && !Util.isEmpty(getMandatoryLogic(), true) && !getMandatoryLogic().startsWith("@SQL=")) {
+				LogicEvaluator.validate(getMandatoryLogic());
+			}
+		}
+				
 		return true;
+	}
+
+	@Override
+	public PO markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 		
 }	//	MUserDefField

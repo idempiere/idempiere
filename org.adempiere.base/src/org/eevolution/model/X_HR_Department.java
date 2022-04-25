@@ -24,19 +24,31 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Department
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="HR_Department")
 public class X_HR_Department extends PO implements I_HR_Department, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_HR_Department (Properties ctx, int HR_Department_ID, String trxName)
     {
       super (ctx, HR_Department_ID, trxName);
+      /** if (HR_Department_ID == 0)
+        {
+			setHR_Department_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Department (Properties ctx, int HR_Department_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Department_ID, trxName, virtualColumns);
       /** if (HR_Department_ID == 0)
         {
 			setHR_Department_ID (0);
@@ -67,32 +79,32 @@ public class X_HR_Department extends PO implements I_HR_Department, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_HR_Department[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_HR_Department[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
-		@param C_Activity_ID 
-		Business Activity
-	  */
+		@param C_Activity_ID Business Activity
+	*/
 	public void setC_Activity_ID (int C_Activity_ID)
 	{
-		if (C_Activity_ID < 1) 
+		if (C_Activity_ID < 1)
 			set_Value (COLUMNNAME_C_Activity_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Activity_ID, Integer.valueOf(C_Activity_ID));
 	}
 
 	/** Get Activity.
 		@return Business Activity
 	  */
-	public int getC_Activity_ID () 
+	public int getC_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Activity_ID);
 		if (ii == null)
@@ -101,9 +113,8 @@ public class X_HR_Department extends PO implements I_HR_Department, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -112,24 +123,25 @@ public class X_HR_Department extends PO implements I_HR_Department, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Payroll Department.
-		@param HR_Department_ID Payroll Department	  */
+		@param HR_Department_ID Payroll Department
+	*/
 	public void setHR_Department_ID (int HR_Department_ID)
 	{
-		if (HR_Department_ID < 1) 
+		if (HR_Department_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Department_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Department_ID, Integer.valueOf(HR_Department_ID));
 	}
 
 	/** Get Payroll Department.
 		@return Payroll Department	  */
-	public int getHR_Department_ID () 
+	public int getHR_Department_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Department_ID);
 		if (ii == null)
@@ -138,7 +150,8 @@ public class X_HR_Department extends PO implements I_HR_Department, I_Persistent
 	}
 
 	/** Set HR_Department_UU.
-		@param HR_Department_UU HR_Department_UU	  */
+		@param HR_Department_UU HR_Department_UU
+	*/
 	public void setHR_Department_UU (String HR_Department_UU)
 	{
 		set_Value (COLUMNNAME_HR_Department_UU, HR_Department_UU);
@@ -146,15 +159,14 @@ public class X_HR_Department extends PO implements I_HR_Department, I_Persistent
 
 	/** Get HR_Department_UU.
 		@return HR_Department_UU	  */
-	public String getHR_Department_UU () 
+	public String getHR_Department_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_Department_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -163,7 +175,7 @@ public class X_HR_Department extends PO implements I_HR_Department, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -177,9 +189,8 @@ public class X_HR_Department extends PO implements I_HR_Department, I_Persistent
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -188,7 +199,7 @@ public class X_HR_Department extends PO implements I_HR_Department, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

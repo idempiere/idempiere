@@ -65,7 +65,7 @@ import org.compiere.util.Util;
  *  Posting Document Root.
  *
  *  <pre>
- *  Table               Base Document Types (C_DocType.DocBaseType & AD_Reference_ID=183)
+ *  Table               Base Document Types (C_DocType.DocBaseType and AD_Reference_ID=183)
  *      Class           AD_Table_ID
  *  ------------------  ------------------------------
  *  C_Invoice:          ARI, ARC, ARF, API, APC
@@ -117,7 +117,7 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 				<li>FR [ 2520591 ] Support multiples calendar for Org
- *				@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+ *				@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  @version  $Id: Doc.java,v 1.6 2006/07/30 00:53:33 jjanke Exp $
  */
 public abstract class Doc
@@ -125,7 +125,7 @@ public abstract class Doc
 	/**************************************************************************
 	 * 	 Document Types
 	 *  --------------
-	 *  C_DocType.DocBaseType & AD_Reference_ID=183
+	 *  C_DocType.DocBaseType and AD_Reference_ID=183
 	 *  C_Invoice:          ARI, ARC, ARF, API, APC
 	 *  C_Payment:          ARP, APP
 	 *  C_Order:            SOO, POO
@@ -138,7 +138,7 @@ public abstract class Doc
 	 *  M_Requisition		POR
 	 **************************************************************************/
 
-	private static final String DOC_TYPE_BY_DOC_BASE_TYPE_SQL = "SELECT C_DocType_ID FROM C_DocType WHERE AD_Client_ID=? AND DocBaseType=? AND IsActive='Y' ORDER BY IsDefault DESC, C_DocType_ID";
+	public static final String DOC_TYPE_BY_DOC_BASE_TYPE_SQL = "SELECT C_DocType_ID FROM C_DocType WHERE AD_Client_ID=? AND DocBaseType=? AND IsActive='Y' ORDER BY IsDefault DESC, C_DocType_ID";
 	
 	/**	AR Invoices - ARI       */
 	public static final String 	DOCTYPE_ARInvoice       = MDocType.DOCBASETYPE_ARInvoice;
@@ -346,7 +346,7 @@ public abstract class Doc
 		p_Status = STATUS_Error;
 		m_as = as;
 		m_ctx = new Properties(m_as.getCtx());
-		m_ctx.setProperty("#AD_Client_ID", String.valueOf(m_as.getAD_Client_ID()));
+		m_ctx.setProperty(Env.AD_CLIENT_ID, String.valueOf(m_as.getAD_Client_ID()));
 
 		String className = clazz.getName();
 		className = className.substring(className.lastIndexOf('.')+1);
@@ -505,7 +505,7 @@ public abstract class Doc
 	 *          - postlogic (for all Accounting Schema)
 	 *              - create Fact lines
 	 *          - postCommit
-	 *              - commits Fact lines and Document & sets Processing = 'N'
+	 *              - commits Fact lines and Document and sets Processing = 'N'
 	 *              - if error - create Note
 	 *  </pre>
 	 *  @param force if true ignore that locked
@@ -1102,7 +1102,7 @@ public abstract class Doc
 				m_period = MPeriod.get(getCtx(), ii.intValue());
 		}
 		if (m_period == null)
-			m_period = MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID(), m_trxName);
+			m_period = MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID(), (String)null);
 		//	Is Period Open?
 		if (m_period != null
 			&& m_period.isOpen(getDocumentType(), getDateAcct()))
@@ -1228,9 +1228,9 @@ public abstract class Doc
 	/**	Account Type - Invoice - AP  */
 	public static final int 	ACCTTYPE_V_Liability    = 2;
 	/**	Account Type - Invoice - AP Service  */
-	public static final int 	ACCTTYPE_V_Liability_Services    = 3;
+	public static final int 	ACCTTYPE_V_Liability_Services    = 3; // Deprecated IDEMPIERE-362
 	/**	Account Type - Invoice - AR Service  */
-	public static final int 	ACCTTYPE_C_Receivable_Services   = 4;
+	public static final int 	ACCTTYPE_C_Receivable_Services   = 4; // Deprecated IDEMPIERE-362
 
 	/** Account Type - Payment - Unallocated */
 	public static final int     ACCTTYPE_UnallocatedCash = 10;
@@ -1313,7 +1313,7 @@ public abstract class Doc
 			sql = "SELECT V_Liability_Acct FROM C_BP_Vendor_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BPartner_ID();
 		}
-		else if (AcctType == ACCTTYPE_V_Liability_Services)
+		else if (AcctType == ACCTTYPE_V_Liability_Services) // Deprecated IDEMPIERE-362
 		{
 			sql = "SELECT V_Liability_Services_Acct FROM C_BP_Vendor_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BPartner_ID();
@@ -1323,7 +1323,7 @@ public abstract class Doc
 			sql = "SELECT C_Receivable_Acct FROM C_BP_Customer_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BPartner_ID();
 		}
-		else if (AcctType == ACCTTYPE_C_Receivable_Services)
+		else if (AcctType == ACCTTYPE_C_Receivable_Services) // Deprecated IDEMPIERE-362
 		{
 			sql = "SELECT C_Receivable_Services_Acct FROM C_BP_Customer_Acct WHERE C_BPartner_ID=? AND C_AcctSchema_ID=?";
 			para_1 = getC_BPartner_ID();
@@ -1465,13 +1465,13 @@ public abstract class Doc
 
 		else
 		{
-			log.severe ("Not found AcctType=" + AcctType);
+			log.warning("Not found AcctType=" + AcctType);
 			return 0;
 		}
 		//  Do we have sql & Parameter
 		if (sql == null || para_1 == 0)
 		{
-			log.severe ("No Parameter for AcctType=" + AcctType + " - SQL=" + sql);
+			log.warning("No Parameter for AcctType=" + AcctType + " - SQL=" + sql);
 			return 0;
 		}
 
@@ -1505,7 +1505,7 @@ public abstract class Doc
 		//	No account
 		if (Account_ID == 0)
 		{
-			log.severe ("NO account Type="
+			log.warning("NO account Type="
 				+ AcctType + ", Record=" + p_po.get_ID());
 			return 0;
 		}
@@ -1690,6 +1690,11 @@ public abstract class Doc
 		return 0;
 	}	//	getC_ConversionType_ID
 
+	public BigDecimal getCurrencyRate()
+	{		
+		return null;
+	}
+
 	/**
 	 * 	Get GL_Category_ID
 	 *	@return category
@@ -1707,8 +1712,8 @@ public abstract class Doc
 	}	//	getGL_Category_ID
 
 	/**
-	 * 	Get GL_Category_ID
-	 *	@return category
+	 * 	Get getGL_Budget_ID
+	 *	@return budget
 	 */
 	public int getGL_Budget_ID()
 	{
@@ -2317,6 +2322,13 @@ public abstract class Doc
 	 */
 	public ArrayList<Fact> getFacts() {
 		return m_fact;
+	}
+	
+	/**
+	 * @return MAcctSchema
+	 */
+	protected MAcctSchema getAcctSchema() {
+		return m_as;
 	}
 	
 	/**

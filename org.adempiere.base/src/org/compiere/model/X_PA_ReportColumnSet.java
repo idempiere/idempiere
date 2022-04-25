@@ -23,19 +23,32 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportColumnSet
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="PA_ReportColumnSet")
 public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_ReportColumnSet (Properties ctx, int PA_ReportColumnSet_ID, String trxName)
     {
       super (ctx, PA_ReportColumnSet_ID, trxName);
+      /** if (PA_ReportColumnSet_ID == 0)
+        {
+			setName (null);
+			setPA_ReportColumnSet_ID (0);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_ReportColumnSet (Properties ctx, int PA_ReportColumnSet_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_ReportColumnSet_ID, trxName, virtualColumns);
       /** if (PA_ReportColumnSet_ID == 0)
         {
 			setName (null);
@@ -67,15 +80,14 @@ public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_ReportColumnSet[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_PA_ReportColumnSet[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -84,15 +96,14 @@ public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -101,7 +112,7 @@ public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -115,21 +126,20 @@ public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_
     }
 
 	/** Set Report Column Set.
-		@param PA_ReportColumnSet_ID 
-		Collection of Columns for Report
-	  */
+		@param PA_ReportColumnSet_ID Collection of Columns for Report
+	*/
 	public void setPA_ReportColumnSet_ID (int PA_ReportColumnSet_ID)
 	{
-		if (PA_ReportColumnSet_ID < 1) 
+		if (PA_ReportColumnSet_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_ReportColumnSet_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_ReportColumnSet_ID, Integer.valueOf(PA_ReportColumnSet_ID));
 	}
 
 	/** Get Report Column Set.
 		@return Collection of Columns for Report
 	  */
-	public int getPA_ReportColumnSet_ID () 
+	public int getPA_ReportColumnSet_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportColumnSet_ID);
 		if (ii == null)
@@ -138,7 +148,8 @@ public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_
 	}
 
 	/** Set PA_ReportColumnSet_UU.
-		@param PA_ReportColumnSet_UU PA_ReportColumnSet_UU	  */
+		@param PA_ReportColumnSet_UU PA_ReportColumnSet_UU
+	*/
 	public void setPA_ReportColumnSet_UU (String PA_ReportColumnSet_UU)
 	{
 		set_Value (COLUMNNAME_PA_ReportColumnSet_UU, PA_ReportColumnSet_UU);
@@ -146,13 +157,14 @@ public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_
 
 	/** Get PA_ReportColumnSet_UU.
 		@return PA_ReportColumnSet_UU	  */
-	public String getPA_ReportColumnSet_UU () 
+	public String getPA_ReportColumnSet_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_ReportColumnSet_UU);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -160,7 +172,7 @@ public class X_PA_ReportColumnSet extends PO implements I_PA_ReportColumnSet, I_
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

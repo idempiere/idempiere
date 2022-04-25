@@ -44,6 +44,7 @@ import org.compiere.util.DB;
 import org.compiere.util.EmailSrv;
 import org.compiere.util.EmailSrv.EmailContent;
 import org.compiere.util.EmailSrv.ProcessEmailHandle;
+import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 
 /**
@@ -53,7 +54,9 @@ import org.compiere.util.Trx;
  *  @version $Id: RequestEMailProcessor.java,v 1.2 2006/10/23 06:01:20 cruiz Exp $
  *  hieplq:separate email process to other class for easy re-use and do IDEMPIERE-2244
  *  
+ *  IMAPHost format: {imap|imaps}://[IMAPHostURL]:[Port] example: imaps://imap.gmail.com:993
  */
+@org.adempiere.base.annotation.Process
 public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHandle
 {
 	protected String	p_IMAPHost = null;
@@ -64,6 +67,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	protected String	p_InboxFolder = null;
 	protected Boolean	p_NestInbox = true;
 	protected String	p_ErrorFolder = null;
+	protected Boolean 	isSSL = null;
 	protected int C_BPartner_ID = 0;
 	protected int AD_User_ID = 0;
 	protected int AD_Role_ID = 0;
@@ -71,6 +75,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	protected int R_RequestType_ID = 0;
 	protected String p_DefaultPriority = null;
 	protected String p_DefaultConfidentiality = null;
+	protected String p_HTMLAttachmentType = "H";
 
 	protected int noProcessed = 0;
 	protected int noRequest = 0;
@@ -83,10 +88,6 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	protected static final int		ERROR = 0;
 	/**	Process Request				*/
 	protected static final int		REQUEST = 1;
-	/**	Process Workflow			*/
-	// private static final int		WORKFLOW = 2;
-	/**	Process Delivery Confirm	*/
-	// private static final int		DELIVERY = 9;
 	
 	protected Folder errorFolder;
 	protected Folder requestFolder;
@@ -128,11 +129,16 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 				p_DefaultPriority = ((String)para[i].getParameter());
 			else if (name.equals("p_DefaultConfidentiality"))
 				p_DefaultConfidentiality = ((String)para[i].getParameter());
-			else if (name.equals("p_nestInbox"))
+			else if (name.equals("p_NestInbox"))
 				p_NestInbox = "Y".equalsIgnoreCase(para[i].getParameter().toString());
+			else if (name.equals("HTMLAttachmentType"))
+				p_HTMLAttachmentType = para[i].getParameterAsString();
 			else
 				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
 		}
+		
+		if(p_HTMLAttachmentType == null)
+			p_HTMLAttachmentType = "H";
 		
 	}	//	prepare
 
@@ -145,7 +151,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	{
 		parseParameter();
 		
-		EmailSrv emailSrv = new EmailSrv(p_IMAPHost, p_IMAPUser, p_IMAPPwd, p_IMAPPort);
+		EmailSrv emailSrv = new EmailSrv(p_IMAPHost, p_IMAPUser, p_IMAPPwd, p_IMAPPort, isSSL);
 		
 		checkInputParameter (emailSrv);		
 		
@@ -158,6 +164,22 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	}	//	doIt
 	
 	protected void parseParameter() {
+		// === check for ssl input parameter ===
+		int imapProtocolIndex = p_IMAPHost.lastIndexOf("://");
+		
+		if(imapProtocolIndex > 0) {
+			String str_Protocol = p_IMAPHost.substring(0, imapProtocolIndex);
+			if(str_Protocol.toLowerCase().equals("imaps"))
+				isSSL  = true;
+			else if(str_Protocol.toLowerCase().equals("imap"))
+				isSSL = false;
+			else
+				log.warning("Unrecognized protocol - " + str_Protocol);
+			
+			if(isSSL != null)	// Remove Imap Protocol
+				p_IMAPHost = p_IMAPHost.substring(imapProtocolIndex + 3, p_IMAPHost.length());
+		}
+
 		// === check input parameter === 
 		int portStartIndex = p_IMAPHost.lastIndexOf(":");
 		if (portStartIndex > 0){
@@ -170,6 +192,8 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 			}			
 		}else if (p_IMAPHost.startsWith("imap.gmail.com")){
 			p_IMAPPort = 993;
+		} else if(portStartIndex <= 0 && isSSL != null && isSSL) {
+			p_IMAPPort = 993;	// Default Port for IMAPS protocol
 		}
 	}
 	
@@ -177,7 +201,6 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		if (log.isLoggable(Level.INFO)) log.info("doIt - IMAPHost=" + p_IMAPHost +
 					   " IMAPPort=" + p_IMAPPort  +
 				       " IMAPUser=" + p_IMAPUser  +
-				       // " IMAPPwd=" + p_IMAPPwd +
 				       " RequestFolder=" + p_RequestFolder +
 				       " InboxFolder=" + p_InboxFolder +
 				       " ErrorFolder=" + p_ErrorFolder);
@@ -248,10 +271,9 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 	
 	/**
 	 * 	Create request
-	 *	@param msg message
-	 * @return 
-	 *	@return Type of Message
-	 * @throws Exception 
+	 * @param emailContent
+	 * @param trxName
+	 * @throws Exception
 	 */
 	protected void createRequest(EmailContent emailContent, String trxName) throws Exception {
 		// Assign from variable
@@ -432,17 +454,30 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		}
 		
 		req.saveEx(trxName);
+		addLog(req.getR_Request_ID(), null, null, Msg.parseTranslation(getCtx(), "@Added@ @R_Request_ID@ ") + req.getDocumentNo(), MRequest.Table_ID, req.getR_Request_ID());
 		
 		if (log.isLoggable(Level.INFO)) log.info("created request " + req.getR_Request_ID() + " from msg -> " + emailContent.subject);
 		
-		String htmlContent = emailContent.getHtmlContent(true);
-		if (htmlContent != null){
-			MAttachment attach = req.createAttachment();
-			
-			attach.addEntry(emailContent.subject + ".html", emailContent.getHtmlContent(true).getBytes(Charset.forName("UTF-8")));
-			attach.saveEx(trxName);
+		if("H".equals(p_HTMLAttachmentType)) {
+			String htmlContent = emailContent.getHtmlContent(true);
+			if (htmlContent != null){
+				MAttachment attach = req.createAttachment();
+				
+				attach.addEntry(emailContent.subject + ".html", emailContent.getHtmlContent(true).getBytes(Charset.forName("UTF-8")));
+				attach.saveEx(trxName);
+			}
+		} else if("I".equals(p_HTMLAttachmentType)) {
+			ArrayList<BodyPart> imagesList = emailContent.getHTMLImageBodyParts();
+			if(imagesList != null) {
+				for(BodyPart image: imagesList) {
+					MAttachment attach = req.createAttachment();
+					
+					attach.addEntry(image.getFileName(), EmailSrv.getBinaryData(image));
+					attach.saveEx(trxName);
+				}
+			}
 		}
-		
+				
 		for (BodyPart attachFile : emailContent.lsAttachPart){
 			MAttachment attach = req.createAttachment();
 			attach.addEntry(attachFile.getFileName(), EmailSrv.getBinaryData(attachFile));
@@ -458,6 +493,7 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		StringBuilder msgreq = new StringBuilder("FROM: ").append(emailContent.fromAddress.get(0)).append("\n").append(emailContent.getTextContent());
 		requp.setResult(msgreq.toString());
 		requp.saveEx(trxName);
+		addLog(requp.getR_Request_ID(), null, null, Msg.parseTranslation(getCtx(), "@Updated@ @R_Request_ID@ ") + requp.getDocumentNo(), MRequest.Table_ID, requp.getR_Request_ID());
 	}
 
 	@Override

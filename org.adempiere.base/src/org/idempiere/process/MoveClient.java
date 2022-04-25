@@ -49,6 +49,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Util;
 
+@org.adempiere.base.annotation.Process
 public class MoveClient extends SvrProcess {
 
 	// Process to move a client from a external database to current, or copy a template in current database
@@ -121,20 +122,20 @@ public class MoveClient extends SvrProcess {
 		// validate parameters
 		if (p_IsCopyClient) {
 			if (! Util.isEmpty(p_ClientsToExclude, true))
-				throw new AdempiereException("Clients to exclude must be empty when copying from template");
+				throw new AdempiereException("Tenants to exclude must be empty when copying from template");
 			if (! Util.isEmpty(p_TablesToPreserveIDs, true))
 				throw new AdempiereException("Preserve IDs must be empty when copying from template");
 			try {
 				Integer.parseInt(p_ClientsToInclude);
 			} catch (NumberFormatException e) {
-				throw new AdempiereException("Error in parameter Clients to Include, must be just one integer");
+				throw new AdempiereException("Error in parameter Tenants to Include, must be just one integer");
 			}
 		} else {
 			if (Util.isEmpty(p_JDBC_URL, true))
 				throw new AdempiereException("Fill mandatory JDBC_URL");
 		}
 		if (! Util.isEmpty(p_ClientsToInclude, true) && ! Util.isEmpty(p_ClientsToExclude, true))
-			throw new AdempiereException("Clients to exclude and include cannot be used at the same time");
+			throw new AdempiereException("Tenants to exclude and include cannot be used at the same time");
 		if (Util.isEmpty(p_UserName, true))
 			p_UserName = CConnection.get().getDbUid();
 		if (Util.isEmpty(p_Password, true))
@@ -171,7 +172,7 @@ public class MoveClient extends SvrProcess {
 				try {
 					clientInt = Integer.parseInt(clientStr);
 				} catch (NumberFormatException e) {
-					throw new AdempiereException("Error in parameter Clients to Exclude, must be a list of integer separated by commas, wrong format: " + clientStr);
+					throw new AdempiereException("Error in parameter Tenants to Exclude, must be a list of integer separated by commas, wrong format: " + clientStr);
 				}
 				p_whereClient.append(clientInt);
 			}
@@ -190,7 +191,7 @@ public class MoveClient extends SvrProcess {
 				try {
 					clientInt = Integer.parseInt(clientStr);
 				} catch (NumberFormatException e) {
-					throw new AdempiereException("Error in parameter Clients to Include, must be a list of integer separated by commas, wrong format: " + clientStr);
+					throw new AdempiereException("Error in parameter Tenants to Include, must be a list of integer separated by commas, wrong format: " + clientStr);
 				}
 				p_whereClient.append(clientInt);
 			}
@@ -247,10 +248,10 @@ public class MoveClient extends SvrProcess {
 			// Validate that the newtenant value/name doesn't exist
 			int cntCN = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Client WHERE Name=?", p_ClientName);
 			if (cntCN > 0)
-				throw new AdempiereUserError("Client with name " + p_ClientName + " already exists in database");
+				throw new AdempiereUserError("Tenant with name " + p_ClientName + " already exists in database");
 			int cntCV = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Client WHERE Value=?", p_ClientValue);
 			if (cntCV > 0)
-				throw new AdempiereUserError("Client with search key " + p_ClientValue + " already exists in database");
+				throw new AdempiereUserError("Tenant with search key " + p_ClientValue + " already exists in database");
 			int cntCW = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM W_Store WHERE WebContext=?", p_ClientValue.toLowerCase());
 			if (cntCW > 0)
 				throw new AdempiereUserError("WebStore with context " + p_ClientValue.toLowerCase() + " already exists in database");
@@ -287,7 +288,7 @@ public class MoveClient extends SvrProcess {
 						cnt = DB.getSQLValueEx(get_TrxName(), sqlValidateLocalClient.toString(), clientValue, clientName, clientUUID);
 					}
 					if (cnt > 0) {
-						String msg = "Client " + clientValue + "/" + clientName + " already exists.  UUID=" + clientUUID;
+						String msg = "Tenant " + clientValue + "/" + clientName + " already exists.  UUID=" + clientUUID;
 						if (p_isPreserveAll || p_tablesToPreserveIDsList.contains("AD_CLIENT")) {
 							msg += ", ID=" + clientID;
 						}
@@ -301,7 +302,7 @@ public class MoveClient extends SvrProcess {
 			DB.close(rsVC, stmtVC);
 		}
 		if (noClients <= 0) {
-			throw new AdempiereUserError("No clients to move");
+			throw new AdempiereUserError("No tenants to move");
 		}
 		if (p_errorList.size() > 0) {
 			return;
@@ -395,7 +396,7 @@ public class MoveClient extends SvrProcess {
 			sqlCountData.append(" WHERE ").append(p_whereClient);
 			int cntCD = countInExternal(sqlCountData.toString());
 			if (cntCD == 0) {
-				if (log.isLoggable(Level.INFO)) log.info("Ignoring " + tableName + ", doesn't have client data");
+				if (log.isLoggable(Level.INFO)) log.info("Ignoring " + tableName + ", doesn't have tenant data");
 				return;
 			}
 			if (cntCD > 0 && "AD_Attribute_Value".equalsIgnoreCase(tableName)) {
@@ -566,7 +567,7 @@ public class MoveClient extends SvrProcess {
 					int foreignID = rsFC.getInt(2);
 					String foreignUU = rsFC.getString(3);
 					if (clientID > 0) {
-						p_errorList.add("Column " + tableName + "." + columnName +  " has invalid cross-client reference to client " + clientID + " on ID=" + foreignID);
+						p_errorList.add("Column " + tableName + "." + columnName +  " has invalid cross-tenant reference to tenant " + clientID + " on ID=" + foreignID);
 						continue;
 					}
 					if (foreignID > 0) {
@@ -752,7 +753,7 @@ public class MoveClient extends SvrProcess {
 			try {
 				clientInt = Integer.parseInt(p_ClientsToInclude);
 			} catch (NumberFormatException e) {
-				throw new AdempiereException("Error in parameter Clients to Include, must be just one integer");
+				throw new AdempiereException("Error in parameter Tenants to Include, must be just one integer");
 			}
 			newADClientID = DB.getSQLValueEx(get_TrxName(),
 					"SELECT Target_ID FROM T_MoveClient WHERE AD_PInstance_ID=? AND TableName=? AND Source_ID=?",
@@ -786,8 +787,9 @@ public class MoveClient extends SvrProcess {
 					columnsSB.append(",");
 					valuesSB.append(",");
 				}
-				qColumnsSB.append(tableName).append(".").append(columnName);
-				columnsSB.append(columnName);
+				String quoteColumnName = DB.getDatabase().quoteColumnName(columnName);
+				qColumnsSB.append(tableName).append(".").append(quoteColumnName);
+				columnsSB.append(quoteColumnName);
 				valuesSB.append("?");
 				columns.add(column);
 				ncols++;
@@ -830,7 +832,7 @@ public class MoveClient extends SvrProcess {
 										|| "AD_Language".equalsIgnoreCase(columnName)
 										|| "EntityType".equalsIgnoreCase(columnName))) {
 							convertTable = "";
-						} else if ("Record_ID".equalsIgnoreCase(columnName) && table.getColumnIndex("AD_Table_ID") > 0) {
+						} else if ("Record_ID".equalsIgnoreCase(columnName) && table.columnExistsInDB("AD_Table_ID")) {
 							// Special case for Record_ID
 							int tableId = rsGD.getInt("AD_Table_ID");
 							if (tableId > 0) {
@@ -919,7 +921,7 @@ public class MoveClient extends SvrProcess {
 										// not found in the table - try to get it again - could be missed in first pass
 										convertedId = getLocalIDFor(convertTable, id, tableName);
 										if (convertedId < 0) {
-											if (("Record_ID".equalsIgnoreCase(columnName) && table.getColumnIndex("AD_Table_ID") > 0)
+											if (("Record_ID".equalsIgnoreCase(columnName) && table.columnExistsInDB("AD_Table_ID"))
 													|| (("Node_ID".equalsIgnoreCase(columnName) || "Parent_ID".equalsIgnoreCase(columnName))
 															&& (       "AD_TreeNode".equalsIgnoreCase(tableName)
 																	|| "AD_TreeNodeMM".equalsIgnoreCase(tableName)

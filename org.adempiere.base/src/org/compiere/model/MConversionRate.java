@@ -113,14 +113,14 @@ public class MConversionRate extends X_C_Conversion_Rate
 	/**
 	 *	Convert an amount
 	 *	@param ctx context
+	 *  @param Amt amount to be converted
 	 *  @param CurFrom_ID  The C_Currency_ID FROM
 	 *  @param CurTo_ID    The C_Currency_ID TO
 	 *  @param ConvDate conversion date - if null - use current date
 	 *  @param C_ConversionType_ID conversion rate type - if 0 - use Default
-	 *  @param Amt amount to be converted
 	 * 	@param AD_Client_ID client
 	 * 	@param AD_Org_ID organization
-	 * 	@param use for costing
+	 * 	@param isCosting use for costing
 	 *  @return converted amount or null if no rate
 	 */
 	public static BigDecimal convert (Properties ctx,
@@ -158,7 +158,8 @@ public class MConversionRate extends X_C_Conversion_Rate
 	 *  @param CurFrom_ISO		Currency from ISO code
 	 *  @param CurTo_ISO		Currency to ISO code
 	 *  @param spotDate			If null, today's date is used.
-	 *  @param multiplyRate		CurFrom_ISO * MultiplyRate = amount in CurTo_ISO
+	 *  @param MultiplyRate		CurFrom_ISO * MultiplyRate = amount in CurTo_ISO
+	 *  @throws Exception
 	 */
 	public static void setRate(String CurFrom_ISO, String CurTo_ISO, java.util.Date spotDate, 
 							   BigDecimal MultiplyRate) throws Exception {
@@ -298,9 +299,6 @@ public class MConversionRate extends X_C_Conversion_Rate
 		super(ctx, C_Conversion_Rate_ID, trxName);
 		if (C_Conversion_Rate_ID == 0)
 		{
-		//	setC_Conversion_Rate_ID (0);
-		//	setC_Currency_ID (0);
-		//	setC_Currency_ID_To (null);
 			super.setDivideRate (Env.ZERO);
 			super.setMultiplyRate (Env.ZERO);
 			setValidFrom (new Timestamp(System.currentTimeMillis()));
@@ -341,6 +339,10 @@ public class MConversionRate extends X_C_Conversion_Rate
 		setMultiplyRate (MultiplyRate);
 		setValidFrom(ValidFrom);
 	}	//	MConversionRate
+
+	public MConversionRate(Properties ctx, int C_Conversion_Rate_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Conversion_Rate_ID, trxName, virtualColumns);
+	}
 
 	/**
 	 * 	Set Multiply Rate

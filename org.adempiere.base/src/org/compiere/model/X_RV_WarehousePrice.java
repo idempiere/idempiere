@@ -24,19 +24,36 @@ import org.compiere.util.Env;
 
 /** Generated Model for RV_WarehousePrice
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="RV_WarehousePrice")
 public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_RV_WarehousePrice (Properties ctx, int RV_WarehousePrice_ID, String trxName)
     {
       super (ctx, RV_WarehousePrice_ID, trxName);
+      /** if (RV_WarehousePrice_ID == 0)
+        {
+			setC_UOM_ID (0);
+			setM_PriceList_Version_ID (0);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setName (null);
+			setValue (null);
+			setWarehouseName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_RV_WarehousePrice (Properties ctx, int RV_WarehousePrice_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, RV_WarehousePrice_ID, trxName, virtualColumns);
       /** if (RV_WarehousePrice_ID == 0)
         {
 			setC_UOM_ID (0);
@@ -72,32 +89,32 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_RV_WarehousePrice[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_RV_WarehousePrice[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
-		@param C_UOM_ID 
-		Unit of Measure
-	  */
+		@param C_UOM_ID Unit of Measure
+	*/
 	public void setC_UOM_ID (int C_UOM_ID)
 	{
-		if (C_UOM_ID < 1) 
+		if (C_UOM_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_UOM_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
 	}
 
 	/** Get UOM.
 		@return Unit of Measure
 	  */
-	public int getC_UOM_ID () 
+	public int getC_UOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
 		if (ii == null)
@@ -106,9 +123,8 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	/** Set Instance Attribute.
-		@param IsInstanceAttribute 
-		The product attribute is specific to the instance (like Serial No, Lot or Guarantee Date)
-	  */
+		@param IsInstanceAttribute The product attribute is specific to the instance (like Serial No, Lot or Guarantee Date)
+	*/
 	public void setIsInstanceAttribute (boolean IsInstanceAttribute)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsInstanceAttribute, Boolean.valueOf(IsInstanceAttribute));
@@ -117,7 +133,7 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get Instance Attribute.
 		@return The product attribute is specific to the instance (like Serial No, Lot or Guarantee Date)
 	  */
-	public boolean isInstanceAttribute () 
+	public boolean isInstanceAttribute()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInstanceAttribute);
 		if (oo != null) 
@@ -130,9 +146,8 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	/** Set Margin %.
-		@param Margin 
-		Margin for a product as a percentage
-	  */
+		@param Margin Margin for a product as a percentage
+	*/
 	public void setMargin (BigDecimal Margin)
 	{
 		set_ValueNoCheck (COLUMNNAME_Margin, Margin);
@@ -141,7 +156,7 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get Margin %.
 		@return Margin for a product as a percentage
 	  */
-	public BigDecimal getMargin () 
+	public BigDecimal getMargin()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Margin);
 		if (bd == null)
@@ -150,26 +165,26 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	public org.compiere.model.I_M_PriceList_Version getM_PriceList_Version() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_Name)
-			.getPO(getM_PriceList_Version_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_PriceList_Version)MTable.get(getCtx(), org.compiere.model.I_M_PriceList_Version.Table_ID)
+			.getPO(getM_PriceList_Version_ID(), get_TrxName());
+	}
 
 	/** Set Price List Version.
-		@param M_PriceList_Version_ID 
-		Identifies a unique instance of a Price List
-	  */
+		@param M_PriceList_Version_ID Identifies a unique instance of a Price List
+	*/
 	public void setM_PriceList_Version_ID (int M_PriceList_Version_ID)
 	{
-		if (M_PriceList_Version_ID < 1) 
+		if (M_PriceList_Version_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_PriceList_Version_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_PriceList_Version_ID, Integer.valueOf(M_PriceList_Version_ID));
 	}
 
 	/** Get Price List Version.
 		@return Identifies a unique instance of a Price List
 	  */
-	public int getM_PriceList_Version_ID () 
+	public int getM_PriceList_Version_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PriceList_Version_ID);
 		if (ii == null)
@@ -178,26 +193,26 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -206,26 +221,26 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -234,9 +249,8 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_ValueNoCheck (COLUMNNAME_Name, Name);
@@ -245,15 +259,14 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Limit Price.
-		@param PriceLimit 
-		Lowest price for a product
-	  */
+		@param PriceLimit Lowest price for a product
+	*/
 	public void setPriceLimit (BigDecimal PriceLimit)
 	{
 		set_ValueNoCheck (COLUMNNAME_PriceLimit, PriceLimit);
@@ -262,7 +275,7 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get Limit Price.
 		@return Lowest price for a product
 	  */
-	public BigDecimal getPriceLimit () 
+	public BigDecimal getPriceLimit()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceLimit);
 		if (bd == null)
@@ -271,9 +284,8 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	/** Set List Price.
-		@param PriceList 
-		List Price
-	  */
+		@param PriceList List Price
+	*/
 	public void setPriceList (BigDecimal PriceList)
 	{
 		set_ValueNoCheck (COLUMNNAME_PriceList, PriceList);
@@ -282,7 +294,7 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get List Price.
 		@return List Price
 	  */
-	public BigDecimal getPriceList () 
+	public BigDecimal getPriceList()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceList);
 		if (bd == null)
@@ -291,9 +303,8 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	/** Set Standard Price.
-		@param PriceStd 
-		Standard Price
-	  */
+		@param PriceStd Standard Price
+	*/
 	public void setPriceStd (BigDecimal PriceStd)
 	{
 		set_ValueNoCheck (COLUMNNAME_PriceStd, PriceStd);
@@ -302,7 +313,7 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get Standard Price.
 		@return Standard Price
 	  */
-	public BigDecimal getPriceStd () 
+	public BigDecimal getPriceStd()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceStd);
 		if (bd == null)
@@ -311,9 +322,8 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	/** Set Available Quantity.
-		@param QtyAvailable 
-		Available Quantity (On Hand - Reserved)
-	  */
+		@param QtyAvailable Available Quantity (On Hand - Reserved)
+	*/
 	public void setQtyAvailable (BigDecimal QtyAvailable)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyAvailable, QtyAvailable);
@@ -322,7 +332,7 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get Available Quantity.
 		@return Available Quantity (On Hand - Reserved)
 	  */
-	public BigDecimal getQtyAvailable () 
+	public BigDecimal getQtyAvailable()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyAvailable);
 		if (bd == null)
@@ -331,9 +341,8 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	/** Set On Hand Quantity.
-		@param QtyOnHand 
-		On Hand Quantity
-	  */
+		@param QtyOnHand On Hand Quantity
+	*/
 	public void setQtyOnHand (BigDecimal QtyOnHand)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyOnHand, QtyOnHand);
@@ -342,7 +351,7 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get On Hand Quantity.
 		@return On Hand Quantity
 	  */
-	public BigDecimal getQtyOnHand () 
+	public BigDecimal getQtyOnHand()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyOnHand);
 		if (bd == null)
@@ -351,9 +360,8 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	/** Set Ordered Quantity.
-		@param QtyOrdered 
-		Ordered Quantity
-	  */
+		@param QtyOrdered Ordered Quantity
+	*/
 	public void setQtyOrdered (BigDecimal QtyOrdered)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyOrdered, QtyOrdered);
@@ -362,7 +370,7 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get Ordered Quantity.
 		@return Ordered Quantity
 	  */
-	public BigDecimal getQtyOrdered () 
+	public BigDecimal getQtyOrdered()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyOrdered);
 		if (bd == null)
@@ -371,9 +379,8 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	/** Set Reserved Quantity.
-		@param QtyReserved 
-		Reserved Quantity
-	  */
+		@param QtyReserved Reserved Quantity
+	*/
 	public void setQtyReserved (BigDecimal QtyReserved)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyReserved, QtyReserved);
@@ -382,7 +389,7 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get Reserved Quantity.
 		@return Reserved Quantity
 	  */
-	public BigDecimal getQtyReserved () 
+	public BigDecimal getQtyReserved()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyReserved);
 		if (bd == null)
@@ -391,9 +398,8 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	}
 
 	/** Set SKU.
-		@param SKU 
-		Stock Keeping Unit
-	  */
+		@param SKU Stock Keeping Unit
+	*/
 	public void setSKU (String SKU)
 	{
 		set_ValueNoCheck (COLUMNNAME_SKU, SKU);
@@ -402,15 +408,14 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get SKU.
 		@return Stock Keeping Unit
 	  */
-	public String getSKU () 
+	public String getSKU()
 	{
 		return (String)get_Value(COLUMNNAME_SKU);
 	}
 
 	/** Set Symbol.
-		@param UOMSymbol 
-		Symbol for a Unit of Measure
-	  */
+		@param UOMSymbol Symbol for a Unit of Measure
+	*/
 	public void setUOMSymbol (String UOMSymbol)
 	{
 		set_ValueNoCheck (COLUMNNAME_UOMSymbol, UOMSymbol);
@@ -419,15 +424,14 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get Symbol.
 		@return Symbol for a Unit of Measure
 	  */
-	public String getUOMSymbol () 
+	public String getUOMSymbol()
 	{
 		return (String)get_Value(COLUMNNAME_UOMSymbol);
 	}
 
 	/** Set UPC/EAN.
-		@param UPC 
-		Bar Code (Universal Product Code or its superset European Article Number)
-	  */
+		@param UPC Bar Code (Universal Product Code or its superset European Article Number)
+	*/
 	public void setUPC (String UPC)
 	{
 		set_ValueNoCheck (COLUMNNAME_UPC, UPC);
@@ -436,15 +440,14 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get UPC/EAN.
 		@return Bar Code (Universal Product Code or its superset European Article Number)
 	  */
-	public String getUPC () 
+	public String getUPC()
 	{
 		return (String)get_Value(COLUMNNAME_UPC);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_ValueNoCheck (COLUMNNAME_Value, Value);
@@ -453,15 +456,14 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
 	/** Set Warehouse.
-		@param WarehouseName 
-		Warehouse Name
-	  */
+		@param WarehouseName Warehouse Name
+	*/
 	public void setWarehouseName (String WarehouseName)
 	{
 		set_ValueNoCheck (COLUMNNAME_WarehouseName, WarehouseName);
@@ -470,7 +472,7 @@ public class X_RV_WarehousePrice extends PO implements I_RV_WarehousePrice, I_Pe
 	/** Get Warehouse.
 		@return Warehouse Name
 	  */
-	public String getWarehouseName () 
+	public String getWarehouseName()
 	{
 		return (String)get_Value(COLUMNNAME_WarehouseName);
 	}

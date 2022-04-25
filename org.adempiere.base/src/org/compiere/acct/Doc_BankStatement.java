@@ -41,7 +41,7 @@ import org.compiere.util.Env;
  *  Avoid posting if both accounts BankAsset and BankInTransit are equal
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 				<li>FR [ 2520591 ] Support multiples calendar for Org
- * 				@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+ * 				@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *
  */
 public class Doc_BankStatement extends Doc
@@ -174,7 +174,6 @@ public class Doc_BankStatement extends Doc
 			MAccount acct_bank_asset =  getAccount(Doc.ACCTTYPE_BankAsset, as);
 			MAccount acct_bank_in_transit = getAccount(Doc.ACCTTYPE_BankInTransit, as);
 
-			// if ((!as.isPostIfClearingEqual()) && acct_bank_asset.equals(acct_bank_in_transit) && (!isInterOrg)) {
 			// don't validate interorg on banks for this - normally banks are balanced by orgs
 			if ((!as.isPostIfClearingEqual()) && acct_bank_asset.equals(acct_bank_in_transit)) {
 				// Not using clearing accounts
@@ -248,41 +247,13 @@ public class Doc_BankStatement extends Doc
 					line.getC_Currency_ID(), line.getInterestAmt().negate());
 			if (fl != null && C_BPartner_ID != 0)
 				fl.setC_BPartner_ID(C_BPartner_ID);
-			//
-		//	fact.createTaxCorrection();
+
 		}
 		//
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		facts.add(fact);
 		return facts;
 	}   //  createFact
-
-	/** Verify if the posting involves two or more organizations
-	@return true if there are more than one org involved on the posting
-	private boolean isInterOrg(MAcctSchema as) {
-		MAcctSchemaElement elementorg = as.getAcctSchemaElement(MAcctSchemaElement.ELEMENTTYPE_Organization);
-		if (elementorg == null || !elementorg.isBalanced()) {
-			// no org element or not need to be balanced
-			return false;
-		}
-
-		if (p_lines.length <= 0) {
-			// no lines
-			return false;
-		}
-
-		int startorg = getBank_Org_ID();
-		if (startorg == 0)
-			startorg = p_lines[0].getAD_Org_ID();
-		// validate if the allocation involves more than one org
-		for (int i = 0; i < p_lines.length; i++) {
-			if (p_lines[i].getAD_Org_ID() != startorg)
-				return true;
-		}
-
-		return false;
-	}
-	 */
 
 	/**
 	 * 	Get AD_Org_ID from Bank Account

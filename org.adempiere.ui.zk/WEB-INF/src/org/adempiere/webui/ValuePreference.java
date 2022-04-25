@@ -48,6 +48,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -73,9 +74,9 @@ public class ValuePreference extends Window implements EventListener<Event>
 
 	/**
 	 *  Factory
+	 *  @param ref
 	 *  @param mField	field
 	 *  @param aValue	value
-	 *  @return ValuePreference or null
 	 */
 	public static void start (Component ref, GridField mField, Object aValue)
 	{
@@ -89,10 +90,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 
 	/**
 	 *  Factory
+	 *  @param ref
 	 *  @param mField	field
 	 *  @param aValue	value
 	 *  @param aDisplayValue	display value
-	 *  @return ValuePreference or null
 	 */
 	public static void start (Component ref, GridField mField, Object aValue, String aDisplayValue)
 	{
@@ -241,7 +242,8 @@ public class ValuePreference extends Window implements EventListener<Event>
 			LayoutUtils.openOverlappedWindow(ref, this, "after_start");
 		} else {
 			AEnv.showCenterScreen(this);
-		}		
+		}
+		Executions.schedule(getDesktop(), e -> confirmPanel.getOKButton().focus(), new Event("onPostOpenValuePreferenceDialog"));
 
 	}   //  ValuePreference
 
@@ -467,6 +469,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		confirmPanel.addActionListener(Events.ON_CLICK, this);		
 		bDelete = confirmPanel.getButton("Delete");
 		setExplanation();
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}   //  dynInit
 
 	/**
@@ -477,7 +480,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	{
 		if (e.getTarget().getId().equals("Cancel"))
 		{
-			this.detach();
+			onCancel();
 		}
 		else if (e.getTarget().getId().equals("Ok"))
 		{
@@ -496,6 +499,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 		else
 			setExplanation();
 	}   //  actionPerformed
+
+	private void onCancel() {
+		this.detach();
+	}
 
 	/**
 	 *  Set Explanation

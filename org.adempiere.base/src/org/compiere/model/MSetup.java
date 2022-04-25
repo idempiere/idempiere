@@ -61,9 +61,20 @@ public final class MSetup
 	 */
 	public MSetup(Properties ctx, int WindowNo)
 	{
+		this(ctx, WindowNo, false);
+	}
+	
+	/**
+	 *  Constructor
+	 *  @param ctx context
+	 *  @param WindowNo window
+	 */
+	public MSetup(Properties ctx, int WindowNo, boolean dryRun)
+	{
 		m_ctx = new Properties(ctx);	//	copy
 		m_lang = Env.getAD_Language(m_ctx);
 		m_WindowNo = WindowNo;
+		m_dryRun = dryRun;
 	}   //  MSetup
 
 	/**	Logger			*/
@@ -76,7 +87,6 @@ public final class MSetup
 	private StringBuffer    m_info;
 	//
 	private String          m_clientName;
-//	private String          m_orgName;
 	//
 	private String          m_stdColumns = "AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy";
 	private String          m_stdValues;
@@ -101,6 +111,7 @@ public final class MSetup
 	private boolean         m_hasSRegion = false;
 	private boolean         m_hasActivity = false;
 
+	private boolean 		m_dryRun = false;
 	/**
 	 *  Create Client Info.
 	 *  - Client, Trees, Org, Role, User, User_Role
@@ -138,7 +149,7 @@ public final class MSetup
 		m_client.setName(m_clientName);
 		if (!m_client.save())
 		{
-			String err = "Client NOT created";
+			String err = "Tenant NOT created";
 			log.log(Level.SEVERE, err);
 			m_info.append(err);
 			m_trx.rollback();
@@ -147,7 +158,7 @@ public final class MSetup
 		}
 		int AD_Client_ID = m_client.getAD_Client_ID();
 		Env.setContext(m_ctx, m_WindowNo, "AD_Client_ID", AD_Client_ID);
-		Env.setContext(m_ctx, "#AD_Client_ID", AD_Client_ID);
+		Env.setContext(m_ctx, Env.AD_CLIENT_ID, AD_Client_ID);
 
 		//	Standard Values
 		m_stdValues = String.valueOf(AD_Client_ID) + ",0,'Y',getDate(),0,getDate(),0";
@@ -168,7 +179,7 @@ public final class MSetup
 		//  Trees and Client Info
 		if (!m_client.setupClientInfo(m_lang))
 		{
-			String err = "Client Info NOT created";
+			String err = "Tenant Info NOT created";
 			log.log(Level.SEVERE, err);
 			m_info.append(err);
 			m_trx.rollback();
@@ -196,13 +207,13 @@ public final class MSetup
 			return false;
 		}
 		Env.setContext(m_ctx, m_WindowNo, "AD_Org_ID", getAD_Org_ID());
-		Env.setContext(m_ctx, "#AD_Org_ID", getAD_Org_ID());
+		Env.setContext(m_ctx, Env.AD_ORG_ID, getAD_Org_ID());
 		m_stdValuesOrg = AD_Client_ID + "," + getAD_Org_ID() + ",'Y',getDate(),0,getDate(),0";
 		//  Info
 		m_info.append(Msg.translate(m_lang, "AD_Org_ID")).append("=").append(name).append("\n");
 		
 		// Set Organization Phone, Phone2, Fax, EMail
-		MOrgInfo orgInfo = MOrgInfo.get(m_ctx, getAD_Org_ID(), m_trx.getTrxName());
+		MOrgInfo orgInfo = MOrgInfo.getCopy(m_ctx, getAD_Org_ID(), m_trx.getTrxName());
 		orgInfo.setPhone(phone);
 		orgInfo.setPhone2(phone2);
 		orgInfo.setFax(fax);
@@ -233,6 +244,7 @@ public final class MSetup
 		admin.setPreferenceType(MRole.PREFERENCETYPE_Client);
 		admin.setIsShowAcct(true);
 		admin.setIsAccessAdvanced(true);
+		admin.setIsClientAdministrator(true);
 		if (!admin.save())
 		{
 			String err = "Admin Role A NOT inserted";
@@ -260,6 +272,7 @@ public final class MSetup
 		user.setClientOrg(m_client);
 		user.setName(name);
 		user.setIsAccessAdvanced(false);
+		user.setIsClientAdministrator(false);
 		if (!user.save())
 		{
 			String err = "User Role A NOT inserted";
@@ -427,7 +440,7 @@ public final class MSetup
 		//  Standard variables
 		m_info = new StringBuffer();
 		String name = null;
-		StringBuffer sqlCmd = null;
+		StringBuilder sqlCmd = null;
 		int no = 0;
 
 		/**
@@ -595,7 +608,7 @@ public final class MSetup
 
 				if (IsMandatory != null)
 				{
-					sqlCmd = new StringBuffer ("INSERT INTO C_AcctSchema_Element(");
+					sqlCmd = new StringBuilder ("INSERT INTO C_AcctSchema_Element(");
 					sqlCmd.append(m_stdColumns).append(",C_AcctSchema_Element_ID,C_AcctSchema_ID,")
 						.append("ElementType,Name,SeqNo,IsMandatory,IsBalanced,C_AcctSchema_Element_UU) VALUES (");
 					sqlCmd.append(m_stdValues).append(",").append(C_AcctSchema_Element_ID).append(",").append(m_as.getC_AcctSchema_ID()).append(",")
@@ -608,7 +621,7 @@ public final class MSetup
 					/** Default value for mandatory elements: OO and AC */
 					if (ElementType.equals("OO"))
 					{
-						sqlCmd = new StringBuffer ("UPDATE C_AcctSchema_Element SET Org_ID=");
+						sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET Org_ID=");
 						sqlCmd.append(getAD_Org_ID()).append(" WHERE C_AcctSchema_Element_ID=").append(C_AcctSchema_Element_ID);
 						no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 						if (no != 1)
@@ -616,7 +629,7 @@ public final class MSetup
 					}
 					if (ElementType.equals("AC"))
 					{
-						sqlCmd = new StringBuffer ("UPDATE C_AcctSchema_Element SET C_ElementValue_ID=");
+						sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET C_ElementValue_ID=");
 						sqlCmd.append(C_ElementValue_ID).append(", C_Element_ID=").append(C_Element_ID);
 						sqlCmd.append(" WHERE C_AcctSchema_Element_ID=").append(C_AcctSchema_Element_ID);
 						no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
@@ -798,7 +811,7 @@ public final class MSetup
 		createPreference("C_DocTypeTarget_ID", String.valueOf(DT), 143);
 
 		//  Update ClientInfo
-		sqlCmd = new StringBuffer ("UPDATE AD_ClientInfo SET ");
+		sqlCmd = new StringBuilder ("UPDATE AD_ClientInfo SET ");
 		sqlCmd.append("C_AcctSchema1_ID=").append(m_as.getC_AcctSchema_ID())
 			.append(", C_Calendar_ID=").append(m_calendar.getC_Calendar_ID())
 			.append(" WHERE AD_Client_ID=").append(m_client.getAD_Client_ID());
@@ -904,6 +917,7 @@ public final class MSetup
 	private int createGLCategory (String Name, String CategoryType, boolean isDefault)
 	{
 		MGLCategory cat = new MGLCategory (m_ctx, 0, m_trx.getTrxName());
+		cat.setAD_Org_ID(0);
 		cat.setName(Name);
 		cat.setCategoryType(CategoryType);
 		cat.setIsDefault(isDefault);
@@ -987,7 +1001,7 @@ public final class MSetup
 	
 	/**************************************************************************
 	 *  Create Default main entities.
-	 *  - Dimensions & BPGroup, Prod Category)
+	 *  - Dimensions and BPGroup, Prod Category)
 	 *  - Location, Locator, Warehouse
 	 *  - PriceList
 	 *  - Cashbook, PaymentTerm
@@ -1012,12 +1026,12 @@ public final class MSetup
 		//
 		String defaultName = Msg.translate(m_lang, "Standard");
 		String defaultEntry = "'" + defaultName + "',";
-		StringBuffer sqlCmd = null;
+		StringBuilder sqlCmd = null;
 		int no = 0;
 
 		//	Create Marketing Channel/Campaign
 		int C_Channel_ID = getNextID(getAD_Client_ID(), "C_Channel");
-		sqlCmd = new StringBuffer("INSERT INTO C_Channel ");
+		sqlCmd = new StringBuilder("INSERT INTO C_Channel ");
 		sqlCmd.append("(C_Channel_ID,Name,");
 		sqlCmd.append(m_stdColumns).append(",C_Channel_UU) VALUES (");
 		sqlCmd.append(C_Channel_ID).append(",").append(defaultEntry);
@@ -1027,7 +1041,7 @@ public final class MSetup
 			log.log(Level.SEVERE, "Channel NOT inserted");
 
 		int C_Campaign_ID = getNextID(getAD_Client_ID(), "C_Campaign");
-		sqlCmd = new StringBuffer("INSERT INTO C_Campaign ");
+		sqlCmd = new StringBuilder("INSERT INTO C_Campaign ");
 		sqlCmd.append("(C_Campaign_ID,C_Channel_ID,").append(m_stdColumns).append(",");
 		sqlCmd.append(" Value,Name,Costs,C_Campaign_UU) VALUES (");
 		sqlCmd.append(C_Campaign_ID).append(",").append(C_Channel_ID).append(",").append(m_stdValues).append(",");
@@ -1040,7 +1054,7 @@ public final class MSetup
 		if (m_hasMCampaign)
 		{
 			//  Default
-			sqlCmd = new StringBuffer ("UPDATE C_AcctSchema_Element SET ");
+			sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET ");
 			sqlCmd.append("C_Campaign_ID=").append(C_Campaign_ID);
 			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 			sqlCmd.append(" AND ElementType='MC'");
@@ -1049,7 +1063,7 @@ public final class MSetup
 				log.log(Level.SEVERE, "AcctSchema Element Campaign NOT updated");
 		}
 		// Campaign Translation
-		sqlCmd = new StringBuffer ("INSERT INTO C_Campaign_Trl (AD_Language,C_Campaign_ID, Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,C_Campaign_Trl_UU)");
+		sqlCmd = new StringBuilder ("INSERT INTO C_Campaign_Trl (AD_Language,C_Campaign_ID, Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,C_Campaign_Trl_UU)");
 		sqlCmd.append(" SELECT l.AD_Language,t.C_Campaign_ID, t.Description,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy, generate_uuid() FROM AD_Language l, C_Campaign t");
 		sqlCmd.append(" WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.C_Campaign_ID=").append(C_Campaign_ID);
 		sqlCmd.append(" AND NOT EXISTS (SELECT * FROM C_Campaign_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.C_Campaign_ID=t.C_Campaign_ID)");
@@ -1059,7 +1073,7 @@ public final class MSetup
 
 		//	Create Sales Region
 		int C_SalesRegion_ID = getNextID(getAD_Client_ID(), "C_SalesRegion");
-		sqlCmd = new StringBuffer ("INSERT INTO C_SalesRegion ");
+		sqlCmd = new StringBuilder ("INSERT INTO C_SalesRegion ");
 		sqlCmd.append("(C_SalesRegion_ID,").append(m_stdColumns).append(",");
 		sqlCmd.append(" Value,Name,IsSummary,C_SalesRegion_UU) VALUES (");
 		sqlCmd.append(C_SalesRegion_ID).append(",").append(m_stdValues).append(", ");
@@ -1072,7 +1086,7 @@ public final class MSetup
 		if (m_hasSRegion)
 		{
 			//  Default
-			sqlCmd = new StringBuffer ("UPDATE C_AcctSchema_Element SET ");
+			sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET ");
 			sqlCmd.append("C_SalesRegion_ID=").append(C_SalesRegion_ID);
 			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 			sqlCmd.append(" AND ElementType='SR'");
@@ -1081,7 +1095,7 @@ public final class MSetup
 				log.log(Level.SEVERE, "AcctSchema Element SalesRegion NOT updated");
 		}
 		// Sales Region Translation
-		sqlCmd = new StringBuffer ("INSERT INTO C_SalesRegion_Trl (AD_Language,C_SalesRegion_ID, Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,C_SalesRegion_Trl_UU)");
+		sqlCmd = new StringBuilder ("INSERT INTO C_SalesRegion_Trl (AD_Language,C_SalesRegion_ID, Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,C_SalesRegion_Trl_UU)");
 		sqlCmd.append(" SELECT l.AD_Language,t.C_SalesRegion_ID, t.Description,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy, generate_uuid() FROM AD_Language l, C_SalesRegion t");
 		sqlCmd.append(" WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.C_SalesRegion_ID=").append(C_SalesRegion_ID);
 		sqlCmd.append(" AND NOT EXISTS (SELECT * FROM C_SalesRegion_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.C_SalesRegion_ID=t.C_SalesRegion_ID)");
@@ -1091,7 +1105,7 @@ public final class MSetup
 
 		//	Create Activity
 		int C_Activity_ID = getNextID(getAD_Client_ID(), "C_Activity");
-		sqlCmd = new StringBuffer ("INSERT INTO C_Activity ");
+		sqlCmd = new StringBuilder ("INSERT INTO C_Activity ");
 		sqlCmd.append("(C_Activity_ID,").append(m_stdColumns).append(",");
 		sqlCmd.append(" Value,Name,IsSummary,C_Activity_UU) VALUES (");
 		sqlCmd.append(C_Activity_ID).append(",").append(m_stdValues).append(", ");
@@ -1104,7 +1118,7 @@ public final class MSetup
 		if (m_hasActivity)
 		{
 			//  Default
-			sqlCmd = new StringBuffer ("UPDATE C_AcctSchema_Element SET ");
+			sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET ");
 			sqlCmd.append("C_Activity_ID=").append(C_Activity_ID);
 			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 			sqlCmd.append(" AND ElementType='AY'");
@@ -1113,7 +1127,7 @@ public final class MSetup
 				log.log(Level.SEVERE, "AcctSchema Element Activity NOT updated");
 		}
 		// Activity Translation
-		sqlCmd = new StringBuffer ("INSERT INTO C_Activity_Trl (AD_Language,C_Activity_ID, Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,C_Activity_Trl_UU)");
+		sqlCmd = new StringBuilder ("INSERT INTO C_Activity_Trl (AD_Language,C_Activity_ID, Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,C_Activity_Trl_UU)");
 		sqlCmd.append(" SELECT l.AD_Language,t.C_Activity_ID, t.Description,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy, generate_uuid() FROM AD_Language l, C_Activity t");
 		sqlCmd.append(" WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.C_Activity_ID=").append(C_Activity_ID);
 		sqlCmd.append(" AND NOT EXISTS (SELECT * FROM C_Activity_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.C_Activity_ID=t.C_Activity_ID)");
@@ -1126,6 +1140,7 @@ public final class MSetup
 		 */
 		//  Create BP Group
 		MBPGroup bpg = new MBPGroup (m_ctx, 0, m_trx.getTrxName());
+		bpg.setAD_Org_ID(0);
 		bpg.setValue(defaultName);
 		bpg.setName(defaultName);
 		bpg.setIsDefault(true);
@@ -1136,6 +1151,7 @@ public final class MSetup
 
 		//	Create BPartner
 		MBPartner bp = new MBPartner (m_ctx, 0, m_trx.getTrxName());
+		bp.setAD_Org_ID(0);
 		bp.setValue(defaultName);
 		bp.setName(defaultName);
 		bp.setBPGroup(bpg);
@@ -1145,13 +1161,14 @@ public final class MSetup
 			log.log(Level.SEVERE, "BPartner NOT inserted");
 		//  Location for Standard BP
 		MLocation bpLoc = new MLocation(m_ctx, C_Country_ID, C_Region_ID, City, m_trx.getTrxName());
+		bpLoc.setAD_Org_ID(0);
 		bpLoc.saveEx();
 		MBPartnerLocation bpl = new MBPartnerLocation(bp);
 		bpl.setC_Location_ID(bpLoc.getC_Location_ID());
 		if (!bpl.save())
 			log.log(Level.SEVERE, "BP_Location (Standard) NOT inserted");
 		//  Default
-		sqlCmd = new StringBuffer ("UPDATE C_AcctSchema_Element SET ");
+		sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET ");
 		sqlCmd.append("C_BPartner_ID=").append(bp.getC_BPartner_ID());
 		sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 		sqlCmd.append(" AND ElementType='BP'");
@@ -1165,6 +1182,7 @@ public final class MSetup
 		 */
 		//  Create Product Category
 		MProductCategory pc = new MProductCategory(m_ctx, 0, m_trx.getTrxName());
+		pc.setAD_Org_ID(0);
 		pc.setValue(defaultName);
 		pc.setName(defaultName);
 		pc.setIsDefault(true);
@@ -1178,7 +1196,7 @@ public final class MSetup
 
 		//  TaxCategory
 		int C_TaxCategory_ID = getNextID(getAD_Client_ID(), "C_TaxCategory");
-		sqlCmd = new StringBuffer ("INSERT INTO C_TaxCategory ");
+		sqlCmd = new StringBuilder ("INSERT INTO C_TaxCategory ");
 		sqlCmd.append("(C_TaxCategory_ID,").append(m_stdColumns).append(",");
 		sqlCmd.append(" Name,IsDefault,C_TaxCategory_UU) VALUES (");
 		sqlCmd.append(C_TaxCategory_ID).append(",").append(m_stdValues).append(", ");
@@ -1192,7 +1210,7 @@ public final class MSetup
 			log.log(Level.SEVERE, "TaxCategory NOT inserted");
 		
 		//  TaxCategory translation
-		sqlCmd = new StringBuffer ("INSERT INTO C_TaxCategory_Trl (AD_Language,C_TaxCategory_ID, Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,C_TaxCategory_Trl_UU)");
+		sqlCmd = new StringBuilder ("INSERT INTO C_TaxCategory_Trl (AD_Language,C_TaxCategory_ID, Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,C_TaxCategory_Trl_UU)");
 		sqlCmd.append(" SELECT l.AD_Language,t.C_TaxCategory_ID, t.Description,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy, generate_uuid() FROM AD_Language l, C_TaxCategory t");
 		sqlCmd.append(" WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.C_TaxCategory_ID=").append(C_TaxCategory_ID);
 		sqlCmd.append(" AND NOT EXISTS (SELECT * FROM C_TaxCategory_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.C_TaxCategory_ID=t.C_TaxCategory_ID)");
@@ -1202,6 +1220,7 @@ public final class MSetup
 
 		//  Tax - Zero Rate
 		MTax tax = new MTax (m_ctx, "Standard", Env.ZERO, C_TaxCategory_ID, m_trx.getTrxName());
+		tax.setAD_Org_ID(0);
 		tax.setIsDefault(true);
 		if (tax.save())
 			m_info.append(Msg.translate(m_lang, "C_Tax_ID"))
@@ -1211,6 +1230,7 @@ public final class MSetup
 
 		//	Create Product
 		MProduct product = new MProduct (m_ctx, 0, m_trx.getTrxName());
+		product.setAD_Org_ID(0);
 		product.setValue(defaultName);
 		product.setName(defaultName);
 		product.setC_UOM_ID(C_UOM_ID);
@@ -1221,7 +1241,7 @@ public final class MSetup
 		else
 			log.log(Level.SEVERE, "Product NOT inserted");
 		//  Default
-		sqlCmd = new StringBuffer ("UPDATE C_AcctSchema_Element SET ");
+		sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET ");
 		sqlCmd.append("M_Product_ID=").append(product.getM_Product_ID());
 		sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 		sqlCmd.append(" AND ElementType='PR'");
@@ -1237,7 +1257,7 @@ public final class MSetup
 		loc.setAddress1(address1);
 		loc.setPostal(postal);
 		loc.saveEx();
-		sqlCmd = new StringBuffer ("UPDATE AD_OrgInfo SET C_Location_ID=");
+		sqlCmd = new StringBuilder ("UPDATE AD_OrgInfo SET C_Location_ID=");
 		sqlCmd.append(loc.getC_Location_ID()).append(" WHERE AD_Org_ID=").append(getAD_Org_ID());
 		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
@@ -1263,13 +1283,9 @@ public final class MSetup
 			log.log(Level.SEVERE, "Locator NOT inserted");
 
 		//  Update ClientInfo
-		sqlCmd = new StringBuffer ("UPDATE AD_ClientInfo SET ");
+		sqlCmd = new StringBuilder ("UPDATE AD_ClientInfo SET ");
 		sqlCmd.append("C_BPartnerCashTrx_ID=").append(bp.getC_BPartner_ID());
 		sqlCmd.append(",M_ProductFreight_ID=").append(product.getM_Product_ID());
-//		sqlCmd.append("C_UOM_Volume_ID=");
-//		sqlCmd.append(",C_UOM_Weight_ID=");
-//		sqlCmd.append(",C_UOM_Length_ID=");
-//		sqlCmd.append(",C_UOM_Time_ID=");
 		sqlCmd.append(" WHERE AD_Client_ID=").append(getAD_Client_ID());
 		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
@@ -1285,6 +1301,7 @@ public final class MSetup
 		 */
 		//  PriceList
 		MPriceList pl = new MPriceList(m_ctx, 0, m_trx.getTrxName());
+		pl.setAD_Org_ID(0);
 		pl.setName(defaultName);
 		pl.setC_Currency_ID(C_Currency_ID);
 		pl.setIsDefault(true);
@@ -1292,12 +1309,14 @@ public final class MSetup
 			log.log(Level.SEVERE, "PriceList NOT inserted");
 		//  Price List
 		MDiscountSchema ds = new MDiscountSchema(m_ctx, 0, m_trx.getTrxName());
+		ds.setAD_Org_ID(0);
 		ds.setName(defaultName);
 		ds.setDiscountType(MDiscountSchema.DISCOUNTTYPE_Pricelist);
 		if (!ds.save())
 			log.log(Level.SEVERE, "DiscountSchema NOT inserted");
 		//  PriceList Version
 		MPriceListVersion plv = new MPriceListVersion(pl);
+		plv.setAD_Org_ID(0);
 		plv.setName();
 		plv.setM_DiscountSchema_ID(ds.getM_DiscountSchema_ID());
 		if (!plv.save())
@@ -1311,6 +1330,7 @@ public final class MSetup
 
 		//	Create Sales Rep for Client-User
 		MBPartner bpCU = new MBPartner (m_ctx, 0, m_trx.getTrxName());
+		bpCU.setAD_Org_ID(0);
 		bpCU.setValue(AD_User_U_Name);
 		bpCU.setName(AD_User_U_Name);
 		bpCU.setBPGroup(bpg);
@@ -1322,13 +1342,14 @@ public final class MSetup
 			log.log(Level.SEVERE, "SalesRep (User) NOT inserted");
 		//  Location for Client-User
 		MLocation bpLocCU = new MLocation(m_ctx, C_Country_ID, C_Region_ID, City, m_trx.getTrxName());
+		bpLocCU.setAD_Org_ID(0);
 		bpLocCU.saveEx();
 		MBPartnerLocation bplCU = new MBPartnerLocation(bpCU);
 		bplCU.setC_Location_ID(bpLocCU.getC_Location_ID());
 		if (!bplCU.save())
 			log.log(Level.SEVERE, "BP_Location (User) NOT inserted");
 		//  Update User
-		sqlCmd = new StringBuffer ("UPDATE AD_User SET C_BPartner_ID=");
+		sqlCmd = new StringBuilder ("UPDATE AD_User SET C_BPartner_ID=");
 		sqlCmd.append(bpCU.getC_BPartner_ID()).append(" WHERE AD_User_ID=").append(AD_User_U_ID);
 		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
@@ -1337,6 +1358,7 @@ public final class MSetup
 
 		//	Create Sales Rep for Client-Admin
 		MBPartner bpCA = new MBPartner (m_ctx, 0, m_trx.getTrxName());
+		bpCA.setAD_Org_ID(0);
 		bpCA.setValue(AD_User_Name);
 		bpCA.setName(AD_User_Name);
 		bpCA.setBPGroup(bpg);
@@ -1348,13 +1370,14 @@ public final class MSetup
 			log.log(Level.SEVERE, "SalesRep (Admin) NOT inserted");
 		//  Location for Client-Admin
 		MLocation bpLocCA = new MLocation(m_ctx, C_Country_ID, C_Region_ID, City, m_trx.getTrxName());
+		bpLocCA.setAD_Org_ID(0);
 		bpLocCA.saveEx();
 		MBPartnerLocation bplCA = new MBPartnerLocation(bpCA);
 		bplCA.setC_Location_ID(bpLocCA.getC_Location_ID());
 		if (!bplCA.save())
 			log.log(Level.SEVERE, "BP_Location (Admin) NOT inserted");
 		//  Update User
-		sqlCmd = new StringBuffer ("UPDATE AD_User SET C_BPartner_ID=");
+		sqlCmd = new StringBuilder ("UPDATE AD_User SET C_BPartner_ID=");
 		sqlCmd.append(bpCA.getC_BPartner_ID()).append(" WHERE AD_User_ID=").append(AD_User_ID);
 		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
@@ -1363,7 +1386,7 @@ public final class MSetup
 
 		//  Payment Term
 		int C_PaymentTerm_ID = getNextID(getAD_Client_ID(), "C_PaymentTerm");
-		sqlCmd = new StringBuffer ("INSERT INTO C_PaymentTerm ");
+		sqlCmd = new StringBuilder ("INSERT INTO C_PaymentTerm ");
 		sqlCmd.append("(C_PaymentTerm_ID,").append(m_stdColumns).append(",");
 		sqlCmd.append("Value,Name,NetDays,GraceDays,DiscountDays,Discount,DiscountDays2,Discount2,IsDefault,C_PaymentTerm_UU) VALUES (");
 		sqlCmd.append(C_PaymentTerm_ID).append(",").append(m_stdValues).append(",");
@@ -1372,7 +1395,7 @@ public final class MSetup
 		if (no != 1)
 			log.log(Level.SEVERE, "PaymentTerm NOT inserted");
 		// Payment Term Translation
-		sqlCmd = new StringBuffer ("INSERT INTO C_PaymentTerm_Trl (AD_Language,C_PaymentTerm_ID, Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,C_PaymentTerm_Trl_UU)");
+		sqlCmd = new StringBuilder ("INSERT INTO C_PaymentTerm_Trl (AD_Language,C_PaymentTerm_ID, Description,Name, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,C_PaymentTerm_Trl_UU)");
 		sqlCmd.append(" SELECT l.AD_Language,t.C_PaymentTerm_ID, t.Description,t.Name, 'N',t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy, generate_uuid() FROM AD_Language l, C_PaymentTerm t");
 		sqlCmd.append(" WHERE l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.C_PaymentTerm_ID=").append(C_PaymentTerm_ID);
 		sqlCmd.append(" AND NOT EXISTS (SELECT * FROM C_PaymentTerm_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.C_PaymentTerm_ID=t.C_PaymentTerm_ID)");
@@ -1382,7 +1405,7 @@ public final class MSetup
 
 		//  Project Cycle
 		C_Cycle_ID = getNextID(getAD_Client_ID(), "C_Cycle");
-		sqlCmd = new StringBuffer ("INSERT INTO C_Cycle ");
+		sqlCmd = new StringBuilder ("INSERT INTO C_Cycle ");
 		sqlCmd.append("(C_Cycle_ID,").append(m_stdColumns).append(",");
 		sqlCmd.append(" Name,C_Currency_ID,C_Cycle_UU) VALUES (");
 		sqlCmd.append(C_Cycle_ID).append(",").append(m_stdValues).append(", ");
@@ -1397,7 +1420,7 @@ public final class MSetup
 
 		//	Create Default Project
 		int C_Project_ID = getNextID(getAD_Client_ID(), "C_Project");
-		sqlCmd = new StringBuffer ("INSERT INTO C_Project ");
+		sqlCmd = new StringBuilder ("INSERT INTO C_Project ");
 		sqlCmd.append("(C_Project_ID,").append(m_stdColumns).append(",");
 		sqlCmd.append(" Value,Name,C_Currency_ID,IsSummary,C_Project_UU) VALUES (");
 		sqlCmd.append(C_Project_ID).append(",").append(m_stdValuesOrg).append(", ");
@@ -1410,7 +1433,7 @@ public final class MSetup
 		//  Default Project
 		if (m_hasProject)
 		{
-			sqlCmd = new StringBuffer ("UPDATE C_AcctSchema_Element SET ");
+			sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET ");
 			sqlCmd.append("C_Project_ID=").append(C_Project_ID);
 			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
 			sqlCmd.append(" AND ElementType='PJ'");
@@ -1428,6 +1451,10 @@ public final class MSetup
 		else
 			log.log(Level.SEVERE, "CashBook NOT inserted");
 		//
+		//do not commit if it is a dry run
+		if (m_dryRun)
+			return true;
+		
 		boolean success = m_trx.commit();
 		m_trx.close();
 		log.info("finish");
@@ -1513,4 +1540,11 @@ public final class MSetup
 		} catch (Exception e) {}
 	}
 
+	/**
+	 * 
+	 * @return trxName
+	 */
+	public String getTrxName() {
+		return m_trx != null ? m_trx.getTrxName() : null;
+	}
 }   //  MSetup

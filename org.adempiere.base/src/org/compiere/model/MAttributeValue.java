@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Env;
+
 /**
  *  Product Attribute Value
  *
@@ -41,14 +43,6 @@ public class MAttributeValue extends X_M_AttributeValue
 	public MAttributeValue (Properties ctx, int M_AttributeValue_ID, String trxName)
 	{
 		super (ctx, M_AttributeValue_ID, trxName);
-		/** if (M_AttributeValue_ID == 0)
-		{
-		setM_AttributeValue_ID (0);
-		setM_Attribute_ID (0);
-		setName (null);
-		setValue (null);
-		}
-		**/
 	}	//	MAttributeValue
 
 	/**
@@ -62,6 +56,36 @@ public class MAttributeValue extends X_M_AttributeValue
 		super(ctx, rs, trxName);
 	}	//	MAttributeValue
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MAttributeValue(MAttributeValue copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MAttributeValue(Properties ctx, MAttributeValue copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MAttributeValue(Properties ctx, MAttributeValue copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	/**
 	 *	String Representation
 	 * 	@return info

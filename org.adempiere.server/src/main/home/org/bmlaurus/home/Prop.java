@@ -75,7 +75,7 @@ public final class Prop implements Serializable {
 	private static final String	DEF_SENDREQUEST_LINK=	"/wstore/request.jsp";
 	private static final String	DEF_RESOURCE_LINK	=	"http://www.idempiere.org";
 	private static final String DEF_SUPPORT_LINK 	=	"#";
-	private static final String DEF_IRC_LINK 		=	"http://webchat.freenode.net/?channels=idempiere";
+	private static final String DEF_IRC_LINK 		=	"https://mattermost.idempiere.org";
 	private static final String	DEF_WIKI_LINK 		=	"http://wiki.idempiere.org/";
 	private static final String DEF_FORUMS_LINK		=	"http://groups.google.com/group/idempiere";
 	private static final String	DEF_SUPPORTREQ_LINK	=	"http://jira.idempiere.com";
@@ -90,7 +90,7 @@ public final class Prop implements Serializable {
 	public static final String	SOC_7				=	"Social7";
 	
 	/**Defaults*/
-	private static final String CREDITS				=	"Welcome to the iDempiere (OSGi+ADempiere) 7.1 Page!";
+	private static final String CREDITS				=	"Welcome to the iDempiere 10 Development Build Page!";
 	private static String LOGO_URL 					= 	null;
 	
 	
@@ -193,7 +193,7 @@ public final class Prop implements Serializable {
 			try {
 				fis = new URL(getProperty(TEMPLATE_PATH)+getProperty(TEMPLATE_NAME)+"/styles/template.css");
 				byte data[]=read(fis);
-				ret+=Base64.getEncoder().encode (data);
+				ret+=Base64.getEncoder().encodeToString (data);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -273,7 +273,7 @@ public final class Prop implements Serializable {
 			byte data[]=read(fis);
 			if(data==null||data.length<=0)
 				return null;
-			ret+=Base64.getEncoder().encode (data);
+			ret+=Base64.getEncoder().encodeToString (data);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MClient;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCost;
 import org.compiere.model.MCostDetail;
@@ -84,7 +85,11 @@ public class Doc_Inventory extends Doc
 		parentDocSubTypeInv = dt.getDocSubTypeInv();
 		
 		// IDEMPIERE-3046 Add Currency Field to Cost Adjustment Window 
-		if (!MDocType.DOCSUBTYPEINV_CostAdjustment.equals(parentDocSubTypeInv))
+		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(parentDocSubTypeInv))
+		{
+			if (inventory.getC_Currency_ID() == 0)
+				setC_Currency_ID(MClient.get(getCtx()).getAcctSchema().getC_Currency_ID()); 
+		} else 
 		{
 			setC_Currency_ID (NO_CURRENCY);	
 		}

@@ -22,19 +22,34 @@ import java.util.Properties;
 
 /** Generated Model for AD_ReplicationDocument
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_ReplicationDocument")
 public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocument, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ReplicationDocument (Properties ctx, int AD_ReplicationDocument_ID, String trxName)
     {
       super (ctx, AD_ReplicationDocument_ID, trxName);
+      /** if (AD_ReplicationDocument_ID == 0)
+        {
+			setAD_ReplicationDocument_ID (0);
+			setAD_ReplicationStrategy_ID (0);
+			setAD_Table_ID (0);
+			setC_DocType_ID (0);
+			setReplicationType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ReplicationDocument (Properties ctx, int AD_ReplicationDocument_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ReplicationDocument_ID, trxName, virtualColumns);
       /** if (AD_ReplicationDocument_ID == 0)
         {
 			setAD_ReplicationDocument_ID (0);
@@ -68,24 +83,25 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_ReplicationDocument[")
+      StringBuilder sb = new StringBuilder ("X_AD_ReplicationDocument[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set Replication Document.
-		@param AD_ReplicationDocument_ID Replication Document	  */
+		@param AD_ReplicationDocument_ID Replication Document
+	*/
 	public void setAD_ReplicationDocument_ID (int AD_ReplicationDocument_ID)
 	{
-		if (AD_ReplicationDocument_ID < 1) 
+		if (AD_ReplicationDocument_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ReplicationDocument_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ReplicationDocument_ID, Integer.valueOf(AD_ReplicationDocument_ID));
 	}
 
 	/** Get Replication Document.
 		@return Replication Document	  */
-	public int getAD_ReplicationDocument_ID () 
+	public int getAD_ReplicationDocument_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ReplicationDocument_ID);
 		if (ii == null)
@@ -94,7 +110,8 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 	}
 
 	/** Set AD_ReplicationDocument_UU.
-		@param AD_ReplicationDocument_UU AD_ReplicationDocument_UU	  */
+		@param AD_ReplicationDocument_UU AD_ReplicationDocument_UU
+	*/
 	public void setAD_ReplicationDocument_UU (String AD_ReplicationDocument_UU)
 	{
 		set_Value (COLUMNNAME_AD_ReplicationDocument_UU, AD_ReplicationDocument_UU);
@@ -102,27 +119,26 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 
 	/** Get AD_ReplicationDocument_UU.
 		@return AD_ReplicationDocument_UU	  */
-	public String getAD_ReplicationDocument_UU () 
+	public String getAD_ReplicationDocument_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_ReplicationDocument_UU);
 	}
 
 	/** Set Replication Strategy.
-		@param AD_ReplicationStrategy_ID 
-		Data Replication Strategy
-	  */
+		@param AD_ReplicationStrategy_ID Data Replication Strategy
+	*/
 	public void setAD_ReplicationStrategy_ID (int AD_ReplicationStrategy_ID)
 	{
-		if (AD_ReplicationStrategy_ID < 1) 
+		if (AD_ReplicationStrategy_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ReplicationStrategy_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ReplicationStrategy_ID, Integer.valueOf(AD_ReplicationStrategy_ID));
 	}
 
 	/** Get Replication Strategy.
 		@return Data Replication Strategy
 	  */
-	public int getAD_ReplicationStrategy_ID () 
+	public int getAD_ReplicationStrategy_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ReplicationStrategy_ID);
 		if (ii == null)
@@ -131,26 +147,26 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -159,26 +175,26 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocType_ID(), get_TrxName());
+	}
 
 	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
+		@param C_DocType_ID Document type or rules
+	*/
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
-		if (C_DocType_ID < 0) 
+		if (C_DocType_ID < 0)
 			set_Value (COLUMNNAME_C_DocType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
 	}
 
 	/** Get Document Type.
 		@return Document type or rules
 	  */
-	public int getC_DocType_ID () 
+	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
@@ -187,9 +203,8 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -198,25 +213,24 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** ReplicationType AD_Reference_ID=126 */
 	public static final int REPLICATIONTYPE_AD_Reference_ID=126;
+	/** Broadcast = B */
+	public static final String REPLICATIONTYPE_Broadcast = "B";
 	/** Local = L */
 	public static final String REPLICATIONTYPE_Local = "L";
 	/** Merge = M */
 	public static final String REPLICATIONTYPE_Merge = "M";
 	/** Reference = R */
 	public static final String REPLICATIONTYPE_Reference = "R";
-	/** Broadcast = B */
-	public static final String REPLICATIONTYPE_Broadcast = "B";
 	/** Set Replication Type.
-		@param ReplicationType 
-		Type of Data Replication
-	  */
+		@param ReplicationType Type of Data Replication
+	*/
 	public void setReplicationType (String ReplicationType)
 	{
 
@@ -226,7 +240,7 @@ public class X_AD_ReplicationDocument extends PO implements I_AD_ReplicationDocu
 	/** Get Replication Type.
 		@return Type of Data Replication
 	  */
-	public String getReplicationType () 
+	public String getReplicationType()
 	{
 		return (String)get_Value(COLUMNNAME_ReplicationType);
 	}

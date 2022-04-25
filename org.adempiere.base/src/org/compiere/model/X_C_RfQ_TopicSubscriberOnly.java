@@ -23,19 +23,31 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQ_TopicSubscriberOnly
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_RfQ_TopicSubscriberOnly")
 public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubscriberOnly, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_RfQ_TopicSubscriberOnly (Properties ctx, int C_RfQ_TopicSubscriberOnly_ID, String trxName)
     {
       super (ctx, C_RfQ_TopicSubscriberOnly_ID, trxName);
+      /** if (C_RfQ_TopicSubscriberOnly_ID == 0)
+        {
+			setC_RfQ_TopicSubscriber_ID (0);
+			setC_RfQ_TopicSubscriberOnly_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RfQ_TopicSubscriberOnly (Properties ctx, int C_RfQ_TopicSubscriberOnly_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RfQ_TopicSubscriberOnly_ID, trxName, virtualColumns);
       /** if (C_RfQ_TopicSubscriberOnly_ID == 0)
         {
 			setC_RfQ_TopicSubscriber_ID (0);
@@ -66,32 +78,32 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_RfQ_TopicSubscriberOnly[")
+      StringBuilder sb = new StringBuilder ("X_C_RfQ_TopicSubscriberOnly[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_RfQ_TopicSubscriber getC_RfQ_TopicSubscriber() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_RfQ_TopicSubscriber)MTable.get(getCtx(), org.compiere.model.I_C_RfQ_TopicSubscriber.Table_Name)
-			.getPO(getC_RfQ_TopicSubscriber_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_RfQ_TopicSubscriber)MTable.get(getCtx(), org.compiere.model.I_C_RfQ_TopicSubscriber.Table_ID)
+			.getPO(getC_RfQ_TopicSubscriber_ID(), get_TrxName());
+	}
 
 	/** Set RfQ Subscriber.
-		@param C_RfQ_TopicSubscriber_ID 
-		Request for Quotation Topic Subscriber
-	  */
+		@param C_RfQ_TopicSubscriber_ID Request for Quotation Topic Subscriber
+	*/
 	public void setC_RfQ_TopicSubscriber_ID (int C_RfQ_TopicSubscriber_ID)
 	{
-		if (C_RfQ_TopicSubscriber_ID < 1) 
+		if (C_RfQ_TopicSubscriber_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RfQ_TopicSubscriber_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RfQ_TopicSubscriber_ID, Integer.valueOf(C_RfQ_TopicSubscriber_ID));
 	}
 
 	/** Get RfQ Subscriber.
 		@return Request for Quotation Topic Subscriber
 	  */
-	public int getC_RfQ_TopicSubscriber_ID () 
+	public int getC_RfQ_TopicSubscriber_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQ_TopicSubscriber_ID);
 		if (ii == null)
@@ -100,21 +112,20 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 	}
 
 	/** Set RfQ Topic Subscriber Restriction.
-		@param C_RfQ_TopicSubscriberOnly_ID 
-		Include Subscriber only for certain products or product categories
-	  */
+		@param C_RfQ_TopicSubscriberOnly_ID Include Subscriber only for certain products or product categories
+	*/
 	public void setC_RfQ_TopicSubscriberOnly_ID (int C_RfQ_TopicSubscriberOnly_ID)
 	{
-		if (C_RfQ_TopicSubscriberOnly_ID < 1) 
+		if (C_RfQ_TopicSubscriberOnly_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RfQ_TopicSubscriberOnly_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RfQ_TopicSubscriberOnly_ID, Integer.valueOf(C_RfQ_TopicSubscriberOnly_ID));
 	}
 
 	/** Get RfQ Topic Subscriber Restriction.
 		@return Include Subscriber only for certain products or product categories
 	  */
-	public int getC_RfQ_TopicSubscriberOnly_ID () 
+	public int getC_RfQ_TopicSubscriberOnly_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQ_TopicSubscriberOnly_ID);
 		if (ii == null)
@@ -123,7 +134,8 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 	}
 
 	/** Set C_RfQ_TopicSubscriberOnly_UU.
-		@param C_RfQ_TopicSubscriberOnly_UU C_RfQ_TopicSubscriberOnly_UU	  */
+		@param C_RfQ_TopicSubscriberOnly_UU C_RfQ_TopicSubscriberOnly_UU
+	*/
 	public void setC_RfQ_TopicSubscriberOnly_UU (String C_RfQ_TopicSubscriberOnly_UU)
 	{
 		set_Value (COLUMNNAME_C_RfQ_TopicSubscriberOnly_UU, C_RfQ_TopicSubscriberOnly_UU);
@@ -131,15 +143,14 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 
 	/** Get C_RfQ_TopicSubscriberOnly_UU.
 		@return C_RfQ_TopicSubscriberOnly_UU	  */
-	public String getC_RfQ_TopicSubscriberOnly_UU () 
+	public String getC_RfQ_TopicSubscriberOnly_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_RfQ_TopicSubscriberOnly_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -148,32 +159,32 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	public org.compiere.model.I_M_Product_Category getM_Product_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_Name)
-			.getPO(getM_Product_Category_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product_Category)MTable.get(getCtx(), org.compiere.model.I_M_Product_Category.Table_ID)
+			.getPO(getM_Product_Category_ID(), get_TrxName());
+	}
 
 	/** Set Product Category.
-		@param M_Product_Category_ID 
-		Category of a Product
-	  */
+		@param M_Product_Category_ID Category of a Product
+	*/
 	public void setM_Product_Category_ID (int M_Product_Category_ID)
 	{
-		if (M_Product_Category_ID < 1) 
+		if (M_Product_Category_ID < 1)
 			set_Value (COLUMNNAME_M_Product_Category_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_Category_ID, Integer.valueOf(M_Product_Category_ID));
 	}
 
 	/** Get Product Category.
 		@return Category of a Product
 	  */
-	public int getM_Product_Category_ID () 
+	public int getM_Product_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_Category_ID);
 		if (ii == null)
@@ -190,26 +201,26 @@ public class X_C_RfQ_TopicSubscriberOnly extends PO implements I_C_RfQ_TopicSubs
     }
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)

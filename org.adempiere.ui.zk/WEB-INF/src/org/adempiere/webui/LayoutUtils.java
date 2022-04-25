@@ -32,11 +32,11 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.LayoutRegion;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Space;
@@ -55,14 +55,16 @@ public final class LayoutUtils {
 	/**
 	 * @param layout
 	 */
-	public static void sendDeferLayoutEvent(Borderlayout layout, int timeout) {
-		StringBuilder content = new StringBuilder();		
-		content.append("ad_deferRenderBorderLayout('")
-			   .append(layout.getUuid())
-			   .append("',").append(timeout).append(");");
-		
-		AuScript as = new AuScript(null, content.toString());
-		Clients.response("deferRenderBorderLayout", as);		
+	@Deprecated
+	public static void sendDeferLayoutEvent(org.zkoss.zul.Borderlayout layout, int timeout) {
+		/* this is not required anymore */
+//		StringBuilder content = new StringBuilder();
+//		content.append("ad_deferRenderBorderLayout('")
+//			   .append(layout.getUuid())
+//			   .append("',").append(timeout).append(");");
+//
+//		AuScript as = new AuScript(null, content.toString());
+//		Clients.response("deferRenderBorderLayout", as);
 	}
 	
 	/**
@@ -133,7 +135,7 @@ public final class LayoutUtils {
 		if (delayMs > 0) {
 			script.append("setTimeout(function() { ");
 		}
-		script.append("_idempiere_popup_window('#")
+		script.append("idempiere.show_popup_window('#")
 			.append(ref.getUuid())
 			.append("','#")
 			.append(window.getUuid())
@@ -159,7 +161,7 @@ public final class LayoutUtils {
 		if (window.getPage() == null)
 			window.setPage(ref.getPage());
 		StringBuilder script = new StringBuilder();
-		script.append("_idempiere_popup_window('#")
+		script.append("idempiere.show_popup_window('#")
 			.append(ref.getUuid())
 			.append("','#")
 			.append(window.getUuid())
@@ -178,7 +180,7 @@ public final class LayoutUtils {
 	 */
 	public static void positionWindow(Component ref, Window window, String position) {
 		StringBuilder script = new StringBuilder();
-		script.append("_idempiere_popup_window('#")
+		script.append("idempiere.show_popup_window('#")
 			.append(ref.getUuid())
 			.append("','#")
 			.append(window.getUuid())
@@ -189,14 +191,14 @@ public final class LayoutUtils {
 	}
 	
 	/**
-	 * open popup window relative to the ref component
+	 * open embedded window relative to the ref component
 	 * @param ref
 	 * @param window
 	 * @param position
 	 */
 	public static void openEmbeddedWindow(Component ref, Window window, String position) {
 		StringBuilder script = new StringBuilder();
-		script.append("_idempiere_popup_window('#")
+		script.append("idempiere.show_popup_window('#")
 			.append(ref.getUuid())
 			.append("','#")
 			.append(window.getUuid())
@@ -205,7 +207,26 @@ public final class LayoutUtils {
 			.append("');");
 		window.setVisible(true);
 		window.setMode(Mode.EMBEDDED);
-		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
+		Clients.response("_openEmbeddedWindow_", new AuScript(window, script.toString()));
+	}
+	
+	/**
+	 * open highlighted window relative to the ref component
+	 * @param ref
+	 * @param window
+	 * @param position
+	 */
+	public static void openHighlightedWindow(Component ref, Window window, String position) {
+		StringBuilder script = new StringBuilder();
+		script.append("idempiere.show_popup_window('#")
+			.append(ref.getUuid())
+			.append("','#")
+			.append(window.getUuid())
+			.append("','")
+			.append(position)
+			.append("');");
+		window.setMode(Mode.HIGHLIGHTED);
+		Clients.response("_openHighlightedWindow_", new AuScript(window, script.toString()));
 	}
 	
 	/**
@@ -267,8 +288,8 @@ public final class LayoutUtils {
 	 * @param window 
 	 * @param childOfOwn  
 	 * @param ownModel
-	 * @return when show success return IMask object, it is own window, use {@link ISupportMask#hideMask()} to hiden mask. 
-	 * other return null. with case return null (show over childOfOwn or parent of childOfOwn but childOfOwn or parent of childOfOwn isn't implement {@link ISupportMask}), please consider use {@link #showOverlapWithMask(Component, Component)}  
+	 * @return when show success return IMask object, it is own window, use {@link ISupportMask#hideMask()} to hidden mask. 
+	 * other return null.  
 	 */
 	public static ISupportMask showWindowWithMask(Window window, Component childOfOwn, int ownModel){
 		ISupportMask ownWindow = null;
@@ -295,13 +316,19 @@ public final class LayoutUtils {
 	}
 	
 	/**
-	 * Show window in center of component get from {@link}
+	 * Show window in center of component
 	 * @param window
 	 * @param mask
 	 */
 	protected static void showWindowWithMask(Window window, ISupportMask mask){
 		mask.showMask();
 		mask.getMaskComponent().appendChild(window);
+		
+		StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+		script.append(mask.getMaskComponent().getUuid()).append("');");
+		script.append("var d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
+		Clients.response(new AuScript(script.toString()));
+		
 		LayoutUtils.openOverlappedWindow(mask.getMaskComponent(), window, "middle_center");
 	}
 	
@@ -328,7 +355,7 @@ public final class LayoutUtils {
 	 * find parent control of child control, parent must implement {@link ISupportMask}
 	 * if parentClass != null, parent class must extends parentClass
 	 * @param child
-	 * @param ownModel
+	 * @param parentClass
 	 * @return
 	 */
 	public static ISupportMask findMaskParent (Component child, Class<?> parentClass){
@@ -465,7 +492,6 @@ public final class LayoutUtils {
 			LayoutUtils.removeSclass("slide", (HtmlBasedComponent) evt.getTarget());
 		else
 			LayoutUtils.addSclass("slide", (HtmlBasedComponent) evt.getTarget());
-		evt.getTarget().invalidate();
 	};
 	
 	/**
@@ -474,5 +500,46 @@ public final class LayoutUtils {
 	 */
 	public static void addSlideSclass(LayoutRegion region) {
 		region.addEventListener(Events.ON_OPEN, addSlideEventListener);
+	}
+	
+	/**
+	 * find popup ancestor of comp
+	 * @param comp
+	 * @return {@link Popup} if comp or one of its ancestor is Popup
+	 */
+	public static Popup findPopup(Component comp) {
+		Component c = comp;
+		while (c != null) {
+			if (c instanceof Popup)
+				return (Popup) c;
+			c = c.getParent();
+		}
+		return null;
+	}
+
+	/**
+	 * call popup.detach when it is close
+	 * @param popup
+	 */
+	public static void autoDetachOnClose(Popup popup) {
+		popup.addEventListener(Events.ON_OPEN, (OpenEvent e) -> {
+			if (!e.isOpen()) {
+				popup.detach();
+			}
+		});
+	}
+
+	/**
+	 * set target same width as ref using client side script
+	 * @param target
+	 * @param ref
+	 */
+	public static void sameWidth(HtmlBasedComponent target, HtmlBasedComponent ref) {
+		StringBuilder script = new StringBuilder()
+				.append("var t=zk.Widget.$('#").append(target.getUuid()).append("');")
+				.append("var r=zk.Widget.$('#").append(ref.getUuid()).append("');")
+				.append("jq(t).css({'width':").append("jq(r).width()+'px'});")
+				.append("t.setWidth(\"").append("jq(r).width()+'px'\");");
+		Clients.response("_sameWidth_", new AuScript(target, script.toString()));
 	}
 }

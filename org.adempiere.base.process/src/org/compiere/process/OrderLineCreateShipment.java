@@ -33,6 +33,7 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: OrderLineCreateShipment.java,v 1.1 2007/07/23 05:34:35 mfuggle Exp $
  */
+@org.adempiere.base.annotation.Process
 public class OrderLineCreateShipment extends SvrProcess
 {
 	/**	Shipment					*/
@@ -57,7 +58,7 @@ public class OrderLineCreateShipment extends SvrProcess
 		}
 		
 		if (p_MovementDate == null)
-			p_MovementDate = Env.getContextAsDate(getCtx(), "#Date");
+			p_MovementDate = Env.getContextAsDate(getCtx(), Env.DATE);
 		if ( p_MovementDate==null)
 			p_MovementDate = new Timestamp(System.currentTimeMillis());
 		
@@ -98,7 +99,6 @@ public class OrderLineCreateShipment extends SvrProcess
 		
 		MInOutLine sline = new MInOutLine( shipment );
 		sline.setOrderLine(line, 0, line.getQtyReserved());
-		//sline.setDatePromised(line.getDatePromised());
 		sline.setQtyEntered(line.getQtyReserved());
 		sline.setC_UOM_ID(line.getC_UOM_ID());
 		sline.setQty(line.getQtyReserved());

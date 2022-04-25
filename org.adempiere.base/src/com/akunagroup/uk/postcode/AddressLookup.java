@@ -118,7 +118,7 @@ public class AddressLookup implements AddressLookupInterface {
 	 */
 	private URL buildUrl(String postcode) {
 		try {
-			StringBuffer urlStr = new StringBuffer();
+			StringBuilder urlStr = new StringBuilder();
 			urlStr.append(serverUrl);
 			urlStr.append(serverUrl.endsWith("/") ? "" : "/");
 			urlStr.append("/query?op=query&");
@@ -151,8 +151,6 @@ public class AddressLookup implements AddressLookupInterface {
 		
 		// Get the root element.
 		Element doc = xmlDoc.getDocumentElement();
-		
-		//System.out.println("Root Node: " + doc.getNodeName());
 		
 		// Get the children.
 		NodeList DataElements = doc.getElementsByTagName("DataElement"); 
@@ -318,10 +316,6 @@ public class AddressLookup implements AddressLookupInterface {
 		} else
 			log.log(Level.WARNING, "Postcode lookup error: " + postcode.getPostcode());
 		
-		//if (postcode.getPostcode().length()==0)
-		//	System.out.println("Postcode NOT found! ");
-		//else
-		
 		return returnValue;
 	}
 
@@ -335,8 +329,8 @@ public class AddressLookup implements AddressLookupInterface {
 	private Document fetchResult(URL cgiUrl) {
 		try {
 			// Get document builder.
-			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+			docBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 			// Get the connection.
 			URLConnection URLconnection = cgiUrl.openConnection();
@@ -414,8 +408,7 @@ public class AddressLookup implements AddressLookupInterface {
 	
 	
 	/**
-	 * @param accessCode
-	 *            the accessCode to set
+	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
 		this.accessCode = password.trim();

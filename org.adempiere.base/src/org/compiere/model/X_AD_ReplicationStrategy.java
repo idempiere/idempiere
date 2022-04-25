@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ReplicationStrategy
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_ReplicationStrategy")
 public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStrategy, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_ReplicationStrategy (Properties ctx, int AD_ReplicationStrategy_ID, String trxName)
@@ -40,7 +41,20 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
         {
 			setAD_ReplicationStrategy_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_ReplicationStrategy (Properties ctx, int AD_ReplicationStrategy_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_ReplicationStrategy_ID, trxName, virtualColumns);
+      /** if (AD_ReplicationStrategy_ID == 0)
+        {
+			setAD_ReplicationStrategy_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
         } */
     }
@@ -68,27 +82,26 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_ReplicationStrategy[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_ReplicationStrategy[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Replication Strategy.
-		@param AD_ReplicationStrategy_ID 
-		Data Replication Strategy
-	  */
+		@param AD_ReplicationStrategy_ID Data Replication Strategy
+	*/
 	public void setAD_ReplicationStrategy_ID (int AD_ReplicationStrategy_ID)
 	{
-		if (AD_ReplicationStrategy_ID < 1) 
+		if (AD_ReplicationStrategy_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_ReplicationStrategy_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_ReplicationStrategy_ID, Integer.valueOf(AD_ReplicationStrategy_ID));
 	}
 
 	/** Get Replication Strategy.
 		@return Data Replication Strategy
 	  */
-	public int getAD_ReplicationStrategy_ID () 
+	public int getAD_ReplicationStrategy_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ReplicationStrategy_ID);
 		if (ii == null)
@@ -97,7 +110,8 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 	}
 
 	/** Set AD_ReplicationStrategy_UU.
-		@param AD_ReplicationStrategy_UU AD_ReplicationStrategy_UU	  */
+		@param AD_ReplicationStrategy_UU AD_ReplicationStrategy_UU
+	*/
 	public void setAD_ReplicationStrategy_UU (String AD_ReplicationStrategy_UU)
 	{
 		set_Value (COLUMNNAME_AD_ReplicationStrategy_UU, AD_ReplicationStrategy_UU);
@@ -105,15 +119,14 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 
 	/** Get AD_ReplicationStrategy_UU.
 		@return AD_ReplicationStrategy_UU	  */
-	public String getAD_ReplicationStrategy_UU () 
+	public String getAD_ReplicationStrategy_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_ReplicationStrategy_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -122,7 +135,7 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -130,9 +143,8 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -142,29 +154,31 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	public org.compiere.model.I_EXP_Processor getEXP_Processor() throws RuntimeException
-    {
-		return (org.compiere.model.I_EXP_Processor)MTable.get(getCtx(), org.compiere.model.I_EXP_Processor.Table_Name)
-			.getPO(getEXP_Processor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_EXP_Processor)MTable.get(getCtx(), org.compiere.model.I_EXP_Processor.Table_ID)
+			.getPO(getEXP_Processor_ID(), get_TrxName());
+	}
 
 	/** Set Export Processor.
-		@param EXP_Processor_ID Export Processor	  */
+		@param EXP_Processor_ID Export Processor
+	*/
 	public void setEXP_Processor_ID (int EXP_Processor_ID)
 	{
-		if (EXP_Processor_ID < 1) 
+		if (EXP_Processor_ID < 1)
 			set_Value (COLUMNNAME_EXP_Processor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_EXP_Processor_ID, Integer.valueOf(EXP_Processor_ID));
 	}
 
 	/** Get Export Processor.
 		@return Export Processor	  */
-	public int getEXP_Processor_ID () 
+	public int getEXP_Processor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_EXP_Processor_ID);
 		if (ii == null)
@@ -173,9 +187,8 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -184,15 +197,14 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -201,7 +213,7 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -215,9 +227,8 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -226,7 +237,7 @@ public class X_AD_ReplicationStrategy extends PO implements I_AD_ReplicationStra
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

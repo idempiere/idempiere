@@ -37,7 +37,7 @@ import org.compiere.model.MUser;
 /**
  *  Web User Info.
  *	Assumes that Email is a direct match.
- *  UPDATE AD_User SET EMail=TRIM(EMail) WHERE Email<>TRIM(EMail)
+ *  UPDATE AD_User SET EMail=TRIM(EMail) WHERE Email&lt;&gt;TRIM(EMail)
  *  @author Jorg Janke
  *  @version $Id$
  */
@@ -240,7 +240,7 @@ public class WebUser
 			}
 			if (m_bpl != null)
 			{
-				m_loc = MLocation.get (m_ctx, m_bpl.getC_Location_ID(), null);
+				m_loc = MLocation.getCopy (m_ctx, m_bpl.getC_Location_ID(), null);
 				if (log.isLoggable(Level.FINE)) log.fine("Found LOC=" + m_loc);
 			}
 			else
@@ -594,7 +594,7 @@ public class WebUser
 	}	//	getPassword
 
 	/**
-	 * 	Check & Save Password
+	 * 	Check and Save Password
 	 */
 	public void setPassword ()
 	{
@@ -754,7 +754,7 @@ public class WebUser
 		setPasswordOK (m_loggedIn, password);
 		if (log.isLoggable(Level.FINE)) log.fine("success=" + m_loggedIn);
 		if (m_loggedIn)
-			Env.setContext(m_ctx, "#AD_User_ID", getAD_User_ID());
+			Env.setContext(m_ctx, Env.AD_USER_ID, getAD_User_ID());
 		return m_loggedIn;
 	}	//	isLoggedIn
 
@@ -1153,7 +1153,7 @@ public class WebUser
 	}
 
 	/**
-	 * 	Check & Set EMail Validation Code.
+	 * 	Check and Set EMail Validation Code.
 	 *	@param code code
 	 *	@param info info
 	 */

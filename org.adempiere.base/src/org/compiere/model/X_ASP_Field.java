@@ -22,19 +22,31 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Field
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="ASP_Field")
 public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_ASP_Field (Properties ctx, int ASP_Field_ID, String trxName)
     {
       super (ctx, ASP_Field_ID, trxName);
+      /** if (ASP_Field_ID == 0)
+        {
+			setASP_Status (null);
+// S
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Field (Properties ctx, int ASP_Field_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Field_ID, trxName, virtualColumns);
       /** if (ASP_Field_ID == 0)
         {
 			setASP_Status (null);
@@ -65,32 +77,32 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_ASP_Field[")
+      StringBuilder sb = new StringBuilder ("X_ASP_Field[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_Name)
-			.getPO(getAD_Field_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Field)MTable.get(getCtx(), org.compiere.model.I_AD_Field.Table_ID)
+			.getPO(getAD_Field_ID(), get_TrxName());
+	}
 
 	/** Set Field.
-		@param AD_Field_ID 
-		Field on a database table
-	  */
+		@param AD_Field_ID Field on a database table
+	*/
 	public void setAD_Field_ID (int AD_Field_ID)
 	{
-		if (AD_Field_ID < 1) 
+		if (AD_Field_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
 	}
 
 	/** Get Field.
 		@return Field on a database table
 	  */
-	public int getAD_Field_ID () 
+	public int getAD_Field_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
 		if (ii == null)
@@ -99,18 +111,19 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 	}
 
 	/** Set ASP Field.
-		@param ASP_Field_ID ASP Field	  */
+		@param ASP_Field_ID ASP Field
+	*/
 	public void setASP_Field_ID (int ASP_Field_ID)
 	{
-		if (ASP_Field_ID < 1) 
+		if (ASP_Field_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Field_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Field_ID, Integer.valueOf(ASP_Field_ID));
 	}
 
 	/** Get ASP Field.
 		@return ASP Field	  */
-	public int getASP_Field_ID () 
+	public int getASP_Field_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Field_ID);
 		if (ii == null)
@@ -119,7 +132,8 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 	}
 
 	/** Set ASP_Field_UU.
-		@param ASP_Field_UU ASP_Field_UU	  */
+		@param ASP_Field_UU ASP_Field_UU
+	*/
 	public void setASP_Field_UU (String ASP_Field_UU)
 	{
 		set_Value (COLUMNNAME_ASP_Field_UU, ASP_Field_UU);
@@ -127,7 +141,7 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 
 	/** Get ASP_Field_UU.
 		@return ASP_Field_UU	  */
-	public String getASP_Field_UU () 
+	public String getASP_Field_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Field_UU);
 	}
@@ -141,7 +155,8 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 	/** Undefined = U */
 	public static final String ASP_STATUS_Undefined = "U";
 	/** Set ASP Status.
-		@param ASP_Status ASP Status	  */
+		@param ASP_Status ASP Status
+	*/
 	public void setASP_Status (String ASP_Status)
 	{
 
@@ -150,29 +165,31 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 
 	/** Get ASP Status.
 		@return ASP Status	  */
-	public String getASP_Status () 
+	public String getASP_Status()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Status);
 	}
 
 	public org.compiere.model.I_ASP_Tab getASP_Tab() throws RuntimeException
-    {
-		return (org.compiere.model.I_ASP_Tab)MTable.get(getCtx(), org.compiere.model.I_ASP_Tab.Table_Name)
-			.getPO(getASP_Tab_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_ASP_Tab)MTable.get(getCtx(), org.compiere.model.I_ASP_Tab.Table_ID)
+			.getPO(getASP_Tab_ID(), get_TrxName());
+	}
 
 	/** Set ASP Tab.
-		@param ASP_Tab_ID ASP Tab	  */
+		@param ASP_Tab_ID ASP Tab
+	*/
 	public void setASP_Tab_ID (int ASP_Tab_ID)
 	{
-		if (ASP_Tab_ID < 1) 
+		if (ASP_Tab_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Tab_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Tab_ID, Integer.valueOf(ASP_Tab_ID));
 	}
 
 	/** Get ASP Tab.
 		@return ASP Tab	  */
-	public int getASP_Tab_ID () 
+	public int getASP_Tab_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Tab_ID);
 		if (ii == null)

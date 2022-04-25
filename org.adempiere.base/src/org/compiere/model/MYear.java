@@ -28,7 +28,6 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.util.IProcessUI;
-import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 
@@ -61,8 +60,6 @@ public class MYear extends X_C_Year
 		super (ctx, C_Year_ID, trxName);
 		if (C_Year_ID == 0)
 		{
-		//	setC_Calendar_ID (0);
-		//	setYear (null);
 			setProcessing (false);	// N
 		}		
 	}	//	MYear
@@ -174,9 +171,8 @@ public class MYear extends X_C_Year
 		/**
 	 * 	Create 12 Standard (Jan-Dec) Periods.
 	 * 	Creates also Period Control from DocType.
-	 * 	@see DocumentTypeVerify#createPeriodControls(Properties, int, SvrProcess, String)
+	 * 	see DocumentTypeVerify#createPeriodControls(Properties, int, SvrProcess, String)
 	 * 	@param locale locale 
-	 *	@return true if created
 	 */
 	public void createStdPeriods(Locale locale)
 	{
@@ -187,7 +183,7 @@ public class MYear extends X_C_Year
 	/**
 	 * 	Create 12 Standard Periods from the specified start date.
 	 * 	Creates also Period Control from DocType.
-	 * 	@see DocumentTypeVerify#createPeriodControls(Properties, int, SvrProcess, String)
+	 * 	see DocumentTypeVerify#createPeriodControls(Properties, int, SvrProcess, String)
 	 * 	@param locale locale
 	 *	@param startDate first day of the calendar year
      *  @param dateFormat SimpleDateFormat pattern for generating the period names.
@@ -251,6 +247,7 @@ public class MYear extends X_C_Year
 			}
 			else
 			{
+				period = MPeriod.getCopy(getCtx(), period.getC_Period_ID(), get_TrxName());
 				period.setC_Year_ID(this.getC_Year_ID());
 				period.setPeriodNo(month+1);
 				period.setName(name);

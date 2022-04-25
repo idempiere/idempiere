@@ -418,7 +418,7 @@ public class Doc_Invoice extends Doc
 
 			//  Receivables     DR
 			int receivables_ID = getValidCombination_ID(Doc.ACCTTYPE_C_Receivable, as);
-			int receivablesServices_ID = getValidCombination_ID (Doc.ACCTTYPE_C_Receivable_Services, as);
+			int receivablesServices_ID = receivables_ID; // Receivable Services account Deprecated IDEMPIERE-362
 			if (m_allLinesItem || !as.isPostServices()
 				|| receivables_ID == receivablesServices_ID)
 			{
@@ -500,7 +500,7 @@ public class Doc_Invoice extends Doc
 
 			//  Receivables             CR
 			int receivables_ID = getValidCombination_ID (Doc.ACCTTYPE_C_Receivable, as);
-			int receivablesServices_ID = getValidCombination_ID (Doc.ACCTTYPE_C_Receivable_Services, as);
+			int receivablesServices_ID = receivables_ID; // Receivable Services account Deprecated IDEMPIERE-362
 			if (m_allLinesItem || !as.isPostServices()
 				|| receivables_ID == receivablesServices_ID)
 			{
@@ -606,7 +606,7 @@ public class Doc_Invoice extends Doc
 
 			//  Liability               CR
 			int payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability, as);
-			int payablesServices_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability_Services, as);
+			int payablesServices_ID = payables_ID; // Liability Services account Deprecated IDEMPIERE-362
 			if (m_allLinesItem || !as.isPostServices()
 				|| payables_ID == payablesServices_ID)
 			{
@@ -713,7 +713,7 @@ public class Doc_Invoice extends Doc
 
 			//  Liability       DR
 			int payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability, as);
-			int payablesServices_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability_Services, as);
+			int payablesServices_ID = payables_ID; // Liability Services account Deprecated IDEMPIERE-362
 			if (m_allLinesItem || !as.isPostServices()
 				|| payables_ID == payablesServices_ID)
 			{
@@ -860,7 +860,7 @@ public class Doc_Invoice extends Doc
 
 
 	/**
-	 * 	Create Landed Cost accounting & Cost lines
+	 * 	Create Landed Cost accounting and Cost lines
 	 *	@param as accounting schema
 	 *	@param fact fact
 	 *	@param line document line
@@ -1140,11 +1140,10 @@ public class Doc_Invoice extends Doc
 			"UPDATE M_Product_PO po ")
 			 .append("SET PriceLastInv = ")
 			//	select
-			.append("(SELECT currencyConvert(il.PriceActual,i.C_Currency_ID,po.C_Currency_ID,i.DateInvoiced,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID) ")
+			.append("(SELECT currencyConvertInvoice(i.C_Invoice_ID,po.C_Currency_ID,il.PriceActual,i.DateInvoiced) ")
 			.append("FROM C_Invoice i, C_InvoiceLine il ")
 			.append("WHERE i.C_Invoice_ID=il.C_Invoice_ID")
 			.append(" AND po.M_Product_ID=il.M_Product_ID AND po.C_BPartner_ID=i.C_BPartner_ID");
-			//jz + " AND ROWNUM=1 AND i.C_Invoice_ID=").append(get_ID()).append(") ")
 			if (DB.isOracle()) //jz
 			{
 				sql.append(" AND ROWNUM=1 ");
@@ -1167,5 +1166,35 @@ public class Doc_Invoice extends Doc
 		int no = DB.executeUpdate(sql.toString(), getTrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Updated=" + no);
 	}	//	updateProductPO
+
+	@Override
+	public BigDecimal getCurrencyRate() {
+		if (getC_Currency_ID() == getAcctSchema().getC_Currency_ID())
+			return null;
+		
+		MInvoice inv = (MInvoice)getPO();
+		int baseCurrencyId = MClientInfo.get(getCtx(), inv.getAD_Client_ID()).getC_Currency_ID();
+		if (baseCurrencyId != getAcctSchema().getC_Currency_ID())
+			return null;
+		
+		if (inv.isOverrideCurrencyRate()) {
+			return inv.getCurrencyRate();
+		} else {
+			return null;
+		}		
+	}	
+	
+	@Override
+	public boolean isConvertible (MAcctSchema acctSchema) {
+		MInvoice inv = (MInvoice)getPO();
+		if (inv.getC_Currency_ID() != acctSchema.getC_Currency_ID()) {
+			int baseCurrencyId = MClientInfo.get(getCtx(), inv.getAD_Client_ID()).getC_Currency_ID();
+			if (baseCurrencyId == acctSchema.getC_Currency_ID() && inv.isOverrideCurrencyRate()) {
+				return true;
+			}
+		}
+		
+		return super.isConvertible(acctSchema);
+	}
 	
 }   //  Doc_Invoice

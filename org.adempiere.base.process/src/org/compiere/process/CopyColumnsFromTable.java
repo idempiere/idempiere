@@ -31,6 +31,7 @@ import org.compiere.util.Msg;
  *  @author Carlos Ruiz - globalqss
  *  @version $Id: CopyColumnsFromTable
  */
+@org.adempiere.base.annotation.Process
 public class CopyColumnsFromTable extends SvrProcess
 {
 	/** Target Table		*/

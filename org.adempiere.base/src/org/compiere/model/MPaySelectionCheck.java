@@ -388,7 +388,7 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	 * 	Create Payments the first time 
 	 * 	@param checks checks
 	 * 	@param batch batch
-	 * 	@param createDeposit create deposit batch
+	 * 	@param createDepositBatch create deposit batch
 	 * 	@return last Document number or 0 if nothing printed
 	 */
 	public static int confirmPrint (MPaySelectionCheck[] checks, MPaymentBatch batch, boolean createDepositBatch)
@@ -523,9 +523,6 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		super(ctx, C_PaySelectionCheck_ID, trxName);
 		if (C_PaySelectionCheck_ID == 0)
 		{
-		//	setC_PaySelection_ID (0);
-		//	setC_BPartner_ID (0);
-		//	setPaymentRule (null);
 			setPayAmt (Env.ZERO);
 			setDiscountAmt(Env.ZERO);
 			setWriteOffAmt(Env.ZERO);

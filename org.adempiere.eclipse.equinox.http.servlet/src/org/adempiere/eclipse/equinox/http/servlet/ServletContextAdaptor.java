@@ -53,7 +53,7 @@ public class ServletContextAdaptor implements ServletContext {
 			return null;
 		try {
 			Method getResourcePathsMethod = httpContext.getClass().getMethod("getResourcePaths", new Class[] {String.class}); //$NON-NLS-1$
-			if (!getResourcePathsMethod.isAccessible())
+			if (!getResourcePathsMethod.canAccess(httpContext))
 				getResourcePathsMethod.setAccessible(true);
 			return (Set<String>) getResourcePathsMethod.invoke(httpContext, new Object[] {name});
 		} catch (Exception e) {
@@ -301,5 +301,40 @@ public class ServletContextAdaptor implements ServletContext {
 	@Override
 	public String getVirtualServerName() {
 		return servletContext.getVirtualServerName();
+	}
+
+	@Override
+	public javax.servlet.ServletRegistration.Dynamic addJspFile(String servletName, String jspFile) {
+		return servletContext.addJspFile(servletName, jspFile);
+	}
+
+	@Override
+	public int getSessionTimeout() {
+		return servletContext.getSessionTimeout();
+	}
+
+	@Override
+	public void setSessionTimeout(int sessionTimeout) {
+		servletContext.setSessionTimeout(sessionTimeout);
+	}
+
+	@Override
+	public String getRequestCharacterEncoding() {
+		return servletContext.getRequestCharacterEncoding();
+	}
+
+	@Override
+	public void setRequestCharacterEncoding(String encoding) {
+		servletContext.setRequestCharacterEncoding(encoding);
+	}
+
+	@Override
+	public String getResponseCharacterEncoding() {
+		return servletContext.getResponseCharacterEncoding();
+	}
+
+	@Override
+	public void setResponseCharacterEncoding(String encoding) {
+		servletContext.setResponseCharacterEncoding(encoding);
 	}
 }

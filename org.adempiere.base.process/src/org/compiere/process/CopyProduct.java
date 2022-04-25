@@ -20,6 +20,7 @@ import org.compiere.model.X_M_Substitute;
  * @author Daniel Tamm (usrdno)
  *
  */
+@org.adempiere.base.annotation.Process
 public class CopyProduct extends SvrProcess {
 
 	private int m_copyFromId;
@@ -136,45 +137,7 @@ public class CopyProduct extends SvrProcess {
 		}
 		
 		count += replenish.size();
-		
-		// Don't copy purchasing since it demands a unique vendor product no
-		/*
-		List<MProductPO> poList = new Query(getCtx(), MProductPO.Table_Name, "M_Product_ID=? AND Discontinued='N'", get_TrxName())
-									.setParameters(new Object[]{m_copyFromId})
-									.setOnlyActiveRecords(true)
-									.list();
-		MProductPO poSrc;
-		MProductPO poDst;
-		for (Iterator<MProductPO> it = poList.iterator(); it.hasNext();) {
-			poSrc = it.next();
-			poDst = new MProductPO(getCtx(), 0, get_TrxName());
-			poDst.setM_Product_ID(toMProductID);
-			poDst.setC_BPartner_ID(poSrc.getC_BPartner_ID());
-			poDst.setC_Currency_ID(poSrc.getC_Currency_ID());
-			poDst.setC_UOM_ID(poSrc.getC_UOM_ID());
-			poDst.setCostPerOrder(poSrc.getCostPerOrder());
-			poDst.setDeliveryTime_Actual(poSrc.getDeliveryTime_Actual());
-			poDst.setDeliveryTime_Promised(poSrc.getDeliveryTime_Promised());
-			poDst.setIsCurrentVendor(poSrc.isCurrentVendor());
-			poDst.setManufacturer(poSrc.getManufacturer());
-			poDst.setOrder_Min(poSrc.getOrder_Min());
-			poDst.setOrder_Pack(poSrc.getOrder_Pack());
-			poDst.setPriceEffective(poSrc.getPriceEffective());
-			poDst.setPriceLastInv(poSrc.getPriceLastInv());
-			poDst.setPriceLastPO(poSrc.getPriceLastPO());
-			poDst.setPriceList(poSrc.getPriceList());
-			poDst.setPricePO(poSrc.getPricePO());
-			poDst.setQualityRating(poSrc.getQualityRating());
-			poDst.setRoyaltyAmt(poSrc.getRoyaltyAmt());
-			// Don't set vendor product no or UPC since that's likely to be different
-			poDst.setVendorCategory(poSrc.getVendorCategory());
-			poDst.saveEx(get_TrxName()); 
-		}
-		
-		count += poList.size();
-		 */		
-		
-		
+
 		// Copy business partner
 		List<MBPartnerProduct> bpList = new Query(getCtx(), MBPartnerProduct.Table_Name, "M_Product_ID=?", get_TrxName())
 										.setParameters(new Object[]{m_copyFromId})
@@ -217,52 +180,6 @@ public class CopyProduct extends SvrProcess {
 			dlDst.saveEx(get_TrxName());
 		}
 		count += dlList.size();
-
-		// Don't copy accounting because of constraints.
-		/*
-		// Delete any current accounting records
-		DB.executeUpdate("delete from " + X_M_Product_Acct.Table_Name + " where M_Product_ID=" + toMProductID, get_TrxName());
-		
-		// Copy accounting
-		List<X_M_Product_Acct> acctList = new Query(getCtx(), X_M_Product_Acct.Table_Name, "M_Product_ID=?", get_TrxName())
-											.setParameters(new Object[]{m_copyFromId})
-											.setOnlyActiveRecords(true)
-											.list();
-		
-		X_M_Product_Acct acctSrc;
-		X_M_Product_Acct acctDst;
-		for (Iterator<X_M_Product_Acct> it = acctList.iterator(); it.hasNext();) {
-			acctSrc = it.next();
-			acctDst = new X_M_Product_Acct(getCtx(), 0, get_TrxName());
-			acctDst.setC_AcctSchema_ID(acctSrc.getC_AcctSchema_ID());
-			acctDst.setM_Product_ID(toMProductID);
-			acctDst.setP_Asset_Acct(acctSrc.getP_Asset_Acct());
-			acctDst.setP_AverageCostVariance_Acct(acctSrc.getP_AverageCostVariance_Acct());
-			acctDst.setP_Burden_Acct(acctSrc.getP_Burden_Acct());
-			acctDst.setP_COGS_Acct(acctSrc.getP_COGS_Acct());
-			acctDst.setP_CostAdjustment_Acct(acctSrc.getP_CostAdjustment_Acct());
-			acctDst.setP_CostOfProduction_Acct(acctSrc.getP_CostOfProduction_Acct());
-			acctDst.setP_Expense_Acct(acctSrc.getP_Expense_Acct());
-			acctDst.setP_FloorStock_Acct(acctSrc.getP_FloorStock_Acct());
-			acctDst.setP_InventoryClearing_Acct(acctSrc.getP_InventoryClearing_Acct());
-			acctDst.setP_InvoicePriceVariance_Acct(acctSrc.getP_InvoicePriceVariance_Acct());
-			acctDst.setP_Labor_Acct(acctSrc.getP_Labor_Acct());
-			acctDst.setP_MethodChangeVariance_Acct(acctSrc.getP_MethodChangeVariance_Acct());
-			acctDst.setP_MixVariance_Acct(acctSrc.getP_MixVariance_Acct());
-			acctDst.setP_OutsideProcessing_Acct(acctSrc.getP_OutsideProcessing_Acct());
-			acctDst.setP_Overhead_Acct(acctSrc.getP_Overhead_Acct());
-			acctDst.setP_PurchasePriceVariance_Acct(acctSrc.getP_PurchasePriceVariance_Acct());
-			acctDst.setP_RateVariance_Acct(acctSrc.getP_RateVariance_Acct());
-			acctDst.setP_Revenue_Acct(acctSrc.getP_Revenue_Acct());
-			acctDst.setP_Scrap_Acct(acctSrc.getP_Scrap_Acct());
-			acctDst.setP_TradeDiscountGrant_Acct(acctSrc.getP_TradeDiscountGrant_Acct());
-			acctDst.setP_TradeDiscountRec_Acct(acctSrc.getP_TradeDiscountRec_Acct());
-			acctDst.setP_UsageVariance_Acct(acctSrc.getP_UsageVariance_Acct());
-			acctDst.setP_WIP_Acct(acctSrc.getP_WIP_Acct());
-			acctDst.saveEx(get_TrxName());
-		}
-		count += acctList.size();
-		*/
 		
 		// TODO Auto-generated method stub
 		return "@Copied@=" + count;

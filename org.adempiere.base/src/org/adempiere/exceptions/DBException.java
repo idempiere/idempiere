@@ -32,17 +32,18 @@ import org.compiere.util.DB;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * @author Armen Rizal, GOODWILL CONSULTING
  * 		FR [2789943] Better DBException handling for PostgreSQL
- * 		https://sourceforge.net/tracker/?func=detail&aid=2789943&group_id=176962&atid=879335
+ * 		https://sourceforge.net/p/adempiere/feature-requests/719/
  */
 public class DBException extends AdempiereException
 {
-	public static final String DATABASE_OPERATION_TIMEOUT_MSG = "DatabaseOperationTimeout";
-	public static final String DELETE_ERROR_DEPENDENT_MSG = "DeleteErrorDependent";
-	public static final String SAVE_ERROR_NOT_UNIQUE_MSG = "SaveErrorNotUnique";
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4264201718343118625L;
+	private static final long serialVersionUID = -1961265420169932726L;
+
+	public static final String DATABASE_OPERATION_TIMEOUT_MSG = "DatabaseOperationTimeout";
+	public static final String DELETE_ERROR_DEPENDENT_MSG = "DeleteErrorDependent";
+	public static final String SAVE_ERROR_NOT_UNIQUE_MSG = "SaveErrorNotUnique";
 	private String m_sql = null;
 
 	/**
@@ -199,11 +200,31 @@ public class DBException extends AdempiereException
      * @param e
      */
     public static boolean isTimeout(Exception e) {
-    	if (DB.isPostgreSQL())
-    		return isSQLState(e, "57014");
-    	return isErrorCode(e, 1013);
+    	SQLException se = null;
+    	if (e instanceof SQLException) {
+    		se = (SQLException) e;
+    	} else if (e.getCause() != null && e.getCause() instanceof SQLException) {
+    		se = (SQLException) e.getCause();
+    	}
+    	
+    	if (se != null) {
+    		return DB.getDatabase().isQueryTimeout(se);
+    	} else {
+    		return false;
+    	}
     }
-    
+
+    /**
+     * Check if value too large for column exception (aka ORA-12899)
+     * @param e exception
+     */
+    public static boolean isValueTooLarge(Exception e) {
+    	if (DB.isPostgreSQL())
+    		return isSQLState(e, "22001");
+    	//
+    	return isErrorCode(e, 12899);
+    }
+
     /**
      * @param e
      */
@@ -218,4 +239,5 @@ public class DBException extends AdempiereException
     		return null;
     	}
     }
+
 }	//	DBException

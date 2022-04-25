@@ -30,7 +30,7 @@ import java.util.HashMap;
 
 /**
  * Interface for Address Lookup Web Service.
- * http://sourceforge.net/tracker/index.php?func=detail&aid=1741222&group_id=176962&atid=879335
+ * https://sourceforge.net/p/adempiere/feature-requests/137/
  * The Address lookup class interface
  */
 public interface AddressLookupInterface {

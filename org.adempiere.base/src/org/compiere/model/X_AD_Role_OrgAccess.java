@@ -22,19 +22,31 @@ import java.util.Properties;
 
 /** Generated Model for AD_Role_OrgAccess
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Role_OrgAccess")
 public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Role_OrgAccess (Properties ctx, int AD_Role_OrgAccess_ID, String trxName)
     {
       super (ctx, AD_Role_OrgAccess_ID, trxName);
+      /** if (AD_Role_OrgAccess_ID == 0)
+        {
+			setAD_Role_ID (0);
+			setIsReadOnly (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Role_OrgAccess (Properties ctx, int AD_Role_OrgAccess_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Role_OrgAccess_ID, trxName, virtualColumns);
       /** if (AD_Role_OrgAccess_ID == 0)
         {
 			setAD_Role_ID (0);
@@ -65,32 +77,32 @@ public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Role_OrgAccess[")
+      StringBuilder sb = new StringBuilder ("X_AD_Role_OrgAccess[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -99,7 +111,8 @@ public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Pe
 	}
 
 	/** Set AD_Role_OrgAccess_UU.
-		@param AD_Role_OrgAccess_UU AD_Role_OrgAccess_UU	  */
+		@param AD_Role_OrgAccess_UU AD_Role_OrgAccess_UU
+	*/
 	public void setAD_Role_OrgAccess_UU (String AD_Role_OrgAccess_UU)
 	{
 		set_Value (COLUMNNAME_AD_Role_OrgAccess_UU, AD_Role_OrgAccess_UU);
@@ -107,15 +120,14 @@ public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Pe
 
 	/** Get AD_Role_OrgAccess_UU.
 		@return AD_Role_OrgAccess_UU	  */
-	public String getAD_Role_OrgAccess_UU () 
+	public String getAD_Role_OrgAccess_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Role_OrgAccess_UU);
 	}
 
 	/** Set Read Only.
-		@param IsReadOnly 
-		Field is read only
-	  */
+		@param IsReadOnly Field is read only
+	*/
 	public void setIsReadOnly (boolean IsReadOnly)
 	{
 		set_Value (COLUMNNAME_IsReadOnly, Boolean.valueOf(IsReadOnly));
@@ -124,7 +136,7 @@ public class X_AD_Role_OrgAccess extends PO implements I_AD_Role_OrgAccess, I_Pe
 	/** Get Read Only.
 		@return Field is read only
 	  */
-	public boolean isReadOnly () 
+	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
 		if (oo != null) 

@@ -64,7 +64,7 @@ public class AmtInWords_IN implements AmtInWords
 //-------------------------- STATIC METHODS --------------------------
 
   /**
-  * Convenient method for {@link #sayNumber(StringBuffer, long)}.
+  * Convenient method for {@link #sayNumber(StringBuffer, double)}.
   *
   * @param number number to say
   * @return said number

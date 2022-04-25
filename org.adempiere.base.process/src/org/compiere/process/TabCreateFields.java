@@ -41,12 +41,13 @@ import org.compiere.util.Util;
  * 
  * @author Teo Sarca
  * 			<li>BF [ 2827782 ] TabCreateFields process not setting entity type well
- * 				https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2827782&group_id=176962
+ * 				https://sourceforge.net/p/adempiere/bugs/1994/
  * 
  * @author Silvano Trinchero
  *      <li>BF [ 2891218] Wrong behavior in entity type settings for customization entity types
- *        https://sourceforge.net/tracker/?func=detail&aid=2891218&group_id=176962&atid=879332 
+ *        https://sourceforge.net/p/adempiere/bugs/2197/ 
  */
+@org.adempiere.base.annotation.Process
 public class TabCreateFields extends SvrProcess
 {
 	/**	Tab Number				*/
@@ -105,6 +106,7 @@ public class TabCreateFields extends SvrProcess
 		sql += "ORDER  BY CASE "
 			+ "            WHEN c.ColumnName = 'AD_Client_ID' THEN -100 "
 			+ "            WHEN c.ColumnName = 'AD_Org_ID' THEN -90 "
+			+ "            WHEN c.IsParent = 'Y' THEN -85 "
 			+ "            WHEN c.ColumnName = 'Value' THEN -80 "
 			+ "            WHEN c.ColumnName = 'Name' THEN -70 "
 			+ "            WHEN c.ColumnName = 'Description' THEN -60 "
@@ -208,6 +210,15 @@ public class TabCreateFields extends SvrProcess
 				} else if (column.getColumnName().equalsIgnoreCase("User2_ID")) {
 					field.setDisplayLogic("@$Element_U2@=Y");
 				}  
+
+				// set read-only for usual known-fields
+				if (   column.getColumnName().equalsIgnoreCase("IsApproved")
+					|| column.getColumnName().equalsIgnoreCase("DocStatus")
+					|| column.getColumnName().equalsIgnoreCase("Processed")
+					|| column.getColumnName().equalsIgnoreCase("ProcessedOn")
+					|| column.getColumnName().equalsIgnoreCase("Processing")) {
+					field.setIsReadOnly(true);
+				}
 
 				if (field.save())
 				{

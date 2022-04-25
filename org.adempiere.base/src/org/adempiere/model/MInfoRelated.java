@@ -20,12 +20,14 @@ import java.util.logging.Level;
 import org.compiere.model.MInfoColumn;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_InfoRelated;
+import org.compiere.util.Env;
+import org.idempiere.cache.ImmutablePOSupport;
 
-public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn {
+public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn, ImmutablePOSupport {	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6216174103510277333L;
+	private static final long serialVersionUID = 4000783886138460291L;
 
 	public MInfoRelated(Properties ctx, int AD_InfoRelated_ID, String trxName) {
 		super(ctx, AD_InfoRelated_ID, trxName);
@@ -35,6 +37,15 @@ public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * Copy constructor
+	 * @param copy
+	 */
+	public MInfoRelated(MInfoRelated copy) {
+		this(Env.getCtx(), 0, (String)null);
+		copyPO(copy);
+	}
+	
 	public MInfoColumn getLinkInfoColumn() {
 		if (log.isLoggable(Level.INFO)) log.info("Link Column ID: -----  : " + getRelatedColumn_ID());
 
@@ -67,6 +78,16 @@ public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn {
 	@Override
 	public MInfoColumn getAD_InfoColumn (){
 		return (MInfoColumn) getParentRelatedColumn();
+	}
+
+	@Override
+	public MInfoRelated markImmutable() {
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		
+		return this;
 	}
 	
 }

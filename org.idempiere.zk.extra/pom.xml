@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.idempiere</groupId>
 		<artifactId>org.idempiere.parent</artifactId>
-		<version>7.1.0-SNAPSHOT</version>
+		<version>${revision}</version>
 		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
 	</parent>
 
@@ -27,7 +27,7 @@
 								<artifactItem>
 									<groupId>org.zkoss.zkforge</groupId>
 									<artifactId>gmapsz</artifactId>
-									<version>3.0.5</version>
+									<version>3.2.0</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.zkoss.zkforge</groupId>

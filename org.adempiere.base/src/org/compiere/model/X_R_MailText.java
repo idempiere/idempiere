@@ -23,19 +23,33 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_MailText
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="R_MailText")
 public class X_R_MailText extends PO implements I_R_MailText, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_MailText (Properties ctx, int R_MailText_ID, String trxName)
     {
       super (ctx, R_MailText_ID, trxName);
+      /** if (R_MailText_ID == 0)
+        {
+			setIsHtml (false);
+			setMailText (null);
+			setName (null);
+			setR_MailText_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_MailText (Properties ctx, int R_MailText_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_MailText_ID, trxName, virtualColumns);
       /** if (R_MailText_ID == 0)
         {
 			setIsHtml (false);
@@ -68,15 +82,14 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_R_MailText[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_R_MailText[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set HTML.
-		@param IsHtml 
-		Text has HTML tags
-	  */
+		@param IsHtml Text has HTML tags
+	*/
 	public void setIsHtml (boolean IsHtml)
 	{
 		set_Value (COLUMNNAME_IsHtml, Boolean.valueOf(IsHtml));
@@ -85,7 +98,7 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 	/** Get HTML.
 		@return Text has HTML tags
 	  */
-	public boolean isHtml () 
+	public boolean isHtml()
 	{
 		Object oo = get_Value(COLUMNNAME_IsHtml);
 		if (oo != null) 
@@ -98,9 +111,8 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 	}
 
 	/** Set Subject.
-		@param MailHeader 
-		Mail Header (Subject)
-	  */
+		@param MailHeader Mail Header (Subject)
+	*/
 	public void setMailHeader (String MailHeader)
 	{
 		set_Value (COLUMNNAME_MailHeader, MailHeader);
@@ -109,15 +121,14 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 	/** Get Subject.
 		@return Mail Header (Subject)
 	  */
-	public String getMailHeader () 
+	public String getMailHeader()
 	{
 		return (String)get_Value(COLUMNNAME_MailHeader);
 	}
 
 	/** Set Mail Text.
-		@param MailText 
-		Text used for Mail message
-	  */
+		@param MailText Text used for Mail message
+	*/
 	public void setMailText (String MailText)
 	{
 		set_Value (COLUMNNAME_MailText, MailText);
@@ -126,15 +137,14 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 	/** Get Mail Text.
 		@return Text used for Mail message
 	  */
-	public String getMailText () 
+	public String getMailText()
 	{
 		return (String)get_Value(COLUMNNAME_MailText);
 	}
 
 	/** Set Mail Text 2.
-		@param MailText2 
-		Optional second text part used for Mail message
-	  */
+		@param MailText2 Optional second text part used for Mail message
+	*/
 	public void setMailText2 (String MailText2)
 	{
 		set_Value (COLUMNNAME_MailText2, MailText2);
@@ -143,15 +153,14 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 	/** Get Mail Text 2.
 		@return Optional second text part used for Mail message
 	  */
-	public String getMailText2 () 
+	public String getMailText2()
 	{
 		return (String)get_Value(COLUMNNAME_MailText2);
 	}
 
 	/** Set Mail Text 3.
-		@param MailText3 
-		Optional third text part used for Mail message
-	  */
+		@param MailText3 Optional third text part used for Mail message
+	*/
 	public void setMailText3 (String MailText3)
 	{
 		set_Value (COLUMNNAME_MailText3, MailText3);
@@ -160,15 +169,14 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 	/** Get Mail Text 3.
 		@return Optional third text part used for Mail message
 	  */
-	public String getMailText3 () 
+	public String getMailText3()
 	{
 		return (String)get_Value(COLUMNNAME_MailText3);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -177,7 +185,7 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -191,21 +199,20 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
     }
 
 	/** Set Mail Template.
-		@param R_MailText_ID 
-		Text templates for mailings
-	  */
+		@param R_MailText_ID Text templates for mailings
+	*/
 	public void setR_MailText_ID (int R_MailText_ID)
 	{
-		if (R_MailText_ID < 1) 
+		if (R_MailText_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_MailText_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_MailText_ID, Integer.valueOf(R_MailText_ID));
 	}
 
 	/** Get Mail Template.
 		@return Text templates for mailings
 	  */
-	public int getR_MailText_ID () 
+	public int getR_MailText_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_MailText_ID);
 		if (ii == null)
@@ -214,7 +221,8 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 	}
 
 	/** Set R_MailText_UU.
-		@param R_MailText_UU R_MailText_UU	  */
+		@param R_MailText_UU R_MailText_UU
+	*/
 	public void setR_MailText_UU (String R_MailText_UU)
 	{
 		set_Value (COLUMNNAME_R_MailText_UU, R_MailText_UU);
@@ -222,7 +230,7 @@ public class X_R_MailText extends PO implements I_R_MailText, I_Persistent
 
 	/** Get R_MailText_UU.
 		@return R_MailText_UU	  */
-	public String getR_MailText_UU () 
+	public String getR_MailText_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_MailText_UU);
 	}

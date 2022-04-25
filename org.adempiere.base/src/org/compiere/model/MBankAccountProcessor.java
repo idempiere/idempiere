@@ -58,14 +58,14 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 	 *  @param C_Currency_ID Currency (ignored)
 	 *  @param Amt Amount (ignored)
 	 *	@param trxName transaction
-	 *  @return Array of BankAccount[0] & PaymentProcessor[1] or null
+	 *  @return Array of BankAccount[0] and PaymentProcessor[1] or null
 	 */
 	public static MBankAccountProcessor[] find (Properties ctx,
 		String tender, String CCType,
 		int AD_Client_ID, int C_Currency_ID, BigDecimal Amt, String trxName)
 	{
 		ArrayList<MBankAccountProcessor> list = new ArrayList<MBankAccountProcessor>();
-		StringBuffer sql = new StringBuffer("SELECT bap.* "
+		StringBuilder sql = new StringBuilder("SELECT bap.* "
 				+ "FROM C_BankAccount_Processor bap, C_PaymentProcessor pp, C_BankAccount ba "
 				+ "WHERE pp.C_PaymentProcessor_ID = bap.C_PaymentProcessor_ID" 
 				+ " AND ba.C_BankAccount_ID = bap.C_BankAccount_ID" 

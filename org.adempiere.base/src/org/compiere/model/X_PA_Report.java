@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Report
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="PA_Report")
 public class X_PA_Report extends PO implements I_PA_Report, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_Report (Properties ctx, int PA_Report_ID, String trxName)
@@ -40,6 +41,28 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
         {
 			setC_AcctSchema_ID (0);
 			setC_Calendar_ID (0);
+			setExcludeAdjustmentPeriods (null);
+// 1
+			setListSources (false);
+			setListTrx (false);
+			setName (null);
+			setPA_ReportColumnSet_ID (0);
+			setPA_Report_ID (0);
+			setPA_ReportLineSet_ID (0);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_Report (Properties ctx, int PA_Report_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_Report_ID, trxName, virtualColumns);
+      /** if (PA_Report_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setC_Calendar_ID (0);
+			setExcludeAdjustmentPeriods (null);
+// 1
 			setListSources (false);
 			setListTrx (false);
 			setName (null);
@@ -73,32 +96,32 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_PA_Report[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_PA_Report[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Print Format.
-		@param AD_PrintFormat_ID 
-		Data Print Format
-	  */
+		@param AD_PrintFormat_ID Data Print Format
+	*/
 	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
 	{
-		if (AD_PrintFormat_ID < 1) 
+		if (AD_PrintFormat_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintFormat_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
 	}
 
 	/** Get Print Format.
 		@return Data Print Format
 	  */
-	public int getAD_PrintFormat_ID () 
+	public int getAD_PrintFormat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
 		if (ii == null)
@@ -107,26 +130,26 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_Value (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -135,26 +158,26 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Calendar getC_Calendar() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_Name)
-			.getPO(getC_Calendar_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Calendar)MTable.get(getCtx(), org.compiere.model.I_C_Calendar.Table_ID)
+			.getPO(getC_Calendar_ID(), get_TrxName());
+	}
 
 	/** Set Calendar.
-		@param C_Calendar_ID 
-		Accounting Calendar Name
-	  */
+		@param C_Calendar_ID Accounting Calendar Name
+	*/
 	public void setC_Calendar_ID (int C_Calendar_ID)
 	{
-		if (C_Calendar_ID < 1) 
+		if (C_Calendar_ID < 1)
 			set_Value (COLUMNNAME_C_Calendar_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Calendar_ID, Integer.valueOf(C_Calendar_ID));
 	}
 
 	/** Get Calendar.
 		@return Accounting Calendar Name
 	  */
-	public int getC_Calendar_ID () 
+	public int getC_Calendar_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Calendar_ID);
 		if (ii == null)
@@ -163,9 +186,8 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -174,32 +196,56 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
+	/** ExcludeAdjustmentPeriods AD_Reference_ID=200198 */
+	public static final int EXCLUDEADJUSTMENTPERIODS_AD_Reference_ID=200198;
+	/** No = 0 */
+	public static final String EXCLUDEADJUSTMENTPERIODS_No = "0";
+	/** Only Report Period = 1 */
+	public static final String EXCLUDEADJUSTMENTPERIODS_OnlyReportPeriod = "1";
+	/** All Adjustment Periods = 2 */
+	public static final String EXCLUDEADJUSTMENTPERIODS_AllAdjustmentPeriods = "2";
+	/** Set Exclude Adjustment Periods.
+		@param ExcludeAdjustmentPeriods Exclude Adjustment Periods
+	*/
+	public void setExcludeAdjustmentPeriods (String ExcludeAdjustmentPeriods)
+	{
+
+		set_Value (COLUMNNAME_ExcludeAdjustmentPeriods, ExcludeAdjustmentPeriods);
+	}
+
+	/** Get Exclude Adjustment Periods.
+		@return Exclude Adjustment Periods	  */
+	public String getExcludeAdjustmentPeriods()
+	{
+		return (String)get_Value(COLUMNNAME_ExcludeAdjustmentPeriods);
+	}
+
 	public org.compiere.model.I_AD_Process getJasperProcess() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_Name)
-			.getPO(getJasperProcess_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getJasperProcess_ID(), get_TrxName());
+	}
 
 	/** Set Jasper Process.
-		@param JasperProcess_ID 
-		The Jasper Process used by the printengine if any process defined
-	  */
+		@param JasperProcess_ID The Jasper Process used by the printengine if any process defined
+	*/
 	public void setJasperProcess_ID (int JasperProcess_ID)
 	{
-		if (JasperProcess_ID < 1) 
+		if (JasperProcess_ID < 1)
 			set_Value (COLUMNNAME_JasperProcess_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_JasperProcess_ID, Integer.valueOf(JasperProcess_ID));
 	}
 
 	/** Get Jasper Process.
 		@return The Jasper Process used by the printengine if any process defined
 	  */
-	public int getJasperProcess_ID () 
+	public int getJasperProcess_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_JasperProcess_ID);
 		if (ii == null)
@@ -208,7 +254,8 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	/** Set Jasper Process Now.
-		@param JasperProcessing Jasper Process Now	  */
+		@param JasperProcessing Jasper Process Now
+	*/
 	public void setJasperProcessing (String JasperProcessing)
 	{
 		set_Value (COLUMNNAME_JasperProcessing, JasperProcessing);
@@ -216,15 +263,14 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 
 	/** Get Jasper Process Now.
 		@return Jasper Process Now	  */
-	public String getJasperProcessing () 
+	public String getJasperProcessing()
 	{
 		return (String)get_Value(COLUMNNAME_JasperProcessing);
 	}
 
 	/** Set List Sources.
-		@param ListSources 
-		List Report Line Sources
-	  */
+		@param ListSources List Report Line Sources
+	*/
 	public void setListSources (boolean ListSources)
 	{
 		set_Value (COLUMNNAME_ListSources, Boolean.valueOf(ListSources));
@@ -233,7 +279,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	/** Get List Sources.
 		@return List Report Line Sources
 	  */
-	public boolean isListSources () 
+	public boolean isListSources()
 	{
 		Object oo = get_Value(COLUMNNAME_ListSources);
 		if (oo != null) 
@@ -246,9 +292,8 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	/** Set Include source accounts with no transaction.
-		@param ListSourcesXTrx 
-		Include source accounts with no transaction for list report line sources
-	  */
+		@param ListSourcesXTrx Include source accounts with no transaction for list report line sources
+	*/
 	public void setListSourcesXTrx (boolean ListSourcesXTrx)
 	{
 		set_Value (COLUMNNAME_ListSourcesXTrx, Boolean.valueOf(ListSourcesXTrx));
@@ -257,7 +302,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	/** Get Include source accounts with no transaction.
 		@return Include source accounts with no transaction for list report line sources
 	  */
-	public boolean isListSourcesXTrx () 
+	public boolean isListSourcesXTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_ListSourcesXTrx);
 		if (oo != null) 
@@ -270,9 +315,8 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	/** Set List Transactions.
-		@param ListTrx 
-		List the report transactions
-	  */
+		@param ListTrx List the report transactions
+	*/
 	public void setListTrx (boolean ListTrx)
 	{
 		set_Value (COLUMNNAME_ListTrx, Boolean.valueOf(ListTrx));
@@ -281,7 +325,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	/** Get List Transactions.
 		@return List the report transactions
 	  */
-	public boolean isListTrx () 
+	public boolean isListTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_ListTrx);
 		if (oo != null) 
@@ -294,9 +338,8 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -305,7 +348,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -319,26 +362,26 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
     }
 
 	public org.compiere.model.I_PA_ReportColumnSet getPA_ReportColumnSet() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_ReportColumnSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumnSet.Table_Name)
-			.getPO(getPA_ReportColumnSet_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_ReportColumnSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumnSet.Table_ID)
+			.getPO(getPA_ReportColumnSet_ID(), get_TrxName());
+	}
 
 	/** Set Report Column Set.
-		@param PA_ReportColumnSet_ID 
-		Collection of Columns for Report
-	  */
+		@param PA_ReportColumnSet_ID Collection of Columns for Report
+	*/
 	public void setPA_ReportColumnSet_ID (int PA_ReportColumnSet_ID)
 	{
-		if (PA_ReportColumnSet_ID < 1) 
+		if (PA_ReportColumnSet_ID < 1)
 			set_Value (COLUMNNAME_PA_ReportColumnSet_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PA_ReportColumnSet_ID, Integer.valueOf(PA_ReportColumnSet_ID));
 	}
 
 	/** Get Report Column Set.
 		@return Collection of Columns for Report
 	  */
-	public int getPA_ReportColumnSet_ID () 
+	public int getPA_ReportColumnSet_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportColumnSet_ID);
 		if (ii == null)
@@ -347,26 +390,26 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	public org.compiere.model.I_PA_ReportCube getPA_ReportCube() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_ReportCube)MTable.get(getCtx(), org.compiere.model.I_PA_ReportCube.Table_Name)
-			.getPO(getPA_ReportCube_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_ReportCube)MTable.get(getCtx(), org.compiere.model.I_PA_ReportCube.Table_ID)
+			.getPO(getPA_ReportCube_ID(), get_TrxName());
+	}
 
 	/** Set Report Cube.
-		@param PA_ReportCube_ID 
-		Define reporting cube for pre-calculation of summary accounting data.
-	  */
+		@param PA_ReportCube_ID Define reporting cube for pre-calculation of summary accounting data.
+	*/
 	public void setPA_ReportCube_ID (int PA_ReportCube_ID)
 	{
-		if (PA_ReportCube_ID < 1) 
+		if (PA_ReportCube_ID < 1)
 			set_Value (COLUMNNAME_PA_ReportCube_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PA_ReportCube_ID, Integer.valueOf(PA_ReportCube_ID));
 	}
 
 	/** Get Report Cube.
 		@return Define reporting cube for pre-calculation of summary accounting data.
 	  */
-	public int getPA_ReportCube_ID () 
+	public int getPA_ReportCube_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportCube_ID);
 		if (ii == null)
@@ -375,21 +418,20 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	/** Set Financial Report.
-		@param PA_Report_ID 
-		Financial Report
-	  */
+		@param PA_Report_ID Financial Report
+	*/
 	public void setPA_Report_ID (int PA_Report_ID)
 	{
-		if (PA_Report_ID < 1) 
+		if (PA_Report_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_Report_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_Report_ID, Integer.valueOf(PA_Report_ID));
 	}
 
 	/** Get Financial Report.
 		@return Financial Report
 	  */
-	public int getPA_Report_ID () 
+	public int getPA_Report_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Report_ID);
 		if (ii == null)
@@ -398,23 +440,25 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException
-    {
-		return (org.compiere.model.I_PA_ReportLineSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLineSet.Table_Name)
-			.getPO(getPA_ReportLineSet_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_PA_ReportLineSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLineSet.Table_ID)
+			.getPO(getPA_ReportLineSet_ID(), get_TrxName());
+	}
 
 	/** Set Report Line Set.
-		@param PA_ReportLineSet_ID Report Line Set	  */
+		@param PA_ReportLineSet_ID Report Line Set
+	*/
 	public void setPA_ReportLineSet_ID (int PA_ReportLineSet_ID)
 	{
-		if (PA_ReportLineSet_ID < 1) 
+		if (PA_ReportLineSet_ID < 1)
 			set_Value (COLUMNNAME_PA_ReportLineSet_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PA_ReportLineSet_ID, Integer.valueOf(PA_ReportLineSet_ID));
 	}
 
 	/** Get Report Line Set.
 		@return Report Line Set	  */
-	public int getPA_ReportLineSet_ID () 
+	public int getPA_ReportLineSet_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportLineSet_ID);
 		if (ii == null)
@@ -423,7 +467,8 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	/** Set PA_Report_UU.
-		@param PA_Report_UU PA_Report_UU	  */
+		@param PA_Report_UU PA_Report_UU
+	*/
 	public void setPA_Report_UU (String PA_Report_UU)
 	{
 		set_Value (COLUMNNAME_PA_Report_UU, PA_Report_UU);
@@ -431,13 +476,14 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 
 	/** Get PA_Report_UU.
 		@return PA_Report_UU	  */
-	public String getPA_Report_UU () 
+	public String getPA_Report_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_Report_UU);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -445,7 +491,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

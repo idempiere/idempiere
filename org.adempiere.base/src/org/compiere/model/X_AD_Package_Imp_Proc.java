@@ -23,19 +23,33 @@ import java.util.Properties;
 
 /** Generated Model for AD_Package_Imp_Proc
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Package_Imp_Proc")
 public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Proc (Properties ctx, int AD_Package_Imp_Proc_ID, String trxName)
     {
       super (ctx, AD_Package_Imp_Proc_ID, trxName);
+      /** if (AD_Package_Imp_Proc_ID == 0)
+        {
+			setAD_Package_Imp_Proc_ID (0);
+			setAD_Package_Source_Type (null);
+// 'File'
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Package_Imp_Proc (Properties ctx, int AD_Package_Imp_Proc_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Package_Imp_Proc_ID, trxName, virtualColumns);
       /** if (AD_Package_Imp_Proc_ID == 0)
         {
 			setAD_Package_Imp_Proc_ID (0);
@@ -68,13 +82,14 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Package_Imp_Proc[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_Package_Imp_Proc[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Update System Maintained Application Dictionary.
-		@param AD_Override_Dict Update System Maintained Application Dictionary	  */
+		@param AD_Override_Dict Update System Maintained Application Dictionary
+	*/
 	public void setAD_Override_Dict (boolean AD_Override_Dict)
 	{
 		set_Value (COLUMNNAME_AD_Override_Dict, Boolean.valueOf(AD_Override_Dict));
@@ -82,7 +97,7 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 
 	/** Get Update System Maintained Application Dictionary.
 		@return Update System Maintained Application Dictionary	  */
-	public boolean isAD_Override_Dict () 
+	public boolean isAD_Override_Dict()
 	{
 		Object oo = get_Value(COLUMNNAME_AD_Override_Dict);
 		if (oo != null) 
@@ -95,9 +110,8 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 	}
 
 	/** Set Package Directory.
-		@param AD_Package_Dir 
-		Package directory, default to AdempiereHome/packages
-	  */
+		@param AD_Package_Dir Package directory, default to AdempiereHome/packages
+	*/
 	public void setAD_Package_Dir (String AD_Package_Dir)
 	{
 		set_Value (COLUMNNAME_AD_Package_Dir, AD_Package_Dir);
@@ -106,24 +120,25 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 	/** Get Package Directory.
 		@return Package directory, default to AdempiereHome/packages
 	  */
-	public String getAD_Package_Dir () 
+	public String getAD_Package_Dir()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Package_Dir);
 	}
 
 	/** Set Package Imp. Proc..
-		@param AD_Package_Imp_Proc_ID Package Imp. Proc.	  */
+		@param AD_Package_Imp_Proc_ID Package Imp. Proc.
+	*/
 	public void setAD_Package_Imp_Proc_ID (int AD_Package_Imp_Proc_ID)
 	{
-		if (AD_Package_Imp_Proc_ID < 1) 
+		if (AD_Package_Imp_Proc_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_Proc_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Package_Imp_Proc_ID, Integer.valueOf(AD_Package_Imp_Proc_ID));
 	}
 
 	/** Get Package Imp. Proc..
 		@return Package Imp. Proc.	  */
-	public int getAD_Package_Imp_Proc_ID () 
+	public int getAD_Package_Imp_Proc_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Package_Imp_Proc_ID);
 		if (ii == null)
@@ -132,7 +147,8 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 	}
 
 	/** Set AD_Package_Imp_Proc_UU.
-		@param AD_Package_Imp_Proc_UU AD_Package_Imp_Proc_UU	  */
+		@param AD_Package_Imp_Proc_UU AD_Package_Imp_Proc_UU
+	*/
 	public void setAD_Package_Imp_Proc_UU (String AD_Package_Imp_Proc_UU)
 	{
 		set_Value (COLUMNNAME_AD_Package_Imp_Proc_UU, AD_Package_Imp_Proc_UU);
@@ -140,15 +156,14 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 
 	/** Get AD_Package_Imp_Proc_UU.
 		@return AD_Package_Imp_Proc_UU	  */
-	public String getAD_Package_Imp_Proc_UU () 
+	public String getAD_Package_Imp_Proc_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Package_Imp_Proc_UU);
 	}
 
 	/** Set Package Source.
-		@param AD_Package_Source 
-		Fully qualified package source file name
-	  */
+		@param AD_Package_Source Fully qualified package source file name
+	*/
 	public void setAD_Package_Source (String AD_Package_Source)
 	{
 		set_Value (COLUMNNAME_AD_Package_Source, AD_Package_Source);
@@ -157,7 +172,7 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 	/** Get Package Source.
 		@return Fully qualified package source file name
 	  */
-	public String getAD_Package_Source () 
+	public String getAD_Package_Source()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Package_Source);
 	}
@@ -169,9 +184,8 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 	/** WebService = WS */
 	public static final String AD_PACKAGE_SOURCE_TYPE_WebService = "WS";
 	/** Set Package Source Type.
-		@param AD_Package_Source_Type 
-		Type of package source - file, ftp, webservice etc
-	  */
+		@param AD_Package_Source_Type Type of package source - file, ftp, webservice etc
+	*/
 	public void setAD_Package_Source_Type (String AD_Package_Source_Type)
 	{
 
@@ -181,13 +195,14 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 	/** Get Package Source Type.
 		@return Type of package source - file, ftp, webservice etc
 	  */
-	public String getAD_Package_Source_Type () 
+	public String getAD_Package_Source_Type()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Package_Source_Type);
 	}
 
 	/** Set Date Processed.
-		@param DateProcessed Date Processed	  */
+		@param DateProcessed Date Processed
+	*/
 	public void setDateProcessed (Timestamp DateProcessed)
 	{
 		set_Value (COLUMNNAME_DateProcessed, DateProcessed);
@@ -195,15 +210,14 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 
 	/** Get Date Processed.
 		@return Date Processed	  */
-	public Timestamp getDateProcessed () 
+	public Timestamp getDateProcessed()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateProcessed);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -212,13 +226,14 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Process Message.
-		@param P_Msg Process Message	  */
+		@param P_Msg Process Message
+	*/
 	public void setP_Msg (String P_Msg)
 	{
 		set_Value (COLUMNNAME_P_Msg, P_Msg);
@@ -226,13 +241,14 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 
 	/** Get Process Message.
 		@return Process Message	  */
-	public String getP_Msg () 
+	public String getP_Msg()
 	{
 		return (String)get_Value(COLUMNNAME_P_Msg);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -240,7 +256,7 @@ public class X_AD_Package_Imp_Proc extends PO implements I_AD_Package_Imp_Proc, 
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

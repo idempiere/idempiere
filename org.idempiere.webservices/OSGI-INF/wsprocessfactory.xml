@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scr:component>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.idempiere.webservices.process.WebServicesProcessFactory">
+   <implementation class="org.idempiere.webservices.process.WebServicesProcessFactory"/>
+   <property name="service.ranking" type="Integer" value="1"/>
+   <service>
+      <provide interface="org.adempiere.base.IProcessFactory"/>
+   </service>
+</scr:component>

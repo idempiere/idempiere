@@ -22,10 +22,11 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Client Info Model
@@ -33,16 +34,25 @@ import org.compiere.util.Env;
  *  @author Jorg Janke
  *  @version $Id: MClientInfo.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
  */
-public class MClientInfo extends X_AD_ClientInfo
+public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4861006368856890116L;
-
+	private static final long serialVersionUID = 4707948832203223893L;
 
 	/**
-	 * 	Get Client Info
+	 * 	Get Client Info from cache (immutable)
+	 * 	@param AD_Client_ID id
+	 * 	@return Client Info
+	 */
+	public static MClientInfo get (int AD_Client_ID)
+	{
+		return get(Env.getCtx(), AD_Client_ID);
+	}
+	
+	/**
+	 * 	Get Client Info from cache (immutable)
 	 * 	@param ctx context
 	 * 	@param AD_Client_ID id
 	 * 	@return Client Info
@@ -53,7 +63,7 @@ public class MClientInfo extends X_AD_ClientInfo
 	}	//	get
 	
 	/**
-	 * 	Get Client Info
+	 * 	Get Client Info from cache (immutable)
 	 * 	@param ctx context
 	 * 	@param AD_Client_ID id
 	 * 	@param trxName optional trx
@@ -62,7 +72,7 @@ public class MClientInfo extends X_AD_ClientInfo
 	public static MClientInfo get (Properties ctx, int AD_Client_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(AD_Client_ID);
-		MClientInfo info = (MClientInfo)s_cache.get(key);
+		MClientInfo info = s_cache.get(ctx, key, e -> new MClientInfo(ctx, e));
 		if (info != null)
 			return info;
 		//
@@ -76,9 +86,8 @@ public class MClientInfo extends X_AD_ClientInfo
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
 			{
-				info = new MClientInfo (ctx, rs, null);
-				if (trxName == null)
-					s_cache.put (key, info);
+				info = new MClientInfo (ctx, rs, trxName);
+				s_cache.put (key, info, e -> new MClientInfo(Env.getCtx(), e));
 			}
 		}
 		catch (SQLException ex)
@@ -97,6 +106,15 @@ public class MClientInfo extends X_AD_ClientInfo
 	
 	/**
 	 * 	Get optionally cached client
+	 *	@return client
+	 */
+	public static MClientInfo get ()
+	{
+		return get(Env.getCtx());
+	}
+	
+	/**
+	 * 	Get optionally cached client
 	 *	@param ctx context
 	 *	@return client
 	 */
@@ -105,8 +123,23 @@ public class MClientInfo extends X_AD_ClientInfo
 		return get (ctx, Env.getAD_Client_ID(ctx), null);
 	}	//	get
 
+	/**
+	 * Get updateable copy of MClientInfo from cache
+	 * @param ctx
+	 * @param AD_Client_ID
+	 * @param trxName
+	 * @return MClientInfo
+	 */
+	public static MClientInfo getCopy(Properties ctx, int AD_Client_ID, String trxName)
+	{
+		MClientInfo ci = get(ctx, AD_Client_ID, trxName);
+		if (ci != null)
+			ci = new MClientInfo(ctx, ci, trxName);
+		return ci;
+	}
+	
 	/**	Cache						*/
-	private static CCache<Integer,MClientInfo> s_cache = new CCache<Integer,MClientInfo>(Table_Name, 2);
+	private static ImmutableIntPOCache<Integer,MClientInfo> s_cache = new ImmutableIntPOCache<Integer,MClientInfo>(Table_Name, 2);
 	/**	Logger						*/
 	private static CLogger		s_log = CLogger.getCLogger (MClientInfo.class);
 
@@ -169,6 +202,37 @@ public class MClientInfo extends X_AD_ClientInfo
 		m_createNew = true;
 	}	//	MClientInfo
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MClientInfo(MClientInfo copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MClientInfo(Properties ctx, MClientInfo copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MClientInfo(Properties ctx, MClientInfo copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_acctSchema = copy.m_acctSchema != null ? new MAcctSchema(ctx, copy.m_acctSchema, trxName) : null;
+	}
 
 	/**	Account Schema				*/
 	private MAcctSchema 		m_acctSchema = null;
@@ -182,7 +246,11 @@ public class MClientInfo extends X_AD_ClientInfo
 	public MAcctSchema getMAcctSchema1()
 	{
 		if (m_acctSchema == null && getC_AcctSchema1_ID() != 0)
-			m_acctSchema = new MAcctSchema (getCtx(), getC_AcctSchema1_ID(), null);
+		{
+			m_acctSchema = new MAcctSchema (getCtx(), getC_AcctSchema1_ID(), get_TrxName());
+			if (is_Immutable())
+				m_acctSchema.markImmutable();
+		}
 		return m_acctSchema;
 	}	//	getMAcctSchema1
 
@@ -214,4 +282,15 @@ public class MClientInfo extends X_AD_ClientInfo
 		return saveUpdate();
 	}	//	save
 	
+	@Override
+	public MClientInfo markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		if (m_acctSchema != null)
+			m_acctSchema.markImmutable();
+		return this;
+	}
+
 }	//	MClientInfo

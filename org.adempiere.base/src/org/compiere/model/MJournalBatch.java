@@ -42,9 +42,9 @@ import org.compiere.util.TimeUtil;
  *	@author Jorg Janke
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li>FR [ 1948157  ]  Is necessary the reference for document reverse
- *  		@see http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1948157&group_id=176962
+ *  		@see https://sourceforge.net/p/adempiere/feature-requests/412/
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 	
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 1776045 ] Add ReActivate action to GL Journal
  *	@version $Id: MJournalBatch.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
@@ -54,7 +54,7 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5920767495976301905L;
+	private static final long serialVersionUID = 4447134860127309777L;
 
 	/**
 	 * 	Create new Journal Batch by copying
@@ -103,10 +103,6 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		super (ctx, GL_JournalBatch_ID, trxName);
 		if (GL_JournalBatch_ID == 0)
 		{
-		//	setGL_JournalBatch_ID (0);	PK
-		//	setDescription (null);
-		//	setDocumentNo (null);
-		//	setC_DocType_ID (0);
 			setPostingType (POSTINGTYPE_Actual);
 			setDocAction (DOCACTION_Complete);
 			setDocStatus (DOCSTATUS_Drafted);
@@ -138,9 +134,6 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	{
 		this (original.getCtx(), 0, original.get_TrxName());
 		setClientOrg(original);
-		//
-	//	setC_AcctSchema_ID(original.getC_AcctSchema_ID());
-	//	setGL_Budget_ID(original.getGL_Budget_ID());
 		setGL_Category_ID(original.getGL_Category_ID());
 		setPostingType(original.getPostingType());
 		setDescription(original.getDescription());
@@ -148,12 +141,6 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		setControlAmt(original.getControlAmt());
 		//
 		setC_Currency_ID(original.getC_Currency_ID());
-	//	setC_ConversionType_ID(original.getC_ConversionType_ID());
-	//	setCurrencyRate(original.getCurrencyRate());
-		
-	//	setDateDoc(original.getDateDoc());
-	//	setDateAcct(original.getDateAcct());
-	//	setC_Period_ID(original.getC_Period_ID());
 	}	//	MJournal
 	
 	
@@ -714,7 +701,7 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		//	Reverse it
 		MJournalBatch reverse = new MJournalBatch (this);
 		reverse.setC_Period_ID(0);
-		Timestamp reversalDate = Env.getContextAsDate(getCtx(), "#Date");
+		Timestamp reversalDate = Env.getContextAsDate(getCtx(), Env.DATE);
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}
@@ -877,10 +864,7 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	
@@ -963,4 +947,17 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 		
 		return true;
 	}
+
+	/**
+	 * 	Document Status is Complete or Closed
+	 *	@return true if CO, CL or RE
+	 */
+	public boolean isComplete()
+	{
+		String ds = getDocStatus();
+		return DOCSTATUS_Completed.equals(ds)
+			|| DOCSTATUS_Closed.equals(ds)
+			|| DOCSTATUS_Reversed.equals(ds);
+	}	//	isComplete
+
 }	//	MJournalBatch

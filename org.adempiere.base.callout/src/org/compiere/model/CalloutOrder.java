@@ -120,7 +120,7 @@ public class CalloutOrder extends CalloutEngine
 				if (DocSubTypeSO.equals(MOrder.DocSubTypeSO_POS))
 					mTab.setValue ("DeliveryRule", X_C_Order.DELIVERYRULE_Force);
 				else if (DocSubTypeSO.equals(MOrder.DocSubTypeSO_Prepay))
-					mTab.setValue ("DeliveryRule", X_C_Order.DELIVERYRULE_AfterReceipt);
+					mTab.setValue ("DeliveryRule", X_C_Order.DELIVERYRULE_AfterPayment);
 				else
 					mTab.setValue ("DeliveryRule", X_C_Order.DELIVERYRULE_Availability);
 				
@@ -253,6 +253,8 @@ public class CalloutOrder extends CalloutEngine
 			+ " p.SO_CreditLimit, p.SO_CreditLimit-p.SO_CreditUsed AS CreditAvailable,"
 			+ " (select max(lship.C_BPartner_Location_ID) from C_BPartner_Location lship where p.C_BPartner_ID=lship.C_BPartner_ID AND lship.IsShipTo='Y' AND lship.IsActive='Y') as C_BPartner_Location_ID,"
 			+ " (select max(c.AD_User_ID) from AD_User c where p.C_BPartner_ID=c.C_BPartner_ID AND c.IsActive='Y') as AD_User_ID,"
+			+ " (select max(c.AD_User_ID) from AD_User c where p.C_BPartner_ID=c.C_BPartner_ID AND c.IsActive='Y' AND IsBillTo='Y') as BillTo_User_ID,"
+			+ " (select max(c.AD_User_ID) from AD_User c where p.C_BPartner_ID=c.C_BPartner_ID AND c.IsActive='Y' AND IsShipTo='Y') as ShipTo_User_ID,"
 			+ " COALESCE(p.PO_PriceList_ID,g.PO_PriceList_ID) AS PO_PriceList_ID, p.PaymentRulePO,p.PO_PaymentTerm_ID,"
 			+ " (select max(lbill.C_BPartner_Location_ID) from C_BPartner_Location lbill where p.C_BPartner_ID=lbill.C_BPartner_ID AND lbill.IsBillTo='Y' AND lbill.IsActive='Y') AS Bill_Location_ID, "
 			+ " p.SOCreditStatus, "
@@ -284,7 +286,7 @@ public class CalloutOrder extends CalloutEngine
 					mTab.setValue("M_PriceList_ID", ii);
 				else
 				{	//	get default PriceList
-					int i = Env.getContextAsInt(ctx, "#M_PriceList_ID");
+					int i = Env.getContextAsInt(ctx, Env.M_PRICELIST_ID);
 					if (i != 0)
 					{
 						MPriceList pl = new MPriceList(ctx, i, null);
@@ -344,12 +346,17 @@ public class CalloutOrder extends CalloutEngine
 					if (cont.length() > 0)
 						contID = Integer.parseInt(cont);
 				}
-				if (contID == 0)
+				int BillTo_User_ID = rs.getInt("BillTo_User_ID");
+				int ShipTo_User_ID = rs.getInt("ShipTo_User_ID");
+				if (contID == 0) {
 					mTab.setValue("AD_User_ID", null);
-				else
+					mTab.setValue("Bill_User_ID", null);
+				} else
 				{
-					mTab.setValue("AD_User_ID", Integer.valueOf(contID));
-					mTab.setValue("Bill_User_ID", Integer.valueOf(contID));
+					Integer userID = ShipTo_User_ID > 0 ? Integer.valueOf(ShipTo_User_ID) : Integer.valueOf(contID);
+					mTab.setValue("AD_User_ID", userID);
+					userID = BillTo_User_ID > 0 ? Integer.valueOf(BillTo_User_ID) : Integer.valueOf(contID);
+					mTab.setValue("Bill_User_ID", userID);
 				}
 
 				//	CreditAvailable
@@ -389,7 +396,7 @@ public class CalloutOrder extends CalloutEngine
 				if (OrderType.equals(MOrder.DocSubTypeSO_Prepay))
 				{
 					mTab.setValue("InvoiceRule", X_C_Order.INVOICERULE_Immediate);
-					mTab.setValue("DeliveryRule", X_C_Order.DELIVERYRULE_AfterReceipt);
+					mTab.setValue("DeliveryRule", X_C_Order.DELIVERYRULE_AfterPayment);
 				}
 				else if (OrderType.equals(MOrder.DocSubTypeSO_POS))	//  for POS
 					mTab.setValue("PaymentRule", X_C_Order.PAYMENTRULE_Cash);
@@ -464,6 +471,7 @@ public class CalloutOrder extends CalloutEngine
 			+ "p.InvoiceRule,p.DeliveryRule,p.FreightCostRule,DeliveryViaRule,"
 			+ "p.SO_CreditLimit, p.SO_CreditLimit-p.SO_CreditUsed AS CreditAvailable,"
 			+ "(select max(c.AD_User_ID) from AD_User c where p.C_BPartner_ID=c.C_BPartner_ID AND c.IsActive='Y') as AD_User_ID,"
+			+ "(select max(c.AD_User_ID) from AD_User c where p.C_BPartner_ID=c.C_BPartner_ID AND c.IsActive='Y' AND IsBillTo='Y') as BillTo_User_ID,"
 			+ "p.PO_PriceList_ID, p.PaymentRulePO, p.PO_PaymentTerm_ID,"
 			+ "(select max(lbill.C_BPartner_Location_ID) from C_BPartner_Location lbill where p.C_BPartner_ID=lbill.C_BPartner_ID AND lbill.IsBillTo='Y' AND lbill.IsActive='Y') AS Bill_Location_ID "
 			+ "FROM C_BPartner p "
@@ -485,7 +493,7 @@ public class CalloutOrder extends CalloutEngine
 					mTab.setValue("M_PriceList_ID", ii);
 				else
 				{	//	get default PriceList
-					int i = Env.getContextAsInt(ctx, "#M_PriceList_ID");
+					int i = Env.getContextAsInt(ctx, Env.M_PRICELIST_ID);
 					if (i != 0)
 					{
 						MPriceList pl = new MPriceList(ctx, i, null);
@@ -522,6 +530,7 @@ public class CalloutOrder extends CalloutEngine
 					mTab.setValue("Bill_Location_ID", Integer.valueOf(bill_Location_ID));
 
 				//	Contact - overwritten by InfoBP selection
+				int BillTo_User_ID = rs.getInt("BillTo_User_ID");
 				int contID = rs.getInt("AD_User_ID");
 				if (bill_BPartner_ID.toString().equals(Env.getContext(ctx, WindowNo, Env.TAB_INFO, "C_BPartner_ID")))
 				{
@@ -531,8 +540,10 @@ public class CalloutOrder extends CalloutEngine
 				}
 				if (contID == 0)
 					mTab.setValue("Bill_User_ID", null);
-				else
-					mTab.setValue("Bill_User_ID", Integer.valueOf(contID));
+				else {
+					Integer userID = BillTo_User_ID > 0 ? Integer.valueOf(BillTo_User_ID) : Integer.valueOf(contID);
+					mTab.setValue("Bill_User_ID", userID);
+				}
 
 				//	CreditAvailable
 				if (IsSOTrx)
@@ -804,7 +815,8 @@ public class CalloutOrder extends CalloutEngine
 		if (Env.isSOTrx(ctx, WindowNo))
 		{
 			MProduct product = MProduct.get (ctx, M_Product_ID.intValue());
-			if (product.isStocked() && Env.getContext(ctx, WindowNo, "IsDropShip").equals("N"))
+			if (product.isStocked() && Env.getContext(ctx, WindowNo, "IsDropShip").equals("N")
+				&& !(product.isBOM() && product.isVerified() && product.isAutoProduce()))
 			{
 				BigDecimal QtyOrdered = (BigDecimal)mTab.getValue("QtyOrdered");
 				if (QtyOrdered == null)
@@ -969,9 +981,10 @@ public class CalloutOrder extends CalloutEngine
 		if (log.isLoggable(Level.FINE)) log.fine("Bill BP_Location=" + billC_BPartner_Location_ID);
 
 		//
-		int C_Tax_ID = Tax.get (ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
+		String deliveryViaRule = Env.getContext(ctx, WindowNo, I_C_Order.COLUMNNAME_DeliveryViaRule, true);
+		int C_Tax_ID = Core.getTaxLookup().get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
 			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID,
-			"Y".equals(Env.getContext(ctx, WindowNo, "IsSOTrx")), null);
+			"Y".equals(Env.getContext(ctx, WindowNo, "IsSOTrx")), deliveryViaRule, null);
 		if (log.isLoggable(Level.INFO)) log.info("Tax ID=" + C_Tax_ID);
 		//
 		if (C_Tax_ID == 0)
@@ -1077,14 +1090,12 @@ public class CalloutOrder extends CalloutEngine
 			if (log.isLoggable(Level.FINE)) log.fine("QtyChanged -> PriceActual=" + pp.getPriceStd()
 				+ ", PriceEntered=" + PriceEntered + ", Discount=" + pp.getDiscount());
 			PriceActual = pp.getPriceStd();
-			PriceEntered = pp.getPriceStd();
 			Discount = pp.getDiscount();
 			PriceLimit = pp.getPriceLimit();
 			PriceList = pp.getPriceList();
 			mTab.setValue("PriceList", pp.getPriceList());
 			mTab.setValue("PriceLimit", pp.getPriceLimit());
 			mTab.setValue("PriceActual", pp.getPriceStd());
-			mTab.setValue("PriceEntered", pp.getPriceStd());
 			mTab.setValue("Discount", pp.getDiscount());
 			mTab.setValue("PriceEntered", PriceEntered);
 			Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
@@ -1300,7 +1311,8 @@ public class CalloutOrder extends CalloutEngine
 			&& QtyOrdered.signum() > 0)		//	no negative (returns)
 		{
 			MProduct product = MProduct.get (ctx, M_Product_ID);
-			if (product.isStocked() && Env.getContext(ctx, WindowNo, "IsDropShip").equals("N"))
+			if (product.isStocked() && Env.getContext(ctx, WindowNo, "IsDropShip").equals("N")
+				&& !(product.isBOM() && product.isVerified() && product.isAutoProduce()))
 			{
 				int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
 				int M_AttributeSetInstance_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_AttributeSetInstance_ID");

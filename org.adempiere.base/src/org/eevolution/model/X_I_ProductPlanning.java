@@ -26,19 +26,34 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_ProductPlanning
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="I_ProductPlanning")
 public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_ProductPlanning (Properties ctx, int I_ProductPlanning_ID, String trxName)
     {
       super (ctx, I_ProductPlanning_ID, trxName);
+      /** if (I_ProductPlanning_ID == 0)
+        {
+			setI_IsImported (false);
+			setI_ProductPlanning_ID (0);
+			setIsCreatePlan (false);
+			setIsPhantom (false);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_ProductPlanning (Properties ctx, int I_ProductPlanning_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_ProductPlanning_ID, trxName, virtualColumns);
       /** if (I_ProductPlanning_ID == 0)
         {
 			setI_IsImported (false);
@@ -72,32 +87,32 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_I_ProductPlanning[")
+      StringBuilder sb = new StringBuilder ("X_I_ProductPlanning[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Workflow getAD_Workflow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_Name)
-			.getPO(getAD_Workflow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Workflow)MTable.get(getCtx(), org.compiere.model.I_AD_Workflow.Table_ID)
+			.getPO(getAD_Workflow_ID(), get_TrxName());
+	}
 
 	/** Set Workflow.
-		@param AD_Workflow_ID 
-		Workflow or combination of tasks
-	  */
+		@param AD_Workflow_ID Workflow or combination of tasks
+	*/
 	public void setAD_Workflow_ID (int AD_Workflow_ID)
 	{
-		if (AD_Workflow_ID < 1) 
+		if (AD_Workflow_ID < 1)
 			set_Value (COLUMNNAME_AD_Workflow_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Workflow_ID, Integer.valueOf(AD_Workflow_ID));
 	}
 
 	/** Get Workflow.
 		@return Workflow or combination of tasks
 	  */
-	public int getAD_Workflow_ID () 
+	public int getAD_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Workflow_ID);
 		if (ii == null)
@@ -106,9 +121,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Business Partner Key.
-		@param BPartner_Value 
-		The Key of the Business Partner
-	  */
+		@param BPartner_Value The Key of the Business Partner
+	*/
 	public void setBPartner_Value (String BPartner_Value)
 	{
 		set_Value (COLUMNNAME_BPartner_Value, BPartner_Value);
@@ -117,32 +131,32 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Business Partner Key.
 		@return The Key of the Business Partner
 	  */
-	public String getBPartner_Value () 
+	public String getBPartner_Value()
 	{
 		return (String)get_Value(COLUMNNAME_BPartner_Value);
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -151,9 +165,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Date Promised.
-		@param DatePromised 
-		Date Order was promised
-	  */
+		@param DatePromised Date Order was promised
+	*/
 	public void setDatePromised (Timestamp DatePromised)
 	{
 		set_Value (COLUMNNAME_DatePromised, DatePromised);
@@ -162,29 +175,31 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Date Promised.
 		@return Date Order was promised
 	  */
-	public Timestamp getDatePromised () 
+	public Timestamp getDatePromised()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DatePromised);
 	}
 
 	public org.eevolution.model.I_DD_NetworkDistribution getDD_NetworkDistribution() throws RuntimeException
-    {
-		return (org.eevolution.model.I_DD_NetworkDistribution)MTable.get(getCtx(), org.eevolution.model.I_DD_NetworkDistribution.Table_Name)
-			.getPO(getDD_NetworkDistribution_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_DD_NetworkDistribution)MTable.get(getCtx(), org.eevolution.model.I_DD_NetworkDistribution.Table_ID)
+			.getPO(getDD_NetworkDistribution_ID(), get_TrxName());
+	}
 
 	/** Set Network Distribution.
-		@param DD_NetworkDistribution_ID Network Distribution	  */
+		@param DD_NetworkDistribution_ID Network Distribution
+	*/
 	public void setDD_NetworkDistribution_ID (int DD_NetworkDistribution_ID)
 	{
-		if (DD_NetworkDistribution_ID < 1) 
+		if (DD_NetworkDistribution_ID < 1)
 			set_Value (COLUMNNAME_DD_NetworkDistribution_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_DD_NetworkDistribution_ID, Integer.valueOf(DD_NetworkDistribution_ID));
 	}
 
 	/** Get Network Distribution.
 		@return Network Distribution	  */
-	public int getDD_NetworkDistribution_ID () 
+	public int getDD_NetworkDistribution_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DD_NetworkDistribution_ID);
 		if (ii == null)
@@ -193,9 +208,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Promised Delivery Time.
-		@param DeliveryTime_Promised 
-		Promised days between order and delivery
-	  */
+		@param DeliveryTime_Promised Promised days between order and delivery
+	*/
 	public void setDeliveryTime_Promised (BigDecimal DeliveryTime_Promised)
 	{
 		set_Value (COLUMNNAME_DeliveryTime_Promised, DeliveryTime_Promised);
@@ -204,7 +218,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Promised Delivery Time.
 		@return Promised days between order and delivery
 	  */
-	public BigDecimal getDeliveryTime_Promised () 
+	public BigDecimal getDeliveryTime_Promised()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DeliveryTime_Promised);
 		if (bd == null)
@@ -213,9 +227,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Forecast Key.
-		@param ForecastValue 
-		Key of the Forecast
-	  */
+		@param ForecastValue Key of the Forecast
+	*/
 	public void setForecastValue (String ForecastValue)
 	{
 		set_Value (COLUMNNAME_ForecastValue, ForecastValue);
@@ -224,15 +237,14 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Forecast Key.
 		@return Key of the Forecast
 	  */
-	public String getForecastValue () 
+	public String getForecastValue()
 	{
 		return (String)get_Value(COLUMNNAME_ForecastValue);
 	}
 
 	/** Set Import Error Message.
-		@param I_ErrorMsg 
-		Messages generated from import process
-	  */
+		@param I_ErrorMsg Messages generated from import process
+	*/
 	public void setI_ErrorMsg (String I_ErrorMsg)
 	{
 		set_Value (COLUMNNAME_I_ErrorMsg, I_ErrorMsg);
@@ -241,15 +253,14 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Import Error Message.
 		@return Messages generated from import process
 	  */
-	public String getI_ErrorMsg () 
+	public String getI_ErrorMsg()
 	{
 		return (String)get_Value(COLUMNNAME_I_ErrorMsg);
 	}
 
 	/** Set Imported.
-		@param I_IsImported 
-		Has this import been processed
-	  */
+		@param I_IsImported Has this import been processed
+	*/
 	public void setI_IsImported (boolean I_IsImported)
 	{
 		set_Value (COLUMNNAME_I_IsImported, Boolean.valueOf(I_IsImported));
@@ -258,7 +269,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Imported.
 		@return Has this import been processed
 	  */
-	public boolean isI_IsImported () 
+	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
 		if (oo != null) 
@@ -271,18 +282,19 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Import Product Planning.
-		@param I_ProductPlanning_ID Import Product Planning	  */
+		@param I_ProductPlanning_ID Import Product Planning
+	*/
 	public void setI_ProductPlanning_ID (int I_ProductPlanning_ID)
 	{
-		if (I_ProductPlanning_ID < 1) 
+		if (I_ProductPlanning_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_I_ProductPlanning_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_I_ProductPlanning_ID, Integer.valueOf(I_ProductPlanning_ID));
 	}
 
 	/** Get Import Product Planning.
 		@return Import Product Planning	  */
-	public int getI_ProductPlanning_ID () 
+	public int getI_ProductPlanning_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_I_ProductPlanning_ID);
 		if (ii == null)
@@ -291,7 +303,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set I_ProductPlanning_UU.
-		@param I_ProductPlanning_UU I_ProductPlanning_UU	  */
+		@param I_ProductPlanning_UU I_ProductPlanning_UU
+	*/
 	public void setI_ProductPlanning_UU (String I_ProductPlanning_UU)
 	{
 		set_Value (COLUMNNAME_I_ProductPlanning_UU, I_ProductPlanning_UU);
@@ -299,15 +312,14 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 
 	/** Get I_ProductPlanning_UU.
 		@return I_ProductPlanning_UU	  */
-	public String getI_ProductPlanning_UU () 
+	public String getI_ProductPlanning_UU()
 	{
 		return (String)get_Value(COLUMNNAME_I_ProductPlanning_UU);
 	}
 
 	/** Set Create Plan.
-		@param IsCreatePlan 
-		Indicates whether planned orders will be generated by MRP
-	  */
+		@param IsCreatePlan Indicates whether planned orders will be generated by MRP
+	*/
 	public void setIsCreatePlan (boolean IsCreatePlan)
 	{
 		set_Value (COLUMNNAME_IsCreatePlan, Boolean.valueOf(IsCreatePlan));
@@ -316,7 +328,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Create Plan.
 		@return Indicates whether planned orders will be generated by MRP
 	  */
-	public boolean isCreatePlan () 
+	public boolean isCreatePlan()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCreatePlan);
 		if (oo != null) 
@@ -329,7 +341,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Is MPS.
-		@param IsMPS Is MPS	  */
+		@param IsMPS Is MPS
+	*/
 	public void setIsMPS (boolean IsMPS)
 	{
 		set_Value (COLUMNNAME_IsMPS, Boolean.valueOf(IsMPS));
@@ -337,7 +350,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 
 	/** Get Is MPS.
 		@return Is MPS	  */
-	public boolean isMPS () 
+	public boolean isMPS()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMPS);
 		if (oo != null) 
@@ -350,9 +363,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Phantom.
-		@param IsPhantom 
-		Phantom Component
-	  */
+		@param IsPhantom Phantom Component
+	*/
 	public void setIsPhantom (boolean IsPhantom)
 	{
 		set_Value (COLUMNNAME_IsPhantom, Boolean.valueOf(IsPhantom));
@@ -361,7 +373,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Phantom.
 		@return Phantom Component
 	  */
-	public boolean isPhantom () 
+	public boolean isPhantom()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPhantom);
 		if (oo != null) 
@@ -374,26 +386,26 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_M_Forecast getM_Forecast() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Forecast)MTable.get(getCtx(), org.compiere.model.I_M_Forecast.Table_Name)
-			.getPO(getM_Forecast_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Forecast)MTable.get(getCtx(), org.compiere.model.I_M_Forecast.Table_ID)
+			.getPO(getM_Forecast_ID(), get_TrxName());
+	}
 
 	/** Set Forecast.
-		@param M_Forecast_ID 
-		Material Forecast
-	  */
+		@param M_Forecast_ID Material Forecast
+	*/
 	public void setM_Forecast_ID (int M_Forecast_ID)
 	{
-		if (M_Forecast_ID < 1) 
+		if (M_Forecast_ID < 1)
 			set_Value (COLUMNNAME_M_Forecast_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Forecast_ID, Integer.valueOf(M_Forecast_ID));
 	}
 
 	/** Get Forecast.
 		@return Material Forecast
 	  */
-	public int getM_Forecast_ID () 
+	public int getM_Forecast_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Forecast_ID);
 		if (ii == null)
@@ -402,26 +414,26 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_M_ForecastLine getM_ForecastLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ForecastLine)MTable.get(getCtx(), org.compiere.model.I_M_ForecastLine.Table_Name)
-			.getPO(getM_ForecastLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ForecastLine)MTable.get(getCtx(), org.compiere.model.I_M_ForecastLine.Table_ID)
+			.getPO(getM_ForecastLine_ID(), get_TrxName());
+	}
 
 	/** Set Forecast Line.
-		@param M_ForecastLine_ID 
-		Forecast Line
-	  */
+		@param M_ForecastLine_ID Forecast Line
+	*/
 	public void setM_ForecastLine_ID (int M_ForecastLine_ID)
 	{
-		if (M_ForecastLine_ID < 1) 
+		if (M_ForecastLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ForecastLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ForecastLine_ID, Integer.valueOf(M_ForecastLine_ID));
 	}
 
 	/** Get Forecast Line.
 		@return Forecast Line
 	  */
-	public int getM_ForecastLine_ID () 
+	public int getM_ForecastLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ForecastLine_ID);
 		if (ii == null)
@@ -430,26 +442,26 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -458,26 +470,26 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_Name)
-			.getPO(getM_Warehouse_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
+			.getPO(getM_Warehouse_ID(), get_TrxName());
+	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_Value (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -486,9 +498,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Network Distribution Key.
-		@param NetworkDistributionValue 
-		Key of the Network Distribution
-	  */
+		@param NetworkDistributionValue Key of the Network Distribution
+	*/
 	public void setNetworkDistributionValue (String NetworkDistributionValue)
 	{
 		set_Value (COLUMNNAME_NetworkDistributionValue, NetworkDistributionValue);
@@ -497,15 +508,14 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Network Distribution Key.
 		@return Key of the Network Distribution
 	  */
-	public String getNetworkDistributionValue () 
+	public String getNetworkDistributionValue()
 	{
 		return (String)get_Value(COLUMNNAME_NetworkDistributionValue);
 	}
 
 	/** Set Maximum Order Qty.
-		@param Order_Max 
-		Maximum order quantity in UOM
-	  */
+		@param Order_Max Maximum order quantity in UOM
+	*/
 	public void setOrder_Max (BigDecimal Order_Max)
 	{
 		set_Value (COLUMNNAME_Order_Max, Order_Max);
@@ -514,7 +524,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Maximum Order Qty.
 		@return Maximum order quantity in UOM
 	  */
-	public BigDecimal getOrder_Max () 
+	public BigDecimal getOrder_Max()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Order_Max);
 		if (bd == null)
@@ -523,9 +533,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Minimum Order Qty.
-		@param Order_Min 
-		Minimum order quantity in UOM
-	  */
+		@param Order_Min Minimum order quantity in UOM
+	*/
 	public void setOrder_Min (BigDecimal Order_Min)
 	{
 		set_Value (COLUMNNAME_Order_Min, Order_Min);
@@ -534,7 +543,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Minimum Order Qty.
 		@return Minimum order quantity in UOM
 	  */
-	public BigDecimal getOrder_Min () 
+	public BigDecimal getOrder_Min()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Order_Min);
 		if (bd == null)
@@ -543,9 +552,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Order Pack Qty.
-		@param Order_Pack 
-		Package order size in UOM (e.g. order set of 5 units)
-	  */
+		@param Order_Pack Package order size in UOM (e.g. order set of 5 units)
+	*/
 	public void setOrder_Pack (BigDecimal Order_Pack)
 	{
 		set_Value (COLUMNNAME_Order_Pack, Order_Pack);
@@ -554,7 +562,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Order Pack Qty.
 		@return Package order size in UOM (e.g. order set of 5 units)
 	  */
-	public BigDecimal getOrder_Pack () 
+	public BigDecimal getOrder_Pack()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Order_Pack);
 		if (bd == null)
@@ -563,7 +571,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Order Period.
-		@param Order_Period Order Period	  */
+		@param Order_Period Order Period
+	*/
 	public void setOrder_Period (BigDecimal Order_Period)
 	{
 		set_Value (COLUMNNAME_Order_Period, Order_Period);
@@ -571,7 +580,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 
 	/** Get Order Period.
 		@return Order Period	  */
-	public BigDecimal getOrder_Period () 
+	public BigDecimal getOrder_Period()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Order_Period);
 		if (bd == null)
@@ -588,7 +597,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Period Order Quantity = POQ */
 	public static final String ORDER_POLICY_PeriodOrderQuantity = "POQ";
 	/** Set Order Policy.
-		@param Order_Policy Order Policy	  */
+		@param Order_Policy Order Policy
+	*/
 	public void setOrder_Policy (String Order_Policy)
 	{
 
@@ -597,13 +607,14 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 
 	/** Get Order Policy.
 		@return Order Policy	  */
-	public String getOrder_Policy () 
+	public String getOrder_Policy()
 	{
 		return (String)get_Value(COLUMNNAME_Order_Policy);
 	}
 
 	/** Set Order Qty.
-		@param Order_Qty Order Qty	  */
+		@param Order_Qty Order Qty
+	*/
 	public void setOrder_Qty (BigDecimal Order_Qty)
 	{
 		set_Value (COLUMNNAME_Order_Qty, Order_Qty);
@@ -611,7 +622,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 
 	/** Get Order Qty.
 		@return Order Qty	  */
-	public BigDecimal getOrder_Qty () 
+	public BigDecimal getOrder_Qty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Order_Qty);
 		if (bd == null)
@@ -620,9 +631,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Org Key.
-		@param OrgValue 
-		Key of the Organization
-	  */
+		@param OrgValue Key of the Organization
+	*/
 	public void setOrgValue (String OrgValue)
 	{
 		set_Value (COLUMNNAME_OrgValue, OrgValue);
@@ -631,29 +641,31 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Org Key.
 		@return Key of the Organization
 	  */
-	public String getOrgValue () 
+	public String getOrgValue()
 	{
 		return (String)get_Value(COLUMNNAME_OrgValue);
 	}
 
 	public org.compiere.model.I_AD_User getPlanner() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getPlanner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getPlanner_ID(), get_TrxName());
+	}
 
 	/** Set Planner.
-		@param Planner_ID Planner	  */
+		@param Planner_ID Planner
+	*/
 	public void setPlanner_ID (int Planner_ID)
 	{
-		if (Planner_ID < 1) 
+		if (Planner_ID < 1)
 			set_Value (COLUMNNAME_Planner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Planner_ID, Integer.valueOf(Planner_ID));
 	}
 
 	/** Get Planner.
 		@return Planner	  */
-	public int getPlanner_ID () 
+	public int getPlanner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Planner_ID);
 		if (ii == null)
@@ -662,9 +674,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Planner Key.
-		@param PlannerValue 
-		Search Key of the Planning
-	  */
+		@param PlannerValue Search Key of the Planning
+	*/
 	public void setPlannerValue (String PlannerValue)
 	{
 		set_Value (COLUMNNAME_PlannerValue, PlannerValue);
@@ -673,32 +684,32 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Planner Key.
 		@return Search Key of the Planning
 	  */
-	public String getPlannerValue () 
+	public String getPlannerValue()
 	{
 		return (String)get_Value(COLUMNNAME_PlannerValue);
 	}
 
 	public org.eevolution.model.I_PP_Product_BOM getPP_Product_BOM() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_Name)
-			.getPO(getPP_Product_BOM_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Product_BOM)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_BOM.Table_ID)
+			.getPO(getPP_Product_BOM_ID(), get_TrxName());
+	}
 
-	/** Set BOM & Formula.
-		@param PP_Product_BOM_ID 
-		BOM & Formula
-	  */
+	/** Set BOM &amp; Formula.
+		@param PP_Product_BOM_ID BOM &amp; Formula
+	*/
 	public void setPP_Product_BOM_ID (int PP_Product_BOM_ID)
 	{
-		if (PP_Product_BOM_ID < 1) 
+		if (PP_Product_BOM_ID < 1)
 			set_Value (COLUMNNAME_PP_Product_BOM_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PP_Product_BOM_ID, Integer.valueOf(PP_Product_BOM_ID));
 	}
 
-	/** Get BOM & Formula.
-		@return BOM & Formula
+	/** Get BOM &amp; Formula.
+		@return BOM &amp; Formula
 	  */
-	public int getPP_Product_BOM_ID () 
+	public int getPP_Product_BOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Product_BOM_ID);
 		if (ii == null)
@@ -707,23 +718,25 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.eevolution.model.I_PP_Product_Planning getPP_Product_Planning() throws RuntimeException
-    {
-		return (org.eevolution.model.I_PP_Product_Planning)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_Planning.Table_Name)
-			.getPO(getPP_Product_Planning_ID(), get_TrxName());	}
+	{
+		return (org.eevolution.model.I_PP_Product_Planning)MTable.get(getCtx(), org.eevolution.model.I_PP_Product_Planning.Table_ID)
+			.getPO(getPP_Product_Planning_ID(), get_TrxName());
+	}
 
 	/** Set Product Planning.
-		@param PP_Product_Planning_ID Product Planning	  */
+		@param PP_Product_Planning_ID Product Planning
+	*/
 	public void setPP_Product_Planning_ID (int PP_Product_Planning_ID)
 	{
-		if (PP_Product_Planning_ID < 1) 
+		if (PP_Product_Planning_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Product_Planning_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Product_Planning_ID, Integer.valueOf(PP_Product_Planning_ID));
 	}
 
 	/** Get Product Planning.
 		@return Product Planning	  */
-	public int getPP_Product_Planning_ID () 
+	public int getPP_Product_Planning_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Product_Planning_ID);
 		if (ii == null)
@@ -732,9 +745,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_ValueNoCheck (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -743,7 +755,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -756,7 +768,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -764,7 +777,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -777,9 +790,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Product BOM Key.
-		@param Product_BOM_Value 
-		Key of Product BOM
-	  */
+		@param Product_BOM_Value Key of Product BOM
+	*/
 	public void setProduct_BOM_Value (String Product_BOM_Value)
 	{
 		set_Value (COLUMNNAME_Product_BOM_Value, Product_BOM_Value);
@@ -788,15 +800,14 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Product BOM Key.
 		@return Key of Product BOM
 	  */
-	public String getProduct_BOM_Value () 
+	public String getProduct_BOM_Value()
 	{
 		return (String)get_Value(COLUMNNAME_Product_BOM_Value);
 	}
 
 	/** Set Product Key.
-		@param ProductValue 
-		Key of the Product
-	  */
+		@param ProductValue Key of the Product
+	*/
 	public void setProductValue (String ProductValue)
 	{
 		set_Value (COLUMNNAME_ProductValue, ProductValue);
@@ -805,15 +816,14 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Product Key.
 		@return Key of the Product
 	  */
-	public String getProductValue () 
+	public String getProductValue()
 	{
 		return (String)get_Value(COLUMNNAME_ProductValue);
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -822,7 +832,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -831,9 +841,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Resource Key.
-		@param ResourceValue 
-		Key of the Resource
-	  */
+		@param ResourceValue Key of the Resource
+	*/
 	public void setResourceValue (String ResourceValue)
 	{
 		set_Value (COLUMNNAME_ResourceValue, ResourceValue);
@@ -842,15 +851,14 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Resource Key.
 		@return Key of the Resource
 	  */
-	public String getResourceValue () 
+	public String getResourceValue()
 	{
 		return (String)get_Value(COLUMNNAME_ResourceValue);
 	}
 
 	/** Set Safety Stock Qty.
-		@param SafetyStock 
-		Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
-	  */
+		@param SafetyStock Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
+	*/
 	public void setSafetyStock (BigDecimal SafetyStock)
 	{
 		set_Value (COLUMNNAME_SafetyStock, SafetyStock);
@@ -859,7 +867,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Safety Stock Qty.
 		@return Safety stock is a term used to describe a level of stock that is maintained below the cycle stock to buffer against stock-outs
 	  */
-	public BigDecimal getSafetyStock () 
+	public BigDecimal getSafetyStock()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_SafetyStock);
 		if (bd == null)
@@ -868,26 +876,26 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_AD_User getSalesRep() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_Name)
-			.getPO(getSalesRep_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getSalesRep_ID(), get_TrxName());
+	}
 
 	/** Set Sales Representative.
-		@param SalesRep_ID 
-		Sales Representative or Company Agent
-	  */
+		@param SalesRep_ID Sales Representative or Company Agent
+	*/
 	public void setSalesRep_ID (int SalesRep_ID)
 	{
-		if (SalesRep_ID < 1) 
+		if (SalesRep_ID < 1)
 			set_Value (COLUMNNAME_SalesRep_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_SalesRep_ID, Integer.valueOf(SalesRep_ID));
 	}
 
 	/** Get Sales Representative.
 		@return Sales Representative or Company Agent
 	  */
-	public int getSalesRep_ID () 
+	public int getSalesRep_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SalesRep_ID);
 		if (ii == null)
@@ -896,26 +904,26 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	public org.compiere.model.I_S_Resource getS_Resource() throws RuntimeException
-    {
-		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_Name)
-			.getPO(getS_Resource_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_S_Resource)MTable.get(getCtx(), org.compiere.model.I_S_Resource.Table_ID)
+			.getPO(getS_Resource_ID(), get_TrxName());
+	}
 
 	/** Set Resource.
-		@param S_Resource_ID 
-		Resource
-	  */
+		@param S_Resource_ID Resource
+	*/
 	public void setS_Resource_ID (int S_Resource_ID)
 	{
-		if (S_Resource_ID < 1) 
+		if (S_Resource_ID < 1)
 			set_Value (COLUMNNAME_S_Resource_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_S_Resource_ID, Integer.valueOf(S_Resource_ID));
 	}
 
 	/** Get Resource.
 		@return Resource
 	  */
-	public int getS_Resource_ID () 
+	public int getS_Resource_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_Resource_ID);
 		if (ii == null)
@@ -924,7 +932,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Time Fence.
-		@param TimeFence Time Fence	  */
+		@param TimeFence Time Fence
+	*/
 	public void setTimeFence (BigDecimal TimeFence)
 	{
 		set_Value (COLUMNNAME_TimeFence, TimeFence);
@@ -932,7 +941,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 
 	/** Get Time Fence.
 		@return Time Fence	  */
-	public BigDecimal getTimeFence () 
+	public BigDecimal getTimeFence()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TimeFence);
 		if (bd == null)
@@ -941,7 +950,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Transfert Time.
-		@param TransfertTime Transfert Time	  */
+		@param TransfertTime Transfert Time
+	*/
 	public void setTransfertTime (BigDecimal TransfertTime)
 	{
 		set_Value (COLUMNNAME_TransfertTime, TransfertTime);
@@ -949,7 +959,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 
 	/** Get Transfert Time.
 		@return Transfert Time	  */
-	public BigDecimal getTransfertTime () 
+	public BigDecimal getTransfertTime()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TransfertTime);
 		if (bd == null)
@@ -958,9 +968,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Partner Product Key.
-		@param VendorProductNo 
-		Product Key of the Business Partner
-	  */
+		@param VendorProductNo Product Key of the Business Partner
+	*/
 	public void setVendorProductNo (String VendorProductNo)
 	{
 		set_Value (COLUMNNAME_VendorProductNo, VendorProductNo);
@@ -969,15 +978,14 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Partner Product Key.
 		@return Product Key of the Business Partner
 	  */
-	public String getVendorProductNo () 
+	public String getVendorProductNo()
 	{
 		return (String)get_Value(COLUMNNAME_VendorProductNo);
 	}
 
 	/** Set Warehouse Key.
-		@param WarehouseValue 
-		Key of the Warehouse
-	  */
+		@param WarehouseValue Key of the Warehouse
+	*/
 	public void setWarehouseValue (String WarehouseValue)
 	{
 		set_Value (COLUMNNAME_WarehouseValue, WarehouseValue);
@@ -986,15 +994,14 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Warehouse Key.
 		@return Key of the Warehouse
 	  */
-	public String getWarehouseValue () 
+	public String getWarehouseValue()
 	{
 		return (String)get_Value(COLUMNNAME_WarehouseValue);
 	}
 
 	/** Set Working Time.
-		@param WorkingTime 
-		Workflow Simulation Execution Time
-	  */
+		@param WorkingTime Workflow Simulation Execution Time
+	*/
 	public void setWorkingTime (BigDecimal WorkingTime)
 	{
 		set_Value (COLUMNNAME_WorkingTime, WorkingTime);
@@ -1003,7 +1010,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Working Time.
 		@return Workflow Simulation Execution Time
 	  */
-	public BigDecimal getWorkingTime () 
+	public BigDecimal getWorkingTime()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_WorkingTime);
 		if (bd == null)
@@ -1012,9 +1019,8 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	}
 
 	/** Set Yield %.
-		@param Yield 
-		The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
-	  */
+		@param Yield The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
+	*/
 	public void setYield (int Yield)
 	{
 		set_Value (COLUMNNAME_Yield, Integer.valueOf(Yield));
@@ -1023,7 +1029,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	/** Get Yield %.
 		@return The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
 	  */
-	public int getYield () 
+	public int getYield()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Yield);
 		if (ii == null)

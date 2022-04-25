@@ -16,9 +16,6 @@ package org.adempiere.webui.apps;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -66,21 +63,22 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MNote;
 import org.compiere.model.MPInstance;
+import org.compiere.model.MPInstanceLog;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MReportView;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.MUserDefProc;
 import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
-import org.compiere.model.X_AD_ReportView;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -91,6 +89,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -107,7 +106,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9220870163215609274L;
+	private static final long serialVersionUID = 484056046177205235L;
 
 	private static final String ON_COMPLETE = "onComplete";
 	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
@@ -122,11 +121,14 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 
 	private ProcessParameterPanel parameterPanel = null;
 	private Checkbox runAsJobField = null;
+	private Label notificationTypeLabel = null;
 	private WTableDirEditor notificationTypeField = null;
 
 	private BusyDialog progressWindow;	
 	
 	private String		    m_Name = null;
+	private String		    m_Description = null;
+	private String		    m_Help = null;
 	private String          m_ShowHelp = null; // Determine if a Help Process Window is shown
 	private String initialMessage;
 	
@@ -150,7 +152,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 * @param WindowNo
 	 * @param AD_Process_ID
 	 * @param pi
-	 * @param innerWidth
 	 * @param autoStart
 	 * @param isDisposeOnComplete
 	 * @return
@@ -165,57 +166,35 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 		log.config("");
 		//
+		StringBuilder buildMsg = new StringBuilder();
 		boolean trl = !Env.isBaseLanguage(m_ctx, "AD_Process");
-		String sql = "SELECT Name, Description, Help, IsReport, ShowHelp, AD_Process_UU "
-				+ "FROM AD_Process "
-				+ "WHERE AD_Process_ID=?";
-		if (trl)
-			sql = "SELECT t.Name, t.Description, t.Help, p.IsReport, p.ShowHelp, AD_Process_UU "
-				+ "FROM AD_Process p, AD_Process_Trl t "
-				+ "WHERE p.AD_Process_ID=t.AD_Process_ID"
-				+ " AND p.AD_Process_ID=? AND t.AD_Language=?";
+		MProcess process = MProcess.get(AD_Process_ID);
+		m_Name = trl ? process.get_Translation(MProcess.COLUMNNAME_Name) : process.getName();
+		m_Description = trl ? process.get_Translation(MProcess.COLUMNNAME_Description) : process.getDescription();
+		m_Help = trl ? process.get_Translation(MProcess.COLUMNNAME_Help) : process.getHelp();
+		m_ShowHelp = process.getShowHelp();
 
-		PreparedStatement pstmt = null; 
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, AD_Process_ID);
-			if (trl)
-				pstmt.setString(2, Env.getAD_Language(m_ctx));
-			rs = pstmt.executeQuery();
-			StringBuilder buildMsg = new StringBuilder();
-			if (rs.next())
-			{
-				m_Name = rs.getString(1);
-				m_ShowHelp = rs.getString(5);
-				//
-				buildMsg.append("<b>");
-				String s = rs.getString(2);		//	Description
-				if (rs.wasNull())
-					buildMsg.append(Msg.getMsg(m_ctx, "StartProcess?"));
-				else
-					buildMsg.append(s);
-				buildMsg.append("</b>");
-
-				s = rs.getString(3);			//	Help
-				if (!rs.wasNull())
-					buildMsg.append("<p>").append(s).append("</p>");
-				m_AD_Process_UU = rs.getString(6);
-			}
-			
-			initialMessage = buildMsg.toString();
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-			return false;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
+		// User Customization
+		MUserDefProc userDef = MUserDefProc.getBestMatch(ctx, AD_Process_ID);
+		if (userDef != null) {
+			if (userDef.getName() != null)
+				m_Name = userDef.getName();
+			if (userDef.getDescription() != null)
+				m_Description = userDef.getDescription();
+			if (userDef.getHelp() != null)
+				m_Help = userDef.getHelp();
 		}
 
+		buildMsg.append("<b>");
+		buildMsg.append(Util.isEmpty(m_Description) ? Msg.getMsg(m_ctx, "StartProcess?") : m_Description);
+		buildMsg.append("</b>");
+
+		if (!Util.isEmpty(m_Help))
+			buildMsg.append("<p>").append(m_Help).append("</p>");
+		m_AD_Process_UU = process.getAD_Process_UU();
+	
+		initialMessage = buildMsg.toString();
+		
 		if (m_Name == null)
 			return false;
 		//
@@ -362,7 +341,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			
 			Div div = new Div();
 	        div.setStyle("text-align: right;");
-	        div.appendChild(new Label(Msg.getElement(m_ctx, MPInstance.COLUMNNAME_NotificationType)));
+	        notificationTypeLabel = new Label(Msg.getElement(m_ctx, MPInstance.COLUMNNAME_NotificationType));
+	        div.appendChild(notificationTypeLabel);
 	        row.appendChild(div);	        
 			
 	        MLookupInfo info = MLookupFactory.getLookup_List(Env.getLanguage(m_ctx), MPInstance.NOTIFICATIONTYPE_AD_Reference_ID);
@@ -379,7 +359,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			String notificationType = user.getNotificationType();
 			if (!MPInstance.NOTIFICATIONTYPE_None.equals(notificationType))
 				notificationTypeField.setValue(notificationType);
-			
+
 			row.appendChild(notificationTypeField.getComponent());
 			runAsJobField.setChecked(MSysConfig.getBooleanValue(MSysConfig.BACKGROUND_JOB_BY_DEFAULT, false));
 			
@@ -460,12 +440,12 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 
 	protected boolean isReport () {
-		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		MProcess pr = MProcess.get(m_ctx, m_AD_Process_ID);
 		return pr.isReport() && pr.getJasperReport() == null;
 	}
 	
 	protected boolean isJasperReport () {
-		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		MProcess pr = MProcess.get(m_ctx, m_AD_Process_ID);
 		return pr.isReport() && pr.getJasperReport() != null;
 	}
 	
@@ -501,7 +481,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	protected void querySaved() 
 	{
 		//user query
-		savedParams = MPInstance.get(Env.getCtx(), getAD_Process_ID(), Env.getContextAsInt(Env.getCtx(), "#AD_User_ID"));
+		savedParams = MPInstance.get(Env.getCtx(), getAD_Process_ID(), Env.getContextAsInt(Env.getCtx(), Env.AD_USER_ID));
 		fSavedName.removeAllItems();
 		for (MPInstance instance : savedParams)
 		{
@@ -536,13 +516,13 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		int AD_Column_ID = 0;
 		boolean m_isCanExport = false; 
 		
-		MProcess pr = new MProcess(m_ctx, m_AD_Process_ID, null);
+		MProcess pr = MProcess.get(m_ctx, m_AD_Process_ID);
 		int table_ID = 0;
 		try 
 		{
 			if (pr.getAD_ReportView_ID() > 0)
 			{
-				X_AD_ReportView m_Reportview = new X_AD_ReportView(m_ctx, pr.getAD_ReportView_ID(), null);
+				MReportView m_Reportview = MReportView.get(m_ctx, pr.getAD_ReportView_ID());
 				table_ID = m_Reportview.getAD_Table_ID();
 			}
 			else if (pr.getAD_PrintFormat_ID() > 0)
@@ -597,7 +577,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		final String where = "AD_Process_ID = ? AND AD_User_ID = ? AND Name IS NULL ";
 		return new Query(Env.getCtx(), MPInstance.Table_Name, where, null)
 				.setOnlyActiveRecords(true).setClient_ID()
-				.setParameters(m_AD_Process_ID, Env.getContextAsInt(Env.getCtx(), "#AD_User_ID"))
+				.setParameters(m_AD_Process_ID, Env.getContextAsInt(Env.getCtx(), Env.AD_USER_ID))
 				.setOrderBy("Created DESC")
 				.first();
 	}
@@ -695,6 +675,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			else
 				chooseSaveParameter(saveName, lastRun);
 		}else if (event.getTarget().equals(bOK)){
+			if (runAsJobField.isChecked() && getNotificationType() == null)
+				throw new WrongValueException(notificationTypeField.getComponent(), Msg.getMsg(m_ctx, "FillMandatory") + notificationTypeLabel.getValue());
 			saveReportOption();
 		}
 	}
@@ -821,15 +803,15 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	
 	protected void startProcess()
 	{
+		if (!parameterPanel.validateParameters())
+			return;
+
 		if (m_pi.isProcessRunning(parameterPanel.getParameters())) {
 			FDialog.error(getWindowNo(), "ProcessAlreadyRunning");
 			log.log(Level.WARNING, "Abort process " + m_AD_Process_ID + " because it is already running");
 			return;
 		}
 
-		if (!parameterPanel.validateParameters())
-			return;
-		
 		startProcess0();
 	}
 	
@@ -915,6 +897,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			instance.setIsRunAsJob(true);
 			instance.setIsProcessing(true);
 			instance.setNotificationType(getNotificationType());
+			if (instance.getNotificationType() == null)
+				instance.setNotificationType(MPInstance.NOTIFICATIONTYPE_Notice);
 			instance.setReportType(m_pi.getReportType());
 			instance.setIsSummary(m_pi.isSummary());
 			instance.setAD_Language_ID(m_pi.getLanguageID());
@@ -1167,13 +1151,13 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			super();
 			
 			m_ctx = new Properties();
-			Env.setContext(m_ctx, "#AD_Client_ID", ctx.getProperty("#AD_Client_ID"));
-			Env.setContext(m_ctx, "#AD_Org_ID", ctx.getProperty("#AD_Org_ID"));
-			Env.setContext(m_ctx, "#AD_Role_ID", ctx.getProperty("#AD_Role_ID"));
-			Env.setContext(m_ctx, "#M_Warehouse_ID", ctx.getProperty("#M_Warehouse_ID"));
-			Env.setContext(m_ctx, "#AD_Language", ctx.getProperty("#AD_Language"));
-			Env.setContext(m_ctx, "#AD_User_ID", ctx.getProperty("#AD_User_ID"));
-			Env.setContext(m_ctx, "#Date", ctx.getProperty("#Date"));
+			Env.setContext(m_ctx, Env.AD_CLIENT_ID, ctx.getProperty(Env.AD_CLIENT_ID));
+			Env.setContext(m_ctx, Env.AD_ORG_ID, ctx.getProperty(Env.AD_ORG_ID));
+			Env.setContext(m_ctx, Env.AD_ROLE_ID, ctx.getProperty(Env.AD_ROLE_ID));
+			Env.setContext(m_ctx, Env.M_WAREHOUSE_ID, ctx.getProperty(Env.M_WAREHOUSE_ID));
+			Env.setContext(m_ctx, Env.LANGUAGE, ctx.getProperty(Env.LANGUAGE));
+			Env.setContext(m_ctx, Env.AD_USER_ID, ctx.getProperty(Env.AD_USER_ID));
+			Env.setContext(m_ctx, Env.DATE, ctx.getProperty(Env.DATE));
 		}
 		
 		@Override
@@ -1194,6 +1178,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			
 			MPInstance instance = new MPInstance(m_ctx, m_pi.getAD_PInstance_ID(), null);
 			String notificationType = instance.getNotificationType();
+			if (notificationType == null)
+				notificationType = MPInstance.NOTIFICATIONTYPE_Notice;
 			boolean sendEmail = notificationType.equals(MPInstance.NOTIFICATIONTYPE_EMail) || notificationType.equals(MPInstance.NOTIFICATIONTYPE_EMailPlusNotice);
 			boolean createNotice = notificationType.equals(MPInstance.NOTIFICATIONTYPE_Notice) || notificationType.equals(MPInstance.NOTIFICATIONTYPE_EMailPlusNotice);
 			
@@ -1260,6 +1246,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 					}
 					if (attachment != null)
 						attachment.saveEx();
+					MPInstanceLog il = instance.addLog(null, 0, null, Msg.parseTranslation(m_ctx, "@Created@ @AD_Note_ID@ " + note.getAD_Note_ID()),
+							MNote.Table_ID, note.getAD_Note_ID());
+					il.saveEx();
 				}
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage());				
@@ -1341,4 +1330,15 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			}
 		});
 	}
+
+	@Override
+	public void focus() {
+		super.focus();
+		if (getParameterPanel() != null) {
+			if (getParameterPanel().focusToFirstEditor())
+				return;
+		}
+		if (bOK != null)
+			bOK.focus();
+	}		
 }

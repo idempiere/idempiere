@@ -55,6 +55,7 @@ import org.zkoss.zul.Center;
  * @author Andrew Kimball
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VSQLProcess")
 public class WSQLProcess extends ADForm implements EventListener<Event>
 {
     /**
@@ -106,7 +107,6 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
         m_txbSqlField.setMultiline(true);
         m_txbSqlField.setMaxlength(maxStatementLength);
         m_txbSqlField.setRows(noStatementRows);
-        ZKUpdateUtil.setHeight(m_txbSqlField, "100%");
         ZKUpdateUtil.setHflex(m_txbSqlField, "1");
         m_txbSqlField.setCols(noColumns);
         m_txbSqlField.setReadonly(false);
@@ -122,7 +122,6 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
         // create the bottom row of components
         m_txbResultField.setCols(noColumns);
         m_txbResultField.setRows(noResultRows);
-        ZKUpdateUtil.setHeight(m_txbResultField, "100%");
         ZKUpdateUtil.setHflex(m_txbResultField, "1");
         m_txbResultField.setReadonly(true);
 
@@ -155,8 +154,10 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
     public static final Button createProcessButton()
     {
         Button btnProcess = new Button();
-
-        btnProcess.setImage(ThemeManager.getThemeResource("images/Process24.png"));
+        if(ThemeManager.isUseFontIconForImage())
+        	btnProcess.setIconSclass("z-icon-Process");
+        else
+        	btnProcess.setImage(ThemeManager.getThemeResource("images/Process24.png"));
         btnProcess.setName(Msg.getMsg(Env.getCtx(), "Process"));
 
         return btnProcess;

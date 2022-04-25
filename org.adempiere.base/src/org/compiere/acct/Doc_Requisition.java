@@ -67,7 +67,6 @@ public class Doc_Requisition extends Doc
 		setAmount(AMTTYPE_Net, req.getTotalLines());
 		// Contained Objects
 		p_lines = loadLines (req);
-		// log.fine( "Lines=" + p_lines.length + ", Taxes=" + m_taxes.length);
 		return null;
 	}	// loadDocumentDetails
 
@@ -86,7 +85,6 @@ public class Doc_Requisition extends Doc
 			DocLine docLine = new DocLine (line, this);
 			BigDecimal Qty = line.getQty();
 			docLine.setQty (Qty, false);
-			//BigDecimal PriceActual = line.getPriceActual();
 			BigDecimal LineNetAmt = line.getLineNetAmt();
 			docLine.setAmount (LineNetAmt);	 // DR
 			list.add (docLine);

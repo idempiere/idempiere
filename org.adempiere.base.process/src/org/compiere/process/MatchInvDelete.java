@@ -19,10 +19,7 @@ package org.compiere.process;
 import java.util.logging.Level;
 
 import org.compiere.model.MMatchInv;
-import org.compiere.model.MMatchPO;
 import org.compiere.util.AdempiereUserError;
-import org.compiere.util.CLogger;
-import org.compiere.util.ValueNamePair;
 
 
 /**
@@ -31,6 +28,7 @@ import org.compiere.util.ValueNamePair;
  *  @author Jorg Janke
  *  @version $Id: MatchInvDelete.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class MatchInvDelete extends SvrProcess
 {
 	/**	ID					*/

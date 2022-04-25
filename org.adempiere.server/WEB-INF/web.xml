@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-         version="3.1">
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+	   version="4.0">
 	<display-name>iDempiere Root</display-name>
 	<description></description>
 	<context-param>
@@ -23,24 +23,6 @@
 		<url-pattern>/idempiereMonitor/*</url-pattern>
 	</filter-mapping>
 	<servlet>
-		<display-name>JNLP Download Servlet</display-name>
-		<servlet-name>JnlpDownloadServlet</servlet-name>
-		<servlet-class>jnlp.sample.servlet.JnlpDownloadServlet</servlet-class>
-		<init-param>
-			<param-name>logLevel</param-name>
-			<param-value>INFORMATIONAL</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<!-- <servlet>
-		<description>iDempiere Server Status Info</description>
-		<display-name>Server Status</display-name>
-		<servlet-name>StatusInfo</servlet-name>
-		<servlet-class>org.compiere.web.StatusInfo</servlet-class>
-	</servlet> -->
-	<servlet>
-		<description>iDempiere Server Monitor</description>
-		<display-name>iDempiere Monitor</display-name>
 		<servlet-name>idempiereMonitor</servlet-name>
 		<servlet-class>org.compiere.web.AdempiereMonitor</servlet-class>
 		<load-on-startup>1</load-on-startup>
@@ -53,37 +35,21 @@
       		<param-value>false</param-value>
     	</init-param>
   	</servlet>
+	<servlet>
+		<servlet-name>OAuthCodeCallbackHandlerServlet</servlet-name>
+		<servlet-class>org.idempiere.web.OAuthCodeCallbackHandlerServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
-		<servlet-name>JnlpDownloadServlet</servlet-name>
-		<url-pattern>*.jnlp</url-pattern>
+		<servlet-name>OAuthCodeCallbackHandlerServlet</servlet-name>
+		<url-pattern>/oauth2/callback</url-pattern>
 	</servlet-mapping>
-	<!-- <servlet-mapping>
-		<servlet-name>StatusInfo</servlet-name>
-		<url-pattern>/statusInfo</url-pattern>
-	</servlet-mapping> -->
 	<servlet-mapping>
 		<servlet-name>idempiereMonitor</servlet-name>
 		<url-pattern>/idempiereMonitor/*</url-pattern>
 	</servlet-mapping>
-	<!-- <servlet-mapping>
-      <servlet-name>RestletServlet</servlet-name>
-      <url-pattern>/server/*</url-pattern>
-   </servlet-mapping> -->
 	<session-config>
 		<session-timeout>15</session-timeout>
 	</session-config>
-	<mime-mapping>
-		<extension>jar</extension>
-		<mime-type>application/x-java-archive</mime-type>
-	</mime-mapping>
-	<mime-mapping>
-		<extension>jardiff</extension>
-		<mime-type>application/x-java-archive-diff</mime-type>
-	</mime-mapping>
-	<mime-mapping>
-		<extension>jnlp</extension>
-		<mime-type>application/x-java-jnlp-file</mime-type>
-	</mime-mapping>
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>admin</web-resource-name>

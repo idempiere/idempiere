@@ -22,19 +22,33 @@ import java.util.Properties;
 
 /** Generated Model for IMP_Processor_Type
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="IMP_Processor_Type")
 public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_IMP_Processor_Type (Properties ctx, int IMP_Processor_Type_ID, String trxName)
     {
       super (ctx, IMP_Processor_Type_ID, trxName);
+      /** if (IMP_Processor_Type_ID == 0)
+        {
+			setIMP_Processor_Type_ID (0);
+			setJavaClass (null);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_IMP_Processor_Type (Properties ctx, int IMP_Processor_Type_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, IMP_Processor_Type_ID, trxName, virtualColumns);
       /** if (IMP_Processor_Type_ID == 0)
         {
 			setIMP_Processor_Type_ID (0);
@@ -67,15 +81,14 @@ public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_IMP_Processor_Type[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_IMP_Processor_Type[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -84,15 +97,14 @@ public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -101,24 +113,25 @@ public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Import Processor Type.
-		@param IMP_Processor_Type_ID Import Processor Type	  */
+		@param IMP_Processor_Type_ID Import Processor Type
+	*/
 	public void setIMP_Processor_Type_ID (int IMP_Processor_Type_ID)
 	{
-		if (IMP_Processor_Type_ID < 1) 
+		if (IMP_Processor_Type_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_IMP_Processor_Type_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_IMP_Processor_Type_ID, Integer.valueOf(IMP_Processor_Type_ID));
 	}
 
 	/** Get Import Processor Type.
 		@return Import Processor Type	  */
-	public int getIMP_Processor_Type_ID () 
+	public int getIMP_Processor_Type_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IMP_Processor_Type_ID);
 		if (ii == null)
@@ -127,7 +140,8 @@ public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_
 	}
 
 	/** Set IMP_Processor_Type_UU.
-		@param IMP_Processor_Type_UU IMP_Processor_Type_UU	  */
+		@param IMP_Processor_Type_UU IMP_Processor_Type_UU
+	*/
 	public void setIMP_Processor_Type_UU (String IMP_Processor_Type_UU)
 	{
 		set_Value (COLUMNNAME_IMP_Processor_Type_UU, IMP_Processor_Type_UU);
@@ -135,13 +149,14 @@ public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_
 
 	/** Get IMP_Processor_Type_UU.
 		@return IMP_Processor_Type_UU	  */
-	public String getIMP_Processor_Type_UU () 
+	public String getIMP_Processor_Type_UU()
 	{
 		return (String)get_Value(COLUMNNAME_IMP_Processor_Type_UU);
 	}
 
 	/** Set Java Class.
-		@param JavaClass Java Class	  */
+		@param JavaClass Java Class
+	*/
 	public void setJavaClass (String JavaClass)
 	{
 		set_Value (COLUMNNAME_JavaClass, JavaClass);
@@ -149,15 +164,14 @@ public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_
 
 	/** Get Java Class.
 		@return Java Class	  */
-	public String getJavaClass () 
+	public String getJavaClass()
 	{
 		return (String)get_Value(COLUMNNAME_JavaClass);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -166,15 +180,14 @@ public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -183,7 +196,7 @@ public class X_IMP_Processor_Type extends PO implements I_IMP_Processor_Type, I_
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

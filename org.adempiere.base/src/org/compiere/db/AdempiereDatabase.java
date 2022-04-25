@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.sql.Timestamp;
 
 import javax.sql.DataSource;
@@ -210,14 +211,14 @@ public interface AdempiereDatabase
 	
 	/**
 	 * 	Return next sequence this Sequence
-	 *	@param Sequence Name
-	 *  @param Transaction
+	 *	@param Name Sequence
+	 *  @param trxName Transaction
 	 */
 	public int getNextID(String Name, String trxName);
 	
 	/**
 	 * 	Return next sequence this Sequence
-	 *	@param Sequence Name
+	 *	@param Name Sequence
 	 */
 	public int getNextID(String Name);
 	
@@ -380,7 +381,14 @@ public interface AdempiereDatabase
 	 * @return variable length character data type name
 	 */
 	public String getVarcharDataType();
-	
+
+	/**
+	 * @return variable length character data type suffix
+	 */
+	public default String getVarcharLengthSuffix() {
+		return "";
+	};
+
 	/**
 	 * 
 	 * @return binary large object data type name
@@ -400,16 +408,21 @@ public interface AdempiereDatabase
 	public String getTimestampDataType();
 	
 	/**
+	 * 
+	 * @return timestamp with time zone type name
+	 */
+	public String getTimestampWithTimezoneDataType();
+	/**
 	 * Get SQL Create
 	 * @param table
 	 * @return create table DDL
 	 */
 	public default String getSQLCreate(MTable table)
 	{
-		StringBuffer sb = new StringBuffer("CREATE TABLE ")
+		StringBuilder sb = new StringBuilder("CREATE TABLE ")
 			.append(table.getTableName()).append(" (");
 		//
-		StringBuffer constraints = new StringBuffer();
+		StringBuilder constraints = new StringBuilder();
 		MColumn[] columns = table.getColumns(true);
 		boolean columnAdded = false;
 		for (int i = 0; i < columns.length; i++)
@@ -460,6 +473,14 @@ public interface AdempiereDatabase
 	 * @return alter column sql
 	 */
 	public String getSQLModify (MTable table, MColumn column, boolean setNullOption);
-		
+
+	/**
+	 * 
+	 * @param ex
+	 * @return true if ex is caused by query timeout
+	 */
+	public default boolean isQueryTimeout(SQLException ex) {
+		return ex instanceof SQLTimeoutException;
+	}
 }   //  AdempiereDatabase
 

@@ -20,9 +20,10 @@ import java.sql.ResultSet;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Calendar Model
@@ -30,16 +31,25 @@ import org.compiere.util.Msg;
  *  @author Jorg Janke
  *  @version $Id: MCalendar.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MCalendar extends X_C_Calendar
+public class MCalendar extends X_C_Calendar implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7721451326626542420L;
-
+	private static final long serialVersionUID = 6036302512252100576L;
 
 	/**
-	 * 	Get MCalendar from Cache
+	 * 	Get MCalendar from Cache (immutable)
+	 *	@param C_Calendar_ID id
+	 *	@return MCalendar
+	 */
+	public static MCalendar get (int C_Calendar_ID)
+	{
+		return get(Env.getCtx(), C_Calendar_ID);
+	}
+	
+	/**
+	 * 	Get MCalendar from Cache (immutable)
 	 *	@param ctx context
 	 *	@param C_Calendar_ID id
 	 *	@return MCalendar
@@ -47,14 +57,32 @@ public class MCalendar extends X_C_Calendar
 	public static MCalendar get (Properties ctx, int C_Calendar_ID)
 	{
 		Integer key = Integer.valueOf(C_Calendar_ID);
-		MCalendar retValue = (MCalendar) s_cache.get (key);
+		MCalendar retValue = s_cache.get (ctx, key, e -> new MCalendar(ctx, e));
 		if (retValue != null)
 			return retValue;
-		retValue = new MCalendar (ctx, C_Calendar_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		retValue = new MCalendar (ctx, C_Calendar_ID, (String)null);
+		if (retValue.get_ID () == C_Calendar_ID) 
+		{
+			s_cache.put (key, retValue, e -> new MCalendar(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
 	}	//	get
+	
+	/**
+	 * Get updateable copy of MCalendar from cache
+	 * @param ctx
+	 * @param C_Calendar_ID
+	 * @param trxName
+	 * @return MCalendar 
+	 */
+	public static MCalendar getCopy(Properties ctx, int C_Calendar_ID, String trxName)
+	{
+		MCalendar calendar = get(C_Calendar_ID);
+		if (calendar != null)
+			calendar = new MCalendar(ctx, calendar, trxName);
+		return calendar;
+	}
 	
 	/**
 	 * 	Get Default Calendar for Client
@@ -65,7 +93,7 @@ public class MCalendar extends X_C_Calendar
 	public static MCalendar getDefault (Properties ctx, int AD_Client_ID)
 	{
 		MClientInfo info = MClientInfo.get(ctx, AD_Client_ID);
-		return get (ctx, info.getC_Calendar_ID());
+		return getCopy(ctx, info.getC_Calendar_ID(), (String)null);
 	}	//	getDefault
 	
 	/**
@@ -79,8 +107,8 @@ public class MCalendar extends X_C_Calendar
 	}	//	getDefault
 	
 	/**	Cache						*/
-	private static CCache<Integer,MCalendar> s_cache
-		= new CCache<Integer,MCalendar>(Table_Name, 20);
+	private static ImmutableIntPOCache<Integer,MCalendar> s_cache
+		= new ImmutableIntPOCache<Integer,MCalendar>(Table_Name, 20);
 	
 	
 	/*************************************************************************
@@ -118,6 +146,31 @@ public class MCalendar extends X_C_Calendar
 	}	//	MCalendar
 	
 	/**
+	 * 
+	 * @param copy
+	 */
+	public MCalendar(MCalendar copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MCalendar(Properties ctx, MCalendar copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	public MCalendar(Properties ctx, MCalendar copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**
 	 * 	Create (current) Calendar Year
 	 * 	@param locale locale
 	 *	@return The Year
@@ -133,4 +186,13 @@ public class MCalendar extends X_C_Calendar
 		return year;
 	}	//	createYear
 	
+	@Override
+	public MCalendar markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MCalendar

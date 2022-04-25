@@ -46,11 +46,6 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 		super (ctx, C_PaymentProcessor_ID, trxName);
 		if (C_PaymentProcessor_ID == 0)
 		{
-		//	setC_BankAccount_ID (0);		//	Parent
-		//	setUserID (null);
-		//	setPassword (null);
-		//	setHostAddress (null);
-		//	setHostPort (0);
 			setCommission (Env.ZERO);
 			setAcceptVisa (false);
 			setAcceptMC (false);
@@ -64,7 +59,6 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 			setAcceptATM (false);
 			setAcceptDirectDeposit(false);
 			setAcceptDirectDebit(false);
-		//	setName (null);
 		}
 	}	//	MPaymentProcessor
 
@@ -85,7 +79,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	 */
 	public String toString ()
 	{
-		StringBuffer sb = new StringBuffer ("MPaymentProcessor[")
+		StringBuilder sb = new StringBuilder ("MPaymentProcessor[")
 			.append(get_ID ()).append("-").append(getName())
 			.append ("]");
 		return sb.toString ();

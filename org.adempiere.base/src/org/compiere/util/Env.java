@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -47,7 +46,6 @@ import org.adempiere.util.ServerContextProvider;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.model.GridWindowVO;
-import org.compiere.model.I_AD_Window;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookupCache;
@@ -75,22 +73,73 @@ import org.compiere.process.SvrProcess;
  */
 public final class Env
 {
-	public static final String STANDARD_REPORT_FOOTER_TRADEMARK_TEXT = "#STANDARD_REPORT_FOOTER_TRADEMARK_TEXT";
-
-	public static final String AD_ROLE_ID = "#AD_Role_ID";
-
-	public static final String AD_USER_ID = "#AD_User_ID";
-
-	public static final String AD_ORG_ID = "#AD_Org_ID";
-
+	//Environments Constants
 	public static final String AD_CLIENT_ID = "#AD_Client_ID";
-	
-	public static final String AD_ORG_NAME = "#AD_Org_Name";
-	
-	public static final String M_WAREHOUSE_ID = "#M_Warehouse_ID";
+	public static final String AD_CLIENT_NAME = "#AD_Client_Name";
+	public static final String AD_ORG_ID = "#AD_Org_ID";		
+	public static final String AD_ORG_NAME = "#AD_Org_Name";	
+	public static final String AD_PRINTCOLOR_ID = "#AD_PrintColor_ID";
+	public static final String AD_PRINTFONT_ID = "#AD_PrintFont_ID";
+	public static final String AD_PRINTPAPER_ID = "#AD_PrintPaper_ID";
+	public static final String AD_PRINTTABLEFORMAT_ID = "#AD_PrintTableFormat_ID";
+	public static final String AD_ROLE_ID = "#AD_Role_ID";
+	public static final String AD_ROLE_NAME = "#AD_Role_Name";
+	public static final String AD_ROLE_TYPE = "#AD_Role_Type";
+	public static final String AD_SESSION_ID = "#AD_Session_ID";
+	public static final String AD_USER_ID = "#AD_User_ID";
+	public static final String AD_USER_NAME = "#AD_User_Name";
+	public static final String C_ACCTSCHEMA_ID = "$C_AcctSchema_ID";
+	public static final String C_BANKACCOUNT_ID = "#C_BankAccount_ID";
+	public static final String C_BP_GROUP_ID = "#C_BP_Group_ID";
+	public static final String C_CASHBOOK_ID = "#C_CashBook_ID";
+	public static final String C_CONVERSIONTYPE_ID = "#C_ConversionType_ID";
+	public static final String C_COUNTRY_ID = "#C_Country_ID";
+	public static final String C_CURRENCY_ID = "$C_Currency_ID";
+	public static final String C_DOCTYPETARGET_ID = "#C_DocTypeTarget_ID";
+	public static final String C_DUNNING_ID = "#C_Dunning_ID";
+	public static final String C_PAYMENTTERM_ID = "#C_PaymentTerm_ID";
+	public static final String C_REGION_ID = "#C_Region_ID";
+	public static final String C_TAXCATEGORY_ID = "#C_TaxCategory_ID";
+	public static final String C_TAX_ID = "#C_Tax_ID";
+	public static final String C_UOM_ID = "#C_UOM_ID";
+	public static final String CLIENT_INFO_DESKTOP_HEIGHT = "#clientInfo_desktopHeight";
+	public static final String CLIENT_INFO_DESKTOP_WIDTH = "#clientInfo_desktopWidth";
+	public static final String CLIENT_INFO_MOBILE = "#clientInfo_mobile";
+	public static final String CLIENT_INFO_ORIENTATION = "#clientInfo_orientation";
+	public static final String CLIENT_INFO_TIME_ZONE = "#clientInfo_timeZone";
+	public static final String DATE	= "#Date";
+	public static final String DB_TYPE = "#DBType";
+	public static final String GL_CATEGORY_ID = "#GL_Category_ID";
+	public static final String HAS_ALIAS = "$HasAlias";
+	public static final String IS_CLIENT_ADMIN = "#IsClientAdmin";
+	/** Context Language identifier */
+	public static final String LANGUAGE = "#AD_Language";
+	public static final String LANGUAGE_NAME = "#LanguageName";
+	public static final String LOCAL_HTTP_ADDRESS = "#LocalHttpAddr";
+	public static final String LOCALE = "#Locale";
+	public static final String M_PRICELIST_ID = "#M_PriceList_ID";
+	public static final String M_PRODUCT_CATEGORY_ID = "#M_Product_Category_ID";
+	public static final String M_WAREHOUSE_ID = "#M_Warehouse_ID";	
+	/** Context for POS ID */
+	public static final String POS_ID = "#POS_ID";
+	public static final String R_STATUSCATEGORY_ID = "#R_StatusCategory_ID";
+	public static final String R_STATUS_ID = "#R_Status_ID";
+	public static final String RUNNING_UNIT_TESTING_TEST_CASE = "#RUNNING_UNIT_TESTING_TEST_CASE";
+	public static final String SALESREP_ID = "#SalesRep_ID";
+	public static final String SHOW_ACCOUNTING = "#ShowAcct";
+	public static final String SHOW_ADVANCED = "#ShowAdvanced";
+	public static final String SHOW_TRANSLATION = "#ShowTrl";
+	public static final String STANDARD_PRECISION = "#StdPrecision";
+	public static final String STANDARD_REPORT_FOOTER_TRADEMARK_TEXT = "#STANDARD_REPORT_FOOTER_TRADEMARK_TEXT";
+	public static final String SYSTEM_NAME = "#System_Name";
+	public static final String UI_CLIENT = "#UIClient";
+	public static final String USER_LEVEL = "#User_Level";
+
+	private static final String PREFIX_SYSTEM_VARIABLE = "$env.";
 
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
 
+	
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
 
 	public static int adWindowDummyID =200054; 
@@ -132,9 +181,11 @@ public final class Env
 		//hengsin, avoid unncessary query of session when exit without log in
 		if (DB.isConnected(false)) {
 			//	End Session
-			MSession session = MSession.get(Env.getCtx(), false);	//	finish
-			if (session != null)
+			MSession session = MSession.get(Env.getCtx());	//	finish
+			if (session != null) {
+				session = new MSession(getCtx(), session.getAD_Session_ID(), null);
 				session.logout();
+			}
 		}
 		//
 		reset(true);	// final cache reset
@@ -151,9 +202,11 @@ public final class Env
 	public static void logout()
 	{
 		//	End Session
-		MSession session = MSession.get(Env.getCtx(), false);	//	finish
-		if (session != null)
+		MSession session = MSession.get(Env.getCtx());	//	finish
+		if (session != null) {
+			session = new MSession(getCtx(), session.getAD_Session_ID(), null);
 			session.logout();
+		}
 		//
 		reset(true);	// final cache reset
 		//
@@ -427,7 +480,7 @@ public final class Env
 	}	//	setContext
 	
 	/**
-	 *	Set Context for Window & Tab to Value
+	 *	Set Context for Window and Tab to Value
 	 *  @param ctx context
 	 *  @param WindowNo window no
 	 *  @param TabNo tab no
@@ -526,6 +579,12 @@ public final class Env
 	{
 		if (ctx == null || context == null)
 			throw new IllegalArgumentException ("Require Context");
+		if (context.startsWith(PREFIX_SYSTEM_VARIABLE)) {
+			String retValue = System.getenv(context.substring(PREFIX_SYSTEM_VARIABLE.length()));
+			if (retValue == null)
+				retValue = "";
+			return retValue;
+		}
 		return ctx.getProperty(context, "");
 	}	//	getContext
 
@@ -571,7 +630,7 @@ public final class Env
 	}	//	getContext
 
 	/**
-	 * Get Value of Context for Window & Tab,
+	 * Get Value of Context for Window and Tab,
 	 * if not found global context if available.
 	 * If TabNo is TAB_INFO only tab's context will be checked.
 	 * @param ctx context
@@ -595,7 +654,7 @@ public final class Env
 	}	//	getContext
 
 	/**
-	 * Get Value of Context for Window & Tab,
+	 * Get Value of Context for Window and Tab,
 	 * if not found global context if available.
 	 * If TabNo is TAB_INFO only tab's context will be checked.
 	 * @param ctx context
@@ -611,7 +670,7 @@ public final class Env
 	}
 
 	/**
-	 * Get Value of Context for Window & Tab,
+	 * Get Value of Context for Window and Tab,
 	 * if not found global context if available.
 	 * If TabNo is TAB_INFO only tab's context will be checked.
 	 * @param ctx context
@@ -1011,12 +1070,6 @@ public final class Env
 	 *  Language issues
 	 */
 
-	/** Context Language identifier */
-	static public final String      LANGUAGE = "#AD_Language";
-
-	/** Context for POS ID */
-	static public final String		POS_ID = "#POS_ID";
-
 	/**
 	 *  Check Base Language
 	 *  @param ctx context
@@ -1152,8 +1205,7 @@ public final class Env
 		}
 		return language;
 	}
-
-	public static final String LOCALE = "#Locale";
+	
 	/**
 	 * @param ctx
 	 * @return Locale
@@ -1354,9 +1406,9 @@ public final class Env
 				sb.append(name).append("  ");
 			}
 		}
-		sb.append(getContext(ctx, "#AD_User_Name")).append("@")
-			.append(getContext(ctx, "#AD_Client_Name")).append(".")
-			.append(getContext(ctx, "#AD_Org_Name"))
+		sb.append(getContext(ctx, Env.AD_USER_NAME)).append("@")
+			.append(getContext(ctx, Env.AD_CLIENT_NAME)).append(".")
+			.append(getContext(ctx, Env.AD_ORG_NAME))
 			.append(" [").append(CConnection.get().toString()).append("]");
 		return sb.toString();
 	}	//	getHeader
@@ -1504,7 +1556,7 @@ public final class Env
 	 *	@param WindowNo	Number of Window
 	 *	@param tabNo	Number of Tab
 	 *	@param value Message to be parsed
-	 *  @param onlyTab if true, no defaults are used
+	 *  @param onlyTab if true, only value from tabNo are used
 	 * 	@param ignoreUnparsable if true, unsuccessful @return parsed String or "" if not successful and ignoreUnparsable
 	 *	@return parsed context
 	 */
@@ -1588,15 +1640,15 @@ public final class Env
 	 *
 	 *  @param ctx context
 	 *	@param	WindowNo	Number of Window
-	 *	@param	TabNo   	Number of Tab
+	 *	@param	tabNo   	Number of Tab
 	 *	@param	value		Message to be parsed
-	 *  @param  onlyWindow  if true, no defaults are used
+	 *  @param  onlyTab  	if true, no value from tabNo are used
 	 *  @return parsed String or "" if not successful
 	 */
 	public static String parseContext (Properties ctx, int WindowNo, int tabNo, String value,
-		boolean onlyWindow)
+		boolean onlyTab)
 	{
-		return parseContext(ctx, WindowNo, tabNo, value, onlyWindow, false);
+		return parseContext(ctx, WindowNo, tabNo, value, onlyTab, false);
 	}	//	parseContext
 
 	/**
@@ -1628,6 +1680,13 @@ public final class Env
 			}
 
 			token = inStr.substring(0, j);
+
+			String defaultValue = "";
+			int idx = token.indexOf(":");
+			if (token.contains(":")) {
+				defaultValue = token.substring(token.indexOf(":") + 1, token.length());
+				token = token.substring(0, idx);
+			}
 
 			//format string
 			String format = "";
@@ -1665,14 +1724,25 @@ public final class Env
 								else
 									tableName = foreignTable;
 								MTable table = MTable.get(ctx, tableName);
-								if (table != null && (tableName.equalsIgnoreCase(foreignTable) || tableName.equalsIgnoreCase(po.get_TableName()))) {
+								String keyCol = tableName + "_ID";
+								boolean isSubTypeTable = false;
+								if (! Util.isEmpty(foreignTable) && ! tableName.equalsIgnoreCase(foreignTable)) {
+									// verify if is a subtype table
+									if (   table.getKeyColumns() != null
+										&& table.getKeyColumns().length == 1
+										&& table.getKeyColumns()[0].equals(foreignTable + "_ID")) {
+										isSubTypeTable = true;
+										keyCol = foreignTable + "_ID";
+									}
+								}
+								if (table != null && (isSubTypeTable || tableName.equalsIgnoreCase(foreignTable) || tableName.equalsIgnoreCase(po.get_TableName()))) {
 									String columnName = tblIndex > 0 ? format.substring(tblIndex + 1) : format;
 									MColumn column = table.getColumn(columnName);
 									if (column != null) {
 										if (column.isSecure()) {
 											outStr.append("********");
 										} else {
-											String value = DB.getSQLValueString(trxName,"SELECT " + columnName + " FROM " + tableName + " WHERE " + tableName + "_ID = ?", (Integer)v);
+											String value = DB.getSQLValueString(trxName,"SELECT " + columnName + " FROM " + tableName + " WHERE " + keyCol + "=?", (Integer)v);
 											if (value != null)
 												outStr.append(value);
 										}
@@ -1697,10 +1767,15 @@ public final class Env
 						} else {
 							if (colToken != null && colToken.isSecure()) {
 								v = "********";
-							}
+							} else if (colToken != null && colToken.getAD_Reference_ID() == DisplayType.YesNo && v instanceof Boolean) {
+								v = ((Boolean)v).booleanValue() ? "Y" : "N";
+							} 
+							
 							outStr.append(v.toString());
 						}
 					}
+					else if (!Util.isEmpty(defaultValue))
+						outStr.append(defaultValue);
 				} else if (keepUnparseable) {
 					outStr.append("@").append(token);
 					if (!Util.isEmpty(format))
@@ -1865,10 +1940,6 @@ public final class Env
 		return p;
 	}
 
-	/**	Window Cache		*/
-	private static CCache<Integer,GridWindowVO>	s_windowsvo
-		= new CCache<Integer,GridWindowVO>(I_AD_Window.Table_Name, I_AD_Window.Table_Name+"|GridWindowVO", 10);
-
 	/**
 	 *  Get Window Model
 	 *
@@ -1880,46 +1951,10 @@ public final class Env
 	public static GridWindowVO getMWindowVO (int WindowNo, int AD_Window_ID, int AD_Menu_ID)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
-		GridWindowVO mWindowVO = null;
-		if (AD_Window_ID != 0 && Ini.isCacheWindow())	//	try cache
-		{
-			mWindowVO = s_windowsvo.get(AD_Window_ID);
-			if (mWindowVO != null)
-			{
-				mWindowVO = mWindowVO.clone(WindowNo);
-				if (log.isLoggable(Level.INFO)) log.info("Cached=" + mWindowVO);
-			}
-		}
-
-		//  Create Window Model on Client
-		if (mWindowVO == null)
-		{
-			if (log.isLoggable(Level.CONFIG)) log.config("create local");
-			mWindowVO = GridWindowVO.create (Env.getCtx(), WindowNo, AD_Window_ID, AD_Menu_ID);
-			if (mWindowVO != null)
-				s_windowsvo.put(AD_Window_ID, mWindowVO);
-		}	//	from Client
+		GridWindowVO mWindowVO = GridWindowVO.get(AD_Window_ID, WindowNo, AD_Menu_ID);
 		if (mWindowVO == null)
 			return null;
 
-		//  Check (remote) context
-		if (!mWindowVO.ctx.equals(Env.getCtx()))
-		{
-			//  Remote Context is called by value, not reference
-			//  Add Window properties to context
-			Enumeration<?> keyEnum = mWindowVO.ctx.keys();
-			while (keyEnum.hasMoreElements())
-			{
-				String key = (String)keyEnum.nextElement();
-				if (key.startsWith(WindowNo+"|"))
-				{
-					String value = mWindowVO.ctx.getProperty (key);
-					Env.setContext(Env.getCtx(), key, value);
-				}
-			}
-			//  Sync Context
-			mWindowVO.setCtx(Env.getCtx());
-		}
 		return mWindowVO;
 	}   //  getWindow
 
@@ -2041,6 +2076,8 @@ public final class Env
 
 	/**	New Line 		 */
 	public static final String	NL = System.getProperty("line.separator");
+	/* Prefix for predefined context variables coming from menu or window definition */
+	public static final String PREFIX_PREDEFINED_VARIABLE = "+";
 
 
 	/**
@@ -2051,5 +2088,38 @@ public final class Env
 		//  Set English as default Language
 		getCtx().put(LANGUAGE, Language.getBaseAD_Language());
 	}   //  static
+
+
+	/**
+	 * Add in context predefined variables with prefix +, coming from menu or window definition
+	 * Predefined variables must come separated by new lines in one of the formats:
+	 *   VAR=VALUE
+	 *   VAR="VALUE"
+	 *   VAR='VALUE'
+	 *  The + prefix is not required, is added here to the defined variables
+	 * @param ctx
+	 * @param windowNo
+	 * @param predefinedVariables
+	 */
+	public static void setPredefinedVariables(Properties ctx, int windowNo, String predefinedVariables) {
+		if (predefinedVariables != null) {
+			String[] lines = predefinedVariables.split("\n");
+			for (String line : lines) {
+				int idxEq = line.indexOf("=");
+				if (idxEq > 0) {
+					String var = line.substring(0, idxEq).trim();
+					if (var.length() > 0) {
+						String value = line.substring(idxEq+1).trim();
+						if (   (value.startsWith("\"") && value.endsWith("\""))
+							|| (value.startsWith("'")  && value.endsWith("'") )
+							) {
+							value = value.substring(1, value.length()-1);
+						}
+						Env.setContext(ctx, windowNo, PREFIX_PREDEFINED_VARIABLE + var, value);
+					}
+				}
+			}
+		}
+	}
 
 }   //  Env

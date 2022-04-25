@@ -28,6 +28,7 @@ import org.compiere.util.DB;
  *  @author Jorg Janke
  *  @version $Id: TransactionXRef.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
+@org.adempiere.base.annotation.Process
 public class TransactionXRef extends SvrProcess
 {
 	private int		p_Search_InOut_ID = 0;
@@ -68,7 +69,7 @@ public class TransactionXRef extends SvrProcess
 		//
 		if (p_Search_InOut_ID != 0){
 			StringBuilder msgtrx = new StringBuilder(
-					"SELECT COALESCE(ma.M_AttributeSetInstance_ID,iol.M_AttributeSetInstance_ID) ")
+					"SELECT NVL(ma.M_AttributeSetInstance_ID,iol.M_AttributeSetInstance_ID) ")
 							.append("FROM M_InOutLine iol")
 							.append(" LEFT OUTER JOIN M_InOutLineMA ma ON (iol.M_InOutLine_ID=ma.M_InOutLine_ID) ")
 							.append("WHERE M_InOut_ID=").append(p_Search_InOut_ID);
@@ -76,7 +77,7 @@ public class TransactionXRef extends SvrProcess
 		}	
 		else if (p_Search_Order_ID != 0){
 			StringBuilder msgtrx = new StringBuilder(
-					"SELECT COALESCE(ma.M_AttributeSetInstance_ID,iol.M_AttributeSetInstance_ID) ")
+					"SELECT NVL(ma.M_AttributeSetInstance_ID,iol.M_AttributeSetInstance_ID) ")
 							.append("FROM M_InOutLine iol")
 							.append(" LEFT OUTER JOIN M_InOutLineMA ma ON (iol.M_InOutLine_ID=ma.M_InOutLine_ID) ")
 							.append(" INNER JOIN M_InOut io ON (iol.M_InOut_ID=io.M_InOut_ID)")
@@ -85,7 +86,7 @@ public class TransactionXRef extends SvrProcess
 		}	
 		else if (p_Search_Invoice_ID != 0){
 			StringBuilder msgtrx = new StringBuilder(
-					"SELECT COALESCE(ma.M_AttributeSetInstance_ID,iol.M_AttributeSetInstance_ID) ")
+					"SELECT NVL(ma.M_AttributeSetInstance_ID,iol.M_AttributeSetInstance_ID) ")
 							.append("FROM M_InOutLine iol")
 							.append(" LEFT OUTER JOIN M_InOutLineMA ma ON (iol.M_InOutLine_ID=ma.M_InOutLine_ID) ")
 							.append(" INNER JOIN C_InvoiceLine il ON (iol.M_InOutLine_ID=il.M_InOutLine_ID) ")

@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.GridField;
+import org.compiere.model.MRole;
 import org.compiere.model.X_AD_PrintFormatItem;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -31,6 +32,9 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Print Format Item Model.
@@ -40,12 +44,12 @@ import org.compiere.util.Language;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: MPrintFormatItem.java,v 1.3 2006/08/03 22:17:17 jjanke Exp $
  */
-public class MPrintFormatItem extends X_AD_PrintFormatItem
+public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7145503984951798641L;
+	private static final long serialVersionUID = 2950704375830865408L;
 
 	/**
 	 *	Constructor
@@ -111,6 +115,42 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 		super(ctx, rs, trxName);
 	}	//	MPrintFormatItem
 
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MPrintFormatItem(MPrintFormatItem copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MPrintFormatItem(Properties ctx, MPrintFormatItem copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MPrintFormatItem(Properties ctx, MPrintFormatItem copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_columnName = copy.m_columnName;
+		this.m_newTranslationLabel = copy.m_newTranslationLabel;
+		this.m_translationLabelChanged = copy.m_translationLabelChanged;
+		this.m_translationLabel = copy.m_translationLabel != null ? new HashMap<String, String>(copy.m_translationLabel) : null;
+		this.m_translationSuffix = copy.m_translationSuffix != null ? new HashMap<String, String>(copy.m_translationSuffix) : null;
+	}
+	
 	/**	Locally cached column name			*/
 	private String 					m_columnName = null;
 	/** Locally cached label translations			*/
@@ -209,6 +249,14 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 		}
 	}	//	loadTranslations
 
+	/**
+	 * 	Type Script
+	 *	@return true if script
+	 */
+	public boolean isTypeScript()
+	{
+		return getPrintFormatType().equals(PRINTFORMATTYPE_Script);
+	}
 
 	/**
 	 * 	Type Field
@@ -630,7 +678,18 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 	 */
 	public MPrintFormatItem copyToClient (int To_Client_ID, int AD_PrintFormat_ID)
 	{
-		MPrintFormatItem to = new MPrintFormatItem (p_ctx, 0, null);
+		return copyToClient(To_Client_ID, AD_PrintFormat_ID, (String)null);
+	}
+	
+	/**
+	 * 	Copy existing Definition To Client
+	 * 	@param To_Client_ID to client
+	 *  @param AD_PrintFormat_ID parent print format
+	 * 	@return print format item
+	 */
+	public MPrintFormatItem copyToClient (int To_Client_ID, int AD_PrintFormat_ID, String trxName)
+	{
+		MPrintFormatItem to = new MPrintFormatItem (p_ctx, 0, trxName);
 		MPrintFormatItem.copyValues(this, to);
 		to.setClientOrg(To_Client_ID, 0);
 		to.setAD_PrintFormat_ID(AD_PrintFormat_ID);
@@ -673,6 +732,18 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 		if (!isTypeField() && !isTypePrintFormat() && !isImageField()) {
 			setAD_Column_ID(0);
 		}
+		
+		if(!isTypeScript() && !Util.isEmpty(getScript())) {
+			setScript(null);
+		}
+		
+		if(   !Util.isEmpty(getScript())
+		   && is_ValueChanged(MPrintFormatItem.COLUMNNAME_Script)
+		   && !MRole.getDefault().isAccessAdvanced()) {
+			log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
+			return false;
+		}
+		
 		return true;
 	}	//	beforeSave
 	
@@ -686,7 +757,6 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 	{
 		//	Set Translation from Element
 		if (newRecord 
-		//	&& MClient.get(getCtx()).isMultiLingualDocument()
 			&& getPrintName() != null && getPrintName().length() > 0)
 		{
 			String sql = "UPDATE AD_PrintFormatItem_Trl "
@@ -729,5 +799,14 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem
 			return true;
 		return super.is_Changed();
 	}
-	
+
+	@Override
+	public MPrintFormatItem markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
 }	//	MPrintFormatItem

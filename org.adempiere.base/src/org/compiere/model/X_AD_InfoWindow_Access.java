@@ -22,19 +22,31 @@ import java.util.Properties;
 
 /** Generated Model for AD_InfoWindow_Access
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_InfoWindow_Access")
 public class X_AD_InfoWindow_Access extends PO implements I_AD_InfoWindow_Access, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_InfoWindow_Access (Properties ctx, int AD_InfoWindow_Access_ID, String trxName)
     {
       super (ctx, AD_InfoWindow_Access_ID, trxName);
+      /** if (AD_InfoWindow_Access_ID == 0)
+        {
+			setAD_InfoWindow_ID (0);
+			setAD_Role_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_InfoWindow_Access (Properties ctx, int AD_InfoWindow_Access_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_InfoWindow_Access_ID, trxName, virtualColumns);
       /** if (AD_InfoWindow_Access_ID == 0)
         {
 			setAD_InfoWindow_ID (0);
@@ -65,13 +77,14 @@ public class X_AD_InfoWindow_Access extends PO implements I_AD_InfoWindow_Access
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_InfoWindow_Access[")
+      StringBuilder sb = new StringBuilder ("X_AD_InfoWindow_Access[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set AD_InfoWindow_Access_UU.
-		@param AD_InfoWindow_Access_UU AD_InfoWindow_Access_UU	  */
+		@param AD_InfoWindow_Access_UU AD_InfoWindow_Access_UU
+	*/
 	public void setAD_InfoWindow_Access_UU (String AD_InfoWindow_Access_UU)
 	{
 		set_Value (COLUMNNAME_AD_InfoWindow_Access_UU, AD_InfoWindow_Access_UU);
@@ -79,32 +92,32 @@ public class X_AD_InfoWindow_Access extends PO implements I_AD_InfoWindow_Access
 
 	/** Get AD_InfoWindow_Access_UU.
 		@return AD_InfoWindow_Access_UU	  */
-	public String getAD_InfoWindow_Access_UU () 
+	public String getAD_InfoWindow_Access_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_InfoWindow_Access_UU);
 	}
 
 	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_Name)
-			.getPO(getAD_InfoWindow_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
 
 	/** Set Info Window.
-		@param AD_InfoWindow_ID 
-		Info and search/select Window
-	  */
+		@param AD_InfoWindow_ID Info and search/select Window
+	*/
 	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
 	{
-		if (AD_InfoWindow_ID < 1) 
+		if (AD_InfoWindow_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_InfoWindow_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
 	}
 
 	/** Get Info Window.
 		@return Info and search/select Window
 	  */
-	public int getAD_InfoWindow_ID () 
+	public int getAD_InfoWindow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
 		if (ii == null)
@@ -113,26 +126,26 @@ public class X_AD_InfoWindow_Access extends PO implements I_AD_InfoWindow_Access
 	}
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_Name)
-			.getPO(getAD_Role_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Role)MTable.get(getCtx(), org.compiere.model.I_AD_Role.Table_ID)
+			.getPO(getAD_Role_ID(), get_TrxName());
+	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)

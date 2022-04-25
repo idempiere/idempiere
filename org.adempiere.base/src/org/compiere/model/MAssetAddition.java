@@ -81,30 +81,12 @@ public class MAssetAddition extends X_A_Asset_Addition
 			setA_CapvsExp(A_CAPVSEXP_Capital);
 		}
 		
-		//
-		// Check suspect asset values (UseLife, Amount etc):
-		/* arhipac: teo_sarca: TODO need to integrate
-		if (hasZeroValues() && (!m_confirmed_AssetValues && !isProcessed() && is_UserEntry()))
-		{
-			String msg = "@AssetValueAmt@="+getAssetValueAmt()
-						+ "\n@DeltaUseLifeYears@="+getDeltaUseLifeYears()
-							+ "\n@DeltaUseLifeYears_F@="+getDeltaUseLifeYears_F()+"\n";
-			m_confirmed_AssetValues = UIFactory.getUI().ask(get_WindowNo(), null, "Confirm", Msg.parseTranslation(getCtx(), msg), true);
-			if (!m_confirmed_AssetValues)
-			{
-				throw new AssetCheckDocumentException(msg);
-			}
-		}
-		*/
-		
 		// set approved
 		setIsApproved();
 		
 		return true;
 	}	//	beforeSave
 	
-//	private boolean m_confirmed_AssetValues = false;
-
 	/**
 	 * Create Asset and asset Addition from MMatchInv.
 	 * MAssetAddition is saved.
@@ -134,7 +116,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	/**
 	 * Create Asset and asset Addition from MIFixedAsset. MAssetAddition is saved. 
 	 * (@win note, not referenced from anywhere. incomplete feature)
-	 * @param	match	match invoice
+	 * @param	ifa
 	 * @return asset addition
 	 */
 	public static MAssetAddition createAsset(MIFixedAsset ifa)
@@ -293,6 +275,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		setA_SourceType(A_SOURCETYPE_Imported);
 		//
 		setM_Product_ID(ifa.getM_Product_ID());
+		setAssetValueAmt(ifa.getA_Asset_Cost());
 		setSourceAmt(ifa.getA_Asset_Cost());
 		setDateDoc(ifa.getAssetServiceDate());
 		setM_Locator_ID(ifa.getM_Locator_ID());
@@ -307,10 +290,16 @@ public class MAssetAddition extends X_A_Asset_Addition
 		Timestamp dateAcct = ifa.getDateAcct();
 		if (dateAcct != null)
 		{
-			//dateAcct = UseLifeImpl.getDateAcct(dateAcct, 1); //commented by @win -- i don't see why i should add 1 month
 			if (log.isLoggable(Level.FINE)) log.fine("DateAcct=" + dateAcct);
 			setDateAcct(dateAcct);
 		}
+		if (ifa.getA_Asset_ID() > 0)
+			setA_Asset_ID(ifa.getA_Asset_ID());
+		if (ifa.getC_Currency_ID() > 0)
+			setC_Currency_ID(ifa.getC_Currency_ID());
+		setAssetAmtEntered(ifa.getAssetAmtEntered());
+		setAssetSourceAmt(ifa.getAssetSourceAmt());
+		
 		setI_FixedAsset(ifa);
 	}
 	
@@ -362,7 +351,6 @@ public class MAssetAddition extends X_A_Asset_Addition
 	 * Copy fields from MatchInv+InvoiceLine+InOutLine
 	 * @param model - to copy from
 	 * @param M_MatchInv_ID - matching invoice id
-	 * @param newRecord new object model is created
 	 */
 	public static boolean setM_MatchInv(SetGetModel model, int M_MatchInv_ID)
 	{
@@ -402,27 +390,6 @@ public class MAssetAddition extends X_A_Asset_Addition
 		}
 		query += qMatchInv_from + M_MatchInv_ID;
 		
-		/*
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		try
-		{
-			pstmt = DB.prepareStatement(query, trxName);
-			DB.setParameters(pstmt, params);
-			rs = pstmt.executeQuery();
-			updateColumns(models, columnNames, rs);
-		}
-		catch (SQLException e)
-		{
-			throw new DBException(e, query);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-		*/
 		SetGetUtil.updateColumns(model, null, query, trxName);
 		
 		s_log.fine("Leaving: RETURN TRUE");
@@ -445,6 +412,8 @@ public class MAssetAddition extends X_A_Asset_Addition
 	 */
 	private void setAssetValueAmt()
 	{
+		if (A_SOURCETYPE_Imported.equals(getA_SourceType()))
+			return;
 		getDateAcct();
 		MConversionRateUtil.convertBase(SetGetUtil.wrap(this),
 				COLUMNNAME_DateAcct,
@@ -501,7 +470,6 @@ public class MAssetAddition extends X_A_Asset_Addition
 	public boolean unlockIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("unlockIt - " + toString());
-	//	setProcessing(false);
 		return true;
 	}	//	unlockIt
 	
@@ -534,17 +502,6 @@ public class MAssetAddition extends X_A_Asset_Addition
 		
 		MAsset asset = getA_Asset(true);
 		
-		// Additions may be made ​​only on sites that depreciates FA 
-		// (WARNING: FA sites scrapped / sold not depreciate)
-		
-		/* @win temporary comment as some assets are not depreciated
-		if(!isA_CreateAsset() && !asset.isDepreciated())
-		{
-			m_processMsg = "@AssetIsNotDepreciating@";
-			return DocAction.STATUS_Invalid;
-		}
-		*/
-		
 		// If new assets (not renewals) must have nonzero values
 		if (isA_CreateAsset() && hasZeroValues())
 		{
@@ -554,7 +511,8 @@ public class MAssetAddition extends X_A_Asset_Addition
 		// Only New assets can be activated
 		if (isA_CreateAsset() && !MAsset.A_ASSET_STATUS_New.equals(asset.getA_Asset_Status()))
 		{
-			throw new AssetException("Only new assets can be activated");
+			if (!A_SOURCETYPE_Imported.equals(getA_SourceType()))
+				throw new AssetException("Only new assets can be activated");
 		}
 		//
 		// Validate Source - Project
@@ -667,35 +625,34 @@ public class MAssetAddition extends X_A_Asset_Addition
 		MDepreciationWorkfile assetwk = MDepreciationWorkfile.get(getCtx(), getA_Asset_ID(), getPostingType(), get_TrxName());
 		if (assetwk == null)
 		{
-		
 			for (MAssetGroupAcct assetgrpacct :  MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), asset.getA_Asset_Group_ID(), getPostingType()))
 			{
+				if (A_SOURCETYPE_Imported.equals(getA_SourceType()) && assetgrpacct.getC_AcctSchema_ID() != getI_FixedAsset().getC_AcctSchema_ID())
+					continue;
 				assetwk = new MDepreciationWorkfile(asset, getPostingType(), assetgrpacct);
 			}
 		}
 		if (log.isLoggable(Level.FINE)) log.fine("workfile: " + assetwk);
-		//
-		// Can not upgrade a previous period
-		/* 
-		if (!isA_CreateAsset() && assetwk.isDepreciated(getDateAcct()))
-		{
-			throw new AssetAlreadyDepreciatedException();
-		}
-		*/
-		//
+
 		for (MDepreciationWorkfile assetworkFile :  MDepreciationWorkfile.forA_Asset_ID(getCtx(), getA_Asset_ID(), get_TrxName()))
 		{
+			if (A_SOURCETYPE_Imported.equals(getA_SourceType()) && assetworkFile.getC_AcctSchema_ID() != getI_FixedAsset().getC_AcctSchema_ID())
+				continue;
+			
 			assetworkFile.setDateAcct(getDateAcct());
-			if (assetworkFile.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
-			{
-				BigDecimal convertedAssetCost  =  MConversionRate.convert(getCtx(), getAssetSourceAmt(),
-						getC_Currency_ID(), assetworkFile.getC_AcctSchema().getC_Currency_ID() ,
-						getDateAcct(), getC_ConversionType_ID(),
-						getAD_Client_ID(), getAD_Org_ID());
-				assetworkFile.adjustCost(convertedAssetCost, getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
+			if (A_SOURCETYPE_Imported.equals(getA_SourceType())) {
+				assetworkFile.adjustCost(getI_FixedAsset().getA_Asset_Cost(), getA_QTY_Current(), isA_CreateAsset());
 			} else {
-				assetworkFile.adjustCost(getAssetSourceAmt(), getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
-
+				if (assetworkFile.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
+				{				
+					BigDecimal convertedAssetCost  =  MConversionRate.convert(getCtx(), getAssetSourceAmt(),
+							getC_Currency_ID(), assetworkFile.getC_AcctSchema().getC_Currency_ID() ,
+							getDateAcct(), getC_ConversionType_ID(),
+							getAD_Client_ID(), getAD_Org_ID());
+					assetworkFile.adjustCost(convertedAssetCost, getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
+				} else {
+					assetworkFile.adjustCost(getAssetSourceAmt(), getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
+				}				
 			}
 			// Do we have entries that are not processed and before this date:
 			if (this.getA_CapvsExp().equals(A_CAPVSEXP_Capital)) { 
@@ -703,15 +660,19 @@ public class MAssetAddition extends X_A_Asset_Addition
 			MDepreciationExp.checkExistsNotProcessedEntries(assetworkFile.getCtx(), assetworkFile.getA_Asset_ID(), getDateAcct(), assetworkFile.getPostingType(), assetworkFile.get_TrxName());
 			//
 			if (this.getA_Salvage_Value().signum() > 0) {
-				if (assetworkFile.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
-				{
-					BigDecimal salvageValue = MConversionRate.convert(getCtx(), this.getA_Salvage_Value(),
-							getC_Currency_ID(), assetworkFile.getC_AcctSchema().getC_Currency_ID() ,
-							getDateAcct(), getC_ConversionType_ID(),
-							getAD_Client_ID(), getAD_Org_ID());
-					assetworkFile.setA_Salvage_Value(salvageValue);
-				} else{
+				if (A_SOURCETYPE_Imported.equals(getA_SourceType())) {
 					assetworkFile.setA_Salvage_Value(this.getA_Salvage_Value());
+				} else {
+					if (assetworkFile.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
+					{
+						BigDecimal salvageValue = MConversionRate.convert(getCtx(), this.getA_Salvage_Value(),
+								getC_Currency_ID(), assetworkFile.getC_AcctSchema().getC_Currency_ID() ,
+								getDateAcct(), getC_ConversionType_ID(),
+								getAD_Client_ID(), getAD_Org_ID());
+						assetworkFile.setA_Salvage_Value(salvageValue);
+					} else{
+						assetworkFile.setA_Salvage_Value(this.getA_Salvage_Value());
+					}
 				}
 			}
 			assetworkFile.setDateAcct(getDateAcct());
@@ -721,44 +682,18 @@ public class MAssetAddition extends X_A_Asset_Addition
 			//@win set initial depreciation period = 1 
 			if (isA_CreateAsset())
 			{
-				assetworkFile.setA_Current_Period(1);
-				assetworkFile.saveEx();
+				if (assetworkFile.getA_Current_Period() == 0)
+				{
+					assetworkFile.setA_Current_Period(1);
+					assetworkFile.saveEx();
+				}
 			}
 			//
 			// Rebuild depreciation:
 			assetworkFile.buildDepreciation();
 		}		
-				
 		
 		MAssetChange.createAddition(this, assetwk);
-		
-		
-		// Accumulated depreciation (if any):
-		/*
-		if (isA_Accumulated_Depr_Adjust())
-		{
-			Collection<MDepreciationExp> expenses = MDepreciationExp.createDepreciation(assetwk,
-														1, // PeriodNo
-														getDateAcct(),
-														getA_Accumulated_Depr(), getA_Accumulated_Depr_F(),
-														null,	// Accum Amt
-														null,	// Accum Amt (F)
-														null,	// Help
-														null);
-			for (MDepreciationExp exp : expenses)
-			{
-				exp.setA_Asset_Addition_ID(getA_Asset_Addition_ID());
-				exp.process();
-			}
-			
-			if (isA_CreateAsset() && isA_Accumulated_Depr_Adjust())
-			{
-				assetwk.setA_Current_Period(getA_Period_Start());
-				assetwk.saveEx();
-			}
-		}
-		*/
-		
 		
 		//
 		updateSourceDocument(false);
@@ -870,8 +805,6 @@ public class MAssetAddition extends X_A_Asset_Addition
 		{
 			MAsset asset = getA_Asset(true);
 			asset.changeStatus(MAsset.A_ASSET_STATUS_New, getDateAcct());
-			//asset.isDepreciated();
-			//asset.setIsDepreciated(true);
 			asset.saveEx();
 			
 			
@@ -1168,6 +1101,10 @@ public class MAssetAddition extends X_A_Asset_Addition
 		if (DOCSTATUS_Voided.equals(getDocStatus()))
 		{
 			setA_CreateAsset(false);
+		}
+		else if (A_SOURCETYPE_Imported.equals(getA_SourceType()))
+		{
+			setA_CreateAsset(true);
 		}
 		else
 		{

@@ -25,19 +25,35 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ShipperPackagingCfg
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_ShipperPackagingCfg")
 public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingCfg, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ShipperPackagingCfg (Properties ctx, int M_ShipperPackagingCfg_ID, String trxName)
     {
       super (ctx, M_ShipperPackagingCfg_ID, trxName);
+      /** if (M_ShipperPackagingCfg_ID == 0)
+        {
+			setIsDefault (false);
+// N
+			setM_ShipperCfg_ID (0);
+			setM_ShipperPackagingCfg_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ShipperPackagingCfg (Properties ctx, int M_ShipperPackagingCfg_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ShipperPackagingCfg_ID, trxName, virtualColumns);
       /** if (M_ShipperPackagingCfg_ID == 0)
         {
 			setIsDefault (false);
@@ -72,15 +88,14 @@ public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingC
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_ShipperPackagingCfg[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_M_ShipperPackagingCfg[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -89,15 +104,14 @@ public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingC
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -106,7 +120,7 @@ public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingC
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -119,23 +133,25 @@ public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingC
 	}
 
 	public org.compiere.model.I_M_ShipperCfg getM_ShipperCfg() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_Name)
-			.getPO(getM_ShipperCfg_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ShipperCfg)MTable.get(getCtx(), org.compiere.model.I_M_ShipperCfg.Table_ID)
+			.getPO(getM_ShipperCfg_ID(), get_TrxName());
+	}
 
 	/** Set Shipper Configuration.
-		@param M_ShipperCfg_ID Shipper Configuration	  */
+		@param M_ShipperCfg_ID Shipper Configuration
+	*/
 	public void setM_ShipperCfg_ID (int M_ShipperCfg_ID)
 	{
-		if (M_ShipperCfg_ID < 1) 
+		if (M_ShipperCfg_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ShipperCfg_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ShipperCfg_ID, Integer.valueOf(M_ShipperCfg_ID));
 	}
 
 	/** Get Shipper Configuration.
 		@return Shipper Configuration	  */
-	public int getM_ShipperCfg_ID () 
+	public int getM_ShipperCfg_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperCfg_ID);
 		if (ii == null)
@@ -144,18 +160,19 @@ public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingC
 	}
 
 	/** Set Shipper Packaging Configuration.
-		@param M_ShipperPackagingCfg_ID Shipper Packaging Configuration	  */
+		@param M_ShipperPackagingCfg_ID Shipper Packaging Configuration
+	*/
 	public void setM_ShipperPackagingCfg_ID (int M_ShipperPackagingCfg_ID)
 	{
-		if (M_ShipperPackagingCfg_ID < 1) 
+		if (M_ShipperPackagingCfg_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ShipperPackagingCfg_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ShipperPackagingCfg_ID, Integer.valueOf(M_ShipperPackagingCfg_ID));
 	}
 
 	/** Get Shipper Packaging Configuration.
 		@return Shipper Packaging Configuration	  */
-	public int getM_ShipperPackagingCfg_ID () 
+	public int getM_ShipperPackagingCfg_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShipperPackagingCfg_ID);
 		if (ii == null)
@@ -164,7 +181,8 @@ public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingC
 	}
 
 	/** Set M_ShipperPackagingCfg_UU.
-		@param M_ShipperPackagingCfg_UU M_ShipperPackagingCfg_UU	  */
+		@param M_ShipperPackagingCfg_UU M_ShipperPackagingCfg_UU
+	*/
 	public void setM_ShipperPackagingCfg_UU (String M_ShipperPackagingCfg_UU)
 	{
 		set_Value (COLUMNNAME_M_ShipperPackagingCfg_UU, M_ShipperPackagingCfg_UU);
@@ -172,15 +190,14 @@ public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingC
 
 	/** Get M_ShipperPackagingCfg_UU.
 		@return M_ShipperPackagingCfg_UU	  */
-	public String getM_ShipperPackagingCfg_UU () 
+	public String getM_ShipperPackagingCfg_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ShipperPackagingCfg_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -189,7 +206,7 @@ public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingC
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -203,9 +220,8 @@ public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingC
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -214,15 +230,14 @@ public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingC
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
 	/** Set Weight.
-		@param Weight 
-		Weight of a product
-	  */
+		@param Weight Weight of a product
+	*/
 	public void setWeight (BigDecimal Weight)
 	{
 		set_Value (COLUMNNAME_Weight, Weight);
@@ -231,7 +246,7 @@ public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingC
 	/** Get Weight.
 		@return Weight of a product
 	  */
-	public BigDecimal getWeight () 
+	public BigDecimal getWeight()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Weight);
 		if (bd == null)

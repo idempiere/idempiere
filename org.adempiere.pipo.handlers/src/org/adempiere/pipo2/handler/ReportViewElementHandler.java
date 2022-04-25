@@ -18,11 +18,13 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.ElementHandler;
@@ -34,10 +36,12 @@ import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormat;
 import org.compiere.model.I_AD_ReportView;
 import org.compiere.model.I_AD_Table;
+import org.compiere.model.MReportView;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
-import org.compiere.model.X_AD_ReportView;
 import org.compiere.model.X_AD_ReportView_Col;
+import org.compiere.model.X_AD_ReportView_Column;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
@@ -46,15 +50,16 @@ import org.xml.sax.helpers.AttributesImpl;
 public class ReportViewElementHandler extends AbstractElementHandler {
 
 	private ReportViewColElementHandler columnHandler = new ReportViewColElementHandler();
+	private ReportViewColumnElementHandler columnSelHandler = new ReportViewColumnElementHandler();
 
 	public void startElement(PIPOContext ctx, Element element)
 			throws SAXException {
 		
-		List<String> excludes = defaultExcludeList(X_AD_ReportView.Table_Name);
+		List<String> excludes = defaultExcludeList(MReportView.Table_Name);
 		
-		X_AD_ReportView mReportview = findPO(ctx, element);
+		MReportView mReportview = findPO(ctx, element);
 		if (mReportview == null) {
-			mReportview = new X_AD_ReportView(ctx.ctx, 0, getTrxName(ctx));
+			mReportview = new MReportView(ctx.ctx, 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mReportview, element, this);
 		List<String> notfound = filler.autoFill(excludes);
@@ -65,11 +70,11 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 		}
 		
 		if (mReportview.is_new() || mReportview.is_Changed()) {
-			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_ReportView.Table_Name,
-					X_AD_ReportView.Table_ID);
+			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, MReportView.Table_Name,
+					MReportView.Table_ID);
 			String action = null;
 			if (!mReportview.is_new()) {
-				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_ReportView.Table_Name, mReportview);
+				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), MReportView.Table_Name, mReportview);
 				action = "Update";
 			} else {
 				action = "New";
@@ -97,7 +102,7 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 			return;
 
 		AttributesImpl atts = new AttributesImpl();
-		X_AD_ReportView m_Reportview = new X_AD_ReportView(ctx.ctx, AD_ReportView_ID, getTrxName(ctx));
+		MReportView m_Reportview = new MReportView(ctx.ctx, AD_ReportView_ID, getTrxName(ctx));
 
 		// Export Table if neccessary
 		ElementHandler tableHandler = packOut.getHandler(I_AD_Table.Table_Name);
@@ -126,14 +131,30 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 			while (rs.next()) {
 				createReportViewCol(ctx, document, rs.getInt("AD_ReportView_Col_ID"));
 			}
-		} catch (Exception e) {
-			throw new AdempiereException(e);
+		} catch (SQLException e) {
+			throw new DBException(e);
+		} finally {
+			DB.close(rs, pstmt);
+		}
+
+		sql = "SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_Reportview_ID= "
+				+ AD_ReportView_ID;
+		pstmt = null;
+		rs = null;
+		try {
+			pstmt = DB.prepareStatement(sql, getTrxName(ctx));
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				createReportViewColumn(ctx, document, AD_ReportView_ID, rs.getInt("AD_Column_ID"));
+			}
+		} catch (SQLException e) {
+			throw new DBException(e);
 		} finally {
 			DB.close(rs, pstmt);
 		}
 
 		if (createElement) {
-			document.endElement("", "", X_AD_ReportView.Table_Name);
+			document.endElement("", "", MReportView.Table_Name);
 		}
 		
 		sql = "SELECT AD_PrintFormat_ID FROM AD_PrintFormat WHERE AD_ReportView_ID="
@@ -164,11 +185,23 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 		ctx.ctx.remove(X_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID);
 	}
 
+	private void createReportViewColumn(PIPOContext ctx,
+			TransformerHandler document, int AD_ReportView_ID, int AD_Column_ID)
+					throws SAXException {
+
+		Query query = new Query(ctx.ctx, "AD_ReportView_Column", "AD_ReportView_ID=? AND AD_Column_ID=?", getTrxName(ctx));
+		X_AD_ReportView_Column po = query.setParameters(new Object[]{AD_ReportView_ID, AD_Column_ID}).first();
+
+		ctx.ctx.put("po", po);
+		columnSelHandler.create(ctx, document);
+		ctx.ctx.remove("po");
+	}
+
 	private void createReportViewBinding(PIPOContext ctx, TransformerHandler document,
-			X_AD_ReportView m_Reportview) {
+			MReportView m_Reportview) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Reportview);
-		List<String> excludes = defaultExcludeList(X_AD_ReportView.Table_Name);
+		List<String> excludes = defaultExcludeList(MReportView.Table_Name);
 		if (m_Reportview.getAD_ReportView_ID() <= PackOut.MAX_OFFICIAL_ID)
 	        filler.add("AD_ReportView_ID", new AttributesImpl());
 		filler.export(excludes);

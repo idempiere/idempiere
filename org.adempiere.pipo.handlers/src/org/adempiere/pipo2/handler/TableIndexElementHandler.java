@@ -90,6 +90,8 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 	@Override
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 		MTableIndex mTableIndex = findPO(ctx, element);
+		if (element.defer && mTableIndex == null)
+			return;
 		int success = validateTableIndex(ctx, mTableIndex);
 		X_AD_Package_Imp_Detail dbDetail = createImportDetail(ctx, "dbIndex", MTableIndex.Table_Name, MTableIndex.Table_ID);
 		if (success == 1) {
@@ -132,12 +134,7 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 
 		MTableIndex m_TableIndex = new MTableIndex(ctx.ctx, AD_TableIndex_ID, null);
 		
-		boolean createElement = true;
-		if (ctx.packOut.getFromDate() != null) {
-			if (m_TableIndex.getUpdated().compareTo(ctx.packOut.getFromDate()) < 0) {
-				createElement = false;
-			}
-		}
+		boolean createElement = isPackOutElement(ctx, m_TableIndex);
 		
 		if (createElement) {
 			if (m_TableIndex.getAD_Message_ID() > 0) {

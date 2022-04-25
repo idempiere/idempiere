@@ -85,6 +85,7 @@ import static org.adempiere.webui.ClientInfo.*;
  * 
  * Contributor : Fabian Aguilar - OFBConsulting - Multiallocation
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VAllocation")
 public class WAllocation extends Allocation
 	implements IFormController, EventListener<Event>, WTableModelListener, ValueChangeListener
 {
@@ -93,12 +94,9 @@ public class WAllocation extends Allocation
 	
 	/**
 	 *	Initialize Panel
-	 *  @param WindowNo window
-	 *  @param frame frame
 	 */
 	public WAllocation()
 	{
-		Env.setContext(Env.getCtx(), form.getWindowNo(), "IsSOTrx", "Y");   //  defaults to no
 		try
 		{
 			super.dynInit();
@@ -459,7 +457,7 @@ public class WAllocation extends Allocation
 		
 		//  Date set to Login Date
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(Env.getContextAsDate(Env.getCtx(), "#Date"));
+		cal.setTime(Env.getContextAsDate(Env.getCtx(), Env.DATE));
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);

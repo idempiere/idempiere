@@ -25,19 +25,41 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DunningRunLine
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_DunningRunLine")
 public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_DunningRunLine (Properties ctx, int C_DunningRunLine_ID, String trxName)
     {
       super (ctx, C_DunningRunLine_ID, trxName);
+      /** if (C_DunningRunLine_ID == 0)
+        {
+			setAmt (Env.ZERO);
+			setC_DunningRunEntry_ID (0);
+			setC_DunningRunLine_ID (0);
+			setConvertedAmt (Env.ZERO);
+			setDaysDue (0);
+			setFeeAmt (Env.ZERO);
+			setInterestAmt (Env.ZERO);
+			setIsInDispute (false);
+			setOpenAmt (Env.ZERO);
+			setProcessed (false);
+			setTimesDunned (0);
+			setTotalAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_DunningRunLine (Properties ctx, int C_DunningRunLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_DunningRunLine_ID, trxName, virtualColumns);
       /** if (C_DunningRunLine_ID == 0)
         {
 			setAmt (Env.ZERO);
@@ -78,15 +100,14 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_DunningRunLine[")
+      StringBuilder sb = new StringBuilder ("X_C_DunningRunLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set Amount.
-		@param Amt 
-		Amount
-	  */
+		@param Amt Amount
+	*/
 	public void setAmt (BigDecimal Amt)
 	{
 		set_Value (COLUMNNAME_Amt, Amt);
@@ -95,7 +116,7 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	/** Get Amount.
 		@return Amount
 	  */
-	public BigDecimal getAmt () 
+	public BigDecimal getAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Amt);
 		if (bd == null)
@@ -104,26 +125,26 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	public org.compiere.model.I_C_DunningRunEntry getC_DunningRunEntry() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DunningRunEntry)MTable.get(getCtx(), org.compiere.model.I_C_DunningRunEntry.Table_Name)
-			.getPO(getC_DunningRunEntry_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DunningRunEntry)MTable.get(getCtx(), org.compiere.model.I_C_DunningRunEntry.Table_ID)
+			.getPO(getC_DunningRunEntry_ID(), get_TrxName());
+	}
 
 	/** Set Dunning Run Entry.
-		@param C_DunningRunEntry_ID 
-		Dunning Run Entry
-	  */
+		@param C_DunningRunEntry_ID Dunning Run Entry
+	*/
 	public void setC_DunningRunEntry_ID (int C_DunningRunEntry_ID)
 	{
-		if (C_DunningRunEntry_ID < 1) 
+		if (C_DunningRunEntry_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_DunningRunEntry_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DunningRunEntry_ID, Integer.valueOf(C_DunningRunEntry_ID));
 	}
 
 	/** Get Dunning Run Entry.
 		@return Dunning Run Entry
 	  */
-	public int getC_DunningRunEntry_ID () 
+	public int getC_DunningRunEntry_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DunningRunEntry_ID);
 		if (ii == null)
@@ -132,21 +153,20 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	/** Set Dunning Run Line.
-		@param C_DunningRunLine_ID 
-		Dunning Run Line
-	  */
+		@param C_DunningRunLine_ID Dunning Run Line
+	*/
 	public void setC_DunningRunLine_ID (int C_DunningRunLine_ID)
 	{
-		if (C_DunningRunLine_ID < 1) 
+		if (C_DunningRunLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_DunningRunLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DunningRunLine_ID, Integer.valueOf(C_DunningRunLine_ID));
 	}
 
 	/** Get Dunning Run Line.
 		@return Dunning Run Line
 	  */
-	public int getC_DunningRunLine_ID () 
+	public int getC_DunningRunLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DunningRunLine_ID);
 		if (ii == null)
@@ -155,7 +175,8 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	/** Set C_DunningRunLine_UU.
-		@param C_DunningRunLine_UU C_DunningRunLine_UU	  */
+		@param C_DunningRunLine_UU C_DunningRunLine_UU
+	*/
 	public void setC_DunningRunLine_UU (String C_DunningRunLine_UU)
 	{
 		set_Value (COLUMNNAME_C_DunningRunLine_UU, C_DunningRunLine_UU);
@@ -163,32 +184,32 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 
 	/** Get C_DunningRunLine_UU.
 		@return C_DunningRunLine_UU	  */
-	public String getC_DunningRunLine_UU () 
+	public String getC_DunningRunLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_DunningRunLine_UU);
 	}
 
 	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_Name)
-			.getPO(getC_Invoice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
 
 	/** Set Invoice.
-		@param C_Invoice_ID 
-		Invoice Identifier
-	  */
+		@param C_Invoice_ID Invoice Identifier
+	*/
 	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_Invoice_ID < 1) 
+		if (C_Invoice_ID < 1)
 			set_Value (COLUMNNAME_C_Invoice_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
 	/** Get Invoice.
 		@return Invoice Identifier
 	  */
-	public int getC_Invoice_ID () 
+	public int getC_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
@@ -205,26 +226,26 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
     }
 
 	public org.compiere.model.I_C_InvoicePaySchedule getC_InvoicePaySchedule() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_InvoicePaySchedule)MTable.get(getCtx(), org.compiere.model.I_C_InvoicePaySchedule.Table_Name)
-			.getPO(getC_InvoicePaySchedule_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_InvoicePaySchedule)MTable.get(getCtx(), org.compiere.model.I_C_InvoicePaySchedule.Table_ID)
+			.getPO(getC_InvoicePaySchedule_ID(), get_TrxName());
+	}
 
 	/** Set Invoice Payment Schedule.
-		@param C_InvoicePaySchedule_ID 
-		Invoice Payment Schedule
-	  */
+		@param C_InvoicePaySchedule_ID Invoice Payment Schedule
+	*/
 	public void setC_InvoicePaySchedule_ID (int C_InvoicePaySchedule_ID)
 	{
-		if (C_InvoicePaySchedule_ID < 1) 
+		if (C_InvoicePaySchedule_ID < 1)
 			set_Value (COLUMNNAME_C_InvoicePaySchedule_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_InvoicePaySchedule_ID, Integer.valueOf(C_InvoicePaySchedule_ID));
 	}
 
 	/** Get Invoice Payment Schedule.
 		@return Invoice Payment Schedule
 	  */
-	public int getC_InvoicePaySchedule_ID () 
+	public int getC_InvoicePaySchedule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoicePaySchedule_ID);
 		if (ii == null)
@@ -233,9 +254,8 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	/** Set Converted Amount.
-		@param ConvertedAmt 
-		Converted Amount
-	  */
+		@param ConvertedAmt Converted Amount
+	*/
 	public void setConvertedAmt (BigDecimal ConvertedAmt)
 	{
 		set_Value (COLUMNNAME_ConvertedAmt, ConvertedAmt);
@@ -244,7 +264,7 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	/** Get Converted Amount.
 		@return Converted Amount
 	  */
-	public BigDecimal getConvertedAmt () 
+	public BigDecimal getConvertedAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ConvertedAmt);
 		if (bd == null)
@@ -253,26 +273,26 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	public org.compiere.model.I_C_Payment getC_Payment() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_Name)
-			.getPO(getC_Payment_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Payment)MTable.get(getCtx(), org.compiere.model.I_C_Payment.Table_ID)
+			.getPO(getC_Payment_ID(), get_TrxName());
+	}
 
 	/** Set Payment.
-		@param C_Payment_ID 
-		Payment identifier
-	  */
+		@param C_Payment_ID Payment identifier
+	*/
 	public void setC_Payment_ID (int C_Payment_ID)
 	{
-		if (C_Payment_ID < 1) 
+		if (C_Payment_ID < 1)
 			set_Value (COLUMNNAME_C_Payment_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
 	}
 
 	/** Get Payment.
 		@return Payment identifier
 	  */
-	public int getC_Payment_ID () 
+	public int getC_Payment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
 		if (ii == null)
@@ -281,9 +301,8 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	/** Set Days due.
-		@param DaysDue 
-		Number of days due (negative: due in number of days)
-	  */
+		@param DaysDue Number of days due (negative: due in number of days)
+	*/
 	public void setDaysDue (int DaysDue)
 	{
 		set_Value (COLUMNNAME_DaysDue, Integer.valueOf(DaysDue));
@@ -292,7 +311,7 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	/** Get Days due.
 		@return Number of days due (negative: due in number of days)
 	  */
-	public int getDaysDue () 
+	public int getDaysDue()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DaysDue);
 		if (ii == null)
@@ -301,9 +320,8 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	/** Set Fee Amount.
-		@param FeeAmt 
-		Fee amount in invoice currency
-	  */
+		@param FeeAmt Fee amount in invoice currency
+	*/
 	public void setFeeAmt (BigDecimal FeeAmt)
 	{
 		set_Value (COLUMNNAME_FeeAmt, FeeAmt);
@@ -312,7 +330,7 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	/** Get Fee Amount.
 		@return Fee amount in invoice currency
 	  */
-	public BigDecimal getFeeAmt () 
+	public BigDecimal getFeeAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_FeeAmt);
 		if (bd == null)
@@ -321,9 +339,8 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	/** Set Interest Amount.
-		@param InterestAmt 
-		Interest Amount
-	  */
+		@param InterestAmt Interest Amount
+	*/
 	public void setInterestAmt (BigDecimal InterestAmt)
 	{
 		set_Value (COLUMNNAME_InterestAmt, InterestAmt);
@@ -332,7 +349,7 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	/** Get Interest Amount.
 		@return Interest Amount
 	  */
-	public BigDecimal getInterestAmt () 
+	public BigDecimal getInterestAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_InterestAmt);
 		if (bd == null)
@@ -341,9 +358,8 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	/** Set In Dispute.
-		@param IsInDispute 
-		Document is in dispute
-	  */
+		@param IsInDispute Document is in dispute
+	*/
 	public void setIsInDispute (boolean IsInDispute)
 	{
 		set_Value (COLUMNNAME_IsInDispute, Boolean.valueOf(IsInDispute));
@@ -352,7 +368,7 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	/** Get In Dispute.
 		@return Document is in dispute
 	  */
-	public boolean isInDispute () 
+	public boolean isInDispute()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInDispute);
 		if (oo != null) 
@@ -365,9 +381,8 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	/** Set Open Amount.
-		@param OpenAmt 
-		Open item amount
-	  */
+		@param OpenAmt Open item amount
+	*/
 	public void setOpenAmt (BigDecimal OpenAmt)
 	{
 		set_Value (COLUMNNAME_OpenAmt, OpenAmt);
@@ -376,7 +391,7 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	/** Get Open Amount.
 		@return Open item amount
 	  */
-	public BigDecimal getOpenAmt () 
+	public BigDecimal getOpenAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_OpenAmt);
 		if (bd == null)
@@ -385,9 +400,8 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -396,7 +410,7 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -409,9 +423,8 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	/** Set Times Dunned.
-		@param TimesDunned 
-		Number of times dunned previously
-	  */
+		@param TimesDunned Number of times dunned previously
+	*/
 	public void setTimesDunned (int TimesDunned)
 	{
 		set_Value (COLUMNNAME_TimesDunned, Integer.valueOf(TimesDunned));
@@ -420,7 +433,7 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	/** Get Times Dunned.
 		@return Number of times dunned previously
 	  */
-	public int getTimesDunned () 
+	public int getTimesDunned()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TimesDunned);
 		if (ii == null)
@@ -429,9 +442,8 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	}
 
 	/** Set Total Amount.
-		@param TotalAmt 
-		Total Amount
-	  */
+		@param TotalAmt Total Amount
+	*/
 	public void setTotalAmt (BigDecimal TotalAmt)
 	{
 		set_Value (COLUMNNAME_TotalAmt, TotalAmt);
@@ -440,7 +452,7 @@ public class X_C_DunningRunLine extends PO implements I_C_DunningRunLine, I_Pers
 	/** Get Total Amount.
 		@return Total Amount
 	  */
-	public BigDecimal getTotalAmt () 
+	public BigDecimal getTotalAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TotalAmt);
 		if (bd == null)

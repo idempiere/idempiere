@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -28,6 +29,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Business Partner Model
@@ -42,12 +44,12 @@ import org.compiere.util.Msg;
  *      <LI>BF [ 2041226 ] BP Open Balance should count only Completed Invoice
  *			<LI>BF [ 2498949 ] BP Get Not Invoiced Shipment Value return null
  */
-public class MBPartner extends X_C_BPartner
+public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5534148976588041343L;
+	private static final long serialVersionUID = 2256035503713773448L;
 
 	/**
 	 * 	Get Empty Template Business Partner
@@ -76,7 +78,6 @@ public class MBPartner extends X_C_BPartner
 			template.setSO_CreditLimit (Env.ZERO);
 			template.setSO_CreditUsed (Env.ZERO);
 			template.setTotalOpenBalance (Env.ZERO);
-		//	s_template.setRating(null);
 			//
 			template.setActualLifeTimeValue(Env.ZERO);
 			template.setPotentialLifeTimeValue(Env.ZERO);
@@ -156,7 +157,7 @@ public class MBPartner extends X_C_BPartner
 	/**
 	 * 	Get BPartner with Value
 	 *	@param ctx context 
-	 *	@param Value value
+	 *  @param C_BPartner_ID
 	 *	@return BPartner or null
 	 */
 	public static MBPartner get (Properties ctx, int C_BPartner_ID)
@@ -168,7 +169,7 @@ public class MBPartner extends X_C_BPartner
 	/**
 	 * 	Get BPartner with Value in a transaction
 	 *	@param ctx context 
-	 *	@param Value value
+	 *  @param C_BPartner_ID
 	 * 	@param trxName transaction
 	 *	@return BPartner or null
 	 */
@@ -259,10 +260,6 @@ public class MBPartner extends X_C_BPartner
 		}
 		if (C_BPartner_ID == 0)
 		{
-		//	setValue ("");
-		//	setName ("");
-		//	setName2 (null);
-		//	setDUNS("");
 			//
 			setIsCustomer (true);
 			setIsProspect (true);
@@ -323,7 +320,48 @@ public class MBPartner extends X_C_BPartner
 		setC_BP_Group_ID(impBP.getC_BP_Group_ID());
 	}	//	MBPartner
 	
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MBPartner(MBPartner copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MBPartner(Properties ctx, MBPartner copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MBPartner(Properties ctx, MBPartner copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_contacts = copy.m_contacts != null ? Arrays.stream(copy.m_contacts).map(e -> {return new MUser(ctx, e, trxName);}).toArray(MUser[]::new) : null;
+		this.m_locations = copy.m_locations != null ? Arrays.stream(copy.m_locations).map(e -> {return new MBPartnerLocation(ctx, e, trxName);}).toArray(MBPartnerLocation[]::new) : null;
+		this.m_accounts = copy.m_accounts != null ? Arrays.stream(copy.m_accounts).map(e -> {return new MBPBankAccount(ctx, e, trxName);}).toArray(MBPBankAccount[]::new) : null;
+		this.m_primaryC_BPartner_Location_ID = copy.m_primaryC_BPartner_Location_ID;
+		this.m_primaryAD_User_ID = copy.m_primaryAD_User_ID;
+		this.m_group = copy.m_group != null ? new MBPGroup(ctx, copy.m_group, trxName) : null;
+	}
+
+	public MBPartner(Properties ctx, int C_BPartner_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_BPartner_ID, trxName, virtualColumns);
+	}
+
+
 	/** Users							*/
 	protected MUser[]				m_contacts = null;
 	/** Addressed						*/
@@ -400,7 +438,7 @@ public class MBPartner extends X_C_BPartner
 			return m_contacts;
 		//
 		ArrayList<MUser> list = new ArrayList<MUser>();
-		final String sql = "SELECT * FROM AD_User WHERE C_BPartner_ID=? ORDER BY AD_User_ID";
+		final String sql = "SELECT * FROM AD_User WHERE C_BPartner_ID=? AND IsActive = 'Y' ORDER BY AD_User_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -573,41 +611,17 @@ public class MBPartner extends X_C_BPartner
 		super.setClientOrg(AD_Client_ID, AD_Org_ID);
 	}	//	setClientOrg
 
-	/**
-	 * 	Set Linked Organization.
-	 * 	(is Button)
-	 *	@param AD_OrgBP_ID 
-	 */
-	public void setAD_OrgBP_ID (int AD_OrgBP_ID)
-	{
-		if (AD_OrgBP_ID == 0)
-			super.setAD_OrgBP_ID (null);
-		else
-			super.set_Value("AD_OrgBP_ID", AD_OrgBP_ID);
-	}	//	setAD_OrgBP_ID
-	
 	/** 
 	 * 	Get Linked Organization.
 	 * 	(is Button)
 	 * 	The Business Partner is another Organization 
 	 * 	for explicit Inter-Org transactions 
 	 * 	@return AD_Org_ID if BP
+	 *  @deprecated
 	 */
 	public int getAD_OrgBP_ID_Int() 
 	{
-		String org = super.getAD_OrgBP_ID();
-		if (org == null)
-			return 0;
-		int AD_OrgBP_ID = 0;
-		try
-		{
-			AD_OrgBP_ID = Integer.parseInt (org);
-		}
-		catch (Exception ex)
-		{
-			log.log(Level.SEVERE, org, ex);
-		}
-		return AD_OrgBP_ID;
+		return getAD_OrgBP_ID();
 	}	//	getAD_OrgBP_ID_Int
 
 	/**
@@ -660,9 +674,6 @@ public class MBPartner extends X_C_BPartner
 		if (m_primaryAD_User_ID == null)
 		{
 			MUser[] users = getContacts(false);
-		//	for (int i = 0; i < users.length; i++)
-		//	{
-		//	}
 			if (m_primaryAD_User_ID == null && users.length > 0)
 				setPrimaryAD_User_ID(users[0].getAD_User_ID());
 		}
@@ -696,6 +707,7 @@ public class MBPartner extends X_C_BPartner
 	 */
 	public void setTotalOpenBalance ()
 	{
+		log.info("");
 		BigDecimal SO_CreditUsed = null;
 		BigDecimal TotalOpenBalance = null;
 		//AZ Goodwill -> BF2041226 : only count completed/closed docs.
@@ -867,7 +879,7 @@ public class MBPartner extends X_C_BPartner
 			if (getC_BP_Group_ID() == 0)
 				m_group = MBPGroup.getDefault(getCtx());
 			else
-				m_group = MBPGroup.get(getCtx(), getC_BP_Group_ID(), get_TrxName());
+				m_group = MBPGroup.getCopy(getCtx(), getC_BP_Group_ID(), get_TrxName());
 		}
 		return m_group;
 	}	//	getBPGroup
@@ -980,7 +992,6 @@ public class MBPartner extends X_C_BPartner
 			StringBuilder msgacc = new StringBuilder("p.C_BP_Group_ID=").append(getC_BP_Group_ID());
 			insert_Accounting("C_BP_Customer_Acct", "C_BP_Group_Acct", msgacc.toString());
 			insert_Accounting("C_BP_Vendor_Acct", "C_BP_Group_Acct",msgacc.toString());
-			// insert_Accounting("C_BP_Employee_Acct", "C_AcctSchema_Default", null);
 		}
 		if (newRecord || is_ValueChanged(COLUMNNAME_Value))
 			update_Tree(MTree_Base.TREETYPE_BPartner);
@@ -1016,6 +1027,15 @@ public class MBPartner extends X_C_BPartner
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public MBPartner markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
 	}
 
 }	//	MBPartner

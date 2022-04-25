@@ -26,19 +26,31 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_FAJournal
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="I_FAJournal")
 public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_FAJournal (Properties ctx, int I_FAJournal_ID, String trxName)
     {
       super (ctx, I_FAJournal_ID, trxName);
+      /** if (I_FAJournal_ID == 0)
+        {
+			setI_FAJournal_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_FAJournal (Properties ctx, int I_FAJournal_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_FAJournal_ID, trxName, virtualColumns);
       /** if (I_FAJournal_ID == 0)
         {
 			setI_FAJournal_ID (0);
@@ -69,27 +81,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_I_FAJournal[")
+      StringBuilder sb = new StringBuilder ("X_I_FAJournal[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_Value (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -98,26 +109,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getAccount_ID(), get_TrxName());
+	}
 
 	/** Set Account.
-		@param Account_ID 
-		Account used
-	  */
+		@param Account_ID Account used
+	*/
 	public void setAccount_ID (int Account_ID)
 	{
-		if (Account_ID < 1) 
+		if (Account_ID < 1)
 			set_Value (COLUMNNAME_Account_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Account_ID, Integer.valueOf(Account_ID));
 	}
 
 	/** Get Account.
 		@return Account used
 	  */
-	public int getAccount_ID () 
+	public int getAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Account_ID);
 		if (ii == null)
@@ -126,9 +137,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Account Key.
-		@param AccountValue 
-		Key of Account Element
-	  */
+		@param AccountValue Key of Account Element
+	*/
 	public void setAccountValue (String AccountValue)
 	{
 		set_Value (COLUMNNAME_AccountValue, AccountValue);
@@ -137,15 +147,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Account Key.
 		@return Key of Account Element
 	  */
-	public String getAccountValue () 
+	public String getAccountValue()
 	{
 		return (String)get_Value(COLUMNNAME_AccountValue);
 	}
 
 	/** Set Account Schema Name.
-		@param AcctSchemaName 
-		Name of the Accounting Schema
-	  */
+		@param AcctSchemaName Name of the Accounting Schema
+	*/
 	public void setAcctSchemaName (String AcctSchemaName)
 	{
 		set_Value (COLUMNNAME_AcctSchemaName, AcctSchemaName);
@@ -154,27 +163,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Account Schema Name.
 		@return Name of the Accounting Schema
 	  */
-	public String getAcctSchemaName () 
+	public String getAcctSchemaName()
 	{
 		return (String)get_Value(COLUMNNAME_AcctSchemaName);
 	}
 
 	/** Set Document Org.
-		@param AD_OrgDoc_ID 
-		Document Organization (independent from account organization)
-	  */
+		@param AD_OrgDoc_ID Document Organization (independent from account organization)
+	*/
 	public void setAD_OrgDoc_ID (int AD_OrgDoc_ID)
 	{
-		if (AD_OrgDoc_ID < 1) 
+		if (AD_OrgDoc_ID < 1)
 			set_Value (COLUMNNAME_AD_OrgDoc_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_OrgDoc_ID, Integer.valueOf(AD_OrgDoc_ID));
 	}
 
 	/** Get Document Org.
 		@return Document Organization (independent from account organization)
 	  */
-	public int getAD_OrgDoc_ID () 
+	public int getAD_OrgDoc_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgDoc_ID);
 		if (ii == null)
@@ -183,21 +191,20 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Trx Organization.
-		@param AD_OrgTrx_ID 
-		Performing or initiating organization
-	  */
+		@param AD_OrgTrx_ID Performing or initiating organization
+	*/
 	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID)
 	{
-		if (AD_OrgTrx_ID < 1) 
+		if (AD_OrgTrx_ID < 1)
 			set_Value (COLUMNNAME_AD_OrgTrx_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_OrgTrx_ID, Integer.valueOf(AD_OrgTrx_ID));
 	}
 
 	/** Get Trx Organization.
 		@return Performing or initiating organization
 	  */
-	public int getAD_OrgTrx_ID () 
+	public int getAD_OrgTrx_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgTrx_ID);
 		if (ii == null)
@@ -206,7 +213,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Entry Type.
-		@param A_Entry_Type Entry Type	  */
+		@param A_Entry_Type Entry Type
+	*/
 	public void setA_Entry_Type (String A_Entry_Type)
 	{
 		set_Value (COLUMNNAME_A_Entry_Type, A_Entry_Type);
@@ -214,15 +222,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 
 	/** Get Entry Type.
 		@return Entry Type	  */
-	public String getA_Entry_Type () 
+	public String getA_Entry_Type()
 	{
 		return (String)get_Value(COLUMNNAME_A_Entry_Type);
 	}
 
 	/** Set Accounted Credit.
-		@param AmtAcctCr 
-		Accounted Credit Amount
-	  */
+		@param AmtAcctCr Accounted Credit Amount
+	*/
 	public void setAmtAcctCr (BigDecimal AmtAcctCr)
 	{
 		set_Value (COLUMNNAME_AmtAcctCr, AmtAcctCr);
@@ -231,7 +238,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Accounted Credit.
 		@return Accounted Credit Amount
 	  */
-	public BigDecimal getAmtAcctCr () 
+	public BigDecimal getAmtAcctCr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtAcctCr);
 		if (bd == null)
@@ -240,9 +247,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Accounted Debit.
-		@param AmtAcctDr 
-		Accounted Debit Amount
-	  */
+		@param AmtAcctDr Accounted Debit Amount
+	*/
 	public void setAmtAcctDr (BigDecimal AmtAcctDr)
 	{
 		set_Value (COLUMNNAME_AmtAcctDr, AmtAcctDr);
@@ -251,7 +257,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Accounted Debit.
 		@return Accounted Debit Amount
 	  */
-	public BigDecimal getAmtAcctDr () 
+	public BigDecimal getAmtAcctDr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtAcctDr);
 		if (bd == null)
@@ -260,9 +266,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Source Credit.
-		@param AmtSourceCr 
-		Source Credit Amount
-	  */
+		@param AmtSourceCr Source Credit Amount
+	*/
 	public void setAmtSourceCr (BigDecimal AmtSourceCr)
 	{
 		set_Value (COLUMNNAME_AmtSourceCr, AmtSourceCr);
@@ -271,7 +276,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Source Credit.
 		@return Source Credit Amount
 	  */
-	public BigDecimal getAmtSourceCr () 
+	public BigDecimal getAmtSourceCr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtSourceCr);
 		if (bd == null)
@@ -280,9 +285,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Source Debit.
-		@param AmtSourceDr 
-		Source Debit Amount
-	  */
+		@param AmtSourceDr Source Debit Amount
+	*/
 	public void setAmtSourceDr (BigDecimal AmtSourceDr)
 	{
 		set_Value (COLUMNNAME_AmtSourceDr, AmtSourceDr);
@@ -291,7 +295,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Source Debit.
 		@return Source Debit Amount
 	  */
-	public BigDecimal getAmtSourceDr () 
+	public BigDecimal getAmtSourceDr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtSourceDr);
 		if (bd == null)
@@ -300,9 +304,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Batch Description.
-		@param BatchDescription 
-		Description of the Batch
-	  */
+		@param BatchDescription Description of the Batch
+	*/
 	public void setBatchDescription (String BatchDescription)
 	{
 		set_Value (COLUMNNAME_BatchDescription, BatchDescription);
@@ -311,15 +314,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Batch Description.
 		@return Description of the Batch
 	  */
-	public String getBatchDescription () 
+	public String getBatchDescription()
 	{
 		return (String)get_Value(COLUMNNAME_BatchDescription);
 	}
 
 	/** Set Batch Document No.
-		@param BatchDocumentNo 
-		Document Number of the Batch
-	  */
+		@param BatchDocumentNo Document Number of the Batch
+	*/
 	public void setBatchDocumentNo (String BatchDocumentNo)
 	{
 		set_Value (COLUMNNAME_BatchDocumentNo, BatchDocumentNo);
@@ -328,15 +330,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Batch Document No.
 		@return Document Number of the Batch
 	  */
-	public String getBatchDocumentNo () 
+	public String getBatchDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_BatchDocumentNo);
 	}
 
 	/** Set Business Partner Key.
-		@param BPartnerValue 
-		Key of the Business Partner
-	  */
+		@param BPartnerValue Key of the Business Partner
+	*/
 	public void setBPartnerValue (String BPartnerValue)
 	{
 		set_Value (COLUMNNAME_BPartnerValue, BPartnerValue);
@@ -345,32 +346,32 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Business Partner Key.
 		@return Key of the Business Partner
 	  */
-	public String getBPartnerValue () 
+	public String getBPartnerValue()
 	{
 		return (String)get_Value(COLUMNNAME_BPartnerValue);
 	}
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_Value (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -379,26 +380,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Activity getC_Activity() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_Name)
-			.getPO(getC_Activity_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Activity)MTable.get(getCtx(), org.compiere.model.I_C_Activity.Table_ID)
+			.getPO(getC_Activity_ID(), get_TrxName());
+	}
 
 	/** Set Activity.
-		@param C_Activity_ID 
-		Business Activity
-	  */
+		@param C_Activity_ID Business Activity
+	*/
 	public void setC_Activity_ID (int C_Activity_ID)
 	{
-		if (C_Activity_ID < 1) 
+		if (C_Activity_ID < 1)
 			set_Value (COLUMNNAME_C_Activity_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Activity_ID, Integer.valueOf(C_Activity_ID));
 	}
 
 	/** Get Activity.
 		@return Business Activity
 	  */
-	public int getC_Activity_ID () 
+	public int getC_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Activity_ID);
 		if (ii == null)
@@ -407,9 +408,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Category Name.
-		@param CategoryName 
-		Name of the Category
-	  */
+		@param CategoryName Name of the Category
+	*/
 	public void setCategoryName (String CategoryName)
 	{
 		set_Value (COLUMNNAME_CategoryName, CategoryName);
@@ -418,32 +418,32 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Category Name.
 		@return Name of the Category
 	  */
-	public String getCategoryName () 
+	public String getCategoryName()
 	{
 		return (String)get_Value(COLUMNNAME_CategoryName);
 	}
 
 	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
-			.getPO(getC_BPartner_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_ID)
+			.getPO(getC_BPartner_ID(), get_TrxName());
+	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -452,26 +452,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Campaign getC_Campaign() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_Name)
-			.getPO(getC_Campaign_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Campaign)MTable.get(getCtx(), org.compiere.model.I_C_Campaign.Table_ID)
+			.getPO(getC_Campaign_ID(), get_TrxName());
+	}
 
 	/** Set Campaign.
-		@param C_Campaign_ID 
-		Marketing Campaign
-	  */
+		@param C_Campaign_ID Marketing Campaign
+	*/
 	public void setC_Campaign_ID (int C_Campaign_ID)
 	{
-		if (C_Campaign_ID < 1) 
+		if (C_Campaign_ID < 1)
 			set_Value (COLUMNNAME_C_Campaign_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
 	}
 
 	/** Get Campaign.
 		@return Marketing Campaign
 	  */
-	public int getC_Campaign_ID () 
+	public int getC_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
 		if (ii == null)
@@ -480,21 +480,20 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Currency Type.
-		@param C_ConversionType_ID 
-		Currency Conversion Rate Type
-	  */
+		@param C_ConversionType_ID Currency Conversion Rate Type
+	*/
 	public void setC_ConversionType_ID (int C_ConversionType_ID)
 	{
-		if (C_ConversionType_ID < 1) 
+		if (C_ConversionType_ID < 1)
 			set_Value (COLUMNNAME_C_ConversionType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ConversionType_ID, Integer.valueOf(C_ConversionType_ID));
 	}
 
 	/** Get Currency Type.
 		@return Currency Conversion Rate Type
 	  */
-	public int getC_ConversionType_ID () 
+	public int getC_ConversionType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ConversionType_ID);
 		if (ii == null)
@@ -503,26 +502,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Currency getC_Currency() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_Name)
-			.getPO(getC_Currency_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Currency)MTable.get(getCtx(), org.compiere.model.I_C_Currency.Table_ID)
+			.getPO(getC_Currency_ID(), get_TrxName());
+	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -531,26 +530,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_Name)
-			.getPO(getC_DocType_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getC_DocType_ID(), get_TrxName());
+	}
 
 	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
+		@param C_DocType_ID Document type or rules
+	*/
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
-		if (C_DocType_ID < 0) 
+		if (C_DocType_ID < 0)
 			set_Value (COLUMNNAME_C_DocType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
 	}
 
 	/** Get Document Type.
 		@return Document type or rules
 	  */
-	public int getC_DocType_ID () 
+	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
@@ -559,9 +558,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Client Key.
-		@param ClientValue 
-		Key of the Client
-	  */
+		@param ClientValue Key of the Client
+	*/
 	public void setClientValue (String ClientValue)
 	{
 		set_Value (COLUMNNAME_ClientValue, ClientValue);
@@ -570,32 +568,32 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Client Key.
 		@return Key of the Client
 	  */
-	public String getClientValue () 
+	public String getClientValue()
 	{
 		return (String)get_Value(COLUMNNAME_ClientValue);
 	}
 
 	public org.compiere.model.I_C_Location getC_LocFrom() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_Name)
-			.getPO(getC_LocFrom_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
+			.getPO(getC_LocFrom_ID(), get_TrxName());
+	}
 
 	/** Set Location From.
-		@param C_LocFrom_ID 
-		Location that inventory was moved from
-	  */
+		@param C_LocFrom_ID Location that inventory was moved from
+	*/
 	public void setC_LocFrom_ID (int C_LocFrom_ID)
 	{
-		if (C_LocFrom_ID < 1) 
+		if (C_LocFrom_ID < 1)
 			set_Value (COLUMNNAME_C_LocFrom_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_LocFrom_ID, Integer.valueOf(C_LocFrom_ID));
 	}
 
 	/** Get Location From.
 		@return Location that inventory was moved from
 	  */
-	public int getC_LocFrom_ID () 
+	public int getC_LocFrom_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_LocFrom_ID);
 		if (ii == null)
@@ -604,26 +602,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Location getC_LocTo() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_Name)
-			.getPO(getC_LocTo_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Location)MTable.get(getCtx(), org.compiere.model.I_C_Location.Table_ID)
+			.getPO(getC_LocTo_ID(), get_TrxName());
+	}
 
 	/** Set Location To.
-		@param C_LocTo_ID 
-		Location that inventory was moved to
-	  */
+		@param C_LocTo_ID Location that inventory was moved to
+	*/
 	public void setC_LocTo_ID (int C_LocTo_ID)
 	{
-		if (C_LocTo_ID < 1) 
+		if (C_LocTo_ID < 1)
 			set_Value (COLUMNNAME_C_LocTo_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_LocTo_ID, Integer.valueOf(C_LocTo_ID));
 	}
 
 	/** Get Location To.
 		@return Location that inventory was moved to
 	  */
-	public int getC_LocTo_ID () 
+	public int getC_LocTo_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_LocTo_ID);
 		if (ii == null)
@@ -632,9 +630,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Currency Type Key.
-		@param ConversionTypeValue 
-		Key value for the Currency Conversion Rate Type
-	  */
+		@param ConversionTypeValue Key value for the Currency Conversion Rate Type
+	*/
 	public void setConversionTypeValue (String ConversionTypeValue)
 	{
 		set_Value (COLUMNNAME_ConversionTypeValue, ConversionTypeValue);
@@ -643,32 +640,32 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Currency Type Key.
 		@return Key value for the Currency Conversion Rate Type
 	  */
-	public String getConversionTypeValue () 
+	public String getConversionTypeValue()
 	{
 		return (String)get_Value(COLUMNNAME_ConversionTypeValue);
 	}
 
 	public org.compiere.model.I_C_Period getC_Period() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_Name)
-			.getPO(getC_Period_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Period)MTable.get(getCtx(), org.compiere.model.I_C_Period.Table_ID)
+			.getPO(getC_Period_ID(), get_TrxName());
+	}
 
 	/** Set Period.
-		@param C_Period_ID 
-		Period of the Calendar
-	  */
+		@param C_Period_ID Period of the Calendar
+	*/
 	public void setC_Period_ID (int C_Period_ID)
 	{
-		if (C_Period_ID < 1) 
+		if (C_Period_ID < 1)
 			set_Value (COLUMNNAME_C_Period_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
 	}
 
 	/** Get Period.
 		@return Period of the Calendar
 	  */
-	public int getC_Period_ID () 
+	public int getC_Period_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Period_ID);
 		if (ii == null)
@@ -677,26 +674,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_Value (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -705,26 +702,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_C_SalesRegion getC_SalesRegion() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_Name)
-			.getPO(getC_SalesRegion_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_SalesRegion)MTable.get(getCtx(), org.compiere.model.I_C_SalesRegion.Table_ID)
+			.getPO(getC_SalesRegion_ID(), get_TrxName());
+	}
 
 	/** Set Sales Region.
-		@param C_SalesRegion_ID 
-		Sales coverage region
-	  */
+		@param C_SalesRegion_ID Sales coverage region
+	*/
 	public void setC_SalesRegion_ID (int C_SalesRegion_ID)
 	{
-		if (C_SalesRegion_ID < 1) 
+		if (C_SalesRegion_ID < 1)
 			set_Value (COLUMNNAME_C_SalesRegion_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_SalesRegion_ID, Integer.valueOf(C_SalesRegion_ID));
 	}
 
 	/** Get Sales Region.
 		@return Sales coverage region
 	  */
-	public int getC_SalesRegion_ID () 
+	public int getC_SalesRegion_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_SalesRegion_ID);
 		if (ii == null)
@@ -733,21 +730,20 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Sub Account.
-		@param C_SubAcct_ID 
-		Sub account for Element Value
-	  */
+		@param C_SubAcct_ID Sub account for Element Value
+	*/
 	public void setC_SubAcct_ID (int C_SubAcct_ID)
 	{
-		if (C_SubAcct_ID < 1) 
+		if (C_SubAcct_ID < 1)
 			set_Value (COLUMNNAME_C_SubAcct_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_SubAcct_ID, Integer.valueOf(C_SubAcct_ID));
 	}
 
 	/** Get Sub Account.
 		@return Sub account for Element Value
 	  */
-	public int getC_SubAcct_ID () 
+	public int getC_SubAcct_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_SubAcct_ID);
 		if (ii == null)
@@ -756,26 +752,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
-			.getPO(getC_UOM_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
 
 	/** Set UOM.
-		@param C_UOM_ID 
-		Unit of Measure
-	  */
+		@param C_UOM_ID Unit of Measure
+	*/
 	public void setC_UOM_ID (int C_UOM_ID)
 	{
-		if (C_UOM_ID < 1) 
+		if (C_UOM_ID < 1)
 			set_Value (COLUMNNAME_C_UOM_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
 	}
 
 	/** Get UOM.
 		@return Unit of Measure
 	  */
-	public int getC_UOM_ID () 
+	public int getC_UOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
 		if (ii == null)
@@ -784,9 +780,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Rate.
-		@param CurrencyRate 
-		Currency Conversion Rate
-	  */
+		@param CurrencyRate Currency Conversion Rate
+	*/
 	public void setCurrencyRate (BigDecimal CurrencyRate)
 	{
 		set_Value (COLUMNNAME_CurrencyRate, CurrencyRate);
@@ -795,7 +790,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Rate.
 		@return Currency Conversion Rate
 	  */
-	public BigDecimal getCurrencyRate () 
+	public BigDecimal getCurrencyRate()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrencyRate);
 		if (bd == null)
@@ -805,24 +800,25 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 
 	/** CurrencyRateType AD_Reference_ID=111 */
 	public static final int CURRENCYRATETYPE_AD_Reference_ID=111;
-	/** Spot = S */
-	public static final String CURRENCYRATETYPE_Spot = "S";
-	/** Period End = P */
-	public static final String CURRENCYRATETYPE_PeriodEnd = "P";
-	/** None = N */
-	public static final String CURRENCYRATETYPE_None = "N";
-	/** Fixed = F */
-	public static final String CURRENCYRATETYPE_Fixed = "F";
 	/** Average = A */
 	public static final String CURRENCYRATETYPE_Average = "A";
 	/** Company = C */
 	public static final String CURRENCYRATETYPE_Company = "C";
-	/** User Type = U */
-	public static final String CURRENCYRATETYPE_UserType = "U";
+	/** Fixed = F */
+	public static final String CURRENCYRATETYPE_Fixed = "F";
 	/** Manual Rate = M */
 	public static final String CURRENCYRATETYPE_ManualRate = "M";
+	/** None = N */
+	public static final String CURRENCYRATETYPE_None = "N";
+	/** Period End = P */
+	public static final String CURRENCYRATETYPE_PeriodEnd = "P";
+	/** Spot = S */
+	public static final String CURRENCYRATETYPE_Spot = "S";
+	/** User Type = U */
+	public static final String CURRENCYRATETYPE_UserType = "U";
 	/** Set CurrencyRateType.
-		@param CurrencyRateType CurrencyRateType	  */
+		@param CurrencyRateType CurrencyRateType
+	*/
 	public void setCurrencyRateType (String CurrencyRateType)
 	{
 
@@ -831,32 +827,32 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 
 	/** Get CurrencyRateType.
 		@return CurrencyRateType	  */
-	public String getCurrencyRateType () 
+	public String getCurrencyRateType()
 	{
 		return (String)get_Value(COLUMNNAME_CurrencyRateType);
 	}
 
 	public org.compiere.model.I_C_ValidCombination getC_ValidCombination() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ValidCombination)MTable.get(getCtx(), org.compiere.model.I_C_ValidCombination.Table_Name)
-			.getPO(getC_ValidCombination_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ValidCombination)MTable.get(getCtx(), org.compiere.model.I_C_ValidCombination.Table_ID)
+			.getPO(getC_ValidCombination_ID(), get_TrxName());
+	}
 
 	/** Set Combination.
-		@param C_ValidCombination_ID 
-		Valid Account Combination
-	  */
+		@param C_ValidCombination_ID Valid Account Combination
+	*/
 	public void setC_ValidCombination_ID (int C_ValidCombination_ID)
 	{
-		if (C_ValidCombination_ID < 1) 
+		if (C_ValidCombination_ID < 1)
 			set_Value (COLUMNNAME_C_ValidCombination_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ValidCombination_ID, Integer.valueOf(C_ValidCombination_ID));
 	}
 
 	/** Get Combination.
 		@return Valid Account Combination
 	  */
-	public int getC_ValidCombination_ID () 
+	public int getC_ValidCombination_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ValidCombination_ID);
 		if (ii == null)
@@ -865,9 +861,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Account Date.
-		@param DateAcct 
-		Accounting Date
-	  */
+		@param DateAcct Accounting Date
+	*/
 	public void setDateAcct (Timestamp DateAcct)
 	{
 		set_Value (COLUMNNAME_DateAcct, DateAcct);
@@ -876,15 +871,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Account Date.
 		@return Accounting Date
 	  */
-	public Timestamp getDateAcct () 
+	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -893,15 +887,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Document Type Name.
-		@param DocTypeName 
-		Name of the Document Type
-	  */
+		@param DocTypeName Name of the Document Type
+	*/
 	public void setDocTypeName (String DocTypeName)
 	{
 		set_Value (COLUMNNAME_DocTypeName, DocTypeName);
@@ -910,32 +903,32 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Document Type Name.
 		@return Name of the Document Type
 	  */
-	public String getDocTypeName () 
+	public String getDocTypeName()
 	{
 		return (String)get_Value(COLUMNNAME_DocTypeName);
 	}
 
 	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_Name)
-			.getPO(getGL_Budget_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Budget)MTable.get(getCtx(), org.compiere.model.I_GL_Budget.Table_ID)
+			.getPO(getGL_Budget_ID(), get_TrxName());
+	}
 
 	/** Set Budget.
-		@param GL_Budget_ID 
-		General Ledger Budget
-	  */
+		@param GL_Budget_ID General Ledger Budget
+	*/
 	public void setGL_Budget_ID (int GL_Budget_ID)
 	{
-		if (GL_Budget_ID < 1) 
+		if (GL_Budget_ID < 1)
 			set_Value (COLUMNNAME_GL_Budget_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_GL_Budget_ID, Integer.valueOf(GL_Budget_ID));
 	}
 
 	/** Get Budget.
 		@return General Ledger Budget
 	  */
-	public int getGL_Budget_ID () 
+	public int getGL_Budget_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Budget_ID);
 		if (ii == null)
@@ -944,26 +937,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_GL_Category getGL_Category() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_Name)
-			.getPO(getGL_Category_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Category)MTable.get(getCtx(), org.compiere.model.I_GL_Category.Table_ID)
+			.getPO(getGL_Category_ID(), get_TrxName());
+	}
 
 	/** Set GL Category.
-		@param GL_Category_ID 
-		General Ledger Category
-	  */
+		@param GL_Category_ID General Ledger Category
+	*/
 	public void setGL_Category_ID (int GL_Category_ID)
 	{
-		if (GL_Category_ID < 1) 
+		if (GL_Category_ID < 1)
 			set_Value (COLUMNNAME_GL_Category_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_GL_Category_ID, Integer.valueOf(GL_Category_ID));
 	}
 
 	/** Get GL Category.
 		@return General Ledger Category
 	  */
-	public int getGL_Category_ID () 
+	public int getGL_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Category_ID);
 		if (ii == null)
@@ -972,26 +965,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_GL_JournalBatch getGL_JournalBatch() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_JournalBatch)MTable.get(getCtx(), org.compiere.model.I_GL_JournalBatch.Table_Name)
-			.getPO(getGL_JournalBatch_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_JournalBatch)MTable.get(getCtx(), org.compiere.model.I_GL_JournalBatch.Table_ID)
+			.getPO(getGL_JournalBatch_ID(), get_TrxName());
+	}
 
 	/** Set Journal Batch.
-		@param GL_JournalBatch_ID 
-		General Ledger Journal Batch
-	  */
+		@param GL_JournalBatch_ID General Ledger Journal Batch
+	*/
 	public void setGL_JournalBatch_ID (int GL_JournalBatch_ID)
 	{
-		if (GL_JournalBatch_ID < 1) 
+		if (GL_JournalBatch_ID < 1)
 			set_Value (COLUMNNAME_GL_JournalBatch_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_GL_JournalBatch_ID, Integer.valueOf(GL_JournalBatch_ID));
 	}
 
 	/** Get Journal Batch.
 		@return General Ledger Journal Batch
 	  */
-	public int getGL_JournalBatch_ID () 
+	public int getGL_JournalBatch_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_JournalBatch_ID);
 		if (ii == null)
@@ -1000,26 +993,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_GL_Journal getGL_Journal() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_Journal)MTable.get(getCtx(), org.compiere.model.I_GL_Journal.Table_Name)
-			.getPO(getGL_Journal_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_Journal)MTable.get(getCtx(), org.compiere.model.I_GL_Journal.Table_ID)
+			.getPO(getGL_Journal_ID(), get_TrxName());
+	}
 
 	/** Set Journal.
-		@param GL_Journal_ID 
-		General Ledger Journal
-	  */
+		@param GL_Journal_ID General Ledger Journal
+	*/
 	public void setGL_Journal_ID (int GL_Journal_ID)
 	{
-		if (GL_Journal_ID < 1) 
+		if (GL_Journal_ID < 1)
 			set_Value (COLUMNNAME_GL_Journal_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_GL_Journal_ID, Integer.valueOf(GL_Journal_ID));
 	}
 
 	/** Get Journal.
 		@return General Ledger Journal
 	  */
-	public int getGL_Journal_ID () 
+	public int getGL_Journal_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_Journal_ID);
 		if (ii == null)
@@ -1028,26 +1021,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_GL_JournalLine getGL_JournalLine() throws RuntimeException
-    {
-		return (org.compiere.model.I_GL_JournalLine)MTable.get(getCtx(), org.compiere.model.I_GL_JournalLine.Table_Name)
-			.getPO(getGL_JournalLine_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_GL_JournalLine)MTable.get(getCtx(), org.compiere.model.I_GL_JournalLine.Table_ID)
+			.getPO(getGL_JournalLine_ID(), get_TrxName());
+	}
 
 	/** Set Journal Line.
-		@param GL_JournalLine_ID 
-		General Ledger Journal Line
-	  */
+		@param GL_JournalLine_ID General Ledger Journal Line
+	*/
 	public void setGL_JournalLine_ID (int GL_JournalLine_ID)
 	{
-		if (GL_JournalLine_ID < 1) 
+		if (GL_JournalLine_ID < 1)
 			set_Value (COLUMNNAME_GL_JournalLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_GL_JournalLine_ID, Integer.valueOf(GL_JournalLine_ID));
 	}
 
 	/** Get Journal Line.
 		@return General Ledger Journal Line
 	  */
-	public int getGL_JournalLine_ID () 
+	public int getGL_JournalLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_JournalLine_ID);
 		if (ii == null)
@@ -1056,9 +1049,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Import Error Message.
-		@param I_ErrorMsg 
-		Messages generated from import process
-	  */
+		@param I_ErrorMsg Messages generated from import process
+	*/
 	public void setI_ErrorMsg (String I_ErrorMsg)
 	{
 		set_Value (COLUMNNAME_I_ErrorMsg, I_ErrorMsg);
@@ -1067,24 +1059,25 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Import Error Message.
 		@return Messages generated from import process
 	  */
-	public String getI_ErrorMsg () 
+	public String getI_ErrorMsg()
 	{
 		return (String)get_Value(COLUMNNAME_I_ErrorMsg);
 	}
 
 	/** Set FA Journal.
-		@param I_FAJournal_ID FA Journal	  */
+		@param I_FAJournal_ID FA Journal
+	*/
 	public void setI_FAJournal_ID (int I_FAJournal_ID)
 	{
-		if (I_FAJournal_ID < 1) 
+		if (I_FAJournal_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_I_FAJournal_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_I_FAJournal_ID, Integer.valueOf(I_FAJournal_ID));
 	}
 
 	/** Get FA Journal.
 		@return FA Journal	  */
-	public int getI_FAJournal_ID () 
+	public int getI_FAJournal_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_I_FAJournal_ID);
 		if (ii == null)
@@ -1101,7 +1094,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
     }
 
 	/** Set I_FAJournal_UU.
-		@param I_FAJournal_UU I_FAJournal_UU	  */
+		@param I_FAJournal_UU I_FAJournal_UU
+	*/
 	public void setI_FAJournal_UU (String I_FAJournal_UU)
 	{
 		set_Value (COLUMNNAME_I_FAJournal_UU, I_FAJournal_UU);
@@ -1109,15 +1103,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 
 	/** Get I_FAJournal_UU.
 		@return I_FAJournal_UU	  */
-	public String getI_FAJournal_UU () 
+	public String getI_FAJournal_UU()
 	{
 		return (String)get_Value(COLUMNNAME_I_FAJournal_UU);
 	}
 
 	/** Set Imported.
-		@param I_IsImported 
-		Has this import been processed
-	  */
+		@param I_IsImported Has this import been processed
+	*/
 	public void setI_IsImported (boolean I_IsImported)
 	{
 		set_Value (COLUMNNAME_I_IsImported, Boolean.valueOf(I_IsImported));
@@ -1126,7 +1119,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Imported.
 		@return Has this import been processed
 	  */
-	public boolean isI_IsImported () 
+	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
 		if (oo != null) 
@@ -1139,9 +1132,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Depreciate.
-		@param IsDepreciated 
-		The asset will be depreciated
-	  */
+		@param IsDepreciated The asset will be depreciated
+	*/
 	public void setIsDepreciated (String IsDepreciated)
 	{
 		set_Value (COLUMNNAME_IsDepreciated, IsDepreciated);
@@ -1150,15 +1142,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Depreciate.
 		@return The asset will be depreciated
 	  */
-	public String getIsDepreciated () 
+	public String getIsDepreciated()
 	{
 		return (String)get_Value(COLUMNNAME_IsDepreciated);
 	}
 
 	/** Set ISO Currency Code.
-		@param ISO_Code 
-		Three letter ISO 4217 Code of the Currency
-	  */
+		@param ISO_Code Three letter ISO 4217 Code of the Currency
+	*/
 	public void setISO_Code (String ISO_Code)
 	{
 		set_Value (COLUMNNAME_ISO_Code, ISO_Code);
@@ -1167,15 +1158,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get ISO Currency Code.
 		@return Three letter ISO 4217 Code of the Currency
 	  */
-	public String getISO_Code () 
+	public String getISO_Code()
 	{
 		return (String)get_Value(COLUMNNAME_ISO_Code);
 	}
 
 	/** Set Journal Document No.
-		@param JournalDocumentNo 
-		Document number of the Journal
-	  */
+		@param JournalDocumentNo Document number of the Journal
+	*/
 	public void setJournalDocumentNo (String JournalDocumentNo)
 	{
 		set_Value (COLUMNNAME_JournalDocumentNo, JournalDocumentNo);
@@ -1184,15 +1174,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Journal Document No.
 		@return Document number of the Journal
 	  */
-	public String getJournalDocumentNo () 
+	public String getJournalDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_JournalDocumentNo);
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -1201,7 +1190,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -1210,26 +1199,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
-			.getPO(getM_Product_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -1238,9 +1227,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Trx Org Key.
-		@param OrgTrxValue 
-		Key of the Transaction Organization
-	  */
+		@param OrgTrxValue Key of the Transaction Organization
+	*/
 	public void setOrgTrxValue (String OrgTrxValue)
 	{
 		set_Value (COLUMNNAME_OrgTrxValue, OrgTrxValue);
@@ -1249,15 +1237,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Trx Org Key.
 		@return Key of the Transaction Organization
 	  */
-	public String getOrgTrxValue () 
+	public String getOrgTrxValue()
 	{
 		return (String)get_Value(COLUMNNAME_OrgTrxValue);
 	}
 
 	/** Set Org Key.
-		@param OrgValue 
-		Key of the Organization
-	  */
+		@param OrgValue Key of the Organization
+	*/
 	public void setOrgValue (String OrgValue)
 	{
 		set_Value (COLUMNNAME_OrgValue, OrgValue);
@@ -1266,7 +1253,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Org Key.
 		@return Key of the Organization
 	  */
-	public String getOrgValue () 
+	public String getOrgValue()
 	{
 		return (String)get_Value(COLUMNNAME_OrgValue);
 	}
@@ -1279,14 +1266,13 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	public static final String POSTINGTYPE_Budget = "B";
 	/** Commitment = E */
 	public static final String POSTINGTYPE_Commitment = "E";
-	/** Statistical = S */
-	public static final String POSTINGTYPE_Statistical = "S";
 	/** Reservation = R */
 	public static final String POSTINGTYPE_Reservation = "R";
+	/** Statistical = S */
+	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
-		@param PostingType 
-		The type of posted amount for the transaction
-	  */
+		@param PostingType The type of posted amount for the transaction
+	*/
 	public void setPostingType (String PostingType)
 	{
 
@@ -1296,15 +1282,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get PostingType.
 		@return The type of posted amount for the transaction
 	  */
-	public String getPostingType () 
+	public String getPostingType()
 	{
 		return (String)get_Value(COLUMNNAME_PostingType);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -1313,7 +1298,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -1326,7 +1311,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -1334,7 +1320,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -1347,9 +1333,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set Product Key.
-		@param ProductValue 
-		Key of the Product
-	  */
+		@param ProductValue Key of the Product
+	*/
 	public void setProductValue (String ProductValue)
 	{
 		set_Value (COLUMNNAME_ProductValue, ProductValue);
@@ -1358,15 +1343,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Product Key.
 		@return Key of the Product
 	  */
-	public String getProductValue () 
+	public String getProductValue()
 	{
 		return (String)get_Value(COLUMNNAME_ProductValue);
 	}
 
 	/** Set Project Key.
-		@param ProjectValue 
-		Key of the Project
-	  */
+		@param ProjectValue Key of the Project
+	*/
 	public void setProjectValue (String ProjectValue)
 	{
 		set_Value (COLUMNNAME_ProjectValue, ProjectValue);
@@ -1375,15 +1359,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Project Key.
 		@return Key of the Project
 	  */
-	public String getProjectValue () 
+	public String getProjectValue()
 	{
 		return (String)get_Value(COLUMNNAME_ProjectValue);
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -1392,7 +1375,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -1401,9 +1384,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set SKU.
-		@param SKU 
-		Stock Keeping Unit
-	  */
+		@param SKU Stock Keeping Unit
+	*/
 	public void setSKU (String SKU)
 	{
 		set_Value (COLUMNNAME_SKU, SKU);
@@ -1412,15 +1394,14 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get SKU.
 		@return Stock Keeping Unit
 	  */
-	public String getSKU () 
+	public String getSKU()
 	{
 		return (String)get_Value(COLUMNNAME_SKU);
 	}
 
 	/** Set UPC/EAN.
-		@param UPC 
-		Bar Code (Universal Product Code or its superset European Article Number)
-	  */
+		@param UPC Bar Code (Universal Product Code or its superset European Article Number)
+	*/
 	public void setUPC (String UPC)
 	{
 		set_Value (COLUMNNAME_UPC, UPC);
@@ -1429,32 +1410,32 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	/** Get UPC/EAN.
 		@return Bar Code (Universal Product Code or its superset European Article Number)
 	  */
-	public String getUPC () 
+	public String getUPC()
 	{
 		return (String)get_Value(COLUMNNAME_UPC);
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser1() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser1_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser1_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 1.
-		@param User1_ID 
-		User defined list element #1
-	  */
+		@param User1_ID User defined list element #1
+	*/
 	public void setUser1_ID (int User1_ID)
 	{
-		if (User1_ID < 1) 
+		if (User1_ID < 1)
 			set_Value (COLUMNNAME_User1_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_User1_ID, Integer.valueOf(User1_ID));
 	}
 
 	/** Get User Element List 1.
 		@return User defined list element #1
 	  */
-	public int getUser1_ID () 
+	public int getUser1_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_User1_ID);
 		if (ii == null)
@@ -1463,26 +1444,26 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
-			.getPO(getUser2_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getUser2_ID(), get_TrxName());
+	}
 
 	/** Set User Element List 2.
-		@param User2_ID 
-		User defined list element #2
-	  */
+		@param User2_ID User defined list element #2
+	*/
 	public void setUser2_ID (int User2_ID)
 	{
-		if (User2_ID < 1) 
+		if (User2_ID < 1)
 			set_Value (COLUMNNAME_User2_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_User2_ID, Integer.valueOf(User2_ID));
 	}
 
 	/** Get User Element List 2.
 		@return User defined list element #2
 	  */
-	public int getUser2_ID () 
+	public int getUser2_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_User2_ID);
 		if (ii == null)
@@ -1491,21 +1472,20 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set User Column 1.
-		@param UserElement1_ID 
-		User defined accounting Element
-	  */
+		@param UserElement1_ID User defined accounting Element
+	*/
 	public void setUserElement1_ID (int UserElement1_ID)
 	{
-		if (UserElement1_ID < 1) 
+		if (UserElement1_ID < 1)
 			set_Value (COLUMNNAME_UserElement1_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_UserElement1_ID, Integer.valueOf(UserElement1_ID));
 	}
 
 	/** Get User Column 1.
 		@return User defined accounting Element
 	  */
-	public int getUserElement1_ID () 
+	public int getUserElement1_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_UserElement1_ID);
 		if (ii == null)
@@ -1514,21 +1494,20 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	}
 
 	/** Set User Column 2.
-		@param UserElement2_ID 
-		User defined accounting Element
-	  */
+		@param UserElement2_ID User defined accounting Element
+	*/
 	public void setUserElement2_ID (int UserElement2_ID)
 	{
-		if (UserElement2_ID < 1) 
+		if (UserElement2_ID < 1)
 			set_Value (COLUMNNAME_UserElement2_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_UserElement2_ID, Integer.valueOf(UserElement2_ID));
 	}
 
 	/** Get User Column 2.
 		@return User defined accounting Element
 	  */
-	public int getUserElement2_ID () 
+	public int getUserElement2_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_UserElement2_ID);
 		if (ii == null)

@@ -24,19 +24,35 @@ import org.compiere.util.Env;
 
 /** Generated Model for U_WebMenu
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="U_WebMenu")
 public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_U_WebMenu (Properties ctx, int U_WebMenu_ID, String trxName)
     {
       super (ctx, U_WebMenu_ID, trxName);
+      /** if (U_WebMenu_ID == 0)
+        {
+			setHasSubMenu (false);
+// 'N'
+			setMenuLink (null);
+			setModule (null);
+			setName (null);
+			setU_WebMenu_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_U_WebMenu (Properties ctx, int U_WebMenu_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, U_WebMenu_ID, trxName, virtualColumns);
       /** if (U_WebMenu_ID == 0)
         {
 			setHasSubMenu (false);
@@ -71,13 +87,14 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_U_WebMenu[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_U_WebMenu[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Category.
-		@param Category Category	  */
+		@param Category Category
+	*/
 	public void setCategory (String Category)
 	{
 		set_Value (COLUMNNAME_Category, Category);
@@ -85,15 +102,14 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 
 	/** Get Category.
 		@return Category	  */
-	public String getCategory () 
+	public String getCategory()
 	{
 		return (String)get_Value(COLUMNNAME_Category);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -102,13 +118,14 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Has SubMenu.
-		@param HasSubMenu Has SubMenu	  */
+		@param HasSubMenu Has SubMenu
+	*/
 	public void setHasSubMenu (boolean HasSubMenu)
 	{
 		set_Value (COLUMNNAME_HasSubMenu, Boolean.valueOf(HasSubMenu));
@@ -116,7 +133,7 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 
 	/** Get Has SubMenu.
 		@return Has SubMenu	  */
-	public boolean isHasSubMenu () 
+	public boolean isHasSubMenu()
 	{
 		Object oo = get_Value(COLUMNNAME_HasSubMenu);
 		if (oo != null) 
@@ -129,9 +146,8 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -140,13 +156,14 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Image Link.
-		@param ImageLink Image Link	  */
+		@param ImageLink Image Link
+	*/
 	public void setImageLink (String ImageLink)
 	{
 		set_Value (COLUMNNAME_ImageLink, ImageLink);
@@ -154,13 +171,14 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 
 	/** Get Image Link.
 		@return Image Link	  */
-	public String getImageLink () 
+	public String getImageLink()
 	{
 		return (String)get_Value(COLUMNNAME_ImageLink);
 	}
 
 	/** Set Menu Link.
-		@param MenuLink Menu Link	  */
+		@param MenuLink Menu Link
+	*/
 	public void setMenuLink (String MenuLink)
 	{
 		set_Value (COLUMNNAME_MenuLink, MenuLink);
@@ -168,13 +186,14 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 
 	/** Get Menu Link.
 		@return Menu Link	  */
-	public String getMenuLink () 
+	public String getMenuLink()
 	{
 		return (String)get_Value(COLUMNNAME_MenuLink);
 	}
 
 	/** Set Module.
-		@param Module Module	  */
+		@param Module Module
+	*/
 	public void setModule (String Module)
 	{
 		set_Value (COLUMNNAME_Module, Module);
@@ -182,15 +201,14 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 
 	/** Get Module.
 		@return Module	  */
-	public String getModule () 
+	public String getModule()
 	{
 		return (String)get_Value(COLUMNNAME_Module);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -199,29 +217,31 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	public org.compiere.model.I_U_WebMenu getParentMenu() throws RuntimeException
-    {
-		return (org.compiere.model.I_U_WebMenu)MTable.get(getCtx(), org.compiere.model.I_U_WebMenu.Table_Name)
-			.getPO(getParentMenu_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_U_WebMenu)MTable.get(getCtx(), org.compiere.model.I_U_WebMenu.Table_ID)
+			.getPO(getParentMenu_ID(), get_TrxName());
+	}
 
 	/** Set Parent Menu.
-		@param ParentMenu_ID Parent Menu	  */
+		@param ParentMenu_ID Parent Menu
+	*/
 	public void setParentMenu_ID (int ParentMenu_ID)
 	{
-		if (ParentMenu_ID < 1) 
+		if (ParentMenu_ID < 1)
 			set_Value (COLUMNNAME_ParentMenu_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_ParentMenu_ID, Integer.valueOf(ParentMenu_ID));
 	}
 
 	/** Get Parent Menu.
 		@return Parent Menu	  */
-	public int getParentMenu_ID () 
+	public int getParentMenu_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ParentMenu_ID);
 		if (ii == null)
@@ -230,7 +250,8 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 	}
 
 	/** Set Position.
-		@param Position Position	  */
+		@param Position Position
+	*/
 	public void setPosition (String Position)
 	{
 		set_Value (COLUMNNAME_Position, Position);
@@ -238,13 +259,14 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 
 	/** Get Position.
 		@return Position	  */
-	public String getPosition () 
+	public String getPosition()
 	{
 		return (String)get_Value(COLUMNNAME_Position);
 	}
 
 	/** Set Sequence.
-		@param Sequence Sequence	  */
+		@param Sequence Sequence
+	*/
 	public void setSequence (BigDecimal Sequence)
 	{
 		set_Value (COLUMNNAME_Sequence, Sequence);
@@ -252,7 +274,7 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 
 	/** Get Sequence.
 		@return Sequence	  */
-	public BigDecimal getSequence () 
+	public BigDecimal getSequence()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Sequence);
 		if (bd == null)
@@ -261,18 +283,19 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 	}
 
 	/** Set Web Menu.
-		@param U_WebMenu_ID Web Menu	  */
+		@param U_WebMenu_ID Web Menu
+	*/
 	public void setU_WebMenu_ID (int U_WebMenu_ID)
 	{
-		if (U_WebMenu_ID < 1) 
+		if (U_WebMenu_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_U_WebMenu_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_U_WebMenu_ID, Integer.valueOf(U_WebMenu_ID));
 	}
 
 	/** Get Web Menu.
 		@return Web Menu	  */
-	public int getU_WebMenu_ID () 
+	public int getU_WebMenu_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_U_WebMenu_ID);
 		if (ii == null)
@@ -281,7 +304,8 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 	}
 
 	/** Set U_WebMenu_UU.
-		@param U_WebMenu_UU U_WebMenu_UU	  */
+		@param U_WebMenu_UU U_WebMenu_UU
+	*/
 	public void setU_WebMenu_UU (String U_WebMenu_UU)
 	{
 		set_Value (COLUMNNAME_U_WebMenu_UU, U_WebMenu_UU);
@@ -289,7 +313,7 @@ public class X_U_WebMenu extends PO implements I_U_WebMenu, I_Persistent
 
 	/** Get U_WebMenu_UU.
 		@return U_WebMenu_UU	  */
-	public String getU_WebMenu_UU () 
+	public String getU_WebMenu_UU()
 	{
 		return (String)get_Value(COLUMNNAME_U_WebMenu_UU);
 	}

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ImpFormat_Row
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 9
  */
 public interface I_AD_ImpFormat_Row 
 {
@@ -208,6 +208,19 @@ public interface I_AD_ImpFormat_Row
 
 	/** Get End No	  */
 	public int getEndNo();
+
+    /** Column name ImportPrefix */
+    public static final String COLUMNNAME_ImportPrefix = "ImportPrefix";
+
+	/** Set Import prefix.
+	  * This prefix will be added in front of import string if they are not empty
+	  */
+	public void setImportPrefix (String ImportPrefix);
+
+	/** Get Import prefix.
+	  * This prefix will be added in front of import string if they are not empty
+	  */
+	public String getImportPrefix();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

@@ -15,9 +15,12 @@ package org.adempiere.webui.action;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.adempiere.base.IServiceHolder;
 import org.adempiere.base.Service;
+import org.adempiere.webui.theme.ITheme;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.CCache;
 import org.zkoss.image.AImage;
 
@@ -32,12 +35,17 @@ public class Actions {
 	private static CCache<String, IServiceHolder<IAction>> trackerCache = new CCache<String, IServiceHolder<IAction>>(null, "ActionsServiceTracker", 5, false);
 	private static CCache<String, AImage> imageCache = new CCache<String, AImage>(null, "ActionsImages",5, false);
 	
+	/**
+	 * 
+	 * @param actionId
+	 * @return {@link IServiceHolder}
+	 */
 	public static IServiceHolder<IAction> getAction(String actionId) {
 		IServiceHolder<IAction> action = null;
 		synchronized (trackerCache) {
 			action = trackerCache.get(actionId);
 		} 
-		if (action != null)
+		if (action != null && action.getService() != null)
 			return action;
 		
 		action = Service.locator().locate(IAction.class, actionId, null);
@@ -49,6 +57,11 @@ public class Actions {
 		return action;
 	}
 	
+	/**
+	 * 
+	 * @param actionId
+	 * @return {@link AImage}
+	 */
 	public static AImage getActionImage(String actionId) {
 		AImage aImage = null;
 		synchronized (imageCache) {
@@ -57,21 +70,66 @@ public class Actions {
 		if (aImage != null)
 			return aImage;
 
-		IServiceHolder<IAction> action = Service.locator().locate(IAction.class, actionId, null);
+		String imageName = actionId+ "24.png";
+		IServiceHolder<IAction> action = getAction(actionId);
 		if (action.getService() != null) {
-			String path = ACTION_IMAGES_PATH + actionId + "24.png";
-			InputStream inputStream = action.getService().getClass().getClassLoader().getResourceAsStream(path);
+			InputStream inputStream = null;
+			//try current theme
+			String themePath = ThemeManager.getThemeResource(imageName);
+			URL themeURL = ThemeManager.class.getResource(ThemeManager.toClassPathResourcePath(themePath));
+			if (themeURL != null) {
+				try {
+					inputStream = themeURL.openStream();
+				} catch (IOException e) {
+				}
+			}
+			//try plugin theme resource
+			if (inputStream == null) {				
+				String path = ACTION_IMAGES_PATH + ThemeManager.getTheme() + "/" + imageName;
+				inputStream = action.getService().getClass().getClassLoader().getResourceAsStream(path);
+			}
+			//try plugin default theme resource
+			if (inputStream == null) {				
+				if (!(ITheme.ZK_THEME_DEFAULT.equals(ThemeManager.getTheme()))) {
+					String path = ACTION_IMAGES_PATH + ITheme.ZK_THEME_DEFAULT + "/" + imageName;
+					inputStream = action.getService().getClass().getClassLoader().getResourceAsStream(path);
+				}
+			}
+			//fall back to plugin resource
+			if (inputStream == null) {				
+				String path = ACTION_IMAGES_PATH + imageName;
+				inputStream = action.getService().getClass().getClassLoader().getResourceAsStream(path);
+			}
 			if (inputStream != null) {
 				try {
 					aImage = new AImage(actionId, inputStream);
 				} catch (IOException e) {
+				} finally {
+					try {
+						inputStream.close();
+					} catch (IOException e) {}
 				}
 			}
-			if (aImage != null)
+			if (aImage != null) {
 				synchronized (imageCache) {
 					imageCache.put(actionId, aImage);
 				}
+			}
 		}
 		return aImage;
+	}
+	
+	/**
+	 * 
+	 * @param actionId
+	 * @return font icon sclass
+	 */
+	public static String getActionIconSclass(String actionId) {
+		IServiceHolder<IAction> action = getAction(actionId);
+		IAction service = action.getService();
+		if (service != null) {
+			return service.getIconSclass();
+		}
+		return "";
 	}
 }

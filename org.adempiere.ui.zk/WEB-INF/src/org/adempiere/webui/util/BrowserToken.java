@@ -76,7 +76,7 @@ public final class BrowserToken {
 
 	/**
 	 * load stored client side token for auto login
-	 * @param cmpid
+	 * @param component
 	 */
 	public static void load(Component component) {
 		//remember me

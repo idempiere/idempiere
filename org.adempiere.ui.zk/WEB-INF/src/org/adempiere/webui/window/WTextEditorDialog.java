@@ -61,6 +61,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	private CKeditor editor;
 	private Label status;
 	private Tab htmlTab;
+	private boolean isShowHTMLTab = true;
 
 	/**
 	 * 
@@ -68,17 +69,30 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	 * @param text
 	 * @param editable
 	 * @param maxSize
-	 * @param isHtml - select the html tab at start
+	 * @param IsHtml - select the html tab at start
 	 */
 	public WTextEditorDialog(String title, String text, boolean editable, int maxSize, boolean IsHtml) {
+		this(title, text, editable, maxSize, IsHtml, true);
+	}
+	
+	/**
+	 * @param title
+	 * @param text
+	 * @param editable
+	 * @param maxSize
+	 * @param IsHtml - select the html tab at start
+	 * @param IsShowHTMLTab - Is to shown HTML tab
+	 */
+	public WTextEditorDialog(String title, String text, boolean editable, int maxSize,boolean IsHtml, boolean IsShowHTMLTab) {
 		super();
 		setTitle(title);
 		this.editable = editable;
 		this.maxSize = maxSize;
 		this.text = text;
+		this.isShowHTMLTab = IsShowHTMLTab;
 		
 		init();
-		if (IsHtml)
+		if (IsHtml && IsShowHTMLTab)
 			tabbox.setSelectedTab(htmlTab);
 	}
 
@@ -118,29 +132,31 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		tabPanels.appendChild(tabPanel);
 		textBox = new Textbox(text);
 		textBox.setCols(80);
-		textBox.setRows(30);
+		textBox.setMultiline(true);
 		ZKUpdateUtil.setHeight(textBox, "100%");
 		textBox.setEnabled(editable);
 		ZKUpdateUtil.setHflex(textBox, "1");
 		ZKUpdateUtil.setVflex(textBox, "1");
 		tabPanel.appendChild(textBox);
 		
-		htmlTab = new Tab("HTML");
-		tabs.appendChild(htmlTab);
-		
-		tabPanel = new Tabpanel();
-		tabPanels.appendChild(tabPanel);
-		if (editable) {
-			createEditor(tabPanel);
-		} else {
-			Div div = new Div();
+		if (isShowHTMLTab) {
+			htmlTab = new Tab("HTML");
+			tabs.appendChild(htmlTab);
+
+			tabPanel = new Tabpanel();
+			tabPanels.appendChild(tabPanel);
+			if (editable) {
+				createEditor(tabPanel);
+			} else {
+				Div div = new Div();
 			ZKUpdateUtil.setHeight(div, "100%");
 			ZKUpdateUtil.setWidth(div, "100%");
-			div.setStyle("overflow: auto; border: 1px solid");
-			tabPanel.appendChild(div);
-			Html html = new Html();
-			div.appendChild(html);
-			html.setContent(text);
+				div.setStyle("overflow: auto; border: 1px solid");
+				tabPanel.appendChild(div);
+				Html html = new Html();
+				div.appendChild(html);
+				html.setContent(text);
+			}
 		}
 		
 		vbox.appendChild(new Separator());
@@ -160,7 +176,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 			
 			status.setStyle("margin-top:10px;");
 			textBox.addEventListener(Events.ON_CHANGE, this);
-			if (editor != null)
+			if (isShowHTMLTab && editor != null)
 				editor.addEventListener(Events.ON_CHANGE, this);
 		}		
 		
@@ -169,6 +185,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		setClosable(true);
 		setSizable(true);
 		setMaximizable(true);
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}
 
 	private void createEditor(org.zkoss.zul.Tabpanel tabPanel) {		
@@ -197,8 +214,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	 */
 	public void onEvent(Event event) throws Exception {
 		if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL)) {
-			cancelled = true;
-			detach();
+			onCancel();
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			if (editable) {
 				if (tabbox.getSelectedIndex() == 0) {
@@ -232,6 +248,11 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 				updateStatus(editor.getValue().length());
 			}
 		}
+	}
+
+	private void onCancel() {
+		cancelled = true;
+		detach();
 	}
 	
 	private void updateStatus(int newLength) {
@@ -273,7 +294,11 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 				.and(Sanitizers.LINKS)
 				.and(Sanitizers.STYLES)
 				.and(Sanitizers.TABLES);
-		return policy.sanitize(untrustedHTML);
-	}
 
+		String ret = policy.sanitize(untrustedHTML);
+		ret = ret.replaceAll("&#35;", "#");
+		ret = ret.replaceAll("&#64;", "@");
+
+		return ret;
+	}
 }

@@ -147,6 +147,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
     protected void init()
     {
     	layout = new Hlayout();
+    	layout.setHflex("1");
     	layout.setValign("middle");
         lblSearch = new Label();
         lblSearch.setValue(Msg.getMsg(Env.getCtx(),"TreeSearch").replaceAll("&", "") + ":");
@@ -275,7 +276,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 
 	protected void addTreeItem(Treeitem treeItem)
     {
-        StringBuilder key = new StringBuilder(getLabel(treeItem)).append(".").append(treeItem.getAttribute("menu.type"));
+        StringBuilder key = new StringBuilder(getLabel(treeItem)).append(".").append(treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE));
         treeNodeItemMap.put(key.toString(), treeItem);
     }
 
@@ -330,7 +331,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         	{
         		Treeitem treeItem = (Treeitem) value;
         		treeValues[i] = getLabel(treeItem);
-        		treeTypes[i]= String.valueOf(treeItem.getAttribute("menu.type")); 
+        		treeTypes[i]= String.valueOf(treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE)); 
         		treeDescription[i] = treeItem.getTooltiptext();
         		treeImages[i] = getImage(treeItem);
         		if ((treeImages[i] == null || treeImages[i].trim().length() == 0) && isFolder(treeItem))

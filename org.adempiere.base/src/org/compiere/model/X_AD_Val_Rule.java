@@ -23,14 +23,15 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Val_Rule
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="AD_Val_Rule")
 public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Val_Rule (Properties ctx, int AD_Val_Rule_ID, String trxName)
@@ -40,7 +41,21 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
         {
 			setAD_Val_Rule_ID (0);
 			setEntityType (null);
-// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Val_Rule (Properties ctx, int AD_Val_Rule_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Val_Rule_ID, trxName, virtualColumns);
+      /** if (AD_Val_Rule_ID == 0)
+        {
+			setAD_Val_Rule_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
 			setType (null);
         } */
@@ -69,27 +84,26 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_AD_Val_Rule[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_AD_Val_Rule[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Dynamic Validation.
-		@param AD_Val_Rule_ID 
-		Dynamic Validation Rule
-	  */
+		@param AD_Val_Rule_ID Dynamic Validation Rule
+	*/
 	public void setAD_Val_Rule_ID (int AD_Val_Rule_ID)
 	{
-		if (AD_Val_Rule_ID < 1) 
+		if (AD_Val_Rule_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Val_Rule_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Val_Rule_ID, Integer.valueOf(AD_Val_Rule_ID));
 	}
 
 	/** Get Dynamic Validation.
 		@return Dynamic Validation Rule
 	  */
-	public int getAD_Val_Rule_ID () 
+	public int getAD_Val_Rule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Val_Rule_ID);
 		if (ii == null)
@@ -98,7 +112,8 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 	}
 
 	/** Set AD_Val_Rule_UU.
-		@param AD_Val_Rule_UU AD_Val_Rule_UU	  */
+		@param AD_Val_Rule_UU AD_Val_Rule_UU
+	*/
 	public void setAD_Val_Rule_UU (String AD_Val_Rule_UU)
 	{
 		set_Value (COLUMNNAME_AD_Val_Rule_UU, AD_Val_Rule_UU);
@@ -106,15 +121,14 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 
 	/** Get AD_Val_Rule_UU.
 		@return AD_Val_Rule_UU	  */
-	public String getAD_Val_Rule_UU () 
+	public String getAD_Val_Rule_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Val_Rule_UU);
 	}
 
 	/** Set Validation code.
-		@param Code 
-		Validation Code
-	  */
+		@param Code Validation Code
+	*/
 	public void setCode (String Code)
 	{
 		set_Value (COLUMNNAME_Code, Code);
@@ -123,15 +137,14 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 	/** Get Validation code.
 		@return Validation Code
 	  */
-	public String getCode () 
+	public String getCode()
 	{
 		return (String)get_Value(COLUMNNAME_Code);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -140,7 +153,7 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -148,9 +161,8 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -160,15 +172,14 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -177,7 +188,7 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -192,16 +203,15 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 
 	/** Type AD_Reference_ID=101 */
 	public static final int TYPE_AD_Reference_ID=101;
-	/** SQL = S */
-	public static final String TYPE_SQL = "S";
-	/** Java Language = J */
-	public static final String TYPE_JavaLanguage = "J";
 	/** Java Script = E */
 	public static final String TYPE_JavaScript = "E";
+	/** Java Language = J */
+	public static final String TYPE_JavaLanguage = "J";
+	/** SQL = S */
+	public static final String TYPE_SQL = "S";
 	/** Set Type.
-		@param Type 
-		Type of Validation (SQL, Java Script, Java Language)
-	  */
+		@param Type Type of Validation (SQL, Java Script, Java Language)
+	*/
 	public void setType (String Type)
 	{
 
@@ -211,7 +221,7 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 	/** Get Type.
 		@return Type of Validation (SQL, Java Script, Java Language)
 	  */
-	public String getType () 
+	public String getType()
 	{
 		return (String)get_Value(COLUMNNAME_Type);
 	}

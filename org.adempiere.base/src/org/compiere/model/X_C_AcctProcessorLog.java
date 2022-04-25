@@ -22,19 +22,32 @@ import java.util.Properties;
 
 /** Generated Model for C_AcctProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_AcctProcessorLog")
 public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_AcctProcessorLog (Properties ctx, int C_AcctProcessorLog_ID, String trxName)
     {
       super (ctx, C_AcctProcessorLog_ID, trxName);
+      /** if (C_AcctProcessorLog_ID == 0)
+        {
+			setC_AcctProcessor_ID (0);
+			setC_AcctProcessorLog_ID (0);
+			setIsError (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AcctProcessorLog (Properties ctx, int C_AcctProcessorLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AcctProcessorLog_ID, trxName, virtualColumns);
       /** if (C_AcctProcessorLog_ID == 0)
         {
 			setC_AcctProcessor_ID (0);
@@ -66,15 +79,14 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_AcctProcessorLog[")
+      StringBuilder sb = new StringBuilder ("X_C_AcctProcessorLog[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	/** Set Binary Data.
-		@param BinaryData 
-		Binary Data
-	  */
+		@param BinaryData Binary Data
+	*/
 	public void setBinaryData (byte[] BinaryData)
 	{
 		set_Value (COLUMNNAME_BinaryData, BinaryData);
@@ -83,32 +95,32 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	/** Get Binary Data.
 		@return Binary Data
 	  */
-	public byte[] getBinaryData () 
+	public byte[] getBinaryData()
 	{
 		return (byte[])get_Value(COLUMNNAME_BinaryData);
 	}
 
 	public org.compiere.model.I_C_AcctProcessor getC_AcctProcessor() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctProcessor)MTable.get(getCtx(), org.compiere.model.I_C_AcctProcessor.Table_Name)
-			.getPO(getC_AcctProcessor_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctProcessor)MTable.get(getCtx(), org.compiere.model.I_C_AcctProcessor.Table_ID)
+			.getPO(getC_AcctProcessor_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Processor.
-		@param C_AcctProcessor_ID 
-		Accounting Processor/Server Parameters
-	  */
+		@param C_AcctProcessor_ID Accounting Processor/Server Parameters
+	*/
 	public void setC_AcctProcessor_ID (int C_AcctProcessor_ID)
 	{
-		if (C_AcctProcessor_ID < 1) 
+		if (C_AcctProcessor_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctProcessor_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctProcessor_ID, Integer.valueOf(C_AcctProcessor_ID));
 	}
 
 	/** Get Accounting Processor.
 		@return Accounting Processor/Server Parameters
 	  */
-	public int getC_AcctProcessor_ID () 
+	public int getC_AcctProcessor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctProcessor_ID);
 		if (ii == null)
@@ -117,21 +129,20 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	}
 
 	/** Set Accounting Processor Log.
-		@param C_AcctProcessorLog_ID 
-		Result of the execution of the Accounting Processor
-	  */
+		@param C_AcctProcessorLog_ID Result of the execution of the Accounting Processor
+	*/
 	public void setC_AcctProcessorLog_ID (int C_AcctProcessorLog_ID)
 	{
-		if (C_AcctProcessorLog_ID < 1) 
+		if (C_AcctProcessorLog_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctProcessorLog_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctProcessorLog_ID, Integer.valueOf(C_AcctProcessorLog_ID));
 	}
 
 	/** Get Accounting Processor Log.
 		@return Result of the execution of the Accounting Processor
 	  */
-	public int getC_AcctProcessorLog_ID () 
+	public int getC_AcctProcessorLog_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctProcessorLog_ID);
 		if (ii == null)
@@ -140,7 +151,8 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	}
 
 	/** Set C_AcctProcessorLog_UU.
-		@param C_AcctProcessorLog_UU C_AcctProcessorLog_UU	  */
+		@param C_AcctProcessorLog_UU C_AcctProcessorLog_UU
+	*/
 	public void setC_AcctProcessorLog_UU (String C_AcctProcessorLog_UU)
 	{
 		set_Value (COLUMNNAME_C_AcctProcessorLog_UU, C_AcctProcessorLog_UU);
@@ -148,15 +160,14 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 
 	/** Get C_AcctProcessorLog_UU.
 		@return C_AcctProcessorLog_UU	  */
-	public String getC_AcctProcessorLog_UU () 
+	public String getC_AcctProcessorLog_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_AcctProcessorLog_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -165,15 +176,14 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Error.
-		@param IsError 
-		An Error occurred in the execution
-	  */
+		@param IsError An Error occurred in the execution
+	*/
 	public void setIsError (boolean IsError)
 	{
 		set_Value (COLUMNNAME_IsError, Boolean.valueOf(IsError));
@@ -182,7 +192,7 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	/** Get Error.
 		@return An Error occurred in the execution
 	  */
-	public boolean isError () 
+	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
 		if (oo != null) 
@@ -195,9 +205,8 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	}
 
 	/** Set Reference.
-		@param Reference 
-		Reference for this record
-	  */
+		@param Reference Reference for this record
+	*/
 	public void setReference (String Reference)
 	{
 		set_Value (COLUMNNAME_Reference, Reference);
@@ -206,15 +215,14 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	/** Get Reference.
 		@return Reference for this record
 	  */
-	public String getReference () 
+	public String getReference()
 	{
 		return (String)get_Value(COLUMNNAME_Reference);
 	}
 
 	/** Set Summary.
-		@param Summary 
-		Textual summary of this request
-	  */
+		@param Summary Textual summary of this request
+	*/
 	public void setSummary (String Summary)
 	{
 		set_Value (COLUMNNAME_Summary, Summary);
@@ -223,15 +231,14 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	/** Get Summary.
 		@return Textual summary of this request
 	  */
-	public String getSummary () 
+	public String getSummary()
 	{
 		return (String)get_Value(COLUMNNAME_Summary);
 	}
 
 	/** Set Text Message.
-		@param TextMsg 
-		Text Message
-	  */
+		@param TextMsg Text Message
+	*/
 	public void setTextMsg (String TextMsg)
 	{
 		set_Value (COLUMNNAME_TextMsg, TextMsg);
@@ -240,7 +247,7 @@ public class X_C_AcctProcessorLog extends PO implements I_C_AcctProcessorLog, I_
 	/** Get Text Message.
 		@return Text Message
 	  */
-	public String getTextMsg () 
+	public String getTextMsg()
 	{
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}

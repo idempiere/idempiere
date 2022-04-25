@@ -20,6 +20,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -28,7 +29,6 @@ import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
-import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -44,41 +44,45 @@ import org.compiere.util.Util;
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li>FR [ 1948157  ]  Is necessary the reference for document reverse
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 	
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  @author Armen Rizal, Goodwill Consulting
  * 			<li>BF [ 1745154 ] Cost in Reversing Material Related Docs
- *  @see http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1948157&group_id=176962
+ *  @see https://sourceforge.net/p/adempiere/feature-requests/412/
  */
 public class MInventory extends X_M_Inventory implements DocAction
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4395759120481570701L;
+	private static final long serialVersionUID = 3877357565525655884L;
+	
 	/** Reversal Indicator			*/
 	public static String	REVERSE_INDICATOR = "^";
 	
 	/**
-	 * 	Get Inventory from Cache
+	 * 	Get Inventory
+	 *	@param M_Inventory_ID id
+	 *	@return MInventory
+	 */
+	public static MInventory get (int M_Inventory_ID)
+	{
+		return get(Env.getCtx(), M_Inventory_ID);
+	}
+	
+	/**
+	 * 	Get Inventory 
 	 *	@param ctx context
 	 *	@param M_Inventory_ID id
 	 *	@return MInventory
 	 */
 	public static MInventory get (Properties ctx, int M_Inventory_ID)
 	{
-		Integer key = Integer.valueOf(M_Inventory_ID);
-		MInventory retValue = (MInventory) s_cache.get (key);
-		if (retValue != null)
-			return retValue;
-		retValue = new MInventory (ctx, M_Inventory_ID, null);
-		if (retValue.get_ID () != 0)
-			s_cache.put (key, retValue);
-		return retValue;
+		MInventory inventory = new MInventory(ctx, M_Inventory_ID, (String)null);
+		if (inventory.get_ID() == M_Inventory_ID)
+			return inventory;
+		else
+			return null;
 	} //	get
-
-	/**	Cache						*/
-	protected static CCache<Integer,MInventory> s_cache = new CCache<Integer,MInventory>(Table_Name, 5, 5);
-
 
 	/**
 	 * 	Standard Constructor
@@ -91,8 +95,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 		super (ctx, M_Inventory_ID, trxName);
 		if (M_Inventory_ID == 0)
 		{
-		//	setName (null);
-		//  setM_Warehouse_ID (0);		//	FK
 			setMovementDate (new Timestamp(System.currentTimeMillis()));
 			setDocAction (DOCACTION_Complete);	// CO
 			setDocStatus (DOCSTATUS_Drafted);	// DR
@@ -136,7 +138,38 @@ public class MInventory extends X_M_Inventory implements DocAction
 		setM_Warehouse_ID(wh.getM_Warehouse_ID());
 	}
 	
-	
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MInventory(MInventory copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MInventory(Properties ctx, MInventory copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MInventory(Properties ctx, MInventory copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_lines = copy.m_lines != null ? Arrays.stream(copy.m_lines).map(e -> {var v = new MInventoryLine(ctx, e, trxName); v.setParent(this); return v;}).toArray(MInventoryLine[]::new) : null;
+	}
+
 	/**	Lines						*/
 	protected MInventoryLine[]	m_lines = null;
 	
@@ -154,7 +187,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		//
 		List<MInventoryLine> list = new Query(getCtx(), I_M_InventoryLine.Table_Name, "M_Inventory_ID=?", get_TrxName())
 										.setParameters(get_ID())
-										.setOrderBy(MInventoryLine.COLUMNNAME_Line)
+										.setOrderBy(MInventoryLine.COLUMNNAME_Line+","+MInventoryLine.COLUMNNAME_M_InventoryLine_ID)
 										.list();
 		m_lines = list.toArray(new MInventoryLine[list.size()]);
 		return m_lines;
@@ -205,7 +238,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	public String getDocumentInfo()
 	{
-		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+		MDocType dt = MDocType.get(getC_DocType_ID());
 		StringBuilder msgreturn = new StringBuilder().append(dt.getNameTrl()).append(" ").append(getDocumentNo());
 		return msgreturn.toString();
 	}	//	getDocumentInfo
@@ -236,10 +269,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	public File createPDF (File file)
 	{
-	//	ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID());
-	//	if (re == null)
-			return null;
-	//	return re.getPDF(file);
+		return null;
 	}	//	createPDF
 
 	
@@ -263,6 +293,14 @@ public class MInventory extends X_M_Inventory implements DocAction
 				return false;
 			}
 		}
+		
+		String docSubTypeInv = MDocType.get(getC_DocType_ID()).getDocSubTypeInv();
+		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(docSubTypeInv))
+		{
+			if (getC_Currency_ID() == 0)
+				setC_Currency_ID(MClient.get(getCtx()).getAcctSchema().getC_Currency_ID()); 
+		}
+		
 		return true;
 	}	//	beforeSave
 	
@@ -349,11 +387,11 @@ public class MInventory extends X_M_Inventory implements DocAction
 			//	Product requires ASI
 			if (line.getM_AttributeSetInstance_ID() == 0)
 			{
-				MProduct product = MProduct.get(getCtx(), line.getM_Product_ID());
-				if (product != null && product.isASIMandatory(line.isSOTrx()))
+				MProduct product = MProduct.get(getCtx(), line.getM_Product_ID(), get_TrxName());
+				if (product != null && product.isASIMandatoryFor(null, line.isSOTrx()))
 				{
 					if (product.getAttributeSet() != null && !product.getAttributeSet().excludeTableEntry(MInventoryLine.Table_ID, line.isSOTrx())) {
-						MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+						MDocType dt = MDocType.get(getC_DocType_ID());
 						String docSubTypeInv = dt.getDocSubTypeInv();
 						BigDecimal qtyDiff = line.getQtyInternalUse();
 						if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
@@ -377,7 +415,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 		}
 
 		//	TODO: Add up Amounts
-	//	setApprovalAmt();
 		
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
@@ -417,7 +454,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 */
 	public String completeIt()
 	{
-		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+		MDocType dt = MDocType.get(getC_DocType_ID());
 		String docSubTypeInv = dt.getDocSubTypeInv();
 		if (Util.isEmpty(docSubTypeInv)) {
 			m_processMsg = "Document inventory subtype not configured, cannot complete";
@@ -530,7 +567,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 							if (log.isLoggable(Level.FINE)) log.fine("Diff=" + qtyDiff 
 									+ " - Instance OnHand=" + QtyMA + "->" + QtyNew);
 	
-							if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+							if (!MStorageOnHand.add(getCtx(), 
 									line.getM_Locator_ID(),
 									line.getM_Product_ID(), 
 									ma.getM_AttributeSetInstance_ID(), 
@@ -576,7 +613,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 						}	
 					}
 	
-					//sLine.getM_AttributeSetInstance_ID() != 0
 					// Fallback
 					if (mtrx == null)
 					{
@@ -589,7 +625,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						}
 						
 						//Fallback: Update Storage - see also VMatch.createMatchRecord
-						if (!MStorageOnHand.add(getCtx(), getM_Warehouse_ID(),
+						if (!MStorageOnHand.add(getCtx(), 
 								line.getM_Locator_ID(),
 								line.getM_Product_ID(), 
 								line.getM_AttributeSetInstance_ID(), 
@@ -665,7 +701,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 * 	Set the definite document number after completed
 	 */
 	protected void setDefiniteDocumentNo() {
-		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+		MDocType dt = MDocType.get(getC_DocType_ID());
 		if (dt.isOverwriteDateOnComplete()) {
 			setMovementDate(TimeUtil.getDay(0));
 			MPeriod.testPeriodOpen(getCtx(), getMovementDate(), MDocType.DOCBASETYPE_MaterialPhysicalInventory, getAD_Org_ID());
@@ -693,7 +729,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 		//	Attribute Set Instance
 		if (line.getM_AttributeSetInstance_ID() == 0)
 		{
-			MProduct product = MProduct.get(getCtx(), line.getM_Product_ID());
+			MProduct product = MProduct.get(getCtx(), line.getM_Product_ID(), get_TrxName());
+			boolean serial = product.isSerial();
 			if (qtyDiff.signum() > 0)	//	Incoming Trx
 			{
 				//auto balance negative on hand
@@ -701,6 +738,12 @@ public class MInventory extends X_M_Inventory implements DocAction
 						null, MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), line.getM_Locator_ID(), get_TrxName(), false);
 				for (MStorageOnHand storage : storages)
 				{
+					if (storage.getM_AttributeSetInstance_ID() > 0 && serial)
+					{
+						MAttributeSetInstance asi = new MAttributeSetInstance(Env.getCtx(), storage.getM_AttributeSetInstance_ID(), get_TrxName()); 
+						if (!Util.isEmpty(asi.getSerNo(), true))
+							continue;
+					}
 					if (storage.getQtyOnHand().signum() < 0)
 					{
 						BigDecimal maQty = qtyDiff;
@@ -730,6 +773,17 @@ public class MInventory extends X_M_Inventory implements DocAction
 								false, true, 0, get_TrxName());
 						for (MStorageOnHand storage : storages)
 						{
+							if (storage.getM_AttributeSetInstance_ID() == 0)
+								continue;
+							
+							if (serial)
+							{
+								MAttributeSetInstance asi = new MAttributeSetInstance(Env.getCtx(), storage.getM_AttributeSetInstance_ID(), get_TrxName());
+								if (!Util.isEmpty(asi.getSerNo(), true))
+								{
+									continue;
+								}
+							}
 							BigDecimal maQty = qtyDiff;
 							//backward compatibility: -ve in MA is incoming trx, +ve in MA is outgoing trx 
 							MInventoryLineMA lineMA =  new MInventoryLineMA(line, storage.getM_AttributeSetInstance_ID(), maQty.negate(), storage.getDateMaterialPolicy(),true);
@@ -799,6 +853,12 @@ public class MInventory extends X_M_Inventory implements DocAction
 				BigDecimal qtyToDeliver = qtyDiff.negate();
 				for (MStorageOnHand storage: storages)
 				{					
+					if (serial && storage.getM_AttributeSetInstance_ID() > 0)
+					{
+						MAttributeSetInstance asi = new MAttributeSetInstance(Env.getCtx(), storage.getM_AttributeSetInstance_ID(), get_TrxName());
+						if (!Util.isEmpty(asi.getSerNo(), true))
+							continue;
+					}
 					if (storage.getQtyOnHand().compareTo(qtyToDeliver) >= 0)
 					{
 						MInventoryLineMA ma = new MInventoryLineMA (line, 
@@ -953,12 +1013,12 @@ public class MInventory extends X_M_Inventory implements DocAction
 	}	//	reverseCorrectIt
 
 	protected MInventory reverse(boolean accrual) {
-		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), "#Date") : getMovementDate();
+		Timestamp reversalDate = accrual ? Env.getContextAsDate(getCtx(), Env.DATE) : getMovementDate();
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}
 		
-		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+		MDocType dt = MDocType.get(getC_DocType_ID());
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, dt.getDocBaseType(), getAD_Org_ID());
 
 		//	Deep Copy
@@ -1151,5 +1211,5 @@ public class MInventory extends X_M_Inventory implements DocAction
 			|| DOCSTATUS_Closed.equals(ds)
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
-	
+
 }	//	MInventory

@@ -16,10 +16,13 @@ package org.adempiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.model.PO;
 import org.compiere.model.X_AD_BroadcastMessage;
-import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 
@@ -27,14 +30,14 @@ import org.compiere.util.Env;
  * @author Deepak Pansheriya
  *
  */
-public class MBroadcastMessage extends X_AD_BroadcastMessage
+public class MBroadcastMessage extends X_AD_BroadcastMessage implements ImmutablePOSupport
 {
-    /**
+/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1908264699133879072L;
-
-    static private CCache<Integer,MBroadcastMessage> s_cache = new CCache<Integer,MBroadcastMessage>("AD_BroadcastMessage", 30, 60);
+	private static final long serialVersionUID = 3733943472482553977L;
+	public final static String CLIENTINFO_BROADCAST_COMPONENT_ID = "#clientInfo_BroadcastComponentId";
+	static private ImmutableIntPOCache<Integer,MBroadcastMessage> s_cache = new ImmutableIntPOCache<Integer,MBroadcastMessage>("AD_BroadcastMessage", 30, 60);
 
     public MBroadcastMessage(Properties ctx, int AD_BroadcastMessage_ID,
 	    String trxName)
@@ -47,16 +50,67 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
     {
     	super(ctx, rs, trxName);
     }
-
+    
+    /**
+     * 
+     * @param copy
+     */
+    public MBroadcastMessage(MBroadcastMessage copy)
+    {
+    	this(Env.getCtx(), copy);
+    }
+    
+    /**
+     * 
+     * @param ctx
+     * @param copy
+     */
+    public MBroadcastMessage(Properties ctx, MBroadcastMessage copy)
+    {
+    	this(ctx, copy, (String)null);
+    }
+    
+    /**
+     * 
+     * @param ctx
+     * @param copy
+     * @param trxName
+     */
+    public MBroadcastMessage(Properties ctx, MBroadcastMessage copy, String trxName)
+    {
+    	this(ctx, 0, trxName);
+    	copyPO(copy);
+    }
+    
+    /**
+     * Get MBroadcastMessage from cache (immutable)
+     * @param AD_BroadcastMessage_ID
+     * @return MBroadcastMessage or null
+     */
+	public static MBroadcastMessage get (int AD_BroadcastMessage_ID)
+	{
+		return get(Env.getCtx(), AD_BroadcastMessage_ID);
+	}
+	
+    /**
+     * Get MBroadcastMessage from cache (immutable)
+     * @param ctx
+     * @param AD_BroadcastMessage_ID
+     * @return MBroadcastMessage or null
+     */
 	public static MBroadcastMessage get (Properties ctx, int AD_BroadcastMessage_ID)
 	{
 		Integer key = Integer.valueOf(AD_BroadcastMessage_ID);
-		MBroadcastMessage retValue = (MBroadcastMessage)s_cache.get(key);
+		MBroadcastMessage retValue = s_cache.get(ctx, key, e -> new MBroadcastMessage(ctx, e));
 		if (retValue == null)
 		{
-			retValue = new MBroadcastMessage (ctx, AD_BroadcastMessage_ID, null);
-			
-			s_cache.put(key, retValue);
+			retValue = new MBroadcastMessage (ctx, AD_BroadcastMessage_ID, (String)null);
+			if (retValue.get_ID() == AD_BroadcastMessage_ID)
+			{
+				s_cache.put(key, retValue, e -> new MBroadcastMessage(Env.getCtx(), e));
+				return retValue;
+			}
+			return null;
 		}
 		return retValue;
 	}	//	get
@@ -116,4 +170,38 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage
 		return true;
 	}
     
+	@Override
+	public MBroadcastMessage markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
+
+	@Override
+	public String get_Translation (String columnName) {
+		String translation = super.get_Translation(columnName);
+		if (!Util.isEmpty(translation) && translation.indexOf('@') > 0)
+			return Env.parseContext(getCtx(), 0, translation, false, false);
+
+		return translation;
+	}
+
+	/** Returns a link to be used in broadcast messages to open a record
+	 * @param PO po
+	 * @param uuid of the window
+	 * @param text of the link
+	 * @return the text to set in the broadcast message
+	 * */
+	public String getUrlZoom(PO po, String windowUUID, String text) {
+		StringBuilder url = new StringBuilder("");
+		url.append("<a href=\"javascript:void(0)\" class=\"rp-href\" onclick=\"window.idempiere.zoomWindow(@" + CLIENTINFO_BROADCAST_COMPONENT_ID + "@, '");
+		url.append(po.get_KeyColumns()[0]);
+		url.append("', '").append(po.get_ID()).append("','").append(windowUUID).append("')\">");
+		url.append(text);
+		url.append("</a>");
+
+		return url.toString();
+	}
 }

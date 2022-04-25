@@ -25,19 +25,32 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for DD_NetworkDistribution
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="DD_NetworkDistribution")
 public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribution, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_DD_NetworkDistribution (Properties ctx, int DD_NetworkDistribution_ID, String trxName)
     {
       super (ctx, DD_NetworkDistribution_ID, trxName);
+      /** if (DD_NetworkDistribution_ID == 0)
+        {
+			setDD_NetworkDistribution_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_DD_NetworkDistribution (Properties ctx, int DD_NetworkDistribution_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, DD_NetworkDistribution_ID, trxName, virtualColumns);
       /** if (DD_NetworkDistribution_ID == 0)
         {
 			setDD_NetworkDistribution_ID (0);
@@ -69,15 +82,14 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_DD_NetworkDistribution[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_DD_NetworkDistribution[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Copy From.
-		@param CopyFrom 
-		Copy From Record
-	  */
+		@param CopyFrom Copy From Record
+	*/
 	public void setCopyFrom (String CopyFrom)
 	{
 		set_Value (COLUMNNAME_CopyFrom, CopyFrom);
@@ -86,24 +98,25 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	/** Get Copy From.
 		@return Copy From Record
 	  */
-	public String getCopyFrom () 
+	public String getCopyFrom()
 	{
 		return (String)get_Value(COLUMNNAME_CopyFrom);
 	}
 
 	/** Set Network Distribution.
-		@param DD_NetworkDistribution_ID Network Distribution	  */
+		@param DD_NetworkDistribution_ID Network Distribution
+	*/
 	public void setDD_NetworkDistribution_ID (int DD_NetworkDistribution_ID)
 	{
-		if (DD_NetworkDistribution_ID < 1) 
+		if (DD_NetworkDistribution_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_DD_NetworkDistribution_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_DD_NetworkDistribution_ID, Integer.valueOf(DD_NetworkDistribution_ID));
 	}
 
 	/** Get Network Distribution.
 		@return Network Distribution	  */
-	public int getDD_NetworkDistribution_ID () 
+	public int getDD_NetworkDistribution_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DD_NetworkDistribution_ID);
 		if (ii == null)
@@ -112,7 +125,8 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	}
 
 	/** Set DD_NetworkDistribution_UU.
-		@param DD_NetworkDistribution_UU DD_NetworkDistribution_UU	  */
+		@param DD_NetworkDistribution_UU DD_NetworkDistribution_UU
+	*/
 	public void setDD_NetworkDistribution_UU (String DD_NetworkDistribution_UU)
 	{
 		set_Value (COLUMNNAME_DD_NetworkDistribution_UU, DD_NetworkDistribution_UU);
@@ -120,15 +134,14 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 
 	/** Get DD_NetworkDistribution_UU.
 		@return DD_NetworkDistribution_UU	  */
-	public String getDD_NetworkDistribution_UU () 
+	public String getDD_NetworkDistribution_UU()
 	{
 		return (String)get_Value(COLUMNNAME_DD_NetworkDistribution_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -137,15 +150,14 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -154,15 +166,14 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -171,32 +182,32 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	public org.compiere.model.I_M_ChangeNotice getM_ChangeNotice() throws RuntimeException
-    {
-		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_Name)
-			.getPO(getM_ChangeNotice_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_M_ChangeNotice)MTable.get(getCtx(), org.compiere.model.I_M_ChangeNotice.Table_ID)
+			.getPO(getM_ChangeNotice_ID(), get_TrxName());
+	}
 
 	/** Set Change Notice.
-		@param M_ChangeNotice_ID 
-		Bill of Materials (Engineering) Change Notice (Version)
-	  */
+		@param M_ChangeNotice_ID Bill of Materials (Engineering) Change Notice (Version)
+	*/
 	public void setM_ChangeNotice_ID (int M_ChangeNotice_ID)
 	{
-		if (M_ChangeNotice_ID < 1) 
+		if (M_ChangeNotice_ID < 1)
 			set_Value (COLUMNNAME_M_ChangeNotice_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ChangeNotice_ID, Integer.valueOf(M_ChangeNotice_ID));
 	}
 
 	/** Get Change Notice.
 		@return Bill of Materials (Engineering) Change Notice (Version)
 	  */
-	public int getM_ChangeNotice_ID () 
+	public int getM_ChangeNotice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ChangeNotice_ID);
 		if (ii == null)
@@ -205,9 +216,8 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -216,13 +226,14 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -230,7 +241,7 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -243,7 +254,8 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	}
 
 	/** Set Revision.
-		@param Revision Revision	  */
+		@param Revision Revision
+	*/
 	public void setRevision (String Revision)
 	{
 		set_Value (COLUMNNAME_Revision, Revision);
@@ -251,15 +263,14 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 
 	/** Get Revision.
 		@return Revision	  */
-	public String getRevision () 
+	public String getRevision()
 	{
 		return (String)get_Value(COLUMNNAME_Revision);
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -268,15 +279,14 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -285,15 +295,14 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -302,7 +311,7 @@ public class X_DD_NetworkDistribution extends PO implements I_DD_NetworkDistribu
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

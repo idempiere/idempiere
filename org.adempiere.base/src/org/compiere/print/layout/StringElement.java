@@ -139,7 +139,7 @@ public class StringElement extends PrintElement
 		int startIndex = 0;
 		int endOffset = 0;
 
-		StringBuffer text = new StringBuffer();
+		StringBuilder text = new StringBuilder();
 		if (label != null && label.length() > 0)
 		{
 			text.append(label).append(" ");
@@ -248,7 +248,7 @@ public class StringElement extends PrintElement
 
 	/**************************************************************************
 	 * 	Layout and Calculate Size.
-	 * 	Set p_width & p_height
+	 * 	Set p_width and p_height
 	 * 	@return Size
 	 */
 	protected boolean calculateSize()

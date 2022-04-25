@@ -52,6 +52,7 @@ import org.zkoss.zul.North;
  * Generate Shipment (manual) view class
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VInOutGen")
 public class WInOutGen extends InOutGen implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	private WGenForm form;
@@ -166,7 +167,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 		fWarehouse = new WTableDirEditor ("M_Warehouse_ID", true, false, true, orgL);
 		lWarehouse.setText(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
 		fWarehouse.addValueChangeListener(this);
-		fWarehouse.setValue(Env.getContextAsInt(Env.getCtx(), "#M_Warehouse_ID"));
+		fWarehouse.setValue(Env.getContextAsInt(Env.getCtx(), Env.M_WAREHOUSE_ID));
 		setM_Warehouse_ID(fWarehouse.getValue());
 		//      Document Action Prepared/ Completed
 		lDocAction.setText(Msg.translate(Env.getCtx(), "DocAction"));
@@ -205,7 +206,6 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 				((North)comp).setOpen(false);
 		}
 		form.getMiniTable().repaint();
-		form.invalidate();
 	}   //  executeQuery
 
 	protected void onClientInfo()

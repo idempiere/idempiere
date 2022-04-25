@@ -81,8 +81,6 @@ public class MAssignmentSlot implements Comparator<Object>
 		setName(name);
 		setDescription(description);
 		setStatus(status);
-		//
-	//	log.fine( toString());
 	}	//	MAssignmentSlot
 
 	/**
@@ -93,7 +91,6 @@ public class MAssignmentSlot implements Comparator<Object>
 	{
 		setStatus(assignment.isConfirmed() ? STATUS_Confirmed : STATUS_NotConfirmed);
 		setMAssignment(assignment);
-	//	log.fine( toString());
 	}	//	MAssignmentSlot
 
 
@@ -468,7 +465,7 @@ public class MAssignmentSlot implements Comparator<Object>
 	}	//	getInfoTimeFromTo
 
 	/**
-	 * 	Get Info with Date & Time From-To
+	 * 	Get Info with Date and Time From-To
 	 *  @return info 12/12/01 00:00 - 01:00 or 12/12/01 00:00 - 12/13/01 01:00
 	 */
 	public String getInfoDateTimeFromTo()
@@ -513,12 +510,12 @@ public class MAssignmentSlot implements Comparator<Object>
 	/**
 	 * 	Returns true if time is between start and end Time.
 	 *  Date part is ignored.
-	 *  <pre>
+	 *  <pre>{@code
 	 *  Example:
 	 *  - Slots: 0:00-9:00 - 9:00-10:00 - 10:00-11:00 - ...
 	 *  - inSlot (9:00, false) -> 1		//	start time
 	 *  - inSlot (10:00, true) -> 1		//	end time
-	 *  </pre>
+	 *  }</pre>
 	 * 	@param time time of the day
 	 *  @param endTime if true, the end time is included
 	 * 	@return true if within slot
@@ -562,14 +559,12 @@ public class MAssignmentSlot implements Comparator<Object>
 		//	after end				|---| x
 		if (compare.after(end))
 		{
-		//	System.out.println("InSlot-false Compare=" + compare + " after end " + end);
 			return false;
 		}
 
 		//	start					x---|
 		if (!endTime && compare.equals(start))
 		{
-		//	System.out.println("InSlot-true Compare=" + compare + " = Start=" + start);
 			return true;
 		}
 
@@ -577,13 +572,11 @@ public class MAssignmentSlot implements Comparator<Object>
 		//	end						|---x
 		if (endTime && compare.equals(end))
 		{
-		//	System.out.println("InSlot-true Compare=" + compare + " = End=" + end);
 			return true;
 		}
 		//	between start/end		|-x-|
 		if (compare.before(end))
 		{
-		//	System.out.println("InSlot-true Compare=" + compare + " before end " + end);
 			return true;
 		}
 		return false;

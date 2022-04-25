@@ -41,12 +41,14 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -54,6 +56,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.event.ListDataEvent;
 
 /**
@@ -67,7 +70,7 @@ import org.zkoss.zul.event.ListDataEvent;
  *
  * @author victor.perez@e-evolution.com, e-Evolution
  * 				FR [ 2826406 ] The Tab Sort without parent column
- *				<li> https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2826406&group_id=176962
+ *				<li> https://sourceforge.net/p/adempiere/feature-requests/776/
  * Zk Port
  * @author Low Heng Sin
  * @author Juan David Arboleda : Refactoring Yes and No List to work with multiple choice.
@@ -77,18 +80,24 @@ public class ADSortTab extends Panel implements IADTabpanel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2238411612673317537L;
+	private static final long serialVersionUID = 4302282658814599752L;
+
+	public ADSortTab()
+	{
+	}
 
 	/**
-	 *	Sort Tab Constructor
-	 *
-	 *  @param WindowNo Window No
-	 *  @param GridTab
+	 * Initiate
+	 * 
+	 * @param winPanel
+	 * @param gridTab
 	 */
-	public ADSortTab(int WindowNo, GridTab gridTab)
+	@Override
+	public void init(AbstractADWindowContent winPanel, GridTab gridTab)
 	{
+		this.adWindowPanel = winPanel;
 		if (log.isLoggable(Level.CONFIG)) log.config("SortOrder=" + gridTab.getAD_ColumnSortOrder_ID() + ", SortYesNo=" + gridTab.getAD_ColumnSortYesNo_ID());
-		m_WindowNo = WindowNo;
+		m_WindowNo = winPanel.getWindowNo();
 		this.gridTab = gridTab;
 
 		m_AD_Table_ID = gridTab.getAD_Table_ID();
@@ -100,7 +109,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 				removeAttribute(ATTR_ON_ACTIVATE_POSTED);
 			}
 		});
-	}	//	ADSortTab
+	} // init
 
 	/**	Logger			*/
 	protected static final CLogger log = CLogger.getCLogger(ADSortTab.class);
@@ -167,7 +176,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		int identifiersCount = 0;
 		StringBuilder identifierSql = new StringBuilder();
 		String sql = "SELECT t.TableName, c.AD_Column_ID, c.ColumnName, e.Name,"	//	1..4
-			+ "c.IsParent, c.IsKey, c.IsIdentifier, c.IsTranslated "				//	4..8
+			+ "c.IsParent, c.IsKey, c.IsIdentifier, c.IsTranslated, c.ColumnSQL, c.AD_Reference_ID "	//	5..10
 			+ "FROM AD_Table t, AD_Column c, AD_Element e "
 			+ "WHERE t.AD_Table_ID=?"						//	#1
 			+ " AND t.AD_Table_ID=c.AD_Table_ID"
@@ -177,7 +186,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Element");
 		if (trl)
 			sql = "SELECT t.TableName, c.AD_Column_ID, c.ColumnName, et.Name,"	//	1..4
-				+ "c.IsParent, c.IsKey, c.IsIdentifier, c.IsTranslated "		//	4..8
+				+ "c.IsParent, c.IsKey, c.IsIdentifier, c.IsTranslated, c.ColumnSQL, c.AD_Reference_ID "	//	5..10
 				+ "FROM AD_Table t, AD_Column c, AD_Element_Trl et "
 				+ "WHERE t.AD_Table_ID=?"						//	#1
 				+ " AND t.AD_Table_ID=c.AD_Table_ID"
@@ -226,20 +235,30 @@ public class ADSortTab extends Panel implements IADTabpanel
 					m_KeyColumnName = rs.getString(3);
 				}
 				//	Identifier
-				else if (rs.getString(7).equals("Y"))
+				if (rs.getString(7).equals("Y"))
 				{
 					if (log.isLoggable(Level.FINE)) log.fine("Identifier=" + rs.getString(1) + "." + rs.getString(3));
 					boolean isTranslated = trl && "Y".equals(rs.getString(8));
+					int AD_Reference_ID = rs.getInt(10);
 					if (identifierSql.length() > 0)
-						identifierSql.append(",");
-					identifierSql.append(isTranslated ? "tt." : "t.").append(rs.getString(3));
+					{
+						identifierSql.append(" || '")
+							.append(MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx())))
+							.append("' || ");
+					}
+					identifierSql.append("NVL(");
+					if (!Util.isEmpty(rs.getString(9)))
+					{
+						String value = rs.getString(9).replace(m_TableName + ".", isTranslated ? "tt." : "t.");
+						identifierSql.append(DB.TO_CHAR("("+value+")", AD_Reference_ID, Env.getAD_Language(Env.getCtx())));			
+					}
+					else
+						identifierSql.append(DB.TO_CHAR((isTranslated ? "tt." : "t.")+rs.getString(3), AD_Reference_ID, Env.getAD_Language(Env.getCtx())));
+					identifierSql.append(",'')");
 					identifiersCount++;
-//					m_IdentifierColumnName = rs.getString(3);
 					if (isTranslated)
 						m_IdentifierTranslated = true;
 				}
-				else
-					if (log.isLoggable(Level.FINE)) log.fine("??NotUsed??=" + rs.getString(1) + "." + rs.getString(3));
 			}
 		}
 		catch (SQLException e)
@@ -254,10 +273,8 @@ public class ADSortTab extends Panel implements IADTabpanel
 		//
 		if (identifiersCount == 0)
 			m_IdentifierSql = "NULL";
-		else if (identifiersCount == 1)
-			m_IdentifierSql = identifierSql.toString();
 		else
-			m_IdentifierSql = identifierSql.insert(0, "COALESCE(").append(")").toString();
+			m_IdentifierSql = identifierSql.toString();
 		//
 		noLabel.setValue(Msg.getMsg(Env.getCtx(), "Available"));
 		log.fine(m_ColumnSortName);
@@ -411,6 +428,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		if (m_IdentifierTranslated)
 			sql.append(" AND t.").append(m_KeyColumnName).append("=tt.").append(m_KeyColumnName)
 			.append(" AND tt.AD_Language=?");
+		sql.append(" AND t.AD_Client_ID IN (0,?)");
 		//	Order
 		sql.append(" ORDER BY ");
 		if (m_ColumnYesNoName != null)
@@ -431,11 +449,14 @@ public class ADSortTab extends Panel implements IADTabpanel
 		ResultSet rs = null;
 		try
 		{
+			int idx = 1;
 			pstmt = DB.prepareStatement(sql.toString(), null);
-			pstmt.setInt(1, ID);
+			pstmt.setInt(idx++, ID);
 
 			if (m_IdentifierTranslated)
-				pstmt.setString(2, Env.getAD_Language(Env.getCtx()));
+				pstmt.setString(idx++, Env.getAD_Language(Env.getCtx()));
+
+			pstmt.setInt(idx++, Env.getAD_Client_ID(Env.getCtx()));
 			
 			rs = pstmt.executeQuery();
 			while (rs.next())
@@ -656,7 +677,6 @@ public class ADSortTab extends Panel implements IADTabpanel
 
 
 	/** (non-Javadoc)
-	 * @see org.compiere.grid.APanelTab#saveData()
 	 */
 	public void saveData()
 	{
@@ -1042,5 +1062,35 @@ public class ADSortTab extends Panel implements IADTabpanel
 	{
 		return false;
 	}
-}	//ADSortTab
 
+	@Override
+	public List<org.zkoss.zul.Button> getToolbarButtons()
+	{
+		return new ArrayList<org.zkoss.zul.Button>();
+	}
+
+	@Override
+	public boolean isEnableCustomizeButton()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isEnableProcessButton()
+	{
+		return false;
+	}
+
+	@Override
+	public void updateToolbar(ADWindowToolbar toolbar)
+	{
+
+	}
+
+	@Override
+	public void updateDetailToolbar(Toolbar toolbar)
+	{
+
+	}
+
+}	//ADSortTab

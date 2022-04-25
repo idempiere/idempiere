@@ -23,19 +23,34 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankAccountDoc
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_BankAccountDoc")
 public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BankAccountDoc (Properties ctx, int C_BankAccountDoc_ID, String trxName)
     {
       super (ctx, C_BankAccountDoc_ID, trxName);
+      /** if (C_BankAccountDoc_ID == 0)
+        {
+			setC_BankAccountDoc_ID (0);
+			setC_BankAccount_ID (0);
+			setCurrentNext (0);
+			setName (null);
+			setPaymentRule (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BankAccountDoc (Properties ctx, int C_BankAccountDoc_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BankAccountDoc_ID, trxName, virtualColumns);
       /** if (C_BankAccountDoc_ID == 0)
         {
 			setC_BankAccountDoc_ID (0);
@@ -69,27 +84,26 @@ public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Pers
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_BankAccountDoc[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_BankAccountDoc[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Bank Account Document.
-		@param C_BankAccountDoc_ID 
-		Checks, Transfers, etc.
-	  */
+		@param C_BankAccountDoc_ID Checks, Transfers, etc.
+	*/
 	public void setC_BankAccountDoc_ID (int C_BankAccountDoc_ID)
 	{
-		if (C_BankAccountDoc_ID < 1) 
+		if (C_BankAccountDoc_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BankAccountDoc_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BankAccountDoc_ID, Integer.valueOf(C_BankAccountDoc_ID));
 	}
 
 	/** Get Bank Account Document.
 		@return Checks, Transfers, etc.
 	  */
-	public int getC_BankAccountDoc_ID () 
+	public int getC_BankAccountDoc_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccountDoc_ID);
 		if (ii == null)
@@ -98,7 +112,8 @@ public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Pers
 	}
 
 	/** Set C_BankAccountDoc_UU.
-		@param C_BankAccountDoc_UU C_BankAccountDoc_UU	  */
+		@param C_BankAccountDoc_UU C_BankAccountDoc_UU
+	*/
 	public void setC_BankAccountDoc_UU (String C_BankAccountDoc_UU)
 	{
 		set_Value (COLUMNNAME_C_BankAccountDoc_UU, C_BankAccountDoc_UU);
@@ -106,32 +121,32 @@ public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Pers
 
 	/** Get C_BankAccountDoc_UU.
 		@return C_BankAccountDoc_UU	  */
-	public String getC_BankAccountDoc_UU () 
+	public String getC_BankAccountDoc_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BankAccountDoc_UU);
 	}
 
 	public org.compiere.model.I_C_BankAccount getC_BankAccount() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_Name)
-			.getPO(getC_BankAccount_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_BankAccount)MTable.get(getCtx(), org.compiere.model.I_C_BankAccount.Table_ID)
+			.getPO(getC_BankAccount_ID(), get_TrxName());
+	}
 
 	/** Set Bank Account.
-		@param C_BankAccount_ID 
-		Account at the Bank
-	  */
+		@param C_BankAccount_ID Account at the Bank
+	*/
 	public void setC_BankAccount_ID (int C_BankAccount_ID)
 	{
-		if (C_BankAccount_ID < 1) 
+		if (C_BankAccount_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BankAccount_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BankAccount_ID, Integer.valueOf(C_BankAccount_ID));
 	}
 
 	/** Get Bank Account.
 		@return Account at the Bank
 	  */
-	public int getC_BankAccount_ID () 
+	public int getC_BankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
 		if (ii == null)
@@ -140,26 +155,26 @@ public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Pers
 	}
 
 	public org.compiere.model.I_AD_PrintFormat getCheck_PrintFormat() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_Name)
-			.getPO(getCheck_PrintFormat_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getCheck_PrintFormat_ID(), get_TrxName());
+	}
 
 	/** Set Check Print Format.
-		@param Check_PrintFormat_ID 
-		Print Format for printing Checks
-	  */
+		@param Check_PrintFormat_ID Print Format for printing Checks
+	*/
 	public void setCheck_PrintFormat_ID (int Check_PrintFormat_ID)
 	{
-		if (Check_PrintFormat_ID < 1) 
+		if (Check_PrintFormat_ID < 1)
 			set_Value (COLUMNNAME_Check_PrintFormat_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Check_PrintFormat_ID, Integer.valueOf(Check_PrintFormat_ID));
 	}
 
 	/** Get Check Print Format.
 		@return Print Format for printing Checks
 	  */
-	public int getCheck_PrintFormat_ID () 
+	public int getCheck_PrintFormat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Check_PrintFormat_ID);
 		if (ii == null)
@@ -168,9 +183,8 @@ public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Pers
 	}
 
 	/** Set Current Next.
-		@param CurrentNext 
-		The next number to be used
-	  */
+		@param CurrentNext The next number to be used
+	*/
 	public void setCurrentNext (int CurrentNext)
 	{
 		set_Value (COLUMNNAME_CurrentNext, Integer.valueOf(CurrentNext));
@@ -179,7 +193,7 @@ public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Pers
 	/** Get Current Next.
 		@return The next number to be used
 	  */
-	public int getCurrentNext () 
+	public int getCurrentNext()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CurrentNext);
 		if (ii == null)
@@ -188,9 +202,8 @@ public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Pers
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -199,15 +212,14 @@ public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -216,7 +228,7 @@ public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Pers
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -233,22 +245,21 @@ public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Pers
 	public static final int PAYMENTRULE_AD_Reference_ID=195;
 	/** Cash = B */
 	public static final String PAYMENTRULE_Cash = "B";
-	/** Credit Card = K */
-	public static final String PAYMENTRULE_CreditCard = "K";
-	/** Direct Deposit = T */
-	public static final String PAYMENTRULE_DirectDeposit = "T";
-	/** Check = S */
-	public static final String PAYMENTRULE_Check = "S";
-	/** On Credit = P */
-	public static final String PAYMENTRULE_OnCredit = "P";
 	/** Direct Debit = D */
 	public static final String PAYMENTRULE_DirectDebit = "D";
+	/** Credit Card = K */
+	public static final String PAYMENTRULE_CreditCard = "K";
 	/** Mixed POS Payment = M */
 	public static final String PAYMENTRULE_MixedPOSPayment = "M";
+	/** On Credit = P */
+	public static final String PAYMENTRULE_OnCredit = "P";
+	/** Check = S */
+	public static final String PAYMENTRULE_Check = "S";
+	/** Direct Deposit = T */
+	public static final String PAYMENTRULE_DirectDeposit = "T";
 	/** Set Payment Rule.
-		@param PaymentRule 
-		How you pay the invoice
-	  */
+		@param PaymentRule How you pay the invoice
+	*/
 	public void setPaymentRule (String PaymentRule)
 	{
 
@@ -258,7 +269,7 @@ public class X_C_BankAccountDoc extends PO implements I_C_BankAccountDoc, I_Pers
 	/** Get Payment Rule.
 		@return How you pay the invoice
 	  */
-	public String getPaymentRule () 
+	public String getPaymentRule()
 	{
 		return (String)get_Value(COLUMNNAME_PaymentRule);
 	}

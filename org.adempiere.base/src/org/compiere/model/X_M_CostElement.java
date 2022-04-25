@@ -23,19 +23,33 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_CostElement
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="M_CostElement")
 public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_CostElement (Properties ctx, int M_CostElement_ID, String trxName)
     {
       super (ctx, M_CostElement_ID, trxName);
+      /** if (M_CostElement_ID == 0)
+        {
+			setCostElementType (null);
+			setIsCalculated (false);
+			setM_CostElement_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_CostElement (Properties ctx, int M_CostElement_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_CostElement_ID, trxName, virtualColumns);
       /** if (M_CostElement_ID == 0)
         {
 			setCostElementType (null);
@@ -68,27 +82,26 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_M_CostElement[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_M_CostElement[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** CostElementType AD_Reference_ID=338 */
 	public static final int COSTELEMENTTYPE_AD_Reference_ID=338;
+	/** Burden (M.Overhead) = B */
+	public static final String COSTELEMENTTYPE_BurdenMOverhead = "B";
 	/** Material = M */
 	public static final String COSTELEMENTTYPE_Material = "M";
 	/** Overhead = O */
 	public static final String COSTELEMENTTYPE_Overhead = "O";
-	/** Burden (M.Overhead) = B */
-	public static final String COSTELEMENTTYPE_BurdenMOverhead = "B";
-	/** Outside Processing = X */
-	public static final String COSTELEMENTTYPE_OutsideProcessing = "X";
 	/** Resource = R */
 	public static final String COSTELEMENTTYPE_Resource = "R";
+	/** Outside Processing = X */
+	public static final String COSTELEMENTTYPE_OutsideProcessing = "X";
 	/** Set Cost Element Type.
-		@param CostElementType 
-		Type of Cost Element
-	  */
+		@param CostElementType Type of Cost Element
+	*/
 	public void setCostElementType (String CostElementType)
 	{
 
@@ -98,35 +111,34 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 	/** Get Cost Element Type.
 		@return Type of Cost Element
 	  */
-	public String getCostElementType () 
+	public String getCostElementType()
 	{
 		return (String)get_Value(COLUMNNAME_CostElementType);
 	}
 
 	/** CostingMethod AD_Reference_ID=122 */
 	public static final int COSTINGMETHOD_AD_Reference_ID=122;
-	/** Standard Costing = S */
-	public static final String COSTINGMETHOD_StandardCosting = "S";
 	/** Average PO = A */
 	public static final String COSTINGMETHOD_AveragePO = "A";
-	/** Lifo = L */
-	public static final String COSTINGMETHOD_Lifo = "L";
 	/** Fifo = F */
 	public static final String COSTINGMETHOD_Fifo = "F";
-	/** Last PO Price = p */
-	public static final String COSTINGMETHOD_LastPOPrice = "p";
-	/** Average Invoice = I */
-	public static final String COSTINGMETHOD_AverageInvoice = "I";
 	/** Last Invoice = i */
 	public static final String COSTINGMETHOD_LastInvoice = "i";
+	/** Average Invoice = I */
+	public static final String COSTINGMETHOD_AverageInvoice = "I";
+	/** Lifo = L */
+	public static final String COSTINGMETHOD_Lifo = "L";
+	/** Last PO Price = p */
+	public static final String COSTINGMETHOD_LastPOPrice = "p";
+	/** Standard Costing = S */
+	public static final String COSTINGMETHOD_StandardCosting = "S";
 	/** User Defined = U */
 	public static final String COSTINGMETHOD_UserDefined = "U";
 	/** _ = x */
 	public static final String COSTINGMETHOD__ = "x";
 	/** Set Costing Method.
-		@param CostingMethod 
-		Indicates how Costs will be calculated
-	  */
+		@param CostingMethod Indicates how Costs will be calculated
+	*/
 	public void setCostingMethod (String CostingMethod)
 	{
 
@@ -136,15 +148,14 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 	/** Get Costing Method.
 		@return Indicates how Costs will be calculated
 	  */
-	public String getCostingMethod () 
+	public String getCostingMethod()
 	{
 		return (String)get_Value(COLUMNNAME_CostingMethod);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -153,15 +164,14 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Calculated.
-		@param IsCalculated 
-		The value is calculated by the system
-	  */
+		@param IsCalculated The value is calculated by the system
+	*/
 	public void setIsCalculated (boolean IsCalculated)
 	{
 		set_Value (COLUMNNAME_IsCalculated, Boolean.valueOf(IsCalculated));
@@ -170,7 +180,7 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 	/** Get Calculated.
 		@return The value is calculated by the system
 	  */
-	public boolean isCalculated () 
+	public boolean isCalculated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCalculated);
 		if (oo != null) 
@@ -183,21 +193,20 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 	}
 
 	/** Set Cost Element.
-		@param M_CostElement_ID 
-		Product Cost Element
-	  */
+		@param M_CostElement_ID Product Cost Element
+	*/
 	public void setM_CostElement_ID (int M_CostElement_ID)
 	{
-		if (M_CostElement_ID < 1) 
+		if (M_CostElement_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_CostElement_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_CostElement_ID, Integer.valueOf(M_CostElement_ID));
 	}
 
 	/** Get Cost Element.
 		@return Product Cost Element
 	  */
-	public int getM_CostElement_ID () 
+	public int getM_CostElement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostElement_ID);
 		if (ii == null)
@@ -206,7 +215,8 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 	}
 
 	/** Set M_CostElement_UU.
-		@param M_CostElement_UU M_CostElement_UU	  */
+		@param M_CostElement_UU M_CostElement_UU
+	*/
 	public void setM_CostElement_UU (String M_CostElement_UU)
 	{
 		set_Value (COLUMNNAME_M_CostElement_UU, M_CostElement_UU);
@@ -214,15 +224,14 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 
 	/** Get M_CostElement_UU.
 		@return M_CostElement_UU	  */
-	public String getM_CostElement_UU () 
+	public String getM_CostElement_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_CostElement_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -231,7 +240,7 @@ public class X_M_CostElement extends PO implements I_M_CostElement, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

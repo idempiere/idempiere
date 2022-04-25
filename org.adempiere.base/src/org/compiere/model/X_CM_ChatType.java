@@ -23,19 +23,32 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_ChatType
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="CM_ChatType")
 public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_CM_ChatType (Properties ctx, int CM_ChatType_ID, String trxName)
     {
       super (ctx, CM_ChatType_ID, trxName);
+      /** if (CM_ChatType_ID == 0)
+        {
+			setAD_Table_ID (0);
+			setCM_ChatType_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_CM_ChatType (Properties ctx, int CM_ChatType_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, CM_ChatType_ID, trxName, virtualColumns);
       /** if (CM_ChatType_ID == 0)
         {
 			setAD_Table_ID (0);
@@ -67,32 +80,32 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_CM_ChatType[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_CM_ChatType[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
-    {
-		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_Name)
-			.getPO(getAD_Table_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -101,21 +114,20 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 	}
 
 	/** Set Chat Type.
-		@param CM_ChatType_ID 
-		Type of discussion / chat
-	  */
+		@param CM_ChatType_ID Type of discussion / chat
+	*/
 	public void setCM_ChatType_ID (int CM_ChatType_ID)
 	{
-		if (CM_ChatType_ID < 1) 
+		if (CM_ChatType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_CM_ChatType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_CM_ChatType_ID, Integer.valueOf(CM_ChatType_ID));
 	}
 
 	/** Get Chat Type.
 		@return Type of discussion / chat
 	  */
-	public int getCM_ChatType_ID () 
+	public int getCM_ChatType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CM_ChatType_ID);
 		if (ii == null)
@@ -124,7 +136,8 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 	}
 
 	/** Set CM_ChatType_UU.
-		@param CM_ChatType_UU CM_ChatType_UU	  */
+		@param CM_ChatType_UU CM_ChatType_UU
+	*/
 	public void setCM_ChatType_UU (String CM_ChatType_UU)
 	{
 		set_Value (COLUMNNAME_CM_ChatType_UU, CM_ChatType_UU);
@@ -132,15 +145,14 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 
 	/** Get CM_ChatType_UU.
 		@return CM_ChatType_UU	  */
-	public String getCM_ChatType_UU () 
+	public String getCM_ChatType_UU()
 	{
 		return (String)get_Value(COLUMNNAME_CM_ChatType_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -149,23 +161,22 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** ModerationType AD_Reference_ID=395 */
 	public static final int MODERATIONTYPE_AD_Reference_ID=395;
-	/** Not moderated = N */
-	public static final String MODERATIONTYPE_NotModerated = "N";
-	/** Before Publishing = B */
-	public static final String MODERATIONTYPE_BeforePublishing = "B";
 	/** After Publishing = A */
 	public static final String MODERATIONTYPE_AfterPublishing = "A";
+	/** Before Publishing = B */
+	public static final String MODERATIONTYPE_BeforePublishing = "B";
+	/** Not moderated = N */
+	public static final String MODERATIONTYPE_NotModerated = "N";
 	/** Set Moderation Type.
-		@param ModerationType 
-		Type of moderation
-	  */
+		@param ModerationType Type of moderation
+	*/
 	public void setModerationType (String ModerationType)
 	{
 
@@ -175,15 +186,14 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 	/** Get Moderation Type.
 		@return Type of moderation
 	  */
-	public String getModerationType () 
+	public String getModerationType()
 	{
 		return (String)get_Value(COLUMNNAME_ModerationType);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -192,7 +202,7 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

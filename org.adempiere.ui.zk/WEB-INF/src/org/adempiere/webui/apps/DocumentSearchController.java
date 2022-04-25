@@ -69,7 +69,7 @@ public class DocumentSearchController implements EventListener<Event>{
 
 	public void create(Component parent) {
 		layout = new Vlayout();
-		layout.setStyle("padding: 3px;");
+		layout.setStyle("padding: 3px; overflow:auto;");
 		ZKUpdateUtil.setWidth(layout, "100%");
 		ZKUpdateUtil.setVflex(layout, "true");
 		
@@ -135,7 +135,7 @@ public class DocumentSearchController implements EventListener<Event>{
 			List<Object> params = new ArrayList<Object>();
 			// SearchDefinition with a given table and column
 			if (msd.getSearchType().equals(MSearchDefinition.SEARCHTYPE_TABLE)) {
-				MColumn column = new MColumn(Env.getCtx(), msd.getAD_Column_ID(), null);
+				MColumn column = MColumn.get(Env.getCtx(), msd.getAD_Column_ID());
 				sql = new StringBuilder("SELECT ").append(table.getTableName()).append("_ID, ")
 						.append(column.getColumnName());
 				sql.append(" FROM ")

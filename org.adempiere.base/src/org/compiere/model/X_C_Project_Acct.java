@@ -22,19 +22,33 @@ import java.util.Properties;
 
 /** Generated Model for C_Project_Acct
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 9 - $Id$ */
+@org.adempiere.base.Model(table="C_Project_Acct")
 public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20191121L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Project_Acct (Properties ctx, int C_Project_Acct_ID, String trxName)
     {
       super (ctx, C_Project_Acct_ID, trxName);
+      /** if (C_Project_Acct_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setC_Project_ID (0);
+			setPJ_Asset_Acct (0);
+			setPJ_WIP_Acct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Project_Acct (Properties ctx, int C_Project_Acct_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Project_Acct_ID, trxName, virtualColumns);
       /** if (C_Project_Acct_ID == 0)
         {
 			setC_AcctSchema_ID (0);
@@ -67,32 +81,32 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_C_Project_Acct[")
+      StringBuilder sb = new StringBuilder ("X_C_Project_Acct[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_Name)
-			.getPO(getC_AcctSchema_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_AcctSchema)MTable.get(getCtx(), org.compiere.model.I_C_AcctSchema.Table_ID)
+			.getPO(getC_AcctSchema_ID(), get_TrxName());
+	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -101,7 +115,8 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	}
 
 	/** Set C_Project_Acct_UU.
-		@param C_Project_Acct_UU C_Project_Acct_UU	  */
+		@param C_Project_Acct_UU C_Project_Acct_UU
+	*/
 	public void setC_Project_Acct_UU (String C_Project_Acct_UU)
 	{
 		set_Value (COLUMNNAME_C_Project_Acct_UU, C_Project_Acct_UU);
@@ -109,32 +124,32 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 
 	/** Get C_Project_Acct_UU.
 		@return C_Project_Acct_UU	  */
-	public String getC_Project_Acct_UU () 
+	public String getC_Project_Acct_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Project_Acct_UU);
 	}
 
 	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
+	{
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_ID)
+			.getPO(getC_Project_ID(), get_TrxName());
+	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -143,14 +158,14 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getPJ_Asset_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getPJ_Asset_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getPJ_Asset_Acct(), get_TrxName());
+	}
 
 	/** Set Project Asset.
-		@param PJ_Asset_Acct 
-		Project Asset Account
-	  */
+		@param PJ_Asset_Acct Project Asset Account
+	*/
 	public void setPJ_Asset_Acct (int PJ_Asset_Acct)
 	{
 		set_Value (COLUMNNAME_PJ_Asset_Acct, Integer.valueOf(PJ_Asset_Acct));
@@ -159,7 +174,7 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	/** Get Project Asset.
 		@return Project Asset Account
 	  */
-	public int getPJ_Asset_Acct () 
+	public int getPJ_Asset_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PJ_Asset_Acct);
 		if (ii == null)
@@ -168,14 +183,14 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	}
 
 	public I_C_ValidCombination getPJ_WIP_A() throws RuntimeException
-    {
-		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_Name)
-			.getPO(getPJ_WIP_Acct(), get_TrxName());	}
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getPJ_WIP_Acct(), get_TrxName());
+	}
 
 	/** Set Work In Progress.
-		@param PJ_WIP_Acct 
-		Account for Work in Progress
-	  */
+		@param PJ_WIP_Acct Account for Work in Progress
+	*/
 	public void setPJ_WIP_Acct (int PJ_WIP_Acct)
 	{
 		set_Value (COLUMNNAME_PJ_WIP_Acct, Integer.valueOf(PJ_WIP_Acct));
@@ -184,7 +199,7 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	/** Get Work In Progress.
 		@return Account for Work in Progress
 	  */
-	public int getPJ_WIP_Acct () 
+	public int getPJ_WIP_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PJ_WIP_Acct);
 		if (ii == null)

@@ -3,7 +3,6 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.model.MRefList;
 import org.compiere.util.DB;
 /** Generated Model for A_Asset_Use
  ** @version $Id: X_A_Asset.java,v 1.88 2004/08/27 21:26:37 jjanke Exp $ */
@@ -17,10 +16,6 @@ public class MAssetUse extends X_A_Asset_Use
 	public MAssetUse (Properties ctx, int A_Asset_Use_ID, String trxName)
 	{
 		super (ctx, A_Asset_Use_ID, trxName);
-		if (A_Asset_Use_ID == 0)
-		{
-			// empty block
-		}
 	}	//	MAssetUse
 
 	/**
