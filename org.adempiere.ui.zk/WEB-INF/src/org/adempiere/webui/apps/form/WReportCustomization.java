@@ -178,6 +178,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		fm =m_reportEngine.getPrintFormat();
 		name.setValue(fm.getName());
+		ZKUpdateUtil.setWidth(name.getComponent(), "400px");
 
 		if (Env.isMultiLingualDocument(m_ctx))
 			name.setValue(fm.get_Translation("Name"));
