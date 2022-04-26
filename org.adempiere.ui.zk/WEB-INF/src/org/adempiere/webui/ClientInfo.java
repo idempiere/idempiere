@@ -96,7 +96,7 @@ public class ClientInfo implements Serializable {
 	 * @return true if mobile browser
 	 */
 	public static boolean isMobile() {
-		return "Y".equals(Env.getContext(Env.getCtx(), "#clientInfo_mobile"));
+		return "Y".equals(Env.getContext(Env.getCtx(), Env.CLIENT_INFO_MOBILE));
 	}
 
 	/**

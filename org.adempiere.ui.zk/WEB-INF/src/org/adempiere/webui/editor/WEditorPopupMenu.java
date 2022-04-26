@@ -288,7 +288,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         if (evt != null)
         {
             ContextMenuEvent menuEvent = new ContextMenuEvent(evt);
-            
+            menuEvent.setTarget(event.getTarget());
             ContextMenuListener[] listeners = new ContextMenuListener[0];
             listeners = menuListeners.toArray(listeners);
             for (ContextMenuListener listener : listeners)
