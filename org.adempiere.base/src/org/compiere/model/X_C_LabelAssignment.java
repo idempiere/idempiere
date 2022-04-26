@@ -30,7 +30,7 @@ public class X_C_LabelAssignment extends PO implements I_C_LabelAssignment, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220415L;
+	private static final long serialVersionUID = 20220426L;
 
     /** Standard Constructor */
     public X_C_LabelAssignment (Properties ctx, int C_LabelAssignment_ID, String trxName)
@@ -67,7 +67,7 @@ public class X_C_LabelAssignment extends PO implements I_C_LabelAssignment, I_Pe
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 7 - System - Client - Org 
       */
     protected int get_AccessLevel()
     {

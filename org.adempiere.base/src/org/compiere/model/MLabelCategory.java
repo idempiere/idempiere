@@ -81,7 +81,7 @@ public class MLabelCategory extends X_C_LabelCategory implements ImmutablePOSupp
 	}
 
 	/**
-	 * 	Get All Label Categories (for AD_Client)
+	 * 	Get All Label Categories (for System and current Client)
 	 *	@param ctx context
 	 *	@return MLabelCategory
 	 */
@@ -98,9 +98,9 @@ public class MLabelCategory extends X_C_LabelCategory implements ImmutablePOSupp
 				return Arrays.stream(retValue).map(e -> {return new MLabelCategory(ctx, e).markImmutable();}).toArray(MLabelCategory[]::new);
 		}
 
-		List<MLabelCategory> list = new Query(ctx, Table_Name, null, null)
-				.setClient_ID()
-				.setOrderBy("IsDefault DESC, C_LabelCategory_ID")
+		List<MLabelCategory> list = new Query(ctx, Table_Name, "AD_Client_ID IN (0, ?)", null)
+				.setParameters(clientID)
+				.setOrderBy("AD_Client_ID DESC, IsDefault DESC, C_LabelCategory_ID")
 				.setOnlyActiveRecords(true)
 				.list();
 

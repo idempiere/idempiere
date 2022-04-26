@@ -850,3 +850,19 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 -- Apr 25, 2022, 10:21:10 AM CEST
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Name of new label',0,0,'Y',TO_TIMESTAMP('2022-04-25 10:21:09','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-25 10:21:09','YYYY-MM-DD HH24:MI:SS'),100,200748,'LabelPanelAddPopupTitle','D','ba88ecb6-4193-4463-954a-5c03e6b527c9')
 ;
+
+-- Apr 26, 2022, 1:54:32 PM CEST
+UPDATE AD_Table SET AccessLevel='7',Updated=TO_TIMESTAMP('2022-04-26 13:54:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=200338
+;
+
+-- Apr 26, 2022, 1:54:37 PM CEST
+UPDATE AD_Table SET AccessLevel='7',Updated=TO_TIMESTAMP('2022-04-26 13:54:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=200339
+;
+
+-- Apr 26, 2022, 1:54:40 PM CEST
+UPDATE AD_Table SET AccessLevel='7',Updated=TO_TIMESTAMP('2022-04-26 13:54:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=200340
+;
+
+-- Apr 26, 2022, 1:54:47 PM CEST
+UPDATE AD_Table SET AccessLevel='7',Updated=TO_TIMESTAMP('2022-04-26 13:54:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=200337
+;

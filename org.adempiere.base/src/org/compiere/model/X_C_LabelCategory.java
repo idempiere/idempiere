@@ -30,7 +30,7 @@ public class X_C_LabelCategory extends PO implements I_C_LabelCategory, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220415L;
+	private static final long serialVersionUID = 20220426L;
 
     /** Standard Constructor */
     public X_C_LabelCategory (Properties ctx, int C_LabelCategory_ID, String trxName)
@@ -65,7 +65,7 @@ public class X_C_LabelCategory extends PO implements I_C_LabelCategory, I_Persis
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 7 - System - Client - Org 
       */
     protected int get_AccessLevel()
     {

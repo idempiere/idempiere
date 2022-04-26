@@ -30,7 +30,7 @@ public class X_C_Label extends PO implements I_C_Label, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220415L;
+	private static final long serialVersionUID = 20220426L;
 
     /** Standard Constructor */
     public X_C_Label (Properties ctx, int C_Label_ID, String trxName)
@@ -63,7 +63,7 @@ public class X_C_Label extends PO implements I_C_Label, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 7 - System - Client - Org 
       */
     protected int get_AccessLevel()
     {

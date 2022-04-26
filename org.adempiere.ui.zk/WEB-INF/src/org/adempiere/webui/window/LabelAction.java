@@ -235,7 +235,7 @@ public class LabelAction implements IAction {
 			fLabelCat = new WTableDirEditor ("C_LabelCategory_ID", false, false, true, lookup);
 			fLabelCat.getComponent().addEventListener(Events.ON_SELECT, this);
 
-			int defaultID = DB.getSQLValueEx(null, "SELECT C_LabelCategory_ID FROM C_LabelCategory WHERE AD_Client_ID = ? AND IsDefault = 'Y' AND IsActive = 'Y'", Env.getAD_Client_ID(Env.getCtx()));
+			int defaultID = MLabelCategory.getDefaultID(Env.getCtx());
 			if (defaultID > 0) {
 				fLabelCat.setValue(defaultID);
 				initTable();
@@ -372,7 +372,7 @@ public class LabelAction implements IAction {
 
 				fLabel.removeAllItems();
 
-				List<List<Object>> rows = DB.getSQLArrayObjectsEx(null, "SELECT C_Label_ID, Name FROM C_Label WHERE C_LabelCategory_ID = ? ORDER BY Name", fLabelCat.getValue());
+				List<List<Object>> rows = DB.getSQLArrayObjectsEx(null, "SELECT C_Label_ID, Name FROM C_Label WHERE C_LabelCategory_ID = ? AND AD_Client_ID IN (0, ?) ORDER BY Name", fLabelCat.getValue(), Env.getAD_Client_ID(Env.getCtx()));
 				if (rows != null && rows.size() > 0) {
 					for (List<Object> row : rows) {
 						KeyNamePair key = new KeyNamePair(((BigDecimal) row.get(0)).intValue(), (String) row.get(1)); 
@@ -433,13 +433,12 @@ public class LabelAction implements IAction {
 		{
 			table.clearTable();
 
-			StringBuilder whereClause = new StringBuilder("AD_Table_ID = ? AND Record_ID = ?"); 
+			StringBuilder whereClause = new StringBuilder("AD_Client_ID IN (0, ?) AND AD_Table_ID = ? AND Record_ID = ?"); 
 			if (fLabelCat.getValue() != null)
 				whereClause.append(" AND C_LabelCategory_ID = ").append(fLabelCat.getValue());
 
 			Query query = new Query(Env.getCtx(), MTable.get(Env.getCtx(), MLabelAssignment.Table_Name), whereClause.toString(), null)
-			.setParameters(m_tableID, m_recordID)
-			.setClient_ID(true)
+			.setParameters(Env.getAD_Client_ID(Env.getCtx()), m_tableID, m_recordID)
 			.setOrderBy(MLabelAssignment.COLUMNNAME_C_LabelCategory_ID + ", " + MLabelAssignment.COLUMNNAME_Created);
 			List<MLabelAssignment> list = query.list();
 
