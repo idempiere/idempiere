@@ -716,6 +716,10 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 				});
 			}
 			setSclass("chosenbox-assistant-dialog");
+
+			addCallback(AFTER_PAGE_DETACHED, t -> {
+				WChosenboxListEditor.this.getComponent().getChosenbox().focus();
+			});
 		}
 
 		private void init() {
@@ -791,8 +795,13 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 
 			// available (data - available)
 			String validationCode = gridField.getVO().ValidationCode;
-			if (!Util.isEmpty(validationCode))
-				validationCode = Env.parseContext(Env.getCtx(), gridField.getWindowNo(), validationCode, true, true);
+			if (!Util.isEmpty(validationCode)) {
+				validationCode = Env.parseContext(Env.getCtx(), gridField.getWindowNo(), gridField.getVO().TabNo, validationCode, false);
+				if (Util.isEmpty(validationCode, true)) {
+					//not validated, ensure list is empty
+					validationCode = "1=2";
+				}
+			}
 
 			for (ValueNamePair vnp : MRefList.getList(Env.getCtx(), refID, false, validationCode, "")) {
 
@@ -833,7 +842,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		private void initListboxAndModel(Listbox lb, SimpleListModel model, EventListener<Event> mouseListener, EventListener<Event> crossListMouseListener, boolean isItemDraggable, String headerLabel, Hlayout buttonsLayout) {
 			lb.addEventListener(Events.ON_RIGHT_CLICK, this);
 			ZKUpdateUtil.setHflex(lb, "1");
-			lb.setRows(15);
+			ZKUpdateUtil.setVflex(lb, true);
 
 			if (mouseListener != null)
 				lb.addDoubleClickListener(mouseListener);
@@ -866,6 +875,8 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			hl.setValign("middle");
 			for (Component comp : comps)
 				hl.appendChild(comp);
+			hl.setVflex("1");
+			hl.setStyle("margin-bottom: 5px;");
 			return hl;
 		}
 

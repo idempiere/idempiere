@@ -306,8 +306,8 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 			.append(language).append("')");
 		sql.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_ID);
 
-		if (!Util.isEmpty(additionalWhereClause))
-			sql.append(" AND ").append(additionalWhereClause);
+		if (!Util.isEmpty(additionalWhereClause, true))
+			sql.append(" AND (").append(additionalWhereClause).append(")");
 
 		sql.append(AspFilter.toString());
 		if (orderByValue)
