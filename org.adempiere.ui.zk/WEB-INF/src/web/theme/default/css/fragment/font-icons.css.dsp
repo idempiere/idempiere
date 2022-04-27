@@ -343,3 +343,6 @@
 .z-icon-ZoomAcross:before {	
 	content: "\f00e";
 }
+.z-icon-ReRun:before {	
+	content: "\f144";
+}

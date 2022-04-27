@@ -237,6 +237,7 @@ public class ReportCtl
 	static public boolean startStandardReport (ProcessInfo pi, int WindowNo)
 	{
 		ReportEngine re = null;
+		MProcess process = new MProcess(Env.getCtx(), pi.getAD_Process_ID(), null);
 		//
 		// Create Report Engine by using attached MPrintFormat (if any)
 		Object o = pi.getTransientObject();
@@ -266,6 +267,8 @@ public class ReportCtl
 		}
 		re.setLanguageID(pi.getLanguageID());
 		re.setWindowNo(WindowNo);
+		if(process.isReport())
+			re.setIsOverride(true);
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
 	}	//	startStandardReport

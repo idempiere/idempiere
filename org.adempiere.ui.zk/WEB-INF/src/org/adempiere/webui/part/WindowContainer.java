@@ -25,6 +25,7 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.TabbedDesktop;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.session.SessionManager;
@@ -635,6 +636,28 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     		return insertBefore((Tab)refTab.getNextSibling(), comp, title, closeable, enable, decorateInfo);
     }
 
+    public Tab insertOverride(Tab refTab, Window comp, String title, boolean closeable, boolean enable, DecorateInfo decorateInfo) {
+    	 
+         if (refTab == null)  
+         {
+         	tabbox.getTabs().getChildren();
+         }
+         else
+         {
+         	org.zkoss.zul.Tabpanel refpanel = refTab.getLinkedPanel();
+         	Component oldWindow = refpanel.getFirstChild();
+         	if(oldWindow instanceof Window) {
+         		((Window)oldWindow).setParent(null);
+         		((Window) oldWindow).onClose();
+         		comp.setParent(refpanel);
+         	}
+         }
+         if (title != null) 
+         {
+ 	        setTabTitle(title, refTab);
+         }
+        return refTab;
+    }
     /**
      * 
      * @param tab

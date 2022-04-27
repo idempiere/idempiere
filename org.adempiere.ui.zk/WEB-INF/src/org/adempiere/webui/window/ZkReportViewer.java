@@ -41,6 +41,7 @@ import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
@@ -83,6 +84,7 @@ import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
+import org.compiere.process.ProcessInfo;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -194,6 +196,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	protected Listbox previewType = new Listbox();
 	
 	private ToolBarButton bRefresh = new ToolBarButton();
+	private ToolBarButton bReRun = new ToolBarButton();
 	private Iframe iframe;
 	
 	private Checkbox summary = new Checkbox();
@@ -694,7 +697,30 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 		if (ThemeManager.isUseFontIconForImage())
 			LayoutUtils.addSclass("medium-toolbarbutton", bRefresh);
-
+		
+		MPrintFormat pf = m_reportEngine.getPrintFormat();
+		if (pf != null) {
+			if(!pf.isForm()) {
+				bReRun.setName("ReRun");
+				if (ThemeManager.isUseFontIconForImage())
+					bReRun.setIconSclass("z-icon-ReRun");
+				else
+					bReRun.setImage(ThemeManager.getThemeResource("images/Requery24.png"));
+				bReRun.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ReRun")));
+				if (toolbarPopup != null)
+				{
+					toolbarPopupLayout.appendChild(bReRun);
+					bReRun.setLabel(bReRun.getTooltiptext());
+				}
+				else
+					toolBar.appendChild(bReRun);
+				bReRun.addEventListener(Events.ON_CLICK, this);
+				if (ThemeManager.isUseFontIconForImage())
+					LayoutUtils.addSclass("medium-toolbarbutton", bReRun);
+			}
+		}
+			
+		
 		bWizard.setName("Wizard");
 		if (ThemeManager.isUseFontIconForImage())
 			bWizard.setIconSclass("z-icon-Wizard");
@@ -1274,6 +1300,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			cmd_Wizard();
 		else if (e.getTarget() == bRefresh)
 			cmd_report();
+		else if (e.getTarget() == bReRun)
+			cmd_reRun();
 		//
 		else if (e.getTarget() == m_ddM)
 			cmd_window(m_ddQ);
@@ -1458,6 +1486,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		postRenderReportEvent();
 	}	//	cmd_report
 
+	/**
+	 * Refresh With Parameters
+	 */
+	private void cmd_reRun() {
+		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
+		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
+		ProcessModalDialog processModalDialog = new ProcessModalDialog(m_WindowNo, pi, false, true);
+		AEnv.showWindow(processModalDialog);
+	}	// cmd_refreshWithParameters
+	
 	protected void setLanguage (){
 		if (MClient.get(m_ctx).isMultiLingualDocument() && wLanguage.getValue() != null){
 			MLanguage language = new MLanguage (m_ctx, (int)wLanguage.getValue(), null);

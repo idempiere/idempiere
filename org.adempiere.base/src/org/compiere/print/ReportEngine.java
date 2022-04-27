@@ -238,6 +238,8 @@ public class ReportEngine implements PrintServiceAttributeListener
 	
 	private String m_name = null;
 	
+	private boolean m_isOverride = false;
+	
 	/**
 	 * store all column has same css rule into a list
 	 * for IDEMPIERE-2640
@@ -2390,6 +2392,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return reportType;
 	}
 	
+	public boolean isOverride() {
+		return m_isOverride;
+	}
+
+	public void setIsOverride(boolean m_isOverride) {
+		this.m_isOverride = m_isOverride;
+	}
+
 	/**
 	 * build css for table from mapCssInfo
 	 * @param doc
