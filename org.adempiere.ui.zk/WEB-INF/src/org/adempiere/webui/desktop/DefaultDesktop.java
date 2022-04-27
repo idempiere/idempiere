@@ -122,7 +122,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7189914859100400758L;
+	private static final long serialVersionUID = 5619838970459655099L;
 
 	private static final String IMAGES_UPARROW_PNG = "images/collapse-header.png";
 
@@ -1094,43 +1094,50 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		.append(" AND tfn.IsActive = 'Y' AND tfn.LoginOpenSeqNo >= 0 ")
 		.append(" ORDER BY tfn.LoginOpenSeqNo ");
 
+		ClassLoader currentCL = Thread.currentThread().getContextClassLoader();
+
 		List<List<Object>> rows = DB.getSQLArrayObjectsEx(null, sql.toString());
 		if (rows != null && rows.size() > 0) {
 			for (List<Object> row : rows) {
 
-				String action = (String) row.get(0);
-				int recordID = ((BigDecimal) row.get(1)).intValue();
-				int menuID = ((BigDecimal) row.get(2)).intValue();
+				try {
+					String action = (String) row.get(0);
+					int recordID = ((BigDecimal) row.get(1)).intValue();
+					int menuID = ((BigDecimal) row.get(2)).intValue();
 
-				if (action.equals(MMenu.ACTION_Form)) {
-					Boolean access = MRole.getDefault().getFormAccess(recordID);
-					if (access != null && access)
-						SessionManager.getAppDesktop().openForm(recordID);
+					if (action.equals(MMenu.ACTION_Form)) {
+						Boolean access = MRole.getDefault().getFormAccess(recordID);
+						if (access != null && access)
+							SessionManager.getAppDesktop().openForm(recordID);
+					}
+					else if (action.equals(MMenu.ACTION_Info)) {
+						Boolean access = MRole.getDefault().getInfoAccess(recordID);
+						if (access != null && access)
+							SessionManager.getAppDesktop().openInfo(recordID);
+					}
+					else if (action.equals(MMenu.ACTION_Process) || action.equals(MMenu.ACTION_Report)) {
+						Boolean access = MRole.getDefault().getProcessAccess(recordID);
+						if (access != null && access)
+							SessionManager.getAppDesktop().openProcessDialog(recordID, DB.getSQLValueStringEx(null, "SELECT IsSOTrx FROM AD_Menu WHERE AD_Menu_ID = ?", menuID).equals("Y"));
+					}
+					else if (action.equals(MMenu.ACTION_Task)) {
+						Boolean access = MRole.getDefault().getTaskAccess(recordID);
+						if (access != null && access)
+							SessionManager.getAppDesktop().openTask(recordID);
+					}
+					else if (action.equals(MMenu.ACTION_Window)) {
+						Boolean access = MRole.getDefault().getWindowAccess(recordID);
+						if (access != null && access)
+							SessionManager.getAppDesktop().openWindow(recordID, null);
+					}
+					else if (action.equals(MMenu.ACTION_WorkFlow)) {
+						Boolean access = MRole.getDefault().getWorkflowAccess(recordID);
+						if (access != null && access)
+							SessionManager.getAppDesktop().openWorkflow(recordID);
+					}
 				}
-				else if (action.equals(MMenu.ACTION_Info)) {
-					Boolean access = MRole.getDefault().getInfoAccess(recordID);
-					if (access != null && access)
-						SessionManager.getAppDesktop().openInfo(recordID);
-				}
-				else if (action.equals(MMenu.ACTION_Process) || action.equals(MMenu.ACTION_Report)) {
-					Boolean access = MRole.getDefault().getProcessAccess(recordID);
-					if (access != null && access)
-						SessionManager.getAppDesktop().openProcessDialog(recordID, DB.getSQLValueStringEx(null, "SELECT IsSOTrx FROM AD_Menu WHERE AD_Menu_ID = ?", menuID).equals("Y"));
-				}
-				else if (action.equals(MMenu.ACTION_Task)) {
-					Boolean access = MRole.getDefault().getTaskAccess(recordID);
-					if (access != null && access)
-						SessionManager.getAppDesktop().openTask(recordID);
-				}
-				else if (action.equals(MMenu.ACTION_Window)) {
-					Boolean access = MRole.getDefault().getWindowAccess(recordID);
-					if (access != null && access)
-						SessionManager.getAppDesktop().openWindow(recordID, null);
-				}
-				else if (action.equals(MMenu.ACTION_WorkFlow)) {
-					Boolean access = MRole.getDefault().getWorkflowAccess(recordID);
-					if (access != null && access)
-						SessionManager.getAppDesktop().openWorkflow(recordID);
+				finally {
+					Thread.currentThread().setContextClassLoader(currentCL);
 				}
 			}
 		}
