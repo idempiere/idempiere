@@ -1329,6 +1329,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		
 		query.setParameters(lsParameter);
 		
+		query.setOnlyActiveRecords(true);
 		query.setOrderBy(" ORDER BY AD_Client_ID DESC, IsDefault DESC, Name ");
 		
 		// query print fomart just in this client  
