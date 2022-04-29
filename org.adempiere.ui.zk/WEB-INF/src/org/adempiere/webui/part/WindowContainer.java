@@ -16,6 +16,7 @@ package org.adempiere.webui.part;
 import java.util.List;
 
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tab.DecorateInfo;
@@ -647,7 +648,8 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
          	org.zkoss.zul.Tabpanel refpanel = refTab.getLinkedPanel();
          	Component oldWindow = refpanel.getFirstChild();
          	if(oldWindow instanceof Window) {
-         		((Window)oldWindow).setParent(null);
+         		if(oldWindow instanceof ProcessDialog)
+         			((ProcessDialog)oldWindow).unlockUI(null);
          		((Window) oldWindow).onClose();
          		comp.setParent(refpanel);
          	}
