@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-220124" sequenceNumber="1643026597">
+<target name="idempiere-220428" sequenceNumber="1643026598">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="zcommon" version="9.6.1"/>
@@ -1491,6 +1491,13 @@ Export-Package:        *;version="${version}";-noimport:=true
       <artifactId>classgraph</artifactId>
       <version>4.8.138</version>
       <type>jar</type>
+	</location>
+	<!-- AssertJ -->
+	<location includeSource="true" missingManifest="error" type="Maven">
+	  <groupId>org.assertj</groupId>
+	  <artifactId>assertj-core</artifactId>
+	  <version>3.22.0</version>
+	  <type>jar</type>
 	</location>
   </locations>
 </target>

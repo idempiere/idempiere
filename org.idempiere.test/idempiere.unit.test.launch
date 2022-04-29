@@ -66,6 +66,7 @@
     <stringAttribute key="product" value="org.adempiere.server.server_product"/>
     <booleanAttribute key="run_in_ui_thread" value="true"/>
     <setAttribute key="selected_target_bundles">
+        <setEntry value="assertj-core@default:default"/>
         <setEntry value="bcmail@default:default"/>
         <setEntry value="bcpg*1.69.0@default:default"/>
         <setEntry value="bcpkix@default:default"/>
