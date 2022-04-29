@@ -44,11 +44,10 @@ import org.compiere.util.Msg;
  *
  */
 public class MBankTransfer extends X_C_BankTransfer implements DocAction {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4627319422026564157L;
+	private static final long serialVersionUID = -6091468617167291836L;
 
 	/**
 	 * 
@@ -434,4 +433,15 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 	public BigDecimal getApprovalAmt() {
 		return getFrom_Amt();
 	}
+
+	/**
+	 * 	String Representation
+	 *	@return info
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder ("MBankTransfer[");
+		sb.append(get_ID()).append("-").append(getDocumentNo());
+		return sb.toString ();
+	}	//	toString
+
 }

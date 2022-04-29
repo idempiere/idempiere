@@ -12,6 +12,7 @@
  * For the text or an alternative of this public license, you may reach us    *
  * Copyright (C) 2003-2008 e-Evolution,SC. All Rights Reserved.               *
  * Contributor(s): Victor Perez www.e-evolution.com                           *
+ *                 Carlos Ruiz - globalqss - bxservice                        *
  *****************************************************************************/
 package org.eevolution.process;
 
@@ -20,7 +21,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
-import org.compiere.model.MBankAccount;
+import org.compiere.model.MBankTransfer;
 import org.compiere.model.MPayment;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -28,17 +29,17 @@ import org.compiere.util.AdempiereUserError;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
- 
+
 /**
  *  Bank Transfer. Generate two Payments entry
  *  
  *  For Bank Transfer From Bank Account "A" 
  *                 
  *	@author victor.perez@e-evoltuion.com
+ *  @author Carlos Ruiz - globalqss - bxservice - add create bank transfer document
  *	
  **/
 @org.adempiere.base.annotation.Process
-@Deprecated
 public class BankTransfer extends SvrProcess
 {
 	private String 		p_DocumentNo= "";				// Document No
@@ -54,6 +55,7 @@ public class BankTransfer extends SvrProcess
 	private Timestamp	p_StatementDate = null;  		// Date Statement
 	private Timestamp	p_DateAcct = null;  			// Date Account
 	private int         p_AD_Org_ID = 0;
+	private boolean		p_IsCreateBankTransferDoc = false;		// Create bank transfer document?
 	private int         m_created = 0;
 
 	/**
@@ -89,6 +91,8 @@ public class BankTransfer extends SvrProcess
 				p_DateAcct = (Timestamp)para[i].getParameter();
 			else if (name.equals("AD_Org_ID"))
 				p_AD_Org_ID = para[i].getParameterAsInt();
+			else if (name.equals("IsCreateBankTransferDoc"))
+				p_IsCreateBankTransferDoc = para[i].getParameterAsBoolean();
 			else
 				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
 		}
@@ -104,7 +108,7 @@ public class BankTransfer extends SvrProcess
 		if (log.isLoggable(Level.INFO)) log.info("From Bank="+p_From_C_BankAccount_ID+" - To Bank="+p_To_C_BankAccount_ID
 				+ " - C_BPartner_ID="+p_C_BPartner_ID+"- C_Charge_ID= "+p_C_Charge_ID+" - Amount="+p_Amount+" - DocumentNo="+p_DocumentNo
 				+ " - Description="+p_Description+ " - Statement Date="+p_StatementDate+
-				" - Date Account="+p_DateAcct);
+				" - Date Account="+p_DateAcct+ " - Create Bank Transfer Doc="+p_IsCreateBankTransferDoc);
 
 		if (p_To_C_BankAccount_ID == 0 || p_From_C_BankAccount_ID == 0)
 			throw new AdempiereUserError (Msg.parseTranslation(getCtx(), "@FillMandatory@: @To_C_BankAccount_ID@, @From_C_BankAccount_ID@"));
@@ -136,7 +140,10 @@ public class BankTransfer extends SvrProcess
 		if (p_DateAcct == null)
 			p_DateAcct = p_StatementDate;
 
-		generateBankTransfer();
+		if (p_IsCreateBankTransferDoc)
+			generateBankTransferDoc();
+		else
+			generateBankTransfer();
 		return "@Created@ = " + m_created;
 	}	//	doIt
 	
@@ -147,12 +154,8 @@ public class BankTransfer extends SvrProcess
 	 */
 	private void generateBankTransfer()
 	{
-
-		MBankAccount mBankFrom = new MBankAccount(getCtx(),p_From_C_BankAccount_ID, get_TrxName());
-		MBankAccount mBankTo = new MBankAccount(getCtx(),p_To_C_BankAccount_ID, get_TrxName());
-		
 		MPayment paymentBankFrom = new MPayment(getCtx(), 0 ,  get_TrxName());
-		paymentBankFrom.setC_BankAccount_ID(mBankFrom.getC_BankAccount_ID());
+		paymentBankFrom.setC_BankAccount_ID(p_From_C_BankAccount_ID);
 		paymentBankFrom.setAD_Org_ID(p_AD_Org_ID);
 		if (!Util.isEmpty(p_DocumentNo, true))
 			paymentBankFrom.setDocumentNo(p_DocumentNo);
@@ -180,7 +183,7 @@ public class BankTransfer extends SvrProcess
 		m_created++;
 
 		MPayment paymentBankTo = new MPayment(getCtx(), 0 ,  get_TrxName());
-		paymentBankTo.setC_BankAccount_ID(mBankTo.getC_BankAccount_ID());
+		paymentBankTo.setC_BankAccount_ID(p_To_C_BankAccount_ID);
 		paymentBankTo.setAD_Org_ID(p_AD_Org_ID);
 		if (!Util.isEmpty(p_DocumentNo, true))
 			paymentBankTo.setDocumentNo(p_DocumentNo);
@@ -206,8 +209,58 @@ public class BankTransfer extends SvrProcess
 				null, paymentBankTo.getC_DocType().getName() + " " + paymentBankTo.getDocumentNo(),
 				MPayment.Table_ID, paymentBankTo.getC_Payment_ID());
 		m_created++;
-		return;
-
 	}  //  generateBankTransfer
-	
+
+	/**
+	 * Generate Bank Transfer Document
+	 * @throws Exception 
+	 *
+	 */
+	private void generateBankTransferDoc() throws Exception {
+		MBankTransfer bt = new MBankTransfer(getCtx(), 0, get_TrxName());
+		bt.setAD_Org_ID(p_AD_Org_ID);
+		bt.setDescription(p_Description);
+		if (!Util.isEmpty(p_DocumentNo, true))
+			bt.setDocumentNo(p_DocumentNo);
+		bt.setPayDate(p_StatementDate);
+		bt.setDateAcct(p_DateAcct);
+		bt.setFrom_C_BankAccount_ID(p_From_C_BankAccount_ID);
+		bt.setTo_C_BankAccount_ID(p_To_C_BankAccount_ID);
+		bt.setFrom_AD_Org_ID(p_AD_Org_ID);
+		bt.setTo_AD_Org_ID(p_AD_Org_ID);
+		bt.setFrom_C_Charge_ID(p_C_Charge_ID);
+		bt.setTo_C_Charge_ID(p_C_Charge_ID);
+		bt.setFrom_C_Currency_ID(p_C_Currency_ID);
+		bt.setTo_C_Currency_ID(p_C_Currency_ID);
+		bt.setFrom_Amt(p_Amount);
+		bt.setTo_Amt(p_Amount);
+		bt.setFrom_C_BPartner_ID(p_C_BPartner_ID);
+		bt.setTo_C_BPartner_ID(p_C_BPartner_ID);
+		bt.setFrom_TenderType(MPayment.TENDERTYPE_DirectDeposit);
+		bt.setTo_TenderType(MPayment.TENDERTYPE_DirectDeposit);
+		if (p_C_ConversionType_ID > 0)
+			bt.setC_ConversionType_ID(p_C_ConversionType_ID);
+		bt.setIsOverrideCurrencyRate(false);
+		bt.saveEx();
+
+		if(!bt.processIt(MBankTransfer.DOCACTION_Complete)) {
+			log.warning("Bank Transfer Process Failed: " + bt + " - " + bt.getProcessMsg());
+			throw new IllegalStateException("Bank Transfer Process Failed: " + bt + " - " + bt.getProcessMsg());
+		}
+		bt.saveEx();
+
+		addBufferLog(bt.getC_BankTransfer_ID(), bt.getPayDate(),
+				null, bt.getDocumentNo(),
+				MBankTransfer.Table_ID, bt.getC_BankTransfer_ID());
+		m_created++;
+		
+		MPayment[] payments = MPayment.getOfBankTransfer(getCtx(), bt.getC_BankTransfer_ID(), get_TrxName());
+		for (MPayment payment : payments) {
+			addBufferLog(payment.getC_Payment_ID(), payment.getDateTrx(),
+					null, payment.getC_DocType().getName() + " " + payment.getDocumentNo(),
+					MPayment.Table_ID, payment.getC_Payment_ID());
+			m_created++;
+		}
+	}  //  generateBankTransfer
+
 }	//	BankTransfer

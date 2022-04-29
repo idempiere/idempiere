@@ -88,7 +88,7 @@ public class MPayment extends X_C_Payment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3236788845265387613L;
+	private static final long serialVersionUID = -1581098289090430363L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -111,6 +111,24 @@ public class MPayment extends X_C_Payment
 		return retValue;
 	}	//	getOfBPartner
 	
+	/**
+	 * 	Get Payments of Bank Transfer
+	 *	@param ctx context
+	 *	@param C_BankTransfer_ID id
+	 *	@param trxName transaction
+	 *	@return array
+	 */
+	public static MPayment[] getOfBankTransfer (Properties ctx, int C_BankTransfer_ID, String trxName)
+	{
+		final String whereClause = "C_BankTransfer_ID=?";
+		List <MPayment> list = new Query(ctx, Table_Name, whereClause, trxName)
+				.setParameters(C_BankTransfer_ID)
+				.setOrderBy(COLUMNNAME_C_Payment_ID)
+				.list();
+		MPayment[] retValue = new MPayment[list.size()];
+		list.toArray(retValue);
+		return retValue;
+	}	//	getOfBankTransfer
 	
 	/**************************************************************************
 	 *  Default Constructor
