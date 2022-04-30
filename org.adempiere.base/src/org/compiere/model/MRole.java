@@ -743,6 +743,9 @@ public final class MRole extends X_AD_Role
 	 */
 	private void loadOrgAccessUser(ArrayList<OrgAccess> list)
 	{
+		if (getAD_User_ID() == -1) {
+			log.severe("Trying to load Org Access from User but user has not been set");
+		}
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		String sql = "SELECT * FROM AD_User_OrgAccess "
@@ -2784,6 +2787,7 @@ public final class MRole extends X_AD_Role
 		final int AD_User_ID = getAD_User_ID();
 		if (AD_User_ID < 0)
 		{
+			log.severe("Trying to load Child Roles but user has not been set");
 			//throw new IllegalStateException("AD_User_ID is not set");
 			return ;
 		}
@@ -2819,6 +2823,7 @@ public final class MRole extends X_AD_Role
 		final int AD_User_ID = getAD_User_ID();
 		if (AD_User_ID < 0)
 		{
+			log.severe("Trying to load Substituted Roles but user has not been set");
 			//throw new IllegalStateException("AD_User_ID is not set");
 			return;
 		}

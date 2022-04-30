@@ -113,6 +113,7 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		Div htmlDiv = new Div();
 		//textMsgContent = new Label();
 		htmlDiv.appendChild(textMsgContent);
+		center.setAutoscroll(true);
 		textMsgContent.setContent(mbMessages.get(0).get_Translation(MBroadcastMessage.COLUMNNAME_BroadcastMessage));
 		htmlDiv.setFocus(true);
 		htmlDiv.setStyle("display: table-cell; vertical-align: middle; text-align: center;");

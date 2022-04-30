@@ -38,7 +38,7 @@ public class MUserQuery extends X_AD_UserQuery
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3606227368868305024L;
+	private static final long serialVersionUID = -5640578235804864422L;
 
 	/**
 	 * 	Get all active queries of client for Tab
@@ -250,6 +250,26 @@ public class MUserQuery extends X_AD_UserQuery
 		}
 		return retValue;
 	}	//	get
+	
+	/**
+	 * 	Get Specific Tab Query 
+	 *  Private or globall
+	 *	@param ctx context
+	 *	@param AD_Tab_ID tab
+	 *	@param name name
+	 *	@return query or null
+	 */
+	public static MUserQuery getUserQueryByName(Properties ctx, int AD_Tab_ID, String name)
+	{
+		String sqlWhere = " AD_Client_ID=? AND AD_Tab_ID=? AND UPPER(Name) LIKE ? "
+			 + "AND (AD_User_ID = ? OR AD_User_ID IS NULL) ";
+
+		return new Query(ctx, Table_Name, sqlWhere, null)
+				.setParameters(Env.getAD_Client_ID (ctx), AD_Tab_ID, name.toUpperCase(), Env.getAD_User_ID(ctx))
+				.setOnlyActiveRecords(true)
+				.setOrderBy("Name")
+				.first();
+	}	//	getUserQueryByName
 
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MUserQuery.class);
@@ -287,6 +307,32 @@ public class MUserQuery extends X_AD_UserQuery
 		} else {
 			setAD_Window_ID(0);
 		}
+		return true;
+	}
+	
+	/**
+	 * Returns true if the current user can save the query privately
+	 * @return
+	 */
+	public boolean userCanSave() {
+		if (getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx()) || //Cannot modify a query from another client (e.g. System) 
+				getAD_User_ID() != Env.getAD_User_ID(Env.getCtx()) || //Cannot save a query from a different user
+				get_Value(COLUMNNAME_AD_User_ID) == null) //Cannot save privately (user-specific) an already existing global query
+			return false;
+
+		return true;
+	}
+	
+	/**
+	 * Returns true if the current users has permission
+	 * to share or modify the query globally
+	 * @return
+	 */
+	public boolean userCanShare() {
+		if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()) || //Share button only works for roles with preference level = Client
+        		getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx())) //Cannot modify a query from another client (e.g. System) 
+			return false;
+
 		return true;
 	}
 

@@ -110,6 +110,7 @@ public class GridTable extends AbstractTableModel
 	public static final String DATA_UPDATE_COPIED_MESSAGE = "UpdateCopied";
 	public static final String DATA_INSERTED_MESSAGE = "Inserted";
 	public static final String DATA_IGNORED_MESSAGE = "Ignored";
+	public static final String DATA_SAVED_MESSAGE = "Saved";
 
 	/**
 	 *	JDBC Based Buffered Table

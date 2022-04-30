@@ -428,6 +428,19 @@ public interface I_AD_User
 	  */
 	public boolean isAddMailTextAutomatically();
 
+    /** Column name IsBillTo */
+    public static final String COLUMNNAME_IsBillTo = "IsBillTo";
+
+	/** Set Invoice Address.
+	  * Business Partner Invoice/Bill Address
+	  */
+	public void setIsBillTo (boolean IsBillTo);
+
+	/** Get Invoice Address.
+	  * Business Partner Invoice/Bill Address
+	  */
+	public boolean isBillTo();
+
     /** Column name IsExpired */
     public static final String COLUMNNAME_IsExpired = "IsExpired";
 
@@ -515,6 +528,19 @@ public interface I_AD_User
 	  * This contact is a sales lead
 	  */
 	public boolean isSalesLead();
+
+    /** Column name IsShipTo */
+    public static final String COLUMNNAME_IsShipTo = "IsShipTo";
+
+	/** Set Ship Address.
+	  * Business Partner Shipment Address
+	  */
+	public void setIsShipTo (boolean IsShipTo);
+
+	/** Get Ship Address.
+	  * Business Partner Shipment Address
+	  */
+	public boolean isShipTo();
 
     /** Column name IsSupportUser */
     public static final String COLUMNNAME_IsSupportUser = "IsSupportUser";

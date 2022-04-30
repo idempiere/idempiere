@@ -1449,4 +1449,12 @@ public class DB_Oracle implements AdempiereDatabase
 		
 		return builder.toString();
 	}	
+
+	/**
+	 * @return variable length character data type suffix
+	 */
+	public String getVarcharLengthSuffix() {
+		return " CHAR";
+	};
+
 }   //  DB_Oracle

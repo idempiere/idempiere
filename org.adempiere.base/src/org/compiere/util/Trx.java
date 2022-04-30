@@ -513,7 +513,17 @@ public class Trx
 			return null;
 		}
 	}
-	
+
+	private Savepoint m_lastWFSavepoint = null; 
+
+	public synchronized void setLastWFSavepoint(Savepoint savepoint) {
+		m_lastWFSavepoint = savepoint;
+	}
+
+	public synchronized Savepoint getLastWFSavepoint() {
+		return m_lastWFSavepoint;
+	}
+
 	/**
 	 * Release Savepoint
 	 * @param savepoint

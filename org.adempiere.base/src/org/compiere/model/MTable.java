@@ -84,7 +84,7 @@ public class MTable extends X_AD_Table
 	 *	@param trxName transaction
 	 *	@return MTable
 	 */
-	public static MTable get (Properties ctx, int AD_Table_ID, String trxName)
+	public static synchronized MTable get (Properties ctx, int AD_Table_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(AD_Table_ID);
 		MTable retValue = s_cache.get (key);

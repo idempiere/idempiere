@@ -166,6 +166,7 @@ public class MDistribution extends X_GL_Distribution
 		List<MDistribution> list = new Query(ctx,I_GL_Distribution.Table_Name,whereClause,null)
 			.setClient_ID()
 			.setParameters(parameters)
+			.setOrderBy("SeqNo, GL_Distribution_ID")
 			.list();
 		//
 		retValue = new MDistribution[list.size ()];

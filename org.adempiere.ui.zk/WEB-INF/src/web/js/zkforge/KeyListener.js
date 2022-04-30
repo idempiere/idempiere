@@ -45,10 +45,21 @@ zkforge.KeyListener = zk.$extends(zul.Widget, {
 		
 		var self = this;
 		jq(document).ready(function () { 
-			jq(document).keydown(function (evt) {
-				self.keyDown(evt);
-			});
+			jq(document).keydown(self, self.keyDownHandle);
 		});
+	},
+	
+	unbind_: function (skipper, after) {
+		this.$supers('unbind_', arguments);
+		
+		var self = this;
+		jq(document).off("keydown", self.keyDownHandle);
+	},
+	
+	keyDownHandle: function(evt){
+		var self = evt.data;
+		self.keyDown(evt);
+		
 	},
 	
 	keyDown: function(evt) {

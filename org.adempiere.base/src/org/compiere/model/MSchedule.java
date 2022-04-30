@@ -89,6 +89,9 @@ public class MSchedule extends X_AD_Schedule
 	 */
 	public boolean isOKtoRunOnIP()
 	{
+		if (!isActive()) {
+			return false;
+		}
 		String ipOnly = getRunOnlyOnIP();
 		// 0.0.0.0 = all ip address
 		if ((ipOnly == null) || (ipOnly.length() == 0) || "0.0.0.0".equals(ipOnly))
@@ -136,6 +139,17 @@ public class MSchedule extends X_AD_Schedule
 							if (log.isLoggable(Level.INFO)) log.info("Not Allowed here - IP=" + retVal+ " does not match " + ipOnly);
 						}
 					}
+				}
+			}
+			if (!chekIPFormat(ipOnly)) {
+				// verify with the local hostname
+				String retVal = InetAddress.getLocalHost().getHostName();
+				retVal = InetAddress.getLocalHost().getCanonicalHostName();
+				if (ipOnly.equals(retVal)) {
+					if (log.isLoggable(Level.INFO)) log.info("Allowed here - IP=" + retVal+ " match");
+					return true;
+				} else {
+					if (log.isLoggable(Level.INFO)) log.info("Not Allowed here - IP=" + retVal+ " does not match " + ipOnly);
 				}
 			}
 		} catch (Exception e) {

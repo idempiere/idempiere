@@ -48,57 +48,57 @@ public class MShipperFacade
 	
 	public String getShippingProcessorClass() 
 	{
-		return m_processor.getShippingProcessorClass();
+		return m_processor == null ? null : m_processor.getShippingProcessorClass();
 	}
 		
 	public String getConnectionKey() 
 	{
-		return m_processor.getConnectionKey();
+		return m_processor == null ? null : m_processor.getConnectionKey();
 	}
 	
 	public String getConnectionPassword() 
 	{
-		return m_processor.getConnectionPassword();
+		return m_processor == null ? null : m_processor.getConnectionPassword();
 	}
 	
 	public String getUserID() 
 	{
-		return m_processor.getUserID();
+		return m_processor == null ? null : m_processor.getUserID();
 	}
 	
 	public String getHostAddress() 
 	{
-		return m_processor.getHostAddress();
+		return m_processor == null ? null : m_processor.getHostAddress();
 	}
 	
 	public String getProxyAddress() 
 	{
-		return m_processor.getProxyAddress();
+		return m_processor == null ? null : m_processor.getProxyAddress();
 	}
 	
 	public int getHostPort() 
 	{
-		return m_processor.getHostPort();
+		return m_processor == null ? null : m_processor.getHostPort();
 	}
 	
 	public String getProxyLogon()
-	{		
-		return m_processor.getProxyLogon();
+	{
+		return m_processor == null ? null : m_processor.getProxyLogon();
 	}
 	
 	public String getProxyPassword() 
-	{		
-		return m_processor.getProxyPassword();
+	{
+		return m_processor == null ? null : m_processor.getProxyPassword();
 	}	
 	
 	public int getProxyPort() 
-	{		
-		return m_processor.getProxyPort();
+	{
+		return m_processor == null ? null : m_processor.getProxyPort();
 	}
 	
 	public String getServicePath() 
-	{		
-		return m_processor.getServicePath();
+	{
+		return m_processor == null ? null : m_processor.getServicePath();
 	}	
 	
 	public String getShippingServiceCode() 

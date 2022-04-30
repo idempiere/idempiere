@@ -244,7 +244,7 @@ public class WorkflowProcessor extends AdempiereServer
 		String sql = "SELECT * "
 			+ "FROM AD_WF_Activity a "
 			+ "WHERE Processed='N' AND WFState='OS'"	//	suspended
-			+ " AND EndWaitTime > SysDate"
+			+ " AND EndWaitTime < SysDate"
 			+ " AND (DateLastAlert IS NULL";
 		if (m_model.getRemindDays() > 0)
 			sql += " OR (DateLastAlert+" + m_model.getRemindDays() 

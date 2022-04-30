@@ -1166,5 +1166,21 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 			return 0;
 		return selectedUserQuery.getAD_UserQuery_ID();
 	}
-	
+
+	/**
+	 * Init Default Query in Window Toolbar
+	 * @return true if initialized
+	 */
+	public boolean initDefaultQuery() {
+		if(userQueries != null) {
+	        for (int i = 0; i < userQueries.length; i++) {
+	        	if(userQueries[i].isDefault()) {
+		       		fQueryName.setSelectedIndex(i);		       		
+		       		setSelectedUserQuery(userQueries[i]);
+		       		return true;		       		
+	        	}
+	        }
+		}
+		return false;
+	}
 }

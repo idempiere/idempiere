@@ -620,7 +620,11 @@ public abstract class SvrProcess implements ProcessCall
 			//save logging info even if context is lost
 			if (noContext)
 				Env.getCtx().put("#AD_Client_ID", m_pi.getAD_Client_ID());
-			
+
+			//clear interrupt signal so that we can unlock the ad_pinstance record
+			if (Thread.currentThread().isInterrupted())
+				Thread.interrupted();
+				
 			MPInstance mpi = new MPInstance (getCtx(), m_pi.getAD_PInstance_ID(), null);
 			if (mpi.get_ID() == 0)
 			{

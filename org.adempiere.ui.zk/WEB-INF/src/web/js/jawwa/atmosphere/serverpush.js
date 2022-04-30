@@ -58,7 +58,11 @@
       this.ajaxOptions.complete = function() {
     	  if (me.trace)
     		  console.log("complete"+ " dtid: " + me.desktop.id);
-    	  me._schedule();
+    	  if (me._req && me._req.statusText == "SessionNotFound" && me._req.status == 400) {
+    		  ;//stop sent request:IDEMPIERE-4237
+    	  } else {
+    		  me._schedule();
+    	  }
       };
     },
     _schedule: function() {

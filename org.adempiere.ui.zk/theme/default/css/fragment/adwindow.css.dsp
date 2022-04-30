@@ -278,6 +278,13 @@
 	}
 }
 
+@media screen and (min-width: 600px) {
+    /* Tablets and bigger */
+	.adwindow-detailpane-adtab-grid-south .z-paging ul>li {
+  		display: inline!important;
+	}
+}
+
 .activity-card {
 	border: 1px solid #d0cdc8;
 	border-top-left-radius: 2px;

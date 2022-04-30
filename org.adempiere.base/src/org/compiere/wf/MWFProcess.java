@@ -131,6 +131,7 @@ public class MWFProcess extends X_AD_WF_Process
 		setProcessed (false);
 		//	Lock Entity
 		getPO();
+		setAD_Org_ID(m_po.getAD_Org_ID());//Add by Hideaki Hagiwara
 		//hengsin: remove lock/unlock which is causing deadlock
 		//if (m_po != null)
 			//m_po.lock();

@@ -79,6 +79,14 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				return;
 			}
 
+			if (   !mColumn.is_new()
+				&& mColumn.is_ValueChanged(MColumn.COLUMNNAME_FieldLength)
+				&& mColumn.getFieldLength() < mColumn.get_ValueOldAsInt(MColumn.COLUMNNAME_FieldLength)
+				) {
+				// IDEMPIERE-1518 2Pack shoud not try to reduce column size
+				mColumn.setFieldLength(mColumn.get_ValueOldAsInt(MColumn.COLUMNNAME_FieldLength));
+			}
+
 			if (!mColumn.is_new() && !mColumn.is_Changed()) {
 				boolean syncDatabase = "Y".equalsIgnoreCase(getStringValue(element, "IsSyncDatabase"));
 				if (syncDatabase) {
@@ -87,7 +95,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				}
 				return;
 			}
-
+			
 			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Column.Table_Name, X_AD_Column.Table_ID);
 			String action = null;
 			if (!mColumn.is_new()) {

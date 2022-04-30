@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.sys.WebAppCtrl;
  */
 public class ZkAtmosphereHandler implements AtmosphereHandler {
 
+	private static final String SESSION_NOT_FOUND = "SessionNotFound";
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
     @Override
@@ -111,7 +112,7 @@ public class ZkAtmosphereHandler implements AtmosphereHandler {
     	Session session = WebManager.getSession(resource.getAtmosphereConfig().getServletContext(), request, false);
     	if (session == null) {
     		log.warn("Could not find session: " + request.getRequestURI());
-    		return new Either<String, Session>("Could not find session", null);
+    		return new Either<String, Session>(SESSION_NOT_FOUND, null);
     	} else {
     		return new Either<String, Session>(null, session);
     	}
@@ -128,7 +129,7 @@ public class ZkAtmosphereHandler implements AtmosphereHandler {
         if (error != null && serverPushEither.getRightValue() == null) {
         	if (log.isDebugEnabled())
         		log.warn("Bad Request. Error="+error+", Request="+resource.getRequest().getRequestURI());
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST, error);
             response.getWriter().write("");
             response.getWriter().flush();
             return;
