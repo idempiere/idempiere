@@ -88,7 +88,7 @@ public class MPayment extends X_C_Payment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3236788845265387613L;
+	private static final long serialVersionUID = -1581098289090430363L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -111,6 +111,24 @@ public class MPayment extends X_C_Payment
 		return retValue;
 	}	//	getOfBPartner
 	
+	/**
+	 * 	Get Payments of Bank Transfer
+	 *	@param ctx context
+	 *	@param C_BankTransfer_ID id
+	 *	@param trxName transaction
+	 *	@return array
+	 */
+	public static MPayment[] getOfBankTransfer (Properties ctx, int C_BankTransfer_ID, String trxName)
+	{
+		final String whereClause = "C_BankTransfer_ID=?";
+		List <MPayment> list = new Query(ctx, Table_Name, whereClause, trxName)
+				.setParameters(C_BankTransfer_ID)
+				.setOrderBy(COLUMNNAME_C_Payment_ID)
+				.list();
+		MPayment[] retValue = new MPayment[list.size()];
+		list.toArray(retValue);
+		return retValue;
+	}	//	getOfBankTransfer
 	
 	/**************************************************************************
 	 *  Default Constructor
@@ -2337,7 +2355,7 @@ public class MPayment extends X_C_Payment
 				aLine = new MAllocationLine (alloc, allocationAmt.negate(),
 					pa.getDiscountAmt().negate(), pa.getWriteOffAmt().negate(), pa.getOverUnderAmt().negate());
 			aLine.setDocInfo(pa.getC_BPartner_ID(), 0, pa.getC_Invoice_ID());
-			aLine.setPaymentInfo(getC_Payment_ID(), 0);
+			aLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
 			if (!aLine.save(get_TrxName()))
 				log.warning("P.Allocations - line not saved");
 			else
@@ -2780,7 +2798,7 @@ public class MPayment extends X_C_Payment
 		aLine = new MAllocationLine (alloc, reversal.getPayAmt(true), 
 			Env.ZERO, Env.ZERO, Env.ZERO);
 		aLine.setDocInfo(reversal.getC_BPartner_ID(), 0, 0);
-		aLine.setPaymentInfo(reversal.getC_Payment_ID(), 0);
+		aLine.setPaymentInfo(reversal.getC_Payment_ID(), 0, reversal.getC_BankTransfer_ID());
 		if (!aLine.save(get_TrxName()))
 			log.warning("Automatic allocation - reversal line not saved");
 		
