@@ -16,6 +16,7 @@ package org.adempiere.webui.part;
 import java.util.List;
 
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Tab;
@@ -32,6 +33,7 @@ import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.Env;
@@ -650,6 +652,10 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
          	if(oldWindow instanceof Window) {
          		if(oldWindow instanceof ProcessDialog)
          			((ProcessDialog)oldWindow).unlockUI(null);
+         		else if(oldWindow instanceof ZkReportViewer)
+    				((ZkReportViewer)oldWindow).hideBusyMask();
+    			else if(oldWindow instanceof AbstractADWindowContent)
+    				((AbstractADWindowContent)oldWindow).hideBusyMask();
          		((Window) oldWindow).onClose();
          		comp.setParent(refpanel);
          	}

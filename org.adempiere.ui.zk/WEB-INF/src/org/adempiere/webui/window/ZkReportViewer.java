@@ -700,7 +700,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		MPrintFormat pf = m_reportEngine.getPrintFormat();
 		if (pf != null) {
-			if(!pf.isForm()) {
+			if((!pf.isForm()) && (pf.getAD_ReportView_ID() > 0)) {
 				bReRun.setName("ReRun");
 				if (ThemeManager.isUseFontIconForImage())
 					bReRun.setIconSclass("z-icon-ReRun");
@@ -1240,6 +1240,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	        			return;
 	        		}
 	        	}
+	        	else if (event.getTarget() instanceof ProcessModalDialog)
+	         	{
+	         		if (!DialogEvents.ON_WINDOW_CLOSE.equals(event.getName())){
+	         			return;
+	         		}
+
+	         		hideBusyMask();
+	         	}
 	        	this.onCtrlKeyEvent(keyEvent);
         	}
 		}
@@ -1492,9 +1500,19 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private void cmd_reRun() {
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
 		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
-		ProcessModalDialog processModalDialog = new ProcessModalDialog(m_WindowNo, pi, false, true);
-		AEnv.showWindow(processModalDialog);
-	}	// cmd_refreshWithParameters
+		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi, false, true);
+		this.getParent().appendChild(processModalDialog);
+		if (ClientInfo.isMobile())
+		{
+			processModalDialog.doHighlighted();
+		}
+		else
+		{
+			showBusyMask(processModalDialog);
+			LayoutUtils.openOverlappedWindow(this, processModalDialog, "middle_center");
+		}
+		processModalDialog.focus();
+}	// cmd_reRun
 	
 	protected void setLanguage (){
 		if (MClient.get(m_ctx).isMultiLingualDocument() && wLanguage.getValue() != null){
