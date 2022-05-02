@@ -705,7 +705,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				if (ThemeManager.isUseFontIconForImage())
 					bReRun.setIconSclass("z-icon-ReRun");
 				else
-					bReRun.setImage(ThemeManager.getThemeResource("images/Requery24.png"));
+					bReRun.setImage(ThemeManager.getThemeResource("images/ReRun24.png"));
 				bReRun.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ReRun")));
 				if (toolbarPopup != null)
 				{
