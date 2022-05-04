@@ -80,12 +80,14 @@ import org.compiere.util.Util;
  *  @version $Id: MWFActivity.java,v 1.4 2006/07/30 00:51:05 jjanke Exp $
  */
 public class MWFActivity extends X_AD_WF_Activity implements Runnable
-{
+{	
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = -3282235931100223816L;
 
+	private static final String CURRENT_WORKFLOW_PROCESS_INFO_ATTR = "Workflow.ProcessInfo";
+	
 	/**
 	 * 	Get Activities for table/record
 	 *	@param ctx context
@@ -868,7 +870,6 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		m_newValue = null;
 
 
-		//m_trx = Trx.get(, true);
 		Trx trx = null;
 		boolean localTrx = false;
 		if (get_TrxName() == null)
@@ -886,6 +887,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		//
 		try
 		{
+			if (m_process.getProcessInfo() != null)
+				Env.getCtx().put(CURRENT_WORKFLOW_PROCESS_INFO_ATTR, m_process.getProcessInfo());
 			if (!localTrx) {
 				// when cascade workflows, avoid setting a savepoint for each workflow
 				// use the same first savepoint from the transaction
@@ -1007,10 +1010,22 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			{
 				trx.close();
 			}
+			Env.getCtx().remove(CURRENT_WORKFLOW_PROCESS_INFO_ATTR);
 		}
 	}	//	run
 
-
+	/**
+	 * Get ProcessInfo instance of current workflow process
+	 * @return {@link ProcessInfo}
+	 */
+	public static ProcessInfo getCurrentWorkflowProcessInfo() 
+	{
+		Object o = Env.getCtx().get(CURRENT_WORKFLOW_PROCESS_INFO_ATTR);
+		if (o != null && o instanceof ProcessInfo)
+			return (ProcessInfo) o;
+		return null;
+	}
+	
 	/**
 	 * 	Perform Work.
 	 * 	Set Text Msg.
