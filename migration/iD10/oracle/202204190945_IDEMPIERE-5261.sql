@@ -45,166 +45,165 @@ UPDATE AD_Field SET SeqNo=320,Updated=TO_DATE('2022-04-19 00:23:53','YYYY-MM-DD 
 ;
 
 -- Apr 19, 2022 12:24:27 AM MYT
-UPDATE AD_Field SET SeqNoGrid=20,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=2005
+UPDATE AD_Field SET SeqNoGrid=20,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=2005
 ;
 
 -- Apr 19, 2022 12:24:27 AM MYT
-UPDATE AD_Field SET SeqNoGrid=30,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=386
+UPDATE AD_Field SET SeqNoGrid=30,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=386
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=40,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=10195
+UPDATE AD_Field SET SeqNoGrid=40,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=10195
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=50,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=387
+UPDATE AD_Field SET SeqNoGrid=50,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=387
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=60,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=388
+UPDATE AD_Field SET SeqNoGrid=60,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=388
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=70,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=389
+UPDATE AD_Field SET SeqNoGrid=70,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=389
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=80,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=390
+UPDATE AD_Field SET SeqNoGrid=80,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=390
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=90,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=4572
+UPDATE AD_Field SET SeqNoGrid=90,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=4572
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=100,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=5821
+UPDATE AD_Field SET SeqNoGrid=100,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=5821
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=110,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8764
+UPDATE AD_Field SET SeqNoGrid=110,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8764
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=120,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8772
+UPDATE AD_Field SET SeqNoGrid=120,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8772
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=130,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8763
+UPDATE AD_Field SET SeqNoGrid=130,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8763
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=140,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8773
+UPDATE AD_Field SET SeqNoGrid=140,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8773
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=150,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8882
+UPDATE AD_Field SET SeqNoGrid=150,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8882
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=160,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8883
+UPDATE AD_Field SET SeqNoGrid=160,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8883
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=170,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=1263
+UPDATE AD_Field SET SeqNoGrid=170,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=1263
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=180,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8881
+UPDATE AD_Field SET SeqNoGrid=180,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8881
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=190,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=1264
+UPDATE AD_Field SET SeqNoGrid=190,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=1264
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=200,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=3666
+UPDATE AD_Field SET SeqNoGrid=200,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=3666
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=210,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=10088
+UPDATE AD_Field SET SeqNoGrid=210,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=10088
 ;
 
 -- Apr 19, 2022 12:24:28 AM MYT
-UPDATE AD_Field SET SeqNoGrid=220,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=10091
+UPDATE AD_Field SET SeqNoGrid=220,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=10091
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=230,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=10090
+UPDATE AD_Field SET SeqNoGrid=230,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=10090
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=240,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=12615
+UPDATE AD_Field SET SeqNoGrid=240,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=12615
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=250,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=12614
+UPDATE AD_Field SET SeqNoGrid=250,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=12614
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=260,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=12616
+UPDATE AD_Field SET SeqNoGrid=260,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=12616
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=270,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=204268
+UPDATE AD_Field SET SeqNoGrid=270,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=204268
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=280,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8761
+UPDATE AD_Field SET SeqNoGrid=280,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8761
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=290,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=1269
+UPDATE AD_Field SET SeqNoGrid=290,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=1269
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=300,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=1268
+UPDATE AD_Field SET SeqNoGrid=300,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=1268
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=310,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8766
+UPDATE AD_Field SET SeqNoGrid=310,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8766
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=320,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=2578
+UPDATE AD_Field SET SeqNoGrid=320,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=2578
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=330,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8771
+UPDATE AD_Field SET SeqNoGrid=330,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8771
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=340,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=10180
+UPDATE AD_Field SET SeqNoGrid=340,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=10180
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=350,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=10089
+UPDATE AD_Field SET SeqNoGrid=350,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=10089
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=360,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=10920
+UPDATE AD_Field SET SeqNoGrid=360,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=10920
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=370,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=10921
+UPDATE AD_Field SET SeqNoGrid=370,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=10921
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=380,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8765
+UPDATE AD_Field SET SeqNoGrid=380,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8765
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=390,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8767
+UPDATE AD_Field SET SeqNoGrid=390,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8767
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=400,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8769
+UPDATE AD_Field SET SeqNoGrid=400,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8769
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=410,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=8768
+UPDATE AD_Field SET SeqNoGrid=410,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=8768
 ;
 
 -- Apr 19, 2022 12:24:29 AM MYT
-UPDATE AD_Field SET SeqNoGrid=420,IsDisplayedGrid='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=201875
+UPDATE AD_Field SET SeqNoGrid=420,IsDisplayedGrid='Y', Updated=getDate(), UpdatedBy=100 WHERE AD_Field_ID=201875
 ;
-
