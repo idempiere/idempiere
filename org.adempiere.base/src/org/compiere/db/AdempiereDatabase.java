@@ -408,6 +408,11 @@ public interface AdempiereDatabase
 	public String getTimestampDataType();
 	
 	/**
+	 * 
+	 * @return timestamp with time zone type name
+	 */
+	public String getTimestampWithTimezoneDataType();
+	/**
 	 * Get SQL Create
 	 * @param table
 	 * @return create table DDL

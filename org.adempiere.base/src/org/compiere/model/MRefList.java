@@ -46,8 +46,7 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2342762307330992884L;
-
+	private static final long serialVersionUID = -2704284822855131148L;
 	/**	RefList Value Cache						*/
 	private static ImmutablePOCache<String,MRefList> s_ref_value_cache	= new ImmutablePOCache<String,MRefList>(Table_Name, 40);
 
@@ -262,6 +261,19 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	 * @return List or null
 	 */
 	public static ValueNamePair[] getList (Properties ctx, int AD_Reference_ID, boolean optional, String orderBy) {
+		return getList(ctx, AD_Reference_ID, optional, "", orderBy);
+	}
+	
+	/**
+	 * Get Reference List (translated)
+	 * @param ctx context
+	 * @param AD_Reference_ID reference
+	 * @param optional if true add "",""
+	 * @param additionalWhereClause
+	 * @param orderBy N-Name, V-Value, D-Default (IsOrderByValue)
+	 * @return List or null
+	 */
+	public static ValueNamePair[] getList (Properties ctx, int AD_Reference_ID, boolean optional, String additionalWhereClause, String orderBy) {
 
 		String language = Env.getAD_Language(ctx);
 		boolean orderByValue = MReference.get(AD_Reference_ID).isOrderByValue();
@@ -293,6 +305,9 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 			.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
 			.append(language).append("')");
 		sql.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_ID);
+
+		if (!Util.isEmpty(additionalWhereClause, true))
+			sql.append(" AND (").append(additionalWhereClause).append(")");
 
 		sql.append(AspFilter.toString());
 		if (orderByValue)

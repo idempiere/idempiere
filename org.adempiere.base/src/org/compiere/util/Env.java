@@ -102,6 +102,11 @@ public final class Env
 	public static final String C_TAXCATEGORY_ID = "#C_TaxCategory_ID";
 	public static final String C_TAX_ID = "#C_Tax_ID";
 	public static final String C_UOM_ID = "#C_UOM_ID";
+	public static final String CLIENT_INFO_DESKTOP_HEIGHT = "#clientInfo_desktopHeight";
+	public static final String CLIENT_INFO_DESKTOP_WIDTH = "#clientInfo_desktopWidth";
+	public static final String CLIENT_INFO_MOBILE = "#clientInfo_mobile";
+	public static final String CLIENT_INFO_ORIENTATION = "#clientInfo_orientation";
+	public static final String CLIENT_INFO_TIME_ZONE = "#clientInfo_timeZone";
 	public static final String DATE	= "#Date";
 	public static final String DB_TYPE = "#DBType";
 	public static final String GL_CATEGORY_ID = "#GL_Category_ID";
@@ -176,9 +181,11 @@ public final class Env
 		//hengsin, avoid unncessary query of session when exit without log in
 		if (DB.isConnected(false)) {
 			//	End Session
-			MSession session = MSession.get(Env.getCtx(), false, false);	//	finish
-			if (session != null)
+			MSession session = MSession.get(Env.getCtx());	//	finish
+			if (session != null) {
+				session = new MSession(getCtx(), session.getAD_Session_ID(), null);
 				session.logout();
+			}
 		}
 		//
 		reset(true);	// final cache reset
@@ -195,9 +202,11 @@ public final class Env
 	public static void logout()
 	{
 		//	End Session
-		MSession session = MSession.get(Env.getCtx(), false, false);	//	finish
-		if (session != null)
+		MSession session = MSession.get(Env.getCtx());	//	finish
+		if (session != null) {
+			session = new MSession(getCtx(), session.getAD_Session_ID(), null);
 			session.logout();
+		}
 		//
 		reset(true);	// final cache reset
 		//

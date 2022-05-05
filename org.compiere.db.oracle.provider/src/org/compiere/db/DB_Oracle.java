@@ -1418,6 +1418,11 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 
 	@Override
+	public String getTimestampWithTimezoneDataType() {
+		return "TIMESTAMP WITH TIME ZONE";
+	}
+
+	@Override
 	public String getSQLDDL(MColumn column) {				
 		StringBuilder sql = new StringBuilder ().append(column.getColumnName())
 			.append(" ").append(column.getSQLDataType());

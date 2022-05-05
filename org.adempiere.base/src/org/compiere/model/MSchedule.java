@@ -26,12 +26,14 @@ import java.sql.ResultSet;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -249,9 +251,29 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	/**
 	 * 	Get Next Run
 	 *	@param last in MS
+	 *  @param scheduleType
+	 *  @param frequencyType
+	 *  @param frequency
+	 *  @param cronPattern
 	 *	@return next run in MS
+	 *  @deprecated
 	 */
 	public static long getNextRunMS (long last, String scheduleType, String frequencyType, int frequency, String cronPattern)
+	{
+		return getNextRunMS(last, scheduleType, frequencyType, frequency, cronPattern, null);
+	}
+	
+	/**
+	 * 	Get Next Run
+	 *	@param last in MS
+	 *  @param scheduleType
+	 *  @param frequencyType
+	 *  @param frequency
+	 *  @param cronPattern
+	 *  @param timeZone
+	 *	@return next run in MS
+	 */
+	public static long getNextRunMS (long last, String scheduleType, String frequencyType, int frequency, String cronPattern, String timeZone)
 	{
 		long now = System.currentTimeMillis();
 		if (MSchedule.SCHEDULETYPE_Frequency.equals(scheduleType))
@@ -281,11 +303,22 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 		{
 			if (cronPattern != null && cronPattern.trim().length() > 0
 					&& SchedulingPattern.validate(cronPattern)) {
+				TimeZone tz = null;
+				if (!Util.isEmpty(timeZone)) {
+					tz = TimeZone.getTimeZone(timeZone);
+					if (tz != null && !tz.getID().equals(timeZone)) {
+						tz = null;
+					}
+				}
 				Predictor predictor = new Predictor(cronPattern, last);
+				if (tz != null)
+					predictor.setTimeZone(tz);
 				long next = predictor.nextMatchingTime();
 				while (next < now)
 				{
 					predictor = new Predictor(cronPattern, next);
+					if (tz != null)
+						predictor.setTimeZone(tz);
 					next = predictor.nextMatchingTime();
 				}
 				return next;
