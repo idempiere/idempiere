@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.compiere.model.MColumn;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Wlistbox_Customization;
 
@@ -30,7 +31,7 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3220641197739038436L;
+	private static final long serialVersionUID = -493650011622455985L;
 
 	/**
 	 * @param ctx
@@ -133,7 +134,16 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 				{
 					orgColumnList.addAll(addColumn);
 				}
-				WlistBoxCust.setCustom(orgColumnList.toString().substring(1, orgColumnList.toString().length() -1).replaceAll("\\s", "") );
+
+				int maxLength = MColumn.get(ctx, Table_Name, COLUMNNAME_Custom).getFieldLength();
+				String custom = orgColumnList.toString().substring(1, orgColumnList.toString().length() -1).replaceAll("\\s", "");
+
+				if (custom.length() > maxLength) {
+					while (custom.length() > maxLength)
+						custom = custom.substring(0, custom.lastIndexOf(","));
+				}
+
+				WlistBoxCust.setCustom(custom);
 			}
 		}
 		else

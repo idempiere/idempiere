@@ -48,7 +48,10 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Trx;
+import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
+import org.compiere.wf.MWFActivity;
 
 /**
  *  Shipment Model
@@ -1850,7 +1853,30 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		//  Drop Shipments
 		MInOut dropShipment = createDropShipment();
 		if (dropShipment != null)
+		{
 			info.append(" - @DropShipment@: @M_InOut_ID@=").append(dropShipment.getDocumentNo());
+			ProcessInfo pi = MWFActivity.getCurrentWorkflowProcessInfo();
+			if (pi != null)
+			{
+				Trx.get(get_TrxName(), false).addTrxEventListener(new TrxEventListener() {					
+					@Override
+					public void afterRollback(Trx trx, boolean success) {
+						trx.removeTrxEventListener(this);
+					}
+					
+					@Override
+					public void afterCommit(Trx trx, boolean success) {
+						if (success)
+							pi.addLog(pi.getAD_PInstance_ID(), null, null, dropShipment.getDocumentInfo(), Table_ID, dropShipment.get_ID());
+						trx.removeTrxEventListener(this);
+					}
+					
+					@Override
+					public void afterClose(Trx trx) {
+					}
+				});
+			}
+		}
 		if (dropShipment != null)
 			addDocsPostProcess(dropShipment);
 		//	User Validation
@@ -1956,7 +1982,14 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		dropShipment.setDropShip_Location_ID(0);
 		dropShipment.setDropShip_User_ID(0);
 		dropShipment.setMovementType(MOVEMENTTYPE_CustomerShipment);
-
+		if (!Util.isEmpty(getTrackingNo()) && getM_Shipper_ID() > 0 && 
+				DELIVERYVIARULE_Shipper.equals(getDeliveryViaRule()))
+		{
+			dropShipment.setTrackingNo(getTrackingNo());
+			dropShipment.setDeliveryViaRule(DELIVERYVIARULE_Shipper);
+			dropShipment.setM_Shipper_ID(getM_Shipper_ID());
+		}
+		
 		//	References (Should not be required
 		dropShipment.setSalesRep_ID(getSalesRep_ID());
 		dropShipment.saveEx(get_TrxName());

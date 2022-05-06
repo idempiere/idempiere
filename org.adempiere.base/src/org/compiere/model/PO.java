@@ -2538,11 +2538,14 @@ public abstract class PO
 			m_newValues = new Object[size];
 			m_createNew = false;
 		}
-		if (!newRecord) {
-			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
+		if (!newRecord)
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID());
-		} else if (get_ID() > 0 && success)
-			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
+		if (CacheMgt.get().hasCache(p_info.getTableName())) {
+			if (!newRecord)
+				Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
+			else if (get_ID() > 0 && success)
+				Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
+		}
 		
 		return success;
 	}	//	saveFinish
