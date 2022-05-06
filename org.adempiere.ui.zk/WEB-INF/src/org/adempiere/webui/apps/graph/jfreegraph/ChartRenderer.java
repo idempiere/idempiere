@@ -118,7 +118,7 @@ import org.zkoss.zul.Imagemap;
 				area.setCoords(entity.getShapeCoords());
 				area.setShape(entity.getShapeType());
 				area.setTooltiptext(entity.getToolTipText());
-				area.setId(count+"_WG__" + seriesName + "__" + key);
+				area.setId(count+"_WG__" + seriesName + "__" + key + "__" + System.currentTimeMillis());
 				count++;
 			}
 
@@ -128,7 +128,7 @@ import org.zkoss.zul.Imagemap;
 					String areaId = me.getArea();
 					if (areaId != null) {
 						String[] strs = areaId.split("__");
-						if (strs.length == 3)
+						if (strs.length == 4)
 						{
 							chartMouseClicked(strs[2], strs[1]);
 						}
