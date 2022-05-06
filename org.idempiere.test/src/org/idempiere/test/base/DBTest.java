@@ -50,6 +50,20 @@ public class DBTest extends AbstractTestCase
 		assertThrows(DBException.class, () -> {
 			DB.getSQLValueEx(null, "SELECT 10 FROM INEXISTENT_TABLE");
 		});
+		
+		int t_integer = DB.getSQLValueEx(null, "select t_integer from test where test_id=?", 103);
+		assertThrows(DBException.class, () -> {
+			DB.getSQLValueEx(null, "update test set t_integer=1 where test_id=?", 103);
+		});
+		int t_integer1 = DB.getSQLValueEx(null, "select t_integer from test where test_id=?", 103);
+		assertEquals(t_integer, t_integer1, "test.t_integer wrongly updated");
+		
+		assertThrows(DBException.class, () -> {
+			DB.getSQLValueEx(getTrxName(), "update test set t_integer=1 where test_id=?;select t_integer from test where test_id=?", 103);
+		});
+		rollback();
+		t_integer1 = DB.getSQLValueEx(null, "select t_integer from test where test_id=?", 103);
+		assertEquals(t_integer, t_integer1, "test.t_integer wrongly updated");
 	}
 	
 	@Test

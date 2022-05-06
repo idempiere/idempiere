@@ -148,8 +148,9 @@ public abstract class AbstractTestCase {
 	 * tear down for each test method
 	 */
 	protected void tearDown() {
-		if (trx != null && trx.isActive()) {
-			trx.rollback();
+		if (trx != null) {
+			if (trx.isActive())
+				trx.rollback();
 			trx.close();
 		}
 	}
