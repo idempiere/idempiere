@@ -61,12 +61,11 @@ public class MArchive extends X_AD_Archive {
 	 * @return archives
 	 */
 	public static MArchive[] get(Properties ctx, String whereClause) {
-		List<MArchive> list = new ArrayList<MArchive>();
 		StringBuilder sql = new StringBuilder("AD_Client_ID=?");
 		if (!Util.isEmpty(whereClause))
 			sql.append(whereClause);
 
-		list = new Query(ctx, Table_Name, sql.toString(),null)
+		List<MArchive> list = new Query(ctx, Table_Name, sql.toString(),null)
 				.setParameters(Env.getAD_Client_ID(ctx))
 				.setOrderBy(COLUMNNAME_Created)
 				.list();
