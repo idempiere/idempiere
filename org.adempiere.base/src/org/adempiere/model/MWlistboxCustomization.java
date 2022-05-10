@@ -25,6 +25,7 @@ import java.util.Properties;
 import org.compiere.model.MColumn;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Wlistbox_Customization;
+import org.compiere.util.Util;
 
 public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 
@@ -146,13 +147,15 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 				WlistBoxCust.setCustom(custom);
 			}
 		}
-		else
+		else if (!Util.isEmpty(Custom))
 		{
 			WlistBoxCust = new MWlistboxCustomization(ctx, 0, trxName); 
 			WlistBoxCust.setWlistboxName(AD_WListboxName);
 			WlistBoxCust.setAD_User_ID(AD_User_ID);
 			WlistBoxCust.setCustom(Custom);
 		}
-		WlistBoxCust.saveEx();
+
+		if (WlistBoxCust != null)
+			WlistBoxCust.saveEx();
 	}  // saveData
 }
