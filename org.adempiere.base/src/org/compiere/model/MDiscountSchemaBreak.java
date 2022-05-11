@@ -150,9 +150,14 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak implements Imm
 			sb.append(",M_Product_ID=").append(getM_Product_ID());
 		sb.append(",Break=").append(getBreakValue());
 		if (isBPartnerFlatDiscount())
+		{
 			sb.append(",FlatDiscount");
+		}
 		else
+		{
 			sb.append(",Discount=").append(getBreakDiscount());
+			sb.append(",FixedPrice=").append(getFixedPrice());
+		}
 		sb.append ("]");
 		return sb.toString ();
 	}	//	toString
