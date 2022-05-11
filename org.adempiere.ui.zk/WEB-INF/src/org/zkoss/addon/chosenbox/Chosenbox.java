@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import org.apache.commons.text.StringEscapeUtils;
 import org.zkoss.lang.Objects;
 import org.zkoss.xel.VariableResolver;
+import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.au.out.AuSetAttribute;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -842,6 +843,11 @@ public class Chosenbox<T> extends HtmlBasedComponent {
 		this._subListModel = _subListModel;
 	}
 	
+	@Override
+	public void focus() {
+		response(new AuScript("$('#"+getUuid()+"-inp').focus();"));
+	}
+
 	private final ItemRenderer<T> _defRend = new ItemRenderer<T>() {
 		public String render(final Component owner, final T data, final int index) {
 			final Chosenbox<?> self = (Chosenbox<?>) owner;

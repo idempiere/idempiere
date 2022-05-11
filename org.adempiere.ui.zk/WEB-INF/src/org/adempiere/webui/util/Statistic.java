@@ -137,6 +137,7 @@ public class Statistic implements Monitor {
 	public void desktopCreated(Desktop desktop) {
 		_ndt.increment();
 		_actdt.increment();
+		DesktopWatchDog.addDesktop(desktop);
 	}
 
 	@Override

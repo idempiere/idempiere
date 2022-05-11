@@ -67,6 +67,7 @@ import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridField;
 import org.compiere.model.MArchive;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
 import org.compiere.model.MLanguage;
@@ -76,6 +77,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MUser;
+import org.compiere.model.PO;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.print.ArchiveEngine;
@@ -180,6 +182,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private Toolbar toolBar = new Toolbar();
 	private ToolBarButton bSendMail = new ToolBarButton();
 	private ToolBarButton bArchive = new ToolBarButton();
+	private ToolBarButton bAttachment = new ToolBarButton();
 	private ToolBarButton bCustomize = new ToolBarButton();
 	private ToolBarButton bFind = new ToolBarButton();
 	private ToolBarButton bExport = new ToolBarButton();
@@ -272,7 +275,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				if (prefix.length() < 3)
 					prefix += "_".repeat(3-prefix.length());
 				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = File.createTempFile(prefix, "."+PDF_FILE_EXT, new File(path));
+				File file = FileUtil.createTempFile(prefix, "."+PDF_FILE_EXT, new File(path));
 				m_reportEngine.createPDF(file);
 				return new AMedia(file.getName(), PDF_FILE_EXT, PDF_MIME_TYPE, file, true);
 			} catch (Exception e) {
@@ -290,7 +293,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				if (prefix.length() < 3)
 					prefix += "_".repeat(3-prefix.length());
 				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = File.createTempFile(prefix, "."+HTML_FILE_EXT, new File(path));
+				File file = FileUtil.createTempFile(prefix, "."+HTML_FILE_EXT, new File(path));
 				String contextPath = Executions.getCurrent().getContextPath();
 				m_reportEngine.createHTML(file, false, m_reportEngine.getPrintFormat().getLanguage(), new HTMLExtension(contextPath, "rp", getUuid()));
 				return new AMedia(file.getName(), HTML_FILE_EXT, HTML_MIME_TYPE, file, false);
@@ -309,7 +312,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				if (prefix.length() < 3)
 					prefix += "_".repeat(3-prefix.length());
 				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
-				File file = File.createTempFile(prefix, "."+EXCEL_FILE_EXT, new File(path));
+				File file = FileUtil.createTempFile(prefix, "."+EXCEL_FILE_EXT, new File(path));
 				m_reportEngine.createXLS(file, m_reportEngine.getPrintFormat().getLanguage());
 				return new AMedia(file.getName(), EXCEL_FILE_EXT, EXCEL_MIME_TYPE, file, true);
 			} catch (Exception e) {
@@ -328,7 +331,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				{
 					log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				}
-				File file = File.createTempFile(prefix, "."+CSV_FILE_EXT, new File(path));
+				File file = FileUtil.createTempFile(prefix, "."+CSV_FILE_EXT, new File(path));
 				m_reportEngine.createCSV(file, ',', AEnv.getLanguage(Env.getCtx()));
 				return new AMedia(file.getName(), CSV_FILE_EXT, CSV_MIME_TYPE, file, false);
 			} catch (Exception e) {
@@ -347,7 +350,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				{
 					log.log(Level.FINE, "Path=" + path + " Prefix=" + prefix);
 				}
-				File file = File.createTempFile(prefix, "."+EXCEL_XML_FILE_EXT, new File(path));
+				File file = FileUtil.createTempFile(prefix, "."+EXCEL_XML_FILE_EXT, new File(path));
 				m_reportEngine.createXLSX(file, m_reportEngine.getPrintFormat().getLanguage());
 				return new AMedia(file.getName(), EXCEL_XML_FILE_EXT, EXCEL_XML_MIME_TYPE, file, true);
 			} catch (Exception e) {
@@ -630,7 +633,28 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		bArchive.addEventListener(Events.ON_CLICK, this);
 		if (ThemeManager.isUseFontIconForImage())
 			LayoutUtils.addSclass("medium-toolbarbutton", bArchive);
-		
+
+		int tableId = m_reportEngine.getPrintInfo().getAD_Table_ID();
+		int recordId = m_reportEngine.getPrintInfo().getRecord_ID();
+		if (tableId > 0 && recordId > 0) {
+			bAttachment.setName("Attachment");
+			if (ThemeManager.isUseFontIconForImage())
+				bAttachment.setIconSclass("z-icon-Attachment");
+			else
+				bAttachment.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
+			bAttachment.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Attachment")));
+			if (toolbarPopup != null)
+			{
+				toolbarPopupLayout.appendChild(bAttachment);
+				bAttachment.setLabel(bAttachment.getTooltiptext());
+			}
+			else
+				toolBar.appendChild(bAttachment);
+			bAttachment.addEventListener(Events.ON_CLICK, this);
+			if (ThemeManager.isUseFontIconForImage())
+				LayoutUtils.addSclass("medium-toolbarbutton", bAttachment);
+		}
+
 		if ( m_isCanExport )
 		{
 			bExport.setName("Export");
@@ -1242,6 +1266,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			cmd_sendMail();
 		else if (e.getTarget() == bArchive)
 			cmd_archive();
+		else if (e.getTarget() == bAttachment)
+			cmd_attachment();
 		else if (e.getTarget() == bCustomize)
 			cmd_customize();
 		else if (e.getTarget() == bWizard)
@@ -1338,6 +1364,29 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		else
 			FDialog.error(m_WindowNo, this, "ArchiveError");
 	}	//	cmd_archive
+
+	/**
+	 * 	Add Report to Attachment directly
+	 */
+	private void cmd_attachment()
+	{
+		int tableId = m_reportEngine.getPrintInfo().getAD_Table_ID();
+		int recordId = m_reportEngine.getPrintInfo().getRecord_ID();
+		if (tableId == 0 || recordId == 0)
+			return;
+		boolean success = false;
+		MTable table = MTable.get(tableId);
+		PO po = table.getPO(recordId, null);
+		MAttachment attachment = po.createAttachment();
+		byte[] data = media.isBinary() ? media.getByteData() : media.getStringData().getBytes();
+		String fileName = m_reportEngine.getName().replace(" ", "_") + "." + media.getFormat();
+		attachment.addEntry(fileName, data);
+		success = attachment.save();
+		if (success)
+			FDialog.info(m_WindowNo, this, "DocumentAttached", fileName);
+		else
+			FDialog.error(m_WindowNo, this, "AttachError");
+	}	//	cmd_attachment
 
 	/**
 	 * 	Export
@@ -1623,7 +1672,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}	// All restrictions
 
 		ToolBarMenuRestictionLoaded = true;
-	}//updateToolBarAndMenuWithRestriction
+	}//updateToolbarAccess
 
 	private void showBusyDialog() {		
 		progressWindow = new BusyDialog();
@@ -1681,6 +1730,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		protected void doRun() {
 			try {
+				viewer.m_reportEngine.initName();
 				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
 					log.warning("Cannot archive Document");
 				viewer.createNewMedia(PDF_MIME_TYPE, PDF_FILE_EXT);
@@ -1718,6 +1768,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		protected void doRun() {
 			try {
+				viewer.m_reportEngine.initName();
 				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
 					log.warning("Cannot archive Document");
 				viewer.createNewMedia(HTML_MIME_TYPE, HTML_FILE_EXT);
@@ -1756,6 +1807,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		protected void doRun() {
 			try {
+				viewer.m_reportEngine.initName();
 				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
 					log.warning("Cannot archive Document");
 				viewer.createNewMedia(EXCEL_MIME_TYPE, EXCEL_FILE_EXT);
@@ -1793,6 +1845,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		protected void doRun() {
 			try {
+				viewer.m_reportEngine.initName();
 				viewer.createNewMedia(CSV_MIME_TYPE,CSV_FILE_EXT);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
@@ -1832,6 +1885,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		{
 			try
 			{
+				viewer.m_reportEngine.initName();
 				if (!ArchiveEngine.isValid(viewer.m_reportEngine.getLayout()))
 					log.warning("Cannot archive Document");
 				viewer.createNewMedia(EXCEL_XML_MIME_TYPE, EXCEL_XML_FILE_EXT);

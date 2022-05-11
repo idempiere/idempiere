@@ -496,6 +496,18 @@ public class Trx
 		}
 		finally
 		{
+			//ensure connection return to pool with readonly=false
+			try 
+			{
+				if (m_connection.isReadOnly())
+				{
+					m_connection.setReadOnly(false);
+				}
+			}
+			catch (SQLException e)
+			{
+				log.log(Level.SEVERE, m_trxName, e);
+			}	
 			try
 			{
 				m_connection.close();

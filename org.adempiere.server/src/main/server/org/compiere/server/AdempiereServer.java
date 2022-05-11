@@ -26,6 +26,7 @@ import org.compiere.model.AdempiereProcessor;
 import org.compiere.model.AdempiereProcessor2;
 import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.MClient;
+import org.compiere.model.MClientInfo;
 import org.compiere.model.MOrgInfo;
 import org.compiere.model.MRole;
 import org.compiere.model.MSchedule;
@@ -127,7 +128,7 @@ public abstract class AdempiereServer implements Runnable
 		{			
 			m_nextWork = MSchedule.getNextRunMS(now.getTime(),
 					p_model.getScheduleType(), p_model.getFrequencyType(),
-					p_model.getFrequency(), p_model.getCronPattern());
+					p_model.getFrequency(), p_model.getCronPattern(), MClientInfo.get(getCtx(), p_model.getAD_Client_ID()).getTimeZone());
 		}
 
 		if (m_nextWork > now.getTime())
@@ -294,7 +295,7 @@ public abstract class AdempiereServer implements Runnable
 
 		m_nextWork = MSchedule.getNextRunMS(lastRun.getTime(),
 				p_model.getScheduleType(), p_model.getFrequencyType(),
-				p_model.getFrequency(), p_model.getCronPattern());
+				p_model.getFrequency(), p_model.getCronPattern(), MClientInfo.get(getCtx(), p_model.getAD_Client_ID()).getTimeZone());
 
 		m_sleepMS = m_nextWork - now;
 		if (m_nextWork == 0) {

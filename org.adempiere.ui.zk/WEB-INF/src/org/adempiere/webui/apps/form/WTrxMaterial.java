@@ -231,7 +231,7 @@ public class WTrxMaterial extends TrxMaterial
 		orgField = new WTableDirEditor("AD_Org_ID", false, false, true, orgLookup);
 	//	orgField.addVetoableChangeListener(this);
 		//  Locator
-		MLocatorLookup locatorLookup = new MLocatorLookup(ctx, m_WindowNo);
+		MLocatorLookup locatorLookup = new MLocatorLookup(ctx, m_WindowNo, null);
 		locatorField = new WLocatorEditor ("M_Locator_ID", false, false, true, locatorLookup, m_WindowNo);
 	//	locatorField.addVetoableChangeListener(this);
 		//  Product

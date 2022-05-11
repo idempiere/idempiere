@@ -1355,4 +1355,11 @@ Export-Package:        *;version="${version}";-noimport:=true
       <version>4.8.138</version>
       <type>jar</type>
 	</location>
+	<!-- AssertJ -->
+	<location includeSource="true" missingManifest="error" type="Maven">
+	  <groupId>org.assertj</groupId>
+	  <artifactId>assertj-core</artifactId>
+	  <version>3.22.0</version>
+	  <type>jar</type>
+	</location>
 </locations>

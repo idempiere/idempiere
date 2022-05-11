@@ -357,6 +357,7 @@ public class MimeType
 	//	{ ".jpg", "image/pjpeg"},
 		{ ".jps", "image/x-jps"}, 
 		{ ".js", "application/x-javascript"},
+		{ ".json", "application/json"},
 		{ ".jut", "image/jutvision"},
 		
 		{ ".kar", "audio/midi"},

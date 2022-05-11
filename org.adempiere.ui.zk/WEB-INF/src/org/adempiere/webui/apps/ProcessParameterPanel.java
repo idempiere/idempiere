@@ -92,7 +92,7 @@ public class ProcessParameterPanel extends Panel implements
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2388338147222636369L;
+	private static final long serialVersionUID = -6099317911368929787L;
 
 	/**
 	 * Dynamic generated Parameter panel.
@@ -1080,6 +1080,10 @@ public class ProcessParameterPanel extends Panel implements
 
 		}
 
+	}
+
+	public int getWindowNo() {
+		return m_WindowNo;
 	}
 
 } // ProcessParameterPanel

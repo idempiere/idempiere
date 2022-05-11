@@ -240,6 +240,7 @@ public class CSVImportAction implements EventListener<Event>
 			importFile();
 		} else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
 			panel.hideBusyMask();
+			panel.focusToLastFocusEditor();
 		}
 	}
 

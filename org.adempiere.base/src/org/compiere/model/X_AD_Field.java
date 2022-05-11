@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Field")
 public class X_AD_Field extends PO implements I_AD_Field, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220315L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -123,6 +123,33 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
       return sb.toString();
     }
 
+	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_ID)
+			.getPO(getAD_Chart_ID(), get_TrxName());
+	}
+
+	/** Set Chart.
+		@param AD_Chart_ID Chart
+	*/
+	public void setAD_Chart_ID (int AD_Chart_ID)
+	{
+		if (AD_Chart_ID < 1)
+			set_Value (COLUMNNAME_AD_Chart_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Chart_ID, Integer.valueOf(AD_Chart_ID));
+	}
+
+	/** Get Chart.
+		@return Chart	  */
+	public int getAD_Chart_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Chart_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
@@ -151,6 +178,43 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set Field.
+		@param AD_Field_ID Field on a database table
+	*/
+	public void setAD_Field_ID (int AD_Field_ID)
+	{
+		if (AD_Field_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
+	}
+
+	/** Get Field.
+		@return Field on a database table
+	  */
+	public int getAD_Field_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set AD_Field_UU.
+		@param AD_Field_UU AD_Field_UU
+	*/
+	public void setAD_Field_UU (String AD_Field_UU)
+	{
+		set_Value (COLUMNNAME_AD_Field_UU, AD_Field_UU);
+	}
+
+	/** Get AD_Field_UU.
+		@return AD_Field_UU	  */
+	public String getAD_Field_UU()
+	{
+		return (String)get_Value(COLUMNNAME_AD_Field_UU);
+	}
+
 	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_ID)
@@ -174,28 +238,6 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	public int getAD_FieldGroup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Field.
-		@param AD_Field_ID Field on a database table
-	*/
-	public void setAD_Field_ID (int AD_Field_ID)
-	{
-		if (AD_Field_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
-	}
-
-	/** Get Field.
-		@return Field on a database table
-	  */
-	public int getAD_Field_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -227,21 +269,6 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set AD_Field_UU.
-		@param AD_Field_UU AD_Field_UU
-	*/
-	public void setAD_Field_UU (String AD_Field_UU)
-	{
-		set_Value (COLUMNNAME_AD_Field_UU, AD_Field_UU);
-	}
-
-	/** Get AD_Field_UU.
-		@return AD_Field_UU	  */
-	public String getAD_Field_UU()
-	{
-		return (String)get_Value(COLUMNNAME_AD_Field_UU);
 	}
 
 	public org.compiere.model.I_AD_Style getAD_LabelStyle() throws RuntimeException

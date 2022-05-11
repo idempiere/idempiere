@@ -138,7 +138,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		sameWarehouseCb.setSelected(true);
 		sameWarehouseCb.addActionListener(this);
 		//  load Locator
-		MLocatorLookup locator = new MLocatorLookup(Env.getCtx(), p_WindowNo);
+		MLocatorLookup locator = new MLocatorLookup(Env.getCtx(), p_WindowNo, (String)null);
 		locatorField = new WLocatorEditor ("M_Locator_ID", true, false, true, locator, p_WindowNo);
 
 		initBPartner(false);

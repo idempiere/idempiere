@@ -379,7 +379,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 				String docAction = lstDocAction.getSelectedItem().getLabel();
 				MessageFormat mf = new MessageFormat(Msg.getMsg(Env.getAD_Language(Env.getCtx()), "ConfirmOnDocAction"));
 				Object[] arguments = new Object[]{docAction};
-				FDialog.ask(0, this, mf.format(arguments), new Callback<Boolean>() {
+				FDialog.ask(gridTab.getWindowNo(), this, "", mf.format(arguments), new Callback<Boolean>() {
 					@Override
 					public void onCallback(Boolean result) {
 						if(result)

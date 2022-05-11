@@ -151,7 +151,12 @@ public class Version2PackActivator extends AbstractActivator{
 			if (getDBLock()) {
 				//Create Session to be able to create records in AD_ChangeLog
 				if (Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID) <= 0) {
-					localSession = MSession.get(Env.getCtx(), true);
+					localSession = MSession.get(Env.getCtx());
+					if(localSession == null) {
+						localSession = MSession.create(Env.getCtx());
+					} else {
+						localSession = new MSession(Env.getCtx(), localSession.getAD_Session_ID(), null);
+					}
 					localSession.setWebSession("Version2PackActivator");
 					localSession.saveEx();
 				}

@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_Tab_Customization;
 import org.compiere.util.Util;
 
@@ -112,7 +113,7 @@ public class MTabCustomization extends X_AD_Tab_Customization {
 	@Override
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID == 0) 
+		if (AD_User_ID == SystemIDs.USER_SYSTEM_DEPRECATED) 
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
 		else 
 			super.setAD_User_ID(AD_User_ID);

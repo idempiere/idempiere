@@ -858,14 +858,17 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		        						label.addEventListener(Events.ON_CLICK, new ZoomListener((IZoomableEditor) editor));
 		        					}
 		
-		        					popupMenu.addContextElement(label);
-		        					if (editor.getComponent() instanceof XulElement) 
-		        					{
-		        						popupMenu.addContextElement((XulElement) editor.getComponent());
-		        					}
-	        					}
+		        					popupMenu.addContextElement(label);		        					
+	        					}	        					
 	        				} 
 	        				popupMenu.addSuggestion(field);
+	        				if(!ClientInfo.isMobile())
+	        				{
+	        					if (editor.getComponent() instanceof XulElement) 
+	        					{
+	        						popupMenu.addContextElement((XulElement) editor.getComponent());
+	        					}
+	        				}
 	        			}      
         			}
         		}
@@ -1413,7 +1416,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         } else {
         	if (activate) {
         		formContainer.setVisible(activate);
-        		if (!isMobile())
+        		if (!isMobile() && !isDetailPaneMode())
         			focusToFirstEditor();
         	}
         }
@@ -2326,6 +2329,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	public void updateDetailToolbar(Toolbar toolbar)
 	{
 
+	}
+	
+	public AbstractADWindowContent getADWindowContent()
+	{
+		return windowPanel;
 	}
 
 }

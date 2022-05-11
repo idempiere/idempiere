@@ -45,7 +45,7 @@ public final class ConfirmPanel extends Div
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5522843675498634948L;
+	private static final long serialVersionUID = -2054986459098954685L;
 
 	/** Action String OK.        */
     public static final String A_OK = "Ok";
@@ -282,7 +282,12 @@ public final class ConfirmPanel extends Div
     	 Button btProcess = createButton(btName);
     	 // replace default image with image set at info process
     	 if (m_withImage && imgName != null && imgName.trim().length() > 0)
-    		 btProcess.setImage(ThemeManager.getThemeResource("images/" + imgName));
+    	 {
+    		 if (ThemeManager.isUseFontIconForImage())
+    			 btProcess.setIconSclass(ThemeManager.getIconSclass(imgName));
+    		 else
+    			 btProcess.setImage(ThemeManager.getThemeResource("images/" + imgName));
+    	 }
     	 addComponentsCenter(btProcess);
     	 return btProcess;     	
     }
@@ -291,7 +296,12 @@ public final class ConfirmPanel extends Div
    	 Button btProcess = createButton(btName, imgName, null);
    	 // replace default image with image set at info process
    	 if (m_withImage && imgName != null && imgName.trim().length() > 0)
-   		 btProcess.setImage(ThemeManager.getThemeResource("images/" + imgName));
+   	 {
+		 if (ThemeManager.isUseFontIconForImage())
+			 btProcess.setIconSclass(ThemeManager.getIconSclass(imgName));
+		 else
+			 btProcess.setImage(ThemeManager.getThemeResource("images/" + imgName));
+	 }
    	 addComponentsCenter(btProcess);
    	 return btProcess;     	
    }
@@ -588,4 +598,10 @@ public final class ConfirmPanel extends Div
 		useSmallButtonClassForSmallScreen = true;
 		addButtonSclass(SMALL_SCREEN_BUTTON_CLASS);
 	}
+
+	/** Returns the map containing all buttons attached to the ConfirmPanel */
+	public Map<String, Button> getMap() {
+		return buttonMap;
+	}
+
 }   //  ConfirmPanel

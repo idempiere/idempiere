@@ -101,9 +101,9 @@ public class AssetDelivery extends SvrProcess
 
 		//	Test
 		if (m_client.getSMTPHost() == null || m_client.getSMTPHost().length() == 0)
-			throw new Exception ("No Client SMTP Info");
+			throw new Exception ("No Tenant SMTP Info");
 		if (m_client.getRequestEMail() == null)
-			throw new Exception ("No Client Request User");
+			throw new Exception ("No Tenant Request User");
 
 		//	Asset selected
 		if (m_A_Asset_ID != 0)

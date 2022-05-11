@@ -543,7 +543,7 @@ public abstract class PO
 		int index = get_ColumnIndex(columnName);
 		if (index < 0)
 		{
-			log.log(Level.WARNING, "Column not found - " + columnName);
+			log.log(Level.WARNING, "Column not found - " + get_TableName() + "." + columnName);
 			Trace.printStack();
 			return null;
 		}
@@ -614,7 +614,7 @@ public abstract class PO
 		int index = get_ColumnIndex(columnName);
 		if (index < 0)
 		{
-			log.log(Level.WARNING, "Column not found - " + columnName);
+			log.log(Level.WARNING, "Column not found - " + get_TableName() + "." + columnName);
 			return null;
 		}
 		return get_ValueOld (index);
@@ -672,7 +672,7 @@ public abstract class PO
 		int index = get_ColumnIndex(columnName);
 		if (index < 0)
 		{
-			log.log(Level.WARNING, "Column not found - " + columnName);
+			log.log(Level.WARNING, "Column not found - " + get_TableName() + "." + columnName);
 			return false;
 		}
 		return is_ValueChanged (index);
@@ -730,7 +730,7 @@ public abstract class PO
 		int index = get_ColumnIndex(columnName);
 		if (index < 0)
 		{
-			log.log(Level.WARNING, "Column not found - " + columnName);
+			log.log(Level.WARNING, "Column not found - " + get_TableName() + "." + columnName);
 			return null;
 		}
 		return get_ValueDifference (index);
@@ -766,8 +766,8 @@ public abstract class PO
 		int index = get_ColumnIndex(ColumnName);
 		if (index < 0)
 		{
-			log.log(Level.SEVERE, "Column not found - " + ColumnName);
-			log.saveError("ColumnNotFound", "Column not found - " + ColumnName);
+			log.log(Level.SEVERE, "Column not found - " + get_TableName() + "." + ColumnName);
+			log.saveError("ColumnNotFound", get_TableName() + "." + ColumnName);
 			return false;
 		}
 		if (ColumnName.endsWith("_ID") && value instanceof String )
@@ -2538,11 +2538,14 @@ public abstract class PO
 			m_newValues = new Object[size];
 			m_createNew = false;
 		}
-		if (!newRecord) {
-			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
+		if (!newRecord)
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID());
-		} else if (get_ID() > 0 && success)
-			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
+		if (CacheMgt.get().hasCache(p_info.getTableName())) {
+			if (!newRecord)
+				Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
+			else if (get_ID() > 0 && success)
+				Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
+		}
 		
 		return success;
 	}	//	saveFinish
@@ -2661,7 +2664,7 @@ public abstract class PO
 		lobReset();
 
 		//	Change Log
-		MSession session = MSession.get (p_ctx, false);
+		MSession session = MSession.get (p_ctx);
 		if (session == null)
 			log.fine("No Session found");
 		int AD_ChangeLog_ID = 0;
@@ -3123,7 +3126,7 @@ public abstract class PO
 		lobReset();
 
 		//	Change Log
-		MSession session = MSession.get (p_ctx, false);
+		MSession session = MSession.get (p_ctx);
 		if (session == null)
 			log.fine("No Session found");
 		int AD_ChangeLog_ID = 0;
@@ -3719,7 +3722,7 @@ public abstract class PO
 					if( p_info.isChangeLog())
 					{
 						//	Change Log
-						MSession session = MSession.get (p_ctx, false);
+						MSession session = MSession.get (p_ctx);
 						if (session == null)
 							log.fine("No Session found");
 						else if (m_IDs.length == 1)

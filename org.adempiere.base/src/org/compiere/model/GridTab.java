@@ -1026,6 +1026,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		return false;
 	}   //  dataSave
 
+	/**
+	 * 
+	 * @return true if need save and all mandatory field has value
+	 */
+	public boolean isNeedSaveAndMandatoryFill()
+	{
+		return m_mTable.isNeedSaveAndMandatoryFill();
+	}
+	
 	// Validate if the current tab record has changed in database or any parent record
 	// Return if there are changes
 	public boolean hasChangedCurrentTabAndParents() {

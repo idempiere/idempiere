@@ -107,7 +107,7 @@ public class MPreference extends X_AD_Preference
 	@Override
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID == 0) 
+		if (AD_User_ID == SystemIDs.USER_SYSTEM_DEPRECATED) 
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, AD_User_ID);
 		else 
 			super.setAD_User_ID(AD_User_ID);

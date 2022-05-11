@@ -144,6 +144,8 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_TEXT = 14;
 	public final static int REFERENCE_DATATYPE_TEXTLONG = 36;
 	public final static int REFERENCE_DATATYPE_TIME = 24;
+	public final static int REFERENCE_DATATYPE_TIMESTAMP_WITH_TIMEZONE = 200133;
+	public final static int REFERENCE_DATATYPE_TIMEZONE = 200135;
 	public final static int REFERENCE_DATATYPE_URL = 40;
 	public final static int REFERENCE_DATATYPE_YES_NO = 20;
 
@@ -181,7 +183,10 @@ public class SystemIDs
 	public final static int TREE_MENUPRIMARY = 10;
 
 	public final static int USER_SUPERUSER = 100;
-	public final static int USER_SYSTEM = 0;
+	public final static int USER_SYSTEM = 10;
+	public final static int USER_SYSTEM_DEPRECATED = 0;
+
+	public final static int ROLE_SYSTEM = 0;
 
 	public final static int WINDOW_ACCOUNTCOMBINATION = 153;
 	public final static int WINDOW_ATTRIBUTESETINSTANCE = 358;

@@ -42,6 +42,7 @@ import org.compiere.model.MPasswordHistory;
 import org.compiere.model.MPasswordRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -319,8 +320,8 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 			MUser operator = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
 			if (log.isLoggable(Level.FINE)) log.fine("Operator=" + operator);
 			
-			if (p_AD_User_ID == 0			//	change of System
-					|| p_AD_User_ID == 100		//	change of SuperUser
+			if (p_AD_User_ID == SystemIDs.USER_SYSTEM			//	change of System
+					|| p_AD_User_ID == SystemIDs.USER_SUPERUSER		//	change of SuperUser
 					|| !operator.isAdministrator())
 				throw new IllegalArgumentException(Msg.getMsg(Env.getCtx(), "OldPasswordMandatory"));
 		} else {
