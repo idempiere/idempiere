@@ -41,9 +41,11 @@ import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
 import org.compiere.process.DocAction;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.test.AbstractTestCase;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -61,6 +63,7 @@ public class MDiscountSchemaTest extends AbstractTestCase {
 	}
 
 	@Test
+	@Order(1)
 	public void testPercentageDiscount() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
@@ -94,39 +97,49 @@ public class MDiscountSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@Order(2)
 	public void testFixedPriceDiscount() {
 		BigDecimal fixedPrice = new BigDecimal("1.00");
 		MDiscountSchema schema = new MDiscountSchema(Env.getCtx(), FIVE_PERCENT_IF_100_ID, getTrxName());
-		MDiscountSchemaBreak discountBreak = new MDiscountSchemaBreak(Env.getCtx(), 0, getTrxName());
-		discountBreak.setM_DiscountSchema_ID(schema.getM_DiscountSchema_ID());
-		discountBreak.setBreakDiscount(new BigDecimal("0.00"));
-		discountBreak.setBreakValue(new BigDecimal("10"));
-		discountBreak.setFixedPrice(fixedPrice);
-		discountBreak.setM_Product_ID(PRODUCT_MULCH_ID);
-		discountBreak.setIsBPartnerFlatDiscount(false);
-		discountBreak.setIsActive(true);
-		discountBreak.setSeqNo(20);
-		discountBreak.saveEx();
+		MDiscountSchemaBreak discountBreak = null;
 		
-		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK_ID));
-		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
-		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
-		order.setDocStatus(DocAction.STATUS_Drafted);
-		order.setDocAction(DocAction.ACTION_Complete);
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
-		order.setDatePromised(today);
-		order.saveEx();
-		
-		MOrderLine line1 = new MOrderLine(order);
-		line1.setLine(10);
-		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_MULCH_ID));
-		line1.setQty(new BigDecimal("10"));
-		line1.setDatePromised(today);
-		line1.saveEx();
+		try {
+			discountBreak = new MDiscountSchemaBreak(Env.getCtx(), 0, null);
+			discountBreak.setM_DiscountSchema_ID(schema.getM_DiscountSchema_ID());
+			discountBreak.setBreakDiscount(new BigDecimal("0.00"));
+			discountBreak.setBreakValue(new BigDecimal("10"));
+			discountBreak.setFixedPrice(fixedPrice);
+			discountBreak.setM_Product_ID(PRODUCT_MULCH_ID);
+			discountBreak.setIsBPartnerFlatDiscount(false);
+			discountBreak.setIsActive(true);
+			discountBreak.setSeqNo(20);
+			discountBreak.saveEx();
 			
-		assertEquals(fixedPrice, line1.getPriceActual().setScale(2, RoundingMode.HALF_UP), "Unexpected Order Line price");
+			CacheMgt.get().reset(MDiscountSchema.Table_Name, schema.get_ID());
+			
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			//Joe Block
+			order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK_ID));
+			order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+			order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			order.setDatePromised(today);
+			order.saveEx();
+			
+			MOrderLine line1 = new MOrderLine(order);
+			line1.setLine(10);
+			//Azalea Bush
+			line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_MULCH_ID));
+			line1.setQty(new BigDecimal("10"));
+			line1.setDatePromised(today);
+			line1.saveEx();
+				
+			assertEquals(fixedPrice, line1.getPriceActual().setScale(2, RoundingMode.HALF_UP), "Unexpected Order Line price");
+		} finally {
+			if (discountBreak != null && discountBreak.get_ID() > 0)
+				discountBreak.deleteEx(true);
+		}
 	}
 }
