@@ -156,7 +156,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		m_tableName = tableName;
 		setExpireMinutes(expireMinutes);
 		int propMaxSize = getCacheMaxSize(name);
-		if (propMaxSize > 0)
+		if (propMaxSize >= 0)
 			m_maxSize = propMaxSize;
 		else
 			m_maxSize = maxSize; 
