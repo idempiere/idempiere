@@ -78,9 +78,10 @@ public class ShowMaskWrapper implements ISupportMask {
 				Component p = maskObj.getParent();
 				maskObj.detach();
 				if (p == comp) {
-					StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+					StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
 					script.append(p.getUuid()).append("');");
 					script.append("w.busy=null;");
+					script.append("})()");
 					Clients.response(new AuScript(script.toString()));
 				}
 			}

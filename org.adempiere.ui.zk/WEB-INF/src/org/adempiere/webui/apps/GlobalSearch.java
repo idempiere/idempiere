@@ -170,9 +170,9 @@ public class GlobalSearch extends Div implements EventListener<Event> {
         } else if (event.getName().equals(ON_CREATE_ECHO)) {
     		StringBuilder script = new StringBuilder("jq('#")
     			.append(bandbox.getUuid())
-    			.append("').bind('keydown', function(e) {var code=e.keyCode||e.which;if(code==13){")
-    			.append("var widget=zk.Widget.$(this);")
-    			.append("var event=new zk.Event(widget,'")
+    			.append("').bind('keydown', function(e) {let code=e.keyCode||e.which;if(code==13){")
+    			.append("let widget=zk.Widget.$(this);")
+    			.append("let event=new zk.Event(widget,'")
     			.append(ON_ENTER_KEY)
     			.append("',{},{toServer:true});")
     			.append("zAu.send(event);")
