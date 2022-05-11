@@ -47,6 +47,24 @@ public class MInOutLine extends X_M_InOutLine
 	private static final long serialVersionUID = 8630611882798722864L;
 
 	/**
+	 * 	Get Ship lines Of Product
+	 * 	 *	@param ctx context
+	 *	@param M_Product_ID product
+	 *	@param where optional addition where clause
+	 *  @param trxName transaction
+	 *	@return array of receipt lines
+	 */
+	public static MInOutLine[] getOfProduct (Properties ctx,
+		int M_Product_ID, String where, String trxName)
+	{
+		String whereClause = "M_Product_ID=?" + (!Util.isEmpty(where, true) ? " AND "+where : "");
+		List<MInOutLine> list = new Query(ctx, Table_Name, whereClause, trxName)
+									.setParameters(M_Product_ID)
+									.list();
+		return list.toArray (new MInOutLine[list.size()]);
+	}
+	
+	/**
 	 * 	Get Ship lines Of Order Line
 	 *	@param ctx context
 	 *	@param C_OrderLine_ID line

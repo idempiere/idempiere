@@ -60,11 +60,11 @@ public class InOutGenerate extends SvrProcess
 	/** Promise Date			*/
 	private Timestamp	p_DatePromised = null;
 	/** Include Orders w. unconfirmed Shipments	*/
-	private boolean		p_IsUnconfirmedInOut = false;
+	private boolean		p_IsUnconfirmedInOut = true;
 	/** DocAction				*/
 	private String		p_docAction = DocAction.ACTION_None;
 	/** Consolidate				*/
-	private boolean		p_ConsolidateDocument = true;
+	private boolean		p_ConsolidateDocument = false;
     /** Shipment Date                       */
 	private Timestamp       p_DateShipped = null;
 	
@@ -173,7 +173,7 @@ public class InOutGenerate extends SvrProcess
 			if (p_C_BPartner_ID != 0)
 				m_sql.append(" AND o.C_BPartner_ID=?");					//	#3
 		}
-		m_sql.append(" ORDER BY M_Warehouse_ID, PriorityRule, M_Shipper_ID, C_BPartner_ID, C_BPartner_Location_ID, C_Order_ID");
+		m_sql.append(" ORDER BY M_Warehouse_ID, PriorityRule, M_Shipper_ID, DateOrdered, C_BPartner_ID, C_BPartner_Location_ID, C_Order_ID");
 
 		PreparedStatement pstmt = null;
 		try
@@ -273,6 +273,7 @@ public class InOutGenerate extends SvrProcess
 					
 					//	Check / adjust for confirmations
 					BigDecimal unconfirmedShippedQty = Env.ZERO;
+					BigDecimal totalunconfirmedShippedQty = Env.ZERO;
 					if (p_IsUnconfirmedInOut && product != null && toDeliver.signum() != 0)
 					{
 						String where2 = "EXISTS (SELECT * FROM M_InOut io WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID AND io.DocStatus IN ('DR','IN','IP','WC'))";
@@ -290,7 +291,17 @@ public class InOutGenerate extends SvrProcess
 							logInfo.append(" (set to 0)");
 						}
 						//	Adjust On Hand
-						onHand = onHand.subtract(unconfirmedShippedQty);
+						StringBuilder where3 = new StringBuilder ("EXISTS (SELECT * FROM M_InOut io WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID AND io.IsSOTrx = 'Y' AND io.DocStatus IN ('DR','IN','IP','WC')")
+							    .append	(" AND io.M_Warehouse_ID=").append(p_M_Warehouse_ID).append (")");;
+						iols = MInOutLine.getOfProduct(getCtx(), 
+							line.getM_Product_ID(), where3.toString(), get_TrxName());
+						for (int j = 0; j < iols.length; j++) 
+							// don't count lines of our m_shipment, they are already decreased in storage
+							if (m_shipment == null || iols[j].get_ValueAsInt("M_InOut_ID") != m_shipment.get_ID())
+								totalunconfirmedShippedQty = totalunconfirmedShippedQty.add(iols[j].getMovementQty());
+						logInfo = new StringBuilder("TotalUnconfirmed Qty=").append(totalunconfirmedShippedQty) 
+							.append(" - ToDeliver=").append(toDeliver).append("->");					
+						onHand = onHand.subtract(totalunconfirmedShippedQty);
 						if (log.isLoggable(Level.FINE)) log.fine(logInfo.toString());
 					}
 					
