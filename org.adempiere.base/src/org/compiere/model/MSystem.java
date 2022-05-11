@@ -352,9 +352,9 @@ public class MSystem extends X_AD_System
 		try
 		{
 			setDBInfo();
-			setInternalUsers();
 			if (isAllowStatistics())
 			{
+				setInternalUsers();
 				setStatisticsInfo(getStatisticsInfo(true));
 				setProfileInfo(getProfileInfo(true));
 			}
@@ -377,7 +377,7 @@ public class MSystem extends X_AD_System
 			+ "FROM AD_User u"
 			+ " INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID) "
 			+ "WHERE u.AD_Client_ID<>11"			//	no Demo
-			+ " AND u.AD_User_ID NOT IN (0,100)";	//	no System/SuperUser
+			+ " AND u.AD_User_ID NOT IN (0,10,100)";	//	no System/SuperUser
 		int internalUsers = DB.getSQLValue(null, sql);
 		setSupportUnits(internalUsers);
 	}	//	setInternalUsers
@@ -437,7 +437,7 @@ public class MSystem extends X_AD_System
 				+ " || '.' || SYS_CONTEXT('USERENV','DB_DOMAIN') AS DBName "
 				+ "FROM DUAL";
 		//
-		return "SELECT NULL,NULL FROM AD_System WHERE AD_System_ID=-1";
+		return "SELECT NULL,NULL FROM DUAL WHERE 1=0";
 	}	//	getDBInfoSQL
 	
 	
