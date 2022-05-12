@@ -36,8 +36,10 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
-public class MDocumentStatus extends X_PA_DocumentStatus {
+public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOSupport {
 	/**
 	 * 
 	 */
@@ -50,6 +52,61 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 	public MDocumentStatus(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
+
+	/**
+	 * 
+	 * @param copy
+	 */
+	public MDocumentStatus(MDocumentStatus copy) 
+	{
+		this(Env.getCtx(), copy);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MDocumentStatus(Properties ctx, MDocumentStatus copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MDocumentStatus(Properties ctx, MDocumentStatus copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
+	
+	/**	Categopry Cache				*/
+	private static ImmutableIntPOCache<Integer,MDocumentStatus>	s_cache = new ImmutableIntPOCache<Integer,MDocumentStatus>(Table_Name, 20);
+	
+	/**
+	 * 	Get from Cache (immutable)
+	 *	@param ctx context
+	 *	@param M_Product_Category_ID id
+	 *	@return category
+	 */
+	public static MDocumentStatus get (Properties ctx, int PA_DocumentStatus_ID)
+	{
+		Integer ii = Integer.valueOf(PA_DocumentStatus_ID);
+		MDocumentStatus retValue = s_cache.get(ctx, ii, e -> new MDocumentStatus(ctx, e));
+		if (retValue != null)
+			return retValue;
+		retValue = new MDocumentStatus (ctx, PA_DocumentStatus_ID, (String)null);
+		if (retValue.get_ID () == PA_DocumentStatus_ID)
+		{
+			s_cache.put (PA_DocumentStatus_ID, retValue, e -> new MDocumentStatus(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
+	}	//	get
 
 	/**
 	 * 	Get Document Status Indicators
@@ -171,4 +228,12 @@ public class MDocumentStatus extends X_PA_DocumentStatus {
 		return false;
 	}
 
+	@Override
+	public PO markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 }

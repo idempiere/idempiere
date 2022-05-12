@@ -1259,6 +1259,8 @@ public class TableElement extends PrintElement
 		if (pageYindex >= m_firstRowOnPage.size())  {
 			pageYindex = m_firstRowOnPage.size() - 1;
 		}
+		if (pageYindex<0)
+			return;
 		int firstRow = ((Integer)m_firstRowOnPage.get(pageYindex)).intValue();
 		int nextPageRow = m_data.getRowCount();				//	no of rows
 		if (pageYindex+1 < m_firstRowOnPage.size())

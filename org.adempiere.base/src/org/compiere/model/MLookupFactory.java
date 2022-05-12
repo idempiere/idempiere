@@ -684,7 +684,7 @@ public class MLookupFactory
 			embedSQL.append(TableNameAlias).append(".Value||'").append(separator).append("'||");
 		}
 
-		MColumn columnDisplay = new MColumn(Env.getCtx(), columnDisplay_ID, null);
+		MColumn columnDisplay = MColumn.get(Env.getCtx(), columnDisplay_ID);
 		if (columnDisplay.isVirtualUIColumn() || columnDisplay.isVirtualSearchColumn())
 		{
 			s_log.warning("Virtual UI Column must not be used as display");

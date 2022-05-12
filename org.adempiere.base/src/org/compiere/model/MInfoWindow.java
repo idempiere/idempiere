@@ -48,7 +48,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6723480469706009814L;
+	private static final long serialVersionUID = -6793583766286122866L;
 
 	/**	Cache						*/
 	private static ImmutablePOCache<String,MInfoWindow> s_cache = new ImmutablePOCache<String,MInfoWindow>(Table_Name, 20);
@@ -221,13 +221,17 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	 * return MInfoWindow if the current role can access to the specified info window ; otherwise return null 
 	 * */
 	public static MInfoWindow get(int infoWindowID, String trxName) {
-		MInfoWindow iw = getInfoWindow(infoWindowID);		
-		Boolean access = MRole.getDefault().getInfoAccess(iw.getAD_InfoWindow_ID());
-		if (access != null && access.booleanValue()) {
-			if (!Util.isEmpty(trxName, true))
-				iw = new MInfoWindow(iw, trxName);
-			return iw;
+		MInfoWindow iw = getInfoWindow(infoWindowID);
+
+		if (iw != null) {
+			Boolean access = MRole.getDefault().getInfoAccess(iw.getAD_InfoWindow_ID());
+			if (access != null && access.booleanValue()) {
+				if (!Util.isEmpty(trxName, true))
+					iw = new MInfoWindow(iw, trxName);
+				return iw;
+			}
 		}
+
 		return null;
 	}
 

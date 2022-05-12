@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_DiscountSchemaBreak
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_M_DiscountSchemaBreak 
 {
@@ -44,8 +44,8 @@ public interface I_M_DiscountSchemaBreak
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_M_DiscountSchemaBreak
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -103,6 +103,19 @@ public interface I_M_DiscountSchemaBreak
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name FixedPrice */
+    public static final String COLUMNNAME_FixedPrice = "FixedPrice";
+
+	/** Set Fixed Price.
+	  * Fixed Price for Product
+	  */
+	public void setFixedPrice (BigDecimal FixedPrice);
+
+	/** Get Fixed Price.
+	  * Fixed Price for Product
+	  */
+	public BigDecimal getFixedPrice();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

@@ -411,7 +411,7 @@ public class DataEngine
 					{
 						if (script.startsWith("@SQL="))
 						{
-							script = "(" + script.replace("@SQL=", "") + ")";
+							script = "(" + script.replace("@SQL=", "").trim() + ")";
 							script = Env.parseContext(Env.getCtx(), 0, script, false);
 						}
 						else
@@ -535,6 +535,7 @@ public class DataEngine
 					}
 					// 	TableName.ColumnName,
 					sqlSELECT.append(lookupSQL).append(" AS ").append(ColumnName).append(",");
+					groupByColumns.add(lookupSQL); 
 					pdc = new PrintDataColumn(AD_PrintFormatItem_ID, AD_Column_ID, ColumnName, AD_Reference_ID, FieldLength, orderName, isPageBreak);
 					synonymNext();
 				}
@@ -1306,7 +1307,7 @@ public class DataEngine
 		if (expression == null || expression.length() == 0)
 			return "";
 
-		log.info("Analyzing Expression " + expression);
+		if (log.isLoggable(Level.CONFIG)) log.config("Analyzing Expression " + expression);
 		String token;
 		String inStr = new String(expression);
 		StringBuffer outStr = new StringBuffer();
@@ -1349,6 +1350,17 @@ public class DataEngine
 				if (tokenPDE == null)
 					return "\"Item not found: " + token + "\"";
 				Object value = ((PrintDataElement)tokenPDE).getValue();
+				outStr.append(value);
+			}
+			else if (token.equals("LINE"))
+			{
+				BigDecimal value = Env.ONE;
+				if (m_summarized.containsKey(pdc))
+				{
+					value = ((BigDecimal)m_summarized.get(pdc)).add(value);
+					m_summarized.remove(pdc);
+				}
+				m_summarized.put(pdc, value);
 				outStr.append(value);
 			}
 

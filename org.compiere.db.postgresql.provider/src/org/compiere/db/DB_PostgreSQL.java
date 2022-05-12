@@ -903,6 +903,18 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
 		if (m_ds != null)
 		{
+			try 
+			{
+				//wait 5 seconds if pool is still busy
+				if (m_ds.getNumBusyConnections() > 0)
+				{
+					Thread.sleep(5 * 1000);
+				}
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			
 			try
 			{
 				m_ds.close();
@@ -1296,6 +1308,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		return "TIMESTAMP";
 	}
 
+	@Override
+	public String getTimestampWithTimezoneDataType() {
+		return "TIMESTAMP WITH TIME ZONE";
+	}
+	
 	@Override
 	public String getSQLDDL(MColumn column) {				
 		StringBuilder sql = new StringBuilder ().append(column.getColumnName())

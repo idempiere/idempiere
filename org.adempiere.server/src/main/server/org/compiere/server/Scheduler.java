@@ -132,7 +132,12 @@ public class Scheduler extends AdempiereServer
 		Env.setContext(getCtx(), Env.DATE, dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
 
 		//Create new Session and set #AD_Session_ID to context
-		MSession session = MSession.get(getCtx(), true);
+		MSession session = MSession.get(Env.getCtx());
+		if(session == null) {
+			session = MSession.create(Env.getCtx());
+		} else {
+			session = new MSession(Env.getCtx(), session.getAD_Session_ID(), null);
+		}
 		MProcess process = new MProcess(getCtx(), scheduler.getAD_Process_ID(), null);
 		try
 		{
