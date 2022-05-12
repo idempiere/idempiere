@@ -639,7 +639,14 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     		return insertBefore((Tab)refTab.getNextSibling(), comp, title, closeable, enable, decorateInfo);
     }
 
-    public Tab insertOverride(Tab refTab, Window comp, String title, boolean closeable, boolean enable, DecorateInfo decorateInfo) {
+    /**
+     * IDEMPIERE-5275 - Tabular Report Re-Run button/close parameter window
+     * @param refTab 
+     * @param comp
+     * @param title
+     * @return
+     */
+    public Tab replace(Tab refTab, Window comp, String title) {
     	 
          if (refTab == null)  
          {
@@ -649,16 +656,14 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
          {
          	org.zkoss.zul.Tabpanel refpanel = refTab.getLinkedPanel();
          	Component oldWindow = refpanel.getFirstChild();
-         	if(oldWindow instanceof Window) {
-         		if(oldWindow instanceof ProcessDialog)
-         			((ProcessDialog)oldWindow).unlockUI(null);
-         		else if(oldWindow instanceof ZkReportViewer)
-    				((ZkReportViewer)oldWindow).hideBusyMask();
-    			else if(oldWindow instanceof AbstractADWindowContent)
-    				((AbstractADWindowContent)oldWindow).hideBusyMask();
-         		((Window) oldWindow).onClose();
-         		comp.setParent(refpanel);
-         	}
+     		if(oldWindow instanceof ProcessDialog)
+     			((ProcessDialog)oldWindow).unlockUI(null);
+     		else if(oldWindow instanceof ZkReportViewer)
+				((ZkReportViewer)oldWindow).hideBusyMask();
+			else if(oldWindow instanceof AbstractADWindowContent)
+				((AbstractADWindowContent)oldWindow).hideBusyMask();
+     		((Window) oldWindow).onClose();
+     		comp.setParent(refpanel);
          }
          if (title != null) 
          {

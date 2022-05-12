@@ -154,7 +154,7 @@ public class ProcessInfo implements Serializable
 	private File				m_exportFile = null;
 	
 	/** Report Override Tab */
-	private boolean				m_IsReportOverride = false;
+	private boolean				m_IsReplaceTabContent = false;
 	
 	/** Row count */
 	private int m_rowCount;
@@ -943,12 +943,19 @@ public class ProcessInfo implements Serializable
 		return processUI;
 	}
 
-	public boolean isReportOverride() {
-		return m_IsReportOverride;
+	/**
+	 * Determines, if current tab content should be replaced, or a new tab should be opened
+	 * @return true, if current tab content should be replaced
+	 */
+	public boolean isReplaceTabContent() {
+		return m_IsReplaceTabContent;
 	}
 
-	public void setIsReportOverride() {
-		this.m_IsReportOverride = !(MSysConfig.getBooleanValue(MSysConfig.ZK_REPORT_TABLE_OPEN_IN_NEW_TAB, false, Env.getAD_Client_ID(Env.getCtx())));
+	/**
+	 * Sets, if current tab content should be replaced, or a new tab should be opened
+	 */
+	public void setReplaceTabContent() {
+		this.m_IsReplaceTabContent = !(MSysConfig.getBooleanValue(MSysConfig.ZK_REPORT_TABLE_OPEN_IN_NEW_TAB, false, Env.getAD_Client_ID(Env.getCtx())));
 	}
 	
 }   //  ProcessInfo

@@ -52,8 +52,8 @@ public class ZkReportViewerProvider implements ReportViewerProvider {
 		
     	viewer.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
     	viewer.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
-    	if(report.isOverride())
-    		viewer.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_OVERRIDE);
+    	if(report.isReplaceTabContent())
+    		viewer.setAttribute(Window.INSERT_POSITION_KEY, Window.REPLACE);
     	
     	viewer.setAttribute(WindowContainer.DEFER_SET_SELECTED_TAB, Boolean.TRUE);
     	SessionManager.getAppDesktop().showWindow(viewer);

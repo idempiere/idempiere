@@ -266,7 +266,7 @@ public class ReportCtl
 		}
 		re.setLanguageID(pi.getLanguageID());
 		re.setWindowNo(WindowNo);
-		re.setIsOverride(pi.isReportOverride());
+		re.setIsReplaceTabContent(pi.isReplaceTabContent());
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
 	}	//	startStandardReport

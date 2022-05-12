@@ -238,7 +238,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 	
 	private String m_name = null;
 	
-	private boolean m_isOverride = false;
+	private boolean m_isReplaceTabContent = false;
 	
 	/**
 	 * store all column has same css rule into a list
@@ -2392,12 +2392,20 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return reportType;
 	}
 	
-	public boolean isOverride() {
-		return m_isOverride;
+	/**
+	 * Determines, if current tab content should be replaced, or a new tab should be opened
+	 * @return
+	 */
+	public boolean isReplaceTabContent() {
+		return m_isReplaceTabContent;
 	}
 
-	public void setIsOverride(boolean m_isOverride) {
-		this.m_isOverride = m_isOverride;
+	/**
+	 * Sets, if current tab content should be replaced, or a new tab should be opened
+	 * @param m_isReplaceTabContent
+	 */
+	public void setIsReplaceTabContent(boolean m_isReplaceTabContent) {
+		this.m_isReplaceTabContent = m_isReplaceTabContent;
 	}
 
 	/**

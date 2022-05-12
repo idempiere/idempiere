@@ -60,7 +60,7 @@ public class Window extends org.zkoss.zul.Window implements ISupportMask
     /*** Insert next to the active tab of the tabbed window container ***/
     public static final String INSERT_NEXT = "insertNext";
     /*** Insert override existing content ***/
-    public static final String INSERT_OVERRIDE = "insertOverride";
+    public static final String REPLACE = "replace";
     
     public Window()
     {

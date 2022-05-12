@@ -1245,11 +1245,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
         else if (event.getTarget() instanceof ProcessModalDialog)
         {
-        	if (!DialogEvents.ON_WINDOW_CLOSE.equals(event.getName())){
-        		return;
-        	}
-        	
-        	hideBusyMask();
+        	if(DialogEvents.ON_WINDOW_CLOSE.equals(event.getName())) 
+        		hideBusyMask();
         }
 	}
 
@@ -1499,10 +1496,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	 */
 	private void cmd_reRun() {
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
+		if(AD_Process_ID <= 0)
+			return;
 		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
-		pi.setIsReportOverride();
-		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi, false, true);
-		processModalDialog.setWidth("850px");
+		pi.setReplaceTabContent();
+		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi);
+		ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
 		this.getParent().appendChild(processModalDialog);
 		if (ClientInfo.isMobile())
 		{
@@ -1749,21 +1748,23 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	
 	private void showBusyMask(Window window) {
 		getParent().appendChild(getMask());
-		StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+		StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
 		script.append(getParent().getUuid()).append("');");
 		if (window != null) {
-			script.append("var d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
+			script.append("let d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
 		} else {
 			script.append("w.busy=true;");
 		}
+		script.append("})()");
 		Clients.response(new AuScript(script.toString()));
 	}
 	
 	public void hideBusyMask() {
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();
-			StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+			StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
 			script.append(getParent().getUuid()).append("');w.busy=false;");
+			script.append("})()");
 			Clients.response(new AuScript(script.toString()));
 		}
 	}
