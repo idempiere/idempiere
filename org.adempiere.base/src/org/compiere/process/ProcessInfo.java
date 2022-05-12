@@ -948,7 +948,7 @@ public class ProcessInfo implements Serializable
 	}
 
 	public void setIsReportOverride() {
-		this.m_IsReportOverride = !(MSysConfig.getBooleanValue(MSysConfig.ZK_REPORT_TABLE_OPEN_IN_NEW_TAB, false));
+		this.m_IsReportOverride = !(MSysConfig.getBooleanValue(MSysConfig.ZK_REPORT_TABLE_OPEN_IN_NEW_TAB, false, Env.getAD_Client_ID(Env.getCtx())));
 	}
 	
 }   //  ProcessInfo

@@ -237,7 +237,6 @@ public class ReportCtl
 	static public boolean startStandardReport (ProcessInfo pi, int WindowNo)
 	{
 		ReportEngine re = null;
-		MProcess process = new MProcess(Env.getCtx(), pi.getAD_Process_ID(), null);
 		//
 		// Create Report Engine by using attached MPrintFormat (if any)
 		Object o = pi.getTransientObject();
