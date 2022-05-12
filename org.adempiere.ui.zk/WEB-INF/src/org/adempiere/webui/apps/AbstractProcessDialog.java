@@ -201,8 +201,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		this.setTitle(m_Name);
 
 		//	Move from APanel.actionButton
-		if (m_pi == null)
+		if (m_pi == null) {
 			m_pi = new WProcessInfo(m_Name, AD_Process_ID);
+			// Set Override
+			m_pi.setIsReportOverride();
+		}
 		m_pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
 		m_pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 		m_pi.setTitle(m_Name);

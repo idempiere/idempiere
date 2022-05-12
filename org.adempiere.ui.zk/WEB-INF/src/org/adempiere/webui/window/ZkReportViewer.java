@@ -1240,17 +1240,17 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	        			return;
 	        		}
 	        	}
-	        	else if (event.getTarget() instanceof ProcessModalDialog)
-	         	{
-	         		if (!DialogEvents.ON_WINDOW_CLOSE.equals(event.getName())){
-	         			return;
-	         		}
-
-	         		hideBusyMask();
-	         	}
 	        	this.onCtrlKeyEvent(keyEvent);
         	}
 		}
+        else if (event.getTarget() instanceof ProcessModalDialog)
+        {
+        	if (!DialogEvents.ON_WINDOW_CLOSE.equals(event.getName())){
+        		return;
+        	}
+        	
+        	hideBusyMask();
+        }
 	}
 
 	private void cmd_upload() {
@@ -1500,7 +1500,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private void cmd_reRun() {
 		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
 		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
+		pi.setIsReportOverride();
 		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi, false, true);
+		processModalDialog.setWidth("850px");
 		this.getParent().appendChild(processModalDialog);
 		if (ClientInfo.isMobile())
 		{

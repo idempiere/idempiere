@@ -29,6 +29,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MSession;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
@@ -151,7 +152,10 @@ public class ProcessInfo implements Serializable
 	
 	/**	Export File				*/
 	private File				m_exportFile = null;
-
+	
+	/** Report Override Tab */
+	private boolean				m_IsReportOverride = false;
+	
 	/** Row count */
 	private int m_rowCount;
 
@@ -937,6 +941,14 @@ public class ProcessInfo implements Serializable
 	
 	public IProcessUI getProcessUI() {
 		return processUI;
+	}
+
+	public boolean isReportOverride() {
+		return m_IsReportOverride;
+	}
+
+	public void setIsReportOverride() {
+		this.m_IsReportOverride = !(MSysConfig.getBooleanValue(MSysConfig.ZK_REPORT_TABLE_OPEN_IN_NEW_TAB, false));
 	}
 	
 }   //  ProcessInfo
