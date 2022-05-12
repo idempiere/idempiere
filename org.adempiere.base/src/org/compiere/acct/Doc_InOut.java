@@ -645,7 +645,6 @@ public class Doc_InOut extends Doc
 								else if (C_Tax_ID != 0)
 								{
 									MTax tax = MTax.get(getCtx(), C_Tax_ID);
-									int stdPrecision = MCurrency.getStdPrecision(getCtx(), C_Currency_ID);
 									if(tax.isSummary())
 									{
 										MTax[] cTaxes = tax.getChildTaxes(false);
@@ -654,7 +653,8 @@ public class Doc_InOut extends Doc
 										{
 											if (cTax.isDistributeTaxWithLineItem())
 											{
-												BigDecimal costTax = cTax.calculateTax(base, false, stdPrecision);
+												//do not round to stdprecision before multiply qty
+												BigDecimal costTax = cTax.calculateTax(base, false, 12);
 												if (log.isLoggable(Level.FINE)) log.fine("Costs=" + base + " - Tax=" + costTax);
 												costs = costs.add(costTax);
 											}																						
@@ -662,7 +662,8 @@ public class Doc_InOut extends Doc
 									}
 									else if (tax.isDistributeTaxWithLineItem())
 									{
-										BigDecimal costTax = tax.calculateTax(costs, false, stdPrecision);
+										//do not round to stdprecision before multiply qty
+										BigDecimal costTax = tax.calculateTax(costs, false, 12);
 										if (log.isLoggable(Level.FINE)) log.fine("Costs=" + costs + " - Tax=" + costTax);
 										costs = costs.add(costTax);
 									}
