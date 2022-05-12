@@ -943,14 +943,49 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	 * author teo_sarca [ 1583825 ]
 	 */
 	protected boolean updateInvoiceTax(boolean oldTax) {
-		MInvoiceTax tax = MInvoiceTax.get (this, getPrecision(), oldTax, get_TrxName());
-		if (tax != null) {
-			if (!tax.calculateTaxFromLines())
-				return false;
+		int C_Tax_ID = getC_Tax_ID();
+		boolean isOldTax = oldTax && is_ValueChanged(MInvoiceTax.COLUMNNAME_C_Tax_ID); 
+		if (isOldTax)
+		{
+			Object old = get_ValueOld(MInvoiceTax.COLUMNNAME_C_Tax_ID);
+			if (old == null)
+			{
+				return true;
+			}
+			C_Tax_ID = ((Integer)old).intValue();
+		}
+		if (C_Tax_ID == 0)
+		{
+			return true;
+		}
 		
-			// red1 - solving BUGS #[ 1701331 ] , #[ 1786103 ]
-			if (!tax.save(get_TrxName()))
-				return false;
+		MTax t = MTax.get(C_Tax_ID);
+		if (t.isSummary())
+		{
+			MInvoiceTax[] invoiceTaxes = MInvoiceTax.getChildTaxes(this, getPrecision(), oldTax, get_TrxName());
+			if (invoiceTaxes != null && invoiceTaxes.length > 0)
+			{
+				for(MInvoiceTax tax : invoiceTaxes)
+				{
+					if (!tax.calculateTaxFromLines())
+						return false;
+				
+					if (!tax.save(get_TrxName()))
+						return false;
+				}
+			}
+		}
+		else
+		{
+			MInvoiceTax tax = MInvoiceTax.get (this, getPrecision(), oldTax, get_TrxName());
+			if (tax != null) {
+				if (!tax.calculateTaxFromLines())
+					return false;
+			
+				// red1 - solving BUGS #[ 1701331 ] , #[ 1786103 ]
+				if (!tax.save(get_TrxName()))
+					return false;
+			}
 		}
 		return true;
 	}

@@ -37,6 +37,7 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCostDetail;
+import org.compiere.model.MCurrency;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
@@ -44,6 +45,7 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MOrderLandedCostAllocation;
+import org.compiere.model.MTax;
 import org.compiere.model.MUOM;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
@@ -533,6 +535,56 @@ public class Doc_MatchInv extends Doc
 				}
 			}
 			tAmt = tAmt.add(LineNetAmt); //Invoice Price
+			// adjust for tax
+			MTax tax = MTax.get(getCtx(), m_invoiceLine.getC_Tax_ID());
+			int stdPrecision = MCurrency.getStdPrecision(getCtx(), m_invoiceLine.getParent().getC_Currency_ID());
+			if (m_invoiceLine.isTaxIncluded())
+			{
+				BigDecimal tAmtTax = tax.calculateTax(tAmt, true, stdPrecision);
+				if (tax.isSummary())
+				{
+					tAmt = tAmt.subtract(tAmtTax);
+					BigDecimal base = tAmt;
+					for (MTax childTax : tax.getChildTaxes(false)) 
+					{
+						if (!childTax.isZeroTax())
+						{
+							if (childTax.isDistributeTaxWithLineItem())
+							{
+								BigDecimal taxAmt = childTax.calculateTax(base, false, stdPrecision);
+								tAmt = tAmt.add(taxAmt);
+							}
+						}
+					}
+				}
+				else if (!tax.isDistributeTaxWithLineItem())
+				{
+					tAmt = tAmt.subtract(tAmtTax);
+				}
+			}
+			else
+			{
+				if (tax.isSummary())
+				{
+					BigDecimal base = tAmt;
+					for (MTax childTax : tax.getChildTaxes(false)) 
+					{
+						if (!childTax.isZeroTax())
+						{
+							if (childTax.isDistributeTaxWithLineItem())
+							{
+								BigDecimal taxAmt = childTax.calculateTax(base, false, stdPrecision);
+								tAmt = tAmt.add(taxAmt);
+							}
+						}
+					}
+				}
+				else if (tax.isDistributeTaxWithLineItem())
+				{					
+					BigDecimal taxAmt = tax.calculateTax(tAmt, false, stdPrecision);
+					tAmt = tAmt.add(taxAmt);
+				}
+			}
 			
 			// 	Different currency
 			MInvoice invoice = m_invoiceLine.getParent();
