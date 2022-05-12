@@ -715,6 +715,11 @@ public abstract class CreateFromShipment extends CreateFrom
 				inout.setDropShip_BPartner_ID(p_order.getDropShip_BPartner_ID());
 				inout.setDropShip_Location_ID(p_order.getDropShip_Location_ID());
 				inout.setDropShip_User_ID(p_order.getDropShip_User_ID());
+				if (MOrder.DELIVERYVIARULE_Shipper.equals(p_order.getDeliveryViaRule()) && p_order.getM_Shipper_ID() > 0)
+				{
+					inout.setDeliveryViaRule(p_order.getDeliveryViaRule());
+					inout.setM_Shipper_ID(p_order.getM_Shipper_ID());
+				}
 			}
 		}
 		if (m_invoice != null && m_invoice.getC_Invoice_ID() != 0)

@@ -315,7 +315,11 @@ public class FDialog
 		if (adMessage != null && !adMessage.equals(""))
 			out.append(Msg.getMsg(Env.getCtx(), adMessage));
 		if (msg != null && msg.length() > 0)
-			out.append("\n").append(msg);
+		{
+			if (out.length() > 0)
+				out.append("\n");
+			out.append(msg);
+		}
 		String s = out.toString().replace("\n", "<br>");
 
     	Callback<Integer> msgCallback = null;
@@ -579,7 +583,11 @@ public class FDialog
 		if (adMessage != null && !adMessage.equals(""))
 			out.append(Msg.getMsg(Env.getCtx(), adMessage));
 		if (msg != null && msg.length() > 0)
-			out.append("\n").append(msg);
+		{
+			if (out.length() > 0)
+				out.append("\n");
+			out.append(msg);
+		}
 		String s = out.toString().replace("\n", "<br>");
 
         int response = Messagebox.showDialog(s, title, Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, msgCallback, (msgCallback == null));

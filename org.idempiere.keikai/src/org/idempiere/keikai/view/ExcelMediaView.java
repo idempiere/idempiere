@@ -24,8 +24,6 @@
  **********************************************************************/
 package org.idempiere.keikai.view;
 
-import java.io.IOException;
-
 import org.idempiere.ui.zk.media.IMediaView;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
@@ -68,7 +66,8 @@ public class ExcelMediaView implements IMediaView {
         Book book;
 		try {
 			book = importer.imports(media.getStreamData(), media.getName());
-		} catch (IOException e) {
+		} catch (Exception e) {
+			container.removeChild(spreadsheet);
 			throw new RuntimeException(e.getMessage(), e);
 		}
         spreadsheet.setBook(book);

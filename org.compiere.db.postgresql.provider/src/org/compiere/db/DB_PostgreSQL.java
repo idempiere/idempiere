@@ -903,6 +903,18 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
 		if (m_ds != null)
 		{
+			try 
+			{
+				//wait 5 seconds if pool is still busy
+				if (m_ds.getNumBusyConnections() > 0)
+				{
+					Thread.sleep(5 * 1000);
+				}
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			
 			try
 			{
 				m_ds.close();

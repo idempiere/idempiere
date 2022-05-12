@@ -18,15 +18,12 @@ package org.compiere.model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
-import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -84,14 +81,25 @@ public class MMailText extends X_R_MailText
 	
 	/**
 	 * 	Get parsed/translated Mail Text
-	 *	@param all concatinate all
+	 *	@param all concatenate all
 	 *	@return parsed/translated text
 	 */
 	public String getMailText(boolean all)
 	{
+		return getMailText(all, true);
+	}
+	
+	/**
+	 * 	Get parsed/translated Mail Text
+	 *	@param all concatenate all
+	 *  @param parsed
+	 *	@return parsed/translated text
+	 */
+	public String getMailText(boolean all, boolean parsed)
+	{
 		translate();
 		if (!all)
-			return parse(m_MailText);
+			return parsed ? parse(m_MailText) : m_MailText;
 		//
 		StringBuilder sb = new StringBuilder();
 		sb.append(m_MailText);
@@ -102,7 +110,7 @@ public class MMailText extends X_R_MailText
 		if (s != null && s.length() > 0)
 			sb.append("\n").append(s);
 		//
-		return parse(sb.toString());
+		return parsed ? parse(sb.toString()) : sb.toString();
 	}	//	getMailText
 
 	/**
@@ -141,8 +149,18 @@ public class MMailText extends X_R_MailText
 	 */
 	public String getMailHeader()
 	{
+		return getMailHeader(true);
+	}
+	
+	/**
+	 * 	Get parsed/translated Mail Header
+	 *  @param parsed
+	 *	@return parsed/translated text
+	 */
+	public String getMailHeader(boolean parsed)
+	{
 		translate();
-		return parse(m_MailHeader);
+		return parsed ? parse(m_MailHeader) : m_MailHeader;
 	}	//	getMailHeader
 	
 	/**************************************************************************
@@ -211,41 +229,7 @@ public class MMailText extends X_R_MailText
 	 */
 	protected String parseVariable (String variable, PO po)
 	{
-		if (variable.contains("<") && variable.contains(">")) { // IDEMPIERE-3096
-			return Env.parseVariable("@"+variable+"@", po, get_TrxName(), true);
-		}
-
-		String defaultValue = "";
-		if (variable.contains(":")) {
-			defaultValue = variable.substring(variable.indexOf(":") + 1, variable.length());
-			variable = variable.substring(0, variable.indexOf(":"));
-		}
-
-		// special default formatting cases for dates/times/boolean in mail text not covered by Env.parseVariable
-		int index = po.get_ColumnIndex(variable);
-		if (index == -1){
-			StringBuilder msgreturn = new StringBuilder("@").append(variable).append("@");
-			return msgreturn.toString();	//	keep for next
-		}	
-		//
-		MColumn col = MColumn.get(Env.getCtx(), po.get_TableName(), variable);
-		Object value = null;
-		if (col != null && col.isSecure()) {
-			value = "********";
-		} else if (col.getAD_Reference_ID() == DisplayType.Date || col.getAD_Reference_ID() == DisplayType.DateTime || col.getAD_Reference_ID() == DisplayType.Time) {
-			SimpleDateFormat sdf = DisplayType.getDateFormat(col.getAD_Reference_ID());
-			value = sdf.format (po.get_Value(index));	
-		} else if (col.getAD_Reference_ID() == DisplayType.YesNo) {
-			if (po.get_ValueAsBoolean(variable))
-				value = Msg.getMsg(Env.getCtx(), "Yes");
-			else
-				value = Msg.getMsg(Env.getCtx(), "No");
-		} else {
-			value = po.get_Value(index);
-		}
-		if (value == null)
-			return defaultValue;
-		return value.toString();
+		return Env.parseVariable("@"+variable+"@", po, get_TrxName(), true, true, true);
 	}	//	translate
 	
 	/**
