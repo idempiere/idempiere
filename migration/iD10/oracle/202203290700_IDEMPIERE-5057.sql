@@ -42,33 +42,33 @@ INSERT INTO AD_Field (SortNo,AD_Field_ID,IsEncrypted,DisplayLength,IsSameLine,Is
 ;
 
 -- Mar 28, 2022 3:55:33 PM MYT
-UPDATE AD_Field SET SeqNo=180,SeqNoGrid=180,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=205862
+UPDATE AD_Field SET SeqNo=180,SeqNoGrid=180,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=205862
 ;
 
 -- Mar 28, 2022 3:55:33 PM MYT
-UPDATE AD_Field SET SeqNo=190,SeqNoGrid=190,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=203325
+UPDATE AD_Field SET SeqNo=190,SeqNoGrid=190,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=203325
 ;
 
 -- Mar 28, 2022 3:55:33 PM MYT
-UPDATE AD_Field SET SeqNo=200,SeqNoGrid=200,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=203326
+UPDATE AD_Field SET SeqNo=200,SeqNoGrid=200,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=203326
 ;
 
 -- Mar 28, 2022 3:55:33 PM MYT
-UPDATE AD_Field SET SeqNo=210,SeqNoGrid=210,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=974
+UPDATE AD_Field SET SeqNo=210,SeqNoGrid=210,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=974
 ;
 
 -- Mar 28, 2022 3:55:33 PM MYT
-UPDATE AD_Field SET SeqNo=220,SeqNoGrid=220,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=976
+UPDATE AD_Field SET SeqNo=220,SeqNoGrid=220,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=976
 ;
 
 -- Mar 28, 2022 3:55:33 PM MYT
-UPDATE AD_Field SET SeqNo=230,SeqNoGrid=230,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=975
+UPDATE AD_Field SET SeqNo=230,SeqNoGrid=230,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=975
 ;
 
-UPDATE AD_Field SET SeqNo=240,SeqNoGrid=240,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=977
+UPDATE AD_Field SET SeqNo=240,SeqNoGrid=240,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=977
 ;
 
-UPDATE AD_Field SET SeqNo=250,SeqNoGrid=250,IsDisplayed='Y', Updated=Now(), UpdatedBy=100 WHERE AD_Field_ID=202402
+UPDATE AD_Field SET SeqNo=250,SeqNoGrid=250,IsDisplayed='Y', Updated=SYSDATE, UpdatedBy=100 WHERE AD_Field_ID=202402
 ;
 
 -- Mar 28, 2022 3:56:15 PM MYT
