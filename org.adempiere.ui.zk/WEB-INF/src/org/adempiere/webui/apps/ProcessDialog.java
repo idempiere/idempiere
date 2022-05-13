@@ -313,8 +313,9 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();
 			if(getParent() != null) {
-				StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+				StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
 				script.append(getParent().getUuid()).append("');w.busy=false;");
+				script.append("})()");
 				Clients.response(new AuScript(script.toString()));
 			}
 		}
