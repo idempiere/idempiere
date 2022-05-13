@@ -60,11 +60,11 @@ public class InOutGenerate extends SvrProcess
 	/** Promise Date			*/
 	private Timestamp	p_DatePromised = null;
 	/** Include Orders w. unconfirmed Shipments	*/
-	private boolean		p_IsUnconfirmedInOut = true;
+	private boolean		p_IsUnconfirmedInOut = false;
 	/** DocAction				*/
 	private String		p_docAction = DocAction.ACTION_None;
 	/** Consolidate				*/
-	private boolean		p_ConsolidateDocument = false;
+	private boolean		p_ConsolidateDocument = true;
     /** Shipment Date                       */
 	private Timestamp       p_DateShipped = null;
 	
