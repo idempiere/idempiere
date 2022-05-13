@@ -1,16 +1,16 @@
 (function() {
   jawwa.atmosphere.startServerPush = function(dtid, timeout) {
-    var dt = zk.Desktop.$(dtid);
+    let dt = zk.Desktop.$(dtid);
     if (dt._serverpush)
       dt._serverpush.stop();
 
     //change to true to enable trace of execution
-    var trace = false;
-    var spush = new jawwa.atmosphere.ServerPush(dt, timeout, trace);
+    let trace = false;
+    let spush = new jawwa.atmosphere.ServerPush(dt, timeout, trace);
     spush.start();
   };
   jawwa.atmosphere.stopServerPush = function(dtid) {
-    var dt = zk.Desktop.$(dtid);
+    let dt = zk.Desktop.$(dtid);
     if (dt._serverpush)
       dt._serverpush.stop();
   };
@@ -37,7 +37,7 @@
       this.ajaxOptions.timeout = this.timeout;
       this.ajaxOptions.url = zk.ajaxURI("/comet", {au: true,desktop:this.desktop.id,ignoreSession:true}),
       this.trace = trace;
-      var me = this;
+      let me = this;
       this.ajaxOptions.error = function(jqxhr, textStatus, errorThrown) {
     	  if (me.trace)
     		  console.log("error: " + textStatus + " dtid: " + me.desktop.id + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
@@ -67,7 +67,7 @@
     },
     _schedule: function() {
       if (this.failures < 3) {
-		var d = this.delay;
+		let d = this.delay;
 		if (this._req && (this._req.status == 0 || this._req.status == 400))
 			d = 500;
     	this._req = null;
@@ -83,7 +83,7 @@
 
       if (this.trace)
     	  console.log("_send"+ " dtid: " + this.desktop.id);
-      var jqxhr = $.ajax(this.ajaxOptions);
+      let jqxhr = $.ajax(this.ajaxOptions);
       this._req = jqxhr;
       zAu.cmd0.echo(this.desktop);
     },

@@ -141,8 +141,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 										if (!headerTab.isDetailVisible()) {
 											String uuid = headerTab.getDetailPane().getParent().getUuid();
 											String vid = getSelectedDetailADTabpanel().getGridView().getUuid();
-											String script = "setTimeout(function(){zk('#"+uuid+"').$().setOpen(true);setTimeout(function(){var v=zk('#" + vid
-													+ "').$();var e=new zk.Event(v,'onEditCurrentRow',null,{toServer:true});zAu.send(e);},200);},200)";
+											String script = "setTimeout(function(){zk('#"+uuid+"').$().setOpen(true);setTimeout(function(){let v=zk('#" + vid
+													+ "').$();let e=new zk.Event(v,'onEditCurrentRow',null,{toServer:true});zAu.send(e);},200);},200)";
 											Clients.response(new AuScript(script));
 										} else {
 											boolean isFormView = headerTab.getDetailPane().getSelectedPanel().isToggleToFormView();

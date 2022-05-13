@@ -135,7 +135,7 @@ public class HelpController
         content.appendChild(htmlToolTip = new Html());
         htmlToolTip.setWidgetOverride("defaultMessage", "'"+Msg.getMsg(Env.getCtx(), "PlaceCursorIntoField")+"'");
         htmlToolTip.setWidgetOverride("onFieldTooltip", "function(origin,opts,header,description,help)" +
-        		"{var s='<html><body><div class=\"help-content\">';" +
+        		"{let s='<html><body><div class=\"help-content\">';" +
         		"if (typeof header == 'undefined') {s=s+'<i>'+this.defaultMessage+'</i>';} " +
         		"else {s=s+'<b>'+header+'</b>';" +
         		"if (typeof description=='string' && description.length > 0) {s=s+'<br><br><i>'+description+'</i>';}" +
@@ -161,7 +161,9 @@ public class HelpController
     }
 
 	public void setupFieldTooltip() {
-		Clients.response("helpControllerFieldTooltip", new AuScript(htmlToolTip, "var w=zk.Widget.$('#"+htmlToolTip.getUuid()+"');zWatch.listen({onFieldTooltip: w});"));
+		Clients.response("helpControllerFieldTooltip", 
+				new AuScript(htmlToolTip, "(function(){let w=zk.Widget.$('#"+htmlToolTip.getUuid()
+				+"');zWatch.listen({onFieldTooltip: w});})()"));
 	}
     
 	/**
