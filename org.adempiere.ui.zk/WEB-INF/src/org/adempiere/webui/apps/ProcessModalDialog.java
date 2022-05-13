@@ -70,9 +70,9 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	}
 	
 	/**
+	 * @param listener
 	 * @param WindowNo
 	 * @param pi
-	 * @param autoStart
 	 */
 	public ProcessModalDialog(EventListener<Event> listener, int WindowNo, ProcessInfo pi)
 	{

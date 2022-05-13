@@ -651,20 +651,26 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     	 
          if (refTab == null)  
          {
-         	tabbox.getTabs().getChildren();
+         	throw new IllegalArgumentException();
          }
          else
          {
          	org.zkoss.zul.Tabpanel refpanel = refTab.getLinkedPanel();
-         	Component oldWindow = refpanel.getFirstChild();
-     		if(oldWindow instanceof ProcessDialog)
-     			((ProcessDialog)oldWindow).unlockUI(null);
-     		else if(oldWindow instanceof ZkReportViewer)
-				((ZkReportViewer)oldWindow).hideBusyMask();
-			else if(oldWindow instanceof AbstractADWindowContent)
-				((AbstractADWindowContent)oldWindow).hideBusyMask();
-     		((Window) oldWindow).onClose();
-     		comp.setParent(refpanel);
+         	Component firstChild = refpanel.getFirstChild();
+         	if(firstChild instanceof Window) {
+	     		if(firstChild instanceof ProcessDialog)
+	     			((ProcessDialog)firstChild).unlockUI(null);
+	     		else if(firstChild instanceof ZkReportViewer)
+					((ZkReportViewer)firstChild).hideBusyMask();
+				else if(firstChild instanceof AbstractADWindowContent)
+					((AbstractADWindowContent)firstChild).hideBusyMask();
+	     		((Window) firstChild).onClose();
+	     		comp.setParent(refpanel);
+         	}
+         	else {
+         		firstChild.detach();
+         		comp.setParent(refpanel);
+         	}
          }
          if (title != null) 
          {
