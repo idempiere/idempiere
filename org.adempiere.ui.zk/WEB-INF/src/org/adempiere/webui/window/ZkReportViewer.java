@@ -1691,21 +1691,23 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	
 	private void showBusyMask(Window window) {
 		getParent().appendChild(getMask());
-		StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+		StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
 		script.append(getParent().getUuid()).append("');");
 		if (window != null) {
-			script.append("var d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
+			script.append("let d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
 		} else {
 			script.append("w.busy=true;");
 		}
+		script.append("})()");		
 		Clients.response(new AuScript(script.toString()));
 	}
 	
 	public void hideBusyMask() {
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();
-			StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+			StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
 			script.append(getParent().getUuid()).append("');w.busy=false;");
+			script.append("})()");
 			Clients.response(new AuScript(script.toString()));
 		}
 	}

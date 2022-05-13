@@ -107,19 +107,21 @@ public class NumberBox extends Div
             decimalBox.setWidgetOverride("doKeyPress_", funct.toString());
             funct = new StringBuffer();
             // debug // funct.append("console.log('keyCode='+event.keyCode);");
+            funct.append("function(event) {");
+            funct.append("let key=0;");
             funct.append("if (window.event)");
             funct.append("    key = event.keyCode;");
             funct.append("else");
             funct.append("    key = event.which;");
             funct.append("if (key == 108 || key == 110 || key == 188 || key == 190 || key == 194) {");
-            funct.append("    var id = '$'.concat('").append(decimalBox.getId()).append("');");
-            funct.append("    var calcText = jq(id)[0];");
-            funct.append("    var position = calcText.selectionStart;");
-            funct.append("    var newValue = calcText.value.substring(0, position) + '").append(separator).append("' + calcText.value.substring(position);");
+            funct.append("    let id = '$'.concat('").append(decimalBox.getId()).append("');");
+            funct.append("    let calcText = jq(id)[0];");
+            funct.append("    let position = calcText.selectionStart;");
+            funct.append("    let newValue = calcText.value.substring(0, position) + '").append(separator).append("' + calcText.value.substring(position);");
             funct.append("    calcText.value = newValue;");
             funct.append("    calcText.setSelectionRange(position+1, position+1);");
             funct.append("    event.stop;");
-            funct.append("};");
+            funct.append("}}");
             decimalBox.setWidgetListener("onKeyDown", funct.toString());
         }
 

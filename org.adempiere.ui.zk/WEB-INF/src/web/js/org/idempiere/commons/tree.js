@@ -1,24 +1,24 @@
 zk.afterLoad("zul.sel", function () {
-    var _tWgt = {},
+    let _tWgt = {},
         _tiWgt = {};
     zk.override(zul.sel.Treerow.prototype, _tiWgt, {
         getDragOptions_: function (map) {
-            var copy = map.constructor(),
+            let copy = map.constructor(),
                 wgt = this;
             // clone map
-            for (var attr in map) {
+            for (let attr in map) {
                 if (map.hasOwnProperty(attr)) copy[attr] = map[attr];
             }
             // change functions as needed
-            var oldChange = copy.change,
+            let oldChange = copy.change,
                 oldEnd = copy.endeffect;
             copy.change =  function (drag, pt, evt) {
-                var tree = wgt.getTree();
+                let tree = wgt.getTree();
                 oldChange(drag, pt, evt);
                 tree.triggerAutoScroll(evt.pageX, evt.pageY);
             };
             copy.endeffect = function (drag, evt) {
-                var tree = wgt.getTree();
+                let tree = wgt.getTree();
                 oldEnd(drag, evt);
                 tree.stopAutoScroll();
             }
@@ -36,7 +36,7 @@ zk.afterLoad("zul.sel", function () {
         speedGap: 50,
         speedGapCounter: 0,
         triggerAutoScroll: function (x, y) {
-            var $n = jq(this.$n()),
+            let $n = jq(this.$n()),
                 offset = $n.offset(),
                 top = offset.top + (this.$n('head')? 10 : 0),
                 bottom = $n.outerHeight(true);
@@ -52,7 +52,7 @@ zk.afterLoad("zul.sel", function () {
             this.clearScrollToBottomTimer();
         },
         startScrollToTop: function (y) {
-            var wgt = this;
+            let wgt = this;
             this.clearScrollToBottomTimer();
             if (!this._scrollToTopTimer) {
             	this.scrollDelay = this.initialScrollDelay;
@@ -84,7 +84,7 @@ zk.afterLoad("zul.sel", function () {
             }
         },
         startScrollToBottom: function (y) {
-            var wgt = this;
+            let wgt = this;
             this.clearScrollToTopTimer();
             if (!this._scrollToBottomTimer) {
             	this.scrollDelay = this.initialScrollDelay;
@@ -116,13 +116,13 @@ zk.afterLoad("zul.sel", function () {
             }
         },
         clearScrollToTopTimer: function () {
-            var timer = this._scrollToTopTimer;
+            let timer = this._scrollToTopTimer;
             if (timer)
                 clearInterval(timer);
             this._scrollToTopTimer = null;
         },
         clearScrollToBottomTimer: function () {
-            var timer = this._scrollToBottomTimer;
+            let timer = this._scrollToBottomTimer;
             if (timer)
                 clearInterval(timer);
             this._scrollToBottomTimer = null;
