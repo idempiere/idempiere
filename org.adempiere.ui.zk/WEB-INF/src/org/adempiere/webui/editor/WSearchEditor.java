@@ -486,7 +486,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		//safety check: if focus is going no where, focus back to self
 		String uid = getComponent().getCombobox().getUuid();
-		String script = "setTimeout(function(){try{let e = zk.Widget.$('#" + uid +
+		String script = "setTimeout(function(){try{var e = zk.Widget.$('#" + uid +
 				"').$n(); if (jq(':focus').size() == 0) e.focus();} catch(error){}}, 100);";
 		Clients.response(new AuScript(script));
 		
@@ -886,7 +886,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		public void onPageAttached(Page newpage, Page oldpage) {
 			super.onPageAttached(newpage, oldpage);
 			if (newpage != null) {
-				String w = "try{let btn=jq('#'+this.parent.uuid+' @button').zk.$();}catch(err){}";
+				String w = "try{var btn=jq('#'+this.parent.uuid+' @button').zk.$();}catch(err){}";
 				if (ThemeManager.isUseFontIconForImage()) {
 					String sclass = "z-icon-spinner z-icon-spin";
 					getCombobox().setWidgetListener("onChange", "try{"+w+"btn.setIconSclass('" + sclass + "');"

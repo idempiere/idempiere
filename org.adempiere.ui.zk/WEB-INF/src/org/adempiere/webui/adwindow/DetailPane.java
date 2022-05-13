@@ -1074,8 +1074,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			if (!btn.isDisabled() && btn.isVisible()) {
 				Events.sendEvent(btn, new Event(Events.ON_CLICK, btn));
 				//client side script to close combobox popup
-				String script = "(function(){let w=zk.Widget.$('#" + btn.getUuid()+"'); " +
-						"zWatch.fire('onFloatUp', w);})()";
+				String script = "var w=zk.Widget.$('#" + btn.getUuid()+"'); " +
+						"zWatch.fire('onFloatUp', w);";
 				Clients.response(new AuScript(script));
 			}
 		}

@@ -78,9 +78,8 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
         	//ensure list is close and not on focus
         	if (this.getPage() != null) 
         	{
-        		String script = "(function(){let w=zk('#"+getUuid()+"').$(); if (w){w.close();let j=jq('#" 
-        				+getUuid()+" :focus');if(j.get(0)){j.blur();}}"
-        				+"})()";
+        		String script = "var w=zk('#"+getUuid()+"').$(); if (w){w.close();var j=jq('#" 
+        				+getUuid()+" :focus');if(j.get(0)){j.blur();}}";
         		Clients.response(new AuScript(script));
         	}
         }
@@ -193,7 +192,7 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
      * add widget listener to auto scroll selected item to view (i.e make visible)
      */
     public void addScrollSelectedIntoViewListener() {
-    	String script = "(function(){let id='#'+this.uuid+'-pp .z-comboitem-selected';let selected=zk($(id));if(selected.jq.length==1)selected.scrollIntoView();})()";
+    	String script = "var id='#'+this.uuid+'-pp .z-comboitem-selected';var selected=zk($(id));if(selected.jq.length==1)selected.scrollIntoView();";
         setWidgetListener("onKeyUp", script);
     }
 }

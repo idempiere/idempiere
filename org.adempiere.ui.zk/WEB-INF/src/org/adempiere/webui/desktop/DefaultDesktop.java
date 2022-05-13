@@ -862,8 +862,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	}
 
 	//use _docClick undocumented api. need verification after major zk release update
-	private final static String autoHideMenuScript = "(function(){try{let w=zk.Widget.$('#{0}');let t=zk.Widget.$('#{1}');" +
-			"let e=new Object;e.target=t;w._docClick(e);}catch(error){}})()";
+	private final static String autoHideMenuScript = "try{var w=zk.Widget.$('#{0}');var t=zk.Widget.$('#{1}');" +
+			"var e=new Object;e.target=t;w._docClick(e);}catch(error){}";
 	
 	private void autoHideMenu() {
 		if (mobile) {
@@ -1063,8 +1063,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		super.onMenuSelected(menuId);
 		if (showHeader != null && showHeader.isVisible()) {
 			//ensure header popup is close
-			String script = "(function(){let w=zk.Widget.$('#" + layout.getUuid()+"'); " +
-					"zWatch.fire('onFloatUp', w);})()";
+			String script = "var w=zk.Widget.$('#" + layout.getUuid()+"'); " +
+					"zWatch.fire('onFloatUp', w);";
 			Clients.response(new AuScript(script));
 		} 
 	}

@@ -3,7 +3,7 @@ if (typeof window.idempiere === 'undefined')
 	
 window.idempiere.scrollToRow = function(uuid){
 	try {
-		let cmp = zk.Widget.$(uuid);  	 
+		var cmp = zk.Widget.$(uuid);  	 
 		if (cmp) {
 			cmp.scrollIntoView();
 		 	cmp.focus();
@@ -16,9 +16,9 @@ window.idempiere.scrollToRow = function(uuid){
 //overload for recalculate width of grid frozen scroll
 //base on _onSizeLater(wgt) from Frozen.js
 window.idempiere.syncScrollFrozen = function(wgt){
-	let parent = wgt.parent;	
+	var parent = wgt.parent;	
 	if (parent.eheadtbl && parent._nativebar) {
-		let cells = parent._getFirstRowCells(parent.eheadrows),
+		var cells = parent._getFirstRowCells(parent.eheadrows),
 			head = parent.head,
 			totalcols = cells.length - jq(head).find(head.$n('bar')).length,
 			columns = wgt._columns,
@@ -30,8 +30,8 @@ window.idempiere.syncScrollFrozen = function(wgt){
 			return;
 		}
 
-		for (let i = columns; i < totalcols; i++) {
-			let n = cells[i],
+		for (var i = columns; i < totalcols; i++) {
+			var n = cells[i],
 					hdWgt = zk.Widget.$(n),
 					isVisible = hdWgt && hdWgt.isVisible();
 			if (!isVisible)
@@ -44,24 +44,24 @@ window.idempiere.syncScrollFrozen = function(wgt){
 			}
 		}
 		
-		for (let i = 0; i < columns; i++)
+		for (var i = 0; i < columns; i++)
 				leftWidth += cells[i].offsetWidth;
 
 		parent._deleteFakeRow(parent.eheadrows);
 
 		wgt.$n('cave').style.width = jq.px0(leftWidth);
-		let scroll = wgt.$n('scrollX'),
+		var scroll = wgt.$n('scrollX'),
 			width = parent.$n('body').offsetWidth;
 
 		// B70-ZK-2074: Resize forzen's width as meshwidget's body.
 		parent.$n('frozen').style.width = jq.px0(width);
 		width -= leftWidth;
 		scroll.style.width = jq.px0(width);
-		let rightWidth = 0;
-		let toScroll = 0;
-		for (let i = columns; i < cells.length; i++){
-			let hdWgt = zk.Widget.$(cells[i]);
-			let isVisible = hdWgt && hdWgt.isVisible();
+		var rightWidth = 0;
+		var toScroll = 0;
+		for (var i = columns; i < cells.length; i++){
+			var hdWgt = zk.Widget.$(cells[i]);
+			var isVisible = hdWgt && hdWgt.isVisible();
 			if (!isVisible)
 				continue;
 			if (cells[i].offsetWidth==0) {
@@ -74,10 +74,10 @@ window.idempiere.syncScrollFrozen = function(wgt){
 				rightWidth += cells[i].offsetWidth;
 			}
 		}
-		for (let i = columns; i < cells.length; i++){
-			let ow=cells[i].offsetWidth;
+		for (var i = columns; i < cells.length; i++){
+			var ow=cells[i].offsetWidth;
 			if (ow==0) {
-				let hdWgt = zk.Widget.$(cells[i]);
+				var hdWgt = zk.Widget.$(cells[i]);
 				if (hdWgt._origWd && hdWgt._origWd.indexOf('px')>0)
 					ow = parseInt(hdWgt._origWd,10);
 				else if (hdWgt._hflexWidth && hdWgt._hflexWidth > 0)

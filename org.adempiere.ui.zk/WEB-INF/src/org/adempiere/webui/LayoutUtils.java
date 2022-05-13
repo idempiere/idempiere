@@ -324,10 +324,9 @@ public final class LayoutUtils {
 		mask.showMask();
 		mask.getMaskComponent().appendChild(window);
 		
-		StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
+		StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
 		script.append(mask.getMaskComponent().getUuid()).append("');");
-		script.append("let d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
-		script.append("})()");
+		script.append("var d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
 		Clients.response(new AuScript(script.toString()));
 		
 		LayoutUtils.openOverlappedWindow(mask.getMaskComponent(), window, "middle_center");
@@ -537,11 +536,10 @@ public final class LayoutUtils {
 	 */
 	public static void sameWidth(HtmlBasedComponent target, HtmlBasedComponent ref) {
 		StringBuilder script = new StringBuilder()
-				.append("(function(){let t=zk.Widget.$('#").append(target.getUuid()).append("');")
-				.append("let r=zk.Widget.$('#").append(ref.getUuid()).append("');")
+				.append("var t=zk.Widget.$('#").append(target.getUuid()).append("');")
+				.append("var r=zk.Widget.$('#").append(ref.getUuid()).append("');")
 				.append("jq(t).css({'width':").append("jq(r).width()+'px'});")
 				.append("t.setWidth(\"").append("jq(r).width()+'px'\");");
-		script.append("})()");
 		Clients.response("_sameWidth_", new AuScript(target, script.toString()));
 	}
 }

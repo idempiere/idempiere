@@ -114,7 +114,7 @@ public class DPPerformance extends DashboardPanel {
 		{
 			int timeout = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_PERFORMANCE_TIMEOUT, 500, Env.getAD_Client_ID(Env.getCtx()));
 			Component grid = this.getFirstChild().getFirstChild();
-			String script = "setTimeout(function() { let grid = jq('#" + grid.getUuid() + "');";
+			String script = "setTimeout(function() { var grid = jq('#" + grid.getUuid() + "');";
 			script = script + "grid.parent().height(grid.css('height'));}, " + timeout + ");";
 			if (Executions.getCurrent() != null)
 				Clients.response(new AuScript(script));

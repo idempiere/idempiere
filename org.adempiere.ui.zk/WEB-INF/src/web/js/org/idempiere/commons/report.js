@@ -3,38 +3,38 @@ if (typeof window.idempiere === 'undefined')
 	
 window.idempiere.zoom = function(cmpid, column, value){
 	zAu.cmd0.showBusy(null);
-	let widget = zk.Widget.$(cmpid);
-	let event = new zk.Event(widget, 'onZoom', {data: [column, value]}, {toServer: true});
+	var widget = zk.Widget.$(cmpid);
+	var event = new zk.Event(widget, 'onZoom', {data: [column, value]}, {toServer: true});
 	zAu.send(event);
 };
 
 window.idempiere.zoomWindow = function(cmpid, column, value, windowuu){
 	zAu.cmd0.showBusy(null);
-	let widget = zk.Widget.$(cmpid);
-	let event = new zk.Event(widget, 'onZoom', {data: [column, value, 'AD_Window_UU', windowuu]}, {toServer: true});
+	var widget = zk.Widget.$(cmpid);
+	var event = new zk.Event(widget, 'onZoom', {data: [column, value, 'AD_Window_UU', windowuu]}, {toServer: true});
 	zAu.send(event);
 };
 
 window.idempiere.drillAcross = function(cmpid, column, value){
 	zAu.cmd0.showBusy(null);
-	let widget = zk.Widget.$(cmpid);
-	let event = new zk.Event(widget, 'onDrillAcross', {data: [column, value]}, {toServer: true});
+	var widget = zk.Widget.$(cmpid);
+	var event = new zk.Event(widget, 'onDrillAcross', {data: [column, value]}, {toServer: true});
 	zAu.send(event);
 };
 
 window.idempiere.drillDown = function(cmpid, column, value){
 	zAu.cmd0.showBusy(null);
-	let widget = zk.Widget.$(cmpid);
-	let event = new zk.Event(widget, 'onDrillDown', {data: [column, value]}, {toServer: true});
+	var widget = zk.Widget.$(cmpid);
+	var event = new zk.Event(widget, 'onDrillDown', {data: [column, value]}, {toServer: true});
 	zAu.send(event);
 };
 
 window.idempiere.showColumnMenu = function(doc, e, columnName, row) {
-	let d = idempiere.getMenu (doc, e.target.getAttribute ("componentId"), e.target.getAttribute ("foreignColumnName"), e.target.getAttribute ("value"));
+	var d = idempiere.getMenu (doc, e.target.getAttribute ("componentId"), e.target.getAttribute ("foreignColumnName"), e.target.getAttribute ("value"));
 	
-	let posx = 0;
-	let posy = 0;
-	if (!e) e = window.event;
+	var posx = 0;
+	var posy = 0;
+	if (!e) var e = window.event;
 	if (e.pageX || e.pageY) 	{
 		posx = e.pageX;
 		posy = e.pageY;
@@ -50,7 +50,7 @@ window.idempiere.showColumnMenu = function(doc, e, columnName, row) {
 	d.style.left = posx;
 	d.style.display = "block";
 	
-	let f = function() {
+	var f = function() {
 		doc.contextMenu.style.display='none'
 	};
 	setTimeout(f, 3000);
@@ -60,7 +60,7 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value){
 	doc.contextMenu = null;
 	if (componentId != null){	
 		//menu div
-		let menu = doc.createElement("div");
+		var menu = doc.createElement("div");
 		menu.style.position = "absolute";
 		menu.style.display = "none";
 		menu.style.top = "0";
@@ -70,13 +70,13 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value){
 		menu.style.backgroundColor = "white";
 		
 		//window menu item
-		let windowMenu = doc.createElement("div");
+		var windowMenu = doc.createElement("div");
 		windowMenu.style.padding = "3px";
 		windowMenu.style.verticalAlign = "middle";
 		windowMenu.setAttribute("onmouseover", "this.style.backgroundColor = 'lightgray'");
 		windowMenu.setAttribute("onmouseout", "this.style.backgroundColor = 'white'");									
 		
-		let href = doc.createElement("a");
+		var href = doc.createElement("a");
 		href.style.fontSize = "11px";
 		href.style.textDecoration = "none";
 		href.style.verticalAlign = "middle";
@@ -86,9 +86,9 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value){
 		windowMenu.appendChild(href);
 		menu.appendChild(windowMenu);				
 		
-		let windowIco = doc.body.getAttribute ("windowIco");
+		var windowIco = doc.body.getAttribute ("windowIco");
 		if (typeof windowIco === 'string' && windowIco.length > 0) {
-			let image = doc.createElement("img"); 
+			var image = doc.createElement("img"); 
 			image.src = windowIco;
 			image.setAttribute("align", "middle");
 			href.appendChild(image);
@@ -96,14 +96,14 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value){
 		href.appendChild(doc.createTextNode(doc.body.getAttribute ("windowLabel")));
 		
 		//report menu item
-		let report = doc.createElement("div");			
+		var report = doc.createElement("div");			
 		report.style.padding = "3px";
 		report.style.verticalAlign = "middle";
 		
 		report.setAttribute("onmouseover", "this.style.backgroundColor = 'lightgray'");
 		report.setAttribute("onmouseout", "this.style.backgroundColor = 'white'");									
 		
-		let reportHref = doc.createElement("a");
+		var reportHref = doc.createElement("a");
 		reportHref.href = "javascript:void(0)";	
 		reportHref.style.textDecoration = "none";
 		reportHref.style.fontSize = "11px";
@@ -112,9 +112,9 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value){
 		
 		report.appendChild(reportHref);
 		menu.appendChild(report);
-		let reportIco = doc.body.getAttribute ("reportIco");
+		var reportIco = doc.body.getAttribute ("reportIco");
 		if (typeof reportIco === 'string' && reportIco.length > 0) {
-			let reportimage = doc.createElement("img"); 
+			var reportimage = doc.createElement("img"); 
 			reportimage.src = reportIco;
 			reportimage.setAttribute("align", "middle");
 			reportHref.appendChild(reportimage);

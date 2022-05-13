@@ -10,7 +10,7 @@ function Calc()
 
 	function validateDown(displayTextId, calcTextId, integral, separatorKey, e, processDotKeypad)
 	{
-	     let key;
+	     var key;
 	     if(window.event)
 	          key = e.keyCode; //IE
 	     else
@@ -31,8 +31,8 @@ function Calc()
 	{
 		try
 		{
-			let id = "$".concat(calcTextId);
-			let calcText = jq(id)[0];
+			var id = "$".concat(calcTextId);
+			var calcText = jq(id)[0];
 			calcText.value = "";
 		}
 		catch (err)
@@ -44,9 +44,9 @@ function Calc()
 	{
 		try
 		{
-			let id = "$".concat(calcTextId);
-			let calcText = jq(id)[0];
-			let val = calcText.value;
+			var id = "$".concat(calcTextId);
+			var calcText = jq(id)[0];
+			var val = calcText.value;
 			if (val != "")
 			{
 				val = val.substring(0, val.length - 1);
@@ -62,15 +62,15 @@ function Calc()
 	function evaluate(displayTextId, calcTextId, separator)
 	{
 		// console.log("evaluate: " + displayTextId + " / " + calcTextId + " / " + separator);
-		let newValue = "error";
+		var newValue = "error";
 		try
 		{
-			let id = "$".concat(calcTextId);
-			let calcText = jq(id)[0];
-			let value = calcText.value;
+			var id = "$".concat(calcTextId);
+			var calcText = jq(id)[0];
+			var value = calcText.value;
 			if (separator != '.')
 			{
-				let re = new RegExp("[" + separator + "]", "g");
+				var re = new RegExp("[" + separator + "]", "g");
 				value = value.replace(re,'.');
 			}
 			value = value
@@ -82,7 +82,7 @@ function Calc()
 				.replace(/0/g, '')                                // throw away the rest of the zeros
 				.replace(/z/g, '0');                              // turn sentinels back to zeros
 			newValue = value;
-			let result = "" + eval(value);
+			var result = "" + eval(value);
 			if (separator != '.')
 			{
 				result = result.replace(/\./, separator);
@@ -90,7 +90,7 @@ function Calc()
 			calcText.value = result;
 
 			id = "$".concat(displayTextId);
-			let displayText = jq(id)[0];
+			var displayText = jq(id)[0];
 
 			if (!displayText.readOnly && calcText.value != 'undefined')
 			{
@@ -106,18 +106,18 @@ function Calc()
 
 	function append(calcTextId, val)
 	{
-		let id = "$".concat(calcTextId);
-		let calcText = jq(id)[0];
+		var id = "$".concat(calcTextId);
+		var calcText = jq(id)[0];
 		calcText.value += val;
 		calcText.focus();
 	}
 
 	function appendOnCursor(calcTextId, val)
 	{
-		let id = "$".concat(calcTextId);
-		let calcText = jq(id)[0];
-		let position = calcText.selectionStart;
-		let newValue = calcText.value.substring(0, position) + val + calcText.value.substring(position);
+		var id = "$".concat(calcTextId);
+		var calcText = jq(id)[0];
+		var position = calcText.selectionStart;
+		var newValue = calcText.value.substring(0, position) + val + calcText.value.substring(position);
 		calcText.value = newValue;
 		calcText.setSelectionRange(position+1, position+1);
 	}

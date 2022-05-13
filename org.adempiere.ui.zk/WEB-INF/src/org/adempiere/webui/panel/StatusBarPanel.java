@@ -260,17 +260,17 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
 		popup.setStyle(popupStyle);
 		if (getRoot() == null || !getRoot().isVisible() ) return;
 
-		String script = "(function(){let d = zk.Widget.$('" + popup.getUuid() + "').$n();";
+		String script = "var d = zk.Widget.$('" + popup.getUuid() + "').$n();";
 		script += "d.style.display='block';d.style.visibility='hidden';";
-		script += "let dhs = document.defaultView.getComputedStyle(d, null).getPropertyValue('height');";
-		script += "let dh = parseInt(dhs, 10);";
-		script += "let r = zk.Widget.$('" + getRoot().getUuid() + "').$n();";
-		script += "let rhs = document.defaultView.getComputedStyle(r, null).getPropertyValue('height');";
-		script += "let rh = parseInt(rhs, 10);";
-		script += "let p = jq('#"+getRoot().getUuid()+"').zk.cmOffset();";
+		script += "var dhs = document.defaultView.getComputedStyle(d, null).getPropertyValue('height');";
+		script += "var dh = parseInt(dhs, 10);";
+		script += "var r = zk.Widget.$('" + getRoot().getUuid() + "').$n();";
+		script += "var rhs = document.defaultView.getComputedStyle(r, null).getPropertyValue('height');";
+		script += "var rh = parseInt(rhs, 10);";
+		script += "var p = jq('#"+getRoot().getUuid()+"').zk.cmOffset();";
 		script += "d.style.top=(rh-dh-5)+'px';";
 		script += "d.style.left=(p[0]+1)+'px';";
-		script += "d.style.visibility='visible';})()";
+		script += "d.style.visibility='visible';";
 
 		AuScript aus = new AuScript(popup, script);
 		Clients.response(aus);

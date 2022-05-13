@@ -1000,31 +1000,31 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		LayoutUtils.addSclass("mobile", this);
 		addEventListener("onOverflowButton", evt -> onOverflowButton(evt));
 		this.setWidgetOverride("toolbarScrollable", "function (wgt) {\n" + 
-				"	let total = jq(wgt.$n()).width();\n" + 
-				"	let w = wgt.firstChild;\n" + 
-				"	let a = " + !mobileShowMoreButtons.isEmpty() + ";\n" + 
+				"	var total = jq(wgt.$n()).width();\n" + 
+				"	var w = wgt.firstChild;\n" + 
+				"	var a = " + !mobileShowMoreButtons.isEmpty() + ";\n" + 
 				"\n" + 
 				"	// make sure all images are loaded.\n" + 
 				"	if (zUtl.isImageLoading()) {\n" + 
-				"		let f = arguments.callee;\n" + 
+				"		var f = arguments.callee;\n" + 
 				"		setTimeout(function () {\n" + 
 				"			return f(wgt);\n" + 
 				"		}, 20);\n" + 
 				"		return;\n" + 
 				"	}\n" + 
 				"	for (; w; w = w.nextSibling) {\n" + 
-				"		let ow = jq(w.$n()).outerWidth(true);\n" +
+				"		var ow = jq(w.$n()).outerWidth(true);\n" +
 				"		if (typeof ow != 'undefined') {total -= ow;}\n" + 
 				"		if (total < 0 && w.className == 'zul.wgt.Toolbarbutton') {\n" + 
 				"			break;\n" + 
 				"		}\n" + 
 				"	}\n" + 
 				"	if (w && total < 0) {\n" + 
-				"       let event = new zk.Event(wgt, 'onOverflowButton', w.uuid, {toServer: true}); \n" +
+				"       var event = new zk.Event(wgt, 'onOverflowButton', w.uuid, {toServer: true}); \n" +
 				"       zAu.send(event); \n" +
 				"	}\n" +
 				"	else if (a) {\n" + 
-				"       let event = new zk.Event(wgt, 'onOverflowButton', null, {toServer: true}); \n" +
+				"       var event = new zk.Event(wgt, 'onOverflowButton', null, {toServer: true}); \n" +
 				"       zAu.send(event); \n" +
 				"	}\n" +
 				"}");
@@ -1122,10 +1122,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 					cnt++;
 			}
 			if (overflows.size() >= cnt) {
-				String script = "(function(){let e = jq('#" + getUuid() + "');";
-				script = script + "let b=zk.Widget.$('#" + overflowPopup.getUuid() + "'); ";
+				String script = "var e = jq('#" + getUuid() + "');";
+				script = script + "var b=zk.Widget.$('#" + overflowPopup.getUuid() + "'); ";
 				script = script + "b.setWidth(e.css('width'));";
-				script = script + "})()";
 				Clients.evalJavaScript(script);
 			} else {
 				overflowPopup.setWidth(null);
@@ -1188,8 +1187,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	
 	public void onPostAfterSize() {
 		if (this.getPage() != null) {
-			String script = "(function(){let w = zk.Widget.$('#" + getUuid() + "'); w.toolbarScrollable(w);";
-			script = script + "})()";
+			String script = "var w = zk.Widget.$('#" + getUuid() + "'); w.toolbarScrollable(w);";
 			Clients.evalJavaScript(script);
 		}
 	}

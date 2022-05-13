@@ -221,8 +221,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 					text = textBox.getText();
 					detach();
 				} else {
-					String script = "(function(){let w=zk('#"+editor.getUuid()+"').$();let d=w.getEditor().getData();let t=zk('#" +
-							this.getUuid()+"').$();let e=new zk.Event(t,'onEditorCallback',d,{toServer:true});zAu.send(e);})()";
+					String script = "var w=zk('#"+editor.getUuid()+"').$();var d=w.getEditor().getData();var t=zk('#" +
+							this.getUuid()+"').$();var e=new zk.Event(t,'onEditorCallback',d,{toServer:true});zAu.send(e);";
 					Clients.response(new AuScript(script));
 				}
 					
