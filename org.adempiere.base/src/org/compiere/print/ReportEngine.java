@@ -238,6 +238,8 @@ public class ReportEngine implements PrintServiceAttributeListener
 	
 	private String m_name = null;
 	
+	private boolean m_isReplaceTabContent = false;
+	
 	/**
 	 * store all column has same css rule into a list
 	 * for IDEMPIERE-2640
@@ -2390,6 +2392,22 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return reportType;
 	}
 	
+	/**
+	 * Determines, if current tab content should be replaced, or a new tab should be opened
+	 * @return
+	 */
+	public boolean isReplaceTabContent() {
+		return m_isReplaceTabContent;
+	}
+
+	/**
+	 * Sets, if current tab content should be replaced, or a new tab should be opened
+	 * @param m_isReplaceTabContent
+	 */
+	public void setIsReplaceTabContent(boolean m_isReplaceTabContent) {
+		this.m_isReplaceTabContent = m_isReplaceTabContent;
+	}
+
 	/**
 	 * build css for table from mapCssInfo
 	 * @param doc

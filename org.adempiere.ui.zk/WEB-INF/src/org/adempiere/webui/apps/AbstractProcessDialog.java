@@ -201,8 +201,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		this.setTitle(m_Name);
 
 		//	Move from APanel.actionButton
-		if (m_pi == null)
+		if (m_pi == null) {
 			m_pi = new WProcessInfo(m_Name, AD_Process_ID);
+			// Set Replace Tab Content
+			m_pi.setReplaceTabContent();
+		}
 		m_pi.setAD_User_ID (Env.getAD_User_ID(Env.getCtx()));
 		m_pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
 		m_pi.setTitle(m_Name);
@@ -573,7 +576,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		setReportTypeAndPrintFormat(getLastRun());
 	}
 	
-	private MPInstance getLastRun() {
+	protected MPInstance getLastRun() {
 		final String where = "AD_Process_ID = ? AND AD_User_ID = ? AND Name IS NULL ";
 		return new Query(Env.getCtx(), MPInstance.Table_Name, where, null)
 				.setOnlyActiveRecords(true).setClient_ID()
@@ -796,7 +799,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	
 	}
 	
-	private void loadSavedParams(MPInstance instance) {
+	protected void loadSavedParams(MPInstance instance) {
 		getParameterPanel().loadParameters(instance);
 		setReportTypeAndPrintFormat(instance);
 	}

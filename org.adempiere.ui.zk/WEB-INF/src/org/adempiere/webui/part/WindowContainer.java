@@ -16,6 +16,8 @@ package org.adempiere.webui.part;
 import java.util.List;
 
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.adwindow.AbstractADWindowContent;
+import org.adempiere.webui.apps.ProcessDialog;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tab.DecorateInfo;
@@ -25,11 +27,13 @@ import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.TabbedDesktop;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.Env;
@@ -636,6 +640,44 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
     		return insertBefore((Tab)refTab.getNextSibling(), comp, title, closeable, enable, decorateInfo);
     }
 
+    /**
+     * IDEMPIERE-5275 - Tabular Report Re-Run button/close parameter window
+     * @param refTab 
+     * @param comp
+     * @param title
+     * @return
+     */
+    public Tab replace(Tab refTab, Window comp, String title) {
+    	 
+         if (refTab == null)  
+         {
+         	throw new IllegalArgumentException();
+         }
+         else
+         {
+         	org.zkoss.zul.Tabpanel refpanel = refTab.getLinkedPanel();
+         	Component firstChild = refpanel.getFirstChild();
+         	if(firstChild instanceof Window) {
+	     		if(firstChild instanceof ProcessDialog)
+	     			((ProcessDialog)firstChild).unlockUI(null);
+	     		else if(firstChild instanceof ZkReportViewer)
+					((ZkReportViewer)firstChild).hideBusyMask();
+				else if(firstChild instanceof AbstractADWindowContent)
+					((AbstractADWindowContent)firstChild).hideBusyMask();
+	     		((Window) firstChild).onClose();
+	     		comp.setParent(refpanel);
+         	}
+         	else {
+         		firstChild.detach();
+         		comp.setParent(refpanel);
+         	}
+         }
+         if (title != null) 
+         {
+ 	        setTabTitle(title, refTab);
+         }
+        return refTab;
+    }
     /**
      * 
      * @param tab

@@ -282,6 +282,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     	preOpenNewTab();
     	if (Window.INSERT_NEXT.equals(window.getAttribute(Window.INSERT_POSITION_KEY)))
     		windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, title, true, true, null);
+    	else if(Window.REPLACE.equals(window.getAttribute(Window.INSERT_POSITION_KEY)))
+    		windowContainer.replace(windowContainer.getSelectedTab(), window, title);
     	else
     		windowContainer.addWindow(tabPanel, title, true, null);
     	if (window instanceof IHelpContext)
