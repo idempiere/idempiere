@@ -651,6 +651,9 @@ public class ProcessParameterPanel extends Panel implements
 			Object result2 = null;
 			if (editor2 != null)
 				result2 = editor2.getValue();
+			//Save only parameters which are set
+			if((result == null) && (result2 == null))
+				continue;
 
 			// Create Parameter
 			MPInstancePara para = MPInstancePara.getOrCreate(Env.getCtx(),

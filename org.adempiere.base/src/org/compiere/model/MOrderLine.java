@@ -980,17 +980,57 @@ public class MOrderLine extends X_C_OrderLine
 	 * author teo_sarca [ 1583825 ]
 	 */
 	public boolean updateOrderTax(boolean oldTax) {
-		MOrderTax tax = MOrderTax.get (this, getPrecision(), oldTax, get_TrxName());
-		if (tax != null) {
-			if (!tax.calculateTaxFromLines())
-				return false;
-			if (tax.getTaxAmt().signum() != 0) {
-				if (!tax.save(get_TrxName()))
-					return false;
+		int C_Tax_ID = getC_Tax_ID();
+		boolean isOldTax = oldTax && is_ValueChanged(MOrderLine.COLUMNNAME_C_Tax_ID); 
+		if (isOldTax)
+		{
+			Object old = get_ValueOld(MOrderLine.COLUMNNAME_C_Tax_ID);
+			if (old == null)
+			{
+				return true;
 			}
-			else {
-				if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+			C_Tax_ID = ((Integer)old).intValue();
+		}
+		if (C_Tax_ID == 0)
+		{
+			return true;
+		}
+		
+		MTax t = MTax.get(C_Tax_ID);
+		if (t.isSummary())
+		{
+			MOrderTax[] taxes = MOrderTax.getChildTaxes(this, getPrecision(), isOldTax, get_TrxName());
+			if (taxes != null && taxes.length > 0)
+			{
+				for(MOrderTax tax : taxes)
+				{
+					if (!tax.calculateTaxFromLines())
+						return false;
+					if (tax.getTaxAmt().signum() != 0) {
+						if (!tax.save(get_TrxName()))
+							return false;
+					}
+					else {
+						if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+							return false;
+					}
+				}
+			}
+		}
+		else
+		{
+			MOrderTax tax = MOrderTax.get (this, getPrecision(), oldTax, get_TrxName());
+			if (tax != null) {
+				if (!tax.calculateTaxFromLines())
 					return false;
+				if (tax.getTaxAmt().signum() != 0) {
+					if (!tax.save(get_TrxName()))
+						return false;
+				}
+				else {
+					if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+						return false;
+				}
 			}
 		}
 		return true;

@@ -144,7 +144,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         {
 	        StringBuilder f = new StringBuilder();
 	        f.append("function(way, tb) {\n")
-	         .append("  var tabbox = this.getTabbox();var tabs = this.$n();\n")
+	         .append("  let tabbox = this.getTabbox();let tabs = this.$n();\n")
 	         .append("  this.$_scrollcheck(way,tb);\n")
 	         .append("  if (tabs && !tabbox.isVertical() && !tabbox.inAccordionMold()) {\n")
 	         .append("    this.__offsetWidth=tabs.offsetWidth;this.__scrollLeft=tabs.scrollLeft;\n")
@@ -157,9 +157,9 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	        tabs.setWidgetOverride("_scrollcheck", f.toString());
 	        f = new StringBuilder();
 	        f.append("function (toSel) {\n")
-	         .append("  var tabbox = this.getTabbox();\n")
-	         .append("  var tabs = this.$n();\n")
-	         .append("  var tabsOffsetWidth=tabs.offsetWidth;\n")
+	         .append("  let tabbox = this.getTabbox();\n")
+	         .append("  let tabs = this.$n();\n")
+	         .append("  let tabsOffsetWidth=tabs.offsetWidth;\n")
 	         .append("  this.$_fixWidth(toSel);\n")
 	         .append("  if(this.__selectedTab && this.__selectedTab == tabbox.getSelectedTab() && this.__selectedIndex == tabbox.getSelectedIndex()) {\n")         
 	         .append("    if(tabs.offsetWidth == this.__offsetWidth) {\n")
@@ -174,7 +174,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	        f = new StringBuilder();
 	        f.append("function (to, move) {\n")
 	         .append("  if (move <= 0) return;\n")
-	         .append("  var self=this,tabs = this.$n();\n")
+	         .append("  let self=this,tabs = this.$n();\n")
 	         .append("  switch (to) {\n")
 	         .append("  case 'right':\n")
 	         .append("    self._fixTabsScrollLeft(self._tabsScrollLeft + move);break;")
@@ -185,7 +185,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	         .append("  default:\n")
 	         .append("    self._fixTabsScrollTop(self._tabsScrollTop + move);\n")
 	         .append("  }\n")
-	         .append("  var tabsScrollLeft = self._tabsScrollLeft, tabsScrollTop = self._tabsScrollTop;\n")
+	         .append("  let tabsScrollLeft = self._tabsScrollLeft, tabsScrollTop = self._tabsScrollTop;\n")
 	         .append("  self._fixTabsScrollLeft(tabsScrollLeft <= 0 ? 0 : tabsScrollLeft);\n")
 	         .append("  self._fixTabsScrollTop(tabsScrollTop <= 0 ? 0 : tabsScrollTop);\n")
 	         .append("}");
@@ -387,6 +387,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
         	public void close() {
         		super.close();
         		popupClose.detach();
+        		popupClose.removeEventListener(Events.ON_OPEN, WindowContainer.this);
         	}
 
 			@Override

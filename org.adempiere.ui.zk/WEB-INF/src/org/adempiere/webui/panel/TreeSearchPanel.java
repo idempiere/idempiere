@@ -137,12 +137,12 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         init();
     }
 
-    private static final String onComboSelectEchoScript = "var combo=zk('@combo').$();"
-    		+ "var panel=zk('@this').$();"
-    		+ "var comboitem=zk('@item').$();"
-    		+ "var popupheight=combo.getPopupNode_().offsetHeight;"
-    		+ "var evt = new zk.Event(panel, 'onComboSelectEcho', [comboitem.uuid, popupheight], {toServer: true});"
-    		+ "zAu.send(evt);";
+    private static final String onComboSelectEchoScript = "(function(){let combo=zk('@combo').$();"
+    		+ "let panel=zk('@this').$();"
+    		+ "let comboitem=zk('@item').$();"
+    		+ "let popupheight=combo.getPopupNode_().offsetHeight;"
+    		+ "let evt = new zk.Event(panel, 'onComboSelectEcho', [comboitem.uuid, popupheight], {toServer: true});"
+    		+ "zAu.send(evt);})()";
 	
     protected void init()
     {
@@ -267,9 +267,9 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 				tree.getSelectedItem().focus();
 		});
 		this.insertBefore(moveItemBox, layout);
-		String script = "var w=zk.Widget.$('#" + moveItemBox.getUuid() + "'); ";
-		script += "var e=jq('#" + layout.getUuid() + "'); "; 
-		script += "w.setWidth(e.css('width')); ";
+		String script = "(function(){let w=zk.Widget.$('#" + moveItemBox.getUuid() + "'); ";
+		script += "let e=jq('#" + layout.getUuid() + "'); "; 
+		script += "w.setWidth(e.css('width'));})() ";
 		Clients.response(new AuScript(script));
 		ti.focus();
 	}
