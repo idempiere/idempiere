@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -521,4 +522,93 @@ public class MPInstance extends X_AD_PInstance
 		return cksum.toString();
 	}
 
+	/**
+	 * 
+	 * @param AD_PInstance_ID
+	 * @return {@link PInstanceInfo}
+	 * @throws SQLException
+	 */
+	public static PInstanceInfo getPInstanceInfo(int AD_PInstance_ID) throws SQLException {
+		PInstanceInfo info = null;
+		
+		//	Get Process Information: Name, Procedure Name, ClassName, IsReport, IsDirectPrint
+		String sql = "SELECT p.Name, p.ProcedureName,p.ClassName, p.AD_Process_ID,"		//	1..4
+			+ " p.isReport,p.IsDirectPrint,p.AD_ReportView_ID,p.AD_Workflow_ID,"		//	5..8
+			+ " CASE WHEN COALESCE(p.Statistic_Count,0)=0 THEN 0 ELSE p.Statistic_Seconds/p.Statistic_Count END," 	//	9
+			+ " p.JasperReport, p.AD_Process_UU "  	//	10..11
+			+ "FROM AD_Process p"
+			+ " INNER JOIN AD_PInstance i ON (p.AD_Process_ID=i.AD_Process_ID) "
+			+ "WHERE p.IsActive='Y'"
+			+ " AND i.AD_PInstance_ID=?";
+		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Process"))
+			sql = "SELECT t.Name, p.ProcedureName,p.ClassName, p.AD_Process_ID,"		//	1..4
+				+ " p.isReport, p.IsDirectPrint,p.AD_ReportView_ID,p.AD_Workflow_ID,"	//	5..8
+				+ " CASE WHEN COALESCE(p.Statistic_Count,0)=0 THEN 0 ELSE p.Statistic_Seconds/p.Statistic_Count END," 	//	9
+				+ " p.JasperReport, p.AD_Process_UU " 	//	10..11
+				+ "FROM AD_Process p"
+				+ " INNER JOIN AD_PInstance i ON (p.AD_Process_ID=i.AD_Process_ID) "
+				+ " INNER JOIN AD_Process_Trl t ON (p.AD_Process_ID=t.AD_Process_ID"
+					+ " AND t.AD_Language='" + Env.getAD_Language(Env.getCtx()) + "') "
+				+ "WHERE p.IsActive='Y'"
+				+ " AND i.AD_PInstance_ID=?";
+		//
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{			
+			pstmt = DB.prepareStatement(sql, 
+				ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
+			pstmt.setInt(1, AD_PInstance_ID);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+			{
+				info = new PInstanceInfo();
+				info.name = rs.getString(1);
+				info.procedureName = rs.getString(2);
+				info.className = rs.getString(3);
+				info.AD_Process_ID = rs.getInt(4);
+				info.AD_Process_UU = rs.getString(11);
+				//	Report
+				if ("Y".equals(rs.getString(5)))
+				{
+					info.isReport = true;
+				}
+				if ("Y".equals(rs.getString(6)))
+				{
+					info.isDirectPrint = true;
+				}
+				info.AD_ReportView_ID = rs.getInt(7);
+				info.AD_Workflow_ID = rs.getInt(8);
+				//
+				info.estimate = rs.getInt(9);
+				info.jasperReport = rs.getString(10);
+			}
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+		}
+		
+		return info;
+	}
+	
+	/**
+	 * Record class with fields from AD_PInstance+AD_Process
+	 * @author hengsin
+	 *
+	 */
+	public static class PInstanceInfo {
+		public int AD_Process_ID;
+		public String AD_Process_UU;
+		public int AD_ReportView_ID = 0;
+		public int	AD_Workflow_ID = 0;	
+		//translated name for current env context
+		public String name;
+		public String className;		
+		public String procedureName = "";
+		public String jasperReport = "";
+		public boolean isReport = false;
+		public boolean isDirectPrint = false;
+		public int estimate;
+	}
 }	//	MPInstance

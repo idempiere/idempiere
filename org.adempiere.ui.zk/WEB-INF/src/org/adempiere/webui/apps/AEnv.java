@@ -211,7 +211,8 @@ public final class AEnv
 		}
 		windowCache.remove(sessionID);
 		//	End Session
-		MSession session = MSession.get(Env.getCtx(), false);	//	finish
+		int ad_Session_ID = Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID);
+		MSession session = ad_Session_ID > 0 ? new MSession(Env.getCtx(), ad_Session_ID, null) : null;	//	finish
 		if (session != null)
 			session.logout();
 		

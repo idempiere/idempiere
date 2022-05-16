@@ -59,7 +59,8 @@ import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.A;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.util.Notification;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
@@ -71,6 +72,7 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.South;
+import org.zkoss.zul.Toolbarbutton;
 
 /**
  * Record Info (Who) With Change History
@@ -145,7 +147,9 @@ public class WRecordInfo extends Window implements EventListener<Event>
 	/** Info			*/
 	private StringBuffer	m_info = new StringBuffer();
 	/** Permalink			*/
-	private A				m_permalink = new A();
+	private Toolbarbutton m_permalink = new Toolbarbutton();
+	/** Copy Select			*/
+	private Toolbarbutton m_copySelect = new Toolbarbutton();
 
 	/** Date Time Format		*/
 	private SimpleDateFormat	m_dateTimeFormat = DisplayType.getDateFormat
@@ -241,14 +245,15 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		south.setSclass("dialog-footer");
 		south.setParent(layout);
 		//
-		m_permalink.setTarget("_blank");
 		m_permalink.setLabel(Msg.getMsg(Env.getCtx(), "Permalink"));
 		m_permalink.setTooltiptext(Msg.getMsg(Env.getCtx(), "Permalink_tooltip"));
+		m_copySelect.setLabel(Msg.getMsg(Env.getCtx(), "CopySelect"));
+		m_copySelect.setTooltiptext(Msg.getMsg(Env.getCtx(), "CopySelect_tooltip"));
 		Hbox hbox = new Hbox();
 		hbox.setWidth("100%");
 		south.appendChild(hbox);
-		ZKUpdateUtil.setHflex(m_permalink, "true");
 		hbox.appendChild(m_permalink);
+		hbox.appendChild(m_copySelect);
 		ZKUpdateUtil.setHflex(confirmPanel, "true");
 		hbox.appendChild(confirmPanel);
 		
@@ -341,8 +346,31 @@ public class WRecordInfo extends Window implements EventListener<Event>
 				}
 				if (!Util.isEmpty(uuid))
 					m_info.append("\n ").append(uuidcol).append("=").append(uuid);
-				m_permalink.setHref(AEnv.getZoomUrlTableID(po));
+				if (po.get_KeyColumns().length == 1) {
+					m_permalink.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+						public void onEvent(Event event) throws Exception {
+							String ticketURL = AEnv.getZoomUrlTableID(po);
+							StringBuffer sb = new StringBuffer("navigator.clipboard.writeText(\"")
+								.append(ticketURL)
+								.append("\");");
+							Clients.evalJavaScript(sb.toString());
+							Notification.show(Msg.getMsg(Env.getCtx(), "Copied"), Notification.TYPE_INFO, m_permalink, "end_before", 1000);
+						}
+					});
+				}
 				m_permalink.setVisible(po.get_KeyColumns().length == 1);
+				m_copySelect.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+					public void onEvent(Event event) throws Exception {
+						StringBuffer query = new StringBuffer("navigator.clipboard.writeText(\"SELECT * FROM ")
+							.append(po.get_TableName())
+							.append(" WHERE ")
+							.append(po.get_WhereClause(true));
+						query.append("\");");
+						Clients.evalJavaScript(query.toString());
+						Notification.show(Msg.getMsg(Env.getCtx(), "Copied"), Notification.TYPE_INFO, m_copySelect, "end_before", 1000);
+					}
+				});
+				m_copySelect.setVisible(true);
 			}
 		}
 		if (gridTab != null)

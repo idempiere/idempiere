@@ -124,6 +124,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 		String registerCookie = getCookie(getCookieName());
 		login = new Login(ctx);
+		this.addEventListener(ON_DEFER_LOGOUT, this);
 		if (login.isMFARequired(registerCookie)) {
 			initComponents(registerCookie != null);
 			init();
@@ -295,7 +296,6 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		txtValidationCode.setCols(25);
 		ZKUpdateUtil.setWidth(txtValidationCode, "220px");
 		txtValidationCode.setDisabled(true);
-		this.addEventListener(ON_DEFER_LOGOUT, this);
 	}
 
 	public void onEvent(Event event) {

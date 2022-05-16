@@ -98,7 +98,7 @@ public class AdempiereActivator extends AbstractActivator {
 			MSession localSession = null;
 			//Create Session to be able to create records in AD_ChangeLog
 			if (Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID) <= 0) {
-				localSession = MSession.get(Env.getCtx(), true);
+				localSession = MSession.create(Env.getCtx());
 				localSession.setWebSession("AdempiereActivator");
 				localSession.saveEx();
 			}

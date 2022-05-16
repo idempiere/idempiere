@@ -110,7 +110,7 @@ public class EMailTest extends SvrProcess
 				if (! from.contains("@"))
 					from = "test@" + from;
 				email.setFrom(from);
-				String msg = email.send();
+				String msg = email.sendEx();
 				if (EMail.SENT_OK.equals (msg))
 				{
 					if (log.isLoggable(Level.INFO)) log.info("Sent Test EMail to " + client.getRequestEMail());

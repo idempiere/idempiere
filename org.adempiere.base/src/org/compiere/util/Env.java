@@ -84,6 +84,7 @@ public final class Env
 	public static final String AD_PRINTTABLEFORMAT_ID = "#AD_PrintTableFormat_ID";
 	public static final String AD_ROLE_ID = "#AD_Role_ID";
 	public static final String AD_ROLE_NAME = "#AD_Role_Name";
+	public static final String AD_ROLE_TYPE = "#AD_Role_Type";
 	public static final String AD_SESSION_ID = "#AD_Session_ID";
 	public static final String AD_USER_ID = "#AD_User_ID";
 	public static final String AD_USER_NAME = "#AD_User_Name";
@@ -105,6 +106,7 @@ public final class Env
 	public static final String DB_TYPE = "#DBType";
 	public static final String GL_CATEGORY_ID = "#GL_Category_ID";
 	public static final String HAS_ALIAS = "$HasAlias";
+	public static final String IS_CLIENT_ADMIN = "#IsClientAdmin";
 	/** Context Language identifier */
 	public static final String LANGUAGE = "#AD_Language";
 	public static final String LANGUAGE_NAME = "#LanguageName";
@@ -174,9 +176,11 @@ public final class Env
 		//hengsin, avoid unncessary query of session when exit without log in
 		if (DB.isConnected(false)) {
 			//	End Session
-			MSession session = MSession.get(Env.getCtx(), false);	//	finish
-			if (session != null)
+			MSession session = MSession.get(Env.getCtx());	//	finish
+			if (session != null) {
+				session = new MSession(getCtx(), session.getAD_Session_ID(), null);
 				session.logout();
+			}
 		}
 		//
 		reset(true);	// final cache reset
@@ -193,9 +197,11 @@ public final class Env
 	public static void logout()
 	{
 		//	End Session
-		MSession session = MSession.get(Env.getCtx(), false);	//	finish
-		if (session != null)
+		MSession session = MSession.get(Env.getCtx());	//	finish
+		if (session != null) {
+			session = new MSession(getCtx(), session.getAD_Session_ID(), null);
 			session.logout();
+		}
 		//
 		reset(true);	// final cache reset
 		//
@@ -1670,6 +1676,13 @@ public final class Env
 
 			token = inStr.substring(0, j);
 
+			String defaultValue = "";
+			int idx = token.indexOf(":");
+			if (token.contains(":")) {
+				defaultValue = token.substring(token.indexOf(":") + 1, token.length());
+				token = token.substring(0, idx);
+			}
+
 			//format string
 			String format = "";
 			int f = token.indexOf('<');
@@ -1756,6 +1769,8 @@ public final class Env
 							outStr.append(v.toString());
 						}
 					}
+					else if (!Util.isEmpty(defaultValue))
+						outStr.append(defaultValue);
 				} else if (keepUnparseable) {
 					outStr.append("@").append(token);
 					if (!Util.isEmpty(format))

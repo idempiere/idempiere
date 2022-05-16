@@ -419,7 +419,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 				}
 			}
 		});
-		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "QuickForm")));
+		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "QuickForm")) + "    Shift+Alt+Q");
 		buttons.put(BTN_QUICK_FORM_ID.substring(3, BTN_QUICK_FORM_ID.length()), button);
 		
 		// ADD Customize grid button
@@ -1037,6 +1037,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
     private static final int VK_S = 0x53;
     private static final int VK_D = 0x44;
     private static final int VK_O = 0x4F;
+    private static final int VK_Q = 0x51;
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
 		ToolBarButton btn = null;
 		if (keyEvent.isAltKey() && !keyEvent.isCtrlKey() && keyEvent.isShiftKey()) { // Shift+Alt key
@@ -1062,6 +1063,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 				btn = getSelectedPanel().getToolbarButton(BTN_DELETE_ID);
 			} else if (keyEvent.getKeyCode() == VK_O) {
 				btn = getSelectedPanel().getToolbarButton(BTN_PROCESS_ID);
+			} else if (keyEvent.getKeyCode() == VK_Q) {
+				btn = getSelectedPanel().getToolbarButton(BTN_QUICK_FORM_ID);
 			}
 		} 
 		if (btn != null) {

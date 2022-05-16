@@ -64,6 +64,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.MSysConfig;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -117,7 +118,7 @@ public class DashboardController implements EventListener<Event> {
 	private boolean isShowInDashboard;
 	private int noOfCols;
 	
-	private final static int DEFAULT_DASHBOARD_WIDTH = 95;
+	private final static int DEFAULT_DASHBOARD_WIDTH = 99;
 	
 	public DashboardController() {
 		dashboardLayout = new Anchorlayout();
@@ -470,7 +471,10 @@ public class DashboardController implements EventListener<Event> {
     		//link to open performance detail
     		Div div = new Div();
     		Toolbarbutton link = new Toolbarbutton();
-            link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
+    		if (ThemeManager.isUseFontIconForImage())
+    			link.setIconSclass("z-icon-Zoom");
+    		else
+    			link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
             link.setAttribute("PA_Goal_ID", PA_Goal_ID);
             link.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
@@ -885,7 +889,7 @@ public class DashboardController implements EventListener<Event> {
 	public AMedia generateReport(int AD_Process_ID, String parameters) throws Exception {
 		ReportEngine re = runReport(AD_Process_ID, parameters);
 
-		File file = File.createTempFile(re.getName(), ".html");		
+		File file = FileUtil.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(Executions.getCurrent().getContextPath(), "rp", 
 				SessionManager.getAppDesktop().getComponent().getUuid()));
 		return new AMedia(re.getName(), "html", "text/html", file, false);

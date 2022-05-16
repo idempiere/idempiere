@@ -220,7 +220,10 @@ public class BankStatementPayment extends SvrProcess
 					payment.setPayAmt(PayAmt);
 				else	//	payment is likely to be negative
 					payment.setPayAmt(PayAmt.negate());
-				payment.setOverUnderAmt(invoice.getOpenAmt().subtract(payment.getPayAmt()));
+				BigDecimal discountAmt = invoice.getDiscountAmt(payment.getDateTrx());
+				payment.setDiscountAmt(discountAmt);
+				BigDecimal overUnderAmt = invoice.getOpenAmt().subtract(payment.getPayAmt()).subtract(discountAmt);
+				payment.setOverUnderAmt(overUnderAmt);
 			}
 			else	// set Pay Amout from Invoice
 			{

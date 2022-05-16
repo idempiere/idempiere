@@ -291,7 +291,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		if (favNode.getAD_Menu_ID() > 0)
 		{
 			MMenu menu = (MMenu) MTable.get(Env.getCtx(), MMenu.Table_ID).getPO(favNode.getAD_Menu_ID(), null);
-			name = menu.get_Translation(MMenu.COLUMNNAME_Name);
+			name = menu.getDisplayedName();
 			action = menu.getAction();
 		}
 		else

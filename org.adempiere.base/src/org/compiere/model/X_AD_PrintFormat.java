@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintFormat
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintFormat")
 public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220315L;
 
     /** Standard Constructor */
     public X_AD_PrintFormat (Properties ctx, int AD_PrintFormat_ID, String trxName)
@@ -402,6 +402,21 @@ public class X_AD_PrintFormat extends PO implements I_AD_PrintFormat, I_Persiste
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set File Name Pattern.
+		@param FileNamePattern File Name Pattern
+	*/
+	public void setFileNamePattern (String FileNamePattern)
+	{
+		set_Value (COLUMNNAME_FileNamePattern, FileNamePattern);
+	}
+
+	/** Get File Name Pattern.
+		@return File Name Pattern	  */
+	public String getFileNamePattern()
+	{
+		return (String)get_Value(COLUMNNAME_FileNamePattern);
 	}
 
 	/** Set Footer Margin.
