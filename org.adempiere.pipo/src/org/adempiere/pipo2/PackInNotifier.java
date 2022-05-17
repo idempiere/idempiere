@@ -160,7 +160,14 @@ public class PackInNotifier {
 			from = sysclient.getRequestEMail();
 		}
 
-		EMail email = client.createEMailFrom(from, to, subject.toString(), message.toString(), false);
+		EMail email;
+		try {
+			email = client.createEMailFrom(from, to, subject.toString(), message.toString(), false);
+		} catch (Exception e) {
+			// ignore exceptions when the email cannot be created, just log it
+			e.printStackTrace();
+			email = null;
+		}
 		if (email != null)
 		{
 			if (!packIn.isSuccess()) {
