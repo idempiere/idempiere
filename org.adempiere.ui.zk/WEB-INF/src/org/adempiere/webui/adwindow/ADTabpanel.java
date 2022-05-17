@@ -316,27 +316,28 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 
 	private void setupFormSwipeListener() {
 		String uuid = form.getUuid();
-		StringBuilder script = new StringBuilder("var w=zk.Widget.$('")
+		StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('")
 				.append(uuid)
 				.append("');");
-		script.append("jq(w).on('touchstart', function(e) {var w=zk.Widget.$(this);w._touchstart=e;});");
-		script.append("jq(w).on('touchmove', function(e) {var w=zk.Widget.$(this);w._touchmove=e;});");
-		script.append("jq(w).on('touchend', function(e) {var w=zk.Widget.$(this);var ts = w._touchstart; var tl = w._touchmove;"
+		script.append("jq(w).on('touchstart', function(e) {let w=zk.Widget.$(this);w._touchstart=e;});");
+		script.append("jq(w).on('touchmove', function(e) {let w=zk.Widget.$(this);w._touchmove=e;});");
+		script.append("jq(w).on('touchend', function(e) {let w=zk.Widget.$(this);let ts = w._touchstart; let tl = w._touchmove;"
 				+ "w._touchstart=null;w._touchmove=null;"
 				+ "if (ts && tl) {"
 				+ "if (ts.originalEvent) ts = ts.originalEvent;"
 				+ "if (tl.originalEvent) tl = tl.originalEvent;"
 				+ "if (ts.changedTouches && ts.changedTouches.length==1 && tl.changedTouches && tl.changedTouches.length==1) {"
-				+ "var diff=(tl.timeStamp-ts.timeStamp)/1000;if (diff > 1) return;"
-				+ "var diffx=tl.changedTouches[0].pageX-ts.changedTouches[0].pageX;"
-				+ "var diffy=tl.changedTouches[0].pageY-ts.changedTouches[0].pageY;"
+				+ "let diff=(tl.timeStamp-ts.timeStamp)/1000;if (diff > 1) return;"
+				+ "let diffx=tl.changedTouches[0].pageX-ts.changedTouches[0].pageX;"
+				+ "let diffy=tl.changedTouches[0].pageY-ts.changedTouches[0].pageY;"
 				+ "if (Math.abs(diffx) >= 100 && Math.abs(diffy) < 80) {"
-				+ "if (diffx > 0) {var event = new zk.Event(w, 'onSwipeRight', null, {toServer: true});zAu.send(event);} "
-				+ "else {var event = new zk.Event(w, 'onSwipeLeft', null, {toServer: true});zAu.send(event);}"
+				+ "if (diffx > 0) {let event = new zk.Event(w, 'onSwipeRight', null, {toServer: true});zAu.send(event);} "
+				+ "else {let event = new zk.Event(w, 'onSwipeLeft', null, {toServer: true});zAu.send(event);}"
 				+ "}"
 				+ "}"
 				+ "}"
 				+ "});");
+		script.append("})()");
 		Clients.response(new AuScript(script.toString()));
 	}
     
@@ -2168,11 +2169,12 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 		if (!checkCurrent) {
 			((HtmlBasedComponent)c).focus();
 		} else {
-			StringBuilder script = new StringBuilder("var b=true;try{if (zk.currentFocus) {");
-			script.append("var p=zk.Widget.$('#").append(formContainer.getCenter().getUuid()).append("');");
+			StringBuilder script = new StringBuilder("(function(){let b=true;try{if (zk.currentFocus) {");
+			script.append("let p=zk.Widget.$('#").append(formContainer.getCenter().getUuid()).append("');");
 			script.append("if (zUtl.isAncestor(p, zk.currentFocus)) {");
 			script.append("b=false;}}}catch(error){}");
-			script.append("if(b){var w=zk.Widget.$('#").append(c.getUuid()).append("');w.focus(0);}");
+			script.append("if(b){let w=zk.Widget.$('#").append(c.getUuid()).append("');w.focus(0);}");
+			script.append("})()");
 			Clients.response(new AuScript(script.toString()));
 		}
 	}

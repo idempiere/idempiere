@@ -411,4 +411,12 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 		return this;
 	}
 	
+	/**
+	 * 
+	 * @return true if input tax is added to product cost
+	 */
+	public boolean isDistributeTaxWithLineItem()
+	{
+		return TAXPOSTINGINDICATOR_DistributeTaxWithRelevantExpense.equals(getTaxPostingIndicator());
+	}
 }	//	MTax

@@ -153,7 +153,7 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 				
 				//safety check: if focus is going no where, focus back to self
 				String uid = getComponent().getTextbox().getUuid();
-				String script = "setTimeout(function(){try{var e = zk.Widget.$('#" + uid +
+				String script = "setTimeout(function(){try{let e = zk.Widget.$('#" + uid +
 						"').$n(); if (jq(':focus').size() == 0) e.focus();} catch(error){}}, 100);";
 				Clients.response(new AuScript(script));
 			}

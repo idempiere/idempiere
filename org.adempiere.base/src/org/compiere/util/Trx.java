@@ -483,8 +483,11 @@ public class Trx
 		if (m_connection == null)
 			return true;
 		
-		if (isActive())
-			commit();
+		try {
+			if (isActive() && !m_connection.isReadOnly())
+				commit();
+		} catch (SQLException e) {			
+		}
 			
 		//	Close Connection
 		try

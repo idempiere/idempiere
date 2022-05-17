@@ -265,6 +265,9 @@
 .z-icon-Request:before {	
 	content: "\f046";
 }
+.z-icon-ReRun:before {
+	content: "\f144";
+}
 .z-icon-Reset:before {
 	content: "\f0e2";
 }

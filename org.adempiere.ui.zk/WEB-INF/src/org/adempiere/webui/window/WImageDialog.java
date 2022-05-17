@@ -273,10 +273,11 @@ public class WImageDialog extends Window implements EventListener<Event>
 			cancelCaptureButton.setVisible(true);
 			cancelCaptureButton.setEnabled(true);
 			mainLayout.setVisible(false);
-			String script = "var wgt = zk.Widget.$('#"+captureDiv.getUuid()+"');";
-			script = script + "var cancelBtn=zk.Widget.$('#"+cancelCaptureButton.getUuid()+"');";
+			String script = "(function(){let wgt = zk.Widget.$('#"+captureDiv.getUuid()+"');";
+			script = script + "let cancelBtn=zk.Widget.$('#"+cancelCaptureButton.getUuid()+"');";
 			script = script + "jq(wgt).photobooth(); ";
 			script = script + "jq(wgt).bind( 'image', function( event, dataUrl ){ cancelBtn.setVisible(false);zAu.send(new zk.Event(wgt, 'onCaptureImage', dataUrl, {toServer:true})); });";
+			script = script + "})()";
 			Clients.evalJavaScript(script);
 		}
 		else if (e.getName().equals("onCaptureImage"))
@@ -302,8 +303,8 @@ public class WImageDialog extends Window implements EventListener<Event>
 				m_mImage.setBinaryData(imageData);
 				fileNameTextbox.setValue(defaultNameForCaptureImage);
 			}
-			String script = "var wgt = zk.Widget.$('#"+captureDiv.getUuid()+"');";
-			script = script + "jq(wgt).data( 'photobooth').destroy(); ";
+			String script = "(function(){let wgt = zk.Widget.$('#"+captureDiv.getUuid()+"');";
+			script = script + "jq(wgt).data( 'photobooth').destroy();})() ";
 			Clients.evalJavaScript(script);
 		}
 		else if (e.getTarget() == cancelCaptureButton) 
@@ -311,8 +312,8 @@ public class WImageDialog extends Window implements EventListener<Event>
 			captureDiv.setVisible(false);
 			cancelCaptureButton.setVisible(false);
 			mainLayout.setVisible(true);
-			String script = "var wgt = zk.Widget.$('#"+captureDiv.getUuid()+"');";
-			script = script + "jq(wgt).data( 'photobooth').destroy(); ";
+			String script = "(function(){let wgt = zk.Widget.$('#"+captureDiv.getUuid()+"');";
+			script = script + "jq(wgt).data( 'photobooth').destroy();})() ";
 			Clients.evalJavaScript(script);
 		}
 		else if (e.getName().equals("onSave"))

@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -123,6 +125,99 @@ public class MOrderTax extends X_C_OrderTax
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("(new) " + retValue);
 		return retValue;
 	}	//	get
+	
+	/**
+	 * 	Get Child Tax Line for Order Line
+	 *	@param line Order line
+	 *	@param precision currency precision
+	 *	@param oldTax get old tax
+	 *	@param trxName transaction
+	 *	@return existing or new tax
+	 */
+	public static MOrderTax[] getChildTaxes(MOrderLine line, int precision, 
+		boolean oldTax, String trxName)
+	{
+		List<MOrderTax> orderTaxes = new ArrayList<MOrderTax>();
+		
+		if (line == null || line.getC_Order_ID() == 0)
+		{
+			return orderTaxes.toArray(new MOrderTax[0]);
+		}
+		
+		int C_Tax_ID = line.getC_Tax_ID();
+		if (oldTax)
+		{
+			Object old = line.get_ValueOld(MOrderTax.COLUMNNAME_C_Tax_ID);
+			if (old == null)
+			{
+				return orderTaxes.toArray(new MOrderTax[0]);
+			}
+			C_Tax_ID = ((Integer)old).intValue();
+		}
+		if (C_Tax_ID == 0)
+		{
+			return orderTaxes.toArray(new MOrderTax[0]);
+		}
+		
+		MTax tax = MTax.get(C_Tax_ID);
+		if (!tax.isSummary())
+			return orderTaxes.toArray(new MOrderTax[0]);
+		
+		MTax[] cTaxes = tax.getChildTaxes(false);
+		for(MTax cTax : cTaxes) {
+			MOrderTax orderTax = null;
+			String sql = "SELECT * FROM C_OrderTax WHERE C_Order_ID=? AND C_Tax_ID=?";
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try
+			{
+				pstmt = DB.prepareStatement (sql, trxName);
+				pstmt.setInt (1, line.getC_Order_ID());
+				pstmt.setInt (2, cTax.getC_Tax_ID());
+				rs = pstmt.executeQuery ();
+				if (rs.next ())
+					orderTax = new MOrderTax (line.getCtx(), rs, trxName);
+			}
+			catch (Exception e)
+			{
+				s_log.log(Level.SEVERE, sql, e);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
+			}
+			if (orderTax != null)
+			{
+				orderTax.setPrecision(precision);
+				orderTax.set_TrxName(trxName);
+				orderTaxes.add(orderTax);
+			}
+			// If the old tax was required and there is no MOrderTax for that
+			// return null, and not create another MOrderTax - teo_sarca [ 1583825 ]
+			else 
+			{
+				if (oldTax)
+					continue;
+			}
+			
+			if (orderTax == null)
+			{
+				//	Create New
+				orderTax = new MOrderTax(line.getCtx(), 0, trxName);
+				orderTax.set_TrxName(trxName);
+				orderTax.setClientOrg(line);
+				orderTax.setC_Order_ID(line.getC_Order_ID());
+				orderTax.setC_Tax_ID(line.getC_Tax_ID());
+				orderTax.setPrecision(precision);
+				orderTax.setIsTaxIncluded(line.isTaxIncluded());
+				orderTaxes.add(orderTax);
+			}
+		}
+		
+		return orderTaxes.toArray(new MOrderTax[0]);
+	}
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MOrderTax.class);

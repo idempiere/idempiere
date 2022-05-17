@@ -74,6 +74,9 @@ public class Doc_Invoice extends Doc
 
 	/** Contained Optional Tax Lines    */
 	protected DocTax[]        m_taxes = null;
+	/** Contained Optional Tax Lines Distributed to Line Item */
+	@SuppressWarnings("unused")
+	private DocTax[]        m_addToLineTaxes = null;
 	/** Currency Precision				*/
 	protected int				m_precision = -1;
 	/** All lines are Service			*/
@@ -109,6 +112,7 @@ public class Doc_Invoice extends Doc
 	private DocTax[] loadTaxes()
 	{
 		ArrayList<DocTax> list = new ArrayList<DocTax>();
+		ArrayList<DocTax> distributeList = new ArrayList<DocTax>();
 		String sql = "SELECT it.C_Tax_ID, t.Name, t.Rate, it.TaxBaseAmt, it.TaxAmt, t.IsSalesTax "
 				+ "FROM C_Tax t, C_InvoiceTax it "
 				+ "WHERE t.C_Tax_ID=it.C_Tax_ID AND it.C_Invoice_ID=?";
@@ -129,10 +133,18 @@ public class Doc_Invoice extends Doc
 				BigDecimal amount = rs.getBigDecimal(5);
 				boolean salesTax = "Y".equals(rs.getString(6));
 				//
+				MTax tax = MTax.get(getCtx(), C_Tax_ID);
 				DocTax taxLine = new DocTax(C_Tax_ID, name, rate,
 					taxBaseAmt, amount, salesTax);
 				if (log.isLoggable(Level.FINE)) log.fine(taxLine.toString());
-				list.add(taxLine);
+				if (!tax.isDistributeTaxWithLineItem())
+				{					
+					list.add(taxLine);
+				}
+				else
+				{
+					distributeList.add(taxLine);
+				}
 			}
 		}
 		catch (SQLException e)
@@ -148,6 +160,9 @@ public class Doc_Invoice extends Doc
 		//	Return Array
 		DocTax[] tl = new DocTax[list.size()];
 		list.toArray(tl);
+		//	Distribute list
+		m_addToLineTaxes = distributeList.toArray(new DocTax[0]);
+		
 		return tl;
 	}	//	loadTaxes
 
@@ -184,24 +199,33 @@ public class Doc_Invoice extends Doc
 				{
 					BigDecimal LineNetAmtTax = tax.calculateTax(LineNetAmt, true, getStdPrecision());
 					if (log.isLoggable(Level.FINE)) log.fine("LineNetAmt=" + LineNetAmt + " - Tax=" + LineNetAmtTax);
-					LineNetAmt = LineNetAmt.subtract(LineNetAmtTax);
 
 					if (tax.isSummary()) {
+						LineNetAmt = LineNetAmt.subtract(LineNetAmtTax);
+						BigDecimal base = LineNetAmt;
 						BigDecimal sumChildLineNetAmtTax = Env.ZERO;
 						DocTax taxToApplyDiff = null;
 						for (MTax childTax : tax.getChildTaxes(false)) {
 							if (!childTax.isZeroTax())
 							{
-								BigDecimal childLineNetAmtTax = childTax.calculateTax(LineNetAmt, false, getStdPrecision());
-								if (log.isLoggable(Level.FINE)) log.fine("LineNetAmt=" + LineNetAmt + " - Child Tax=" + childLineNetAmtTax);
-								for (int t = 0; t < m_taxes.length; t++)
+								BigDecimal childLineNetAmtTax = childTax.calculateTax(base, false, getStdPrecision());
+								if (log.isLoggable(Level.FINE)) log.fine("LineNetAmt=" + base + " - Child Tax=" + childLineNetAmtTax);
+								if (childTax.isDistributeTaxWithLineItem())
 								{
-									if (m_taxes[t].getC_Tax_ID() == childTax.getC_Tax_ID())
+									LineNetAmt = LineNetAmt.add(childLineNetAmtTax);
+									LineNetAmtTax = LineNetAmtTax.subtract(childLineNetAmtTax);
+								}
+								else
+								{
+									for (int t = 0; t < m_taxes.length; t++)
 									{
-										m_taxes[t].addIncludedTax(childLineNetAmtTax);
-										taxToApplyDiff = m_taxes[t];
-										sumChildLineNetAmtTax = sumChildLineNetAmtTax.add(childLineNetAmtTax);
-										break;
+										if (m_taxes[t].getC_Tax_ID() == childTax.getC_Tax_ID())
+										{
+											m_taxes[t].addIncludedTax(childLineNetAmtTax);
+											taxToApplyDiff = m_taxes[t];
+											sumChildLineNetAmtTax = sumChildLineNetAmtTax.add(childLineNetAmtTax);
+											break;
+										}
 									}
 								}
 							}
@@ -211,12 +235,16 @@ public class Doc_Invoice extends Doc
 							taxToApplyDiff.addIncludedTax(diffChildVsSummary);
 						}
 					} else {
-						for (int t = 0; t < m_taxes.length; t++)
+						if (!tax.isDistributeTaxWithLineItem())
 						{
-							if (m_taxes[t].getC_Tax_ID() == C_Tax_ID)
+							LineNetAmt = LineNetAmt.subtract(LineNetAmtTax);
+							for (int t = 0; t < m_taxes.length; t++)
 							{
-								m_taxes[t].addIncludedTax(LineNetAmtTax);
-								break;
+								if (m_taxes[t].getC_Tax_ID() == C_Tax_ID)
+								{
+									m_taxes[t].addIncludedTax(LineNetAmtTax);
+									break;
+								}
 							}
 						}
 					}
@@ -225,6 +253,29 @@ public class Doc_Invoice extends Doc
 					PriceList = PriceList.subtract(PriceListTax);
 				}
 			}	//	correct included Tax
+			else
+			{
+				int stdPrecision = MCurrency.getStdPrecision(getCtx(), invoice.getC_Currency_ID());
+				MTax tax = MTax.get(getCtx(), C_Tax_ID);
+				if (tax.isSummary())
+				{
+					MTax[] cTaxes = tax.getChildTaxes(false);
+					BigDecimal base = LineNetAmt;
+					for(MTax cTax : cTaxes)
+					{
+						if (cTax.isDistributeTaxWithLineItem())
+						{
+							BigDecimal taxAmt = cTax.calculateTax(base, false, stdPrecision);
+							LineNetAmt = LineNetAmt.add(taxAmt);
+						}
+					}
+				}
+				else if (tax.isDistributeTaxWithLineItem())
+				{
+					BigDecimal taxAmt = tax.calculateTax(LineNetAmt, false, stdPrecision);
+					LineNetAmt = LineNetAmt.add(taxAmt);
+				}
+			}
 
 			docLine.setAmount (LineNetAmt, PriceList, Qty);	//	qty for discount calc
 			if (docLine.isItem())

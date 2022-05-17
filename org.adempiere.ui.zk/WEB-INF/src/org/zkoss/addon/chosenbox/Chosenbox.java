@@ -812,8 +812,8 @@ public class Chosenbox<T> extends HtmlBasedComponent {
 					objects, null, null, null, index, 0));
 			if (selItems.size() < (getSubListModel() != null ? getSubListModel().getSize() : getModel().getSize())) {
 				StringBuilder script = new StringBuilder();
-				script.append("var w=zk.Widget.$('#").append(getUuid()).append("');");
-				script.append("w.$n('inp').focus();");
+				script.append("(function(){let w=zk.Widget.$('#").append(getUuid()).append("');");
+				script.append("w.$n('inp').focus();})()");
 				Executions.schedule(getDesktop(), e -> {setOpen(true);Clients.evalJavaScript(script.toString());}, new Event("onPostSelect"));
 			}
 			_onSelectTimestamp = System.currentTimeMillis();
