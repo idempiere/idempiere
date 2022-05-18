@@ -650,24 +650,6 @@ public class Query
 	}
 	
 	/**
-	 * Return an Iterable implementation that can be used in a <tt>for</tt> expression. Example:
-	 * <pre>{@code
-	 * Iterable<MTable> query = new Query(...).iterable();
-	 *
-	 * for (MTable table : query) {
-	 *   // Do stuff with the element
-	 * }
-	 * </pre>
-	 *
-	 * @return Iterable
-	 * @throws DBException 
-	 */
-	public <T extends PO> Iterable<T> iterable() throws DBException
-	{
-		return () -> iterate();
-	}
-	
-	/**
 	 * Return an Stream implementation to fetch one PO at a time. This method will only create POs on-demand and
 	 * they will become eligible for garbage collection once they have been consumed by the stream, so unlike
 	 * {@link #list()} it doesn't have to hold a copy of all the POs in the result set in memory at one time.
@@ -714,19 +696,51 @@ public class Query
 	}
 
 	/**
-	 * Return an Iterator implementation to fetch one PO at a time. This implementation is equivalent to
-	 * <tt>stream().iterator()</tt> and has similar performance benefits compared with {@link #list()}.
-	 * Useful if the downstream API requires an <code>Iterator</code>; otherwise the additional
-	 * of the {@link #stream()} interface is likely to be more useful.
-	 *
+	 * Return an Iterator implementation to fetch one PO at a time. The implementation first retrieve
+	 * all IDS that match the query criteria and issue sql query to fetch the PO when caller want to
+	 * fetch the next PO. This minimize memory usage but it is slower than the list method.
 	 * @return Iterator
 	 * @throws DBException 
-	 * @see #stream()
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends PO> Iterator<T> iterate() throws DBException
 	{
-		return (Iterator<T>) stream().iterator();
+		String[] keys = table.getKeyColumns();
+		StringBuilder sqlBuffer = new StringBuilder(" SELECT ");
+		for (int i = 0; i < keys.length; i++) {
+			if (i > 0)
+				sqlBuffer.append(", ");
+			if (!joinClauseList.isEmpty())
+				sqlBuffer.append(table.getTableName()).append(".");
+			sqlBuffer.append(keys[i]);
+		}
+		sqlBuffer.append(" FROM ").append(table.getTableName());
+		String sql = buildSQL(sqlBuffer, true);
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<Object[]> idList = new ArrayList<Object[]>();
+		try
+		{
+			pstmt = DB.prepareStatement (sql, trxName);
+			rs = createResultSet(pstmt);
+			while (rs.next ())
+			{
+				Object[] ids = new Object[keys.length];
+				for (int i = 0; i < ids.length; i++) {
+					ids[i] = rs.getObject(i+1);
+				}
+				idList.add(ids);
+			}
+		}
+		catch (SQLException e)
+		{
+			log.log(Level.SEVERE, sql, e);
+			throw new DBException(e, sql);
+		} finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		return new POIterator<T>(table, idList, trxName);
 	}
 	
 	/**
