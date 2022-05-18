@@ -1146,7 +1146,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		if (   MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) 
 			&& Boolean.TRUE.equals(MRole.getDefault().getWindowAccess(pfAD_Window_ID)))
 		{
-			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
 			StringBuffer sb = new StringBuffer("*** ").append(Msg.getMsg(Env.getCtx(), "Operations")).append(" ***");
 			KeyNamePair pp = new KeyNamePair(0, sb.toString());
 			comboReport.appendItem(pp.getName(), null);
