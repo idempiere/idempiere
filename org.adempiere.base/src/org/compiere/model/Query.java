@@ -653,9 +653,19 @@ public class Query
 	 * Return an Stream implementation to fetch one PO at a time. This method will only create POs on-demand and
 	 * they will become eligible for garbage collection once they have been consumed by the stream, so unlike
 	 * {@link #list()} it doesn't have to hold a copy of all the POs in the result set in memory at one time.
+	 * And unlike {#link #iterate()}, it only creates one ResultSet and iterates over it, creating a PO for each
+	 * row ({@link #iterate()}, on the other hand, has to re-run the query for each element).<br/>
+	 * 
 	 * For situations where you need to iterate over a result set and operate on the results one-at-a-time rather
-	 * than operate on the group as a whole, this method is likely to give better performance than <code>list()</code>.
-	 * @return Stream
+	 * than operate on the group as a whole, this method is likely to give better performance than <code>list()</code>
+	 * or <code>iterate()</code>.<br/>
+	 * 
+	 * <strong>However</strong>, because it keeps the underlying {@code ResultSet} open, you need to make sure that the
+	 * stream is properly disposed of using {@code close()} or else you will get resource leaks. As {@link Stream}
+	 * extends {@link AutoCloseable}, you can use it in a try-with-resources statement to automatically close it when
+	 * you are done.
+	 * 
+	 * @return Stream of POs.
 	 * @throws DBException 
 	 */
 	public <T extends PO> Stream<T> stream() throws DBException
