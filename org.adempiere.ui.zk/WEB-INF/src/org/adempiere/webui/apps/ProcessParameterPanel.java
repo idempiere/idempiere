@@ -145,12 +145,11 @@ public class ProcessParameterPanel extends Panel implements
 	private ArrayList<GridField> m_mFields = new ArrayList<GridField>();
 	private ArrayList<GridField> m_mFields2 = new ArrayList<GridField>();
 	private ArrayList<Space> m_separators = new ArrayList<Space>();
-	private ArrayList<Div> m_Divs = new ArrayList<Div>();
 	//
 	private Grid centerPanel = null;
 	private Map<String, List<Row>> fieldGroupContents = new HashMap<String, List<Row>>();
     private Map<String, List<org.zkoss.zul.Row>> fieldGroupHeaders = new HashMap<String, List<org.zkoss.zul.Row>>();
-	private ArrayList<Row> rowList;
+	private ArrayList<Row> rowList = new ArrayList<Row>();
 	private List<Group> allCollapsibleGroups = new ArrayList<Group>();
 	private Group currentGroup;
 
@@ -421,7 +420,6 @@ public class ProcessParameterPanel extends Panel implements
         if (label.getDecorator() != null)
         	div.appendChild(label.getDecorator());
         row.appendChild(div);
-        m_Divs.add(div);
 		//
 		if (voF.isRange) {
 			Div box = new Div();
@@ -938,7 +936,7 @@ public class ProcessParameterPanel extends Panel implements
 			if (mField.isDisplayed(true)) {
 				if (!editor.isVisible()) {
 					editor.setVisible(true);
-					m_Divs.get(i).getParent().setVisible(true);
+					rowList.get(i).setVisible(true);
 					
 					if (mField.getVO().isRange) {
 						m_separators.get(i).setVisible(true);
@@ -954,7 +952,7 @@ public class ProcessParameterPanel extends Panel implements
 				}
 			} else if (editor.isVisible()) {
 				editor.setVisible(false);
-				m_Divs.get(i).getParent().setVisible(false);
+				rowList.get(i).setVisible(false);
 				
 				if (mField.getVO().isRange) {
 					m_separators.get(i).setVisible(false);
