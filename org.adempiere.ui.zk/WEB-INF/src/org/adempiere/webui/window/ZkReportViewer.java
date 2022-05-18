@@ -1147,8 +1147,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			&& Boolean.TRUE.equals(MRole.getDefault().getWindowAccess(pfAD_Window_ID)))
 		{
 			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
-			KeyNamePair pp = new KeyNamePair(-1, sb.toString());
+			StringBuffer sb = new StringBuffer("*** ").append(Msg.getMsg(Env.getCtx(), "Operations")).append(" ***");
+			KeyNamePair pp = new KeyNamePair(0, sb.toString());
+			comboReport.appendItem(pp.getName(), null);
+			
+			sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
+			pp = new KeyNamePair(-1, sb.toString());
 			comboReport.appendItem(pp.getName(), pp.getKey());
+			sb = new StringBuffer("** ").append(Msg.getMsg(m_ctx, "CopyReport")).append(" **");
+			pp = new KeyNamePair(-2, sb.toString());
+			comboReport.addItem(pp);
 		}
 		comboReport.addEventListener(Events.ON_SELECT, this);
 	}	//	fillComboReport
@@ -1474,6 +1482,19 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			if (pf != null)
 				fillComboReport(pf.get_ID());
 			else
+				return;
+		} else if (AD_PrintFormat_ID == -2) {
+			MPrintFormat current = m_reportEngine.getPrintFormat();
+			if (current != null) {
+				pf = MPrintFormat.copyToClient(m_ctx,
+						current.getAD_PrintFormat_ID(),
+						Env.getAD_Client_ID(m_ctx));
+
+				if (pf != null)
+					fillComboReport(pf.get_ID());
+				else
+					return;
+			} else
 				return;
 		}
 		else
