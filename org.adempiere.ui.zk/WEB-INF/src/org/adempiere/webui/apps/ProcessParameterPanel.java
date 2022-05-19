@@ -655,10 +655,8 @@ public class ProcessParameterPanel extends Panel implements
 			//Save only parameters which are set
 			if((result == null) && (result2 == null))
 				continue;
-			if(result instanceof String) {
-				if((result2 == null) && (Util.isEmpty(String.valueOf(result))))
-					continue;
-				if(Util.isEmpty(String.valueOf(result)) && Util.isEmpty(String.valueOf(result2)))
+			if(result instanceof String) { 
+				if (Util.isEmpty((String)result) && Util.isEmpty((String)result2)) 
 					continue;
 			}
 
