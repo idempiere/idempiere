@@ -145,6 +145,7 @@ public class ProcessParameterPanel extends Panel implements
 	private ArrayList<GridField> m_mFields = new ArrayList<GridField>();
 	private ArrayList<GridField> m_mFields2 = new ArrayList<GridField>();
 	private ArrayList<Space> m_separators = new ArrayList<Space>();
+	private ArrayList<Row> m_Rows = new ArrayList<Row>();
 	//
 	private Grid centerPanel = null;
 	private Map<String, List<Row>> fieldGroupContents = new HashMap<String, List<Row>>();
@@ -331,6 +332,7 @@ public class ProcessParameterPanel extends Panel implements
 				
 				row.setGroup(currentGroup);
         		rows.appendChild(row);
+        		m_Rows.add(row);
                 if (rowList != null)
         			rowList.add(row);
 				if (log.isLoggable(Level.INFO)) log.info(listVO.get(i).ColumnName + listVO.get(i).SeqNo);
@@ -420,7 +422,6 @@ public class ProcessParameterPanel extends Panel implements
         if (label.getDecorator() != null)
         	div.appendChild(label.getDecorator());
         row.appendChild(div);
-
 		//
 		if (voF.isRange) {
 			Div box = new Div();
@@ -934,6 +935,9 @@ public class ProcessParameterPanel extends Panel implements
 			if (mField.isDisplayed(true)) {
 				if (!editor.isVisible()) {
 					editor.setVisible(true);
+					m_Rows.get(i).setVisible(true);
+					m_Rows.get(i).setAttribute(Group.GROUP_ROW_VISIBLE_KEY, "true");
+					
 					if (mField.getVO().isRange) {
 						m_separators.get(i).setVisible(true);
 						m_wEditors2.get(i).setVisible(true);
@@ -948,6 +952,9 @@ public class ProcessParameterPanel extends Panel implements
 				}
 			} else if (editor.isVisible()) {
 				editor.setVisible(false);
+				m_Rows.get(i).setVisible(false);
+				m_Rows.get(i).setAttribute(Group.GROUP_ROW_VISIBLE_KEY, "false");
+				
 				if (mField.getVO().isRange) {
 					m_separators.get(i).setVisible(false);
 					m_wEditors2.get(i).setVisible(false);
