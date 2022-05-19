@@ -656,7 +656,7 @@ public class ProcessParameterPanel extends Panel implements
 			if((result == null) && (result2 == null))
 				continue;
 			if(result instanceof String) { 
-				if (Util.isEmpty((String)result) && Util.isEmpty((String)result2)) 
+				if (Util.isEmpty((String)result) && (result2 == null || Util.isEmpty((String)result2))) 
 					continue;
 			}
 
