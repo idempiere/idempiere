@@ -105,31 +105,6 @@ public class QueryTest extends AbstractTestCase {
 	}
 	
 	@Test
-	public void testIterable() throws Exception {
-		Iterable<MTable> query = new Query(Env.getCtx(), "AD_Table", "TableName IN (?,?)", getTrxName())
-									.setParameters("C_Invoice", "M_InOut")
-									.setOrderBy("TableName")
-									.iterable();
-		int i = 0;
-		for (MTable t : query) {
-			if (i == 0)
-			{
-				softly.assertThat(t.getTableName()).as("element 0").isEqualTo("C_Invoice");
-			}
-			else if (i == 1)
-			{
-				softly.assertThat(t.getTableName()).as("element 1").isEqualTo("M_InOut");
-			}
-			else
-			{
-				softly.fail("More objects retrieved than expected: " + t.get_TableName());
-				break;
-			}
-			i++;
-		}
-	}
-	
-	@Test
 	public void testScroll() throws Exception
 	{
 		POResultSet<MTable> rs = new Query(Env.getCtx(), "AD_Table", "TableName IN (?,?)", getTrxName())
