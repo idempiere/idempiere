@@ -100,15 +100,6 @@ public class MPInstance extends X_AD_PInstance
 		setAD_User_ID(Env.getAD_User_ID(process.getCtx()));
 		if (!save())		//	need to save for parameters
 			throw new IllegalArgumentException ("Cannot Save");
-		//	Set Parameter Base Info
-		MProcessPara[] para = process.getParameters();
-		for (int i = 0; i < para.length; i++)
-		{
-			MPInstancePara pip = new MPInstancePara (this, para[i].getSeqNo());
-			pip.setParameterName(para[i].getColumnName());
-			pip.setInfo(para[i].getName());
-			pip.saveEx();
-		}
 	}	//	MPInstance
 
 	/**
@@ -149,6 +140,24 @@ public class MPInstance extends X_AD_PInstance
 		m_parameters = new MPInstancePara[list.size()];
 		list.toArray(m_parameters);
 		return m_parameters;
+	}	//	getParameters
+	
+	/**
+	 * 	Get Process Parameters
+	 *	@return processParameters array
+	 */
+	public MProcessPara[] getProcessParameters()
+	{
+		final String whereClause = "AD_Process_ID=?";
+		List <MProcessPara> list = new Query(getCtx(), MProcessPara.Table_Name, whereClause, null)
+		.setParameters(getAD_Process_ID())
+		.setOrderBy("SeqNo")
+		.list();
+
+		//
+		MProcessPara[] processParameters = new MProcessPara[list.size()];
+		list.toArray(processParameters);
+		return processParameters;
 	}	//	getParameters
 	
 	/**
