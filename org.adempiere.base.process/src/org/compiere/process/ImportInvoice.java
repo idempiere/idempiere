@@ -387,9 +387,12 @@ public class ImportInvoice extends SvrProcess
 			  .append("SET C_BPartner_Location_ID=(SELECT C_BPartner_Location_ID")
 			  .append(" FROM C_BPartner_Location bpl INNER JOIN C_Location l ON (bpl.C_Location_ID=l.C_Location_ID)")
 			  .append(" WHERE o.C_BPartner_ID=bpl.C_BPartner_ID AND bpl.AD_Client_ID=o.AD_Client_ID")
-			  .append(" AND COALESCE(o.Address1,'')=COALESCE(l.Address1,'') AND COALESCE(o.Address2,'')=COALESCE(l.Address2,'')")
-			  .append(" AND COALESCE(o.City,'')=COALESCE(l.City,'') AND COALESCE(o.Postal,'')=COALESCE(l.Postal,'')")
-			  .append(" AND COALESCE(o.C_Region_ID,0)=COALESCE(l.C_Region_ID,0) AND COALESCE(o.C_Country_ID,0)=COALESCE(l.C_Country_ID,0)) ")
+			  .append(" AND ((o.Address1 IS NULL AND l.Address1 IS NULL) OR o.Address1=l.Address1)")
+			  .append(" AND ((o.Address2 IS NULL AND l.Address2 IS NULL) OR o.Address2=l.Address2)")
+			  .append(" AND ((o.City IS NULL AND l.City IS NULL) OR o.City=l.City)")
+			  .append(" AND ((o.Postal IS NULL AND l.Postal IS NULL) OR o.Postal=l.Postal)")
+			  .append(" AND COALESCE(o.C_Region_ID,0)=COALESCE(l.C_Region_ID,0)")
+			  .append(" AND COALESCE(o.C_Country_ID,0)=COALESCE(l.C_Country_ID,0)) ")
 			  .append("WHERE C_BPartner_ID IS NOT NULL AND C_BPartner_Location_ID IS NULL")
 			  .append(" AND I_IsImported='N'").append (clientCheck);
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
