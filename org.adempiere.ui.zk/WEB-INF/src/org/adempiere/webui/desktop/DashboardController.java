@@ -869,7 +869,8 @@ public class DashboardController implements EventListener<Event> {
 		int AD_Table_ID = 0;
 		int Record_ID = 0;
 		//
-		MPInstance pInstance = new MPInstance(process, Record_ID);
+		MPInstance pInstance = new MPInstance(Env.getCtx(), process.getAD_Process_ID(), Record_ID);
+		pInstance.saveEx();
 		fillParameter(pInstance, parameters);
 		//
 		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(),

@@ -1128,8 +1128,9 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				getAD_Table_ID(), getRecord_ID());
 			pi.setAD_User_ID(getAD_User_ID());
 			pi.setAD_Client_ID(getAD_Client_ID());
-			MPInstance pInstance = new MPInstance(process, getRecord_ID());
+			MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), getRecord_ID());
 			pInstance.set_TrxName(trx != null ? trx.getTrxName() : null);
+			pInstance.saveEx();
 			fillParameter(pInstance, trx);
 			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
 			//	Report
@@ -1158,7 +1159,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (log.isLoggable(Level.FINE)) log.fine("Process:AD_Process_ID=" + m_node.getAD_Process_ID());
 			//	Process
 			MProcess process = MProcess.get(getCtx(), m_node.getAD_Process_ID());
-			MPInstance pInstance = new MPInstance(process, getRecord_ID());
+			MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), getRecord_ID());
+			pInstance.saveEx();
 			fillParameter(pInstance, trx);
 			//
 			ProcessInfo pi = new ProcessInfo (m_node.getName(true), m_node.getAD_Process_ID(),

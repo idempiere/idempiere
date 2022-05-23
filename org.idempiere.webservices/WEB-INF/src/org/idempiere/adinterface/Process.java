@@ -482,7 +482,8 @@ public class Process {
 	
 	private static MPInstance fillParameter(CompiereService m_cs, DataRow dr, MProcess process, Map<String, Object> requestCtx) throws Exception
 	{
-		MPInstance pInstance = new MPInstance (process, 0);
+		MPInstance pInstance = new MPInstance(Env.getCtx(), process.getAD_Process_ID(), 0);
+		pInstance.saveEx();
 		
 		DataField f[] = dr.getFieldArray();
 		HashMap<String,DataField> fmap = new HashMap<String,DataField>();

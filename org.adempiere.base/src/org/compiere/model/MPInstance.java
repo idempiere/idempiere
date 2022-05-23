@@ -100,6 +100,15 @@ public class MPInstance extends X_AD_PInstance
 		setAD_User_ID(Env.getAD_User_ID(process.getCtx()));
 		if (!save())		//	need to save for parameters
 			throw new IllegalArgumentException ("Cannot Save");
+		//	Set Parameter Base Info
+		MProcessPara[] para = process.getParameters();
+		for (int i = 0; i < para.length; i++)
+		{
+			MPInstancePara pip = new MPInstancePara (this, para[i].getSeqNo());
+			pip.setParameterName(para[i].getColumnName());
+			pip.setInfo(para[i].getName());
+			pip.saveEx();
+		}
 	}	//	MPInstance
 
 	/**
