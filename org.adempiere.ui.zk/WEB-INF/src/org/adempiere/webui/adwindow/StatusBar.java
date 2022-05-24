@@ -27,7 +27,9 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WTextEditorDialog;
+import org.compiere.model.MSysConfig;
 import org.compiere.process.ProcessInfoLog;
+import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
@@ -173,11 +175,15 @@ public class StatusBar extends Panel implements EventListener<Event>
 			return;
 		
     	String labelText = buildLabelText(m_statusText);
+    	//iDempiereConsulting __05/10/2021 --- Error Message - The popup exposes the complete message and life time can be configured through system variable configurator (ErrorMsgLifeTime)  
+    	// If the value equals '0', then the popup will not disappear and you will need to close it manually; otherwise set the variable as milleseconds
+    	int duration = Integer.parseInt(MSysConfig.getValue("ErrorMsgLifeTime", "4500", Env.getAD_Client_ID(Env.getCtx())));   //MSysConfig.getIntValue("ErrorMsgLifeTime", 3500);
     	if (error) {
-    		Notification.show(buildNotificationText(m_statusText), "error", findTabpanel(this), "top_left", 3500, true);
+    		Notification.show(m_statusText, "error", findTabpanel(this), "top_left", duration, true);
     	} else if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH)) {
     		Notification.show(buildNotificationText(m_statusText), "info", findTabpanel(this), "top_left", 2000, true);
     	}
+    	//iDempiereConsulting __05/10/2021 -------- END
     	
     	messageContainer.setSclass(error ? "docstatus-error" : "docstatus-normal");
     	if (!ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH))
