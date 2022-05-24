@@ -22,6 +22,8 @@ import java.io.StringWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
+import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.pdf.Document;
 import org.adempiere.util.Callback;
 import org.adempiere.util.ContextRunnable;
@@ -1442,7 +1445,18 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		winExportFile.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		AEnv.showWindow(winExportFile);
 	}	//	cmd_export
-		
+	
+	/**
+	 * Sets AD_PrintFormat_Trl Name to AD_PrintFormat Name
+	 * @param pf
+	 */
+	private void resetPrintFormatTrl(MPrintFormat pf) {
+		String sql = "UPDATE AD_PrintFormat_Trl pf "
+				+ " SET Name = '" + pf.getName() + "' "
+				+ " WHERE pf.AD_PrintFormat_ID = " + pf.getAD_PrintFormat_ID();
+		DB.executeUpdate(sql, null);
+	}
+	
 	/**
 	 * 	Report Combo - Start other Report or create new one
 	 */
@@ -1461,53 +1475,80 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		//	create new
 		if (AD_PrintFormat_ID == -1)
 		{
-			FDialog.ask(m_WindowNo, this, "CreateNewReport?", new Callback<Boolean>() {
-				public void onCallback(Boolean result) {
-					MPrintFormat pf = null;
-					if (result) {
-						int AD_ReportView_ID = m_reportEngine.getPrintFormat().getAD_ReportView_ID();
-						if (AD_ReportView_ID != 0)
-						{
-							String name = m_reportEngine.getName();
-							int index = name.lastIndexOf('_');
-							if (index != -1)
-								name = name.substring(0,index);
-							pf = MPrintFormat.createFromReportView(m_ctx, AD_ReportView_ID, name);
-						}
-						else
-						{
-							int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
-							pf = MPrintFormat.createFromTable(m_ctx, AD_Table_ID);
-						}
-						if (pf != null)
-							fillComboReport(pf.get_ID());
-						else
-							return;
-//						Get Language from previous - thanks Gunther Hoppe 
-						if (m_reportEngine.getPrintFormat() != null)
-						{
-							setLanguage();
-							pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
-							pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
-						}
-						m_reportEngine.setPrintFormat(pf);
-						postRenderReportEvent();
+			FDialog.askForInput(m_WindowNo, null, "CreateNewPrintFormat", "CreateNewPrintFormatTitle", new Callback<Object>() {
+//			FDialog.ask(m_WindowNo, this, "CreateNewReport?", new Callback<Boolean>() {
+			public void onCallback(Object result) {
+				if(!(result instanceof String))
+					return;
+				MPrintFormat pf = null;
+				if (!Util.isEmpty((String)result)) {
+					int AD_ReportView_ID = m_reportEngine.getPrintFormat().getAD_ReportView_ID();
+					if (AD_ReportView_ID != 0)
+					{
+						String name = (String)result;
+						pf = MPrintFormat.createFromReportView(m_ctx, AD_ReportView_ID, name);
 					}
+					else
+					{
+						int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
+						pf = MPrintFormat.createFromTable(m_ctx, AD_Table_ID);
+					}
+					if (pf != null) {
+						pf.setName((String)result);
+						if(!pf.save()) {
+							Calendar cal = Calendar.getInstance();
+							SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+							String dt = sdf.format(cal.getTime());
+							pf.setName(pf.getName() + "_" + dt);
+							pf.saveEx();
+						}
+						resetPrintFormatTrl(pf);
+						fillComboReport(pf.get_ID());
+					}
+					else
+						return;
+//							Get Language from previous - thanks Gunther Hoppe 
+					if (m_reportEngine.getPrintFormat() != null)
+					{
+						setLanguage();
+						pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
+						pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
+					}
+					
+					m_reportEngine.setPrintFormat(pf);
+					m_reportEngine.initName();
+					postRenderReportEvent();
 				}
-			});
+				else
+					throw new FillMandatoryException("AD_PrintFormat");
+			}
+		});
 		} else if (AD_PrintFormat_ID == -2) {
-			FDialog.ask(m_WindowNo, this, "CreateCopyReport?", new Callback<Boolean>() {
-				public void onCallback(Boolean result) {
+			FDialog.askForInput(m_WindowNo, null, "CreatePrintFormatCopy", Msg.getMsg(m_ctx, "CreatePrintFormatCopyTitle"), new Callback<Object>() {
+			//FDialog.ask(m_WindowNo, this, "CreateCopyReport?", new Callback<Boolean>() {
+				public void onCallback(Object result) {
+					if(!(result instanceof String))
+						return;
 					MPrintFormat pf = null;
-					if (result) {
+					if (!Util.isEmpty((String)result)) {
 						MPrintFormat current = m_reportEngine.getPrintFormat();
 						if (current != null) {
 							pf = MPrintFormat.copyToClient(m_ctx,
 									current.getAD_PrintFormat_ID(),
 									Env.getAD_Client_ID(m_ctx));
 
-							if (pf != null)
+							if (pf != null) {
+								pf.setName((String)result);
+								if(!pf.save()) {
+									Calendar cal = Calendar.getInstance();
+									SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+									String dt = sdf.format(cal.getTime());
+									pf.setName(pf.getName() + "_" + dt);
+									pf.saveEx();
+								}
+								resetPrintFormatTrl(pf);
 								fillComboReport(pf.get_ID());
+							}
 							else
 								return;
 						} else
@@ -1519,10 +1560,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 							pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
 							pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
 						}
+						m_reportEngine.initName();
 						m_reportEngine.setPrintFormat(pf);
 						postRenderReportEvent();
 					}
-					
+					else
+						throw new FillMandatoryException("AD_PrintFormat");
 				}
 			});
 		}
