@@ -104,6 +104,9 @@ import org.zkoss.zul.Vlayout;
  */
 public class DashboardController implements EventListener<Event> {
 
+	/**	Logger							*/
+	protected transient CLogger	log = CLogger.getCLogger (getClass());
+	
 	private static final String PANEL_EMPTY_ATTR = "panel.empty";
 	private final static CLogger logger = CLogger.getCLogger(DashboardController.class);
 	private Component prevParent;
@@ -866,7 +869,8 @@ public class DashboardController implements EventListener<Event> {
 		int AD_Table_ID = 0;
 		int Record_ID = 0;
 		//
-		MPInstance pInstance = new MPInstance(process, Record_ID);
+		MPInstance pInstance = new MPInstance(Env.getCtx(), process.getAD_Process_ID(), Record_ID);
+		pInstance.saveEx();
 		fillParameter(pInstance, parameters);
 		//
 		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(),
@@ -911,9 +915,13 @@ public class DashboardController implements EventListener<Event> {
 				String value = s.substring(pos + 1);
 				paramMap.put(key, value);
 			}
-			MPInstancePara[] iParams = pInstance.getParameters();
-			for (MPInstancePara iPara : iParams)
+			MProcessPara[] processParams = pInstance.getProcessParameters();
+			for (int pi = 0; pi < processParams.length; pi++)
 			{
+				MPInstancePara iPara = new MPInstancePara (pInstance, processParams[pi].getSeqNo());
+				iPara.setParameterName(processParams[pi].getColumnName());
+				iPara.setInfo(processParams[pi].getName());
+				
 				String variable = paramMap.get(iPara.getParameterName());
 
 				if (Util.isEmpty(variable))
@@ -970,6 +978,11 @@ public class DashboardController implements EventListener<Event> {
 					 {
 						 continue;
 					 }
+					 if( DisplayType.isText(iPara.getDisplayType())
+								&& Util.isEmpty(String.valueOf(value))) {
+						if (log.isLoggable(Level.FINE)) log.fine(iPara.getParameterName() + " - empty string");
+							break;
+					}
 
 					 //	Convert to Type				
 					 if (DisplayType.isNumeric(iPara.getDisplayType()))
