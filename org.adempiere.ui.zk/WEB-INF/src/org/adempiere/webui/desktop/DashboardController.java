@@ -867,23 +867,31 @@ public class DashboardController implements EventListener<Event> {
 		int Record_ID = 0;
 		//
 		MPInstance pInstance = new MPInstance(process, Record_ID);
-		fillParameter(pInstance, parameters);
-		//
-		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(),
-			AD_Table_ID, Record_ID);
-		pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
-		pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
-		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());		
-		if (!process.processIt(pi, null) && pi.getClassName() != null) 
-			throw new IllegalStateException("Process failed: (" + pi.getClassName() + ") " + pi.getSummary());
-	
-		//	Report
-		ReportEngine re = ReportEngine.get(Env.getCtx(), pi);
-		if (re == null)
-			throw new IllegalStateException("Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
-				+ " - " + process.getName());
+		pInstance.setIsProcessing(true);
+		pInstance.saveEx();
+		try {
+			fillParameter(pInstance, parameters);
+			//
+			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(),
+				AD_Table_ID, Record_ID);
+			pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+			pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());		
+			if (!process.processIt(pi, null) && pi.getClassName() != null) 
+				throw new IllegalStateException("Process failed: (" + pi.getClassName() + ") " + pi.getSummary());
 		
-		return re;
+			//	Report
+			ReportEngine re = ReportEngine.get(Env.getCtx(), pi);
+			if (re == null)
+				throw new IllegalStateException("Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
+					+ " - " + process.getName());
+			return re;
+		}
+		finally {			
+			pInstance.setIsProcessing(false);
+			pInstance.saveEx();
+		}
+		
 	}
 
 	public AMedia generateReport(int AD_Process_ID, String parameters) throws Exception {

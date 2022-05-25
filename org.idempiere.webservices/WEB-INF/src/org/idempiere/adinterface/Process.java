@@ -324,6 +324,8 @@ public class Process {
 		//	Start
 		if (process.isWorkflow())
 		{
+			pInstance.setIsProcessing(true);
+			pInstance.saveEx();
 			try
 			{
 				int AD_Workflow_ID = process.getAD_Workflow_ID();
@@ -344,6 +346,10 @@ public class Process {
 				r.setLogInfo(pi.getLogInfo(true) );
 				r.setIsError( true );
 				return res;				
+			}
+			finally {
+				pInstance.setIsProcessing(false);
+				pInstance.saveEx();
 			}
 		}
 	

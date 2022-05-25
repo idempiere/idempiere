@@ -172,8 +172,15 @@ public abstract class AbstractProcessCtl implements Runnable
 			String errmsg = m_pi.getSummary();
 			pinstance.setResult(!m_pi.isError());
 			pinstance.setErrorMsg(errmsg);
+			pinstance.setIsProcessing(true);
 			pinstance.saveEx();
-			unlock();
+			try {
+				unlock();
+			}
+			finally {
+				pinstance.setIsProcessing(false);
+				pinstance.saveEx();
+			}
 			return;
 		}
 
