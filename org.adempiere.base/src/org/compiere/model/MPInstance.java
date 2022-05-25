@@ -160,6 +160,7 @@ public class MPInstance extends X_AD_PInstance
 		final String whereClause = "AD_Process_ID=?";
 		List <MProcessPara> list = new Query(getCtx(), MProcessPara.Table_Name, whereClause, get_TrxName())
 		.setParameters(getAD_Process_ID())
+		.setOnlyActiveRecords(true)
 		.setOrderBy("SeqNo")
 		.list();
 
