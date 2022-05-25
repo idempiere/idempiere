@@ -655,6 +655,10 @@ public class ProcessParameterPanel extends Panel implements
 			//Save only parameters which are set
 			if((result == null) && (result2 == null))
 				continue;
+			if(result instanceof String) { 
+				if (Util.isEmpty((String)result) && (result2 == null || Util.isEmpty((String)result2))) 
+					continue;
+			}
 
 			// Create Parameter
 			MPInstancePara para = MPInstancePara.getOrCreate(Env.getCtx(),

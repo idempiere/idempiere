@@ -46,6 +46,7 @@ import org.compiere.model.MOrgInfo;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRefList;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -1127,8 +1128,9 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				getAD_Table_ID(), getRecord_ID());
 			pi.setAD_User_ID(getAD_User_ID());
 			pi.setAD_Client_ID(getAD_Client_ID());
-			MPInstance pInstance = new MPInstance(process, getRecord_ID());
+			MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), getRecord_ID());
 			pInstance.set_TrxName(trx != null ? trx.getTrxName() : null);
+			pInstance.saveEx();
 			fillParameter(pInstance, trx);
 			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
 			//	Report
@@ -1657,10 +1659,14 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		getPO(trx);
 		//
 		MWFNodePara[] nParams = m_node.getParameters();
-		MPInstancePara[] iParams = pInstance.getParameters();
-		for (int pi = 0; pi < iParams.length; pi++)
+		MProcessPara[] processParams = pInstance.getProcessParameters();
+		for (int pi = 0; pi < processParams.length; pi++)
 		{
-			MPInstancePara iPara = iParams[pi];
+			MPInstancePara iPara = new MPInstancePara (pInstance, processParams[pi].getSeqNo());
+			iPara.setParameterName(processParams[pi].getColumnName());
+			iPara.setInfo(processParams[pi].getName());
+			iPara.setParameterName(processParams[pi].getColumnName());
+			iPara.setInfo(processParams[pi].getName());
 			for (int np = 0; np < nParams.length; np++)
 			{
 				MWFNodePara nPara = nParams[np];				
@@ -1681,6 +1687,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 							if (log.isLoggable(Level.FINE)) log.fine(nPara.getAttributeName()
 								+ " - empty");
 						break;
+					}
+					if( DisplayType.isText(nPara.getDisplayType())
+							&& Util.isEmpty(String.valueOf(value))) {
+						if (log.isLoggable(Level.FINE)) log.fine(nPara.getAttributeName() + " - empty string");
+							break;
 					}
 
 					//	Convert to Type
