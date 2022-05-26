@@ -38,10 +38,12 @@ import org.adempiere.pdf.Document;
 import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
+import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessModalDialog;
+import org.adempiere.webui.apps.WDrillReport;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
@@ -56,6 +58,7 @@ import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.DrillEvent;
+import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.ITabOnCloseHandler;
@@ -825,14 +828,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				if (event instanceof DrillEvent) {
 					Clients.clearBusy();
 					DrillEvent de = (DrillEvent) event;
-					if (de.getData() != null && de.getData() instanceof MQuery) {
-						MQuery query = (MQuery) de.getData();
-						Listitem item = comboDrill.getSelectedItem();
-						if (item != null && item.getValue() != null && item.toString().trim().length() > 0)
-						{
-							query.setTableName(item.getValue().toString());
-							executeDrill(query, event.getTarget());
-						}
+					if (de.getData() != null && de.getData() instanceof DrillData) {
+						DrillData data = (DrillData) de.getData();
+//						Listitem item = comboDrill.getSelectedItem();
+//						if (item != null && item.getValue() != null && item.toString().trim().length() > 0)
+//						{
+//							query.setTableName(item.getValue().toString());
+							executeDrill(data, event.getTarget());
+//						}
 					}
 				}
 				
@@ -845,9 +848,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				if (event instanceof DrillEvent) {
 					Clients.clearBusy();
 					DrillEvent de = (DrillEvent) event;
-					if (de.getData() != null && de.getData() instanceof MQuery) {
-						MQuery query = (MQuery) de.getData();
-						executeDrill(query, event.getTarget());
+					if (de.getData() != null && de.getData() instanceof DrillData) {
+						DrillData data = (DrillData) de.getData();
+						executeDrillDown(data, event.getTarget());
 					}
 				}
 				
@@ -1015,20 +1018,20 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 		//	fill Drill Options (Name, TableName)
 		comboDrill.appendItem("", null);
-		String sql = "SELECT t.AD_Table_ID, t.TableName, e.PrintName, NULLIF(e.PO_PrintName,e.PrintName) "
+		String sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(e.PO_PrintName,e.PrintName) " //et.PrintName
 			+ "FROM AD_Column c "
 			+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
-			+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.IsView='N' AND t.AD_Table_ID <> c.AD_Table_ID)"
+			+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"	//AND t.IsView='N' 
 			+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
 			+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName) "
 			+ "WHERE c.AD_Table_ID=? AND c.IsKey='Y' "
 			+ "ORDER BY 3";
 		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Element");
 		if (trl)
-			sql = "SELECT t.AD_Table_ID, t.TableName, et.PrintName, NULLIF(et.PO_PrintName,et.PrintName) "
+			sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(et.PO_PrintName,et.PrintName) " //et.PrintName
 				+ "FROM AD_Column c"
 				+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
-				+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.IsView='N' AND t.AD_Table_ID <> c.AD_Table_ID)"
+				+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"	//AND t.IsView='N' 
 				+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
 				+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName)"
 				+ " INNER JOIN AD_Element_Trl et ON (e.AD_Element_ID=et.AD_Element_ID) "
@@ -1322,23 +1325,71 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 	/**
 	 * 	Execute Drill to Query
-	 * 	@param query query
+	 * 	@param data query
 	 *  @param component
 	 */
-	private void executeDrill (MQuery query, Component component)
+	private void executeDrill (DrillData data, Component component)
 	{
-		int AD_Table_ID = MTable.getTable_ID(query.getTableName());
+		int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
-			FDialog.error(m_WindowNo, this, "AccessCannotReport", query.getTableName());
+			FDialog.error(m_WindowNo, this, "AccessCannotReport", data.getQuery().getTableName());
 			return;
 		}
-		if (AD_Table_ID != 0)
-			new WReport (AD_Table_ID, query, component, m_WindowNo);
+		if (AD_Table_ID != 0) {
+//			new WReport (AD_Table_ID, query, component, m_WindowNo);
+			WDrillReport drillReport = new WDrillReport(data, component, m_WindowNo);
+
+			Object window = SessionManager.getAppDesktop().findWindow(m_WindowNo);
+			if (window != null && window instanceof Component && window instanceof ISupportMask){
+				final ISupportMask parent = LayoutUtils.showWindowWithMask(drillReport, (Component)window, LayoutUtils.OVERLAP_PARENT);
+				drillReport.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						parent.hideMask();
+					}
+				});
+			}else if (window != null && window instanceof Component){
+				final Mask mask = LayoutUtils.showWindowWithMask(drillReport, (Component)window, null);
+				drillReport.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						mask.hideMask();
+					}
+				});
+			}else{
+				// Add proper width width
+				int width = SessionManager.getAppDesktop().getClientInfo().screenWidth * 42 / 100;
+				drillReport.setWidth(width + "px");
+				drillReport.setPosition("center");
+				drillReport.setAttribute(Window.MODE_KEY, Window.MODE_MODAL);
+				AEnv.showWindow(drillReport);
+			}
+		}
 		else
-			log.warning("No Table found for " + query.getWhereClause(true));
+			log.warning("No Table found for " + data.getQuery().getWhereClause(true));
 	}	//	executeDrill
 	
+	/**
+	 * 	Execute Drill to Query
+	 * 	@param data query
+	 *  @param component
+	 */
+	private void executeDrillDown (DrillData data, Component component)
+	{
+		int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
+		if (!MRole.getDefault().isCanReport(AD_Table_ID))
+		{
+			FDialog.error(m_WindowNo, this, "AccessCannotReport", data.getQuery().getTableName());
+			return;
+		}
+		if (AD_Table_ID != 0) {
+			new WReport (AD_Table_ID, data.getQuery(), component, m_WindowNo);
+		}
+		else
+			log.warning("No Table found for " + data.getQuery().getWhereClause(true));
+	}	//	executeDrill
+
 	/**
 	 * 	Open Window
 	 *	@param query query
