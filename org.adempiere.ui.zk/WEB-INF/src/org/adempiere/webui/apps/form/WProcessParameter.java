@@ -14,7 +14,6 @@
 
 package org.adempiere.webui.apps.form;
 
-import org.adempiere.model.GenericPO;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.panel.WProcessParameterForm;
@@ -25,6 +24,8 @@ import org.compiere.model.MProcessDrillRulePara;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MScheduler;
 import org.compiere.model.MSchedulerPara;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -54,12 +55,14 @@ public class WProcessParameter implements IFormController {
 	}
 
 	/**
-	 * Save parameters to AD_Scheduler_Para
+	 * Save parameters
 	 * @param paras
+	 * @param tableName
 	 */
 	public void saveParameters(MPInstancePara[] paras, String tableName) {
 		
-		GenericPO po = new GenericPO(tableName, Env.getCtx(), parameterForm.getProcessInfo().getRecord_ID(), null);// PO(Env.getCtx(), parameterForm.getProcessInfo().getRecord_ID(), null); //MScheduler scheduler = new MScheduler(Env.getCtx(), parameterForm.getProcessInfo().getRecord_ID(), null);
+		MTable table = MTable.get(Env.getCtx(), tableName);
+		PO po = table.getPO(parameterForm.getProcessInfo().getRecord_ID(), null);
 		String idColumn = "";
 		
 		int AD_Process_ID = po.get_ValueAsInt("AD_Process_ID"); //scheduler.getAD_Process_ID();
@@ -87,7 +90,8 @@ public class WProcessParameter implements IFormController {
 			//
 			//child table always must have "_Para" suffix
 			for(MPInstancePara para : paras) {
-				GenericPO poPara = new GenericPO(tableName+"_Para", Env.getCtx(), 0, null);	
+				table = MTable.get(Env.getCtx(), tableName+"_Para");
+				PO poPara = table.getPO(0, null);
 				poPara.set_ValueOfColumn(idColumn, (po.get_ValueAsInt(idColumn))); 
 				for(MProcessPara processPara : processParameters) {
 					if (processPara.getColumnName().equals(para.getParameterName())) {

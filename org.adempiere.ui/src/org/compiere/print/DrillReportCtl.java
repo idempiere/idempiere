@@ -1,3 +1,28 @@
+/**********************************************************************
+* This file is part of iDempiere ERP Open Source                      *
+* http://www.idempiere.org                                            *
+*                                                                     *
+* Copyright (C) Contributors                                          *
+*                                                                     *
+* This program is free software; you can redistribute it and/or       *
+* modify it under the terms of the GNU General Public License         *
+* as published by the Free Software Foundation; either version 2      *
+* of the License, or (at your option) any later version.              *
+*                                                                     *
+* This program is distributed in the hope that it will be useful,     *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+* GNU General Public License for more details.                        *
+*                                                                     *
+* You should have received a copy of the GNU General Public License   *
+* along with this program; if not, write to the Free Software         *
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+* MA 02110-1301, USA.                                                 *
+*                                                                     *
+* Contributors:                                                       *
+* - Igor Pojzl, Cloudempiere                                          *
+* - Peter Takacs, Cloudempiere                                        *
+**********************************************************************/
 package org.compiere.print;
 
 import java.math.BigDecimal;
@@ -75,6 +100,16 @@ public class DrillReportCtl {
 	/** Drill Process Rule PrintFormats */
 	private HashMap<Integer, KeyNamePair[]> drillProcessRulesPrintFormatMap = new HashMap<>();
 
+	/**
+	 * 
+	 * @param ctx
+	 * @param TableName
+	 * @param query
+	 * @param ColumnName
+	 * @param Value
+	 * @param displayValue
+	 * @param WindowNo
+	 */
 	public DrillReportCtl(Properties ctx, String TableName, MQuery query, String ColumnName, Object Value, String displayValue, int WindowNo) {
 		this.m_ctx = ctx;
 		this.m_TableName = TableName;
@@ -87,18 +122,6 @@ public class DrillReportCtl {
 
 		this.initMaps();
 	}
-
-
-//	public DrillReportCtl(Properties ctx, String TableName, MQuery query, int WindowNo) {
-//		this.m_ctx = ctx;
-//		this.m_TableName = TableName;
-//		this.m_WindowNo = WindowNo;
-//
-//		this.m_Query = query;
-//
-//		this.initMaps();
-//
-//	}
 
 	/**
 	 * Get Drill Table KeyNamePairs
@@ -133,12 +156,18 @@ public class DrillReportCtl {
 		return drillProcessRulesPrintFormatMap.get(AD_Process_DrillRule_ID);
 	}
 
-
+	/**
+	 * Get Display Value
+	 * @return
+	 */
 	public String getDisplayValue() {
 		return m_DisplayValue;
 	}
 
-
+	/**
+	 * Get Value
+	 * @return
+	 */
 	public Object getValue() {
 		return m_Value;
 	}
@@ -210,20 +239,20 @@ public class DrillReportCtl {
 	private void initDrillTableMap() {
 
 		ArrayList<KeyNamePair> drillTableList = new ArrayList<>();
-		String sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(e.PO_PrintName,e.PrintName) " //et.PrintName
+		String sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(e.PO_PrintName,e.PrintName) "
 				+ "FROM AD_Column c "
 				+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
-				+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"	//AND t.IsView='N'
+				+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"
 				+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
 				+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName) "
 				+ "WHERE c.AD_Table_ID=? AND c.IsKey='Y' "
 				+ "ORDER BY 3 ";
 			boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Element");
 			if (trl)
-				sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(et.PO_PrintName,et.PrintName) " //et.PrintName
+				sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(et.PO_PrintName,et.PrintName) "
 					+ "FROM AD_Column c"
 					+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
-					+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"	//AND t.IsView='N'
+					+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"
 					+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
 					+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName)"
 					+ " INNER JOIN AD_Element_Trl et ON (e.AD_Element_ID=et.AD_Element_ID) "
@@ -303,19 +332,18 @@ public class DrillReportCtl {
 					MPrintFormat pf = MPrintFormat.get(processDrillRule.getAD_PrintFormat_ID());
 					if(pf != null) {
 						m_list = new KeyNamePair[] {
-//								new KeyNamePair(-1, Msg.getMsg(Env.getCtx(), pf.getAD_Client_ID() == 0 ? "PredefinedReports" : "ClientReports" )),
 								new KeyNamePair(pf.getAD_PrintFormat_ID(), drillProcessRule.getName())};
 					}
 				} else if(processDrillRule.getAD_ReportView_ID() > 0) {
 					// Report View
 					MReportView reportView = MReportView.get(processDrillRule.getAD_ReportView_ID());
-					m_list = getPrintFormats(reportView.getAD_Table_ID(), reportView.getAD_ReportView_ID());//MPrintFormat.getAccessiblePrintFormats(reportView.getAD_Table_ID(), AD_Window_ID, null, false);
+					m_list = getPrintFormats(reportView.getAD_Table_ID(), reportView.getAD_ReportView_ID());
 				} else {
 					MProcess process = MProcess.get(processDrillRule.getAD_Process_ID());
 					if(process == null || process.getAD_ReportView_ID() <= 0)
 						continue;
 					MReportView reportView = MReportView.get(process.getAD_ReportView_ID());
-					m_list = getPrintFormats(reportView.getAD_Table_ID(), reportView.getAD_ReportView_ID()); //MPrintFormat.getAccessiblePrintFormats(reportView.getAD_Table_ID(), AD_Window_ID, null, false);
+					m_list = getPrintFormats(reportView.getAD_Table_ID(), reportView.getAD_ReportView_ID());
 				}
 
 				this.drillProcessRulesPrintFormatMap.put(drillProcessRule.getKey(), m_list);
@@ -340,8 +368,6 @@ public class DrillReportCtl {
 			"AD_PrintFormat", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		boolean system = true;
-		boolean client = true;
 		try
 		{
 			pstmt = DB.prepareStatement(sql, null);
@@ -353,15 +379,6 @@ public class DrillReportCtl {
 			while (rs.next())
 			{
 				MPrintFormat printFormat = new MPrintFormat (Env.getCtx(), rs, null);
-//				if(system && printFormat.getAD_Client_ID()==0){
-//					printFormatList.add(new KeyNamePair(-1, Msg.getMsg(Env.getCtx(), "PredefinedReports")));
-//					system = false;
-//				}
-//
-//				if(client && printFormat.getAD_Client_ID()>0){
-//					printFormatList.add(new KeyNamePair(-1, Msg.getMsg(Env.getCtx(), "ClientReports")));
-//					client = false;
-//				}
 
 				KeyNamePair pp = new KeyNamePair(printFormat.get_ID(), printFormat.get_Translation(MPrintFormat.COLUMNNAME_Name, Env.getAD_Language(Env.getCtx()), true));
 				printFormatList.add(pp);
@@ -415,7 +432,6 @@ public class DrillReportCtl {
 			ProcessInfo pi = new ProcessInfo ("", pf.getJasperProcess_ID(), pf.getAD_Table_ID(), Record_ID);
 
 			//	Execute Process
-//			WProcessCtl.process(m_WindowNo, pi, null);
 		}
 		else
 		{
@@ -440,10 +456,6 @@ public class DrillReportCtl {
 		return prepareProcessInfo(process, drillRule, ad_PrintFormat_ID);
 
 		// It's a default report using the standard printing engine
-//		ReportEngine re = new ReportEngine (Env.getCtx(), pf, m_Query, info);
-//		re.setWindowNo(m_WindowNo);
-//		ReportCtl.preview(re);
-
 	}	//	launchReport
 
 	/**
@@ -460,7 +472,7 @@ public class DrillReportCtl {
 
 		//	Process (see also MWFActivity.performWork
 		int AD_Table_ID = processDrillRule.getAD_Table_ID();
-		int Record_ID = 0; //drillRule.getRecord_ID();
+		int Record_ID = 0;
 		//
 		MPInstance pInstance = new MPInstance(process, Record_ID);
 		fillParameter(pInstance, processDrillRule);
@@ -472,7 +484,7 @@ public class DrillReportCtl {
 		pi.setAD_Process_UU(process.getAD_Process_UU());
 		pi.setIsBatch(true);
 		pi.setPrintPreview(true);
-//		pi.setReportType(drillRule.getReportOutputType());
+
 		int AD_PrintFormat_ID = ad_PrintFormat_ID > 0 ? ad_PrintFormat_ID : processDrillRule.getAD_PrintFormat_ID();
 		if (AD_PrintFormat_ID > 0)
 		{
@@ -658,7 +670,6 @@ public class DrillReportCtl {
 		else if (variable.startsWith("@SQL=")) {
 			String	defStr = "";
 			String sql = variable.substring(5);	//	w/o tag
-			//sql = Env.parseContext(m_vo.ctx, m_vo.WindowNo, sql, false, true);	//	replace variables
 			//hengsin, capture unparseable error to avoid subsequent sql exception
 			sql = Env.parseContext(m_ctx, 0, sql, false, false);	//	replace variables
 			if (sql.equals(""))
@@ -767,21 +778,34 @@ public class DrillReportCtl {
 		return value;
 	}
 
+	/**
+	 * Get Table Name
+	 * @return
+	 */
 	public String getTableName() {
 		return m_TableName;
 	}
 
-
+	/**
+	 * Get Drill Process List
+	 * @return
+	 */
 	public KeyNamePair[] getDrillProcessList() {
 		return drillProcessList;
 	}
 
-
+	/**
+	 * Get Drill Table Print Format Map
+	 * @return
+	 */
 	public HashMap<Integer, KeyNamePair[]> getDrillTablePrintFormatMap() {
 		return drillTablePrintFormatMap;
 	}
 
-
+	/**
+	 * Get Drill Process Rules Print Format Map
+	 * @return
+	 */
 	public HashMap<Integer, KeyNamePair[]> getDrillProcessRulesPrintFormatMap() {
 		return drillProcessRulesPrintFormatMap;
 	}

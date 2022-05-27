@@ -1,3 +1,28 @@
+/**********************************************************************
+* This file is part of iDempiere ERP Open Source                      *
+* http://www.idempiere.org                                            *
+*                                                                     *
+* Copyright (C) Contributors                                          *
+*                                                                     *
+* This program is free software; you can redistribute it and/or       *
+* modify it under the terms of the GNU General Public License         *
+* as published by the Free Software Foundation; either version 2      *
+* of the License, or (at your option) any later version.              *
+*                                                                     *
+* This program is distributed in the hope that it will be useful,     *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+* GNU General Public License for more details.                        *
+*                                                                     *
+* You should have received a copy of the GNU General Public License   *
+* along with this program; if not, write to the Free Software         *
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+* MA 02110-1301, USA.                                                 *
+*                                                                     *
+* Contributors:                                                       *
+* - Igor Pojzl, Cloudempiere                                          *
+* - Peter Takacs, Cloudempiere                                        *
+**********************************************************************/
 package org.adempiere.webui.apps;
 
 import java.text.SimpleDateFormat;
@@ -24,7 +49,6 @@ import org.compiere.util.Util;
 import org.zkoss.zhtml.A;
 import org.zkoss.zhtml.H3;
 import org.zkoss.zhtml.H4;
-import org.zkoss.zhtml.I;
 import org.zkoss.zhtml.P;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
@@ -60,6 +84,12 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 	private int windowNo = 0;
 
+	/**
+	 * 
+	 * @param data
+	 * @param parent
+	 * @param WindowNo
+	 */
 	public WDrillReport(DrillData data, Component parent, int WindowNo) {
 		super();
 		this.parent = parent;
@@ -89,12 +119,9 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		table.setStyle("width: 100%;");
 		div.appendChild(table);
 
-
-//		WebDoc doc = WebDoc.create(true);
 		table.setWidgetAttribute("cellspacing", "0");
 		table.setWidgetAttribute("cellpadding", "0");
 		table.setWidgetAttribute("border", "0");
-//		doc.getBody().addElement(table);
 
 		Tr tr = new Tr();
 		table.appendChild(tr);
@@ -109,20 +136,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		td = new Td();
 		tr.appendChild(td);
 		td.appendChild(getContent());
-
-//		html.setContent(doc.toString());
-
-//		this.addEventListener(DrillEvent.ON_DRILL_REPORT, new EventListener<Event>() {
-//
-//			public void onEvent(Event event) throws Exception {
-//				if (event instanceof DrillEvent) {
-//					Clients.clearBusy();
-//					DrillEvent de = (DrillEvent) event;
-//				}
-//
-//			}
-//		});
-
 	}
 
 	private Table getHeader()
@@ -160,43 +173,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 		td = new Td();
 		tr.appendChild(td);
-//		td.appendChild(WebDoc.NBSP);
-
-//		if (gridWindow.getDescription().length() != 0)
-//		{
-//			tr = new tr();
-//			table.addElement(tr);
-//
-//			td = new td();
-//			td.setClass("help-window-description");
-//			tr.addElement(td);
-//			td.addElement(new p().addElement(gridWindow.getDescription()));
-//
-//			tr = new tr();
-//			table.addElement(tr);
-//
-//			td = new td();
-//			tr.addElement(td);
-//			td.addElement(WebDoc.NBSP);
-//		}
-
-//		if (gridWindow.getHelp().length() != 0)
-//		{
-//			tr = new tr();
-//			table.addElement(tr);
-//
-//			td = new td();
-//			td.setClass("help-window-help");
-//			tr.addElement(td);
-//			td.addElement(new p().addElement(gridWindow.getHelp()));
-//
-//			tr = new tr();
-//			table.addElement(tr);
-//
-//			td = new td();
-//			tr.addElement(td);
-//			td.addElement(WebDoc.NBSP);
-//		}
 
 		tr = new Tr();
 		table.appendChild(tr);
@@ -210,7 +186,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 		td = new Td();
 		tr.appendChild(td);
-//		td.appendChild(WebDoc.NBSP);
 
 		return table;
 	}
@@ -228,8 +203,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		tabs.appendChild(tab);
 		tab = new Tab(Msg.translate(Env.getCtx(), "AD_Table_ID"));
 		tabs.appendChild(tab);
-//		tab = new Tab(Msg.translate(Env.getCtx(), "Favorites"));
-//		tabs.appendChild(tab);
 
 		Tabpanel tabPanel = new Tabpanel();
 		tabPanel.appendChild(getTabContent(1, drillReportCtl.getDrillProcessList(), drillReportCtl.getDrillProcesRules(), true));
@@ -238,23 +211,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		tabPanel = new Tabpanel();
 		tabPanel.appendChild(getTabContent(2, drillReportCtl.getDrillTables(), drillReportCtl.getDrillTablePrintFormatMap(), false));
 		tabpanels.appendChild(tabPanel);
-
-//		Table table = new Table();
-//		table.setWidgetAttribute("cellspacing", "0");
-//		table.setWidgetAttribute("cellpadding", "0");
-//		table.setWidgetAttribute("border", "0");
-//		table.setStyle("width: 100%;");
-//		table.setWidgetAttribute("class","help-window-content");
-//
-//		Tr tr = new Tr();
-////		tr.setVAlign("top");
-//		table.appendChild(tr);
-//
-//		Td td = new Td();
-////		td.setWidth("80%");
-//		tr.appendChild(td);
-//		td.appendChild(getTabContent(1, drillReportCtl.getDrillTables(), drillReportCtl.getDrillTablePrintFormatMap()));
-//		tabPanel.appendChild(table);
 
 		return tabbox;
 	}
@@ -267,19 +223,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		table.setWidgetAttribute("border", "0");
 		table.setStyle("width: 100%;");
 		table.setWidgetAttribute("class","help-window-content-l");
-
-//		int size = gridWindow.getTabCount();
-//		for (int i = 0; i < size; i++)
-//		{
-//			tr tr = new tr();
-//			table.addElement(tr);
-//
-//			td td = new td();
-//			tr.addElement(td);
-//
-//			GridTab tab = gridWindow.getTab(i);
-//			td.addElement(new a("#"+winpref+"Rep"+i).addElement(tab.getName()));
-//		}
 
 		return table;
 	}
@@ -302,9 +245,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		A a = new A();
 		a.setWidgetAttribute("name",winpref+"Tables");
 		td.appendChild(a);
-//		H4 h4 = new H4();
-//		h4.appendChild(new Text(Msg.getMsg(Env.getCtx(), "Tables")));
-//		td.appendChild(h4);
 		td.appendChild(getTablesBox(tabIndex, drillTables));
 
 		int size = drillTables.length;
@@ -319,119 +259,10 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 			td = new Td();
 			tr.appendChild(td);
 			td.appendChild(getDrillTableBox(drillTable, i, tabIndex, drillPrintFormatMap, isDrillProcessRule));
-
-			// fields
-//			tr = new Tr();
-//			table.appendChild(tr);
-//
-//			td = new Td();
-//			tr.appendChild(td);
-//			td.appendChild(getPrintFormatsBox(drillPrintFormats, i, tabIndex));
-
 		}
 
 		return table;
 	}
-
-
-//	private Table getRightContent()
-//	{
-//		Table table = new Table();
-//		table.setWidgetAttribute("cellspacing", "0");
-//		table.setWidgetAttribute("cellpadding", "0");
-//		table.setWidgetAttribute("border", "0");
-//		table.setStyle("width: 100%;");
-//		table.setWidgetAttribute("class","help-window-content-r");
-//
-//		int size = drillReportCtl.getDrillTables().length;
-//		for (int i = 0; i < size; i++)
-//		{
-//			KeyNamePair drillTable = drillReportCtl.getDrillTables()[i];
-//
-//			// tab
-//			Tr tr = new Tr();
-//			table.appendChild(tr);
-//
-//			Td td = new Td();
-//			tr.appendChild(td);
-//			td.appendChild(getDrillTableBox(drillTable, i, 1));
-//
-//			// fields
-//			tr = new Tr();
-//			table.appendChild(tr);
-//
-//			td = new Td();
-//			tr.appendChild(td);
-//			KeyNamePair[] drillPrintFormats = drillReportCtl.getDrillTablePrintFormat(drillTable.getKey());
-//			td.appendChild(getPrintFormatsBox(drillPrintFormats, i, 1));
-//
-//			for (int j = 0; j < drillPrintFormats.length; j++)
-//			{
-//				KeyNamePair drillPrintFormat = drillPrintFormats[j];
-////				if (!field.isDisplayed(false)) {
-////					continue;
-////				}
-//
-//				String hdr = drillPrintFormat.getName();
-//				if (hdr != null && hdr.length() > 0)
-//				{
-//					// field
-//					tr = new Tr();
-//					table.appendChild(tr);
-//
-//					td = new Td();
-//					tr.appendChild(td);
-//					td.appendChild(getPrintFormatBox(drillPrintFormat, i, j, 1));
-//				}
-//			}
-//		}
-//
-//		// Drill Rules
-//		size = drillReportCtl.getDrillProcesRules().length;
-//		for (int i = 0; i < size; i++)
-//		{
-//			KeyNamePair drillProcessRule = drillReportCtl.getDrillProcesRules()[i];
-//
-//			// tab
-//			Tr tr = new Tr();
-//			table.appendChild(tr);
-//
-//			Td td = new Td();
-//			tr.appendChild(td);
-//			td.appendChild(getDrillTableBox(drillProcessRule, i, 2));
-//
-//			// fields
-//			tr = new Tr();
-//			table.appendChild(tr);
-//
-//			td = new Td();
-//			tr.appendChild(td);
-//			KeyNamePair[] drillProcessPrintFormats = drillReportCtl.getDrillProcessRulesPrintFormatMap(drillProcessRule.getKey());
-//			td.appendChild(getPrintFormatsBox(drillProcessPrintFormats, i, 2));
-//
-//			for (int j = 0; j < drillProcessPrintFormats.length; j++)
-//			{
-//				KeyNamePair drillPrintFormat = drillProcessPrintFormats[j];
-////				if (!field.isDisplayed(false)) {
-////					continue;
-////				}
-//
-//				String hdr = drillPrintFormat.getName();
-//				if (hdr != null && hdr.length() > 0)
-//				{
-//					// field
-//					tr = new Tr();
-//					table.appendChild(tr);
-//
-//					td = new Td();
-//					tr.appendChild(td);
-//					td.appendChild(getPrintFormatBox(drillPrintFormat, i, j, 2, drillProcessRule));
-//				}
-//			}
-//		}
-//
-//		return table;
-//	}
 
 	private Table getDrillTableBox(KeyNamePair drillTable, int tabIndex, int groupIndex, HashMap<Integer, KeyNamePair[]> drillPrintFormatMap, boolean isDrillProcessRule)
 	{
@@ -507,7 +338,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 		Td td = new Td();
 		tr.appendChild(td);
-//		td.appendChild(WebDoc.NBSP);
 
 		tr = new Tr();
 		tr.setWidgetAttribute("class","help-window-Formats-link");
@@ -517,9 +347,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		tr.appendChild(td);
 		P p = new P();
 		td.appendChild(p);
-
-//		if (!tab.isLoadComplete())
-//			gridWindow.initTab(tabIndex);
+		
 		for (int j = 0; j < drillTables.length; j++)
 		{
 			KeyNamePair printFormat = drillTables[j];
@@ -542,7 +370,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 		td = new Td();
 		tr.appendChild(td);
-//		td.appendChild(WebDoc.NBSP);
 
 		return table;
 	}
@@ -573,7 +400,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 		td = new Td();
 		tr.appendChild(td);
-//		td.appendChild(WebDoc.NBSP);
 
 		tr = new Tr();
 		tr.setWidgetAttribute("class","help-window-Formats-link");
@@ -584,16 +410,12 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		P p = new P();
 		td.appendChild(p);
 
-//		if (!tab.isLoadComplete())
-//			gridWindow.initTab(tabIndex);
 		for (int j = 0; j < drillPrintFormats.length; j++)
 		{
 			KeyNamePair printFormat = drillPrintFormats[j];
 			String hdr = printFormat.getName();
 			if (hdr != null && hdr.length() > 0)
 			{
-//				if (j > 0)
-//					p.appendChild(WebDoc.NBSP);
 				a = new A();
 				a.setHref("#"+winpref+"Format" + tabIndex + "-" + j +"-"+groupIndex);
 				a.appendChild(new Text(hdr));
@@ -607,7 +429,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 		td = new Td();
 		tr.appendChild(td);
-//		td.appendChild(WebDoc.NBSP);
 
 		return table;
 	}
@@ -624,11 +445,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		h4.appendChild(new Text(drillProcessRule != null ? drillProcessRule.getName(): drillPrintFormat.getName()));
 
 		td.appendChild(h4);
-//		if(drillProcessRule != null) {
-//			I italic = new I();
-//			italic.appendChild(new Text(" ["+ drillPrintFormat.getName() + "]"));
-//			td.appendChild(italic);
-//		}
 		return tr;
 	}
 
@@ -678,35 +494,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 		td.appendChild(a);
 
-//		Button button = new Button();
-//		if (ThemeManager.isUseFontIconForImage())
-//			button.setIconSclass("z-icon-Report");
-//		else
-//			button.setImage(ThemeManager.getThemeResource("images/mReport.png"));
-//		button.setSclass("img-btn");
-//		button.addEventListener(Events.ON_CLICK, this);
-//		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "RunReport")));
-//		button.setAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME, drillPrintFormat.getKey());
-//
-//		if(drillTable != null)
-//			button.setAttribute(DRILL_PROCESS_RULE_ID_NAME, drillTable.getKey());
-
-//		td = new Td();
-//		td.appendChild(button);
-//		tr.appendChild(td);
-
-//		tr = new Tr();
-//		table.appendChild(tr);
-
-//		td = new Td();
-//		tr.appendChild(td);
-//		td.appendChild(WebDoc.NBSP);
-
-//		tr = new Tr();
-//		tr.setWidgetAttribute("class","help-window-field-description");
-//		table.appendChild(tr);
-
-
 		String description = "";
 
 		if(drillTable != null && isSinglePrintFormat) {
@@ -749,7 +536,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 			return;
 		}
-		//super.onEvent(event);
 	}
 
 }

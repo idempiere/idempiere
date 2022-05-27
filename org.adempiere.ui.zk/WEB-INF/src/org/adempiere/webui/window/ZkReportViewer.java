@@ -830,12 +830,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 					DrillEvent de = (DrillEvent) event;
 					if (de.getData() != null && de.getData() instanceof DrillData) {
 						DrillData data = (DrillData) de.getData();
-//						Listitem item = comboDrill.getSelectedItem();
-//						if (item != null && item.getValue() != null && item.toString().trim().length() > 0)
-//						{
-//							query.setTableName(item.getValue().toString());
 							executeDrill(data, event.getTarget());
-//						}
 					}
 				}
 				
@@ -1018,20 +1013,20 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 		//	fill Drill Options (Name, TableName)
 		comboDrill.appendItem("", null);
-		String sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(e.PO_PrintName,e.PrintName) " //et.PrintName
+		String sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(e.PO_PrintName,e.PrintName) "
 			+ "FROM AD_Column c "
 			+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
-			+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"	//AND t.IsView='N' 
+			+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"
 			+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
 			+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName) "
 			+ "WHERE c.AD_Table_ID=? AND c.IsKey='Y' "
 			+ "ORDER BY 3";
 		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Element");
 		if (trl)
-			sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(et.PO_PrintName,et.PrintName) " //et.PrintName
+			sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(et.PO_PrintName,et.PrintName) "
 				+ "FROM AD_Column c"
 				+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
-				+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"	//AND t.IsView='N' 
+				+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"
 				+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
 				+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName)"
 				+ " INNER JOIN AD_Element_Trl et ON (e.AD_Element_ID=et.AD_Element_ID) "
@@ -1337,7 +1332,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			return;
 		}
 		if (AD_Table_ID != 0) {
-//			new WReport (AD_Table_ID, query, component, m_WindowNo);
 			WDrillReport drillReport = new WDrillReport(data, component, m_WindowNo);
 
 			Object window = SessionManager.getAppDesktop().findWindow(m_WindowNo);
