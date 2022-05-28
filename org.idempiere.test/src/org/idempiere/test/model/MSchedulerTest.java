@@ -94,7 +94,7 @@ public class MSchedulerTest extends AbstractTestCase {
 			cal2.setTimeZone(tz2);
 			cal2.setTimeInMillis(System.currentTimeMillis());
 			hour = cal2.get(Calendar.HOUR_OF_DAY);
-			if (hour > 17) {
+			if (hour >= 17) {
 				cal2.add(Calendar.DAY_OF_MONTH, 1);
 			}
 			cal2.set(Calendar.HOUR_OF_DAY, 17);
@@ -126,7 +126,7 @@ public class MSchedulerTest extends AbstractTestCase {
 			assertFalse(cal2.getTimeInMillis() == ts1.getTime(), "Un-expected date next run");
 			
 			//test with default + 2hour time zone
-			clientInfo.setTimeZone(tz2.getID());
+			clientInfo.setTimeZone(tz2.toZoneId().getId());
 			clientInfo.saveEx();
 			CacheMgt.get().reset();
 			
@@ -143,11 +143,11 @@ public class MSchedulerTest extends AbstractTestCase {
 		} finally {
 			if (schedule != null && schedule.get_ID() > 0)
 				schedule.deleteEx(true);
-			if (!Util.isEmpty(currentTimeZone, true)) {
-				clientInfo.setTimeZone(currentTimeZone);
+			clientInfo.setTimeZone(currentTimeZone);
+			if (clientInfo.is_Changed()) {
 				clientInfo.saveEx();
 				CacheMgt.get().reset();
-			}	
+			}
 		}
 	}
 }
