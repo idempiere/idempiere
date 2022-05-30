@@ -29,6 +29,7 @@ import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.idempiere.model.IProcessParameter;
 
 /**
  * @author hengsin
@@ -91,41 +92,45 @@ public class WProcessParameter implements IFormController {
 			//child table always must have "_Para" suffix
 			for(MPInstancePara para : paras) {
 				table = MTable.get(Env.getCtx(), tableName+"_Para");
-				PO poPara = table.getPO(0, null);
-				poPara.set_ValueOfColumn(idColumn, (po.get_ValueAsInt(idColumn))); 
+				IProcessParameter poPara = null;
+				if(tableName.equalsIgnoreCase(MScheduler.Table_Name))
+					poPara = new MSchedulerPara(Env.getCtx(), 0, null);
+				else if(tableName.equalsIgnoreCase(MProcessDrillRule.Table_Name))
+					poPara = new MProcessDrillRulePara(Env.getCtx(), 0, null);
+				poPara.setParentID(po.get_ValueAsInt(idColumn)); 
 				for(MProcessPara processPara : processParameters) {
 					if (processPara.getColumnName().equals(para.getParameterName())) {
-						poPara.set_ValueOfColumn("AD_Process_Para_ID", processPara.getAD_Process_Para_ID());
+						poPara.setAD_Process_Para_ID(processPara.getAD_Process_Para_ID());
 						if (DisplayType.isNumeric(processPara.getAD_Reference_ID())) {
 							if (para.get_Value(MPInstancePara.COLUMNNAME_P_Number) != null)
-								poPara.set_ValueOfColumn("ParameterDefault", para.getP_Number().toString());
+								poPara.setParameterDefault(para.getP_Number().toString());
 							if (processPara.isRange() && para.get_Value(MPInstancePara.COLUMNNAME_P_Number_To) != null) 
-								poPara.set_ValueOfColumn("ParameterToDefault", para.getP_Number_To().toString());
+								poPara.setParameterToDefault(para.getP_Number_To().toString());
 						} else if (DisplayType.isID(processPara.getAD_Reference_ID())) {
 							if (para.get_Value(MPInstancePara.COLUMNNAME_P_Number) != null)
-								poPara.set_ValueOfColumn("ParameterDefault", Integer.toString(para.getP_Number().intValue()));
+								poPara.setParameterDefault(Integer.toString(para.getP_Number().intValue()));
 							if (processPara.isRange() && para.get_Value(MPInstancePara.COLUMNNAME_P_Number_To) != null)
-								poPara.set_ValueOfColumn("ParameterToDefault", Integer.toString(para.getP_Number_To().intValue()));
+								poPara.setParameterToDefault(Integer.toString(para.getP_Number_To().intValue()));
 						} else if (DisplayType.isDate(processPara.getAD_Reference_ID())) {
 							if (para.getP_Date() != null)
-								poPara.set_ValueOfColumn("ParameterDefault", para.getP_Date().toString());
+								poPara.setParameterDefault(para.getP_Date().toString());
 							if (processPara.isRange() && para.getP_Date_To() != null)
-								poPara.set_ValueOfColumn("ParameterToDefault", para.getP_Date_To().toString());
+								poPara.setParameterToDefault(para.getP_Date_To().toString());
 						} else {
-							poPara.set_ValueOfColumn("ParameterDefault", para.getP_String());
+							poPara.setParameterDefault(para.getP_String());
 							if (processPara.isRange() && para.getP_String_To() != null)
-								poPara.set_ValueOfColumn("ParameterToDefault", para.getP_String_To());
+								poPara.setParameterToDefault(para.getP_String_To());
 						}
 						if (!Util.isEmpty(para.getInfo())) {
-							poPara.set_ValueOfColumn("Description", para.getInfo());
+							poPara.setDescription(para.getInfo());
 						}
 						if (!Util.isEmpty(para.getInfo_To())) {
-							String s = poPara.get_ValueAsString("Description");
+							String s = poPara.getDescription();
 							if (Util.isEmpty(s))
 								s = para.getInfo_To();
 							else
 								s = s + ", " + para.getInfo_To();
-							poPara.set_ValueOfColumn("Description", s);
+							poPara.setDescription(s);
 						}
 						break;
 					}
