@@ -792,14 +792,14 @@ public class MPayment extends X_C_Payment
 			if (getC_Invoice_ID() != 0) {
 				MInvoice inv = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 				if (inv.getC_BPartner_ID() != getC_BPartner_ID()) {
-					log.saveError("Error", Msg.parseTranslation(getCtx(), "BP different from BP Invoice"));
+					log.saveError("Error", Msg.getMsg(getCtx(), "BPDifferentFromBPInvoice"));
 					return false;
 				}
 			}
 			if (getC_Order_ID() != 0) {
 				MOrder ord = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
 				if (ord.getC_BPartner_ID() != getC_BPartner_ID()) {
-					log.saveError("Error", Msg.parseTranslation(getCtx(), "BP different from BP Order"));
+					log.saveError("Error", Msg.getMsg(getCtx(), "BPDifferentFromBPOrder"));
 					return false;
 				}
 			}
