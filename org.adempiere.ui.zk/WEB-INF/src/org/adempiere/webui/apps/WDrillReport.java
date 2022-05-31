@@ -78,7 +78,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 	private static final String DRILL_PROCESS_RULE_ID_NAME = "AD_Process_DrillRule_ID";
 
-	DrillReportCtl drillReportCtl;
+	private DrillReportCtl drillReportCtl;
 	private String winpref;
 	private Component parent;
 
@@ -94,7 +94,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		super();
 		this.parent = parent;
 		this.windowNo = WindowNo;
-		drillReportCtl = new DrillReportCtl(Env.getCtx(), data.getQuery().getTableName(), data.getQuery(), data.getColumnName(), data.getValue(), data.getDisplayValue(), WindowNo);
+		drillReportCtl = new DrillReportCtl(data.getQuery().getTableName(), data.getQuery(), data.getColumnName(), data.getValue(), data.getDisplayValue(), WindowNo);
 
 		this.setTitle(Msg.getMsg(Env.getCtx(), "DrillAssistant"));
 		this.setClosable(true);
@@ -199,9 +199,9 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		Tabpanels tabpanels = new Tabpanels();
 		tabbox.appendChild(tabpanels);
 
-		Tab tab = new Tab(Msg.translate(Env.getCtx(), "AD_Process_DrillRule_ID"));
+		Tab tab = new Tab(Msg.getElement(Env.getCtx(), "AD_Process_DrillRule_ID"));
 		tabs.appendChild(tab);
-		tab = new Tab(Msg.translate(Env.getCtx(), "AD_Table_ID"));
+		tab = new Tab(Msg.getElement(Env.getCtx(), "AD_Table_ID"));
 		tabs.appendChild(tab);
 
 		Tabpanel tabPanel = new Tabpanel();

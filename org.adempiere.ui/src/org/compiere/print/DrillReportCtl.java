@@ -37,7 +37,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -59,7 +58,6 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
-import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 /**
@@ -72,9 +70,7 @@ public class DrillReportCtl {
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(DrillReportCtl.class);
 
-	Properties m_ctx;
-
-	int m_WindowNo = 0;
+	private int m_WindowNo = 0;
 	private String m_TableName;
 	private String m_ColumnName;
 	private Object m_Value;
@@ -110,8 +106,7 @@ public class DrillReportCtl {
 	 * @param displayValue
 	 * @param WindowNo
 	 */
-	public DrillReportCtl(Properties ctx, String TableName, MQuery query, String ColumnName, Object Value, String displayValue, int WindowNo) {
-		this.m_ctx = ctx;
+	public DrillReportCtl(String TableName, MQuery query, String ColumnName, Object Value, String displayValue, int WindowNo) {
 		this.m_TableName = TableName;
 		this.m_ColumnName = ColumnName;
 		this.m_Value = Value;
@@ -200,9 +195,9 @@ public class DrillReportCtl {
 	private void initProcessDrillRuleMap() {
 		HashMap<Integer, String> drillProcessMap = new HashMap<>();
 		HashMap<Integer, ArrayList<KeyNamePair>> drillProcessRuleMap = new HashMap<>();
-		M_Element element = M_Element.get(m_ctx, m_ColumnName);
+		M_Element element = M_Element.get(Env.getCtx(), m_ColumnName);
 		if(element != null) {
-			MProcessDrillRule[] processDrillRules = MProcessDrillRule.getByElement_ID(m_ctx, element.getAD_Element_ID(), null);
+			MProcessDrillRule[] processDrillRules = MProcessDrillRule.getByElement_ID(Env.getCtx(), element.getAD_Element_ID(), null);
 			for( MProcessDrillRule drillProcesRule: processDrillRules) {
 				MProcess process = MProcess.get(drillProcesRule.getAD_Process_ID());
 				if(process == null)
@@ -323,7 +318,7 @@ public class DrillReportCtl {
 		for( KeyNamePair[] drilProcessRuleList : drillProcesRules.values() ) {
 			for( KeyNamePair drillProcessRule : drilProcessRuleList ) {
 				//
-				MProcessDrillRule processDrillRule = MProcessDrillRule.get(m_ctx, drillProcessRule.getKey());
+				MProcessDrillRule processDrillRule = MProcessDrillRule.get(Env.getCtx(), drillProcessRule.getKey());
 
 				KeyNamePair[] m_list = null;
 
@@ -448,12 +443,12 @@ public class DrillReportCtl {
 	 * 	@param pf print format
 	 * @throws Exception
 	 */
-	public ProcessInfo getDrillProcessProcessInfo (int AD_Process_DrillRule_ID, int ad_PrintFormat_ID) throws Exception
+	public ProcessInfo getDrillProcessProcessInfo (int AD_Process_DrillRule_ID, int AD_PrintFormat_ID) throws Exception
 	{
-		MProcessDrillRule drillRule = MProcessDrillRule.get(m_ctx, AD_Process_DrillRule_ID);
-		MProcess process = new MProcess(m_ctx, drillRule.getAD_Process_ID(), null);
+		MProcessDrillRule drillRule = MProcessDrillRule.get(Env.getCtx(), AD_Process_DrillRule_ID);
+		MProcess process = new MProcess(Env.getCtx(), drillRule.getAD_Process_ID(), null);
 
-		return prepareProcessInfo(process, drillRule, ad_PrintFormat_ID);
+		return prepareProcessInfo(process, drillRule, AD_PrintFormat_ID);
 
 		// It's a default report using the standard printing engine
 	}	//	launchReport
@@ -478,7 +473,7 @@ public class DrillReportCtl {
 		fillParameter(pInstance, processDrillRule);
 		//
 		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), AD_Table_ID, Record_ID);
-		pi.setAD_User_ID(Env.getAD_User_ID(m_ctx));
+		pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 		pi.setAD_Client_ID(processDrillRule.getAD_Client_ID());
 		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
 		pi.setAD_Process_UU(process.getAD_Process_UU());
@@ -492,8 +487,6 @@ public class DrillReportCtl {
 			pi.setSerializableObject(format);
 		}
 
-		Trx m_trx = null;
-		pi.setTransactionName(m_trx != null ? m_trx.getTrxName() : null);
 		if (!Util.isEmpty(process.getJasperReport()))
 		{
 			pi.setExport(true);
@@ -638,7 +631,7 @@ public class DrillReportCtl {
 		}	//	instance parameter loop
 
 		if(!isKeyParameterSet) {
-			throw new AdempiereException(Msg.parseTranslation(m_ctx, "@NoDrillKeyParameterSet@"));
+			throw new AdempiereException(Msg.parseTranslation(Env.getCtx(), "@NoDrillKeyParameterSet@"));
 		}
 	}	//	fillParameter
 
@@ -671,7 +664,7 @@ public class DrillReportCtl {
 			String	defStr = "";
 			String sql = variable.substring(5);	//	w/o tag
 			//hengsin, capture unparseable error to avoid subsequent sql exception
-			sql = Env.parseContext(m_ctx, 0, sql, false, false);	//	replace variables
+			sql = Env.parseContext(Env.getCtx(), 0, sql, false, false);	//	replace variables
 			if (sql.equals(""))
 				log.log(Level.WARNING, "(" + sPara.getColumnName() + ") - Default SQL variable parse failed: " + variable);
 			else {
@@ -715,9 +708,9 @@ public class DrillReportCtl {
 			String tail=index < (columnName.length()-1) ? columnName.substring(index+1) : null;
 			columnName = columnName.substring(0, index);
 			//	try Env
-			String env = Env.getContext(m_ctx, columnName);
+			String env = Env.getContext(Env.getCtx(), columnName);
 			if (env == null || env.length() == 0)
-				env = Env.getContext(m_ctx, columnName);
+				env = Env.getContext(Env.getCtx(), columnName);
 			if (env.length() == 0)
 			{
 				log.warning(sPara.getColumnName()
@@ -725,7 +718,7 @@ public class DrillReportCtl {
 					+ "(" + variable + ")");
 
 				if(DisplayType.isDate(sPara.getDisplayType())) {
-					return Env.getContext(m_ctx, "#Date");
+					return Env.getContext(Env.getCtx(), "#Date");
 				}
 				return null;
 			}
