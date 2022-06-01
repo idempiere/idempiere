@@ -186,6 +186,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		setSizable(true);
 		setMaximizable(true);
 		addEventListener(Events.ON_CANCEL, e -> onCancel());
+		addEventListener(Events.ON_SIZE, e -> onSize());
+		addEventListener(Events.ON_MAXIMIZE, e -> onSize());
 	}
 
 	private void createEditor(org.zkoss.zul.Tabpanel tabPanel) {		
@@ -253,6 +255,10 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	private void onCancel() {
 		cancelled = true;
 		detach();
+	}
+	
+	private void onSize() {
+		editor.invalidate();
 	}
 	
 	private void updateStatus(int newLength) {
