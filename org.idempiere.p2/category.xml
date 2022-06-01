@@ -45,7 +45,7 @@
    <feature url="features/org.idempiere.webservices.feature_10.0.0.qualifier.jar" id="org.idempiere.webservices.feature" version="10.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.eclipse.equinox.executable_3.8.1200.v20210527-0259.jar" id="org.eclipse.equinox.executable" version="3.8.1200.v20210527-0259">
+   <feature url="features/org.eclipse.equinox.executable_3.8.1200.v20210527-0259.jar" id="org.eclipse.equinox.executable" version="3.8.1500.v20220210-1108">
       <category name="idempiere.server"/>
    </feature>
    <feature id="org.idempiere.test.feature">

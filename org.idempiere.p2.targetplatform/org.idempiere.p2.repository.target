@@ -43,8 +43,8 @@
 		<plugin id="com.sun.mail.jakarta.mail"/>
 		<plugin id="com.sun.xml.bind.external.relaxng-datatype"/>
 		<plugin id="com.sun.xml.bind.jaxb-impl"/>
-		<plugin id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.18.v202109010034"/>
 		<plugin id="com.sun.xml.fastinfoset.FastInfoset" version="2.0.0"/>
+		<plugin id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.18.v202109010034"/>
 		<plugin id="com.sun.xml.messaging.saaj.impl"/>
 		<plugin id="com.sun.xml.stream.buffer.streambuffer"/>
 		<plugin id="com.sun.xml.ws.jaxws-rt"/>
@@ -151,7 +151,6 @@
 		<plugin id="org.eclipse.ecf.filetransfer"/>
 		<plugin id="org.eclipse.ecf.identity"/>
 		<plugin id="org.eclipse.ecf.provider.filetransfer"/>
-		<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient45"/>
 		<plugin id="org.eclipse.ecf.provider.filetransfer.ssl"/>
 		<plugin id="org.eclipse.equinox.app"/>
 		<plugin id="org.eclipse.equinox.cm"/>
@@ -334,5 +333,9 @@
 		<plugin id="zul"/>
 		<plugin id="zweb"/>
 		<plugin id="zweb-dsp"/>
+		<plugin id="org.apache.httpcomponents.client5.httpclient5"/>
+		<plugin id="org.apache.httpcomponents.core5.httpcore5"/>
+		<plugin id="org.apache.httpcomponents.core5.httpcore5-h2"/>
+		<plugin id="org.eclipse.ecf.provider.filetransfer.httpclient5"/>
 	</includeBundles>
 </target>
