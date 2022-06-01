@@ -167,14 +167,15 @@ public abstract class AbstractProcessCtl implements Runnable
 		 */
 		if (AD_Workflow_ID > 0)	
 		{
-			startWorkflow (AD_Workflow_ID);
 			MPInstance pinstance = new MPInstance(Env.getCtx(), m_pi.getAD_PInstance_ID(), null);
-			String errmsg = m_pi.getSummary();
-			pinstance.setResult(!m_pi.isError());
-			pinstance.setErrorMsg(errmsg);
 			pinstance.setIsProcessing(true);
 			pinstance.saveEx();
 			try {
+				startWorkflow (AD_Workflow_ID);
+				String errmsg = m_pi.getSummary();
+				pinstance.setResult(!m_pi.isError());
+				pinstance.setErrorMsg(errmsg);	
+				pinstance.saveEx();
 				unlock();
 			}
 			finally {
