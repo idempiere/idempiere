@@ -1,3 +1,21 @@
+<%-- Attachment Item --%>
+.z-attachment-item {
+	border: 1px solid #dcdcdc;
+	border-radius: 4px;
+	background-color: #f5f5f5;
+	width: auto !important;
+	display: inline-block;
+	margin-right: 5px; 
+	margin-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.z-attachment-item-del-button {
+	float: right;
+	background-color: #f5f5f5;
+}
+
 <%-- Combobox --%>
 .z-combobox-disabled, .z-combobox[disabled], .z-datebox-disabled {
 	color: black !important; cursor: default !important; opacity: 1; -moz-opacity: 1; -khtml-opacity: 1; filter: alpha(opacity=100);
