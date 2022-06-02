@@ -136,48 +136,55 @@ public class ReportCtl
 			instance.setAD_PrintFormat_ID(((MPrintFormat)pi.getSerializableObject()).getAD_PrintFormat_ID());
 		instance.setIsSummary(pi.isSummary());
 		instance.setAD_Language_ID(pi.getLanguageID());
+		instance.setIsProcessing(true);
 		instance.saveEx();
 
-		/**
-		 *	Order Print
-		 */
-		if (pi.getAD_Process_ID() == PROCESS_RPT_C_ORDER)			//	C_Order
-			return startDocumentPrint(ReportEngine.ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		if (pi.getAD_Process_ID() ==  MProcess.getProcess_ID("Rpt PP_Order", null))			//	C_Order
-			return startDocumentPrint(ReportEngine.MANUFACTURING_ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		if (pi.getAD_Process_ID() ==  MProcess.getProcess_ID("Rpt DD_Order", null))			//	C_Order
-			return startDocumentPrint(ReportEngine.DISTRIBUTION_ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_INVOICE)		//	C_Invoice
-			return startDocumentPrint(ReportEngine.INVOICE, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INOUT)		//	M_InOut
-			return startDocumentPrint(ReportEngine.SHIPMENT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_PROJECT)		//	C_Project
-			return startDocumentPrint(ReportEngine.PROJECT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_RFQRESPONSE)		//	C_RfQResponse
-			return startDocumentPrint(ReportEngine.RFQ, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_PAYMENT)		//	C_Payment
-			return startCheckPrint(pi.getRecord_ID(), !pi.isPrintPreview());
-		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INVENTORY)		//	Physical Inventory
-			return startDocumentPrint(ReportEngine.INVENTORY, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		else if (pi.getAD_Process_ID() == PROCESS_RPT_M_MOVEMENT)		//	Inventory Move
-			return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-		/**
-        else if (pi.getAD_Process_ID() == 290)      // Movement Submission by VHARCQ
-            return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID(), parent, WindowNo, IsDirectPrint);
-		else if (pi.AD_Process_ID == 9999999)	//	PaySelection
-			return startDocumentPrint(CHECK, pi, IsDirectPrint);
-		else if (pi.AD_Process_ID == 9999999)	//	PaySelection
-			return startDocumentPrint(REMITTANCE, pi, IsDirectPrint);
-		**/
-		else if (pi.getAD_Process_ID() == PROCESS_RPT_C_DUNNING)		//	Dunning
-			return startDocumentPrint(ReportEngine.DUNNING, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
-	   else if (pi.getAD_Process_ID() == PROCESS_RPT_FINREPORT			//	Financial Report
-			|| pi.getAD_Process_ID() == PROCESS_RPT_FINSTATEMENT)			//	Financial Statement
-		   return startFinReport (pi, WindowNo);
-		/********************
-		 *	Standard Report
-		 *******************/
-		return startStandardReport (pi, WindowNo);
+		try {
+			/**
+			 *	Order Print
+			 */
+			if (pi.getAD_Process_ID() == PROCESS_RPT_C_ORDER)			//	C_Order
+				return startDocumentPrint(ReportEngine.ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+			if (pi.getAD_Process_ID() ==  MProcess.getProcess_ID("Rpt PP_Order", null))			//	C_Order
+				return startDocumentPrint(ReportEngine.MANUFACTURING_ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+			if (pi.getAD_Process_ID() ==  MProcess.getProcess_ID("Rpt DD_Order", null))			//	C_Order
+				return startDocumentPrint(ReportEngine.DISTRIBUTION_ORDER, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+			else if (pi.getAD_Process_ID() == PROCESS_RPT_C_INVOICE)		//	C_Invoice
+				return startDocumentPrint(ReportEngine.INVOICE, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+			else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INOUT)		//	M_InOut
+				return startDocumentPrint(ReportEngine.SHIPMENT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+			else if (pi.getAD_Process_ID() == PROCESS_RPT_C_PROJECT)		//	C_Project
+				return startDocumentPrint(ReportEngine.PROJECT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+			else if (pi.getAD_Process_ID() == PROCESS_RPT_C_RFQRESPONSE)		//	C_RfQResponse
+				return startDocumentPrint(ReportEngine.RFQ, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+			else if (pi.getAD_Process_ID() == PROCESS_RPT_C_PAYMENT)		//	C_Payment
+				return startCheckPrint(pi.getRecord_ID(), !pi.isPrintPreview());
+			else if (pi.getAD_Process_ID() == PROCESS_RPT_M_INVENTORY)		//	Physical Inventory
+				return startDocumentPrint(ReportEngine.INVENTORY, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+			else if (pi.getAD_Process_ID() == PROCESS_RPT_M_MOVEMENT)		//	Inventory Move
+				return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+			/**
+	        else if (pi.getAD_Process_ID() == 290)      // Movement Submission by VHARCQ
+	            return startDocumentPrint(ReportEngine.MOVEMENT, pi.getRecord_ID(), parent, WindowNo, IsDirectPrint);
+			else if (pi.AD_Process_ID == 9999999)	//	PaySelection
+				return startDocumentPrint(CHECK, pi, IsDirectPrint);
+			else if (pi.AD_Process_ID == 9999999)	//	PaySelection
+				return startDocumentPrint(REMITTANCE, pi, IsDirectPrint);
+			**/
+			else if (pi.getAD_Process_ID() == PROCESS_RPT_C_DUNNING)		//	Dunning
+				return startDocumentPrint(ReportEngine.DUNNING, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
+		   else if (pi.getAD_Process_ID() == PROCESS_RPT_FINREPORT			//	Financial Report
+				|| pi.getAD_Process_ID() == PROCESS_RPT_FINSTATEMENT)			//	Financial Statement
+			   return startFinReport (pi, WindowNo);
+			/********************
+			 *	Standard Report
+			 *******************/
+			return startStandardReport (pi, WindowNo);
+		}
+		finally {
+			instance.setIsProcessing(false);
+			instance.saveEx();
+		}
 	}	//	create
 
 	/**************************************************************************

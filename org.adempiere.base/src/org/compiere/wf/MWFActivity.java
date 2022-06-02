@@ -1159,40 +1159,47 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			//	Process
 			MProcess process = MProcess.get(getCtx(), m_node.getAD_Process_ID());
 			MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), getRecord_ID());
+			pInstance.setIsProcessing(true);
 			pInstance.saveEx();
-			fillParameter(pInstance, trx);
-			//
-			ProcessInfo pi = new ProcessInfo (m_node.getName(true), m_node.getAD_Process_ID(),
-				getAD_Table_ID(), getRecord_ID());
-			
-			//check record id overwrite
-			MWFNodePara[] nParams = m_node.getParameters();
-			for(MWFNodePara p : nParams) 
-			{
-				if (p.getAD_Process_Para_ID() == 0 && p.getAttributeName().equalsIgnoreCase("Record_ID") && !Util.isEmpty(p.getAttributeValue(), true)) 
+			try {
+				fillParameter(pInstance, trx);
+				//
+				ProcessInfo pi = new ProcessInfo (m_node.getName(true), m_node.getAD_Process_ID(),
+					getAD_Table_ID(), getRecord_ID());
+				
+				//check record id overwrite
+				MWFNodePara[] nParams = m_node.getParameters();
+				for(MWFNodePara p : nParams) 
 				{
-					try 
+					if (p.getAD_Process_Para_ID() == 0 && p.getAttributeName().equalsIgnoreCase("Record_ID") && !Util.isEmpty(p.getAttributeValue(), true)) 
 					{
-						Object value = parseNodeParaAttribute(p);
-						if (value == p || value == null)
-							break;
-						int recordId = Integer.valueOf(value.toString());
-						pi.setRecord_ID(recordId);
+						try 
+						{
+							Object value = parseNodeParaAttribute(p);
+							if (value == p || value == null)
+								break;
+							int recordId = Integer.valueOf(value.toString());
+							pi.setRecord_ID(recordId);
+						}
+						catch (NumberFormatException e)
+						{
+							log.log(Level.WARNING, e.getMessage(), e);
+						}
+						break;
 					}
-					catch (NumberFormatException e)
-					{
-						log.log(Level.WARNING, e.getMessage(), e);
-					}
-					break;
 				}
+	
+				pi.setAD_User_ID(getAD_User_ID());
+				pi.setAD_Client_ID(getAD_Client_ID());
+				pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
+				boolean success = process.processItWithoutTrxClose(pi, trx);
+				setTextMsg(pi.getSummary());
+				return success;
 			}
-
-			pi.setAD_User_ID(getAD_User_ID());
-			pi.setAD_Client_ID(getAD_Client_ID());
-			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
-			boolean success = process.processItWithoutTrxClose(pi, trx);
-			setTextMsg(pi.getSummary());
-			return success;
+			finally {
+				pInstance.setIsProcessing(false);
+				pInstance.saveEx();
+			}
 		}
 
 		/******	Start Task (Probably redundant;
