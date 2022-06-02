@@ -4049,6 +4049,7 @@ public abstract class PO
 			.append(tableName).append("_Trl SET ");
 
 		//
+		ArrayList<Object> values = new ArrayList<Object>();
 		StringBuilder sqlcols = new StringBuilder();
 		for (int i = 0; i < p_info.getColumnCount(); i++)
 		{
@@ -4056,19 +4057,8 @@ public abstract class PO
 			if (p_info.isColumnTranslated(i)
 				&& is_ValueChanged(columnName))
 			{
-				sqlcols.append(columnName).append("=");
-				Object value = get_Value(columnName);
-				if (value == null)
-					sqlcols.append("NULL");
-				else if (value instanceof String)
-					sqlcols.append(DB.TO_STRING((String)value));
-				else if (value instanceof Boolean)
-					sqlcols.append(((Boolean)value).booleanValue() ? "'Y'" : "'N'");
-				else if (value instanceof Timestamp)
-					sqlcols.append(DB.TO_DATE((Timestamp)value));
-				else
-					sqlcols.append(value.toString());
-				sqlcols.append(",");
+				sqlcols.append(columnName).append("=?,");
+				values.add(get_Value(columnName));
 
 				// Reset of related translation cache entries
 		        String[] availableLanguages = Language.getNames();
@@ -4088,6 +4078,9 @@ public abstract class PO
 		int no = -1;
 
 	  try {
+		  Object[] params = new Object[values.size()];
+		  values.toArray(params);
+
 		if (client.isMultiLingualDocument()) {
 			if (client.getAD_Language().equals(baselang)) {
 				// tenant language = base language
@@ -4108,7 +4101,7 @@ public abstract class PO
 					.append("IsTranslated='Y'")
 					.append(whereid)
 					.append(getAD_Client_ID() == 0 ? andBaseLang : andClientLang);
-				no = DB.executeUpdateEx(sqlexec.toString(), m_trxName);
+				no = DB.executeUpdateEx(sqlexec.toString(), params, m_trxName);
 				if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 				if (no >= 0) {
 					// set other translations as untranslated
@@ -4129,7 +4122,7 @@ public abstract class PO
 				.append(sqlcols)
 				.append("IsTranslated='Y'")
 				.append(whereid);
-			no = DB.executeUpdateEx(sqlexec.toString(), m_trxName);
+			no = DB.executeUpdateEx(sqlexec.toString(), params, m_trxName);
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 		}
 	  } catch (DBException e) {
