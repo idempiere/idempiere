@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.print;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
@@ -87,16 +88,16 @@ public class PrintDataFunction
 
 	/**
 	 * 	Add Value to Counter
-	 * 	@param o data
+	 * 	@param s data
 	 */
-	public void addValue (Object o)
+	public void addValue (Serializable s)
 	{
-		if (o != null)
+		if (s != null)
 		{
 			//	Count
 			m_count++;
-			if(o instanceof BigDecimal) {
-				BigDecimal bdVaue =(BigDecimal)o;
+			if(s instanceof BigDecimal) {
+				BigDecimal bdVaue =(BigDecimal)s;
 				//	Sum
 				m_sum = m_sum.add(bdVaue);
 				//	Min
@@ -110,8 +111,8 @@ public class PrintDataFunction
 				//	Sum of Squares
 				m_sumSquare = m_sumSquare.add (bdVaue.multiply(bdVaue));
 			}
-			else if(o instanceof Timestamp) {
-				Timestamp t = (Timestamp) o;
+			else if(s instanceof Timestamp) {
+				Timestamp t = (Timestamp) s;
 				//	Min Timestamp
 				if ((m_minDate == null) || (m_minDate.after(t)))
 					m_minDate = t;
@@ -128,7 +129,7 @@ public class PrintDataFunction
 	 *  @param function function
 	 *  @return function value
 	 */
-	public Object getValue(char function)
+	public Serializable getValue(char function)
 	{
 		//	Sum
 		if (function == F_SUM)

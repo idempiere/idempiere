@@ -965,10 +965,10 @@ public class DataEngine
 										if (format.getTableFormat().isPrintFunctionSymbols())		//	Translate Sum, etc.
 											valueString	+= PrintDataFunction.getFunctionSymbol(functions[f]);
 										if (m_group.isFunctionColumn(pdc.getAD_PrintFormatItem_ID(), functions[f])) {
-											Object groupValue = m_group.getValue(pdc.getAD_PrintFormatItem_ID(), 
+											Serializable groupValue = m_group.getValue(pdc.getAD_PrintFormatItem_ID(), 
 													pdc.getAD_PrintFormatItem_ID(), functions[f]);
 											if(groupValue instanceof Timestamp)
-												groupValue = DisplayType.getDateFormat().format((Timestamp)groupValue);
+												groupValue = DisplayType.getDateFormat(pdc.getDisplayType()).format((Timestamp)groupValue);
 											if(groupValue != null)
 												valueString += ": " + groupValue;
 										}
@@ -977,13 +977,12 @@ public class DataEngine
 									}
 									else if (m_group.isFunctionColumn(pdc.getAD_PrintFormatItem_ID(), functions[f]))
 									{
-										Object groupValue = m_group.getValue(group_pdc.getAD_PrintFormatItem_ID(), 
+										Serializable groupValue = m_group.getValue(group_pdc.getAD_PrintFormatItem_ID(), 
 												pdc.getAD_PrintFormatItem_ID(), functions[f]);
 										if(groupValue instanceof Timestamp)
-											groupValue = DisplayType.getDateFormat().format((Timestamp)groupValue);
+											groupValue = DisplayType.getDateFormat(pdc.getDisplayType()).format((Timestamp)groupValue);
 										pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
-												groupValue.toString(), 
-											PrintDataFunction.getFunctionDisplayType(functions[f], pdc.getDisplayType()), 
+												groupValue, PrintDataFunction.getFunctionDisplayType(functions[f], pdc.getDisplayType()), 
 												false, pdc.isPageBreak(), pdc.getFormatPattern()));
 									}
 								}	//	 for all columns
@@ -1197,10 +1196,10 @@ public class DataEngine
 								if (format.getTableFormat().isPrintFunctionSymbols())		//	Translate Sum, etc.
 									valueString	+= PrintDataFunction.getFunctionSymbol(functions[f]);
 								if (m_group.isFunctionColumn(pdc.getAD_PrintFormatItem_ID(), functions[f])) {
-									Object groupValue = m_group.getValue(pdc.getAD_PrintFormatItem_ID(), 
+									Serializable groupValue = m_group.getValue(pdc.getAD_PrintFormatItem_ID(), 
 											pdc.getAD_PrintFormatItem_ID(), functions[f]);
 									if(groupValue instanceof Timestamp)
-										groupValue = DisplayType.getDateFormat().format((Timestamp)groupValue);
+										groupValue = DisplayType.getDateFormat(pdc.getDisplayType()).format((Timestamp)groupValue);
 									if(groupValue != null)
 										valueString += ": " + groupValue;
 								}
@@ -1209,13 +1208,12 @@ public class DataEngine
 							}
 							else if (m_group.isFunctionColumn(pdc.getAD_PrintFormatItem_ID(), functions[f]))
 							{
-								Object groupValue = m_group.getValue(group_pdc.getAD_PrintFormatItem_ID(), 
+								Serializable groupValue = m_group.getValue(group_pdc.getAD_PrintFormatItem_ID(), 
 										pdc.getAD_PrintFormatItem_ID(), functions[f]);
 								if(groupValue instanceof Timestamp)
-									groupValue = DisplayType.getDateFormat().format((Timestamp)groupValue);
+									groupValue = DisplayType.getDateFormat(pdc.getDisplayType()).format((Timestamp)groupValue);
 								pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
-										groupValue.toString(),
-									PrintDataFunction.getFunctionDisplayType(functions[f],
+										groupValue,	PrintDataFunction.getFunctionDisplayType(functions[f],
 											pdc.getDisplayType()),pdc.getFormatPattern()));
 							}
 						}
@@ -1246,10 +1244,10 @@ public class DataEngine
 							name = PrintDataFunction.getFunctionSymbol(functions[f]);	//	Symbol
  						if (m_group.isFunctionColumn(pdc.getAD_PrintFormatItem_ID(), functions[f]))
 						{
-							Object groupValue = m_group.getValue(PrintDataGroup.TOTAL, 
+ 							Serializable groupValue = m_group.getValue(PrintDataGroup.TOTAL, 
 									pdc.getAD_PrintFormatItem_ID(), functions[f]);
 							if(groupValue instanceof Timestamp)
-								groupValue = DisplayType.getDateFormat().format((Timestamp)groupValue);
+								groupValue = DisplayType.getDateFormat(pdc.getDisplayType()).format((Timestamp)groupValue);
 							if(groupValue != null)
 								name += ": " + groupValue;
 						}
@@ -1258,13 +1256,12 @@ public class DataEngine
 					}
 					else if (m_group.isFunctionColumn(pdc.getAD_PrintFormatItem_ID(), functions[f]))
 					{
-						Object groupValue = m_group.getValue(PrintDataGroup.TOTAL, 
+						Serializable groupValue = m_group.getValue(PrintDataGroup.TOTAL, 
 								pdc.getAD_PrintFormatItem_ID(), functions[f]);
 						if(groupValue instanceof Timestamp)
-							groupValue = DisplayType.getDateFormat().format((Timestamp)groupValue);
+							groupValue = DisplayType.getDateFormat(pdc.getDisplayType()).format((Timestamp)groupValue);
 						pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
-								groupValue.toString(),
-							PrintDataFunction.getFunctionDisplayType(functions[f], pdc.getDisplayType()), pdc.getFormatPattern()));
+								groupValue, PrintDataFunction.getFunctionDisplayType(functions[f], pdc.getDisplayType()), pdc.getFormatPattern()));
 					}
 				}	//	for all columns
 			}	//	for all functions
@@ -1322,7 +1319,7 @@ public class DataEngine
 				else if (m_group.isFunctionColumn(pdc.getAD_PrintFormatItem_ID(), PrintDataFunction.F_SUM))
 				{
 					pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
-						m_group.getValue(PrintDataGroup.TOTAL, pdc.getAD_PrintFormatItem_ID(), PrintDataFunction.F_SUM).toString(),
+						m_group.getValue(PrintDataGroup.TOTAL, pdc.getAD_PrintFormatItem_ID(), PrintDataFunction.F_SUM),
 						PrintDataFunction.getFunctionDisplayType(PrintDataFunction.F_SUM,
 								pdc.getDisplayType()), false, false, pdc.getFormatPattern()));
 				}

@@ -164,7 +164,7 @@ public class PrintDataElement implements Serializable
 	 * 	Get Function Value
 	 * 	@return length or numeric value
 	 */
-	public Object getFunctionValue()
+	public Serializable getFunctionValue()
 	{
 		if (m_value == null)
 			return Env.ZERO;
