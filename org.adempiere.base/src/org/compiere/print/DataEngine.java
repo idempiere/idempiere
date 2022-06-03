@@ -968,7 +968,7 @@ public class DataEngine
 											Object groupValue = m_group.getValue(pdc.getAD_PrintFormatItem_ID(), 
 													pdc.getAD_PrintFormatItem_ID(), functions[f]);
 											if(groupValue instanceof Timestamp)
-												groupValue = formatTimestamp((Timestamp)groupValue);
+												groupValue = DisplayType.getDateFormat().format((Timestamp)groupValue);
 											if(groupValue != null)
 												valueString += ": " + groupValue;
 										}
@@ -980,7 +980,7 @@ public class DataEngine
 										Object groupValue = m_group.getValue(group_pdc.getAD_PrintFormatItem_ID(), 
 												pdc.getAD_PrintFormatItem_ID(), functions[f]);
 										if(groupValue instanceof Timestamp)
-											groupValue = formatTimestamp((Timestamp)groupValue);
+											groupValue = DisplayType.getDateFormat().format((Timestamp)groupValue);
 										pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
 												groupValue.toString(), 
 											PrintDataFunction.getFunctionDisplayType(functions[f], pdc.getDisplayType()), 
@@ -1200,7 +1200,7 @@ public class DataEngine
 									Object groupValue = m_group.getValue(pdc.getAD_PrintFormatItem_ID(), 
 											pdc.getAD_PrintFormatItem_ID(), functions[f]);
 									if(groupValue instanceof Timestamp)
-										groupValue = formatTimestamp((Timestamp)groupValue);
+										groupValue = DisplayType.getDateFormat().format((Timestamp)groupValue);
 									if(groupValue != null)
 										valueString += ": " + groupValue;
 								}
@@ -1212,7 +1212,7 @@ public class DataEngine
 								Object groupValue = m_group.getValue(group_pdc.getAD_PrintFormatItem_ID(), 
 										pdc.getAD_PrintFormatItem_ID(), functions[f]);
 								if(groupValue instanceof Timestamp)
-									groupValue = formatTimestamp((Timestamp)groupValue);
+									groupValue = DisplayType.getDateFormat().format((Timestamp)groupValue);
 								pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
 										groupValue.toString(),
 									PrintDataFunction.getFunctionDisplayType(functions[f],
@@ -1249,7 +1249,7 @@ public class DataEngine
 							Object groupValue = m_group.getValue(PrintDataGroup.TOTAL, 
 									pdc.getAD_PrintFormatItem_ID(), functions[f]);
 							if(groupValue instanceof Timestamp)
-								groupValue = formatTimestamp((Timestamp)groupValue);
+								groupValue = DisplayType.getDateFormat().format((Timestamp)groupValue);
 							if(groupValue != null)
 								name += ": " + groupValue;
 						}
@@ -1261,7 +1261,7 @@ public class DataEngine
 						Object groupValue = m_group.getValue(PrintDataGroup.TOTAL, 
 								pdc.getAD_PrintFormatItem_ID(), functions[f]);
 						if(groupValue instanceof Timestamp)
-							groupValue = formatTimestamp((Timestamp)groupValue);
+							groupValue = DisplayType.getDateFormat().format((Timestamp)groupValue);
 						pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
 								groupValue.toString(),
 							PrintDataFunction.getFunctionDisplayType(functions[f], pdc.getDisplayType()), pdc.getFormatPattern()));
@@ -1404,19 +1404,6 @@ public class DataEngine
 		outStr.append(inStr);						// add the rest of the string
 
 		return outStr.toString();
-	}
-	
-	/**
-	 * Returns Timestamp in format MM/DD/YYYY
-	 * @param Timestamp t
-	 * @return
-	 */
-	private String formatTimestamp(Timestamp t) {
-		if(t != null) {
-			String sTimestamp = t.toString();
-			return sTimestamp = sTimestamp.substring(5, 7) + "/" + sTimestamp.substring(8, 10) + "/" + sTimestamp.substring(0, 4);
-		}
-		return null;
 	}
 	/*************************************************************************
 	 * 	Test
