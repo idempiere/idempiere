@@ -179,7 +179,8 @@ public class WPostIt extends Window implements EventListener<Event>{
 			onCancel();
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			if (editable) {
-				m_postIt.setText(textBox.getText());
+				String text = tabbox.getSelectedIndex() == 0 ? textBox.getText() : editor.getValue();
+				m_postIt.setText(text);
 				m_postIt.saveEx();
 			}
 			detach();
