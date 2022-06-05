@@ -230,6 +230,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_TOOLBAR_SHOW_MORE_VERTICAL = "ZK_TOOLBAR_SHOW_MORE_VERTICAL";
     public static final String ZK_USE_PDF_JS_VIEWER = "ZK_USE_PDF_JS_VIEWER";
     public static final String ZOOM_ACROSS_QUERY_TIMEOUT = "ZOOM_ACROSS_QUERY_TIMEOUT";
+    public static final String LABEL_AUTOMATIC_COLOR = "LABEL_AUTOMATIC_COLOR";
 
 	/**
 	 * 	Standard Constructor

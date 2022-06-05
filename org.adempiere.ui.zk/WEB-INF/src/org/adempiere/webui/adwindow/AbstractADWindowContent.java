@@ -82,6 +82,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.CustomizeGridViewDialog;
 import org.adempiere.webui.window.FDialog;
 import org.adempiere.webui.window.FindWindow;
+import org.adempiere.webui.window.LabelAction;
 import org.adempiere.webui.window.WChat;
 import org.adempiere.webui.window.WPostIt;
 import org.adempiere.webui.window.WRecordAccessDialog;
@@ -1132,7 +1133,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	LayoutUtils.openOverlappedWindow(getComponent(), postit, "middle_center");
     	postit.showWindow();
     }
-
+    
+	public void onLabel() {
+		LabelAction labelAction = new LabelAction(this);
+		labelAction.show();
+	}
+    
     /**
      * @see ToolbarListener#onToggle()
      */
@@ -1908,11 +1914,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             toolbar.setPressed("Chat",adTabbox.getSelectedGridTab().hasChat());
             toolbar.enablePostIt(true);
             toolbar.setPressed("PostIt",adTabbox.getSelectedGridTab().hasPostIt());
+            toolbar.enableLabel(true);
+            toolbar.setPressed("Label",adTabbox.getSelectedGridTab().hasLabel());
         }
         else
         {
         	toolbar.enableChat(false);
         	toolbar.enablePostIt(false);
+        	toolbar.enableLabel(false);
         }
 
         // Elaine 2008/12/05

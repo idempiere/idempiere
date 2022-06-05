@@ -2202,8 +2202,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return 0;
 		int recordID = m_mTable.getKeyID(m_currentRow);
 		return MPostIt.getID(m_vo.AD_Table_ID, recordID);
-	}	//	getAD_PostIt_ID
-
+	}	//	getAD_PostIt_ID	
+	
+	public boolean hasLabel()
+	{
+		if (!canHaveAttachment())
+			return false;
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordID);
+	}	//	hasLabel
 
 	/**
 	 *	Returns true, if this tab have templates allowed with current role
