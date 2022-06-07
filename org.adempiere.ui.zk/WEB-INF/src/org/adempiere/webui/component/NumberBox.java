@@ -107,7 +107,7 @@ public class NumberBox extends Div
             decimalBox.setWidgetOverride("doKeyPress_", funct.toString());
             funct = new StringBuffer();
             // debug // funct.append("console.log('keyCode='+event.keyCode);");
-            funct.append("function(event) {");
+            funct.append("(function(event) {");
             funct.append("let key=0;");
             funct.append("if (window.event)");
             funct.append("    key = event.keyCode;");
@@ -121,7 +121,7 @@ public class NumberBox extends Div
             funct.append("    calcText.value = newValue;");
             funct.append("    calcText.setSelectionRange(position+1, position+1);");
             funct.append("    event.stop;");
-            funct.append("}}");
+            funct.append("}})(event);");
             decimalBox.setWidgetListener("onKeyDown", funct.toString());
         }
 
