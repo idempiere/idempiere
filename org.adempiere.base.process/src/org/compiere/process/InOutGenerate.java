@@ -298,8 +298,7 @@ public class InOutGenerate extends SvrProcess
 									+ "AND io.IsSOTrx = 'Y' "
 									+ "AND io.DocStatus IN ('IP','WC') "
 								    + "AND io.M_Warehouse_ID=").append(p_M_Warehouse_ID).append (") "
-							    + "AND M_Product_ID = ").append(line.getM_Product_ID()).append(" "
-							    + "AND M_InOut_ID <> ").append(m_shipment.get_ID());
+							    + "AND M_Product_ID = ").append(line.getM_Product_ID());
 						
 						totalunconfirmedShippedQty = 
 								new Query(getCtx(), MInOutLine.Table_Name, where3.toString(), get_TrxName())
