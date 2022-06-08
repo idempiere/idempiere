@@ -30,7 +30,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220526L;
+	private static final long serialVersionUID = 20220603L;
 
     /** Standard Constructor */
     public X_AD_Process_DrillRule (Properties ctx, int AD_Process_DrillRule_ID, String trxName)
@@ -38,7 +38,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
       super (ctx, AD_Process_DrillRule_ID, trxName);
       /** if (AD_Process_DrillRule_ID == 0)
         {
-			setAD_Element_ID (0);
+			setAD_Column_ID (0);
 			setAD_Process_DrillRule_ID (0);
 			setAD_Process_ID (0);
 			setName (null);
@@ -51,7 +51,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
       super (ctx, AD_Process_DrillRule_ID, trxName, virtualColumns);
       /** if (AD_Process_DrillRule_ID == 0)
         {
-			setAD_Element_ID (0);
+			setAD_Column_ID (0);
 			setAD_Process_DrillRule_ID (0);
 			setAD_Process_ID (0);
 			setName (null);
@@ -65,7 +65,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -86,29 +86,29 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
       return sb.toString();
     }
 
-	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
-		return (org.compiere.model.I_AD_Element)MTable.get(getCtx(), org.compiere.model.I_AD_Element.Table_ID)
-			.getPO(getAD_Element_ID(), get_TrxName());
+		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
+			.getPO(getAD_Column_ID(), get_TrxName());
 	}
 
-	/** Set System Element.
-		@param AD_Element_ID System Element enables the central maintenance of column description and help.
+	/** Set Column.
+		@param AD_Column_ID Column in the table
 	*/
-	public void setAD_Element_ID (int AD_Element_ID)
+	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Element_ID < 1)
-			set_Value (COLUMNNAME_AD_Element_ID, null);
+		if (AD_Column_ID < 1)
+			set_Value (COLUMNNAME_AD_Column_ID, null);
 		else
-			set_Value (COLUMNNAME_AD_Element_ID, Integer.valueOf(AD_Element_ID));
+			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
-	/** Get System Element.
-		@return System Element enables the central maintenance of column description and help.
+	/** Get Column.
+		@return Column in the table
 	  */
-	public int getAD_Element_ID()
+	public int getAD_Column_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Element_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -142,8 +142,8 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 		return ii.intValue();
 	}
 
-	/** Set Process Drill Rule.
-		@param AD_Process_DrillRule_ID Process Drill Rule
+	/** Set Drill Rule.
+		@param AD_Process_DrillRule_ID Drill Rule
 	*/
 	public void setAD_Process_DrillRule_ID (int AD_Process_DrillRule_ID)
 	{
@@ -153,8 +153,8 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 			set_ValueNoCheck (COLUMNNAME_AD_Process_DrillRule_ID, Integer.valueOf(AD_Process_DrillRule_ID));
 	}
 
-	/** Get Process Drill Rule.
-		@return Process Drill Rule	  */
+	/** Get Drill Rule.
+		@return Drill Rule	  */
 	public int getAD_Process_DrillRule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_DrillRule_ID);

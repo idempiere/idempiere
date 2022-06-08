@@ -35,9 +35,9 @@ public interface I_AD_Process_DrillRule
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(3);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -49,20 +49,20 @@ public interface I_AD_Process_DrillRule
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Element_ID */
-    public static final String COLUMNNAME_AD_Element_ID = "AD_Element_ID";
+    /** Column name AD_Column_ID */
+    public static final String COLUMNNAME_AD_Column_ID = "AD_Column_ID";
 
-	/** Set System Element.
-	  * System Element enables the central maintenance of column description and help.
+	/** Set Column.
+	  * Column in the table
 	  */
-	public void setAD_Element_ID (int AD_Element_ID);
+	public void setAD_Column_ID (int AD_Column_ID);
 
-	/** Get System Element.
-	  * System Element enables the central maintenance of column description and help.
+	/** Get Column.
+	  * Column in the table
 	  */
-	public int getAD_Element_ID();
+	public int getAD_Column_ID();
 
-	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException;
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -95,10 +95,10 @@ public interface I_AD_Process_DrillRule
     /** Column name AD_Process_DrillRule_ID */
     public static final String COLUMNNAME_AD_Process_DrillRule_ID = "AD_Process_DrillRule_ID";
 
-	/** Set Process Drill Rule	  */
+	/** Set Drill Rule	  */
 	public void setAD_Process_DrillRule_ID (int AD_Process_DrillRule_ID);
 
-	/** Get Process Drill Rule	  */
+	/** Get Drill Rule	  */
 	public int getAD_Process_DrillRule_ID();
 
     /** Column name AD_Process_DrillRule_UU */

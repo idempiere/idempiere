@@ -27,7 +27,7 @@ ALTER TABLE AD_Table MODIFY IsShowInDrillOptions CHAR(1) DEFAULT 'Y'
 ;
 
 -- Apr 6, 2022, 2:46:56 PM CEST
-INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable,IsShowInDrillOptions) VALUES (200335,'Process Drill Rule','AD_Process_DrillRule',0,'4',0,0,'Y',TO_TIMESTAMP('2022-04-06 14:46:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:46:56','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','83361033-2aa3-41d6-9de5-1ce897245dde','N','N','N','N','Y')
+INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable,IsShowInDrillOptions) VALUES (200335,'Drill Rule','AD_Process_DrillRule',0,'4',0,0,'Y',TO_TIMESTAMP('2022-04-06 14:46:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:46:56','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','83361033-2aa3-41d6-9de5-1ce897245dde','N','N','N','N','Y')
 ;
 
 -- Apr 6, 2022, 2:46:56 PM CEST
@@ -35,11 +35,11 @@ INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsA
 ;
 
 -- Apr 6, 2022, 2:47:08 PM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203569,0,0,'Y',TO_TIMESTAMP('2022-04-06 14:47:08','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:47:08','YYYY-MM-DD HH24:MI:SS'),100,'AD_Process_DrillRule_ID','Process Drill Rule','Process Drill Rule','D','0c9e8965-941a-46f7-be4e-5794df9dfc9d')
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203569,0,0,'Y',TO_TIMESTAMP('2022-04-06 14:47:08','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:47:08','YYYY-MM-DD HH24:MI:SS'),100,'AD_Process_DrillRule_ID','Drill Rule','Drill Rule','D','0c9e8965-941a-46f7-be4e-5794df9dfc9d')
 ;
 
 -- Apr 6, 2022, 2:47:08 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (214722,0.0,'Process Drill Rule',200335,'AD_Process_DrillRule_ID',10,'Y','N','Y','N','N','N',13,0,0,'Y',TO_TIMESTAMP('2022-04-06 14:47:08','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:47:08','YYYY-MM-DD HH24:MI:SS'),100,203569,'N','N','D','N','afd2c9af-9c8d-4fb9-b4ea-88626a1ef43d','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (214722,0.0,'Drill Rule',200335,'AD_Process_DrillRule_ID',10,'Y','N','Y','N','N','N',13,0,0,'Y',TO_TIMESTAMP('2022-04-06 14:47:08','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:47:08','YYYY-MM-DD HH24:MI:SS'),100,203569,'N','N','D','N','afd2c9af-9c8d-4fb9-b4ea-88626a1ef43d','N')
 ;
 
 -- Apr 6, 2022, 2:47:08 PM CEST
@@ -210,7 +210,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS ad_process_drillrule_uu_idx ON adempiere.ad_pr
 ;
 
 -- Apr 6, 2022, 2:49:42 PM CEST
-INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable,IsShowInDrillOptions) VALUES (200336,'Process Drill Rule Parameter','AD_Process_DrillRule_Para',0,'4',0,0,'Y',TO_TIMESTAMP('2022-04-06 14:49:42','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:49:42','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','1c5204bd-d8e8-4cc6-ab2d-e11735e1ff3c','N','N','N','N','Y')
+INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable,IsShowInDrillOptions) VALUES (200336,'Drill Rule Parameter','AD_Process_DrillRule_Para',0,'4',0,0,'Y',TO_TIMESTAMP('2022-04-06 14:49:42','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:49:42','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','1c5204bd-d8e8-4cc6-ab2d-e11735e1ff3c','N','N','N','N','Y')
 ;
 
 -- Apr 6, 2022, 2:49:43 PM CEST
@@ -218,7 +218,7 @@ INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsA
 ;
 
 -- Apr 6, 2022, 2:49:54 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton,FKConstraintType) VALUES (214739,0.0,'Process Drill Rule',200336,'AD_Process_DrillRule_ID',10,'N','N','Y','N','N','N',19,0,0,'Y',TO_TIMESTAMP('2022-04-06 14:49:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:49:53','YYYY-MM-DD HH24:MI:SS'),100,203569,'N','N','D','N','cc9d25da-cd10-4a46-b598-49bfa88a5fef','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton,FKConstraintType) VALUES (214739,0.0,'Drill Rule',200336,'AD_Process_DrillRule_ID',10,'N','N','Y','N','N','N',19,0,0,'Y',TO_TIMESTAMP('2022-04-06 14:49:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:49:53','YYYY-MM-DD HH24:MI:SS'),100,203569,'N','N','D','N','cc9d25da-cd10-4a46-b598-49bfa88a5fef','N','N')
 ;
 
 -- Apr 6, 2022, 2:47:08 PM CEST
@@ -349,11 +349,11 @@ CREATE UNIQUE INDEX IF NOT EXISTS ad_process_drillrule_para_uu_idx ON adempiere.
 ;
 
 -- Apr 6, 2022, 2:51:06 PM CEST
-INSERT INTO AD_Window (AD_Window_ID,Name,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,WindowType,Processing,EntityType,IsSOTrx,IsDefault,WinHeight,WinWidth,IsBetaFunctionality,AD_Window_UU) VALUES (200123,'Process Drill Rule',0,0,'Y',TO_TIMESTAMP('2022-04-06 14:51:06','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:51:06','YYYY-MM-DD HH24:MI:SS'),100,'M','N','D','Y','N',0,0,'N','91407fde-0a29-41fd-b44c-aff7070f94ec')
+INSERT INTO AD_Window (AD_Window_ID,Name,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,WindowType,Processing,EntityType,IsSOTrx,IsDefault,WinHeight,WinWidth,IsBetaFunctionality,AD_Window_UU) VALUES (200123,'Drill Rule',0,0,'Y',TO_TIMESTAMP('2022-04-06 14:51:06','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:51:06','YYYY-MM-DD HH24:MI:SS'),100,'M','N','D','Y','N',0,0,'N','91407fde-0a29-41fd-b44c-aff7070f94ec')
 ;
 
 -- Apr 6, 2022, 2:55:04 PM CEST
-INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsInfoTab,IsTranslationTab,IsReadOnly,Processing,ImportFields,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU,TreeDisplayedOn,IsLookupOnlySelection,IsAllowAdvancedLookup,MaxQueryRecords) VALUES (200308,'Process Drill Rule',200123,10,'Y',200335,0,0,'Y',TO_TIMESTAMP('2022-04-06 14:55:04','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:55:04','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','N','N','N',0,'N','D','Y','N','1c99e0b5-4718-463a-a0e7-bf8432d1b70e','B','N','Y',0)
+INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsInfoTab,IsTranslationTab,IsReadOnly,Processing,ImportFields,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU,TreeDisplayedOn,IsLookupOnlySelection,IsAllowAdvancedLookup,MaxQueryRecords) VALUES (200308,'Drill Rule',200123,10,'Y',200335,0,0,'Y',TO_TIMESTAMP('2022-04-06 14:55:04','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:55:04','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','N','N','N',0,'N','D','Y','N','1c99e0b5-4718-463a-a0e7-bf8432d1b70e','B','N','Y',0)
 ;
 
 -- Apr 6, 2022, 2:55:25 PM CEST
@@ -373,7 +373,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 ;
 
 -- Apr 6, 2022, 2:55:26 PM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (206925,'Process Drill Rule',200308,214722,'N',10,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2022-04-06 14:55:26','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:55:26','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','6487a092-0a7c-4d9c-9cc7-f6bea064af07','N',2)
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (206925,'Drill Rule',200308,214722,'N',10,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2022-04-06 14:55:26','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:55:26','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','6487a092-0a7c-4d9c-9cc7-f6bea064af07','N',2)
 ;
 
 -- Apr 6, 2022, 2:55:27 PM CEST
@@ -408,7 +408,7 @@ There are two reasons for de-activating and not deleting records:
 ;
 
 -- Apr 6, 2022, 2:56:56 PM CEST
-INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsInfoTab,IsTranslationTab,IsReadOnly,AD_Column_ID,Processing,ImportFields,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU,TreeDisplayedOn,IsLookupOnlySelection,IsAllowAdvancedLookup,MaxQueryRecords) VALUES (200309,'Process Drill Rule Parameter',200123,20,'Y',200336,0,0,'Y',TO_TIMESTAMP('2022-04-06 14:56:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:56:56','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','N',214739,'N','N',0,'N','D','Y','N','cf646be0-5bd7-4d8e-9ede-185fec8f6b64','B','N','Y',0)
+INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsInfoTab,IsTranslationTab,IsReadOnly,AD_Column_ID,Processing,ImportFields,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU,TreeDisplayedOn,IsLookupOnlySelection,IsAllowAdvancedLookup,MaxQueryRecords) VALUES (200309,'Drill Rule Parameter',200123,20,'Y',200336,0,0,'Y',TO_TIMESTAMP('2022-04-06 14:56:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:56:56','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','N',214739,'N','N',0,'N','D','Y','N','cf646be0-5bd7-4d8e-9ede-185fec8f6b64','B','N','Y',0)
 ;
 
 -- Apr 6, 2022, 2:57:05 PM CEST
@@ -424,7 +424,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 ;
 
 -- Apr 6, 2022, 2:57:06 PM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (206937,'Process Drill Rule',200309,214739,'Y',10,40,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2022-04-06 14:57:06','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:57:06','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','c375dd96-6b77-4d57-8bd4-3783ad332aa3','Y',20,2)
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (206937,'Drill Rule',200309,214739,'Y',10,40,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2022-04-06 14:57:06','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 14:57:06','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','c375dd96-6b77-4d57-8bd4-3783ad332aa3','Y',20,2)
 ;
 
 -- Apr 6, 2022, 2:57:07 PM CEST
@@ -447,7 +447,7 @@ There are two reasons for de-activating and not deleting records:
 ;
 
 -- Apr 6, 2022, 3:02:36 PM CEST
-INSERT INTO AD_Menu (AD_Menu_ID,Name,"action",AD_Window_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,IsSOTrx,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU) VALUES (200201,'Process Drill Rule','W',200123,0,0,'Y',TO_TIMESTAMP('2022-04-06 15:02:36','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 15:02:36','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','D','Y','732c12fb-276b-445d-a3ba-e984dfb22cbf')
+INSERT INTO AD_Menu (AD_Menu_ID,Name,"action",AD_Window_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,IsSOTrx,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU) VALUES (200201,'Drill Rule','W',200123,0,0,'Y',TO_TIMESTAMP('2022-04-06 15:02:36','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-04-06 15:02:36','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','D','Y','732c12fb-276b-445d-a3ba-e984dfb22cbf')
 ;
 
 -- Apr 6, 2022, 3:02:36 PM CEST
@@ -603,7 +603,7 @@ UPDATE AD_Column SET AD_Val_Rule_ID=200159,Updated=TO_TIMESTAMP('2022-04-25 11:2
 ;
 
 -- May 25, 2022, 3:13:27 PM CEST
-INSERT INTO AD_Table (AD_Table_ID,Name,AD_Window_ID,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable) VALUES (200349,'Process Drill Rule Trl',200123,'AD_Process_DrillRule_Trl',0,'3',0,0,'Y',TO_TIMESTAMP('2022-05-25 15:13:26','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-05-25 15:13:26','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','N','L','N','Y','238cf5eb-d915-48d0-a1e6-df5cb52415e7','N','N','N','N')
+INSERT INTO AD_Table (AD_Table_ID,Name,AD_Window_ID,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable) VALUES (200349,'Drill Rule Trl',200123,'AD_Process_DrillRule_Trl',0,'3',0,0,'Y',TO_TIMESTAMP('2022-05-25 15:13:26','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-05-25 15:13:26','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','N','L','N','Y','238cf5eb-d915-48d0-a1e6-df5cb52415e7','N','N','N','N')
 ;
 
 -- May 25, 2022, 3:13:27 PM CEST
@@ -730,7 +730,7 @@ ALTER TABLE AD_Process_DrillRule_Trl ADD UpdatedBy NUMBER(10) NOT NULL
 ;
 
 -- May 25, 2022, 3:39:21 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintName,FKConstraintType,IsHtml) VALUES (214929,0,'Process Drill Rule',200349,'AD_Process_DrillRule_ID',22,'N','Y','Y','N','N',0,'N',30,0,0,'Y',TO_TIMESTAMP('2022-05-25 15:39:20','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-05-25 15:39:20','YYYY-MM-DD HH24:MI:SS'),100,203569,'N','N','D','N','N','N','Y','6cba0265-b5f8-4134-850d-d6aa6b042a67','Y',0,'N','N','adprocessdrillrule_trl','C','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintName,FKConstraintType,IsHtml) VALUES (214929,0,'Drill Rule',200349,'AD_Process_DrillRule_ID',22,'N','Y','Y','N','N',0,'N',30,0,0,'Y',TO_TIMESTAMP('2022-05-25 15:39:20','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-05-25 15:39:20','YYYY-MM-DD HH24:MI:SS'),100,203569,'N','N','D','N','N','N','Y','6cba0265-b5f8-4134-850d-d6aa6b042a67','Y',0,'N','N','adprocessdrillrule_trl','C','N')
 ;
 
 -- May 25, 2022, 3:39:24 PM CEST
@@ -754,7 +754,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 ;
 
 -- May 25, 2022, 3:48:46 PM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (207065,'Process Drill Rule',200322,214929,'Y',22,30,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2022-05-25 15:48:46','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-05-25 15:48:46','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','fbcbc793-12a4-40ea-b738-e0dee2869129','Y',20,2)
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (207065,'Drill Rule',200322,214929,'Y',22,30,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2022-05-25 15:48:46','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-05-25 15:48:46','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','fbcbc793-12a4-40ea-b738-e0dee2869129','Y',20,2)
 ;
 
 -- May 25, 2022, 3:48:46 PM CEST
@@ -794,5 +794,57 @@ UPDATE AD_Column SET IsTranslated='Y',Updated=TO_TIMESTAMP('2022-05-25 15:50:47'
 
 -- May 26, 2022, 12:13:49 PM CEST
 UPDATE AD_Tab SET IsInsertRecord='N',Updated=TO_TIMESTAMP('2022-05-26 12:13:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200322
+;
+
+-- Jun 3, 2022, 2:35:07 PM CEST
+UPDATE AD_Field SET IsDisplayed='N', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-06-03 14:35:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206926
+;
+
+-- Jun 3, 2022, 4:13:05 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214930,0,'Column','Column in the table','Link to the database column of the table',200335,'AD_Column_ID',22,'N','N','Y','N','N',0,'N',30,0,0,'Y',TO_TIMESTAMP('2022-06-03 16:13:05','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-03 16:13:05','YYYY-MM-DD HH24:MI:SS'),100,104,'Y','N','D','N','N','N','Y','73a5f907-95a5-4043-a35a-898dfd6089af','Y',0,'N','N','N','N')
+;
+
+-- Jun 3, 2022, 4:13:10 PM CEST
+UPDATE AD_Column SET FKConstraintName='ADColumn_ADProcessDrillRule', FKConstraintType='N',Updated=TO_TIMESTAMP('2022-06-03 16:13:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214930
+;
+
+-- Jun 3, 2022, 4:13:10 PM CEST
+ALTER TABLE AD_Process_DrillRule ADD AD_Column_ID NUMBER(10) NOT NULL
+;
+
+-- Jun 3, 2022, 4:20:24 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,SortNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (207072,'Column','Column in the table','Link to the database column of the table',200308,214930,'Y',0,120,0,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2022-06-03 16:20:24','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-03 16:20:24','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','796de252-df4b-46f5-839d-e905b909f3aa','Y',110,1,1,1,'N','N','N','N')
+;
+
+-- Jun 3, 2022, 4:31:34 PM CEST
+DELETE  FROM  AD_Field_Trl WHERE AD_Field_ID=206943
+;
+
+-- Jun 3, 2022, 4:31:35 PM CEST
+DELETE FROM AD_Field WHERE AD_Field_ID=206943
+;
+
+-- Jun 3, 2022, 4:32:29 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=90, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=1, ColumnSpan=2, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-06-03 16:32:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207072
+;
+
+-- Jun 3, 2022, 4:32:29 PM CEST
+UPDATE AD_Field SET SeqNo=0, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-06-03 16:32:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206926
+;
+
+-- Jun 3, 2022, 4:32:53 PM CEST
+ALTER TABLE AD_Process_DrillRule DROP COLUMN AD_Element_ID
+;
+
+-- Jun 3, 2022, 4:32:56 PM CEST
+DELETE  FROM  AD_Column_Trl WHERE AD_Column_ID=214752
+;
+
+-- Jun 3, 2022, 4:32:56 PM CEST
+DELETE FROM AD_Column WHERE AD_Column_ID=214752
+;
+
+-- Jun 3, 2022, 4:56:13 PM CEST
+UPDATE AD_Column SET AD_Val_Rule_ID=100,Updated=TO_TIMESTAMP('2022-06-03 16:56:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214930
 ;
 

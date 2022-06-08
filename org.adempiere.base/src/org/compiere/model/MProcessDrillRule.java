@@ -146,17 +146,18 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 	}
 
 	/**
-	 * Get array of MProcessDrillRule by Element
+	 * Get array of MProcessDrillRule by Column Name
 	 * @param ctx
-	 * @param AD_Element_ID
+	 * @param columnName
 	 * @param trxName
 	 * @return
 	 */
-	public static MProcessDrillRule[] getByElement_ID(Properties ctx, int AD_Element_ID, String trxName) {
+	public static MProcessDrillRule[] getByColumnName(Properties ctx, String columnName, String trxName) {
 
-		String whereClause = " AD_Element_ID = ? ";
+		String whereClause = "";
 		List<MProcessDrillRule> processDrillRules = new Query(ctx, MProcessDrillRule.Table_Name, whereClause, trxName)
-				.setParameters(AD_Element_ID)
+				.addJoinClause(" INNER JOIN AD_Column c ON "+ MProcessDrillRule.Table_Name + ".AD_Column_ID = c.AD_Column_ID AND c." + MColumn.COLUMNNAME_ColumnName + " = ?")
+				.setParameters(columnName)
 				.setClient_ID()
 				.setOnlyActiveRecords(true)
 				.list();

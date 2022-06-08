@@ -195,9 +195,8 @@ public class DrillReportCtl {
 	private void initProcessDrillRuleMap() {
 		HashMap<Integer, String> drillProcessMap = new HashMap<>();
 		HashMap<Integer, ArrayList<KeyNamePair>> drillProcessRuleMap = new HashMap<>();
-		M_Element element = M_Element.get(Env.getCtx(), m_ColumnName);
-		if(element != null) {
-			MProcessDrillRule[] processDrillRules = MProcessDrillRule.getByElement_ID(Env.getCtx(), element.getAD_Element_ID(), null);
+		if(!Util.isEmpty(m_ColumnName)) {
+			MProcessDrillRule[] processDrillRules = MProcessDrillRule.getByColumnName(Env.getCtx(), m_ColumnName, null);
 			for( MProcessDrillRule drillProcesRule: processDrillRules) {
 				MProcess process = MProcess.get(drillProcesRule.getAD_Process_ID());
 				if(process == null)
