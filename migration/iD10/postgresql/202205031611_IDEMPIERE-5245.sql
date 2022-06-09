@@ -380,4 +380,3 @@ UPDATE AD_Element SET Name='Workflow Processor Log',Updated=TO_TIMESTAMP('2022-0
 -- 3/05/2022, 6:04:55 p. m. GMT+02:00
 UPDATE AD_Element SET Name='Year Month', PrintName='Year Month',Updated=TO_TIMESTAMP('2022-05-03 18:04:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=200062
 ;
-
