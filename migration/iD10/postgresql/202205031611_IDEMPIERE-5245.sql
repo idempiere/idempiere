@@ -381,16 +381,3 @@ UPDATE AD_Element SET Name='Workflow Processor Log',Updated=TO_TIMESTAMP('2022-0
 UPDATE AD_Element SET Name='Year Month', PrintName='Year Month',Updated=TO_TIMESTAMP('2022-05-03 18:04:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=200062
 ;
 
--- Jun 8, 2022, 6:50:40 PM CEST
-UPDATE AD_Message SET MsgText='Error while creating the Accounting Setup. 
-Check the error log and the format of the Accounting*.csv file - No duplicate Accounts and all default accounts must be included (even if you will not use them).',Updated=TO_TIMESTAMP('2022-06-08 18:50:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=807
-;
-
--- Jun 8, 2022, 6:53:56 PM CEST
-UPDATE AD_Message SET MsgText='CoA File',Updated=TO_TIMESTAMP('2022-06-08 18:53:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200527
-;
-
--- Jun 8, 2022, 6:54:23 PM CEST
-UPDATE AD_Message SET MsgText='Cannot read CoA File',Updated=TO_TIMESTAMP('2022-06-08 18:54:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200529
-;
-
