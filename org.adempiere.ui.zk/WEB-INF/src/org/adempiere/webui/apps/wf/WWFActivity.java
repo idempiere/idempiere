@@ -13,10 +13,9 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.wf;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -47,10 +46,9 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
-import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.Query;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -66,11 +64,11 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.North;
+import org.zkoss.zul.South;
 
 /**
  * Direct port from WFActivity
@@ -319,42 +317,13 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	 */
 	public int getActivitiesCount()
 	{
-		int count = 0;
-
-		String sql = "SELECT COUNT(*) FROM AD_WF_Activity a "
-			+ "WHERE " + getWhereActivities();
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		MRole role = MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()));
-		sql = role.addAccessSQL(sql, "a", true, false);
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, AD_User_ID);
-			pstmt.setInt (2, AD_User_ID);
-			pstmt.setInt (3, AD_User_ID);
-			pstmt.setInt (4, AD_User_ID);
-			pstmt.setInt (5, AD_User_ID);
-			pstmt.setInt (6, AD_Client_ID);
-			rs = pstmt.executeQuery ();
-			if (rs.next ()) {
-				count = rs.getInt(1);
-			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-
+		int count = new Query(Env.getCtx(), MWFActivity.Table_Name, MWFActivity.getWhereActivities(), null)
+				.setApplyAccessFilter(true, false)
+				.setParameters(AD_User_ID, AD_User_ID, AD_User_ID, AD_User_ID, AD_User_ID, AD_Client_ID)
+				.count();
 		return count;
-
 	}
 
 	/**
@@ -369,51 +338,28 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 		model = new ListModelTable();
 
-		ArrayList<MWFActivity> list = new ArrayList<MWFActivity>();
-		String sql = "SELECT * FROM AD_WF_Activity a "
-			+ "WHERE " + getWhereActivities()
-			+ " ORDER BY a.Priority DESC, Created";
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		MRole role = MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()));
-		sql = role.addAccessSQL(sql, "a", true, false);
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, AD_User_ID);
-			pstmt.setInt (2, AD_User_ID);
-			pstmt.setInt (3, AD_User_ID);
-			pstmt.setInt (4, AD_User_ID);
-			pstmt.setInt (5, AD_User_ID);
-			pstmt.setInt (6, AD_Client_ID);
-            
-			rs = pstmt.executeQuery();
-			while (rs.next ())
+		Iterator<MWFActivity> it = new Query(Env.getCtx(), MWFActivity.Table_Name, MWFActivity.getWhereActivities(), null)
+				.setApplyAccessFilter(true, false)
+				.setParameters(AD_User_ID, AD_User_ID, AD_User_ID, AD_User_ID, AD_User_ID, AD_Client_ID)
+				.setOrderBy("AD_WF_Activity.Priority DESC, AD_WF_Activity.Created")
+				.iterate();
+
+		List<MWFActivity> list = new ArrayList<MWFActivity>();
+		while (it.hasNext()) {
+			MWFActivity activity = it.next();
+			list.add (activity);
+			List<Object> rowData = new ArrayList<Object>();
+			rowData.add(activity.getPriority());
+			rowData.add(activity.getNodeName());
+			rowData.add(activity.getSummary());
+			model.add(rowData);
+			if (list.size() > MAX_ACTIVITIES_IN_LIST && MAX_ACTIVITIES_IN_LIST > 0)
 			{
-				MWFActivity activity = new MWFActivity(Env.getCtx(), rs, null);
-				list.add (activity);
-				List<Object> rowData = new ArrayList<Object>();
-				rowData.add(activity.getPriority());
-				rowData.add(activity.getNodeName());
-				rowData.add(activity.getSummary());
-				model.add(rowData);
-				if (list.size() > MAX_ACTIVITIES_IN_LIST && MAX_ACTIVITIES_IN_LIST > 0)
-				{
-					log.warning("More then 200 Activities - ignored");
-					break;
-				}
+				log.warning("More than " + MAX_ACTIVITIES_IN_LIST + " Activities - ignored");
+				break;
 			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 		}
 		m_activities = new MWFActivity[list.size ()];
 		list.toArray (m_activities);
@@ -445,27 +391,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 		return m_activities.length;
 	}	//	loadActivities
-
-	private String getWhereActivities() {
-		final String where =
-			"a.Processed='N' AND a.WFState='OS' AND ("
-			//	Owner of Activity
-			+ " a.AD_User_ID=?"	//	#1
-			//	Invoker (if no invoker = all)
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
-			+ " AND r.ResponsibleType='H' AND COALESCE(r.AD_User_ID,0)=0 AND COALESCE(r.AD_Role_ID,0)=0 AND (a.AD_User_ID=? OR a.AD_User_ID IS NULL))"	//	#2
-			//  Responsible User
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
-			+ " AND r.ResponsibleType='H' AND r.AD_User_ID=?)"		//	#3
-			//	Responsible Role
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r INNER JOIN AD_User_Roles ur ON (r.AD_Role_ID=ur.AD_Role_ID)"
-			+ " WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND r.ResponsibleType='R' AND ur.AD_User_ID=? AND ur.isActive = 'Y')"	//	#4
-			///* Manual Responsible */ 
-			+ " OR EXISTS (SELECT * FROM AD_WF_ActivityApprover r "
-			+ " WHERE a.AD_WF_Activity_ID=r.AD_WF_Activity_ID AND r.AD_User_ID=? AND r.isActive = 'Y')" 
-			+ ") AND a.AD_Client_ID=?";	//	#5
-		return where;
-	}
 
 	/**
 	 * 	Reset Display

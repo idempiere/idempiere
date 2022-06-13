@@ -50,10 +50,7 @@ import org.zkoss.zul.Div;
  * 	Document Status Indicator
  */
 public class WDocumentStatusIndicator extends Panel implements EventListener<Event> {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 794746556509546913L;
+	private static final long serialVersionUID = -9076405331101242792L;
 
 	/**
 	 * 	Constructor
@@ -171,6 +168,14 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 
 	public void updateUI() {
 		statusLabel.setText(Integer.toString(statusCount));		
+	}
+
+	/**
+	 * Return the count for this indicator
+	 * @return
+	 */
+	public int getStatusCount() {
+		return statusCount;
 	}
 
 }

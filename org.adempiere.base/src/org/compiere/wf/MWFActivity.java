@@ -83,9 +83,9 @@ import org.compiere.util.Util;
 public class MWFActivity extends X_AD_WF_Activity implements Runnable
 {	
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -3282235931100223816L;
+	private static final long serialVersionUID = -2964604544661482626L;
 
 	private static final String CURRENT_WORKFLOW_PROCESS_INFO_ATTR = "Workflow.ProcessInfo";
 	
@@ -2126,4 +2126,31 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			trx.removeTrxEventListener(this);
 		}		
 	}
+
+	/**
+	 * Where to get the activities related to a User
+	 * The where returned requires the AD_User_ID parameter 5 times, and then AD_Client_ID
+	 * @return Where Clause
+	 */
+	public static String getWhereActivities() {
+		final String where =
+			"AD_WF_Activity.Processed='N' AND AD_WF_Activity.WFState='OS' AND ("
+			//	Owner of Activity
+			+ " AD_WF_Activity.AD_User_ID=?"	//	#1
+			//	Invoker (if no invoker = all)
+			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE AD_WF_Activity.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
+			+ " AND r.ResponsibleType='H' AND COALESCE(r.AD_User_ID,0)=0 AND COALESCE(r.AD_Role_ID,0)=0 AND (AD_WF_Activity.AD_User_ID=? OR AD_WF_Activity.AD_User_ID IS NULL))"	//	#2
+			//  Responsible User
+			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE AD_WF_Activity.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
+			+ " AND r.ResponsibleType='H' AND r.AD_User_ID=?)"		//	#3
+			//	Responsible Role
+			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r INNER JOIN AD_User_Roles ur ON (r.AD_Role_ID=ur.AD_Role_ID)"
+			+ " WHERE AD_WF_Activity.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND r.ResponsibleType='R' AND ur.AD_User_ID=? AND ur.isActive = 'Y')"	//	#4
+			///* Manual Responsible */ 
+			+ " OR EXISTS (SELECT * FROM AD_WF_ActivityApprover r "
+			+ " WHERE AD_WF_Activity.AD_WF_Activity_ID=r.AD_WF_Activity_ID AND r.AD_User_ID=? AND r.isActive = 'Y')" 
+			+ ") AND AD_WF_Activity.AD_Client_ID=?";	//	#5
+		return where;
+	}
+
 }	//	MWFActivity
