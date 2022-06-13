@@ -29,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Borderlayout;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabbox;
@@ -38,6 +40,7 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MProcess;
 import org.compiere.model.MProcessDrillRule;
 import org.compiere.print.DrillReportCtl;
 import org.compiere.print.MPrintFormat;
@@ -526,9 +529,22 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		if(event.getTarget().getAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME) != null) {
 			if(event.getTarget().getAttribute(DRILL_PROCESS_RULE_ID_NAME) != null) {
 				ProcessInfo pi = drillReportCtl.getDrillProcessProcessInfo((int) event.getTarget().getAttribute(DRILL_PROCESS_RULE_ID_NAME), (int) event.getTarget().getAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME));
-				WProcessCtl process = new WProcessCtl(null, windowNo, pi, null);
-				process.run();
-				this.onClose();
+				Integer processDrillRuleID = (Integer) event.getTarget().getAttribute(DRILL_PROCESS_RULE_ID_NAME);
+				MProcessDrillRule drillRule = new MProcessDrillRule(Env.getCtx(), processDrillRuleID, null);
+				String showHelp = !Util.isEmpty(showHelp = drillRule.getShowHelp()) ? showHelp : MProcess.SHOWHELP_RunSilently_TakeDefaults;
+				pi.setShowHelp(showHelp);
+				ProcessModalDialog processModalDialog = new ProcessModalDialog(this, windowNo, false, pi);
+				ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
+				this.appendChild(processModalDialog);
+				if (ClientInfo.isMobile())
+				{
+					processModalDialog.doHighlighted();
+				}
+				else
+				{
+					LayoutUtils.openOverlappedWindow(this, processModalDialog, "middle_center");
+				}
+				processModalDialog.focus();
 			} else {
 				drillReportCtl.launchTableDrillReport((int) event.getTarget().getAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME));
 				this.onClose();

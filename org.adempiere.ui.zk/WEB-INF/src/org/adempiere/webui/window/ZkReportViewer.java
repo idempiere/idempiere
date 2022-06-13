@@ -1545,7 +1545,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			return;
 		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
 		pi.setReplaceTabContent();
-		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi);
+		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, true, pi);
 		ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
 		this.getParent().appendChild(processModalDialog);
 		if (ClientInfo.isMobile())

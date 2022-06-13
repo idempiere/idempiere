@@ -45,6 +45,7 @@ import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessDrillRule;
 import org.compiere.model.MProcessDrillRulePara;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MQuery;
 import org.compiere.model.MReportView;
 import org.compiere.model.MRole;
@@ -52,6 +53,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.M_Element;
 import org.compiere.model.PrintInfo;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -467,18 +469,16 @@ public class DrillReportCtl {
 		//	Process (see also MWFActivity.performWork
 		int AD_Table_ID = processDrillRule.getAD_Table_ID();
 		int Record_ID = 0;
-		//
-		MPInstance pInstance = new MPInstance(process, Record_ID);
-		fillParameter(pInstance, processDrillRule);
-		//
+
 		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), AD_Table_ID, Record_ID);
 		pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 		pi.setAD_Client_ID(processDrillRule.getAD_Client_ID());
-		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
 		pi.setAD_Process_UU(process.getAD_Process_UU());
 		pi.setIsBatch(true);
 		pi.setPrintPreview(true);
 
+		fillParameter(pi, processDrillRule);
+		
 		int AD_PrintFormat_ID = ad_PrintFormat_ID > 0 ? ad_PrintFormat_ID : processDrillRule.getAD_PrintFormat_ID();
 		if (AD_PrintFormat_ID > 0)
 		{
@@ -510,28 +510,25 @@ public class DrillReportCtl {
 	 * 	Fill Parameter
 	 *	@param pInstance process instance
 	 */
-	protected void fillParameter(MPInstance pInstance, MProcessDrillRule processDrillRule)
+	protected void fillParameter(ProcessInfo pi, MProcessDrillRule processDrillRule)
 	{
 		boolean isKeyParameterSet= false;
-		MProcessDrillRulePara[] sParams = processDrillRule.getParameters (false);
-		MPInstancePara[] iParams = pInstance.getParameters();
-		for (int pi = 0; pi < iParams.length; pi++)
-		{
-			MPInstancePara iPara = iParams[pi];
-
-			if(iPara.getParameterName().equals(m_ColumnName))
+		MProcessDrillRulePara[] sParams = processDrillRule.getParameters (true);
+		ArrayList<ProcessInfoParameter> iParams = new ArrayList<ProcessInfoParameter>();
+		for (int p = 0; p < sParams.length; p++)
 			{
-				iPara.setP_Number(Integer.valueOf((String) m_Value));
-				iPara.setInfo(!Util.isEmpty(m_DisplayValue) ? m_DisplayValue : (String) m_Value);
-				iPara.save();
-				isKeyParameterSet = true;
-				continue;
-			}
-			for (int np = 0; np < sParams.length; np++)
-			{
-				MProcessDrillRulePara sPara = sParams[np];
-				if (iPara.getParameterName().equals(sPara.getColumnName()))
+				MProcessPara processPara = (MProcessPara) sParams[p].getAD_Process_Para();
+				ProcessInfoParameter iPara = new ProcessInfoParameter(processPara.getColumnName(), null, null, null, null);
+				MProcessDrillRulePara sPara = sParams[p];
+				if(processPara. getColumnName().equals(m_ColumnName))
 				{
+					iPara.setParameter(DisplayType.isID(sPara.getDisplayType()) ? Integer.valueOf((String) m_Value) : (String) m_Value);
+					iPara.setInfo(!Util.isEmpty(m_DisplayValue) ? m_DisplayValue : (String) m_Value);
+					isKeyParameterSet = true;
+					iParams.add(iPara);
+					continue;
+				}
+				
 					String paraDesc = sPara.getDescription();
 					if (paraDesc != null && paraDesc.trim().length() > 0)
 						iPara.setInfo(sPara.getDescription());
@@ -546,7 +543,7 @@ public class DrillReportCtl {
 					if (value == null && toValue == null)
 					{
 						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty");
-						break;
+						continue;
 					}
 
 					//	Convert to Type
@@ -557,17 +554,17 @@ public class DrillReportCtl {
 						{
 							DecimalFormat decimalFormat = DisplayType.getNumberFormat(sPara.getDisplayType());
 							BigDecimal bd = toBigDecimal(value);
-							iPara.setP_Number(bd);
+							iPara.setParameter(bd);
 							if (toValue != null)
 							{
 								bd = toBigDecimal(toValue);
-								iPara.setP_Number_To(bd);
+								iPara.setParameter_To(bd);
 							}
 							if (Util.isEmpty(paraDesc))
 							{
-								String info = decimalFormat.format(iPara.getP_Number());
-								if (iPara.getP_Number_To() != null)
-									info = info + " - " + decimalFormat.format(iPara.getP_Number_To());
+								String info = decimalFormat.format(iPara.getParameterAsBigDecimal());
+								if (iPara.getParameter_ToAsBigDecimal() != null)
+									info = info + " - " + decimalFormat.format(iPara.getParameter_ToAsBigDecimal());
 								iPara.setInfo(info);
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
@@ -577,17 +574,17 @@ public class DrillReportCtl {
 						{
 							SimpleDateFormat dateFormat = DisplayType.getDateFormat(sPara.getDisplayType());
 							Timestamp ts = toTimestamp(value);
-							iPara.setP_Date(ts);
+							iPara.setParameter(ts);
 							if (toValue != null) {
 								ts = toTimestamp(toValue);
-								iPara.setP_Date_To(ts);
+								iPara.setParameter_To(ts);
 							}
 							if (Util.isEmpty(paraDesc))
 							{
-								String info = dateFormat.format(iPara.getP_Date());
-								if (iPara.getP_Date_To() != null)
+								String info = dateFormat.format(iPara.getParameterAsTimestamp());
+								if (iPara.getParameter_ToAsTimestamp() != null)
 								{
-									info = info + " - " + dateFormat.format(iPara.getP_Date_To());
+									info = info + " - " + dateFormat.format(iPara.getParameter_ToAsTimestamp());
 								}
 								iPara.setInfo(info);
 							}
@@ -596,17 +593,17 @@ public class DrillReportCtl {
 						}
 						else
 						{
-							iPara.setP_String(value.toString());
+							iPara.setParameter(value.toString());
 							if (toValue != null)
 							{
-								iPara.setP_String_To(toValue.toString());
+								iPara.setParameter_To(toValue.toString());
 							}
 							if (Util.isEmpty(paraDesc))
 							{
-								String info = iPara.getP_String();
-								if (iPara.getP_String_To() != null)
+								String info = iPara.getParameterAsString();
+								if (iPara.getParameter_ToAsString() != null)
 								{
-									info = info + " - " + iPara.getP_String_To();
+									info = info + " - " + iPara.getParameter_ToAsString();
 								}
 								iPara.setInfo(info);
 							}
@@ -614,8 +611,7 @@ public class DrillReportCtl {
 								+ " = " + variable
 								+ " (=" + value + "=) " + value.getClass().getName());
 						}
-						if (!iPara.save())
-							log.warning("Not Saved - " + sPara.getColumnName());
+						iParams.add(iPara);
 					}
 					catch (Exception e)
 					{
@@ -624,10 +620,8 @@ public class DrillReportCtl {
 							+ ") " + value.getClass().getName()
 							+ " - " + e.getLocalizedMessage());
 					}
-					break;
-				}	//	parameter match
 			}	//	scheduler parameter loop
-		}	//	instance parameter loop
+			pi.setParameter(iParams.toArray(new ProcessInfoParameter[0]));
 
 		if(!isKeyParameterSet) {
 			throw new AdempiereException(Msg.parseTranslation(Env.getCtx(), "@NoDrillKeyParameterSet@"));
