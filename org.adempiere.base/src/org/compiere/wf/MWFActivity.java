@@ -2128,11 +2128,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}
 
 	/**
-	 * Where to get the activities related to a User
+	 * Where to get the pending activities related to a User (unprocessed and suspended)
 	 * The where returned requires the AD_User_ID parameter 5 times, and then AD_Client_ID
 	 * @return Where Clause
 	 */
-	public static String getWhereActivities() {
+	public static String getWhereUserPendingActivities() {
 		final String where =
 			"AD_WF_Activity.Processed='N' AND AD_WF_Activity.WFState='OS' AND ("
 			//	Owner of Activity

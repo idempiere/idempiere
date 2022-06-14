@@ -319,7 +319,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	{
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		int count = new Query(Env.getCtx(), MWFActivity.Table_Name, MWFActivity.getWhereActivities(), null)
+		int count = new Query(Env.getCtx(), MWFActivity.Table_Name, MWFActivity.getWhereUserPendingActivities(), null)
 				.setApplyAccessFilter(true, false)
 				.setParameters(AD_User_ID, AD_User_ID, AD_User_ID, AD_User_ID, AD_User_ID, AD_Client_ID)
 				.count();
@@ -340,7 +340,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		Iterator<MWFActivity> it = new Query(Env.getCtx(), MWFActivity.Table_Name, MWFActivity.getWhereActivities(), null)
+		Iterator<MWFActivity> it = new Query(Env.getCtx(), MWFActivity.Table_Name, MWFActivity.getWhereUserPendingActivities(), null)
 				.setApplyAccessFilter(true, false)
 				.setParameters(AD_User_ID, AD_User_ID, AD_User_ID, AD_User_ID, AD_User_ID, AD_Client_ID)
 				.setOrderBy("AD_WF_Activity.Priority DESC, AD_WF_Activity.Created")
