@@ -22,7 +22,6 @@ import static org.compiere.model.SystemIDs.TREE_MENUPRIMARY;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -137,13 +136,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	private Borderlayout layout;
 
-	private int noOfNotice;
-
-	private int noOfRequest;
-
-	private int noOfWorkflow;
-
-	private int noOfUnprocessed;
+	private int noCount;
 
 	private Tabpanel homeTab;
 
@@ -700,28 +693,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         }
         else if (eventName.equals(ON_ACTIVITIES_CHANGED_EVENT))
         {
-        	@SuppressWarnings("unchecked")
-			Map<String, Object> map = (Map<String, Object>) event.getData();
-        	Integer notice = (Integer) map.get("notice");
-        	Integer request = (Integer) map.get("request");
-        	Integer workflow = (Integer) map.get("workflow");
-        	Integer unprocessed = (Integer) map.get("unprocessed");
+        	Integer count = (Integer) event.getData();
         	boolean change = false;
-        	if (notice != null && notice.intValue() != noOfNotice) 
+        	if (count != null && count.intValue() != noCount) 
         	{
-        		noOfNotice = notice.intValue(); change = true;
-        	}
-        	if (request != null && request.intValue() != noOfRequest) 
-        	{
-        		noOfRequest = request.intValue(); change = true;
-        	}		
-        	if (workflow != null && workflow.intValue() != noOfWorkflow) 
-        	{
-        		noOfWorkflow = workflow.intValue(); change = true;
-        	}
-        	if (unprocessed != null && unprocessed.intValue() != noOfUnprocessed) 
-        	{
-        		noOfUnprocessed = unprocessed.intValue(); change = true;
+        		noCount = count.intValue(); change = true;
         	}
         	if (change)
         		updateUI();
@@ -851,14 +827,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	}
 
 	public void updateUI() {
-		int total = noOfNotice + noOfRequest + noOfWorkflow + noOfUnprocessed;
-		windowContainer.setTabTitle(0, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home"))
-				+ " (" + total + ")",
-				Msg.translate(Env.getCtx(), "AD_Note_ID") + " : " + noOfNotice
-				+ ", " + Msg.translate(Env.getCtx(), "R_Request_ID") + " : " + noOfRequest
-				+ ", " + Util.cleanAmp(Msg.getMsg (Env.getCtx(), "WorkflowActivities")) + " : " + noOfWorkflow
-				+ (noOfUnprocessed>0 ? ", " + Msg.getMsg (Env.getCtx(), "UnprocessedDocs") + " : " + noOfUnprocessed : "")
-				);
+		windowContainer.setTabTitle(0, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home")) + " (" + noCount + ")", null);
 	}
 
 	//use _docClick undocumented api. need verification after major zk release update
