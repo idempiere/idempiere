@@ -22,6 +22,8 @@ import java.util.logging.Level;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHeader;
@@ -81,7 +83,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8405802852868437716L;
+	private static final long serialVersionUID = -1658595186719510159L;
 	/**	Window No					*/
 	private int         		m_WindowNo = 0;
 	/**	Open Activities				*/
@@ -113,14 +115,14 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	private Textbox fTextMsg = new Textbox();
 	private Button bOK = new Button();
 	private WSearchEditor fForward = null;	//	dynInit
-	private Label lForward = new Label(Msg.getMsg(Env.getCtx(), "Forward"));
-	private Label lOptional = new Label("(" + Msg.translate(Env.getCtx(), "Optional") + ")");
+	private Label lForward = new Label(Msg.getMsg(Env.getCtx(), "Forward") + " (" + Msg.translate(Env.getCtx(), "Optional") + ")");
 	private StatusBarPanel statusBar = new StatusBarPanel();
+	private Button bRefresh = new Button();
 
 	private ListModelTable model = null;
 	private WListbox listbox = new WListbox();
 
-	private final static String HISTORY_DIV_START_TAG = "<div style='height: 100px; border: 1px solid #7F9DB9;'>";
+	private final static String HISTORY_DIV_START_TAG = "<div style='overflow-y:scroll;height: 100px; border: 1px solid #7F9DB9;'>";
 	public WWFActivity()
 	{
 		super();
@@ -133,12 +135,14 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
         fAnswerList.setMold("select");
 
-        if (ThemeManager.isUseFontIconForImage()) {
+		if (ThemeManager.isUseFontIconForImage()) {
         	bZoom.setIconSclass("z-icon-Zoom");
         	bOK.setIconSclass("z-icon-Ok");
+			bRefresh.setIconSclass("z-icon-Refresh");
         } else {
         	bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
         	bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
+			bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
         }
 
         MLookup lookup = MLookupFactory.get(Env.getCtx(), m_WindowNo,
@@ -158,6 +162,15 @@ public class WWFActivity extends ADForm implements EventListener<Event>
         grid.setStyle("margin:0; padding:0; position: absolute; align: center; valign: center;");
         grid.makeNoStrip();
         grid.setOddRowSclass("even");
+
+		Columns columns = new Columns();
+		grid.appendChild(columns);
+		Column column = new Column();
+		ZKUpdateUtil.setWidth(column, "30%");
+		columns.appendChild(column);
+		column = new Column();
+		ZKUpdateUtil.setWidth(column, "70%");
+		columns.appendChild(column);
 
 		Rows rows = new Rows();
 		grid.appendChild(rows);
@@ -198,7 +211,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		ZKUpdateUtil.setWidth(fHelp, "100%");
 		ZKUpdateUtil.setHflex(fHelp, "true");
 		fHelp.setReadonly(true);
-		row.appendChild(new Label());
 
 		row = new Row();
 		rows.appendChild(row);
@@ -208,7 +220,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(div);
 		row.appendChild(fHistory);
 		ZKUpdateUtil.setHflex(fHistory, "true");
-		row.appendChild(new Label());
 
 		row = new Row();
 		rows.appendChild(row);
@@ -221,9 +232,9 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		ZKUpdateUtil.setHflex(fAnswerText, "true");
 		hbox.appendChild(fAnswerList);
 		hbox.appendChild(fAnswerButton);
-		fAnswerButton.addEventListener(Events.ON_CLICK, this);
+		hbox.appendChild(bZoom);
 		row.appendChild(hbox);
-		row.appendChild(bZoom);
+		fAnswerButton.addEventListener(Events.ON_CLICK, this);
 		bZoom.addEventListener(Events.ON_CLICK, this);
 
 		row = new Row();
@@ -236,7 +247,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		ZKUpdateUtil.setHflex(fTextMsg, "true");
 		fTextMsg.setMultiline(true);
 		ZKUpdateUtil.setWidth(fTextMsg, "100%");
-		row.appendChild(new Label());
 
 		row = new Row();
 		rows.appendChild(row);
@@ -246,10 +256,11 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(div);
 		hbox = new Hbox();
 		hbox.appendChild(fForward.getComponent());
-		hbox.appendChild(lOptional);
+		hbox.appendChild(bOK);
+		hbox.appendChild(bRefresh);
 		row.appendChild(hbox);
-		row.appendChild(bOK);
 		bOK.addEventListener(Events.ON_CLICK, this);
+		bRefresh.addEventListener(Events.ON_CLICK, this);
 
 		Borderlayout layout = new Borderlayout();
 		ZKUpdateUtil.setWidth(layout, "100%");
@@ -291,6 +302,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
         {
     		if (comp == bZoom)
     			cmd_zoom();
+    		else if (comp == bRefresh)
+    			loadActivities();
     		else if (comp == bOK)
     		{
     			Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));
