@@ -85,7 +85,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2964604544661482626L;
+	private static final long serialVersionUID = 8180781075902940080L;
 
 	private static final String CURRENT_WORKFLOW_PROCESS_INFO_ATTR = "Workflow.ProcessInfo";
 	
