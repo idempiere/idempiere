@@ -55,7 +55,7 @@ public class MiniTableImpl implements IMiniTable {
 
 	private int m_keyColumnIndex;
 
-	private int m_selectedRow;
+	private int m_selectedRow = -1;
 	
 	public MiniTableImpl() {
 	}
@@ -277,6 +277,9 @@ public class MiniTableImpl implements IMiniTable {
 
 	@Override
 	public void setRowCount(int rowCount) {
+		while (model.size() < rowCount) {
+			model.add(new HashMap<String, Object>());
+		}
 	}
 
 	@Override
