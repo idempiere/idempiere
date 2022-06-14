@@ -435,7 +435,7 @@ public class WAllocation extends Allocation
 		int AD_Column_ID = COLUMN_C_INVOICE_C_CURRENCY_ID;    //  C_Invoice.C_Currency_ID
 		MLookup lookupCur = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
 		currencyPick = new WTableDirEditor("C_Currency_ID", true, false, true, lookupCur);
-		currencyPick.setValue(Integer.valueOf(m_C_Currency_ID));
+		currencyPick.setValue(getC_Currency_ID());
 		currencyPick.addValueChangeListener(this);
 
 		// Organization filter selection
@@ -465,20 +465,19 @@ public class WAllocation extends Allocation
 		dateField.setValue(new Timestamp(cal.getTimeInMillis()));
 		dateField.addValueChangeListener(this);
 
-		
 		//  Charge
 		AD_Column_ID = 61804;    //  C_AllocationLine.C_Charge_ID
 		MLookup lookupCharge = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
 		chargePick = new WTableDirEditor("C_Charge_ID", false, false, true, lookupCharge);
-		chargePick.setValue(Integer.valueOf(m_C_Charge_ID));
+		chargePick.setValue(getC_Charge_ID());
 		chargePick.addValueChangeListener(this);
 		
-	//  Charge
-			AD_Column_ID = 212213;    //  C_AllocationLine.C_Charge_ID
-			MLookup lookupDocType = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
-			DocTypePick = new WTableDirEditor("C_DocType_ID", false, false, true, lookupDocType);
-			DocTypePick.setValue(Integer.valueOf(m_C_DocType_ID));
-			DocTypePick.addValueChangeListener(this);
+		//  Doc Type
+		AD_Column_ID = 212213;    //  C_AllocationLine.C_DocType_ID
+		MLookup lookupDocType = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
+		DocTypePick = new WTableDirEditor("C_DocType_ID", false, false, true, lookupDocType);
+		DocTypePick.setValue(getC_DocType_ID());
+		DocTypePick.addValueChangeListener(this);
 			
 	}   //  dynInit
 	
@@ -540,7 +539,7 @@ public class WAllocation extends Allocation
 		{
 			loadBPartner();
 		}
-	}   //  actionPerformed
+	}
 
 	/**
 	 *  Table Model Listener.
@@ -596,35 +595,34 @@ public class WAllocation extends Allocation
 		// Organization
 		if (name.equals("AD_Org_ID"))
 		{
-			m_AD_Org_ID = ((Integer) value).intValue();
+			setAD_Org_ID((int) value);
 			
 			loadBPartner();
 		}
 		//		Charge
 		else if (name.equals("C_Charge_ID") )
 		{
-			m_C_Charge_ID = value!=null? ((Integer) value).intValue() : 0;
+			setC_Charge_ID(value!=null? ((Integer) value).intValue() : 0);
 			
 			setAllocateButton();
 		}
 
 		else if (name.equals("C_DocType_ID") )
 		{
-			m_C_DocType_ID = value!=null? ((Integer) value).intValue() : 0;
-			
+			setC_DocType_ID(value!=null? ((Integer) value).intValue() : 0);			
 		}
 
 		//  BPartner
 		if (name.equals("C_BPartner_ID"))
 		{
 			bpartnerSearch.setValue(value);
-			m_C_BPartner_ID = ((Integer)value).intValue();
+			setC_BPartner_ID((int) value);
 			loadBPartner();
 		}
 		//	Currency
 		else if (name.equals("C_Currency_ID"))
 		{
-			m_C_Currency_ID = ((Integer)value).intValue();
+			setC_Currency_ID((int) value);
 			loadBPartner();
 		}
 		//	Date for Multi-Currency
@@ -633,22 +631,22 @@ public class WAllocation extends Allocation
 	}   //  vetoableChange
 	
 	private void setAllocateButton() {
-			if (totalDiff.signum() == 0 ^ m_C_Charge_ID > 0 )
-			{
-				allocateButton.setEnabled(true);
-			// chargePick.setValue(m_C_Charge_ID);
-			}
-			else
-			{
-				allocateButton.setEnabled(false);
-			}
+		if (isOkToAllocate() )
+		{
+			allocateButton.setEnabled(true);
+		}
+		else
+		{
+			allocateButton.setEnabled(false);
+		}
 
-			if ( totalDiff.signum() == 0 )
-			{
-					chargePick.setValue(null);
-					m_C_Charge_ID = 0;
-	   		}
+		if ( getTotalDifference().signum() == 0 )
+		{
+			chargePick.setValue(null);
+			setC_Charge_ID(0);
+   		}
 	}
+
 	/**
 	 *  Load Business Partner Info
 	 *  - Payments
@@ -658,7 +656,7 @@ public class WAllocation extends Allocation
 	{
 		checkBPartner();
 		
-		Vector<Vector<Object>> data = getPaymentData(multiCurrency.isSelected(), dateField.getValue(), paymentTable);
+		Vector<Vector<Object>> data = getPaymentData(multiCurrency.isSelected(), dateField.getValue(), (String)null);
 		Vector<String> columnNames = getPaymentColumnNames(multiCurrency.isSelected());
 		
 		paymentTable.clear();
@@ -673,7 +671,7 @@ public class WAllocation extends Allocation
 		setPaymentColumnClass(paymentTable, multiCurrency.isSelected());
 		//
 
-		data = getInvoiceData(multiCurrency.isSelected(), dateField.getValue(), invoiceTable);
+		data = getInvoiceData(multiCurrency.isSelected(), dateField.getValue(), (String)null);
 		columnNames = getInvoiceColumnNames(multiCurrency.isSelected());
 		
 		invoiceTable.clear();
@@ -688,21 +686,23 @@ public class WAllocation extends Allocation
 		setInvoiceColumnClass(invoiceTable, multiCurrency.isSelected());
 		//
 		
-		calculate(multiCurrency.isSelected());
-		
 		//  Calculate Totals
 		calculate();
 		
 		statusBar.getChildren().clear();
 	}   //  loadBPartner
 	
+	/**
+	 * perform allocation calculation
+	 */
 	public void calculate()
 	{
-		allocDate = null;
+		calculate(paymentTable, invoiceTable, multiCurrency.isSelected());
 		
-		paymentInfo.setText(calculatePayment(paymentTable, multiCurrency.isSelected()));
-		invoiceInfo.setText(calculateInvoice(invoiceTable, multiCurrency.isSelected()));
-
+		paymentInfo.setText(getPaymentInfoText());
+		invoiceInfo.setText(getInvoiceInfoText());
+		differenceField.setText(format.format(getTotalDifference()));
+		
 		//	Set AllocationDate
 		if (allocDate != null) {
 			if (! allocDate.equals(dateField.getValue())) {
@@ -712,21 +712,18 @@ public class WAllocation extends Allocation
 		}
 
 		//  Set Allocation Currency
-		allocCurrencyLabel.setText(currencyPick.getDisplay());
-		//  Difference
-		totalDiff = totalPay.subtract(totalInv);
-		differenceField.setText(format.format(totalDiff));		
+		allocCurrencyLabel.setText(currencyPick.getDisplay());				
 
 		setAllocateButton();
 	}
-	
+
 	/**************************************************************************
 	 *  Save Data
 	 */
 	private MAllocationHdr saveData()
 	{
-		if (m_AD_Org_ID > 0)
-			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Org_ID", m_AD_Org_ID);
+		if (getAD_Org_ID() > 0)
+			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Org_ID", getAD_Org_ID());
 		else
 			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Org_ID", "");
 		try
@@ -753,7 +750,7 @@ public class WAllocation extends Allocation
 	
 	/**
 	 * Called by org.adempiere.webui.panel.ADForm.openForm(int)
-	 * @return
+	 * @return {@link ADForm}
 	 */
 	public ADForm getForm()
 	{
