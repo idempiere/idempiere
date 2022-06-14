@@ -36,9 +36,13 @@ import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
+import org.adempiere.webui.desktop.IDesktop;
 import org.compiere.model.MDocumentStatus;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 
 public class WDocumentStatusPanel extends Panel {
 	/**
@@ -104,9 +108,15 @@ public class WDocumentStatusPanel extends Panel {
 	}	//	init
 
 	public void refresh() {
+		int count = 0;
 		for (WDocumentStatusIndicator indicator : indicatorList) {
 			indicator.refresh();
+			if (indicator.getDocumentStatus().getAD_Client_ID() == 0)
+				count += indicator.getStatusCount();
 		}
+		EventQueue<Event> queue = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, true);
+		Event event = new Event(IDesktop.ON_ACTIVITIES_CHANGED_EVENT, null, count);
+		queue.publish(event);
 	}
 
 	public void updateUI() {
