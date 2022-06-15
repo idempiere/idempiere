@@ -55,11 +55,13 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.compiere.wf.MWFActivity;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFProcess;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -71,6 +73,7 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
+import org.zkoss.zul.Vlayout;
 
 /**
  * Direct port from WFActivity
@@ -144,6 +147,9 @@ public class WWFActivity extends ADForm implements EventListener<Event>
         	bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
 			bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
         }
+		setTooltipText(bZoom, "Zoom");
+		setTooltipText(bOK, "Ok");
+		setTooltipText(bRefresh, "Refresh");
 
         MLookup lookup = MLookupFactory.get(Env.getCtx(), m_WindowNo,
                 0, 10443, DisplayType.Search);
@@ -154,14 +160,17 @@ public class WWFActivity extends ADForm implements EventListener<Event>
         display(-1);
     }
 
+	private void setTooltipText(Button btn, String key) {
+		String text = Util.cleanAmp(Msg.translate(Env.getCtx(), key));
+		if (!Util.isEmpty(text, true))
+			btn.setTooltiptext(text);
+	}
+
 	private void init()
 	{
 		Grid grid = new Grid();
-		ZKUpdateUtil.setWidth(grid, "100%");
-		ZKUpdateUtil.setHeight(grid, "100%");
-        grid.setStyle("margin:0; padding:0; position: absolute; align: center; valign: center;");
+		grid.setStyle("margin:0; padding:0;");
         grid.makeNoStrip();
-        grid.setOddRowSclass("even");
 
 		Columns columns = new Columns();
 		grid.appendChild(columns);
@@ -182,7 +191,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		div.appendChild(lNode);
 		row.appendChild(div);
 		row.appendChild(fNode);
-		ZKUpdateUtil.setWidth(fNode, "100%");
 		ZKUpdateUtil.setHflex(fNode, "true");
 		fNode.setReadonly(true);
 
@@ -195,7 +203,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(div);
 		row.appendChild(fDescription);
 		fDescription.setMultiline(true);
-		ZKUpdateUtil.setWidth(fDescription, "100%");
 		ZKUpdateUtil.setHflex(fDescription, "true");
 		fDescription.setReadonly(true);
 
@@ -208,7 +215,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(fHelp);
 		fHelp.setMultiline(true);
 		fHelp.setRows(3);
-		ZKUpdateUtil.setWidth(fHelp, "100%");
 		ZKUpdateUtil.setHflex(fHelp, "true");
 		fHelp.setReadonly(true);
 
@@ -244,7 +250,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		div.appendChild(lTextMsg);
 		row.appendChild(div);
 		row.appendChild(fTextMsg);
-		ZKUpdateUtil.setHflex(fTextMsg, "true");
 		fTextMsg.setMultiline(true);
 		ZKUpdateUtil.setWidth(fTextMsg, "100%");
 
@@ -265,7 +270,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		Borderlayout layout = new Borderlayout();
 		ZKUpdateUtil.setWidth(layout, "100%");
 		ZKUpdateUtil.setHeight(layout, "100%");
-		layout.setStyle("background-color: transparent; position: absolute;");
+		layout.setStyle("background-color: transparent; position: relative;");
 
 		North north = new North();
 		north.appendChild(listbox);
@@ -278,7 +283,11 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		listbox.addEventListener(Events.ON_SELECT, this);
 
 		Center center = new Center();
-		center.appendChild(grid);
+		Vlayout vlayout = new Vlayout();
+		vlayout.appendChild(grid);
+		vlayout.setWidth("100%");
+		vlayout.setHeight("99%");
+		center.appendChild(vlayout);
 		layout.appendChild(center);
 		center.setStyle("background-color: transparent; overflow:auto");
 		ZKUpdateUtil.setVflex(grid, "1");
@@ -290,7 +299,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		south.setStyle("background-color: transparent");
 
 		this.appendChild(layout);
-		this.setStyle("height: 100%; width: 100%; position: absolute;");
+		this.setStyle("height: 100%; width: 100%; position: relative;");
 	}
 
 	public void onEvent(Event event) throws Exception
@@ -303,7 +312,13 @@ public class WWFActivity extends ADForm implements EventListener<Event>
     		if (comp == bZoom)
     			cmd_zoom();
     		else if (comp == bRefresh)
-    			loadActivities();
+    		{
+    			Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));
+    			Executions.schedule(getDesktop(), e -> {
+    				loadActivities();
+    				Clients.clearBusy();
+    			}, new Event("onRefresh"));
+    		}
     		else if (comp == bOK)
     		{
     			Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));
