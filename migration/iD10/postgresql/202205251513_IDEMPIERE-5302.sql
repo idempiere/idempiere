@@ -13,7 +13,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisp
 UPDATE AD_Field SET IsDisplayed='Y', SeqNo=240, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=5, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-04-06 13:21:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206920
 ;
 
-ALTER TABLE AD_Table ADD COLUMN IsShowInDrillOptions character(1) DEFAULT 'Y';
+ALTER TABLE AD_Table ADD COLUMN IsShowInDrillOptions character(1) DEFAULT 'N';
 
 -- Apr 6, 2022, 1:23:14 PM CEST
 UPDATE AD_Column SET DefaultValue='Y',Updated=TO_TIMESTAMP('2022-04-06 13:23:14','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214721
@@ -794,7 +794,7 @@ UPDATE AD_Tab SET IsInsertRecord='N',Updated=TO_TIMESTAMP('2022-05-26 12:13:49',
 ;
 
 -- Jun 3, 2022, 4:13:05 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214930,0,'Column','Column in the table','Link to the database column of the table',200335,'AD_Column_ID',22,'N','N','Y','N','N',0,'N',30,0,0,'Y',TO_TIMESTAMP('2022-06-03 16:13:05','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-03 16:13:05','YYYY-MM-DD HH24:MI:SS'),100,104,'Y','N','D','N','N','N','Y','73a5f907-95a5-4043-a35a-898dfd6089af','Y',0,'N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (214930,0,'Column','Column in the table','Link to the database column of the table',200335,'AD_Column_ID',22,'N','N','Y','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2022-06-03 16:13:05','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-03 16:13:05','YYYY-MM-DD HH24:MI:SS'),100,104,'Y','N','D','N','N','N','Y','73a5f907-95a5-4043-a35a-898dfd6089af','Y',0,'N','N','N','N')
 ;
 
 -- Jun 3, 2022, 4:13:10 PM CEST
@@ -841,11 +841,35 @@ DELETE FROM AD_Column WHERE AD_Column_ID=214752
 UPDATE AD_Column SET AD_Val_Rule_ID=100,Updated=TO_TIMESTAMP('2022-06-03 16:56:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214930
 ;
 
-+-- Jun 13, 2022, 3:56:41 PM CEST
+-- Jun 13, 2022, 3:56:41 PM CEST
 UPDATE AD_Field SET IsDisplayed='Y', SeqNo=110, AD_FieldGroup_ID=114, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, XPosition=1, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-06-13 15:56:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206926
 ;
 
 -- Jun 13, 2022, 4:12:27 PM CEST
 UPDATE AD_Column SET DefaultValue='S',Updated=TO_TIMESTAMP('2022-06-13 16:12:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214732
+;
+
+-- Jun 16, 2022, 10:00:03 AM CEST
+INSERT INTO AD_Message (MsgType,MsgText,MsgTip,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Cannot find Drill Across for Column in Tables.','You can enable Drill Across in Application Dictionary as System User in the Table window.',0,0,'Y',TO_TIMESTAMP('2022-06-16 10:00:02','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-16 10:00:02','YYYY-MM-DD HH24:MI:SS'),100,200761,'NoTableWithDrillOptions','D','22c1a70e-5ba7-4d22-a84c-db19c552b693')
+;
+
+-- Jun 16, 2022, 10:01:24 AM CEST
+INSERT INTO AD_Message (MsgType,MsgText,MsgTip,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Cannot find Drill Rule for the selected Column.','You can define new definitions in Drill Rule window.',0,0,'Y',TO_TIMESTAMP('2022-06-16 10:01:24','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-16 10:01:24','YYYY-MM-DD HH24:MI:SS'),100,200762,'NoDrillRuleFound','D','6953574e-88f7-4d13-9914-ee36e2dd3bf9')
+;
+
+-- Jun 16, 2022, 2:03:49 PM CEST
+UPDATE AD_Column SET Callout='org.cloudempiere.model.CalloutProcessDrillRule.process',Updated=TO_TIMESTAMP('2022-06-16 14:03:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214733
+;
+
+-- Jun 16, 2022, 2:04:36 PM CEST
+UPDATE AD_Column SET AD_Val_Rule_ID=128,Updated=TO_TIMESTAMP('2022-06-16 14:04:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214733
+;
+
+-- Jun 16, 2022, 2:08:50 PM CEST
+UPDATE AD_Field SET IsReadOnly='Y', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-06-16 14:08:50','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206928
+;
+
+-- Jun 16, 2022, 3:29:53 PM CEST
+INSERT INTO AD_Tab_Customization (AD_Client_ID,AD_Org_ID,AD_Tab_Customization_ID,AD_Tab_ID,AD_User_ID,Created,CreatedBy,Custom,IsActive,Updated,UpdatedBy,AD_Tab_Customization_UU,IsQuickForm) VALUES (11,0,200000,200309,100,TO_TIMESTAMP('2022-06-16 15:29:52','YYYY-MM-DD HH24:MI:SS'),100,'206937,206944,206939,206942,206936,206941','Y',TO_TIMESTAMP('2022-06-16 15:29:52','YYYY-MM-DD HH24:MI:SS'),100,'373b146c-85ce-4a24-8648-a2785472528a','N')
 ;
 

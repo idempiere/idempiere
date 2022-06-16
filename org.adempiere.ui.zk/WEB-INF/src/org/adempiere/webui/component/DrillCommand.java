@@ -16,7 +16,6 @@ package org.adempiere.webui.component;
 import java.util.Map;
 
 import org.adempiere.webui.event.DrillEvent;
-import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.compiere.model.MQuery;
 import org.zkoss.json.JSONArray;
 import org.zkoss.lang.Objects;

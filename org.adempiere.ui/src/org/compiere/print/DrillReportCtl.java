@@ -40,8 +40,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.MPInstance;
-import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessDrillRule;
 import org.compiere.model.MProcessDrillRulePara;
@@ -50,7 +48,6 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MReportView;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
-import org.compiere.model.M_Element;
 import org.compiere.model.PrintInfo;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
@@ -422,20 +419,10 @@ public class DrillReportCtl {
 			Record_ID);
 		info.setDescription(m_Query.getInfo());
 
-		if(pf != null && pf.getJasperProcess_ID() > 0)
-		{
-			// It's a report using the JasperReports engine
-			ProcessInfo pi = new ProcessInfo ("", pf.getJasperProcess_ID(), pf.getAD_Table_ID(), Record_ID);
-
-			//	Execute Process
-		}
-		else
-		{
-			// It's a default report using the standard printing engine
-			ReportEngine re = new ReportEngine (Env.getCtx(), pf, m_Query, info);
-			re.setWindowNo(m_WindowNo);
-			ReportCtl.preview(re);
-		}
+		// It's a default report using the standard printing engine
+		ReportEngine re = new ReportEngine (Env.getCtx(), pf, m_Query, info);
+		re.setWindowNo(m_WindowNo);
+		ReportCtl.preview(re);
 	}	//	launchReport
 
 
@@ -463,8 +450,6 @@ public class DrillReportCtl {
 	protected ProcessInfo prepareProcessInfo(MProcess process,MProcessDrillRule processDrillRule, int ad_PrintFormat_ID) throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info(process.toString());
-
-		boolean isReport = (process.isReport() || process.getAD_ReportView_ID() > 0 || process.getJasperReport() != null || process.getAD_PrintFormat_ID() > 0);
 
 		//	Process (see also MWFActivity.performWork
 		int AD_Table_ID = processDrillRule.getAD_Table_ID();

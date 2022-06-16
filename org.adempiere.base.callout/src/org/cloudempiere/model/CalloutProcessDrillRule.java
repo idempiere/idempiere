@@ -30,9 +30,11 @@ import java.util.Properties;
 import org.compiere.model.CalloutEngine;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.MColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessDrillRule;
 import org.compiere.model.MReportView;
+import org.compiere.model.MTable;
 
 /**
  *
@@ -52,14 +54,19 @@ public class CalloutProcessDrillRule extends CalloutEngine {
 	 */
 	public String process (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
+		// set AD_Table_ID
 		Integer AD_Process_ID = (Integer)value;
 		if (AD_Process_ID == null || AD_Process_ID.intValue() == 0)
 			return "";
 
 		MProcess process = MProcess.get(AD_Process_ID);
 
-		if(process == null || process.getAD_ReportView_ID() <= 0)
+		if(process == null || process.getAD_ReportView_ID() <= 0) {
+			mTab.setValue(MProcessDrillRule.COLUMNNAME_AD_Table_ID, null);
+			mTab.setValue(MProcessDrillRule.COLUMNNAME_AD_ReportView_ID, null);
+			mTab.setValue(MProcessDrillRule.COLUMNNAME_AD_Column_ID, null);
 			return "";
+		}
 
 		MReportView reportView = MReportView.get(process.getAD_ReportView_ID());
 
@@ -67,6 +74,16 @@ public class CalloutProcessDrillRule extends CalloutEngine {
 			return "";
 
 		mTab.setValue(MProcessDrillRule.COLUMNNAME_AD_Table_ID, reportView.getAD_Table_ID());
+		
+		// set AD_Column_ID
+		MTable table = MTable.get(reportView.getAD_Table_ID());
+		String[] keyColumns = table.getKeyColumns();
+		MColumn column = null;
+		
+		if(keyColumns.length > 0) {
+			column = MColumn.get(ctx, table.getTableName(), table.getKeyColumns()[0]);
+			mTab.setValue(MProcessDrillRule.COLUMNNAME_AD_Column_ID, column.getAD_Column_ID());
+		}
 		return "";
 	}
 

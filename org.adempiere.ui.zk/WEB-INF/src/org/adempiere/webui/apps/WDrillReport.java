@@ -42,6 +42,8 @@ import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessDrillRule;
+import org.compiere.model.MTable;
+import org.compiere.model.Query;
 import org.compiere.print.DrillReportCtl;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
@@ -53,6 +55,7 @@ import org.zkoss.zhtml.A;
 import org.zkoss.zhtml.H3;
 import org.zkoss.zhtml.H4;
 import org.zkoss.zhtml.P;
+import org.zkoss.zhtml.Span;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Text;
@@ -83,7 +86,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 	private DrillReportCtl drillReportCtl;
 	private String winpref;
-	private Component parent;
 
 	private int windowNo = 0;
 
@@ -95,7 +97,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	 */
 	public WDrillReport(DrillData data, Component parent, int WindowNo) {
 		super();
-		this.parent = parent;
 		this.windowNo = WindowNo;
 		drillReportCtl = new DrillReportCtl(data.getQuery().getTableName(), data.getQuery(), data.getColumnName(), data.getValue(), data.getDisplayValue(), WindowNo);
 
@@ -105,6 +106,8 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		ZKUpdateUtil.setHeight(this, "70%");
 		this.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 		this.setSclass("help-window");
+		this.setSizable(true);
+		this.setMaximizable(true);
 
 		Borderlayout borderlayout = new Borderlayout();
 		this.appendChild(borderlayout);
@@ -218,18 +221,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		return tabbox;
 	}
 
-	private Table getLeftContent()
-	{
-		Table table = new Table();
-		table.setWidgetAttribute("cellspacing", "0");
-		table.setWidgetAttribute("cellpadding", "0");
-		table.setWidgetAttribute("border", "0");
-		table.setStyle("width: 100%;");
-		table.setWidgetAttribute("class","help-window-content-l");
-
-		return table;
-	}
-
 	private Table getTabContent(int tabIndex, KeyNamePair[] drillTables, HashMap<Integer, KeyNamePair[]> drillPrintFormatMap, boolean isDrillProcessRule)
 	{
 		Table table = new Table();
@@ -239,29 +230,48 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		table.setStyle("width: 100%;");
 		table.setWidgetAttribute("class","help-window-content-r");
 
-		// tab
-		Tr tr = new Tr();
-		table.appendChild(tr);
-
-		Td td = new Td();
-		tr.appendChild(td);
-		A a = new A();
-		a.setWidgetAttribute("name",winpref+"Tables");
-		td.appendChild(a);
-		td.appendChild(getTablesBox(tabIndex, drillTables));
-
+		
+		Tr tr = null;
+		Td td = null;
 		int size = drillTables.length;
-		for (int i = 0; i < size; i++)
-		{
-			KeyNamePair drillTable = drillTables[i];
-
+		
+		if(size <= 0) {
+			tr = new Tr();
+			table.appendChild(tr);
+			td = new Td();
+			tr.appendChild(td);
+			
+			String message = isDrillProcessRule ? "NoDrillRuleFound" : "NoTableWithDrillOptions";
+			
+			Span span = new Span();
+			span.appendChild(new Text(Msg.getMsg(Env.getCtx(), message)));
+			td.setStyle("text-align: center;");
+			td.appendChild(span);
+		}
+		else {
 			// tab
 			tr = new Tr();
 			table.appendChild(tr);
 
 			td = new Td();
 			tr.appendChild(td);
-			td.appendChild(getDrillTableBox(drillTable, i, tabIndex, drillPrintFormatMap, isDrillProcessRule));
+			A a = new A();
+			a.setWidgetAttribute("name",winpref+"Tables");
+			td.appendChild(a);
+			td.appendChild(getTablesBox(tabIndex, drillTables));
+			for (int i = 0; i < size; i++)
+			{
+				
+				KeyNamePair drillTable = drillTables[i];
+	
+				// tab
+				tr = new Tr();
+				table.appendChild(tr);
+	
+				td = new Td();
+				tr.appendChild(td);
+				td.appendChild(getDrillTableBox(drillTable, i, tabIndex, drillPrintFormatMap, isDrillProcessRule));
+			}
 		}
 
 		return table;
@@ -307,6 +317,39 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 			KeyNamePair[] printFormats = isDrillProcessRule ? drillReportCtl.getDrillProcessRulesPrintFormatMap(drillPrintFormat.getKey()) : new KeyNamePair[] {drillPrintFormat} ;
 
+			// create new Print Format
+			if (printFormats.length <= 0)
+			{
+				KeyNamePair[] pfArray = {null};
+				MPrintFormat pf = null;
+				MProcessDrillRule dr = MProcessDrillRule.get(Env.getCtx(), drillPrintFormat.getKey());
+				if(dr != null) {
+					int AD_ReportView_ID = dr.getAD_ReportView_ID();
+					if (AD_ReportView_ID != 0)
+					{
+						String name = dr.getName();
+						int index = name.lastIndexOf('_');
+						if (index != -1)
+							name = name.substring(0,index);
+						pf = MPrintFormat.createFromReportView(Env.getCtx(), AD_ReportView_ID, name);
+					}
+					else
+					{
+						int AD_Table_ID = dr.getAD_Table_ID();
+						pf = MPrintFormat.createFromTable(Env.getCtx(), AD_Table_ID);
+					}
+					if (pf != null)
+						pfArray[0] = new KeyNamePair(pf.getAD_PrintFormat_ID(), pf.getName());
+					
+					printFormats = pfArray;
+				}
+				if (printFormats.length <= 0) {
+					int AD_Table_ID = new Query(Env.getCtx(), MTable.Table_Name, " Name = ? ", null).setParameters(drillPrintFormat.getName()).firstId();
+					pf = MPrintFormat.createFromTable(Env.getCtx(), AD_Table_ID);
+					pfArray[0] = new KeyNamePair(pf.getAD_PrintFormat_ID(), pf.getName());
+					printFormats = pfArray;
+				}
+			}
 			for(KeyNamePair printFormat: printFormats) {
 				String hdr = printFormat.getName();
 				if (hdr != null && hdr.length() > 0)
@@ -377,65 +420,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		return table;
 	}
 
-	private Table getPrintFormatsBox(KeyNamePair[] drillPrintFormats, int tabIndex, int groupIndex)
-	{
-		Table table = new Table();
-		table.setWidgetAttribute("cellspacing", "0");
-		table.setWidgetAttribute("cellpadding", "0");
-		table.setWidgetAttribute("border", "0");
-		table.setStyle("width: 100%;");
-		table.setWidgetAttribute("class","help-window-fields");
-
-		Tr tr = new Tr();
-		table.appendChild(tr);
-
-		Td td = new Td();
-		tr.appendChild(td);
-		A a = new A();
-		a.setWidgetAttribute("name",winpref+"Formats"+tabIndex+"-"+groupIndex);
-		td.appendChild(a);
-		H4 h4 = new H4();
-		h4.appendChild(new Text(Msg.getMsg(Env.getCtx(), "Formats")));
-		td.appendChild(h4);
-
-		tr = new Tr();
-		table.appendChild(tr);
-
-		td = new Td();
-		tr.appendChild(td);
-
-		tr = new Tr();
-		tr.setWidgetAttribute("class","help-window-Formats-link");
-		table.appendChild(tr);
-
-		td = new Td();
-		tr.appendChild(td);
-		P p = new P();
-		td.appendChild(p);
-
-		for (int j = 0; j < drillPrintFormats.length; j++)
-		{
-			KeyNamePair printFormat = drillPrintFormats[j];
-			String hdr = printFormat.getName();
-			if (hdr != null && hdr.length() > 0)
-			{
-				a = new A();
-				a.setHref("#"+winpref+"Format" + tabIndex + "-" + j +"-"+groupIndex);
-				a.appendChild(new Text(hdr));
-				p.appendChild(a);
-				p.appendChild(new Text("  "));
-			}
-		}
-
-		tr = new Tr();
-		table.appendChild(tr);
-
-		td = new Td();
-		tr.appendChild(td);
-
-		return table;
-	}
-
 	private Tr getPrintFormatHeader(KeyNamePair drillPrintFormat, KeyNamePair drillProcessRule) {
 		Tr tr = new Tr();
 		tr.setWidgetAttribute("class", "drill-window-field-header");
@@ -449,11 +433,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 		td.appendChild(h4);
 		return tr;
-	}
-
-	private Tr getPrintFormatBox(KeyNamePair drillPrintFormat, int tabIndex, int fieldIndex, int groupIndex)
-	{
-		return getPrintFormatBox(drillPrintFormat, tabIndex, fieldIndex, groupIndex, null, false);
 	}
 
 	private Tr getPrintFormatBox(KeyNamePair drillPrintFormat, int reportIndex, int formatIndex, int groupIndex, KeyNamePair drillTable, boolean isSinglePrintFormat)

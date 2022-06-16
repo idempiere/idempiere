@@ -47,7 +47,6 @@ import org.adempiere.webui.apps.WDrillReport;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
-import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Mask;
@@ -115,7 +114,6 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
@@ -194,8 +192,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private ToolBarButton bWizard = new ToolBarButton();
 	private Listbox comboReport = new Listbox();
 	private WTableDirEditor wLanguage;
-	private Label labelDrill = new Label();
-	private Listbox comboDrill = new Listbox();
 	protected Listbox previewType = new Listbox();
 	
 	private ToolBarButton bRefresh = new ToolBarButton();
@@ -495,23 +491,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			appendChild(toolbarPopup);	
 			toolbarPopupLayout = new Vlayout();
 			toolbarPopup.appendChild(toolbarPopupLayout);
-		}
-		
-		labelDrill.setValue(Msg.getMsg(Env.getCtx(), "Drill") + ": ");		
-		comboDrill.setMold("select");
-		comboDrill.setTooltiptext(Msg.getMsg(Env.getCtx(), "Drill"));
-		if (toolbarPopup != null)
-		{
-			Hlayout hl = new Hlayout();
-			hl.setValign("middle");
-			hl.appendChild(labelDrill);
-			hl.appendChild(comboDrill);
-			toolbarPopupLayout.appendChild(hl);
-		}
-		else 
-		{
-			toolBar.appendChild(labelDrill);		
-			toolBar.appendChild(comboDrill);
 		}
 		
 		if (toolbarPopup == null)
@@ -1010,66 +989,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		summary.setStyle("font-size: 14px");
 		
 		fillComboReport(m_reportEngine.getPrintFormat().get_ID());
-
-		//	fill Drill Options (Name, TableName)
-		comboDrill.appendItem("", null);
-		String sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(e.PO_PrintName,e.PrintName) "
-			+ "FROM AD_Column c "
-			+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
-			+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"
-			+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
-			+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName) "
-			+ "WHERE c.AD_Table_ID=? AND c.IsKey='Y' "
-			+ "ORDER BY 3";
-		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Element");
-		if (trl)
-			sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(et.PO_PrintName,et.PrintName) "
-				+ "FROM AD_Column c"
-				+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
-				+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"
-				+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
-				+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName)"
-				+ " INNER JOIN AD_Element_Trl et ON (e.AD_Element_ID=et.AD_Element_ID) "
-				+ "WHERE c.AD_Table_ID=? AND c.IsKey='Y'"
-				+ " AND et.AD_Language=? "
-				+ "ORDER BY 3";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, m_reportEngine.getPrintFormat().getAD_Table_ID());
-			if (trl)
-				pstmt.setString(2, Env.getAD_Language(Env.getCtx()));
-			rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				String tableName = rs.getString(2);
-				String name = rs.getString(3);
-				String poName = rs.getString(4);
-				if (poName != null)
-					name += "/" + poName;
-				comboDrill.appendItem(name, tableName);
-			}
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		
-		if (comboDrill.getItemCount() == 1)
-		{
-			labelDrill.setVisible(false);
-			comboDrill.setVisible(false);
-		}
-		else
-			comboDrill.addEventListener(Events.ON_SELECT, this);
 
 		revalidate();
 	}	//	dynInit
@@ -1853,8 +1772,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 		@Override
 		public void updateUI() {
-			viewer.labelDrill.setVisible(false);
-			viewer.comboDrill.setVisible(false);
 			viewer.onPreviewReport();
 		}
 		
@@ -1890,11 +1807,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 
 		@Override
-		public void updateUI() {						
-			if (viewer.comboDrill.getItemCount() > 1) {
-				viewer.labelDrill.setVisible(true);
-				viewer.comboDrill.setVisible(true);
-			}
+		public void updateUI() {
 			viewer.onPreviewReport();
 		}		
 	}
@@ -1930,8 +1843,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 		@Override
 		public void updateUI() {
-			viewer.labelDrill.setVisible(false);
-			viewer.comboDrill.setVisible(false);
 			viewer.onPreviewReport();
 		}
 		
@@ -1966,8 +1877,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 		@Override
 		public void updateUI() {
-			viewer.labelDrill.setVisible(false);
-			viewer.comboDrill.setVisible(false);
 			viewer.onPreviewReport();
 		}
 		
@@ -2014,8 +1923,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		public void updateUI()
 		{
-			viewer.labelDrill.setVisible(false);
-			viewer.comboDrill.setVisible(false);
 			viewer.onPreviewReport();
 		}
 
