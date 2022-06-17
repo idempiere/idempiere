@@ -114,7 +114,7 @@ public class DrillReportCtl {
 
 		m_Query = query;
 
-		this.initMaps();
+		this.initProcessDrillRuleMaps();
 	}
 
 	/**
@@ -168,24 +168,29 @@ public class DrillReportCtl {
 
 
 	/**
-	 * Init All Data Maps for Window
+	 * Init Process Drill Rule Maps for Window
 	 */
-	private void initMaps() {
+	private void initProcessDrillRuleMaps() {
 		// Init Table Name
 		this.m_AD_Table_ID = MTable.getTable_ID(m_TableName);
-
-
-		// Get Drill Table Map
-		initDrillTableMap();
-
-		// Init Drill Print Format Map
-		initDrillTablePrintFormatMap();
 
 		// Init Drill Process Rule Maps
 		initProcessDrillRuleMap();
 
 		// Init Drill Process Rule Print Formats
 		initDrillProcessRulePrintFormatMap();
+	}
+	
+	/**
+	 * Init Drill Table Maps for Window
+	 */
+	public void initDrillTableMaps() {
+
+		// Get Drill Table Map
+		initDrillTableMap();
+
+		// Init Drill Print Format Map
+		initDrillTablePrintFormatMap();
 	}
 
 	/**

@@ -86,6 +86,10 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 	private DrillReportCtl drillReportCtl;
 	private String winpref;
+	
+	private Tabpanel tabPanel;
+	private Tab tableTab;
+	private boolean tablesLoaded = false;
 
 	private int windowNo = 0;
 
@@ -208,16 +212,18 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		Tab tab = new Tab(Msg.getElement(Env.getCtx(), "AD_Process_DrillRule_ID"));
 		tabs.appendChild(tab);
 		tab = new Tab(Msg.getElement(Env.getCtx(), "AD_Table_ID"));
+		tab.addEventListener(Events.ON_SELECT, this);
 		tabs.appendChild(tab);
+		tableTab = tab;
 
 		Tabpanel tabPanel = new Tabpanel();
 		tabPanel.appendChild(getTabContent(1, drillReportCtl.getDrillProcessList(), drillReportCtl.getDrillProcesRules(), true));
 		tabpanels.appendChild(tabPanel);
 
 		tabPanel = new Tabpanel();
-		tabPanel.appendChild(getTabContent(2, drillReportCtl.getDrillTables(), drillReportCtl.getDrillTablePrintFormatMap(), false));
 		tabpanels.appendChild(tabPanel);
-
+		this.tabPanel = tabPanel;
+		
 		return tabbox;
 	}
 
@@ -505,6 +511,11 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 	@Override
 	public void onEvent(Event event) throws Exception {
+		if(event.getTarget().equals(tableTab) && !tablesLoaded) {
+			drillReportCtl.initDrillTableMaps();
+			tabPanel.appendChild(getTabContent(2, drillReportCtl.getDrillTables(), drillReportCtl.getDrillTablePrintFormatMap(), false));
+			tablesLoaded = true;
+		}
 		if(event.getTarget().getAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME) != null) {
 			if(event.getTarget().getAttribute(DRILL_PROCESS_RULE_ID_NAME) != null) {
 				ProcessInfo pi = drillReportCtl.getDrillProcessProcessInfo((int) event.getTarget().getAttribute(DRILL_PROCESS_RULE_ID_NAME), (int) event.getTarget().getAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME));
