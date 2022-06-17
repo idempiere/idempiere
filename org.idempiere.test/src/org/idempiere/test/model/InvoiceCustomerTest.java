@@ -46,6 +46,7 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -70,11 +71,11 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		
 		// Invoice $200 today
 		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
-		invoice.setBPartner(MBPartner.get(Env.getCtx(), 117));  // C&W
+		invoice.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id));  // C&W
 		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
 		invoice.setC_DocType_ID(invoice.getC_DocTypeTarget_ID()); // required to avoid runDocumentActionWorkflow exception
 		invoice.setPaymentRule(MInvoice.PAYMENTRULE_Check);
-		invoice.setC_PaymentTerm_ID(105);  // Immediate
+		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id);  // Immediate
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		invoice.setDateInvoiced(today);
 		invoice.setDateAcct(today);
@@ -84,14 +85,14 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 
 		MInvoiceLine line1 = new MInvoiceLine(invoice);
 		line1.setLine(10);
-		line1.setC_Charge_ID(100);  // Bank Charge
+		line1.setC_Charge_ID(DictionaryIDs.C_Charge.BANK.id);  // Bank Charge
 		line1.setQty(new BigDecimal("1"));
 		line1.setPrice(Env.ONEHUNDRED);
 		line1.saveEx();
 
 		MInvoiceLine line2 = new MInvoiceLine(invoice);
 		line2.setLine(20);
-		line2.setC_Charge_ID(101);  // Commissions Paid
+		line2.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);  // Commissions Paid
 		line2.setQty(new BigDecimal("1"));
 		line2.setPrice(Env.ONEHUNDRED);
 		line2.saveEx();
@@ -112,8 +113,8 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		payment1.setDocAction(DocAction.ACTION_Complete);
 		payment1.setPayAmt(Env.ONEHUNDRED);
 		payment1.setTenderType(MPayment.TENDERTYPE_Check);
-		payment1.setC_BankAccount_ID(100); // 1234_MoneyBank_123456789
-		payment1.setC_Currency_ID(100);  // USD
+		payment1.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id); // 1234_MoneyBank_123456789
+		payment1.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);  // USD
 		Timestamp nextweek = TimeUtil.addDays(today, 7);
 		payment1.setDateTrx(nextweek);
 		payment1.setDateAcct(nextweek);
@@ -140,8 +141,8 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		payment2.setDocAction(DocAction.ACTION_Complete);
 		payment2.setPayAmt(Env.ONEHUNDRED);
 		payment2.setTenderType(MPayment.TENDERTYPE_Check);
-		payment2.setC_BankAccount_ID(100); // 1234_MoneyBank_123456789
-		payment2.setC_Currency_ID(100);  // USD
+		payment2.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id); // 1234_MoneyBank_123456789
+		payment2.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);  // USD
 		Timestamp next2weeks = TimeUtil.addDays(today, 14);
 		payment2.setDateTrx(next2weeks);
 		payment2.setDateAcct(next2weeks);

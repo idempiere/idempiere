@@ -89,10 +89,14 @@ public class SystemIDs
 	public final static int PROCESS_C_INVOICE_GENERATE = 119;
 	public final static int PROCESS_C_INVOICE_GENERATE_MANUAL = 134;
 	public final static int PROCESS_C_INVOICE_GENERATERMA_MANUAL = 52002;
-	public final static int PROCESS_C_PAYSELECTION_CREATEPAYMENT = 155;
+	public final static int PROCESS_C_ORDER_PROCESS = 104;
+	public final static int PROCESS_C_PAYSELECTION_CREATEPAYMENT = 155;	
 	public final static int PROCESS_M_INOUT_GENERATE = 118;
 	public final static int PROCESS_M_INOUT_GENERATE_MANUAL = 199;
 	public final static int PROCESS_M_INOUT_GENERATERMA_MANUAL = 52001;
+	public final static int PROCESS_M_MATCHPO_REVERSAL = 200016;
+	public final static int PROCESS_M_StorageCleanup = 325;
+	public final static int PROCESS_PP_PRODUCT_BOM = 136;
 	public final static int PROCESS_RPT_C_ORDER = 110;
 	public final static int PROCESS_RPT_C_PAYMENT = 313;
 	public final static int PROCESS_RPT_M_INOUT = 117;
@@ -190,19 +194,25 @@ public class SystemIDs
 
 	public final static int WINDOW_ACCOUNTCOMBINATION = 153;
 	public final static int WINDOW_ATTRIBUTESETINSTANCE = 358;
+	public final static int WINDOW_BUSINESS_PARTNER = 123;
 	public static final int WINDOW_CHART = 53124;
 	public final static int WINDOW_CUSTOMERRETURN = 53097;
 	public final static int WINDOW_IMAGE = 227;
+	public final static int WINDOW_INVOICE_CUSTOMER = 167;
 	public final static int WINDOW_LOCATION = 121;
 	public final static int WINDOW_LOCATOR = 139;
 	public final static int WINDOW_LOT = 257;
 	public final static int WINDOW_MATERIALTRANSACTIONS_INDIRECTUSER = 223;
 	public final static int WINDOW_MY_REQUESTS = 237;
+	public final static int WINDOW_NOTICE = 193;
+	public final static int WINDOW_REQUEST = 201;
 	public final static int WINDOW_REQUESTS_ALL = 232;
 	public final static int WINDOW_RESOURCE = 236;
 	public final static int WINDOW_RETURNTOVENDOR = 53098;
+	public final static int WINDOW_SALES_ORDER = 143;
 	public final static int WINDOW_WAREHOUSE_LOCATOR = 139;
 	public final static int WINDOW_WINDOW_TAB_FIELD = 102;	
+	public final static int WINDOW_WORKFLOW_ACTIVITIES = 298;
 
 	public final static int TAB_TAB = 106;
 
