@@ -471,13 +471,23 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 						btn.setId("Btn"+toolbarButton.getComponentName());
 						btn.setTooltiptext(tooltiptext);
 						btn.setDisabled(false);
-
-						AImage aImage = Actions.getActionImage(actionId);
-						if ( aImage != null ) {
-							btn.setImageContent(aImage);
-						} else {
-							btn.setLabel(label);
-						}
+						btn.setIconSclass(null);
+						if (ThemeManager.isUseFontIconForImage()) {
+        					String iconSclass = Actions.getActionIconSclass(actionId);
+        					if (!Util.isEmpty(iconSclass, true)) {
+        						btn.setIconSclass(iconSclass);
+        						LayoutUtils.addSclass("font-icon-toolbar-button", btn);
+        					}
+        				}
+        				//not using font icon, fallback to image or label
+        				if (Util.isEmpty(btn.getIconSclass(), true)) {
+							AImage aImage = Actions.getActionImage(actionId);
+							if ( aImage != null ) {
+								btn.setImageContent(aImage);
+							} else {
+								btn.setLabel(label);
+							}
+        				}
 
 						ToolbarCustomButton toolbarCustomBtn = new ToolbarCustomButton(toolbarButton, btn, actionId, tabPanel.getGridTab().getWindowNo(), tabPanel.getGridTab().getTabNo());
 						tp.toolbarCustomButtons.put(btn, toolbarCustomBtn);
