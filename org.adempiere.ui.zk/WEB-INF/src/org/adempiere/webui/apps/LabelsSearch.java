@@ -50,6 +50,10 @@ public class LabelsSearch extends Div implements EventListener<Event> {
 	private Bandbox bandbox;	
 	private LabelsSearchController controller;
 
+	/**
+	 * Standard constructot
+	 * @param controller
+	 */
 	public LabelsSearch(LabelsSearchController controller) {
 		this.controller = controller;
 		init();
@@ -149,12 +153,18 @@ public class LabelsSearch extends Div implements EventListener<Event> {
 		Events.echoEvent(ON_CREATE_ECHO, this, null);		
 	}
 	
+	/**
+	 * Close the search dropdown
+	 */
 	public void closePopup() {
 		if (bandbox != null) {
 			bandbox.close();
 		}
 	}
 	
+	/**
+	 * Set height of the search dropdown
+	 */
 	public void onClientInfo() {
 		ZKUpdateUtil.setWindowHeightX(bandbox.getDropdown(), ClientInfo.get().desktopHeight-50);	
 	}

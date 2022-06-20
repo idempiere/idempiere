@@ -66,10 +66,18 @@ public class LabelsSearchController implements EventListener<Event>{
 	private Vlayout layout;
 	private LabelsPanel labelsPanel;
 
+	/**
+	 * Standard constructor
+	 * @param labelsPanel
+	 */
 	public LabelsSearchController(LabelsPanel labelsPanel) {
 		this.labelsPanel = labelsPanel;
 	}
 
+	/**
+	 * Create the controller for the search field
+	 * @param parent
+	 */
 	public void create(Component parent) {
 		this.parent = parent;
 		
@@ -112,11 +120,19 @@ public class LabelsSearchController implements EventListener<Event>{
         }
 	}
 	
+	/**
+	 * Search for a given text
+	 * @param value
+	 */
 	public void search(String value) {
 		listbox.setModel((ListModel<?>)null);
 		Events.echoEvent(ON_SEARCH_ECHO, layout, value);
 	}
 	
+	/**
+	 * Search for a given text
+	 * @param value
+	 */
 	public void onSearchEcho(String value) {
 		ListModelList<LabelItem> newModel = null;
 		
@@ -187,6 +203,10 @@ public class LabelsSearchController implements EventListener<Event>{
 		}
 	}	
 	
+	/**
+	 * Assign the selected label to the record. If doesn't exist, create the label.
+	 * @param item
+	 */
 	public void onSelect(LabelItem item) {		
 		if (item == null || !item.isAllowed())
 			return;
@@ -215,12 +235,20 @@ public class LabelsSearchController implements EventListener<Event>{
     	Events.echoEvent(ON_POST_SELECT_LABELITEM_EVENT, parent.getParent().getParent(), item);
 	}	
 	
+	/**
+	 * Get the selected item in the search results
+	 * @return selected label or null
+	 */
 	public LabelItem getSelectedItem() {
 		ListItem selected = listbox.getSelectedItem();
 		if (selected == null) return null;
 		return selected.getValue();
 	}
 
+	/**
+	 * Select the previous item in the search results
+	 * @return previous label or null
+	 */
 	public LabelItem selectPrior() {
 		int i = listbox.getSelectedIndex();
 		if (i > 0) {
@@ -234,6 +262,10 @@ public class LabelsSearchController implements EventListener<Event>{
 		return null;
 	}
 	
+	/**
+	 * Select the next item in the search results
+	 * @return next label or null
+	 */
 	public LabelItem selectNext() {
 		int i = listbox.getSelectedIndex();
 		if (i < 0 && listbox.getItemCount() > 0) {
@@ -254,6 +286,9 @@ public class LabelsSearchController implements EventListener<Event>{
 		return null;
 	}
 	
+	/**
+	 * Search result item
+	 */
 	public class LabelItem {
 		private String label;
 		private int C_Label_ID;

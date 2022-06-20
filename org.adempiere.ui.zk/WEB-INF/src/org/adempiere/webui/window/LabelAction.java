@@ -42,6 +42,10 @@ public class LabelAction {
 	private Window window = null;	
 	private LabelsPanel labelsPanel;
 	
+	/**
+	 * Standard constructor
+	 * @param panel
+	 */
 	public LabelAction(AbstractADWindowContent panel) {
 		this.panel = panel;	
 		int AD_Table_ID = panel.getActiveGridTab().getAD_Table_ID();
@@ -49,6 +53,9 @@ public class LabelAction {
 		labelsPanel = new LabelsPanel(AD_Table_ID, Record_ID);
 	}	
 
+	/**
+	 * Open the popup window
+	 */
 	public void show() {
 		if(window == null) {
 			window = new Window();

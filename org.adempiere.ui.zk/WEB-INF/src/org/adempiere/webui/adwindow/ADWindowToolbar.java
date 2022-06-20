@@ -739,6 +739,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         this.btnPostIt.setDisabled(!enabled);
     }
     
+    /**
+     * Enable/disable the label button
+     * @param enabled
+     */
     public void enableLabel(boolean enabled)
     {
         this.btnLabel.setDisabled(!enabled);

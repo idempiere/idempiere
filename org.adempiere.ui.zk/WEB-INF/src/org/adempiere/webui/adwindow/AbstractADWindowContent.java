@@ -1134,6 +1134,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	postit.showWindow();
     }
     
+    /**
+     * Open Label panel
+     */
 	public void onLabel() {
 		LabelAction labelAction = new LabelAction(this);
 		labelAction.show();

@@ -70,7 +70,7 @@ public class MLabelCategory extends X_AD_LabelCategory implements ImmutablePOSup
 	/**
 	 * 	Get All Label Categories (for System and current Client)
 	 *	@param ctx context
-	 *	@return MLabelCategory
+	 *	@return MLabelCategory array
 	 */
 	public static MLabelCategory[] getAll(Properties ctx)
 	{
@@ -105,7 +105,7 @@ public class MLabelCategory extends X_AD_LabelCategory implements ImmutablePOSup
 	}
 
 	/**
-	 * 
+	 * Load Constructor
 	 * @param copy
 	 */
 	public MLabelCategory(MLabelCategory copy) 
@@ -114,7 +114,7 @@ public class MLabelCategory extends X_AD_LabelCategory implements ImmutablePOSup
 	}
 
 	/**
-	 * 
+	 * Load Constructor
 	 * @param ctx
 	 * @param copy
 	 */
@@ -124,7 +124,7 @@ public class MLabelCategory extends X_AD_LabelCategory implements ImmutablePOSup
 	}
 
 	/**
-	 * 
+	 * Load Constructor
 	 * @param ctx
 	 * @param copy
 	 * @param trxName

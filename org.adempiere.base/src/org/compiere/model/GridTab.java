@@ -2204,6 +2204,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		return MPostIt.getID(m_vo.AD_Table_ID, recordID);
 	}	//	getAD_PostIt_ID	
 	
+	/**
+	 *	Returns true, if current row has Label(s)
+	 *  @return true if record has Label(s)
+	 */
 	public boolean hasLabel()
 	{
 		if (!canHaveAttachment())

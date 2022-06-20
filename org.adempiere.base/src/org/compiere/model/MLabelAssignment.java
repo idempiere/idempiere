@@ -57,12 +57,25 @@ public class MLabelAssignment extends X_AD_LabelAssignment {
 		super(ctx, rs, trxName);
 	}
 	
+	/**
+	 * Check if record has any label assigned
+	 * @param Table_ID
+	 * @param Record_ID
+	 * @return true if record has any label assigned
+	 */
 	public static boolean hasAnyAssignment(int Table_ID, int Record_ID) {
 		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Table_ID=? AND Record_ID=?";
 		int counter = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);
 		return counter > 0;
 	}
 	
+	/**
+	 * Check if a label is assigned to a record
+	 * @param AD_Label_ID
+	 * @param Table_ID
+	 * @param Record_ID
+	 * @return true if label is assigned
+	 */
 	public static boolean hasLabelAssignment(int AD_Label_ID, int Table_ID, int Record_ID) {
 		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Label_ID = ? AND AD_Table_ID=? AND Record_ID=?";
 		int counter = DB.getSQLValueEx(null, sql, AD_Label_ID, Table_ID, Record_ID);

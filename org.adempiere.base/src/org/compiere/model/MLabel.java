@@ -92,8 +92,8 @@ public class MLabel extends X_AD_Label {
 
 	/**
 	 * Calculates the label css style based on priorities:
-	 * 1- Label style
-	 * 2- Category style
+	 * 1- Label style;
+	 * 2- Category style;
 	 * 3- Label Hash to Hex 
 	 * @return css style
 	 */
@@ -139,6 +139,11 @@ public class MLabel extends X_AD_Label {
 		return result.toString();
 	}
 	
+	/**
+	 * Calculates a color for a given text
+	 * @param text
+	 * @return hex color
+	 */
 	public static String calculateHexColor(String text) {
 		int colorIndex = Math.abs(UUID.nameUUIDFromBytes(text.getBytes()).toString().hashCode() % VIVID_COLORS.length);
 		return VIVID_COLORS[colorIndex];

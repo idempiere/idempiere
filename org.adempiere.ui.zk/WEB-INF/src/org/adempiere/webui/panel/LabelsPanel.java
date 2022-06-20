@@ -48,6 +48,11 @@ public class LabelsPanel extends Div implements EventListener<Event> {
 	private int AD_Table_ID;
 	private int Record_ID;	
 	
+	/**
+	 * Standard constructor
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 */
 	public LabelsPanel(int AD_Table_ID, int Record_ID) {
 		this.AD_Table_ID = AD_Table_ID;
 		this.Record_ID = Record_ID;
@@ -56,10 +61,18 @@ public class LabelsPanel extends Div implements EventListener<Event> {
 		update();
 	}	
 
+	/**
+	 * Get current table id
+	 * @return id
+	 */
 	public int getAD_Table_ID() {
 		return AD_Table_ID;
 	}
 
+	/**
+	 * Get current record id
+	 * @return
+	 */
 	public int getRecord_ID() {
 		return Record_ID;
 	}
