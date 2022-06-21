@@ -461,6 +461,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		if(!Util.isEmpty(correctInput)) {
 			if((correctInput.equals(inputField.getValue()) && returnValue == DELETE) ||  (returnValue == CANCEL_TEXT))
 				close();
+			inputField.setBackground(!correctInput.equals(inputField.getValue()));
 		}
 		else {
 			close();
