@@ -25,6 +25,8 @@ import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WStringEditor;
+import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -338,10 +340,16 @@ public class Messagebox extends Window implements EventListener<Event>
 		if ((buttons & INPUT) != 0) {
 			inputField.setVisible(true);
 			isInput = true;
+			
+			if(!Util.isEmpty(this.correctInput)) {
+				inputField.addValueChangeListener(new ValueChangeListener() {
+					@Override
+					public void valueChange(ValueChangeEvent evt) {
+						inputField.setBackground(!correctInput.equals(inputField.getValue()));
+					}
+				});
+			}
 		}
-
-		if(!Util.isEmpty(this.correctInput))
-			this.addEventListener(Events.ON_CLICK, this);
 		
 		this.setTitle(title);
 		this.setPosition("center");
@@ -453,8 +461,6 @@ public class Messagebox extends Window implements EventListener<Event>
 		if(!Util.isEmpty(correctInput)) {
 			if((correctInput.equals(inputField.getValue()) && returnValue == DELETE) ||  (returnValue == CANCEL_TEXT))
 				close();
-			
-			inputField.setBackground(!correctInput.equals(inputField.getValue()));
 		}
 		else {
 			close();
