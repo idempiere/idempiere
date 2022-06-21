@@ -62,6 +62,7 @@ public class Messagebox extends Window implements EventListener<Event>
 	private static final String SMALLER_MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 350pt; min-width: 180pt; ";
 	private String msg = new String("");
 	private String imgSrc = new String("");
+	private String correctInput = new String("");
 
 	private Text lblMsg = new Text();
 
@@ -69,6 +70,8 @@ public class Messagebox extends Window implements EventListener<Event>
 	private Button btnCancel;
 	private Button btnYes;
 	private Button btnNo;
+	private Button btnDelete;
+	private Button btnCancelText;
 	private Button btnAbort;
 	private Button btnRetry;
 	private Button btnIgnore;
@@ -92,6 +95,12 @@ public class Messagebox extends Window implements EventListener<Event>
 
 	/** A No button. */
 	public static final int NO = 0x0020;
+	
+	/** A Delete button. */
+	public static final int DELETE = 0x0040;
+
+	/** A No button. */
+	public static final int CANCEL_TEXT = 0x0080;
 
 	/** A Abort button. */
 	public static final int ABORT = 0x0100;
@@ -155,6 +164,17 @@ public class Messagebox extends Window implements EventListener<Event>
 				ButtonFactory.isWithText() ? null : noLabel);
 		btnNo.addEventListener(Events.ON_CLICK, this);
 		btnNo.setId("btnNo");
+		
+		String cancelTextLabel = Util.cleanAmp(Msg.getMsg(ctx, "Cancel"));
+		btnCancelText = ButtonFactory.createButton(cancelTextLabel, null, cancelTextLabel);
+		btnCancelText.addEventListener(Events.ON_CLICK, this);
+		btnCancelText.setId("btnCancelText");
+		
+		String deleteLabel = Util.cleanAmp(Msg.getMsg(ctx, "delete"));
+		btnDelete = ButtonFactory.createButton(deleteLabel, null, deleteLabel);
+		btnDelete.setStyle("color: white; background: red;");
+		btnDelete.addEventListener(Events.ON_CLICK, this);
+		btnDelete.setId("btnDelete");
 		
 		btnAbort = ButtonFactory.createButton("Abort", null, null);
 		btnAbort.addEventListener(Events.ON_CLICK, this);
@@ -234,6 +254,8 @@ public class Messagebox extends Window implements EventListener<Event>
 		pnlButtons.appendChild(btnCancel);
 		pnlButtons.appendChild(btnYes);
 		pnlButtons.appendChild(btnNo);
+		pnlButtons.appendChild(btnCancelText);
+		pnlButtons.appendChild(btnDelete);
 		pnlButtons.appendChild(btnAbort);
 		pnlButtons.appendChild(btnRetry);
 		pnlButtons.appendChild(btnIgnore);
@@ -259,12 +281,13 @@ public class Messagebox extends Window implements EventListener<Event>
 	
 	public int show(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal)
 	{
-		return show(message, title, buttons, icon, null, callback, modal);
+		return show(message, title, null, buttons, icon, null, callback, modal);
 	}
 
-	public int show(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
+	public int show(String message, String title, String correctInput, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
 	{
 		this.msg = message;
+		this.correctInput = correctInput;
 		this.imgSrc = icon;
 		this.callback = callback;
 		if (editor == null)
@@ -278,6 +301,8 @@ public class Messagebox extends Window implements EventListener<Event>
 		btnCancel.setVisible(false);
 		btnYes.setVisible(false);
 		btnNo.setVisible(false);
+		btnDelete.setVisible(false);
+		btnCancelText.setVisible(false);
 		btnRetry.setVisible(false);
 		btnAbort.setVisible(false);
 		btnIgnore.setVisible(false);
@@ -294,6 +319,12 @@ public class Messagebox extends Window implements EventListener<Event>
 
 		if ((buttons & NO) != 0)
 			btnNo.setVisible(true);
+		
+		if ((buttons & DELETE) != 0)
+			btnDelete.setVisible(true);
+
+		if ((buttons & CANCEL_TEXT) != 0)
+			btnCancelText.setVisible(true);
 
 		if ((buttons & RETRY) != 0)
 			btnRetry.setVisible(true);
@@ -309,9 +340,12 @@ public class Messagebox extends Window implements EventListener<Event>
 			isInput = true;
 		}
 
+		if(!Util.isEmpty(this.correctInput))
+			this.addEventListener(Events.ON_CLICK, this);
+		
 		this.setTitle(title);
 		this.setPosition("center");
-		this.setClosable(true);
+		this.setClosable(Util.isEmpty(correctInput));
 		this.setAttribute(Window.MODE_KEY, modal ? Window.MODE_MODAL : Window.MODE_HIGHLIGHTED);
 		this.setSizable(true);
 
@@ -347,13 +381,18 @@ public class Messagebox extends Window implements EventListener<Event>
 	
 	public static int showDialog(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal) 
 	{
-		return showDialog(message, title, buttons, icon, null, callback, modal);
+		return showDialog(message, title, null, buttons, icon, null, callback, modal);
 	}
 
-	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
+	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal) 
+	{
+		return showDialog(message, title, null, buttons, icon, editor, callback, modal);
+	}
+	
+	public static int showDialog(String message, String title, String correctInput, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
 	{
 		Messagebox msg = new Messagebox();
-		return msg.show(message, title, buttons, icon, editor, callback, modal);
+		return msg.show(message, title, correctInput, buttons, icon, editor, callback, modal);
 	}
 	
     // Andreas Sumerauer IDEMPIERE 4702
@@ -386,6 +425,15 @@ public class Messagebox extends Window implements EventListener<Event>
 		{
 			returnValue = NO;
 		}
+		else if (event.getTarget() == btnDelete)
+		{
+			returnValue = DELETE;
+		}
+		else if (event.getTarget() == btnCancelText)
+		{
+			returnValue = CANCEL_TEXT;
+			inputField.setValue(null);
+		}
 		else if (event.getTarget() == btnAbort)
 		{
 			returnValue = ABORT;
@@ -398,7 +446,19 @@ public class Messagebox extends Window implements EventListener<Event>
 		{
 			returnValue = IGNORE;
 		}
-		close();
+		else {
+			returnValue = 0;
+		}
+		
+		if(!Util.isEmpty(correctInput)) {
+			if((correctInput.equals(inputField.getValue()) && returnValue == DELETE) ||  (returnValue == CANCEL_TEXT))
+				close();
+			
+			inputField.setBackground(!correctInput.equals(inputField.getValue()));
+		}
+		else {
+			close();
+		}
 	}
 	
 	private void close() {

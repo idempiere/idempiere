@@ -62,6 +62,7 @@ import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.editor.IProcessButton;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.event.DialogEvents;
@@ -110,6 +111,7 @@ import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -202,6 +204,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	private int adWindowId;
 
 	private MImage image;
+	
+	private String deleteConfirmationLogic;
 
 	/**
 	 * Quick Form Status bar
@@ -2756,29 +2760,64 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			onDeleteSelected(postCallback);
 			return;
 		}
-
-        FDialog.ask(curWindowNo, null, "DeleteRecord?", new Callback<Boolean>() {
-
-			@Override
-			public void onCallback(Boolean result)
-			{
-				if (result)
+		
+		deleteConfirmationLogic = adTabbox.getSelectedGridTab().getDeleteConfirmationLogic();
+		if(Util.isEmpty(deleteConfirmationLogic)) {
+			FDialog.ask(curWindowNo, null, "DeleteRecord?", new Callback<Boolean>() {
+				@Override
+				public void onCallback(Boolean result)
 				{
-		        	//error will be catch in the dataStatusChanged event
-		            boolean success = adTabbox.getSelectedGridTab().dataDelete();
-		            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
-		    		adTabbox.getSelectedGridTab().refreshParentTabs();
-		    		if (!success)
-		    			showLastWarning();
-
-		            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
-		            focusToActivePanel();
-		            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));		            
+					if (result)
+					{
+			        	//error will be catch in the dataStatusChanged event
+			            boolean success = adTabbox.getSelectedGridTab().dataDelete();
+			            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+			    		adTabbox.getSelectedGridTab().refreshParentTabs();
+			    		if (!success)
+			    			showLastWarning();
+	
+			            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
+			            focusToActivePanel();
+			            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));		           
+					}
+					if (postCallback != null)
+						postCallback.onCallback(result);
 				}
-				if (postCallback != null)
-					postCallback.onCallback(result);
-	        }
-		});
+			});
+		}
+		else {
+			int tableID = adTabbox.getSelectedGridTab().getAD_Table_ID();
+			int recordID = adTabbox.getSelectedGridTab().getRecord_ID();
+			deleteConfirmationLogic = FileUtil.parseTitle(ctx, deleteConfirmationLogic, tableID, recordID, curWindowNo, null);
+			
+			WEditor editor = new WStringEditor();
+			editor.fillHorizontal();
+			
+			FDialog.askForInputDeleteConfirmation(curWindowNo, editor, "DeleteRecordWithConfirm?", new Object[] {deleteConfirmationLogic}, null, 
+					deleteConfirmationLogic, new Callback<Object>() {
+				@Override
+				public void onCallback(Object result)
+				{
+					if(!(result instanceof String))
+						return;
+						
+					if(result.equals(deleteConfirmationLogic)) {
+						boolean success = adTabbox.getSelectedGridTab().dataDelete();
+			            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+			    		adTabbox.getSelectedGridTab().refreshParentTabs();
+			    		if (!success)
+			    			showLastWarning();
+	
+			            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
+			            focusToActivePanel();
+			            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));
+			            
+					}
+					if (postCallback != null)
+						postCallback.onCallback(result.equals(deleteConfirmationLogic));
+				}
+			});		
+		}
     }
 
     // Elaine 2008/12/01
@@ -2790,46 +2829,94 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     			postCallback.onCallback(false);
             return;
         }
-
+    	deleteConfirmationLogic = adTabbox.getSelectedGridTab().getDeleteConfirmationLogic();
 		final int[] indices = adTabbox.getSelectedGridTab().getSelection();
 		if(indices.length > 0) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(Env.getContext(ctx, curWindowNo, "_WinInfo_WindowName", false)).append(" - ")
 				.append(indices.length).append(" ").append(Msg.getMsg(Env.getCtx(), "Selected"));
-			FDialog.ask(sb.toString(), curWindowNo, null,"DeleteSelection", new Callback<Boolean>() {
-				@Override
-				public void onCallback(Boolean result) {
-					if(result){
-						adTabbox.getSelectedGridTab().clearSelection();						
-						Arrays.sort(indices);
-						int offset = 0;
-						int count = 0;
-						for (int i = 0; i < indices.length; i++)
-						{
-							adTabbox.getSelectedGridTab().navigate(indices[i]-offset);
-							if (adTabbox.getSelectedGridTab().dataDelete())
+			if(Util.isEmpty(deleteConfirmationLogic)) {
+				FDialog.ask(sb.toString(), curWindowNo, null,"DeleteSelection", new Callback<Boolean>() {
+					@Override
+					public void onCallback(Boolean result) {
+						if(result){
+							adTabbox.getSelectedGridTab().clearSelection();						
+							Arrays.sort(indices);
+							int offset = 0;
+							int count = 0;
+							for (int i = 0; i < indices.length; i++)
 							{
-								offset++;
-								count++;
+								adTabbox.getSelectedGridTab().navigate(indices[i]-offset);
+								if (adTabbox.getSelectedGridTab().dataDelete())
+								{
+									offset++;
+									count++;
+								}
+							}
+				            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+				    		adTabbox.getSelectedGridTab().refreshParentTabs();
+							
+							adTabbox.getSelectedTabpanel().dynamicDisplay(0);
+							if (getActiveGridTab().isQuickForm)
+							{
+								statusBarQF.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
+							}
+							else
+							{
+								statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
 							}
 						}
-			            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
-			    		adTabbox.getSelectedGridTab().refreshParentTabs();
-						
-						adTabbox.getSelectedTabpanel().dynamicDisplay(0);
-						if (getActiveGridTab().isQuickForm)
-						{
-							statusBarQF.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
-						}
-						else
-						{
-							statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
-						}
+						if (postCallback != null)
+							postCallback.onCallback(result);
 					}
-					if (postCallback != null)
-						postCallback.onCallback(result);
-				}
-			});
+				});
+			}
+			else {
+				deleteConfirmationLogic = Msg.getMsg(ctx, "DeleteSelection");
+				
+				WEditor editor = new WStringEditor();
+				editor.fillHorizontal();
+				
+				FDialog.askForInputDeleteConfirmation(curWindowNo, editor, "DeleteSelectionWithConfirm?", new String[] {Integer.toString(indices.length), deleteConfirmationLogic}, null, 
+						deleteConfirmationLogic, new Callback<Object>() {
+					@Override
+					public void onCallback(Object result)
+					{
+						if(!(result instanceof String))
+							return;
+							
+						if(result.equals(deleteConfirmationLogic)) {
+							adTabbox.getSelectedGridTab().clearSelection();						
+							Arrays.sort(indices);
+							int offset = 0;
+							int count = 0;
+							for (int i = 0; i < indices.length; i++)
+							{
+								adTabbox.getSelectedGridTab().navigate(indices[i]-offset);
+								if (adTabbox.getSelectedGridTab().dataDelete())
+								{
+									offset++;
+									count++;
+								}
+							}
+				            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+				    		adTabbox.getSelectedGridTab().refreshParentTabs();
+							
+							adTabbox.getSelectedTabpanel().dynamicDisplay(0);
+							if (getActiveGridTab().isQuickForm)
+							{
+								statusBarQF.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
+							}
+							else
+							{
+								statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
+							}
+						}
+						if (postCallback != null)
+							postCallback.onCallback(result.equals(deleteConfirmationLogic));
+					}
+				});		
+			}
 		} else {
 			if (getActiveGridTab().isQuickForm)
 			{

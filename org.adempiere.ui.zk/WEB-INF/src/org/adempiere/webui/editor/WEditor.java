@@ -507,9 +507,18 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         return component.isVisible();
     }
 
+    /**
+     * Indicating error with changing the style.
+     * @param error
+     */
     public void setBackground(boolean error)
     {
-
+    	if(error) {
+    		setFieldStyle("border-color: red;");
+    	}
+    	else {
+    		setFieldStyle("");
+    	}
     }
 
     public void setBackground(Color color)

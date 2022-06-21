@@ -423,6 +423,33 @@ public class FDialog
         Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title,
         		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
     }
+    
+    /**
+     * Confirmation dialog before deleting the records. 
+     * @param windowNo
+     * @param weditor
+     * @param adMessage
+     * @param adMessageArgs
+     * @param title
+     * @param correctInput
+     * @param callback
+     */
+    public static void askForInputDeleteConfirmation(int windowNo, WEditor weditor, String adMessage, Object[] adMessageArgs, String title, String correctInput, final Callback<Object> callback)
+    {
+    	Callback<Object> msgCallback = null;
+    	if (callback != null)
+    	{
+    		msgCallback = new Callback<Object>() {
+				@Override
+				public void onCallback(Object result) {
+					callback.onCallback(result);
+				}
+			};
+    	}
+    	String s = Msg.getMsg(Env.getCtx(), adMessage, adMessageArgs).replace("\n", "<br>");
+        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title, correctInput,
+        		Messagebox.DELETE | Messagebox.CANCEL_TEXT | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
+    }
 
     public static void askForInput(int windowNo, Component comp, String adMessage, final Callback<String> callback) {
     	askForInput(windowNo, comp, adMessage, "", callback);
