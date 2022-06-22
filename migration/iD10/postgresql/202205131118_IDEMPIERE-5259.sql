@@ -248,7 +248,7 @@ ALTER TABLE AD_LabelCategory_Trl ADD CONSTRAINT UpdatedBy_ADLabelCategoryTrl FOR
 ;
 
 -- May 16, 2022, 9:48:43 AM BRT
-INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing) VALUES (0,0,201119,'a3ee7ea1-7935-4687-98f7-d0afea3b7ce4',TO_TIMESTAMP('2022-05-16 09:48:42','YYYY-MM-DD HH24:MI:SS'),10,'U','Y','ad_labelcategory_trl_uu_idx',TO_TIMESTAMP('2022-05-16 09:48:42','YYYY-MM-DD HH24:MI:SS'),10,200344,'N','Y','N')
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing) VALUES (0,0,201119,'a3ee7ea1-7935-4687-98f7-d0afea3b7ce4',TO_TIMESTAMP('2022-05-16 09:48:42','YYYY-MM-DD HH24:MI:SS'),10,'D','Y','ad_labelcategory_trl_uu_idx',TO_TIMESTAMP('2022-05-16 09:48:42','YYYY-MM-DD HH24:MI:SS'),10,200344,'N','Y','N')
 ;
 
 -- May 16, 2022, 9:48:43 AM BRT
@@ -510,7 +510,7 @@ ALTER TABLE AD_Label_Trl ADD CONSTRAINT UpdatedBy_ADLabelTrl FOREIGN KEY (Update
 ;
 
 -- May 16, 2022, 10:08:05 AM BRT
-INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing) VALUES (0,0,201121,'9ca26156-5f14-43f2-9516-381a85a27dba',TO_TIMESTAMP('2022-05-16 10:08:04','YYYY-MM-DD HH24:MI:SS'),10,'U','Y','ad_label_trl_uu_idx',TO_TIMESTAMP('2022-05-16 10:08:04','YYYY-MM-DD HH24:MI:SS'),10,200346,'N','Y','N')
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing) VALUES (0,0,201121,'9ca26156-5f14-43f2-9516-381a85a27dba',TO_TIMESTAMP('2022-05-16 10:08:04','YYYY-MM-DD HH24:MI:SS'),10,'D','Y','ad_label_trl_uu_idx',TO_TIMESTAMP('2022-05-16 10:08:04','YYYY-MM-DD HH24:MI:SS'),10,200346,'N','Y','N')
 ;
 
 -- May 16, 2022, 10:08:05 AM BRT
