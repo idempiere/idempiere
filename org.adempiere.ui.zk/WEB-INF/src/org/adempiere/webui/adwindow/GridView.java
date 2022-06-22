@@ -548,7 +548,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 		
 		//frozen not working well on tablet devices yet
 		//unlikely to be fixed since the working 'smooth scrolling frozen' is a zk ee only feature
-		if (!ClientInfo.isMobile() && !ClientInfo.isFirefox("100."))
+		if (!ClientInfo.isMobile())
 		{
 			Frozen frozen = new Frozen();
 			//freeze selection and indicator column

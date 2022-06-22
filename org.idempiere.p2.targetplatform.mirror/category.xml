@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.idempiere.p2.targetplatform.mirror.feature_10.0.0.qualifier.jar" id="org.idempiere.p2.targetplatform.mirror.feature" version="10.0.0.qualifier"/>
+</site>

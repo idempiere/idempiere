@@ -32,6 +32,7 @@ import org.compiere.model.MProjectTypePhase;
 import org.compiere.model.MProjectTypeTask;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -41,22 +42,19 @@ import org.junit.jupiter.api.Test;
  */
 public class MProjectTypeTest extends AbstractTestCase {
 
-	private final static int IMPLEMENTATION_TYPE_ID = 100;
-	private final static int EVALUATION_PHASE_ID = 100;
-	
 	public MProjectTypeTest() {
 	}
 
 	@Test
 	public void testGetTasks() {
 
-		MProjectType type = new MProjectType(Env.getCtx(), IMPLEMENTATION_TYPE_ID, getTrxName());
-		assertEquals(IMPLEMENTATION_TYPE_ID, type.get_ID());
+		MProjectType type = new MProjectType(Env.getCtx(), DictionaryIDs.C_ProjectType.IMPLEMENTATION.id, getTrxName());
+		assertEquals(DictionaryIDs.C_ProjectType.IMPLEMENTATION.id, type.get_ID());
 		MProjectTypePhase[] phases = type.getPhases();
 		assertEquals(2, phases.length);
 		MProjectTypeTask[] tasks = null;
 		for (MProjectTypePhase phase : phases) {
-			if (phase.get_ID() == EVALUATION_PHASE_ID) {
+			if (phase.get_ID() == DictionaryIDs.C_Phase.INITIAL_NEED_EVALUATION.id) {
 				tasks = phase.getTasks();
 			}
 		}
@@ -64,7 +62,7 @@ public class MProjectTypeTest extends AbstractTestCase {
 		assertEquals(2, tasks.length);
 		
 		for (MProjectTypePhase phase : phases) {
-			if (phase.get_ID() != EVALUATION_PHASE_ID) {
+			if (phase.get_ID() != DictionaryIDs.C_Phase.INITIAL_NEED_EVALUATION.id) {
 				phase.setIsActive(false);
 				phase.saveEx();
 			}
@@ -72,8 +70,8 @@ public class MProjectTypeTest extends AbstractTestCase {
 		tasks[0].setIsActive(false);
 		tasks[0].saveEx();
 		
-		type = new MProjectType(Env.getCtx(), IMPLEMENTATION_TYPE_ID, getTrxName());
-		assertEquals(IMPLEMENTATION_TYPE_ID, type.get_ID());
+		type = new MProjectType(Env.getCtx(), DictionaryIDs.C_ProjectType.IMPLEMENTATION.id, getTrxName());
+		assertEquals(DictionaryIDs.C_ProjectType.IMPLEMENTATION.id, type.get_ID());
 		phases = type.getPhases();
 		assertEquals(1, phases.length);
 		tasks = phases[0].getTasks();
