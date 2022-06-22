@@ -175,15 +175,12 @@ public class StatusBar extends Panel implements EventListener<Event>
 			return;
 		
     	String labelText = buildLabelText(m_statusText);
-    	//iDempiereConsulting __05/10/2021 --- Error Message - The popup exposes the complete message and life time can be configured through system variable configurator (ErrorMsgLifeTime)  
-    	// If the value equals '0', then the popup will not disappear and you will need to close it manually; otherwise set the variable as milleseconds
-    	int duration = Integer.parseInt(MSysConfig.getValue("ErrorMsgLifeTime", "4500", Env.getAD_Client_ID(Env.getCtx())));   //MSysConfig.getIntValue("ErrorMsgLifeTime", 3500);
+    	int duration = MSysConfig.getIntValue(MSysConfig.ZK_ERROR_MSG_LIFETIME_MILLISECONDS, 3500, Env.getAD_Client_ID(Env.getCtx()));
     	if (error) {
-    		Notification.show(m_statusText, "error", findTabpanel(this), "top_left", duration, true);
+    		Notification.show(buildNotificationText(m_statusText), "error", findTabpanel(this), "top_left", duration, true);
     	} else if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH)) {
     		Notification.show(buildNotificationText(m_statusText), "info", findTabpanel(this), "top_left", 2000, true);
     	}
-    	//iDempiereConsulting __05/10/2021 -------- END
     	
     	messageContainer.setSclass(error ? "docstatus-error" : "docstatus-normal");
     	if (!ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH))
