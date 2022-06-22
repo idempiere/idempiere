@@ -64,6 +64,7 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -73,15 +74,6 @@ import org.junit.jupiter.api.Test;
  */
 public class MTaxTest extends AbstractTestCase {
 
-	private static final int STANDARD_TAX_ID = 104;
-	private static final int STANDARD_TAX_CATEGORY_ID=107;
-	
-	private static final int BP_JOE_BLOCK_ID = 118;
-	private static final int PRODUCT_MULCH_ID = 137;
-	private static final int PURCHASE_PRICE_LIST_ID = 102;
-	private static final int BP_PATIO_ID = 121;
-	private static final int MM_RECEIPT_DOCTYPE_ID = 122;
-	
 	public MTaxTest() {
 	}
 
@@ -89,12 +81,12 @@ public class MTaxTest extends AbstractTestCase {
 	public void testClearParentTaxId() {
 		MTax tax = new MTax(Env.getCtx(), 0, getTrxName());
 		tax.setName("testClearParentTaxId");
-		tax.setParent_Tax_ID(STANDARD_TAX_ID);
+		tax.setParent_Tax_ID(DictionaryIDs.C_Tax.STANDARD.id);
 		tax.setValidFrom(TimeUtil.getDay(null));
 		tax.setIsSummary(false);
-		tax.setC_TaxCategory_ID(STANDARD_TAX_CATEGORY_ID);
+		tax.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
 		tax.saveEx();		
-		assertEquals(STANDARD_TAX_ID, tax.getParent_Tax_ID(), "Unexpected parent tax id");
+		assertEquals(DictionaryIDs.C_Tax.STANDARD.id, tax.getParent_Tax_ID(), "Unexpected parent tax id");
 		
 		tax.setIsSummary(true);
 		tax.saveEx();
@@ -106,21 +98,21 @@ public class MTaxTest extends AbstractTestCase {
 		int taxExemptId = Tax.getExemptTax(Env.getCtx(), getAD_Org_ID(), getTrxName());
 		assertTrue(taxExemptId>0, "Fail to get tax exempt Id");
 		
-		MBPartner bp = new MBPartner(Env.getCtx(), BP_JOE_BLOCK_ID, getTrxName());
+		MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
 		bp.setIsTaxExempt(true);
 		bp.saveEx();
 		
-		int id = Core.getTaxLookup().get(Env.getCtx(), PRODUCT_MULCH_ID, 0, getLoginDate(), getLoginDate(), getAD_Org_ID(), getM_Warehouse_ID(), 
+		int id = Core.getTaxLookup().get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, 0, getLoginDate(), getLoginDate(), getAD_Org_ID(), getM_Warehouse_ID(), 
 				bp.getPrimaryC_BPartner_Location_ID(), bp.getPrimaryC_BPartner_Location_ID(), true, null, getTrxName());
 		assertEquals(taxExemptId, id, "Unexpected tax id");
 		
 		bp.setIsTaxExempt(false);
 		bp.saveEx();
 		
-		id = Core.getTaxLookup().get(Env.getCtx(), PRODUCT_MULCH_ID, 0, getLoginDate(), getLoginDate(), getAD_Org_ID(), getM_Warehouse_ID(), 
+		id = Core.getTaxLookup().get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, 0, getLoginDate(), getLoginDate(), getAD_Org_ID(), getM_Warehouse_ID(), 
 				bp.getPrimaryC_BPartner_Location_ID(), bp.getPrimaryC_BPartner_Location_ID(), true, null, getTrxName());
 		assertTrue(id != taxExemptId, "Unexpected tax id: " + id);
-		assertEquals(STANDARD_TAX_ID, id, "Unexpected tax id");
+		assertEquals(DictionaryIDs.C_Tax.STANDARD.id, id, "Unexpected tax id");
 	}
 	
 	@Test
@@ -146,7 +138,7 @@ public class MTaxTest extends AbstractTestCase {
 			CacheMgt.get().reset();
 			
 			//need to create product with trx as order line get product from cache
-			MProduct p = MProduct.get(PRODUCT_MULCH_ID);
+			MProduct p = MProduct.get(DictionaryIDs.M_Product.MULCH.id);
 			product = new MProduct(Env.getCtx(), 0, null);
 			product.setM_Product_Category_ID(p.getM_Product_Category_ID());
 			product.setC_TaxCategory_ID(category.get_ID());
@@ -159,7 +151,7 @@ public class MTaxTest extends AbstractTestCase {
 			product.setC_UOM_ID(p.getC_UOM_ID());
 			product.saveEx();
 			
-			MPriceList priceList = MPriceList.get(PURCHASE_PRICE_LIST_ID);
+			MPriceList priceList = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id);
 			MPriceListVersion priceListVersion = priceList.getPriceListVersion(null);
 			MProductPrice productPrice = new MProductPrice(Env.getCtx(), 0, getTrxName());
 			productPrice.setM_PriceList_Version_ID(priceListVersion.get_ID());
@@ -170,7 +162,7 @@ public class MTaxTest extends AbstractTestCase {
 			//purchase price of 2 + 5% tax
 			BigDecimal expectedCost = new BigDecimal("2.00").add(new BigDecimal("2.00").multiply(new BigDecimal("0.05"))).setScale(2, RoundingMode.HALF_EVEN);
 			
-			MBPartner bpartner = MBPartner.get(Env.getCtx(), BP_PATIO_ID);
+			MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id);
 			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 			order.setBPartner(bpartner);
 			order.setIsSOTrx(false);
@@ -194,7 +186,7 @@ public class MTaxTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 			assertEquals(expectedCost, order.getGrandTotal().setScale(2, RoundingMode.HALF_EVEN), "Un-expected order grand total");
 			
-			MInOut receipt = new MInOut(order, MM_RECEIPT_DOCTYPE_ID, order.getDateOrdered()); // MM Receipt
+			MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 			receipt.saveEx();
 			
 			MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
@@ -289,7 +281,7 @@ public class MTaxTest extends AbstractTestCase {
 			CacheMgt.get().reset();
 			
 			//need to create product with trx as order line get product from cache
-			MProduct p = MProduct.get(PRODUCT_MULCH_ID);
+			MProduct p = MProduct.get(DictionaryIDs.M_Product.MULCH.id);
 			product = new MProduct(Env.getCtx(), 0, null);
 			product.setM_Product_Category_ID(p.getM_Product_Category_ID());
 			product.setC_TaxCategory_ID(category.get_ID());
@@ -302,7 +294,7 @@ public class MTaxTest extends AbstractTestCase {
 			product.setC_UOM_ID(p.getC_UOM_ID());
 			product.saveEx();
 			
-			MPriceList priceList = MPriceList.get(PURCHASE_PRICE_LIST_ID);
+			MPriceList priceList = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id);
 			MPriceListVersion priceListVersion = priceList.getPriceListVersion(null);
 			MProductPrice productPrice = new MProductPrice(Env.getCtx(), 0, getTrxName());
 			productPrice.setM_PriceList_Version_ID(priceListVersion.get_ID());
@@ -315,7 +307,7 @@ public class MTaxTest extends AbstractTestCase {
 			//purchase price of 2 + 5% tax
 			BigDecimal expectedTotal = new BigDecimal("2.00").add(new BigDecimal("2.00").multiply(new BigDecimal("0.05"))).setScale(2, RoundingMode.HALF_EVEN);
 			
-			MBPartner bpartner = MBPartner.get(Env.getCtx(), BP_PATIO_ID);
+			MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id);
 			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 			order.setBPartner(bpartner);
 			order.setIsSOTrx(false);
@@ -339,7 +331,7 @@ public class MTaxTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 			assertEquals(expectedTotal, order.getGrandTotal().setScale(2, RoundingMode.HALF_EVEN), "Un-expected order grand total");
 			
-			MInOut receipt = new MInOut(order, MM_RECEIPT_DOCTYPE_ID, order.getDateOrdered()); // MM Receipt
+			MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 			receipt.saveEx();
 			
 			MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
