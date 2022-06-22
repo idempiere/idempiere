@@ -34,6 +34,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.zhtml.Span;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
@@ -64,7 +65,6 @@ public class Messagebox extends Window implements EventListener<Event>
 	private static final String SMALLER_MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 350pt; min-width: 180pt; ";
 	private String msg = new String("");
 	private String imgSrc = new String("");
-	private String correctInput = new String("");
 
 	private Text lblMsg = new Text();
 
@@ -78,6 +78,9 @@ public class Messagebox extends Window implements EventListener<Event>
 	private Button btnRetry;
 	private Button btnIgnore;
 	private WEditor inputField;
+	
+	Vbox pnlText;
+	Span spanError;
 
 	private Image img = new Image();
 
@@ -190,6 +193,10 @@ public class Messagebox extends Window implements EventListener<Event>
 		btnIgnore.addEventListener(Events.ON_CLICK, this);
 		btnIgnore.setId("btnIgnore");
 
+		spanError = new Span();
+		spanError.setStyle("color: red; font-size: 11px; font-style: italic;");
+		spanError.appendChild(new Text(Msg.getMsg(ctx, "ValueNotCorrect")));
+		
 		Panel pnlMessage = new Panel();
 		if (ClientInfo.maxWidth(399))
 		{
@@ -205,7 +212,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		pnlInput.setStyle(MESSAGE_PANEL_STYLE);
 		pnlInput.appendChild(inputField.getComponent());
 
-		Vbox pnlText = new Vbox();
+		pnlText = new Vbox();
 		pnlText.appendChild(pnlMessage);
 		pnlText.appendChild(pnlInput);
 
@@ -283,13 +290,12 @@ public class Messagebox extends Window implements EventListener<Event>
 	
 	public int show(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal)
 	{
-		return show(message, title, null, buttons, icon, null, callback, modal);
+		return show(message, title, buttons, icon, null, callback, modal);
 	}
 
-	public int show(String message, String title, String correctInput, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
+	public int show(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
 	{
 		this.msg = message;
-		this.correctInput = correctInput;
 		this.imgSrc = icon;
 		this.callback = callback;
 		if (editor == null)
@@ -341,11 +347,18 @@ public class Messagebox extends Window implements EventListener<Event>
 			inputField.setVisible(true);
 			isInput = true;
 			
-			if(!Util.isEmpty(this.correctInput)) {
+			if(!Util.isEmpty(inputField.getValidInput())) {
 				inputField.addValueChangeListener(new ValueChangeListener() {
 					@Override
 					public void valueChange(ValueChangeEvent evt) {
-						inputField.setBackground(!correctInput.equals(inputField.getValue()));
+						if(inputField.isValid(String.valueOf(inputField.getValue()))) {
+							inputField.setBackground(false);
+							pnlText.removeChild(spanError);
+						}
+						else {
+							inputField.setBackground(true);
+							pnlText.appendChild(spanError);
+						}
 					}
 				});
 			}
@@ -353,7 +366,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		
 		this.setTitle(title);
 		this.setPosition("center");
-		this.setClosable(Util.isEmpty(correctInput));
+		this.setClosable(true);
 		this.setAttribute(Window.MODE_KEY, modal ? Window.MODE_MODAL : Window.MODE_HIGHLIGHTED);
 		this.setSizable(true);
 
@@ -389,18 +402,13 @@ public class Messagebox extends Window implements EventListener<Event>
 	
 	public static int showDialog(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal) 
 	{
-		return showDialog(message, title, null, buttons, icon, null, callback, modal);
-	}
-
-	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal) 
-	{
-		return showDialog(message, title, null, buttons, icon, editor, callback, modal);
+		return showDialog(message, title, buttons, icon, null, callback, modal);
 	}
 	
-	public static int showDialog(String message, String title, String correctInput, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
+	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
 	{
 		Messagebox msg = new Messagebox();
-		return msg.show(message, title, correctInput, buttons, icon, editor, callback, modal);
+		return msg.show(message, title, buttons, icon, editor, callback, modal);
 	}
 	
     // Andreas Sumerauer IDEMPIERE 4702
@@ -458,10 +466,22 @@ public class Messagebox extends Window implements EventListener<Event>
 			returnValue = 0;
 		}
 		
-		if(!Util.isEmpty(correctInput)) {
-			if((correctInput.equals(inputField.getValue()) && returnValue == DELETE) ||  (returnValue == CANCEL_TEXT))
+		if(!Util.isEmpty(inputField.getValidInput())) {
+			
+			if((inputField.isValid(String.valueOf(inputField.getValue())) && returnValue == DELETE) ||  (returnValue == CANCEL_TEXT)) {
 				close();
-			inputField.setBackground(!correctInput.equals(inputField.getValue()));
+			}
+			else {
+				if(inputField.isValid(String.valueOf(inputField.getValue()))) {
+					inputField.setBackground(false);
+					pnlText.removeChild(spanError);
+				}
+				else {
+					inputField.setBackground(true);
+					pnlText.appendChild(spanError);
+				}
+			}
+			returnValue = 0;
 		}
 		else {
 			close();
@@ -485,7 +505,12 @@ public class Messagebox extends Window implements EventListener<Event>
 		{
 			callback.onCallback(returnValue);
 		} else if (callback != null && isInput) {
-			callback.onCallback(inputField.getValue());
+			Object inputValue;
+			if((!Util.isEmpty(inputField.getValidInput())) && returnValue == 0)
+				inputValue = "";
+			else
+				inputValue = inputField.getValue();
+			callback.onCallback(inputValue);
 		}
 	}
 }

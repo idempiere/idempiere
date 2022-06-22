@@ -83,11 +83,15 @@ UPDATE AD_Field SET SeqNo=190, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, 
 
 -- Jun 17, 2022, 2:50:13 PM CEST
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Do you want to delete the record?<br />
-Please confirm by typing: {0}',0,0,'Y',TO_TIMESTAMP('2022-06-17 14:50:13','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-17 14:50:13','YYYY-MM-DD HH24:MI:SS'),100,200763,'DeleteRecordWithConfirm?','D','f95200bf-125c-4d7e-a157-79cd1971905d')
+Please confirm by typing: <b>{0}<b/>',0,0,'Y',TO_TIMESTAMP('2022-06-17 14:50:13','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-17 14:50:13','YYYY-MM-DD HH24:MI:SS'),100,200763,'DeleteRecordWithConfirm?','D','f95200bf-125c-4d7e-a157-79cd1971905d')
 ;
 
 -- Jun 21, 2022, 10:32:12 AM CEST
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Do you want to delete {0} (selected) items?<br />
-Please confirm by typing: {1}',0,0,'Y',TO_TIMESTAMP('2022-06-21 10:32:11','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-21 10:32:11','YYYY-MM-DD HH24:MI:SS'),100,200764,'DeleteSelectionWithConfirm?','D','850eaab7-0ae9-48db-8232-80af712b5024')
+Please confirm by typing: <b>{1}<b/>',0,0,'Y',TO_TIMESTAMP('2022-06-21 10:32:11','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-21 10:32:11','YYYY-MM-DD HH24:MI:SS'),100,200764,'DeleteSelectionWithConfirm?','D','850eaab7-0ae9-48db-8232-80af712b5024')
+;
+
+-- Jun 22, 2022, 1:16:31 PM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Entered Value Is Not Correct',0,0,'Y',TO_TIMESTAMP('2022-06-22 13:16:30','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-22 13:16:30','YYYY-MM-DD HH24:MI:SS'),100,200765,'ValueNotCorrect','D','a8be89f0-367c-4f4b-8df8-62b6da3f3f2e')
 ;
 

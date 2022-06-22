@@ -71,7 +71,7 @@ import org.zkoss.zul.impl.XulElement;
  * @date    Mar 11, 2007
  * @version $Revision: 0.10 $
  */
-public abstract class WEditor implements EventListener<Event>, PropertyChangeListener
+public abstract class WEditor implements EventListener<Event>, PropertyChangeListener, IInputValidator
 {
     private static final String[] lISTENER_EVENTS = {};
 
@@ -104,6 +104,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	protected boolean tableEditor;
 	
 	private boolean isProcessParameter;
+	
+	private String sValidInput;
 
 	/**
 	 * call to show context menu of this field.
@@ -951,5 +953,20 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			return gridField.get_ValueAsString(variableName);
 		}
 		
+	}
+	
+	@Override
+	public String getValidInput() {
+		return this.sValidInput;
+	}
+	
+	@Override
+	public void setValidInput(String validInput) {
+		this.sValidInput = validInput;
+	}
+	
+	@Override
+	public boolean isValid(String input) {
+		return this.sValidInput.equals(input);
 	}
 }

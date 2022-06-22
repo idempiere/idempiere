@@ -434,20 +434,17 @@ public class FDialog
      * @param correctInput
      * @param callback
      */
-    public static void askForInputDeleteConfirmation(int windowNo, WEditor weditor, String adMessage, Object[] adMessageArgs, String title, String correctInput, final Callback<Object> callback)
+    public static void askForInputDeleteConfirmation(int windowNo, WEditor weditor, String adMessage, Object[] adMessageArgs, String title, final Callback<String> callback)
     {
-    	Callback<Object> msgCallback = null;
-    	if (callback != null)
-    	{
-    		msgCallback = new Callback<Object>() {
-				@Override
-				public void onCallback(Object result) {
-					callback.onCallback(result);
-				}
-			};
-    	}
+    	Callback<String> msgCallback = null;
+		msgCallback = new Callback<String>() {
+			@Override
+			public void onCallback(String result) {
+				callback.onCallback(result);
+			}
+		};
     	String s = Msg.getMsg(Env.getCtx(), adMessage, adMessageArgs).replace("\n", "<br>");
-        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title, correctInput,
+        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title,
         		Messagebox.DELETE | Messagebox.CANCEL_TEXT | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
     }
 

@@ -2792,11 +2792,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			
 			WEditor editor = new WStringEditor();
 			editor.fillHorizontal();
+			editor.setValidInput(deleteConfirmationLogic);
 			
 			FDialog.askForInputDeleteConfirmation(curWindowNo, editor, "DeleteRecordWithConfirm?", new Object[] {deleteConfirmationLogic}, null, 
-					deleteConfirmationLogic, new Callback<Object>() {
+					new Callback<String>() {
 				@Override
-				public void onCallback(Object result)
+				public void onCallback(String result)
 				{
 					if(!(result instanceof String))
 						return;
@@ -2876,11 +2877,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				
 				WEditor editor = new WStringEditor();
 				editor.fillHorizontal();
+				editor.setValidInput(deleteConfirmationLogic);
 				
 				FDialog.askForInputDeleteConfirmation(curWindowNo, editor, "DeleteSelectionWithConfirm?", new String[] {Integer.toString(indices.length), deleteConfirmationLogic}, null, 
-						deleteConfirmationLogic, new Callback<Object>() {
+						new Callback<String>() {
 					@Override
-					public void onCallback(Object result)
+					public void onCallback(String result)
 					{
 						if(!(result instanceof String))
 							return;
