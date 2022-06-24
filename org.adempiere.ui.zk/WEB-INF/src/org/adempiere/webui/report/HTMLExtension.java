@@ -77,6 +77,14 @@ public class HTMLExtension implements IHTMLExtension {
 	}
 
 	public void extendRowElement(ConcreteElement row, PrintData printData) {
+		PrintDataElement pkey = printData.getPKey();
+		if (pkey != null)
+		{
+			row.addAttribute("ondblclick", "parent.idempiere.drillAcross('" 
+					+ componentId + "', '" 
+					+ pkey.getColumnName() + "', '" 
+					+ pkey.getValueAsString() + "')");
+		}
 	}
 
 	public String getClassPrefix() {

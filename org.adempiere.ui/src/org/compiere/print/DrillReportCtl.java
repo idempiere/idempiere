@@ -456,11 +456,7 @@ public class DrillReportCtl {
 	{
 		if (log.isLoggable(Level.INFO)) log.info(process.toString());
 
-		//	Process (see also MWFActivity.performWork
-		int AD_Table_ID = processDrillRule.getAD_Table_ID();
-		int Record_ID = 0;
-
-		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), AD_Table_ID, Record_ID);
+		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID());
 		pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 		pi.setAD_Client_ID(processDrillRule.getAD_Client_ID());
 		pi.setAD_Process_UU(process.getAD_Process_UU());

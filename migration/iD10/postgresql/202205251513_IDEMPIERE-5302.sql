@@ -873,3 +873,7 @@ UPDATE AD_Field SET IsReadOnly='Y', AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=N
 INSERT INTO AD_Tab_Customization (AD_Client_ID,AD_Org_ID,AD_Tab_Customization_ID,AD_Tab_ID,AD_User_ID,Created,CreatedBy,Custom,IsActive,Updated,UpdatedBy,AD_Tab_Customization_UU,IsQuickForm) VALUES (11,0,200000,200309,100,TO_TIMESTAMP('2022-06-16 15:29:52','YYYY-MM-DD HH24:MI:SS'),100,'206937,206944,206939,206942,206936,206941','Y',TO_TIMESTAMP('2022-06-16 15:29:52','YYYY-MM-DD HH24:MI:SS'),100,'373b146c-85ce-4a24-8648-a2785472528a','N')
 ;
 
+-- Jun 24, 2022, 4:18:53 PM CEST
+UPDATE AD_Table SET IsShowInDrillOptions = 'Y' WHERE TableName IN('C_AllocationHdr','C_BankStatement','C_BankTransfer','C_Invoice','C_Order','C_Payment','C_Project','C_RfQ','GL_Journal','M_InOut','M_Inventory','M_Movement','M_Production','M_Requisition','M_RMA','R_Request')
+;
+
