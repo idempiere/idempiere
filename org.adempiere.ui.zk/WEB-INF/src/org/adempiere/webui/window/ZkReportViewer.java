@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
-import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.pdf.Document;
 import org.adempiere.util.Callback;
 import org.adempiere.util.ContextRunnable;
@@ -57,6 +56,8 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.DrillEvent;
@@ -105,6 +106,7 @@ import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -194,6 +196,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private ToolBarButton bExport = new ToolBarButton();
 	private ToolBarButton bWizard = new ToolBarButton();
 	private Listbox comboReport = new Listbox();
+	private Listitem previousSelected = new Listitem();
 	private WTableDirEditor wLanguage;
 	private Label labelDrill = new Label();
 	private Listbox comboDrill = new Listbox();
@@ -1131,6 +1134,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				{
 					selectValue = pp;
 					if(selectValue != null)
+						previousSelected = comboReport.getSelectedItem();
 						comboReport.setSelectedItem(li);
 				}
 			}
@@ -1475,62 +1479,69 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		//	create new
 		if (AD_PrintFormat_ID == -1)
 		{
-			FDialog.askForInput(m_WindowNo, null, "CreateNewPrintFormat", "CreateNewPrintFormatTitle", new Callback<Object>() {
-//			FDialog.ask(m_WindowNo, this, "CreateNewReport?", new Callback<Boolean>() {
-			public void onCallback(Object result) {
-				if(!(result instanceof String))
-					return;
-				MPrintFormat pf = null;
-				if (!Util.isEmpty((String)result)) {
-					int AD_ReportView_ID = m_reportEngine.getPrintFormat().getAD_ReportView_ID();
-					if (AD_ReportView_ID != 0)
-					{
-						String name = (String)result;
-						pf = MPrintFormat.createFromReportView(m_ctx, AD_ReportView_ID, name);
-					}
-					else
-					{
-						int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
-						pf = MPrintFormat.createFromTable(m_ctx, AD_Table_ID);
-					}
-					if (pf != null) {
-						pf.setName((String)result);
-						if(!pf.save()) {
-							Calendar cal = Calendar.getInstance();
-							SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-							String dt = sdf.format(cal.getTime());
-							pf.setName(pf.getName() + "_" + dt);
-							pf.saveEx();
-						}
-						resetPrintFormatTrl(pf);
-						fillComboReport(pf.get_ID());
-					}
-					else
+			WEditor editor = new WStringEditor();
+			ZKUpdateUtil.setWidth((HtmlBasedComponent)editor.getComponent(), "98%");
+			FDialog.askForInputWithCancel(m_WindowNo, editor, "CreateNewPrintFormat",  Msg.getMsg(m_ctx, "CreateNewPrintFormatTitle"), new Callback<Map.Entry<Boolean, Object>>() {
+				public void onCallback(Map.Entry<Boolean, Object> result) {
+					if((result == null) || (!(result.getValue() instanceof String)) || (!result.getKey())) {
+						comboReport.setSelectedItem(previousSelected);
 						return;
-//							Get Language from previous - thanks Gunther Hoppe 
-					if (m_reportEngine.getPrintFormat() != null)
-					{
-						setLanguage();
-						pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
-						pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
 					}
-					
-					m_reportEngine.setPrintFormat(pf);
-					m_reportEngine.initName();
-					postRenderReportEvent();
-				}
-				else
-					throw new FillMandatoryException("AD_PrintFormat");
-			}
-		});
-		} else if (AD_PrintFormat_ID == -2) {
-			FDialog.askForInput(m_WindowNo, null, "CreatePrintFormatCopy", Msg.getMsg(m_ctx, "CreatePrintFormatCopyTitle"), new Callback<Object>() {
-			//FDialog.ask(m_WindowNo, this, "CreateCopyReport?", new Callback<Boolean>() {
-				public void onCallback(Object result) {
-					if(!(result instanceof String))
-						return;
 					MPrintFormat pf = null;
-					if (!Util.isEmpty((String)result)) {
+					if (!Util.isEmpty((String)result.getValue())) {
+						int AD_ReportView_ID = m_reportEngine.getPrintFormat().getAD_ReportView_ID();
+						if (AD_ReportView_ID != 0)
+						{
+							String name = (String)result.getValue();
+							pf = MPrintFormat.createFromReportView(m_ctx, AD_ReportView_ID, name);
+						}
+						else
+						{
+							int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
+							pf = MPrintFormat.createFromTable(m_ctx, AD_Table_ID);
+						}
+						if (pf != null) {
+							pf.setName((String)result.getValue());
+							if(!pf.save()) {
+								Calendar cal = Calendar.getInstance();
+								SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+								String dt = sdf.format(cal.getTime());
+								pf.setName(pf.getName() + "_" + dt);
+								pf.saveEx();
+							}
+							resetPrintFormatTrl(pf);
+							fillComboReport(pf.get_ID());
+						}
+						else
+							return;
+//						Get Language from previous - thanks Gunther Hoppe 
+						if (m_reportEngine.getPrintFormat() != null)
+						{
+							setLanguage();
+							pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
+							pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
+						}
+						
+						m_reportEngine.setPrintFormat(pf);
+						m_reportEngine.initName();
+						postRenderReportEvent();
+					}
+					else {
+						comboReport.setSelectedItem(previousSelected);
+					}
+				}
+			});
+		} else if (AD_PrintFormat_ID == -2) {
+			WEditor editor = new WStringEditor();
+			ZKUpdateUtil.setWidth((HtmlBasedComponent)editor.getComponent(), "90%");
+			FDialog.askForInputWithCancel(m_WindowNo, editor, "CreatePrintFormatCopy", Msg.getMsg(m_ctx, "CreatePrintFormatCopyTitle"), new Callback<Map.Entry<Boolean, Object>>() {
+				public void onCallback(Map.Entry<Boolean, Object> result) {
+					if((result == null) || (!(result.getValue() instanceof String)) || (!result.getKey())) {
+						comboReport.setSelectedItem(previousSelected);
+						return;
+					}
+					MPrintFormat pf = null;
+					if (!Util.isEmpty((String)result.getValue())) {
 						MPrintFormat current = m_reportEngine.getPrintFormat();
 						if (current != null) {
 							pf = MPrintFormat.copyToClient(m_ctx,
@@ -1538,7 +1549,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 									Env.getAD_Client_ID(m_ctx));
 
 							if (pf != null) {
-								pf.setName((String)result);
+								pf.setName((String)result.getValue());
 								if(!pf.save()) {
 									Calendar cal = Calendar.getInstance();
 									SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -1564,8 +1575,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 						m_reportEngine.setPrintFormat(pf);
 						postRenderReportEvent();
 					}
-					else
-						throw new FillMandatoryException("AD_PrintFormat");
+					else {
+						comboReport.setSelectedItem(previousSelected);
+					}
 				}
 			});
 		}

@@ -17,6 +17,8 @@
 
 package org.adempiere.webui.component;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.adempiere.util.Callback;
@@ -25,6 +27,8 @@ import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WStringEditor;
+import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -35,6 +39,7 @@ import org.compiere.util.Util;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -73,6 +78,8 @@ public class Messagebox extends Window implements EventListener<Event>
 	private Button btnRetry;
 	private Button btnIgnore;
 	private WEditor inputField;
+	private boolean isInputMandatory;
+	private boolean isExceptionThrown = false;
 
 	private Image img = new Image();
 
@@ -259,10 +266,10 @@ public class Messagebox extends Window implements EventListener<Event>
 	
 	public int show(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal)
 	{
-		return show(message, title, buttons, icon, null, callback, modal);
+		return show(message, title, buttons, icon, null, false, callback, modal);
 	}
 
-	public int show(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
+	public int show(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal)
 	{
 		this.msg = message;
 		this.imgSrc = icon;
@@ -271,7 +278,8 @@ public class Messagebox extends Window implements EventListener<Event>
 			inputField = new WStringEditor();
 		else
 			inputField = editor;
-
+		this.isInputMandatory = isInputMandatory;
+		
 		init();
 		
 		btnOk.setVisible(false);
@@ -307,6 +315,13 @@ public class Messagebox extends Window implements EventListener<Event>
 		if ((buttons & INPUT) != 0) {
 			inputField.setVisible(true);
 			isInput = true;
+			inputField.addValueChangeListener(new ValueChangeListener() {
+				
+				@Override
+				public void valueChange(ValueChangeEvent evt) {
+					isExceptionThrown = false;
+				}
+			});
 		}
 
 		this.setTitle(title);
@@ -347,13 +362,17 @@ public class Messagebox extends Window implements EventListener<Event>
 	
 	public static int showDialog(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal) 
 	{
-		return showDialog(message, title, buttons, icon, null, callback, modal);
+		return showDialog(message, title, buttons, icon, null, false, callback, modal);
 	}
 
-	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
+	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal) {
+		return showDialog(message, title, buttons, icon, editor, false, callback, modal);
+	}
+	
+	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal)
 	{
 		Messagebox msg = new Messagebox();
-		return msg.show(message, title, buttons, icon, editor, callback, modal);
+		return msg.show(message, title, buttons, icon, editor, isInputMandatory, callback, modal);
 	}
 	
     // Andreas Sumerauer IDEMPIERE 4702
@@ -398,7 +417,13 @@ public class Messagebox extends Window implements EventListener<Event>
 		{
 			returnValue = IGNORE;
 		}
-		close();
+		 if ((returnValue == CANCEL) || !isInputMandatory || (isInputMandatory && !Util.isEmpty(String.valueOf(inputField.getValue()))))
+			close();
+		 else {
+			 isExceptionThrown = true;
+			 returnValue = 0;
+			 throw new WrongValueException(inputField.getComponent(), Msg.getMsg(Env.getCtx(), "PrintFormatMandatory"));
+		 }
 	}
 	
 	private void close() {
@@ -417,8 +442,12 @@ public class Messagebox extends Window implements EventListener<Event>
 		if (callback != null && !isInput)
 		{
 			callback.onCallback(returnValue);
-		} else if (callback != null && isInput) {
+		} else if (callback != null && isInput && !btnCancel.isVisible() && !btnNo.isVisible()) {
 			callback.onCallback(inputField.getValue());
+		} else if (callback != null && isInput && (btnCancel.isVisible() || btnNo.isVisible())) {
+			Map<Boolean, Object> map = new HashMap<Boolean, Object>();
+			map.put(returnValue == OK || returnValue == YES, isExceptionThrown ? "" : inputField.getValue());
+			callback.onCallback(map.entrySet().iterator().next());
 		}
 	}
 }
