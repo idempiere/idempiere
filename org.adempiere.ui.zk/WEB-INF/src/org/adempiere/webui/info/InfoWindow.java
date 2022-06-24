@@ -2625,16 +2625,24 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		exportButton.setEnabled(contentPanel.getRowCount() > 0);		
 	}
 
-	/** Return (if exists) the editor with the name */
-	public WEditor getEditor(String name) {
+	/**
+	 * Return (if exists) the editor with the name
+	 * @param columnName
+	 * @return editor
+	 */
+	public WEditor getEditor(String columnName) {
 		for (WEditor editor : editors) {
-			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals(name))
+			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals(columnName))
 				return editor;
 		}
 		return null;
 	}
 
-	/** Return (if exists) the index of the column in the grid */
+	/**
+	 * Return (if exists) the index of the column in the grid
+	 * @param columnName
+	 * @return editor
+	 */
 	public int getColumnIdx(String columnName) {
 		for (int i = 0; i < contentPanel.getColumnCount(); i++) {
 			if (p_layout[i].getGridField() != null && p_layout[i].getGridField().getColumnName().equals(columnName))
