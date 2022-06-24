@@ -53,7 +53,7 @@
 								<artifactItem>
 									<groupId>org.zkoss.zkforge</groupId>
 									<artifactId>ckez</artifactId>
-									<version>4.17.1.0</version>
+									<version>4.18.0.0</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>

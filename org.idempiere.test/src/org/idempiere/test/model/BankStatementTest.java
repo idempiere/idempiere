@@ -45,6 +45,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -62,7 +63,7 @@ public class BankStatementTest extends AbstractTestCase {
 	@Test
 	public void testCompleteStatement() {
 		MBankStatement stmt = new MBankStatement(Env.getCtx(), 0, getTrxName());
-		stmt.setC_BankAccount_ID(100);
+		stmt.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id);
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		stmt.setStatementDate(today);
 		stmt.setDateAcct(today);
@@ -76,7 +77,7 @@ public class BankStatementTest extends AbstractTestCase {
 		line.setStatementLineDate(today);
 		line.setStmtAmt(new BigDecimal("10.00"));
 		line.setTrxAmt(new BigDecimal("10.00"));
-		line.setC_Currency_ID(100);
+		line.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 		line.saveEx();
 		
 		ProcessInfo pi = MWorkflow.runDocumentActionWorkflow(stmt, DocAction.ACTION_Complete);
@@ -107,14 +108,14 @@ public class BankStatementTest extends AbstractTestCase {
 		
 		try {
 			MPayment payment1 = new MPayment(Env.getCtx(), 0, getTrxName());
-			payment1.setC_BPartner_ID(117); //C&W
+			payment1.setC_BPartner_ID(DictionaryIDs.C_BPartner.C_AND_W.id); //C&W
 			payment1.setC_DocType_ID(true); // Receipt
 			payment1.setDocStatus(DocAction.STATUS_Drafted);
 			payment1.setDocAction(DocAction.ACTION_Complete);
 			payment1.setPayAmt(Env.ONEHUNDRED);
 			payment1.setTenderType(MPayment.TENDERTYPE_Check);
-			payment1.setC_BankAccount_ID(100); // 1234_MoneyBank_123456789
-			payment1.setC_Currency_ID(100);  // USD
+			payment1.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id); // 1234_MoneyBank_123456789
+			payment1.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);  // USD
 			payment1.setDateTrx(today);
 			payment1.setDateAcct(today);
 			payment1.saveEx();
@@ -125,7 +126,7 @@ public class BankStatementTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, payment1.getDocStatus(), "Payment document status is not completed: " + payment1.getDocStatus());
 			
 			MBankStatement stmt = new MBankStatement(Env.getCtx(), 0, getTrxName());
-			stmt.setC_BankAccount_ID(100);		
+			stmt.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id);		
 			stmt.setStatementDate(today);
 			stmt.setDateAcct(today);
 			stmt.setName(System.currentTimeMillis()+"");
@@ -139,7 +140,7 @@ public class BankStatementTest extends AbstractTestCase {
 			line.setStmtAmt(payment1.getPayAmt());
 			line.setTrxAmt(payment1.getPayAmt());
 			line.setC_Payment_ID(payment1.getC_Payment_ID());
-			line.setC_Currency_ID(100);
+			line.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 			line.saveEx();
 			
 			pi = MWorkflow.runDocumentActionWorkflow(stmt, DocAction.ACTION_Complete);
@@ -187,14 +188,14 @@ public class BankStatementTest extends AbstractTestCase {
 		}
 		try {
 			MPayment payment1 = new MPayment(Env.getCtx(), 0, getTrxName());
-			payment1.setC_BPartner_ID(117); //C&W
+			payment1.setC_BPartner_ID(DictionaryIDs.C_BPartner.C_AND_W.id); //C&W
 			payment1.setC_DocType_ID(true); // Receipt
 			payment1.setDocStatus(DocAction.STATUS_Drafted);
 			payment1.setDocAction(DocAction.ACTION_Complete);
 			payment1.setPayAmt(Env.ONEHUNDRED);
 			payment1.setTenderType(MPayment.TENDERTYPE_Check);
-			payment1.setC_BankAccount_ID(100); // 1234_MoneyBank_123456789
-			payment1.setC_Currency_ID(100);  // USD
+			payment1.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id); // 1234_MoneyBank_123456789
+			payment1.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);  // USD
 			payment1.setDateTrx(today);
 			payment1.setDateAcct(today);
 			payment1.saveEx();
@@ -205,7 +206,7 @@ public class BankStatementTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, payment1.getDocStatus(), "Payment document status is not completed: " + payment1.getDocStatus());
 			
 			MBankStatement stmt = new MBankStatement(Env.getCtx(), 0, getTrxName());
-			stmt.setC_BankAccount_ID(100);		
+			stmt.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id);		
 			stmt.setStatementDate(today);
 			stmt.setDateAcct(today);
 			stmt.setName(System.currentTimeMillis()+"");
@@ -219,7 +220,7 @@ public class BankStatementTest extends AbstractTestCase {
 			line.setStmtAmt(payment1.getPayAmt());
 			line.setTrxAmt(payment1.getPayAmt());
 			line.setC_Payment_ID(payment1.getC_Payment_ID());
-			line.setC_Currency_ID(100);
+			line.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 			line.saveEx();
 			
 			pi = MWorkflow.runDocumentActionWorkflow(stmt, DocAction.ACTION_Complete);

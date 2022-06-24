@@ -65,12 +65,14 @@ import org.compiere.model.MRMALine;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -86,8 +88,8 @@ public class MatchInvTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4173
 	 */
 	public void testMatShipmentPosting() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(bpartner);
@@ -108,7 +110,7 @@ public class MatchInvTest extends AbstractTestCase {
 		assertFalse(info.isError());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
-		MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 		receipt.saveEx();
 				
 		MInOutLine receiptLine = new MInOutLine(receipt);
@@ -135,11 +137,11 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		MRMA rma = new MRMA(Env.getCtx(), 0, getTrxName());
 		rma.setName(order.getDocumentNo());
-		rma.setC_DocType_ID(150); // Vendor Return Material
-		rma.setM_RMAType_ID(100); // Damaged on Arrival
+		rma.setC_DocType_ID(DictionaryIDs.C_DocType.VENDOR_RETURN_MATERIAL.id); // Vendor Return Material
+		rma.setM_RMAType_ID(DictionaryIDs.M_RMAType.DAMAGE_ON_ARRIVAL.id); // Damaged on Arrival
 		rma.setM_InOut_ID(receipt.get_ID());
 		rma.setIsSOTrx(false);
-		rma.setSalesRep_ID(100); // SuperUser
+		rma.setSalesRep_ID(SystemIDs.USER_SUPERUSER); // SuperUser
 		rma.saveEx();
 		
 		MRMALine rmaLine = new MRMALine(Env.getCtx(), 0, getTrxName());
@@ -159,7 +161,7 @@ public class MatchInvTest extends AbstractTestCase {
 		delivery.setBPartner(bpartner);
 		delivery.setIsSOTrx(false);
 		delivery.setMovementType(MInOut.MOVEMENTTYPE_VendorReturns);
-		delivery.setC_DocType_ID(151); // MM Vendor Return
+		delivery.setC_DocType_ID(DictionaryIDs.C_DocType.MM_VENDOR_RETURN.id); // MM Vendor Return
 		delivery.setDocStatus(DocAction.STATUS_Drafted);
 		delivery.setDocAction(DocAction.ACTION_Complete);
 		delivery.setM_Warehouse_ID(receipt.getM_Warehouse_ID());
@@ -249,8 +251,8 @@ public class MatchInvTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4173
 	 */
 	public void testMatReceiptPosting() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(bpartner);
@@ -271,7 +273,7 @@ public class MatchInvTest extends AbstractTestCase {
 		assertFalse(info.isError());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
-		MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 		receipt.saveEx();
 				
 		MInOutLine receiptLine = new MInOutLine(receipt);
@@ -373,19 +375,19 @@ public class MatchInvTest extends AbstractTestCase {
 		}
 		
 		try {
-			int mulchId = 137;  // Mulch product
+			int mulchId = DictionaryIDs.M_Product.MULCH.id;  // Mulch product
 			MProduct mulch = new MProduct(Env.getCtx(), mulchId, getTrxName());
 			mulch.setM_Product_Category_ID(category.get_ID());
 			mulch.saveEx();
 			
-			int purchaseId = 102; // Purchase Price List
-			MBPartner bpartner = MBPartner.get(Env.getCtx(), 120); // Seed Farm Inc.
+			int purchaseId = DictionaryIDs.M_PriceList.PURCHASE.id; // Purchase Price List
+			MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); // Seed Farm Inc.
 			MAcctSchema as = MClient.get(getAD_Client_ID()).getAcctSchema();
 			BigDecimal mulchCost = MCost.getCurrentCost(mulch, 0, getTrxName()).setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 			
 			// Change standard cost of mulch product to 2.1234
-			int hqLocator = 101;
-			int costAdjustmentDocTypeId = 200004;
+			int hqLocator = DictionaryIDs.M_Locator.HQ.id;
+			int costAdjustmentDocTypeId = DictionaryIDs.C_DocType.COST_ADJUSTMENT.id;
 			MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
 			inventory.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
 			inventory.setC_DocType_ID(costAdjustmentDocTypeId);
@@ -542,8 +544,8 @@ public class MatchInvTest extends AbstractTestCase {
 	 * PO Qty=10 > IV Qty=10 > MR Qty=9 > CM Qty=1
 	 */
 	public void testCreditMemoPosting() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(bpartner);
@@ -595,7 +597,7 @@ public class MatchInvTest extends AbstractTestCase {
 		invoice.load(getTrxName());
 		assertTrue(invoice.isPosted());
 		
-		MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 		receipt.saveEx();
 				
 		MInOutLine receiptLine = new MInOutLine(receipt);
@@ -729,19 +731,19 @@ public class MatchInvTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4128
 	 */
 	public void testMatReceiptPostingWithDiffCurrencyPrecision() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), Env.DATE);
 		
 		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
 		priceList.setName("Purchase JPY " + System.currentTimeMillis());
-		MCurrency japaneseYen = MCurrency.get("JPY"); // Japanese Yen (JPY)
+		MCurrency japaneseYen = MCurrency.get(DictionaryIDs.C_Currency.JPY.id); // Japanese Yen (JPY)
 		priceList.setC_Currency_ID(japaneseYen.getC_Currency_ID());
 		priceList.setPricePrecision(japaneseYen.getStdPrecision());
 		priceList.saveEx();
 		
 		MPriceListVersion plv = new MPriceListVersion(priceList);
-		plv.setM_DiscountSchema_ID(101); // Purchase 2001
+		plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.PURCHASE_2001.id); // Purchase 2001
 		plv.setValidFrom(currentDate);
 		plv.saveEx();
 		
@@ -752,8 +754,8 @@ public class MatchInvTest extends AbstractTestCase {
 		BigDecimal yenToUsd = new BigDecimal(0.277582);
 		MConversionRate cr1 = new MConversionRate(Env.getCtx(), 0, null);
 		cr1.setC_Currency_ID(japaneseYen.getC_Currency_ID());
-		cr1.setC_Currency_ID_To(100); // USD
-		cr1.setC_ConversionType_ID(114); // Spot
+		cr1.setC_Currency_ID_To(DictionaryIDs.C_Currency.USD.id); // USD
+		cr1.setC_ConversionType_ID(DictionaryIDs.C_ConversionType.SPOT.id); // Spot
 		cr1.setValidFrom(currentDate);
 		cr1.setValidTo(currentDate);
 		cr1.setMultiplyRate(yenToUsd);
@@ -762,8 +764,8 @@ public class MatchInvTest extends AbstractTestCase {
 		BigDecimal euroToUsd = new BigDecimal(0.236675);
 		MConversionRate cr2 = new MConversionRate(Env.getCtx(), 0, null);
 		cr2.setC_Currency_ID(japaneseYen.getC_Currency_ID());
-		cr2.setC_Currency_ID_To(102); // EUR
-		cr2.setC_ConversionType_ID(114); // Spot
+		cr2.setC_Currency_ID_To(DictionaryIDs.C_Currency.EUR.id); // EUR
+		cr2.setC_ConversionType_ID(DictionaryIDs.C_ConversionType.SPOT.id); // Spot
 		cr2.setValidFrom(currentDate);
 		cr2.setValidTo(currentDate);
 		cr2.setMultiplyRate(euroToUsd);
@@ -777,7 +779,7 @@ public class MatchInvTest extends AbstractTestCase {
 			order.setDateOrdered(currentDate);
 			order.setDateAcct(currentDate);
 			order.setM_PriceList_ID(priceList.getM_PriceList_ID());
-			order.setC_ConversionType_ID(114); // Spot
+			order.setC_ConversionType_ID(DictionaryIDs.C_ConversionType.SPOT.id); // Spot
 			order.setDocStatus(DocAction.STATUS_Drafted);
 			order.setDocAction(DocAction.ACTION_Complete);
 			order.saveEx();
@@ -793,7 +795,7 @@ public class MatchInvTest extends AbstractTestCase {
 			assertFalse(info.isError());
 			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 			
-			MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+			MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 			receipt.saveEx();
 					
 			MInOutLine receiptLine = new MInOutLine(receipt);
@@ -920,8 +922,8 @@ public class MatchInvTest extends AbstractTestCase {
 	
 	@Test
 	public void testIsReversal() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(bpartner);
@@ -942,7 +944,7 @@ public class MatchInvTest extends AbstractTestCase {
 		assertFalse(info.isError());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
-		MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 		receipt.saveEx();
 				
 		MInOutLine receiptLine = new MInOutLine(receipt);
@@ -1014,8 +1016,8 @@ public class MatchInvTest extends AbstractTestCase {
 	
 	@Test
 	public void testIsReversalCM() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(bpartner);
@@ -1036,7 +1038,7 @@ public class MatchInvTest extends AbstractTestCase {
 		assertFalse(info.isError());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
-		MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 		receipt.saveEx();
 		
 		MInOutLine receiptLine = new MInOutLine(receipt);
@@ -1133,8 +1135,8 @@ public class MatchInvTest extends AbstractTestCase {
 	
 	@Test
 	public void testReversalPosting() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(bpartner);
@@ -1155,7 +1157,7 @@ public class MatchInvTest extends AbstractTestCase {
 		assertFalse(info.isError());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
-		MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 		receipt.saveEx();
 		
 		MInOutLine receiptLine = new MInOutLine(receipt);
