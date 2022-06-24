@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.window;
 
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -434,18 +435,18 @@ public class FDialog
      * @param correctInput
      * @param callback
      */
-    public static void askForInputDeleteConfirmation(int windowNo, WEditor weditor, String adMessage, Object[] adMessageArgs, String title, final Callback<String> callback)
+    public static void askForInputTextConfirmation(int windowNo, WEditor weditor, String adMessage, Object[] adMessageArgs, String title, final Callback<Map.Entry<Boolean, String>> callback)
     {
-    	Callback<String> msgCallback = null;
-		msgCallback = new Callback<String>() {
+    	Callback<Map.Entry<Boolean, String>> msgCallback = null;
+		msgCallback = new Callback<Map.Entry<Boolean, String>>() {
 			@Override
-			public void onCallback(String result) {
+			public void onCallback(Map.Entry<Boolean, String> result) {
 				callback.onCallback(result);
 			}
 		};
     	String s = Msg.getMsg(Env.getCtx(), adMessage, adMessageArgs).replace("\n", "<br>");
         Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title,
-        		Messagebox.DELETE | Messagebox.CANCEL_TEXT | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
+        		Messagebox.OK | Messagebox.CANCEL | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
     }
 
     public static void askForInput(int windowNo, Component comp, String adMessage, final Callback<String> callback) {

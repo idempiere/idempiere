@@ -2789,20 +2789,21 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			int tableID = adTabbox.getSelectedGridTab().getAD_Table_ID();
 			int recordID = adTabbox.getSelectedGridTab().getRecord_ID();
 			deleteConfirmationLogic = FileUtil.parseTitle(ctx, deleteConfirmationLogic, tableID, recordID, curWindowNo, null);
+			deleteConfirmationLogic = Msg.parseTranslation(ctx, deleteConfirmationLogic);
 			
 			WEditor editor = new WStringEditor();
 			editor.fillHorizontal();
 			editor.setValidInput(deleteConfirmationLogic);
 			
-			FDialog.askForInputDeleteConfirmation(curWindowNo, editor, "DeleteRecordWithConfirm?", new Object[] {deleteConfirmationLogic}, null, 
-					new Callback<String>() {
+			FDialog.askForInputTextConfirmation(curWindowNo, editor, "DeleteRecordWithConfirm?", new Object[] {deleteConfirmationLogic}, null, 
+					new Callback<Map.Entry<Boolean, String>>() {
 				@Override
-				public void onCallback(String result)
+				public void onCallback(Map.Entry<Boolean, String> result)
 				{
-					if(!(result instanceof String))
+					if(!result.getKey() || !(result.getValue() instanceof String))
 						return;
 						
-					if(result.equals(deleteConfirmationLogic)) {
+					if(result.getValue().equals(deleteConfirmationLogic)) {
 						boolean success = adTabbox.getSelectedGridTab().dataDelete();
 			            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
 			    		adTabbox.getSelectedGridTab().refreshParentTabs();
@@ -2815,7 +2816,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			            
 					}
 					if (postCallback != null)
-						postCallback.onCallback(result.equals(deleteConfirmationLogic));
+						postCallback.onCallback(result.getValue().equals(deleteConfirmationLogic));
 				}
 			});		
 		}
@@ -2879,15 +2880,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				editor.fillHorizontal();
 				editor.setValidInput(deleteConfirmationLogic);
 				
-				FDialog.askForInputDeleteConfirmation(curWindowNo, editor, "DeleteSelectionWithConfirm?", new String[] {Integer.toString(indices.length), deleteConfirmationLogic}, null, 
-						new Callback<String>() {
+				FDialog.askForInputTextConfirmation(curWindowNo, editor, "DeleteSelectionWithConfirm?", new String[] {Integer.toString(indices.length), deleteConfirmationLogic}, null, 
+						new Callback<Map.Entry<Boolean, String>>() {
 					@Override
-					public void onCallback(String result)
+					public void onCallback(Map.Entry<Boolean, String> result)
 					{
-						if(!(result instanceof String))
+						if(!result.getKey() || !(result.getValue() instanceof String))
 							return;
 							
-						if(result.equals(deleteConfirmationLogic)) {
+						if(result.getValue().equals(deleteConfirmationLogic)) {
 							adTabbox.getSelectedGridTab().clearSelection();						
 							Arrays.sort(indices);
 							int offset = 0;
@@ -2915,7 +2916,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							}
 						}
 						if (postCallback != null)
-							postCallback.onCallback(result.equals(deleteConfirmationLogic));
+							postCallback.onCallback(result.getValue().equals(deleteConfirmationLogic));
 					}
 				});		
 			}

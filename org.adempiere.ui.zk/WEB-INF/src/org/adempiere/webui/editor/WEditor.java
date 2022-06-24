@@ -515,12 +515,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
      */
     public void setBackground(boolean error)
     {
-    	if(error) {
-    		setFieldStyle("border-color: red;");
-    	}
-    	else {
-    		setFieldStyle("");
-    	}
+
     }
 
     public void setBackground(Color color)
@@ -967,6 +962,6 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	
 	@Override
 	public boolean isValid(String input) {
-		return this.sValidInput.equals(input);
+		return Util.isEmpty(sValidInput) ? true : sValidInput.equals(input);
 	}
 }

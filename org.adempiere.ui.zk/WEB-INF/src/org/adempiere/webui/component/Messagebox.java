@@ -17,6 +17,8 @@
 
 package org.adempiere.webui.component;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.adempiere.util.Callback;
@@ -34,10 +36,10 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.zkoss.zhtml.Span;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -72,15 +74,11 @@ public class Messagebox extends Window implements EventListener<Event>
 	private Button btnCancel;
 	private Button btnYes;
 	private Button btnNo;
-	private Button btnDelete;
-	private Button btnCancelText;
 	private Button btnAbort;
 	private Button btnRetry;
 	private Button btnIgnore;
 	private WEditor inputField;
-	
-	Vbox pnlText;
-	Span spanError;
+	private boolean isExceptionThrown = false;
 
 	private Image img = new Image();
 
@@ -100,12 +98,6 @@ public class Messagebox extends Window implements EventListener<Event>
 
 	/** A No button. */
 	public static final int NO = 0x0020;
-	
-	/** A Delete button. */
-	public static final int DELETE = 0x0040;
-
-	/** A No button. */
-	public static final int CANCEL_TEXT = 0x0080;
 
 	/** A Abort button. */
 	public static final int ABORT = 0x0100;
@@ -170,17 +162,6 @@ public class Messagebox extends Window implements EventListener<Event>
 		btnNo.addEventListener(Events.ON_CLICK, this);
 		btnNo.setId("btnNo");
 		
-		String cancelTextLabel = Util.cleanAmp(Msg.getMsg(ctx, "Cancel"));
-		btnCancelText = ButtonFactory.createButton(cancelTextLabel, null, cancelTextLabel);
-		btnCancelText.addEventListener(Events.ON_CLICK, this);
-		btnCancelText.setId("btnCancelText");
-		
-		String deleteLabel = Util.cleanAmp(Msg.getMsg(ctx, "delete"));
-		btnDelete = ButtonFactory.createButton(deleteLabel, null, deleteLabel);
-		btnDelete.setStyle("color: white; background: red;");
-		btnDelete.addEventListener(Events.ON_CLICK, this);
-		btnDelete.setId("btnDelete");
-		
 		btnAbort = ButtonFactory.createButton("Abort", null, null);
 		btnAbort.addEventListener(Events.ON_CLICK, this);
 		btnAbort.setId("btnAbort");
@@ -192,10 +173,6 @@ public class Messagebox extends Window implements EventListener<Event>
 		btnIgnore = ButtonFactory.createNamedButton("Ignore");
 		btnIgnore.addEventListener(Events.ON_CLICK, this);
 		btnIgnore.setId("btnIgnore");
-
-		spanError = new Span();
-		spanError.setStyle("color: red; font-size: 11px; font-style: italic;");
-		spanError.appendChild(new Text(Msg.getMsg(ctx, "ValueNotCorrect")));
 		
 		Panel pnlMessage = new Panel();
 		if (ClientInfo.maxWidth(399))
@@ -212,7 +189,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		pnlInput.setStyle(MESSAGE_PANEL_STYLE);
 		pnlInput.appendChild(inputField.getComponent());
 
-		pnlText = new Vbox();
+		Vbox pnlText = new Vbox();
 		pnlText.appendChild(pnlMessage);
 		pnlText.appendChild(pnlInput);
 
@@ -263,8 +240,6 @@ public class Messagebox extends Window implements EventListener<Event>
 		pnlButtons.appendChild(btnCancel);
 		pnlButtons.appendChild(btnYes);
 		pnlButtons.appendChild(btnNo);
-		pnlButtons.appendChild(btnCancelText);
-		pnlButtons.appendChild(btnDelete);
 		pnlButtons.appendChild(btnAbort);
 		pnlButtons.appendChild(btnRetry);
 		pnlButtons.appendChild(btnIgnore);
@@ -309,8 +284,6 @@ public class Messagebox extends Window implements EventListener<Event>
 		btnCancel.setVisible(false);
 		btnYes.setVisible(false);
 		btnNo.setVisible(false);
-		btnDelete.setVisible(false);
-		btnCancelText.setVisible(false);
 		btnRetry.setVisible(false);
 		btnAbort.setVisible(false);
 		btnIgnore.setVisible(false);
@@ -327,12 +300,6 @@ public class Messagebox extends Window implements EventListener<Event>
 
 		if ((buttons & NO) != 0)
 			btnNo.setVisible(true);
-		
-		if ((buttons & DELETE) != 0)
-			btnDelete.setVisible(true);
-
-		if ((buttons & CANCEL_TEXT) != 0)
-			btnCancelText.setVisible(true);
 
 		if ((buttons & RETRY) != 0)
 			btnRetry.setVisible(true);
@@ -346,22 +313,13 @@ public class Messagebox extends Window implements EventListener<Event>
 		if ((buttons & INPUT) != 0) {
 			inputField.setVisible(true);
 			isInput = true;
-			
-			if(!Util.isEmpty(inputField.getValidInput())) {
-				inputField.addValueChangeListener(new ValueChangeListener() {
-					@Override
-					public void valueChange(ValueChangeEvent evt) {
-						if(inputField.isValid(String.valueOf(inputField.getValue()))) {
-							inputField.setBackground(false);
-							pnlText.removeChild(spanError);
-						}
-						else {
-							inputField.setBackground(true);
-							pnlText.appendChild(spanError);
-						}
-					}
-				});
-			}
+			inputField.addValueChangeListener(new ValueChangeListener() {
+				
+				@Override
+				public void valueChange(ValueChangeEvent evt) {
+					isExceptionThrown = false;
+				}
+			});
 		}
 		
 		this.setTitle(title);
@@ -441,15 +399,6 @@ public class Messagebox extends Window implements EventListener<Event>
 		{
 			returnValue = NO;
 		}
-		else if (event.getTarget() == btnDelete)
-		{
-			returnValue = DELETE;
-		}
-		else if (event.getTarget() == btnCancelText)
-		{
-			returnValue = CANCEL_TEXT;
-			inputField.setValue(null);
-		}
 		else if (event.getTarget() == btnAbort)
 		{
 			returnValue = ABORT;
@@ -468,20 +417,14 @@ public class Messagebox extends Window implements EventListener<Event>
 		
 		if(!Util.isEmpty(inputField.getValidInput())) {
 			
-			if((inputField.isValid(String.valueOf(inputField.getValue())) && returnValue == DELETE) ||  (returnValue == CANCEL_TEXT)) {
+			if((returnValue == CANCEL) || (inputField.isValid(String.valueOf(inputField.getValue())) && returnValue == OK)) {
 				close();
 			}
 			else {
-				if(inputField.isValid(String.valueOf(inputField.getValue()))) {
-					inputField.setBackground(false);
-					pnlText.removeChild(spanError);
-				}
-				else {
-					inputField.setBackground(true);
-					pnlText.appendChild(spanError);
-				}
+				isExceptionThrown = true;
+				returnValue = 0;
+				throw new WrongValueException(inputField.getComponent(), Msg.getMsg(Env.getCtx(), "ValueNotCorrect"));
 			}
-			returnValue = 0;
 		}
 		else {
 			close();
@@ -504,13 +447,13 @@ public class Messagebox extends Window implements EventListener<Event>
 		if (callback != null && !isInput)
 		{
 			callback.onCallback(returnValue);
-		} else if (callback != null && isInput) {
-			Object inputValue;
-			if((!Util.isEmpty(inputField.getValidInput())) && returnValue == 0)
-				inputValue = "";
-			else
-				inputValue = inputField.getValue();
-			callback.onCallback(inputValue);
+		} 
+		else if (callback != null && isInput && !btnCancel.isVisible() && !btnNo.isVisible()) {
+			callback.onCallback(inputField.getValue());
+		} else if (callback != null && isInput && (btnCancel.isVisible() || btnNo.isVisible())) {
+			Map<Boolean, Object> map = new HashMap<Boolean, Object>();
+			map.put(returnValue == OK || returnValue == YES, isExceptionThrown ? "" : inputField.getValue());
+			callback.onCallback(map.entrySet().iterator().next());
 		}
 	}
 }
