@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.window;
 
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -443,6 +444,23 @@ public class FDialog
     	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
         Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title, 
         		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, msgCallback, (msgCallback == null));
+    }
+    
+    public static void askForInputWithCancel(int windowNo, WEditor weditor, String adMessage, String title, final Callback<Map.Entry<Boolean, Object>> callback)
+    {
+    	Callback<Map.Entry<Boolean, Object>> msgCallback = null;
+    	if (callback != null) 
+    	{
+    		msgCallback = new Callback<Map.Entry<Boolean, Object>>() {
+				@Override
+				public void onCallback(Map.Entry<Boolean, Object> result) {
+					callback.onCallback(result);
+				}
+			};
+    	}
+    	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
+        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title, 
+        		Messagebox.OK | Messagebox.CANCEL | Messagebox.INPUT, Messagebox.QUESTION, weditor, true, msgCallback, (msgCallback == null));
     }
 
     /**************************************************************************
