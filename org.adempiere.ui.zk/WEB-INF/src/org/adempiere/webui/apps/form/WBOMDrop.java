@@ -170,7 +170,7 @@ public class WBOMDrop extends ADForm implements EventListener<Event>, ValueChang
 			borderLayout.appendChild(center);
 			center.appendChild(centerGroupbox);
 			centerGroupbox.setWidth("100%");
-			centerGroupbox.setHeight("100%");
+			centerGroupbox.setHeight("auto");
 			createMainPanel();
 
 			confirmPanel.addActionListener(Events.ON_CLICK, this);
