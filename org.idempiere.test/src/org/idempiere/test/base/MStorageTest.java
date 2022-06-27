@@ -50,6 +50,7 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -59,15 +60,12 @@ import org.junit.jupiter.api.Test;
  */
 public class MStorageTest extends AbstractTestCase {
 
-	private static final int BP_JOE_BLOCK = 118;
-	private static final int PRODUCT_AZALEA = 128;
-	
 	public MStorageTest() {
 	}
 
 	@Test
 	public void testStorageOnHandAndReservation() {
-		MProduct azalea = MProduct.get(Env.getCtx(), PRODUCT_AZALEA);
+		MProduct azalea = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id);
 		
 		BigDecimal onhandForReservation = MStorageOnHand.getQtyOnHandForReservation(azalea.getM_Product_ID(), getM_Warehouse_ID(), 0, getTrxName());
 		BigDecimal onhandForShipping  = MStorageOnHand.getQtyOnHandForShipping(azalea.getM_Product_ID(), getM_Warehouse_ID(), 0, getTrxName());
@@ -76,7 +74,7 @@ public class MStorageTest extends AbstractTestCase {
 		
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -106,7 +104,7 @@ public class MStorageTest extends AbstractTestCase {
 		BigDecimal availableForReservation1 = MStorageReservation.getQtyAvailable(getM_Warehouse_ID(), azalea.getM_Product_ID(), 0, getTrxName());
 		assertTrue(availableForReservation1.compareTo(availableForReservation) < 0, "Qty available for reservation doesn't reduce as expected (Before=" + availableForReservation.toPlainString() + " After=" + availableForReservation1.toPlainString());
 		
-		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
 		shipment.setDocAction(DocAction.ACTION_Complete);
 		shipment.saveEx();
@@ -153,7 +151,7 @@ public class MStorageTest extends AbstractTestCase {
 				
 		MMovement movement = new MMovement(Env.getCtx(), 0, getTrxName());
 		//143 | Material Movement
-		movement.setC_DocType_ID(143);
+		movement.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_MOVEMENT.id);
 		movement.setDocAction(DocAction.ACTION_Complete);
 		movement.saveEx();
 		

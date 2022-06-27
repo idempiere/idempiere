@@ -62,6 +62,7 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -72,22 +73,6 @@ public class InventoryTest extends AbstractTestCase {
 	public InventoryTest() {
 	}
 
-	private static final int PRODCAT_BUSHES = 107;
-	private static final int TAXCAT_STANDARD = 107;
-	private static final int UOM_EACH = 100;
-	private static final int WAREHOUSE_HQ = 103;
-	private static final int LOCATOR_HQ = 101;
-	private static final int DOCTYPE_PHYSICAL_INV = 144;
-	private static final int DOCTYPE_COST_ADJUSTMENT = 200004;
-	private static final int DOCTYPE_PO = 126;
-	private static final int DOCTYPE_RECEIPT = 122;
-	private static final int BP_PATIO = 121;
-	private static final int USER_GARDENADMIN = 101;
-	private static final int MULCH_PRODUCT_ID = 137;
-	private final static int FERTILIZER_LOT_ATTRIBUTESET_ID = 101;
-	private static final int CHEMICALS_CATEGORY_ID = 109;
-	private static final int PURCHASE_PRICE_LIST_ID = 102;
-
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4596
 	 */
@@ -97,24 +82,24 @@ public class InventoryTest extends AbstractTestCase {
 		String trxName = getTrxName();
 
 		MProduct product = new MProduct(ctx, 0, trxName);
-		product.setM_Product_Category_ID(PRODCAT_BUSHES);
+		product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.BUSH.id);
 		product.setName("Test 4596");
 		product.setValue("T4596");
 		product.setProductType(MProduct.PRODUCTTYPE_Item);
 		product.setIsStocked(true);
 		product.setIsSold(true);
 		product.setIsPurchased(true);
-		product.setC_UOM_ID(UOM_EACH);
-		product.setC_TaxCategory_ID(TAXCAT_STANDARD);
+		product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+		product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
 		product.saveEx();
 
 		MInventory inventory = new MInventory(ctx, 0, trxName);
-		inventory.setM_Warehouse_ID(WAREHOUSE_HQ);
-		inventory.setC_DocType_ID(DOCTYPE_PHYSICAL_INV);
+		inventory.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
 		inventory.saveEx();
 
 		MInventoryLine iline = new MInventoryLine(inventory,
-				LOCATOR_HQ, 
+				DictionaryIDs.M_Locator.HQ.id, 
 				product.getM_Product_ID(),
 				0, // M_AttributeSetInstance_ID
 				Env.ZERO, // QtyBook
@@ -131,22 +116,22 @@ public class InventoryTest extends AbstractTestCase {
 	public void testCostAdjustmentLineBeforeSave() {
 		MClient client = MClient.get(Env.getCtx());
 		MAcctSchema as = client.getAcctSchema();
-		MProduct product = new MProduct(Env.getCtx(), MULCH_PRODUCT_ID, getTrxName());
+		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
 		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 		if (cost == null || cost.getCurrentCostPrice().signum() == 0) {
-			createPOAndMRForProduct(MULCH_PRODUCT_ID);
+			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id);
 			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 		}
 		assertNotNull(cost);
 		
 		MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
-		inventory.setC_DocType_ID(DOCTYPE_COST_ADJUSTMENT);
+		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.COST_ADJUSTMENT.id);
 		inventory.setCostingMethod(as.getCostingMethod());
 		inventory.saveEx();
 		
 		MInventoryLine line = new MInventoryLine(Env.getCtx(), 0, getTrxName());
 		line.setM_Inventory_ID(inventory.get_ID());
-		line.setM_Product_ID(MULCH_PRODUCT_ID);
+		line.setM_Product_ID(DictionaryIDs.M_Product.MULCH.id);
 		line.setNewCostPrice(cost.getCurrentCostPrice().add(new BigDecimal("0.5")));
 		line.saveEx();
 		
@@ -160,10 +145,10 @@ public class InventoryTest extends AbstractTestCase {
 	
 	private void createPOAndMRForProduct(int productId, MAttributeSetInstance asi) {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_PATIO));
-		order.setC_DocTypeTarget_ID(DOCTYPE_PO);
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
 		order.setIsSOTrx(false);
-		order.setSalesRep_ID(USER_GARDENADMIN);
+		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -183,7 +168,7 @@ public class InventoryTest extends AbstractTestCase {
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());		
 		
-		MInOut receipt1 = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());
+		MInOut receipt1 = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
 		receipt1.setDocStatus(DocAction.STATUS_Drafted);
 		receipt1.setDocAction(DocAction.ACTION_Complete);
 		receipt1.saveEx();
@@ -210,11 +195,11 @@ public class InventoryTest extends AbstractTestCase {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
 		
-		MAttributeSet set = new MAttributeSet(Env.getCtx(), FERTILIZER_LOT_ATTRIBUTESET_ID, null);
+		MAttributeSet set = new MAttributeSet(Env.getCtx(), DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id, null);
 		set.setIsSerNo(true);
 		set.saveEx();
 			
-		MWarehouse wh = new MWarehouse(Env.getCtx(), WAREHOUSE_HQ, null);
+		MWarehouse wh = new MWarehouse(Env.getCtx(), DictionaryIDs.M_Warehouse.HQ.id, null);
 		boolean disallow = wh.isDisallowNegativeInv(); 
 		MProduct product = null;
 		try {
@@ -226,19 +211,19 @@ public class InventoryTest extends AbstractTestCase {
 			}
 			
 			product = new MProduct(ctx, 0, null);
-			product.setM_Product_Category_ID(CHEMICALS_CATEGORY_ID);
+			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.CHEMICALS.id);
 			product.setName("testSkipProductWithSerial");
 			product.setValue("testSkipProductWithSerial");
 			product.setProductType(MProduct.PRODUCTTYPE_Item);
 			product.setIsStocked(true);
 			product.setIsSold(true);
 			product.setIsPurchased(true);
-			product.setC_UOM_ID(UOM_EACH);
-			product.setC_TaxCategory_ID(TAXCAT_STANDARD);
-			product.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 			product.saveEx();
 	
-			MPriceListVersion plv = MPriceList.get(PURCHASE_PRICE_LIST_ID).getPriceListVersion(null);
+			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
 			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
 			pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
 			pp.setM_Product_ID(product.get_ID());
@@ -247,7 +232,7 @@ public class InventoryTest extends AbstractTestCase {
 			pp.saveEx();
 			
 			MAttributeSetInstance asi = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
-			asi.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+			asi.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 			asi.setSerNo("testSkipProductWithSerial #1");
 			asi.saveEx();
 			
@@ -258,12 +243,12 @@ public class InventoryTest extends AbstractTestCase {
 			assertEquals(onhands[0].getM_AttributeSetInstance_ID(), asi.get_ID(), "Unexpected M_AttributeSetInstance_ID for on hand record");
 			
 			MInventory inventory = new MInventory(ctx, 0, trxName);
-			inventory.setM_Warehouse_ID(WAREHOUSE_HQ);
-			inventory.setC_DocType_ID(DOCTYPE_PHYSICAL_INV);
+			inventory.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+			inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
 			inventory.saveEx();
 	
 			MInventoryLine iline = new MInventoryLine(inventory,
-					LOCATOR_HQ, 
+					DictionaryIDs.M_Locator.HQ.id, 
 					product.getM_Product_ID(),
 					0, // M_AttributeSetInstance_ID
 					Env.ONE, // QtyBook
@@ -294,11 +279,11 @@ public class InventoryTest extends AbstractTestCase {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
 		
-		MAttributeSet set = new MAttributeSet(Env.getCtx(), FERTILIZER_LOT_ATTRIBUTESET_ID, null);
+		MAttributeSet set = new MAttributeSet(Env.getCtx(), DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id, null);
 		set.setIsSerNo(true);
 		set.saveEx();
 			
-		MWarehouse wh = new MWarehouse(Env.getCtx(), WAREHOUSE_HQ, null);
+		MWarehouse wh = new MWarehouse(Env.getCtx(), DictionaryIDs.M_Warehouse.HQ.id, null);
 		boolean disallow = wh.isDisallowNegativeInv(); 
 		MProduct product = null;
 		try {
@@ -310,19 +295,19 @@ public class InventoryTest extends AbstractTestCase {
 			}
 			
 			product = new MProduct(ctx, 0, null);
-			product.setM_Product_Category_ID(CHEMICALS_CATEGORY_ID);
+			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.CHEMICALS.id);
 			product.setName("testSkipProductWithSerial");
 			product.setValue("testSkipProductWithSerial");
 			product.setProductType(MProduct.PRODUCTTYPE_Item);
 			product.setIsStocked(true);
 			product.setIsSold(true);
 			product.setIsPurchased(true);
-			product.setC_UOM_ID(UOM_EACH);
-			product.setC_TaxCategory_ID(TAXCAT_STANDARD);
-			product.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 			product.saveEx();
 	
-			MPriceListVersion plv = MPriceList.get(PURCHASE_PRICE_LIST_ID).getPriceListVersion(null);
+			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
 			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
 			pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
 			pp.setM_Product_ID(product.get_ID());
@@ -331,7 +316,7 @@ public class InventoryTest extends AbstractTestCase {
 			pp.saveEx();
 			
 			MAttributeSetInstance asi = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
-			asi.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+			asi.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 			asi.setSerNo("testSkipProductWithSerial #1");
 			asi.saveEx();
 			
@@ -342,7 +327,7 @@ public class InventoryTest extends AbstractTestCase {
 			assertEquals(onhands[0].getM_AttributeSetInstance_ID(), asi.get_ID(), "Unexpected M_AttributeSetInstance_ID for on hand record");
 			
 			MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
-			asi1.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+			asi1.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 			asi1.saveEx();
 
 			createPOAndMRForProduct(product.get_ID(), asi1);
@@ -354,12 +339,12 @@ public class InventoryTest extends AbstractTestCase {
 			assertEquals(onhands[1].getM_AttributeSetInstance_ID(), asi1.get_ID(), "Unexpected M_AttributeSetInstance_ID for second on hand record");
 			
 			MInventory inventory = new MInventory(ctx, 0, trxName);
-			inventory.setM_Warehouse_ID(WAREHOUSE_HQ);
-			inventory.setC_DocType_ID(DOCTYPE_PHYSICAL_INV);
+			inventory.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+			inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
 			inventory.saveEx();
 	
 			MInventoryLine iline = new MInventoryLine(inventory,
-					LOCATOR_HQ, 
+					DictionaryIDs.M_Locator.HQ.id, 
 					product.getM_Product_ID(),
 					0, // M_AttributeSetInstance_ID
 					new BigDecimal("2"), // QtyBook

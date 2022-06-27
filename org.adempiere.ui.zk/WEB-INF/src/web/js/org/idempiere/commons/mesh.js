@@ -45,7 +45,43 @@ zk.afterLoad('zul.mesh', function() {
           }
         }
         return result;
-      }
+      },
+      //workarond from https://tracker.zkoss.org/browse/ZK-5159
+      bind_: function () {
+		this.$supers(zul.mesh.Frozen, 'bind_', arguments);
+		var p = this.parent,
+			body = p.$n('body'),
+			foot = p.$n('foot');
+
+		if (p._nativebar) {
+			//B70-ZK-2130: No need to reset when beforeSize, ZK-343 with native bar works fine too.
+			zWatch.listen({onSize: this});
+			var scroll = this.$n('scrollX'),
+				scrollbarWidth = jq.scrollbarWidth();
+			if(scrollbarWidth == 0){
+				scrollbarWidth = 12;
+			}
+			// ZK-2583: native IE bug, add 1px in scroll div's height for workaround
+			this.$n().style.height = this.$n('cave').style.height = this.$n('right').style.height = scroll.style.height
+				 = scroll.firstChild.style.height = jq.px0(zk.ie ? scrollbarWidth + 1 : scrollbarWidth);
+			p._currentLeft = 0;
+			this.domListen_(scroll, 'onScroll');
+
+			var head = p.$n('head');
+			if (head)
+				this.domListen_(head, 'onScroll', '_doHeadScroll');
+
+		} else {
+			// Bug ZK-2264
+			this._shallSyncScale = true;
+		}
+		// refix-ZK-3100455 : grid/listbox with frozen trigger "invalidate" should _syncFrozenNow
+		zWatch.listen({onResponse: this});
+		if (body)
+			jq(body).addClass('z-word-nowrap');
+		if (foot)
+			jq(foot).addClass('z-word-nowrap');
+	  }
     });
     
     zk.override(zul.mesh.MeshWidget.prototype, "clearCache", function() {

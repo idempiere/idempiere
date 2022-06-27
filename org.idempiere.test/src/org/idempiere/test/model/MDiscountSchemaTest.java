@@ -45,6 +45,7 @@ import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
@@ -55,10 +56,6 @@ import org.junit.jupiter.api.Test;
  */
 public class MDiscountSchemaTest extends AbstractTestCase {
 
-	private static final int FIVE_PERCENT_IF_100_ID=102;
-	private static final int PRODUCT_MULCH_ID = 137;
-	private static final int BP_JOE_BLOCK_ID = 118;
-	
 	public MDiscountSchemaTest() {
 	}
 
@@ -67,7 +64,7 @@ public class MDiscountSchemaTest extends AbstractTestCase {
 	public void testPercentageDiscount() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK_ID));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -78,19 +75,18 @@ public class MDiscountSchemaTest extends AbstractTestCase {
 		
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_MULCH_ID));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
 		line1.setQty(new BigDecimal("100"));
 		line1.setDatePromised(today);
 		line1.saveEx();
 		
-		MDiscountSchema schema = new MDiscountSchema(Env.getCtx(), FIVE_PERCENT_IF_100_ID, getTrxName());
+		MDiscountSchema schema = new MDiscountSchema(Env.getCtx(), DictionaryIDs.M_DiscountSchema.FIVE_PERCENT_DISCOUNT.id, getTrxName());
 		MDiscountSchemaBreak[] breaks = schema.getBreaks(false);
 		assertTrue(breaks.length > 0, "No discount schema breaks");
 		
 		MPriceList priceList = MPriceList.get(order.getM_PriceList_ID());
 		MPriceListVersion priceListVersion = priceList.getPriceListVersion(order.getDateOrdered());
-		MProductPrice[] productPrice = priceListVersion.getProductPrice(" AND M_Product_ID="+PRODUCT_MULCH_ID);
+		MProductPrice[] productPrice = priceListVersion.getProductPrice(" AND M_Product_ID="+DictionaryIDs.M_Product.MULCH.id);
 		assertEquals(1, productPrice.length, "Unexpected number of ProductPrice record");
 		BigDecimal discounted = MDiscountSchema.calculateDiscountedPrice(productPrice[0].getPriceStd(), breaks[0].getBreakDiscount());
 		assertEquals(discounted.setScale(2, RoundingMode.HALF_UP), line1.getPriceActual().setScale(2, RoundingMode.HALF_UP), "Unexpected Order Line price");
@@ -100,7 +96,7 @@ public class MDiscountSchemaTest extends AbstractTestCase {
 	@Order(2)
 	public void testFixedPriceDiscount() {
 		BigDecimal fixedPrice = new BigDecimal("1.00");
-		MDiscountSchema schema = new MDiscountSchema(Env.getCtx(), FIVE_PERCENT_IF_100_ID, getTrxName());
+		MDiscountSchema schema = new MDiscountSchema(Env.getCtx(), DictionaryIDs.M_DiscountSchema.FIVE_PERCENT_DISCOUNT.id, getTrxName());
 		MDiscountSchemaBreak discountBreak = null;
 		
 		try {
@@ -109,7 +105,7 @@ public class MDiscountSchemaTest extends AbstractTestCase {
 			discountBreak.setBreakDiscount(new BigDecimal("0.00"));
 			discountBreak.setBreakValue(new BigDecimal("10"));
 			discountBreak.setFixedPrice(fixedPrice);
-			discountBreak.setM_Product_ID(PRODUCT_MULCH_ID);
+			discountBreak.setM_Product_ID(DictionaryIDs.M_Product.MULCH.id);
 			discountBreak.setIsBPartnerFlatDiscount(false);
 			discountBreak.setIsActive(true);
 			discountBreak.setSeqNo(20);
@@ -119,7 +115,7 @@ public class MDiscountSchemaTest extends AbstractTestCase {
 			
 			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 			//Joe Block
-			order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK_ID));
+			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 			order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 			order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 			order.setDocStatus(DocAction.STATUS_Drafted);
@@ -131,7 +127,7 @@ public class MDiscountSchemaTest extends AbstractTestCase {
 			MOrderLine line1 = new MOrderLine(order);
 			line1.setLine(10);
 			//Azalea Bush
-			line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_MULCH_ID));
+			line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
 			line1.setQty(new BigDecimal("10"));
 			line1.setDatePromised(today);
 			line1.saveEx();
