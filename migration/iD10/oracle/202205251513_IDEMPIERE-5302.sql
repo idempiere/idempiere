@@ -880,3 +880,17 @@ INSERT INTO AD_Tab_Customization (AD_Client_ID,AD_Org_ID,AD_Tab_Customization_ID
 UPDATE AD_Table SET IsShowInDrillOptions = 'Y' WHERE TableName IN('C_AllocationHdr','C_BankStatement','C_BankTransfer','C_Invoice','C_Order','C_Payment','C_Project','C_RfQ','GL_Journal','M_InOut','M_Inventory','M_Movement','M_Production','M_Requisition','M_RMA','R_Request')
 ;
 
+-- Jun 27, 2022, 9:16:01 AM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Drill Key Parameter is Not Set',0,0,'Y',TO_TIMESTAMP('2022-06-27 09:16:01','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-27 09:16:01','YYYY-MM-DD HH24:MI:SS'),100,200766,'NoDrillKeyParameterSet','D','afe60283-10a3-446b-a557-b0003c457ee4')
+;
+
+-- Jun 27, 2022, 9:47:33 AM CEST
+INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Description,Type,Code,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Val_Rule_UU) VALUES (200160,'AD_Column of AD_Process_Para in AD_Table','Table must be previously defined','S','AD_Column.AD_Table_ID=@AD_Table_ID@ AND AD_Column.ColumnName IN (
+SELECT ColumnName FROM AD_Process_Para WHERE AD_Process_ID = @AD_Process_ID@
+)',0,0,'Y',TO_TIMESTAMP('2022-06-27 09:47:33','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-27 09:47:33','YYYY-MM-DD HH24:MI:SS'),100,'D','93841ae5-8071-444c-b626-efdf06798b13')
+;
+
+-- Jun 27, 2022, 9:48:56 AM CEST
+UPDATE AD_Column SET AD_Val_Rule_ID=200160,Updated=TO_TIMESTAMP('2022-06-27 09:48:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214930
+;
+

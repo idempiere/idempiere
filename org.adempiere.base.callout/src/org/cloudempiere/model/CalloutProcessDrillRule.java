@@ -74,16 +74,6 @@ public class CalloutProcessDrillRule extends CalloutEngine {
 			return "";
 
 		mTab.setValue(MProcessDrillRule.COLUMNNAME_AD_Table_ID, reportView.getAD_Table_ID());
-		
-		// set AD_Column_ID
-		MTable table = MTable.get(reportView.getAD_Table_ID());
-		String[] keyColumns = table.getKeyColumns();
-		MColumn column = null;
-		
-		if(keyColumns.length > 0) {
-			column = MColumn.get(ctx, table.getTableName(), table.getKeyColumns()[0]);
-			mTab.setValue(MProcessDrillRule.COLUMNNAME_AD_Column_ID, column.getAD_Column_ID());
-		}
 		return "";
 	}
 
