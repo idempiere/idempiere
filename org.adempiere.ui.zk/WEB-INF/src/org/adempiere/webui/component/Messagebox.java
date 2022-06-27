@@ -78,6 +78,7 @@ public class Messagebox extends Window implements EventListener<Event>
 	private Button btnRetry;
 	private Button btnIgnore;
 	private WEditor inputField;
+	private boolean isInputMandatory;
 	private boolean isExceptionThrown = false;
 
 	private Image img = new Image();
@@ -265,10 +266,10 @@ public class Messagebox extends Window implements EventListener<Event>
 	
 	public int show(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal)
 	{
-		return show(message, title, buttons, icon, null, callback, modal);
+		return show(message, title, buttons, icon, null, false, callback, modal);
 	}
 
-	public int show(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
+	public int show(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal)
 	{
 		this.msg = message;
 		this.imgSrc = icon;
@@ -277,7 +278,8 @@ public class Messagebox extends Window implements EventListener<Event>
 			inputField = new WStringEditor();
 		else
 			inputField = editor;
-
+		this.isInputMandatory = isInputMandatory;
+		
 		init();
 		
 		btnOk.setVisible(false);
@@ -360,13 +362,17 @@ public class Messagebox extends Window implements EventListener<Event>
 	
 	public static int showDialog(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal) 
 	{
-		return showDialog(message, title, buttons, icon, null, callback, modal);
+		return showDialog(message, title, buttons, icon, null, false, callback, modal);
+	}
+
+	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal) {
+		return showDialog(message, title, buttons, icon, editor, false, callback, modal);
 	}
 	
-	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
+	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal)
 	{
 		Messagebox msg = new Messagebox();
-		return msg.show(message, title, buttons, icon, editor, callback, modal);
+		return msg.show(message, title, buttons, icon, editor, isInputMandatory, callback, modal);
 	}
 	
     // Andreas Sumerauer IDEMPIERE 4702
@@ -411,6 +417,8 @@ public class Messagebox extends Window implements EventListener<Event>
 		{
 			returnValue = IGNORE;
 		}
+
+		//TODO
 		else {
 			returnValue = 0;
 		}
@@ -429,6 +437,13 @@ public class Messagebox extends Window implements EventListener<Event>
 		else {
 			close();
 		}
+		 if ((returnValue == CANCEL) || !isInputMandatory || (isInputMandatory && !Util.isEmpty(String.valueOf(inputField.getValue()))))
+			close();
+		 else {
+			 isExceptionThrown = true;
+			 returnValue = 0;
+			 throw new WrongValueException(inputField.getComponent(), Msg.getMsg(Env.getCtx(), "PrintFormatMandatory"));
+		 }
 	}
 	
 	private void close() {
@@ -447,8 +462,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		if (callback != null && !isInput)
 		{
 			callback.onCallback(returnValue);
-		} 
-		else if (callback != null && isInput && !btnCancel.isVisible() && !btnNo.isVisible()) {
+		} else if (callback != null && isInput && !btnCancel.isVisible() && !btnNo.isVisible()) {
 			callback.onCallback(inputField.getValue());
 		} else if (callback != null && isInput && (btnCancel.isVisible() || btnNo.isVisible())) {
 			Map<Boolean, Object> map = new HashMap<Boolean, Object>();

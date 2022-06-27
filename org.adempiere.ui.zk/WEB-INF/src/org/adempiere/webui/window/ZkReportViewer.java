@@ -22,6 +22,8 @@ import java.io.StringWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pdf.Document;
+import org.adempiere.util.Callback;
 import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
@@ -53,6 +56,8 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.DrillEvent;
@@ -101,6 +106,7 @@ import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -190,6 +196,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private ToolBarButton bExport = new ToolBarButton();
 	private ToolBarButton bWizard = new ToolBarButton();
 	private Listbox comboReport = new Listbox();
+	private Listitem previousSelected = new Listitem();
 	private WTableDirEditor wLanguage;
 	private Label labelDrill = new Label();
 	private Listbox comboDrill = new Listbox();
@@ -1127,6 +1134,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				{
 					selectValue = pp;
 					if(selectValue != null)
+						previousSelected = comboReport.getSelectedItem();
 						comboReport.setSelectedItem(li);
 				}
 			}
@@ -1149,6 +1157,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
 			KeyNamePair pp = new KeyNamePair(-1, sb.toString());
 			comboReport.appendItem(pp.getName(), pp.getKey());
+			sb = new StringBuffer("** ").append(Msg.getMsg(m_ctx, "CopyReport")).append(" **");
+			pp = new KeyNamePair(-2, sb.toString());
+			comboReport.addItem(pp);
 		}
 		comboReport.addEventListener(Events.ON_SELECT, this);
 	}	//	fillComboReport
@@ -1438,7 +1449,18 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		winExportFile.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		AEnv.showWindow(winExportFile);
 	}	//	cmd_export
-		
+	
+	/**
+	 * Sets AD_PrintFormat_Trl Name to AD_PrintFormat Name
+	 * @param pf
+	 */
+	private void resetPrintFormatTrl(MPrintFormat pf) {
+		String sql = "UPDATE AD_PrintFormat_Trl pf "
+				+ " SET Name = '" + pf.getName() + "' "
+				+ " WHERE pf.AD_PrintFormat_ID = " + pf.getAD_PrintFormat_ID();
+		DB.executeUpdate(sql, null);
+	}
+	
 	/**
 	 * 	Report Combo - Start other Report or create new one
 	 */
@@ -1457,38 +1479,120 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		//	create new
 		if (AD_PrintFormat_ID == -1)
 		{
-			int AD_ReportView_ID = m_reportEngine.getPrintFormat().getAD_ReportView_ID();
-			if (AD_ReportView_ID != 0)
-			{
-				String name = m_reportEngine.getName();
-				int index = name.lastIndexOf('_');
-				if (index != -1)
-					name = name.substring(0,index);
-				pf = MPrintFormat.createFromReportView(m_ctx, AD_ReportView_ID, name);
-			}
-			else
-			{
-				int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
-				pf = MPrintFormat.createFromTable(m_ctx, AD_Table_ID);
-			}
-			if (pf != null)
-				fillComboReport(pf.get_ID());
-			else
-				return;
+			WEditor editor = new WStringEditor();
+			ZKUpdateUtil.setWidth((HtmlBasedComponent)editor.getComponent(), "98%");
+			FDialog.askForInputWithCancel(m_WindowNo, editor, "CreateNewPrintFormat",  Msg.getMsg(m_ctx, "CreateNewPrintFormatTitle"), new Callback<Map.Entry<Boolean, Object>>() {
+				public void onCallback(Map.Entry<Boolean, Object> result) {
+					if((result == null) || (!(result.getValue() instanceof String)) || (!result.getKey())) {
+						comboReport.setSelectedItem(previousSelected);
+						return;
+					}
+					MPrintFormat pf = null;
+					if (!Util.isEmpty((String)result.getValue())) {
+						int AD_ReportView_ID = m_reportEngine.getPrintFormat().getAD_ReportView_ID();
+						if (AD_ReportView_ID != 0)
+						{
+							String name = (String)result.getValue();
+							pf = MPrintFormat.createFromReportView(m_ctx, AD_ReportView_ID, name);
+						}
+						else
+						{
+							int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
+							pf = MPrintFormat.createFromTable(m_ctx, AD_Table_ID);
+						}
+						if (pf != null) {
+							pf.setName((String)result.getValue());
+							if(!pf.save()) {
+								Calendar cal = Calendar.getInstance();
+								SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+								String dt = sdf.format(cal.getTime());
+								pf.setName(pf.getName() + "_" + dt);
+								pf.saveEx();
+							}
+							resetPrintFormatTrl(pf);
+							fillComboReport(pf.get_ID());
+						}
+						else
+							return;
+//						Get Language from previous - thanks Gunther Hoppe 
+						if (m_reportEngine.getPrintFormat() != null)
+						{
+							setLanguage();
+							pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
+							pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
+						}
+						
+						m_reportEngine.setPrintFormat(pf);
+						m_reportEngine.initName();
+						postRenderReportEvent();
+					}
+					else {
+						comboReport.setSelectedItem(previousSelected);
+					}
+				}
+			});
+		} else if (AD_PrintFormat_ID == -2) {
+			WEditor editor = new WStringEditor();
+			ZKUpdateUtil.setWidth((HtmlBasedComponent)editor.getComponent(), "90%");
+			FDialog.askForInputWithCancel(m_WindowNo, editor, "CreatePrintFormatCopy", Msg.getMsg(m_ctx, "CreatePrintFormatCopyTitle"), new Callback<Map.Entry<Boolean, Object>>() {
+				public void onCallback(Map.Entry<Boolean, Object> result) {
+					if((result == null) || (!(result.getValue() instanceof String)) || (!result.getKey())) {
+						comboReport.setSelectedItem(previousSelected);
+						return;
+					}
+					MPrintFormat pf = null;
+					if (!Util.isEmpty((String)result.getValue())) {
+						MPrintFormat current = m_reportEngine.getPrintFormat();
+						if (current != null) {
+							pf = MPrintFormat.copyToClient(m_ctx,
+									current.getAD_PrintFormat_ID(),
+									Env.getAD_Client_ID(m_ctx));
+
+							if (pf != null) {
+								pf.setName((String)result.getValue());
+								if(!pf.save()) {
+									Calendar cal = Calendar.getInstance();
+									SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+									String dt = sdf.format(cal.getTime());
+									pf.setName(pf.getName() + "_" + dt);
+									pf.saveEx();
+								}
+								resetPrintFormatTrl(pf);
+								fillComboReport(pf.get_ID());
+							}
+							else
+								return;
+						} else
+							return;
+//						Get Language from previous - thanks Gunther Hoppe 
+						if (m_reportEngine.getPrintFormat() != null)
+						{
+							setLanguage();
+							pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
+							pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
+						}
+						m_reportEngine.initName();
+						m_reportEngine.setPrintFormat(pf);
+						postRenderReportEvent();
+					}
+					else {
+						comboReport.setSelectedItem(previousSelected);
+					}
+				}
+			});
 		}
-		else
+		else {
+//			Get Language from previous - thanks Gunther Hoppe 
 			pf = MPrintFormat.get (Env.getCtx(), AD_PrintFormat_ID, true);
-		
-		//	Get Language from previous - thanks Gunther Hoppe 
-		if (m_reportEngine.getPrintFormat() != null)
-		{
-			setLanguage();
-			pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
-			pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
+			if (m_reportEngine.getPrintFormat() != null)
+			{
+				setLanguage();
+				pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
+				pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
+			}
+			m_reportEngine.setPrintFormat(pf);
+			postRenderReportEvent();
 		}
-		m_reportEngine.setPrintFormat(pf);
-		
-		postRenderReportEvent();
 	}	//	cmd_report
 
 	/**
