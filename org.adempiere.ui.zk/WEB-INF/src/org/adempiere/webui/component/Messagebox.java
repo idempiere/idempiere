@@ -422,28 +422,36 @@ public class Messagebox extends Window implements EventListener<Event>
 		else {
 			returnValue = 0;
 		}
+		validateOnClose();
+	}
+	
+	private void validateOnClose() {
 		
-		if(!Util.isEmpty(inputField.getValidInput())) {
+		// Don't close on OK if input is mandatory while input field is empty 
+		if ((returnValue == CANCEL) || !isInputMandatory || (isInputMandatory && !Util.isEmpty(String.valueOf(inputField.getValue()))))
 			
-			if((returnValue == CANCEL) || (inputField.isValid(String.valueOf(inputField.getValue())) && returnValue == OK)) {
-				close();
+			// if Valid Input is defined, don't close on OK until user types the Valid Input
+			if(!Util.isEmpty(inputField.getValidInput())) {
+				
+				if((returnValue == CANCEL) || (inputField.isValid(String.valueOf(inputField.getValue())) && returnValue == OK)) {
+					close();
+				}
+				else {
+					isExceptionThrown = true;
+					returnValue = 0;
+					throw new WrongValueException(inputField.getComponent(), Msg.getMsg(Env.getCtx(), "ValueNotCorrect"));
+				}
 			}
 			else {
-				isExceptionThrown = true;
-				returnValue = 0;
-				throw new WrongValueException(inputField.getComponent(), Msg.getMsg(Env.getCtx(), "ValueNotCorrect"));
+				close();
 			}
-		}
+			//
 		else {
-			close();
+			isExceptionThrown = true;
+			returnValue = 0;
+			throw new WrongValueException(inputField.getComponent(), Msg.getMsg(Env.getCtx(), "AnswerMandatory"));
 		}
-		 if ((returnValue == CANCEL) || !isInputMandatory || (isInputMandatory && !Util.isEmpty(String.valueOf(inputField.getValue()))))
-			close();
-		 else {
-			 isExceptionThrown = true;
-			 returnValue = 0;
-			 throw new WrongValueException(inputField.getComponent(), Msg.getMsg(Env.getCtx(), "PrintFormatMandatory"));
-		 }
+		//
 	}
 	
 	private void close() {
