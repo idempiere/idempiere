@@ -174,7 +174,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		btnIgnore = ButtonFactory.createNamedButton("Ignore");
 		btnIgnore.addEventListener(Events.ON_CLICK, this);
 		btnIgnore.setId("btnIgnore");
-
+		
 		Panel pnlMessage = new Panel();
 		if (ClientInfo.maxWidth(399))
 		{
@@ -323,7 +323,7 @@ public class Messagebox extends Window implements EventListener<Event>
 				}
 			});
 		}
-
+		
 		this.setTitle(title);
 		this.setPosition("center");
 		this.setClosable(true);
@@ -417,13 +417,41 @@ public class Messagebox extends Window implements EventListener<Event>
 		{
 			returnValue = IGNORE;
 		}
-		 if ((returnValue == CANCEL) || !isInputMandatory || (isInputMandatory && !Util.isEmpty(String.valueOf(inputField.getValue()))))
-			close();
-		 else {
-			 isExceptionThrown = true;
-			 returnValue = 0;
-			 throw new WrongValueException(inputField.getComponent(), Msg.getMsg(Env.getCtx(), "PrintFormatMandatory"));
-		 }
+
+		//TODO
+		else {
+			returnValue = 0;
+		}
+		validateOnClose();
+	}
+	
+	private void validateOnClose() {
+		
+		// Don't close on OK if input is mandatory while input field is empty 
+		if ((returnValue == CANCEL) || !isInputMandatory || (isInputMandatory && !Util.isEmpty(String.valueOf(inputField.getValue()))))
+			
+			// if Valid Input is defined, don't close on OK until user types the Valid Input
+			if(!Util.isEmpty(inputField.getValidInput())) {
+				
+				if((returnValue == CANCEL) || (inputField.isValid(String.valueOf(inputField.getValue())) && returnValue == OK)) {
+					close();
+				}
+				else {
+					isExceptionThrown = true;
+					returnValue = 0;
+					throw new WrongValueException(inputField.getComponent(), Msg.getMsg(Env.getCtx(), "ValueNotCorrect"));
+				}
+			}
+			else {
+				close();
+			}
+			//
+		else {
+			isExceptionThrown = true;
+			returnValue = 0;
+			throw new WrongValueException(inputField.getComponent(), Msg.getMsg(Env.getCtx(), "AnswerMandatory"));
+		}
+		//
 	}
 	
 	private void close() {
