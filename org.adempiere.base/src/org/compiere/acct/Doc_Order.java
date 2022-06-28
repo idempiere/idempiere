@@ -337,7 +337,6 @@ public class Doc_Order extends Doc
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		ArrayList<Fact> facts = new ArrayList<Fact>();
-		Fact fact = new Fact(this, as, Fact.POST_Commitment);
 		//  Purchase Order
 		if (getDocumentType().equals(DOCTYPE_POrder))
 		{
@@ -350,7 +349,7 @@ public class Doc_Order extends Doc
 			FactLine fl = null;
 			if (as.isCreatePOCommitment())
 			{
-				fact = new Fact(this, as, Fact.POST_Commitment);
+				Fact fact = new Fact(this, as, Fact.POST_Commitment);
 				BigDecimal total = Env.ZERO;
 				for (int i = 0; i < p_lines.length; i++)
 				{
@@ -374,21 +373,20 @@ public class Doc_Order extends Doc
 				fact.createLine (null, offset,
 					getC_Currency_ID(), null, total);
 				//
-				facts.add(fact);
+				addFact(facts, fact, as);
 			}
 
 			//  Reverse Reservation
 			if (as.isCreateReservation())
 			{
-				fact = new Fact(this, as, Fact.POST_Reservation);
-				BigDecimal total = Env.ZERO;
+				Fact fact = new Fact(this, as, Fact.POST_Reservation);
+				BigDecimal total = getAmount(Doc.AMTTYPE_Gross);
 				if (m_requisitions == null)
 					m_requisitions = loadRequisitions();
 				for (int i = 0; i < m_requisitions.length; i++)
 				{
 					DocLine line = m_requisitions[i];
 					BigDecimal cost = line.getAmtSource();
-					total = total.add(cost);
 
 					//	Account
 					MAccount expense = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
@@ -409,7 +407,7 @@ public class Doc_Order extends Doc
 						getC_Currency_ID(), total, null);
 				}
 				//
-				facts.add(fact);
+				addFact(facts, fact, as);
 			}	//	reservations
 		}
 		//	SO
@@ -420,13 +418,12 @@ public class Doc_Order extends Doc
 			FactLine fl = null;
 			if (as.isCreateSOCommitment())
 			{
-				fact = new Fact(this, as, Fact.POST_Commitment);
-				BigDecimal total = Env.ZERO;
+				Fact fact = new Fact(this, as, Fact.POST_Commitment);
+				BigDecimal total = getAmount(Doc.AMTTYPE_Gross);
 				for (int i = 0; i < p_lines.length; i++)
 				{
 					DocLine line = p_lines[i];
 					BigDecimal cost = line.getAmtSource();
-					total = total.add(cost);
 
 					//	Account
 					MAccount revenue = line.getAccount(ProductCost.ACCTTYPE_P_Revenue, as);
@@ -444,8 +441,19 @@ public class Doc_Order extends Doc
 				fact.createLine (null, offset,
 					getC_Currency_ID(), total, null);
 				//
+				addFact(facts, fact, as);
 			}
 		}
+		return facts;
+	}   //  createFact
+
+	/**
+	 * 
+	 * @param facts
+	 * @param fact
+	 * @param as
+	 */
+	private void addFact(ArrayList<Fact> facts, Fact fact, MAcctSchema as) {
 		MOrder order = (MOrder)getPO();
 		
 		if (order.getCurrencyRoundAmt().signum()!=0) {
@@ -463,10 +471,8 @@ public class Doc_Order extends Doc
 			
 			facts.add(fact);
 		}
-		return facts;
-	}   //  createFact
-
-
+	}
+	
 	/**
 	 * 	Update ProductPO PriceLastPO
 	 *	@param as accounting schema
