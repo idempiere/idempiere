@@ -98,8 +98,6 @@ public class OrderCreateProduction extends SvrProcess {
 			production.setM_Product_ID(line.getM_Product_ID());
 			production.setProductionQty(line.getQtyOrdered().subtract(line.getQtyDelivered()));
 			production.setDatePromised(line.getDatePromised());
-			if (product.getM_Locator_ID() > 0)
-				production.setM_Locator_ID(product.getM_Locator_ID());
 			production.setC_OrderLine_ID(line.getC_OrderLine_ID());
 
 			int locator = product.getM_Locator_ID();
