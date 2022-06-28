@@ -61,11 +61,11 @@ public class Archive {
 		
 		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Process");
 		String lang = Env.getAD_Language(Env.getCtx());
-		String sql = "SELECT DISTINCT p.AD_Process_ID,"
+		String sql = "SELECT p.AD_Process_ID,"
 				+ (trl ? "trl.Name" : "p.Name ")
-			+ " FROM AD_Process p INNER JOIN AD_Process_Access pa ON (p.AD_Process_ID=pa.AD_Process_ID) "
+			+ " FROM AD_Process p "
 			+ (trl ? "LEFT JOIN AD_Process_Trl trl on (trl.AD_Process_ID=p.AD_Process_ID and trl.AD_Language=" + DB.TO_STRING(lang) + ")" : "") 
-			+ " WHERE p.IsReport='Y' AND p.IsActive='Y' AND pa.IsActive='Y' "
+			+ " WHERE p.IsReport='Y' AND p.IsActive='Y' "
 			+ "ORDER BY 2"; 
 		
 		List<KeyNamePair> list = new ArrayList<>();
