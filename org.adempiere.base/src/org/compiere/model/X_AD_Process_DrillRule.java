@@ -30,7 +30,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220603L;
+	private static final long serialVersionUID = 20220628L;
 
     /** Standard Constructor */
     public X_AD_Process_DrillRule (Properties ctx, int AD_Process_DrillRule_ID, String trxName)
@@ -38,9 +38,9 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
       super (ctx, AD_Process_DrillRule_ID, trxName);
       /** if (AD_Process_DrillRule_ID == 0)
         {
-			setAD_Column_ID (0);
 			setAD_Process_DrillRule_ID (0);
 			setAD_Process_ID (0);
+			setAD_Process_Para_ID (0);
 			setName (null);
         } */
     }
@@ -51,9 +51,9 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
       super (ctx, AD_Process_DrillRule_ID, trxName, virtualColumns);
       /** if (AD_Process_DrillRule_ID == 0)
         {
-			setAD_Column_ID (0);
 			setAD_Process_DrillRule_ID (0);
 			setAD_Process_ID (0);
+			setAD_Process_Para_ID (0);
 			setName (null);
         } */
     }
@@ -85,34 +85,6 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Column)MTable.get(getCtx(), org.compiere.model.I_AD_Column.Table_ID)
-			.getPO(getAD_Column_ID(), get_TrxName());
-	}
-
-	/** Set Column.
-		@param AD_Column_ID Column in the table
-	*/
-	public void setAD_Column_ID (int AD_Column_ID)
-	{
-		if (AD_Column_ID < 1)
-			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else
-			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
-	}
-
-	/** Get Column.
-		@return Column in the table
-	  */
-	public int getAD_Column_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
 	{
@@ -201,6 +173,33 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Process_Para)MTable.get(getCtx(), org.compiere.model.I_AD_Process_Para.Table_ID)
+			.getPO(getAD_Process_Para_ID(), get_TrxName());
+	}
+
+	/** Set Process Parameter.
+		@param AD_Process_Para_ID Process Parameter
+	*/
+	public void setAD_Process_Para_ID (int AD_Process_Para_ID)
+	{
+		if (AD_Process_Para_ID < 1)
+			set_Value (COLUMNNAME_AD_Process_Para_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Process_Para_ID, Integer.valueOf(AD_Process_Para_ID));
+	}
+
+	/** Get Process Parameter.
+		@return Process Parameter	  */
+	public int getAD_Process_Para_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_Para_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

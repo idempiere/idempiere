@@ -156,7 +156,9 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 
 		String whereClause = "";
 		List<MProcessDrillRule> processDrillRules = new Query(ctx, MProcessDrillRule.Table_Name, whereClause, trxName)
-				.addJoinClause(" INNER JOIN AD_Column c ON "+ MProcessDrillRule.Table_Name + ".AD_Column_ID = c.AD_Column_ID AND c." + MColumn.COLUMNNAME_ColumnName + " = ?")
+				.addJoinClause(" INNER JOIN AD_Process_Para pp ON "
+								+ MProcessDrillRule.Table_Name + "." + MProcessDrillRule.COLUMNNAME_AD_Process_Para_ID + " = pp." + MProcessPara.COLUMNNAME_AD_Process_Para_ID 
+								+ " AND " + MProcessPara.COLUMNNAME_ColumnName + " = ?")
 				.setParameters(columnName)
 				.setClient_ID()
 				.setOnlyActiveRecords(true)

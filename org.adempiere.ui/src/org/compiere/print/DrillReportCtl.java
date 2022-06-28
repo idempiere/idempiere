@@ -501,6 +501,16 @@ public class DrillReportCtl {
 		boolean isKeyParameterSet= false;
 		MProcessDrillRulePara[] sParams = processDrillRule.getParameters (true);
 		ArrayList<ProcessInfoParameter> iParams = new ArrayList<ProcessInfoParameter>();
+		
+		if(sParams.length <= 0) {
+			if(hasMandatoryProcessPara(processDrillRule.getAD_Process_ID()))
+				throw new AdempiereException(Msg.parseTranslation(Env.getCtx(), "@FillMandatoryDrillRulePara@"));
+			
+			MProcessDrillRulePara keyPara = new MProcessDrillRulePara(Env.getCtx(), 0, null); 
+			keyPara.setAD_Process_DrillRule_ID(processDrillRule.getAD_Process_DrillRule_ID());
+			keyPara.setAD_Process_Para_ID(processDrillRule.getAD_Process_Para_ID());
+			sParams = new MProcessDrillRulePara[] {keyPara};
+		}
 		for (int p = 0; p < sParams.length; p++)
 			{
 				MProcessPara processPara = (MProcessPara) sParams[p].getAD_Process_Para();
@@ -606,7 +616,7 @@ public class DrillReportCtl {
 							+ ") " + value.getClass().getName()
 							+ " - " + e.getLocalizedMessage());
 					}
-			}	//	scheduler parameter loop
+			}	//	Drill Rule Parameter loop
 			pi.setParameter(iParams.toArray(new ProcessInfoParameter[0]));
 
 		if(!isKeyParameterSet) {
@@ -614,6 +624,15 @@ public class DrillReportCtl {
 		}
 	}	//	fillParameter
 
+	private boolean hasMandatoryProcessPara(int processID) {
+		MProcess process = new MProcess(Env.getCtx(), processID, null);
+		for(MProcessPara processPara : process.getParameters()) {
+			if(processPara.isMandatory())
+				return true;
+		}
+		return false;
+	}
+	
 	private Timestamp toTimestamp(Object value) {
 		Timestamp ts = null;
 		if (value instanceof Timestamp)

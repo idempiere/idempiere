@@ -49,21 +49,6 @@ public interface I_AD_Process_DrillRule
 	  */
 	public int getAD_Client_ID();
 
-    /** Column name AD_Column_ID */
-    public static final String COLUMNNAME_AD_Column_ID = "AD_Column_ID";
-
-	/** Set Column.
-	  * Column in the table
-	  */
-	public void setAD_Column_ID (int AD_Column_ID);
-
-	/** Get Column.
-	  * Column in the table
-	  */
-	public int getAD_Column_ID();
-
-	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
-
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
@@ -124,6 +109,17 @@ public interface I_AD_Process_DrillRule
 	public int getAD_Process_ID();
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
+
+    /** Column name AD_Process_Para_ID */
+    public static final String COLUMNNAME_AD_Process_Para_ID = "AD_Process_Para_ID";
+
+	/** Set Process Parameter	  */
+	public void setAD_Process_Para_ID (int AD_Process_Para_ID);
+
+	/** Get Process Parameter	  */
+	public int getAD_Process_Para_ID();
+
+	public org.compiere.model.I_AD_Process_Para getAD_Process_Para() throws RuntimeException;
 
     /** Column name AD_ReportView_ID */
     public static final String COLUMNNAME_AD_ReportView_ID = "AD_ReportView_ID";

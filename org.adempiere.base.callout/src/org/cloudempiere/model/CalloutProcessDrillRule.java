@@ -30,11 +30,9 @@ import java.util.Properties;
 import org.compiere.model.CalloutEngine;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
-import org.compiere.model.MColumn;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessDrillRule;
 import org.compiere.model.MReportView;
-import org.compiere.model.MTable;
 
 /**
  *
@@ -64,7 +62,7 @@ public class CalloutProcessDrillRule extends CalloutEngine {
 		if(process == null || process.getAD_ReportView_ID() <= 0) {
 			mTab.setValue(MProcessDrillRule.COLUMNNAME_AD_Table_ID, null);
 			mTab.setValue(MProcessDrillRule.COLUMNNAME_AD_ReportView_ID, null);
-			mTab.setValue(MProcessDrillRule.COLUMNNAME_AD_Column_ID, null);
+			mTab.setValue(MProcessDrillRule.COLUMNNAME_AD_Process_Para_ID, null);
 			return "";
 		}
 

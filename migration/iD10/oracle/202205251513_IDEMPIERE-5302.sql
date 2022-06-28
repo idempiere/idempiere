@@ -894,3 +894,55 @@ SELECT ColumnName FROM AD_Process_Para WHERE AD_Process_ID = @AD_Process_ID@
 UPDATE AD_Column SET AD_Val_Rule_ID=200160,Updated=TO_TIMESTAMP('2022-06-27 09:48:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214930
 ;
 
+-- Jun 28, 2022, 12:07:13 PM CEST
+DELETE  FROM  AD_Field_Trl WHERE AD_Field_ID=207072
+;
+
+-- Jun 28, 2022, 12:07:13 PM CEST
+DELETE FROM AD_Field WHERE AD_Field_ID=207072
+;
+
+-- Jun 28, 2022, 12:07:19 PM CEST
+ALTER TABLE AD_Process_DrillRule DROP CONSTRAINT ADColumn_ADProcessDrillRule
+;
+
+-- Jun 28, 2022, 12:07:35 PM CEST
+ALTER TABLE AD_Process_DrillRule DROP COLUMN AD_Column_ID
+;
+
+-- Jun 28, 2022, 12:08:06 PM CEST
+DELETE  FROM  AD_Column_Trl WHERE AD_Column_ID=214930
+;
+
+-- Jun 28, 2022, 12:08:06 PM CEST
+DELETE FROM AD_Column WHERE AD_Column_ID=214930
+;
+
+-- Jun 28, 2022, 12:29:34 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,AD_Val_Rule_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml) VALUES (214967,0,'Process Parameter',200335,186,'AD_Process_Para_ID',22,'N','N','Y','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2022-06-28 12:29:33','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-28 12:29:33','YYYY-MM-DD HH24:MI:SS'),100,118,'Y','N','D','N','N','N','Y','a793c423-1a45-4fd7-95a0-d03bfb6c6f94','Y',0,'N','N','N')
+;
+
+-- Jun 28, 2022, 12:30:40 PM CEST
+UPDATE AD_Column SET FKConstraintName='ADProcessPara_ADProcessDrillRu', FKConstraintType='N',Updated=TO_TIMESTAMP('2022-06-28 12:30:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214967
+;
+
+-- Jun 28, 2022, 12:30:40 PM CEST
+ALTER TABLE AD_Process_DrillRule ADD AD_Process_Para_ID NUMBER(10) NOT NULL
+;
+
+-- Jun 28, 2022, 12:32:12 PM CEST
+ALTER TABLE AD_Process_DrillRule ADD CONSTRAINT ADProcessPara_ADProcessDrillRu FOREIGN KEY (AD_Process_Para_ID) REFERENCES ad_process_para(ad_process_para_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Jun 28, 2022, 12:38:29 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,SortNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (207109,'Process Parameter',200308,214967,'Y',0,110,0,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2022-06-28 12:38:29','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-28 12:38:29','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','6dbd8833-4d79-4312-a7b4-5ccc05af8f12','Y',100,1,1,1,'N','N','N','N')
+;
+
+-- Jun 28, 2022, 12:39:27 PM CEST
+UPDATE AD_Field SET SeqNo=110, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, ColumnSpan=2, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-06-28 12:39:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207109
+;
+
+-- Jun 28, 2022, 2:31:48 PM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Fill Mandatory Drill Rule Parameters',0,0,'Y',TO_TIMESTAMP('2022-06-28 14:31:48','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-28 14:31:48','YYYY-MM-DD HH24:MI:SS'),100,200767,'FillMandatoryDrillRulePara','D','115f5fac-3645-4f9f-af30-050dda684d24')
+;
+
