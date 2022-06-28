@@ -50,6 +50,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
 
@@ -3040,5 +3041,24 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		}
 		
 		return data;
+	}
+	
+	@Override
+	public void setGrandTotal (BigDecimal GrandTotal)
+	{
+		X_C_DocRoundingRule roundingrule = MDocType.getRoundingRule(getC_DocTypeTarget_ID(),getAD_Org_ID(),getPaymentRule());
+		BigDecimal ronded = getGrandTotal();		
+		if (roundingrule!=null) {
+			ronded = Util.getAmountRounding(getGrandTotal(),roundingrule.getRoundingRule(),(MCurrency)getC_Currency());
+			BigDecimal rounding=ronded.subtract(getGrandTotal());
+			if (rounding.signum()!=0) {
+				setCurrencyRoundAmt(rounding);
+			}
+			super.setTotalLines(getTotalLines().add(rounding));
+			super.setGrandTotal(ronded);
+			saveEx();
+		}
+		else
+		super.setGrandTotal(GrandTotal);
 	}
 }	//	MInvoice

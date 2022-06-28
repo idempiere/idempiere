@@ -423,4 +423,21 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 		return this;
 	}
 
+	/**
+	 * Get Rounding Rule
+	 * @param c_DocType_ID
+	 * @param ad_Org_ID
+	 * @param paymentRule
+	 * @return
+	 */
+	public static X_C_DocRoundingRule getRoundingRule(int c_DocType_ID, int ad_Org_ID, String paymentRule) {
+		X_C_DocRoundingRule roundingrule = new Query(Env.getCtx(), X_C_DocRoundingRule.Table_Name, " c_doctype_id=? and ad_org_id in (0,?) and (paymentrule ilike ? OR paymentrule is null)  ", null)
+				.setParameters(c_DocType_ID,ad_Org_ID,paymentRule)
+				.setOrderBy(" ad_org_id desc,paymentrule desc")
+				.first();
+				
+		
+		return roundingrule;
+	}
+
 }	//	MDocType

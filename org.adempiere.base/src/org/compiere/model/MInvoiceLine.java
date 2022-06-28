@@ -1047,8 +1047,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
     	if (!calculator.updateInvoiceTax(provider, this))
 			return false;
-
-		return calculator.updateHeaderTax(provider, this);
+    	boolean success = calculator.updateHeaderTax(provider, this);
+    	// This must be called, because of direct SQL update header
+		getParent().setGrandTotal(getParent().getGrandTotal());
+    	return success;
 	}	//	updateHeaderTax
 
 

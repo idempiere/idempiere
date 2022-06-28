@@ -1055,7 +1055,10 @@ public class MOrderLine extends X_C_OrderLine
     	if (!calculator.updateOrderTax(provider, this))
 			return false;
 
-    	return calculator.updateHeaderTax(provider, this);
+    	boolean success = calculator.updateHeaderTax(provider, this);
+    	// This must be called, because of direct SQL update header
+		getParent().setGrandTotal(getParent().getGrandTotal());
+    	return success;
 
 	}	//	updateHeaderTax
 

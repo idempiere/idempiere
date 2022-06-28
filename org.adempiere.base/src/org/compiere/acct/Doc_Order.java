@@ -337,6 +337,7 @@ public class Doc_Order extends Doc
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		ArrayList<Fact> facts = new ArrayList<Fact>();
+		Fact fact = new Fact(this, as, Fact.POST_Commitment);
 		//  Purchase Order
 		if (getDocumentType().equals(DOCTYPE_POrder))
 		{
@@ -349,7 +350,7 @@ public class Doc_Order extends Doc
 			FactLine fl = null;
 			if (as.isCreatePOCommitment())
 			{
-				Fact fact = new Fact(this, as, Fact.POST_Commitment);
+				fact = new Fact(this, as, Fact.POST_Commitment);
 				BigDecimal total = Env.ZERO;
 				for (int i = 0; i < p_lines.length; i++)
 				{
@@ -379,7 +380,7 @@ public class Doc_Order extends Doc
 			//  Reverse Reservation
 			if (as.isCreateReservation())
 			{
-				Fact fact = new Fact(this, as, Fact.POST_Reservation);
+				fact = new Fact(this, as, Fact.POST_Reservation);
 				BigDecimal total = Env.ZERO;
 				if (m_requisitions == null)
 					m_requisitions = loadRequisitions();
@@ -419,7 +420,7 @@ public class Doc_Order extends Doc
 			FactLine fl = null;
 			if (as.isCreateSOCommitment())
 			{
-				Fact fact = new Fact(this, as, Fact.POST_Commitment);
+				fact = new Fact(this, as, Fact.POST_Commitment);
 				BigDecimal total = Env.ZERO;
 				for (int i = 0; i < p_lines.length; i++)
 				{
@@ -443,9 +444,24 @@ public class Doc_Order extends Doc
 				fact.createLine (null, offset,
 					getC_Currency_ID(), total, null);
 				//
-				facts.add(fact);
 			}
-
+		}
+		MOrder order = (MOrder)getPO();
+		
+		if (order.getCurrencyRoundAmt().signum()!=0) {
+			BigDecimal roundingAmt = order.getCurrencyRoundAmt();
+			if (getDocumentType().equals(DOCTYPE_POrder)) {
+				roundingAmt = roundingAmt.negate();
+			}
+			
+			if (roundingAmt.signum() < 0)
+				fact.createLine(null, getAccount(Doc.ACCTTYPE_RoundingLoss, as), getC_Currency_ID(),
+						roundingAmt.abs(), null);
+			else if (roundingAmt.signum() > 0)
+				fact.createLine(null, getAccount(Doc.ACCTTYPE_RoundingGain, as), getC_Currency_ID(), null,
+						roundingAmt);
+			
+			facts.add(fact);
 		}
 		return facts;
 	}   //  createFact

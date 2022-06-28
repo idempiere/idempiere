@@ -801,7 +801,23 @@ public class Doc_Invoice extends Doc
 			fact = null;
 		}
 		//
-		facts.add(fact);
+		MInvoice inv = (MInvoice)getPO();
+		
+		if (inv.getCurrencyRoundAmt().signum()!=0) {
+			BigDecimal roundingAmt = inv.getCurrencyRoundAmt();
+			if (getDocumentType().equals(DOCTYPE_APInvoice) || getDocumentType().equals(DOCTYPE_ARCredit)) {
+				roundingAmt = roundingAmt.negate();
+			}
+
+			if (roundingAmt.signum() < 0)
+				fact.createLine(null, getAccount(Doc.ACCTTYPE_RoundingLoss, as), getC_Currency_ID(),
+						roundingAmt.abs(), null);
+			else if (roundingAmt.signum() > 0)
+				fact.createLine(null, getAccount(Doc.ACCTTYPE_RoundingGain, as), getC_Currency_ID(), null,
+						roundingAmt);
+			
+			facts.add(fact);
+		}
 		return facts;
 	}   //  createFact
 

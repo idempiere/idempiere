@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
@@ -40,6 +42,9 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+
+import org.compiere.model.MCurrency;
+import org.compiere.model.MDiscountSchemaLine;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -748,4 +753,39 @@ public class Util
 			}
 		}
 	}
+	
+	public static BigDecimal getAmountRounding ( BigDecimal total,String roundMethod,MCurrency currency) {
+		
+		if (MDiscountSchemaLine.LIST_ROUNDING_CurrencyPrecision.equals(roundMethod)) {
+			int curPrecision = currency.getStdPrecision();
+			total = total.setScale(curPrecision, RoundingMode.HALF_UP);
+		}
+		else if (MDiscountSchemaLine.LIST_ROUNDING_Dime102030.equals(roundMethod))
+			total = total.setScale(1, RoundingMode.HALF_UP);
+		else if (MDiscountSchemaLine.LIST_ROUNDING_Hundred.equals(roundMethod))
+			total = total.setScale(-2, RoundingMode.HALF_UP);
+		else if (MDiscountSchemaLine.LIST_ROUNDING_Nickel051015.equals(roundMethod)) {
+			BigDecimal mm = new BigDecimal(20);
+			total = total.multiply(mm); 
+			total = total.setScale(0, RoundingMode.HALF_UP);
+			total = total.divide(mm, 2, RoundingMode.HALF_UP);
+		}
+		else if (MDiscountSchemaLine.LIST_ROUNDING_NoRounding.equals(roundMethod))
+			;
+		else if (MDiscountSchemaLine.LIST_ROUNDING_Quarter255075.equals(roundMethod)) {
+			BigDecimal mm = new BigDecimal(4);
+			total = total.multiply(mm); 
+			total = total.setScale(0, RoundingMode.HALF_UP);
+			total = total.divide(mm, 2, RoundingMode.HALF_UP);
+		}
+		else if (MDiscountSchemaLine.LIST_ROUNDING_Ten10002000.equals(roundMethod))
+			total = total.setScale(-1, RoundingMode.HALF_UP);
+		else if (MDiscountSchemaLine.LIST_ROUNDING_Thousand.equals(roundMethod))
+			total = total.setScale(-3, RoundingMode.HALF_UP);
+		else if (MDiscountSchemaLine.LIST_ROUNDING_WholeNumber00.equals(roundMethod))
+			total = total.setScale(0, RoundingMode.HALF_UP);
+
+		return total;
+	}	//	
+	
 }   //  Util

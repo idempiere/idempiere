@@ -1284,6 +1284,10 @@ public abstract class Doc
 	public static final int     ACCTTYPE_CommitmentOffset = 111;
 	/** GL Accounts - Commitment Offset	Sales */
 	public static final int     ACCTTYPE_CommitmentOffsetSales = 112;
+	/** GL Accounts - Rounding Gain */
+	public static final int     ACCTTYPE_RoundingGain = 998;
+	/** GL Accounts - Rounding Loss */
+	public static final int     ACCTTYPE_RoundingLoss = 999;
 
 
 	/**
@@ -1460,6 +1464,16 @@ public abstract class Doc
 		else if (AcctType == ACCTTYPE_CommitmentOffsetSales)
 		{
 			sql = "SELECT CommitmentOffsetSales_Acct FROM C_AcctSchema_GL WHERE C_AcctSchema_ID=?";
+			para_1 = -1;
+		}
+		else if (AcctType == ACCTTYPE_RoundingGain)
+		{
+			sql = "SELECT roundinggain_acct FROM C_AcctSchema_Default WHERE C_AcctSchema_ID=?";
+			para_1 = -1;
+		}
+		else if (AcctType == ACCTTYPE_RoundingLoss)
+		{
+			sql = "SELECT RoundingLoss_Acct FROM C_AcctSchema_Default WHERE C_AcctSchema_ID=?";
 			para_1 = -1;
 		}
 
