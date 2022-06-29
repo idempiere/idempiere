@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_Charge_Acct
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_Charge_Acct")
 public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220629L;
 
     /** Standard Constructor */
     public X_C_Charge_Acct (Properties ctx, int C_Charge_Acct_ID, String trxName)
@@ -41,6 +41,7 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 			setC_AcctSchema_ID (0);
 			setC_Charge_ID (0);
 			setCh_Expense_Acct (0);
+			setCh_Revenue_Acct (0);
         } */
     }
 
@@ -53,6 +54,7 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 			setC_AcctSchema_ID (0);
 			setC_Charge_ID (0);
 			setCh_Expense_Acct (0);
+			setCh_Revenue_Acct (0);
         } */
     }
 
@@ -161,20 +163,45 @@ public class X_C_Charge_Acct extends PO implements I_C_Charge_Acct, I_Persistent
 			.getPO(getCh_Expense_Acct(), get_TrxName());
 	}
 
-	/** Set Charge Account.
-		@param Ch_Expense_Acct Charge Account
+	/** Set Charge Expense.
+		@param Ch_Expense_Acct Charge Expense Account
 	*/
 	public void setCh_Expense_Acct (int Ch_Expense_Acct)
 	{
 		set_Value (COLUMNNAME_Ch_Expense_Acct, Integer.valueOf(Ch_Expense_Acct));
 	}
 
-	/** Get Charge Account.
-		@return Charge Account
+	/** Get Charge Expense.
+		@return Charge Expense Account
 	  */
 	public int getCh_Expense_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Ch_Expense_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_C_ValidCombination getCh_Revenue_A() throws RuntimeException
+	{
+		return (I_C_ValidCombination)MTable.get(getCtx(), I_C_ValidCombination.Table_ID)
+			.getPO(getCh_Revenue_Acct(), get_TrxName());
+	}
+
+	/** Set Charge Revenue.
+		@param Ch_Revenue_Acct Charge Revenue Account
+	*/
+	public void setCh_Revenue_Acct (int Ch_Revenue_Acct)
+	{
+		set_Value (COLUMNNAME_Ch_Revenue_Acct, Integer.valueOf(Ch_Revenue_Acct));
+	}
+
+	/** Get Charge Revenue.
+		@return Charge Revenue Account
+	  */
+	public int getCh_Revenue_Acct()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Ch_Revenue_Acct);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

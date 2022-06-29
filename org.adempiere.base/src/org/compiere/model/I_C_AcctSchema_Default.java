@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_AcctSchema_Default
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_C_AcctSchema_Default 
 {
@@ -44,8 +44,8 @@ public interface I_C_AcctSchema_Default
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_C_AcctSchema_Default
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -254,17 +254,32 @@ public interface I_C_AcctSchema_Default
     /** Column name Ch_Expense_Acct */
     public static final String COLUMNNAME_Ch_Expense_Acct = "Ch_Expense_Acct";
 
-	/** Set Charge Account.
-	  * Charge Account
+	/** Set Charge Expense.
+	  * Charge Expense Account
 	  */
 	public void setCh_Expense_Acct (int Ch_Expense_Acct);
 
-	/** Get Charge Account.
-	  * Charge Account
+	/** Get Charge Expense.
+	  * Charge Expense Account
 	  */
 	public int getCh_Expense_Acct();
 
 	public I_C_ValidCombination getCh_Expense_A() throws RuntimeException;
+
+    /** Column name Ch_Revenue_Acct */
+    public static final String COLUMNNAME_Ch_Revenue_Acct = "Ch_Revenue_Acct";
+
+	/** Set Charge Revenue.
+	  * Charge Revenue Account
+	  */
+	public void setCh_Revenue_Acct (int Ch_Revenue_Acct);
+
+	/** Get Charge Revenue.
+	  * Charge Revenue Account
+	  */
+	public int getCh_Revenue_Acct();
+
+	public I_C_ValidCombination getCh_Revenue_A() throws RuntimeException;
 
     /** Column name C_Prepayment_Acct */
     public static final String COLUMNNAME_C_Prepayment_Acct = "C_Prepayment_Acct";

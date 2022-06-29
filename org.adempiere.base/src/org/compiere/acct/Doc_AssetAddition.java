@@ -64,7 +64,7 @@ public class Doc_AssetAddition extends Doc
 		//
 		BigDecimal assetValueAmt = assetAdd.getAssetSourceAmt();
 		FactLine[] fls = FactUtil.createSimpleOperation(fact, null,
-				getA_Asset_Acct(as), getP_Asset_Acct(as),
+				getA_Asset_Acct(as), getP_Asset_Acct(as, assetValueAmt),
 				getC_Currency_ID(),
 				assetValueAmt,
 				false);
@@ -88,7 +88,7 @@ public class Doc_AssetAddition extends Doc
 		return (MAssetAddition)getPO();
 	}
 	
-	private MAccount getP_Asset_Acct(MAcctSchema as)
+	private MAccount getP_Asset_Acct(MAcctSchema as, BigDecimal assetValueAmt)
 	{
 		MAssetAddition assetAdd = getAssetAddition();
 		// Source Account
@@ -101,7 +101,7 @@ public class Doc_AssetAddition extends Doc
 		else if (MAssetAddition.A_SOURCETYPE_Manual.equals(assetAdd.getA_SourceType())
 				&& getC_Charge_ID() > 0) // backward compatibility: only if charge defined; if not fallback to product account 
 		{	
-			pAssetAcct = MCharge.getAccount(getC_Charge_ID(), as);
+			pAssetAcct = MCharge.getAccount(getC_Charge_ID(), as, assetValueAmt);
 			return pAssetAcct;
 		}	
 		else if (MAssetAddition.A_SOURCETYPE_Invoice.equals(assetAdd.getA_SourceType())

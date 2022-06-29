@@ -473,7 +473,7 @@ public class DocLine
 		int C_Charge_ID = getC_Charge_ID();
 		if (C_Charge_ID == 0)
 			return null;
-		return MCharge.getAccount(C_Charge_ID, as);
+		return MCharge.getAccount(C_Charge_ID, as, amount);
 	}   //  getChargeAccount
 
 	/**

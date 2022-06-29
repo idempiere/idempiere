@@ -45,6 +45,7 @@ SUSPENSEBALANCING,Suspense balancing ,Difference to make journal balance in sour
 CB_EXPENSE,Cash book expense,Default other expense for petty cash transactions,Expense,,Yes,No,CB_EXPENSE_ACCT,DEFAULTS_NOT_CONFIGURED
 CB_RECEIPT,Cash book receipts,Default other revenue for petty cash transactions,Revenue,,Yes,No,CB_RECEIPT_ACCT,DEFAULTS_NOT_CONFIGURED
 CH_EXPENSE,Charge expense,Default other expense,Expense,,Yes,No,CH_EXPENSE_ACCT,DEFAULTS_NOT_CONFIGURED
+CH_REVENUE,Charge revenue,Default other revenue,Revenue,,Yes,No,CH_REVENUE_ACCT,DEFAULTS_NOT_CONFIGURED
 B_INTERESTREV,Interest Income,Bank interest revenue,Revenue,,Yes,No,B_INTERESTREV_ACCT,DEFAULTS_NOT_CONFIGURED
 UNREALIZEDGAIN,Unrealized gain,Difference between foreign currency receivables/payables and current rate,Revenue,,Yes,No,UNREALIZEDGAIN_ACCT,DEFAULTS_NOT_CONFIGURED
 REALIZEDGAIN,Realized gain,Difference between invoice and payment currency,Revenue,,Yes,No,REALIZEDGAIN_ACCT,DEFAULTS_NOT_CONFIGURED

@@ -1303,8 +1303,10 @@ public abstract class Doc
 			int cmp = getAmount(AMTTYPE_Charge).compareTo(Env.ZERO);
 			if (cmp == 0)
 				return 0;
-			else
+			else if (cmp < 0)
 				sql = "SELECT CH_Expense_Acct FROM C_Charge_Acct WHERE C_Charge_ID=? AND C_AcctSchema_ID=?";
+			else
+				sql = "SELECT CH_Revenue_Acct FROM C_Charge_Acct WHERE C_Charge_ID=? AND C_AcctSchema_ID=?";
 			
 			para_1 = getC_Charge_ID();
 		}

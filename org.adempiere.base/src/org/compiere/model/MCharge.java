@@ -40,33 +40,36 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1978008783808254164L;
+	private static final long serialVersionUID = -6183007166029800261L;
 
 	/**
 	 *  Get Charge Account
 	 *  @param C_Charge_ID charge
 	 *  @param as account schema
-	 *  @param amount amount NOT USED
 	 *  @return Charge Account or null
-	 *  @deprecated use getAccount(Charge, as) instead
+	 *  @deprecated use getAccount(Charge, as, amount) instead
 	 */
-	public static MAccount getAccount (int C_Charge_ID, MAcctSchema as, BigDecimal amount)
+	public static MAccount getAccount (int C_Charge_ID, MAcctSchema as)
 	{
-		return getAccount (C_Charge_ID, as);
+		return getAccount(C_Charge_ID, as, Env.ZERO);
 	}   //  getAccount
 
 	/**
 	 *  Get Charge Account
 	 *  @param C_Charge_ID charge
 	 *  @param as account schema
+	 *  @param amount amount for expense(+)/revenue(-)
 	 *  @return Charge Account or null
 	 */
-	public static MAccount getAccount (int C_Charge_ID, MAcctSchema as)
+	public static MAccount getAccount (int C_Charge_ID, MAcctSchema as, BigDecimal amount)
 	{
 		if (C_Charge_ID == 0 || as == null)
 			return null;
 
-		String sql = "SELECT Ch_Expense_Acct FROM C_Charge_Acct WHERE C_Charge_ID=? AND C_AcctSchema_ID=?";
+		String acctName = X_C_Charge_Acct.COLUMNNAME_Ch_Expense_Acct;		//  Expense (positive amt)
+		if (amount != null && amount.signum() < 0)
+			acctName = X_C_Charge_Acct.COLUMNNAME_Ch_Revenue_Acct;			//  Revenue (negative amt)
+		String sql = "SELECT "+acctName+" FROM C_Charge_Acct WHERE C_Charge_ID=? AND C_AcctSchema_ID=?";
 		int Account_ID = DB.getSQLValueEx(null, sql, C_Charge_ID, as.get_ID());
 		//	No account
 		if (Account_ID <= 0)
