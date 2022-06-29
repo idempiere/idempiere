@@ -87,20 +87,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 */
 	public ProcessModalDialog(EventListener<Event> listener, int WindowNo, boolean isReRun, ProcessInfo pi)
 	{
-		this(listener, WindowNo, isReRun, pi, false);
-	}
-	
-	/**
-	 * 
-	 * @param listener
-	 * @param WindowNo
-	 * @param isReRun
-	 * @param pi
-	 * @param disposeParent
-	 */
-	public ProcessModalDialog(EventListener<Event> listener, int WindowNo, boolean isReRun, ProcessInfo pi, boolean disposeParent)
-	{
-		this(null, WindowNo, pi, false, disposeParent);
+		this(WindowNo, pi, false);
 		
 		if(isReRun) {
 			MPInstance instance = getLastRun();
@@ -130,19 +117,6 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 */
 	public ProcessModalDialog(EventListener<Event> listener, int WindowNo, ProcessInfo pi, boolean autoStart)
 	{
-		this(listener, WindowNo, pi, autoStart, false);
-	}
-	
-	/**
-	 * 
-	 * @param listener
-	 * @param WindowNo
-	 * @param pi
-	 * @param autoStart
-	 * @param disposeParent
-	 */
-	public ProcessModalDialog(EventListener<Event> listener, int WindowNo, ProcessInfo pi, boolean autoStart, boolean disposeParent)
-	{
 		super();
 		
 		if (listener != null) 
@@ -154,7 +128,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		log.info("Process=" + pi.getAD_Process_ID());
 		try
 		{
-			init(Env.getCtx(), WindowNo, pi.getAD_Process_ID(), pi, autoStart, true, disposeParent);
+			init(Env.getCtx(), WindowNo, pi.getAD_Process_ID(), pi, autoStart, true);
 			if (mainParameterLayout != null)// when auto start it's null
 			{
 				mainParameterLayout.setStyle("max-height:" + ClientInfo.get().desktopHeight + "px");

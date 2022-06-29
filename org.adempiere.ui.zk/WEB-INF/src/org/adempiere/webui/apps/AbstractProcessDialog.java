@@ -118,7 +118,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	private int m_AD_Process_ID;
 	private ProcessInfo m_pi = null;
 	private boolean m_disposeOnComplete;
-	private boolean m_disposeParent;
 
 	private ProcessParameterPanel parameterPanel = null;
 	private Checkbox runAsJobField = null;
@@ -159,28 +158,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 */
 	protected boolean init(Properties ctx, int WindowNo, int AD_Process_ID, ProcessInfo pi, boolean autoStart, boolean isDisposeOnComplete)
 	{
-		return this.init(ctx, WindowNo, AD_Process_ID, pi, autoStart, isDisposeOnComplete, false);
-	}
-	
-	/**
-	 * 
-	 * @param ctx
-	 * @param WindowNo
-	 * @param AD_Process_ID
-	 * @param pi
-	 * @param autoStart
-	 * @param isDisposeOnComplete
-	 * @param disposeParent
-	 * @return
-	 */
-	protected boolean init(Properties ctx, int WindowNo, int AD_Process_ID, ProcessInfo pi, boolean autoStart, boolean isDisposeOnComplete, boolean disposeParent)
-	{
 		m_ctx = ctx;
 		m_WindowNo = WindowNo;
 		m_AD_Process_ID = AD_Process_ID;
 		setProcessInfo(pi);
 		m_disposeOnComplete = isDisposeOnComplete;
-		m_disposeParent = disposeParent;
 		
 		log.config("");
 		//
@@ -979,11 +961,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			Events.postEvent(downloadDialog, new Event(MultiFileDownloadDialog.ON_SHOW));
 		}
 		
-		if (m_disposeOnComplete) {
-			if(m_disposeParent)
-				getParent().detach();
+		if (m_disposeOnComplete)
 			dispose();
-		}
 	}
 	
 	private void onStatusUpdate(Event event) 
