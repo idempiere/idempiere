@@ -38,6 +38,7 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Tabpanels;
 import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MProcess;
@@ -542,6 +543,8 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 
 			return;
 		}
+		if (DialogEvents.ON_WINDOW_CLOSE.equals(event.getName())) 
+			this.onClose();
 	}
 
 }
