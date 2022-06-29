@@ -50,7 +50,7 @@ public class LabelAction {
 		this.panel = panel;	
 		int AD_Table_ID = panel.getActiveGridTab().getAD_Table_ID();
 		int Record_ID = panel.getActiveGridTab().getRecord_ID();
-		labelsPanel = new LabelsPanel(AD_Table_ID, Record_ID);
+		labelsPanel = new LabelsPanel(panel, AD_Table_ID, Record_ID);
 	}	
 
 	/**
@@ -79,5 +79,6 @@ public class LabelAction {
 		
 		LayoutUtils.openPopupWindow(toolbarItem, window, "after_start");
 		window.setFocus(true);
+		panel.getToolbar().setPressed("Label", panel.getADTab().getSelectedGridTab().hasLabel());
 	}
 }

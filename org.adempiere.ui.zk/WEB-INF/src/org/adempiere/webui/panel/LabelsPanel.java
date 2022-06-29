@@ -29,6 +29,7 @@ package org.adempiere.webui.panel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.apps.LabelsSearchController;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ZkCssHelper;
@@ -45,15 +46,18 @@ import org.zkoss.zul.Groupbox;
 
 public class LabelsPanel extends Div implements EventListener<Event> {
 	private static final long serialVersionUID = 2232899183255702050L;
+	private AbstractADWindowContent abstractADWindowContent;
 	private int AD_Table_ID;
 	private int Record_ID;	
 	
 	/**
 	 * Standard constructor
+	 * @param abstractADWindowContent 
 	 * @param AD_Table_ID
 	 * @param Record_ID
 	 */
-	public LabelsPanel(int AD_Table_ID, int Record_ID) {
+	public LabelsPanel(AbstractADWindowContent abstractADWindowContent, int AD_Table_ID, int Record_ID) {
+		this.abstractADWindowContent = abstractADWindowContent;
 		this.AD_Table_ID = AD_Table_ID;
 		this.Record_ID = Record_ID;
 		setStyle("padding:0px 5px;");
@@ -107,6 +111,8 @@ public class LabelsPanel extends Div implements EventListener<Event> {
 	        d.appendChild(gb);
 	        appendChild(d);
 		}
+
+		abstractADWindowContent.getToolbar().setPressed("Label",abstractADWindowContent.getActiveGridTab().hasLabel());
 	}
 	
 	private class LabelPill extends Groupbox {

@@ -1142,6 +1142,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      * Open Label panel
      */
 	public void onLabel() {
+		toolbar.setPressed("Label",false);
 		LabelAction labelAction = new LabelAction(this);
 		labelAction.show();
 	}
