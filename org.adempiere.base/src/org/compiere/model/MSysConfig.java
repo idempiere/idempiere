@@ -112,6 +112,7 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE = "INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE";
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
     public static final String JASPER_SWAP_MAX_PAGES = "JASPER_SWAP_MAX_PAGES";
+    public static final String LABEL_AUTOMATIC_COLOR = "LABEL_AUTOMATIC_COLOR";
     public static final String LASTRUN_RECORD_COUNT = "LASTRUN_RECORD_COUNT";
 	public static final String LDAP_TYPE = "LDAP_TYPE";
     public static final String LOCATION_MAPS_DESTINATION_ADDRESS = "LOCATION_MAPS_DESTINATION_ADDRESS";
@@ -231,7 +232,6 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_TOOLBAR_SHOW_MORE_VERTICAL = "ZK_TOOLBAR_SHOW_MORE_VERTICAL";
     public static final String ZK_USE_PDF_JS_VIEWER = "ZK_USE_PDF_JS_VIEWER";
     public static final String ZOOM_ACROSS_QUERY_TIMEOUT = "ZOOM_ACROSS_QUERY_TIMEOUT";
-    public static final String LABEL_AUTOMATIC_COLOR = "LABEL_AUTOMATIC_COLOR";
 
 	/**
 	 * 	Standard Constructor
