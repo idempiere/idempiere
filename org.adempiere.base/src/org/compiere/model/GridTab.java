@@ -3473,6 +3473,22 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		this.calloutUI = calloutUI;
 	}
 
+	/**
+	 * Get Delete Confirmation Logic
+	 * @return String
+	 */
+	public String getDeleteConfirmationLogic() {
+		return m_vo.deleteConfirmationLogic;
+	}
+	
+	/**
+	 * Set Delete Confirmation Logic
+	 * @param deleteConfirmationLogic
+	 */
+	public void setDeleteConfirmationLogic(String deleteConfirmationLogic) {
+		m_vo.deleteConfirmationLogic = deleteConfirmationLogic;
+	}
+	
 	/** Get Max Query Records.
 	 *  @return If defined, you cannot query more records as defined - the query criteria needs to be changed to query less records
      */

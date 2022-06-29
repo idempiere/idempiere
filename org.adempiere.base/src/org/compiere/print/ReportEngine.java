@@ -39,9 +39,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -388,11 +386,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 
 		if(Util.isEmpty(processFileNamePattern)) {
 
-	        Calendar cal = Calendar.getInstance();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-			String dt = sdf.format(cal.getTime());
-
-			m_name = m_printFormat.get_Translation("Name") + "_" + dt;
+			m_name = (m_name = m_printFormat.get_Translation(m_printFormat.getName())) != null ? m_name : m_printFormat.getName();
  
 
 		} else {
