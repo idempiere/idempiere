@@ -523,7 +523,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 				MProcessDrillRule drillRule = new MProcessDrillRule(Env.getCtx(), processDrillRuleID, null);
 				String showHelp = !Util.isEmpty(showHelp = drillRule.getShowHelp()) ? showHelp : MProcess.SHOWHELP_RunSilently_TakeDefaults;
 				pi.setShowHelp(showHelp);
-				ProcessModalDialog processModalDialog = new ProcessModalDialog(this, windowNo, false, pi);
+				ProcessModalDialog processModalDialog = new ProcessModalDialog(this, windowNo, false, pi, true);
 				ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
 				this.appendChild(processModalDialog);
 				if (ClientInfo.isMobile())
