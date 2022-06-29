@@ -63,7 +63,7 @@ public class InOutGenerate extends SvrProcess
 	/** Include Orders w. unconfirmed Shipments	*/
 	private boolean		p_IsUnconfirmedInOut = false;
 	/** Reserve on hand for this inout */
-	private boolean		p_SubtractOnHand = true;
+	private boolean		p_SubtractOnHand = false;
 	/** DocAction				*/
 	private String		p_docAction = DocAction.ACTION_None;
 	/** Consolidate				*/
@@ -279,25 +279,37 @@ public class InOutGenerate extends SvrProcess
 					//	Check / adjust for confirmations
 					BigDecimal unconfirmedShippedQty = Env.ZERO;
 					BigDecimal totalunconfirmedShippedQty = Env.ZERO;
+					StringBuilder logInfo = null;
 					if (p_IsUnconfirmedInOut && product != null && toDeliver.signum() != 0)
 					{
 						String where2 = "EXISTS (SELECT * FROM M_InOut io WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID AND io.DocStatus IN ('DR','IN','IP','WC'))";
 						MInOutLine[] iols = MInOutLine.getOfOrderLine(getCtx(), 
 							line.getC_OrderLine_ID(), where2, null);
-						for (int j = 0; j < iols.length; j++) 
+						for (int j = 0; j < iols.length; j++)
 							unconfirmedShippedQty = unconfirmedShippedQty.add(iols[j].getMovementQty());
-						StringBuilder logInfo = new StringBuilder("Unconfirmed Qty=").append(unconfirmedShippedQty) 
-							.append(" - ToDeliver=").append(toDeliver).append("->");					
+						if (log.isLoggable(Level.FINE))
+							logInfo = new StringBuilder("Unconfirmed Qty=").append(unconfirmedShippedQty)
+								.append(" - ToDeliver=").append(toDeliver).append("->");
 						toDeliver = toDeliver.subtract(unconfirmedShippedQty);
-						logInfo.append(toDeliver);
+						if (log.isLoggable(Level.FINE))
+							logInfo.append(toDeliver);
 						if (toDeliver.signum() < 0)
 						{
 							toDeliver = Env.ZERO;
-							logInfo.append(" (set to 0)");
+							if (log.isLoggable(Level.FINE))
+								logInfo.append(" (set to 0)");
 						}
-						
+						if (log.isLoggable(Level.FINE) && logInfo.length() > 0) log.fine(logInfo.toString());
+						if (toDeliver.signum() == 0) {
+							if (completeOrder)
+								completeOrder = false;
+							continue;
+						}
+					}
+
+					if (product != null && toDeliver.signum() != 0) {
+						// Adjust On Hand
 						if(p_SubtractOnHand) {
-							//	Adjust On Hand
 							StringBuilder where3 = new StringBuilder (
 									"EXISTS (SELECT * FROM M_InOut io "
 											+ "WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID "
@@ -306,19 +318,15 @@ public class InOutGenerate extends SvrProcess
 											+ "AND io.M_Warehouse_ID=").append(p_M_Warehouse_ID).append (") "
 													+ "AND M_Product_ID = ").append(line.getM_Product_ID());
 							
-							totalunconfirmedShippedQty = 
+							totalunconfirmedShippedQty =
 									new Query(getCtx(), MInOutLine.Table_Name, where3.toString(), get_TrxName())
 									.aggregate(MInOutLine.COLUMNNAME_MovementQty, Query.AGGREGATE_SUM);
-							
-							logInfo = new StringBuilder("TotalUnconfirmed Qty=").append(totalunconfirmedShippedQty) 
-									.append(" - ToDeliver=").append(toDeliver).append("->");					
 							onHand = onHand.subtract(totalunconfirmedShippedQty);
-						} else {
+						} else if (unconfirmedShippedQty.signum() != 0){
 							onHand = onHand.subtract(unconfirmedShippedQty);
 						}
-						if (log.isLoggable(Level.FINE)) log.fine(logInfo.toString());
 					}
-					
+
 					//	Comments & lines w/o product & services
 					if ((product == null || !product.isStocked())
 						&& (line.getQtyOrdered().signum() == 0 	//	comments
