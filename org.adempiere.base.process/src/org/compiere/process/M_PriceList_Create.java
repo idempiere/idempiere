@@ -20,7 +20,6 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -44,6 +43,7 @@ import org.compiere.model.Query;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 /**
  * Create PriceList by copying purchase prices (M_Product_PO) 
@@ -425,33 +425,7 @@ public class M_PriceList_Create extends SvrProcess {
 			calc = new BigDecimal(dd);
 		}
 
-		//	Rounding
-		if (MDiscountSchemaLine.LIST_ROUNDING_CurrencyPrecision.equals(round))
-			calc = calc.setScale(curPrecision, RoundingMode.HALF_UP);
-		else if (MDiscountSchemaLine.LIST_ROUNDING_Dime102030.equals(round))
-			calc = calc.setScale(1, RoundingMode.HALF_UP);
-		else if (MDiscountSchemaLine.LIST_ROUNDING_Hundred.equals(round))
-			calc = calc.setScale(-2, RoundingMode.HALF_UP);
-		else if (MDiscountSchemaLine.LIST_ROUNDING_Nickel051015.equals(round)) {
-			BigDecimal mm = new BigDecimal(20);
-			calc = calc.multiply(mm); 
-			calc = calc.setScale(0, RoundingMode.HALF_UP);
-			calc = calc.divide(mm, 2, RoundingMode.HALF_UP);
-		}
-		else if (MDiscountSchemaLine.LIST_ROUNDING_NoRounding.equals(round))
-			;
-		else if (MDiscountSchemaLine.LIST_ROUNDING_Quarter255075.equals(round)) {
-			BigDecimal mm = new BigDecimal(4);
-			calc = calc.multiply(mm); 
-			calc = calc.setScale(0, RoundingMode.HALF_UP);
-			calc = calc.divide(mm, 2, RoundingMode.HALF_UP);
-		}
-		else if (MDiscountSchemaLine.LIST_ROUNDING_Ten10002000.equals(round))
-			calc = calc.setScale(-1, RoundingMode.HALF_UP);
-		else if (MDiscountSchemaLine.LIST_ROUNDING_Thousand.equals(round))
-			calc = calc.setScale(-3, RoundingMode.HALF_UP);
-		else if (MDiscountSchemaLine.LIST_ROUNDING_WholeNumber00.equals(round))
-			calc = calc.setScale(0, RoundingMode.HALF_UP);
+		calc = Util.getRoundedAmount(calc, round, curPrecision);
 
 		return calc;
 	}	//	calculate

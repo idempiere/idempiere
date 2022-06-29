@@ -1311,6 +1311,37 @@ public class MOrder extends X_C_Order implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 				
+		// Rounding
+		String rounding = dt.getRounding();
+		int chargeId = dt.getRoundingCharge_ID();
+		if (!Util.isEmpty(rounding) && chargeId > 0) {
+			boolean deleted = false;
+			for (MOrderLine rline : getLines()) {
+				if (rline.getC_Charge_ID() == chargeId) {
+					rline.delete(true);
+					deleted = true;
+				}
+			}
+			if (deleted)
+				load(get_TrxName());
+
+			boolean inserted = false;
+			BigDecimal grandTotal = getGrandTotal();
+			BigDecimal roundAmt = Util.getRoundingAmount(grandTotal, rounding, getPrecision());
+			if (roundAmt != null && roundAmt.signum() != 0) {
+				MOrderLine rline = new MOrderLine(this);
+				rline.setC_Charge_ID(chargeId);
+				rline.setQty(Env.ONE);
+				rline.setPrice(roundAmt);
+				rline.saveEx();
+				inserted = true;
+			}
+			if (deleted || inserted)
+				getLines(true, null);
+			if (inserted)
+				load(get_TrxName());
+		}
+
 		// Bug 1564431
 		if (MOrder.DELIVERYRULE_CompleteOrder.equals(getDeliveryRule()) )
 		{
@@ -2326,10 +2357,9 @@ public class MOrder extends X_C_Order implements DocAction
 			}
 		}
 		
-		// added AdempiereException by zuhri
+		invoice.load(invoice.get_TrxName());
 		if (!invoice.processIt(DocAction.ACTION_Complete))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + invoice.getProcessMsg());
-		// end added
 		invoice.saveEx(get_TrxName());
 		setC_CashLine_ID(invoice.getC_CashLine_ID());
 		if (!DOCSTATUS_Completed.equals(invoice.getDocStatus()))

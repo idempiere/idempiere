@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocType
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_DocType")
 public class X_C_DocType extends PO implements I_C_DocType, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220629L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -411,7 +411,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public static final String DOCBASETYPE_PurchaseRequisition = "POR";
 	/** Sales Order = SOO */
 	public static final String DOCBASETYPE_SalesOrder = "SOO";
-	/** Set Document BaseType.
+	/** Set Document Base Type.
 		@param DocBaseType Logical type of document
 	*/
 	public void setDocBaseType (String DocBaseType)
@@ -420,7 +420,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		set_Value (COLUMNNAME_DocBaseType, DocBaseType);
 	}
 
-	/** Get Document BaseType.
+	/** Get Document Base Type.
 		@return Logical type of document
 	  */
 	public String getDocBaseType()
@@ -785,16 +785,16 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 		return false;
 	}
 
-	/** Set Allow Product Without Pricelist.
-		@param IsNoPriceListCheck Allow Product Without Pricelist
+	/** Set Allow Product Without Price List.
+		@param IsNoPriceListCheck Allow Product Without Price List
 	*/
 	public void setIsNoPriceListCheck (boolean IsNoPriceListCheck)
 	{
 		set_Value (COLUMNNAME_IsNoPriceListCheck, Boolean.valueOf(IsNoPriceListCheck));
 	}
 
-	/** Get Allow Product Without Pricelist.
-		@return Allow Product Without Pricelist	  */
+	/** Get Allow Product Without Price List.
+		@return Allow Product Without Price List	  */
 	public boolean isNoPriceListCheck()
 	{
 		Object oo = get_Value(COLUMNNAME_IsNoPriceListCheck);
@@ -1004,5 +1004,70 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public String getPrintName()
 	{
 		return (String)get_Value(COLUMNNAME_PrintName);
+	}
+
+	/** Rounding AD_Reference_ID=155 */
+	public static final int ROUNDING_AD_Reference_ID=155;
+	/** Whole Number .00 = 0 */
+	public static final String ROUNDING_WholeNumber00 = "0";
+	/** Nickel .05, .10, .15, ... = 5 */
+	public static final String ROUNDING_Nickel051015 = "5";
+	/** Ending in 9/5 = 9 */
+	public static final String ROUNDING_EndingIn95 = "9";
+	/** Currency Precision = C */
+	public static final String ROUNDING_CurrencyPrecision = "C";
+	/** Dime .10, .20, .30, ... = D */
+	public static final String ROUNDING_Dime102030 = "D";
+	/** Hundred = h */
+	public static final String ROUNDING_Hundred = "h";
+	/** No Rounding = N */
+	public static final String ROUNDING_NoRounding = "N";
+	/** Quarter .25 .50 .75 = Q */
+	public static final String ROUNDING_Quarter255075 = "Q";
+	/** Thousand = t */
+	public static final String ROUNDING_Thousand = "t";
+	/** Ten 10.00, 20.00, .. = T */
+	public static final String ROUNDING_Ten10002000 = "T";
+	/** Set Rounding rule for the document.
+		@param Rounding Rounding rule for the document
+	*/
+	public void setRounding (String Rounding)
+	{
+
+		set_Value (COLUMNNAME_Rounding, Rounding);
+	}
+
+	/** Get Rounding rule for the document.
+		@return Rounding rule for the document	  */
+	public String getRounding()
+	{
+		return (String)get_Value(COLUMNNAME_Rounding);
+	}
+
+	public org.compiere.model.I_C_Charge getRoundingCharge() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getRoundingCharge_ID(), get_TrxName());
+	}
+
+	/** Set Rounding Charge.
+		@param RoundingCharge_ID Rounding Charge
+	*/
+	public void setRoundingCharge_ID (int RoundingCharge_ID)
+	{
+		if (RoundingCharge_ID < 1)
+			set_Value (COLUMNNAME_RoundingCharge_ID, null);
+		else
+			set_Value (COLUMNNAME_RoundingCharge_ID, Integer.valueOf(RoundingCharge_ID));
+	}
+
+	/** Get Rounding Charge.
+		@return Rounding Charge	  */
+	public int getRoundingCharge_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_RoundingCharge_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }

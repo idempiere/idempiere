@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
@@ -40,6 +42,8 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+
+import org.compiere.model.MDiscountSchemaLine;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -748,4 +752,54 @@ public class Util
 			}
 		}
 	}
+
+	/**
+	 * @param Amount to round
+	 * @param rounding - as defined in the reference list Rounding
+	 * @param curPrecision - currency precision, required when the rounding is CurrencyPrecision
+	 * @return the amount required to round the received amount
+	 */
+	public static BigDecimal getRoundingAmount(BigDecimal amtToRound, String rounding, int curPrecision) {
+		BigDecimal roundingAmt = amtToRound;
+		//	Rounding
+		if (MDiscountSchemaLine.LIST_ROUNDING_CurrencyPrecision.equals(rounding)) {
+			roundingAmt = roundingAmt.setScale(curPrecision, RoundingMode.HALF_UP);
+		} else if (MDiscountSchemaLine.LIST_ROUNDING_Dime102030.equals(rounding)) {
+			roundingAmt = roundingAmt.setScale(1, RoundingMode.HALF_UP);
+		} else if (MDiscountSchemaLine.LIST_ROUNDING_Hundred.equals(rounding)) {
+			roundingAmt = roundingAmt.setScale(-2, RoundingMode.HALF_UP);
+		} else if (MDiscountSchemaLine.LIST_ROUNDING_Nickel051015.equals(rounding)) {
+			BigDecimal mm = new BigDecimal(20);
+			roundingAmt = roundingAmt.multiply(mm); 
+			roundingAmt = roundingAmt.setScale(0, RoundingMode.HALF_UP);
+			roundingAmt = roundingAmt.divide(mm, 2, RoundingMode.HALF_UP);
+		} else if (MDiscountSchemaLine.LIST_ROUNDING_NoRounding.equals(rounding)) {
+			;
+		} else if (MDiscountSchemaLine.LIST_ROUNDING_Quarter255075.equals(rounding)) {
+			BigDecimal mm = new BigDecimal(4);
+			roundingAmt = roundingAmt.multiply(mm); 
+			roundingAmt = roundingAmt.setScale(0, RoundingMode.HALF_UP);
+			roundingAmt = roundingAmt.divide(mm, 2, RoundingMode.HALF_UP);
+		} else if (MDiscountSchemaLine.LIST_ROUNDING_Ten10002000.equals(rounding)) {
+			roundingAmt = roundingAmt.setScale(-1, RoundingMode.HALF_UP);
+		} else if (MDiscountSchemaLine.LIST_ROUNDING_Thousand.equals(rounding)) {
+			roundingAmt = roundingAmt.setScale(-3, RoundingMode.HALF_UP);
+		} else if (MDiscountSchemaLine.LIST_ROUNDING_WholeNumber00.equals(rounding)) {
+			roundingAmt = roundingAmt.setScale(0, RoundingMode.HALF_UP);
+		}
+		roundingAmt = roundingAmt.subtract(amtToRound);
+		return roundingAmt;
+	}
+
+	/**
+	 * @param Amount to round
+	 * @param rounding - as defined in the reference list Rounding
+	 * @param currencyId - required when the rounding is currency precision
+	 * @return the amount rounded
+	 */
+	public static BigDecimal getRoundedAmount(BigDecimal amtToRound, String rounding, int curPrecision) {
+		BigDecimal roundingAmt = getRoundingAmount(amtToRound, rounding, curPrecision);
+		return amtToRound.add(roundingAmt);
+	}
+
 }   //  Util

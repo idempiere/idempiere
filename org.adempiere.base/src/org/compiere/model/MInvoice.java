@@ -50,6 +50,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
 
@@ -1571,6 +1572,38 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		{
 			m_processMsg = "No Document Type";
 			return DocAction.STATUS_Invalid;
+		}
+
+		MDocType dt = MDocType.get(getCtx(), getC_DocTypeTarget_ID());
+		// Rounding
+		String rounding = dt.getRounding();
+		int chargeId = dt.getRoundingCharge_ID();
+		if (!Util.isEmpty(rounding) && chargeId > 0) {
+			boolean deleted = false;
+			for (MInvoiceLine rline : getLines()) {
+				if (rline.getC_Charge_ID() == chargeId) {
+					rline.delete(true);
+					deleted = true;
+				}
+			}
+			if (deleted)
+				load(get_TrxName());
+
+			boolean inserted = false;
+			BigDecimal grandTotal = getGrandTotal();
+			BigDecimal roundAmt = Util.getRoundingAmount(grandTotal, rounding, getPrecision());
+			if (roundAmt != null && roundAmt.signum() != 0) {
+				MInvoiceLine rline = new MInvoiceLine(this);
+				rline.setC_Charge_ID(chargeId);
+				rline.setQty(Env.ONE);
+				rline.setPrice(roundAmt);
+				rline.saveEx();
+				inserted = true;
+			}
+			if (deleted || inserted)
+				getLines(true);
+			if (inserted)
+				load(get_TrxName());
 		}
 
 		explodeBOM();
