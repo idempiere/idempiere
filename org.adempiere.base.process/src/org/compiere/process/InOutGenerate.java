@@ -62,6 +62,8 @@ public class InOutGenerate extends SvrProcess
 	private Timestamp	p_DatePromised = null;
 	/** Include Orders w. unconfirmed Shipments	*/
 	private boolean		p_IsUnconfirmedInOut = false;
+	/** Reserve on hand for this inout */
+	private boolean		p_SubtractOnHand = true;
 	/** DocAction				*/
 	private String		p_docAction = DocAction.ACTION_None;
 	/** Consolidate				*/
@@ -113,6 +115,8 @@ public class InOutGenerate extends SvrProcess
 				p_Selection = "Y".equals(para[i].getParameter());
 			else if (name.equals("IsUnconfirmedInOut"))
 				p_IsUnconfirmedInOut = "Y".equals(para[i].getParameter());
+			else if (name.equals("SubtractOnHand"))
+				p_SubtractOnHand = "Y".equals(para[i].getParameter());
 			else if (name.equals("ConsolidateDocument"))
 				p_ConsolidateDocument = "Y".equals(para[i].getParameter());
 			else if (name.equals("DocAction"))
@@ -291,22 +295,27 @@ public class InOutGenerate extends SvrProcess
 							toDeliver = Env.ZERO;
 							logInfo.append(" (set to 0)");
 						}
-						//	Adjust On Hand
-						StringBuilder where3 = new StringBuilder (
-								"EXISTS (SELECT * FROM M_InOut io "
-									+ "WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID "
-									+ "AND io.IsSOTrx = 'Y' "
-									+ "AND io.DocStatus IN ('IP','WC') "
-								    + "AND io.M_Warehouse_ID=").append(p_M_Warehouse_ID).append (") "
-							    + "AND M_Product_ID = ").append(line.getM_Product_ID());
 						
-						totalunconfirmedShippedQty = 
-								new Query(getCtx(), MInOutLine.Table_Name, where3.toString(), get_TrxName())
-								.aggregate(MInOutLine.COLUMNNAME_MovementQty, Query.AGGREGATE_SUM);
-						
-						logInfo = new StringBuilder("TotalUnconfirmed Qty=").append(totalunconfirmedShippedQty) 
-							.append(" - ToDeliver=").append(toDeliver).append("->");					
-						onHand = onHand.subtract(totalunconfirmedShippedQty);
+						if(p_SubtractOnHand) {
+							//	Adjust On Hand
+							StringBuilder where3 = new StringBuilder (
+									"EXISTS (SELECT * FROM M_InOut io "
+											+ "WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID "
+											+ "AND io.IsSOTrx = 'Y' "
+											+ "AND io.DocStatus IN ('IP','WC') "
+											+ "AND io.M_Warehouse_ID=").append(p_M_Warehouse_ID).append (") "
+													+ "AND M_Product_ID = ").append(line.getM_Product_ID());
+							
+							totalunconfirmedShippedQty = 
+									new Query(getCtx(), MInOutLine.Table_Name, where3.toString(), get_TrxName())
+									.aggregate(MInOutLine.COLUMNNAME_MovementQty, Query.AGGREGATE_SUM);
+							
+							logInfo = new StringBuilder("TotalUnconfirmed Qty=").append(totalunconfirmedShippedQty) 
+									.append(" - ToDeliver=").append(toDeliver).append("->");					
+							onHand = onHand.subtract(totalunconfirmedShippedQty);
+						} else {
+							onHand = onHand.subtract(unconfirmedShippedQty);
+						}
 						if (log.isLoggable(Level.FINE)) log.fine(logInfo.toString());
 					}
 					
