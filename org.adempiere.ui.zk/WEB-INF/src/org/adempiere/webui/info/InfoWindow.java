@@ -2641,9 +2641,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * Return (if exists) the index of the column in the grid
 	 * @param columnName
-	 * @return editor
+	 * @return index of the column
 	 */
-	public int getColumnIdx(String columnName) {
+	public int getColumnIndex(String columnName) {
 		for (int i = 0; i < contentPanel.getColumnCount(); i++) {
 			if (p_layout[i].getGridField() != null && p_layout[i].getGridField().getColumnName().equals(columnName))
 				return i;
