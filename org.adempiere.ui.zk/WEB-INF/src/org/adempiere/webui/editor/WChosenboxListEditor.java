@@ -329,7 +329,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     		return;
     	}
     	
-    	if (value != null)
+    	if (value != null && value instanceof String && !Util.isEmpty((String) value, true))
         {
     		String[] values = ((String)value).split("[,]");
             Set<ValueNamePair> selected = new LinkedHashSet<>();
