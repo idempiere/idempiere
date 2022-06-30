@@ -874,7 +874,10 @@ INSERT INTO AD_Tab_Customization (AD_Client_ID,AD_Org_ID,AD_Tab_Customization_ID
 ;
 
 -- Jun 24, 2022, 4:18:53 PM CEST
-UPDATE AD_Table SET IsShowInDrillOptions = 'Y' WHERE TableName IN('C_AllocationHdr','C_BankStatement','C_BankTransfer','C_Invoice','C_Order','C_Payment','C_Project','C_RfQ','GL_Journal','M_InOut','M_Inventory','M_Movement','M_Production','M_Requisition','M_RMA','R_Request')
+UPDATE AD_Table SET IsShowInDrillOptions = 'Y', UPDATED=TO_TIMESTAMP('2022-06-16 15:29:52','YYYY-MM-DD HH24:MI:SS')
+WHERE TableName IN('C_AllocationHdr','C_AllocationLine','C_BankStatement','C_BankStatementLine','C_BankTransfer','C_Invoice','C_InvoiceLine','C_Order','C_OrderLine','C_Payment','C_PaymentAllocate',
+'C_Project','C_ProjectLine','C_ProjectIssue','C_RfQ','C_RfQLine','GL_Journal','GL_JournalLine','M_InOut','M_InOutLine','M_Inventory','M_InventoryLine','M_Movement','M_MovementLine',
+'M_Production','M_ProductionLine','M_Requisition','M_RequisitionLine','M_RMA','M_RMALine','R_Request')
 ;
 
 -- Jun 27, 2022, 9:16:01 AM CEST

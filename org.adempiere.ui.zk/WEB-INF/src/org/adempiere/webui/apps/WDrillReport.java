@@ -43,6 +43,7 @@ import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessDrillRule;
+import org.compiere.model.MReportView;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.print.DrillReportCtl;
@@ -332,12 +333,11 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 				MProcessDrillRule dr = MProcessDrillRule.get(Env.getCtx(), drillPrintFormat.getKey());
 				if(dr != null) {
 					int AD_ReportView_ID = dr.getAD_ReportView_ID();
+					if (AD_ReportView_ID == 0)
+						AD_ReportView_ID = MProcess.get(dr.getAD_Process_ID()).getAD_ReportView_ID();
 					if (AD_ReportView_ID != 0)
 					{
-						String name = dr.getName();
-						int index = name.lastIndexOf('_');
-						if (index != -1)
-							name = name.substring(0,index);
+						String name = MReportView.get(AD_ReportView_ID).getName();
 						pf = MPrintFormat.createFromReportView(Env.getCtx(), AD_ReportView_ID, name);
 					}
 					else

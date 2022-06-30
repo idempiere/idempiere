@@ -358,9 +358,7 @@ public class DrillReportCtl {
 			"SELECT * "
 				+ "FROM AD_PrintFormat "
 				+ "WHERE AD_Table_ID=? "
-				//Added Lines by Armen
 				+ "AND IsActive='Y' "
-				//End of Added Lines
 				+ (reportView_ID > 0 ? "AND AD_ReportView_ID=? " : "")
 				+ "ORDER BY AD_Client_ID, Name",
 			"AD_PrintFormat", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
