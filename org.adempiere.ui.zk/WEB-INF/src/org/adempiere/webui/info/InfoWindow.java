@@ -134,7 +134,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1180753002653812499L;
+	private static final long serialVersionUID = -7909883495636121689L;
 	
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -2624,7 +2624,33 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		exportButton.setEnabled(contentPanel.getRowCount() > 0);		
 	}
-	
+
+	/**
+	 * Return (if exists) the editor with the name
+	 * @param columnName
+	 * @return editor
+	 */
+	public WEditor getEditor(String columnName) {
+		for (WEditor editor : editors) {
+			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals(columnName))
+				return editor;
+		}
+		return null;
+	}
+
+	/**
+	 * Return (if exists) the index of the column in the grid
+	 * @param columnName
+	 * @return index of the column
+	 */
+	public int getColumnIndex(String columnName) {
+		for (int i = 0; i < contentPanel.getColumnCount(); i++) {
+			if (p_layout[i].getGridField() != null && p_layout[i].getGridField().getColumnName().equals(columnName))
+				return i;
+		}
+		return -1;
+	}
+
 	private class XlsExportAction implements EventListener<Event>
 	{		
 		@Override
