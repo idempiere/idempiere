@@ -140,6 +140,16 @@ public class BOMDrop {
 	public MPPProductBOMLine[] getBOMLine(MProduct product) {
 		MPPProductBOM bom = MPPProductBOM.getDefault(product, (String)null);
 		MPPProductBOMLine[] bomLines = bom.getLines();
+		//sort by feature
+		Arrays.sort(bomLines, new Comparator<MPPProductBOMLine>() {
+			@Override
+			public int compare(MPPProductBOMLine arg0, MPPProductBOMLine arg1) {
+				String feature1 = arg0.getFeature() != null ? arg0.getFeature() : "";
+				String feature2 = arg1.getFeature() != null ? arg1.getFeature() : ""; 
+				return feature1.compareTo(feature2);
+			}
+		});
+		
 		//sort by component type
 		Arrays.sort(bomLines, new Comparator<MPPProductBOMLine>() {
 			@Override
@@ -327,6 +337,7 @@ public class BOMDrop {
 		private BigDecimal lineQty;
 		private String bomType;
 		private int bomLevel;
+		private String feature;
 		
 		/**
 		 * 
@@ -341,6 +352,9 @@ public class BOMDrop {
 			if (bomType == null)
 				bomType = MPPProductBOMLine.COMPONENTTYPE_Component;
 			bomLevel = level;
+			feature = bomLine.getFeature();
+			if (feature == null)
+				feature = "";
 		}
 
 		/**
@@ -373,6 +387,14 @@ public class BOMDrop {
 		 */
 		public int getBOMLevel() {
 			return bomLevel;
+		}
+		
+		/**
+		 * 
+		 * @return feature of bom line
+		 */
+		public String getFeature() {
+			return feature;
 		}
 		
 		/**
