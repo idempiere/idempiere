@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.model.IProcessParameter;
 
 /**
  * 	Scheduler Parameter Model
@@ -28,7 +29,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *  @author Jorg Janke
  *  @version $Id: MSchedulerPara.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MSchedulerPara extends X_AD_Scheduler_Para implements ImmutablePOSupport
+public class MSchedulerPara extends X_AD_Scheduler_Para implements ImmutablePOSupport, IProcessParameter
 {
 	/**
 	 * 
@@ -135,6 +136,11 @@ public class MSchedulerPara extends X_AD_Scheduler_Para implements ImmutablePOSu
 
 		makeImmutable();
 		return this;
+	}
+
+	@Override
+	public void setParentID(int id) {
+		setAD_Scheduler_ID(id);
 	}
 
 }	//	MSchedulerPara
