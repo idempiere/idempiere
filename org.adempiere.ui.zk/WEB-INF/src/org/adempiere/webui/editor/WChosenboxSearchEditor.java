@@ -496,7 +496,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 	/**
 	 * 	Sets m_tableName and m_keyColumnName
 	 */
-	private void setTableAndKeyColumn() {
+	protected void setTableAndKeyColumn() {
 		if (lookup != null && lookup instanceof MLookup) {
 			// foreign table defined in lookup
 			m_keyColumnName = ((MLookup)lookup).getColumnName();
@@ -525,7 +525,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		}
 	}
 	
-	private String getWhereClause()
+	protected String getWhereClause()
 	{
 		String whereClause = "";
 
@@ -575,6 +575,13 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		return lookup;
 	}
 	
+	public String getTableName() {
+		return m_tableName;
+	}
+	
+	public String getKeyColumnName() {
+		return m_keyColumnName;
+	}
 	
 	@Override
 	public void dynamicDisplay(Properties ctx) {
