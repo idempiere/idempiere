@@ -121,7 +121,7 @@ public class InfoManager
 					IInfoFactory service = serviceReference.getService();
 					if (service != null) {
 						visitedIds.add(key);
-						ip = service.create(lookup, field, tableName, keyColumn, queryValue, false, whereClause, AD_InfoWindow_ID);
+						ip = service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID);
 						if (ip != null)
 							return ip;
 					} else {
