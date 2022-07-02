@@ -318,7 +318,7 @@ public class TrialBalance extends SvrProcess
 			sql.append(",' '");
 		else
 			sql.append(",null");
-		Timestamp balanceDay = TimeUtil.addDays(p_DateAcct_From, -1);
+		Timestamp balanceDay = p_DateAcct_From;
 		sql.append(",null,").append(DB.TO_DATE(balanceDay, true)).append(",");
 		if (p_C_Period_ID == 0)
 			sql.append("null");
