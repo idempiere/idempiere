@@ -176,7 +176,7 @@ public class DefaultInfoFactory implements IInfoFactory {
 		}
 		else	//	General Info
 		{
-			info = create(lookup.getWindowNo(), tableName, keyColumn, queryValue, false, whereClause, AD_InfoWindow_ID, true);
+			info = create(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID, true);
 		}
 		return info;
 	}
