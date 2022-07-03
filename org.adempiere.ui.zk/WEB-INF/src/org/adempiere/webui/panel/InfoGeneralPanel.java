@@ -69,7 +69,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3328089102224160413L;
+	private static final long serialVersionUID = 624139753237845647L;
 
 	private Textbox txt1;
 	private Textbox txt2;
@@ -94,14 +94,14 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 	private int noOfParameterColumn;
 
-	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean isSOTrx, String whereClause)
+	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean multipleSelection, String whereClause)
 	{
-		this(queryValue, windowNo, tableName, keyColumn, isSOTrx, whereClause, true);
+		this(queryValue, windowNo, tableName, keyColumn, multipleSelection, whereClause, true);
 	}
 
-	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean isSOTrx, String whereClause, boolean lookup)
+	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean multipleSelection, String whereClause, boolean lookup)
 	{
-		super(windowNo, tableName, keyColumn, false, whereClause, lookup, 0, queryValue);
+		super(windowNo, tableName, keyColumn, multipleSelection, whereClause, lookup, 0, queryValue);
 
 		setTitle(Msg.getMsg(Env.getCtx(), "Info"));
 
