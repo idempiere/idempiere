@@ -19,19 +19,28 @@ package org.compiere.process;
 import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.stream.Stream;
 
 import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSession;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -72,6 +81,8 @@ public class ProcessInfo implements Serializable
 			m_printPreview = true;
 		else
 			m_printPreview = false;
+		
+		setDefaultParameters();
 	}   //  ProcessInfo
 
 	/** Process UUID			*/
@@ -130,6 +141,7 @@ public class ProcessInfo implements Serializable
 
 	/**	Log Info					*/
 	private ProcessInfoParameter[]	m_parameter = null;
+	private ProcessInfoParameter[]	m_defaultParameters = null;
 	
 	/** Transaction Name 			*/
 	private String				m_transactionName = null;
@@ -589,7 +601,7 @@ public class ProcessInfo implements Serializable
 	 */
 	public ProcessInfoParameter[] getParameter()
 	{
-		return m_parameter;
+		return Stream.concat(Arrays.stream(m_defaultParameters), Arrays.stream(m_parameter)).toArray(ProcessInfoParameter[]::new);
 	}	//	getParameter
 
 	/**
@@ -601,6 +613,37 @@ public class ProcessInfo implements Serializable
 		m_parameter = parameter;
 	}	//	setParameter
 
+	/**
+	 * Set default parameters from ad_process_para table 
+	 */
+	public void setDefaultParameters() {
+		LinkedList<ProcessInfoParameter> list = new LinkedList<>();
+		
+		String sql = "SELECT " + MProcessPara.COLUMNNAME_ColumnName + "," + MProcessPara.COLUMNNAME_DefaultValue
+				+ " FROM " + MProcessPara.Table_Name
+				+ " WHERE " + MProcessPara.COLUMNNAME_AD_Process_ID + " = ?";
+		PreparedStatement ps = DB.prepareStatement(sql, null);
+		
+		try {
+			ps.setInt(1, m_AD_Process_ID);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				list.add(
+					new ProcessInfoParameter(
+						rs.getString(MProcessPara.COLUMNNAME_ColumnName), 
+						Env.parseContext(Env.getCtx(), 0, rs.getString(MProcessPara.COLUMNNAME_DefaultValue), false),
+//						rs.getString(MProcessPara.COLUMNNAME_DefaultValue), 
+						null, 
+						null, 
+						null)
+				);
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "", e);
+		}
+		
+		m_defaultParameters = list.toArray(new ProcessInfoParameter[list.size()]);
+	}
 	
 	public void addLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg,int tableId,int recordId)
 	{

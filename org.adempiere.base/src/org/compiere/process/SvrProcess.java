@@ -27,6 +27,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -563,6 +564,13 @@ public abstract class SvrProcess implements ProcessCall
 			ProcessInfoUtil.setParameterFromDB(m_pi);
 			retValue = m_pi.getParameter();
 		}
+		
+		LinkedList<String> existingParams = new LinkedList<>();
+		for (ProcessInfoParameter pip : retValue) {
+			existingParams.add(pip.getParameterName());
+		}
+		
+		
 		return retValue;
 	}	//	getParameter
 
