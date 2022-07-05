@@ -112,10 +112,12 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	 *  @param format Print Format
 	 *  @param data Print Data
 	 *  @param query query for parameter info
+	 *  @param info
+	 *  @param windowNo
 	 */
-	public LayoutEngine (MPrintFormat format, PrintData data, MQuery query, PrintInfo info )
+	public LayoutEngine (MPrintFormat format, PrintData data, MQuery query, PrintInfo info, int windowNo )
 	{
-		this(format, data, query, info , null);
+		this(format, data, query, info , null, windowNo);
 	}	//	LayoutEngine
 	
 	/**
@@ -123,10 +125,13 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	 *  @param format Print Format
 	 *  @param data Print Data
 	 *  @param query query for parameter info
+	 *  @param info
 	 *  @param trxName
+	 *  @param windowNo
 	 */
-	public LayoutEngine (MPrintFormat format, PrintData data, MQuery query, PrintInfo info ,  String trxName)
+	public LayoutEngine (MPrintFormat format, PrintData data, MQuery query, PrintInfo info ,  String trxName, int windowNo)
 	{
+		m_windowNo = windowNo;
 		m_TrxName = trxName;
 		if (log.isLoggable(Level.INFO)) log.info(format + " - " + data + " - " + query);
 	//	s_FASTDRAW = MClient.get(format.getCtx()).isUseBetaFunctions();
@@ -163,6 +168,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	/** PrintInfo **/
 	private PrintInfo			m_PrintInfo = null;
 
+	/** Window No				*/
+	private int 				m_windowNo = 0;
 
 	/**	Paper - default: standard portrait		*/
 	private CPaper				m_paper;
@@ -290,7 +297,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 
 		//	Print Context
 		Env.setContext(m_printCtx, Page.CONTEXT_REPORTNAME, m_format.get_Translation(MPrintFormat.COLUMNNAME_Name));
-		Env.setContext(m_printCtx, Page.CONTEXT_HEADER, Env.getHeader(m_printCtx, 0));
+		Env.setContext(m_printCtx, Page.CONTEXT_HEADER, Env.getHeader(m_printCtx, m_windowNo));
 		Env.setContext(m_printCtx, Env.LANGUAGE, m_format.getLanguage().getAD_Language());
 
 		if (m_hasLayout && doLayout)
@@ -1260,7 +1267,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		if (log.isLoggable(Level.FINE))
 			log.fine(query.toString());
 		//
-		DataEngine de = new DataEngine(format.getLanguage(),m_TrxName);
+		DataEngine de = new DataEngine(format.getLanguage(),m_TrxName, m_windowNo);
 		PrintData includedData = de.getPrintData(data.getCtx(), format, query);
 		if (includedData == null)
 			return null;

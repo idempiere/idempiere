@@ -373,9 +373,8 @@ public class ReportAction implements EventListener<Event>
 		else
 		{
 			// It's a default report using the standard printing engine
-			ReportEngine re = new ReportEngine (Env.getCtx(), pf, query, info);
+			ReportEngine re = new ReportEngine (Env.getCtx(), pf, query, info, null, gridTab.getWindowNo());
 			re.setWhereExtended(gridTab.getWhereExtended());
-			re.setWindowNo(gridTab.getWindowNo());
 			
 			if (export)
 				export(re);

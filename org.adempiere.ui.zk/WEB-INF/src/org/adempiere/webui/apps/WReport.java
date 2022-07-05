@@ -195,9 +195,8 @@ public class WReport implements EventListener<Event> {
 		else
 		{
 			// It's a default report using the standard printing engine
-			ReportEngine re = new ReportEngine (Env.getCtx(), pf, m_query, info);
+			ReportEngine re = new ReportEngine (Env.getCtx(), pf, m_query, info, null, WindowNo);
 			re.setWhereExtended(whereExtended);
-			re.setWindowNo(WindowNo);
 			ReportCtl.preview(re);
 		}
 	}	//	launchReport
