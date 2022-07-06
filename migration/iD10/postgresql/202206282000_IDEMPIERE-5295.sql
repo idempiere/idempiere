@@ -430,3 +430,7 @@ UPDATE AD_Table SET IsView='N',Updated=TO_TIMESTAMP('2022-06-30 14:30:56','YYYY-
 -- Jun 30, 2022, 2:31:07 PM IST
 INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('T_TrialBalance',1000000,'N','N','Table T_TrialBalance','Y','Y',0,0,TO_TIMESTAMP('2022-06-30 14:30:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-06-30 14:30:56','YYYY-MM-DD HH24:MI:SS'),100,200419,'Y',1000000,1,200000,'b901e84f-e53d-4552-86eb-e8bc49ea9124')
 ;
+
+-- Jul 4, 2022, 8:03:29 PM MYT
+UPDATE AD_PrintFormat SET AD_ReportView_ID=153,Updated=TO_TIMESTAMP('2022-07-04 20:03:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_PrintFormat_ID=200014
+;
