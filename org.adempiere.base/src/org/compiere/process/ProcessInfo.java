@@ -25,17 +25,15 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.stream.Stream;
+import java.util.regex.Pattern;
 
 import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
-import org.compiere.model.MProcessPara;
 import org.compiere.model.MSession;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
@@ -601,7 +599,7 @@ public class ProcessInfo implements Serializable
 	 */
 	public ProcessInfoParameter[] getParameter()
 	{
-		return Stream.concat(Arrays.stream(m_defaultParameters), Arrays.stream(m_parameter)).toArray(ProcessInfoParameter[]::new);
+		return m_parameter;
 	}	//	getParameter
 
 	/**
@@ -613,30 +611,61 @@ public class ProcessInfo implements Serializable
 		m_parameter = parameter;
 	}	//	setParameter
 
+	public ProcessInfoParameter[] getDefaultParameters() {
+		return m_defaultParameters;
+	}
+	
 	/**
 	 * Set default parameters from ad_process_para table 
 	 */
 	public void setDefaultParameters() {
 		LinkedList<ProcessInfoParameter> list = new LinkedList<>();
 		
-		String sql = "SELECT " + MProcessPara.COLUMNNAME_ColumnName + "," + MProcessPara.COLUMNNAME_DefaultValue
-				+ " FROM " + MProcessPara.Table_Name
-				+ " WHERE " + MProcessPara.COLUMNNAME_AD_Process_ID + " = ?";
+		String sql = "SELECT columnname, app.defaultvalue AS systemwide, aupp.defaultvalue AS userdef "
+				+ "FROM ad_process_para app "
+				+ "LEFT JOIN ad_userdef_proc_parameter aupp "
+				+ "	ON app.ad_process_para_id = aupp.ad_process_para_id "
+				+ "LEFT JOIN ad_userdef_proc aup "
+				+ "	ON aupp.ad_userdef_proc_id = aup.ad_userdef_proc_id "
+				+ "WHERE app.ad_process_id = ? "
+				+ "AND NOT (app.defaultvalue IS NULL AND aupp.defaultvalue IS NULL) "
+				+ "AND (aup.ad_user_id IN (?,0) OR aup.ad_user_id IS NULL) "
+				+ "AND (aup.ad_role_id IN (?,0) OR aup.ad_role_id IS NULL) "
+				+ "AND (aup.ad_org_id IN (?,0) OR aup.ad_org_id IS NULL) "
+				+ "AND (aup.ad_client_id IN (?,0) OR aup.ad_client_id IS NULL) "
+				+ "ORDER BY aup.ad_user_id, aup.ad_role_id, aup.ad_org_id, aup.ad_client_id ";
 		PreparedStatement ps = DB.prepareStatement(sql, null);
 		
 		try {
 			ps.setInt(1, m_AD_Process_ID);
+			ps.setInt(2, Env.getAD_User_ID(Env.getCtx()));
+			ps.setInt(3, Env.getAD_Role_ID(Env.getCtx()));
+			ps.setInt(4, Env.getAD_Org_ID(Env.getCtx()));
+			ps.setInt(5, Env.getAD_Client_ID(Env.getCtx()));
+			
 			ResultSet rs = ps.executeQuery();
+			String lastColName = "";
 			while (rs.next()) {
-				list.add(
-					new ProcessInfoParameter(
-						rs.getString(MProcessPara.COLUMNNAME_ColumnName), 
-						Env.parseContext(Env.getCtx(), 0, rs.getString(MProcessPara.COLUMNNAME_DefaultValue), false),
-//						rs.getString(MProcessPara.COLUMNNAME_DefaultValue), 
-						null, 
-						null, 
-						null)
-				);
+				String colName = rs.getString("columnname");
+				if (colName.equals(lastColName)) continue;
+				
+				String stringValue = rs.getString("userdef");
+				if (stringValue == null)
+					stringValue = rs.getString("systemwide");
+				stringValue = Env.parseContext(Env.getCtx(), 0, stringValue, false);
+				
+				// Parse to probably expected result
+				Object paramVal;
+				if (Pattern.compile("^\\d{1,10}$").matcher(stringValue).matches())
+					paramVal = Integer.parseInt(stringValue);
+				else if (Pattern.compile("^\\d*(\\.\\d+)?$").matcher(stringValue).matches())
+					paramVal = new BigDecimal(stringValue);
+				else if (Pattern.compile("^\\d{4}-\\d{2}-\\d{2}( \\d{2}:\\d{2}:\\d{2})?$").matcher(stringValue).matches())
+					paramVal = Timestamp.valueOf(stringValue);
+				else paramVal = stringValue;
+				
+				list.add( new ProcessInfoParameter(colName,paramVal,null,null,null) );
+				lastColName = colName;
 			}
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "", e);
