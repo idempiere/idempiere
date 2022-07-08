@@ -54,17 +54,12 @@ public class DrillCommand implements AuService {
 		
 		String columnName = (String) data.get(0);
 		String tableName = MQuery.getZoomTableName(columnName);
-		Object code = null;
-		if(tableName.endsWith("_ID"))
-			code = (Integer) data.get(1);
-		else
-			code = (String) data.get(1);
-		String displayValue = data.size() >= 3 ? (String) data.get(2) : null;
+		String code = (String) data.get(1);
 		//
 		MQuery query = new MQuery(tableName);
 		query.addRestriction(columnName, MQuery.EQUAL, code);
 
-		Events.postEvent(new DrillEvent(request.getCommand(), comp, new DrillEvent.DrillData(query, columnName, code, displayValue, null )));
+		Events.postEvent(new DrillEvent(request.getCommand(), comp, query));
 
 		return true;
 	}

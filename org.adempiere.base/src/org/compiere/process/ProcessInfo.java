@@ -167,8 +167,6 @@ public class ProcessInfo implements Serializable
 	
 	private int languageID = 0;
 	
-	private String showHelp = null;
-	
 	public int getLanguageID() {
 		return languageID;
 	}
@@ -192,22 +190,6 @@ public class ProcessInfo implements Serializable
 	
 	public boolean isSummary() {
 		return this.isSummary;
-	}
-	
-	/**
-	 * Set Show Help
-	 * @param showHelp
-	 */
-	public void setShowHelp(String showHelp) {
-		this.showHelp = showHelp;
-	}
-	
-	/**
-	 * Get Show Help
-	 * @return String
-	 */
-	public String getShowHelp() {
-		return this.showHelp;
 	}
 
 	/**
