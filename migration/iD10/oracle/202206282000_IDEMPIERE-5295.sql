@@ -13,7 +13,7 @@ INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,
 ;
 
 ALTER TABLE t_trialbalance 
-DROP CONSTRAINT t_trialbalance_pkey
+DROP CONSTRAINT t_trialbalance_key
 ;
 
 ALTER TABLE t_trialbalance
