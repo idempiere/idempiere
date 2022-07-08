@@ -45,15 +45,6 @@ public class CalloutImportTemplate extends CalloutEngine
 
 		String characterSet = value.toString();
 		if (!Charset.isSupported(characterSet)) {
-			/*
-			StringBuilder valid = new StringBuilder();
-			for (Charset validch : Charset.availableCharsets().values()) {
-				if (valid.length() > 0)
-					valid.append(", ");
-				valid.append(validch.displayName());
-			}
-			return Msg.parseTranslation(ctx, "@Invalid@ @CharacterSet@ -> " + valid);
-			*/
 			return Msg.parseTranslation(ctx, "@Invalid@ @CharacterSet@");
 		}
 
