@@ -53,10 +53,14 @@ import org.zkoss.zul.Imagemap;
 	 * 
 	 * @param panel
 	 * @param width
+	 * @param height
+	 * @param showTitle
 	 */
-	public void render(Component parent, int width, int height) {
+	public void render(Component parent, int width, int height, boolean showTitle) {
 		chartBuilder = new ChartBuilder(chartModel);
 		JFreeChart chart = chartBuilder.createChart();
+		if (!showTitle)
+			chart.setTitle("");
 		chart.getPlot().setForegroundAlpha(0.6f);
 		
 		ChartRenderingInfo info = new ChartRenderingInfo();
