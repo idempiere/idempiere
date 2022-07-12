@@ -1422,11 +1422,13 @@ public class Login
 												
 				StringBuilder sql= new StringBuilder("SELECT  DISTINCT cli.AD_Client_ID, cli.Name, u.AD_User_ID, u.Name");
 			      sql.append(" FROM AD_User_Roles ur")
+                   .append(" INNER JOIN AD_Role r on (ur.AD_Role_ID=r.AD_Role_ID)")
                    .append(" INNER JOIN AD_User u on (ur.AD_User_ID=u.AD_User_ID)")
                    .append(" INNER JOIN AD_Client cli on (ur.AD_Client_ID=cli.AD_Client_ID)")
                    .append(" WHERE ur.IsActive='Y'")
                    .append(" AND u.IsActive='Y'")
-                   .append(" AND cli.IsActive='Y'")
+                   .append(" AND cli.IsActive='Y' AND ")
+                   .append(whereRoleType)
                    .append(" AND ur.AD_User_ID=? ORDER BY cli.Name");
 			      PreparedStatement pstmt=null;
 			      ResultSet rs=null;
