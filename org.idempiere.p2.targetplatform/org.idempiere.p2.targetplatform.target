@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-220428" sequenceNumber="1643026598">
+<target name="idempiere-220525" sequenceNumber="1653486593">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <unit id="zcommon" version="9.6.1"/>
-      <unit id="zel" version="9.6.1"/>
-      <unit id="zhtml" version="9.6.1"/>
-      <unit id="zjavassist" version="9.6.1"/>
-      <unit id="zk" version="9.6.1"/>
-      <unit id="zkbind" version="9.6.1"/>
-      <unit id="zkplus" version="9.6.1"/>
-      <unit id="zkwebfragment" version="9.6.1"/>
-      <unit id="zul" version="9.6.1"/>
-      <unit id="zweb" version="9.6.1"/>
-      <unit id="zweb-dsp" version="9.6.1"/>
-      <repository location="https://idempiere.github.io/binary.file/p2.zk/9.6.1"/>
+      <unit id="zcommon" version="9.6.2"/>
+      <unit id="zel" version="9.6.2"/>
+      <unit id="zhtml" version="9.6.2"/>
+      <unit id="zjavassist" version="9.6.2"/>
+      <unit id="zk" version="9.6.2"/>
+      <unit id="zkbind" version="9.6.2"/>
+      <unit id="zkplus" version="9.6.2"/>
+      <unit id="zkwebfragment" version="9.6.2"/>
+      <unit id="zul" version="9.6.2"/>
+      <unit id="zweb" version="9.6.2"/>
+      <unit id="zweb-dsp" version="9.6.2"/>
+      <repository location="https://idempiere.github.io/binary.file/p2.zk/9.6.2"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="jakarta.xml.ws-api" version="2.3.3.v202109010034"/>
@@ -28,72 +28,8 @@
       <repository location="https://idempiere.github.io/binary.file/p2.repackaged/9.0.0"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <unit id="org.eclipse.osgi" version="3.16.300.v20210525-1715"/>
-      <unit id="org.apache.felix.gogo.command" version="1.1.2.v20210111-1007"/>
-      <unit id="org.apache.felix.gogo.runtime" version="1.1.4.v20210111-1007"/>
-      <unit id="org.apache.felix.gogo.shell" version="1.1.4.v20210111-1007"/>
-      <unit id="org.apache.felix.scr" version="2.1.24.v20200924-1939"/>
       <unit id="org.apache.httpcomponents.httpclient" version="4.5.13.v20210128-2225"/>
       <unit id="org.apache.httpcomponents.httpcore" version="4.4.14.v20210128-2225"/>
-      <unit id="org.eclipse.core.jobs" version="3.11.0.v20210420-1453"/>
-      <unit id="org.eclipse.ecf" version="3.9.102.v20210409-2301"/>
-      <unit id="org.eclipse.ecf.filetransfer" version="5.1.102.v20210409-2301"/>
-      <unit id="org.eclipse.ecf.identity" version="3.9.402.v20210409-2301"/>
-      <unit id="org.eclipse.ecf.provider.filetransfer" version="3.2.601.v20201025-0700"/>
-      <unit id="org.eclipse.ecf.provider.filetransfer.httpclient45" version="1.0.401.v20210512-0614"/>
-      <unit id="org.eclipse.ecf.provider.filetransfer.ssl" version="1.0.201.v20210409-2301"/>
-      <unit id="org.eclipse.equinox.app" version="1.5.100.v20210212-1143"/>
-      <unit id="org.eclipse.equinox.common" version="3.15.0.v20210518-0604"/>
-      <unit id="org.eclipse.equinox.concurrent" version="1.2.0.v20210202-1157"/>
-      <unit id="org.eclipse.equinox.console" version="1.4.400.v20210602-1312"/>
-      <unit id="org.eclipse.equinox.frameworkadmin" version="2.2.0.v20210315-2042"/>
-      <unit id="org.eclipse.equinox.frameworkadmin.equinox" version="1.2.0.v20210315-2042"/>
-      <unit id="org.eclipse.equinox.launcher" version="1.6.200.v20210416-2027"/>
-      <unit id="org.eclipse.equinox.p2.artifact.repository" version="1.4.100.v20210418-1636"/>
-      <unit id="org.eclipse.equinox.p2.console" version="1.2.0.v20210315-2042"/>
-      <unit id="org.eclipse.equinox.p2.core" version="2.7.0.v20210315-2042"/>
-      <unit id="org.eclipse.equinox.p2.director" version="2.5.0.v20210325-0750"/>
-      <unit id="org.eclipse.equinox.p2.engine" version="2.7.0.v20210328-0514"/>
-      <unit id="org.eclipse.equinox.p2.garbagecollector" version="1.2.0.v20210316-1209"/>
-      <unit id="org.eclipse.equinox.p2.jarprocessor" version="1.2.0.v20210507-0825"/>
-      <unit id="org.eclipse.equinox.p2.metadata" version="2.6.0.v20210331-1610"/>
-      <unit id="org.eclipse.equinox.p2.metadata.repository" version="1.4.0.v20210315-2228"/>
-      <unit id="org.eclipse.equinox.p2.operations" version="2.6.0.v20210315-2228"/>
-      <unit id="org.eclipse.equinox.p2.repository" version="2.5.100.v20210329-1206"/>
-      <unit id="org.eclipse.equinox.p2.touchpoint.eclipse" version="2.3.0.v20210315-2228"/>
-      <unit id="org.eclipse.equinox.p2.touchpoint.natives" version="1.4.0.v20210326-2048"/>
-      <unit id="org.eclipse.equinox.p2.transport.ecf" version="1.3.100.v20210329-1206"/>
-      <unit id="org.eclipse.equinox.preferences" version="3.8.200.v20210212-1143"/>
-      <unit id="org.eclipse.equinox.registry" version="3.10.200.v20210503-1606"/>
-      <unit id="org.eclipse.equinox.security" version="1.3.600.v20210126-1005"/>
-      <unit id="org.eclipse.equinox.simpleconfigurator" version="1.4.0.v20210315-2228"/>
-      <unit id="org.eclipse.equinox.simpleconfigurator.manipulator" version="2.2.0.v20210315-2228"/>
-      <unit id="org.eclipse.osgi.services" version="3.10.100.v20210324-0936"/>
-      <unit id="org.eclipse.osgi.util" version="3.6.0.v20210212-1137"/>
-      <unit id="org.sat4j.core" version="2.3.5.v201308161310"/>
-      <unit id="org.sat4j.pb" version="2.3.5.v201404071733"/>
-      <unit id="org.tukaani.xz" version="1.8.0.v20180207-1613"/>
-      <unit id="org.eclipse.equinox.executable.feature.group" version="3.8.1200.v20210527-0259"/>
-      <unit id="org.eclipse.equinox.http.registry" version="1.2.0.v20200614-1851"/>
-      <unit id="org.eclipse.osgi.compatibility.state" version="1.2.400.v20210401-1438"/>
-      <unit id="org.eclipse.core.runtime" version="3.22.0.v20210506-1025"/>
-      <unit id="org.eclipse.equinox.http.servlet" version="1.7.100.v20210311-1631"/>
-      <unit id="org.eclipse.equinox.servletbridge" version="1.6.0.v20200511-1902"/>
-      <unit id="org.eclipse.equinox.p2.director.app" version="1.2.0.v20210315-2042"/>
-      <unit id="org.eclipse.equinox.cm" version="1.5.0.v20210202-1256"/>
-      <unit id="org.eclipse.equinox.event" version="1.6.0.v20210212-1143"/>
-      <unit id="org.eclipse.equinox.http.servletbridge" version="1.2.0.v20210120-1213"/>
-      <unit id="org.eclipse.equinox.metatype" version="1.6.0.v20210212-1143"/>
-      <unit id="org.eclipse.ant.core" version="3.6.0.v20210415-1314"/>
-      <unit id="org.eclipse.core.commands" version="3.10.0.v20210401-0744"/>
-      <unit id="org.eclipse.core.contenttype" version="3.7.1000.v20210409-1722"/>
-      <unit id="org.eclipse.core.expressions" version="3.7.100.v20210203-1000"/>
-      <unit id="org.eclipse.core.filesystem" version="1.9.0.v20210419-1155"/>
-      <unit id="org.eclipse.core.net" version="1.3.1100.v20210424-0724"/>
-      <unit id="org.eclipse.core.resources" version="3.15.0.v20210521-0722"/>
-      <unit id="org.eclipse.core.variables" version="3.5.0.v20210510-1945"/>
-      <unit id="org.eclipse.jdt.core" version="3.26.0.v20210609-0549"/>
-      <unit id="org.eclipse.text" version="3.12.0.v20210512-1644"/>
       <repository location="https://download.eclipse.org/eclipse/updates/4.20"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
@@ -115,7 +51,74 @@
       <unit id="org.eclipse.pde.junit.runtime" version="3.6.100.v20211112-1151"/>
       <unit id="org.eclipse.jdt.junit.runtime" version="3.6.100.v20210708-1502"/>
       <unit id="org.eclipse.jdt.junit5.runtime" version="1.0.1400.v20211108-0640"/>
-      <repository location="https://download.eclipse.org/eclipse/updates/4.22"/>
+      <unit id="org.eclipse.osgi" version="3.17.200.v20220215-2237"/>
+      <unit id="org.apache.felix.gogo.command" version="1.1.2.v20210111-1007"/>
+      <unit id="org.apache.felix.gogo.runtime" version="1.1.4.v20210111-1007"/>
+      <unit id="org.apache.felix.gogo.shell" version="1.1.4.v20210111-1007"/>
+      <unit id="org.apache.felix.scr" version="2.1.24.v20200924-1939"/>
+      <unit id="org.apache.httpcomponents.client5.httpclient5" version="5.1.2.v20211217-1500"/>
+      <unit id="org.apache.httpcomponents.core5.httpcore5" version="5.1.2.v20211217-1500"/>
+      <unit id="org.apache.httpcomponents.core5.httpcore5-h2" version="5.1.2.v20211217-1500"/>
+      <unit id="org.eclipse.core.jobs" version="3.12.100.v20220120-1329"/>
+      <unit id="org.eclipse.ecf" version="3.10.0.v20210925-0032"/>
+      <unit id="org.eclipse.ecf.filetransfer" version="5.1.102.v20210409-2301"/>
+      <unit id="org.eclipse.ecf.identity" version="3.9.402.v20210409-2301"/>
+      <unit id="org.eclipse.ecf.provider.filetransfer" version="3.2.800.v20220215-0126"/>
+      <unit id="org.eclipse.ecf.provider.filetransfer.httpclient5" version="1.0.300.v20220215-0126"/>
+      <unit id="org.eclipse.ecf.provider.filetransfer.ssl" version="1.0.201.v20210409-2301"/>
+      <unit id="org.eclipse.equinox.app" version="1.6.100.v20211021-1418"/>
+      <unit id="org.eclipse.equinox.common" version="3.16.0.v20220211-2322"/>
+      <unit id="org.eclipse.equinox.concurrent" version="1.2.100.v20211021-1418"/>
+      <unit id="org.eclipse.equinox.console" version="1.4.500.v20211021-1418"/>
+      <unit id="org.eclipse.equinox.frameworkadmin" version="2.2.0.v20210315-2042"/>
+      <unit id="org.eclipse.equinox.frameworkadmin.equinox" version="1.2.100.v20210703-1540"/>
+      <unit id="org.eclipse.equinox.launcher" version="1.6.400.v20210924-0641"/>
+      <unit id="org.eclipse.equinox.p2.artifact.repository" version="1.4.400.v20220223-1131"/>
+      <unit id="org.eclipse.equinox.p2.console" version="1.2.0.v20210315-2042"/>
+      <unit id="org.eclipse.equinox.p2.core" version="2.9.0.v20220210-1157"/>
+      <unit id="org.eclipse.equinox.p2.director" version="2.5.200.v20220127-1112"/>
+      <unit id="org.eclipse.equinox.p2.engine" version="2.7.300.v20220209-1714"/>
+      <unit id="org.eclipse.equinox.p2.garbagecollector" version="1.2.0.v20210316-1209"/>
+      <unit id="org.eclipse.equinox.p2.jarprocessor" version="1.2.200.v20220207-0719"/>
+      <unit id="org.eclipse.equinox.p2.metadata" version="2.6.100.v20210813-0606"/>
+      <unit id="org.eclipse.equinox.p2.metadata.repository" version="1.4.0.v20210315-2228"/>
+      <unit id="org.eclipse.equinox.p2.operations" version="2.6.0.v20210315-2228"/>
+      <unit id="org.eclipse.equinox.p2.repository" version="2.6.0.v20220215-0840"/>
+      <unit id="org.eclipse.equinox.p2.touchpoint.eclipse" version="2.3.100.v20210615-1334"/>
+      <unit id="org.eclipse.equinox.p2.touchpoint.natives" version="1.4.300.v20220210-1319"/>
+      <unit id="org.eclipse.equinox.p2.transport.ecf" version="1.3.200.v20210613-1953"/>
+      <unit id="org.eclipse.equinox.preferences" version="3.9.100.v20211021-1418"/>
+      <unit id="org.eclipse.equinox.registry" version="3.11.100.v20211021-1418"/>
+      <unit id="org.eclipse.equinox.security" version="1.3.900.v20220108-1321"/>
+      <unit id="org.eclipse.equinox.simpleconfigurator" version="1.4.0.v20210315-2228"/>
+      <unit id="org.eclipse.equinox.simpleconfigurator.manipulator" version="2.2.0.v20210315-2228"/>
+      <unit id="org.eclipse.osgi.services" version="3.10.200.v20210723-0643"/>
+      <unit id="org.eclipse.osgi.util" version="3.6.100.v20210723-1119"/>
+      <unit id="org.sat4j.core" version="2.3.5.v201308161310"/>
+      <unit id="org.sat4j.pb" version="2.3.5.v201404071733"/>
+      <unit id="org.tukaani.xz" version="1.9.0.v20210624-1259"/>
+      <unit id="org.eclipse.equinox.executable.feature.group" version="3.8.1500.v20220210-1108"/>
+      <unit id="org.eclipse.equinox.http.registry" version="1.3.100.v20211021-1418"/>
+      <unit id="org.eclipse.osgi.compatibility.state" version="1.2.600.v20220207-1403"/>
+      <unit id="org.eclipse.core.runtime" version="3.24.100.v20220211-2001"/>
+      <unit id="org.eclipse.equinox.http.servlet" version="1.7.200.v20211021-1418"/>
+      <unit id="org.eclipse.equinox.servletbridge" version="1.6.100.v20211021-1418"/>
+      <unit id="org.eclipse.equinox.p2.director.app" version="1.2.100.v20211220-1825"/>
+      <unit id="org.eclipse.equinox.cm" version="1.5.100.v20211021-1418"/>
+      <unit id="org.eclipse.equinox.event" version="1.6.100.v20211021-1418"/>
+      <unit id="org.eclipse.equinox.http.servletbridge" version="1.2.100.v20211021-1418"/>
+      <unit id="org.eclipse.equinox.metatype" version="1.6.100.v20211021-1418"/>
+      <unit id="org.eclipse.ant.core" version="3.6.300.v20220214-2001"/>
+      <unit id="org.eclipse.core.commands" version="3.10.100.v20210722-1426"/>
+      <unit id="org.eclipse.core.contenttype" version="3.8.100.v20210910-0640"/>
+      <unit id="org.eclipse.core.expressions" version="3.8.100.v20210910-0640"/>
+      <unit id="org.eclipse.core.filesystem" version="1.9.300.v20220121-1426"/>
+      <unit id="org.eclipse.core.net" version="1.3.1100.v20210424-0724"/>
+      <unit id="org.eclipse.core.resources" version="3.16.100.v20220214-1012"/>
+      <unit id="org.eclipse.core.variables" version="3.5.100.v20210721-1355"/>
+      <unit id="org.eclipse.jdt.core" version="3.29.0.v20220214-1307"/>
+      <unit id="org.eclipse.text" version="3.12.0.v20210512-1644"/>
+      <repository id="eclipse-2022-03" location="https://download.eclipse.org/eclipse/updates/4.23"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.apache.ant" version="1.10.10.v20210426-1926"/>
@@ -129,7 +132,7 @@
       <unit id="org.apache.xalan" version="2.7.2.v20201124-1837"/>
       <unit id="org.apache.xml.serializer" version="2.7.1.v201005080400"/>
       <unit id="org.apache.commons.discovery" version="0.2.0.v201004190315"/>
-      <repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository"/>
+      <repository id="orbit-2021-06-R20210602031627" location="https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="com.jaspersoft.studio.bundles.barbecue" version="1.5.0.beta1_b02"/>
@@ -142,7 +145,7 @@
     <location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.8.6</version>
+      <version>2.9.0</version>
 	  <type>jar</type>
 	</location>    
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1153,7 +1156,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>5.2.15.RELEASE</version>
+      <version>5.2.22.RELEASE</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -1166,7 +1169,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>5.2.15.RELEASE</version>
+      <version>5.2.22.RELEASE</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -1179,7 +1182,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
-      <version>5.2.15.RELEASE</version>
+      <version>5.2.22.RELEASE</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -1192,7 +1195,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
-      <version>5.2.15.RELEASE</version>
+      <version>5.2.22.RELEASE</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -1205,7 +1208,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <version>5.2.15.RELEASE</version>
+      <version>5.2.22.RELEASE</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -1218,7 +1221,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.springframework</groupId>
       <artifactId>spring-expression</artifactId>
-      <version>5.2.15.RELEASE</version>
+      <version>5.2.22.RELEASE</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -1231,7 +1234,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
-      <version>5.2.15.RELEASE</version>
+      <version>5.2.22.RELEASE</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -1310,19 +1313,19 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlets</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>apache-jsp</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>apache-jstl</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1334,109 +1337,109 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-client</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jmx</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-plus</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-deploy</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jndi</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util-ajax</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jaas</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-rewrite</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-slf4j-impl</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.osgi</groupId>
       <artifactId>jetty-osgi-boot</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.osgi</groupId>
       <artifactId>jetty-osgi-boot-jsp</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.osgi</groupId>
       <artifactId>jetty-osgi-boot-warurl</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.osgi</groupId>
       <artifactId>jetty-osgi-boot-warurl</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.osgi</groupId>
       <artifactId>jetty-httpservice</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-jetty-server</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-javax-server</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-javax-common</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-core-server</artifactId>
-      <version>10.0.7</version>
+      <version>10.0.9</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1489,7 +1492,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>io.github.classgraph</groupId>
       <artifactId>classgraph</artifactId>
-      <version>4.8.138</version>
+      <version>4.8.147</version>
       <type>jar</type>
 	</location>
 	<!-- AssertJ -->

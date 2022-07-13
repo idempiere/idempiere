@@ -13,9 +13,6 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionManager;
@@ -148,12 +145,7 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
 			btnUnprocessed.setLabel(labelU + " : " + noOfUnprocessed);
 		
 		EventQueue<Event> queue = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, true);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("notice", noOfNotice);
-		map.put("request", noOfRequest);
-		map.put("workflow", noOfWorkflow);
-		map.put("unprocessed", noOfUnprocessed);
-		Event event = new Event(IDesktop.ON_ACTIVITIES_CHANGED_EVENT, null, map);
+		Event event = new Event(IDesktop.ON_ACTIVITIES_CHANGED_EVENT, null, noOfNotice + noOfRequest+ noOfWorkflow + noOfUnprocessed);
 		queue.publish(event);
 	}
 

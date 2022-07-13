@@ -16,7 +16,7 @@
  *****************************************************************************/
 package org.compiere.print;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -201,7 +201,7 @@ public class PrintDataGroup
 	 * 	@param functionColumnId function column
 	 * 	@param functionValue value
 	 */
-	public void addValue (int functionColumnId, BigDecimal functionValue)
+	public void addValue (int functionColumnId, Serializable functionValue)
 	{
 		if (!isFunctionColumn(functionColumnId))
 			return;
@@ -225,7 +225,7 @@ public class PrintDataGroup
 	 * 	@param function function
 	 * 	@return value
 	 */
-	public BigDecimal getValue (int groupId, int functionColumnId,
+	public Serializable getValue (int groupId, int functionColumnId,
 		char function)
 	{
 		String key = groupId + DELIMITER + functionColumnId;

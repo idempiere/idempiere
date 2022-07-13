@@ -104,6 +104,9 @@ import org.zkoss.zul.Vlayout;
  */
 public class DashboardController implements EventListener<Event> {
 
+	/**	Logger							*/
+	protected transient CLogger	log = CLogger.getCLogger (getClass());
+	
 	private static final String PANEL_EMPTY_ATTR = "panel.empty";
 	private final static CLogger logger = CLogger.getCLogger(DashboardController.class);
 	private Component prevParent;
@@ -867,23 +870,31 @@ public class DashboardController implements EventListener<Event> {
 		int Record_ID = 0;
 		//
 		MPInstance pInstance = new MPInstance(process, Record_ID);
-		fillParameter(pInstance, parameters);
-		//
-		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(),
-			AD_Table_ID, Record_ID);
-		pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
-		pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
-		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());		
-		if (!process.processIt(pi, null) && pi.getClassName() != null) 
-			throw new IllegalStateException("Process failed: (" + pi.getClassName() + ") " + pi.getSummary());
-	
-		//	Report
-		ReportEngine re = ReportEngine.get(Env.getCtx(), pi);
-		if (re == null)
-			throw new IllegalStateException("Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
-				+ " - " + process.getName());
+		pInstance.setIsProcessing(true);
+		pInstance.saveEx();
+		try {
+			fillParameter(pInstance, parameters);
+			//
+			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(),
+				AD_Table_ID, Record_ID);
+			pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+			pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());		
+			if (!process.processIt(pi, null) && pi.getClassName() != null) 
+				throw new IllegalStateException("Process failed: (" + pi.getClassName() + ") " + pi.getSummary());
 		
-		return re;
+			//	Report
+			ReportEngine re = ReportEngine.get(Env.getCtx(), pi);
+			if (re == null)
+				throw new IllegalStateException("Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
+					+ " - " + process.getName());
+			return re;
+		}
+		finally {			
+			pInstance.setIsProcessing(false);
+			pInstance.saveEx();
+		}
+		
 	}
 
 	public AMedia generateReport(int AD_Process_ID, String parameters) throws Exception {
@@ -911,9 +922,13 @@ public class DashboardController implements EventListener<Event> {
 				String value = s.substring(pos + 1);
 				paramMap.put(key, value);
 			}
-			MPInstancePara[] iParams = pInstance.getParameters();
-			for (MPInstancePara iPara : iParams)
+			MProcessPara[] processParams = pInstance.getProcessParameters();
+			for (int pi = 0; pi < processParams.length; pi++)
 			{
+				MPInstancePara iPara = new MPInstancePara (pInstance, processParams[pi].getSeqNo());
+				iPara.setParameterName(processParams[pi].getColumnName());
+				iPara.setInfo(processParams[pi].getName());
+				
 				String variable = paramMap.get(iPara.getParameterName());
 
 				if (Util.isEmpty(variable))
@@ -970,6 +985,11 @@ public class DashboardController implements EventListener<Event> {
 					 {
 						 continue;
 					 }
+					 if( DisplayType.isText(iPara.getDisplayType())
+								&& Util.isEmpty(String.valueOf(value))) {
+						if (log.isLoggable(Level.FINE)) log.fine(iPara.getParameterName() + " - empty string");
+							break;
+					}
 
 					 //	Convert to Type				
 					 if (DisplayType.isNumeric(iPara.getDisplayType()))

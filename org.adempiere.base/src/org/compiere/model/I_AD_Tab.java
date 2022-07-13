@@ -44,25 +44,10 @@ public interface I_AD_Tab
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
-
-    /** Column name AD_Column_ID */
-    public static final String COLUMNNAME_AD_Column_ID = "AD_Column_ID";
-
-	/** Set Column.
-	  * Column in the table
-	  */
-	public void setAD_Column_ID (int AD_Column_ID);
-
-	/** Get Column.
-	  * Column in the table
-	  */
-	public int getAD_Column_ID();
-
-	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
     /** Column name AD_ColumnSortOrder_ID */
     public static final String COLUMNNAME_AD_ColumnSortOrder_ID = "AD_ColumnSortOrder_ID";
@@ -94,6 +79,21 @@ public interface I_AD_Tab
 
 	public org.compiere.model.I_AD_Column getAD_ColumnSortYesNo() throws RuntimeException;
 
+    /** Column name AD_Column_ID */
+    public static final String COLUMNNAME_AD_Column_ID = "AD_Column_ID";
+
+	/** Set Column.
+	  * Column in the table
+	  */
+	public void setAD_Column_ID (int AD_Column_ID);
+
+	/** Get Column.
+	  * Column in the table
+	  */
+	public int getAD_Column_ID();
+
+	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
+
     /** Column name AD_CtxHelp_ID */
     public static final String COLUMNNAME_AD_CtxHelp_ID = "AD_CtxHelp_ID";
 
@@ -124,12 +124,12 @@ public interface I_AD_Tab
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -147,6 +147,19 @@ public interface I_AD_Tab
 	public int getAD_Process_ID();
 
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
+
+    /** Column name AD_TabType */
+    public static final String COLUMNNAME_AD_TabType = "AD_TabType";
+
+	/** Set Tab Type.
+	  * Defines Tab Type
+	  */
+	public void setAD_TabType (String AD_TabType);
+
+	/** Get Tab Type.
+	  * Defines Tab Type
+	  */
+	public String getAD_TabType();
 
     /** Column name AD_Tab_ID */
     public static final String COLUMNNAME_AD_Tab_ID = "AD_Tab_ID";
@@ -184,19 +197,6 @@ public interface I_AD_Tab
 	public int getAD_Table_ID();
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
-
-    /** Column name AD_TabType */
-    public static final String COLUMNNAME_AD_TabType = "AD_TabType";
-
-	/** Set Tab Type.
-	  * Defines Tab Type
-	  */
-	public void setAD_TabType (String AD_TabType);
-
-	/** Get Tab Type.
-	  * Defines Tab Type
-	  */
-	public String getAD_TabType();
 
     /** Column name AD_Window_ID */
     public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
@@ -241,6 +241,15 @@ public interface I_AD_Tab
 	  * User who created this records
 	  */
 	public int getCreatedBy();
+
+    /** Column name DeleteConfirmationLogic */
+    public static final String COLUMNNAME_DeleteConfirmationLogic = "DeleteConfirmationLogic";
+
+	/** Set Delete Confirmation Logic	  */
+	public void setDeleteConfirmationLogic (String DeleteConfirmationLogic);
+
+	/** Get Delete Confirmation Logic	  */
+	public String getDeleteConfirmationLogic();
 
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
@@ -466,12 +475,12 @@ public interface I_AD_Tab
     /** Column name IsTranslationTab */
     public static final String COLUMNNAME_IsTranslationTab = "IsTranslationTab";
 
-	/** Set TranslationTab.
+	/** Set Translation Tab.
 	  * This Tab contains translation information
 	  */
 	public void setIsTranslationTab (boolean IsTranslationTab);
 
-	/** Get TranslationTab.
+	/** Get Translation Tab.
 	  * This Tab contains translation information
 	  */
 	public boolean isTranslationTab();

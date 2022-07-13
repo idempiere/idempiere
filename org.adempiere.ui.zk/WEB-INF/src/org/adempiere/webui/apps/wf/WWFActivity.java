@@ -13,16 +13,17 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.wf;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Column;
+import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListHeader;
@@ -47,30 +48,32 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
-import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.Query;
 import org.compiere.util.CLogger;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.compiere.wf.MWFActivity;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFProcess;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.North;
+import org.zkoss.zul.South;
+import org.zkoss.zul.Vlayout;
 
 /**
  * Direct port from WFActivity
@@ -83,7 +86,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8405802852868437716L;
+	private static final long serialVersionUID = -1658595186719510159L;
 	/**	Window No					*/
 	private int         		m_WindowNo = 0;
 	/**	Open Activities				*/
@@ -115,14 +118,14 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	private Textbox fTextMsg = new Textbox();
 	private Button bOK = new Button();
 	private WSearchEditor fForward = null;	//	dynInit
-	private Label lForward = new Label(Msg.getMsg(Env.getCtx(), "Forward"));
-	private Label lOptional = new Label("(" + Msg.translate(Env.getCtx(), "Optional") + ")");
+	private Label lForward = new Label(Msg.getMsg(Env.getCtx(), "Forward") + " (" + Msg.translate(Env.getCtx(), "Optional") + ")");
 	private StatusBarPanel statusBar = new StatusBarPanel();
+	private Button bRefresh = new Button();
 
 	private ListModelTable model = null;
 	private WListbox listbox = new WListbox();
 
-	private final static String HISTORY_DIV_START_TAG = "<div style='height: 100px; border: 1px solid #7F9DB9;'>";
+	private final static String HISTORY_DIV_START_TAG = "<div style='overflow-y:scroll;height: 100px; border: 1px solid #7F9DB9;'>";
 	public WWFActivity()
 	{
 		super();
@@ -135,13 +138,18 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
         fAnswerList.setMold("select");
 
-        if (ThemeManager.isUseFontIconForImage()) {
+		if (ThemeManager.isUseFontIconForImage()) {
         	bZoom.setIconSclass("z-icon-Zoom");
         	bOK.setIconSclass("z-icon-Ok");
+			bRefresh.setIconSclass("z-icon-Refresh");
         } else {
         	bZoom.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
         	bOK.setImage(ThemeManager.getThemeResource("images/Ok16.png"));
+			bRefresh.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
         }
+		setTooltipText(bZoom, "Zoom");
+		setTooltipText(bOK, "Ok");
+		setTooltipText(bRefresh, "Refresh");
 
         MLookup lookup = MLookupFactory.get(Env.getCtx(), m_WindowNo,
                 0, 10443, DisplayType.Search);
@@ -152,14 +160,26 @@ public class WWFActivity extends ADForm implements EventListener<Event>
         display(-1);
     }
 
+	private void setTooltipText(Button btn, String key) {
+		String text = Util.cleanAmp(Msg.translate(Env.getCtx(), key));
+		if (!Util.isEmpty(text, true))
+			btn.setTooltiptext(text);
+	}
+
 	private void init()
 	{
 		Grid grid = new Grid();
-		ZKUpdateUtil.setWidth(grid, "100%");
-		ZKUpdateUtil.setHeight(grid, "100%");
-        grid.setStyle("margin:0; padding:0; position: absolute; align: center; valign: center;");
+		grid.setStyle("margin:0; padding:0;");
         grid.makeNoStrip();
-        grid.setOddRowSclass("even");
+
+		Columns columns = new Columns();
+		grid.appendChild(columns);
+		Column column = new Column();
+		ZKUpdateUtil.setWidth(column, "30%");
+		columns.appendChild(column);
+		column = new Column();
+		ZKUpdateUtil.setWidth(column, "70%");
+		columns.appendChild(column);
 
 		Rows rows = new Rows();
 		grid.appendChild(rows);
@@ -171,7 +191,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		div.appendChild(lNode);
 		row.appendChild(div);
 		row.appendChild(fNode);
-		ZKUpdateUtil.setWidth(fNode, "100%");
 		ZKUpdateUtil.setHflex(fNode, "true");
 		fNode.setReadonly(true);
 
@@ -184,7 +203,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(div);
 		row.appendChild(fDescription);
 		fDescription.setMultiline(true);
-		ZKUpdateUtil.setWidth(fDescription, "100%");
 		ZKUpdateUtil.setHflex(fDescription, "true");
 		fDescription.setReadonly(true);
 
@@ -197,10 +215,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(fHelp);
 		fHelp.setMultiline(true);
 		fHelp.setRows(3);
-		ZKUpdateUtil.setWidth(fHelp, "100%");
 		ZKUpdateUtil.setHflex(fHelp, "true");
 		fHelp.setReadonly(true);
-		row.appendChild(new Label());
 
 		row = new Row();
 		rows.appendChild(row);
@@ -210,7 +226,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(div);
 		row.appendChild(fHistory);
 		ZKUpdateUtil.setHflex(fHistory, "true");
-		row.appendChild(new Label());
 
 		row = new Row();
 		rows.appendChild(row);
@@ -223,9 +238,9 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		ZKUpdateUtil.setHflex(fAnswerText, "true");
 		hbox.appendChild(fAnswerList);
 		hbox.appendChild(fAnswerButton);
-		fAnswerButton.addEventListener(Events.ON_CLICK, this);
+		hbox.appendChild(bZoom);
 		row.appendChild(hbox);
-		row.appendChild(bZoom);
+		fAnswerButton.addEventListener(Events.ON_CLICK, this);
 		bZoom.addEventListener(Events.ON_CLICK, this);
 
 		row = new Row();
@@ -235,10 +250,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		div.appendChild(lTextMsg);
 		row.appendChild(div);
 		row.appendChild(fTextMsg);
-		ZKUpdateUtil.setHflex(fTextMsg, "true");
 		fTextMsg.setMultiline(true);
 		ZKUpdateUtil.setWidth(fTextMsg, "100%");
-		row.appendChild(new Label());
 
 		row = new Row();
 		rows.appendChild(row);
@@ -248,15 +261,16 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		row.appendChild(div);
 		hbox = new Hbox();
 		hbox.appendChild(fForward.getComponent());
-		hbox.appendChild(lOptional);
+		hbox.appendChild(bOK);
+		hbox.appendChild(bRefresh);
 		row.appendChild(hbox);
-		row.appendChild(bOK);
 		bOK.addEventListener(Events.ON_CLICK, this);
+		bRefresh.addEventListener(Events.ON_CLICK, this);
 
 		Borderlayout layout = new Borderlayout();
 		ZKUpdateUtil.setWidth(layout, "100%");
 		ZKUpdateUtil.setHeight(layout, "100%");
-		layout.setStyle("background-color: transparent; position: absolute;");
+		layout.setStyle("background-color: transparent; position: relative;");
 
 		North north = new North();
 		north.appendChild(listbox);
@@ -269,7 +283,11 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		listbox.addEventListener(Events.ON_SELECT, this);
 
 		Center center = new Center();
-		center.appendChild(grid);
+		Vlayout vlayout = new Vlayout();
+		vlayout.appendChild(grid);
+		vlayout.setWidth("100%");
+		vlayout.setHeight("99%");
+		center.appendChild(vlayout);
 		layout.appendChild(center);
 		center.setStyle("background-color: transparent; overflow:auto");
 		ZKUpdateUtil.setVflex(grid, "1");
@@ -281,7 +299,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		south.setStyle("background-color: transparent");
 
 		this.appendChild(layout);
-		this.setStyle("height: 100%; width: 100%; position: absolute;");
+		this.setStyle("height: 100%; width: 100%; position: relative;");
 	}
 
 	public void onEvent(Event event) throws Exception
@@ -293,6 +311,14 @@ public class WWFActivity extends ADForm implements EventListener<Event>
         {
     		if (comp == bZoom)
     			cmd_zoom();
+    		else if (comp == bRefresh)
+    		{
+    			Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));
+    			Executions.schedule(getDesktop(), e -> {
+    				loadActivities();
+    				Clients.clearBusy();
+    			}, new Event("onRefresh"));
+    		}
     		else if (comp == bOK)
     		{
     			Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));
@@ -319,42 +345,13 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	 */
 	public int getActivitiesCount()
 	{
-		int count = 0;
-
-		String sql = "SELECT COUNT(*) FROM AD_WF_Activity a "
-			+ "WHERE " + getWhereActivities();
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		MRole role = MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()));
-		sql = role.addAccessSQL(sql, "a", true, false);
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, AD_User_ID);
-			pstmt.setInt (2, AD_User_ID);
-			pstmt.setInt (3, AD_User_ID);
-			pstmt.setInt (4, AD_User_ID);
-			pstmt.setInt (5, AD_User_ID);
-			pstmt.setInt (6, AD_Client_ID);
-			rs = pstmt.executeQuery ();
-			if (rs.next ()) {
-				count = rs.getInt(1);
-			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
-		}
-
+		int count = new Query(Env.getCtx(), MWFActivity.Table_Name, MWFActivity.getWhereUserPendingActivities(), null)
+				.setApplyAccessFilter(true, false)
+				.setParameters(AD_User_ID, AD_User_ID, AD_User_ID, AD_User_ID, AD_User_ID, AD_Client_ID)
+				.count();
 		return count;
-
 	}
 
 	/**
@@ -369,51 +366,28 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 		model = new ListModelTable();
 
-		ArrayList<MWFActivity> list = new ArrayList<MWFActivity>();
-		String sql = "SELECT * FROM AD_WF_Activity a "
-			+ "WHERE " + getWhereActivities()
-			+ " ORDER BY a.Priority DESC, Created";
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		MRole role = MRole.get(Env.getCtx(), Env.getAD_Role_ID(Env.getCtx()));
-		sql = role.addAccessSQL(sql, "a", true, false);
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, AD_User_ID);
-			pstmt.setInt (2, AD_User_ID);
-			pstmt.setInt (3, AD_User_ID);
-			pstmt.setInt (4, AD_User_ID);
-			pstmt.setInt (5, AD_User_ID);
-			pstmt.setInt (6, AD_Client_ID);
-            
-			rs = pstmt.executeQuery();
-			while (rs.next ())
+		Iterator<MWFActivity> it = new Query(Env.getCtx(), MWFActivity.Table_Name, MWFActivity.getWhereUserPendingActivities(), null)
+				.setApplyAccessFilter(true, false)
+				.setParameters(AD_User_ID, AD_User_ID, AD_User_ID, AD_User_ID, AD_User_ID, AD_Client_ID)
+				.setOrderBy("AD_WF_Activity.Priority DESC, AD_WF_Activity.Created")
+				.iterate();
+
+		List<MWFActivity> list = new ArrayList<MWFActivity>();
+		while (it.hasNext()) {
+			MWFActivity activity = it.next();
+			list.add (activity);
+			List<Object> rowData = new ArrayList<Object>();
+			rowData.add(activity.getPriority());
+			rowData.add(activity.getNodeName());
+			rowData.add(activity.getSummary());
+			model.add(rowData);
+			if (list.size() > MAX_ACTIVITIES_IN_LIST && MAX_ACTIVITIES_IN_LIST > 0)
 			{
-				MWFActivity activity = new MWFActivity(Env.getCtx(), rs, null);
-				list.add (activity);
-				List<Object> rowData = new ArrayList<Object>();
-				rowData.add(activity.getPriority());
-				rowData.add(activity.getNodeName());
-				rowData.add(activity.getSummary());
-				model.add(rowData);
-				if (list.size() > MAX_ACTIVITIES_IN_LIST && MAX_ACTIVITIES_IN_LIST > 0)
-				{
-					log.warning("More then 200 Activities - ignored");
-					break;
-				}
+				log.warning("More than " + MAX_ACTIVITIES_IN_LIST + " Activities - ignored");
+				break;
 			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 		}
 		m_activities = new MWFActivity[list.size ()];
 		list.toArray (m_activities);
@@ -445,27 +419,6 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 		return m_activities.length;
 	}	//	loadActivities
-
-	private String getWhereActivities() {
-		final String where =
-			"a.Processed='N' AND a.WFState='OS' AND ("
-			//	Owner of Activity
-			+ " a.AD_User_ID=?"	//	#1
-			//	Invoker (if no invoker = all)
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
-			+ " AND r.ResponsibleType='H' AND COALESCE(r.AD_User_ID,0)=0 AND COALESCE(r.AD_Role_ID,0)=0 AND (a.AD_User_ID=? OR a.AD_User_ID IS NULL))"	//	#2
-			//  Responsible User
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
-			+ " AND r.ResponsibleType='H' AND r.AD_User_ID=?)"		//	#3
-			//	Responsible Role
-			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r INNER JOIN AD_User_Roles ur ON (r.AD_Role_ID=ur.AD_Role_ID)"
-			+ " WHERE a.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND r.ResponsibleType='R' AND ur.AD_User_ID=? AND ur.isActive = 'Y')"	//	#4
-			///* Manual Responsible */ 
-			+ " OR EXISTS (SELECT * FROM AD_WF_ActivityApprover r "
-			+ " WHERE a.AD_WF_Activity_ID=r.AD_WF_Activity_ID AND r.AD_User_ID=? AND r.isActive = 'Y')" 
-			+ ") AND a.AD_Client_ID=?";	//	#5
-		return where;
-	}
 
 	/**
 	 * 	Reset Display

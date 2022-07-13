@@ -926,10 +926,16 @@ public class AdempiereMonitor extends HttpServlet
 			return "";
 		DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
 		MClientInfo clientInfo = MClientInfo.get(AD_Client_ID);
-		if (!Util.isEmpty(clientInfo.getTimeZone()))
-			formatter = formatter.withZone(ZoneId.of(clientInfo.getTimeZone()));
-		else
+		if (!Util.isEmpty(clientInfo.getTimeZone())) {
+			try {
+				formatter = formatter.withZone(ZoneId.of(clientInfo.getTimeZone()));
+			} catch (Exception e) {
+				//fallback to default
+				formatter = formatter.withZone(ZoneId.systemDefault());
+			}
+		} else {
 			formatter = formatter.withZone(ZoneId.systemDefault());
+		}
 		return formatter.format(date.toInstant().truncatedTo(ChronoUnit.SECONDS));
 	}
 

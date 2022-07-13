@@ -66,6 +66,7 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -85,19 +86,19 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4263
 	 */
 	public void testCreditMemoPosting_1() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product1 = MProduct.get(Env.getCtx(), 124); // Elm Tree
-		MProduct product2 = MProduct.get(Env.getCtx(), 123); // Oak Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product1 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
+		MProduct product2 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.OAK.id); // Oak Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MCurrency usd = MCurrency.get(100); // USD
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal usdToEur = new BigDecimal(31.526248754713);
 		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, usdToEur);
 		BigDecimal eurToUsd = cr.getDivideRate();
 		
-		int M_PriceList_ID = 103; // Export in EUR
+		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
 		try {
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
@@ -176,17 +177,17 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * IV Qty=5
 	 */
 	public void testCreditMemoPosting_2() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MCurrency usd = MCurrency.get(100); // USD
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(31.526248754713);
 		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
-		int M_PriceList_ID = 103; // Export in EUR
+		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
 		try {
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
@@ -291,8 +292,8 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * CM Qty=2, Period 2
 	 */
 	public void testCreditMemoPosting_3() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -301,17 +302,17 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		Timestamp date1 = new Timestamp(cal.getTimeInMillis());
 		Timestamp date2 = currentDate;
 		
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
 		priceList.setName("Purchase GBP " + System.currentTimeMillis());
-		MCurrency britishPound = MCurrency.get("GBP"); // British Pound (GBP)
+		MCurrency britishPound = MCurrency.get(DictionaryIDs.C_Currency.GBP.id); // British Pound (GBP)
 		priceList.setC_Currency_ID(britishPound.getC_Currency_ID());
 		priceList.setPricePrecision(britishPound.getStdPrecision());
 		priceList.saveEx();
 		
 		MPriceListVersion plv = new MPriceListVersion(priceList);
-		plv.setM_DiscountSchema_ID(101); // Purchase 2001
+		plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.PURCHASE_2001.id); // Purchase 2001
 		plv.setValidFrom(date1);
 		plv.saveEx();
 		
@@ -319,7 +320,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		MProductPrice pp = new MProductPrice(plv, product.getM_Product_ID(), priceInPound, priceInPound, Env.ZERO);
 		pp.saveEx();
 		
-		MCurrency usd = MCurrency.get("USD"); // USD
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		BigDecimal usdToPound1 = new BigDecimal(0.88917098794);
 		MConversionRate crUsd1 = createConversionRate(britishPound.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, usdToPound1, false);
 		BigDecimal poundToUsd1 = crUsd1.getMultiplyRate();
@@ -328,7 +329,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		MConversionRate crUsd2 = createConversionRate(britishPound.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, usdToPound2, false);
 		BigDecimal poundToUsd2 = crUsd2.getMultiplyRate();
 		
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal poundToEuro1 = new BigDecimal(34.7186);
 		MConversionRate crEur1 = createConversionRate(britishPound.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date1, poundToEuro1, true);
 		
@@ -416,10 +417,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * CM Qty1=200, Qty2=300, Period 3
 	 */
 	public void testCreditMemoPosting_4() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product1 = MProduct.get(Env.getCtx(), 124); // Elm Tree
-		MProduct product2 = MProduct.get(Env.getCtx(), 123); // Oak Tree
-		MProduct product3 = MProduct.get(Env.getCtx(), 130); // Plum Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product1 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
+		MProduct product2 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.OAK.id); // Oak Tree
+		MProduct product3 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.PLUM_TREE.id); // Plum Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
 		Calendar cal = Calendar.getInstance();
@@ -431,10 +432,10 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		Timestamp date2 = new Timestamp(cal.getTimeInMillis());
 		Timestamp date3 = currentDate;
 		
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MCurrency usd = MCurrency.get(100); // USD
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30.212666962751);
 		MConversionRate cr1 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
 		
@@ -444,7 +445,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		BigDecimal eurToUsd3 = new BigDecimal(29.326631220545);
 		MConversionRate cr3 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date3, eurToUsd3, false);
 		
-		int M_PriceList_ID = 103; // Export in EUR
+		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
 		try {
 			MOrder order = createPurchaseOrder(bpartner, date1, M_PriceList_ID, C_ConversionType_ID);
@@ -589,17 +590,17 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * CM Qty=1
 	 */
 	public void testCreditMemoPosting_5() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MCurrency usd = MCurrency.get(100); // USD
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30.870771861909);
 		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
-		int M_PriceList_ID = 103; // Export in EUR
+		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
 		try {
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
@@ -677,17 +678,17 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * CM Qty=100
 	 */
 	public void testCreditMemoPosting_6() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MCurrency usd = MCurrency.get(100); // USD
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30.870771861909);
 		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
-		int M_PriceList_ID = 103; // Export in EUR
+		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
 		try {
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
@@ -765,17 +766,17 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * CM Qty=44
 	 */
 	public void testCreditMemoPosting_7() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MCurrency usd = MCurrency.get(100); // USD
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30.870771861909);
 		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
-		int M_PriceList_ID = 103; // Export in EUR
+		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
 		try {
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
@@ -853,17 +854,17 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * CM Qty=1
 	 */
 	public void testCreditMemoPosting_8() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MCurrency usd = MCurrency.get(100); // USD
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30.870771861909);
 		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
-		int M_PriceList_ID = 103; // Export in EUR
+		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
 		try {
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
@@ -984,17 +985,17 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * MR Qty=1200
 	 */
 	public void testMatReceiptPosting_1() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MCurrency usd = MCurrency.get(100); // USD
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30.870771861909);
 		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
-		int M_PriceList_ID = 103; // Export in EUR
+		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
 		try {
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
@@ -1070,8 +1071,8 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * MR Qty=44, Period 2
 	 */
 	public void testMatReceiptPosting_2() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
 		Calendar cal = Calendar.getInstance();
@@ -1080,17 +1081,17 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		Timestamp date1 = new Timestamp(cal.getTimeInMillis());
 		Timestamp date2 = currentDate;
 		
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MCurrency usd = MCurrency.get(100); // USD
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30.870771861909);
 		MConversionRate cr1 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
 		
 		BigDecimal eurToUsd2 = new BigDecimal(31.326259863856);
 		MConversionRate cr2 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
 		
-		int M_PriceList_ID = 103; // Export in EUR
+		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
 		try {
 			MOrder order = createPurchaseOrder(bpartner, date1, M_PriceList_ID, C_ConversionType_ID);
@@ -1169,17 +1170,17 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * MR Qty=1
 	 */
 	public void testMatReceiptPosting_3() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MCurrency usd = MCurrency.get(100); // USD
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd = new BigDecimal(30.870771861909);
 		MConversionRate cr = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, eurToUsd, false);
 		
-		int M_PriceList_ID = 103; // Export in EUR
+		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
 		try {
 			MOrder order = createPurchaseOrder(bpartner, currentDate, M_PriceList_ID, C_ConversionType_ID);
@@ -1302,8 +1303,8 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * MR Qty=1, Period 2
 	 */
 	public void testMatReceiptPosting_4() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
 		Calendar cal = Calendar.getInstance();
@@ -1312,17 +1313,17 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		Timestamp date1 = new Timestamp(cal.getTimeInMillis());
 		Timestamp date2 = currentDate;
 		
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
-		MCurrency usd = MCurrency.get(100); // USD
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(30.870771861909);
 		MConversionRate cr1 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
 		
 		BigDecimal eurToUsd2 = new BigDecimal(31.326259863856);
 		MConversionRate cr2 = createConversionRate(usd.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, date2, eurToUsd2, false);
 		
-		int M_PriceList_ID = 103; // Export in EUR
+		int M_PriceList_ID = DictionaryIDs.M_PriceList.EXPORT.id; // Export in EUR
 		
 		try {
 			MOrder order = createPurchaseOrder(bpartner, date1, M_PriceList_ID, C_ConversionType_ID);
@@ -1444,21 +1445,21 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * IV Qty=250
 	 */
 	public void testMatReceiptPosting_5() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
 		priceList.setName("Purchase GBP " + System.currentTimeMillis());
-		MCurrency britishPound = MCurrency.get("GBP"); // British Pound (GBP)
+		MCurrency britishPound = MCurrency.get(DictionaryIDs.C_Currency.GBP.id); // British Pound (GBP)
 		priceList.setC_Currency_ID(britishPound.getC_Currency_ID());
 		priceList.setPricePrecision(britishPound.getStdPrecision());
 		priceList.saveEx();
 		
 		MPriceListVersion plv = new MPriceListVersion(priceList);
-		plv.setM_DiscountSchema_ID(101); // Purchase 2001
+		plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.PURCHASE_2001.id); // Purchase 2001
 		plv.setValidFrom(currentDate);
 		plv.saveEx();
 		
@@ -1466,11 +1467,11 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		MProductPrice pp = new MProductPrice(plv, product.getM_Product_ID(), priceInPound, priceInPound, Env.ZERO);
 		pp.saveEx();
 		
-		MCurrency usd = MCurrency.get("USD"); // USD
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		BigDecimal poundToUsd = new BigDecimal(0.676234);
 		MConversionRate crUsd = createConversionRate(britishPound.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, currentDate, poundToUsd);
 		
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal poundToEuro = new BigDecimal(22.5062);
 		MConversionRate crEur = createConversionRate(britishPound.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, poundToEuro);
 
@@ -1557,21 +1558,21 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * MR Qty=5 (Reversed)
 	 */
 	public void testMatReceiptPostingWithDiffCurrencyPrecision() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
-		int C_ConversionType_ID = 201; // Company
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
 		priceList.setName("Purchase JPY " + System.currentTimeMillis());
-		MCurrency japaneseYen = MCurrency.get("JPY"); // Japanese Yen (JPY)
+		MCurrency japaneseYen = MCurrency.get(DictionaryIDs.C_Currency.JPY.id); // Japanese Yen (JPY)
 		priceList.setC_Currency_ID(japaneseYen.getC_Currency_ID());
 		priceList.setPricePrecision(japaneseYen.getStdPrecision());
 		priceList.saveEx();
 		
 		MPriceListVersion plv = new MPriceListVersion(priceList);
-		plv.setM_DiscountSchema_ID(101); // Purchase 2001
+		plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.PURCHASE_2001.id); // Purchase 2001
 		plv.setValidFrom(currentDate);
 		plv.saveEx();
 		
@@ -1579,11 +1580,11 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		MProductPrice pp = new MProductPrice(plv, product.getM_Product_ID(), priceInYen, priceInYen, Env.ZERO);
 		pp.saveEx();
 		
-		MCurrency usd = MCurrency.get("USD"); // USD
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		BigDecimal yenToUsd = new BigDecimal(0.00956427);
 		MConversionRate crUsd = createConversionRate(japaneseYen.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, currentDate, yenToUsd);
 		
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal yenToEuro = new BigDecimal(0.29);
 		MConversionRate crEur = createConversionRate(japaneseYen.getC_Currency_ID(), euro.getC_Currency_ID(), C_ConversionType_ID, currentDate, yenToEuro);
 		
@@ -1791,7 +1792,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	private MInOut createMMReceipt(MOrder order, Timestamp date) {
-		MInOut receipt = new MInOut(order, 122, date); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, date); // MM Receipt
 		receipt.saveEx();
 		return receipt;
 	}

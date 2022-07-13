@@ -34,6 +34,7 @@ import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeUse;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -43,14 +44,12 @@ import org.junit.jupiter.api.Test;
  */
 public class MAttributeSetTest extends AbstractTestCase {
 
-	private final static int PATIO_Chair_AttributeSet = 102;
-	
 	public MAttributeSetTest() {
 	}
 
 	@Test
 	public void testGetMAttributeUse() {
-		MAttributeSet as = MAttributeSet.get(PATIO_Chair_AttributeSet);
+		MAttributeSet as = MAttributeSet.get(DictionaryIDs.M_AttributeSet.PATIO_CHAIR.id);
 		MAttributeUse[] use = as.getMAttributeUse();
 		assertNotNull(use);
 		assertTrue(use.length > 0);
@@ -58,7 +57,7 @@ public class MAttributeSetTest extends AbstractTestCase {
 	
 	@Test
 	public void testGetMAttributes() {
-		MAttributeSet as = MAttributeSet.get(PATIO_Chair_AttributeSet);
+		MAttributeSet as = MAttributeSet.get(DictionaryIDs.M_AttributeSet.PATIO_CHAIR.id);
 		MAttributeUse[] uses = as.getMAttributeUse();
 		int instance = 0;
 		int nonInstance = 0;

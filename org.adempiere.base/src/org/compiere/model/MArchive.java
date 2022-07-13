@@ -24,7 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -61,11 +60,25 @@ public class MArchive extends X_AD_Archive {
 	 * @return archives
 	 */
 	public static MArchive[] get(Properties ctx, String whereClause) {
+		return get(ctx, whereClause, null);
+	}
+	
+	/**
+	 * Get Archives
+	 * 
+	 * @param ctx
+	 *            context
+	 * @param whereClause
+	 *            optional where clause (starting with AND)
+	 * @param trxName optional trx name
+	 * @return archives
+	 */
+	public static MArchive[] get(Properties ctx, String whereClause, String trxName) {
 		StringBuilder sql = new StringBuilder("AD_Client_ID=?");
 		if (!Util.isEmpty(whereClause))
 			sql.append(whereClause);
 
-		List<MArchive> list = new Query(ctx, Table_Name, sql.toString(),null)
+		List<MArchive> list = new Query(ctx, Table_Name, sql.toString(),trxName)
 				.setParameters(Env.getAD_Client_ID(ctx))
 				.setOrderBy(COLUMNNAME_Created)
 				.list();

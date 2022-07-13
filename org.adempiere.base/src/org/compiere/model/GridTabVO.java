@@ -105,9 +105,21 @@ public class GridTabVO implements Evaluatee, Serializable
 			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Tab_UU, vo.AD_Tab_UU);
 			// FR IDEMPIERE-177
 			MUserDefTab userDef = MUserDefTab.get(vo.ctx, vo.AD_Tab_ID, vo.AD_Window_ID);
+			MTab tab = MTab.get(vo.AD_Tab_ID);
 			vo.Name = rs.getString("Name");
-			if (userDef != null && userDef.getName() != null)
-				vo.Name = userDef.getName();
+			if (userDef != null) {
+				if(!Util.isEmpty(userDef.getName()))
+					vo.Name = userDef.getName();
+				
+				if(!Util.isEmpty(userDef.getDeleteConfirmationLogic()))
+					vo.deleteConfirmationLogic = userDef.getDeleteConfirmationLogic();
+				else if((tab != null) && (!Util.isEmpty(tab.getDeleteConfirmationLogic())))
+					vo.deleteConfirmationLogic = tab.getDeleteConfirmationLogic();
+					
+			}
+			else if((tab != null) && (!Util.isEmpty(tab.getDeleteConfirmationLogic()))) {
+				vo.deleteConfirmationLogic = tab.getDeleteConfirmationLogic();
+			}
 			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_Name, vo.Name);
 
 			//	Translation Tab	**
@@ -547,6 +559,9 @@ public class GridTabVO implements Evaluatee, Serializable
 	private ArrayList<GridFieldVO>	Fields = null;
 
 	private boolean initFields = false;
+
+	/** Delete Confirmation Logic of AD_Tab or AD_UserDef_Tab	 */
+	public String deleteConfirmationLogic = null;
 	
 	public ArrayList<GridFieldVO> getFields()
 	{
@@ -627,6 +642,7 @@ public class GridTabVO implements Evaluatee, Serializable
 		clone.AD_Image_ID = AD_Image_ID;
 		clone.Included_Tab_ID = Included_Tab_ID;
 		clone.ReplicationType = ReplicationType;
+		clone.deleteConfirmationLogic = deleteConfirmationLogic;
 		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_AccessLevel, clone.AccessLevel);
 		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_AD_Table_ID, String.valueOf(clone.AD_Table_ID));
 		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_IsLookupOnlySelection, clone.IsLookupOnlySelection);

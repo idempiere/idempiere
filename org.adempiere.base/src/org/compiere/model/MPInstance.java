@@ -152,6 +152,25 @@ public class MPInstance extends X_AD_PInstance
 	}	//	getParameters
 	
 	/**
+	 * 	Get Process Parameters
+	 *	@return processParameters array
+	 */
+	public MProcessPara[] getProcessParameters()
+	{
+		final String whereClause = "AD_Process_ID=?";
+		List <MProcessPara> list = new Query(getCtx(), MProcessPara.Table_Name, whereClause, get_TrxName())
+		.setParameters(getAD_Process_ID())
+		.setOnlyActiveRecords(true)
+		.setOrderBy("SeqNo")
+		.list();
+
+		//
+		MProcessPara[] processParameters = new MProcessPara[list.size()];
+		list.toArray(processParameters);
+		return processParameters;
+	}	//	getParameters
+	
+	/**
 	 * Validate that a set of process instance parameters are equal or not
 	 * to the current instance parameter
 	 * @param params array of parameters to compare

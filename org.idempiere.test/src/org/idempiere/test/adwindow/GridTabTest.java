@@ -36,8 +36,10 @@ import org.compiere.model.GridWindowVO;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MOrder;
 import org.compiere.model.MQuery;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -47,26 +49,19 @@ import org.junit.jupiter.api.Test;
  */
 public class GridTabTest extends AbstractTestCase {
 
-	////Business Partner Job Block
-	private final static int BP_JOE_BLOCK = 118;
-	//Business Partner Window
-	private final static int BP_WINDOW_ID = 123;
-	//Sales Order Window
-	private final static int SO_WINDOW_ID = 143;
-	
 	public GridTabTest() {
 	}
 
 	@Test
 	public void testQuery() {		
-		int AD_Window_ID = BP_WINDOW_ID;
+		int AD_Window_ID = SystemIDs.WINDOW_BUSINESS_PARTNER;
 		var gWindowVO = GridWindowVO.create (Env.getCtx(), 1, AD_Window_ID);
 		var gridWindow = new GridWindow(gWindowVO, true);
 		int tabCount = gridWindow.getTabCount();
 		assertTrue(tabCount > 0, "Tab Count is Zero. AD_Window_ID="+AD_Window_ID);
 		
 		MQuery query = new MQuery(MBPartner.Table_Name);
-		query.addRestriction(MBPartner.COLUMNNAME_C_BPartner_ID, MQuery.EQUAL, BP_JOE_BLOCK);
+		query.addRestriction(MBPartner.COLUMNNAME_C_BPartner_ID, MQuery.EQUAL, DictionaryIDs.C_BPartner.JOE_BLOCK.id);
 		
 		for(int i = 0; i < gridWindow.getTabCount(); i++) {
 			gridWindow.initTab(i);
@@ -84,14 +79,14 @@ public class GridTabTest extends AbstractTestCase {
 		assertTrue(gTab.getRowCount()==1, "GridTab Row Count is not 1. GridTab="+gTab.getName());
 		
 		String name = (String) gTab.getValue("Name");
-		MBPartner bpartner = new MBPartner(Env.getCtx(), BP_JOE_BLOCK, getTrxName());
+		MBPartner bpartner = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
 		assertTrue(bpartner.getName().equals(name), "GridTab Name != MBPartner.getName(). GridTab.Name="+name + " MBPartner.getName="+bpartner.getName());
 	}
 	
 	@Test
 	public void testCallout() {
 		//Sales Order
-		int AD_Window_ID = SO_WINDOW_ID;
+		int AD_Window_ID = SystemIDs.WINDOW_SALES_ORDER;
 		var gWindowVO = GridWindowVO.create (Env.getCtx(), 1, AD_Window_ID);
 		var gridWindow = new GridWindow(gWindowVO, true);
 		int tabCount = gridWindow.getTabCount();
@@ -116,12 +111,12 @@ public class GridTabTest extends AbstractTestCase {
 		
 		//initial value of Bill_BPartner_ID should be null
 		assertNull(gTab.getValue(MOrder.COLUMNNAME_Bill_BPartner_ID), "Bill_BPartner_ID not null");
-		gTab.setValue(MOrder.COLUMNNAME_C_BPartner_ID, BP_JOE_BLOCK);
+		gTab.setValue(MOrder.COLUMNNAME_C_BPartner_ID, DictionaryIDs.C_BPartner.JOE_BLOCK.id);
 		
 		//set C_BPartner_ID to BP_JOE_BLOCK
 		Object value = gTab.getValue(MOrder.COLUMNNAME_C_BPartner_ID);
 		assertNotNull(value, "C_BPartner_ID is null");
-		assertEquals(BP_JOE_BLOCK, ((Number)value).intValue(), "C_BPartner_ID not equals to " + BP_JOE_BLOCK);
+		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, ((Number)value).intValue(), "C_BPartner_ID not equals to " + DictionaryIDs.C_BPartner.JOE_BLOCK.id);
 		
 		//invoke org.compiere.model.CalloutOrder.bPartner
 		GridField mField = gTab.getField(MOrder.COLUMNNAME_C_BPartner_ID);
@@ -130,13 +125,13 @@ public class GridTabTest extends AbstractTestCase {
 		//org.compiere.model.CalloutOrder.bPartner should set Bill_BPartner_ID to BP_JOE_BLOCK
 		value = gTab.getValue(MOrder.COLUMNNAME_Bill_BPartner_ID);
 		assertNotNull(value, "Bill_BPartner_ID is null");
-		assertEquals(BP_JOE_BLOCK, ((Number)value).intValue(), "Bill_BPartner_ID not equals to " + BP_JOE_BLOCK);
+		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, ((Number)value).intValue(), "Bill_BPartner_ID not equals to " + DictionaryIDs.C_BPartner.JOE_BLOCK.id);
 	}
 	
 	@Test
 	public void testUpdate() {
 		//Business Partner
-		int AD_Window_ID = BP_WINDOW_ID;
+		int AD_Window_ID = SystemIDs.WINDOW_BUSINESS_PARTNER;
 		var gWindowVO = GridWindowVO.create (Env.getCtx(), 1, AD_Window_ID);
 		var gridWindow = new GridWindow(gWindowVO, true);
 		int tabCount = gridWindow.getTabCount();
@@ -144,7 +139,7 @@ public class GridTabTest extends AbstractTestCase {
 		
 		//retrieve for update
 		MQuery query = new MQuery(MBPartner.Table_Name);
-		query.addRestriction(MBPartner.COLUMNNAME_C_BPartner_ID, MQuery.EQUAL, BP_JOE_BLOCK);
+		query.addRestriction(MBPartner.COLUMNNAME_C_BPartner_ID, MQuery.EQUAL, DictionaryIDs.C_BPartner.JOE_BLOCK.id);
 		
 		for(int i = 0; i < gridWindow.getTabCount(); i++) {
 			gridWindow.initTab(i);
@@ -162,7 +157,7 @@ public class GridTabTest extends AbstractTestCase {
 		assertTrue(gTab.getRowCount()==1, "GridTab Row Count is not 1. GridTab="+gTab.getName());
 		
 		String name = (String) gTab.getValue("Name");
-		MBPartner bpartner = new MBPartner(Env.getCtx(), BP_JOE_BLOCK, getTrxName());
+		MBPartner bpartner = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
 		assertTrue(bpartner.getName().equals(name), "GridTab Name != MBPartner.getName(). GridTab.Name="+name + " MBPartner.getName="+bpartner.getName());
 		
 		//use trx to perform update

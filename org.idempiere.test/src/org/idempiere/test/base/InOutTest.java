@@ -55,6 +55,7 @@ import org.compiere.model.MShippingProcessor;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_BP_ShippingAcct;
 import org.compiere.model.X_M_ShippingProcessorCfg;
 import org.compiere.process.DocAction;
@@ -64,6 +65,7 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -71,8 +73,6 @@ import org.junit.jupiter.api.Test;
  */
 public class InOutTest extends AbstractTestCase {
 	
-	private final static int BP_JOE_BLOCK_ID = 118;
-
 	public InOutTest() {
 	}
 	
@@ -81,22 +81,22 @@ public class InOutTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4656
 	 */
 	public void testMatReceiptPosting() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
-		int Spot_ConversionType_ID = 114; // Spot;
-		int Company_ConversionType_ID = 201; // Company
+		int Spot_ConversionType_ID = DictionaryIDs.C_ConversionType.SPOT.id; // Spot;
+		int Company_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
 		priceList.setName("Purchase AUD " + System.currentTimeMillis());
-		MCurrency australianDollar = MCurrency.get("AUD"); // Australian Dollar (AUD)
+		MCurrency australianDollar = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // Australian Dollar (AUD)
 		priceList.setC_Currency_ID(australianDollar.getC_Currency_ID());
 		priceList.setPricePrecision(australianDollar.getStdPrecision());
 		priceList.saveEx();
 		
 		MPriceListVersion plv = new MPriceListVersion(priceList);
-		plv.setM_DiscountSchema_ID(101); // Purchase 2001
+		plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.PURCHASE_2001.id); // Purchase 2001
 		plv.setValidFrom(currentDate);
 		plv.saveEx();
 		
@@ -104,13 +104,13 @@ public class InOutTest extends AbstractTestCase {
 		MProductPrice pp = new MProductPrice(plv, product.getM_Product_ID(), priceInAud, priceInAud, Env.ZERO);
 		pp.saveEx();
 		
-		MCurrency usd = MCurrency.get("USD"); // USD
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		BigDecimal audToUsdCompany = new BigDecimal(0.676234);
 		MConversionRate crUsdCompany = createConversionRate(australianDollar.getC_Currency_ID(), usd.getC_Currency_ID(), Company_ConversionType_ID, currentDate, audToUsdCompany);
 		BigDecimal audToUsdSpot = new BigDecimal(0.77);
 		MConversionRate crUsdSpot = createConversionRate(australianDollar.getC_Currency_ID(), usd.getC_Currency_ID(), Spot_ConversionType_ID, currentDate, audToUsdSpot);
 		
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal audToEuroCompany = new BigDecimal(0.746234);
 		MConversionRate crEurCompany = createConversionRate(australianDollar.getC_Currency_ID(), euro.getC_Currency_ID(), Company_ConversionType_ID, currentDate, audToEuroCompany);
 		BigDecimal audToEuroSpot = new BigDecimal(0.64);
@@ -216,21 +216,21 @@ public class InOutTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4656
 	 */
 	public void testMatShipmentPosting() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
-		int Company_ConversionType_ID = 201; // Company
+		int Company_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
 		priceList.setName("Purchase AUD " + System.currentTimeMillis());
-		MCurrency australianDollar = MCurrency.get("AUD"); // Australian Dollar (AUD)
+		MCurrency australianDollar = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // Australian Dollar (AUD)
 		priceList.setC_Currency_ID(australianDollar.getC_Currency_ID());
 		priceList.setPricePrecision(australianDollar.getStdPrecision());
 		priceList.saveEx();
 		
 		MPriceListVersion plv = new MPriceListVersion(priceList);
-		plv.setM_DiscountSchema_ID(101); // Purchase 2001
+		plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.PURCHASE_2001.id); // Purchase 2001
 		plv.setValidFrom(currentDate);
 		plv.saveEx();
 		
@@ -238,11 +238,11 @@ public class InOutTest extends AbstractTestCase {
 		MProductPrice pp = new MProductPrice(plv, product.getM_Product_ID(), priceInAud, priceInAud, Env.ZERO);
 		pp.saveEx();
 		
-		MCurrency usd = MCurrency.get("USD"); // USD
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		BigDecimal audToUsdCompany = new BigDecimal(0.676234);
 		MConversionRate crUsdCompany = createConversionRate(australianDollar.getC_Currency_ID(), usd.getC_Currency_ID(), Company_ConversionType_ID, currentDate, audToUsdCompany);
 		
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal audToEuroCompany = new BigDecimal(0.746234);
 		MConversionRate crEurCompany = createConversionRate(australianDollar.getC_Currency_ID(), euro.getC_Currency_ID(), Company_ConversionType_ID, currentDate, audToEuroCompany);
 		try {
@@ -290,11 +290,11 @@ public class InOutTest extends AbstractTestCase {
 			
 			MRMA rma = new MRMA(Env.getCtx(), 0, getTrxName());
 			rma.setName(order.getDocumentNo());
-			rma.setC_DocType_ID(150); // Vendor Return Material
-			rma.setM_RMAType_ID(100); // Damaged on Arrival
+			rma.setC_DocType_ID(DictionaryIDs.C_DocType.VENDOR_RETURN_MATERIAL.id); // Vendor Return Material
+			rma.setM_RMAType_ID(DictionaryIDs.M_RMAType.DAMAGE_ON_ARRIVAL.id); // Damaged on Arrival
 			rma.setM_InOut_ID(receipt.get_ID());
 			rma.setIsSOTrx(false);
-			rma.setSalesRep_ID(100); // SuperUser
+			rma.setSalesRep_ID(SystemIDs.USER_SUPERUSER); // SuperUser
 			rma.saveEx();
 			
 			MRMALine rmaLine = new MRMALine(Env.getCtx(), 0, getTrxName());
@@ -311,7 +311,7 @@ public class InOutTest extends AbstractTestCase {
 			delivery.setBPartner(bpartner);
 			delivery.setIsSOTrx(false);
 			delivery.setMovementType(MInOut.MOVEMENTTYPE_VendorReturns);
-			delivery.setC_DocType_ID(151); // MM Vendor Return
+			delivery.setC_DocType_ID(DictionaryIDs.C_DocType.MM_VENDOR_RETURN.id); // MM Vendor Return
 			delivery.setDocStatus(DocAction.STATUS_Drafted);
 			delivery.setDocAction(DocAction.ACTION_Complete);
 			delivery.setM_Warehouse_ID(receipt.getM_Warehouse_ID());
@@ -431,7 +431,7 @@ public class InOutTest extends AbstractTestCase {
 	}
 	
 	private MInOut createMMReceipt(MOrder order, Timestamp date) {
-		MInOut receipt = new MInOut(order, 122, date); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, date); // MM Receipt
 		receipt.saveEx();
 		return receipt;
 	}
@@ -469,7 +469,7 @@ public class InOutTest extends AbstractTestCase {
 	@Test
 	public void testFreightCostRuleCustomerAccount() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK_ID));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -500,7 +500,7 @@ public class InOutTest extends AbstractTestCase {
 		
 		final String shipperAccount = "testFreightCostRuleCustomerAccount";
 		
-		MBPartner bp = new MBPartner(Env.getCtx(), BP_JOE_BLOCK_ID, getTrxName());
+		MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
 		X_C_BP_ShippingAcct acct = new X_C_BP_ShippingAcct(Env.getCtx(), 0, getTrxName());
 		acct.setC_BPartner_ID(bp.getC_BPartner_ID());		
 		acct.setShipperAccount(shipperAccount);

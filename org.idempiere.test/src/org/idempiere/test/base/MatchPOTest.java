@@ -48,6 +48,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MStorageReservation;
 import org.compiere.model.MWarehouse;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
@@ -56,6 +57,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.ui.MiniTableImpl;
 import org.junit.jupiter.api.Test;
 
@@ -71,8 +73,8 @@ public class MatchPOTest extends AbstractTestCase {
 
 	@Test
 	public void testOrderInvoiceReceiptMatching() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(bpartner);
@@ -110,7 +112,7 @@ public class MatchPOTest extends AbstractTestCase {
 		invoice.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
-		MInOut receipt = new MInOut(invoice, 122, invoice.getDateInvoiced(), getM_Warehouse_ID()); // MM Receipt
+		MInOut receipt = new MInOut(invoice, DictionaryIDs.C_DocType.MM_RECEIPT.id, invoice.getDateInvoiced(), getM_Warehouse_ID()); // MM Receipt
 		receipt.saveEx();
 		
 		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
@@ -143,8 +145,8 @@ public class MatchPOTest extends AbstractTestCase {
 	
 	@Test
 	public void testOrderReceiptInvoiceMatching() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(bpartner);
@@ -165,7 +167,7 @@ public class MatchPOTest extends AbstractTestCase {
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
-		MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 		receipt.saveEx();
 		
 		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
@@ -213,8 +215,8 @@ public class MatchPOTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-3212
 	 */
 	public void testOrderMultiInvoiceReceiptMatching() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(bpartner);
@@ -252,7 +254,7 @@ public class MatchPOTest extends AbstractTestCase {
 		invoice.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
-		MInOut receipt = new MInOut(invoice, 122, invoice.getDateInvoiced(), getM_Warehouse_ID()); // MM Receipt
+		MInOut receipt = new MInOut(invoice, DictionaryIDs.C_DocType.MM_RECEIPT.id, invoice.getDateInvoiced(), getM_Warehouse_ID()); // MM Receipt
 		receipt.saveEx();
 		
 		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
@@ -316,7 +318,7 @@ public class MatchPOTest extends AbstractTestCase {
 		invoice.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
-		receipt = new MInOut(invoice, 122, invoice.getDateInvoiced(), getM_Warehouse_ID()); // MM Receipt
+		receipt = new MInOut(invoice, DictionaryIDs.C_DocType.MM_RECEIPT.id, invoice.getDateInvoiced(), getM_Warehouse_ID()); // MM Receipt
 		receipt.saveEx();
 		
 		receiptLine = new MInOutLine(receipt);
@@ -343,7 +345,7 @@ public class MatchPOTest extends AbstractTestCase {
 		
 		matchPOs = MMatchPO.get(Env.getCtx(), invoiceLine.getC_OrderLine_ID(), invoiceLine.getC_InvoiceLine_ID(), getTrxName());
 		
-		receipt = new MInOut(invoice, 122, invoice.getDateInvoiced(), getM_Warehouse_ID()); // MM Receipt
+		receipt = new MInOut(invoice, DictionaryIDs.C_DocType.MM_RECEIPT.id, invoice.getDateInvoiced(), getM_Warehouse_ID()); // MM Receipt
 		receipt.saveEx();
 		
 		receiptLine = new MInOutLine(receipt);
@@ -369,8 +371,8 @@ public class MatchPOTest extends AbstractTestCase {
 	
 	@Test
 	public void testOrderMultiReceiptInvoiceMatching() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(bpartner);
@@ -391,7 +393,7 @@ public class MatchPOTest extends AbstractTestCase {
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
-		MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 		receipt.saveEx();
 		
 		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
@@ -432,7 +434,7 @@ public class MatchPOTest extends AbstractTestCase {
 		assertEquals(invoiceLine.getC_InvoiceLine_ID(), matchPOs[0].getC_InvoiceLine_ID());
 		assertTrue(matchPOs[0].getQty().compareTo(new BigDecimal("3"))==0);
 		
-		receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+		receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 		receipt.saveEx();
 		
 		receiptLine = new MInOutLine(receipt);
@@ -497,8 +499,8 @@ public class MatchPOTest extends AbstractTestCase {
 	
 	@Test
 	public void testReverseFullyMatchPO() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		
 		int initialOnHand = MStorageOnHand.getQtyOnHand(product.get_ID(), getM_Warehouse_ID(), 0, getTrxName()).intValue();
 		int initialOnOrdered = MStorageReservation.getQty(product.get_ID(), getM_Warehouse_ID(), 0, false, getTrxName()).intValue();
@@ -527,7 +529,7 @@ public class MatchPOTest extends AbstractTestCase {
 		int newOnOrdered = MStorageReservation.getQty(product.get_ID(), getM_Warehouse_ID(), 0, false, getTrxName()).intValue();
 		assertEquals(initialOnOrdered+1, newOnOrdered, "Unexpected qty on ordered value");
 		
-		MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 		receipt.saveEx();
 		
 		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
@@ -553,7 +555,7 @@ public class MatchPOTest extends AbstractTestCase {
 		
 		MMatchPO[] matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
 		assertEquals(1, matchPOs.length, "Unexpected number of MatchPO for order line");
-		int matchedPOReverse = 200016;
+		int matchedPOReverse = SystemIDs.PROCESS_M_MATCHPO_REVERSAL;
 		info = new ProcessInfo("MatchPOReverse", matchedPOReverse, MMatchPO.Table_ID, matchPOs[0].get_ID());
 		ServerProcessCtl.process(info, getTrx(), false);
 		assertFalse(info.isError(), info.getSummary());
@@ -693,8 +695,8 @@ public class MatchPOTest extends AbstractTestCase {
 	
 	@Test
 	public void testReversePartialMatchPO() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		
 		int initialOnHand = MStorageOnHand.getQtyOnHand(product.get_ID(), getM_Warehouse_ID(), 0, getTrxName()).intValue();
 		int initialOnOrdered = MStorageReservation.getQty(product.get_ID(), getM_Warehouse_ID(), 0, false, getTrxName()).intValue();
@@ -723,7 +725,7 @@ public class MatchPOTest extends AbstractTestCase {
 		int newOnOrdered = MStorageReservation.getQty(product.get_ID(), getM_Warehouse_ID(), 0, false, getTrxName()).intValue();
 		assertEquals(initialOnOrdered+2, newOnOrdered, "Unexpected qty on ordered value");
 		
-		MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
 		receipt.saveEx();
 		
 		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
@@ -750,7 +752,7 @@ public class MatchPOTest extends AbstractTestCase {
 		
 		MMatchPO[] matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
 		assertEquals(1, matchPOs.length, "Unexpected number of MatchPO for order line");
-		int matchedPOReverse = 200016;
+		int matchedPOReverse = SystemIDs.PROCESS_M_MATCHPO_REVERSAL;
 		info = new ProcessInfo("MatchPOReverse", matchedPOReverse, MMatchPO.Table_ID, matchPOs[0].get_ID());
 		ServerProcessCtl.process(info, getTrx(), false);
 		assertFalse(info.isError(), info.getSummary());

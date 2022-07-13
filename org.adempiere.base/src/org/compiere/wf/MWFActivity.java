@@ -46,6 +46,7 @@ import org.compiere.model.MOrgInfo;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRefList;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -82,9 +83,9 @@ import org.compiere.util.Util;
 public class MWFActivity extends X_AD_WF_Activity implements Runnable
 {	
 	/**
-	 *
+	 * 
 	 */
-	private static final long serialVersionUID = -3282235931100223816L;
+	private static final long serialVersionUID = 8180781075902940080L;
 
 	private static final String CURRENT_WORKFLOW_PROCESS_INFO_ATTR = "Workflow.ProcessInfo";
 	
@@ -1127,8 +1128,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				getAD_Table_ID(), getRecord_ID());
 			pi.setAD_User_ID(getAD_User_ID());
 			pi.setAD_Client_ID(getAD_Client_ID());
-			MPInstance pInstance = new MPInstance(process, getRecord_ID());
-			pInstance.set_TrxName(trx != null ? trx.getTrxName() : null);
+			MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), getRecord_ID());
+			pInstance.saveEx();
 			fillParameter(pInstance, trx);
 			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
 			//	Report
@@ -1157,40 +1158,48 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (log.isLoggable(Level.FINE)) log.fine("Process:AD_Process_ID=" + m_node.getAD_Process_ID());
 			//	Process
 			MProcess process = MProcess.get(getCtx(), m_node.getAD_Process_ID());
-			MPInstance pInstance = new MPInstance(process, getRecord_ID());
-			fillParameter(pInstance, trx);
-			//
-			ProcessInfo pi = new ProcessInfo (m_node.getName(true), m_node.getAD_Process_ID(),
-				getAD_Table_ID(), getRecord_ID());
-			
-			//check record id overwrite
-			MWFNodePara[] nParams = m_node.getParameters();
-			for(MWFNodePara p : nParams) 
-			{
-				if (p.getAD_Process_Para_ID() == 0 && p.getAttributeName().equalsIgnoreCase("Record_ID") && !Util.isEmpty(p.getAttributeValue(), true)) 
+			MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), getRecord_ID());
+			pInstance.setIsProcessing(true);
+			pInstance.saveEx();
+			try {
+				fillParameter(pInstance, trx);
+				//
+				ProcessInfo pi = new ProcessInfo (m_node.getName(true), m_node.getAD_Process_ID(),
+					getAD_Table_ID(), getRecord_ID());
+				
+				//check record id overwrite
+				MWFNodePara[] nParams = m_node.getParameters();
+				for(MWFNodePara p : nParams) 
 				{
-					try 
+					if (p.getAD_Process_Para_ID() == 0 && p.getAttributeName().equalsIgnoreCase("Record_ID") && !Util.isEmpty(p.getAttributeValue(), true)) 
 					{
-						Object value = parseNodeParaAttribute(p);
-						if (value == p || value == null)
-							break;
-						int recordId = Integer.valueOf(value.toString());
-						pi.setRecord_ID(recordId);
+						try 
+						{
+							Object value = parseNodeParaAttribute(p);
+							if (value == p || value == null)
+								break;
+							int recordId = Integer.valueOf(value.toString());
+							pi.setRecord_ID(recordId);
+						}
+						catch (NumberFormatException e)
+						{
+							log.log(Level.WARNING, e.getMessage(), e);
+						}
+						break;
 					}
-					catch (NumberFormatException e)
-					{
-						log.log(Level.WARNING, e.getMessage(), e);
-					}
-					break;
 				}
+	
+				pi.setAD_User_ID(getAD_User_ID());
+				pi.setAD_Client_ID(getAD_Client_ID());
+				pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
+				boolean success = process.processItWithoutTrxClose(pi, trx);
+				setTextMsg(pi.getSummary());
+				return success;
 			}
-
-			pi.setAD_User_ID(getAD_User_ID());
-			pi.setAD_Client_ID(getAD_Client_ID());
-			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
-			boolean success = process.processItWithoutTrxClose(pi, trx);
-			setTextMsg(pi.getSummary());
-			return success;
+			finally {
+				pInstance.setIsProcessing(false);
+				pInstance.saveEx();
+			}
 		}
 
 		/******	Start Task (Probably redundant;
@@ -1649,10 +1658,14 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		getPO(trx);
 		//
 		MWFNodePara[] nParams = m_node.getParameters();
-		MPInstancePara[] iParams = pInstance.getParameters();
-		for (int pi = 0; pi < iParams.length; pi++)
+		MProcessPara[] processParams = pInstance.getProcessParameters();
+		for (int pi = 0; pi < processParams.length; pi++)
 		{
-			MPInstancePara iPara = iParams[pi];
+			MPInstancePara iPara = new MPInstancePara (pInstance, processParams[pi].getSeqNo());
+			iPara.setParameterName(processParams[pi].getColumnName());
+			iPara.setInfo(processParams[pi].getName());
+			iPara.setParameterName(processParams[pi].getColumnName());
+			iPara.setInfo(processParams[pi].getName());
 			for (int np = 0; np < nParams.length; np++)
 			{
 				MWFNodePara nPara = nParams[np];				
@@ -1673,6 +1686,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 							if (log.isLoggable(Level.FINE)) log.fine(nPara.getAttributeName()
 								+ " - empty");
 						break;
+					}
+					if( DisplayType.isText(nPara.getDisplayType())
+							&& Util.isEmpty(String.valueOf(value))) {
+						if (log.isLoggable(Level.FINE)) log.fine(nPara.getAttributeName() + " - empty string");
+							break;
 					}
 
 					//	Convert to Type
@@ -2108,4 +2126,31 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			trx.removeTrxEventListener(this);
 		}		
 	}
+
+	/**
+	 * Where to get the pending activities related to a User (unprocessed and suspended)
+	 * The where returned requires the AD_User_ID parameter 5 times, and then AD_Client_ID
+	 * @return Where Clause
+	 */
+	public static String getWhereUserPendingActivities() {
+		final String where =
+			"AD_WF_Activity.Processed='N' AND AD_WF_Activity.WFState='OS' AND ("
+			//	Owner of Activity
+			+ " AD_WF_Activity.AD_User_ID=?"	//	#1
+			//	Invoker (if no invoker = all)
+			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE AD_WF_Activity.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
+			+ " AND r.ResponsibleType='H' AND COALESCE(r.AD_User_ID,0)=0 AND COALESCE(r.AD_Role_ID,0)=0 AND (AD_WF_Activity.AD_User_ID=? OR AD_WF_Activity.AD_User_ID IS NULL))"	//	#2
+			//  Responsible User
+			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r WHERE AD_WF_Activity.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID"
+			+ " AND r.ResponsibleType='H' AND r.AD_User_ID=?)"		//	#3
+			//	Responsible Role
+			+ " OR EXISTS (SELECT * FROM AD_WF_Responsible r INNER JOIN AD_User_Roles ur ON (r.AD_Role_ID=ur.AD_Role_ID)"
+			+ " WHERE AD_WF_Activity.AD_WF_Responsible_ID=r.AD_WF_Responsible_ID AND r.ResponsibleType='R' AND ur.AD_User_ID=? AND ur.isActive = 'Y')"	//	#4
+			///* Manual Responsible */ 
+			+ " OR EXISTS (SELECT * FROM AD_WF_ActivityApprover r "
+			+ " WHERE AD_WF_Activity.AD_WF_Activity_ID=r.AD_WF_Activity_ID AND r.AD_User_ID=? AND r.isActive = 'Y')" 
+			+ ") AND AD_WF_Activity.AD_Client_ID=?";	//	#5
+		return where;
+	}
+
 }	//	MWFActivity
