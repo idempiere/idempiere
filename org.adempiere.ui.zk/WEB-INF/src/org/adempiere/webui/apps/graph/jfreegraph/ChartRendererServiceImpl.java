@@ -168,13 +168,6 @@ public class ChartRendererServiceImpl implements IChartRendererService {
 			log.warning("Nothing to zoom to - " + bgc);
 	}
 
-
-	@Override
-	public boolean renderChart(Component parent, int width, int height,
-			ChartModel chartModel) {
-		return renderChart(parent, width, height, chartModel, true);
-	}
-
 	@Override
 	public boolean renderChart(Component parent, int width, int height, ChartModel chartModel, boolean showTitle) {
 		ChartRenderer renderer = new ChartRenderer(chartModel.chart);
