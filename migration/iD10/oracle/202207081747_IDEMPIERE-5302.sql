@@ -13,7 +13,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnN
 ;
 
 -- Jul 12, 2022, 9:32:57 AM CEST
-ALTER TABLE AD_Table ADD IsShowInDrillOptions CHAR(1) DEFAULT 'N' CHECK (IsShowInDrillOptions IN ('Y','N'))
+ALTER TABLE AD_Table ADD IsShowInDrillOptions CHAR(1) DEFAULT 'Y' CHECK (IsShowInDrillOptions IN ('Y','N'))
 ;
 
 -- Jul 12, 2022, 9:34:27 AM CEST
