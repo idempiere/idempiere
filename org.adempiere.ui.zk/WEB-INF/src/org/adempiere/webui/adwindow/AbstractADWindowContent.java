@@ -3955,7 +3955,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	}
 	
 	public boolean getFindWindow(GridField[] findFields) {
-		FindWindow findWindow = tabFindWindowHashMap.get(adTabbox.getSelectedGridTab());
+		FindWindow findWindow = getCurrentFindWindow();
 		if (findWindow != null && isCurrentFindWindowValid()) {
 			toolbar.setSelectedUserQuery(findWindow.getAD_UserQuery_ID());
 		} else {
