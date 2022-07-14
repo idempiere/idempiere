@@ -485,10 +485,8 @@ public class WLocatorDialog extends Window implements EventListener<Event>
 	private void enableNew()
 	{
 		boolean sel = chkCreateNew.isChecked();
-		//lblWarehouse.setVisible(sel);
 		lstWarehouse.setVisible(sel);
 		lstWarehouse.getParent().setVisible(sel);
-		//lWarehouseInfo.setVisible(!sel);
 		txtWarehouse.setVisible(!sel);
 		txtWarehouse.getParent().setVisible(!sel);
 		txtWarehouse.setReadonly(true);

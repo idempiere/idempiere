@@ -1962,8 +1962,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	if(history.length() > 0)
         	{
         		historyCombo.setAttribute("history", history);
-        		//historyCombo.setSelectedItem(new Comboitem(history));
-        		//historyCombo.setSelectedItem(new Comboitem(history, history));
         		historyCombo.setSelectedIndex(getHistoryIndex(history)+1);
         	}
     	}
@@ -2537,14 +2535,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                         m_query.addRestriction(ColumnSQL.toString(), oper, value, ColumnName, wed.getDisplay());
                         appendCode(code, ColumnName, oper, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
                     }
-                    
-                    /*
-                    if (value.toString().indexOf('%') != -1)
-                        m_query.addRestriction(ColumnName, MQuery.LIKE, value, ColumnName, ved.getDisplay());
-                    else
-                        m_query.addRestriction(ColumnName, MQuery.EQUAL, value, ColumnName, ved.getDisplay());
-                    */
-                    // end globalqss patch
             	}
             } else if (valueTo != null && valueTo.toString().length() > 0) {
             	// filled upper limit without filling lower limit
@@ -3031,9 +3021,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
         else
             if (log.isLoggable(Level.CONFIG)) log.config("#" + m_total);
-        //
-        /*if (query != null)
-            statusBar.setStatusToolTip (query.getWhereClause());*/
+
         return m_total;
 
     }   //  getNoOfRecords
@@ -3461,10 +3449,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	        	attributeSQL.append(" AND value ");
 
 	        }
-//	        else if(attribute.getAttributeValueType().equals(MAttribute.ATTRIBUTEVALUETYPE_TableDirect)) {
-//	        	
-//	        	attributeSQL.append(" AND record_ID ");
-//	        }   
 
 		return attributeSQL.toString();
 	}	// getAttributeSQL
@@ -3544,16 +3528,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	       	//String
 	       	editor.setValue(value);
 	    }
-//	    else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_TableDirect)) {
-//	       	
-//	       	int AD_Column_ID = attribute.getAD_Column_ID();
-//	    	MLookup attributes = MLookupFactory.get(Env.getCtx(), m_targetWindowNo, AD_Column_ID, DisplayType.TableDir, Env.getLanguage(Env.getCtx()), 
-//	    			attribute.getAD_Column().getColumnName(), 0, true, null);
-//	    	editor = new WTableDirEditor(attribute.getAD_Column().getName(), true, false, true, attributes);    
-//	    	
-//	    	editor.setValue(Integer.valueOf(in));	
-//	    }     
-	 	        //
+
 	    editor.addValueChangeListener(this);	       
 	    editor.setReadWrite(enabled);
 	    editor.setVisible(enabled);
@@ -3728,21 +3703,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         	editor = new WStringEditor("Test", true, false, true, 40, 40, null, null);
         }
-//        else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_TableDirect)) {
-//        	
-//        	int AD_Column_ID = attribute.getAD_Column_ID();
-//    		MLookup orders = MLookupFactory.get(Env.getCtx(), m_targetWindowNo, AD_Column_ID, DisplayType.TableDir, Env.getLanguage(Env.getCtx()), 
-//    				attribute.getAD_Column().getColumnName(), 0, true, null);
-//    		editor = new WTableDirEditor(attribute.getAD_Column().getName(), true, false, true, orders);    
-//    		 	
-//        }     
 
-        //
         editor.addValueChangeListener(this);
         editor.setValue(null);
         editor.setReadWrite(enabled);
         editor.setVisible(enabled);
-        //editor.dynamicDisplay();
 
         return editor.getComponent();
 
@@ -3767,7 +3732,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             //  Return Integer
             if (dt.equals(String.valueOf(MAttribute.ATTRIBUTEVALUETYPE_AD_Reference_ID))
             		|| dt.equals(MAttribute.ATTRIBUTEVALUETYPE_List))
-//            		|| dt.equals(MAttribute.ATTRIBUTEVALUETYPE_TableDirect))
             {
                 if (value instanceof Integer)
                     return value;
