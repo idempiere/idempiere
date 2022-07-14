@@ -326,7 +326,23 @@ public class BOMDrop {
 		public SelectedItem(int M_Product_ID, BigDecimal qty) {
 			this.M_Product_ID = M_Product_ID;
 			this.qty = qty;
-		}		
+		}
+		
+		/**
+		 * 
+		 * @return M_Product_ID
+		 */
+		public int getM_Product_ID() {
+			return M_Product_ID;
+		}
+		
+		/**
+		 * 
+		 * @return qty
+		 */
+		public BigDecimal getQty() {
+			return qty;
+		}
 	}
 	
 	/**
