@@ -100,8 +100,8 @@ public class InOutGenerate extends SvrProcess
 		for (int i = 0; i < para.length; i++)
 		{
 			String name = para[i].getParameterName();
-			if (para[i].getParameter() == null)
-				;
+			if (name == null || para[i].getParameter() == null)
+				continue;
 			else if (name.equals("M_Warehouse_ID"))
 				p_M_Warehouse_ID = para[i].getParameterAsInt();
 			else if (name.equals("C_BPartner_ID"))

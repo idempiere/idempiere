@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 
 import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
@@ -621,7 +620,7 @@ public class ProcessInfo implements Serializable
 	public void setDefaultParameters() {
 		LinkedList<ProcessInfoParameter> list = new LinkedList<>();
 		
-		String sql = "SELECT columnname, app.defaultvalue AS systemwide, aupp.defaultvalue AS userdef "
+		String sql = "SELECT columnname, app.defaultvalue AS systemwide, aupp.defaultvalue AS userdef, app.ad_reference_id AS refid "
 				+ "FROM ad_process_para app "
 				+ "LEFT JOIN ad_userdef_proc_parameter aupp "
 				+ "	ON app.ad_process_para_id = aupp.ad_process_para_id "
@@ -632,8 +631,8 @@ public class ProcessInfo implements Serializable
 				+ "AND (aup.ad_user_id IN (?,0) OR aup.ad_user_id IS NULL) "
 				+ "AND (aup.ad_role_id IN (?,0) OR aup.ad_role_id IS NULL) "
 				+ "AND (aup.ad_org_id IN (?,0) OR aup.ad_org_id IS NULL) "
-				+ "AND (aup.ad_client_id IN (?,0) OR aup.ad_client_id IS NULL) "
-				+ "ORDER BY aup.ad_user_id, aup.ad_role_id, aup.ad_org_id, aup.ad_client_id ";
+				+ "AND aup.ad_client_id = ? "
+				+ "ORDER BY columnname, aup.ad_user_id, aup.ad_role_id, aup.ad_org_id, aup.ad_client_id ";
 		PreparedStatement ps = DB.prepareStatement(sql, null);
 		
 		try {
@@ -654,13 +653,14 @@ public class ProcessInfo implements Serializable
 					stringValue = rs.getString("systemwide");
 				stringValue = Env.parseContext(Env.getCtx(), 0, stringValue, false);
 				
-				// Parse to probably expected result
+				// Parse to expected result
+				int refID = rs.getInt("refid");
 				Object paramVal;
-				if (Pattern.compile("^\\d{1,10}$").matcher(stringValue).matches())
+				if (DisplayType.isID(refID) || DisplayType.isLookup(refID))
 					paramVal = Integer.parseInt(stringValue);
-				else if (Pattern.compile("^\\d*(\\.\\d+)?$").matcher(stringValue).matches())
+				else if (DisplayType.isNumeric(refID))
 					paramVal = new BigDecimal(stringValue);
-				else if (Pattern.compile("^\\d{4}-\\d{2}-\\d{2}( \\d{2}:\\d{2}:\\d{2})?$").matcher(stringValue).matches())
+				else if (DisplayType.isDate(refID))
 					paramVal = Timestamp.valueOf(stringValue);
 				else paramVal = stringValue;
 				
