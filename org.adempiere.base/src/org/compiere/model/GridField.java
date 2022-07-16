@@ -443,10 +443,6 @@ public class GridField
 			return false;
 		}
 
-		//  Fields always updateable
-		if (m_vo.IsAlwaysUpdateable)      //  Zoom
-			return true;
-
 		//check tab context
 		if (checkContext && getGridTab() != null &&
 			! "Y".equals(Env.getContext(Env.getCtx(), getWindowNo(), "_QUICK_ENTRY_MODE_")))
@@ -529,8 +525,12 @@ public class GridField
 		//  Record is Processed	***	
 		if (checkContext 
 			&& ("Y".equals(get_ValueAsString("Processed")) || "Y".equals(get_ValueAsString("Processing"))) )
-			return false;
-
+		{//  Fields always updateable
+			if (m_vo.IsAlwaysUpdateable)
+				return true;
+			else
+				return false;
+		}
 		//  IsActive field is editable, if record not processed
 		if (m_vo.ColumnName.equals("IsActive"))
 			return true;
