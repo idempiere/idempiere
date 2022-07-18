@@ -59,7 +59,7 @@ public class InOutGenerateRMA extends SvrProcess
     /** Number of Shipments     */
     private int         m_created = 0;
     /** Movement Date           */
-    private Timestamp   m_movementDate = null;
+    private Timestamp   p_movementDate = null;
 
     protected void prepare()
     {
@@ -75,15 +75,19 @@ public class InOutGenerateRMA extends SvrProcess
                 p_Selection = "Y".equals(para[i].getParameter());
             else if (name.equals("DocAction"))
                 p_docAction = (String)para[i].getParameter();
+            else if (name.equals("MovementDate"))
+            	p_movementDate = para[i].getParameterAsTimestamp();
             else
                 log.log(Level.SEVERE, "Unknown Parameter: " + name);
         }
-        
-        m_movementDate = Env.getContextAsDate(getCtx(), Env.DATE);
-        if (m_movementDate == null)
-        {
-            m_movementDate = new Timestamp(System.currentTimeMillis());
+        if (p_movementDate == null) {
+	        p_movementDate = Env.getContextAsDate(getCtx(), Env.DATE);
+	        if (p_movementDate == null)
+	        {
+	            p_movementDate = new Timestamp(System.currentTimeMillis());
+	        }
         }
+        p_Selection = getProcessInfo().getAD_InfoWindow_ID() > 0;
     }
     
     protected String doIt() throws Exception
@@ -95,7 +99,7 @@ public class InOutGenerateRMA extends SvrProcess
         
         String sql = "SELECT rma.M_RMA_ID FROM M_RMA rma, T_Selection "
             + "WHERE rma.DocStatus='CO' AND rma.IsSOTrx='N' AND rma.AD_Client_ID=? "
-            + "AND rma.M_RMA_ID = T_Selection.T_Selection_ID " 
+            + "AND rma.InOut_ID = T_Selection.T_Selection_ID " 
             + "AND T_Selection.AD_PInstance_ID=? ";
         
         PreparedStatement pstmt = null;
