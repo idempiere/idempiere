@@ -360,23 +360,6 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 			+ "; M_Locator_ID=" + m_M_Locator_ID);
 	}	//	enableButtons
 
-	//TODO: double click support for WListbox
-	/**
-	 *  Mouse Clicked
-	 *  @param e event
-	 */
-	/*
-	public void mouseClicked(MouseEvent e)
-	{
-		//  Double click with selected row => exit
-		if (e.getClickCount() > 1 && m_table.getSelectedRow() != -1)
-		{
-			enableButtons();
-			dispose();
-		}
-	}*/   //  mouseClicked
-
-
 	/**
 	 * 	Get Attribute Set Instance
 	 *	@return M_AttributeSetInstance_ID or -1

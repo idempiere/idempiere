@@ -734,7 +734,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				more.setIconSclass("z-icon-Expand");
 			else
 				more.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
-//			more.setStyle("float: right;");
+
 			toolBar.appendChild(more);
 			LayoutUtils.addSclass("space-between-content", toolBar);
 			more.addEventListener(Events.ON_CLICK, evt -> {

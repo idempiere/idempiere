@@ -205,6 +205,7 @@ public class Scheduler extends AdempiereServer
 		pi.setIsBatch(true);
 		pi.setPrintPreview(true);
 		pi.setReportType(scheduler.getReportOutputType());
+		pi.setAD_Scheduler_ID(scheduler.getAD_Scheduler_ID());
 		int AD_PrintFormat_ID = scheduler.getAD_PrintFormat_ID();
 		if (AD_PrintFormat_ID > 0) 
 		{
@@ -333,7 +334,7 @@ public class Scheduler extends AdempiereServer
 					String mailContent = "";
 					
 					if (mailTemplate.is_new()){
-						mailContent = scheduler.getDescription();
+						mailContent = scheduler.getDescription() != null ? scheduler.getDescription() : "";
 					}else{
 						mailTemplate.setUser(user);
 						mailTemplate.setLanguage(Env.getContext(getCtx(), Env.LANGUAGE));
@@ -358,7 +359,7 @@ public class Scheduler extends AdempiereServer
 							pLog.saveEx();
 						}
 					} else {
-						if (!client.sendEMail(from, user, schedulerName, mailContent + "\n" + pi.getSummary() + " " + pi.getLogInfo(), null)) {
+						if (!client.sendEMail(from, user, schedulerName, mailContent + "\n" + pi.getSummary() + "\n" + pi.getLogInfo(), null)) {
 							StringBuilder summary = new StringBuilder(Msg.getMsg(Env.getCtx(), "SchedulerSendNotificationFailed"));
 							summary.append(user.getName());
 							String error = (String) Env.getCtx().remove(EMail.EMAIL_SEND_MSG);

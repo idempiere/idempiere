@@ -88,7 +88,6 @@ public class CalloutBankStatement extends CalloutEngine
 			if (charge == null)
 				charge = Env.ZERO;
 			bd = bd.subtract(charge);
-		//	log.trace(log.l5_DData, "Interest (" + bd + ") = Stmt(" + stmt + ") - Trx(" + trx + ") - Charge(" + charge + ")");
 			mTab.setValue("InterestAmt", bd);
 		}
 		//  Calculate Charge
@@ -98,7 +97,6 @@ public class CalloutBankStatement extends CalloutEngine
 			if (interest == null)
 				interest = Env.ZERO;
 			bd = bd.subtract(interest);
-		//	log.trace(log.l5_DData, "Charge (" + bd + ") = Stmt(" + stmt + ") - Trx(" + trx + ") - Interest(" + interest + ")");
 			mTab.setValue("ChargeAmt", bd);
 		}
 		return "";

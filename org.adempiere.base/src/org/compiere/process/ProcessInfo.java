@@ -169,6 +169,8 @@ public class ProcessInfo implements Serializable
 	
 	private String showHelp = null;
 
+	private int m_AD_Scheduler_ID = 0;
+	
 	public int getLanguageID() {
 		return languageID;
 	}
@@ -974,6 +976,22 @@ public class ProcessInfo implements Serializable
 	 */
 	public void setReplaceTabContent() {
 		this.m_IsReplaceTabContent = !(MSysConfig.getBooleanValue(MSysConfig.ZK_REPORT_TABLE_OPEN_IN_NEW_TAB, false, Env.getAD_Client_ID(Env.getCtx())));
+	}
+
+	/**
+	 * 
+	 * @return AD_Scheduler_ID or 0 if not running from scheduler
+	 */
+	public int getAD_Scheduler_ID() {
+		return m_AD_Scheduler_ID;
+	}
+
+	/**
+	 * 
+	 * @param AD_Scheduler_ID
+	 */
+	public void setAD_Scheduler_ID(int AD_Scheduler_ID) {
+		this.m_AD_Scheduler_ID = AD_Scheduler_ID;
 	}
 	
 }   //  ProcessInfo
