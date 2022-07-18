@@ -471,11 +471,14 @@ public class FileUtil
             throw new IllegalArgumentException("Prefix string \"" + prefix +
                 "\" too short: length must be at least 3");
         }
+
+        prefix = Util.setFilenameCorrect(prefix);
+
         if (suffix == null)
             suffix = ".tmp";
 
         Calendar cal = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		String dt = sdf.format(cal.getTime());
 		String tmpdirname = (directory != null) ? directory.getCanonicalPath() : System.getProperty("java.io.tmpdir");
 		tmpdirname += System.getProperty("file.separator") + "rpttmp_" + dt + "_" + Env.getContext(Env.getCtx(), Env.AD_SESSION_ID) + System.getProperty("file.separator");
