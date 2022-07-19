@@ -55,7 +55,7 @@ public class InOutGenerateRMA extends SvrProcess
     @SuppressWarnings("unused")
     private int         p_M_Warehouse_ID = 0;
     /** DocAction               */
-    private String      p_docAction = DocAction.ACTION_Complete;
+    private String      p_docAction = DocAction.ACTION_None;
     /** Number of Shipments     */
     private int         m_created = 0;
     /** Movement Date           */
@@ -256,18 +256,16 @@ public class InOutGenerateRMA extends SvrProcess
         
         StringBuilder processMsg = new StringBuilder().append(shipment.getDocumentNo());
         
-        if (!shipment.processIt(p_docAction))
-        {
-            processMsg.append(" (NOT Processed)");
-            StringBuilder msglog = new StringBuilder("Shipment Processing failed: ").append(shipment).append(" - ").append(shipment.getProcessMsg());
-            log.warning(msglog.toString());
-            throw new IllegalStateException("Shipment Processing failed: " + shipment + " - " + shipment.getProcessMsg());
-        }
-        
-        if (!shipment.save())
-        {
-            throw new IllegalStateException("Could not update shipment");
-        }
+		if (!DocAction.ACTION_None.equals(p_docAction)) {
+	        if (!shipment.processIt(p_docAction))
+	        {
+	            processMsg.append(" (NOT Processed)");
+	            StringBuilder msglog = new StringBuilder("Shipment Processing failed: ").append(shipment).append(" - ").append(shipment.getProcessMsg());
+	            log.warning(msglog.toString());
+	            throw new IllegalStateException("Shipment Processing failed: " + shipment + " - " + shipment.getProcessMsg());
+	        }
+		}
+        shipment.saveEx();
         
         // Add processing information to process log
         addBufferLog(shipment.getM_InOut_ID(), shipment.getMovementDate(), null, processMsg.toString(),shipment.get_Table_ID(),shipment.getM_InOut_ID());

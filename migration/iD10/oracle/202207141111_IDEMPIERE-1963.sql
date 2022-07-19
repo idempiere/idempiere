@@ -191,7 +191,7 @@ DROP VIEW M_InOut_Candidate_v
 ;
 
 -- Jul 14, 2022, 12:01:22 PM CEST
-CREATE OR REPLACE VIEW M_InOut_Candidate_v(AD_Client_ID, AD_Org_ID, Created, Updated, IsActive, C_BPartner_ID, C_Order_ID, DocumentNo, DateOrdered, C_DocType_ID, POReference, Description, SalesRep_ID, M_Warehouse_ID, M_InOut_ID, TotalLines, DocSource, M_InOut_Candidate_v_ID, DeliveryRule) AS SELECT o.ad_client_id AS AD_Client_ID, o.ad_org_id AS AD_Org_ID, o.created AS Created, o.updated AS Updated, o.isactive AS IsActive, o.c_bpartner_id AS C_BPartner_ID, o.c_order_id AS C_Order_ID, o.documentno AS DocumentNo, o.dateordered AS DateOrdered, o.c_doctype_id AS C_DocType_ID, o.poreference AS POReference, o.description AS Description, o.salesrep_id AS SalesRep_ID, l.m_warehouse_id AS M_Warehouse_ID, NULL::numeric AS M_InOut_ID, sum((l.qtyordered - l.qtydelivered) * l.priceactual) AS TotalLines, 'O'::text AS DocSource, o.c_order_id AS M_InOut_Candidate_v_ID, o.deliveryrule FROM c_order o
+CREATE OR REPLACE VIEW M_InOut_Candidate_v(AD_Client_ID, AD_Org_ID, Created, Updated, IsActive, C_BPartner_ID, C_Order_ID, DocumentNo, DateOrdered, C_DocType_ID, POReference, Description, SalesRep_ID, M_Warehouse_ID, M_InOut_ID, TotalLines, DocSource, M_InOut_Candidate_v_ID, DeliveryRule) AS SELECT o.ad_client_id AS AD_Client_ID, o.ad_org_id AS AD_Org_ID, o.created AS Created, o.updated AS Updated, o.isactive AS IsActive, o.c_bpartner_id AS C_BPartner_ID, o.c_order_id AS C_Order_ID, o.documentno AS DocumentNo, o.dateordered AS DateOrdered, o.c_doctype_id AS C_DocType_ID, o.poreference AS POReference, o.description AS Description, o.salesrep_id AS SalesRep_ID, l.m_warehouse_id AS M_Warehouse_ID, NULL::numeric AS M_InOut_ID, sum((l.qtyordered - l.qtydelivered) * l.priceactual) AS TotalLines, 'O'::text AS DocSource, o.c_order_id AS M_InOut_Candidate_v_ID, o.deliveryrule AS DeliveryRule FROM c_order o
 JOIN c_orderline l ON o.c_order_id = l.c_order_id WHERE o.docstatus = 'CO' AND o.isdelivered = 'N' AND (o.c_doctype_id IN ( SELECT c_doctype.c_doctype_id
            FROM c_doctype
           WHERE c_doctype.docbasetype = 'SOO' AND (c_doctype.docsubtypeso NOT IN ('ON', 'OB', 'WR')))) AND o.deliveryrule <> 'M' AND (l.m_product_id IS NULL OR (EXISTS ( SELECT 1
@@ -352,10 +352,6 @@ UPDATE AD_Field SET Name='Document Source', Description=NULL, Help=NULL WHERE AD
 
 -- Jun 5, 2014 12:12:38 PM CEST
 UPDATE AD_PrintFormatItem SET PrintName='Document Source', Name='Document Source' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=AD_PrintFormatItem.AD_Column_ID AND c.AD_Element_ID=203628)
-;
-
--- Jun 5, 2014 12:13:22 PM CEST
-UPDATE C_AcctProcessor SET DateLastRun=TO_DATE('2014-06-05 12:13:22','YYYY-MM-DD HH24:MI:SS'), DateNextRun=TO_DATE('2014-06-05 12:23:22','YYYY-MM-DD HH24:MI:SS'),Updated=TO_DATE('2014-06-05 12:13:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE C_AcctProcessor_ID=100
 ;
 
 -- Jun 5, 2014 12:13:37 PM CEST
