@@ -13,14 +13,14 @@ INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,
 ;
 
 ALTER TABLE t_trialbalance 
-DROP CONSTRAINT T_TRIALBALANCE_KEY
+DROP CONSTRAINT t_trialbalance_key
 ;
 
 DROP INDEX T_TRIALBALANCE_KEY
 ;
  
 ALTER TABLE t_trialbalance
-ADD CONSTRAINT T_TRIALBALANCE_KEY PRIMARY KEY (AD_PInstance_ID, Fact_Acct_ID, Account_ID, AD_Org_ID)
+ADD CONSTRAINT t_trialbalance_pkey PRIMARY KEY (AD_PInstance_ID, Fact_Acct_ID, Account_ID, AD_Org_ID)
 ;
 
 
