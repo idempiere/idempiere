@@ -382,50 +382,44 @@ public final class AEnv
     {
         if (lookup == null)
             return;
-        //
-        MQuery zoomQuery = lookup.getZoomQuery();
 		// still null means the field is empty or not selected item
 		if (value == null)
 			value = -1;
-
-        //  If not already exist or exact value
-        if (zoomQuery == null || value != null)
-        {
-        	zoomQuery = new MQuery();   //  ColumnName might be changed in MTab.validateQuery
-        	String column = lookup.getColumnName();
-        	//	Check if it is a List Reference
-        	if (lookup instanceof MLookup)
-        	{
-        		int AD_Reference_ID = ((MLookup)lookup).getAD_Reference_Value_ID();
-        		if (AD_Reference_ID > 0)
-        		{
-        			MReference reference = MReference.get(AD_Reference_ID);
-        			if (reference.getValidationType().equals(MReference.VALIDATIONTYPE_ListValidation))
-        			{
-		        		column = "AD_Ref_List_ID";
-		        		value = DB.getSQLValue(null, "SELECT AD_Ref_List_ID FROM AD_Ref_List WHERE AD_Reference_ID=? AND Value=?", AD_Reference_ID, value);
-        			}
-        		}
-        	}
-        	//strip off table name, fully qualify name doesn't work when zoom into detail tab
-        	if (column.indexOf(".") > 0)
-        	{
-        		int p = column.indexOf(".");
-        		String tableName = column.substring(0, p);
-        		column = column.substring(column.indexOf(".")+1);
-        		zoomQuery.setZoomTableName(tableName);
-        		zoomQuery.setZoomColumnName(column);            	
-        	}
-        	else
-        	{
-        		zoomQuery.setZoomColumnName(column);
-        		//remove _ID to get table name
-        		zoomQuery.setZoomTableName(column.substring(0, column.length() - 3));
-        	}
-        	zoomQuery.setZoomValue(value);
-        	zoomQuery.addRestriction(column, MQuery.EQUAL, value);
-        	zoomQuery.setRecordCount(1);    //  guess
-        }
+        //
+        MQuery zoomQuery = new MQuery();   //  ColumnName might be changed in MTab.validateQuery
+		String column = lookup.getColumnName();
+		//	Check if it is a List Reference
+		if (lookup instanceof MLookup)
+		{
+			int AD_Reference_ID = ((MLookup)lookup).getAD_Reference_Value_ID();
+			if (AD_Reference_ID > 0)
+			{
+				MReference reference = MReference.get(AD_Reference_ID);
+				if (reference.getValidationType().equals(MReference.VALIDATIONTYPE_ListValidation))
+				{
+					column = "AD_Ref_List_ID";
+					value = DB.getSQLValue(null, "SELECT AD_Ref_List_ID FROM AD_Ref_List WHERE AD_Reference_ID=? AND Value=?", AD_Reference_ID, value);
+				}
+			}
+		}
+		//strip off table name, fully qualify name doesn't work when zoom into detail tab
+		if (column.indexOf(".") > 0)
+		{
+			int p = column.indexOf(".");
+			String tableName = column.substring(0, p);
+			column = column.substring(column.indexOf(".")+1);
+			zoomQuery.setZoomTableName(tableName);
+			zoomQuery.setZoomColumnName(column);
+		}
+		else
+		{
+			zoomQuery.setZoomColumnName(column);
+			//remove _ID to get table name
+			zoomQuery.setZoomTableName(column.substring(0, column.length() - 3));
+		}
+		zoomQuery.setZoomValue(value);
+		zoomQuery.addRestriction(column, MQuery.EQUAL, value);
+		zoomQuery.setRecordCount(1);    //  guess
         if (value instanceof Integer && ((Integer) value).intValue() >= 0 && zoomQuery != null && zoomQuery.getZoomTableName() != null) {
         	int tableId = MTable.getTable_ID(zoomQuery.getZoomTableName());
         	zoom(tableId, ((Integer) value).intValue(), zoomQuery, lookup.getWindowNo());
