@@ -189,7 +189,7 @@ UPDATE AD_ViewColumn SET SeqNo=160,Updated=TO_TIMESTAMP('2022-07-14 11:56:10','Y
 DROP VIEW M_InOut_Candidate_v
 ;
 
--- Jul 20, 2022, 2:21:32 PM CEST
+-- Jul 20, 2022, 4:04:11 PM CEST
 CREATE OR REPLACE VIEW M_InOut_Candidate_v(AD_Client_ID, AD_Org_ID, Created, Updated, IsActive, C_BPartner_ID, C_Order_ID, DocumentNo, DateOrdered, C_DocType_ID, POReference, Description, SalesRep_ID, M_Warehouse_ID, M_InOut_ID, TotalLines, DocSource, M_InOut_Candidate_v_ID, DeliveryRule) AS SELECT o.ad_client_id AS AD_Client_ID, o.ad_org_id AS AD_Org_ID, o.created AS Created, o.updated AS Updated, o.isactive AS IsActive, o.c_bpartner_id AS C_BPartner_ID, o.c_order_id AS C_Order_ID, o.documentno AS DocumentNo, o.dateordered AS DateOrdered, o.c_doctype_id AS C_DocType_ID, o.poreference AS POReference, o.description AS Description, o.salesrep_id AS SalesRep_ID, l.m_warehouse_id AS M_Warehouse_ID, NULL AS M_InOut_ID, sum((l.qtyordered - l.qtydelivered) * l.priceactual) AS TotalLines, 'O' AS DocSource, o.c_order_id AS M_InOut_Candidate_v_ID, o.deliveryrule AS DeliveryRule FROM c_order o
 JOIN c_orderline l ON o.c_order_id = l.c_order_id WHERE o.docstatus = 'CO' AND o.isdelivered = 'N' AND (o.c_doctype_id IN ( SELECT c_doctype.c_doctype_id
            FROM c_doctype
@@ -198,7 +198,8 @@ JOIN c_orderline l ON o.c_order_id = l.c_order_id WHERE o.docstatus = 'CO' AND o
           WHERE l.m_product_id = p.m_product_id AND p.isexcludeautodelivery = 'N'))) AND l.qtyordered <> l.qtydelivered AND (l.m_product_id IS NOT NULL OR l.c_charge_id IS NOT NULL) AND NOT (EXISTS ( SELECT 1
            FROM m_inoutline iol
              JOIN m_inout io ON iol.m_inout_id = io.m_inout_id
-          WHERE iol.c_orderline_id = l.c_orderline_id AND (io.docstatus IN ('DR', 'IN', 'IP', 'WC')))) GROUP BY o.ad_client_id, o.ad_org_id, o.c_bpartner_id, o.c_order_id, o.documentno, o.dateordered, o.c_doctype_id, o.poreference, o.description, o.salesrep_id, l.m_warehouse_id UNION  ALL SELECT rma.ad_client_id AS AD_Client_ID, rma.ad_org_id AS AD_Org_ID, rma.created AS Created, rma.updated AS Updated, rma.isactive AS IsActive, rma.c_bpartner_id AS C_BPartner_ID, rma.c_order_id AS C_Order_ID, rma.documentno AS DocumentNo, rma.created AS DateOrdered, rma.c_doctype_id AS C_DocType_ID, NULL AS POReference, NULL AS Description, NULL AS SalesRep_ID, io.m_warehouse_id AS M_Warehouse_ID, rma.inout_id AS M_InOut_ID, rma.amt AS TotalLines, 'R' AS DocSource, rma.inout_id AS M_InOut_Candidate_v_ID, NULL AS DeliveryRule FROM m_rma RMA
+          WHERE iol.c_orderline_id = l.c_orderline_id AND (io.docstatus IN ('DR', 'IN', 'IP', 'WC')))) GROUP BY o.ad_client_id, o.ad_org_id, o.c_bpartner_id, o.c_order_id, o.documentno, o.dateordered, o.c_doctype_id, o.poreference, o.description, o.salesrep_id, l.m_warehouse_id, o.created, o.updated, o.isactive, o.deliveryrule
+ UNION  ALL SELECT rma.ad_client_id AS AD_Client_ID, rma.ad_org_id AS AD_Org_ID, rma.created AS Created, rma.updated AS Updated, rma.isactive AS IsActive, rma.c_bpartner_id AS C_BPartner_ID, rma.c_order_id AS C_Order_ID, rma.documentno AS DocumentNo, rma.created AS DateOrdered, rma.c_doctype_id AS C_DocType_ID, NULL AS POReference, NULL AS Description, NULL AS SalesRep_ID, io.m_warehouse_id AS M_Warehouse_ID, rma.inout_id AS M_InOut_ID, rma.amt AS TotalLines, 'R' AS DocSource, rma.inout_id AS M_InOut_Candidate_v_ID, NULL AS DeliveryRule FROM m_rma RMA
        INNER JOIN ad_org ORG ON RMA.ad_org_id = ORG.ad_org_id
        INNER JOIN c_doctype DT ON RMA.c_doctype_id = DT.c_doctype_id
        INNER JOIN c_bpartner BP ON RMA.c_bpartner_id = BP.c_bpartner_id
@@ -583,6 +584,11 @@ INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn
 
 -- Jul 18, 2022, 11:18:48 AM CEST
 INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217383,'1a10e02e-37b3-4295-b606-9ec604819372',TO_TIMESTAMP('2022-07-18 11:18:48','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-18 11:18:48','YYYY-MM-DD HH24:MI:SS'),100,200065,'DeliveryRule','o.deliveryrule',190)
+;
+
+-- Jul 20, 2022, 4:04:06 PM CEST
+UPDATE AD_ViewComponent SET OtherClause='GROUP BY o.ad_client_id, o.ad_org_id, o.c_bpartner_id, o.c_order_id, o.documentno, o.dateordered, o.c_doctype_id, o.poreference, o.description, o.salesrep_id, l.m_warehouse_id, o.created, o.updated, o.isactive, o.deliveryrule
+',Updated=TO_TIMESTAMP('2022-07-20 16:04:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ViewComponent_ID=200065
 ;
 
 -- Jul 18, 2022, 11:19:15 AM CEST
