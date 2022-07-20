@@ -9,32 +9,32 @@ UPDATE AD_ViewComponent SET IsUnionAll='Y',Updated=TO_TIMESTAMP('2022-07-18 15:5
 ;
 
 -- Jul 18, 2022, 3:53:32 PM CEST
-INSERT INTO AD_ViewComponent (AD_Client_ID,AD_Org_ID,AD_ViewComponent_ID,AD_ViewComponent_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,SeqNo,WhereClause,FromClause,IsUnionAll) VALUES (0,0,200220,'3a3a0b11-e939-4611-b1e8-fc9d6bdd0f04',TO_TIMESTAMP('2022-07-18 15:53:31','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','c_invoice_candidate_v-020',TO_TIMESTAMP('2022-07-18 15:53:31','YYYY-MM-DD HH24:MI:SS'),100,200292,20,'WHERE  rma.docstatus = ''CO''::bpchar
-AND    dt.docbasetype = ''SOO''::bpchar
+INSERT INTO AD_ViewComponent (AD_Client_ID,AD_Org_ID,AD_ViewComponent_ID,AD_ViewComponent_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,SeqNo,WhereClause,FromClause,IsUnionAll) VALUES (0,0,200220,'3a3a0b11-e939-4611-b1e8-fc9d6bdd0f04',TO_TIMESTAMP('2022-07-18 15:53:31','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','c_invoice_candidate_v-020',TO_TIMESTAMP('2022-07-18 15:53:31','YYYY-MM-DD HH24:MI:SS'),100,200292,20,'WHERE  rma.docstatus = ''CO''
+AND    dt.docbasetype = ''SOO''
 AND    NOT (
               EXISTS
               (
                      SELECT 1
-                     FROM   adempiere.c_invoice i
+                     FROM   c_invoice i
                      WHERE  i.m_rma_id = rma.m_rma_id
                      AND    (
-                                   i.docstatus = ANY (array[''IP''::bpchar, ''CO''::bpchar, ''CL''::bpchar]))))
+                                   i.docstatus = ANY (array[''IP'', ''CO'', ''CL'']))))
 AND    (
               EXISTS
               (
                      SELECT 1
-                     FROM   adempiere.c_invoiceline il
-                     JOIN   adempiere.m_inoutline iol ON     il.m_inoutline_id = iol.m_inoutline_id
-                     JOIN   adempiere.c_invoice i ON     i.c_invoice_id = il.c_invoice_id
+                     FROM   c_invoiceline il
+                     JOIN   m_inoutline iol ON     il.m_inoutline_id = iol.m_inoutline_id
+                     JOIN   c_invoice i ON     i.c_invoice_id = il.c_invoice_id
                      WHERE  (
-                                   i.docstatus = ANY (array[''CO''::bpchar, ''CL''::bpchar]) AND EXISTS (SELECT 1
-                                      FROM   adempiere.m_rmaline rl
+                                   i.docstatus = ANY (array[''CO'', ''CL'']) AND EXISTS (SELECT 1
+                                      FROM   m_rmaline rl
                                       WHERE  rl.m_rma_id = rma.m_rma_id
                                              AND iol.m_inoutline_id =
                                                  rl.m_inoutline_id
                                              AND rl.m_inoutline_id IS NOT NULL))
-                     ));','FROM   adempiere.m_rma rma
-JOIN adempiere.c_doctype dt ON rma.c_doctype_id = dt.c_doctype_id
+                     ));','FROM   m_rma rma
+JOIN c_doctype dt ON rma.c_doctype_id = dt.c_doctype_id
 ','Y')
 ;
 
@@ -87,7 +87,7 @@ INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn
 ;
 
 -- Jul 18, 2022, 4:05:14 PM CEST
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217396,'b34664fd-2289-4224-8677-81f19015e40c',TO_TIMESTAMP('2022-07-18 16:05:13','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-18 16:05:13','YYYY-MM-DD HH24:MI:SS'),100,200220,'DocSource','''R''::text',130)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217396,'b34664fd-2289-4224-8677-81f19015e40c',TO_TIMESTAMP('2022-07-18 16:05:13','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-18 16:05:13','YYYY-MM-DD HH24:MI:SS'),100,200220,'DocSource','''R''',130)
 ;
 
 -- Jul 18, 2022, 4:05:39 PM CEST
@@ -95,7 +95,7 @@ INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn
 ;
 
 -- Jul 18, 2022, 4:07:01 PM CEST
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217398,'036da593-6991-4156-8247-51733795ab6d',TO_TIMESTAMP('2022-07-18 16:07:01','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-18 16:07:01','YYYY-MM-DD HH24:MI:SS'),100,200220,'InvoiceRule','NULL::text',150)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217398,'036da593-6991-4156-8247-51733795ab6d',TO_TIMESTAMP('2022-07-18 16:07:01','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-18 16:07:01','YYYY-MM-DD HH24:MI:SS'),100,200220,'InvoiceRule','NULL',150)
 ;
 
 -- Jul 18, 2022, 4:08:09 PM CEST
@@ -111,7 +111,7 @@ INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn
 ;
 
 -- Jul 18, 2022, 4:09:26 PM CEST
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217402,'6b27ea88-9816-4bcf-ae2f-98a9025827c9',TO_TIMESTAMP('2022-07-18 16:09:26','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-18 16:09:26','YYYY-MM-DD HH24:MI:SS'),100,200019,'M_InOut_ID','NULL::numeric',80)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217402,'6b27ea88-9816-4bcf-ae2f-98a9025827c9',TO_TIMESTAMP('2022-07-18 16:09:26','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-18 16:09:26','YYYY-MM-DD HH24:MI:SS'),100,200019,'M_InOut_ID','NULL',80)
 ;
 
 -- Jul 18, 2022, 4:09:51 PM CEST
@@ -119,7 +119,7 @@ INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn
 ;
 
 -- Jul 18, 2022, 4:10:25 PM CEST
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217404,'5d32876a-2925-4889-8f29-6499d4881fa9',TO_TIMESTAMP('2022-07-18 16:10:25','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-18 16:10:25','YYYY-MM-DD HH24:MI:SS'),100,200019,'DocSource','''O''::text',140)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217404,'5d32876a-2925-4889-8f29-6499d4881fa9',TO_TIMESTAMP('2022-07-18 16:10:25','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-18 16:10:25','YYYY-MM-DD HH24:MI:SS'),100,200019,'DocSource','''O''',140)
 ;
 
 -- Jul 18, 2022, 4:10:50 PM CEST
@@ -155,39 +155,39 @@ DROP VIEW C_Invoice_Candidate_v
 ;
 
 -- Jul 19, 2022, 10:07:02 AM CEST
-CREATE OR REPLACE VIEW C_Invoice_Candidate_v(AD_Client_ID, AD_Org_ID, Created, Updated, IsActive, C_BPartner_ID, C_Order_ID, M_InOut_ID, DocumentNo, DateOrdered, C_DocType_ID, InvoiceRule, TotalLines, DocSource, C_Invoice_Candidate_v_ID) AS SELECT o.ad_client_id AS AD_Client_ID, o.ad_org_id AS AD_Org_ID, o.created AS Created, o.updated AS Updated, o.isactive AS IsActive, o.c_bpartner_id AS C_BPartner_ID, o.c_order_id AS C_Order_ID, NULL::numeric AS M_InOut_ID, o.documentno AS DocumentNo, o.dateordered AS DateOrdered, o.c_doctype_id AS C_DocType_ID, o.invoicerule AS InvoiceRule, sum((l.qtyordered - l.qtyinvoiced) * l.priceactual) AS TotalLines, 'O'::text AS DocSource, o.c_order_id AS C_Invoice_Candidate_v_ID FROM c_order o
+CREATE OR REPLACE VIEW C_Invoice_Candidate_v(AD_Client_ID, AD_Org_ID, Created, Updated, IsActive, C_BPartner_ID, C_Order_ID, M_InOut_ID, DocumentNo, DateOrdered, C_DocType_ID, InvoiceRule, TotalLines, DocSource, C_Invoice_Candidate_v_ID) AS SELECT o.ad_client_id AS AD_Client_ID, o.ad_org_id AS AD_Org_ID, o.created AS Created, o.updated AS Updated, o.isactive AS IsActive, o.c_bpartner_id AS C_BPartner_ID, o.c_order_id AS C_Order_ID, NULL AS M_InOut_ID, o.documentno AS DocumentNo, o.dateordered AS DateOrdered, o.c_doctype_id AS C_DocType_ID, o.invoicerule AS InvoiceRule, sum((l.qtyordered - l.qtyinvoiced) * l.priceactual) AS TotalLines, 'O' AS DocSource, o.c_order_id AS C_Invoice_Candidate_v_ID FROM c_order o
 JOIN c_orderline l ON o.c_order_id = l.c_order_id
 JOIN c_bpartner bp ON o.c_bpartner_id = bp.c_bpartner_id
 LEFT JOIN c_invoiceschedule si ON bp.c_invoiceschedule_id = si.c_invoiceschedule_id WHERE (o.docstatus IN ('CO', 'CL', 'IP')) AND (o.c_doctype_id IN ( SELECT c_doctype.c_doctype_id
            FROM c_doctype
           WHERE c_doctype.docbasetype = 'SOO' AND (c_doctype.docsubtypeso NOT IN ('ON', 'OB', 'WR')))) AND l.qtyordered <> l.qtyinvoiced AND (o.invoicerule = 'I' OR o.invoicerule = 'O' AND NOT (EXISTS ( SELECT 1
            FROM c_orderline zz1
-          WHERE zz1.c_order_id = o.c_order_id AND zz1.qtyordered <> zz1.qtydelivered)) OR o.invoicerule = 'D' AND l.qtyinvoiced <> l.qtydelivered OR o.invoicerule = 'S' AND bp.c_invoiceschedule_id IS NULL OR o.invoicerule = 'S' AND bp.c_invoiceschedule_id IS NOT NULL AND (si.invoicefrequency IS NULL OR si.invoicefrequency = 'D' OR si.invoicefrequency = 'W' OR si.invoicefrequency = 'T' AND (trunc(o.dateordered) <= (firstof(getdate(), 'MM') + si.invoicedaycutoff - 1) AND trunc(getdate()) >= (firstof(o.dateordered, 'MM') + si.invoiceday - 1) OR trunc(o.dateordered) <= (firstof(getdate(), 'MM') + si.invoicedaycutoff + 14) AND trunc(getdate()) >= (firstof(o.dateordered, 'MM') + si.invoiceday + 14)) OR si.invoicefrequency = 'M' AND trunc(o.dateordered) <= (firstof(getdate(), 'MM') + si.invoicedaycutoff - 1) AND trunc(getdate()) >= (firstof(o.dateordered, 'MM') + si.invoiceday - 1))) GROUP BY o.ad_client_id, o.ad_org_id, o.c_bpartner_id, o.c_order_id, o.documentno, o.dateordered, o.c_doctype_id UNION  ALL SELECT rma.ad_client_id AS AD_Client_ID, rma.ad_org_id AS AD_Org_ID, rma.created AS Created, rma.updated AS Updated, rma.isactive AS IsActive, rma.c_bpartner_id AS C_BPartner_ID, rma.c_order_id AS C_Order_ID, rma.inout_id AS M_InOut_ID, rma.documentno AS DocumentNo, rma.created AS DateOrdered, rma.c_doctype_id AS C_DocType_ID, NULL::text AS InvoiceRule, rma.amt AS TotalLines, 'R'::text AS DocSource, rma.inout_id AS C_Invoice_Candidate_v_ID FROM   adempiere.m_rma rma
-JOIN adempiere.c_doctype dt ON rma.c_doctype_id = dt.c_doctype_id
- WHERE  rma.docstatus = 'CO'::bpchar
-AND    dt.docbasetype = 'SOO'::bpchar
+          WHERE zz1.c_order_id = o.c_order_id AND zz1.qtyordered <> zz1.qtydelivered)) OR o.invoicerule = 'D' AND l.qtyinvoiced <> l.qtydelivered OR o.invoicerule = 'S' AND bp.c_invoiceschedule_id IS NULL OR o.invoicerule = 'S' AND bp.c_invoiceschedule_id IS NOT NULL AND (si.invoicefrequency IS NULL OR si.invoicefrequency = 'D' OR si.invoicefrequency = 'W' OR si.invoicefrequency = 'T' AND (trunc(o.dateordered) <= (firstof(getdate(), 'MM') + si.invoicedaycutoff - 1) AND trunc(getdate()) >= (firstof(o.dateordered, 'MM') + si.invoiceday - 1) OR trunc(o.dateordered) <= (firstof(getdate(), 'MM') + si.invoicedaycutoff + 14) AND trunc(getdate()) >= (firstof(o.dateordered, 'MM') + si.invoiceday + 14)) OR si.invoicefrequency = 'M' AND trunc(o.dateordered) <= (firstof(getdate(), 'MM') + si.invoicedaycutoff - 1) AND trunc(getdate()) >= (firstof(o.dateordered, 'MM') + si.invoiceday - 1))) GROUP BY o.ad_client_id, o.ad_org_id, o.c_bpartner_id, o.c_order_id, o.documentno, o.dateordered, o.c_doctype_id UNION  ALL SELECT rma.ad_client_id AS AD_Client_ID, rma.ad_org_id AS AD_Org_ID, rma.created AS Created, rma.updated AS Updated, rma.isactive AS IsActive, rma.c_bpartner_id AS C_BPartner_ID, rma.c_order_id AS C_Order_ID, rma.inout_id AS M_InOut_ID, rma.documentno AS DocumentNo, rma.created AS DateOrdered, rma.c_doctype_id AS C_DocType_ID, NULL AS InvoiceRule, rma.amt AS TotalLines, 'R' AS DocSource, rma.inout_id AS C_Invoice_Candidate_v_ID FROM   m_rma rma
+JOIN c_doctype dt ON rma.c_doctype_id = dt.c_doctype_id
+ WHERE  rma.docstatus = 'CO'
+AND    dt.docbasetype = 'SOO'
 AND    NOT (
               EXISTS
               (
                      SELECT 1
-                     FROM   adempiere.c_invoice i
+                     FROM   c_invoice i
                      WHERE  i.m_rma_id = rma.m_rma_id
                      AND    (
-                                   i.docstatus = ANY (array['IP'::bpchar, 'CO'::bpchar, 'CL'::bpchar]))))
+                                   i.docstatus = ANY (array['IP', 'CO', 'CL']))))
 AND    (
               EXISTS
               (
                      SELECT 1
-                     FROM   adempiere.c_invoiceline il
-                     JOIN   adempiere.m_inoutline iol ON     il.m_inoutline_id = iol.m_inoutline_id
-                     JOIN   adempiere.c_invoice i ON     i.c_invoice_id = il.c_invoice_id
+                     FROM   c_invoiceline il
+                     JOIN   m_inoutline iol ON     il.m_inoutline_id = iol.m_inoutline_id
+                     JOIN   c_invoice i ON     i.c_invoice_id = il.c_invoice_id
                      WHERE  (
-                                   i.docstatus = ANY (array['CO'::bpchar, 'CL'::bpchar] AND EXISTS (SELECT 1
-                                      FROM   adempiere.m_rmaline rl
+                                   i.docstatus = ANY (array['CO', 'CL']) AND EXISTS (SELECT 1
+                                      FROM   m_rmaline rl
                                       WHERE  rl.m_rma_id = rma.m_rma_id
                                              AND iol.m_inoutline_id =
                                                  rl.m_inoutline_id
-                                             AND rl.m_inoutline_id IS NOT NULL)))
+                                             AND rl.m_inoutline_id IS NOT NULL))
                      ));
 ;
 
@@ -315,7 +315,7 @@ UPDATE AD_InfoWindow SET IsValid='Y',Updated=TO_DATE('2014-06-05 13:38:31','YYYY
 ;
 
 -- Jun 5, 2014 1:39:03 PM CEST
-INSERT INTO AD_Menu (EntityType,Created,UpdatedBy,IsSummary,AD_Menu_ID,IsReadOnly,IsCentrallyMaintained,Name,Description,AD_Menu_UU,Action,AD_InfoWindow_ID,IsSOTrx,IsActive,CreatedBy,Updated,AD_Client_ID,AD_Org_ID) VALUES ('U',TO_DATE('2014-06-05 13:39:02','YYYY-MM-DD HH24:MI:SS'),100,'N',200083,'N','Y','Generate Invoices (manual)','Select and generate invoices Info Window','56b27cac-0a4f-4531-8b56-96a7e5967e31','I',200011,'N','Y',100,TO_DATE('2014-06-05 13:39:02','YYYY-MM-DD HH24:MI:SS'),0,0)
+INSERT INTO AD_Menu (EntityType,Created,UpdatedBy,IsSummary,AD_Menu_ID,IsReadOnly,IsCentrallyMaintained,Name,Description,AD_Menu_UU,Action,AD_InfoWindow_ID,IsSOTrx,IsActive,CreatedBy,Updated,AD_Client_ID,AD_Org_ID) VALUES ('D',TO_DATE('2014-06-05 13:39:02','YYYY-MM-DD HH24:MI:SS'),100,'N',200083,'N','Y','Generate Invoices (manual)','Select and generate invoices Info Window','56b27cac-0a4f-4531-8b56-96a7e5967e31','I',200011,'N','Y',100,TO_DATE('2014-06-05 13:39:02','YYYY-MM-DD HH24:MI:SS'),0,0)
 ;
 
 -- Jun 5, 2014 1:39:03 PM CEST
