@@ -35,7 +35,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
@@ -49,6 +48,7 @@ import org.compiere.model.MReportView;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PrintInfo;
+import org.compiere.model.Query;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.CLogger;
@@ -82,9 +82,6 @@ public class DrillReportCtl {
 
 	/** Drill Tables Map */
 	private KeyNamePair[] drillTables;
-
-	/** Drill Table PrintFormats */
-	private HashMap<Integer, KeyNamePair[]> drillTablePrintFormatMap = new HashMap<>();
 
 	/** Drill Process Map */
 	private KeyNamePair[] drillProcessList;
@@ -122,15 +119,6 @@ public class DrillReportCtl {
 	 */
 	public KeyNamePair[] getDrillTables() {
 		return this.drillTables;
-	}
-
-	/**
-	 * Return Array of PrintFormat KeynamePairs
-	 * @param AD_Table_ID
-	 * @return KeyNamePair Array or Null if not found
-	 */
-	public KeyNamePair[] getDrillTablePrintFormat(int AD_Table_ID) {
-		return this.drillTablePrintFormatMap.get(AD_Table_ID);
 	}
 
 	/**
@@ -182,18 +170,6 @@ public class DrillReportCtl {
 	}
 
 	/**
-	 * Init Drill Table Maps for Window
-	 */
-	public void initDrillTableMaps() {
-
-		// Get Drill Table Map
-		initDrillTableMap();
-
-		// Init Drill Print Format Map
-		initDrillTablePrintFormatMap();
-	}
-
-	/**
 	 * Initialize Drill Process Rules Map
 	 */
 	private void initProcessDrillRuleMap() {
@@ -234,7 +210,7 @@ public class DrillReportCtl {
 	/**
 	 * Initialize Drill Table Map
 	 */
-	private void initDrillTableMap() {
+	public void initDrillTableMap() {
 
 		ArrayList<KeyNamePair> drillTableList = new ArrayList<>();
 		String sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(e.PO_PrintName,e.PrintName) "
@@ -289,24 +265,6 @@ public class DrillReportCtl {
 		}
 
 		this.drillTables = drillTableList.toArray(new KeyNamePair[drillTableList.size()]);
-	}
-
-	/**
-	 * Initialize Print Formats for Table Name
-	 */
-	private void initDrillTablePrintFormatMap() {
-
-		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), this.m_WindowNo, "_WinInfo_AD_Window_ID", true);
-		if (AD_Window_ID == 0)
-			AD_Window_ID = Env.getZoomWindowID(m_Query);
-
-
-		for( KeyNamePair drillTable : drillTables ) {
-			//
-			List<KeyNamePair> m_list = MPrintFormat.getAccessiblePrintFormats(drillTable.getKey(), AD_Window_ID, null, true);
-
-			this.drillTablePrintFormatMap.put(drillTable.getKey(), m_list.toArray(new KeyNamePair[m_list.size()]));
-		}
 	}
 
 	/**
@@ -398,9 +356,15 @@ public class DrillReportCtl {
 	 * 	Launch Report
 	 * 	@param pf print format
 	 */
-	public void launchTableDrillReport (int ad_PrintFormat_ID)
+	public void launchTableDrillReport (int ad_PrintFormat_ID, String tableName)
 	{
-		MPrintFormat pf = MPrintFormat.get(ad_PrintFormat_ID);
+		MPrintFormat pf = null;
+		if(ad_PrintFormat_ID == 0) {
+			int AD_Table_ID = new Query(Env.getCtx(), MTable.Table_Name, " Name = ? ", null).setParameters(tableName).firstId();
+			pf = MPrintFormat.createFromTable(Env.getCtx(), AD_Table_ID > 0 ? AD_Table_ID : m_AD_Table_ID);
+		}
+		else
+			pf = MPrintFormat.get(ad_PrintFormat_ID);
 		int Record_ID = 0;
 		if (m_Query.getRestrictionCount() == 1) {
 			if (m_Query.getColumnName(0).equals(m_Query.getTableName()+"_ID")) {
@@ -781,14 +745,6 @@ public class DrillReportCtl {
 	 */
 	public KeyNamePair[] getDrillProcessList() {
 		return drillProcessList;
-	}
-
-	/**
-	 * Get Drill Table Print Format Map
-	 * @return
-	 */
-	public HashMap<Integer, KeyNamePair[]> getDrillTablePrintFormatMap() {
-		return drillTablePrintFormatMap;
 	}
 
 	/**

@@ -85,6 +85,8 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	private static final String DRILL_REPORT_PRINTFORMAT_ID_NAME = "AD_PrintFormat_ID";
 
 	private static final String DRILL_PROCESS_RULE_ID_NAME = "AD_Process_DrillRule_ID";
+	
+	private static final String DRILL_REPORT_TABLE_NAME = "TableName";
 
 	private DrillReportCtl drillReportCtl;
 	private String winpref;
@@ -318,7 +320,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		a.appendChild(new Text(".."));
 		header.appendChild(a);
 
-		KeyNamePair[] drillPrintFormats = drillPrintFormatMap.get(drillTable.getKey());
+		KeyNamePair[] drillPrintFormats = drillPrintFormatMap != null ? drillPrintFormatMap.get(drillTable.getKey()) : new KeyNamePair[]{findTablePrintFormat(drillTable)};
 		for (int j = 0; j < drillPrintFormats.length; j++)
 		{
 			KeyNamePair drillPrintFormat = drillPrintFormats[j];
@@ -326,7 +328,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 			KeyNamePair[] printFormats = isDrillProcessRule ? drillReportCtl.getDrillProcessRulesPrintFormatMap(drillPrintFormat.getKey()) : new KeyNamePair[] {drillPrintFormat} ;
 
 			// create new Print Format
-			if (printFormats.length <= 0)
+			if ((printFormats.length <= 0) && isDrillProcessRule)
 			{
 				KeyNamePair[] pfArray = {null};
 				MPrintFormat pf = null;
@@ -362,11 +364,11 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 				if (hdr != null && hdr.length() > 0)
 				{
 					// field
-					if (printFormat.getKey() <= 0) {
-						table.appendChild(getPrintFormatHeader(printFormat, isDrillProcessRule? drillPrintFormat : null));
+					if ((printFormat.getKey() <= 0) && isDrillProcessRule) {
+						table.appendChild(getPrintFormatHeader(printFormat, drillPrintFormat));
 
 					} else {
-						table.appendChild(getPrintFormatBox(printFormat, tabIndex, j, tabIndex, isDrillProcessRule? drillPrintFormat : null, printFormats.length == 1));
+						table.appendChild(getPrintFormatBox(printFormat, tabIndex, j, tabIndex, null, printFormats.length == 1));
 					}
 				}
 			}
@@ -375,6 +377,12 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		return table;
 	}
 
+	
+	private KeyNamePair findTablePrintFormat(KeyNamePair drillTable) {
+		
+		Integer printFormatID = new Query(Env.getCtx(), MPrintFormat.Table_Name, " AD_Table_ID = ? ", null).setParameters(drillTable.getKey()).firstId();
+		return new KeyNamePair((printFormatID != null && printFormatID > 0) ? printFormatID : 0, drillTable.getName());
+	}
 
 
 	private Table getTablesBox(int tabIndex, KeyNamePair[] drillTables)
@@ -477,10 +485,10 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		a.appendChild(new Text("[" + Msg.getMsg(Env.getCtx(), "Run") + "]"));
 		a.addEventListener(Events.ON_CLICK, this);
 		a.setAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME, drillPrintFormat.getKey());
-
-		if(drillTable != null)
+		a.setAttribute(DRILL_REPORT_TABLE_NAME, drillPrintFormat.getName());
+		if(drillTable != null) {
 			a.setAttribute(DRILL_PROCESS_RULE_ID_NAME, drillTable.getKey());
-
+		}
 		td.appendChild(a);
 
 		String description = "";
@@ -513,8 +521,8 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if(event.getTarget().equals(tableTab) && !tablesLoaded) {
-			drillReportCtl.initDrillTableMaps();
-			tabPanel.appendChild(getTabContent(2, drillReportCtl.getDrillTables(), drillReportCtl.getDrillTablePrintFormatMap(), false));
+			drillReportCtl.initDrillTableMap();
+			tabPanel.appendChild(getTabContent(2, drillReportCtl.getDrillTables(), null, false));
 			tablesLoaded = true;
 		}
 		if(event.getTarget().getAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME) != null) {
@@ -537,7 +545,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 				}
 				processModalDialog.focus();
 			} else {
-				drillReportCtl.launchTableDrillReport((int) event.getTarget().getAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME));
+				drillReportCtl.launchTableDrillReport((int) event.getTarget().getAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME), (String) event.getTarget().getAttribute(DRILL_REPORT_TABLE_NAME));
 				this.onClose();
 			}
 
