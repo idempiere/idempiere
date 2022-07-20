@@ -42,7 +42,7 @@ import org.compiere.util.Trx;
 
 /**
  * Generate Shipment (manual) controller class
- * 
+ * @deprecated ticket IDEMPIERE-1963 replaced this with an Info Window
  */
 public class InOutGen extends GenForm
 {
