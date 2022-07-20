@@ -16,22 +16,21 @@ UPDATE AD_ViewComponent SET IsUnionAll='Y',Updated=TO_TIMESTAMP('2022-07-14 11:2
 INSERT INTO AD_ViewComponent (AD_Client_ID,AD_Org_ID,AD_ViewComponent_ID,AD_ViewComponent_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,SeqNo,WhereClause,FromClause,IsUnionAll) VALUES (0,0,200219,'7eee5607-2762-4c83-8682-69ada95df101',TO_TIMESTAMP('2022-07-14 11:30:32','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','m_inout_candidate_v-020',TO_TIMESTAMP('2022-07-14 11:30:32','YYYY-MM-DD HH24:MI:SS'),100,200309,20,'WHERE  RMA.docstatus = ''CO''
        AND DT.docbasetype = ''POO''
        AND EXISTS (SELECT 1
-                   FROM   adempiere.m_rma R
-                          INNER JOIN adempiere.m_rmaline RL
+                   FROM   m_rma R
+                          INNER JOIN m_rmaline RL
                                   ON R.m_rma_id = RL.m_rma_id
                    WHERE  R.m_rma_id = RMA.m_rma_id
                           AND RL.isactive = ''Y''
                           AND RL.m_inoutline_id > 0
                           AND RL.qtydelivered < RL.qty)
        AND NOT EXISTS (SELECT 1
-                       FROM   adempiere.m_inout OIO
+                       FROM   m_inout OIO
                        WHERE  OIO.m_rma_id = RMA.m_rma_id
-                              AND OIO.docstatus IN ( ''IP'', ''CO'', ''CL'' ))','FROM adempiere.m_rma RMA
-       INNER JOIN adempiere.ad_org ORG ON RMA.ad_org_id = ORG.ad_org_id
-       INNER JOIN adempiere.c_doctype DT ON RMA.c_doctype_id = DT.c_doctype_id
-       INNER JOIN adempiere.c_bpartner BP ON RMA.c_bpartner_id = BP.c_bpartner_id
-       INNER JOIN adempiere.m_inout IO ON RMA.inout_id = IO.m_inout_id
-	   JOIN adempiere.c_order o ON rma.c_order_id = o.c_order_id','Y')
+                              AND OIO.docstatus IN ( ''IP'', ''CO'', ''CL'' ))','FROM m_rma RMA
+       INNER JOIN ad_org ORG ON RMA.ad_org_id = ORG.ad_org_id
+       INNER JOIN c_doctype DT ON RMA.c_doctype_id = DT.c_doctype_id
+       INNER JOIN c_bpartner BP ON RMA.c_bpartner_id = BP.c_bpartner_id
+       INNER JOIN m_inout IO ON RMA.inout_id = IO.m_inout_id','Y')
 ;
 
 -- Jul 14, 2022, 11:32:37 AM CEST
@@ -75,15 +74,15 @@ INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn
 ;
 
 -- Jul 14, 2022, 11:35:30 AM CEST
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217366,'0d328714-fcc1-470b-83cf-acda74a0aa65',TO_TIMESTAMP('2022-07-14 11:35:30','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:35:30','YYYY-MM-DD HH24:MI:SS'),100,200219,'POReference','NULL::text',110)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217366,'0d328714-fcc1-470b-83cf-acda74a0aa65',TO_TIMESTAMP('2022-07-14 11:35:30','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:35:30','YYYY-MM-DD HH24:MI:SS'),100,200219,'POReference','NULL',110)
 ;
 
 -- Jul 14, 2022, 11:35:46 AM CEST
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217367,'6c14e96c-a531-48d8-a3e8-6126c0b98970',TO_TIMESTAMP('2022-07-14 11:35:46','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:35:46','YYYY-MM-DD HH24:MI:SS'),100,200219,'Description','NULL::text',120)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217367,'6c14e96c-a531-48d8-a3e8-6126c0b98970',TO_TIMESTAMP('2022-07-14 11:35:46','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:35:46','YYYY-MM-DD HH24:MI:SS'),100,200219,'Description','NULL',120)
 ;
 
 -- Jul 14, 2022, 11:36:13 AM CEST
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217368,'dd2c6e39-1087-4afd-adfa-28a35321cbd5',TO_TIMESTAMP('2022-07-14 11:36:13','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:36:13','YYYY-MM-DD HH24:MI:SS'),100,200219,'SalesRep_ID','NULL::numeric',130)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217368,'dd2c6e39-1087-4afd-adfa-28a35321cbd5',TO_TIMESTAMP('2022-07-14 11:36:13','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:36:13','YYYY-MM-DD HH24:MI:SS'),100,200219,'SalesRep_ID','NULL',130)
 ;
 
 -- Jul 14, 2022, 11:36:35 AM CEST
@@ -99,7 +98,7 @@ INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn
 ;
 
 -- Jul 14, 2022, 11:38:08 AM CEST
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217372,'ce0cf5ba-e39b-4df7-85ae-7b81872ced45',TO_TIMESTAMP('2022-07-14 11:38:08','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:38:08','YYYY-MM-DD HH24:MI:SS'),100,200219,'DocSource','''R''::text',170)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217372,'ce0cf5ba-e39b-4df7-85ae-7b81872ced45',TO_TIMESTAMP('2022-07-14 11:38:08','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:38:08','YYYY-MM-DD HH24:MI:SS'),100,200219,'DocSource','''R''',170)
 ;
 
 -- Jul 14, 2022, 11:39:10 AM CEST
@@ -119,11 +118,11 @@ INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn
 ;
 
 -- Jul 14, 2022, 11:47:37 AM CEST
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217377,'34bac1c8-b988-40c7-ac40-6ac410efc342',TO_TIMESTAMP('2022-07-14 11:47:37','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:47:37','YYYY-MM-DD HH24:MI:SS'),100,200065,'M_InOut_ID','NULL::numeric',160)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217377,'34bac1c8-b988-40c7-ac40-6ac410efc342',TO_TIMESTAMP('2022-07-14 11:47:37','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:47:37','YYYY-MM-DD HH24:MI:SS'),100,200065,'M_InOut_ID','NULL',160)
 ;
 
 -- Jul 14, 2022, 11:48:20 AM CEST
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217378,'c5d16738-b415-4263-be3a-4940e20a7109',TO_TIMESTAMP('2022-07-14 11:48:19','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:48:19','YYYY-MM-DD HH24:MI:SS'),100,200065,'DocSource','''O''::text',170)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217378,'c5d16738-b415-4263-be3a-4940e20a7109',TO_TIMESTAMP('2022-07-14 11:48:19','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:48:19','YYYY-MM-DD HH24:MI:SS'),100,200065,'DocSource','''O''',170)
 ;
 
 -- Jul 14, 2022, 11:48:53 AM CEST
@@ -190,8 +189,8 @@ UPDATE AD_ViewColumn SET SeqNo=160,Updated=TO_TIMESTAMP('2022-07-14 11:56:10','Y
 DROP VIEW M_InOut_Candidate_v
 ;
 
--- Jul 14, 2022, 12:01:22 PM CEST
-CREATE OR REPLACE VIEW M_InOut_Candidate_v(AD_Client_ID, AD_Org_ID, Created, Updated, IsActive, C_BPartner_ID, C_Order_ID, DocumentNo, DateOrdered, C_DocType_ID, POReference, Description, SalesRep_ID, M_Warehouse_ID, M_InOut_ID, TotalLines, DocSource, M_InOut_Candidate_v_ID, DeliveryRule) AS SELECT o.ad_client_id AS AD_Client_ID, o.ad_org_id AS AD_Org_ID, o.created AS Created, o.updated AS Updated, o.isactive AS IsActive, o.c_bpartner_id AS C_BPartner_ID, o.c_order_id AS C_Order_ID, o.documentno AS DocumentNo, o.dateordered AS DateOrdered, o.c_doctype_id AS C_DocType_ID, o.poreference AS POReference, o.description AS Description, o.salesrep_id AS SalesRep_ID, l.m_warehouse_id AS M_Warehouse_ID, NULL::numeric AS M_InOut_ID, sum((l.qtyordered - l.qtydelivered) * l.priceactual) AS TotalLines, 'O'::text AS DocSource, o.c_order_id AS M_InOut_Candidate_v_ID, o.deliveryrule AS DeliveryRule FROM c_order o
+-- Jul 20, 2022, 2:21:32 PM CEST
+CREATE OR REPLACE VIEW M_InOut_Candidate_v(AD_Client_ID, AD_Org_ID, Created, Updated, IsActive, C_BPartner_ID, C_Order_ID, DocumentNo, DateOrdered, C_DocType_ID, POReference, Description, SalesRep_ID, M_Warehouse_ID, M_InOut_ID, TotalLines, DocSource, M_InOut_Candidate_v_ID, DeliveryRule) AS SELECT o.ad_client_id AS AD_Client_ID, o.ad_org_id AS AD_Org_ID, o.created AS Created, o.updated AS Updated, o.isactive AS IsActive, o.c_bpartner_id AS C_BPartner_ID, o.c_order_id AS C_Order_ID, o.documentno AS DocumentNo, o.dateordered AS DateOrdered, o.c_doctype_id AS C_DocType_ID, o.poreference AS POReference, o.description AS Description, o.salesrep_id AS SalesRep_ID, l.m_warehouse_id AS M_Warehouse_ID, NULL AS M_InOut_ID, sum((l.qtyordered - l.qtydelivered) * l.priceactual) AS TotalLines, 'O' AS DocSource, o.c_order_id AS M_InOut_Candidate_v_ID, o.deliveryrule AS DeliveryRule FROM c_order o
 JOIN c_orderline l ON o.c_order_id = l.c_order_id WHERE o.docstatus = 'CO' AND o.isdelivered = 'N' AND (o.c_doctype_id IN ( SELECT c_doctype.c_doctype_id
            FROM c_doctype
           WHERE c_doctype.docbasetype = 'SOO' AND (c_doctype.docsubtypeso NOT IN ('ON', 'OB', 'WR')))) AND o.deliveryrule <> 'M' AND (l.m_product_id IS NULL OR (EXISTS ( SELECT 1
@@ -199,22 +198,22 @@ JOIN c_orderline l ON o.c_order_id = l.c_order_id WHERE o.docstatus = 'CO' AND o
           WHERE l.m_product_id = p.m_product_id AND p.isexcludeautodelivery = 'N'))) AND l.qtyordered <> l.qtydelivered AND (l.m_product_id IS NOT NULL OR l.c_charge_id IS NOT NULL) AND NOT (EXISTS ( SELECT 1
            FROM m_inoutline iol
              JOIN m_inout io ON iol.m_inout_id = io.m_inout_id
-          WHERE iol.c_orderline_id = l.c_orderline_id AND (io.docstatus IN ('DR', 'IN', 'IP', 'WC')))) GROUP BY o.ad_client_id, o.ad_org_id, o.c_bpartner_id, o.c_order_id, o.documentno, o.dateordered, o.c_doctype_id, o.poreference, o.description, o.salesrep_id, l.m_warehouse_id UNION  ALL SELECT rma.ad_client_id AS AD_Client_ID, rma.ad_org_id AS AD_Org_ID, rma.created AS Created, rma.updated AS Updated, rma.isactive AS IsActive, rma.c_bpartner_id AS C_BPartner_ID, rma.c_order_id AS C_Order_ID, rma.documentno AS DocumentNo, rma.created AS DateOrdered, rma.c_doctype_id AS C_DocType_ID, NULL::text AS POReference, NULL::text AS Description, NULL::numeric AS SalesRep_ID, io.m_warehouse_id AS M_Warehouse_ID, rma.inout_id AS M_InOut_ID, rma.amt AS TotalLines, 'R'::text AS DocSource, rma.inout_id AS M_InOut_Candidate_v_ID, NULL::text AS DeliveryRule FROM adempiere.m_rma RMA
-       INNER JOIN adempiere.ad_org ORG ON RMA.ad_org_id = ORG.ad_org_id
-       INNER JOIN adempiere.c_doctype DT ON RMA.c_doctype_id = DT.c_doctype_id
-       INNER JOIN adempiere.c_bpartner BP ON RMA.c_bpartner_id = BP.c_bpartner_id
-       INNER JOIN adempiere.m_inout IO ON RMA.inout_id = IO.m_inout_id WHERE  RMA.docstatus = 'CO'
+          WHERE iol.c_orderline_id = l.c_orderline_id AND (io.docstatus IN ('DR', 'IN', 'IP', 'WC')))) GROUP BY o.ad_client_id, o.ad_org_id, o.c_bpartner_id, o.c_order_id, o.documentno, o.dateordered, o.c_doctype_id, o.poreference, o.description, o.salesrep_id, l.m_warehouse_id UNION  ALL SELECT rma.ad_client_id AS AD_Client_ID, rma.ad_org_id AS AD_Org_ID, rma.created AS Created, rma.updated AS Updated, rma.isactive AS IsActive, rma.c_bpartner_id AS C_BPartner_ID, rma.c_order_id AS C_Order_ID, rma.documentno AS DocumentNo, rma.created AS DateOrdered, rma.c_doctype_id AS C_DocType_ID, NULL AS POReference, NULL AS Description, NULL AS SalesRep_ID, io.m_warehouse_id AS M_Warehouse_ID, rma.inout_id AS M_InOut_ID, rma.amt AS TotalLines, 'R' AS DocSource, rma.inout_id AS M_InOut_Candidate_v_ID, NULL AS DeliveryRule FROM m_rma RMA
+       INNER JOIN ad_org ORG ON RMA.ad_org_id = ORG.ad_org_id
+       INNER JOIN c_doctype DT ON RMA.c_doctype_id = DT.c_doctype_id
+       INNER JOIN c_bpartner BP ON RMA.c_bpartner_id = BP.c_bpartner_id
+       INNER JOIN m_inout IO ON RMA.inout_id = IO.m_inout_id WHERE  RMA.docstatus = 'CO'
        AND DT.docbasetype = 'POO'
        AND EXISTS (SELECT 1
-                   FROM   adempiere.m_rma R
-                          INNER JOIN adempiere.m_rmaline RL
+                   FROM   m_rma R
+                          INNER JOIN m_rmaline RL
                                   ON R.m_rma_id = RL.m_rma_id
                    WHERE  R.m_rma_id = RMA.m_rma_id
                           AND RL.isactive = 'Y'
                           AND RL.m_inoutline_id > 0
                           AND RL.qtydelivered < RL.qty)
        AND NOT EXISTS (SELECT 1
-                       FROM   adempiere.m_inout OIO
+                       FROM   m_inout OIO
                        WHERE  OIO.m_rma_id = RMA.m_rma_id
                               AND OIO.docstatus IN ( 'IP', 'CO', 'CL' ))
 ;
@@ -579,7 +578,7 @@ UPDATE AD_InfoColumn SET SeqNoSelection=40,Updated=TO_TIMESTAMP('2022-07-18 11:0
 ;
 
 -- Jul 18, 2022, 11:18:25 AM CEST
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217382,'8c35f8fc-ef89-46c1-af9b-7c6b4a9fabca',TO_TIMESTAMP('2022-07-18 11:18:24','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-18 11:18:24','YYYY-MM-DD HH24:MI:SS'),100,200219,'DeliveryRule','NULL::text',190)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217382,'8c35f8fc-ef89-46c1-af9b-7c6b4a9fabca',TO_TIMESTAMP('2022-07-18 11:18:24','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-18 11:18:24','YYYY-MM-DD HH24:MI:SS'),100,200219,'DeliveryRule','NULL',190)
 ;
 
 -- Jul 18, 2022, 11:18:48 AM CEST
