@@ -74,11 +74,14 @@ public class InvoiceGenerateRMA extends SvrProcess
                 log.log(Level.SEVERE, "Unknown Parameter: " + name);
         }
         
-        m_dateinvoiced = Env.getContextAsDate(getCtx(), Env.DATE);
-        if (m_dateinvoiced == null)
-        {
-            m_dateinvoiced = new Timestamp(System.currentTimeMillis());
+        if (m_dateinvoiced == null) {
+        	m_dateinvoiced = Env.getContextAsDate(getCtx(), Env.DATE);
+	        if (m_dateinvoiced == null)
+	        {
+	        	m_dateinvoiced = new Timestamp(System.currentTimeMillis());
+	        }
         }
+        p_Selection = getProcessInfo().getAD_InfoWindow_ID() > 0;
     }
 
     protected String doIt() throws Exception
@@ -90,7 +93,7 @@ public class InvoiceGenerateRMA extends SvrProcess
         
         String sql = "SELECT rma.M_RMA_ID FROM M_RMA rma, T_Selection "
             + "WHERE rma.DocStatus='CO' AND rma.IsSOTrx='Y' AND rma.AD_Client_ID=? "
-            + "AND rma.M_RMA_ID = T_Selection.T_Selection_ID " 
+            + "AND rma.InOut_ID = T_Selection.T_Selection_ID " 
             + "AND T_Selection.AD_PInstance_ID=? ";
         
         PreparedStatement pstmt = null;
