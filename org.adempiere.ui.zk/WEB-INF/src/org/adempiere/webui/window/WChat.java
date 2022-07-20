@@ -68,7 +68,6 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 	 */
 	private static final long serialVersionUID = -5265835393257520762L;
 	
-//	private static final String REPLY_DIV_STYLE = "padding-left: 10px";
 	private static final String USER_LABEL_STYLE = "font-weight: bold";
 	private static final String TIME_LABEL_STYLE = "font-size:xx-small;color:gray;margin-left:20px";
 
@@ -271,8 +270,7 @@ public class WChat extends Window implements EventListener<Event>, DialogEvents
 				div.appendChild(button);
 				Label timeLabel = createTimestampLabel(entry);
 				div.appendChild(timeLabel);
-//					div.setStyle(REPLY_DIV_STYLE);
-				
+			
 				Treechildren treeChildren = treeitem.getTreechildren();
 				if (treeChildren == null)
 				{

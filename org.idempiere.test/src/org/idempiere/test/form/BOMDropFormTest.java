@@ -39,7 +39,10 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MPriceList;
+import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MProduct;
+import org.compiere.model.MProductPrice;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectLine;
 import org.compiere.util.Env;
@@ -115,6 +118,18 @@ public class BOMDropFormTest extends AbstractTestCase {
 		
 		assertEquals(8, selectedItems.size(), "Unexpected number of components");
 		
+		int priceListId = order.getM_PriceList_ID();
+		MPriceListVersion priceListVersion = MPriceList.get(priceListId).getPriceListVersion(null);
+		for(SelectedItem selectedItem : selectedItems) {
+			MProductPrice pp = MProductPrice.get(Env.getCtx(), priceListVersion.get_ID(), selectedItem.getM_Product_ID(), getTrxName());
+			if (pp == null) {
+				pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
+				pp.setM_PriceList_Version_ID(priceListVersion.get_ID());
+				pp.setM_Product_ID(selectedItem.getM_Product_ID());
+				pp.setPrices(new BigDecimal("1"), new BigDecimal("1"), BigDecimal.ZERO);
+				pp.saveEx();
+			}
+		}
 		bomDrop.saveOrderLines(order.getC_Order_ID(), selectedItems, getTrxName());
 		
 		order.load(getTrxName());
