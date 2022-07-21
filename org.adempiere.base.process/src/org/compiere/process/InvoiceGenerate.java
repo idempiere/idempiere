@@ -149,7 +149,7 @@ public class InvoiceGenerate extends SvrProcess
 			+ ", Consolidate=" + p_ConsolidateDocument);
 		//
 		StringBuilder sql = null;
-		if (getProcessInfo().getAD_InfoWindow_ID() > 0)	//	VInvoiceGen
+		if ((getProcessInfo().getAD_InfoWindow_ID() > 0) || (getProcessInfo().getAD_InfoWindow_ID()==0 && p_Selection))
 		{
 			p_Selection = true;
 			sql = new StringBuilder("SELECT C_Order.* FROM C_Order, T_Selection ")
