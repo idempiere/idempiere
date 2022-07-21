@@ -248,22 +248,6 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml) VALUES (215090,0,'Invoice Rule','Frequency and method of invoicing ','The Invoice Rule defines how a Business Partner is invoiced and the frequency of invoicing.',200292,'InvoiceRule',1,'N','N','N','N','N',0,'N',17,150,0,0,'Y',TO_TIMESTAMP('2022-07-18 16:57:39','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-07-18 16:57:39','YYYY-MM-DD HH24:MI:SS'),100,559,'N','N','D','N','N','N','Y','77116e70-467a-41e7-83b6-4ee5d4926738','Y',0,'N','N','N')
 ;
 
--- Jul 14, 2022, 11:11:43 AM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203628,0,0,'Y',TO_TIMESTAMP('2022-07-14 11:11:43','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-07-14 11:11:43','YYYY-MM-DD HH24:MI:SS'),100,'DocSource','Document Source','Document Source','D','824512df-68c6-483a-9a63-a04e217ed86d')
-;
-
--- Jun 5, 2014 12:13:37 PM CEST
-INSERT INTO AD_Reference (AD_Org_ID,Created,EntityType,IsActive,IsOrderByValue,AD_Reference_ID,ValidationType,Name,CreatedBy,Updated,UpdatedBy,AD_Reference_UU,AD_Client_ID) VALUES (0,TO_DATE('2014-06-05 12:13:35','YYYY-MM-DD HH24:MI:SS'),'D','Y','N',200085,'L','DocSource',100,TO_DATE('2014-06-05 12:13:35','YYYY-MM-DD HH24:MI:SS'),100,'3be7b948-8b9e-490c-849c-df25ea642a23',0)
-;
-
--- Jun 5, 2014 12:14:06 PM CEST
-INSERT INTO AD_Ref_List (AD_Org_ID,EntityType,Updated,UpdatedBy,AD_Ref_List_ID,AD_Reference_ID,Name,AD_Ref_List_UU,Value,Created,CreatedBy,IsActive,AD_Client_ID) VALUES (0,'D',TO_DATE('2014-06-05 12:14:05','YYYY-MM-DD HH24:MI:SS'),100,200190,200085,'Order','aba7bebd-533e-4c9b-94d0-0a3a014b8335','O',TO_DATE('2014-06-05 12:14:05','YYYY-MM-DD HH24:MI:SS'),100,'Y',0)
-;
-
--- Jun 5, 2014 12:14:21 PM CEST
-INSERT INTO AD_Ref_List (AD_Org_ID,EntityType,Updated,UpdatedBy,AD_Ref_List_ID,AD_Reference_ID,Name,AD_Ref_List_UU,Value,Created,CreatedBy,IsActive,AD_Client_ID) VALUES (0,'D',TO_DATE('2014-06-05 12:14:20','YYYY-MM-DD HH24:MI:SS'),100,200191,200085,'RMA','0390303f-bfa0-4207-93b1-750461733fab','R',TO_DATE('2014-06-05 12:14:20','YYYY-MM-DD HH24:MI:SS'),100,'Y',0)
-;
-
 -- Jul 19, 2022, 8:47:16 AM CEST
 INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203632,0,0,'Y',TO_TIMESTAMP('2022-07-19 08:47:16','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-07-19 08:47:16','YYYY-MM-DD HH24:MI:SS'),100,'C_Invoice_Candidate_v_ID','C_Invoice_Candidate_v_ID','C_Invoice_Candidate_v_ID','D','3d8c623c-1b01-4bf9-ac04-5f6a49057746')
 ;
@@ -512,5 +496,17 @@ INSERT INTO AD_InfoProcess (AD_InfoProcess_ID,AD_InfoProcess_UU,AD_Client_ID,AD_
 
 -- Jul 19, 2022, 3:05:38 PM CEST
 UPDATE AD_Process SET Name='Generate Invoices for RMA', Description='Generate Invoices from open RMA based on selection.',Updated=TO_TIMESTAMP('2022-07-19 15:05:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_ID=52002
+;
+
+-- Jul 21, 2022, 8:00:45 AM CEST
+UPDATE AD_Menu SET IsActive='N',Updated=TO_TIMESTAMP('2022-07-21 08:00:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Menu_ID=217
+;
+
+-- Jul 21, 2022, 8:15:11 AM CEST
+UPDATE AD_Reference SET Name='DocSource Generate Shipments/Invoices (manual)',Updated=TO_TIMESTAMP('2022-07-21 08:15:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Reference_ID=200085
+;
+
+-- Jul 21, 2022, 8:15:21 AM CEST
+UPDATE AD_Ref_List SET Name='RMA',Updated=TO_TIMESTAMP('2022-07-21 08:15:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Ref_List_ID=200191
 ;
 
