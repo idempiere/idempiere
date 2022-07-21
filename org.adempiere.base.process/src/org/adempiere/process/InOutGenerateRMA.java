@@ -87,7 +87,7 @@ public class InOutGenerateRMA extends SvrProcess
 	            p_movementDate = new Timestamp(System.currentTimeMillis());
 	        }
         }
-        p_Selection = getProcessInfo().getAD_InfoWindow_ID() > 0;
+        if (getProcessInfo().getAD_InfoWindow_ID() > 0) p_Selection=true;
     }
     
     protected String doIt() throws Exception

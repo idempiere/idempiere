@@ -150,7 +150,7 @@ public class InOutGenerate extends SvrProcess
 			+ ", Movement=" + m_movementDate);
 		
 		
-		if (getProcessInfo().getAD_InfoWindow_ID() > 0)	//	VInOutGen
+		if ((getProcessInfo().getAD_InfoWindow_ID() > 0) || (getProcessInfo().getAD_InfoWindow_ID()==0 && p_Selection))
 		{
 			p_Selection = true;
 			m_sql = new StringBuffer("SELECT C_Order.* FROM C_Order, T_Selection ")
