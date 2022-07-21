@@ -83,7 +83,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -632698704437797176L;
+	private static final long serialVersionUID = 496387784464611123L;
 
 	/**
 	 *  Field Constructor.
@@ -444,8 +444,30 @@ public class GridField
 		}
 
 		//  Fields always updateable
-		if (m_vo.IsAlwaysUpdateable)      //  Zoom
-			return true;
+		if (m_vo.IsAlwaysUpdateable)
+		{
+			boolean isAlwaysUpdatable = true;
+			//  Do we have a Always updatable rule
+			if (checkContext && m_vo.AlwaysUpdatableLogic.length() > 0)
+			{
+				if (m_vo.AlwaysUpdatableLogic.startsWith("@SQL="))
+				{
+					boolean retValue = Evaluator.parseSQLLogic(m_vo.AlwaysUpdatableLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
+					if (!retValue)
+						isAlwaysUpdatable = false;
+				}
+				else
+				{
+					boolean retValue = Evaluator.evaluateLogic(this, m_vo.AlwaysUpdatableLogic);
+					if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " R/O(" + m_vo.AlwaysUpdatableLogic + ") => R/W-" + retValue);
+					if (!retValue)
+						isAlwaysUpdatable = false;
+				}
+			}
+			if(isAlwaysUpdatable)
+				return true;
+		}
+			
 
 		//check tab context
 		if (checkContext && getGridTab() != null &&
