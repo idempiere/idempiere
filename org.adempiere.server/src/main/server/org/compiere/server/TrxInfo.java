@@ -37,15 +37,16 @@ import org.compiere.util.Trx;
  *
  */
 public class TrxInfo implements Serializable {
-
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -4002703843474813148L;
-	
+	private static final long serialVersionUID = 4818076143344735089L;
+
 	private String displayName;
+	private String trxName;
 	private Date startTime;
 	private String stackTrace;
+	private boolean isActive;
 
 	/**
 	 * 
@@ -57,11 +58,13 @@ public class TrxInfo implements Serializable {
 		List<TrxInfo> list = new ArrayList<>();
 		Trx[] trxs = Trx.getActiveTransactions();
 		for (Trx trx : trxs) {
-			if (trx != null && trx.isActive()) {
+			if (trx != null) {
 				TrxInfo ti = new TrxInfo();
 				ti.displayName = trx.getDisplayName();
+				ti.trxName = trx.getTrxName();
 				ti.startTime = trx.getStartTime();
 				ti.stackTrace = trx.getStrackTrace();
+				ti.isActive = trx.isActive();
 				list.add(ti);
 			}
 		}
@@ -73,6 +76,13 @@ public class TrxInfo implements Serializable {
 	 */
 	public String getDisplayName() {
 		return displayName;
+	}
+
+	/**
+	 * @return the trxName
+	 */
+	public String getTrxName() {
+		return trxName;
 	}
 
 	/**
@@ -88,4 +98,12 @@ public class TrxInfo implements Serializable {
 	public String getStackTrace() {
 		return stackTrace;
 	}	
+
+	/**
+	 * @return Active status
+	 */
+	public boolean isActive() {
+		return isActive;
+	}
+
 }

@@ -131,7 +131,15 @@ public class Trx
 			prefix = "Trx";
 		prefix += "_" + UUID.randomUUID(); //System.currentTimeMillis();
 		//create transaction entry
-		Trx.get(prefix, true);
+		Trx trx = Trx.get(prefix, true);
+		StackTraceElement[] st = new Throwable().fillInStackTrace().getStackTrace();
+		for (StackTraceElement ste : st) {
+			if (! Trx.class.getName().equals(ste.getClassName())) {
+				String displayName = ste.getClassName().concat("_").concat(ste.getMethodName());
+				trx.setDisplayName(displayName);
+				break;
+			}
+		}
 		return prefix;
 	}	//	createTrxName
 
