@@ -364,8 +364,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         /**
          * Window Tabs
          */
-    	if (query != null && query.getZoomTableName() != null && query.getZoomColumnName() != null
-				&& query.getZoomValue() instanceof Integer && (Integer)query.getZoomValue() > 0)
+        if (query != null && query.getZoomTableName() != null && query.getZoomColumnName() != null)
     	{
     		if (!query.getZoomTableName().equalsIgnoreCase(gridWindow.getTab(0).getTableName()))
     		{
@@ -2305,9 +2304,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	private void doOnFind() {
 		//  Gets Fields from AD_Field_v
         GridField[] findFields = adTabbox.getSelectedGridTab().getFields();
-        if (getCurrentFindWindow() == null || !getCurrentFindWindow().validate(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
-            adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-            adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID())) {
+        if (!isCurrentFindWindowValid()) {
         	if (!getFindWindow(findFields))
         		return;
         }
@@ -2369,6 +2366,22 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         getComponent().getParent().appendChild(getCurrentFindWindow());
         showBusyMask(getCurrentFindWindow());                
         LayoutUtils.openEmbeddedWindow(toolbar, getCurrentFindWindow(), "after_start");
+	}
+	
+	/**
+	 * Validates if the current FindWindow corresponds to the actve tab and record  
+	 * @return true if the current find window is good to use
+	 */
+	private boolean isCurrentFindWindowValid() {
+        GridField[] findFields = adTabbox.getSelectedGridTab().getFields();
+		return getCurrentFindWindow() != null && getCurrentFindWindow().validate(adTabbox.getSelectedGridTab().getWindowNo(), 
+				adTabbox.getSelectedGridTab().getName(),
+	            adTabbox.getSelectedGridTab().getAD_Table_ID(), 
+	            adTabbox.getSelectedGridTab().getTableName(),
+	            adTabbox.getSelectedGridTab().getWhereExtended(), 
+	            findFields, 
+	            1, 
+	            adTabbox.getSelectedGridTab().getAD_Tab_ID());
 	}
 
 	@Override
@@ -3200,10 +3213,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void doOnQueryChange() {
 		//  Gets Fields from AD_Field_v
 		GridField[] findFields = adTabbox.getSelectedGridTab().getFields();
-		if (getCurrentFindWindow() == null || !getCurrentFindWindow().validate(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
-				adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-				adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID())) {
-
+		if (!isCurrentFindWindowValid()) {
         	if (!getFindWindow(findFields))
         		return;
 		}
@@ -3944,9 +3954,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	}
 	
 	public boolean getFindWindow(GridField[] findFields) {
-		FindWindow findWindow;
-		if (tabFindWindowHashMap.get(adTabbox.getSelectedGridTab()) != null) {
-			findWindow = tabFindWindowHashMap.get(adTabbox.getSelectedGridTab());
+		FindWindow findWindow = getCurrentFindWindow();
+		if (findWindow != null && isCurrentFindWindowValid()) {
 			toolbar.setSelectedUserQuery(findWindow.getAD_UserQuery_ID());
 		} else {
 			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),

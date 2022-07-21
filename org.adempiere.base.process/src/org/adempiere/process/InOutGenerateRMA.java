@@ -55,11 +55,11 @@ public class InOutGenerateRMA extends SvrProcess
     @SuppressWarnings("unused")
     private int         p_M_Warehouse_ID = 0;
     /** DocAction               */
-    private String      p_docAction = DocAction.ACTION_Complete;
+    private String      p_docAction = DocAction.ACTION_None;
     /** Number of Shipments     */
     private int         m_created = 0;
     /** Movement Date           */
-    private Timestamp   m_movementDate = null;
+    private Timestamp   p_movementDate = null;
 
     protected void prepare()
     {
@@ -75,15 +75,19 @@ public class InOutGenerateRMA extends SvrProcess
                 p_Selection = "Y".equals(para[i].getParameter());
             else if (name.equals("DocAction"))
                 p_docAction = (String)para[i].getParameter();
+            else if (name.equals("MovementDate"))
+            	p_movementDate = para[i].getParameterAsTimestamp();
             else
                 log.log(Level.SEVERE, "Unknown Parameter: " + name);
         }
-        
-        m_movementDate = Env.getContextAsDate(getCtx(), Env.DATE);
-        if (m_movementDate == null)
-        {
-            m_movementDate = new Timestamp(System.currentTimeMillis());
+        if (p_movementDate == null) {
+	        p_movementDate = Env.getContextAsDate(getCtx(), Env.DATE);
+	        if (p_movementDate == null)
+	        {
+	            p_movementDate = new Timestamp(System.currentTimeMillis());
+	        }
         }
+        p_Selection = getProcessInfo().getAD_InfoWindow_ID() > 0;
     }
     
     protected String doIt() throws Exception
@@ -95,7 +99,7 @@ public class InOutGenerateRMA extends SvrProcess
         
         String sql = "SELECT rma.M_RMA_ID FROM M_RMA rma, T_Selection "
             + "WHERE rma.DocStatus='CO' AND rma.IsSOTrx='N' AND rma.AD_Client_ID=? "
-            + "AND rma.M_RMA_ID = T_Selection.T_Selection_ID " 
+            + "AND rma.InOut_ID = T_Selection.T_Selection_ID " 
             + "AND T_Selection.AD_PInstance_ID=? ";
         
         PreparedStatement pstmt = null;
@@ -252,18 +256,16 @@ public class InOutGenerateRMA extends SvrProcess
         
         StringBuilder processMsg = new StringBuilder().append(shipment.getDocumentNo());
         
-        if (!shipment.processIt(p_docAction))
-        {
-            processMsg.append(" (NOT Processed)");
-            StringBuilder msglog = new StringBuilder("Shipment Processing failed: ").append(shipment).append(" - ").append(shipment.getProcessMsg());
-            log.warning(msglog.toString());
-            throw new IllegalStateException("Shipment Processing failed: " + shipment + " - " + shipment.getProcessMsg());
-        }
-        
-        if (!shipment.save())
-        {
-            throw new IllegalStateException("Could not update shipment");
-        }
+		if (!DocAction.ACTION_None.equals(p_docAction)) {
+	        if (!shipment.processIt(p_docAction))
+	        {
+	            processMsg.append(" (NOT Processed)");
+	            StringBuilder msglog = new StringBuilder("Shipment Processing failed: ").append(shipment).append(" - ").append(shipment.getProcessMsg());
+	            log.warning(msglog.toString());
+	            throw new IllegalStateException("Shipment Processing failed: " + shipment + " - " + shipment.getProcessMsg());
+	        }
+		}
+        shipment.saveEx();
         
         // Add processing information to process log
         addBufferLog(shipment.getM_InOut_ID(), shipment.getMovementDate(), null, processMsg.toString(),shipment.get_Table_ID(),shipment.getM_InOut_ID());
