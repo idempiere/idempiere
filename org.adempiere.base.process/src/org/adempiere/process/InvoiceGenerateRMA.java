@@ -91,7 +91,7 @@ public class InvoiceGenerateRMA extends SvrProcess
         
         String sql = "SELECT rma.M_RMA_ID FROM M_RMA rma, T_Selection "
             + "WHERE rma.DocStatus='CO' AND rma.IsSOTrx='Y' AND rma.AD_Client_ID=? "
-            + "AND rma.InOut_ID = T_Selection.T_Selection_ID " 
+            + "AND rma.M_RMA_ID = T_Selection.T_Selection_ID " 
             + "AND T_Selection.AD_PInstance_ID=? ";
         
         PreparedStatement pstmt = null;
