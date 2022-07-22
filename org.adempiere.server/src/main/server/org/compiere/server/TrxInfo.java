@@ -40,7 +40,7 @@ public class TrxInfo implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4818076143344735089L;
+	private static final long serialVersionUID = 5884131137700945750L;
 
 	private String displayName;
 	private String trxName;
@@ -54,11 +54,16 @@ public class TrxInfo implements Serializable {
 	private TrxInfo() {
 	}
 
-	public static TrxInfo[] getActiveTransactions() {
+	/**
+	 * Get the open transactions
+	 * @param onlyActive return just active transactions
+	 * @return
+	 */
+	public static TrxInfo[] getOpenTransactions(boolean onlyActive) {
 		List<TrxInfo> list = new ArrayList<>();
 		Trx[] trxs = Trx.getActiveTransactions();
 		for (Trx trx : trxs) {
-			if (trx != null) {
+			if (trx != null && (!onlyActive || trx.isActive())) {
 				TrxInfo ti = new TrxInfo();
 				ti.displayName = trx.getDisplayName();
 				ti.trxName = trx.getTrxName();
@@ -69,6 +74,22 @@ public class TrxInfo implements Serializable {
 			}
 		}
 		return list.toArray(new TrxInfo[0]);
+	}
+
+	/**
+	 * Get all the open transactions
+	 * @return
+	 */
+	public static TrxInfo[] getOpenTransactions() {
+		return getOpenTransactions(false);
+	}
+
+	/**
+	 * Get the active transactions
+	 * @return
+	 */
+	public static TrxInfo[] getActiveTransactions() {
+		return getOpenTransactions(true);
 	}
 
 	/**

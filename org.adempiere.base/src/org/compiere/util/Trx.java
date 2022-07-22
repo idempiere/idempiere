@@ -127,19 +127,24 @@ public class Trx
 	 */
 	public static String createTrxName (String prefix)
 	{
-		if (prefix == null || prefix.length() == 0)
+		String displayName = null;
+		if (prefix == null || prefix.length() == 0) {
 			prefix = "Trx";
+			if (MSysConfig.getBooleanValue(MSysConfig.TRX_AUTOSET_DISPLAY_NAME, false)) {
+				StackTraceElement[] st = new Throwable().fillInStackTrace().getStackTrace();
+				for (StackTraceElement ste : st) {
+					if (! Trx.class.getName().equals(ste.getClassName())) {
+						displayName = ste.getClassName().concat("_").concat(ste.getMethodName());
+						break;
+					}
+				}
+			}
+		}
 		prefix += "_" + UUID.randomUUID(); //System.currentTimeMillis();
 		//create transaction entry
 		Trx trx = Trx.get(prefix, true);
-		StackTraceElement[] st = new Throwable().fillInStackTrace().getStackTrace();
-		for (StackTraceElement ste : st) {
-			if (! Trx.class.getName().equals(ste.getClassName())) {
-				String displayName = ste.getClassName().concat("_").concat(ste.getMethodName());
-				trx.setDisplayName(displayName);
-				break;
-			}
-		}
+		if (displayName != null)
+			trx.setDisplayName(displayName);
 		return prefix;
 	}	//	createTrxName
 
@@ -393,6 +398,13 @@ public class Trx
 	 **/
 	public synchronized boolean commit(boolean throwException) throws SQLException
 	{
+		// ??
+		try {
+			TimeUnit.SECONDS.sleep(5);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		//local
 		try
 		{
@@ -438,6 +450,13 @@ public class Trx
 	 */
 	public boolean commit()
 	{
+		// ??
+		try {
+			TimeUnit.SECONDS.sleep(5);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try 
 		{
 			return commit(false);
