@@ -398,13 +398,6 @@ public class Trx
 	 **/
 	public synchronized boolean commit(boolean throwException) throws SQLException
 	{
-		// ??
-		try {
-			TimeUnit.SECONDS.sleep(5);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		//local
 		try
 		{
@@ -450,13 +443,6 @@ public class Trx
 	 */
 	public boolean commit()
 	{
-		// ??
-		try {
-			TimeUnit.SECONDS.sleep(5);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		try 
 		{
 			return commit(false);
