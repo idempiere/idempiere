@@ -61,7 +61,7 @@ public class TrxInfo implements Serializable {
 	 */
 	public static TrxInfo[] getOpenTransactions(boolean onlyActive) {
 		List<TrxInfo> list = new ArrayList<>();
-		Trx[] trxs = Trx.getActiveTransactions();
+		Trx[] trxs = Trx.getOpenTransactions();
 		for (Trx trx : trxs) {
 			if (trx != null && (!onlyActive || trx.isActive())) {
 				TrxInfo ti = new TrxInfo();

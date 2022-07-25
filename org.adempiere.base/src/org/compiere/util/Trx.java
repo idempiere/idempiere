@@ -622,7 +622,7 @@ public class Trx
 	/**
 	 * @return Trx[]
 	 */
-	public static Trx[] getActiveTransactions()
+	public static Trx[] getOpenTransactions()
 	{
 		Collection<Trx> collections = s_cache.values();
 		Trx[] trxs = new Trx[collections.size()];
@@ -630,7 +630,16 @@ public class Trx
 		
 		return trxs;
 	}
-	
+
+	/**
+	 * @return Trx[]
+	 * @deprecated - wrong method name fixed with IDEMPIERE-5355 - please use getOpenTransactions
+	 */
+	public static Trx[] getActiveTransactions()
+	{
+		return getOpenTransactions();
+	}
+
 	/**
 	 * @see #run(String, TrxRunnable)
 	 */
