@@ -102,7 +102,7 @@ INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn
 ;
 
 -- Jul 14, 2022, 11:39:10 AM CEST
-INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217373,'332f5ba4-9258-479c-8371-68d849bf1bc5',TO_TIMESTAMP('2022-07-14 11:39:10','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:39:10','YYYY-MM-DD HH24:MI:SS'),100,200219,'M_InOut_Candidate_v_ID','rma.inout_id',180)
+INSERT INTO AD_ViewColumn (AD_Client_ID,AD_Org_ID,AD_ViewColumn_ID,AD_ViewColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_ViewComponent_ID,ColumnName,ColumnSQL,SeqNo) VALUES (0,0,217373,'332f5ba4-9258-479c-8371-68d849bf1bc5',TO_TIMESTAMP('2022-07-14 11:39:10','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2022-07-14 11:39:10','YYYY-MM-DD HH24:MI:SS'),100,200219,'M_InOut_Candidate_v_ID','rma.m_rma_id',180)
 ;
 
 -- Jul 14, 2022, 11:45:57 AM CEST
@@ -199,7 +199,7 @@ JOIN c_orderline l ON o.c_order_id = l.c_order_id WHERE o.docstatus = 'CO' AND o
            FROM m_inoutline iol
              JOIN m_inout io ON iol.m_inout_id = io.m_inout_id
           WHERE iol.c_orderline_id = l.c_orderline_id AND (io.docstatus IN ('DR', 'IN', 'IP', 'WC')))) GROUP BY o.ad_client_id, o.ad_org_id, o.c_bpartner_id, o.c_order_id, o.documentno, o.dateordered, o.c_doctype_id, o.poreference, o.description, o.salesrep_id, l.m_warehouse_id, o.created, o.updated, o.isactive, o.deliveryrule
- UNION  ALL SELECT rma.ad_client_id AS AD_Client_ID, rma.ad_org_id AS AD_Org_ID, rma.created AS Created, rma.updated AS Updated, rma.isactive AS IsActive, rma.c_bpartner_id AS C_BPartner_ID, rma.c_order_id AS C_Order_ID, rma.documentno AS DocumentNo, rma.created AS DateOrdered, rma.c_doctype_id AS C_DocType_ID, NULL AS POReference, NULL AS Description, NULL AS SalesRep_ID, io.m_warehouse_id AS M_Warehouse_ID, rma.inout_id AS M_InOut_ID, rma.amt AS TotalLines, 'R' AS DocSource, rma.inout_id AS M_InOut_Candidate_v_ID, NULL AS DeliveryRule FROM m_rma RMA
+ UNION  ALL SELECT rma.ad_client_id AS AD_Client_ID, rma.ad_org_id AS AD_Org_ID, rma.created AS Created, rma.updated AS Updated, rma.isactive AS IsActive, rma.c_bpartner_id AS C_BPartner_ID, rma.c_order_id AS C_Order_ID, rma.documentno AS DocumentNo, rma.created AS DateOrdered, rma.c_doctype_id AS C_DocType_ID, NULL AS POReference, NULL AS Description, NULL AS SalesRep_ID, io.m_warehouse_id AS M_Warehouse_ID, rma.inout_id AS M_InOut_ID, rma.amt AS TotalLines, 'R' AS DocSource, rma.m_rma_id AS M_InOut_Candidate_v_ID, NULL AS DeliveryRule FROM m_rma RMA
        INNER JOIN ad_org ORG ON RMA.ad_org_id = ORG.ad_org_id
        INNER JOIN c_doctype DT ON RMA.c_doctype_id = DT.c_doctype_id
        INNER JOIN c_bpartner BP ON RMA.c_bpartner_id = BP.c_bpartner_id
