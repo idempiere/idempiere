@@ -1138,13 +1138,21 @@ public class AdempiereMonitor extends HttpServlet
 		for (TrxInfo trx : trxs)
 		{
 			line = new tr();
-			line.addElement(new th().addElement("Active Transaction "));
+			line.addElement(new th().addElement((trx.isActive() ? "Active" : "Inactive") + " Transaction "));
 			td td = new td();
-			td.setOnClick("var newwindow=window.open('','Popup', 'width=800,height=600');newwindow.document.write('<title>"  + escapeEcmaScript(trx.getDisplayName()) +"</title>"
-					+ "<pre>" + escapeEcmaScript(trx.getStackTrace()) + "</pre>')");
-			td.addElement("Name="+trx.getDisplayName() + ", StartTime=" + formatTimestampWithTimeZone(0,trx.getStartTime()));
-			td.setTitle("Click to see stack trace");
-			td.setStyle("text-decoration: underline; color: blue");
+			if (Util.isEmpty(trx.getStackTrace())) {
+				td.addElement("Name=" + trx.getDisplayName() + ", StartTime=" + formatTimestampWithTimeZone(0,trx.getStartTime()));
+				td.setTitle(trx.getTrxName());
+			} else {
+				td.setOnClick("var newwindow=window.open('','Popup', 'width=800,height=600');newwindow.document.write('<title>"  + escapeEcmaScript(trx.getDisplayName()) +"</title>"
+						+ "<p><b>Transaction = " + trx.getDisplayName() + "</b></p>"
+						+ "<p><b>TrxName = " + trx.getTrxName() + "</b></p>"
+						+ "<pre>" + escapeEcmaScript(trx.getStackTrace()) + "</pre>')");
+				label lbl = new label().addElement(trx.getDisplayName());
+				lbl.setStyle("text-decoration: underline; color: blue");
+				td.addElement("Name=").addElement(lbl).addElement(", StartTime=" + formatTimestampWithTimeZone(0,trx.getStartTime()));
+				td.setTitle("Click to see stack trace for " + trx.getTrxName());
+			}
 			line.addElement(td);
 			table.addElement(line);
 		}
@@ -1715,13 +1723,21 @@ public class AdempiereMonitor extends HttpServlet
 		for (TrxInfo trx : trxs)
 		{
 			line = new tr();
-			line.addElement(new th().addElement("Active Transaction "));
+			line.addElement(new th().addElement((trx.isActive() ? "Active" : "Inactive") + " Transaction "));
 			td td = new td();
-			td.setOnClick("var newwindow=window.open('','Popup', 'width=800,height=600');newwindow.document.write('<title>"  + escapeEcmaScript(trx.getDisplayName()) +"</title>"
-					+ "<pre>" + escapeEcmaScript(trx.getStackTrace()) + "</pre>')");
-			td.addElement("Name="+trx.getDisplayName() + ", StartTime=" + formatTimestampWithTimeZone(0, trx.getStartTime()));
-			td.setTitle("Click to see stack trace");
-			td.setStyle("text-decoration: underline; color: blue");
+			if (Util.isEmpty(trx.getStackTrace())) {
+				td.addElement("Name=" + trx.getDisplayName() + ", StartTime=" + formatTimestampWithTimeZone(0,trx.getStartTime()));
+				td.setTitle(trx.getTrxName());
+			} else {
+				td.setOnClick("var newwindow=window.open('','Popup', 'width=800,height=600');newwindow.document.write('<title>"  + escapeEcmaScript(trx.getDisplayName()) +"</title>"
+						+ "<p><b>Transaction = " + trx.getDisplayName() + "</b></p>"
+						+ "<p><b>TrxName = " + trx.getTrxName() + "</b></p>"
+						+ "<pre>" + escapeEcmaScript(trx.getStackTrace()) + "</pre>')");
+				label lbl = new label().addElement(trx.getDisplayName());
+				lbl.setStyle("text-decoration: underline; color: blue");
+				td.addElement("Name=").addElement(lbl).addElement(", StartTime=" + formatTimestampWithTimeZone(0,trx.getStartTime()));
+				td.setTitle("Click to see stack trace for " + trx.getTrxName());
+			}
 			line.addElement(td);
 			table.addElement(line);
 		}

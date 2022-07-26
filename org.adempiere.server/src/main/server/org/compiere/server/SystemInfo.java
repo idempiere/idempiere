@@ -270,7 +270,7 @@ public class SystemInfo implements Serializable {
 		si.peakThreadCount = th.getPeakThreadCount();
 		si.daemonThreadCount = th.getDaemonThreadCount();
 		si.totalStartedThreadCount = th.getTotalStartedThreadCount();
-		si.trxInfos = TrxInfo.getActiveTransactions();
+		si.trxInfos = TrxInfo.getOpenTransactions();
 		si.logLevel = CLogMgt.getLevel();
 		si.currentLogFile = LogFileInfo.getCurrentLogFile();
 		si.logFileInfos = LogFileInfo.getLogFileInfos();
