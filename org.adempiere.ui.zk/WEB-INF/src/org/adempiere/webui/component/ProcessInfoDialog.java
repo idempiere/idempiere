@@ -14,25 +14,53 @@
 
 package org.adempiere.webui.component;
 
+import static org.compiere.model.SystemIDs.PROCESS_C_INVOICE_GENERATERMA_MANUAL;
+import static org.compiere.model.SystemIDs.PROCESS_C_INVOICE_GENERATE_MANUAL;
+import static org.compiere.model.SystemIDs.PROCESS_M_INOUT_GENERATERMA_MANUAL;
+import static org.compiere.model.SystemIDs.PROCESS_M_INOUT_GENERATE_MANUAL;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_DUNNING;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_INVOICE;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_ORDER;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_PROJECT;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_C_RFQRESPONSE;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_DD_ORDER;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INOUT;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INVENTORY;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_M_MOVEMENT;
+import static org.compiere.model.SystemIDs.PROCESS_RPT_PP_ORDER;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.apps.form.WGenForm;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.SimplePDFViewer;
+import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
+import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zhtml.Text;
+import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Separator;
@@ -51,9 +79,17 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 
 	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 250pt; min-width: 230pt; max-width: 450pt;";
 
+	/**	Logger			*/
+	private static final CLogger log = CLogger.getCLogger(WGenForm.class);
+	
 	private Text lblMsg = new Text();
 	private Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
+	private Button btnPrint = ButtonFactory.createNamedButton(ConfirmPanel.A_PRINT);
 	private Image img = new Image();
+	private ProcessInfoLog[] m_logs;
+	private int reportEngineType;
+	private String printTmpFileName;
+	
 	public static final String INFORMATION = "~./zul/img/msgbox/info-btn.png";
 	public static final String ERROR = "~./zul/img/msgbox/info-btn.png";
 
@@ -113,6 +149,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		lblMsg.setValue(header);
 
 		btnOk.addEventListener(Events.ON_CLICK, this);
+		btnPrint.addEventListener(Events.ON_CLICK, this);
 
 		Panel pnlMessage = new Panel();
 		pnlMessage.setStyle(MESSAGE_PANEL_STYLE);
@@ -142,6 +179,8 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		ZKUpdateUtil.setHeight(pnlButtons, "52px");
 		pnlButtons.setAlign("center");
 		pnlButtons.setPack("end");
+		if(isPrintable(pi))
+			pnlButtons.appendChild(btnPrint);
 		pnlButtons.appendChild(btnOk);
 
 		Separator separator = new Separator();
@@ -166,7 +205,9 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 				pnlMessage.appendChild(new Text(summary));
 			}
 		}
-				
+		
+		this.m_logs = m_logs;
+		
 		if (m_logs != null && m_logs.length > 0){
 			separator = new Separator();
 			ZKUpdateUtil.setWidth(separator, "100%");
@@ -216,6 +257,88 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		if (event.getTarget() == btnOk) {
 			this.detach();
 		}
+		if(event.getTarget() == btnPrint) {
+			Clients.showBusy("Processing...");
+			Clients.response(new AuEcho(ProcessInfoDialog.this, "onPrint", null));
+		}
+	}
+	
+	/**
+	 * On Print
+	 */
+	public void onPrint() {
+		// Loop through all items
+		List<File> pdfList = new ArrayList<File>();
+		for (int i = 0; i < m_logs.length; i++)
+		{
+			int RecordID = m_logs[i].getRecord_ID();
+			ReportEngine re = null;
+			
+			re = ReportEngine.get (Env.getCtx(), reportEngineType, RecordID);
+			
+			pdfList.add(re.getPDF());				
+		}
+		if (pdfList.size() > 1) {
+			try {
+				File outFile = File.createTempFile(printTmpFileName, ".pdf");					
+				AEnv.mergePdf(pdfList, outFile);
+
+				Clients.clearBusy();
+				Window win = new SimplePDFViewer(getTitle(), new FileInputStream(outFile));
+				SessionManager.getAppDesktop().showWindow(win, "center");
+			} catch (Exception e) {
+				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			}
+		} else if (pdfList.size() > 0) {
+			Clients.clearBusy();
+			try {
+				Window win = new SimplePDFViewer(getTitle(), new FileInputStream(pdfList.get(0)));
+				SessionManager.getAppDesktop().showWindow(win, "center");
+			} catch (Exception e)
+			{
+				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			}
+		}
+	}
+	
+	public boolean isPrintable(ProcessInfo pi) {
+		switch(pi.getAD_Process_ID()) {
+			case PROCESS_RPT_C_INVOICE:
+			case PROCESS_C_INVOICE_GENERATE_MANUAL:
+			case PROCESS_C_INVOICE_GENERATERMA_MANUAL:
+				reportEngineType = ReportEngine.INVOICE;
+				return true;
+			case PROCESS_RPT_M_INOUT:
+			case PROCESS_M_INOUT_GENERATE_MANUAL:
+			case PROCESS_M_INOUT_GENERATERMA_MANUAL:
+				reportEngineType = ReportEngine.SHIPMENT;
+				return true;
+			case PROCESS_RPT_C_ORDER:
+				reportEngineType = ReportEngine.ORDER;
+				return true;
+			case PROCESS_RPT_PP_ORDER:
+				reportEngineType = ReportEngine.MANUFACTURING_ORDER;
+				return true;
+			case PROCESS_RPT_DD_ORDER:
+				reportEngineType = ReportEngine.DISTRIBUTION_ORDER;
+				return true;
+			case PROCESS_RPT_C_PROJECT:
+				reportEngineType = ReportEngine.PROJECT;
+				return true;
+			case PROCESS_RPT_C_RFQRESPONSE:
+				reportEngineType = ReportEngine.RFQ;
+				return true;
+			case PROCESS_RPT_M_INVENTORY:
+				reportEngineType = ReportEngine.INVENTORY;
+				return true;
+			case PROCESS_RPT_M_MOVEMENT:
+				reportEngineType = ReportEngine.MOVEMENT;
+				return true;
+			case PROCESS_RPT_C_DUNNING:
+				reportEngineType = ReportEngine.DUNNING;
+				return true;
+		}
+		return false;
 	}
 	
 	@Override
