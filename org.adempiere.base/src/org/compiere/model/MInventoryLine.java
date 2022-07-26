@@ -369,6 +369,20 @@ public class MInventoryLine extends X_M_InventoryLine
 				}
 			}
 			
+			//check currency and as
+			int C_Currency_ID = getParent().getC_Currency_ID();
+
+			if (as.getC_Currency_ID() != C_Currency_ID) 
+			{
+				MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(getCtx(), client.get_ID());
+				for (int i = 0; i < ass.length ; i ++)
+				{
+					MAcctSchema a =  ass[i];
+					if (a.getC_Currency_ID() ==  C_Currency_ID) 
+						as = a ; 
+				}
+			}
+			
 			String costingMethod = getParent().getCostingMethod();
 			int AD_Org_ID = getAD_Org_ID();
 			MCost cost = product.getCostingRecord(as, AD_Org_ID, M_ASI_ID, costingMethod);					
