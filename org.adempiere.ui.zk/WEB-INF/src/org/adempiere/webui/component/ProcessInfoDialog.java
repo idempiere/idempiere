@@ -14,21 +14,6 @@
 
 package org.adempiere.webui.component;
 
-import static org.compiere.model.SystemIDs.PROCESS_C_INVOICE_GENERATERMA_MANUAL;
-import static org.compiere.model.SystemIDs.PROCESS_C_INVOICE_GENERATE_MANUAL;
-import static org.compiere.model.SystemIDs.PROCESS_M_INOUT_GENERATERMA_MANUAL;
-import static org.compiere.model.SystemIDs.PROCESS_M_INOUT_GENERATE_MANUAL;
-import static org.compiere.model.SystemIDs.PROCESS_RPT_C_DUNNING;
-import static org.compiere.model.SystemIDs.PROCESS_RPT_C_INVOICE;
-import static org.compiere.model.SystemIDs.PROCESS_RPT_C_ORDER;
-import static org.compiere.model.SystemIDs.PROCESS_RPT_C_PROJECT;
-import static org.compiere.model.SystemIDs.PROCESS_RPT_C_RFQRESPONSE;
-import static org.compiere.model.SystemIDs.PROCESS_RPT_DD_ORDER;
-import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INOUT;
-import static org.compiere.model.SystemIDs.PROCESS_RPT_M_INVENTORY;
-import static org.compiere.model.SystemIDs.PROCESS_RPT_M_MOVEMENT;
-import static org.compiere.model.SystemIDs.PROCESS_RPT_PP_ORDER;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
@@ -179,8 +164,8 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		ZKUpdateUtil.setHeight(pnlButtons, "52px");
 		pnlButtons.setAlign("center");
 		pnlButtons.setPack("end");
-		if(isPrintable(pi))
-			pnlButtons.appendChild(btnPrint);
+		btnPrint.setVisible(false);
+		pnlButtons.appendChild(btnPrint);
 		pnlButtons.appendChild(btnOk);
 
 		Separator separator = new Separator();
@@ -207,6 +192,9 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		}
 		
 		this.m_logs = m_logs;
+
+		if(isPrintable(pi))
+			btnPrint.setVisible(true);
 		
 		if (m_logs != null && m_logs.length > 0){
 			separator = new Separator();
@@ -299,45 +287,21 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
 		}
+		this.detach();
 	}
 	
+	/**
+	 * Is Printable
+	 * @param pi
+	 * @return
+	 */
 	public boolean isPrintable(ProcessInfo pi) {
-		switch(pi.getAD_Process_ID()) {
-			case PROCESS_RPT_C_INVOICE:
-			case PROCESS_C_INVOICE_GENERATE_MANUAL:
-			case PROCESS_C_INVOICE_GENERATERMA_MANUAL:
-				reportEngineType = ReportEngine.INVOICE;
-				return true;
-			case PROCESS_RPT_M_INOUT:
-			case PROCESS_M_INOUT_GENERATE_MANUAL:
-			case PROCESS_M_INOUT_GENERATERMA_MANUAL:
-				reportEngineType = ReportEngine.SHIPMENT;
-				return true;
-			case PROCESS_RPT_C_ORDER:
-				reportEngineType = ReportEngine.ORDER;
-				return true;
-			case PROCESS_RPT_PP_ORDER:
-				reportEngineType = ReportEngine.MANUFACTURING_ORDER;
-				return true;
-			case PROCESS_RPT_DD_ORDER:
-				reportEngineType = ReportEngine.DISTRIBUTION_ORDER;
-				return true;
-			case PROCESS_RPT_C_PROJECT:
-				reportEngineType = ReportEngine.PROJECT;
-				return true;
-			case PROCESS_RPT_C_RFQRESPONSE:
-				reportEngineType = ReportEngine.RFQ;
-				return true;
-			case PROCESS_RPT_M_INVENTORY:
-				reportEngineType = ReportEngine.INVENTORY;
-				return true;
-			case PROCESS_RPT_M_MOVEMENT:
-				reportEngineType = ReportEngine.MOVEMENT;
-				return true;
-			case PROCESS_RPT_C_DUNNING:
-				reportEngineType = ReportEngine.DUNNING;
-				return true;
-		}
+		for(ProcessInfoLog log : m_logs)
+			for(int tableID : ReportEngine.getDocTableIDs())
+				if(log.getAD_Table_ID() == tableID) {
+					reportEngineType = ReportEngine.getReportEngineType(tableID);
+					return true;
+				}
 		return false;
 	}
 	
