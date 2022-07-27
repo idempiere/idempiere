@@ -32,12 +32,24 @@ public class X_QM_Specification extends PO implements I_QM_Specification, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_QM_Specification (Properties ctx, int QM_Specification_ID, String trxName)
     {
       super (ctx, QM_Specification_ID, trxName);
+      /** if (QM_Specification_ID == 0)
+        {
+			setM_AttributeSet_ID (0);
+			setM_Product_ID (0);
+			setQM_Specification_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_QM_Specification (Properties ctx, int QM_Specification_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, QM_Specification_ID, trxName, virtualColumns);
       /** if (QM_Specification_ID == 0)
         {
 			setM_AttributeSet_ID (0);

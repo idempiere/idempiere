@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for RV_BPartner
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="RV_BPartner")
 public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent 
 {
@@ -33,12 +33,39 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220321L;
 
     /** Standard Constructor */
     public X_RV_BPartner (Properties ctx, int RV_BPartner_ID, String trxName)
     {
       super (ctx, RV_BPartner_ID, trxName);
+      /** if (RV_BPartner_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_BP_Group_ID (0);
+			setC_Country_ID (0);
+			setContactName (null);
+			setCountryName (null);
+			setIsCustomer (false);
+			setIsEmployee (false);
+			setIsOneTime (false);
+			setIsProspect (false);
+			setIsSalesRep (false);
+			setIsSummary (false);
+			setIsVendor (false);
+			setLDAPUser (false);
+			setName (null);
+			setNotificationType (null);
+			setSendEMail (false);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_RV_BPartner (Properties ctx, int RV_BPartner_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, RV_BPartner_ID, trxName, virtualColumns);
       /** if (RV_BPartner_ID == 0)
         {
 			setC_BPartner_ID (0);
@@ -1923,6 +1950,8 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	public static final String FREIGHTCOSTRULE_FreightIncluded = "I";
 	/** Line = L */
 	public static final String FREIGHTCOSTRULE_Line = "L";
+	/** Customer Account = U */
+	public static final String FREIGHTCOSTRULE_CustomerAccount = "U";
 	/** Set Freight Cost Rule.
 		@param FreightCostRule Method for charging Freight
 	*/

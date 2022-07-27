@@ -33,12 +33,38 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_PaySelectionLine (Properties ctx, int C_PaySelectionLine_ID, String trxName)
     {
       super (ctx, C_PaySelectionLine_ID, trxName);
+      /** if (C_PaySelectionLine_ID == 0)
+        {
+			setC_Invoice_ID (0);
+			setC_PaySelection_ID (0);
+			setC_PaySelectionLine_ID (0);
+			setDifferenceAmt (Env.ZERO);
+			setDiscountAmt (Env.ZERO);
+			setIsManual (false);
+			setIsSOTrx (false);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_PaySelectionLine WHERE C_PaySelection_ID=@C_PaySelection_ID@
+			setOpenAmt (Env.ZERO);
+			setPayAmt (Env.ZERO);
+			setPaymentRule (null);
+// S
+			setProcessed (false);
+// N
+			setWriteOffAmt (Env.ZERO);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaySelectionLine (Properties ctx, int C_PaySelectionLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaySelectionLine_ID, trxName, virtualColumns);
       /** if (C_PaySelectionLine_ID == 0)
         {
 			setC_Invoice_ID (0);

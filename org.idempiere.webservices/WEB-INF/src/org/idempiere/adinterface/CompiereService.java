@@ -288,11 +288,14 @@ public class CompiereService {
 		Env.setContext(getCtx(), Env.LANGUAGE, m_language.getAD_Language());
 		
 		// Create session
-		MSession session = MSession.get (getCtx(), false);
+		MSession session = MSession.get (getCtx());
 		if (session == null){
 			log.fine("No Session found");
-			session = MSession.get (getCtx(), true);    	
+			session = MSession.create (getCtx());
+		} else {
+			session = new MSession(getCtx(), session.getAD_Session_ID(), null);
 		}
+
 		session.setWebSession("WebService");
 		
 		session.setDescription(session.getDescription() + "\nUser Agent: " + getCtx().getProperty("#UserAgent"));

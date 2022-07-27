@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Payment
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_Payment")
 public class X_C_Payment extends PO implements I_C_Payment, I_Persistent 
 {
@@ -34,12 +34,58 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220405L;
 
     /** Standard Constructor */
     public X_C_Payment (Properties ctx, int C_Payment_ID, String trxName)
     {
       super (ctx, C_Payment_ID, trxName);
+      /** if (C_Payment_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_Currency_ID (0);
+			setC_DocType_ID (0);
+			setC_Payment_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsAllocated (false);
+			setIsApproved (false);
+// N
+			setIsDelayedCapture (false);
+			setIsOnline (false);
+			setIsOverrideCurrencyRate (false);
+// N
+			setIsOverUnderPayment (true);
+// Y
+			setIsPrepayment (false);
+			setIsReceipt (false);
+			setIsReconciled (false);
+			setIsSelfService (false);
+			setIsVoided (false);
+// N
+			setPayAmt (Env.ZERO);
+// 0
+			setPosted (false);
+// N
+			setProcessed (false);
+			setTenderType (null);
+// K
+			setTrxType (null);
+// S
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Payment (Properties ctx, int C_Payment_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Payment_ID, trxName, virtualColumns);
       /** if (C_Payment_ID == 0)
         {
 			setC_BPartner_ID (0);
@@ -343,6 +389,34 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	public int getC_BankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BankTransfer getC_BankTransfer() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BankTransfer)MTable.get(getCtx(), org.compiere.model.I_C_BankTransfer.Table_ID)
+			.getPO(getC_BankTransfer_ID(), get_TrxName());
+	}
+
+	/** Set Bank Transfer.
+		@param C_BankTransfer_ID Bank Transfer
+	*/
+	public void setC_BankTransfer_ID (int C_BankTransfer_ID)
+	{
+		if (C_BankTransfer_ID < 1)
+			set_Value (COLUMNNAME_C_BankTransfer_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BankTransfer_ID, Integer.valueOf(C_BankTransfer_ID));
+	}
+
+	/** Get Bank Transfer.
+		@return Bank Transfer
+	  */
+	public int getC_BankTransfer_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankTransfer_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

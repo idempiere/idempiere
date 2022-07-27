@@ -31,12 +31,24 @@ public class X_C_TaxPostal extends PO implements I_C_TaxPostal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_TaxPostal (Properties ctx, int C_TaxPostal_ID, String trxName)
     {
       super (ctx, C_TaxPostal_ID, trxName);
+      /** if (C_TaxPostal_ID == 0)
+        {
+			setC_Tax_ID (0);
+			setC_TaxPostal_ID (0);
+			setPostal (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxPostal (Properties ctx, int C_TaxPostal_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxPostal_ID, trxName, virtualColumns);
       /** if (C_TaxPostal_ID == 0)
         {
 			setC_Tax_ID (0);

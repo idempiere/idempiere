@@ -579,8 +579,7 @@ public final class WAccountDialog extends Window
 			m_row.setStyle("background-color: transparent");
 			m_rows.appendChild(m_row);
 		}
-//		else
-//			m_gbc.gridx = 2;
+
 		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
 		{
 			Vlayout vlayout = new Vlayout();

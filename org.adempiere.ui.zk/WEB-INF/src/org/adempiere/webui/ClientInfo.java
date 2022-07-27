@@ -21,6 +21,7 @@ import java.util.TimeZone;
 
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -96,9 +97,21 @@ public class ClientInfo implements Serializable {
 	 * @return true if mobile browser
 	 */
 	public static boolean isMobile() {
-		return "Y".equals(Env.getContext(Env.getCtx(), "#clientInfo_mobile"));
+		return "Y".equals(Env.getContext(Env.getCtx(), Env.CLIENT_INFO_MOBILE));
 	}
 
+	/**
+	 * 
+	 * @param version null to match all version
+	 * @return true if browser is firefox and match the pass in version parameter
+	 */
+	public static boolean isFirefox(String version) {
+		StringBuilder ua = new StringBuilder("Firefox");
+		if (!Util.isEmpty(version, true))
+			ua.append("/").append(version);
+		return get() != null && get().userAgent != null && get().userAgent.contains(ua.toString());
+	}
+	
 	/**
 	 * @return the current clientinfo instance
 	 */

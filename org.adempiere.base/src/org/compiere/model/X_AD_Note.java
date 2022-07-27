@@ -31,12 +31,23 @@ public class X_AD_Note extends PO implements I_AD_Note, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Note (Properties ctx, int AD_Note_ID, String trxName)
     {
       super (ctx, AD_Note_ID, trxName);
+      /** if (AD_Note_ID == 0)
+        {
+			setAD_Message_ID (0);
+			setAD_Note_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Note (Properties ctx, int AD_Note_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Note_ID, trxName, virtualColumns);
       /** if (AD_Note_ID == 0)
         {
 			setAD_Message_ID (0);

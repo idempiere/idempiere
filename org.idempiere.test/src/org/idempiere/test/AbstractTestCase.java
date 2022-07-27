@@ -147,8 +147,9 @@ public abstract class AbstractTestCase {
 	 * tear down for each test method
 	 */
 	protected void tearDown() {
-		if (trx != null && trx.isActive()) {
-			trx.rollback();
+		if (trx != null) {
+			if (trx.isActive())
+				trx.rollback();
 			trx.close();
 		}
 	}
@@ -224,6 +225,5 @@ public abstract class AbstractTestCase {
 	 * shutdown for class
 	 */
 	static void shutdown() {
-		Adempiere.stop();
 	}
 }

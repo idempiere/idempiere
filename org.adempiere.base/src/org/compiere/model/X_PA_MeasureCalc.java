@@ -31,12 +31,35 @@ public class X_PA_MeasureCalc extends PO implements I_PA_MeasureCalc, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_MeasureCalc (Properties ctx, int PA_MeasureCalc_ID, String trxName)
     {
       super (ctx, PA_MeasureCalc_ID, trxName);
+      /** if (PA_MeasureCalc_ID == 0)
+        {
+			setAD_Table_ID (0);
+			setDateColumn (null);
+// x.Date
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setKeyColumn (null);
+			setName (null);
+			setOrgColumn (null);
+// x.AD_Org_ID
+			setPA_MeasureCalc_ID (0);
+			setSelectClause (null);
+// SELECT ... FROM ...
+			setWhereClause (null);
+// WHERE ...
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_MeasureCalc (Properties ctx, int PA_MeasureCalc_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_MeasureCalc_ID, trxName, virtualColumns);
       /** if (PA_MeasureCalc_ID == 0)
         {
 			setAD_Table_ID (0);

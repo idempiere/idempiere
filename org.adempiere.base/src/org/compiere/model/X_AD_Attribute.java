@@ -31,12 +31,32 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Attribute (Properties ctx, int AD_Attribute_ID, String trxName)
     {
       super (ctx, AD_Attribute_ID, trxName);
+      /** if (AD_Attribute_ID == 0)
+        {
+			setAD_Attribute_ID (0);
+			setAD_Reference_ID (0);
+			setAD_Table_ID (0);
+			setIsEncrypted (false);
+			setIsFieldOnly (false);
+			setIsHeading (false);
+			setIsMandatory (false);
+			setIsReadOnly (false);
+			setIsSameLine (false);
+			setIsUpdateable (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Attribute (Properties ctx, int AD_Attribute_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Attribute_ID, trxName, virtualColumns);
       /** if (AD_Attribute_ID == 0)
         {
 			setAD_Attribute_ID (0);

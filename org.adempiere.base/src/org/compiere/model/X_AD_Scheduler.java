@@ -32,12 +32,28 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Scheduler (Properties ctx, int AD_Scheduler_ID, String trxName)
     {
       super (ctx, AD_Scheduler_ID, trxName);
+      /** if (AD_Scheduler_ID == 0)
+        {
+			setAD_Process_ID (0);
+			setAD_Schedule_ID (0);
+			setAD_Scheduler_ID (0);
+			setKeepLogDays (0);
+// 7
+			setName (null);
+			setSupervisor_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Scheduler (Properties ctx, int AD_Scheduler_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Scheduler_ID, trxName, virtualColumns);
       /** if (AD_Scheduler_ID == 0)
         {
 			setAD_Process_ID (0);

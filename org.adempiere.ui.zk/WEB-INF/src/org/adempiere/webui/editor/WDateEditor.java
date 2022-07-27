@@ -155,7 +155,7 @@ public class WDateEditor extends WEditor implements ContextMenuListener
     }
 
     @Override
-    public Object getValue()
+    public Timestamp getValue()
     {
     	// Elaine 2008/07/25
     	if(getComponent().getValue() == null) return null;

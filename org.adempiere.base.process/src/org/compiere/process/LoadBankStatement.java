@@ -22,6 +22,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MBankStatementLoader;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 
 /**
@@ -111,7 +112,7 @@ public class LoadBankStatement extends SvrProcess
 		else
 		{
 			if (log.isLoggable(Level.INFO)) log.info("Imported=" + m_controller.getLoadCount());
-			addLog (0, null, new BigDecimal (m_controller.getLoadCount()), "@Loaded@");
+			addLog (0, null, new BigDecimal (m_controller.getLoadCount()), Msg.getMsg(m_ctx, "Inserted"));
 			message = "@OK@";
 		}
 

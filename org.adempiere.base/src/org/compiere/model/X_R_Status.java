@@ -31,12 +31,33 @@ public class X_R_Status extends PO implements I_R_Status, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_Status (Properties ctx, int R_Status_ID, String trxName)
     {
       super (ctx, R_Status_ID, trxName);
+      /** if (R_Status_ID == 0)
+        {
+			setIsClosed (false);
+// N
+			setIsDefault (false);
+			setIsFinalClose (false);
+// N
+			setIsOpen (false);
+			setIsWebCanUpdate (false);
+			setName (null);
+			setR_StatusCategory_ID (0);
+			setR_Status_ID (0);
+			setSeqNo (0);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_Status (Properties ctx, int R_Status_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_Status_ID, trxName, virtualColumns);
       /** if (R_Status_ID == 0)
         {
 			setIsClosed (false);

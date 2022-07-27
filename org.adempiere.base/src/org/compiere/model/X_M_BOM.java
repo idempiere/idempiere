@@ -31,12 +31,28 @@ public class X_M_BOM extends PO implements I_M_BOM, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_BOM (Properties ctx, int M_BOM_ID, String trxName)
     {
       super (ctx, M_BOM_ID, trxName);
+      /** if (M_BOM_ID == 0)
+        {
+			setBOMType (null);
+// A
+			setBOMUse (null);
+// A
+			setM_BOM_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_BOM (Properties ctx, int M_BOM_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_BOM_ID, trxName, virtualColumns);
       /** if (M_BOM_ID == 0)
         {
 			setBOMType (null);

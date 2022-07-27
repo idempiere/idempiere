@@ -31,12 +31,32 @@ public class X_AD_WF_NextCondition extends PO implements I_AD_WF_NextCondition, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_WF_NextCondition (Properties ctx, int AD_WF_NextCondition_ID, String trxName)
     {
       super (ctx, AD_WF_NextCondition_ID, trxName);
+      /** if (AD_WF_NextCondition_ID == 0)
+        {
+			setAD_WF_NextCondition_ID (0);
+			setAD_WF_NodeNext_ID (0);
+// @4|AD_WF_NodeNext_ID@
+			setAndOr (null);
+// O
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setOperation (null);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_WF_NextCondition WHERE AD_WF_NodeNext_ID=@AD_WF_NodeNext_ID@
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_NextCondition (Properties ctx, int AD_WF_NextCondition_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_NextCondition_ID, trxName, virtualColumns);
       /** if (AD_WF_NextCondition_ID == 0)
         {
 			setAD_WF_NextCondition_ID (0);

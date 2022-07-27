@@ -68,6 +68,8 @@ public class BankStatementPayment extends SvrProcess
 		
 		if (Table_ID == X_I_BankStatement.Table_ID)
 			return createPayment (new X_I_BankStatement(getCtx(), Record_ID, get_TrxName()));
+		else if (Table_ID == MBankStatement.Table_ID)
+			return createPayment (new MBankStatement(getCtx(), Record_ID, get_TrxName()));
 		else if (Table_ID == MBankStatementLine.Table_ID)
 			return createPayment (new MBankStatementLine(getCtx(), Record_ID, get_TrxName()));
 		
@@ -107,7 +109,28 @@ public class BankStatementPayment extends SvrProcess
 			retString.append(" - @OverUnderAmt@=").append(payment.getOverUnderAmt());
 		return retString.toString();
 	}	//	createPayment - Import
-	
+
+	/**
+	 * Create Payment for Bank Statement
+	 * Process all lines with TrxAmt+Invoice+BP and no Payment
+	 * @param mBankStatement
+	 * @return Message
+	 * @throws Exception if not successful
+	 */
+	private String createPayment(MBankStatement bs) throws Exception {
+		int count = 0;
+		for (MBankStatementLine line : bs.getLines(false)) {
+			if (line.getC_Payment_ID() == 0
+				&& line.getTrxAmt().signum() > 0
+				&& line.getC_Invoice_ID() > 0
+				&& line.getC_BPartner_ID() > 0) {
+				createPayment(line);
+				count++;
+			}
+		}
+		return String.valueOf(count);
+	}
+
 	/**
 	 * 	Create Payment for BankStatement
 	 *	@param bsl bank statement Line
@@ -197,7 +220,10 @@ public class BankStatementPayment extends SvrProcess
 					payment.setPayAmt(PayAmt);
 				else	//	payment is likely to be negative
 					payment.setPayAmt(PayAmt.negate());
-				payment.setOverUnderAmt(invoice.getOpenAmt().subtract(payment.getPayAmt()));
+				BigDecimal discountAmt = invoice.getDiscountAmt(payment.getDateTrx());
+				payment.setDiscountAmt(discountAmt);
+				BigDecimal overUnderAmt = invoice.getOpenAmt().subtract(payment.getPayAmt()).subtract(discountAmt);
+				payment.setOverUnderAmt(overUnderAmt);
 			}
 			else	// set Pay Amout from Invoice
 			{

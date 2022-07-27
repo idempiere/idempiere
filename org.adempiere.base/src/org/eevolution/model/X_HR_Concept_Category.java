@@ -32,12 +32,23 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_HR_Concept_Category (Properties ctx, int HR_Concept_Category_ID, String trxName)
     {
       super (ctx, HR_Concept_Category_ID, trxName);
+      /** if (HR_Concept_Category_ID == 0)
+        {
+			setHR_Concept_Category_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Concept_Category (Properties ctx, int HR_Concept_Category_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Concept_Category_ID, trxName, virtualColumns);
       /** if (HR_Concept_Category_ID == 0)
         {
 			setHR_Concept_Category_ID (0);

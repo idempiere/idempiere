@@ -34,12 +34,30 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CashPlan (Properties ctx, int C_CashPlan_ID, String trxName)
     {
       super (ctx, C_CashPlan_ID, trxName);
+      /** if (C_CashPlan_ID == 0)
+        {
+			setC_CashPlan_ID (0);
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocumentNo (null);
+			setGrandTotal (Env.ZERO);
+			setIsApproved (false);
+// @IsApproved@
+			setIsSOTrx (false);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CashPlan (Properties ctx, int C_CashPlan_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CashPlan_ID, trxName, virtualColumns);
       /** if (C_CashPlan_ID == 0)
         {
 			setC_CashPlan_ID (0);

@@ -31,12 +31,29 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_StyleLine (Properties ctx, int AD_StyleLine_ID, String trxName)
     {
       super (ctx, AD_StyleLine_ID, trxName);
+      /** if (AD_StyleLine_ID == 0)
+        {
+			setAD_Style_ID (0);
+			setAD_StyleLine_ID (0);
+			setAD_StyleLine_UU (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setInlineStyle (null);
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 FROM AD_StyleLine WHERE AD_Style_ID =@AD_Style_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_StyleLine (Properties ctx, int AD_StyleLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_StyleLine_ID, trxName, virtualColumns);
       /** if (AD_StyleLine_ID == 0)
         {
 			setAD_Style_ID (0);

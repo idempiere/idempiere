@@ -66,68 +66,6 @@ public class CalloutPackage extends CalloutEngine
         {
         	int shipper_id = ((Integer)value).intValue();
 
-/*        	if(value != oldValue)
-        	{
-	        	if (Ini.isClient())
-				{
-	        		try
-	                {
-	                    Class cl = Class.forName("org.compiere.apps.ADialog");
-	                    Class paramTypes[] = {int.class, Container.class, String.class, String.class};
-	                    Object params[] = {windowNo, Env.getWindow(windowNo), "Update Shipment Method", "Are you sure you want to apply this Shipment Method to the Shipment?"};
-	                    Method method = cl.getDeclaredMethod("ask", paramTypes);
-	                    Boolean ok = (Boolean) method.invoke(null, params);
-	                    
-	                    if(!ok)
-		                {
-		                    // don't update the shipper of shipment record but continue with default values setting
-		                    //return "";
-		                }
-		                else
-		                {
-		                    int inout_id = Env.getContextAsInt(ctx, windowNo, "M_InOut_ID");
-		                    String sql = "update M_InOut set M_Shipper_ID=? where M_InOut_ID=?";
-		                    DB.executeUpdate(sql, new Object[] { shipper_id, inout_id }, false, null);
-		                }
-	                }
-	                catch (Exception ex)
-	                {
-	                	throw new AdempiereException(ex);
-	                }
-				}
-				else
-				{
-					try
-					{
-						ClassLoader loader = Thread.currentThread().getContextClassLoader();
-						if (loader == null)
-							loader = this.getClass().getClassLoader();
-		    	    	Class<?> clazz = loader.loadClass("org.adempiere.webui.window.FDialog");
-		    	    	Class<?> clazz1 = loader.loadClass("org.zkoss.zk.ui.Component");
-		    		      
-		    	    	Method m = clazz.getMethod("ask", Integer.TYPE, clazz1, String.class, String.class);
-		    	    	Boolean returnCode = (Boolean)m.invoke(null, 0, null, "Update Shipment Method",
-                                "Are you sure you want to apply this Shipment Method to the Shipment?");
-		    		    
-		    	    	if(!returnCode)
-		                {
-		                    // don't update the shipper of shipment record but continue with default values setting
-		                    //return "";		    	    		
-		                }
-		    	    	else
-		    	    	{
-		    	    		int inout_id = Env.getContextAsInt(ctx, windowNo, "M_InOut_ID");
-		                    String sql = "update M_InOut set M_Shipper_ID=? where M_InOut_ID=?";
-		                    DB.executeUpdate(sql, new Object[] { shipper_id, inout_id }, false, null);
-		    	    	}
-					} 
-					catch (Exception e)
-					{
-						throw new AdempiereException(e);
-					}
-				}
-            }
-*/        
         	String whereClause = "M_Shipper_ID = " + shipper_id + " AND IsDefault='Y' AND IsActive='Y'";
     		int[] ids = MShipperLabels.getAllIDs(MShipperLabels.Table_Name, whereClause, null);
     		if (ids.length > 0)

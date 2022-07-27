@@ -35,12 +35,40 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Order_BOMLine (Properties ctx, int PP_Order_BOMLine_ID, String trxName)
     {
       super (ctx, PP_Order_BOMLine_ID, trxName);
+      /** if (PP_Order_BOMLine_ID == 0)
+        {
+			setC_UOM_ID (0);
+			setIsCritical (false);
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Order_BOMLine WHERE PP_Order_ID=@PP_Order_ID@
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setPP_Order_BOM_ID (0);
+			setPP_Order_BOMLine_ID (0);
+			setPP_Order_ID (0);
+			setQtyBatch (Env.ZERO);
+			setQtyBOM (Env.ZERO);
+			setQtyDelivered (Env.ZERO);
+			setQtyPost (Env.ZERO);
+			setQtyReject (Env.ZERO);
+			setQtyRequiered (Env.ZERO);
+			setQtyReserved (Env.ZERO);
+			setQtyScrap (Env.ZERO);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_BOMLine (Properties ctx, int PP_Order_BOMLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_BOMLine_ID, trxName, virtualColumns);
       /** if (PP_Order_BOMLine_ID == 0)
         {
 			setC_UOM_ID (0);

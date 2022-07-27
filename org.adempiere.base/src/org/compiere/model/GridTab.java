@@ -1026,6 +1026,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		return false;
 	}   //  dataSave
 
+	/**
+	 * 
+	 * @return true if need save and all mandatory field has value
+	 */
+	public boolean isNeedSaveAndMandatoryFill()
+	{
+		return m_mTable.isNeedSaveAndMandatoryFill();
+	}
+	
 	// Validate if the current tab record has changed in database or any parent record
 	// Return if there are changes
 	public boolean hasChangedCurrentTabAndParents() {
@@ -3453,6 +3462,22 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		this.calloutUI = calloutUI;
 	}
 
+	/**
+	 * Get Delete Confirmation Logic
+	 * @return String
+	 */
+	public String getDeleteConfirmationLogic() {
+		return m_vo.deleteConfirmationLogic;
+	}
+	
+	/**
+	 * Set Delete Confirmation Logic
+	 * @param deleteConfirmationLogic
+	 */
+	public void setDeleteConfirmationLogic(String deleteConfirmationLogic) {
+		m_vo.deleteConfirmationLogic = deleteConfirmationLogic;
+	}
+	
 	/** Get Max Query Records.
 	 *  @return If defined, you cannot query more records as defined - the query criteria needs to be changed to query less records
      */

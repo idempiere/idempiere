@@ -31,12 +31,22 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CountryGroupCountry (Properties ctx, int C_CountryGroupCountry_ID, String trxName)
     {
       super (ctx, C_CountryGroupCountry_ID, trxName);
+      /** if (C_CountryGroupCountry_ID == 0)
+        {
+			setC_CountryGroupCountry_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CountryGroupCountry (Properties ctx, int C_CountryGroupCountry_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CountryGroupCountry_ID, trxName, virtualColumns);
       /** if (C_CountryGroupCountry_ID == 0)
         {
 			setC_CountryGroupCountry_ID (0);

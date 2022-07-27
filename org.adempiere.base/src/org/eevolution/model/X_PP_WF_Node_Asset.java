@@ -31,12 +31,25 @@ public class X_PP_WF_Node_Asset extends PO implements I_PP_WF_Node_Asset, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_WF_Node_Asset (Properties ctx, int PP_WF_Node_Asset_ID, String trxName)
     {
       super (ctx, PP_WF_Node_Asset_ID, trxName);
+      /** if (PP_WF_Node_Asset_ID == 0)
+        {
+			setA_Asset_ID (0);
+			setAD_WF_Node_ID (0);
+			setPP_WF_Node_Asset_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_WF_Node_Asset (Properties ctx, int PP_WF_Node_Asset_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_WF_Node_Asset_ID, trxName, virtualColumns);
       /** if (PP_WF_Node_Asset_ID == 0)
         {
 			setA_Asset_ID (0);

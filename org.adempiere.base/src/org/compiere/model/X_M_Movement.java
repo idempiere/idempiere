@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Movement
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_Movement")
 public class X_M_Movement extends PO implements I_M_Movement, I_Persistent 
 {
@@ -34,12 +34,34 @@ public class X_M_Movement extends PO implements I_M_Movement, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220321L;
 
     /** Standard Constructor */
     public X_M_Movement (Properties ctx, int M_Movement_ID, String trxName)
     {
       super (ctx, M_Movement_ID, trxName);
+      /** if (M_Movement_ID == 0)
+        {
+			setC_DocType_ID (0);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+			setIsInTransit (false);
+			setM_Movement_ID (0);
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setPosted (false);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Movement (Properties ctx, int M_Movement_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Movement_ID, trxName, virtualColumns);
       /** if (M_Movement_ID == 0)
         {
 			setC_DocType_ID (0);
@@ -644,6 +666,8 @@ public class X_M_Movement extends PO implements I_M_Movement, I_Persistent
 	public static final String FREIGHTCOSTRULE_FreightIncluded = "I";
 	/** Line = L */
 	public static final String FREIGHTCOSTRULE_Line = "L";
+	/** Customer Account = U */
+	public static final String FREIGHTCOSTRULE_CustomerAccount = "U";
 	/** Set Freight Cost Rule.
 		@param FreightCostRule Method for charging Freight
 	*/

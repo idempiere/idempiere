@@ -33,6 +33,7 @@ import org.compiere.model.MCurrency;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MMovement;
 import org.compiere.model.MRevenueRecognitionPlan;
+import org.compiere.model.MUOM;
 import org.compiere.model.X_C_AcctSchema_Element;
 import org.compiere.model.X_Fact_Acct;
 import org.compiere.util.DB;
@@ -1206,8 +1207,14 @@ public final class FactLine extends X_Fact_Acct
 				setC_Tax_ID(fact.getC_Tax_ID());
 				//	Org for cross charge
 				setAD_Org_ID (fact.getAD_Org_ID());
-				if (fact.getQty() != null)
-					setQty(fact.getQty().negate());
+				if (fact.getQty() != null) {
+					if (getC_UOM_ID() != 0)
+					{
+						int precision = MUOM.getPrecision(getCtx(), getC_UOM_ID());
+						setQty(fact.getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
+					} else
+						setQty(fact.getQty().multiply(multiplier).negate().stripTrailingZeros());
+				}
 			}
 			else
 				log.warning(new StringBuilder("Not Found (try later) ")

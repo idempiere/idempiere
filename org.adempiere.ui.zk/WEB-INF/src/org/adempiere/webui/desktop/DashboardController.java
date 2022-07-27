@@ -64,6 +64,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.MSysConfig;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -103,6 +104,9 @@ import org.zkoss.zul.Vlayout;
  */
 public class DashboardController implements EventListener<Event> {
 
+	/**	Logger							*/
+	protected transient CLogger	log = CLogger.getCLogger (getClass());
+	
 	private static final String PANEL_EMPTY_ATTR = "panel.empty";
 	private final static CLogger logger = CLogger.getCLogger(DashboardController.class);
 	private Component prevParent;
@@ -117,7 +121,7 @@ public class DashboardController implements EventListener<Event> {
 	private boolean isShowInDashboard;
 	private int noOfCols;
 	
-	private final static int DEFAULT_DASHBOARD_WIDTH = 95;
+	private final static int DEFAULT_DASHBOARD_WIDTH = 99;
 	
 	public DashboardController() {
 		dashboardLayout = new Anchorlayout();
@@ -470,7 +474,10 @@ public class DashboardController implements EventListener<Event> {
     		//link to open performance detail
     		Div div = new Div();
     		Toolbarbutton link = new Toolbarbutton();
-            link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
+    		if (ThemeManager.isUseFontIconForImage())
+    			link.setIconSclass("z-icon-Zoom");
+    		else
+    			link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
             link.setAttribute("PA_Goal_ID", PA_Goal_ID);
             link.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
@@ -546,7 +553,7 @@ public class DashboardController implements EventListener<Event> {
 	        		chartPanel.getChildren().clear();
 	        		ChartModel model = new ChartModel();
 	        		model.chart = chartModel;
-	        		renderChart(chartPanel, width, height, model);
+	        		renderChart(chartPanel, width, height, model, dc.isShowTitle());
 				}
 			});
     	}
@@ -863,29 +870,37 @@ public class DashboardController implements EventListener<Event> {
 		int Record_ID = 0;
 		//
 		MPInstance pInstance = new MPInstance(process, Record_ID);
-		fillParameter(pInstance, parameters);
-		//
-		ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(),
-			AD_Table_ID, Record_ID);
-		pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
-		pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
-		pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());		
-		if (!process.processIt(pi, null) && pi.getClassName() != null) 
-			throw new IllegalStateException("Process failed: (" + pi.getClassName() + ") " + pi.getSummary());
-	
-		//	Report
-		ReportEngine re = ReportEngine.get(Env.getCtx(), pi);
-		if (re == null)
-			throw new IllegalStateException("Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
-				+ " - " + process.getName());
+		pInstance.setIsProcessing(true);
+		pInstance.saveEx();
+		try {
+			fillParameter(pInstance, parameters);
+			//
+			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(),
+				AD_Table_ID, Record_ID);
+			pi.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
+			pi.setAD_Client_ID(Env.getAD_Client_ID(Env.getCtx()));
+			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());		
+			if (!process.processIt(pi, null) && pi.getClassName() != null) 
+				throw new IllegalStateException("Process failed: (" + pi.getClassName() + ") " + pi.getSummary());
 		
-		return re;
+			//	Report
+			ReportEngine re = ReportEngine.get(Env.getCtx(), pi);
+			if (re == null)
+				throw new IllegalStateException("Cannot create Report AD_Process_ID=" + process.getAD_Process_ID()
+					+ " - " + process.getName());
+			return re;
+		}
+		finally {			
+			pInstance.setIsProcessing(false);
+			pInstance.saveEx();
+		}
+		
 	}
 
 	public AMedia generateReport(int AD_Process_ID, String parameters) throws Exception {
 		ReportEngine re = runReport(AD_Process_ID, parameters);
 
-		File file = File.createTempFile(re.getName(), ".html");		
+		File file = FileUtil.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(Executions.getCurrent().getContextPath(), "rp", 
 				SessionManager.getAppDesktop().getComponent().getUuid()));
 		return new AMedia(re.getName(), "html", "text/html", file, false);
@@ -907,9 +922,13 @@ public class DashboardController implements EventListener<Event> {
 				String value = s.substring(pos + 1);
 				paramMap.put(key, value);
 			}
-			MPInstancePara[] iParams = pInstance.getParameters();
-			for (MPInstancePara iPara : iParams)
+			MProcessPara[] processParams = pInstance.getProcessParameters();
+			for (int pi = 0; pi < processParams.length; pi++)
 			{
+				MPInstancePara iPara = new MPInstancePara (pInstance, processParams[pi].getSeqNo());
+				iPara.setParameterName(processParams[pi].getColumnName());
+				iPara.setInfo(processParams[pi].getName());
+				
 				String variable = paramMap.get(iPara.getParameterName());
 
 				if (Util.isEmpty(variable))
@@ -966,6 +985,11 @@ public class DashboardController implements EventListener<Event> {
 					 {
 						 continue;
 					 }
+					 if( DisplayType.isText(iPara.getDisplayType())
+								&& Util.isEmpty(String.valueOf(value))) {
+						if (log.isLoggable(Level.FINE)) log.fine(iPara.getParameterName() + " - empty string");
+							break;
+					}
 
 					 //	Convert to Type				
 					 if (DisplayType.isNumeric(iPara.getDisplayType()))
@@ -1101,10 +1125,10 @@ public class DashboardController implements EventListener<Event> {
 		}			
 	}
 
-	private void renderChart(final Div chartPanel, int width, int height, ChartModel model) {
+	private void renderChart(final Div chartPanel, int width, int height, ChartModel model, boolean showTitle) {
 		List<IChartRendererService> list = Extensions.getChartRendererServices();
 		for (IChartRendererService renderer : list) {
-			if (renderer.renderChart(chartPanel, width, height, model))
+			if (renderer.renderChart(chartPanel, width, height, model, showTitle))
 				break;
 		}
 	}

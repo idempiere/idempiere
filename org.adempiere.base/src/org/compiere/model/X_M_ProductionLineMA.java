@@ -34,12 +34,24 @@ public class X_M_ProductionLineMA extends PO implements I_M_ProductionLineMA, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ProductionLineMA (Properties ctx, int M_ProductionLineMA_ID, String trxName)
     {
       super (ctx, M_ProductionLineMA_ID, trxName);
+      /** if (M_ProductionLineMA_ID == 0)
+        {
+			setM_AttributeSetInstance_ID (0);
+			setMovementQty (Env.ZERO);
+			setM_ProductionLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductionLineMA (Properties ctx, int M_ProductionLineMA_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductionLineMA_ID, trxName, virtualColumns);
       /** if (M_ProductionLineMA_ID == 0)
         {
 			setM_AttributeSetInstance_ID (0);

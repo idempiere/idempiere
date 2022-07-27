@@ -31,12 +31,25 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp_Detail (Properties ctx, int AD_Package_Exp_Detail_ID, String trxName)
     {
       super (ctx, AD_Package_Exp_Detail_ID, trxName);
+      /** if (AD_Package_Exp_Detail_ID == 0)
+        {
+			setAD_Package_Exp_Detail_ID (0);
+			setAD_Package_Exp_ID (0);
+			setProcessing (false);
+			setType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Package_Exp_Detail (Properties ctx, int AD_Package_Exp_Detail_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Package_Exp_Detail_ID, trxName, virtualColumns);
       /** if (AD_Package_Exp_Detail_ID == 0)
         {
 			setAD_Package_Exp_Detail_ID (0);

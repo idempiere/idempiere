@@ -13,7 +13,13 @@
  *****************************************************************************/
 package org.compiere.apps.form;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.compiere.model.MArchive;
@@ -28,43 +34,66 @@ import org.compiere.util.TimeUtil;
 public class Archive {
 	
 	/**	Window No			*/
-	public int         m_WindowNo = 0;
+	protected int         m_WindowNo = 0;
 	/**	The Archives		*/
-	public MArchive[]	m_archives = new MArchive[0];
+	protected MArchive[]	m_archives = new MArchive[0];
 	/** Archive Index		*/
-	public int			m_index = 0;
+	protected int			m_index = 0;
 	/** Table direct		*/
-	public int 		m_AD_Table_ID = 0;
+	protected int 		m_AD_Table_ID = 0;
 	/** Record direct		*/
-	public int 		m_Record_ID = 0;
+	protected int 		m_Record_ID = 0;
 	
 	/**	Logger			*/
-	public static final CLogger log = CLogger.getCLogger(Archive.class);
+	protected static final CLogger log = CLogger.getCLogger(Archive.class);
 
+	/** optional trx name **/
+	private String m_trxName = null;
+	
+	/**
+	 * 
+	 * @return KeyNamePair array of AD_Process records
+	 */
 	public KeyNamePair[] getProcessData()
 	{
 		// Processes
 		final MRole role = MRole.getDefault(); // metas
-//		int AD_Role_ID = Env.getAD_Role_ID(Env.getCtx());
 		
 		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Process");
 		String lang = Env.getAD_Language(Env.getCtx());
-		// TODO: ASP - implement process and window access ASP control
-		String sql = "SELECT DISTINCT p.AD_Process_ID,"
+		String sql = "SELECT p.AD_Process_ID,"
 				+ (trl ? "trl.Name" : "p.Name ")
-			+ " FROM AD_Process p INNER JOIN AD_Process_Access pa ON (p.AD_Process_ID=pa.AD_Process_ID) "
+			+ " FROM AD_Process p "
 			+ (trl ? "LEFT JOIN AD_Process_Trl trl on (trl.AD_Process_ID=p.AD_Process_ID and trl.AD_Language=" + DB.TO_STRING(lang) + ")" : "") 
-			+ " WHERE "+role.getIncludedRolesWhereClause("pa.AD_Role_ID", null) // metas: use included roles
-			+ " AND p.IsReport='Y' AND p.IsActive='Y' AND pa.IsActive='Y' "
+			+ " WHERE p.IsReport='Y' AND p.IsActive='Y' "
 			+ "ORDER BY 2"; 
-		return DB.getKeyNamePairs(sql, true);
+		
+		List<KeyNamePair> list = new ArrayList<>();
+		list.add (new KeyNamePair(-1, ""));
+		try (PreparedStatement pstmt = DB.prepareStatement(sql, m_trxName)) {
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next()) {
+				int AD_Process_ID = rs.getInt(1);
+				String name = rs.getString(2);
+				Boolean access = role.getProcessAccess(AD_Process_ID);
+				if (access != null) {
+					list.add(new KeyNamePair(AD_Process_ID, name));
+				}
+			}
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, e.getMessage(), e);
+		} 
+		return list.toArray(new KeyNamePair[0]);
 	}
 	
+	/**
+	 * 
+	 * @return KeyNamePair array of AD_Table records
+	 */
 	public KeyNamePair[] getTableData()
 	{
 		//	Tables
 		final MRole role = MRole.getDefault(); // metas
-//		int AD_Role_ID = Env.getAD_Role_ID(Env.getCtx());
 		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Table");
 		String lang = Env.getAD_Language(Env.getCtx());
 		String sql = "SELECT DISTINCT t.AD_Table_ID,"
@@ -75,9 +104,13 @@ public class Archive {
 			+ " WHERE "+role.getIncludedRolesWhereClause("wa.AD_Role_ID", null) // metas
 			+ " AND t.IsActive='Y' AND tab.IsActive='Y' "
 			+ "ORDER BY 2";
-		return DB.getKeyNamePairs(sql, true);
+		return DB.getKeyNamePairs(m_trxName, sql, true);
 	}
 		
+	/**
+	 * 
+	 * @return KeyNamePair array of user records
+	 */
 	public KeyNamePair[] getUserData()
 	{
 		//	Internal Users
@@ -85,7 +118,9 @@ public class Archive {
 			+ "FROM AD_User u WHERE EXISTS "
 				+"(SELECT * FROM AD_User_Roles ur WHERE u.AD_User_ID=ur.AD_User_ID) "
 			+ "ORDER BY 2";
-		return DB.getKeyNamePairs(sql, true);
+		MRole role = MRole.getDefault();
+		sql = role.addAccessSQL(sql, "u", true, false);
+		return DB.getKeyNamePairs(m_trxName, sql, true);
 	}	//	dynInit
 	
 	/**
@@ -96,21 +131,28 @@ public class Archive {
 	 */
 	public boolean isSame(String s1, String s2)
 	{
-		if (s1 == null)
-			return s2 == null;
-		else if (s2 == null)
-			return false;
-		else
-			return s1.equals(s2);
+		return Objects.equals(s1, s2);
 	}	//	isSame
 	
-	/**************************************************************************
-	 * 	Create Query
+	/**
+	 * retrieve archive record
+	 * @param reports IsReport filter
+	 * @param process AD_Process_ID filter
+	 * @param table AD_Table_ID filter
+	 * @param C_BPartner_ID C_BPartner_ID filter
+	 * @param name archive name filter
+	 * @param description archive description filter
+	 * @param help archive help filter
+	 * @param createdBy CreatedBy filter
+	 * @param createdFrom Created >= createdFrom
+	 * @param createdTo Created <= createdTo
 	 */
 	public void cmd_query(boolean reports, KeyNamePair process, KeyNamePair table, Integer C_BPartner_ID, 
 			String name, String description, String help, KeyNamePair createdBy, 
 			Timestamp createdFrom, Timestamp createdTo)
 	{
+		m_archives = new MArchive[0];
+		
 		StringBuilder sql = new StringBuilder();
 		MRole role = MRole.getDefault();
 		if (!role.isCanReport())
@@ -214,7 +256,23 @@ public class Archive {
 		if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
 		//metas: Bugfix zu included_Role ende
 		//
-		m_archives = MArchive.get(Env.getCtx(), sql.toString());
+		m_archives = MArchive.get(Env.getCtx(), sql.toString(), m_trxName);
 		if (log.isLoggable(Level.INFO)) log.info("Length=" + m_archives.length);
 	}	//	cmd_query
+
+	/**
+	 * 
+	 * @return array of archive records
+	 */
+	public MArchive[] getArchives() {
+		return m_archives;
+	}
+	
+	/**
+	 * set optional trx name
+	 * @param trxName
+	 */
+	public void setTrxName(String trxName) {
+		m_trxName = trxName;
+	}
 }

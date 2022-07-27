@@ -46,7 +46,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -61,7 +61,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5693788724825608611L;
+	private static final long serialVersionUID = 7542581302442072662L;
 
 	/**
 	 *	Public Constructor.
@@ -255,7 +255,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			while (rs.next())
 			{
 				MPrintFormatItem pfi = new MPrintFormatItem(p_ctx, rs, get_TrxName());
-				if (role.isColumnAccess(getAD_Table_ID(), pfi.getAD_Column_ID(), true))
+				if (role.isColumnAccess(getAD_Table_ID(), pfi.getAD_Column_ID(), true, get_TrxName()))
 					list.add (pfi);
 			}
 		}
@@ -300,10 +300,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			.list();
 
 		MRole role = MRole.getDefault(getCtx(), false);
-		for (MPrintFormatItem pfi : list) {
-			if (! role.isColumnAccess(getAD_Table_ID(), pfi.getAD_Column_ID(), true))
-				list.remove(pfi);
-		}
+		list.removeIf(pfi -> !role.isColumnAccess(getAD_Table_ID(), pfi.getAD_Column_ID(), true));
+
 		MPrintFormatItem[] retValue = new MPrintFormatItem[list.size()];
 		list.toArray(retValue);
 		return retValue;
@@ -1153,7 +1151,44 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	}
 
 	/** Cached Formats						*/
-	static private ImmutableIntPOCache<Integer,MPrintFormat> s_formats = new ImmutableIntPOCache<Integer,MPrintFormat>(Table_Name, 30);
+	static private ImmutablePOCache<String,MPrintFormat> s_formats = new ImmutablePOCache<String,MPrintFormat>(Table_Name, 30) {
+		private static final long serialVersionUID = 2428566381289874703L;
+
+		@Override
+		public int reset(int recordId) {
+			if (recordId <= 0)
+				return reset();
+			
+			if (cache.isEmpty() && nullList.isEmpty())
+				return 0;
+			
+			StringBuilder key = new StringBuilder()
+					.append(recordId).append("|");
+			int removed = 0;
+			if (!nullList.isEmpty()) {
+				String[] nullKeys = nullList.toArray(new String[0]);
+				for(String nullKey : nullKeys) {
+					if (nullKey.startsWith(key.toString())) {
+						if (nullList.remove(nullKey))
+							removed++;
+					}
+				}
+			}
+			
+			if (!cache.isEmpty()) {
+				String[] cacheKeys = cache.keySet().toArray(new String[0]);
+				for(String cacheKey : cacheKeys) {
+					if (cacheKey.startsWith(key.toString())) {
+						MPrintFormat v = cache.remove(cacheKey);
+						if (v != null)
+							removed++;
+					}
+				}
+			}
+			return removed;
+		}
+		
+	};
 
 	/**
 	 * 	Get Format from cache (immutable)
@@ -1174,16 +1209,18 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	static public MPrintFormat get (Properties ctx, int AD_PrintFormat_ID, boolean readFromDisk)
 	{
-		Integer key = Integer.valueOf(AD_PrintFormat_ID);
+		StringBuilder key = new StringBuilder()
+				.append(AD_PrintFormat_ID).append("|")
+				.append(MRole.getDefault().getAD_Role_ID());
 		MPrintFormat pf = null;
 		if (!readFromDisk)
-			pf = s_formats.get(ctx, key, e -> new MPrintFormat(ctx, e));
+			pf = s_formats.get(ctx, key.toString(), e -> new MPrintFormat(ctx, e));
 		if (pf == null)
 		{
 			pf = new MPrintFormat (ctx, AD_PrintFormat_ID, (String)null);
 			if (pf.get_ID() == AD_PrintFormat_ID)
 			{
-				s_formats.put(key, pf, e -> new MPrintFormat(Env.getCtx(), e));
+				s_formats.put(key.toString(), pf, e -> new MPrintFormat(Env.getCtx(), e));
 				return pf;
 			}
 			return null;
@@ -1235,8 +1272,10 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	static public void deleteFromCache (int AD_PrintFormat_ID)
 	{
-		Integer key = Integer.valueOf(AD_PrintFormat_ID);
-		s_formats.put(key, null);
+		StringBuilder key = new StringBuilder()
+				.append(AD_PrintFormat_ID).append("|")
+				.append(MRole.getDefault().getAD_Role_ID());
+		s_formats.put(key.toString(), null);
 	}	//	deleteFromCache
 
     //begin vpj-cd e-evolution
@@ -1288,6 +1327,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		
 		query.setParameters(lsParameter);
 		
+		query.setOnlyActiveRecords(true);
 		query.setOrderBy(" ORDER BY AD_Client_ID DESC, IsDefault DESC, Name ");
 		
 		// query print fomart just in this client  

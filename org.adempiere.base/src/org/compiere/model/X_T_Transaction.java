@@ -33,12 +33,29 @@ public class X_T_Transaction extends PO implements I_T_Transaction, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_T_Transaction (Properties ctx, int T_Transaction_ID, String trxName)
     {
       super (ctx, T_Transaction_ID, trxName);
+      /** if (T_Transaction_ID == 0)
+        {
+			setAD_PInstance_ID (0);
+			setM_AttributeSetInstance_ID (0);
+			setM_Locator_ID (0);
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+			setMovementQty (Env.ZERO);
+			setMovementType (null);
+			setM_Product_ID (0);
+			setM_Transaction_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_Transaction (Properties ctx, int T_Transaction_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_Transaction_ID, trxName, virtualColumns);
       /** if (T_Transaction_ID == 0)
         {
 			setAD_PInstance_ID (0);

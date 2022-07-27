@@ -34,12 +34,40 @@ public class X_A_Asset_Split extends PO implements I_A_Asset_Split, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Split (Properties ctx, int A_Asset_Split_ID, String trxName)
     {
       super (ctx, A_Asset_Split_ID, trxName);
+      /** if (A_Asset_Split_ID == 0)
+        {
+			setA_Asset_Acct_ID (0);
+// @SQL=SELECT A_Asset_Acct_ID FROM A_Asset_Acct WHERE A_Asset_Acct.A_Asset_Acct_ID=@A_Asset_Acct_ID@
+			setA_Asset_ID (0);
+// @SQL=SELECT A_Asset_ID FROM A_Asset WHERE A_Asset.A_Asset_ID=@A_Asset_ID@
+			setA_Asset_Split_ID (0);
+			setA_Depreciation_Workfile_ID (0);
+// @SQL=SELECT A_Depreciation_Workfile_ID FROM A_Depreciation_Workfile WHERE A_Depreciation_Workfile.A_Depreciation_Workfile_ID=@A_Depreciation_Workfile_ID@
+			setA_QTY_Current (Env.ZERO);
+// @SQL=SELECT A_QTY_Current FROM A_Depreciation_Workfile WHERE A_Depreciation_Workfile.A_Asset_ID=@A_Asset_ID@ and A_Depreciation_Workfile.PostingType='@PostingType@'
+			setA_Split_Type (null);
+			setA_Transfer_Balance_IS (false);
+			setC_Period_ID (0);
+// @Date@
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @Date@
+			setPostingType (null);
+// @SQL=SELECT PostingType FROM A_Depreciation_Workfile WHERE A_Depreciation_Workfile.A_Depreciation_Workfile_ID=@A_Depreciation_Workfile_ID@
+			setProcessed (false);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Split (Properties ctx, int A_Asset_Split_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Split_ID, trxName, virtualColumns);
       /** if (A_Asset_Split_ID == 0)
         {
 			setA_Asset_Acct_ID (0);

@@ -34,12 +34,23 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_Test (Properties ctx, int Test_ID, String trxName)
     {
       super (ctx, Test_ID, trxName);
+      /** if (Test_ID == 0)
+        {
+			setName (null);
+			setTest_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_Test (Properties ctx, int Test_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, Test_ID, trxName, virtualColumns);
       /** if (Test_ID == 0)
         {
 			setName (null);
@@ -528,6 +539,24 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	public String getTest_UU()
 	{
 		return (String)get_Value(COLUMNNAME_Test_UU);
+	}
+
+	/** Set Virtual Quantity.
+		@param TestVirtualQty Used only for testing purposes
+	*/
+	public void setTestVirtualQty (BigDecimal TestVirtualQty)
+	{
+		throw new IllegalArgumentException ("TestVirtualQty is virtual column");	}
+
+	/** Get Virtual Quantity.
+		@return Used only for testing purposes
+	  */
+	public BigDecimal getTestVirtualQty()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TestVirtualQty);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Integer.

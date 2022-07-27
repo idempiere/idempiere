@@ -235,11 +235,12 @@ public class AddAuthorizationForm extends ADForm {
 		this.pInstanceId = pInstanceId;
 		
 		StringBuilder authScript = new StringBuilder()
-				.append("var x = window.outerWidth / 2 + window.screenX - (800 / 2);\n")
-				.append("var y = window.outerHeight / 2 + window.screenY - (600 / 2);\n")
-				.append("var authWindow = window.open('").append(authURL).append("','_blank','width=800, height=600, top='+y+', left='+x);\n")
-				.append("var timer = zk.Widget.$('#").append(timer.getUuid()).append("');\n")
-				.append("timer.windowRef = authWindow; timer.play();");
+				.append("(function(){let x = window.outerWidth / 2 + window.screenX - (800 / 2);\n")
+				.append("let y = window.outerHeight / 2 + window.screenY - (600 / 2);\n")
+				.append("let authWindow = window.open('").append(authURL).append("','_blank','width=800, height=600, top='+y+', left='+x);\n")
+				.append("let timer = zk.Widget.$('#").append(timer.getUuid()).append("');\n")
+				.append("timer.windowRef = authWindow; timer.play();")
+				.append("})()");
 		// Note: the listener can be set to onBind instead of onClick to open the popup without user intervention,
 		//       but in this case the browser popup restrictions apply.
 		//       As most browser block popups by default I prefer to go the safest route using onClick
@@ -250,8 +251,8 @@ public class AddAuthorizationForm extends ADForm {
 		StringBuilder timerScript = new StringBuilder()
 				.append("function sleep (time) {return new Promise((resolve) => setTimeout(resolve, time));}\n")
 				.append("try {\n")
-				.append("  var t = zk.Widget.$('#").append(msgBox.getUuid()).append("');\n")
-				.append("  var authWindow = this.windowRef;\n")
+				.append("  let t = zk.Widget.$('#").append(msgBox.getUuid()).append("');\n")
+				.append("  let authWindow = this.windowRef;\n")
 				.append("  if (authWindow && authWindow.closed) {\n")
 				.append("    t.setValue('! ").append(msgError).append(msgFailure).append("'); t.fireOnChange(); \n") // prefix "! " - see onMsgBoxChanged
 				.append("    this.stop();\n")
@@ -260,11 +261,11 @@ public class AddAuthorizationForm extends ADForm {
 				.append("  if (authWindow && authWindow.location) {\n")
 				.append("    if (authWindow.location.href.indexOf('/callback.jsp') >= 0) {\n")
 				.append("      this.stop();\n")
-				.append("      var url = new URL(authWindow.location.href);\n")
-				.append("      var error = url.searchParams.get('error');\n")
-				.append("      var msg = url.searchParams.get('msg');\n")
+				.append("      let url = new URL(authWindow.location.href);\n")
+				.append("      let error = url.searchParams.get('error');\n")
+				.append("      let msg = url.searchParams.get('msg');\n")
 				.append("      if (error) {\n" )
-				.append("        var msg = '").append(msgError).append("'+error;\n")
+				.append("        let msg = '").append(msgError).append("'+error;\n")
 				.append("        t.setValue(msg, false); t.fireOnChange();\n")
 				.append("      } else if (msg) {\n")
 				.append("        t.setValue(msg, false); t.fireOnChange();\n")

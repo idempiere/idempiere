@@ -67,6 +67,8 @@ public class MCommissionLine extends X_C_CommissionLine
 		super(ctx, rs, trxName);
 	}	//	MCommissionLine
 
-	
-	
+	public MCommissionLine(Properties ctx, int C_CommissionLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_CommissionLine_ID, trxName, virtualColumns);
+	}
+
 }	//	MCommissionLine

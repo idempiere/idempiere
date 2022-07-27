@@ -30,12 +30,27 @@ public class X_C_AddressValidation extends PO implements I_C_AddressValidation, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_AddressValidation (Properties ctx, int C_AddressValidation_ID, String trxName)
     {
       super (ctx, C_AddressValidation_ID, trxName);
+      /** if (C_AddressValidation_ID == 0)
+        {
+			setC_AddressValidationCfg_ID (0);
+			setC_AddressValidation_ID (0);
+			setConnectionPassword (null);
+			setName (null);
+			setSeqNo (0);
+			setUserID (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AddressValidation (Properties ctx, int C_AddressValidation_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AddressValidation_ID, trxName, virtualColumns);
       /** if (C_AddressValidation_ID == 0)
         {
 			setC_AddressValidationCfg_ID (0);

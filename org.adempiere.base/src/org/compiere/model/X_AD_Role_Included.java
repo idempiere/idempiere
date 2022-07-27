@@ -30,12 +30,25 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Role_Included (Properties ctx, int AD_Role_Included_ID, String trxName)
     {
       super (ctx, AD_Role_Included_ID, trxName);
+      /** if (AD_Role_Included_ID == 0)
+        {
+			setAD_Role_ID (0);
+			setIncluded_Role_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Role_Included WHERE AD_Role_ID=@AD_Role_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Role_Included (Properties ctx, int AD_Role_Included_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Role_Included_ID, trxName, virtualColumns);
       /** if (AD_Role_Included_ID == 0)
         {
 			setAD_Role_ID (0);

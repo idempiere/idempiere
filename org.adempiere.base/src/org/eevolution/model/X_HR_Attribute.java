@@ -34,12 +34,24 @@ public class X_HR_Attribute extends PO implements I_HR_Attribute, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_HR_Attribute (Properties ctx, int HR_Attribute_ID, String trxName)
     {
       super (ctx, HR_Attribute_ID, trxName);
+      /** if (HR_Attribute_ID == 0)
+        {
+			setHR_Attribute_ID (0);
+			setHR_Concept_ID (0);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Attribute (Properties ctx, int HR_Attribute_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Attribute_ID, trxName, virtualColumns);
       /** if (HR_Attribute_ID == 0)
         {
 			setHR_Attribute_ID (0);

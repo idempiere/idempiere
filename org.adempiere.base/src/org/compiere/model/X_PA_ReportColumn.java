@@ -33,12 +33,56 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_ReportColumn (Properties ctx, int PA_ReportColumn_ID, String trxName)
     {
       super (ctx, PA_ReportColumn_ID, trxName);
+      /** if (PA_ReportColumn_ID == 0)
+        {
+			setColumnType (null);
+// R
+			setIsIncludeNullsActivity (false);
+// N
+			setIsIncludeNullsBPartner (false);
+// N
+			setIsIncludeNullsCampaign (false);
+// N
+			setIsIncludeNullsElementValue (false);
+// N
+			setIsIncludeNullsLocation (false);
+// N
+			setIsIncludeNullsOrg (false);
+// N
+			setIsIncludeNullsOrgTrx (false);
+// N
+			setIsIncludeNullsProduct (false);
+// N
+			setIsIncludeNullsProject (false);
+// N
+			setIsIncludeNullsSalesRegion (false);
+// N
+			setIsIncludeNullsUserElement1 (false);
+// N
+			setIsIncludeNullsUserElement2 (false);
+// N
+			setIsPrinted (true);
+// Y
+			setName (null);
+			setPA_ReportColumn_ID (0);
+			setPA_ReportColumnSet_ID (0);
+			setPostingType (null);
+// A
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM PA_ReportColumn WHERE PA_ReportColumnSet_ID=@PA_ReportColumnSet_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_ReportColumn (Properties ctx, int PA_ReportColumn_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_ReportColumn_ID, trxName, virtualColumns);
       /** if (PA_ReportColumn_ID == 0)
         {
 			setColumnType (null);

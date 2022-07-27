@@ -31,12 +31,23 @@ public class X_AD_LabelPrinter extends PO implements I_AD_LabelPrinter, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_LabelPrinter (Properties ctx, int AD_LabelPrinter_ID, String trxName)
     {
       super (ctx, AD_LabelPrinter_ID, trxName);
+      /** if (AD_LabelPrinter_ID == 0)
+        {
+			setAD_LabelPrinter_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_LabelPrinter (Properties ctx, int AD_LabelPrinter_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_LabelPrinter_ID, trxName, virtualColumns);
       /** if (AD_LabelPrinter_ID == 0)
         {
 			setAD_LabelPrinter_ID (0);

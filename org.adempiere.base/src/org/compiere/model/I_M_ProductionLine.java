@@ -266,32 +266,6 @@ public interface I_M_ProductionLine
 	  */
 	public boolean isProcessed();
 
-    /** Column name ProductType */
-    public static final String COLUMNNAME_ProductType = "ProductType";
-
-	/** Set Product Type.
-	  * Type of product
-	  */
-	public void setProductType (String ProductType);
-
-	/** Get Product Type.
-	  * Type of product
-	  */
-	public String getProductType();
-
-    /** Column name QtyAvailable */
-    public static final String COLUMNNAME_QtyAvailable = "QtyAvailable";
-
-	/** Set Available Quantity.
-	  * Available Quantity (On Hand - Reserved)
-	  */
-	public void setQtyAvailable (BigDecimal QtyAvailable);
-
-	/** Get Available Quantity.
-	  * Available Quantity (On Hand - Reserved)
-	  */
-	public BigDecimal getQtyAvailable();
-
     /** Column name QtyUsed */
     public static final String COLUMNNAME_QtyUsed = "QtyUsed";
 

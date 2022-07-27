@@ -388,10 +388,14 @@ public final class ImpFormat
 				if (!concat) {
 					entry.append(row.getColumnName());
 					entry.append("=");
-					if (row.isString())
+					if (row.isString()) {
 						entry.append("'");
-					else if (row.isDate())
-						entry.append("TO_DATE('");
+					} else if (row.isDate()) {
+						if (DB.isPostgreSQL())
+							entry.append("TO_TIMESTAMP('");
+						else
+							entry.append("TO_DATE('");
+					}
 				}
 			}
 

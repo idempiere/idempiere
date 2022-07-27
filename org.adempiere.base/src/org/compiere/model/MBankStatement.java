@@ -52,7 +52,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4286511528899179483L;
+	private static final long serialVersionUID = -5635804381201264475L;
 
 	/**
 	 * 	Standard Constructor
@@ -313,6 +313,12 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			MBankStatementLine line = lines[i];
 			if (!line.isActive())
 				continue;
+
+			if (!line.isDateConsistentIfUsedForPosting()) {
+				m_processMsg = Msg.getMsg(getCtx(), "BankStatementLinePeriodNotSameAsHeader", new Object[] {line.getLine()});
+				return DocAction.STATUS_Invalid;
+			}
+
 			total = total.add(line.getStmtAmt());
 		}
 		setStatementDifference(total);
@@ -644,5 +650,9 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			|| DOCSTATUS_Closed.equals(ds)
 			|| DOCSTATUS_Reversed.equals(ds);
 	}	//	isComplete
+
+	public static boolean isPostWithDateFromLine(int clientID) {
+		return MSysConfig.getBooleanValue(MSysConfig.BANK_STATEMENT_POST_WITH_DATE_FROM_LINE, false, Env.getAD_Client_ID(Env.getCtx()));
+	}
 	
 }	//	MBankStatement

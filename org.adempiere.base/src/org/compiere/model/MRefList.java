@@ -28,6 +28,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *  Reference List Value
@@ -39,12 +41,14 @@ import org.compiere.util.ValueNamePair;
  *  		<li>BF [ 1748449 ] Info Account - Posting Type is not translated
  *  		<li>FR [ 2694043 ] Query. first/firstOnly usage best practice
  */
-public class MRefList extends X_AD_Ref_List
+public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2342762307330992884L;
+	private static final long serialVersionUID = -2704284822855131148L;
+	/**	RefList Value Cache						*/
+	private static ImmutablePOCache<String,MRefList> s_ref_value_cache	= new ImmutablePOCache<String,MRefList>(Table_Name, 40);
 
 	/**
 	 * 	Get Reference List 
@@ -54,12 +58,47 @@ public class MRefList extends X_AD_Ref_List
 	 *	@param trxName transaction
 	 *	@return List or null
 	 */
-	public static MRefList get (Properties ctx, int AD_Reference_ID, String Value, String trxName)
+	public static synchronized MRefList get (Properties ctx, int AD_Reference_ID, String Value, String trxName)
 	{
-		return new Query(ctx, Table_Name, "AD_Reference_ID=? AND Value=?", trxName)
+		StringBuilder sb = new StringBuilder(AD_Reference_ID)
+								.append("|")
+								.append(Value);
+		String key = sb.toString();
+		MRefList rl = s_ref_value_cache.get(ctx, key, e -> new MRefList(ctx, e));
+		if (rl == null)
+		{
+			rl = new Query(ctx, Table_Name, "AD_Reference_ID=? AND Value=?", trxName)
 					.setParameters(AD_Reference_ID, Value)
-					.firstOnly();
+					.first();
+			if (rl != null)
+			{
+				s_ref_value_cache.put(key, rl, e -> new MRefList(Env.getCtx(), e));
+			}
+		}
+		return rl;
 	}	//	get
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 */
+	public MRefList(Properties ctx, MRefList copy) 
+	{
+		this(ctx, copy, (String) null);
+	}
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param copy
+	 * @param trxName
+	 */
+	public MRefList(Properties ctx, MRefList copy, String trxName) 
+	{
+		this(ctx, 0, trxName);
+		copyPO(copy);
+	}
 	
 	/**
 	 * Get Reference List Value Name (cached)
@@ -222,6 +261,19 @@ public class MRefList extends X_AD_Ref_List
 	 * @return List or null
 	 */
 	public static ValueNamePair[] getList (Properties ctx, int AD_Reference_ID, boolean optional, String orderBy) {
+		return getList(ctx, AD_Reference_ID, optional, "", orderBy);
+	}
+	
+	/**
+	 * Get Reference List (translated)
+	 * @param ctx context
+	 * @param AD_Reference_ID reference
+	 * @param optional if true add "",""
+	 * @param additionalWhereClause
+	 * @param orderBy N-Name, V-Value, D-Default (IsOrderByValue)
+	 * @return List or null
+	 */
+	public static ValueNamePair[] getList (Properties ctx, int AD_Reference_ID, boolean optional, String additionalWhereClause, String orderBy) {
 
 		String language = Env.getAD_Language(ctx);
 		boolean orderByValue = MReference.get(AD_Reference_ID).isOrderByValue();
@@ -253,6 +305,9 @@ public class MRefList extends X_AD_Ref_List
 			.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
 			.append(language).append("')");
 		sql.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_ID);
+
+		if (!Util.isEmpty(additionalWhereClause, true))
+			sql.append(" AND (").append(additionalWhereClause).append(")");
 
 		sql.append(AspFilter.toString());
 		if (orderByValue)
@@ -304,5 +359,13 @@ public class MRefList extends X_AD_Ref_List
 		return getName();
 	}	//	toString
 
+	@Override
+	public PO markImmutable() {
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+		return this;
+	}
 
 }	//	MRef_List

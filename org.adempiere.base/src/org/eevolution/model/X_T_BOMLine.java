@@ -33,12 +33,23 @@ public class X_T_BOMLine extends PO implements I_T_BOMLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_T_BOMLine (Properties ctx, int T_BOMLine_ID, String trxName)
     {
       super (ctx, T_BOMLine_ID, trxName);
+      /** if (T_BOMLine_ID == 0)
+        {
+			setSel_Product_ID (0);
+			setT_BOMLine_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_BOMLine (Properties ctx, int T_BOMLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_BOMLine_ID, trxName, virtualColumns);
       /** if (T_BOMLine_ID == 0)
         {
 			setSel_Product_ID (0);

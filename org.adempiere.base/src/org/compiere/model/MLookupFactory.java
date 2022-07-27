@@ -664,6 +664,11 @@ public class MLookupFactory
 			pstmt = null;
 		}
 
+		boolean showID = DisplayColumn.equals(TableName+"_ID");
+		if (showID) {
+			return getLookup_TableDirEmbed(language, DisplayColumn, BaseTable, BaseColumn);
+		}
+
 		// If it's self referencing then use other alias - teo_sarca [ 1739544 ]
 		if (TableName.equals(BaseTable)) {
 			TableNameAlias = TableName + "1";
@@ -679,7 +684,7 @@ public class MLookupFactory
 			embedSQL.append(TableNameAlias).append(".Value||'").append(separator).append("'||");
 		}
 
-		MColumn columnDisplay = new MColumn(Env.getCtx(), columnDisplay_ID, null);
+		MColumn columnDisplay = MColumn.get(Env.getCtx(), columnDisplay_ID);
 		if (columnDisplay.isVirtualUIColumn() || columnDisplay.isVirtualSearchColumn())
 		{
 			s_log.warning("Virtual UI Column must not be used as display");

@@ -34,12 +34,38 @@ public class X_GL_JournalLine extends PO implements I_GL_JournalLine, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_GL_JournalLine (Properties ctx, int GL_JournalLine_ID, String trxName)
     {
       super (ctx, GL_JournalLine_ID, trxName);
+      /** if (GL_JournalLine_ID == 0)
+        {
+			setAmtAcctCr (Env.ZERO);
+			setAmtAcctDr (Env.ZERO);
+			setAmtSourceCr (Env.ZERO);
+			setAmtSourceDr (Env.ZERO);
+			setC_ConversionType_ID (0);
+			setC_Currency_ID (0);
+// @C_Currency_ID@
+			setCurrencyRate (Env.ZERO);
+// @CurrencyRate@;1
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+// @DateAcct@
+			setGL_Journal_ID (0);
+			setGL_JournalLine_ID (0);
+			setIsGenerated (false);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM GL_JournalLine WHERE GL_Journal_ID=@GL_Journal_ID@
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_JournalLine (Properties ctx, int GL_JournalLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_JournalLine_ID, trxName, virtualColumns);
       /** if (GL_JournalLine_ID == 0)
         {
 			setAmtAcctCr (Env.ZERO);

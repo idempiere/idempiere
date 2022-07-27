@@ -31,12 +31,27 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_PInstance (Properties ctx, int AD_PInstance_ID, String trxName)
     {
       super (ctx, AD_PInstance_ID, trxName);
+      /** if (AD_PInstance_ID == 0)
+        {
+			setAD_PInstance_ID (0);
+			setAD_Process_ID (0);
+			setIsProcessing (false);
+			setIsRunAsJob (false);
+// N
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PInstance (Properties ctx, int AD_PInstance_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PInstance_ID, trxName, virtualColumns);
       /** if (AD_PInstance_ID == 0)
         {
 			setAD_PInstance_ID (0);

@@ -13,7 +13,7 @@ This program is distributed under LGPL Version 3.0 in the hope that
 it will be useful, but WITHOUT ANY WARRANTY.
 */
 function (out) {
-	var zcls = this.getZclass(),
+	let zcls = this.getZclass(),
 		uid = this.uuid;
 			
 	out.push('<i id="', uid, '" class="',zcls,'"', (!this.isVisible() ? 'style="display:none;"' : ''), '>',

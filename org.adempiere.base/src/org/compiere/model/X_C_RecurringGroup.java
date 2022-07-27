@@ -31,12 +31,24 @@ public class X_C_RecurringGroup extends PO implements I_C_RecurringGroup, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_RecurringGroup (Properties ctx, int C_RecurringGroup_ID, String trxName)
     {
       super (ctx, C_RecurringGroup_ID, trxName);
+      /** if (C_RecurringGroup_ID == 0)
+        {
+			setC_RecurringGroup_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RecurringGroup (Properties ctx, int C_RecurringGroup_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RecurringGroup_ID, trxName, virtualColumns);
       /** if (C_RecurringGroup_ID == 0)
         {
 			setC_RecurringGroup_ID (0);

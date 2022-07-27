@@ -30,12 +30,25 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_B_BidComment (Properties ctx, int B_BidComment_ID, String trxName)
     {
       super (ctx, B_BidComment_ID, trxName);
+      /** if (B_BidComment_ID == 0)
+        {
+			setAD_User_ID (0);
+			setB_BidComment_ID (0);
+			setB_Topic_ID (0);
+			setTextMsg (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_BidComment (Properties ctx, int B_BidComment_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_BidComment_ID, trxName, virtualColumns);
       /** if (B_BidComment_ID == 0)
         {
 			setAD_User_ID (0);

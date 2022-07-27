@@ -134,7 +134,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1180753002653812499L;
+	private static final long serialVersionUID = -7909883495636121689L;
 	
 	protected Grid parameterGrid;
 	private Borderlayout layout;
@@ -399,7 +399,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    					item.setValue(process);
    					item.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
    					if (!Util.isEmpty(data.getImageURL(), true)) {
-   		   	   			item.setImage(ThemeManager.getThemeResource("images/" + data.getImageURL()));
+   						if (ThemeManager.isUseFontIconForImage())
+   		   	   				item.setIconSclass(ThemeManager.getIconSclass(data.getImageURL()));
+   						else
+   							item.setImage(ThemeManager.getThemeResource("images/" + data.getImageURL()));
    		   	   		}
    				}
 			});
@@ -522,7 +525,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    	   		Menuitem ipMenuItem = new Menuitem();
    	   		ipMenuItem.setLabel(process.get_Translation(MProcess.COLUMNNAME_Name));
    	   		if (!Util.isEmpty(infoProcess.getImageURL(), true)) {
-   	   			ipMenuItem.setImage(ThemeManager.getThemeResource("images/" + infoProcess.getImageURL()));
+   	   			if (ThemeManager.isUseFontIconForImage())
+   	   				ipMenuItem.setIconSclass(ThemeManager.getIconSclass(infoProcess.getImageURL()));
+   	   			else
+   	   				ipMenuItem.setImage(ThemeManager.getThemeResource("images/" + infoProcess.getImageURL()));
    	   		}   	   		
    	   		ipMenuItem.setAttribute(PROCESS_ID_KEY, infoProcess.getAD_Process_ID());
    	   		ipMenuItem.addEventListener(Events.ON_CLICK, this);
@@ -2225,7 +2231,24 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (!isLookup() && Util.isEmpty(isSOTrx)) {
 			isSOTrx = "Y";
 		}
-		
+
+		if (infoWindow != null) {
+
+			MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), infoWindow.getAD_InfoWindow_ID());
+
+			if (userDef != null) {
+				if (isSOTrx.equals("N") && userDef.getPO_Window_ID() > 0)
+					return userDef.getPO_Window_ID();
+				if (userDef.getAD_Window_ID() > 0)
+					return userDef.getAD_Window_ID();
+			}
+
+			if (isSOTrx.equals("N") && infoWindow.getPO_Window_ID() > 0)
+				return infoWindow.getPO_Window_ID();
+			if (infoWindow.getAD_Window_ID() > 0)
+				return infoWindow.getAD_Window_ID();
+		}
+
 		return super.getAD_Window_ID(MTable.getTableName(Env.getCtx(), infoWindow.getAD_Table_ID()), isSOTrx.equalsIgnoreCase("Y"));
 	}
 	
@@ -2601,7 +2624,33 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		exportButton.setEnabled(contentPanel.getRowCount() > 0);		
 	}
-	
+
+	/**
+	 * Return (if exists) the editor with the name
+	 * @param columnName
+	 * @return editor
+	 */
+	public WEditor getEditor(String columnName) {
+		for (WEditor editor : editors) {
+			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals(columnName))
+				return editor;
+		}
+		return null;
+	}
+
+	/**
+	 * Return (if exists) the index of the column in the grid
+	 * @param columnName
+	 * @return index of the column
+	 */
+	public int getColumnIndex(String columnName) {
+		for (int i = 0; i < contentPanel.getColumnCount(); i++) {
+			if (p_layout[i].getGridField() != null && p_layout[i].getGridField().getColumnName().equals(columnName))
+				return i;
+		}
+		return -1;
+	}
+
 	private class XlsExportAction implements EventListener<Event>
 	{		
 		@Override

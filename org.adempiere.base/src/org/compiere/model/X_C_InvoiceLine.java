@@ -34,12 +34,41 @@ public class X_C_InvoiceLine extends PO implements I_C_InvoiceLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_InvoiceLine (Properties ctx, int C_InvoiceLine_ID, String trxName)
     {
       super (ctx, C_InvoiceLine_ID, trxName);
+      /** if (C_InvoiceLine_ID == 0)
+        {
+			setC_Invoice_ID (0);
+			setC_InvoiceLine_ID (0);
+			setC_Tax_ID (0);
+			setIsDescription (false);
+// N
+			setIsPrinted (true);
+// Y
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_InvoiceLine WHERE C_Invoice_ID=@C_Invoice_ID@
+			setLineNetAmt (Env.ZERO);
+			setM_AttributeSetInstance_ID (0);
+			setPriceActual (Env.ZERO);
+			setPriceEntered (Env.ZERO);
+			setPriceLimit (Env.ZERO);
+			setPriceList (Env.ZERO);
+			setProcessed (false);
+			setQtyEntered (Env.ZERO);
+// 1
+			setQtyInvoiced (Env.ZERO);
+// 1
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_InvoiceLine (Properties ctx, int C_InvoiceLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_InvoiceLine_ID, trxName, virtualColumns);
       /** if (C_InvoiceLine_ID == 0)
         {
 			setC_Invoice_ID (0);

@@ -34,12 +34,25 @@ public class X_M_InventoryLineMA extends PO implements I_M_InventoryLineMA, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_InventoryLineMA (Properties ctx, int M_InventoryLineMA_ID, String trxName)
     {
       super (ctx, M_InventoryLineMA_ID, trxName);
+      /** if (M_InventoryLineMA_ID == 0)
+        {
+			setM_AttributeSetInstance_ID (0);
+			setM_InventoryLine_ID (0);
+			setMovementQty (Env.ZERO);
+// 1
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_InventoryLineMA (Properties ctx, int M_InventoryLineMA_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_InventoryLineMA_ID, trxName, virtualColumns);
       /** if (M_InventoryLineMA_ID == 0)
         {
 			setM_AttributeSetInstance_ID (0);

@@ -34,8 +34,10 @@ import org.compiere.model.MDocumentStatusAccess;
 import org.compiere.model.MEntityType;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 /**
  * Unit test cases for document status indicator
@@ -46,17 +48,6 @@ public class DocumentStatusTest extends AbstractTestCase {
 
 	public DocumentStatusTest() {
 	}
-
-	private static final int USER_GARDENADMIN = 101;
-	private static final int USER_GARDENUSER = 102;
-	private static final int USER_SUPERUSER = 100;
-
-	private static final int ROLE_GARDENWORLDADMIN = 102;
-	private static final int ROLE_GARDENWORLDUSER = 103;
-	private static final int ROLE_GARDENWORLD_ADMIN_NOT_ADVANCED = 200001;
-
-	private static final int WINDOW_ID_INVOICE_CUSTOMER = 167;
-	private static final int WINDOW_ID_SALES_ORDER = 143;
 
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4836
@@ -70,38 +61,38 @@ public class DocumentStatusTest extends AbstractTestCase {
 		invoiceDS.setName("Invoice Document Status Unit Test");
 		invoiceDS.setEntityType(MEntityType.ENTITYTYPE_Dictionary);
 		invoiceDS.setAD_Table_ID(MInvoice.Table_ID);
-		invoiceDS.setAD_Window_ID(WINDOW_ID_INVOICE_CUSTOMER);
+		invoiceDS.setAD_Window_ID(SystemIDs.WINDOW_INVOICE_CUSTOMER);
 		invoiceDS.setSeqNo(10);
 		invoiceDS.saveEx();
 
 		MDocumentStatusAccess invoiceDSAccess = new MDocumentStatusAccess(Env.getCtx(),0, getTrxName());
 		invoiceDSAccess.setPA_DocumentStatus_ID(invoiceDS.get_ID());
-		invoiceDSAccess.setAD_User_ID(USER_GARDENADMIN);
-		invoiceDSAccess.setAD_Role_ID(ROLE_GARDENWORLDADMIN);
+		invoiceDSAccess.setAD_User_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+		invoiceDSAccess.setAD_Role_ID(DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id);
 		invoiceDSAccess.saveEx();
 
 
 		/* Document Status with no user or role access, visible to all */
 		MDocumentStatus noticeDS = new MDocumentStatus(Env.getCtx(), 0,	getTrxName());
-		noticeDS.setName("order Document Status Unit Test");
+		noticeDS.setName("Notice Document Status Unit Test");
 		noticeDS.setEntityType(MEntityType.ENTITYTYPE_Dictionary);
 		noticeDS.setAD_Table_ID(MOrder.Table_ID);
-		noticeDS.setAD_Window_ID(WINDOW_ID_SALES_ORDER);
+		noticeDS.setAD_Window_ID(SystemIDs.WINDOW_NOTICE);
 		noticeDS.setSeqNo(20);
 		noticeDS.saveEx();
 
 		/* Document Status with specific user access */
 		MDocumentStatus requestDS = new MDocumentStatus(Env.getCtx(), 0, getTrxName());
-		requestDS.setName("Notice Document Status Unit Test");
+		requestDS.setName("Request Document Status Unit Test");
 		requestDS.setEntityType(MEntityType.ENTITYTYPE_Dictionary);
 		requestDS.setAD_Table_ID(MInvoice.Table_ID);
-		requestDS.setAD_Window_ID(WINDOW_ID_INVOICE_CUSTOMER);
+		requestDS.setAD_Window_ID(SystemIDs.WINDOW_REQUEST);
 		requestDS.setSeqNo(30);
 		requestDS.saveEx();
 
 		MDocumentStatusAccess requestDSAccess = new MDocumentStatusAccess(Env.getCtx(),0, getTrxName());
 		requestDSAccess.setPA_DocumentStatus_ID(requestDS.get_ID());
-		requestDSAccess.setAD_Role_ID( ROLE_GARDENWORLDUSER);
+		requestDSAccess.setAD_Role_ID(DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id);
 		requestDSAccess.saveEx();
 
 		/* Document Status with specific role access */
@@ -109,18 +100,18 @@ public class DocumentStatusTest extends AbstractTestCase {
 		WorkflowActivitiesDS.setName("Workflow Activities Document Status Unit Test");
 		WorkflowActivitiesDS.setEntityType(MEntityType.ENTITYTYPE_Dictionary);
 		WorkflowActivitiesDS.setAD_Table_ID(MInvoice.Table_ID);
-		WorkflowActivitiesDS.setAD_Window_ID(WINDOW_ID_INVOICE_CUSTOMER);
+		WorkflowActivitiesDS.setAD_Window_ID(SystemIDs.WINDOW_WORKFLOW_ACTIVITIES);
 		WorkflowActivitiesDS.setSeqNo(40);
 		WorkflowActivitiesDS.saveEx();
 
 		MDocumentStatusAccess WorkflowActivitiesDSAccess = new MDocumentStatusAccess(Env.getCtx(),0, getTrxName());
 		WorkflowActivitiesDSAccess.setPA_DocumentStatus_ID(WorkflowActivitiesDS.get_ID());
-		WorkflowActivitiesDSAccess.setAD_User_ID(USER_GARDENADMIN);
+		WorkflowActivitiesDSAccess.setAD_User_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 		WorkflowActivitiesDSAccess.saveEx();
 
 		// check document status accessibility with user- GardenAdmin and role- GardenWorld Admin
 		MDocumentStatus[] documentStatusIndicators = MDocumentStatus.getDocumentStatusIndicators(Env.getCtx(),
-				USER_GARDENADMIN, ROLE_GARDENWORLDADMIN, getTrxName());
+				DictionaryIDs.AD_User.GARDEN_ADMIN.id, DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id, getTrxName());
 		assertTrue(Arrays.asList(documentStatusIndicators).contains(invoiceDS), "Either User or Role Assignment matching");
 		assertTrue(Arrays.asList(documentStatusIndicators).contains(noticeDS), "No permission assigned, should visible to every one");
 		assertFalse(Arrays.asList(documentStatusIndicators).contains(requestDS),
@@ -129,8 +120,8 @@ public class DocumentStatusTest extends AbstractTestCase {
 				"User is assigned, Should Visible");
 
 		// check document status accessibility with user- GardenAdmin and role- GardenWorld User
-		documentStatusIndicators = MDocumentStatus.getDocumentStatusIndicators(Env.getCtx(), USER_GARDENADMIN,
-				ROLE_GARDENWORLDUSER, getTrxName());
+		documentStatusIndicators = MDocumentStatus.getDocumentStatusIndicators(Env.getCtx(), DictionaryIDs.AD_User.GARDEN_ADMIN.id,
+				DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id, getTrxName());
 		assertFalse(Arrays.asList(documentStatusIndicators).contains(invoiceDS),
 				"User Assignment Match but role do not");
 		assertTrue(Arrays.asList(documentStatusIndicators).contains(noticeDS), "No permission assigned, should visible to every one");
@@ -139,8 +130,8 @@ public class DocumentStatusTest extends AbstractTestCase {
 				"User is assigned, Should Visible");
 
 		// check document status accessibility with user- GardenUser and role- GardenWorld User
-		documentStatusIndicators = MDocumentStatus.getDocumentStatusIndicators(Env.getCtx(), USER_GARDENUSER,
-				ROLE_GARDENWORLDUSER, getTrxName());
+		documentStatusIndicators = MDocumentStatus.getDocumentStatusIndicators(Env.getCtx(), DictionaryIDs.AD_User.GARDEN_USER.id,
+				DictionaryIDs.AD_Role.GARDEN_WORLD_USER.id, getTrxName());
 		assertFalse(Arrays.asList(documentStatusIndicators).contains(invoiceDS),
 				"Invoice Document Status Not Visible For User Garden Admin and Role GardenWorld User");
 		assertTrue(Arrays.asList(documentStatusIndicators).contains(noticeDS), "No permission assigned, should visible to every one");
@@ -149,8 +140,8 @@ public class DocumentStatusTest extends AbstractTestCase {
 				"User is assigned, Should not Visible");
 
 		// check document status accessibility with user- SuperUser and role- GardenWorld Admin Not Advanced
-		documentStatusIndicators = MDocumentStatus.getDocumentStatusIndicators(Env.getCtx(), USER_SUPERUSER,
-				ROLE_GARDENWORLD_ADMIN_NOT_ADVANCED, getTrxName());
+		documentStatusIndicators = MDocumentStatus.getDocumentStatusIndicators(Env.getCtx(), SystemIDs.USER_SUPERUSER,
+				DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN_NOT_ADVANCED.id, getTrxName());
 		assertFalse(Arrays.asList(documentStatusIndicators).contains(invoiceDS),
 				"Niether User or Role Assignment match, Should not visible");
 		assertTrue(Arrays.asList(documentStatusIndicators).contains(noticeDS), "No permission assigned, should visible to every one");

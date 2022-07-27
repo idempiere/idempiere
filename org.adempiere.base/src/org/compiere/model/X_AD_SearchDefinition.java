@@ -30,12 +30,30 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_SearchDefinition (Properties ctx, int AD_SearchDefinition_ID, String trxName)
     {
       super (ctx, AD_SearchDefinition_ID, trxName);
+      /** if (AD_SearchDefinition_ID == 0)
+        {
+			setAD_SearchDefinition_ID (0);
+			setAD_Table_ID (0);
+			setAD_Window_ID (0);
+			setDataType (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDefault (false);
+// N
+			setSearchType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_SearchDefinition (Properties ctx, int AD_SearchDefinition_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_SearchDefinition_ID, trxName, virtualColumns);
       /** if (AD_SearchDefinition_ID == 0)
         {
 			setAD_SearchDefinition_ID (0);

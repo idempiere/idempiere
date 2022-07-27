@@ -27,6 +27,7 @@ import org.compiere.model.MRfQResponse;
 import org.compiere.model.MRfQResponseLine;
 import org.compiere.model.MRfQResponseLineQty;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	Rank RfQ Responses	
@@ -90,7 +91,7 @@ public class RfQResponseRank extends SvrProcess
 		{
 			responses[0].setIsSelectedWinner(true);
 			responses[0].saveEx();
-			return "Only one completed RfQ Response found";
+			return	Msg.getMsg(Env.getCtx(), "OnlyOneRfQResponse");
 		}
 			
 		//	Rank
@@ -217,10 +218,10 @@ public class RfQResponseRank extends SvrProcess
 						&& respQty.getRfQLineQty().isPurchaseQty())
 					{
 						respLine.setIsSelectedWinner(true);
-						respLine.saveEx();
 						break;
 					}
 				}
+				respLine.saveEx();
 			}
 			response.setRanking(ranking);
 			response.saveEx();

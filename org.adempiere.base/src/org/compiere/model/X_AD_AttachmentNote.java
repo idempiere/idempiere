@@ -31,12 +31,26 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_AttachmentNote (Properties ctx, int AD_AttachmentNote_ID, String trxName)
     {
       super (ctx, AD_AttachmentNote_ID, trxName);
+      /** if (AD_AttachmentNote_ID == 0)
+        {
+			setAD_Attachment_ID (0);
+			setAD_AttachmentNote_ID (0);
+			setAD_User_ID (0);
+			setTextMsg (null);
+			setTitle (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AttachmentNote (Properties ctx, int AD_AttachmentNote_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AttachmentNote_ID, trxName, virtualColumns);
       /** if (AD_AttachmentNote_ID == 0)
         {
 			setAD_Attachment_ID (0);

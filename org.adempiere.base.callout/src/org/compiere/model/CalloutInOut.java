@@ -86,6 +86,13 @@ public class CalloutInOut extends CalloutEngine
 				mTab.setValue("AD_User_ID", Integer.valueOf(order.getAD_User_ID()));
 			else
 				mTab.setValue("AD_User_ID", null);
+
+			if (order.isDropShip()) {
+				mTab.setValue(MInOut.COLUMNNAME_IsDropShip, order.isDropShip());
+				mTab.setValue(MInOut.COLUMNNAME_DropShip_BPartner_ID, order.getDropShip_BPartner_ID());
+				mTab.setValue(MInOut.COLUMNNAME_DropShip_Location_ID, order.getDropShip_Location_ID());
+				mTab.setValue(MInOut.COLUMNNAME_DropShip_User_ID, order.getDropShip_User_ID());
+			}
 		}
         /**
          * Modification: set corresponding document type
@@ -562,7 +569,6 @@ public class CalloutInOut extends CalloutEngine
 			return "";
 
 		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
-		//	log.log(Level.WARNING,"qty - init - M_Product_ID=" + M_Product_ID);
 		BigDecimal MovementQty, QtyEntered;
 
 		//	No Product

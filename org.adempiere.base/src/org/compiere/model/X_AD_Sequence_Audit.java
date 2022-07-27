@@ -30,12 +30,25 @@ public class X_AD_Sequence_Audit extends PO implements I_AD_Sequence_Audit, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Sequence_Audit (Properties ctx, int AD_Sequence_Audit_ID, String trxName)
     {
       super (ctx, AD_Sequence_Audit_ID, trxName);
+      /** if (AD_Sequence_Audit_ID == 0)
+        {
+			setAD_Sequence_ID (0);
+			setAD_Table_ID (0);
+			setDocumentNo (null);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Sequence_Audit (Properties ctx, int AD_Sequence_Audit_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Sequence_Audit_ID, trxName, virtualColumns);
       /** if (AD_Sequence_Audit_ID == 0)
         {
 			setAD_Sequence_ID (0);

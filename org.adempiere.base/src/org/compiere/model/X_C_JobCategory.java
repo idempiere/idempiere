@@ -31,12 +31,23 @@ public class X_C_JobCategory extends PO implements I_C_JobCategory, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_JobCategory (Properties ctx, int C_JobCategory_ID, String trxName)
     {
       super (ctx, C_JobCategory_ID, trxName);
+      /** if (C_JobCategory_ID == 0)
+        {
+			setC_JobCategory_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_JobCategory (Properties ctx, int C_JobCategory_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_JobCategory_ID, trxName, virtualColumns);
       /** if (C_JobCategory_ID == 0)
         {
 			setC_JobCategory_ID (0);

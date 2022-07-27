@@ -31,12 +31,25 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_GoalRestriction (Properties ctx, int PA_GoalRestriction_ID, String trxName)
     {
       super (ctx, PA_GoalRestriction_ID, trxName);
+      /** if (PA_GoalRestriction_ID == 0)
+        {
+			setGoalRestrictionType (null);
+			setName (null);
+			setPA_Goal_ID (0);
+			setPA_GoalRestriction_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_GoalRestriction (Properties ctx, int PA_GoalRestriction_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_GoalRestriction_ID, trxName, virtualColumns);
       /** if (PA_GoalRestriction_ID == 0)
         {
 			setGoalRestrictionType (null);

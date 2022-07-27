@@ -34,12 +34,39 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_Request (Properties ctx, int R_Request_ID, String trxName)
     {
       super (ctx, R_Request_ID, trxName);
+      /** if (R_Request_ID == 0)
+        {
+			setConfidentialType (null);
+// C
+			setConfidentialTypeEntry (null);
+// C
+			setDocumentNo (null);
+			setDueType (null);
+// 5
+			setIsEscalated (false);
+			setIsInvoiced (false);
+			setIsSelfService (false);
+// N
+			setPriority (null);
+// 5
+			setProcessed (false);
+			setRequestAmt (Env.ZERO);
+			setR_Request_ID (0);
+			setR_RequestType_ID (0);
+			setSummary (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_Request (Properties ctx, int R_Request_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_Request_ID, trxName, virtualColumns);
       /** if (R_Request_ID == 0)
         {
 			setConfidentialType (null);

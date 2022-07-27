@@ -31,12 +31,27 @@ public class X_B_TopicType extends PO implements I_B_TopicType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_B_TopicType (Properties ctx, int B_TopicType_ID, String trxName)
     {
       super (ctx, B_TopicType_ID, trxName);
+      /** if (B_TopicType_ID == 0)
+        {
+			setAuctionType (null);
+			setB_TopicType_ID (0);
+			setM_PriceList_ID (0);
+			setM_Product_ID (0);
+			setM_ProductMember_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_TopicType (Properties ctx, int B_TopicType_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_TopicType_ID, trxName, virtualColumns);
       /** if (B_TopicType_ID == 0)
         {
 			setAuctionType (null);

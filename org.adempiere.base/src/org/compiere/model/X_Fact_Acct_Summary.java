@@ -33,12 +33,29 @@ public class X_Fact_Acct_Summary extends PO implements I_Fact_Acct_Summary, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_Fact_Acct_Summary (Properties ctx, int Fact_Acct_Summary_ID, String trxName)
     {
       super (ctx, Fact_Acct_Summary_ID, trxName);
+      /** if (Fact_Acct_Summary_ID == 0)
+        {
+			setAccount_ID (0);
+			setAmtAcctCr (Env.ZERO);
+			setAmtAcctDr (Env.ZERO);
+			setC_AcctSchema_ID (0);
+			setC_Period_ID (0);
+			setPA_ReportCube_ID (0);
+			setPostingType (false);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_Fact_Acct_Summary (Properties ctx, int Fact_Acct_Summary_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, Fact_Acct_Summary_ID, trxName, virtualColumns);
       /** if (Fact_Acct_Summary_ID == 0)
         {
 			setAccount_ID (0);

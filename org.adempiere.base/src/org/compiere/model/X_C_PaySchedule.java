@@ -33,12 +33,29 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_PaySchedule (Properties ctx, int C_PaySchedule_ID, String trxName)
     {
       super (ctx, C_PaySchedule_ID, trxName);
+      /** if (C_PaySchedule_ID == 0)
+        {
+			setC_PaymentTerm_ID (0);
+			setC_PaySchedule_ID (0);
+			setDiscount (Env.ZERO);
+			setDiscountDays (0);
+			setGraceDays (0);
+			setIsValid (false);
+			setNetDays (0);
+			setPercentage (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaySchedule (Properties ctx, int C_PaySchedule_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaySchedule_ID, trxName, virtualColumns);
       /** if (C_PaySchedule_ID == 0)
         {
 			setC_PaymentTerm_ID (0);

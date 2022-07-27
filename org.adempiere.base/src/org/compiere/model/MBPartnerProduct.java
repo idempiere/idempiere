@@ -45,5 +45,8 @@ public class MBPartnerProduct extends X_C_BPartner_Product
 		super(ctx, rs, trxName);
 	}
 
-	
+	public MBPartnerProduct(Properties ctx, int C_BPartner_Product_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_BPartner_Product_ID, trxName, virtualColumns);
+	}
+
 }

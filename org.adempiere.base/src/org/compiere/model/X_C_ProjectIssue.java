@@ -34,12 +34,39 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_ProjectIssue (Properties ctx, int C_ProjectIssue_ID, String trxName)
     {
       super (ctx, C_ProjectIssue_ID, trxName);
+      /** if (C_ProjectIssue_ID == 0)
+        {
+			setC_Project_ID (0);
+			setC_ProjectIssue_ID (0);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setIsApproved (false);
+// N
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM C_ProjectIssue WHERE C_Project_ID=@C_Project_ID@
+			setM_AttributeSetInstance_ID (0);
+			setM_Locator_ID (0);
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+			setMovementQty (Env.ZERO);
+			setM_Product_ID (0);
+			setPosted (false);
+// N
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ProjectIssue (Properties ctx, int C_ProjectIssue_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ProjectIssue_ID, trxName, virtualColumns);
       /** if (C_ProjectIssue_ID == 0)
         {
 			setC_Project_ID (0);

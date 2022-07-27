@@ -30,12 +30,24 @@ public class X_U_BlackListCheque extends PO implements I_U_BlackListCheque, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_U_BlackListCheque (Properties ctx, int U_BlackListCheque_ID, String trxName)
     {
       super (ctx, U_BlackListCheque_ID, trxName);
+      /** if (U_BlackListCheque_ID == 0)
+        {
+			setBankName (null);
+			setChequeNo (null);
+			setU_BlackListCheque_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_U_BlackListCheque (Properties ctx, int U_BlackListCheque_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, U_BlackListCheque_ID, trxName, virtualColumns);
       /** if (U_BlackListCheque_ID == 0)
         {
 			setBankName (null);

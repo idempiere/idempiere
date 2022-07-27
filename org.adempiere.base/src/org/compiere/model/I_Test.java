@@ -348,6 +348,19 @@ public interface I_Test
 	/** Get Test_UU	  */
 	public String getTest_UU();
 
+    /** Column name TestVirtualQty */
+    public static final String COLUMNNAME_TestVirtualQty = "TestVirtualQty";
+
+	/** Set Virtual Quantity.
+	  * Used only for testing purposes
+	  */
+	public void setTestVirtualQty (BigDecimal TestVirtualQty);
+
+	/** Get Virtual Quantity.
+	  * Used only for testing purposes
+	  */
+	public BigDecimal getTestVirtualQty();
+
     /** Column name T_Integer */
     public static final String COLUMNNAME_T_Integer = "T_Integer";
 

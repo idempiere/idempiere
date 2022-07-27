@@ -64,6 +64,7 @@ import org.compiere.process.ClientProcess;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -394,7 +395,21 @@ public class ReportStarter implements ProcessCall, ClientProcess
         			printerName = printFormat.getPrinterName();
         		}
         	}
-
+			if (pi.getAD_Process_ID()>0) {
+				MProcess process = new MProcess(Env.getCtx(), processInfo.getAD_Process_ID(), processInfo.getTransactionName());
+				String processFileNamePattern = null;
+				if (printFormat != null) {
+					Language language = printFormat.getLanguage();
+					processFileNamePattern = printFormat.get_Translation("FileNamePattern", language.getAD_Language());
+				}
+				if (processFileNamePattern == null && process.getFileNamePattern() != null) {
+					processFileNamePattern = process.getFileNamePattern();
+				}
+				if (process !=null && !Util.isEmpty(processFileNamePattern)) {
+					String filename=FileUtil.parseTitle(Env.getCtx(), processFileNamePattern, pi.getTable_ID(), Record_ID, 0, trxName);
+					pi.setTitle(filename);
+				}
+	      	} 
            	params.put(CURRENT_LANG, currLang.getAD_Language());
            	params.put(JRParameter.REPORT_LOCALE, currLang.getLocale());
            	params.put(COLUMN_LOOKUP, new ColumnLookup(currLang));
@@ -443,6 +458,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 				params.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
 				JRBaseFiller filler = JRFiller.createFiller(jasperReportContext, jasperReport);
 				JasperPrint jasperPrint = filler.fill(params, conn);
+				jasperPrint.setName(pi.getTitle());
 				recordCounts = filler.getVariableValue(JRVariable.REPORT_COUNT);
 
                 if (!processInfo.isExport())

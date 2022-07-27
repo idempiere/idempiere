@@ -293,6 +293,14 @@ public class MInventory extends X_M_Inventory implements DocAction
 				return false;
 			}
 		}
+		
+		String docSubTypeInv = MDocType.get(getC_DocType_ID()).getDocSubTypeInv();
+		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(docSubTypeInv))
+		{
+			if (getC_Currency_ID() == 0)
+				setC_Currency_ID(MClient.get(getCtx()).getAcctSchema().getC_Currency_ID()); 
+		}
+		
 		return true;
 	}	//	beforeSave
 	
@@ -722,6 +730,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		if (line.getM_AttributeSetInstance_ID() == 0)
 		{
 			MProduct product = MProduct.get(getCtx(), line.getM_Product_ID(), get_TrxName());
+			boolean serial = product.isSerial();
 			if (qtyDiff.signum() > 0)	//	Incoming Trx
 			{
 				//auto balance negative on hand
@@ -729,6 +738,12 @@ public class MInventory extends X_M_Inventory implements DocAction
 						null, MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), line.getM_Locator_ID(), get_TrxName(), false);
 				for (MStorageOnHand storage : storages)
 				{
+					if (storage.getM_AttributeSetInstance_ID() > 0 && serial)
+					{
+						MAttributeSetInstance asi = new MAttributeSetInstance(Env.getCtx(), storage.getM_AttributeSetInstance_ID(), get_TrxName()); 
+						if (!Util.isEmpty(asi.getSerNo(), true))
+							continue;
+					}
 					if (storage.getQtyOnHand().signum() < 0)
 					{
 						BigDecimal maQty = qtyDiff;
@@ -758,6 +773,17 @@ public class MInventory extends X_M_Inventory implements DocAction
 								false, true, 0, get_TrxName());
 						for (MStorageOnHand storage : storages)
 						{
+							if (storage.getM_AttributeSetInstance_ID() == 0)
+								continue;
+							
+							if (serial)
+							{
+								MAttributeSetInstance asi = new MAttributeSetInstance(Env.getCtx(), storage.getM_AttributeSetInstance_ID(), get_TrxName());
+								if (!Util.isEmpty(asi.getSerNo(), true))
+								{
+									continue;
+								}
+							}
 							BigDecimal maQty = qtyDiff;
 							//backward compatibility: -ve in MA is incoming trx, +ve in MA is outgoing trx 
 							MInventoryLineMA lineMA =  new MInventoryLineMA(line, storage.getM_AttributeSetInstance_ID(), maQty.negate(), storage.getDateMaterialPolicy(),true);
@@ -827,6 +853,12 @@ public class MInventory extends X_M_Inventory implements DocAction
 				BigDecimal qtyToDeliver = qtyDiff.negate();
 				for (MStorageOnHand storage: storages)
 				{					
+					if (serial && storage.getM_AttributeSetInstance_ID() > 0)
+					{
+						MAttributeSetInstance asi = new MAttributeSetInstance(Env.getCtx(), storage.getM_AttributeSetInstance_ID(), get_TrxName());
+						if (!Util.isEmpty(asi.getSerNo(), true))
+							continue;
+					}
 					if (storage.getQtyOnHand().compareTo(qtyToDeliver) >= 0)
 					{
 						MInventoryLineMA ma = new MInventoryLineMA (line, 

@@ -31,12 +31,22 @@ public class X_AD_Package_Imp_Inst extends PO implements I_AD_Package_Imp_Inst, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Inst (Properties ctx, int AD_Package_Imp_Inst_ID, String trxName)
     {
       super (ctx, AD_Package_Imp_Inst_ID, trxName);
+      /** if (AD_Package_Imp_Inst_ID == 0)
+        {
+			setAD_Package_Imp_Inst_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Package_Imp_Inst (Properties ctx, int AD_Package_Imp_Inst_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Package_Imp_Inst_ID, trxName, virtualColumns);
       /** if (AD_Package_Imp_Inst_ID == 0)
         {
 			setAD_Package_Imp_Inst_ID (0);

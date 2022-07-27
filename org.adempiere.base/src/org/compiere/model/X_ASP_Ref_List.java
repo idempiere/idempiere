@@ -30,12 +30,25 @@ public class X_ASP_Ref_List extends PO implements I_ASP_Ref_List, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_ASP_Ref_List (Properties ctx, int ASP_Ref_List_ID, String trxName)
     {
       super (ctx, ASP_Ref_List_ID, trxName);
+      /** if (ASP_Ref_List_ID == 0)
+        {
+			setAD_Reference_ID (0);
+			setAD_Ref_List_ID (0);
+			setASP_Level_ID (0);
+			setASP_Ref_List_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Ref_List (Properties ctx, int ASP_Ref_List_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Ref_List_ID, trxName, virtualColumns);
       /** if (ASP_Ref_List_ID == 0)
         {
 			setAD_Reference_ID (0);

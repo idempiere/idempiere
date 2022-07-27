@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionRun
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_CommissionRun")
 public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persistent 
 {
@@ -34,12 +34,27 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220317L;
 
     /** Standard Constructor */
     public X_C_CommissionRun (Properties ctx, int C_CommissionRun_ID, String trxName)
     {
       super (ctx, C_CommissionRun_ID, trxName);
+      /** if (C_CommissionRun_ID == 0)
+        {
+			setC_Commission_ID (0);
+			setC_CommissionRun_ID (0);
+			setDocumentNo (null);
+			setGrandTotal (Env.ZERO);
+			setProcessed (false);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CommissionRun (Properties ctx, int C_CommissionRun_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CommissionRun_ID, trxName, virtualColumns);
       /** if (C_CommissionRun_ID == 0)
         {
 			setC_Commission_ID (0);
@@ -142,6 +157,34 @@ public class X_C_CommissionRun extends PO implements I_C_CommissionRun, I_Persis
 	public String getC_CommissionRun_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_CommissionRun_UU);
+	}
+
+	public org.compiere.model.I_C_Invoice getC_Invoice() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Invoice)MTable.get(getCtx(), org.compiere.model.I_C_Invoice.Table_ID)
+			.getPO(getC_Invoice_ID(), get_TrxName());
+	}
+
+	/** Set Invoice.
+		@param C_Invoice_ID Invoice Identifier
+	*/
+	public void setC_Invoice_ID (int C_Invoice_ID)
+	{
+		if (C_Invoice_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
+	}
+
+	/** Get Invoice.
+		@return Invoice Identifier
+	  */
+	public int getC_Invoice_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Description.

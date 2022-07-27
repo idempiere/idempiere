@@ -30,12 +30,24 @@ public class X_AD_SchedulerLog extends PO implements I_AD_SchedulerLog, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_SchedulerLog (Properties ctx, int AD_SchedulerLog_ID, String trxName)
     {
       super (ctx, AD_SchedulerLog_ID, trxName);
+      /** if (AD_SchedulerLog_ID == 0)
+        {
+			setAD_Scheduler_ID (0);
+			setAD_SchedulerLog_ID (0);
+			setIsError (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_SchedulerLog (Properties ctx, int AD_SchedulerLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_SchedulerLog_ID, trxName, virtualColumns);
       /** if (AD_SchedulerLog_ID == 0)
         {
 			setAD_Scheduler_ID (0);

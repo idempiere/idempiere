@@ -104,6 +104,7 @@ public class ReportAction implements EventListener<Event>
 			winReport.setBorder("normal");
 			winReport.setStyle("position:absolute");
 			winReport.addEventListener("onValidate", this);
+			winReport.addCallback(Window.AFTER_PAGE_DETACHED, t -> panel.focusToLastFocusEditor());
 			
 			cboPrintFormat.setMold("select");
 			cboPrintFormat.getItems().clear();

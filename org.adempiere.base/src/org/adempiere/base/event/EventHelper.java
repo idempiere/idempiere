@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.compiere.model.PO;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.CLogger;
 import org.osgi.service.event.Event;
 
 /**
@@ -93,6 +94,8 @@ public final class EventHelper {
 		if (msg == null)
 			msg = e.toString();
 		addErrorMessage(event, msg);
+		if (e instanceof Exception)
+			CLogger.get().saveError("Error", (Exception) e);
 	}
 
 	/**

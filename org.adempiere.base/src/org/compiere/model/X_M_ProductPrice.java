@@ -32,12 +32,26 @@ public class X_M_ProductPrice extends PO implements I_M_ProductPrice, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ProductPrice (Properties ctx, int M_ProductPrice_ID, String trxName)
     {
       super (ctx, M_ProductPrice_ID, trxName);
+      /** if (M_ProductPrice_ID == 0)
+        {
+			setM_PriceList_Version_ID (0);
+			setM_Product_ID (0);
+			setPriceLimit (Env.ZERO);
+			setPriceList (Env.ZERO);
+			setPriceStd (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductPrice (Properties ctx, int M_ProductPrice_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductPrice_ID, trxName, virtualColumns);
       /** if (M_ProductPrice_ID == 0)
         {
 			setM_PriceList_Version_ID (0);

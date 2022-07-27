@@ -185,6 +185,10 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						addTypeName(atts, "table");
 						document.startElement("","", tableName, atts);
 						PoExporter filler = new PoExporter(ctx, document, po);
+						if (MColumn.Table_Name.equals(po.get_TableName())) {
+							filler.addString("IsSyncDatabase", "Y", new AttributesImpl());
+							excludes.add("IsSyncDatabase");
+						}
 						filler.export(excludes, true);
 						ctx.packOut.getCtx().ctx.put("Table_Name",tableName);
 						try {

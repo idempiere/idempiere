@@ -32,12 +32,23 @@ public class X_M_AttributeSetInstance extends PO implements I_M_AttributeSetInst
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_AttributeSetInstance (Properties ctx, int M_AttributeSetInstance_ID, String trxName)
     {
       super (ctx, M_AttributeSetInstance_ID, trxName);
+      /** if (M_AttributeSetInstance_ID == 0)
+        {
+			setM_AttributeSet_ID (0);
+			setM_AttributeSetInstance_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_AttributeSetInstance (Properties ctx, int M_AttributeSetInstance_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_AttributeSetInstance_ID, trxName, virtualColumns);
       /** if (M_AttributeSetInstance_ID == 0)
         {
 			setM_AttributeSet_ID (0);

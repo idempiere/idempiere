@@ -152,7 +152,11 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 		copyPO(copy);
 		this.m_bom = copy.m_bom != null ? new MPPProductBOM(ctx, copy.m_bom, trxName) : null;
 	}
-	
+
+	public MPPProductBOMLine(Properties ctx, int PP_Product_BOMLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, PP_Product_BOMLine_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * Get Low Level of a Product
 	 * @return int low level

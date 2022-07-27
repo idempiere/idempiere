@@ -49,6 +49,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author hengsin
@@ -71,6 +72,8 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 				(rs, trxName) -> new MyTest(Env.getCtx(), rs, trxName));		
 		PO po = MTable.get(MyTest.Table_ID).getPO(0, getTrxName());
 		assertTrue(po instanceof MyTest, "PO not instanceof MyTest. PO.className="+po.getClass().getName());
+		mappedFactory.removeMapping(MyTest.Table_Name);
+		CacheMgt.get().reset();
 	}
 	
 	@Test
@@ -79,10 +82,12 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 		BundleContext bc = TestActivator.context;
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put("service.ranking", Integer.valueOf(2));
-		bc.registerService(IModelFactory.class, new MyFactory(), properties);	
+		ServiceRegistration<IModelFactory> registration = bc.registerService(IModelFactory.class, new MyFactory(), properties);
 		CacheMgt.get().reset();
 		PO po = MTable.get(MyTest2.Table_ID).getPO(0, getTrxName());
 		assertTrue(po instanceof MyTest2, "PO not instanceof MyTest2. PO.className="+po.getClass().getName());
+		registration.unregister();
+		CacheMgt.get().reset();
 	}
 	
 	@Test
@@ -93,6 +98,8 @@ public class MappedModelFactoryTest extends AbstractTestCase {
 		CacheMgt.get().reset();
 		PO po = MTable.get(MColor.Table_ID).getPO(0, getTrxName());
 		assertTrue(po instanceof MyAnnotatedColorModel, "PO not instanceof MyAnnotatedColorModel. PO.className="+po.getClass().getName());
+		Core.getMappedModelFactory().removeMapping(MColor.Table_Name);
+		CacheMgt.get().reset();
 	}
 	
 	private final static class MyFactory extends MappedModelFactory {

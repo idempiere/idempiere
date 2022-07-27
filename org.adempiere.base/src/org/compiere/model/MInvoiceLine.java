@@ -118,7 +118,11 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	 */
 	public MInvoiceLine (Properties ctx, int C_InvoiceLine_ID, String trxName)
 	{
-		super (ctx, C_InvoiceLine_ID, trxName);
+		this (ctx, C_InvoiceLine_ID, trxName, (String[]) null);
+	}	//	MInvoiceLine
+
+	public MInvoiceLine(Properties ctx, int C_InvoiceLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_InvoiceLine_ID, trxName, virtualColumns);
 		if (C_InvoiceLine_ID == 0)
 		{
 			setIsDescription(false);
@@ -134,7 +138,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			setQtyEntered(Env.ZERO);
 			setQtyInvoiced(Env.ZERO);
 		}
-	}	//	MInvoiceLine
+	}
 
 	/**
 	 * 	Parent Constructor
@@ -473,10 +477,18 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		//
 		int M_Warehouse_ID = Env.getContextAsInt(getCtx(), Env.M_WAREHOUSE_ID);
 		//
-		int C_Tax_ID = Tax.get(getCtx(), getM_Product_ID(), getC_Charge_ID() , m_DateInvoiced, m_DateInvoiced,
+		String deliveryViaRule = null;
+		if (getC_OrderLine_ID() > 0) {
+			deliveryViaRule = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName()).getParent().getDeliveryViaRule();
+		} else if (getM_InOutLine_ID() > 0) {
+			deliveryViaRule = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName()).getParent().getDeliveryViaRule();
+		} else if (getParent().getC_Order_ID() > 0) {
+			deliveryViaRule = new MOrder(getCtx(), getParent().getC_Order_ID(), get_TrxName()).getDeliveryViaRule();
+		}
+		int C_Tax_ID = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID() , m_DateInvoiced, m_DateInvoiced,
 			getAD_Org_ID(), M_Warehouse_ID,
 			m_C_BPartner_Location_ID,		//	should be bill to
-			m_C_BPartner_Location_ID, m_IsSOTrx, get_TrxName());
+			m_C_BPartner_Location_ID, m_IsSOTrx, deliveryViaRule, get_TrxName());
 		if (C_Tax_ID == 0)
 		{
 			log.log(Level.SEVERE, "No Tax found");
@@ -931,14 +943,49 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	 * author teo_sarca [ 1583825 ]
 	 */
 	protected boolean updateInvoiceTax(boolean oldTax) {
-		MInvoiceTax tax = MInvoiceTax.get (this, getPrecision(), oldTax, get_TrxName());
-		if (tax != null) {
-			if (!tax.calculateTaxFromLines())
-				return false;
+		int C_Tax_ID = getC_Tax_ID();
+		boolean isOldTax = oldTax && is_ValueChanged(MInvoiceTax.COLUMNNAME_C_Tax_ID); 
+		if (isOldTax)
+		{
+			Object old = get_ValueOld(MInvoiceTax.COLUMNNAME_C_Tax_ID);
+			if (old == null)
+			{
+				return true;
+			}
+			C_Tax_ID = ((Integer)old).intValue();
+		}
+		if (C_Tax_ID == 0)
+		{
+			return true;
+		}
 		
-			// red1 - solving BUGS #[ 1701331 ] , #[ 1786103 ]
-			if (!tax.save(get_TrxName()))
-				return false;
+		MTax t = MTax.get(C_Tax_ID);
+		if (t.isSummary())
+		{
+			MInvoiceTax[] invoiceTaxes = MInvoiceTax.getChildTaxes(this, getPrecision(), oldTax, get_TrxName());
+			if (invoiceTaxes != null && invoiceTaxes.length > 0)
+			{
+				for(MInvoiceTax tax : invoiceTaxes)
+				{
+					if (!tax.calculateTaxFromLines())
+						return false;
+				
+					if (!tax.save(get_TrxName()))
+						return false;
+				}
+			}
+		}
+		else
+		{
+			MInvoiceTax tax = MInvoiceTax.get (this, getPrecision(), oldTax, get_TrxName());
+			if (tax != null) {
+				if (!tax.calculateTaxFromLines())
+					return false;
+			
+				// red1 - solving BUGS #[ 1701331 ] , #[ 1786103 ]
+				if (!tax.save(get_TrxName()))
+					return false;
+			}
 		}
 		return true;
 	}

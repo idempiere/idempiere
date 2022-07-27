@@ -31,12 +31,39 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Process_Para (Properties ctx, int AD_Process_Para_ID, String trxName)
     {
       super (ctx, AD_Process_Para_ID, trxName);
+      /** if (AD_Process_Para_ID == 0)
+        {
+			setAD_Process_ID (0);
+			setAD_Process_Para_ID (0);
+			setAD_Reference_ID (0);
+			setColumnName (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setFieldLength (0);
+			setIsAutocomplete (false);
+// N
+			setIsCentrallyMaintained (true);
+// Y
+			setIsEncrypted (false);
+// N
+			setIsMandatory (false);
+			setIsRange (false);
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Process_Para WHERE AD_Process_ID=@AD_Process_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Process_Para (Properties ctx, int AD_Process_Para_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Process_Para_ID, trxName, virtualColumns);
       /** if (AD_Process_Para_ID == 0)
         {
 			setAD_Process_ID (0);

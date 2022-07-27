@@ -31,12 +31,25 @@ public class X_C_Activity extends PO implements I_C_Activity, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Activity (Properties ctx, int C_Activity_ID, String trxName)
     {
       super (ctx, C_Activity_ID, trxName);
+      /** if (C_Activity_ID == 0)
+        {
+			setC_Activity_ID (0);
+			setIsSummary (false);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Activity (Properties ctx, int C_Activity_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Activity_ID, trxName, virtualColumns);
       /** if (C_Activity_ID == 0)
         {
 			setC_Activity_ID (0);

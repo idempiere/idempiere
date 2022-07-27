@@ -35,12 +35,52 @@ public class X_DD_Order extends PO implements I_DD_Order, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_DD_Order (Properties ctx, int DD_Order_ID, String trxName)
     {
       super (ctx, DD_Order_ID, trxName);
+      /** if (DD_Order_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setC_DocType_ID (0);
+			setDateOrdered (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDatePromised (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDD_Order_ID (0);
+			setDeliveryRule (null);
+// A
+			setDeliveryViaRule (null);
+// P
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setFreightCostRule (null);
+// I
+			setIsApproved (false);
+			setIsInDispute (false);
+			setIsInTransit (false);
+			setIsPrinted (false);
+			setIsSOTrx (false);
+// @IsSOTrx@
+			setM_Warehouse_ID (0);
+			setPosted (false);
+			setPriorityRule (null);
+// 5
+			setProcessed (false);
+			setSendEMail (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_DD_Order (Properties ctx, int DD_Order_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, DD_Order_ID, trxName, virtualColumns);
       /** if (DD_Order_ID == 0)
         {
 			setC_BPartner_ID (0);

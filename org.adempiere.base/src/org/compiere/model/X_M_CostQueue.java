@@ -32,12 +32,29 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_CostQueue (Properties ctx, int M_CostQueue_ID, String trxName)
     {
       super (ctx, M_CostQueue_ID, trxName);
+      /** if (M_CostQueue_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setCurrentCostPrice (Env.ZERO);
+			setCurrentQty (Env.ZERO);
+			setM_AttributeSetInstance_ID (0);
+			setM_CostElement_ID (0);
+			setM_CostQueue_ID (0);
+			setM_CostType_ID (0);
+			setM_Product_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_CostQueue (Properties ctx, int M_CostQueue_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_CostQueue_ID, trxName, virtualColumns);
       /** if (M_CostQueue_ID == 0)
         {
 			setC_AcctSchema_ID (0);

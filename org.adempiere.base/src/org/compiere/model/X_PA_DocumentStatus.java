@@ -30,12 +30,27 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatus (Properties ctx, int PA_DocumentStatus_ID, String trxName)
     {
       super (ctx, PA_DocumentStatus_ID, trxName);
+      /** if (PA_DocumentStatus_ID == 0)
+        {
+			setAD_Table_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setPA_DocumentStatus_ID (0);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_DocumentStatus (Properties ctx, int PA_DocumentStatus_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_DocumentStatus_ID, trxName, virtualColumns);
       /** if (PA_DocumentStatus_ID == 0)
         {
 			setAD_Table_ID (0);

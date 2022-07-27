@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_UserDef_Tab
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Tab")
 public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persistent 
 {
@@ -31,12 +31,25 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211224L;
+	private static final long serialVersionUID = 20220617L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Tab (Properties ctx, int AD_UserDef_Tab_ID, String trxName)
     {
       super (ctx, AD_UserDef_Tab_ID, trxName);
+      /** if (AD_UserDef_Tab_ID == 0)
+        {
+			setAD_Tab_ID (0);
+			setAD_UserDef_Tab_ID (0);
+			setAD_UserDef_Win_ID (0);
+			setIsMultiRowOnly (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_UserDef_Tab (Properties ctx, int AD_UserDef_Tab_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_UserDef_Tab_ID, trxName, virtualColumns);
       /** if (AD_UserDef_Tab_ID == 0)
         {
 			setAD_Tab_ID (0);
@@ -201,6 +214,21 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 		return ii.intValue();
 	}
 
+	/** Set Delete Confirmation Logic.
+		@param DeleteConfirmationLogic Delete Confirmation Logic
+	*/
+	public void setDeleteConfirmationLogic (String DeleteConfirmationLogic)
+	{
+		set_Value (COLUMNNAME_DeleteConfirmationLogic, DeleteConfirmationLogic);
+	}
+
+	/** Get Delete Confirmation Logic.
+		@return Delete Confirmation Logic	  */
+	public String getDeleteConfirmationLogic()
+	{
+		return (String)get_Value(COLUMNNAME_DeleteConfirmationLogic);
+	}
+
 	/** Set Description.
 		@param Description Optional short description of the record
 	*/
@@ -269,6 +297,29 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	public String getIsAllowAdvancedLookup()
 	{
 		return (String)get_Value(COLUMNNAME_IsAllowAdvancedLookup);
+	}
+
+	/** IsHighVolume AD_Reference_ID=319 */
+	public static final int ISHIGHVOLUME_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ISHIGHVOLUME_No = "N";
+	/** Yes = Y */
+	public static final String ISHIGHVOLUME_Yes = "Y";
+	/** Set High Volume.
+		@param IsHighVolume Use Search instead of Pick list
+	*/
+	public void setIsHighVolume (String IsHighVolume)
+	{
+
+		set_Value (COLUMNNAME_IsHighVolume, IsHighVolume);
+	}
+
+	/** Get High Volume.
+		@return Use Search instead of Pick list
+	  */
+	public String getIsHighVolume()
+	{
+		return (String)get_Value(COLUMNNAME_IsHighVolume);
 	}
 
 	/** IsLookupOnlySelection AD_Reference_ID=319 */

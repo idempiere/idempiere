@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
  *	Match Invoice (Receipt&lt;&gt;Invoice) Model.
@@ -391,6 +392,24 @@ public class MMatchInv extends X_M_MatchInv
 			this.setReversal_ID(reversal.getM_MatchInv_ID());
 			this.saveEx();
 			return true;
+		}
+		return false;
+	}
+
+	
+	@Override
+	public MInOutLine getM_InOutLine() throws RuntimeException {
+		return new MInOutLine(Env.getCtx(), getM_InOutLine_ID(), get_TrxName());
+	}
+
+	/**
+	 * @return true if this is created to reverse another match invoice document
+	 */
+	public boolean isReversal() {
+		if (getReversal_ID() > 0) {
+			MMatchInv reversal = new MMatchInv (getCtx(), getReversal_ID(), get_TrxName());
+			if (reversal.getM_MatchInv_ID() < getM_MatchInv_ID())
+				return true;
 		}
 		return false;
 	}
