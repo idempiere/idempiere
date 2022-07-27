@@ -211,7 +211,18 @@ public class LabelsSearchController implements EventListener<Event>{
 		if (item == null || !item.isAllowed())
 			return;
 		
-		MLabel label = new MLabel(Env.getCtx(), item.getC_Label_ID(), null);
+		MLabel label = null;
+		
+		if (item.getC_Label_ID() > 0) {
+			label = new MLabel(Env.getCtx(), item.getC_Label_ID(), null);
+		} else {
+			// Try to find an existing label before creating a new one
+			label = MLabel.getByName(Env.getCtx(), item.getLabel(), null);
+			
+			if (label == null) {
+				label = new MLabel(Env.getCtx(), 0, null);
+			}
+		}
 		
 		if (label.get_ID() <= 0) {
 			label.setAD_Org_ID(0);

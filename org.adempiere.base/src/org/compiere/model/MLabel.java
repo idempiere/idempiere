@@ -30,6 +30,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.compiere.util.Env;
+
 /**
  * Label Model
  */
@@ -147,5 +149,15 @@ public class MLabel extends X_AD_Label {
 	public static String calculateHexColor(String text) {
 		int colorIndex = Math.abs(UUID.nameUUIDFromBytes(text.getBytes()).toString().hashCode() % VIVID_COLORS.length);
 		return VIVID_COLORS[colorIndex];
+	}
+	
+	public static MLabel getByName(Properties ctx, String name, String trxName) {
+		String sqlWhere = " AD_Client_ID=? AND UPPER(Name) LIKE ?";
+
+		return new Query(ctx, Table_Name, sqlWhere, trxName)
+				.setParameters(Env.getAD_Client_ID(ctx), name.toUpperCase())
+				.setOnlyActiveRecords(true)
+				.setOrderBy("Name")
+				.first();
 	}
 }
