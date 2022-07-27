@@ -300,10 +300,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			.list();
 
 		MRole role = MRole.getDefault(getCtx(), false);
-		for (MPrintFormatItem pfi : list) {
-			if (! role.isColumnAccess(getAD_Table_ID(), pfi.getAD_Column_ID(), true))
-				list.remove(pfi);
-		}
+		list.removeIf(pfi -> !role.isColumnAccess(getAD_Table_ID(), pfi.getAD_Column_ID(), true));
+
 		MPrintFormatItem[] retValue = new MPrintFormatItem[list.size()];
 		list.toArray(retValue);
 		return retValue;

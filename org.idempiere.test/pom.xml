@@ -27,6 +27,7 @@
 					</argLine>
 					<testRuntime>p2Installed</testRuntime>
 					<skipTests>${skipTests}</skipTests>
+					<providerHint>junit58</providerHint>
 				</configuration>
 			</plugin>
 			<plugin>

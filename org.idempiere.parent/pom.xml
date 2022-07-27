@@ -12,11 +12,11 @@
 	<properties>
 		<revision>9.0.0-SNAPSHOT</revision>
 		<jdk.version>11</jdk.version>
-		<tycho.version>2.4.0</tycho.version>
+		<tycho.version>2.7.3</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.17.0</jp.version>
-		<zk.version>9.6.1</zk.version>
+		<zk.version>9.6.2</zk.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 		<download.maven.version>1.4.1</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
@@ -129,10 +129,52 @@
 											target-platform-configuration
 										</artifactId>
 										<versionRange>
-											[2.4.0,)
+											[2.7.3,)
 										</versionRange>
 										<goals>
 											<goal>target-platform</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.eclipse.tycho
+										</groupId>
+										<artifactId>
+											tycho-compiler-plugin
+										</artifactId>
+										<versionRange>
+											[2.7.3,)
+										</versionRange>
+										<goals>
+											<goal>
+												validate-classpath
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.eclipse.tycho
+										</groupId>
+										<artifactId>
+											tycho-ds-plugin
+										</artifactId>
+										<versionRange>
+											[2.7.3,)
+										</versionRange>
+										<goals>
+											<goal>
+												declarative-services
+											</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

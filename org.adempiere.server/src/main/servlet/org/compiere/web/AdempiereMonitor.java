@@ -24,11 +24,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
@@ -912,6 +915,14 @@ public class AdempiereMonitor extends HttpServlet
 		WebUtil.createResponse (request, response, this, null, doc, false);
 	}	//	createSummaryPage
 
+	private String formatTimestampWithTimeZone(int AD_Client_ID, Date date) {
+		if (date == null)
+			return "";
+		DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+		formatter = formatter.withZone(ZoneId.systemDefault());
+		return formatter.format(date.toInstant().truncatedTo(ChronoUnit.SECONDS));
+	}
+
 	private String createServerCountMessage(ServerCount serverCount) {
 		StringBuilder builder = new StringBuilder();
 		
@@ -1111,13 +1122,21 @@ public class AdempiereMonitor extends HttpServlet
 		for (TrxInfo trx : trxs)
 		{
 			line = new tr();
-			line.addElement(new th().addElement("Active Transaction "));
+			line.addElement(new th().addElement((trx.isActive() ? "Active" : "Inactive") + " Transaction "));
 			td td = new td();
-			td.setOnClick("var newwindow=window.open('','Popup', 'width=800,height=600');newwindow.document.write('<title>"  + escapeEcmaScript(trx.getDisplayName()) +"</title>"
-					+ "<pre>" + escapeEcmaScript(trx.getStackTrace()) + "</pre>')");
-			td.addElement("Name="+trx.getDisplayName() + ", StartTime=" + trx.getStartTime());
-			td.setTitle("Click to see stack trace");
-			td.setStyle("text-decoration: underline; color: blue");
+			if (Util.isEmpty(trx.getStackTrace())) {
+				td.addElement("Name=" + trx.getDisplayName() + ", StartTime=" + formatTimestampWithTimeZone(0,trx.getStartTime()));
+				td.setTitle(trx.getTrxName());
+			} else {
+				td.setOnClick("var newwindow=window.open('','Popup', 'width=800,height=600');newwindow.document.write('<title>"  + escapeEcmaScript(trx.getDisplayName()) +"</title>"
+						+ "<p><b>Transaction = " + trx.getDisplayName() + "</b></p>"
+						+ "<p><b>TrxName = " + trx.getTrxName() + "</b></p>"
+						+ "<pre>" + escapeEcmaScript(trx.getStackTrace()) + "</pre>')");
+				label lbl = new label().addElement(trx.getDisplayName());
+				lbl.setStyle("text-decoration: underline; color: blue");
+				td.addElement("Name=").addElement(lbl).addElement(", StartTime=" + formatTimestampWithTimeZone(0,trx.getStartTime()));
+				td.setTitle("Click to see stack trace for " + trx.getTrxName());
+			}
 			line.addElement(td);
 			table.addElement(line);
 		}
@@ -1688,13 +1707,21 @@ public class AdempiereMonitor extends HttpServlet
 		for (TrxInfo trx : trxs)
 		{
 			line = new tr();
-			line.addElement(new th().addElement("Active Transaction "));
+			line.addElement(new th().addElement((trx.isActive() ? "Active" : "Inactive") + " Transaction "));
 			td td = new td();
-			td.setOnClick("var newwindow=window.open('','Popup', 'width=800,height=600');newwindow.document.write('<title>"  + escapeEcmaScript(trx.getDisplayName()) +"</title>"
-					+ "<pre>" + escapeEcmaScript(trx.getStackTrace()) + "</pre>')");
-			td.addElement("Name="+trx.getDisplayName() + ", StartTime=" + trx.getStartTime());
-			td.setTitle("Click to see stack trace");
-			td.setStyle("text-decoration: underline; color: blue");
+			if (Util.isEmpty(trx.getStackTrace())) {
+				td.addElement("Name=" + trx.getDisplayName() + ", StartTime=" + formatTimestampWithTimeZone(0,trx.getStartTime()));
+				td.setTitle(trx.getTrxName());
+			} else {
+				td.setOnClick("var newwindow=window.open('','Popup', 'width=800,height=600');newwindow.document.write('<title>"  + escapeEcmaScript(trx.getDisplayName()) +"</title>"
+						+ "<p><b>Transaction = " + trx.getDisplayName() + "</b></p>"
+						+ "<p><b>TrxName = " + trx.getTrxName() + "</b></p>"
+						+ "<pre>" + escapeEcmaScript(trx.getStackTrace()) + "</pre>')");
+				label lbl = new label().addElement(trx.getDisplayName());
+				lbl.setStyle("text-decoration: underline; color: blue");
+				td.addElement("Name=").addElement(lbl).addElement(", StartTime=" + formatTimestampWithTimeZone(0,trx.getStartTime()));
+				td.setTitle("Click to see stack trace for " + trx.getTrxName());
+			}
 			line.addElement(td);
 			table.addElement(line);
 		}

@@ -659,6 +659,9 @@ public class MProduction extends X_M_Production implements DocAction {
 				return reverseCorrectIt();
 		}
 
+		if (getC_OrderLine_ID() > 0)
+			setC_OrderLine_ID(0);
+
 		// After Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
@@ -715,6 +718,9 @@ public class MProduction extends X_M_Production implements DocAction {
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}
+
+		if (getC_OrderLine_ID() > 0)
+			setC_OrderLine_ID(0);
 
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, Doc.DOCTYPE_MatProduction, getAD_Org_ID());
 		MProduction reversal = null;

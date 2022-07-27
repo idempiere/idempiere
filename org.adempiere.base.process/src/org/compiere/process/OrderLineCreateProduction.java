@@ -16,7 +16,6 @@
  *****************************************************************************/
 package org.compiere.process;
 
-import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.compiere.model.MDocType;
@@ -30,7 +29,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
  
 /**
- *	Create (Generate) Invoice from Shipment
+ *	Create (Generate) Production from OrderLine
  *	
  *  @author Jorg Janke
  *  @version $Id: OrderLineCreateProduction.java,v 1.1 2007/07/23 05:34:35 mfuggle Exp $
@@ -38,35 +37,14 @@ import org.compiere.util.Msg;
 @org.adempiere.base.annotation.Process
 public class OrderLineCreateProduction extends SvrProcess
 {
-	/**	Shipment					*/
+	/**	Order Line					*/
 	private int 	p_C_OrderLine_ID = 0;
-	private Timestamp p_MovementDate = null;
-	private boolean ignorePrevProduction = false;
 	
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
 	protected void prepare()
 	{
-		ProcessInfoParameter[] para = getParameter();
-		for (int i = 0; i < para.length; i++)
-		{
-			String name = para[i].getParameterName();
-			if (para[i].getParameter() == null)
-				;
-			if (name.equals("MovementDate"))
-				p_MovementDate = (Timestamp) para[i].getParameter();
-			else if (name.equals("IgnorePrevProduction"))
-				ignorePrevProduction = "Y".equals(para[i].getParameter());
-			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
-		}
-		
-		if (p_MovementDate == null)
-			p_MovementDate = Env.getContextAsDate(getCtx(), Env.DATE);
-		if ( p_MovementDate==null)
-			p_MovementDate = new Timestamp(System.currentTimeMillis());
-		
 		p_C_OrderLine_ID = getRecord_ID();
 	}	//	prepare
 
@@ -98,19 +76,13 @@ public class OrderLineCreateProduction extends SvrProcess
 			}
 		}
 		
-		
-		// If we don't ignore previous production, and there has been a previous one,
-		//throw an exception
-		if (!ignorePrevProduction)
-		{ 
-			String docNo = DB.getSQLValueString(get_TrxName(), 
-					"SELECT max(DocumentNo) " +  
-					"FROM M_Production WHERE C_OrderLine_ID = ?",
-					p_C_OrderLine_ID);
-			if (docNo != null)
-			{
-			    throw new IllegalArgumentException("Production has already been created: " + docNo);
-			}
+		String docNo = DB.getSQLValueString(get_TrxName(), 
+				"SELECT max(DocumentNo) " +  
+				"FROM M_Production WHERE C_OrderLine_ID = ?",
+				p_C_OrderLine_ID);
+		if (docNo != null)
+		{
+		    throw new IllegalArgumentException("Production has already been created: " + docNo);
 		}
 		
 		MProduction production = new MProduction( line );
@@ -119,8 +91,6 @@ public class OrderLineCreateProduction extends SvrProcess
 		production.setM_Product_ID(line.getM_Product_ID());
 		production.setProductionQty(line.getQtyOrdered().subtract(line.getQtyDelivered()));
 		production.setDatePromised(line.getDatePromised());
-		if ( product.getM_Locator_ID() > 0 )
-			production.setM_Locator_ID(product.getM_Locator_ID());
 		production.setC_OrderLine_ID(p_C_OrderLine_ID);
 		
 		int locator = product.getM_Locator_ID();
@@ -177,6 +147,6 @@ public class OrderLineCreateProduction extends SvrProcess
 		String msg = Msg.parseTranslation(getCtx(), "@M_Production_ID@ @Created@ " + production.getDocumentNo());
 		addLog(production.getM_Production_ID(), null, null, msg, MProduction.Table_ID, production.getM_Production_ID());
 		return "@OK@";
-	}	//	OrderLineCreateShipment
+	}
 	
 }	//	OrderLineCreateShipment

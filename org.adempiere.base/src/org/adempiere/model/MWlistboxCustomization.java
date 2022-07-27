@@ -151,7 +151,7 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 		{
 			WlistBoxCust = new MWlistboxCustomization(ctx, 0, trxName); 
 			WlistBoxCust.setWlistboxName(AD_WListboxName);
-			WlistBoxCust.setAD_User_ID(AD_User_ID);
+			WlistBoxCust.set_ValueNoCheck(COLUMNNAME_AD_User_ID, AD_User_ID);
 			WlistBoxCust.setCustom(Custom);
 		}
 

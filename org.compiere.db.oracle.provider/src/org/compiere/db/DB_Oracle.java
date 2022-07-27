@@ -355,7 +355,7 @@ public class DB_Oracle implements AdempiereDatabase
             sb.append(" , # Min Pool Size: ").append(m_ds.getMinPoolSize());
             sb.append(" , # Max Pool Size: ").append(m_ds.getMaxPoolSize());
             sb.append(" , # Max Statements Cache Per Session: ").append(m_ds.getMaxStatementsPerConnection());
-            sb.append(" , # Active Transactions: ").append(Trx.getActiveTransactions().length);
+            sb.append(" , # Open Transactions: ").append(Trx.getOpenTransactions().length);
         }
         catch (Exception e)
         {}
