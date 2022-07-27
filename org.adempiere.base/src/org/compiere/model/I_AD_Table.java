@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Table
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_Table 
 {
@@ -41,24 +41,11 @@ public interface I_AD_Table
 
     /** Load Meta Data */
 
-    /** Column name AccessLevel */
-    public static final String COLUMNNAME_AccessLevel = "AccessLevel";
-
-	/** Set Data Access Level.
-	  * Access Level required
-	  */
-	public void setAccessLevel (String AccessLevel);
-
-	/** Get Data Access Level.
-	  * Access Level required
-	  */
-	public String getAccessLevel();
-
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -66,12 +53,12 @@ public interface I_AD_Table
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -127,6 +114,19 @@ public interface I_AD_Table
 
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
 
+    /** Column name AccessLevel */
+    public static final String COLUMNNAME_AccessLevel = "AccessLevel";
+
+	/** Set Data Access Level.
+	  * Access Level required
+	  */
+	public void setAccessLevel (String AccessLevel);
+
+	/** Get Data Access Level.
+	  * Access Level required
+	  */
+	public String getAccessLevel();
+
     /** Column name CopyColumnsFromTable */
     public static final String COLUMNNAME_CopyColumnsFromTable = "CopyColumnsFromTable";
 
@@ -145,6 +145,15 @@ public interface I_AD_Table
 	/** Get Copy Components From View	  */
 	public String getCopyComponentsFromView();
 
+    /** Column name CreateWindowFromTable */
+    public static final String COLUMNNAME_CreateWindowFromTable = "CreateWindowFromTable";
+
+	/** Set Create Window From Table	  */
+	public void setCreateWindowFromTable (String CreateWindowFromTable);
+
+	/** Get Create Window From Table	  */
+	public String getCreateWindowFromTable();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -160,15 +169,6 @@ public interface I_AD_Table
 	  * User who created this records
 	  */
 	public int getCreatedBy();
-
-    /** Column name CreateWindowFromTable */
-    public static final String COLUMNNAME_CreateWindowFromTable = "CreateWindowFromTable";
-
-	/** Set Create Window From Table	  */
-	public void setCreateWindowFromTable (String CreateWindowFromTable);
-
-	/** Get Create Window From Table	  */
-	public String getCreateWindowFromTable();
 
     /** Column name DatabaseViewDrop */
     public static final String COLUMNNAME_DatabaseViewDrop = "DatabaseViewDrop";
@@ -310,6 +310,19 @@ public interface I_AD_Table
 	  * If security is enabled, user access to data can be restricted via Roles
 	  */
 	public boolean isSecurityEnabled();
+
+    /** Column name IsShowInDrillOptions */
+    public static final String COLUMNNAME_IsShowInDrillOptions = "IsShowInDrillOptions";
+
+	/** Set Show In Drill Options.
+	  * This parameter enables the table is displayed in Report Viewer Drill options list
+	  */
+	public void setIsShowInDrillOptions (boolean IsShowInDrillOptions);
+
+	/** Get Show In Drill Options.
+	  * This parameter enables the table is displayed in Report Viewer Drill options list
+	  */
+	public boolean isShowInDrillOptions();
 
     /** Column name IsView */
     public static final String COLUMNNAME_IsView = "IsView";

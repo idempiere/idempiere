@@ -60,6 +60,7 @@ import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -630,6 +631,59 @@ public class ProcessParameterPanel extends Panel implements
 		return true;
 	}	//	loadParameters
 
+	/* 
+	 * Load parameters from Process Info
+	 */
+	public boolean loadParametersFromProcessInfo(ProcessInfo pi)
+	{
+		log.config("");
+
+		ProcessInfoParameter[] params = pi.getParameter();
+		for (int j = 0; j < m_mFields.size(); j++)
+		{
+			GridField mField = (GridField)m_mFields.get(j);
+
+			if (!mField.isEditablePara(true))
+				continue;
+
+			//	Get Values
+			WEditor editor = (WEditor)m_wEditors.get(j);
+			WEditor editor2 = (WEditor)m_wEditors2.get(j);
+
+			editor.setValue(null);
+			if (editor2 != null)
+				editor2.setValue(null);
+
+			for ( int i = 0; i<params.length; i++)
+			{
+				ProcessInfoParameter para = params[i];
+				if ( mField.getColumnName().equals(para.getParameterName()) )
+				{					 
+					editor.setValue(para.getParameter());
+					if (editor2 != null)
+						editor2.setValue(para.getParameter_To());
+				 
+					if (editor.getValue() != null) {
+	            		ValueChangeEvent changeEvent = new ValueChangeEvent(editor, editor.getColumnName(), null, editor.getValue());
+	            		valueChange(changeEvent);
+					}
+					if (editor2 != null && editor2.getValue() != null) {
+					    ValueChangeEvent changeEvent = new ValueChangeEvent(editor2, editor2.getColumnName(), null, editor2.getValue());
+					    valueChange(changeEvent);
+					}
+
+					log.fine(para.toString());
+					break;
+				}
+			} // for every parameter
+
+		}	//	for every field
+		
+		dynamicDisplay();
+		
+		return true;
+	}	//	loadParameters
+	
 	/**
 	 * Save Parameter values
 	 * 

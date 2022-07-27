@@ -19,12 +19,17 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.panel.WProcessParameterForm;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProcessDrillRule;
+import org.compiere.model.MProcessDrillRulePara;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MScheduler;
 import org.compiere.model.MSchedulerPara;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.idempiere.model.IProcessParameter;
 
 /**
  * @author hengsin
@@ -51,62 +56,86 @@ public class WProcessParameter implements IFormController {
 	}
 
 	/**
-	 * Save parameters to AD_Scheduler_Para
+	 * Save parameters
 	 * @param paras
+	 * @param tableName
 	 */
-	public void saveParameters(MPInstancePara[] paras) {
-		MScheduler scheduler = new MScheduler(Env.getCtx(), parameterForm.getProcessInfo().getRecord_ID(), null);
-		int AD_Process_ID = scheduler.getAD_Process_ID();
+	public void saveParameters(MPInstancePara[] paras, String tableName) {
+		
+		MTable table = MTable.get(Env.getCtx(), tableName);
+		PO po = table.getPO(parameterForm.getProcessInfo().getRecord_ID(), null);
+		String idColumn = "";
+		
+		int AD_Process_ID = po.get_ValueAsInt("AD_Process_ID"); //scheduler.getAD_Process_ID();
 		if (AD_Process_ID > 0 && paras.length > 0) {
 			MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
 			MProcessPara[] processParameters = process.getParameters();
-			MSchedulerPara[] schedulerParas = scheduler.getParameters(true);
-			for(MSchedulerPara para : schedulerParas) {
-				para.deleteEx(true);
-			}
 			
+			//delete parameters
+			if(tableName.equalsIgnoreCase(MScheduler.Table_Name)) {
+				idColumn = "AD_Scheduler_ID";
+				MScheduler scheduler = new MScheduler(Env.getCtx(), po.get_ID(), null);
+				MSchedulerPara[] schedulerParas = scheduler.getParameters(true);
+				for(MSchedulerPara para : schedulerParas) {
+					para.deleteEx(true);
+				}
+			}
+			else if(tableName.equalsIgnoreCase(MProcessDrillRule.Table_Name)) {
+				idColumn = "AD_Process_DrillRule_ID";
+				MProcessDrillRule drillRule = new MProcessDrillRule(Env.getCtx(), po.get_ID(), null);
+				MProcessDrillRulePara[] drillRuleParas = drillRule.getParameters(true);
+				for(MProcessDrillRulePara para : drillRuleParas) {
+					para.deleteEx(true);
+				}
+			}
+			//
+			//child table always must have "_Para" suffix
 			for(MPInstancePara para : paras) {
-				MSchedulerPara schedulerPara = new MSchedulerPara(Env.getCtx(), 0, null);
-				schedulerPara.setAD_Scheduler_ID(scheduler.getAD_Scheduler_ID());
+				table = MTable.get(Env.getCtx(), tableName+"_Para");
+				IProcessParameter poPara = null;
+				if(tableName.equalsIgnoreCase(MScheduler.Table_Name))
+					poPara = new MSchedulerPara(Env.getCtx(), 0, null);
+				else if(tableName.equalsIgnoreCase(MProcessDrillRule.Table_Name))
+					poPara = new MProcessDrillRulePara(Env.getCtx(), 0, null);
+				poPara.setParentID(po.get_ValueAsInt(idColumn)); 
 				for(MProcessPara processPara : processParameters) {
 					if (processPara.getColumnName().equals(para.getParameterName())) {
-						schedulerPara.setAD_Process_Para_ID(processPara.getAD_Process_Para_ID());
+						poPara.setAD_Process_Para_ID(processPara.getAD_Process_Para_ID());
 						if (DisplayType.isNumeric(processPara.getAD_Reference_ID())) {
 							if (para.get_Value(MPInstancePara.COLUMNNAME_P_Number) != null)
-								schedulerPara.setParameterDefault(para.getP_Number().toString());
+								poPara.setParameterDefault(para.getP_Number().toString());
 							if (processPara.isRange() && para.get_Value(MPInstancePara.COLUMNNAME_P_Number_To) != null) 
-								schedulerPara.setParameterToDefault(para.getP_Number_To().toString());
+								poPara.setParameterToDefault(para.getP_Number_To().toString());
 						} else if (DisplayType.isID(processPara.getAD_Reference_ID())) {
 							if (para.get_Value(MPInstancePara.COLUMNNAME_P_Number) != null)
-								schedulerPara.setParameterDefault(Integer.toString(para.getP_Number().intValue()));
+								poPara.setParameterDefault(Integer.toString(para.getP_Number().intValue()));
 							if (processPara.isRange() && para.get_Value(MPInstancePara.COLUMNNAME_P_Number_To) != null)
-								schedulerPara.setParameterToDefault(Integer.toString(para.getP_Number_To().intValue()));
+								poPara.setParameterToDefault(Integer.toString(para.getP_Number_To().intValue()));
 						} else if (DisplayType.isDate(processPara.getAD_Reference_ID())) {
 							if (para.getP_Date() != null)
-								schedulerPara.setParameterDefault(para.getP_Date().toString());
+								poPara.setParameterDefault(para.getP_Date().toString());
 							if (processPara.isRange() && para.getP_Date_To() != null)
-								schedulerPara.setParameterToDefault(para.getP_Date_To().toString());
+								poPara.setParameterToDefault(para.getP_Date_To().toString());
 						} else {
-							schedulerPara.setParameterDefault(para.getP_String());
+							poPara.setParameterDefault(para.getP_String());
 							if (processPara.isRange() && para.getP_String_To() != null)
-								schedulerPara.setParameterToDefault(para.getP_String_To());
+								poPara.setParameterToDefault(para.getP_String_To());
 						}
 						if (!Util.isEmpty(para.getInfo())) {
-							schedulerPara.setDescription(para.getInfo());
+							poPara.setDescription(para.getInfo());
 						}
 						if (!Util.isEmpty(para.getInfo_To())) {
-							String s = schedulerPara.getDescription();
+							String s = poPara.getDescription();
 							if (Util.isEmpty(s))
 								s = para.getInfo_To();
 							else
 								s = s + ", " + para.getInfo_To();
-							schedulerPara.setDescription(s);
+							poPara.setDescription(s);
 						}
 						break;
 					}
 				}
-				
-				schedulerPara.saveEx();
+				poPara.saveEx();
 			}
 		}		
 	}
