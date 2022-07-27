@@ -142,24 +142,6 @@ public class PipoDictionaryService implements IDictionaryService {
 
 	}
 
-	/*
-	private String getPackageDir() {
-
-		// Create Target directory if required
-		String packageDirectory = Adempiere.getAdempiereHome();
-		String result = packageDirectory + File.separator
-				+ "packages";
-		File docDir = new File( result+File.separator+"doc");
-
-		if (!docDir.exists()) {
-			boolean success = docDir.mkdirs();
-			if (!success) {
-				logger.info("Target directory creation failed");
-			}
-		}
-		return result;
-	}*/
-
 	@Override
 	public X_AD_Package_Imp_Proc getAD_Package_Imp_Proc() {
 		return adPackageImp;

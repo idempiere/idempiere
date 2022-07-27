@@ -415,6 +415,17 @@ public class MatchInvTest extends AbstractTestCase {
 			mulchCost = MCost.getCurrentCost(mulch, 0, getTrxName()).setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 			assertEquals(endProductCost, mulchCost, "Cost not adjusted: " + mulchCost.toPlainString());
 			
+			//test converted cost for all schemas
+			MAcctSchema[] schemas = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+			for (int i = 0; i < schemas.length; i++) {
+				BigDecimal expected = MConversionRate.convert (Env.getCtx(),
+						mulchCost, as.getC_Currency_ID(), schemas[i].getC_Currency_ID(),
+						inventory.getMovementDate(), 0, getAD_Client_ID(), getAD_Org_ID(), true);
+				BigDecimal mulchCostConv = MCost.getCurrentCost(mulch, 0, schemas[i], schemas[i].getAD_Org_ID(), MAcctSchema.COSTINGMETHOD_StandardCosting,
+						BigDecimal.ONE, 0, true, getTrxName()).setScale(schemas[i].getCostingPrecision(), RoundingMode.HALF_UP);
+				assertEquals(expected, mulchCostConv, "Converted Cost for schema incorrect: " + schemas[i].toString()+ " - " + mulchCostConv.toPlainString());
+			}
+			
 			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 			order.setBPartner(bpartner);
 			order.setIsSOTrx(false);

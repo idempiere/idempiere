@@ -16,6 +16,7 @@ package org.adempiere.webui.apps;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zul.Div;
@@ -40,7 +41,10 @@ public class BusyDialog extends Window {
 		appendChild(box);
 		
 		Span image = new Span();
-		LayoutUtils.addSclass("busy-dialog-img", image);
+		if (ThemeManager.isUseFontIconForImage())
+			LayoutUtils.addSclass("z-icon-spinner z-icon-spin", image);
+		else
+			LayoutUtils.addSclass("busy-dialog-img", image);
 		box.appendChild(image);
 		
 		label = new Label(Msg.getMsg(Env.getCtx(), "Processing"));

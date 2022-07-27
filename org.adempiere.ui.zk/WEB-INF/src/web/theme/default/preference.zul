@@ -8,6 +8,7 @@
 <zscript>
 <![CDATA[
 	import org.compiere.util.Env;
+	import org.adempiere.webui.apps.AEnv;
 	import org.adempiere.webui.theme.ITheme;
 	import org.compiere.model.MSysConfig;
 	import org.zkoss.zul.theme.Themes;
@@ -15,7 +16,7 @@
 	
 	Env.setContext(Env.getCtx(), ITheme.ZK_TOOLBAR_BUTTON_SIZE, "24");	
 	/* Set the next variable if you want to control browser title in theme */
-	/* Env.setContext(Env.getCtx(), "#ZK_BROWSER_TITLE", "iDempiere"); */
+	/* AEnv.getDesktop().getWebApp().setAppName("iDempiere"); */
 	Env.setContext(Env.getCtx(), ITheme.USE_CSS_FOR_WINDOW_SIZE, "Y");
 	Env.setContext(Env.getCtx(), ITheme.USE_FONT_ICON_FOR_IMAGE, MSysConfig.getBooleanValue(MSysConfig.ZK_THEME_USE_FONT_ICON_FOR_IMAGE, false));
 	Themes.setTheme(Executions.getCurrent(), "breeze");

@@ -224,6 +224,5 @@ public abstract class AbstractTestCase {
 	 * shutdown for class
 	 */
 	static void shutdown() {
-		Adempiere.stop();
 	}
 }

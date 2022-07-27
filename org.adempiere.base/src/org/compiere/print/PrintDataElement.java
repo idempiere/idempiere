@@ -164,7 +164,7 @@ public class PrintDataElement implements Serializable
 	 * 	Get Function Value
 	 * 	@return length or numeric value
 	 */
-	public BigDecimal getFunctionValue()
+	public Serializable getFunctionValue()
 	{
 		if (m_value == null)
 			return Env.ZERO;
@@ -184,6 +184,10 @@ public class PrintDataElement implements Serializable
 				return Env.ZERO;
 		}
 
+		// Timestamp
+		if (m_value instanceof Timestamp)
+			return m_value;
+		
 		//	Return Length
 		String s = m_value.toString();
 		return new BigDecimal(s.length());

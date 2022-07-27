@@ -24,7 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -36,6 +36,7 @@ import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * Archive Model
@@ -59,28 +60,15 @@ public class MArchive extends X_AD_Archive {
 	 * @return archives
 	 */
 	public static MArchive[] get(Properties ctx, String whereClause) {
-		ArrayList<MArchive> list = new ArrayList<MArchive>();
-		StringBuilder sql = new StringBuilder("SELECT * FROM AD_Archive WHERE AD_Client_ID=?");
-		if (whereClause != null && whereClause.length() > 0)
+		StringBuilder sql = new StringBuilder("AD_Client_ID=?");
+		if (!Util.isEmpty(whereClause))
 			sql.append(whereClause);
-		sql.append(" ORDER BY Created");
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			pstmt = DB.prepareStatement(sql.toString(), null);
-			pstmt.setInt(1, Env.getAD_Client_ID(ctx));
-			rs = pstmt.executeQuery();
-			while (rs.next())
-				list.add(new MArchive(ctx, rs, null));
-		} catch (Exception e) {
-			s_log.log(Level.SEVERE, sql.toString(), e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
+
+		List<MArchive> list = new Query(ctx, Table_Name, sql.toString(),null)
+				.setParameters(Env.getAD_Client_ID(ctx))
+				.setOrderBy(COLUMNNAME_Created)
+				.list();
+
 		if (list.size() == 0)
 			s_log.fine(sql.toString());
 		else

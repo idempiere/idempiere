@@ -156,7 +156,7 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 					String zclass = styleStr.substring(MStyle.ZCLASS_PREFIX.length());
 					listcell.setZclass(zclass);
 				} else {
-					listcell.setStyle(styleStr);
+					ZkCssHelper.appendStyle(listcell, styleStr);
 				}
 			}
 		}

@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -44,8 +45,7 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5999216946208895291L;
-
+	private static final long serialVersionUID = 8157805998814206274L;
 	/** Cache */
 	private static ImmutableIntPOCache<Integer, MMenu>	s_cache				= new ImmutableIntPOCache<Integer, MMenu>(Table_Name, 50);
 
@@ -259,5 +259,35 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 		makeImmutable();
 		return this;
 	}
-	
+
+	/** Returns the name using UserDef module ; if nothing is defined, fallback to the translated name */
+	public String getDisplayedName() {
+
+		if (!Util.isEmpty(getAction())) {
+			if (ACTION_Window.equals(getAction())) {
+				MUserDefWin userDef = MUserDefWin.getBestMatch(getCtx(), getAD_Window_ID());
+				if (userDef != null) {
+					if (userDef.getName() != null)
+						return userDef.getName();
+				}
+			}
+			else if (ACTION_Process.equals(getAction()) || ACTION_Report.equals(getAction())) {
+				MUserDefProc userDef = MUserDefProc.getBestMatch(getCtx(), getAD_Process_ID());
+				if (userDef != null) {
+					if (userDef.getName() != null)
+						return userDef.getName();
+				}
+			}
+			else if (ACTION_Info.equals(getAction())) {
+				MUserDefInfo userDef = MUserDefInfo.getBestMatch(getCtx(), getAD_InfoWindow_ID());
+				if (userDef != null) {
+					if (userDef.getName() != null)
+						return userDef.getName();
+				}
+			}
+		}
+
+		return get_Translation(MMenu.COLUMNNAME_Name);
+	}
+
 }	//	MMenu

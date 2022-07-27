@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Process
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Process")
 public class X_AD_Process extends PO implements I_AD_Process, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220315L;
 
     /** Standard Constructor */
     public X_AD_Process (Properties ctx, int AD_Process_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
       super (ctx, AD_Process_ID, trxName);
       /** if (AD_Process_ID == 0)
         {
-			setAccessLevel (null);
 			setAD_Process_ID (0);
+			setAccessLevel (null);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsBetaFunctionality (false);
@@ -56,8 +56,8 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
       super (ctx, AD_Process_ID, trxName, virtualColumns);
       /** if (AD_Process_ID == 0)
         {
-			setAccessLevel (null);
 			setAD_Process_ID (0);
+			setAccessLevel (null);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setIsBetaFunctionality (false);
@@ -94,37 +94,6 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
-
-	/** AccessLevel AD_Reference_ID=5 */
-	public static final int ACCESSLEVEL_AD_Reference_ID=5;
-	/** Organization = 1 */
-	public static final String ACCESSLEVEL_Organization = "1";
-	/** Client only = 2 */
-	public static final String ACCESSLEVEL_ClientOnly = "2";
-	/** Client+Organization = 3 */
-	public static final String ACCESSLEVEL_ClientPlusOrganization = "3";
-	/** System only = 4 */
-	public static final String ACCESSLEVEL_SystemOnly = "4";
-	/** System+Client = 6 */
-	public static final String ACCESSLEVEL_SystemPlusClient = "6";
-	/** All = 7 */
-	public static final String ACCESSLEVEL_All = "7";
-	/** Set Data Access Level.
-		@param AccessLevel Access Level required
-	*/
-	public void setAccessLevel (String AccessLevel)
-	{
-
-		set_Value (COLUMNNAME_AccessLevel, AccessLevel);
-	}
-
-	/** Get Data Access Level.
-		@return Access Level required
-	  */
-	public String getAccessLevel()
-	{
-		return (String)get_Value(COLUMNNAME_AccessLevel);
-	}
 
 	public org.compiere.model.I_AD_CtxHelp getAD_CtxHelp() throws RuntimeException
 	{
@@ -302,6 +271,37 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 		return ii.intValue();
 	}
 
+	/** AccessLevel AD_Reference_ID=5 */
+	public static final int ACCESSLEVEL_AD_Reference_ID=5;
+	/** Organization = 1 */
+	public static final String ACCESSLEVEL_Organization = "1";
+	/** Client only = 2 */
+	public static final String ACCESSLEVEL_ClientOnly = "2";
+	/** Client+Organization = 3 */
+	public static final String ACCESSLEVEL_ClientPlusOrganization = "3";
+	/** System only = 4 */
+	public static final String ACCESSLEVEL_SystemOnly = "4";
+	/** System+Client = 6 */
+	public static final String ACCESSLEVEL_SystemPlusClient = "6";
+	/** All = 7 */
+	public static final String ACCESSLEVEL_All = "7";
+	/** Set Data Access Level.
+		@param AccessLevel Access Level required
+	*/
+	public void setAccessLevel (String AccessLevel)
+	{
+
+		set_Value (COLUMNNAME_AccessLevel, AccessLevel);
+	}
+
+	/** Get Data Access Level.
+		@return Access Level required
+	  */
+	public String getAccessLevel()
+	{
+		return (String)get_Value(COLUMNNAME_AccessLevel);
+	}
+
 	/** AllowMultipleExecution AD_Reference_ID=200158 */
 	public static final int ALLOWMULTIPLEEXECUTION_AD_Reference_ID=200158;
 	/** Disallow multiple executions = N */
@@ -413,6 +413,21 @@ public class X_AD_Process extends PO implements I_AD_Process, I_Persistent
 	public String getExecutionType()
 	{
 		return (String)get_Value(COLUMNNAME_ExecutionType);
+	}
+
+	/** Set File Name Pattern.
+		@param FileNamePattern File Name Pattern
+	*/
+	public void setFileNamePattern (String FileNamePattern)
+	{
+		set_Value (COLUMNNAME_FileNamePattern, FileNamePattern);
+	}
+
+	/** Get File Name Pattern.
+		@return File Name Pattern	  */
+	public String getFileNamePattern()
+	{
+		return (String)get_Value(COLUMNNAME_FileNamePattern);
 	}
 
 	/** Set Comment/Help.

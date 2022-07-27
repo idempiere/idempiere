@@ -334,7 +334,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
             sb.append(" , # Min Pool Size: ").append(m_ds.getMinPoolSize());
             sb.append(" , # Max Pool Size: ").append(m_ds.getMaxPoolSize());
             sb.append(" , # Max Statements Cache Per Session: ").append(m_ds.getMaxStatementsPerConnection());
-            sb.append(" , # Active Transactions: ").append(Trx.getActiveTransactions().length);
+            sb.append(" , # Open Transactions: ").append(Trx.getOpenTransactions().length);
         }
         catch (Exception e)
         {}
@@ -434,19 +434,19 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 *  @param  time Date to be converted
 	 *  @param  dayOnly true if time set to 00:00:00
 	 *
-	 *  @return TO_DATE('2001-01-30 18:10:20',''YYYY-MM-DD HH24:MI:SS')
-	 *      or  TO_DATE('2001-01-30',''YYYY-MM-DD')
+	 *  @return TO_TIMESTAMP('2001-01-30 18:10:20',''YYYY-MM-DD HH24:MI:SS')
+	 *      or  TO_TIMESTAMP('2001-01-30',''YYYY-MM-DD')
 	 */
 	public String TO_DATE (Timestamp time, boolean dayOnly)
 	{
 		if (time == null)
 		{
 			if (dayOnly)
-				return "current_date()";
-			return "current_date()";
+				return "current_date";
+			return "current_timestamp";
 		}
 
-		StringBuilder dateString = new StringBuilder("TO_DATE('");
+		StringBuilder dateString = new StringBuilder("TO_TIMESTAMP('");
 		//  YYYY-MM-DD HH24:MI:SS.mmmm  JDBC Timestamp format
 		String myDate = time.toString();
 		if (dayOnly)

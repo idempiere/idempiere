@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.print.layout;
 
+import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -98,6 +99,7 @@ public class HTMLRenderer extends View implements Externalizable
 		m_factory = f;
 		m_view = v;
 		m_view.setParent(this);
+		m_container = new Container();
 		m_element = m_view.getElement();
 		// initially layout to the preferred size
 		setSize(m_view.getPreferredSpan(X_AXIS), m_view.getPreferredSpan(Y_AXIS));
@@ -106,6 +108,7 @@ public class HTMLRenderer extends View implements Externalizable
 	private int 			m_width;
 	private View m_view;
 	private ViewFactory m_factory;
+	private Container m_container;
 	private Element 		m_element;
 	private Rectangle		m_allocation;
 	private float m_viewWidth;
@@ -436,4 +439,10 @@ public class HTMLRenderer extends View implements Externalizable
 		float height = in.readFloat();
 		setSize(width, height);
 	}
+
+	@Override
+	public Container getContainer() {
+		return m_container;
+	}
+
 }	//	HTMLRenderer

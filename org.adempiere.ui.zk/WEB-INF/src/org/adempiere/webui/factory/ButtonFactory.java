@@ -117,7 +117,10 @@ public class ButtonFactory {
         	button.setLabel(label);
         	if (!Util.isEmpty(image)) 
         	{
-        		button.setImage(image);        	
+        		if (ThemeManager.isUseFontIconForImage())
+        			button.setIconSclass(ThemeManager.getIconSclass(image)); 
+        		else
+        			button.setImage(image); 
         		LayoutUtils.addSclass("img-txt-btn", button);
         	}
         	else
@@ -127,7 +130,10 @@ public class ButtonFactory {
         }
         else if (!Util.isEmpty(image))
         {
-        	button.setImage(image);
+        	if (ThemeManager.isUseFontIconForImage())
+    			button.setIconSclass(ThemeManager.getIconSclass(image)); 
+    		else
+    			button.setImage(image); 
         	LayoutUtils.addSclass("img-btn", button);
         }
         

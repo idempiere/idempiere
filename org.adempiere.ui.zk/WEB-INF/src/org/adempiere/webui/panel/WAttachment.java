@@ -146,6 +146,8 @@ public class WAttachment extends Window implements EventListener<Event>
 		autoPreviewList.add("image/gif");
 		autoPreviewList.add("text/plain");
 		autoPreviewList.add("application/pdf");
+		autoPreviewList.add("text/xml");
+		autoPreviewList.add("application/json");
 		// autoPreviewList.add("text/html"); IDEMPIERE-3980
 	}
 
@@ -493,7 +495,19 @@ public class WAttachment extends Window implements EventListener<Event>
 				{
 					if (data.length <= maxPreviewSize) {
 						AMedia media = new AMedia(entry.getName(), null, mimeType, entry.getData());
-						customPreviewComponent = view.renderMediaView(previewPanel, media, true);
+						try {
+							customPreviewComponent = view.renderMediaView(previewPanel, media, true);
+						} catch (Exception e) {
+							log.warning("Error previewing file in attachment entry " + entry.getName() + " -> " + e.getLocalizedMessage());
+							e.printStackTrace();
+							clearPreview();
+							String msg = WTextEditorDialog.sanitize(Msg.getMsg(Env.getCtx(), "ErrorPreviewingFile"));
+							Media mediaErr = new AMedia(null, null, "text/html", msg.getBytes());
+							preview.setContent(mediaErr);
+							preview.setVisible(true);
+							bPreview.setEnabled(true);
+							return false;
+						}
 						return true;
 					} else {
 						return false;

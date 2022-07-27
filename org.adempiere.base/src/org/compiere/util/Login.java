@@ -467,7 +467,7 @@ public class Login
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 		KeyNamePair[] retValue = null;
 		String sql = "SELECT DISTINCT r.UserLevel, r.ConnectionProfile, "	//	1/2
-			+ " c.AD_Client_ID,c.Name "						//	3/4 
+			+ " c.AD_Client_ID,c.Name,r.RoleType,r.IsClientAdministrator "						//	3/4/5/6 
 			+ "FROM AD_Role r" 
 			+ " INNER JOIN AD_Client c ON (r.AD_Client_ID=c.AD_Client_ID) "
 			+ "WHERE r.AD_Role_ID=?"		//	#1
@@ -491,6 +491,8 @@ public class Login
 			//  Role Info
 			Env.setContext(m_ctx, Env.AD_ROLE_ID, role.getKey());
 			Env.setContext(m_ctx, Env.AD_ROLE_NAME, role.getName());
+			Env.setContext(m_ctx, Env.AD_ROLE_TYPE, rs.getString("RoleType"));
+			Env.setContext(m_ctx, Env.IS_CLIENT_ADMIN, rs.getString("IsClientAdministrator"));
 			Ini.setProperty(Ini.P_ROLE, role.getName());
 			//	User Level
 			Env.setContext(m_ctx, Env.USER_LEVEL, rs.getString(1));  	//	Format 'SCO'
@@ -544,7 +546,7 @@ public class Login
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 		KeyNamePair[] retValue = null;
 		//
-		String sql = " SELECT DISTINCT r.UserLevel, r.ConnectionProfile,o.AD_Org_ID,o.Name,o.IsSummary "
+		String sql = " SELECT DISTINCT r.UserLevel, r.ConnectionProfile,o.AD_Org_ID,o.Name,o.IsSummary,r.RoleType,r.IsClientAdministrator "
 				+" FROM AD_Org o"
 				+" INNER JOIN AD_Role r on (r.AD_Role_ID=?)"
 				+" INNER JOIN AD_Client c on (c.AD_Client_ID=?)"
@@ -577,6 +579,8 @@ public class Login
 			//  Role Info
 			Env.setContext(m_ctx, Env.AD_ROLE_ID, rol.getKey());
 			Env.setContext(m_ctx, Env.AD_ROLE_NAME, rol.getName());
+			Env.setContext(m_ctx, Env.AD_ROLE_TYPE, rs.getString("RoleType"));
+			Env.setContext(m_ctx, Env.IS_CLIENT_ADMIN, rs.getString("IsClientAdministrator"));
 			Ini.setProperty(Ini.P_ROLE, rol.getName());
 			//	User Level
 			Env.setContext(m_ctx, Env.USER_LEVEL, rs.getString(1));  	//	Format 'SCO'
@@ -1414,14 +1418,18 @@ public class Login
 					}
 				}
 												
-				StringBuilder sql= new StringBuilder("SELECT  DISTINCT cli.AD_Client_ID, cli.Name, u.AD_User_ID, u.Name");
-			      sql.append(" FROM AD_User_Roles ur")
+				StringBuilder sql= new StringBuilder("SELECT  DISTINCT cli.AD_Client_ID, cli.Name, u.AD_User_ID, u.Name")
+			       .append(" FROM AD_User_Roles ur")
+                   .append(" INNER JOIN AD_Role r on (ur.AD_Role_ID=r.AD_Role_ID)")
                    .append(" INNER JOIN AD_User u on (ur.AD_User_ID=u.AD_User_ID)")
                    .append(" INNER JOIN AD_Client cli on (ur.AD_Client_ID=cli.AD_Client_ID)")
                    .append(" WHERE ur.IsActive='Y'")
                    .append(" AND u.IsActive='Y'")
-                   .append(" AND cli.IsActive='Y'")
-                   .append(" AND ur.AD_User_ID=? ORDER BY cli.Name");
+                   .append(" AND cli.IsActive='Y'");
+				if (! Util.isEmpty(whereRoleType)) {
+					sql.append(" AND ").append(whereRoleType);
+				}
+				sql.append(" AND ur.AD_User_ID=? ORDER BY cli.Name");
 			      PreparedStatement pstmt=null;
 			      ResultSet rs=null;
 			      try{

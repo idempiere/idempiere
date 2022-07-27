@@ -50,10 +50,7 @@ import org.zkoss.zul.Div;
  * 	Document Status Indicator
  */
 public class WDocumentStatusIndicator extends Panel implements EventListener<Event> {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 794746556509546913L;
+	private static final long serialVersionUID = -9076405331101242792L;
 
 	/**
 	 * 	Constructor
@@ -162,12 +159,23 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 	}
 
 	public void refresh() {
-		m_documentStatus.load(m_documentStatus.get_TrxName());
+		MDocumentStatus refresh_documentStatus = MDocumentStatus.get(Env.getCtx(), m_documentStatus.getPA_DocumentStatus_ID());
+		if(refresh_documentStatus != null) {
+			m_documentStatus = 	refresh_documentStatus;
+		}
 		statusCount = MDocumentStatus.evaluate(m_documentStatus);		
 	}
 
 	public void updateUI() {
 		statusLabel.setText(Integer.toString(statusCount));		
+	}
+
+	/**
+	 * Return the count for this indicator
+	 * @return
+	 */
+	public int getStatusCount() {
+		return statusCount;
 	}
 
 }

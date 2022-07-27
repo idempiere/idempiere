@@ -83,7 +83,10 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 
 	protected void createOpenButton() {
 		openBtn = new Toolbarbutton();
-		openBtn.setImage(ThemeManager.getThemeResource("images/Open16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			openBtn.setIconSclass("z-icon-Open");
+		else
+			openBtn.setImage(ThemeManager.getThemeResource("images/Open16.png"));
 		openBtn.setSclass("menu-search-toggle-on");
 		openBtn.setDisabled(true);
 		openBtn.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
@@ -102,7 +105,10 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
 
 	protected void createNewButton() {
 		newBtn = new Toolbarbutton();
-		newBtn.setImage(ThemeManager.getThemeResource("images/New16.png"));
+		if (ThemeManager.isUseFontIconForImage())
+			newBtn.setIconSclass("z-icon-New");
+		else
+			newBtn.setImage(ThemeManager.getThemeResource("images/New16.png"));
 		newBtn.setSclass("menu-search-toggle-off");
 		newBtn.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 			@Override

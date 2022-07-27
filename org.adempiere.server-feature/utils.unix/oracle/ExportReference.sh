@@ -17,13 +17,13 @@ fi
 echo -------------------------------------
 echo Re-Create DataPump directory
 echo -------------------------------------
-sqlplus "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateDataPumpDir.sql "$IDEMPIERE_HOME"/data
+sqlplus -S "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$IDEMPIERE_HOME"/utils/"$ADEMPIERE_DB_PATH"/CreateDataPumpDir.sql "$IDEMPIERE_HOME"/data
 chgrp dba "$IDEMPIERE_HOME"/data
 chmod 770 "$IDEMPIERE_HOME"/data
 
 if [ "x${1,,}" != "xreference" ]
 then
-    sqlplus "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" <<!
+    sqlplus -S "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" <<!
 DROP USER REFERENCE CASCADE;
 alter session set "_enable_rename_user"=true;
 alter system enable restricted session;
@@ -38,7 +38,7 @@ expdp REFERENCE/"$2"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_
 
 if [ "x${1,,}" != "xreference" ]
 then
-    sqlplus "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" <<!
+    sqlplus -S "$3"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" <<!
 alter session set "_enable_rename_user"=true;
 alter system enable restricted session;
 ALTER USER REFERENCE RENAME TO $1 IDENTIFIED BY "$2";

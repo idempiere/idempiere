@@ -217,10 +217,10 @@ public class RfQResponseRank extends SvrProcess
 						&& respQty.getRfQLineQty().isPurchaseQty())
 					{
 						respLine.setIsSelectedWinner(true);
-						respLine.saveEx();
 						break;
 					}
 				}
+				respLine.saveEx();
 			}
 			response.setRanking(ranking);
 			response.saveEx();

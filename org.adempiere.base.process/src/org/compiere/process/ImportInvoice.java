@@ -336,37 +336,6 @@ public class ImportInvoice extends SvrProcess
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Set Default BP=" + no);
 
-		//	Existing Location ? Exact Match
-		sql = new StringBuilder ("UPDATE I_Invoice o ")
-			  .append("SET C_BPartner_Location_ID=(SELECT C_BPartner_Location_ID")
-			  .append(" FROM C_BPartner_Location bpl INNER JOIN C_Location l ON (bpl.C_Location_ID=l.C_Location_ID)")
-			  .append(" WHERE o.C_BPartner_ID=bpl.C_BPartner_ID AND bpl.AD_Client_ID=o.AD_Client_ID")
-			  .append(" AND DUMP(o.Address1)=DUMP(l.Address1) AND DUMP(o.Address2)=DUMP(l.Address2)")
-			  .append(" AND DUMP(o.City)=DUMP(l.City) AND DUMP(o.Postal)=DUMP(l.Postal)")
-			  .append(" AND o.C_Region_ID=l.C_Region_ID AND o.C_Country_ID=l.C_Country_ID) ")
-			  .append("WHERE C_BPartner_ID IS NOT NULL AND C_BPartner_Location_ID IS NULL")
-			  .append(" AND I_IsImported='N'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		if (log.isLoggable(Level.FINE)) log.fine("Found Location=" + no);
-		//	Set Location from BPartner
-		sql = new StringBuilder ("UPDATE I_Invoice o ")
-			  .append("SET C_BPartner_Location_ID=(SELECT MAX(C_BPartner_Location_ID) FROM C_BPartner_Location l")
-			  .append(" WHERE l.C_BPartner_ID=o.C_BPartner_ID AND o.AD_Client_ID=l.AD_Client_ID")
-			  .append(" AND ((l.IsBillTo='Y' AND o.IsSOTrx='Y') OR o.IsSOTrx='N')")
-			  .append(") ")
-			  .append("WHERE C_BPartner_ID IS NOT NULL AND C_BPartner_Location_ID IS NULL")
-			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		if (log.isLoggable(Level.FINE)) log.fine("Set BP Location from BP=" + no);
-		//
-		sql = new StringBuilder ("UPDATE I_Invoice ")
-			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No BP Location, ' ")
-			  .append("WHERE C_BPartner_ID IS NOT NULL AND C_BPartner_Location_ID IS NULL")
-			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
-		no = DB.executeUpdate(sql.toString(), get_TrxName());
-		if (no != 0)
-			log.warning ("No BP Location=" + no);
-
 		//	Set Country
 		sql = new StringBuilder ("UPDATE I_Invoice o ")
 			  .append("SET C_Country_ID=(SELECT C_Country_ID FROM C_Country c")
@@ -412,6 +381,40 @@ public class ImportInvoice extends SvrProcess
 		no = DB.executeUpdate(sql.toString(), get_TrxName());
 		if (no != 0)
 			log.warning ("Invalid Region=" + no);
+
+		//	Existing Location ? Exact Match
+		sql = new StringBuilder ("UPDATE I_Invoice o ")
+			  .append("SET C_BPartner_Location_ID=(SELECT C_BPartner_Location_ID")
+			  .append(" FROM C_BPartner_Location bpl INNER JOIN C_Location l ON (bpl.C_Location_ID=l.C_Location_ID)")
+			  .append(" WHERE o.C_BPartner_ID=bpl.C_BPartner_ID AND bpl.AD_Client_ID=o.AD_Client_ID")
+			  .append(" AND ((o.Address1 IS NULL AND l.Address1 IS NULL) OR o.Address1=l.Address1)")
+			  .append(" AND ((o.Address2 IS NULL AND l.Address2 IS NULL) OR o.Address2=l.Address2)")
+			  .append(" AND ((o.City IS NULL AND l.City IS NULL) OR o.City=l.City)")
+			  .append(" AND ((o.Postal IS NULL AND l.Postal IS NULL) OR o.Postal=l.Postal)")
+			  .append(" AND COALESCE(o.C_Region_ID,0)=COALESCE(l.C_Region_ID,0)")
+			  .append(" AND COALESCE(o.C_Country_ID,0)=COALESCE(l.C_Country_ID,0)) ")
+			  .append("WHERE C_BPartner_ID IS NOT NULL AND C_BPartner_Location_ID IS NULL")
+			  .append(" AND I_IsImported='N'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (log.isLoggable(Level.FINE)) log.fine("Found Location=" + no);
+		//	Set Location from BPartner
+		sql = new StringBuilder ("UPDATE I_Invoice o ")
+			  .append("SET C_BPartner_Location_ID=(SELECT MAX(C_BPartner_Location_ID) FROM C_BPartner_Location l")
+			  .append(" WHERE l.C_BPartner_ID=o.C_BPartner_ID AND o.AD_Client_ID=l.AD_Client_ID")
+			  .append(" AND ((l.IsBillTo='Y' AND o.IsSOTrx='Y') OR o.IsSOTrx='N')")
+			  .append(") ")
+			  .append("WHERE C_BPartner_ID IS NOT NULL AND C_BPartner_Location_ID IS NULL")
+			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (log.isLoggable(Level.FINE)) log.fine("Set BP Location from BP=" + no);
+		//
+		sql = new StringBuilder ("UPDATE I_Invoice ")
+			  .append("SET I_IsImported='E', I_ErrorMsg=I_ErrorMsg||'ERR=No BP Location, ' ")
+			  .append("WHERE C_BPartner_ID IS NOT NULL AND C_BPartner_Location_ID IS NULL")
+			  .append(" AND I_IsImported<>'Y'").append (clientCheck);
+		no = DB.executeUpdate(sql.toString(), get_TrxName());
+		if (no != 0)
+			log.warning ("No BP Location=" + no);
 
 		//	Product
 		sql = new StringBuilder ("UPDATE I_Invoice o ")

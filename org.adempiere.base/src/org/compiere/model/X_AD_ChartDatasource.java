@@ -31,7 +31,7 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220324L;
 
     /** Standard Constructor */
     public X_AD_ChartDatasource (Properties ctx, int AD_ChartDatasource_ID, String trxName)
@@ -46,8 +46,6 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 			setFromClause (null);
 			setName (null);
 			setValueColumn (null);
-			setWhereClause (null);
-// WHERE ...
         } */
     }
 
@@ -64,8 +62,6 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 			setFromClause (null);
 			setName (null);
 			setValueColumn (null);
-			setWhereClause (null);
-// WHERE ...
         } */
     }
 

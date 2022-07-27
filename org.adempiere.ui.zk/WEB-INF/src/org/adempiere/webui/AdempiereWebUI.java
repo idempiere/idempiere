@@ -151,7 +151,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		this.getPage().setTitle(ThemeManager.getBrowserTitle());
         
         Executions.getCurrent().getDesktop().enableServerPush(true);
-        DesktopWatchDog.addDesktop(Executions.getCurrent().getDesktop());
         
         SessionManager.setSessionApplication(this);
         final Session session = Executions.getCurrent().getDesktop().getSession();
@@ -274,7 +273,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
         
 		MSession mSession = MSession.get (ctx, x_Forward_IP!=null ? x_Forward_IP : Executions.getCurrent().getRemoteAddr(),
-			Executions.getCurrent().getRemoteHost(), httpSess.getId() );
+			Executions.getCurrent().getRemoteHost(), httpSess.getId());
 		if (clientInfo.userAgent != null) {
 			mSession.setDescription(mSession.getDescription() + "\n" + clientInfo.toString());
 			mSession.saveEx();
@@ -295,7 +294,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 		keyListener = new Keylistener();
 		keyListener.setPage(this.getPage());
-		keyListener.setCtrlKeys("@a@c@d@e@f@h@l@m@n@o@p@r@s@t@w@x@z@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
+		keyListener.setCtrlKeys("@a@c@d@e@f@h@l@m@n@o@p@q@r@s@t@w@x@z@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
 		keyListener.setAutoBlur(false);
 		
 		//create new desktop
@@ -591,6 +590,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, Env.AD_USER_NAME, Env.getContext(Env.getCtx(), Env.AD_USER_NAME));
 		Env.setContext(properties, Env.AD_ROLE_ID, Env.getAD_Role_ID(Env.getCtx()));
 		Env.setContext(properties, Env.AD_ROLE_NAME, Env.getContext(Env.getCtx(), Env.AD_ROLE_NAME));
+		Env.setContext(properties, Env.AD_ROLE_TYPE, Env.getContext(Env.getCtx(), Env.AD_ROLE_TYPE));
+		Env.setContext(properties, Env.IS_CLIENT_ADMIN, Env.getContext(Env.getCtx(), Env.IS_CLIENT_ADMIN));
 		Env.setContext(properties, Env.USER_LEVEL, Env.getContext(Env.getCtx(), Env.USER_LEVEL));
 		Env.setContext(properties, Env.AD_ORG_NAME, Env.getContext(Env.getCtx(), Env.AD_ORG_NAME));
 		Env.setContext(properties, Env.M_WAREHOUSE_ID, Env.getContext(Env.getCtx(), Env.M_WAREHOUSE_ID));
