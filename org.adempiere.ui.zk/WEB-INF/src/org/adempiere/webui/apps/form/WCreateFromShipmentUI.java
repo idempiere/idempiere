@@ -63,15 +63,24 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vlayout;
 
+/**
+ * 
+ * @author hengsin
+ *
+ */
 public class WCreateFromShipmentUI extends CreateFromShipment implements EventListener<Event>, ValueChangeListener
 {
 
 	private WCreateFromWindow window;
 	
+	/**
+	 * 
+	 * @param tab
+	 */
 	public WCreateFromShipmentUI(GridTab tab) 
 	{
 		super(tab);
-		log.info(getGridTab().toString());
+		if (log.isLoggable(Level.INFO)) log.info(getGridTab().toString());
 		
 		window = new WCreateFromWindow(this, getGridTab().getWindowNo());
 		
@@ -122,14 +131,10 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 
 	private int noOfParameterColumn;
     
-	/**
-	 *  Dynamic Init
-	 *  @throws Exception if Lookups cannot be initialized
-	 *  @return true if initialized
-	 */
-	public boolean dynInit() throws Exception
+	@Override
+	protected boolean dynInit() throws Exception
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		
 		super.dynInit();
 		
@@ -222,11 +227,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 
 	private boolean 	m_actionActive = false;
 	
-	/**
-	 *  Action Listener
-	 *  @param e event
-	 * @throws Exception 
-	 */
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		if (m_actionActive)
@@ -333,10 +334,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		return(-1);
 	}
 		
-	/**
-	 *  Change Listener
-	 *  @param e event
-	 */
+	@Override
 	public void valueChange (ValueChangeEvent e)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config(e.getPropertyName() + "=" + e.getNewValue());
@@ -398,7 +396,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	}
 	
 	/**
-	 *  Load PBartner dependent Order/Invoice/Shipment Field.
+	 *  Load BPartner dependent Order Field.
 	 *  @param C_BPartner_ID BPartner
 	 *  @param forInvoice for invoice
 	 */
@@ -431,7 +429,11 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		initBPDetails(C_BPartner_ID);
 	}   //  initBPOrderDetails
 	
-	public void initBPDetails(int C_BPartner_ID) 
+	/**
+	 * load bpartner related details
+	 * @param C_BPartner_ID
+	 */
+	protected void initBPDetails(int C_BPartner_ID) 
 	{
 		initBPInvoiceDetails(C_BPartner_ID);
 		initBPRMADetails(C_BPartner_ID);
@@ -458,26 +460,6 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	    rmaField.addActionListener(this);
 	}
 
-	/**
-	 *  Load Data - Order
-	 *  @param C_Order_ID Order
-	 *  @param forInvoice true if for invoice vs. delivery qty
-	 */
-/*	protected void loadOrder (int C_Order_ID, boolean forInvoice)
-	{
-		loadTableOIS(getOrderData(C_Order_ID, forInvoice));
-	}   //  LoadOrder
-	
-	protected void loadRMA (int M_RMA_ID)
-	{
-		loadTableOIS(getRMAData(M_RMA_ID));
-	}
-	
-	protected void loadShipment (int M_InOut_ID)
-	{
-		loadTableOIS(getShipmentData(M_InOut_ID));
-	}*/
-	
 	/**
 	 *  Load Data - Order
 	 *  @param C_Order_ID Order
@@ -510,7 +492,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	}
 		
 	/**
-	 *  Load Order/Invoice/Shipment data into Table
+	 *  Load data into list box
 	 *  @param data data
 	 */
 	protected void loadTableOIS (Vector<?> data)
@@ -528,11 +510,13 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		configureMiniTable(window.getWListbox());
 	}   //  loadOrder
 	
+	@Override
 	public void showWindow()
 	{
 		window.setVisible(true);
 	}
 	
+	@Override
 	public void closeWindow()
 	{
 		window.dispose();
@@ -543,6 +527,10 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		return window;
 	}
 	
+	/**
+	 * Configure layout of parameter grid
+	 * @param parameterGrid
+	 */
 	protected void setupColumns(Grid parameterGrid) {
 		noOfParameterColumn = ClientInfo.maxWidth((ClientInfo.EXTRA_SMALL_WIDTH+ClientInfo.SMALL_WIDTH)/2) ? 2 : 4;
 		Columns columns = new Columns();
@@ -573,6 +561,9 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		}
 	}
 	
+	/**
+	 * handle onClientInfo event
+	 */
 	protected void onClientInfo()
 	{
 		if (ClientInfo.isMobile() && parameterStdLayout != null && parameterStdLayout.getRows() != null)

@@ -13,13 +13,32 @@
  *****************************************************************************/
 package org.compiere.grid;
 
+/**
+ * 
+ * @author hengsin
+ *
+ */
 public interface ICreateFrom
 {
+	/**
+	 * 
+	 * @return true if initialization success
+	 */
 	public boolean isInitOK();
 	
+	/**
+	 * show dialog
+	 */
 	public void showWindow();
 	
+	/**
+	 * close dialog
+	 */
 	public void closeWindow();
 	
+	/**
+	 * 
+	 * @return dialog object
+	 */
 	public Object getWindow();
 }

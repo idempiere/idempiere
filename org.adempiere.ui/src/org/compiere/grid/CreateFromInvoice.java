@@ -60,20 +60,17 @@ import org.compiere.util.Msg;
 public abstract class CreateFromInvoice extends CreateFrom
 {
 	/**
-	 *  Protected Constructor
+	 *  Constructor
 	 *  @param mTab MTab
 	 */
 	public CreateFromInvoice(GridTab mTab)
 	{
 		super(mTab);
 		if (log.isLoggable(Level.INFO)) log.info(mTab.toString());
-	}   //  VCreateFromInvoice
+	}   //  CreateFromInvoice
 
-	/**
-	 *  Dynamic Init
-	 *  @return true if initialized
-	 */
-	public boolean dynInit() throws Exception
+	@Override
+	protected boolean dynInit() throws Exception
 	{
 		log.config("");
 		setTitle(Msg.getElement(Env.getCtx(), "C_Invoice_ID", false) + " .. " + Msg.translate(Env.getCtx(), "CreateFrom"));
@@ -82,10 +79,11 @@ public abstract class CreateFromInvoice extends CreateFrom
 	}   //  dynInit
 
 	/**
-	 * Load PBartner dependent Order/Invoice/Shipment Field.
+	 * Load BPartner dependent Shipment records.
 	 * @param C_BPartner_ID
+	 * @return list of shipment records
 	 */
-	protected ArrayList<KeyNamePair> loadShipmentData (int C_BPartner_ID)
+	protected ArrayList<KeyNamePair> getShipments (int C_BPartner_ID)
 	{
 		String isSOTrxParam = isSOTrx ? "Y":"N";
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
@@ -117,7 +115,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), getTrxName());
 			pstmt.setInt(1, C_BPartner_ID);
 			pstmt.setString(2, isSOTrxParam);
 			pstmt.setInt(3, C_BPartner_ID);
@@ -143,8 +141,9 @@ public abstract class CreateFromInvoice extends CreateFrom
 	}
 
 	/**
-	 *  Load PBartner dependent Order/Invoice/Shipment Field.
+	 *  Load BPartner dependent RMA records
 	 *  @param C_BPartner_ID BPartner
+	 *  @return list of RMA records
 	 */
 	protected ArrayList<KeyNamePair> loadRMAData(int C_BPartner_ID) {
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
@@ -158,7 +157,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			pstmt = DB.prepareStatement(sqlStmt, null);
+			pstmt = DB.prepareStatement(sqlStmt, getTrxName());
 			pstmt.setInt(1, C_BPartner_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -178,19 +177,19 @@ public abstract class CreateFromInvoice extends CreateFrom
 	/**
 	 *  Load Data - Shipment not invoiced
 	 *  @param M_InOut_ID InOut
+	 *  @return list of shipment line records
 	 */
 	protected Vector<Vector<Object>> getShipmentData(int M_InOut_ID)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("M_InOut_ID=" + M_InOut_ID);
-		MInOut inout = new MInOut(Env.getCtx(), M_InOut_ID, null);
+		MInOut inout = new MInOut(Env.getCtx(), M_InOut_ID, getTrxName());
 		p_order = null;
 		if (inout.getC_Order_ID() != 0)
-			p_order = new MOrder (Env.getCtx(), inout.getC_Order_ID(), null);
+			p_order = new MOrder (Env.getCtx(), inout.getC_Order_ID(), getTrxName());
 
 		m_rma = null;
 		if (inout.getM_RMA_ID() != 0)
-			m_rma = new MRMA (Env.getCtx(), inout.getM_RMA_ID(), null);
-
+			m_rma = new MRMA (Env.getCtx(), inout.getM_RMA_ID(), getTrxName());
 		//
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder("SELECT ");	//	QtyEntered
@@ -231,7 +230,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), getTrxName());
 			pstmt.setInt(1, M_InOut_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next())
@@ -270,17 +269,16 @@ public abstract class CreateFromInvoice extends CreateFrom
 		}
 
 		return data;
-	}   //  loadShipment
+	}   //  getShipmentData
 
 	/**
 	 * Load RMA details
 	 * @param M_RMA_ID RMA
+	 * @return list of RMA line records
 	 */
 	protected Vector<Vector<Object>> getRMAData(int M_RMA_ID)
 	{
 	    p_order = null;
-
-//	    MRMA m_rma = new MRMA(Env.getCtx(), M_RMA_ID, null);
 
 	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 	    StringBuilder sqlStmt = new StringBuilder();
@@ -320,7 +318,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 	    ResultSet rs = null;
 	    try
 	    {
-	        pstmt = DB.prepareStatement(sqlStmt.toString(), null);
+	        pstmt = DB.prepareStatement(sqlStmt.toString(), getTrxName());
 	        pstmt.setInt(1, M_RMA_ID);
 	        pstmt.setInt(2, M_RMA_ID);
 	        rs = pstmt.executeQuery();
@@ -355,18 +353,20 @@ public abstract class CreateFromInvoice extends CreateFrom
 	    return data;
 	}
 
-	/**
-	 *  List number of rows selected
-	 */
+	@Override
 	public void info(IMiniTable miniTable, IStatusBar statusBar)
 	{
 
-	}   //  infoInvoice
+	}
 
+	/**
+	 * 
+	 * @param miniTable
+	 */
 	protected void configureMiniTable (IMiniTable miniTable)
 	{
 		miniTable.setColumnClass(0, Boolean.class, false);      //  0-Selection
-		miniTable.setColumnClass(1, BigDecimal.class, false);        //  1-Qty
+		miniTable.setColumnClass(1, BigDecimal.class, false);   //  1-Qty
 		miniTable.setColumnClass(2, String.class, true);        //  2-UOM
 		miniTable.setColumnClass(3, String.class, true);        //  3-Product
 		miniTable.setColumnClass(4, String.class, true);        //  4-VendorProductNo
@@ -381,6 +381,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 	 *  Save - Create Invoice Lines
 	 *  @return true if saved
 	 */
+	@Override
 	public boolean save(IMiniTable miniTable, String trxName)
 	{
 		//  Invoice
@@ -399,18 +400,6 @@ public abstract class CreateFromInvoice extends CreateFrom
 			invoice.setM_RMA_ID(m_rma.getM_RMA_ID());
 			invoice.saveEx();
 		}
-
-//		MInOut inout = null;
-//		if (m_M_InOut_ID > 0)
-//		{
-//			inout = new MInOut(Env.getCtx(), m_M_InOut_ID, trxName);
-//		}
-//		if (inout != null && inout.getM_InOut_ID() != 0
-//			&& inout.getC_Invoice_ID() == 0)	//	only first time
-//		{
-//			inout.setC_Invoice_ID(C_Invoice_ID);
-//			inout.saveEx();
-//		}
 
 		//  Lines
 		for (int i = 0; i < miniTable.getRowCount(); i++)
@@ -475,7 +464,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 				//
 				MRMALine rmaLine = null;
 				if (M_RMALine_ID > 0)
-					rmaLine = new MRMALine (Env.getCtx(), M_RMALine_ID, null);
+					rmaLine = new MRMALine (Env.getCtx(), M_RMALine_ID, trxName);
 				//
 				MInOutLine inoutLine = null;
 				if (M_InOutLine_ID != 0)
@@ -510,17 +499,12 @@ public abstract class CreateFromInvoice extends CreateFrom
 								break;
 							}
 						}
-//						if (inoutLine == null)
-//						{
-//							inoutLine = lines[0];	//	first as default
-//							M_InOutLine_ID = inoutLine.getM_InOutLine_ID();
-//						}
 					}
 				}
 				else if (M_RMALine_ID != 0)
 				{
 					String whereClause = "EXISTS (SELECT 1 FROM M_InOut io WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID AND io.DocStatus IN ('CO','CL'))";
-					MInOutLine[] lines = MInOutLine.getOfRMALine(Env.getCtx(), M_RMALine_ID, whereClause, null);
+					MInOutLine[] lines = MInOutLine.getOfRMALine(Env.getCtx(), M_RMALine_ID, whereClause, trxName);
 					if (log.isLoggable(Level.FINE)) log.fine ("Receipt Lines with RMALine = #" + lines.length);
 					if (lines.length > 0)
 					{
@@ -559,7 +543,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 					}						
 				}
 				else {
-					log.fine("No Receipt Line");
+					if (log.isLoggable(Level.FINE)) log.fine("No Receipt Line");
 					//	Order Info
 					if (orderLine != null)
 					{
@@ -567,7 +551,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 					}
 					else
 					{
-						log.fine("No Order Line");
+						if (log.isLoggable(Level.FINE)) log.fine("No Order Line");
 						invoiceLine.setPrice();
 						invoiceLine.setTax();
 					}
@@ -578,7 +562,9 @@ public abstract class CreateFromInvoice extends CreateFrom
 						invoiceLine.setRMALine(rmaLine);		//	overwrites
 					}
 					else
-						log.fine("No RMA Line");
+					{
+						if (log.isLoggable(Level.FINE)) log.fine("No RMA Line");
+					}
 				}
 				invoiceLine.saveEx();
 			}   //   if selected
@@ -622,8 +608,12 @@ public abstract class CreateFromInvoice extends CreateFrom
 		}
 
 		return true;
-	}   //  saveInvoice
+	}   //  save
 
+	/**
+	 * 
+	 * @return column header names
+	 */
 	protected Vector<String> getOISColumnNames()
 	{
 		//  Header Info

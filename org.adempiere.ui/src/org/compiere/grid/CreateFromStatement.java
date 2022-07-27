@@ -38,13 +38,18 @@ import org.compiere.util.Msg;
  */
 public abstract class CreateFromStatement extends CreateFromBatch 
 {
+	/**
+	 * 
+	 * @param mTab
+	 */
 	public CreateFromStatement(GridTab mTab) 
 	{
 		super(mTab);
 		if (log.isLoggable(Level.INFO)) log.info(mTab.toString());
 	}
 
-	public boolean dynInit() throws Exception
+	@Override
+	protected boolean dynInit() throws Exception
 	{
 		log.config("");
 		setTitle(Msg.getElement(Env.getCtx(), "C_BankStatement_ID") + " .. " + Msg.translate(Env.getCtx(), "CreateFrom"));
@@ -52,8 +57,9 @@ public abstract class CreateFromStatement extends CreateFromBatch
 		return true;
 	}
 	
-	protected Vector<Vector<Object>> getBankAccountData(Object BankAccount, Object BPartner, String DocumentNo, 
-			Object DateFrom, Object DateTo, Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode)
+	@Override
+	protected Vector<Vector<Object>> getBankAccountData(Integer BankAccount, Integer BPartner, String DocumentNo, 
+			Timestamp DateFrom, Timestamp DateTo, BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode)
 	{
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		
@@ -71,7 +77,7 @@ public abstract class CreateFromStatement extends CreateFromBatch
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), getTrxName());
 			setParameters(pstmt, BankAccount, BPartner, DocumentNo, DateFrom, DateTo, AmtFrom, AmtTo, DocType, TenderType, AuthCode);
 			rs = pstmt.executeQuery();
 			while(rs.next())
@@ -102,6 +108,10 @@ public abstract class CreateFromStatement extends CreateFromBatch
 		return data;
 	}
 	
+	/**
+	 * 
+	 * @param miniTable
+	 */
 	protected void configureMiniTable(IMiniTable miniTable)
 	{
 		miniTable.setColumnClass(0, Boolean.class, false);      //  0-Selection
@@ -115,6 +125,7 @@ public abstract class CreateFromStatement extends CreateFromBatch
 		miniTable.autoSize();
 	}
 
+	@Override
 	public boolean save(IMiniTable miniTable, String trxName)
 	{
 		//  fixed values
@@ -152,6 +163,10 @@ public abstract class CreateFromStatement extends CreateFromBatch
 		return true;
 	}   //  save
 	
+	/**
+	 * 
+	 * @return column header names
+	 */
 	protected Vector<String> getOISColumnNames()
 	{
 		//  Header Info

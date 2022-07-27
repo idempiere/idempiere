@@ -38,6 +38,10 @@ import org.compiere.util.Msg;
  */
 public abstract class CreateFromRMA extends CreateFrom {
 
+	/**
+	 * 
+	 * @param mTab
+	 */
 	public CreateFromRMA(GridTab mTab)
 	{
 		super(mTab);
@@ -45,7 +49,7 @@ public abstract class CreateFromRMA extends CreateFrom {
 	}
 	
 	@Override
-	public boolean dynInit() throws Exception 
+	protected boolean dynInit() throws Exception 
 	{
 		log.config("");
 		setTitle(Msg.getElement(Env.getCtx(), "M_RMA_ID") + " .. " + Msg.translate(Env.getCtx(), "CreateFrom"));
@@ -53,6 +57,10 @@ public abstract class CreateFromRMA extends CreateFrom {
 		return true;
 	}
 	
+	/**
+	 * 
+	 * @return list of shipment line records
+	 */
 	protected Vector<Vector<Object>> getRMAData()
 	{
 		int M_InOut_ID = Env.getContextAsInt(Env.getCtx(), getGridTab().getWindowNo(), "InOut_ID");
@@ -62,11 +70,12 @@ public abstract class CreateFromRMA extends CreateFrom {
 		
 		/**
          * 1 M_InOutLine_ID
-         * 2 Line
+         * 2 Line No
          * 3 Product Name
          * 4 Qty Entered
          * 5 Movement Qty
          * 6 ASI
+         * 7 Line Description
          */
         StringBuilder sqlStmt = new StringBuilder();
         
@@ -87,7 +96,7 @@ public abstract class CreateFromRMA extends CreateFrom {
         ResultSet rs = null;
         try
         {
-            pstmt = DB.prepareStatement(sqlStmt.toString(), null);
+            pstmt = DB.prepareStatement(sqlStmt.toString(), getTrxName());
             pstmt.setInt(1, M_InOut_ID);
             pstmt.setInt(2, M_RMA_ID);
             rs = pstmt.executeQuery();
@@ -131,6 +140,10 @@ public abstract class CreateFromRMA extends CreateFrom {
 
 	}
 	
+	/**
+	 * 
+	 * @param miniTable
+	 */
 	protected void configureMiniTable (IMiniTable miniTable)
 	{
 		miniTable.setColumnClass(0, Boolean.class, false);      //  0-Selection
@@ -148,20 +161,17 @@ public abstract class CreateFromRMA extends CreateFrom {
 	@Override
 	public boolean save(IMiniTable miniTable, String trxName) 
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		int M_RMA_ID = Env.getContextAsInt(Env.getCtx(), getGridTab().getWindowNo(), "M_RMA_ID");
         
-//        Integer bpId = (Integer)bPartnerField.getValue();
         MRMA rma = new MRMA(Env.getCtx(), M_RMA_ID, trxName);
-        //update BP
-//        rma.setC_BPartner_ID(bpId);
         
         for (int i = 0; i < miniTable.getRowCount(); i++)
         {
             if (((Boolean)miniTable.getValueAt(i, 0)).booleanValue())
             {
-                BigDecimal d = (BigDecimal)miniTable.getValueAt(i, 5);              //  5-Movement Qty
-                KeyNamePair pp = (KeyNamePair)miniTable.getValueAt(i, 1);   //  1-Line
+                BigDecimal d = (BigDecimal)miniTable.getValueAt(i, 5);      //  5-Movement Qty
+                KeyNamePair pp = (KeyNamePair)miniTable.getValueAt(i, 1);   //  1-Line (M_InOutLine_ID, Line)
                 
                 int inOutLineId = pp.getKey();
                 
@@ -171,16 +181,17 @@ public abstract class CreateFromRMA extends CreateFrom {
                 rmaLine.setQty(d);
                 rmaLine.setAD_Org_ID(rma.getAD_Org_ID());
                 rmaLine.setDescription((String)miniTable.getValueAt(i, 6));
-                if (!rmaLine.save())
-                {
-                    throw new IllegalStateException("Could not create RMA Line");
-                }
+                rmaLine.saveEx();
             }
         }
         rma.saveEx();
         return true;
 	}
 	
+	/**
+	 * 
+	 * @return column header names
+	 */
 	protected Vector<String> getOISColumnNames()
 	{
 		//  Header Info

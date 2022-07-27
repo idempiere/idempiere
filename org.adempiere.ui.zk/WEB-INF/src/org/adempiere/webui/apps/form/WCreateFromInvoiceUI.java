@@ -55,10 +55,19 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Space;
 
+/**
+ * 
+ * @author hengsin
+ *
+ */
 public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventListener<Event>, ValueChangeListener
 {
 	private WCreateFromWindow window;
 	
+	/**
+	 * 
+	 * @param tab
+	 */
 	public WCreateFromInvoiceUI(GridTab tab) 
 	{
 		super(tab);
@@ -107,14 +116,10 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	
 	private boolean isCreditMemo = false;
 	
-	/**
-	 *  Dynamic Init
-	 *  @throws Exception if Lookups cannot be initialized
-	 *  @return true if initialized
-	 */
+	@Override
 	public boolean dynInit() throws Exception
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		
 		super.dynInit();
 		
@@ -220,11 +225,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 
 	private int noOfParameterColumn;
 	
-	/**
-	 *  Action Listener
-	 *  @param e event
-	 * @throws Exception 
-	 */
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		if (m_actionActive)
@@ -270,10 +271,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		m_actionActive = false;
 	}
 	
-	/**
-	 *  Change Listener
-	 *  @param e event
-	 */
+	@Override
 	public void valueChange (ValueChangeEvent e)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config(e.getPropertyName() + "=" + e.getNewValue());
@@ -331,7 +329,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		initBPDetails(C_BPartner_ID);
 	}   //  initBPartnerOIS
 	
-	public void initBPDetails(int C_BPartner_ID) 
+	private void initBPDetails(int C_BPartner_ID) 
 	{
 		initBPShipmentDetails(C_BPartner_ID);
 		initBPRMADetails(C_BPartner_ID);
@@ -352,7 +350,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		KeyNamePair pp = new KeyNamePair(0,"");
 		shipmentField.addItem(pp);
 		
-		ArrayList<KeyNamePair> list = loadShipmentData(C_BPartner_ID);
+		ArrayList<KeyNamePair> list = getShipments(C_BPartner_ID);
 		for(KeyNamePair knp : list)
 			shipmentField.addItem(knp);
 		
@@ -381,7 +379,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	}
 
 	/**
-	 *  Load Data - Order
+	 *  Load Order Line records
 	 *  @param C_Order_ID Order
 	 *  @param forInvoice true if for invoice vs. delivery qty
 	 */
@@ -390,11 +388,19 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		loadTableOIS(getOrderData(C_Order_ID, forInvoice, isCreditMemo));
 	}   //  LoadOrder
 	
+	/**
+	 * load RMA Line records
+	 * @param M_RMA_ID
+	 */
 	protected void loadRMA (int M_RMA_ID)
 	{
 		loadTableOIS(getRMAData(M_RMA_ID));
 	}
 	
+	/**
+	 * load shipment line records
+	 * @param M_InOut_ID
+	 */
 	protected void loadShipment (int M_InOut_ID)
 	{
 		loadTableOIS(getShipmentData(M_InOut_ID));
@@ -419,11 +425,13 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		configureMiniTable(window.getWListbox());
 	}   //  loadOrder
 	
+	@Override
 	public void showWindow()
 	{
 		window.setVisible(true);
 	}
 	
+	@Override
 	public void closeWindow()
 	{
 		window.dispose();
@@ -434,6 +442,10 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		return window;
 	}
 	
+	/**
+	 * configure layout of parameter grid
+	 * @param parameterGrid
+	 */
 	protected void setupColumns(Grid parameterGrid) {
 		noOfParameterColumn = ClientInfo.maxWidth((ClientInfo.EXTRA_SMALL_WIDTH+ClientInfo.SMALL_WIDTH)/2) ? 2 : 4;
 		Columns columns = new Columns();
@@ -464,6 +476,9 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		}
 	}
 	
+	/**
+	 * handle onClientInfo event
+	 */
 	protected void onClientInfo()
 	{
 		if (ClientInfo.isMobile() && parameterStdLayout != null && parameterStdLayout.getRows() != null)
