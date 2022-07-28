@@ -168,14 +168,14 @@ public class Doc_AllocationHdr extends Doc
 	 *  CashBankTransfer
 	 *      -
 	 *  ==============================
-	 *  Realized Gain & Loss
+	 *  Realized Gain and Loss
 	 * 		AR/AP			DR		CR
 	 * 		Realized G/L	DR		CR
 	 *
 	 *
 	 *  </pre>
-	 *  Tax needs to be corrected for discount & write-off;
-	 *  Currency gain & loss is realized here.
+	 *  Tax needs to be corrected for discount and write-off;
+	 *  Currency gain and loss is realized here.
 	 *  @param as accounting schema
 	 *  @return Fact
 	 */
@@ -1290,6 +1290,7 @@ public class Doc_AllocationHdr extends Doc
 					.append(" AND C_AcctSchema_ID=?")
 					.append(" AND PostingType='A'")
 					.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
+					.append(" AND Description LIKE 'Invoice%'")
 					.append(" AND Line_ID IN (SELECT C_AllocationLine_ID FROM C_AllocationLine WHERE C_AllocationHdr_ID=? AND C_Invoice_ID=?)");
 				
 				// For Allocation
@@ -1621,6 +1622,7 @@ public class Doc_AllocationHdr extends Doc
 					.append(" AND C_AcctSchema_ID=?")
 					.append(" AND PostingType='A'")
 					.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
+					.append(" AND Description LIKE 'Payment%'")
 					.append(" AND Line_ID IN (SELECT C_AllocationLine_ID FROM C_AllocationLine WHERE C_AllocationHdr_ID=? AND C_Payment_ID=?)");
 				
 				// For Allocation

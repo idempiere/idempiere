@@ -117,6 +117,8 @@ public class WorkflowProcessor extends AdempiereServer
 				activity.setWFState (StateEngine.STATE_Completed);
 				// saves and calls MWFProcess.checkActivities();
 				count++;
+				MWFProcess wfpr = new MWFProcess(activity.getCtx(), activity.getAD_WF_Process_ID(), activity.get_TrxName());
+				wfpr.checkCloseActivities(activity.get_TrxName());
 			}
 		}
 		catch (Exception e)

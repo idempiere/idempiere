@@ -61,7 +61,6 @@ public class SessionContextListener implements ExecutionInit,
     /**
      * get servlet thread local context from session
      * @param exec
-     * @param createNew
      */
     public static void setupExecutionContextFromSession(Execution exec) {
     	Session session = exec.getDesktop().getSession();
@@ -266,9 +265,9 @@ public class SessionContextListener implements ExecutionInit,
 				}
 			}
 		
-			MSession mSession = MSession.get(Env.getCtx(), false);
+			MSession mSession = MSession.get(Env.getCtx());
 			if(mSession!=null && !mSession.isProcessed()) {
-				
+				mSession = new MSession(Env.getCtx(), mSession.getAD_Session_ID(), null);
 		        mSession.setProcessed(true);
 		        mSession.saveEx();
 			}
@@ -319,9 +318,10 @@ public class SessionContextListener implements ExecutionInit,
     	{
 			setupExecutionContextFromSession(Executions.getCurrent());
     	}
-		MSession mSession = MSession.get(Env.getCtx(), false);
+		MSession mSession = MSession.get(Env.getCtx());
 		if(mSession!=null){
 			if (mSession.isProcessed()) {
+				mSession = new MSession(Env.getCtx(), mSession.getAD_Session_ID(), null);
 				mSession.setProcessed(false);
 				mSession.saveEx();
 			}

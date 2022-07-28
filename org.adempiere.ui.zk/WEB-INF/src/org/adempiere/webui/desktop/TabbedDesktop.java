@@ -142,9 +142,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	
 	/**
 	 *
-	 * @param <T>
 	 * @param windowId
-	 * @return ADWindow
+	 * @param callback
 	 */
 	public void openWindow(int windowId, Callback<ADWindow> callback) {
 		openWindow(windowId, null, callback);
@@ -154,7 +153,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	 *
 	 * @param windowId
      * @param query
-	 * @return ADWindow
+     * @param callback
 	 */
 	public void openWindow(int windowId, MQuery query, Callback<ADWindow> callback) {
 		final ADWindow adWindow = new ADWindow(Env.getCtx(), windowId, query);
@@ -283,6 +282,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     	preOpenNewTab();
     	if (Window.INSERT_NEXT.equals(window.getAttribute(Window.INSERT_POSITION_KEY)))
     		windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, title, true, true, null);
+    	else if(Window.REPLACE.equals(window.getAttribute(Window.INSERT_POSITION_KEY)))
+    		windowContainer.replace(windowContainer.getSelectedTab(), window, title);
     	else
     		windowContainer.addWindow(tabPanel, title, true, null);
     	if (window instanceof IHelpContext)

@@ -169,10 +169,11 @@ public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSup
 					if (dt.equals(MViewColumn.DBDATATYPE_CharacterFixed) || 
 							dt.equals(MViewColumn.DBDATATYPE_CharacterVariable))
 						colSQL = "NULLIF('a','a')";
-					else if (dt.equals(MViewColumn.DBDATATYPE_Decimal) || 
-							dt.equals(MViewColumn.DBDATATYPE_Integer) ||
-							dt.equals(MViewColumn.DBDATATYPE_Number))
+					else if (dt.equals(MViewColumn.DBDATATYPE_Integer))
 						colSQL = "NULLIF(1,1)";
+					else if (dt.equals(MViewColumn.DBDATATYPE_Decimal) || 
+							dt.equals(MViewColumn.DBDATATYPE_Number))
+						colSQL = "NULLIF(1.0,1.0)";
 					else if (dt.equals(MViewColumn.DBDATATYPE_Timestamp))
 						colSQL = "NULL";
 				}

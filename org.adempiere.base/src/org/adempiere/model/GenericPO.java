@@ -33,7 +33,7 @@ import org.compiere.process.DocAction;
 
 /**
  * Generic PO implementation, this can be use together with ModelValidator as alternative to the classic 
- * generated model class and extend ( X_ & M_ ) approach.
+ * generated model class and extend ( X_ and M_ ) approach.
  * 
  * Originally for used to insert/update data from adempieredata.xml file in 2pack.
  * @author Marco LOMBARDO
@@ -53,7 +53,7 @@ public class GenericPO extends PO implements DocAction {
 	 * @param ID
 	 */
 	public GenericPO(String tableName, Properties ctx, int ID) {
-		super(new PropertiesWrapper(ctx, tableName), ID, null, null);
+		super(new PropertiesWrapper(ctx, tableName), ID, null, (String[]) null);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class GenericPO extends PO implements DocAction {
 	 * @param trxName
 	 */
 	public GenericPO(String tableName, Properties ctx, int ID, String trxName) {
-		super(new PropertiesWrapper(ctx, tableName), ID, trxName, null);
+		super(new PropertiesWrapper(ctx, tableName), ID, trxName, (String[]) null);
 	}
 
 	/**

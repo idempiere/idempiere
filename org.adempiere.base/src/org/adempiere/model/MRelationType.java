@@ -108,6 +108,10 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		super(ctx, rs, trxName);
 	}
 
+	public MRelationType(Properties ctx, int AD_RelationType_ID, String trxName, String... virtualColumns) {
+		super(ctx, AD_RelationType_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * Returns the types that define a relation which contains the given PO.
 	 * Explicit types are returned even if they don't actually contain the given

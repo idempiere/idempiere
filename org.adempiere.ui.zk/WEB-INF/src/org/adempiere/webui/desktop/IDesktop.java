@@ -91,8 +91,8 @@ public interface IDesktop extends UIPart {
 
 	/**
 	 *
-	 * @param doc
-	 * @param string
+	 * @param content
+	 * @param title
 	 * @param closeable
 	 */
 	public void showHTMLContent(String content, String title, boolean closeable);
@@ -149,14 +149,13 @@ public interface IDesktop extends UIPart {
 	/**
     *
     * @param infoId
-    * @return ADWindow
     */
 	public void openInfo(int infoId);
 
 	/**
 	 *
 	 * @param windowId
-	 * @return ADWindow
+	 * @param callback
 	 */
 	public void openWindow(int windowId, Callback<ADWindow> callback);
 
@@ -164,7 +163,7 @@ public interface IDesktop extends UIPart {
 	 *
 	 * @param windowId
 	 * @param query
-	 * @return ADWindow
+	 * @param callback
 	 */
 	public void openWindow(int windowId, MQuery query, Callback<ADWindow> callback);
 

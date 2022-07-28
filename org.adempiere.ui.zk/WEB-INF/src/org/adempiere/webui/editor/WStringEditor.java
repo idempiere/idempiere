@@ -146,9 +146,7 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        }
 	        if (!tableEditor)
 	        	getComponent().setCols(displayLength);
-	        if (tableEditor)
-	        	getComponent().setMultiline(false);
-	        else if (gridField.getDisplayType() == DisplayType.Text)
+	        if (gridField.getDisplayType() == DisplayType.Text)
 	        {
 	            getComponent().setMultiline(true);
 	        }
@@ -208,8 +206,9 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        
 	        changeEvent.setIsInitEdit(isStartEdit);
 	        
-	        super.fireValueChange(changeEvent);
-	        oldValue = getComponent().getValue(); // IDEMPIERE-963 - check again the value could be changed by callout
+	        super.fireValueChange(changeEvent);	  
+	        if (!isStartEdit)
+	        	oldValue = getComponent().getValue(); // IDEMPIERE-963 - check again the value could be changed by callout
     	}
     }
 

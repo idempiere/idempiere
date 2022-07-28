@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_UOM
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_UOM")
 public class X_C_UOM extends PO implements I_C_UOM, I_Persistent 
 {
@@ -31,12 +31,27 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_UOM (Properties ctx, int C_UOM_ID, String trxName)
     {
       super (ctx, C_UOM_ID, trxName);
+      /** if (C_UOM_ID == 0)
+        {
+			setCostingPrecision (0);
+			setC_UOM_ID (0);
+			setIsDefault (false);
+			setName (null);
+			setStdPrecision (0);
+			setX12DE355 (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_UOM (Properties ctx, int C_UOM_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_UOM_ID, trxName, virtualColumns);
       /** if (C_UOM_ID == 0)
         {
 			setCostingPrecision (0);
@@ -77,9 +92,8 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
     }
 
 	/** Set Costing Precision.
-		@param CostingPrecision 
-		Rounding used costing calculations
-	  */
+		@param CostingPrecision Rounding used costing calculations
+	*/
 	public void setCostingPrecision (int CostingPrecision)
 	{
 		set_Value (COLUMNNAME_CostingPrecision, Integer.valueOf(CostingPrecision));
@@ -88,7 +102,7 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	/** Get Costing Precision.
 		@return Rounding used costing calculations
 	  */
-	public int getCostingPrecision () 
+	public int getCostingPrecision()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CostingPrecision);
 		if (ii == null)
@@ -97,21 +111,20 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	}
 
 	/** Set UOM.
-		@param C_UOM_ID 
-		Unit of Measure
-	  */
+		@param C_UOM_ID Unit of Measure
+	*/
 	public void setC_UOM_ID (int C_UOM_ID)
 	{
-		if (C_UOM_ID < 1) 
+		if (C_UOM_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_UOM_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
 	}
 
 	/** Get UOM.
 		@return Unit of Measure
 	  */
-	public int getC_UOM_ID () 
+	public int getC_UOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
 		if (ii == null)
@@ -120,7 +133,8 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	}
 
 	/** Set C_UOM_UU.
-		@param C_UOM_UU C_UOM_UU	  */
+		@param C_UOM_UU C_UOM_UU
+	*/
 	public void setC_UOM_UU (String C_UOM_UU)
 	{
 		set_Value (COLUMNNAME_C_UOM_UU, C_UOM_UU);
@@ -128,15 +142,14 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 
 	/** Get C_UOM_UU.
 		@return C_UOM_UU	  */
-	public String getC_UOM_UU () 
+	public String getC_UOM_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_UOM_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -145,15 +158,14 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -162,7 +174,7 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -175,9 +187,8 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -186,7 +197,7 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -200,9 +211,8 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
     }
 
 	/** Set Standard Precision.
-		@param StdPrecision 
-		Rule for rounding  calculated amounts
-	  */
+		@param StdPrecision Rule for rounding  calculated amounts
+	*/
 	public void setStdPrecision (int StdPrecision)
 	{
 		set_Value (COLUMNNAME_StdPrecision, Integer.valueOf(StdPrecision));
@@ -211,7 +221,7 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	/** Get Standard Precision.
 		@return Rule for rounding  calculated amounts
 	  */
-	public int getStdPrecision () 
+	public int getStdPrecision()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_StdPrecision);
 		if (ii == null)
@@ -220,9 +230,8 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	}
 
 	/** Set Symbol.
-		@param UOMSymbol 
-		Symbol for a Unit of Measure
-	  */
+		@param UOMSymbol Symbol for a Unit of Measure
+	*/
 	public void setUOMSymbol (String UOMSymbol)
 	{
 		set_Value (COLUMNNAME_UOMSymbol, UOMSymbol);
@@ -231,7 +240,7 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	/** Get Symbol.
 		@return Symbol for a Unit of Measure
 	  */
-	public String getUOMSymbol () 
+	public String getUOMSymbol()
 	{
 		return (String)get_Value(COLUMNNAME_UOMSymbol);
 	}
@@ -281,7 +290,8 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	/** Weight = WE */
 	public static final String UOMTYPE_Weight = "WE";
 	/** Set UOM Type.
-		@param UOMType UOM Type	  */
+		@param UOMType UOM Type
+	*/
 	public void setUOMType (String UOMType)
 	{
 
@@ -290,15 +300,14 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 
 	/** Get UOM Type.
 		@return UOM Type	  */
-	public String getUOMType () 
+	public String getUOMType()
 	{
 		return (String)get_Value(COLUMNNAME_UOMType);
 	}
 
 	/** Set UOM Code.
-		@param X12DE355 
-		UOM EDI X12 Code
-	  */
+		@param X12DE355 UOM EDI X12 Code
+	*/
 	public void setX12DE355 (String X12DE355)
 	{
 		set_Value (COLUMNNAME_X12DE355, X12DE355);
@@ -307,7 +316,7 @@ public class X_C_UOM extends PO implements I_C_UOM, I_Persistent
 	/** Get UOM Code.
 		@return UOM EDI X12 Code
 	  */
-	public String getX12DE355 () 
+	public String getX12DE355()
 	{
 		return (String)get_Value(COLUMNNAME_X12DE355);
 	}

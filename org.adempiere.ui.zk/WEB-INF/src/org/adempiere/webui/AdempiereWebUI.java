@@ -151,7 +151,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		this.getPage().setTitle(ThemeManager.getBrowserTitle());
         
         Executions.getCurrent().getDesktop().enableServerPush(true);
-        DesktopWatchDog.addDesktop(Executions.getCurrent().getDesktop());
         
         SessionManager.setSessionApplication(this);
         final Session session = Executions.getCurrent().getDesktop().getSession();
@@ -192,10 +191,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//clear context, invalidate session
 		Env.getCtx().clear();		
 		Adempiere.getThreadPoolExecutor().schedule(() -> {
-			((SessionCtrl)session).invalidateNow();
-			desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
-		    try {
-				desktopCache.removeDesktop(desktop);
+			try {
+				((SessionCtrl)session).invalidateNow();
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}	
+		    try {		   
+		    	if (desktopCache.getDesktopIfAny(desktop.getId()) != null) {
+		    		desktop.setAttribute(DESKTOP_SESSION_INVALIDATED_ATTR, Boolean.TRUE);
+		    		desktopCache.removeDesktop(desktop);
+		    	}
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
@@ -268,7 +273,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
         
 		MSession mSession = MSession.get (ctx, x_Forward_IP!=null ? x_Forward_IP : Executions.getCurrent().getRemoteAddr(),
-			Executions.getCurrent().getRemoteHost(), httpSess.getId() );
+			Executions.getCurrent().getRemoteHost(), httpSess.getId());
 		if (clientInfo.userAgent != null) {
 			mSession.setDescription(mSession.getDescription() + "\n" + clientInfo.toString());
 			mSession.saveEx();
@@ -289,7 +294,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 		keyListener = new Keylistener();
 		keyListener.setPage(this.getPage());
-		keyListener.setCtrlKeys("@a@c@d@e@f@h@l@m@n@o@p@r@s@t@w@x@z@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
+		keyListener.setCtrlKeys("@a@c@d@e@f@h@l@m@n@o@p@q@r@s@t@w@x@z@#left@#right@#up@#down@#home@#end#enter^u@u@#pgdn@#pgup$#f2^#f2");
 		keyListener.setAutoBlur(false);
 		
 		//create new desktop
@@ -530,15 +535,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 				Executions.getCurrent().getSession().setAttribute(CLIENT_INFO, clientInfo);
 			}
 			
-			Env.setContext(Env.getCtx(), "#clientInfo_desktopWidth", clientInfo.desktopWidth);
-			Env.setContext(Env.getCtx(), "#clientInfo_desktopHeight", clientInfo.desktopHeight);
-			Env.setContext(Env.getCtx(), "#clientInfo_orientation", clientInfo.orientation);
-			Env.setContext(Env.getCtx(), "#clientInfo_mobile", clientInfo.tablet);
+			Env.setContext(Env.getCtx(), Env.CLIENT_INFO_DESKTOP_WIDTH, clientInfo.desktopWidth);
+			Env.setContext(Env.getCtx(), Env.CLIENT_INFO_DESKTOP_HEIGHT, clientInfo.desktopHeight);
+			Env.setContext(Env.getCtx(), Env.CLIENT_INFO_ORIENTATION, clientInfo.orientation);
+			Env.setContext(Env.getCtx(), Env.CLIENT_INFO_MOBILE, clientInfo.tablet);
+			if (clientInfo.timeZone != null)
+				Env.setContext(Env.getCtx(), Env.CLIENT_INFO_TIME_ZONE, clientInfo.timeZone.getID());
 			
 			IDesktop appDesktop = getAppDeskop();
 			if (appDesktop != null)
 				appDesktop.setClientInfo(clientInfo);
-
 		} else if (event.getName().equals(ON_LOGIN_COMPLETED)) {
 			loginCompleted();
 		} 
@@ -585,6 +591,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, Env.AD_USER_NAME, Env.getContext(Env.getCtx(), Env.AD_USER_NAME));
 		Env.setContext(properties, Env.AD_ROLE_ID, Env.getAD_Role_ID(Env.getCtx()));
 		Env.setContext(properties, Env.AD_ROLE_NAME, Env.getContext(Env.getCtx(), Env.AD_ROLE_NAME));
+		Env.setContext(properties, Env.AD_ROLE_TYPE, Env.getContext(Env.getCtx(), Env.AD_ROLE_TYPE));
+		Env.setContext(properties, Env.IS_CLIENT_ADMIN, Env.getContext(Env.getCtx(), Env.IS_CLIENT_ADMIN));
 		Env.setContext(properties, Env.USER_LEVEL, Env.getContext(Env.getCtx(), Env.USER_LEVEL));
 		Env.setContext(properties, Env.AD_ORG_NAME, Env.getContext(Env.getCtx(), Env.AD_ORG_NAME));
 		Env.setContext(properties, Env.M_WAREHOUSE_ID, Env.getContext(Env.getCtx(), Env.M_WAREHOUSE_ID));
@@ -594,10 +602,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, ITheme.ZK_TOOLBAR_BUTTON_SIZE, Env.getContext(Env.getCtx(), ITheme.ZK_TOOLBAR_BUTTON_SIZE));
 		Env.setContext(properties, ITheme.USE_CSS_FOR_WINDOW_SIZE, Env.getContext(Env.getCtx(), ITheme.USE_CSS_FOR_WINDOW_SIZE));
 		Env.setContext(properties, ITheme.USE_FONT_ICON_FOR_IMAGE, Env.getContext(Env.getCtx(), ITheme.USE_FONT_ICON_FOR_IMAGE));
-		Env.setContext(properties, "#clientInfo_desktopWidth", clientInfo.desktopWidth);
-		Env.setContext(properties, "#clientInfo_desktopHeight", clientInfo.desktopHeight);
-		Env.setContext(properties, "#clientInfo_orientation", clientInfo.orientation);
-		Env.setContext(properties, "#clientInfo_mobile", clientInfo.tablet);
+		Env.setContext(properties, Env.CLIENT_INFO_DESKTOP_WIDTH, clientInfo.desktopWidth);
+		Env.setContext(properties, Env.CLIENT_INFO_DESKTOP_HEIGHT, clientInfo.desktopHeight);
+		Env.setContext(properties, Env.CLIENT_INFO_ORIENTATION, clientInfo.orientation);
+		Env.setContext(properties, Env.CLIENT_INFO_MOBILE, clientInfo.tablet);
+		Env.setContext(properties, Env.CLIENT_INFO_TIME_ZONE, clientInfo.timeZone.getID());
 		
 		Desktop desktop = Executions.getCurrent().getDesktop();
 		Locale locale = (Locale) desktop.getSession().getAttribute(Attributes.PREFERRED_LOCALE);

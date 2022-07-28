@@ -37,7 +37,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *  @version 	$Id: MAcctSchemaElement.java,v 1.4 2006/08/10 01:00:44 jjanke Exp $
  * 
  * @author victor.perez@e-evolution.com, www.e-evolution.com
- *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query http://sourceforge.net/tracker/index.php?func=detail&aid=2214883&group_id=176962&atid=879335
+ *    			<li>RF [ 2214883 ] Remove SQL code and Replace for Query https://sourceforge.net/p/adempiere/feature-requests/557/
  */
 public class MAcctSchemaElement extends X_C_AcctSchema_Element implements ImmutablePOSupport
 {

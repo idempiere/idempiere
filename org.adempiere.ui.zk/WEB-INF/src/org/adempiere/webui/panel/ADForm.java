@@ -70,9 +70,6 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
 
     /**
      * Constructor
-     *
-     * @param ctx		the context into which the form is being placed
-     * @param adFormId	the Adempiere form identifier
      */
     protected ADForm()
     {

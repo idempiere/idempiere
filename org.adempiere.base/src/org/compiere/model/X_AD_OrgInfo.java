@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_OrgInfo
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_OrgInfo")
 public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent 
 {
@@ -30,12 +30,25 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_OrgInfo (Properties ctx, int AD_OrgInfo_ID, String trxName)
     {
       super (ctx, AD_OrgInfo_ID, trxName);
+      /** if (AD_OrgInfo_ID == 0)
+        {
+			setDUNS (null);
+			setReceiptFooterMsg (null);
+// 1
+			setTaxID (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_OrgInfo (Properties ctx, int AD_OrgInfo_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_OrgInfo_ID, trxName, virtualColumns);
       /** if (AD_OrgInfo_ID == 0)
         {
 			setDUNS (null);
@@ -74,7 +87,8 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
     }
 
 	/** Set AD_OrgInfo_UU.
-		@param AD_OrgInfo_UU AD_OrgInfo_UU	  */
+		@param AD_OrgInfo_UU AD_OrgInfo_UU
+	*/
 	public void setAD_OrgInfo_UU (String AD_OrgInfo_UU)
 	{
 		set_Value (COLUMNNAME_AD_OrgInfo_UU, AD_OrgInfo_UU);
@@ -82,7 +96,7 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 
 	/** Get AD_OrgInfo_UU.
 		@return AD_OrgInfo_UU	  */
-	public String getAD_OrgInfo_UU () 
+	public String getAD_OrgInfo_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_OrgInfo_UU);
 	}
@@ -94,21 +108,20 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	/** Set Organization Type.
-		@param AD_OrgType_ID 
-		Organization Type
-	  */
+		@param AD_OrgType_ID Organization Type
+	*/
 	public void setAD_OrgType_ID (int AD_OrgType_ID)
 	{
-		if (AD_OrgType_ID < 1) 
+		if (AD_OrgType_ID < 1)
 			set_Value (COLUMNNAME_AD_OrgType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_OrgType_ID, Integer.valueOf(AD_OrgType_ID));
 	}
 
 	/** Get Organization Type.
 		@return Organization Type
 	  */
-	public int getAD_OrgType_ID () 
+	public int getAD_OrgType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgType_ID);
 		if (ii == null)
@@ -123,21 +136,20 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	/** Set Calendar.
-		@param C_Calendar_ID 
-		Accounting Calendar Name
-	  */
+		@param C_Calendar_ID Accounting Calendar Name
+	*/
 	public void setC_Calendar_ID (int C_Calendar_ID)
 	{
-		if (C_Calendar_ID < 1) 
+		if (C_Calendar_ID < 1)
 			set_Value (COLUMNNAME_C_Calendar_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Calendar_ID, Integer.valueOf(C_Calendar_ID));
 	}
 
 	/** Get Calendar.
 		@return Accounting Calendar Name
 	  */
-	public int getC_Calendar_ID () 
+	public int getC_Calendar_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Calendar_ID);
 		if (ii == null)
@@ -152,21 +164,20 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	/** Set Address.
-		@param C_Location_ID 
-		Location or Address
-	  */
+		@param C_Location_ID Location or Address
+	*/
 	public void setC_Location_ID (int C_Location_ID)
 	{
-		if (C_Location_ID < 1) 
+		if (C_Location_ID < 1)
 			set_Value (COLUMNNAME_C_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
 	}
 
 	/** Get Address.
 		@return Location or Address
 	  */
-	public int getC_Location_ID () 
+	public int getC_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
 		if (ii == null)
@@ -181,21 +192,20 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	/** Set Drop Ship Warehouse.
-		@param DropShip_Warehouse_ID 
-		The (logical) warehouse to use for recording drop ship receipts and shipments.
-	  */
+		@param DropShip_Warehouse_ID The (logical) warehouse to use for recording drop ship receipts and shipments.
+	*/
 	public void setDropShip_Warehouse_ID (int DropShip_Warehouse_ID)
 	{
-		if (DropShip_Warehouse_ID < 1) 
+		if (DropShip_Warehouse_ID < 1)
 			set_Value (COLUMNNAME_DropShip_Warehouse_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_DropShip_Warehouse_ID, Integer.valueOf(DropShip_Warehouse_ID));
 	}
 
 	/** Get Drop Ship Warehouse.
 		@return The (logical) warehouse to use for recording drop ship receipts and shipments.
 	  */
-	public int getDropShip_Warehouse_ID () 
+	public int getDropShip_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DropShip_Warehouse_ID);
 		if (ii == null)
@@ -204,26 +214,24 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	/** Set D-U-N-S.
-		@param DUNS 
-		Dun & Bradstreet Number
-	  */
+		@param DUNS Dun &amp; Bradstreet Number
+	*/
 	public void setDUNS (String DUNS)
 	{
 		set_Value (COLUMNNAME_DUNS, DUNS);
 	}
 
 	/** Get D-U-N-S.
-		@return Dun & Bradstreet Number
+		@return Dun &amp; Bradstreet Number
 	  */
-	public String getDUNS () 
+	public String getDUNS()
 	{
 		return (String)get_Value(COLUMNNAME_DUNS);
 	}
 
 	/** Set EMail Address.
-		@param EMail 
-		Electronic Mail Address
-	  */
+		@param EMail Electronic Mail Address
+	*/
 	public void setEMail (String EMail)
 	{
 		set_Value (COLUMNNAME_EMail, EMail);
@@ -232,15 +240,14 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	/** Get EMail Address.
 		@return Electronic Mail Address
 	  */
-	public String getEMail () 
+	public String getEMail()
 	{
 		return (String)get_Value(COLUMNNAME_EMail);
 	}
 
 	/** Set Fax.
-		@param Fax 
-		Facsimile number
-	  */
+		@param Fax Facsimile number
+	*/
 	public void setFax (String Fax)
 	{
 		set_Value (COLUMNNAME_Fax, Fax);
@@ -249,24 +256,25 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	/** Get Fax.
 		@return Facsimile number
 	  */
-	public String getFax () 
+	public String getFax()
 	{
 		return (String)get_Value(COLUMNNAME_Fax);
 	}
 
 	/** Set Logo.
-		@param Logo_ID Logo	  */
+		@param Logo_ID Logo
+	*/
 	public void setLogo_ID (int Logo_ID)
 	{
-		if (Logo_ID < 1) 
+		if (Logo_ID < 1)
 			set_Value (COLUMNNAME_Logo_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Logo_ID, Integer.valueOf(Logo_ID));
 	}
 
 	/** Get Logo.
 		@return Logo	  */
-	public int getLogo_ID () 
+	public int getLogo_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Logo_ID);
 		if (ii == null)
@@ -281,21 +289,20 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_Value (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -304,21 +311,20 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	/** Set Parent Organization.
-		@param Parent_Org_ID 
-		Parent (superior) Organization 
-	  */
+		@param Parent_Org_ID Parent (superior) Organization 
+	*/
 	public void setParent_Org_ID (int Parent_Org_ID)
 	{
-		if (Parent_Org_ID < 1) 
+		if (Parent_Org_ID < 1)
 			set_Value (COLUMNNAME_Parent_Org_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Parent_Org_ID, Integer.valueOf(Parent_Org_ID));
 	}
 
 	/** Get Parent Organization.
 		@return Parent (superior) Organization 
 	  */
-	public int getParent_Org_ID () 
+	public int getParent_Org_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Parent_Org_ID);
 		if (ii == null)
@@ -327,9 +333,8 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	/** Set Phone.
-		@param Phone 
-		Identifies a telephone number
-	  */
+		@param Phone Identifies a telephone number
+	*/
 	public void setPhone (String Phone)
 	{
 		set_Value (COLUMNNAME_Phone, Phone);
@@ -338,15 +343,14 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	/** Get Phone.
 		@return Identifies a telephone number
 	  */
-	public String getPhone () 
+	public String getPhone()
 	{
 		return (String)get_Value(COLUMNNAME_Phone);
 	}
 
 	/** Set 2nd Phone.
-		@param Phone2 
-		Identifies an alternate telephone number.
-	  */
+		@param Phone2 Identifies an alternate telephone number.
+	*/
 	public void setPhone2 (String Phone2)
 	{
 		set_Value (COLUMNNAME_Phone2, Phone2);
@@ -355,15 +359,14 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	/** Get 2nd Phone.
 		@return Identifies an alternate telephone number.
 	  */
-	public String getPhone2 () 
+	public String getPhone2()
 	{
 		return (String)get_Value(COLUMNNAME_Phone2);
 	}
 
 	/** Set Receipt Footer Msg.
-		@param ReceiptFooterMsg 
-		This message will be displayed at the bottom of a receipt when doing a sales or purchase
-	  */
+		@param ReceiptFooterMsg This message will be displayed at the bottom of a receipt when doing a sales or purchase
+	*/
 	public void setReceiptFooterMsg (String ReceiptFooterMsg)
 	{
 		set_Value (COLUMNNAME_ReceiptFooterMsg, ReceiptFooterMsg);
@@ -372,7 +375,7 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	/** Get Receipt Footer Msg.
 		@return This message will be displayed at the bottom of a receipt when doing a sales or purchase
 	  */
-	public String getReceiptFooterMsg () 
+	public String getReceiptFooterMsg()
 	{
 		return (String)get_Value(COLUMNNAME_ReceiptFooterMsg);
 	}
@@ -384,21 +387,20 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	/** Set Supervisor.
-		@param Supervisor_ID 
-		Supervisor for this user/organization - used for escalation and approval
-	  */
+		@param Supervisor_ID Supervisor for this user/organization - used for escalation and approval
+	*/
 	public void setSupervisor_ID (int Supervisor_ID)
 	{
-		if (Supervisor_ID < 1) 
+		if (Supervisor_ID < 1)
 			set_Value (COLUMNNAME_Supervisor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Supervisor_ID, Integer.valueOf(Supervisor_ID));
 	}
 
 	/** Get Supervisor.
 		@return Supervisor for this user/organization - used for escalation and approval
 	  */
-	public int getSupervisor_ID () 
+	public int getSupervisor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Supervisor_ID);
 		if (ii == null)
@@ -407,9 +409,8 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	/** Set Tax ID.
-		@param TaxID 
-		Tax Identification
-	  */
+		@param TaxID Tax Identification
+	*/
 	public void setTaxID (String TaxID)
 	{
 		set_Value (COLUMNNAME_TaxID, TaxID);
@@ -418,7 +419,7 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	/** Get Tax ID.
 		@return Tax Identification
 	  */
-	public String getTaxID () 
+	public String getTaxID()
 	{
 		return (String)get_Value(COLUMNNAME_TaxID);
 	}
@@ -430,21 +431,20 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	/** Set Bank for transfers.
-		@param TransferBank_ID 
-		Bank account depending on currency will be used from this bank for doing transfers
-	  */
+		@param TransferBank_ID Bank account depending on currency will be used from this bank for doing transfers
+	*/
 	public void setTransferBank_ID (int TransferBank_ID)
 	{
-		if (TransferBank_ID < 1) 
+		if (TransferBank_ID < 1)
 			set_Value (COLUMNNAME_TransferBank_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_TransferBank_ID, Integer.valueOf(TransferBank_ID));
 	}
 
 	/** Get Bank for transfers.
 		@return Bank account depending on currency will be used from this bank for doing transfers
 	  */
-	public int getTransferBank_ID () 
+	public int getTransferBank_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TransferBank_ID);
 		if (ii == null)
@@ -459,18 +459,19 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	}
 
 	/** Set CashBook for transfers.
-		@param TransferCashBook_ID CashBook for transfers	  */
+		@param TransferCashBook_ID CashBook for transfers
+	*/
 	public void setTransferCashBook_ID (int TransferCashBook_ID)
 	{
-		if (TransferCashBook_ID < 1) 
+		if (TransferCashBook_ID < 1)
 			set_Value (COLUMNNAME_TransferCashBook_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_TransferCashBook_ID, Integer.valueOf(TransferCashBook_ID));
 	}
 
 	/** Get CashBook for transfers.
 		@return CashBook for transfers	  */
-	public int getTransferCashBook_ID () 
+	public int getTransferCashBook_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_TransferCashBook_ID);
 		if (ii == null)

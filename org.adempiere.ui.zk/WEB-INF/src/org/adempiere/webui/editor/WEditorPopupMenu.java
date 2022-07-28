@@ -62,6 +62,8 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     public static final String SHOWLOCATION_EVENT = "SHOW_LOCATION";
     public static final String CHANGE_LOG_EVENT = "CHANGE_LOG";
     public static final String EDITOR_EVENT = "EDITOR";
+    public static final String RESET_EVENT = "RESET";
+    public static final String ASSISTANT_EVENT = "ASSISTANT";
    
     private boolean newEnabled = true;
     private boolean updateEnabled = true; // Elaine 2009/02/16 - update record
@@ -287,7 +289,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         if (evt != null)
         {
             ContextMenuEvent menuEvent = new ContextMenuEvent(evt);
-            
+            menuEvent.setTarget(event.getTarget());
             ContextMenuListener[] listeners = new ContextMenuListener[0];
             listeners = menuListeners.toArray(listeners);
             for (ContextMenuListener listener : listeners)

@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -103,6 +105,74 @@ public class MInvoiceTax extends X_C_InvoiceTax
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("(new) " + retValue);
 		return retValue;
 	}	//	get
+	
+	/**
+	 * 	Get Child Tax Lines for Invoice Line
+	 *	@param line invoice line
+	 *	@param precision currency precision
+	 *	@param oldTax if true old tax is returned
+	 *	@param trxName transaction name
+	 *	@return existing or new tax
+	 */
+	public static MInvoiceTax[] getChildTaxes(MInvoiceLine line, int precision, 
+		boolean oldTax, String trxName)
+	{
+		List<MInvoiceTax> invoiceTaxes = new ArrayList<MInvoiceTax>();
+		
+		if (line == null || line.getC_Invoice_ID() == 0)
+			return invoiceTaxes.toArray(new MInvoiceTax[0]);
+		
+		int C_Tax_ID = line.getC_Tax_ID();
+		if (oldTax)
+		{
+			Object old = line.get_ValueOld(MInvoiceLine.COLUMNNAME_C_Tax_ID);
+			if (old == null)
+				return invoiceTaxes.toArray(new MInvoiceTax[0]);
+			C_Tax_ID = ((Integer)old).intValue();
+		}
+		if (C_Tax_ID == 0)
+		{
+			return invoiceTaxes.toArray(new MInvoiceTax[0]);
+		}
+		
+		MTax tax = MTax.get(C_Tax_ID);
+		if (!tax.isSummary())
+			return invoiceTaxes.toArray(new MInvoiceTax[0]);
+			
+		MTax[] cTaxes = tax.getChildTaxes(false);
+		for(MTax cTax : cTaxes) {
+			MInvoiceTax invoiceTax = new Query(line.getCtx(), Table_Name, "C_Invoice_ID=? AND C_Tax_ID=?", trxName)
+							.setParameters(line.getC_Invoice_ID(), cTax.getC_Tax_ID())
+							.firstOnly();
+			if (invoiceTax != null)
+			{
+				invoiceTax.set_TrxName(trxName);
+				invoiceTax.setPrecision(precision);
+				invoiceTaxes.add(invoiceTax);
+			}
+			// If the old tax was required and there is no MInvoiceTax for that
+			// return null, and not create another MInvoiceTax - teo_sarca [ 1583825 ]
+			else 
+			{
+				if (oldTax)
+					continue;
+			}
+			
+			if (invoiceTax == null)
+			{
+				//	Create New
+				invoiceTax = new MInvoiceTax(line.getCtx(), 0, trxName);
+				invoiceTax.set_TrxName(trxName);
+				invoiceTax.setClientOrg(line);
+				invoiceTax.setC_Invoice_ID(line.getC_Invoice_ID());
+				invoiceTax.setC_Tax_ID(line.getC_Tax_ID());
+				invoiceTax.setPrecision(precision);
+				invoiceTax.setIsTaxIncluded(line.isTaxIncluded());
+				invoiceTaxes.add(invoiceTax);
+			}
+		}
+		return invoiceTaxes.toArray(new MInvoiceTax[0]); 
+	}
 	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MInvoiceTax.class);

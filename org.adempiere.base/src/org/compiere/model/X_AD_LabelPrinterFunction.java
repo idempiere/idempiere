@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_LabelPrinterFunction
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_LabelPrinterFunction")
 public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFunction, I_Persistent 
 {
@@ -31,12 +31,25 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_LabelPrinterFunction (Properties ctx, int AD_LabelPrinterFunction_ID, String trxName)
     {
       super (ctx, AD_LabelPrinterFunction_ID, trxName);
+      /** if (AD_LabelPrinterFunction_ID == 0)
+        {
+			setAD_LabelPrinterFunction_ID (0);
+			setAD_LabelPrinter_ID (0);
+			setIsXYPosition (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_LabelPrinterFunction (Properties ctx, int AD_LabelPrinterFunction_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_LabelPrinterFunction_ID, trxName, virtualColumns);
       /** if (AD_LabelPrinterFunction_ID == 0)
         {
 			setAD_LabelPrinterFunction_ID (0);
@@ -75,21 +88,20 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
     }
 
 	/** Set Label printer Function.
-		@param AD_LabelPrinterFunction_ID 
-		Function of Label Printer
-	  */
+		@param AD_LabelPrinterFunction_ID Function of Label Printer
+	*/
 	public void setAD_LabelPrinterFunction_ID (int AD_LabelPrinterFunction_ID)
 	{
-		if (AD_LabelPrinterFunction_ID < 1) 
+		if (AD_LabelPrinterFunction_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_LabelPrinterFunction_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_LabelPrinterFunction_ID, Integer.valueOf(AD_LabelPrinterFunction_ID));
 	}
 
 	/** Get Label printer Function.
 		@return Function of Label Printer
 	  */
-	public int getAD_LabelPrinterFunction_ID () 
+	public int getAD_LabelPrinterFunction_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_LabelPrinterFunction_ID);
 		if (ii == null)
@@ -98,7 +110,8 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	}
 
 	/** Set AD_LabelPrinterFunction_UU.
-		@param AD_LabelPrinterFunction_UU AD_LabelPrinterFunction_UU	  */
+		@param AD_LabelPrinterFunction_UU AD_LabelPrinterFunction_UU
+	*/
 	public void setAD_LabelPrinterFunction_UU (String AD_LabelPrinterFunction_UU)
 	{
 		set_Value (COLUMNNAME_AD_LabelPrinterFunction_UU, AD_LabelPrinterFunction_UU);
@@ -106,7 +119,7 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 
 	/** Get AD_LabelPrinterFunction_UU.
 		@return AD_LabelPrinterFunction_UU	  */
-	public String getAD_LabelPrinterFunction_UU () 
+	public String getAD_LabelPrinterFunction_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_LabelPrinterFunction_UU);
 	}
@@ -118,21 +131,20 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	}
 
 	/** Set Label printer.
-		@param AD_LabelPrinter_ID 
-		Label Printer Definition
-	  */
+		@param AD_LabelPrinter_ID Label Printer Definition
+	*/
 	public void setAD_LabelPrinter_ID (int AD_LabelPrinter_ID)
 	{
-		if (AD_LabelPrinter_ID < 1) 
+		if (AD_LabelPrinter_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_LabelPrinter_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_LabelPrinter_ID, Integer.valueOf(AD_LabelPrinter_ID));
 	}
 
 	/** Get Label printer.
 		@return Label Printer Definition
 	  */
-	public int getAD_LabelPrinter_ID () 
+	public int getAD_LabelPrinter_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_LabelPrinter_ID);
 		if (ii == null)
@@ -141,9 +153,8 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -152,15 +163,14 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Function Prefix.
-		@param FunctionPrefix 
-		Data sent before the function
-	  */
+		@param FunctionPrefix Data sent before the function
+	*/
 	public void setFunctionPrefix (String FunctionPrefix)
 	{
 		set_Value (COLUMNNAME_FunctionPrefix, FunctionPrefix);
@@ -169,15 +179,14 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	/** Get Function Prefix.
 		@return Data sent before the function
 	  */
-	public String getFunctionPrefix () 
+	public String getFunctionPrefix()
 	{
 		return (String)get_Value(COLUMNNAME_FunctionPrefix);
 	}
 
 	/** Set Function Suffix.
-		@param FunctionSuffix 
-		Data sent after the function
-	  */
+		@param FunctionSuffix Data sent after the function
+	*/
 	public void setFunctionSuffix (String FunctionSuffix)
 	{
 		set_Value (COLUMNNAME_FunctionSuffix, FunctionSuffix);
@@ -186,15 +195,14 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	/** Get Function Suffix.
 		@return Data sent after the function
 	  */
-	public String getFunctionSuffix () 
+	public String getFunctionSuffix()
 	{
 		return (String)get_Value(COLUMNNAME_FunctionSuffix);
 	}
 
 	/** Set XY Position.
-		@param IsXYPosition 
-		The Function is XY position
-	  */
+		@param IsXYPosition The Function is XY position
+	*/
 	public void setIsXYPosition (boolean IsXYPosition)
 	{
 		set_Value (COLUMNNAME_IsXYPosition, Boolean.valueOf(IsXYPosition));
@@ -203,7 +211,7 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	/** Get XY Position.
 		@return The Function is XY position
 	  */
-	public boolean isXYPosition () 
+	public boolean isXYPosition()
 	{
 		Object oo = get_Value(COLUMNNAME_IsXYPosition);
 		if (oo != null) 
@@ -216,9 +224,8 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -227,7 +234,7 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -241,9 +248,8 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
     }
 
 	/** Set XY Separator.
-		@param XYSeparator 
-		The separator between the X and Y function.
-	  */
+		@param XYSeparator The separator between the X and Y function.
+	*/
 	public void setXYSeparator (String XYSeparator)
 	{
 		set_Value (COLUMNNAME_XYSeparator, XYSeparator);
@@ -252,7 +258,7 @@ public class X_AD_LabelPrinterFunction extends PO implements I_AD_LabelPrinterFu
 	/** Get XY Separator.
 		@return The separator between the X and Y function.
 	  */
-	public String getXYSeparator () 
+	public String getXYSeparator()
 	{
 		return (String)get_Value(COLUMNNAME_XYSeparator);
 	}

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_InvoiceSchedule
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_InvoiceSchedule")
 public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Persistent 
 {
@@ -33,12 +33,30 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_InvoiceSchedule (Properties ctx, int C_InvoiceSchedule_ID, String trxName)
     {
       super (ctx, C_InvoiceSchedule_ID, trxName);
+      /** if (C_InvoiceSchedule_ID == 0)
+        {
+			setAmt (Env.ZERO);
+			setC_InvoiceSchedule_ID (0);
+			setInvoiceDay (0);
+// 1
+			setInvoiceFrequency (null);
+			setInvoiceWeekDay (null);
+			setIsAmount (false);
+			setIsDefault (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_InvoiceSchedule (Properties ctx, int C_InvoiceSchedule_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_InvoiceSchedule_ID, trxName, virtualColumns);
       /** if (C_InvoiceSchedule_ID == 0)
         {
 			setAmt (Env.ZERO);
@@ -82,9 +100,8 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
     }
 
 	/** Set Amount.
-		@param Amt 
-		Amount
-	  */
+		@param Amt Amount
+	*/
 	public void setAmt (BigDecimal Amt)
 	{
 		set_Value (COLUMNNAME_Amt, Amt);
@@ -93,7 +110,7 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Get Amount.
 		@return Amount
 	  */
-	public BigDecimal getAmt () 
+	public BigDecimal getAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Amt);
 		if (bd == null)
@@ -102,21 +119,20 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	}
 
 	/** Set Invoice Schedule.
-		@param C_InvoiceSchedule_ID 
-		Schedule for generating Invoices
-	  */
+		@param C_InvoiceSchedule_ID Schedule for generating Invoices
+	*/
 	public void setC_InvoiceSchedule_ID (int C_InvoiceSchedule_ID)
 	{
-		if (C_InvoiceSchedule_ID < 1) 
+		if (C_InvoiceSchedule_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceSchedule_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceSchedule_ID, Integer.valueOf(C_InvoiceSchedule_ID));
 	}
 
 	/** Get Invoice Schedule.
 		@return Schedule for generating Invoices
 	  */
-	public int getC_InvoiceSchedule_ID () 
+	public int getC_InvoiceSchedule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoiceSchedule_ID);
 		if (ii == null)
@@ -125,7 +141,8 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	}
 
 	/** Set C_InvoiceSchedule_UU.
-		@param C_InvoiceSchedule_UU C_InvoiceSchedule_UU	  */
+		@param C_InvoiceSchedule_UU C_InvoiceSchedule_UU
+	*/
 	public void setC_InvoiceSchedule_UU (String C_InvoiceSchedule_UU)
 	{
 		set_Value (COLUMNNAME_C_InvoiceSchedule_UU, C_InvoiceSchedule_UU);
@@ -133,15 +150,14 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 
 	/** Get C_InvoiceSchedule_UU.
 		@return C_InvoiceSchedule_UU	  */
-	public String getC_InvoiceSchedule_UU () 
+	public String getC_InvoiceSchedule_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_InvoiceSchedule_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -150,15 +166,14 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Invoice on even weeks.
-		@param EvenInvoiceWeek 
-		Send invoices on even weeks
-	  */
+		@param EvenInvoiceWeek Send invoices on even weeks
+	*/
 	public void setEvenInvoiceWeek (boolean EvenInvoiceWeek)
 	{
 		set_Value (COLUMNNAME_EvenInvoiceWeek, Boolean.valueOf(EvenInvoiceWeek));
@@ -167,7 +182,7 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Get Invoice on even weeks.
 		@return Send invoices on even weeks
 	  */
-	public boolean isEvenInvoiceWeek () 
+	public boolean isEvenInvoiceWeek()
 	{
 		Object oo = get_Value(COLUMNNAME_EvenInvoiceWeek);
 		if (oo != null) 
@@ -180,9 +195,8 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	}
 
 	/** Set Invoice Day.
-		@param InvoiceDay 
-		Day of Invoice Generation
-	  */
+		@param InvoiceDay Day of Invoice Generation
+	*/
 	public void setInvoiceDay (int InvoiceDay)
 	{
 		set_Value (COLUMNNAME_InvoiceDay, Integer.valueOf(InvoiceDay));
@@ -191,7 +205,7 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Get Invoice Day.
 		@return Day of Invoice Generation
 	  */
-	public int getInvoiceDay () 
+	public int getInvoiceDay()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_InvoiceDay);
 		if (ii == null)
@@ -200,9 +214,8 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	}
 
 	/** Set Invoice day cut-off.
-		@param InvoiceDayCutoff 
-		Last day for including shipments
-	  */
+		@param InvoiceDayCutoff Last day for including shipments
+	*/
 	public void setInvoiceDayCutoff (int InvoiceDayCutoff)
 	{
 		set_Value (COLUMNNAME_InvoiceDayCutoff, Integer.valueOf(InvoiceDayCutoff));
@@ -211,7 +224,7 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Get Invoice day cut-off.
 		@return Last day for including shipments
 	  */
-	public int getInvoiceDayCutoff () 
+	public int getInvoiceDayCutoff()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_InvoiceDayCutoff);
 		if (ii == null)
@@ -230,9 +243,8 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Weekly = W */
 	public static final String INVOICEFREQUENCY_Weekly = "W";
 	/** Set Invoice Frequency.
-		@param InvoiceFrequency 
-		How often invoices will be generated
-	  */
+		@param InvoiceFrequency How often invoices will be generated
+	*/
 	public void setInvoiceFrequency (String InvoiceFrequency)
 	{
 
@@ -242,7 +254,7 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Get Invoice Frequency.
 		@return How often invoices will be generated
 	  */
-	public String getInvoiceFrequency () 
+	public String getInvoiceFrequency()
 	{
 		return (String)get_Value(COLUMNNAME_InvoiceFrequency);
 	}
@@ -264,9 +276,8 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Sunday = 7 */
 	public static final String INVOICEWEEKDAY_Sunday = "7";
 	/** Set Invoice Week Day.
-		@param InvoiceWeekDay 
-		Day to generate invoices
-	  */
+		@param InvoiceWeekDay Day to generate invoices
+	*/
 	public void setInvoiceWeekDay (String InvoiceWeekDay)
 	{
 
@@ -276,7 +287,7 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Get Invoice Week Day.
 		@return Day to generate invoices
 	  */
-	public String getInvoiceWeekDay () 
+	public String getInvoiceWeekDay()
 	{
 		return (String)get_Value(COLUMNNAME_InvoiceWeekDay);
 	}
@@ -298,9 +309,8 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Sunday = 7 */
 	public static final String INVOICEWEEKDAYCUTOFF_Sunday = "7";
 	/** Set Invoice weekday cutoff.
-		@param InvoiceWeekDayCutoff 
-		Last day in the week for shipments to be included
-	  */
+		@param InvoiceWeekDayCutoff Last day in the week for shipments to be included
+	*/
 	public void setInvoiceWeekDayCutoff (String InvoiceWeekDayCutoff)
 	{
 
@@ -310,15 +320,14 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Get Invoice weekday cutoff.
 		@return Last day in the week for shipments to be included
 	  */
-	public String getInvoiceWeekDayCutoff () 
+	public String getInvoiceWeekDayCutoff()
 	{
 		return (String)get_Value(COLUMNNAME_InvoiceWeekDayCutoff);
 	}
 
 	/** Set Amount Limit.
-		@param IsAmount 
-		Send invoices only if the amount exceeds the limit
-	  */
+		@param IsAmount Send invoices only if the amount exceeds the limit
+	*/
 	public void setIsAmount (boolean IsAmount)
 	{
 		set_Value (COLUMNNAME_IsAmount, Boolean.valueOf(IsAmount));
@@ -327,7 +336,7 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Get Amount Limit.
 		@return Send invoices only if the amount exceeds the limit
 	  */
-	public boolean isAmount () 
+	public boolean isAmount()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAmount);
 		if (oo != null) 
@@ -340,9 +349,8 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -351,7 +359,7 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -364,9 +372,8 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -375,7 +382,7 @@ public class X_C_InvoiceSchedule extends PO implements I_C_InvoiceSchedule, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

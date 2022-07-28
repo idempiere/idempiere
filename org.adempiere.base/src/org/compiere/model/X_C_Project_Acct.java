@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_Project_Acct
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_Project_Acct")
 public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persistent 
 {
@@ -30,12 +30,25 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Project_Acct (Properties ctx, int C_Project_Acct_ID, String trxName)
     {
       super (ctx, C_Project_Acct_ID, trxName);
+      /** if (C_Project_Acct_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setC_Project_ID (0);
+			setPJ_Asset_Acct (0);
+			setPJ_WIP_Acct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Project_Acct (Properties ctx, int C_Project_Acct_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Project_Acct_ID, trxName, virtualColumns);
       /** if (C_Project_Acct_ID == 0)
         {
 			setC_AcctSchema_ID (0);
@@ -80,21 +93,20 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -103,7 +115,8 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	}
 
 	/** Set C_Project_Acct_UU.
-		@param C_Project_Acct_UU C_Project_Acct_UU	  */
+		@param C_Project_Acct_UU C_Project_Acct_UU
+	*/
 	public void setC_Project_Acct_UU (String C_Project_Acct_UU)
 	{
 		set_Value (COLUMNNAME_C_Project_Acct_UU, C_Project_Acct_UU);
@@ -111,7 +124,7 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 
 	/** Get C_Project_Acct_UU.
 		@return C_Project_Acct_UU	  */
-	public String getC_Project_Acct_UU () 
+	public String getC_Project_Acct_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Project_Acct_UU);
 	}
@@ -123,21 +136,20 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -152,9 +164,8 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	}
 
 	/** Set Project Asset.
-		@param PJ_Asset_Acct 
-		Project Asset Account
-	  */
+		@param PJ_Asset_Acct Project Asset Account
+	*/
 	public void setPJ_Asset_Acct (int PJ_Asset_Acct)
 	{
 		set_Value (COLUMNNAME_PJ_Asset_Acct, Integer.valueOf(PJ_Asset_Acct));
@@ -163,7 +174,7 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	/** Get Project Asset.
 		@return Project Asset Account
 	  */
-	public int getPJ_Asset_Acct () 
+	public int getPJ_Asset_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PJ_Asset_Acct);
 		if (ii == null)
@@ -178,9 +189,8 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	}
 
 	/** Set Work In Progress.
-		@param PJ_WIP_Acct 
-		Account for Work in Progress
-	  */
+		@param PJ_WIP_Acct Account for Work in Progress
+	*/
 	public void setPJ_WIP_Acct (int PJ_WIP_Acct)
 	{
 		set_Value (COLUMNNAME_PJ_WIP_Acct, Integer.valueOf(PJ_WIP_Acct));
@@ -189,7 +199,7 @@ public class X_C_Project_Acct extends PO implements I_C_Project_Acct, I_Persiste
 	/** Get Work In Progress.
 		@return Account for Work in Progress
 	  */
-	public int getPJ_WIP_Acct () 
+	public int getPJ_WIP_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PJ_WIP_Acct);
 		if (ii == null)

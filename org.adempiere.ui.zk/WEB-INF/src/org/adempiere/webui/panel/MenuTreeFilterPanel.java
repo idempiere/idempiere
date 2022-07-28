@@ -1,10 +1,14 @@
 package org.adempiere.webui.panel;
 
+import java.util.List;
+
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeUtils;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -13,19 +17,25 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Tree;
+import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
 
 public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, IdSpace {
 
+	private static final String ORIGINAL_SIBLING = "original.sibling";
+
+	private static final String FLAT_VIEW_PARENT = "flatView.parent";
+
 	private static final long serialVersionUID = 5884898489357885711L;
 	
 	public static final String MENU_TREE_FILTER_CHECKED_QUEUE = "MENU_TREE_FILTER_CHECKED_QUEUE";
 	
-	@SuppressWarnings("unused")
 	private Tree tree;
 	@SuppressWarnings("unused")
 	private TreeSearchPanel searchPanel;
+
+	private Checkbox flatView;
 
 	public MenuTreeFilterPanel(Tree tree, TreeSearchPanel panel) {
 		super();
@@ -94,33 +104,43 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 		info.addEventListener(Events.ON_CHECK, this);
 		box.appendChild(info);
 
-		Checkbox single = new Checkbox();
-		single.setLabel(Msg.getMsg(Env.getCtx(), "FlatView"));
-		single.setId("flatView");
-		single.setChecked(false);
-		single.addEventListener(Events.ON_CHECK, this);
-		box.appendChild(single);
+		flatView = new Checkbox();
+		flatView.setLabel(Msg.getMsg(Env.getCtx(), "FlatView"));
+		flatView.setId("flatView");
+		flatView.setChecked(false);
+		flatView.addEventListener(Events.ON_CHECK, this);
+		box.appendChild(flatView);
 
 		appendChild(box);
 	}
 
 	public void onEvent(Event event) throws Exception {
 		final Checkbox chk = (Checkbox) event.getTarget();
-/*		if ("flatView".equals(chk.getId()))
-			toggleFlatView(tree, chk);
-		else
-			toggle(tree, chk);
-		if (searchPanel != null)
-			searchPanel.refreshSearchList();
-		tree.invalidate();
-*/		
 		EventQueues.lookup(MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.DESKTOP, true).publish(new Event(Events.ON_CHECK, null, chk));
 	}
 
+	/**
+	 * switch menu tree to flat view
+	 */
+	public void switchToFlatView() {
+		if (!flatView.isChecked()) {
+			flatView.setChecked(true);
+			toggleFlatView(tree, flatView);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param tree
+	 * @param chk checkbox for flat view toggle
+	 */
 	public static void toggleFlatView(Tree tree, final Checkbox chk) {
+		final Treeitem[] lastVisitedItem = new Treeitem[1];
+		final Treeitem[] lastVisitedParent = new Treeitem[1];
 		TreeUtils.traverse(tree, new TreeItemAction() {
 			public void run(Treeitem treeItem) {
-				if (treeItem.getAttribute("menu.type") == null)
+				Treeitem currentParent = treeItem.getParentItem();
+				if (treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE) == null)
 				{
 					if (chk.isChecked())
 					{
@@ -133,6 +153,13 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 					{
 						treeItem.setVisible(true);
 					}
+					if (lastVisitedParent[0] == treeItem.getParentItem())
+					{
+						if (lastVisitedItem[0] != null && lastVisitedItem[0].getAttribute(ORIGINAL_SIBLING) == null)
+						{
+							lastVisitedItem[0].setAttribute(ORIGINAL_SIBLING, treeItem);
+						}
+					}
 				}
 				else
 				{
@@ -140,59 +167,119 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 					{
 						if (treeItem.getParentItem() != null && !treeItem.getParentItem().isVisible())
 						{
-							StringBuilder label = new StringBuilder(treeItem.getLabel());
-							treeItem.setAttribute("flatView.label", treeItem.getLabel());
 							Treeitem parent = treeItem.getParentItem();
-							treeItem.setAttribute("flatView.parent", parent);
+							treeItem.setAttribute(FLAT_VIEW_PARENT, parent);
 							while(parent != null)
 							{
 								if (parent.isVisible())
 								{
+									if (lastVisitedParent[0] == treeItem.getParentItem())
+									{
+										if (lastVisitedItem[0] != null && lastVisitedItem[0].getAttribute(ORIGINAL_SIBLING) == null)
+										{
+											lastVisitedItem[0].setAttribute(ORIGINAL_SIBLING, treeItem);
+										}
+									}
 									treeItem.detach();
-									parent.getTreechildren().appendChild(treeItem);
+									parent.getTreechildren().insertBefore(treeItem, findFlatViewSibling(parent.getTreechildren(), treeItem));
 									break;
 								}
-								//not working with search
-								/*
-								String t = parent.getLabel();
-								label.insert(0, " > ");
-								label.insert(0, t);
-								*/
 								parent = parent.getParentItem();
 							}
-							treeItem.setLabel(label.toString());
 						}
 						else
 						{
 							Treeitem parent = treeItem.getParentItem();
 							if (parent != null)
-								parent.getTreechildren().appendChild(treeItem);
+							{
+								if (lastVisitedParent[0] == treeItem.getParentItem())
+								{
+									if (lastVisitedItem[0] != null && lastVisitedItem[0].getAttribute(ORIGINAL_SIBLING) == null)
+									{
+										lastVisitedItem[0].setAttribute(ORIGINAL_SIBLING, treeItem);
+									}
+								}
+								treeItem.detach();
+								parent.getTreechildren().insertBefore(treeItem, findFlatViewSibling(parent.getTreechildren(), treeItem));
+							}
 						}
 					}
 					else
 					{
-						if (treeItem.getAttribute("flatView.parent") != null)
+						if (treeItem.getAttribute(FLAT_VIEW_PARENT) != null)
 						{
-							Treeitem parent = (Treeitem) treeItem.getAttribute("flatView.parent");
-							String label = (String) treeItem.getAttribute("flatView.label");
-							treeItem.setLabel(label);
+							Treeitem parent = (Treeitem) treeItem.getAttribute(FLAT_VIEW_PARENT);
 							treeItem.detach();
-							parent.getTreechildren().appendChild(treeItem);
-							treeItem.removeAttribute("flatView.parent");
-							treeItem.removeAttribute("flatView.label");
+							Treeitem sibling = (Treeitem) treeItem.getAttribute(ORIGINAL_SIBLING);
+							if (sibling != null)
+							{
+								reattachSibling(parent.getTreechildren(), sibling);
+							}
+							parent.getTreechildren().insertBefore(treeItem, sibling);
+							treeItem.removeAttribute(FLAT_VIEW_PARENT);
+						}
+						else
+						{
+							Treeitem parent = treeItem.getParentItem();
+							Treeitem sibling = (Treeitem) treeItem.getAttribute(ORIGINAL_SIBLING);
+							if (sibling != null)
+							{
+								reattachSibling(parent.getTreechildren(), sibling);
+							}
+							parent.getTreechildren().insertBefore(treeItem, sibling);
 						}
 					}
 				}
+				lastVisitedItem[0] = treeItem;
+				lastVisitedParent[0] = currentParent;
 			}
 		});
+	}
+
+	private static void reattachSibling(Treechildren treechildren, Treeitem treeItem) {
+		Treeitem sibling = (Treeitem) treeItem.getAttribute(ORIGINAL_SIBLING);
+		if (sibling != null)
+		{
+			reattachSibling(treechildren, sibling);
+		}
+		treechildren.insertBefore(treeItem, sibling);
+	}
+
+	private static Component findFlatViewSibling(Treechildren treechildren, Treeitem treeItem) {
+		List<Component> childrens = treechildren.getChildren();
+		if (childrens.isEmpty()) {			
+			return null;
+		}
+		String menuType = (String) treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE);
+		String label = (String) treeItem.getAttribute(AbstractMenuPanel.MENU_LABEL_ATTRIBUTE);
+		for(int i = 0; i < childrens.size(); i++) {
+			Component child = childrens.get(i);
+			if (child instanceof Treeitem) {
+				Treeitem ti = (Treeitem) child;
+				String tiType = (String) ti.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE);
+				if (tiType == null)
+					continue;
+				if (menuType.equals(tiType)) {
+					String tiLabel = (String) ti.getAttribute(AbstractMenuPanel.MENU_LABEL_ATTRIBUTE);
+					if (Util.isEmpty(tiLabel))
+						continue;
+					if (label.compareTo(tiLabel) < 0) {
+						return child;
+					}
+				} else if (menuType.compareTo(tiType) < 0) {
+					return child;
+				}
+			}
+		}
+		return null;
 	}
 
 	public static void toggle(Tree tree, final Checkbox chk) {
 		TreeUtils.traverse(tree, new TreeItemAction() {
 			public void run(Treeitem treeItem) {
-				if (treeItem.getAttribute("menu.type") != null)
+				if (treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE) != null)
 				{
-					String menuType = (String) treeItem.getAttribute("menu.type");
+					String menuType = (String) treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE);
 					if (chk.isChecked())
 					{
 						if (chk.getId().equals(menuType))

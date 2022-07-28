@@ -79,7 +79,7 @@ public class CalloutPaySelection extends CalloutEngine
 	/**
 	 *	Payment Selection Line - Invoice.
 	 *		- called from C_PaySelectionLine.C_Invoice_ID
-	 *		- update PayAmt & DifferenceAmt
+	 *		- update PayAmt and DifferenceAmt
 	 *  @param ctx context
 	 *  @param WindowNo current Window No
 	 *  @param mTab Grid Tab

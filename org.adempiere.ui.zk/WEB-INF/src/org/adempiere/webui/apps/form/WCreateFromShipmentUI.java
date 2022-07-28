@@ -138,7 +138,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		sameWarehouseCb.setSelected(true);
 		sameWarehouseCb.addActionListener(this);
 		//  load Locator
-		MLocatorLookup locator = new MLocatorLookup(Env.getCtx(), p_WindowNo);
+		MLocatorLookup locator = new MLocatorLookup(Env.getCtx(), p_WindowNo, (String)null);
 		locatorField = new WLocatorEditor ("M_Locator_ID", true, false, true, locator, p_WindowNo);
 
 		initBPartner(false);
@@ -232,53 +232,12 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		if (m_actionActive)
 			return;
 		m_actionActive = true;
-		/*
-		//  Order
-		if (e.getTarget().equals(orderField))
-		{
-			ListItem li = orderField.getSelectedItem();
-			int C_Order_ID = 0;
-			if (li != null && li.getValue() != null)
-				C_Order_ID = ((Integer) li.getValue()).intValue();
-			//  set Invoice, RMA and Shipment to Null
-			rmaField.setSelectedIndex(-1);
-			//shipmentField.setSelectedIndex(-1);
-			loadOrder(C_Order_ID, true);
-		}
-		//  Shipment
-		else if (e.getTarget().equals(invoiceField))
-		{
-			ListItem li = shipmentField.getSelectedItem();
-			int M_InOut_ID = 0;
-			if (li != null && li.getValue() != null)
-				M_InOut_ID = ((Integer) li.getValue()).intValue();
-			//  set Order, RMA and Invoice to Null
-			orderField.setSelectedIndex(-1);
-			rmaField.setSelectedIndex(-1);
-			loadShipment(M_InOut_ID);
-		}
-		//  RMA
-		else if (e.getTarget().equals(rmaField))
-		{
-			ListItem li = rmaField.getSelectedItem();
-		    int M_RMA_ID = 0;
-		    if (li != null && li.getValue() != null)
-		        M_RMA_ID = ((Integer) li.getValue()).intValue();
-		    //  set Order and Invoice to Null
-		    orderField.setSelectedIndex(-1);
-		    //shipmentField.setSelectedIndex(-1);
-		    loadRMA(M_RMA_ID);
-		}
-		m_actionActive = false;
-		*/
-		
+
 		//  Order
 		if (e.getTarget().equals(orderField))
 		{
 			KeyNamePair pp = orderField.getSelectedItem().toKeyNamePair();
-			if (pp == null || pp.getKey() == 0)
-				;
-			else
+			if (pp != null && pp.getKey() > 0)
 			{
 				int C_Order_ID = pp.getKey();
 				//  set Invoice and Shipment to Null
@@ -291,9 +250,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		else if (e.getTarget().equals(invoiceField))
 		{
 			KeyNamePair pp = invoiceField.getSelectedItem().toKeyNamePair();
-			if (pp == null || pp.getKey() == 0)
-				;
-			else
+			if (pp != null && pp.getKey() > 0)
 			{
 				int C_Invoice_ID = pp.getKey();
 				//  set Order and Shipment to Null
@@ -306,9 +263,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
         else if (e.getTarget().equals(rmaField))
         {
             KeyNamePair pp = rmaField.getSelectedItem().toKeyNamePair();
-            if (pp == null || pp.getKey() == 0)
-                ;
-            else
+			if (pp != null && pp.getKey() > 0)
             {
                 int M_RMA_ID = pp.getKey();
                 //  set Order and Shipment to Null
@@ -460,7 +415,17 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		for(KeyNamePair knp : list)
 			orderField.addItem(knp);
 		
-		orderField.setSelectedIndex(0);
+		int C_Order_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_Order_ID");
+		if (C_Order_ID > 0) {
+			orderField.setValue(Integer.valueOf(C_Order_ID));
+			if (orderField.getSelectedItem() != null) { // in case the order is not in the list, f.e. the BP was changed
+				KeyNamePair knpo = orderField.getSelectedItem().toKeyNamePair();
+				if (knpo != null && knpo.getKey() > 0)
+					loadOrder(knpo.getKey(), false, locatorField.getValue()!=null?((Integer)locatorField.getValue()).intValue():0);
+			}
+		} else {
+			orderField.setSelectedIndex(0);
+		}
 		orderField.addActionListener(this);
 
 		initBPDetails(C_BPartner_ID);

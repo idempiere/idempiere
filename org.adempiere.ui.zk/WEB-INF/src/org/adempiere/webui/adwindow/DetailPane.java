@@ -419,7 +419,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 				}
 			}
 		});
-		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "QuickForm")));
+		button.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "QuickForm")) + "    Shift+Alt+Q");
 		buttons.put(BTN_QUICK_FORM_ID.substring(3, BTN_QUICK_FORM_ID.length()), button);
 		
 		// ADD Customize grid button
@@ -471,13 +471,23 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 						btn.setId("Btn"+toolbarButton.getComponentName());
 						btn.setTooltiptext(tooltiptext);
 						btn.setDisabled(false);
-
-						AImage aImage = Actions.getActionImage(actionId);
-						if ( aImage != null ) {
-							btn.setImageContent(aImage);
-						} else {
-							btn.setLabel(label);
-						}
+						btn.setIconSclass(null);
+						if (ThemeManager.isUseFontIconForImage()) {
+        					String iconSclass = Actions.getActionIconSclass(actionId);
+        					if (!Util.isEmpty(iconSclass, true)) {
+        						btn.setIconSclass(iconSclass);
+        						LayoutUtils.addSclass("font-icon-toolbar-button", btn);
+        					}
+        				}
+        				//not using font icon, fallback to image or label
+        				if (Util.isEmpty(btn.getIconSclass(), true)) {
+							AImage aImage = Actions.getActionImage(actionId);
+							if ( aImage != null ) {
+								btn.setImageContent(aImage);
+							} else {
+								btn.setLabel(label);
+							}
+        				}
 
 						ToolbarCustomButton toolbarCustomBtn = new ToolbarCustomButton(toolbarButton, btn, actionId, tabPanel.getGridTab().getWindowNo(), tabPanel.getGridTab().getTabNo());
 						tp.toolbarCustomButtons.put(btn, toolbarCustomBtn);
@@ -560,7 +570,11 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	protected void onCustomize(Event e) {
 		if (getSelectedADTabpanel() instanceof ADTabpanel) {
 			ADTabpanel tabPanel = (ADTabpanel) getSelectedADTabpanel();
-			CustomizeGridViewDialog.onCustomize(tabPanel);
+			CustomizeGridViewDialog.onCustomize(tabPanel, b -> {
+				ADWindow adwindow = ADWindow.findADWindow(DetailPane.this);
+				if (adwindow != null)
+					adwindow.getADWindowContent().focusToLastFocusEditor();
+			});
 		}
 	}
 
@@ -1037,6 +1051,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
     private static final int VK_S = 0x53;
     private static final int VK_D = 0x44;
     private static final int VK_O = 0x4F;
+    private static final int VK_Q = 0x51;
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
 		ToolBarButton btn = null;
 		if (keyEvent.isAltKey() && !keyEvent.isCtrlKey() && keyEvent.isShiftKey()) { // Shift+Alt key
@@ -1062,6 +1077,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 				btn = getSelectedPanel().getToolbarButton(BTN_DELETE_ID);
 			} else if (keyEvent.getKeyCode() == VK_O) {
 				btn = getSelectedPanel().getToolbarButton(BTN_PROCESS_ID);
+			} else if (keyEvent.getKeyCode() == VK_Q) {
+				btn = getSelectedPanel().getToolbarButton(BTN_QUICK_FORM_ID);
 			}
 		} 
 		if (btn != null) {
@@ -1071,8 +1088,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 			if (!btn.isDisabled() && btn.isVisible()) {
 				Events.sendEvent(btn, new Event(Events.ON_CLICK, btn));
 				//client side script to close combobox popup
-				String script = "var w=zk.Widget.$('#" + btn.getUuid()+"'); " +
-						"zWatch.fire('onFloatUp', w);";
+				String script = "(function(){let w=zk.Widget.$('#" + btn.getUuid()+"'); " +
+						"zWatch.fire('onFloatUp', w);})()";
 				Clients.response(new AuScript(script));
 			}
 		}

@@ -37,7 +37,11 @@ public class MProduction extends X_M_Production implements DocAction {
 	protected int count;
 
 	public MProduction(Properties ctx, int M_Production_ID, String trxName) {
-		super(ctx, M_Production_ID, trxName);
+		this (ctx, M_Production_ID, trxName, (String[]) null);
+	}
+
+	public MProduction(Properties ctx, int M_Production_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_Production_ID, trxName, virtualColumns);
 		if (M_Production_ID == 0) {
 			setDocStatus(DOCSTATUS_Drafted);
 			setDocAction (DOCACTION_Prepare);
@@ -184,7 +188,8 @@ public class MProduction extends X_M_Production implements DocAction {
 		
 		String sql = "SELECT pl.M_ProductionLine_ID "
 			+ "FROM M_ProductionLine pl "
-			+ "WHERE pl.M_Production_ID = ?";
+			+ "WHERE pl.M_Production_ID = ? "
+			+ "ORDER BY pl.Line, pl.M_ProductionLine_ID ";
 		
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -351,8 +356,6 @@ public class MProduction extends X_M_Production implements DocAction {
 
 						MProductionLine BOMLine = null;
 						int prevLoc = -1;
-						int previousAttribSet = -1;
-						int prevAsi = -1;
 						// Create lines from storage until qty is reached
 						for (int sl = 0; sl < storages.length; sl++) {
 
@@ -363,13 +366,9 @@ public class MProduction extends X_M_Production implements DocAction {
 
 
 								int loc = storages[sl].getM_Locator_ID();
-								int slASI = storages[sl].getM_AttributeSetInstance_ID();
-								int locAttribSet = new MAttributeSetInstance(getCtx(), slASI,
-										get_TrxName()).getM_AttributeSet_ID();
 
-								// roll up costing attributes if in the same locator
-								if (((locAttribSet == 0 && previousAttribSet == 0) || (slASI == prevAsi))
-										&& prevLoc == loc) {
+								// same locator
+								if (prevLoc == loc) {
 									BOMLine.setQtyUsed(BOMLine.getQtyUsed()
 											.add(lineQty));
 									BOMLine.setPlannedQty(BOMLine.getQtyUsed());
@@ -384,16 +383,12 @@ public class MProduction extends X_M_Production implements DocAction {
 									BOMLine.setM_Locator_ID( loc );
 									BOMLine.setQtyUsed( lineQty);
 									BOMLine.setPlannedQty( lineQty);
-									if ( slASI != 0 && locAttribSet != 0 )  // ie non costing attribute
-										BOMLine.setM_AttributeSetInstance_ID(slASI);
 									BOMLine.saveEx(get_TrxName());
 
 									lineno = lineno + 10;
 									count++;
 								}
 								prevLoc = loc;
-								previousAttribSet = locAttribSet;
-								prevAsi = slASI;
 								// enough ?
 								BOMMovementQty = BOMMovementQty.subtract(lineQty);
 								if (BOMMovementQty.signum() == 0)
@@ -406,9 +401,8 @@ public class MProduction extends X_M_Production implements DocAction {
 							if (!mustBeStocked)
 							{
 
-								// roll up costing attributes if in the same locator
-								if ( previousAttribSet == 0
-										&& prevLoc == defaultLocator) {
+								// same locator
+								if (prevLoc == defaultLocator) {
 									BOMLine.setQtyUsed(BOMLine.getQtyUsed()
 											.add(BOMMovementQty));
 									BOMLine.setPlannedQty(BOMLine.getQtyUsed());
@@ -665,6 +659,9 @@ public class MProduction extends X_M_Production implements DocAction {
 				return reverseCorrectIt();
 		}
 
+		if (getC_OrderLine_ID() > 0)
+			setC_OrderLine_ID(0);
+
 		// After Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
@@ -721,6 +718,9 @@ public class MProduction extends X_M_Production implements DocAction {
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}
+
+		if (getC_OrderLine_ID() > 0)
+			setC_OrderLine_ID(0);
 
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, Doc.DOCTYPE_MatProduction, getAD_Org_ID());
 		MProduction reversal = null;

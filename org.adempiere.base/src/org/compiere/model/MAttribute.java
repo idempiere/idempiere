@@ -152,6 +152,10 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 		this.m_values = copy.m_values != null ? Arrays.stream(copy.m_values).map(e -> {return new MAttributeValue(ctx, e, trxName);}).toArray(MAttributeValue[]::new) : null;
 	}
 
+	public MAttribute(Properties ctx, int M_Attribute_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_Attribute_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 *	Get Values if List
 	 *	@return Values or null if not list

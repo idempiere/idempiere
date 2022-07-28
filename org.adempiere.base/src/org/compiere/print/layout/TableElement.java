@@ -254,7 +254,7 @@ public class TableElement extends PrintElement
 
 	/** first data row number per page	*/
 	private ArrayList<Integer>	m_firstRowOnPage = new ArrayList<Integer>();
-	/** first column number per -> page	*/
+	/** first column number per -&gt; page	*/
 	private ArrayList<Integer>	m_firstColumnOnPage = new ArrayList<Integer>();
 	/** Height of page					*/
 	private ArrayList<Float>	m_pageHeight = new ArrayList<Float>();
@@ -289,7 +289,7 @@ public class TableElement extends PrintElement
 	
 	/**************************************************************************
 	 * 	Layout and Calculate Size.
-	 * 	Set p_width & p_height
+	 * 	Set p_width and p_height
 	 * 	@return true if calculated
 	 */
 	protected boolean calculateSize()
@@ -1259,6 +1259,8 @@ public class TableElement extends PrintElement
 		if (pageYindex >= m_firstRowOnPage.size())  {
 			pageYindex = m_firstRowOnPage.size() - 1;
 		}
+		if (pageYindex<0)
+			return;
 		int firstRow = ((Integer)m_firstRowOnPage.get(pageYindex)).intValue();
 		int nextPageRow = m_data.getRowCount();				//	no of rows
 		if (pageYindex+1 < m_firstRowOnPage.size())

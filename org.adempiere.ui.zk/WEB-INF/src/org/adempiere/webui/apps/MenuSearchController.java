@@ -22,6 +22,7 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.desktop.FavouriteController;
+import org.adempiere.webui.panel.AbstractMenuPanel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeItemAction;
 import org.adempiere.webui.util.TreeNodeAction;
@@ -154,7 +155,7 @@ public class MenuSearchController implements EventListener<Event>{
 		item.setImage(image);
 		item.setData(treeItem);
 		list.add(item);		
-		item.setType((String) treeItem.getAttribute("menu.type"));
+		item.setType((String) treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE));
 	}
 	
 	private String getLabel(Treeitem treeItem) {

@@ -2,13 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Core
 Bundle-SymbolicName: org.adempiere.base;singleton:=true
-Bundle-Version: 9.0.0.qualifier
+Bundle-Version: 10.0.0.qualifier
 Bundle-ClassPath: .,
  lib/bsh.jar,
  lib/commons-validator.jar,
  lib/cron4j.jar,
  lib/avalon-framework-api.jar,
- lib/classgraph.jar
+ lib/htmlcompressor.jar,
+ lib/yuicompressor.jar
 Export-Package: bsh,
  bsh.classpath,
  bsh.collection,
@@ -19,7 +20,6 @@ Export-Package: bsh,
  bsh.servlet,
  bsh.util,
  com.akunagroup.uk.postcode,
- io.github.classgraph,
  it.sauronsoftware.cron4j,
  org.adempiere.apps.graph,
  org.adempiere.base,
@@ -71,6 +71,7 @@ Import-Package: com.google.zxing,
  com.google.zxing.qrcode.decoder,
  com.google.zxing.qrcode.encoder,
  com.sun.mail.smtp;version="1.5",
+ io.github.classgraph;version="4.8.138",
  io.grpc;version="1.27.0",
  io.opencensus.common;version="0.28.0",
  io.opencensus.contrib.http;version="0.28.0",

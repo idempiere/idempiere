@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_CostQueue
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_CostQueue")
 public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent 
 {
@@ -32,12 +32,29 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_CostQueue (Properties ctx, int M_CostQueue_ID, String trxName)
     {
       super (ctx, M_CostQueue_ID, trxName);
+      /** if (M_CostQueue_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setCurrentCostPrice (Env.ZERO);
+			setCurrentQty (Env.ZERO);
+			setM_AttributeSetInstance_ID (0);
+			setM_CostElement_ID (0);
+			setM_CostQueue_ID (0);
+			setM_CostType_ID (0);
+			setM_Product_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_CostQueue (Properties ctx, int M_CostQueue_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_CostQueue_ID, trxName, virtualColumns);
       /** if (M_CostQueue_ID == 0)
         {
 			setC_AcctSchema_ID (0);
@@ -86,21 +103,20 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -109,9 +125,8 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	}
 
 	/** Set Current Cost Price.
-		@param CurrentCostPrice 
-		The currently used cost price
-	  */
+		@param CurrentCostPrice The currently used cost price
+	*/
 	public void setCurrentCostPrice (BigDecimal CurrentCostPrice)
 	{
 		set_Value (COLUMNNAME_CurrentCostPrice, CurrentCostPrice);
@@ -120,7 +135,7 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	/** Get Current Cost Price.
 		@return The currently used cost price
 	  */
-	public BigDecimal getCurrentCostPrice () 
+	public BigDecimal getCurrentCostPrice()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrentCostPrice);
 		if (bd == null)
@@ -129,9 +144,8 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	}
 
 	/** Set Current Quantity.
-		@param CurrentQty 
-		Current Quantity
-	  */
+		@param CurrentQty Current Quantity
+	*/
 	public void setCurrentQty (BigDecimal CurrentQty)
 	{
 		set_Value (COLUMNNAME_CurrentQty, CurrentQty);
@@ -140,7 +154,7 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	/** Get Current Quantity.
 		@return Current Quantity
 	  */
-	public BigDecimal getCurrentQty () 
+	public BigDecimal getCurrentQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrentQty);
 		if (bd == null)
@@ -155,21 +169,20 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -184,21 +197,20 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	}
 
 	/** Set Cost Element.
-		@param M_CostElement_ID 
-		Product Cost Element
-	  */
+		@param M_CostElement_ID Product Cost Element
+	*/
 	public void setM_CostElement_ID (int M_CostElement_ID)
 	{
-		if (M_CostElement_ID < 1) 
+		if (M_CostElement_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_CostElement_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_CostElement_ID, Integer.valueOf(M_CostElement_ID));
 	}
 
 	/** Get Cost Element.
 		@return Product Cost Element
 	  */
-	public int getM_CostElement_ID () 
+	public int getM_CostElement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostElement_ID);
 		if (ii == null)
@@ -207,21 +219,20 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	}
 
 	/** Set Cost Queue.
-		@param M_CostQueue_ID 
-		FiFo/LiFo Cost Queue
-	  */
+		@param M_CostQueue_ID FiFo/LiFo Cost Queue
+	*/
 	public void setM_CostQueue_ID (int M_CostQueue_ID)
 	{
-		if (M_CostQueue_ID < 1) 
+		if (M_CostQueue_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_CostQueue_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_CostQueue_ID, Integer.valueOf(M_CostQueue_ID));
 	}
 
 	/** Get Cost Queue.
 		@return FiFo/LiFo Cost Queue
 	  */
-	public int getM_CostQueue_ID () 
+	public int getM_CostQueue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostQueue_ID);
 		if (ii == null)
@@ -230,7 +241,8 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	}
 
 	/** Set M_CostQueue_UU.
-		@param M_CostQueue_UU M_CostQueue_UU	  */
+		@param M_CostQueue_UU M_CostQueue_UU
+	*/
 	public void setM_CostQueue_UU (String M_CostQueue_UU)
 	{
 		set_Value (COLUMNNAME_M_CostQueue_UU, M_CostQueue_UU);
@@ -238,7 +250,7 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 
 	/** Get M_CostQueue_UU.
 		@return M_CostQueue_UU	  */
-	public String getM_CostQueue_UU () 
+	public String getM_CostQueue_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_CostQueue_UU);
 	}
@@ -250,21 +262,20 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	}
 
 	/** Set Cost Type.
-		@param M_CostType_ID 
-		Type of Cost (e.g. Current, Plan, Future)
-	  */
+		@param M_CostType_ID Type of Cost (e.g. Current, Plan, Future)
+	*/
 	public void setM_CostType_ID (int M_CostType_ID)
 	{
-		if (M_CostType_ID < 1) 
+		if (M_CostType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_CostType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_CostType_ID, Integer.valueOf(M_CostType_ID));
 	}
 
 	/** Get Cost Type.
 		@return Type of Cost (e.g. Current, Plan, Future)
 	  */
-	public int getM_CostType_ID () 
+	public int getM_CostType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostType_ID);
 		if (ii == null)
@@ -279,21 +290,20 @@ public class X_M_CostQueue extends PO implements I_M_CostQueue, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)

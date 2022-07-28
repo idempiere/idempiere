@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_TaxDeclarationLine
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxDeclarationLine")
 public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine, I_Persistent 
 {
@@ -33,12 +33,32 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_TaxDeclarationLine (Properties ctx, int C_TaxDeclarationLine_ID, String trxName)
     {
       super (ctx, C_TaxDeclarationLine_ID, trxName);
+      /** if (C_TaxDeclarationLine_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_Currency_ID (0);
+			setC_TaxDeclaration_ID (0);
+			setC_TaxDeclarationLine_ID (0);
+			setC_Tax_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setIsManual (true);
+// Y
+			setLine (0);
+			setTaxAmt (Env.ZERO);
+			setTaxBaseAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxDeclarationLine (Properties ctx, int C_TaxDeclarationLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxDeclarationLine_ID, trxName, virtualColumns);
       /** if (C_TaxDeclarationLine_ID == 0)
         {
 			setC_BPartner_ID (0);
@@ -90,21 +110,20 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	/** Set Allocation Line.
-		@param C_AllocationLine_ID 
-		Allocation Line
-	  */
+		@param C_AllocationLine_ID Allocation Line
+	*/
 	public void setC_AllocationLine_ID (int C_AllocationLine_ID)
 	{
-		if (C_AllocationLine_ID < 1) 
+		if (C_AllocationLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AllocationLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AllocationLine_ID, Integer.valueOf(C_AllocationLine_ID));
 	}
 
 	/** Get Allocation Line.
 		@return Allocation Line
 	  */
-	public int getC_AllocationLine_ID () 
+	public int getC_AllocationLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AllocationLine_ID);
 		if (ii == null)
@@ -118,22 +137,21 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -148,21 +166,20 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -177,21 +194,20 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	/** Set Invoice.
-		@param C_Invoice_ID 
-		Invoice Identifier
-	  */
+		@param C_Invoice_ID Invoice Identifier
+	*/
 	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_Invoice_ID < 1) 
+		if (C_Invoice_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
 	/** Get Invoice.
 		@return Invoice Identifier
 	  */
-	public int getC_Invoice_ID () 
+	public int getC_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
@@ -206,21 +222,20 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	/** Set Invoice Line.
-		@param C_InvoiceLine_ID 
-		Invoice Detail Line
-	  */
+		@param C_InvoiceLine_ID Invoice Detail Line
+	*/
 	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID)
 	{
-		if (C_InvoiceLine_ID < 1) 
+		if (C_InvoiceLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceLine_ID, Integer.valueOf(C_InvoiceLine_ID));
 	}
 
 	/** Get Invoice Line.
 		@return Invoice Detail Line
 	  */
-	public int getC_InvoiceLine_ID () 
+	public int getC_InvoiceLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoiceLine_ID);
 		if (ii == null)
@@ -235,21 +250,20 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	/** Set Tax Declaration.
-		@param C_TaxDeclaration_ID 
-		Define the declaration to the tax authorities
-	  */
+		@param C_TaxDeclaration_ID Define the declaration to the tax authorities
+	*/
 	public void setC_TaxDeclaration_ID (int C_TaxDeclaration_ID)
 	{
-		if (C_TaxDeclaration_ID < 1) 
+		if (C_TaxDeclaration_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_TaxDeclaration_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_TaxDeclaration_ID, Integer.valueOf(C_TaxDeclaration_ID));
 	}
 
 	/** Get Tax Declaration.
 		@return Define the declaration to the tax authorities
 	  */
-	public int getC_TaxDeclaration_ID () 
+	public int getC_TaxDeclaration_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxDeclaration_ID);
 		if (ii == null)
@@ -258,21 +272,20 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	/** Set Tax Declaration Line.
-		@param C_TaxDeclarationLine_ID 
-		Tax Declaration Document Information
-	  */
+		@param C_TaxDeclarationLine_ID Tax Declaration Document Information
+	*/
 	public void setC_TaxDeclarationLine_ID (int C_TaxDeclarationLine_ID)
 	{
-		if (C_TaxDeclarationLine_ID < 1) 
+		if (C_TaxDeclarationLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_TaxDeclarationLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_TaxDeclarationLine_ID, Integer.valueOf(C_TaxDeclarationLine_ID));
 	}
 
 	/** Get Tax Declaration Line.
 		@return Tax Declaration Document Information
 	  */
-	public int getC_TaxDeclarationLine_ID () 
+	public int getC_TaxDeclarationLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxDeclarationLine_ID);
 		if (ii == null)
@@ -281,7 +294,8 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	/** Set C_TaxDeclarationLine_UU.
-		@param C_TaxDeclarationLine_UU C_TaxDeclarationLine_UU	  */
+		@param C_TaxDeclarationLine_UU C_TaxDeclarationLine_UU
+	*/
 	public void setC_TaxDeclarationLine_UU (String C_TaxDeclarationLine_UU)
 	{
 		set_Value (COLUMNNAME_C_TaxDeclarationLine_UU, C_TaxDeclarationLine_UU);
@@ -289,7 +303,7 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 
 	/** Get C_TaxDeclarationLine_UU.
 		@return C_TaxDeclarationLine_UU	  */
-	public String getC_TaxDeclarationLine_UU () 
+	public String getC_TaxDeclarationLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_TaxDeclarationLine_UU);
 	}
@@ -301,21 +315,20 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	/** Set Tax.
-		@param C_Tax_ID 
-		Tax identifier
-	  */
+		@param C_Tax_ID Tax identifier
+	*/
 	public void setC_Tax_ID (int C_Tax_ID)
 	{
-		if (C_Tax_ID < 1) 
+		if (C_Tax_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Tax_ID, Integer.valueOf(C_Tax_ID));
 	}
 
 	/** Get Tax.
 		@return Tax identifier
 	  */
-	public int getC_Tax_ID () 
+	public int getC_Tax_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Tax_ID);
 		if (ii == null)
@@ -324,9 +337,8 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	/** Set Account Date.
-		@param DateAcct 
-		Accounting Date
-	  */
+		@param DateAcct Accounting Date
+	*/
 	public void setDateAcct (Timestamp DateAcct)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateAcct, DateAcct);
@@ -335,15 +347,14 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	/** Get Account Date.
 		@return Accounting Date
 	  */
-	public Timestamp getDateAcct () 
+	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -352,15 +363,14 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Manual.
-		@param IsManual 
-		This is a manual process
-	  */
+		@param IsManual This is a manual process
+	*/
 	public void setIsManual (boolean IsManual)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsManual, Boolean.valueOf(IsManual));
@@ -369,7 +379,7 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	/** Get Manual.
 		@return This is a manual process
 	  */
-	public boolean isManual () 
+	public boolean isManual()
 	{
 		Object oo = get_Value(COLUMNNAME_IsManual);
 		if (oo != null) 
@@ -382,9 +392,8 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -393,7 +402,7 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -402,9 +411,8 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	/** Set Tax Amount.
-		@param TaxAmt 
-		Tax Amount for a document
-	  */
+		@param TaxAmt Tax Amount for a document
+	*/
 	public void setTaxAmt (BigDecimal TaxAmt)
 	{
 		set_ValueNoCheck (COLUMNNAME_TaxAmt, TaxAmt);
@@ -413,7 +421,7 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	/** Get Tax Amount.
 		@return Tax Amount for a document
 	  */
-	public BigDecimal getTaxAmt () 
+	public BigDecimal getTaxAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TaxAmt);
 		if (bd == null)
@@ -422,9 +430,8 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	}
 
 	/** Set Tax base Amount.
-		@param TaxBaseAmt 
-		Base for calculating the tax amount
-	  */
+		@param TaxBaseAmt Base for calculating the tax amount
+	*/
 	public void setTaxBaseAmt (BigDecimal TaxBaseAmt)
 	{
 		set_ValueNoCheck (COLUMNNAME_TaxBaseAmt, TaxBaseAmt);
@@ -433,7 +440,7 @@ public class X_C_TaxDeclarationLine extends PO implements I_C_TaxDeclarationLine
 	/** Get Tax base Amount.
 		@return Base for calculating the tax amount
 	  */
-	public BigDecimal getTaxBaseAmt () 
+	public BigDecimal getTaxBaseAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TaxBaseAmt);
 		if (bd == null)

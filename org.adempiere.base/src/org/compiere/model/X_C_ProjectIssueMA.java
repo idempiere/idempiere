@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ProjectIssueMA
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectIssueMA")
 public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Persistent 
 {
@@ -33,12 +33,24 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_ProjectIssueMA (Properties ctx, int C_ProjectIssueMA_ID, String trxName)
     {
       super (ctx, C_ProjectIssueMA_ID, trxName);
+      /** if (C_ProjectIssueMA_ID == 0)
+        {
+			setC_ProjectIssue_ID (0);
+			setM_AttributeSetInstance_ID (0);
+			setMovementQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ProjectIssueMA (Properties ctx, int C_ProjectIssueMA_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ProjectIssueMA_ID, trxName, virtualColumns);
       /** if (C_ProjectIssueMA_ID == 0)
         {
 			setC_ProjectIssue_ID (0);
@@ -82,21 +94,20 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
 	}
 
 	/** Set Project Issue.
-		@param C_ProjectIssue_ID 
-		Project Issues (Material, Labor)
-	  */
+		@param C_ProjectIssue_ID Project Issues (Material, Labor)
+	*/
 	public void setC_ProjectIssue_ID (int C_ProjectIssue_ID)
 	{
-		if (C_ProjectIssue_ID < 1) 
+		if (C_ProjectIssue_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_ProjectIssue_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_ProjectIssue_ID, Integer.valueOf(C_ProjectIssue_ID));
 	}
 
 	/** Get Project Issue.
 		@return Project Issues (Material, Labor)
 	  */
-	public int getC_ProjectIssue_ID () 
+	public int getC_ProjectIssue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectIssue_ID);
 		if (ii == null)
@@ -113,7 +124,8 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
     }
 
 	/** Set C_ProjectIssueMA_UU.
-		@param C_ProjectIssueMA_UU C_ProjectIssueMA_UU	  */
+		@param C_ProjectIssueMA_UU C_ProjectIssueMA_UU
+	*/
 	public void setC_ProjectIssueMA_UU (String C_ProjectIssueMA_UU)
 	{
 		set_Value (COLUMNNAME_C_ProjectIssueMA_UU, C_ProjectIssueMA_UU);
@@ -121,7 +133,7 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
 
 	/** Get C_ProjectIssueMA_UU.
 		@return C_ProjectIssueMA_UU	  */
-	public String getC_ProjectIssueMA_UU () 
+	public String getC_ProjectIssueMA_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_ProjectIssueMA_UU);
 	}
@@ -133,21 +145,20 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -156,9 +167,8 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
 	}
 
 	/** Set Movement Quantity.
-		@param MovementQty 
-		Quantity of a product moved.
-	  */
+		@param MovementQty Quantity of a product moved.
+	*/
 	public void setMovementQty (BigDecimal MovementQty)
 	{
 		set_Value (COLUMNNAME_MovementQty, MovementQty);
@@ -167,7 +177,7 @@ public class X_C_ProjectIssueMA extends PO implements I_C_ProjectIssueMA, I_Pers
 	/** Get Movement Quantity.
 		@return Quantity of a product moved.
 	  */
-	public BigDecimal getMovementQty () 
+	public BigDecimal getMovementQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MovementQty);
 		if (bd == null)

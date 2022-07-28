@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_SearchDefinition
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_SearchDefinition")
 public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, I_Persistent 
 {
@@ -30,12 +30,30 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_SearchDefinition (Properties ctx, int AD_SearchDefinition_ID, String trxName)
     {
       super (ctx, AD_SearchDefinition_ID, trxName);
+      /** if (AD_SearchDefinition_ID == 0)
+        {
+			setAD_SearchDefinition_ID (0);
+			setAD_Table_ID (0);
+			setAD_Window_ID (0);
+			setDataType (null);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsDefault (false);
+// N
+			setSearchType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_SearchDefinition (Properties ctx, int AD_SearchDefinition_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_SearchDefinition_ID, trxName, virtualColumns);
       /** if (AD_SearchDefinition_ID == 0)
         {
 			setAD_SearchDefinition_ID (0);
@@ -85,21 +103,20 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -108,18 +125,19 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	}
 
 	/** Set Search Definition.
-		@param AD_SearchDefinition_ID Search Definition	  */
+		@param AD_SearchDefinition_ID Search Definition
+	*/
 	public void setAD_SearchDefinition_ID (int AD_SearchDefinition_ID)
 	{
-		if (AD_SearchDefinition_ID < 1) 
+		if (AD_SearchDefinition_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_SearchDefinition_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_SearchDefinition_ID, Integer.valueOf(AD_SearchDefinition_ID));
 	}
 
 	/** Get Search Definition.
 		@return Search Definition	  */
-	public int getAD_SearchDefinition_ID () 
+	public int getAD_SearchDefinition_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_SearchDefinition_ID);
 		if (ii == null)
@@ -128,7 +146,8 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	}
 
 	/** Set AD_SearchDefinition_UU.
-		@param AD_SearchDefinition_UU AD_SearchDefinition_UU	  */
+		@param AD_SearchDefinition_UU AD_SearchDefinition_UU
+	*/
 	public void setAD_SearchDefinition_UU (String AD_SearchDefinition_UU)
 	{
 		set_Value (COLUMNNAME_AD_SearchDefinition_UU, AD_SearchDefinition_UU);
@@ -136,7 +155,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 
 	/** Get AD_SearchDefinition_UU.
 		@return AD_SearchDefinition_UU	  */
-	public String getAD_SearchDefinition_UU () 
+	public String getAD_SearchDefinition_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_SearchDefinition_UU);
 	}
@@ -148,21 +167,20 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -177,21 +195,20 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_Value (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -200,9 +217,8 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	}
 
 	/** Set Data Type.
-		@param DataType 
-		Type of data
-	  */
+		@param DataType Type of data
+	*/
 	public void setDataType (String DataType)
 	{
 		set_Value (COLUMNNAME_DataType, DataType);
@@ -211,15 +227,14 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/** Get Data Type.
 		@return Type of data
 	  */
-	public String getDataType () 
+	public String getDataType()
 	{
 		return (String)get_Value(COLUMNNAME_DataType);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -228,7 +243,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -236,9 +251,8 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -248,15 +262,14 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -265,7 +278,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -278,9 +291,8 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -289,7 +301,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -301,21 +313,20 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	}
 
 	/** Set PO Window.
-		@param PO_Window_ID 
-		Purchase Order Window
-	  */
+		@param PO_Window_ID Purchase Order Window
+	*/
 	public void setPO_Window_ID (int PO_Window_ID)
 	{
-		if (PO_Window_ID < 1) 
+		if (PO_Window_ID < 1)
 			set_Value (COLUMNNAME_PO_Window_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PO_Window_ID, Integer.valueOf(PO_Window_ID));
 	}
 
 	/** Get PO Window.
 		@return Purchase Order Window
 	  */
-	public int getPO_Window_ID () 
+	public int getPO_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PO_Window_ID);
 		if (ii == null)
@@ -324,9 +335,8 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	}
 
 	/** Set Query.
-		@param Query 
-		SQL
-	  */
+		@param Query SQL
+	*/
 	public void setQuery (String Query)
 	{
 		set_Value (COLUMNNAME_Query, Query);
@@ -335,15 +345,14 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/** Get Query.
 		@return SQL
 	  */
-	public String getQuery () 
+	public String getQuery()
 	{
 		return (String)get_Value(COLUMNNAME_Query);
 	}
 
 	/** Set Search Type.
-		@param SearchType 
-		Which kind of search is used (Query or Table)
-	  */
+		@param SearchType Which kind of search is used (Query or Table)
+	*/
 	public void setSearchType (String SearchType)
 	{
 		set_Value (COLUMNNAME_SearchType, SearchType);
@@ -352,15 +361,14 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/** Get Search Type.
 		@return Which kind of search is used (Query or Table)
 	  */
-	public String getSearchType () 
+	public String getSearchType()
 	{
 		return (String)get_Value(COLUMNNAME_SearchType);
 	}
 
 	/** Set Transaction Code.
-		@param TransactionCode 
-		The transaction code represents the search definition
-	  */
+		@param TransactionCode The transaction code represents the search definition
+	*/
 	public void setTransactionCode (String TransactionCode)
 	{
 		set_Value (COLUMNNAME_TransactionCode, TransactionCode);
@@ -369,7 +377,7 @@ public class X_AD_SearchDefinition extends PO implements I_AD_SearchDefinition, 
 	/** Get Transaction Code.
 		@return The transaction code represents the search definition
 	  */
-	public String getTransactionCode () 
+	public String getTransactionCode()
 	{
 		return (String)get_Value(COLUMNNAME_TransactionCode);
 	}

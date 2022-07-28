@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_FreightCategory
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_FreightCategory")
 public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Persistent 
 {
@@ -31,12 +31,24 @@ public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_FreightCategory (Properties ctx, int M_FreightCategory_ID, String trxName)
     {
       super (ctx, M_FreightCategory_ID, trxName);
+      /** if (M_FreightCategory_ID == 0)
+        {
+			setM_FreightCategory_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_FreightCategory (Properties ctx, int M_FreightCategory_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_FreightCategory_ID, trxName, virtualColumns);
       /** if (M_FreightCategory_ID == 0)
         {
 			setM_FreightCategory_ID (0);
@@ -74,9 +86,8 @@ public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Pe
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -85,15 +96,14 @@ public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -102,27 +112,26 @@ public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Pe
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Freight Category.
-		@param M_FreightCategory_ID 
-		Category of the Freight
-	  */
+		@param M_FreightCategory_ID Category of the Freight
+	*/
 	public void setM_FreightCategory_ID (int M_FreightCategory_ID)
 	{
-		if (M_FreightCategory_ID < 1) 
+		if (M_FreightCategory_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_FreightCategory_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_FreightCategory_ID, Integer.valueOf(M_FreightCategory_ID));
 	}
 
 	/** Get Freight Category.
 		@return Category of the Freight
 	  */
-	public int getM_FreightCategory_ID () 
+	public int getM_FreightCategory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_FreightCategory_ID);
 		if (ii == null)
@@ -131,7 +140,8 @@ public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Pe
 	}
 
 	/** Set M_FreightCategory_UU.
-		@param M_FreightCategory_UU M_FreightCategory_UU	  */
+		@param M_FreightCategory_UU M_FreightCategory_UU
+	*/
 	public void setM_FreightCategory_UU (String M_FreightCategory_UU)
 	{
 		set_Value (COLUMNNAME_M_FreightCategory_UU, M_FreightCategory_UU);
@@ -139,15 +149,14 @@ public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Pe
 
 	/** Get M_FreightCategory_UU.
 		@return M_FreightCategory_UU	  */
-	public String getM_FreightCategory_UU () 
+	public String getM_FreightCategory_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_FreightCategory_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -156,7 +165,7 @@ public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -170,9 +179,8 @@ public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Pe
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -181,7 +189,7 @@ public class X_M_FreightCategory extends PO implements I_M_FreightCategory, I_Pe
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

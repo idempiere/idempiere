@@ -85,7 +85,7 @@ public class WChartEditor extends WEditor
 	        model.chart = chartModel;
 	        List<IChartRendererService> list = Extensions.getChartRendererServices();
 			for (IChartRendererService renderer : list) {
-				if (renderer.renderChart(chartDiv, chartWidth, chartHeight, model))
+				if (renderer.renderChart(chartDiv, chartWidth, chartHeight, model, true))
 					break;
 			}
     	}
@@ -155,7 +155,7 @@ public class WChartEditor extends WEditor
 
 	public void onEvent(Event event) throws Exception 
 	{
-		if (event instanceof AfterSizeEvent)
+		if (event instanceof AfterSizeEvent && chartModel != null && chartModel.getAD_Chart_ID() > 0)
 		{
 			AfterSizeEvent ase = (AfterSizeEvent) event;
 			chartWidth = ase.getWidth();
@@ -175,7 +175,7 @@ public class WChartEditor extends WEditor
     		model.chart = chartModel;
     		List<IChartRendererService> list = Extensions.getChartRendererServices();
     		for (IChartRendererService renderer : list) {
-    			if (renderer.renderChart(chartDiv, chartWidth, chartHeight, model))
+    			if (renderer.renderChart(chartDiv, chartWidth, chartHeight, model, true))
     				break;
     		}
 		}

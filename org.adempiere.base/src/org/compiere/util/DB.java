@@ -83,14 +83,14 @@ import org.compiere.process.ProcessInfoParameter;
  *		<li>FR [ 2448461 ] Introduce DB.getSQLValue*Ex methods
  *		<li>FR [ 2781053 ] Introduce DB.getValueNamePairs
  *		<li>FR [ 2818480 ] Introduce DB.createT_Selection helper method
- *			https://sourceforge.net/tracker/?func=detail&aid=2818480&group_id=176962&atid=879335
+ *			https://sourceforge.net/p/adempiere/feature-requests/757/
  * @author Teo Sarca, teo.sarca@gmail.com
  * 		<li>BF [ 2873324 ] DB.TO_NUMBER should be a static method
- * 			https://sourceforge.net/tracker/?func=detail&aid=2873324&group_id=176962&atid=879332
+ * 			https://sourceforge.net/p/adempiere/bugs/2160/
  * 		<li>FR [ 2873891 ] DB.getKeyNamePairs should use trxName
- * 			https://sourceforge.net/tracker/?func=detail&aid=2873891&group_id=176962&atid=879335
+ * 			https://sourceforge.net/p/adempiere/feature-requests/847/
  *  @author Paul Bowden, phib BF 2900767 Zoom to child tab - inefficient queries
- *  @see https://sourceforge.net/tracker/?func=detail&aid=2900767&group_id=176962&atid=879332
+ *  @see https://sourceforge.net/p/adempiere/bugs/2222/
  */
 public final class DB
 {
@@ -695,7 +695,7 @@ public final class DB
 
 	/**************************************************************************
 	 *	Prepare Forward Read Only Call
-	 *  @param SQL sql
+	 *  @param sql SQL
 	 *  @return Callable Statement
 	 */
 	public static CallableStatement prepareCall(String sql)
@@ -706,7 +706,7 @@ public final class DB
 	/**************************************************************************
 	 *	Prepare Call
 	 *  @param SQL sql
-	 *  @param readOnly
+	 *  @param resultSetConcurrency
 	 *  @param trxName
 	 *  @return Callable Statement
 	 */
@@ -727,11 +727,7 @@ public final class DB
 	 */
 	public static CPreparedStatement prepareStatement (String sql)
 	{
-		int concurrency = ResultSet.CONCUR_READ_ONLY;
-		String upper = sql.toUpperCase();
-		if (upper.startsWith("UPDATE ") || upper.startsWith("DELETE "))
-			concurrency = ResultSet.CONCUR_UPDATABLE;
-		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, concurrency, null);
+		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
 	}	//	prepareStatement
 
 	/**
@@ -742,11 +738,7 @@ public final class DB
 	 */
 	public static CPreparedStatement prepareStatement (String sql, String trxName)
 	{
-		int concurrency = ResultSet.CONCUR_READ_ONLY;
-		String upper = sql.toUpperCase();
-		if (upper.startsWith("UPDATE ") || upper.startsWith("DELETE "))
-			concurrency = ResultSet.CONCUR_UPDATABLE;
-		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, concurrency, trxName);
+		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, trxName);
 	}	//	prepareStatement
 
 	/**
@@ -1252,7 +1244,6 @@ public final class DB
 	 * 	When a Rowset is closed, it also closes the underlying connection.
 	 * 	If the created RowSet is transfered by RMI, closing it makes no difference
 	 *	@param sql sql
-	 *	@param local local RowSet (own connection)
 	 *	@return row set or null
 	 */
 	public static RowSet getRowSet (String sql)
@@ -1278,8 +1269,18 @@ public final class DB
     	int retValue = -1;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -1296,6 +1297,10 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
     }
@@ -1359,8 +1364,18 @@ public final class DB
     	String retValue = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -1377,6 +1392,10 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
     }
@@ -1440,8 +1459,18 @@ public final class DB
     	BigDecimal retValue = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -1459,6 +1488,10 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
     }
@@ -1523,8 +1556,18 @@ public final class DB
     	Timestamp retValue = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -1541,6 +1584,10 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
     }
@@ -1850,7 +1897,7 @@ public final class DB
 	 *	@param C_DocType_ID document type
 	 * 	@param trxName optional Transaction Name
 	 *  @param definite asking for a definitive or temporary sequence
-	 *  @param PO
+	 *  @param po PO
 	 *	@return document no or null
 	 */
 	public static String getDocumentNo(int C_DocType_ID, String trxName, boolean definite, PO po)
@@ -2314,7 +2361,7 @@ public final class DB
 	 * saveKeys is map with key is rowID, value is list value of all viewID
 	 * viewIDIndex is index of viewID need save.
 	 * @param AD_PInstance_ID
-	 * @param selection
+	 * @param saveKeys
 	 * @param trxName
 	 */
 	public static void createT_SelectionNew (int AD_PInstance_ID, Collection<KeyNamePair> saveKeys, String trxName)
@@ -2513,11 +2560,7 @@ public final class DB
 	 *  @return Prepared Statement (from replica if possible, otherwise normal statement)
 	 */
 	public static PreparedStatement prepareNormalReadReplicaStatement(String sql, String trxName) {
-		int concurrency = ResultSet.CONCUR_READ_ONLY;
-		String upper = sql.toUpperCase();
-		if (upper.startsWith("UPDATE ") || upper.startsWith("DELETE "))
-			concurrency = ResultSet.CONCUR_UPDATABLE;
-		return prepareNormalReadReplicaStatement(sql, ResultSet.TYPE_FORWARD_ONLY, concurrency, trxName);
+		return prepareNormalReadReplicaStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, trxName);
 	}
 
 	/**
@@ -2610,7 +2653,7 @@ public final class DB
 		String removeQuotedStrings = "'(?:.|[\\n\\r])*?'";
 		String removeLeadingSpaces = "^\\s+";
 		String cleanSql = sql.toLowerCase().replaceAll(removeComments, "").replaceAll(removeQuotedStrings, "").replaceFirst(removeLeadingSpaces, "");
-		if(cleanSql.matches("^select\s.*$") && !cleanSql.contains(";"))
+		if(cleanSql.matches("^select\\s.*$") && !cleanSql.contains(";"))
 			return true;
 		else
 			return false;

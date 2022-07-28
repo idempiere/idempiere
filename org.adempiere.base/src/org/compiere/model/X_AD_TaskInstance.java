@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_TaskInstance
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_TaskInstance")
 public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persistent 
 {
@@ -31,12 +31,23 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_TaskInstance (Properties ctx, int AD_TaskInstance_ID, String trxName)
     {
       super (ctx, AD_TaskInstance_ID, trxName);
+      /** if (AD_TaskInstance_ID == 0)
+        {
+			setAD_Task_ID (0);
+			setAD_TaskInstance_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_TaskInstance (Properties ctx, int AD_TaskInstance_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_TaskInstance_ID, trxName, virtualColumns);
       /** if (AD_TaskInstance_ID == 0)
         {
 			setAD_Task_ID (0);
@@ -73,21 +84,20 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
     }
 
 	/** Set OS Task.
-		@param AD_Task_ID 
-		Operation System Task
-	  */
+		@param AD_Task_ID Operation System Task
+	*/
 	public void setAD_Task_ID (int AD_Task_ID)
 	{
-		if (AD_Task_ID < 1) 
+		if (AD_Task_ID < 1)
 			set_Value (COLUMNNAME_AD_Task_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Task_ID, Integer.valueOf(AD_Task_ID));
 	}
 
 	/** Get OS Task.
 		@return Operation System Task
 	  */
-	public int getAD_Task_ID () 
+	public int getAD_Task_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Task_ID);
 		if (ii == null)
@@ -96,18 +106,19 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
 	}
 
 	/** Set Task Instance.
-		@param AD_TaskInstance_ID Task Instance	  */
+		@param AD_TaskInstance_ID Task Instance
+	*/
 	public void setAD_TaskInstance_ID (int AD_TaskInstance_ID)
 	{
-		if (AD_TaskInstance_ID < 1) 
+		if (AD_TaskInstance_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_TaskInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_TaskInstance_ID, Integer.valueOf(AD_TaskInstance_ID));
 	}
 
 	/** Get Task Instance.
 		@return Task Instance	  */
-	public int getAD_TaskInstance_ID () 
+	public int getAD_TaskInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_TaskInstance_ID);
 		if (ii == null)
@@ -124,7 +135,8 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
     }
 
 	/** Set AD_TaskInstance_UU.
-		@param AD_TaskInstance_UU AD_TaskInstance_UU	  */
+		@param AD_TaskInstance_UU AD_TaskInstance_UU
+	*/
 	public void setAD_TaskInstance_UU (String AD_TaskInstance_UU)
 	{
 		set_Value (COLUMNNAME_AD_TaskInstance_UU, AD_TaskInstance_UU);
@@ -132,7 +144,7 @@ public class X_AD_TaskInstance extends PO implements I_AD_TaskInstance, I_Persis
 
 	/** Get AD_TaskInstance_UU.
 		@return AD_TaskInstance_UU	  */
-	public String getAD_TaskInstance_UU () 
+	public String getAD_TaskInstance_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_TaskInstance_UU);
 	}

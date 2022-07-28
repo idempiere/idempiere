@@ -288,11 +288,14 @@ public class CompiereService {
 		Env.setContext(getCtx(), Env.LANGUAGE, m_language.getAD_Language());
 		
 		// Create session
-		MSession session = MSession.get (getCtx(), false);
+		MSession session = MSession.get (getCtx());
 		if (session == null){
 			log.fine("No Session found");
-			session = MSession.get (getCtx(), true);    	
+			session = MSession.create (getCtx());
+		} else {
+			session = new MSession(getCtx(), session.getAD_Session_ID(), null);
 		}
+
 		session.setWebSession("WebService");
 		
 		session.setDescription(session.getDescription() + "\nUser Agent: " + getCtx().getProperty("#UserAgent"));
@@ -364,7 +367,7 @@ public class CompiereService {
 	}
 
 	/**
-	 * @return set password
+	 * @param pass
 	 */
 	public synchronized void setPassword(String pass) {
 		m_password = pass;
@@ -378,7 +381,7 @@ public class CompiereService {
 	}
 
 	/**
-	 * @return set expiry minutes
+	 * @param expiryMinutes
 	 */
 	public synchronized void setExpiryMinutes(int expiryMinutes) {
 		m_expiryMinutes = expiryMinutes;

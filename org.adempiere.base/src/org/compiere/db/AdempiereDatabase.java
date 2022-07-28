@@ -211,14 +211,14 @@ public interface AdempiereDatabase
 	
 	/**
 	 * 	Return next sequence this Sequence
-	 *	@param Sequence Name
-	 *  @param Transaction
+	 *	@param Name Sequence
+	 *  @param trxName Transaction
 	 */
 	public int getNextID(String Name, String trxName);
 	
 	/**
 	 * 	Return next sequence this Sequence
-	 *	@param Sequence Name
+	 *	@param Name Sequence
 	 */
 	public int getNextID(String Name);
 	
@@ -407,6 +407,11 @@ public interface AdempiereDatabase
 	 */
 	public String getTimestampDataType();
 	
+	/**
+	 * 
+	 * @return timestamp with time zone type name
+	 */
+	public String getTimestampWithTimezoneDataType();
 	/**
 	 * Get SQL Create
 	 * @param table

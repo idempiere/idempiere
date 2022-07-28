@@ -76,7 +76,7 @@ public class MDistributionRun extends X_M_DistributionRun
 		}
 		//
 		String sql = "SELECT * FROM M_DistributionRunLine "
-			+ "WHERE M_DistributionRun_ID=? AND IsActive='Y' AND TotalQty IS NOT NULL AND TotalQty<> 0 ORDER BY Line";
+			+ "WHERE M_DistributionRun_ID=? AND IsActive='Y' AND TotalQty IS NOT NULL AND TotalQty<> 0 ORDER BY Line,M_DistributionRunLine_ID";
 		ArrayList<MDistributionRunLine> list = new ArrayList<MDistributionRunLine>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Registration
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Registration")
 public class X_AD_Registration extends PO implements I_AD_Registration, I_Persistent 
 {
@@ -31,12 +31,32 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Registration (Properties ctx, int AD_Registration_ID, String trxName)
     {
       super (ctx, AD_Registration_ID, trxName);
+      /** if (AD_Registration_ID == 0)
+        {
+			setAD_Registration_ID (0);
+// 0
+			setAD_System_ID (0);
+// 0
+			setIsAllowPublish (true);
+// Y
+			setIsAllowStatistics (true);
+// Y
+			setIsInProduction (false);
+			setIsRegistered (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Registration (Properties ctx, int AD_Registration_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Registration_ID, trxName, virtualColumns);
       /** if (AD_Registration_ID == 0)
         {
 			setAD_Registration_ID (0);
@@ -82,21 +102,20 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
     }
 
 	/** Set System Registration.
-		@param AD_Registration_ID 
-		System Registration
-	  */
+		@param AD_Registration_ID System Registration
+	*/
 	public void setAD_Registration_ID (int AD_Registration_ID)
 	{
-		if (AD_Registration_ID < 1) 
+		if (AD_Registration_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Registration_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Registration_ID, Integer.valueOf(AD_Registration_ID));
 	}
 
 	/** Get System Registration.
 		@return System Registration
 	  */
-	public int getAD_Registration_ID () 
+	public int getAD_Registration_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Registration_ID);
 		if (ii == null)
@@ -105,7 +124,8 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set AD_Registration_UU.
-		@param AD_Registration_UU AD_Registration_UU	  */
+		@param AD_Registration_UU AD_Registration_UU
+	*/
 	public void setAD_Registration_UU (String AD_Registration_UU)
 	{
 		set_Value (COLUMNNAME_AD_Registration_UU, AD_Registration_UU);
@@ -113,7 +133,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 
 	/** Get AD_Registration_UU.
 		@return AD_Registration_UU	  */
-	public String getAD_Registration_UU () 
+	public String getAD_Registration_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Registration_UU);
 	}
@@ -125,21 +145,20 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set System.
-		@param AD_System_ID 
-		System Definition
-	  */
+		@param AD_System_ID System Definition
+	*/
 	public void setAD_System_ID (int AD_System_ID)
 	{
-		if (AD_System_ID < 1) 
+		if (AD_System_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_System_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_System_ID, Integer.valueOf(AD_System_ID));
 	}
 
 	/** Get System.
 		@return System Definition
 	  */
-	public int getAD_System_ID () 
+	public int getAD_System_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_System_ID);
 		if (ii == null)
@@ -154,21 +173,20 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -183,21 +201,20 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set Address.
-		@param C_Location_ID 
-		Location or Address
-	  */
+		@param C_Location_ID Location or Address
+	*/
 	public void setC_Location_ID (int C_Location_ID)
 	{
-		if (C_Location_ID < 1) 
+		if (C_Location_ID < 1)
 			set_Value (COLUMNNAME_C_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
 	}
 
 	/** Get Address.
 		@return Location or Address
 	  */
-	public int getC_Location_ID () 
+	public int getC_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
 		if (ii == null)
@@ -206,9 +223,8 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -217,15 +233,14 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Industry Info.
-		@param IndustryInfo 
-		Information of the industry (e.g. professional service, distribution of furnitures, ..)
-	  */
+		@param IndustryInfo Information of the industry (e.g. professional service, distribution of furnitures, ..)
+	*/
 	public void setIndustryInfo (String IndustryInfo)
 	{
 		set_Value (COLUMNNAME_IndustryInfo, IndustryInfo);
@@ -234,15 +249,14 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/** Get Industry Info.
 		@return Information of the industry (e.g. professional service, distribution of furnitures, ..)
 	  */
-	public String getIndustryInfo () 
+	public String getIndustryInfo()
 	{
 		return (String)get_Value(COLUMNNAME_IndustryInfo);
 	}
 
 	/** Set Allowed to be Published.
-		@param IsAllowPublish 
-		You allow to publish the information, not just statistical summary info
-	  */
+		@param IsAllowPublish You allow to publish the information, not just statistical summary info
+	*/
 	public void setIsAllowPublish (boolean IsAllowPublish)
 	{
 		set_Value (COLUMNNAME_IsAllowPublish, Boolean.valueOf(IsAllowPublish));
@@ -251,7 +265,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/** Get Allowed to be Published.
 		@return You allow to publish the information, not just statistical summary info
 	  */
-	public boolean isAllowPublish () 
+	public boolean isAllowPublish()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowPublish);
 		if (oo != null) 
@@ -264,9 +278,8 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set Maintain Statistics.
-		@param IsAllowStatistics 
-		Maintain general statistics
-	  */
+		@param IsAllowStatistics Maintain general statistics
+	*/
 	public void setIsAllowStatistics (boolean IsAllowStatistics)
 	{
 		set_Value (COLUMNNAME_IsAllowStatistics, Boolean.valueOf(IsAllowStatistics));
@@ -275,7 +288,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/** Get Maintain Statistics.
 		@return Maintain general statistics
 	  */
-	public boolean isAllowStatistics () 
+	public boolean isAllowStatistics()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAllowStatistics);
 		if (oo != null) 
@@ -288,9 +301,8 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set In Production.
-		@param IsInProduction 
-		The system is in production
-	  */
+		@param IsInProduction The system is in production
+	*/
 	public void setIsInProduction (boolean IsInProduction)
 	{
 		set_Value (COLUMNNAME_IsInProduction, Boolean.valueOf(IsInProduction));
@@ -299,7 +311,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/** Get In Production.
 		@return The system is in production
 	  */
-	public boolean isInProduction () 
+	public boolean isInProduction()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInProduction);
 		if (oo != null) 
@@ -312,9 +324,8 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set Registered.
-		@param IsRegistered 
-		The application is registered.
-	  */
+		@param IsRegistered The application is registered.
+	*/
 	public void setIsRegistered (boolean IsRegistered)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsRegistered, Boolean.valueOf(IsRegistered));
@@ -323,7 +334,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/** Get Registered.
 		@return The application is registered.
 	  */
-	public boolean isRegistered () 
+	public boolean isRegistered()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRegistered);
 		if (oo != null) 
@@ -336,9 +347,8 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set Employees.
-		@param NumberEmployees 
-		Number of employees
-	  */
+		@param NumberEmployees Number of employees
+	*/
 	public void setNumberEmployees (int NumberEmployees)
 	{
 		set_Value (COLUMNNAME_NumberEmployees, Integer.valueOf(NumberEmployees));
@@ -347,7 +357,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/** Get Employees.
 		@return Number of employees
 	  */
-	public int getNumberEmployees () 
+	public int getNumberEmployees()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_NumberEmployees);
 		if (ii == null)
@@ -356,9 +366,8 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set Platform Info.
-		@param PlatformInfo 
-		Information about Server and Client Platform
-	  */
+		@param PlatformInfo Information about Server and Client Platform
+	*/
 	public void setPlatformInfo (String PlatformInfo)
 	{
 		set_Value (COLUMNNAME_PlatformInfo, PlatformInfo);
@@ -367,13 +376,14 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/** Get Platform Info.
 		@return Information about Server and Client Platform
 	  */
-	public String getPlatformInfo () 
+	public String getPlatformInfo()
 	{
 		return (String)get_Value(COLUMNNAME_PlatformInfo);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -381,7 +391,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -394,21 +404,20 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)
@@ -417,9 +426,8 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set Remote Addr.
-		@param Remote_Addr 
-		Remote Address
-	  */
+		@param Remote_Addr Remote Address
+	*/
 	public void setRemote_Addr (String Remote_Addr)
 	{
 		set_ValueNoCheck (COLUMNNAME_Remote_Addr, Remote_Addr);
@@ -428,15 +436,14 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/** Get Remote Addr.
 		@return Remote Address
 	  */
-	public String getRemote_Addr () 
+	public String getRemote_Addr()
 	{
 		return (String)get_Value(COLUMNNAME_Remote_Addr);
 	}
 
 	/** Set Remote Host.
-		@param Remote_Host 
-		Remote host Info
-	  */
+		@param Remote_Host Remote host Info
+	*/
 	public void setRemote_Host (String Remote_Host)
 	{
 		set_ValueNoCheck (COLUMNNAME_Remote_Host, Remote_Host);
@@ -445,15 +452,14 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/** Get Remote Host.
 		@return Remote host Info
 	  */
-	public String getRemote_Host () 
+	public String getRemote_Host()
 	{
 		return (String)get_Value(COLUMNNAME_Remote_Host);
 	}
 
 	/** Set Sales Volume in 1.000.
-		@param SalesVolume 
-		Total Volume of Sales in Thousands of Currency
-	  */
+		@param SalesVolume Total Volume of Sales in Thousands of Currency
+	*/
 	public void setSalesVolume (int SalesVolume)
 	{
 		set_Value (COLUMNNAME_SalesVolume, Integer.valueOf(SalesVolume));
@@ -462,7 +468,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/** Get Sales Volume in 1.000.
 		@return Total Volume of Sales in Thousands of Currency
 	  */
-	public int getSalesVolume () 
+	public int getSalesVolume()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SalesVolume);
 		if (ii == null)
@@ -471,9 +477,8 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	}
 
 	/** Set Start Implementation/Production.
-		@param StartProductionDate 
-		The day you started the implementation (if implementing) - or production (went life) with iDempiere
-	  */
+		@param StartProductionDate The day you started the implementation (if implementing) - or production (went life) with iDempiere
+	*/
 	public void setStartProductionDate (Timestamp StartProductionDate)
 	{
 		set_Value (COLUMNNAME_StartProductionDate, StartProductionDate);
@@ -482,7 +487,7 @@ public class X_AD_Registration extends PO implements I_AD_Registration, I_Persis
 	/** Get Start Implementation/Production.
 		@return The day you started the implementation (if implementing) - or production (went life) with iDempiere
 	  */
-	public Timestamp getStartProductionDate () 
+	public Timestamp getStartProductionDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartProductionDate);
 	}

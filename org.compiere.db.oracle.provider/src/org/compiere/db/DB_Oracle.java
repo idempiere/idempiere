@@ -355,7 +355,7 @@ public class DB_Oracle implements AdempiereDatabase
             sb.append(" , # Min Pool Size: ").append(m_ds.getMinPoolSize());
             sb.append(" , # Max Pool Size: ").append(m_ds.getMaxPoolSize());
             sb.append(" , # Max Statements Cache Per Session: ").append(m_ds.getMaxStatementsPerConnection());
-            sb.append(" , # Active Transactions: ").append(Trx.getActiveTransactions().length);
+            sb.append(" , # Open Transactions: ").append(Trx.getOpenTransactions().length);
         }
         catch (Exception e)
         {}
@@ -889,6 +889,17 @@ public class DB_Oracle implements AdempiereDatabase
         if (log.isLoggable(Level.CONFIG)) log.config(toString());
         if (m_ds != null)
         {
+        	try 
+			{
+				//wait 5 seconds if pool is still busy
+				if (m_ds.getNumBusyConnections() > 0)
+				{
+					Thread.sleep(5 * 1000);
+				}
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
             try
             {
                 m_ds.close();
@@ -1209,18 +1220,24 @@ public class DB_Oracle implements AdempiereDatabase
 		return true;
 	}
 
+	/**
+	 * Implemented using the fetch first and offset feature. use 1 base index for start and end parameter
+	 * @param sql
+	 * @param start
+	 * @param end
+	 */
 	public String addPagingSQL(String sql, int start, int end) {
-		StringBuilder newSql = new StringBuilder("select * from (")
-				.append("   select tb.*, ROWNUM oracle_native_rownum_ from (")
-				.append(sql)
-				.append(") tb) where oracle_native_rownum_ >= ")
-				.append(start);
-		if (end > 0) {
-			newSql.append(" AND oracle_native_rownum_ <= ")
-				.append(end);
+		StringBuilder newSql = new StringBuilder(sql);
+		if (start > 1) {
+			newSql.append(" OFFSET ")
+				.append((start - 1))
+				.append( " ROWS");
 		}
-		newSql.append(" order by oracle_native_rownum_");
-
+		if (end > 0) {
+			newSql.append(" FETCH FIRST ")
+				.append(( end - start + 1 ))
+				.append(" ROWS ONLY");
+		}
 		return newSql.toString();
 	}
 
@@ -1398,6 +1415,11 @@ public class DB_Oracle implements AdempiereDatabase
 	@Override
 	public String getTimestampDataType() {
 		return "DATE";
+	}
+
+	@Override
+	public String getTimestampWithTimezoneDataType() {
+		return "TIMESTAMP WITH TIME ZONE";
 	}
 
 	@Override

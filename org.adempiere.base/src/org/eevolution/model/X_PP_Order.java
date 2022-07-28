@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order")
 public class X_PP_Order extends PO implements I_PP_Order, I_Persistent 
 {
@@ -35,12 +35,63 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Order (Properties ctx, int PP_Order_ID, String trxName)
     {
       super (ctx, PP_Order_ID, trxName);
+      /** if (PP_Order_ID == 0)
+        {
+			setAD_Workflow_ID (0);
+			setC_DocTypeTarget_ID (0);
+// 0
+			setC_UOM_ID (0);
+// @UOMConversion@=Y | @Processed@='Y'
+			setDateOrdered (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDatePromised (new Timestamp( System.currentTimeMillis() ));
+			setDateStartSchedule (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocAction (null);
+// --
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setIsApproved (false);
+// N
+			setIsPrinted (false);
+// N
+			setIsSelected (false);
+// N
+			setIsSOTrx (false);
+// N
+			setLine (0);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setPP_Order_ID (0);
+			setPP_Product_BOM_ID (0);
+			setPriorityRule (null);
+			setProcessed (false);
+// N
+			setQtyDelivered (Env.ZERO);
+// 0
+			setQtyOrdered (Env.ZERO);
+// 1
+			setQtyReject (Env.ZERO);
+// 0
+			setQtyScrap (Env.ZERO);
+// 0
+			setS_Resource_ID (0);
+			setYield (Env.ZERO);
+// 100
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order (Properties ctx, int PP_Order_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_ID, trxName, virtualColumns);
       /** if (PP_Order_ID == 0)
         {
 			setAD_Workflow_ID (0);
@@ -117,21 +168,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
     }
 
 	/** Set Trx Organization.
-		@param AD_OrgTrx_ID 
-		Performing or initiating organization
-	  */
+		@param AD_OrgTrx_ID Performing or initiating organization
+	*/
 	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID)
 	{
-		if (AD_OrgTrx_ID < 1) 
+		if (AD_OrgTrx_ID < 1)
 			set_Value (COLUMNNAME_AD_OrgTrx_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_OrgTrx_ID, Integer.valueOf(AD_OrgTrx_ID));
 	}
 
 	/** Get Trx Organization.
 		@return Performing or initiating organization
 	  */
-	public int getAD_OrgTrx_ID () 
+	public int getAD_OrgTrx_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgTrx_ID);
 		if (ii == null)
@@ -146,21 +196,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Workflow.
-		@param AD_Workflow_ID 
-		Workflow or combination of tasks
-	  */
+		@param AD_Workflow_ID Workflow or combination of tasks
+	*/
 	public void setAD_Workflow_ID (int AD_Workflow_ID)
 	{
-		if (AD_Workflow_ID < 1) 
+		if (AD_Workflow_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Workflow_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Workflow_ID, Integer.valueOf(AD_Workflow_ID));
 	}
 
 	/** Get Workflow.
 		@return Workflow or combination of tasks
 	  */
-	public int getAD_Workflow_ID () 
+	public int getAD_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Workflow_ID);
 		if (ii == null)
@@ -169,9 +218,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Quantity Assay.
-		@param Assay 
-		Indicated the Quantity Assay to use into Quality Order
-	  */
+		@param Assay Indicated the Quantity Assay to use into Quality Order
+	*/
 	public void setAssay (BigDecimal Assay)
 	{
 		set_Value (COLUMNNAME_Assay, Assay);
@@ -180,7 +228,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Quantity Assay.
 		@return Indicated the Quantity Assay to use into Quality Order
 	  */
-	public BigDecimal getAssay () 
+	public BigDecimal getAssay()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Assay);
 		if (bd == null)
@@ -195,21 +243,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Activity.
-		@param C_Activity_ID 
-		Business Activity
-	  */
+		@param C_Activity_ID Business Activity
+	*/
 	public void setC_Activity_ID (int C_Activity_ID)
 	{
-		if (C_Activity_ID < 1) 
+		if (C_Activity_ID < 1)
 			set_Value (COLUMNNAME_C_Activity_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Activity_ID, Integer.valueOf(C_Activity_ID));
 	}
 
 	/** Get Activity.
 		@return Business Activity
 	  */
-	public int getC_Activity_ID () 
+	public int getC_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Activity_ID);
 		if (ii == null)
@@ -224,21 +271,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Campaign.
-		@param C_Campaign_ID 
-		Marketing Campaign
-	  */
+		@param C_Campaign_ID Marketing Campaign
+	*/
 	public void setC_Campaign_ID (int C_Campaign_ID)
 	{
-		if (C_Campaign_ID < 1) 
+		if (C_Campaign_ID < 1)
 			set_Value (COLUMNNAME_C_Campaign_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
 	}
 
 	/** Get Campaign.
 		@return Marketing Campaign
 	  */
-	public int getC_Campaign_ID () 
+	public int getC_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
 		if (ii == null)
@@ -253,21 +299,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
+		@param C_DocType_ID Document type or rules
+	*/
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
-		if (C_DocType_ID < 0) 
+		if (C_DocType_ID < 0)
 			set_Value (COLUMNNAME_C_DocType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
 	}
 
 	/** Get Document Type.
 		@return Document type or rules
 	  */
-	public int getC_DocType_ID () 
+	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
@@ -282,21 +327,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Target Document Type.
-		@param C_DocTypeTarget_ID 
-		Target document type for conversing documents
-	  */
+		@param C_DocTypeTarget_ID Target document type for conversing documents
+	*/
 	public void setC_DocTypeTarget_ID (int C_DocTypeTarget_ID)
 	{
-		if (C_DocTypeTarget_ID < 1) 
+		if (C_DocTypeTarget_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_DocTypeTarget_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DocTypeTarget_ID, Integer.valueOf(C_DocTypeTarget_ID));
 	}
 
 	/** Get Target Document Type.
 		@return Target document type for conversing documents
 	  */
-	public int getC_DocTypeTarget_ID () 
+	public int getC_DocTypeTarget_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocTypeTarget_ID);
 		if (ii == null)
@@ -305,9 +349,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Copy From.
-		@param CopyFrom 
-		Copy From Record
-	  */
+		@param CopyFrom Copy From Record
+	*/
 	public void setCopyFrom (String CopyFrom)
 	{
 		set_Value (COLUMNNAME_CopyFrom, CopyFrom);
@@ -316,7 +359,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Copy From.
 		@return Copy From Record
 	  */
-	public String getCopyFrom () 
+	public String getCopyFrom()
 	{
 		return (String)get_Value(COLUMNNAME_CopyFrom);
 	}
@@ -328,21 +371,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Sales Order Line.
-		@param C_OrderLine_ID 
-		Sales Order Line
-	  */
+		@param C_OrderLine_ID Sales Order Line
+	*/
 	public void setC_OrderLine_ID (int C_OrderLine_ID)
 	{
-		if (C_OrderLine_ID < 1) 
+		if (C_OrderLine_ID < 1)
 			set_Value (COLUMNNAME_C_OrderLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_OrderLine_ID, Integer.valueOf(C_OrderLine_ID));
 	}
 
 	/** Get Sales Order Line.
 		@return Sales Order Line
 	  */
-	public int getC_OrderLine_ID () 
+	public int getC_OrderLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_OrderLine_ID);
 		if (ii == null)
@@ -357,21 +399,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_Value (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -386,21 +427,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set UOM.
-		@param C_UOM_ID 
-		Unit of Measure
-	  */
+		@param C_UOM_ID Unit of Measure
+	*/
 	public void setC_UOM_ID (int C_UOM_ID)
 	{
-		if (C_UOM_ID < 1) 
+		if (C_UOM_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_UOM_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
 	}
 
 	/** Get UOM.
 		@return Unit of Measure
 	  */
-	public int getC_UOM_ID () 
+	public int getC_UOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
 		if (ii == null)
@@ -409,9 +449,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Date Confirm.
-		@param DateConfirm 
-		Date Confirm of this Order
-	  */
+		@param DateConfirm Date Confirm of this Order
+	*/
 	public void setDateConfirm (Timestamp DateConfirm)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateConfirm, DateConfirm);
@@ -420,15 +459,14 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Date Confirm.
 		@return Date Confirm of this Order
 	  */
-	public Timestamp getDateConfirm () 
+	public Timestamp getDateConfirm()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateConfirm);
 	}
 
 	/** Set Date Delivered.
-		@param DateDelivered 
-		Date when the product was delivered
-	  */
+		@param DateDelivered Date when the product was delivered
+	*/
 	public void setDateDelivered (Timestamp DateDelivered)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateDelivered, DateDelivered);
@@ -437,15 +475,14 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Date Delivered.
 		@return Date when the product was delivered
 	  */
-	public Timestamp getDateDelivered () 
+	public Timestamp getDateDelivered()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateDelivered);
 	}
 
 	/** Set Finish Date.
-		@param DateFinish 
-		Finish or (planned) completion date
-	  */
+		@param DateFinish Finish or (planned) completion date
+	*/
 	public void setDateFinish (Timestamp DateFinish)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateFinish, DateFinish);
@@ -454,15 +491,14 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Finish Date.
 		@return Finish or (planned) completion date
 	  */
-	public Timestamp getDateFinish () 
+	public Timestamp getDateFinish()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateFinish);
 	}
 
 	/** Set Date Finish Schedule.
-		@param DateFinishSchedule 
-		Scheduled Finish date for this Order
-	  */
+		@param DateFinishSchedule Scheduled Finish date for this Order
+	*/
 	public void setDateFinishSchedule (Timestamp DateFinishSchedule)
 	{
 		set_Value (COLUMNNAME_DateFinishSchedule, DateFinishSchedule);
@@ -471,15 +507,14 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Date Finish Schedule.
 		@return Scheduled Finish date for this Order
 	  */
-	public Timestamp getDateFinishSchedule () 
+	public Timestamp getDateFinishSchedule()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateFinishSchedule);
 	}
 
 	/** Set Date Ordered.
-		@param DateOrdered 
-		Date of Order
-	  */
+		@param DateOrdered Date of Order
+	*/
 	public void setDateOrdered (Timestamp DateOrdered)
 	{
 		set_Value (COLUMNNAME_DateOrdered, DateOrdered);
@@ -488,15 +523,14 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Date Ordered.
 		@return Date of Order
 	  */
-	public Timestamp getDateOrdered () 
+	public Timestamp getDateOrdered()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateOrdered);
 	}
 
 	/** Set Date Promised.
-		@param DatePromised 
-		Date Order was promised
-	  */
+		@param DatePromised Date Order was promised
+	*/
 	public void setDatePromised (Timestamp DatePromised)
 	{
 		set_Value (COLUMNNAME_DatePromised, DatePromised);
@@ -505,15 +539,14 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Date Promised.
 		@return Date Order was promised
 	  */
-	public Timestamp getDatePromised () 
+	public Timestamp getDatePromised()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DatePromised);
 	}
 
 	/** Set Date Start.
-		@param DateStart 
-		Date Start for this Order
-	  */
+		@param DateStart Date Start for this Order
+	*/
 	public void setDateStart (Timestamp DateStart)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateStart, DateStart);
@@ -522,15 +555,14 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Date Start.
 		@return Date Start for this Order
 	  */
-	public Timestamp getDateStart () 
+	public Timestamp getDateStart()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateStart);
 	}
 
 	/** Set Date Start Schedule.
-		@param DateStartSchedule 
-		Scheduled start date for this Order
-	  */
+		@param DateStartSchedule Scheduled start date for this Order
+	*/
 	public void setDateStartSchedule (Timestamp DateStartSchedule)
 	{
 		set_Value (COLUMNNAME_DateStartSchedule, DateStartSchedule);
@@ -539,15 +571,14 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Date Start Schedule.
 		@return Scheduled start date for this Order
 	  */
-	public Timestamp getDateStartSchedule () 
+	public Timestamp getDateStartSchedule()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateStartSchedule);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -556,14 +587,14 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** <None> = -- */
+	/** &lt;None&gt; = -- */
 	public static final String DOCACTION_None = "--";
 	/** Approve = AP */
 	public static final String DOCACTION_Approve = "AP";
@@ -592,9 +623,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Unlock = XL */
 	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
-		@param DocAction 
-		The targeted status of the document
-	  */
+		@param DocAction The targeted status of the document
+	*/
 	public void setDocAction (String DocAction)
 	{
 
@@ -604,7 +634,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Document Action.
 		@return The targeted status of the document
 	  */
-	public String getDocAction () 
+	public String getDocAction()
 	{
 		return (String)get_Value(COLUMNNAME_DocAction);
 	}
@@ -636,9 +666,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Waiting Payment = WP */
 	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
-		@param DocStatus 
-		The current status of the document
-	  */
+		@param DocStatus The current status of the document
+	*/
 	public void setDocStatus (String DocStatus)
 	{
 
@@ -648,15 +677,14 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Document Status.
 		@return The current status of the document
 	  */
-	public String getDocStatus () 
+	public String getDocStatus()
 	{
 		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -665,7 +693,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
@@ -679,7 +707,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
     }
 
 	/** Set Float After.
-		@param FloatAfter Float After	  */
+		@param FloatAfter Float After
+	*/
 	public void setFloatAfter (BigDecimal FloatAfter)
 	{
 		set_Value (COLUMNNAME_FloatAfter, FloatAfter);
@@ -687,7 +716,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 
 	/** Get Float After.
 		@return Float After	  */
-	public BigDecimal getFloatAfter () 
+	public BigDecimal getFloatAfter()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_FloatAfter);
 		if (bd == null)
@@ -696,7 +725,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Float Befored.
-		@param FloatBefored Float Befored	  */
+		@param FloatBefored Float Befored
+	*/
 	public void setFloatBefored (BigDecimal FloatBefored)
 	{
 		set_Value (COLUMNNAME_FloatBefored, FloatBefored);
@@ -704,7 +734,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 
 	/** Get Float Befored.
 		@return Float Befored	  */
-	public BigDecimal getFloatBefored () 
+	public BigDecimal getFloatBefored()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_FloatBefored);
 		if (bd == null)
@@ -713,9 +743,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Approved.
-		@param IsApproved 
-		Indicates if this document requires approval
-	  */
+		@param IsApproved Indicates if this document requires approval
+	*/
 	public void setIsApproved (boolean IsApproved)
 	{
 		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
@@ -724,7 +753,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Approved.
 		@return Indicates if this document requires approval
 	  */
-	public boolean isApproved () 
+	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
 		if (oo != null) 
@@ -737,9 +766,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Printed.
-		@param IsPrinted 
-		Indicates if this document / line is printed
-	  */
+		@param IsPrinted Indicates if this document / line is printed
+	*/
 	public void setIsPrinted (boolean IsPrinted)
 	{
 		set_Value (COLUMNNAME_IsPrinted, Boolean.valueOf(IsPrinted));
@@ -748,7 +776,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Printed.
 		@return Indicates if this document / line is printed
 	  */
-	public boolean isPrinted () 
+	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
 		if (oo != null) 
@@ -761,9 +789,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Is Qty Percentage.
-		@param IsQtyPercentage 
-		Indicate that this component is based in % Quantity
-	  */
+		@param IsQtyPercentage Indicate that this component is based in % Quantity
+	*/
 	public void setIsQtyPercentage (boolean IsQtyPercentage)
 	{
 		set_Value (COLUMNNAME_IsQtyPercentage, Boolean.valueOf(IsQtyPercentage));
@@ -772,7 +799,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Is Qty Percentage.
 		@return Indicate that this component is based in % Quantity
 	  */
-	public boolean isQtyPercentage () 
+	public boolean isQtyPercentage()
 	{
 		Object oo = get_Value(COLUMNNAME_IsQtyPercentage);
 		if (oo != null) 
@@ -785,7 +812,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Selected.
-		@param IsSelected Selected	  */
+		@param IsSelected Selected
+	*/
 	public void setIsSelected (boolean IsSelected)
 	{
 		set_Value (COLUMNNAME_IsSelected, Boolean.valueOf(IsSelected));
@@ -793,7 +821,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 
 	/** Get Selected.
 		@return Selected	  */
-	public boolean isSelected () 
+	public boolean isSelected()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelected);
 		if (oo != null) 
@@ -806,9 +834,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Sales Transaction.
-		@param IsSOTrx 
-		This is a Sales Transaction
-	  */
+		@param IsSOTrx This is a Sales Transaction
+	*/
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
 		set_Value (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
@@ -817,7 +844,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Sales Transaction.
 		@return This is a Sales Transaction
 	  */
-	public boolean isSOTrx () 
+	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
 		if (oo != null) 
@@ -830,9 +857,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -841,7 +867,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -850,9 +876,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Lot No.
-		@param Lot 
-		Lot number (alphanumeric)
-	  */
+		@param Lot Lot number (alphanumeric)
+	*/
 	public void setLot (String Lot)
 	{
 		set_Value (COLUMNNAME_Lot, Lot);
@@ -861,7 +886,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Lot No.
 		@return Lot number (alphanumeric)
 	  */
-	public String getLot () 
+	public String getLot()
 	{
 		return (String)get_Value(COLUMNNAME_Lot);
 	}
@@ -873,21 +898,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -902,21 +926,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -931,21 +954,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -954,9 +976,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Order Type.
-		@param OrderType 
-		Type of Order: MRP records grouped by source (Sales Order, Purchase Order, Distribution Order, Requisition)
-	  */
+		@param OrderType Type of Order: MRP records grouped by source (Sales Order, Purchase Order, Distribution Order, Requisition)
+	*/
 	public void setOrderType (String OrderType)
 	{
 		set_Value (COLUMNNAME_OrderType, OrderType);
@@ -965,7 +986,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Order Type.
 		@return Type of Order: MRP records grouped by source (Sales Order, Purchase Order, Distribution Order, Requisition)
 	  */
-	public String getOrderType () 
+	public String getOrderType()
 	{
 		return (String)get_Value(COLUMNNAME_OrderType);
 	}
@@ -977,18 +998,19 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Planner.
-		@param Planner_ID Planner	  */
+		@param Planner_ID Planner
+	*/
 	public void setPlanner_ID (int Planner_ID)
 	{
-		if (Planner_ID < 1) 
+		if (Planner_ID < 1)
 			set_Value (COLUMNNAME_Planner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Planner_ID, Integer.valueOf(Planner_ID));
 	}
 
 	/** Get Planner.
 		@return Planner	  */
-	public int getPlanner_ID () 
+	public int getPlanner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Planner_ID);
 		if (ii == null)
@@ -997,9 +1019,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Posted.
-		@param Posted 
-		Posting status
-	  */
+		@param Posted Posting status
+	*/
 	public void setPosted (boolean Posted)
 	{
 		set_Value (COLUMNNAME_Posted, Boolean.valueOf(Posted));
@@ -1008,7 +1029,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Posted.
 		@return Posting status
 	  */
-	public boolean isPosted () 
+	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
 		if (oo != null) 
@@ -1021,21 +1042,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Manufacturing Order.
-		@param PP_Order_ID 
-		Manufacturing Order
-	  */
+		@param PP_Order_ID Manufacturing Order
+	*/
 	public void setPP_Order_ID (int PP_Order_ID)
 	{
-		if (PP_Order_ID < 1) 
+		if (PP_Order_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, Integer.valueOf(PP_Order_ID));
 	}
 
 	/** Get Manufacturing Order.
 		@return Manufacturing Order
 	  */
-	public int getPP_Order_ID () 
+	public int getPP_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_ID);
 		if (ii == null)
@@ -1044,7 +1064,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set PP_Order_UU.
-		@param PP_Order_UU PP_Order_UU	  */
+		@param PP_Order_UU PP_Order_UU
+	*/
 	public void setPP_Order_UU (String PP_Order_UU)
 	{
 		set_Value (COLUMNNAME_PP_Order_UU, PP_Order_UU);
@@ -1052,7 +1073,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 
 	/** Get PP_Order_UU.
 		@return PP_Order_UU	  */
-	public String getPP_Order_UU () 
+	public String getPP_Order_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PP_Order_UU);
 	}
@@ -1063,22 +1084,21 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 			.getPO(getPP_Product_BOM_ID(), get_TrxName());
 	}
 
-	/** Set BOM & Formula.
-		@param PP_Product_BOM_ID 
-		BOM & Formula
-	  */
+	/** Set BOM &amp; Formula.
+		@param PP_Product_BOM_ID BOM &amp; Formula
+	*/
 	public void setPP_Product_BOM_ID (int PP_Product_BOM_ID)
 	{
-		if (PP_Product_BOM_ID < 1) 
+		if (PP_Product_BOM_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Product_BOM_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Product_BOM_ID, Integer.valueOf(PP_Product_BOM_ID));
 	}
 
-	/** Get BOM & Formula.
-		@return BOM & Formula
+	/** Get BOM &amp; Formula.
+		@return BOM &amp; Formula
 	  */
-	public int getPP_Product_BOM_ID () 
+	public int getPP_Product_BOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Product_BOM_ID);
 		if (ii == null)
@@ -1099,9 +1119,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Minor = 9 */
 	public static final String PRIORITYRULE_Minor = "9";
 	/** Set Priority.
-		@param PriorityRule 
-		Priority of a document
-	  */
+		@param PriorityRule Priority of a document
+	*/
 	public void setPriorityRule (String PriorityRule)
 	{
 
@@ -1111,15 +1130,14 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Priority.
 		@return Priority of a document
 	  */
-	public String getPriorityRule () 
+	public String getPriorityRule()
 	{
 		return (String)get_Value(COLUMNNAME_PriorityRule);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -1128,7 +1146,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -1141,9 +1159,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Processed On.
-		@param ProcessedOn 
-		The date+time (expressed in decimal format) when the document has been processed
-	  */
+		@param ProcessedOn The date+time (expressed in decimal format) when the document has been processed
+	*/
 	public void setProcessedOn (BigDecimal ProcessedOn)
 	{
 		set_Value (COLUMNNAME_ProcessedOn, ProcessedOn);
@@ -1152,7 +1169,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Processed On.
 		@return The date+time (expressed in decimal format) when the document has been processed
 	  */
-	public BigDecimal getProcessedOn () 
+	public BigDecimal getProcessedOn()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ProcessedOn);
 		if (bd == null)
@@ -1161,7 +1178,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -1169,7 +1187,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -1182,7 +1200,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Qty Batchs.
-		@param QtyBatchs Qty Batchs	  */
+		@param QtyBatchs Qty Batchs
+	*/
 	public void setQtyBatchs (BigDecimal QtyBatchs)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyBatchs, QtyBatchs);
@@ -1190,7 +1209,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 
 	/** Get Qty Batchs.
 		@return Qty Batchs	  */
-	public BigDecimal getQtyBatchs () 
+	public BigDecimal getQtyBatchs()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBatchs);
 		if (bd == null)
@@ -1199,7 +1218,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Qty Batch Size.
-		@param QtyBatchSize Qty Batch Size	  */
+		@param QtyBatchSize Qty Batch Size
+	*/
 	public void setQtyBatchSize (BigDecimal QtyBatchSize)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyBatchSize, QtyBatchSize);
@@ -1207,7 +1227,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 
 	/** Get Qty Batch Size.
 		@return Qty Batch Size	  */
-	public BigDecimal getQtyBatchSize () 
+	public BigDecimal getQtyBatchSize()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBatchSize);
 		if (bd == null)
@@ -1216,9 +1236,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Delivered Quantity.
-		@param QtyDelivered 
-		Delivered Quantity
-	  */
+		@param QtyDelivered Delivered Quantity
+	*/
 	public void setQtyDelivered (BigDecimal QtyDelivered)
 	{
 		set_Value (COLUMNNAME_QtyDelivered, QtyDelivered);
@@ -1227,7 +1246,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Delivered Quantity.
 		@return Delivered Quantity
 	  */
-	public BigDecimal getQtyDelivered () 
+	public BigDecimal getQtyDelivered()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyDelivered);
 		if (bd == null)
@@ -1236,9 +1255,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Quantity.
-		@param QtyEntered 
-		The Quantity Entered is based on the selected UoM
-	  */
+		@param QtyEntered The Quantity Entered is based on the selected UoM
+	*/
 	public void setQtyEntered (BigDecimal QtyEntered)
 	{
 		set_Value (COLUMNNAME_QtyEntered, QtyEntered);
@@ -1247,7 +1265,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Quantity.
 		@return The Quantity Entered is based on the selected UoM
 	  */
-	public BigDecimal getQtyEntered () 
+	public BigDecimal getQtyEntered()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyEntered);
 		if (bd == null)
@@ -1256,9 +1274,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Ordered Quantity.
-		@param QtyOrdered 
-		Ordered Quantity
-	  */
+		@param QtyOrdered Ordered Quantity
+	*/
 	public void setQtyOrdered (BigDecimal QtyOrdered)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyOrdered, QtyOrdered);
@@ -1267,7 +1284,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Ordered Quantity.
 		@return Ordered Quantity
 	  */
-	public BigDecimal getQtyOrdered () 
+	public BigDecimal getQtyOrdered()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyOrdered);
 		if (bd == null)
@@ -1276,7 +1293,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Qty Reject.
-		@param QtyReject Qty Reject	  */
+		@param QtyReject Qty Reject
+	*/
 	public void setQtyReject (BigDecimal QtyReject)
 	{
 		set_Value (COLUMNNAME_QtyReject, QtyReject);
@@ -1284,7 +1302,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 
 	/** Get Qty Reject.
 		@return Qty Reject	  */
-	public BigDecimal getQtyReject () 
+	public BigDecimal getQtyReject()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyReject);
 		if (bd == null)
@@ -1293,9 +1311,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Reserved Quantity.
-		@param QtyReserved 
-		Reserved Quantity
-	  */
+		@param QtyReserved Reserved Quantity
+	*/
 	public void setQtyReserved (BigDecimal QtyReserved)
 	{
 		set_Value (COLUMNNAME_QtyReserved, QtyReserved);
@@ -1304,7 +1321,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Reserved Quantity.
 		@return Reserved Quantity
 	  */
-	public BigDecimal getQtyReserved () 
+	public BigDecimal getQtyReserved()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyReserved);
 		if (bd == null)
@@ -1313,9 +1330,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Scrap %.
-		@param QtyScrap 
-		Scrap % Quantity for this componet
-	  */
+		@param QtyScrap Scrap % Quantity for this componet
+	*/
 	public void setQtyScrap (BigDecimal QtyScrap)
 	{
 		set_Value (COLUMNNAME_QtyScrap, QtyScrap);
@@ -1324,7 +1340,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Scrap %.
 		@return Scrap % Quantity for this componet
 	  */
-	public BigDecimal getQtyScrap () 
+	public BigDecimal getQtyScrap()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyScrap);
 		if (bd == null)
@@ -1333,9 +1349,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Schedule Type.
-		@param ScheduleType 
-		Type of schedule
-	  */
+		@param ScheduleType Type of schedule
+	*/
 	public void setScheduleType (String ScheduleType)
 	{
 		set_Value (COLUMNNAME_ScheduleType, ScheduleType);
@@ -1344,15 +1359,14 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Schedule Type.
 		@return Type of schedule
 	  */
-	public String getScheduleType () 
+	public String getScheduleType()
 	{
 		return (String)get_Value(COLUMNNAME_ScheduleType);
 	}
 
 	/** Set Serial No.
-		@param SerNo 
-		Product Serial Number 
-	  */
+		@param SerNo Product Serial Number 
+	*/
 	public void setSerNo (String SerNo)
 	{
 		set_Value (COLUMNNAME_SerNo, SerNo);
@@ -1361,7 +1375,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Serial No.
 		@return Product Serial Number 
 	  */
-	public String getSerNo () 
+	public String getSerNo()
 	{
 		return (String)get_Value(COLUMNNAME_SerNo);
 	}
@@ -1373,21 +1387,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Resource.
-		@param S_Resource_ID 
-		Resource
-	  */
+		@param S_Resource_ID Resource
+	*/
 	public void setS_Resource_ID (int S_Resource_ID)
 	{
-		if (S_Resource_ID < 1) 
+		if (S_Resource_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_S_Resource_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_S_Resource_ID, Integer.valueOf(S_Resource_ID));
 	}
 
 	/** Get Resource.
 		@return Resource
 	  */
-	public int getS_Resource_ID () 
+	public int getS_Resource_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_S_Resource_ID);
 		if (ii == null)
@@ -1402,21 +1415,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set User Element List 1.
-		@param User1_ID 
-		User defined list element #1
-	  */
+		@param User1_ID User defined list element #1
+	*/
 	public void setUser1_ID (int User1_ID)
 	{
-		if (User1_ID < 1) 
+		if (User1_ID < 1)
 			set_Value (COLUMNNAME_User1_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_User1_ID, Integer.valueOf(User1_ID));
 	}
 
 	/** Get User Element List 1.
 		@return User defined list element #1
 	  */
-	public int getUser1_ID () 
+	public int getUser1_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_User1_ID);
 		if (ii == null)
@@ -1431,21 +1443,20 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set User Element List 2.
-		@param User2_ID 
-		User defined list element #2
-	  */
+		@param User2_ID User defined list element #2
+	*/
 	public void setUser2_ID (int User2_ID)
 	{
-		if (User2_ID < 1) 
+		if (User2_ID < 1)
 			set_Value (COLUMNNAME_User2_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_User2_ID, Integer.valueOf(User2_ID));
 	}
 
 	/** Get User Element List 2.
 		@return User defined list element #2
 	  */
-	public int getUser2_ID () 
+	public int getUser2_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_User2_ID);
 		if (ii == null)
@@ -1454,9 +1465,8 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Yield %.
-		@param Yield 
-		The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
-	  */
+		@param Yield The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
+	*/
 	public void setYield (BigDecimal Yield)
 	{
 		set_Value (COLUMNNAME_Yield, Yield);
@@ -1465,7 +1475,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/** Get Yield %.
 		@return The Yield is the percentage of a lot that is expected to be of acceptable wuality may fall below 100 percent
 	  */
-	public BigDecimal getYield () 
+	public BigDecimal getYield()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Yield);
 		if (bd == null)

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
@@ -30,11 +31,16 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MArchive;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MTable;
+import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MUser;
+import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
+import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -59,6 +65,7 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbar;
+import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.impl.Utils;
 import org.zkoss.zul.impl.XulElement;
 
@@ -86,7 +93,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -812700088629098149L;
+	private static final long serialVersionUID = -7204858572267608018L;
 
 	private JasperPrint jasperPrint;
 	private java.util.List<JasperPrint> jasperPrintList;
@@ -106,7 +113,9 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	private KeyEvent prevKeyEvent;
 
 	private String m_title; // local title - embedded windows clear the title
+	Toolbar toolbar = new Toolbar();
 	protected ToolBarButton		bArchive			= new ToolBarButton();
+	protected ToolBarButton		bAttachment			= new ToolBarButton();
 	protected ToolBarButton bExport = new ToolBarButton();
 	protected ToolBarButton bCloudUpload = new ToolBarButton();
 	private PrintInfo			m_printInfo;
@@ -192,7 +201,6 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		this.appendChild(layout);
 		this.setStyle("width: 100%; height: 100%; position: absolute");
 
-		Toolbar toolbar = new Toolbar();
 		ZKUpdateUtil.setHeight(toolbar, "32px");
 
 		previewType.setMold("select");
@@ -260,6 +268,20 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		toolbar.appendChild(bArchive);
 		bArchive.addEventListener(Events.ON_CLICK, this);
 
+		int tableId = m_printInfo.getAD_Table_ID();
+		int recordId = m_printInfo.getRecord_ID();
+		if (tableId > 0 && recordId > 0) {
+			toolbar.appendChild(new Separator("vertical"));
+			bAttachment.setName("Attachment");
+			if (ThemeManager.isUseFontIconForImage())
+				bAttachment.setIconSclass("z-icon-Attachment");
+			else
+				bAttachment.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
+			bAttachment.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Attachment")));
+			toolbar.appendChild(bAttachment);
+			bAttachment.addEventListener(Events.ON_CLICK, this);
+		}
+
 		if ( isCanExport )
 		{
 			bExport.setName("Export");
@@ -300,6 +322,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		ZKUpdateUtil.setHeight(iframe, "100%");
 		ZKUpdateUtil.setWidth(iframe, "100%");
 
+		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "_WinInfo_AD_Window_ID", true);
+		int AD_Process_ID = m_printInfo.getAD_Process_ID();
+		updateToolbarAccess(AD_Window_ID, AD_Process_ID);
+
 		try {
 			renderReport();
 		} catch (Exception e) {
@@ -310,6 +336,42 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 		this.setBorder("normal");				
 	}
+
+	private boolean ToolBarMenuRestictionLoaded = false;
+	public void updateToolbarAccess(int AD_Window_ID, int AD_Process_ID) {
+		if (ToolBarMenuRestictionLoaded)
+			return;
+		Properties m_ctx = Env.getCtx();
+		int ToolBarButton_ID = 0;
+
+		int[] restrictionList = AD_Window_ID > 0 
+				? MToolBarButtonRestrict.getOfWindow(m_ctx, MRole.getDefault().getAD_Role_ID(), AD_Window_ID, true, null)
+				: MToolBarButtonRestrict.getOfReport(m_ctx, MRole.getDefault().getAD_Role_ID(), AD_Process_ID, null);
+		if (log.isLoggable(Level.INFO))
+			log.info("restrictionList="+restrictionList.toString());
+
+		for (int i = 0; i < restrictionList.length; i++)
+		{
+			ToolBarButton_ID= restrictionList[i];
+			X_AD_ToolBarButton tbt = new X_AD_ToolBarButton(m_ctx, ToolBarButton_ID, null);
+			if (!"R".equals(tbt.getAction()))
+				continue;
+			
+			String restrictName = tbt.getComponentName();
+			if (log.isLoggable(Level.CONFIG)) log.config("tbt="+tbt.getAD_ToolBarButton_ID() + " / " + restrictName);
+
+			for (Component p = this.toolbar.getFirstChild(); p != null; p = p.getNextSibling()) {
+				if (p instanceof Toolbarbutton) {
+					if ( restrictName.equals(((ToolBarButton)p).getName()) ) {
+						this.toolbar.removeChild(p);
+						break;
+					}
+				}
+			}
+		}	// All restrictions
+
+		ToolBarMenuRestictionLoaded = true;
+	}//updateToolbarAccess
 
 	private void initMediaSuppliers() {
 		mediaSuppliers.put(toMediaType(PDF_MIME_TYPE, PDF_FILE_EXT), () -> {
@@ -525,6 +587,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			cmd_sendMail();
 		else if (e.getTarget() == bArchive)
 			cmd_archive();
+		else if (e.getTarget() == bAttachment)
+			cmd_attachment();
 		else if (e.getTarget() == bExport)
 			cmd_export();
 		else if (e.getTarget() == bCloudUpload)
@@ -808,6 +872,29 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		{
 			log.log(Level.SEVERE, "Error loading object from InputStream" + e);
 		}
+	} // cmd_archive
+
+	/**
+	 * Create archive for jasper report
+	 */
+	protected void cmd_attachment()
+	{
+		int tableId = m_printInfo.getAD_Table_ID();
+		int recordId = m_printInfo.getRecord_ID();
+		if (tableId == 0 || recordId == 0)
+			return;
+		boolean success = false;
+		MTable table = MTable.get(tableId);
+		PO po = table.getPO(recordId, null);
+		MAttachment attachment = po.createAttachment();
+		String fileName = m_title.replace(" ", "_") + "." + media.getFormat();
+		byte[] data = media.isBinary() ? media.getByteData() : media.getStringData().getBytes();
+		attachment.addEntry(fileName, data);
+		success = attachment.save();
+		if (success)
+			FDialog.info(m_WindowNo, this, "Attached", fileName);
+		else
+			FDialog.error(m_WindowNo, this, "AttachError");
 	} // cmd_archive
 
 	/** 

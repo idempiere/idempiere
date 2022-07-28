@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_TaxDeclaration
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxDeclaration")
 public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Persistent 
 {
@@ -32,12 +32,27 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_TaxDeclaration (Properties ctx, int C_TaxDeclaration_ID, String trxName)
     {
       super (ctx, C_TaxDeclaration_ID, trxName);
+      /** if (C_TaxDeclaration_ID == 0)
+        {
+			setC_TaxDeclaration_ID (0);
+			setDateFrom (new Timestamp( System.currentTimeMillis() ));
+			setDateTo (new Timestamp( System.currentTimeMillis() ));
+			setDateTrx (new Timestamp( System.currentTimeMillis() ));
+			setName (null);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxDeclaration (Properties ctx, int C_TaxDeclaration_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxDeclaration_ID, trxName, virtualColumns);
       /** if (C_TaxDeclaration_ID == 0)
         {
 			setC_TaxDeclaration_ID (0);
@@ -78,21 +93,20 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
     }
 
 	/** Set Tax Declaration.
-		@param C_TaxDeclaration_ID 
-		Define the declaration to the tax authorities
-	  */
+		@param C_TaxDeclaration_ID Define the declaration to the tax authorities
+	*/
 	public void setC_TaxDeclaration_ID (int C_TaxDeclaration_ID)
 	{
-		if (C_TaxDeclaration_ID < 1) 
+		if (C_TaxDeclaration_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_TaxDeclaration_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_TaxDeclaration_ID, Integer.valueOf(C_TaxDeclaration_ID));
 	}
 
 	/** Get Tax Declaration.
 		@return Define the declaration to the tax authorities
 	  */
-	public int getC_TaxDeclaration_ID () 
+	public int getC_TaxDeclaration_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxDeclaration_ID);
 		if (ii == null)
@@ -101,7 +115,8 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
 	}
 
 	/** Set C_TaxDeclaration_UU.
-		@param C_TaxDeclaration_UU C_TaxDeclaration_UU	  */
+		@param C_TaxDeclaration_UU C_TaxDeclaration_UU
+	*/
 	public void setC_TaxDeclaration_UU (String C_TaxDeclaration_UU)
 	{
 		set_Value (COLUMNNAME_C_TaxDeclaration_UU, C_TaxDeclaration_UU);
@@ -109,15 +124,14 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
 
 	/** Get C_TaxDeclaration_UU.
 		@return C_TaxDeclaration_UU	  */
-	public String getC_TaxDeclaration_UU () 
+	public String getC_TaxDeclaration_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_TaxDeclaration_UU);
 	}
 
 	/** Set Date From.
-		@param DateFrom 
-		Starting date for a range
-	  */
+		@param DateFrom Starting date for a range
+	*/
 	public void setDateFrom (Timestamp DateFrom)
 	{
 		set_Value (COLUMNNAME_DateFrom, DateFrom);
@@ -126,15 +140,14 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
 	/** Get Date From.
 		@return Starting date for a range
 	  */
-	public Timestamp getDateFrom () 
+	public Timestamp getDateFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateFrom);
 	}
 
 	/** Set Date To.
-		@param DateTo 
-		End date of a date range
-	  */
+		@param DateTo End date of a date range
+	*/
 	public void setDateTo (Timestamp DateTo)
 	{
 		set_Value (COLUMNNAME_DateTo, DateTo);
@@ -143,15 +156,14 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
 	/** Get Date To.
 		@return End date of a date range
 	  */
-	public Timestamp getDateTo () 
+	public Timestamp getDateTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateTo);
 	}
 
 	/** Set Transaction Date.
-		@param DateTrx 
-		Transaction Date
-	  */
+		@param DateTrx Transaction Date
+	*/
 	public void setDateTrx (Timestamp DateTrx)
 	{
 		set_Value (COLUMNNAME_DateTrx, DateTrx);
@@ -160,15 +172,14 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
 	/** Get Transaction Date.
 		@return Transaction Date
 	  */
-	public Timestamp getDateTrx () 
+	public Timestamp getDateTrx()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateTrx);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -177,15 +188,14 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -194,7 +204,7 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -208,9 +218,8 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
     }
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -219,7 +228,7 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -232,7 +241,8 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -240,7 +250,7 @@ public class X_C_TaxDeclaration extends PO implements I_C_TaxDeclaration, I_Pers
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

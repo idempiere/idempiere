@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for C_Recurring_Run
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_Recurring_Run")
 public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persistent 
 {
@@ -31,12 +31,23 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Recurring_Run (Properties ctx, int C_Recurring_Run_ID, String trxName)
     {
       super (ctx, C_Recurring_Run_ID, trxName);
+      /** if (C_Recurring_Run_ID == 0)
+        {
+			setC_Recurring_ID (0);
+			setC_Recurring_Run_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Recurring_Run (Properties ctx, int C_Recurring_Run_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Recurring_Run_ID, trxName, virtualColumns);
       /** if (C_Recurring_Run_ID == 0)
         {
 			setC_Recurring_ID (0);
@@ -79,21 +90,20 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
 	}
 
 	/** Set Invoice.
-		@param C_Invoice_ID 
-		Invoice Identifier
-	  */
+		@param C_Invoice_ID Invoice Identifier
+	*/
 	public void setC_Invoice_ID (int C_Invoice_ID)
 	{
-		if (C_Invoice_ID < 1) 
+		if (C_Invoice_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Invoice_ID, Integer.valueOf(C_Invoice_ID));
 	}
 
 	/** Get Invoice.
 		@return Invoice Identifier
 	  */
-	public int getC_Invoice_ID () 
+	public int getC_Invoice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Invoice_ID);
 		if (ii == null)
@@ -108,21 +118,20 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
 	}
 
 	/** Set Order.
-		@param C_Order_ID 
-		Order
-	  */
+		@param C_Order_ID Order
+	*/
 	public void setC_Order_ID (int C_Order_ID)
 	{
-		if (C_Order_ID < 1) 
+		if (C_Order_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Order_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
 	}
 
 	/** Get Order.
 		@return Order
 	  */
-	public int getC_Order_ID () 
+	public int getC_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
 		if (ii == null)
@@ -137,21 +146,20 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
 	}
 
 	/** Set Payment.
-		@param C_Payment_ID 
-		Payment identifier
-	  */
+		@param C_Payment_ID Payment identifier
+	*/
 	public void setC_Payment_ID (int C_Payment_ID)
 	{
-		if (C_Payment_ID < 1) 
+		if (C_Payment_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Payment_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
 	}
 
 	/** Get Payment.
 		@return Payment identifier
 	  */
-	public int getC_Payment_ID () 
+	public int getC_Payment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
 		if (ii == null)
@@ -166,21 +174,20 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
 	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -195,21 +202,20 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
 	}
 
 	/** Set Recurring.
-		@param C_Recurring_ID 
-		Recurring Document
-	  */
+		@param C_Recurring_ID Recurring Document
+	*/
 	public void setC_Recurring_ID (int C_Recurring_ID)
 	{
-		if (C_Recurring_ID < 1) 
+		if (C_Recurring_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Recurring_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Recurring_ID, Integer.valueOf(C_Recurring_ID));
 	}
 
 	/** Get Recurring.
 		@return Recurring Document
 	  */
-	public int getC_Recurring_ID () 
+	public int getC_Recurring_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Recurring_ID);
 		if (ii == null)
@@ -218,21 +224,20 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
 	}
 
 	/** Set Recurring Run.
-		@param C_Recurring_Run_ID 
-		Recurring Document Run
-	  */
+		@param C_Recurring_Run_ID Recurring Document Run
+	*/
 	public void setC_Recurring_Run_ID (int C_Recurring_Run_ID)
 	{
-		if (C_Recurring_Run_ID < 1) 
+		if (C_Recurring_Run_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Recurring_Run_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Recurring_Run_ID, Integer.valueOf(C_Recurring_Run_ID));
 	}
 
 	/** Get Recurring Run.
 		@return Recurring Document Run
 	  */
-	public int getC_Recurring_Run_ID () 
+	public int getC_Recurring_Run_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Recurring_Run_ID);
 		if (ii == null)
@@ -241,7 +246,8 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
 	}
 
 	/** Set C_Recurring_Run_UU.
-		@param C_Recurring_Run_UU C_Recurring_Run_UU	  */
+		@param C_Recurring_Run_UU C_Recurring_Run_UU
+	*/
 	public void setC_Recurring_Run_UU (String C_Recurring_Run_UU)
 	{
 		set_Value (COLUMNNAME_C_Recurring_Run_UU, C_Recurring_Run_UU);
@@ -249,15 +255,14 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
 
 	/** Get C_Recurring_Run_UU.
 		@return C_Recurring_Run_UU	  */
-	public String getC_Recurring_Run_UU () 
+	public String getC_Recurring_Run_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Recurring_Run_UU);
 	}
 
 	/** Set Document Date.
-		@param DateDoc 
-		Date of the Document
-	  */
+		@param DateDoc Date of the Document
+	*/
 	public void setDateDoc (Timestamp DateDoc)
 	{
 		set_Value (COLUMNNAME_DateDoc, DateDoc);
@@ -266,7 +271,7 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
 	/** Get Document Date.
 		@return Date of the Document
 	  */
-	public Timestamp getDateDoc () 
+	public Timestamp getDateDoc()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateDoc);
 	}
@@ -278,21 +283,20 @@ public class X_C_Recurring_Run extends PO implements I_C_Recurring_Run, I_Persis
 	}
 
 	/** Set Journal Batch.
-		@param GL_JournalBatch_ID 
-		General Ledger Journal Batch
-	  */
+		@param GL_JournalBatch_ID General Ledger Journal Batch
+	*/
 	public void setGL_JournalBatch_ID (int GL_JournalBatch_ID)
 	{
-		if (GL_JournalBatch_ID < 1) 
+		if (GL_JournalBatch_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_GL_JournalBatch_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_GL_JournalBatch_ID, Integer.valueOf(GL_JournalBatch_ID));
 	}
 
 	/** Get Journal Batch.
 		@return General Ledger Journal Batch
 	  */
-	public int getGL_JournalBatch_ID () 
+	public int getGL_JournalBatch_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_JournalBatch_ID);
 		if (ii == null)

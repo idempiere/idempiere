@@ -57,7 +57,7 @@ import org.compiere.util.Msg;
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
-	 *	@param C_BankStatementLine_ID id
+	 *	@param C_DepositBatchLine_ID id
 	 *	@param trxName transaction
 	 */
 	public MDepositBatchLine (Properties ctx, int C_DepositBatchLine_ID, String trxName)

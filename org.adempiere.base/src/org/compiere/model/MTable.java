@@ -59,7 +59,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *  @author Jorg Janke
  *  @author Teo Sarca, teo.sarca@gmail.com
  *  		<li>BF [ 3017117 ] MTable.getClass returns bad class
- *  			https://sourceforge.net/tracker/?func=detail&aid=3017117&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/2433/
  *  @version $Id: MTable.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
  */
 public class MTable extends X_AD_Table implements ImmutablePOSupport
@@ -721,13 +721,15 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		if (!success)
 			return success;
 		//	Sync Table ID
-		MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
-		if (seq == null || seq.get_ID() == 0)
-			MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
-		else if (!seq.getName().equals(getTableName()))
-		{
-			seq.setName(getTableName());
-			seq.saveEx();
+		if(!isView()) {
+			MSequence seq = MSequence.get(getCtx(), getTableName(), get_TrxName());
+			if (seq == null || seq.get_ID() == 0)
+				MSequence.createTableSequence(getCtx(), getTableName(), get_TrxName());
+			else if (!seq.getName().equals(getTableName()))
+			{
+				seq.setName(getTableName());
+				seq.saveEx();
+			}
 		}
 		if (newRecord || is_ValueChanged(COLUMNNAME_IsChangeLog)) {
 			MChangeLog.resetLoggedList();
@@ -755,7 +757,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 	/**
 	 * 	Grant independence to GenerateModel from AD_Table_ID
-	 *	@param String tableName
+	 *	@param tableName String
+	 *  @param trxName
 	 *	@return int retValue
 	 */
 	public static int getTable_ID(String tableName, String trxName) {

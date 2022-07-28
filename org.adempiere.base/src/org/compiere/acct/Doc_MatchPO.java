@@ -47,6 +47,7 @@ import org.compiere.model.X_M_InOut;
 import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -269,7 +270,7 @@ public class Doc_MatchPO extends Doc
 			if (m_matchPO.getRef_MatchPO_ID() > 0)
 				return facts;
 			
-			p_Error = "No posting if not matched to Shipment";
+			p_Error = Msg.getMsg(Env.getCtx(), "NoPostingIfNotMatchedToShipment");
 			return null;
 		}
 
@@ -285,17 +286,53 @@ public class Doc_MatchPO extends Doc
 			poCost = m_oLine.getPriceActual();
 			//	Goodwill: Correct included Tax
 	    	int C_Tax_ID = m_oLine.getC_Tax_ID();
+	    	MTax tax = MTax.get(getCtx(), C_Tax_ID);
+	    	int stdPrecision = MCurrency.getStdPrecision(getCtx(), m_oLine.getC_Currency_ID());
 			if (m_oLine.isTaxIncluded() && C_Tax_ID != 0)
-			{
-				MTax tax = MTax.get(getCtx(), C_Tax_ID);
+			{				
 				if (!tax.isZeroTax())
-				{
-					int stdPrecision = MCurrency.getStdPrecision(getCtx(), m_oLine.getC_Currency_ID());
+				{					
 					BigDecimal costTax = tax.calculateTax(poCost, true, stdPrecision);
 					if (log.isLoggable(Level.FINE)) log.fine("Costs=" + poCost + " - Tax=" + costTax);
-					poCost = poCost.subtract(costTax);
+					if (tax.isSummary())
+					{
+						poCost = poCost.subtract(costTax);
+						BigDecimal base = poCost;
+						for (MTax childTax : tax.getChildTaxes(false))
+						{
+							if (!childTax.isZeroTax() && childTax.isDistributeTaxWithLineItem())
+							{
+								BigDecimal taxAmt = childTax.calculateTax(base, false, stdPrecision);
+								poCost = poCost.add(taxAmt);
+							}
+						}
+					}
+					else if (!tax.isDistributeTaxWithLineItem())
+					{
+						poCost = poCost.subtract(costTax);
+					}
 				}
 			}	//	correct included Tax
+			else 
+			{
+				if (tax.isSummary())
+				{
+					BigDecimal base = poCost;
+					for (MTax childTax : tax.getChildTaxes(false)) 
+					{
+						if (childTax.isDistributeTaxWithLineItem())
+						{
+							BigDecimal taxAmt = childTax.calculateTax(base, false, stdPrecision);
+							poCost = poCost.add(taxAmt);
+						}
+					}
+				}
+				else if (tax.isDistributeTaxWithLineItem())
+				{
+					BigDecimal taxAmt = tax.calculateTax(poCost, false, stdPrecision);
+					poCost = poCost.add(taxAmt);
+				}
+			}
 		}
 
 		MInOutLine receiptLine = new MInOutLine (getCtx(), m_M_InOutLine_ID, getTrxName());
@@ -321,7 +358,7 @@ public class Doc_MatchPO extends Doc
 					m_oLine.getAD_Client_ID(), m_oLine.getAD_Org_ID());
 				if (rate == null)
 				{
-					p_Error = "Purchase Order not convertible - " + as.getName();
+					p_Error = Msg.getMsg(Env.getCtx(), "PurchaseOrderNotConvertible", new String[] {as.getName()}); 							
 					return null;
 				}
 				amt = amt.multiply(rate);
@@ -354,7 +391,7 @@ public class Doc_MatchPO extends Doc
 				m_oLine.getAD_Client_ID(), m_oLine.getAD_Org_ID());
 			if (rate == null)
 			{
-				p_Error = "Purchase Order not convertible - " + as.getName();
+				p_Error = Msg.getMsg(Env.getCtx(), "PurchaseOrderNotConvertible", new String[] {as.getName()});
 				return null;
 			}
 			poCost = poCost.multiply(rate);
@@ -382,7 +419,7 @@ public class Doc_MatchPO extends Doc
 
 		if (MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{
-			if (m_matchPO.getReversal_ID() > 0)
+			if (m_matchPO.isReversal())
 			{
 				//  Product PPV
 				FactLine cr = fact.createLine(null,
@@ -399,8 +436,8 @@ public class Doc_MatchPO extends Doc
 					FactLine dr = fact.createLine(null,
 						getAccount(Doc.ACCTTYPE_PPVOffset, as), as.getC_Currency_ID(), Env.ONE);
 					if (!dr.updateReverseLine(MMatchPO.Table_ID, m_matchPO.getM_MatchPO_ID(), 0, Env.ONE)) 
-					{
-						p_Error = "Failed to create reversal entry for ACCTTYPE_PPVOffset";
+					{						
+						p_Error = Msg.getMsg(Env.getCtx(), "FailedToCreateReversalEntryForACCTTYPE_PPVOffset");
 						return null;
 					}
 				}
@@ -416,8 +453,8 @@ public class Doc_MatchPO extends Doc
 						costs = BigDecimal.ZERO;
 					}
 					else
-					{
-						p_Error = "Resubmit - No Costs for " + product.getName();
+					{						
+						p_Error = Msg.getMsg(Env.getCtx(), "Resubmit - No Costs for") + product.getName();
 						log.log(Level.SEVERE, p_Error);
 						return null;
 					}
@@ -581,7 +618,7 @@ public class Doc_MatchPO extends Doc
 			tAmt = tAmt.add(isReturnTrx ? poCost.negate() : poCost);
 			tQty = tQty.add(isReturnTrx ? getQty().negate() : getQty());
 			
-			if (mMatchPO.getReversal_ID() > 0) 
+			if (mMatchPO.isReversal()) 
 			{
 				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO, tQty);
 				if (!Util.isEmpty(error))
@@ -600,7 +637,7 @@ public class Doc_MatchPO extends Doc
 				return "SaveError";
 			}
 			
-			if (mMatchPO.getReversal_ID() <= 0)
+			if (!mMatchPO.isReversal())
 			{
 				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO, tQty);
 				if (!Util.isEmpty(error))

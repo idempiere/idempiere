@@ -157,7 +157,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 	/**
 	 * 	Get BPartner with Value
 	 *	@param ctx context 
-	 *	@param Value value
+	 *  @param C_BPartner_ID
 	 *	@return BPartner or null
 	 */
 	public static MBPartner get (Properties ctx, int C_BPartner_ID)
@@ -169,7 +169,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 	/**
 	 * 	Get BPartner with Value in a transaction
 	 *	@param ctx context 
-	 *	@param Value value
+	 *  @param C_BPartner_ID
 	 * 	@param trxName transaction
 	 *	@return BPartner or null
 	 */
@@ -356,6 +356,11 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 		this.m_primaryAD_User_ID = copy.m_primaryAD_User_ID;
 		this.m_group = copy.m_group != null ? new MBPGroup(ctx, copy.m_group, trxName) : null;
 	}
+
+	public MBPartner(Properties ctx, int C_BPartner_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_BPartner_ID, trxName, virtualColumns);
+	}
+
 
 	/** Users							*/
 	protected MUser[]				m_contacts = null;

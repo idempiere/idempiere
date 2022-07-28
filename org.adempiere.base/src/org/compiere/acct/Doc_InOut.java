@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.I_C_OrderLine;
@@ -616,9 +617,57 @@ public class Doc_InOut extends Doc
 										int stdPrecision = MCurrency.getStdPrecision(getCtx(), C_Currency_ID);
 										BigDecimal costTax = tax.calculateTax(costs, true, stdPrecision);
 										if (log.isLoggable(Level.FINE)) log.fine("Costs=" + costs + " - Tax=" + costTax);
-										costs = costs.subtract(costTax);
+										if(tax.isSummary())
+										{
+											MTax[] cTaxes = tax.getChildTaxes(false);
+											List<MTax> toSubtract = new ArrayList<>();
+											for(MTax cTax : cTaxes)
+											{
+												if (!cTax.isDistributeTaxWithLineItem())
+													toSubtract.add(cTax);
+											}
+											if (toSubtract.size() > 0)
+											{
+												BigDecimal base = costs.subtract(costTax);
+												for(MTax cTax : toSubtract)
+												{
+													BigDecimal ts = cTax.calculateTax(base, false, stdPrecision);
+													costs = costs.subtract(ts);
+												}												
+											}
+										}
+										else if (!tax.isDistributeTaxWithLineItem())
+										{											
+											costs = costs.subtract(costTax);
+										}
 									}
 								}	//	correct included Tax
+								else if (C_Tax_ID != 0)
+								{
+									MTax tax = MTax.get(getCtx(), C_Tax_ID);
+									if(tax.isSummary())
+									{
+										MTax[] cTaxes = tax.getChildTaxes(false);
+										BigDecimal base = costs;
+										for(MTax cTax : cTaxes)
+										{
+											if (cTax.isDistributeTaxWithLineItem())
+											{
+												//do not round to stdprecision before multiply qty
+												BigDecimal costTax = cTax.calculateTax(base, false, 12);
+												if (log.isLoggable(Level.FINE)) log.fine("Costs=" + base + " - Tax=" + costTax);
+												costs = costs.add(costTax);
+											}																						
+										}
+									}
+									else if (tax.isDistributeTaxWithLineItem())
+									{
+										//do not round to stdprecision before multiply qty
+										BigDecimal costTax = tax.calculateTax(costs, false, 12);
+										if (log.isLoggable(Level.FINE)) log.fine("Costs=" + costs + " - Tax=" + costTax);
+										costs = costs.add(costTax);
+									}
+								}
 						    }
 						    costs = costs.multiply(line.getQty());
 	                    }
@@ -781,18 +830,50 @@ public class Doc_InOut extends Doc
 						MOrderLine originalOrderLine = (MOrderLine) originalInOutLine.getC_OrderLine();
 						//	Goodwill: Correct included Tax
 				    	int C_Tax_ID = originalOrderLine.getC_Tax_ID();
+				    	MTax tax = MTax.get(getCtx(), C_Tax_ID);
+				    	int stdPrecision = MCurrency.getStdPrecision(getCtx(), originalOrderLine.getC_Currency_ID());
 				    	if (originalOrderLine.isTaxIncluded() && C_Tax_ID != 0)
 						{
-							MTax tax = MTax.get(getCtx(), C_Tax_ID);
-							if (!tax.isZeroTax())
+							BigDecimal costTax = tax.calculateTax(costs, true, stdPrecision);
+				    		if (log.isLoggable(Level.FINE)) log.fine("Costs=" + costs + " - Tax=" + costTax);
+				    		if (tax.isSummary())
+				    		{
+				    			costs = costs.subtract(costTax);
+				    			BigDecimal base = costs;
+				    			for(MTax cTax : tax.getChildTaxes(false))
+				    			{
+				    				if (!cTax.isZeroTax() && cTax.isDistributeTaxWithLineItem())
+				    				{
+				    					costTax = cTax.calculateTax(base, false, stdPrecision);
+						    			costs = costs.add(costTax);
+				    				}
+				    			}
+				    		}
+							else if (!tax.isZeroTax() && !tax.isDistributeTaxWithLineItem())
 							{
-								int stdPrecision = MCurrency.getStdPrecision(getCtx(), originalOrderLine.getC_Currency_ID());
-								BigDecimal costTax = tax.calculateTax(costs, true, stdPrecision);
-								if (log.isLoggable(Level.FINE)) log.fine("Costs=" + costs + " - Tax=" + costTax);
 								costs = costs.subtract(costTax);
 							}
 						}	//	correct included Tax
-				    	
+				    	else 
+				    	{
+				    		if (tax.isSummary())
+				    		{
+				    			BigDecimal base = costs;
+				    			for(MTax cTax : tax.getChildTaxes(false))
+				    			{
+				    				if (!cTax.isZeroTax() && cTax.isDistributeTaxWithLineItem())
+				    				{
+				    					BigDecimal costTax = cTax.calculateTax(base, false, stdPrecision);
+						    			costs = costs.add(costTax);
+				    				}
+				    			}
+				    		}
+				    		else if (tax.isDistributeTaxWithLineItem())
+				    		{
+				    			BigDecimal costTax = tax.calculateTax(costs, false, stdPrecision);
+				    			costs = costs.add(costTax);
+				    		}
+				    	}
 				    	// different currency
 				    	if (C_Currency_ID  != originalOrderLine.getC_Currency_ID()) 
 						{

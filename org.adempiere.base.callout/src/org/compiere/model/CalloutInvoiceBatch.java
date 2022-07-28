@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -317,9 +318,10 @@ public class CalloutInvoiceBatch extends CalloutEngine
 		if (log.isLoggable(Level.FINE)) log.fine("Warehouse=" + M_Warehouse_ID);
 
 		//
-		int C_Tax_ID = Tax.get(ctx, 0, C_Charge_ID, billDate, shipDate,
+		String deliveryViaRule = getLineDeliveryViaRule(ctx, WindowNo, mTab);
+		int C_Tax_ID = Core.getTaxLookup().get(ctx, 0, C_Charge_ID, billDate, shipDate,
 			AD_Org_ID, M_Warehouse_ID, C_BPartner_Location_ID, C_BPartner_Location_ID,
-			Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y"), null);
+			Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y"), deliveryViaRule, null);
 		if (log.isLoggable(Level.INFO)) log.info("Tax ID=" + C_Tax_ID);
 		//
 		if (C_Tax_ID == 0)
@@ -330,7 +332,36 @@ public class CalloutInvoiceBatch extends CalloutEngine
 		return amt (ctx, WindowNo, mTab, mField, value);
 	}	//	tax
 
-
+	private String getLineDeliveryViaRule(Properties ctx, int windowNo, GridTab mTab) {
+		if (mTab.getValue("C_InvoiceLine_ID") != null) {
+			int C_InvoiceLine_ID = (Integer) mTab.getValue("C_InvoiceLine_ID");
+			if (C_InvoiceLine_ID > 0) {
+				MInvoiceLine invoiceLine = new MInvoiceLine(ctx, C_InvoiceLine_ID, null);
+				int C_OrderLine_ID = invoiceLine.getC_OrderLine_ID();
+				if (C_OrderLine_ID > 0) {
+					MOrderLine orderLine = new MOrderLine(ctx, C_OrderLine_ID, null);
+					return orderLine.getParent().getDeliveryViaRule();
+				}
+				int M_InOutLine_ID = invoiceLine.getM_InOutLine_ID();
+				if (M_InOutLine_ID > 0) {
+					MInOutLine ioLine = new MInOutLine(ctx, M_InOutLine_ID, null);
+					return ioLine.getParent().getDeliveryViaRule();
+				}
+			}			
+		}
+		if (mTab.getValue("C_Invoice_ID") != null) {
+			int C_Invoice_ID = (Integer) mTab.getValue("C_Invoice_ID");
+			if (C_Invoice_ID > 0) {
+				MInvoice invoice = new MInvoice(ctx, C_Invoice_ID, null);
+				I_C_Order order = invoice.getC_Order();
+				if (order != null) {
+					return order.getDeliveryViaRule();
+				}
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 *	Invoice - Amount.
 	 *		- called from QtyEntered, PriceEntered

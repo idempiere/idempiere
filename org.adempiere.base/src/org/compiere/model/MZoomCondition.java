@@ -43,7 +43,7 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
-	 *	@param XXA_PostIt_ID id
+	 *	@param AD_ZoomCondition_ID id
 	 *	@param trxName transaction
 	 */
 	public MZoomCondition (Properties ctx, int AD_ZoomCondition_ID, String trxName)

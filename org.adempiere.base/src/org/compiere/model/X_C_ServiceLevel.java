@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ServiceLevel
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_ServiceLevel")
 public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persistent 
 {
@@ -33,12 +33,26 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_ServiceLevel (Properties ctx, int C_ServiceLevel_ID, String trxName)
     {
       super (ctx, C_ServiceLevel_ID, trxName);
+      /** if (C_ServiceLevel_ID == 0)
+        {
+			setC_RevenueRecognition_Plan_ID (0);
+			setC_ServiceLevel_ID (0);
+			setM_Product_ID (0);
+			setServiceLevelInvoiced (Env.ZERO);
+			setServiceLevelProvided (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_ServiceLevel (Properties ctx, int C_ServiceLevel_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_ServiceLevel_ID, trxName, virtualColumns);
       /** if (C_ServiceLevel_ID == 0)
         {
 			setC_RevenueRecognition_Plan_ID (0);
@@ -84,21 +98,20 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	}
 
 	/** Set Revenue Recognition Plan.
-		@param C_RevenueRecognition_Plan_ID 
-		Plan for recognizing or recording revenue
-	  */
+		@param C_RevenueRecognition_Plan_ID Plan for recognizing or recording revenue
+	*/
 	public void setC_RevenueRecognition_Plan_ID (int C_RevenueRecognition_Plan_ID)
 	{
-		if (C_RevenueRecognition_Plan_ID < 1) 
+		if (C_RevenueRecognition_Plan_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RevenueRecognition_Plan_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RevenueRecognition_Plan_ID, Integer.valueOf(C_RevenueRecognition_Plan_ID));
 	}
 
 	/** Get Revenue Recognition Plan.
 		@return Plan for recognizing or recording revenue
 	  */
-	public int getC_RevenueRecognition_Plan_ID () 
+	public int getC_RevenueRecognition_Plan_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RevenueRecognition_Plan_ID);
 		if (ii == null)
@@ -107,21 +120,20 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	}
 
 	/** Set Service Level.
-		@param C_ServiceLevel_ID 
-		Product Revenue Recognition Service Level 
-	  */
+		@param C_ServiceLevel_ID Product Revenue Recognition Service Level 
+	*/
 	public void setC_ServiceLevel_ID (int C_ServiceLevel_ID)
 	{
-		if (C_ServiceLevel_ID < 1) 
+		if (C_ServiceLevel_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_ServiceLevel_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_ServiceLevel_ID, Integer.valueOf(C_ServiceLevel_ID));
 	}
 
 	/** Get Service Level.
 		@return Product Revenue Recognition Service Level 
 	  */
-	public int getC_ServiceLevel_ID () 
+	public int getC_ServiceLevel_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ServiceLevel_ID);
 		if (ii == null)
@@ -130,7 +142,8 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	}
 
 	/** Set C_ServiceLevel_UU.
-		@param C_ServiceLevel_UU C_ServiceLevel_UU	  */
+		@param C_ServiceLevel_UU C_ServiceLevel_UU
+	*/
 	public void setC_ServiceLevel_UU (String C_ServiceLevel_UU)
 	{
 		set_Value (COLUMNNAME_C_ServiceLevel_UU, C_ServiceLevel_UU);
@@ -138,15 +151,14 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 
 	/** Get C_ServiceLevel_UU.
 		@return C_ServiceLevel_UU	  */
-	public String getC_ServiceLevel_UU () 
+	public String getC_ServiceLevel_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_ServiceLevel_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -155,7 +167,7 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -175,21 +187,20 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -198,9 +209,8 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -209,7 +219,7 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -222,7 +232,8 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -230,7 +241,7 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -243,9 +254,8 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	}
 
 	/** Set Quantity Invoiced.
-		@param ServiceLevelInvoiced 
-		Quantity of product or service invoiced
-	  */
+		@param ServiceLevelInvoiced Quantity of product or service invoiced
+	*/
 	public void setServiceLevelInvoiced (BigDecimal ServiceLevelInvoiced)
 	{
 		set_ValueNoCheck (COLUMNNAME_ServiceLevelInvoiced, ServiceLevelInvoiced);
@@ -254,7 +264,7 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	/** Get Quantity Invoiced.
 		@return Quantity of product or service invoiced
 	  */
-	public BigDecimal getServiceLevelInvoiced () 
+	public BigDecimal getServiceLevelInvoiced()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ServiceLevelInvoiced);
 		if (bd == null)
@@ -263,9 +273,8 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	}
 
 	/** Set Quantity Provided.
-		@param ServiceLevelProvided 
-		Quantity of service or product provided
-	  */
+		@param ServiceLevelProvided Quantity of service or product provided
+	*/
 	public void setServiceLevelProvided (BigDecimal ServiceLevelProvided)
 	{
 		set_ValueNoCheck (COLUMNNAME_ServiceLevelProvided, ServiceLevelProvided);
@@ -274,7 +283,7 @@ public class X_C_ServiceLevel extends PO implements I_C_ServiceLevel, I_Persiste
 	/** Get Quantity Provided.
 		@return Quantity of service or product provided
 	  */
-	public BigDecimal getServiceLevelProvided () 
+	public BigDecimal getServiceLevelProvided()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ServiceLevelProvided);
 		if (bd == null)

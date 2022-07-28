@@ -77,6 +77,10 @@ public class MCommissionAmt extends X_C_CommissionAmt
 		super(ctx, rs, trxName);
 	}	//	MCommissionAmt
 
+	public MCommissionAmt(Properties ctx, int C_CommissionAmt_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_CommissionAmt_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * 	Get Details
 	 *	@return array of details

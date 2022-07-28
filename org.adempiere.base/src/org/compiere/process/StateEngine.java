@@ -221,7 +221,7 @@ public class StateEngine
 
 
 	/**************************************************************************
-	 * 	Start: not started -> running
+	 * 	Start: not started -&gt; running
 	 *	@return true if set to running
 	 */
 	public boolean start()
@@ -242,7 +242,7 @@ public class StateEngine
 	}	//	start
 	
 	/**
-	 * 	Resume: suspended -> running
+	 * 	Resume: suspended -&gt; running
 	 *	@return true if set to sunning
 	 */
 	public boolean resume()	//	raises CannotResume, NotRunning, NotSuspended
@@ -263,7 +263,7 @@ public class StateEngine
 	}	//	resume
 
 	/**
-	 * 	Suspend: running -> suspended
+	 * 	Suspend: running -&gt; suspended
 	 *	@return true if suspended
 	 */
 	public boolean suspend()	//	raises CannotSuspend, NotRunning, AlreadySuspended
@@ -284,7 +284,7 @@ public class StateEngine
 	}	//	suspend
 
 	/**
-	 * 	Complete: running -> completed
+	 * 	Complete: running -&gt; completed
 	 *	@return true if set to completed
 	 */
 	public boolean complete()
@@ -305,7 +305,7 @@ public class StateEngine
 	}	//	complete
 	
 	/**
-	 * 	Abort: open -> aborted
+	 * 	Abort: open -&gt; aborted
 	 *	@return true if set to aborted
 	 */
 	public boolean abort()	//	raises CannotStop, NotRunning
@@ -326,7 +326,7 @@ public class StateEngine
 	}	//	abort
 	
 	/**
-	 * 	Terminate: open -> terminated
+	 * 	Terminate: open -&gt; terminated
 	 *	@return true if set to terminated
 	 */
 	public boolean terminate()	//	raises CannotStop, NotRunning

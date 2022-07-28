@@ -45,7 +45,7 @@ import org.idempiere.cache.IntPOCopyCache;
  * 	@author 	Jorg Janke
  *  @author victor.perez@e-evolution.com, e-Evolution
  * 	<li>BF [ 2011567 ] Implement Background Image for Document printed 
- * 	<li>http://sourceforge.net/tracker/index.php?func=detail&aid=2011567&group_id=176962&atid=879335
+ * 	<li>https://sourceforge.net/p/adempiere/feature-requests/477/
  * 	@version 	$Id: MPrintTableFormat.java,v 1.3 2006/07/30 00:53:02 jjanke Exp $
  */
 public class MPrintTableFormat extends X_AD_PrintTableFormat implements ImmutablePOSupport
@@ -66,7 +66,6 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		super (ctx, AD_PrintTableFormat_ID, trxName);
 		if (AD_PrintTableFormat_ID == 0)
 		{
-		//	setName (null);
 			setIsDefault (false);
 			setIsPaintHeaderLines (true);	// Y
 			setIsPaintBoundaryLines (false);

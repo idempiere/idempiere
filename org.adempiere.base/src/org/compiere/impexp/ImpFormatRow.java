@@ -37,7 +37,7 @@ import org.compiere.util.Util;
  *
  *  @author Jorg Janke
  *  @author Trifon Trifonov, Catura AG (www.catura.de)
- *				<li>FR [ 3010957 ] Custom Separator Character, http://sourceforge.net/tracker/?func=detail&aid=3010957&group_id=176962&atid=879335 </li>
+ *				<li>FR [ 3010957 ] Custom Separator Character, https://sourceforge.net/p/adempiere/feature-requests/975/ </li>
  *  @version $Id: ImpFormatRow.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  *  
  *  globalqss: integrate Teo Sarca bug fix [ 1623817 ] Minor bug on importing calendar date
@@ -180,7 +180,7 @@ public final class ImpFormatRow
 
 	/**
 	 *	Name
-	 *  @param Name name
+	 *  @param name name
 	 */
 	public void setName (String name)
 	{

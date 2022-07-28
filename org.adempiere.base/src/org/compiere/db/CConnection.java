@@ -34,7 +34,7 @@ import org.compiere.util.Ini;
  *  Adempiere Connection Descriptor
  *
  *  @author     Jorg Janke
- *  @author     Marek Mosiewicz<marek.mosiewicz@jotel.com.pl> - support for RMI over HTTP
+ *  @author     Marek Mosiewicz&lt;marek.mosiewicz@jotel.com.pl&gt; - support for RMI over HTTP
  *  @version    $Id: CConnection.java,v 1.5 2006/07/30 00:55:13 jjanke Exp $
  */
 public class CConnection implements Serializable, Cloneable

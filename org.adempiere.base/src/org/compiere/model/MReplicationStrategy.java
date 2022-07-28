@@ -27,9 +27,9 @@ import org.compiere.util.CLogger;
  * @author Trifon N. Trifonov
  * @author victor.perez@e-evolution.com, e-Evolution
  * <li> BF2875989 Deactivate replication records are include to replication
- * <li> https://sourceforge.net/tracker/?func=detail&aid=2875989&group_id=176962&atid=879332
- * <li> BF2947615 The document recplicacion not working
- * <li> https://sourceforge.net/tracker/?func=detail&aid=2947615&group_id=176962&atid=879332
+ * <li> https://sourceforge.net/p/adempiere/bugs/2167/
+ * <li> BF2947615 The document replication not working
+ * <li> https://sourceforge.net/p/adempiere/bugs/2167/
  * <li> IDEMPIERE-218 Replication not working in ZK
  * <li> http://jira.idempiere.com/browse/IDEMPIERE-218
  */

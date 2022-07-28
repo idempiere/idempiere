@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PasswordRule
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_PasswordRule")
 public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persistent 
 {
@@ -31,12 +31,31 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_PasswordRule (Properties ctx, int AD_PasswordRule_ID, String trxName)
     {
       super (ctx, AD_PasswordRule_ID, trxName);
+      /** if (AD_PasswordRule_ID == 0)
+        {
+			setAD_PasswordRule_ID (0);
+			setIsDictMatchBackwards (false);
+// N
+			setIsUserNameRule (false);
+// N
+			setIsUsingDictionary (false);
+// N
+			setIsWhitespace (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PasswordRule (Properties ctx, int AD_PasswordRule_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PasswordRule_ID, trxName, virtualColumns);
       /** if (AD_PasswordRule_ID == 0)
         {
 			setAD_PasswordRule_ID (0);
@@ -81,18 +100,19 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
     }
 
 	/** Set Password Policies.
-		@param AD_PasswordRule_ID Password Policies	  */
+		@param AD_PasswordRule_ID Password Policies
+	*/
 	public void setAD_PasswordRule_ID (int AD_PasswordRule_ID)
 	{
-		if (AD_PasswordRule_ID < 1) 
+		if (AD_PasswordRule_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PasswordRule_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PasswordRule_ID, Integer.valueOf(AD_PasswordRule_ID));
 	}
 
 	/** Get Password Policies.
 		@return Password Policies	  */
-	public int getAD_PasswordRule_ID () 
+	public int getAD_PasswordRule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PasswordRule_ID);
 		if (ii == null)
@@ -101,7 +121,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set AD_PasswordRule_UU.
-		@param AD_PasswordRule_UU AD_PasswordRule_UU	  */
+		@param AD_PasswordRule_UU AD_PasswordRule_UU
+	*/
 	public void setAD_PasswordRule_UU (String AD_PasswordRule_UU)
 	{
 		set_Value (COLUMNNAME_AD_PasswordRule_UU, AD_PasswordRule_UU);
@@ -109,15 +130,14 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 
 	/** Get AD_PasswordRule_UU.
 		@return AD_PasswordRule_UU	  */
-	public String getAD_PasswordRule_UU () 
+	public String getAD_PasswordRule_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_PasswordRule_UU);
 	}
 
 	/** Set Alphabetical Character.
-		@param AlphabeticalCharacter 
-		Require at least # alphabetical in passwords
-	  */
+		@param AlphabeticalCharacter Require at least # alphabetical in passwords
+	*/
 	public void setAlphabeticalCharacter (int AlphabeticalCharacter)
 	{
 		set_Value (COLUMNNAME_AlphabeticalCharacter, Integer.valueOf(AlphabeticalCharacter));
@@ -126,7 +146,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Alphabetical Character.
 		@return Require at least # alphabetical in passwords
 	  */
-	public int getAlphabeticalCharacter () 
+	public int getAlphabeticalCharacter()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AlphabeticalCharacter);
 		if (ii == null)
@@ -135,9 +155,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Alphabetical Sequence.
-		@param AlphabeticalSequence 
-		Lenght of alphabetical sequence to validate
-	  */
+		@param AlphabeticalSequence Lenght of alphabetical sequence to validate
+	*/
 	public void setAlphabeticalSequence (int AlphabeticalSequence)
 	{
 		set_Value (COLUMNNAME_AlphabeticalSequence, Integer.valueOf(AlphabeticalSequence));
@@ -146,7 +165,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Alphabetical Sequence.
 		@return Lenght of alphabetical sequence to validate
 	  */
-	public int getAlphabeticalSequence () 
+	public int getAlphabeticalSequence()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AlphabeticalSequence);
 		if (ii == null)
@@ -155,9 +174,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Days Reuse Password.
-		@param Days_Reuse_Password 
-		Define number of day can reuser password
-	  */
+		@param Days_Reuse_Password Define number of day can reuser password
+	*/
 	public void setDays_Reuse_Password (int Days_Reuse_Password)
 	{
 		set_Value (COLUMNNAME_Days_Reuse_Password, Integer.valueOf(Days_Reuse_Password));
@@ -166,7 +184,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Days Reuse Password.
 		@return Define number of day can reuser password
 	  */
-	public int getDays_Reuse_Password () 
+	public int getDays_Reuse_Password()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Days_Reuse_Password);
 		if (ii == null)
@@ -175,9 +193,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Digit Character.
-		@param DigitCharacter 
-		Require at least # digit in passwords
-	  */
+		@param DigitCharacter Require at least # digit in passwords
+	*/
 	public void setDigitCharacter (int DigitCharacter)
 	{
 		set_Value (COLUMNNAME_DigitCharacter, Integer.valueOf(DigitCharacter));
@@ -186,7 +203,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Digit Character.
 		@return Require at least # digit in passwords
 	  */
-	public int getDigitCharacter () 
+	public int getDigitCharacter()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DigitCharacter);
 		if (ii == null)
@@ -195,9 +212,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Match Backwards of Dictionary.
-		@param IsDictMatchBackwards 
-		Match dictionary words backwards
-	  */
+		@param IsDictMatchBackwards Match dictionary words backwards
+	*/
 	public void setIsDictMatchBackwards (boolean IsDictMatchBackwards)
 	{
 		set_Value (COLUMNNAME_IsDictMatchBackwards, Boolean.valueOf(IsDictMatchBackwards));
@@ -206,7 +222,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Match Backwards of Dictionary.
 		@return Match dictionary words backwards
 	  */
-	public boolean isDictMatchBackwards () 
+	public boolean isDictMatchBackwards()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDictMatchBackwards);
 		if (oo != null) 
@@ -219,18 +235,17 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set User Name Rule.
-		@param IsUserNameRule 
-		Validate the password doesn't contain user name (ignore case and match backwards)
-	  */
+		@param IsUserNameRule Validate the password doesn&#039;t contain user name (ignore case and match backwards)
+	*/
 	public void setIsUserNameRule (boolean IsUserNameRule)
 	{
 		set_Value (COLUMNNAME_IsUserNameRule, Boolean.valueOf(IsUserNameRule));
 	}
 
 	/** Get User Name Rule.
-		@return Validate the password doesn't contain user name (ignore case and match backwards)
+		@return Validate the password doesn&#039;t contain user name (ignore case and match backwards)
 	  */
-	public boolean isUserNameRule () 
+	public boolean isUserNameRule()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUserNameRule);
 		if (oo != null) 
@@ -243,7 +258,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Using Dictionary.
-		@param IsUsingDictionary Using Dictionary	  */
+		@param IsUsingDictionary Using Dictionary
+	*/
 	public void setIsUsingDictionary (boolean IsUsingDictionary)
 	{
 		set_Value (COLUMNNAME_IsUsingDictionary, Boolean.valueOf(IsUsingDictionary));
@@ -251,7 +267,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 
 	/** Get Using Dictionary.
 		@return Using Dictionary	  */
-	public boolean isUsingDictionary () 
+	public boolean isUsingDictionary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUsingDictionary);
 		if (oo != null) 
@@ -264,9 +280,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Whitespace.
-		@param IsWhitespace 
-		Whitespace validation
-	  */
+		@param IsWhitespace Whitespace validation
+	*/
 	public void setIsWhitespace (boolean IsWhitespace)
 	{
 		set_Value (COLUMNNAME_IsWhitespace, Boolean.valueOf(IsWhitespace));
@@ -275,7 +290,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Whitespace.
 		@return Whitespace validation
 	  */
-	public boolean isWhitespace () 
+	public boolean isWhitespace()
 	{
 		Object oo = get_Value(COLUMNNAME_IsWhitespace);
 		if (oo != null) 
@@ -288,9 +303,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Lowercase Character.
-		@param LowercaseCharacter 
-		Require at least # lower case char
-	  */
+		@param LowercaseCharacter Require at least # lower case char
+	*/
 	public void setLowercaseCharacter (int LowercaseCharacter)
 	{
 		set_Value (COLUMNNAME_LowercaseCharacter, Integer.valueOf(LowercaseCharacter));
@@ -299,7 +313,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Lowercase Character.
 		@return Require at least # lower case char
 	  */
-	public int getLowercaseCharacter () 
+	public int getLowercaseCharacter()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LowercaseCharacter);
 		if (ii == null)
@@ -308,9 +322,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Maximum Length.
-		@param MaxLength 
-		Maximum Length of Data
-	  */
+		@param MaxLength Maximum Length of Data
+	*/
 	public void setMaxLength (int MaxLength)
 	{
 		set_Value (COLUMNNAME_MaxLength, Integer.valueOf(MaxLength));
@@ -319,7 +332,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Maximum Length.
 		@return Maximum Length of Data
 	  */
-	public int getMaxLength () 
+	public int getMaxLength()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MaxLength);
 		if (ii == null)
@@ -328,7 +341,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Minimum Length.
-		@param MinLength Minimum Length	  */
+		@param MinLength Minimum Length
+	*/
 	public void setMinLength (int MinLength)
 	{
 		set_Value (COLUMNNAME_MinLength, Integer.valueOf(MinLength));
@@ -336,7 +350,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 
 	/** Get Minimum Length.
 		@return Minimum Length	  */
-	public int getMinLength () 
+	public int getMinLength()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MinLength);
 		if (ii == null)
@@ -345,9 +359,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -356,7 +369,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -370,9 +383,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
     }
 
 	/** Set Non Alpha Numeric Character.
-		@param NonAlphaNumericCharacter 
-		Require at least # non-alphanumeric char
-	  */
+		@param NonAlphaNumericCharacter Require at least # non-alphanumeric char
+	*/
 	public void setNonAlphaNumericCharacter (int NonAlphaNumericCharacter)
 	{
 		set_Value (COLUMNNAME_NonAlphaNumericCharacter, Integer.valueOf(NonAlphaNumericCharacter));
@@ -381,7 +393,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Non Alpha Numeric Character.
 		@return Require at least # non-alphanumeric char
 	  */
-	public int getNonAlphaNumericCharacter () 
+	public int getNonAlphaNumericCharacter()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_NonAlphaNumericCharacter);
 		if (ii == null)
@@ -390,9 +402,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Numerical Sequence.
-		@param NumericalSequence 
-		Length of numerical sequence to validate
-	  */
+		@param NumericalSequence Length of numerical sequence to validate
+	*/
 	public void setNumericalSequence (int NumericalSequence)
 	{
 		set_Value (COLUMNNAME_NumericalSequence, Integer.valueOf(NumericalSequence));
@@ -401,7 +412,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Numerical Sequence.
 		@return Length of numerical sequence to validate
 	  */
-	public int getNumericalSequence () 
+	public int getNumericalSequence()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_NumericalSequence);
 		if (ii == null)
@@ -410,7 +421,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Path Dictionary.
-		@param PathDictionary Path Dictionary	  */
+		@param PathDictionary Path Dictionary
+	*/
 	public void setPathDictionary (String PathDictionary)
 	{
 		set_Value (COLUMNNAME_PathDictionary, PathDictionary);
@@ -418,15 +430,14 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 
 	/** Get Path Dictionary.
 		@return Path Dictionary	  */
-	public String getPathDictionary () 
+	public String getPathDictionary()
 	{
 		return (String)get_Value(COLUMNNAME_PathDictionary);
 	}
 
 	/** Set QWERTY Sequence.
-		@param QWERTYSequence 
-		Lenght of QWERTY sequences to validate
-	  */
+		@param QWERTYSequence Lenght of QWERTY sequences to validate
+	*/
 	public void setQWERTYSequence (int QWERTYSequence)
 	{
 		set_Value (COLUMNNAME_QWERTYSequence, Integer.valueOf(QWERTYSequence));
@@ -435,7 +446,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get QWERTY Sequence.
 		@return Lenght of QWERTY sequences to validate
 	  */
-	public int getQWERTYSequence () 
+	public int getQWERTYSequence()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_QWERTYSequence);
 		if (ii == null)
@@ -444,9 +455,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Repeat Character Regex.
-		@param RepeatCharacterRegex 
-		Length of repeated characters to validate
-	  */
+		@param RepeatCharacterRegex Length of repeated characters to validate
+	*/
 	public void setRepeatCharacterRegex (int RepeatCharacterRegex)
 	{
 		set_Value (COLUMNNAME_RepeatCharacterRegex, Integer.valueOf(RepeatCharacterRegex));
@@ -455,7 +465,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Repeat Character Regex.
 		@return Length of repeated characters to validate
 	  */
-	public int getRepeatCharacterRegex () 
+	public int getRepeatCharacterRegex()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_RepeatCharacterRegex);
 		if (ii == null)
@@ -464,9 +474,8 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Uppercase Character.
-		@param UppercaseCharacter 
-		Require at least # upper case char
-	  */
+		@param UppercaseCharacter Require at least # upper case char
+	*/
 	public void setUppercaseCharacter (int UppercaseCharacter)
 	{
 		set_Value (COLUMNNAME_UppercaseCharacter, Integer.valueOf(UppercaseCharacter));
@@ -475,7 +484,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/** Get Uppercase Character.
 		@return Require at least # upper case char
 	  */
-	public int getUppercaseCharacter () 
+	public int getUppercaseCharacter()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_UppercaseCharacter);
 		if (ii == null)

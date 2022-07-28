@@ -62,7 +62,7 @@ import org.zkoss.zul.Vbox;
 
 
 /**
- *	Schedule - Resource availability & assigment.
+ *	Schedule - Resource availability and assigment.
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: InfoSchedule.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
@@ -103,7 +103,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	 *  Constructor
 	 *  @param mAssignment optional assignment
 	 *  @param createNew if true, allows to create new assignments
-	 *  @param listener
+	 *  @param parent
+	 *  @param callback
 	 */
 	public InfoSchedule (MResourceAssignment mAssignment, boolean createNew, Component parent, Callback<MResourceAssignment> callback)
 	{
@@ -432,7 +433,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	 * 	Callback.
 	 * 	Called from WSchedule after WAssignmentDialog finished
 	 * 	@param assignment New/Changed Assignment
-	 * @param b 
+	 *  @param createNew
+	 *  @param cancelled
 	 */
 	public void mAssignmentCallback (MResourceAssignment assignment, boolean createNew, boolean cancelled)
 	{
@@ -658,21 +660,4 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			mask.detach();
 		}
 	}
-	
-	/**
-SELECT o.DocumentNo, ol.Line, ol.Description
-FROM C_OrderLine ol, C_Order o
-WHERE ol.S_ResourceAssignment_ID=1
-  AND ol.C_Order_ID=o.C_Order_ID
-UNION
-SELECT i.DocumentNo, il.Line, il.Description
-FROM C_InvoiceLine il, C_Invoice i
-WHERE il.S_ResourceAssignment_ID=1
-  AND il.C_Invoice_ID=i.C_Invoice_ID
-UNION
-SELECT e.DocumentNo, el.Line, el.Description
-FROM S_TimeExpenseLine el, S_TimeExpense e
-WHERE el.S_ResourceAssignment_ID=1
-  AND el.S_TimeExpense_ID=el.S_TimeExpense_ID
-	 */
 }	//	InfoSchedule

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PeriodControl
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_PeriodControl")
 public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persistent 
 {
@@ -31,12 +31,26 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_PeriodControl (Properties ctx, int C_PeriodControl_ID, String trxName)
     {
       super (ctx, C_PeriodControl_ID, trxName);
+      /** if (C_PeriodControl_ID == 0)
+        {
+			setC_PeriodControl_ID (0);
+			setC_Period_ID (0);
+			setDocBaseType (null);
+			setPeriodAction (null);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PeriodControl (Properties ctx, int C_PeriodControl_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PeriodControl_ID, trxName, virtualColumns);
       /** if (C_PeriodControl_ID == 0)
         {
 			setC_PeriodControl_ID (0);
@@ -76,18 +90,19 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
     }
 
 	/** Set Period Control.
-		@param C_PeriodControl_ID Period Control	  */
+		@param C_PeriodControl_ID Period Control
+	*/
 	public void setC_PeriodControl_ID (int C_PeriodControl_ID)
 	{
-		if (C_PeriodControl_ID < 1) 
+		if (C_PeriodControl_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_PeriodControl_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_PeriodControl_ID, Integer.valueOf(C_PeriodControl_ID));
 	}
 
 	/** Get Period Control.
 		@return Period Control	  */
-	public int getC_PeriodControl_ID () 
+	public int getC_PeriodControl_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_PeriodControl_ID);
 		if (ii == null)
@@ -104,7 +119,8 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
     }
 
 	/** Set C_PeriodControl_UU.
-		@param C_PeriodControl_UU C_PeriodControl_UU	  */
+		@param C_PeriodControl_UU C_PeriodControl_UU
+	*/
 	public void setC_PeriodControl_UU (String C_PeriodControl_UU)
 	{
 		set_Value (COLUMNNAME_C_PeriodControl_UU, C_PeriodControl_UU);
@@ -112,7 +128,7 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 
 	/** Get C_PeriodControl_UU.
 		@return C_PeriodControl_UU	  */
-	public String getC_PeriodControl_UU () 
+	public String getC_PeriodControl_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_PeriodControl_UU);
 	}
@@ -124,21 +140,20 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	}
 
 	/** Set Period.
-		@param C_Period_ID 
-		Period of the Calendar
-	  */
+		@param C_Period_ID Period of the Calendar
+	*/
 	public void setC_Period_ID (int C_Period_ID)
 	{
-		if (C_Period_ID < 1) 
+		if (C_Period_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Period_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
 	}
 
 	/** Get Period.
 		@return Period of the Calendar
 	  */
-	public int getC_Period_ID () 
+	public int getC_Period_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Period_ID);
 		if (ii == null)
@@ -213,9 +228,8 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	/** Sales Order = SOO */
 	public static final String DOCBASETYPE_SalesOrder = "SOO";
 	/** Set Document BaseType.
-		@param DocBaseType 
-		Logical type of document
-	  */
+		@param DocBaseType Logical type of document
+	*/
 	public void setDocBaseType (String DocBaseType)
 	{
 
@@ -225,7 +239,7 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	/** Get Document BaseType.
 		@return Logical type of document
 	  */
-	public String getDocBaseType () 
+	public String getDocBaseType()
 	{
 		return (String)get_Value(COLUMNNAME_DocBaseType);
 	}
@@ -234,16 +248,15 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	public static final int PERIODACTION_AD_Reference_ID=176;
 	/** Close Period = C */
 	public static final String PERIODACTION_ClosePeriod = "C";
-	/** <No Action> = N */
+	/** &lt;No Action&gt; = N */
 	public static final String PERIODACTION_NoAction = "N";
 	/** Open Period = O */
 	public static final String PERIODACTION_OpenPeriod = "O";
 	/** Permanently Close Period = P */
 	public static final String PERIODACTION_PermanentlyClosePeriod = "P";
 	/** Set Period Action.
-		@param PeriodAction 
-		Action taken for this period
-	  */
+		@param PeriodAction Action taken for this period
+	*/
 	public void setPeriodAction (String PeriodAction)
 	{
 
@@ -253,7 +266,7 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	/** Get Period Action.
 		@return Action taken for this period
 	  */
-	public String getPeriodAction () 
+	public String getPeriodAction()
 	{
 		return (String)get_Value(COLUMNNAME_PeriodAction);
 	}
@@ -269,9 +282,8 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	/** Permanently closed = P */
 	public static final String PERIODSTATUS_PermanentlyClosed = "P";
 	/** Set Period Status.
-		@param PeriodStatus 
-		Current state of this period
-	  */
+		@param PeriodStatus Current state of this period
+	*/
 	public void setPeriodStatus (String PeriodStatus)
 	{
 
@@ -281,13 +293,14 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	/** Get Period Status.
 		@return Current state of this period
 	  */
-	public String getPeriodStatus () 
+	public String getPeriodStatus()
 	{
 		return (String)get_Value(COLUMNNAME_PeriodStatus);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -295,7 +308,7 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

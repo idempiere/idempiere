@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for C_RfQResponseLine
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQResponseLine")
 public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Persistent 
 {
@@ -31,12 +31,26 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLine (Properties ctx, int C_RfQResponseLine_ID, String trxName)
     {
       super (ctx, C_RfQResponseLine_ID, trxName);
+      /** if (C_RfQResponseLine_ID == 0)
+        {
+			setC_RfQLine_ID (0);
+			setC_RfQResponse_ID (0);
+			setC_RfQResponseLine_ID (0);
+			setIsSelectedWinner (false);
+			setIsSelfService (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RfQResponseLine (Properties ctx, int C_RfQResponseLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RfQResponseLine_ID, trxName, virtualColumns);
       /** if (C_RfQResponseLine_ID == 0)
         {
 			setC_RfQLine_ID (0);
@@ -82,21 +96,20 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	}
 
 	/** Set RfQ Line.
-		@param C_RfQLine_ID 
-		Request for Quotation Line
-	  */
+		@param C_RfQLine_ID Request for Quotation Line
+	*/
 	public void setC_RfQLine_ID (int C_RfQLine_ID)
 	{
-		if (C_RfQLine_ID < 1) 
+		if (C_RfQLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RfQLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RfQLine_ID, Integer.valueOf(C_RfQLine_ID));
 	}
 
 	/** Get RfQ Line.
 		@return Request for Quotation Line
 	  */
-	public int getC_RfQLine_ID () 
+	public int getC_RfQLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQLine_ID);
 		if (ii == null)
@@ -111,21 +124,20 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	}
 
 	/** Set RfQ Response.
-		@param C_RfQResponse_ID 
-		Request for Quotation Response from a potential Vendor
-	  */
+		@param C_RfQResponse_ID Request for Quotation Response from a potential Vendor
+	*/
 	public void setC_RfQResponse_ID (int C_RfQResponse_ID)
 	{
-		if (C_RfQResponse_ID < 1) 
+		if (C_RfQResponse_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RfQResponse_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RfQResponse_ID, Integer.valueOf(C_RfQResponse_ID));
 	}
 
 	/** Get RfQ Response.
 		@return Request for Quotation Response from a potential Vendor
 	  */
-	public int getC_RfQResponse_ID () 
+	public int getC_RfQResponse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQResponse_ID);
 		if (ii == null)
@@ -134,21 +146,20 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	}
 
 	/** Set RfQ Response Line.
-		@param C_RfQResponseLine_ID 
-		Request for Quotation Response Line
-	  */
+		@param C_RfQResponseLine_ID Request for Quotation Response Line
+	*/
 	public void setC_RfQResponseLine_ID (int C_RfQResponseLine_ID)
 	{
-		if (C_RfQResponseLine_ID < 1) 
+		if (C_RfQResponseLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RfQResponseLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RfQResponseLine_ID, Integer.valueOf(C_RfQResponseLine_ID));
 	}
 
 	/** Get RfQ Response Line.
 		@return Request for Quotation Response Line
 	  */
-	public int getC_RfQResponseLine_ID () 
+	public int getC_RfQResponseLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQResponseLine_ID);
 		if (ii == null)
@@ -157,7 +168,8 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	}
 
 	/** Set C_RfQResponseLine_UU.
-		@param C_RfQResponseLine_UU C_RfQResponseLine_UU	  */
+		@param C_RfQResponseLine_UU C_RfQResponseLine_UU
+	*/
 	public void setC_RfQResponseLine_UU (String C_RfQResponseLine_UU)
 	{
 		set_Value (COLUMNNAME_C_RfQResponseLine_UU, C_RfQResponseLine_UU);
@@ -165,15 +177,14 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 
 	/** Get C_RfQResponseLine_UU.
 		@return C_RfQResponseLine_UU	  */
-	public String getC_RfQResponseLine_UU () 
+	public String getC_RfQResponseLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_RfQResponseLine_UU);
 	}
 
 	/** Set Work Complete.
-		@param DateWorkComplete 
-		Date when work is (planned to be) complete
-	  */
+		@param DateWorkComplete Date when work is (planned to be) complete
+	*/
 	public void setDateWorkComplete (Timestamp DateWorkComplete)
 	{
 		set_Value (COLUMNNAME_DateWorkComplete, DateWorkComplete);
@@ -182,15 +193,14 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	/** Get Work Complete.
 		@return Date when work is (planned to be) complete
 	  */
-	public Timestamp getDateWorkComplete () 
+	public Timestamp getDateWorkComplete()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateWorkComplete);
 	}
 
 	/** Set Work Start.
-		@param DateWorkStart 
-		Date when work is (planned to be) started
-	  */
+		@param DateWorkStart Date when work is (planned to be) started
+	*/
 	public void setDateWorkStart (Timestamp DateWorkStart)
 	{
 		set_Value (COLUMNNAME_DateWorkStart, DateWorkStart);
@@ -199,15 +209,14 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	/** Get Work Start.
 		@return Date when work is (planned to be) started
 	  */
-	public Timestamp getDateWorkStart () 
+	public Timestamp getDateWorkStart()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateWorkStart);
 	}
 
 	/** Set Delivery Days.
-		@param DeliveryDays 
-		Number of Days (planned) until Delivery
-	  */
+		@param DeliveryDays Number of Days (planned) until Delivery
+	*/
 	public void setDeliveryDays (int DeliveryDays)
 	{
 		set_Value (COLUMNNAME_DeliveryDays, Integer.valueOf(DeliveryDays));
@@ -216,7 +225,7 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	/** Get Delivery Days.
 		@return Number of Days (planned) until Delivery
 	  */
-	public int getDeliveryDays () 
+	public int getDeliveryDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DeliveryDays);
 		if (ii == null)
@@ -225,9 +234,8 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -236,15 +244,14 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -253,15 +260,14 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Selected Winner.
-		@param IsSelectedWinner 
-		The response is the selected winner
-	  */
+		@param IsSelectedWinner The response is the selected winner
+	*/
 	public void setIsSelectedWinner (boolean IsSelectedWinner)
 	{
 		set_Value (COLUMNNAME_IsSelectedWinner, Boolean.valueOf(IsSelectedWinner));
@@ -270,7 +276,7 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	/** Get Selected Winner.
 		@return The response is the selected winner
 	  */
-	public boolean isSelectedWinner () 
+	public boolean isSelectedWinner()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelectedWinner);
 		if (oo != null) 
@@ -283,9 +289,8 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	}
 
 	/** Set Self-Service.
-		@param IsSelfService 
-		This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
+		@param IsSelfService This is a Self-Service entry or this entry can be changed via Self-Service
+	*/
 	public void setIsSelfService (boolean IsSelfService)
 	{
 		set_Value (COLUMNNAME_IsSelfService, Boolean.valueOf(IsSelfService));
@@ -294,7 +299,7 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 	/** Get Self-Service.
 		@return This is a Self-Service entry or this entry can be changed via Self-Service
 	  */
-	public boolean isSelfService () 
+	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
 		if (oo != null) 

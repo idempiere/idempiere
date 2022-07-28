@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CashPlan
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_CashPlan")
 public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent 
 {
@@ -34,12 +34,30 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CashPlan (Properties ctx, int C_CashPlan_ID, String trxName)
     {
       super (ctx, C_CashPlan_ID, trxName);
+      /** if (C_CashPlan_ID == 0)
+        {
+			setC_CashPlan_ID (0);
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+			setDocumentNo (null);
+			setGrandTotal (Env.ZERO);
+			setIsApproved (false);
+// @IsApproved@
+			setIsSOTrx (false);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CashPlan (Properties ctx, int C_CashPlan_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CashPlan_ID, trxName, virtualColumns);
       /** if (C_CashPlan_ID == 0)
         {
 			setC_CashPlan_ID (0);
@@ -83,21 +101,20 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
     }
 
 	/** Set Trx Organization.
-		@param AD_OrgTrx_ID 
-		Performing or initiating organization
-	  */
+		@param AD_OrgTrx_ID Performing or initiating organization
+	*/
 	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID)
 	{
-		if (AD_OrgTrx_ID < 1) 
+		if (AD_OrgTrx_ID < 1)
 			set_Value (COLUMNNAME_AD_OrgTrx_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_OrgTrx_ID, Integer.valueOf(AD_OrgTrx_ID));
 	}
 
 	/** Get Trx Organization.
 		@return Performing or initiating organization
 	  */
-	public int getAD_OrgTrx_ID () 
+	public int getAD_OrgTrx_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgTrx_ID);
 		if (ii == null)
@@ -112,21 +129,20 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	}
 
 	/** Set Activity.
-		@param C_Activity_ID 
-		Business Activity
-	  */
+		@param C_Activity_ID Business Activity
+	*/
 	public void setC_Activity_ID (int C_Activity_ID)
 	{
-		if (C_Activity_ID < 1) 
+		if (C_Activity_ID < 1)
 			set_Value (COLUMNNAME_C_Activity_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Activity_ID, Integer.valueOf(C_Activity_ID));
 	}
 
 	/** Get Activity.
 		@return Business Activity
 	  */
-	public int getC_Activity_ID () 
+	public int getC_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Activity_ID);
 		if (ii == null)
@@ -143,7 +159,8 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	/** Operational = O */
 	public static final String CASHFLOWTYPE_Operational = "O";
 	/** Set Cash Flow Type.
-		@param CashFlowType Cash Flow Type	  */
+		@param CashFlowType Cash Flow Type
+	*/
 	public void setCashFlowType (String CashFlowType)
 	{
 
@@ -152,7 +169,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 
 	/** Get Cash Flow Type.
 		@return Cash Flow Type	  */
-	public String getCashFlowType () 
+	public String getCashFlowType()
 	{
 		return (String)get_Value(COLUMNNAME_CashFlowType);
 	}
@@ -163,22 +180,21 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -193,21 +209,20 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	}
 
 	/** Set Campaign.
-		@param C_Campaign_ID 
-		Marketing Campaign
-	  */
+		@param C_Campaign_ID Marketing Campaign
+	*/
 	public void setC_Campaign_ID (int C_Campaign_ID)
 	{
-		if (C_Campaign_ID < 1) 
+		if (C_Campaign_ID < 1)
 			set_Value (COLUMNNAME_C_Campaign_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
 	}
 
 	/** Get Campaign.
 		@return Marketing Campaign
 	  */
-	public int getC_Campaign_ID () 
+	public int getC_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
 		if (ii == null)
@@ -216,18 +231,19 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	}
 
 	/** Set Cash Plan.
-		@param C_CashPlan_ID Cash Plan	  */
+		@param C_CashPlan_ID Cash Plan
+	*/
 	public void setC_CashPlan_ID (int C_CashPlan_ID)
 	{
-		if (C_CashPlan_ID < 1) 
+		if (C_CashPlan_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CashPlan_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CashPlan_ID, Integer.valueOf(C_CashPlan_ID));
 	}
 
 	/** Get Cash Plan.
 		@return Cash Plan	  */
-	public int getC_CashPlan_ID () 
+	public int getC_CashPlan_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CashPlan_ID);
 		if (ii == null)
@@ -236,7 +252,8 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	}
 
 	/** Set C_CashPlan_UU.
-		@param C_CashPlan_UU C_CashPlan_UU	  */
+		@param C_CashPlan_UU C_CashPlan_UU
+	*/
 	public void setC_CashPlan_UU (String C_CashPlan_UU)
 	{
 		set_Value (COLUMNNAME_C_CashPlan_UU, C_CashPlan_UU);
@@ -244,15 +261,14 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 
 	/** Get C_CashPlan_UU.
 		@return C_CashPlan_UU	  */
-	public String getC_CashPlan_UU () 
+	public String getC_CashPlan_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_CashPlan_UU);
 	}
 
 	/** Set Copy From.
-		@param CopyFrom 
-		Copy From Record
-	  */
+		@param CopyFrom Copy From Record
+	*/
 	public void setCopyFrom (String CopyFrom)
 	{
 		set_Value (COLUMNNAME_CopyFrom, CopyFrom);
@@ -261,7 +277,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	/** Get Copy From.
 		@return Copy From Record
 	  */
-	public String getCopyFrom () 
+	public String getCopyFrom()
 	{
 		return (String)get_Value(COLUMNNAME_CopyFrom);
 	}
@@ -273,21 +289,20 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_Value (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -296,9 +311,8 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	}
 
 	/** Set Document Date.
-		@param DateDoc 
-		Date of the Document
-	  */
+		@param DateDoc Date of the Document
+	*/
 	public void setDateDoc (Timestamp DateDoc)
 	{
 		set_Value (COLUMNNAME_DateDoc, DateDoc);
@@ -307,15 +321,14 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	/** Get Document Date.
 		@return Date of the Document
 	  */
-	public Timestamp getDateDoc () 
+	public Timestamp getDateDoc()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateDoc);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -324,15 +337,14 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -341,7 +353,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
@@ -355,7 +367,8 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
     }
 
 	/** Set Generate Periodic Plan.
-		@param GeneratePeriodic Generate Periodic Plan	  */
+		@param GeneratePeriodic Generate Periodic Plan
+	*/
 	public void setGeneratePeriodic (String GeneratePeriodic)
 	{
 		set_Value (COLUMNNAME_GeneratePeriodic, GeneratePeriodic);
@@ -363,15 +376,14 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 
 	/** Get Generate Periodic Plan.
 		@return Generate Periodic Plan	  */
-	public String getGeneratePeriodic () 
+	public String getGeneratePeriodic()
 	{
 		return (String)get_Value(COLUMNNAME_GeneratePeriodic);
 	}
 
 	/** Set Grand Total.
-		@param GrandTotal 
-		Total amount of document
-	  */
+		@param GrandTotal Total amount of document
+	*/
 	public void setGrandTotal (BigDecimal GrandTotal)
 	{
 		set_ValueNoCheck (COLUMNNAME_GrandTotal, GrandTotal);
@@ -380,7 +392,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	/** Get Grand Total.
 		@return Total amount of document
 	  */
-	public BigDecimal getGrandTotal () 
+	public BigDecimal getGrandTotal()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_GrandTotal);
 		if (bd == null)
@@ -389,9 +401,8 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	}
 
 	/** Set Approved.
-		@param IsApproved 
-		Indicates if this document requires approval
-	  */
+		@param IsApproved Indicates if this document requires approval
+	*/
 	public void setIsApproved (boolean IsApproved)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
@@ -400,7 +411,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	/** Get Approved.
 		@return Indicates if this document requires approval
 	  */
-	public boolean isApproved () 
+	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
 		if (oo != null) 
@@ -413,9 +424,8 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	}
 
 	/** Set Sales Transaction.
-		@param IsSOTrx 
-		This is a Sales Transaction
-	  */
+		@param IsSOTrx This is a Sales Transaction
+	*/
 	public void setIsSOTrx (boolean IsSOTrx)
 	{
 		set_Value (COLUMNNAME_IsSOTrx, Boolean.valueOf(IsSOTrx));
@@ -424,7 +434,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	/** Get Sales Transaction.
 		@return This is a Sales Transaction
 	  */
-	public boolean isSOTrx () 
+	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
 		if (oo != null) 
@@ -437,9 +447,8 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_ValueNoCheck (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -448,7 +457,7 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -467,21 +476,20 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	}
 
 	/** Set User Element List 1.
-		@param User1_ID 
-		User defined list element #1
-	  */
+		@param User1_ID User defined list element #1
+	*/
 	public void setUser1_ID (int User1_ID)
 	{
-		if (User1_ID < 1) 
+		if (User1_ID < 1)
 			set_Value (COLUMNNAME_User1_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_User1_ID, Integer.valueOf(User1_ID));
 	}
 
 	/** Get User Element List 1.
 		@return User defined list element #1
 	  */
-	public int getUser1_ID () 
+	public int getUser1_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_User1_ID);
 		if (ii == null)
@@ -496,21 +504,20 @@ public class X_C_CashPlan extends PO implements I_C_CashPlan, I_Persistent
 	}
 
 	/** Set User Element List 2.
-		@param User2_ID 
-		User defined list element #2
-	  */
+		@param User2_ID User defined list element #2
+	*/
 	public void setUser2_ID (int User2_ID)
 	{
-		if (User2_ID < 1) 
+		if (User2_ID < 1)
 			set_Value (COLUMNNAME_User2_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_User2_ID, Integer.valueOf(User2_ID));
 	}
 
 	/** Get User Element List 2.
 		@return User defined list element #2
 	  */
-	public int getUser2_ID () 
+	public int getUser2_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_User2_ID);
 		if (ii == null)

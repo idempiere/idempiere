@@ -137,12 +137,12 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         init();
     }
 
-    private static final String onComboSelectEchoScript = "var combo=zk('@combo').$();"
-    		+ "var panel=zk('@this').$();"
-    		+ "var comboitem=zk('@item').$();"
-    		+ "var popupheight=combo.getPopupNode_().offsetHeight;"
-    		+ "var evt = new zk.Event(panel, 'onComboSelectEcho', [comboitem.uuid, popupheight], {toServer: true});"
-    		+ "zAu.send(evt);";
+    private static final String onComboSelectEchoScript = "(function(){let combo=zk('@combo').$();"
+    		+ "let panel=zk('@this').$();"
+    		+ "let comboitem=zk('@item').$();"
+    		+ "let popupheight=combo.getPopupNode_().offsetHeight;"
+    		+ "let evt = new zk.Event(panel, 'onComboSelectEcho', [comboitem.uuid, popupheight], {toServer: true});"
+    		+ "zAu.send(evt);})()";
 	
     protected void init()
     {
@@ -267,16 +267,16 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
 				tree.getSelectedItem().focus();
 		});
 		this.insertBefore(moveItemBox, layout);
-		String script = "var w=zk.Widget.$('#" + moveItemBox.getUuid() + "'); ";
-		script += "var e=jq('#" + layout.getUuid() + "'); "; 
-		script += "w.setWidth(e.css('width')); ";
+		String script = "(function(){let w=zk.Widget.$('#" + moveItemBox.getUuid() + "'); ";
+		script += "let e=jq('#" + layout.getUuid() + "'); "; 
+		script += "w.setWidth(e.css('width'));})() ";
 		Clients.response(new AuScript(script));
 		ti.focus();
 	}
 
 	protected void addTreeItem(Treeitem treeItem)
     {
-        StringBuilder key = new StringBuilder(getLabel(treeItem)).append(".").append(treeItem.getAttribute("menu.type"));
+        StringBuilder key = new StringBuilder(getLabel(treeItem)).append(".").append(treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE));
         treeNodeItemMap.put(key.toString(), treeItem);
     }
 
@@ -331,7 +331,7 @@ public class TreeSearchPanel extends Panel implements EventListener<Event>, Tree
         	{
         		Treeitem treeItem = (Treeitem) value;
         		treeValues[i] = getLabel(treeItem);
-        		treeTypes[i]= String.valueOf(treeItem.getAttribute("menu.type")); 
+        		treeTypes[i]= String.valueOf(treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE)); 
         		treeDescription[i] = treeItem.getTooltiptext();
         		treeImages[i] = getImage(treeItem);
         		if ((treeImages[i] == null || treeImages[i].trim().length() == 0) && isFolder(treeItem))

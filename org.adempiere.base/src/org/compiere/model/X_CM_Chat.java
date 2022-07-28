@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_Chat
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="CM_Chat")
 public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent 
 {
@@ -31,12 +31,26 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_CM_Chat (Properties ctx, int CM_Chat_ID, String trxName)
     {
       super (ctx, CM_Chat_ID, trxName);
+      /** if (CM_Chat_ID == 0)
+        {
+			setAD_Table_ID (0);
+			setCM_Chat_ID (0);
+			setConfidentialType (null);
+			setDescription (null);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_CM_Chat (Properties ctx, int CM_Chat_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, CM_Chat_ID, trxName, virtualColumns);
       /** if (CM_Chat_ID == 0)
         {
 			setAD_Table_ID (0);
@@ -82,21 +96,20 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -105,21 +118,20 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 	}
 
 	/** Set Chat.
-		@param CM_Chat_ID 
-		Chat or discussion thread
-	  */
+		@param CM_Chat_ID Chat or discussion thread
+	*/
 	public void setCM_Chat_ID (int CM_Chat_ID)
 	{
-		if (CM_Chat_ID < 1) 
+		if (CM_Chat_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_CM_Chat_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_CM_Chat_ID, Integer.valueOf(CM_Chat_ID));
 	}
 
 	/** Get Chat.
 		@return Chat or discussion thread
 	  */
-	public int getCM_Chat_ID () 
+	public int getCM_Chat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CM_Chat_ID);
 		if (ii == null)
@@ -134,21 +146,20 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 	}
 
 	/** Set Chat Type.
-		@param CM_ChatType_ID 
-		Type of discussion / chat
-	  */
+		@param CM_ChatType_ID Type of discussion / chat
+	*/
 	public void setCM_ChatType_ID (int CM_ChatType_ID)
 	{
-		if (CM_ChatType_ID < 1) 
+		if (CM_ChatType_ID < 1)
 			set_Value (COLUMNNAME_CM_ChatType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_CM_ChatType_ID, Integer.valueOf(CM_ChatType_ID));
 	}
 
 	/** Get Chat Type.
 		@return Type of discussion / chat
 	  */
-	public int getCM_ChatType_ID () 
+	public int getCM_ChatType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CM_ChatType_ID);
 		if (ii == null)
@@ -157,7 +168,8 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 	}
 
 	/** Set CM_Chat_UU.
-		@param CM_Chat_UU CM_Chat_UU	  */
+		@param CM_Chat_UU CM_Chat_UU
+	*/
 	public void setCM_Chat_UU (String CM_Chat_UU)
 	{
 		set_Value (COLUMNNAME_CM_Chat_UU, CM_Chat_UU);
@@ -165,7 +177,7 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 
 	/** Get CM_Chat_UU.
 		@return CM_Chat_UU	  */
-	public String getCM_Chat_UU () 
+	public String getCM_Chat_UU()
 	{
 		return (String)get_Value(COLUMNNAME_CM_Chat_UU);
 	}
@@ -181,9 +193,8 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 	/** Private Information = P */
 	public static final String CONFIDENTIALTYPE_PrivateInformation = "P";
 	/** Set Confidentiality.
-		@param ConfidentialType 
-		Type of Confidentiality
-	  */
+		@param ConfidentialType Type of Confidentiality
+	*/
 	public void setConfidentialType (String ConfidentialType)
 	{
 
@@ -193,15 +204,14 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 	/** Get Confidentiality.
 		@return Type of Confidentiality
 	  */
-	public String getConfidentialType () 
+	public String getConfidentialType()
 	{
 		return (String)get_Value(COLUMNNAME_ConfidentialType);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -210,7 +220,7 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -232,9 +242,8 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 	/** Not moderated = N */
 	public static final String MODERATIONTYPE_NotModerated = "N";
 	/** Set Moderation Type.
-		@param ModerationType 
-		Type of moderation
-	  */
+		@param ModerationType Type of moderation
+	*/
 	public void setModerationType (String ModerationType)
 	{
 
@@ -244,27 +253,26 @@ public class X_CM_Chat extends PO implements I_CM_Chat, I_Persistent
 	/** Get Moderation Type.
 		@return Type of moderation
 	  */
-	public String getModerationType () 
+	public String getModerationType()
 	{
 		return (String)get_Value(COLUMNNAME_ModerationType);
 	}
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)

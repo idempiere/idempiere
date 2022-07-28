@@ -2,6 +2,7 @@ package org.adempiere.pipo2.handler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -129,7 +130,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 			if(pstm.executeUpdate()<0){
 				throw new SAXException();
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			throw new DBException(e);
 		} finally {
 			DB.close(pstm);

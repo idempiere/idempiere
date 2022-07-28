@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoProcess
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoProcess")
 public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persistent 
 {
@@ -31,12 +31,30 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_InfoProcess (Properties ctx, int AD_InfoProcess_ID, String trxName)
     {
       super (ctx, AD_InfoProcess_ID, trxName);
+      /** if (AD_InfoProcess_ID == 0)
+        {
+			setAD_InfoProcess_ID (0);
+			setAD_InfoProcess_UU (null);
+			setAD_Process_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setLayoutType (null);
+// B
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_InfoProcess WHERE AD_InfoWindow_ID=@AD_InfoWindow_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_InfoProcess (Properties ctx, int AD_InfoProcess_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_InfoProcess_ID, trxName, virtualColumns);
       /** if (AD_InfoProcess_ID == 0)
         {
 			setAD_InfoProcess_ID (0);
@@ -86,21 +104,20 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	}
 
 	/** Set Info Column.
-		@param AD_InfoColumn_ID 
-		Info Window Column
-	  */
+		@param AD_InfoColumn_ID Info Window Column
+	*/
 	public void setAD_InfoColumn_ID (int AD_InfoColumn_ID)
 	{
-		if (AD_InfoColumn_ID < 1) 
+		if (AD_InfoColumn_ID < 1)
 			set_Value (COLUMNNAME_AD_InfoColumn_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_InfoColumn_ID, Integer.valueOf(AD_InfoColumn_ID));
 	}
 
 	/** Get Info Column.
 		@return Info Window Column
 	  */
-	public int getAD_InfoColumn_ID () 
+	public int getAD_InfoColumn_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoColumn_ID);
 		if (ii == null)
@@ -109,18 +126,19 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	}
 
 	/** Set Info Process.
-		@param AD_InfoProcess_ID Info Process	  */
+		@param AD_InfoProcess_ID Info Process
+	*/
 	public void setAD_InfoProcess_ID (int AD_InfoProcess_ID)
 	{
-		if (AD_InfoProcess_ID < 1) 
+		if (AD_InfoProcess_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_InfoProcess_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_InfoProcess_ID, Integer.valueOf(AD_InfoProcess_ID));
 	}
 
 	/** Get Info Process.
 		@return Info Process	  */
-	public int getAD_InfoProcess_ID () 
+	public int getAD_InfoProcess_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoProcess_ID);
 		if (ii == null)
@@ -129,7 +147,8 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	}
 
 	/** Set AD_InfoProcess_UU.
-		@param AD_InfoProcess_UU AD_InfoProcess_UU	  */
+		@param AD_InfoProcess_UU AD_InfoProcess_UU
+	*/
 	public void setAD_InfoProcess_UU (String AD_InfoProcess_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_InfoProcess_UU, AD_InfoProcess_UU);
@@ -137,7 +156,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 
 	/** Get AD_InfoProcess_UU.
 		@return AD_InfoProcess_UU	  */
-	public String getAD_InfoProcess_UU () 
+	public String getAD_InfoProcess_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_InfoProcess_UU);
 	}
@@ -149,21 +168,20 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	}
 
 	/** Set Info Window.
-		@param AD_InfoWindow_ID 
-		Info and search/select Window
-	  */
+		@param AD_InfoWindow_ID Info and search/select Window
+	*/
 	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
 	{
-		if (AD_InfoWindow_ID < 1) 
+		if (AD_InfoWindow_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_InfoWindow_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
 	}
 
 	/** Get Info Window.
 		@return Info and search/select Window
 	  */
-	public int getAD_InfoWindow_ID () 
+	public int getAD_InfoWindow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
 		if (ii == null)
@@ -178,21 +196,20 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	}
 
 	/** Set Process.
-		@param AD_Process_ID 
-		Process or Report
-	  */
+		@param AD_Process_ID Process or Report
+	*/
 	public void setAD_Process_ID (int AD_Process_ID)
 	{
-		if (AD_Process_ID < 1) 
+		if (AD_Process_ID < 1)
 			set_Value (COLUMNNAME_AD_Process_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
 	}
 
 	/** Get Process.
 		@return Process or Report
 	  */
-	public int getAD_Process_ID () 
+	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
@@ -209,9 +226,8 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
     }
 
 	/** Set Display Logic.
-		@param DisplayLogic 
-		If the Field is displayed, the result determines if the field is actually displayed
-	  */
+		@param DisplayLogic If the Field is displayed, the result determines if the field is actually displayed
+	*/
 	public void setDisplayLogic (String DisplayLogic)
 	{
 		set_Value (COLUMNNAME_DisplayLogic, DisplayLogic);
@@ -220,7 +236,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/** Get Display Logic.
 		@return If the Field is displayed, the result determines if the field is actually displayed
 	  */
-	public String getDisplayLogic () 
+	public String getDisplayLogic()
 	{
 		return (String)get_Value(COLUMNNAME_DisplayLogic);
 	}
@@ -228,9 +244,8 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -240,15 +255,14 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Image URL.
-		@param ImageURL 
-		URL of  image
-	  */
+		@param ImageURL URL of  image
+	*/
 	public void setImageURL (String ImageURL)
 	{
 		set_Value (COLUMNNAME_ImageURL, ImageURL);
@@ -257,7 +271,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/** Get Image URL.
 		@return URL of  image
 	  */
-	public String getImageURL () 
+	public String getImageURL()
 	{
 		return (String)get_Value(COLUMNNAME_ImageURL);
 	}
@@ -271,9 +285,8 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/** Menu = M */
 	public static final String LAYOUTTYPE_Menu = "M";
 	/** Set LayoutType.
-		@param LayoutType 
-		Layout type of info process
-	  */
+		@param LayoutType Layout type of info process
+	*/
 	public void setLayoutType (String LayoutType)
 	{
 
@@ -283,15 +296,14 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/** Get LayoutType.
 		@return Layout type of info process
 	  */
-	public String getLayoutType () 
+	public String getLayoutType()
 	{
 		return (String)get_Value(COLUMNNAME_LayoutType);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -300,7 +312,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat;
 
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -58,8 +57,10 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	public static final String INFORMATION = "~./zul/img/msgbox/info-btn.png";
 	public static final String ERROR = "~./zul/img/msgbox/info-btn.png";
 
+	private boolean isAutoCloseAfterZoom = false;
+	
 	/**
-	 * @deprecated Should use {@link #ProcessInfoDialog(String, String, ProcessInfo)} for flexible show message
+	 * @deprecated Should use {@link #ProcessInfoDialog(String, String, ProcessInfo, boolean)} for flexible show message
 	 * @param title
 	 * @param header
 	 * @param m_logs
@@ -71,11 +72,22 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 
 	/**
 	 * show result after run a process
-	 * @param title
-	 * @param header
+	 * @deprecated
+	 * @param title ignore
+	 * @param header ignore
 	 * @param pi
+	 * @param needFillLogFromDb
 	 */
 	public ProcessInfoDialog(String title, String header, ProcessInfo pi, boolean needFillLogFromDb) {
+		this(pi, needFillLogFromDb);
+	}
+	
+	/**
+	 * show result after run a process
+	 * @param pi
+	 * @param needFillLogFromDb
+	 */
+	public ProcessInfoDialog(ProcessInfo pi, boolean needFillLogFromDb) {
 		if (needFillLogFromDb)
 			ProcessInfoUtil.setLogFromDB(pi);
 		init(pi.getTitle(), null, pi, null);
@@ -180,7 +192,11 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 							
 					if (log.getAD_Table_ID() > 0		
 							&& log.getRecord_ID() > 0) {
-						DocumentLink recordLink = new DocumentLink(sb.toString(), log.getAD_Table_ID(), log.getRecord_ID());	
+						DocumentLink recordLink = new DocumentLink(sb.toString(), log.getAD_Table_ID(), log.getRecord_ID());
+						recordLink.addEventListener(Events.ON_CLICK, e -> {
+							if (isAutoCloseAfterZoom())
+								this.detach();
+						});
 							
 						pnlMessage.appendChild(recordLink);	
 					} else {		
@@ -208,6 +224,22 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	}
 
 	/**
+	 * enable/disable auto close of dialog after zoom using document link
+	 * @param autoClose
+	 */
+	public void setAutoCloseAfterZoom(boolean autoClose) {
+		isAutoCloseAfterZoom = autoClose;
+	}
+	
+	/**
+	 * 
+	 * @return auto close after zoom state
+	 */
+	public boolean isAutoCloseAfterZoom() {
+		return isAutoCloseAfterZoom;
+	}
+	
+	/**
 	 * after run a process, call this function to show result in a dialog 
 	 * @param pi
 	 * @param windowNo
@@ -216,7 +248,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	 * just pass false, other pass true to avoid duplicate message 
 	 */
 	public static ProcessInfoDialog showProcessInfo (ProcessInfo pi, int windowNo, final Component comp, boolean needFillLogFromDb) {						
-		ProcessInfoDialog dialog = new ProcessInfoDialog(AEnv.getDialogHeader(Env.getCtx(), windowNo),AEnv.getDialogHeader(Env.getCtx(), windowNo), pi, needFillLogFromDb);
+		ProcessInfoDialog dialog = new ProcessInfoDialog(pi, needFillLogFromDb);
 		final ISupportMask supportMask = LayoutUtils.showWindowWithMask(dialog, comp, LayoutUtils.OVERLAP_PARENT);
 		dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override

@@ -62,6 +62,7 @@ import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.editor.IProcessButton;
 import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.event.ActionEvent;
 import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.event.DialogEvents;
@@ -110,6 +111,7 @@ import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -145,17 +147,17 @@ import org.zkoss.zul.impl.LabelImageElement;
  * @version $Revision: 0.10 $
  *
  * @author Cristina Ghita, www.arhipac.ro
- * @see FR [ 2877111 ] See identifiers columns when delete records https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2877111&group_id=176962
+ * see FR [ 2877111 ] See identifiers columns when delete records https://sourceforge.net/p/adempiere/feature-requests/855/
  *
  * @author hengsin, hengsin.low@idalica.com
- * @see FR [2887701] https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2887701&group_id=176962
+ * see FR [2887701] https://sourceforge.net/p/adempiere/feature-requests/866/
  * @sponsor www.metas.de
  *
  * @author Teo Sarca, teo.sarca@gmail.com
  *  	<li>BF [ 2992540 ] Grid/Panel not refreshed after process run
- *  		https://sourceforge.net/tracker/?func=detail&aid=2992540&group_id=176962&atid=955896
+ *  		https://sourceforge.net/p/adempiere/zk-web-client/418/
  *  	<li>BF [ 2985892 ] Opening a window using a new record query is not working
- *  		https://sourceforge.net/tracker/?func=detail&aid=2985892&group_id=176962&atid=955896
+ *  		https://sourceforge.net/p/adempiere/zk-web-client/411/
  */
 public abstract class AbstractADWindowContent extends AbstractUIPart implements ToolbarListener,
         EventListener<Event>, DataStatusListener, ActionListener, ITabOnSelectHandler
@@ -202,6 +204,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	private int adWindowId;
 
 	private MImage image;
+	
+	private String deleteConfirmationLogic;
 
 	/**
 	 * Quick Form Status bar
@@ -211,8 +215,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
 	 * Maintain no of quick form tabs open
 	 */
-	ArrayList <Integer>			quickFormOpenTabs	= new ArrayList <Integer>();
+	protected ArrayList <Integer>			quickFormOpenTabs	= new ArrayList <Integer>();
 
+	protected Component lastFocusEditor = null;
+	
 	/**
 	 * Constructor
 	 * @param ctx
@@ -246,6 +252,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         comp.addEventListener(ON_DEFER_SET_DETAILPANE_SELECTION_EVENT, this);
         comp.addEventListener(ON_FOCUS_DEFER_EVENT, this);
         comp.setAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY, this);
+        
         return comp;
     }
 
@@ -305,7 +312,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	}
 
     /**
-     * @param adWindowId
      * @param query
      * @return boolean
      */
@@ -313,7 +319,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     {
 		// This temporary validation code is added to check the reported bug
 		// [ adempiere-ZK Web Client-2832968 ] User context lost?
-		// https://sourceforge.net/tracker/?func=detail&atid=955896&aid=2832968&group_id=176962
+		// https://sourceforge.net/p/adempiere/zk-web-client/303/
 		// it's harmless, if there is no bug then this must never fail
 		Session currSess = Executions.getCurrent().getDesktop().getSession();
 		int checkad_user_id = -1;
@@ -358,8 +364,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         /**
          * Window Tabs
          */
-    	if (query != null && query.getZoomTableName() != null && query.getZoomColumnName() != null
-				&& query.getZoomValue() instanceof Integer && (Integer)query.getZoomValue() > 0)
+        if (query != null && query.getZoomTableName() != null && query.getZoomColumnName() != null)
     	{
     		if (!query.getZoomTableName().equalsIgnoreCase(gridWindow.getTab(0).getTableName()))
     		{
@@ -947,6 +952,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	protected ADWindow adwindow;
 
+	protected boolean showingOnExitDialog;
+
 	/**
 	 *	@see ToolbarListener#onLock()
 	 */
@@ -986,6 +993,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						@Override
 						public void onEvent(Event event) throws Exception {
 							toolbar.lock(adTabbox.getSelectedGridTab().isLocked());
+							focusToLastFocusEditor();
 						}
 					});
 
@@ -1018,16 +1026,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		if (record_ID == -1)	//	No Key
 		{
-			//aAttachment.setEnabled(false);
 			return;
 		}
 
 		EventListener<Event> listener = new EventListener<Event>() {
-
 			@Override
 			public void onEvent(Event event) throws Exception {
 				toolbar.setPressed("Attachment",adTabbox.getSelectedGridTab().hasAttachment());
-				focusToActivePanel();				
+				focusToLastFocusEditor();
 			}
 		};
 		//	Attachment va =
@@ -1080,7 +1086,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			public void onEvent(Event event) throws Exception {
 				hideBusyMask();
 				toolbar.setPressed("Chat",adTabbox.getSelectedGridTab().hasChat());
-				focusToActivePanel();				
+				focusToLastFocusEditor();				
 			}
 		});
     	getComponent().getParent().appendChild(chat);
@@ -1121,7 +1127,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		public void onEvent(Event event) throws Exception {
     			hideBusyMask();
     			toolbar.setPressed("PostIt",adTabbox.getSelectedGridTab().hasPostIt());
-    			focusToActivePanel();
+    			focusToLastFocusEditor();
     		}
     	});
     	getComponent().getParent().appendChild(postit);
@@ -1143,11 +1149,20 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
      * @param callback
      */
-    public void onExit(Callback<Boolean> callback)
+    public synchronized void onExit(Callback<Boolean> callback)
     {
     	if (isPendingChanges())
     	{
-    		FDialog.ask(curWindowNo, null, "CloseUnSave?", callback);
+    		showingOnExitDialog = true;
+    		FDialog.ask(curWindowNo, null, "CloseUnSave?", b -> {
+    			showingOnExitDialog = false;
+    			callback.onCallback(b);
+    			if (!b)
+    			{
+    				//restore focus
+    				focusToLastFocusEditor();
+    			}
+    		});
     	}
     	else
     	{
@@ -1156,10 +1171,46 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	
     }
 
+    /**
+     * restore focus to last known focus editor (if any)
+     * @return true if there's last focus editor
+     */
+	public boolean focusToLastFocusEditor() {
+		return focusToLastFocusEditor(false);
+	}
+	
+    /**
+     * restore focus to last known focus editor (if any)
+     * @param defer true to schedule for later/defer execution
+     * @return true if there's last focus editor
+     */
+	public boolean focusToLastFocusEditor(boolean defer) {
+		if (lastFocusEditor != null && lastFocusEditor instanceof HtmlBasedComponent && 
+			lastFocusEditor.getPage() != null && LayoutUtils.isReallyVisible(lastFocusEditor)) {
+			if (defer) {
+				final HtmlBasedComponent editor = (HtmlBasedComponent) lastFocusEditor;
+				Executions.schedule(getComponent().getDesktop(), e -> editor.focus(), new Event("onScheduleFocusToLastFocusEditor"));
+			} else {
+				((HtmlBasedComponent)lastFocusEditor).focus();
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * Invoke when quick form is click
 	 */
-	public void onQuickForm()
+	public void onQuickForm() {
+		onQuickForm(false);
+	}
+
+	/**
+	 * Invoke when quick form is click
+	 * @param focusTabAtEnd the tab to return when finished
+	 */
+	public void onQuickForm(boolean stayInParent)
 	{
 		logger.log(Level.FINE, "Invoke Quick Form");
 		// Prevent to open Quick Form if already opened.
@@ -1187,6 +1238,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		form.setMaximizable(true);
 		form.setMaximized(true);
 		form.setPosition("center");
+		form.setStayInParent(stayInParent);
 		ZKUpdateUtil.setWindowHeightX(form, 550);
 		ZKUpdateUtil.setWindowWidthX(form, 900);
 		ZkCssHelper.appendStyle(form, "z-index: 900;");
@@ -1305,7 +1357,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	}
     	else if (event.getName().equals(ON_FOCUS_DEFER_EVENT)) {
     		HtmlBasedComponent comp = (HtmlBasedComponent) event.getData();
-    		comp.focus();
+    		if (comp instanceof ADTabpanel)
+    			((ADTabpanel)comp).focusToFirstEditor(false);
+    		else
+    			comp.focus();
+    		// 
     	}    		
     }
 
@@ -1792,6 +1848,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         		adTabbox.getSelectedGridTab().isNew() ||
         		(adTabbox.getSelectedDetailADTabpanel() != null && adTabbox.getSelectedDetailADTabpanel().getGridTab().isNew()));
 
+        if (!e.isError() && Util.isEmpty(adInfo)) {
+        	autoSaveChanges(e);
+        }
+        
         //
         //  No Rows
         if (e.getTotalRows() == 0 && insertRecord && !detailTab && !tabPanel.getGridTab().isSortTab())
@@ -1904,6 +1964,48 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
     }
 
+	private synchronized void autoSaveChanges(DataStatusEvent e) {		
+		if (!e.isInitEdit() && toolbar.isSaveEnable() && MSysConfig.getBooleanValue(MSysConfig.ZK_AUTO_SAVE_CHANGES, false, Env.getAD_Client_ID(Env.getCtx()))) {
+        	final IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
+        	if (dirtyTabpanel != null && !dirtyTabpanel.getGridTab().isSortTab() 
+        		&& Util.isEmpty(dirtyTabpanel.getGridTab().getCommitWarning(), true)
+        		&& Env.isAutoCommit(ctx, curWindowNo)) {
+        		if (dirtyTabpanel.getGridTab().isNeedSaveAndMandatoryFill()) {
+            		String tabsExcluded = MSysConfig.getValue(MSysConfig.ZK_AUTO_SAVE_TABS_EXCLUDED, Env.getAD_Client_ID(Env.getCtx()));
+            		boolean isTabExcluded = false;
+            		if (!Util.isEmpty(tabsExcluded)) {
+            			String tabID = String.valueOf(dirtyTabpanel.getGridTab().getAD_Tab_ID());
+            			String tabUU = dirtyTabpanel.getGridTab().getAD_Tab_UU();
+            			for (String excl : tabsExcluded.split(",")) {
+           					if (excl.equals(tabID) || excl.equals(tabUU)) {
+           						isTabExcluded = true;
+            				}
+            			}
+            		}
+            		if (!isTabExcluded) {
+            			//sleep needed for onClose to show confirmation dialog
+            			try {
+    						Thread.sleep(200);
+    					} catch (InterruptedException e2) {
+    					}
+            			if (!showingOnExitDialog)
+            				Executions.schedule(getComponent().getDesktop(), e1 -> asyncAutoSave(), new Event("onAutoSave"));
+            		}
+        		}
+        	}
+        }
+	}
+
+	private synchronized void asyncAutoSave() {
+		//ensure still dirty and can save
+		if (toolbar.isSaveEnable() && !showingOnExitDialog) {
+        	final IADTabpanel dirtyTabpanel = adTabbox.getDirtyADTabpanel();
+        	if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isNeedSaveAndMandatoryFill()) {
+        		onSave(false, false, null);
+        	}
+        }
+	}
+	
     /**
      * @return boolean
      */
@@ -2202,9 +2304,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	private void doOnFind() {
 		//  Gets Fields from AD_Field_v
         GridField[] findFields = adTabbox.getSelectedGridTab().getFields();
-        if (getCurrentFindWindow() == null || !getCurrentFindWindow().validate(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
-            adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-            adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID())) {
+        if (!isCurrentFindWindowValid()) {
         	if (!getFindWindow(findFields))
         		return;
         }
@@ -2251,12 +2351,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				        	}
 				        }
 				        toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), getCurrentFindWindow().getAD_UserQuery_ID());
+				        focusToActivePanel();
 			        }
 					else
 					{
 						toolbar.setPressed("Find",adTabbox.getSelectedGridTab().isQueryActive());
+						focusToLastFocusEditor();
 					}
-			        focusToActivePanel();
+			        
 				}
 			});
         }
@@ -2264,6 +2366,22 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         getComponent().getParent().appendChild(getCurrentFindWindow());
         showBusyMask(getCurrentFindWindow());                
         LayoutUtils.openEmbeddedWindow(toolbar, getCurrentFindWindow(), "after_start");
+	}
+	
+	/**
+	 * Validates if the current FindWindow corresponds to the actve tab and record  
+	 * @return true if the current find window is good to use
+	 */
+	private boolean isCurrentFindWindowValid() {
+        GridField[] findFields = adTabbox.getSelectedGridTab().getFields();
+		return getCurrentFindWindow() != null && getCurrentFindWindow().validate(adTabbox.getSelectedGridTab().getWindowNo(), 
+				adTabbox.getSelectedGridTab().getName(),
+	            adTabbox.getSelectedGridTab().getAD_Table_ID(), 
+	            adTabbox.getSelectedGridTab().getTableName(),
+	            adTabbox.getSelectedGridTab().getWhereExtended(), 
+	            findFields, 
+	            1, 
+	            adTabbox.getSelectedGridTab().getAD_Tab_ID());
 	}
 
 	@Override
@@ -2394,7 +2512,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				if (result) {
 					WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.AFTER_SAVE.getName());
 			    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, callback);
-				} else {
+				} else if (callback != null) {
 					callback.onCallback(result);
 				}
 			}
@@ -2655,29 +2773,66 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			onDeleteSelected(postCallback);
 			return;
 		}
-
-        FDialog.ask(curWindowNo, null, "DeleteRecord?", new Callback<Boolean>() {
-
-			@Override
-			public void onCallback(Boolean result)
-			{
-				if (result)
+		
+		deleteConfirmationLogic = adTabbox.getSelectedGridTab().getDeleteConfirmationLogic();
+		if(Util.isEmpty(deleteConfirmationLogic)) {
+			FDialog.ask(curWindowNo, null, "DeleteRecord?", new Callback<Boolean>() {
+				@Override
+				public void onCallback(Boolean result)
 				{
-		        	//error will be catch in the dataStatusChanged event
-		            boolean success = adTabbox.getSelectedGridTab().dataDelete();
-		            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
-		    		adTabbox.getSelectedGridTab().refreshParentTabs();
-		    		if (!success)
-		    			showLastWarning();
-
-		            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
-		            focusToActivePanel();
-		            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));		            
+					if (result)
+					{
+			        	//error will be catch in the dataStatusChanged event
+			            boolean success = adTabbox.getSelectedGridTab().dataDelete();
+			            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+			    		adTabbox.getSelectedGridTab().refreshParentTabs();
+			    		if (!success)
+			    			showLastWarning();
+	
+			            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
+			            focusToActivePanel();
+			            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));		           
+					}
+					if (postCallback != null)
+						postCallback.onCallback(result);
 				}
-				if (postCallback != null)
-					postCallback.onCallback(result);
-	        }
-		});
+			});
+		}
+		else {
+			int tableID = adTabbox.getSelectedGridTab().getAD_Table_ID();
+			int recordID = adTabbox.getSelectedGridTab().getRecord_ID();
+			deleteConfirmationLogic = FileUtil.parseTitle(ctx, deleteConfirmationLogic, tableID, recordID, curWindowNo, null);
+			deleteConfirmationLogic = Msg.parseTranslation(ctx, deleteConfirmationLogic);
+			
+			WEditor editor = new WStringEditor();
+			editor.fillHorizontal();
+			editor.setValidInput(deleteConfirmationLogic);
+			
+			FDialog.askForInputTextConfirmation(curWindowNo, editor, "DeleteRecordWithConfirm?", new Object[] {deleteConfirmationLogic}, null, 
+					new Callback<Map.Entry<Boolean, String>>() {
+				@Override
+				public void onCallback(Map.Entry<Boolean, String> result)
+				{
+					if(!result.getKey() || !(result.getValue() instanceof String))
+						return;
+						
+					if(result.getValue().equals(deleteConfirmationLogic)) {
+						boolean success = adTabbox.getSelectedGridTab().dataDelete();
+			            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+			    		adTabbox.getSelectedGridTab().refreshParentTabs();
+			    		if (!success)
+			    			showLastWarning();
+	
+			            adTabbox.getSelectedTabpanel().dynamicDisplay(0);
+			            focusToActivePanel();
+			            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));
+			            
+					}
+					if (postCallback != null)
+						postCallback.onCallback(result.getValue().equals(deleteConfirmationLogic));
+				}
+			});		
+		}
     }
 
     // Elaine 2008/12/01
@@ -2689,46 +2844,95 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     			postCallback.onCallback(false);
             return;
         }
-
+    	deleteConfirmationLogic = adTabbox.getSelectedGridTab().getDeleteConfirmationLogic();
 		final int[] indices = adTabbox.getSelectedGridTab().getSelection();
 		if(indices.length > 0) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(Env.getContext(ctx, curWindowNo, "_WinInfo_WindowName", false)).append(" - ")
 				.append(indices.length).append(" ").append(Msg.getMsg(Env.getCtx(), "Selected"));
-			FDialog.ask(sb.toString(), curWindowNo, null,"DeleteSelection", new Callback<Boolean>() {
-				@Override
-				public void onCallback(Boolean result) {
-					if(result){
-						adTabbox.getSelectedGridTab().clearSelection();						
-						Arrays.sort(indices);
-						int offset = 0;
-						int count = 0;
-						for (int i = 0; i < indices.length; i++)
-						{
-							adTabbox.getSelectedGridTab().navigate(indices[i]-offset);
-							if (adTabbox.getSelectedGridTab().dataDelete())
+			if(Util.isEmpty(deleteConfirmationLogic)) {
+				FDialog.ask(sb.toString(), curWindowNo, null,"DeleteSelection", new Callback<Boolean>() {
+					@Override
+					public void onCallback(Boolean result) {
+						if(result){
+							adTabbox.getSelectedGridTab().clearSelection();						
+							Arrays.sort(indices);
+							int offset = 0;
+							int count = 0;
+							for (int i = 0; i < indices.length; i++)
 							{
-								offset++;
-								count++;
+								adTabbox.getSelectedGridTab().navigate(indices[i]-offset);
+								if (adTabbox.getSelectedGridTab().dataDelete())
+								{
+									offset++;
+									count++;
+								}
+							}
+				            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+				    		adTabbox.getSelectedGridTab().refreshParentTabs();
+							
+							adTabbox.getSelectedTabpanel().dynamicDisplay(0);
+							if (getActiveGridTab().isQuickForm)
+							{
+								statusBarQF.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
+							}
+							else
+							{
+								statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
 							}
 						}
-			            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
-			    		adTabbox.getSelectedGridTab().refreshParentTabs();
-						
-						adTabbox.getSelectedTabpanel().dynamicDisplay(0);
-						if (getActiveGridTab().isQuickForm)
-						{
-							statusBarQF.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
-						}
-						else
-						{
-							statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
-						}
+						if (postCallback != null)
+							postCallback.onCallback(result);
 					}
-					if (postCallback != null)
-						postCallback.onCallback(result);
-				}
-			});
+				});
+			}
+			else {
+				deleteConfirmationLogic = Msg.getMsg(ctx, "DeleteSelection");
+				
+				WEditor editor = new WStringEditor();
+				editor.fillHorizontal();
+				editor.setValidInput(deleteConfirmationLogic);
+				
+				FDialog.askForInputTextConfirmation(curWindowNo, editor, "DeleteSelectionWithConfirm?", new String[] {Integer.toString(indices.length), deleteConfirmationLogic}, null, 
+						new Callback<Map.Entry<Boolean, String>>() {
+					@Override
+					public void onCallback(Map.Entry<Boolean, String> result)
+					{
+						if(!result.getKey() || !(result.getValue() instanceof String))
+							return;
+							
+						if(result.getValue().equals(deleteConfirmationLogic)) {
+							adTabbox.getSelectedGridTab().clearSelection();						
+							Arrays.sort(indices);
+							int offset = 0;
+							int count = 0;
+							for (int i = 0; i < indices.length; i++)
+							{
+								adTabbox.getSelectedGridTab().navigate(indices[i]-offset);
+								if (adTabbox.getSelectedGridTab().dataDelete())
+								{
+									offset++;
+									count++;
+								}
+							}
+				            adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+				    		adTabbox.getSelectedGridTab().refreshParentTabs();
+							
+							adTabbox.getSelectedTabpanel().dynamicDisplay(0);
+							if (getActiveGridTab().isQuickForm)
+							{
+								statusBarQF.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
+							}
+							else
+							{
+								statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
+							}
+						}
+						if (postCallback != null)
+							postCallback.onCallback(result.getValue().equals(deleteConfirmationLogic));
+					}
+				});		
+			}
 		} else {
 			if (getActiveGridTab().isQuickForm)
 			{
@@ -2832,6 +3036,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			public void onCallback(Boolean result) {
 				if (result) {
 					onReport0();
+				} else {
+					focusToLastFocusEditor();
 				}
 			}
 		};
@@ -3007,10 +3213,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void doOnQueryChange() {
 		//  Gets Fields from AD_Field_v
 		GridField[] findFields = adTabbox.getSelectedGridTab().getFields();
-		if (getCurrentFindWindow() == null || !getCurrentFindWindow().validate(adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getName(),
-				adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
-				adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID())) {
-
+		if (!isCurrentFindWindowValid()) {
         	if (!getFindWindow(findFields))
         		return;
 		}
@@ -3167,7 +3370,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				win.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 					public void onEvent(Event event) throws Exception {
 						hideBusyMask();
-						if (!win.isStartProcess()) {							
+						focusToLastFocusEditor();
+						if (!win.isStartProcess()) {								
 							return;
 						}
 						boolean startWOasking = true;
@@ -3200,7 +3404,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							hideBusyMask();
 							if (!window.isCancel()) {
 								onRefresh(true, false);
-							}							
+							} else {
+								focusToLastFocusEditor();
+							}
 						}
 					});
 					window.setZindex(1000);
@@ -3311,21 +3517,23 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void hideBusyMask() {
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();
-			StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+			StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
 			script.append(getComponent().getParent().getUuid()).append("');if(w) w.busy=false;");
+			script.append("})()");
 			Clients.response(new AuScript(script.toString()));
 		}
 	}
 	
 	public void showBusyMask(Window window) {
 		getComponent().getParent().appendChild(getMask());
-		StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+		StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
 		script.append(getComponent().getParent().getUuid()).append("');");
 		if (window != null) {
-			script.append("var d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
+			script.append("let d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
 		} else {
 			script.append("w.busy=true;");
 		}
+		script.append("})()");
 		Clients.response(new AuScript(script.toString()));
 	}
 
@@ -3532,6 +3740,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					{
 						statusBar.setStatusLine(error, true);
 					}
+					focusToLastFocusEditor();
 					return;
 				}
 				actionButton((IProcessButton) event.getSource());
@@ -3703,7 +3912,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
 	public void onCustomize() {
 		ADTabpanel tabPanel = (ADTabpanel) getADTab().getSelectedTabpanel();
-		CustomizeGridViewDialog.onCustomize(tabPanel);
+		CustomizeGridViewDialog.onCustomize(tabPanel, b -> {
+			focusToLastFocusEditor();
+		});
 	}
 
 	/**
@@ -3725,6 +3936,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void onSelect() {
 		if (getCurrentFindWindow() != null && getCurrentFindWindow().getPage() != null && getCurrentFindWindow().isVisible() && m_queryInitiating) {
 			LayoutUtils.openEmbeddedWindow(getComponent().getParent(), getCurrentFindWindow(), "overlap");
+		} else {
+			focusToLastFocusEditor();
 		}
 	}
 
@@ -3741,9 +3954,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	}
 	
 	public boolean getFindWindow(GridField[] findFields) {
-		FindWindow findWindow;
-		if (tabFindWindowHashMap.get(adTabbox.getSelectedGridTab()) != null) {
-			findWindow = tabFindWindowHashMap.get(adTabbox.getSelectedGridTab());
+		FindWindow findWindow = getCurrentFindWindow();
+		if (findWindow != null && isCurrentFindWindowValid()) {
 			toolbar.setSelectedUserQuery(findWindow.getAD_UserQuery_ID());
 		} else {
 			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),
@@ -3892,5 +4104,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 */
 	public GridWindow getGridWindow() {
 		return gridWindow;
+	}
+
+	
+	/**
+	 * set component of last focus editor.
+	 * Use in onClose/Exit to restore focus
+	 * @param component
+	 */
+	public void setLastFocusEditor(Component component) {
+		lastFocusEditor = component;
 	}
 }

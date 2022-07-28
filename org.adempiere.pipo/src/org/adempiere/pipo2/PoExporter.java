@@ -23,6 +23,7 @@ import org.compiere.model.X_AD_Client;
 import org.compiere.model.X_AD_Image;
 import org.compiere.model.X_AD_Org;
 import org.compiere.model.X_C_Location;
+import org.compiere.model.X_M_AttributeSetInstance;
 import org.compiere.model.X_M_Locator;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -108,19 +109,17 @@ public class PoExporter {
 
 
 	/**
-	 *
-	 * @param name
 	 * @param columnName
+	 * @param atts
 	 */
 	public void add(String columnName, AttributesImpl atts) {
 		add(columnName, "", atts);
 	}
 
 	/**
-	 *
-	 * @param name
 	 * @param columnName
 	 * @param defaultValue
+	 * @param atts
 	 */
 	public void add(String columnName, String defaultValue, AttributesImpl atts) {
 		Object value = po.get_Value(columnName);
@@ -292,6 +291,8 @@ public class PoExporter {
 			    addTableReference(columnName, X_C_Location.Table_Name, new AttributesImpl());
 			} else if (DisplayType.Image == displayType) {
 				addTableReference(columnName, X_AD_Image.Table_Name, new AttributesImpl());
+			} else if (DisplayType.PAttribute == displayType) {
+			    addTableReference(columnName, X_M_AttributeSetInstance.Table_Name, new AttributesImpl());
 			} else {
 				add(columnName, "", new AttributesImpl());
 			}

@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ForecastLine
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_ForecastLine")
 public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persistent 
 {
@@ -34,12 +34,30 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ForecastLine (Properties ctx, int M_ForecastLine_ID, String trxName)
     {
       super (ctx, M_ForecastLine_ID, trxName);
+      /** if (M_ForecastLine_ID == 0)
+        {
+			setC_Period_ID (0);
+			setDatePromised (new Timestamp( System.currentTimeMillis() ));
+			setM_Forecast_ID (0);
+			setM_ForecastLine_ID (0);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+// @M_Warehouse_ID@
+			setQty (Env.ZERO);
+			setQtyCalculated (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ForecastLine (Properties ctx, int M_ForecastLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ForecastLine_ID, trxName, virtualColumns);
       /** if (M_ForecastLine_ID == 0)
         {
 			setC_Period_ID (0);
@@ -89,21 +107,20 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	}
 
 	/** Set Period.
-		@param C_Period_ID 
-		Period of the Calendar
-	  */
+		@param C_Period_ID Period of the Calendar
+	*/
 	public void setC_Period_ID (int C_Period_ID)
 	{
-		if (C_Period_ID < 1) 
+		if (C_Period_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Period_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
 	}
 
 	/** Get Period.
 		@return Period of the Calendar
 	  */
-	public int getC_Period_ID () 
+	public int getC_Period_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Period_ID);
 		if (ii == null)
@@ -120,9 +137,8 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
     }
 
 	/** Set Date Promised.
-		@param DatePromised 
-		Date Order was promised
-	  */
+		@param DatePromised Date Order was promised
+	*/
 	public void setDatePromised (Timestamp DatePromised)
 	{
 		set_Value (COLUMNNAME_DatePromised, DatePromised);
@@ -131,7 +147,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	/** Get Date Promised.
 		@return Date Order was promised
 	  */
-	public Timestamp getDatePromised () 
+	public Timestamp getDatePromised()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DatePromised);
 	}
@@ -143,21 +159,20 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	}
 
 	/** Set Forecast.
-		@param M_Forecast_ID 
-		Material Forecast
-	  */
+		@param M_Forecast_ID Material Forecast
+	*/
 	public void setM_Forecast_ID (int M_Forecast_ID)
 	{
-		if (M_Forecast_ID < 1) 
+		if (M_Forecast_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Forecast_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Forecast_ID, Integer.valueOf(M_Forecast_ID));
 	}
 
 	/** Get Forecast.
 		@return Material Forecast
 	  */
-	public int getM_Forecast_ID () 
+	public int getM_Forecast_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Forecast_ID);
 		if (ii == null)
@@ -166,21 +181,20 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	}
 
 	/** Set Forecast Line.
-		@param M_ForecastLine_ID 
-		Forecast Line
-	  */
+		@param M_ForecastLine_ID Forecast Line
+	*/
 	public void setM_ForecastLine_ID (int M_ForecastLine_ID)
 	{
-		if (M_ForecastLine_ID < 1) 
+		if (M_ForecastLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ForecastLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ForecastLine_ID, Integer.valueOf(M_ForecastLine_ID));
 	}
 
 	/** Get Forecast Line.
 		@return Forecast Line
 	  */
-	public int getM_ForecastLine_ID () 
+	public int getM_ForecastLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ForecastLine_ID);
 		if (ii == null)
@@ -189,7 +203,8 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	}
 
 	/** Set M_ForecastLine_UU.
-		@param M_ForecastLine_UU M_ForecastLine_UU	  */
+		@param M_ForecastLine_UU M_ForecastLine_UU
+	*/
 	public void setM_ForecastLine_UU (String M_ForecastLine_UU)
 	{
 		set_Value (COLUMNNAME_M_ForecastLine_UU, M_ForecastLine_UU);
@@ -197,7 +212,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 
 	/** Get M_ForecastLine_UU.
 		@return M_ForecastLine_UU	  */
-	public String getM_ForecastLine_UU () 
+	public String getM_ForecastLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ForecastLine_UU);
 	}
@@ -209,21 +224,20 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -238,21 +252,20 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_Value (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -261,9 +274,8 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -272,7 +284,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -281,9 +293,8 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	}
 
 	/** Set Calculated Quantity.
-		@param QtyCalculated 
-		Calculated Quantity
-	  */
+		@param QtyCalculated Calculated Quantity
+	*/
 	public void setQtyCalculated (BigDecimal QtyCalculated)
 	{
 		set_Value (COLUMNNAME_QtyCalculated, QtyCalculated);
@@ -292,7 +303,7 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	/** Get Calculated Quantity.
 		@return Calculated Quantity
 	  */
-	public BigDecimal getQtyCalculated () 
+	public BigDecimal getQtyCalculated()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyCalculated);
 		if (bd == null)
@@ -307,21 +318,20 @@ public class X_M_ForecastLine extends PO implements I_M_ForecastLine, I_Persiste
 	}
 
 	/** Set Sales Representative.
-		@param SalesRep_ID 
-		Sales Representative or Company Agent
-	  */
+		@param SalesRep_ID Sales Representative or Company Agent
+	*/
 	public void setSalesRep_ID (int SalesRep_ID)
 	{
-		if (SalesRep_ID < 1) 
+		if (SalesRep_ID < 1)
 			set_Value (COLUMNNAME_SalesRep_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_SalesRep_ID, Integer.valueOf(SalesRep_ID));
 	}
 
 	/** Get Sales Representative.
 		@return Sales Representative or Company Agent
 	  */
-	public int getSalesRep_ID () 
+	public int getSalesRep_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SalesRep_ID);
 		if (ii == null)

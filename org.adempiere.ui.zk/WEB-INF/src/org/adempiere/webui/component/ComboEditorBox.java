@@ -189,4 +189,9 @@ public class ComboEditorBox extends Div {
 		}
 			
 	}
+
+	@Override
+	public void focus() {
+		txt.focus();
+	}
 }

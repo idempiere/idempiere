@@ -248,6 +248,11 @@ public class MInOutLineMA extends X_M_InOutLineMA
 		return retValue;
 	}	//	getNonReturned
 	
+	@Override
+	public MInOutLine getM_InOutLine() throws RuntimeException {
+		return new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
+	}
+
 	/**************************************************************************
 	 * 	Before Save
 	 *	@param newRecord new
@@ -255,25 +260,24 @@ public class MInOutLineMA extends X_M_InOutLineMA
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
-		MInOutLine parentline = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
+		MInOutLine parentline = getM_InOutLine();
 		if (newRecord && parentline.getParent().isProcessed()) {
 			log.saveError("ParentComplete", Msg.translate(getCtx(), "M_InOut_ID"));
 			return false;
 		}
 		//Set DateMaterialPolicy
-		if(!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)){
-			//TODO Require testing for all scenario
-			I_M_InOutLine line = getM_InOutLine();
+		if ((!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)) ||
+			(newRecord && getM_AttributeSetInstance_ID() > 0 && getDateMaterialPolicy() == null)) {
 			
 			Timestamp dateMPolicy = null;
 			if(getM_AttributeSetInstance_ID()>0)
 			{
-				dateMPolicy = MStorageOnHand.getDateMaterialPolicy(line.getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
+				dateMPolicy = MStorageOnHand.getDateMaterialPolicy(parentline.getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
 			}
 			
 			if(dateMPolicy == null)
 			{
-				I_M_InOut  inout = line.getM_InOut();
+				I_M_InOut  inout = parentline.getParent();
 				dateMPolicy = inout.getMovementDate();
 			}
 			

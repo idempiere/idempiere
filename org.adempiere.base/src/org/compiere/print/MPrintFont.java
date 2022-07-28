@@ -121,7 +121,6 @@ public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 		}
 		if (code == null)
 			m_cacheFont = new Font (null);		//	family=dialog,name=Dialog,style=plain,size=12
-	//	log.fine( "MPrintFont.getFont " + code, m_cacheFont);
 		return m_cacheFont;
 	}	//	getFont
 
@@ -278,24 +277,6 @@ public class MPrintFont extends X_AD_PrintFont implements ImmutablePOSupport
 		org.compiere.Adempiere.startup(true);
 		MPrintFont pf = new MPrintFont(Env.getCtx(), 100, null);
 		dump( pf.getFont() );
-
-		String[] systemLocical = new String[] {"Dialog", "DialogInput", "Monospaced", "Serif", "SansSerif"};
-		for (int i = 0; i < systemLocical.length; i++)
-		{
-		//	create(new Font(systemLocical[i], Font.BOLD, 13));
-		//	create(new Font(systemLocical[i], Font.PLAIN, 11));
-		//	create(new Font(systemLocical[i], Font.BOLD, 11));
-		//	create(new Font(systemLocical[i], Font.ITALIC, 11));
-		//	create(new Font(systemLocical[i], Font.PLAIN, 10));
-		//	create(new Font(systemLocical[i], Font.BOLD, 10));
-		//	create(new Font(systemLocical[i], Font.ITALIC, 10));
-		//	create(new Font(systemLocical[i], Font.PLAIN, 9));
-		//	create(new Font(systemLocical[i], Font.BOLD, 9));
-		//	create(new Font(systemLocical[i], Font.ITALIC, 9));
-		//	create(new Font(systemLocical[i], Font.PLAIN, 8));
-		//	create(new Font(systemLocical[i], Font.BOLD, 8));
-		//	create(new Font(systemLocical[i], Font.ITALIC, 8));
-		}
 
 		//	Read All Fonts
 		int[] IDs = PO.getAllIDs ("AD_PrintFont", null, null);

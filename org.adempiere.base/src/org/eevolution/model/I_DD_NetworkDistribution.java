@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for DD_NetworkDistribution
  *  @author iDempiere (generated) 
- *  @version Development 9.0
+ *  @version Release 9
  */
 @SuppressWarnings("all")
 public interface I_DD_NetworkDistribution 

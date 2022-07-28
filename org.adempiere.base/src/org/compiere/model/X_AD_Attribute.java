@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Attribute
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Attribute")
 public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent 
 {
@@ -31,12 +31,32 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Attribute (Properties ctx, int AD_Attribute_ID, String trxName)
     {
       super (ctx, AD_Attribute_ID, trxName);
+      /** if (AD_Attribute_ID == 0)
+        {
+			setAD_Attribute_ID (0);
+			setAD_Reference_ID (0);
+			setAD_Table_ID (0);
+			setIsEncrypted (false);
+			setIsFieldOnly (false);
+			setIsHeading (false);
+			setIsMandatory (false);
+			setIsReadOnly (false);
+			setIsSameLine (false);
+			setIsUpdateable (false);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Attribute (Properties ctx, int AD_Attribute_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Attribute_ID, trxName, virtualColumns);
       /** if (AD_Attribute_ID == 0)
         {
 			setAD_Attribute_ID (0);
@@ -82,18 +102,19 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
     }
 
 	/** Set System Attribute.
-		@param AD_Attribute_ID System Attribute	  */
+		@param AD_Attribute_ID System Attribute
+	*/
 	public void setAD_Attribute_ID (int AD_Attribute_ID)
 	{
-		if (AD_Attribute_ID < 1) 
+		if (AD_Attribute_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Attribute_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Attribute_ID, Integer.valueOf(AD_Attribute_ID));
 	}
 
 	/** Get System Attribute.
 		@return System Attribute	  */
-	public int getAD_Attribute_ID () 
+	public int getAD_Attribute_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Attribute_ID);
 		if (ii == null)
@@ -102,7 +123,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set AD_Attribute_UU.
-		@param AD_Attribute_UU AD_Attribute_UU	  */
+		@param AD_Attribute_UU AD_Attribute_UU
+	*/
 	public void setAD_Attribute_UU (String AD_Attribute_UU)
 	{
 		set_Value (COLUMNNAME_AD_Attribute_UU, AD_Attribute_UU);
@@ -110,7 +132,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 
 	/** Get AD_Attribute_UU.
 		@return AD_Attribute_UU	  */
-	public String getAD_Attribute_UU () 
+	public String getAD_Attribute_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Attribute_UU);
 	}
@@ -122,21 +144,20 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Reference.
-		@param AD_Reference_ID 
-		System Reference and Validation
-	  */
+		@param AD_Reference_ID System Reference and Validation
+	*/
 	public void setAD_Reference_ID (int AD_Reference_ID)
 	{
-		if (AD_Reference_ID < 1) 
+		if (AD_Reference_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
 	}
 
 	/** Get Reference.
 		@return System Reference and Validation
 	  */
-	public int getAD_Reference_ID () 
+	public int getAD_Reference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
 		if (ii == null)
@@ -151,21 +172,20 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Reference Key.
-		@param AD_Reference_Value_ID 
-		Required to specify, if data type is Table or List
-	  */
+		@param AD_Reference_Value_ID Required to specify, if data type is Table or List
+	*/
 	public void setAD_Reference_Value_ID (int AD_Reference_Value_ID)
 	{
-		if (AD_Reference_Value_ID < 1) 
+		if (AD_Reference_Value_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_Value_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_Value_ID, Integer.valueOf(AD_Reference_Value_ID));
 	}
 
 	/** Get Reference Key.
 		@return Required to specify, if data type is Table or List
 	  */
-	public int getAD_Reference_Value_ID () 
+	public int getAD_Reference_Value_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_Value_ID);
 		if (ii == null)
@@ -180,21 +200,20 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -209,21 +228,20 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Dynamic Validation.
-		@param AD_Val_Rule_ID 
-		Dynamic Validation Rule
-	  */
+		@param AD_Val_Rule_ID Dynamic Validation Rule
+	*/
 	public void setAD_Val_Rule_ID (int AD_Val_Rule_ID)
 	{
-		if (AD_Val_Rule_ID < 1) 
+		if (AD_Val_Rule_ID < 1)
 			set_Value (COLUMNNAME_AD_Val_Rule_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Val_Rule_ID, Integer.valueOf(AD_Val_Rule_ID));
 	}
 
 	/** Get Dynamic Validation.
 		@return Dynamic Validation Rule
 	  */
-	public int getAD_Val_Rule_ID () 
+	public int getAD_Val_Rule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Val_Rule_ID);
 		if (ii == null)
@@ -232,9 +250,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Callout.
-		@param Callout 
-		Fully qualified class names and method - separated by semicolons
-	  */
+		@param Callout Fully qualified class names and method - separated by semicolons
+	*/
 	public void setCallout (String Callout)
 	{
 		set_Value (COLUMNNAME_Callout, Callout);
@@ -243,15 +260,14 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Callout.
 		@return Fully qualified class names and method - separated by semicolons
 	  */
-	public String getCallout () 
+	public String getCallout()
 	{
 		return (String)get_Value(COLUMNNAME_Callout);
 	}
 
 	/** Set Default Logic.
-		@param DefaultValue 
-		Default value hierarchy, separated by ;
-	  */
+		@param DefaultValue Default value hierarchy, separated by ;
+	*/
 	public void setDefaultValue (String DefaultValue)
 	{
 		set_Value (COLUMNNAME_DefaultValue, DefaultValue);
@@ -260,15 +276,14 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Default Logic.
 		@return Default value hierarchy, separated by ;
 	  */
-	public String getDefaultValue () 
+	public String getDefaultValue()
 	{
 		return (String)get_Value(COLUMNNAME_DefaultValue);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -277,15 +292,14 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Display Length.
-		@param DisplayLength 
-		Length of the display in characters
-	  */
+		@param DisplayLength Length of the display in characters
+	*/
 	public void setDisplayLength (int DisplayLength)
 	{
 		set_Value (COLUMNNAME_DisplayLength, Integer.valueOf(DisplayLength));
@@ -294,7 +308,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Display Length.
 		@return Length of the display in characters
 	  */
-	public int getDisplayLength () 
+	public int getDisplayLength()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DisplayLength);
 		if (ii == null)
@@ -303,9 +317,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Display Logic.
-		@param DisplayLogic 
-		If the Field is displayed, the result determines if the field is actually displayed
-	  */
+		@param DisplayLogic If the Field is displayed, the result determines if the field is actually displayed
+	*/
 	public void setDisplayLogic (String DisplayLogic)
 	{
 		set_Value (COLUMNNAME_DisplayLogic, DisplayLogic);
@@ -314,15 +327,14 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Display Logic.
 		@return If the Field is displayed, the result determines if the field is actually displayed
 	  */
-	public String getDisplayLogic () 
+	public String getDisplayLogic()
 	{
 		return (String)get_Value(COLUMNNAME_DisplayLogic);
 	}
 
 	/** Set Length.
-		@param FieldLength 
-		Length of the column in the database
-	  */
+		@param FieldLength Length of the column in the database
+	*/
 	public void setFieldLength (int FieldLength)
 	{
 		set_Value (COLUMNNAME_FieldLength, Integer.valueOf(FieldLength));
@@ -331,7 +343,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Length.
 		@return Length of the column in the database
 	  */
-	public int getFieldLength () 
+	public int getFieldLength()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_FieldLength);
 		if (ii == null)
@@ -340,9 +352,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -351,15 +362,14 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Encrypted.
-		@param IsEncrypted 
-		Display or Storage is encrypted
-	  */
+		@param IsEncrypted Display or Storage is encrypted
+	*/
 	public void setIsEncrypted (boolean IsEncrypted)
 	{
 		set_Value (COLUMNNAME_IsEncrypted, Boolean.valueOf(IsEncrypted));
@@ -368,7 +378,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Encrypted.
 		@return Display or Storage is encrypted
 	  */
-	public boolean isEncrypted () 
+	public boolean isEncrypted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEncrypted);
 		if (oo != null) 
@@ -381,9 +391,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Field Only.
-		@param IsFieldOnly 
-		Label is not displayed
-	  */
+		@param IsFieldOnly Label is not displayed
+	*/
 	public void setIsFieldOnly (boolean IsFieldOnly)
 	{
 		set_Value (COLUMNNAME_IsFieldOnly, Boolean.valueOf(IsFieldOnly));
@@ -392,7 +401,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Field Only.
 		@return Label is not displayed
 	  */
-	public boolean isFieldOnly () 
+	public boolean isFieldOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFieldOnly);
 		if (oo != null) 
@@ -405,9 +414,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Heading only.
-		@param IsHeading 
-		Field without Column - Only label is displayed
-	  */
+		@param IsHeading Field without Column - Only label is displayed
+	*/
 	public void setIsHeading (boolean IsHeading)
 	{
 		set_Value (COLUMNNAME_IsHeading, Boolean.valueOf(IsHeading));
@@ -416,7 +424,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Heading only.
 		@return Field without Column - Only label is displayed
 	  */
-	public boolean isHeading () 
+	public boolean isHeading()
 	{
 		Object oo = get_Value(COLUMNNAME_IsHeading);
 		if (oo != null) 
@@ -429,9 +437,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Mandatory.
-		@param IsMandatory 
-		Data entry is required in this column
-	  */
+		@param IsMandatory Data entry is required in this column
+	*/
 	public void setIsMandatory (boolean IsMandatory)
 	{
 		set_Value (COLUMNNAME_IsMandatory, Boolean.valueOf(IsMandatory));
@@ -440,7 +447,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Mandatory.
 		@return Data entry is required in this column
 	  */
-	public boolean isMandatory () 
+	public boolean isMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatory);
 		if (oo != null) 
@@ -453,9 +460,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Read Only.
-		@param IsReadOnly 
-		Field is read only
-	  */
+		@param IsReadOnly Field is read only
+	*/
 	public void setIsReadOnly (boolean IsReadOnly)
 	{
 		set_Value (COLUMNNAME_IsReadOnly, Boolean.valueOf(IsReadOnly));
@@ -464,7 +470,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Read Only.
 		@return Field is read only
 	  */
-	public boolean isReadOnly () 
+	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
 		if (oo != null) 
@@ -477,9 +483,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Same Line.
-		@param IsSameLine 
-		Displayed on same line as previous field
-	  */
+		@param IsSameLine Displayed on same line as previous field
+	*/
 	public void setIsSameLine (boolean IsSameLine)
 	{
 		set_Value (COLUMNNAME_IsSameLine, Boolean.valueOf(IsSameLine));
@@ -488,7 +493,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Same Line.
 		@return Displayed on same line as previous field
 	  */
-	public boolean isSameLine () 
+	public boolean isSameLine()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSameLine);
 		if (oo != null) 
@@ -501,9 +506,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Updatable.
-		@param IsUpdateable 
-		Determines, if the field can be updated
-	  */
+		@param IsUpdateable Determines, if the field can be updated
+	*/
 	public void setIsUpdateable (boolean IsUpdateable)
 	{
 		set_Value (COLUMNNAME_IsUpdateable, Boolean.valueOf(IsUpdateable));
@@ -512,7 +516,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Updatable.
 		@return Determines, if the field can be updated
 	  */
-	public boolean isUpdateable () 
+	public boolean isUpdateable()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUpdateable);
 		if (oo != null) 
@@ -525,9 +529,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -536,7 +539,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -550,9 +553,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
     }
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -561,7 +563,7 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -570,9 +572,8 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	}
 
 	/** Set Max. Value.
-		@param ValueMax 
-		Maximum Value for a field
-	  */
+		@param ValueMax Maximum Value for a field
+	*/
 	public void setValueMax (String ValueMax)
 	{
 		set_Value (COLUMNNAME_ValueMax, ValueMax);
@@ -581,15 +582,14 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Max. Value.
 		@return Maximum Value for a field
 	  */
-	public String getValueMax () 
+	public String getValueMax()
 	{
 		return (String)get_Value(COLUMNNAME_ValueMax);
 	}
 
 	/** Set Min. Value.
-		@param ValueMin 
-		Minimum Value for a field
-	  */
+		@param ValueMin Minimum Value for a field
+	*/
 	public void setValueMin (String ValueMin)
 	{
 		set_Value (COLUMNNAME_ValueMin, ValueMin);
@@ -598,24 +598,23 @@ public class X_AD_Attribute extends PO implements I_AD_Attribute, I_Persistent
 	/** Get Min. Value.
 		@return Minimum Value for a field
 	  */
-	public String getValueMin () 
+	public String getValueMin()
 	{
 		return (String)get_Value(COLUMNNAME_ValueMin);
 	}
 
 	/** Set Value Format.
-		@param VFormat 
-		Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
-	  */
+		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	*/
 	public void setVFormat (String VFormat)
 	{
 		set_Value (COLUMNNAME_VFormat, VFormat);
 	}
 
 	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
 	  */
-	public String getVFormat () 
+	public String getVFormat()
 	{
 		return (String)get_Value(COLUMNNAME_VFormat);
 	}

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_SellerFunds
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="B_SellerFunds")
 public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent 
 {
@@ -33,12 +33,25 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_B_SellerFunds (Properties ctx, int B_SellerFunds_ID, String trxName)
     {
       super (ctx, B_SellerFunds_ID, trxName);
+      /** if (B_SellerFunds_ID == 0)
+        {
+			setAD_User_ID (0);
+			setB_SellerFunds_ID (0);
+			setCommittedAmt (Env.ZERO);
+			setNonCommittedAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_SellerFunds (Properties ctx, int B_SellerFunds_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_SellerFunds_ID, trxName, virtualColumns);
       /** if (B_SellerFunds_ID == 0)
         {
 			setAD_User_ID (0);
@@ -83,21 +96,20 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -114,21 +126,20 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
     }
 
 	/** Set Seller Funds.
-		@param B_SellerFunds_ID 
-		Seller Funds from Offers on Topics
-	  */
+		@param B_SellerFunds_ID Seller Funds from Offers on Topics
+	*/
 	public void setB_SellerFunds_ID (int B_SellerFunds_ID)
 	{
-		if (B_SellerFunds_ID < 1) 
+		if (B_SellerFunds_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_B_SellerFunds_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_B_SellerFunds_ID, Integer.valueOf(B_SellerFunds_ID));
 	}
 
 	/** Get Seller Funds.
 		@return Seller Funds from Offers on Topics
 	  */
-	public int getB_SellerFunds_ID () 
+	public int getB_SellerFunds_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_SellerFunds_ID);
 		if (ii == null)
@@ -137,7 +148,8 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 	}
 
 	/** Set B_SellerFunds_UU.
-		@param B_SellerFunds_UU B_SellerFunds_UU	  */
+		@param B_SellerFunds_UU B_SellerFunds_UU
+	*/
 	public void setB_SellerFunds_UU (String B_SellerFunds_UU)
 	{
 		set_Value (COLUMNNAME_B_SellerFunds_UU, B_SellerFunds_UU);
@@ -145,15 +157,14 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 
 	/** Get B_SellerFunds_UU.
 		@return B_SellerFunds_UU	  */
-	public String getB_SellerFunds_UU () 
+	public String getB_SellerFunds_UU()
 	{
 		return (String)get_Value(COLUMNNAME_B_SellerFunds_UU);
 	}
 
 	/** Set Committed Amount.
-		@param CommittedAmt 
-		The (legal) commitment amount
-	  */
+		@param CommittedAmt The (legal) commitment amount
+	*/
 	public void setCommittedAmt (BigDecimal CommittedAmt)
 	{
 		set_Value (COLUMNNAME_CommittedAmt, CommittedAmt);
@@ -162,7 +173,7 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 	/** Get Committed Amount.
 		@return The (legal) commitment amount
 	  */
-	public BigDecimal getCommittedAmt () 
+	public BigDecimal getCommittedAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CommittedAmt);
 		if (bd == null)
@@ -177,21 +188,20 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 	}
 
 	/** Set Order.
-		@param C_Order_ID 
-		Order
-	  */
+		@param C_Order_ID Order
+	*/
 	public void setC_Order_ID (int C_Order_ID)
 	{
-		if (C_Order_ID < 1) 
+		if (C_Order_ID < 1)
 			set_Value (COLUMNNAME_C_Order_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
 	}
 
 	/** Get Order.
 		@return Order
 	  */
-	public int getC_Order_ID () 
+	public int getC_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
 		if (ii == null)
@@ -206,21 +216,20 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 	}
 
 	/** Set Payment.
-		@param C_Payment_ID 
-		Payment identifier
-	  */
+		@param C_Payment_ID Payment identifier
+	*/
 	public void setC_Payment_ID (int C_Payment_ID)
 	{
-		if (C_Payment_ID < 1) 
+		if (C_Payment_ID < 1)
 			set_Value (COLUMNNAME_C_Payment_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Payment_ID, Integer.valueOf(C_Payment_ID));
 	}
 
 	/** Get Payment.
 		@return Payment identifier
 	  */
-	public int getC_Payment_ID () 
+	public int getC_Payment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Payment_ID);
 		if (ii == null)
@@ -229,9 +238,8 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 	}
 
 	/** Set Not Committed Aount.
-		@param NonCommittedAmt 
-		Amount not committed yet
-	  */
+		@param NonCommittedAmt Amount not committed yet
+	*/
 	public void setNonCommittedAmt (BigDecimal NonCommittedAmt)
 	{
 		set_Value (COLUMNNAME_NonCommittedAmt, NonCommittedAmt);
@@ -240,7 +248,7 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 	/** Get Not Committed Aount.
 		@return Amount not committed yet
 	  */
-	public BigDecimal getNonCommittedAmt () 
+	public BigDecimal getNonCommittedAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_NonCommittedAmt);
 		if (bd == null)

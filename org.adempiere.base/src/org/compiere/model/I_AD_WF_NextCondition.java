@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_WF_NextCondition
  *  @author iDempiere (generated) 
- *  @version Development 9.0
+ *  @version Release 9
  */
 public interface I_AD_WF_NextCondition 
 {
@@ -202,10 +202,10 @@ public interface I_AD_WF_NextCondition
     /** Column name SQLStatement */
     public static final String COLUMNNAME_SQLStatement = "SQLStatement";
 
-	/** Set SQLStatement	  */
+	/** Set SQL Expression/Statement	  */
 	public void setSQLStatement (String SQLStatement);
 
-	/** Get SQLStatement	  */
+	/** Get SQL Expression/Statement	  */
 	public String getSQLStatement();
 
     /** Column name Updated */

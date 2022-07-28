@@ -288,7 +288,7 @@ public class MWindow extends X_AD_Window implements ImmutablePOSupport
 	//vpj-cd begin e-evolution
 	/**
 	 * 	get Window ID
-	 *	@param String windowName
+	 *	@param windowName String
 	 *	@return int retValue
 	 */
 	public static int getWindow_ID(String windowName) {

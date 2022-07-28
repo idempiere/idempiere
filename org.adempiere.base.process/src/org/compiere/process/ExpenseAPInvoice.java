@@ -183,7 +183,6 @@ public class ExpenseAPInvoice extends SvrProcess
 					il.setC_Activity_ID(line.getC_Activity_ID());
 					il.setC_Campaign_ID(line.getC_Campaign_ID());
 					//
-				//	il.setPrice();	//	not really a list/limit price for reimbursements
 					il.setPrice(line.getPriceReimbursed());	//
 					
 					il.setTax();

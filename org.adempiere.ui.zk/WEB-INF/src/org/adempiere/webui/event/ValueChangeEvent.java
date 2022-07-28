@@ -87,7 +87,7 @@ public class ValueChangeEvent
 	}
 
 	/**
-	 * @param indicate this event is by user start edit this field but not yet complete edit
+	 * @param isInitEdit indicate this event is by user start edit this field but not yet complete edit
 	 */
 	public void setIsInitEdit(boolean isInitEdit) {
 		this.isInitEdit = isInitEdit;

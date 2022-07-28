@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Info
  *  @author iDempiere (generated) 
- *  @version Development 9.0
+ *  @version Release 9
  */
 public interface I_AD_UserDef_Info 
 {
@@ -138,6 +138,21 @@ public interface I_AD_UserDef_Info
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
+    /** Column name AD_Window_ID */
+    public static final String COLUMNNAME_AD_Window_ID = "AD_Window_ID";
+
+	/** Set Window.
+	  * Data entry or display window
+	  */
+	public void setAD_Window_ID (int AD_Window_ID);
+
+	/** Get Window.
+	  * Data entry or display window
+	  */
+	public int getAD_Window_ID();
+
+	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -231,6 +246,21 @@ public interface I_AD_UserDef_Info
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name PO_Window_ID */
+    public static final String COLUMNNAME_PO_Window_ID = "PO_Window_ID";
+
+	/** Set PO Window.
+	  * Purchase Order Window
+	  */
+	public void setPO_Window_ID (int PO_Window_ID);
+
+	/** Get PO Window.
+	  * Purchase Order Window
+	  */
+	public int getPO_Window_ID();
+
+	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException;
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

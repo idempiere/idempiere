@@ -21,6 +21,34 @@
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
         <listEntry value="4"/>
     </listAttribute>
+    <listAttribute key="org.eclipse.eclemma.core.SCOPE_IDS">
+        <listEntry value="=org.adempiere.install/src"/>
+        <listEntry value="=org.adempiere.server/src\/main\/server"/>
+        <listEntry value="=org.idempiere.printformat.editor/src"/>
+        <listEntry value="=org.idempiere.keikai/src"/>
+        <listEntry value="=org.adempiere.replication/src"/>
+        <listEntry value="=org.adempiere.plugin.utils/src"/>
+        <listEntry value="=org.compiere.db.oracle.provider/src"/>
+        <listEntry value="=org.adempiere.ui/src"/>
+        <listEntry value="=org.adempiere.pipo.handlers/src"/>
+        <listEntry value="=org.compiere.db.postgresql.provider/src"/>
+        <listEntry value="=org.adempiere.report.jasper/src"/>
+        <listEntry value="=org.adempiere.ui.zk/WEB-INF\/src"/>
+        <listEntry value="=org.apache.ecs/src"/>
+        <listEntry value="=org.idempiere.felix.webconsole/src"/>
+        <listEntry value="=org.idempiere.webservices/WEB-INF\/src"/>
+        <listEntry value="=org.adempiere.pipo/src"/>
+        <listEntry value="=org.adempiere.payment.processor/src"/>
+        <listEntry value="=org.adempiere.webstore/src"/>
+        <listEntry value="=org.adempiere.server/src\/main\/home"/>
+        <listEntry value="=org.adempiere.base.callout/src"/>
+        <listEntry value="=org.adempiere.base/src"/>
+        <listEntry value="=org.adempiere.base.process/src"/>
+        <listEntry value="=org.idempiere.hazelcast.service/src"/>
+        <listEntry value="=org.adempiere.eclipse.equinox.http.servlet/src"/>
+        <listEntry value="=org.adempiere.replication.server/src"/>
+        <listEntry value="=org.adempiere.server/src\/main\/servlet"/>
+    </listAttribute>
     <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=org.idempiere.test"/>
     <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
     <stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
@@ -38,6 +66,7 @@
     <stringAttribute key="product" value="org.adempiere.server.server_product"/>
     <booleanAttribute key="run_in_ui_thread" value="true"/>
     <setAttribute key="selected_target_bundles">
+        <setEntry value="assertj-core@default:default"/>
         <setEntry value="bcmail@default:default"/>
         <setEntry value="bcpg*1.69.0@default:default"/>
         <setEntry value="bcpkix@default:default"/>
@@ -84,6 +113,7 @@
         <setEntry value="groovy-sql@default:false"/>
         <setEntry value="groovy-xml@default:false"/>
         <setEntry value="groovy@default:default"/>
+        <setEntry value="io.github.classgraph.classgraph@default:default"/>
         <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="jakarta.jws-api@default:default"/>
         <setEntry value="jakarta.persistence-api@default:default"/>
@@ -144,6 +174,9 @@
         <setEntry value="org.apache.geronimo.specs.geronimo-jms_1.1_spec@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
+        <setEntry value="org.apache.httpcomponents.client5.httpclient5@default:default"/>
+        <setEntry value="org.apache.httpcomponents.core5.httpcore5@default:default"/>
+        <setEntry value="org.apache.httpcomponents.core5.httpcore5-h2@default:default"/>
         <setEntry value="org.apache.neethi@default:default"/>
         <setEntry value="org.apache.poi.ooxml-schemas@default:default"/>
         <setEntry value="org.apache.servicemix.bundles.batik@default:default"/>
@@ -173,7 +206,7 @@
         <setEntry value="org.eclipse.core.variables@default:default"/>
         <setEntry value="org.eclipse.ecf.filetransfer@default:default"/>
         <setEntry value="org.eclipse.ecf.identity@default:default"/>
-        <setEntry value="org.eclipse.ecf.provider.filetransfer.httpclient45@default:default"/>
+        <setEntry value="org.eclipse.ecf.provider.filetransfer.httpclient5@default:default"/>
         <setEntry value="org.eclipse.ecf.provider.filetransfer.ssl@default:false"/>
         <setEntry value="org.eclipse.ecf.provider.filetransfer@default:default"/>
         <setEntry value="org.eclipse.ecf@default:default"/>
@@ -273,6 +306,8 @@
         <setEntry value="org.junit.platform.launcher@default:default"/>
         <setEntry value="org.junit.platform.runner@default:default"/>
         <setEntry value="org.junit.platform.suite.api@default:default"/>
+        <setEntry value="org.junit.platform.suite.commons@default:default"/>
+        <setEntry value="org.junit.platform.suite.engine@default:default"/>
         <setEntry value="org.junit.vintage.engine@default:default"/>
         <setEntry value="org.junit@default:default"/>
         <setEntry value="org.jvnet.mimepull@default:default"/>

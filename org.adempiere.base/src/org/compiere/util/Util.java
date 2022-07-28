@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -228,7 +229,7 @@ public class Util
 	/**
 	 * Is String Empty
 	 * @param str string
-	 * @return true if >= 1 char
+	 * @return true if &gt;= 1 char
 	 */
 	public static boolean isEmpty (String str)
 	{
@@ -239,7 +240,7 @@ public class Util
 	 * Is String Empty
 	 * @param str string
 	 * @param trimWhitespaces trim whitespaces
-	 * @return true if >= 1 char
+	 * @return true if &gt;= 1 char
 	 */
 	public static boolean isEmpty (String str, boolean trimWhitespaces)
 	{
@@ -253,7 +254,7 @@ public class Util
 
 	/**
 	 * Remove accents from string
-	 * @param str string
+	 * @param text string
 	 * @return Unaccented String
 	 */
 	public static String deleteAccents(String text) {
@@ -557,7 +558,7 @@ public class Util
 	/**
 	 * Is 8 Bit
 	 * @param str string
-	 * @return true if string contains chars > 255
+	 * @return true if string contains chars &gt; 255
 	 */
 	public static boolean is8Bit (String str)
 	{
@@ -748,4 +749,21 @@ public class Util
 			}
 		}
 	}
+
+	/**
+	 * Make the filename correct (updating all unauthorized characters to safe ones)
+	 * @param the filename to check
+	 * @returns the correct filename
+	 */
+	public static String setFilenameCorrect(String input) {
+		String output = Normalizer.normalize(input, Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+		output = output.replaceAll("/" , "-");
+		output = output.replaceAll(":" , "-");
+		output = output.replaceAll("\\*" , "-");
+		output = output.replaceAll("<" , "-");
+		output = output.replaceAll(">" , "-");
+		output = output.replaceAll("%" , "-");
+		return output.trim();
+	}
+
 }   //  Util

@@ -18,12 +18,14 @@ package org.idempiere.webservices.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for WS_WebService_Para
  *  @author iDempiere (generated) 
- *  @version Development 9.0
+ *  @version Release 9
  */
+@SuppressWarnings("all")
 public interface I_WS_WebService_Para 
 {
 

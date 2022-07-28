@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_BOMProduct
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_BOMProduct")
 public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent 
 {
@@ -33,12 +33,31 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_BOMProduct (Properties ctx, int M_BOMProduct_ID, String trxName)
     {
       super (ctx, M_BOMProduct_ID, trxName);
+      /** if (M_BOMProduct_ID == 0)
+        {
+			setBOMProductType (null);
+// S
+			setBOMQty (Env.ZERO);
+// 1
+			setIsPhantom (false);
+			setLeadTimeOffset (0);
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_BOMProduct WHERE M_BOM_ID=@M_BOM_ID@
+			setM_BOM_ID (0);
+			setM_BOMProduct_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_BOMProduct (Properties ctx, int M_BOMProduct_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_BOMProduct_ID, trxName, virtualColumns);
       /** if (M_BOMProduct_ID == 0)
         {
 			setBOMProductType (null);
@@ -95,9 +114,8 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	/** Outside Processing = X */
 	public static final String BOMPRODUCTTYPE_OutsideProcessing = "X";
 	/** Set Component Type.
-		@param BOMProductType 
-		BOM Product Type
-	  */
+		@param BOMProductType BOM Product Type
+	*/
 	public void setBOMProductType (String BOMProductType)
 	{
 
@@ -107,15 +125,14 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	/** Get Component Type.
 		@return BOM Product Type
 	  */
-	public String getBOMProductType () 
+	public String getBOMProductType()
 	{
 		return (String)get_Value(COLUMNNAME_BOMProductType);
 	}
 
 	/** Set BOM Quantity.
-		@param BOMQty 
-		Bill of Materials Quantity
-	  */
+		@param BOMQty Bill of Materials Quantity
+	*/
 	public void setBOMQty (BigDecimal BOMQty)
 	{
 		set_Value (COLUMNNAME_BOMQty, BOMQty);
@@ -124,7 +141,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	/** Get BOM Quantity.
 		@return Bill of Materials Quantity
 	  */
-	public BigDecimal getBOMQty () 
+	public BigDecimal getBOMQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_BOMQty);
 		if (bd == null)
@@ -133,9 +150,8 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -144,15 +160,14 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -161,15 +176,14 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Phantom.
-		@param IsPhantom 
-		Phantom Component
-	  */
+		@param IsPhantom Phantom Component
+	*/
 	public void setIsPhantom (boolean IsPhantom)
 	{
 		set_Value (COLUMNNAME_IsPhantom, Boolean.valueOf(IsPhantom));
@@ -178,7 +192,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	/** Get Phantom.
 		@return Phantom Component
 	  */
-	public boolean isPhantom () 
+	public boolean isPhantom()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPhantom);
 		if (oo != null) 
@@ -191,9 +205,8 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	}
 
 	/** Set Lead Time Offset.
-		@param LeadTimeOffset 
-		Optional Lead Time offset before starting production
-	  */
+		@param LeadTimeOffset Optional Lead Time offset before starting production
+	*/
 	public void setLeadTimeOffset (int LeadTimeOffset)
 	{
 		set_Value (COLUMNNAME_LeadTimeOffset, Integer.valueOf(LeadTimeOffset));
@@ -202,7 +215,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	/** Get Lead Time Offset.
 		@return Optional Lead Time offset before starting production
 	  */
-	public int getLeadTimeOffset () 
+	public int getLeadTimeOffset()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LeadTimeOffset);
 		if (ii == null)
@@ -211,9 +224,8 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -222,7 +234,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -245,21 +257,20 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -274,21 +285,20 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	}
 
 	/** Set Alternative Group.
-		@param M_BOMAlternative_ID 
-		Product BOM Alternative Group
-	  */
+		@param M_BOMAlternative_ID Product BOM Alternative Group
+	*/
 	public void setM_BOMAlternative_ID (int M_BOMAlternative_ID)
 	{
-		if (M_BOMAlternative_ID < 1) 
+		if (M_BOMAlternative_ID < 1)
 			set_Value (COLUMNNAME_M_BOMAlternative_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_BOMAlternative_ID, Integer.valueOf(M_BOMAlternative_ID));
 	}
 
 	/** Get Alternative Group.
 		@return Product BOM Alternative Group
 	  */
-	public int getM_BOMAlternative_ID () 
+	public int getM_BOMAlternative_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_BOMAlternative_ID);
 		if (ii == null)
@@ -303,21 +313,20 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	}
 
 	/** Set BOM.
-		@param M_BOM_ID 
-		Bill of Material
-	  */
+		@param M_BOM_ID Bill of Material
+	*/
 	public void setM_BOM_ID (int M_BOM_ID)
 	{
-		if (M_BOM_ID < 1) 
+		if (M_BOM_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_BOM_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_BOM_ID, Integer.valueOf(M_BOM_ID));
 	}
 
 	/** Get BOM.
 		@return Bill of Material
 	  */
-	public int getM_BOM_ID () 
+	public int getM_BOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_BOM_ID);
 		if (ii == null)
@@ -326,21 +335,20 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	}
 
 	/** Set BOM Component.
-		@param M_BOMProduct_ID 
-		Bill of Material Component (Product)
-	  */
+		@param M_BOMProduct_ID Bill of Material Component (Product)
+	*/
 	public void setM_BOMProduct_ID (int M_BOMProduct_ID)
 	{
-		if (M_BOMProduct_ID < 1) 
+		if (M_BOMProduct_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_BOMProduct_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_BOMProduct_ID, Integer.valueOf(M_BOMProduct_ID));
 	}
 
 	/** Get BOM Component.
 		@return Bill of Material Component (Product)
 	  */
-	public int getM_BOMProduct_ID () 
+	public int getM_BOMProduct_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_BOMProduct_ID);
 		if (ii == null)
@@ -349,7 +357,8 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	}
 
 	/** Set M_BOMProduct_UU.
-		@param M_BOMProduct_UU M_BOMProduct_UU	  */
+		@param M_BOMProduct_UU M_BOMProduct_UU
+	*/
 	public void setM_BOMProduct_UU (String M_BOMProduct_UU)
 	{
 		set_Value (COLUMNNAME_M_BOMProduct_UU, M_BOMProduct_UU);
@@ -357,7 +366,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 
 	/** Get M_BOMProduct_UU.
 		@return M_BOMProduct_UU	  */
-	public String getM_BOMProduct_UU () 
+	public String getM_BOMProduct_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_BOMProduct_UU);
 	}
@@ -369,21 +378,20 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	}
 
 	/** Set Change Notice.
-		@param M_ChangeNotice_ID 
-		Bill of Materials (Engineering) Change Notice (Version)
-	  */
+		@param M_ChangeNotice_ID Bill of Materials (Engineering) Change Notice (Version)
+	*/
 	public void setM_ChangeNotice_ID (int M_ChangeNotice_ID)
 	{
-		if (M_ChangeNotice_ID < 1) 
+		if (M_ChangeNotice_ID < 1)
 			set_Value (COLUMNNAME_M_ChangeNotice_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ChangeNotice_ID, Integer.valueOf(M_ChangeNotice_ID));
 	}
 
 	/** Get Change Notice.
 		@return Bill of Materials (Engineering) Change Notice (Version)
 	  */
-	public int getM_ChangeNotice_ID () 
+	public int getM_ChangeNotice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ChangeNotice_ID);
 		if (ii == null)
@@ -398,21 +406,20 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	}
 
 	/** Set BOM Product.
-		@param M_ProductBOM_ID 
-		Bill of Material Component Product
-	  */
+		@param M_ProductBOM_ID Bill of Material Component Product
+	*/
 	public void setM_ProductBOM_ID (int M_ProductBOM_ID)
 	{
-		if (M_ProductBOM_ID < 1) 
+		if (M_ProductBOM_ID < 1)
 			set_Value (COLUMNNAME_M_ProductBOM_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ProductBOM_ID, Integer.valueOf(M_ProductBOM_ID));
 	}
 
 	/** Get BOM Product.
 		@return Bill of Material Component Product
 	  */
-	public int getM_ProductBOM_ID () 
+	public int getM_ProductBOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductBOM_ID);
 		if (ii == null)
@@ -427,21 +434,20 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	}
 
 	/** Set Product Operation.
-		@param M_ProductOperation_ID 
-		Product Manufacturing Operation
-	  */
+		@param M_ProductOperation_ID Product Manufacturing Operation
+	*/
 	public void setM_ProductOperation_ID (int M_ProductOperation_ID)
 	{
-		if (M_ProductOperation_ID < 1) 
+		if (M_ProductOperation_ID < 1)
 			set_Value (COLUMNNAME_M_ProductOperation_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ProductOperation_ID, Integer.valueOf(M_ProductOperation_ID));
 	}
 
 	/** Get Product Operation.
 		@return Product Manufacturing Operation
 	  */
-	public int getM_ProductOperation_ID () 
+	public int getM_ProductOperation_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductOperation_ID);
 		if (ii == null)
@@ -450,9 +456,8 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -461,7 +466,7 @@ public class X_M_BOMProduct extends PO implements I_M_BOMProduct, I_Persistent
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

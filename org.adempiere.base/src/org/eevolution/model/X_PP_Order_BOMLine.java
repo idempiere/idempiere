@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_BOMLine
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_BOMLine")
 public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Persistent 
 {
@@ -35,12 +35,40 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Order_BOMLine (Properties ctx, int PP_Order_BOMLine_ID, String trxName)
     {
       super (ctx, PP_Order_BOMLine_ID, trxName);
+      /** if (PP_Order_BOMLine_ID == 0)
+        {
+			setC_UOM_ID (0);
+			setIsCritical (false);
+			setLine (0);
+// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM PP_Order_BOMLine WHERE PP_Order_ID=@PP_Order_ID@
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setPP_Order_BOM_ID (0);
+			setPP_Order_BOMLine_ID (0);
+			setPP_Order_ID (0);
+			setQtyBatch (Env.ZERO);
+			setQtyBOM (Env.ZERO);
+			setQtyDelivered (Env.ZERO);
+			setQtyPost (Env.ZERO);
+			setQtyReject (Env.ZERO);
+			setQtyRequiered (Env.ZERO);
+			setQtyReserved (Env.ZERO);
+			setQtyScrap (Env.ZERO);
+			setValidFrom (new Timestamp( System.currentTimeMillis() ));
+// @#Date@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_BOMLine (Properties ctx, int PP_Order_BOMLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_BOMLine_ID, trxName, virtualColumns);
       /** if (PP_Order_BOMLine_ID == 0)
         {
 			setC_UOM_ID (0);
@@ -100,21 +128,20 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -123,9 +150,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Quantity Assay.
-		@param Assay 
-		Indicated the Quantity Assay to use into Quality Order
-	  */
+		@param Assay Indicated the Quantity Assay to use into Quality Order
+	*/
 	public void setAssay (BigDecimal Assay)
 	{
 		set_ValueNoCheck (COLUMNNAME_Assay, Assay);
@@ -134,7 +160,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Quantity Assay.
 		@return Indicated the Quantity Assay to use into Quality Order
 	  */
-	public BigDecimal getAssay () 
+	public BigDecimal getAssay()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Assay);
 		if (bd == null)
@@ -143,9 +169,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Backflush Group.
-		@param BackflushGroup 
-		The Grouping Components to the Backflush
-	  */
+		@param BackflushGroup The Grouping Components to the Backflush
+	*/
 	public void setBackflushGroup (String BackflushGroup)
 	{
 		set_ValueNoCheck (COLUMNNAME_BackflushGroup, BackflushGroup);
@@ -154,7 +179,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Backflush Group.
 		@return The Grouping Components to the Backflush
 	  */
-	public String getBackflushGroup () 
+	public String getBackflushGroup()
 	{
 		return (String)get_Value(COLUMNNAME_BackflushGroup);
 	}
@@ -180,9 +205,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Variant = VA */
 	public static final String COMPONENTTYPE_Variant = "VA";
 	/** Set Component Type.
-		@param ComponentType 
-		Component Type for a Bill of Material or Formula
-	  */
+		@param ComponentType Component Type for a Bill of Material or Formula
+	*/
 	public void setComponentType (String ComponentType)
 	{
 
@@ -192,15 +216,14 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Component Type.
 		@return Component Type for a Bill of Material or Formula
 	  */
-	public String getComponentType () 
+	public String getComponentType()
 	{
 		return (String)get_Value(COLUMNNAME_ComponentType);
 	}
 
 	/** Set Cost Allocation Percent.
-		@param CostAllocationPerc 
-		Cost allocation percent in case of a co-product.
-	  */
+		@param CostAllocationPerc Cost allocation percent in case of a co-product.
+	*/
 	public void setCostAllocationPerc (BigDecimal CostAllocationPerc)
 	{
 		set_Value (COLUMNNAME_CostAllocationPerc, CostAllocationPerc);
@@ -209,7 +232,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Cost Allocation Percent.
 		@return Cost allocation percent in case of a co-product.
 	  */
-	public BigDecimal getCostAllocationPerc () 
+	public BigDecimal getCostAllocationPerc()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CostAllocationPerc);
 		if (bd == null)
@@ -224,21 +247,20 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set UOM.
-		@param C_UOM_ID 
-		Unit of Measure
-	  */
+		@param C_UOM_ID Unit of Measure
+	*/
 	public void setC_UOM_ID (int C_UOM_ID)
 	{
-		if (C_UOM_ID < 1) 
+		if (C_UOM_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_UOM_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
 	}
 
 	/** Get UOM.
 		@return Unit of Measure
 	  */
-	public int getC_UOM_ID () 
+	public int getC_UOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
 		if (ii == null)
@@ -247,9 +269,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Date Delivered.
-		@param DateDelivered 
-		Date when the product was delivered
-	  */
+		@param DateDelivered Date when the product was delivered
+	*/
 	public void setDateDelivered (Timestamp DateDelivered)
 	{
 		set_Value (COLUMNNAME_DateDelivered, DateDelivered);
@@ -258,15 +279,14 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Date Delivered.
 		@return Date when the product was delivered
 	  */
-	public Timestamp getDateDelivered () 
+	public Timestamp getDateDelivered()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateDelivered);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -275,15 +295,14 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Feature.
-		@param Feature 
-		Indicated the Feature for Product Configure
-	  */
+		@param Feature Indicated the Feature for Product Configure
+	*/
 	public void setFeature (String Feature)
 	{
 		set_Value (COLUMNNAME_Feature, Feature);
@@ -292,15 +311,14 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Feature.
 		@return Indicated the Feature for Product Configure
 	  */
-	public String getFeature () 
+	public String getFeature()
 	{
 		return (String)get_Value(COLUMNNAME_Feature);
 	}
 
 	/** Set Forecast.
-		@param Forecast 
-		Indicated the % of participation this component into a of the BOM Planning
-	  */
+		@param Forecast Indicated the % of participation this component into a of the BOM Planning
+	*/
 	public void setForecast (BigDecimal Forecast)
 	{
 		set_ValueNoCheck (COLUMNNAME_Forecast, Forecast);
@@ -309,7 +327,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Forecast.
 		@return Indicated the % of participation this component into a of the BOM Planning
 	  */
-	public BigDecimal getForecast () 
+	public BigDecimal getForecast()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Forecast);
 		if (bd == null)
@@ -318,9 +336,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -329,15 +346,14 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Is Critical Component.
-		@param IsCritical 
-		Indicate that a Manufacturing Order can not begin without have this component
-	  */
+		@param IsCritical Indicate that a Manufacturing Order can not begin without have this component
+	*/
 	public void setIsCritical (boolean IsCritical)
 	{
 		set_Value (COLUMNNAME_IsCritical, Boolean.valueOf(IsCritical));
@@ -346,7 +362,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Is Critical Component.
 		@return Indicate that a Manufacturing Order can not begin without have this component
 	  */
-	public boolean isCritical () 
+	public boolean isCritical()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCritical);
 		if (oo != null) 
@@ -359,9 +375,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Is Qty Percentage.
-		@param IsQtyPercentage 
-		Indicate that this component is based in % Quantity
-	  */
+		@param IsQtyPercentage Indicate that this component is based in % Quantity
+	*/
 	public void setIsQtyPercentage (boolean IsQtyPercentage)
 	{
 		set_ValueNoCheck (COLUMNNAME_IsQtyPercentage, Boolean.valueOf(IsQtyPercentage));
@@ -370,7 +385,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Is Qty Percentage.
 		@return Indicate that this component is based in % Quantity
 	  */
-	public boolean isQtyPercentage () 
+	public boolean isQtyPercentage()
 	{
 		Object oo = get_Value(COLUMNNAME_IsQtyPercentage);
 		if (oo != null) 
@@ -391,9 +406,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Floor Stock = 2 */
 	public static final String ISSUEMETHOD_FloorStock = "2";
 	/** Set Issue Method.
-		@param IssueMethod 
-		There are two methods for issue the components to Manufacturing Order
-	  */
+		@param IssueMethod There are two methods for issue the components to Manufacturing Order
+	*/
 	public void setIssueMethod (String IssueMethod)
 	{
 
@@ -403,15 +417,14 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Issue Method.
 		@return There are two methods for issue the components to Manufacturing Order
 	  */
-	public String getIssueMethod () 
+	public String getIssueMethod()
 	{
 		return (String)get_Value(COLUMNNAME_IssueMethod);
 	}
 
 	/** Set Lead Time Offset.
-		@param LeadTimeOffset 
-		Optional Lead Time offset before starting production
-	  */
+		@param LeadTimeOffset Optional Lead Time offset before starting production
+	*/
 	public void setLeadTimeOffset (int LeadTimeOffset)
 	{
 		set_Value (COLUMNNAME_LeadTimeOffset, Integer.valueOf(LeadTimeOffset));
@@ -420,7 +433,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Lead Time Offset.
 		@return Optional Lead Time offset before starting production
 	  */
-	public int getLeadTimeOffset () 
+	public int getLeadTimeOffset()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LeadTimeOffset);
 		if (ii == null)
@@ -429,9 +442,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -440,7 +452,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -455,21 +467,20 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -484,21 +495,20 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Change Notice.
-		@param M_ChangeNotice_ID 
-		Bill of Materials (Engineering) Change Notice (Version)
-	  */
+		@param M_ChangeNotice_ID Bill of Materials (Engineering) Change Notice (Version)
+	*/
 	public void setM_ChangeNotice_ID (int M_ChangeNotice_ID)
 	{
-		if (M_ChangeNotice_ID < 1) 
+		if (M_ChangeNotice_ID < 1)
 			set_Value (COLUMNNAME_M_ChangeNotice_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ChangeNotice_ID, Integer.valueOf(M_ChangeNotice_ID));
 	}
 
 	/** Get Change Notice.
 		@return Bill of Materials (Engineering) Change Notice (Version)
 	  */
-	public int getM_ChangeNotice_ID () 
+	public int getM_ChangeNotice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ChangeNotice_ID);
 		if (ii == null)
@@ -513,21 +523,20 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Locator.
-		@param M_Locator_ID 
-		Warehouse Locator
-	  */
+		@param M_Locator_ID Warehouse Locator
+	*/
 	public void setM_Locator_ID (int M_Locator_ID)
 	{
-		if (M_Locator_ID < 1) 
+		if (M_Locator_ID < 1)
 			set_Value (COLUMNNAME_M_Locator_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
 	}
 
 	/** Get Locator.
 		@return Warehouse Locator
 	  */
-	public int getM_Locator_ID () 
+	public int getM_Locator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
 		if (ii == null)
@@ -542,21 +551,20 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -579,21 +587,20 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_Value (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -608,18 +615,19 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Manufacturing Order BOM.
-		@param PP_Order_BOM_ID Manufacturing Order BOM	  */
+		@param PP_Order_BOM_ID Manufacturing Order BOM
+	*/
 	public void setPP_Order_BOM_ID (int PP_Order_BOM_ID)
 	{
-		if (PP_Order_BOM_ID < 1) 
+		if (PP_Order_BOM_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_BOM_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_BOM_ID, Integer.valueOf(PP_Order_BOM_ID));
 	}
 
 	/** Get Manufacturing Order BOM.
 		@return Manufacturing Order BOM	  */
-	public int getPP_Order_BOM_ID () 
+	public int getPP_Order_BOM_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_BOM_ID);
 		if (ii == null)
@@ -628,18 +636,19 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Manufacturing Order BOM Line.
-		@param PP_Order_BOMLine_ID Manufacturing Order BOM Line	  */
+		@param PP_Order_BOMLine_ID Manufacturing Order BOM Line
+	*/
 	public void setPP_Order_BOMLine_ID (int PP_Order_BOMLine_ID)
 	{
-		if (PP_Order_BOMLine_ID < 1) 
+		if (PP_Order_BOMLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_BOMLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_BOMLine_ID, Integer.valueOf(PP_Order_BOMLine_ID));
 	}
 
 	/** Get Manufacturing Order BOM Line.
 		@return Manufacturing Order BOM Line	  */
-	public int getPP_Order_BOMLine_ID () 
+	public int getPP_Order_BOMLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_BOMLine_ID);
 		if (ii == null)
@@ -648,7 +657,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set PP_Order_BOMLine_UU.
-		@param PP_Order_BOMLine_UU PP_Order_BOMLine_UU	  */
+		@param PP_Order_BOMLine_UU PP_Order_BOMLine_UU
+	*/
 	public void setPP_Order_BOMLine_UU (String PP_Order_BOMLine_UU)
 	{
 		set_Value (COLUMNNAME_PP_Order_BOMLine_UU, PP_Order_BOMLine_UU);
@@ -656,7 +666,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 
 	/** Get PP_Order_BOMLine_UU.
 		@return PP_Order_BOMLine_UU	  */
-	public String getPP_Order_BOMLine_UU () 
+	public String getPP_Order_BOMLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PP_Order_BOMLine_UU);
 	}
@@ -668,21 +678,20 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Manufacturing Order.
-		@param PP_Order_ID 
-		Manufacturing Order
-	  */
+		@param PP_Order_ID Manufacturing Order
+	*/
 	public void setPP_Order_ID (int PP_Order_ID)
 	{
-		if (PP_Order_ID < 1) 
+		if (PP_Order_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, Integer.valueOf(PP_Order_ID));
 	}
 
 	/** Get Manufacturing Order.
 		@return Manufacturing Order
 	  */
-	public int getPP_Order_ID () 
+	public int getPP_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_ID);
 		if (ii == null)
@@ -691,9 +700,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Quantity in %.
-		@param QtyBatch 
-		Indicate the Quantity % use in this Formula
-	  */
+		@param QtyBatch Indicate the Quantity % use in this Formula
+	*/
 	public void setQtyBatch (BigDecimal QtyBatch)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyBatch, QtyBatch);
@@ -702,7 +710,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Quantity in %.
 		@return Indicate the Quantity % use in this Formula
 	  */
-	public BigDecimal getQtyBatch () 
+	public BigDecimal getQtyBatch()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBatch);
 		if (bd == null)
@@ -711,9 +719,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Quantity.
-		@param QtyBOM 
-		Indicate the Quantity  use in this BOM
-	  */
+		@param QtyBOM Indicate the Quantity  use in this BOM
+	*/
 	public void setQtyBOM (BigDecimal QtyBOM)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyBOM, QtyBOM);
@@ -722,7 +729,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Quantity.
 		@return Indicate the Quantity  use in this BOM
 	  */
-	public BigDecimal getQtyBOM () 
+	public BigDecimal getQtyBOM()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBOM);
 		if (bd == null)
@@ -731,9 +738,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Delivered Quantity.
-		@param QtyDelivered 
-		Delivered Quantity
-	  */
+		@param QtyDelivered Delivered Quantity
+	*/
 	public void setQtyDelivered (BigDecimal QtyDelivered)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyDelivered, QtyDelivered);
@@ -742,7 +748,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Delivered Quantity.
 		@return Delivered Quantity
 	  */
-	public BigDecimal getQtyDelivered () 
+	public BigDecimal getQtyDelivered()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyDelivered);
 		if (bd == null)
@@ -751,9 +757,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Quantity.
-		@param QtyEntered 
-		The Quantity Entered is based on the selected UoM
-	  */
+		@param QtyEntered The Quantity Entered is based on the selected UoM
+	*/
 	public void setQtyEntered (BigDecimal QtyEntered)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyEntered, QtyEntered);
@@ -762,7 +767,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Quantity.
 		@return The Quantity Entered is based on the selected UoM
 	  */
-	public BigDecimal getQtyEntered () 
+	public BigDecimal getQtyEntered()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyEntered);
 		if (bd == null)
@@ -771,7 +776,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Qty Post.
-		@param QtyPost Qty Post	  */
+		@param QtyPost Qty Post
+	*/
 	public void setQtyPost (BigDecimal QtyPost)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyPost, QtyPost);
@@ -779,7 +785,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 
 	/** Get Qty Post.
 		@return Qty Post	  */
-	public BigDecimal getQtyPost () 
+	public BigDecimal getQtyPost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyPost);
 		if (bd == null)
@@ -788,7 +794,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Qty Reject.
-		@param QtyReject Qty Reject	  */
+		@param QtyReject Qty Reject
+	*/
 	public void setQtyReject (BigDecimal QtyReject)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyReject, QtyReject);
@@ -796,7 +803,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 
 	/** Get Qty Reject.
 		@return Qty Reject	  */
-	public BigDecimal getQtyReject () 
+	public BigDecimal getQtyReject()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyReject);
 		if (bd == null)
@@ -805,7 +812,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Qty Requiered.
-		@param QtyRequiered Qty Requiered	  */
+		@param QtyRequiered Qty Requiered
+	*/
 	public void setQtyRequiered (BigDecimal QtyRequiered)
 	{
 		set_Value (COLUMNNAME_QtyRequiered, QtyRequiered);
@@ -813,7 +821,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 
 	/** Get Qty Requiered.
 		@return Qty Requiered	  */
-	public BigDecimal getQtyRequiered () 
+	public BigDecimal getQtyRequiered()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyRequiered);
 		if (bd == null)
@@ -822,9 +830,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Reserved Quantity.
-		@param QtyReserved 
-		Reserved Quantity
-	  */
+		@param QtyReserved Reserved Quantity
+	*/
 	public void setQtyReserved (BigDecimal QtyReserved)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyReserved, QtyReserved);
@@ -833,7 +840,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Reserved Quantity.
 		@return Reserved Quantity
 	  */
-	public BigDecimal getQtyReserved () 
+	public BigDecimal getQtyReserved()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyReserved);
 		if (bd == null)
@@ -842,9 +849,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Scrap %.
-		@param QtyScrap 
-		Scrap % Quantity for this componet
-	  */
+		@param QtyScrap Scrap % Quantity for this componet
+	*/
 	public void setQtyScrap (BigDecimal QtyScrap)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyScrap, QtyScrap);
@@ -853,7 +859,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Scrap %.
 		@return Scrap % Quantity for this componet
 	  */
-	public BigDecimal getQtyScrap () 
+	public BigDecimal getQtyScrap()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyScrap);
 		if (bd == null)
@@ -862,9 +868,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Scrap %.
-		@param Scrap 
-		Indicate the Scrap %  for calculate the Scrap Quantity
-	  */
+		@param Scrap Indicate the Scrap %  for calculate the Scrap Quantity
+	*/
 	public void setScrap (BigDecimal Scrap)
 	{
 		set_ValueNoCheck (COLUMNNAME_Scrap, Scrap);
@@ -873,7 +878,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Scrap %.
 		@return Indicate the Scrap %  for calculate the Scrap Quantity
 	  */
-	public BigDecimal getScrap () 
+	public BigDecimal getScrap()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Scrap);
 		if (bd == null)
@@ -882,9 +887,8 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	}
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -893,15 +897,14 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -910,7 +913,7 @@ public class X_PP_Order_BOMLine extends PO implements I_PP_Order_BOMLine, I_Pers
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}

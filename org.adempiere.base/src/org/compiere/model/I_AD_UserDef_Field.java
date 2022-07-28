@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Field
  *  @author iDempiere (generated) 
- *  @version Development 9.0
+ *  @version Release 10
  */
 public interface I_AD_UserDef_Field 
 {
@@ -41,6 +41,17 @@ public interface I_AD_UserDef_Field
 
     /** Load Meta Data */
 
+    /** Column name AD_Chart_ID */
+    public static final String COLUMNNAME_AD_Chart_ID = "AD_Chart_ID";
+
+	/** Set Chart	  */
+	public void setAD_Chart_ID (int AD_Chart_ID);
+
+	/** Get Chart	  */
+	public int getAD_Chart_ID();
+
+	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException;
+
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
@@ -48,21 +59,6 @@ public interface I_AD_UserDef_Field
 	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
-
-    /** Column name AD_FieldGroup_ID */
-    public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
-
-	/** Set Field Group.
-	  * Logical grouping of fields
-	  */
-	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID);
-
-	/** Get Field Group.
-	  * Logical grouping of fields
-	  */
-	public int getAD_FieldGroup_ID();
-
-	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
 
     /** Column name AD_Field_ID */
     public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
@@ -78,6 +74,21 @@ public interface I_AD_UserDef_Field
 	public int getAD_Field_ID();
 
 	public org.compiere.model.I_AD_Field getAD_Field() throws RuntimeException;
+
+    /** Column name AD_FieldGroup_ID */
+    public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
+
+	/** Set Field Group.
+	  * Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID);
+
+	/** Get Field Group.
+	  * Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID();
+
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
 
     /** Column name AD_FieldStyle_ID */
     public static final String COLUMNNAME_AD_FieldStyle_ID = "AD_FieldStyle_ID";
@@ -559,13 +570,17 @@ public interface I_AD_UserDef_Field
 
 	/** Set Value Format.
 	  * Format of the value;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+
 	  */
 	public void setVFormat (String VFormat);
 
 	/** Get Value Format.
 	  * Format of the value;
- Can contain fixed format elements, Variables: "_lLoOaAcCa09"
+ Can contain fixed format elements, Variables: &quot;
+_lLoOaAcCa09&quot;
+
 	  */
 	public String getVFormat();
 

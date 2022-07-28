@@ -18,9 +18,12 @@ package org.compiere.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Util;
 
 /**
  *	PO Info Column Info Value Object
@@ -33,7 +36,7 @@ public class POInfoColumn implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3882249785085847367L;
+	private static final long serialVersionUID = -6550300505836470875L;
 
 	/** Used by Remote FinReport			*/
 	/**
@@ -106,24 +109,38 @@ public class POInfoColumn implements Serializable
 		//
 		FieldLength = fieldLength;
 		ValueMin = valueMin;
-		try
-		{
-			if (valueMin != null && valueMin.length() > 0)
-				ValueMin_BD = new BigDecimal(valueMin);
-		}
-		catch (Exception ex)
-		{
-			CLogger.get().log(Level.SEVERE, "ValueMin=" + valueMin, ex);
+		if (!Util.isEmpty(ValueMin)) {
+			try {
+				ValueMin_BD = new BigDecimal(ValueMin);
+			} catch (Exception ex) {
+				ValueMin_BD = null;
+			}
+			try {
+			    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			    ValueMin_TS = new java.sql.Timestamp(dateFormat.parse(ValueMin).getTime());
+			} catch (Exception ex) {
+				ValueMin_TS = null;
+			}
+			if (ValueMin_BD == null && ValueMin_TS == null) {
+				CLogger.get().log(Level.SEVERE, "ValueMin cannot be parsed to a number or date = " + ValueMin);
+			}
 		}
 		ValueMax = valueMax;
-		try
-		{
-			if (valueMax != null && valueMax.length() > 0)
-				ValueMax_BD = new BigDecimal(valueMax);
-		}
-		catch (Exception ex)
-		{
-			CLogger.get().log(Level.SEVERE, "ValueMax=" + valueMax, ex);
+		if (!Util.isEmpty(ValueMax)) {
+			try {
+				ValueMax_BD = new BigDecimal(ValueMax);
+			} catch (Exception ex) {
+				ValueMax_BD = null;
+			}
+			try {
+			    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			    ValueMax_TS = new java.sql.Timestamp(dateFormat.parse(ValueMax).getTime());
+			} catch (Exception ex) {
+				ValueMax_TS = null;
+			}
+			if (ValueMax_BD == null && ValueMax_TS == null) {
+				CLogger.get().log(Level.SEVERE, "ValueMax cannot be parsed to a number or date = " + ValueMax);
+			}
 		}
 		IsTranslated = isTranslated;
 		IsEncrypted = isEncrypted;
@@ -179,6 +196,10 @@ public class POInfoColumn implements Serializable
 	public BigDecimal	ValueMin_BD = null;
 	/**	Max Value		*/
 	public BigDecimal	ValueMax_BD = null;
+	/**	Min Value		*/
+	public Timestamp	ValueMin_TS = null;
+	/**	Max Value		*/
+	public Timestamp	ValueMax_TS = null;
 
 	/**
 	 * 	String representation

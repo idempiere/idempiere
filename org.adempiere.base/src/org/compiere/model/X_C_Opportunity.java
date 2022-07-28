@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Opportunity
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_Opportunity")
 public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent 
 {
@@ -34,12 +34,30 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Opportunity (Properties ctx, int C_Opportunity_ID, String trxName)
     {
       super (ctx, C_Opportunity_ID, trxName);
+      /** if (C_Opportunity_ID == 0)
+        {
+			setC_BPartner_ID (0);
+// @C_BPartner_ID@
+			setC_Currency_ID (0);
+			setC_Opportunity_ID (0);
+			setC_SalesStage_ID (0);
+			setDocumentNo (null);
+			setExpectedCloseDate (new Timestamp( System.currentTimeMillis() ));
+			setOpportunityAmt (Env.ZERO);
+			setProbability (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Opportunity (Properties ctx, int C_Opportunity_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Opportunity_ID, trxName, virtualColumns);
       /** if (C_Opportunity_ID == 0)
         {
 			setC_BPartner_ID (0);
@@ -89,21 +107,20 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -117,22 +134,21 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -147,21 +163,20 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	}
 
 	/** Set Campaign.
-		@param C_Campaign_ID 
-		Marketing Campaign
-	  */
+		@param C_Campaign_ID Marketing Campaign
+	*/
 	public void setC_Campaign_ID (int C_Campaign_ID)
 	{
-		if (C_Campaign_ID < 1) 
+		if (C_Campaign_ID < 1)
 			set_Value (COLUMNNAME_C_Campaign_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
 	}
 
 	/** Get Campaign.
 		@return Marketing Campaign
 	  */
-	public int getC_Campaign_ID () 
+	public int getC_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
 		if (ii == null)
@@ -176,21 +191,20 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	}
 
 	/** Set Currency.
-		@param C_Currency_ID 
-		The Currency for this record
-	  */
+		@param C_Currency_ID The Currency for this record
+	*/
 	public void setC_Currency_ID (int C_Currency_ID)
 	{
-		if (C_Currency_ID < 1) 
+		if (C_Currency_ID < 1)
 			set_Value (COLUMNNAME_C_Currency_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Currency_ID, Integer.valueOf(C_Currency_ID));
 	}
 
 	/** Get Currency.
 		@return The Currency for this record
 	  */
-	public int getC_Currency_ID () 
+	public int getC_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Currency_ID);
 		if (ii == null)
@@ -199,9 +213,8 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	}
 
 	/** Set Close Date.
-		@param CloseDate 
-		Close Date
-	  */
+		@param CloseDate Close Date
+	*/
 	public void setCloseDate (Timestamp CloseDate)
 	{
 		set_Value (COLUMNNAME_CloseDate, CloseDate);
@@ -210,15 +223,14 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/** Get Close Date.
 		@return Close Date
 	  */
-	public Timestamp getCloseDate () 
+	public Timestamp getCloseDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_CloseDate);
 	}
 
 	/** Set Comments.
-		@param Comments 
-		Comments or additional information
-	  */
+		@param Comments Comments or additional information
+	*/
 	public void setComments (String Comments)
 	{
 		set_Value (COLUMNNAME_Comments, Comments);
@@ -227,24 +239,25 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/** Get Comments.
 		@return Comments or additional information
 	  */
-	public String getComments () 
+	public String getComments()
 	{
 		return (String)get_Value(COLUMNNAME_Comments);
 	}
 
 	/** Set Sales Opportunity.
-		@param C_Opportunity_ID Sales Opportunity	  */
+		@param C_Opportunity_ID Sales Opportunity
+	*/
 	public void setC_Opportunity_ID (int C_Opportunity_ID)
 	{
-		if (C_Opportunity_ID < 1) 
+		if (C_Opportunity_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Opportunity_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Opportunity_ID, Integer.valueOf(C_Opportunity_ID));
 	}
 
 	/** Get Sales Opportunity.
 		@return Sales Opportunity	  */
-	public int getC_Opportunity_ID () 
+	public int getC_Opportunity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Opportunity_ID);
 		if (ii == null)
@@ -253,7 +266,8 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	}
 
 	/** Set C_Opportunity_UU.
-		@param C_Opportunity_UU C_Opportunity_UU	  */
+		@param C_Opportunity_UU C_Opportunity_UU
+	*/
 	public void setC_Opportunity_UU (String C_Opportunity_UU)
 	{
 		set_Value (COLUMNNAME_C_Opportunity_UU, C_Opportunity_UU);
@@ -261,7 +275,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 
 	/** Get C_Opportunity_UU.
 		@return C_Opportunity_UU	  */
-	public String getC_Opportunity_UU () 
+	public String getC_Opportunity_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Opportunity_UU);
 	}
@@ -273,21 +287,20 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	}
 
 	/** Set Order.
-		@param C_Order_ID 
-		Order
-	  */
+		@param C_Order_ID Order
+	*/
 	public void setC_Order_ID (int C_Order_ID)
 	{
-		if (C_Order_ID < 1) 
+		if (C_Order_ID < 1)
 			set_Value (COLUMNNAME_C_Order_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
 	}
 
 	/** Get Order.
 		@return Order
 	  */
-	public int getC_Order_ID () 
+	public int getC_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
 		if (ii == null)
@@ -296,9 +309,8 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	}
 
 	/** Set Cost.
-		@param Cost 
-		Cost information
-	  */
+		@param Cost Cost information
+	*/
 	public void setCost (BigDecimal Cost)
 	{
 		set_Value (COLUMNNAME_Cost, Cost);
@@ -307,7 +319,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/** Get Cost.
 		@return Cost information
 	  */
-	public BigDecimal getCost () 
+	public BigDecimal getCost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Cost);
 		if (bd == null)
@@ -322,21 +334,20 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	}
 
 	/** Set Sales Stage.
-		@param C_SalesStage_ID 
-		Stages of the sales process
-	  */
+		@param C_SalesStage_ID Stages of the sales process
+	*/
 	public void setC_SalesStage_ID (int C_SalesStage_ID)
 	{
-		if (C_SalesStage_ID < 1) 
+		if (C_SalesStage_ID < 1)
 			set_Value (COLUMNNAME_C_SalesStage_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_SalesStage_ID, Integer.valueOf(C_SalesStage_ID));
 	}
 
 	/** Get Sales Stage.
 		@return Stages of the sales process
 	  */
-	public int getC_SalesStage_ID () 
+	public int getC_SalesStage_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_SalesStage_ID);
 		if (ii == null)
@@ -345,9 +356,8 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -356,15 +366,14 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -373,7 +382,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
@@ -387,9 +396,8 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
     }
 
 	/** Set Expected Close Date.
-		@param ExpectedCloseDate 
-		Expected Close Date
-	  */
+		@param ExpectedCloseDate Expected Close Date
+	*/
 	public void setExpectedCloseDate (Timestamp ExpectedCloseDate)
 	{
 		set_Value (COLUMNNAME_ExpectedCloseDate, ExpectedCloseDate);
@@ -398,15 +406,14 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/** Get Expected Close Date.
 		@return Expected Close Date
 	  */
-	public Timestamp getExpectedCloseDate () 
+	public Timestamp getExpectedCloseDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ExpectedCloseDate);
 	}
 
 	/** Set Opportunity Amount.
-		@param OpportunityAmt 
-		The estimated value of this opportunity.
-	  */
+		@param OpportunityAmt The estimated value of this opportunity.
+	*/
 	public void setOpportunityAmt (BigDecimal OpportunityAmt)
 	{
 		set_Value (COLUMNNAME_OpportunityAmt, OpportunityAmt);
@@ -415,7 +422,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/** Get Opportunity Amount.
 		@return The estimated value of this opportunity.
 	  */
-	public BigDecimal getOpportunityAmt () 
+	public BigDecimal getOpportunityAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_OpportunityAmt);
 		if (bd == null)
@@ -424,7 +431,8 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	}
 
 	/** Set Probability.
-		@param Probability Probability	  */
+		@param Probability Probability
+	*/
 	public void setProbability (BigDecimal Probability)
 	{
 		set_Value (COLUMNNAME_Probability, Probability);
@@ -432,7 +440,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 
 	/** Get Probability.
 		@return Probability	  */
-	public BigDecimal getProbability () 
+	public BigDecimal getProbability()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Probability);
 		if (bd == null)
@@ -447,21 +455,20 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	}
 
 	/** Set Sales Representative.
-		@param SalesRep_ID 
-		Sales Representative or Company Agent
-	  */
+		@param SalesRep_ID Sales Representative or Company Agent
+	*/
 	public void setSalesRep_ID (int SalesRep_ID)
 	{
-		if (SalesRep_ID < 1) 
+		if (SalesRep_ID < 1)
 			set_Value (COLUMNNAME_SalesRep_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_SalesRep_ID, Integer.valueOf(SalesRep_ID));
 	}
 
 	/** Get Sales Representative.
 		@return Sales Representative or Company Agent
 	  */
-	public int getSalesRep_ID () 
+	public int getSalesRep_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SalesRep_ID);
 		if (ii == null)
@@ -470,9 +477,8 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	}
 
 	/** Set Weighted Amount.
-		@param WeightedAmt 
-		The amount adjusted by the probability.
-	  */
+		@param WeightedAmt The amount adjusted by the probability.
+	*/
 	public void setWeightedAmt (BigDecimal WeightedAmt)
 	{
 		throw new IllegalArgumentException ("WeightedAmt is virtual column");	}
@@ -480,7 +486,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/** Get Weighted Amount.
 		@return The amount adjusted by the probability.
 	  */
-	public BigDecimal getWeightedAmt () 
+	public BigDecimal getWeightedAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_WeightedAmt);
 		if (bd == null)

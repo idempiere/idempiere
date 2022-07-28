@@ -26,6 +26,7 @@ import java.util.Properties;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.IFieldEditorContainer;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
@@ -70,7 +71,7 @@ import org.zkoss.zul.impl.XulElement;
  * @date    Mar 11, 2007
  * @version $Revision: 0.10 $
  */
-public abstract class WEditor implements EventListener<Event>, PropertyChangeListener
+public abstract class WEditor implements EventListener<Event>, PropertyChangeListener, IInputValidator
 {
     private static final String[] lISTENER_EVENTS = {};
 
@@ -103,6 +104,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	protected boolean tableEditor;
 	
 	private boolean isProcessParameter;
+	
+	private String sValidInput;
 
 	/**
 	 * call to show context menu of this field.
@@ -189,7 +192,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	 * @param comp
 	 * @param gridField
 	 * @param rowIndex
-	 * @param tableEditor
+	 * @param tableEditor editor for Grid
 	 * @param editorConfiguration
 	 */
     public WEditor(Component comp, GridField gridField, int rowIndex, boolean tableEditor, IEditorConfiguration editorConfiguration)
@@ -332,6 +335,13 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         
         component.addEventListener(INIT_EDIT_EVENT, this);
         component.setAttribute("idempiere.editor", this);
+        
+        component.addEventListener(Events.ON_FOCUS, e -> {
+        	ADWindow adwindow = ADWindow.findADWindow(component);
+        	if (adwindow != null) {
+        		adwindow.getADWindowContent().setLastFocusEditor(component);
+        	}
+        });
     }
 
     /**
@@ -499,6 +509,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         return component.isVisible();
     }
 
+    /**
+     * Indicating error with changing the style.
+     * @param error
+     */
     public void setBackground(boolean error)
     {
 
@@ -934,5 +948,20 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			return gridField.get_ValueAsString(variableName);
 		}
 		
+	}
+	
+	@Override
+	public String getValidInput() {
+		return this.sValidInput;
+	}
+	
+	@Override
+	public void setValidInput(String validInput) {
+		this.sValidInput = validInput;
+	}
+	
+	@Override
+	public boolean isValid(String input) {
+		return Util.isEmpty(sValidInput) ? true : sValidInput.equals(input);
 	}
 }

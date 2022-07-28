@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Process
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="HR_Process")
 public class X_HR_Process extends PO implements I_HR_Process, I_Persistent 
 {
@@ -35,12 +35,32 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_HR_Process (Properties ctx, int HR_Process_ID, String trxName)
     {
       super (ctx, HR_Process_ID, trxName);
+      /** if (HR_Process_ID == 0)
+        {
+			setC_DocTypeTarget_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setHR_Payroll_ID (0);
+			setName (null);
+			setPosted (false);
+// N
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Process (Properties ctx, int HR_Process_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Process_ID, trxName, virtualColumns);
       /** if (HR_Process_ID == 0)
         {
 			setC_DocTypeTarget_ID (0);
@@ -92,21 +112,20 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Print Format.
-		@param AD_PrintFormat_ID 
-		Data Print Format
-	  */
+		@param AD_PrintFormat_ID Data Print Format
+	*/
 	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
 	{
-		if (AD_PrintFormat_ID < 1) 
+		if (AD_PrintFormat_ID < 1)
 			set_Value (COLUMNNAME_AD_PrintFormat_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
 	}
 
 	/** Get Print Format.
 		@return Data Print Format
 	  */
-	public int getAD_PrintFormat_ID () 
+	public int getAD_PrintFormat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
 		if (ii == null)
@@ -121,21 +140,20 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Workflow.
-		@param AD_Workflow_ID 
-		Workflow or combination of tasks
-	  */
+		@param AD_Workflow_ID Workflow or combination of tasks
+	*/
 	public void setAD_Workflow_ID (int AD_Workflow_ID)
 	{
-		if (AD_Workflow_ID < 1) 
+		if (AD_Workflow_ID < 1)
 			set_Value (COLUMNNAME_AD_Workflow_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Workflow_ID, Integer.valueOf(AD_Workflow_ID));
 	}
 
 	/** Get Workflow.
 		@return Workflow or combination of tasks
 	  */
-	public int getAD_Workflow_ID () 
+	public int getAD_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Workflow_ID);
 		if (ii == null)
@@ -149,22 +167,21 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -179,21 +196,20 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Charge.
-		@param C_Charge_ID 
-		Additional document charges
-	  */
+		@param C_Charge_ID Additional document charges
+	*/
 	public void setC_Charge_ID (int C_Charge_ID)
 	{
-		if (C_Charge_ID < 1) 
+		if (C_Charge_ID < 1)
 			set_Value (COLUMNNAME_C_Charge_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
 	}
 
 	/** Get Charge.
 		@return Additional document charges
 	  */
-	public int getC_Charge_ID () 
+	public int getC_Charge_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
 		if (ii == null)
@@ -208,21 +224,20 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
+		@param C_DocType_ID Document type or rules
+	*/
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
-		if (C_DocType_ID < 0) 
+		if (C_DocType_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
 	}
 
 	/** Get Document Type.
 		@return Document type or rules
 	  */
-	public int getC_DocType_ID () 
+	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
@@ -237,21 +252,20 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Target Document Type.
-		@param C_DocTypeTarget_ID 
-		Target document type for conversing documents
-	  */
+		@param C_DocTypeTarget_ID Target document type for conversing documents
+	*/
 	public void setC_DocTypeTarget_ID (int C_DocTypeTarget_ID)
 	{
-		if (C_DocTypeTarget_ID < 1) 
+		if (C_DocTypeTarget_ID < 1)
 			set_Value (COLUMNNAME_C_DocTypeTarget_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_DocTypeTarget_ID, Integer.valueOf(C_DocTypeTarget_ID));
 	}
 
 	/** Get Target Document Type.
 		@return Target document type for conversing documents
 	  */
-	public int getC_DocTypeTarget_ID () 
+	public int getC_DocTypeTarget_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocTypeTarget_ID);
 		if (ii == null)
@@ -260,9 +274,8 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Column SQL.
-		@param ColumnSQL 
-		Virtual Column (r/o)
-	  */
+		@param ColumnSQL Virtual Column (r/o)
+	*/
 	public void setColumnSQL (String ColumnSQL)
 	{
 		set_Value (COLUMNNAME_ColumnSQL, ColumnSQL);
@@ -271,7 +284,7 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	/** Get Column SQL.
 		@return Virtual Column (r/o)
 	  */
-	public String getColumnSQL () 
+	public String getColumnSQL()
 	{
 		return (String)get_Value(COLUMNNAME_ColumnSQL);
 	}
@@ -283,21 +296,20 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Payment Selection.
-		@param C_PaySelection_ID 
-		Payment Selection
-	  */
+		@param C_PaySelection_ID Payment Selection
+	*/
 	public void setC_PaySelection_ID (int C_PaySelection_ID)
 	{
-		if (C_PaySelection_ID < 1) 
+		if (C_PaySelection_ID < 1)
 			set_Value (COLUMNNAME_C_PaySelection_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_PaySelection_ID, Integer.valueOf(C_PaySelection_ID));
 	}
 
 	/** Get Payment Selection.
 		@return Payment Selection
 	  */
-	public int getC_PaySelection_ID () 
+	public int getC_PaySelection_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaySelection_ID);
 		if (ii == null)
@@ -306,9 +318,8 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Account Date.
-		@param DateAcct 
-		Accounting Date
-	  */
+		@param DateAcct Accounting Date
+	*/
 	public void setDateAcct (Timestamp DateAcct)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateAcct, DateAcct);
@@ -317,14 +328,14 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	/** Get Account Date.
 		@return Accounting Date
 	  */
-	public Timestamp getDateAcct () 
+	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** <None> = -- */
+	/** &lt;None&gt; = -- */
 	public static final String DOCACTION_None = "--";
 	/** Approve = AP */
 	public static final String DOCACTION_Approve = "AP";
@@ -353,9 +364,8 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	/** Unlock = XL */
 	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
-		@param DocAction 
-		The targeted status of the document
-	  */
+		@param DocAction The targeted status of the document
+	*/
 	public void setDocAction (String DocAction)
 	{
 
@@ -365,7 +375,7 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	/** Get Document Action.
 		@return The targeted status of the document
 	  */
-	public String getDocAction () 
+	public String getDocAction()
 	{
 		return (String)get_Value(COLUMNNAME_DocAction);
 	}
@@ -397,9 +407,8 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	/** Waiting Payment = WP */
 	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
-		@param DocStatus 
-		The current status of the document
-	  */
+		@param DocStatus The current status of the document
+	*/
 	public void setDocStatus (String DocStatus)
 	{
 
@@ -409,15 +418,14 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	/** Get Document Status.
 		@return The current status of the document
 	  */
-	public String getDocStatus () 
+	public String getDocStatus()
 	{
 		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_ValueNoCheck (COLUMNNAME_DocumentNo, DocumentNo);
@@ -426,7 +434,7 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
@@ -438,18 +446,19 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Payroll Department.
-		@param HR_Department_ID Payroll Department	  */
+		@param HR_Department_ID Payroll Department
+	*/
 	public void setHR_Department_ID (int HR_Department_ID)
 	{
-		if (HR_Department_ID < 1) 
+		if (HR_Department_ID < 1)
 			set_Value (COLUMNNAME_HR_Department_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Department_ID, Integer.valueOf(HR_Department_ID));
 	}
 
 	/** Get Payroll Department.
 		@return Payroll Department	  */
-	public int getHR_Department_ID () 
+	public int getHR_Department_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Department_ID);
 		if (ii == null)
@@ -464,18 +473,19 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Payroll Employee.
-		@param HR_Employee_ID Payroll Employee	  */
+		@param HR_Employee_ID Payroll Employee
+	*/
 	public void setHR_Employee_ID (int HR_Employee_ID)
 	{
-		if (HR_Employee_ID < 1) 
+		if (HR_Employee_ID < 1)
 			set_Value (COLUMNNAME_HR_Employee_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Employee_ID, Integer.valueOf(HR_Employee_ID));
 	}
 
 	/** Get Payroll Employee.
 		@return Payroll Employee	  */
-	public int getHR_Employee_ID () 
+	public int getHR_Employee_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Employee_ID);
 		if (ii == null)
@@ -490,18 +500,19 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Payroll Job.
-		@param HR_Job_ID Payroll Job	  */
+		@param HR_Job_ID Payroll Job
+	*/
 	public void setHR_Job_ID (int HR_Job_ID)
 	{
-		if (HR_Job_ID < 1) 
+		if (HR_Job_ID < 1)
 			set_Value (COLUMNNAME_HR_Job_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Job_ID, Integer.valueOf(HR_Job_ID));
 	}
 
 	/** Get Payroll Job.
 		@return Payroll Job	  */
-	public int getHR_Job_ID () 
+	public int getHR_Job_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Job_ID);
 		if (ii == null)
@@ -516,18 +527,19 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Payroll.
-		@param HR_Payroll_ID Payroll	  */
+		@param HR_Payroll_ID Payroll
+	*/
 	public void setHR_Payroll_ID (int HR_Payroll_ID)
 	{
-		if (HR_Payroll_ID < 1) 
+		if (HR_Payroll_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Payroll_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Payroll_ID, Integer.valueOf(HR_Payroll_ID));
 	}
 
 	/** Get Payroll.
 		@return Payroll	  */
-	public int getHR_Payroll_ID () 
+	public int getHR_Payroll_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Payroll_ID);
 		if (ii == null)
@@ -542,18 +554,19 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Payroll Period.
-		@param HR_Period_ID Payroll Period	  */
+		@param HR_Period_ID Payroll Period
+	*/
 	public void setHR_Period_ID (int HR_Period_ID)
 	{
-		if (HR_Period_ID < 1) 
+		if (HR_Period_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Period_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Period_ID, Integer.valueOf(HR_Period_ID));
 	}
 
 	/** Get Payroll Period.
 		@return Payroll Period	  */
-	public int getHR_Period_ID () 
+	public int getHR_Period_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Period_ID);
 		if (ii == null)
@@ -562,18 +575,19 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Payroll Process.
-		@param HR_Process_ID Payroll Process	  */
+		@param HR_Process_ID Payroll Process
+	*/
 	public void setHR_Process_ID (int HR_Process_ID)
 	{
-		if (HR_Process_ID < 1) 
+		if (HR_Process_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Process_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Process_ID, Integer.valueOf(HR_Process_ID));
 	}
 
 	/** Get Payroll Process.
 		@return Payroll Process	  */
-	public int getHR_Process_ID () 
+	public int getHR_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Process_ID);
 		if (ii == null)
@@ -582,7 +596,8 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set HR_Process_UU.
-		@param HR_Process_UU HR_Process_UU	  */
+		@param HR_Process_UU HR_Process_UU
+	*/
 	public void setHR_Process_UU (String HR_Process_UU)
 	{
 		set_Value (COLUMNNAME_HR_Process_UU, HR_Process_UU);
@@ -590,15 +605,14 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 
 	/** Get HR_Process_UU.
 		@return HR_Process_UU	  */
-	public String getHR_Process_UU () 
+	public String getHR_Process_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_Process_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -607,7 +621,7 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -621,9 +635,8 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
     }
 
 	/** Set Posted.
-		@param Posted 
-		Posting status
-	  */
+		@param Posted Posting status
+	*/
 	public void setPosted (boolean Posted)
 	{
 		set_Value (COLUMNNAME_Posted, Boolean.valueOf(Posted));
@@ -632,7 +645,7 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	/** Get Posted.
 		@return Posting status
 	  */
-	public boolean isPosted () 
+	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
 		if (oo != null) 
@@ -645,9 +658,8 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -656,7 +668,7 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -669,9 +681,8 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Processed On.
-		@param ProcessedOn 
-		The date+time (expressed in decimal format) when the document has been processed
-	  */
+		@param ProcessedOn The date+time (expressed in decimal format) when the document has been processed
+	*/
 	public void setProcessedOn (BigDecimal ProcessedOn)
 	{
 		set_Value (COLUMNNAME_ProcessedOn, ProcessedOn);
@@ -680,7 +691,7 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	/** Get Processed On.
 		@return The date+time (expressed in decimal format) when the document has been processed
 	  */
-	public BigDecimal getProcessedOn () 
+	public BigDecimal getProcessedOn()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ProcessedOn);
 		if (bd == null)
@@ -689,7 +700,8 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -697,7 +709,7 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -716,21 +728,20 @@ public class X_HR_Process extends PO implements I_HR_Process, I_Persistent
 	}
 
 	/** Set Reversal ID.
-		@param Reversal_ID 
-		ID of document reversal
-	  */
+		@param Reversal_ID ID of document reversal
+	*/
 	public void setReversal_ID (int Reversal_ID)
 	{
-		if (Reversal_ID < 1) 
+		if (Reversal_ID < 1)
 			set_Value (COLUMNNAME_Reversal_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Reversal_ID, Integer.valueOf(Reversal_ID));
 	}
 
 	/** Get Reversal ID.
 		@return ID of document reversal
 	  */
-	public int getReversal_ID () 
+	public int getReversal_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Reversal_ID);
 		if (ii == null)

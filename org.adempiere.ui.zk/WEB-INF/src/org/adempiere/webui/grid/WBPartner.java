@@ -107,7 +107,6 @@ public class WBPartner extends Window implements EventListener<Event>, ValueChan
 	/**
 	 *	Constructor.
 	 *	Requires call loadBPartner
-	 * 	@param frame	parent
 	 * 	@param WindowNo	Window No
 	 */
 	

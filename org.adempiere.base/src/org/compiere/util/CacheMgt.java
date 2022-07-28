@@ -336,7 +336,6 @@ public class CacheMgt
 	 * 	Reset local Cache
 	 * 	@param tableName table name
 	 * 	@param Record_ID record if applicable or 0 for all
-	 * 	@return number of deleted cache entries
 	 */
 	protected void localNewRecord (String tableName, int Record_ID)
 	{
@@ -479,4 +478,14 @@ public class CacheMgt
 			}
 		}
 	}
+
+	/**
+	 * Is there a cache for this table name?
+	 * @param tableName
+	 * @return boolean
+	 */
+	public boolean hasCache(String tableName) {
+		return m_tableNames.contains(tableName);
+	}
+
 }	//	CCache

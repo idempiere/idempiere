@@ -92,6 +92,10 @@ public class MCommissionRun extends X_C_CommissionRun
 		return retValue;
 	}	//	getAmts
 
+	public MCommissionRun(Properties ctx, int C_CommissionRun_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_CommissionRun_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * 	Update From Amt
 	 */

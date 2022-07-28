@@ -129,7 +129,7 @@ public class AbstractService {
 			}
 		}
 		if (!okclient)
-			return "Error logging in - client not allowed for this user";
+			return "Error logging in - tenant not allowed for this user";
 
 		m_cs.getCtx().setProperty(Env.AD_CLIENT_ID, "" + loginRequest.getClientID());
        	Env.setContext(m_cs.getCtx(), Env.AD_CLIENT_ID, (String) selectedClient.getID());
@@ -496,11 +496,9 @@ public class AbstractService {
 	}
 	
 	/**
-	 * 
 	 * @param strValue
 	 * @param columnClass
 	 * @param colName
-	 * @param m_webservicetype
 	 * @return
 	 */
 	protected Object convertToObj(String strValue,Class<?> columnClass,String colName){

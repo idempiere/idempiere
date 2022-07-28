@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Forecast
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation_Forecast")
 public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Forecast, I_Persistent 
 {
@@ -32,12 +32,26 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Forecast (Properties ctx, int A_Depreciation_Forecast_ID, String trxName)
     {
       super (ctx, A_Depreciation_Forecast_ID, trxName);
+      /** if (A_Depreciation_Forecast_ID == 0)
+        {
+			setA_Depreciation_Forecast_ID (0);
+			setA_End_Asset_ID (0);
+			setA_Start_Asset_ID (0);
+			setDateDoc (new Timestamp( System.currentTimeMillis() ));
+			setPostingType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Depreciation_Forecast (Properties ctx, int A_Depreciation_Forecast_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Depreciation_Forecast_ID, trxName, virtualColumns);
       /** if (A_Depreciation_Forecast_ID == 0)
         {
 			setA_Depreciation_Forecast_ID (0);
@@ -77,18 +91,19 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
     }
 
 	/** Set Depreciation Forecast.
-		@param A_Depreciation_Forecast_ID Depreciation Forecast	  */
+		@param A_Depreciation_Forecast_ID Depreciation Forecast
+	*/
 	public void setA_Depreciation_Forecast_ID (int A_Depreciation_Forecast_ID)
 	{
-		if (A_Depreciation_Forecast_ID < 1) 
+		if (A_Depreciation_Forecast_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Depreciation_Forecast_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Depreciation_Forecast_ID, Integer.valueOf(A_Depreciation_Forecast_ID));
 	}
 
 	/** Get Depreciation Forecast.
 		@return Depreciation Forecast	  */
-	public int getA_Depreciation_Forecast_ID () 
+	public int getA_Depreciation_Forecast_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Depreciation_Forecast_ID);
 		if (ii == null)
@@ -105,7 +120,8 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
     }
 
 	/** Set A_Depreciation_Forecast_UU.
-		@param A_Depreciation_Forecast_UU A_Depreciation_Forecast_UU	  */
+		@param A_Depreciation_Forecast_UU A_Depreciation_Forecast_UU
+	*/
 	public void setA_Depreciation_Forecast_UU (String A_Depreciation_Forecast_UU)
 	{
 		set_Value (COLUMNNAME_A_Depreciation_Forecast_UU, A_Depreciation_Forecast_UU);
@@ -113,7 +129,7 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 
 	/** Get A_Depreciation_Forecast_UU.
 		@return A_Depreciation_Forecast_UU	  */
-	public String getA_Depreciation_Forecast_UU () 
+	public String getA_Depreciation_Forecast_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_Depreciation_Forecast_UU);
 	}
@@ -125,18 +141,19 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	}
 
 	/** Set To Asset.
-		@param A_End_Asset_ID To Asset	  */
+		@param A_End_Asset_ID To Asset
+	*/
 	public void setA_End_Asset_ID (int A_End_Asset_ID)
 	{
-		if (A_End_Asset_ID < 1) 
+		if (A_End_Asset_ID < 1)
 			set_Value (COLUMNNAME_A_End_Asset_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_A_End_Asset_ID, Integer.valueOf(A_End_Asset_ID));
 	}
 
 	/** Get To Asset.
 		@return To Asset	  */
-	public int getA_End_Asset_ID () 
+	public int getA_End_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_End_Asset_ID);
 		if (ii == null)
@@ -151,18 +168,19 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	}
 
 	/** Set From Asset.
-		@param A_Start_Asset_ID From Asset	  */
+		@param A_Start_Asset_ID From Asset
+	*/
 	public void setA_Start_Asset_ID (int A_Start_Asset_ID)
 	{
-		if (A_Start_Asset_ID < 1) 
+		if (A_Start_Asset_ID < 1)
 			set_Value (COLUMNNAME_A_Start_Asset_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_A_Start_Asset_ID, Integer.valueOf(A_Start_Asset_ID));
 	}
 
 	/** Get From Asset.
 		@return From Asset	  */
-	public int getA_Start_Asset_ID () 
+	public int getA_Start_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Start_Asset_ID);
 		if (ii == null)
@@ -171,9 +189,8 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	}
 
 	/** Set Document Date.
-		@param DateDoc 
-		Date of the Document
-	  */
+		@param DateDoc Date of the Document
+	*/
 	public void setDateDoc (Timestamp DateDoc)
 	{
 		set_Value (COLUMNNAME_DateDoc, DateDoc);
@@ -182,7 +199,7 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	/** Get Document Date.
 		@return Date of the Document
 	  */
-	public Timestamp getDateDoc () 
+	public Timestamp getDateDoc()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateDoc);
 	}
@@ -200,9 +217,8 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
 	/** Set PostingType.
-		@param PostingType 
-		The type of posted amount for the transaction
-	  */
+		@param PostingType The type of posted amount for the transaction
+	*/
 	public void setPostingType (String PostingType)
 	{
 
@@ -212,15 +228,14 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	/** Get PostingType.
 		@return The type of posted amount for the transaction
 	  */
-	public String getPostingType () 
+	public String getPostingType()
 	{
 		return (String)get_Value(COLUMNNAME_PostingType);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -229,7 +244,7 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -242,7 +257,8 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -250,7 +266,7 @@ public class X_A_Depreciation_Forecast extends PO implements I_A_Depreciation_Fo
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

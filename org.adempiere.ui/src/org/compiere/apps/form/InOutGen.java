@@ -42,7 +42,7 @@ import org.compiere.util.Trx;
 
 /**
  * Generate Shipment (manual) controller class
- * 
+ * @deprecated ticket IDEMPIERE-1963 replaced this with an Info Window
  */
 public class InOutGen extends GenForm
 {
@@ -211,8 +211,7 @@ public class InOutGen extends GenForm
 	}   //  executeQuery
 	
 	/**
-	 *	Save Selection & return selection Query or ""
-	 *  @return where clause like C_Order_ID IN (...)
+	 *	Save Selection and return selection Query or ""
 	 */
 	public void saveSelection(IMiniTable miniTable)
 	{

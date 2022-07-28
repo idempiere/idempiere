@@ -91,7 +91,7 @@ public class DocumentLink extends A implements EventListener<Event> {
 	public void onEvent(Event event) throws Exception {
 		if(event.getTarget() instanceof DocumentLink){
 			DocumentLink documentLink = (DocumentLink)event.getTarget();
-			if (documentLink.getAdTableId() > 0 && documentLink.getAdTableId() > 0)
+			if (documentLink.getAdTableId() > 0 && documentLink.getRecordId() > 0)
 				AEnv.zoom(documentLink.getAdTableId(), documentLink.getRecordId());
 		}
 	}

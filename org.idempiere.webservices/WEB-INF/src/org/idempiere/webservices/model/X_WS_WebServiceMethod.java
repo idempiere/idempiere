@@ -19,16 +19,12 @@ package org.idempiere.webservices.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceMethod
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceMethod")
 public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, I_Persistent 
 {
@@ -36,12 +32,24 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_WS_WebServiceMethod (Properties ctx, int WS_WebServiceMethod_ID, String trxName)
     {
       super (ctx, WS_WebServiceMethod_ID, trxName);
+      /** if (WS_WebServiceMethod_ID == 0)
+        {
+			setName (null);
+			setValue (null);
+			setWS_WebServiceMethod_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_WS_WebServiceMethod (Properties ctx, int WS_WebServiceMethod_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, WS_WebServiceMethod_ID, trxName, virtualColumns);
       /** if (WS_WebServiceMethod_ID == 0)
         {
 			setName (null);
@@ -79,9 +87,8 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -90,15 +97,14 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -107,15 +113,14 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -124,15 +129,14 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -141,7 +145,7 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
@@ -153,18 +157,19 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	}
 
 	/** Set Web Service.
-		@param WS_WebService_ID Web Service	  */
+		@param WS_WebService_ID Web Service
+	*/
 	public void setWS_WebService_ID (int WS_WebService_ID)
 	{
-		if (WS_WebService_ID < 1) 
+		if (WS_WebService_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_WS_WebService_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_WS_WebService_ID, Integer.valueOf(WS_WebService_ID));
 	}
 
 	/** Get Web Service.
 		@return Web Service	  */
-	public int getWS_WebService_ID () 
+	public int getWS_WebService_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebService_ID);
 		if (ii == null)
@@ -181,18 +186,19 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
     }
 
 	/** Set Web Service Method.
-		@param WS_WebServiceMethod_ID Web Service Method	  */
+		@param WS_WebServiceMethod_ID Web Service Method
+	*/
 	public void setWS_WebServiceMethod_ID (int WS_WebServiceMethod_ID)
 	{
-		if (WS_WebServiceMethod_ID < 1) 
+		if (WS_WebServiceMethod_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_WS_WebServiceMethod_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_WS_WebServiceMethod_ID, Integer.valueOf(WS_WebServiceMethod_ID));
 	}
 
 	/** Get Web Service Method.
 		@return Web Service Method	  */
-	public int getWS_WebServiceMethod_ID () 
+	public int getWS_WebServiceMethod_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebServiceMethod_ID);
 		if (ii == null)
@@ -201,7 +207,8 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 	}
 
 	/** Set WS_WebServiceMethod_UU.
-		@param WS_WebServiceMethod_UU WS_WebServiceMethod_UU	  */
+		@param WS_WebServiceMethod_UU WS_WebServiceMethod_UU
+	*/
 	public void setWS_WebServiceMethod_UU (String WS_WebServiceMethod_UU)
 	{
 		set_Value (COLUMNNAME_WS_WebServiceMethod_UU, WS_WebServiceMethod_UU);
@@ -209,7 +216,7 @@ public class X_WS_WebServiceMethod extends PO implements I_WS_WebServiceMethod, 
 
 	/** Get WS_WebServiceMethod_UU.
 		@return WS_WebServiceMethod_UU	  */
-	public String getWS_WebServiceMethod_UU () 
+	public String getWS_WebServiceMethod_UU()
 	{
 		return (String)get_Value(COLUMNNAME_WS_WebServiceMethod_UU);
 	}

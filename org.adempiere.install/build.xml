@@ -43,6 +43,8 @@
 					tofile="../hazelcast.xml" filtering="yes" overwrite="yes"/>
 		<copy file="../org.adempiere.server-feature/jettyhome/etc/jetty-threadpool.xml"
 							tofile="../jettyhome/etc/jetty-threadpool.xml" filtering="no" overwrite="yes"/>
+		<copy file="../org.adempiere.server-feature/jettyhome/etc/jetty-http-forwarded.xml"
+									tofile="../jettyhome/etc/jetty-http-forwarded.xml" filtering="no" overwrite="yes"/>
 	</target>
 
 	<!-- ==================================================== -->

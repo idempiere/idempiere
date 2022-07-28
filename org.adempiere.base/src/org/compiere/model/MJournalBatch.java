@@ -42,9 +42,9 @@ import org.compiere.util.TimeUtil;
  *	@author Jorg Janke
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li>FR [ 1948157  ]  Is necessary the reference for document reverse
- *  		@see http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1948157&group_id=176962
+ *  		@see https://sourceforge.net/p/adempiere/feature-requests/412/
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 	
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 1776045 ] Add ReActivate action to GL Journal
  *	@version $Id: MJournalBatch.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $

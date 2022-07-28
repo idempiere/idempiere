@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.window;
 
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -102,15 +103,14 @@ public class FDialog
 	/**
 	 *	Display warning with warning icon
 	 *	@param	windowNo	Number of Window
+     *  @param comp
 	 *	@param	adMessage	Message to be translated
 	 *	@param	message		Additional message
-	 *	@param	title		If none then one will be generated
 	 *
 	 * @see #warn(int, String)
 	 * @see #warn(int, String, String)
 	 * @see #warn(int, Component, String, String, String)
 	 */
-    
     public static void warn(int windowNo, Component comp, String adMessage, String message)
     {
     	warn(windowNo, comp, adMessage, message, null);
@@ -200,13 +200,12 @@ public class FDialog
 	 *	Display error with error icon
 	 *	@param	windowNo	Number of Window
 	 *	@param	adMessage	Message to be translated
-	 *	@param	adMessage	Additional message
+	 *	@param	msg         Additional message
 	 *
 	 *  @see #error(int, String)
 	 *  @see #error(int, Component, String)
 	 *  @see #error(int, Component, String, String)
 	 */
-	
     public static void error(int windowNo, String adMessage, String msg)
     {
         error(windowNo, null, adMessage, msg);
@@ -290,11 +289,10 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
 	 *	@param	msg			Additional clear text message
-	 *
 	 *	@return true, if OK
 	 */    
     public static boolean ask(int windowNo, Component comp, String adMessage, String msg)
@@ -305,11 +303,11 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
 	 *	@param	msg			Additional clear text message
-	 *
+     *  @param callback
 	 *	@return true, if OK
 	 */    
     public static boolean ask(int windowNo, Component comp, String adMessage, String msg, final Callback<Boolean> callback)
@@ -318,7 +316,11 @@ public class FDialog
 		if (adMessage != null && !adMessage.equals(""))
 			out.append(Msg.getMsg(Env.getCtx(), adMessage));
 		if (msg != null && msg.length() > 0)
-			out.append("\n").append(msg);
+		{
+			if (out.length() > 0)
+				out.append("\n");
+			out.append(msg);
+		}
 		String s = out.toString().replace("\n", "<br>");
 
     	Callback<Integer> msgCallback = null;
@@ -342,13 +344,11 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
-	 *
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
 	 *	@return true, if OK
 	 */
-    
     public static boolean ask(int windowNo, Component comp, String adMessage)
     {
     	return ask(windowNo, comp, adMessage, (Callback<Boolean>)null);
@@ -424,6 +424,30 @@ public class FDialog
         Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title,
         		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
     }
+    
+    /**
+     * Confirmation dialog before deleting the records. 
+     * @param windowNo
+     * @param weditor
+     * @param adMessage
+     * @param adMessageArgs
+     * @param title
+     * @param correctInput
+     * @param callback
+     */
+    public static void askForInputTextConfirmation(int windowNo, WEditor weditor, String adMessage, Object[] adMessageArgs, String title, final Callback<Map.Entry<Boolean, String>> callback)
+    {
+    	Callback<Map.Entry<Boolean, String>> msgCallback = null;
+		msgCallback = new Callback<Map.Entry<Boolean, String>>() {
+			@Override
+			public void onCallback(Map.Entry<Boolean, String> result) {
+				callback.onCallback(result);
+			}
+		};
+    	String s = Msg.getMsg(Env.getCtx(), adMessage, adMessageArgs).replace("\n", "<br>");
+        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title,
+        		Messagebox.OK | Messagebox.CANCEL | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
+    }
 
     public static void askForInput(int windowNo, Component comp, String adMessage, final Callback<String> callback) {
     	askForInput(windowNo, comp, adMessage, "", callback);
@@ -445,17 +469,35 @@ public class FDialog
         Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title, 
         		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, msgCallback, (msgCallback == null));
     }
+    
+    public static void askForInputWithCancel(int windowNo, WEditor weditor, String adMessage, String title, final Callback<Map.Entry<Boolean, Object>> callback)
+    {
+    	Callback<Map.Entry<Boolean, Object>> msgCallback = null;
+    	if (callback != null) 
+    	{
+    		msgCallback = new Callback<Map.Entry<Boolean, Object>>() {
+				@Override
+				public void onCallback(Map.Entry<Boolean, Object> result) {
+					callback.onCallback(result);
+				}
+			};
+    	}
+    	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
+        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title, 
+        		Messagebox.OK | Messagebox.CANCEL | Messagebox.INPUT, Messagebox.QUESTION, weditor, true, msgCallback, (msgCallback == null));
+    }
 
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
-	 *
+     *  @param  title
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
+     *  @param  callback
+     *  @param  args
 	 *	@return true, if OK
 	 */
-    
     public static boolean ask(String title, int windowNo, Component comp, String adMessage, final Callback<Boolean> callback, Object ... args)
     {
     	Callback<Integer> msgCallback = null;
@@ -557,12 +599,12 @@ public class FDialog
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
 	 *	@param	title		Title of the dialog panel
-	 *	@param	AD_Message	Message to be translated
+	 *	@param	adMessage   Message to be translated
 	 *	@param	msg			Additional clear text message
-	 *
+     *  @param callback
 	 *	@return true, if OK
 	 */        
     public static boolean ask(int windowNo, Component comp, String title, String adMessage, String msg, final Callback<Boolean> callback)
@@ -583,7 +625,11 @@ public class FDialog
 		if (adMessage != null && !adMessage.equals(""))
 			out.append(Msg.getMsg(Env.getCtx(), adMessage));
 		if (msg != null && msg.length() > 0)
-			out.append("\n").append(msg);
+		{
+			if (out.length() > 0)
+				out.append("\n");
+			out.append(msg);
+		}
 		String s = out.toString().replace("\n", "<br>");
 
         int response = Messagebox.showDialog(s, title, Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, msgCallback, (msgCallback == null));

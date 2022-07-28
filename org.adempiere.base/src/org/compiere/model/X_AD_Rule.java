@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Rule
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Rule")
 public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent 
 {
@@ -31,12 +31,28 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Rule (Properties ctx, int AD_Rule_ID, String trxName)
     {
       super (ctx, AD_Rule_ID, trxName);
+      /** if (AD_Rule_ID == 0)
+        {
+			setAD_Rule_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setEventType (null);
+			setName (null);
+			setRuleType (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Rule (Properties ctx, int AD_Rule_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Rule_ID, trxName, virtualColumns);
       /** if (AD_Rule_ID == 0)
         {
 			setAD_Rule_ID (0);
@@ -92,9 +108,8 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/** All = 7 */
 	public static final String ACCESSLEVEL_All = "7";
 	/** Set Data Access Level.
-		@param AccessLevel 
-		Access Level required
-	  */
+		@param AccessLevel Access Level required
+	*/
 	public void setAccessLevel (String AccessLevel)
 	{
 
@@ -104,24 +119,25 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/** Get Data Access Level.
 		@return Access Level required
 	  */
-	public String getAccessLevel () 
+	public String getAccessLevel()
 	{
 		return (String)get_Value(COLUMNNAME_AccessLevel);
 	}
 
 	/** Set Rule.
-		@param AD_Rule_ID Rule	  */
+		@param AD_Rule_ID Rule
+	*/
 	public void setAD_Rule_ID (int AD_Rule_ID)
 	{
-		if (AD_Rule_ID < 1) 
+		if (AD_Rule_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Rule_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Rule_ID, Integer.valueOf(AD_Rule_ID));
 	}
 
 	/** Get Rule.
 		@return Rule	  */
-	public int getAD_Rule_ID () 
+	public int getAD_Rule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Rule_ID);
 		if (ii == null)
@@ -130,7 +146,8 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	}
 
 	/** Set AD_Rule_UU.
-		@param AD_Rule_UU AD_Rule_UU	  */
+		@param AD_Rule_UU AD_Rule_UU
+	*/
 	public void setAD_Rule_UU (String AD_Rule_UU)
 	{
 		set_Value (COLUMNNAME_AD_Rule_UU, AD_Rule_UU);
@@ -138,15 +155,14 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 
 	/** Get AD_Rule_UU.
 		@return AD_Rule_UU	  */
-	public String getAD_Rule_UU () 
+	public String getAD_Rule_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Rule_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -155,7 +171,7 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -163,9 +179,8 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -175,7 +190,7 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
@@ -186,7 +201,7 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	public static final String EVENTTYPE_Callout = "C";
 	/** Model Validator Document Event = D */
 	public static final String EVENTTYPE_ModelValidatorDocumentEvent = "D";
-	/** Human Resource & Payroll = H */
+	/** Human Resource &amp; Payroll = H */
 	public static final String EVENTTYPE_HumanResourcePayroll = "H";
 	/** Model Validator Login Event = L */
 	public static final String EVENTTYPE_ModelValidatorLoginEvent = "L";
@@ -199,9 +214,8 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/** Model Validator Table Event = T */
 	public static final String EVENTTYPE_ModelValidatorTableEvent = "T";
 	/** Set Event Type.
-		@param EventType 
-		Type of Event
-	  */
+		@param EventType Type of Event
+	*/
 	public void setEventType (String EventType)
 	{
 
@@ -211,15 +225,14 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/** Get Event Type.
 		@return Type of Event
 	  */
-	public String getEventType () 
+	public String getEventType()
 	{
 		return (String)get_Value(COLUMNNAME_EventType);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -228,15 +241,14 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -245,7 +257,7 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -269,7 +281,8 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/** JSR 223 Scripting APIs = S */
 	public static final String RULETYPE_JSR223ScriptingAPIs = "S";
 	/** Set Rule Type.
-		@param RuleType Rule Type	  */
+		@param RuleType Rule Type
+	*/
 	public void setRuleType (String RuleType)
 	{
 
@@ -278,15 +291,14 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 
 	/** Get Rule Type.
 		@return Rule Type	  */
-	public String getRuleType () 
+	public String getRuleType()
 	{
 		return (String)get_Value(COLUMNNAME_RuleType);
 	}
 
 	/** Set Script.
-		@param Script 
-		Dynamic Java Language Script to calculate result
-	  */
+		@param Script Dynamic Java Language Script to calculate result
+	*/
 	public void setScript (String Script)
 	{
 		set_Value (COLUMNNAME_Script, Script);
@@ -295,15 +307,14 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/** Get Script.
 		@return Dynamic Java Language Script to calculate result
 	  */
-	public String getScript () 
+	public String getScript()
 	{
 		return (String)get_Value(COLUMNNAME_Script);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -312,7 +323,7 @@ public class X_AD_Rule extends PO implements I_AD_Rule, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

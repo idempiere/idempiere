@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for IMP_ProcessorParameter
  *  @author iDempiere (generated) 
- *  @version Development 9.0
+ *  @version Release 9
  */
 public interface I_IMP_ProcessorParameter 
 {

@@ -87,6 +87,10 @@ public class MTest extends X_Test
 	}	//	MTest
 
 	
+	public MTest(Properties ctx, int Test_ID, String trxName, String... virtualColumns) {
+		super(ctx, Test_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * 	Before Delete
 	 *	@return true if it can be deleted

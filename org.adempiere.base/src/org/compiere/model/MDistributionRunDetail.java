@@ -112,7 +112,7 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 	private int	m_precision = 0;
 	
 	/**
-	 * 	Round MinQty & Qty
+	 * 	Round MinQty and Qty
 	 *	@param precision precision (saved)
 	 */
 	public void round (int precision)
@@ -137,7 +137,7 @@ public class MDistributionRunDetail extends X_T_DistributionRunDetail
 	
 	/**
 	 * 	We can adjust Allocation Qty
-	 *	@return true if qty > min
+	 *	@return true if qty &gt; min
 	 */
 	public boolean isCanAdjust()
 	{

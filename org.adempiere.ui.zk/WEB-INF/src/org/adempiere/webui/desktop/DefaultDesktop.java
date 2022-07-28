@@ -22,7 +22,6 @@ import static org.compiere.model.SystemIDs.TREE_MENUPRIMARY;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -137,13 +136,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	private Borderlayout layout;
 
-	private int noOfNotice;
-
-	private int noOfRequest;
-
-	private int noOfWorkflow;
-
-	private int noOfUnprocessed;
+	private int noCount;
 
 	private Tabpanel homeTab;
 
@@ -174,6 +167,12 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private Popup westPopup;
 	
 	private ToolBarButton westBtn;
+	
+    // For quick info optimization
+    private GridTab    gridTab;
+
+    // Right side Quick info is visible
+    private boolean    isQuickInfoOpen    = true;
 
     public DefaultDesktop()
     {
@@ -259,6 +258,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			@Override
 			public void onEvent(Event event) throws Exception {
 				OpenEvent oe = (OpenEvent) event;
+                isQuickInfoOpen = oe.isOpen();
 				updateHelpCollapsedPreference(!oe.isOpen());
 				HtmlBasedComponent comp = windowContainer.getComponent();
 				if (comp != null) {
@@ -331,7 +331,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	eastPopup = new Popup();
         	ToolBarButton btn = new ToolBarButton();
         	btn.setIconSclass("z-icon-remove");
-        	btn.addEventListener(Events.ON_CLICK, evt -> eastPopup.close());
+        	btn.addEventListener(Events.ON_CLICK, evt -> {
+				eastPopup.close();
+				isQuickInfoOpen = false;
+			});
         	eastPopup.appendChild(btn);
         	btn.setStyle("position: absolute; top: 20px; right: 0px; padding: 2px 0px;");
         	eastPopup.setStyle("padding-top: 20px;");
@@ -339,6 +342,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	eastPopup.setPage(getComponent().getPage());
         	eastPopup.setHeight("100%");        	
         	helpController.setupFieldTooltip();
+        	eastPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
+				isQuickInfoOpen = oe.isOpen();
+			});
         	
         	westPopup = new Popup();        	
         	westPopup.setStyle("padding-top: 10px;");
@@ -396,14 +402,20 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	        	
 	        };
 	        toolbar.appendChild(showHeader);
-	        showHeader.setImage(ThemeManager.getThemeResource(IMAGES_THREELINE_MENU_PNG));
+	        if (ThemeManager.isUseFontIconForImage())
+	        	showHeader.setIconSclass("z-icon-ThreeLineMenu");
+			else
+				showHeader.setImage(ThemeManager.getThemeResource(IMAGES_THREELINE_MENU_PNG));
 	        showHeader.addEventListener(Events.ON_CLICK, this);
 	        showHeader.setSclass("window-container-toolbar-btn");
 	        showHeader.setVisible(false);
 	        
 	        max = new ToolBarButton();
 	        toolbar.appendChild(max);
-	        max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
+	        if (ThemeManager.isUseFontIconForImage())
+	        	max.setIconSclass("z-icon-Collapsing");
+			else
+				max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
 	        max.addEventListener(Events.ON_CLICK, this);
 	        max.setSclass("window-container-toolbar-btn");
 		}
@@ -418,6 +430,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         contextHelp.setSclass("window-container-toolbar-btn context-help-btn");
         contextHelp.setTooltiptext(Util.cleanAmp(Msg.getElement(Env.getCtx(), "AD_CtxHelp_ID")));
         contextHelp.setVisible(!e.isVisible());
+        isQuickInfoOpen = e.isVisible();
         
         if (!mobile) {
 	        boolean headerCollapsed= pref.isPropertyBool(UserPreference.P_HEADER_COLLAPSED);
@@ -428,7 +441,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         
         if (mobile) {
 	        westBtn = new ToolBarButton();
-	        westBtn.setImage(ThemeManager.getThemeResource(IMAGES_THREELINE_MENU_PNG));
+	        if (ThemeManager.isUseFontIconForImage())
+	        	westBtn.setIconSclass("z-icon-ThreeLineMenu");
+			else
+				westBtn.setImage(ThemeManager.getThemeResource(IMAGES_THREELINE_MENU_PNG));
 	        westBtn.addEventListener(Events.ON_CLICK, this);
 	        westBtn.setSclass("window-container-toolbar-btn");
 	        westBtn.setStyle("cursor: pointer; padding: 0px; margin: 0px;");
@@ -645,6 +661,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         		if (mobile && eastPopup != null)
         		{
         			eastPopup.open(layout.getCenter(), "overlap_end");
+        			isQuickInfoOpen = true;
+            		updateHelpQuickInfo(gridTab);
         		}
         		else
         		{
@@ -653,6 +671,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	        		LayoutUtils.removeSclass("slide", layout.getEast());
 	        		contextHelp.setVisible(false);
 	        		updateHelpCollapsedPreference(false);
+	        		isQuickInfoOpen = true;
+	        		updateHelpQuickInfo(gridTab);
         		}
         	}
         	else if (comp == westBtn)
@@ -673,28 +693,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         }
         else if (eventName.equals(ON_ACTIVITIES_CHANGED_EVENT))
         {
-        	@SuppressWarnings("unchecked")
-			Map<String, Object> map = (Map<String, Object>) event.getData();
-        	Integer notice = (Integer) map.get("notice");
-        	Integer request = (Integer) map.get("request");
-        	Integer workflow = (Integer) map.get("workflow");
-        	Integer unprocessed = (Integer) map.get("unprocessed");
+        	Integer count = (Integer) event.getData();
         	boolean change = false;
-        	if (notice != null && notice.intValue() != noOfNotice) 
+        	if (count != null && count.intValue() != noCount) 
         	{
-        		noOfNotice = notice.intValue(); change = true;
-        	}
-        	if (request != null && request.intValue() != noOfRequest) 
-        	{
-        		noOfRequest = request.intValue(); change = true;
-        	}		
-        	if (workflow != null && workflow.intValue() != noOfWorkflow) 
-        	{
-        		noOfWorkflow = workflow.intValue(); change = true;
-        	}
-        	if (unprocessed != null && unprocessed.intValue() != noOfUnprocessed) 
-        	{
-        		noOfUnprocessed = unprocessed.intValue(); change = true;
+        		noCount = count.intValue(); change = true;
         	}
         	if (change)
         		updateUI();
@@ -721,7 +724,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	protected void restoreHeader() {
 		layout.getNorth().setVisible(true);
-		max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
+		if (ThemeManager.isUseFontIconForImage())
+        	max.setIconSclass("z-icon-Collapsing");
+		else
+			max.setImage(ThemeManager.getThemeResource(IMAGES_UPARROW_PNG));
 		showHeader.setVisible(false);
 		pnlHead.detach();
 		headerContainer.appendChild(pnlHead);
@@ -731,7 +737,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	protected void collapseHeader() {
 		layout.getNorth().setVisible(false);
-		max.setImage(ThemeManager.getThemeResource(IMAGES_DOWNARROW_PNG));
+		if (ThemeManager.isUseFontIconForImage())
+        	max.setIconSclass("z-icon-Expanding");
+		else
+			max.setImage(ThemeManager.getThemeResource(IMAGES_DOWNARROW_PNG));
 		showHeader.setVisible(true);
 		pnlHead.detach();
 		if (headerPopup == null) 
@@ -818,19 +827,12 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	}
 
 	public void updateUI() {
-		int total = noOfNotice + noOfRequest + noOfWorkflow + noOfUnprocessed;
-		windowContainer.setTabTitle(0, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home"))
-				+ " (" + total + ")",
-				Msg.translate(Env.getCtx(), "AD_Note_ID") + " : " + noOfNotice
-				+ ", " + Msg.translate(Env.getCtx(), "R_Request_ID") + " : " + noOfRequest
-				+ ", " + Util.cleanAmp(Msg.getMsg (Env.getCtx(), "WorkflowActivities")) + " : " + noOfWorkflow
-				+ (noOfUnprocessed>0 ? ", " + Msg.getMsg (Env.getCtx(), "UnprocessedDocs") + " : " + noOfUnprocessed : "")
-				);
+		windowContainer.setTabTitle(0, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home")) + " (" + noCount + ")", null);
 	}
 
 	//use _docClick undocumented api. need verification after major zk release update
-	private final static String autoHideMenuScript = "try{var w=zk.Widget.$('#{0}');var t=zk.Widget.$('#{1}');" +
-			"var e=new Object;e.target=t;w._docClick(e);}catch(error){}";
+	private final static String autoHideMenuScript = "(function(){try{let w=zk.Widget.$('#{0}');let t=zk.Widget.$('#{1}');" +
+			"let e=new Object;e.target=t;w._docClick(e);}catch(error){}})()";
 	
 	private void autoHideMenu() {
 		if (mobile) {
@@ -862,14 +864,12 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	//Implementation for Broadcast message
 	/**
-	 * @param eventManager
 	 */
 	public void bindEventManager() {
 		EventManager.getInstance().register(IEventTopics.BROADCAST_MESSAGE, this);
 	}
 
 	/**
-	 * @param eventManager
 	 */
 	public void unbindEventManager() {
 		EventManager.getInstance().unregister(this);
@@ -958,7 +958,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		Component window = getActiveWindow();
 		ADWindow adwindow = ADWindow.findADWindow(window);
 		if (adwindow != null) {
-			gridTab = adwindow.getADWindowContent().getActiveGridTab();
+            gridTab = adwindow.getADWindowContent().getActiveGridTab();
 		}
 		updateHelpQuickInfo(gridTab);
 	}
@@ -975,7 +975,9 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	@Override
 	public void updateHelpQuickInfo(GridTab gridTab) {
-		helpController.renderQuickInfo(gridTab);
+        this.gridTab = gridTab;
+        if (isQuickInfoOpen)
+            helpController.renderQuickInfo(gridTab);
 	}
 
 	@Override
@@ -1030,8 +1032,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		super.onMenuSelected(menuId);
 		if (showHeader != null && showHeader.isVisible()) {
 			//ensure header popup is close
-			String script = "var w=zk.Widget.$('#" + layout.getUuid()+"'); " +
-					"zWatch.fire('onFloatUp', w);";
+			String script = "(function(){let w=zk.Widget.$('#" + layout.getUuid()+"'); " +
+					"zWatch.fire('onFloatUp', w);})()";
 			Clients.response(new AuScript(script));
 		} 
 	}

@@ -37,7 +37,7 @@ import org.compiere.util.Util;
  *
  *  @author Teo Sarca, www.arhipac.ro
  *  		<li>BF [ 2784194 ] Check Warehouse-Locator conflict
- *  			https://sourceforge.net/tracker/?func=detail&aid=2784194&group_id=176962&atid=879332
+ *  			https://sourceforge.net/p/adempiere/bugs/1871/
  */
 public class MInOutLine extends X_M_InOutLine
 {
@@ -46,6 +46,24 @@ public class MInOutLine extends X_M_InOutLine
 	 */
 	private static final long serialVersionUID = 8630611882798722864L;
 
+	/**
+	 * 	Get Ship lines Of Product
+	 * 	 *	@param ctx context
+	 *	@param M_Product_ID product
+	 *	@param where optional addition where clause
+	 *  @param trxName transaction
+	 *	@return array of receipt lines
+	 */
+	public static MInOutLine[] getOfProduct (Properties ctx,
+		int M_Product_ID, String where, String trxName)
+	{
+		String whereClause = "M_Product_ID=?" + (!Util.isEmpty(where, true) ? " AND "+where : "");
+		List<MInOutLine> list = new Query(ctx, Table_Name, whereClause, trxName)
+									.setParameters(M_Product_ID)
+									.list();
+		return list.toArray (new MInOutLine[list.size()]);
+	}
+	
 	/**
 	 * 	Get Ship lines Of Order Line
 	 *	@param ctx context
@@ -103,7 +121,11 @@ public class MInOutLine extends X_M_InOutLine
 	 */
 	public MInOutLine (Properties ctx, int M_InOutLine_ID, String trxName)
 	{
-		super (ctx, M_InOutLine_ID, trxName);
+		this (ctx, M_InOutLine_ID, trxName, (String[]) null);
+	}	//	MInOutLine
+
+	public MInOutLine(Properties ctx, int M_InOutLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_InOutLine_ID, trxName, virtualColumns);
 		if (M_InOutLine_ID == 0)
 		{
 			setM_AttributeSetInstance_ID(0);
@@ -114,7 +136,7 @@ public class MInOutLine extends X_M_InOutLine
 			setIsInvoiced (false);
 			setIsDescription (false);
 		}
-	}	//	MInOutLine
+	}
 
 	/**
 	 *  Load Constructor
@@ -544,7 +566,26 @@ public class MInOutLine extends X_M_InOutLine
 		{
 			if (getM_Locator_ID() <= 0 && getC_Charge_ID() <= 0)
 			{
-				throw new FillMandatoryException(COLUMNNAME_M_Locator_ID);
+				// Try to load Default Locator
+
+				MWarehouse warehouse = MWarehouse.get(getM_Warehouse_ID());
+				
+				if(warehouse != null) {
+					
+					int m_Locator_ID = getProduct().getM_Locator_ID();
+					
+					if(m_Locator_ID > 0 && MLocator.get(m_Locator_ID).getM_Warehouse_ID() == warehouse.getM_Warehouse_ID()) {
+						setM_Locator_ID(m_Locator_ID);
+					} 
+					else {
+						MLocator defaultLocator = warehouse.getDefaultLocator();
+						if(defaultLocator != null) 
+							setM_Locator_ID(defaultLocator.getM_Locator_ID());
+					}
+				}
+
+				if (getM_Locator_ID() <= 0)
+					throw new FillMandatoryException(COLUMNNAME_M_Locator_ID);
 			}
 		}
 

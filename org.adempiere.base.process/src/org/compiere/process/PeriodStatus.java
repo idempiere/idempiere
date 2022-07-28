@@ -98,35 +98,40 @@ public class PeriodStatus extends SvrProcess
 		}
 		StringBuilder sql = new StringBuilder ("UPDATE C_PeriodControl SET PeriodStatus=?, PeriodAction='N', Updated=getDate(), UpdatedBy=? WHERE ");
 		//	WHERE
+		StringBuilder wherepc = new StringBuilder();
 		if (p_C_Period_IDs != null && p_C_Period_IDs.size() > 0) {
-			sql.append("C_Period_ID IN (");
+			wherepc.append("C_Period_ID IN (");
 			boolean addComma = false;
 			for (int id : p_C_Period_IDs) {
 				if (addComma)
-					sql.append(",");
+					wherepc.append(",");
 				else
 					addComma = true;
-				sql.append(id);
+				wherepc.append(id);
 			}
 		} else if (p_C_PeriodControl_IDs != null && p_C_PeriodControl_IDs.size() > 0) {
-			sql.append("C_PeriodControl_ID IN (");
+			wherepc.append("C_PeriodControl_ID IN (");
 			boolean addComma = false;
 			for (int id : p_C_PeriodControl_IDs) {
 				if (addComma)
-					sql.append(",");
+					wherepc.append(",");
 				else
 					addComma = true;
-				sql.append(id);
+				wherepc.append(id);
 			}
 		}
-		sql.append(") AND PeriodStatus<>'P' AND PeriodStatus<>?");
+		wherepc.append(") AND PeriodStatus<>'P' AND PeriodStatus<>?");
+		sql.append(wherepc);
+		StringBuilder sqlPeriods = new StringBuilder("SELECT DISTINCT C_Period_ID FROM C_PeriodControl WHERE ").append(wherepc);
+		int[] periods = DB.getIDsEx(get_TrxName(), sqlPeriods.toString(), p_PeriodAction);
 		no += DB.executeUpdateEx(sql.toString(), new Object[] {p_PeriodAction, getAD_User_ID(), p_PeriodAction}, get_TrxName());
 
-		if (p_C_Period_IDs != null && p_C_Period_IDs.size() > 0) {
-			for (int id : p_C_Period_IDs) {
+		if (periods != null && periods.length > 0) {
+			for (int id : periods) {
 				CacheMgt.get().reset("C_Period", id);
 			}
-		} else if (p_C_PeriodControl_IDs != null && p_C_PeriodControl_IDs.size() > 0) {
+		}
+		if (p_C_PeriodControl_IDs != null && p_C_PeriodControl_IDs.size() > 0) {
 			for (int id : p_C_PeriodControl_IDs) {
 				CacheMgt.get().reset("C_PeriodControl", id);
 			}

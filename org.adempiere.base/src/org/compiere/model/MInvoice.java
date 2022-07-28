@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
@@ -40,11 +41,13 @@ import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
+import org.compiere.process.IDocsPostProcess;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.eevolution.model.MPPProductBOM;
@@ -60,18 +63,18 @@ import org.eevolution.model.MPPProductBOMLine;
  *  @author Jorg Janke
  *  @version $Id: MInvoice.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
- *  		@see http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1948157&group_id=176962
+ *  		@see https://sourceforge.net/p/adempiere/feature-requests/412/
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  Modifications: Added RMA functionality (Ashley Ramdass)
  *  Modifications: Generate DocNo^ instead of using a new number whan an invoice is reversed (Diego Ruiz-globalqss)
  */
-public class MInvoice extends X_C_Invoice implements DocAction
+public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -261338363319970683L;
+	private static final long serialVersionUID = -303676612533389278L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -92,7 +95,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 * 	Create new Invoice by copying
 	 * 	@param from invoice
 	 * 	@param dateDoc date of the document date
-	 *  @param acctDate original account date 
+	 *  @param dateAcct original account date 
 	 * 	@param C_DocTypeTarget_ID target doc type
 	 * 	@param isSOTrx sales order
 	 * 	@param counter create counter links
@@ -113,13 +116,13 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 * 	Create new Invoice by copying
 	 * 	@param from invoice
 	 * 	@param dateDoc date of the document date
-	 *  @param acctDate original account date 
+	 *  @param dateAcct original account date 
 	 * 	@param C_DocTypeTarget_ID target doc type
 	 * 	@param isSOTrx sales order
 	 * 	@param counter create counter links
 	 * 	@param trxName trx
 	 * 	@param setOrder set Order links
-	 *  @param Document Number for reversed invoices
+	 *  @param documentNo Document Number for reversed invoices
 	 *	@return Invoice
 	 */
 	public static MInvoice copyFrom (MInvoice from, Timestamp dateDoc, Timestamp dateAcct,
@@ -274,7 +277,11 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	 */
 	public MInvoice (Properties ctx, int C_Invoice_ID, String trxName)
 	{
-		super (ctx, C_Invoice_ID, trxName);
+		this (ctx, C_Invoice_ID, trxName, (String[]) null);
+	}	//	MInvoice
+
+	public MInvoice(Properties ctx, int C_Invoice_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Invoice_ID, trxName, virtualColumns);
 		if (C_Invoice_ID == 0)
 		{
 			setDocStatus (DOCSTATUS_Drafted);		//	Draft
@@ -304,7 +311,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 			super.setProcessed (false);
 			setProcessing(false);
 		}
-	}	//	MInvoice
+	}
 
 	/**
 	 *  Load Constructor
@@ -463,7 +470,7 @@ public class MInvoice extends X_C_Invoice implements DocAction
 	}	//	setClientOrg
 
 	/**
-	 * 	Set Business Partner Defaults & Details
+	 * 	Set Business Partner Defaults and Details
 	 * 	@param bp business partner
 	 */
 	public void setBPartner (MBPartner bp)
@@ -1399,6 +1406,18 @@ public class MInvoice extends X_C_Invoice implements DocAction
         return retValue;
     }    //    getOpenAmt
 
+    /*
+     *    Get discount amt depending on payment date
+     *    @return discount Amt
+     */
+    public BigDecimal getDiscountAmt(Timestamp paymentDate)
+    {
+    	BigDecimal retValue = DB.getSQLValueBDEx(get_TrxName(),
+    			"SELECT invoiceDiscount(?,?,?) FROM DUAL",
+    			getC_Invoice_ID(), paymentDate, 0);
+    	return retValue;
+    }
+
 	/**
 	 * 	Get Document Status
 	 *	@return Document Status Clear Text
@@ -2236,7 +2255,8 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		docsPostProcess.add(doc);
 	}
 
-	public ArrayList<PO> getDocsPostProcess() {
+	@Override
+	public List<PO> getDocsPostProcess() {
 		return docsPostProcess;
 	}
 
@@ -2874,4 +2894,151 @@ public class MInvoice extends X_C_Invoice implements DocAction
 		return getC_DocType_ID() > 0 ? getC_DocType_ID() : getC_DocTypeTarget_ID();
 	}
 
+	/**
+	 * Index constant for Vector<Object> record return by getUnpaidInvoiceData.
+	 * Use MULTI_CURRENCY index if isMultiCurrency=true.
+	 * Use SINGLE_CURRENCY index if isMultiCurrency=false.
+	 */
+	//selected row, boolean
+	public static final int UNPAID_INVOICE_SELECTED = 0;
+	//transaction date, timestamp
+	public static final int UNPAID_INVOICE_TRX_DATE = 1;
+	//KeyNamePair, DocumentNo and C_Invoice_ID
+	public static final int UNPAID_INVOICE_DOCUMENT_KEY_NAME_PAIR = 2;
+	//multi currency record, invoice currency iso code
+	public static final int UNPAID_INVOICE_MULTI_CURRENCY_ISO = 3;
+	//multi currency record, invoice amount 
+	public static final int UNPAID_INVOICE_MULTI_CURRENCY_INVOICE_AMT = 4;
+	//multi currency record, invoice amount converted to base currency
+	public static final int UNPAID_INVOICE_MULTI_CURRENCY_CONVERTED_AMT = 5;
+	//multi currency record, open invoice amount
+	public static final int UNPAID_INVOICE_MULTI_CURRENCY_OPEN_AMT = 6;
+	//multi currency record, discount amount converted to base currency
+	public static final int UNPAID_INVOICE_MULTI_CURRENCY_CONVERTED_DISCOUNT_AMT = 7;
+	//multi currency record, write off amount
+	public static final int UNPAID_INVOICE_MULTI_CURRENCY_WRITE_OFF_AMT = 8;
+	//multi currency record, invoice applied amount
+	public static final int UNPAID_INVOICE_MULTI_CURRENCY_APPLIED_AMT = 9;
+	//multi currency record, over or under applied amount
+	public static final int UNPAID_INVOICE_MULTI_CURRENCY_OVER_UNDER_AMT = 10;
+	//single currency record, invoice amount
+	public static final int UNPAID_INVOICE_SINGLE_CURRENCY_INVOICE_AMT = 3;
+	//single currency record, open invoice amount
+	public static final int UNPAID_INVOICE_SINGLE_CURRENCY_OPEN_AMT = 4;
+	//single currency record, discount amount
+	public static final int UNPAID_INVOICE_SINGLE_CURRENCY_DISCOUNT_AMT = 5;
+	//single currency record, write off amount
+	public static final int UNPAID_INVOICE_SINGLE_CURRENCY_WRITE_OFF_AMT = 6;
+	//single currency record, invoice applied amount
+	public static final int UNPAID_INVOICE_SINGLE_CURRENCY_APPLIED_AMT = 7;
+	//single currency record, over or under applied amount
+	public static final int UNPAID_INVOICE_SINGLE_CURRENCY_OVER_UNDER_AMT = 8;
+	
+	/**
+	 * 
+	 * @param isMultiCurrency false to apply currency filter
+	 * @param date invoice open amount as at date
+	 * @param AD_Org_ID 0 for all orgs
+	 * @param C_Currency_ID mandatory, use as invoice document filter if isMultiCurrency is false
+	 * @param C_BPartner_ID mandatory bpartner filter
+	 * @param trxName optional trx name
+	 * @return list of unpaid invoice data
+	 */
+	public static Vector<Vector<Object>> getUnpaidInvoiceData(boolean isMultiCurrency, Timestamp date, int AD_Org_ID, int C_Currency_ID, 
+			int C_BPartner_ID, String trxName)
+	{
+		/********************************
+		 *  Load unpaid Invoices
+		 *      1-TrxDate, 2-Value, (3-Currency, 4-InvAmt,)
+		 *      5-ConvAmt, 6-ConvOpen, 7-ConvDisc, 8-WriteOff, 9-Applied
+		 * 
+		 SELECT i.DateInvoiced,i.DocumentNo,i.C_Invoice_ID,c.ISO_Code,
+		 i.GrandTotal*i.MultiplierAP "GrandTotal", 
+		 currencyConvert(i.GrandTotal*i.MultiplierAP,i.C_Currency_ID,i.C_Currency_ID,i.DateInvoiced,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID) "GrandTotal $", 
+		 invoiceOpen(C_Invoice_ID,C_InvoicePaySchedule_ID) "Open",
+		 currencyConvert(invoiceOpen(C_Invoice_ID,C_InvoicePaySchedule_ID),i.C_Currency_ID,i.C_Currency_ID,i.DateInvoiced,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID)*i.MultiplierAP "Open $", 
+		 invoiceDiscount(i.C_Invoice_ID,getDate(),C_InvoicePaySchedule_ID) "Discount",
+		 currencyConvert(invoiceDiscount(i.C_Invoice_ID,getDate(),C_InvoicePaySchedule_ID),i.C_Currency_ID,i.C_Currency_ID,i.DateInvoiced,i.C_ConversionType_ID,i.AD_Client_ID,i.AD_Org_ID)*i.Multiplier*i.MultiplierAP "Discount $",
+		 i.MultiplierAP, i.Multiplier 
+		 FROM C_Invoice_v i INNER JOIN C_Currency c ON (i.C_Currency_ID=c.C_Currency_ID) 
+		 WHERE -- i.IsPaid='N' AND i.Processed='Y' AND i.C_BPartner_ID=1000001
+		 */
+		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+		StringBuilder sql = new StringBuilder("SELECT i.DateInvoiced,i.DocumentNo,i.C_Invoice_ID," //  1..3
+			+ "c.ISO_Code,i.GrandTotal*i.MultiplierAP, "                            //  4..5    Orig Currency
+			+ "currencyConvertInvoice(i.C_Invoice_ID,?,i.GrandTotal*i.MultiplierAP,?), " //  6   #1  Converted, #2 Date
+			+ "currencyConvertInvoice(i.C_Invoice_ID,?,invoiceOpen(C_Invoice_ID,C_InvoicePaySchedule_ID),?)*i.MultiplierAP, "  //  7   #3, #4  Converted Open
+			+ "currencyConvertInvoice(i.C_Invoice_ID"                               //  8       AllowedDiscount
+			+ ",?,invoiceDiscount(i.C_Invoice_ID,?,C_InvoicePaySchedule_ID),i.DateInvoiced)*i.Multiplier*i.MultiplierAP,"               //  #5, #6
+			+ "i.MultiplierAP "
+			+ "FROM C_Invoice_v i"		//  corrected for CM/Split
+			+ " INNER JOIN C_Currency c ON (i.C_Currency_ID=c.C_Currency_ID) "
+			+ "WHERE i.IsPaid='N' AND i.Processed='Y'"
+			+ " AND i.C_BPartner_ID=?");                                            //  #7
+		if (!isMultiCurrency)
+			sql.append(" AND i.C_Currency_ID=?");                                   //  #8
+		if (AD_Org_ID != 0 ) 
+			sql.append(" AND i.AD_Org_ID=" + AD_Org_ID);
+		sql.append(" ORDER BY i.DateInvoiced, i.DocumentNo");
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("InvSQL=" + sql.toString());
+		
+		// role security
+		sql = new StringBuilder( MRole.getDefault(Env.getCtx(), false).addAccessSQL( sql.toString(), "i", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO ) );
+		
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql.toString(), trxName);
+			pstmt.setInt(1, C_Currency_ID);
+			pstmt.setTimestamp(2, date);
+			pstmt.setInt(3, C_Currency_ID);
+			pstmt.setTimestamp(4, date);
+			pstmt.setInt(5, C_Currency_ID);
+			pstmt.setTimestamp(6, date);
+			pstmt.setInt(7, C_BPartner_ID);
+			if (!isMultiCurrency)
+				pstmt.setInt(8, C_Currency_ID);
+			rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				Vector<Object> line = new Vector<Object>();
+				line.add(Boolean.FALSE);       //  0-Selection
+				line.add(rs.getTimestamp(1));       //  1-TrxDate
+				KeyNamePair pp = new KeyNamePair(rs.getInt(3), rs.getString(2));
+				line.add(pp);                       //  2-Value
+				if (isMultiCurrency)
+				{
+					line.add(rs.getString(4));      //  3-Currency
+					line.add(rs.getBigDecimal(5));  //  4-Orig Amount
+				}
+				line.add(rs.getBigDecimal(6));      //  3/5-ConvAmt
+				BigDecimal open = rs.getBigDecimal(7);
+				if (open == null)		//	no conversion rate
+					open = Env.ZERO;
+				line.add(open);      				//  4/6-ConvOpen
+				BigDecimal discount = rs.getBigDecimal(8);
+				if (discount == null)	//	no concersion rate
+					discount = Env.ZERO;
+				line.add(discount);					//  5/7-ConvAllowedDisc
+				line.add(Env.ZERO);      			//  6/8-WriteOff
+				line.add(Env.ZERO);					// 7/9-Applied
+				line.add(open);				    //  8/10-OverUnder
+
+				//	Add when open <> 0 (i.e. not if no conversion rate)
+				if (Env.ZERO.compareTo(open) != 0)
+					data.add(line);
+			}
+		}
+		catch (SQLException e)
+		{
+			s_log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+		}
+		
+		return data;
+	}
 }	//	MInvoice

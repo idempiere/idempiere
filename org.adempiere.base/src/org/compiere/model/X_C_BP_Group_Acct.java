@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BP_Group_Acct
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_BP_Group_Acct")
 public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persistent 
 {
@@ -31,12 +31,32 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_BP_Group_Acct (Properties ctx, int C_BP_Group_Acct_ID, String trxName)
     {
       super (ctx, C_BP_Group_Acct_ID, trxName);
+      /** if (C_BP_Group_Acct_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setC_BP_Group_ID (0);
+			setC_Prepayment_Acct (0);
+			setC_Receivable_Acct (0);
+			setC_Receivable_Services_Acct (0);
+			setNotInvoicedReceipts_Acct (0);
+			setPayDiscount_Exp_Acct (0);
+			setPayDiscount_Rev_Acct (0);
+			setV_Liability_Acct (0);
+			setV_Prepayment_Acct (0);
+			setWriteOff_Acct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BP_Group_Acct (Properties ctx, int C_BP_Group_Acct_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BP_Group_Acct_ID, trxName, virtualColumns);
       /** if (C_BP_Group_Acct_ID == 0)
         {
 			setC_AcctSchema_ID (0);
@@ -88,21 +108,20 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -111,7 +130,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set C_BP_Group_Acct_UU.
-		@param C_BP_Group_Acct_UU C_BP_Group_Acct_UU	  */
+		@param C_BP_Group_Acct_UU C_BP_Group_Acct_UU
+	*/
 	public void setC_BP_Group_Acct_UU (String C_BP_Group_Acct_UU)
 	{
 		set_Value (COLUMNNAME_C_BP_Group_Acct_UU, C_BP_Group_Acct_UU);
@@ -119,7 +139,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 
 	/** Get C_BP_Group_Acct_UU.
 		@return C_BP_Group_Acct_UU	  */
-	public String getC_BP_Group_Acct_UU () 
+	public String getC_BP_Group_Acct_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_BP_Group_Acct_UU);
 	}
@@ -131,21 +151,20 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Business Partner Group.
-		@param C_BP_Group_ID 
-		Business Partner Group
-	  */
+		@param C_BP_Group_ID Business Partner Group
+	*/
 	public void setC_BP_Group_ID (int C_BP_Group_ID)
 	{
-		if (C_BP_Group_ID < 1) 
+		if (C_BP_Group_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_BP_Group_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_BP_Group_ID, Integer.valueOf(C_BP_Group_ID));
 	}
 
 	/** Get Business Partner Group.
 		@return Business Partner Group
 	  */
-	public int getC_BP_Group_ID () 
+	public int getC_BP_Group_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Group_ID);
 		if (ii == null)
@@ -168,9 +187,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Customer Prepayment.
-		@param C_Prepayment_Acct 
-		Account for customer prepayments
-	  */
+		@param C_Prepayment_Acct Account for customer prepayments
+	*/
 	public void setC_Prepayment_Acct (int C_Prepayment_Acct)
 	{
 		set_Value (COLUMNNAME_C_Prepayment_Acct, Integer.valueOf(C_Prepayment_Acct));
@@ -179,7 +197,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/** Get Customer Prepayment.
 		@return Account for customer prepayments
 	  */
-	public int getC_Prepayment_Acct () 
+	public int getC_Prepayment_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Prepayment_Acct);
 		if (ii == null)
@@ -194,9 +212,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Customer Receivables.
-		@param C_Receivable_Acct 
-		Account for Customer Receivables
-	  */
+		@param C_Receivable_Acct Account for Customer Receivables
+	*/
 	public void setC_Receivable_Acct (int C_Receivable_Acct)
 	{
 		set_Value (COLUMNNAME_C_Receivable_Acct, Integer.valueOf(C_Receivable_Acct));
@@ -205,7 +222,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/** Get Customer Receivables.
 		@return Account for Customer Receivables
 	  */
-	public int getC_Receivable_Acct () 
+	public int getC_Receivable_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Receivable_Acct);
 		if (ii == null)
@@ -220,9 +237,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Receivable Services.
-		@param C_Receivable_Services_Acct 
-		Customer Accounts Receivables Services Account
-	  */
+		@param C_Receivable_Services_Acct Customer Accounts Receivables Services Account
+	*/
 	public void setC_Receivable_Services_Acct (int C_Receivable_Services_Acct)
 	{
 		set_Value (COLUMNNAME_C_Receivable_Services_Acct, Integer.valueOf(C_Receivable_Services_Acct));
@@ -231,7 +247,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/** Get Receivable Services.
 		@return Customer Accounts Receivables Services Account
 	  */
-	public int getC_Receivable_Services_Acct () 
+	public int getC_Receivable_Services_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Receivable_Services_Acct);
 		if (ii == null)
@@ -246,9 +262,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Not-invoiced Receipts.
-		@param NotInvoicedReceipts_Acct 
-		Account for not-invoiced Material Receipts
-	  */
+		@param NotInvoicedReceipts_Acct Account for not-invoiced Material Receipts
+	*/
 	public void setNotInvoicedReceipts_Acct (int NotInvoicedReceipts_Acct)
 	{
 		set_Value (COLUMNNAME_NotInvoicedReceipts_Acct, Integer.valueOf(NotInvoicedReceipts_Acct));
@@ -257,7 +272,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/** Get Not-invoiced Receipts.
 		@return Account for not-invoiced Material Receipts
 	  */
-	public int getNotInvoicedReceipts_Acct () 
+	public int getNotInvoicedReceipts_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_NotInvoicedReceipts_Acct);
 		if (ii == null)
@@ -272,9 +287,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Payment Discount Expense.
-		@param PayDiscount_Exp_Acct 
-		Payment Discount Expense Account
-	  */
+		@param PayDiscount_Exp_Acct Payment Discount Expense Account
+	*/
 	public void setPayDiscount_Exp_Acct (int PayDiscount_Exp_Acct)
 	{
 		set_Value (COLUMNNAME_PayDiscount_Exp_Acct, Integer.valueOf(PayDiscount_Exp_Acct));
@@ -283,7 +297,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/** Get Payment Discount Expense.
 		@return Payment Discount Expense Account
 	  */
-	public int getPayDiscount_Exp_Acct () 
+	public int getPayDiscount_Exp_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PayDiscount_Exp_Acct);
 		if (ii == null)
@@ -298,9 +312,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Payment Discount Revenue.
-		@param PayDiscount_Rev_Acct 
-		Payment Discount Revenue Account
-	  */
+		@param PayDiscount_Rev_Acct Payment Discount Revenue Account
+	*/
 	public void setPayDiscount_Rev_Acct (int PayDiscount_Rev_Acct)
 	{
 		set_Value (COLUMNNAME_PayDiscount_Rev_Acct, Integer.valueOf(PayDiscount_Rev_Acct));
@@ -309,7 +322,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/** Get Payment Discount Revenue.
 		@return Payment Discount Revenue Account
 	  */
-	public int getPayDiscount_Rev_Acct () 
+	public int getPayDiscount_Rev_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PayDiscount_Rev_Acct);
 		if (ii == null)
@@ -318,7 +331,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -326,7 +340,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -345,9 +359,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Unearned Revenue.
-		@param UnEarnedRevenue_Acct 
-		Account for unearned revenue
-	  */
+		@param UnEarnedRevenue_Acct Account for unearned revenue
+	*/
 	public void setUnEarnedRevenue_Acct (int UnEarnedRevenue_Acct)
 	{
 		set_Value (COLUMNNAME_UnEarnedRevenue_Acct, Integer.valueOf(UnEarnedRevenue_Acct));
@@ -356,7 +369,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/** Get Unearned Revenue.
 		@return Account for unearned revenue
 	  */
-	public int getUnEarnedRevenue_Acct () 
+	public int getUnEarnedRevenue_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_UnEarnedRevenue_Acct);
 		if (ii == null)
@@ -371,9 +384,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Vendor Liability.
-		@param V_Liability_Acct 
-		Account for Vendor Liability
-	  */
+		@param V_Liability_Acct Account for Vendor Liability
+	*/
 	public void setV_Liability_Acct (int V_Liability_Acct)
 	{
 		set_Value (COLUMNNAME_V_Liability_Acct, Integer.valueOf(V_Liability_Acct));
@@ -382,7 +394,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/** Get Vendor Liability.
 		@return Account for Vendor Liability
 	  */
-	public int getV_Liability_Acct () 
+	public int getV_Liability_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_V_Liability_Acct);
 		if (ii == null)
@@ -397,9 +409,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Vendor Service Liability.
-		@param V_Liability_Services_Acct 
-		Account for Vendor Service Liability
-	  */
+		@param V_Liability_Services_Acct Account for Vendor Service Liability
+	*/
 	public void setV_Liability_Services_Acct (int V_Liability_Services_Acct)
 	{
 		set_Value (COLUMNNAME_V_Liability_Services_Acct, Integer.valueOf(V_Liability_Services_Acct));
@@ -408,7 +419,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/** Get Vendor Service Liability.
 		@return Account for Vendor Service Liability
 	  */
-	public int getV_Liability_Services_Acct () 
+	public int getV_Liability_Services_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_V_Liability_Services_Acct);
 		if (ii == null)
@@ -423,9 +434,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Vendor Prepayment.
-		@param V_Prepayment_Acct 
-		Account for Vendor Prepayments
-	  */
+		@param V_Prepayment_Acct Account for Vendor Prepayments
+	*/
 	public void setV_Prepayment_Acct (int V_Prepayment_Acct)
 	{
 		set_Value (COLUMNNAME_V_Prepayment_Acct, Integer.valueOf(V_Prepayment_Acct));
@@ -434,7 +444,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/** Get Vendor Prepayment.
 		@return Account for Vendor Prepayments
 	  */
-	public int getV_Prepayment_Acct () 
+	public int getV_Prepayment_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_V_Prepayment_Acct);
 		if (ii == null)
@@ -449,9 +459,8 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	}
 
 	/** Set Write-off.
-		@param WriteOff_Acct 
-		Account for Receivables write-off
-	  */
+		@param WriteOff_Acct Account for Receivables write-off
+	*/
 	public void setWriteOff_Acct (int WriteOff_Acct)
 	{
 		set_Value (COLUMNNAME_WriteOff_Acct, Integer.valueOf(WriteOff_Acct));
@@ -460,7 +469,7 @@ public class X_C_BP_Group_Acct extends PO implements I_C_BP_Group_Acct, I_Persis
 	/** Get Write-off.
 		@return Account for Receivables write-off
 	  */
-	public int getWriteOff_Acct () 
+	public int getWriteOff_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WriteOff_Acct);
 		if (ii == null)

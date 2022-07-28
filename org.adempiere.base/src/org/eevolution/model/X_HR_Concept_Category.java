@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Concept_Category
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="HR_Concept_Category")
 public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, I_Persistent 
 {
@@ -32,12 +32,23 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_HR_Concept_Category (Properties ctx, int HR_Concept_Category_ID, String trxName)
     {
       super (ctx, HR_Concept_Category_ID, trxName);
+      /** if (HR_Concept_Category_ID == 0)
+        {
+			setHR_Concept_Category_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Concept_Category (Properties ctx, int HR_Concept_Category_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Concept_Category_ID, trxName, virtualColumns);
       /** if (HR_Concept_Category_ID == 0)
         {
 			setHR_Concept_Category_ID (0);
@@ -74,9 +85,8 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -85,7 +95,7 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -97,7 +107,8 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	}
 
 	/** Set Payroll Concept Account.
-		@param HR_Concept_Acct Payroll Concept Account	  */
+		@param HR_Concept_Acct Payroll Concept Account
+	*/
 	public void setHR_Concept_Acct (int HR_Concept_Acct)
 	{
 		set_Value (COLUMNNAME_HR_Concept_Acct, Integer.valueOf(HR_Concept_Acct));
@@ -105,7 +116,7 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 
 	/** Get Payroll Concept Account.
 		@return Payroll Concept Account	  */
-	public int getHR_Concept_Acct () 
+	public int getHR_Concept_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Concept_Acct);
 		if (ii == null)
@@ -114,18 +125,19 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	}
 
 	/** Set Payroll Concept Category.
-		@param HR_Concept_Category_ID Payroll Concept Category	  */
+		@param HR_Concept_Category_ID Payroll Concept Category
+	*/
 	public void setHR_Concept_Category_ID (int HR_Concept_Category_ID)
 	{
-		if (HR_Concept_Category_ID < 1) 
+		if (HR_Concept_Category_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Concept_Category_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Concept_Category_ID, Integer.valueOf(HR_Concept_Category_ID));
 	}
 
 	/** Get Payroll Concept Category.
 		@return Payroll Concept Category	  */
-	public int getHR_Concept_Category_ID () 
+	public int getHR_Concept_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Concept_Category_ID);
 		if (ii == null)
@@ -134,7 +146,8 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	}
 
 	/** Set HR_Concept_Category_UU.
-		@param HR_Concept_Category_UU HR_Concept_Category_UU	  */
+		@param HR_Concept_Category_UU HR_Concept_Category_UU
+	*/
 	public void setHR_Concept_Category_UU (String HR_Concept_Category_UU)
 	{
 		set_Value (COLUMNNAME_HR_Concept_Category_UU, HR_Concept_Category_UU);
@@ -142,15 +155,14 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 
 	/** Get HR_Concept_Category_UU.
 		@return HR_Concept_Category_UU	  */
-	public String getHR_Concept_Category_UU () 
+	public String getHR_Concept_Category_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_Concept_Category_UU);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -159,7 +171,7 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -172,9 +184,8 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -183,7 +194,7 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -197,9 +208,8 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -208,7 +218,7 @@ public class X_HR_Concept_Category extends PO implements I_HR_Concept_Category, 
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

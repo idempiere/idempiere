@@ -124,7 +124,11 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	public MOrderLine (Properties ctx, int C_OrderLine_ID, String trxName)
 	{
-		super (ctx, C_OrderLine_ID, trxName);
+		this (ctx, C_OrderLine_ID, trxName, (String[]) null);
+	}	//	MOrderLine
+
+	public MOrderLine(Properties ctx, int C_OrderLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_OrderLine_ID, trxName, virtualColumns);
 		if (C_OrderLine_ID == 0)
 		{
 			setFreightAmt (Env.ZERO);
@@ -147,8 +151,8 @@ public class MOrderLine extends X_C_OrderLine
 			setProcessed (false);
 			setLine (0);
 		}
-	}	//	MOrderLine
-	
+	}
+
 	/**
 	 *  Parent Constructor.
 	 		ol.setM_Product_ID(wbl.getM_Product_ID());
@@ -325,10 +329,10 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	public boolean setTax()
 	{
-		int ii = Tax.get(getCtx(), getM_Product_ID(), getC_Charge_ID(), getDateOrdered(), getDateOrdered(),
+		int ii = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID(), getDateOrdered(), getDateOrdered(),
 			getAD_Org_ID(), getM_Warehouse_ID(),
 			getC_BPartner_Location_ID(),		//	should be bill to
-			getC_BPartner_Location_ID(), m_IsSOTrx, get_TrxName());
+			getC_BPartner_Location_ID(), m_IsSOTrx, getParent().getDeliveryViaRule(), get_TrxName());
 		if (ii == 0)
 		{
 			log.log(Level.SEVERE, "No Tax found");
@@ -790,7 +794,8 @@ public class MOrderLine extends X_C_OrderLine
 		
 		//	R/O Check - Product/Warehouse Change
 		if (!newRecord 
-			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID"))) 
+			&& (is_ValueChanged("M_Product_ID") || is_ValueChanged("M_Warehouse_ID") || 
+			(!getParent().isProcessed() && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)))) 
 		{
 			if (!canChangeWarehouse())
 				return false;
@@ -828,7 +833,7 @@ public class MOrderLine extends X_C_OrderLine
 			int C_DocType_ID = getParent().getDocTypeID();
 			MDocType docType = MDocType.get(getCtx(), C_DocType_ID);
 			//
-			if (!docType.IsNoPriceListCheck() && !m_productPrice.isCalculated())
+			if (!docType.isNoPriceListCheck() && !m_productPrice.isCalculated())
 			{
 				throw new ProductNotOnPriceListException(m_productPrice, getLine());
 			}
@@ -972,27 +977,67 @@ public class MOrderLine extends X_C_OrderLine
 	 * @param oldTax true if the old C_Tax_ID should be used
 	 * @return true if success, false otherwise
 	 * 
-	 * @author teo_sarca [ 1583825 ]
+	 * author teo_sarca [ 1583825 ]
 	 */
 	public boolean updateOrderTax(boolean oldTax) {
-		MOrderTax tax = MOrderTax.get (this, getPrecision(), oldTax, get_TrxName());
-		if (tax != null) {
-			if (!tax.calculateTaxFromLines())
-				return false;
-			if (tax.getTaxAmt().signum() != 0) {
-				if (!tax.save(get_TrxName()))
-					return false;
+		int C_Tax_ID = getC_Tax_ID();
+		boolean isOldTax = oldTax && is_ValueChanged(MOrderLine.COLUMNNAME_C_Tax_ID); 
+		if (isOldTax)
+		{
+			Object old = get_ValueOld(MOrderLine.COLUMNNAME_C_Tax_ID);
+			if (old == null)
+			{
+				return true;
 			}
-			else {
-				if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+			C_Tax_ID = ((Integer)old).intValue();
+		}
+		if (C_Tax_ID == 0)
+		{
+			return true;
+		}
+		
+		MTax t = MTax.get(C_Tax_ID);
+		if (t.isSummary())
+		{
+			MOrderTax[] taxes = MOrderTax.getChildTaxes(this, getPrecision(), isOldTax, get_TrxName());
+			if (taxes != null && taxes.length > 0)
+			{
+				for(MOrderTax tax : taxes)
+				{
+					if (!tax.calculateTaxFromLines())
+						return false;
+					if (tax.getTaxAmt().signum() != 0) {
+						if (!tax.save(get_TrxName()))
+							return false;
+					}
+					else {
+						if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+							return false;
+					}
+				}
+			}
+		}
+		else
+		{
+			MOrderTax tax = MOrderTax.get (this, getPrecision(), oldTax, get_TrxName());
+			if (tax != null) {
+				if (!tax.calculateTaxFromLines())
 					return false;
+				if (tax.getTaxAmt().signum() != 0) {
+					if (!tax.save(get_TrxName()))
+						return false;
+				}
+				else {
+					if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+						return false;
+				}
 			}
 		}
 		return true;
 	}
 	
 	/**
-	 *	Update Tax & Header
+	 *	Update Tax and Header
 	 *	@return true if header updated
 	 */
 	public boolean updateHeaderTax()

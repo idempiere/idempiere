@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Scheduler_Para
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Scheduler_Para")
 public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Persistent 
 {
@@ -30,12 +30,23 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Scheduler_Para (Properties ctx, int AD_Scheduler_Para_ID, String trxName)
     {
       super (ctx, AD_Scheduler_Para_ID, trxName);
+      /** if (AD_Scheduler_Para_ID == 0)
+        {
+			setAD_Process_Para_ID (0);
+			setAD_Scheduler_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Scheduler_Para (Properties ctx, int AD_Scheduler_Para_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Scheduler_Para_ID, trxName, virtualColumns);
       /** if (AD_Scheduler_Para_ID == 0)
         {
 			setAD_Process_Para_ID (0);
@@ -78,18 +89,19 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 	}
 
 	/** Set Process Parameter.
-		@param AD_Process_Para_ID Process Parameter	  */
+		@param AD_Process_Para_ID Process Parameter
+	*/
 	public void setAD_Process_Para_ID (int AD_Process_Para_ID)
 	{
-		if (AD_Process_Para_ID < 1) 
+		if (AD_Process_Para_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Process_Para_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Process_Para_ID, Integer.valueOf(AD_Process_Para_ID));
 	}
 
 	/** Get Process Parameter.
 		@return Process Parameter	  */
-	public int getAD_Process_Para_ID () 
+	public int getAD_Process_Para_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_Para_ID);
 		if (ii == null)
@@ -104,21 +116,20 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 	}
 
 	/** Set Scheduler.
-		@param AD_Scheduler_ID 
-		Schedule Processes
-	  */
+		@param AD_Scheduler_ID Schedule Processes
+	*/
 	public void setAD_Scheduler_ID (int AD_Scheduler_ID)
 	{
-		if (AD_Scheduler_ID < 1) 
+		if (AD_Scheduler_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Scheduler_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Scheduler_ID, Integer.valueOf(AD_Scheduler_ID));
 	}
 
 	/** Get Scheduler.
 		@return Schedule Processes
 	  */
-	public int getAD_Scheduler_ID () 
+	public int getAD_Scheduler_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Scheduler_ID);
 		if (ii == null)
@@ -127,7 +138,8 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 	}
 
 	/** Set AD_Scheduler_Para_UU.
-		@param AD_Scheduler_Para_UU AD_Scheduler_Para_UU	  */
+		@param AD_Scheduler_Para_UU AD_Scheduler_Para_UU
+	*/
 	public void setAD_Scheduler_Para_UU (String AD_Scheduler_Para_UU)
 	{
 		set_Value (COLUMNNAME_AD_Scheduler_Para_UU, AD_Scheduler_Para_UU);
@@ -135,15 +147,14 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 
 	/** Get AD_Scheduler_Para_UU.
 		@return AD_Scheduler_Para_UU	  */
-	public String getAD_Scheduler_Para_UU () 
+	public String getAD_Scheduler_Para_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Scheduler_Para_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -152,15 +163,14 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Default Parameter.
-		@param ParameterDefault 
-		Default value of the parameter
-	  */
+		@param ParameterDefault Default value of the parameter
+	*/
 	public void setParameterDefault (String ParameterDefault)
 	{
 		set_Value (COLUMNNAME_ParameterDefault, ParameterDefault);
@@ -169,15 +179,14 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 	/** Get Default Parameter.
 		@return Default value of the parameter
 	  */
-	public String getParameterDefault () 
+	public String getParameterDefault()
 	{
 		return (String)get_Value(COLUMNNAME_ParameterDefault);
 	}
 
 	/** Set Default To Parameter.
-		@param ParameterToDefault 
-		Default value of the to parameter
-	  */
+		@param ParameterToDefault Default value of the to parameter
+	*/
 	public void setParameterToDefault (String ParameterToDefault)
 	{
 		set_Value (COLUMNNAME_ParameterToDefault, ParameterToDefault);
@@ -186,7 +195,7 @@ public class X_AD_Scheduler_Para extends PO implements I_AD_Scheduler_Para, I_Pe
 	/** Get Default To Parameter.
 		@return Default value of the to parameter
 	  */
-	public String getParameterToDefault () 
+	public String getParameterToDefault()
 	{
 		return (String)get_Value(COLUMNNAME_ParameterToDefault);
 	}

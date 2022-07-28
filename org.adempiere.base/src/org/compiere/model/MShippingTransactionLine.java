@@ -20,5 +20,10 @@ public class MShippingTransactionLine extends X_M_ShippingTransactionLine
 	{
 		super(ctx, rs, trxName);
 	}
-	
+
+	public MShippingTransactionLine(Properties ctx, int M_ShippingTransactionLine_ID, String trxName,
+			String... virtualColumns) {
+		super(ctx, M_ShippingTransactionLine_ID, trxName, virtualColumns);
+	}
+
 }

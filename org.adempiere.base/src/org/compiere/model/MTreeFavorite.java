@@ -33,7 +33,7 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 	/**
 	 * 
 	 */
-	private static final long				serialVersionUID			= -1781192037651191816L;
+	private static final long				serialVersionUID			= 6849737702264230347L;
 
 	public static final String				SQL_GET_TREE_FAVORITE_ID	= "SELECT AD_Tree_Favorite_ID FROM AD_Tree_Favorite	WHERE IsActive='Y' AND AD_User_ID=?";
 
@@ -113,7 +113,7 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 
 					if (access != null)
 					{
-						name = menu.get_Translation(MMenu.COLUMNNAME_Name);
+						name = menu.getDisplayedName();
 						img = menu.getAction();
 					}
 				}
@@ -210,7 +210,7 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 	} // checkBuffer
 
 	/**
-	 * Get Favorite Tree ID for a specific User & Role Wise
+	 * Get Favorite Tree ID for a specific User and Role Wise
 	 * 
 	 * @param  userID
 	 * @return        Favorite Tree_ID

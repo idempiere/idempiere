@@ -18,6 +18,7 @@ package org.compiere.acct;
 
 import java.math.BigDecimal;
 
+import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -46,7 +47,7 @@ public class DocLine_Bank extends DocLine
 		m_TrxAmt = line.getTrxAmt();
 		//
 		setDateDoc(line.getValutaDate());
-		setDateAcct(doc.getDateAcct());  // adaxa-pb use statement date
+		setDateAcct(MBankStatement.isPostWithDateFromLine(doc.getAD_Client_ID()) ? line.getDateAcct() : doc.getDateAcct());
 		setC_BPartner_ID(line.getC_BPartner_ID());
 	}   //  DocLine_Bank
 

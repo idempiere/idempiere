@@ -69,7 +69,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	 * @param text
 	 * @param editable
 	 * @param maxSize
-	 * @param isHtml - select the html tab at start
+	 * @param IsHtml - select the html tab at start
 	 */
 	public WTextEditorDialog(String title, String text, boolean editable, int maxSize, boolean IsHtml) {
 		this(title, text, editable, maxSize, IsHtml, true);
@@ -186,6 +186,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		setSizable(true);
 		setMaximizable(true);
 		addEventListener(Events.ON_CANCEL, e -> onCancel());
+		addEventListener(Events.ON_SIZE, e -> onSize());
+		addEventListener(Events.ON_MAXIMIZE, e -> onSize());
 	}
 
 	private void createEditor(org.zkoss.zul.Tabpanel tabPanel) {		
@@ -221,8 +223,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 					text = textBox.getText();
 					detach();
 				} else {
-					String script = "var w=zk('#"+editor.getUuid()+"').$();var d=w.getEditor().getData();var t=zk('#" +
-							this.getUuid()+"').$();var e=new zk.Event(t,'onEditorCallback',d,{toServer:true});zAu.send(e);";
+					String script = "(function(){let w=zk('#"+editor.getUuid()+"').$();let d=w.getEditor().getData();let t=zk('#" +
+							this.getUuid()+"').$();let e=new zk.Event(t,'onEditorCallback',d,{toServer:true});zAu.send(e);})()";
 					Clients.response(new AuScript(script));
 				}
 					
@@ -253,6 +255,10 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	private void onCancel() {
 		cancelled = true;
 		detach();
+	}
+	
+	private void onSize() {
+		editor.invalidate();
 	}
 	
 	private void updateStatus(int newLength) {

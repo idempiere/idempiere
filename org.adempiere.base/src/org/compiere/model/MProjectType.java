@@ -152,7 +152,7 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 	public MProjectTypePhase[] getPhases()
 	{
 		ArrayList<MProjectTypePhase> list = new ArrayList<MProjectTypePhase>();
-		String sql = "SELECT * FROM C_Phase WHERE C_ProjectType_ID=? ORDER BY SeqNo";
+		String sql = "SELECT * FROM C_Phase WHERE C_ProjectType_ID=? AND IsActive='Y' ORDER BY SeqNo, C_Phase_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

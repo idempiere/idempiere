@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Group
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Group")
 public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent 
 {
@@ -31,12 +31,32 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Group (Properties ctx, int A_Asset_Group_ID, String trxName)
     {
       super (ctx, A_Asset_Group_ID, trxName);
+      /** if (A_Asset_Group_ID == 0)
+        {
+			setA_Asset_Group_ID (0);
+			setIsCreateAsActive (true);
+// Y
+			setIsDefault (false);
+// 'N'
+			setIsDepreciated (false);
+			setIsOneAssetPerUOM (false);
+			setIsOwned (false);
+			setIsTrackIssues (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Group (Properties ctx, int A_Asset_Group_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Group_ID, trxName, virtualColumns);
       /** if (A_Asset_Group_ID == 0)
         {
 			setA_Asset_Group_ID (0);
@@ -88,18 +108,19 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	}
 
 	/** Set Asset class.
-		@param A_Asset_Class_ID Asset class	  */
+		@param A_Asset_Class_ID Asset class
+	*/
 	public void setA_Asset_Class_ID (int A_Asset_Class_ID)
 	{
-		if (A_Asset_Class_ID < 1) 
+		if (A_Asset_Class_ID < 1)
 			set_Value (COLUMNNAME_A_Asset_Class_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_A_Asset_Class_ID, Integer.valueOf(A_Asset_Class_ID));
 	}
 
 	/** Get Asset class.
 		@return Asset class	  */
-	public int getA_Asset_Class_ID () 
+	public int getA_Asset_Class_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Class_ID);
 		if (ii == null)
@@ -108,21 +129,20 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	}
 
 	/** Set Asset Group.
-		@param A_Asset_Group_ID 
-		Group of Assets
-	  */
+		@param A_Asset_Group_ID Group of Assets
+	*/
 	public void setA_Asset_Group_ID (int A_Asset_Group_ID)
 	{
-		if (A_Asset_Group_ID < 1) 
+		if (A_Asset_Group_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Group_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Group_ID, Integer.valueOf(A_Asset_Group_ID));
 	}
 
 	/** Get Asset Group.
 		@return Group of Assets
 	  */
-	public int getA_Asset_Group_ID () 
+	public int getA_Asset_Group_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Group_ID);
 		if (ii == null)
@@ -139,7 +159,8 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
     }
 
 	/** Set A_Asset_Group_UU.
-		@param A_Asset_Group_UU A_Asset_Group_UU	  */
+		@param A_Asset_Group_UU A_Asset_Group_UU
+	*/
 	public void setA_Asset_Group_UU (String A_Asset_Group_UU)
 	{
 		set_Value (COLUMNNAME_A_Asset_Group_UU, A_Asset_Group_UU);
@@ -147,7 +168,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 
 	/** Get A_Asset_Group_UU.
 		@return A_Asset_Group_UU	  */
-	public String getA_Asset_Group_UU () 
+	public String getA_Asset_Group_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_Asset_Group_UU);
 	}
@@ -159,18 +180,19 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	}
 
 	/** Set Asset Type.
-		@param A_Asset_Type_ID Asset Type	  */
+		@param A_Asset_Type_ID Asset Type
+	*/
 	public void setA_Asset_Type_ID (int A_Asset_Type_ID)
 	{
-		if (A_Asset_Type_ID < 1) 
+		if (A_Asset_Type_ID < 1)
 			set_Value (COLUMNNAME_A_Asset_Type_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_A_Asset_Type_ID, Integer.valueOf(A_Asset_Type_ID));
 	}
 
 	/** Get Asset Type.
 		@return Asset Type	  */
-	public int getA_Asset_Type_ID () 
+	public int getA_Asset_Type_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Type_ID);
 		if (ii == null)
@@ -179,9 +201,8 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -190,15 +211,14 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -207,15 +227,14 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Create As Active.
-		@param IsCreateAsActive 
-		Create Asset and activate it
-	  */
+		@param IsCreateAsActive Create Asset and activate it
+	*/
 	public void setIsCreateAsActive (boolean IsCreateAsActive)
 	{
 		set_Value (COLUMNNAME_IsCreateAsActive, Boolean.valueOf(IsCreateAsActive));
@@ -224,7 +243,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/** Get Create As Active.
 		@return Create Asset and activate it
 	  */
-	public boolean isCreateAsActive () 
+	public boolean isCreateAsActive()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCreateAsActive);
 		if (oo != null) 
@@ -237,9 +256,8 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -248,7 +266,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -261,9 +279,8 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	}
 
 	/** Set Depreciate.
-		@param IsDepreciated 
-		The asset will be depreciated
-	  */
+		@param IsDepreciated The asset will be depreciated
+	*/
 	public void setIsDepreciated (boolean IsDepreciated)
 	{
 		set_Value (COLUMNNAME_IsDepreciated, Boolean.valueOf(IsDepreciated));
@@ -272,7 +289,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/** Get Depreciate.
 		@return The asset will be depreciated
 	  */
-	public boolean isDepreciated () 
+	public boolean isDepreciated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDepreciated);
 		if (oo != null) 
@@ -285,7 +302,8 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	}
 
 	/** Set IsFixedAsset.
-		@param IsFixedAsset IsFixedAsset	  */
+		@param IsFixedAsset IsFixedAsset
+	*/
 	public void setIsFixedAsset (boolean IsFixedAsset)
 	{
 		set_Value (COLUMNNAME_IsFixedAsset, Boolean.valueOf(IsFixedAsset));
@@ -293,7 +311,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 
 	/** Get IsFixedAsset.
 		@return IsFixedAsset	  */
-	public boolean isFixedAsset () 
+	public boolean isFixedAsset()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFixedAsset);
 		if (oo != null) 
@@ -306,9 +324,8 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	}
 
 	/** Set One Asset Per UOM.
-		@param IsOneAssetPerUOM 
-		Create one asset per UOM
-	  */
+		@param IsOneAssetPerUOM Create one asset per UOM
+	*/
 	public void setIsOneAssetPerUOM (boolean IsOneAssetPerUOM)
 	{
 		set_Value (COLUMNNAME_IsOneAssetPerUOM, Boolean.valueOf(IsOneAssetPerUOM));
@@ -317,7 +334,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/** Get One Asset Per UOM.
 		@return Create one asset per UOM
 	  */
-	public boolean isOneAssetPerUOM () 
+	public boolean isOneAssetPerUOM()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOneAssetPerUOM);
 		if (oo != null) 
@@ -330,9 +347,8 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	}
 
 	/** Set Owned.
-		@param IsOwned 
-		The asset is owned by the organization
-	  */
+		@param IsOwned The asset is owned by the organization
+	*/
 	public void setIsOwned (boolean IsOwned)
 	{
 		set_Value (COLUMNNAME_IsOwned, Boolean.valueOf(IsOwned));
@@ -341,7 +357,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/** Get Owned.
 		@return The asset is owned by the organization
 	  */
-	public boolean isOwned () 
+	public boolean isOwned()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOwned);
 		if (oo != null) 
@@ -354,9 +370,8 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	}
 
 	/** Set Track Issues.
-		@param IsTrackIssues 
-		Enable tracking issues for this asset
-	  */
+		@param IsTrackIssues Enable tracking issues for this asset
+	*/
 	public void setIsTrackIssues (boolean IsTrackIssues)
 	{
 		set_Value (COLUMNNAME_IsTrackIssues, Boolean.valueOf(IsTrackIssues));
@@ -365,7 +380,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/** Get Track Issues.
 		@return Enable tracking issues for this asset
 	  */
-	public boolean isTrackIssues () 
+	public boolean isTrackIssues()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTrackIssues);
 		if (oo != null) 
@@ -378,9 +393,8 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -389,7 +403,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQResponseLineQty
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQResponseLineQty")
 public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty, I_Persistent 
 {
@@ -33,12 +33,25 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_RfQResponseLineQty (Properties ctx, int C_RfQResponseLineQty_ID, String trxName)
     {
       super (ctx, C_RfQResponseLineQty_ID, trxName);
+      /** if (C_RfQResponseLineQty_ID == 0)
+        {
+			setC_RfQLineQty_ID (0);
+			setC_RfQResponseLine_ID (0);
+			setC_RfQResponseLineQty_ID (0);
+			setPrice (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_RfQResponseLineQty (Properties ctx, int C_RfQResponseLineQty_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_RfQResponseLineQty_ID, trxName, virtualColumns);
       /** if (C_RfQResponseLineQty_ID == 0)
         {
 			setC_RfQLineQty_ID (0);
@@ -83,21 +96,20 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 	}
 
 	/** Set RfQ Line Quantity.
-		@param C_RfQLineQty_ID 
-		Request for Quotation Line Quantity
-	  */
+		@param C_RfQLineQty_ID Request for Quotation Line Quantity
+	*/
 	public void setC_RfQLineQty_ID (int C_RfQLineQty_ID)
 	{
-		if (C_RfQLineQty_ID < 1) 
+		if (C_RfQLineQty_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RfQLineQty_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RfQLineQty_ID, Integer.valueOf(C_RfQLineQty_ID));
 	}
 
 	/** Get RfQ Line Quantity.
 		@return Request for Quotation Line Quantity
 	  */
-	public int getC_RfQLineQty_ID () 
+	public int getC_RfQLineQty_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQLineQty_ID);
 		if (ii == null)
@@ -112,21 +124,20 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 	}
 
 	/** Set RfQ Response Line.
-		@param C_RfQResponseLine_ID 
-		Request for Quotation Response Line
-	  */
+		@param C_RfQResponseLine_ID Request for Quotation Response Line
+	*/
 	public void setC_RfQResponseLine_ID (int C_RfQResponseLine_ID)
 	{
-		if (C_RfQResponseLine_ID < 1) 
+		if (C_RfQResponseLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RfQResponseLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RfQResponseLine_ID, Integer.valueOf(C_RfQResponseLine_ID));
 	}
 
 	/** Get RfQ Response Line.
 		@return Request for Quotation Response Line
 	  */
-	public int getC_RfQResponseLine_ID () 
+	public int getC_RfQResponseLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQResponseLine_ID);
 		if (ii == null)
@@ -143,21 +154,20 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
     }
 
 	/** Set RfQ Response Line Qty.
-		@param C_RfQResponseLineQty_ID 
-		Request for Quotation Response Line Quantity
-	  */
+		@param C_RfQResponseLineQty_ID Request for Quotation Response Line Quantity
+	*/
 	public void setC_RfQResponseLineQty_ID (int C_RfQResponseLineQty_ID)
 	{
-		if (C_RfQResponseLineQty_ID < 1) 
+		if (C_RfQResponseLineQty_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_RfQResponseLineQty_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_RfQResponseLineQty_ID, Integer.valueOf(C_RfQResponseLineQty_ID));
 	}
 
 	/** Get RfQ Response Line Qty.
 		@return Request for Quotation Response Line Quantity
 	  */
-	public int getC_RfQResponseLineQty_ID () 
+	public int getC_RfQResponseLineQty_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_RfQResponseLineQty_ID);
 		if (ii == null)
@@ -166,7 +176,8 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 	}
 
 	/** Set C_RfQResponseLineQty_UU.
-		@param C_RfQResponseLineQty_UU C_RfQResponseLineQty_UU	  */
+		@param C_RfQResponseLineQty_UU C_RfQResponseLineQty_UU
+	*/
 	public void setC_RfQResponseLineQty_UU (String C_RfQResponseLineQty_UU)
 	{
 		set_Value (COLUMNNAME_C_RfQResponseLineQty_UU, C_RfQResponseLineQty_UU);
@@ -174,15 +185,14 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 
 	/** Get C_RfQResponseLineQty_UU.
 		@return C_RfQResponseLineQty_UU	  */
-	public String getC_RfQResponseLineQty_UU () 
+	public String getC_RfQResponseLineQty_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_RfQResponseLineQty_UU);
 	}
 
 	/** Set Discount %.
-		@param Discount 
-		Discount in percent
-	  */
+		@param Discount Discount in percent
+	*/
 	public void setDiscount (BigDecimal Discount)
 	{
 		set_Value (COLUMNNAME_Discount, Discount);
@@ -191,7 +201,7 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 	/** Get Discount %.
 		@return Discount in percent
 	  */
-	public BigDecimal getDiscount () 
+	public BigDecimal getDiscount()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Discount);
 		if (bd == null)
@@ -200,9 +210,8 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 	}
 
 	/** Set Price.
-		@param Price 
-		Price
-	  */
+		@param Price Price
+	*/
 	public void setPrice (BigDecimal Price)
 	{
 		set_Value (COLUMNNAME_Price, Price);
@@ -211,7 +220,7 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 	/** Get Price.
 		@return Price
 	  */
-	public BigDecimal getPrice () 
+	public BigDecimal getPrice()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Price);
 		if (bd == null)
@@ -220,9 +229,8 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 	}
 
 	/** Set Ranking.
-		@param Ranking 
-		Relative Rank Number
-	  */
+		@param Ranking Relative Rank Number
+	*/
 	public void setRanking (int Ranking)
 	{
 		set_Value (COLUMNNAME_Ranking, Integer.valueOf(Ranking));
@@ -231,7 +239,7 @@ public class X_C_RfQResponseLineQty extends PO implements I_C_RfQResponseLineQty
 	/** Get Ranking.
 		@return Relative Rank Number
 	  */
-	public int getRanking () 
+	public int getRanking()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Ranking);
 		if (ii == null)

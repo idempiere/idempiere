@@ -33,7 +33,7 @@ import org.compiere.util.Util;
 
 /**
  *  Natural Account (HashMap) Management.
- *  <String,MElementValue>
+ *  &lt;String,MElementValue&gt;
  *  <pre>
  *  The key is a String of the column name (e.g. SUSPENSEBALANCING_ACCT)
  *  The value is an NaturalAccount

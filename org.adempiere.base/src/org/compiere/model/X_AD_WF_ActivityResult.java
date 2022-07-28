@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_ActivityResult
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_ActivityResult")
 public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult, I_Persistent 
 {
@@ -31,12 +31,24 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_WF_ActivityResult (Properties ctx, int AD_WF_ActivityResult_ID, String trxName)
     {
       super (ctx, AD_WF_ActivityResult_ID, trxName);
+      /** if (AD_WF_ActivityResult_ID == 0)
+        {
+			setAD_WF_Activity_ID (0);
+			setAD_WF_ActivityResult_ID (0);
+			setAttributeName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_ActivityResult (Properties ctx, int AD_WF_ActivityResult_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_ActivityResult_ID, trxName, virtualColumns);
       /** if (AD_WF_ActivityResult_ID == 0)
         {
 			setAD_WF_Activity_ID (0);
@@ -80,21 +92,20 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 	}
 
 	/** Set Workflow Activity.
-		@param AD_WF_Activity_ID 
-		Workflow Activity
-	  */
+		@param AD_WF_Activity_ID Workflow Activity
+	*/
 	public void setAD_WF_Activity_ID (int AD_WF_Activity_ID)
 	{
-		if (AD_WF_Activity_ID < 1) 
+		if (AD_WF_Activity_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Activity_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Activity_ID, Integer.valueOf(AD_WF_Activity_ID));
 	}
 
 	/** Get Workflow Activity.
 		@return Workflow Activity
 	  */
-	public int getAD_WF_Activity_ID () 
+	public int getAD_WF_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Activity_ID);
 		if (ii == null)
@@ -111,21 +122,20 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
     }
 
 	/** Set Workflow Activity Result.
-		@param AD_WF_ActivityResult_ID 
-		Result of the Workflow Process Activity
-	  */
+		@param AD_WF_ActivityResult_ID Result of the Workflow Process Activity
+	*/
 	public void setAD_WF_ActivityResult_ID (int AD_WF_ActivityResult_ID)
 	{
-		if (AD_WF_ActivityResult_ID < 1) 
+		if (AD_WF_ActivityResult_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_ActivityResult_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_ActivityResult_ID, Integer.valueOf(AD_WF_ActivityResult_ID));
 	}
 
 	/** Get Workflow Activity Result.
 		@return Result of the Workflow Process Activity
 	  */
-	public int getAD_WF_ActivityResult_ID () 
+	public int getAD_WF_ActivityResult_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_ActivityResult_ID);
 		if (ii == null)
@@ -134,7 +144,8 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 	}
 
 	/** Set AD_WF_ActivityResult_UU.
-		@param AD_WF_ActivityResult_UU AD_WF_ActivityResult_UU	  */
+		@param AD_WF_ActivityResult_UU AD_WF_ActivityResult_UU
+	*/
 	public void setAD_WF_ActivityResult_UU (String AD_WF_ActivityResult_UU)
 	{
 		set_Value (COLUMNNAME_AD_WF_ActivityResult_UU, AD_WF_ActivityResult_UU);
@@ -142,15 +153,14 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 
 	/** Get AD_WF_ActivityResult_UU.
 		@return AD_WF_ActivityResult_UU	  */
-	public String getAD_WF_ActivityResult_UU () 
+	public String getAD_WF_ActivityResult_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_WF_ActivityResult_UU);
 	}
 
 	/** Set Attribute Name.
-		@param AttributeName 
-		Name of the Attribute
-	  */
+		@param AttributeName Name of the Attribute
+	*/
 	public void setAttributeName (String AttributeName)
 	{
 		set_Value (COLUMNNAME_AttributeName, AttributeName);
@@ -159,15 +169,14 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 	/** Get Attribute Name.
 		@return Name of the Attribute
 	  */
-	public String getAttributeName () 
+	public String getAttributeName()
 	{
 		return (String)get_Value(COLUMNNAME_AttributeName);
 	}
 
 	/** Set Attribute Value.
-		@param AttributeValue 
-		Value of the Attribute
-	  */
+		@param AttributeValue Value of the Attribute
+	*/
 	public void setAttributeValue (String AttributeValue)
 	{
 		set_Value (COLUMNNAME_AttributeValue, AttributeValue);
@@ -176,15 +185,14 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 	/** Get Attribute Value.
 		@return Value of the Attribute
 	  */
-	public String getAttributeValue () 
+	public String getAttributeValue()
 	{
 		return (String)get_Value(COLUMNNAME_AttributeValue);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -193,15 +201,14 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -210,7 +217,7 @@ public class X_AD_WF_ActivityResult extends PO implements I_AD_WF_ActivityResult
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}

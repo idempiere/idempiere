@@ -30,7 +30,7 @@ import org.compiere.util.Msg;
  *	
  *  @author Jorg Janke
  *  @version $Id: MCommission.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
- *  @author victor.perez@e-evolution.com www.e-evolution.com [ 1867477 ] http://sourceforge.net/tracker/index.php?func=detail&aid=1867477&group_id=176962&atid=879332
+ *  @author victor.perez@e-evolution.com www.e-evolution.com [ 1867477 ] https://sourceforge.net/p/adempiere/bugs/924/
  *	FR: [ 2214883 ] Remove SQL code and Replace for Query - red1
  */
 public class MCommission extends X_C_Commission
@@ -68,6 +68,10 @@ public class MCommission extends X_C_Commission
 		super(ctx, rs, trxName);
 	}	//	MCommission
 
+	public MCommission(Properties ctx, int C_Commission_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Commission_ID, trxName, virtualColumns);
+	}
+
 	/**
 	 * 	Get Lines
 	 *	@return array of lines
@@ -79,7 +83,7 @@ public class MCommission extends X_C_Commission
 		final String whereClause = "IsActive='Y' AND C_Commission_ID=?";
 		List<MCommissionLine> list  = new Query(getCtx(), I_C_CommissionLine.Table_Name, whereClause, get_TrxName())
 		.setParameters(getC_Commission_ID())
-		.setOrderBy("Line")
+		.setOrderBy("Line,C_CommissionLine_ID")
 		.list();	
 		//	Convert
 		MCommissionLine[] retValue = new MCommissionLine[list.size()];

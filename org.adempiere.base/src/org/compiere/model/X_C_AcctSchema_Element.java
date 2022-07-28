@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema_Element
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctSchema_Element")
 public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element, I_Persistent 
 {
@@ -31,12 +31,31 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_Element (Properties ctx, int C_AcctSchema_Element_ID, String trxName)
     {
       super (ctx, C_AcctSchema_Element_ID, trxName);
+      /** if (C_AcctSchema_Element_ID == 0)
+        {
+			setC_AcctSchema_Element_ID (0);
+			setC_AcctSchema_ID (0);
+			setC_Element_ID (0);
+			setElementType (null);
+			setIsBalanced (false);
+			setIsMandatory (false);
+			setName (null);
+			setOrg_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM C_AcctSchema_Element WHERE C_AcctSchema_ID=@C_AcctSchema_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AcctSchema_Element (Properties ctx, int C_AcctSchema_Element_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AcctSchema_Element_ID, trxName, virtualColumns);
       /** if (C_AcctSchema_Element_ID == 0)
         {
 			setC_AcctSchema_Element_ID (0);
@@ -87,21 +106,20 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -110,18 +128,19 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Acct.Schema Element.
-		@param C_AcctSchema_Element_ID Acct.Schema Element	  */
+		@param C_AcctSchema_Element_ID Acct.Schema Element
+	*/
 	public void setC_AcctSchema_Element_ID (int C_AcctSchema_Element_ID)
 	{
-		if (C_AcctSchema_Element_ID < 1) 
+		if (C_AcctSchema_Element_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_Element_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_Element_ID, Integer.valueOf(C_AcctSchema_Element_ID));
 	}
 
 	/** Get Acct.Schema Element.
 		@return Acct.Schema Element	  */
-	public int getC_AcctSchema_Element_ID () 
+	public int getC_AcctSchema_Element_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_Element_ID);
 		if (ii == null)
@@ -130,7 +149,8 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set C_AcctSchema_Element_UU.
-		@param C_AcctSchema_Element_UU C_AcctSchema_Element_UU	  */
+		@param C_AcctSchema_Element_UU C_AcctSchema_Element_UU
+	*/
 	public void setC_AcctSchema_Element_UU (String C_AcctSchema_Element_UU)
 	{
 		set_Value (COLUMNNAME_C_AcctSchema_Element_UU, C_AcctSchema_Element_UU);
@@ -138,7 +158,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 
 	/** Get C_AcctSchema_Element_UU.
 		@return C_AcctSchema_Element_UU	  */
-	public String getC_AcctSchema_Element_UU () 
+	public String getC_AcctSchema_Element_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_AcctSchema_Element_UU);
 	}
@@ -150,21 +170,20 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -179,21 +198,20 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Activity.
-		@param C_Activity_ID 
-		Business Activity
-	  */
+		@param C_Activity_ID Business Activity
+	*/
 	public void setC_Activity_ID (int C_Activity_ID)
 	{
-		if (C_Activity_ID < 1) 
+		if (C_Activity_ID < 1)
 			set_Value (COLUMNNAME_C_Activity_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Activity_ID, Integer.valueOf(C_Activity_ID));
 	}
 
 	/** Get Activity.
 		@return Business Activity
 	  */
-	public int getC_Activity_ID () 
+	public int getC_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Activity_ID);
 		if (ii == null)
@@ -207,22 +225,21 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -237,21 +254,20 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Campaign.
-		@param C_Campaign_ID 
-		Marketing Campaign
-	  */
+		@param C_Campaign_ID Marketing Campaign
+	*/
 	public void setC_Campaign_ID (int C_Campaign_ID)
 	{
-		if (C_Campaign_ID < 1) 
+		if (C_Campaign_ID < 1)
 			set_Value (COLUMNNAME_C_Campaign_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
 	}
 
 	/** Get Campaign.
 		@return Marketing Campaign
 	  */
-	public int getC_Campaign_ID () 
+	public int getC_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
 		if (ii == null)
@@ -266,21 +282,20 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Element.
-		@param C_Element_ID 
-		Accounting Element
-	  */
+		@param C_Element_ID Accounting Element
+	*/
 	public void setC_Element_ID (int C_Element_ID)
 	{
-		if (C_Element_ID < 1) 
+		if (C_Element_ID < 1)
 			set_Value (COLUMNNAME_C_Element_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Element_ID, Integer.valueOf(C_Element_ID));
 	}
 
 	/** Get Element.
 		@return Accounting Element
 	  */
-	public int getC_Element_ID () 
+	public int getC_Element_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Element_ID);
 		if (ii == null)
@@ -295,21 +310,20 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Account Element.
-		@param C_ElementValue_ID 
-		Account Element
-	  */
+		@param C_ElementValue_ID Account Element
+	*/
 	public void setC_ElementValue_ID (int C_ElementValue_ID)
 	{
-		if (C_ElementValue_ID < 1) 
+		if (C_ElementValue_ID < 1)
 			set_Value (COLUMNNAME_C_ElementValue_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ElementValue_ID, Integer.valueOf(C_ElementValue_ID));
 	}
 
 	/** Get Account Element.
 		@return Account Element
 	  */
-	public int getC_ElementValue_ID () 
+	public int getC_ElementValue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValue_ID);
 		if (ii == null)
@@ -324,21 +338,20 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Address.
-		@param C_Location_ID 
-		Location or Address
-	  */
+		@param C_Location_ID Location or Address
+	*/
 	public void setC_Location_ID (int C_Location_ID)
 	{
-		if (C_Location_ID < 1) 
+		if (C_Location_ID < 1)
 			set_Value (COLUMNNAME_C_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Location_ID, Integer.valueOf(C_Location_ID));
 	}
 
 	/** Get Address.
 		@return Location or Address
 	  */
-	public int getC_Location_ID () 
+	public int getC_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Location_ID);
 		if (ii == null)
@@ -353,21 +366,20 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_Value (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -382,21 +394,20 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Sales Region.
-		@param C_SalesRegion_ID 
-		Sales coverage region
-	  */
+		@param C_SalesRegion_ID Sales coverage region
+	*/
 	public void setC_SalesRegion_ID (int C_SalesRegion_ID)
 	{
-		if (C_SalesRegion_ID < 1) 
+		if (C_SalesRegion_ID < 1)
 			set_Value (COLUMNNAME_C_SalesRegion_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_SalesRegion_ID, Integer.valueOf(C_SalesRegion_ID));
 	}
 
 	/** Get Sales Region.
 		@return Sales coverage region
 	  */
-	public int getC_SalesRegion_ID () 
+	public int getC_SalesRegion_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_SalesRegion_ID);
 		if (ii == null)
@@ -439,9 +450,8 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	/** User Column 2 = X2 */
 	public static final String ELEMENTTYPE_UserColumn2 = "X2";
 	/** Set Type.
-		@param ElementType 
-		Element Type (account or user defined)
-	  */
+		@param ElementType Element Type (account or user defined)
+	*/
 	public void setElementType (String ElementType)
 	{
 
@@ -451,13 +461,14 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	/** Get Type.
 		@return Element Type (account or user defined)
 	  */
-	public String getElementType () 
+	public String getElementType()
 	{
 		return (String)get_Value(COLUMNNAME_ElementType);
 	}
 
 	/** Set Balanced.
-		@param IsBalanced Balanced	  */
+		@param IsBalanced Balanced
+	*/
 	public void setIsBalanced (boolean IsBalanced)
 	{
 		set_Value (COLUMNNAME_IsBalanced, Boolean.valueOf(IsBalanced));
@@ -465,7 +476,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 
 	/** Get Balanced.
 		@return Balanced	  */
-	public boolean isBalanced () 
+	public boolean isBalanced()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBalanced);
 		if (oo != null) 
@@ -478,9 +489,8 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Mandatory.
-		@param IsMandatory 
-		Data entry is required in this column
-	  */
+		@param IsMandatory Data entry is required in this column
+	*/
 	public void setIsMandatory (boolean IsMandatory)
 	{
 		set_Value (COLUMNNAME_IsMandatory, Boolean.valueOf(IsMandatory));
@@ -489,7 +499,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	/** Get Mandatory.
 		@return Data entry is required in this column
 	  */
-	public boolean isMandatory () 
+	public boolean isMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatory);
 		if (oo != null) 
@@ -508,21 +518,20 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -531,9 +540,8 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -542,7 +550,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -556,21 +564,20 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
     }
 
 	/** Set Organization.
-		@param Org_ID 
-		Organizational entity within client
-	  */
+		@param Org_ID Organizational entity within client
+	*/
 	public void setOrg_ID (int Org_ID)
 	{
-		if (Org_ID < 1) 
+		if (Org_ID < 1)
 			set_Value (COLUMNNAME_Org_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Org_ID, Integer.valueOf(Org_ID));
 	}
 
 	/** Get Organization.
 		@return Organizational entity within client
 	  */
-	public int getOrg_ID () 
+	public int getOrg_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Org_ID);
 		if (ii == null)
@@ -579,9 +586,8 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -590,7 +596,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

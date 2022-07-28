@@ -36,7 +36,8 @@ public class MForecast extends  X_M_Forecast
 	/**
 	 * Standard Constructor
 	 * @param ctx context
-	 * @param M_ForecastLine_ID id
+	 * @param M_Forecast_ID id
+	 * @param trxName
 	 */
 	public MForecast (Properties ctx, int M_Forecast_ID, String trxName)
 	{

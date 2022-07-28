@@ -53,7 +53,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  * 
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>FR [ 2788430 ] MUser.getOfBPartner add trxName parameter
- * 				https://sourceforge.net/tracker/index.php?func=detail&aid=2788430&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/714/
  */
 public class MUser extends X_AD_User implements ImmutablePOSupport
 {
@@ -154,7 +154,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		if (retValue == null)
 		{
 			retValue = new MUser (ctx, AD_User_ID, (String)null);
-			if (AD_User_ID == 0)
+			if (AD_User_ID == SystemIDs.USER_SYSTEM_DEPRECATED)
 			{
 				String trxName = null;
 				retValue.load(trxName);	//	load System Record
@@ -705,7 +705,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	}	//	getEMailValidationCode
 	
 	/**
-	 * 	Check & Set EMail Validation Code.
+	 * 	Check and Set EMail Validation Code.
 	 *	@param code code
 	 *	@param info info
 	 *	@return true if valid
@@ -835,7 +835,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			MRole[] roles = getRoles(0);
 			for (int i = 0; i < roles.length; i++)
 			{
-				if (roles[i].getAD_Role_ID() == 0)
+				if (roles[i].getAD_Role_ID() == SystemIDs.ROLE_SYSTEM)
 				{
 					m_isAdministrator = Boolean.TRUE;
 					break;
@@ -1084,25 +1084,6 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		return retValue;
 	}
 	
-	/**
-	 * 	Test
-	 *	@param args ignored
-	 *
-	public static void main (String[] args)
-	{
-		try
-		{
-			validateEmail(new InternetAddress("jjanke@adempiere.org"));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-	//	org.compiere.Adempiere.startupClient();
-	//	System.out.println ( MUser.get(Env.getCtx(), "SuperUser", "22") );
-	}	//	main	/* */
-
 	@Override
 	public String getEMailUser() {
 		// IDEMPIERE-722

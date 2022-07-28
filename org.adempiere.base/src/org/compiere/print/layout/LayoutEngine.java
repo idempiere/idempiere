@@ -98,10 +98,10 @@ import org.idempiere.print.StandardHeaderFooter;
  *				<li>FR [ 1966406 ] Report Engine: AD_PInstance_Logs should be displayed
  *				<li>BF [ 2487307 ] LayoutEngine: NPE when Barcode field is null
  *				<li>BF [ 2828893 ] Problem with NextPage in Print Format
- *					https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2828893&group_id=176962
+ *					https://sourceforge.net/p/adempiere/bugs/2001/
  * @author victor.perez@e-evolution.com, e-Evolution
  * 				<li>BF [ 2011567 ] Implement Background Image for Document printed 
- * 				<li>http://sourceforge.net/tracker/index.php?func=detail&aid=2011567&group_id=176962&atid=879335
+ * 				<li>https://sourceforge.net/p/adempiere/feature-requests/477/
  * @author Michael Judd (Akuna Ltd)
  * 				<li>BF [ 2695078 ] Country is not translated on invoice
  */
@@ -716,8 +716,8 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	}	//	getPages
 
 	/**
-	 * 	Get Header & Footer info
-	 * 	@return Header&Footer
+	 * 	Get Header and Footer info
+	 * 	@return Header and Footer
 	 */
 	public HeaderFooter getHeaderFooter()
 	{
@@ -2049,7 +2049,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 	
 	/**
 	 * 
-	 * @param PrintInfo info
+	 * @param info PrintInfo
 	 */
 	public void setPrintInfo(PrintInfo info)
 	{

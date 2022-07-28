@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Table_Access
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Table_Access")
 public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persistent 
 {
@@ -31,12 +31,28 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Table_Access (Properties ctx, int AD_Table_Access_ID, String trxName)
     {
       super (ctx, AD_Table_Access_ID, trxName);
+      /** if (AD_Table_Access_ID == 0)
+        {
+			setAccessTypeRule (null);
+// A
+			setAD_Role_ID (0);
+			setAD_Table_ID (0);
+			setIsExclude (true);
+// Y
+			setIsReadOnly (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Table_Access (Properties ctx, int AD_Table_Access_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Table_Access_ID, trxName, virtualColumns);
       /** if (AD_Table_Access_ID == 0)
         {
 			setAccessTypeRule (null);
@@ -86,9 +102,8 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	/** Reporting = R */
 	public static final String ACCESSTYPERULE_Reporting = "R";
 	/** Set Access Type.
-		@param AccessTypeRule 
-		The type of access for this rule
-	  */
+		@param AccessTypeRule The type of access for this rule
+	*/
 	public void setAccessTypeRule (String AccessTypeRule)
 	{
 
@@ -98,7 +113,7 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	/** Get Access Type.
 		@return The type of access for this rule
 	  */
-	public String getAccessTypeRule () 
+	public String getAccessTypeRule()
 	{
 		return (String)get_Value(COLUMNNAME_AccessTypeRule);
 	}
@@ -110,21 +125,20 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -133,7 +147,8 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	}
 
 	/** Set AD_Table_Access_UU.
-		@param AD_Table_Access_UU AD_Table_Access_UU	  */
+		@param AD_Table_Access_UU AD_Table_Access_UU
+	*/
 	public void setAD_Table_Access_UU (String AD_Table_Access_UU)
 	{
 		set_Value (COLUMNNAME_AD_Table_Access_UU, AD_Table_Access_UU);
@@ -141,7 +156,7 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 
 	/** Get AD_Table_Access_UU.
 		@return AD_Table_Access_UU	  */
-	public String getAD_Table_Access_UU () 
+	public String getAD_Table_Access_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Table_Access_UU);
 	}
@@ -153,21 +168,20 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -184,9 +198,8 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
     }
 
 	/** Set Exclude.
-		@param IsExclude 
-		Exclude access to the data - if not selected Include access to the data
-	  */
+		@param IsExclude Exclude access to the data - if not selected Include access to the data
+	*/
 	public void setIsExclude (boolean IsExclude)
 	{
 		set_Value (COLUMNNAME_IsExclude, Boolean.valueOf(IsExclude));
@@ -195,7 +208,7 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	/** Get Exclude.
 		@return Exclude access to the data - if not selected Include access to the data
 	  */
-	public boolean isExclude () 
+	public boolean isExclude()
 	{
 		Object oo = get_Value(COLUMNNAME_IsExclude);
 		if (oo != null) 
@@ -208,9 +221,8 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	}
 
 	/** Set Read Only.
-		@param IsReadOnly 
-		Field is read only
-	  */
+		@param IsReadOnly Field is read only
+	*/
 	public void setIsReadOnly (boolean IsReadOnly)
 	{
 		set_Value (COLUMNNAME_IsReadOnly, Boolean.valueOf(IsReadOnly));
@@ -219,7 +231,7 @@ public class X_AD_Table_Access extends PO implements I_AD_Table_Access, I_Persis
 	/** Get Read Only.
 		@return Field is read only
 	  */
-	public boolean isReadOnly () 
+	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
 		if (oo != null) 

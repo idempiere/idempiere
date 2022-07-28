@@ -365,7 +365,6 @@ public class CalloutInvoice extends CalloutEngine
 		mTab.setValue("PriceActual", pp.getPriceStd());
 		mTab.setValue("PriceEntered", pp.getPriceStd());
 		mTab.setValue("C_Currency_ID", Integer.valueOf(pp.getC_Currency_ID()));
-	//	mTab.setValue("Discount", pp.getDiscount());
 		mTab.setValue("C_UOM_ID", Integer.valueOf(pp.getC_UOM_ID()));
 		Env.setContext(ctx, WindowNo, "EnforcePriceLimit", pp.isEnforcePriceLimit() ? "Y" : "N");
 		Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
@@ -488,9 +487,10 @@ public class CalloutInvoice extends CalloutEngine
 		if (log.isLoggable(Level.FINE)) log.fine("Warehouse=" + M_Warehouse_ID);
 
 		//
-		int C_Tax_ID = Tax.get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
+		String deliveryViaRule = getLineDeliveryViaRule(ctx, WindowNo, mTab);
+		int C_Tax_ID = Core.getTaxLookup().get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
 			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID,
-			Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y"), null);
+			Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y"), deliveryViaRule, null);
 		if (log.isLoggable(Level.INFO)) log.info("Tax ID=" + C_Tax_ID);
 		//
 		if (C_Tax_ID == 0)
@@ -501,7 +501,29 @@ public class CalloutInvoice extends CalloutEngine
 		return amt (ctx, WindowNo, mTab, mField, value);
 	}	//	tax
 
-
+	private String getLineDeliveryViaRule(Properties ctx, int windowNo, GridTab mTab) {
+		if (mTab.getValue("C_OrderLine_ID") != null) {
+			int C_OrderLine_ID = (Integer) mTab.getValue("C_OrderLine_ID");
+			if (C_OrderLine_ID > 0) {
+				MOrderLine orderLine = new MOrderLine(ctx, C_OrderLine_ID, null);
+				return orderLine.getParent().getDeliveryViaRule();
+			}
+		}
+		if (mTab.getValue("M_InOutLine_ID") != null) {
+			int M_InOutLine_ID = (Integer) mTab.getValue("M_InOutLine_ID");
+			if (M_InOutLine_ID > 0) {
+				MInOutLine ioLine = new MInOutLine(ctx, M_InOutLine_ID, null);
+				return ioLine.getParent().getDeliveryViaRule();
+			}
+		}
+		int C_Order_ID = Env.getContextAsInt(ctx, windowNo, "C_Order_ID", true);
+		if (C_Order_ID > 0) {
+			MOrder order = new MOrder(ctx, C_Order_ID, null);
+			return order.getDeliveryViaRule();
+		}
+		return null;
+	}
+	
 	/**
 	 *	Invoice - Amount.
 	 *		- called from QtyInvoiced, PriceActual
@@ -518,7 +540,6 @@ public class CalloutInvoice extends CalloutEngine
 		if (isCalloutActive() || value == null)
 			return "";
 
-	//	log.log(Level.WARNING,"amt - init");
 		int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
 		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
 		int M_PriceList_ID = Env.getContextAsInt(ctx, WindowNo, "M_PriceList_ID");
@@ -533,7 +554,6 @@ public class CalloutInvoice extends CalloutEngine
 		//
 		PriceEntered = (BigDecimal)mTab.getValue("PriceEntered");
 		PriceActual = (BigDecimal)mTab.getValue("PriceActual");
-	//	Discount = (BigDecimal)mTab.getValue("Discount");
 		PriceLimit = (BigDecimal)mTab.getValue("PriceLimit");
 		PriceList = (BigDecimal)mTab.getValue("PriceList");
 		if (log.isLoggable(Level.FINE)){
@@ -590,7 +610,6 @@ public class CalloutInvoice extends CalloutEngine
 				+ ", PriceEntered=" + PriceEntered + ", Discount=" + pp.getDiscount());
 			PriceActual = pp.getPriceStd();
 			mTab.setValue("PriceActual", pp.getPriceStd());
-		//	mTab.setValue("Discount", pp.getDiscount());
 			mTab.setValue("PriceEntered", PriceEntered);
 			Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
 		}
@@ -619,33 +638,6 @@ public class CalloutInvoice extends CalloutEngine
 			mTab.setValue("PriceActual", PriceActual);
 		}
 		
-		/**  Discount entered - Calculate Actual/Entered
-		if (mField.getColumnName().equals("Discount"))
-		{
-			PriceActual = new BigDecimal ((100.0 - Discount.doubleValue()) / 100.0 * PriceList.doubleValue());
-			if (PriceActual.scale() > StdPrecision)
-				PriceActual = PriceActual.setScale(StdPrecision, RoundingMode.HALF_UP);
-			PriceEntered = MUOMConversion.convertProductFrom (ctx, M_Product_ID, 
-				C_UOM_To_ID, PriceActual);
-			if (PriceEntered == null)
-				PriceEntered = PriceActual;
-			mTab.setValue("PriceActual", PriceActual);
-			mTab.setValue("PriceEntered", PriceEntered);
-		}
-		//	calculate Discount
-		else
-		{
-			if (PriceList.compareTo(Env.ZERO) == 0)
-				Discount = Env.ZERO;
-			else
-				Discount = new BigDecimal ((PriceList.doubleValue() - PriceActual.doubleValue()) / PriceList.doubleValue() * 100.0);
-			if (Discount.scale() > 2)
-				Discount = Discount.setScale(2, RoundingMode.HALF_UP);
-			mTab.setValue("Discount", Discount);
-		}
-		log.fine("amt = PriceEntered=" + PriceEntered + ", Actual" + PriceActual + ", Discount=" + Discount);
-		/* */
-
 		//	Check PriceLimit
 		String epl = Env.getContext(ctx, WindowNo, "EnforcePriceLimit");
 		boolean enforce = Env.isSOTrx(ctx, WindowNo) && epl != null && !epl.equals("") ? epl.equals("Y") : isEnforcePriceLimit;
@@ -670,7 +662,6 @@ public class CalloutInvoice extends CalloutEngine
 				Discount = BigDecimal.valueOf((PriceList.doubleValue () - PriceActual.doubleValue ()) / PriceList.doubleValue () * 100.0);
 				if (Discount.scale () > 2)
 					Discount = Discount.setScale (2, RoundingMode.HALF_UP);
-			//	mTab.setValue ("Discount", Discount);
 			}
 		}
 
@@ -749,7 +740,6 @@ public class CalloutInvoice extends CalloutEngine
 			return "";
 
 		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
-	//	log.log(Level.WARNING,"qty - init - M_Product_ID=" + M_Product_ID);
 		BigDecimal QtyInvoiced, QtyEntered, PriceActual, PriceEntered;
 		
 		//	No Product

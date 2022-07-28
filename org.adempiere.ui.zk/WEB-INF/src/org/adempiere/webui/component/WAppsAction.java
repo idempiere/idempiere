@@ -22,6 +22,7 @@ import java.net.URI;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -29,7 +30,7 @@ import org.compiere.util.Msg;
  *  Application Action.
  *      Creates Action with Button
  *      The ActionCommand is translated for display
- *      If translated text contains &, the next character is the Mnemonic
+ *      If translated text contains &amp;, the next character is the Mnemonic
  *
  *  @author     Andrew Kimball
  */
@@ -40,7 +41,6 @@ public class WAppsAction
     *
     *  @param   action base action command - used as AD_Message for Text and Icon name
     *  @param   accelerator optional keystroke for accelerator
-    *  @param   toggle is toggle action (maintains state)
     */
    public WAppsAction (String action, String accelerator) throws IOException
    {
@@ -53,7 +53,6 @@ public class WAppsAction
     *  @param   action base action command - used as AD_Message for Text and Icon name
     *  @param   accelerator optional keystroke for accelerator
     *  @param   toolTipText text, if null defered from action
-    *  @param   toggle is toggle action (maintains state)
     */
    public WAppsAction (String action, String accelerator, String toolTipText) throws IOException
    {
@@ -97,15 +96,19 @@ public class WAppsAction
        m_button.setName("btn" + action);
        m_button.setId(action);
        
-       //Image only if image is available
-       if (large != null)
-       {
-           m_button.setImage(large.getPath());
-           m_button.setLabel(null);
-       }
-       else
-       {
-    	   m_button.setLabel(newToolTipText);
+       if (ThemeManager.isUseFontIconForImage()) {
+    	   m_button.setIconSclass(ThemeManager.getIconSclass(large.getPath()));
+       } else {
+	       //Image only if image is available
+	       if (large != null)
+	       {
+	           m_button.setImage(large.getPath());
+	           m_button.setLabel(null);
+	       }
+	       else
+	       {
+	    	   m_button.setLabel(newToolTipText);
+	       }
        }
        LayoutUtils.addSclass("img-btn", m_button);
    }   //  Action

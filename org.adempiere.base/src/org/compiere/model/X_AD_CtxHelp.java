@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_CtxHelp
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_CtxHelp")
 public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent 
 {
@@ -30,12 +30,23 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_CtxHelp (Properties ctx, int AD_CtxHelp_ID, String trxName)
     {
       super (ctx, AD_CtxHelp_ID, trxName);
+      /** if (AD_CtxHelp_ID == 0)
+        {
+			setAD_CtxHelp_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_CtxHelp (Properties ctx, int AD_CtxHelp_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_CtxHelp_ID, trxName, virtualColumns);
       /** if (AD_CtxHelp_ID == 0)
         {
 			setAD_CtxHelp_ID (0);
@@ -72,18 +83,19 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
     }
 
 	/** Set Context Help.
-		@param AD_CtxHelp_ID Context Help	  */
+		@param AD_CtxHelp_ID Context Help
+	*/
 	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID)
 	{
-		if (AD_CtxHelp_ID < 1) 
+		if (AD_CtxHelp_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_CtxHelp_ID, Integer.valueOf(AD_CtxHelp_ID));
 	}
 
 	/** Get Context Help.
 		@return Context Help	  */
-	public int getAD_CtxHelp_ID () 
+	public int getAD_CtxHelp_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelp_ID);
 		if (ii == null)
@@ -92,7 +104,8 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
 	}
 
 	/** Set AD_CtxHelp_UU.
-		@param AD_CtxHelp_UU AD_CtxHelp_UU	  */
+		@param AD_CtxHelp_UU AD_CtxHelp_UU
+	*/
 	public void setAD_CtxHelp_UU (String AD_CtxHelp_UU)
 	{
 		set_Value (COLUMNNAME_AD_CtxHelp_UU, AD_CtxHelp_UU);
@@ -100,7 +113,7 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
 
 	/** Get AD_CtxHelp_UU.
 		@return AD_CtxHelp_UU	  */
-	public String getAD_CtxHelp_UU () 
+	public String getAD_CtxHelp_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_CtxHelp_UU);
 	}
@@ -126,9 +139,8 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
 	/** Workflow = W */
 	public static final String CTXTYPE_Workflow = "W";
 	/** Set Context Type.
-		@param CtxType 
-		Type of Context Help
-	  */
+		@param CtxType Type of Context Help
+	*/
 	public void setCtxType (String CtxType)
 	{
 
@@ -138,15 +150,14 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
 	/** Get Context Type.
 		@return Type of Context Help
 	  */
-	public String getCtxType () 
+	public String getCtxType()
 	{
 		return (String)get_Value(COLUMNNAME_CtxType);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -155,15 +166,14 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -172,7 +182,7 @@ public class X_AD_CtxHelp extends PO implements I_AD_CtxHelp, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

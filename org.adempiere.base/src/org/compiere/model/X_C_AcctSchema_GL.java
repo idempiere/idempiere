@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema_GL
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctSchema_GL")
 public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persistent 
 {
@@ -31,12 +31,30 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_GL (Properties ctx, int C_AcctSchema_GL_ID, String trxName)
     {
       super (ctx, C_AcctSchema_GL_ID, trxName);
+      /** if (C_AcctSchema_GL_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setCommitmentOffset_Acct (0);
+			setCommitmentOffsetSales_Acct (0);
+			setIntercompanyDueFrom_Acct (0);
+			setIntercompanyDueTo_Acct (0);
+			setPPVOffset_Acct (0);
+			setUseCurrencyBalancing (false);
+			setUseSuspenseBalancing (false);
+			setUseSuspenseError (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AcctSchema_GL (Properties ctx, int C_AcctSchema_GL_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AcctSchema_GL_ID, trxName, virtualColumns);
       /** if (C_AcctSchema_GL_ID == 0)
         {
 			setC_AcctSchema_ID (0);
@@ -80,7 +98,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
     }
 
 	/** Set C_AcctSchema_GL_UU.
-		@param C_AcctSchema_GL_UU C_AcctSchema_GL_UU	  */
+		@param C_AcctSchema_GL_UU C_AcctSchema_GL_UU
+	*/
 	public void setC_AcctSchema_GL_UU (String C_AcctSchema_GL_UU)
 	{
 		set_Value (COLUMNNAME_C_AcctSchema_GL_UU, C_AcctSchema_GL_UU);
@@ -88,7 +107,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 
 	/** Get C_AcctSchema_GL_UU.
 		@return C_AcctSchema_GL_UU	  */
-	public String getC_AcctSchema_GL_UU () 
+	public String getC_AcctSchema_GL_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_AcctSchema_GL_UU);
 	}
@@ -100,21 +119,20 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -137,9 +155,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	}
 
 	/** Set Commitment Offset.
-		@param CommitmentOffset_Acct 
-		Budgetary Commitment Offset Account
-	  */
+		@param CommitmentOffset_Acct Budgetary Commitment Offset Account
+	*/
 	public void setCommitmentOffset_Acct (int CommitmentOffset_Acct)
 	{
 		set_Value (COLUMNNAME_CommitmentOffset_Acct, Integer.valueOf(CommitmentOffset_Acct));
@@ -148,7 +165,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	/** Get Commitment Offset.
 		@return Budgetary Commitment Offset Account
 	  */
-	public int getCommitmentOffset_Acct () 
+	public int getCommitmentOffset_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CommitmentOffset_Acct);
 		if (ii == null)
@@ -163,9 +180,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	}
 
 	/** Set Commitment Offset Sales.
-		@param CommitmentOffsetSales_Acct 
-		Budgetary Commitment Offset Account for Sales
-	  */
+		@param CommitmentOffsetSales_Acct Budgetary Commitment Offset Account for Sales
+	*/
 	public void setCommitmentOffsetSales_Acct (int CommitmentOffsetSales_Acct)
 	{
 		set_Value (COLUMNNAME_CommitmentOffsetSales_Acct, Integer.valueOf(CommitmentOffsetSales_Acct));
@@ -174,7 +190,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	/** Get Commitment Offset Sales.
 		@return Budgetary Commitment Offset Account for Sales
 	  */
-	public int getCommitmentOffsetSales_Acct () 
+	public int getCommitmentOffsetSales_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CommitmentOffsetSales_Acct);
 		if (ii == null)
@@ -189,9 +205,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	}
 
 	/** Set Currency Balancing Acct.
-		@param CurrencyBalancing_Acct 
-		Account used when a currency is out of balance
-	  */
+		@param CurrencyBalancing_Acct Account used when a currency is out of balance
+	*/
 	public void setCurrencyBalancing_Acct (int CurrencyBalancing_Acct)
 	{
 		set_Value (COLUMNNAME_CurrencyBalancing_Acct, Integer.valueOf(CurrencyBalancing_Acct));
@@ -200,7 +215,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	/** Get Currency Balancing Acct.
 		@return Account used when a currency is out of balance
 	  */
-	public int getCurrencyBalancing_Acct () 
+	public int getCurrencyBalancing_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CurrencyBalancing_Acct);
 		if (ii == null)
@@ -215,9 +230,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	}
 
 	/** Set Intercompany Due From Acct.
-		@param IntercompanyDueFrom_Acct 
-		Intercompany Due From / Receivables Account
-	  */
+		@param IntercompanyDueFrom_Acct Intercompany Due From / Receivables Account
+	*/
 	public void setIntercompanyDueFrom_Acct (int IntercompanyDueFrom_Acct)
 	{
 		set_Value (COLUMNNAME_IntercompanyDueFrom_Acct, Integer.valueOf(IntercompanyDueFrom_Acct));
@@ -226,7 +240,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	/** Get Intercompany Due From Acct.
 		@return Intercompany Due From / Receivables Account
 	  */
-	public int getIntercompanyDueFrom_Acct () 
+	public int getIntercompanyDueFrom_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IntercompanyDueFrom_Acct);
 		if (ii == null)
@@ -241,9 +255,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	}
 
 	/** Set Intercompany Due To Acct.
-		@param IntercompanyDueTo_Acct 
-		Intercompany Due To / Payable Account
-	  */
+		@param IntercompanyDueTo_Acct Intercompany Due To / Payable Account
+	*/
 	public void setIntercompanyDueTo_Acct (int IntercompanyDueTo_Acct)
 	{
 		set_Value (COLUMNNAME_IntercompanyDueTo_Acct, Integer.valueOf(IntercompanyDueTo_Acct));
@@ -252,7 +265,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	/** Get Intercompany Due To Acct.
 		@return Intercompany Due To / Payable Account
 	  */
-	public int getIntercompanyDueTo_Acct () 
+	public int getIntercompanyDueTo_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_IntercompanyDueTo_Acct);
 		if (ii == null)
@@ -267,9 +280,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	}
 
 	/** Set PPV Offset.
-		@param PPVOffset_Acct 
-		Purchase Price Variance Offset Account
-	  */
+		@param PPVOffset_Acct Purchase Price Variance Offset Account
+	*/
 	public void setPPVOffset_Acct (int PPVOffset_Acct)
 	{
 		set_Value (COLUMNNAME_PPVOffset_Acct, Integer.valueOf(PPVOffset_Acct));
@@ -278,7 +290,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	/** Get PPV Offset.
 		@return Purchase Price Variance Offset Account
 	  */
-	public int getPPVOffset_Acct () 
+	public int getPPVOffset_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PPVOffset_Acct);
 		if (ii == null)
@@ -293,7 +305,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	}
 
 	/** Set Suspense Balancing Acct.
-		@param SuspenseBalancing_Acct Suspense Balancing Acct	  */
+		@param SuspenseBalancing_Acct Suspense Balancing Acct
+	*/
 	public void setSuspenseBalancing_Acct (int SuspenseBalancing_Acct)
 	{
 		set_Value (COLUMNNAME_SuspenseBalancing_Acct, Integer.valueOf(SuspenseBalancing_Acct));
@@ -301,7 +314,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 
 	/** Get Suspense Balancing Acct.
 		@return Suspense Balancing Acct	  */
-	public int getSuspenseBalancing_Acct () 
+	public int getSuspenseBalancing_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SuspenseBalancing_Acct);
 		if (ii == null)
@@ -310,7 +323,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	}
 
 	/** Set Use Currency Balancing.
-		@param UseCurrencyBalancing Use Currency Balancing	  */
+		@param UseCurrencyBalancing Use Currency Balancing
+	*/
 	public void setUseCurrencyBalancing (boolean UseCurrencyBalancing)
 	{
 		set_Value (COLUMNNAME_UseCurrencyBalancing, Boolean.valueOf(UseCurrencyBalancing));
@@ -318,7 +332,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 
 	/** Get Use Currency Balancing.
 		@return Use Currency Balancing	  */
-	public boolean isUseCurrencyBalancing () 
+	public boolean isUseCurrencyBalancing()
 	{
 		Object oo = get_Value(COLUMNNAME_UseCurrencyBalancing);
 		if (oo != null) 
@@ -331,7 +345,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	}
 
 	/** Set Use Suspense Balancing.
-		@param UseSuspenseBalancing Use Suspense Balancing	  */
+		@param UseSuspenseBalancing Use Suspense Balancing
+	*/
 	public void setUseSuspenseBalancing (boolean UseSuspenseBalancing)
 	{
 		set_Value (COLUMNNAME_UseSuspenseBalancing, Boolean.valueOf(UseSuspenseBalancing));
@@ -339,7 +354,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 
 	/** Get Use Suspense Balancing.
 		@return Use Suspense Balancing	  */
-	public boolean isUseSuspenseBalancing () 
+	public boolean isUseSuspenseBalancing()
 	{
 		Object oo = get_Value(COLUMNNAME_UseSuspenseBalancing);
 		if (oo != null) 
@@ -352,7 +367,8 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 	}
 
 	/** Set Use Suspense Error.
-		@param UseSuspenseError Use Suspense Error	  */
+		@param UseSuspenseError Use Suspense Error
+	*/
 	public void setUseSuspenseError (boolean UseSuspenseError)
 	{
 		set_Value (COLUMNNAME_UseSuspenseError, Boolean.valueOf(UseSuspenseError));
@@ -360,7 +376,7 @@ public class X_C_AcctSchema_GL extends PO implements I_C_AcctSchema_GL, I_Persis
 
 	/** Get Use Suspense Error.
 		@return Use Suspense Error	  */
-	public boolean isUseSuspenseError () 
+	public boolean isUseSuspenseError()
 	{
 		Object oo = get_Value(COLUMNNAME_UseSuspenseError);
 		if (oo != null) 

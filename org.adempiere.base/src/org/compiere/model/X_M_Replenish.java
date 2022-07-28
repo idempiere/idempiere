@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_Replenish
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_Replenish")
 public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent 
 {
@@ -32,12 +32,26 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_Replenish (Properties ctx, int M_Replenish_ID, String trxName)
     {
       super (ctx, M_Replenish_ID, trxName);
+      /** if (M_Replenish_ID == 0)
+        {
+			setLevel_Max (Env.ZERO);
+			setLevel_Min (Env.ZERO);
+			setM_Product_ID (0);
+			setM_Warehouse_ID (0);
+			setReplenishType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Replenish (Properties ctx, int M_Replenish_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Replenish_ID, trxName, virtualColumns);
       /** if (M_Replenish_ID == 0)
         {
 			setLevel_Max (Env.ZERO);
@@ -77,9 +91,8 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
     }
 
 	/** Set Maximum Level.
-		@param Level_Max 
-		Maximum Inventory level for this product
-	  */
+		@param Level_Max Maximum Inventory level for this product
+	*/
 	public void setLevel_Max (BigDecimal Level_Max)
 	{
 		set_Value (COLUMNNAME_Level_Max, Level_Max);
@@ -88,7 +101,7 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	/** Get Maximum Level.
 		@return Maximum Inventory level for this product
 	  */
-	public BigDecimal getLevel_Max () 
+	public BigDecimal getLevel_Max()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Level_Max);
 		if (bd == null)
@@ -97,9 +110,8 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	}
 
 	/** Set Minimum Level.
-		@param Level_Min 
-		Minimum Inventory level for this product
-	  */
+		@param Level_Min Minimum Inventory level for this product
+	*/
 	public void setLevel_Min (BigDecimal Level_Min)
 	{
 		set_Value (COLUMNNAME_Level_Min, Level_Min);
@@ -108,7 +120,7 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	/** Get Minimum Level.
 		@return Minimum Inventory level for this product
 	  */
-	public BigDecimal getLevel_Min () 
+	public BigDecimal getLevel_Min()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Level_Min);
 		if (bd == null)
@@ -123,21 +135,20 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	}
 
 	/** Set Locator.
-		@param M_Locator_ID 
-		Warehouse Locator
-	  */
+		@param M_Locator_ID Warehouse Locator
+	*/
 	public void setM_Locator_ID (int M_Locator_ID)
 	{
-		if (M_Locator_ID < 1) 
+		if (M_Locator_ID < 1)
 			set_Value (COLUMNNAME_M_Locator_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
 	}
 
 	/** Get Locator.
 		@return Warehouse Locator
 	  */
-	public int getM_Locator_ID () 
+	public int getM_Locator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
 		if (ii == null)
@@ -152,21 +163,20 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -175,7 +185,8 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	}
 
 	/** Set M_Replenish_UU.
-		@param M_Replenish_UU M_Replenish_UU	  */
+		@param M_Replenish_UU M_Replenish_UU
+	*/
 	public void setM_Replenish_UU (String M_Replenish_UU)
 	{
 		set_Value (COLUMNNAME_M_Replenish_UU, M_Replenish_UU);
@@ -183,7 +194,7 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 
 	/** Get M_Replenish_UU.
 		@return M_Replenish_UU	  */
-	public String getM_Replenish_UU () 
+	public String getM_Replenish_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Replenish_UU);
 	}
@@ -195,21 +206,20 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -224,21 +234,20 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	}
 
 	/** Set Source Warehouse.
-		@param M_WarehouseSource_ID 
-		Optional Warehouse to replenish from
-	  */
+		@param M_WarehouseSource_ID Optional Warehouse to replenish from
+	*/
 	public void setM_WarehouseSource_ID (int M_WarehouseSource_ID)
 	{
-		if (M_WarehouseSource_ID < 1) 
+		if (M_WarehouseSource_ID < 1)
 			set_Value (COLUMNNAME_M_WarehouseSource_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_WarehouseSource_ID, Integer.valueOf(M_WarehouseSource_ID));
 	}
 
 	/** Get Source Warehouse.
 		@return Optional Warehouse to replenish from
 	  */
-	public int getM_WarehouseSource_ID () 
+	public int getM_WarehouseSource_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_WarehouseSource_ID);
 		if (ii == null)
@@ -247,7 +256,8 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	}
 
 	/** Set Qty Batch Size.
-		@param QtyBatchSize Qty Batch Size	  */
+		@param QtyBatchSize Qty Batch Size
+	*/
 	public void setQtyBatchSize (BigDecimal QtyBatchSize)
 	{
 		set_Value (COLUMNNAME_QtyBatchSize, QtyBatchSize);
@@ -255,7 +265,7 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 
 	/** Get Qty Batch Size.
 		@return Qty Batch Size	  */
-	public BigDecimal getQtyBatchSize () 
+	public BigDecimal getQtyBatchSize()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBatchSize);
 		if (bd == null)
@@ -274,9 +284,8 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	/** Custom = 9 */
 	public static final String REPLENISHTYPE_Custom = "9";
 	/** Set Replenish Type.
-		@param ReplenishType 
-		Method for re-ordering a product
-	  */
+		@param ReplenishType Method for re-ordering a product
+	*/
 	public void setReplenishType (String ReplenishType)
 	{
 
@@ -286,7 +295,7 @@ public class X_M_Replenish extends PO implements I_M_Replenish, I_Persistent
 	/** Get Replenish Type.
 		@return Method for re-ordering a product
 	  */
-	public String getReplenishType () 
+	public String getReplenishType()
 	{
 		return (String)get_Value(COLUMNNAME_ReplenishType);
 	}

@@ -23,6 +23,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.MPInstance;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -59,7 +60,6 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	private String orientation;
 
 	/**
-	 * @param aProcess
 	 * @param WindowNo
 	 * @param pi
 	 * @param autoStart
@@ -70,7 +70,27 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	}
 	
 	/**
-	 * @param aProcess
+	 * @param listener
+	 * @param WindowNo
+	 * @param pi
+	 */
+	public ProcessModalDialog(EventListener<Event> listener, int WindowNo, ProcessInfo pi)
+	{
+		this(WindowNo, pi, false);
+		MPInstance instance = getLastRun();
+		if(instance != null) {
+			loadSavedParams(instance);
+			chooseSaveParameter(fSavedName.getRawText(), true);
+		}
+		if (listener != null) 
+		{
+			addEventListener(ON_WINDOW_CLOSE, listener);
+			addEventListener(ON_BEFORE_RUN_PROCESS, listener);
+		}
+	}
+	
+	/**
+	 * @param listener
 	 * @param WindowNo
 	 * @param pi
 	 * @param autoStart
@@ -144,7 +164,6 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 
 	/**
 	 * Dialog to start a process/report
-	 * @param ctx
 	 * @param parent not used
 	 * @param title not used
 	 * @param WindowNo

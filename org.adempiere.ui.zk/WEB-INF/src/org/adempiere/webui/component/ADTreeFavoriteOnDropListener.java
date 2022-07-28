@@ -38,7 +38,7 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 
 /**
- * Register listener for Drag&Drop item, Context Menu, Delete Item, Summary folder default
+ * Register listener for Drag&amp;Drop item, Context Menu, Delete Item, Summary folder default
  * Collapsed/Expanded Operation
  * 
  * @author Logilite Technologies

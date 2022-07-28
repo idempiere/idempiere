@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_RegistrationAttribute
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="A_RegistrationAttribute")
 public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAttribute, I_Persistent 
 {
@@ -31,12 +31,27 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_RegistrationAttribute (Properties ctx, int A_RegistrationAttribute_ID, String trxName)
     {
       super (ctx, A_RegistrationAttribute_ID, trxName);
+      /** if (A_RegistrationAttribute_ID == 0)
+        {
+			setAD_Reference_ID (0);
+			setA_RegistrationAttribute_ID (0);
+			setIsSelfService (true);
+// Y
+			setName (null);
+			setSeqNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_RegistrationAttribute (Properties ctx, int A_RegistrationAttribute_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_RegistrationAttribute_ID, trxName, virtualColumns);
       /** if (A_RegistrationAttribute_ID == 0)
         {
 			setAD_Reference_ID (0);
@@ -83,21 +98,20 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	}
 
 	/** Set Reference.
-		@param AD_Reference_ID 
-		System Reference and Validation
-	  */
+		@param AD_Reference_ID System Reference and Validation
+	*/
 	public void setAD_Reference_ID (int AD_Reference_ID)
 	{
-		if (AD_Reference_ID < 1) 
+		if (AD_Reference_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
 	}
 
 	/** Get Reference.
 		@return System Reference and Validation
 	  */
-	public int getAD_Reference_ID () 
+	public int getAD_Reference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
 		if (ii == null)
@@ -112,21 +126,20 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	}
 
 	/** Set Reference Key.
-		@param AD_Reference_Value_ID 
-		Required to specify, if data type is Table or List
-	  */
+		@param AD_Reference_Value_ID Required to specify, if data type is Table or List
+	*/
 	public void setAD_Reference_Value_ID (int AD_Reference_Value_ID)
 	{
-		if (AD_Reference_Value_ID < 1) 
+		if (AD_Reference_Value_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_Value_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_Value_ID, Integer.valueOf(AD_Reference_Value_ID));
 	}
 
 	/** Get Reference Key.
 		@return Required to specify, if data type is Table or List
 	  */
-	public int getAD_Reference_Value_ID () 
+	public int getAD_Reference_Value_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_Value_ID);
 		if (ii == null)
@@ -135,21 +148,20 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	}
 
 	/** Set Registration Attribute.
-		@param A_RegistrationAttribute_ID 
-		Asset Registration Attribute
-	  */
+		@param A_RegistrationAttribute_ID Asset Registration Attribute
+	*/
 	public void setA_RegistrationAttribute_ID (int A_RegistrationAttribute_ID)
 	{
-		if (A_RegistrationAttribute_ID < 1) 
+		if (A_RegistrationAttribute_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_RegistrationAttribute_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_RegistrationAttribute_ID, Integer.valueOf(A_RegistrationAttribute_ID));
 	}
 
 	/** Get Registration Attribute.
 		@return Asset Registration Attribute
 	  */
-	public int getA_RegistrationAttribute_ID () 
+	public int getA_RegistrationAttribute_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_RegistrationAttribute_ID);
 		if (ii == null)
@@ -158,7 +170,8 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	}
 
 	/** Set A_RegistrationAttribute_UU.
-		@param A_RegistrationAttribute_UU A_RegistrationAttribute_UU	  */
+		@param A_RegistrationAttribute_UU A_RegistrationAttribute_UU
+	*/
 	public void setA_RegistrationAttribute_UU (String A_RegistrationAttribute_UU)
 	{
 		set_Value (COLUMNNAME_A_RegistrationAttribute_UU, A_RegistrationAttribute_UU);
@@ -166,15 +179,14 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 
 	/** Get A_RegistrationAttribute_UU.
 		@return A_RegistrationAttribute_UU	  */
-	public String getA_RegistrationAttribute_UU () 
+	public String getA_RegistrationAttribute_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_RegistrationAttribute_UU);
 	}
 
 	/** Set DB Column Name.
-		@param ColumnName 
-		Name of the column in the database
-	  */
+		@param ColumnName Name of the column in the database
+	*/
 	public void setColumnName (String ColumnName)
 	{
 		set_Value (COLUMNNAME_ColumnName, ColumnName);
@@ -183,15 +195,14 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	/** Get DB Column Name.
 		@return Name of the column in the database
 	  */
-	public String getColumnName () 
+	public String getColumnName()
 	{
 		return (String)get_Value(COLUMNNAME_ColumnName);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -200,15 +211,14 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Self-Service.
-		@param IsSelfService 
-		This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
+		@param IsSelfService This is a Self-Service entry or this entry can be changed via Self-Service
+	*/
 	public void setIsSelfService (boolean IsSelfService)
 	{
 		set_Value (COLUMNNAME_IsSelfService, Boolean.valueOf(IsSelfService));
@@ -217,7 +227,7 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	/** Get Self-Service.
 		@return This is a Self-Service entry or this entry can be changed via Self-Service
 	  */
-	public boolean isSelfService () 
+	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
 		if (oo != null) 
@@ -230,9 +240,8 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -241,7 +250,7 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -255,9 +264,8 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
     }
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -266,7 +274,7 @@ public class X_A_RegistrationAttribute extends PO implements I_A_RegistrationAtt
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

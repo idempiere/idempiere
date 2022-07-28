@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_BOMAlternative
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_BOMAlternative")
 public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Persistent 
 {
@@ -31,12 +31,24 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_BOMAlternative (Properties ctx, int M_BOMAlternative_ID, String trxName)
     {
       super (ctx, M_BOMAlternative_ID, trxName);
+      /** if (M_BOMAlternative_ID == 0)
+        {
+			setM_BOMAlternative_ID (0);
+			setM_Product_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_BOMAlternative (Properties ctx, int M_BOMAlternative_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_BOMAlternative_ID, trxName, virtualColumns);
       /** if (M_BOMAlternative_ID == 0)
         {
 			setM_BOMAlternative_ID (0);
@@ -74,9 +86,8 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -85,27 +96,26 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Alternative Group.
-		@param M_BOMAlternative_ID 
-		Product BOM Alternative Group
-	  */
+		@param M_BOMAlternative_ID Product BOM Alternative Group
+	*/
 	public void setM_BOMAlternative_ID (int M_BOMAlternative_ID)
 	{
-		if (M_BOMAlternative_ID < 1) 
+		if (M_BOMAlternative_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_BOMAlternative_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_BOMAlternative_ID, Integer.valueOf(M_BOMAlternative_ID));
 	}
 
 	/** Get Alternative Group.
 		@return Product BOM Alternative Group
 	  */
-	public int getM_BOMAlternative_ID () 
+	public int getM_BOMAlternative_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_BOMAlternative_ID);
 		if (ii == null)
@@ -114,7 +124,8 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
 	}
 
 	/** Set M_BOMAlternative_UU.
-		@param M_BOMAlternative_UU M_BOMAlternative_UU	  */
+		@param M_BOMAlternative_UU M_BOMAlternative_UU
+	*/
 	public void setM_BOMAlternative_UU (String M_BOMAlternative_UU)
 	{
 		set_Value (COLUMNNAME_M_BOMAlternative_UU, M_BOMAlternative_UU);
@@ -122,7 +133,7 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
 
 	/** Get M_BOMAlternative_UU.
 		@return M_BOMAlternative_UU	  */
-	public String getM_BOMAlternative_UU () 
+	public String getM_BOMAlternative_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_BOMAlternative_UU);
 	}
@@ -134,21 +145,20 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -157,9 +167,8 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -168,7 +177,7 @@ public class X_M_BOMAlternative extends PO implements I_M_BOMAlternative, I_Pers
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

@@ -25,7 +25,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 			}, 350);
 	}
 
-	var Chosenbox =
+	let Chosenbox =
 
 	chosenbox.Chosenbox = zk.$extends(zul.Widget, {
 				$init : function(props) {
@@ -55,7 +55,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					 *            tabindex
 					 */
 					tabindex : function(tabindex) {
-						var n = this.$n('inp');
+						let n = this.$n('inp');
 						if (n)
 							n.tabindex = tabindex || '';
 					},
@@ -72,7 +72,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					 *            selectedIndex
 					 */
 					selectedIndex : function(v, opts) {
-						var options, sel;
+						let options, sel;
 						this._clearSelection();
 						if ((sel = this.$n('sel')) && v >= 0) {
 							options = jq(sel).children();
@@ -99,7 +99,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					 *            disabled
 					 */
 					disabled : function(disabled) {
-						var n = this.$n('inp');
+						let n = this.$n('inp');
 						if (n)
 							n.disabled = disabled ? 'disabled' : '';
 					},
@@ -135,7 +135,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					 *            name the name of this component.
 					 */
 					name : function(name) {
-						var n = this.$n('inp');
+						let n = this.$n('inp');
 						if (n)
 							n.name = name;
 					},
@@ -231,7 +231,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					 *            this component.
 					 */
 					separator : function(v) {
-						var separatorCode = this._separatorCode;
+						let separatorCode = this._separatorCode;
 						separatorCode.length = 0;
 						// save keycode for special symble
 						// handle the code of special char because
@@ -288,7 +288,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					open : null
 				},
 				setListContent : function(v) {
-					var sel, out, oldHlite, value;
+					let sel, out, oldHlite, value;
 					if (sel = this.$n('sel')) {
 						if (oldHlite = jq(this.$n('sel'))
 								.find(
@@ -317,27 +317,27 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					}
 				},
 				_renderItems : function(out, content) {
-					var s = $eval(content ? content : this._items)
+					let s = $eval(content ? content : this._items)
 							|| [], zcls = this.getZclass();
-					for (var i = 0, j = s.length; i < j; i++) {
+					for (let i = 0, j = s.length; i < j; i++) {
 						out.push('<div class="', zcls, '-option">',
 								zUtl.encodeXML(s[i]), '</div>');
 					}
 					return out;
 				},
 				getZclass : function() {
-					var zcls = this._zclass;
+					let zcls = this._zclass;
 					return zcls != null ? zcls : "z-chosenbox";
 				},
 				// update the selected items, the old selection will be
 				// cleared at first
 				setChgSel : function(val) { // called from the server
 					this._clearSelection();
-					var sel, options;
+					let sel, options;
 					if (sel = this.$n('sel')) { // select each item
 						options = jq(sel).children();
-						var s = $eval(val), renderByServer = this._renderByServer, item, value;
-						for (var i = 0; i < s.length; i++) {
+						let s = $eval(val), renderByServer = this._renderByServer, item, value;
+						for (let i = 0; i < s.length; i++) {
 							value = s[i];
 							if (item = this._getItemByValue(value))
 								this._doSelect(item);
@@ -350,7 +350,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				},
 				bind_ : function() {
 					this.$supers(Chosenbox, 'bind_', arguments);					
-					var n = this.$n(), inp = this.$n('inp');
+					let n = this.$n(), inp = this.$n('inp');
 
 					this.domListen_(inp, 'onFocus', 'doFocus_')
 							.domListen_(inp, 'onBlur', 'doBlur_');
@@ -361,19 +361,19 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					this._fixWidth(n);					
 					//fix selection
 					if (this._selItems && this._selItems.length > 0) {
-						var s = this._selItems;
+						let s = this._selItems;
 						this._selItems = [];
-						for (var i = 0; i < s.length; i++) {
-							var value = s[i];
+						for (let i = 0; i < s.length; i++) {
+							let value = s[i];
 							if (item = this._getItemByValue(value))
 								this._doSelect(item);
 							else
 								this._selectItemDirectly(value);
 						}
 					} else if (this._chgSel) {
-						var s = this._chgSel;
+						let s = this._chgSel;
 						this._chgSel = null;
-						for (var i = 0; i < s.length; i++) {
+						for (let i = 0; i < s.length; i++) {
 							value = s[i];
 							if (item = this._getItemByValue(value))
 								this._doSelect(item);
@@ -387,7 +387,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 						this.setOpen(true);
 				},
 				unbind_ : function() {
-					var inp = this.$n('inp');
+					let inp = this.$n('inp');
 					this.domUnlisten_(inp, 'onFocus', 'doFocus_')
 							.domUnlisten_(inp, 'onBlur', 'doBlur_');
 					zWatch.unlisten({
@@ -418,24 +418,24 @@ it will be useful, but WITHOUT ANY WARRANTY.
 								this.getZclass() + '-focus');
 				},
 				doMouseOver_ : function(evt) {
-					var target = evt.domTarget;
+					let target = evt.domTarget;
 					// mouseover option
 					if (jq(target).hasClass(
 							this.getZclass() + '-option'))
 						this._hliteOpt(target, true);
 				},
 				doMouseOut_ : function(evt) {
-					var target = evt.domTarget;
+					let target = evt.domTarget;
 					// mouseout option
 					if (jq(target).hasClass(
 							this.getZclass() + '-option-over'))
 						this._hliteOpt(target, false);
 				},
 				_hliteOpt : function(target, highlight) {
-					var zcls = this.getZclass() + '-option-over';
+					let zcls = this.getZclass() + '-option-over';
 					if (highlight) {
 						// clear old first
-						var oldHlite = jq(this.$n('sel'))
+						let oldHlite = jq(this.$n('sel'))
 								.find(
 										'.' + this.getZclass()
 												+ '-option-over')[0];
@@ -451,7 +451,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					else if (key == 'down')
 						this._moveOptionFocus('next');
 					else {
-						var inp = this.$n('inp'), pos = zk(inp)
+						let inp = this.$n('inp'), pos = zk(inp)
 								.getSelectionRange(), label = jq(
 								this.$n()).find(
 								'.' + this.getZclass()
@@ -472,7 +472,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				// focus previous or next visible option,
 				// depends on dir
 				_moveOptionFocus : function(dir) {
-					var sel = this.$n('sel'), $sel = jq(sel), oldHlite = $sel
+					let sel = this.$n('sel'), $sel = jq(sel), oldHlite = $sel
 							.find('.' + this.getZclass()
 									+ '-option-over')[0], newHlite, next = dir == 'next', prev = dir == 'prev';
 					if (next && !this._open) // default focus first
@@ -511,7 +511,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				// focus previous or next label,
 				// depends on dir
 				_moveLabelFocus : function(label, dir) {
-					var zcls = this.getZclass() + '-sel-item-focus', newLabel, prev = dir == 'prev', next = dir == 'next';
+					let zcls = this.getZclass() + '-sel-item-focus', newLabel, prev = dir == 'prev', next = dir == 'next';
 					if (label) {
 						jq(label).removeClass(zcls);
 						newLabel = prev ? label.previousSibling
@@ -527,14 +527,14 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				},
 				// called after press backspace or del and release
 				_deleteLabel : function(key, evt) {
-					var inp = this.$n('inp'), pos = zk(inp)
+					let inp = this.$n('inp'), pos = zk(inp)
 							.getSelectionRange(), label;
 
 					// only works if cursor is at the begining of input
 					if (pos[0] == 0 && pos[1] == 0) {
-						var zcls = this.getZclass() + '-sel-item-focus';
+						let zcls = this.getZclass() + '-sel-item-focus';
 						if (label = jq(this.$n()).find('.' + zcls)[0]) {
-							var dir = (label.previousSibling && key == 'backspace') ? 'prev'
+							let dir = (label.previousSibling && key == 'backspace') ? 'prev'
 									: 'next';
 							this._moveLabelFocus(label, dir);
 							this._doDeselect(label, {
@@ -550,14 +550,14 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					}
 				},
 				_removeLabelFocus : function() {
-					var zcls = this.getZclass() + '-sel-item-focus', label = jq(
+					let zcls = this.getZclass() + '-sel-item-focus', label = jq(
 							this.$n()).find('.' + zcls)[0];
 					if (label)
 						jq(label).removeClass(zcls);
 				},
 				// called after press enter and release
 				_doEnterPressed : function(evt) {
-					var $sel, hlited, old;
+					let $sel, hlited, old;
 					// clear timer and fix display before process
 					if (old = this.fixDisplay)
 						clearTimeout(old);
@@ -577,7 +577,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 								&& (hlited = $sel.find('.'
 										+ this.getZclass()
 										+ '-option-over')[0])) {
-							var options = $sel.children();
+							let options = $sel.children();
 							this._doSelect(hlited, {
 								sendOnSelect : true
 							});
@@ -591,7 +591,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				},
 				doClick_ : function(evt) {
 					if (!this.isDisabled()) {
-						var target = evt.domTarget, $target = jq(target), inp = this
+						let target = evt.domTarget, $target = jq(target), inp = this
 								.$n('inp'), zcls = this.getZclass();
 						this._removeLabelFocus();
 						if (inp.value == this._emptyMessage)
@@ -616,7 +616,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 									sendOnOpen : true
 								});
 						} else {
-							var label = target, zcls = this.getZclass()
+							let label = target, zcls = this.getZclass()
 									+ '-sel-item';
 							if ($target.hasClass(zcls)
 									|| (label = $target.parent('.'
@@ -637,7 +637,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				// select an item
 				_doSelect : function(target, opts) {
 					this._hliteOpt(target, false);
-					var value = target.innerHTML;
+					let value = target.innerHTML;
 					if (this._selItems.indexOf(value) == -1) {
 						this._createLabel(value);
 						target.style.display = 'none'; // hide selected
@@ -660,7 +660,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				},
 				// deselect an item
 				_doDeselect : function(selectedItem, opts) {
-					var value = jq(selectedItem).find(
+					let value = jq(selectedItem).find(
 							'.' + this.getZclass() + '-sel-item-cnt')[0].innerHTML, element = this
 							._getItemByValue(value), _selItems = this._selItems;
 					if (this._open)
@@ -682,8 +682,8 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					this._startFixDisplay();
 				},
 				_getItemByValue : function(value) {
-					var options = jq(this.$n('sel')).children(), item;
-					for (var i = 0; i < options.length; i++)
+					let options = jq(this.$n('sel')).children(), item;
+					for (let i = 0; i < options.length; i++)
 						if ((item = options[i])
 								&& item.innerHTML == value)
 							return item;
@@ -692,7 +692,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				},
 				// create label for selected item
 				_createLabel : function(value) {
-					var span = document.createElement("span"), content = document
+					let span = document.createElement("span"), content = document
 							.createElement("div"), delbtn = document
 							.createElement("div"), wgt = this, zcls = this
 							.getZclass();
@@ -717,7 +717,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				},
 				// clear all selected items
 				_clearSelection : function(opts) {
-					var n = this.$n(), inp = this.$n('inp'), c, // selected
+					let n = this.$n(), inp = this.$n('inp'), c, // selected
 																// item
 					del;
 					if (n)
@@ -731,21 +731,21 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				},
 				// fire onSelectevent to server
 				fireSelectEvent : function() {
-					var data = [], selItems = this._selItems; // selected
+					let data = [], selItems = this._selItems; // selected
 																// item
-					for (var i = 0; i < selItems.length; i++)
+					for (let i = 0; i < selItems.length; i++)
 						data.push(selItems[i]);
 					this.fire('onSelect', data);
 				},
 				// fire onSearch event
 				_fireOnSearch : function(value) {
-					var data = [];
+					let data = [];
 					data.push(value);
 					this.fire('onSearch', data);
 				},
 				// fire onSearching event
 				_fireOnSearching : function(value) {
-					var data = [];
+					let data = [];
 					data.push(value);
 					this.fire('onSearching', data);
 				},
@@ -762,7 +762,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				},
 
 				doKeyDown_ : function(evt) {
-					var keyCode = evt.keyCode;
+					let keyCode = evt.keyCode;
 					switch (keyCode) {
 					case 8:// backspace
 						this._deleteLabel('backspace', evt);
@@ -802,7 +802,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 						this._removeLabelFocus();
 				},
 				doKeyUp_ : function(evt) {
-					var keyCode = evt.keyCode, opts = {
+					let keyCode = evt.keyCode, opts = {
 						hliteFirst : true
 					};
 					switch (keyCode) {
@@ -831,7 +831,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 						startOnSearching(this);
 				},
 				_isSeparator : function(keyCode) {
-					var separator = this._separator, separatorCode = this._separatorCode;
+					let separator = this._separator, separatorCode = this._separatorCode;
 					return (separatorCode && separatorCode
 							.indexOf(keyCode) != -1)
 							|| ((keyCode >= 48 && keyCode <= 122)
@@ -842,7 +842,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 													.fromCharCode(keyCode)) != -1);
 				},
 				_updateInput : function(evt) {
-					var inp = evt ? evt.domTarget : this.$n('inp'), txcnt = this
+					let inp = evt ? evt.domTarget : this.$n('inp'), txcnt = this
 							.$n('txcnt'), wgt = this;
 
 					// check every 100ms while input
@@ -855,7 +855,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					if (!this.isDisabled())
 						this._open = open;
 					if (this.$n('pp')) {
-						var pp = this.$n('pp');
+						let pp = this.$n('pp');
 						if (open)
 							this.open(this.$n(), pp, opts);
 						else
@@ -863,7 +863,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					}
 				},
 				open : function(n, pp, opts) {
-					var ppstyle = pp.style;
+					let ppstyle = pp.style;
 
 					this._fixWidth(n);
 					this._fixsz(pp);
@@ -875,7 +875,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					ppstyle.zIndex = n.style.zIndex;
 					ppstyle.display = 'block';
 					if (opts) {
-						var inp = this.$n();
+						let inp = this.$n();
 						zk(pp).position(inp, "after_start");
 					}
 
@@ -908,7 +908,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 						this._clearListContent();
 				},
 				_fixsz : function(pp) {
-					var ppstyle = pp.style, maxh = this._ppMaxHeight;
+					let ppstyle = pp.style, maxh = this._ppMaxHeight;
 					ppstyle.height = 'auto';
 					ppstyle.left = "-10000px";
 					ppstyle.display = "block";
@@ -920,7 +920,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				},
 				// calculate the width for input field
 				_fixInputWidth : function() {
-					var n = this.$n(), inp = this.$n('inp'), txcnt = this
+					let n = this.$n(), inp = this.$n('inp'), txcnt = this
 							.$n('txcnt'), oldh = jq(n).height(), width, max = parseInt(this._width) - 10;
 					// copy value to hidden txcnt
 					txcnt.innerHTML = inp.value;
@@ -942,7 +942,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 						this._fixDisplay(opts);
 					else { // replace old if exist and hold a while
 							// while input
-						var wgt = this, old;
+						let wgt = this, old;
 						if (old = this.fixDisplay)
 							clearTimeout(old);
 						this.fixDisplay = setTimeout(function() {
@@ -954,10 +954,10 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				_fixDisplay : function(opts) {
 					if (!this._open)
 						return;
-					var fromServer = opts && opts.fromServer;
+					let fromServer = opts && opts.fromServer;
 					if (!this._renderByServer
 							|| (opts && opts.fromServer)) {
-						var str = this.$n('inp').value, oldhlite = jq(
+						let str = this.$n('inp').value, oldhlite = jq(
 								this.$n('sel'))
 								.find(
 										'.' + this.getZclass()
@@ -976,7 +976,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				},
 				// fix the display content of options
 				_fixSelDisplay : function(hliteFirst, str, fromServer) {
-					var pp = this.$n('pp'), $pp = jq(pp), maxh = this._ppMaxHeight, ppstyle = pp.style, selItems = this._selItems, options = jq(
+					let pp = this.$n('pp'), $pp = jq(pp), maxh = this._ppMaxHeight, ppstyle = pp.style, selItems = this._selItems, options = jq(
 							this.$n('sel')).children(), found = false, // unselected
 																		// match
 																		// item
@@ -1034,7 +1034,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				},
 				// fix the display of no-result text block
 				_fixEmptyDisplay : function(type, str, found, exist) {
-					var ecls = this.getZclass() + '-empty-creatable', empty = this
+					let ecls = this.getZclass() + '-empty-creatable', empty = this
 							.$n('empty');
 					if (type
 							&& (type.showBlank || type.showExistance
@@ -1054,7 +1054,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 																	// item
 																	// and
 																	// creatable
-								var createMsg = this._createMessage;
+								let createMsg = this._createMessage;
 								if (createMsg)
 									createMsg = zUtl.encodeXML(
 											createMsg.replace(/\{0\}/g,
@@ -1066,7 +1066,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 								jq(empty).addClass(ecls);
 							} else { // show no-result text if
 										// nothing can be selected
-								var empMsg = this._noResultsText;
+								let empMsg = this._noResultsText;
 								if (empMsg)
 									empMsg = zUtl.encodeXML(
 											empMsg.replace(/\{0\}/g,
@@ -1086,7 +1086,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 				},
 				// show emptyMessage or clear input
 				_fixEmptyMessage : function(force) {
-					var inp;
+					let inp;
 					if ((!this._open || force)
 							&& (inp = this.$n('inp'))) {
 
@@ -1099,7 +1099,7 @@ it will be useful, but WITHOUT ANY WARRANTY.
 					}
 				},
 				domAttrs_ : function() {
-					var v;
+					let v;
 					return this.$supers('domAttrs_', arguments)
 							+ (this.isDisabled() ? ' disabled="disabled"'
 									: '')

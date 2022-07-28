@@ -36,9 +36,9 @@ import org.compiere.util.Env;
  *
  *  @author Jorg Janke
  *  @author Trifon Trifonov, Catura AG (www.catura.de)
- *				<li>FR [ 3010957 ] Custom Separator Character, http://sourceforge.net/tracker/?func=detail&aid=3010957&group_id=176962&atid=879335 </li>
+ *				<li>FR [ 3010957 ] Custom Separator Character, https://sourceforge.net/p/adempiere/feature-requests/975/ </li>
  *  @author eugen.hanussek@klst.com
- *  			<li>BF [ 3564464 ] Import File Loader discards input records , https://sourceforge.net/tracker/?func=detail&aid=3564464&group_id=176962&atid=879332 </li>
+ *  			<li>BF [ 3564464 ] Import File Loader discards input records , https://sourceforge.net/p/adempiere/bugs/2727/ </li>
  *
  *  @version $Id$
  */
@@ -388,10 +388,14 @@ public final class ImpFormat
 				if (!concat) {
 					entry.append(row.getColumnName());
 					entry.append("=");
-					if (row.isString())
+					if (row.isString()) {
 						entry.append("'");
-					else if (row.isDate())
-						entry.append("TO_DATE('");
+					} else if (row.isDate()) {
+						if (DB.isPostgreSQL())
+							entry.append("TO_TIMESTAMP('");
+						else
+							entry.append("TO_DATE('");
+					}
 				}
 			}
 

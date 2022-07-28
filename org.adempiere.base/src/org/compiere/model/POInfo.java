@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +44,7 @@ import org.compiere.util.Env;
  *  @version $Id: POInfo.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
  *  @author Victor Perez, e-Evolution SC
  *			<li>[ 2195894 ] Improve performance in PO engine
- *			<li>http://sourceforge.net/tracker/index.php?func=detail&aid=2195894&group_id=176962&atid=879335
+ *			<li>https://sourceforge.net/p/adempiere/feature-requests/555/
  */
 public class POInfo implements Serializable
 {
@@ -747,6 +748,13 @@ public class POInfo implements Serializable
 					return "LessThanMinValue"+";"+m_columns[index].ValueMin_BD.toPlainString();
 				}
 			}
+			else if (value instanceof Timestamp && m_columns[index].ValueMin_TS != null)    // Date
+			{
+				if (((Timestamp) value).before(m_columns[index].ValueMin_TS))
+				{
+					return "LessThanMinValue"+";"+m_columns[index].ValueMin;
+				}
+			}
 			else	//	String
 			{
 				int comp = m_columns[index].ValueMin.compareTo(value.toString());
@@ -774,6 +782,13 @@ public class POInfo implements Serializable
 					return "MoreThanMaxValue"+";"+m_columns[index].ValueMax_BD.toPlainString();
 				}
 			}
+			else if (value instanceof Timestamp && m_columns[index].ValueMax_TS != null)    // Date
+			{
+				if (((Timestamp) value).after(m_columns[index].ValueMax_TS))
+				{
+					return "MoreThanMaxValue"+";"+m_columns[index].ValueMax;
+				}
+			}
 			else	//	String
 			{
 				int comp = m_columns[index].ValueMax.compareTo(value.toString());
@@ -785,23 +800,35 @@ public class POInfo implements Serializable
 		}
 		return null;
 	}   //  validate
-	
+
 	/**
-	 * Build select clause
-	 * @return stringbuilder
+	 * Build SQL SELECT statement.
+	 * @return {@link StringBuilder} instance with the SQL statement.
 	 */
 	public StringBuilder buildSelect()
 	{
 		return buildSelect(false, false);
 	}
-	
+
 	/**
-	 * Build select clause
-	 * @param fullyQualified
-	 * @param noVirtualColumn
-	 * @return stringbuilder
+	 * Build SQL SELECT statement.
+	 * @param fullyQualified prefix column names with the table name
+	 * @param noVirtualColumn Include (<code>false</code> value) all declared virtual columns at once 
+	 *        or use lazy loading (<code>true</code> value).
+	 * @return {@link StringBuilder} instance with the SQL statement.
 	 */
-	public StringBuilder buildSelect(boolean fullyQualified, boolean noVirtualColumn)
+	public StringBuilder buildSelect(boolean fullyQualified, boolean noVirtualColumn) {
+		return buildSelect(fullyQualified, noVirtualColumn ? new String[] {} : null);
+	}
+
+	/**
+	 * Build SQL SELECT statement.
+	 * @param fullyQualified prefix column names with the table name
+	 * @param virtualColumns names of virtual columns to include along with the regular table columns - 
+	 *        if no value (or <code>null</code>) is provided then all declared virtual columns will be included.
+	 * @return {@link StringBuilder} instance with the SQL statement.
+	 */
+	public StringBuilder buildSelect(boolean fullyQualified, String ... virtualColumns)
 	{
 		StringBuilder sql = new StringBuilder("SELECT ");
 		int size = getColumnCount();
@@ -809,9 +836,21 @@ public class POInfo implements Serializable
 		for (int i = 0; i < size; i++)
 		{
 			boolean virtual = isVirtualColumn(i);
-			if (virtual && noVirtualColumn)
-				continue;
-			
+			if (virtual && virtualColumns != null)
+			{
+				boolean found = false;
+				for(String virtualColumn : virtualColumns)
+				{
+					if(m_columns[i].ColumnName.equalsIgnoreCase(virtualColumn))
+					{
+						found = true;
+						break;
+					}
+				}
+				if(!found)
+					continue;
+			}
+
 			count++;
 			if (count > 1)
 				sql.append(",");

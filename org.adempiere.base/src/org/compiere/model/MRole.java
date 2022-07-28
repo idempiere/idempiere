@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.process.UUIDGenerator;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -47,6 +48,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trace;
 import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
+import org.compiere.wf.MWorkflowAccess;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.POCopyCache;
 
@@ -66,7 +68,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6317084960843429042L;
+	private static final long serialVersionUID = 7597852750014990009L;
 
 	/**
 	 * 	Get Default (Client) Role
@@ -129,7 +131,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		if (role == null || reload)
 		{
 			role = new MRole (ctx, AD_Role_ID, null);			
-			if (AD_Role_ID == 0)
+			if (AD_Role_ID == SystemIDs.ROLE_SYSTEM)
 			{
 				String trxName = null;
 				role.load(trxName);			//	special Handling
@@ -267,7 +269,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	{
 		super (ctx, AD_Role_ID, trxName);
 		//	ID=0 == System Administrator
-		if (AD_Role_ID == 0)
+		if (AD_Role_ID == SystemIDs.ROLE_SYSTEM)
 		{
 			setIsCanExport (true);
 			setIsCanReport (true);
@@ -590,13 +592,29 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		int docact = DB.executeUpdateEx(sqlDocAction, get_TrxName());
 		int info = DB.executeUpdateEx(sqlInfo + roleAccessLevel, get_TrxName());
 
+		if (DB.isGenerateUUIDSupported()) {
+			DB.executeUpdateEx("UPDATE AD_Window_Access SET AD_Window_Access_UU=generate_uuid() WHERE AD_Window_Access_UU IS NULL", get_TrxName());
+			DB.executeUpdateEx("UPDATE AD_Process_Access SET AD_Process_Access_UU=generate_uuid() WHERE AD_Process_Access_UU IS NULL", get_TrxName());
+			DB.executeUpdateEx("UPDATE AD_Form_Access SET AD_Form_Access_UU=generate_uuid() WHERE AD_Form_Access_UU IS NULL", get_TrxName());
+			DB.executeUpdateEx("UPDATE AD_Workflow_Access SET AD_Workflow_Access_UU=generate_uuid() WHERE AD_Workflow_Access_UU IS NULL", get_TrxName());
+			DB.executeUpdateEx("UPDATE AD_Document_Action_Access SET AD_Document_Action_Access_UU=generate_uuid() WHERE AD_Document_Action_Access_UU IS NULL", get_TrxName());
+			DB.executeUpdateEx("UPDATE AD_InfoWindow_Access SET AD_InfoWindow_Access_UU=generate_uuid() WHERE AD_InfoWindow_Access_UU IS NULL", get_TrxName());
+		} else {
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MWindowAccess.Table_Name,         PO.getUUIDColumnName(MWindowAccess.Table_Name)),         get_TrxName());
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MProcessAccess.Table_Name,        PO.getUUIDColumnName(MProcessAccess.Table_Name)),        get_TrxName());
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MFormAccess.Table_Name,           PO.getUUIDColumnName(MFormAccess.Table_Name)),           get_TrxName());
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MWorkflowAccess.Table_Name,       PO.getUUIDColumnName(MWorkflowAccess.Table_Name)),       get_TrxName());
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MDocumentActionAccess.Table_Name, PO.getUUIDColumnName(MDocumentActionAccess.Table_Name)), get_TrxName());
+			UUIDGenerator.updateUUID(MColumn.get(getCtx(), MInfoWindowAccess.Table_Name,     PO.getUUIDColumnName(MInfoWindowAccess.Table_Name)),     get_TrxName());
+		}
+
 		loadAccess(true);
-		return "@AD_Window_ID@ #" + win 
+		return Msg.parseTranslation(getCtx(), "@AD_Window_ID@ #" + win 
 			+ " -  @AD_Process_ID@ #" + proc
 			+ " -  @AD_Form_ID@ #" + form
 			+ " -  @AD_Workflow_ID@ #" + wf
 			+ " -  @DocAction@ #" + docact
-			+ " -  @AD_InfoWindow_ID@ #" + info;
+			+ " -  @AD_InfoWindow_ID@ #" + info);
 		
 	}	//	createAccessRecords
 
@@ -1437,7 +1455,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		return false;
 	}	//	isTableAccessLevel
 
-
 	/**
 	 * 	Access to Column
 	 *	@param AD_Table_ID table
@@ -1447,12 +1464,25 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 */
 	public boolean isColumnAccess (int AD_Table_ID, int AD_Column_ID, boolean ro)
 	{
+		return isColumnAccess(AD_Table_ID, AD_Column_ID, ro, null);
+	}
+
+	/**
+	 * 	Access to Column
+	 *	@param AD_Table_ID table
+	 *	@param AD_Column_ID column
+	 *	@param ro read only
+	 *  @param trxName
+	 *	@return true if access
+	 */
+	public boolean isColumnAccess (int AD_Table_ID, int AD_Column_ID, boolean ro, String trxName)
+	{
 		if (!isTableAccess(AD_Table_ID, ro))		//	No Access to Table		
 			return false;
 		loadColumnAccess(false);
 
 		// Verify access to process for buttons
-		MColumn column = MColumn.get(Env.getCtx(), AD_Column_ID);
+		MColumn column = MColumn.get(Env.getCtx(), AD_Column_ID, trxName);
 		if (column.getAD_Reference_ID() == DisplayType.Button && column.getAD_Process_ID() > 0) {
 			Boolean access = MRole.getDefault().getProcessAccess(column.getAD_Process_ID());
 			if (access == null)

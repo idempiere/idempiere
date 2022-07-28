@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Attribute
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_Attribute")
 public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent 
 {
@@ -31,12 +31,27 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_Attribute (Properties ctx, int M_Attribute_ID, String trxName)
     {
       super (ctx, M_Attribute_ID, trxName);
+      /** if (M_Attribute_ID == 0)
+        {
+			setAttributeValueType (null);
+// S
+			setIsInstanceAttribute (false);
+			setIsMandatory (false);
+			setM_Attribute_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Attribute (Properties ctx, int M_Attribute_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Attribute_ID, trxName, virtualColumns);
       /** if (M_Attribute_ID == 0)
         {
 			setAttributeValueType (null);
@@ -83,21 +98,20 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	}
 
 	/** Set Reference.
-		@param AD_Reference_ID 
-		System Reference and Validation
-	  */
+		@param AD_Reference_ID System Reference and Validation
+	*/
 	public void setAD_Reference_ID (int AD_Reference_ID)
 	{
-		if (AD_Reference_ID < 1) 
+		if (AD_Reference_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
 	}
 
 	/** Get Reference.
 		@return System Reference and Validation
 	  */
-	public int getAD_Reference_ID () 
+	public int getAD_Reference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
 		if (ii == null)
@@ -112,21 +126,20 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	}
 
 	/** Set Reference Key.
-		@param AD_Reference_Value_ID 
-		Required to specify, if data type is Table or List
-	  */
+		@param AD_Reference_Value_ID Required to specify, if data type is Table or List
+	*/
 	public void setAD_Reference_Value_ID (int AD_Reference_Value_ID)
 	{
-		if (AD_Reference_Value_ID < 1) 
+		if (AD_Reference_Value_ID < 1)
 			set_Value (COLUMNNAME_AD_Reference_Value_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Reference_Value_ID, Integer.valueOf(AD_Reference_Value_ID));
 	}
 
 	/** Get Reference Key.
 		@return Required to specify, if data type is Table or List
 	  */
-	public int getAD_Reference_Value_ID () 
+	public int getAD_Reference_Value_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_Value_ID);
 		if (ii == null)
@@ -141,21 +154,20 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	}
 
 	/** Set Dynamic Validation.
-		@param AD_Val_Rule_ID 
-		Dynamic Validation Rule
-	  */
+		@param AD_Val_Rule_ID Dynamic Validation Rule
+	*/
 	public void setAD_Val_Rule_ID (int AD_Val_Rule_ID)
 	{
-		if (AD_Val_Rule_ID < 1) 
+		if (AD_Val_Rule_ID < 1)
 			set_Value (COLUMNNAME_AD_Val_Rule_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Val_Rule_ID, Integer.valueOf(AD_Val_Rule_ID));
 	}
 
 	/** Get Dynamic Validation.
 		@return Dynamic Validation Rule
 	  */
-	public int getAD_Val_Rule_ID () 
+	public int getAD_Val_Rule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Val_Rule_ID);
 		if (ii == null)
@@ -176,9 +188,8 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/** String (max 40) = S */
 	public static final String ATTRIBUTEVALUETYPE_StringMax40 = "S";
 	/** Set Attribute Value Type.
-		@param AttributeValueType 
-		Type of Attribute Value
-	  */
+		@param AttributeValueType Type of Attribute Value
+	*/
 	public void setAttributeValueType (String AttributeValueType)
 	{
 
@@ -188,15 +199,14 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/** Get Attribute Value Type.
 		@return Type of Attribute Value
 	  */
-	public String getAttributeValueType () 
+	public String getAttributeValueType()
 	{
 		return (String)get_Value(COLUMNNAME_AttributeValueType);
 	}
 
 	/** Set Date Format.
-		@param DateFormat 
-		Date format used in the input format
-	  */
+		@param DateFormat Date format used in the input format
+	*/
 	public void setDateFormat (String DateFormat)
 	{
 		set_Value (COLUMNNAME_DateFormat, DateFormat);
@@ -205,15 +215,14 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/** Get Date Format.
 		@return Date format used in the input format
 	  */
-	public String getDateFormat () 
+	public String getDateFormat()
 	{
 		return (String)get_Value(COLUMNNAME_DateFormat);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -222,15 +231,14 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Instance Attribute.
-		@param IsInstanceAttribute 
-		The product attribute is specific to the instance (like Serial No, Lot or Guarantee Date)
-	  */
+		@param IsInstanceAttribute The product attribute is specific to the instance (like Serial No, Lot or Guarantee Date)
+	*/
 	public void setIsInstanceAttribute (boolean IsInstanceAttribute)
 	{
 		set_Value (COLUMNNAME_IsInstanceAttribute, Boolean.valueOf(IsInstanceAttribute));
@@ -239,7 +247,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/** Get Instance Attribute.
 		@return The product attribute is specific to the instance (like Serial No, Lot or Guarantee Date)
 	  */
-	public boolean isInstanceAttribute () 
+	public boolean isInstanceAttribute()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInstanceAttribute);
 		if (oo != null) 
@@ -252,9 +260,8 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	}
 
 	/** Set Mandatory.
-		@param IsMandatory 
-		Data entry is required in this column
-	  */
+		@param IsMandatory Data entry is required in this column
+	*/
 	public void setIsMandatory (boolean IsMandatory)
 	{
 		set_Value (COLUMNNAME_IsMandatory, Boolean.valueOf(IsMandatory));
@@ -263,7 +270,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/** Get Mandatory.
 		@return Data entry is required in this column
 	  */
-	public boolean isMandatory () 
+	public boolean isMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatory);
 		if (oo != null) 
@@ -276,21 +283,20 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	}
 
 	/** Set Attribute.
-		@param M_Attribute_ID 
-		Product Attribute
-	  */
+		@param M_Attribute_ID Product Attribute
+	*/
 	public void setM_Attribute_ID (int M_Attribute_ID)
 	{
-		if (M_Attribute_ID < 1) 
+		if (M_Attribute_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
 	}
 
 	/** Get Attribute.
 		@return Product Attribute
 	  */
-	public int getM_Attribute_ID () 
+	public int getM_Attribute_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
 		if (ii == null)
@@ -305,21 +311,20 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	}
 
 	/** Set Attribute Search.
-		@param M_AttributeSearch_ID 
-		Common Search Attribute 
-	  */
+		@param M_AttributeSearch_ID Common Search Attribute 
+	*/
 	public void setM_AttributeSearch_ID (int M_AttributeSearch_ID)
 	{
-		if (M_AttributeSearch_ID < 1) 
+		if (M_AttributeSearch_ID < 1)
 			set_Value (COLUMNNAME_M_AttributeSearch_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_AttributeSearch_ID, Integer.valueOf(M_AttributeSearch_ID));
 	}
 
 	/** Get Attribute Search.
 		@return Common Search Attribute 
 	  */
-	public int getM_AttributeSearch_ID () 
+	public int getM_AttributeSearch_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSearch_ID);
 		if (ii == null)
@@ -328,7 +333,8 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	}
 
 	/** Set M_Attribute_UU.
-		@param M_Attribute_UU M_Attribute_UU	  */
+		@param M_Attribute_UU M_Attribute_UU
+	*/
 	public void setM_Attribute_UU (String M_Attribute_UU)
 	{
 		set_Value (COLUMNNAME_M_Attribute_UU, M_Attribute_UU);
@@ -336,15 +342,14 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 
 	/** Get M_Attribute_UU.
 		@return M_Attribute_UU	  */
-	public String getM_Attribute_UU () 
+	public String getM_Attribute_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Attribute_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -353,7 +358,7 @@ public class X_M_Attribute extends PO implements I_M_Attribute, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

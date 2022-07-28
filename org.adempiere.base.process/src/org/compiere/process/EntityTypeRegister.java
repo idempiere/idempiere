@@ -57,7 +57,6 @@ public class EntityTypeRegister extends SvrProcess
 		
 		throw new AdempiereSystemError("To register an Entity Type, contact Adempiere directly");
 		
-	//	return "Not Supported Yet";
 	}	//	doIt
 	
 }	//	EntityTypeRegister

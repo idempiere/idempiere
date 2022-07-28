@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeUse
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeUse")
 public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persistent 
 {
@@ -31,12 +31,25 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_AttributeUse (Properties ctx, int M_AttributeUse_ID, String trxName)
     {
       super (ctx, M_AttributeUse_ID, trxName);
+      /** if (M_AttributeUse_ID == 0)
+        {
+			setM_Attribute_ID (0);
+			setM_AttributeSet_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM M_AttributeUse WHERE M_AttributeSet_ID=@M_AttributeSet_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_AttributeUse (Properties ctx, int M_AttributeUse_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_AttributeUse_ID, trxName, virtualColumns);
       /** if (M_AttributeUse_ID == 0)
         {
 			setM_Attribute_ID (0);
@@ -81,21 +94,20 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	}
 
 	/** Set Attribute.
-		@param M_Attribute_ID 
-		Product Attribute
-	  */
+		@param M_Attribute_ID Product Attribute
+	*/
 	public void setM_Attribute_ID (int M_Attribute_ID)
 	{
-		if (M_Attribute_ID < 1) 
+		if (M_Attribute_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
 	}
 
 	/** Get Attribute.
 		@return Product Attribute
 	  */
-	public int getM_Attribute_ID () 
+	public int getM_Attribute_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
 		if (ii == null)
@@ -110,21 +122,20 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	}
 
 	/** Set Attribute Set.
-		@param M_AttributeSet_ID 
-		Product Attribute Set
-	  */
+		@param M_AttributeSet_ID Product Attribute Set
+	*/
 	public void setM_AttributeSet_ID (int M_AttributeSet_ID)
 	{
-		if (M_AttributeSet_ID < 0) 
+		if (M_AttributeSet_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSet_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSet_ID, Integer.valueOf(M_AttributeSet_ID));
 	}
 
 	/** Get Attribute Set.
 		@return Product Attribute Set
 	  */
-	public int getM_AttributeSet_ID () 
+	public int getM_AttributeSet_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSet_ID);
 		if (ii == null)
@@ -141,7 +152,8 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
     }
 
 	/** Set M_AttributeUse_UU.
-		@param M_AttributeUse_UU M_AttributeUse_UU	  */
+		@param M_AttributeUse_UU M_AttributeUse_UU
+	*/
 	public void setM_AttributeUse_UU (String M_AttributeUse_UU)
 	{
 		set_Value (COLUMNNAME_M_AttributeUse_UU, M_AttributeUse_UU);
@@ -149,15 +161,14 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 
 	/** Get M_AttributeUse_UU.
 		@return M_AttributeUse_UU	  */
-	public String getM_AttributeUse_UU () 
+	public String getM_AttributeUse_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_AttributeUse_UU);
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -166,7 +177,7 @@ public class X_M_AttributeUse extends PO implements I_M_AttributeUse, I_Persiste
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

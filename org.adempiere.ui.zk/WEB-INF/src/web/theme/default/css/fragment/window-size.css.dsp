@@ -386,3 +386,17 @@
 	}
 }
 
+.chosenbox-assistant-dialog {
+	height: 600px;
+	width: 700px;
+}
+@media screen and (max-width: 500px) {
+	.chosenbox-assistant-dialog {
+		width: 100%;
+	}
+}
+@media screen and (max-height: 500px) {
+	.chosenbox-assistant-dialog {
+		height: 100%;
+	}
+}

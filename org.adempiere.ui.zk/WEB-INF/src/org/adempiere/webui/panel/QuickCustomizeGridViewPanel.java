@@ -100,11 +100,11 @@ public class QuickCustomizeGridViewPanel extends Panel {
 
 	/**
 	 * Sort Tab Constructor
-	 *
-	 * @param WindowNo
-	 *            Window No
+	 * @param WindowNo Window No
+	 * @param AD_Tab_ID
+	 * @param AD_User_ID
 	 * @param columnsWidth
-	 * @param GridTab
+	 * @param gridFieldIds
 	 */
 	public QuickCustomizeGridViewPanel(int WindowNo, int AD_Tab_ID, int AD_User_ID, Map <Integer, String> columnsWidth, ArrayList <Integer> gridFieldIds)
 	{

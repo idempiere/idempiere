@@ -95,7 +95,7 @@ public class MResourceUnAvailable extends X_S_ResourceUnAvailable
 
 	/**
 	 * Check if the resource is unavailable for date
-	 * @param date
+	 * @param dateTime
 	 * @return true if valid
 	 */
 	public boolean isUnAvailable(Timestamp dateTime)
