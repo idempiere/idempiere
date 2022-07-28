@@ -461,7 +461,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	}
 
 	/**
-	 *  Load Data - Order
+	 *  Load Order lines
 	 *  @param C_Order_ID Order
 	 *  @param forInvoice true if for invoice vs. delivery qty
 	 *  @param M_Locator_ID
@@ -472,7 +472,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	}   //  LoadOrder
 	
 	/**
-	 *  Load Data - RMA
+	 *  Load RMA lines
 	 *  @param M_RMA_ID RMA
 	 *  @param M_Locator_ID
 	 */
@@ -482,7 +482,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	}
 		
 	/**
-	 *  Load Data - Invoice
+	 *  Load Invoice Lines
 	 *  @param C_Invoice_ID Invoice
 	 *  @param M_Locator_ID
 	 */

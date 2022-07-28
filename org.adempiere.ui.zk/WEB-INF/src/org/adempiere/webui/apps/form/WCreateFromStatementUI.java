@@ -283,6 +283,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	 *  @param e event
 	 *  @throws Exception 
 	 */
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Action=" + e.getTarget().getId());
@@ -294,7 +295,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	}
 	
 	/**
-	 * load bank account data
+	 * load bank account transactions
 	 */
 	protected void loadBankAccount()
 	{

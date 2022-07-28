@@ -44,7 +44,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- *  Create Invoice Transactions from PO Orders or Receipt
+ *  Create M_InOutLine for M_InOut from Purchase Orders, Vendor Invoice or Customer RMA
  *
  *  @author Jorg Janke
  *  @version  $Id: VCreateFromShipment.java,v 1.4 2006/07/30 00:51:28 jjanke Exp $
@@ -82,7 +82,7 @@ public abstract class CreateFromShipment extends CreateFrom
 
 	
 	/**
-	 *  Load BPartner dependent RMA Field.
+	 *  Load BPartner related RMA records.
 	 *  @param C_BPartner_ID BPartner
 	 *  @return list of RMA records
 	 */
@@ -117,7 +117,7 @@ public abstract class CreateFromShipment extends CreateFrom
 	}
 
 	/**
-	 * Load BPartner dependent Invoice Field.
+	 * Load BPartner related Invoices
 	 * @param C_BPartner_ID
 	 * @return list of invoice records
 	 */
@@ -171,10 +171,10 @@ public abstract class CreateFromShipment extends CreateFrom
 	}
 	
 	/**
-	 *  Load Data - Order
+	 *  Load Order Lines
 	 *  @param C_Order_ID Order
 	 *  @param forInvoice true if for invoice vs. delivery qty
-	 *  @return list of Order line records
+	 *  @return Order lines (selection,qty,[c_uom_id,uomSymbol/name],[m_locator_id,value][m_product_id,name],vendorProductNo,[c_orderline_id,line],null,null)
 	 */
 	protected Vector<Vector<Object>> getOrderData (int C_Order_ID, boolean forInvoice)
 	{
@@ -267,9 +267,9 @@ public abstract class CreateFromShipment extends CreateFrom
 	}   //  LoadOrder
 	
 	/**
-	 * Load RMA details
+	 * Load RMA lines
 	 * @param M_RMA_ID RMA
-	 * @return list of RMA Line records
+	 * @return RMA lines (selection,qty,[c_uom_id,uomSymbol/name],[m_locator_id,value],[m_product_id,name],null,null,[m_rmaline_id,line],null)
 	 */
 	protected Vector<Vector<Object>> getRMAData(int M_RMA_ID)
 	{
@@ -371,9 +371,9 @@ public abstract class CreateFromShipment extends CreateFrom
 	}
 
 	/**
-	 * Load Invoice details
+	 * Load Invoice lines
 	 * @param C_Invoice_ID Invoice
-	 * @return list of Invoice Line records
+	 * @return Invoice lines (selection,qty,[c_uom_id,uomSymbol/name],[m_locator_id,value],[m_product_id,name],vendorProductNo,[c_orderline_id,.],null,[c_invoiceline_id,line])
 	 */
 	protected Vector<Vector<Object>> getInvoiceData(int C_Invoice_ID)
 	{
@@ -457,7 +457,7 @@ public abstract class CreateFromShipment extends CreateFrom
 	 * If no locator specified or the specified locator is not valid (e.g. warehouse not match),
 	 * a default one will be used.
 	 * @param M_Locator_ID
-	 * @return KeyNamePair
+	 * @return KeyNamePair (m_locator_id,value)
 	 */
 	protected KeyNamePair getLocatorKeyNamePair(int M_Locator_ID)
 	{
@@ -512,7 +512,7 @@ public abstract class CreateFromShipment extends CreateFrom
 	}
 
 	/**
-	 * 
+	 * set class/type of columns
 	 * @param miniTable
 	 */
 	protected void configureMiniTable (IMiniTable miniTable)
@@ -532,7 +532,7 @@ public abstract class CreateFromShipment extends CreateFrom
 	}
 
 	/**
-	 *  Save - Create Invoice Lines
+	 *  Create M_InOutLine
 	 *  @return true if saved
 	 */
 	@Override
@@ -743,7 +743,7 @@ public abstract class CreateFromShipment extends CreateFrom
 
 	/**
 	 * 
-	 * @return column header names
+	 * @return column header names (select,quantity,uom,locator,product,vendorProductNo,order,rma,invoice)
 	 */
 	protected Vector<String> getOISColumnNames()
 	{
@@ -763,11 +763,11 @@ public abstract class CreateFromShipment extends CreateFrom
 	}
 
 	/**
-	 * 
+	 * Load order lines
 	 * @param C_Order_ID
 	 * @param forInvoice
 	 * @param M_Locator_ID
-	 * @return list of order line records
+	 * @return order lines
 	 */
 	protected Vector<Vector<Object>> getOrderData (int C_Order_ID, boolean forInvoice, int M_Locator_ID)
 	{
@@ -779,7 +779,7 @@ public abstract class CreateFromShipment extends CreateFrom
 	 * 
 	 * @param M_RMA_ID
 	 * @param M_Locator_ID
-	 * @return list of RMA line records
+	 * @return RMA lines
 	 */
 	protected Vector<Vector<Object>> getRMAData (int M_RMA_ID, int M_Locator_ID)
 	{
@@ -791,7 +791,7 @@ public abstract class CreateFromShipment extends CreateFrom
 	 * 
 	 * @param C_Invoice_ID
 	 * @param M_Locator_ID
-	 * @return list of invoice line records
+	 * @return Invoice lines
 	 */
 	protected Vector<Vector<Object>> getInvoiceData (int C_Invoice_ID, int M_Locator_ID)
 	{

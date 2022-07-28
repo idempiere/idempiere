@@ -35,7 +35,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Create M_PackageLine for M_PackageMPS from shipment lines
  * @author Elaine
  *
  */
@@ -63,7 +63,7 @@ public abstract class CreateFromPackageShipment extends CreateFrom
 	/**
 	 * 
 	 * @param M_InOut_ID
-	 * @return list of shipment line records
+	 * @return shipment lines (selection,[m_inoutline_id,line],qty,[m_product_id,name],uom)
 	 */
 	protected Vector<Vector<Object>> getShipmentData(int M_InOut_ID)
 	{
@@ -117,7 +117,7 @@ public abstract class CreateFromPackageShipment extends CreateFrom
 	}
 	
 	/**
-	 * 
+	 * set class/type of columns
 	 * @param miniTable
 	 */
 	protected void configureMiniTable (IMiniTable miniTable)
@@ -131,7 +131,10 @@ public abstract class CreateFromPackageShipment extends CreateFrom
 		miniTable.autoSize();
 	}
 	
-	@Override
+	/**
+	 * Create M_PackageLine
+	 */
+	@Override	
 	public boolean save(IMiniTable miniTable, String trxName)
 	{
 		int M_PackageMPS_ID = (Integer) getGridTab().getValue(MPackageMPS.COLUMNNAME_M_PackageMPS_ID);
@@ -173,7 +176,7 @@ public abstract class CreateFromPackageShipment extends CreateFrom
 	
 	/**
 	 * 
-	 * @return column header names
+	 * @return column header names (select,line,quantity,product,uom)
 	 */
 	protected Vector<String> getOISColumnNames()
 	{

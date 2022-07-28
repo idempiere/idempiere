@@ -215,7 +215,7 @@ public abstract class CreateFromBatch extends CreateFrom
 	 * @param DocType
 	 * @param TenderType
 	 * @param AuthCode
-	 * @return list of bank account records
+	 * @return list of transaction records (usually payments) for bank account
 	 */
 	protected abstract Vector<Vector<Object>> getBankAccountData(Integer BankAccount, Integer BPartner, String DocumentNo, 
 			Timestamp DateFrom, Timestamp DateTo, BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode);

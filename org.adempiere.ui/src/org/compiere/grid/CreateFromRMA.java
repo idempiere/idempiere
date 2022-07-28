@@ -31,7 +31,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- *  Create Transactions for RMA
+ *  Create M_RMALine for M_RMA from shipment lines
  * @author ashley
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 2007837 ] VCreateFrom.save() should run in trx
@@ -58,8 +58,8 @@ public abstract class CreateFromRMA extends CreateFrom {
 	}
 	
 	/**
-	 * 
-	 * @return list of shipment line records
+	 * Get shipment lines
+	 * @return shipment lines (selection,[m_inoutline_id,line],productName,serialNo,qtyEntered,movementQty,lineDescription)
 	 */
 	protected Vector<Vector<Object>> getRMAData()
 	{
@@ -141,7 +141,7 @@ public abstract class CreateFromRMA extends CreateFrom {
 	}
 	
 	/**
-	 * 
+	 * set class/type of columns
 	 * @param miniTable
 	 */
 	protected void configureMiniTable (IMiniTable miniTable)
@@ -158,6 +158,9 @@ public abstract class CreateFromRMA extends CreateFrom {
 		miniTable.autoSize();
 	}
 
+	/**
+	 * Create M_RMALine
+	 */
 	@Override
 	public boolean save(IMiniTable miniTable, String trxName) 
 	{
@@ -190,7 +193,7 @@ public abstract class CreateFromRMA extends CreateFrom {
 	
 	/**
 	 * 
-	 * @return column header names
+	 * @return column header names (select,line,product,serialNo,quantity,qtyDelivered,description)
 	 */
 	protected Vector<String> getOISColumnNames()
 	{

@@ -32,7 +32,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Create C_DepositBatchLine for C_DepositBatch from C_Payment
  * @author Elaine
  *
  */
@@ -57,6 +57,9 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 		return true;
 	}
 	
+	/**
+	 * @return transaction records (selection,datetrx,[c_payment_id,documentno],[c_currency_id,iso_code],payamt,converted amt,bp name)
+	 */
 	@Override
 	protected Vector<Vector<Object>> getBankAccountData(Integer BankAccount, Integer BPartner, String DocumentNo, 
 			Timestamp DateFrom, Timestamp DateTo, BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode)
@@ -115,7 +118,7 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 	}
 	
 	/**
-	 * 
+	 * set class/type of columns
 	 * @param miniTable
 	 */
 	protected void configureMiniTable(IMiniTable miniTable)
@@ -131,7 +134,10 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 		miniTable.autoSize();
 	}
 	
-	@Override
+	/**
+	 * Create C_DepositBatchLine
+	 */
+	@Override	
 	public boolean save(IMiniTable miniTable, String trxName)
 	{
 		//  fixed values
@@ -164,7 +170,7 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 
 	/**
 	 * 
-	 * @return column header names
+	 * @return column header names (select,date,c_payment_id,c_currency_id,amount,converted amount,c_bpartner_id)
 	 */
 	protected Vector<String> getOISColumnNames()
 	{

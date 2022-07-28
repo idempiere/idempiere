@@ -48,7 +48,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- *  Create Invoice Transactions from PO Orders or Receipt
+ *  Create Invoice Lines from Purchase Order, Material Receipt or Vendor RMA
  *
  *  @author Jorg Janke
  *  @version  $Id: VCreateFromInvoice.java,v 1.4 2006/07/30 00:51:28 jjanke Exp $
@@ -79,7 +79,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 	}   //  dynInit
 
 	/**
-	 * Load BPartner dependent Shipment records.
+	 * Load BPartner related Shipment records.
 	 * @param C_BPartner_ID
 	 * @return list of shipment records
 	 */
@@ -141,7 +141,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 	}
 
 	/**
-	 *  Load BPartner dependent RMA records
+	 *  Load BPartner related RMA records
 	 *  @param C_BPartner_ID BPartner
 	 *  @return list of RMA records
 	 */
@@ -175,9 +175,9 @@ public abstract class CreateFromInvoice extends CreateFrom
 	}
 
 	/**
-	 *  Load Data - Shipment not invoiced
+	 *  Load Shipment Lines not invoiced
 	 *  @param M_InOut_ID InOut
-	 *  @return list of shipment line records
+	 *  @return shipment lines (selection,qty,[c_uom_id,uomSymbol/name],[m_product_id,name],vendorProductNo,[c_orderline_id,.],[m_inoutline_id,line],null)
 	 */
 	protected Vector<Vector<Object>> getShipmentData(int M_InOut_ID)
 	{
@@ -272,9 +272,9 @@ public abstract class CreateFromInvoice extends CreateFrom
 	}   //  getShipmentData
 
 	/**
-	 * Load RMA details
+	 * Load RMA line records
 	 * @param M_RMA_ID RMA
-	 * @return list of RMA line records
+	 * @return RMA lines (selection,qty,[c_uom_id,uomSymbol/name],[m_product_id,name],null,null,null,[m_rmaline_id,line])
 	 */
 	protected Vector<Vector<Object>> getRMAData(int M_RMA_ID)
 	{
@@ -360,7 +360,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 	}
 
 	/**
-	 * 
+	 * set class/type of columns
 	 * @param miniTable
 	 */
 	protected void configureMiniTable (IMiniTable miniTable)
@@ -612,7 +612,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 
 	/**
 	 * 
-	 * @return column header names
+	 * @return column header names (select,quantity,uom,product,vendorProductNo,order,shipment,rma)
 	 */
 	protected Vector<String> getOISColumnNames()
 	{

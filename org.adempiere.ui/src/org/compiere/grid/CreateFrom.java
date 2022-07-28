@@ -112,7 +112,7 @@ public abstract class CreateFrom implements ICreateFrom
 	}
 
 	/**
-	 *  Load BPartner dependent Order Field.
+	 *  Load BPartner related Orders.
 	 *  @param C_BPartner_ID BPartner
 	 *  @param forInvoice for invoice
 	 *  @param sameWarehouseOnly
@@ -200,7 +200,7 @@ public abstract class CreateFrom implements ICreateFrom
 	}   //  initBPartnerOIS
 
 	/**
-	 *  Load Data - Order
+	 *  Load Order Line records
 	 *  @param C_Order_ID Order
 	 *  @param forInvoice true if for invoice vs. delivery qty
 	 *  @return list of order line records

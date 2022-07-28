@@ -96,7 +96,7 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		}
 		catch(Exception e)
 		{
-			
+			e.printStackTrace();
 		}		
     }
 	
@@ -149,6 +149,7 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		ZKUpdateUtil.setHeight(contentPane, "100%");		
 	}
 
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		//  OK - Save

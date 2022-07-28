@@ -306,7 +306,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	}   //  initBPartner
 
 	/**
-	 *  Load PBartner dependent Order/Invoice/Shipment Field.
+	 *  Load BPartner dependent Order/Shipment/RMA Field.
 	 *  @param C_BPartner_ID BPartner
 	 *  @param forInvoice for invoice
 	 */
@@ -336,7 +336,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	}
 
 	/**
-	 * Load PBartner dependent Order/Invoice/Shipment Field.
+	 * Load PBartner dependent Shipment Field.
 	 * @param C_BPartner_ID
 	 */
 	private void initBPShipmentDetails(int C_BPartner_ID)
@@ -359,7 +359,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	}
 	
 	/**
-	 * Load RMA that are candidates for shipment
+	 * Load RMA that are candidates for billing
 	 * @param C_BPartner_ID BPartner
 	 */
 	private void initBPRMADetails(int C_BPartner_ID)
@@ -407,7 +407,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	}
 	
 	/**
-	 *  Load Order/Invoice/Shipment data into Table
+	 *  Load datas into list box
 	 *  @param data data
 	 */
 	protected void loadTableOIS (Vector<?> data)

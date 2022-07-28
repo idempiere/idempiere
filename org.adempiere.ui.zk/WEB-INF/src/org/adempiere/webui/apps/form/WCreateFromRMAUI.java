@@ -42,6 +42,11 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
+/**
+ * 
+ * @author hengsin
+ *
+ */
 public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListener
 {
 	private WCreateFromWindow window;
@@ -154,7 +159,7 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 	}   //  initBPartner
 	
 	/**
-	 * load RMA records
+	 * load RMA lines
 	 */
 	protected void loadRMA()
 	{
@@ -162,7 +167,7 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 	}
 	
 	/**
-	 *  Load RMA data into list box
+	 *  Load data into list box
 	 *  @param data data
 	 */
 	protected void loadTableOIS (Vector<?> data)
