@@ -255,7 +255,7 @@ public class InventoryTest extends AbstractTestCase {
 					Env.ZERO);
 			iline.saveEx();
 	
-			//show error out with negative on hand (skip the only asi record with serno)
+			//should error out with negative on hand (skip the only asi record with serno)
 			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
 			assertTrue(info.isError(), info.getSummary());
 		} finally {

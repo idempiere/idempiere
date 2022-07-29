@@ -236,7 +236,8 @@ public class MProductTest extends AbstractTestCase {
 	
 	@Test
 	public void testDeactivateProductBOMValidation() {
-		Query query = new Query(Env.getCtx(), MPPProductBOM.Table_Name, MPPProductBOM.COLUMNNAME_PP_Product_BOM_ID+"<1000000", getTrxName());
+		Query query = new Query(Env.getCtx(), MPPProductBOM.Table_Name, MPPProductBOM.COLUMNNAME_PP_Product_BOM_ID+"<1000000"
+				+ " AND M_Product_ID NOT IN (SELECT M_Product_ID FROM PP_Product_BOMLine)", getTrxName());
 		MPPProductBOM bom = query.setClient_ID().setOnlyActiveRecords(true).first();
 		MPPProductBOMLine[] lines = bom.getLines();
 		final MProduct product = new MProduct(Env.getCtx(), lines[0].getM_Product_ID(), getTrxName());
