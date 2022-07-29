@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
+import javax.servlet.http.HttpSession;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
@@ -64,6 +65,7 @@ import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -76,6 +78,7 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.North;
+import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Vlayout;
 
@@ -136,6 +139,8 @@ public class WAttachment extends Window implements EventListener<Event>
 	private int maxPreviewSize;
 
 	private Component customPreviewComponent;
+	
+	private Progressmeter progress = new Progressmeter(0);
 
 	private static List<String> autoPreviewList;
 
@@ -225,6 +230,16 @@ public class WAttachment extends Window implements EventListener<Event>
 		{
 		}
 
+		String maxUploadSize = "";
+		int size = MSysConfig.getIntValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, 0);
+		if (size > 0)
+			maxUploadSize = "" + size;
+
+		String sessionID = ((HttpSession) Executions.getCurrent().getSession().getNativeSession()).getId();
+		Clients.evalJavaScript("dropToAttachFiles.init('" + this.getUuid() + "','" + mainPanel.getUuid() + "','"
+				+ this.getDesktop().getId() + "','" + progress.getUuid() + "','" + sizeLabel.getUuid() + "','"
+				+ maxUploadSize + "','" + sessionID + "');");
+
 	} // WAttachment
 
 	/**
@@ -266,9 +281,11 @@ public class WAttachment extends Window implements EventListener<Event>
 		this.appendChild(mainPanel);
 		ZKUpdateUtil.setHeight(mainPanel, "100%");
 		ZKUpdateUtil.setWidth(mainPanel, "100%");
+		mainPanel.addEventListener(Events.ON_UPLOAD, this);
+
 
 		North northPanel = new North();
-		northPanel.setStyle("padding: 4px");
+		northPanel.setStyle("padding: 4px; background: #e8e8e8;");
 		northPanel.setCollapsible(false);
 		northPanel.setSplittable(false);
 
@@ -286,14 +303,19 @@ public class WAttachment extends Window implements EventListener<Event>
 		toolBar.appendChild(cbContent);
 		toolBar.appendChild(sizeLabel);
 
+		progress.setClass("drop-progress-meter");
+		progress.setVisible(false);
+		
 		mainPanel.appendChild(northPanel);
 		Vlayout div = new Vlayout();
 		div.appendChild(toolBar);
+		div.appendChild(progress);
 		text.setRows(3);
 		ZKUpdateUtil.setHflex(text, "1");
 		
 		div.appendChild(text);
 		northPanel.appendChild(div);
+		mainPanel.appendChild(northPanel);
 
 		bSave.setEnabled(false);
 		bSave.setSclass("img-btn");
@@ -336,8 +358,9 @@ public class WAttachment extends Window implements EventListener<Event>
 		bEmail.addEventListener(Events.ON_CLICK, this);
 
 		previewPanel.appendChild(preview);
-		ZKUpdateUtil.setVflex(preview, "1");
-		ZKUpdateUtil.setHflex(preview, "1");
+		previewPanel.setStyle("border: 3px solid #cfcfcf; background: #efefef;");
+		ZKUpdateUtil.setHeight(preview, "99%");
+		ZKUpdateUtil.setWidth(preview, "99%");
 		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
