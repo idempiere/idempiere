@@ -149,6 +149,7 @@ public class MStorageOnHandTest extends AbstractTestCase {
 				as.saveEx();
 			}
 		} finally {
+			rollback();
 			product.deleteEx(true);			
 		}
 	}

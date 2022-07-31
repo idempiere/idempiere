@@ -70,11 +70,13 @@ public class ModelClassMappingTest extends AbstractTestCase {
 	@Test
 	public void testModelClassMappingForCoreTables() {
 		Query query = new Query(Env.getCtx(), MTable.Table_Name, "IsView='N' AND EntityType IN ('D','EE01','EE02','EE04','EE05') "
-				+ "AND TableName NOT Like 'I\\_%' AND TableName NOT Like 'T\\_%' AND TableName NOT Like 'W\\_%'"
-				+ "AND TableName NOT Like '%\\_Trl'", getTrxName());
+				+ "AND TableName NOT Like 'I!_%' ESCAPE '!' AND TableName NOT Like 'T!_%' ESCAPE '!' AND TableName NOT Like 'W!_%' ESCAPE '!' "
+				+ "AND TableName NOT Like '%!_Trl' ESCAPE '!'", getTrxName());
 		List<IServiceReferenceHolder<IModelFactory>> references = Service.locator().list(IModelFactory.class).getServiceReferences();
 		List<MTable> tables = query.setOnlyActiveRecords(true).setOrderBy("TableName").list();
 		for(MTable table : tables) {
+			if (table.getTableName().endsWith("_Trl"))
+				continue;
 			Class<?> clazz = null;
 			for(IServiceReferenceHolder<IModelFactory> reference : references) {
 				IModelFactory service = reference.getService();
