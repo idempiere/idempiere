@@ -170,7 +170,7 @@ public class MRMA extends X_M_RMA implements DocAction
        else
        {
            String sqlStmt = "SELECT C_Invoice_ID FROM C_Invoice WHERE C_Order_ID=?";
-           invId = DB.getSQLValueEx(null, sqlStmt, shipment.getC_Order_ID());
+           invId = DB.getSQLValueEx(get_TrxName(), sqlStmt, shipment.getC_Order_ID());
        }
 
        if (invId <= 0)

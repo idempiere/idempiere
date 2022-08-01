@@ -36,9 +36,9 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
- * Generate invoice for Vendor RMA
+ * Generate invoice for customer RMA
  * @author  Ashley Ramdass
- * 
+ *
  * Based on org.compiere.process.InvoiceGenerate
  */
 @org.adempiere.base.annotation.Process
@@ -86,9 +86,9 @@ public class InvoiceGenerateRMA extends SvrProcess
     {
         if (!p_Selection)
         {
-            throw new IllegalStateException("Shipments can only be generated from selection");
+            throw new IllegalStateException("Invoice can only be generated from selection");
         }
-        
+
         String sql = "SELECT rma.M_RMA_ID FROM M_RMA rma, T_Selection "
             + "WHERE rma.DocStatus='CO' AND rma.IsSOTrx='Y' AND rma.AD_Client_ID=? "
             + "AND rma.M_RMA_ID = T_Selection.T_Selection_ID " 
@@ -126,21 +126,21 @@ public class InvoiceGenerateRMA extends SvrProcess
         String docTypeSQl = "SELECT dt.C_DocTypeInvoice_ID FROM C_DocType dt "
             + "INNER JOIN M_RMA rma ON dt.C_DocType_ID=rma.C_DocType_ID "
             + "WHERE rma.M_RMA_ID=?";
-        
-        int docTypeId = DB.getSQLValue(null, docTypeSQl, M_RMA_ID);
-        
+
+        int docTypeId = DB.getSQLValue(get_TrxName(), docTypeSQl, M_RMA_ID);
+
         return docTypeId;
     }
     
     private MInvoice createInvoice(MRMA rma)
     {
         int docTypeId = getInvoiceDocTypeId(rma.get_ID());
-            
+
         if (docTypeId == -1)
         {
-            throw new IllegalStateException("Could not get invoice document type for Vendor RMA");
+            throw new IllegalStateException("Could not get invoice document type for Customer RMA");
         }
-        
+
         MInvoice invoice = new MInvoice(getCtx(), 0, get_TrxName());
         invoice.setRMA(rma);
         
