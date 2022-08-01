@@ -584,10 +584,10 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(1, line1.getQtyReserved().intValue());
 		
 		//create invoice
-		instance = new MPInstance(Env.getCtx(), SystemIDs.PROCESS_C_INVOICE_GENERATE, 0);
+		instance = new MPInstance(Env.getCtx(), SystemIDs.PROCESS_C_INVOICE_GENERATE_MANUAL, 0);
 		instance.saveEx();
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order2.getC_Order_ID()}, null);		
-		pi = new ProcessInfo ("InvoiceGen", AD_Process_ID);
+		pi = new ProcessInfo ("InvoiceGenerateManual", AD_Process_ID);
 		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
 
 		//	Add Parameter - Selection=Y
