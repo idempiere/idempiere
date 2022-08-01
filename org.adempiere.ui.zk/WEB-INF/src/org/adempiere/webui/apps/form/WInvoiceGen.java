@@ -50,7 +50,7 @@ import org.zkoss.zul.North;
 
 /**
  * Generate Invoice (manual) view class
- *
+ * @deprecated ticket IDEMPIERE-1965 replaced this with an Info Window
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VInvoiceGen")
 public class WInvoiceGen extends InvoiceGen implements IFormController, EventListener<Event>, ValueChangeListener
