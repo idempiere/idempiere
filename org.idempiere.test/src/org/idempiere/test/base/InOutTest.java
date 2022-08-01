@@ -198,6 +198,8 @@ public class InOutTest extends AbstractTestCase {
 				}
 			}
 		} finally {
+			rollback();
+			
 			deleteConversionRate(crUsdCompany);
 			deleteConversionRate(crUsdSpot);
 			deleteConversionRate(crEurCompany);
@@ -205,9 +207,7 @@ public class InOutTest extends AbstractTestCase {
 			
 			pp.deleteEx(true);
 			plv.deleteEx(true);
-			priceList.deleteEx(true);
-			
-			rollback();
+			priceList.deleteEx(true);						
 		}		
 	}
 	
@@ -357,14 +357,13 @@ public class InOutTest extends AbstractTestCase {
 				}
 			}
 		} finally {
+			rollback();
 			deleteConversionRate(crUsdCompany);
 			deleteConversionRate(crEurCompany);
 			
 			pp.deleteEx(true);
 			plv.deleteEx(true);
-			priceList.deleteEx(true);
-			
-			rollback();
+			priceList.deleteEx(true);						
 		}		
 	}
 	

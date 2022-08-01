@@ -67,7 +67,6 @@ public class CalloutPayment extends CalloutEngine
 		//
 		mTab.setValue ("DiscountAmt", Env.ZERO);
 		mTab.setValue ("WriteOffAmt", Env.ZERO);
-		// mTab.setValue ("IsOverUnderPayment", Boolean.FALSE);
 		mTab.setValue ("OverUnderAmt", Env.ZERO);
 		int C_InvoicePaySchedule_ID = 0;
 		if (Env.getContextAsInt (ctx, WindowNo, Env.TAB_INFO, "C_Invoice_ID") == C_Invoice_ID.intValue ()
@@ -218,8 +217,6 @@ public class CalloutPayment extends CalloutEngine
 			return "";
 		mTab.setValue ("C_Invoice_ID", null);
 		mTab.setValue ("C_Order_ID", null);
-		// 2008/07/18 Globalqss [ 2021745 ]
-		// mTab.setValue ("C_Project_ID", null);
 		mTab.setValue ("IsPrepayment", Boolean.FALSE);
 		//
 		mTab.setValue ("DiscountAmt", Env.ZERO);
@@ -267,8 +264,6 @@ public class CalloutPayment extends CalloutEngine
 		}
 		// globalqss - Allow prepayment to Purchase Orders
 		// Order Waiting Payment (can only be SO)
-		// if (C_Order_ID != 0 && dt != null && !dt.isSOTrx())
-		// return "PaymentDocTypeInvoiceInconsistent";
 		// Order
 		if (C_Order_ID != 0)
 		{
@@ -476,8 +471,6 @@ public class CalloutPayment extends CalloutEngine
 				AD_Org_ID);
 			if (CurrencyRate == null || CurrencyRate.compareTo (Env.ZERO) == 0)
 			{
-				// mTab.setValue("C_Currency_ID", new
-				// Integer(C_Currency_Invoice_ID)); // does not work
 				if (C_Currency_Invoice_ID == 0)
 					return ""; // no error message when no invoice is selected
 				return "NoCurrencyConversion";

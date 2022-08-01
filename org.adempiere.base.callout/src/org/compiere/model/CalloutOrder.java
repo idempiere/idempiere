@@ -802,16 +802,6 @@ public class CalloutOrder extends CalloutEngine
 		Env.setContext(ctx, WindowNo, "EnforcePriceLimit", pp.isEnforcePriceLimit() ? "Y" : "N");
 		Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
 
-		//	Check/Update Warehouse Setting
-		//	int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
-		//	Integer wh = (Integer)mTab.getValue("M_Warehouse_ID");
-		//	if (wh.intValue() != M_Warehouse_ID)
-		//	{
-		//		mTab.setValue("M_Warehouse_ID", Integer.valueOf(M_Warehouse_ID));
-		//		ADialog.warn(,WindowNo, "WarehouseChanged");
-		//	}
-
-
 		if (Env.isSOTrx(ctx, WindowNo))
 		{
 			MProduct product = MProduct.get (ctx, M_Product_ID.intValue());

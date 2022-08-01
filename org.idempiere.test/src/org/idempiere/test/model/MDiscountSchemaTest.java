@@ -134,6 +134,7 @@ public class MDiscountSchemaTest extends AbstractTestCase {
 				
 			assertEquals(fixedPrice, line1.getPriceActual().setScale(2, RoundingMode.HALF_UP), "Unexpected Order Line price");
 		} finally {
+			rollback();
 			if (discountBreak != null && discountBreak.get_ID() > 0)
 				discountBreak.deleteEx(true);
 		}

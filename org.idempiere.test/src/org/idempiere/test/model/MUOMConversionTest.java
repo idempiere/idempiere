@@ -126,6 +126,7 @@ public class MUOMConversionTest extends AbstractTestCase {
 			converted = MUOMConversion.convertProductFrom(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"), 1);
 			assertEquals(conv1.getDivideRate().setScale(1, RoundingMode.HALF_UP), converted);
 		} finally {
+			rollback();
 			DB.executeUpdateEx("DELETE FROM C_UOM_Conversion WHERE C_UOM_Conversion_ID=?", new Object[] {conv1.get_ID()}, null);
 			if (conv2 != null)
 				conv2.deleteEx(true);

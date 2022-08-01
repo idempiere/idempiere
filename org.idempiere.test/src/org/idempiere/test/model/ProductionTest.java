@@ -370,7 +370,7 @@ public class ProductionTest extends AbstractTestCase {
 				break;
 			}
 			BigDecimal varianceExpected = componentCost.subtract(endProductCost).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
-			assertEquals(varianceExpected, variance, "Variance not posted correctly.");
+			assertEquals(varianceExpected.setScale(2, RoundingMode.HALF_UP), variance.setScale(2, RoundingMode.HALF_UP), "Variance not posted correctly.");
 		} finally {
 			getTrx().rollback();
 			mulch.setM_Product_Category_ID(categorySaveId);

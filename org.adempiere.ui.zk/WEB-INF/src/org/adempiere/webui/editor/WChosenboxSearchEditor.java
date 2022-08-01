@@ -452,7 +452,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		if (m_tableName == null)	//	sets table name & key column
 			setTableAndKeyColumn();
 
-		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, null, false, whereClause);
+		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, null, true, whereClause);
 		if (ip != null)
 			showInfoPanel(ip);
 	}
