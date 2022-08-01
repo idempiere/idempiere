@@ -257,10 +257,11 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		for (int i = 0; i < m_logs.length; i++)
 		{
 			int recordID = m_logs[i].getRecord_ID();
+			int reportEngineType = ReportEngine.getReportEngineType(m_logs[i].getAD_Table_ID());
 			ReportEngine re = null;
 			
-			if(recordID > 0) {
-				re = ReportEngine.get (Env.getCtx(), ReportEngine.getReportEngineType(m_logs[i].getAD_Table_ID()), recordID);
+			if((reportEngineType >= 0) && (recordID > 0)) {
+				re = ReportEngine.get (Env.getCtx(), reportEngineType, recordID);
 				pdfList.add(re.getPDF());
 			}
 		}
