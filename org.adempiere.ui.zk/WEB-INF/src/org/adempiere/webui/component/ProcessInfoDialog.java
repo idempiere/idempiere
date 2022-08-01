@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.apps.form.WGenForm;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
@@ -65,15 +64,13 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 250pt; min-width: 230pt; max-width: 450pt;";
 
 	/**	Logger			*/
-	private static final CLogger log = CLogger.getCLogger(WGenForm.class);
+	private static final CLogger log = CLogger.getCLogger(ProcessInfoDialog.class);
 	
 	private Text lblMsg = new Text();
 	private Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
 	private Button btnPrint = ButtonFactory.createNamedButton(ConfirmPanel.A_PRINT);
 	private Image img = new Image();
 	private ProcessInfoLog[] m_logs;
-	private int reportEngineType;
-	private String printTmpFileName;
 	
 	public static final String INFORMATION = "~./zul/img/msgbox/info-btn.png";
 	public static final String ERROR = "~./zul/img/msgbox/info-btn.png";
@@ -246,7 +243,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 			this.detach();
 		}
 		if(event.getTarget() == btnPrint) {
-			Clients.showBusy("Processing...");
+			Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));
 			Clients.response(new AuEcho(ProcessInfoDialog.this, "onPrint", null));
 		}
 	}
@@ -259,16 +256,17 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		List<File> pdfList = new ArrayList<File>();
 		for (int i = 0; i < m_logs.length; i++)
 		{
-			int RecordID = m_logs[i].getRecord_ID();
+			int recordID = m_logs[i].getRecord_ID();
 			ReportEngine re = null;
 			
-			re = ReportEngine.get (Env.getCtx(), reportEngineType, RecordID);
-			
-			pdfList.add(re.getPDF());				
+			if(recordID > 0) {
+				re = ReportEngine.get (Env.getCtx(), ReportEngine.getReportEngineType(m_logs[i].getAD_Table_ID()), recordID);
+				pdfList.add(re.getPDF());
+			}
 		}
 		if (pdfList.size() > 1) {
 			try {
-				File outFile = File.createTempFile(printTmpFileName, ".pdf");					
+				File outFile = File.createTempFile(getTitle(), ".pdf");					
 				AEnv.mergePdf(pdfList, outFile);
 
 				Clients.clearBusy();
@@ -296,12 +294,10 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	 * @return
 	 */
 	public boolean isPrintable(ProcessInfo pi) {
-		for(ProcessInfoLog log : m_logs)
-			for(int tableID : ReportEngine.getDocTableIDs())
-				if(log.getAD_Table_ID() == tableID) {
-					reportEngineType = ReportEngine.getReportEngineType(tableID);
+		for(ProcessInfoLog log : m_logs) {
+				if (ReportEngine.getReportEngineType(log.getAD_Table_ID()) >= 0) 
 					return true;
-				}
+		}
 		return false;
 	}
 	

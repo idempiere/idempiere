@@ -2401,14 +2401,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	public void setIsReplaceTabContent(boolean m_isReplaceTabContent) {
 		this.m_isReplaceTabContent = m_isReplaceTabContent;
 	}
-
-	/**
-	 * Get DOC_TABLE_ID array
-	 * @return
-	 */
-	public static int[] getDocTableIDs() {
-		return DOC_TABLE_ID;
-	}
 	
 	/**
 	 * Get Report Engine Type from Table_ID
