@@ -52,6 +52,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void test1807657() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -78,6 +79,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	}
 	@Test
 	public void test1751966() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -113,6 +115,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	//[ 1707959 ] Copy from other PrintFormat doesn't work anymore
 	@Test
 	public void test1707959() {
+      if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -139,6 +142,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	//[ 1707611 ] Column synchronization for mandatory columns doesn't work
 	@Test
 	public void testAlterColumn() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -201,6 +205,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	// https://sourceforge.net/p/adempiere/bugs/504/
 	@Test
 	public void test1705768() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -215,6 +220,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void test1704261() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -230,6 +236,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void testAlterTable() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -251,6 +258,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void test1662983() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -271,6 +279,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void testMultiColumnAssignment() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -324,6 +333,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void testReservedWordInQuote() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -339,6 +349,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void test1580231() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -391,6 +402,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void testAliasInUpdate() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -406,6 +418,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void test1580226() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -453,6 +466,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void testTrunc() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -468,6 +482,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void testSubQuery() {
+		if (DB.isOracle()) return;
 		//MLanguage.addTable
 		sql = "INSERT INTO " + "AD_Column_Trl"
 		+ "(AD_Language,IsTranslated, AD_Client_ID,AD_Org_ID, "
@@ -487,6 +502,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void test1622302() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -504,6 +520,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void test1638046() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -529,6 +546,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	//[ 1727193 ] Convert failed with decode in quoted string
 	@Test
 	public void test1727193() {
+		if (DB.isOracle()) return;
 		sql = "UPDATE a set a.ten_decode = 'b'";
 		sqe = "UPDATE a set a.ten_decode = 'b'";
 		r = DB.getDatabase().convertStatement(sql);
@@ -542,6 +560,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	
 	@Test
 	public void testDecode() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -568,6 +587,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 
 	@Test
 	public void test2371805_GetDate() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -590,6 +610,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testCasts() {
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  try {
 		testNotNative();
@@ -630,6 +651,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	 */
 	@Test
 	public void test2521586() {
+		if (DB.isOracle()) return;
 		sql = "INSERT INTO M_Forecast (M_Forecast_ID) VALUES (1000000)";
 		sqe = "INSERT INTO M_Forecast (M_Forecast_ID) VALUES (1000000)";
 		r = DB.getDatabase().convertStatement(sql);
@@ -643,6 +665,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	@Test
 	public void test3137355()
 	{
+		if (DB.isOracle()) return;
 		sql = "INSERT INTO MyTable (a, b, c, d, xml) VALUES ('val1', 'val2', 'this ''is'' a string with ''quotes'' and backslashes ''\\''', 'val4')";
 		sqe = "INSERT INTO MyTable (a, b, c, d, xml) VALUES ('val1', 'val2', E'this ''is'' a string with ''quotes'' and backslashes ''\\\\''', 'val4')";
 		r = DB.getDatabase().convertStatement(sql);
@@ -662,6 +685,7 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	@Test
 	public void testNativeSysdate()
 	{
+	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
 	  String originalSimilarTo = Env.getContext(Env.getCtx(), "P|IsUseSimilarTo");
 	  try {

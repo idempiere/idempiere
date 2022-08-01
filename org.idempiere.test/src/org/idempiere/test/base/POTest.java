@@ -349,6 +349,12 @@ public class POTest extends AbstractTestCase
 		//test update with default optimistic locking using updated timestamp
 		bp1.set_UseOptimisticLocking(true);
 		bp1.setDescription("bp1");
+		if (DB.isOracle()) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
+		}
 		updated = bp1.save();
 		assertTrue(updated);
 		
@@ -418,6 +424,12 @@ public class POTest extends AbstractTestCase
 		//test delete with default optimistic locking
 		MMessage msg2 = new MMessage(Env.getCtx(), msg1.getAD_Message_ID(), getTrxName());				
 		msg1.setMsgText("msg 1.1 test");
+		if (DB.isOracle()) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
+		}
 		msg1.saveEx();
 		
 		msg2.set_UseOptimisticLocking(true);

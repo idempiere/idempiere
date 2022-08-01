@@ -654,8 +654,8 @@ public class AllocationTest extends AbstractTestCase {
 			int taxid = DictionaryIDs.C_Tax.CT_SALES.id; // (CT Sales, Rate 6)
 			MInvoice invoice = createInvoice(true,false, date,  date,
 					bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
-			assertEquals(invoice.getTotalLines(), new BigDecimal("100.0"));
-			assertEquals(invoice.getGrandTotal(), new BigDecimal("106.00"));
+			assertEquals(invoice.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("100.00"));
+			assertEquals(invoice.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
 
 			// Payamt with discount
 			BigDecimal payAmt = new BigDecimal("102");
@@ -785,8 +785,8 @@ public class AllocationTest extends AbstractTestCase {
 			int taxid = DictionaryIDs.C_Tax.CT_SALES.id; // (CT Sales, Rate 6)
 			MInvoice invoice = createInvoice(true, true, date,  date,
 					bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
-			assertEquals(invoice.getTotalLines(), new BigDecimal("100.0"));
-			assertEquals(invoice.getGrandTotal(), new BigDecimal("106.00"));
+			assertEquals(invoice.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("100.00"));
+			assertEquals(invoice.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
 
 			// Payamt with discount
 			BigDecimal payAmt = new BigDecimal("102");
@@ -915,8 +915,8 @@ public class AllocationTest extends AbstractTestCase {
 			int taxid = DictionaryIDs.C_Tax.CT_SALES.id; // (CT Sales, Rate 6)
 			MInvoice invoice = createInvoice(false, false, date, date,
 					bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
-			assertEquals(invoice.getTotalLines(), new BigDecimal("100.0"));
-			assertEquals(invoice.getGrandTotal(), new BigDecimal("106.00"));
+			assertEquals(invoice.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("100.00"));
+			assertEquals(invoice.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
 
 			// Payamt with discount
 			BigDecimal payAmt = new BigDecimal("102");
@@ -1045,8 +1045,8 @@ public class AllocationTest extends AbstractTestCase {
 			int taxid = DictionaryIDs.C_Tax.CT_SALES.id; // (CT Sales, Rate 6)
 			MInvoice invoice = createInvoice(false, true, date, date,
 					bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
-			assertEquals(invoice.getTotalLines(), new BigDecimal("100.0"));
-			assertEquals(invoice.getGrandTotal(), new BigDecimal("106.00"));
+			assertEquals(invoice.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("100.00"));
+			assertEquals(invoice.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
 
 			// Payamt with discount
 			BigDecimal payAmt = new BigDecimal("102");
@@ -1175,8 +1175,8 @@ public class AllocationTest extends AbstractTestCase {
 			int taxid = DictionaryIDs.C_Tax.CT_SALES.id; // (CT Sales, Rate 6)
 			MInvoice invoice = createInvoice(true,false, date,  date,
 					bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
-			assertEquals(invoice.getTotalLines(), new BigDecimal("100.0"));
-			assertEquals(invoice.getGrandTotal(), new BigDecimal("106.00"));
+			assertEquals(invoice.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("100.00"));
+			assertEquals(invoice.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
 
 			// Payamt with discount
 			BigDecimal payAmt = new BigDecimal("102");
@@ -1307,8 +1307,8 @@ public class AllocationTest extends AbstractTestCase {
 			int taxid = DictionaryIDs.C_Tax.CT_SALES.id; // (CT Sales, Rate 6)
 			MInvoice invoice = createInvoice(true, true, date,  date,
 					bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
-			assertEquals(invoice.getTotalLines(), new BigDecimal("100.0"));
-			assertEquals(invoice.getGrandTotal(), new BigDecimal("106.00"));
+			assertEquals(invoice.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("100.00"));
+			assertEquals(invoice.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
 
 			// Payamt with discount
 			BigDecimal payAmt = new BigDecimal("102").negate();
@@ -1438,8 +1438,8 @@ public class AllocationTest extends AbstractTestCase {
 			int taxid = DictionaryIDs.C_Tax.CT_SALES.id; // (CT Sales, Rate 6)
 			MInvoice invoice = createInvoice(false, false, date, date,
 					bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
-			assertEquals(invoice.getTotalLines(), new BigDecimal("100.0"));
-			assertEquals(invoice.getGrandTotal(), new BigDecimal("106.00"));
+			assertEquals(invoice.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("100.00"));
+			assertEquals(invoice.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
 
 
 			BigDecimal payAmt = new BigDecimal("102");
@@ -1569,8 +1569,8 @@ public class AllocationTest extends AbstractTestCase {
 			int taxid = DictionaryIDs.C_Tax.CT_SALES.id; // (CT Sales, Rate 6)
 			MInvoice invoice = createInvoice(false, true, date, date,
 					bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
-			assertEquals(invoice.getTotalLines(), new BigDecimal("100.0"));
-			assertEquals(invoice.getGrandTotal(), new BigDecimal("106.00"));
+			assertEquals(invoice.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("100.00"));
+			assertEquals(invoice.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
 
 			// Payamt with discount
 			BigDecimal payAmt = new BigDecimal("102").negate();
@@ -1700,14 +1700,14 @@ public class AllocationTest extends AbstractTestCase {
 			int taxid = DictionaryIDs.C_Tax.CT_SALES.id; // (CT Sales, Rate 6)
 			MInvoice invoice = createInvoice(true,false, date,  date,
 					bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
-			assertEquals(invoice.getTotalLines(), new BigDecimal("100.0"));
-			assertEquals(invoice.getGrandTotal(), new BigDecimal("106.00"));
+			assertEquals(invoice.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("100.00"));
+			assertEquals(invoice.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
 
 			int paytermcm = DictionaryIDs.C_PaymentTerm.IMMEDIATE.id; 
 			MInvoice creditmemo = createInvoice(true,true, date,  date,
 					bpartner.getC_BPartner_ID(), paytermcm, taxid, new BigDecimal("96.23"));
-			assertEquals(creditmemo.getTotalLines(), new BigDecimal("96.23"));
-			assertEquals(creditmemo.getGrandTotal(), new BigDecimal("102.00"));
+			assertEquals(creditmemo.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("96.23"));
+			assertEquals(creditmemo.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("102.00"));
 
 			MAllocationHdr alloc = new MAllocationHdr(Env.getCtx(), true, date, usd.getC_Currency_ID(), Env.getContext(Env.getCtx(), "#AD_User_Name"), getTrxName());
 			alloc.setAD_Org_ID(invoice.getAD_Org_ID());
@@ -1837,14 +1837,14 @@ public class AllocationTest extends AbstractTestCase {
 			int taxid = DictionaryIDs.C_Tax.CT_SALES.id; // (CT Sales, Rate 6)
 			MInvoice invoice = createInvoice(false, false, date, date,
 					bpartner.getC_BPartner_ID(), payterm, taxid, Env.ONEHUNDRED);
-			assertEquals(invoice.getTotalLines(), new BigDecimal("100.0"));
-			assertEquals(invoice.getGrandTotal(), new BigDecimal("106.00"));
+			assertEquals(invoice.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("100.00"));
+			assertEquals(invoice.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("106.00"));
 
 			int paytermcm = DictionaryIDs.C_PaymentTerm.IMMEDIATE.id;
 			MInvoice creditmemo = createInvoice(false,true, date,  date,
 					bpartner.getC_BPartner_ID(), paytermcm, taxid, new BigDecimal("96.23"));
-			assertEquals(creditmemo.getTotalLines(), new BigDecimal("96.23"));
-			assertEquals(creditmemo.getGrandTotal(), new BigDecimal("102.00"));
+			assertEquals(creditmemo.getTotalLines().setScale(2, RoundingMode.HALF_UP), new BigDecimal("96.23"));
+			assertEquals(creditmemo.getGrandTotal().setScale(2, RoundingMode.HALF_UP), new BigDecimal("102.00"));
 
 
 			MAllocationHdr alloc = new MAllocationHdr(Env.getCtx(), true, date, usd.getC_Currency_ID(), Env.getContext(Env.getCtx(), "#AD_User_Name"), getTrxName());

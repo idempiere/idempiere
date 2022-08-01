@@ -395,6 +395,8 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
 		} finally {
+			rollback();
+			
 			deleteConversionRate(crUsd1);
 			deleteConversionRate(crUsd2);
 			deleteConversionRate(crEur1);
@@ -402,9 +404,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			
 			pp.deleteEx(true);
 			plv.deleteEx(true);
-			priceList.deleteEx(true);
-			
-			rollback();
+			priceList.deleteEx(true);						
 		}		
 	}
 	
@@ -1538,14 +1538,13 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testMatchInvoicePosting(ass, miList, notInvoicedReceiptsLineList, inventoryClearingLineList);
 		} finally {
+			rollback();
 			deleteConversionRate(crUsd);
 			deleteConversionRate(crEur);
 			
 			pp.deleteEx(true);
 			plv.deleteEx(true);
-			priceList.deleteEx(true);
-			
-			rollback();
+			priceList.deleteEx(true);						
 		}		
 	}
 	
@@ -1642,13 +1641,13 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 				inventoryClearingLineList2.add(new PostingLine(inventoryClearingLine.currency, inventoryClearingLine.amtAcctCr, inventoryClearingLine.amtAcctDr));
 			testMatchInvoicePosting(ass, miList0.toArray(miList2), notInvoicedReceiptsLineList2, inventoryClearingLineList2);
 		} finally {
+			rollback();
 			deleteConversionRate(crUsd);
 			deleteConversionRate(crEur);
 			
 			pp.deleteEx(true);
 			plv.deleteEx(true);
-			priceList.deleteEx(true);
-			rollback();
+			priceList.deleteEx(true);		
 		}
 	}
 	
