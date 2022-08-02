@@ -19,7 +19,6 @@ import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
@@ -33,12 +32,11 @@ import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
-import org.compiere.util.CLogger;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zhtml.Text;
-import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -62,9 +60,6 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	private static final long serialVersionUID = -1712025652050086903L;
 
 	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 250pt; min-width: 230pt; max-width: 450pt;";
-
-	/**	Logger			*/
-	private static final CLogger log = CLogger.getCLogger(ProcessInfoDialog.class);
 	
 	private Text lblMsg = new Text();
 	private Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
@@ -244,14 +239,14 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		}
 		if(event.getTarget() == btnPrint) {
 			Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));
-			Clients.response(new AuEcho(ProcessInfoDialog.this, "onPrint", null));
+			Executions.schedule(this.getDesktop(), e -> onPrint(), new Event("onPrint"));
 		}
 	}
 	
 	/**
 	 * On Print
 	 */
-	public void onPrint() {
+	private void onPrint() {
 		// Loop through all items
 		List<File> pdfList = new ArrayList<File>();
 		for (int i = 0; i < m_logs.length; i++)
@@ -267,14 +262,14 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		}
 		if (pdfList.size() > 1) {
 			try {
-				File outFile = File.createTempFile(getTitle(), ".pdf");					
+				File outFile = FileUtil.createTempFile(getTitle(), ".pdf");					
 				AEnv.mergePdf(pdfList, outFile);
 
 				Clients.clearBusy();
 				Window win = new SimplePDFViewer(getTitle(), new FileInputStream(outFile));
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+				throw new RuntimeException(e.getLocalizedMessage());
 			}
 		} else if (pdfList.size() > 0) {
 			Clients.clearBusy();
@@ -283,7 +278,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e)
 			{
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+				throw new RuntimeException(e.getLocalizedMessage());
 			}
 		}
 		this.detach();
