@@ -104,10 +104,12 @@ public class SystemIDs
 	public final static int PROCESS_RPT_C_PROJECT = 217;
 	public final static int PROCESS_RPT_C_RFQRESPONSE = 276;
 	public final static int PROCESS_RPT_C_DUNNING = 159;
+	public final static int PROCESS_RPT_DD_ORDER = 53044;
 	public final static int PROCESS_RPT_FINREPORT = 202;
 	public final static int PROCESS_RPT_FINSTATEMENT = 204;
 	public final static int PROCESS_RPT_M_INVENTORY = 291;
 	public final static int PROCESS_RPT_M_MOVEMENT = 290;
+	public final static int PROCESS_RPT_PP_ORDER = 53028;
 
 	public final static int REFERENCE_DATATYPE_ACCOUNT = 25;
 	public final static int REFERENCE_DATATYPE_AMOUNT = 12;
