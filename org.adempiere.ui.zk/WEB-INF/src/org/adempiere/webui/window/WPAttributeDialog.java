@@ -82,6 +82,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 
@@ -202,6 +203,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	private Borderlayout mainLayout = new Borderlayout();
 	private Panel centerPanel = new Panel();
 	private Grid centerLayout = new Grid();
+	private Panel northPanel = new Panel();
+	private Grid northLayout = new Grid();
 	private ConfirmPanel confirmPanel = new ConfirmPanel (true);
 	
 	private String m_columnName = null;
@@ -213,15 +216,22 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	private void init () throws Exception
 	{
 		mainLayout.setParent(this);
-		ZKUpdateUtil.setHflex(mainLayout, "1");
-		ZKUpdateUtil.setVflex(mainLayout, "min");
+		mainLayout.setHeight("500px");
+		
+		North north = new North();
+		north.setSclass("dialog-content");
+		north.setParent(mainLayout);
+		ZKUpdateUtil.setVflex(northPanel, "min");
+		ZKUpdateUtil.setHflex(northPanel, "min");
+		north.appendChild(northPanel);
 		
 		Center center = new Center();
 		center.setSclass("dialog-content");
 		center.setParent(mainLayout);
-		ZKUpdateUtil.setVflex(centerPanel, "min");
-		ZKUpdateUtil.setHflex(centerPanel, "min");
+		ZKUpdateUtil.setVflex(centerPanel, "1");
+		ZKUpdateUtil.setHflex(centerPanel, "1");
 		center.appendChild(centerPanel);
+		center.setAutoscroll(true);
 
 		South south = new South();
 		south.setSclass("dialog-footer");
@@ -230,6 +240,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		
 		centerPanel.appendChild(centerLayout);
 		centerLayout.setOddRowSclass("even");
+		northPanel.appendChild(northLayout);
+		northLayout.setOddRowSclass("even");
 		//
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
 		addEventListener(Events.ON_CANCEL, e -> onCancel());
@@ -251,6 +263,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		column = new Column();
 		column.setParent(columns);
 		ZKUpdateUtil.setWidth(column, "70%");
+		
+		Rows northRows = new Rows();
+		northRows.setParent(northLayout);
 		
 		Rows rows = new Rows();
 		rows.setParent(centerLayout);
@@ -298,7 +313,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		if (m_productWindow)
 		{
 			Row row = new Row();
-			row.setParent(rows);
+			row.setParent(northRows);
 			cbNewEdit.setLabel(Msg.getMsg(Env.getCtx(), "EditRecord"));
 			cbNewEdit.addEventListener(Events.ON_CHECK, this);
 			row.appendChild(cbNewEdit);
@@ -321,7 +336,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			ZKUpdateUtil.setHflex(existingCombo, "1");
 			
 			row = new Row();
-			row.setParent(rows);
+			row.setParent(northRows);
 			LayoutUtils.addSclass("txt-btn", bNewRecord);
 			bNewRecord.addActionListener(this);
 			row.appendChild(bNewRecord);
