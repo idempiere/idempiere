@@ -261,15 +261,15 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 			}
 		}
 		if (pdfList.size() > 1) {
+			Clients.clearBusy();
 			try {
 				File outFile = FileUtil.createTempFile(getTitle(), ".pdf");					
 				AEnv.mergePdf(pdfList, outFile);
 
-				Clients.clearBusy();
 				Window win = new SimplePDFViewer(getTitle(), new FileInputStream(outFile));
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e) {
-				throw new RuntimeException(e.getLocalizedMessage());
+				throw new RuntimeException(e.getLocalizedMessage(), e);
 			}
 		} else if (pdfList.size() > 0) {
 			Clients.clearBusy();
@@ -278,7 +278,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e)
 			{
-				throw new RuntimeException(e.getLocalizedMessage());
+				throw new RuntimeException(e.getLocalizedMessage(), e);
 			}
 		}
 		this.detach();
