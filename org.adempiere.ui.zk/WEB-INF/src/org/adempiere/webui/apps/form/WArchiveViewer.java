@@ -64,7 +64,7 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WEMailDialog;
 import org.compiere.apps.form.Archive;
 import org.compiere.model.MArchive;
@@ -670,7 +670,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	}	//	updateQDisplay
 
 	public void cmd_deleteArchive(){
-	  FDialog.ask(m_WindowNo, this.form, "DeleteRecord?", new Callback<Boolean>() {
+	  Dialog.ask(m_WindowNo, "DeleteRecord?", new Callback<Boolean>() {
 			
 			@Override
 			public void onCallback(Boolean result) 

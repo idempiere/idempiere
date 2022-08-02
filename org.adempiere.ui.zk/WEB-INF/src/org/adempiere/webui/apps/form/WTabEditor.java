@@ -52,7 +52,7 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.panel.WTabEditorForm;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.TabEditor;
 import org.compiere.model.GridField;
 import org.compiere.model.MColumn;
@@ -157,7 +157,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 				
 				if (udt.getAD_UserDef_Win().getAD_Language() != null && !udt.getAD_UserDef_Win().getAD_Language().equals(Env.getAD_Language(Env.getCtx())))
 				{
-					FDialog.error(m_WindowNo, "TabEditorWrongLanguage");
+					Dialog.error(m_WindowNo, "TabEditorWrongLanguage");
 					tabform.detach();
 					return;
 				}

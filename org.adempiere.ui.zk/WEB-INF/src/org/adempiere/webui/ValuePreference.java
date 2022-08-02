@@ -37,7 +37,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MRole;
 import org.compiere.util.CLogMgt;
@@ -491,9 +491,9 @@ public class ValuePreference extends Window implements EventListener<Event>
 		{
 			int no = delete();
 			if (no == 0)
-				FDialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotFound");
+				Dialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotFound");
 			else
-				FDialog.info(m_WindowNo, this, "ValuePreferenceDeleted", String.valueOf(no));
+				Dialog.info(m_WindowNo, "ValuePreferenceDeleted", String.valueOf(no));
 			detach();
 		}
 		else
@@ -672,7 +672,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 				m_Value = " ";
 			else
 			{
-				FDialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotInserted");
+				Dialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotInserted");
 				return;
 			}
 		}
@@ -733,10 +733,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 		if (no == 1)
 		{
 			Env.setContext(m_ctx, getContextKey(), m_Value);
-			FDialog.info(m_WindowNo, this, "ValuePreferenceInserted");
+			Dialog.info(m_WindowNo, "ValuePreferenceInserted");
 		}
 		else
-			FDialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotInserted");
+			Dialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotInserted");
 
 	}   //  insert
 

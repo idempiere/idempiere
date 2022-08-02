@@ -55,7 +55,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.I_AD_Preference;
@@ -772,7 +772,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		int AD_Table_ID = MTable.getTable_ID(query.getTableName());
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
-			FDialog.error(0, null, "AccessCannotReport", query.getTableName());
+			Dialog.error(0, "AccessCannotReport", query.getTableName());
 			return;
 		}
 		if (AD_Table_ID != 0)

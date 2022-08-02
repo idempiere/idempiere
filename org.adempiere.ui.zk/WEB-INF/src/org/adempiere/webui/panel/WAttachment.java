@@ -47,7 +47,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WEMailDialog;
 import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.MAttachment;
@@ -755,7 +755,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	{
 		log.info("");
 
-		FDialog.ask(m_WindowNo, this, "AttachmentDelete?", new Callback<Boolean>() {
+		Dialog.ask(m_WindowNo, "AttachmentDelete?", new Callback<Boolean>() {
 			
 			@Override
 			public void onCallback(Boolean result) 
@@ -786,7 +786,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		if (fileName == null)
 			return;
 
-		FDialog.ask(m_WindowNo, this, "AttachmentDeleteEntry?", new Callback<Boolean>() {
+		Dialog.ask(m_WindowNo, "AttachmentDeleteEntry?", new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 

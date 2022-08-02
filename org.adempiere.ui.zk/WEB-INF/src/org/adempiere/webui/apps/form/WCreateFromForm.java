@@ -28,7 +28,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.CreateFromForm;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -163,7 +163,7 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 			}
 			catch (Exception ex)
 			{
-				FDialog.error(getWindowNo(), this, "Error", ex.getLocalizedMessage());
+				Dialog.error(getWindowNo(), "Error", ex.getLocalizedMessage());
 			}
 		}
 		//  Cancel

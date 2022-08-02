@@ -40,7 +40,7 @@ import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.CreateFromStatement;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankStatement;
@@ -144,7 +144,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 				
 		if (getGridTab().getValue("C_BankStatement_ID") == null)
 		{
-			FDialog.error(0, window, "SaveErrorRowNotFound");
+			Dialog.error(0, "SaveErrorRowNotFound");
 			return false;
 		}
 		

@@ -41,7 +41,7 @@ import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.StatementCreateFromBatch;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MColumn;
@@ -145,7 +145,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		
 		if (form.getGridTab() != null && form.getGridTab().getValue("C_BankStatement_ID") == null)
 		{
-			FDialog.error(0, form, "SaveErrorRowNotFound");
+			Dialog.error(0, "SaveErrorRowNotFound");
 			return false;
 		}
 		

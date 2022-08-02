@@ -49,7 +49,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
@@ -536,7 +536,7 @@ public class ProcessParameterPanel extends Panel implements
 		} // field loop
 
 		if (sb.length() != 0) {
-			FDialog.error(m_WindowNo, this, "FillMandatory", sb.toString());
+			Dialog.error(m_WindowNo, "FillMandatory", sb.toString());
 			return false;
 		}
 
@@ -546,7 +546,7 @@ public class ProcessParameterPanel extends Panel implements
 			for(IProcessParameterListener listener : listeners) {
 				String error = listener.validate(this);
 				if (!Util.isEmpty(error)) {
-					FDialog.error(m_WindowNo, this, error);
+					Dialog.error(m_WindowNo, error);
 					return false;
 				}
 			}

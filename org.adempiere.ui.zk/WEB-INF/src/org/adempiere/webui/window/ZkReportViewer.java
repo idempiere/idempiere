@@ -257,7 +257,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		m_AD_Table_ID = re.getPrintFormat().getAD_Table_ID();
 		if (!MRole.getDefault().isCanReport(m_AD_Table_ID))
 		{
-			FDialog.error(m_WindowNo, this, "AccessCannotReport", m_reportEngine.getName());
+			Dialog.error(m_WindowNo, "AccessCannotReport", m_reportEngine.getName());
 			this.onClose();
 		}
 		m_isCanExport = MRole.getDefault().isCanExport(m_AD_Table_ID);
@@ -414,7 +414,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			catch(Exception e)
 			{
 				log.log(Level.SEVERE, "", e);
-				FDialog.error(m_WindowNo, this, "LoadError", e.getLocalizedMessage());
+				Dialog.error(m_WindowNo, "LoadError", e.getLocalizedMessage());
 				this.onClose();
 			}
 		}
@@ -1341,7 +1341,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		int AD_Table_ID = MTable.getTable_ID(query.getTableName());
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
-			FDialog.error(m_WindowNo, this, "AccessCannotReport", query.getTableName());
+			Dialog.error(m_WindowNo, "AccessCannotReport", query.getTableName());
 			return;
 		}
 		if (AD_Table_ID != 0)
@@ -1404,9 +1404,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			success = archive.save();
 		}
 		if (success)
-			FDialog.info(m_WindowNo, this, "Archived");
+			Dialog.info(m_WindowNo, "Archived");
 		else
-			FDialog.error(m_WindowNo, this, "ArchiveError");
+			Dialog.error(m_WindowNo, "ArchiveError");
 	}	//	cmd_archive
 
 	/**
@@ -1427,9 +1427,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		attachment.addEntry(fileName, data);
 		success = attachment.save();
 		if (success)
-			FDialog.info(m_WindowNo, this, "DocumentAttached", fileName);
+			Dialog.info(m_WindowNo, "DocumentAttached", fileName);
 		else
-			FDialog.error(m_WindowNo, this, "AttachError");
+			Dialog.error(m_WindowNo, "AttachError");
 	}	//	cmd_attachment
 
 	/**
@@ -1440,7 +1440,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		log.config("");
 		if (!m_isCanExport)
 		{
-			FDialog.error(m_WindowNo, this, "AccessCannotExport", getTitle());
+			Dialog.error(m_WindowNo, "AccessCannotExport", getTitle());
 			return;
 		}
 		
@@ -1481,7 +1481,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		{
 			WEditor editor = new WStringEditor();
 			ZKUpdateUtil.setWidth((HtmlBasedComponent)editor.getComponent(), "98%");
-			FDialog.askForInputWithCancel(m_WindowNo, editor, "CreateNewPrintFormat",  Msg.getMsg(m_ctx, "CreateNewPrintFormatTitle"), new Callback<Map.Entry<Boolean, Object>>() {
+			Dialog.askForInputWithCancel(m_WindowNo, editor, "CreateNewPrintFormat",  Msg.getMsg(m_ctx, "CreateNewPrintFormatTitle"), new Callback<Map.Entry<Boolean, Object>>() {
 				public void onCallback(Map.Entry<Boolean, Object> result) {
 					if((result == null) || (!(result.getValue() instanceof String)) || (!result.getKey())) {
 						comboReport.setSelectedItem(previousSelected);
@@ -1534,7 +1534,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		} else if (AD_PrintFormat_ID == -2) {
 			WEditor editor = new WStringEditor();
 			ZKUpdateUtil.setWidth((HtmlBasedComponent)editor.getComponent(), "90%");
-			FDialog.askForInputWithCancel(m_WindowNo, editor, "CreatePrintFormatCopy", Msg.getMsg(m_ctx, "CreatePrintFormatCopyTitle"), new Callback<Map.Entry<Boolean, Object>>() {
+			Dialog.askForInputWithCancel(m_WindowNo, editor, "CreatePrintFormatCopy", Msg.getMsg(m_ctx, "CreatePrintFormatCopyTitle"), new Callback<Map.Entry<Boolean, Object>>() {
 				public void onCallback(Map.Entry<Boolean, Object> result) {
 					if((result == null) || (!(result.getValue() instanceof String)) || (!result.getKey())) {
 						comboReport.setSelectedItem(previousSelected);

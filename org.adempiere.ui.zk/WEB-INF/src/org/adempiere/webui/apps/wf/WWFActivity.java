@@ -42,7 +42,7 @@ import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -621,7 +621,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				}
 				if (!m_activity.forwardTo(fw, textMsg))
 				{
-					FDialog.error(m_WindowNo, this, "CannotForward");
+					Dialog.error(m_WindowNo, "CannotForward");
 					trx.rollback();
 					trx.close();
 					return;
@@ -642,7 +642,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				}
 				if (value == null || value.length() == 0)
 				{
-					FDialog.error(m_WindowNo, this, "FillMandatory", Msg.getMsg(Env.getCtx(), "Answer"));
+					Dialog.error(m_WindowNo, "FillMandatory", Msg.getMsg(Env.getCtx(), "Answer"));
 					trx.rollback();
 					trx.close();
 					return;
@@ -658,7 +658,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				catch (Exception e)
 				{
 					log.log(Level.SEVERE, node.getName(), e);
-					FDialog.error(m_WindowNo, this, "Error", e.toString());
+					Dialog.error(m_WindowNo, "Error", e.toString());
 					trx.rollback();
 					trx.close();
 					return;
@@ -678,7 +678,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				catch (Exception e)
 				{
 					log.log(Level.SEVERE, node.getName(), e);
-					FDialog.error(m_WindowNo, this, "Error", e.toString());
+					Dialog.error(m_WindowNo, "Error", e.toString());
 					trx.rollback();
 					trx.close();
 					return;

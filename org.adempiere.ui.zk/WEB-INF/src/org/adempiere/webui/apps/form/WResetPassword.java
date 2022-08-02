@@ -35,7 +35,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPasswordHistory;
@@ -382,7 +382,7 @@ public class WResetPassword implements IFormController, EventListener<Event>, Va
 			throw e;
 		}
 		clearForm();
-		FDialog.info(form.getWindowNo(), form, "RecordSaved");
+		Dialog.info(form.getWindowNo(), "RecordSaved");
 		return;
     }
 	
