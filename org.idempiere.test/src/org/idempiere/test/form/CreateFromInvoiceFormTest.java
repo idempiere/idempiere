@@ -315,9 +315,8 @@ public class CreateFromInvoiceFormTest extends AbstractTestCase {
 			}
 		}
 
-		@Override
 		public ArrayList<KeyNamePair> getShipments(int C_BPartner_ID) {
-			return super.getShipments(C_BPartner_ID);
+			return super.loadShipmentData(C_BPartner_ID);
 		}
 
 		public void loadShipmentLines(int M_InOut_ID) {

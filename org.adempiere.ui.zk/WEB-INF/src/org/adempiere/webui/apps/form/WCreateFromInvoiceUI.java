@@ -350,7 +350,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		KeyNamePair pp = new KeyNamePair(0,"");
 		shipmentField.addItem(pp);
 		
-		ArrayList<KeyNamePair> list = getShipments(C_BPartner_ID);
+		ArrayList<KeyNamePair> list = loadShipmentData(C_BPartner_ID);
 		for(KeyNamePair knp : list)
 			shipmentField.addItem(knp);
 		

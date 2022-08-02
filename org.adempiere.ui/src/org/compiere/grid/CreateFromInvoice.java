@@ -83,7 +83,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 	 * @param C_BPartner_ID
 	 * @return list of shipment records
 	 */
-	protected ArrayList<KeyNamePair> getShipments (int C_BPartner_ID)
+	protected ArrayList<KeyNamePair> loadShipmentData (int C_BPartner_ID)
 	{
 		String isSOTrxParam = isSOTrx ? "Y":"N";
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
