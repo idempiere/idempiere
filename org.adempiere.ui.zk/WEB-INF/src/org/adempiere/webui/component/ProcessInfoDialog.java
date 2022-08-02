@@ -185,7 +185,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		
 		this.m_logs = m_logs;
 
-		if(isPrintable(pi))
+		if(isPrintable())
 			btnPrint.setVisible(true);
 		
 		if (m_logs != null && m_logs.length > 0){
@@ -247,6 +247,8 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	 * On Print
 	 */
 	private void onPrint() {
+		
+		Clients.clearBusy();
 		// Loop through all items
 		List<File> pdfList = new ArrayList<File>();
 		for (int i = 0; i < m_logs.length; i++)
@@ -261,7 +263,6 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 			}
 		}
 		if (pdfList.size() > 1) {
-			Clients.clearBusy();
 			try {
 				File outFile = FileUtil.createTempFile(getTitle(), ".pdf");					
 				AEnv.mergePdf(pdfList, outFile);
@@ -272,7 +273,6 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 				throw new RuntimeException(e.getLocalizedMessage(), e);
 			}
 		} else if (pdfList.size() > 0) {
-			Clients.clearBusy();
 			try {
 				Window win = new SimplePDFViewer(getTitle(), new FileInputStream(pdfList.get(0)));
 				SessionManager.getAppDesktop().showWindow(win, "center");
@@ -286,10 +286,9 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	
 	/**
 	 * Is Printable
-	 * @param pi
-	 * @return
+	 * @return boolean
 	 */
-	public boolean isPrintable(ProcessInfo pi) {
+	public boolean isPrintable() {
 		for(ProcessInfoLog log : m_logs) {
 				if (ReportEngine.getReportEngineType(log.getAD_Table_ID()) >= 0) 
 					return true;
