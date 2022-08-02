@@ -149,8 +149,9 @@ public class InvoiceGenerate extends SvrProcess
 			+ ", Consolidate=" + p_ConsolidateDocument);
 		//
 		StringBuilder sql = null;
-		if (p_Selection)	//	VInvoiceGen
+		if ((getProcessInfo().getAD_InfoWindow_ID() > 0) || (getProcessInfo().getAD_InfoWindow_ID()==0 && p_Selection))
 		{
+			p_Selection = true;
 			sql = new StringBuilder("SELECT C_Order.* FROM C_Order, T_Selection ")
 				.append("WHERE C_Order.DocStatus='CO' AND C_Order.IsSOTrx='Y' ")
 				.append("AND C_Order.C_Order_ID = T_Selection.T_Selection_ID ")
@@ -159,17 +160,17 @@ public class InvoiceGenerate extends SvrProcess
 		}
 		else
 		{
-			sql = new StringBuilder("SELECT * FROM C_Order o ")
-				.append("WHERE DocStatus IN('CO','CL') AND IsSOTrx='Y'");
+			sql = new StringBuilder("SELECT o.* FROM C_Invoice_Candidate_v ic JOIN C_Order o ON o.C_Order_ID = ic.C_Order_ID ")
+				.append("WHERE DocStatus IN('CO','CL') AND IsSOTrx='Y' ");
 			if (p_AD_Org_ID != 0)
-				sql.append(" AND AD_Org_ID=?");
+				sql.append(" AND ic.AD_Org_ID=?");
 			if (p_C_BPartner_ID != 0)
-				sql.append(" AND C_BPartner_ID=?");
+				sql.append(" AND ic.C_BPartner_ID=?");
 			if (p_C_Order_ID != 0)
-				sql.append(" AND C_Order_ID=?");
+				sql.append(" AND ic.C_Order_ID=?");
 			//
-			sql.append(" AND EXISTS (SELECT * FROM C_OrderLine ol ")
-					.append("WHERE o.C_Order_ID=ol.C_Order_ID AND ol.QtyOrdered<>ol.QtyInvoiced ");
+			sql.append(" AND EXISTS (SELECT 1 FROM C_OrderLine ol ")
+					.append("WHERE o.C_Order_ID=ol.C_Order_ID AND ol.QtyOrdered<>ol.QtyInvoiced AND ic.DocSource = 'O' ");
 			//
 			if (p_M_InOut_ID != 0)
 				sql.append(" AND EXISTS (SELECT '1' FROM M_InOutLine iol WHERE iol.C_OrderLine_ID=ol.C_OrderLine_ID AND iol.M_InOut_ID=?) ");
