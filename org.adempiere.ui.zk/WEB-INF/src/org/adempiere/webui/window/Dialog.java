@@ -61,19 +61,32 @@ public class Dialog {
      * @param message additional message
      * @return The translated AD_Message appended with the additional message
      */
-    private static StringBuffer constructMessage(String adMessage, String message) {
+    private static String constructMessage(String adMessage, String message, Object ... args) {
 		StringBuffer out = new StringBuffer();
 
 		if (!Util.isEmpty(adMessage)) {
-			out.append(Msg.getMsg(Env.getCtx(), adMessage));
+			out.append(getADMessage(adMessage, args));
 		}
 
 		if (!Util.isEmpty(message)) {
-			out.append("<br>").append(message);
+			if (out.length() > 0)
+				out.append("<br>");
+			out.append(message);
 		}
 
-		return out;
+		return out.toString();
 	}
+    
+    private static String getADMessage(String adMessage, Object ... args) {
+    	String message;
+
+    	if (args != null && args.length > 0)
+    		message = Msg.getMsg(Env.getCtx(), adMessage, args);
+    	else
+    		message = Msg.getMsg(Env.getCtx(), adMessage);
+    	
+    	return message;
+    }
 
 	/**
 	 *	Display dialog with a warning icon
@@ -108,13 +121,21 @@ public class Dialog {
     	if (logger.isLoggable(Level.INFO)) 
     		logger.info(adMessage + " - " + additionalMessage);
 
-    	StringBuffer out = constructMessage(adMessage, additionalMessage);
-    	String newTitle = title == null ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title;
-		String message = out.toString().replace("\n", "<br>");
+    	String dialogTitle = getDialogTitle(title, windowNo);
+    	String out = constructMessage(adMessage, additionalMessage);
+		String message = formatDialogMessage(out);
 
-		Messagebox.showDialog(message, newTitle, Messagebox.OK, Messagebox.EXCLAMATION);
+		Messagebox.showDialog(message, dialogTitle, Messagebox.OK, Messagebox.EXCLAMATION);
+    }
+    
+    private static String getDialogTitle(String title, int windowNo) {
+    	return title == null ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title;
     }
 
+    private static String formatDialogMessage(String originalMessage) {
+    	return originalMessage.replace("\n", "<br>");
+    }
+        
 	/**
 	 *	Display dialog with an error icon
 	 *	@param	windowNo	Number of Window
@@ -176,11 +197,34 @@ public class Dialog {
 			Trace.printStack();
 		}
 
-		StringBuffer out = constructMessage(adMessage, additionalMessage);
-    	String newTitle = title == null ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title;
-        String message = out.toString().replace("\n", "<br>");
+		String dialogTitle = getDialogTitle(title, windowNo);
+    	String out = constructMessage(adMessage, additionalMessage);
+		String message = formatDialogMessage(out);
         
-		Messagebox.showDialog(message, newTitle, Messagebox.OK, Messagebox.ERROR, callback);
+		Messagebox.showDialog(message, dialogTitle, Messagebox.OK, Messagebox.ERROR, callback);
+    }
+
+    /**************************************************************************
+	 *	Ask Question with question icon and (OK) (Cancel) buttons
+	 *
+	 *	@param	windowNo	Number of Window
+	 *	@param	adMessage	Message to be translated
+	 *	@return true, if OK
+	 */
+    public static boolean ask(int windowNo, String adMessage) {
+    	return ask(windowNo, adMessage, "");
+    }
+    
+    /**************************************************************************
+	 *	Ask Question with question icon and (OK) (Cancel) buttons
+	 *
+	 *	@param	windowNo	Number of Window
+	 *	@param	adMessage	Message to be translated
+	 *	@param	callback
+	 *	@return true, if OK
+	 */    
+    public static boolean ask(int windowNo, String adMessage, final Callback<Boolean> callback) {
+    	return ask(null, windowNo, adMessage, callback);
     }
 
     /**************************************************************************
@@ -205,40 +249,7 @@ public class Dialog {
 	 *	@return true, if OK
 	 */    
     public static boolean ask(int windowNo, String adMessage, String additionalMessage, final Callback<Boolean> callback) {
-		StringBuffer out = constructMessage(adMessage, additionalMessage);
-		String message = out.toString().replace("\n", "<br>");
-
-    	Callback<Integer> msgCallback = null;
-    	if (callback != null) {
-    		msgCallback = new Callback<Integer>() {
-				@Override
-				public void onCallback(Integer result) {
-					boolean b = result != null && result.intValue() == Messagebox.OK;
-					callback.onCallback(b);
-				}
-			};
-    	}
-
-    	String title = AEnv.getDialogHeader(Env.getCtx(), windowNo);
-        int response = Messagebox.showDialog(message, title, 
-        		Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, msgCallback, (msgCallback == null));
-
-        return (response == Messagebox.OK);
-    }
-    
-    /**************************************************************************
-	 *	Ask Question with question icon and (OK) (Cancel) buttons
-	 *
-	 *	@param	windowNo	Number of Window
-	 *	@param	adMessage	Message to be translated
-	 *	@return true, if OK
-	 */
-    public static boolean ask(int windowNo, String adMessage) {
-    	return ask(windowNo, adMessage, (Callback<Boolean>)null);
-    }
-    
-    public static boolean ask(int windowNo, String adMessage, final Callback<Boolean> callback) {
-    	return ask(AEnv.getDialogHeader(Env.getCtx(), windowNo), windowNo, adMessage, callback);
+    	return ask(null, windowNo, adMessage, additionalMessage, callback);
     }
     
     /**************************************************************************
@@ -252,9 +263,50 @@ public class Dialog {
 	 *	@return true, if OK
 	 */
     public static boolean ask(String title, int windowNo, String adMessage, final Callback<Boolean> callback, Object ... args) {
+    	return ask(title, windowNo, adMessage, null, callback, args);
+    }
+    
+    /**************************************************************************
+	 *	Ask Question with question icon and (OK) (Cancel) buttons
+	 *
+	 *	@param	windowNo	Number of Window
+	 *	@param	title		Title of the dialog panel
+	 *	@param	adMessage   Message to be translated
+	 *	@param	msg			Additional clear text message
+     *  @param callback
+	 *	@return true, if OK
+	 */        
+    public static boolean ask(int windowNo, String title, String adMessage, String msg, final Callback<Boolean> callback) {
+    	return ask(title, windowNo, adMessage, msg, callback);
+    }
+    
+    /**************************************************************************
+	 *	Ask Question with question icon and (OK) (Cancel) buttons
+	 *
+     *  @param  title
+	 *	@param	windowNo	Number of Window
+	 *	@param	adMessage	Message to be translated
+	 *	@param	additionalMessage			Additional clear text message
+     *  @param  callback
+     *  @param  args
+	 *	@return true, if OK
+	 */
+    public static boolean ask(String title, int windowNo, String adMessage, String additionalMessage, final Callback<Boolean> callback, Object ... args) {
+    	Callback<Integer> msgCallback = getMessageCallback(callback);
+
+    	String message = constructMessage(adMessage, additionalMessage, args);
+		String dialogTitle = getDialogTitle(title, windowNo);
+    	message = formatDialogMessage(message);
+    	
+        int response = Messagebox.showDialog(message, dialogTitle, 
+        		Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, msgCallback, (msgCallback == null));
+
+        return (response == Messagebox.OK);
+    }
+    
+    private static Callback<Integer> getMessageCallback(final Callback<Boolean> callback) {
     	Callback<Integer> msgCallback = null;
-    	if (callback != null) 
-    	{
+    	if (callback != null) {
     		msgCallback = new Callback<Integer>() {
 				@Override
 				public void onCallback(Integer result) {
@@ -263,16 +315,8 @@ public class Dialog {
 				}
 			};
     	}
-    	String s;
-    	if (args != null && args.length > 0)
-    		s = Msg.getMsg(Env.getCtx(), adMessage, args);
-    	else
-    		s = Msg.getMsg(Env.getCtx(), adMessage);
-    	s = s.replace("\n", "<br>");
-        int response = Messagebox.showDialog(s, title, 
-        		Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, msgCallback, (msgCallback == null));
-
-        return (response == Messagebox.OK);
+    	
+    	return msgCallback;
     }
     
 	public static void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback, Desktop desktop, int windowNo) {
@@ -281,33 +325,7 @@ public class Dialog {
 	
 	public static void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback, Desktop desktop, int windowNo, String title, Object defaultValue) {
 		
-		final WEditor weditor;
-
-		switch (editorType) {
-		case DisplayType.String:
-			weditor = new WStringEditor();
-			break;
-		case DisplayType.Number:
-			weditor = new WNumberEditor();
-			break;
-		case DisplayType.TableDir:
-			weditor = new WTableDirEditor(lookup, "", "", true, false, true);
-			break;
-		case DisplayType.Search:
-			weditor = new WSearchEditor(lookup, "", "", true, false, true);
-			break;
-		case DisplayType.ChosenMultipleSelectionSearch:
-			weditor = new WChosenboxSearchEditor(lookup, "", "", true, false, true);
-			break;
-		case DisplayType.ChosenMultipleSelectionList:
-		case DisplayType.ChosenMultipleSelectionTable:
-			weditor = new WChosenboxListEditor(lookup, "", "", true, false, true);
-			break;
-		default:
-			weditor = null;
-			break;
-		}
-
+		final WEditor weditor = getEditor(lookup, editorType);
 		if (weditor != null && defaultValue != null)
 			weditor.setValue(defaultValue);
 
@@ -318,6 +336,26 @@ public class Dialog {
 			}
 		}, new Event("onAskForInput"));
 	}
+	
+	private static WEditor getEditor(MLookup lookup, int editorType) {
+		switch (editorType) {
+		case DisplayType.String:
+			return new WStringEditor();
+		case DisplayType.Number:
+			return new WNumberEditor();
+		case DisplayType.TableDir:
+			return new WTableDirEditor(lookup, "", "", true, false, true);
+		case DisplayType.Search:
+			return new WSearchEditor(lookup, "", "", true, false, true);
+		case DisplayType.ChosenMultipleSelectionSearch:
+			return new WChosenboxSearchEditor(lookup, "", "", true, false, true);
+		case DisplayType.ChosenMultipleSelectionList:
+		case DisplayType.ChosenMultipleSelectionTable:
+			return new WChosenboxListEditor(lookup, "", "", true, false, true);
+		default:
+			return null;
+		}
+	}
 
     public static void askForInput(int windowNo, WEditor weditor, String adMessage, final Callback<Object> callback) {
     	askForInput(windowNo, weditor, adMessage, "", callback);
@@ -325,8 +363,7 @@ public class Dialog {
     
     public static void askForInput(int windowNo, WEditor weditor, String adMessage, String title, final Callback<Object> callback) {
     	Callback<Object> msgCallback = null;
-    	if (callback != null)
-    	{
+    	if (callback != null) {
     		msgCallback = new Callback<Object>() {
 				@Override
 				public void onCallback(Object result) {
@@ -334,11 +371,38 @@ public class Dialog {
 				}
 			};
     	}
-    	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
-        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title,
+    	
+		String dialogTitle = getDialogTitle(title, windowNo);
+    	String message = constructMessage(adMessage, null);
+    	message = formatDialogMessage(message);
+
+        Messagebox.showDialog(message, dialogTitle,
         		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
     }
     
+    public static void askForInput(int windowNo, String adMessage, final Callback<String> callback) {
+    	askForInput(windowNo, adMessage, "", callback);
+    }
+    
+    public static void askForInput(int windowNo, String adMessage, String title, final Callback<String> callback) {
+    	Callback<String> msgCallback = null;
+    	if (callback != null) 
+    	{
+    		msgCallback = new Callback<String>() {
+				@Override
+				public void onCallback(String result) {
+					callback.onCallback(result);
+				}
+			};
+    	}
+    	String dialogTitle = getDialogTitle(title, windowNo);
+    	String message = constructMessage(adMessage, null);
+    	message = formatDialogMessage(message);
+    	
+    	Messagebox.showDialog(message, dialogTitle, 
+        		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, msgCallback, (msgCallback == null));
+    }
+
     /**
      * Confirmation dialog before deleting the records. 
      * @param windowNo
@@ -357,29 +421,12 @@ public class Dialog {
 				callback.onCallback(result);
 			}
 		};
-    	String s = Msg.getMsg(Env.getCtx(), adMessage, adMessageArgs).replace("\n", "<br>");
-        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title,
+		String dialogTitle = getDialogTitle(title, windowNo);
+    	String message = constructMessage(adMessage, null, adMessageArgs);
+    	message = formatDialogMessage(message);
+
+        Messagebox.showDialog(message, dialogTitle,
         		Messagebox.OK | Messagebox.CANCEL | Messagebox.INPUT, Messagebox.QUESTION, weditor, msgCallback, (msgCallback == null));
-    }
-
-    public static void askForInput(int windowNo, String adMessage, final Callback<String> callback) {
-    	askForInput(windowNo, adMessage, "", callback);
-    }
-
-    public static void askForInput(int windowNo, String adMessage, String title, final Callback<String> callback) {
-    	Callback<String> msgCallback = null;
-    	if (callback != null) 
-    	{
-    		msgCallback = new Callback<String>() {
-				@Override
-				public void onCallback(String result) {
-					callback.onCallback(result);
-				}
-			};
-    	}
-    	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
-        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title, 
-        		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, msgCallback, (msgCallback == null));
     }
     
     public static void askForInputWithCancel(int windowNo, WEditor weditor, String adMessage, String title, final Callback<Map.Entry<Boolean, Object>> callback) {
@@ -393,8 +440,11 @@ public class Dialog {
 				}
 			};
     	}
-    	String s = Msg.getMsg(Env.getCtx(), adMessage).replace("\n", "<br>");
-        Messagebox.showDialog(s, Util.isEmpty(title) ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title, 
+		String dialogTitle = getDialogTitle(title, windowNo);
+    	String message = constructMessage(adMessage, null);
+    	message = formatDialogMessage(message);
+    	
+    	Messagebox.showDialog(message, dialogTitle, 
         		Messagebox.OK | Messagebox.CANCEL | Messagebox.INPUT, Messagebox.QUESTION, weditor, true, msgCallback, (msgCallback == null));
     }
     
@@ -435,49 +485,12 @@ public class Dialog {
         if (CLogMgt.isLevelFinest()) {
             Trace.printStack();
         }
-        StringBuffer out = constructMessage(adMessage, additionalMessage);
-    	String newTitle = title == null ? AEnv.getDialogHeader(Env.getCtx(), windowNo) : title;
-    	String message = out.toString().replace("\n", "<br>");
+        
+        String dialogTitle = getDialogTitle(title, windowNo);
+    	String message = constructMessage(adMessage, null);
+    	message = formatDialogMessage(message);
     	
-    	Messagebox.showDialog(message, newTitle, Messagebox.OK, Messagebox.INFORMATION);
+    	Messagebox.showDialog(message, dialogTitle, Messagebox.OK, Messagebox.INFORMATION);
     }
-    
-    
-    /**************************************************************************
-	 *	Ask Question with question icon and (OK) (Cancel) buttons
-	 *
-	 *	@param	windowNo	Number of Window
-	 *	@param	title		Title of the dialog panel
-	 *	@param	adMessage   Message to be translated
-	 *	@param	msg			Additional clear text message
-     *  @param callback
-	 *	@return true, if OK
-	 */        
-    public static boolean ask(int windowNo, String title, String adMessage, String msg, final Callback<Boolean> callback) {
-    	Callback<Integer> msgCallback = null;
-    	if (callback != null) 
-    	{
-    		msgCallback = new Callback<Integer>() {
-				@Override
-				public void onCallback(Integer result) {
-					boolean b = result != null && result.intValue() == Messagebox.OK;
-					callback.onCallback(b);
-				}
-			};
-    	}
-    	
-    	StringBuilder out = new StringBuilder();
-		if (adMessage != null && !adMessage.equals(""))
-			out.append(Msg.getMsg(Env.getCtx(), adMessage));
-		if (msg != null && msg.length() > 0)
-		{
-			if (out.length() > 0)
-				out.append("\n");
-			out.append(msg);
-		}
-		String s = out.toString().replace("\n", "<br>");
-
-        int response = Messagebox.showDialog(s, title, Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION, msgCallback, (msgCallback == null));
-        return (response == Messagebox.OK);
-    }
+   
 }
