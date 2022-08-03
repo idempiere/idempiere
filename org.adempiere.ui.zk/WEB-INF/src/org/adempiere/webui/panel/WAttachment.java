@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
-import javax.servlet.http.HttpSession;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
@@ -65,7 +64,6 @@ import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -235,10 +233,9 @@ public class WAttachment extends Window implements EventListener<Event>
 		if (size > 0)
 			maxUploadSize = "" + size;
 
-		String sessionID = ((HttpSession) Executions.getCurrent().getSession().getNativeSession()).getId();
-		Clients.evalJavaScript("dropToAttachFiles.init('" + this.getUuid() + "','" + mainPanel.getUuid() + "','"
+		Clients.evalJavaScript("idempiere.dropToAttachFiles('" + this.getUuid() + "','" + mainPanel.getUuid() + "','"
 				+ this.getDesktop().getId() + "','" + progress.getUuid() + "','" + sizeLabel.getUuid() + "','"
-				+ maxUploadSize + "','" + sessionID + "');");
+				+ maxUploadSize + "');");
 
 	} // WAttachment
 
@@ -306,7 +303,6 @@ public class WAttachment extends Window implements EventListener<Event>
 		progress.setClass("drop-progress-meter");
 		progress.setVisible(false);
 		
-		mainPanel.appendChild(northPanel);
 		Vlayout div = new Vlayout();
 		div.appendChild(toolBar);
 		div.appendChild(progress);
@@ -358,7 +354,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		bEmail.addEventListener(Events.ON_CLICK, this);
 
 		previewPanel.appendChild(preview);
-		previewPanel.setStyle("border: 3px solid #cfcfcf; background: #efefef;");
+		previewPanel.setSclass("popup-content-background");
 		ZKUpdateUtil.setHeight(preview, "99%");
 		ZKUpdateUtil.setWidth(preview, "99%");
 		

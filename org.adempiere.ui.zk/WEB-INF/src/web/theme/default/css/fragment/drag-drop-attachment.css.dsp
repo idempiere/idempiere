@@ -12,3 +12,8 @@
 .z-progressmeter-image {
 	background: linear-gradient(to bottom, #1eff00 0%, #1a6b18 100%);
 }
+
+.popup-content-background 
+{
+	border: 3px solid #cfcfcf; background: #efefef;
+}
