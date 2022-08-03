@@ -171,10 +171,10 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalList);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
 			deleteConversionRate(cr3);
-			rollback();
 		}
 	}
 	
@@ -259,8 +259,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
@@ -329,9 +329,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
@@ -390,8 +390,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
@@ -538,9 +538,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
@@ -676,8 +676,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
@@ -776,9 +776,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
@@ -867,8 +867,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
@@ -965,9 +965,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
@@ -1054,8 +1054,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
@@ -1208,6 +1208,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
 		} finally {
+			rollback();
+			
 			deleteConversionRate(cr1a);
 			deleteConversionRate(cr1b);
 			deleteConversionRate(cr2a);
@@ -1217,8 +1219,6 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			plv.deleteEx(true);
 			priceList.deleteEx(true);
-			
-			rollback();
 		}
 	}
 	
@@ -1371,6 +1371,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
 		} finally {
+			rollback();
+
 			deleteConversionRate(cr1a);
 			deleteConversionRate(cr1b);
 			deleteConversionRate(cr2a);
@@ -1379,9 +1381,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			deleteConversionRate(cr3b);
 			
 			plv.deleteEx(true);
-			priceList.deleteEx(true);
-			
-			rollback();
+			priceList.deleteEx(true);			
 		}
 	}
 	
@@ -1442,9 +1442,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, gainLossLineList, null);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
@@ -1494,8 +1494,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
@@ -1565,9 +1565,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, gainLossLineList, null);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
@@ -1626,8 +1626,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
@@ -1684,9 +1684,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, gainLossLineList, null);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
@@ -1732,8 +1732,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
@@ -1796,9 +1796,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, gainLossLineList, null);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
@@ -1850,8 +1850,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 		

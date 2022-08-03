@@ -842,10 +842,7 @@ public class Doc_AllocationHdr extends Doc
 		if (valuesInv != null && valuesInv.size() >= 4) {
 			if (invoice.getReversal_ID() == 0 || invoice.get_ID() < invoice.getReversal_ID())
 			{
-				if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-						|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo())) {
+				if (hasDebitTradeAmt(invoice)) {
 					invoiceSource = (BigDecimal) valuesInv.get(0); // AmtSourceDr
 					invoiceAccounted = (BigDecimal) valuesInv.get(1); // AmtAcctDr
 				} else {
@@ -855,10 +852,7 @@ public class Doc_AllocationHdr extends Doc
 			}
 			else
 			{
-				if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-						|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo())) {
+				if (hasDebitTradeAmt(invoice)) {
 					invoiceSource = (BigDecimal) valuesInv.get(2); // AmtSourceCr
 					invoiceAccounted = (BigDecimal) valuesInv.get(3); // AmtAcctCr
 				} else {
@@ -918,10 +912,7 @@ public class Doc_AllocationHdr extends Doc
 		MAllocationHdr alloc = (MAllocationHdr) getPO();
 		if (alloc.getReversal_ID() == 0 || alloc.get_ID() < alloc.getReversal_ID())
 		{
-			if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-					|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-					|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-					|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo()))
+			if (hasDebitTradeAmt(invoice))
 			{
 				FactLine fl = fact.createLine (line, loss, gain, as.getC_Currency_ID(), acctDifference);
 				fl.setDescription(description.toString());
@@ -940,10 +931,7 @@ public class Doc_AllocationHdr extends Doc
 		}
 		else
 		{
-			if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-					|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-					|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-					|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo()))
+			if (hasDebitTradeAmt(invoice))
 			{
 				FactLine fl = fact.createLine (line, acct, as.getC_Currency_ID(), acctDifference);
 				fl.setDescription(description.toString());
@@ -1114,10 +1102,7 @@ public class Doc_AllocationHdr extends Doc
 				BigDecimal invoiceAccounted = null;
 				if (invoice.getReversal_ID() == 0 || invoice.get_ID() < invoice.getReversal_ID())
 				{
-					if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-							|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-							|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-							|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo())) {
+					if (hasDebitTradeAmt(invoice)) {
 						invoiceSource = (BigDecimal) valuesInv.get(0); // AmtSourceDr
 						invoiceAccounted = (BigDecimal) valuesInv.get(1); // AmtAcctDr
 					} else {
@@ -1127,10 +1112,7 @@ public class Doc_AllocationHdr extends Doc
 				}
 				else
 				{
-					if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-							|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-							|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-							|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo())) {
+					if (hasDebitTradeAmt(invoice)) {
 						invoiceSource = (BigDecimal) valuesInv.get(2); // AmtSourceCr
 						invoiceAccounted = (BigDecimal) valuesInv.get(3); // AmtAcctCr
 					} else {
@@ -1384,10 +1366,7 @@ public class Doc_AllocationHdr extends Doc
 			MAllocationHdr alloc = (MAllocationHdr) getPO();
 			if (alloc.getReversal_ID() == 0 || alloc.get_ID() < alloc.getReversal_ID())
 			{
-				if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-						|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo()))
+				if (hasDebitTradeAmt(invoice))
 				{
 					FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference);
 					fl.setDescription(description.toString());
@@ -1420,10 +1399,7 @@ public class Doc_AllocationHdr extends Doc
 			}
 			else
 			{
-				if ((invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
-						|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
-						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
-						|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo()))
+				if (hasDebitTradeAmt(invoice))
 				{
 					FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference.negate());
 					fl.setDescription(description.toString());
@@ -1820,6 +1796,19 @@ public class Doc_AllocationHdr extends Doc
 				line = fact.createLine(null, loss, gain, as.getC_Currency_ID(), acctDifference.negate());
 		}
 		return line;
+	}
+	
+	/**
+	 * Has Debit Receivables/Payables Trade Amount
+	 * @param invoice
+	 * @return
+	 */
+	private boolean hasDebitTradeAmt(MInvoice invoice)
+	{
+		return (invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && !invoice.isCreditMemo()) 
+				|| (invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && invoice.isCreditMemo())
+				|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() >= 0 && invoice.isCreditMemo())
+				|| (!invoice.isSOTrx() && invoice.getGrandTotal().signum() < 0 && !invoice.isCreditMemo());
 	}
 }   //  Doc_Allocation
 
