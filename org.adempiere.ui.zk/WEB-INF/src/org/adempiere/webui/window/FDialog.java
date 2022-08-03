@@ -51,7 +51,7 @@ import org.zkoss.zk.ui.event.EventListener;
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-
+@Deprecated(since="10", forRemoval=true)
 public class FDialog
 {
 	/**	Logger			*/
