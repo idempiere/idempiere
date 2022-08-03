@@ -216,7 +216,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	private void init () throws Exception
 	{
 		mainLayout.setParent(this);
-		mainLayout.setHeight("500px");
+		ZKUpdateUtil.setHflex(mainLayout, "1");
+		ZKUpdateUtil.setVflex(mainLayout, "min");
+		mainLayout.setStyle("max-height: 600px;");
 		
 		North north = new North();
 		north.setSclass("dialog-content");
@@ -228,8 +230,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		Center center = new Center();
 		center.setSclass("dialog-content");
 		center.setParent(mainLayout);
-		ZKUpdateUtil.setVflex(centerPanel, "1");
-		ZKUpdateUtil.setHflex(centerPanel, "1");
+		ZKUpdateUtil.setVflex(centerPanel, "min");
+		ZKUpdateUtil.setHflex(centerPanel, "min");
 		center.appendChild(centerPanel);
 		center.setAutoscroll(true);
 
