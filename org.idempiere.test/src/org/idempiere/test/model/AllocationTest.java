@@ -426,10 +426,10 @@ public class AllocationTest extends AbstractTestCase {
 			}
 			
 		} finally {
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
-			
 			rollback();
+
+			deleteConversionRate(cr1);
+			deleteConversionRate(cr2);			
 		}
 	}
 	
@@ -530,10 +530,10 @@ public class AllocationTest extends AbstractTestCase {
 			}
 			
 		} finally {
-			deleteConversionRate(cr1);
-			deleteConversionRate(cr2);
-			
 			rollback();
+
+			deleteConversionRate(cr1);
+			deleteConversionRate(cr2);			
 		}
 	}
 	
@@ -2143,11 +2143,11 @@ public class AllocationTest extends AbstractTestCase {
 				}
 			}
 		} finally {
+			rollback();
+			
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			deleteConversionRate(cr3);
-			
-			rollback();
+			deleteConversionRate(cr3);			
 		}
 	}
 
