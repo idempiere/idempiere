@@ -1291,6 +1291,10 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
+    		if (trx != null)
+    		{
+    			trx.rollback();
+    		}
     		throw new DBException(e, sql);
     	}
     	finally
@@ -1386,6 +1390,10 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
+    		if (trx != null)
+    		{
+    			trx.rollback();
+    		}
     		throw new DBException(e, sql);
     	}
     	finally
@@ -1481,7 +1489,10 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
-    		//log.log(Level.SEVERE, sql, getSQLException(e));
+    		if (trx != null)
+    		{
+    			trx.rollback();
+    		}
     		throw new DBException(e, sql);
     	}
     	finally
@@ -1578,6 +1589,10 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
+    		if (trx != null)
+    		{
+    			trx.rollback();
+    		}
     		throw new DBException(e, sql);
     	}
     	finally
@@ -2478,8 +2493,18 @@ public final class DB
 		List<Object> retValue = new ArrayList<Object>();
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueObjectsEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -2498,12 +2523,20 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
+    		if (trx != null)
+    		{
+    			trx.rollback();
+    		}
     		throw new DBException(e, sql);
     	}
     	finally
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
 	}
@@ -2521,8 +2554,18 @@ public final class DB
 		List<List<Object>> rowsArray = new ArrayList<List<Object>>();
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLArrayObjectsEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -2541,12 +2584,20 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
+    		if (trx != null)
+    		{
+    			trx.rollback();
+    		}
     		throw new DBException(e, sql);
     	}
     	finally
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	if (rowsArray.size() == 0)
     		return null;
