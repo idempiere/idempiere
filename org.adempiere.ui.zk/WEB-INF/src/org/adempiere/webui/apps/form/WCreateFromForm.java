@@ -68,6 +68,10 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 	
 	public static final String SELECT_ALL = "SelectAll";
 
+	/**
+	 * 
+	 * @param createFrom
+	 */
 	public WCreateFromForm(CreateFromForm createFrom)
 	{
 		super();
@@ -78,7 +82,8 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		setBorder("normal");		
 		setSclass("create-from-form");
 	}
-		
+	
+	@Override
 	protected void initForm() 
 	{		
 		try
@@ -91,7 +96,7 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		}
 		catch(Exception e)
 		{
-			
+			e.printStackTrace();
 		}		
     }
 	
@@ -144,6 +149,7 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		ZKUpdateUtil.setHeight(contentPane, "100%");		
 	}
 
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		//  OK - Save
@@ -191,6 +197,7 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		}
 	}
 
+	@Override
 	public void tableChanged (WTableModelEvent e)
 	{
 		int type = -1;
@@ -203,6 +210,11 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		info();
 	}
 	
+	/**
+	 * 
+	 * @param trxName
+	 * @return true if save success
+	 */
 	public boolean save(String trxName)
 	{
 		ListModelTable model = dataTable.getModel();
@@ -213,6 +225,9 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		return form.save(dataTable, trxName, getGridTab());
 	}
 
+	/**
+	 * update status bar
+	 */
 	public void info()
 	{
 		ListModelTable model = dataTable.getModel();
@@ -228,6 +243,11 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		form.info(dataTable, statusBar);
 	}
 	
+	/**
+	 * set status bar text
+	 * @param selectedRowCount
+	 * @param text
+	 */
 	public void setStatusLine(int selectedRowCount, String text) 
 	{
 		StringBuilder sb = new StringBuilder(String.valueOf(selectedRowCount));
@@ -239,26 +259,45 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		confirmPanel.getOKButton().setEnabled(selectedRowCount > 0);
 	}
 	
+	/**
+	 * 
+	 * @return {@link WListbox}
+	 */
 	public WListbox getWListbox()
 	{
 		return dataTable;
 	}
 	
+	/**
+	 * 
+	 * @return {@link Panel}
+	 */
 	public Panel getParameterPanel()
 	{
 		return parameterPanel;
 	}
 	
+	/**
+	 * 
+	 * @return {@link ConfirmPanel}
+	 */
 	public ConfirmPanel getConfirmPanel()
 	{
 		return confirmPanel;
 	}
 	
+	/**
+	 * 
+	 * @return true if cancel by user
+	 */
 	public boolean isCancel() 
 	{
 		return isCancel;
 	}
 	
+	/**
+	 * post execute query event
+	 */
 	public void postQueryEvent() 
     {
 		Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));

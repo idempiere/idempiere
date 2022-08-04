@@ -196,25 +196,32 @@ public class SystemIDs
 
 	public final static int WINDOW_ACCOUNTCOMBINATION = 153;
 	public final static int WINDOW_ATTRIBUTESETINSTANCE = 358;
+	public final static int WINDOW_BANK_STATEMENT = 194;
 	public final static int WINDOW_BUSINESS_PARTNER = 123;
 	public static final int WINDOW_CHART = 53124;
 	public final static int WINDOW_CUSTOMERRETURN = 53097;
+	public final static int WINDOW_CUSTOMER_RMA = 320;
 	public final static int WINDOW_IMAGE = 227;
 	public final static int WINDOW_INVOICE_CUSTOMER = 167;
+	public final static int WINDOW_INVOICE_VENDOR = 183;
 	public final static int WINDOW_LOCATION = 121;
 	public final static int WINDOW_LOCATOR = 139;
 	public final static int WINDOW_LOT = 257;
+	public final static int WINDOW_MATERIAL_RECEIPT = 184;
 	public final static int WINDOW_MATERIALTRANSACTIONS_INDIRECTUSER = 223;
 	public final static int WINDOW_MY_REQUESTS = 237;
 	public final static int WINDOW_NOTICE = 193;
+	public final static int WINDOW_PAYMENTS_INTO_BATCH = 200031;
 	public final static int WINDOW_REQUEST = 201;
 	public final static int WINDOW_REQUESTS_ALL = 232;
 	public final static int WINDOW_RESOURCE = 236;
 	public final static int WINDOW_RETURNTOVENDOR = 53098;
 	public final static int WINDOW_SALES_ORDER = 143;
+	public final static int WINDOW_SHIPMENT_CUSTOMER = 169;
+	public final static int WINDOW_VENDOR_RMA = 53099;
 	public final static int WINDOW_WAREHOUSE_LOCATOR = 139;
 	public final static int WINDOW_WINDOW_TAB_FIELD = 102;	
-	public final static int WINDOW_WORKFLOW_ACTIVITIES = 298;
+	public final static int WINDOW_WORKFLOW_ACTIVITIES = 298;	
 
 	public final static int TAB_TAB = 106;
 

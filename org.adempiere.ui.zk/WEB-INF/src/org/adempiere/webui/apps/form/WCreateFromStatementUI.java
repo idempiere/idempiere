@@ -66,10 +66,14 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 {
 	private WCreateFromWindow window;
 	
+	/**
+	 * 
+	 * @param tab
+	 */
 	public WCreateFromStatementUI(GridTab tab) 
 	{
 		super(tab);
-		log.info(getGridTab().toString());
+		if (log.isLoggable(Level.INFO)) log.info(getGridTab().toString());
 		
 		window = new WCreateFromWindow(this, getGridTab().getWindowNo());
 		
@@ -126,12 +130,8 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 
 	protected Grid parameterBankLayout;
 
-	/**
-	 *  Dynamic Init
-	 *  @throws Exception if Lookups cannot be initialized
-	 *  @return true if initialized
-	 */
-	public boolean dynInit() throws Exception
+	@Override
+	protected boolean dynInit() throws Exception
 	{
 		log.config("");
 		
@@ -245,6 +245,10 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		}
 	}
 
+	/**
+	 * Configure layout of parameter grid
+	 * @param parameterBankLayout
+	 */
 	protected void setupColumns(Grid parameterBankLayout) {
 		Columns columns = new Columns();
 		parameterBankLayout.appendChild(columns);
@@ -277,8 +281,9 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	/**
 	 *  Action Listener
 	 *  @param e event
-	 * @throws Exception 
+	 *  @throws Exception 
 	 */
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Action=" + e.getTarget().getId());
@@ -289,14 +294,21 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		}
 	}
 	
+	/**
+	 * load bank account transactions
+	 */
 	protected void loadBankAccount()
 	{
-		loadTableOIS(getBankAccountData(bankAccountField.getValue(), bPartnerLookup.getValue(), 
+		loadTableOIS(getBankAccountData((Integer)bankAccountField.getValue(), (Integer)bPartnerLookup.getValue(), 
 				documentNoField.getValue().toString(), dateFromField.getValue(), dateToField.getValue(),
 				amtFromField.getValue(), amtToField.getValue(), 
-				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getValue().toString()));
+				(Integer)documentTypeField.getValue(), (String)tenderTypeField.getValue(), authorizationField.getValue().toString()));
 	}
 	
+	/**
+	 * load data into listbox
+	 * @param data
+	 */
 	protected void loadTableOIS (Vector<?> data)
 	{
 		window.getWListbox().clear();
@@ -312,11 +324,13 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		configureMiniTable(window.getWListbox());
 	}
 	
+	@Override
 	public void showWindow()
 	{
 		window.setVisible(true);
 	}
 	
+	@Override
 	public void closeWindow()
 	{
 		window.dispose();

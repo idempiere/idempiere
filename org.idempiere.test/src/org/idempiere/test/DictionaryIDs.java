@@ -429,6 +429,18 @@ public final class DictionaryIDs {
 		}
 	}
 	
+	public enum M_Shipper {
+		UPS(100),
+		FERTILIZER_INTERNAL_SHIPPER(50001),
+		FURNITURE_INTERNAL_SHIPPER(50002);
+		
+		public final int id;
+
+		private M_Shipper(int id) {
+			this.id = id;
+		}
+	}
+	
 	public enum M_Warehouse {
 		HQ(103),
 		STORE_CENTRAL(104),
