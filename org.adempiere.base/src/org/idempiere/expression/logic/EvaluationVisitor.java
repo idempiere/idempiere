@@ -156,7 +156,9 @@ public class EvaluationVisitor extends SimpleBooleanBaseVisitor<Object> {
 			return Boolean.FALSE;
 		if (left instanceof String && right instanceof String) {
 			String rightText = (String) right;
-			if (rightText.indexOf(",") > 0) {
+			if (ctx.right.start.getType() == SimpleBooleanLexer.QCSVTEXT || ctx.right.start.getType() == SimpleBooleanLexer.DQCSVTEXT) {
+				return isIn((String)left, rightText);
+			} else if (ctx.right.start.getType() == SimpleBooleanLexer.TEXT && rightText.indexOf(",") > 0) {
 				return isIn((String)left, rightText);
 			}
 		}

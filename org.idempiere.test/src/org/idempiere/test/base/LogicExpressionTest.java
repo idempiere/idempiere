@@ -96,6 +96,15 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
 		Env.setContext(Env.getCtx(), "$Element_AY", "N");
 		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		
+		expr = "@LineType@=\"C\"&@CalculationType@='A,R,S'";
+		Env.setContext(Env.getCtx(), "LineType", "C");
+		Env.setContext(Env.getCtx(), "CalculationType", "B");
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "CalculationType", "A");
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "CalculationType", "A,R,S");
+		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
 	}
 	
 	@Test
@@ -134,7 +143,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		testInARS(expr);
 		expr = "@LineType@=\"C\"&@CalculationType@=\"A\",\"R\",\"S\"";
 		testInARS(expr);
-		
+
 		expr = "@Name@='Name 1','Name 2','Name 3'";
 		testInName123(expr);
 		expr = "@Name@=\"Name 1\",\"Name 2\",\"Name 3\"";
