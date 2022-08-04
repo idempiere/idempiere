@@ -30,7 +30,6 @@ import java.util.logging.Level;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
-import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -50,6 +49,7 @@ import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -79,6 +79,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
@@ -181,8 +182,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	/** List of Editors				*/
 	private ArrayList<WEditor>		m_editors = new ArrayList<WEditor>();
 
-	private Checkbox	cbNewEdit = new Checkbox();
-	private Button		bNewRecord = new Button(Msg.getMsg(Env.getCtx(), "NewRecord"));
+	private Button	bNewEdit = ButtonFactory.createNamedButton("");
+	private Button		bNewRecord = ButtonFactory.createNamedButton(ConfirmPanel.A_NEW);
 	private Listbox		existingCombo = new Listbox();
 	private Button		bSelect = new Button(); 
 	//	Lot
@@ -208,6 +209,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	private ConfirmPanel confirmPanel = new ConfirmPanel (true);
 	
 	private String m_columnName = null;
+	private boolean editMode = false;
 
 	/**
 	 *	Layout
@@ -316,9 +318,16 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		{
 			Row row = new Row();
 			row.setParent(northRows);
-			cbNewEdit.setLabel(Msg.getMsg(Env.getCtx(), "EditRecord"));
-			cbNewEdit.addEventListener(Events.ON_CHECK, this);
-			row.appendChild(cbNewEdit);
+			Cell cell = new Cell();
+			cell.setWidth("30%");
+			LayoutUtils.addSclass("txt-btn", bNewRecord);
+			bNewRecord.addActionListener(this);
+			cell.appendChild(bNewRecord);
+			cell.appendChild(new Space());
+			bNewEdit.addEventListener(Events.ON_CLICK, this);
+			bNewEdit.setIconSclass("z-icon-Edit");
+			cell.appendChild(bNewEdit);
+			row.appendChild(cell);
 						
 			String sql = "SELECT M_AttributeSetInstance_ID, Description"
 				+ " FROM M_AttributeSetInstance"
@@ -337,12 +346,6 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			row.appendChild(existingCombo);
 			ZKUpdateUtil.setHflex(existingCombo, "1");
 			
-			row = new Row();
-			row.setParent(northRows);
-			LayoutUtils.addSclass("txt-btn", bNewRecord);
-			bNewRecord.addActionListener(this);
-			row.appendChild(bNewRecord);
-			row.appendChild(new Space());
 			MAttribute[] attributes = as.getMAttributes (false);
 			if (log.isLoggable(Level.FINE)) log.fine ("Product Attributes=" + attributes.length);
 			for (int i = 0; i < attributes.length; i++)
@@ -366,11 +369,11 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			
 			//	New/Edit - Selection
 			if (m_M_AttributeSetInstance_ID == 0)		//	new
-				cbNewEdit.setLabel(Msg.getMsg(Env.getCtx(), "NewRecord"));
+				bNewEdit.setLabel(Msg.getMsg(Env.getCtx(), "NewRecord"));
 			else
-				cbNewEdit.setLabel(Msg.getMsg(Env.getCtx(), "EditRecord"));
-			cbNewEdit.addEventListener(Events.ON_CHECK, this);
-			row.appendChild(cbNewEdit);
+				bNewEdit.setLabel(Msg.getMsg(Env.getCtx(), "EditRecord"));
+			bNewEdit.addEventListener(Events.ON_CHECK, this);
+			row.appendChild(bNewEdit);
 			bSelect.setLabel(Msg.getMsg(Env.getCtx(), "SelectExisting"));
 			if (ThemeManager.isUseFontIconForImage())
 				bSelect.setIconSclass("z-icon-PAttribute");
@@ -512,13 +515,15 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		//	New/Edit Window
 		if (!m_productWindow)
 		{
-			cbNewEdit.setChecked(m_M_AttributeSetInstance_ID == 0);
-			cmd_newEdit();
+			editMode = m_M_AttributeSetInstance_ID == 0;
+			bNewEdit.setIconSclass(editMode ? "z-icon-Save" : "z-icon-Edit");
+			cmd_newEdit(null);
 		}
 		else
 		{
-			cbNewEdit.setSelected(false);
-			cbNewEdit.setEnabled(m_M_AttributeSetInstance_ID > 0);
+			editMode = false;
+			bNewEdit.setIconSclass("z-icon-Edit");
+			bNewEdit.setEnabled(m_M_AttributeSetInstance_ID > 0);
 			bNewRecord.setEnabled(m_M_AttributeSetInstance_ID > 0);
 			boolean rw = m_M_AttributeSetInstance_ID == 0;
 			for (int i = 0; i < m_editors.size(); i++)
@@ -533,8 +538,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		fieldDescription.setText(m_masi.getDescription());
 		fieldDescription.setReadonly(true);
 		Row row = new Row();
-		row.setParent(rows);
+		row.setParent(northRows);
 		row.appendChild(label);
+		row.setAlign("right");
 		row.appendChild(fieldDescription);
 		ZKUpdateUtil.setHflex(fieldDescription, "1");
 		
@@ -755,15 +761,15 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			cmd_select();				
 		}
 		//	New/Edit
-		else if (e.getTarget() == cbNewEdit)
+		else if (e.getTarget() == bNewEdit)
 		{
 			if (m_productWindow)
 			{
-				cmd_edit();
+				cmd_edit(e);
 			}
 			else
 			{
-				cmd_newEdit();
+				cmd_newEdit(e);
 			}
 		}
 		else if (e.getTarget() == bNewRecord)
@@ -849,16 +855,17 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			for (int i = 0; i < attributes.length; i++)
 				updateAttributeEditor(attributes[i], i);
 			
-			cbNewEdit.setEnabled(true);
-			cbNewEdit.setSelected(false);
+			bNewEdit.setEnabled(true);
+			editMode = false;
 			bNewRecord.setEnabled(true);
-			cmd_edit();
+			cmd_edit(null);
 		}
 	}
 
 	private void cmd_newRecord() {
-		cbNewEdit.setSelected(false);
-		cbNewEdit.setEnabled(false);
+		editMode = false;
+		bNewEdit.setIconSclass("z-icon-Edit");
+		bNewEdit.setEnabled(false);
 		bNewRecord.setEnabled(false);
 		existingCombo.setSelectedItem(null);
 		
@@ -874,12 +881,14 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		fieldDescription.setText("");
 	}
 
-	private void cmd_edit() {
-		boolean check = cbNewEdit.isSelected();
+	private void cmd_edit(Event e) {
+		if((e != null) && !e.getTarget().equals(existingCombo))
+			editMode = editMode ? false : true;
+		bNewEdit.setIconSclass(editMode ? "z-icon-Save" : "z-icon-Edit");
 		for (int i = 0; i < m_editors.size(); i++)
 		{
 			WEditor editor = m_editors.get(i);
-			editor.setReadWrite(check);
+			editor.setReadWrite(editMode);
 		}	
 	}
 
@@ -956,23 +965,24 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	/**
 	 * 	Instance New/Edit
 	 */
-	private void cmd_newEdit()
+	private void cmd_newEdit(Event e)
 	{
-		boolean rw = cbNewEdit.isChecked();
-		if (log.isLoggable(Level.CONFIG)) log.config("R/W=" + rw + " " + m_masi);
+		editMode = editMode ? false : true;
+		bNewEdit.setIconSclass(editMode ? "z-icon-Save" : "z-icon-Edit");
+		if (log.isLoggable(Level.CONFIG)) log.config("R/W=" + editMode + " " + m_masi);
 		//
-		fieldLotString.setReadonly(!(rw && m_masi.getM_Lot_ID()==0));
+		fieldLotString.setReadonly(!(editMode && m_masi.getM_Lot_ID()==0));
 		if (fieldLot != null)
-			fieldLot.setEnabled(rw);
-		bLot.setEnabled(rw);
-		fieldSerNo.setReadonly(!rw);
-		bSerNo.setEnabled(rw);
-		fieldGuaranteeDate.setReadonly(!rw);
+			fieldLot.setEnabled(editMode);
+		bLot.setEnabled(editMode);
+		fieldSerNo.setReadonly(!editMode);
+		bSerNo.setEnabled(editMode);
+		fieldGuaranteeDate.setReadonly(!editMode);
 		//
 		for (int i = 0; i < m_editors.size(); i++)
 		{
 			WEditor editor = m_editors.get(i);
-			editor.setReadWrite(rw);
+			editor.setReadWrite(editMode);
 		}	
 	}	//	cmd_newEdit
 
