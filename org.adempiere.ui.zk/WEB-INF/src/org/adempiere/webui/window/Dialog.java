@@ -50,9 +50,12 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
-public class Dialog {
+public final class Dialog {
 	
     private static final CLogger logger = CLogger.getCLogger(Dialog.class);
+    
+    private Dialog() {
+    }
     
     /**
      * Construct a message from the AD_Message and the additional message
