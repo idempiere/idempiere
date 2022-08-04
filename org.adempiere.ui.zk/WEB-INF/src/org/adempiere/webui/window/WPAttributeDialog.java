@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -124,6 +125,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		this.setBorder("normal");
 		this.setShadow(true);
 		this.setSizable(true);
+		this.setMaximizable(true);
 		
 		if (log.isLoggable(Level.CONFIG)) log.config("M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID 
 			+ ", M_Product_ID=" + M_Product_ID
@@ -220,7 +222,10 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		mainLayout.setParent(this);
 		ZKUpdateUtil.setHflex(mainLayout, "1");
 		ZKUpdateUtil.setVflex(mainLayout, "min");
-		mainLayout.setStyle("max-height: 600px;");
+		if (ClientInfo.maxHeight(600)) 
+				mainLayout.setStyle("max-height: 100%;"); 
+		else 
+			mainLayout.setStyle("max-height: 600px;");
 		
 		North north = new North();
 		north.setSclass("dialog-content");
@@ -517,7 +522,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		{
 			editMode = m_M_AttributeSetInstance_ID == 0;
 			bNewEdit.setIconSclass(editMode ? "z-icon-Save" : "z-icon-Edit");
-			cmd_newEdit(null);
+			cmd_newEdit();
 		}
 		else
 		{
@@ -858,7 +863,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			bNewEdit.setEnabled(true);
 			editMode = false;
 			bNewRecord.setEnabled(true);
-			cmd_edit(null);
+			cmd_edit();
 		}
 	}
 
@@ -881,8 +886,12 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		fieldDescription.setText("");
 	}
 
+	private void cmd_edit() {
+		cmd_edit(null);
+	}
+	
 	private void cmd_edit(Event e) {
-		if((e != null) && !e.getTarget().equals(existingCombo))
+		if((e != null) && e.getTarget().equals(bNewEdit))
 			editMode = editMode ? false : true;
 		bNewEdit.setIconSclass(editMode ? "z-icon-Save" : "z-icon-Edit");
 		for (int i = 0; i < m_editors.size(); i++)
@@ -965,9 +974,17 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	/**
 	 * 	Instance New/Edit
 	 */
+	private void cmd_newEdit() {
+		cmd_newEdit(null);
+	}
+	
+	/**
+	 * 	Instance New/Edit
+	 */
 	private void cmd_newEdit(Event e)
 	{
-		editMode = editMode ? false : true;
+		if((e != null) && e.getTarget().equals(bNewEdit))
+			editMode = editMode ? false : true;
 		bNewEdit.setIconSclass(editMode ? "z-icon-Save" : "z-icon-Edit");
 		if (log.isLoggable(Level.CONFIG)) log.config("R/W=" + editMode + " " + m_masi);
 		//
