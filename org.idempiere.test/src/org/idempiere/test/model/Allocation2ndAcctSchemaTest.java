@@ -1067,8 +1067,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5339
 	 */
 	public void testAllocateInvoicePaymentPosting_11() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
-		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), 117); // C&W Construction
+		MCharge charge = MCharge.get(Env.getCtx(), 200000); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
 		Calendar cal = Calendar.getInstance();
@@ -1082,11 +1082,11 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		
 		Timestamp date3 = currentDate;
 		
-		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.SPOT.id; // Spot
+		int C_ConversionType_ID = 114; // Spot
 		
-		MCurrency aud = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // AUD
-		MCurrency eur = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency aud = MCurrency.get(120); // AUD
+		MCurrency eur = MCurrency.get(102); // EUR
+		MCurrency usd = MCurrency.get(100); // USD
 		BigDecimal audToEur = new BigDecimal(0.7);
 		MConversionRate cr1a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date1, audToEur, true);
 		BigDecimal audToUsd = new BigDecimal(0.8);
@@ -1104,13 +1104,13 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		
 		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
 		priceList.setName("Export AUD " + System.currentTimeMillis());
-		MCurrency australianDollar = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // Australian Dollar (AUD)
+		MCurrency australianDollar = MCurrency.get(120); // Australian Dollar (AUD)
 		priceList.setC_Currency_ID(australianDollar.getC_Currency_ID());
 		priceList.setPricePrecision(australianDollar.getStdPrecision());
 		priceList.saveEx();
 		
 		MPriceListVersion plv = new MPriceListVersion(priceList);
-		plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.SALES_2001.id); // Sales 2001
+		plv.setM_DiscountSchema_ID(100); // Sales 2001
 		plv.setValidFrom(currentDate);
 		plv.saveEx();
 		
@@ -1230,8 +1230,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5339
 	 */
 	public void testAllocateInvoicePaymentPosting_12() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
-		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), 117); // C&W Construction
+		MCharge charge = MCharge.get(Env.getCtx(), 200000); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
 		Calendar cal = Calendar.getInstance();
@@ -1245,11 +1245,11 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		
 		Timestamp date3 = currentDate;
 		
-		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.SPOT.id; // Spot
+		int C_ConversionType_ID = 114; // Spot
 		
-		MCurrency aud = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // AUD
-		MCurrency eur = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
-		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		MCurrency aud = MCurrency.get(120); // AUD
+		MCurrency eur = MCurrency.get(102); // EUR
+		MCurrency usd = MCurrency.get(100); // USD
 		BigDecimal audToEur = new BigDecimal(0.7);
 		MConversionRate cr1a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date1, audToEur, true);
 		BigDecimal audToUsd = new BigDecimal(0.8);
@@ -1267,13 +1267,13 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		
 		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
 		priceList.setName("Export AUD " + System.currentTimeMillis());
-		MCurrency australianDollar = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // Australian Dollar (AUD)
+		MCurrency australianDollar = MCurrency.get(120); // Australian Dollar (AUD)
 		priceList.setC_Currency_ID(australianDollar.getC_Currency_ID());
 		priceList.setPricePrecision(australianDollar.getStdPrecision());
 		priceList.saveEx();
 		
 		MPriceListVersion plv = new MPriceListVersion(priceList);
-		plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.SALES_2001.id); // Sales 2001
+		plv.setM_DiscountSchema_ID(100); // Sales 2001
 		plv.setValidFrom(currentDate);
 		plv.saveEx();
 		
