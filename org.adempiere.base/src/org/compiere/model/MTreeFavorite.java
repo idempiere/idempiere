@@ -119,7 +119,7 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 					}
 				}
 
-				if ((access != null && access.booleanValue()) || isSummary)
+				if (access != null || isSummary)
 					addToTree(nodeID, parentID, seqNo, name, menuID, img, isSummary, isCollapsible, isFavourite);
 			}
 		}
