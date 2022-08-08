@@ -185,6 +185,7 @@ public class SystemIDs
 	public final static int TABLE_I_ELEMENTVALUE = 534;
 	public final static int TABLE_I_REPORTLINE = 535;
 	public final static int TABLE_T_REPORT = 544;
+	public final static int TABLE_R_REQUEST = 417;
 
 	public final static int TREE_MENUPRIMARY = 10;
 
