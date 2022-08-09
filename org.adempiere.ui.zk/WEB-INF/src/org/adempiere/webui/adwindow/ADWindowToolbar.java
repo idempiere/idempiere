@@ -41,7 +41,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -583,7 +583,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		    	if (msg == null) {
 		    		msg = "Could not invoke Toolbar listener method: " + methodName + "()";
 		    	}
-		    	FDialog.error(windowNo, this, "Error", msg);
+		    	Dialog.error(windowNo, "Error", msg);
 		    	log.log(Level.SEVERE, msg, e);
 		    }
 		}

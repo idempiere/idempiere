@@ -38,7 +38,7 @@ import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.model.MProcess;
 import org.compiere.model.X_AD_CtxHelp;
@@ -545,7 +545,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	{		
 		if (m_ids == null)
 			return;
-		FDialog.ask(getWindowNo(), this, "PrintShipments", new Callback<Boolean>() {
+		Dialog.ask(getWindowNo(), "PrintShipments", new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) {
@@ -628,7 +628,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	{
 		if (m_ids == null)
 			return;
-		FDialog.ask(getWindowNo(), this, "PrintInvoices", new Callback<Boolean>() {
+		Dialog.ask(getWindowNo(), "PrintInvoices", new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result) 
 			{

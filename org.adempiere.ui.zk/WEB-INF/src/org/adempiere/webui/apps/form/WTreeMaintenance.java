@@ -36,7 +36,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.TreeMaintenance;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
@@ -486,7 +486,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	private void action_treeAddAll()
 	{
 		// idempiere-85
-		FDialog.ask(m_WindowNo, null, "TreeAddAllItems", new Callback<Boolean>() {
+		Dialog.ask(m_WindowNo, "TreeAddAllItems", new Callback<Boolean>() {
 			
 			@Override
 			public void onCallback(Boolean result) 
@@ -514,7 +514,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	{
 		log.info("");
 		// idempiere-85
-		FDialog.ask(m_WindowNo, null, "TreeRemoveAllItems", new Callback<Boolean>() {
+		Dialog.ask(m_WindowNo, "TreeRemoveAllItems", new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 

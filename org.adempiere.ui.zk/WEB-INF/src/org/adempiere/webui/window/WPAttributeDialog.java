@@ -284,13 +284,13 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		//	Product has no Attribute Set
 		if (as == null)		
 		{
-			FDialog.error(m_WindowNo, this, "PAttributeNoAttributeSet");
+			Dialog.error(m_WindowNo, "PAttributeNoAttributeSet");
 			return false;
 		}
 		//	Product has no Instance Attributes
 		if (!m_productWindow && !as.isInstanceAttribute())
 		{
-			FDialog.error(m_WindowNo, this, "PAttributeNoInstanceAttribute");
+			Dialog.error(m_WindowNo, "PAttributeNoInstanceAttribute");
 			return false;
 		}
 
@@ -488,7 +488,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 
 		if (m_row == 0)
 		{
-			FDialog.error(m_WindowNo, this, "PAttributeNoInfo");
+			Dialog.error(m_WindowNo, "PAttributeNoInfo");
 			return false;
 		}
 
@@ -1095,7 +1095,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			//
 			if (mandatory.length() > 0)
 			{
-				FDialog.error(m_WindowNo, this, "FillMandatory", mandatory);
+				Dialog.error(m_WindowNo, "FillMandatory", mandatory);
 				return false;
 			}
 			//	Save Model

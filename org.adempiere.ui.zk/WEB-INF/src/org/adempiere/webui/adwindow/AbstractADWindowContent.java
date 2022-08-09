@@ -81,7 +81,7 @@ import org.adempiere.webui.part.ITabOnSelectHandler;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.CustomizeGridViewDialog;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.FindWindow;
 import org.adempiere.webui.window.LabelAction;
 import org.adempiere.webui.window.WChat;
@@ -192,8 +192,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	private int m_onlyCurrentDays = 0;
 
-	private Component parent;
-
 	private boolean m_findCancelled;
 
 	private boolean m_findCreateNew;
@@ -241,9 +239,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
 	public Component createPart(Object parent)
     {
-		if (parent instanceof Component)
-			this.parent = (Component) parent;
-
 		adTabbox = createADTab();
 		adTabbox.setSelectionEventListener(this);
 		adTabbox.setADWindowPanel(this);
@@ -699,7 +694,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						initFirstTabpanel();
 		    		} catch (Exception e) {
 		        		if (DBException.isTimeout(e)) {
-		        			FDialog.error(curWindowNo, GridTable.LOAD_TIMEOUT_ERROR_MESSAGE);
+		        			Dialog.error(curWindowNo, GridTable.LOAD_TIMEOUT_ERROR_MESSAGE);
 		        		}
 		    		}
 			}
@@ -1164,7 +1159,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	if (isPendingChanges())
     	{
     		showingOnExitDialog = true;
-    		FDialog.ask(curWindowNo, null, "CloseUnSave?", b -> {
+    		Dialog.ask(curWindowNo, "CloseUnSave?", b -> {
     			showingOnExitDialog = false;
     			callback.onCallback(b);
     			if (!b)
@@ -1447,7 +1442,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		if (!adTabbox.updateSelectedIndex(oldTabIndex, newTabIndex))
 		{
-		    FDialog.warn(curWindowNo, "TabSwitchJumpGo", title);
+		    Dialog.warn(curWindowNo, "TabSwitchJumpGo", title);
 		    if (callback != null)
 				callback.onCallback(false);
 		    return;
@@ -1794,7 +1789,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         		isImporting = gridTable.isImporting();
         	}
         	if (!isImporting) {
-        		FDialog.warn(curWindowNo, null, e.getAD_Message(), e.getInfo());
+        		Dialog.warn(curWindowNo, e.getAD_Message(), e.getInfo());
         		e.setConfirmed(true);   //  show just once - if MTable.setCurrentRow is involved the status event is re-issued
         	}
         }
@@ -2070,9 +2065,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			adTabbox.getSelectedGridTab().dataRefreshAll(fireEvent, true);			
 		} catch (Exception e) {			
 			if (DBException.isTimeout(e)) {
-				FDialog.error(getWindowNo(), "GridTabLoadTimeoutError");
+				Dialog.error(getWindowNo(), "GridTabLoadTimeoutError");
 			} else {
-				FDialog.error(getWindowNo(), "Error", e.getMessage());
+				Dialog.error(getWindowNo(), "Error", e.getMessage());
 				logger.log(Level.SEVERE, e.getMessage(), e);
 			}
 			adTabbox.getSelectedGridTab().reset();
@@ -2573,7 +2568,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	if (!Util.isEmpty(dirtyTabpanel.getGridTab().getCommitWarning()) ||
 			(!Env.isAutoCommit(ctx, curWindowNo) && onNavigationEvent))
 		{
-			FDialog.ask(curWindowNo, this.getComponent(), "SaveChanges?", dirtyTabpanel.getGridTab().getCommitWarning(), new Callback<Boolean>() {
+			Dialog.ask(curWindowNo, "SaveChanges?", dirtyTabpanel.getGridTab().getCommitWarning(), new Callback<Boolean>() {
 
 				@Override
 				public void onCallback(Boolean result)
@@ -2789,7 +2784,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		
 		deleteConfirmationLogic = adTabbox.getSelectedGridTab().getDeleteConfirmationLogic();
 		if(Util.isEmpty(deleteConfirmationLogic)) {
-			FDialog.ask(curWindowNo, null, "DeleteRecord?", new Callback<Boolean>() {
+			Dialog.ask(curWindowNo, "DeleteRecord?", new Callback<Boolean>() {
 				@Override
 				public void onCallback(Boolean result)
 				{
@@ -2821,7 +2816,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			editor.fillHorizontal();
 			editor.setValidInput(deleteConfirmationLogic);
 			
-			FDialog.askForInputTextConfirmation(curWindowNo, editor, "DeleteRecordWithConfirm?", new Object[] {deleteConfirmationLogic}, null, 
+			Dialog.askForInputTextConfirmation(curWindowNo, editor, "DeleteRecordWithConfirm?", new Object[] {deleteConfirmationLogic}, null, 
 					new Callback<Map.Entry<Boolean, String>>() {
 				@Override
 				public void onCallback(Map.Entry<Boolean, String> result)
@@ -2864,7 +2859,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			sb.append(Env.getContext(ctx, curWindowNo, "_WinInfo_WindowName", false)).append(" - ")
 				.append(indices.length).append(" ").append(Msg.getMsg(Env.getCtx(), "Selected"));
 			if(Util.isEmpty(deleteConfirmationLogic)) {
-				FDialog.ask(sb.toString(), curWindowNo, null,"DeleteSelection", new Callback<Boolean>() {
+				Dialog.ask(sb.toString(), curWindowNo,"DeleteSelection", new Callback<Boolean>() {
 					@Override
 					public void onCallback(Boolean result) {
 						if(result){
@@ -2906,7 +2901,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				editor.fillHorizontal();
 				editor.setValidInput(deleteConfirmationLogic);
 				
-				FDialog.askForInputTextConfirmation(curWindowNo, editor, "DeleteSelectionWithConfirm?", new String[] {Integer.toString(indices.length), deleteConfirmationLogic}, null, 
+				Dialog.askForInputTextConfirmation(curWindowNo, editor, "DeleteSelectionWithConfirm?", new String[] {Integer.toString(indices.length), deleteConfirmationLogic}, null, 
 						new Callback<Map.Entry<Boolean, String>>() {
 					@Override
 					public void onCallback(Map.Entry<Boolean, String> result)
@@ -3039,7 +3034,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	public void onReport() {
 		if (!MRole.getDefault().isCanReport(adTabbox.getSelectedGridTab().getAD_Table_ID()))
 		{
-			FDialog.error(curWindowNo, parent, "AccessCannotReport");
+			Dialog.error(curWindowNo, "AccessCannotReport");
 			return;
 		}
 
@@ -3178,7 +3173,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		int AD_Table_ID=getActiveGridTab().getAD_Table_ID();
 		final boolean isCanExport=MRole.getDefault().isCanExport(AD_Table_ID);
 		if (!isCanExport) {
-			FDialog.error(curWindowNo, parent, "AccessCannotExport");
+			Dialog.error(curWindowNo, "AccessCannotExport");
 			return;
 		} else {
 			ExportAction action = new ExportAction(this);
@@ -3267,7 +3262,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	{
 		if (adTabbox.getSelectedGridTab().hasChangedCurrentTabAndParents()) {
 			String msg = CLogger.retrieveErrorString("Please ReQuery Window");
-			FDialog.error(curWindowNo, parent, null, msg);
+			Dialog.error(curWindowNo, null, msg);
 			return;
 		}
 
@@ -3363,7 +3358,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		if (record_ID == -1 && adtabPanel.getGridTab().getKeyColumnName().endsWith("_ID"))
 		{
-			FDialog.error(curWindowNo, parent, "SaveErrorRowNotFound");
+			Dialog.error(curWindowNo, "SaveErrorRowNotFound");
 			return;
 		}
 
@@ -3457,7 +3452,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					;
 				else
 				{
-					FDialog.error(curWindowNo, parent, "PostDocNotComplete");
+					Dialog.error(curWindowNo, "PostDocNotComplete");
 					return;
 				}
 			}
@@ -3484,7 +3479,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			{
 				final int tableIdRef = tableId;
 				final int recordIdRef = recordId;
-				FDialog.ask(curWindowNo, null, "PostImmediate?", new Callback<Boolean>() {
+				Dialog.ask(curWindowNo, "PostImmediate?", new Callback<Boolean>() {
 
 					@Override
 					public void onCallback(Boolean result)
@@ -3607,7 +3602,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		{
 			if (isProcessMandatory)
 			{
-				FDialog.error(curWindowNo, null, null, Msg.parseTranslation(ctx, "@NotFound@ @AD_Process_ID@"));
+				Dialog.error(curWindowNo, null, Msg.parseTranslation(ctx, "@NotFound@ @AD_Process_ID@"));
 			}
 			return;
 		}
@@ -3978,7 +3973,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			setupEmbeddedFindwindow(findWindow);
 			if (!findWindow.initialize()) {
 				if (findWindow.getTotalRecords() == 0) {
-					FDialog.info(curWindowNo, getComponent(), "NoRecordsFound");
+					Dialog.info(curWindowNo, "NoRecordsFound");
 				}
 				return false;
 			}

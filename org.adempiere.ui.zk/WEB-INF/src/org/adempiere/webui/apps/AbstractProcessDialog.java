@@ -50,7 +50,7 @@ import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.Adempiere;
@@ -810,7 +810,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			return;
 
 		if (m_pi.isProcessRunning(parameterPanel.getParameters())) {
-			FDialog.error(getWindowNo(), "ProcessAlreadyRunning");
+			Dialog.error(getWindowNo(), "ProcessAlreadyRunning");
 			log.log(Level.WARNING, "Abort process " + m_AD_Process_ID + " because it is already running");
 			return;
 		}
@@ -1029,7 +1029,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		Executions.schedule(getDesktop(), new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				FDialog.ask(getWindowNo(), null, message, callback);
+				Dialog.ask(getWindowNo(), message, callback);
 			}
 		}, new Event("onAsk"));
 	}
@@ -1269,14 +1269,14 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		Executions.schedule(getDesktop(), new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				FDialog.askForInput(m_WindowNo, null, message, callback);
+				Dialog.askForInput(m_WindowNo, message, callback);
 			}
 		}, new Event("onAskForInput"));
 	}
 
 	@Override
 	public void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback) {
-		FDialog.askForInput(message, lookup, editorType, callback, getDesktop(), m_WindowNo);
+		Dialog.askForInput(message, lookup, editorType, callback, getDesktop(), m_WindowNo);
 	}
 
 	@Override

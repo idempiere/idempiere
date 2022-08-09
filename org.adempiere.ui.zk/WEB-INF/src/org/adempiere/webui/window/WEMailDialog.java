@@ -599,14 +599,14 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 					new MUserMail(Env.getCtx(), email).saveEx();
 				if (email.isSentOK())
 				{
-					FDialog.info(0, this, "MessageSent");
+					Dialog.info(0, "MessageSent");
 					onClose();
 				}
 				else
-					FDialog.error(0, this, "MessageNotSent", status);
+					Dialog.error(0, "MessageNotSent", status);
 			}
 			else
-				FDialog.error(0, this, "MessageNotSent", status);
+				Dialog.error(0, "MessageNotSent", status);
 		}
 		else if (event instanceof UploadEvent)
 		{
@@ -704,7 +704,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				m_user = MUser.get(Env.getCtx(), AD_User_ID);
 				if (Util.isEmpty(m_user.getEMail())) 
 				{
-					FDialog.error(0, Msg.getMsg(Env.getCtx(), "UserNoEmailAddress"));
+					Dialog.error(0, Msg.getMsg(Env.getCtx(), "UserNoEmailAddress"));
 				} 
 				else 
 				{
@@ -719,7 +719,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				m_ccuser = MUser.get(Env.getCtx(), AD_User_ID);
 				if (Util.isEmpty(m_ccuser.getEMail())) 
 				{
-					FDialog.error(0, Msg.getMsg(Env.getCtx(), "UserNoEmailAddress"));
+					Dialog.error(0, Msg.getMsg(Env.getCtx(), "UserNoEmailAddress"));
 				}
 				else
 				{

@@ -52,7 +52,7 @@ import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MColumn;
@@ -1311,11 +1311,11 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		{
 			// IDEMPIERE-2392
 			if (! MPeriod.isOpen(Env.getCtx(), m_data.AD_Table_ID, m_data.Record_ID, null)) {
-				FDialog.error(0, WAcctViewer.this, "Error", Msg.getMsg(Env.getCtx(), "PeriodClosed"));
+				Dialog.error(0, "Error", Msg.getMsg(Env.getCtx(), "PeriodClosed"));
 				return;
 			}
 
-			FDialog.ask(m_data.WindowNo, this, "PostImmediate?", new Callback<Boolean>() {
+			Dialog.ask(m_data.WindowNo, "PostImmediate?", new Callback<Boolean>() {
 				
 				@Override
 				public void onCallback(Boolean result) 
@@ -1328,7 +1328,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 							m_data.AD_Table_ID, m_data.Record_ID, force);
 						//setCursor(Cursor.getDefaultCursor());
 						if (error != null)
-							FDialog.error(0, WAcctViewer.this, "PostingError-N", error);
+							Dialog.error(0, "PostingError-N", error);
 
 						actionQuery();
 					}

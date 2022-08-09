@@ -49,7 +49,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.model.MMFAMethod;
 import org.compiere.model.MMFARegisteredDevice;
@@ -388,7 +388,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		String msg = login.validateLogin(m_orgKNPair);
 		if (!Util.isEmpty(msg)) {
 			Env.getCtx().clear();
-			FDialog.error(0, this, "Error", msg, new Callback<Integer>() {					
+			Dialog.error(0, "Error", msg, new Callback<Integer>() {					
 				@Override
 				public void onCallback(Integer result) {
 					Events.echoEvent(new Event(ON_DEFER_LOGOUT, component));
@@ -406,7 +406,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 				Timestamp now = TimeUtil.getDay(null);
 
 				if (now.after(notifyAfter))
-					FDialog.warn(0, null, "", Msg.getMsg(m_ctx, "YourPasswordWillExpireInDays",
+					Dialog.warn(0, "", Msg.getMsg(m_ctx, "YourPasswordWillExpireInDays",
 							new Object[] { TimeUtil.getDaysBetween(now, limit) }));
 			}
 		}

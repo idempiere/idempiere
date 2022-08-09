@@ -28,7 +28,7 @@ import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.CreateFrom;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
@@ -165,7 +165,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 			}
 			catch (Exception ex)
 			{
-				FDialog.error(windowNo, this, "Error", ex.getLocalizedMessage());
+				Dialog.error(windowNo, "Error", ex.getLocalizedMessage());
 			}
 		}
 		//  Cancel

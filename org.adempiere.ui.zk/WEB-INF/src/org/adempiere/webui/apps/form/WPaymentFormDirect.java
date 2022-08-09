@@ -30,7 +30,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.PaymentFormDirect;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
@@ -151,7 +151,7 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 		KeyNamePair bpba = selected != null ? selected.toKeyNamePair() : null;
 		if (bpba == null)
 		{
-			FDialog.error(getWindowNo(), window, "PaymentBPBankNotFound");
+			Dialog.error(getWindowNo(), "PaymentBPBankNotFound");
 			dataOK = false;
 		}
 		//
@@ -163,9 +163,9 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 	public boolean saveChangesInTrx(final String trxName) {		
 		boolean ok = save(0, tRoutingField.getText(), tNumberField.getText(), trxName);		
 		if (!ok)
-			FDialog.error(getWindowNo(), window, "PaymentError", processMsg);
+			Dialog.error(getWindowNo(), "PaymentError", processMsg);
 		else if (processMsg != null)
-			FDialog.info(getWindowNo(), window, "PaymentCreated", m_mPayment.getDocumentNo());
+			Dialog.info(getWindowNo(), "PaymentCreated", m_mPayment.getDocumentNo());
 		
 		return ok;
 	}

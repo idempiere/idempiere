@@ -34,7 +34,7 @@ import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.CustomizeGridViewDialog;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -217,7 +217,7 @@ public class WQuickForm extends Window implements IQuickForm
 	{
 		if (gridTab.getTableModel().getRowChanged() > -1)
 		{
-			FDialog.ask(windowNo, this, "SaveChanges?", new Callback <Boolean>() {
+			Dialog.ask(windowNo, "SaveChanges?", new Callback <Boolean>() {
 
 				@Override
 				public void onCallback(Boolean result)
@@ -296,7 +296,7 @@ public class WQuickForm extends Window implements IQuickForm
 		final int[] indices = gridTab.getSelection();
 		if (indices.length > 0)
 		{
-			FDialog.ask(windowNo, this, "DeleteRecord?", new Callback <Boolean>() {
+			Dialog.ask(windowNo, "DeleteRecord?", new Callback <Boolean>() {
 
 				@Override
 				public void onCallback(Boolean result)

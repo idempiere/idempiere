@@ -34,7 +34,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.I_C_ElementValue;
@@ -437,7 +437,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		//	Miminum check
 		if (m_queryColumns.size() == 0)
 		{
-			FDialog.error(p_WindowNo, this, "Error", Msg.getMsg(Env.getCtx(),"NoQueryColumnsFound"));
+			Dialog.error(p_WindowNo, "Error", Msg.getMsg(Env.getCtx(),"NoQueryColumnsFound"));
 			log.log(Level.SEVERE, "No query columns found");
 			return false;
 		}
@@ -568,7 +568,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 		if (list.size() == 0)
 		{
-			FDialog.error(p_WindowNo, this, "Error", "No Info Columns");
+			Dialog.error(p_WindowNo, "Error", "No Info Columns");
 			log.log(Level.SEVERE, "No Info for AD_Table_ID=" + AD_Table_ID + " - " + sql);
 			return false;
 		}
