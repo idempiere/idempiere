@@ -36,6 +36,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MOrder;
 import org.compiere.model.MRMA;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -163,12 +164,12 @@ public class WInvoiceGen extends InvoiceGen implements IFormController, EventLis
 	 */
 	public void dynInit() throws Exception
 	{
-		MLookup orgL = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, 2163, DisplayType.TableDir);
+		MLookup orgL = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, SystemIDs.COLUMN_C_ORDER_AD_ORG_ID, DisplayType.TableDir);
 		fOrg = new WTableDirEditor ("AD_Org_ID", false, false, true, orgL);
 	//	lOrg.setText(Msg.translate(Env.getCtx(), "AD_Org_ID"));
 		fOrg.addValueChangeListener(this);
 		//
-		MLookup bpL = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, 2762, DisplayType.Search);
+		MLookup bpL = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, SystemIDs.COLUMN_C_ORDER_C_BPARTNER_ID, DisplayType.Search);
 		fBPartner = new WSearchEditor ("C_BPartner_ID", false, false, true, bpL);
 	//	lBPartner.setText(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
 		fBPartner.addValueChangeListener(this);

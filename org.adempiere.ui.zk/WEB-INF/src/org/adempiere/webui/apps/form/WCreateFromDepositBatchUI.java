@@ -47,6 +47,7 @@ import org.compiere.model.MDepositBatch;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -166,7 +167,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, MColumn.getColumn_ID(MPayment.Table_Name, MPayment.COLUMNNAME_TenderType), DisplayType.List);
 		tenderTypeField = new WTableDirEditor (MPayment.COLUMNNAME_TenderType,false,false,true,lookup);
 		
-		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 3499, DisplayType.Search);
+		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID, DisplayType.Search);
 		bPartnerLookup = new WSearchEditor ("C_BPartner_ID", false, false, true, lookup);
 		
 		Timestamp date = null;

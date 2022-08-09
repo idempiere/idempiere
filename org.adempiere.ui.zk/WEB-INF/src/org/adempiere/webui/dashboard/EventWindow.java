@@ -31,7 +31,6 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MRequest;
 import org.compiere.model.MRequestType;
-import org.compiere.model.SystemIDs;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
@@ -168,7 +167,7 @@ public class EventWindow extends Window implements EventListener<Event> {
 			setVisible(false);
 		else if (e.getTarget() == confirmPanel.getButton(ConfirmPanel.A_ZOOM)) {
 			if (R_Request_ID > 0)
-				AEnv.zoom(SystemIDs.TABLE_R_REQUEST, R_Request_ID);
+				AEnv.zoom(MRequest.Table_ID, R_Request_ID);
 		}
 	}
 }

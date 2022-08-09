@@ -30,12 +30,15 @@ public class SystemIDs
 	public final static int COLUMN_C_INVOICE_C_BPARTNER_ID = 3499;
 	public final static int COLUMN_C_INVOICE_C_CURRENCY_ID = 3505;
 	public final static int COLUMN_C_INVOICELINE_M_PRODUCT_ID = 3840;
+	public final static int COLUMN_C_ORDER_AD_ORG_ID = 2163;
+	public final static int COLUMN_C_ORDER_C_BPARTNER_ID = 2762;
 	public final static int COLUMN_C_PAYMENT_V_TENDERTYPE = 8416;
 	public final static int COLUMN_C_PAYSELECTIONCHECK_C_PAYSELECTION_ID = 7670;
 	public final static int COLUMN_FACT_ACCT_C_ACCTSCHEMA_ID = 2513;	
 	public final static int COLUMN_FACT_ACCT_M_PRODUCT_ID = 2527;	
 	public final static int COLUMN_M_MOVEMENTLINE_M_ATTRIBUTESETINSTANCE_ID = 8551;
 	public final static int COLUMN_M_PRODUCT_M_ATTRIBUTESETINSTANCE_ID = 8418;
+	public final static int COLUMN_M_REQUISITION_M_WAREHOUSE_ID = 11474;
 	public final static int COLUMN_S_RESOURCE_S_RESOURCETYPE_ID = 6851;
 	public final static int COLUMN_S_RESOURCEASSIGNMENT_S_RESOURCE_ID = 6826;
 	public final static int COLUMN_WIZARDSTATUS = 200310;
@@ -43,6 +46,8 @@ public class SystemIDs
 
 	public final static int COUNTRY_US = 100;
 	public final static int COUNTRY_JAPAN = 216;
+
+	public final static int C_UOM_EACH = 100;
 
 	public final static int ELEMENT_AD_CLIENT_ID = 102;
 	public final static int ELEMENT_AD_ORG_ID = 113;
@@ -176,16 +181,6 @@ public class SystemIDs
 	public final static int REFERENCE_WFINSTANCE_STATE = 305;
 	public final static int REFERENCE_WIZARDSTATUS = 200003;
 	public final static int REFERENCE_YESNO = 319;
-
-	public final static int TABLE_AD_TABLE = 100;
-	public final static int TABLE_AD_WF_PROCESS = 645;
-	public final static int TABLE_AD_WF_ACTIVITY = 644;
-	public final static int TABLE_I_PRODUCT = 532;
-	public final static int TABLE_I_BPARTNER = 533;
-	public final static int TABLE_I_ELEMENTVALUE = 534;
-	public final static int TABLE_I_REPORTLINE = 535;
-	public final static int TABLE_T_REPORT = 544;
-	public final static int TABLE_R_REQUEST = 417;
 
 	public final static int TREE_MENUPRIMARY = 10;
 

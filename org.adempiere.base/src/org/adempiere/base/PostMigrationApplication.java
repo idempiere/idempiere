@@ -17,6 +17,7 @@ import java.util.logging.Level;
 
 import org.adempiere.util.ProcessUtil;
 import org.compiere.Adempiere;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.Env;
@@ -46,7 +47,7 @@ public class PostMigrationApplication implements IApplication {
 	private void checkSequence() {
 		ProcessInfo pi = new ProcessInfo("Sequence Check", 258);
 		pi.setAD_Client_ID(0);
-		pi.setAD_User_ID(100);
+		pi.setAD_User_ID(SystemIDs.USER_SUPERUSER);
 		pi.setClassName("org.compiere.process.SequenceCheck");
 		ProcessUtil.startJavaProcess(Env.getCtx(), pi, null);
 	}
@@ -54,7 +55,7 @@ public class PostMigrationApplication implements IApplication {
 	private void roleAccessUpdate() {
 		ProcessInfo pi = new ProcessInfo("Role Access Update", 295);
 		pi.setAD_Client_ID(0);
-		pi.setAD_User_ID(100);
+		pi.setAD_User_ID(SystemIDs.USER_SUPERUSER);
 		pi.setClassName("org.compiere.process.RoleAccessUpdate");
 		ProcessUtil.startJavaProcess(Env.getCtx(), pi, null);
 	}
@@ -62,7 +63,7 @@ public class PostMigrationApplication implements IApplication {
 	private void addMissingTranslation() {
 		ProcessInfo pi = new ProcessInfo("Synchronize Terminology", 172);
 		pi.setAD_Client_ID(0);
-		pi.setAD_User_ID(100);
+		pi.setAD_User_ID(SystemIDs.USER_SUPERUSER);
 		pi.setClassName("org.compiere.process.SynchronizeTerminology");
 		ProcessUtil.startJavaProcess(Env.getCtx(), pi, null);
 	}
