@@ -127,7 +127,7 @@ public class RoleAccessUpdate extends SvrProcess
 		s_log.info("------------------");
 		ProcessInfo pi = new ProcessInfo("Role Access Update", 295);
 		pi.setAD_Client_ID(0);
-		pi.setAD_User_ID(100);
+		pi.setAD_User_ID(SystemIDs.USER_SUPERUSER);
 		
 		RoleAccessUpdate rau = new RoleAccessUpdate();
 		rau.startProcess(Env.getCtx(), pi, null);

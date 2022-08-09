@@ -57,6 +57,7 @@ import org.compiere.model.MSystem;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POResultSet;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 
@@ -239,8 +240,8 @@ public final class DB
 			.append(" EMail=").append(DB.TO_STRING(adminEMail))
 			.append(", EMailUser=").append(DB.TO_STRING(mailUser))
 			.append(", EMailUserPW=").append(DB.TO_STRING(mailPassword))
-			.append(" WHERE AD_User_ID IN (0,100)");
-		no = DB.executeUpdate(sql.toString(), null);
+			.append(" WHERE AD_User_ID IN (?,?,?)");
+		no = DB.executeUpdate(sql.toString(), new Object[]{SystemIDs.USER_SYSTEM_DEPRECATED, SystemIDs.USER_SYSTEM, SystemIDs.USER_SUPERUSER}, false, null);
 		if (log.isLoggable(Level.FINE)) log.fine("User #"+no);
 		//
 		try (FileOutputStream out = new FileOutputStream(envFile))

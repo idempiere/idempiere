@@ -50,6 +50,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -152,7 +153,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		setTooltipText(bRefresh, "Refresh");
 
         MLookup lookup = MLookupFactory.get(Env.getCtx(), m_WindowNo,
-                0, 10443, DisplayType.Search);
+                0, SystemIDs.COLUMN_AD_WF_ACTIVITY_AD_USER_ID, DisplayType.Search);
         fForward = new WSearchEditor(lookup, Msg.translate(
                 Env.getCtx(), "AD_User_ID"), "", true, false, true);
 

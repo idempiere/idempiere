@@ -377,8 +377,8 @@ public class MSystem extends X_AD_System
 			+ "FROM AD_User u"
 			+ " INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID) "
 			+ "WHERE u.AD_Client_ID<>11"			//	no Demo
-			+ " AND u.AD_User_ID NOT IN (0,10,100)";	//	no System/SuperUser
-		int internalUsers = DB.getSQLValue(null, sql);
+			+ " AND u.AD_User_ID NOT IN (?,?,?)";	//	no System/SuperUser
+		int internalUsers = DB.getSQLValue(null, sql, SystemIDs.USER_SYSTEM_DEPRECATED, SystemIDs.USER_SYSTEM, SystemIDs.USER_SUPERUSER);
 		setSupportUnits(internalUsers);
 	}	//	setInternalUsers
 

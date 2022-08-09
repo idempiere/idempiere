@@ -48,6 +48,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -168,7 +169,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		tenderTypeField = new WTableDirEditor (MPayment.COLUMNNAME_TenderType,false,false,true,lookup);
 		tenderTypeField.getComponent().addEventListener(Events.ON_CHANGE, this);
 		
-		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 3499, DisplayType.Search);
+		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID, DisplayType.Search);
 		bPartnerLookup = new WSearchEditor ("C_BPartner_ID", false, false, true, lookup);
 		
 		Timestamp date = Env.getContextAsDate(Env.getCtx(), p_WindowNo, MBankStatement.COLUMNNAME_StatementDate);

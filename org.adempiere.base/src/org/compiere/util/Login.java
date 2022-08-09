@@ -376,7 +376,7 @@ public class Login
 					if (force)
 					{
 						Env.setContext(m_ctx, Env.AD_USER_NAME, "SuperUser");
-						Env.setContext(m_ctx, Env.AD_USER_ID, "100");
+						Env.setContext(m_ctx, Env.AD_USER_ID, SystemIDs.USER_SUPERUSER);
 						Env.setContext(m_ctx, "#AD_User_Description", "SuperUser Forced Login");
 						Env.setContext(m_ctx, Env.USER_LEVEL, "S  ");  	//	Format 'SCO'
 						Env.setContext(m_ctx, "#User_Client", "0");		//	Format c1, c2, ...

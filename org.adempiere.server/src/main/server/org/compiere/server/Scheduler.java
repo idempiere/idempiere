@@ -54,6 +54,7 @@ import org.compiere.model.MSchedulerRecipient;
 import org.compiere.model.MSession;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
+import org.compiere.model.SystemIDs;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -504,7 +505,7 @@ public class Scheduler extends AdempiereServer
 		else if (scheduler.getUpdatedBy() > 0)
 			AD_User_ID = scheduler.getUpdatedBy();
 		else
-			AD_User_ID = 100; //fall back to SuperUser
+			AD_User_ID = SystemIDs.USER_SUPERUSER; //fall back to SuperUser
 		return AD_User_ID;
 	}
 	
