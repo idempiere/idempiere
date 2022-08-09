@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -79,9 +80,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 
@@ -122,6 +125,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		this.setBorder("normal");
 		this.setShadow(true);
 		this.setSizable(true);
+		this.setMaximizable(true);
 		
 		if (log.isLoggable(Level.CONFIG)) log.config("M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID 
 			+ ", M_Product_ID=" + M_Product_ID
@@ -205,6 +209,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	private Borderlayout mainLayout = new Borderlayout();
 	private Panel centerPanel = new Panel();
 	private Grid centerLayout = new Grid();
+	private Panel northPanel = new Panel();
+	private Grid northLayout = new Grid();
 	private ConfirmPanel confirmPanel = new ConfirmPanel (true);
 	
 	private String m_columnName = null;
@@ -218,6 +224,17 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		mainLayout.setParent(this);
 		ZKUpdateUtil.setHflex(mainLayout, "1");
 		ZKUpdateUtil.setVflex(mainLayout, "min");
+		if (ClientInfo.maxHeight(600)) 
+				mainLayout.setStyle("max-height: 100%;"); 
+		else 
+			mainLayout.setStyle("max-height: 600px;");
+		
+		North north = new North();
+		north.setSclass("dialog-content");
+		north.setParent(mainLayout);
+		ZKUpdateUtil.setVflex(northPanel, "min");
+		ZKUpdateUtil.setHflex(northPanel, "min");
+		north.appendChild(northPanel);
 		
 		Center center = new Center();
 		center.setSclass("dialog-content");
@@ -225,6 +242,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		ZKUpdateUtil.setVflex(centerPanel, "min");
 		ZKUpdateUtil.setHflex(centerPanel, "min");
 		center.appendChild(centerPanel);
+		center.setAutoscroll(true);
 
 		South south = new South();
 		south.setSclass("dialog-footer");
@@ -233,6 +251,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		
 		centerPanel.appendChild(centerLayout);
 		centerLayout.setOddRowSclass("even");
+		northPanel.appendChild(northLayout);
+		northLayout.setOddRowSclass("even");
 		//
 		confirmPanel.addActionListener(Events.ON_CLICK, this);
 		addEventListener(Events.ON_CANCEL, e -> onCancel());
@@ -254,6 +274,9 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		column = new Column();
 		column.setParent(columns);
 		ZKUpdateUtil.setWidth(column, "70%");
+		
+		Rows northRows = new Rows();
+		northRows.setParent(northLayout);
 		
 		Rows rows = new Rows();
 		rows.setParent(centerLayout);
@@ -301,10 +324,13 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		if (m_productWindow)
 		{
 			Row row = new Row();
-			row.setParent(rows);
+			row.setParent(northRows);
+			Cell cell = new Cell();
+			cell.setWidth("29%");
 			cbNewEdit.setLabel(Msg.getMsg(Env.getCtx(), "EditRecord"));
 			cbNewEdit.addEventListener(Events.ON_CHECK, this);
-			row.appendChild(cbNewEdit);
+			cell.appendChild(cbNewEdit);
+			row.appendChild(cell);
 						
 			String sql = "SELECT M_AttributeSetInstance_ID, Description"
 				+ " FROM M_AttributeSetInstance"
@@ -324,7 +350,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			ZKUpdateUtil.setHflex(existingCombo, "1");
 			
 			row = new Row();
-			row.setParent(rows);
+			row.setParent(northRows);
 			LayoutUtils.addSclass("txt-btn", bNewRecord);
 			bNewRecord.addActionListener(this);
 			row.appendChild(bNewRecord);
@@ -365,7 +391,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			bSelect.addEventListener(Events.ON_CLICK, this);
 			row.appendChild(bSelect);
 			ZKUpdateUtil.setHflex(bSelect, "1");
-			rows.appendChild(row);
+			northRows.appendChild(row);
 			
 			//	All Attributes
 			MAttribute[] attributes = as.getMAttributes (true);
@@ -381,7 +407,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			row.setParent(rows);
 			m_row++;
 			Label label = new Label (Msg.translate(Env.getCtx(), "Lot"));
-			row.appendChild(label);
+			row.appendChild(label.rightAlign());
 			row.appendChild(fieldLotString);
 			ZKUpdateUtil.setHflex(fieldLotString, "1");
 			fieldLotString.setText (m_masi.getLot());
@@ -405,7 +431,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			row = new Row();
 			row.setParent(rows);
 			m_row++;
-			row.appendChild(label);
+			row.appendChild(label.rightAlign());
 			row.appendChild(fieldLot);
 			ZKUpdateUtil.setHflex(fieldLot, "1");
 			if (m_masi.getM_Lot_ID() != 0)
@@ -457,7 +483,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			row.setParent(rows);
 			m_row++;
 			Label label = new Label (Msg.translate(Env.getCtx(), "SerNo"));
-			row.appendChild(label);
+			row.appendChild(label.rightAlign());
 			row.appendChild(fieldSerNo);
 			ZKUpdateUtil.setHflex(fieldSerNo, "1");
 			fieldSerNo.setText(m_masi.getSerNo());
@@ -489,7 +515,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 				fieldGuaranteeDate.setValue(m_masi.getGuaranteeDate(true));
 			else
 				fieldGuaranteeDate.setValue(m_masi.getGuaranteeDate());
-			row.appendChild(label);
+			row.appendChild(label.rightAlign());
 			row.appendChild(fieldGuaranteeDate);			
 		}	//	GuaranteeDate
 
@@ -525,7 +551,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		fieldDescription.setReadonly(true);
 		Row row = new Row();
 		row.setParent(rows);
-		row.appendChild(label);
+		row.appendChild(label.rightAlign());
 		row.appendChild(fieldDescription);
 		ZKUpdateUtil.setHflex(fieldDescription, "1");
 		
