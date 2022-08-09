@@ -291,10 +291,10 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	public boolean isPrintable() {
 		if (m_logs == null)
 			return false;
-			
+
 		for(ProcessInfoLog log : m_logs) {
-				if (ReportEngine.getReportEngineType(log.getAD_Table_ID()) >= 0) 
-					return true;
+			if (log.getAD_Table_ID() > 0 && log.getRecord_ID() > 0 && ReportEngine.getReportEngineType(log.getAD_Table_ID()) >= 0)
+				return true;
 		}
 		return false;
 	}
