@@ -419,22 +419,12 @@ public final class DB
 	public static Connection createConnection (boolean autoCommit, int trxLevel)
 	{
 		Connection conn = s_cc.getConnection (autoCommit, trxLevel);
-		if (CLogMgt.isLevelFinest())
-		{
-			/**
-			try
-			{
-				log.finest(s_cc.getConnectionURL()
-					+ ", UserID=" + s_cc.getDbUid()
-					+ ", AutoCommit=" + conn.getAutoCommit() + " (" + autoCommit + ")"
-					+ ", TrxIso=" + conn.getTransactionIsolation() + "( " + trxLevel + ")");
-			}
-			catch (Exception e)
-			{
-			}
-			**/
-		}
 
+		if (conn == null)
+        {
+            throw new IllegalStateException("DB.createConnection - @NoDBConnection@");
+        }
+		
 		//hengsin: failed to set autocommit can lead to severe lock up of the system
         try {
 	        if (conn != null && conn.getAutoCommit() != autoCommit)
@@ -447,46 +437,19 @@ public final class DB
 	}	//	createConnection
 
     /**
+     *  @Deprecated (since="10", forRemoval=true)
      *  Create new Connection.
      *  The connection must be closed explicitly by the application
      *
      *  @param autoCommit auto commit
+     *  @param readOnly ignore
      *  @param trxLevel - Connection.TRANSACTION_READ_UNCOMMITTED, Connection.TRANSACTION_READ_COMMITTED, Connection.TRANSACTION_REPEATABLE_READ, or Connection.TRANSACTION_READ_COMMITTED.
      *  @return Connection connection
+     *  @deprecated
      */
     public static Connection createConnection (boolean autoCommit, boolean readOnly, int trxLevel)
     {
-        Connection conn = s_cc.getConnection (autoCommit, trxLevel);
-
-        //hengsin: this could be problematic as it can be reuse for readwrite activites after return to pool
-        /*
-        if (conn != null)
-        {
-            try
-            {
-                conn.setReadOnly(readOnly);
-            }
-            catch (SQLException ex)
-            {
-                conn = null;
-                log.log(Level.SEVERE, ex.getMessage(), ex);
-            }
-        }*/
-
-        if (conn == null)
-        {
-            throw new IllegalStateException("DB.getConnectionRO - @NoDBConnection@");
-        }
-
-        //hengsin: failed to set autocommit can lead to severe lock up of the system
-        try {
-	        if (conn.getAutoCommit() != autoCommit)
-	        {
-	        	throw new IllegalStateException("Failed to set the requested auto commit mode on connection. [autocommit=" + autoCommit +"]");
-	        }
-        } catch (SQLException e) {}
-
-        return conn;
+        return createConnection(autoCommit, trxLevel);
     }   //  createConnection
 
 	/**
