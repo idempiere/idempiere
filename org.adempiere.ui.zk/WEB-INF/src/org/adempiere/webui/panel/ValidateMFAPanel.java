@@ -108,9 +108,6 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 	private KeyNamePair m_orgKNPair;
 
-	/* Push the first OK automatically - when the first record is TOTP */
-	private boolean m_autoCall = false;
-
 	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
 
 	/* Number of failures to calculate an incremental delay on every trial */
@@ -133,11 +130,6 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 			AuFocus auf = new AuFocus(lstMFAMechanism);
 			Clients.response(auf);
-
-			if (m_autoCall) {
-				validateMFAComplete(true);
-			}
-
 		} else {
 			if (logger.isLoggable(Level.INFO)) logger.info("MFA not required");
 			validateMFAComplete(false);
@@ -260,15 +252,8 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		lstMFAMechanism.setAutocomplete(true);
 		lstMFAMechanism.setAutodrop(true);
 		lstMFAMechanism.setId("lstMFAMechanism");
-		boolean first = true;
 		for (MMFARegistration reg : MMFARegistration.getValidRegistrationsFromUser()) {
 			MMFAMethod method = new MMFAMethod(m_ctx, reg.getMFA_Method_ID(), reg.get_TrxName());
-			if (first) {
-				first = false;
-				if (MMFAMethod.METHOD_Time_BasedOne_TimePassword.equals(method.getMethod())) {
-					m_autoCall = true;
-				}
-			}
 			ComboItem ci = new ComboItem(reg.getName() + " - " + method.getMethod(), reg.getMFA_Registration_ID());
 			String id = AdempiereIdGenerator.escapeId(ci.getLabel());
 			if (lstMFAMechanism.getFellowIfAny(id) == null)
