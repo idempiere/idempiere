@@ -157,7 +157,6 @@ public class EMailMechanism implements IMFAMechanism {
 		// valid code
 		reg.setMFALastSecret(code);
 		reg.setLastSuccess(new Timestamp(System.currentTimeMillis()));
-		reg.setFailedLoginCount(0);
 		reg.setIsValid(true);
 		reg.setMFAValidatedAt(new Timestamp(System.currentTimeMillis()));
 		reg.setExpiration(null);
@@ -261,7 +260,6 @@ public class EMailMechanism implements IMFAMechanism {
 
 		reg.setMFALastSecret(code);
 		reg.setLastSuccess(new Timestamp(System.currentTimeMillis()));
-		reg.setFailedLoginCount(0);
 		if (setPreferred)
 			reg.setIsUserMFAPreferred(true);
 		saveRegistration(reg);

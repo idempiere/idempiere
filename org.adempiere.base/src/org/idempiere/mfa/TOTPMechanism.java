@@ -201,7 +201,6 @@ public class TOTPMechanism implements IMFAMechanism {
 		if (valid) {
 			reg.setMFALastSecret(code);
 			reg.setLastSuccess(new Timestamp(System.currentTimeMillis()));
-			reg.setFailedLoginCount(0);
 		} else  {
 			reg.setLastFailure(new Timestamp(System.currentTimeMillis()));
 			reg.setFailedLoginCount(reg.getFailedLoginCount() + 1);
