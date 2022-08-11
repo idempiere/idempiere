@@ -2897,9 +2897,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 */
 	private void loadSubstitutedRoles(boolean reload)
 	{
-		if (this.m_parent != null)
+		if (this.m_parent != null || isMasterRole())
 		{
-			// load only if this is logged role (no parent roles) 
+			// load only if this is logged role (no parent or master roles) 
 			return;
 		}
 		//
