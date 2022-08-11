@@ -26,6 +26,7 @@
 package org.adempiere.webui.panel;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -108,6 +109,9 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 	private KeyNamePair m_orgKNPair;
 
+	/* Push the first OK automatically - when the first record is TOTP */
+	private boolean m_autoCall = false;
+
 	private static LogAuthFailure logAuthFailure = new LogAuthFailure();
 
 	/* Number of failures to calculate an incremental delay on every trial */
@@ -130,6 +134,11 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 			AuFocus auf = new AuFocus(lstMFAMechanism);
 			Clients.response(auf);
+
+			if (m_autoCall) {
+				validateMFAComplete(true);
+			}
+
 		} else {
 			if (logger.isLoggable(Level.INFO)) logger.info("MFA not required");
 			validateMFAComplete(false);
@@ -252,8 +261,12 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		lstMFAMechanism.setAutocomplete(true);
 		lstMFAMechanism.setAutodrop(true);
 		lstMFAMechanism.setId("lstMFAMechanism");
-		for (MMFARegistration reg : MMFARegistration.getValidRegistrationsFromUser()) {
+		List<MMFARegistration> regs = MMFARegistration.getValidRegistrationsFromUser();
+		for (MMFARegistration reg : regs) {
 			MMFAMethod method = new MMFAMethod(m_ctx, reg.getMFA_Method_ID(), reg.get_TrxName());
+			if (regs.size() == 1 && MMFAMethod.METHOD_Time_BasedOne_TimePassword.equals(method.getMethod())) {
+				m_autoCall = true;
+			}
 			ComboItem ci = new ComboItem(reg.getName() + " - " + method.getMethod(), reg.getMFA_Registration_ID());
 			String id = AdempiereIdGenerator.escapeId(ci.getLabel());
 			if (lstMFAMechanism.getFellowIfAny(id) == null)
