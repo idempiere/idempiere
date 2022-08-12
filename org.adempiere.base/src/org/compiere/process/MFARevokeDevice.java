@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.MMFARegisteredDevice;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 
@@ -75,20 +76,25 @@ public class MFARevokeDevice extends SvrProcess {
 		String where;
 		List<Object> params = new ArrayList<Object>();
 		params.add(Env.getAD_User_ID(getCtx()));
+		params.add(getAD_Client_ID());
 		if (p_MFARevokeAll) {
-			where = "AD_User_ID=?";
+			where = "AD_User_ID=? AND AD_Client_ID IN (0,?)";
 		} else {
-			where = "AD_User_ID=? AND (MFA_RegisteredDevice_ID=? OR Expiration<=SYSDATE)";
+			where = "AD_User_ID=? AND AD_Client_ID IN (0,?) AND (MFA_RegisteredDevice_ID=? OR Expiration<=SYSDATE)";
 			params.add(p_MFA_RegisteredDevice_ID);
 		}
 		List<MMFARegisteredDevice> rds = new Query(getCtx(), MMFARegisteredDevice.Table_Name, where, get_TrxName())
 				.setOnlyActiveRecords(true)
-				.setClient_ID()
 				.setParameters(params)
 				.list();
 		for (MMFARegisteredDevice rd : rds) {
 			rd.setIsActive(false);
-			rd.saveEx();
+			try {
+				PO.setCrossTenantSafe();
+				rd.saveEx();
+			} finally {
+				PO.clearCrossTenantSafe();
+			}
 		}
 
 		return "@OK@";
