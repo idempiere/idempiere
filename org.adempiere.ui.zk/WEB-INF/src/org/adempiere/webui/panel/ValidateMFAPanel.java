@@ -26,6 +26,7 @@
 package org.adempiere.webui.panel;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -260,14 +261,11 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		lstMFAMechanism.setAutocomplete(true);
 		lstMFAMechanism.setAutodrop(true);
 		lstMFAMechanism.setId("lstMFAMechanism");
-		boolean first = true;
-		for (MMFARegistration reg : MMFARegistration.getValidRegistrationsFromUser()) {
+		List<MMFARegistration> regs = MMFARegistration.getValidRegistrationsFromUser();
+		for (MMFARegistration reg : regs) {
 			MMFAMethod method = new MMFAMethod(m_ctx, reg.getMFA_Method_ID(), reg.get_TrxName());
-			if (first) {
-				first = false;
-				if (MMFAMethod.METHOD_Time_BasedOne_TimePassword.equals(method.getMethod())) {
-					m_autoCall = true;
-				}
+			if (regs.size() == 1 && MMFAMethod.METHOD_Time_BasedOne_TimePassword.equals(method.getMethod())) {
+				m_autoCall = true;
 			}
 			ComboItem ci = new ComboItem(reg.getName() + " - " + method.getMethod(), reg.getMFA_Registration_ID());
 			String id = AdempiereIdGenerator.escapeId(ci.getLabel());
