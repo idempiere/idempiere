@@ -704,7 +704,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	}
 
 	private void processUploadMedia(Media media) {
-		if (media != null && media.getByteData().length>0)
+		if (media != null && ((media.isBinary() && media.getByteData().length>0) || (!media.isBinary() && media.getStringData().length() > 0)))
 		{
 //				pdfViewer.setContent(media);
 			;
