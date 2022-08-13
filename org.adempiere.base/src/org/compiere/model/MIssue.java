@@ -55,7 +55,7 @@ public class MIssue extends X_AD_Issue
 	{
 		if (s_log.isLoggable(Level.CONFIG))
 			s_log.config(record.getMessage());
-		if (!DB.isConnected(false))
+		if (!DB.isConnected())
 			return null;
 		MSystem system = MSystem.get(Env.getCtx()); 
 		if (system == null || !system.isAutoErrorReport())

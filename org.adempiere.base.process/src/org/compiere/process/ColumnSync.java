@@ -113,7 +113,7 @@ public class ColumnSync extends SvrProcess
 		Connection conn = null;
 		ResultSet rs = null;
 		try {
-			conn = DB.getConnectionRO();
+			conn = DB.getConnection();
 			DatabaseMetaData md = conn.getMetaData();
 			String catalog = DB.getDatabase().getCatalog();
 			String schema = DB.getDatabase().getSchema();
