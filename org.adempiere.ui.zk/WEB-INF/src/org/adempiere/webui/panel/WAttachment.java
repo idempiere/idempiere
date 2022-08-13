@@ -606,7 +606,6 @@ public class WAttachment extends Window implements EventListener<Event>
 			{
 				String contentType = entry.getContentType();
 				media = new AMedia(entry.getName(), null, contentType, entry.getData());
-
 				if (   MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())) 
 					&& Medias.PDF_MIME_TYPE.equals(contentType)) {
 					mediaVersion++;
@@ -615,9 +614,9 @@ public class WAttachment extends Window implements EventListener<Event>
 					preview.setSrc(pdfJsUrl);
 				} else {
 					preview.setContent(media);
-					preview.setVisible(true);
-					preview.invalidate();
 				}
+				preview.setVisible(true);
+				preview.invalidate();
 			}
 			catch (Exception e)
 			{
