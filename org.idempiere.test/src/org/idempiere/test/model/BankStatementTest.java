@@ -81,7 +81,7 @@ public class BankStatementTest extends AbstractTestCase {
 		line.saveEx();
 		
 		ProcessInfo pi = MWorkflow.runDocumentActionWorkflow(stmt, DocAction.ACTION_Complete);
-		assertFalse(pi.isError());
+		assertFalse(pi.isError(), pi.getSummary());
 		
 		stmt.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, stmt.getDocStatus());
@@ -144,7 +144,7 @@ public class BankStatementTest extends AbstractTestCase {
 			line.saveEx();
 			
 			pi = MWorkflow.runDocumentActionWorkflow(stmt, DocAction.ACTION_Complete);
-			assertFalse(pi.isError());
+			assertFalse(pi.isError(), pi.getSummary());
 			
 			stmt.load(getTrxName());
 			assertEquals(DocAction.STATUS_Completed, stmt.getDocStatus());
@@ -224,7 +224,7 @@ public class BankStatementTest extends AbstractTestCase {
 			line.saveEx();
 			
 			pi = MWorkflow.runDocumentActionWorkflow(stmt, DocAction.ACTION_Complete);
-			assertFalse(pi.isError());
+			assertFalse(pi.isError(), pi.getSummary());
 			
 			stmt.load(getTrxName());
 			assertEquals(DocAction.STATUS_Completed, stmt.getDocStatus());

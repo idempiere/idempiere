@@ -91,7 +91,7 @@ public class CreateFromRMAFormTest extends AbstractTestCase {
 		orderLine.saveEx();
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
@@ -106,7 +106,7 @@ public class CreateFromRMAFormTest extends AbstractTestCase {
 		receiptLine.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		

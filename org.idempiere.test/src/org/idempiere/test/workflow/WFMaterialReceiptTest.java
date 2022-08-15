@@ -167,7 +167,7 @@ public class WFMaterialReceiptTest extends AbstractTestCase {
 			line1.saveEx();
 
 			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(mr, DocAction.ACTION_Complete);
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			mr.load(trxName);
 			assertEquals(DocAction.STATUS_Completed, mr.getDocStatus());
 
