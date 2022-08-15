@@ -104,7 +104,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		line1.saveEx();
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(trxName);
@@ -122,7 +122,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		receiptLine.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 
@@ -165,7 +165,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		line2.saveEx();
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 
@@ -185,7 +185,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		receiptLine2.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 
@@ -205,7 +205,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		invoiceLine2.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		invoice.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 
@@ -241,7 +241,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		line1.saveEx();
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(trxName);
@@ -261,7 +261,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		receiptLine1.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt1, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt1.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, receipt1.getDocStatus());
 
@@ -273,7 +273,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 
 		// reactivate the purchase order
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_ReActivate);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_InProgress, order.getDocStatus());
 
@@ -284,7 +284,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 
 		// complete the order again
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(trxName);
@@ -306,7 +306,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		receiptLine2.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt2, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt2.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, receipt2.getDocStatus());
 
@@ -447,7 +447,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		line1.saveEx();
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 
@@ -470,7 +470,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		receiptLine1.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
@@ -605,7 +605,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		line1.saveEx();
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
@@ -620,7 +620,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		receiptLine1.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
@@ -643,7 +643,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		assertEquals(0, rmaLine.getQtyDelivered().intValue(), "Unexpected RMA Line QtyDelivered value");
 		
 		info = MWorkflow.runDocumentActionWorkflow(rma, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		rma.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, rma.getDocStatus());
 		

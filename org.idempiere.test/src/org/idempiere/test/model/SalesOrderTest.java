@@ -147,7 +147,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		rollback();
@@ -181,7 +181,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		rollback();
@@ -210,7 +210,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -228,7 +228,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 		
@@ -247,7 +247,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 		
@@ -278,7 +278,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -296,7 +296,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 		
@@ -438,7 +438,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -486,7 +486,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		order1.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(order1, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order1.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order1.getDocStatus());
 		line1 = order1.getLines()[0];
@@ -536,7 +536,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		payment.setC_Currency_ID(order1.getC_Currency_ID());
 		payment.saveEx();
 		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		payment.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 		
@@ -576,7 +576,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		order2.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(order2, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order2.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order2.getDocStatus());
 		line1 = order2.getLines()[0];
@@ -620,7 +620,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		payment.setC_Currency_ID(order2.getC_Currency_ID());
 		payment.saveEx();
 		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		payment.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 		
@@ -829,7 +829,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -855,7 +855,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 		
@@ -887,7 +887,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -905,12 +905,12 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Closed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -935,7 +935,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.saveEx();		
 		
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -953,12 +953,12 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Closed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -995,7 +995,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		
 		// No change on warehouse allowed if QtyDelivered, QtyInvoice or QtyReserved != 0 on any line
 		order.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);

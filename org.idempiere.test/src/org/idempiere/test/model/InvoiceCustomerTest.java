@@ -264,7 +264,7 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		line1.saveEx();
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());

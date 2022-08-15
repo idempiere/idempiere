@@ -107,7 +107,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
@@ -125,7 +125,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 		receipt.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		if (!receipt.isPosted()) {
@@ -153,7 +153,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(rma, DocAction.ACTION_Complete);
 		rma.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, rma.getDocStatus());
 		
 		MInOut delivery = new MInOut(Env.getCtx(), 0, getTrxName());
@@ -202,7 +202,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(creditMemo, DocAction.ACTION_Complete);
 		creditMemo.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, creditMemo.getDocStatus());
 		
 		if (!creditMemo.isPosted()) {
@@ -270,7 +270,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
@@ -288,7 +288,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 		receipt.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		if (!receipt.isPosted()) {
@@ -313,7 +313,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
 		if (!invoice.isPosted()) {
@@ -445,7 +445,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 			order.load(getTrxName());
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 			
 			MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
@@ -463,7 +463,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 			receipt.load(getTrxName());
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 			
 			if (!receipt.isPosted()) {
@@ -488,7 +488,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 			invoice.load(getTrxName());
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 			
 			if (!invoice.isPosted()) {
@@ -563,7 +563,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
@@ -587,7 +587,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
 		if (!invoice.isPosted()) {
@@ -612,7 +612,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 		receipt.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		if (!receipt.isPosted()) {
@@ -678,7 +678,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(creditMemo, DocAction.ACTION_Complete);
 		creditMemo.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, creditMemo.getDocStatus());
 		
 		if (!creditMemo.isPosted()) {
@@ -792,7 +792,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 			order.load(getTrxName());
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 			
 			MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
@@ -810,7 +810,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 			receipt.load(getTrxName());
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 			
 			if (!receipt.isPosted()) {
@@ -838,7 +838,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 			invoice.load(getTrxName());
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 			
 			if (!invoice.isPosted()) {
@@ -941,7 +941,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
@@ -959,7 +959,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 		receipt.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		if (!receipt.isPosted()) {
@@ -984,7 +984,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
 		if (!invoice.isPosted()) {
@@ -999,7 +999,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Reverse_Correct);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, invoice.getDocStatus());
 		
 		MMatchInv[] afterList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
@@ -1035,7 +1035,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
@@ -1053,7 +1053,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 		receipt.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		if (!receipt.isPosted()) {
@@ -1078,7 +1078,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
 		if (!invoice.isPosted()) {
@@ -1103,7 +1103,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(creditMemo, DocAction.ACTION_Complete);
 		creditMemo.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, creditMemo.getDocStatus());
 		
 		if (!creditMemo.isPosted()) {
@@ -1118,7 +1118,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(creditMemo, DocAction.ACTION_Reverse_Correct);
 		creditMemo.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, creditMemo.getDocStatus());
 		
 		MMatchInv[] afterList = MMatchInv.getInvoiceLine(Env.getCtx(), creditMemoLine.get_ID(), getTrxName());
@@ -1154,7 +1154,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
@@ -1172,7 +1172,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 		receipt.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		if (!receipt.isPosted()) {
@@ -1197,7 +1197,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
 		if (!invoice.isPosted()) {
@@ -1211,7 +1211,7 @@ public class MatchInvTest extends AbstractTestCase {
 		assertTrue(invoice.isPosted());
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Reverse_Correct);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, invoice.getDocStatus());
 		
 		MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
