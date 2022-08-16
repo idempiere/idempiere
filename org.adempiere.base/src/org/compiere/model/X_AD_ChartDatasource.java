@@ -31,7 +31,7 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220324L;
+	private static final long serialVersionUID = 20220816L;
 
     /** Standard Constructor */
     public X_AD_ChartDatasource (Properties ctx, int AD_ChartDatasource_ID, String trxName)
@@ -39,8 +39,8 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
       super (ctx, AD_ChartDatasource_ID, trxName);
       /** if (AD_ChartDatasource_ID == 0)
         {
-			setAD_Chart_ID (0);
 			setAD_ChartDatasource_ID (0);
+			setAD_Chart_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFromClause (null);
@@ -55,8 +55,8 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
       super (ctx, AD_ChartDatasource_ID, trxName, virtualColumns);
       /** if (AD_ChartDatasource_ID == 0)
         {
-			setAD_Chart_ID (0);
 			setAD_ChartDatasource_ID (0);
+			setAD_Chart_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFromClause (null);
@@ -93,33 +93,6 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
       return sb.toString();
     }
 
-	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_ID)
-			.getPO(getAD_Chart_ID(), get_TrxName());
-	}
-
-	/** Set Chart.
-		@param AD_Chart_ID Chart
-	*/
-	public void setAD_Chart_ID (int AD_Chart_ID)
-	{
-		if (AD_Chart_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_Chart_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_Chart_ID, Integer.valueOf(AD_Chart_ID));
-	}
-
-	/** Get Chart.
-		@return Chart	  */
-	public int getAD_Chart_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Chart_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Chart Datasource.
 		@param AD_ChartDatasource_ID Chart Datasource
 	*/
@@ -154,6 +127,33 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 	public String getAD_ChartDatasource_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_ChartDatasource_UU);
+	}
+
+	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_ID)
+			.getPO(getAD_Chart_ID(), get_TrxName());
+	}
+
+	/** Set Chart.
+		@param AD_Chart_ID Chart
+	*/
+	public void setAD_Chart_ID (int AD_Chart_ID)
+	{
+		if (AD_Chart_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Chart_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Chart_ID, Integer.valueOf(AD_Chart_ID));
+	}
+
+	/** Get Chart.
+		@return Chart	  */
+	public int getAD_Chart_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Chart_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
@@ -281,6 +281,21 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 	public String getKeyColumn()
 	{
 		return (String)get_Value(COLUMNNAME_KeyColumn);
+	}
+
+	/** Set Last Refresh Date Column.
+		@param LastRefreshDateColumn Last Refresh Date Column
+	*/
+	public void setLastRefreshDateColumn (String LastRefreshDateColumn)
+	{
+		set_Value (COLUMNNAME_LastRefreshDateColumn, LastRefreshDateColumn);
+	}
+
+	/** Get Last Refresh Date Column.
+		@return Last Refresh Date Column	  */
+	public String getLastRefreshDateColumn()
+	{
+		return (String)get_Value(COLUMNNAME_LastRefreshDateColumn);
 	}
 
 	/** Set Name.
