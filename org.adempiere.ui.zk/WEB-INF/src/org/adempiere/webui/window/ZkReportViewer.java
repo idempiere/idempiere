@@ -32,13 +32,12 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
-import javax.print.attribute.standard.Media;
-import javax.security.auth.callback.Callback;
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.Popup;
 
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
+import org.adempiere.pdf.Document;
+import org.adempiere.util.Callback;
 import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
@@ -103,15 +102,16 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.WMediaOptions;
-import org.jcp.xml.dsig.internal.dom.Utils;
-import org.w3c.dom.events.Event;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.ext.render.DynamicMedia;
@@ -124,12 +124,15 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.North;
+import org.zkoss.zul.Popup;
+import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vlayout;
-
-import com.apple.laf.AquaButtonBorder.Toolbar;
+import org.zkoss.zul.impl.Utils;
+import org.zkoss.zul.impl.XulElement;
 
 /**
  *	Print View Frame
