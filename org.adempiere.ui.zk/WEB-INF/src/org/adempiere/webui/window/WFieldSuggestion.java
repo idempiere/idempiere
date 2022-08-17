@@ -162,7 +162,7 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		}finally {
 			PO.clearCrossTenantSafe();
 		}
-		FDialog.info(0, this, Msg.getMsg(Env.getCtx(),"Your suggestions have been submitted for review"));
+		Dialog.info(0, Msg.getMsg(Env.getCtx(),"Your suggestions have been submitted for review"));
 		this.detach();
 	}
 }

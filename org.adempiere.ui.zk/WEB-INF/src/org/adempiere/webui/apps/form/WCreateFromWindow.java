@@ -28,7 +28,7 @@ import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.CreateFrom;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
@@ -40,6 +40,11 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 
+/**
+ * 
+ * @author hengsin
+ *
+ */
 public class WCreateFromWindow extends Window implements EventListener<Event>, WTableModelListener, DialogEvents
 {
 	/**
@@ -60,6 +65,11 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 	public static final String SELECT_DESELECT_ALL = "SelectAll";
 	private boolean checkAllSelected = true;
 
+	/**
+	 * 
+	 * @param createFrom
+	 * @param windowNo
+	 */
 	public WCreateFromWindow(CreateFrom createFrom, int windowNo)
 	{
 		super();
@@ -135,6 +145,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		ZKUpdateUtil.setHeight(contentPane, "100%");
 	}
 
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		//  OK - Save
@@ -154,7 +165,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 			}
 			catch (Exception ex)
 			{
-				FDialog.error(windowNo, this, "Error", ex.getLocalizedMessage());
+				Dialog.error(windowNo, "Error", ex.getLocalizedMessage());
 			}
 		}
 		//  Cancel
@@ -185,6 +196,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		}
 	}
 
+	@Override
 	public void tableChanged (WTableModelEvent e)
 	{
 		int type = -1;
@@ -210,6 +222,11 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		info();
 	}
 	
+	/**
+	 * 
+	 * @param trxName
+	 * @return true if save successfully
+	 */
 	public boolean save(String trxName)
 	{
 		ListModelTable model = dataTable.getModel();
@@ -220,6 +237,9 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		return createFrom.save(dataTable, trxName);
 	}
 
+	/**
+	 * update status
+	 */
 	public void info()
 	{
 		ListModelTable model = dataTable.getModel();
@@ -235,6 +255,11 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		createFrom.info(dataTable, statusBar);
 	}
 	
+	/**
+	 * 
+	 * @param selectedRowCount
+	 * @param text
+	 */
 	public void setStatusLine(int selectedRowCount, String text) 
 	{
 		StringBuilder sb = new StringBuilder(String.valueOf(selectedRowCount));
@@ -246,31 +271,55 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		confirmPanel.getOKButton().setEnabled(selectedRowCount > 0);
 	}
 	
+	/**
+	 * 
+	 * @return {@link StatusBarPanel}
+	 */
 	public StatusBarPanel getStatusBar()
 	{
 		return statusBar;
 	}
 
+	/**
+	 * 
+	 * @param statusBar
+	 */
 	public void setStatusBar(StatusBarPanel statusBar)
 	{
 		this.statusBar = statusBar;
 	}
 	
+	/**
+	 * 
+	 * @return {@link WListbox}
+	 */
 	public WListbox getWListbox()
 	{
 		return dataTable;
 	}
 	
+	/**
+	 * 
+	 * @return {@link Panel}
+	 */
 	public Panel getParameterPanel()
 	{
 		return parameterPanel;
 	}
 	
+	/**
+	 * 
+	 * @return {@link ConfirmPanel}
+	 */
 	public ConfirmPanel getConfirmPanel()
 	{
 		return confirmPanel;
 	}
 	
+	/**
+	 * 
+	 * @return true if dialog cancel by user
+	 */
 	public boolean isCancel() 
 	{
 		return isCancel;

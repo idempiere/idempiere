@@ -16,6 +16,9 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import static org.adempiere.webui.ClientInfo.MEDIUM_WIDTH;
+import static org.adempiere.webui.ClientInfo.SMALL_WIDTH;
+import static org.adempiere.webui.ClientInfo.maxWidth;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_CURRENCY_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_PERIOD_AD_ORG_ID;
@@ -53,7 +56,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.Allocation;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MLookup;
@@ -74,8 +77,6 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
-
-import static org.adempiere.webui.ClientInfo.*;
 
 /**
  * Allocation Form
@@ -572,7 +573,7 @@ public class WAllocation extends Allocation
 		model.updateComponent(row);
 	    
 		if(msg != null && msg.length() > 0)
-			FDialog.warn(form.getWindowNo(), "AllocationWriteOffWarn");
+			Dialog.warn(form.getWindowNo(), "AllocationWriteOffWarn");
 		
 		calculate();
 	}   //  tableChanged
@@ -743,7 +744,7 @@ public class WAllocation extends Allocation
 		}
 		catch (Exception e)
 		{
-			FDialog.error(form.getWindowNo(), form, "Error", e.getLocalizedMessage());
+			Dialog.error(form.getWindowNo(), "Error", e.getLocalizedMessage());
 			return null;
 		}
 	}   //  saveData

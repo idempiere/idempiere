@@ -26,6 +26,7 @@
 package org.adempiere.webui.panel;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -49,7 +50,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.model.MMFAMethod;
 import org.compiere.model.MMFARegisteredDevice;
@@ -260,14 +261,11 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		lstMFAMechanism.setAutocomplete(true);
 		lstMFAMechanism.setAutodrop(true);
 		lstMFAMechanism.setId("lstMFAMechanism");
-		boolean first = true;
-		for (MMFARegistration reg : MMFARegistration.getValidRegistrationsFromUser()) {
+		List<MMFARegistration> regs = MMFARegistration.getValidRegistrationsFromUser();
+		for (MMFARegistration reg : regs) {
 			MMFAMethod method = new MMFAMethod(m_ctx, reg.getMFA_Method_ID(), reg.get_TrxName());
-			if (first) {
-				first = false;
-				if (MMFAMethod.METHOD_Time_BasedOne_TimePassword.equals(method.getMethod())) {
-					m_autoCall = true;
-				}
+			if (regs.size() == 1 && MMFAMethod.METHOD_Time_BasedOne_TimePassword.equals(method.getMethod())) {
+				m_autoCall = true;
 			}
 			ComboItem ci = new ComboItem(reg.getName() + " - " + method.getMethod(), reg.getMFA_Registration_ID());
 			String id = AdempiereIdGenerator.escapeId(ci.getLabel());
@@ -388,7 +386,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		String msg = login.validateLogin(m_orgKNPair);
 		if (!Util.isEmpty(msg)) {
 			Env.getCtx().clear();
-			FDialog.error(0, this, "Error", msg, new Callback<Integer>() {					
+			Dialog.error(0, "Error", msg, new Callback<Integer>() {					
 				@Override
 				public void onCallback(Integer result) {
 					Events.echoEvent(new Event(ON_DEFER_LOGOUT, component));
@@ -406,7 +404,7 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 				Timestamp now = TimeUtil.getDay(null);
 
 				if (now.after(notifyAfter))
-					FDialog.warn(0, null, "", Msg.getMsg(m_ctx, "YourPasswordWillExpireInDays",
+					Dialog.warn(0, "", Msg.getMsg(m_ctx, "YourPasswordWillExpireInDays",
 							new Object[] { TimeUtil.getDaysBetween(now, limit) }));
 			}
 		}

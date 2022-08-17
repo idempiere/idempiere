@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -748,4 +749,21 @@ public class Util
 			}
 		}
 	}
+
+	/**
+	 * Make the filename correct (updating all unauthorized characters to safe ones)
+	 * @param the filename to check
+	 * @returns the correct filename
+	 */
+	public static String setFilenameCorrect(String input) {
+		String output = Normalizer.normalize(input, Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+		output = output.replaceAll("/" , "-");
+		output = output.replaceAll(":" , "-");
+		output = output.replaceAll("\\*" , "-");
+		output = output.replaceAll("<" , "-");
+		output = output.replaceAll(">" , "-");
+		output = output.replaceAll("%" , "-");
+		return output.trim();
+	}
+
 }   //  Util

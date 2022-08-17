@@ -29,6 +29,7 @@ package org.compiere.process;
 
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.IMFAMechanism;
 import org.compiere.model.MMFAMethod;
 import org.compiere.model.MMFARegistration;
@@ -77,6 +78,9 @@ public class MFARegister extends SvrProcess {
 
 		MMFAMethod method = new MMFAMethod(getCtx(), p_MFA_Method_ID, get_TrxName());
 		IMFAMechanism mechanism = method.getMFAMechanism();
+
+		if (MMFARegistration.alreadyExistsValid(method, null))
+			throw new AdempiereException(Msg.getMsg(getCtx(), "MFAMethodAlreadyRegistered"));
 
 		retArray = mechanism.register(getCtx(), method, p_ParameterValue, get_TrxName());
 		if (retArray == null || retArray.length == 0 || ! (retArray[0] instanceof String) )

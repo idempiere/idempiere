@@ -107,7 +107,7 @@ public class InventoryTest extends AbstractTestCase {
 		iline.saveEx();
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		inventory.load(trxName);
 		assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus());
 	}
@@ -164,7 +164,7 @@ public class InventoryTest extends AbstractTestCase {
 		line1.saveEx();
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());		
 		
@@ -181,7 +181,7 @@ public class InventoryTest extends AbstractTestCase {
 		receiptLine1.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt1, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt1.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, receipt1.getDocStatus());
 		if (!receipt1.isPosted()) {
@@ -255,7 +255,7 @@ public class InventoryTest extends AbstractTestCase {
 					Env.ZERO);
 			iline.saveEx();
 	
-			//show error out with negative on hand (skip the only asi record with serno)
+			//should error out with negative on hand (skip the only asi record with serno)
 			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
 			assertTrue(info.isError(), info.getSummary());
 		} finally {

@@ -19,7 +19,7 @@ import java.util.Arrays;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Ini;
 import org.compiere.util.Util;
@@ -200,7 +200,7 @@ public class FolderBrowser extends Window implements EventListener<Event>
 				{
 					if(!file.isDirectory() || !file.exists())
 					{
-						FDialog.error(0, "Invalid directory");
+						Dialog.error(0, "Invalid directory");
 						return;
 					}
 				}
@@ -208,7 +208,7 @@ public class FolderBrowser extends Window implements EventListener<Event>
 				{
 					if(!file.isFile() || !file.exists())
 					{
-						FDialog.error(0, "Invalid file");
+						Dialog.error(0, "Invalid file");
 						return;
 					}
 				}

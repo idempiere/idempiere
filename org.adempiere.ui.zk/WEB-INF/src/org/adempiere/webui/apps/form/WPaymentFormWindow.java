@@ -21,7 +21,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.PaymentForm;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -66,7 +66,7 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 			zkInit();
 			initOK = dynInit(); // Null Pointer if order/invoice not saved yet
 		} catch (Exception ex) {
-			FDialog.error(windowNo, this, ex.getMessage() == null ? ex.toString() : ex.getMessage());
+			Dialog.error(windowNo, ex.getMessage() == null ? ex.toString() : ex.getMessage());
 			initOK = false;
 		}
 		

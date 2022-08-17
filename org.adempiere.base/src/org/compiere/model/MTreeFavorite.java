@@ -38,7 +38,7 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 	public static final String				SQL_GET_TREE_FAVORITE_ID	= "SELECT AD_Tree_Favorite_ID FROM AD_Tree_Favorite	WHERE IsActive='Y' AND AD_User_ID=?";
 
 	public static final String				SQL_GET_TREE_FAVORITE_NODE	= "SELECT AD_Tree_Favorite_Node_ID, Parent_ID, SeqNo, Name, IsSummary, AD_Menu_ID, IsCollapsible, IsFavourite "
-																			+ " FROM AD_Tree_Favorite_Node WHERE IsActive='Y' AND AD_Tree_Favorite_ID=? "
+																			+ " FROM AD_Tree_Favorite_Node WHERE IsActive='Y' AND AD_Tree_Favorite_ID=? AND AD_Client_ID IN (0,?) "
 																			+ " ORDER BY COALESCE(Parent_ID, -1), SeqNo, Name ";
 
 	/** Cache for AD_Tree_Favorite_ID */
@@ -91,6 +91,7 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 
 			pstmt = DB.prepareStatement(SQL_GET_TREE_FAVORITE_NODE, get_TrxName());
 			pstmt.setInt(1, getAD_Tree_Favorite_ID());
+			pstmt.setInt(2, Env.getAD_Client_ID(Env.getCtx()));
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -118,7 +119,7 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 					}
 				}
 
-				if ((access != null && access.booleanValue()) || isSummary)
+				if (access != null || isSummary)
 					addToTree(nodeID, parentID, seqNo, name, menuID, img, isSummary, isCollapsible, isFavourite);
 			}
 		}

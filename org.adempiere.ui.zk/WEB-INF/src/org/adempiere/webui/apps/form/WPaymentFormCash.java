@@ -31,7 +31,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.PaymentFormCash;
 import org.compiere.model.GridTab;
 import org.compiere.model.MConversionRate;
@@ -199,7 +199,7 @@ public class WPaymentFormCash extends PaymentFormCash implements EventListener<E
 			// Check & Cash (Payment) must have a bank account
 			if (C_BankAccount_ID == 0 && m_Cash_As_Payment)
 			{
-				FDialog.error(getWindowNo(), window, "FillMandatory", bBankAccountLabel.getValue());
+				Dialog.error(getWindowNo(), "FillMandatory", bBankAccountLabel.getValue());
 				dataOK = false;
 			}
 		}
@@ -230,9 +230,9 @@ public class WPaymentFormCash extends PaymentFormCash implements EventListener<E
 		boolean ok = save(newC_BankAccount_ID,newC_CashBook_ID, newDateAcct, (BigDecimal) bAmountField.getValue(), trxName);
 		
 		if (!ok)
-			FDialog.error(getWindowNo(), window, "PaymentError", processMsg);
+			Dialog.error(getWindowNo(), "PaymentError", processMsg);
 		else if (processMsg != null)
-			FDialog.info(getWindowNo(), window, "PaymentCreated", processMsg);
+			Dialog.info(getWindowNo(), "PaymentCreated", processMsg);
 		
 		return ok;
 	}

@@ -226,6 +226,12 @@
 .z-icon-PostIt:before {
 	content: "\f24a";
 }
+.z-icon-Label:before {
+	content: "\f02b";
+}
+.z-icon-NotAllowed:before {
+	content: "\f05e";
+}
 .z-icon-Preference:before {
 	content: "\f085";
 }

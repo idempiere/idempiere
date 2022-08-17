@@ -65,7 +65,7 @@ import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.EmbedWinInfo;
 import org.compiere.minigrid.IDColumn;
@@ -2008,12 +2008,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				if (log.isLoggable(Level.INFO))
 					log.log(Level.INFO, countSql, e);
-				FDialog.error(p_WindowNo, INFO_QUERY_TIME_OUT_ERROR);
+				Dialog.error(p_WindowNo, INFO_QUERY_TIME_OUT_ERROR);
 			}
 			else
 			{
 				log.log(Level.SEVERE, countSql, e);
-				FDialog.error(p_WindowNo, "DBExecuteError", e.getMessage());
+				Dialog.error(p_WindowNo, "DBExecuteError", e.getMessage());
 			}
 			m_count = -2;
 		}
@@ -2029,7 +2029,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		{
 			if (promptError)
 			{
-				FDialog.error(getWindowNo(), this, "InfoFindOverMax",
+				Dialog.error(getWindowNo(), "InfoFindOverMax",
 		                m_count + " > " + infoWindow.getMaxQueryRecords());
 			}
 	        m_count = 0;
@@ -2404,7 +2404,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					}
 					
 					String msg = Msg.translate(ctx, sbError.toString());
-					FDialog.error(0, this, "ValidationError", msg); // TODO messaggio
+					Dialog.error(0, "ValidationError", msg); // TODO messaggio
 				}
 				else	
 					changeIsValid = true;
@@ -2413,7 +2413,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				log.log(Level.SEVERE, "Error executing validation SQL: " + validationSQL, e);
 				
-				FDialog.error(0, this, "Error", validationSQL); // TODO messaggio
+				Dialog.error(0, "Error", validationSQL); // TODO messaggio
 				changeIsValid = false;
 			}
 		}

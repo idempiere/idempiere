@@ -184,7 +184,7 @@ public class MSequence extends X_AD_Sequence
 		{
 			try
 			{
-				conn = DB.getConnectionID();
+				conn = DB.getConnection(false);
 				//	Error
 				if (conn == null)
 					return -1;
@@ -388,7 +388,7 @@ public class MSequence extends X_AD_Sequence
 			if (trx != null)
 				conn = trx.getConnection();
 			else
-				conn = DB.getConnectionID();
+				conn = DB.getConnection(false);
 			//	Error
 			if (conn == null)
 				return null;

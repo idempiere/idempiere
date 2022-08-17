@@ -16,6 +16,9 @@ ALTER TABLE t_trialbalance
 DROP CONSTRAINT t_trialbalance_key
 ;
 
+DROP INDEX T_TRIALBALANCE_KEY
+;
+ 
 ALTER TABLE t_trialbalance
 ADD CONSTRAINT t_trialbalance_pkey PRIMARY KEY (AD_PInstance_ID, Fact_Acct_ID, Account_ID, AD_Org_ID)
 ;

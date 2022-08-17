@@ -197,7 +197,7 @@ public class ProductionTest extends AbstractTestCase {
 		line1.saveEx();
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());		
 		
@@ -212,7 +212,7 @@ public class ProductionTest extends AbstractTestCase {
 		receiptLine1.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt1, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt1.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, receipt1.getDocStatus());
 		if (!receipt1.isPosted()) {
@@ -370,7 +370,7 @@ public class ProductionTest extends AbstractTestCase {
 				break;
 			}
 			BigDecimal varianceExpected = componentCost.subtract(endProductCost).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
-			assertEquals(varianceExpected, variance, "Variance not posted correctly.");
+			assertEquals(varianceExpected.setScale(2, RoundingMode.HALF_UP), variance.setScale(2, RoundingMode.HALF_UP), "Variance not posted correctly.");
 		} finally {
 			getTrx().rollback();
 			mulch.setM_Product_Category_ID(categorySaveId);
@@ -522,7 +522,7 @@ public class ProductionTest extends AbstractTestCase {
 			line1.saveEx();		
 			
 			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			order.load(getTrxName());		
 			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 			line1.load(getTrxName());
@@ -539,7 +539,7 @@ public class ProductionTest extends AbstractTestCase {
 			shipmentLine.saveEx();
 			
 			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			shipment.load(getTrxName());
 			assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 			

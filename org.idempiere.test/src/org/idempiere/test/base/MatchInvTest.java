@@ -107,7 +107,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
@@ -125,7 +125,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 		receipt.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		if (!receipt.isPosted()) {
@@ -153,7 +153,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(rma, DocAction.ACTION_Complete);
 		rma.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, rma.getDocStatus());
 		
 		MInOut delivery = new MInOut(Env.getCtx(), 0, getTrxName());
@@ -202,7 +202,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(creditMemo, DocAction.ACTION_Complete);
 		creditMemo.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, creditMemo.getDocStatus());
 		
 		if (!creditMemo.isPosted()) {
@@ -237,9 +237,9 @@ public class MatchInvTest extends AbstractTestCase {
 			for (int id : ids) {
 				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
 				if (fa.getAccount_ID() == acctNIR.getAccount_ID())
-					assertEquals(fa.getAmtAcctCr(), credMatchAmt, "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
+					assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), credMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
 				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID())
-					assertEquals(fa.getAmtAcctDr(), credMatchAmt, "MatchInv incorrect amount posted "+fa.getAmtAcctDr().toPlainString());
+					assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), credMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctDr().toPlainString());
 			}
 		}
 		
@@ -270,7 +270,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
@@ -288,7 +288,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 		receipt.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		if (!receipt.isPosted()) {
@@ -313,7 +313,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
 		if (!invoice.isPosted()) {
@@ -348,9 +348,9 @@ public class MatchInvTest extends AbstractTestCase {
 			for (int id : ids) {
 				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
 				if (fa.getAccount_ID() == acctNIR.getAccount_ID())
-					assertEquals(fa.getAmtAcctDr(), invMatchAmt, "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
+					assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
 				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID())
-					assertEquals(fa.getAmtAcctCr(), invMatchAmt, "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
+					assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
 			}
 		}
 		
@@ -445,7 +445,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 			order.load(getTrxName());
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 			
 			MInOut receipt = new MInOut(order, 122, order.getDateOrdered()); // MM Receipt
@@ -463,7 +463,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 			receipt.load(getTrxName());
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 			
 			if (!receipt.isPosted()) {
@@ -488,7 +488,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 			invoice.load(getTrxName());
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 			
 			if (!invoice.isPosted()) {
@@ -525,11 +525,11 @@ public class MatchInvTest extends AbstractTestCase {
 				for (int id : ids) {
 					MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
 					if (fa.getAccount_ID() == acctNIR.getAccount_ID())
-						assertEquals(fa.getAmtAcctDr(), mulchCost, "");
+						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), mulchCost.setScale(2, RoundingMode.HALF_UP), "");
 					else if (fa.getAccount_ID() == acctInvClr.getAccount_ID())
-						assertEquals(fa.getAmtAcctCr(), invMatchAmt, "");
+						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "");
 					else if (fa.getAccount_ID() == acctIPV.getAccount_ID())
-						assertEquals(fa.getAmtAcctDr().subtract(fa.getAmtAcctCr()), invMatchAmt.subtract(mulchCost), "");
+						assertEquals(fa.getAmtAcctDr().subtract(fa.getAmtAcctCr()).setScale(2, RoundingMode.HALF_UP), invMatchAmt.subtract(mulchCost).setScale(2, RoundingMode.HALF_UP), "");
 				}
 			}
 		} finally {
@@ -563,7 +563,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
@@ -587,7 +587,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
 		if (!invoice.isPosted()) {
@@ -612,7 +612,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 		receipt.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		if (!receipt.isPosted()) {
@@ -647,12 +647,12 @@ public class MatchInvTest extends AbstractTestCase {
 			for (int id : ids) {
 				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
 				if (fa.getAccount_ID() == acctNIR.getAccount_ID()) {
-					assertEquals(fa.getAmtAcctDr(), invMatchAmt, "MatchInv incorrect amount posted "+fa.getAmtAcctDr().toPlainString());
+					assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctDr().toPlainString());
 					assertEquals(mi.getQty(), fa.getQty(), "Accounting fact quantity incorrect");
 				}
 				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID()) {
-					assertEquals(fa.getAmtAcctCr(), invMatchAmt, "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
-					assertEquals(mi.getQty().negate(), fa.getQty(), "Accounting fact quantity incorrect");
+					assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
+					assertEquals(mi.getQty().negate().setScale(2, RoundingMode.HALF_UP), fa.getQty().setScale(2, RoundingMode.HALF_UP), "Accounting fact quantity incorrect");
 				}
 			}
 		}
@@ -678,7 +678,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(creditMemo, DocAction.ACTION_Complete);
 		creditMemo.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, creditMemo.getDocStatus());
 		
 		if (!creditMemo.isPosted()) {
@@ -710,12 +710,12 @@ public class MatchInvTest extends AbstractTestCase {
 			for (int id : ids) {
 				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
 				if (fa.getAccount_ID() == acctInvClr.getAccount_ID() && fa.getQty().compareTo(BigDecimal.ZERO) < 0) {
-					assertEquals(fa.getAmtAcctCr(), credMatchAmt, "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
+					assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), credMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctCr().toPlainString());
 					amtAcctCrInvClr = amtAcctCrInvClr.add(fa.getAmtAcctCr());
 					assertEquals(mi.getQty(), fa.getQty(), "Accounting fact quantity incorrect");
 				}
 				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID() && fa.getQty().compareTo(BigDecimal.ZERO) > 0) {
-					assertEquals(fa.getAmtAcctDr(), credMatchAmt, "MatchInv incorrect amount posted "+fa.getAmtAcctDr().toPlainString());
+					assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), credMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted "+fa.getAmtAcctDr().toPlainString());
 					amtAcctDrInvClr = amtAcctDrInvClr.add(fa.getAmtAcctDr());
 					assertEquals(mi.getQty().negate(), fa.getQty(), "Accounting fact quantity incorrect");
 				}
@@ -792,7 +792,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 			order.load(getTrxName());
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 			
 			MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
@@ -810,7 +810,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 			receipt.load(getTrxName());
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 			
 			if (!receipt.isPosted()) {
@@ -838,7 +838,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 			invoice.load(getTrxName());
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 			
 			if (!invoice.isPosted()) {
@@ -889,6 +889,7 @@ public class MatchInvTest extends AbstractTestCase {
 				}
 			}
 		} finally {
+			rollback();
 			String whereClause = "ValidFrom=? AND ValidTo=? "
 					+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
 					+ "AND C_ConversionType_ID=? "
@@ -915,8 +916,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			pp.deleteEx(true);
 			plv.deleteEx(true);
-			priceList.deleteEx(true);
-			rollback();
+			priceList.deleteEx(true);			
 		}
 	}
 	
@@ -941,7 +941,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
@@ -959,7 +959,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 		receipt.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		if (!receipt.isPosted()) {
@@ -984,7 +984,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
 		if (!invoice.isPosted()) {
@@ -999,7 +999,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Reverse_Correct);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, invoice.getDocStatus());
 		
 		MMatchInv[] afterList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
@@ -1035,7 +1035,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
@@ -1053,7 +1053,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 		receipt.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		if (!receipt.isPosted()) {
@@ -1078,7 +1078,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
 		if (!invoice.isPosted()) {
@@ -1103,7 +1103,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(creditMemo, DocAction.ACTION_Complete);
 		creditMemo.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, creditMemo.getDocStatus());
 		
 		if (!creditMemo.isPosted()) {
@@ -1118,7 +1118,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(creditMemo, DocAction.ACTION_Reverse_Correct);
 		creditMemo.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, creditMemo.getDocStatus());
 		
 		MMatchInv[] afterList = MMatchInv.getInvoiceLine(Env.getCtx(), creditMemoLine.get_ID(), getTrxName());
@@ -1154,7 +1154,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered()); // MM Receipt
@@ -1172,7 +1172,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
 		receipt.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		if (!receipt.isPosted()) {
@@ -1197,7 +1197,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
 		if (!invoice.isPosted()) {
@@ -1211,7 +1211,7 @@ public class MatchInvTest extends AbstractTestCase {
 		assertTrue(invoice.isPosted());
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Reverse_Correct);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, invoice.getDocStatus());
 		
 		MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
@@ -1238,16 +1238,16 @@ public class MatchInvTest extends AbstractTestCase {
 				MFactAcct fa = new MFactAcct(Env.getCtx(), id, getTrxName());
 				if (fa.getAccount_ID() == acctNIR.getAccount_ID()) {
 					if (mi.isReversal())
-						assertEquals(fa.getAmtAcctCr(), invMatchAmt, "MatchInv incorrect amount posted ");
+						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted ");
 					else
-						assertEquals(fa.getAmtAcctDr(), invMatchAmt, "MatchInv incorrect amount posted ");
+						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted ");
 					assertEquals(mi.getQty(), fa.getQty(), "Accounting fact quantity incorrect");
 				}
 				else if (fa.getAccount_ID() == acctInvClr.getAccount_ID()) {
 					if (mi.isReversal())
-						assertEquals(fa.getAmtAcctDr(), invMatchAmt, "MatchInv incorrect amount posted ");
+						assertEquals(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted ");
 					else
-						assertEquals(fa.getAmtAcctCr(), invMatchAmt, "MatchInv incorrect amount posted ");
+						assertEquals(fa.getAmtAcctCr().setScale(2, RoundingMode.HALF_UP), invMatchAmt.setScale(2, RoundingMode.HALF_UP), "MatchInv incorrect amount posted ");
 					assertEquals(mi.getQty().negate(), fa.getQty(), "Accounting fact quantity incorrect");
 				}
 			}

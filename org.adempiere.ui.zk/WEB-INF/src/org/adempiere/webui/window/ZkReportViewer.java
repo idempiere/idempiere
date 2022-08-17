@@ -32,12 +32,13 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
+import javax.print.attribute.standard.Media;
+import javax.security.auth.callback.Callback;
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.Popup;
 
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
-import org.adempiere.pdf.Document;
-import org.adempiere.util.Callback;
 import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
@@ -102,16 +103,15 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.WMediaOptions;
+import org.jcp.xml.dsig.internal.dom.Utils;
+import org.w3c.dom.events.Event;
 import org.zkoss.util.media.AMedia;
-import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.ext.render.DynamicMedia;
@@ -124,15 +124,12 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.North;
-import org.zkoss.zul.Popup;
-import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Tab;
-import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vlayout;
-import org.zkoss.zul.impl.Utils;
-import org.zkoss.zul.impl.XulElement;
+
+import com.apple.laf.AquaButtonBorder.Toolbar;
 
 /**
  *	Print View Frame
@@ -256,7 +253,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		m_AD_Table_ID = re.getPrintFormat().getAD_Table_ID();
 		if (!MRole.getDefault().isCanReport(m_AD_Table_ID))
 		{
-			FDialog.error(m_WindowNo, this, "AccessCannotReport", m_reportEngine.getName());
+			Dialog.error(m_WindowNo, "AccessCannotReport", m_reportEngine.getName());
 			this.onClose();
 		}
 		m_isCanExport = MRole.getDefault().isCanExport(m_AD_Table_ID);
@@ -413,7 +410,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			catch(Exception e)
 			{
 				log.log(Level.SEVERE, "", e);
-				FDialog.error(m_WindowNo, this, "LoadError", e.getLocalizedMessage());
+				Dialog.error(m_WindowNo, "LoadError", e.getLocalizedMessage());
 				this.onClose();
 			}
 		}
@@ -1258,7 +1255,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
-			FDialog.error(m_WindowNo, this, "AccessCannotReport", data.getQuery().getTableName());
+			Dialog.error(m_WindowNo, "AccessCannotReport", query.getTableName());
 			return;
 		}
 		if (AD_Table_ID != 0) {
@@ -1368,9 +1365,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			success = archive.save();
 		}
 		if (success)
-			FDialog.info(m_WindowNo, this, "Archived");
+			Dialog.info(m_WindowNo, "Archived");
 		else
-			FDialog.error(m_WindowNo, this, "ArchiveError");
+			Dialog.error(m_WindowNo, "ArchiveError");
 	}	//	cmd_archive
 
 	/**
@@ -1391,9 +1388,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		attachment.addEntry(fileName, data);
 		success = attachment.save();
 		if (success)
-			FDialog.info(m_WindowNo, this, "DocumentAttached", fileName);
+			Dialog.info(m_WindowNo, "DocumentAttached", fileName);
 		else
-			FDialog.error(m_WindowNo, this, "AttachError");
+			Dialog.error(m_WindowNo, "AttachError");
 	}	//	cmd_attachment
 
 	/**
@@ -1404,7 +1401,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		log.config("");
 		if (!m_isCanExport)
 		{
-			FDialog.error(m_WindowNo, this, "AccessCannotExport", getTitle());
+			Dialog.error(m_WindowNo, "AccessCannotExport", getTitle());
 			return;
 		}
 		
@@ -1445,7 +1442,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		{
 			WEditor editor = new WStringEditor();
 			ZKUpdateUtil.setWidth((HtmlBasedComponent)editor.getComponent(), "98%");
-			FDialog.askForInputWithCancel(m_WindowNo, editor, "CreateNewPrintFormat",  Msg.getMsg(m_ctx, "CreateNewPrintFormatTitle"), new Callback<Map.Entry<Boolean, Object>>() {
+			Dialog.askForInputWithCancel(m_WindowNo, editor, "CreateNewPrintFormat",  Msg.getMsg(m_ctx, "CreateNewPrintFormatTitle"), new Callback<Map.Entry<Boolean, Object>>() {
 				public void onCallback(Map.Entry<Boolean, Object> result) {
 					if((result == null) || (!(result.getValue() instanceof String)) || (!result.getKey())) {
 						comboReport.setSelectedItem(previousSelected);
@@ -1498,7 +1495,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		} else if (AD_PrintFormat_ID == -2) {
 			WEditor editor = new WStringEditor();
 			ZKUpdateUtil.setWidth((HtmlBasedComponent)editor.getComponent(), "90%");
-			FDialog.askForInputWithCancel(m_WindowNo, editor, "CreatePrintFormatCopy", Msg.getMsg(m_ctx, "CreatePrintFormatCopyTitle"), new Callback<Map.Entry<Boolean, Object>>() {
+			Dialog.askForInputWithCancel(m_WindowNo, editor, "CreatePrintFormatCopy", Msg.getMsg(m_ctx, "CreatePrintFormatCopyTitle"), new Callback<Map.Entry<Boolean, Object>>() {
 				public void onCallback(Map.Entry<Boolean, Object> result) {
 					if((result == null) || (!(result.getValue() instanceof String)) || (!result.getKey())) {
 						comboReport.setSelectedItem(previousSelected);
