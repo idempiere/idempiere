@@ -40,6 +40,7 @@ import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
@@ -48,6 +49,7 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
  * @author hengsin
  *
  */
+@Isolated
 public class ModelClassMappingTest extends AbstractTestCase {
 
 	//copy from DefaultModelFactory

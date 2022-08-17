@@ -54,7 +54,6 @@ import org.compiere.model.MShipper;
 import org.compiere.model.MShippingProcessor;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
-import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_C_BP_ShippingAcct;
 import org.compiere.model.X_M_ShippingProcessorCfg;
@@ -65,8 +64,10 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * @author etantg
@@ -77,6 +78,7 @@ public class InOutTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4656
 	 */
@@ -212,6 +214,7 @@ public class InOutTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4656
 	 */
@@ -374,34 +377,11 @@ public class InOutTest extends AbstractTestCase {
 	
 	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
 			Timestamp date, BigDecimal rate, boolean isMultiplyRate) {
-		MConversionRate cr = new MConversionRate(Env.getCtx(), 0, null);
-		cr.setC_Currency_ID(C_Currency_ID);
-		cr.setC_Currency_ID_To(C_Currency_ID_To);
-		cr.setC_ConversionType_ID(C_ConversionType_ID);
-		cr.setValidFrom(date);
-		cr.setValidTo(date);
-		if (isMultiplyRate)
-			cr.setMultiplyRate(rate);
-		else
-			cr.setDivideRate(rate);
-		cr.saveEx();
-		return cr;
+		return ConversionRateHelper.createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, isMultiplyRate);
 	}
 	
 	private void deleteConversionRate(MConversionRate cr) {
-		String whereClause = "ValidFrom=? AND ValidTo=? "
-				+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
-				+ "AND C_ConversionType_ID=? "
-				+ "AND AD_Client_ID=? AND AD_Org_ID=?";
-		MConversionRate reciprocal = new Query(Env.getCtx(), MConversionRate.Table_Name, whereClause, null)
-				.setParameters(cr.getValidFrom(), cr.getValidTo(), 
-						cr.getC_Currency_ID_To(), cr.getC_Currency_ID(),
-						cr.getC_ConversionType_ID(),
-						cr.getAD_Client_ID(), cr.getAD_Org_ID())
-				.firstOnly();
-		if (reciprocal != null)
-			reciprocal.deleteEx(true);
-		cr.deleteEx(true);
+		ConversionRateHelper.deleteConversionRate(cr);
 	}
 	
 	private MOrder createPurchaseOrder(MBPartner bpartner, Timestamp date, int M_PriceList_ID, int C_ConversionType_ID) {

@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import org.compiere.model.MBPartner;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MPayment;
@@ -40,6 +41,7 @@ import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CacheMgt;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
@@ -47,6 +49,7 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * @author hengsin
@@ -88,6 +91,7 @@ public class BankStatementTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MSysConfig.ALLOW_REVERSAL_OF_RECONCILED_PAYMENT)
 	public void testReversalOfReconciledPayment1() {
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		
@@ -107,6 +111,9 @@ public class BankStatementTest extends AbstractTestCase {
 		}
 		
 		try {
+			MBPartner bp = new MBPartner (Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
+			DB.getDatabase().forUpdate(bp, 0);
+			
 			MPayment payment1 = new MPayment(Env.getCtx(), 0, getTrxName());
 			payment1.setC_BPartner_ID(DictionaryIDs.C_BPartner.C_AND_W.id); //C&W
 			payment1.setC_DocType_ID(true); // Receipt
@@ -169,6 +176,7 @@ public class BankStatementTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MSysConfig.ALLOW_REVERSAL_OF_RECONCILED_PAYMENT)
 	public void testReversalOfReconciledPayment2() {
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		
@@ -187,6 +195,9 @@ public class BankStatementTest extends AbstractTestCase {
 			sysConfig = null;
 		}
 		try {
+			MBPartner bp = new MBPartner (Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
+			DB.getDatabase().forUpdate(bp, 0);
+			
 			MPayment payment1 = new MPayment(Env.getCtx(), 0, getTrxName());
 			payment1.setC_BPartner_ID(DictionaryIDs.C_BPartner.C_AND_W.id); //C&W
 			payment1.setC_DocType_ID(true); // Receipt

@@ -120,12 +120,14 @@ import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.TestActivator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * 
  * @author hengsin
  *
  */
+@Isolated
 public class CacheTest extends AbstractTestCase {
 
 	private static final int ORDER_HEADER_PRINT_FORMAT_ID = 118;
