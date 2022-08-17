@@ -213,20 +213,20 @@ public class DrillReportCtl {
 	public void initDrillTableMap() {
 
 		ArrayList<KeyNamePair> drillTableList = new ArrayList<>();
-		String sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(e.PO_PrintName,e.PrintName) "
+		String sql = "SELECT t.AD_Table_ID, t.TableName, e.PrintName, NULLIF(e.PO_PrintName,e.PrintName) "
 				+ "FROM AD_Column c "
 				+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
-				+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"
+				+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.IsView='N' AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"
 				+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
 				+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName) "
 				+ "WHERE c.AD_Table_ID=? AND c.IsKey='Y' "
 				+ "ORDER BY 3 ";
 			boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Element");
 			if (trl)
-				sql = "SELECT t.AD_Table_ID, t.TableName, t.Name, NULLIF(et.PO_PrintName,et.PrintName) "
+				sql = "SELECT t.AD_Table_ID, t.TableName, et.PrintName, NULLIF(et.PO_PrintName,et.PrintName) "
 					+ "FROM AD_Column c"
 					+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
-					+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"
+					+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.IsView='N' AND t.AD_Table_ID <> c.AD_Table_ID AND t.IsShowInDrillOptions='Y')"
 					+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
 					+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName)"
 					+ " INNER JOIN AD_Element_Trl et ON (e.AD_Element_ID=et.AD_Element_ID) "

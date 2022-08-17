@@ -1255,7 +1255,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
-			Dialog.error(m_WindowNo, "AccessCannotReport", query.getTableName());
+			Dialog.error(m_WindowNo, "AccessCannotReport", data.getQuery().getTableName());
 			return;
 		}
 		if (AD_Table_ID != 0) {
@@ -1301,7 +1301,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
-			FDialog.error(m_WindowNo, this, "AccessCannotReport", data.getQuery().getTableName());
+			Dialog.error(m_WindowNo, "AccessCannotReport", data.getQuery().getTableName());
 			return;
 		}
 		if (AD_Table_ID != 0) {

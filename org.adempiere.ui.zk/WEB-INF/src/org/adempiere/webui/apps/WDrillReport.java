@@ -228,6 +228,13 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		tabpanels.appendChild(tabPanel);
 		this.tabPanel = tabPanel;
 
+		if (drillReportCtl.getDrillProcessList().length <= 0) {
+			tabbox.setSelectedIndex(1);
+			drillReportCtl.initDrillTableMap();
+			tabPanel.appendChild(getTabContent(2, drillReportCtl.getDrillTables(), null, false));
+			tablesLoaded = true;
+		}
+
 		return tabbox;
 	}
 
