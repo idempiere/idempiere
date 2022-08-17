@@ -87,7 +87,7 @@ public class CreateFromInvoiceFormTest extends AbstractTestCase {
 
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.HOLLY_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
@@ -179,7 +179,7 @@ public class CreateFromInvoiceFormTest extends AbstractTestCase {
 
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.HOLLY_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();

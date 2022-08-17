@@ -60,10 +60,12 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * @author Carlos Ruiz - globalqss
  */
+@Isolated
 public class InvoiceCustomerTest extends AbstractTestCase {
 
 	public InvoiceCustomerTest() {
@@ -80,6 +82,9 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		LogRecord[] errorLogs = CLogErrorBuffer.get(true).getRecords(true);
 		if (errorLogs != null)
 			severeCount = errorLogs.length;
+		
+		MBPartner bp = new MBPartner (Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
+		DB.getDatabase().forUpdate(bp, 0);
 		
 		// Invoice $200 today
 		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());

@@ -90,7 +90,7 @@ public class CreateFromShipmentFormTest extends AbstractTestCase {
 
 		MOrderLine orderLine = new MOrderLine(order);
 		orderLine.setLine(10);
-		orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+		orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.HOLLY_BUSH.id));
 		orderLine.setQty(new BigDecimal("1"));
 		orderLine.setDatePromised(today);
 		orderLine.saveEx();
@@ -170,7 +170,7 @@ public class CreateFromShipmentFormTest extends AbstractTestCase {
 
 		MOrderLine orderLine = new MOrderLine(order);
 		orderLine.setLine(10);
-		orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+		orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.HOLLY_BUSH.id));
 		orderLine.setQty(new BigDecimal("1"));
 		orderLine.setDatePromised(today);
 		orderLine.saveEx();

@@ -56,17 +56,22 @@ import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogErrorBuffer;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * @author Carlos Ruiz - globalqss
  *
  */
+@Isolated
 public class AllocationTest extends AbstractTestCase {
 
 	/**
@@ -176,12 +181,13 @@ public class AllocationTest extends AbstractTestCase {
 		String trxName = getTrxName();
 
 		// Get the OpenBalance of C&W
-		MBPartner bpartner = new MBPartner(ctx, DictionaryIDs.C_BPartner.C_AND_W.id, trxName);
+		MBPartner bpartner = new MBPartner(ctx, DictionaryIDs.C_BPartner.PATIO.id, trxName);
+		DB.getDatabase().forUpdate(bpartner, 0);
 		BigDecimal initialBalance = bpartner.getTotalOpenBalance();
 
 		// Create Invoice $100
 		MInvoice invoice = new MInvoice(ctx, 0, trxName);
-		invoice.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.C_AND_W.id));
+		invoice.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
 		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
 		invoice.setC_DocType_ID(invoice.getC_DocTypeTarget_ID()); // required to avoid runDocumentActionWorkflow exception
 		invoice.setPaymentRule(MInvoice.PAYMENTRULE_Check);
@@ -340,11 +346,12 @@ public class AllocationTest extends AbstractTestCase {
 	}
 
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testPaymentReversePosting() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.COLOR_INC.id); 
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -427,8 +434,9 @@ public class AllocationTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	public void testAllocatePaymentPosting() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHROME_INC.id); 
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -532,34 +540,11 @@ public class AllocationTest extends AbstractTestCase {
 	
 	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
 			Timestamp date, BigDecimal rate, boolean isMultiplyRate) {
-		MConversionRate cr = new MConversionRate(Env.getCtx(), 0, null);
-		cr.setC_Currency_ID(C_Currency_ID);
-		cr.setC_Currency_ID_To(C_Currency_ID_To);
-		cr.setC_ConversionType_ID(C_ConversionType_ID);
-		cr.setValidFrom(date);
-		cr.setValidTo(date);
-		if (isMultiplyRate)
-			cr.setMultiplyRate(rate);
-		else
-			cr.setDivideRate(rate);
-		cr.saveEx();
-		return cr;
+		return ConversionRateHelper.createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, isMultiplyRate);
 	}
 	
 	private void deleteConversionRate(MConversionRate cr) {
-		String whereClause = "ValidFrom=? AND ValidTo=? "
-				+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
-				+ "AND C_ConversionType_ID=? "
-				+ "AND AD_Client_ID=? AND AD_Org_ID=?";
-		MConversionRate reciprocal = new Query(Env.getCtx(), MConversionRate.Table_Name, whereClause, null)
-				.setParameters(cr.getValidFrom(), cr.getValidTo(), 
-						cr.getC_Currency_ID_To(), cr.getC_Currency_ID(),
-						cr.getC_ConversionType_ID(),
-						cr.getAD_Client_ID(), cr.getAD_Org_ID())
-				.firstOnly();
-		if (reciprocal != null)
-			reciprocal.deleteEx(true);
-		cr.deleteEx(true);
+		ConversionRateHelper.deleteConversionRate(cr);
 	}
 	
 	private MPayment createReceiptPayment(int C_BPartner_ID, int C_BankAccount_ID, Timestamp date, int C_Currency_ID, int C_ConversionType_ID, BigDecimal payAmt) {
@@ -893,7 +878,7 @@ public class AllocationTest extends AbstractTestCase {
 	// #4 check accounts
 	public void testAllocatePaymentPostingWithWriteOffandDiscountAPInv() {
 
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 121); // Patio
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id); // Patio
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -1023,7 +1008,7 @@ public class AllocationTest extends AbstractTestCase {
 	// #4 check accounts
 	public void testAllocatePaymentPostingWithWriteOffandDiscountAPCrMe() {
 
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 121); // Patio
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id); // Patio
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -1416,7 +1401,7 @@ public class AllocationTest extends AbstractTestCase {
 	// #4 check accounts
 	public void testPaymentPostingWithWriteOffandDiscountAPInv() {
 
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 121); // Patio
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.AGRI_TECH.id);
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -1547,7 +1532,7 @@ public class AllocationTest extends AbstractTestCase {
 	// #4 check accounts
 	public void testPaymentPostingWithWriteOffandDiscountAPCrMe() {
 
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 121); // Patio
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id);
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -1678,7 +1663,7 @@ public class AllocationTest extends AbstractTestCase {
 	// #4 Check accounts
 	public void testAllocatePostingWithWriteOffandDiscountARInvARCrMe() {
 
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id); 
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); 
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -1815,7 +1800,7 @@ public class AllocationTest extends AbstractTestCase {
 	// #4 Check accounts
 	public void testAllocatePostingWithWriteOffandDiscountAPInvAPCrMe() {
 
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 121); // Patio
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); 
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -1943,6 +1928,7 @@ public class AllocationTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Invoice Total=12,587.48, Period 1
@@ -1968,6 +1954,10 @@ public class AllocationTest extends AbstractTestCase {
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal eurToUsd1 = new BigDecimal(32.458922422202);
+		
+		MBPartner bp = new MBPartner (Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
+		DB.getDatabase().forUpdate(bp, 0);
+		
 		MConversionRate cr1 = createConversionRate(euro.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, eurToUsd1, false);
 		
 		BigDecimal eurToUsd2 = new BigDecimal(33.93972535567);

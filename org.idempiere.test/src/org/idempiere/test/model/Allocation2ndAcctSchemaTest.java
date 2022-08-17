@@ -59,11 +59,14 @@ import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * @author Elaine Tan - etantg
@@ -74,6 +77,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Invoice Total=12,587.48, Period 1
@@ -179,6 +183,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Invoice Total=12,587.48
@@ -189,7 +194,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5053
 	 */
 	public void testAllocateInvoicePaymentPosting_2() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Timestamp date = currentDate;
@@ -265,6 +270,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Payment Total=12,000, Period 1
@@ -273,7 +279,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4200
 	 */
 	public void testAllocateInvoicePaymentPosting_3() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Calendar cal = Calendar.getInstance();
@@ -336,6 +342,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Payment Total=12,000
@@ -344,7 +351,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4200
 	 */
 	public void testAllocateInvoicePaymentPosting_4() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.AGRI_TECH.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Timestamp date = currentDate;
@@ -396,6 +403,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Invoice1 Total=9,362.50, Period 1
@@ -410,7 +418,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4200
 	 */
 	public void testAllocateInvoicePaymentPosting_5() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Calendar cal = Calendar.getInstance();
@@ -545,6 +553,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Invoice1 Total=9,362.50
@@ -682,6 +691,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Payment Total=12,000, Period 1
@@ -692,7 +702,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4127
 	 */
 	public void testAllocateInvoicePaymentPosting_7() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id, getTrxName()); 
+		DB.getDatabase().forUpdate(bpartner, 0);
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Calendar cal = Calendar.getInstance();
@@ -783,6 +794,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Payment Total=12,000
@@ -793,7 +805,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4127
 	 */
 	public void testAllocateInvoicePaymentPosting_8() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id, getTrxName()); // C&W Construction
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Timestamp date = currentDate;
@@ -810,6 +822,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		try {
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			BigDecimal payAmt = new BigDecimal(12000);
+			DB.getDatabase().forUpdate(bpartner, 0);
 			MPayment payment = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date, payAmt, euro.getC_Currency_ID(), C_ConversionType_ID);
 			completeDocument(payment);
 			postDocument(payment);
@@ -873,6 +886,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Invoice Total=12,000, Period 1
@@ -883,7 +897,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4127
 	 */
 	public void testAllocateInvoicePaymentPosting_9() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.AGRI_TECH.id, getTrxName());
+		DB.getDatabase().forUpdate(bpartner, 0);
+		
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Calendar cal = Calendar.getInstance();
@@ -972,6 +988,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Invoice Total=12,000
@@ -982,7 +999,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4127
 	 */
 	public void testAllocateInvoicePaymentPosting_10() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Timestamp date = currentDate;
@@ -1060,6 +1077,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + reversal)
 	 * Invoice Total=1000, Period 1
@@ -1223,6 +1241,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + reversal)
 	 * Payment Total=1000, Period 1
@@ -1231,7 +1250,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5339
 	 */
 	public void testAllocateInvoicePaymentPosting_12() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
@@ -1386,6 +1405,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + reversal)
 	 * Invoice Total=1000, Period 1
@@ -1449,6 +1469,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period + reversal)
 	 * Invoice Total=1000
@@ -1456,7 +1477,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testAllocateInvoicePosting_2() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Timestamp date = currentDate;
@@ -1500,6 +1521,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + offset)
 	 * Invoice Total=1000, Period 1
@@ -1507,7 +1529,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testAllocateInvoicePosting_3() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
@@ -1572,6 +1594,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period + offset)
 	 * Invoice Total=1000
@@ -1579,7 +1602,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testAllocateInvoicePosting_4() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Timestamp date = currentDate;
@@ -1632,6 +1655,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + reversal)
 	 * Payment Total=1000, Period 1
@@ -1639,7 +1663,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testAllocatePaymentPosting_1() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.AGRI_TECH.id); 
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -1691,6 +1715,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period + reversal)
 	 * Payment Total=1000, Period 1
@@ -1738,6 +1763,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + offset)
 	 * Payment Total=1000, Period 1
@@ -1745,7 +1771,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testAllocatePaymentPosting_3() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id);
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -1803,6 +1829,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period + offset)
 	 * Payment Total=1000
@@ -1862,34 +1889,11 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	
 	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
 			Timestamp date, BigDecimal rate, boolean isMultiplyRate) {
-		MConversionRate cr = new MConversionRate(Env.getCtx(), 0, null);
-		cr.setC_Currency_ID(C_Currency_ID);
-		cr.setC_Currency_ID_To(C_Currency_ID_To);
-		cr.setC_ConversionType_ID(C_ConversionType_ID);
-		cr.setValidFrom(date);
-		cr.setValidTo(date);
-		if (isMultiplyRate)
-			cr.setMultiplyRate(rate);
-		else
-			cr.setDivideRate(rate);
-		cr.saveEx();
-		return cr;
+		return ConversionRateHelper.createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, isMultiplyRate);
 	}
 	
 	private void deleteConversionRate(MConversionRate cr) {
-		String whereClause = "ValidFrom=? AND ValidTo=? "
-				+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
-				+ "AND C_ConversionType_ID=? "
-				+ "AND AD_Client_ID=? AND AD_Org_ID=?";
-		MConversionRate reciprocal = new Query(Env.getCtx(), MConversionRate.Table_Name, whereClause, null)
-				.setParameters(cr.getValidFrom(), cr.getValidTo(), 
-						cr.getC_Currency_ID_To(), cr.getC_Currency_ID(),
-						cr.getC_ConversionType_ID(),
-						cr.getAD_Client_ID(), cr.getAD_Org_ID())
-				.firstOnly();
-		if (reciprocal != null)
-			reciprocal.deleteEx(true);
-		cr.deleteEx(true);
+		ConversionRateHelper.deleteConversionRate(cr);
 	}
 	
 	private MInvoice createInvoice(boolean isSOTrx, MBPartner bpartner, Timestamp date, int M_PriceList_ID, int C_ConversionType_ID) {

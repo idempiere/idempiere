@@ -219,7 +219,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
 
-		BigDecimal qtyOrderedOriginal = getQtyOrdered(ctx, DictionaryIDs.M_Product.MULCH.id, trxName);
+		BigDecimal qtyOrderedOriginal = getQtyOrdered(ctx, DictionaryIDs.M_Product.HOLLY_BUSH.id, trxName);
 
 		MOrder order = new MOrder(ctx, 0, trxName);
 		order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
@@ -235,7 +235,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.MULCH.id));
+		line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.HOLLY_BUSH.id));
 		line1.setQty(THREE);
 		line1.setDatePromised(today);
 		line1.saveEx();
@@ -247,7 +247,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		line1.load(trxName);
 		assertEquals(0, line1.getQtyReserved().compareTo(THREE));
 
-		BigDecimal newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.MULCH.id, trxName);
+		BigDecimal newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.HOLLY_BUSH.id, trxName);
 		assertEquals(0, qtyOrderedOriginal.add(THREE).compareTo(newQtyOrdered));
 
 		MInOut receipt1 = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
@@ -268,7 +268,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		line1.load(trxName);
 		assertEquals(0, line1.getQtyReserved().compareTo(Env.ZERO));
 
-		newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.MULCH.id, trxName);
+		newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.HOLLY_BUSH.id, trxName);
 		assertEquals(0, qtyOrderedOriginal.compareTo(newQtyOrdered));
 
 		// reactivate the purchase order
@@ -291,7 +291,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		// IDEMPIERE-5039 - when reservations go negative they are changed to zero
 		assertEquals(0, line1.getQtyReserved().compareTo(Env.ZERO));
 
-		newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.MULCH.id, trxName);
+		newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.HOLLY_BUSH.id, trxName);
 		assertEquals(0, qtyOrderedOriginal.compareTo(newQtyOrdered));
 
 		// create a new material receipt for the -3 reversed
@@ -313,7 +313,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		line1.load(trxName);
 		assertEquals(0, line1.getQtyReserved().compareTo(Env.ZERO));
 
-		newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.MULCH.id, trxName);
+		newQtyOrdered = getQtyOrdered(ctx, DictionaryIDs.M_Product.HOLLY_BUSH.id, trxName);
 		assertEquals(0, qtyOrderedOriginal.compareTo(newQtyOrdered));
 	}
 
@@ -490,7 +490,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 				new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
 		CacheMgt.get().reset();
 
-		BigDecimal initialQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+		BigDecimal initialQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id, getTrxName());
 		try {			
 			MOrder order = new MOrder(ctx, 0, trxName);
 			order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
@@ -506,7 +506,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 	
 			MOrderLine line1 = new MOrderLine(order);
 			line1.setLine(10);
-			line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.MULCH.id));
+			line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.ROSE_BUSH.id));
 			line1.setQty(new BigDecimal("1"));
 			line1.setDatePromised(today);
 			line1.saveEx();
@@ -517,7 +517,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Order not completed");
 			line1.load(trxName);
 			assertEquals(1, line1.getQtyReserved().intValue(), "Wrong Order line qty reserved value");
-			BigDecimal newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+			BigDecimal newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id, getTrxName());
 			assertEquals(initialQtyOrdered.intValue()+1, newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
 	
 			MInOut receipt1 = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
@@ -537,7 +537,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 	
 			line1.load(trxName);
 			assertEquals(0, line1.getQtyReserved().intValue(), "Wrong order line qty reserved value");
-			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id, getTrxName());
 			assertEquals(initialQtyOrdered.intValue(), newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
 	
 			// reactivate the purchase order
@@ -559,7 +559,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			line1.load(trxName);
 			assertEquals(0, line1.getQtyReserved().intValue(), "Wrong order line qty reserved value");
 			assertEquals(2, line1.getQtyOrdered().intValue(), "Wrong order line qty ordered value");
-			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id, getTrxName());
 			assertEquals(initialQtyOrdered.intValue(), newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
 	
 			//reverse MR
@@ -574,7 +574,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			line1.load(trxName);
 			assertEquals(2, line1.getQtyReserved().intValue(), "Wrong order line qty reserved value");
 			assertEquals(0, line1.getQtyDelivered().intValue(), "Wrong order line qty delivered value");
-			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id, getTrxName());
 			assertEquals(initialQtyOrdered.intValue()+2, newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
 		} finally {
 			DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='Y' WHERE AD_Client_ID=0 AND Name=?", 
@@ -599,7 +599,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
