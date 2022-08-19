@@ -81,7 +81,7 @@ public class MMFARegistration extends X_MFA_Registration {
 				+ " WHERE AD_User_ID=?"
 				+ "  AND MFA_Method_ID=?"
 				+ "  AND IsValid='Y'"
-				+ "  AND AD_Client_ID=?"
+				+ "  AND AD_Client_ID IN (0,?)"
 				+ "  AND IsActive='Y'");
 		if (prm != null) {
 			sql.append(" AND ParameterValue=?");
@@ -102,7 +102,7 @@ public class MMFARegistration extends X_MFA_Registration {
 				+ " SET IsActive='N'"
 				+ " WHERE AD_User_ID=?"
 				+ "  AND MFA_Method_ID=?"
-				+ "  AND AD_Client_ID=?"
+				+ "  AND AD_Client_ID IN (0,?)"
 				+ "  AND IsValid='N'"
 				+ "  AND IsActive='Y'"
 				+ "  AND MFA_Registration_ID!=?");

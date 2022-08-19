@@ -14,16 +14,25 @@
 
 package org.adempiere.webui.component;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.SimplePDFViewer;
+import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -33,6 +42,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Separator;
@@ -50,10 +60,13 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	private static final long serialVersionUID = -1712025652050086903L;
 
 	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 250pt; min-width: 230pt; max-width: 450pt;";
-
+	
 	private Text lblMsg = new Text();
 	private Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
+	private Button btnPrint = ButtonFactory.createNamedButton(ConfirmPanel.A_PRINT);
 	private Image img = new Image();
+	private ProcessInfoLog[] m_logs;
+	
 	public static final String INFORMATION = "~./zul/img/msgbox/info-btn.png";
 	public static final String ERROR = "~./zul/img/msgbox/info-btn.png";
 
@@ -113,6 +126,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		lblMsg.setValue(header);
 
 		btnOk.addEventListener(Events.ON_CLICK, this);
+		btnPrint.addEventListener(Events.ON_CLICK, this);
 
 		Panel pnlMessage = new Panel();
 		pnlMessage.setStyle(MESSAGE_PANEL_STYLE);
@@ -142,6 +156,8 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		ZKUpdateUtil.setHeight(pnlButtons, "52px");
 		pnlButtons.setAlign("center");
 		pnlButtons.setPack("end");
+		btnPrint.setVisible(false);
+		pnlButtons.appendChild(btnPrint);
 		pnlButtons.appendChild(btnOk);
 
 		Separator separator = new Separator();
@@ -166,7 +182,12 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 				pnlMessage.appendChild(new Text(summary));
 			}
 		}
-				
+		
+		this.m_logs = m_logs;
+
+		if(isPrintable())
+			btnPrint.setVisible(true);
+		
 		if (m_logs != null && m_logs.length > 0){
 			separator = new Separator();
 			ZKUpdateUtil.setWidth(separator, "100%");
@@ -216,6 +237,66 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		if (event.getTarget() == btnOk) {
 			this.detach();
 		}
+		if(event.getTarget() == btnPrint) {
+			Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));
+			Executions.schedule(this.getDesktop(), e -> onPrint(), new Event("onPrint"));
+		}
+	}
+	
+	/**
+	 * On Print
+	 */
+	private void onPrint() {
+		
+		Clients.clearBusy();
+		// Loop through all items
+		List<File> pdfList = new ArrayList<File>();
+		for (int i = 0; i < m_logs.length; i++)
+		{
+			int recordID = m_logs[i].getRecord_ID();
+			int reportEngineType = ReportEngine.getReportEngineType(m_logs[i].getAD_Table_ID());
+			ReportEngine re = null;
+			
+			if((reportEngineType >= 0) && (recordID > 0)) {
+				re = ReportEngine.get (Env.getCtx(), reportEngineType, recordID);
+				pdfList.add(re.getPDF());
+			}
+		}
+		if (pdfList.size() > 1) {
+			try {
+				File outFile = FileUtil.createTempFile(getTitle(), ".pdf");					
+				AEnv.mergePdf(pdfList, outFile);
+
+				Window win = new SimplePDFViewer(getTitle(), new FileInputStream(outFile));
+				SessionManager.getAppDesktop().showWindow(win, "center");
+			} catch (Exception e) {
+				throw new RuntimeException(e.getLocalizedMessage(), e);
+			}
+		} else if (pdfList.size() > 0) {
+			try {
+				Window win = new SimplePDFViewer(getTitle(), new FileInputStream(pdfList.get(0)));
+				SessionManager.getAppDesktop().showWindow(win, "center");
+			} catch (Exception e)
+			{
+				throw new RuntimeException(e.getLocalizedMessage(), e);
+			}
+		}
+		this.detach();
+	}
+	
+	/**
+	 * Is Printable
+	 * @return boolean
+	 */
+	public boolean isPrintable() {
+		if (m_logs == null)
+			return false;
+
+		for(ProcessInfoLog log : m_logs) {
+			if (log.getAD_Table_ID() > 0 && log.getRecord_ID() > 0 && ReportEngine.getReportEngineType(log.getAD_Table_ID()) >= 0)
+				return true;
+		}
+		return false;
 	}
 	
 	@Override

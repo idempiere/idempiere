@@ -144,7 +144,7 @@ public class WReportExportDialog extends Window implements EventListener<Event> 
 			ListItem li = cboType.getSelectedItem();
 			if(li == null || li.getValue() == null)
 			{
-				FDialog.error(-1, this, "FileInvalidExtension");
+				Dialog.error(-1, "FileInvalidExtension");
 				return;
 			}
 			
@@ -187,7 +187,7 @@ public class WReportExportDialog extends Window implements EventListener<Event> 
 			}
 			else
 			{
-				FDialog.error(-1, this, "FileInvalidExtension");
+				Dialog.error(-1, "FileInvalidExtension");
 				return;
 			}
 

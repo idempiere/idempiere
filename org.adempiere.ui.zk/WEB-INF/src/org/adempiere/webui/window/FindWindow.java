@@ -2386,7 +2386,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			String name = selected;
 			if ((fQueryName.getSelectedIndex() == 0 || name.equals(m_sNew)) && saveQuery){ // New query - needs a name
 
-				FDialog.warn (m_targetWindowNo, this, "NeedsName", name);
+				Dialog.warn(m_targetWindowNo, "NeedsName", name);
 				return;
 			}
 			if (saveQuery){
@@ -2413,16 +2413,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				} else	if (code.length() <= 0){ // Delete the query
 					if (uq == null) 
 					{
-						FDialog.warn (m_targetWindowNo, this, "NeedsQuery", name);
+						Dialog.warn(m_targetWindowNo, "NeedsQuery", name);
 						return;
 					}
 					if (uq.delete(true))
 					{
-						FDialog.info (m_targetWindowNo, this, "Deleted", name);
+						Dialog.info(m_targetWindowNo, "Deleted", name);
 						refreshUserQueries();
 					}
 					else
-						FDialog.warn (m_targetWindowNo, this, "DeleteError", name);
+						Dialog.warn(m_targetWindowNo, "DeleteError", name);
 					return;
 				}
 				uq.setCode (code.toString());
@@ -2842,7 +2842,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         //  Test for no records
         if (getNoOfRecords(m_query, true) != 0) {
         	if (m_total == COUNTING_RECORDS_TIMED_OUT) {
-        		FDialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
+        		Dialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
         	} else {
                 if (advancedPanel != null) {
                 	advancedPanel.getItems().clear();
@@ -2924,7 +2924,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
         if (getNoOfRecords(m_query, true) != 0) {
         	if (m_total == COUNTING_RECORDS_TIMED_OUT) {
-        		FDialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
+        		Dialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
         	} else {
                 dispose();
         	}
@@ -3011,11 +3011,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
         //  No Records
         if (m_total == 0 && alertRecords)
-            FDialog.warn(m_targetWindowNo, this, "FindZeroRecords", null);
+            Dialog.warn(m_targetWindowNo, "FindZeroRecords", null);
         //  More then allowed
         if (m_gridTab != null && alertRecords && m_total != COUNTING_RECORDS_TIMED_OUT && m_gridTab.isQueryMax(m_total))
         {
-            FDialog.error(m_targetWindowNo, this, "FindOverMax",
+            Dialog.error(m_targetWindowNo, "FindOverMax",
                 m_total + " > " + m_gridTab.getMaxQueryRecords());
             m_total = 0; // return 0 if more then allowed - teo_sarca [ 1708717 ]
         }
@@ -3189,7 +3189,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             StringBuilder errMsg = new StringBuilder();
             errMsg.append(field.getColumnName()).append(" = ").append(in).append(" - ").append(error);
             //
-            FDialog.error(0, this, "ValidationError", errMsg.toString());
+            Dialog.error(0, "ValidationError", errMsg.toString());
             return null;
         }
 
@@ -3776,7 +3776,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             StringBuilder errMsg = new StringBuilder();
             errMsg.append(attribute.getName()).append(" = ").append(value).append(" - ").append(error);
             //
-            FDialog.error(0, this, "ValidationError", errMsg.toString());
+            Dialog.error(0, "ValidationError", errMsg.toString());
             return null;
         }
 

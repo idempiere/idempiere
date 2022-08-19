@@ -35,26 +35,36 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Create M_PackageLine for M_PackageMPS from shipment lines
  * @author Elaine
  *
  */
 public abstract class CreateFromPackageShipment extends CreateFrom
 {
+	/**
+	 * 
+	 * @param gridTab
+	 */
 	public CreateFromPackageShipment(GridTab gridTab) 
 	{
 		super(gridTab);
 		if (log.isLoggable(Level.INFO)) log.info(gridTab.toString());
 	}
 	
-	public boolean dynInit() throws Exception
+	@Override
+	protected boolean dynInit() throws Exception
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		setTitle(Msg.getElement(Env.getCtx(), "M_PackageMPS_ID", false) + " .. " + Msg.translate(Env.getCtx(), "CreateFrom"));
 
 		return true;
 	}
 	
+	/**
+	 * 
+	 * @param M_InOut_ID
+	 * @return shipment lines (selection,[m_inoutline_id,line],qty,[m_product_id,name],uom)
+	 */
 	protected Vector<Vector<Object>> getShipmentData(int M_InOut_ID)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("M_InOut_ID=" + M_InOut_ID);
@@ -69,7 +79,7 @@ public abstract class CreateFromPackageShipment extends CreateFrom
         ResultSet rs = null;
         try
         {
-            pstmt = DB.prepareStatement(sqlStmt.toString(), null);
+            pstmt = DB.prepareStatement(sqlStmt.toString(), getTrxName());
             pstmt.setInt(1, M_InOut_ID);           
             rs = pstmt.executeQuery();
             while (rs.next())
@@ -78,10 +88,9 @@ public abstract class CreateFromPackageShipment extends CreateFrom
                 line.add(Boolean.FALSE);           //  0-Selection
                 KeyNamePair lineKNPair = new KeyNamePair(rs.getInt(1), rs.getString(2)); // M_InOutLine_ID, Line
                 line.add(lineKNPair);
-                line.add(rs.getBigDecimal(3));	   				//Qty
+                line.add(rs.getBigDecimal(3));	   		//Qty
                 KeyNamePair productKNPair = new KeyNamePair(rs.getInt(4), rs.getString(5)); // ProductID, Product Name
                 line.add(productKNPair);				//Product
-                //line.add(rs.getString(5)); 				
                 line.add(rs.getString(6)); 				//UOM
                 
                 data.add(line);
@@ -101,11 +110,16 @@ public abstract class CreateFromPackageShipment extends CreateFrom
 		return data;
 	}
 	
+	@Override
 	public void info(IMiniTable miniTable, IStatusBar statusBar)
 	{
 
 	}
 	
+	/**
+	 * set class/type of columns
+	 * @param miniTable
+	 */
 	protected void configureMiniTable (IMiniTable miniTable)
 	{
 		miniTable.setColumnClass(0, Boolean.class, false);      //  0-Selection
@@ -117,13 +131,17 @@ public abstract class CreateFromPackageShipment extends CreateFrom
 		miniTable.autoSize();
 	}
 	
+	/**
+	 * Create M_PackageLine
+	 */
+	@Override	
 	public boolean save(IMiniTable miniTable, String trxName)
 	{
 		int M_PackageMPS_ID = (Integer) getGridTab().getValue(MPackageMPS.COLUMNNAME_M_PackageMPS_ID);
-		MPackageMPS packageMPS = new MPackageMPS(Env.getCtx(), M_PackageMPS_ID, null);
+		MPackageMPS packageMPS = new MPackageMPS(Env.getCtx(), M_PackageMPS_ID, trxName);
 		
-		MPackage mPackage = new MPackage(Env.getCtx(), packageMPS.getM_Package_ID(), null);
-        MInOut shipment = new MInOut(Env.getCtx(), mPackage.getM_InOut_ID(), null);
+		MPackage mPackage = new MPackage(Env.getCtx(), packageMPS.getM_Package_ID(), trxName);
+        MInOut shipment = new MInOut(Env.getCtx(), mPackage.getM_InOut_ID(), trxName);
         MInOutLine[] shipmentLines = shipment.getLines(false);
         
         HashMap<Integer, MInOutLine> lineMap = new HashMap<Integer, MInOutLine>();
@@ -148,18 +166,18 @@ public abstract class CreateFromPackageShipment extends CreateFrom
                 packageLine.setInOutLine((MInOutLine)lineMap.get(inOutLineId));
                 packageLine.setM_Product_ID(productId);
                 packageLine.setQty(qty);
-                packageLine.setM_PackageMPS_ID(M_PackageMPS_ID);
-                
-                if (!packageLine.save(mPackage.get_TrxName()))
-                {
-                    throw new IllegalStateException("Could not create Package Line");
-                }
+                packageLine.setM_PackageMPS_ID(M_PackageMPS_ID);                
+                packageLine.saveEx(mPackage.get_TrxName());
             }
         }
         
         return true;
 	}
 	
+	/**
+	 * 
+	 * @return column header names (select,line,quantity,product,uom)
+	 */
 	protected Vector<String> getOISColumnNames()
 	{
 		Vector<String> columnNames = new Vector<String>(5);

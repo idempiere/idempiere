@@ -28,7 +28,7 @@ import org.adempiere.webui.adwindow.DetailPane.Tabpanel;
 import org.adempiere.webui.component.ADTabListModel;
 import org.adempiere.webui.component.ADTabListModel.ADTabLabel;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
@@ -225,7 +225,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 				}
 				else if (tabPanel != null && tabPanel.getGridTab().getRowCount() > 0
 					&& tabPanel.getGridTab().getCurrentRow() >= 0) {
-					FDialog.ask(tabPanel.getGridTab().getWindowNo(), null, "DeleteRecord?", new Callback<Boolean>() {
+					Dialog.ask(tabPanel.getGridTab().getWindowNo(), "DeleteRecord?", new Callback<Boolean>() {
 
 						@Override
 						public void onCallback(Boolean result) {
@@ -248,7 +248,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 					StringBuilder sb = new StringBuilder();
 					sb.append(Env.getContext(Env.getCtx(), tabPanel.getGridTab().getWindowNo(), "_WinInfo_WindowName", false)).append(" - ")
 						.append(indices.length).append(" ").append(Msg.getMsg(Env.getCtx(), "Selected"));
-					FDialog.ask(sb.toString(), tabPanel.getGridTab().getWindowNo(), null,"DeleteSelection", new Callback<Boolean>() {
+					Dialog.ask(sb.toString(), tabPanel.getGridTab().getWindowNo(),"DeleteSelection", new Callback<Boolean>() {
 						@Override
 						public void onCallback(Boolean result) {
 							if(result){

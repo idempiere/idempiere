@@ -28,7 +28,9 @@ import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.model.GridTab;
 import org.compiere.model.MPInstancePara;
+import org.compiere.model.MProcessDrillRule;
 import org.compiere.model.MScheduler;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -63,6 +65,8 @@ public class WProcessParameterForm extends ADForm
 	private String m_Name;
 
 	private StringBuffer m_messageText = new StringBuffer();
+
+	private String tableName = "";
 
 	private ProcessParameterPanel parameterPanel;
 	
@@ -107,15 +111,28 @@ public class WProcessParameterForm extends ADForm
 
 	private void onOK() {
 		MPInstancePara[] paras = parameterPanel.getParameters();
-		pp.saveParameters(paras);
+		GridTab gridTab = super.getGridTab();
+		if(gridTab != null)
+			tableName = gridTab.getTableName();
+		pp.saveParameters(paras, tableName);
 		this.dispose();
 	}
 
 	@Override
 	protected void initForm() {
 		if (getProcessInfo() != null) {
-			MScheduler scheduler = new MScheduler(Env.getCtx(), getProcessInfo().getRecord_ID(), null);
-			int AD_Process_ID = scheduler.getAD_Process_ID();
+			int AD_Process_ID = 0;
+			GridTab gridTab = super.getGridTab();
+			if(gridTab != null)
+				tableName = gridTab.getTableName();
+			if(tableName.equalsIgnoreCase(MScheduler.Table_Name)) {
+				MScheduler scheduler = new MScheduler(Env.getCtx(), getProcessInfo().getRecord_ID(), null);
+				AD_Process_ID = scheduler.getAD_Process_ID();
+			}
+			else if(tableName.equalsIgnoreCase(MProcessDrillRule.Table_Name)) {
+				MProcessDrillRule drillRule = new MProcessDrillRule(Env.getCtx(), getProcessInfo().getRecord_ID(), null);
+				AD_Process_ID = drillRule.getAD_Process_ID();
+			}
 			if (AD_Process_ID > 0) {
 				processInfo = new ProcessInfo("", AD_Process_ID);
 				init();

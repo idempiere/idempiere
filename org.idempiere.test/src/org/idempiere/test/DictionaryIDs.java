@@ -93,7 +93,12 @@ public final class DictionaryIDs {
 		C_AND_W(117),
 		JOE_BLOCK(118),
 		SEED_FARM(120),
-		PATIO(121);
+		PATIO(121),
+		WOOD_INC(50000),
+		COLOR_INC(50001),
+		CHROME_INC(50002),
+		CHEMICAL_INC(50003),
+		AGRI_TECH(200000);
 		
 		public final int id;
 
@@ -425,6 +430,18 @@ public final class DictionaryIDs {
 		public final int id;
 
 		private M_RMAType(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum M_Shipper {
+		UPS(100),
+		FERTILIZER_INTERNAL_SHIPPER(50001),
+		FURNITURE_INTERNAL_SHIPPER(50002);
+		
+		public final int id;
+
+		private M_Shipper(int id) {
 			this.id = id;
 		}
 	}

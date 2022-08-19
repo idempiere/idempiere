@@ -120,12 +120,14 @@ import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.TestActivator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * 
  * @author hengsin
  *
  */
+@Isolated
 public class CacheTest extends AbstractTestCase {
 
 	private static final int ORDER_HEADER_PRINT_FORMAT_ID = 118;
@@ -560,7 +562,7 @@ public class CacheTest extends AbstractTestCase {
 		line1.saveEx();
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		invoice.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		if (!invoice.isPosted()) {
 			String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), true, getTrxName());

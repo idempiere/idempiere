@@ -34,7 +34,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -326,7 +326,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 			}
 			else
 			{
-				FDialog.error(0, this, "Request record not saved");
+				Dialog.error(0, "Request record not saved");
 				return;
 			}
 			

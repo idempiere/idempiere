@@ -20,7 +20,7 @@ import org.adempiere.webui.adwindow.ADWindowContent;
 import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.TreeUtils;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.model.PO;
@@ -214,7 +214,7 @@ public class ADTreeOnDropListener implements EventListener<Event> {
         catch (Exception e)
 		{
 			trx.rollback();
-			FDialog.error(windowNo, tree, "TreeUpdateError", e.getLocalizedMessage());
+			Dialog.error(windowNo, "TreeUpdateError", e.getLocalizedMessage());
 		}
 		finally
 		{

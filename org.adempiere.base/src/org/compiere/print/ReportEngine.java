@@ -2401,7 +2401,21 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	public void setIsReplaceTabContent(boolean m_isReplaceTabContent) {
 		this.m_isReplaceTabContent = m_isReplaceTabContent;
 	}
-
+	
+	/**
+	 * Get Report Engine Type from Table_ID
+	 * @param tableID
+	 * @return Report Engine Type 
+	 * -1 if Report Engine Type was not found
+	 */
+	public static int getReportEngineType(int tableID) {
+		for(int i = 0; i < DOC_TABLE_ID.length; i++) {
+			if(DOC_TABLE_ID[i] == tableID)
+				return i;
+		}
+		return -1;
+	}
+	
 	/**
 	 * build css for table from mapCssInfo
 	 * @param doc

@@ -44,7 +44,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.apps.form.GenForm;
 import org.compiere.minigrid.IDColumn;
@@ -391,7 +391,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	public void onAfterProcess()
 	{
 		//	OK to print
-		FDialog.ask(getWindowNo(), this, genForm.getAskPrintMsg(), new Callback<Boolean>() {
+		Dialog.ask(getWindowNo(), genForm.getAskPrintMsg(), new Callback<Boolean>() {
 			
 			@Override
 			public void onCallback(Boolean result) 

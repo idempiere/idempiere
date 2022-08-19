@@ -94,7 +94,7 @@ public class TableCreateColumns extends SvrProcess
 		Connection conn = null;
 		
 		try {
-			conn = DB.getConnectionRO();
+			conn = DB.getConnection();
 			AdempiereDatabase db = DB.getDatabase();
 			DatabaseMetaData md = conn.getMetaData();
 			String catalog = db.getCatalog();

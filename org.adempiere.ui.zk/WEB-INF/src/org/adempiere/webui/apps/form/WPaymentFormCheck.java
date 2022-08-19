@@ -33,7 +33,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.PaymentFormCheck;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
@@ -255,26 +255,26 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		String error = MPaymentValidate.validateRoutingNo(sRoutingField.getText());
 		if (error.length() != 0)
 		{
-			FDialog.error(getWindowNo(), window, error);
+			Dialog.error(getWindowNo(), error);
 			dataOK = false;
 		}
 		error = MPaymentValidate.validateAccountNo(sNumberField.getText());
 		if (error.length() != 0)
 		{
-			FDialog.error(getWindowNo(), window, error);
+			Dialog.error(getWindowNo(), error);
 			dataOK = false;
 		}
 		error = MPaymentValidate.validateCheckNo(sCheckField.getText());
 		if (error.length() != 0)
 		{
-			FDialog.error(getWindowNo(), window, error);
+			Dialog.error(getWindowNo(), error);
 			dataOK = false;
 		}
 		
 		// Check & Cash (Payment) must have a bank account
 		if (C_BankAccount_ID == 0)
 		{
-			FDialog.error(getWindowNo(), window, "FillMandatory", sBankAccountLabel.getValue());
+			Dialog.error(getWindowNo(), "FillMandatory", sBankAccountLabel.getValue());
 			dataOK = false;
 		}
 		//
@@ -293,9 +293,9 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		boolean ok = save(newC_BankAccount_ID, sRoutingField.getText(), sNumberField.getText(), 
 				sCheckField.getText(), (BigDecimal) sAmountField.getValue(), trxName);		
 		if (!ok)
-			FDialog.error(getWindowNo(), window, "PaymentError", processMsg);
+			Dialog.error(getWindowNo(), "PaymentError", processMsg);
 		else if (processMsg != null)
-			FDialog.info(getWindowNo(), window, "PaymentCreated", m_mPayment.getDocumentNo());
+			Dialog.info(getWindowNo(), "PaymentCreated", m_mPayment.getDocumentNo());
 		
 		return ok;
 	}

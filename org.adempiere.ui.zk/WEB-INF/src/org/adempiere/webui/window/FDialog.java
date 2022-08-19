@@ -46,12 +46,14 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
 /**
+ * @deprecated  Many methods in this class receive parameters that are never used.
+ * As of iDempiere 10, use the {@link Dialog} class instead.
  *
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
-
+@Deprecated(since="10", forRemoval=true)
 public class FDialog
 {
 	/**	Logger			*/

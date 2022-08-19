@@ -167,7 +167,7 @@ public class EventWindow extends Window implements EventListener<Event> {
 			setVisible(false);
 		else if (e.getTarget() == confirmPanel.getButton(ConfirmPanel.A_ZOOM)) {
 			if (R_Request_ID > 0)
-				AEnv.zoom(417, R_Request_ID);
+				AEnv.zoom(MRequest.Table_ID, R_Request_ID);
 		}
 	}
 }

@@ -16,7 +16,7 @@ package org.adempiere.webui.apps;
 
 import org.adempiere.util.Callback;
 import org.adempiere.util.ICalloutUI;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MLookup;
 import org.zkoss.zk.ui.Desktop;
 
@@ -38,7 +38,7 @@ public class CalloutDialog implements ICalloutUI {
 
 	@Override
 	public void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback) {
-			FDialog.askForInput(message, lookup, editorType, callback, desktop, m_windowNo);
+			Dialog.askForInput(message, lookup, editorType, callback, desktop, m_windowNo);
 	}
 
 	@Override

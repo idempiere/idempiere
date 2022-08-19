@@ -30,12 +30,15 @@ public class SystemIDs
 	public final static int COLUMN_C_INVOICE_C_BPARTNER_ID = 3499;
 	public final static int COLUMN_C_INVOICE_C_CURRENCY_ID = 3505;
 	public final static int COLUMN_C_INVOICELINE_M_PRODUCT_ID = 3840;
+	public final static int COLUMN_C_ORDER_AD_ORG_ID = 2163;
+	public final static int COLUMN_C_ORDER_C_BPARTNER_ID = 2762;
 	public final static int COLUMN_C_PAYMENT_V_TENDERTYPE = 8416;
 	public final static int COLUMN_C_PAYSELECTIONCHECK_C_PAYSELECTION_ID = 7670;
 	public final static int COLUMN_FACT_ACCT_C_ACCTSCHEMA_ID = 2513;	
 	public final static int COLUMN_FACT_ACCT_M_PRODUCT_ID = 2527;	
 	public final static int COLUMN_M_MOVEMENTLINE_M_ATTRIBUTESETINSTANCE_ID = 8551;
 	public final static int COLUMN_M_PRODUCT_M_ATTRIBUTESETINSTANCE_ID = 8418;
+	public final static int COLUMN_M_REQUISITION_M_WAREHOUSE_ID = 11474;
 	public final static int COLUMN_S_RESOURCE_S_RESOURCETYPE_ID = 6851;
 	public final static int COLUMN_S_RESOURCEASSIGNMENT_S_RESOURCE_ID = 6826;
 	public final static int COLUMN_WIZARDSTATUS = 200310;
@@ -43,6 +46,8 @@ public class SystemIDs
 
 	public final static int COUNTRY_US = 100;
 	public final static int COUNTRY_JAPAN = 216;
+
+	public final static int C_UOM_EACH = 100;
 
 	public final static int ELEMENT_AD_CLIENT_ID = 102;
 	public final static int ELEMENT_AD_ORG_ID = 113;
@@ -104,10 +109,12 @@ public class SystemIDs
 	public final static int PROCESS_RPT_C_PROJECT = 217;
 	public final static int PROCESS_RPT_C_RFQRESPONSE = 276;
 	public final static int PROCESS_RPT_C_DUNNING = 159;
+	public final static int PROCESS_RPT_DD_ORDER = 53044;
 	public final static int PROCESS_RPT_FINREPORT = 202;
 	public final static int PROCESS_RPT_FINSTATEMENT = 204;
 	public final static int PROCESS_RPT_M_INVENTORY = 291;
 	public final static int PROCESS_RPT_M_MOVEMENT = 290;
+	public final static int PROCESS_RPT_PP_ORDER = 53028;
 
 	public final static int REFERENCE_DATATYPE_ACCOUNT = 25;
 	public final static int REFERENCE_DATATYPE_AMOUNT = 12;
@@ -175,15 +182,6 @@ public class SystemIDs
 	public final static int REFERENCE_WIZARDSTATUS = 200003;
 	public final static int REFERENCE_YESNO = 319;
 
-	public final static int TABLE_AD_TABLE = 100;
-	public final static int TABLE_AD_WF_PROCESS = 645;
-	public final static int TABLE_AD_WF_ACTIVITY = 644;
-	public final static int TABLE_I_PRODUCT = 532;
-	public final static int TABLE_I_BPARTNER = 533;
-	public final static int TABLE_I_ELEMENTVALUE = 534;
-	public final static int TABLE_I_REPORTLINE = 535;
-	public final static int TABLE_T_REPORT = 544;
-
 	public final static int TREE_MENUPRIMARY = 10;
 
 	public final static int USER_SUPERUSER = 100;
@@ -194,25 +192,32 @@ public class SystemIDs
 
 	public final static int WINDOW_ACCOUNTCOMBINATION = 153;
 	public final static int WINDOW_ATTRIBUTESETINSTANCE = 358;
+	public final static int WINDOW_BANK_STATEMENT = 194;
 	public final static int WINDOW_BUSINESS_PARTNER = 123;
 	public static final int WINDOW_CHART = 53124;
 	public final static int WINDOW_CUSTOMERRETURN = 53097;
+	public final static int WINDOW_CUSTOMER_RMA = 320;
 	public final static int WINDOW_IMAGE = 227;
 	public final static int WINDOW_INVOICE_CUSTOMER = 167;
+	public final static int WINDOW_INVOICE_VENDOR = 183;
 	public final static int WINDOW_LOCATION = 121;
 	public final static int WINDOW_LOCATOR = 139;
 	public final static int WINDOW_LOT = 257;
+	public final static int WINDOW_MATERIAL_RECEIPT = 184;
 	public final static int WINDOW_MATERIALTRANSACTIONS_INDIRECTUSER = 223;
 	public final static int WINDOW_MY_REQUESTS = 237;
 	public final static int WINDOW_NOTICE = 193;
+	public final static int WINDOW_PAYMENTS_INTO_BATCH = 200031;
 	public final static int WINDOW_REQUEST = 201;
 	public final static int WINDOW_REQUESTS_ALL = 232;
 	public final static int WINDOW_RESOURCE = 236;
 	public final static int WINDOW_RETURNTOVENDOR = 53098;
 	public final static int WINDOW_SALES_ORDER = 143;
+	public final static int WINDOW_SHIPMENT_CUSTOMER = 169;
+	public final static int WINDOW_VENDOR_RMA = 53099;
 	public final static int WINDOW_WAREHOUSE_LOCATOR = 139;
 	public final static int WINDOW_WINDOW_TAB_FIELD = 102;	
-	public final static int WINDOW_WORKFLOW_ACTIVITIES = 298;
+	public final static int WINDOW_WORKFLOW_ACTIVITIES = 298;	
 
 	public final static int TAB_TAB = 106;
 

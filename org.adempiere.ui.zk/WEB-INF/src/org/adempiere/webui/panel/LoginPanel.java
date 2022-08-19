@@ -48,7 +48,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
@@ -477,7 +477,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 		}
 		catch (Exception e) {
 			String message = e.getMessage();
-			FDialog.warn(0, this, "URLnotValid", message);
+			Dialog.warn(0, "URLnotValid", message);
 		}
 	}
 

@@ -30,6 +30,7 @@ if (window.location.protocol == 'https:') {
   zk.load("org.idempiere.commons");
   zk.load("jquery.maskedinput");
   zk.load("photobooth");
+  zk.load("dragdrop.attachment");
 
   zk.afterLoad(function() {
     zk._Erbx.push = function(msg) {

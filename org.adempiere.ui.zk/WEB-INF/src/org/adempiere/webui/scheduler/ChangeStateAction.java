@@ -33,7 +33,7 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.ADWindowContent;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.factory.ButtonFactory;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MScheduler;
@@ -90,7 +90,7 @@ public class ChangeStateAction implements IAction, EventListener<Event> {
 				else if (status == IServerManager.SERVER_STATE_STOPPED)
 					label = Msg.getMsg(Env.getCtx(), "SchedulerStopped");
 				else
-					FDialog.error(content.getWindowNo(), content.getComponent(), "CantReadCurrentSchedulerState");
+					Dialog.error(content.getWindowNo(), "CantReadCurrentSchedulerState");
 				
 				if (label == null)
 					return;
@@ -115,9 +115,9 @@ public class ChangeStateAction implements IAction, EventListener<Event> {
 						MScheduler model = (MScheduler) schedulerAttr;
 						String error = serverMgr.start(model.getServerID());
 						if (error == null) {
-							FDialog.info(0, null, "SchedulerStartSuccess");
+							Dialog.info(0, "SchedulerStartSuccess");
 						} else {
-							FDialog.error(0, "SchedulerStartFail", error);
+							Dialog.error(0, "SchedulerStartFail", error);
 						}
 						Clients.clearBusy();
 					}
@@ -129,9 +129,9 @@ public class ChangeStateAction implements IAction, EventListener<Event> {
 						MScheduler model = (MScheduler) schedulerAttr;
 						String error = serverMgr.stop(model.getServerID());
 						if (error == null) {
-							FDialog.info(0, null, "SchedulerStopSuccess");
+							Dialog.info(0, "SchedulerStopSuccess");
 						} else {
-							FDialog.error(0, "SchedulerStopFail", error);
+							Dialog.error(0, "SchedulerStopFail", error);
 						}
 						Clients.clearBusy();
 					}
@@ -142,9 +142,9 @@ public class ChangeStateAction implements IAction, EventListener<Event> {
 					if (schedulerAttr != null && schedulerAttr instanceof MScheduler) {
 						String error = serverMgr.addScheduler(scheduler);
 						if (error == null) {
-							FDialog.info(0, null, "SchedulerAddAndStartSuccess");
+							Dialog.info(0, "SchedulerAddAndStartSuccess");
 						} else {
-							FDialog.error(0, "SchedulerAddAndStartFail", error);
+							Dialog.error(0, "SchedulerAddAndStartFail", error);
 						}
 						Clients.clearBusy();
 					}
@@ -180,7 +180,7 @@ public class ChangeStateAction implements IAction, EventListener<Event> {
 		if (stateAttr != null && stateAttr instanceof Number && schedulerAttr != null && schedulerAttr instanceof MScheduler) {
 			int state = ((Number)stateAttr).intValue();
 			if (state == IServerManager.SERVER_STATE_NOT_SCHEDULE) {
-				FDialog.ask(0, null, "SchedulerAddAndStartPrompt", new Callback<Boolean>() {					
+				Dialog.ask(0, "SchedulerAddAndStartPrompt", new Callback<Boolean>() {					
 					@Override
 					public void onCallback(Boolean result) {
 						if (result) {
@@ -190,7 +190,7 @@ public class ChangeStateAction implements IAction, EventListener<Event> {
 					}
 				});				
 			} else if (state == IServerManager.SERVER_STATE_STARTED) {				
-				FDialog.ask(0, null, "SchedulerStopPrompt", new Callback<Boolean>() {					
+				Dialog.ask(0, "SchedulerStopPrompt", new Callback<Boolean>() {					
 					@Override
 					public void onCallback(Boolean result) {
 						if (result) {
@@ -202,7 +202,7 @@ public class ChangeStateAction implements IAction, EventListener<Event> {
 				});				
 			}
 			else if (state == IServerManager.SERVER_STATE_STOPPED) {				
-				FDialog.ask(0, null, "SchedulerStartPrompt", new Callback<Boolean>() {					
+				Dialog.ask(0, "SchedulerStartPrompt", new Callback<Boolean>() {					
 					@Override
 					public void onCallback(Boolean result) {
 						if (result) {
