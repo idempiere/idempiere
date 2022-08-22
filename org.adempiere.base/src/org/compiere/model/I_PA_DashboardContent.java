@@ -55,8 +55,8 @@ public interface I_PA_DashboardContent
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Tenant.
-	  * Tenant for this installation.
+	/** Get Client.
+	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -64,12 +64,12 @@ public interface I_PA_DashboardContent
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
 
@@ -102,17 +102,6 @@ public interface I_PA_DashboardContent
 	public int getAD_Role_ID();
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
-
-    /** Column name AD_StatusLine_ID */
-    public static final String COLUMNNAME_AD_StatusLine_ID = "AD_StatusLine_ID";
-
-	/** Set Status Line	  */
-	public void setAD_StatusLine_ID (int AD_StatusLine_ID);
-
-	/** Get Status Line	  */
-	public int getAD_StatusLine_ID();
-
-	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException;
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
@@ -273,15 +262,6 @@ public interface I_PA_DashboardContent
 	  */
 	public boolean isShowInDashboard();
 
-    /** Column name IsShowTitle */
-    public static final String COLUMNNAME_IsShowTitle = "IsShowTitle";
-
-	/** Set Show Title	  */
-	public void setIsShowTitle (boolean IsShowTitle);
-
-	/** Get Show Title	  */
-	public boolean isShowTitle();
-
     /** Column name IsShowinLogin */
     public static final String COLUMNNAME_IsShowinLogin = "IsShowinLogin";
 
@@ -290,6 +270,15 @@ public interface I_PA_DashboardContent
 
 	/** Get Show on Login	  */
 	public boolean isShowinLogin();
+
+    /** Column name IsShowTitle */
+    public static final String COLUMNNAME_IsShowTitle = "IsShowTitle";
+
+	/** Set Show Title	  */
+	public void setIsShowTitle (boolean IsShowTitle);
+
+	/** Get Show Title	  */
+	public boolean isShowTitle();
 
     /** Column name Line */
     public static final String COLUMNNAME_Line = "Line";
