@@ -267,3 +267,113 @@
   vertical-align: middle;
 }
 <%-- User Favorite Dashboard Panel End --%>
+
+.z-anchorchildren .z-hlayout {
+	white-space: normal;
+}
+
+.dashboard-row-10 .z-hlayout-inner {
+	width: 10%;
+}
+.dashboard-row-9 .z-hlayout-inner {
+	width: 11%;
+}
+.dashboard-row-8 .z-hlayout-inner {
+	width: 12%;
+}
+.dashboard-row-7 .z-hlayout-inner {
+	width: 14%;
+}
+.dashboard-row-6 .z-hlayout-inner {
+	width: 16%;
+}
+.dashboard-row-5 .z-hlayout-inner {
+	width: 20%;
+}
+.dashboard-row-4 .z-hlayout-inner {
+	width: 25%;
+}
+.dashboard-row-3 .z-hlayout-inner {
+	width: 33%;
+}
+.dashboard-row-2 .z-hlayout-inner {
+	width: 50%;
+}
+.dashboard-row-1 .z-hlayout-inner {
+	width: 100%;
+}
+@media screen and (max-width: 1024px) {
+	.dashboard-row-10 .z-hlayout-inner {
+		width: 20%;
+	}
+	.dashboard-row-9 .z-hlayout-inner {
+		width: 25%;
+	}
+	.dashboard-row-9 .z-hlayout-inner:last-child {
+		width: 100%;
+	}
+	.dashboard-row-8 .z-hlayout-inner {
+		width: 25%;
+	}
+	.dashboard-row-7 .z-hlayout-inner {
+		width: 33%;
+	}
+	.dashboard-row-7 .z-hlayout-inner:last-child {
+		width: 100%;
+	}
+	.dashboard-row-6 .z-hlayout-inner {
+		width: 33%;
+	}
+	.dashboard-row-5 .z-hlayout-inner {
+		width: 50%;
+	}
+	.dashboard-row-5 .z-hlayout-inner:last-child {
+		width: 100%;
+	}
+	.dashboard-row-4 .z-hlayout-inner {
+		width: 50%;
+	}
+	.dashboard-row-3 .z-hlayout-inner {
+		width: 50%;
+	}
+	.dashboard-row-3 .z-hlayout-inner:last-child {
+		width: 100%;
+	}
+	.dashboard-row-2 .z-hlayout-inner {
+		width: 100%;
+	}
+}
+@media screen and (max-width: 750px) {
+	.dashboard-row-10 .z-hlayout-inner {
+		width: 100%;
+		display: flex;
+	}
+	.dashboard-row-9 .z-hlayout-inner {
+		width: 100%;
+		display: flex;
+	}
+	.dashboard-row-8 .z-hlayout-inner {
+		width: 100%;
+		display: flex;
+	}
+	.dashboard-row-7 .z-hlayout-inner {
+		width: 100%;
+		display: flex;
+	}
+	.dashboard-row-6 .z-hlayout-inner {
+		width: 100%;
+		display: flex;
+	}
+	.dashboard-row-5 .z-hlayout-inner {
+		width: 100%;
+		display: flex;
+	}
+	.dashboard-row-4 .z-hlayout-inner {
+		width: 100%;
+		display: flex;
+	}
+	.dashboard-row-3 .z-hlayout-inner {
+		width: 100%;
+		display: flex;
+	}
+}
