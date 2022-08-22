@@ -19,7 +19,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.impexp.AbstractExcelExporter;
+import org.adempiere.impexp.AbstractXLSXExporter;
 import org.adempiere.model.IInfoColumn;
 import org.adempiere.model.MInfoProcess;
 import org.adempiere.model.MInfoRelated;
@@ -2612,7 +2612,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     exportButton = ButtonFactory.createNamedButton("Export", false, true);        
     exportButton.setId("Export");
     exportButton.setEnabled(false);       
-    exportButton.addEventListener(Events.ON_CLICK, new XlsExportAction());
+    exportButton.addEventListener(Events.ON_CLICK, new XlsxExportAction());
 
     confirmPanel.addComponentsLeft(exportButton);
 	}
@@ -2651,21 +2651,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return -1;
 	}
 
-	private class XlsExportAction implements EventListener<Event>
+	private class XlsxExportAction implements EventListener<Event>
 	{		
 		@Override
 		public void onEvent(Event evt) throws Exception
 		{
 			if(evt.getTarget() == exportButton)
 			{
-				XlsExporter exporter = new XlsExporter();
+				XlsxExporter exporter = new XlsxExporter();
 				
 				exporter.doExport();
 			}
 		}
 	}
 	
-	private class XlsExporter extends AbstractExcelExporter
+	private class XlsxExporter extends AbstractXLSXExporter
 	{
 		private ResultSet m_rs = null;
 		private int rowCount = -1;
@@ -2677,7 +2677,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			
 			String dataSql = buildDataSQL(0, 0);
 			
-			File file = File.createTempFile(infoWindow.get_Translation("Name")+"_", ".xls");
+			File file = File.createTempFile(infoWindow.get_Translation("Name")+"_", ".xlsx");
 			
 			testCount();
 			
@@ -2693,7 +2693,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				{
 					String trxName = Trx.createTrxName("InfoPanelLoad:");
 					trx  = Trx.get(trxName, true);
-					trx.setDisplayName(getClass().getName()+"_exportXls");
+					trx.setDisplayName(getClass().getName()+"_exportXlsx");
 					pstmt = DB.prepareStatement(dataSql, trxName);
 					setParameters (pstmt, false);	//	no count
 
