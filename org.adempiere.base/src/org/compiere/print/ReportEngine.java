@@ -2412,6 +2412,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return m_whereExtended;
 	}
 
+	/* Save windowNo of the report to parse the context */
+	public void setWindowNo(int windowNo) {
+		m_windowNo = windowNo;
+	}
+	
 	public int getWindowNo() {
 		return m_windowNo;
 	}
