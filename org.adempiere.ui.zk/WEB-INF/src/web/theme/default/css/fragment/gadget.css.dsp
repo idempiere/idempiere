@@ -212,6 +212,10 @@
 	height: 100% !important; 
 }
 
+.statusline-gadget {
+	padding: 0px 10px 10px;
+}
+
 .help-content
 {
 	padding: 2px;

@@ -568,7 +568,7 @@ public class DashboardController implements EventListener<Event> {
     		statusLineHtml.setContent(sl.parseLine(0));
     		Div div = new Div();
     		div.appendChild(statusLineHtml);
-    		div.setStyle("padding: 0px 10px 10px;");
+    		div.setSclass("statusline-gadget");
     		content.appendChild(div);
     		empty = false;
     	}
