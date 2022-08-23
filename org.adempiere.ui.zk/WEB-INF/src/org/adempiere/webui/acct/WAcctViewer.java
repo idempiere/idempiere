@@ -809,8 +809,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			try {
 				file = new File(FileUtil.getTempMailName(Msg.getMsg(Env.getCtx(), TITLE), ".xlsx"));
 				exporter.export(file, Env.getLanguage(Env.getCtx()));
-				AMedia media = new AMedia(file.getName(), null, Medias.EXCEL_MIME_TYPE, file, true);
-				IMediaView view = Extensions.getMediaView(Medias.EXCEL_MIME_TYPE, Medias.EXCEL_FILE_EXT, ClientInfo.isMobile());
+				AMedia media = new AMedia(file.getName(), null, Medias.EXCEL_XML_MIME_TYPE, file, true);
+				IMediaView view = Extensions.getMediaView(Medias.EXCEL_XML_MIME_TYPE, Medias.EXCEL_XML_FILE_EXT, ClientInfo.isMobile());
 				Map<MAuthorizationAccount, IUploadService> uploadServicesMap = MAuthorizationAccount.getUserUploadServices();
 				if (view != null || uploadServicesMap.size() > 0) {
 					WMediaOptions options = new WMediaOptions(media, view != null ? () -> {
@@ -825,7 +825,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 					options.setPage(getPage());
 					options.doHighlighted();
 				} else {
-					Filedownload.save(file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+					Filedownload.save(file, Medias.EXCEL_XML_MIME_TYPE);
 				}
 			} catch (Exception e) {
 				throw new RuntimeException(e);
