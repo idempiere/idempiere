@@ -13,14 +13,14 @@
  *****************************************************************************/
 package org.compiere.report.core;
 
-import org.adempiere.impexp.AbstractExcelExporter;
+import org.adempiere.impexp.AbstractXLSXExporter;
 
 /**
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  *
  */
 public class RModelExcelExporter
-extends AbstractExcelExporter
+extends AbstractXLSXExporter
 {
 	private RModel m_model = null;
 	private int m_currentRow = 0;
