@@ -61,6 +61,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MStatusLine;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.print.ReportEngine;
@@ -559,6 +560,19 @@ public class DashboardController implements EventListener<Event> {
 			});
     	}
     	
+    	// Status Line
+    	final int AD_StatusLine_ID = dc.getAD_StatusLine_ID();
+    	if(AD_StatusLine_ID > 0) {
+    		MStatusLine sl = new MStatusLine(Env.getCtx(), AD_StatusLine_ID, null);
+    		final Html statusLineHtml = new Html();
+    		statusLineHtml.setContent(sl.parseLine(0));
+    		Div div = new Div();
+    		div.appendChild(statusLineHtml);
+    		div.setSclass("statusline-gadget");
+    		content.appendChild(div);
+    		empty = false;
+    	}
+
     	return !empty;
 	}
 	
