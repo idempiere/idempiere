@@ -128,6 +128,7 @@ public class DashboardController implements EventListener<Event> {
 	private final static String DASHBOARD_LAYOUT_COLUMNS = "C";
 	private final static String DASHBOARD_LAYOUT_ROWS = "R";
 	private final static int MAX_NO_OF_PREFS_IN_ROW = 10;
+	private final static int DEFAULT_FLEX_GROW = 1;
 	
 	public DashboardController() {
 		dashboardLayout = new Anchorlayout();
@@ -370,11 +371,8 @@ public class DashboardController implements EventListener<Event> {
         // Dashboard content
         Hlayout dashboardLineLayout = null;
         int currentLineNo = 0;
-
         int noOfLines = 0;
-        int noOfPrefsInLine = 0;
         int width = 100;
-
         try
 		{
         	int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
@@ -415,13 +413,13 @@ public class DashboardController implements EventListener<Event> {
             	
 	        	int lineNo = dp.getLine().intValue();
 	        	int effLine = lineNo;
+	        	
+	        	int flexGrow = (flexGrow = dp.getFlexGrow()) > 0 ? flexGrow : DEFAULT_FLEX_GROW;
 	        	if (effLine+1 > noOfLines)
 	        		effLine = noOfLines-1;
-	        	noOfPrefsInLine = MDashboardPreference.getForRowPreferenceCount(isShowInDashboard, AD_User_ID, AD_Role_ID, lineNo);
 	        	if(dashboardLineLayout == null || currentLineNo != effLine)
 	        	{
 	        		dashboardLineLayout = new Hlayout();
-	        		dashboardLineLayout.setSclass("dashboard-row-"+noOfPrefsInLine);
 	        		dashboardLineLayout.setAttribute("Line", lineNo);
 	        		dashboardLineLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
 	        		dashboardLineLayout.setAttribute("IsAdditionalRow", false);
@@ -436,7 +434,6 @@ public class DashboardController implements EventListener<Event> {
 	        		dashboardLine.appendChild(dashboardLineLayout);
 	        		rowList.add(dashboardLine);
 	                dashboardLayout.appendChild(dashboardLine);
- 	                ZKUpdateUtil.setHflex(dashboardLineLayout, "1");
 	                currentLineNo = effLine;
 	        	}
 
@@ -454,6 +451,7 @@ public class DashboardController implements EventListener<Event> {
 		        	panel.setSclass("dashboard-widget");
 		        	panel.setStyle("");
 		        	panel.setMaximizable(true);
+		        	ZKUpdateUtil.setHflex(panel, String.valueOf(flexGrow));
 		        	
 		        	String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
 	            	if(description != null)
@@ -511,7 +509,6 @@ public class DashboardController implements EventListener<Event> {
             	// additional row
             	dashboardLineLayout = new Hlayout();
             	ZKUpdateUtil.setWidth(dashboardLineLayout, "100%");
-            	dashboardLineLayout.setSclass("dashboard-row-1");
         		dashboardLineLayout.setAttribute("Line", currentLineNo + 1);
         		dashboardLineLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
         		dashboardLineLayout.setAttribute("IsAdditionalRow", true);
@@ -1110,18 +1107,9 @@ public class DashboardController implements EventListener<Event> {
 			    				if (!preference.save())
 			    					logger.log(Level.SEVERE, "Failed to save dashboard preference " + preference.toString());
 			    				if(layout instanceof Hlayout) {
-			    					int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
-			    		        	int AD_Role_ID = Env.getAD_Role_ID(Env.getCtx());
-			    					int noOfPrefsInLine = MDashboardPreference.getForRowPreferenceCount(isShowInDashboard, AD_User_ID, AD_Role_ID, lineNo);
-			    					((Hlayout)layout).setSclass("dashboard-row-" + noOfPrefsInLine);
+			    					int flexGrow = (flexGrow = preference.getFlexGrow()) > 0 ? flexGrow : DEFAULT_FLEX_GROW;
+			    					ZKUpdateUtil.setHflex(panel, String.valueOf(flexGrow));
 			    				}
-			    				for (Anchorchildren row : rowList) {
-					            	if(row.getFirstChild() instanceof Hlayout) {
-					            		Hlayout rowChild = (Hlayout) row.getFirstChild();
-					            		List<Component> rowChildren = rowChild.getChildren();
-										rowChild.setSclass("dashboard-row-" + rowChildren.size());
-									}
-					            }
 			    			}
 						}
 					}
@@ -1156,7 +1144,6 @@ public class DashboardController implements EventListener<Event> {
 								// additional row
 								Hlayout dashboardLineLayout = new Hlayout();
 				            	ZKUpdateUtil.setWidth(dashboardLineLayout, "100%");
-				            	dashboardLineLayout.setSclass("dashboard-row-1");
 				        		dashboardLineLayout.setAttribute("Line", lineNo + 1);
 				        		dashboardLineLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
 				        		dashboardLineLayout.setAttribute("IsAdditionalRow", true);

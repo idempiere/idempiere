@@ -49,14 +49,6 @@ public class MDashboardPreference extends X_PA_DashboardPreference
         return noOfCols;
 	}
 	
-	public static int getForRowPreferenceCount(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID, int lineNo)
-	{
-        int noOfCols = getForSessionQuery(isShowInDashboard, AD_User_ID, AD_Role_ID, lineNo)
-        		.setOnlyActiveRecords(true)
-        		.aggregate(COLUMNNAME_Line, Query.AGGREGATE_COUNT, Integer.class);
-        return noOfCols;
-	}
-	
 	public static MDashboardPreference[] getForSession(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
 	{
 		List<MDashboardPreference> list = getForSessionQuery(isShowInDashboard, AD_User_ID, AD_Role_ID).list();
