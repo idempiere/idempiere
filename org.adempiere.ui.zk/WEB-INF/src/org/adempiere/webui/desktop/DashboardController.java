@@ -415,14 +415,13 @@ public class DashboardController implements EventListener<Event> {
 	        	int effLine = lineNo;
 	        	
 	        	int flexGrow = (flexGrow = dp.getFlexGrow()) > 0 ? flexGrow : DEFAULT_FLEX_GROW;
-	        	if (effLine+1 > noOfLines)
-	        		effLine = noOfLines-1;
 	        	if(dashboardLineLayout == null || currentLineNo != effLine)
 	        	{
 	        		dashboardLineLayout = new Hlayout();
 	        		dashboardLineLayout.setAttribute("Line", lineNo);
 	        		dashboardLineLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
 	        		dashboardLineLayout.setAttribute("IsAdditionalRow", false);
+	        		dashboardLineLayout.setSclass("dashboard-row");
 	        		Anchorchildren dashboardLine = new Anchorchildren();
 	        		dashboardLine.setAnchor(width + "%");
 	        		ZKUpdateUtil.setHflex(dashboardLine, "min");
@@ -449,9 +448,10 @@ public class DashboardController implements EventListener<Event> {
 		        	panelList.add(panel);
 		        	panel.addEventListener(Events.ON_MAXIMIZE, this);
 		        	panel.setSclass("dashboard-widget");
-		        	panel.setStyle("");
 		        	panel.setMaximizable(true);
 		        	ZKUpdateUtil.setHflex(panel, String.valueOf(flexGrow));
+		        	ZKUpdateUtil.setHeight(panel, "100%");
+		        	
 		        	
 		        	String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
 	            	if(description != null)
@@ -492,6 +492,7 @@ public class DashboardController implements EventListener<Event> {
         		dashboardLineLayout.setAttribute("Line", "0");
         		dashboardLineLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
         		dashboardLineLayout.setAttribute("IsAdditionalLinen", true);
+        		dashboardLineLayout.setSclass("dashboard-row");
         		Anchorchildren dashboardColumn = new Anchorchildren();
         		dashboardColumn.setAnchor((width-5) + "%" + " 100%");
         		if (!ClientInfo.isMobile())
@@ -512,6 +513,7 @@ public class DashboardController implements EventListener<Event> {
         		dashboardLineLayout.setAttribute("Line", currentLineNo + 1);
         		dashboardLineLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
         		dashboardLineLayout.setAttribute("IsAdditionalRow", true);
+        		dashboardLineLayout.setSclass("dashboard-row");
         		Anchorchildren dashboardLine = new Anchorchildren();
         		dashboardLine.setAnchor(width + "% 10%");
         		ZKUpdateUtil.setHflex(dashboardLine, "min");
@@ -1147,6 +1149,7 @@ public class DashboardController implements EventListener<Event> {
 				        		dashboardLineLayout.setAttribute("Line", lineNo + 1);
 				        		dashboardLineLayout.setAttribute("IsShowInDashboard", isShowInDashboard);
 				        		dashboardLineLayout.setAttribute("IsAdditionalRow", true);
+				        		dashboardLineLayout.setSclass("dashboard-row");
 				        		Anchorchildren dashboardLine = new Anchorchildren();
 				        		dashboardLine.setAnchor(width + "% 10%");
 				        		ZKUpdateUtil.setHflex(dashboardLine, "min");

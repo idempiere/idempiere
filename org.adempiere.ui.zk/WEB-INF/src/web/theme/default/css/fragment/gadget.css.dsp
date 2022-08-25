@@ -68,6 +68,10 @@
 	overflow: auto;
 }
 
+.dashboard-widget > .z-panel-body > .z-panelchildren {
+	height: auto !important;
+}
+
 .dashboard-report-iframe {
 	min-height:300px; 
 	border: 1px solid lightgray; 
@@ -270,4 +274,8 @@
 
 .z-anchorchildren .z-hlayout {
 	white-space: normal;
+}
+
+.dashboard-row {
+	padding-bottom: 5px;
 }
