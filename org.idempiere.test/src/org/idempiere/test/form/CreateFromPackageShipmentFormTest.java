@@ -110,7 +110,7 @@ public class CreateFromPackageShipmentFormTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 		

@@ -103,7 +103,7 @@ public class ReportProcessor
             Language currLang = Env.getLanguage(Env.getCtx());
             m_Param.put("CURRENT_LANG", currLang.getAD_Language());
 
-		    java.sql.Connection conn = DB.getConnectionRO();
+		    java.sql.Connection conn = DB.getConnection();
 		    m_Param.put("REPORT_CONNECTION", conn );  //DB_CONN
 		    m_Param.put("DB_CONN", conn );
         

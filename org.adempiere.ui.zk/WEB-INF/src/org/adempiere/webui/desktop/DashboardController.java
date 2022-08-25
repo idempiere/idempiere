@@ -61,7 +61,9 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MStatusLine;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.PO;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.tools.FileUtil;
@@ -773,6 +775,19 @@ public class DashboardController implements EventListener<Event> {
 			});
     	}
     	
+    	// Status Line
+    	final int AD_StatusLine_ID = dc.getAD_StatusLine_ID();
+    	if(AD_StatusLine_ID > 0) {
+    		MStatusLine sl = new MStatusLine(Env.getCtx(), AD_StatusLine_ID, null);
+    		final Html statusLineHtml = new Html();
+    		statusLineHtml.setContent(sl.parseLine(0));
+    		Div div = new Div();
+    		div.appendChild(statusLineHtml);
+    		div.setSclass("statusline-gadget");
+    		content.appendChild(div);
+    		empty = false;
+    	}
+
     	return !empty;
 	}
 	
@@ -924,8 +939,13 @@ public class DashboardController implements EventListener<Event> {
     				int PA_DashboardPreference_ID = Integer.parseInt(value.toString());
     				MDashboardPreference preference = new MDashboardPreference(Env.getCtx(), PA_DashboardPreference_ID, null);
     				preference.setIsCollapsedByDefault(!panel.isOpen());
-    				if (!preference.save())
-    					logger.log(Level.SEVERE, "Failed to save dashboard preference " + preference.toString());
+    				try {
+    					PO.setCrossTenantSafe();
+    					if (!preference.save())
+    						logger.log(Level.SEVERE, "Failed to save dashboard preference " + preference.toString());
+    				} finally {
+    					PO.clearCrossTenantSafe();
+    				}
     			}
     		}
 		}

@@ -76,12 +76,32 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 */
 	public ProcessModalDialog(EventListener<Event> listener, int WindowNo, ProcessInfo pi)
 	{
+		this(listener, WindowNo, true, pi);
+	}
+
+	/**
+	 * @param listener
+	 * @param WindowNo
+	 * @param isReRun
+	 * @param pi
+	 */
+	public ProcessModalDialog(EventListener<Event> listener, int WindowNo, boolean isReRun, ProcessInfo pi)
+	{
 		this(WindowNo, pi, false);
-		MPInstance instance = getLastRun();
-		if(instance != null) {
-			loadSavedParams(instance);
-			chooseSaveParameter(fSavedName.getRawText(), true);
+
+		if(isReRun) {
+			MPInstance instance = getLastRun();
+			if(instance != null) {
+				loadSavedParams(instance);
+				chooseSaveParameter(fSavedName.getRawText(), true);
+			}
 		}
+		else {
+			if(pi != null) {
+				getParameterPanel().loadParametersFromProcessInfo(pi);
+			}
+		}
+
 		if (listener != null) 
 		{
 			addEventListener(ON_WINDOW_CLOSE, listener);

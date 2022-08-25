@@ -14,16 +14,45 @@
 		<idempiere.home>..</idempiere.home>
 		<skipTests>true</skipTests>
 		<sonar.skip>true</sonar.skip>
+		<p1>-Djunit.jupiter.execution.parallel.enabled=true</p1>
+		<p2>-Djunit.jupiter.execution.parallel.mode.default=concurrent</p2>
+		<p3>-Djunit.jupiter.execution.parallel.config.strategy=fixed</p3>
+		<p4>-Djunit.jupiter.execution.parallel.config.fixed.parallelism=4</p4>
+		<p5>-Djunit.jupiter.execution.parallel.mode.classes.default=same_thread</p5>
 	</properties>
 
 	<build>
 		<plugins>
 			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>auto-clean</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<skip>false</skip>
+					<filesets>
+						<fileset>
+							<directory>${project.basedir}/lib</directory>
+							<includes>
+								<include>*.jar</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+        				</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<configuration>
 					<argLine>
-						-DIDEMPIERE_HOME=${idempiere.home}
+						-DIDEMPIERE_HOME=${idempiere.home} ${p1} ${p2} ${p3} ${p4} ${p5}
 					</argLine>
 					<testRuntime>p2Installed</testRuntime>
 					<skipTests>${skipTests}</skipTests>

@@ -15,10 +15,10 @@ window.idempiere.zoomWindow = function(cmpid, column, value, windowuu){
 	zAu.send(event);
 };
 
-window.idempiere.drillAcross = function(cmpid, column, value){
+window.idempiere.drillAcross = function(cmpid, column, value, displayValue){
 	zAu.cmd0.showBusy(null);
 	let widget = zk.Widget.$(cmpid);
-	let event = new zk.Event(widget, 'onDrillAcross', {data: [column, value]}, {toServer: true});
+	let event = new zk.Event(widget, 'onDrillAcross', {data: [column, value, displayValue]}, {toServer: true});
 	zAu.send(event);
 };
 
@@ -30,7 +30,7 @@ window.idempiere.drillDown = function(cmpid, column, value){
 };
 
 window.idempiere.showColumnMenu = function(doc, e, columnName, row) {
-	let d = idempiere.getMenu (doc, e.target.getAttribute ("componentId"), e.target.getAttribute ("foreignColumnName"), e.target.getAttribute ("value"));
+	let d = idempiere.getMenu (doc, e.target.getAttribute ("componentId"), e.target.getAttribute ("foreignColumnName"), e.target.getAttribute ("value"), e.target.getAttribute ("displayValue"));
 	
 	let posx = 0;
 	let posy = 0;
@@ -56,7 +56,7 @@ window.idempiere.showColumnMenu = function(doc, e, columnName, row) {
 	setTimeout(f, 3000);
 };
 
-window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value){
+window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, displayValue){
 	doc.contextMenu = null;
 	if (componentId != null){	
 		//menu div
@@ -120,7 +120,34 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value){
 			reportHref.appendChild(reportimage);
 		}
 		reportHref.appendChild(doc.createTextNode(doc.body.getAttribute ("reportLabel")));
-		
+
+		//drill menu item
+		let reportDrill = doc.createElement("div");
+		reportDrill.style.padding = "3px";
+		reportDrill.style.verticalAlign = "middle";
+
+		reportDrill.setAttribute("onmouseover", "this.style.backgroundColor = 'lightgray'");
+		reportDrill.setAttribute("onmouseout", "this.style.backgroundColor = 'white'");
+
+		let reportDrillHref = doc.createElement("a");
+		reportDrillHref.href = "javascript:void(0)";
+		reportDrillHref.style.textDecoration = "none";
+		reportDrillHref.style.fontSize = "11px";
+		reportDrillHref.style.verticalAlign = "middle";
+		reportDrillHref.setAttribute("onclick", "parent.idempiere.drillAcross('" + componentId + "','" + foreignColumnName + "','" + value + "','" + displayValue + "')");
+
+		reportDrill.appendChild(reportDrillHref);
+		menu.appendChild(reportDrill);
+		let drillIco = doc.body.getAttribute ("drillAssistantIco");
+		if (typeof drillIco === 'string' && drillIco.length > 0) {
+			let drillimage = doc.createElement("img");
+			drillimage.src = drillIco;
+			drillimage.setAttribute("align", "middle");
+			reportDrillHref.appendChild(drillimage);
+		}
+		reportDrillHref.appendChild(doc.createTextNode(doc.body.getAttribute ("drillAssistantLabel")));
+
+
 		doc.contextMenu = menu;
 		doc.body.appendChild (doc.contextMenu);
 	}	

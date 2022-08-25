@@ -181,7 +181,7 @@ public final class Env
 	public static void exitEnv (int status)
 	{
 		//hengsin, avoid unncessary query of session when exit without log in
-		if (DB.isConnected(false)) {
+		if (DB.isConnected()) {
 			//	End Session
 			MSession session = MSession.get(Env.getCtx());	//	finish
 			if (session != null) {
