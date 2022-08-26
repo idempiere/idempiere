@@ -800,7 +800,7 @@ public class DashboardController implements EventListener<Event> {
         String layoutOrientation = MSysConfig.getValue(MSysConfig.DASHBOARD_LAYOUT_ORIENTATION, Env.getAD_Client_ID(Env.getCtx()));
         
         if(!layoutOrientation.equals(DASHBOARD_LAYOUT_ROWS) && !layoutOrientation.equals(DASHBOARD_LAYOUT_COLUMNS))
-        	layoutOrientation = DASHBOARD_LAYOUT_ROWS;
+        	layoutOrientation = DASHBOARD_LAYOUT_COLUMNS;
         
 		if (event instanceof MaximizeEvent)
 		{
