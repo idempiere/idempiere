@@ -309,6 +309,21 @@ public final class DictionaryIDs {
 		}
 	}
 	
+	public enum M_AttributeValue {
+		SMALL(100),
+		MEDIUM(101),
+		LARGE(102),
+		RED(103),
+		GREEN(104),
+		BLUE(105);
+		
+		public final int id;
+		
+		private M_AttributeValue(int id) {
+			this.id = id;
+		}
+	}
+	
 	public enum M_AttributeSet {
 		T_SHIRT(100),
 		FERTILIZER_LOT(101),
