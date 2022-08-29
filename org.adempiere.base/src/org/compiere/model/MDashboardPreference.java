@@ -33,6 +33,13 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 	 */
 	private static final long serialVersionUID = -3887344231734476767L;
 
+	/**
+	 *
+	 * @param isShowInDashboard
+	 * @param AD_User_ID
+	 * @param AD_Role_ID
+	 * @return number of column
+	 */
 	public static int getForSessionColumnCount(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
 	{
         int noOfCols = getForSessionQuery(isShowInDashboard, AD_User_ID, AD_Role_ID)
@@ -40,7 +47,14 @@ public class MDashboardPreference extends X_PA_DashboardPreference
         		.aggregate("DISTINCT "+COLUMNNAME_ColumnNo, Query.AGGREGATE_COUNT, Integer.class);
         return noOfCols;
 	}
-	
+
+	/**
+	 *
+	 * @param isShowInDashboard
+	 * @param AD_User_ID
+	 * @param AD_Role_ID
+	 * @return number of row
+	 */
 	public static int getForSessionRowCount(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
 	{
         int noOfCols = getForSessionQuery(isShowInDashboard, AD_User_ID, AD_Role_ID)
@@ -48,22 +62,29 @@ public class MDashboardPreference extends X_PA_DashboardPreference
         		.aggregate("DISTINCT "+COLUMNNAME_Line, Query.AGGREGATE_COUNT, Integer.class);
         return noOfCols;
 	}
-	
+
+	/**
+	 *
+	 * @param isShowInDashboard
+	 * @param AD_User_ID
+	 * @param AD_Role_ID
+	 * @return MDashboardPreference[]
+	 */
 	public static MDashboardPreference[] getForSession(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
 	{
 		List<MDashboardPreference> list = getForSessionQuery(isShowInDashboard, AD_User_ID, AD_Role_ID).list();
 		return list.toArray(new MDashboardPreference[list.size()]);
 	}
-	
-	public static Query getForSessionQuery(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
+
+	private static Query getForSessionQuery(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID)
 	{
 		return getForSessionQuery(isShowInDashboard, AD_User_ID, AD_Role_ID, -1);
 	}
-	
-	public static Query getForSessionQuery(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID, int lineNo)
+
+	private static Query getForSessionQuery(boolean isShowInDashboard, int AD_User_ID, int AD_Role_ID, int lineNo)
 	{
 		Properties ctx = Env.getCtx();
-		
+
 		StringBuilder whereClause = new StringBuilder(COLUMNNAME_IsShowInDashboard).append("=?")
 			.append(" AND ").append(COLUMNNAME_AD_Role_ID).append("=?")
 			.append(" AND ").append(COLUMNNAME_AD_User_ID).append("=?")
@@ -88,17 +109,24 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 		.setApplyAccessFilter(true, false)
 		.setOrderBy(orderByClause);
 	}
-	
+
+	/**
+	 *
+	 * @param AD_User_ID
+	 * @param AD_Role_ID
+	 * @param isCol
+	 * @return MDashboardPreference[]
+	 */
 	public static MDashboardPreference[] getForSession(int AD_User_ID, int AD_Role_ID, boolean isCol)
 	{
 		List<MDashboardPreference> list = getForSessionQuery(AD_User_ID, AD_Role_ID, isCol).list();
 		return list.toArray(new MDashboardPreference[list.size()]);
 	}
-	
-	public static Query getForSessionQuery(int AD_User_ID, int AD_Role_ID, boolean isCol)
+
+	private static Query getForSessionQuery(int AD_User_ID, int AD_Role_ID, boolean isCol)
 	{
 		Properties ctx = Env.getCtx();
-		
+
 		StringBuilder whereClause = new StringBuilder()
 			.append(COLUMNNAME_AD_Role_ID).append("=?")
 			.append(" AND ").append(COLUMNNAME_AD_User_ID).append("=?")
@@ -120,12 +148,24 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 		.setApplyAccessFilter(true, false)
 		.setOrderBy(orderByClause);
 	}
-	
+
+	/**
+	 *
+	 * @param ctx
+	 * @param PA_DashboardPreference_ID
+	 * @param trxName
+	 */
     public MDashboardPreference (Properties ctx, int PA_DashboardPreference_ID, String trxName)
     {
       super (ctx, PA_DashboardPreference_ID, trxName);
     }
-    
+
+    /**
+     *
+     * @param ctx
+     * @param rs
+     * @param trxName
+     */
     public MDashboardPreference (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
