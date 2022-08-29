@@ -333,7 +333,6 @@ public final class DB
 	}
 
 	/**
-	 *  @Deprecated (since="10", forRemoval=true)
 	 *  Replace by {@link #isConnected()}
 	 * 
 	 *  Is there a connection to the database ?
@@ -341,6 +340,7 @@ public final class DB
 	 *  @return true, if connected to database
 	 *  @deprecated
 	 */
+	@Deprecated (since="10", forRemoval=true)
 	public static boolean isConnected(boolean createNew)
 	{
 		return isConnected();
@@ -368,19 +368,18 @@ public final class DB
 	}
 	
 	/**
-	 * @Deprecated (since="10", forRemoval=true)
 	 * Replace by @{@link #getConnection()} 
 	 * 
 	 * @return Connection (r/w)
 	 * @deprecated
 	 */
+	@Deprecated (since="10", forRemoval=true)
 	public static Connection getConnectionRW()
 	{
 		return getConnection();
 	}
 
 	/**
-	 *  @Deprecated (since="10", forRemoval=true)
 	 *  Replace by @{@link #getConnection()}
 	 *  
 	 *	Return (pooled) r/w AutoCommit, Serializable connection.
@@ -389,13 +388,13 @@ public final class DB
 	 *  @return Connection (r/w)
 	 *  @deprecated
 	 */
+	@Deprecated (since="10", forRemoval=true)
 	public static Connection getConnectionRW (boolean createNew)
 	{
         return getConnection();
 	}   //  getConnectionRW
 
 	/**
-	 *  @Deprecated (since="10", forRemoval=true)
 	 *  Replace by @{@link #getConnection(boolean)}. 
 	 *  Note that this is intended for internal use only from the beginning.
 	 *  
@@ -404,19 +403,20 @@ public final class DB
 	 *  @return Connection (r/w)
 	 *  @deprecated
 	 */
+	@Deprecated (since="10", forRemoval=true)
 	public static Connection getConnectionID ()
 	{
         return getConnection(false);
 	}   //  getConnectionID
 
 	/**
-	 *  @Deprecated (since="10", forRemoval=true)
 	 *  Replace by @{@link #getConnection()}. Use {@link Trx} instead for readonly transaction.
 	 *  
 	 *	Return read committed, read/only from pool.
 	 *  @return Connection (r/o)
 	 *  @deprecated
 	 */
+	@Deprecated (since="10", forRemoval=true)
 	public static Connection getConnectionRO ()
 	{
         return getConnection();
@@ -463,7 +463,6 @@ public final class DB
 	}	//	createConnection
 
     /**
-     *  @Deprecated (since="10", forRemoval=true)
      *  Replace by {@link #createConnection(boolean, int)}.
      *  Use {@link Trx} instead for readonly transaction.
      *  
@@ -476,6 +475,7 @@ public final class DB
      *  @return Connection connection
      *  @deprecated
      */
+	@Deprecated (since="10", forRemoval=true)
     public static Connection createConnection (boolean autoCommit, boolean readOnly, int trxLevel)
     {
         return createConnection(autoCommit, trxLevel);
@@ -544,13 +544,12 @@ public final class DB
 
 
 	/**************************************************************************
-	 *  @Deprecated (since="10", forRemoval=true)
-	 * 
 	 *  Check database Version with Code version
 	 *  @param ctx context
 	 *  @return true if Database version (date) is the same
 	 *  @deprecated
 	 */
+	@Deprecated (since="10", forRemoval=true)
 	public static boolean isDatabaseOK (Properties ctx)
 	{
 		// Check Version
@@ -1957,26 +1956,26 @@ public final class DB
 	}	//	getDocumentNo
 
 	/**
-	 *  @Deprecated (forRemoval=true)
 	 * 	Is this a remote client connection.
 	 *
 	 *  Deprecated, always return false.
 	 *	@return true if client and RMI or Objects on Server
 	 *  @deprecated
 	 */
+	@Deprecated (forRemoval=true)
 	public static boolean isRemoteObjects()
 	{
 		return false;
 	}	//	isRemoteObjects
 
 	/**
-	 *  @Deprecated (forRemoval=true)
 	 * 	Is this a remote client connection
 	 *
 	 *  Deprecated, always return false.
 	 *	@return true if client and RMI or Process on Server
 	 *  @deprecated
 	 */
+	@Deprecated (forRemoval=true)
 	public static boolean isRemoteProcess()
 	{
 		return false;
