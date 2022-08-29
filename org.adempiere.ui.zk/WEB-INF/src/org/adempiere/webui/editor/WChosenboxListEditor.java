@@ -45,9 +45,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
-import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
-import org.compiere.model.MProcess;
 import org.compiere.model.MRefList;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -698,10 +696,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 
 		public WChosenboxListAssistant() {
 			super();
-			if (gridField.getAD_Process_ID_Of_Panel() > 0)
-				refID = MProcess.get(gridField.getAD_Process_ID_Of_Panel()).getParameter(gridField.getColumnName()).getAD_Reference_Value_ID();
-			else
-				refID = MColumn.get(Env.getCtx(), gridTab.getTableName(), gridField.getColumnName()).getAD_Reference_Value_ID();
+			refID = gridField.getAD_Reference_Value_ID();
 			setTitle(gridField.getHeader() + " " + Msg.getMsg(Env.getCtx(), "Assistant"));
 			init();
 			load();
