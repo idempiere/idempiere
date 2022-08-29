@@ -329,7 +329,6 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		}
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void syncModel() {
 		Hashtable<String,BigDecimal> ht = new Hashtable<String,BigDecimal>();
 		

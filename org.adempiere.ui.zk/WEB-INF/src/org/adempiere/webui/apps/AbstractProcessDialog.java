@@ -172,7 +172,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		m_Name = trl ? process.get_Translation(MProcess.COLUMNNAME_Name) : process.getName();
 		m_Description = trl ? process.get_Translation(MProcess.COLUMNNAME_Description) : process.getDescription();
 		m_Help = trl ? process.get_Translation(MProcess.COLUMNNAME_Help) : process.getHelp();
-		m_ShowHelp = process.getShowHelp();
+		if((pi != null) && !Util.isEmpty(pi.getShowHelp()))
+			m_ShowHelp = pi.getShowHelp();
+		else
+			m_ShowHelp = process.getShowHelp();
 
 		// User Customization
 		MUserDefProc userDef = MUserDefProc.getBestMatch(ctx, AD_Process_ID);

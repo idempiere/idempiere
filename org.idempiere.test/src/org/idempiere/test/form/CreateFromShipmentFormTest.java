@@ -90,13 +90,13 @@ public class CreateFromShipmentFormTest extends AbstractTestCase {
 
 		MOrderLine orderLine = new MOrderLine(order);
 		orderLine.setLine(10);
-		orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+		orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.HOLLY_BUSH.id));
 		orderLine.setQty(new BigDecimal("1"));
 		orderLine.setDatePromised(today);
 		orderLine.saveEx();
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
@@ -170,7 +170,7 @@ public class CreateFromShipmentFormTest extends AbstractTestCase {
 
 		MOrderLine orderLine = new MOrderLine(order);
 		orderLine.setLine(10);
-		orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+		orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.HOLLY_BUSH.id));
 		orderLine.setQty(new BigDecimal("1"));
 		orderLine.setDatePromised(today);
 		orderLine.saveEx();

@@ -87,13 +87,13 @@ public class CreateFromInvoiceFormTest extends AbstractTestCase {
 
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.HOLLY_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
@@ -158,7 +158,7 @@ public class CreateFromInvoiceFormTest extends AbstractTestCase {
 		assertEquals(lines[0].getQtyInvoiced().setScale(2, RoundingMode.HALF_UP), line1.getQtyOrdered().setScale(2, RoundingMode.HALF_UP));
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		invoice.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 	}
@@ -179,13 +179,13 @@ public class CreateFromInvoiceFormTest extends AbstractTestCase {
 
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.HOLLY_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
@@ -200,7 +200,7 @@ public class CreateFromInvoiceFormTest extends AbstractTestCase {
 		receiptLine1.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
@@ -265,7 +265,7 @@ public class CreateFromInvoiceFormTest extends AbstractTestCase {
 		assertEquals(lines[0].getQtyInvoiced().setScale(2, RoundingMode.HALF_UP), line1.getQtyOrdered().setScale(2, RoundingMode.HALF_UP));
 		
 		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		invoice.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 	}

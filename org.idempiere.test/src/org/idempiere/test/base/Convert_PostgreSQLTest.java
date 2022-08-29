@@ -20,12 +20,15 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Unit testing for Convert_PostgreSQL. 
  * @author Low Heng Sin
  * @version 20061225
  */
+@Execution(ExecutionMode.SAME_THREAD)
 public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	//private Convert_PostgreSQL convert = new Convert_PostgreSQL();
 	String sql;

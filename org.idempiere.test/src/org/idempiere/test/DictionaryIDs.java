@@ -93,7 +93,12 @@ public final class DictionaryIDs {
 		C_AND_W(117),
 		JOE_BLOCK(118),
 		SEED_FARM(120),
-		PATIO(121);
+		PATIO(121),
+		WOOD_INC(50000),
+		COLOR_INC(50001),
+		CHROME_INC(50002),
+		CHEMICAL_INC(50003),
+		AGRI_TECH(200000);
 		
 		public final int id;
 

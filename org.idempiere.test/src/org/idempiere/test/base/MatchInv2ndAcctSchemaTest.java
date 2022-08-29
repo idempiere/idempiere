@@ -59,15 +59,16 @@ import org.compiere.model.MProductPrice;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
 import org.compiere.model.ProductCost;
-import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * @author Elaine Tan - etantg
@@ -78,6 +79,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (same period)
 	 * PO Qty1=2400, Qty2=2400 
@@ -167,6 +169,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (same period)
 	 * PO Qty=10, Price=33.75
@@ -177,7 +180,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * IV Qty=5
 	 */
 	public void testCreditMemoPosting_2() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHEMICAL_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
@@ -284,6 +287,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (different period)
 	 * PO Qty=3, Price=0.3023, Period 1
@@ -292,7 +296,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * CM Qty=2, Period 2
 	 */
 	public void testCreditMemoPosting_3() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.WOOD_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
@@ -409,6 +413,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (different period)
 	 * PO Qty1=1000, Qty2=1000, Qty3=1000, Price1=3.00, Price2=2.70, Price3=3.15, Period 1
@@ -417,7 +422,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * CM Qty1=200, Qty2=300, Period 3
 	 */
 	public void testCreditMemoPosting_4() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHEMICAL_INC.id); 
 		MProduct product1 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		MProduct product2 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.OAK.id); // Oak Tree
 		MProduct product3 = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.PLUM_TREE.id); // Plum Tree
@@ -582,6 +587,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (same period)
 	 * PO Qty=2, Price=0.1875
@@ -590,7 +596,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * CM Qty=1
 	 */
 	public void testCreditMemoPosting_5() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.WOOD_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
@@ -670,6 +676,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (same period)
 	 * PO Qty=200, Price=0.1875
@@ -758,6 +765,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (same period)
 	 * PO Qty=45, Price=0.3742
@@ -766,7 +774,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * CM Qty=44
 	 */
 	public void testCreditMemoPosting_7() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHEMICAL_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
@@ -844,6 +852,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting for credit memo (same period + reversal)
 	 * PO Qty=2, Price=0.1875
@@ -854,7 +863,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * CM Qty=1
 	 */
 	public void testCreditMemoPosting_8() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.WOOD_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
@@ -977,6 +986,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting (same period)
 	 * PO Qty=1200, Price=0.3742
@@ -985,7 +995,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * MR Qty=1200
 	 */
 	public void testMatReceiptPosting_1() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHEMICAL_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
@@ -1063,6 +1073,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting (different period)
 	 * PO Qty=1200, Price=0.3742, Period 1
@@ -1071,7 +1082,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * MR Qty=44, Period 2
 	 */
 	public void testMatReceiptPosting_2() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.WOOD_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
@@ -1160,6 +1171,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting (same period + reversal)
 	 * PO Qty=2, Price=0.1875
@@ -1293,6 +1305,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting (different period + reversal)
 	 * PO Qty=2, Price=0.1875, Period 1
@@ -1303,7 +1316,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * MR Qty=1, Period 2
 	 */
 	public void testMatReceiptPosting_4() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.WOOD_INC.id);
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
@@ -1437,6 +1450,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting (same period)
 	 * PO Qty=500, Price=23.32
@@ -1445,7 +1459,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * IV Qty=250
 	 */
 	public void testMatReceiptPosting_5() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHEMICAL_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
@@ -1549,6 +1563,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the matched invoice posting (same period + reversal)
 	 * PO Qty=5, Price=65
@@ -1557,7 +1572,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	 * MR Qty=5 (Reversed)
 	 */
 	public void testMatReceiptPostingWithDiffCurrencyPrecision() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.CHEMICAL_INC.id); 
 		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
@@ -1658,34 +1673,11 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	
 	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
 			Timestamp date, BigDecimal rate, boolean isMultiplyRate) {
-		MConversionRate cr = new MConversionRate(Env.getCtx(), 0, null);
-		cr.setC_Currency_ID(C_Currency_ID);
-		cr.setC_Currency_ID_To(C_Currency_ID_To);
-		cr.setC_ConversionType_ID(C_ConversionType_ID);
-		cr.setValidFrom(date);
-		cr.setValidTo(date);
-		if (isMultiplyRate)
-			cr.setMultiplyRate(rate);
-		else
-			cr.setDivideRate(rate);
-		cr.saveEx();
-		return cr;
+		return ConversionRateHelper.createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, isMultiplyRate);
 	}
 	
 	private void deleteConversionRate(MConversionRate cr) {
-		String whereClause = "ValidFrom=? AND ValidTo=? "
-				+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
-				+ "AND C_ConversionType_ID=? "
-				+ "AND AD_Client_ID=? AND AD_Org_ID=?";
-		MConversionRate reciprocal = new Query(Env.getCtx(), MConversionRate.Table_Name, whereClause, null)
-				.setParameters(cr.getValidFrom(), cr.getValidTo(), 
-						cr.getC_Currency_ID_To(), cr.getC_Currency_ID(),
-						cr.getC_ConversionType_ID(),
-						cr.getAD_Client_ID(), cr.getAD_Org_ID())
-				.firstOnly();
-		if (reciprocal != null)
-			reciprocal.deleteEx(true);
-		cr.deleteEx(true);
+		ConversionRateHelper.deleteConversionRate(cr);
 	}
 	
 	private MOrder createPurchaseOrder(MBPartner bpartner, Timestamp date, int M_PriceList_ID, int C_ConversionType_ID) {
