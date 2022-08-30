@@ -195,7 +195,8 @@ public class MSequence extends X_AD_Sequence
 				//
 				if (DB.getDatabase().isQueryTimeoutSupported())
 				{
-					pstmt.setQueryTimeout(QUERY_TIME_OUT);
+					int timeout = MSysConfig.getIntValue(MSysConfig.MSEQUENCE_GETNEXT_TIMEOUT, QUERY_TIME_OUT, Env.getAD_Client_ID(Env.getCtx())); // default 30 seconds
+					pstmt.setQueryTimeout(timeout);
 				}
 				rs = pstmt.executeQuery();
 				if (s_log.isLoggable(Level.FINEST)) s_log.finest("AC=" + conn.getAutoCommit() + ", RO=" + conn.isReadOnly()
@@ -432,7 +433,8 @@ public class MSequence extends X_AD_Sequence
 			//
 			if (DB.getDatabase().isQueryTimeoutSupported())
 			{
-				pstmt.setQueryTimeout(QUERY_TIME_OUT);
+				int timeout = MSysConfig.getIntValue(MSysConfig.MSEQUENCE_GETNEXT_TIMEOUT, QUERY_TIME_OUT, Env.getAD_Client_ID(Env.getCtx())); // default 30 seconds
+				pstmt.setQueryTimeout(timeout);
 			}
 			rs = pstmt.executeQuery();
 
