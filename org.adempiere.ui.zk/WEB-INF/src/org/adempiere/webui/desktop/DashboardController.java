@@ -37,9 +37,12 @@ import org.adempiere.webui.Extensions;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.WGraph;
+import org.adempiere.webui.apps.graph.WPAWidget;
 import org.adempiere.webui.apps.graph.WPerformanceDetail;
+import org.adempiere.webui.apps.graph.WPerformanceIndicator;
 import org.adempiere.webui.apps.graph.model.ChartModel;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.dashboard.DPPerformance;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
 import org.adempiere.webui.report.HTMLExtension;
@@ -667,30 +670,37 @@ public class DashboardController implements EventListener<Event> {
     	int PA_Goal_ID = dc.getPA_Goal_ID();
     	if(PA_Goal_ID > 0)
     	{
-    		//link to open performance detail
-    		Div div = new Div();
-    		Toolbarbutton link = new Toolbarbutton();
-    		if (ThemeManager.isUseFontIconForImage())
-    			link.setIconSclass("z-icon-Zoom");
-    		else
-    			link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
-            link.setAttribute("PA_Goal_ID", PA_Goal_ID);
-            link.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-				public void onEvent(Event event) throws Exception {
-					int PA_Goal_ID = (Integer)event.getTarget().getAttribute("PA_Goal_ID");
-					MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
-					new WPerformanceDetail(goal);
-				}
-            });
-            div.appendChild(link);
-            content.appendChild(div);
 
             String goalDisplay = dc.getGoalDisplay();
             MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
-            WGraph graph = new WGraph(goal, 55, false, true,
-            		!(MDashboardContent.GOALDISPLAY_Chart.equals(goalDisplay)),
-            		MDashboardContent.GOALDISPLAY_Chart.equals(goalDisplay));
-            content.appendChild(graph);
+            if(MDashboardContent.GOALDISPLAY_Goal.equals(goalDisplay)) {
+            	WPAWidget paWidget = new WPAWidget(goal, null);
+            	content.appendChild(paWidget);
+            }
+            else {
+            	//link to open performance detail
+            	Div div = new Div();
+            	Toolbarbutton link = new Toolbarbutton();
+            	if (ThemeManager.isUseFontIconForImage())
+            		link.setIconSclass("z-icon-Zoom");
+            	else
+            		link.setImage(ThemeManager.getThemeResource("images/Zoom16.png"));
+            	link.setAttribute("PA_Goal_ID", PA_Goal_ID);
+            	link.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
+            		public void onEvent(Event event) throws Exception {
+            			int PA_Goal_ID = (Integer)event.getTarget().getAttribute("PA_Goal_ID");
+            			MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
+            			new WPerformanceDetail(goal);
+            		}
+            	});
+            	div.appendChild(link);
+            	content.appendChild(div);
+            	
+            	WGraph graph = new WGraph(goal, 55, false, true,
+	            		!(MDashboardContent.GOALDISPLAY_Chart.equals(goalDisplay)),
+	            		MDashboardContent.GOALDISPLAY_Chart.equals(goalDisplay));
+            	content.appendChild(graph);
+            }
             empty = false;
     	}
 

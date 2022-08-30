@@ -216,6 +216,17 @@
 	width: 100%;
 }
 
+.widget-title {
+	text-align: center;
+	padding-top: 1px; 
+	padding-bottom: 1px;
+	line-height:12px;
+}
+
+.performance-gadget {
+	cursor: pointer;
+}
+
 .dashboard-widget.dashboard-widget-max .chart-gadget {
 	height: 100% !important; 
 }
