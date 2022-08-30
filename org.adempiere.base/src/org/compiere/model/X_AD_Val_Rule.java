@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Val_Rule
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Val_Rule")
 public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220824L;
 
     /** Standard Constructor */
     public X_AD_Val_Rule (Properties ctx, int AD_Val_Rule_ID, String trxName)
@@ -68,7 +68,7 @@ public class X_AD_Val_Rule extends PO implements I_AD_Val_Rule, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
