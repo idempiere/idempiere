@@ -37,7 +37,6 @@ public class WPAWidget extends Panel implements EventListener<Event> {
 	private void init(MGoal goal, Options options)
 	{
 		Div div = new Div();
-		div.setSclass("performance-gadget");
 		appendChild(div);
 		WPerformanceIndicator pi = new WPerformanceIndicator(goal, options);
 		div.appendChild(pi);

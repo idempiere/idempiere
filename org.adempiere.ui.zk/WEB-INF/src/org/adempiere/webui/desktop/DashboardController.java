@@ -39,10 +39,8 @@ import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.WGraph;
 import org.adempiere.webui.apps.graph.WPAWidget;
 import org.adempiere.webui.apps.graph.WPerformanceDetail;
-import org.adempiere.webui.apps.graph.WPerformanceIndicator;
 import org.adempiere.webui.apps.graph.model.ChartModel;
 import org.adempiere.webui.component.ToolBarButton;
-import org.adempiere.webui.dashboard.DPPerformance;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
 import org.adempiere.webui.report.HTMLExtension;
@@ -675,6 +673,7 @@ public class DashboardController implements EventListener<Event> {
             MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
             if(MDashboardContent.GOALDISPLAY_Goal.equals(goalDisplay)) {
             	WPAWidget paWidget = new WPAWidget(goal, null);
+            	((HtmlBasedComponent)content).setSclass("performance-gadget");
             	content.appendChild(paWidget);
             }
             else {

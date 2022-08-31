@@ -224,7 +224,14 @@
 }
 
 .performance-gadget {
+	display: flex;
+ 	justify-content: center;
+ 	align-items: center;
 	cursor: pointer;
+}
+
+.performance-gadget > .z-div {
+	width: 100%;
 }
 
 .dashboard-widget.dashboard-widget-max .chart-gadget {
