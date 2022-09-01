@@ -68,6 +68,8 @@ import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.exception.ApplicationException;
+import org.adempiere.webui.factory.InfoManager;
+import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.panel.WAttachment;
@@ -97,6 +99,7 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_M_Product;
 import org.compiere.model.MImage;
+import org.compiere.model.MInfoWindow;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProjectIssue;
@@ -3632,6 +3635,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		// call form
 		MProcess pr = new MProcess(ctx, wButton.getProcess_ID(), null);
 		int adFormID = pr.getAD_Form_ID();
+		int adInfoWinID = pr.getAD_InfoWindow_ID();
 		if (adFormID != 0 )
 		{
 			String title = wButton.getDescription();
@@ -3672,6 +3676,97 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			}
 			else {
 				SessionManager.getAppDesktop().showWindow(form);
+			}
+		}
+		else if (adInfoWinID != 0)
+		{
+			String title = wButton.getDescription();
+			if (title == null || title.length() == 0)
+				title = wButton.getDisplay();							
+			ProcessInfo pi = new ProcessInfo (title, wButton.getProcess_ID(), table_ID, record_ID);
+			pi.setAD_User_ID (Env.getAD_User_ID(ctx));
+			pi.setAD_Client_ID (Env.getAD_Client_ID(ctx));
+			IADTabpanel adtabPanel = null;
+			if (adTabbox.getSelectedGridTab().isQuickForm())
+			{
+				adtabPanel=this.getADTab().getSelectedTabpanel();
+			}
+			else
+			{
+				adtabPanel = findADTabpanel(wButton);
+			}
+			GridTab gridTab = null;
+			if (adtabPanel != null)
+				gridTab = adtabPanel.getGridTab();
+			
+			if (gridTab != null)
+			{
+				MInfoWindow infoWindow = MInfoWindow.getInfoWindow(adInfoWinID);
+				String tableName = infoWindow.getAD_Table().getTableName();
+				String keyColumn = tableName + "_ID";
+				
+				InfoPanel infoPanel = new InfoWindow(gridTab.getWindowNo(), tableName, keyColumn, null/*value*/, false, null/*whereClause*/, adInfoWinID, false, null, null/*predefinedContextVariables*/);
+				infoPanel.setAttribute(Window.MODE_KEY, Mode.OVERLAPPED);
+				
+				infoPanel.setBorder("normal");
+				infoPanel.setClosable(true);
+				int height = ClientInfo.get().desktopHeight;
+				int width = ClientInfo.get().desktopWidth;
+				if (width <= ClientInfo.MEDIUM_WIDTH)
+				{
+					ZKUpdateUtil.setWidth(infoPanel, "100%");
+					ZKUpdateUtil.setHeight(infoPanel, "100%");
+				}
+				else
+				{
+					height = height * 85 / 100;
+		    		width = width * 80 / 100;
+		    		ZKUpdateUtil.setWidth(infoPanel, width + "px");
+		    		ZKUpdateUtil.setHeight(infoPanel, height + "px");
+				}
+				infoPanel.setContentStyle("overflow: auto");
+				
+				infoPanel.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(infoPanel.getTitle()));
+				infoPanel.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						hideBusyMask();
+						onRefresh(true, false);
+					}
+				});
+				infoPanel.setZindex(1000);
+				infoPanel.setMaximizable(true);
+				infoPanel.setSizable(true);
+				ZkCssHelper.appendStyle(infoPanel, "position: absolute; ");					
+				getComponent().getParent().appendChild(infoPanel);
+				showBusyMask(infoPanel);
+				LayoutUtils.openOverlappedWindow(getComponent(), infoPanel, "middle_center");			
+			}
+			else
+			{
+				InfoPanel infoPanel = InfoManager.create(adInfoWinID);
+				if (infoPanel != null) {
+					Mode mode = infoPanel.getModeAttribute();
+					infoPanel.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
+					
+					if (mode == Mode.HIGHLIGHTED || mode == Mode.MODAL) {
+						infoPanel.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+							@Override
+							public void onEvent(Event event) throws Exception {
+								hideBusyMask();
+								onRefresh(true, false);						
+							}
+						});
+						infoPanel.setPage(getComponent().getPage());
+						infoPanel.doHighlighted();
+						infoPanel.focus();
+					}
+					else {
+						SessionManager.getAppDesktop().showWindow(infoPanel);
+					}
+				} else {
+					Dialog.error(0, "NotValid");
+				}
 			}
 		}
 		else
