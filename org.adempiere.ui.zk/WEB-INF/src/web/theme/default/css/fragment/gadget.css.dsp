@@ -10,6 +10,10 @@
 	background-image: none; background-color: #FFFFFF;
 }
 
+.dashboard-widget > .z-panel-body {
+	height: 100%;
+}
+
 .z-panel {
 	border-radius: 5px;
 	border: 1px solid #d8d8d8;
@@ -66,6 +70,10 @@
 
 .dashboard-widget.dashboard-widget-max > .z-panel-body > .z-panelchildren {
 	overflow: auto;
+}
+
+.dashboard-widget > .z-panel-body > .z-panelchildren {
+	height: 100% !important;
 }
 
 .dashboard-report-iframe {
@@ -213,7 +221,9 @@
 }
 
 .statusline-gadget {
-	padding: 0px 10px 10px;
+	display: flex;
+ 	justify-content: center;
+ 	align-items: center;
 }
 
 .help-content
@@ -271,3 +281,11 @@
   vertical-align: middle;
 }
 <%-- User Favorite Dashboard Panel End --%>
+
+.z-anchorchildren .z-hlayout {
+	white-space: normal;
+}
+
+.dashboard-row {
+	padding-bottom: 5px;
+}
