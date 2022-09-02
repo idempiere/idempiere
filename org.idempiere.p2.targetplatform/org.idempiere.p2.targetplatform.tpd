@@ -1,5 +1,5 @@
 
-target "idempiere-220524"
+target "idempiere-220824"
 
 with source configurePhase allEnvironments
 
