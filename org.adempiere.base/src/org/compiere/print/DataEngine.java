@@ -90,6 +90,14 @@ public class DataEngine
 	}	//	DataEngine
 	
 	/**
+	 * Constructor
+	 * @param language
+	 * @param trxName
+	 */
+	public DataEngine (Language language, String trxName){
+		this(language,trxName,0);
+	}
+	/**
 	 *	Constructor
 	 *	@param language Language of the data (for translation)
 	 *	@param trxName

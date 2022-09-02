@@ -108,6 +108,17 @@ import org.idempiere.print.StandardHeaderFooter;
 public class LayoutEngine implements Pageable, Printable, Doc
 {
 	/**
+	 * Constructor
+	 * @param format
+	 * @param data
+	 * @param query
+	 * @param info
+	 */
+	public LayoutEngine (MPrintFormat format, PrintData data, MQuery query, PrintInfo info)
+	{
+		this(format,data,query,info,0);
+	}
+	/**
 	 *	Detail Constructor
 	 *  @param format Print Format
 	 *  @param data Print Data
@@ -120,6 +131,18 @@ public class LayoutEngine implements Pageable, Printable, Doc
 		this(format, data, query, info , null, windowNo);
 	}	//	LayoutEngine
 	
+	/**
+	 * Detail Constructor
+	 * @param format
+	 * @param data
+	 * @param query
+	 * @param info
+	 * @param trxName
+	 */
+	public LayoutEngine (MPrintFormat format, PrintData data, MQuery query, PrintInfo info ,  String trxName)
+	{
+		this(format,data,query,info,trxName,0);
+	}
 	/**
 	 *	Detail Constructor
 	 *  @param format Print Format
