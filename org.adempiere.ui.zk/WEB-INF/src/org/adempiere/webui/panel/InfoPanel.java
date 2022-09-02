@@ -2319,6 +2319,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 						ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, true);	
 						isRequeryByRunSuccessProcess = true;
 						Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
+						
+						if (m_pi.isCloseParentOnOK() && p_WindowNo > 0)
+							SessionManager.getAppDesktop().closeWindow(p_WindowNo);
 					}
 					recordSelectedData.clear();
 				}

@@ -52,8 +52,8 @@ public class ProcessInfo implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4648764346588157872L;
-
+	private static final long serialVersionUID = 1457197735361230763L;
+	
 	private static final CLogger logger = CLogger.getCLogger(ProcessInfo.class);
 
 	/**
@@ -109,6 +109,8 @@ public class ProcessInfo implements Serializable
 	private int					m_AD_PInstance_ID = 0;
 
 	private int					m_InfoWindowID = 0;
+	
+	private boolean				m_CloseParentOnOK = false;
 	/** Summary of Execution        */
 	private String    			m_Summary = "";
 	/** Execution had an error      */
@@ -429,6 +431,16 @@ public class ProcessInfo implements Serializable
 	public void setAD_InfoWindow_ID(int infoWindowID)
 	{
 		m_InfoWindowID = infoWindowID;
+	}
+	
+	public void setCloseParentOnOK(boolean closeParentOnOK)
+	{
+		m_CloseParentOnOK = closeParentOnOK;
+	}
+	
+	public boolean isCloseParentOnOK()
+	{
+		return m_CloseParentOnOK;
 	}
 	
 	/**

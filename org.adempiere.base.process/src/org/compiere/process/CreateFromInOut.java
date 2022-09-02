@@ -82,6 +82,8 @@ public class CreateFromInOut extends SvrProcess
 		if (p_M_Locator_ID == 0)
 			throw new AdempiereUserError("@NotFound@ @M_Locator_ID@");
 		
+		getProcessInfo().setCloseParentOnOK(true);
+		
 		if (getProcessInfo().getAD_InfoWindow_ID() > 0)
 			return createLines();
 		else
