@@ -216,7 +216,7 @@
 	width: 100%;
 }
 
-.chart-gadget {
+.dashboard-row .chart-gadget {
 	max-height: 300px; 
 }
 
