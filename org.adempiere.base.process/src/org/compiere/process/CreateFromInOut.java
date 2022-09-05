@@ -82,8 +82,6 @@ public class CreateFromInOut extends SvrProcess
 		if (p_M_Locator_ID == 0)
 			throw new AdempiereUserError("@NotFound@ @M_Locator_ID@");
 		
-		getProcessInfo().setCloseParentOnOK(true);
-		
 		if (getProcessInfo().getAD_InfoWindow_ID() > 0)
 			return createLines();
 		else
@@ -305,7 +303,7 @@ public class CreateFromInOut extends SvrProcess
 				QtyEntered = QtyEntered.negate();
 
 			//	Create new InOut Line
-			MInOut.createLine(inout, C_OrderLine_ID, C_InvoiceLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered, M_Locator_ID, get_TrxName());
+			MInOut.createLineFrom(inout, C_OrderLine_ID, C_InvoiceLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered, M_Locator_ID, get_TrxName());
 			m_created++;
 		}   //  for all rows
 

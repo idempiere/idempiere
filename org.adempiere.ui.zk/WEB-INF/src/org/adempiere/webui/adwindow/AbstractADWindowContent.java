@@ -68,6 +68,7 @@ import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.exception.ApplicationException;
+import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.InfoPanel;
@@ -98,7 +99,6 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_M_Product;
 import org.compiere.model.MImage;
-import org.compiere.model.MInfoWindow;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProjectIssue;
@@ -3618,126 +3618,40 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				@Override
 				public void onCallback(Boolean result) {
 					if (result) {
-						executeButtonProcess0(wButton, startWOasking, table_ID, record_ID);
+						if (wButton.getInfoWindow_ID() > 0)
+							executionButtonInfoWindow0(wButton);
+						else
+							executeButtonProcess0(wButton, startWOasking, table_ID, record_ID);
 					}
 				}
 			});
 		}
 		else
 		{
-			executeButtonProcess0(wButton, startWOasking, table_ID, record_ID);
+			if (wButton.getInfoWindow_ID() > 0)
+				executionButtonInfoWindow0(wButton);
+			else
+				executeButtonProcess0(wButton, startWOasking, table_ID, record_ID);
 		}
 	}
 
 	private void executeButtonProcess0(final IProcessButton wButton,
 			boolean startWOasking, int table_ID, int record_ID) {
-		if (wButton.getProcess_ID() != 0) 
+		// call form
+		MProcess pr = new MProcess(ctx, wButton.getProcess_ID(), null);
+		int adFormID = pr.getAD_Form_ID();
+		if (adFormID != 0 )
 		{
-			// call form
-			MProcess pr = new MProcess(ctx, wButton.getProcess_ID(), null);
-			int adFormID = pr.getAD_Form_ID();
-			if (adFormID != 0 )
-			{
-				String title = wButton.getDescription();
-				if (title == null || title.length() == 0)
-					title = wButton.getDisplay();							
-				ProcessInfo pi = new ProcessInfo (title, wButton.getProcess_ID(), table_ID, record_ID);
-				pi.setAD_User_ID (Env.getAD_User_ID(ctx));
-				pi.setAD_Client_ID (Env.getAD_Client_ID(ctx));
-				IADTabpanel adtabPanel = null;
-				if (adTabbox.getSelectedGridTab().isQuickForm())
-				{
-					adtabPanel=this.getADTab().getSelectedTabpanel();
-				}
-				else
-				{
-					adtabPanel = findADTabpanel(wButton);
-				}
-				GridTab gridTab = null;
-				if (adtabPanel != null)
-					gridTab = adtabPanel.getGridTab();
-				ADForm form = ADForm.openForm(adFormID, gridTab);
-				form.setProcessInfo(pi);
-				Mode mode = form.getWindowMode();
-				form.setAttribute(Window.MODE_KEY, form.getWindowMode());
-				form.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
-				
-				if (mode == Mode.HIGHLIGHTED || mode == Mode.MODAL) {
-					form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-						@Override
-						public void onEvent(Event event) throws Exception {
-							hideBusyMask();
-							onRefresh(true, false);						
-						}
-					});
-					form.setPage(getComponent().getPage());
-					form.doHighlighted();
-					form.focus();
-				}
-				else {
-					SessionManager.getAppDesktop().showWindow(form);
-				}
-			}
-			else
-			{
-				IADTabpanel adtabPanel = null;
-				if (adTabbox.getSelectedGridTab().isQuickForm())
-					adtabPanel = this.getADTab().getSelectedTabpanel();
-				else
-					adtabPanel = findADTabpanel(wButton);
-	
-				ProcessInfo pi = new ProcessInfo("", wButton.getProcess_ID(), table_ID, record_ID);
-				if (adtabPanel != null && adtabPanel.isGridView() && adtabPanel.getGridTab() != null)
-				{
-					int[] indices = adtabPanel.getGridTab().getSelection();
-					if (indices.length > 0)
-					{
-						List<Integer> records = new ArrayList<Integer>();
-						for (int i = 0; i < indices.length; i++)
-						{
-							int keyID = adtabPanel.getGridTab().getKeyID(indices[i]);
-							if (keyID > 0)
-								records.add(keyID);
-						}
-	
-						// IDEMPIERE-3998 Set multiple selected grid records into process info
-						pi.setRecord_IDs(records);
-					}
-				}
-	
-				ProcessModalDialog dialog = new ProcessModalDialog(this, curWindowNo, pi, startWOasking);
-	
-				if (dialog.isValid())
-				{
-					//dialog.setWidth("500px");
-					dialog.setBorder("normal");				
-					getComponent().getParent().appendChild(dialog);
-					if (ClientInfo.isMobile())
-					{
-						dialog.doHighlighted();
-					}
-					else
-					{
-						showBusyMask(dialog);
-						LayoutUtils.openOverlappedWindow(getComponent(), dialog, "middle_center");
-					}
-					Executions.schedule(getComponent().getDesktop(), e -> dialog.focus(), new Event("onPostShowProcessModalDialog"));
-				}
-				if (adTabbox.getSelectedGridTab().isQuickForm()) {
-					adTabbox.getSelectedGridTab().dataRefreshAll(false, false);
-				}
-				else
-				{
-					onRefresh(true, false);
-				}
-			}
-		} 
-		else if (wButton.getInfoWindow_ID() != 0)
-		{
+			String title = wButton.getDescription();
+			if (title == null || title.length() == 0)
+				title = wButton.getDisplay();							
+			ProcessInfo pi = new ProcessInfo (title, wButton.getProcess_ID(), table_ID, record_ID);
+			pi.setAD_User_ID (Env.getAD_User_ID(ctx));
+			pi.setAD_Client_ID (Env.getAD_Client_ID(ctx));
 			IADTabpanel adtabPanel = null;
 			if (adTabbox.getSelectedGridTab().isQuickForm())
 			{
-				adtabPanel = this.getADTab().getSelectedTabpanel();
+				adtabPanel=this.getADTab().getSelectedTabpanel();
 			}
 			else
 			{
@@ -3746,51 +3660,142 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			GridTab gridTab = null;
 			if (adtabPanel != null)
 				gridTab = adtabPanel.getGridTab();
+			ADForm form = ADForm.openForm(adFormID, gridTab);
+			form.setProcessInfo(pi);
+			Mode mode = form.getWindowMode();
+			form.setAttribute(Window.MODE_KEY, form.getWindowMode());
+			form.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
 			
-			MInfoWindow infoWindow = MInfoWindow.getInfoWindow(wButton.getInfoWindow_ID());
-			String tableName = infoWindow.getAD_Table().getTableName();
-			String keyColumn = tableName + "_ID";
-			
-			InfoWindow infoWin = new InfoWindow(gridTab != null ? gridTab.getWindowNo() : -1, tableName, keyColumn, null/*value*/, false, null/*whereClause*/, wButton.getInfoWindow_ID(), false, null, null/*predefinedContextVariables*/);
-			infoWin.setAttribute(Window.MODE_KEY, Mode.OVERLAPPED);
-			
-			infoWin.setBorder("normal");
-			infoWin.setClosable(true);
-			int height = ClientInfo.get().desktopHeight;
-			int width = ClientInfo.get().desktopWidth;
-			if (width <= ClientInfo.MEDIUM_WIDTH)
+			if (mode == Mode.HIGHLIGHTED || mode == Mode.MODAL) {
+				form.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						hideBusyMask();
+						onRefresh(true, false);						
+					}
+				});
+				form.setPage(getComponent().getPage());
+				form.doHighlighted();
+				form.focus();
+			}
+			else {
+				SessionManager.getAppDesktop().showWindow(form);
+			}
+		}
+		else
+		{
+			IADTabpanel adtabPanel = null;
+			if (adTabbox.getSelectedGridTab().isQuickForm())
+				adtabPanel = this.getADTab().getSelectedTabpanel();
+			else
+				adtabPanel = findADTabpanel(wButton);
+
+			ProcessInfo pi = new ProcessInfo("", wButton.getProcess_ID(), table_ID, record_ID);
+			if (adtabPanel != null && adtabPanel.isGridView() && adtabPanel.getGridTab() != null)
 			{
-				ZKUpdateUtil.setWidth(infoWin, "100%");
-				ZKUpdateUtil.setHeight(infoWin, "100%");
+				int[] indices = adtabPanel.getGridTab().getSelection();
+				if (indices.length > 0)
+				{
+					List<Integer> records = new ArrayList<Integer>();
+					for (int i = 0; i < indices.length; i++)
+					{
+						int keyID = adtabPanel.getGridTab().getKeyID(indices[i]);
+						if (keyID > 0)
+							records.add(keyID);
+					}
+
+					// IDEMPIERE-3998 Set multiple selected grid records into process info
+					pi.setRecord_IDs(records);
+				}
+			}
+
+			ProcessModalDialog dialog = new ProcessModalDialog(this, curWindowNo, pi, startWOasking);
+
+			if (dialog.isValid())
+			{
+				//dialog.setWidth("500px");
+				dialog.setBorder("normal");				
+				getComponent().getParent().appendChild(dialog);
+				if (ClientInfo.isMobile())
+				{
+					dialog.doHighlighted();
+				}
+				else
+				{
+					showBusyMask(dialog);
+					LayoutUtils.openOverlappedWindow(getComponent(), dialog, "middle_center");
+				}
+				Executions.schedule(getComponent().getDesktop(), e -> dialog.focus(), new Event("onPostShowProcessModalDialog"));
+			}
+			if (adTabbox.getSelectedGridTab().isQuickForm()) {
+				adTabbox.getSelectedGridTab().dataRefreshAll(false, false);
 			}
 			else
 			{
-				height = height * 85 / 100;
-	    		width = width * 80 / 100;
-	    		ZKUpdateUtil.setWidth(infoWin, width + "px");
-	    		ZKUpdateUtil.setHeight(infoWin, height + "px");
+				onRefresh(true, false);
 			}
-			infoWin.setContentStyle("overflow: auto");
-			
-			infoWin.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(infoWin.getTitle()));
-			infoWin.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-				@Override
-				public void onEvent(Event event) throws Exception {
-					hideBusyMask();
-					if (!infoWin.isCancelled())
-						onRefresh(true, false);
-				}
-			});
-			infoWin.setZindex(1000);
-			infoWin.setMaximizable(true);
-			infoWin.setSizable(true);
-			ZkCssHelper.appendStyle(infoWin, "position: absolute; ");					
-			getComponent().getParent().appendChild(infoWin);
-			showBusyMask(infoWin);
-			LayoutUtils.openOverlappedWindow(getComponent(), infoWin, "middle_center");
 		}
 	}
 
+	private void executionButtonInfoWindow0(final IProcessButton wButton) {
+		IADTabpanel adtabPanel = null;
+		if (adTabbox.getSelectedGridTab().isQuickForm())
+		{
+			adtabPanel = this.getADTab().getSelectedTabpanel();
+		}
+		else
+		{
+			adtabPanel = findADTabpanel(wButton);
+		}
+		if (adtabPanel == null)
+			return;
+			
+		GridTab gridTab = adtabPanel.getGridTab();		
+		if (gridTab == null)
+			return;
+		
+		InfoWindow infoWindow = InfoManager.create(gridTab.getWindowNo(), wButton.getInfoWindow_ID(), (String)null);
+		infoWindow.setAttribute(Window.MODE_KEY, Mode.OVERLAPPED);
+		infoWindow.setCloseAfterExecutionOfProcess(true);		
+		infoWindow.setBorder("normal");
+		infoWindow.setClosable(true);
+		infoWindow.moveProcessButtonsToBeforeRight();
+		int height = ClientInfo.get().desktopHeight;
+		int width = ClientInfo.get().desktopWidth;
+		if (width <= ClientInfo.MEDIUM_WIDTH)
+		{
+			ZKUpdateUtil.setWidth(infoWindow, "100%");
+			ZKUpdateUtil.setHeight(infoWindow, "100%");
+		}
+		else
+		{
+			height = height * 85 / 100;
+    		width = width * 80 / 100;
+    		ZKUpdateUtil.setWidth(infoWindow, width + "px");
+    		ZKUpdateUtil.setHeight(infoWindow, height + "px");
+		}
+		infoWindow.setContentStyle("overflow: auto");
+		
+		infoWindow.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, AdempiereIdGenerator.escapeId(infoWindow.getTitle()));
+		infoWindow.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				hideBusyMask();
+				if (!infoWindow.isCancelled())
+					onRefresh(true, false);
+				else
+					focusToLastFocusEditor();
+			}
+		});
+		infoWindow.setZindex(1000);
+		infoWindow.setMaximizable(true);
+		infoWindow.setSizable(true);
+		getComponent().getParent().appendChild(infoWindow);
+		showBusyMask(infoWindow);
+		LayoutUtils.openOverlappedWindow(getComponent(), infoWindow, "middle_center");	
+		infoWindow.focusToFirstEditor();
+	}
+	
 	/**
 	 * @param event
 	 * @see ActionListener#actionPerformed(ActionEvent)

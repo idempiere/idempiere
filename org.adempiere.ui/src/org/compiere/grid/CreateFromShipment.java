@@ -27,15 +27,11 @@ import org.compiere.apps.IStatusBar;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
 import org.compiere.model.MInOut;
-import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
-import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MLocator;
 import org.compiere.model.MOrder;
-import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
-import org.compiere.model.MRMALine;
 import org.compiere.model.MWarehouse;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -593,7 +589,7 @@ public abstract class CreateFromShipment extends CreateFrom
 					QtyEntered = QtyEntered.negate();
 
 				//	Create new InOut Line
-				MInOut.createLine(inout, C_OrderLine_ID, C_InvoiceLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered, M_Locator_ID, trxName);
+				MInOut.createLineFrom(inout, C_OrderLine_ID, C_InvoiceLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered, M_Locator_ID, trxName);
 			}   //   if selected
 		}   //  for all rows
 

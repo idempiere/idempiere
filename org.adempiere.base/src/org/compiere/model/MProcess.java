@@ -575,7 +575,6 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 		if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Copying from:" + source + ", to: " + this);
 		setAccessLevel(source.getAccessLevel());
 		setAD_Form_ID(source.getAD_Form_ID());
-		setAD_InfoWindow_ID(source.getAD_InfoWindow_ID());
 		setAD_PrintFormat_ID(source.getAD_PrintFormat_ID());
 		setAD_ReportView_ID(source.getAD_ReportView_ID());
 		setAD_Workflow_ID(source.getAD_Workflow_ID());

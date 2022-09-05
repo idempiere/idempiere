@@ -101,6 +101,7 @@ import org.idempiere.ui.zk.media.WMediaOptions;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -287,7 +288,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				prepareTable();
 				processQueryValue();
-			}			
+			}	
 		}
 		
 		if (ClientInfo.isMobile()) {
@@ -297,6 +298,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		// F3P: add export button
 		if (!isAutoComplete)
 			initExport();
+	}
+	
+	/**
+	 * set focus to first parameter editor
+	 */
+	public void focusToFirstEditor()
+	{
+		if (editors != null && editors.size() > 0)
+		{
+			Component component = editors.get(0).getComponent();
+			if (component instanceof HtmlBasedComponent)
+			{
+				((HtmlBasedComponent) component).focus();
+			}
+		}
 	}
 	
 	/** 
@@ -538,6 +554,18 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		btMenuProcess.setVisible(ipMenu.getChildren().size() > 0);
 	}
 
+	/**
+	 * move process buttons from left side of center to the front of right side
+	 */
+	public void moveProcessButtonsToBeforeRight() {
+		if (btProcessList == null || btProcessList.isEmpty())
+			return;
+		
+		for(Button btn : btProcessList) {
+			confirmPanel.addComponentsBeforeRight(btn);
+		}
+	}
+	
 	protected void processQueryValue() {
 		isQueryByUser = true;
 		for (int i = 0; i < identifiers.size(); i++) {

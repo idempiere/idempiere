@@ -208,6 +208,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	static final int        INFO_WIDTH = 800;
 	protected boolean m_lookup;
 	protected int m_infoWindowID;
+	private boolean m_closeAfterExecutionOfProcess = false;
 	
 	/**************************************************
      *  Detail Constructor
@@ -296,7 +297,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		addEventListener(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, this);
 		addEventListener(ON_RUN_PROCESS, this);
 		addEventListener(Events.ON_CLOSE, this);
-		
+		addEventListener(Events.ON_CANCEL, e -> onCancel());
 	}	//	InfoPanel
 
 	protected void parseQueryValue() {
@@ -2024,8 +2025,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         }
         else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_CANCEL)))
         {
-        	m_cancel = true;
-            dispose(false);
+        	onCancel();
         }
         else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_RESET))) {
         	resetParameters ();
@@ -2146,8 +2146,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         		onUserQuery();
         	}
     	}else if (event.getName().equals(Events.ON_CANCEL) || (event.getTarget().equals(this) && event.getName().equals(Events.ON_CLOSE))){
-    		m_cancel = true;
-    		dispose(false);
+    		onCancel();
     	}
         //when user push enter keyboard at input parameter field
         else
@@ -2155,6 +2154,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         	// onUserQuery(); // captured now on control key
         }
     }  //  onEvent
+
+	protected void onCancel() {
+		m_cancel = true;
+		dispose(false);
+	}
 
     public static final int VK_ENTER          = '\r';
     public static final int VK_ESCAPE         = 0x1B;
@@ -2316,12 +2320,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 						// enable or disable control button rely selected record status 
 						enableButtons();
 					}else if (!m_pi.isError()){
-						ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, true);	
-						isRequeryByRunSuccessProcess = true;
-						Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
-						
-						if (m_pi.isCloseParentOnOK() && p_WindowNo > 0)
-							SessionManager.getAppDesktop().closeWindow(p_WindowNo);
+						ProcessInfoDialog dialog = ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, true);
+						if (isCloseAfterExecutionOfProcess()) {
+							dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, e -> InfoPanel.this.detach());
+						} else {
+							isRequeryByRunSuccessProcess = true;
+							Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
+						}
 					}
 					recordSelectedData.clear();
 				}
@@ -2790,5 +2795,21 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 	public int getPageSize() {
 		return pageSize;
+	}
+
+	/**
+	 * 
+	 * @return true if dialog should auto close after successful execution of process
+	 */
+	public boolean isCloseAfterExecutionOfProcess() {
+		return m_closeAfterExecutionOfProcess;
+	}
+
+	/**
+	 * Set whether dialog should auto close after successful execution of process
+	 * @param closeAfterExecutionOfProcess
+	 */
+	public void setCloseAfterExecutionOfProcess(boolean closeAfterExecutionOfProcess) {
+		this.m_closeAfterExecutionOfProcess = closeAfterExecutionOfProcess;
 	}
 }	//	Info

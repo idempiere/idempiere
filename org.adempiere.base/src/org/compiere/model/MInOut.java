@@ -2841,7 +2841,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 * @param M_Locator_ID
 	 * @param trxName
 	 */
-	public static void createLine(MInOut inout, int C_OrderLine_ID, int C_InvoiceLine_ID, int M_RMALine_ID, 
+	public static void createLineFrom(MInOut inout, int C_OrderLine_ID, int C_InvoiceLine_ID, int M_RMALine_ID, 
 			int M_Product_ID, int C_UOM_ID, BigDecimal Qty, int M_Locator_ID, String trxName)
 	{
 		MInvoiceLine il = null;
