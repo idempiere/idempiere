@@ -24,6 +24,8 @@
  **********************************************************************/
 package org.compiere.model;
 
+import static org.compiere.model.SystemIDs.OAUTH2_AUTHORIZATION_PROVIDER_MICROSOFT;
+
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -35,6 +37,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
+import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -148,6 +151,27 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 			if (email == null) {
 				msg = Msg.parseTranslation(ctx, "@Error@ @OAuthProcessToken_CouldNotGetEMail@");
 				return msg;
+			}
+
+			if (   ap.getAD_AuthorizationProvider_ID() == OAUTH2_AUTHORIZATION_PROVIDER_MICROSOFT
+				&& MSysConfig.getBooleanValue("OAUTH2_USE_ACCESS_TOKEN_UPN_ON_MICROSOFT_PROVIDER", true)) {
+				/* IDEMPIERE-5354
+				 * Microsoft send the user email information in the access_token in upn field in some cases when the login doesn't correspond with the email
+				 * for this the upn must take precedence when the email is different than the user for login
+				 */
+				Object access_token = tokenResponse.get("access_token");
+				String upn_access = null;
+				if (access_token != null && access_token instanceof String) {
+					try {
+						IdToken accesstoken = IdToken.parse(tokenResponse.getFactory(), (String) tokenResponse.get("access_token"));
+						upn_access = (String) accesstoken.getPayload().get("upn");
+					} catch (Exception ex) {
+						// accesstoken not valid ... simply ignore
+					}
+				}
+				if (upn_access != null && ! email.toLowerCase().equals(upn_access.toLowerCase()) && EMail.validate(upn_access)) {
+					email = upn_access;
+				}
 			}
 
 			boolean newAccount = false;
