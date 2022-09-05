@@ -216,6 +216,10 @@
 	width: 100%;
 }
 
+.chart-gadget {
+	max-height: 300px; 
+}
+
 .dashboard-widget.dashboard-widget-max .chart-gadget {
 	height: 100% !important; 
 }
