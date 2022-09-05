@@ -79,7 +79,7 @@ public class TimeUtil
 		if (month < 1 || month > 12)
 			throw new IllegalArgumentException("Invalid Month: " + month);
 		if (day < 1 || day > 31)
-			throw new IllegalArgumentException("Invalid Day: " + month);
+			throw new IllegalArgumentException("Invalid Day: " + day);
 		GregorianCalendar cal = new GregorianCalendar (year, month-1, day);
 		return new Timestamp (cal.getTimeInMillis());
 	}	//	getDay
