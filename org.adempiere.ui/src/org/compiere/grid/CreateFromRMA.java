@@ -24,7 +24,6 @@ import org.compiere.apps.IStatusBar;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRMA;
-import org.compiere.model.MRMALine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -178,13 +177,7 @@ public abstract class CreateFromRMA extends CreateFrom {
                 
                 int inOutLineId = pp.getKey();
                 
-                MRMALine rmaLine = new MRMALine(rma.getCtx(), 0, rma.get_TrxName());
-                rmaLine.setM_RMA_ID(M_RMA_ID);
-                rmaLine.setM_InOutLine_ID(inOutLineId);
-                rmaLine.setQty(d);
-                rmaLine.setAD_Org_ID(rma.getAD_Org_ID());
-                rmaLine.setDescription((String)miniTable.getValueAt(i, 6));
-                rmaLine.saveEx();
+                MRMA.createLineFrom(rma, inOutLineId, d, (String)miniTable.getValueAt(i, 6));
             }
         }
         rma.saveEx();
