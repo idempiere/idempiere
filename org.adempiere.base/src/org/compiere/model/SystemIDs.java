@@ -209,4 +209,6 @@ public class SystemIDs
 
 	public final static int	TOOLBAR_BTN_ID_WINDOW_NEW = 200031;
 
+	public final static int OAUTH2_AUTHORIZATION_PROVIDER_MICROSOFT = 200001;
+
 }
