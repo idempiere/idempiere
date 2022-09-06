@@ -329,7 +329,7 @@ public class DashboardController implements EventListener<Event> {
 		panelList.add(panel);
 		panel.addEventListener(Events.ON_MAXIMIZE, this);
 		panel.setSclass("dashboard-widget");
-		panel.setMaximizable(true);
+		panel.setMaximizable(dc.isMaximizable());
 
 		String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
 	if(description != null)
