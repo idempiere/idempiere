@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.idempiere.zk.billboard.chart.ChartRendererServiceImpl">
+   <property name="service.ranking" type="Integer" value="0"/>
+   <service>
+      <provide interface="org.adempiere.webui.apps.graph.IChartRendererService"/>
+   </service>
+   <implementation class="org.idempiere.zk.billboard.chart.ChartRendererServiceImpl"/>
+</scr:component>

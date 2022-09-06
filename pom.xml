@@ -38,6 +38,8 @@
 		<module>org.idempiere.zk.extra</module>
 		<module>org.idempiere.keikai</module>
 		<module>org.idempiere.printformat.editor</module>
+		<module>org.idempiere.zk.billboard</module>
+		<module>org.idempiere.zk.billboard.chart</module>
 		<module>org.adempiere.report.jasper-feature</module>
 		<module>org.adempiere.base-feature</module>
 		<module>org.adempiere.replication-feature</module>
