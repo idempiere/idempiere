@@ -23,11 +23,12 @@ public class WPAWidget extends Panel implements EventListener<Event> {
 	public WPAWidget (MGoal goal, Options options)
 	{
 		super();
+		goal.updateGoal(false);
 		init(goal, options);
 	}
 	
 	/**	Logger	*/
-	private static final CLogger log = CLogger.getCLogger (WPAPanel.class);
+	private static final CLogger log = CLogger.getCLogger (WPAWidget.class);
 	
 	/**
 	 * 	Static/Dynamic Init
