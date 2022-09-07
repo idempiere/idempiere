@@ -232,6 +232,16 @@
 
 .performance-gadget > .z-div {
 	width: 100%;
+@media screen and (min-width: 768px) {
+	.dashboard-row .chart-gadget {
+		max-height: 300px; 
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.dashboard-row .chart-gadget {
+		max-height: 150px; 
+	}
 }
 
 .dashboard-widget.dashboard-widget-max .chart-gadget {

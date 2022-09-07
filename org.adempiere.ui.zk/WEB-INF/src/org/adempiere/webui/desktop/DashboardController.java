@@ -507,7 +507,7 @@ public class DashboardController implements EventListener<Event> {
 			dashboardLineLayout.setAttribute(IS_ADDITIONAL_ROW_ATTRIBUTE, true);
         		dashboardLineLayout.setSclass("dashboard-row");
         		Anchorchildren dashboardLine = new Anchorchildren();
-        		dashboardLine.setAnchor(width + "% 10%");
+        		dashboardLine.setAnchor(width + "% 1%");
         		ZKUpdateUtil.setHflex(dashboardLine, "min");
         		if (!ClientInfo.isMobile())
         		{
@@ -1162,7 +1162,7 @@ public class DashboardController implements EventListener<Event> {
 							dashboardLineLayout.setAttribute(IS_ADDITIONAL_ROW_ATTRIBUTE, true);
 				        		dashboardLineLayout.setSclass("dashboard-row");
 				        		Anchorchildren dashboardLine = new Anchorchildren();
-				        		dashboardLine.setAnchor(width + "% 10%");
+				        		dashboardLine.setAnchor(width + "% 1%");
 				        		ZKUpdateUtil.setHflex(dashboardLine, "min");
 				        		if (!ClientInfo.isMobile())
 				        		{
