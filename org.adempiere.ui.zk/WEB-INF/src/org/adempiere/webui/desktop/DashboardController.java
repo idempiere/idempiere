@@ -761,10 +761,7 @@ public class DashboardController implements EventListener<Event> {
     		statusLineHtml.setContent(sl.parseLine(0));
     		Div div = new Div();
     		div.appendChild(statusLineHtml);
-    		if(content instanceof HtmlBasedComponent)
-    			((HtmlBasedComponent) content).setSclass("statusline-gadget");
-    		else
-    			div.setSclass("statusline-gadget");
+    		div.setSclass("statusline-gadget");
     		content.appendChild(div);
     		empty = false;
     	}

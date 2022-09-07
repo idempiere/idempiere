@@ -224,6 +224,8 @@
 	display: flex;
  	justify-content: center;
  	align-items: center;
+ 	margin: 20px 0px 20px 0px;
+ 	height: -webkit-fill-available;
 }
 
 .help-content
