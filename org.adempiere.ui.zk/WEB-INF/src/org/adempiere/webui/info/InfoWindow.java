@@ -1320,7 +1320,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			return sqlMain;
 		}
 				
-		int fromIndex = sqlMain.lastIndexOf("FROM");
+		int fromIndex = sqlMain.indexOf("FROM");
 		// split Select and from clause
 		String selectClause = sqlMain.substring(0, fromIndex);
 		String fromClause = sqlMain.substring(fromIndex);
