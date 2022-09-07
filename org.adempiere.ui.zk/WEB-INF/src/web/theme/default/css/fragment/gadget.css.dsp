@@ -216,6 +216,24 @@
 	width: 100%;
 }
 
+.performance-indicator-title {
+	text-align: center;
+	padding-top: 1px; 
+	padding-bottom: 1px;
+	line-height:12px;
+}
+
+.performance-gadget {
+	display: flex;
+ 	justify-content: center;
+ 	align-items: center;
+	cursor: pointer;
+}
+
+.performance-gadget > .z-div {
+	width: 100%;	
+}
+
 @media screen and (min-width: 768px) {
 	.dashboard-row .chart-gadget {
 		max-height: 300px; 
