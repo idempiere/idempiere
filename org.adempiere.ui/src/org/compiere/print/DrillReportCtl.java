@@ -387,8 +387,7 @@ public class DrillReportCtl {
 		info.setDescription(m_Query.getInfo());
 
 		// It's a default report using the standard printing engine
-		ReportEngine re = new ReportEngine (Env.getCtx(), pf, m_Query, info);
-		re.setWindowNo(m_WindowNo);
+		ReportEngine re = new ReportEngine (Env.getCtx(), pf, m_Query, info,null,m_WindowNo);
 		ReportCtl.preview(re);
 	}	//	launchReport
 

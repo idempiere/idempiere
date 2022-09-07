@@ -191,6 +191,34 @@ public class ReportEngine implements PrintServiceAttributeListener
 	 */
 	public ReportEngine (Properties ctx, MPrintFormat pf, MQuery query, PrintInfo info, boolean isSummary, String trxName)
 	{
+		this(ctx, pf, query, info, false, trxName, 0);
+	}
+
+	/**
+	 * Set report engine with summary = false
+	 * @param ctx
+	 * @param pf
+	 * @param query
+	 * @param info
+	 * @param trxName
+	 * @param windowNo
+	 */
+	public ReportEngine (Properties ctx, MPrintFormat pf, MQuery query, PrintInfo info, String trxName, int windowNo){
+		this(ctx, pf, query, info, false, trxName, windowNo);
+	}
+
+	/**
+	 *	Constructor
+	 * 	@param ctx context
+	 *  @param pf Print Format
+	 *  @param query Optional Query
+	 *  @param info print info
+	 *  @param isSummary
+	 *  @param trxName
+	 *  @param windowNo
+	 */
+	public ReportEngine (Properties ctx, MPrintFormat pf, MQuery query, PrintInfo info, boolean isSummary, String trxName, int windowNo)
+	{
 		m_summary = isSummary;
 		if (pf == null)
 			throw new IllegalArgumentException("ReportEngine - no PrintFormat");
@@ -200,6 +228,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 		m_printFormat = pf;
 		m_info = info;
 		m_trxName = trxName;
+		m_windowNo = windowNo;
 		initName();
 		setQuery(query);		//	loads Data
 		
@@ -320,7 +349,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 		if (m_query == null)
 			return;
 		
-		DataEngine de = new DataEngine(m_printFormat.getLanguage(),m_trxName);
+		DataEngine de = new DataEngine(m_printFormat.getLanguage(),m_trxName, m_windowNo);
 		setPrintData(de.getPrintData (m_ctx, m_printFormat, m_query, m_summary));
 	//	m_printData.dump();
 	}	//	setPrintData
@@ -356,7 +385,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 			throw new IllegalStateException ("No print format");
 		if (m_printData == null)
 			throw new IllegalStateException ("No print data (Delete Print Format and restart)");
-		m_layout = new LayoutEngine (m_printFormat, m_printData, m_query, m_info, m_trxName);
+		m_layout = new LayoutEngine (m_printFormat, m_printData, m_query, m_info, m_trxName, m_windowNo);
 	}	//	layout
 
 	/**
@@ -1792,6 +1821,18 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	static public ReportEngine get (Properties ctx, ProcessInfo pi)
 	{
+		return get(ctx, pi, 0);
+	}
+
+	/**************************************************************************
+	 * 	Get Report Engine for process info 
+	 *	@param ctx context
+	 *	@param pi process info with AD_PInstance_ID
+	 *  @param windowNo Window No
+	 *	@return report engine or null
+	 */
+	static public ReportEngine get (Properties ctx, ProcessInfo pi, int windowNo)
+	{
 		int AD_Client_ID = pi.getAD_Client_ID();
 		//
 		int AD_Table_ID = 0;
@@ -1921,7 +1962,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		PrintInfo info = new PrintInfo (pi);
 		info.setAD_Table_ID(AD_Table_ID);
 		
-		return new ReportEngine(ctx, format, query, info, pi.isSummary(), pi.getTransactionName());
+		return new ReportEngine(ctx, format, query, info, pi.isSummary(), pi.getTransactionName(), windowNo);
 	}	//	get
 	
 	/*************************************************************************/
@@ -1976,7 +2017,19 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	public static ReportEngine get (Properties ctx, int type, int Record_ID)
 	{
-		return get(ctx, type, Record_ID, null);
+		return get(ctx, type, Record_ID, null, 0);
+	}
+	
+	/**************************************************************************
+	 * 	Get Document Print Engine for Document Type.
+	 * 	@param ctx context
+	 * 	@param type document type
+	 * 	@param Record_ID id
+	 * 	@return Report Engine or null
+	 */
+	public static ReportEngine get (Properties ctx, int type, int Record_ID, int windowNo)
+	{
+		return get(ctx, type, Record_ID, null, windowNo);
 	}
 	
 	/**************************************************************************
@@ -1988,6 +2041,20 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 * 	@return Report Engine or null
 	 */
 	public static ReportEngine get (Properties ctx, int type, int Record_ID, String trxName)
+	{
+		return get(ctx, type, Record_ID, trxName, 0);
+	}
+
+	/**************************************************************************
+	 * 	Get Document Print Engine for Document Type.
+	 * 	@param ctx context
+	 * 	@param type document type
+	 * 	@param Record_ID id
+	 *  @param trxName
+	 *  @param windowNo
+	 * 	@return Report Engine or null
+	 */
+	public static ReportEngine get(Properties ctx, int type, int Record_ID, String trxName, int windowNo)
 	{
 		if (Record_ID < 1)
 		{
@@ -2215,7 +2282,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		info.setPrinterName(format.getPrinterName());
 		
 		//	Engine
-		ReportEngine re = new ReportEngine(ctx, format, query, info, trxName);
+		ReportEngine re = new ReportEngine(ctx, format, query, info, trxName, windowNo);
 		return re;
 	}	//	get
 

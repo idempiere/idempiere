@@ -423,11 +423,11 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 				query.addRestriction(table.getTableName() + "_ID", MQuery.EQUAL, RecordID);
 				//	Engine
 				PrintInfo info = new PrintInfo(table.getTableName(),table.get_Table_ID(), RecordID);               
-				re = new ReportEngine(Env.getCtx(), format, query, info);
+				re = new ReportEngine(Env.getCtx(), format, query, info, null, m_WindowNo);
 			}
 			else
 			{	
-				re = ReportEngine.get (Env.getCtx(), genForm.getReportEngineType(), RecordID);
+				re = ReportEngine.get (Env.getCtx(), genForm.getReportEngineType(), RecordID, m_WindowNo);
 			}	
 			
 			pdfList.add(re.getPDF());				
