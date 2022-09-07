@@ -33,7 +33,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220818L;
+	private static final long serialVersionUID = 20220906L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
@@ -46,6 +46,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 			setIsCollapsible (true);
 // Y
 			setIsEmbedReportContent (false);
+// N
+			setIsMaximizable (false);
 // N
 			setIsShowInDashboard (true);
 // 'Y'
@@ -67,6 +69,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 			setIsCollapsible (true);
 // Y
 			setIsEmbedReportContent (false);
+// N
+			setIsMaximizable (false);
 // N
 			setIsShowInDashboard (true);
 // 'Y'
@@ -404,6 +408,28 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	public boolean isEmbedReportContent()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEmbedReportContent);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Maximizable.
+		@param IsMaximizable Maximizable
+	*/
+	public void setIsMaximizable (boolean IsMaximizable)
+	{
+		set_Value (COLUMNNAME_IsMaximizable, Boolean.valueOf(IsMaximizable));
+	}
+
+	/** Get Maximizable.
+		@return Maximizable	  */
+	public boolean isMaximizable()
+	{
+		Object oo = get_Value(COLUMNNAME_IsMaximizable);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
