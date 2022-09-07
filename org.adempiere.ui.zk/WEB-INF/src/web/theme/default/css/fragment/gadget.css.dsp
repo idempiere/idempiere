@@ -231,7 +231,9 @@
 }
 
 .performance-gadget > .z-div {
-	width: 100%;
+	width: 100%;	
+}
+
 @media screen and (min-width: 768px) {
 	.dashboard-row .chart-gadget {
 		max-height: 300px; 
