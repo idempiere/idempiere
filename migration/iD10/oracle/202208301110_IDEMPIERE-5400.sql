@@ -1,5 +1,5 @@
 -- IDEMPIERE-5400
-SELECT register_migration_script('202208301110_PlaceholderForTicket.sql') FROM dual;
+SELECT register_migration_script('202208301110_IDEMPIERE-5400.sql') FROM dual;
 
 SET SQLBLANKLINES ON
 SET DEFINE OFF
