@@ -216,7 +216,7 @@
 	width: 100%;
 }
 
-.widget-title {
+.performance-indicator-title {
 	text-align: center;
 	padding-top: 1px; 
 	padding-bottom: 1px;

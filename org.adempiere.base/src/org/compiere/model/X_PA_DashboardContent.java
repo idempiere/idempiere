@@ -33,7 +33,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220830L;
+	private static final long serialVersionUID = 20220907L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
@@ -310,8 +310,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	public static final int GOALDISPLAY_AD_Reference_ID=53316;
 	/** Chart = C */
 	public static final String GOALDISPLAY_Chart = "C";
-	/** Goal = G */
-	public static final String GOALDISPLAY_Goal = "G";
+	/** Gauge Indicator = G */
+	public static final String GOALDISPLAY_GaugeIndicator = "G";
 	/** HTML Table = T */
 	public static final String GOALDISPLAY_HTMLTable = "T";
 	/** Set Goal Display.

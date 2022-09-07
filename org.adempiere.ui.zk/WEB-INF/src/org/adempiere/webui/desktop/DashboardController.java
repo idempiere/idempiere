@@ -671,7 +671,7 @@ public class DashboardController implements EventListener<Event> {
 
             String goalDisplay = dc.getGoalDisplay();
             MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
-            if(MDashboardContent.GOALDISPLAY_Goal.equals(goalDisplay)) {
+            if(MDashboardContent.GOALDISPLAY_GaugeIndicator.equals(goalDisplay)) {
             	WPAWidget paWidget = new WPAWidget(goal, null);
             	((HtmlBasedComponent)content).setSclass("performance-gadget");
             	content.appendChild(paWidget);
