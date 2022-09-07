@@ -10,7 +10,24 @@
 	background-image: none; background-color: #FFFFFF;
 }
 
+.statusline-wrapper > .z-panel-head {
+	position: absolute;
+	top: 1;
+	z-index: 1;
+	width: calc(100% - 8px);
+}
+
 .dashboard-widget > .z-panel-body {
+	height: 100%;
+}
+
+.statusline-wrapper {
+	height: 100%;
+}
+
+.statusline-wrapper > .z-panel-body {
+	position: relative;
+	top: 0;
 	height: 100%;
 }
 
@@ -26,6 +43,7 @@
 
 .z-panelchildren {
 	border: none;
+	height: 100%;
 }
 
 .z-panel-head {
@@ -61,6 +79,7 @@
 	margin-right: auto;
 	position: relative;
 	width: 99%;	
+	height: 100%;
 }
 
 .dashboard-widget-max {
@@ -70,10 +89,6 @@
 
 .dashboard-widget.dashboard-widget-max > .z-panel-body > .z-panelchildren {
 	overflow: auto;
-}
-
-.dashboard-widget > .z-panel-body > .z-panelchildren {
-	height: 100% !important;
 }
 
 .dashboard-report-iframe {
@@ -252,8 +267,11 @@
 
 .statusline-gadget {
 	display: flex;
+	flex-direction: column;
  	justify-content: center;
  	align-items: center;
+ 	padding: 40px 0px 10px;
+ 	height: 100%;
 }
 
 .help-content

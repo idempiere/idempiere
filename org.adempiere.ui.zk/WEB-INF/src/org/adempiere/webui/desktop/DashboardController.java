@@ -468,7 +468,6 @@ public class DashboardController implements EventListener<Event> {
 				panel = newGadgetPanel(dp, dc);
 				panel.setAttribute(FLEX_GROW_ATTRIBUTE, String.valueOf(flexGrow));
 		        	ZKUpdateUtil.setHflex(panel, String.valueOf(flexGrow));
-				ZKUpdateUtil.setHeight(panel, "100%");
 	        	}
 			if (panel != null && panel.getAttribute(PANEL_EMPTY_ATTRIBUTE) == null) {
 	        		dashboardLineLayout.appendChild(panel);
@@ -770,10 +769,8 @@ public class DashboardController implements EventListener<Event> {
     		statusLineHtml.setContent(sl.parseLine(0));
     		Div div = new Div();
     		div.appendChild(statusLineHtml);
-    		if(content instanceof HtmlBasedComponent)
-    			((HtmlBasedComponent) content).setSclass("statusline-gadget");
-    		else
-    			div.setSclass("statusline-gadget");
+    		div.setSclass("statusline-gadget");
+    		((HtmlBasedComponent) content.getParent()).setSclass("statusline-wrapper");
     		content.appendChild(div);
     		empty = false;
     	}
