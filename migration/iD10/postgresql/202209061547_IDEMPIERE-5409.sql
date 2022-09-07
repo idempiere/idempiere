@@ -1,4 +1,4 @@
--- isMaximizable
+-- IDEMPIERE-5409
 SELECT register_migration_script('202209061547_PlaceholderForTicket.sql') FROM dual;
 
 -- Sep 6, 2022, 3:47:13 PM CEST
