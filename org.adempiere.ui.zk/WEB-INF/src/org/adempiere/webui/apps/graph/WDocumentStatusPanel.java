@@ -92,6 +92,7 @@ public class WDocumentStatusPanel extends Panel {
 		grid.setWidth("100%");
 		grid.makeNoStrip();
 		grid.setOddRowSclass("even");
+		grid.setStyle("border: none;");
 
 		Rows rows = new Rows();
 		grid.appendChild(rows);

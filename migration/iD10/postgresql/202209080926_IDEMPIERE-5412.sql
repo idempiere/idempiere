@@ -1,0 +1,11 @@
+-- IDEMPIERE-5412
+SELECT register_migration_script('202209080926_IDEMPIERE-5412.sql') FROM dual;
+
+-- Sep 8, 2022, 9:26:00 AM CEST
+UPDATE PA_DocumentStatus SET Name_PrintFont_ID=NULL, Number_PrintFont_ID=NULL,Updated=TO_TIMESTAMP('2022-09-08 09:26:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200001
+;
+
+-- Sep 8, 2022, 9:26:06 AM CEST
+UPDATE PA_DocumentStatus SET Name_PrintFont_ID=NULL, Number_PrintFont_ID=NULL,Updated=TO_TIMESTAMP('2022-09-08 09:26:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DocumentStatus_ID=200000
+;
+

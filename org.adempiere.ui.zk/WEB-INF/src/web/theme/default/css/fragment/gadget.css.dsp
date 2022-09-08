@@ -14,7 +14,7 @@
 	position: absolute;
 	top: 1;
 	z-index: 1;
-	width: calc(100% - 8px);
+	width: calc(100% - 10px);
 }
 
 .dashboard-widget > .z-panel-body {
@@ -32,9 +32,8 @@
 }
 
 .z-panel {
-	border-radius: 5px;
-	border: 1px solid #d8d8d8;
-	border-bottom-width: 1px;
+	border-radius: 3px;
+	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 }
 
 .z-panel-noborder {
@@ -334,6 +333,6 @@
 	white-space: normal;
 }
 
-.dashboard-row {
-	padding-bottom: 5px;
+.desktop-home-tabpanel .z-hlayout-inner {
+	padding: 5px !important;
 }
