@@ -5,7 +5,7 @@ billboard.GaugeRenderer = function() {};
 billboard.GaugeRenderer.prototype.render = function(wgt) {
 	var columns = [wgt.getSeriesData()[0], wgt.getSeriesData()[1]];
 	var color = {};
-	var gauge = {units: "%"};
+	var gauge = {units: ""};
 	var rendererOptions = wgt._rendererOptions ? jq.evalJSON(wgt._rendererOptions) : null;
 	if (rendererOptions) {
 		if (rendererOptions["intervalColors"]) {

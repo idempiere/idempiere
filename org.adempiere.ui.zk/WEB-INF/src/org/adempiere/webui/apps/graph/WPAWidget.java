@@ -43,11 +43,11 @@ public class WPAWidget extends Panel {
 	/**************************************************************************
 	 * 	Constructor
 	 */
-	public WPAWidget (MGoal goal, Options options)
+	public WPAWidget (MGoal goal, Options options, boolean isShowTitle)
 	{
 		super();
 		goal.updateGoal(false);
-		init(goal, options);
+		init(goal, options, isShowTitle);
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class WPAWidget extends Panel {
 	 * @param goal
 	 * @param options 
 	 */
-	private void init(MGoal goal, Options options)
+	private void init(MGoal goal, Options options, boolean isShowTitle)
 	{
 		Div div = new Div();
 		appendChild(div);
@@ -63,10 +63,12 @@ public class WPAWidget extends Panel {
 		div.appendChild(pi);
 		if (goal.getMeasure() != null) 
 			pi.addEventListener(Events.ON_CLICK, e -> new WPerformanceDetail(pi.getGoal())); //Action Listener for Drill Down
-		Div titleDiv = new Div();
-		titleDiv.setSclass("performance-indicator-title");
-		Label label = new Label(pi.getTitle());
-		div.appendChild(titleDiv);
-		titleDiv.appendChild(label);
+		if(isShowTitle) {
+			Div titleDiv = new Div();
+			titleDiv.setSclass("gauge-indicator-title");
+			Label label = new Label(pi.getTitle());
+			div.appendChild(titleDiv);
+			titleDiv.appendChild(label);
+		}
 	}	//	init
 }
