@@ -132,6 +132,7 @@ public class DashboardController implements EventListener<Event> {
 	private static final String IS_ADDITIONAL_COLUMN_ATTRIBUTE = "IsAdditionalColumn";
 	private static final String IS_SHOW_IN_DASHBOARD_ATTRIBUTE = "IsShowInDashboard";
 	private static final String FLEX_GROW_ATTRIBUTE = "FlexGrow";
+	private static final String IMAGES_CONTEXT_HELP_PNG = "images/Help16.png";
 
 	private final static int DEFAULT_DASHBOARD_WIDTH = 99;
 	private final static String DASHBOARD_LAYOUT_COLUMNS = "C";
@@ -335,20 +336,27 @@ public class DashboardController implements EventListener<Event> {
 		panel.setMaximizable(dc.isMaximizable());
 
 		String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
-	if(description != null)
-		panel.setTooltiptext(description);
-
-	panel.setCollapsible(dc.isCollapsible());
-	panel.setOpen(!dp.isCollapsedByDefault());
-	panel.addEventListener(Events.ON_OPEN, this);
-	if (!ClientInfo.isMobile()) {
-		panel.setDroppable("true");
-		panel.getCaption().setDraggable("true");
-		panel.addEventListener(Events.ON_DROP, this);
-	}
-	panel.setBorder("normal");
-
-		return panel;
+		if(description != null) {
+			ToolBarButton help = new ToolBarButton();
+			help.setDisabled(true);
+			caption.appendChild(help);
+			if (ThemeManager.isUseFontIconForImage())
+				help.setIconSclass("z-icon-Help");
+			else
+				help.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
+			help.setTooltiptext(description);
+		}
+		panel.setCollapsible(dc.isCollapsible());
+		panel.setOpen(!dp.isCollapsedByDefault());
+		panel.addEventListener(Events.ON_OPEN, this);
+		if (!ClientInfo.isMobile()) {
+			panel.setDroppable("true");
+			panel.getCaption().setDraggable("true");
+			panel.addEventListener(Events.ON_DROP, this);
+		}
+		panel.setBorder("normal");
+	
+			return panel;
 	}
 
 	private void renderGadgetPanel(MDashboardContent dc, Panel panel) throws Exception {
