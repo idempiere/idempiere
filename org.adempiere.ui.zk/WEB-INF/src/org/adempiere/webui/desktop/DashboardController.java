@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.desktop;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -39,6 +40,7 @@ import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.WGraph;
 import org.adempiere.webui.apps.graph.WPAWidget;
 import org.adempiere.webui.apps.graph.WPerformanceDetail;
+import org.adempiere.webui.apps.graph.WPerformanceIndicator;
 import org.adempiere.webui.apps.graph.model.ChartModel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
@@ -671,7 +673,10 @@ public class DashboardController implements EventListener<Event> {
             String goalDisplay = dc.getGoalDisplay();
             MGoal goal = new MGoal(Env.getCtx(), PA_Goal_ID, null);
             if(MDashboardContent.GOALDISPLAY_GaugeIndicator.equals(goalDisplay)) {
-            	WPAWidget paWidget = new WPAWidget(goal, null);
+            	WPerformanceIndicator.Options options = new WPerformanceIndicator.Options();
+            	options.colorMap = new HashMap<String, Color>();
+            	options.colorMap.put(WPerformanceIndicator.DIAL_BACKGROUND, new Color(224, 224, 224, 1));
+            	WPAWidget paWidget = new WPAWidget(goal, options, dc.isShowTitle());
             	((HtmlBasedComponent)content).setSclass("performance-gadget");
             	content.appendChild(paWidget);
             }

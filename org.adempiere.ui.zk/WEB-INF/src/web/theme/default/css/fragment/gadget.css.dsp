@@ -231,7 +231,7 @@
 	width: 100%;
 }
 
-.performance-indicator-title {
+.gauge-indicator-title {
 	text-align: center;
 	padding-top: 1px; 
 	padding-bottom: 1px;
