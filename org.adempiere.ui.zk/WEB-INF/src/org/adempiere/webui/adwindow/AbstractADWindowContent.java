@@ -2721,21 +2721,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			@Override
 			public void onCallback(Boolean result)
 			{
-				if(result)
-		    	{
-		    		adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
-		    		adTabbox.getSelectedGridTab().refreshParentTabs();
-		    		IADTabpanel dirtyTabpanel = (IADTabpanel) Executions.getCurrent().removeAttribute("adtabpane.saved");
-		    		if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isDetail()) {
-		    			try {
-							adTabbox.getSelectedTabpanel().getDetailPane().onNew();
-						} catch (Exception e) {
-							throw new RuntimeException(e);
-						}
-		    		} else {
-		    			onNew();
-		    		}
-		    	}
+				adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+				adTabbox.getSelectedGridTab().refreshParentTabs();
+				IADTabpanel dirtyTabpanel = (IADTabpanel) Executions.getCurrent().removeAttribute("adtabpane.saved");
+				if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isDetail()) {
+					try {
+						adTabbox.getSelectedTabpanel().getDetailPane().onNew();
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				} else {
+					onNew();
+				}
 			}
 		});
     }
