@@ -2598,6 +2598,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		if (!retValue)
 		{
+			if (CLogger.peekError() == null && ! wasChanged && callback != null) {
+				callback.onCallback(true);
+				return;
+			}
 			showLastError();
 			if (callback != null)
 				callback.onCallback(false);
@@ -2721,18 +2725,21 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			@Override
 			public void onCallback(Boolean result)
 			{
-				adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
-				adTabbox.getSelectedGridTab().refreshParentTabs();
-				IADTabpanel dirtyTabpanel = (IADTabpanel) Executions.getCurrent().removeAttribute("adtabpane.saved");
-				if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isDetail()) {
-					try {
-						adTabbox.getSelectedTabpanel().getDetailPane().onNew();
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-				} else {
-					onNew();
-				}
+				if(result)
+		    	{
+		    		adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+		    		adTabbox.getSelectedGridTab().refreshParentTabs();
+		    		IADTabpanel dirtyTabpanel = (IADTabpanel) Executions.getCurrent().removeAttribute("adtabpane.saved");
+		    		if (dirtyTabpanel != null && dirtyTabpanel.getGridTab().isDetail()) {
+		    			try {
+							adTabbox.getSelectedTabpanel().getDetailPane().onNew();
+						} catch (Exception e) {
+							throw new RuntimeException(e);
+						}
+		    		} else {
+		    			onNew();
+		    		}
+		    	}
 			}
 		});
     }
