@@ -77,6 +77,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -98,6 +99,7 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Include;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Toolbar;
@@ -327,6 +329,7 @@ public class DashboardController implements EventListener<Event> {
 		Panel panel;
 		panel = new Panel();
 		Caption caption = new Caption(dc.get_Translation(MDashboardContent.COLUMNNAME_Name));
+		caption.setAttribute("help", false);
 		panel.appendChild(caption);
 		panel.setAttribute(MDashboardPreference.COLUMNNAME_PA_DashboardContent_ID, dp.getPA_DashboardContent_ID());
 		panel.setAttribute(MDashboardPreference.COLUMNNAME_PA_DashboardPreference_ID, dp.getPA_DashboardPreference_ID());
@@ -337,15 +340,9 @@ public class DashboardController implements EventListener<Event> {
 
 		String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
 		if(description != null) {
-			ToolBarButton help = new ToolBarButton();
-			help.setDisabled(true);
-			caption.appendChild(help);
-			if (ThemeManager.isUseFontIconForImage())
-				help.setIconSclass("z-icon-Help");
-			else
-				help.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
-			help.setTooltiptext(description);
+			renderHelpButton(caption, description);
 		}
+		
 		panel.setCollapsible(dc.isCollapsible());
 		panel.setOpen(!dp.isCollapsedByDefault());
 		panel.addEventListener(Events.ON_OPEN, this);
@@ -357,6 +354,26 @@ public class DashboardController implements EventListener<Event> {
 		panel.setBorder("normal");
 	
 			return panel;
+	}
+	
+	private void renderHelpButton(Caption caption, String text) {
+		ToolBarButton help = new ToolBarButton();
+		caption.appendChild(help);
+		if (ThemeManager.isUseFontIconForImage())
+			help.setIconSclass("z-icon-Help");
+		else
+			help.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
+		Popup popup = new Popup();
+		popup.setSclass("dashboard-content-help");
+		popup.setPopup(popup);
+		Text t = new Text(text);
+		popup.appendChild(t);
+		caption.setAttribute("help", true);
+		help.setTooltip(popup);
+		help.addEventListener(Events.ON_CLICK, (Event event) -> {
+			popup.setPage(help.getPage());
+			popup.open(help, "after_start");
+		});
 	}
 
 	private void renderGadgetPanel(MDashboardContent dc, Panel panel) throws Exception {
