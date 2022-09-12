@@ -3043,20 +3043,18 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	}
 	
 	/**
-	 * Create Line
-	 * @param invoice
+	 * Create Line from orderline/inoutline/rmaline
 	 * @param C_OrderLine_ID
 	 * @param M_InOutLine_ID
 	 * @param M_RMALine_ID
 	 * @param M_Product_ID
 	 * @param C_UOM_ID
 	 * @param Qty
-	 * @param trxName
 	 */
-	public static void createLineFrom(MInvoice invoice, int C_OrderLine_ID, int M_InOutLine_ID, int M_RMALine_ID, 
-			int M_Product_ID, int C_UOM_ID, BigDecimal Qty, String trxName)
+	public void createLineFrom(int C_OrderLine_ID, int M_InOutLine_ID, int M_RMALine_ID, 
+			int M_Product_ID, int C_UOM_ID, BigDecimal Qty)
 	{
-		MInvoiceLine invoiceLine = new MInvoiceLine (invoice);
+		MInvoiceLine invoiceLine = new MInvoiceLine (this);
 		invoiceLine.setM_Product_ID(M_Product_ID, C_UOM_ID);	//	Line UOM
 		invoiceLine.setQty(Qty);							//	Invoiced/Entered
 		BigDecimal QtyInvoiced = null;
@@ -3071,27 +3069,27 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		//  Info
 		MOrderLine orderLine = null;
 		if (C_OrderLine_ID != 0)
-			orderLine = new MOrderLine (Env.getCtx(), C_OrderLine_ID, trxName);
+			orderLine = new MOrderLine (Env.getCtx(), C_OrderLine_ID, get_TrxName());
 		//
 		MRMALine rmaLine = null;
 		if (M_RMALine_ID > 0)
-			rmaLine = new MRMALine (Env.getCtx(), M_RMALine_ID, trxName);
+			rmaLine = new MRMALine (Env.getCtx(), M_RMALine_ID, get_TrxName());
 		//
 		MInOutLine inoutLine = null;
 		if (M_InOutLine_ID != 0)
 		{
-			inoutLine = new MInOutLine (Env.getCtx(), M_InOutLine_ID, trxName);
+			inoutLine = new MInOutLine (Env.getCtx(), M_InOutLine_ID, get_TrxName());
 			if (orderLine == null && inoutLine.getC_OrderLine_ID() != 0)
 			{
 				C_OrderLine_ID = inoutLine.getC_OrderLine_ID();
-				orderLine = new MOrderLine (Env.getCtx(), C_OrderLine_ID, trxName);
+				orderLine = new MOrderLine (Env.getCtx(), C_OrderLine_ID, get_TrxName());
 			}
 		}
 		else if (C_OrderLine_ID > 0)
 		{
 			String whereClause = "EXISTS (SELECT 1 FROM M_InOut io WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID AND io.DocStatus IN ('CO','CL'))";
 			MInOutLine[] lines = MInOutLine.getOfOrderLine(Env.getCtx(),
-				C_OrderLine_ID, whereClause, trxName);
+				C_OrderLine_ID, whereClause, get_TrxName());
 			if (s_log.isLoggable(Level.FINE)) s_log.fine ("Receipt Lines with OrderLine = #" + lines.length);
 			if (lines.length > 0)
 			{
@@ -3100,7 +3098,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 					MInOutLine line = lines[j];
 					// qty matched
 					BigDecimal qtyMatched = Env.ZERO;
-					for (MMatchInv match : MMatchInv.getInOutLine(Env.getCtx(), line.getM_InOutLine_ID(), trxName)) {
+					for (MMatchInv match : MMatchInv.getInOutLine(Env.getCtx(), line.getM_InOutLine_ID(), get_TrxName())) {
 						qtyMatched = qtyMatched.add(match.getQty());
 					}
 					if (line.getQtyEntered().subtract(qtyMatched).compareTo(Qty) == 0)
@@ -3115,7 +3113,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		else if (M_RMALine_ID != 0)
 		{
 			String whereClause = "EXISTS (SELECT 1 FROM M_InOut io WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID AND io.DocStatus IN ('CO','CL'))";
-			MInOutLine[] lines = MInOutLine.getOfRMALine(Env.getCtx(), M_RMALine_ID, whereClause, trxName);
+			MInOutLine[] lines = MInOutLine.getOfRMALine(Env.getCtx(), M_RMALine_ID, whereClause, get_TrxName());
 			if (s_log.isLoggable(Level.FINE)) s_log.fine ("Receipt Lines with RMALine = #" + lines.length);
 			if (lines.length > 0)
 			{
@@ -3146,7 +3144,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			invoiceLine.setShipLine(inoutLine);		//	overwrites
 			if(invoiceLine.getC_UOM_ID()!=inoutLine.getC_UOM_ID()) {
 				invoiceLine.setC_UOM_ID(inoutLine.getC_UOM_ID());						
-				BigDecimal PriceEntered = MUOMConversion.convertProductFrom (invoice.getCtx(), M_Product_ID, 
+				BigDecimal PriceEntered = MUOMConversion.convertProductFrom (Env.getCtx(), M_Product_ID, 
 						inoutLine.getC_UOM_ID(), invoiceLine.getPriceEntered());
 					if (PriceEntered == null)
 						throw new AdempiereException("No Conversion For Price=" + invoiceLine.getPriceEntered());
@@ -3181,25 +3179,24 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	}
 	
 	/**
-	 * Update Header
-	 * @param invoice
+	 * Update from order
 	 * @param order
 	 */
-	public static void updateHeader(MInvoice invoice, MOrder order)
+	public void updateFrom(MOrder order)
 	{
 		if (order != null) 
 		{
-			invoice.setPaymentRule(order.getPaymentRule());
-			invoice.setC_PaymentTerm_ID(order.getC_PaymentTerm_ID());
-			invoice.saveEx();
-			invoice.load(invoice.get_TrxName()); // refresh from DB
+			setPaymentRule(order.getPaymentRule());
+			setC_PaymentTerm_ID(order.getC_PaymentTerm_ID());
+			saveEx();
+			load(get_TrxName()); // refresh from DB
 			// copy payment schedule from order if invoice doesn't have a current payment schedule
-			MOrderPaySchedule[] opss = MOrderPaySchedule.getOrderPaySchedule(invoice.getCtx(), order.getC_Order_ID(), 0, invoice.get_TrxName());
-			MInvoicePaySchedule[] ipss = MInvoicePaySchedule.getInvoicePaySchedule(invoice.getCtx(), invoice.getC_Invoice_ID(), 0, invoice.get_TrxName());
+			MOrderPaySchedule[] opss = MOrderPaySchedule.getOrderPaySchedule(Env.getCtx(), order.getC_Order_ID(), 0, get_TrxName());
+			MInvoicePaySchedule[] ipss = MInvoicePaySchedule.getInvoicePaySchedule(Env.getCtx(), getC_Invoice_ID(), 0, get_TrxName());
 			if (ipss.length == 0 && opss.length > 0) 
 			{
 				BigDecimal ogt = order.getGrandTotal();
-				BigDecimal igt = invoice.getGrandTotal();
+				BigDecimal igt = getGrandTotal();
 				BigDecimal percent = Env.ONE;
 				if (ogt.compareTo(igt) != 0)
 					percent = igt.divide(ogt, 10, RoundingMode.HALF_UP);
@@ -3208,7 +3205,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			
 				for (MOrderPaySchedule ops : opss) 
 				{
-					MInvoicePaySchedule ips = new MInvoicePaySchedule(invoice.getCtx(), 0, invoice.get_TrxName());
+					MInvoicePaySchedule ips = new MInvoicePaySchedule(Env.getCtx(), 0, get_TrxName());
 					PO.copyValues(ops, ips);
 					if (percent != Env.ONE) {
 						BigDecimal propDueAmt = ops.getDueAmt().multiply(percent);
@@ -3216,14 +3213,14 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 							propDueAmt = propDueAmt.setScale(scale, RoundingMode.HALF_UP);
 						ips.setDueAmt(propDueAmt);
 					}
-					ips.setC_Invoice_ID(invoice.getC_Invoice_ID());
+					ips.setC_Invoice_ID(getC_Invoice_ID());
 					ips.setAD_Org_ID(ops.getAD_Org_ID());
 					ips.setProcessing(ops.isProcessing());
 					ips.setIsActive(ops.isActive());
 					ips.saveEx();
 				}
-				invoice.validatePaySchedule();
-				invoice.saveEx();
+				validatePaySchedule();
+				saveEx();
 			}
 		}
 	}

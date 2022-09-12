@@ -189,7 +189,7 @@ public class CreateFromRMA extends SvrProcess
 			value = selectionValueMap.get(key);
 			String Description = value != null ? (String) value : null;
 			
-			MRMA.createLineFrom(rma, M_InOutLine_ID, MovementQty, Description);
+			rma.createLineFrom(M_InOutLine_ID, MovementQty, Description);
             m_created++;
 		}
 		

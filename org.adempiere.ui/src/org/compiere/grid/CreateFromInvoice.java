@@ -435,12 +435,12 @@ public abstract class CreateFromInvoice extends CreateFrom
 					+ ", OrderLine_ID=" + C_OrderLine_ID + ", InOutLine_ID=" + M_InOutLine_ID);
 
 				//	Create new Invoice Line
-				MInvoice.createLineFrom(invoice, C_OrderLine_ID, M_InOutLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered, trxName);
+				invoice.createLineFrom(C_OrderLine_ID, M_InOutLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered);
 			}   //   if selected
 		}   //  for all rows
 		
 		//  Update Header
-		MInvoice.updateHeader(invoice, p_order);
+		invoice.updateFrom(p_order);
 
 		return true;
 	}   //  save

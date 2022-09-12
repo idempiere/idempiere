@@ -589,7 +589,7 @@ public abstract class CreateFromShipment extends CreateFrom
 					QtyEntered = QtyEntered.negate();
 
 				//	Create new InOut Line
-				MInOut.createLineFrom(inout, C_OrderLine_ID, C_InvoiceLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered, M_Locator_ID, trxName);
+				inout.createLineFrom(C_OrderLine_ID, C_InvoiceLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered, M_Locator_ID);
 			}   //   if selected
 		}   //  for all rows
 
@@ -598,7 +598,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		 *  - if linked to another order/invoice/rma - remove link
 		 *  - if no link set it
 		 */
-		MInOut.updateHeader(inout, p_order, m_invoice, m_rma);
+		inout.updateFrom(p_order, m_invoice, m_rma);
 		return true;		
 
 	}   //  saveInvoice

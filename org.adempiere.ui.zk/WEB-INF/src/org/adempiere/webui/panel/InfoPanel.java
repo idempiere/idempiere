@@ -82,6 +82,8 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoLog;
+import org.compiere.process.ProcessInfoUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -2319,11 +2321,18 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 						ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, true);
 						// enable or disable control button rely selected record status 
 						enableButtons();
-					}else if (!m_pi.isError()){
-						ProcessInfoDialog dialog = ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, true);
+					}else if (!m_pi.isError()){						
 						if (isCloseAfterExecutionOfProcess()) {
-							dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, e -> InfoPanel.this.detach());
+							ProcessInfoUtil.setLogFromDB(m_pi);
+							ProcessInfoLog[] logs = m_pi.getLogs();
+							if (logs != null && logs.length > 0) {
+								ProcessInfoDialog dialog = ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, false);
+								dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, e -> InfoPanel.this.detach());
+							} else {
+								detach();
+							}
 						} else {
+							ProcessInfoDialog.showProcessInfo(m_pi, p_WindowNo, InfoPanel.this, true);
 							isRequeryByRunSuccessProcess = true;
 							Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
 						}

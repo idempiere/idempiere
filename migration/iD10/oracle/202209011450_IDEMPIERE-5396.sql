@@ -759,10 +759,6 @@ UPDATE AD_InfoColumn SET AD_Val_Rule_ID=200165,Updated=TO_TIMESTAMP('2022-09-01 
 UPDATE AD_InfoColumn SET AD_Val_Rule_ID=200166,Updated=TO_TIMESTAMP('2022-09-01 15:09:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoColumn_ID=200256
 ;
 
--- Sep 1, 2022, 3:15:05 PM SGT
-INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,IsReport,Value,IsDirectPrint,AccessLevel,EntityType,Statistic_Count,Statistic_Seconds,IsBetaFunctionality,ShowHelp,AD_Process_UU,AD_InfoWindow_ID) VALUES (200140,0,0,'Y',TO_TIMESTAMP('2022-09-01 15:15:04','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-09-01 15:15:04','YYYY-MM-DD HH24:MI:SS'),100,'Create lines from Shipment/Receipt','Create lines from Shipment/Receipt','N','M_InOut_CreateFromInfoWin','N','1','D',0,0,'N','Y','1131e5fd-6426-4e75-b0b0-7f6cc0e2406a',200022)
-;
-
 -- Sep 1, 2022, 3:16:32 PM SGT
 INSERT INTO AD_Process (AD_Process_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,IsReport,Value,IsDirectPrint,Classname,AccessLevel,EntityType,Statistic_Count,Statistic_Seconds,IsBetaFunctionality,ShowHelp,AD_Process_UU) VALUES (200141,0,0,'Y',TO_TIMESTAMP('2022-09-01 15:16:31','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-09-01 15:16:31','YYYY-MM-DD HH24:MI:SS'),100,'Create lines from Shipment/Receipt','Create lines from Shipment/Receipt','N','M_InOut_CreateFromProcess','N','org.compiere.process.CreateFromInOut','1','D',0,0,'N','Y','a937803f-8f37-4a08-90b8-f653f48dd421')
 ;
@@ -784,7 +780,7 @@ INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 ;
 
 -- Sep 1, 2022, 3:28:52 PM SGT
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,AD_Process_ID,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (215125,1,'Create lines from','Process which will generate a new document lines based on an existing document','The Create From process will create a new document based on information in an existing document selected by the user.',319,'CreateLinesFrom',1,'N','N','N','N','N',0,'N',28,0,0,'Y',TO_TIMESTAMP('2022-09-01 15:28:51','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-09-01 15:28:51','YYYY-MM-DD HH24:MI:SS'),100,203638,'Y',200140,'N','D','N','N','N','Y','ef9074e3-2b7e-464b-b934-04597f6b7ef9','Y','N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (215125,1,'Create lines from','Process which will generate a new document lines based on an existing document','The Create From process will create a new document based on information in an existing document selected by the user.',319,'CreateLinesFrom',1,'N','N','N','N','N',0,'N',28,0,0,'Y',TO_TIMESTAMP('2022-09-01 15:28:51','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-09-01 15:28:51','YYYY-MM-DD HH24:MI:SS'),100,203638,'Y','N','D','N','N','N','Y','ef9074e3-2b7e-464b-b934-04597f6b7ef9','Y','N','N','N','N')
 ;
 
 -- Sep 1, 2022, 3:29:10 PM SGT

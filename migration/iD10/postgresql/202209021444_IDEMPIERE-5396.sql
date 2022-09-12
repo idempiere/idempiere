@@ -53,34 +53,6 @@ UPDATE AD_Column SET Callout='org.compiere.model.Callout_AD_Column.process',Upda
 UPDATE AD_Column SET Callout='org.compiere.model.Callout_AD_Column.infoWindow', ReadOnlyLogic='@AD_Process_ID@!0',Updated=TO_TIMESTAMP('2022-09-02 16:00:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215126
 ;
 
--- Sep 2, 2022, 4:10:48 PM SGT
-DELETE FROM AD_Field_Trl WHERE AD_Field_ID=207137
-;
-
--- Sep 2, 2022, 4:10:48 PM SGT
-DELETE FROM AD_Field WHERE AD_Field_ID=207137
-;
-
--- Sep 2, 2022, 4:11:33 PM SGT
-ALTER TABLE AD_Process DROP COLUMN AD_InfoWindow_ID
-;
-
--- Sep 2, 2022, 4:11:43 PM SGT
-DELETE FROM AD_Column_Trl WHERE AD_Column_ID=215101
-;
-
--- Sep 2, 2022, 4:11:43 PM SGT
-DELETE FROM AD_Column WHERE AD_Column_ID=215101
-;
-
--- Sep 2, 2022, 4:16:29 PM SGT
-DELETE FROM AD_Process_Trl WHERE AD_Process_ID=200140
-;
-
--- Sep 2, 2022, 4:16:29 PM SGT
-DELETE FROM AD_Process WHERE AD_Process_ID=200140
-;
-
 -- Sep 2, 2022, 4:19:00 PM SGT
 UPDATE AD_Column SET AD_InfoWindow_ID=200022,Updated=TO_TIMESTAMP('2022-09-02 16:19:00','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215125
 ;

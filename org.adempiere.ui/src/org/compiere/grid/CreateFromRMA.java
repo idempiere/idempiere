@@ -177,7 +177,7 @@ public abstract class CreateFromRMA extends CreateFrom {
                 
                 int inOutLineId = pp.getKey();
                 
-                MRMA.createLineFrom(rma, inOutLineId, d, (String)miniTable.getValueAt(i, 6));
+                rma.createLineFrom(inOutLineId, d, (String)miniTable.getValueAt(i, 6));
             }
         }
         rma.saveEx();

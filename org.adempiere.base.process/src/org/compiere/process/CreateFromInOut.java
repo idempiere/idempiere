@@ -44,7 +44,7 @@ import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 
 /**
- *  Create lines from Shipment/Receipt
+ *  Create M_InOutLine for M_InOut from Purchase Orders, Vendor Invoice or Customer RMA
  *
  *	@author etantg
  */
@@ -303,14 +303,14 @@ public class CreateFromInOut extends SvrProcess
 				QtyEntered = QtyEntered.negate();
 
 			//	Create new InOut Line
-			MInOut.createLineFrom(inout, C_OrderLine_ID, C_InvoiceLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered, M_Locator_ID, get_TrxName());
+			inout.createLineFrom(C_OrderLine_ID, C_InvoiceLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered, M_Locator_ID);
 			m_created++;
 		}   //  for all rows
 
 		//  Update Header
 		//  - if linked to another order/invoice/rma - remove link
 		//  - if no link set it
-		MInOut.updateHeader(inout, m_order, m_invoice, m_rma);
+		inout.updateFrom(m_order, m_invoice, m_rma);
 		
 		StringBuilder msgreturn = new StringBuilder("@Created@ = ").append(m_created);
 		return msgreturn.toString();

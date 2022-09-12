@@ -43,7 +43,7 @@ import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 
 /**
- *  Create lines from Invoice
+ *  Create Invoice Lines from Purchase Order, Material Receipt or Vendor RMA
  *
  *	@author etantg
  */
@@ -286,12 +286,12 @@ public class CreateFromInvoice extends SvrProcess
 					+ ", OrderLine=" + C_OrderLine_ID + ", InOutLine_ID=" + M_InOutLine_ID);
 			
 			//	Create new Invoice Line
-			MInvoice.createLineFrom(invoice, C_OrderLine_ID, M_InOutLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered, get_TrxName());
+			invoice.createLineFrom(C_OrderLine_ID, M_InOutLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered);
             m_created++;
 		}   //  for all rows
 		
 		//  Update Header
-		MInvoice.updateHeader(invoice, m_order);
+		invoice.updateFrom(m_order);
 			
 		StringBuilder msgreturn = new StringBuilder("@Created@ = ").append(m_created);
 		return msgreturn.toString();
