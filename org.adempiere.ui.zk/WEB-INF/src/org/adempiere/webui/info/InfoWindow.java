@@ -17,6 +17,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.impexp.AbstractXLSXExporter;
@@ -885,7 +886,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					
 					columnInfo = new ColumnInfo(infoColumn.getNameTrl(), colSQL, DisplayType.getClass(infoColumn.getAD_Reference_ID(), true), infoColumn.isReadOnly() || haveNotProcess);
 				}
-				else if (DisplayType.isLookup(infoColumn.getAD_Reference_ID()))
+				else if (LookupFactoryHelper.isLookup(infoColumn))
 				{
 					if (infoColumn.getAD_Reference_ID() == DisplayType.List)
 					{

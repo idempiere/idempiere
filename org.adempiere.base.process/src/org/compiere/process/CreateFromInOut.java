@@ -68,8 +68,6 @@ public class CreateFromInOut extends SvrProcess
 				;
 			else if (name.equals("M_InOut_ID"))
 				p_M_InOut_ID = para[i].getParameterAsInt();
-			else if (name.equals("M_Locator_ID"))
-				p_M_Locator_ID = para[i].getParameterAsInt();
 			else
 				log.log(Level.SEVERE, "Unknown Parameter: " + name);
 		}
@@ -79,8 +77,6 @@ public class CreateFromInOut extends SvrProcess
 	protected String doIt() throws Exception {
 		if (p_M_InOut_ID == 0)
 			throw new AdempiereUserError("@NotFound@ @M_InOut_ID@");
-		if (p_M_Locator_ID == 0)
-			throw new AdempiereUserError("@NotFound@ @M_Locator_ID@");
 		
 		if (getProcessInfo().getAD_InfoWindow_ID() > 0)
 			return createLines();
@@ -92,8 +88,6 @@ public class CreateFromInOut extends SvrProcess
 		// Get Shipment
 		MInOut inout = new MInOut(getCtx(), p_M_InOut_ID, get_TrxName());
 		if (log.isLoggable(Level.CONFIG)) log.config(inout + ", M_Locator_ID=" + p_M_Locator_ID);
-		
-		int defaultLocator_ID = p_M_Locator_ID;
 
 		// Lines
 		StringBuilder sql = new StringBuilder();
@@ -263,7 +257,7 @@ public class CreateFromInOut extends SvrProcess
 			key = ColumnName + "_" + T_Selection_ID;
 			value = selectionValueMap.get(key);
 			// If a locator is specified on the product, choose that otherwise default locator
-			int M_Locator_ID = value != null ? ((Integer) value).intValue() : defaultLocator_ID;
+			int M_Locator_ID = value != null ? ((BigDecimal) value).intValue() : 0;
 
 			ColumnName = "M_Product_ID";
 			key = ColumnName + "_" + T_Selection_ID;
