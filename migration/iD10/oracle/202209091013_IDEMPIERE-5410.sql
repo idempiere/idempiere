@@ -126,16 +126,8 @@ UPDATE PA_DashboardPreference SET ColumnNo=1, IsShowInDashboard='Y', Line=5,Upda
 UPDATE PA_DashboardPreference SET ColumnNo=0, IsShowInDashboard='Y', Line=7,Updated=TO_TIMESTAMP('2022-09-09 11:05:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DashboardPreference_ID=200008
 ;
 
--- Sep 9, 2022, 11:05:12 AM CEST
-UPDATE PA_DashboardPreference SET ColumnNo=1, IsShowInDashboard='Y', Line=7,Updated=TO_TIMESTAMP('2022-09-09 11:05:12','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DashboardPreference_ID=1000003
-;
-
 -- Sep 9, 2022, 11:05:21 AM CEST
 UPDATE PA_DashboardPreference SET ColumnNo=0, IsShowInDashboard='Y', Line=6,Updated=TO_TIMESTAMP('2022-09-09 11:05:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DashboardPreference_ID=200011
-;
-
--- Sep 9, 2022, 11:20:58 AM CEST
-UPDATE PA_DashboardPreference SET ColumnNo=0, IsShowInDashboard='Y', Line=7,Updated=TO_TIMESTAMP('2022-09-09 11:20:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DashboardPreference_ID=1000001
 ;
 
 -- Sep 9, 2022, 11:20:58 AM CEST
@@ -144,9 +136,5 @@ UPDATE PA_DashboardPreference SET ColumnNo=1, IsShowInDashboard='Y', Line=7,Upda
 
 -- Sep 9, 2022, 11:21:02 AM CEST
 UPDATE PA_DashboardPreference SET ColumnNo=0, IsShowInDashboard='Y', Line=7,Updated=TO_TIMESTAMP('2022-09-09 11:21:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DashboardPreference_ID=200008
-;
-
--- Sep 9, 2022, 11:21:02 AM CEST
-UPDATE PA_DashboardPreference SET ColumnNo=1, IsShowInDashboard='Y', Line=7,Updated=TO_TIMESTAMP('2022-09-09 11:21:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_DashboardPreference_ID=1000001
 ;
 
