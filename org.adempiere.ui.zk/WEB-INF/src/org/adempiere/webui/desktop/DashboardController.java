@@ -329,7 +329,6 @@ public class DashboardController implements EventListener<Event> {
 		Panel panel;
 		panel = new Panel();
 		Caption caption = new Caption(dc.get_Translation(MDashboardContent.COLUMNNAME_Name));
-		caption.setAttribute("help", false);
 		panel.appendChild(caption);
 		panel.setAttribute(MDashboardPreference.COLUMNNAME_PA_DashboardContent_ID, dp.getPA_DashboardContent_ID());
 		panel.setAttribute(MDashboardPreference.COLUMNNAME_PA_DashboardPreference_ID, dp.getPA_DashboardPreference_ID());
@@ -368,7 +367,6 @@ public class DashboardController implements EventListener<Event> {
 		popup.setPopup(popup);
 		Text t = new Text(text);
 		popup.appendChild(t);
-		caption.setAttribute("help", true);
 		help.setTooltip(popup);
 		help.addEventListener(Events.ON_CLICK, (Event event) -> {
 			popup.setPage(help.getPage());
