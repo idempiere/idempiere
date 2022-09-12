@@ -2598,6 +2598,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		if (!retValue)
 		{
+			if (CLogger.peekError() == null && ! wasChanged && callback != null) {
+				callback.onCallback(true);
+				return;
+			}
 			showLastError();
 			if (callback != null)
 				callback.onCallback(false);
