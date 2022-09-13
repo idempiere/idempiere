@@ -222,3 +222,31 @@ UPDATE AD_Field SET SeqNo=90, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, I
 UPDATE AD_Column SET IsTranslated='Y', IsToolbarButton='N',Updated=TO_TIMESTAMP('2022-09-12 16:20:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=59678
 ;
 
+-- Sep 13, 2022, 11:13:31 AM CEST
+UPDATE AD_Tab SET IsTranslationTab='Y',Updated=TO_TIMESTAMP('2022-09-13 11:13:31','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200329
+;
+
+-- Sep 13, 2022, 11:16:59 AM CEST
+UPDATE AD_Tab SET AD_Column_ID=215306,Updated=TO_TIMESTAMP('2022-09-13 11:16:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200329
+;
+
+-- Sep 13, 2022, 11:17:17 AM CEST
+UPDATE AD_Tab SET IsInsertRecord='N',Updated=TO_TIMESTAMP('2022-09-13 11:17:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200329
+;
+
+-- Sep 13, 2022, 11:20:49 AM CEST
+UPDATE AD_Column SET IsUpdateable='N', FKConstraintName='ADChartDatasourceADChartDatas',Updated=TO_TIMESTAMP('2022-09-13 11:20:49','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215306
+;
+
+-- Sep 13, 2022, 11:21:11 AM CEST
+ALTER TABLE AD_ChartDatasource_Trl MODIFY AD_ChartDatasource_ID NUMBER(10)
+;
+
+-- Sep 13, 2022, 11:21:11 AM CEST
+ALTER TABLE AD_ChartDatasource_Trl DROP CONSTRAINT adchartdatasource_adchartdatas
+;
+
+-- Sep 13, 2022, 11:21:11 AM CEST
+ALTER TABLE AD_ChartDatasource_Trl ADD CONSTRAINT ADChartDatasourceADChartDatas FOREIGN KEY (AD_ChartDatasource_ID) REFERENCES ad_chartdatasource(ad_chartdatasource_id) DEFERRABLE INITIALLY DEFERRED
+;
+
