@@ -692,6 +692,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				if(infoColumn.isQueryCriteria()) {
 					vo = vo.clone(infoContext, p_WindowNo, 0, vo.AD_Window_ID, 0, false);
 					vo.IsReadOnly = false;
+					vo.TabNo = Env.TAB_INFO;					
 					gridField = new GridField(vo);
 					List<Object[]> list = parameterTree.get(infoColumn.getSeqNoSelection());
 					if (list == null) {
@@ -1589,6 +1590,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	        editor.dynamicDisplay();
 	        editor.addValueChangeListener(this);
 	        editor.fillHorizontal();
+	        if (editor instanceof WTableDirEditor)
+	        {
+	        	((WTableDirEditor) editor).setRetainSelectedValueAfterRefresh(false);
+	        }
         }
         Label label = editor.getLabel();
         Component fieldEditor = editor.getComponent();
