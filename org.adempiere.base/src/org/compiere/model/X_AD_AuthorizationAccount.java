@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for AD_AuthorizationAccount
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_AuthorizationAccount")
 public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationAccount, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220906L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationAccount (Properties ctx, int AD_AuthorizationAccount_ID, String trxName)
@@ -332,6 +332,21 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Preferred User Name.
+		@param Preferred_UserName Preferred User Name
+	*/
+	public void setPreferred_UserName (String Preferred_UserName)
+	{
+		set_Value (COLUMNNAME_Preferred_UserName, Preferred_UserName);
+	}
+
+	/** Get Preferred User Name.
+		@return Preferred User Name	  */
+	public String getPreferred_UserName()
+	{
+		return (String)get_Value(COLUMNNAME_Preferred_UserName);
 	}
 
 	/** Set Refresh Token.
