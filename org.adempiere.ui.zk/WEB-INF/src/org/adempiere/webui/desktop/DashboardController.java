@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.WGraph;
@@ -371,6 +372,7 @@ public class DashboardController implements EventListener<Event> {
 		help.addEventListener(Events.ON_CLICK, (Event event) -> {
 			popup.setPage(help.getPage());
 			popup.open(help, "after_start");
+			LayoutUtils.autoDetachOnClose(popup);
 		});
 	}
 
