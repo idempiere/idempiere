@@ -756,8 +756,9 @@ public class DB_PostgreSQL implements AdempiereDatabase
     		if (!poolProperties.contains("password")) {
     			poolProperties.put("password", connection.getDbPwd());
     		}
-    		
-    		HikariConfig hikariConfig = new HikariConfig(poolProperties);    		
+
+    		HikariConfig hikariConfig = new HikariConfig(poolProperties);
+    		hikariConfig.setDriverClassName(DRIVER);
     		m_ds = new HikariDataSource(hikariConfig);
 
             m_connectionURL = m_ds.getJdbcUrl();
