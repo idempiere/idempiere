@@ -78,6 +78,8 @@ table.z-vbox > tbody > tr > td > table {
 
 <c:include page="fragment/gadget.css.dsp" />
 
+<c:include page="fragment/gadget-kpi.css.dsp" />
+
 <c:include page="fragment/toolbar.css.dsp" />
 
 <c:include page="fragment/button.css.dsp" />
