@@ -8,7 +8,9 @@ This is a list of the common issues, standards and guidelines when contributing 
 
 ## Description
 
-Please include the link to the corresponding JIRA ticket in the description. This gives the peer reviewers relevant information and context on what's needed for the change.
+Please ensure that information in JIRA is sufficient, it must contain a natural language description of the changes proposed, when relevant is important to add information about how to test and the possible collateral effects that the ticket can impact.
+
+Please include here the link to the corresponding JIRA ticket in the description, this helps with navigating back and forth between JIRA and GitHub.
 
 ## Run the unit tests.
 
