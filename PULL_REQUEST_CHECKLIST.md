@@ -2,7 +2,7 @@
 
 ## Follow the project code guidelines.
 
-Please read carefully the [How to Contribute](https://wiki.idempiere.org/en/Contributing_to_Trunk) guidelines before starting the development. 
+Please read carefully the [Contributing to Core](https://wiki.idempiere.org/en/Contributing_to_Trunk) guidelines before starting the development. 
 
 This is a list of the common issues, standards and guidelines when contributing to iDempiere's core. Following all the recommendations will make the merging process smoother for everyone involved.
 
