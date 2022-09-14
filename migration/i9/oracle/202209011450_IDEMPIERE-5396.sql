@@ -5,7 +5,7 @@ SET SQLBLANKLINES ON
 SET DEFINE OFF
 
 -- Sep 1, 2022, 2:50:58 PM SGT
-INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable,IsShowInDrillOptions) VALUES (200355,'M_InOut_CreateFrom_v','M_InOut_CreateFrom_v',0,'3',0,0,'Y',TO_TIMESTAMP('2022-09-01 14:50:57','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-09-01 14:50:57','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','Y','D','N','N','L','N','Y','7209268d-f892-4377-b297-d6500bb4cab9','N','N','N','N','N')
+INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable) VALUES (200355,'M_InOut_CreateFrom_v','M_InOut_CreateFrom_v',0,'3',0,0,'Y',TO_TIMESTAMP('2022-09-01 14:50:57','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-09-01 14:50:57','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','Y','D','N','N','L','N','Y','7209268d-f892-4377-b297-d6500bb4cab9','N','N','N','N')
 ;
 
 -- Sep 1, 2022, 2:52:26 PM SGT

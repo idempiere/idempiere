@@ -6,7 +6,7 @@ UPDATE AD_InfoColumn SET IsMandatory='Y',Updated=TO_TIMESTAMP('2022-09-05 12:34:
 ;
 
 -- Sep 5, 2022, 1:26:20 PM SGT
-INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable,IsShowInDrillOptions) VALUES (200356,'M_RMA_CreateFrom_v','M_RMA_CreateFrom_v',0,'3',0,0,'Y',TO_TIMESTAMP('2022-09-05 13:26:18','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-09-05 13:26:18','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','Y','D','N','N','L','N','Y','8bb4fa35-7dd3-4788-9ce3-274fb607fde8','N','N','N','N','N')
+INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable) VALUES (200356,'M_RMA_CreateFrom_v','M_RMA_CreateFrom_v',0,'3',0,0,'Y',TO_TIMESTAMP('2022-09-05 13:26:18','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-09-05 13:26:18','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','Y','D','N','N','L','N','Y','8bb4fa35-7dd3-4788-9ce3-274fb607fde8','N','N','N','N')
 ;
 
 -- Sep 5, 2022, 1:27:15 PM SGT

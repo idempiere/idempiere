@@ -127,6 +127,7 @@ import org.zkoss.zul.ext.Sortable;
  */
 public abstract class InfoPanel extends Window implements EventListener<Event>, WTableModelListener, Sortable<Object>, IHelpContext
 {
+	protected static final String ON_USER_QUERY_ATTR = "ON_USER_QUERY";
 	protected static final String INFO_QUERY_TIME_OUT_ERROR = "InfoQueryTimeOutError";
 	protected static final String COLUMN_VISIBLE_ORIGINAL = "column.visible.original";
 	
@@ -2181,7 +2182,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     /**
      * Call query when user click to query button enter in parameter field
      */
-    public void onUserQuery (){   	
+    public void onUserQuery (){
+    	if (Executions.getCurrent().getAttribute(ON_USER_QUERY_ATTR) != null)
+    		return;
+    	
+    	Executions.getCurrent().setAttribute(ON_USER_QUERY_ATTR, Boolean.TRUE);
     	if (validateParameters()){
             showBusyDialog();
             isQueryByUser = true;
@@ -2534,7 +2539,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     {
     	try
     	{
-//    		m_sqlUserOrder="";
     		// event == null mean direct call from reset button
     		if (event == null)
     			m_count = 0;
