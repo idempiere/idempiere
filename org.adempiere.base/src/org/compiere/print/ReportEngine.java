@@ -405,7 +405,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 	public void initName()
 	{
 		Language language = m_printFormat.getLanguage();
-		String processFileNamePattern = m_printFormat.get_Translation("FileNamePattern", language.getAD_Language());
+		String processFileNamePattern = m_printFormat.get_Translation(MPrintFormat.COLUMNNAME_FileNamePattern, language.getAD_Language());
 	 	if (m_info.getAD_Process_ID()>0) {
 			MProcess process = new MProcess(Env.getCtx(), m_info.getAD_Process_ID(), m_trxName);
 			if (process !=null && !Util.isEmpty(process.getFileNamePattern())) {
@@ -414,10 +414,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 		}  
 
 		if(Util.isEmpty(processFileNamePattern)) {
-
-			m_name = (m_name = m_printFormat.get_Translation(m_printFormat.getName())) != null ? m_name : m_printFormat.getName();
- 
-
+			m_name = m_printFormat.get_Translation(MPrintFormat.COLUMNNAME_Name);
 		} else {
 			m_name = FileUtil.parseTitle(m_ctx, processFileNamePattern, m_info.getAD_Table_ID(), m_info.getRecord_ID(), m_windowNo, m_trxName);
 		}
