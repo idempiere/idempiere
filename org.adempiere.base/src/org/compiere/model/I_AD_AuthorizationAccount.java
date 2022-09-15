@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_AuthorizationAccount
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_AuthorizationAccount 
 {
@@ -100,8 +100,8 @@ public interface I_AD_AuthorizationAccount
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -109,12 +109,12 @@ public interface I_AD_AuthorizationAccount
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -214,6 +214,15 @@ public interface I_AD_AuthorizationAccount
 
 	/** Get Authorized	  */
 	public boolean isAuthorized();
+
+    /** Column name Preferred_UserName */
+    public static final String COLUMNNAME_Preferred_UserName = "Preferred_UserName";
+
+	/** Set Preferred User Name	  */
+	public void setPreferred_UserName (String Preferred_UserName);
+
+	/** Get Preferred User Name	  */
+	public String getPreferred_UserName();
 
     /** Column name RefreshToken */
     public static final String COLUMNNAME_RefreshToken = "RefreshToken";

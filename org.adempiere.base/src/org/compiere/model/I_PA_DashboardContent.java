@@ -260,6 +260,15 @@ public interface I_PA_DashboardContent
 	  */
 	public boolean isEmbedReportContent();
 
+    /** Column name IsMaximizable */
+    public static final String COLUMNNAME_IsMaximizable = "IsMaximizable";
+
+	/** Set Maximizable	  */
+	public void setIsMaximizable (boolean IsMaximizable);
+
+	/** Get Maximizable	  */
+	public boolean isMaximizable();
+
     /** Column name IsShowInDashboard */
     public static final String COLUMNNAME_IsShowInDashboard = "IsShowInDashboard";
 

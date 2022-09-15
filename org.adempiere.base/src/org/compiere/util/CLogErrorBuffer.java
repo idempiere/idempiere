@@ -222,6 +222,7 @@ public class CLogErrorBuffer extends Handler
 					&& !methodName.equals("dataSave")
 					&& loggerName.indexOf("Issue") == -1
 					&& loggerName.indexOf("CConnection") == -1
+					&& !loggerName.startsWith("com.zaxxer.hikari")
 					&& DB.isConnected()
 					)
 				{
@@ -245,7 +246,8 @@ public class CLogErrorBuffer extends Handler
 						&& !methodName.equals("get_Value")
 						&& !methodName.equals("dataSave")
 						&& loggerName.indexOf("Issue") == -1
-						&& loggerName.indexOf("CConnection") == -1)
+						&& loggerName.indexOf("CConnection") == -1
+						&& !loggerName.startsWith("com.zaxxer.hikari"))
 					{
 						System.err.println(getFormatter().format(record));
 					}
