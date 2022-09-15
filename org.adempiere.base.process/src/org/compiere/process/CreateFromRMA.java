@@ -145,7 +145,13 @@ public class CreateFromRMA extends SvrProcess
 				int T_Selection_ID = rs.getInt("T_Selection_ID");
 				String ColumnName = rs.getString("ColumnName");
 				String Value_String = rs.getString("Value_String");
-				BigDecimal Value_Number = rs.getBigDecimal("Value_Number");
+				
+				Object Value_Number = null;
+				if (ColumnName.toUpperCase().endsWith("_ID"))
+					Value_Number = rs.getInt("Value_Number");
+				else
+					Value_Number = rs.getBigDecimal("Value_Number");
+				
 				Timestamp Value_Date = rs.getTimestamp("Value_Date");
 				
 				String key = ColumnName + "_" + T_Selection_ID;
@@ -177,7 +183,7 @@ public class CreateFromRMA extends SvrProcess
 			String ColumnName = "M_InOutLine_ID";
 			String key = ColumnName + "_" + T_Selection_ID;
 			Object value = selectionValueMap.get(key);
-			int M_InOutLine_ID = value != null ? ((Integer) value).intValue() : 0;
+			int M_InOutLine_ID = value != null ? ((Number) value).intValue() : 0;
 			
 			ColumnName = "MovementQty";
 			key = ColumnName + "_" + T_Selection_ID;

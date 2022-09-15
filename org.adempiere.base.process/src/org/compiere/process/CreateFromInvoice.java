@@ -182,7 +182,13 @@ public class CreateFromInvoice extends SvrProcess
 				int T_Selection_ID = rs.getInt("T_Selection_ID");
 				String ColumnName = rs.getString("ColumnName");
 				String Value_String = rs.getString("Value_String");
-				BigDecimal Value_Number = rs.getBigDecimal("Value_Number");
+				
+				Object Value_Number = null;
+				if (ColumnName.toUpperCase().endsWith("_ID"))
+					Value_Number = rs.getInt("Value_Number");
+				else
+					Value_Number = rs.getBigDecimal("Value_Number");
+				
 				Timestamp Value_Date = rs.getTimestamp("Value_Date");
 				
 				String key = ColumnName + "_" + T_Selection_ID;
@@ -217,7 +223,7 @@ public class CreateFromInvoice extends SvrProcess
 			String ColumnName = "C_Order_ID";
 			String key = ColumnName + "_" + T_Selection_ID;
 			Object value = selectionValueMap.get(key);
-			int C_Order_ID = value != null ? ((Integer) value).intValue() : 0;
+			int C_Order_ID = value != null ? ((Number) value).intValue() : 0;
 			if (C_Order_ID != 0 && (m_order == null || m_order.getC_Order_ID() != C_Order_ID))
 			{
 				m_order = new MOrder(getCtx(), C_Order_ID, get_TrxName());
@@ -231,7 +237,7 @@ public class CreateFromInvoice extends SvrProcess
 			ColumnName = "M_RMA_ID";
 			key = ColumnName + "_" + T_Selection_ID;
 			value = selectionValueMap.get(key);
-			int M_RMA_ID = value != null ? ((Integer) value).intValue() : 0;
+			int M_RMA_ID = value != null ? ((Number) value).intValue() : 0;
 			if (M_RMA_ID != 0 && (m_rma == null || m_rma.getM_RMA_ID() != M_RMA_ID))
 			{
 				m_rma = new MRMA(getCtx(), M_RMA_ID, get_TrxName());
@@ -250,27 +256,27 @@ public class CreateFromInvoice extends SvrProcess
 			ColumnName = "C_UOM_ID";
 			key = ColumnName + "_" + T_Selection_ID;
 			value = selectionValueMap.get(key);
-			int C_UOM_ID = value != null ? ((Integer) value).intValue() : 0;
+			int C_UOM_ID = value != null ? ((Number) value).intValue() : 0;
 
 			ColumnName = "M_Product_ID";
 			key = ColumnName + "_" + T_Selection_ID;
 			value = selectionValueMap.get(key);
-			int M_Product_ID = value != null ? ((Integer) value).intValue() : 0;
+			int M_Product_ID = value != null ? ((Number) value).intValue() : 0;
 			
 			ColumnName = "C_OrderLine_ID";
 			key = ColumnName + "_" + T_Selection_ID;
 			value = selectionValueMap.get(key);
-			int C_OrderLine_ID = value != null ? ((Integer) value).intValue() : 0;
+			int C_OrderLine_ID = value != null ? ((Number) value).intValue() : 0;
 			
 			ColumnName = "M_InOutLine_ID";
 			key = ColumnName + "_" + T_Selection_ID;
 			value = selectionValueMap.get(key);
-			int M_InOutLine_ID = value != null ? ((Integer) value).intValue() : 0;
+			int M_InOutLine_ID = value != null ? ((Number) value).intValue() : 0;
 			
 			ColumnName = "M_RMALine_ID";
 			key = ColumnName + "_" + T_Selection_ID;
 			value = selectionValueMap.get(key);
-			int M_RMALine_ID = value != null ? ((Integer) value).intValue() : 0;
+			int M_RMALine_ID = value != null ? ((Number) value).intValue() : 0;
 			
 			//	Precision of Qty UOM
 			int precision = 2;
