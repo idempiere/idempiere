@@ -45,12 +45,12 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
-import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MRefList;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -254,16 +254,18 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
         {
             popupMenu = new WEditorPopupMenu(false, true, isShowPreference(), false, false, false, lookup);
     		addChangeLogMenu(popupMenu);
-
-    		Menuitem editor = new Menuitem();
-    		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
-    		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
-    		if (ThemeManager.isUseFontIconForImage())
-    			editor.setIconSclass("z-icon-Wizard");
-    		else
-    			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
-    		editor.addEventListener(Events.ON_CLICK, popupMenu);
-    		popupMenu.appendChild(editor);
+    		
+    		if (gridField.getDisplayType() == DisplayType.ChosenMultipleSelectionList) { // The Assistant must be shown for MultipleSelectionList only (not for MultipleSelectionTable editors)
+        		Menuitem editor = new Menuitem();
+	        		editor.setAttribute("EVENT", WEditorPopupMenu.ASSISTANT_EVENT);
+        		editor.setLabel(Msg.getMsg(Env.getCtx(), "Assistant"));
+        		if (ThemeManager.isUseFontIconForImage())
+        			editor.setIconSclass("z-icon-Wizard");
+        		else
+        			editor.setImage(ThemeManager.getThemeResource("images/Wizard16.png"));
+        		editor.addEventListener(Events.ON_CLICK, popupMenu);
+        		popupMenu.appendChild(editor);    			
+    		}
         }        
     }
 
@@ -681,7 +683,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 	}
 	
 	private class WChosenboxListAssistant extends Window implements EventListener<Event> {
-		private static final long serialVersionUID = 1223690858387209211L;
+		private static final long serialVersionUID = 1043859495570181469L;
 		private Button bAdd, bRemove, bUp, bDown;
 		private SimpleListModel availableModel = new SimpleListModel();
 		private SimpleListModel selectedModel = new SimpleListModel();
@@ -694,7 +696,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 
 		public WChosenboxListAssistant() {
 			super();
-			refID = MColumn.get(Env.getCtx(), gridTab.getTableName(), gridField.getColumnName()).getAD_Reference_Value_ID();
+			refID = gridField.getAD_Reference_Value_ID();
 			setTitle(gridField.getHeader() + " " + Msg.getMsg(Env.getCtx(), "Assistant"));
 			init();
 			load();

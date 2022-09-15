@@ -175,7 +175,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		headerPanel.appendChild(new Separator("vertical"));
 
-		fm =m_reportEngine.getPrintFormat();
+		fm = new MPrintFormat(m_ctx, m_reportEngine.getPrintFormat().getAD_PrintFormat_ID(), null);
 		name.setValue(fm.getName());
 
 		if (Env.isMultiLingualDocument(m_ctx))
