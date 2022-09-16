@@ -1081,7 +1081,42 @@ public class GridField
 		//  cannot be validated
 		if (!isLookup() || m_lookup == null)
 			return true;
-		if (m_lookup.containsKeyNoDirect(m_value)) {
+		if (getDisplayType() == DisplayType.ChosenMultipleSelectionList) {
+			boolean allValid = true;
+			for (String vals : ((String)m_value).split(",")) {
+				if (! m_lookup.containsKeyNoDirect(vals)) {
+					if (m_lookup.get(vals) == null) {
+						allValid = false;
+						break;
+					}
+					String name = m_lookup.get(vals).getName();
+					if (name.startsWith(MLookup.INACTIVE_S) && name.endsWith(MLookup.INACTIVE_E)) {
+						allValid = false;
+						break;
+					}
+				}
+			}
+			if (allValid)
+				return true;
+		} else if (getDisplayType() == DisplayType.ChosenMultipleSelectionTable || getDisplayType() == DisplayType.ChosenMultipleSelectionSearch) {
+			boolean allValid = true;
+			for (String vals : ((String)m_value).split(",")) {
+				Integer vali = Integer.valueOf(vals);
+				if (! m_lookup.containsKeyNoDirect(vali)) {
+					if (m_lookup.get(vali) == null) {
+						allValid = false;
+						break;
+					}
+					String name = m_lookup.get(vali).getName();
+					if (name.startsWith(MLookup.INACTIVE_S) && name.endsWith(MLookup.INACTIVE_E)) {
+						allValid = false;
+						break;
+					}
+				}
+			}
+			if (allValid)
+				return true;
+		} else if (m_lookup.containsKeyNoDirect(m_value)) {
 			String name = m_lookup.get(m_value).getName();
 			if (! ( name.startsWith(MLookup.INACTIVE_S) && name.endsWith(MLookup.INACTIVE_E) ) ) {
 				return true;
