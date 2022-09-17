@@ -675,7 +675,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			else
 				chooseSaveParameter(saveName, lastRun);
 		}else if (event.getTarget().equals(bOK)){
-			if (runAsJobField.isChecked() && getNotificationType() == null)
+			if (isBackgroundJob() && getNotificationType() == null)
 				throw new WrongValueException(notificationTypeField.getComponent(), Msg.getMsg(m_ctx, "FillMandatory") + notificationTypeLabel.getValue());
 			saveReportOption();
 		}
