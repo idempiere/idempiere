@@ -498,10 +498,23 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 							.append(" WHERE AD_Language='").append(getAD_Language()).append("')");
 		int no = DB.executeUpdateEx(insert.toString(), null, get_TrxName());
 		// IDEMPIERE-99 Language Maintenance does not create UUIDs
+		String uucolname = PO.getUUIDColumnName(tableName);
 		MTable table = MTable.get(getCtx(), tableName);
-		MColumn column = table.getColumn(PO.getUUIDColumnName(tableName));
-		if (column != null)
-			UUIDGenerator.updateUUID(column, get_TrxName());
+		MColumn column = table.getColumn(uucolname);
+		if (column != null) {
+			if (DB.isGenerateUUIDSupported()) {
+				StringBuilder upduuid = new StringBuilder("UPDATE ")
+						.append(tableName)
+						.append(" SET ")
+						.append(uucolname)
+						.append("=generate_uuid() WHERE ")
+						.append(uucolname)
+						.append(" IS NULL");
+				DB.executeUpdateEx(upduuid.toString(), get_TrxName());
+			} else {
+				UUIDGenerator.updateUUID(column, get_TrxName());
+			}
+		}
 		//
 		StringBuilder msglog = new StringBuilder().append(tableName).append(" #").append(no);
 		if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());

@@ -226,7 +226,7 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 	
 	/**
 	 * 	Is Product Available
-	 *	@return true if available qty > 0
+	 *	@return true if available qty &gt; 0
 	 */
 	public boolean isAvailable()
 	{

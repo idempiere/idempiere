@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CommissionAmt
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_CommissionAmt")
 public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persistent 
 {
@@ -33,12 +33,27 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CommissionAmt (Properties ctx, int C_CommissionAmt_ID, String trxName)
     {
       super (ctx, C_CommissionAmt_ID, trxName);
+      /** if (C_CommissionAmt_ID == 0)
+        {
+			setActualQty (Env.ZERO);
+			setC_CommissionAmt_ID (0);
+			setC_CommissionLine_ID (0);
+			setC_CommissionRun_ID (0);
+			setCommissionAmt (Env.ZERO);
+			setConvertedAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CommissionAmt (Properties ctx, int C_CommissionAmt_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CommissionAmt_ID, trxName, virtualColumns);
       /** if (C_CommissionAmt_ID == 0)
         {
 			setActualQty (Env.ZERO);
@@ -79,9 +94,8 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
     }
 
 	/** Set Actual Quantity.
-		@param ActualQty 
-		The actual quantity
-	  */
+		@param ActualQty The actual quantity
+	*/
 	public void setActualQty (BigDecimal ActualQty)
 	{
 		set_Value (COLUMNNAME_ActualQty, ActualQty);
@@ -90,7 +104,7 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
 	/** Get Actual Quantity.
 		@return The actual quantity
 	  */
-	public BigDecimal getActualQty () 
+	public BigDecimal getActualQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ActualQty);
 		if (bd == null)
@@ -99,21 +113,20 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
 	}
 
 	/** Set Commission Amount.
-		@param C_CommissionAmt_ID 
-		Generated Commission Amount 
-	  */
+		@param C_CommissionAmt_ID Generated Commission Amount 
+	*/
 	public void setC_CommissionAmt_ID (int C_CommissionAmt_ID)
 	{
-		if (C_CommissionAmt_ID < 1) 
+		if (C_CommissionAmt_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CommissionAmt_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CommissionAmt_ID, Integer.valueOf(C_CommissionAmt_ID));
 	}
 
 	/** Get Commission Amount.
 		@return Generated Commission Amount 
 	  */
-	public int getC_CommissionAmt_ID () 
+	public int getC_CommissionAmt_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CommissionAmt_ID);
 		if (ii == null)
@@ -122,7 +135,8 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
 	}
 
 	/** Set C_CommissionAmt_UU.
-		@param C_CommissionAmt_UU C_CommissionAmt_UU	  */
+		@param C_CommissionAmt_UU C_CommissionAmt_UU
+	*/
 	public void setC_CommissionAmt_UU (String C_CommissionAmt_UU)
 	{
 		set_Value (COLUMNNAME_C_CommissionAmt_UU, C_CommissionAmt_UU);
@@ -130,7 +144,7 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
 
 	/** Get C_CommissionAmt_UU.
 		@return C_CommissionAmt_UU	  */
-	public String getC_CommissionAmt_UU () 
+	public String getC_CommissionAmt_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_CommissionAmt_UU);
 	}
@@ -142,21 +156,20 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
 	}
 
 	/** Set Commission Line.
-		@param C_CommissionLine_ID 
-		Commission Line
-	  */
+		@param C_CommissionLine_ID Commission Line
+	*/
 	public void setC_CommissionLine_ID (int C_CommissionLine_ID)
 	{
-		if (C_CommissionLine_ID < 1) 
+		if (C_CommissionLine_ID < 1)
 			set_Value (COLUMNNAME_C_CommissionLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_CommissionLine_ID, Integer.valueOf(C_CommissionLine_ID));
 	}
 
 	/** Get Commission Line.
 		@return Commission Line
 	  */
-	public int getC_CommissionLine_ID () 
+	public int getC_CommissionLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CommissionLine_ID);
 		if (ii == null)
@@ -171,21 +184,20 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
 	}
 
 	/** Set Commission Run.
-		@param C_CommissionRun_ID 
-		Commission Run or Process
-	  */
+		@param C_CommissionRun_ID Commission Run or Process
+	*/
 	public void setC_CommissionRun_ID (int C_CommissionRun_ID)
 	{
-		if (C_CommissionRun_ID < 1) 
+		if (C_CommissionRun_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CommissionRun_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CommissionRun_ID, Integer.valueOf(C_CommissionRun_ID));
 	}
 
 	/** Get Commission Run.
 		@return Commission Run or Process
 	  */
-	public int getC_CommissionRun_ID () 
+	public int getC_CommissionRun_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CommissionRun_ID);
 		if (ii == null)
@@ -202,9 +214,8 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
     }
 
 	/** Set Commission Amount.
-		@param CommissionAmt 
-		Commission Amount
-	  */
+		@param CommissionAmt Commission Amount
+	*/
 	public void setCommissionAmt (BigDecimal CommissionAmt)
 	{
 		set_Value (COLUMNNAME_CommissionAmt, CommissionAmt);
@@ -213,7 +224,7 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
 	/** Get Commission Amount.
 		@return Commission Amount
 	  */
-	public BigDecimal getCommissionAmt () 
+	public BigDecimal getCommissionAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CommissionAmt);
 		if (bd == null)
@@ -222,9 +233,8 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
 	}
 
 	/** Set Converted Amount.
-		@param ConvertedAmt 
-		Converted Amount
-	  */
+		@param ConvertedAmt Converted Amount
+	*/
 	public void setConvertedAmt (BigDecimal ConvertedAmt)
 	{
 		set_Value (COLUMNNAME_ConvertedAmt, ConvertedAmt);
@@ -233,7 +243,7 @@ public class X_C_CommissionAmt extends PO implements I_C_CommissionAmt, I_Persis
 	/** Get Converted Amount.
 		@return Converted Amount
 	  */
-	public BigDecimal getConvertedAmt () 
+	public BigDecimal getConvertedAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ConvertedAmt);
 		if (bd == null)

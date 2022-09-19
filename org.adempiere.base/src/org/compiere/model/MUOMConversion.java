@@ -449,13 +449,12 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		return retValue;
 	}   //  convert
 
-	
 	/**************************************************************************
 	 *	Convert PRICE expressed in entered UoM to equivalent price in product UoM and round. <br/>
 	 *  OR Convert QTY in product UOM to qty in entered UoM and round. <br/>
 	 *  
-	 *   eg: $6/6pk => $1/ea <br/>
-	 *   OR 6 X ea => 1 X 6pk
+	 *   eg: $6/6pk =&gt; $1/ea <br/>
+	 *   OR 6 X ea =&gt; 1 X 6pk
 	 *   
 	 *  @param ctx context
 	 *  @param M_Product_ID product
@@ -464,7 +463,27 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	 *  @return Product: Qty/Price (precision rounded)
 	 */
 	static public BigDecimal convertProductTo (Properties ctx,
-		int M_Product_ID, int C_UOM_To_ID, BigDecimal qtyPrice)
+			int M_Product_ID, int C_UOM_To_ID, BigDecimal qtyPrice)
+	{
+		return convertProductTo(ctx, M_Product_ID, C_UOM_To_ID, qtyPrice, -1);
+	}
+	
+	/**************************************************************************
+	 *	Convert PRICE expressed in entered UoM to equivalent price in product UoM and round. <br/>
+	 *  OR Convert QTY in product UOM to qty in entered UoM and round. <br/>
+	 *  
+	 *   eg: $6/6pk =&gt; $1/ea <br/>
+	 *   OR 6 X ea =&gt; 1 X 6pk
+	 *   
+	 *  @param ctx context
+	 *  @param M_Product_ID product
+	 *  @param C_UOM_To_ID entered UOM
+	 *  @param qtyPrice quantity or price
+	 *  @param precision Rounding precision, -1 to use precision from UOM
+	 *  @return Product: Qty/Price (precision rounded)
+	 */
+	static public BigDecimal convertProductTo (Properties ctx,
+		int M_Product_ID, int C_UOM_To_ID, BigDecimal qtyPrice, int precision)
 	{
 		if (qtyPrice == null || qtyPrice.signum() == 0 
 			|| M_Product_ID == 0 || C_UOM_To_ID == 0)
@@ -475,10 +494,17 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		{
 			if (Env.ONE.compareTo(retValue) == 0)
 				return qtyPrice;
-			MUOM uom = MUOM.get (ctx, C_UOM_To_ID);
-			if (uom != null)
-				return uom.round(retValue.multiply(qtyPrice), true);
-			return retValue.multiply(qtyPrice);
+			if (precision >= 0)
+			{
+				return retValue.multiply(qtyPrice).setScale(precision, RoundingMode.HALF_UP);
+			}
+			else
+			{
+				MUOM uom = MUOM.get (ctx, C_UOM_To_ID);
+				if (uom != null)
+					return uom.round(retValue.multiply(qtyPrice), true);
+				return retValue.multiply(qtyPrice);
+			}
 		}
 		return null;
 	}	//	convertProductTo
@@ -496,6 +522,8 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	{
 		if (M_Product_ID == 0)
 			return null;
+		
+		//first check product specific conversion
 		MUOMConversion[] rates = getProductConversions(ctx, M_Product_ID);
 		
 		for (int i = 0; i < rates.length; i++)
@@ -505,8 +533,10 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 				return rate.getMultiplyRate();
 		}
 		
-		List<MUOMConversion> conversions = new Query(ctx, Table_Name, "C_UOM_ID=? AND C_UOM_TO_ID=?", null)
-				.setParameters(MProduct.get(ctx, M_Product_ID).getC_UOM_ID(), C_UOM_To_ID)
+		//fall back to generic conversion
+		List<MUOMConversion> conversions = new Query(ctx, Table_Name, "C_UOM_ID=? AND C_UOM_TO_ID=? AND M_Product_ID IS NULL AND AD_Client_ID IN (0, ?)", null)
+				.setParameters(MProduct.get(ctx, M_Product_ID).getC_UOM_ID(), C_UOM_To_ID, Env.getAD_Client_ID(ctx))
+				.setOrderBy("AD_Client_ID Desc")
 				.setOnlyActiveRecords(true)
 				.list();
 		for (int i = 0; i < conversions.size(); i++)
@@ -522,8 +552,8 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	 *	Convert PRICE expressed in product UoM to equivalent price in entered UoM and round. <br/>
 	 *  OR Convert QTY in entered UOM to qty in product UoM and round.  <br/>
 	 *  
-	 *   eg: $1/ea => $6/6pk <br/>
-	 *   OR 1 X 6pk => 6 X ea
+	 *   eg: $1/ea =&gt; $6/6pk <br/>
+	 *   OR 1 X 6pk =&gt; 6 X ea
 	 *   
 	 *  @param ctx context
 	 *  @param M_Product_ID product
@@ -532,7 +562,27 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	 *  @return Product: Qty/Price (precision rounded)
 	 */
 	static public BigDecimal convertProductFrom (Properties ctx,
-		int M_Product_ID, int C_UOM_To_ID, BigDecimal qtyPrice)
+			int M_Product_ID, int C_UOM_To_ID, BigDecimal qtyPrice)
+	{
+		return convertProductFrom(ctx, M_Product_ID, C_UOM_To_ID, qtyPrice, -1);
+	}
+	
+	/**************************************************************************
+	 *	Convert PRICE expressed in product UoM to equivalent price in entered UoM and round. <br/>
+	 *  OR Convert QTY in entered UOM to qty in product UoM and round.  <br/>
+	 *  
+	 *   eg: $1/ea =&gt; $6/6pk <br/>
+	 *   OR 1 X 6pk =&gt; 6 X ea
+	 *   
+	 *  @param ctx context
+	 *  @param M_Product_ID product
+	 *  @param C_UOM_To_ID entered UOM
+	 *  @param qtyPrice quantity or price
+	 *  @param precision Rounding precision, -1 to use precision from UOM
+	 *  @return Product: Qty/Price (precision rounded)
+	 */
+	static public BigDecimal convertProductFrom (Properties ctx,
+		int M_Product_ID, int C_UOM_To_ID, BigDecimal qtyPrice, int precision)
 	{
 		//	No conversion
 		if (qtyPrice == null || qtyPrice.compareTo(Env.ZERO)==0 
@@ -547,10 +597,17 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		{
 			if (Env.ONE.compareTo(retValue) == 0)
 				return qtyPrice;
-			MUOM uom = MUOM.get (ctx, C_UOM_To_ID);
-			if (uom != null)
-				return uom.round(retValue.multiply(qtyPrice), true);
-			return retValue.multiply(qtyPrice);
+			if (precision >= 0)
+			{
+				return retValue.multiply(qtyPrice).setScale(precision, RoundingMode.HALF_UP);
+			}
+			else
+			{
+				MUOM uom = MUOM.get (ctx, C_UOM_To_ID);
+				if (uom != null)
+					return uom.round(retValue.multiply(qtyPrice), true);
+				return retValue.multiply(qtyPrice);
+			}
 		}
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("No Rate M_Product_ID=" + M_Product_ID);
 		return null;
@@ -567,6 +624,10 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	static public BigDecimal getProductRateFrom (Properties ctx,
 		int M_Product_ID, int C_UOM_To_ID)
 	{
+		if (M_Product_ID == 0)
+			return null;
+				
+		//first, check product specific conversion
 		MUOMConversion[] rates = getProductConversions(ctx, M_Product_ID);
 		
 		for (int i = 0; i < rates.length; i++)
@@ -576,8 +637,10 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 				return rate.getDivideRate();
 		}
 	
-		List<MUOMConversion> conversions = new Query(ctx, Table_Name, "C_UOM_ID=? AND C_UOM_TO_ID=?", null)
-				.setParameters(MProduct.get(ctx, M_Product_ID).getC_UOM_ID(), C_UOM_To_ID)
+		//fall back to generic conversion
+		List<MUOMConversion> conversions = new Query(ctx, Table_Name, "C_UOM_ID=? AND C_UOM_TO_ID=? AND M_Product_ID IS NULL AND AD_Client_ID IN (0, ?)", null)
+				.setParameters(MProduct.get(ctx, M_Product_ID).getC_UOM_ID(), C_UOM_To_ID, Env.getAD_Client_ID(ctx))
+				.setOrderBy("AD_Client_ID Desc")
 				.setOnlyActiveRecords(true)
 				.list();
 		for (int i = 0; i < conversions.size(); i++)
@@ -746,6 +809,18 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 			log.saveError("Error", Msg.parseTranslation(getCtx(), "@C_UOM_ID@ = @C_UOM_To_ID@"));
 			return false;
 		}
+		
+		if (getMultiplyRate() != null && getMultiplyRate().signum() != 0)
+		{
+			if (getDivideRate() == null || getDivideRate().signum() == 0)
+				setDivideRate(getOppositeRate(getMultiplyRate()));
+		}
+		else if (getDivideRate() != null && getDivideRate().signum() != 0)
+		{
+			if (getMultiplyRate() == null || getMultiplyRate().signum() == 0)
+				setMultiplyRate(getOppositeRate(getDivideRate()));
+		}
+		
 		//	Nothing to convert
 		if (getMultiplyRate().compareTo(Env.ZERO) <= 0)
 		{
@@ -756,7 +831,7 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		if (MSysConfig.getBooleanValue(MSysConfig.ProductUOMConversionUOMValidate, true, getAD_Client_ID()))
 		{
 			if (getM_Product_ID() != 0 
-				&& (newRecord || is_ValueChanged("M_Product_ID")))
+				&& (newRecord || is_ValueChanged("M_Product_ID") || is_ValueChanged("C_UOM_ID")))
 			{
 				// Check of product must be in the same transaction as the conversion being saved
 				MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
@@ -807,4 +882,12 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		return this;
 	}
 
+	/**
+	 * Calculate opposite conversion rate, i.e calculate divide rate for multiply rate and vice versa.
+	 * @param rate
+	 * @return {@link BigDecimal}
+	 */
+	public static BigDecimal getOppositeRate(BigDecimal rate) {
+		return Env.ONE.divide(rate, 12, RoundingMode.HALF_UP);
+	}
 }	//	UOMConversion

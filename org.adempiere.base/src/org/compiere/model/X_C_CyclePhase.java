@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for C_CyclePhase
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_CyclePhase")
 public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent 
 {
@@ -30,12 +30,23 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CyclePhase (Properties ctx, int C_CyclePhase_ID, String trxName)
     {
       super (ctx, C_CyclePhase_ID, trxName);
+      /** if (C_CyclePhase_ID == 0)
+        {
+			setC_CycleStep_ID (0);
+			setC_Phase_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CyclePhase (Properties ctx, int C_CyclePhase_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CyclePhase_ID, trxName, virtualColumns);
       /** if (C_CyclePhase_ID == 0)
         {
 			setC_CycleStep_ID (0);
@@ -72,7 +83,8 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
     }
 
 	/** Set C_CyclePhase_UU.
-		@param C_CyclePhase_UU C_CyclePhase_UU	  */
+		@param C_CyclePhase_UU C_CyclePhase_UU
+	*/
 	public void setC_CyclePhase_UU (String C_CyclePhase_UU)
 	{
 		set_Value (COLUMNNAME_C_CyclePhase_UU, C_CyclePhase_UU);
@@ -80,7 +92,7 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
 
 	/** Get C_CyclePhase_UU.
 		@return C_CyclePhase_UU	  */
-	public String getC_CyclePhase_UU () 
+	public String getC_CyclePhase_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_CyclePhase_UU);
 	}
@@ -92,21 +104,20 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
 	}
 
 	/** Set Cycle Step.
-		@param C_CycleStep_ID 
-		The step for this Cycle
-	  */
+		@param C_CycleStep_ID The step for this Cycle
+	*/
 	public void setC_CycleStep_ID (int C_CycleStep_ID)
 	{
-		if (C_CycleStep_ID < 1) 
+		if (C_CycleStep_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CycleStep_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CycleStep_ID, Integer.valueOf(C_CycleStep_ID));
 	}
 
 	/** Get Cycle Step.
 		@return The step for this Cycle
 	  */
-	public int getC_CycleStep_ID () 
+	public int getC_CycleStep_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CycleStep_ID);
 		if (ii == null)
@@ -121,21 +132,20 @@ public class X_C_CyclePhase extends PO implements I_C_CyclePhase, I_Persistent
 	}
 
 	/** Set Standard Phase.
-		@param C_Phase_ID 
-		Standard Phase of the Project Type
-	  */
+		@param C_Phase_ID Standard Phase of the Project Type
+	*/
 	public void setC_Phase_ID (int C_Phase_ID)
 	{
-		if (C_Phase_ID < 1) 
+		if (C_Phase_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Phase_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Phase_ID, Integer.valueOf(C_Phase_ID));
 	}
 
 	/** Get Standard Phase.
 		@return Standard Phase of the Project Type
 	  */
-	public int getC_Phase_ID () 
+	public int getC_Phase_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Phase_ID);
 		if (ii == null)

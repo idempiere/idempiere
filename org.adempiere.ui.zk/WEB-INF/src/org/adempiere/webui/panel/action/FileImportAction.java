@@ -50,7 +50,7 @@ import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.util.ReaderInputStream;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -252,6 +252,7 @@ public class FileImportAction implements EventListener<Event>
 			importFile();
 		} else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
 			panel.hideBusyMask();
+			panel.focusToLastFocusEditor();
 		}
 	}
 
@@ -284,7 +285,7 @@ public class FileImportAction implements EventListener<Event>
 			ListItem li = cboType.getSelectedItem();
 			if(li == null || li.getValue() == null)
 			{
-				FDialog.error(0, winImportFile, "FileInvalidExtension");
+				Dialog.error(0, "FileInvalidExtension");
 				return;
 			}
 
@@ -292,7 +293,7 @@ public class FileImportAction implements EventListener<Event>
 			IGridTabImporter importer = importerMap.get(ext);
 			if (importer == null)
 			{
-				FDialog.error(0, winImportFile, "FileInvalidExtension");
+				Dialog.error(0, "FileInvalidExtension");
 				return;
 			}
 

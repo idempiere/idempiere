@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AccessLog
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_AccessLog")
 public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent 
 {
@@ -31,12 +31,22 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_AccessLog (Properties ctx, int AD_AccessLog_ID, String trxName)
     {
       super (ctx, AD_AccessLog_ID, trxName);
+      /** if (AD_AccessLog_ID == 0)
+        {
+			setAD_AccessLog_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AccessLog (Properties ctx, int AD_AccessLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AccessLog_ID, trxName, virtualColumns);
       /** if (AD_AccessLog_ID == 0)
         {
 			setAD_AccessLog_ID (0);
@@ -72,21 +82,20 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
     }
 
 	/** Set Access Log.
-		@param AD_AccessLog_ID 
-		Log of Access to the System
-	  */
+		@param AD_AccessLog_ID Log of Access to the System
+	*/
 	public void setAD_AccessLog_ID (int AD_AccessLog_ID)
 	{
-		if (AD_AccessLog_ID < 1) 
+		if (AD_AccessLog_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_AccessLog_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_AccessLog_ID, Integer.valueOf(AD_AccessLog_ID));
 	}
 
 	/** Get Access Log.
 		@return Log of Access to the System
 	  */
-	public int getAD_AccessLog_ID () 
+	public int getAD_AccessLog_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AccessLog_ID);
 		if (ii == null)
@@ -103,7 +112,8 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
     }
 
 	/** Set AD_AccessLog_UU.
-		@param AD_AccessLog_UU AD_AccessLog_UU	  */
+		@param AD_AccessLog_UU AD_AccessLog_UU
+	*/
 	public void setAD_AccessLog_UU (String AD_AccessLog_UU)
 	{
 		set_Value (COLUMNNAME_AD_AccessLog_UU, AD_AccessLog_UU);
@@ -111,7 +121,7 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
 
 	/** Get AD_AccessLog_UU.
 		@return AD_AccessLog_UU	  */
-	public String getAD_AccessLog_UU () 
+	public String getAD_AccessLog_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AccessLog_UU);
 	}
@@ -123,21 +133,20 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
 	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -152,21 +161,20 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -175,9 +183,8 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -186,27 +193,26 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_Value (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)
@@ -215,9 +221,8 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
 	}
 
 	/** Set Remote Addr.
-		@param Remote_Addr 
-		Remote Address
-	  */
+		@param Remote_Addr Remote Address
+	*/
 	public void setRemote_Addr (String Remote_Addr)
 	{
 		set_Value (COLUMNNAME_Remote_Addr, Remote_Addr);
@@ -226,15 +231,14 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
 	/** Get Remote Addr.
 		@return Remote Address
 	  */
-	public String getRemote_Addr () 
+	public String getRemote_Addr()
 	{
 		return (String)get_Value(COLUMNNAME_Remote_Addr);
 	}
 
 	/** Set Remote Host.
-		@param Remote_Host 
-		Remote host Info
-	  */
+		@param Remote_Host Remote host Info
+	*/
 	public void setRemote_Host (String Remote_Host)
 	{
 		set_Value (COLUMNNAME_Remote_Host, Remote_Host);
@@ -243,15 +247,14 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
 	/** Get Remote Host.
 		@return Remote host Info
 	  */
-	public String getRemote_Host () 
+	public String getRemote_Host()
 	{
 		return (String)get_Value(COLUMNNAME_Remote_Host);
 	}
 
 	/** Set Reply.
-		@param Reply 
-		Reply or Answer
-	  */
+		@param Reply Reply or Answer
+	*/
 	public void setReply (String Reply)
 	{
 		set_Value (COLUMNNAME_Reply, Reply);
@@ -260,15 +263,14 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
 	/** Get Reply.
 		@return Reply or Answer
 	  */
-	public String getReply () 
+	public String getReply()
 	{
 		return (String)get_Value(COLUMNNAME_Reply);
 	}
 
 	/** Set Text Message.
-		@param TextMsg 
-		Text Message
-	  */
+		@param TextMsg Text Message
+	*/
 	public void setTextMsg (String TextMsg)
 	{
 		set_Value (COLUMNNAME_TextMsg, TextMsg);
@@ -277,7 +279,7 @@ public class X_AD_AccessLog extends PO implements I_AD_AccessLog, I_Persistent
 	/** Get Text Message.
 		@return Text Message
 	  */
-	public String getTextMsg () 
+	public String getTextMsg()
 	{
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}

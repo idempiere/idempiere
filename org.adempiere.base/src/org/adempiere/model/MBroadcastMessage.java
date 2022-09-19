@@ -16,9 +16,11 @@ package org.adempiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.model.PO;
 import org.compiere.model.X_AD_BroadcastMessage;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -30,12 +32,12 @@ import org.idempiere.cache.ImmutablePOSupport;
  */
 public class MBroadcastMessage extends X_AD_BroadcastMessage implements ImmutablePOSupport
 {
-    /**
+/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5402131480890468471L;
-
-    static private ImmutableIntPOCache<Integer,MBroadcastMessage> s_cache = new ImmutableIntPOCache<Integer,MBroadcastMessage>("AD_BroadcastMessage", 30, 60);
+	private static final long serialVersionUID = 3733943472482553977L;
+	public final static String CLIENTINFO_BROADCAST_COMPONENT_ID = "#clientInfo_BroadcastComponentId";
+	static private ImmutableIntPOCache<Integer,MBroadcastMessage> s_cache = new ImmutableIntPOCache<Integer,MBroadcastMessage>("AD_BroadcastMessage", 30, 60);
 
     public MBroadcastMessage(Properties ctx, int AD_BroadcastMessage_ID,
 	    String trxName)
@@ -175,5 +177,31 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage implements Immutabl
 
 		makeImmutable();
 		return this;
+	}
+
+	@Override
+	public String get_Translation (String columnName) {
+		String translation = super.get_Translation(columnName);
+		if (!Util.isEmpty(translation) && translation.indexOf('@') > 0)
+			return Env.parseContext(getCtx(), 0, translation, false, false);
+
+		return translation;
+	}
+
+	/** Returns a link to be used in broadcast messages to open a record
+	 * @param PO po
+	 * @param uuid of the window
+	 * @param text of the link
+	 * @return the text to set in the broadcast message
+	 * */
+	public String getUrlZoom(PO po, String windowUUID, String text) {
+		StringBuilder url = new StringBuilder("");
+		url.append("<a href=\"javascript:void(0)\" class=\"rp-href\" onclick=\"window.idempiere.zoomWindow(@" + CLIENTINFO_BROADCAST_COMPONENT_ID + "@, '");
+		url.append(po.get_KeyColumns()[0]);
+		url.append("', '").append(po.get_ID()).append("','").append(windowUUID).append("')\">");
+		url.append(text);
+		url.append("</a>");
+
+		return url.toString();
 	}
 }

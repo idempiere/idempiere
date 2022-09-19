@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for C_CountryGroupCountry
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_CountryGroupCountry")
 public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCountry, I_Persistent 
 {
@@ -31,12 +31,22 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CountryGroupCountry (Properties ctx, int C_CountryGroupCountry_ID, String trxName)
     {
       super (ctx, C_CountryGroupCountry_ID, trxName);
+      /** if (C_CountryGroupCountry_ID == 0)
+        {
+			setC_CountryGroupCountry_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CountryGroupCountry (Properties ctx, int C_CountryGroupCountry_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CountryGroupCountry_ID, trxName, virtualColumns);
       /** if (C_CountryGroupCountry_ID == 0)
         {
 			setC_CountryGroupCountry_ID (0);
@@ -72,18 +82,19 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
     }
 
 	/** Set Country on Country Group.
-		@param C_CountryGroupCountry_ID Country on Country Group	  */
+		@param C_CountryGroupCountry_ID Country on Country Group
+	*/
 	public void setC_CountryGroupCountry_ID (int C_CountryGroupCountry_ID)
 	{
-		if (C_CountryGroupCountry_ID < 1) 
+		if (C_CountryGroupCountry_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CountryGroupCountry_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CountryGroupCountry_ID, Integer.valueOf(C_CountryGroupCountry_ID));
 	}
 
 	/** Get Country on Country Group.
 		@return Country on Country Group	  */
-	public int getC_CountryGroupCountry_ID () 
+	public int getC_CountryGroupCountry_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CountryGroupCountry_ID);
 		if (ii == null)
@@ -92,7 +103,8 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 	}
 
 	/** Set C_CountryGroupCountry_UU.
-		@param C_CountryGroupCountry_UU C_CountryGroupCountry_UU	  */
+		@param C_CountryGroupCountry_UU C_CountryGroupCountry_UU
+	*/
 	public void setC_CountryGroupCountry_UU (String C_CountryGroupCountry_UU)
 	{
 		set_Value (COLUMNNAME_C_CountryGroupCountry_UU, C_CountryGroupCountry_UU);
@@ -100,7 +112,7 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 
 	/** Get C_CountryGroupCountry_UU.
 		@return C_CountryGroupCountry_UU	  */
-	public String getC_CountryGroupCountry_UU () 
+	public String getC_CountryGroupCountry_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_CountryGroupCountry_UU);
 	}
@@ -112,18 +124,19 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 	}
 
 	/** Set Country Group.
-		@param C_CountryGroup_ID Country Group	  */
+		@param C_CountryGroup_ID Country Group
+	*/
 	public void setC_CountryGroup_ID (int C_CountryGroup_ID)
 	{
-		if (C_CountryGroup_ID < 1) 
+		if (C_CountryGroup_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CountryGroup_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CountryGroup_ID, Integer.valueOf(C_CountryGroup_ID));
 	}
 
 	/** Get Country Group.
 		@return Country Group	  */
-	public int getC_CountryGroup_ID () 
+	public int getC_CountryGroup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CountryGroup_ID);
 		if (ii == null)
@@ -138,21 +151,20 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 	}
 
 	/** Set Country.
-		@param C_Country_ID 
-		Country 
-	  */
+		@param C_Country_ID Country 
+	*/
 	public void setC_Country_ID (int C_Country_ID)
 	{
-		if (C_Country_ID < 1) 
+		if (C_Country_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Country_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Country_ID, Integer.valueOf(C_Country_ID));
 	}
 
 	/** Get Country.
 		@return Country 
 	  */
-	public int getC_Country_ID () 
+	public int getC_Country_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Country_ID);
 		if (ii == null)
@@ -161,9 +173,8 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 	}
 
 	/** Set Date From.
-		@param DateFrom 
-		Starting date for a range
-	  */
+		@param DateFrom Starting date for a range
+	*/
 	public void setDateFrom (Timestamp DateFrom)
 	{
 		set_Value (COLUMNNAME_DateFrom, DateFrom);
@@ -172,15 +183,14 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 	/** Get Date From.
 		@return Starting date for a range
 	  */
-	public Timestamp getDateFrom () 
+	public Timestamp getDateFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateFrom);
 	}
 
 	/** Set Date To.
-		@param DateTo 
-		End date of a date range
-	  */
+		@param DateTo End date of a date range
+	*/
 	public void setDateTo (Timestamp DateTo)
 	{
 		set_Value (COLUMNNAME_DateTo, DateTo);
@@ -189,7 +199,7 @@ public class X_C_CountryGroupCountry extends PO implements I_C_CountryGroupCount
 	/** Get Date To.
 		@return End date of a date range
 	  */
-	public Timestamp getDateTo () 
+	public Timestamp getDateTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateTo);
 	}

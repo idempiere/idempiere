@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for HR_Period
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="HR_Period")
 public class X_HR_Period extends PO implements I_HR_Period, I_Persistent 
 {
@@ -33,12 +33,29 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_HR_Period (Properties ctx, int HR_Period_ID, String trxName)
     {
       super (ctx, HR_Period_ID, trxName);
+      /** if (HR_Period_ID == 0)
+        {
+			setC_Period_ID (0);
+			setC_Year_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setHR_Payroll_ID (0);
+			setHR_Period_ID (0);
+			setName (null);
+			setPeriodNo (0);
+			setStartDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_HR_Period (Properties ctx, int HR_Period_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, HR_Period_ID, trxName, virtualColumns);
       /** if (HR_Period_ID == 0)
         {
 			setC_Period_ID (0);
@@ -87,21 +104,20 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	/** Set Period.
-		@param C_Period_ID 
-		Period of the Calendar
-	  */
+		@param C_Period_ID Period of the Calendar
+	*/
 	public void setC_Period_ID (int C_Period_ID)
 	{
-		if (C_Period_ID < 1) 
+		if (C_Period_ID < 1)
 			set_Value (COLUMNNAME_C_Period_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Period_ID, Integer.valueOf(C_Period_ID));
 	}
 
 	/** Get Period.
 		@return Period of the Calendar
 	  */
-	public int getC_Period_ID () 
+	public int getC_Period_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Period_ID);
 		if (ii == null)
@@ -116,21 +132,20 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	/** Set Year.
-		@param C_Year_ID 
-		Calendar Year
-	  */
+		@param C_Year_ID Calendar Year
+	*/
 	public void setC_Year_ID (int C_Year_ID)
 	{
-		if (C_Year_ID < 1) 
+		if (C_Year_ID < 1)
 			set_Value (COLUMNNAME_C_Year_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Year_ID, Integer.valueOf(C_Year_ID));
 	}
 
 	/** Get Year.
 		@return Calendar Year
 	  */
-	public int getC_Year_ID () 
+	public int getC_Year_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Year_ID);
 		if (ii == null)
@@ -139,9 +154,8 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	/** Set Account Date.
-		@param DateAcct 
-		Accounting Date
-	  */
+		@param DateAcct Accounting Date
+	*/
 	public void setDateAcct (Timestamp DateAcct)
 	{
 		set_Value (COLUMNNAME_DateAcct, DateAcct);
@@ -150,15 +164,14 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	/** Get Account Date.
 		@return Accounting Date
 	  */
-	public Timestamp getDateAcct () 
+	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -167,15 +180,14 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set End Date.
-		@param EndDate 
-		Last effective date (inclusive)
-	  */
+		@param EndDate Last effective date (inclusive)
+	*/
 	public void setEndDate (Timestamp EndDate)
 	{
 		set_Value (COLUMNNAME_EndDate, EndDate);
@@ -184,7 +196,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	/** Get End Date.
 		@return Last effective date (inclusive)
 	  */
-	public Timestamp getEndDate () 
+	public Timestamp getEndDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_EndDate);
 	}
@@ -196,18 +208,19 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	/** Set Payroll.
-		@param HR_Payroll_ID Payroll	  */
+		@param HR_Payroll_ID Payroll
+	*/
 	public void setHR_Payroll_ID (int HR_Payroll_ID)
 	{
-		if (HR_Payroll_ID < 1) 
+		if (HR_Payroll_ID < 1)
 			set_Value (COLUMNNAME_HR_Payroll_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_HR_Payroll_ID, Integer.valueOf(HR_Payroll_ID));
 	}
 
 	/** Get Payroll.
 		@return Payroll	  */
-	public int getHR_Payroll_ID () 
+	public int getHR_Payroll_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Payroll_ID);
 		if (ii == null)
@@ -216,18 +229,19 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	/** Set Payroll Period.
-		@param HR_Period_ID Payroll Period	  */
+		@param HR_Period_ID Payroll Period
+	*/
 	public void setHR_Period_ID (int HR_Period_ID)
 	{
-		if (HR_Period_ID < 1) 
+		if (HR_Period_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Period_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Period_ID, Integer.valueOf(HR_Period_ID));
 	}
 
 	/** Get Payroll Period.
 		@return Payroll Period	  */
-	public int getHR_Period_ID () 
+	public int getHR_Period_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Period_ID);
 		if (ii == null)
@@ -236,7 +250,8 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	/** Set HR_Period_UU.
-		@param HR_Period_UU HR_Period_UU	  */
+		@param HR_Period_UU HR_Period_UU
+	*/
 	public void setHR_Period_UU (String HR_Period_UU)
 	{
 		set_Value (COLUMNNAME_HR_Period_UU, HR_Period_UU);
@@ -244,7 +259,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 
 	/** Get HR_Period_UU.
 		@return HR_Period_UU	  */
-	public String getHR_Period_UU () 
+	public String getHR_Period_UU()
 	{
 		return (String)get_Value(COLUMNNAME_HR_Period_UU);
 	}
@@ -256,18 +271,19 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	/** Set Payroll Year.
-		@param HR_Year_ID Payroll Year	  */
+		@param HR_Year_ID Payroll Year
+	*/
 	public void setHR_Year_ID (int HR_Year_ID)
 	{
-		if (HR_Year_ID < 1) 
+		if (HR_Year_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_HR_Year_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_HR_Year_ID, Integer.valueOf(HR_Year_ID));
 	}
 
 	/** Get Payroll Year.
 		@return Payroll Year	  */
-	public int getHR_Year_ID () 
+	public int getHR_Year_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HR_Year_ID);
 		if (ii == null)
@@ -276,9 +292,8 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -287,7 +302,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -301,9 +316,8 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
     }
 
 	/** Set Period Action.
-		@param PeriodAction 
-		Action taken for this period
-	  */
+		@param PeriodAction Action taken for this period
+	*/
 	public void setPeriodAction (String PeriodAction)
 	{
 		set_Value (COLUMNNAME_PeriodAction, PeriodAction);
@@ -312,15 +326,14 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	/** Get Period Action.
 		@return Action taken for this period
 	  */
-	public String getPeriodAction () 
+	public String getPeriodAction()
 	{
 		return (String)get_Value(COLUMNNAME_PeriodAction);
 	}
 
 	/** Set Period No.
-		@param PeriodNo 
-		Unique Period Number
-	  */
+		@param PeriodNo Unique Period Number
+	*/
 	public void setPeriodNo (int PeriodNo)
 	{
 		set_Value (COLUMNNAME_PeriodNo, Integer.valueOf(PeriodNo));
@@ -329,7 +342,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	/** Get Period No.
 		@return Unique Period Number
 	  */
-	public int getPeriodNo () 
+	public int getPeriodNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PeriodNo);
 		if (ii == null)
@@ -338,9 +351,8 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	/** Set Period Status.
-		@param PeriodStatus 
-		Current state of this period
-	  */
+		@param PeriodStatus Current state of this period
+	*/
 	public void setPeriodStatus (String PeriodStatus)
 	{
 		set_Value (COLUMNNAME_PeriodStatus, PeriodStatus);
@@ -349,15 +361,14 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	/** Get Period Status.
 		@return Current state of this period
 	  */
-	public String getPeriodStatus () 
+	public String getPeriodStatus()
 	{
 		return (String)get_Value(COLUMNNAME_PeriodStatus);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -366,7 +377,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -379,7 +390,8 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -387,7 +399,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -400,9 +412,8 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	}
 
 	/** Set Start Date.
-		@param StartDate 
-		First effective day (inclusive)
-	  */
+		@param StartDate First effective day (inclusive)
+	*/
 	public void setStartDate (Timestamp StartDate)
 	{
 		set_Value (COLUMNNAME_StartDate, StartDate);
@@ -411,7 +422,7 @@ public class X_HR_Period extends PO implements I_HR_Period, I_Persistent
 	/** Get Start Date.
 		@return First effective day (inclusive)
 	  */
-	public Timestamp getStartDate () 
+	public Timestamp getStartDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}

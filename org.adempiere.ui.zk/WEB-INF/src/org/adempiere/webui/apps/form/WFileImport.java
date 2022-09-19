@@ -42,7 +42,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ReaderInputStream;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.impexp.ImpFormat;
 import org.compiere.impexp.ImpFormatRow;
 import org.compiere.model.MRole;
@@ -126,7 +126,6 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	
 	/**
 	 *	Initialize Panel
-	 *  @param WindowNo window
 	 */
 	protected void initForm()
 	{
@@ -474,7 +473,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		
 		if (m_format == null)
 		{
-			FDialog.error(m_WindowNo, this, formatName);
+			Dialog.error(m_WindowNo, formatName);
 			return;
 		}
 
@@ -569,7 +568,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	{
 		if (m_format == null)
 		{
-			FDialog.error(m_WindowNo, this, "FileImportNoFormat");
+			Dialog.error(m_WindowNo, "FileImportNoFormat");
 			return;
 		}
 		
@@ -584,7 +583,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			if (m_format.updateDB(Env.getCtx(), m_data.get(row).toString(), null))
 				imported++;
 		
-		FDialog.info(m_WindowNo, this, "FileImportR/I", row + " / " + imported + "#");
+		Dialog.info(m_WindowNo, "FileImportR/I", row + " / " + imported + "#");
 		
 		SessionManager.getAppDesktop().closeActiveWindow();
 	}	//	cmd_process

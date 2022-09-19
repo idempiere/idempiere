@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for T_ReportStatement
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="T_ReportStatement")
 public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Persistent 
 {
@@ -34,12 +34,25 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_T_ReportStatement (Properties ctx, int T_ReportStatement_ID, String trxName)
     {
       super (ctx, T_ReportStatement_ID, trxName);
+      /** if (T_ReportStatement_ID == 0)
+        {
+			setAD_PInstance_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setFact_Acct_ID (0);
+			setLevelNo (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_ReportStatement (Properties ctx, int T_ReportStatement_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_ReportStatement_ID, trxName, virtualColumns);
       /** if (T_ReportStatement_ID == 0)
         {
 			setAD_PInstance_ID (0);
@@ -84,21 +97,20 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	}
 
 	/** Set Process Instance.
-		@param AD_PInstance_ID 
-		Instance of the process
-	  */
+		@param AD_PInstance_ID Instance of the process
+	*/
 	public void setAD_PInstance_ID (int AD_PInstance_ID)
 	{
-		if (AD_PInstance_ID < 1) 
+		if (AD_PInstance_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PInstance_ID, Integer.valueOf(AD_PInstance_ID));
 	}
 
 	/** Get Process Instance.
 		@return Instance of the process
 	  */
-	public int getAD_PInstance_ID () 
+	public int getAD_PInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PInstance_ID);
 		if (ii == null)
@@ -107,9 +119,8 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	}
 
 	/** Set Accounted Credit.
-		@param AmtAcctCr 
-		Accounted Credit Amount
-	  */
+		@param AmtAcctCr Accounted Credit Amount
+	*/
 	public void setAmtAcctCr (BigDecimal AmtAcctCr)
 	{
 		set_ValueNoCheck (COLUMNNAME_AmtAcctCr, AmtAcctCr);
@@ -118,7 +129,7 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	/** Get Accounted Credit.
 		@return Accounted Credit Amount
 	  */
-	public BigDecimal getAmtAcctCr () 
+	public BigDecimal getAmtAcctCr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtAcctCr);
 		if (bd == null)
@@ -127,9 +138,8 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	}
 
 	/** Set Accounted Debit.
-		@param AmtAcctDr 
-		Accounted Debit Amount
-	  */
+		@param AmtAcctDr Accounted Debit Amount
+	*/
 	public void setAmtAcctDr (BigDecimal AmtAcctDr)
 	{
 		set_ValueNoCheck (COLUMNNAME_AmtAcctDr, AmtAcctDr);
@@ -138,7 +148,7 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	/** Get Accounted Debit.
 		@return Accounted Debit Amount
 	  */
-	public BigDecimal getAmtAcctDr () 
+	public BigDecimal getAmtAcctDr()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtAcctDr);
 		if (bd == null)
@@ -147,7 +157,8 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	}
 
 	/** Set Balance.
-		@param Balance Balance	  */
+		@param Balance Balance
+	*/
 	public void setBalance (BigDecimal Balance)
 	{
 		set_ValueNoCheck (COLUMNNAME_Balance, Balance);
@@ -155,7 +166,7 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 
 	/** Get Balance.
 		@return Balance	  */
-	public BigDecimal getBalance () 
+	public BigDecimal getBalance()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Balance);
 		if (bd == null)
@@ -164,9 +175,8 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	}
 
 	/** Set Account Date.
-		@param DateAcct 
-		Accounting Date
-	  */
+		@param DateAcct Accounting Date
+	*/
 	public void setDateAcct (Timestamp DateAcct)
 	{
 		set_ValueNoCheck (COLUMNNAME_DateAcct, DateAcct);
@@ -175,15 +185,14 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	/** Get Account Date.
 		@return Accounting Date
 	  */
-	public Timestamp getDateAcct () 
+	public Timestamp getDateAcct()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateAcct);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_ValueNoCheck (COLUMNNAME_Description, Description);
@@ -192,7 +201,7 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -204,18 +213,19 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	}
 
 	/** Set Accounting Fact.
-		@param Fact_Acct_ID Accounting Fact	  */
+		@param Fact_Acct_ID Accounting Fact
+	*/
 	public void setFact_Acct_ID (int Fact_Acct_ID)
 	{
-		if (Fact_Acct_ID < 1) 
+		if (Fact_Acct_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_Fact_Acct_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Fact_Acct_ID, Integer.valueOf(Fact_Acct_ID));
 	}
 
 	/** Get Accounting Fact.
 		@return Accounting Fact	  */
-	public int getFact_Acct_ID () 
+	public int getFact_Acct_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Fact_Acct_ID);
 		if (ii == null)
@@ -224,7 +234,8 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	}
 
 	/** Set Level no.
-		@param LevelNo Level no	  */
+		@param LevelNo Level no
+	*/
 	public void setLevelNo (int LevelNo)
 	{
 		set_ValueNoCheck (COLUMNNAME_LevelNo, Integer.valueOf(LevelNo));
@@ -232,7 +243,7 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 
 	/** Get Level no.
 		@return Level no	  */
-	public int getLevelNo () 
+	public int getLevelNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LevelNo);
 		if (ii == null)
@@ -241,9 +252,8 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_ValueNoCheck (COLUMNNAME_Name, Name);
@@ -252,7 +262,7 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -266,9 +276,8 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
     }
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_ValueNoCheck (COLUMNNAME_Qty, Qty);
@@ -277,7 +286,7 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -286,7 +295,8 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 	}
 
 	/** Set T_ReportStatement_UU.
-		@param T_ReportStatement_UU T_ReportStatement_UU	  */
+		@param T_ReportStatement_UU T_ReportStatement_UU
+	*/
 	public void setT_ReportStatement_UU (String T_ReportStatement_UU)
 	{
 		set_Value (COLUMNNAME_T_ReportStatement_UU, T_ReportStatement_UU);
@@ -294,7 +304,7 @@ public class X_T_ReportStatement extends PO implements I_T_ReportStatement, I_Pe
 
 	/** Get T_ReportStatement_UU.
 		@return T_ReportStatement_UU	  */
-	public String getT_ReportStatement_UU () 
+	public String getT_ReportStatement_UU()
 	{
 		return (String)get_Value(COLUMNNAME_T_ReportStatement_UU);
 	}

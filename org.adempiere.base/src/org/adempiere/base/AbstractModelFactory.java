@@ -54,20 +54,40 @@ public abstract class AbstractModelFactory implements IModelFactory {
 		boolean errorLogged = false;
 		try
 		{
+			Exception ce = null;
+			Object[] arguments = null;
 			Constructor<?> constructor = null;
 			try
 			{
 				constructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, int.class, String.class});
+				arguments = new Object[] {Env.getCtx(), Integer.valueOf(Record_ID), trxName};
 			}
 			catch (Exception e)
 			{
-				String msg = e.getMessage();
+				ce = e;
+			}
+			if(constructor==null)
+			{
+				try
+				{
+					constructor = clazz.getDeclaredConstructor(new Class[]{Properties.class, int.class, String.class, String[].class});
+					arguments = new Object[] {Env.getCtx(), Integer.valueOf(Record_ID), trxName, null};
+				}
+				catch(Exception e)
+				{
+					ce = e;
+				}
+			}
+
+			if(constructor==null && ce!=null)
+			{
+				String msg = ce.getMessage();
 				if (msg == null)
-					msg = e.toString();
+					msg = ce.toString();
 				s_log.warning("No transaction Constructor for " + clazz + " (" + msg + ")");
 			}
 
-			PO po = constructor!=null ? (PO)constructor.newInstance(new Object[] {Env.getCtx(), Integer.valueOf(Record_ID), trxName}) : null;
+			PO po = constructor!=null ? (PO)constructor.newInstance(arguments) : null;
 			return po;
 		}
 		catch (Exception e)

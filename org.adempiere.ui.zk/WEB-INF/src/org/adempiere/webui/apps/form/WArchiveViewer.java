@@ -64,7 +64,7 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WEMailDialog;
 import org.compiere.apps.form.Archive;
 import org.compiere.model.MArchive;
@@ -72,6 +72,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -669,7 +670,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	}	//	updateQDisplay
 
 	public void cmd_deleteArchive(){
-	  FDialog.ask(m_WindowNo, this.form, "DeleteRecord?", new Callback<Boolean>() {
+	  Dialog.ask(m_WindowNo, "DeleteRecord?", new Callback<Boolean>() {
 			
 			@Override
 			public void onCallback(Boolean result) 
@@ -693,9 +694,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		MArchive ar = m_archives[m_index];
 
 		MUser from = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
-		String fileName = System.getProperty("java.io.tmpdir") +
-				System.getProperty("file.separator") + ar.getName() + ".pdf";
-		File attachment = new File(fileName);
+		File attachment = new File(FileUtil.getTempMailName(ar.getName(), ".pdf"));
 		try {
 			Files.write(attachment.toPath(), ar.getBinaryData());
 		} catch (IOException e) {

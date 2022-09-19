@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Ref_List
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Ref_List")
 public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent 
 {
@@ -32,12 +32,27 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Ref_List (Properties ctx, int AD_Ref_List_ID, String trxName)
     {
       super (ctx, AD_Ref_List_ID, trxName);
+      /** if (AD_Ref_List_ID == 0)
+        {
+			setAD_Reference_ID (0);
+			setAD_Ref_List_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Ref_List (Properties ctx, int AD_Ref_List_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Ref_List_ID, trxName, virtualColumns);
       /** if (AD_Ref_List_ID == 0)
         {
 			setAD_Reference_ID (0);
@@ -84,21 +99,20 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	}
 
 	/** Set Reference.
-		@param AD_Reference_ID 
-		System Reference and Validation
-	  */
+		@param AD_Reference_ID System Reference and Validation
+	*/
 	public void setAD_Reference_ID (int AD_Reference_ID)
 	{
-		if (AD_Reference_ID < 1) 
+		if (AD_Reference_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Reference_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
 	}
 
 	/** Get Reference.
 		@return System Reference and Validation
 	  */
-	public int getAD_Reference_ID () 
+	public int getAD_Reference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
 		if (ii == null)
@@ -107,21 +121,20 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	}
 
 	/** Set Reference List.
-		@param AD_Ref_List_ID 
-		Reference List based on Table
-	  */
+		@param AD_Ref_List_ID Reference List based on Table
+	*/
 	public void setAD_Ref_List_ID (int AD_Ref_List_ID)
 	{
-		if (AD_Ref_List_ID < 1) 
+		if (AD_Ref_List_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Ref_List_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Ref_List_ID, Integer.valueOf(AD_Ref_List_ID));
 	}
 
 	/** Get Reference List.
 		@return Reference List based on Table
 	  */
-	public int getAD_Ref_List_ID () 
+	public int getAD_Ref_List_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Ref_List_ID);
 		if (ii == null)
@@ -130,7 +143,8 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	}
 
 	/** Set AD_Ref_List_UU.
-		@param AD_Ref_List_UU AD_Ref_List_UU	  */
+		@param AD_Ref_List_UU AD_Ref_List_UU
+	*/
 	public void setAD_Ref_List_UU (String AD_Ref_List_UU)
 	{
 		set_Value (COLUMNNAME_AD_Ref_List_UU, AD_Ref_List_UU);
@@ -138,15 +152,14 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 
 	/** Get AD_Ref_List_UU.
 		@return AD_Ref_List_UU	  */
-	public String getAD_Ref_List_UU () 
+	public String getAD_Ref_List_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Ref_List_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -155,7 +168,7 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -163,9 +176,8 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -175,15 +187,14 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -192,7 +203,7 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -206,9 +217,8 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
     }
 
 	/** Set Valid from.
-		@param ValidFrom 
-		Valid from including this date (first day)
-	  */
+		@param ValidFrom Valid from including this date (first day)
+	*/
 	public void setValidFrom (Timestamp ValidFrom)
 	{
 		set_Value (COLUMNNAME_ValidFrom, ValidFrom);
@@ -217,15 +227,14 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	/** Get Valid from.
 		@return Valid from including this date (first day)
 	  */
-	public Timestamp getValidFrom () 
+	public Timestamp getValidFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidFrom);
 	}
 
 	/** Set Valid to.
-		@param ValidTo 
-		Valid to including this date (last day)
-	  */
+		@param ValidTo Valid to including this date (last day)
+	*/
 	public void setValidTo (Timestamp ValidTo)
 	{
 		set_Value (COLUMNNAME_ValidTo, ValidTo);
@@ -234,15 +243,14 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	/** Get Valid to.
 		@return Valid to including this date (last day)
 	  */
-	public Timestamp getValidTo () 
+	public Timestamp getValidTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValidTo);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -251,7 +259,7 @@ public class X_AD_Ref_List extends PO implements I_AD_Ref_List, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

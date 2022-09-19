@@ -36,7 +36,8 @@ public class MRevenueRecogService extends X_C_RevenueRecog_Service
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
-	 *	@param C_RevenueRecognition_ID id
+	 *	@param C_RevenueRecog_Service_ID id
+	 *  @param trxName
 	 */
 	public MRevenueRecogService (Properties ctx, int C_RevenueRecog_Service_ID, String trxName)
 	{

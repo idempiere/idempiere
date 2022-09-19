@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_Warehouse_Acct
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_Warehouse_Acct")
 public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Persistent 
 {
@@ -30,12 +30,24 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_Warehouse_Acct (Properties ctx, int M_Warehouse_Acct_ID, String trxName)
     {
       super (ctx, M_Warehouse_Acct_ID, trxName);
+      /** if (M_Warehouse_Acct_ID == 0)
+        {
+			setC_AcctSchema_ID (0);
+			setM_Warehouse_ID (0);
+			setW_Differences_Acct (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Warehouse_Acct (Properties ctx, int M_Warehouse_Acct_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Warehouse_Acct_ID, trxName, virtualColumns);
       /** if (M_Warehouse_Acct_ID == 0)
         {
 			setC_AcctSchema_ID (0);
@@ -79,21 +91,20 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -102,7 +113,8 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 	}
 
 	/** Set M_Warehouse_Acct_UU.
-		@param M_Warehouse_Acct_UU M_Warehouse_Acct_UU	  */
+		@param M_Warehouse_Acct_UU M_Warehouse_Acct_UU
+	*/
 	public void setM_Warehouse_Acct_UU (String M_Warehouse_Acct_UU)
 	{
 		set_Value (COLUMNNAME_M_Warehouse_Acct_UU, M_Warehouse_Acct_UU);
@@ -110,7 +122,7 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 
 	/** Get M_Warehouse_Acct_UU.
 		@return M_Warehouse_Acct_UU	  */
-	public String getM_Warehouse_Acct_UU () 
+	public String getM_Warehouse_Acct_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Warehouse_Acct_UU);
 	}
@@ -122,21 +134,20 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -151,9 +162,8 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 	}
 
 	/** Set Warehouse Differences.
-		@param W_Differences_Acct 
-		Warehouse Differences Account
-	  */
+		@param W_Differences_Acct Warehouse Differences Account
+	*/
 	public void setW_Differences_Acct (int W_Differences_Acct)
 	{
 		set_Value (COLUMNNAME_W_Differences_Acct, Integer.valueOf(W_Differences_Acct));
@@ -162,7 +172,7 @@ public class X_M_Warehouse_Acct extends PO implements I_M_Warehouse_Acct, I_Pers
 	/** Get Warehouse Differences.
 		@return Warehouse Differences Account
 	  */
-	public int getW_Differences_Acct () 
+	public int getW_Differences_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_W_Differences_Acct);
 		if (ii == null)

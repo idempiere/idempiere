@@ -76,6 +76,14 @@ public class MAttributeUse extends X_M_AttributeUse
 				return false;
 			}
 		}
+		
+		// Get Sequence No
+		if (getSeqNo() == 0) {
+			String sql = "SELECT COALESCE(MAX(SeqNo),0)+10 FROM M_AttributeUse WHERE M_AttributeSet_ID=?";
+			int seqNo = DB.getSQLValue (get_TrxName(), sql, getM_AttributeSet_ID());
+			setSeqNo(seqNo);
+		}
+			
 		return true;
 	}
 

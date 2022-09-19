@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Workflow
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Workflow")
 public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent 
 {
@@ -30,12 +30,25 @@ public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_ASP_Workflow (Properties ctx, int ASP_Workflow_ID, String trxName)
     {
       super (ctx, ASP_Workflow_ID, trxName);
+      /** if (ASP_Workflow_ID == 0)
+        {
+			setAD_Workflow_ID (0);
+			setASP_Level_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Workflow (Properties ctx, int ASP_Workflow_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Workflow_ID, trxName, virtualColumns);
       /** if (ASP_Workflow_ID == 0)
         {
 			setAD_Workflow_ID (0);
@@ -80,21 +93,20 @@ public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent
 	}
 
 	/** Set Workflow.
-		@param AD_Workflow_ID 
-		Workflow or combination of tasks
-	  */
+		@param AD_Workflow_ID Workflow or combination of tasks
+	*/
 	public void setAD_Workflow_ID (int AD_Workflow_ID)
 	{
-		if (AD_Workflow_ID < 1) 
+		if (AD_Workflow_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Workflow_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Workflow_ID, Integer.valueOf(AD_Workflow_ID));
 	}
 
 	/** Get Workflow.
 		@return Workflow or combination of tasks
 	  */
-	public int getAD_Workflow_ID () 
+	public int getAD_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Workflow_ID);
 		if (ii == null)
@@ -109,18 +121,19 @@ public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent
 	}
 
 	/** Set ASP Level.
-		@param ASP_Level_ID ASP Level	  */
+		@param ASP_Level_ID ASP Level
+	*/
 	public void setASP_Level_ID (int ASP_Level_ID)
 	{
-		if (ASP_Level_ID < 1) 
+		if (ASP_Level_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Level_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Level_ID, Integer.valueOf(ASP_Level_ID));
 	}
 
 	/** Get ASP Level.
 		@return ASP Level	  */
-	public int getASP_Level_ID () 
+	public int getASP_Level_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Level_ID);
 		if (ii == null)
@@ -137,7 +150,8 @@ public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent
 	/** Undefined = U */
 	public static final String ASP_STATUS_Undefined = "U";
 	/** Set ASP Status.
-		@param ASP_Status ASP Status	  */
+		@param ASP_Status ASP Status
+	*/
 	public void setASP_Status (String ASP_Status)
 	{
 
@@ -146,24 +160,25 @@ public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent
 
 	/** Get ASP Status.
 		@return ASP Status	  */
-	public String getASP_Status () 
+	public String getASP_Status()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Status);
 	}
 
 	/** Set ASP Workflow.
-		@param ASP_Workflow_ID ASP Workflow	  */
+		@param ASP_Workflow_ID ASP Workflow
+	*/
 	public void setASP_Workflow_ID (int ASP_Workflow_ID)
 	{
-		if (ASP_Workflow_ID < 1) 
+		if (ASP_Workflow_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Workflow_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Workflow_ID, Integer.valueOf(ASP_Workflow_ID));
 	}
 
 	/** Get ASP Workflow.
 		@return ASP Workflow	  */
-	public int getASP_Workflow_ID () 
+	public int getASP_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Workflow_ID);
 		if (ii == null)
@@ -172,7 +187,8 @@ public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent
 	}
 
 	/** Set ASP_Workflow_UU.
-		@param ASP_Workflow_UU ASP_Workflow_UU	  */
+		@param ASP_Workflow_UU ASP_Workflow_UU
+	*/
 	public void setASP_Workflow_UU (String ASP_Workflow_UU)
 	{
 		set_Value (COLUMNNAME_ASP_Workflow_UU, ASP_Workflow_UU);
@@ -180,7 +196,7 @@ public class X_ASP_Workflow extends PO implements I_ASP_Workflow, I_Persistent
 
 	/** Get ASP_Workflow_UU.
 		@return ASP_Workflow_UU	  */
-	public String getASP_Workflow_UU () 
+	public String getASP_Workflow_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Workflow_UU);
 	}

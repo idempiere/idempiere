@@ -19,16 +19,12 @@ package org.idempiere.webservices.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceType
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceType")
 public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Persistent 
 {
@@ -36,12 +32,26 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_WS_WebServiceType (Properties ctx, int WS_WebServiceType_ID, String trxName)
     {
       super (ctx, WS_WebServiceType_ID, trxName);
+      /** if (WS_WebServiceType_ID == 0)
+        {
+			setName (null);
+			setValue (null);
+			setWS_WebService_ID (0);
+			setWS_WebServiceMethod_ID (0);
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_WS_WebServiceType (Properties ctx, int WS_WebServiceType_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, WS_WebServiceType_ID, trxName, virtualColumns);
       /** if (WS_WebServiceType_ID == 0)
         {
 			setName (null);
@@ -87,21 +97,20 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -110,9 +119,8 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -121,15 +129,14 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -138,13 +145,14 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Create Default Parameters.
-		@param InsertParameters Create Default Parameters	  */
+		@param InsertParameters Create Default Parameters
+	*/
 	public void setInsertParameters (String InsertParameters)
 	{
 		set_Value (COLUMNNAME_InsertParameters, InsertParameters);
@@ -152,15 +160,14 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 
 	/** Get Create Default Parameters.
 		@return Create Default Parameters	  */
-	public String getInsertParameters () 
+	public String getInsertParameters()
 	{
 		return (String)get_Value(COLUMNNAME_InsertParameters);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -169,7 +176,7 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -183,9 +190,8 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -194,7 +200,7 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
@@ -206,18 +212,19 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	}
 
 	/** Set Web Service.
-		@param WS_WebService_ID Web Service	  */
+		@param WS_WebService_ID Web Service
+	*/
 	public void setWS_WebService_ID (int WS_WebService_ID)
 	{
-		if (WS_WebService_ID < 1) 
+		if (WS_WebService_ID < 1)
 			set_Value (COLUMNNAME_WS_WebService_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_WS_WebService_ID, Integer.valueOf(WS_WebService_ID));
 	}
 
 	/** Get Web Service.
 		@return Web Service	  */
-	public int getWS_WebService_ID () 
+	public int getWS_WebService_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebService_ID);
 		if (ii == null)
@@ -232,18 +239,19 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	}
 
 	/** Set Web Service Method.
-		@param WS_WebServiceMethod_ID Web Service Method	  */
+		@param WS_WebServiceMethod_ID Web Service Method
+	*/
 	public void setWS_WebServiceMethod_ID (int WS_WebServiceMethod_ID)
 	{
-		if (WS_WebServiceMethod_ID < 1) 
+		if (WS_WebServiceMethod_ID < 1)
 			set_Value (COLUMNNAME_WS_WebServiceMethod_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_WS_WebServiceMethod_ID, Integer.valueOf(WS_WebServiceMethod_ID));
 	}
 
 	/** Get Web Service Method.
 		@return Web Service Method	  */
-	public int getWS_WebServiceMethod_ID () 
+	public int getWS_WebServiceMethod_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebServiceMethod_ID);
 		if (ii == null)
@@ -252,18 +260,19 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	}
 
 	/** Set Web Service Type.
-		@param WS_WebServiceType_ID Web Service Type	  */
+		@param WS_WebServiceType_ID Web Service Type
+	*/
 	public void setWS_WebServiceType_ID (int WS_WebServiceType_ID)
 	{
-		if (WS_WebServiceType_ID < 1) 
+		if (WS_WebServiceType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_WS_WebServiceType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_WS_WebServiceType_ID, Integer.valueOf(WS_WebServiceType_ID));
 	}
 
 	/** Get Web Service Type.
 		@return Web Service Type	  */
-	public int getWS_WebServiceType_ID () 
+	public int getWS_WebServiceType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebServiceType_ID);
 		if (ii == null)
@@ -272,7 +281,8 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 	}
 
 	/** Set WS_WebServiceType_UU.
-		@param WS_WebServiceType_UU WS_WebServiceType_UU	  */
+		@param WS_WebServiceType_UU WS_WebServiceType_UU
+	*/
 	public void setWS_WebServiceType_UU (String WS_WebServiceType_UU)
 	{
 		set_Value (COLUMNNAME_WS_WebServiceType_UU, WS_WebServiceType_UU);
@@ -280,7 +290,7 @@ public class X_WS_WebServiceType extends PO implements I_WS_WebServiceType, I_Pe
 
 	/** Get WS_WebServiceType_UU.
 		@return WS_WebServiceType_UU	  */
-	public String getWS_WebServiceType_UU () 
+	public String getWS_WebServiceType_UU()
 	{
 		return (String)get_Value(COLUMNNAME_WS_WebServiceType_UU);
 	}

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_LandedCostAllocation
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_LandedCostAllocation")
 public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAllocation, I_Persistent 
 {
@@ -33,12 +33,28 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_LandedCostAllocation (Properties ctx, int C_LandedCostAllocation_ID, String trxName)
     {
       super (ctx, C_LandedCostAllocation_ID, trxName);
+      /** if (C_LandedCostAllocation_ID == 0)
+        {
+			setAmt (Env.ZERO);
+			setBase (Env.ZERO);
+			setC_InvoiceLine_ID (0);
+			setC_LandedCostAllocation_ID (0);
+			setM_CostElement_ID (0);
+			setM_Product_ID (0);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_LandedCostAllocation (Properties ctx, int C_LandedCostAllocation_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_LandedCostAllocation_ID, trxName, virtualColumns);
       /** if (C_LandedCostAllocation_ID == 0)
         {
 			setAmt (Env.ZERO);
@@ -80,9 +96,8 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
     }
 
 	/** Set Amount.
-		@param Amt 
-		Amount
-	  */
+		@param Amt Amount
+	*/
 	public void setAmt (BigDecimal Amt)
 	{
 		set_Value (COLUMNNAME_Amt, Amt);
@@ -91,7 +106,7 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	/** Get Amount.
 		@return Amount
 	  */
-	public BigDecimal getAmt () 
+	public BigDecimal getAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Amt);
 		if (bd == null)
@@ -100,9 +115,8 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	}
 
 	/** Set Base.
-		@param Base 
-		Calculation Base
-	  */
+		@param Base Calculation Base
+	*/
 	public void setBase (BigDecimal Base)
 	{
 		set_Value (COLUMNNAME_Base, Base);
@@ -111,7 +125,7 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	/** Get Base.
 		@return Calculation Base
 	  */
-	public BigDecimal getBase () 
+	public BigDecimal getBase()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Base);
 		if (bd == null)
@@ -126,21 +140,20 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	}
 
 	/** Set Invoice Line.
-		@param C_InvoiceLine_ID 
-		Invoice Detail Line
-	  */
+		@param C_InvoiceLine_ID Invoice Detail Line
+	*/
 	public void setC_InvoiceLine_ID (int C_InvoiceLine_ID)
 	{
-		if (C_InvoiceLine_ID < 1) 
+		if (C_InvoiceLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_InvoiceLine_ID, Integer.valueOf(C_InvoiceLine_ID));
 	}
 
 	/** Get Invoice Line.
 		@return Invoice Detail Line
 	  */
-	public int getC_InvoiceLine_ID () 
+	public int getC_InvoiceLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_InvoiceLine_ID);
 		if (ii == null)
@@ -157,21 +170,20 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
     }
 
 	/** Set Landed Cost Allocation.
-		@param C_LandedCostAllocation_ID 
-		Allocation for Land Costs
-	  */
+		@param C_LandedCostAllocation_ID Allocation for Land Costs
+	*/
 	public void setC_LandedCostAllocation_ID (int C_LandedCostAllocation_ID)
 	{
-		if (C_LandedCostAllocation_ID < 1) 
+		if (C_LandedCostAllocation_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_LandedCostAllocation_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_LandedCostAllocation_ID, Integer.valueOf(C_LandedCostAllocation_ID));
 	}
 
 	/** Get Landed Cost Allocation.
 		@return Allocation for Land Costs
 	  */
-	public int getC_LandedCostAllocation_ID () 
+	public int getC_LandedCostAllocation_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_LandedCostAllocation_ID);
 		if (ii == null)
@@ -180,7 +192,8 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	}
 
 	/** Set C_LandedCostAllocation_UU.
-		@param C_LandedCostAllocation_UU C_LandedCostAllocation_UU	  */
+		@param C_LandedCostAllocation_UU C_LandedCostAllocation_UU
+	*/
 	public void setC_LandedCostAllocation_UU (String C_LandedCostAllocation_UU)
 	{
 		set_Value (COLUMNNAME_C_LandedCostAllocation_UU, C_LandedCostAllocation_UU);
@@ -188,7 +201,7 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 
 	/** Get C_LandedCostAllocation_UU.
 		@return C_LandedCostAllocation_UU	  */
-	public String getC_LandedCostAllocation_UU () 
+	public String getC_LandedCostAllocation_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_LandedCostAllocation_UU);
 	}
@@ -200,21 +213,20 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -229,21 +241,20 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	}
 
 	/** Set Cost Element.
-		@param M_CostElement_ID 
-		Product Cost Element
-	  */
+		@param M_CostElement_ID Product Cost Element
+	*/
 	public void setM_CostElement_ID (int M_CostElement_ID)
 	{
-		if (M_CostElement_ID < 1) 
+		if (M_CostElement_ID < 1)
 			set_Value (COLUMNNAME_M_CostElement_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_CostElement_ID, Integer.valueOf(M_CostElement_ID));
 	}
 
 	/** Get Cost Element.
 		@return Product Cost Element
 	  */
-	public int getM_CostElement_ID () 
+	public int getM_CostElement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostElement_ID);
 		if (ii == null)
@@ -258,21 +269,20 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	}
 
 	/** Set Shipment/Receipt Line.
-		@param M_InOutLine_ID 
-		Line on Shipment or Receipt document
-	  */
+		@param M_InOutLine_ID Line on Shipment or Receipt document
+	*/
 	public void setM_InOutLine_ID (int M_InOutLine_ID)
 	{
-		if (M_InOutLine_ID < 1) 
+		if (M_InOutLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
 	}
 
 	/** Get Shipment/Receipt Line.
 		@return Line on Shipment or Receipt document
 	  */
-	public int getM_InOutLine_ID () 
+	public int getM_InOutLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
 		if (ii == null)
@@ -287,21 +297,20 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -310,9 +319,8 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -321,7 +329,7 @@ public class X_C_LandedCostAllocation extends PO implements I_C_LandedCostAlloca
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)

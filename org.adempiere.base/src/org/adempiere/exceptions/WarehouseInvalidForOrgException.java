@@ -20,7 +20,7 @@ package org.adempiere.exceptions;
  * Throw when there is no Warehouse for Organization.
  * @author victor.perez@e-evolution.com, www.e-evolution.com
  * 			<li>FR [ 2457781 ] Introduce WarehouseInvalidForOrgException
- * 			<li>https://sourceforge.net/tracker/index.php?func=detail&aid=2877521&group_id=176962&atid=879335
+ * 			<li>https://sourceforge.net/p/adempiere/feature-requests/856/
  */
 public class WarehouseInvalidForOrgException extends AdempiereException
 {
@@ -31,7 +31,8 @@ public class WarehouseInvalidForOrgException extends AdempiereException
 	private static final long serialVersionUID = -8637554073291880392L;
 
 	/**
-	 * @param productName M_Product Name
+	 * @param wname
+	 * @param oname
 	 */
 	public WarehouseInvalidForOrgException(String wname ,String oname)
 	{

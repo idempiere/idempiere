@@ -81,15 +81,64 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	 */
 	protected ArrayList<String> convertStatement(String sqlStatement) {
 		ArrayList<String> result = new ArrayList<String>();
-		
-		String statement = null;
+		/** Vector to save previous values of quoted strings **/
+		Vector<String> retVars = new Vector<String>();
+
+		String nonce = sharedNonce;
+
+		// check for collision with nonce
+		while ( sqlStatement.contains(nonce))
+		{
+			nonce = generateNonce();
+		}
+
+		String statement = replaceQuotedStrings(sqlStatement, retVars, nonce);
+
 		if (DB_PostgreSQL.isUseNativeDialect()) {
-			statement = sqlStatement;
+
 			statement = convertSysDate(statement);
 			statement = convertSimilarTo(statement);
+
 		} else {
-			statement = convertOracleStatement(sqlStatement);
-		}		
+
+			statement = convertWithConvertMap(statement);
+			statement = convertSimilarTo(statement);
+			statement = DB_PostgreSQL.removeNativeKeyworkMarker(statement);
+
+			String cmpString = statement.toUpperCase();
+			boolean isCreate = cmpString.startsWith("CREATE ");
+
+			// Process
+			if (isCreate && cmpString.indexOf(" FUNCTION ") != -1)
+				;
+			else if (isCreate && cmpString.indexOf(" TRIGGER ") != -1)
+				;
+			else if (isCreate && cmpString.indexOf(" PROCEDURE ") != -1)
+				;
+			else if (isCreate && cmpString.indexOf(" VIEW ") != -1)
+				;
+			else if (cmpString.indexOf("ALTER TABLE") != -1) {
+				// See https://sourceforge.net/p/adempiere/bugs/655/
+				statement = recoverQuotedStrings(statement, retVars, nonce);
+				retVars.clear();
+				statement = convertDDL(convertComplexStatement(statement));
+				/*
+		    } else if (cmpString.indexOf("ROWNUM") != -1) {
+			    result.add(convertRowNum(convertComplexStatement(convertAlias(statement))));*/
+			} else if (cmpString.indexOf("DELETE ") != -1
+					&& cmpString.indexOf("DELETE FROM") == -1) {
+				statement = convertDelete(statement);
+				statement = convertComplexStatement(convertAlias(statement));
+			} else if (cmpString.indexOf("DELETE FROM") != -1) {
+				statement = convertComplexStatement(convertAlias(statement));
+			} else if (cmpString.indexOf("UPDATE ") != -1) {
+				statement = convertComplexStatement(convertUpdate(convertAlias(statement)));
+			} else {
+				statement = convertComplexStatement(convertAlias(statement));
+			}
+		}
+		if (retVars.size() > 0)
+			statement = recoverQuotedStrings(statement, retVars, nonce);
 		result.add(statement);
 
 		if ("true".equals(System.getProperty("org.idempiere.db.debug"))) {
@@ -105,62 +154,6 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		}
 		return result;
 	} // convertStatement
-
-	/**
-	 * Convert Oracle SQL statement to PostgreSQL syntax
-	 * @param sqlStatement oracle sql statement
-	 * @return PostgreSQL statement
-	 */
-	public String convertOracleStatement(String sqlStatement) {
-		String statement;
-		String nonce = sharedNonce;
-
-		// check for collision with nonce
-		while ( sqlStatement.contains(nonce))
-		{
-			nonce = generateNonce();
-		}
-		/** Vector to save previous values of quoted strings **/
-		Vector<String> retVars = new Vector<String>();
-		statement = replaceQuotedStrings(sqlStatement, retVars, nonce);			
-		statement = convertWithConvertMap(statement);
-		statement = convertSimilarTo(statement);
-		statement = DB_PostgreSQL.removeNativeKeyworkMarker(statement);
-
-		String cmpString = statement.toUpperCase();
-		boolean isCreate = cmpString.startsWith("CREATE ");
-
-		// Process
-		if (isCreate && cmpString.indexOf(" FUNCTION ") != -1)
-			;
-		else if (isCreate && cmpString.indexOf(" TRIGGER ") != -1)
-			;
-		else if (isCreate && cmpString.indexOf(" PROCEDURE ") != -1)
-			;
-		else if (isCreate && cmpString.indexOf(" VIEW ") != -1)
-			;
-		else if (cmpString.indexOf("ALTER TABLE") != -1) {
-			statement = recoverQuotedStrings(statement, retVars, nonce);
-			retVars.clear();
-			statement = convertDDL(convertComplexStatement(statement));
-			/*
-		} else if (cmpString.indexOf("ROWNUM") != -1) {
-		    result.add(convertRowNum(convertComplexStatement(convertAlias(statement))));*/
-		} else if (cmpString.indexOf("DELETE ") != -1
-				&& cmpString.indexOf("DELETE FROM") == -1) {
-			statement = convertDelete(statement);
-			statement = convertComplexStatement(convertAlias(statement));
-		} else if (cmpString.indexOf("DELETE FROM") != -1) {
-			statement = convertComplexStatement(convertAlias(statement));
-		} else if (cmpString.indexOf("UPDATE ") != -1) {
-			statement = convertComplexStatement(convertUpdate(convertAlias(statement)));
-		} else {
-			statement = convertComplexStatement(convertAlias(statement));
-		}
-		if (retVars.size() > 0)
-			statement = recoverQuotedStrings(statement, retVars, nonce);
-		return statement;
-	}
 
 	private String convertSysDate(String statement) {
 		String retValue = statement;

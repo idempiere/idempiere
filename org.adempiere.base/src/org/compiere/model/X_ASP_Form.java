@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Form
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Form")
 public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent 
 {
@@ -30,12 +30,25 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_ASP_Form (Properties ctx, int ASP_Form_ID, String trxName)
     {
       super (ctx, ASP_Form_ID, trxName);
+      /** if (ASP_Form_ID == 0)
+        {
+			setAD_Form_ID (0);
+			setASP_Level_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Form (Properties ctx, int ASP_Form_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Form_ID, trxName, virtualColumns);
       /** if (ASP_Form_ID == 0)
         {
 			setAD_Form_ID (0);
@@ -80,21 +93,20 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
 	}
 
 	/** Set Special Form.
-		@param AD_Form_ID 
-		Special Form
-	  */
+		@param AD_Form_ID Special Form
+	*/
 	public void setAD_Form_ID (int AD_Form_ID)
 	{
-		if (AD_Form_ID < 1) 
+		if (AD_Form_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Form_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Form_ID, Integer.valueOf(AD_Form_ID));
 	}
 
 	/** Get Special Form.
 		@return Special Form
 	  */
-	public int getAD_Form_ID () 
+	public int getAD_Form_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Form_ID);
 		if (ii == null)
@@ -103,18 +115,19 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
 	}
 
 	/** Set ASP Form.
-		@param ASP_Form_ID ASP Form	  */
+		@param ASP_Form_ID ASP Form
+	*/
 	public void setASP_Form_ID (int ASP_Form_ID)
 	{
-		if (ASP_Form_ID < 1) 
+		if (ASP_Form_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Form_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Form_ID, Integer.valueOf(ASP_Form_ID));
 	}
 
 	/** Get ASP Form.
 		@return ASP Form	  */
-	public int getASP_Form_ID () 
+	public int getASP_Form_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Form_ID);
 		if (ii == null)
@@ -123,7 +136,8 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
 	}
 
 	/** Set ASP_Form_UU.
-		@param ASP_Form_UU ASP_Form_UU	  */
+		@param ASP_Form_UU ASP_Form_UU
+	*/
 	public void setASP_Form_UU (String ASP_Form_UU)
 	{
 		set_Value (COLUMNNAME_ASP_Form_UU, ASP_Form_UU);
@@ -131,7 +145,7 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
 
 	/** Get ASP_Form_UU.
 		@return ASP_Form_UU	  */
-	public String getASP_Form_UU () 
+	public String getASP_Form_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Form_UU);
 	}
@@ -143,18 +157,19 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
 	}
 
 	/** Set ASP Level.
-		@param ASP_Level_ID ASP Level	  */
+		@param ASP_Level_ID ASP Level
+	*/
 	public void setASP_Level_ID (int ASP_Level_ID)
 	{
-		if (ASP_Level_ID < 1) 
+		if (ASP_Level_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Level_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Level_ID, Integer.valueOf(ASP_Level_ID));
 	}
 
 	/** Get ASP Level.
 		@return ASP Level	  */
-	public int getASP_Level_ID () 
+	public int getASP_Level_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Level_ID);
 		if (ii == null)
@@ -171,7 +186,8 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
 	/** Undefined = U */
 	public static final String ASP_STATUS_Undefined = "U";
 	/** Set ASP Status.
-		@param ASP_Status ASP Status	  */
+		@param ASP_Status ASP Status
+	*/
 	public void setASP_Status (String ASP_Status)
 	{
 
@@ -180,7 +196,7 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
 
 	/** Get ASP Status.
 		@return ASP Status	  */
-	public String getASP_Status () 
+	public String getASP_Status()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Status);
 	}

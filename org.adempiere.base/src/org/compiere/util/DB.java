@@ -38,8 +38,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.sql.RowSet;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.ProcessUtil;
@@ -57,6 +55,7 @@ import org.compiere.model.MSystem;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POResultSet;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 
@@ -83,14 +82,14 @@ import org.compiere.process.ProcessInfoParameter;
  *		<li>FR [ 2448461 ] Introduce DB.getSQLValue*Ex methods
  *		<li>FR [ 2781053 ] Introduce DB.getValueNamePairs
  *		<li>FR [ 2818480 ] Introduce DB.createT_Selection helper method
- *			https://sourceforge.net/tracker/?func=detail&aid=2818480&group_id=176962&atid=879335
+ *			https://sourceforge.net/p/adempiere/feature-requests/757/
  * @author Teo Sarca, teo.sarca@gmail.com
  * 		<li>BF [ 2873324 ] DB.TO_NUMBER should be a static method
- * 			https://sourceforge.net/tracker/?func=detail&aid=2873324&group_id=176962&atid=879332
+ * 			https://sourceforge.net/p/adempiere/bugs/2160/
  * 		<li>FR [ 2873891 ] DB.getKeyNamePairs should use trxName
- * 			https://sourceforge.net/tracker/?func=detail&aid=2873891&group_id=176962&atid=879335
+ * 			https://sourceforge.net/p/adempiere/feature-requests/847/
  *  @author Paul Bowden, phib BF 2900767 Zoom to child tab - inefficient queries
- *  @see https://sourceforge.net/tracker/?func=detail&aid=2900767&group_id=176962&atid=879332
+ *  @see https://sourceforge.net/p/adempiere/bugs/2222/
  */
 public final class DB
 {
@@ -223,8 +222,6 @@ public final class DB
 			mailPassword = Ini.getVar("ADEMPIERE_MAIL_PASSWORD");
 		else
 			mailPassword = env.getProperty("ADEMPIERE_MAIL_PASSWORD");
-	//	if (mailPassword == null || mailPassword.length() == 0)
-	//		return;
 		//
 		StringBuilder sql = new StringBuilder("UPDATE AD_Client SET")
 			.append(" SMTPHost=").append(DB.TO_STRING(server))
@@ -239,8 +236,8 @@ public final class DB
 			.append(" EMail=").append(DB.TO_STRING(adminEMail))
 			.append(", EMailUser=").append(DB.TO_STRING(mailUser))
 			.append(", EMailUserPW=").append(DB.TO_STRING(mailPassword))
-			.append(" WHERE AD_User_ID IN (0,100)");
-		no = DB.executeUpdate(sql.toString(), null);
+			.append(" WHERE AD_User_ID IN (?,?,?)");
+		no = DB.executeUpdate(sql.toString(), new Object[]{SystemIDs.USER_SYSTEM_DEPRECATED, SystemIDs.USER_SYSTEM, SystemIDs.USER_SUPERUSER}, false, null);
 		if (log.isLoggable(Level.FINE)) log.fine("User #"+no);
 		//
 		try (FileOutputStream out = new FileOutputStream(envFile))
@@ -277,7 +274,6 @@ public final class DB
 		s_cc.setDataSource();
 
 		if (log.isLoggable(Level.CONFIG)) log.config(s_cc + " - DS=" + s_cc.isDataSource());
-	//	Trace.printStack();
 	}   //  setDBTarget
 
 	/**
@@ -289,25 +285,14 @@ public final class DB
 		boolean success =false;
 		try
 		{
-            Connection connRW = getConnectionRW();
-            if (connRW != null)
+            Connection conn = getConnection();
+            if (conn != null)
             {
-                s_cc.readInfo(connRW);
-                connRW.close();
+                s_cc.readInfo(conn);
+                conn.close();
             }
 
-            Connection connRO = getConnectionRO();
-            if (connRO != null)
-            {
-                connRO.close();
-            }
-
-            Connection connID = getConnectionID();
-            if (connID != null)
-            {
-                connID.close();
-            }
-            success = ((connRW != null) && (connRO != null) && (connID != null));
+            success = (conn != null);
 		}
         catch (Exception e)
 		{
@@ -325,16 +310,6 @@ public final class DB
 	 */
 	public static boolean isConnected()
 	{
-		return isConnected(true);
-	}
-
-	/**
-	 *  Is there a connection to the database ?
-	 *  @param createNew If true, try to connect it not already connected
-	 *  @return true, if connected to database
-	 */
-	public static boolean isConnected(boolean createNew)
-	{
 		//bug [1637432]
 		if (s_cc == null) return false;
 
@@ -342,7 +317,7 @@ public final class DB
 		boolean success = false;
 		try
 		{
-            Connection conn = getConnectionRW(createNew);   //  try to get a connection
+            Connection conn = getConnection();   //  try to get a connection
             if (conn != null)
             {
                 conn.close();
@@ -355,55 +330,107 @@ public final class DB
 			success = false;
 		}
 		return success;
-	}   //  isConnected
-
-	/**
-	 * @return Connection (r/w)
-	 */
-	public static Connection getConnectionRW()
-	{
-		return getConnectionRW(true);
 	}
 
 	/**
+	 *  Replace by {@link #isConnected()}
+	 * 
+	 *  Is there a connection to the database ?
+	 *  @param createNew ignore
+	 *  @return true, if connected to database
+	 *  @deprecated
+	 */
+	@Deprecated (since="10", forRemoval=true)
+	public static boolean isConnected(boolean createNew)
+	{
+		return isConnected();
+	}   //  isConnected
+
+	/**
+	 * Get auto commit connection from connection pool.
+	 * @return {@link Connection}
+	 */
+	public static Connection getConnection() 
+	{
+		return getConnection(true);
+	}
+	
+	/**
+	 * Get auto or not auto commit connection from connection pool.
+	 * Usually you should use @{@link #getConnection()} instead to get auto commit connection 
+	 * and use {@link Trx} to works with not autoCommit connection.
+	 * @param autoCommit
+	 * @return {@link Connection}
+	 */
+	public static Connection getConnection(boolean autoCommit) 
+	{
+		return createConnection(autoCommit, Connection.TRANSACTION_READ_COMMITTED);
+	}
+	
+	/**
+	 * Replace by @{@link #getConnection()} 
+	 * 
+	 * @return Connection (r/w)
+	 * @deprecated
+	 */
+	@Deprecated (since="10", forRemoval=true)
+	public static Connection getConnectionRW()
+	{
+		return getConnection();
+	}
+
+	/**
+	 *  Replace by @{@link #getConnection()}
+	 *  
 	 *	Return (pooled) r/w AutoCommit, Serializable connection.
 	 *	For Transaction control use Trx.getConnection()
-	 *  @param createNew If true, try to create new connection if no existing connection
+	 *  @param createNew ignore
 	 *  @return Connection (r/w)
+	 *  @deprecated
 	 */
+	@Deprecated (since="10", forRemoval=true)
 	public static Connection getConnectionRW (boolean createNew)
 	{
-        return createConnection(true, false, Connection.TRANSACTION_READ_COMMITTED);
+        return getConnection();
 	}   //  getConnectionRW
 
 	/**
+	 *  Replace by @{@link #getConnection(boolean)}. 
+	 *  Note that this is intended for internal use only from the beginning.
+	 *  
 	 *	Return everytime a new r/w no AutoCommit, Serializable connection.
 	 *	To be used to ID
 	 *  @return Connection (r/w)
+	 *  @deprecated
 	 */
+	@Deprecated (since="10", forRemoval=true)
 	public static Connection getConnectionID ()
 	{
-        return createConnection(false, false, Connection.TRANSACTION_READ_COMMITTED);
+        return getConnection(false);
 	}   //  getConnectionID
 
 	/**
+	 *  Replace by @{@link #getConnection()}. Use {@link Trx} instead for readonly transaction.
+	 *  
 	 *	Return read committed, read/only from pool.
 	 *  @return Connection (r/o)
+	 *  @deprecated
 	 */
+	@Deprecated (since="10", forRemoval=true)
 	public static Connection getConnectionRO ()
 	{
-        return createConnection(true, true, Connection.TRANSACTION_READ_COMMITTED);     //  see below
+        return getConnection();
 	}	//	getConnectionRO
 
 	/**
-	 *	Return a replica connection if possible, otherwise read committed, read/only from pool.
+	 *	Return a replica connection if possible, otherwise from pool.
 	 *  @return Connection (r/o)
 	 */
 	public static Connection getReportingConnectionRO ()
 	{
 		Connection conn = DBReadReplica.getConnectionRO();
 		if (conn == null)
-			conn = getConnectionRO();
+			conn = getConnection();
         return conn;
 	}	//	getReportingConnectionRO
 
@@ -418,22 +445,12 @@ public final class DB
 	public static Connection createConnection (boolean autoCommit, int trxLevel)
 	{
 		Connection conn = s_cc.getConnection (autoCommit, trxLevel);
-		if (CLogMgt.isLevelFinest())
-		{
-			/**
-			try
-			{
-				log.finest(s_cc.getConnectionURL()
-					+ ", UserID=" + s_cc.getDbUid()
-					+ ", AutoCommit=" + conn.getAutoCommit() + " (" + autoCommit + ")"
-					+ ", TrxIso=" + conn.getTransactionIsolation() + "( " + trxLevel + ")");
-			}
-			catch (Exception e)
-			{
-			}
-			**/
-		}
 
+		if (conn == null)
+        {
+            throw new IllegalStateException("DB.createConnection - @NoDBConnection@");
+        }
+		
 		//hengsin: failed to set autocommit can lead to severe lock up of the system
         try {
 	        if (conn != null && conn.getAutoCommit() != autoCommit)
@@ -446,46 +463,22 @@ public final class DB
 	}	//	createConnection
 
     /**
+     *  Replace by {@link #createConnection(boolean, int)}.
+     *  Use {@link Trx} instead for readonly transaction.
+     *  
      *  Create new Connection.
-     *  The connection must be closed explicitly by the application
+     *  The connection must be closed explicitly by the application.
      *
      *  @param autoCommit auto commit
+     *  @param readOnly ignore
      *  @param trxLevel - Connection.TRANSACTION_READ_UNCOMMITTED, Connection.TRANSACTION_READ_COMMITTED, Connection.TRANSACTION_REPEATABLE_READ, or Connection.TRANSACTION_READ_COMMITTED.
      *  @return Connection connection
+     *  @deprecated
      */
+	@Deprecated (since="10", forRemoval=true)
     public static Connection createConnection (boolean autoCommit, boolean readOnly, int trxLevel)
     {
-        Connection conn = s_cc.getConnection (autoCommit, trxLevel);
-
-        //hengsin: this could be problematic as it can be reuse for readwrite activites after return to pool
-        /*
-        if (conn != null)
-        {
-            try
-            {
-                conn.setReadOnly(readOnly);
-            }
-            catch (SQLException ex)
-            {
-                conn = null;
-                log.log(Level.SEVERE, ex.getMessage(), ex);
-            }
-        }*/
-
-        if (conn == null)
-        {
-            throw new IllegalStateException("DB.getConnectionRO - @NoDBConnection@");
-        }
-
-        //hengsin: failed to set autocommit can lead to severe lock up of the system
-        try {
-	        if (conn.getAutoCommit() != autoCommit)
-	        {
-	        	throw new IllegalStateException("Failed to set the requested auto commit mode on connection. [autocommit=" + autoCommit +"]");
-	        }
-        } catch (SQLException e) {}
-
-        return conn;
+        return createConnection(autoCommit, trxLevel);
     }   //  createConnection
 
 	/**
@@ -554,10 +547,12 @@ public final class DB
 	 *  Check database Version with Code version
 	 *  @param ctx context
 	 *  @return true if Database version (date) is the same
+	 *  @deprecated
 	 */
+	@Deprecated (since="10", forRemoval=true)
 	public static boolean isDatabaseOK (Properties ctx)
 	{
-//    Check Version
+		// Check Version
         String version = "?";
         String sql = "SELECT Version FROM AD_System";
         PreparedStatement pstmt = null;
@@ -587,21 +582,10 @@ public final class DB
             return true;
 
         String AD_Message = "DatabaseVersionError";
-        String title = org.compiere.Adempiere.getName() + " " +  Msg.getMsg(ctx, AD_Message, true);
         //  Code assumes Database version {0}, but Database has Version {1}.
         String msg = Msg.getMsg(ctx, AD_Message);   //  complete message
         msg = MessageFormat.format(msg, new Object[] {Adempiere.DB_VERSION, version});
-        Object[] options = { UIManager.get("OptionPane.noButtonText"), "Migrate" };
-        int no = JOptionPane.showOptionDialog (null, msg,
-            title, JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
-            UIManager.getIcon("OptionPane.errorIcon"), options, options[0]);
-        if (no == 1)
-        {
-            JOptionPane.showMessageDialog (null,
-                "Start RUN_Migrate (in utils)\nSee: http://www.adempiere.com/maintain",
-                title, JOptionPane.INFORMATION_MESSAGE);
-            Env.exitEnv(1);
-        }
+        System.err.println(msg);
         return false;
 	}   //  isDatabaseOK
 
@@ -613,7 +597,7 @@ public final class DB
 	 */
 	public static boolean isBuildOK (Properties ctx)
 	{
-//    Check Build
+		//  Check Build
         String buildClient = Adempiere.getVersion();
         String buildDatabase = "";
         boolean failOnBuild = false;
@@ -650,7 +634,6 @@ public final class DB
             return true;
 
         String AD_Message = "BuildVersionError";
-        String title = org.compiere.Adempiere.getName() + " " +  Msg.getMsg(ctx, AD_Message, true);
         // The program assumes build version {0}, but database has build Version {1}.
         String msg = Msg.getMsg(ctx, AD_Message);   //  complete message
         msg = MessageFormat.format(msg, new Object[] {buildClient, buildDatabase});
@@ -659,18 +642,8 @@ public final class DB
         	return true;
         }
         
-        if (Ini.isClient())
-        {
-	    	JOptionPane.showMessageDialog (null,
-	    			msg,
-	    			title, JOptionPane.ERROR_MESSAGE);
-	    	Env.exitEnv(1);
-        }
-        else
-        {
-        	log.log(Level.SEVERE, msg);
-        }
-    	return false;
+        log.log(Level.SEVERE, msg);
+        return false;
 	}   //  isDatabaseOK
 
 
@@ -695,7 +668,7 @@ public final class DB
 
 	/**************************************************************************
 	 *	Prepare Forward Read Only Call
-	 *  @param SQL sql
+	 *  @param sql
 	 *  @return Callable Statement
 	 */
 	public static CallableStatement prepareCall(String sql)
@@ -705,8 +678,8 @@ public final class DB
 
 	/**************************************************************************
 	 *	Prepare Call
-	 *  @param SQL sql
-	 *  @param readOnly
+	 *  @param SQL
+	 *  @param resultSetConcurrency
 	 *  @param trxName
 	 *  @return Callable Statement
 	 */
@@ -727,11 +700,7 @@ public final class DB
 	 */
 	public static CPreparedStatement prepareStatement (String sql)
 	{
-		int concurrency = ResultSet.CONCUR_READ_ONLY;
-		String upper = sql.toUpperCase();
-		if (upper.startsWith("UPDATE ") || upper.startsWith("DELETE "))
-			concurrency = ResultSet.CONCUR_UPDATABLE;
-		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, concurrency, null);
+		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, null);
 	}	//	prepareStatement
 
 	/**
@@ -742,19 +711,15 @@ public final class DB
 	 */
 	public static CPreparedStatement prepareStatement (String sql, String trxName)
 	{
-		int concurrency = ResultSet.CONCUR_READ_ONLY;
-		String upper = sql.toUpperCase();
-		if (upper.startsWith("UPDATE ") || upper.startsWith("DELETE "))
-			concurrency = ResultSet.CONCUR_UPDATABLE;
-		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, concurrency, trxName);
+		return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, trxName);
 	}	//	prepareStatement
 
 	/**
 	 *	Prepare Statement.
-	 *  @param sql sql statement
+	 *  @param sql
 	 *  @param resultSetType - ResultSet.TYPE_FORWARD_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.TYPE_SCROLL_SENSITIVE
 	 *  @param resultSetConcurrency - ResultSet.CONCUR_READ_ONLY or ResultSet.CONCUR_UPDATABLE
-	 *  @return Prepared Statement r/o or r/w depending on concur
+	 *  @return Prepared Statement
 	 *  @deprecated
 	 */
 	public static CPreparedStatement prepareStatement (String sql,
@@ -765,11 +730,11 @@ public final class DB
 
 	/**
 	 *	Prepare Statement.
-	 *  @param sql sql statement
+	 *  @param sql
 	 *  @param resultSetType - ResultSet.TYPE_FORWARD_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.TYPE_SCROLL_SENSITIVE
 	 *  @param resultSetConcurrency - ResultSet.CONCUR_READ_ONLY or ResultSet.CONCUR_UPDATABLE
 	 * 	@param trxName transaction name
-	 *  @return Prepared Statement r/o or r/w depending on concur
+	 *  @return Prepared Statement
 	 */
 	public static CPreparedStatement prepareStatement(String sql,
 		int resultSetType, int resultSetConcurrency, String trxName)
@@ -794,7 +759,7 @@ public final class DB
 	 *  @param resultSetType - ResultSet.TYPE_FORWARD_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.TYPE_SCROLL_SENSITIVE
 	 *  @param resultSetConcurrency - ResultSet.CONCUR_READ_ONLY or ResultSet.CONCUR_UPDATABLE
 	 * 	@param trxName transaction name
-	 *  @return Statement - either r/w ir r/o depending on concur
+	 *  @return Statement
 	 */
 	public static Statement createStatement(int resultSetType, int resultSetConcurrency, String trxName)
 	{
@@ -870,7 +835,7 @@ public final class DB
 	/**
 	 *	Execute Update.
 	 *  saves "DBExecuteError" in Log
-	 *  @param sql sql
+	 *  @param sql
 	 *  @return number of rows updated or -1 if error
 	 *  @deprecated
 	 */
@@ -882,7 +847,7 @@ public final class DB
 	/**
 	 *	Execute Update.
 	 *  saves "DBExecuteError" in Log
-	 *  @param sql sql
+	 *  @param sql
 	 * 	@param trxName optional transaction name
 	 *  @return number of rows updated or -1 if error
 	 */
@@ -894,7 +859,7 @@ public final class DB
 	/**
 	 *	Execute Update.
 	 *  saves "DBExecuteError" in Log
-	 *  @param sql sql
+	 *  @param sql
 	 * 	@param trxName optional transaction name
 	 *  @param timeOut optional timeout parameter
 	 *  @return number of rows updated or -1 if error
@@ -907,7 +872,7 @@ public final class DB
 	/**
 	 *	Execute Update.
 	 *  saves "DBExecuteError" in Log
-	 *  @param sql sql
+	 *  @param sql
 	 * 	@param ignoreError if true, no execution error is reported
 	 *  @return number of rows updated or -1 if error
 	 *  @deprecated
@@ -920,7 +885,7 @@ public final class DB
 	/**
 	 *	Execute Update.
 	 *  saves "DBExecuteError" in Log
-	 *  @param sql sql
+	 *  @param sql
 	 * 	@param ignoreError if true, no execution error is reported
 	 * 	@param trxName transaction
 	 *  @return number of rows updated or -1 if error
@@ -933,7 +898,7 @@ public final class DB
 	/**
 	 *	Execute Update.
 	 *  saves "DBExecuteError" in Log
-	 *  @param sql sql
+	 *  @param sql
 	 * 	@param ignoreError if true, no execution error is reported
 	 * 	@param trxName transaction
 	 *  @param timeOut optional timeOut parameter
@@ -947,7 +912,7 @@ public final class DB
 	/**
 	 *	Execute Update.
 	 *  saves "DBExecuteError" in Log
-	 *  @param sql sql
+	 *  @param sql
 	 *  @param param int param
 	 * 	@param trxName transaction
 	 *  @return number of rows updated or -1 if error
@@ -960,7 +925,7 @@ public final class DB
 	/**
 	 *	Execute Update.
 	 *  saves "DBExecuteError" in Log
-	 *  @param sql sql
+	 *  @param sql
 	 *  @param param int param
 	 * 	@param trxName transaction
 	 *  @param timeOut optional timeOut parameter
@@ -974,7 +939,7 @@ public final class DB
 	/**
 	 *	Execute Update.
 	 *  saves "DBExecuteError" in Log
-	 *  @param sql sql
+	 *  @param sql
 	 *  @param param int parameter
 	 * 	@param ignoreError if true, no execution error is reported
 	 * 	@param trxName transaction
@@ -988,7 +953,7 @@ public final class DB
 	/**
 	 *	Execute Update.
 	 *  saves "DBExecuteError" in Log
-	 *  @param sql sql
+	 *  @param sql
 	 *  @param param int parameter
 	 * 	@param ignoreError if true, no execution error is reported
 	 * 	@param trxName transaction
@@ -1003,7 +968,7 @@ public final class DB
 	/**
 	 *	Execute Update.
 	 *  saves "DBExecuteError" in Log
-	 *  @param sql sql
+	 *  @param sql
 	 *  @param params array of parameters
 	 * 	@param ignoreError if true, no execution error is reported
 	 * 	@param trxName optional transaction name
@@ -1017,7 +982,7 @@ public final class DB
 	/**
 	 *	Execute Update.
 	 *  saves "DBExecuteError" in Log
-	 *  @param sql sql
+	 *  @param sql
 	 *  @param params array of parameters
 	 * 	@param ignoreError if true, no execution error is reported
 	 * 	@param trxName optional transaction name
@@ -1028,7 +993,7 @@ public final class DB
 	{
 		if (sql == null || sql.length() == 0)
 			throw new IllegalArgumentException("Required parameter missing - " + sql);
-		verifyTrx(trxName, sql);
+		verifyTrx(trxName);
 		//
 		int no = -1;
 		CPreparedStatement cs = ProxyFactory.newCPreparedStatement(ResultSet.TYPE_FORWARD_ONLY,
@@ -1043,11 +1008,6 @@ public final class DB
 				cs.setQueryTimeout(timeOut);
 			}
 			no = cs.executeUpdate();
-			//	No Transaction - Commit
-			if (trxName == null)
-			{
-				cs.commit();	//	Local commit
-			}
 		}
 		catch (Exception e)
 		{
@@ -1060,7 +1020,6 @@ public final class DB
 				String msg = DBException.getDefaultDBExceptionMessage(e);
 				log.saveError (msg != null ? msg : "DBExecuteError", e);
 			}
-		//	throw new DBException(e);
 		}
 		finally
 		{
@@ -1098,7 +1057,7 @@ public final class DB
 		if (sql == null || sql.length() == 0)
 			throw new IllegalArgumentException("Required parameter missing - " + sql);
 		//
-		verifyTrx(trxName, sql);
+		verifyTrx(trxName);
 		int no = -1;
 		CPreparedStatement cs = ProxyFactory.newCPreparedStatement(ResultSet.TYPE_FORWARD_ONLY,
 			ResultSet.CONCUR_UPDATABLE, sql, trxName);	//	converted in call
@@ -1113,11 +1072,6 @@ public final class DB
 				}
 			}
 			no = cs.executeUpdate();
-			//	No Transaction - Commit
-			if (trxName == null)
-			{
-				cs.commit();	//	Local commit
-			}
 		}
 		catch (Exception e)
 		{
@@ -1226,16 +1180,26 @@ public final class DB
 	 */
 	public static boolean rollback (boolean throwException, String trxName) throws SQLException
 	{
+		// Not on transaction scope, Connection are thus auto commit/rollback
+        if (trxName == null)
+        {
+            return true;
+        }
+        
 		try
 		{
-			Connection conn = null;
-			Trx trx = trxName == null ? null : Trx.get(trxName, true);
+			Trx trx = Trx.get(trxName, false);
 			if (trx != null)
 				return trx.rollback(true);
-			else
-				conn = DB.getConnectionRW ();
-			if (conn != null && !conn.getAutoCommit())
-				conn.rollback();
+			
+			if (throwException)
+            {
+                throw new IllegalStateException("Could not load transation with identifier: " + trxName);
+            }
+            else
+            {
+                return false;
+            }
 		}
 		catch (SQLException e)
 		{
@@ -1244,15 +1208,13 @@ public final class DB
 				throw e;
 			return false;
 		}
-		return true;
 	}	//	commit
 
 	/**
 	 * 	Get Row Set.
 	 * 	When a Rowset is closed, it also closes the underlying connection.
 	 * 	If the created RowSet is transfered by RMI, closing it makes no difference
-	 *	@param sql sql
-	 *	@param local local RowSet (own connection)
+	 *	@param sql
 	 *	@return row set or null
 	 */
 	public static RowSet getRowSet (String sql)
@@ -1267,8 +1229,8 @@ public final class DB
 
     /**
      * Get int Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params array of parameters
      * @return first value or -1 if not found
      * @throws DBException if there is any SQLException
@@ -1278,8 +1240,18 @@ public final class DB
     	int retValue = -1;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -1290,20 +1262,28 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
+    		if (trx != null)
+    		{
+    			trx.rollback();
+    		}
     		throw new DBException(e, sql);
     	}
     	finally
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
     }
 
     /**
      * Get String Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params collection of parameters
      * @return first value or -1
      * @throws DBException if there is any SQLException
@@ -1315,8 +1295,8 @@ public final class DB
 
     /**
      * Get int Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params array of parameters
      * @return first value or -1 if not found or error
      */
@@ -1336,8 +1316,8 @@ public final class DB
 
     /**
      * Get int Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params collection of parameters
      * @return first value or null
      */
@@ -1348,8 +1328,8 @@ public final class DB
 
     /**
      * Get String Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params array of parameters
      * @return first value or null
      * @throws DBException if there is any SQLException
@@ -1359,8 +1339,18 @@ public final class DB
     	String retValue = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -1371,20 +1361,28 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
+    		if (trx != null)
+    		{
+    			trx.rollback();
+    		}
     		throw new DBException(e, sql);
     	}
     	finally
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
     }
 
     /**
      * Get String Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params collection of parameters
      * @return first value or null
      * @throws DBException if there is any SQLException
@@ -1396,8 +1394,8 @@ public final class DB
 
     /**
      * Get String Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params array of parameters
      * @return first value or null
      */
@@ -1417,8 +1415,8 @@ public final class DB
 
     /**
      * Get String Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params collection of parameters
      * @return first value or null
      */
@@ -1429,8 +1427,8 @@ public final class DB
 
     /**
      * Get BigDecimal Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params array of parameters
      * @return first value or null if not found
      * @throws DBException if there is any SQLException
@@ -1440,8 +1438,18 @@ public final class DB
     	BigDecimal retValue = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -1452,21 +1460,28 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
-    		//log.log(Level.SEVERE, sql, getSQLException(e));
+    		if (trx != null)
+    		{
+    			trx.rollback();
+    		}
     		throw new DBException(e, sql);
     	}
     	finally
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
     }
 
     /**
      * Get BigDecimal Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params collection of parameters
      * @return first value or null if not found
      * @throws DBException if there is any SQLException
@@ -1479,8 +1494,8 @@ public final class DB
 
     /**
      * Get BigDecimal Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params array of parameters
      * @return first value or null
      */
@@ -1500,8 +1515,8 @@ public final class DB
 
     /**
      * Get BigDecimal Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params collection of parameters
      * @return first value or null
      */
@@ -1512,8 +1527,8 @@ public final class DB
 
     /**
      * Get Timestamp Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params array of parameters
      * @return first value or null
      * @throws DBException if there is any SQLException
@@ -1523,8 +1538,18 @@ public final class DB
     	Timestamp retValue = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -1535,20 +1560,28 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
+    		if (trx != null)
+    		{
+    			trx.rollback();
+    		}
     		throw new DBException(e, sql);
     	}
     	finally
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
     }
 
     /**
      * Get BigDecimal Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params collection of parameters
      * @return first value or null if not found
      * @throws DBException if there is any SQLException
@@ -1560,8 +1593,8 @@ public final class DB
 
     /**
      * Get Timestamp Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params array of parameters
      * @return first value or null
      */
@@ -1580,8 +1613,8 @@ public final class DB
 
     /**
      * Get Timestamp Value from sql
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params collection of parameters
      * @return first value or null
      */
@@ -1653,7 +1686,6 @@ public final class DB
         }
         KeyNamePair[] retValue = new KeyNamePair[list.size()];
         list.toArray(retValue);
-    //  s_log.fine("getKeyNamePairs #" + retValue.length);
         return retValue;
 	}	//	getKeyNamePairs
 
@@ -1796,10 +1828,10 @@ public final class DB
 
 	/**************************************************************************
 	 *	Get next number for Key column = 0 is Error.
-	 *   * @param ctx client
-	@param TableName table name
-	 * 	@param trxName optionl transaction name
-	 *  @return next no
+	 *  @param ctx client
+	 *  @param TableName table name
+	 * 	@param trxName optional transaction name
+	 *  @return next id no
 	 */
 	public static int getNextID (Properties ctx, String TableName, String trxName)
 	{
@@ -1815,11 +1847,11 @@ public final class DB
 	 *  @param AD_Client_ID client
 	 *  @param TableName table name
 	 * 	@param trxName optional Transaction Name
-	 *  @return next no
+	 *  @return next id no
 	 */
 	public static int getNextID (int AD_Client_ID, String TableName, String trxName)
 	{
-		return MSequence.getNextID (AD_Client_ID, TableName, trxName); // it is ok to call deprecated method here
+		return MSequence.getNextID (AD_Client_ID, TableName, trxName);
 	}	//	getNextID
 
 	/**
@@ -1850,7 +1882,7 @@ public final class DB
 	 *	@param C_DocType_ID document type
 	 * 	@param trxName optional Transaction Name
 	 *  @param definite asking for a definitive or temporary sequence
-	 *  @param PO
+	 *  @param po PO
 	 *	@return document no or null
 	 */
 	public static String getDocumentNo(int C_DocType_ID, String trxName, boolean definite, PO po)
@@ -1930,6 +1962,7 @@ public final class DB
 	 *	@return true if client and RMI or Objects on Server
 	 *  @deprecated
 	 */
+	@Deprecated (forRemoval=true)
 	public static boolean isRemoteObjects()
 	{
 		return false;
@@ -1942,6 +1975,7 @@ public final class DB
 	 *	@return true if client and RMI or Process on Server
 	 *  @deprecated
 	 */
+	@Deprecated (forRemoval=true)
 	public static boolean isRemoteProcess()
 	{
 		return false;
@@ -2031,7 +2065,7 @@ public final class DB
 	/**
 	 *  Package Strings for SQL command in quotes
 	 *  @param txt  String with text
-	 *  @return escaped string for insert statement (NULL if null)
+	 *  @return escaped string for sql statement (NULL if null)
 	 */
 	public static String TO_STRING (String txt)
 	{
@@ -2046,7 +2080,7 @@ public final class DB
 	 *  </pre>
 	 *  @param txt  String with text
 	 *  @param maxLength    Maximum Length of content or 0 to ignore
-	 *  @return escaped string for insert statement (NULL if null)
+	 *  @return escaped string for sql statement (NULL if null)
 	 */
 	public static String TO_STRING (String txt, int maxLength)
 	{
@@ -2140,19 +2174,6 @@ public final class DB
 	/** Quote			*/
 	private static final char QUOTE = '\'';
 
-	/**
-	 * 	Run Post Migration manually
-	 *	@param args ignored
-	 */
-	public static void main (String[] args)
-	{
-		Adempiere.startup(true);
-		MSystem system = MSystem.get(Env.getCtx());
-		system.setIsJustMigrated(true);
-		afterMigration(Env.getCtx());
-	}	//	main
-
-
     // Following methods are kept for BeanShell compatibility.
 	// See BF [ 2030233 ] Remove duplicate code from DB class
     // TODO: remove this when BeanShell will support varargs methods
@@ -2184,6 +2205,7 @@ public final class DB
     {
     	return getSQLValueBD(trxName, sql, new Object[]{int_param1});
     }
+    //End BeanShell compatibility.
 
 	/**
 	 * Get Array of ValueNamePair items.
@@ -2314,7 +2336,7 @@ public final class DB
 	 * saveKeys is map with key is rowID, value is list value of all viewID
 	 * viewIDIndex is index of viewID need save.
 	 * @param AD_PInstance_ID
-	 * @param selection
+	 * @param saveKeys
 	 * @param trxName
 	 */
 	public static void createT_SelectionNew (int AD_PInstance_ID, Collection<KeyNamePair> saveKeys, String trxName)
@@ -2378,7 +2400,7 @@ public final class DB
 		return m_isUUIDSupported;
 	}
 
-	private static void verifyTrx(String trxName, String sql) {
+	private static void verifyTrx(String trxName) {
 		if (trxName != null && Trx.get(trxName, false) == null) {
 			// Using a trx that was previously closed or never opened
 			// probably timed out - throw Exception (IDEMPIERE-644)
@@ -2393,7 +2415,7 @@ public final class DB
 	 * @return true if table or view with name=tableName exists in db
 	 */
 	public static boolean isTableOrViewExists(String tableName) {
-		Connection conn = getConnectionRO();
+		Connection conn = getConnection();
 		ResultSet rs = null;
 		try {
 			DatabaseMetaData metadata = conn.getMetaData();
@@ -2421,8 +2443,8 @@ public final class DB
 
     /**
      * Get an array of objects from sql (one per each column on the select clause), column indexing starts with 0
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params array of parameters
      * @return null if not found
      * @throws DBException if there is any SQLException
@@ -2431,8 +2453,18 @@ public final class DB
 		List<Object> retValue = new ArrayList<Object>();
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLValueObjectsEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -2451,12 +2483,20 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
+    		if (trx != null)
+    		{
+    			trx.rollback();
+    		}
     		throw new DBException(e, sql);
     	}
     	finally
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	return retValue;
 	}
@@ -2464,8 +2504,8 @@ public final class DB
     /**
      * Get an array of arrays of objects from sql (one per each row, and one per each column on the select clause), column indexing starts with 0
      * WARNING: This method must be used just for queries returning few records, using it for many records implies heavy memory consumption
-     * @param trxName trx
-     * @param sql sql
+     * @param trxName optional transaction name
+     * @param sql
      * @param params array of parameters
      * @return null if not found
      * @throws DBException if there is any SQLException
@@ -2474,8 +2514,18 @@ public final class DB
 		List<List<Object>> rowsArray = new ArrayList<List<Object>>();
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
+    	Trx trx = null; 
+    	if (trxName == null)
+    	{
+    		trxName = Trx.createTrxName("getSQLArrayObjectsEx");
+    		trx = Trx.get(trxName, true);    		
+    	}
     	try
     	{
+    		if (trx != null)
+    		{
+    			trx.getConnection().setReadOnly(true);
+    		}
     		pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
@@ -2494,12 +2544,20 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
+    		if (trx != null)
+    		{
+    			trx.rollback();
+    		}
     		throw new DBException(e, sql);
     	}
     	finally
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
+    		if (trx != null)
+    		{
+    			trx.close();
+    		}
     	}
     	if (rowsArray.size() == 0)
     		return null;
@@ -2508,21 +2566,17 @@ public final class DB
 
 	/**
 	 *	Prepare Read Replica Statement
-	 *  @param sql sql statement
+	 *  @param sql
 	 * 	@param trxName transaction
 	 *  @return Prepared Statement (from replica if possible, otherwise normal statement)
 	 */
 	public static PreparedStatement prepareNormalReadReplicaStatement(String sql, String trxName) {
-		int concurrency = ResultSet.CONCUR_READ_ONLY;
-		String upper = sql.toUpperCase();
-		if (upper.startsWith("UPDATE ") || upper.startsWith("DELETE "))
-			concurrency = ResultSet.CONCUR_UPDATABLE;
-		return prepareNormalReadReplicaStatement(sql, ResultSet.TYPE_FORWARD_ONLY, concurrency, trxName);
+		return prepareNormalReadReplicaStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, trxName);
 	}
 
 	/**
 	 *	Prepare Read Replica Statement
-	 *  @param sql sql statement
+	 *  @param sql
 	 *  @param resultSetType - ResultSet.TYPE_FORWARD_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.TYPE_SCROLL_SENSITIVE
 	 *  @param resultSetConcurrency - ResultSet.CONCUR_READ_ONLY or ResultSet.CONCUR_UPDATABLE
 	 * 	@param trxName transaction name
@@ -2610,7 +2664,7 @@ public final class DB
 		String removeQuotedStrings = "'(?:.|[\\n\\r])*?'";
 		String removeLeadingSpaces = "^\\s+";
 		String cleanSql = sql.toLowerCase().replaceAll(removeComments, "").replaceAll(removeQuotedStrings, "").replaceFirst(removeLeadingSpaces, "");
-		if(cleanSql.matches("^select\s.*$") && !cleanSql.contains(";"))
+		if(cleanSql.matches("^select\\s.*$") && !cleanSql.contains(";"))
 			return true;
 		else
 			return false;

@@ -40,7 +40,7 @@ import org.compiere.util.Msg;
  * 			<li>BF [ 2608617 ] Error when I want to delete a PO document
  * 			<li>BF [ 2609604 ] Add M_RequisitionLine.C_BPartner_ID
  * 			<li>FR [ 2841841 ] Requisition Improvements
- * 				https://sourceforge.net/tracker/?func=detail&aid=2841841&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/792/
  */
 public class MRequisitionLine extends X_M_RequisitionLine
 {
@@ -52,9 +52,9 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	/**
 	 * Get corresponding Requisition Line for given Order Line
 	 * @param ctx
-	 * @param C_OrderLine_ID order line
+	 * @param C_Order_ID order line
 	 * @param trxName
-	 * @return Requisition Line
+	 * @return Requisition Line array
 	 */
 	public static MRequisitionLine[] forC_Order_ID(Properties ctx, int C_Order_ID, String trxName)
 	{
@@ -123,7 +123,11 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	 */
 	public MRequisitionLine (Properties ctx, int M_RequisitionLine_ID, String trxName)
 	{
-		super (ctx, M_RequisitionLine_ID, trxName);
+		this (ctx, M_RequisitionLine_ID, trxName, (String[]) null);
+	}	//	MRequisitionLine
+
+	public MRequisitionLine(Properties ctx, int M_RequisitionLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_RequisitionLine_ID, trxName, virtualColumns);
 		if (M_RequisitionLine_ID == 0)
 		{
 			setLine (0);	// @SQL=SELECT COALESCE(MAX(Line),0)+10 AS DefaultValue FROM M_RequisitionLine WHERE M_Requisition_ID=@M_Requisition_ID@
@@ -131,8 +135,7 @@ public class MRequisitionLine extends X_M_RequisitionLine
 			setPriceActual (Env.ZERO);
 			setQty (Env.ONE);	// 1
 		}
-		
-	}	//	MRequisitionLine
+	}
 
 	/**
 	 * 	Load Constructor

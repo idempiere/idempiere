@@ -13,7 +13,7 @@
  *****************************************************************************/
 
 window.adempiere = {};
-var adempiere = window.adempiere;
+let adempiere = window.adempiere;
 adempiere.isSupportSavePass=typeof(Storage) !== "undefined";
 
 adempiere.saveUserToken = function (key, hash, sessionId)
@@ -29,15 +29,15 @@ adempiere.findUserToken = function (cmpid, key)
 	if (!adempiere.isSupportSavePass)
 		return;
 	
-	var sid = localStorage[key+".sid"];
-	var hash = localStorage[key+".hash"];
+	let sid = localStorage[key+".sid"];
+	let hash = localStorage[key+".hash"];
 
 	if (sid == null || sid == "" || hash == null || hash == ""){
 		return
 	}
 	
-	var widget = zk.Widget.$(cmpid);
-	var event = new zk.Event(widget, 'onUserToken', {sid: sid, hash: hash}, {toServer: true});
+	let widget = zk.Widget.$(cmpid);
+	let event = new zk.Event(widget, 'onUserToken', {sid: sid, hash: hash}, {toServer: true});
 	zAu.send(event);
 };
 

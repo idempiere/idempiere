@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for PP_Order_Node_Product
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_Node_Product")
 public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Product, I_Persistent 
 {
@@ -33,12 +33,26 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Order_Node_Product (Properties ctx, int PP_Order_Node_Product_ID, String trxName)
     {
       super (ctx, PP_Order_Node_Product_ID, trxName);
+      /** if (PP_Order_Node_Product_ID == 0)
+        {
+			setM_Product_ID (0);
+			setPP_Order_ID (0);
+			setPP_Order_Node_ID (0);
+			setPP_Order_Node_Product_ID (0);
+			setPP_Order_Workflow_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_Node_Product (Properties ctx, int PP_Order_Node_Product_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_Node_Product_ID, trxName, virtualColumns);
       /** if (PP_Order_Node_Product_ID == 0)
         {
 			setM_Product_ID (0);
@@ -78,7 +92,8 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
     }
 
 	/** Set Is Subcontracting.
-		@param IsSubcontracting Is Subcontracting	  */
+		@param IsSubcontracting Is Subcontracting
+	*/
 	public void setIsSubcontracting (boolean IsSubcontracting)
 	{
 		set_Value (COLUMNNAME_IsSubcontracting, Boolean.valueOf(IsSubcontracting));
@@ -86,7 +101,7 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 
 	/** Get Is Subcontracting.
 		@return Is Subcontracting	  */
-	public boolean isSubcontracting () 
+	public boolean isSubcontracting()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSubcontracting);
 		if (oo != null) 
@@ -105,21 +120,20 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -134,21 +148,20 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	}
 
 	/** Set Manufacturing Order.
-		@param PP_Order_ID 
-		Manufacturing Order
-	  */
+		@param PP_Order_ID Manufacturing Order
+	*/
 	public void setPP_Order_ID (int PP_Order_ID)
 	{
-		if (PP_Order_ID < 1) 
+		if (PP_Order_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, Integer.valueOf(PP_Order_ID));
 	}
 
 	/** Get Manufacturing Order.
 		@return Manufacturing Order
 	  */
-	public int getPP_Order_ID () 
+	public int getPP_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_ID);
 		if (ii == null)
@@ -163,21 +176,20 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	}
 
 	/** Set Manufacturing Order Activity.
-		@param PP_Order_Node_ID 
-		Workflow Node (activity), step or process
-	  */
+		@param PP_Order_Node_ID Workflow Node (activity), step or process
+	*/
 	public void setPP_Order_Node_ID (int PP_Order_Node_ID)
 	{
-		if (PP_Order_Node_ID < 1) 
+		if (PP_Order_Node_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Node_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Node_ID, Integer.valueOf(PP_Order_Node_ID));
 	}
 
 	/** Get Manufacturing Order Activity.
 		@return Workflow Node (activity), step or process
 	  */
-	public int getPP_Order_Node_ID () 
+	public int getPP_Order_Node_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_Node_ID);
 		if (ii == null)
@@ -186,18 +198,19 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	}
 
 	/** Set Manufacturing Order Activity Product.
-		@param PP_Order_Node_Product_ID Manufacturing Order Activity Product	  */
+		@param PP_Order_Node_Product_ID Manufacturing Order Activity Product
+	*/
 	public void setPP_Order_Node_Product_ID (int PP_Order_Node_Product_ID)
 	{
-		if (PP_Order_Node_Product_ID < 1) 
+		if (PP_Order_Node_Product_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Node_Product_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Node_Product_ID, Integer.valueOf(PP_Order_Node_Product_ID));
 	}
 
 	/** Get Manufacturing Order Activity Product.
 		@return Manufacturing Order Activity Product	  */
-	public int getPP_Order_Node_Product_ID () 
+	public int getPP_Order_Node_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_Node_Product_ID);
 		if (ii == null)
@@ -206,7 +219,8 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	}
 
 	/** Set PP_Order_Node_Product_UU.
-		@param PP_Order_Node_Product_UU PP_Order_Node_Product_UU	  */
+		@param PP_Order_Node_Product_UU PP_Order_Node_Product_UU
+	*/
 	public void setPP_Order_Node_Product_UU (String PP_Order_Node_Product_UU)
 	{
 		set_Value (COLUMNNAME_PP_Order_Node_Product_UU, PP_Order_Node_Product_UU);
@@ -214,7 +228,7 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 
 	/** Get PP_Order_Node_Product_UU.
 		@return PP_Order_Node_Product_UU	  */
-	public String getPP_Order_Node_Product_UU () 
+	public String getPP_Order_Node_Product_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PP_Order_Node_Product_UU);
 	}
@@ -226,18 +240,19 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	}
 
 	/** Set Manufacturing Order Workflow.
-		@param PP_Order_Workflow_ID Manufacturing Order Workflow	  */
+		@param PP_Order_Workflow_ID Manufacturing Order Workflow
+	*/
 	public void setPP_Order_Workflow_ID (int PP_Order_Workflow_ID)
 	{
-		if (PP_Order_Workflow_ID < 1) 
+		if (PP_Order_Workflow_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Workflow_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Workflow_ID, Integer.valueOf(PP_Order_Workflow_ID));
 	}
 
 	/** Get Manufacturing Order Workflow.
 		@return Manufacturing Order Workflow	  */
-	public int getPP_Order_Workflow_ID () 
+	public int getPP_Order_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_Workflow_ID);
 		if (ii == null)
@@ -246,9 +261,8 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -257,7 +271,7 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -266,9 +280,8 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -277,7 +290,7 @@ public class X_PP_Order_Node_Product extends PO implements I_PP_Order_Node_Produ
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

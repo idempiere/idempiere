@@ -33,7 +33,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.Merge;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookupFactory;
@@ -246,7 +246,7 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 		final String columnNameRef = columnName;
 		final int fromIdRef = from_ID;
 		final int toIdRef = to_ID;
-		FDialog.ask(m_WindowNo, form, "MergeQuestion", m_msg, new Callback<Boolean>() {
+		Dialog.ask(m_WindowNo, "MergeQuestion", m_msg, new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 
@@ -294,12 +294,12 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 	{
 		if (m_success)
 		{
-			FDialog.info (m_WindowNo, form, "MergeSuccess", 
+			Dialog.info (m_WindowNo, "MergeSuccess", 
 				m_msg + " #" + m_totalCount);
 		}
 		else
 		{
-			FDialog.error(m_WindowNo, form, "MergeError", 
+			Dialog.error(m_WindowNo, "MergeError", 
 				m_errorLog.toString());
 			return;
 		}

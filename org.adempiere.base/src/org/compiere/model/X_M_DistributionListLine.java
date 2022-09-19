@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DistributionListLine
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_DistributionListLine")
 public class X_M_DistributionListLine extends PO implements I_M_DistributionListLine, I_Persistent 
 {
@@ -33,12 +33,26 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_DistributionListLine (Properties ctx, int M_DistributionListLine_ID, String trxName)
     {
       super (ctx, M_DistributionListLine_ID, trxName);
+      /** if (M_DistributionListLine_ID == 0)
+        {
+			setC_BPartner_ID (0);
+			setC_BPartner_Location_ID (0);
+			setM_DistributionList_ID (0);
+			setM_DistributionListLine_ID (0);
+			setMinQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_DistributionListLine (Properties ctx, int M_DistributionListLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_DistributionListLine_ID, trxName, virtualColumns);
       /** if (M_DistributionListLine_ID == 0)
         {
 			setC_BPartner_ID (0);
@@ -83,22 +97,21 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -113,21 +126,20 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 	}
 
 	/** Set Partner Location.
-		@param C_BPartner_Location_ID 
-		Identifies the (ship to) address for this Business Partner
-	  */
+		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
+	*/
 	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
 	{
-		if (C_BPartner_Location_ID < 1) 
+		if (C_BPartner_Location_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
 	}
 
 	/** Get Partner Location.
 		@return Identifies the (ship to) address for this Business Partner
 	  */
-	public int getC_BPartner_Location_ID () 
+	public int getC_BPartner_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
 		if (ii == null)
@@ -136,9 +148,8 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -147,7 +158,7 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -159,21 +170,20 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 	}
 
 	/** Set Distribution List.
-		@param M_DistributionList_ID 
-		Distribution Lists allow to distribute products to a selected list of partners
-	  */
+		@param M_DistributionList_ID Distribution Lists allow to distribute products to a selected list of partners
+	*/
 	public void setM_DistributionList_ID (int M_DistributionList_ID)
 	{
-		if (M_DistributionList_ID < 1) 
+		if (M_DistributionList_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_DistributionList_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_DistributionList_ID, Integer.valueOf(M_DistributionList_ID));
 	}
 
 	/** Get Distribution List.
 		@return Distribution Lists allow to distribute products to a selected list of partners
 	  */
-	public int getM_DistributionList_ID () 
+	public int getM_DistributionList_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_DistributionList_ID);
 		if (ii == null)
@@ -190,21 +200,20 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
     }
 
 	/** Set Distribution List Line.
-		@param M_DistributionListLine_ID 
-		Distribution List Line with Business Partner and Quantity/Percentage
-	  */
+		@param M_DistributionListLine_ID Distribution List Line with Business Partner and Quantity/Percentage
+	*/
 	public void setM_DistributionListLine_ID (int M_DistributionListLine_ID)
 	{
-		if (M_DistributionListLine_ID < 1) 
+		if (M_DistributionListLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_DistributionListLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_DistributionListLine_ID, Integer.valueOf(M_DistributionListLine_ID));
 	}
 
 	/** Get Distribution List Line.
 		@return Distribution List Line with Business Partner and Quantity/Percentage
 	  */
-	public int getM_DistributionListLine_ID () 
+	public int getM_DistributionListLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_DistributionListLine_ID);
 		if (ii == null)
@@ -213,7 +222,8 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 	}
 
 	/** Set M_DistributionListLine_UU.
-		@param M_DistributionListLine_UU M_DistributionListLine_UU	  */
+		@param M_DistributionListLine_UU M_DistributionListLine_UU
+	*/
 	public void setM_DistributionListLine_UU (String M_DistributionListLine_UU)
 	{
 		set_Value (COLUMNNAME_M_DistributionListLine_UU, M_DistributionListLine_UU);
@@ -221,15 +231,14 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 
 	/** Get M_DistributionListLine_UU.
 		@return M_DistributionListLine_UU	  */
-	public String getM_DistributionListLine_UU () 
+	public String getM_DistributionListLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_DistributionListLine_UU);
 	}
 
 	/** Set Minimum Quantity.
-		@param MinQty 
-		Minimum quantity for the business partner
-	  */
+		@param MinQty Minimum quantity for the business partner
+	*/
 	public void setMinQty (BigDecimal MinQty)
 	{
 		set_Value (COLUMNNAME_MinQty, MinQty);
@@ -238,7 +247,7 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 	/** Get Minimum Quantity.
 		@return Minimum quantity for the business partner
 	  */
-	public BigDecimal getMinQty () 
+	public BigDecimal getMinQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MinQty);
 		if (bd == null)
@@ -247,9 +256,8 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 	}
 
 	/** Set Ratio.
-		@param Ratio 
-		Relative Ratio for Distributions
-	  */
+		@param Ratio Relative Ratio for Distributions
+	*/
 	public void setRatio (BigDecimal Ratio)
 	{
 		set_Value (COLUMNNAME_Ratio, Ratio);
@@ -258,7 +266,7 @@ public class X_M_DistributionListLine extends PO implements I_M_DistributionList
 	/** Get Ratio.
 		@return Relative Ratio for Distributions
 	  */
-	public BigDecimal getRatio () 
+	public BigDecimal getRatio()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Ratio);
 		if (bd == null)

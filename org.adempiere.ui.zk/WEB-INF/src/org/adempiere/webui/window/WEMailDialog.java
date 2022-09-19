@@ -84,6 +84,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
 /**
@@ -93,7 +94,7 @@ import org.zkoss.zul.South;
  *  @version 	$Id: EMailDialog.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  *  
  *  globalqss: integrate phib fixing bug reported here
- *     http://sourceforge.net/tracker/index.php?func=detail&aid=1568765&group_id=176962&atid=879332
+ *     https://sourceforge.net/p/adempiere/bugs/62/
  * 
  *  phib - fixing bug [ 1568765 ] Close email dialog button broken
  *  
@@ -204,6 +205,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		setAttachment(attachment);
 		setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		addEventListener(Events.ON_CANCEL, e -> onCancel());
+		addEventListener(Events.ON_SIZE, e -> onSize());
+		addEventListener(Events.ON_MAXIMIZE, e -> onSize());
 	}	//	commonInit
 
 
@@ -373,11 +376,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			attachmentBox.appendChild(item);
 		}
 		
-		row = new Row();
-		rows.appendChild(row);
-		row.appendCellChild(fMessage, 2);
-		fMessage.setHflex("2");
-		fMessage.setHeight("350px");
+		fMessage.setWidth("100%");
+		fMessage.setHeight("100%");
 		
 		confirmPanel.addActionListener(this);
 		
@@ -409,11 +409,16 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		this.appendChild(borderlayout);
 		ZKUpdateUtil.setWidth(borderlayout, "100%");
 		
+		North northPane = new North();
+		northPane.setSclass("dialog-content");
+		northPane.setAutoscroll(true);
+		borderlayout.appendChild(northPane);
+		northPane.appendChild(grid);
+		
 		Center centerPane = new Center();
 		centerPane.setSclass("dialog-content");
-		centerPane.setAutoscroll(true);
 		borderlayout.appendChild(centerPane);
-		centerPane.appendChild(grid);
+		centerPane.appendChild(fMessage);
 
 		South southPane = new South();
 		southPane.setSclass("dialog-footer");
@@ -594,14 +599,14 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 					new MUserMail(Env.getCtx(), email).saveEx();
 				if (email.isSentOK())
 				{
-					FDialog.info(0, this, "MessageSent");
+					Dialog.info(0, "MessageSent");
 					onClose();
 				}
 				else
-					FDialog.error(0, this, "MessageNotSent", status);
+					Dialog.error(0, "MessageNotSent", status);
 			}
 			else
-				FDialog.error(0, this, "MessageNotSent", status);
+				Dialog.error(0, "MessageNotSent", status);
 		}
 		else if (event instanceof UploadEvent)
 		{
@@ -621,6 +626,10 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 
 	private void onCancel() {
 		onClose();
+	}
+	
+	private void onSize() {
+		fMessage.invalidate();
 	}
 
 	/**
@@ -695,7 +704,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				m_user = MUser.get(Env.getCtx(), AD_User_ID);
 				if (Util.isEmpty(m_user.getEMail())) 
 				{
-					FDialog.error(0, Msg.getMsg(Env.getCtx(), "UserNoEmailAddress"));
+					Dialog.error(0, Msg.getMsg(Env.getCtx(), "UserNoEmailAddress"));
 				} 
 				else 
 				{
@@ -710,7 +719,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 				m_ccuser = MUser.get(Env.getCtx(), AD_User_ID);
 				if (Util.isEmpty(m_ccuser.getEMail())) 
 				{
-					FDialog.error(0, Msg.getMsg(Env.getCtx(), "UserNoEmailAddress"));
+					Dialog.error(0, Msg.getMsg(Env.getCtx(), "UserNoEmailAddress"));
 				}
 				else
 				{

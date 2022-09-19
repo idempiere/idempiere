@@ -32,7 +32,7 @@ import org.compiere.util.DB;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * @author Armen Rizal, GOODWILL CONSULTING
  * 		FR [2789943] Better DBException handling for PostgreSQL
- * 		https://sourceforge.net/tracker/?func=detail&aid=2789943&group_id=176962&atid=879335
+ * 		https://sourceforge.net/p/adempiere/feature-requests/719/
  */
 public class DBException extends AdempiereException
 {

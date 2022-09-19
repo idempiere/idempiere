@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Color
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Color")
 public class X_AD_Color extends PO implements I_AD_Color, I_Persistent 
 {
@@ -33,12 +33,30 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Color (Properties ctx, int AD_Color_ID, String trxName)
     {
       super (ctx, AD_Color_ID, trxName);
+      /** if (AD_Color_ID == 0)
+        {
+			setAD_Color_ID (0);
+			setAlpha (0);
+			setBlue (0);
+			setColorType (null);
+			setGreen (0);
+			setImageAlpha (Env.ZERO);
+			setIsDefault (false);
+			setName (null);
+			setRed (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Color (Properties ctx, int AD_Color_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Color_ID, trxName, virtualColumns);
       /** if (AD_Color_ID == 0)
         {
 			setAD_Color_ID (0);
@@ -82,21 +100,20 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
     }
 
 	/** Set System Color.
-		@param AD_Color_ID 
-		Color for backgrounds or indicators
-	  */
+		@param AD_Color_ID Color for backgrounds or indicators
+	*/
 	public void setAD_Color_ID (int AD_Color_ID)
 	{
-		if (AD_Color_ID < 1) 
+		if (AD_Color_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Color_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Color_ID, Integer.valueOf(AD_Color_ID));
 	}
 
 	/** Get System Color.
 		@return Color for backgrounds or indicators
 	  */
-	public int getAD_Color_ID () 
+	public int getAD_Color_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Color_ID);
 		if (ii == null)
@@ -105,7 +122,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set AD_Color_UU.
-		@param AD_Color_UU AD_Color_UU	  */
+		@param AD_Color_UU AD_Color_UU
+	*/
 	public void setAD_Color_UU (String AD_Color_UU)
 	{
 		set_Value (COLUMNNAME_AD_Color_UU, AD_Color_UU);
@@ -113,7 +131,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 
 	/** Get AD_Color_UU.
 		@return AD_Color_UU	  */
-	public String getAD_Color_UU () 
+	public String getAD_Color_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Color_UU);
 	}
@@ -125,21 +143,20 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set Image.
-		@param AD_Image_ID 
-		Image or Icon
-	  */
+		@param AD_Image_ID Image or Icon
+	*/
 	public void setAD_Image_ID (int AD_Image_ID)
 	{
-		if (AD_Image_ID < 1) 
+		if (AD_Image_ID < 1)
 			set_Value (COLUMNNAME_AD_Image_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Image_ID, Integer.valueOf(AD_Image_ID));
 	}
 
 	/** Get Image.
 		@return Image or Icon
 	  */
-	public int getAD_Image_ID () 
+	public int getAD_Image_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Image_ID);
 		if (ii == null)
@@ -148,9 +165,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set Alpha.
-		@param Alpha 
-		Color Alpha value 0-255
-	  */
+		@param Alpha Color Alpha value 0-255
+	*/
 	public void setAlpha (int Alpha)
 	{
 		set_Value (COLUMNNAME_Alpha, Integer.valueOf(Alpha));
@@ -159,7 +175,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get Alpha.
 		@return Color Alpha value 0-255
 	  */
-	public int getAlpha () 
+	public int getAlpha()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Alpha);
 		if (ii == null)
@@ -168,9 +184,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set 2nd Alpha.
-		@param Alpha_1 
-		Alpha value for second color
-	  */
+		@param Alpha_1 Alpha value for second color
+	*/
 	public void setAlpha_1 (int Alpha_1)
 	{
 		set_Value (COLUMNNAME_Alpha_1, Integer.valueOf(Alpha_1));
@@ -179,7 +194,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get 2nd Alpha.
 		@return Alpha value for second color
 	  */
-	public int getAlpha_1 () 
+	public int getAlpha_1()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Alpha_1);
 		if (ii == null)
@@ -188,9 +203,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set Blue.
-		@param Blue 
-		Color RGB blue value
-	  */
+		@param Blue Color RGB blue value
+	*/
 	public void setBlue (int Blue)
 	{
 		set_Value (COLUMNNAME_Blue, Integer.valueOf(Blue));
@@ -199,7 +213,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get Blue.
 		@return Color RGB blue value
 	  */
-	public int getBlue () 
+	public int getBlue()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Blue);
 		if (ii == null)
@@ -208,9 +222,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set 2nd Blue.
-		@param Blue_1 
-		RGB value for second color
-	  */
+		@param Blue_1 RGB value for second color
+	*/
 	public void setBlue_1 (int Blue_1)
 	{
 		set_Value (COLUMNNAME_Blue_1, Integer.valueOf(Blue_1));
@@ -219,7 +232,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get 2nd Blue.
 		@return RGB value for second color
 	  */
-	public int getBlue_1 () 
+	public int getBlue_1()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Blue_1);
 		if (ii == null)
@@ -238,9 +251,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Texture (Picture) = T */
 	public static final String COLORTYPE_TexturePicture = "T";
 	/** Set Color Type.
-		@param ColorType 
-		Color presentation for this color
-	  */
+		@param ColorType Color presentation for this color
+	*/
 	public void setColorType (String ColorType)
 	{
 
@@ -250,15 +262,14 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get Color Type.
 		@return Color presentation for this color
 	  */
-	public String getColorType () 
+	public String getColorType()
 	{
 		return (String)get_Value(COLUMNNAME_ColorType);
 	}
 
 	/** Set Green.
-		@param Green 
-		RGB value 
-	  */
+		@param Green RGB value 
+	*/
 	public void setGreen (int Green)
 	{
 		set_Value (COLUMNNAME_Green, Integer.valueOf(Green));
@@ -267,7 +278,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get Green.
 		@return RGB value 
 	  */
-	public int getGreen () 
+	public int getGreen()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Green);
 		if (ii == null)
@@ -276,9 +287,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set 2nd Green.
-		@param Green_1 
-		RGB value for second color
-	  */
+		@param Green_1 RGB value for second color
+	*/
 	public void setGreen_1 (int Green_1)
 	{
 		set_Value (COLUMNNAME_Green_1, Integer.valueOf(Green_1));
@@ -287,7 +297,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get 2nd Green.
 		@return RGB value for second color
 	  */
-	public int getGreen_1 () 
+	public int getGreen_1()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Green_1);
 		if (ii == null)
@@ -295,19 +305,18 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Image Alpha .
-		@param ImageAlpha 
-		Image Texture Composite Alpha
-	  */
+	/** Set Image Alpha.
+		@param ImageAlpha Image Texture Composite Alpha
+	*/
 	public void setImageAlpha (BigDecimal ImageAlpha)
 	{
 		set_Value (COLUMNNAME_ImageAlpha, ImageAlpha);
 	}
 
-	/** Get Image Alpha .
+	/** Get Image Alpha.
 		@return Image Texture Composite Alpha
 	  */
-	public BigDecimal getImageAlpha () 
+	public BigDecimal getImageAlpha()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ImageAlpha);
 		if (bd == null)
@@ -316,9 +325,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -327,7 +335,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -340,9 +348,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set Line Distance.
-		@param LineDistance 
-		Distance between lines
-	  */
+		@param LineDistance Distance between lines
+	*/
 	public void setLineDistance (int LineDistance)
 	{
 		set_Value (COLUMNNAME_LineDistance, Integer.valueOf(LineDistance));
@@ -351,7 +358,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get Line Distance.
 		@return Distance between lines
 	  */
-	public int getLineDistance () 
+	public int getLineDistance()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LineDistance);
 		if (ii == null)
@@ -360,9 +367,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set Line Width.
-		@param LineWidth 
-		Width of the lines
-	  */
+		@param LineWidth Width of the lines
+	*/
 	public void setLineWidth (int LineWidth)
 	{
 		set_Value (COLUMNNAME_LineWidth, Integer.valueOf(LineWidth));
@@ -371,7 +377,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get Line Width.
 		@return Width of the lines
 	  */
-	public int getLineWidth () 
+	public int getLineWidth()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LineWidth);
 		if (ii == null)
@@ -380,9 +386,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -391,7 +396,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -405,9 +410,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
     }
 
 	/** Set Red.
-		@param Red 
-		RGB value
-	  */
+		@param Red RGB value
+	*/
 	public void setRed (int Red)
 	{
 		set_Value (COLUMNNAME_Red, Integer.valueOf(Red));
@@ -416,7 +420,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get Red.
 		@return RGB value
 	  */
-	public int getRed () 
+	public int getRed()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Red);
 		if (ii == null)
@@ -425,9 +429,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set 2nd Red.
-		@param Red_1 
-		RGB value for second color
-	  */
+		@param Red_1 RGB value for second color
+	*/
 	public void setRed_1 (int Red_1)
 	{
 		set_Value (COLUMNNAME_Red_1, Integer.valueOf(Red_1));
@@ -436,7 +439,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get 2nd Red.
 		@return RGB value for second color
 	  */
-	public int getRed_1 () 
+	public int getRed_1()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Red_1);
 		if (ii == null)
@@ -445,9 +448,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	}
 
 	/** Set Repeat Distance.
-		@param RepeatDistance 
-		Distance in points to repeat gradient color - or zero
-	  */
+		@param RepeatDistance Distance in points to repeat gradient color - or zero
+	*/
 	public void setRepeatDistance (int RepeatDistance)
 	{
 		set_Value (COLUMNNAME_RepeatDistance, Integer.valueOf(RepeatDistance));
@@ -456,7 +458,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get Repeat Distance.
 		@return Distance in points to repeat gradient color - or zero
 	  */
-	public int getRepeatDistance () 
+	public int getRepeatDistance()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_RepeatDistance);
 		if (ii == null)
@@ -483,9 +485,8 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** North West = 8 */
 	public static final String STARTPOINT_NorthWest = "8";
 	/** Set Start Point.
-		@param StartPoint 
-		Start point of the gradient colors
-	  */
+		@param StartPoint Start point of the gradient colors
+	*/
 	public void setStartPoint (String StartPoint)
 	{
 
@@ -495,7 +496,7 @@ public class X_AD_Color extends PO implements I_AD_Color, I_Persistent
 	/** Get Start Point.
 		@return Start point of the gradient colors
 	  */
-	public String getStartPoint () 
+	public String getStartPoint()
 	{
 		return (String)get_Value(COLUMNNAME_StartPoint);
 	}

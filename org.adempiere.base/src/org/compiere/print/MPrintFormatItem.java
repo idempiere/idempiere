@@ -757,7 +757,6 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	{
 		//	Set Translation from Element
 		if (newRecord 
-		//	&& MClient.get(getCtx()).isMultiLingualDocument()
 			&& getPrintName() != null && getPrintName().length() > 0)
 		{
 			String sql = "UPDATE AD_PrintFormatItem_Trl "

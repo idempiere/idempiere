@@ -43,7 +43,7 @@ import org.compiere.util.Trx;
 
 /**
  * Generate Invoice (manual) controller class
- * 
+ * @deprecated ticket IDEMPIERE-1965 replaced this with an Info Window
  */
 public class InvoiceGen extends GenForm
 {
@@ -215,8 +215,7 @@ public class InvoiceGen extends GenForm
 	}   //  executeQuery
 	
 	/**
-	 *	Save Selection & return selecion Query or ""
-	 *  @return where clause like C_Order_ID IN (...)
+	 *	Save Selection and return selection Query or ""
 	 */
 	public void saveSelection(IMiniTable miniTable)
 	{

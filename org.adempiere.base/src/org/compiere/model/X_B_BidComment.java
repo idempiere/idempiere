@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for B_BidComment
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="B_BidComment")
 public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent 
 {
@@ -30,12 +30,25 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_B_BidComment (Properties ctx, int B_BidComment_ID, String trxName)
     {
       super (ctx, B_BidComment_ID, trxName);
+      /** if (B_BidComment_ID == 0)
+        {
+			setAD_User_ID (0);
+			setB_BidComment_ID (0);
+			setB_Topic_ID (0);
+			setTextMsg (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_BidComment (Properties ctx, int B_BidComment_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_BidComment_ID, trxName, virtualColumns);
       /** if (B_BidComment_ID == 0)
         {
 			setAD_User_ID (0);
@@ -80,21 +93,20 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -103,21 +115,20 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
 	}
 
 	/** Set Bid Comment.
-		@param B_BidComment_ID 
-		Make a comment to a Bid Topic
-	  */
+		@param B_BidComment_ID Make a comment to a Bid Topic
+	*/
 	public void setB_BidComment_ID (int B_BidComment_ID)
 	{
-		if (B_BidComment_ID < 1) 
+		if (B_BidComment_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_B_BidComment_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_B_BidComment_ID, Integer.valueOf(B_BidComment_ID));
 	}
 
 	/** Get Bid Comment.
 		@return Make a comment to a Bid Topic
 	  */
-	public int getB_BidComment_ID () 
+	public int getB_BidComment_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_BidComment_ID);
 		if (ii == null)
@@ -126,7 +137,8 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
 	}
 
 	/** Set B_BidComment_UU.
-		@param B_BidComment_UU B_BidComment_UU	  */
+		@param B_BidComment_UU B_BidComment_UU
+	*/
 	public void setB_BidComment_UU (String B_BidComment_UU)
 	{
 		set_Value (COLUMNNAME_B_BidComment_UU, B_BidComment_UU);
@@ -134,7 +146,7 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
 
 	/** Get B_BidComment_UU.
 		@return B_BidComment_UU	  */
-	public String getB_BidComment_UU () 
+	public String getB_BidComment_UU()
 	{
 		return (String)get_Value(COLUMNNAME_B_BidComment_UU);
 	}
@@ -146,21 +158,20 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
 	}
 
 	/** Set Topic.
-		@param B_Topic_ID 
-		Auction Topic
-	  */
+		@param B_Topic_ID Auction Topic
+	*/
 	public void setB_Topic_ID (int B_Topic_ID)
 	{
-		if (B_Topic_ID < 1) 
+		if (B_Topic_ID < 1)
 			set_Value (COLUMNNAME_B_Topic_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_B_Topic_ID, Integer.valueOf(B_Topic_ID));
 	}
 
 	/** Get Topic.
 		@return Auction Topic
 	  */
-	public int getB_Topic_ID () 
+	public int getB_Topic_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_Topic_ID);
 		if (ii == null)
@@ -169,9 +180,8 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
 	}
 
 	/** Set Text Message.
-		@param TextMsg 
-		Text Message
-	  */
+		@param TextMsg Text Message
+	*/
 	public void setTextMsg (String TextMsg)
 	{
 		set_Value (COLUMNNAME_TextMsg, TextMsg);
@@ -180,7 +190,7 @@ public class X_B_BidComment extends PO implements I_B_BidComment, I_Persistent
 	/** Get Text Message.
 		@return Text Message
 	  */
-	public String getTextMsg () 
+	public String getTextMsg()
 	{
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}

@@ -132,12 +132,6 @@ public class AttachmentFileSystem implements IAttachmentStore {
 						fos = new FileOutputStream(destFile);
 						out = fos.getChannel();
 						in.transferTo(0, in.size(), out);
-						/* IDEMPIERE-2864
-						if(entryFile.exists()){
-							if(!entryFile.delete()){
-								entryFile.deleteOnExit();
-							}
-						}*/
 						entryFile = destFile;
 
 					} catch (IOException e) {
@@ -163,7 +157,6 @@ public class AttachmentFileSystem implements IAttachmentStore {
 					}
 				}
 				final Element entry = document.createElement("entry");
-				//entry.setAttribute("name", m_items.get(i).getName());
 				entry.setAttribute("name", attach.getEntryName(i));
 				String filePathToStore = entryFile.getAbsolutePath();
 				filePathToStore = filePathToStore.replaceFirst(attachmentPathRoot.replaceAll("\\\\","\\\\\\\\"), attach.ATTACHMENT_FOLDER_PLACEHOLDER);

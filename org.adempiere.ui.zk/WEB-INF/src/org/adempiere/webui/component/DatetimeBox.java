@@ -13,8 +13,11 @@
 package org.adempiere.webui.component;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.zkoss.zk.ui.event.EventListener;
 
@@ -31,13 +34,13 @@ public class DatetimeBox extends Panel {
 	private static final long serialVersionUID = -1075410511739601354L;
 	private Datebox dateBox;
 	private Timebox timeBox;
+	private TimeZone timeZone;
 	
 	public DatetimeBox() {
 		dateBox = new Datebox();
 		dateBox.setCols(10);
 		timeBox = new Timebox();
 		timeBox.setCols(10);
-		//timeBox.setButtonVisible(false);
 		appendChild(dateBox);
 		appendChild(timeBox);
 		
@@ -107,17 +110,40 @@ public class DatetimeBox extends Panel {
 	 * @return date
 	 */
 	public Date getValue() {
-		Date d = dateBox.getValue();
-		Date t = timeBox.getValue();
-		
-		if (d != null && t != null) {
-			Calendar cd = Calendar.getInstance();
-			cd.setTime(d);
-			Calendar ct = Calendar.getInstance();
-			ct.setTime(t);
-			cd.set(cd.get(Calendar.YEAR), cd.get(Calendar.MONTH), cd.get(Calendar.DAY_OF_MONTH),
-				   ct.get(Calendar.HOUR_OF_DAY), ct.get(Calendar.MINUTE), ct.get(Calendar.SECOND));
-			d = cd.getTime();
+		Date d = null;
+		if (timeZone != null) {
+			ZonedDateTime zonedDate = dateBox.getValueInZonedDateTime();
+			if (zonedDate != null)
+				d = Date.from(zonedDate.toInstant().atZone(timeZone.toZoneId()).toInstant());
+			Date t = null;
+			ZonedDateTime zonedTime = timeBox.getValueInZonedDateTime();
+			if (zonedTime != null)
+				t = Date.from(zonedTime.toInstant().atZone(timeZone.toZoneId()).toInstant());
+			
+			if (d != null && t != null) {
+				Calendar cd = Calendar.getInstance();
+				cd.setTimeZone(dateBox.getTimeZone());
+				cd.setTime(d);
+				Calendar ct = Calendar.getInstance();
+				ct.setTimeZone(timeBox.getTimeZone());
+				ct.setTime(t);
+				cd.set(cd.get(Calendar.YEAR), cd.get(Calendar.MONTH), cd.get(Calendar.DAY_OF_MONTH),
+					   ct.get(Calendar.HOUR_OF_DAY), ct.get(Calendar.MINUTE), ct.get(Calendar.SECOND));
+				d = cd.getTime();
+			}
+		} else {
+			d = dateBox.getValue();
+			Date t = timeBox.getValue();
+			
+			if (d != null && t != null) {
+				Calendar cd = Calendar.getInstance();
+				cd.setTime(d);
+				Calendar ct = Calendar.getInstance();
+				ct.setTime(t);
+				cd.set(cd.get(Calendar.YEAR), cd.get(Calendar.MONTH), cd.get(Calendar.DAY_OF_MONTH),
+					   ct.get(Calendar.HOUR_OF_DAY), ct.get(Calendar.MINUTE), ct.get(Calendar.SECOND));
+				d = cd.getTime();
+			}
 		}
 		
 		return d;
@@ -145,5 +171,37 @@ public class DatetimeBox extends Panel {
 	public Timebox getTimebox()
 	{
 		return timeBox;
+	}
+
+	/**
+	 * 
+	 * @param tz
+	 */
+	public void setTimeZone(TimeZone tz) {
+		this.timeZone = tz;
+		dateBox.setTimeZone(tz);
+		timeBox.setTimeZone(tz);
+		if (tz == null)
+			timeBox.setCols(10);
+		else
+			timeBox.setCols(14);
+	}
+
+	/**
+	 * 
+	 * @param localTime
+	 */
+	public void setValueInLocalDateTime(LocalDateTime localTime) {
+		dateBox.setValueInLocalDateTime(localTime);
+		timeBox.setValueInLocalDateTime(localTime);
+	}
+
+	/**
+	 * 
+	 * @param zdt
+	 */
+	public void setValueInZonedDateTime(ZonedDateTime zdt) {
+		dateBox.setValueInZonedDateTime(zdt);
+		timeBox.setValueInZonedDateTime(zdt);
 	}
 }

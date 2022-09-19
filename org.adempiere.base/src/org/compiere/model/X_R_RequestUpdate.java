@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_RequestUpdate
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestUpdate")
 public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persistent 
 {
@@ -34,12 +34,24 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_RequestUpdate (Properties ctx, int R_RequestUpdate_ID, String trxName)
     {
       super (ctx, R_RequestUpdate_ID, trxName);
+      /** if (R_RequestUpdate_ID == 0)
+        {
+			setConfidentialTypeEntry (null);
+			setR_Request_ID (0);
+			setR_RequestUpdate_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestUpdate (Properties ctx, int R_RequestUpdate_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestUpdate_ID, trxName, virtualColumns);
       /** if (R_RequestUpdate_ID == 0)
         {
 			setConfidentialTypeEntry (null);
@@ -87,9 +99,8 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	/** Private Information = P */
 	public static final String CONFIDENTIALTYPEENTRY_PrivateInformation = "P";
 	/** Set Entry Confidentiality.
-		@param ConfidentialTypeEntry 
-		Confidentiality of the individual entry
-	  */
+		@param ConfidentialTypeEntry Confidentiality of the individual entry
+	*/
 	public void setConfidentialTypeEntry (String ConfidentialTypeEntry)
 	{
 
@@ -99,15 +110,14 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	/** Get Entry Confidentiality.
 		@return Confidentiality of the individual entry
 	  */
-	public String getConfidentialTypeEntry () 
+	public String getConfidentialTypeEntry()
 	{
 		return (String)get_Value(COLUMNNAME_ConfidentialTypeEntry);
 	}
 
 	/** Set End Time.
-		@param EndTime 
-		End of the time span
-	  */
+		@param EndTime End of the time span
+	*/
 	public void setEndTime (Timestamp EndTime)
 	{
 		set_Value (COLUMNNAME_EndTime, EndTime);
@@ -116,7 +126,7 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	/** Get End Time.
 		@return End of the time span
 	  */
-	public Timestamp getEndTime () 
+	public Timestamp getEndTime()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_EndTime);
 	}
@@ -128,21 +138,20 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	}
 
 	/** Set Product Used.
-		@param M_ProductSpent_ID 
-		Product/Resource/Service used in Request
-	  */
+		@param M_ProductSpent_ID Product/Resource/Service used in Request
+	*/
 	public void setM_ProductSpent_ID (int M_ProductSpent_ID)
 	{
-		if (M_ProductSpent_ID < 1) 
+		if (M_ProductSpent_ID < 1)
 			set_Value (COLUMNNAME_M_ProductSpent_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ProductSpent_ID, Integer.valueOf(M_ProductSpent_ID));
 	}
 
 	/** Get Product Used.
 		@return Product/Resource/Service used in Request
 	  */
-	public int getM_ProductSpent_ID () 
+	public int getM_ProductSpent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductSpent_ID);
 		if (ii == null)
@@ -151,9 +160,8 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	}
 
 	/** Set Quantity Invoiced.
-		@param QtyInvoiced 
-		Invoiced Quantity
-	  */
+		@param QtyInvoiced Invoiced Quantity
+	*/
 	public void setQtyInvoiced (BigDecimal QtyInvoiced)
 	{
 		set_Value (COLUMNNAME_QtyInvoiced, QtyInvoiced);
@@ -162,7 +170,7 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	/** Get Quantity Invoiced.
 		@return Invoiced Quantity
 	  */
-	public BigDecimal getQtyInvoiced () 
+	public BigDecimal getQtyInvoiced()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyInvoiced);
 		if (bd == null)
@@ -171,9 +179,8 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	}
 
 	/** Set Quantity Used.
-		@param QtySpent 
-		Quantity used for this event
-	  */
+		@param QtySpent Quantity used for this event
+	*/
 	public void setQtySpent (BigDecimal QtySpent)
 	{
 		set_Value (COLUMNNAME_QtySpent, QtySpent);
@@ -182,7 +189,7 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	/** Get Quantity Used.
 		@return Quantity used for this event
 	  */
-	public BigDecimal getQtySpent () 
+	public BigDecimal getQtySpent()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtySpent);
 		if (bd == null)
@@ -191,9 +198,8 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	}
 
 	/** Set Result.
-		@param Result 
-		Result of the action taken
-	  */
+		@param Result Result of the action taken
+	*/
 	public void setResult (String Result)
 	{
 		set_ValueNoCheck (COLUMNNAME_Result, Result);
@@ -202,7 +208,7 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	/** Get Result.
 		@return Result of the action taken
 	  */
-	public String getResult () 
+	public String getResult()
 	{
 		return (String)get_Value(COLUMNNAME_Result);
 	}
@@ -214,21 +220,20 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	}
 
 	/** Set Request.
-		@param R_Request_ID 
-		Request from a Business Partner or Prospect
-	  */
+		@param R_Request_ID Request from a Business Partner or Prospect
+	*/
 	public void setR_Request_ID (int R_Request_ID)
 	{
-		if (R_Request_ID < 1) 
+		if (R_Request_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Request_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Request_ID, Integer.valueOf(R_Request_ID));
 	}
 
 	/** Get Request.
 		@return Request from a Business Partner or Prospect
 	  */
-	public int getR_Request_ID () 
+	public int getR_Request_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Request_ID);
 		if (ii == null)
@@ -237,21 +242,20 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	}
 
 	/** Set Request Update.
-		@param R_RequestUpdate_ID 
-		Request Updates
-	  */
+		@param R_RequestUpdate_ID Request Updates
+	*/
 	public void setR_RequestUpdate_ID (int R_RequestUpdate_ID)
 	{
-		if (R_RequestUpdate_ID < 1) 
+		if (R_RequestUpdate_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_RequestUpdate_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_RequestUpdate_ID, Integer.valueOf(R_RequestUpdate_ID));
 	}
 
 	/** Get Request Update.
 		@return Request Updates
 	  */
-	public int getR_RequestUpdate_ID () 
+	public int getR_RequestUpdate_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_RequestUpdate_ID);
 		if (ii == null)
@@ -268,7 +272,8 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
     }
 
 	/** Set R_RequestUpdate_UU.
-		@param R_RequestUpdate_UU R_RequestUpdate_UU	  */
+		@param R_RequestUpdate_UU R_RequestUpdate_UU
+	*/
 	public void setR_RequestUpdate_UU (String R_RequestUpdate_UU)
 	{
 		set_Value (COLUMNNAME_R_RequestUpdate_UU, R_RequestUpdate_UU);
@@ -276,15 +281,14 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 
 	/** Get R_RequestUpdate_UU.
 		@return R_RequestUpdate_UU	  */
-	public String getR_RequestUpdate_UU () 
+	public String getR_RequestUpdate_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_RequestUpdate_UU);
 	}
 
 	/** Set Start Time.
-		@param StartTime 
-		Time started
-	  */
+		@param StartTime Time started
+	*/
 	public void setStartTime (Timestamp StartTime)
 	{
 		set_Value (COLUMNNAME_StartTime, StartTime);
@@ -293,7 +297,7 @@ public class X_R_RequestUpdate extends PO implements I_R_RequestUpdate, I_Persis
 	/** Get Start Time.
 		@return Time started
 	  */
-	public Timestamp getStartTime () 
+	public Timestamp getStartTime()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartTime);
 	}

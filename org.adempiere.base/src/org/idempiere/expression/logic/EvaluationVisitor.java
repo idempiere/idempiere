@@ -26,6 +26,8 @@ package org.idempiere.expression.logic;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,7 +38,9 @@ import org.idempiere.expression.logic.SimpleBooleanParser.BoolContext;
 import org.idempiere.expression.logic.SimpleBooleanParser.ComparatorContext;
 import org.idempiere.expression.logic.SimpleBooleanParser.ComparatorExpressionContext;
 import org.idempiere.expression.logic.SimpleBooleanParser.ContextVariablesContext;
+import org.idempiere.expression.logic.SimpleBooleanParser.DoubleQuotedCSVTextContext;
 import org.idempiere.expression.logic.SimpleBooleanParser.DoubleQuotedTextContext;
+import org.idempiere.expression.logic.SimpleBooleanParser.QuotedCSVTextContext;
 import org.idempiere.expression.logic.SimpleBooleanParser.QuotedTextContext;
 import org.idempiere.expression.logic.SimpleBooleanParser.TextContext;
 
@@ -63,11 +67,19 @@ public class EvaluationVisitor extends SimpleBooleanBaseVisitor<Object> {
 		return new BigDecimal(ctx.DECIMAL().getText());
 	}
 
-	
+	@Override
+	public Object visitQuotedCSVText(QuotedCSVTextContext ctx) {
+		return ctx.QCSVTEXT().getText();
+	}
 
 	@Override
 	public Object visitQuotedText(QuotedTextContext ctx) {
 		return ctx.QTEXT().getText().replaceAll("[']", "");
+	}
+
+	@Override
+	public Object visitDoubleQuotedCSVText(DoubleQuotedCSVTextContext ctx) {
+		return ctx.DQCSVTEXT().getText();
 	}
 
 	@Override
@@ -142,9 +154,11 @@ public class EvaluationVisitor extends SimpleBooleanBaseVisitor<Object> {
 			return Boolean.TRUE;
 		if (left == null || right == null)
 			return Boolean.FALSE;
-		if (left instanceof String && right instanceof String && !(ctx.right.getText().startsWith("'") && !(ctx.right.getText().startsWith("\"")))) {
+		if (left instanceof String && right instanceof String) {
 			String rightText = (String) right;
-			if (rightText.indexOf(",") > 0) {
+			if (ctx.right.start.getType() == SimpleBooleanLexer.QCSVTEXT || ctx.right.start.getType() == SimpleBooleanLexer.DQCSVTEXT) {
+				return isIn((String)left, rightText);
+			} else if (ctx.right.start.getType() == SimpleBooleanLexer.TEXT && rightText.indexOf(",") > 0) {
 				return isIn((String)left, rightText);
 			}
 		}
@@ -173,11 +187,39 @@ public class EvaluationVisitor extends SimpleBooleanBaseVisitor<Object> {
 	}
 
 	private Boolean isIn(String left, String rightText) {
-		String[] values = rightText.split("[,]");
+		List<String> values = new ArrayList<>();
+		char[] chars = rightText.toCharArray();
+		Character quote = null;
+		StringBuilder value = new StringBuilder();
+		for (char ec : chars) {
+			if (quote != null && quote.charValue() == ec) {
+				quote = null;
+			} if (ec == '"') {
+				if (quote == null) {
+					quote = Character.valueOf(ec);
+				} else {
+					value.append(ec);
+				}
+			} else if (ec == '\'') {
+				if (quote == null) {
+					quote = Character.valueOf(ec);
+				} else {
+					value.append(ec);
+				}
+			} else if (Character.isWhitespace(ec)) {
+				if (quote != null)
+					value.append(ec);
+			} else if (ec == ',') {
+				if (value.length() > 0)
+					values.add(value.toString());
+				value = new StringBuilder();
+			} else {
+				value.append(ec);
+			}
+		}
+		if (value.length() > 0)
+			values.add(value.toString());
 		for(String s : values) {
-			s = s.trim();
-			if ((s.startsWith("'") && s.endsWith("'")) || (s.startsWith("\"") && s.endsWith("\"")))
-				s = s.substring(1, s.length()-1);
 			if (left.equals(s))
 				return Boolean.TRUE;
 		}

@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_CountryGroup
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_CountryGroup")
 public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persistent 
 {
@@ -32,12 +32,24 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_CountryGroup (Properties ctx, int C_CountryGroup_ID, String trxName)
     {
       super (ctx, C_CountryGroup_ID, trxName);
+      /** if (C_CountryGroup_ID == 0)
+        {
+			setC_CountryGroup_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_CountryGroup (Properties ctx, int C_CountryGroup_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_CountryGroup_ID, trxName, virtualColumns);
       /** if (C_CountryGroup_ID == 0)
         {
 			setC_CountryGroup_ID (0);
@@ -75,18 +87,19 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
     }
 
 	/** Set Country Group.
-		@param C_CountryGroup_ID Country Group	  */
+		@param C_CountryGroup_ID Country Group
+	*/
 	public void setC_CountryGroup_ID (int C_CountryGroup_ID)
 	{
-		if (C_CountryGroup_ID < 1) 
+		if (C_CountryGroup_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_CountryGroup_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_CountryGroup_ID, Integer.valueOf(C_CountryGroup_ID));
 	}
 
 	/** Get Country Group.
 		@return Country Group	  */
-	public int getC_CountryGroup_ID () 
+	public int getC_CountryGroup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CountryGroup_ID);
 		if (ii == null)
@@ -95,7 +108,8 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
 	}
 
 	/** Set C_CountryGroup_UU.
-		@param C_CountryGroup_UU C_CountryGroup_UU	  */
+		@param C_CountryGroup_UU C_CountryGroup_UU
+	*/
 	public void setC_CountryGroup_UU (String C_CountryGroup_UU)
 	{
 		set_Value (COLUMNNAME_C_CountryGroup_UU, C_CountryGroup_UU);
@@ -103,15 +117,14 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
 
 	/** Get C_CountryGroup_UU.
 		@return C_CountryGroup_UU	  */
-	public String getC_CountryGroup_UU () 
+	public String getC_CountryGroup_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_CountryGroup_UU);
 	}
 
 	/** Set Date From.
-		@param DateFrom 
-		Starting date for a range
-	  */
+		@param DateFrom Starting date for a range
+	*/
 	public void setDateFrom (Timestamp DateFrom)
 	{
 		set_Value (COLUMNNAME_DateFrom, DateFrom);
@@ -120,15 +133,14 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
 	/** Get Date From.
 		@return Starting date for a range
 	  */
-	public Timestamp getDateFrom () 
+	public Timestamp getDateFrom()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateFrom);
 	}
 
 	/** Set Date To.
-		@param DateTo 
-		End date of a date range
-	  */
+		@param DateTo End date of a date range
+	*/
 	public void setDateTo (Timestamp DateTo)
 	{
 		set_Value (COLUMNNAME_DateTo, DateTo);
@@ -137,15 +149,14 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
 	/** Get Date To.
 		@return End date of a date range
 	  */
-	public Timestamp getDateTo () 
+	public Timestamp getDateTo()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateTo);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -154,15 +165,14 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -171,15 +181,14 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -188,7 +197,7 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -202,9 +211,8 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -213,7 +221,7 @@ public class X_C_CountryGroup extends PO implements I_C_CountryGroup, I_Persiste
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

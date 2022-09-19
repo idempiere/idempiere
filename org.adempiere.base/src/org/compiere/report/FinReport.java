@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.compiere.report;
 
-import static org.compiere.model.SystemIDs.TABLE_T_REPORT;
-
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,6 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.I_C_ValidCombination;
+import org.compiere.model.I_T_Report;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MReportCube;
@@ -45,7 +44,7 @@ import org.compiere.util.TimeUtil;
  *
  *  @author Jorg Janke
  *	@author Armen Rizal, Goodwill Consulting
- *			<li>FR [2857076] User Element 1 and 2 completion - https://sourceforge.net/tracker/?func=detail&aid=2857076&group_id=176962&atid=879335
+ *			<li>FR [2857076] User Element 1 and 2 completion - https://sourceforge.net/p/adempiere/feature-requests/817/
  *
  *  @version $Id: FinReport.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
@@ -1809,7 +1808,7 @@ public class FinReport extends SvrProcess
 		//	Create New
 		if (createNew)
 		{
-			int AD_Table_ID = TABLE_T_REPORT;		//	T_Report
+			int AD_Table_ID = I_T_Report.Table_ID;		//	T_Report
 			pf = MPrintFormat.createFromTable(Env.getCtx(), AD_Table_ID);
 			AD_PrintFormat_ID = pf.getAD_PrintFormat_ID();
 			m_report.setAD_PrintFormat_ID(AD_PrintFormat_ID);

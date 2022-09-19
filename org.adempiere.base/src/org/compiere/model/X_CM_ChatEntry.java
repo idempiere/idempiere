@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_ChatEntry
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatEntry")
 public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent 
 {
@@ -31,12 +31,27 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_CM_ChatEntry (Properties ctx, int CM_ChatEntry_ID, String trxName)
     {
       super (ctx, CM_ChatEntry_ID, trxName);
+      /** if (CM_ChatEntry_ID == 0)
+        {
+			setCharacterData (null);
+			setChatEntryType (null);
+// N
+			setCM_ChatEntry_ID (0);
+			setCM_Chat_ID (0);
+			setConfidentialType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_CM_ChatEntry (Properties ctx, int CM_ChatEntry_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, CM_ChatEntry_ID, trxName, virtualColumns);
       /** if (CM_ChatEntry_ID == 0)
         {
 			setCharacterData (null);
@@ -83,21 +98,20 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -106,9 +120,8 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	}
 
 	/** Set Character Data.
-		@param CharacterData 
-		Long Character Field
-	  */
+		@param CharacterData Long Character Field
+	*/
 	public void setCharacterData (String CharacterData)
 	{
 		set_ValueNoCheck (COLUMNNAME_CharacterData, CharacterData);
@@ -117,7 +130,7 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	/** Get Character Data.
 		@return Long Character Field
 	  */
-	public String getCharacterData () 
+	public String getCharacterData()
 	{
 		return (String)get_Value(COLUMNNAME_CharacterData);
 	}
@@ -131,9 +144,8 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	/** Wiki = W */
 	public static final String CHATENTRYTYPE_Wiki = "W";
 	/** Set Chat Entry Type.
-		@param ChatEntryType 
-		Type of Chat/Forum Entry
-	  */
+		@param ChatEntryType Type of Chat/Forum Entry
+	*/
 	public void setChatEntryType (String ChatEntryType)
 	{
 
@@ -143,7 +155,7 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	/** Get Chat Entry Type.
 		@return Type of Chat/Forum Entry
 	  */
-	public String getChatEntryType () 
+	public String getChatEntryType()
 	{
 		return (String)get_Value(COLUMNNAME_ChatEntryType);
 	}
@@ -155,21 +167,20 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	}
 
 	/** Set Chat Entry Grandparent.
-		@param CM_ChatEntryGrandParent_ID 
-		Link to Grand Parent (root level)
-	  */
+		@param CM_ChatEntryGrandParent_ID Link to Grand Parent (root level)
+	*/
 	public void setCM_ChatEntryGrandParent_ID (int CM_ChatEntryGrandParent_ID)
 	{
-		if (CM_ChatEntryGrandParent_ID < 1) 
+		if (CM_ChatEntryGrandParent_ID < 1)
 			set_Value (COLUMNNAME_CM_ChatEntryGrandParent_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_CM_ChatEntryGrandParent_ID, Integer.valueOf(CM_ChatEntryGrandParent_ID));
 	}
 
 	/** Get Chat Entry Grandparent.
 		@return Link to Grand Parent (root level)
 	  */
-	public int getCM_ChatEntryGrandParent_ID () 
+	public int getCM_ChatEntryGrandParent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CM_ChatEntryGrandParent_ID);
 		if (ii == null)
@@ -178,21 +189,20 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	}
 
 	/** Set Chat Entry.
-		@param CM_ChatEntry_ID 
-		Individual Chat / Discussion Entry
-	  */
+		@param CM_ChatEntry_ID Individual Chat / Discussion Entry
+	*/
 	public void setCM_ChatEntry_ID (int CM_ChatEntry_ID)
 	{
-		if (CM_ChatEntry_ID < 1) 
+		if (CM_ChatEntry_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_CM_ChatEntry_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_CM_ChatEntry_ID, Integer.valueOf(CM_ChatEntry_ID));
 	}
 
 	/** Get Chat Entry.
 		@return Individual Chat / Discussion Entry
 	  */
-	public int getCM_ChatEntry_ID () 
+	public int getCM_ChatEntry_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CM_ChatEntry_ID);
 		if (ii == null)
@@ -215,21 +225,20 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	}
 
 	/** Set Chat Entry Parent.
-		@param CM_ChatEntryParent_ID 
-		Link to direct Parent
-	  */
+		@param CM_ChatEntryParent_ID Link to direct Parent
+	*/
 	public void setCM_ChatEntryParent_ID (int CM_ChatEntryParent_ID)
 	{
-		if (CM_ChatEntryParent_ID < 1) 
+		if (CM_ChatEntryParent_ID < 1)
 			set_Value (COLUMNNAME_CM_ChatEntryParent_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_CM_ChatEntryParent_ID, Integer.valueOf(CM_ChatEntryParent_ID));
 	}
 
 	/** Get Chat Entry Parent.
 		@return Link to direct Parent
 	  */
-	public int getCM_ChatEntryParent_ID () 
+	public int getCM_ChatEntryParent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CM_ChatEntryParent_ID);
 		if (ii == null)
@@ -238,7 +247,8 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	}
 
 	/** Set CM_ChatEntry_UU.
-		@param CM_ChatEntry_UU CM_ChatEntry_UU	  */
+		@param CM_ChatEntry_UU CM_ChatEntry_UU
+	*/
 	public void setCM_ChatEntry_UU (String CM_ChatEntry_UU)
 	{
 		set_Value (COLUMNNAME_CM_ChatEntry_UU, CM_ChatEntry_UU);
@@ -246,7 +256,7 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 
 	/** Get CM_ChatEntry_UU.
 		@return CM_ChatEntry_UU	  */
-	public String getCM_ChatEntry_UU () 
+	public String getCM_ChatEntry_UU()
 	{
 		return (String)get_Value(COLUMNNAME_CM_ChatEntry_UU);
 	}
@@ -258,21 +268,20 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	}
 
 	/** Set Chat.
-		@param CM_Chat_ID 
-		Chat or discussion thread
-	  */
+		@param CM_Chat_ID Chat or discussion thread
+	*/
 	public void setCM_Chat_ID (int CM_Chat_ID)
 	{
-		if (CM_Chat_ID < 1) 
+		if (CM_Chat_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_CM_Chat_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_CM_Chat_ID, Integer.valueOf(CM_Chat_ID));
 	}
 
 	/** Get Chat.
 		@return Chat or discussion thread
 	  */
-	public int getCM_Chat_ID () 
+	public int getCM_Chat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CM_Chat_ID);
 		if (ii == null)
@@ -291,9 +300,8 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	/** Private Information = P */
 	public static final String CONFIDENTIALTYPE_PrivateInformation = "P";
 	/** Set Confidentiality.
-		@param ConfidentialType 
-		Type of Confidentiality
-	  */
+		@param ConfidentialType Type of Confidentiality
+	*/
 	public void setConfidentialType (String ConfidentialType)
 	{
 
@@ -303,7 +311,7 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	/** Get Confidentiality.
 		@return Type of Confidentiality
 	  */
-	public String getConfidentialType () 
+	public String getConfidentialType()
 	{
 		return (String)get_Value(COLUMNNAME_ConfidentialType);
 	}
@@ -319,9 +327,8 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	/** Suspicious = S */
 	public static final String MODERATORSTATUS_Suspicious = "S";
 	/** Set Moderation Status.
-		@param ModeratorStatus 
-		Status of Moderation
-	  */
+		@param ModeratorStatus Status of Moderation
+	*/
 	public void setModeratorStatus (String ModeratorStatus)
 	{
 
@@ -331,15 +338,14 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	/** Get Moderation Status.
 		@return Status of Moderation
 	  */
-	public String getModeratorStatus () 
+	public String getModeratorStatus()
 	{
 		return (String)get_Value(COLUMNNAME_ModeratorStatus);
 	}
 
 	/** Set Subject.
-		@param Subject 
-		Email Message Subject
-	  */
+		@param Subject Email Message Subject
+	*/
 	public void setSubject (String Subject)
 	{
 		set_Value (COLUMNNAME_Subject, Subject);
@@ -348,7 +354,7 @@ public class X_CM_ChatEntry extends PO implements I_CM_ChatEntry, I_Persistent
 	/** Get Subject.
 		@return Email Message Subject
 	  */
-	public String getSubject () 
+	public String getSubject()
 	{
 		return (String)get_Value(COLUMNNAME_Subject);
 	}

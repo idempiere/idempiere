@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_Topic
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="B_Topic")
 public class X_B_Topic extends PO implements I_B_Topic, I_Persistent 
 {
@@ -32,12 +32,31 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_B_Topic (Properties ctx, int B_Topic_ID, String trxName)
     {
       super (ctx, B_Topic_ID, trxName);
+      /** if (B_Topic_ID == 0)
+        {
+			setB_TopicCategory_ID (0);
+			setB_Topic_ID (0);
+			setB_TopicType_ID (0);
+			setDecisionDate (new Timestamp( System.currentTimeMillis() ));
+			setDocumentNo (null);
+			setIsPublished (false);
+			setName (null);
+			setProcessed (false);
+			setTopicAction (null);
+			setTopicStatus (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_Topic (Properties ctx, int B_Topic_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_Topic_ID, trxName, virtualColumns);
       /** if (B_Topic_ID == 0)
         {
 			setB_TopicCategory_ID (0);
@@ -88,21 +107,20 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	}
 
 	/** Set Topic Category.
-		@param B_TopicCategory_ID 
-		Auction Topic Category
-	  */
+		@param B_TopicCategory_ID Auction Topic Category
+	*/
 	public void setB_TopicCategory_ID (int B_TopicCategory_ID)
 	{
-		if (B_TopicCategory_ID < 1) 
+		if (B_TopicCategory_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_B_TopicCategory_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_B_TopicCategory_ID, Integer.valueOf(B_TopicCategory_ID));
 	}
 
 	/** Get Topic Category.
 		@return Auction Topic Category
 	  */
-	public int getB_TopicCategory_ID () 
+	public int getB_TopicCategory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_TopicCategory_ID);
 		if (ii == null)
@@ -111,21 +129,20 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	}
 
 	/** Set Topic.
-		@param B_Topic_ID 
-		Auction Topic
-	  */
+		@param B_Topic_ID Auction Topic
+	*/
 	public void setB_Topic_ID (int B_Topic_ID)
 	{
-		if (B_Topic_ID < 1) 
+		if (B_Topic_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_B_Topic_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_B_Topic_ID, Integer.valueOf(B_Topic_ID));
 	}
 
 	/** Get Topic.
 		@return Auction Topic
 	  */
-	public int getB_Topic_ID () 
+	public int getB_Topic_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_Topic_ID);
 		if (ii == null)
@@ -140,21 +157,20 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	}
 
 	/** Set Topic Type.
-		@param B_TopicType_ID 
-		Auction Topic Type
-	  */
+		@param B_TopicType_ID Auction Topic Type
+	*/
 	public void setB_TopicType_ID (int B_TopicType_ID)
 	{
-		if (B_TopicType_ID < 1) 
+		if (B_TopicType_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_B_TopicType_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_B_TopicType_ID, Integer.valueOf(B_TopicType_ID));
 	}
 
 	/** Get Topic Type.
 		@return Auction Topic Type
 	  */
-	public int getB_TopicType_ID () 
+	public int getB_TopicType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_B_TopicType_ID);
 		if (ii == null)
@@ -163,7 +179,8 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	}
 
 	/** Set B_Topic_UU.
-		@param B_Topic_UU B_Topic_UU	  */
+		@param B_Topic_UU B_Topic_UU
+	*/
 	public void setB_Topic_UU (String B_Topic_UU)
 	{
 		set_Value (COLUMNNAME_B_Topic_UU, B_Topic_UU);
@@ -171,13 +188,14 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 
 	/** Get B_Topic_UU.
 		@return B_Topic_UU	  */
-	public String getB_Topic_UU () 
+	public String getB_Topic_UU()
 	{
 		return (String)get_Value(COLUMNNAME_B_Topic_UU);
 	}
 
 	/** Set Decision date.
-		@param DecisionDate Decision date	  */
+		@param DecisionDate Decision date
+	*/
 	public void setDecisionDate (Timestamp DecisionDate)
 	{
 		set_Value (COLUMNNAME_DecisionDate, DecisionDate);
@@ -185,15 +203,14 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 
 	/** Get Decision date.
 		@return Decision date	  */
-	public Timestamp getDecisionDate () 
+	public Timestamp getDecisionDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DecisionDate);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -202,15 +219,14 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -219,15 +235,14 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
 
 	/** Set Published.
-		@param IsPublished 
-		The Topic is published and can be viewed
-	  */
+		@param IsPublished The Topic is published and can be viewed
+	*/
 	public void setIsPublished (boolean IsPublished)
 	{
 		set_Value (COLUMNNAME_IsPublished, Boolean.valueOf(IsPublished));
@@ -236,7 +251,7 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	/** Get Published.
 		@return The Topic is published and can be viewed
 	  */
-	public boolean isPublished () 
+	public boolean isPublished()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPublished);
 		if (oo != null) 
@@ -249,9 +264,8 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -260,7 +274,7 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -274,9 +288,8 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
     }
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -285,7 +298,7 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -298,7 +311,8 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -306,7 +320,7 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -319,7 +333,8 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	}
 
 	/** Set Details.
-		@param TextDetails Details	  */
+		@param TextDetails Details
+	*/
 	public void setTextDetails (String TextDetails)
 	{
 		set_Value (COLUMNNAME_TextDetails, TextDetails);
@@ -327,15 +342,14 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 
 	/** Get Details.
 		@return Details	  */
-	public String getTextDetails () 
+	public String getTextDetails()
 	{
 		return (String)get_Value(COLUMNNAME_TextDetails);
 	}
 
 	/** Set Text Message.
-		@param TextMsg 
-		Text Message
-	  */
+		@param TextMsg Text Message
+	*/
 	public void setTextMsg (String TextMsg)
 	{
 		set_Value (COLUMNNAME_TextMsg, TextMsg);
@@ -344,13 +358,14 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 	/** Get Text Message.
 		@return Text Message
 	  */
-	public String getTextMsg () 
+	public String getTextMsg()
 	{
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}
 
 	/** Set Topic Action.
-		@param TopicAction Topic Action	  */
+		@param TopicAction Topic Action
+	*/
 	public void setTopicAction (String TopicAction)
 	{
 		set_Value (COLUMNNAME_TopicAction, TopicAction);
@@ -358,13 +373,14 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 
 	/** Get Topic Action.
 		@return Topic Action	  */
-	public String getTopicAction () 
+	public String getTopicAction()
 	{
 		return (String)get_Value(COLUMNNAME_TopicAction);
 	}
 
 	/** Set Topic Status.
-		@param TopicStatus Topic Status	  */
+		@param TopicStatus Topic Status
+	*/
 	public void setTopicStatus (String TopicStatus)
 	{
 		set_Value (COLUMNNAME_TopicStatus, TopicStatus);
@@ -372,7 +388,7 @@ public class X_B_Topic extends PO implements I_B_Topic, I_Persistent
 
 	/** Get Topic Status.
 		@return Topic Status	  */
-	public String getTopicStatus () 
+	public String getTopicStatus()
 	{
 		return (String)get_Value(COLUMNNAME_TopicStatus);
 	}

@@ -19,7 +19,8 @@ package org.adempiere.webui.apps;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.adempiere.webui.window.FDialog;
+
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -49,7 +50,6 @@ public class WReport implements EventListener<Event> {
 	 *	Constructor
 	 *
 	 *  @param AD_Table_ID table
-	 *  @param invoker component to display popup (optional)
 	 *  @param query query
 	 */
 	public WReport (int AD_Table_ID, MQuery	query)
@@ -61,7 +61,6 @@ public class WReport implements EventListener<Event> {
 	 *	Constructor
 	 *
 	 *  @param AD_Table_ID table
-	 *  @param invoker component to display popup (optional)
 	 *  @param query query
 	 *  @param parent The invoking parent window
 	 *  @param WindowNo The invoking parent window number
@@ -76,7 +75,6 @@ public class WReport implements EventListener<Event> {
 	 *	Constructor
 	 *
 	 *  @param AD_Table_ID table
-	 *  @param invoker component to display popup (optional)
 	 *  @param query query
 	 *  @param parent The invoking parent window
 	 *  @param WindowNo The invoking parent window number
@@ -88,7 +86,7 @@ public class WReport implements EventListener<Event> {
 		if (log.isLoggable(Level.CONFIG)) log.config("AD_Table_ID=" + AD_Table_ID + " " + query);
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
-			FDialog.error(0, "AccessCannotReport", query.getTableName());
+			Dialog.error(0, "AccessCannotReport", query.getTableName());
 			return;
 		}
 
@@ -198,9 +196,8 @@ public class WReport implements EventListener<Event> {
 		else
 		{
 			// It's a default report using the standard printing engine
-			ReportEngine re = new ReportEngine (Env.getCtx(), pf, m_query, info);
+			ReportEngine re = new ReportEngine (Env.getCtx(), pf, m_query, info, null, WindowNo);
 			re.setWhereExtended(whereExtended);
-			re.setWindowNo(WindowNo);
 			ReportCtl.preview(re);
 		}
 	}	//	launchReport

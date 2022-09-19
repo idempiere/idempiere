@@ -79,7 +79,7 @@ import org.zkoss.zul.Vbox;
  * 			<li>FR [ 2794312 ] Location AutoComplete
  * @author Teo Sarca, teo.sarca@gmail.com
  * 			<li>BF [ 2995212 ] NPE on Location dialog
- * 				https://sourceforge.net/tracker/?func=detail&aid=2995212&group_id=176962&atid=955896
+ * 				https://sourceforge.net/p/adempiere/zk-web-client/419/
  * 
  * @TODO: Implement fOnline button present in swing client
  *
@@ -192,7 +192,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		lstRegion.appendItem("", null);
 		for (MRegion region : MRegion.getRegions(m_origCountry_ID))
 		{
-			lstRegion.appendItem(region.getName(),region);
+			lstRegion.appendItem(region.getTrlName(),region);
 		}
 		if (m_location.getCountry().isHasRegion()) {
 			if (m_location.getCountry().get_Translation(MCountry.COLUMNNAME_RegionName) != null
@@ -543,7 +543,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 				lstRegion.appendItem("", null);
 				for (MRegion region : MRegion.getRegions(country.getC_Country_ID()))
 				{
-					lstRegion.appendItem(region.getName(),region);
+					lstRegion.appendItem(region.getTrlName(),region);
 				}
 				if (m_location.getCountry().get_Translation(MCountry.COLUMNNAME_RegionName) != null
 						&& m_location.getCountry().get_Translation(MCountry.COLUMNNAME_RegionName).trim().length() > 0)
@@ -727,7 +727,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			String msg = validate_OK();
 			if (msg != null) {
 				onSaveError = true;
-				FDialog.error(0, this, "FillMandatory", Msg.parseTranslation(Env.getCtx(), msg), new Callback<Integer>() {					
+				Dialog.error(0, "FillMandatory", Msg.parseTranslation(Env.getCtx(), msg), new Callback<Integer>() {					
 					@Override
 					public void onCallback(Integer result) {
 						Events.echoEvent("onSaveError", WLocationDialog.this, null);
@@ -746,7 +746,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			else
 			{
 				onSaveError = true;
-				FDialog.error(0, this, "CityNotFound", (String)null, new Callback<Integer>() {					
+				Dialog.error(0, "CityNotFound", (String)null, new Callback<Integer>() {					
 					@Override
 					public void onCallback(Integer result) {
 						Events.echoEvent("onSaveError", WLocationDialog.this, null);
@@ -768,7 +768,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			}
 			catch (Exception e) {
 				message = e.getMessage();
-				FDialog.warn(0, this, "URLnotValid", message);
+				Dialog.warn(0, "URLnotValid", message);
 			}
 		}
 		else if (toRoute.equals(event.getTarget()))
@@ -787,7 +787,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 				}
 				catch (Exception e) {
 					message = e.getMessage();
-					FDialog.warn(0, this, "URLnotValid", message);
+					Dialog.warn(0, "URLnotValid", message);
 				}
 			}
 		}
@@ -809,7 +809,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			String msg = validate_OK();
 			if (msg != null) {
 				onSaveError = true;
-				FDialog.error(0, this, "FillMandatory", Msg.parseTranslation(Env.getCtx(), msg), new Callback<Integer>() {					
+				Dialog.error(0, "FillMandatory", Msg.parseTranslation(Env.getCtx(), msg), new Callback<Integer>() {					
 					@Override
 					public void onCallback(Integer result) {
 						Events.echoEvent("onSaveError", WLocationDialog.this, null);
@@ -866,7 +866,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 				if (!ok)
 				{
 					onSaveError = true;
-					FDialog.error(0, this, "Error", m_location.getErrorMessage(), new Callback<Integer>() {					
+					Dialog.error(0, "Error", m_location.getErrorMessage(), new Callback<Integer>() {					
 						@Override
 						public void onCallback(Integer result) {
 							Events.echoEvent("onSaveError", WLocationDialog.this, null);

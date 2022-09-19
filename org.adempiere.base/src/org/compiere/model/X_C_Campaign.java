@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Campaign
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_Campaign")
 public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent 
 {
@@ -34,12 +34,26 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Campaign (Properties ctx, int C_Campaign_ID, String trxName)
     {
       super (ctx, C_Campaign_ID, trxName);
+      /** if (C_Campaign_ID == 0)
+        {
+			setC_Campaign_ID (0);
+			setCosts (Env.ZERO);
+			setIsSummary (false);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Campaign (Properties ctx, int C_Campaign_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Campaign_ID, trxName, virtualColumns);
       /** if (C_Campaign_ID == 0)
         {
 			setC_Campaign_ID (0);
@@ -79,21 +93,20 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
     }
 
 	/** Set Campaign.
-		@param C_Campaign_ID 
-		Marketing Campaign
-	  */
+		@param C_Campaign_ID Marketing Campaign
+	*/
 	public void setC_Campaign_ID (int C_Campaign_ID)
 	{
-		if (C_Campaign_ID < 1) 
+		if (C_Campaign_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Campaign_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
 	}
 
 	/** Get Campaign.
 		@return Marketing Campaign
 	  */
-	public int getC_Campaign_ID () 
+	public int getC_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
 		if (ii == null)
@@ -102,7 +115,8 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	}
 
 	/** Set C_Campaign_UU.
-		@param C_Campaign_UU C_Campaign_UU	  */
+		@param C_Campaign_UU C_Campaign_UU
+	*/
 	public void setC_Campaign_UU (String C_Campaign_UU)
 	{
 		set_Value (COLUMNNAME_C_Campaign_UU, C_Campaign_UU);
@@ -110,7 +124,7 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 
 	/** Get C_Campaign_UU.
 		@return C_Campaign_UU	  */
-	public String getC_Campaign_UU () 
+	public String getC_Campaign_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Campaign_UU);
 	}
@@ -122,21 +136,20 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	}
 
 	/** Set Channel.
-		@param C_Channel_ID 
-		Sales Channel
-	  */
+		@param C_Channel_ID Sales Channel
+	*/
 	public void setC_Channel_ID (int C_Channel_ID)
 	{
-		if (C_Channel_ID < 1) 
+		if (C_Channel_ID < 1)
 			set_Value (COLUMNNAME_C_Channel_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Channel_ID, Integer.valueOf(C_Channel_ID));
 	}
 
 	/** Get Channel.
 		@return Sales Channel
 	  */
-	public int getC_Channel_ID () 
+	public int getC_Channel_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Channel_ID);
 		if (ii == null)
@@ -145,9 +158,8 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	}
 
 	/** Set Costs.
-		@param Costs 
-		Costs in accounting currency
-	  */
+		@param Costs Costs in accounting currency
+	*/
 	public void setCosts (BigDecimal Costs)
 	{
 		set_Value (COLUMNNAME_Costs, Costs);
@@ -156,7 +168,7 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	/** Get Costs.
 		@return Costs in accounting currency
 	  */
-	public BigDecimal getCosts () 
+	public BigDecimal getCosts()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Costs);
 		if (bd == null)
@@ -165,9 +177,8 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -176,15 +187,14 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set End Date.
-		@param EndDate 
-		Last effective date (inclusive)
-	  */
+		@param EndDate Last effective date (inclusive)
+	*/
 	public void setEndDate (Timestamp EndDate)
 	{
 		set_Value (COLUMNNAME_EndDate, EndDate);
@@ -193,15 +203,14 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	/** Get End Date.
 		@return Last effective date (inclusive)
 	  */
-	public Timestamp getEndDate () 
+	public Timestamp getEndDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_EndDate);
 	}
 
 	/** Set Summary Level.
-		@param IsSummary 
-		This is a summary entity
-	  */
+		@param IsSummary This is a summary entity
+	*/
 	public void setIsSummary (boolean IsSummary)
 	{
 		set_Value (COLUMNNAME_IsSummary, Boolean.valueOf(IsSummary));
@@ -210,7 +219,7 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	/** Get Summary Level.
 		@return This is a summary entity
 	  */
-	public boolean isSummary () 
+	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
 		if (oo != null) 
@@ -223,9 +232,8 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -234,7 +242,7 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -248,9 +256,8 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
     }
 
 	/** Set Start Date.
-		@param StartDate 
-		First effective day (inclusive)
-	  */
+		@param StartDate First effective day (inclusive)
+	*/
 	public void setStartDate (Timestamp StartDate)
 	{
 		set_Value (COLUMNNAME_StartDate, StartDate);
@@ -259,15 +266,14 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	/** Get Start Date.
 		@return First effective day (inclusive)
 	  */
-	public Timestamp getStartDate () 
+	public Timestamp getStartDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_StartDate);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -276,7 +282,7 @@ public class X_C_Campaign extends PO implements I_C_Campaign, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

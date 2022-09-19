@@ -22,22 +22,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.compiere.model.MColumn;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Wlistbox_Customization;
+import org.compiere.util.Util;
 
 public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3220641197739038436L;
+	private static final long serialVersionUID = -493650011622455985L;
 
 	/**
 	 * @param ctx
-	 * @param AD_WListboxName
 	 * @param AD_Wlistbox_Customization_ID
 	 * @param trxName
-	 * @return
 	 */
 	public MWlistboxCustomization(Properties ctx, int AD_Wlistbox_Customization_ID, String trxName) {
 		super(ctx, AD_Wlistbox_Customization_ID, trxName);
@@ -47,7 +47,6 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 	 * @param ctx
 	 * @param rs
 	 * @param trxName
-	 * @return
 	 */	
 	public MWlistboxCustomization(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
@@ -99,9 +98,7 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 	 * @param AD_User_ID
 	 * @param Custom
 	 * @param trxName
-	 * @return
 	 */
-	
 	public static void saveData(Properties  ctx,
 								String      AD_WListboxName, 
 								int         AD_User_ID, 
@@ -138,16 +135,27 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 				{
 					orgColumnList.addAll(addColumn);
 				}
-				WlistBoxCust.setCustom(orgColumnList.toString().substring(1, orgColumnList.toString().length() -1).replaceAll("\\s", "") );
+
+				int maxLength = MColumn.get(ctx, Table_Name, COLUMNNAME_Custom).getFieldLength();
+				String custom = orgColumnList.toString().substring(1, orgColumnList.toString().length() -1).replaceAll("\\s", "");
+
+				if (custom.length() > maxLength) {
+					while (custom.length() > maxLength)
+						custom = custom.substring(0, custom.lastIndexOf(","));
+				}
+
+				WlistBoxCust.setCustom(custom);
 			}
 		}
-		else
+		else if (!Util.isEmpty(Custom))
 		{
 			WlistBoxCust = new MWlistboxCustomization(ctx, 0, trxName); 
 			WlistBoxCust.setWlistboxName(AD_WListboxName);
-			WlistBoxCust.setAD_User_ID(AD_User_ID);
+			WlistBoxCust.set_ValueNoCheck(COLUMNNAME_AD_User_ID, AD_User_ID);
 			WlistBoxCust.setCustom(Custom);
 		}
-		WlistBoxCust.saveEx();
+
+		if (WlistBoxCust != null)
+			WlistBoxCust.saveEx();
 	}  // saveData
 }

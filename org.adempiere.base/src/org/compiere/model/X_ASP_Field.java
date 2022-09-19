@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Field
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Field")
 public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent 
 {
@@ -30,12 +30,23 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_ASP_Field (Properties ctx, int ASP_Field_ID, String trxName)
     {
       super (ctx, ASP_Field_ID, trxName);
+      /** if (ASP_Field_ID == 0)
+        {
+			setASP_Status (null);
+// S
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Field (Properties ctx, int ASP_Field_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Field_ID, trxName, virtualColumns);
       /** if (ASP_Field_ID == 0)
         {
 			setASP_Status (null);
@@ -78,21 +89,20 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 	}
 
 	/** Set Field.
-		@param AD_Field_ID 
-		Field on a database table
-	  */
+		@param AD_Field_ID Field on a database table
+	*/
 	public void setAD_Field_ID (int AD_Field_ID)
 	{
-		if (AD_Field_ID < 1) 
+		if (AD_Field_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
 	}
 
 	/** Get Field.
 		@return Field on a database table
 	  */
-	public int getAD_Field_ID () 
+	public int getAD_Field_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
 		if (ii == null)
@@ -101,18 +111,19 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 	}
 
 	/** Set ASP Field.
-		@param ASP_Field_ID ASP Field	  */
+		@param ASP_Field_ID ASP Field
+	*/
 	public void setASP_Field_ID (int ASP_Field_ID)
 	{
-		if (ASP_Field_ID < 1) 
+		if (ASP_Field_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Field_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Field_ID, Integer.valueOf(ASP_Field_ID));
 	}
 
 	/** Get ASP Field.
 		@return ASP Field	  */
-	public int getASP_Field_ID () 
+	public int getASP_Field_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Field_ID);
 		if (ii == null)
@@ -121,7 +132,8 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 	}
 
 	/** Set ASP_Field_UU.
-		@param ASP_Field_UU ASP_Field_UU	  */
+		@param ASP_Field_UU ASP_Field_UU
+	*/
 	public void setASP_Field_UU (String ASP_Field_UU)
 	{
 		set_Value (COLUMNNAME_ASP_Field_UU, ASP_Field_UU);
@@ -129,7 +141,7 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 
 	/** Get ASP_Field_UU.
 		@return ASP_Field_UU	  */
-	public String getASP_Field_UU () 
+	public String getASP_Field_UU()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Field_UU);
 	}
@@ -143,7 +155,8 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 	/** Undefined = U */
 	public static final String ASP_STATUS_Undefined = "U";
 	/** Set ASP Status.
-		@param ASP_Status ASP Status	  */
+		@param ASP_Status ASP Status
+	*/
 	public void setASP_Status (String ASP_Status)
 	{
 
@@ -152,7 +165,7 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 
 	/** Get ASP Status.
 		@return ASP Status	  */
-	public String getASP_Status () 
+	public String getASP_Status()
 	{
 		return (String)get_Value(COLUMNNAME_ASP_Status);
 	}
@@ -164,18 +177,19 @@ public class X_ASP_Field extends PO implements I_ASP_Field, I_Persistent
 	}
 
 	/** Set ASP Tab.
-		@param ASP_Tab_ID ASP Tab	  */
+		@param ASP_Tab_ID ASP Tab
+	*/
 	public void setASP_Tab_ID (int ASP_Tab_ID)
 	{
-		if (ASP_Tab_ID < 1) 
+		if (ASP_Tab_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_ASP_Tab_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_ASP_Tab_ID, Integer.valueOf(ASP_Tab_ID));
 	}
 
 	/** Get ASP Tab.
 		@return ASP Tab	  */
-	public int getASP_Tab_ID () 
+	public int getASP_Tab_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_Tab_ID);
 		if (ii == null)

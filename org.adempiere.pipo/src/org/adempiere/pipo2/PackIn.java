@@ -131,8 +131,7 @@ public class PackIn {
 			if (log.isLoggable(Level.INFO)) log.info("importXML:" + msg);
 			return msg;
 		}
-		try {
-			FileInputStream input = new FileInputStream(in);
+		try (FileInputStream input = new FileInputStream(in)) {
 			return importXML(input, ctx, trxName);
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "importXML:", e);

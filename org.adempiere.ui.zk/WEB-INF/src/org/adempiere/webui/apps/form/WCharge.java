@@ -21,6 +21,7 @@
 
 package org.adempiere.webui.apps.form;
 
+import java.io.Serializable;
 import java.util.logging.Level;
 
 import org.adempiere.webui.component.Button;
@@ -34,13 +35,14 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.WListbox;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.Charge;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -53,8 +55,8 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 
 /**
  * This class represents the Custom Form for generating charges
@@ -68,13 +70,12 @@ import org.zkoss.zul.Separator;
  *
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VCharge")
-public class WCharge extends Charge implements IFormController, EventListener<Event>
+public class WCharge extends Charge implements IFormController, EventListener<Event>, Serializable
 {
-    /**
-	 *
+	/**
+	 * generated serial id
 	 */
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = 4210542409436277344L;
+	private static final long serialVersionUID = 4571016052942218676L;
 
 	private CustomForm form = new CustomForm();
 
@@ -106,73 +107,8 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
     private Button m_btnAccount = new Button();
     /** Table to hold data of accounts. */
     private WListbox m_tblData = new WListbox();
-
-    /** confirmation panel. */
-    private ConfirmPanel m_pnlConfirm = new ConfirmPanel();
-    /** Confirmation Grid. */
-    private Grid m_grdConfirm = GridFactory.newGridLayout();
-
-    /** Enumeration of column names and indices. */
-    private enum EColumn
-    {
-        /** Select column to record whether the account is selected. */
-        SELECT(0, "Select"),
-        /** Value column to hold the account key. */
-        VALUE(1, "Value"),
-        /** Name column to hold the account name. */
-        NAME(2, "Name"),
-        /** Expense column to indicate whether or not the account is an expense account. */
-        EXPENSE(3, "Expense");
-
-        /** The column's index. */
-        @SuppressWarnings("unused")
-		private final int m_index;
-        /** The column's name. */
-        private final String m_title;
-
-        /**
-         * Constructor.
-         *
-         * @param index index of the column
-         * @param title name of the column
-         */
-        EColumn(int index, String title)
-        {
-            m_index = index;
-            m_title = title;
-        }
-
-        /**
-         * Gets the index of the column.
-         *
-         *  @return the column index.
-         */
-        /*public int index()
-        {
-            return m_index;
-        }*/
-
-        /**
-         * Gets the name of the column.
-         *
-         * @return the column's name
-         */
-        public String title()
-        {
-            return m_title;
-        }
-
-        /**
-         * Gets the number of columns.
-         *
-         * @return the number of columns.
-         */
-        /*public static int count()
-        {
-            return values().length;
-        }*/
-
-    }
+    /** selected account count */
+	private int m_selectedCount;
 
     /**
      * Default constructor.
@@ -187,13 +123,10 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
 
     /**
      * Initialises the panel.
-     *
-     * @param adFormId  The Adempiere identifier for the form
-     * @param name      The name of the form
      */
     protected void initForm()
     {
-        log.info("");
+        if (log.isLoggable(Level.INFO)) log.info("");
         try
         {
             staticInitialise();
@@ -216,7 +149,6 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
     {
         createNewChargePanel();
         createAccountPanel();
-        createConfirmPanel();
 
         return;
     }
@@ -235,13 +167,6 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
 		Center center = new Center();
         contentPane.appendChild(center);
 		center.appendChild(m_pnlAccount);
-
-		South south = new South();
-		contentPane.appendChild(south);
-		Panel southPanel = new Panel();
-		south.appendChild(southPanel);
-		southPanel.appendChild(new Separator());
-		southPanel.appendChild(m_grdConfirm);
 	}
 
     /**
@@ -284,6 +209,8 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
 		south.appendChild(southPanel);
 		m_btnAccount.setLabel(Msg.getMsg(Env.getCtx(), AD_MESSAGE_CREATE) + " " + Msg.getMsg(Env.getCtx(), "From") + " " + Msg.getElement(Env.getCtx(), "Account_ID"));
         m_btnAccount.addEventListener(Events.ON_CLICK, this);
+        m_btnAccount.setDisabled(true);
+        southPanel.appendChild(new Separator());
 		southPanel.appendChild(m_btnAccount);
 
         return;
@@ -350,13 +277,23 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
      *  <li>Creates Table with Accounts
      */
     private void dynamicInitialise()
-    {
-    	findChargeElementID();
+    {    	
         ListModelTable model = new ListModelTable(getData());
         m_tblData.setData(model, getColumnNames());
-		setColumnClass(m_tblData);
-		findTaxCategoryID();
-
+		setColumnClass(m_tblData);		
+		m_selectedCount = 0;
+		WListItemRenderer renderer = (WListItemRenderer) m_tblData.getItemRenderer();
+		renderer.addTableValueChangeListener(e -> {
+			if (e.getColumn() == EColumn.SELECT.index() && e.getNewValue() instanceof Boolean) {
+				Boolean b = (Boolean) e.getNewValue();
+				if (b)
+					m_selectedCount++;
+				else
+					m_selectedCount--;
+				m_btnAccount.setDisabled(m_selectedCount == 0);
+			}			
+		});
+		
         return;
     }   //  dynInit
 
@@ -367,7 +304,7 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
      */
     public void onEvent(Event event)
     {
-        log.info(event.getName());
+        if (log.isLoggable(Level.INFO)) log.info(event.getName());
         //
         if (event.getTarget().getId().equals(ConfirmPanel.A_OK) || m_C_Element_ID == 0)
         {
@@ -394,7 +331,7 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         String value;
         String name;
 
-        log.config("");
+        if (log.isLoggable(Level.CONFIG)) log.config("");
         //  Get Input
         value = m_txbValueField.getValue();
         if (value.length() == 0)
@@ -412,17 +349,17 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         int elementValueId = createElementValue (value, name, m_chbIsExpense.isChecked());
         if (elementValueId == 0)
         {
-            FDialog.error(form.getWindowNo(), form, "ChargeNotCreated", name);
+            Dialog.error(form.getWindowNo(), "ChargeNotCreated", name);
             return;
         }
         //  Create Charge
         int chargeId = createCharge(name, elementValueId);
         if (chargeId == 0)
         {
-            FDialog.error(form.getWindowNo(), form, "ChargeNotCreated", name);
+            Dialog.error(form.getWindowNo(), "ChargeNotCreated", name);
             return;
         }
-        FDialog.info(form.getWindowNo(), form, "ChargeCreated", name);
+        Dialog.info(form.getWindowNo(), "ChargeCreated", name);
     }   //  createNew
 
     /**
@@ -435,31 +372,18 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         createAccount(m_tblData);
         if (listCreated.length() > 0)
         {
-            FDialog.info(form.getWindowNo(), form, "ChargeCreated", listCreated.toString());
+            Dialog.info(form.getWindowNo(), "ChargeCreated", listCreated.toString());
         }
         if (listRejected.length() > 0)
         {
-            FDialog.error(form.getWindowNo(), form, "ChargeNotCreated", listRejected.toString());
+            Dialog.error(form.getWindowNo(), "ChargeNotCreated", listRejected.toString());
         }
+        
+        m_selectedCount = 0;
+        m_btnAccount.setDisabled(true);
 
         return;
     }   //  createAccount
-
-    /**
-     *  Create Confirmation Panel with OK Button.
-     */
-    public void createConfirmPanel()
-    {
-        Rows rows = new Rows();
-        Row row = new Row();
-        m_pnlConfirm.addActionListener(this);
-        row.appendChild(m_pnlConfirm);
-        rows.appendChild(row);
-        m_grdConfirm.appendChild(rows);
-
-        return;
-    }   //  ConfirmPanel
-
 
     public void close()
     {

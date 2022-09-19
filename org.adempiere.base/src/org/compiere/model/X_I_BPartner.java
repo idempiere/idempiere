@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_BPartner
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="I_BPartner")
 public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent 
 {
@@ -32,12 +32,24 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_BPartner (Properties ctx, int I_BPartner_ID, String trxName)
     {
       super (ctx, I_BPartner_ID, trxName);
+      /** if (I_BPartner_ID == 0)
+        {
+			setI_BPartner_ID (0);
+			setI_IsImported (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_BPartner (Properties ctx, int I_BPartner_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_BPartner_ID, trxName, virtualColumns);
       /** if (I_BPartner_ID == 0)
         {
 			setI_BPartner_ID (0);
@@ -75,9 +87,8 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
     }
 
 	/** Set Address 1.
-		@param Address1 
-		Address line 1 for this location
-	  */
+		@param Address1 Address line 1 for this location
+	*/
 	public void setAddress1 (String Address1)
 	{
 		set_Value (COLUMNNAME_Address1, Address1);
@@ -86,15 +97,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Address 1.
 		@return Address line 1 for this location
 	  */
-	public String getAddress1 () 
+	public String getAddress1()
 	{
 		return (String)get_Value(COLUMNNAME_Address1);
 	}
 
 	/** Set Address 2.
-		@param Address2 
-		Address line 2 for this location
-	  */
+		@param Address2 Address line 2 for this location
+	*/
 	public void setAddress2 (String Address2)
 	{
 		set_Value (COLUMNNAME_Address2, Address2);
@@ -103,7 +113,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Address 2.
 		@return Address line 2 for this location
 	  */
-	public String getAddress2 () 
+	public String getAddress2()
 	{
 		return (String)get_Value(COLUMNNAME_Address2);
 	}
@@ -115,21 +125,20 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -138,9 +147,8 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Birthday.
-		@param Birthday 
-		Birthday or Anniversary day
-	  */
+		@param Birthday Birthday or Anniversary day
+	*/
 	public void setBirthday (Timestamp Birthday)
 	{
 		set_Value (COLUMNNAME_Birthday, Birthday);
@@ -149,15 +157,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Birthday.
 		@return Birthday or Anniversary day
 	  */
-	public Timestamp getBirthday () 
+	public Timestamp getBirthday()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_Birthday);
 	}
 
 	/** Set BP Contact Greeting.
-		@param BPContactGreeting 
-		Greeting for Business Partner Contact
-	  */
+		@param BPContactGreeting Greeting for Business Partner Contact
+	*/
 	public void setBPContactGreeting (String BPContactGreeting)
 	{
 		set_Value (COLUMNNAME_BPContactGreeting, BPContactGreeting);
@@ -166,7 +173,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get BP Contact Greeting.
 		@return Greeting for Business Partner Contact
 	  */
-	public String getBPContactGreeting () 
+	public String getBPContactGreeting()
 	{
 		return (String)get_Value(COLUMNNAME_BPContactGreeting);
 	}
@@ -177,22 +184,21 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -207,21 +213,20 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Partner Location.
-		@param C_BPartner_Location_ID 
-		Identifies the (ship to) address for this Business Partner
-	  */
+		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
+	*/
 	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
 	{
-		if (C_BPartner_Location_ID < 1) 
+		if (C_BPartner_Location_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
 	}
 
 	/** Get Partner Location.
 		@return Identifies the (ship to) address for this Business Partner
 	  */
-	public int getC_BPartner_Location_ID () 
+	public int getC_BPartner_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
 		if (ii == null)
@@ -236,21 +241,20 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Business Partner Group.
-		@param C_BP_Group_ID 
-		Business Partner Group
-	  */
+		@param C_BP_Group_ID Business Partner Group
+	*/
 	public void setC_BP_Group_ID (int C_BP_Group_ID)
 	{
-		if (C_BP_Group_ID < 1) 
+		if (C_BP_Group_ID < 1)
 			set_Value (COLUMNNAME_C_BP_Group_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BP_Group_ID, Integer.valueOf(C_BP_Group_ID));
 	}
 
 	/** Get Business Partner Group.
 		@return Business Partner Group
 	  */
-	public int getC_BP_Group_ID () 
+	public int getC_BP_Group_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BP_Group_ID);
 		if (ii == null)
@@ -265,21 +269,20 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Country.
-		@param C_Country_ID 
-		Country 
-	  */
+		@param C_Country_ID Country 
+	*/
 	public void setC_Country_ID (int C_Country_ID)
 	{
-		if (C_Country_ID < 1) 
+		if (C_Country_ID < 1)
 			set_Value (COLUMNNAME_C_Country_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Country_ID, Integer.valueOf(C_Country_ID));
 	}
 
 	/** Get Country.
 		@return Country 
 	  */
-	public int getC_Country_ID () 
+	public int getC_Country_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Country_ID);
 		if (ii == null)
@@ -294,21 +297,20 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Greeting.
-		@param C_Greeting_ID 
-		Greeting to print on correspondence
-	  */
+		@param C_Greeting_ID Greeting to print on correspondence
+	*/
 	public void setC_Greeting_ID (int C_Greeting_ID)
 	{
-		if (C_Greeting_ID < 1) 
+		if (C_Greeting_ID < 1)
 			set_Value (COLUMNNAME_C_Greeting_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Greeting_ID, Integer.valueOf(C_Greeting_ID));
 	}
 
 	/** Get Greeting.
 		@return Greeting to print on correspondence
 	  */
-	public int getC_Greeting_ID () 
+	public int getC_Greeting_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Greeting_ID);
 		if (ii == null)
@@ -317,9 +319,8 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set City.
-		@param City 
-		Identifies a City
-	  */
+		@param City Identifies a City
+	*/
 	public void setCity (String City)
 	{
 		set_Value (COLUMNNAME_City, City);
@@ -328,15 +329,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get City.
 		@return Identifies a City
 	  */
-	public String getCity () 
+	public String getCity()
 	{
 		return (String)get_Value(COLUMNNAME_City);
 	}
 
 	/** Set Comments.
-		@param Comments 
-		Comments or additional information
-	  */
+		@param Comments Comments or additional information
+	*/
 	public void setComments (String Comments)
 	{
 		set_Value (COLUMNNAME_Comments, Comments);
@@ -345,15 +345,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Comments.
 		@return Comments or additional information
 	  */
-	public String getComments () 
+	public String getComments()
 	{
 		return (String)get_Value(COLUMNNAME_Comments);
 	}
 
 	/** Set Contact Description.
-		@param ContactDescription 
-		Description of Contact
-	  */
+		@param ContactDescription Description of Contact
+	*/
 	public void setContactDescription (String ContactDescription)
 	{
 		set_Value (COLUMNNAME_ContactDescription, ContactDescription);
@@ -362,15 +361,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Contact Description.
 		@return Description of Contact
 	  */
-	public String getContactDescription () 
+	public String getContactDescription()
 	{
 		return (String)get_Value(COLUMNNAME_ContactDescription);
 	}
 
 	/** Set Contact Name.
-		@param ContactName 
-		Business Partner Contact Name
-	  */
+		@param ContactName Business Partner Contact Name
+	*/
 	public void setContactName (String ContactName)
 	{
 		set_Value (COLUMNNAME_ContactName, ContactName);
@@ -379,15 +377,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Contact Name.
 		@return Business Partner Contact Name
 	  */
-	public String getContactName () 
+	public String getContactName()
 	{
 		return (String)get_Value(COLUMNNAME_ContactName);
 	}
 
 	/** Set ISO Country Code.
-		@param CountryCode 
-		Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
-	  */
+		@param CountryCode Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+	*/
 	public void setCountryCode (String CountryCode)
 	{
 		set_Value (COLUMNNAME_CountryCode, CountryCode);
@@ -396,7 +393,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get ISO Country Code.
 		@return Upper-case two-letter alphanumeric ISO Country code according to ISO 3166-1 - http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
 	  */
-	public String getCountryCode () 
+	public String getCountryCode()
 	{
 		return (String)get_Value(COLUMNNAME_CountryCode);
 	}
@@ -408,21 +405,20 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Region.
-		@param C_Region_ID 
-		Identifies a geographical Region
-	  */
+		@param C_Region_ID Identifies a geographical Region
+	*/
 	public void setC_Region_ID (int C_Region_ID)
 	{
-		if (C_Region_ID < 1) 
+		if (C_Region_ID < 1)
 			set_Value (COLUMNNAME_C_Region_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Region_ID, Integer.valueOf(C_Region_ID));
 	}
 
 	/** Get Region.
 		@return Identifies a geographical Region
 	  */
-	public int getC_Region_ID () 
+	public int getC_Region_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_ID);
 		if (ii == null)
@@ -431,9 +427,8 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -442,32 +437,30 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set D-U-N-S.
-		@param DUNS 
-		Dun & Bradstreet Number
-	  */
+		@param DUNS Dun &amp; Bradstreet Number
+	*/
 	public void setDUNS (String DUNS)
 	{
 		set_Value (COLUMNNAME_DUNS, DUNS);
 	}
 
 	/** Get D-U-N-S.
-		@return Dun & Bradstreet Number
+		@return Dun &amp; Bradstreet Number
 	  */
-	public String getDUNS () 
+	public String getDUNS()
 	{
 		return (String)get_Value(COLUMNNAME_DUNS);
 	}
 
 	/** Set EMail Address.
-		@param EMail 
-		Electronic Mail Address
-	  */
+		@param EMail Electronic Mail Address
+	*/
 	public void setEMail (String EMail)
 	{
 		set_Value (COLUMNNAME_EMail, EMail);
@@ -476,15 +469,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get EMail Address.
 		@return Electronic Mail Address
 	  */
-	public String getEMail () 
+	public String getEMail()
 	{
 		return (String)get_Value(COLUMNNAME_EMail);
 	}
 
 	/** Set Fax.
-		@param Fax 
-		Facsimile number
-	  */
+		@param Fax Facsimile number
+	*/
 	public void setFax (String Fax)
 	{
 		set_Value (COLUMNNAME_Fax, Fax);
@@ -493,15 +485,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Fax.
 		@return Facsimile number
 	  */
-	public String getFax () 
+	public String getFax()
 	{
 		return (String)get_Value(COLUMNNAME_Fax);
 	}
 
 	/** Set Group Key.
-		@param GroupValue 
-		Business Partner Group Key
-	  */
+		@param GroupValue Business Partner Group Key
+	*/
 	public void setGroupValue (String GroupValue)
 	{
 		set_Value (COLUMNNAME_GroupValue, GroupValue);
@@ -510,24 +501,25 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Group Key.
 		@return Business Partner Group Key
 	  */
-	public String getGroupValue () 
+	public String getGroupValue()
 	{
 		return (String)get_Value(COLUMNNAME_GroupValue);
 	}
 
 	/** Set Import Business Partner.
-		@param I_BPartner_ID Import Business Partner	  */
+		@param I_BPartner_ID Import Business Partner
+	*/
 	public void setI_BPartner_ID (int I_BPartner_ID)
 	{
-		if (I_BPartner_ID < 1) 
+		if (I_BPartner_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_I_BPartner_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_I_BPartner_ID, Integer.valueOf(I_BPartner_ID));
 	}
 
 	/** Get Import Business Partner.
 		@return Import Business Partner	  */
-	public int getI_BPartner_ID () 
+	public int getI_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_I_BPartner_ID);
 		if (ii == null)
@@ -536,7 +528,8 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set I_BPartner_UU.
-		@param I_BPartner_UU I_BPartner_UU	  */
+		@param I_BPartner_UU I_BPartner_UU
+	*/
 	public void setI_BPartner_UU (String I_BPartner_UU)
 	{
 		set_Value (COLUMNNAME_I_BPartner_UU, I_BPartner_UU);
@@ -544,15 +537,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 
 	/** Get I_BPartner_UU.
 		@return I_BPartner_UU	  */
-	public String getI_BPartner_UU () 
+	public String getI_BPartner_UU()
 	{
 		return (String)get_Value(COLUMNNAME_I_BPartner_UU);
 	}
 
 	/** Set Import Error Message.
-		@param I_ErrorMsg 
-		Messages generated from import process
-	  */
+		@param I_ErrorMsg Messages generated from import process
+	*/
 	public void setI_ErrorMsg (String I_ErrorMsg)
 	{
 		set_Value (COLUMNNAME_I_ErrorMsg, I_ErrorMsg);
@@ -561,15 +553,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Import Error Message.
 		@return Messages generated from import process
 	  */
-	public String getI_ErrorMsg () 
+	public String getI_ErrorMsg()
 	{
 		return (String)get_Value(COLUMNNAME_I_ErrorMsg);
 	}
 
 	/** Set Imported.
-		@param I_IsImported 
-		Has this import been processed
-	  */
+		@param I_IsImported Has this import been processed
+	*/
 	public void setI_IsImported (boolean I_IsImported)
 	{
 		set_Value (COLUMNNAME_I_IsImported, Boolean.valueOf(I_IsImported));
@@ -578,7 +569,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Imported.
 		@return Has this import been processed
 	  */
-	public boolean isI_IsImported () 
+	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
 		if (oo != null) 
@@ -591,9 +582,8 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Interest Area.
-		@param InterestAreaName 
-		Name of the Interest Area
-	  */
+		@param InterestAreaName Name of the Interest Area
+	*/
 	public void setInterestAreaName (String InterestAreaName)
 	{
 		set_Value (COLUMNNAME_InterestAreaName, InterestAreaName);
@@ -602,15 +592,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Interest Area.
 		@return Name of the Interest Area
 	  */
-	public String getInterestAreaName () 
+	public String getInterestAreaName()
 	{
 		return (String)get_Value(COLUMNNAME_InterestAreaName);
 	}
 
 	/** Set Customer.
-		@param IsCustomer 
-		Indicates if this Business Partner is a Customer
-	  */
+		@param IsCustomer Indicates if this Business Partner is a Customer
+	*/
 	public void setIsCustomer (boolean IsCustomer)
 	{
 		set_Value (COLUMNNAME_IsCustomer, Boolean.valueOf(IsCustomer));
@@ -619,7 +608,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Customer.
 		@return Indicates if this Business Partner is a Customer
 	  */
-	public boolean isCustomer () 
+	public boolean isCustomer()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCustomer);
 		if (oo != null) 
@@ -632,9 +621,8 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Employee.
-		@param IsEmployee 
-		Indicates if  this Business Partner is an employee
-	  */
+		@param IsEmployee Indicates if  this Business Partner is an employee
+	*/
 	public void setIsEmployee (boolean IsEmployee)
 	{
 		set_Value (COLUMNNAME_IsEmployee, Boolean.valueOf(IsEmployee));
@@ -643,7 +631,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Employee.
 		@return Indicates if  this Business Partner is an employee
 	  */
-	public boolean isEmployee () 
+	public boolean isEmployee()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEmployee);
 		if (oo != null) 
@@ -656,9 +644,8 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Vendor.
-		@param IsVendor 
-		Indicates if this Business Partner is a Vendor
-	  */
+		@param IsVendor Indicates if this Business Partner is a Vendor
+	*/
 	public void setIsVendor (boolean IsVendor)
 	{
 		set_Value (COLUMNNAME_IsVendor, Boolean.valueOf(IsVendor));
@@ -667,7 +654,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Vendor.
 		@return Indicates if this Business Partner is a Vendor
 	  */
-	public boolean isVendor () 
+	public boolean isVendor()
 	{
 		Object oo = get_Value(COLUMNNAME_IsVendor);
 		if (oo != null) 
@@ -680,9 +667,8 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set NAICS/SIC.
-		@param NAICS 
-		Standard Industry Code or its successor NAIC - http://www.osha.gov/oshstats/sicser.html
-	  */
+		@param NAICS Standard Industry Code or its successor NAIC - http://www.osha.gov/oshstats/sicser.html
+	*/
 	public void setNAICS (String NAICS)
 	{
 		set_Value (COLUMNNAME_NAICS, NAICS);
@@ -691,15 +677,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get NAICS/SIC.
 		@return Standard Industry Code or its successor NAIC - http://www.osha.gov/oshstats/sicser.html
 	  */
-	public String getNAICS () 
+	public String getNAICS()
 	{
 		return (String)get_Value(COLUMNNAME_NAICS);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -708,15 +693,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Name 2.
-		@param Name2 
-		Additional Name
-	  */
+		@param Name2 Additional Name
+	*/
 	public void setName2 (String Name2)
 	{
 		set_Value (COLUMNNAME_Name2, Name2);
@@ -725,15 +709,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Name 2.
 		@return Additional Name
 	  */
-	public String getName2 () 
+	public String getName2()
 	{
 		return (String)get_Value(COLUMNNAME_Name2);
 	}
 
 	/** Set Password.
-		@param Password 
-		Password of any length (case sensitive)
-	  */
+		@param Password Password of any length (case sensitive)
+	*/
 	public void setPassword (String Password)
 	{
 		set_Value (COLUMNNAME_Password, Password);
@@ -742,15 +725,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Password.
 		@return Password of any length (case sensitive)
 	  */
-	public String getPassword () 
+	public String getPassword()
 	{
 		return (String)get_Value(COLUMNNAME_Password);
 	}
 
 	/** Set Phone.
-		@param Phone 
-		Identifies a telephone number
-	  */
+		@param Phone Identifies a telephone number
+	*/
 	public void setPhone (String Phone)
 	{
 		set_Value (COLUMNNAME_Phone, Phone);
@@ -759,15 +741,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Phone.
 		@return Identifies a telephone number
 	  */
-	public String getPhone () 
+	public String getPhone()
 	{
 		return (String)get_Value(COLUMNNAME_Phone);
 	}
 
 	/** Set 2nd Phone.
-		@param Phone2 
-		Identifies an alternate telephone number.
-	  */
+		@param Phone2 Identifies an alternate telephone number.
+	*/
 	public void setPhone2 (String Phone2)
 	{
 		set_Value (COLUMNNAME_Phone2, Phone2);
@@ -776,15 +757,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get 2nd Phone.
 		@return Identifies an alternate telephone number.
 	  */
-	public String getPhone2 () 
+	public String getPhone2()
 	{
 		return (String)get_Value(COLUMNNAME_Phone2);
 	}
 
 	/** Set ZIP.
-		@param Postal 
-		Postal code
-	  */
+		@param Postal Postal code
+	*/
 	public void setPostal (String Postal)
 	{
 		set_Value (COLUMNNAME_Postal, Postal);
@@ -793,15 +773,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get ZIP.
 		@return Postal code
 	  */
-	public String getPostal () 
+	public String getPostal()
 	{
 		return (String)get_Value(COLUMNNAME_Postal);
 	}
 
 	/** Set Additional Zip.
-		@param Postal_Add 
-		Additional ZIP or Postal code
-	  */
+		@param Postal_Add Additional ZIP or Postal code
+	*/
 	public void setPostal_Add (String Postal_Add)
 	{
 		set_Value (COLUMNNAME_Postal_Add, Postal_Add);
@@ -810,15 +789,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Additional Zip.
 		@return Additional ZIP or Postal code
 	  */
-	public String getPostal_Add () 
+	public String getPostal_Add()
 	{
 		return (String)get_Value(COLUMNNAME_Postal_Add);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_ValueNoCheck (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -827,7 +805,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -840,7 +818,8 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -848,7 +827,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -861,9 +840,8 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Region.
-		@param RegionName 
-		Name of the Region
-	  */
+		@param RegionName Name of the Region
+	*/
 	public void setRegionName (String RegionName)
 	{
 		set_Value (COLUMNNAME_RegionName, RegionName);
@@ -872,7 +850,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Region.
 		@return Name of the Region
 	  */
-	public String getRegionName () 
+	public String getRegionName()
 	{
 		return (String)get_Value(COLUMNNAME_RegionName);
 	}
@@ -884,21 +862,20 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Interest Area.
-		@param R_InterestArea_ID 
-		Interest Area or Topic
-	  */
+		@param R_InterestArea_ID Interest Area or Topic
+	*/
 	public void setR_InterestArea_ID (int R_InterestArea_ID)
 	{
-		if (R_InterestArea_ID < 1) 
+		if (R_InterestArea_ID < 1)
 			set_Value (COLUMNNAME_R_InterestArea_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_R_InterestArea_ID, Integer.valueOf(R_InterestArea_ID));
 	}
 
 	/** Get Interest Area.
 		@return Interest Area or Topic
 	  */
-	public int getR_InterestArea_ID () 
+	public int getR_InterestArea_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_InterestArea_ID);
 		if (ii == null)
@@ -907,9 +884,8 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	}
 
 	/** Set Tax ID.
-		@param TaxID 
-		Tax Identification
-	  */
+		@param TaxID Tax Identification
+	*/
 	public void setTaxID (String TaxID)
 	{
 		set_Value (COLUMNNAME_TaxID, TaxID);
@@ -918,15 +894,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Tax ID.
 		@return Tax Identification
 	  */
-	public String getTaxID () 
+	public String getTaxID()
 	{
 		return (String)get_Value(COLUMNNAME_TaxID);
 	}
 
 	/** Set Title.
-		@param Title 
-		Name this entity is referred to as
-	  */
+		@param Title Name this entity is referred to as
+	*/
 	public void setTitle (String Title)
 	{
 		set_Value (COLUMNNAME_Title, Title);
@@ -935,15 +910,14 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Title.
 		@return Name this entity is referred to as
 	  */
-	public String getTitle () 
+	public String getTitle()
 	{
 		return (String)get_Value(COLUMNNAME_Title);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -952,7 +926,7 @@ public class X_I_BPartner extends PO implements I_I_BPartner, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

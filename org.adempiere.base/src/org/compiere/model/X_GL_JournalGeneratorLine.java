@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_JournalGeneratorLine
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="GL_JournalGeneratorLine")
 public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGeneratorLine, I_Persistent 
 {
@@ -33,12 +33,29 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_GL_JournalGeneratorLine (Properties ctx, int GL_JournalGeneratorLine_ID, String trxName)
     {
       super (ctx, GL_JournalGeneratorLine_ID, trxName);
+      /** if (GL_JournalGeneratorLine_ID == 0)
+        {
+			setGL_JournalGenerator_ID (0);
+			setGL_JournalGeneratorLine_ID (0);
+			setIsCopyAllDimensions (false);
+// N
+			setIsSameProduct (false);
+// N
+			setSeqNo (0);
+// @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM GL_JournalGeneratorLine WHERE GL_JournalGenerator_ID=@GL_JournalGenerator_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_JournalGeneratorLine (Properties ctx, int GL_JournalGeneratorLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_JournalGeneratorLine_ID, trxName, virtualColumns);
       /** if (GL_JournalGeneratorLine_ID == 0)
         {
 			setGL_JournalGenerator_ID (0);
@@ -81,9 +98,8 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
     }
 
 	/** Set Multiplier Amount.
-		@param AmtMultiplier 
-		Multiplier Amount for generating commissions
-	  */
+		@param AmtMultiplier Multiplier Amount for generating commissions
+	*/
 	public void setAmtMultiplier (BigDecimal AmtMultiplier)
 	{
 		set_Value (COLUMNNAME_AmtMultiplier, AmtMultiplier);
@@ -92,7 +108,7 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	/** Get Multiplier Amount.
 		@return Multiplier Amount for generating commissions
 	  */
-	public BigDecimal getAmtMultiplier () 
+	public BigDecimal getAmtMultiplier()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmtMultiplier);
 		if (bd == null)
@@ -101,7 +117,8 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	/** Set BP Column.
-		@param BPColumn BP Column	  */
+		@param BPColumn BP Column
+	*/
 	public void setBPColumn (String BPColumn)
 	{
 		set_Value (COLUMNNAME_BPColumn, BPColumn);
@@ -109,7 +126,7 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 
 	/** Get BP Column.
 		@return BP Column	  */
-	public String getBPColumn () 
+	public String getBPColumn()
 	{
 		return (String)get_Value(COLUMNNAME_BPColumn);
 	}
@@ -123,7 +140,8 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	/** Same = S */
 	public static final String BPDIMENSIONTYPE_Same = "S";
 	/** Set Type of BP Dimension.
-		@param BPDimensionType Type of BP Dimension	  */
+		@param BPDimensionType Type of BP Dimension
+	*/
 	public void setBPDimensionType (String BPDimensionType)
 	{
 
@@ -132,7 +150,7 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 
 	/** Get Type of BP Dimension.
 		@return Type of BP Dimension	  */
-	public String getBPDimensionType () 
+	public String getBPDimensionType()
 	{
 		return (String)get_Value(COLUMNNAME_BPDimensionType);
 	}
@@ -143,22 +161,21 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -173,18 +190,19 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	/** Set Account CR.
-		@param C_ElementValueCR_ID Account CR	  */
+		@param C_ElementValueCR_ID Account CR
+	*/
 	public void setC_ElementValueCR_ID (int C_ElementValueCR_ID)
 	{
-		if (C_ElementValueCR_ID < 1) 
+		if (C_ElementValueCR_ID < 1)
 			set_Value (COLUMNNAME_C_ElementValueCR_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ElementValueCR_ID, Integer.valueOf(C_ElementValueCR_ID));
 	}
 
 	/** Get Account CR.
 		@return Account CR	  */
-	public int getC_ElementValueCR_ID () 
+	public int getC_ElementValueCR_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValueCR_ID);
 		if (ii == null)
@@ -199,18 +217,19 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	/** Set Account DR.
-		@param C_ElementValueDR_ID Account DR	  */
+		@param C_ElementValueDR_ID Account DR
+	*/
 	public void setC_ElementValueDR_ID (int C_ElementValueDR_ID)
 	{
-		if (C_ElementValueDR_ID < 1) 
+		if (C_ElementValueDR_ID < 1)
 			set_Value (COLUMNNAME_C_ElementValueDR_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ElementValueDR_ID, Integer.valueOf(C_ElementValueDR_ID));
 	}
 
 	/** Get Account DR.
 		@return Account DR	  */
-	public int getC_ElementValueDR_ID () 
+	public int getC_ElementValueDR_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValueDR_ID);
 		if (ii == null)
@@ -219,9 +238,8 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -230,7 +248,7 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -242,18 +260,19 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	/** Set GL Journal Generator.
-		@param GL_JournalGenerator_ID GL Journal Generator	  */
+		@param GL_JournalGenerator_ID GL Journal Generator
+	*/
 	public void setGL_JournalGenerator_ID (int GL_JournalGenerator_ID)
 	{
-		if (GL_JournalGenerator_ID < 1) 
+		if (GL_JournalGenerator_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_GL_JournalGenerator_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_GL_JournalGenerator_ID, Integer.valueOf(GL_JournalGenerator_ID));
 	}
 
 	/** Get GL Journal Generator.
 		@return GL Journal Generator	  */
-	public int getGL_JournalGenerator_ID () 
+	public int getGL_JournalGenerator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_JournalGenerator_ID);
 		if (ii == null)
@@ -270,18 +289,19 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
     }
 
 	/** Set Generator Line.
-		@param GL_JournalGeneratorLine_ID Generator Line	  */
+		@param GL_JournalGeneratorLine_ID Generator Line
+	*/
 	public void setGL_JournalGeneratorLine_ID (int GL_JournalGeneratorLine_ID)
 	{
-		if (GL_JournalGeneratorLine_ID < 1) 
+		if (GL_JournalGeneratorLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_GL_JournalGeneratorLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_GL_JournalGeneratorLine_ID, Integer.valueOf(GL_JournalGeneratorLine_ID));
 	}
 
 	/** Get Generator Line.
 		@return Generator Line	  */
-	public int getGL_JournalGeneratorLine_ID () 
+	public int getGL_JournalGeneratorLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GL_JournalGeneratorLine_ID);
 		if (ii == null)
@@ -290,7 +310,8 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	/** Set GL_JournalGeneratorLine_UU.
-		@param GL_JournalGeneratorLine_UU GL_JournalGeneratorLine_UU	  */
+		@param GL_JournalGeneratorLine_UU GL_JournalGeneratorLine_UU
+	*/
 	public void setGL_JournalGeneratorLine_UU (String GL_JournalGeneratorLine_UU)
 	{
 		set_Value (COLUMNNAME_GL_JournalGeneratorLine_UU, GL_JournalGeneratorLine_UU);
@@ -298,15 +319,14 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 
 	/** Get GL_JournalGeneratorLine_UU.
 		@return GL_JournalGeneratorLine_UU	  */
-	public String getGL_JournalGeneratorLine_UU () 
+	public String getGL_JournalGeneratorLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_GL_JournalGeneratorLine_UU);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -315,13 +335,14 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Copy All Dimensions.
-		@param IsCopyAllDimensions Copy All Dimensions	  */
+		@param IsCopyAllDimensions Copy All Dimensions
+	*/
 	public void setIsCopyAllDimensions (boolean IsCopyAllDimensions)
 	{
 		set_Value (COLUMNNAME_IsCopyAllDimensions, Boolean.valueOf(IsCopyAllDimensions));
@@ -329,7 +350,7 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 
 	/** Get Copy All Dimensions.
 		@return Copy All Dimensions	  */
-	public boolean isCopyAllDimensions () 
+	public boolean isCopyAllDimensions()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCopyAllDimensions);
 		if (oo != null) 
@@ -342,7 +363,8 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	/** Set Same Product.
-		@param IsSameProduct Same Product	  */
+		@param IsSameProduct Same Product
+	*/
 	public void setIsSameProduct (boolean IsSameProduct)
 	{
 		set_Value (COLUMNNAME_IsSameProduct, Boolean.valueOf(IsSameProduct));
@@ -350,7 +372,7 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 
 	/** Get Same Product.
 		@return Same Product	  */
-	public boolean isSameProduct () 
+	public boolean isSameProduct()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSameProduct);
 		if (oo != null) 
@@ -363,7 +385,8 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	/** Set Round Factor.
-		@param RoundFactor Round Factor	  */
+		@param RoundFactor Round Factor
+	*/
 	public void setRoundFactor (int RoundFactor)
 	{
 		set_Value (COLUMNNAME_RoundFactor, Integer.valueOf(RoundFactor));
@@ -371,7 +394,7 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 
 	/** Get Round Factor.
 		@return Round Factor	  */
-	public int getRoundFactor () 
+	public int getRoundFactor()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_RoundFactor);
 		if (ii == null)
@@ -380,9 +403,8 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -391,7 +413,7 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)

@@ -69,7 +69,11 @@ public class MInventoryLine extends X_M_InventoryLine
 	 */
 	public MInventoryLine (Properties ctx, int M_InventoryLine_ID, String trxName)
 	{
-		super (ctx, M_InventoryLine_ID, trxName);
+		this (ctx, M_InventoryLine_ID, trxName, (String[]) null);
+	}	//	MInventoryLine
+
+	public MInventoryLine(Properties ctx, int M_InventoryLine_ID, String trxName, String... virtualColumns) {
+		super(ctx, M_InventoryLine_ID, trxName, virtualColumns);
 		if (M_InventoryLine_ID == 0)
 		{
 			setLine(0);
@@ -79,7 +83,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			setQtyCount (Env.ZERO);
 			setProcessed(false);
 		}
-	}	//	MInventoryLine
+	}
 
 	/**
 	 * 	Load Constructor
@@ -365,6 +369,20 @@ public class MInventoryLine extends X_M_InventoryLine
 				}
 			}
 			
+			//check currency and as
+			int C_Currency_ID = getParent().getC_Currency_ID();
+
+			if (as.getC_Currency_ID() != C_Currency_ID) 
+			{
+				MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(getCtx(), client.get_ID());
+				for (int i = 0; i < ass.length ; i ++)
+				{
+					MAcctSchema a =  ass[i];
+					if (a.getC_Currency_ID() ==  C_Currency_ID) 
+						as = a ; 
+				}
+			}
+			
 			String costingMethod = getParent().getCostingMethod();
 			int AD_Org_ID = getAD_Org_ID();
 			MCost cost = product.getCostingRecord(as, AD_Org_ID, M_ASI_ID, costingMethod);					
@@ -373,6 +391,9 @@ public class MInventoryLine extends X_M_InventoryLine
 					log.saveError("NoCostingRecord", "");
 					return false;
 				}
+			} else {
+				if (is_new() || is_ValueChanged(COLUMNNAME_M_Product_ID) || is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID))
+					setCurrentCostPrice(cost.getCurrentCostPrice());
 			}
 			setM_Locator_ID(0);
 		} else {

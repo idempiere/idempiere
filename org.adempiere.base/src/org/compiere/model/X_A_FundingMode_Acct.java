@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for A_FundingMode_Acct
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="A_FundingMode_Acct")
 public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_Persistent 
 {
@@ -30,12 +30,24 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_FundingMode_Acct (Properties ctx, int A_FundingMode_Acct_ID, String trxName)
     {
       super (ctx, A_FundingMode_Acct_ID, trxName);
+      /** if (A_FundingMode_Acct_ID == 0)
+        {
+			setA_FundingMode_Acct (0);
+			setA_FundingMode_ID (0);
+			setC_AcctSchema_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_FundingMode_Acct (Properties ctx, int A_FundingMode_Acct_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_FundingMode_Acct_ID, trxName, virtualColumns);
       /** if (A_FundingMode_Acct_ID == 0)
         {
 			setA_FundingMode_Acct (0);
@@ -79,7 +91,8 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 	}
 
 	/** Set Funding Mode Account.
-		@param A_FundingMode_Acct Funding Mode Account	  */
+		@param A_FundingMode_Acct Funding Mode Account
+	*/
 	public void setA_FundingMode_Acct (int A_FundingMode_Acct)
 	{
 		set_Value (COLUMNNAME_A_FundingMode_Acct, Integer.valueOf(A_FundingMode_Acct));
@@ -87,7 +100,7 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 
 	/** Get Funding Mode Account.
 		@return Funding Mode Account	  */
-	public int getA_FundingMode_Acct () 
+	public int getA_FundingMode_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_FundingMode_Acct);
 		if (ii == null)
@@ -96,7 +109,8 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 	}
 
 	/** Set A_FundingMode_Acct_UU.
-		@param A_FundingMode_Acct_UU A_FundingMode_Acct_UU	  */
+		@param A_FundingMode_Acct_UU A_FundingMode_Acct_UU
+	*/
 	public void setA_FundingMode_Acct_UU (String A_FundingMode_Acct_UU)
 	{
 		set_Value (COLUMNNAME_A_FundingMode_Acct_UU, A_FundingMode_Acct_UU);
@@ -104,7 +118,7 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 
 	/** Get A_FundingMode_Acct_UU.
 		@return A_FundingMode_Acct_UU	  */
-	public String getA_FundingMode_Acct_UU () 
+	public String getA_FundingMode_Acct_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_FundingMode_Acct_UU);
 	}
@@ -116,18 +130,19 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 	}
 
 	/** Set Asset Funding Mode.
-		@param A_FundingMode_ID Asset Funding Mode	  */
+		@param A_FundingMode_ID Asset Funding Mode
+	*/
 	public void setA_FundingMode_ID (int A_FundingMode_ID)
 	{
-		if (A_FundingMode_ID < 1) 
+		if (A_FundingMode_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_FundingMode_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_FundingMode_ID, Integer.valueOf(A_FundingMode_ID));
 	}
 
 	/** Get Asset Funding Mode.
 		@return Asset Funding Mode	  */
-	public int getA_FundingMode_ID () 
+	public int getA_FundingMode_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_FundingMode_ID);
 		if (ii == null)
@@ -142,21 +157,20 @@ public class X_A_FundingMode_Acct extends PO implements I_A_FundingMode_Acct, I_
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)

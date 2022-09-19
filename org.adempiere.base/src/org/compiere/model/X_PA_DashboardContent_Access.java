@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for PA_DashboardContent_Access
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PA_DashboardContent_Access")
 public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardContent_Access, I_Persistent 
 {
@@ -30,12 +30,22 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent_Access (Properties ctx, int PA_DashboardContent_Access_ID, String trxName)
     {
       super (ctx, PA_DashboardContent_Access_ID, trxName);
+      /** if (PA_DashboardContent_Access_ID == 0)
+        {
+			setPA_DashboardContent_Access_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_DashboardContent_Access (Properties ctx, int PA_DashboardContent_Access_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_DashboardContent_Access_ID, trxName, virtualColumns);
       /** if (PA_DashboardContent_Access_ID == 0)
         {
 			setPA_DashboardContent_Access_ID (0);
@@ -49,7 +59,7 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 7 - System - Client - Org 
       */
     protected int get_AccessLevel()
     {
@@ -77,21 +87,20 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -106,21 +115,20 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -129,18 +137,19 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	}
 
 	/** Set PA_DashboardContent_Access_ID.
-		@param PA_DashboardContent_Access_ID PA_DashboardContent_Access_ID	  */
+		@param PA_DashboardContent_Access_ID PA_DashboardContent_Access_ID
+	*/
 	public void setPA_DashboardContent_Access_ID (int PA_DashboardContent_Access_ID)
 	{
-		if (PA_DashboardContent_Access_ID < 1) 
+		if (PA_DashboardContent_Access_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_DashboardContent_Access_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_DashboardContent_Access_ID, Integer.valueOf(PA_DashboardContent_Access_ID));
 	}
 
 	/** Get PA_DashboardContent_Access_ID.
 		@return PA_DashboardContent_Access_ID	  */
-	public int getPA_DashboardContent_Access_ID () 
+	public int getPA_DashboardContent_Access_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_DashboardContent_Access_ID);
 		if (ii == null)
@@ -149,7 +158,8 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	}
 
 	/** Set PA_DashboardContent_Access_UU.
-		@param PA_DashboardContent_Access_UU PA_DashboardContent_Access_UU	  */
+		@param PA_DashboardContent_Access_UU PA_DashboardContent_Access_UU
+	*/
 	public void setPA_DashboardContent_Access_UU (String PA_DashboardContent_Access_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_PA_DashboardContent_Access_UU, PA_DashboardContent_Access_UU);
@@ -157,7 +167,7 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 
 	/** Get PA_DashboardContent_Access_UU.
 		@return PA_DashboardContent_Access_UU	  */
-	public String getPA_DashboardContent_Access_UU () 
+	public String getPA_DashboardContent_Access_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_DashboardContent_Access_UU);
 	}
@@ -169,18 +179,19 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	}
 
 	/** Set Dashboard Content.
-		@param PA_DashboardContent_ID Dashboard Content	  */
+		@param PA_DashboardContent_ID Dashboard Content
+	*/
 	public void setPA_DashboardContent_ID (int PA_DashboardContent_ID)
 	{
-		if (PA_DashboardContent_ID < 1) 
+		if (PA_DashboardContent_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_DashboardContent_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_DashboardContent_ID, Integer.valueOf(PA_DashboardContent_ID));
 	}
 
 	/** Get Dashboard Content.
 		@return Dashboard Content	  */
-	public int getPA_DashboardContent_ID () 
+	public int getPA_DashboardContent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_DashboardContent_ID);
 		if (ii == null)

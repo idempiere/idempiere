@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Charge
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_Charge")
 public class X_C_Charge extends PO implements I_C_Charge, I_Persistent 
 {
@@ -33,12 +33,29 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Charge (Properties ctx, int C_Charge_ID, String trxName)
     {
       super (ctx, C_Charge_ID, trxName);
+      /** if (C_Charge_ID == 0)
+        {
+			setC_Charge_ID (0);
+			setChargeAmt (Env.ZERO);
+			setC_TaxCategory_ID (0);
+			setIsSameCurrency (false);
+			setIsSameTax (false);
+			setIsTaxIncluded (false);
+// N
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Charge (Properties ctx, int C_Charge_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Charge_ID, trxName, virtualColumns);
       /** if (C_Charge_ID == 0)
         {
 			setC_Charge_ID (0);
@@ -86,22 +103,21 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -110,21 +126,20 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	}
 
 	/** Set Charge.
-		@param C_Charge_ID 
-		Additional document charges
-	  */
+		@param C_Charge_ID Additional document charges
+	*/
 	public void setC_Charge_ID (int C_Charge_ID)
 	{
-		if (C_Charge_ID < 1) 
+		if (C_Charge_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Charge_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
 	}
 
 	/** Get Charge.
 		@return Additional document charges
 	  */
-	public int getC_Charge_ID () 
+	public int getC_Charge_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
 		if (ii == null)
@@ -139,18 +154,19 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	}
 
 	/** Set Charge Type.
-		@param C_ChargeType_ID Charge Type	  */
+		@param C_ChargeType_ID Charge Type
+	*/
 	public void setC_ChargeType_ID (int C_ChargeType_ID)
 	{
-		if (C_ChargeType_ID < 1) 
+		if (C_ChargeType_ID < 1)
 			set_Value (COLUMNNAME_C_ChargeType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_ChargeType_ID, Integer.valueOf(C_ChargeType_ID));
 	}
 
 	/** Get Charge Type.
 		@return Charge Type	  */
-	public int getC_ChargeType_ID () 
+	public int getC_ChargeType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_ChargeType_ID);
 		if (ii == null)
@@ -159,7 +175,8 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	}
 
 	/** Set C_Charge_UU.
-		@param C_Charge_UU C_Charge_UU	  */
+		@param C_Charge_UU C_Charge_UU
+	*/
 	public void setC_Charge_UU (String C_Charge_UU)
 	{
 		set_Value (COLUMNNAME_C_Charge_UU, C_Charge_UU);
@@ -167,15 +184,14 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 
 	/** Get C_Charge_UU.
 		@return C_Charge_UU	  */
-	public String getC_Charge_UU () 
+	public String getC_Charge_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Charge_UU);
 	}
 
 	/** Set Charge amount.
-		@param ChargeAmt 
-		Charge Amount
-	  */
+		@param ChargeAmt Charge Amount
+	*/
 	public void setChargeAmt (BigDecimal ChargeAmt)
 	{
 		set_Value (COLUMNNAME_ChargeAmt, ChargeAmt);
@@ -184,7 +200,7 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	/** Get Charge amount.
 		@return Charge Amount
 	  */
-	public BigDecimal getChargeAmt () 
+	public BigDecimal getChargeAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ChargeAmt);
 		if (bd == null)
@@ -199,21 +215,20 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	}
 
 	/** Set Tax Category.
-		@param C_TaxCategory_ID 
-		Tax Category
-	  */
+		@param C_TaxCategory_ID Tax Category
+	*/
 	public void setC_TaxCategory_ID (int C_TaxCategory_ID)
 	{
-		if (C_TaxCategory_ID < 1) 
+		if (C_TaxCategory_ID < 1)
 			set_Value (COLUMNNAME_C_TaxCategory_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_TaxCategory_ID, Integer.valueOf(C_TaxCategory_ID));
 	}
 
 	/** Get Tax Category.
 		@return Tax Category
 	  */
-	public int getC_TaxCategory_ID () 
+	public int getC_TaxCategory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxCategory_ID);
 		if (ii == null)
@@ -222,9 +237,8 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -233,13 +247,14 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Same Currency.
-		@param IsSameCurrency Same Currency	  */
+		@param IsSameCurrency Same Currency
+	*/
 	public void setIsSameCurrency (boolean IsSameCurrency)
 	{
 		set_Value (COLUMNNAME_IsSameCurrency, Boolean.valueOf(IsSameCurrency));
@@ -247,7 +262,7 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 
 	/** Get Same Currency.
 		@return Same Currency	  */
-	public boolean isSameCurrency () 
+	public boolean isSameCurrency()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSameCurrency);
 		if (oo != null) 
@@ -260,9 +275,8 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	}
 
 	/** Set Same Tax.
-		@param IsSameTax 
-		Use the same tax as the main transaction
-	  */
+		@param IsSameTax Use the same tax as the main transaction
+	*/
 	public void setIsSameTax (boolean IsSameTax)
 	{
 		set_Value (COLUMNNAME_IsSameTax, Boolean.valueOf(IsSameTax));
@@ -271,7 +285,7 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	/** Get Same Tax.
 		@return Use the same tax as the main transaction
 	  */
-	public boolean isSameTax () 
+	public boolean isSameTax()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSameTax);
 		if (oo != null) 
@@ -284,9 +298,8 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	}
 
 	/** Set Price includes Tax.
-		@param IsTaxIncluded 
-		Tax is included in the price 
-	  */
+		@param IsTaxIncluded Tax is included in the price 
+	*/
 	public void setIsTaxIncluded (boolean IsTaxIncluded)
 	{
 		set_Value (COLUMNNAME_IsTaxIncluded, Boolean.valueOf(IsTaxIncluded));
@@ -295,7 +308,7 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	/** Get Price includes Tax.
 		@return Tax is included in the price 
 	  */
-	public boolean isTaxIncluded () 
+	public boolean isTaxIncluded()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTaxIncluded);
 		if (oo != null) 
@@ -308,9 +321,8 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -319,7 +331,7 @@ public class X_C_Charge extends PO implements I_C_Charge, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

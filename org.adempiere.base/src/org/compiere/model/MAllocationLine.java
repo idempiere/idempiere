@@ -158,10 +158,23 @@ public class MAllocationLine extends X_C_AllocationLine
 	 */
 	public void setPaymentInfo (int C_Payment_ID, int C_CashLine_ID)
 	{
+		setPaymentInfo(C_Payment_ID, C_CashLine_ID, 0);
+	}
+	
+	/**
+	 * 	Set Payment Info
+	 *	@param C_Payment_ID payment
+	 *	@param C_CashLine_ID cash line
+	 *  @param C_BankTransfer_ID
+	 */
+	public void setPaymentInfo (int C_Payment_ID, int C_CashLine_ID, int C_BankTransfer_ID)
+	{
 		if (C_Payment_ID != 0)
 			setC_Payment_ID(C_Payment_ID);
 		if (C_CashLine_ID != 0)
 			setC_CashLine_ID(C_CashLine_ID);
+		if (C_BankTransfer_ID != 0)
+			setC_BankTransfer_ID(C_BankTransfer_ID);
 	}	//	setPaymentInfo
 
 	/**

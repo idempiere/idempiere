@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DistributionRun
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_DistributionRun")
 public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Persistent 
 {
@@ -31,12 +31,25 @@ public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_DistributionRun (Properties ctx, int M_DistributionRun_ID, String trxName)
     {
       super (ctx, M_DistributionRun_ID, trxName);
+      /** if (M_DistributionRun_ID == 0)
+        {
+			setIsCreateSingleOrder (false);
+// N
+			setM_DistributionRun_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_DistributionRun (Properties ctx, int M_DistributionRun_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_DistributionRun_ID, trxName, virtualColumns);
       /** if (M_DistributionRun_ID == 0)
         {
 			setIsCreateSingleOrder (false);
@@ -80,22 +93,21 @@ public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Pe
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -110,21 +122,20 @@ public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Pe
 	}
 
 	/** Set Partner Location.
-		@param C_BPartner_Location_ID 
-		Identifies the (ship to) address for this Business Partner
-	  */
+		@param C_BPartner_Location_ID Identifies the (ship to) address for this Business Partner
+	*/
 	public void setC_BPartner_Location_ID (int C_BPartner_Location_ID)
 	{
-		if (C_BPartner_Location_ID < 1) 
+		if (C_BPartner_Location_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_Location_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_Location_ID, Integer.valueOf(C_BPartner_Location_ID));
 	}
 
 	/** Get Partner Location.
 		@return Identifies the (ship to) address for this Business Partner
 	  */
-	public int getC_BPartner_Location_ID () 
+	public int getC_BPartner_Location_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_Location_ID);
 		if (ii == null)
@@ -133,9 +144,8 @@ public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Pe
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -144,15 +154,14 @@ public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Create Single Order.
-		@param IsCreateSingleOrder 
-		For all shipments create one Order
-	  */
+		@param IsCreateSingleOrder For all shipments create one Order
+	*/
 	public void setIsCreateSingleOrder (boolean IsCreateSingleOrder)
 	{
 		set_Value (COLUMNNAME_IsCreateSingleOrder, Boolean.valueOf(IsCreateSingleOrder));
@@ -161,7 +170,7 @@ public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Pe
 	/** Get Create Single Order.
 		@return For all shipments create one Order
 	  */
-	public boolean isCreateSingleOrder () 
+	public boolean isCreateSingleOrder()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCreateSingleOrder);
 		if (oo != null) 
@@ -174,21 +183,20 @@ public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Pe
 	}
 
 	/** Set Distribution Run.
-		@param M_DistributionRun_ID 
-		Distribution Run create Orders to distribute products to a selected list of partners
-	  */
+		@param M_DistributionRun_ID Distribution Run create Orders to distribute products to a selected list of partners
+	*/
 	public void setM_DistributionRun_ID (int M_DistributionRun_ID)
 	{
-		if (M_DistributionRun_ID < 1) 
+		if (M_DistributionRun_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_DistributionRun_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_DistributionRun_ID, Integer.valueOf(M_DistributionRun_ID));
 	}
 
 	/** Get Distribution Run.
 		@return Distribution Run create Orders to distribute products to a selected list of partners
 	  */
-	public int getM_DistributionRun_ID () 
+	public int getM_DistributionRun_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_DistributionRun_ID);
 		if (ii == null)
@@ -197,7 +205,8 @@ public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Pe
 	}
 
 	/** Set M_DistributionRun_UU.
-		@param M_DistributionRun_UU M_DistributionRun_UU	  */
+		@param M_DistributionRun_UU M_DistributionRun_UU
+	*/
 	public void setM_DistributionRun_UU (String M_DistributionRun_UU)
 	{
 		set_Value (COLUMNNAME_M_DistributionRun_UU, M_DistributionRun_UU);
@@ -205,15 +214,14 @@ public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Pe
 
 	/** Get M_DistributionRun_UU.
 		@return M_DistributionRun_UU	  */
-	public String getM_DistributionRun_UU () 
+	public String getM_DistributionRun_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_DistributionRun_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -222,7 +230,7 @@ public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Pe
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -236,7 +244,8 @@ public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Pe
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -244,7 +253,7 @@ public class X_M_DistributionRun extends PO implements I_M_DistributionRun, I_Pe
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

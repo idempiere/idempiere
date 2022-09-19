@@ -44,7 +44,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.apps.form.GenForm;
 import org.compiere.minigrid.IDColumn;
@@ -211,7 +211,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 
 	/**
 	 *	Dynamic Init.
-	 *	- Create GridController & Panel
+	 *	- Create GridController and Panel
 	 *	- AD_Column_ID from C_Order
 	 */
 	public void dynInit()
@@ -312,8 +312,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	}   //  tableChanged
 
 	/**
-	 *	Save Selection & return selecion Query or ""
-	 *  @return where clause like C_Order_ID IN (...)
+	 *	Save Selection
 	 */
 	public void saveSelection()
 	{
@@ -392,7 +391,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	public void onAfterProcess()
 	{
 		//	OK to print
-		FDialog.ask(getWindowNo(), this, genForm.getAskPrintMsg(), new Callback<Boolean>() {
+		Dialog.ask(getWindowNo(), genForm.getAskPrintMsg(), new Callback<Boolean>() {
 			
 			@Override
 			public void onCallback(Boolean result) 
@@ -424,11 +423,11 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 				query.addRestriction(table.getTableName() + "_ID", MQuery.EQUAL, RecordID);
 				//	Engine
 				PrintInfo info = new PrintInfo(table.getTableName(),table.get_Table_ID(), RecordID);               
-				re = new ReportEngine(Env.getCtx(), format, query, info);
+				re = new ReportEngine(Env.getCtx(), format, query, info, null, m_WindowNo);
 			}
 			else
 			{	
-				re = ReportEngine.get (Env.getCtx(), genForm.getReportEngineType(), RecordID);
+				re = ReportEngine.get (Env.getCtx(), genForm.getReportEngineType(), RecordID, m_WindowNo);
 			}	
 			
 			pdfList.add(re.getPDF());				
@@ -460,7 +459,6 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	/**************************************************************************
 	 *  Lock User Interface.
 	 *  Called from the Worker before processing
-	 *  @param pi process info
 	 */
 	public void lockUI ()
 	{
@@ -472,7 +470,6 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	/**
 	 *  Unlock User Interface.
 	 *  Called from the Worker when processing is done
-	 *  @param pi result of execute ASync call
 	 */
 	public void unlockUI ()
 	{		

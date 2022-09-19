@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Delivery
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Delivery")
 public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Persistent 
 {
@@ -32,12 +32,24 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Delivery (Properties ctx, int A_Asset_Delivery_ID, String trxName)
     {
       super (ctx, A_Asset_Delivery_ID, trxName);
+      /** if (A_Asset_Delivery_ID == 0)
+        {
+			setA_Asset_Delivery_ID (0);
+			setA_Asset_ID (0);
+			setMovementDate (new Timestamp( System.currentTimeMillis() ));
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Delivery (Properties ctx, int A_Asset_Delivery_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Delivery_ID, trxName, virtualColumns);
       /** if (A_Asset_Delivery_ID == 0)
         {
 			setA_Asset_Delivery_ID (0);
@@ -75,21 +87,20 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
     }
 
 	/** Set Asset Delivery.
-		@param A_Asset_Delivery_ID 
-		Delivery of Asset
-	  */
+		@param A_Asset_Delivery_ID Delivery of Asset
+	*/
 	public void setA_Asset_Delivery_ID (int A_Asset_Delivery_ID)
 	{
-		if (A_Asset_Delivery_ID < 1) 
+		if (A_Asset_Delivery_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Delivery_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Delivery_ID, Integer.valueOf(A_Asset_Delivery_ID));
 	}
 
 	/** Get Asset Delivery.
 		@return Delivery of Asset
 	  */
-	public int getA_Asset_Delivery_ID () 
+	public int getA_Asset_Delivery_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Delivery_ID);
 		if (ii == null)
@@ -98,7 +109,8 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	}
 
 	/** Set A_Asset_Delivery_UU.
-		@param A_Asset_Delivery_UU A_Asset_Delivery_UU	  */
+		@param A_Asset_Delivery_UU A_Asset_Delivery_UU
+	*/
 	public void setA_Asset_Delivery_UU (String A_Asset_Delivery_UU)
 	{
 		set_Value (COLUMNNAME_A_Asset_Delivery_UU, A_Asset_Delivery_UU);
@@ -106,7 +118,7 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 
 	/** Get A_Asset_Delivery_UU.
 		@return A_Asset_Delivery_UU	  */
-	public String getA_Asset_Delivery_UU () 
+	public String getA_Asset_Delivery_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_Asset_Delivery_UU);
 	}
@@ -118,21 +130,20 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	}
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -147,21 +158,20 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -170,9 +180,8 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	}
 
 	/** Set Delivery Confirmation.
-		@param DeliveryConfirmation 
-		EMail Delivery confirmation
-	  */
+		@param DeliveryConfirmation EMail Delivery confirmation
+	*/
 	public void setDeliveryConfirmation (String DeliveryConfirmation)
 	{
 		set_Value (COLUMNNAME_DeliveryConfirmation, DeliveryConfirmation);
@@ -181,15 +190,14 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/** Get Delivery Confirmation.
 		@return EMail Delivery confirmation
 	  */
-	public String getDeliveryConfirmation () 
+	public String getDeliveryConfirmation()
 	{
 		return (String)get_Value(COLUMNNAME_DeliveryConfirmation);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -198,15 +206,14 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set EMail Address.
-		@param EMail 
-		Electronic Mail Address
-	  */
+		@param EMail Electronic Mail Address
+	*/
 	public void setEMail (String EMail)
 	{
 		set_ValueNoCheck (COLUMNNAME_EMail, EMail);
@@ -215,15 +222,14 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/** Get EMail Address.
 		@return Electronic Mail Address
 	  */
-	public String getEMail () 
+	public String getEMail()
 	{
 		return (String)get_Value(COLUMNNAME_EMail);
 	}
 
 	/** Set Lot No.
-		@param Lot 
-		Lot number (alphanumeric)
-	  */
+		@param Lot Lot number (alphanumeric)
+	*/
 	public void setLot (String Lot)
 	{
 		set_ValueNoCheck (COLUMNNAME_Lot, Lot);
@@ -232,15 +238,14 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/** Get Lot No.
 		@return Lot number (alphanumeric)
 	  */
-	public String getLot () 
+	public String getLot()
 	{
 		return (String)get_Value(COLUMNNAME_Lot);
 	}
 
 	/** Set Message ID.
-		@param MessageID 
-		EMail Message ID
-	  */
+		@param MessageID EMail Message ID
+	*/
 	public void setMessageID (String MessageID)
 	{
 		set_ValueNoCheck (COLUMNNAME_MessageID, MessageID);
@@ -249,7 +254,7 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/** Get Message ID.
 		@return EMail Message ID
 	  */
-	public String getMessageID () 
+	public String getMessageID()
 	{
 		return (String)get_Value(COLUMNNAME_MessageID);
 	}
@@ -261,21 +266,20 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	}
 
 	/** Set Shipment/Receipt Line.
-		@param M_InOutLine_ID 
-		Line on Shipment or Receipt document
-	  */
+		@param M_InOutLine_ID Line on Shipment or Receipt document
+	*/
 	public void setM_InOutLine_ID (int M_InOutLine_ID)
 	{
-		if (M_InOutLine_ID < 1) 
+		if (M_InOutLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_InOutLine_ID, Integer.valueOf(M_InOutLine_ID));
 	}
 
 	/** Get Shipment/Receipt Line.
 		@return Line on Shipment or Receipt document
 	  */
-	public int getM_InOutLine_ID () 
+	public int getM_InOutLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_InOutLine_ID);
 		if (ii == null)
@@ -284,9 +288,8 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	}
 
 	/** Set Movement Date.
-		@param MovementDate 
-		Date a product was moved in or out of inventory
-	  */
+		@param MovementDate Date a product was moved in or out of inventory
+	*/
 	public void setMovementDate (Timestamp MovementDate)
 	{
 		set_ValueNoCheck (COLUMNNAME_MovementDate, MovementDate);
@@ -295,7 +298,7 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/** Get Movement Date.
 		@return Date a product was moved in or out of inventory
 	  */
-	public Timestamp getMovementDate () 
+	public Timestamp getMovementDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
 	}
@@ -315,21 +318,20 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	}
 
 	/** Set Product Download.
-		@param M_ProductDownload_ID 
-		Product downloads
-	  */
+		@param M_ProductDownload_ID Product downloads
+	*/
 	public void setM_ProductDownload_ID (int M_ProductDownload_ID)
 	{
-		if (M_ProductDownload_ID < 1) 
+		if (M_ProductDownload_ID < 1)
 			set_Value (COLUMNNAME_M_ProductDownload_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_ProductDownload_ID, Integer.valueOf(M_ProductDownload_ID));
 	}
 
 	/** Get Product Download.
 		@return Product downloads
 	  */
-	public int getM_ProductDownload_ID () 
+	public int getM_ProductDownload_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductDownload_ID);
 		if (ii == null)
@@ -338,9 +340,8 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	}
 
 	/** Set Referrer.
-		@param Referrer 
-		Referring web address
-	  */
+		@param Referrer Referring web address
+	*/
 	public void setReferrer (String Referrer)
 	{
 		set_ValueNoCheck (COLUMNNAME_Referrer, Referrer);
@@ -349,15 +350,14 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/** Get Referrer.
 		@return Referring web address
 	  */
-	public String getReferrer () 
+	public String getReferrer()
 	{
 		return (String)get_Value(COLUMNNAME_Referrer);
 	}
 
 	/** Set Remote Addr.
-		@param Remote_Addr 
-		Remote Address
-	  */
+		@param Remote_Addr Remote Address
+	*/
 	public void setRemote_Addr (String Remote_Addr)
 	{
 		set_ValueNoCheck (COLUMNNAME_Remote_Addr, Remote_Addr);
@@ -366,15 +366,14 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/** Get Remote Addr.
 		@return Remote Address
 	  */
-	public String getRemote_Addr () 
+	public String getRemote_Addr()
 	{
 		return (String)get_Value(COLUMNNAME_Remote_Addr);
 	}
 
 	/** Set Remote Host.
-		@param Remote_Host 
-		Remote host Info
-	  */
+		@param Remote_Host Remote host Info
+	*/
 	public void setRemote_Host (String Remote_Host)
 	{
 		set_ValueNoCheck (COLUMNNAME_Remote_Host, Remote_Host);
@@ -383,15 +382,14 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/** Get Remote Host.
 		@return Remote host Info
 	  */
-	public String getRemote_Host () 
+	public String getRemote_Host()
 	{
 		return (String)get_Value(COLUMNNAME_Remote_Host);
 	}
 
 	/** Set Serial No.
-		@param SerNo 
-		Product Serial Number 
-	  */
+		@param SerNo Product Serial Number 
+	*/
 	public void setSerNo (String SerNo)
 	{
 		set_ValueNoCheck (COLUMNNAME_SerNo, SerNo);
@@ -400,15 +398,14 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/** Get Serial No.
 		@return Product Serial Number 
 	  */
-	public String getSerNo () 
+	public String getSerNo()
 	{
 		return (String)get_Value(COLUMNNAME_SerNo);
 	}
 
 	/** Set URL.
-		@param URL 
-		Full URL address - e.g. http://www.idempiere.org
-	  */
+		@param URL Full URL address - e.g. http://www.idempiere.org
+	*/
 	public void setURL (String URL)
 	{
 		set_ValueNoCheck (COLUMNNAME_URL, URL);
@@ -417,15 +414,14 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/** Get URL.
 		@return Full URL address - e.g. http://www.idempiere.org
 	  */
-	public String getURL () 
+	public String getURL()
 	{
 		return (String)get_Value(COLUMNNAME_URL);
 	}
 
 	/** Set Version No.
-		@param VersionNo 
-		Version Number
-	  */
+		@param VersionNo Version Number
+	*/
 	public void setVersionNo (String VersionNo)
 	{
 		set_ValueNoCheck (COLUMNNAME_VersionNo, VersionNo);
@@ -434,7 +430,7 @@ public class X_A_Asset_Delivery extends PO implements I_A_Asset_Delivery, I_Pers
 	/** Get Version No.
 		@return Version Number
 	  */
-	public String getVersionNo () 
+	public String getVersionNo()
 	{
 		return (String)get_Value(COLUMNNAME_VersionNo);
 	}

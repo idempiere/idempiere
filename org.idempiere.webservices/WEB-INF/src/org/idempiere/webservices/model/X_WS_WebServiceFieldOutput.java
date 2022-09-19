@@ -19,16 +19,12 @@ package org.idempiere.webservices.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceFieldOutput
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceFieldOutput")
 public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFieldOutput, I_Persistent 
 {
@@ -36,12 +32,23 @@ public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFie
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_WS_WebServiceFieldOutput (Properties ctx, int WS_WebServiceFieldOutput_ID, String trxName)
     {
       super (ctx, WS_WebServiceFieldOutput_ID, trxName);
+      /** if (WS_WebServiceFieldOutput_ID == 0)
+        {
+			setWS_WebServiceFieldOutput_ID (0);
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_WS_WebServiceFieldOutput (Properties ctx, int WS_WebServiceFieldOutput_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, WS_WebServiceFieldOutput_ID, trxName, virtualColumns);
       /** if (WS_WebServiceFieldOutput_ID == 0)
         {
 			setWS_WebServiceFieldOutput_ID (0);
@@ -84,21 +91,20 @@ public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFie
 	}
 
 	/** Set Column.
-		@param AD_Column_ID 
-		Column in the table
-	  */
+		@param AD_Column_ID Column in the table
+	*/
 	public void setAD_Column_ID (int AD_Column_ID)
 	{
-		if (AD_Column_ID < 1) 
+		if (AD_Column_ID < 1)
 			set_Value (COLUMNNAME_AD_Column_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Column_ID, Integer.valueOf(AD_Column_ID));
 	}
 
 	/** Get Column.
 		@return Column in the table
 	  */
-	public int getAD_Column_ID () 
+	public int getAD_Column_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Column_ID);
 		if (ii == null)
@@ -107,18 +113,19 @@ public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFie
 	}
 
 	/** Set Web Service Field Output.
-		@param WS_WebServiceFieldOutput_ID Web Service Field Output	  */
+		@param WS_WebServiceFieldOutput_ID Web Service Field Output
+	*/
 	public void setWS_WebServiceFieldOutput_ID (int WS_WebServiceFieldOutput_ID)
 	{
-		if (WS_WebServiceFieldOutput_ID < 1) 
+		if (WS_WebServiceFieldOutput_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_WS_WebServiceFieldOutput_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_WS_WebServiceFieldOutput_ID, Integer.valueOf(WS_WebServiceFieldOutput_ID));
 	}
 
 	/** Get Web Service Field Output.
 		@return Web Service Field Output	  */
-	public int getWS_WebServiceFieldOutput_ID () 
+	public int getWS_WebServiceFieldOutput_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebServiceFieldOutput_ID);
 		if (ii == null)
@@ -135,7 +142,8 @@ public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFie
     }
 
 	/** Set WS_WebServiceFieldOutput_UU.
-		@param WS_WebServiceFieldOutput_UU WS_WebServiceFieldOutput_UU	  */
+		@param WS_WebServiceFieldOutput_UU WS_WebServiceFieldOutput_UU
+	*/
 	public void setWS_WebServiceFieldOutput_UU (String WS_WebServiceFieldOutput_UU)
 	{
 		set_Value (COLUMNNAME_WS_WebServiceFieldOutput_UU, WS_WebServiceFieldOutput_UU);
@@ -143,7 +151,7 @@ public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFie
 
 	/** Get WS_WebServiceFieldOutput_UU.
 		@return WS_WebServiceFieldOutput_UU	  */
-	public String getWS_WebServiceFieldOutput_UU () 
+	public String getWS_WebServiceFieldOutput_UU()
 	{
 		return (String)get_Value(COLUMNNAME_WS_WebServiceFieldOutput_UU);
 	}
@@ -155,18 +163,19 @@ public class X_WS_WebServiceFieldOutput extends PO implements I_WS_WebServiceFie
 	}
 
 	/** Set Web Service Type.
-		@param WS_WebServiceType_ID Web Service Type	  */
+		@param WS_WebServiceType_ID Web Service Type
+	*/
 	public void setWS_WebServiceType_ID (int WS_WebServiceType_ID)
 	{
-		if (WS_WebServiceType_ID < 1) 
+		if (WS_WebServiceType_ID < 1)
 			set_Value (COLUMNNAME_WS_WebServiceType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_WS_WebServiceType_ID, Integer.valueOf(WS_WebServiceType_ID));
 	}
 
 	/** Get Web Service Type.
 		@return Web Service Type	  */
-	public int getWS_WebServiceType_ID () 
+	public int getWS_WebServiceType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebServiceType_ID);
 		if (ii == null)

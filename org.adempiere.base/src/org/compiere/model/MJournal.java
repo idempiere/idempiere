@@ -46,10 +46,10 @@ import org.compiere.util.TimeUtil;
  * 				<li>FR [ 1776045 ] Add ReActivate action to GL Journal
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li>FR [ 1948157  ]  Is necessary the reference for document reverse
- *  		@see http://sourceforge.net/tracker/?func=detail&atid=879335&aid=1948157&group_id=176962
+ *  		@see https://sourceforge.net/p/adempiere/feature-requests/412/
  *  		<li>FR: [ 2214883 ] Remove SQL code and Replace for Query 
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 	
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  */
 public class MJournal extends X_GL_Journal implements DocAction
 {
@@ -207,7 +207,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		final String whereClause = "GL_Journal_ID=?";
 		List <MJournalLine> list = new Query(getCtx(), I_GL_JournalLine.Table_Name, whereClause, get_TrxName())
 			.setParameters(getGL_Journal_ID())
-			.setOrderBy("Line")
+			.setOrderBy("Line,GL_JournalLine_ID")
 			.list();
 		//
 		MJournalLine[] retValue = new MJournalLine[list.size()];

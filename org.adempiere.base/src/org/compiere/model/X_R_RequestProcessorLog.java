@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_RequestProcessorLog
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestProcessorLog")
 public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorLog, I_Persistent 
 {
@@ -30,12 +30,24 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_RequestProcessorLog (Properties ctx, int R_RequestProcessorLog_ID, String trxName)
     {
       super (ctx, R_RequestProcessorLog_ID, trxName);
+      /** if (R_RequestProcessorLog_ID == 0)
+        {
+			setIsError (false);
+			setR_RequestProcessor_ID (0);
+			setR_RequestProcessorLog_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestProcessorLog (Properties ctx, int R_RequestProcessorLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestProcessorLog_ID, trxName, virtualColumns);
       /** if (R_RequestProcessorLog_ID == 0)
         {
 			setIsError (false);
@@ -73,9 +85,8 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
     }
 
 	/** Set Binary Data.
-		@param BinaryData 
-		Binary Data
-	  */
+		@param BinaryData Binary Data
+	*/
 	public void setBinaryData (byte[] BinaryData)
 	{
 		set_Value (COLUMNNAME_BinaryData, BinaryData);
@@ -84,15 +95,14 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	/** Get Binary Data.
 		@return Binary Data
 	  */
-	public byte[] getBinaryData () 
+	public byte[] getBinaryData()
 	{
 		return (byte[])get_Value(COLUMNNAME_BinaryData);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -101,15 +111,14 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Error.
-		@param IsError 
-		An Error occurred in the execution
-	  */
+		@param IsError An Error occurred in the execution
+	*/
 	public void setIsError (boolean IsError)
 	{
 		set_Value (COLUMNNAME_IsError, Boolean.valueOf(IsError));
@@ -118,7 +127,7 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	/** Get Error.
 		@return An Error occurred in the execution
 	  */
-	public boolean isError () 
+	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
 		if (oo != null) 
@@ -131,9 +140,8 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	}
 
 	/** Set Reference.
-		@param Reference 
-		Reference for this record
-	  */
+		@param Reference Reference for this record
+	*/
 	public void setReference (String Reference)
 	{
 		set_Value (COLUMNNAME_Reference, Reference);
@@ -142,7 +150,7 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	/** Get Reference.
 		@return Reference for this record
 	  */
-	public String getReference () 
+	public String getReference()
 	{
 		return (String)get_Value(COLUMNNAME_Reference);
 	}
@@ -154,21 +162,20 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	}
 
 	/** Set Request Processor.
-		@param R_RequestProcessor_ID 
-		Processor for Requests
-	  */
+		@param R_RequestProcessor_ID Processor for Requests
+	*/
 	public void setR_RequestProcessor_ID (int R_RequestProcessor_ID)
 	{
-		if (R_RequestProcessor_ID < 1) 
+		if (R_RequestProcessor_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_RequestProcessor_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_RequestProcessor_ID, Integer.valueOf(R_RequestProcessor_ID));
 	}
 
 	/** Get Request Processor.
 		@return Processor for Requests
 	  */
-	public int getR_RequestProcessor_ID () 
+	public int getR_RequestProcessor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_RequestProcessor_ID);
 		if (ii == null)
@@ -177,21 +184,20 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	}
 
 	/** Set Request Processor Log.
-		@param R_RequestProcessorLog_ID 
-		Result of the execution of the Request Processor
-	  */
+		@param R_RequestProcessorLog_ID Result of the execution of the Request Processor
+	*/
 	public void setR_RequestProcessorLog_ID (int R_RequestProcessorLog_ID)
 	{
-		if (R_RequestProcessorLog_ID < 1) 
+		if (R_RequestProcessorLog_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_RequestProcessorLog_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_RequestProcessorLog_ID, Integer.valueOf(R_RequestProcessorLog_ID));
 	}
 
 	/** Get Request Processor Log.
 		@return Result of the execution of the Request Processor
 	  */
-	public int getR_RequestProcessorLog_ID () 
+	public int getR_RequestProcessorLog_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_RequestProcessorLog_ID);
 		if (ii == null)
@@ -200,7 +206,8 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	}
 
 	/** Set R_RequestProcessorLog_UU.
-		@param R_RequestProcessorLog_UU R_RequestProcessorLog_UU	  */
+		@param R_RequestProcessorLog_UU R_RequestProcessorLog_UU
+	*/
 	public void setR_RequestProcessorLog_UU (String R_RequestProcessorLog_UU)
 	{
 		set_Value (COLUMNNAME_R_RequestProcessorLog_UU, R_RequestProcessorLog_UU);
@@ -208,15 +215,14 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 
 	/** Get R_RequestProcessorLog_UU.
 		@return R_RequestProcessorLog_UU	  */
-	public String getR_RequestProcessorLog_UU () 
+	public String getR_RequestProcessorLog_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_RequestProcessorLog_UU);
 	}
 
 	/** Set Summary.
-		@param Summary 
-		Textual summary of this request
-	  */
+		@param Summary Textual summary of this request
+	*/
 	public void setSummary (String Summary)
 	{
 		set_Value (COLUMNNAME_Summary, Summary);
@@ -225,15 +231,14 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	/** Get Summary.
 		@return Textual summary of this request
 	  */
-	public String getSummary () 
+	public String getSummary()
 	{
 		return (String)get_Value(COLUMNNAME_Summary);
 	}
 
 	/** Set Text Message.
-		@param TextMsg 
-		Text Message
-	  */
+		@param TextMsg Text Message
+	*/
 	public void setTextMsg (String TextMsg)
 	{
 		set_Value (COLUMNNAME_TextMsg, TextMsg);
@@ -242,7 +247,7 @@ public class X_R_RequestProcessorLog extends PO implements I_R_RequestProcessorL
 	/** Get Text Message.
 		@return Text Message
 	  */
-	public String getTextMsg () 
+	public String getTextMsg()
 	{
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}

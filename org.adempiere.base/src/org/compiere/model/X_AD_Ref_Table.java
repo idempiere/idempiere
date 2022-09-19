@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Ref_Table
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Ref_Table")
 public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent 
 {
@@ -31,12 +31,28 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Ref_Table (Properties ctx, int AD_Ref_Table_ID, String trxName)
     {
       super (ctx, AD_Ref_Table_ID, trxName);
+      /** if (AD_Ref_Table_ID == 0)
+        {
+			setAD_Display (0);
+			setAD_Key (0);
+			setAD_Reference_ID (0);
+			setAD_Table_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsValueDisplayed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Ref_Table (Properties ctx, int AD_Ref_Table_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Ref_Table_ID, trxName, virtualColumns);
       /** if (AD_Ref_Table_ID == 0)
         {
 			setAD_Display (0);
@@ -84,9 +100,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	}
 
 	/** Set Display column.
-		@param AD_Display 
-		Column that will display
-	  */
+		@param AD_Display Column that will display
+	*/
 	public void setAD_Display (int AD_Display)
 	{
 		set_Value (COLUMNNAME_AD_Display, Integer.valueOf(AD_Display));
@@ -95,7 +110,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	/** Get Display column.
 		@return Column that will display
 	  */
-	public int getAD_Display () 
+	public int getAD_Display()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Display);
 		if (ii == null)
@@ -110,21 +125,20 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	}
 
 	/** Set Info Window.
-		@param AD_InfoWindow_ID 
-		Info and search/select Window
-	  */
+		@param AD_InfoWindow_ID Info and search/select Window
+	*/
 	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
 	{
-		if (AD_InfoWindow_ID < 1) 
+		if (AD_InfoWindow_ID < 1)
 			set_Value (COLUMNNAME_AD_InfoWindow_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
 	}
 
 	/** Get Info Window.
 		@return Info and search/select Window
 	  */
-	public int getAD_InfoWindow_ID () 
+	public int getAD_InfoWindow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
 		if (ii == null)
@@ -139,9 +153,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	}
 
 	/** Set Key column.
-		@param AD_Key 
-		Unique identifier of a record
-	  */
+		@param AD_Key Unique identifier of a record
+	*/
 	public void setAD_Key (int AD_Key)
 	{
 		set_Value (COLUMNNAME_AD_Key, Integer.valueOf(AD_Key));
@@ -150,7 +163,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	/** Get Key column.
 		@return Unique identifier of a record
 	  */
-	public int getAD_Key () 
+	public int getAD_Key()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Key);
 		if (ii == null)
@@ -165,21 +178,20 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	}
 
 	/** Set Reference.
-		@param AD_Reference_ID 
-		System Reference and Validation
-	  */
+		@param AD_Reference_ID System Reference and Validation
+	*/
 	public void setAD_Reference_ID (int AD_Reference_ID)
 	{
-		if (AD_Reference_ID < 1) 
+		if (AD_Reference_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Reference_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Reference_ID, Integer.valueOf(AD_Reference_ID));
 	}
 
 	/** Get Reference.
 		@return System Reference and Validation
 	  */
-	public int getAD_Reference_ID () 
+	public int getAD_Reference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Reference_ID);
 		if (ii == null)
@@ -196,7 +208,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
     }
 
 	/** Set AD_Ref_Table_UU.
-		@param AD_Ref_Table_UU AD_Ref_Table_UU	  */
+		@param AD_Ref_Table_UU AD_Ref_Table_UU
+	*/
 	public void setAD_Ref_Table_UU (String AD_Ref_Table_UU)
 	{
 		set_Value (COLUMNNAME_AD_Ref_Table_UU, AD_Ref_Table_UU);
@@ -204,7 +217,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 
 	/** Get AD_Ref_Table_UU.
 		@return AD_Ref_Table_UU	  */
-	public String getAD_Ref_Table_UU () 
+	public String getAD_Ref_Table_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Ref_Table_UU);
 	}
@@ -216,21 +229,20 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -245,21 +257,20 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_Value (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -270,9 +281,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -282,15 +292,14 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Display Value.
-		@param IsValueDisplayed 
-		Displays Value column with the Display column
-	  */
+		@param IsValueDisplayed Displays Value column with the Display column
+	*/
 	public void setIsValueDisplayed (boolean IsValueDisplayed)
 	{
 		set_Value (COLUMNNAME_IsValueDisplayed, Boolean.valueOf(IsValueDisplayed));
@@ -299,7 +308,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	/** Get Display Value.
 		@return Displays Value column with the Display column
 	  */
-	public boolean isValueDisplayed () 
+	public boolean isValueDisplayed()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValueDisplayed);
 		if (oo != null) 
@@ -312,9 +321,8 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	}
 
 	/** Set Sql ORDER BY.
-		@param OrderByClause 
-		Fully qualified ORDER BY clause
-	  */
+		@param OrderByClause Fully qualified ORDER BY clause
+	*/
 	public void setOrderByClause (String OrderByClause)
 	{
 		set_Value (COLUMNNAME_OrderByClause, OrderByClause);
@@ -323,15 +331,14 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	/** Get Sql ORDER BY.
 		@return Fully qualified ORDER BY clause
 	  */
-	public String getOrderByClause () 
+	public String getOrderByClause()
 	{
 		return (String)get_Value(COLUMNNAME_OrderByClause);
 	}
 
 	/** Set Sql WHERE.
-		@param WhereClause 
-		Fully qualified SQL WHERE clause
-	  */
+		@param WhereClause Fully qualified SQL WHERE clause
+	*/
 	public void setWhereClause (String WhereClause)
 	{
 		set_Value (COLUMNNAME_WhereClause, WhereClause);
@@ -340,7 +347,7 @@ public class X_AD_Ref_Table extends PO implements I_AD_Ref_Table, I_Persistent
 	/** Get Sql WHERE.
 		@return Fully qualified SQL WHERE clause
 	  */
-	public String getWhereClause () 
+	public String getWhereClause()
 	{
 		return (String)get_Value(COLUMNNAME_WhereClause);
 	}

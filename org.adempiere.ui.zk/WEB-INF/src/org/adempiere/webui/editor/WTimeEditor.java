@@ -14,6 +14,7 @@
 package org.adempiere.webui.editor;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 
@@ -122,11 +123,19 @@ public class WTimeEditor extends WEditor implements ContextMenuListener
 		if (Events.ON_CHANGE.equalsIgnoreCase(event.getName()) || Events.ON_OK.equalsIgnoreCase(event.getName()))
 		{
 	        Date date = getComponent().getValue();
+	        
 	        Timestamp newValue = null;
 
 	        if (date != null)
 	        {
-	            newValue = new Timestamp(date.getTime());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(date);
+				cal.set(Calendar.YEAR, 1970);
+				cal.set(Calendar.MONTH, 0);
+				cal.set(Calendar.DAY_OF_MONTH, 1);
+				Date dateIn1970 = new Date(cal.getTimeInMillis());
+				getComponent().setValue(dateIn1970);
+	            newValue = new Timestamp(dateIn1970.getTime());
 	        }
 
 	        if (oldValue != null && newValue != null && oldValue.equals(newValue)) {

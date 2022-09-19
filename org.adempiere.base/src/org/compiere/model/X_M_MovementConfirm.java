@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MovementConfirm
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_MovementConfirm")
 public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Persistent 
 {
@@ -33,12 +33,29 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_MovementConfirm (Properties ctx, int M_MovementConfirm_ID, String trxName)
     {
       super (ctx, M_MovementConfirm_ID, trxName);
+      /** if (M_MovementConfirm_ID == 0)
+        {
+			setDocAction (null);
+			setDocStatus (null);
+			setDocumentNo (null);
+			setIsApproved (false);
+// N
+			setM_MovementConfirm_ID (0);
+			setM_Movement_ID (0);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_MovementConfirm (Properties ctx, int M_MovementConfirm_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_MovementConfirm_ID, trxName, virtualColumns);
       /** if (M_MovementConfirm_ID == 0)
         {
 			setDocAction (null);
@@ -81,9 +98,8 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
     }
 
 	/** Set Approval Amount.
-		@param ApprovalAmt 
-		Document Approval Amount
-	  */
+		@param ApprovalAmt Document Approval Amount
+	*/
 	public void setApprovalAmt (BigDecimal ApprovalAmt)
 	{
 		set_Value (COLUMNNAME_ApprovalAmt, ApprovalAmt);
@@ -92,7 +108,7 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	/** Get Approval Amount.
 		@return Document Approval Amount
 	  */
-	public BigDecimal getApprovalAmt () 
+	public BigDecimal getApprovalAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ApprovalAmt);
 		if (bd == null)
@@ -101,9 +117,8 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -112,14 +127,14 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** DocAction AD_Reference_ID=135 */
 	public static final int DOCACTION_AD_Reference_ID=135;
-	/** <None> = -- */
+	/** &lt;None&gt; = -- */
 	public static final String DOCACTION_None = "--";
 	/** Approve = AP */
 	public static final String DOCACTION_Approve = "AP";
@@ -148,9 +163,8 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	/** Unlock = XL */
 	public static final String DOCACTION_Unlock = "XL";
 	/** Set Document Action.
-		@param DocAction 
-		The targeted status of the document
-	  */
+		@param DocAction The targeted status of the document
+	*/
 	public void setDocAction (String DocAction)
 	{
 
@@ -160,7 +174,7 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	/** Get Document Action.
 		@return The targeted status of the document
 	  */
-	public String getDocAction () 
+	public String getDocAction()
 	{
 		return (String)get_Value(COLUMNNAME_DocAction);
 	}
@@ -192,9 +206,8 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	/** Waiting Payment = WP */
 	public static final String DOCSTATUS_WaitingPayment = "WP";
 	/** Set Document Status.
-		@param DocStatus 
-		The current status of the document
-	  */
+		@param DocStatus The current status of the document
+	*/
 	public void setDocStatus (String DocStatus)
 	{
 
@@ -204,15 +217,14 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	/** Get Document Status.
 		@return The current status of the document
 	  */
-	public String getDocStatus () 
+	public String getDocStatus()
 	{
 		return (String)get_Value(COLUMNNAME_DocStatus);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -221,7 +233,7 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
@@ -235,9 +247,8 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
     }
 
 	/** Set Approved.
-		@param IsApproved 
-		Indicates if this document requires approval
-	  */
+		@param IsApproved Indicates if this document requires approval
+	*/
 	public void setIsApproved (boolean IsApproved)
 	{
 		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
@@ -246,7 +257,7 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	/** Get Approved.
 		@return Indicates if this document requires approval
 	  */
-	public boolean isApproved () 
+	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
 		if (oo != null) 
@@ -265,21 +276,20 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	}
 
 	/** Set Phys.Inventory.
-		@param M_Inventory_ID 
-		Parameters for a Physical Inventory
-	  */
+		@param M_Inventory_ID Parameters for a Physical Inventory
+	*/
 	public void setM_Inventory_ID (int M_Inventory_ID)
 	{
-		if (M_Inventory_ID < 1) 
+		if (M_Inventory_ID < 1)
 			set_Value (COLUMNNAME_M_Inventory_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Inventory_ID, Integer.valueOf(M_Inventory_ID));
 	}
 
 	/** Get Phys.Inventory.
 		@return Parameters for a Physical Inventory
 	  */
-	public int getM_Inventory_ID () 
+	public int getM_Inventory_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Inventory_ID);
 		if (ii == null)
@@ -288,21 +298,20 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	}
 
 	/** Set Move Confirm.
-		@param M_MovementConfirm_ID 
-		Inventory Move Confirmation
-	  */
+		@param M_MovementConfirm_ID Inventory Move Confirmation
+	*/
 	public void setM_MovementConfirm_ID (int M_MovementConfirm_ID)
 	{
-		if (M_MovementConfirm_ID < 1) 
+		if (M_MovementConfirm_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_MovementConfirm_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_MovementConfirm_ID, Integer.valueOf(M_MovementConfirm_ID));
 	}
 
 	/** Get Move Confirm.
 		@return Inventory Move Confirmation
 	  */
-	public int getM_MovementConfirm_ID () 
+	public int getM_MovementConfirm_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_MovementConfirm_ID);
 		if (ii == null)
@@ -311,7 +320,8 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	}
 
 	/** Set M_MovementConfirm_UU.
-		@param M_MovementConfirm_UU M_MovementConfirm_UU	  */
+		@param M_MovementConfirm_UU M_MovementConfirm_UU
+	*/
 	public void setM_MovementConfirm_UU (String M_MovementConfirm_UU)
 	{
 		set_Value (COLUMNNAME_M_MovementConfirm_UU, M_MovementConfirm_UU);
@@ -319,7 +329,7 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 
 	/** Get M_MovementConfirm_UU.
 		@return M_MovementConfirm_UU	  */
-	public String getM_MovementConfirm_UU () 
+	public String getM_MovementConfirm_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_MovementConfirm_UU);
 	}
@@ -331,21 +341,20 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	}
 
 	/** Set Inventory Move.
-		@param M_Movement_ID 
-		Movement of Inventory
-	  */
+		@param M_Movement_ID Movement of Inventory
+	*/
 	public void setM_Movement_ID (int M_Movement_ID)
 	{
-		if (M_Movement_ID < 1) 
+		if (M_Movement_ID < 1)
 			set_Value (COLUMNNAME_M_Movement_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Movement_ID, Integer.valueOf(M_Movement_ID));
 	}
 
 	/** Get Inventory Move.
 		@return Movement of Inventory
 	  */
-	public int getM_Movement_ID () 
+	public int getM_Movement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Movement_ID);
 		if (ii == null)
@@ -354,9 +363,8 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -365,7 +373,7 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -378,7 +386,8 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -386,7 +395,7 @@ public class X_M_MovementConfirm extends PO implements I_M_MovementConfirm, I_Pe
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

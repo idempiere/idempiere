@@ -375,13 +375,11 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 				return false;
 			}
 		}
-		if (getC_Country_ID() > 0 && getC_CountryGroupFrom_ID() > 0) {
-			setC_Country_ID(0);
+		if (isSummary()) {
+			if (getParent_Tax_ID() > 0) {
+				setParent_Tax_ID(0);
+			}
 		}
-		if (getTo_Country_ID() > 0 && getC_CountryGroupTo_ID() > 0) {
-			setTo_Country_ID(0);
-		}
-
 		return super.beforeSave(newRecord);
 	}
 	
@@ -413,4 +411,12 @@ public class MTax extends X_C_Tax implements ImmutablePOSupport
 		return this;
 	}
 	
+	/**
+	 * 
+	 * @return true if input tax is added to product cost
+	 */
+	public boolean isDistributeTaxWithLineItem()
+	{
+		return TAXPOSTINGINDICATOR_DistributeTaxWithRelevantExpense.equals(getTaxPostingIndicator());
+	}
 }	//	MTax

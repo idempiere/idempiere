@@ -40,7 +40,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -104,6 +104,7 @@ public class ReportAction implements EventListener<Event>
 			winReport.setBorder("normal");
 			winReport.setStyle("position:absolute");
 			winReport.addEventListener("onValidate", this);
+			winReport.addCallback(Window.AFTER_PAGE_DETACHED, t -> panel.focusToLastFocusEditor());
 			
 			cboPrintFormat.setMold("select");
 			cboPrintFormat.getItems().clear();
@@ -251,7 +252,7 @@ public class ReportAction implements EventListener<Event>
 		ListItem li = cboPrintFormat.getSelectedItem();
 		if(li == null || li.getValue() == null)
 		{
-			FDialog.error(0, winReport, "PrintFormatMandatory");
+			Dialog.error(0, "PrintFormatMandatory");
 			return;
 		}
 		
@@ -263,7 +264,7 @@ public class ReportAction implements EventListener<Event>
 			li = cboExportType.getSelectedItem();
 			if(li == null || li.getValue() == null)
 			{
-				FDialog.error(0, winReport, "ExportFileTypeMandatory");
+				Dialog.error(0, "ExportFileTypeMandatory");
 				return;
 			}
 		}		
@@ -372,9 +373,8 @@ public class ReportAction implements EventListener<Event>
 		else
 		{
 			// It's a default report using the standard printing engine
-			ReportEngine re = new ReportEngine (Env.getCtx(), pf, query, info);
+			ReportEngine re = new ReportEngine (Env.getCtx(), pf, query, info, null, gridTab.getWindowNo());
 			re.setWhereExtended(gridTab.getWhereExtended());
-			re.setWindowNo(gridTab.getWindowNo());
 			
 			if (export)
 				export(re);
@@ -398,7 +398,7 @@ public class ReportAction implements EventListener<Event>
 			ListItem li = cboExportType.getSelectedItem();
 			if(li == null || li.getValue() == null)
 			{
-				FDialog.error(0, winReport, "FileInvalidExtension");
+				Dialog.error(0, "FileInvalidExtension");
 				return;
 			}
 			
@@ -459,7 +459,7 @@ public class ReportAction implements EventListener<Event>
 			}
 			else
 			{
-				FDialog.error(0, winReport, "FileInvalidExtension");
+				Dialog.error(0, "FileInvalidExtension");
 				return;
 			}
 

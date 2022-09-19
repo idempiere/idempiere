@@ -55,6 +55,8 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLEDIR;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TEXT;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TEXTLONG;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIME;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIMESTAMP_WITH_TIMEZONE;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIMEZONE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_URL;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
 
@@ -66,6 +68,7 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.logging.Level;
 
 import org.adempiere.base.IDisplayTypeFactory;
@@ -172,6 +175,10 @@ public final class DisplayType
 	
 	public static final int ChosenMultipleSelectionSearch = REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_SEARCH;
 
+	public static final int TimestampWithTimeZone = REFERENCE_DATATYPE_TIMESTAMP_WITH_TIMEZONE;
+	
+	public static final int TimeZoneId = REFERENCE_DATATYPE_TIMEZONE;
+	
 	/**
 	 *	- New Display Type
 		INSERT INTO AD_REFERENCE
@@ -317,7 +324,8 @@ public final class DisplayType
 			|| displayType == RadiogroupList
 			|| displayType == ChosenMultipleSelectionList
 			|| displayType == ChosenMultipleSelectionTable
-			|| displayType == ChosenMultipleSelectionSearch)
+			|| displayType == ChosenMultipleSelectionSearch
+			|| displayType == TimeZoneId)
 			return true;
 		
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
@@ -345,6 +353,9 @@ public final class DisplayType
 	public static boolean isDate (int displayType)
 	{
 		if (displayType == Date || displayType == DateTime || displayType == Time)
+			return true;
+		
+		if (isTimestampWithTimeZone(displayType))
 			return true;
 		
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
@@ -455,6 +466,19 @@ public final class DisplayType
 		return false;
 	}	//	isLOB
 
+	/**
+	 * 
+	 * @param displayType
+	 * @return true if displayType == TimestampWithTimeZone
+	 */
+	public static boolean isTimestampWithTimeZone(int displayType)
+	{
+		if (displayType == TimestampWithTimeZone)
+			return true;
+		else
+			return false;
+	}
+	
 	/**************************************************************************
 	 *	Return Format for numeric DisplayType
 	 *  @param displayType Display Type (default Number)
@@ -611,8 +635,8 @@ public final class DisplayType
 		{
 			SimpleDateFormat format = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, language.getLocale());
 			try {
-			format.applyPattern(pattern);
-			return format;
+				format.applyPattern(pattern);
+				return displayType==TimeZoneId ? setTimeZone(format) : format;
 			}
 			catch (IllegalArgumentException e) {
 				s_log.log(Level.WARNING, "Invalid date pattern: " + pattern);
@@ -631,7 +655,14 @@ public final class DisplayType
 				return new SimpleDateFormat(lang.getTimePattern());
 			return myLanguage.getTimeFormat();
 		}
-
+		else if ( displayType == TimestampWithTimeZone) {
+			SimpleDateFormat format = null;
+			if (!Util.isEmpty(lang.getDatePattern()) && !Util.isEmpty(lang.getTimePattern()))
+				format = new SimpleDateFormat(lang.getDatePattern() + " " + lang.getTimePattern());
+			else
+				format = myLanguage.getDateTimeFormat();
+			return setTimeZone(format);
+		}
 		else {
 			IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
 			if (cache != null) {
@@ -658,6 +689,20 @@ public final class DisplayType
 		return myLanguage.getDateFormat();		//	default
 	}	//	getDateFormat
 
+	private static SimpleDateFormat setTimeZone(SimpleDateFormat dateFormat) {
+		String timezoneId = Env.getContext(Env.getCtx(), Env.CLIENT_INFO_TIME_ZONE);
+		if (!Util.isEmpty(timezoneId, true))
+		{
+			TimeZone tz = TimeZone.getTimeZone(timezoneId);
+			if (tz != null && timezoneId.equals(tz.getID()))
+			{
+				dateFormat = new SimpleDateFormat(dateFormat.toPattern());
+				dateFormat.setTimeZone(tz);
+			}
+		}
+		return dateFormat;
+	}
+	
 	/**
 	 *	JDBC Date Format YYYY-MM-DD
 	 *  @return date format
@@ -768,6 +813,8 @@ public final class DisplayType
 		//
 		if (displayType == DisplayType.Integer)
 			return getDatabase().getNumericDataType()+"(10)";
+		if (DisplayType.isTimestampWithTimeZone(displayType))
+			return getDatabase().getTimestampWithTimezoneDataType();
 		if (DisplayType.isDate(displayType))
 			return getDatabase().getTimestampDataType();
 		if (DisplayType.isNumeric(displayType))
@@ -775,7 +822,7 @@ public final class DisplayType
 		if (displayType == DisplayType.Binary)
 			return getDatabase().getBlobDataType();
 		if (displayType == DisplayType.TextLong
-			|| (displayType == DisplayType.Text && fieldLength >= 4000))
+			|| (displayType == DisplayType.Text && (fieldLength == 0 || fieldLength >= 4000)))
 			return getDatabase().getClobDataType();
 		if (displayType == DisplayType.YesNo)
 			return getDatabase().getCharacterDataType()+"(1)";
@@ -793,7 +840,7 @@ public final class DisplayType
 				return getDatabase().getNumericDataType()+"(10)";
 			else
 				return getDatabase().getCharacterDataType()+"(" + fieldLength + ")";
-		}
+		}		
 		
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
 		if (cache != null) {
@@ -922,8 +969,8 @@ public final class DisplayType
 
 	/**
 	 *	Helper method to get a currency format in a language (multi-currency and multi-language system)
-	 *  @param language locale code
-	 *  @param currency code
+	 *  @param langcode language locale code
+	 *  @param currencyCode currency code
 	 *  @return number format
 	 */
 	public static NumberFormat getCurrencyFormat(String langcode, String currencyCode)

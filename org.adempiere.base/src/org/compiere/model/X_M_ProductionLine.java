@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ProductionLine
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_ProductionLine")
 public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Persistent 
 {
@@ -33,12 +33,30 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ProductionLine (Properties ctx, int M_ProductionLine_ID, String trxName)
     {
       super (ctx, M_ProductionLine_ID, trxName);
+      /** if (M_ProductionLine_ID == 0)
+        {
+			setLine (0);
+// @SQL=SELECT NVL(MAX(Line),0)+10 AS DefaultValue FROM M_ProductionLine WHERE M_Production_ID=@M_Production_ID@
+			setM_AttributeSetInstance_ID (0);
+			setM_Locator_ID (0);
+// @M_Locator_ID@
+			setMovementQty (Env.ZERO);
+			setM_Product_ID (0);
+			setM_ProductionLine_ID (0);
+			setProcessed (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ProductionLine (Properties ctx, int M_ProductionLine_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ProductionLine_ID, trxName, virtualColumns);
       /** if (M_ProductionLine_ID == 0)
         {
 			setLine (0);
@@ -82,9 +100,8 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -93,15 +110,14 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set End Product.
-		@param IsEndProduct 
-		End Product of production
-	  */
+		@param IsEndProduct End Product of production
+	*/
 	public void setIsEndProduct (boolean IsEndProduct)
 	{
 		set_Value (COLUMNNAME_IsEndProduct, Boolean.valueOf(IsEndProduct));
@@ -110,7 +126,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	/** Get End Product.
 		@return End Product of production
 	  */
-	public boolean isEndProduct () 
+	public boolean isEndProduct()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEndProduct);
 		if (oo != null) 
@@ -123,9 +139,8 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (int Line)
 	{
 		set_Value (COLUMNNAME_Line, Integer.valueOf(Line));
@@ -134,7 +149,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public int getLine () 
+	public int getLine()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Line);
 		if (ii == null)
@@ -149,21 +164,20 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -178,21 +192,20 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	/** Set Locator.
-		@param M_Locator_ID 
-		Warehouse Locator
-	  */
+		@param M_Locator_ID Warehouse Locator
+	*/
 	public void setM_Locator_ID (int M_Locator_ID)
 	{
-		if (M_Locator_ID < 1) 
+		if (M_Locator_ID < 1)
 			set_Value (COLUMNNAME_M_Locator_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
 	}
 
 	/** Get Locator.
 		@return Warehouse Locator
 	  */
-	public int getM_Locator_ID () 
+	public int getM_Locator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
 		if (ii == null)
@@ -201,9 +214,8 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	/** Set Movement Quantity.
-		@param MovementQty 
-		Quantity of a product moved.
-	  */
+		@param MovementQty Quantity of a product moved.
+	*/
 	public void setMovementQty (BigDecimal MovementQty)
 	{
 		set_Value (COLUMNNAME_MovementQty, MovementQty);
@@ -212,7 +224,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	/** Get Movement Quantity.
 		@return Quantity of a product moved.
 	  */
-	public BigDecimal getMovementQty () 
+	public BigDecimal getMovementQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MovementQty);
 		if (bd == null)
@@ -227,21 +239,20 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -256,21 +267,20 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	/** Set Production.
-		@param M_Production_ID 
-		Plan for producing a product
-	  */
+		@param M_Production_ID Plan for producing a product
+	*/
 	public void setM_Production_ID (int M_Production_ID)
 	{
-		if (M_Production_ID < 1) 
+		if (M_Production_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Production_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Production_ID, Integer.valueOf(M_Production_ID));
 	}
 
 	/** Get Production.
 		@return Plan for producing a product
 	  */
-	public int getM_Production_ID () 
+	public int getM_Production_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Production_ID);
 		if (ii == null)
@@ -287,21 +297,20 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
     }
 
 	/** Set Production Line.
-		@param M_ProductionLine_ID 
-		Document Line representing a production
-	  */
+		@param M_ProductionLine_ID Document Line representing a production
+	*/
 	public void setM_ProductionLine_ID (int M_ProductionLine_ID)
 	{
-		if (M_ProductionLine_ID < 1) 
+		if (M_ProductionLine_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ProductionLine_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ProductionLine_ID, Integer.valueOf(M_ProductionLine_ID));
 	}
 
 	/** Get Production Line.
 		@return Document Line representing a production
 	  */
-	public int getM_ProductionLine_ID () 
+	public int getM_ProductionLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductionLine_ID);
 		if (ii == null)
@@ -310,7 +319,8 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	/** Set M_ProductionLine_UU.
-		@param M_ProductionLine_UU M_ProductionLine_UU	  */
+		@param M_ProductionLine_UU M_ProductionLine_UU
+	*/
 	public void setM_ProductionLine_UU (String M_ProductionLine_UU)
 	{
 		set_Value (COLUMNNAME_M_ProductionLine_UU, M_ProductionLine_UU);
@@ -318,7 +328,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 
 	/** Get M_ProductionLine_UU.
 		@return M_ProductionLine_UU	  */
-	public String getM_ProductionLine_UU () 
+	public String getM_ProductionLine_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ProductionLine_UU);
 	}
@@ -330,21 +340,20 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	/** Set Production Plan.
-		@param M_ProductionPlan_ID 
-		Plan for how a product is produced
-	  */
+		@param M_ProductionPlan_ID Plan for how a product is produced
+	*/
 	public void setM_ProductionPlan_ID (int M_ProductionPlan_ID)
 	{
-		if (M_ProductionPlan_ID < 1) 
+		if (M_ProductionPlan_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ProductionPlan_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ProductionPlan_ID, Integer.valueOf(M_ProductionPlan_ID));
 	}
 
 	/** Get Production Plan.
 		@return Plan for how a product is produced
 	  */
-	public int getM_ProductionPlan_ID () 
+	public int getM_ProductionPlan_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ProductionPlan_ID);
 		if (ii == null)
@@ -353,9 +362,8 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	/** Set Planned Quantity.
-		@param PlannedQty 
-		Planned quantity for this project
-	  */
+		@param PlannedQty Planned quantity for this project
+	*/
 	public void setPlannedQty (BigDecimal PlannedQty)
 	{
 		set_Value (COLUMNNAME_PlannedQty, PlannedQty);
@@ -364,7 +372,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	/** Get Planned Quantity.
 		@return Planned quantity for this project
 	  */
-	public BigDecimal getPlannedQty () 
+	public BigDecimal getPlannedQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PlannedQty);
 		if (bd == null)
@@ -373,9 +381,8 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -384,7 +391,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -396,43 +403,9 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 		return false;
 	}
 
-	/** Set Product Type.
-		@param ProductType 
-		Type of product
-	  */
-	public void setProductType (String ProductType)
-	{
-		throw new IllegalArgumentException ("ProductType is virtual column");	}
-
-	/** Get Product Type.
-		@return Type of product
-	  */
-	public String getProductType () 
-	{
-		return (String)get_Value(COLUMNNAME_ProductType);
-	}
-
-	/** Set Available Quantity.
-		@param QtyAvailable 
-		Available Quantity (On Hand - Reserved)
-	  */
-	public void setQtyAvailable (BigDecimal QtyAvailable)
-	{
-		throw new IllegalArgumentException ("QtyAvailable is virtual column");	}
-
-	/** Get Available Quantity.
-		@return Available Quantity (On Hand - Reserved)
-	  */
-	public BigDecimal getQtyAvailable () 
-	{
-		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyAvailable);
-		if (bd == null)
-			 return Env.ZERO;
-		return bd;
-	}
-
 	/** Set Quantity Used.
-		@param QtyUsed Quantity Used	  */
+		@param QtyUsed Quantity Used
+	*/
 	public void setQtyUsed (BigDecimal QtyUsed)
 	{
 		set_Value (COLUMNNAME_QtyUsed, QtyUsed);
@@ -440,7 +413,7 @@ public class X_M_ProductionLine extends PO implements I_M_ProductionLine, I_Pers
 
 	/** Get Quantity Used.
 		@return Quantity Used	  */
-	public BigDecimal getQtyUsed () 
+	public BigDecimal getQtyUsed()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyUsed);
 		if (bd == null)

@@ -408,8 +408,7 @@ public class AddressLookup implements AddressLookupInterface {
 	
 	
 	/**
-	 * @param accessCode
-	 *            the accessCode to set
+	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
 		this.accessCode = password.trim();

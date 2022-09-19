@@ -95,9 +95,6 @@ public class CalloutPaymentAllocate extends CalloutEngine
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
-			//	mTab.setValue("C_BPartner_ID", Integer.valueOf(rs.getInt(1)));
-			//	int C_Currency_ID = rs.getInt(2);					//	Set Invoice Currency
-			//	mTab.setValue("C_Currency_ID", Integer.valueOf(C_Currency_ID));
 				//
 				BigDecimal InvoiceOpen = rs.getBigDecimal(3);		//	Set Invoice OPen Amount
 				if (InvoiceOpen == null)
@@ -129,9 +126,9 @@ public class CalloutPaymentAllocate extends CalloutEngine
 	/**
 	 *  Payment_Amounts.
 	 *	Change of:
-	 *		- IsOverUnderPayment -> set OverUnderAmt to 0
-	 *		- C_Currency_ID, C_ConvesionRate_ID -> convert all
-	 *		- PayAmt, DiscountAmt, WriteOffAmt, OverUnderAmt -> PayAmt
+	 *		- IsOverUnderPayment -&gt; set OverUnderAmt to 0
+	 *		- C_Currency_ID, C_ConvesionRate_ID -&gt; convert all
+	 *		- PayAmt, DiscountAmt, WriteOffAmt, OverUnderAmt -&gt; PayAmt
 	 *			make sure that add up to InvoiceOpenAmt
 	 *  @param ctx context
 	 *  @param WindowNo current Window No

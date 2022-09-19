@@ -16,7 +16,7 @@ public final class FactUtil
 	
 	/**
 	 * Create a simple acct transaction, as fellows:
-	 * <pre>
+	 * <pre>{@code
 	 * if signSensitive == true then
 	 * 	if amt >= 0
 	 * 		account_DR	DR			 amt
@@ -28,16 +28,17 @@ public final class FactUtil
 	 *		account_DR	DR			 amt
 	 *		account_CR		CR		-amt
 	 *		(same as when signSensitive==true and amt>=0)
-	 * </pre>
+	 * }</pre>
 	 * Note:
 	 * <ul>
 	 * <li>Operation index is automatically incremented 
 	 * </ul>
+	 * @param  fact
 	 * @param  docLine Document line or null
 	 * @param  account_DR   DR account
 	 * @param  account_CR   CR account
 	 * @param  C_Currency_ID Currency
-	 * @param  Amt amount
+	 * @param  amt amount
 	 * @param  signSensitive if true, the DR and CR account will switch when amount is negative
 	 * @return resulting two fact lines
 	 * @category arhipac

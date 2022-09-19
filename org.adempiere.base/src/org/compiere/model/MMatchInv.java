@@ -24,9 +24,10 @@ import java.util.Properties;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 
 /**
- *	Match Invoice (Receipt<>Invoice) Model.
+ *	Match Invoice (Receipt&lt;&gt;Invoice) Model.
  *	Accounting:
  *	- Not Invoiced Receipts (relief)
  *	- IPV
@@ -38,7 +39,7 @@ import org.compiere.util.DB;
  * 			<li>BF [ 1926113 ] MMatchInv.getNewerDateAcct() should work in trx
  * @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962 
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  * @author Bayu Cahya, Sistematika
  * 			<li>BF [ 2240484 ] Re MatchingPO, MMatchPO doesn't contains Invoice info
  * 
@@ -391,6 +392,24 @@ public class MMatchInv extends X_M_MatchInv
 			this.setReversal_ID(reversal.getM_MatchInv_ID());
 			this.saveEx();
 			return true;
+		}
+		return false;
+	}
+
+	
+	@Override
+	public MInOutLine getM_InOutLine() throws RuntimeException {
+		return new MInOutLine(Env.getCtx(), getM_InOutLine_ID(), get_TrxName());
+	}
+
+	/**
+	 * @return true if this is created to reverse another match invoice document
+	 */
+	public boolean isReversal() {
+		if (getReversal_ID() > 0) {
+			MMatchInv reversal = new MMatchInv (getCtx(), getReversal_ID(), get_TrxName());
+			if (reversal.getM_MatchInv_ID() < getM_MatchInv_ID())
+				return true;
 		}
 		return false;
 	}

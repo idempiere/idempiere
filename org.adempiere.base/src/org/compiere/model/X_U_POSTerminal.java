@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for U_POSTerminal
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="U_POSTerminal")
 public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent 
 {
@@ -31,12 +31,27 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_U_POSTerminal (Properties ctx, int U_POSTerminal_ID, String trxName)
     {
       super (ctx, U_POSTerminal_ID, trxName);
+      /** if (U_POSTerminal_ID == 0)
+        {
+			setAutoLock (false);
+// N
+			setCashBookTransferType (null);
+			setC_CashBook_ID (0);
+			setC_CashBPartner_ID (0);
+			setU_POSTerminal_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_U_POSTerminal (Properties ctx, int U_POSTerminal_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, U_POSTerminal_ID, trxName, virtualColumns);
       /** if (U_POSTerminal_ID == 0)
         {
 			setAutoLock (false);
@@ -77,9 +92,8 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
     }
 
 	/** Set Auto Lock.
-		@param AutoLock 
-		Whether to automatically lock the terminal when till is closed
-	  */
+		@param AutoLock Whether to automatically lock the terminal when till is closed
+	*/
 	public void setAutoLock (boolean AutoLock)
 	{
 		set_Value (COLUMNNAME_AutoLock, Boolean.valueOf(AutoLock));
@@ -88,7 +102,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** Get Auto Lock.
 		@return Whether to automatically lock the terminal when till is closed
 	  */
-	public boolean isAutoLock () 
+	public boolean isAutoLock()
 	{
 		Object oo = get_Value(COLUMNNAME_AutoLock);
 		if (oo != null) 
@@ -107,21 +121,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Card Bank Account.
-		@param Card_BankAccount_ID 
-		Bank Account on which card transactions will be processed
-	  */
+		@param Card_BankAccount_ID Bank Account on which card transactions will be processed
+	*/
 	public void setCard_BankAccount_ID (int Card_BankAccount_ID)
 	{
-		if (Card_BankAccount_ID < 1) 
+		if (Card_BankAccount_ID < 1)
 			set_Value (COLUMNNAME_Card_BankAccount_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Card_BankAccount_ID, Integer.valueOf(Card_BankAccount_ID));
 	}
 
 	/** Get Card Bank Account.
 		@return Bank Account on which card transactions will be processed
 	  */
-	public int getCard_BankAccount_ID () 
+	public int getCard_BankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Card_BankAccount_ID);
 		if (ii == null)
@@ -136,21 +149,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Transfer Card trx to.
-		@param CardTransferBankAccount_ID 
-		Bank account on which to transfer Card transactions
-	  */
+		@param CardTransferBankAccount_ID Bank account on which to transfer Card transactions
+	*/
 	public void setCardTransferBankAccount_ID (int CardTransferBankAccount_ID)
 	{
-		if (CardTransferBankAccount_ID < 1) 
+		if (CardTransferBankAccount_ID < 1)
 			set_Value (COLUMNNAME_CardTransferBankAccount_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_CardTransferBankAccount_ID, Integer.valueOf(CardTransferBankAccount_ID));
 	}
 
 	/** Get Transfer Card trx to.
 		@return Bank account on which to transfer Card transactions
 	  */
-	public int getCardTransferBankAccount_ID () 
+	public int getCardTransferBankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CardTransferBankAccount_ID);
 		if (ii == null)
@@ -165,21 +177,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Transfer Card trx to.
-		@param CardTransferCashBook_ID 
-		Cash Book on which to transfer all Card transactions
-	  */
+		@param CardTransferCashBook_ID Cash Book on which to transfer all Card transactions
+	*/
 	public void setCardTransferCashBook_ID (int CardTransferCashBook_ID)
 	{
-		if (CardTransferCashBook_ID < 1) 
+		if (CardTransferCashBook_ID < 1)
 			set_Value (COLUMNNAME_CardTransferCashBook_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_CardTransferCashBook_ID, Integer.valueOf(CardTransferCashBook_ID));
 	}
 
 	/** Get Transfer Card trx to.
 		@return Cash Book on which to transfer all Card transactions
 	  */
-	public int getCardTransferCashBook_ID () 
+	public int getCardTransferCashBook_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CardTransferCashBook_ID);
 		if (ii == null)
@@ -194,7 +205,8 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** CashBook = C */
 	public static final String CARDTRANSFERTYPE_CashBook = "C";
 	/** Set Card Transfer Type.
-		@param CardTransferType Card Transfer Type	  */
+		@param CardTransferType Card Transfer Type
+	*/
 	public void setCardTransferType (String CardTransferType)
 	{
 
@@ -203,7 +215,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 
 	/** Get Card Transfer Type.
 		@return Card Transfer Type	  */
-	public String getCardTransferType () 
+	public String getCardTransferType()
 	{
 		return (String)get_Value(COLUMNNAME_CardTransferType);
 	}
@@ -215,9 +227,8 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** CashBook = C */
 	public static final String CASHBOOKTRANSFERTYPE_CashBook = "C";
 	/** Set Cash Book Transfer Type.
-		@param CashBookTransferType 
-		Where the money in the cash book should be transfered to. Either a Bank Account or another Cash Book
-	  */
+		@param CashBookTransferType Where the money in the cash book should be transfered to. Either a Bank Account or another Cash Book
+	*/
 	public void setCashBookTransferType (String CashBookTransferType)
 	{
 
@@ -227,7 +238,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** Get Cash Book Transfer Type.
 		@return Where the money in the cash book should be transfered to. Either a Bank Account or another Cash Book
 	  */
-	public String getCashBookTransferType () 
+	public String getCashBookTransferType()
 	{
 		return (String)get_Value(COLUMNNAME_CashBookTransferType);
 	}
@@ -239,21 +250,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Transfer Cash trx to.
-		@param CashTransferBankAccount_ID 
-		Bank Account on which to transfer all Cash transactions
-	  */
+		@param CashTransferBankAccount_ID Bank Account on which to transfer all Cash transactions
+	*/
 	public void setCashTransferBankAccount_ID (int CashTransferBankAccount_ID)
 	{
-		if (CashTransferBankAccount_ID < 1) 
+		if (CashTransferBankAccount_ID < 1)
 			set_Value (COLUMNNAME_CashTransferBankAccount_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_CashTransferBankAccount_ID, Integer.valueOf(CashTransferBankAccount_ID));
 	}
 
 	/** Get Transfer Cash trx to.
 		@return Bank Account on which to transfer all Cash transactions
 	  */
-	public int getCashTransferBankAccount_ID () 
+	public int getCashTransferBankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CashTransferBankAccount_ID);
 		if (ii == null)
@@ -268,21 +278,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Transfer Cash trx to.
-		@param CashTransferCashBook_ID 
-		Cash Book on which to transfer all Cash transactions
-	  */
+		@param CashTransferCashBook_ID Cash Book on which to transfer all Cash transactions
+	*/
 	public void setCashTransferCashBook_ID (int CashTransferCashBook_ID)
 	{
-		if (CashTransferCashBook_ID < 1) 
+		if (CashTransferCashBook_ID < 1)
 			set_Value (COLUMNNAME_CashTransferCashBook_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_CashTransferCashBook_ID, Integer.valueOf(CashTransferCashBook_ID));
 	}
 
 	/** Get Transfer Cash trx to.
 		@return Cash Book on which to transfer all Cash transactions
 	  */
-	public int getCashTransferCashBook_ID () 
+	public int getCashTransferCashBook_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CashTransferCashBook_ID);
 		if (ii == null)
@@ -297,21 +306,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Cash Book.
-		@param C_CashBook_ID 
-		Cash Book for recording petty cash transactions
-	  */
+		@param C_CashBook_ID Cash Book for recording petty cash transactions
+	*/
 	public void setC_CashBook_ID (int C_CashBook_ID)
 	{
-		if (C_CashBook_ID < 1) 
+		if (C_CashBook_ID < 1)
 			set_Value (COLUMNNAME_C_CashBook_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_CashBook_ID, Integer.valueOf(C_CashBook_ID));
 	}
 
 	/** Get Cash Book.
 		@return Cash Book for recording petty cash transactions
 	  */
-	public int getC_CashBook_ID () 
+	public int getC_CashBook_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CashBook_ID);
 		if (ii == null)
@@ -326,21 +334,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Cash BPartner.
-		@param C_CashBPartner_ID 
-		BPartner to be used for Cash transactions
-	  */
+		@param C_CashBPartner_ID BPartner to be used for Cash transactions
+	*/
 	public void setC_CashBPartner_ID (int C_CashBPartner_ID)
 	{
-		if (C_CashBPartner_ID < 1) 
+		if (C_CashBPartner_ID < 1)
 			set_Value (COLUMNNAME_C_CashBPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_CashBPartner_ID, Integer.valueOf(C_CashBPartner_ID));
 	}
 
 	/** Get Cash BPartner.
 		@return BPartner to be used for Cash transactions
 	  */
-	public int getC_CashBPartner_ID () 
+	public int getC_CashBPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_CashBPartner_ID);
 		if (ii == null)
@@ -355,21 +362,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Check Bank Account.
-		@param Check_BankAccount_ID 
-		Bank Account to be used for processing Check transactions
-	  */
+		@param Check_BankAccount_ID Bank Account to be used for processing Check transactions
+	*/
 	public void setCheck_BankAccount_ID (int Check_BankAccount_ID)
 	{
-		if (Check_BankAccount_ID < 1) 
+		if (Check_BankAccount_ID < 1)
 			set_Value (COLUMNNAME_Check_BankAccount_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Check_BankAccount_ID, Integer.valueOf(Check_BankAccount_ID));
 	}
 
 	/** Get Check Bank Account.
 		@return Bank Account to be used for processing Check transactions
 	  */
-	public int getCheck_BankAccount_ID () 
+	public int getCheck_BankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Check_BankAccount_ID);
 		if (ii == null)
@@ -384,21 +390,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Tranfer Check trx to.
-		@param CheckTransferBankAccount_ID 
-		Bank account on which to transfer Check transactions
-	  */
+		@param CheckTransferBankAccount_ID Bank account on which to transfer Check transactions
+	*/
 	public void setCheckTransferBankAccount_ID (int CheckTransferBankAccount_ID)
 	{
-		if (CheckTransferBankAccount_ID < 1) 
+		if (CheckTransferBankAccount_ID < 1)
 			set_Value (COLUMNNAME_CheckTransferBankAccount_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_CheckTransferBankAccount_ID, Integer.valueOf(CheckTransferBankAccount_ID));
 	}
 
 	/** Get Tranfer Check trx to.
 		@return Bank account on which to transfer Check transactions
 	  */
-	public int getCheckTransferBankAccount_ID () 
+	public int getCheckTransferBankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CheckTransferBankAccount_ID);
 		if (ii == null)
@@ -413,21 +418,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Transfer Check trx to.
-		@param CheckTransferCashBook_ID 
-		Cash Book on which to transfer all Check transactions
-	  */
+		@param CheckTransferCashBook_ID Cash Book on which to transfer all Check transactions
+	*/
 	public void setCheckTransferCashBook_ID (int CheckTransferCashBook_ID)
 	{
-		if (CheckTransferCashBook_ID < 1) 
+		if (CheckTransferCashBook_ID < 1)
 			set_Value (COLUMNNAME_CheckTransferCashBook_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_CheckTransferCashBook_ID, Integer.valueOf(CheckTransferCashBook_ID));
 	}
 
 	/** Get Transfer Check trx to.
 		@return Cash Book on which to transfer all Check transactions
 	  */
-	public int getCheckTransferCashBook_ID () 
+	public int getCheckTransferCashBook_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CheckTransferCashBook_ID);
 		if (ii == null)
@@ -442,7 +446,8 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** CashBook = C */
 	public static final String CHECKTRANSFERTYPE_CashBook = "C";
 	/** Set Check Transfer Type.
-		@param CheckTransferType Check Transfer Type	  */
+		@param CheckTransferType Check Transfer Type
+	*/
 	public void setCheckTransferType (String CheckTransferType)
 	{
 
@@ -451,7 +456,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 
 	/** Get Check Transfer Type.
 		@return Check Transfer Type	  */
-	public String getCheckTransferType () 
+	public String getCheckTransferType()
 	{
 		return (String)get_Value(COLUMNNAME_CheckTransferType);
 	}
@@ -463,21 +468,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Template BPartner.
-		@param C_TemplateBPartner_ID 
-		BPartner that is to be used as template when new customers are created
-	  */
+		@param C_TemplateBPartner_ID BPartner that is to be used as template when new customers are created
+	*/
 	public void setC_TemplateBPartner_ID (int C_TemplateBPartner_ID)
 	{
-		if (C_TemplateBPartner_ID < 1) 
+		if (C_TemplateBPartner_ID < 1)
 			set_Value (COLUMNNAME_C_TemplateBPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_TemplateBPartner_ID, Integer.valueOf(C_TemplateBPartner_ID));
 	}
 
 	/** Get Template BPartner.
 		@return BPartner that is to be used as template when new customers are created
 	  */
-	public int getC_TemplateBPartner_ID () 
+	public int getC_TemplateBPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TemplateBPartner_ID);
 		if (ii == null)
@@ -486,9 +490,8 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -497,15 +500,14 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -514,15 +516,14 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Last Lock Time.
-		@param LastLockTime 
-		Last time at which the terminal was locked
-	  */
+		@param LastLockTime Last time at which the terminal was locked
+	*/
 	public void setLastLockTime (Timestamp LastLockTime)
 	{
 		set_Value (COLUMNNAME_LastLockTime, LastLockTime);
@@ -531,15 +532,14 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** Get Last Lock Time.
 		@return Last time at which the terminal was locked
 	  */
-	public Timestamp getLastLockTime () 
+	public Timestamp getLastLockTime()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_LastLockTime);
 	}
 
 	/** Set Locked.
-		@param Locked 
-		Whether the terminal is locked
-	  */
+		@param Locked Whether the terminal is locked
+	*/
 	public void setLocked (boolean Locked)
 	{
 		set_Value (COLUMNNAME_Locked, Boolean.valueOf(Locked));
@@ -548,7 +548,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** Get Locked.
 		@return Whether the terminal is locked
 	  */
-	public boolean isLocked () 
+	public boolean isLocked()
 	{
 		Object oo = get_Value(COLUMNNAME_Locked);
 		if (oo != null) 
@@ -561,9 +561,8 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Lock Time.
-		@param LockTime 
-		Time in minutes the terminal should be kept in a locked state.
-	  */
+		@param LockTime Time in minutes the terminal should be kept in a locked state.
+	*/
 	public void setLockTime (int LockTime)
 	{
 		set_Value (COLUMNNAME_LockTime, Integer.valueOf(LockTime));
@@ -572,7 +571,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** Get Lock Time.
 		@return Time in minutes the terminal should be kept in a locked state.
 	  */
-	public int getLockTime () 
+	public int getLockTime()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LockTime);
 		if (ii == null)
@@ -587,21 +586,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Warehouse.
-		@param M_Warehouse_ID 
-		Storage Warehouse and Service Point
-	  */
+		@param M_Warehouse_ID Storage Warehouse and Service Point
+	*/
 	public void setM_Warehouse_ID (int M_Warehouse_ID)
 	{
-		if (M_Warehouse_ID < 1) 
+		if (M_Warehouse_ID < 1)
 			set_Value (COLUMNNAME_M_Warehouse_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Warehouse_ID, Integer.valueOf(M_Warehouse_ID));
 	}
 
 	/** Get Warehouse.
 		@return Storage Warehouse and Service Point
 	  */
-	public int getM_Warehouse_ID () 
+	public int getM_Warehouse_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Warehouse_ID);
 		if (ii == null)
@@ -610,9 +608,8 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -621,7 +618,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -633,21 +630,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Purchase Pricelist.
-		@param PO_PriceList_ID 
-		Price List used by this Business Partner
-	  */
+		@param PO_PriceList_ID Price List used by this Business Partner
+	*/
 	public void setPO_PriceList_ID (int PO_PriceList_ID)
 	{
-		if (PO_PriceList_ID < 1) 
+		if (PO_PriceList_ID < 1)
 			set_Value (COLUMNNAME_PO_PriceList_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PO_PriceList_ID, Integer.valueOf(PO_PriceList_ID));
 	}
 
 	/** Get Purchase Pricelist.
 		@return Price List used by this Business Partner
 	  */
-	public int getPO_PriceList_ID () 
+	public int getPO_PriceList_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PO_PriceList_ID);
 		if (ii == null)
@@ -656,9 +652,8 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Printer Name.
-		@param PrinterName 
-		Name of the Printer
-	  */
+		@param PrinterName Name of the Printer
+	*/
 	public void setPrinterName (String PrinterName)
 	{
 		set_Value (COLUMNNAME_PrinterName, PrinterName);
@@ -667,7 +662,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** Get Printer Name.
 		@return Name of the Printer
 	  */
-	public String getPrinterName () 
+	public String getPrinterName()
 	{
 		return (String)get_Value(COLUMNNAME_PrinterName);
 	}
@@ -679,21 +674,20 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Sales Representative.
-		@param SalesRep_ID 
-		Sales Representative or Company Agent
-	  */
+		@param SalesRep_ID Sales Representative or Company Agent
+	*/
 	public void setSalesRep_ID (int SalesRep_ID)
 	{
-		if (SalesRep_ID < 1) 
+		if (SalesRep_ID < 1)
 			set_Value (COLUMNNAME_SalesRep_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_SalesRep_ID, Integer.valueOf(SalesRep_ID));
 	}
 
 	/** Get Sales Representative.
 		@return Sales Representative or Company Agent
 	  */
-	public int getSalesRep_ID () 
+	public int getSalesRep_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SalesRep_ID);
 		if (ii == null)
@@ -708,18 +702,19 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set Sales Pricelist.
-		@param SO_PriceList_ID Sales Pricelist	  */
+		@param SO_PriceList_ID Sales Pricelist
+	*/
 	public void setSO_PriceList_ID (int SO_PriceList_ID)
 	{
-		if (SO_PriceList_ID < 1) 
+		if (SO_PriceList_ID < 1)
 			set_Value (COLUMNNAME_SO_PriceList_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_SO_PriceList_ID, Integer.valueOf(SO_PriceList_ID));
 	}
 
 	/** Get Sales Pricelist.
 		@return Sales Pricelist	  */
-	public int getSO_PriceList_ID () 
+	public int getSO_PriceList_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SO_PriceList_ID);
 		if (ii == null)
@@ -728,9 +723,8 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set UnlockingTime.
-		@param UnlockingTime 
-		Time at which the terminal should be unlocked
-	  */
+		@param UnlockingTime Time at which the terminal should be unlocked
+	*/
 	public void setUnlockingTime (Timestamp UnlockingTime)
 	{
 		set_Value (COLUMNNAME_UnlockingTime, UnlockingTime);
@@ -739,24 +733,25 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** Get UnlockingTime.
 		@return Time at which the terminal should be unlocked
 	  */
-	public Timestamp getUnlockingTime () 
+	public Timestamp getUnlockingTime()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_UnlockingTime);
 	}
 
 	/** Set POS Terminal.
-		@param U_POSTerminal_ID POS Terminal	  */
+		@param U_POSTerminal_ID POS Terminal
+	*/
 	public void setU_POSTerminal_ID (int U_POSTerminal_ID)
 	{
-		if (U_POSTerminal_ID < 1) 
+		if (U_POSTerminal_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_U_POSTerminal_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_U_POSTerminal_ID, Integer.valueOf(U_POSTerminal_ID));
 	}
 
 	/** Get POS Terminal.
 		@return POS Terminal	  */
-	public int getU_POSTerminal_ID () 
+	public int getU_POSTerminal_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_U_POSTerminal_ID);
 		if (ii == null)
@@ -765,7 +760,8 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	}
 
 	/** Set U_POSTerminal_UU.
-		@param U_POSTerminal_UU U_POSTerminal_UU	  */
+		@param U_POSTerminal_UU U_POSTerminal_UU
+	*/
 	public void setU_POSTerminal_UU (String U_POSTerminal_UU)
 	{
 		set_Value (COLUMNNAME_U_POSTerminal_UU, U_POSTerminal_UU);
@@ -773,15 +769,14 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 
 	/** Get U_POSTerminal_UU.
 		@return U_POSTerminal_UU	  */
-	public String getU_POSTerminal_UU () 
+	public String getU_POSTerminal_UU()
 	{
 		return (String)get_Value(COLUMNNAME_U_POSTerminal_UU);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -790,7 +785,7 @@ public class X_U_POSTerminal extends PO implements I_U_POSTerminal, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

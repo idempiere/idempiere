@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Task
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Task")
 public class X_AD_Task extends PO implements I_AD_Task, I_Persistent 
 {
@@ -31,12 +31,27 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Task (Properties ctx, int AD_Task_ID, String trxName)
     {
       super (ctx, AD_Task_ID, trxName);
+      /** if (AD_Task_ID == 0)
+        {
+			setAccessLevel (null);
+			setAD_Task_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setOS_Command (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Task (Properties ctx, int AD_Task_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Task_ID, trxName, virtualColumns);
       /** if (AD_Task_ID == 0)
         {
 			setAccessLevel (null);
@@ -91,9 +106,8 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	/** All = 7 */
 	public static final String ACCESSLEVEL_All = "7";
 	/** Set Data Access Level.
-		@param AccessLevel 
-		Access Level required
-	  */
+		@param AccessLevel Access Level required
+	*/
 	public void setAccessLevel (String AccessLevel)
 	{
 
@@ -103,7 +117,7 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	/** Get Data Access Level.
 		@return Access Level required
 	  */
-	public String getAccessLevel () 
+	public String getAccessLevel()
 	{
 		return (String)get_Value(COLUMNNAME_AccessLevel);
 	}
@@ -115,18 +129,19 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	}
 
 	/** Set Context Help.
-		@param AD_CtxHelp_ID Context Help	  */
+		@param AD_CtxHelp_ID Context Help
+	*/
 	public void setAD_CtxHelp_ID (int AD_CtxHelp_ID)
 	{
-		if (AD_CtxHelp_ID < 1) 
+		if (AD_CtxHelp_ID < 1)
 			set_Value (COLUMNNAME_AD_CtxHelp_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_CtxHelp_ID, Integer.valueOf(AD_CtxHelp_ID));
 	}
 
 	/** Get Context Help.
 		@return Context Help	  */
-	public int getAD_CtxHelp_ID () 
+	public int getAD_CtxHelp_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_CtxHelp_ID);
 		if (ii == null)
@@ -135,21 +150,20 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	}
 
 	/** Set OS Task.
-		@param AD_Task_ID 
-		Operation System Task
-	  */
+		@param AD_Task_ID Operation System Task
+	*/
 	public void setAD_Task_ID (int AD_Task_ID)
 	{
-		if (AD_Task_ID < 1) 
+		if (AD_Task_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Task_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Task_ID, Integer.valueOf(AD_Task_ID));
 	}
 
 	/** Get OS Task.
 		@return Operation System Task
 	  */
-	public int getAD_Task_ID () 
+	public int getAD_Task_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Task_ID);
 		if (ii == null)
@@ -158,7 +172,8 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	}
 
 	/** Set AD_Task_UU.
-		@param AD_Task_UU AD_Task_UU	  */
+		@param AD_Task_UU AD_Task_UU
+	*/
 	public void setAD_Task_UU (String AD_Task_UU)
 	{
 		set_Value (COLUMNNAME_AD_Task_UU, AD_Task_UU);
@@ -166,15 +181,14 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 
 	/** Get AD_Task_UU.
 		@return AD_Task_UU	  */
-	public String getAD_Task_UU () 
+	public String getAD_Task_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Task_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -183,7 +197,7 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -191,9 +205,8 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -203,15 +216,14 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -220,15 +232,14 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -237,7 +248,7 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -251,9 +262,8 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
     }
 
 	/** Set OS Command.
-		@param OS_Command 
-		Operating System Command
-	  */
+		@param OS_Command Operating System Command
+	*/
 	public void setOS_Command (String OS_Command)
 	{
 		set_Value (COLUMNNAME_OS_Command, OS_Command);
@@ -262,7 +272,7 @@ public class X_AD_Task extends PO implements I_AD_Task, I_Persistent
 	/** Get OS Command.
 		@return Operating System Command
 	  */
-	public String getOS_Command () 
+	public String getOS_Command()
 	{
 		return (String)get_Value(COLUMNNAME_OS_Command);
 	}

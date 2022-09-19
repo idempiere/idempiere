@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Replication_Log
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Replication_Log")
 public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_Persistent 
 {
@@ -31,12 +31,25 @@ public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Replication_Log (Properties ctx, int AD_Replication_Log_ID, String trxName)
     {
       super (ctx, AD_Replication_Log_ID, trxName);
+      /** if (AD_Replication_Log_ID == 0)
+        {
+			setAD_Replication_Log_ID (0);
+			setAD_Replication_Run_ID (0);
+			setIsReplicated (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Replication_Log (Properties ctx, int AD_Replication_Log_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Replication_Log_ID, trxName, virtualColumns);
       /** if (AD_Replication_Log_ID == 0)
         {
 			setAD_Replication_Log_ID (0);
@@ -75,21 +88,20 @@ public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_
     }
 
 	/** Set Replication Log.
-		@param AD_Replication_Log_ID 
-		Data Replication Log Details
-	  */
+		@param AD_Replication_Log_ID Data Replication Log Details
+	*/
 	public void setAD_Replication_Log_ID (int AD_Replication_Log_ID)
 	{
-		if (AD_Replication_Log_ID < 1) 
+		if (AD_Replication_Log_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Replication_Log_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Replication_Log_ID, Integer.valueOf(AD_Replication_Log_ID));
 	}
 
 	/** Get Replication Log.
 		@return Data Replication Log Details
 	  */
-	public int getAD_Replication_Log_ID () 
+	public int getAD_Replication_Log_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Replication_Log_ID);
 		if (ii == null)
@@ -98,7 +110,8 @@ public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_
 	}
 
 	/** Set AD_Replication_Log_UU.
-		@param AD_Replication_Log_UU AD_Replication_Log_UU	  */
+		@param AD_Replication_Log_UU AD_Replication_Log_UU
+	*/
 	public void setAD_Replication_Log_UU (String AD_Replication_Log_UU)
 	{
 		set_Value (COLUMNNAME_AD_Replication_Log_UU, AD_Replication_Log_UU);
@@ -106,7 +119,7 @@ public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_
 
 	/** Get AD_Replication_Log_UU.
 		@return AD_Replication_Log_UU	  */
-	public String getAD_Replication_Log_UU () 
+	public String getAD_Replication_Log_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Replication_Log_UU);
 	}
@@ -118,21 +131,20 @@ public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_
 	}
 
 	/** Set Replication Run.
-		@param AD_Replication_Run_ID 
-		Data Replication Run
-	  */
+		@param AD_Replication_Run_ID Data Replication Run
+	*/
 	public void setAD_Replication_Run_ID (int AD_Replication_Run_ID)
 	{
-		if (AD_Replication_Run_ID < 1) 
+		if (AD_Replication_Run_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Replication_Run_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Replication_Run_ID, Integer.valueOf(AD_Replication_Run_ID));
 	}
 
 	/** Get Replication Run.
 		@return Data Replication Run
 	  */
-	public int getAD_Replication_Run_ID () 
+	public int getAD_Replication_Run_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Replication_Run_ID);
 		if (ii == null)
@@ -155,21 +167,20 @@ public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_
 	}
 
 	/** Set Replication Table.
-		@param AD_ReplicationTable_ID 
-		Data Replication Strategy Table Info
-	  */
+		@param AD_ReplicationTable_ID Data Replication Strategy Table Info
+	*/
 	public void setAD_ReplicationTable_ID (int AD_ReplicationTable_ID)
 	{
-		if (AD_ReplicationTable_ID < 1) 
+		if (AD_ReplicationTable_ID < 1)
 			set_Value (COLUMNNAME_AD_ReplicationTable_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_ReplicationTable_ID, Integer.valueOf(AD_ReplicationTable_ID));
 	}
 
 	/** Get Replication Table.
 		@return Data Replication Strategy Table Info
 	  */
-	public int getAD_ReplicationTable_ID () 
+	public int getAD_ReplicationTable_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_ReplicationTable_ID);
 		if (ii == null)
@@ -178,9 +189,8 @@ public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_
 	}
 
 	/** Set Replicated.
-		@param IsReplicated 
-		The data is successfully replicated
-	  */
+		@param IsReplicated The data is successfully replicated
+	*/
 	public void setIsReplicated (boolean IsReplicated)
 	{
 		set_Value (COLUMNNAME_IsReplicated, Boolean.valueOf(IsReplicated));
@@ -189,7 +199,7 @@ public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_
 	/** Get Replicated.
 		@return The data is successfully replicated
 	  */
-	public boolean isReplicated () 
+	public boolean isReplicated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReplicated);
 		if (oo != null) 
@@ -202,7 +212,8 @@ public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_
 	}
 
 	/** Set Process Message.
-		@param P_Msg Process Message	  */
+		@param P_Msg Process Message
+	*/
 	public void setP_Msg (String P_Msg)
 	{
 		set_Value (COLUMNNAME_P_Msg, P_Msg);
@@ -210,7 +221,7 @@ public class X_AD_Replication_Log extends PO implements I_AD_Replication_Log, I_
 
 	/** Get Process Message.
 		@return Process Message	  */
-	public String getP_Msg () 
+	public String getP_Msg()
 	{
 		return (String)get_Value(COLUMNNAME_P_Msg);
 	}

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Order_BOM
  *  @author iDempiere (generated) 
- *  @version Development 9.0
+ *  @version Release 9
  */
 @SuppressWarnings("all")
 public interface I_PP_Order_BOM 

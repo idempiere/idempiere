@@ -126,7 +126,7 @@ public abstract class PrintElement implements ImageObserver, Serializable
 
 	/**
 	 * 	Layout and Calculate Size
-	 * 	Set p_width & p_height
+	 * 	Set p_width and p_height
 	 * 	@return true if calculated
 	 */
 	protected abstract boolean calculateSize();

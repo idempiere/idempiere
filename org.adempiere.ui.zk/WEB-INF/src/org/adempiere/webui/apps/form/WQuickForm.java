@@ -34,7 +34,7 @@ import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.CustomizeGridViewDialog;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -83,6 +83,8 @@ public class WQuickForm extends Window implements IQuickForm
 
 	private int						windowNo;
 
+	private boolean stayInParent;
+
 	public WQuickForm(AbstractADWindowContent winContent, boolean m_onlyCurrentRows, int m_onlyCurrentDays)
 	{
 		super();
@@ -103,6 +105,8 @@ public class WQuickForm extends Window implements IQuickForm
 		// To maintain parent-child Quick Form
 		prevQGV = adWinContent.getCurrQGV();
 		adWinContent.setCurrQGV(quickGridView);
+		
+		addCallback(AFTER_PAGE_DETACHED, t -> adWinContent.focusToLastFocusEditor());
 	}
 
 	protected void initForm( )
@@ -213,7 +217,7 @@ public class WQuickForm extends Window implements IQuickForm
 	{
 		if (gridTab.getTableModel().getRowChanged() > -1)
 		{
-			FDialog.ask(windowNo, this, "SaveChanges?", new Callback <Boolean>() {
+			Dialog.ask(windowNo, "SaveChanges?", new Callback <Boolean>() {
 
 				@Override
 				public void onCallback(Boolean result)
@@ -264,7 +268,7 @@ public class WQuickForm extends Window implements IQuickForm
 		ZKUpdateUtil.setWidth(quickGridView, getWidth());
 		ZKUpdateUtil.setHeight(quickGridView, getHeight());
 
-		CustomizeGridViewDialog.showCustomize(0, gridTab.getAD_Tab_ID(), columnsWidth, gridFieldIds, null, quickGridView, true);
+		CustomizeGridViewDialog.showCustomize(0, gridTab.getAD_Tab_ID(), columnsWidth, gridFieldIds, null, quickGridView, true, null);
 	} // onCustomize
 
 	public void onIgnore( )
@@ -292,7 +296,7 @@ public class WQuickForm extends Window implements IQuickForm
 		final int[] indices = gridTab.getSelection();
 		if (indices.length > 0)
 		{
-			FDialog.ask(windowNo, this, "DeleteRecord?", new Callback <Boolean>() {
+			Dialog.ask(windowNo, "DeleteRecord?", new Callback <Boolean>() {
 
 				@Override
 				public void onCallback(Boolean result)
@@ -403,6 +407,10 @@ public class WQuickForm extends Window implements IQuickForm
 			adWinContent.setCurrQGV(null);
 		}
 		adWinContent.getADTab().getSelectedTabpanel().query(onlyCurrentRows, onlyCurrentDays, MRole.getDefault().getMaxQueryRecords()); // autoSize
+
+		if (stayInParent) {
+			adWinContent.onParentRecord();
+		}
 	} // dispose
 
 	private void createNewRow( )
@@ -435,4 +443,13 @@ public class WQuickForm extends Window implements IQuickForm
 		int col = e.getChangedColumn();
 		quickGridView.dynamicDisplay(col);
 	} // dataStatusChanged
+
+	/**
+	 * Return to parent when closing the quick form
+	 * @param stayInParent
+	 */
+	public void setStayInParent(boolean stayInParent) {
+		this.stayInParent = stayInParent;
+	}
+
 }

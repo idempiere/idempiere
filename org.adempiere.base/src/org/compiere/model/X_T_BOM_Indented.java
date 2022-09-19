@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for T_BOM_Indented
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="T_BOM_Indented")
 public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persistent 
 {
@@ -32,12 +32,22 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_T_BOM_Indented (Properties ctx, int T_BOM_Indented_ID, String trxName)
     {
       super (ctx, T_BOM_Indented_ID, trxName);
+      /** if (T_BOM_Indented_ID == 0)
+        {
+			setT_BOM_Indented_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_T_BOM_Indented (Properties ctx, int T_BOM_Indented_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, T_BOM_Indented_ID, trxName, virtualColumns);
       /** if (T_BOM_Indented_ID == 0)
         {
 			setT_BOM_Indented_ID (0);
@@ -79,21 +89,20 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Process Instance.
-		@param AD_PInstance_ID 
-		Instance of the process
-	  */
+		@param AD_PInstance_ID Instance of the process
+	*/
 	public void setAD_PInstance_ID (int AD_PInstance_ID)
 	{
-		if (AD_PInstance_ID < 1) 
+		if (AD_PInstance_ID < 1)
 			set_Value (COLUMNNAME_AD_PInstance_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_PInstance_ID, Integer.valueOf(AD_PInstance_ID));
 	}
 
 	/** Get Process Instance.
 		@return Instance of the process
 	  */
-	public int getAD_PInstance_ID () 
+	public int getAD_PInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PInstance_ID);
 		if (ii == null)
@@ -108,21 +117,20 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Accounting Schema.
-		@param C_AcctSchema_ID 
-		Rules for accounting
-	  */
+		@param C_AcctSchema_ID Rules for accounting
+	*/
 	public void setC_AcctSchema_ID (int C_AcctSchema_ID)
 	{
-		if (C_AcctSchema_ID < 1) 
+		if (C_AcctSchema_ID < 1)
 			set_Value (COLUMNNAME_C_AcctSchema_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_AcctSchema_ID, Integer.valueOf(C_AcctSchema_ID));
 	}
 
 	/** Get Accounting Schema.
 		@return Rules for accounting
 	  */
-	public int getC_AcctSchema_ID () 
+	public int getC_AcctSchema_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AcctSchema_ID);
 		if (ii == null)
@@ -131,9 +139,8 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Cost.
-		@param Cost 
-		Cost information
-	  */
+		@param Cost Cost information
+	*/
 	public void setCost (BigDecimal Cost)
 	{
 		set_Value (COLUMNNAME_Cost, Cost);
@@ -142,7 +149,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	/** Get Cost.
 		@return Cost information
 	  */
-	public BigDecimal getCost () 
+	public BigDecimal getCost()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Cost);
 		if (bd == null)
@@ -151,9 +158,8 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Future Cost.
-		@param CostFuture 
-		Cost information
-	  */
+		@param CostFuture Cost information
+	*/
 	public void setCostFuture (BigDecimal CostFuture)
 	{
 		set_Value (COLUMNNAME_CostFuture, CostFuture);
@@ -162,7 +168,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	/** Get Future Cost.
 		@return Cost information
 	  */
-	public BigDecimal getCostFuture () 
+	public BigDecimal getCostFuture()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CostFuture);
 		if (bd == null)
@@ -171,9 +177,8 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Current Cost Price.
-		@param CurrentCostPrice 
-		The currently used cost price
-	  */
+		@param CurrentCostPrice The currently used cost price
+	*/
 	public void setCurrentCostPrice (BigDecimal CurrentCostPrice)
 	{
 		set_Value (COLUMNNAME_CurrentCostPrice, CurrentCostPrice);
@@ -182,7 +187,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	/** Get Current Cost Price.
 		@return The currently used cost price
 	  */
-	public BigDecimal getCurrentCostPrice () 
+	public BigDecimal getCurrentCostPrice()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrentCostPrice);
 		if (bd == null)
@@ -191,9 +196,8 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Current Cost Price Lower Level.
-		@param CurrentCostPriceLL 
-		Current Price Lower Level Is the sum of the costs of the components of this product manufactured for this level.
-	  */
+		@param CurrentCostPriceLL Current Price Lower Level Is the sum of the costs of the components of this product manufactured for this level.
+	*/
 	public void setCurrentCostPriceLL (BigDecimal CurrentCostPriceLL)
 	{
 		set_Value (COLUMNNAME_CurrentCostPriceLL, CurrentCostPriceLL);
@@ -202,7 +206,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	/** Get Current Cost Price Lower Level.
 		@return Current Price Lower Level Is the sum of the costs of the components of this product manufactured for this level.
 	  */
-	public BigDecimal getCurrentCostPriceLL () 
+	public BigDecimal getCurrentCostPriceLL()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CurrentCostPriceLL);
 		if (bd == null)
@@ -211,7 +215,8 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Future Cost Price.
-		@param FutureCostPrice Future Cost Price	  */
+		@param FutureCostPrice Future Cost Price
+	*/
 	public void setFutureCostPrice (BigDecimal FutureCostPrice)
 	{
 		set_Value (COLUMNNAME_FutureCostPrice, FutureCostPrice);
@@ -219,7 +224,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 
 	/** Get Future Cost Price.
 		@return Future Cost Price	  */
-	public BigDecimal getFutureCostPrice () 
+	public BigDecimal getFutureCostPrice()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_FutureCostPrice);
 		if (bd == null)
@@ -228,7 +233,8 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Future Cost Price Lower Level.
-		@param FutureCostPriceLL Future Cost Price Lower Level	  */
+		@param FutureCostPriceLL Future Cost Price Lower Level
+	*/
 	public void setFutureCostPriceLL (BigDecimal FutureCostPriceLL)
 	{
 		set_Value (COLUMNNAME_FutureCostPriceLL, FutureCostPriceLL);
@@ -236,7 +242,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 
 	/** Get Future Cost Price Lower Level.
 		@return Future Cost Price Lower Level	  */
-	public BigDecimal getFutureCostPriceLL () 
+	public BigDecimal getFutureCostPriceLL()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_FutureCostPriceLL);
 		if (bd == null)
@@ -245,7 +251,8 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Level no.
-		@param LevelNo Level no	  */
+		@param LevelNo Level no
+	*/
 	public void setLevelNo (int LevelNo)
 	{
 		set_Value (COLUMNNAME_LevelNo, Integer.valueOf(LevelNo));
@@ -253,7 +260,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 
 	/** Get Level no.
 		@return Level no	  */
-	public int getLevelNo () 
+	public int getLevelNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LevelNo);
 		if (ii == null)
@@ -262,7 +269,8 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Levels.
-		@param Levels Levels	  */
+		@param Levels Levels
+	*/
 	public void setLevels (String Levels)
 	{
 		set_Value (COLUMNNAME_Levels, Levels);
@@ -270,7 +278,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 
 	/** Get Levels.
 		@return Levels	  */
-	public String getLevels () 
+	public String getLevels()
 	{
 		return (String)get_Value(COLUMNNAME_Levels);
 	}
@@ -282,21 +290,20 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Cost Element.
-		@param M_CostElement_ID 
-		Product Cost Element
-	  */
+		@param M_CostElement_ID Product Cost Element
+	*/
 	public void setM_CostElement_ID (int M_CostElement_ID)
 	{
-		if (M_CostElement_ID < 1) 
+		if (M_CostElement_ID < 1)
 			set_Value (COLUMNNAME_M_CostElement_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_CostElement_ID, Integer.valueOf(M_CostElement_ID));
 	}
 
 	/** Get Cost Element.
 		@return Product Cost Element
 	  */
-	public int getM_CostElement_ID () 
+	public int getM_CostElement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostElement_ID);
 		if (ii == null)
@@ -311,21 +318,20 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -334,9 +340,8 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Quantity.
-		@param Qty 
-		Quantity
-	  */
+		@param Qty Quantity
+	*/
 	public void setQty (BigDecimal Qty)
 	{
 		set_Value (COLUMNNAME_Qty, Qty);
@@ -345,7 +350,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	/** Get Quantity.
 		@return Quantity
 	  */
-	public BigDecimal getQty () 
+	public BigDecimal getQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
 		if (bd == null)
@@ -354,9 +359,8 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Quantity.
-		@param QtyBOM 
-		Indicate the Quantity  use in this BOM
-	  */
+		@param QtyBOM Indicate the Quantity  use in this BOM
+	*/
 	public void setQtyBOM (BigDecimal QtyBOM)
 	{
 		set_Value (COLUMNNAME_QtyBOM, QtyBOM);
@@ -365,7 +369,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	/** Get Quantity.
 		@return Indicate the Quantity  use in this BOM
 	  */
-	public BigDecimal getQtyBOM () 
+	public BigDecimal getQtyBOM()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBOM);
 		if (bd == null)
@@ -380,18 +384,19 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Selected Product.
-		@param Sel_Product_ID Selected Product	  */
+		@param Sel_Product_ID Selected Product
+	*/
 	public void setSel_Product_ID (int Sel_Product_ID)
 	{
-		if (Sel_Product_ID < 1) 
+		if (Sel_Product_ID < 1)
 			set_Value (COLUMNNAME_Sel_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Sel_Product_ID, Integer.valueOf(Sel_Product_ID));
 	}
 
 	/** Get Selected Product.
 		@return Selected Product	  */
-	public int getSel_Product_ID () 
+	public int getSel_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Sel_Product_ID);
 		if (ii == null)
@@ -400,9 +405,8 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -411,7 +415,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -420,18 +424,19 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set Indented BOM Report.
-		@param T_BOM_Indented_ID Indented BOM Report	  */
+		@param T_BOM_Indented_ID Indented BOM Report
+	*/
 	public void setT_BOM_Indented_ID (int T_BOM_Indented_ID)
 	{
-		if (T_BOM_Indented_ID < 1) 
+		if (T_BOM_Indented_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_T_BOM_Indented_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_T_BOM_Indented_ID, Integer.valueOf(T_BOM_Indented_ID));
 	}
 
 	/** Get Indented BOM Report.
 		@return Indented BOM Report	  */
-	public int getT_BOM_Indented_ID () 
+	public int getT_BOM_Indented_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_T_BOM_Indented_ID);
 		if (ii == null)
@@ -440,7 +445,8 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 	}
 
 	/** Set T_BOM_Indented_UU.
-		@param T_BOM_Indented_UU T_BOM_Indented_UU	  */
+		@param T_BOM_Indented_UU T_BOM_Indented_UU
+	*/
 	public void setT_BOM_Indented_UU (String T_BOM_Indented_UU)
 	{
 		set_Value (COLUMNNAME_T_BOM_Indented_UU, T_BOM_Indented_UU);
@@ -448,7 +454,7 @@ public class X_T_BOM_Indented extends PO implements I_T_BOM_Indented, I_Persiste
 
 	/** Get T_BOM_Indented_UU.
 		@return T_BOM_Indented_UU	  */
-	public String getT_BOM_Indented_UU () 
+	public String getT_BOM_Indented_UU()
 	{
 		return (String)get_Value(COLUMNNAME_T_BOM_Indented_UU);
 	}

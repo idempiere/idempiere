@@ -99,7 +99,6 @@ public class OrderLineCreateShipment extends SvrProcess
 		
 		MInOutLine sline = new MInOutLine( shipment );
 		sline.setOrderLine(line, 0, line.getQtyReserved());
-		//sline.setDatePromised(line.getDatePromised());
 		sline.setQtyEntered(line.getQtyReserved());
 		sline.setC_UOM_ID(line.getC_UOM_ID());
 		sline.setQty(line.getQtyReserved());

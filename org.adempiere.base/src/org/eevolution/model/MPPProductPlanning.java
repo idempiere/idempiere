@@ -51,8 +51,7 @@ public class MPPProductPlanning extends X_PP_Product_Planning
 	 * 	Default Constructor
 	 *	@param ctx context
 	 *	@param pp_product_planning_id id
-	 *	@param trxName
-	 *  @return MPPProductPlanning Data Product Planning 
+	 *	@param trxname
 	 */
 	public MPPProductPlanning(Properties ctx, int pp_product_planning_id, String trxname)
 	{
@@ -66,12 +65,15 @@ public class MPPProductPlanning extends X_PP_Product_Planning
 	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
-	 *	@param trxName Transaction Name
-	 *	@return MPPProductPlanning Data Product Planning 
+	 *	@param trxname Transaction Name
 	 */
 	public MPPProductPlanning(Properties ctx, ResultSet rs, String trxname)
 	{
 		super(ctx, rs,trxname);
+	}
+
+	public MPPProductPlanning(Properties ctx, int PP_Product_Planning_ID, String trxName, String... virtualColumns) {
+		super(ctx, PP_Product_Planning_ID, trxName, virtualColumns);
 	}
 
 	/**
@@ -102,14 +104,14 @@ public class MPPProductPlanning extends X_PP_Product_Planning
 	/**
 	 * Get Data Product Planning 
 	 * @param ctx Context
-	 * @param AD_Client_ID ID Organization
-	 * @param AD_Org_ID ID Organization
-	 * @param M_Warehouse_ID Warehouse
-	 * @param S_Resource_ID Resource type Plant
-	 * @param M_Product_ID ID Product
+	 * @param ad_client_id ID Organization
+	 * @param ad_org_id ID Organization
+	 * @param m_warehouse_id Warehouse
+	 * @param s_resource_id Resource type Plant
+	 * @param m_product_id ID Product
 	 * @param trxname Trx Name
 	 * @return MPPProductPlanning
-	 */     
+	 */
 	public static MPPProductPlanning get(Properties ctx, int ad_client_id, int ad_org_id,
 											int m_warehouse_id, int s_resource_id, int m_product_id,
 											String trxname)

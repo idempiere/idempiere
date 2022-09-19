@@ -15,7 +15,7 @@ import org.adempiere.webui.dashboard.DPFavourites;
 import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeUtils;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MTable;
 import org.compiere.model.MTreeFavoriteNode;
 import org.compiere.model.MTreeNode;
@@ -38,7 +38,7 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 
 /**
- * Register listener for Drag&Drop item, Context Menu, Delete Item, Summary folder default
+ * Register listener for Drag&amp;Drop item, Context Menu, Delete Item, Summary folder default
  * Collapsed/Expanded Operation
  * 
  * @author Logilite Technologies
@@ -98,7 +98,7 @@ public class ADTreeFavoriteOnDropListener implements EventListener<Event>
 				}
 				else
 				{
-					FDialog.error(0, "DragItemMenu");
+					Dialog.error(0, "DragItemMenu");
 					return;
 				}
 
@@ -198,7 +198,7 @@ public class ADTreeFavoriteOnDropListener implements EventListener<Event>
 	 */
 	private void showWarningDialog()
 	{
-		FDialog.warn(0, Msg.getMsg(Env.getCtx(), "AlreadyExists"));
+		Dialog.warn(0, Msg.getMsg(Env.getCtx(), "AlreadyExists"));
 	} // showWarningDialog
 
 	/**

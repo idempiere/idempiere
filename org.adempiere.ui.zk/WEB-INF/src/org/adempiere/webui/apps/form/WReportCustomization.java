@@ -47,7 +47,7 @@ import org.adempiere.webui.panel.WRCTabPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
@@ -63,13 +63,12 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Auxhead;
-import org.zkoss.zul.Auxheader;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Foot;
 import org.zkoss.zul.Footer;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Vbox;
 
@@ -92,7 +91,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 	private ReportEngine m_reportEngine=null;
 	public ArrayList<MPrintFormatItem> pfi ; 
 	
-	private Auxheader headerPanel=new Auxheader();
+	private Hlayout headerPanel=new Hlayout();
 	private WStringEditor name = new WStringEditor();
 	private String tempName = "";
 	private Button newPrintFormat;
@@ -162,7 +161,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
  		catch(Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
-			FDialog.error(m_WindowNo, "LoadError", e.getLocalizedMessage());
+			Dialog.error(m_WindowNo, "LoadError", e.getLocalizedMessage());
 		}
 	}
 	
@@ -176,7 +175,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		headerPanel.appendChild(new Separator("vertical"));
 
-		fm =m_reportEngine.getPrintFormat();
+		fm = new MPrintFormat(m_ctx, m_reportEngine.getPrintFormat().getAD_PrintFormat_ID(), null);
 		name.setValue(fm.getName());
 
 		if (Env.isMultiLingualDocument(m_ctx))
@@ -186,6 +185,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		headerPanel.appendChild(name.getComponent());
 		headerPanel.appendChild(new Separator("vertical"));
+		ZKUpdateUtil.setHflex(name.getComponent(), "1");
 		
 		name.getComponent().addEventListener(Events.ON_FOCUS, this);	
 		name.getComponent().addEventListener(Events.ON_BLUR, this);	
@@ -197,9 +197,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		newPrintFormat.addActionListener(this);
 
 		headerPanel.appendChild(newPrintFormat);
-		Separator tor =new Separator("vertical");
-		tor.setSpacing("23%");
-		headerPanel.appendChild(tor);
+		headerPanel.setValign("middle");
 
 		selectAll = new Label(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SelectAll")));
 		selectAll.setStyle("cursor:pointer;text-decoration: underline;");
@@ -210,7 +208,9 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		deselectAll.setAttribute("name", "DeselectAll");
 		selectAll.addEventListener(Events.ON_CLICK, this);
 		deselectAll.addEventListener(Events.ON_CLICK, this);
-		headerPanel.appendChild(new Separator("vertical"));
+		Separator sep = new Separator("vertical");
+		sep.setHflex("1");
+		headerPanel.appendChild(sep);
 		headerPanel.appendChild(selectAll);
 		headerPanel.appendChild(new Separator("vertical"));
 		headerPanel.appendChild(pipeSeparator);
@@ -218,11 +218,10 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		headerPanel.appendChild(deselectAll);
 		headerPanel.appendChild(new Separator("vertical"));
 
-		Auxhead head=new Auxhead();
-		head.appendChild(headerPanel);
-		form.appendChild(head);
+		form.appendChild(headerPanel);
+		headerPanel.setHflex("1");
 
-		headerPanel.appendChild(new Separator("horizontal"));
+		form.appendChild(new Separator("horizontal"));
 
 		ZKUpdateUtil.setWidth(tabbox, "100%");		
 		ZKUpdateUtil.setHeight(tabbox, "84%");//IDEMPIERE-2476, Pritesh Shah
@@ -454,7 +453,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		log.config("");
 		if (!m_isCanExport)
 		{
-			FDialog.error(m_WindowNo, "AccessCannotExport","Export");
+			Dialog.error(m_WindowNo, "AccessCannotExport","Export");
 			return;
 		}
 		
@@ -521,7 +520,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			ListItem li = cboType.getSelectedItem();
 			if(li == null || li.getValue() == null)
 			{
-				FDialog.error(m_WindowNo, winExportFile, "FileInvalidExtension");
+				Dialog.error(m_WindowNo, "FileInvalidExtension");
 				return;
 			}
 			
@@ -582,7 +581,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			}
 			else
 			{
-				FDialog.error(m_WindowNo, winExportFile, "FileInvalidExtension");
+				Dialog.error(m_WindowNo, "FileInvalidExtension");
 				return;
 			}
 

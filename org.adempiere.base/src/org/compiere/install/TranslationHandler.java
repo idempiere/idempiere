@@ -34,17 +34,31 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class TranslationHandler extends DefaultHandler
 {
+
 	/**
 	 * 	Translation Handler
-	 * 	@param AD_Client_ID only certain client if id >= 0
+	 * 	@param AD_Client_ID only certain client if id &gt;= 0
 	 */
 	public TranslationHandler (int AD_Client_ID)
 	{
+		this(AD_Client_ID, null);
+	}	//	TranslationHandler
+
+	/**
+	 * 	Translation Handler
+	 * 	@param AD_Client_ID only certain client if id &gt;= 0
+	 *  @param trxName Transaction
+	 */
+	public TranslationHandler (int AD_Client_ID, String trxName)
+	{
 		m_AD_Client_ID = AD_Client_ID;
+		m_trxName = trxName;
 	}	//	TranslationHandler
 
 	/**	Client							*/
 	private int				m_AD_Client_ID = -1;
+	/** Transaction						*/
+	private String			m_trxName = null;
 	/** Language						*/
 	private String			m_AD_Language = null;
 	/** Is Base Language				*/
@@ -174,7 +188,7 @@ public class TranslationHandler extends DefaultHandler
 			m_sql.insert(0, m_updateSQL);
 
 			//	Execute
-			int no = DB.executeUpdate(m_sql.toString(), null);
+			int no = DB.executeUpdate(m_sql.toString(), m_trxName);
 			if (no == 1)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine(m_sql.toString());

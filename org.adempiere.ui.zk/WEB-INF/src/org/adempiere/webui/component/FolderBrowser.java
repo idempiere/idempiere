@@ -19,7 +19,7 @@ import java.util.Arrays;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Ini;
 import org.compiere.util.Util;
@@ -29,6 +29,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
@@ -129,7 +130,10 @@ public class FolderBrowser extends Window implements EventListener<Event>
 			if(!dir.getParent().equals(root.getParent()))
 			{
 				ListItem li = new ListItem(dir.getName(), dir.getParent());
-				li.setImage(ThemeManager.getThemeResource("images/Undo16.png"));
+				if (ThemeManager.isUseFontIconForImage())
+					((Listcell)li.getFirstChild()).setIconSclass("z-icon-Undo");
+				else
+					li.setImage(ThemeManager.getThemeResource("images/Undo16.png"));
 				listDir.appendChild(li);
 			}
 
@@ -141,7 +145,10 @@ public class FolderBrowser extends Window implements EventListener<Event>
 				if(file.isDirectory())
 				{
 					ListItem li = new ListItem(file.getName(), file.getAbsolutePath());
-					li.setImage(ThemeManager.getThemeResource("images/Folder16.png"));
+					if (ThemeManager.isUseFontIconForImage())
+						((Listcell)li.getFirstChild()).setIconSclass("z-icon-Folder");
+					else
+						li.setImage(ThemeManager.getThemeResource("images/Folder16.png"));
 					listDir.appendChild(li);
 				}
 			}
@@ -193,7 +200,7 @@ public class FolderBrowser extends Window implements EventListener<Event>
 				{
 					if(!file.isDirectory() || !file.exists())
 					{
-						FDialog.error(0, "Invalid directory");
+						Dialog.error(0, "Invalid directory");
 						return;
 					}
 				}
@@ -201,7 +208,7 @@ public class FolderBrowser extends Window implements EventListener<Event>
 				{
 					if(!file.isFile() || !file.exists())
 					{
-						FDialog.error(0, "Invalid file");
+						Dialog.error(0, "Invalid file");
 						return;
 					}
 				}

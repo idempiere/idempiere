@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportLineSet
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PA_ReportLineSet")
 public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Persistent 
 {
@@ -31,12 +31,24 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_ReportLineSet (Properties ctx, int PA_ReportLineSet_ID, String trxName)
     {
       super (ctx, PA_ReportLineSet_ID, trxName);
+      /** if (PA_ReportLineSet_ID == 0)
+        {
+			setName (null);
+			setPA_ReportLineSet_ID (0);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_ReportLineSet (Properties ctx, int PA_ReportLineSet_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_ReportLineSet_ID, trxName, virtualColumns);
       /** if (PA_ReportLineSet_ID == 0)
         {
 			setName (null);
@@ -74,9 +86,8 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -85,15 +96,14 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -102,7 +112,7 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -116,18 +126,19 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
     }
 
 	/** Set Report Line Set.
-		@param PA_ReportLineSet_ID Report Line Set	  */
+		@param PA_ReportLineSet_ID Report Line Set
+	*/
 	public void setPA_ReportLineSet_ID (int PA_ReportLineSet_ID)
 	{
-		if (PA_ReportLineSet_ID < 1) 
+		if (PA_ReportLineSet_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_ReportLineSet_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_ReportLineSet_ID, Integer.valueOf(PA_ReportLineSet_ID));
 	}
 
 	/** Get Report Line Set.
 		@return Report Line Set	  */
-	public int getPA_ReportLineSet_ID () 
+	public int getPA_ReportLineSet_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportLineSet_ID);
 		if (ii == null)
@@ -136,7 +147,8 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
 	}
 
 	/** Set PA_ReportLineSet_UU.
-		@param PA_ReportLineSet_UU PA_ReportLineSet_UU	  */
+		@param PA_ReportLineSet_UU PA_ReportLineSet_UU
+	*/
 	public void setPA_ReportLineSet_UU (String PA_ReportLineSet_UU)
 	{
 		set_Value (COLUMNNAME_PA_ReportLineSet_UU, PA_ReportLineSet_UU);
@@ -144,13 +156,14 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
 
 	/** Get PA_ReportLineSet_UU.
 		@return PA_ReportLineSet_UU	  */
-	public String getPA_ReportLineSet_UU () 
+	public String getPA_ReportLineSet_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_ReportLineSet_UU);
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -158,7 +171,7 @@ public class X_PA_ReportLineSet extends PO implements I_PA_ReportLineSet, I_Pers
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

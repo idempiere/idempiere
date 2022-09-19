@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Preference
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Preference")
 public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent 
 {
@@ -31,12 +31,26 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Preference (Properties ctx, int AD_Preference_ID, String trxName)
     {
       super (ctx, AD_Preference_ID, trxName);
+      /** if (AD_Preference_ID == 0)
+        {
+			setAD_Preference_ID (0);
+			setAttribute (null);
+			setPreferenceFor (null);
+// W
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Preference (Properties ctx, int AD_Preference_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Preference_ID, trxName, virtualColumns);
       /** if (AD_Preference_ID == 0)
         {
 			setAD_Preference_ID (0);
@@ -82,21 +96,20 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	}
 
 	/** Set Info Window.
-		@param AD_InfoWindow_ID 
-		Info and search/select Window
-	  */
+		@param AD_InfoWindow_ID Info and search/select Window
+	*/
 	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
 	{
-		if (AD_InfoWindow_ID < 1) 
+		if (AD_InfoWindow_ID < 1)
 			set_Value (COLUMNNAME_AD_InfoWindow_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
 	}
 
 	/** Get Info Window.
 		@return Info and search/select Window
 	  */
-	public int getAD_InfoWindow_ID () 
+	public int getAD_InfoWindow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
 		if (ii == null)
@@ -105,21 +118,20 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	}
 
 	/** Set Preference.
-		@param AD_Preference_ID 
-		Personal Value Preference
-	  */
+		@param AD_Preference_ID Personal Value Preference
+	*/
 	public void setAD_Preference_ID (int AD_Preference_ID)
 	{
-		if (AD_Preference_ID < 1) 
+		if (AD_Preference_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Preference_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Preference_ID, Integer.valueOf(AD_Preference_ID));
 	}
 
 	/** Get Preference.
 		@return Personal Value Preference
 	  */
-	public int getAD_Preference_ID () 
+	public int getAD_Preference_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Preference_ID);
 		if (ii == null)
@@ -128,7 +140,8 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	}
 
 	/** Set AD_Preference_UU.
-		@param AD_Preference_UU AD_Preference_UU	  */
+		@param AD_Preference_UU AD_Preference_UU
+	*/
 	public void setAD_Preference_UU (String AD_Preference_UU)
 	{
 		set_Value (COLUMNNAME_AD_Preference_UU, AD_Preference_UU);
@@ -136,7 +149,7 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 
 	/** Get AD_Preference_UU.
 		@return AD_Preference_UU	  */
-	public String getAD_Preference_UU () 
+	public String getAD_Preference_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Preference_UU);
 	}
@@ -148,21 +161,20 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	}
 
 	/** Set Process.
-		@param AD_Process_ID 
-		Process or Report
-	  */
+		@param AD_Process_ID Process or Report
+	*/
 	public void setAD_Process_ID (int AD_Process_ID)
 	{
-		if (AD_Process_ID < 1) 
+		if (AD_Process_ID < 1)
 			set_Value (COLUMNNAME_AD_Process_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
 	}
 
 	/** Get Process.
 		@return Process or Report
 	  */
-	public int getAD_Process_ID () 
+	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
@@ -177,21 +189,20 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -206,21 +217,20 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_Value (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -229,7 +239,8 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	}
 
 	/** Set Attribute.
-		@param Attribute Attribute	  */
+		@param Attribute Attribute
+	*/
 	public void setAttribute (String Attribute)
 	{
 		set_Value (COLUMNNAME_Attribute, Attribute);
@@ -237,7 +248,7 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 
 	/** Get Attribute.
 		@return Attribute	  */
-	public String getAttribute () 
+	public String getAttribute()
 	{
 		return (String)get_Value(COLUMNNAME_Attribute);
 	}
@@ -257,9 +268,8 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	/** Window = W */
 	public static final String PREFERENCEFOR_Window = "W";
 	/** Set Preference For.
-		@param PreferenceFor 
-		Type of preference, it can window, info window or parameter process
-	  */
+		@param PreferenceFor Type of preference, it can window, info window or parameter process
+	*/
 	public void setPreferenceFor (String PreferenceFor)
 	{
 
@@ -269,15 +279,14 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	/** Get Preference For.
 		@return Type of preference, it can window, info window or parameter process
 	  */
-	public String getPreferenceFor () 
+	public String getPreferenceFor()
 	{
 		return (String)get_Value(COLUMNNAME_PreferenceFor);
 	}
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -286,7 +295,7 @@ public class X_AD_Preference extends PO implements I_AD_Preference, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

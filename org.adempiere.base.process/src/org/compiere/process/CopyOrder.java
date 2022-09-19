@@ -112,8 +112,6 @@ public class CopyOrder extends SvrProcess
 			original.saveEx();
 		}
 		//
-	//	Env.setSOTrx(getCtx(), newOrder.isSOTrx());
-	//	return "@C_Order_ID@ " + newOrder.getDocumentNo();
 		StringBuilder msgreturn = new StringBuilder().append(dt.getName()).append(": ").append(newOrder.getDocumentNo());
 		addLog(0, null, null, msgreturn.toString(), newOrder.get_Table_ID(), newOrder.getC_Order_ID());
 		return "@C_Order_ID@ @Created@";

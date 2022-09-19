@@ -33,7 +33,7 @@ import org.zkoss.zk.ui.util.DesktopCleanup;
  *
  * @author hengsin
  * @author Cristina Ghita, www.arhipac.ro BF [2871741] Error at start
- * @see https://sourceforge.net/tracker/?func=detail&atid=955896&aid=2871741&group_id=176962
+ * @see https://sourceforge.net/p/adempiere/zk-web-client/327/
  */
 public class DashboardRunnable implements Runnable, Serializable
 {
@@ -52,7 +52,6 @@ public class DashboardRunnable implements Runnable, Serializable
 	/**
 	 *
 	 * @param desktop zk desktop interface
-	 * @param appDesktop adempiere desktop interface
 	 */
 	public DashboardRunnable(Desktop desktop) {
 		this.desktop = new WeakReference<Desktop>(desktop);
@@ -76,12 +75,17 @@ public class DashboardRunnable implements Runnable, Serializable
 		desktop = null;
 	}
 
+	/**
+	 * @param tmp
+	 * @param desktop
+	 */
 	public DashboardRunnable(DashboardRunnable tmp, Desktop desktop) {
 		this(desktop);
 		this.dashboardPanels = tmp.dashboardPanels;
 		tmp.cleanup();
 	}
 
+	@Override
 	public void run()
 	{
 		if (dashboardPanels != null && desktop != null && desktop.get() != null

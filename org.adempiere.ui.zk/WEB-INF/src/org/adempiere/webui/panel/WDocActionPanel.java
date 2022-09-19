@@ -35,7 +35,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MBankStatement;
@@ -69,7 +69,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2166149559040327486L;
+	private static final long serialVersionUID = -3218367479851088526L;
 
 	private Label lblDocAction;
 	private Label label;
@@ -94,6 +94,11 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 
 	public WDocActionPanel(GridTab mgridTab)
 	{
+		this(mgridTab, false);
+	}
+
+	public WDocActionPanel(GridTab mgridTab, boolean fromMenu)
+	{
 		gridTab = mgridTab;
 		DocStatus = (String)gridTab.getValue("DocStatus");
 		DocAction = (String)gridTab.getValue("DocAction");
@@ -102,15 +107,16 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 
 		readReference();
 		initComponents();
-		dynInit();
+		dynInit(fromMenu);
 
 		init();
 	}
 
 	/**
 	 *	Dynamic Init - determine valid DocActions based on DocStatus for the different documents.
+	 * @param fromMenu 
 	 */
-	private void dynInit()
+	private void dynInit(boolean fromMenu)
 	{
 
 		//
@@ -149,14 +155,15 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		String wfStatus = MWFActivity.getActiveInfo(Env.getCtx(), m_AD_Table_ID, gridTab.getRecord_ID());
 		if (wfStatus != null)
 		{
-			FDialog.error(gridTab.getWindowNo(), this, "WFActiveForRecord", wfStatus);
+			if (! fromMenu)
+				Dialog.error(gridTab.getWindowNo(), "WFActiveForRecord", wfStatus);
 			return;
 		}
 
 		//	Status Change
 		if (!checkStatus(gridTab.getTableName(), gridTab.getRecord_ID(), DocStatus))
 		{
-			FDialog.error(gridTab.getWindowNo(), this, "DocumentStatusChanged");
+			Dialog.error(gridTab.getWindowNo(), "DocumentStatusChanged");
 			return;
 		}
 		/*******************
@@ -372,7 +379,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 				String docAction = lstDocAction.getSelectedItem().getLabel();
 				MessageFormat mf = new MessageFormat(Msg.getMsg(Env.getAD_Language(Env.getCtx()), "ConfirmOnDocAction"));
 				Object[] arguments = new Object[]{docAction};
-				FDialog.ask(0, this, mf.format(arguments), new Callback<Boolean>() {
+				Dialog.ask(gridTab.getWindowNo(), "", mf.format(arguments), new Callback<Boolean>() {
 					@Override
 					public void onCallback(Boolean result) {
 						if(result)

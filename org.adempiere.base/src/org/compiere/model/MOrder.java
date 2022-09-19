@@ -65,13 +65,13 @@ import org.eevolution.model.MPPProductBOMLine;
  *
  *  @author victor.perez@e-evolution.com, e-Evolution http://www.e-evolution.com
  * 			<li> FR [ 2520591 ] Support multiples calendar for Org 
- *			@see http://sourceforge.net/tracker2/?func=detail&atid=879335&aid=2520591&group_id=176962
+ *			@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  @version $Id: MOrder.java,v 1.5 2006/10/06 00:42:24 jjanke Exp $
  * 
  * @author Teo Sarca, www.arhipac.ro
  * 			<li>BF [ 2419978 ] Voiding PO, requisition don't set on NULL
  * 			<li>BF [ 2892578 ] Order should autoset only active price lists
- * 				https://sourceforge.net/tracker/?func=detail&aid=2892578&group_id=176962&atid=879335
+ * 				https://sourceforge.net/p/adempiere/feature-requests/873/
  * @author Michael Judd, www.akunagroup.com
  *          <li>BF [ 2804888 ] Incorrect reservation of products with attributes
  */
@@ -167,7 +167,11 @@ public class MOrder extends X_C_Order implements DocAction
 	 */
 	public MOrder(Properties ctx, int C_Order_ID, String trxName)
 	{
-		super (ctx, C_Order_ID, trxName);
+		this (ctx, C_Order_ID, trxName, (String[]) null);
+	}	//	MOrder
+
+	public MOrder(Properties ctx, int C_Order_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_Order_ID, trxName, virtualColumns);
 		//  New
 		if (C_Order_ID == 0)
 		{
@@ -209,7 +213,7 @@ public class MOrder extends X_C_Order implements DocAction
 			setTotalLines (Env.ZERO);
 			setGrandTotal (Env.ZERO);
 		}
-	}	//	MOrder
+	}
 
 	/**************************************************************************
 	 *  Project Constructor
@@ -442,7 +446,7 @@ public class MOrder extends X_C_Order implements DocAction
 
 
 	/**
-	 * 	Set Business Partner Defaults & Details.
+	 * 	Set Business Partner Defaults and Details.
 	 * 	SOTrx should be set.
 	 * 	@param bp business partner
 	 */
@@ -713,7 +717,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (orderBy != null && orderBy.length() > 0)
 			orderClause += orderBy;
 		else
-			orderClause += "Line";
+			orderClause += "Line,C_OrderLine_ID";
 		m_lines = getLines(null, orderClause);
 		return m_lines;
 	}	//	getLines
@@ -1477,7 +1481,7 @@ public class MOrder extends X_C_Order implements DocAction
 		MClientInfo ci = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
 		if (ci.getC_ChargeFreight_ID() == 0 && ci.getM_ProductFreight_ID() == 0)
 		{
-			m_processMsg = "Product or Charge for Freight is not defined at Client window > Client Info tab";
+			m_processMsg = "Product or Charge for Freight is not defined at Tenant window > Tenant Info tab";
 			return false;
 		}
 		
@@ -1525,7 +1529,7 @@ public class MOrder extends X_C_Order implements DocAction
 				else if (ci.getM_ProductFreight_ID() > 0)
 					freightLine.setM_Product_ID(ci.getM_ProductFreight_ID());
 				else
-					throw new AdempiereException("Product or Charge for Freight is not defined at Client window > Client Info tab");
+					throw new AdempiereException("Product or Charge for Freight is not defined at Tenant window > Tenant Info tab");
 			}
 			
 			freightLine.setC_BPartner_Location_ID(getC_BPartner_Location_ID());
@@ -1538,12 +1542,12 @@ public class MOrder extends X_C_Order implements DocAction
 		{
 			if (ci.getC_UOM_Weight_ID() == 0)
 			{
-				m_processMsg = "UOM for Weight is not defined at Client window > Client Info tab";
+				m_processMsg = "UOM for Weight is not defined at Tenant window > Tenant Info tab";
 				return false;
 			}
 			if (ci.getC_UOM_Length_ID() == 0)
 			{
-				m_processMsg = "UOM for Length is not defined at Client window > Client Info ta";
+				m_processMsg = "UOM for Length is not defined at Tenant window > Tenant Info ta";
 				return false;
 			}
 			
@@ -1591,7 +1595,7 @@ public class MOrder extends X_C_Order implements DocAction
 					else if (ci.getM_ProductFreight_ID() > 0)
 						freightLine.setM_Product_ID(ci.getM_ProductFreight_ID());
 					else
-						throw new AdempiereException("Product or Charge for Freight is not defined at Client window > Client Info tab");
+						throw new AdempiereException("Product or Charge for Freight is not defined at Tenant window > Tenant Info tab");
 				}
 				
 				freightLine.setC_BPartner_Location_ID(getC_BPartner_Location_ID());
@@ -2593,6 +2597,27 @@ public class MOrder extends X_C_Order implements DocAction
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_CLOSE);
 		if (m_processMsg != null)
 			return false;
+		
+		// Validate In Progress MInOUt
+		StringBuilder sql = new StringBuilder("SELECT DISTINCT io.DocumentNo FROM M_InOut io ")
+				.append("JOIN M_InOutLine iol ON (io.M_InOut_ID=iol.M_InOut_ID) ")
+				.append("JOIN C_OrderLine ol ON (iol.C_OrderLine_ID=ol.C_OrderLine_ID) ")
+				.append("WHERE io.DocStatus='IP' AND ol.QtyOrdered != 0 AND (ol.M_Product_ID > 0 OR ol.C_Charge_ID > 0) ")
+				.append("AND ol.IsActive='Y' AND iol.IsActive='Y' ")
+				.append("AND ol.C_Order_ID=? ");
+		List<List<Object>> openShipments = DB.getSQLArrayObjectsEx(get_TrxName(), sql.toString(), getC_Order_ID());
+		if (openShipments != null && openShipments.size() > 0) 
+		{
+			m_processMsg = Msg.getMsg(p_ctx,"MInOutInProgress")+" (";
+			for(int i = 0; i< openShipments.size(); i++)
+			{
+				if (i > 0)
+					m_processMsg += ", ";
+				m_processMsg += openShipments.get(i).get(0).toString();
+			}
+			m_processMsg += ")";
+			return false;
+		}
 		
 		//	Close Not delivered Qty - SO/PO
 		MOrderLine[] lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);

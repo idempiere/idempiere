@@ -138,7 +138,6 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		
 	/**
 	 * 	Dispose
-	 * @see org.compiere.apps.form.FormPanel#dispose()
 	 */
 	public void dispose()
 	{
@@ -147,7 +146,7 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 
 	
 	/**
-	 * 	Load Workflow & Nodes
+	 * 	Load Workflow and Nodes
 	 * 	@param AD_Workflow_ID ID
 	 */
 	public void load (int AD_Workflow_ID)

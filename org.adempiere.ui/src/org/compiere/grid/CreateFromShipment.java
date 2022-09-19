@@ -44,7 +44,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- *  Create Invoice Transactions from PO Orders or Receipt
+ *  Create M_InOutLine for M_InOut from Purchase Orders, Vendor Invoice or Customer RMA
  *
  *  @author Jorg Janke
  *  @version  $Id: VCreateFromShipment.java,v 1.4 2006/07/30 00:51:28 jjanke Exp $
@@ -62,22 +62,19 @@ public abstract class CreateFromShipment extends CreateFrom
 	private int defaultLocator_ID=0;
 
 	/**
-	 *  Protected Constructor
+	 *  Constructor
 	 *  @param mTab MTab
 	 */
 	public CreateFromShipment(GridTab mTab)
 	{
 		super(mTab);
 		if (log.isLoggable(Level.INFO)) log.info(mTab.toString());
-	}   //  VCreateFromShipment
+	}   //  CreateFromShipment
 
-	/**
-	 *  Dynamic Init
-	 *  @return true if initialized
-	 */
-	public boolean dynInit() throws Exception
+	@Override
+	protected boolean dynInit() throws Exception
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		setTitle(Msg.getElement(Env.getCtx(), "M_InOut_ID", false) + " .. " + Msg.translate(Env.getCtx(), "CreateFrom"));
 		
 		return true;
@@ -85,8 +82,9 @@ public abstract class CreateFromShipment extends CreateFrom
 
 	
 	/**
-	 *  Load PBartner dependent Order/Invoice/Shipment Field.
+	 *  Load BPartner related RMA records.
 	 *  @param C_BPartner_ID BPartner
+	 *  @return list of RMA records
 	 */
 	protected ArrayList<KeyNamePair> loadRMAData(int C_BPartner_ID) {
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
@@ -101,7 +99,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			pstmt = DB.prepareStatement(sqlStmt, null);
+			pstmt = DB.prepareStatement(sqlStmt, getTrxName());
 			pstmt.setInt(1, C_BPartner_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -119,8 +117,9 @@ public abstract class CreateFromShipment extends CreateFrom
 	}
 
 	/**
-	 * Load PBartner dependent Order/Invoice/Shipment Field.
+	 * Load BPartner related Invoices
 	 * @param C_BPartner_ID
+	 * @return list of invoice records
 	 */
 	protected ArrayList<KeyNamePair> loadInvoiceData (int C_BPartner_ID)
 	{
@@ -139,6 +138,7 @@ public abstract class CreateFromShipment extends CreateFrom
 				+ " LEFT OUTER JOIN M_MatchInv mi ON (il.C_InvoiceLine_ID=mi.C_InvoiceLine_ID) "
 				+ " JOIN C_Invoice i2 ON (il.C_Invoice_ID = i2.C_Invoice_ID) "
 				+ " WHERE i2.C_BPartner_ID=? AND i2.IsSOTrx='N' AND i2.DocStatus IN ('CL','CO') "
+				+ " AND il.M_Product_ID IS NOT NULL "
 				+ "GROUP BY il.C_Invoice_ID,mi.C_InvoiceLine_ID,il.QtyInvoiced "
 				+ "HAVING (il.QtyInvoiced<>SUM(mi.Qty) AND mi.C_InvoiceLine_ID IS NOT NULL)"
 				+ " OR mi.C_InvoiceLine_ID IS NULL) "
@@ -148,7 +148,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), getTrxName());
 			pstmt.setInt(1, C_BPartner_ID);
 			pstmt.setInt(2, C_BPartner_ID);
 			rs = pstmt.executeQuery();
@@ -160,7 +160,8 @@ public abstract class CreateFromShipment extends CreateFrom
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
-		}finally
+		}
+		finally
 		{
 			DB.close(rs, pstmt);
 			rs = null;
@@ -171,9 +172,10 @@ public abstract class CreateFromShipment extends CreateFrom
 	}
 	
 	/**
-	 *  Load Data - Order
+	 *  Load Order Lines
 	 *  @param C_Order_ID Order
 	 *  @param forInvoice true if for invoice vs. delivery qty
+	 *  @return Order lines (selection,qty,[c_uom_id,uomSymbol/name],[m_locator_id,value][m_product_id,name],vendorProductNo,[c_orderline_id,line],null,null)
 	 */
 	protected Vector<Vector<Object>> getOrderData (int C_Order_ID, boolean forInvoice)
 	{
@@ -189,14 +191,14 @@ public abstract class CreateFromShipment extends CreateFrom
 		 *  InvoiceLine     - 8
 		 */
 		if (log.isLoggable(Level.CONFIG)) log.config("C_Order_ID=" + C_Order_ID);
-		p_order = new MOrder (Env.getCtx(), C_Order_ID, null);      //  save
+		p_order = new MOrder (Env.getCtx(), C_Order_ID, getTrxName());      //  save
 
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		StringBuilder sql = new StringBuilder("SELECT "
-				+ "l.QtyOrdered-SUM(COALESCE(m.Qty,0))"
 				// subtract drafted lines from this or other orders IDEMPIERE-2889
-				+ "-COALESCE((SELECT SUM(MovementQty) FROM M_InOutLine iol JOIN M_InOut io ON iol.M_InOut_ID=io.M_InOut_ID WHERE l.C_OrderLine_ID=iol.C_OrderLine_ID AND io.Processed='N'),0),"	//	1
-				+ "CASE WHEN l.QtyOrdered=0 THEN 0 ELSE l.QtyEntered/l.QtyOrdered END,"	//	2
+				+ "l.QtyOrdered-SUM(COALESCE(m.Qty,0))" // 1				
+				+ "-COALESCE((SELECT SUM(MovementQty) FROM M_InOutLine iol JOIN M_InOut io ON iol.M_InOut_ID=io.M_InOut_ID WHERE l.C_OrderLine_ID=iol.C_OrderLine_ID AND io.Processed='N'),0),"
+				+ " CASE WHEN l.QtyOrdered=0 THEN 0 ELSE l.QtyEntered/l.QtyOrdered END,"	//	2
 				+ " l.C_UOM_ID,COALESCE(uom.UOMSymbol,uom.Name),"			//	3..4
 				+ " p.M_Locator_ID, loc.Value, " // 5..6
 				+ " COALESCE(l.M_Product_ID,0),COALESCE(p.Name,c.Name), " //	7..8
@@ -227,7 +229,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), getTrxName());
 			pstmt.setInt(1, C_Order_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next())
@@ -241,11 +243,11 @@ public abstract class CreateFromShipment extends CreateFrom
 				KeyNamePair pp = new KeyNamePair(rs.getInt(3), rs.getString(4).trim());
 				line.add(pp);                           //  2-UOM
 				// Add locator
-				line.add(getLocatorKeyNamePair(rs.getInt(5)));// 3-Locator
+				line.add(getLocatorKeyNamePair(rs.getInt(5))); // 3-Locator
 				// Add product
 				pp = new KeyNamePair(rs.getInt(7), rs.getString(8));
 				line.add(pp);                           //  4-Product
-				line.add(rs.getString(9));				// 5-VendorProductNo
+				line.add(rs.getString(9));				//  5-VendorProductNo
 				pp = new KeyNamePair(rs.getInt(10), rs.getString(11));
 				line.add(pp);                           //  6-OrderLine
 				line.add(null);                         //  7-Ship
@@ -256,7 +258,6 @@ public abstract class CreateFromShipment extends CreateFrom
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
-			//throw new DBException(e, sql.toString());
 		}
 		finally
 		{
@@ -267,14 +268,15 @@ public abstract class CreateFromShipment extends CreateFrom
 	}   //  LoadOrder
 	
 	/**
-	 * Load RMA details
+	 * Load RMA lines
 	 * @param M_RMA_ID RMA
+	 * @return RMA lines (selection,qty,[c_uom_id,uomSymbol/name],[m_locator_id,value],[m_product_id,name],null,null,[m_rmaline_id,line],null)
 	 */
 	protected Vector<Vector<Object>> getRMAData(int M_RMA_ID)
 	{
 		m_invoice = null;
 		p_order = null;
-		m_rma = new MRMA(Env.getCtx(), M_RMA_ID, null);
+		m_rma = new MRMA(Env.getCtx(), M_RMA_ID, getTrxName());
 			
 	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 	    StringBuilder sqlStmt = new StringBuilder();
@@ -332,7 +334,7 @@ public abstract class CreateFromShipment extends CreateFrom
 	    ResultSet rs = null;
 	    try
 	    {
-	        pstmt = DB.prepareStatement(sqlStmt.toString(), null);
+	        pstmt = DB.prepareStatement(sqlStmt.toString(), getTrxName());
 	        pstmt.setInt(1, M_RMA_ID);
 	        pstmt.setInt(2, M_RMA_ID);
 	        pstmt.setInt(3, M_RMA_ID);
@@ -370,12 +372,13 @@ public abstract class CreateFromShipment extends CreateFrom
 	}
 
 	/**
-	 * Load Invoice details
+	 * Load Invoice lines
 	 * @param C_Invoice_ID Invoice
+	 * @return Invoice lines (selection,qty,[c_uom_id,uomSymbol/name],[m_locator_id,value],[m_product_id,name],vendorProductNo,[c_orderline_id,.],null,[c_invoiceline_id,line])
 	 */
 	protected Vector<Vector<Object>> getInvoiceData(int C_Invoice_ID)
 	{
-		m_invoice = new MInvoice(Env.getCtx(), C_Invoice_ID, null); // save
+		m_invoice = new MInvoice(Env.getCtx(), C_Invoice_ID, getTrxName()); // save
 		p_order = null;
 		m_rma = null;
 		
@@ -409,7 +412,7 @@ public abstract class CreateFromShipment extends CreateFrom
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), getTrxName());
 			pstmt.setInt(1, C_Invoice_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next())
@@ -441,7 +444,6 @@ public abstract class CreateFromShipment extends CreateFrom
 		catch (SQLException e)
 		{
 			log.log(Level.SEVERE, sql.toString(), e);
-			//throw new DBException(e, sql);
 		}
 	    finally
 	    {
@@ -456,7 +458,7 @@ public abstract class CreateFromShipment extends CreateFrom
 	 * If no locator specified or the specified locator is not valid (e.g. warehouse not match),
 	 * a default one will be used.
 	 * @param M_Locator_ID
-	 * @return KeyNamePair
+	 * @return KeyNamePair (m_locator_id,value)
 	 */
 	protected KeyNamePair getLocatorKeyNamePair(int M_Locator_ID)
 	{
@@ -504,14 +506,16 @@ public abstract class CreateFromShipment extends CreateFrom
 		return pp;
 	}
 	
-	/**
-	 *  List number of rows selected
-	 */
+	@Override
 	public void info(IMiniTable miniTable, IStatusBar statusBar)
 	{
 
-	}   //  infoInvoice
+	}
 
+	/**
+	 * set class/type of columns
+	 * @param miniTable
+	 */
 	protected void configureMiniTable (IMiniTable miniTable)
 	{
 		miniTable.setColumnClass(0, Boolean.class, false);     //  Selection
@@ -525,30 +529,16 @@ public abstract class CreateFromShipment extends CreateFrom
 		miniTable.setColumnClass(8, String.class, true);   //  Invoice
 		
 		//  Table UI
-		miniTable.autoSize();
-		
+		miniTable.autoSize();		
 	}
 
 	/**
-	 *  Save - Create Invoice Lines
+	 *  Create M_InOutLine
 	 *  @return true if saved
 	 */
+	@Override
 	public boolean save(IMiniTable miniTable, String trxName)
 	{
-		/*
-		dataTable.stopEditor(true);
-		log.config("");
-		TableModel model = dataTable.getModel();
-		int rows = model.getRowCount();
-		if (rows == 0)
-			return false;
-		//
-		Integer defaultLoc = (Integer) locatorField.getValue();
-		if (defaultLoc == null || defaultLoc.intValue() == 0) {
-			locatorField.setBackground(AdempierePLAF.getFieldBackground_Error());
-			return false;
-		}
-		*/
 		int M_Locator_ID = defaultLocator_ID;
 		if (M_Locator_ID == 0) {
 			return false;
@@ -588,7 +578,6 @@ public abstract class CreateFromShipment extends CreateFrom
 					C_InvoiceLine_ID = pp.getKey();
 				if (C_InvoiceLine_ID != 0)
 					il = new MInvoiceLine (Env.getCtx(), C_InvoiceLine_ID, trxName);
-				//boolean isInvoiced = (C_InvoiceLine_ID != 0);
 				//	Precision of Qty UOM
 				int precision = 2;
 				if (M_Product_ID != 0)
@@ -715,6 +704,11 @@ public abstract class CreateFromShipment extends CreateFrom
 				inout.setDropShip_BPartner_ID(p_order.getDropShip_BPartner_ID());
 				inout.setDropShip_Location_ID(p_order.getDropShip_Location_ID());
 				inout.setDropShip_User_ID(p_order.getDropShip_User_ID());
+				if (MOrder.DELIVERYVIARULE_Shipper.equals(p_order.getDeliveryViaRule()) && p_order.getM_Shipper_ID() > 0)
+				{
+					inout.setDeliveryViaRule(p_order.getDeliveryViaRule());
+					inout.setM_Shipper_ID(p_order.getM_Shipper_ID());
+				}
 			}
 		}
 		if (m_invoice != null && m_invoice.getC_Invoice_ID() != 0)
@@ -748,6 +742,10 @@ public abstract class CreateFromShipment extends CreateFrom
 
 	}   //  saveInvoice
 
+	/**
+	 * 
+	 * @return column header names (select,quantity,uom,locator,product,vendorProductNo,order,rma,invoice)
+	 */
 	protected Vector<String> getOISColumnNames()
 	{
 		//  Header Info
@@ -765,18 +763,37 @@ public abstract class CreateFromShipment extends CreateFrom
 	    return columnNames;
 	}
 
+	/**
+	 * Load order lines
+	 * @param C_Order_ID
+	 * @param forInvoice
+	 * @param M_Locator_ID
+	 * @return order lines
+	 */
 	protected Vector<Vector<Object>> getOrderData (int C_Order_ID, boolean forInvoice, int M_Locator_ID)
 	{
 		defaultLocator_ID = M_Locator_ID;
 		return getOrderData (C_Order_ID, forInvoice);
 	}
 
+	/**
+	 * 
+	 * @param M_RMA_ID
+	 * @param M_Locator_ID
+	 * @return RMA lines
+	 */
 	protected Vector<Vector<Object>> getRMAData (int M_RMA_ID, int M_Locator_ID)
 	{
 		defaultLocator_ID = M_Locator_ID;
 		return getRMAData (M_RMA_ID);
 	}
 
+	/**
+	 * 
+	 * @param C_Invoice_ID
+	 * @param M_Locator_ID
+	 * @return Invoice lines
+	 */
 	protected Vector<Vector<Object>> getInvoiceData (int C_Invoice_ID, int M_Locator_ID)
 	{
 		defaultLocator_ID = M_Locator_ID;

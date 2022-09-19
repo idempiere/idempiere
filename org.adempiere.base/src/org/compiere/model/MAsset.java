@@ -121,7 +121,7 @@ public class MAsset extends X_A_Asset {
 
 	/**
 	 * Construct from MIFixedAsset (import)
-	 * @param match match invoice
+	 * @param ifa
 	 */
 	protected MAsset (MIFixedAsset ifa)
 	{
@@ -154,7 +154,7 @@ public class MAsset extends X_A_Asset {
 	}
 
 	/**
-	 * @author Edwin Ang
+	 * author Edwin Ang
 	 * @param project
 	 */
 	protected MAsset (MProject project)
@@ -183,10 +183,9 @@ public class MAsset extends X_A_Asset {
 	 * Create Asset from Inventory
 	 * @param inventory	inventory
 	 * @param invLine 	inventory line
-	 * @param deliveryCount 0 or number of delivery
-	 * @return A_Asset_ID
+	 * @param qty
+	 * @param costs
 	 */
-	
 	public MAsset (MInventory inventory, MInventoryLine invLine, BigDecimal qty, BigDecimal costs)
 	{
 		super(invLine.getCtx(), 0, invLine.get_TrxName());
@@ -270,6 +269,10 @@ public class MAsset extends X_A_Asset {
 		this(ctx, 0, trxName);
 		copyPO(copy);
 		this.m_DateAcct = copy.m_DateAcct;
+	}
+
+	public MAsset(Properties ctx, int A_Asset_ID, String trxName, String... virtualColumns) {
+		super(ctx, A_Asset_ID, trxName, virtualColumns);
 	}
 
 	/**

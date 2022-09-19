@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Demand
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_Demand")
 public class X_M_Demand extends PO implements I_M_Demand, I_Persistent 
 {
@@ -31,12 +31,26 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_Demand (Properties ctx, int M_Demand_ID, String trxName)
     {
       super (ctx, M_Demand_ID, trxName);
+      /** if (M_Demand_ID == 0)
+        {
+			setC_Calendar_ID (0);
+			setC_Year_ID (0);
+			setIsDefault (false);
+			setM_Demand_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_Demand (Properties ctx, int M_Demand_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_Demand_ID, trxName, virtualColumns);
       /** if (M_Demand_ID == 0)
         {
 			setC_Calendar_ID (0);
@@ -82,21 +96,20 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	}
 
 	/** Set Calendar.
-		@param C_Calendar_ID 
-		Accounting Calendar Name
-	  */
+		@param C_Calendar_ID Accounting Calendar Name
+	*/
 	public void setC_Calendar_ID (int C_Calendar_ID)
 	{
-		if (C_Calendar_ID < 1) 
+		if (C_Calendar_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Calendar_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Calendar_ID, Integer.valueOf(C_Calendar_ID));
 	}
 
 	/** Get Calendar.
 		@return Accounting Calendar Name
 	  */
-	public int getC_Calendar_ID () 
+	public int getC_Calendar_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Calendar_ID);
 		if (ii == null)
@@ -111,21 +124,20 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	}
 
 	/** Set Year.
-		@param C_Year_ID 
-		Calendar Year
-	  */
+		@param C_Year_ID Calendar Year
+	*/
 	public void setC_Year_ID (int C_Year_ID)
 	{
-		if (C_Year_ID < 1) 
+		if (C_Year_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Year_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Year_ID, Integer.valueOf(C_Year_ID));
 	}
 
 	/** Get Year.
 		@return Calendar Year
 	  */
-	public int getC_Year_ID () 
+	public int getC_Year_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Year_ID);
 		if (ii == null)
@@ -134,9 +146,8 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -145,15 +156,14 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -162,15 +172,14 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -179,7 +188,7 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -192,21 +201,20 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	}
 
 	/** Set Demand.
-		@param M_Demand_ID 
-		Material Demand
-	  */
+		@param M_Demand_ID Material Demand
+	*/
 	public void setM_Demand_ID (int M_Demand_ID)
 	{
-		if (M_Demand_ID < 1) 
+		if (M_Demand_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Demand_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Demand_ID, Integer.valueOf(M_Demand_ID));
 	}
 
 	/** Get Demand.
 		@return Material Demand
 	  */
-	public int getM_Demand_ID () 
+	public int getM_Demand_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Demand_ID);
 		if (ii == null)
@@ -215,7 +223,8 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	}
 
 	/** Set M_Demand_UU.
-		@param M_Demand_UU M_Demand_UU	  */
+		@param M_Demand_UU M_Demand_UU
+	*/
 	public void setM_Demand_UU (String M_Demand_UU)
 	{
 		set_Value (COLUMNNAME_M_Demand_UU, M_Demand_UU);
@@ -223,15 +232,14 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 
 	/** Get M_Demand_UU.
 		@return M_Demand_UU	  */
-	public String getM_Demand_UU () 
+	public String getM_Demand_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_Demand_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -240,7 +248,7 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -254,7 +262,8 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -262,7 +271,7 @@ public class X_M_Demand extends PO implements I_M_Demand, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 

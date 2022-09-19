@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeInstance
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeInstance")
 public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, I_Persistent 
 {
@@ -34,12 +34,23 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_AttributeInstance (Properties ctx, int M_AttributeInstance_ID, String trxName)
     {
       super (ctx, M_AttributeInstance_ID, trxName);
+      /** if (M_AttributeInstance_ID == 0)
+        {
+			setM_Attribute_ID (0);
+			setM_AttributeSetInstance_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_AttributeInstance (Properties ctx, int M_AttributeInstance_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_AttributeInstance_ID, trxName, virtualColumns);
       /** if (M_AttributeInstance_ID == 0)
         {
 			setM_Attribute_ID (0);
@@ -82,21 +93,20 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	}
 
 	/** Set Attribute.
-		@param M_Attribute_ID 
-		Product Attribute
-	  */
+		@param M_Attribute_ID Product Attribute
+	*/
 	public void setM_Attribute_ID (int M_Attribute_ID)
 	{
-		if (M_Attribute_ID < 1) 
+		if (M_Attribute_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_Attribute_ID, Integer.valueOf(M_Attribute_ID));
 	}
 
 	/** Get Attribute.
 		@return Product Attribute
 	  */
-	public int getM_Attribute_ID () 
+	public int getM_Attribute_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Attribute_ID);
 		if (ii == null)
@@ -105,7 +115,8 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	}
 
 	/** Set M_AttributeInstance_UU.
-		@param M_AttributeInstance_UU M_AttributeInstance_UU	  */
+		@param M_AttributeInstance_UU M_AttributeInstance_UU
+	*/
 	public void setM_AttributeInstance_UU (String M_AttributeInstance_UU)
 	{
 		set_Value (COLUMNNAME_M_AttributeInstance_UU, M_AttributeInstance_UU);
@@ -113,7 +124,7 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 
 	/** Get M_AttributeInstance_UU.
 		@return M_AttributeInstance_UU	  */
-	public String getM_AttributeInstance_UU () 
+	public String getM_AttributeInstance_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_AttributeInstance_UU);
 	}
@@ -125,21 +136,20 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	}
 
 	/** Set Attribute Set Instance.
-		@param M_AttributeSetInstance_ID 
-		Product Attribute Set Instance
-	  */
+		@param M_AttributeSetInstance_ID Product Attribute Set Instance
+	*/
 	public void setM_AttributeSetInstance_ID (int M_AttributeSetInstance_ID)
 	{
-		if (M_AttributeSetInstance_ID < 0) 
+		if (M_AttributeSetInstance_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_AttributeSetInstance_ID, Integer.valueOf(M_AttributeSetInstance_ID));
 	}
 
 	/** Get Attribute Set Instance.
 		@return Product Attribute Set Instance
 	  */
-	public int getM_AttributeSetInstance_ID () 
+	public int getM_AttributeSetInstance_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeSetInstance_ID);
 		if (ii == null)
@@ -154,21 +164,20 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	}
 
 	/** Set Attribute Value.
-		@param M_AttributeValue_ID 
-		Product Attribute Value
-	  */
+		@param M_AttributeValue_ID Product Attribute Value
+	*/
 	public void setM_AttributeValue_ID (int M_AttributeValue_ID)
 	{
-		if (M_AttributeValue_ID < 1) 
+		if (M_AttributeValue_ID < 1)
 			set_Value (COLUMNNAME_M_AttributeValue_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_AttributeValue_ID, Integer.valueOf(M_AttributeValue_ID));
 	}
 
 	/** Get Attribute Value.
 		@return Product Attribute Value
 	  */
-	public int getM_AttributeValue_ID () 
+	public int getM_AttributeValue_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_AttributeValue_ID);
 		if (ii == null)
@@ -185,9 +194,8 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -196,13 +204,14 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
 	/** Set Value Date.
-		@param ValueDate Value Date	  */
+		@param ValueDate Value Date
+	*/
 	public void setValueDate (Timestamp ValueDate)
 	{
 		set_Value (COLUMNNAME_ValueDate, ValueDate);
@@ -210,15 +219,14 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 
 	/** Get Value Date.
 		@return Value Date	  */
-	public Timestamp getValueDate () 
+	public Timestamp getValueDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_ValueDate);
 	}
 
 	/** Set Value.
-		@param ValueNumber 
-		Numeric Value
-	  */
+		@param ValueNumber Numeric Value
+	*/
 	public void setValueNumber (BigDecimal ValueNumber)
 	{
 		set_Value (COLUMNNAME_ValueNumber, ValueNumber);
@@ -227,7 +235,7 @@ public class X_M_AttributeInstance extends PO implements I_M_AttributeInstance, 
 	/** Get Value.
 		@return Numeric Value
 	  */
-	public BigDecimal getValueNumber () 
+	public BigDecimal getValueNumber()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ValueNumber);
 		if (bd == null)

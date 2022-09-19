@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Hierarchy
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PA_Hierarchy")
 public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent 
 {
@@ -31,12 +31,31 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PA_Hierarchy (Properties ctx, int PA_Hierarchy_ID, String trxName)
     {
       super (ctx, PA_Hierarchy_ID, trxName);
+      /** if (PA_Hierarchy_ID == 0)
+        {
+			setAD_Tree_Account_ID (0);
+			setAD_Tree_Activity_ID (0);
+			setAD_Tree_BPartner_ID (0);
+			setAD_Tree_Campaign_ID (0);
+			setAD_Tree_Org_ID (0);
+			setAD_Tree_Product_ID (0);
+			setAD_Tree_Project_ID (0);
+			setAD_Tree_SalesRegion_ID (0);
+			setName (null);
+			setPA_Hierarchy_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_Hierarchy (Properties ctx, int PA_Hierarchy_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_Hierarchy_ID, trxName, virtualColumns);
       /** if (PA_Hierarchy_ID == 0)
         {
 			setAD_Tree_Account_ID (0);
@@ -87,21 +106,20 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	}
 
 	/** Set Account Tree.
-		@param AD_Tree_Account_ID 
-		Tree for Natural Account Tree
-	  */
+		@param AD_Tree_Account_ID Tree for Natural Account Tree
+	*/
 	public void setAD_Tree_Account_ID (int AD_Tree_Account_ID)
 	{
-		if (AD_Tree_Account_ID < 1) 
+		if (AD_Tree_Account_ID < 1)
 			set_Value (COLUMNNAME_AD_Tree_Account_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Tree_Account_ID, Integer.valueOf(AD_Tree_Account_ID));
 	}
 
 	/** Get Account Tree.
 		@return Tree for Natural Account Tree
 	  */
-	public int getAD_Tree_Account_ID () 
+	public int getAD_Tree_Account_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_Account_ID);
 		if (ii == null)
@@ -116,21 +134,20 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	}
 
 	/** Set Activity Tree.
-		@param AD_Tree_Activity_ID 
-		Trees are used for (financial) reporting
-	  */
+		@param AD_Tree_Activity_ID Trees are used for (financial) reporting
+	*/
 	public void setAD_Tree_Activity_ID (int AD_Tree_Activity_ID)
 	{
-		if (AD_Tree_Activity_ID < 1) 
+		if (AD_Tree_Activity_ID < 1)
 			set_Value (COLUMNNAME_AD_Tree_Activity_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Tree_Activity_ID, Integer.valueOf(AD_Tree_Activity_ID));
 	}
 
 	/** Get Activity Tree.
 		@return Trees are used for (financial) reporting
 	  */
-	public int getAD_Tree_Activity_ID () 
+	public int getAD_Tree_Activity_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_Activity_ID);
 		if (ii == null)
@@ -145,21 +162,20 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	}
 
 	/** Set BPartner Tree.
-		@param AD_Tree_BPartner_ID 
-		Trees are used for (financial) reporting
-	  */
+		@param AD_Tree_BPartner_ID Trees are used for (financial) reporting
+	*/
 	public void setAD_Tree_BPartner_ID (int AD_Tree_BPartner_ID)
 	{
-		if (AD_Tree_BPartner_ID < 1) 
+		if (AD_Tree_BPartner_ID < 1)
 			set_Value (COLUMNNAME_AD_Tree_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Tree_BPartner_ID, Integer.valueOf(AD_Tree_BPartner_ID));
 	}
 
 	/** Get BPartner Tree.
 		@return Trees are used for (financial) reporting
 	  */
-	public int getAD_Tree_BPartner_ID () 
+	public int getAD_Tree_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_BPartner_ID);
 		if (ii == null)
@@ -174,21 +190,20 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	}
 
 	/** Set Campaign Tree.
-		@param AD_Tree_Campaign_ID 
-		Trees are used for (financial) reporting
-	  */
+		@param AD_Tree_Campaign_ID Trees are used for (financial) reporting
+	*/
 	public void setAD_Tree_Campaign_ID (int AD_Tree_Campaign_ID)
 	{
-		if (AD_Tree_Campaign_ID < 1) 
+		if (AD_Tree_Campaign_ID < 1)
 			set_Value (COLUMNNAME_AD_Tree_Campaign_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Tree_Campaign_ID, Integer.valueOf(AD_Tree_Campaign_ID));
 	}
 
 	/** Get Campaign Tree.
 		@return Trees are used for (financial) reporting
 	  */
-	public int getAD_Tree_Campaign_ID () 
+	public int getAD_Tree_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_Campaign_ID);
 		if (ii == null)
@@ -203,21 +218,20 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	}
 
 	/** Set Organization Tree.
-		@param AD_Tree_Org_ID 
-		Trees are used for (financial) reporting and security access (via role)
-	  */
+		@param AD_Tree_Org_ID Trees are used for (financial) reporting and security access (via role)
+	*/
 	public void setAD_Tree_Org_ID (int AD_Tree_Org_ID)
 	{
-		if (AD_Tree_Org_ID < 1) 
+		if (AD_Tree_Org_ID < 1)
 			set_Value (COLUMNNAME_AD_Tree_Org_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Tree_Org_ID, Integer.valueOf(AD_Tree_Org_ID));
 	}
 
 	/** Get Organization Tree.
 		@return Trees are used for (financial) reporting and security access (via role)
 	  */
-	public int getAD_Tree_Org_ID () 
+	public int getAD_Tree_Org_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_Org_ID);
 		if (ii == null)
@@ -232,21 +246,20 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	}
 
 	/** Set Product Tree.
-		@param AD_Tree_Product_ID 
-		Trees are used for (financial) reporting
-	  */
+		@param AD_Tree_Product_ID Trees are used for (financial) reporting
+	*/
 	public void setAD_Tree_Product_ID (int AD_Tree_Product_ID)
 	{
-		if (AD_Tree_Product_ID < 1) 
+		if (AD_Tree_Product_ID < 1)
 			set_Value (COLUMNNAME_AD_Tree_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Tree_Product_ID, Integer.valueOf(AD_Tree_Product_ID));
 	}
 
 	/** Get Product Tree.
 		@return Trees are used for (financial) reporting
 	  */
-	public int getAD_Tree_Product_ID () 
+	public int getAD_Tree_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_Product_ID);
 		if (ii == null)
@@ -261,21 +274,20 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	}
 
 	/** Set Project Tree.
-		@param AD_Tree_Project_ID 
-		Trees are used for (financial) reporting
-	  */
+		@param AD_Tree_Project_ID Trees are used for (financial) reporting
+	*/
 	public void setAD_Tree_Project_ID (int AD_Tree_Project_ID)
 	{
-		if (AD_Tree_Project_ID < 1) 
+		if (AD_Tree_Project_ID < 1)
 			set_Value (COLUMNNAME_AD_Tree_Project_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Tree_Project_ID, Integer.valueOf(AD_Tree_Project_ID));
 	}
 
 	/** Get Project Tree.
 		@return Trees are used for (financial) reporting
 	  */
-	public int getAD_Tree_Project_ID () 
+	public int getAD_Tree_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_Project_ID);
 		if (ii == null)
@@ -290,21 +302,20 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	}
 
 	/** Set Sales Region Tree.
-		@param AD_Tree_SalesRegion_ID 
-		Trees are used for (financial) reporting
-	  */
+		@param AD_Tree_SalesRegion_ID Trees are used for (financial) reporting
+	*/
 	public void setAD_Tree_SalesRegion_ID (int AD_Tree_SalesRegion_ID)
 	{
-		if (AD_Tree_SalesRegion_ID < 1) 
+		if (AD_Tree_SalesRegion_ID < 1)
 			set_Value (COLUMNNAME_AD_Tree_SalesRegion_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Tree_SalesRegion_ID, Integer.valueOf(AD_Tree_SalesRegion_ID));
 	}
 
 	/** Get Sales Region Tree.
 		@return Trees are used for (financial) reporting
 	  */
-	public int getAD_Tree_SalesRegion_ID () 
+	public int getAD_Tree_SalesRegion_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tree_SalesRegion_ID);
 		if (ii == null)
@@ -313,9 +324,8 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -324,15 +334,14 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -341,15 +350,14 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -358,7 +366,7 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -372,21 +380,20 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
     }
 
 	/** Set Reporting Hierarchy.
-		@param PA_Hierarchy_ID 
-		Optional Reporting Hierarchy - If not selected the default hierarchy trees are used.
-	  */
+		@param PA_Hierarchy_ID Optional Reporting Hierarchy - If not selected the default hierarchy trees are used.
+	*/
 	public void setPA_Hierarchy_ID (int PA_Hierarchy_ID)
 	{
-		if (PA_Hierarchy_ID < 1) 
+		if (PA_Hierarchy_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_Hierarchy_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_Hierarchy_ID, Integer.valueOf(PA_Hierarchy_ID));
 	}
 
 	/** Get Reporting Hierarchy.
 		@return Optional Reporting Hierarchy - If not selected the default hierarchy trees are used.
 	  */
-	public int getPA_Hierarchy_ID () 
+	public int getPA_Hierarchy_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Hierarchy_ID);
 		if (ii == null)
@@ -395,7 +402,8 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 	}
 
 	/** Set PA_Hierarchy_UU.
-		@param PA_Hierarchy_UU PA_Hierarchy_UU	  */
+		@param PA_Hierarchy_UU PA_Hierarchy_UU
+	*/
 	public void setPA_Hierarchy_UU (String PA_Hierarchy_UU)
 	{
 		set_Value (COLUMNNAME_PA_Hierarchy_UU, PA_Hierarchy_UU);
@@ -403,7 +411,7 @@ public class X_PA_Hierarchy extends PO implements I_PA_Hierarchy, I_Persistent
 
 	/** Get PA_Hierarchy_UU.
 		@return PA_Hierarchy_UU	  */
-	public String getPA_Hierarchy_UU () 
+	public String getPA_Hierarchy_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_Hierarchy_UU);
 	}

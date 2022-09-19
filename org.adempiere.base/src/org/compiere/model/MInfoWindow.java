@@ -48,7 +48,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6723480469706009814L;
+	private static final long serialVersionUID = -6793583766286122866L;
 
 	/**	Cache						*/
 	private static ImmutablePOCache<String,MInfoWindow> s_cache = new ImmutablePOCache<String,MInfoWindow>(Table_Name, 20);
@@ -118,7 +118,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	}
 
 	/**
-	 * @author xolali
+	 * author xolali
 	 * @param AD_InfoWindow_ID
 	 * @return {@link MInfoWindow}
 	 */
@@ -142,11 +142,6 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		return null;
 	}
 
-	/**
-	 * @author xolali
-	 * @param requery
-	 * @return
-	 */
 	private MInfoRelated[] m_infoRelated;
 
 	/**
@@ -155,6 +150,11 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	 */
 	private MInfoProcess[]  m_infoProcess;
 
+	/**
+	 * author xolali
+	 * @param requery
+	 * @return
+	 */
 	public MInfoRelated[] getInfoRelated(boolean requery) {
 		if ((this.m_infoRelated != null) && (!requery)) {
 			set_TrxName(this.m_infoRelated, get_TrxName());
@@ -221,13 +221,17 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	 * return MInfoWindow if the current role can access to the specified info window ; otherwise return null 
 	 * */
 	public static MInfoWindow get(int infoWindowID, String trxName) {
-		MInfoWindow iw = getInfoWindow(infoWindowID);		
-		Boolean access = MRole.getDefault().getInfoAccess(iw.getAD_InfoWindow_ID());
-		if (access != null && access.booleanValue()) {
-			if (!Util.isEmpty(trxName, true))
-				iw = new MInfoWindow(iw, trxName);
-			return iw;
+		MInfoWindow iw = getInfoWindow(infoWindowID);
+
+		if (iw != null) {
+			Boolean access = MRole.getDefault().getInfoAccess(iw.getAD_InfoWindow_ID());
+			if (access != null && access.booleanValue()) {
+				if (!Util.isEmpty(trxName, true))
+					iw = new MInfoWindow(iw, trxName);
+				return iw;
+			}
 		}
+
 		return null;
 	}
 
@@ -257,7 +261,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	}
 
 	/**
-	 * @author xolali
+	 * author xolali
 	 */
 	private MInfoColumn[] m_infocolumns = null;
 
@@ -280,7 +284,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	}
 
 	/**
-	 * @author xolali
+	 * author xolali
 	 * @return
 	 */
 	public String getSql(){
@@ -518,5 +522,14 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	@Override
 	public I_AD_Table getAD_Table() throws RuntimeException {
 		return MTable.get(Env.getCtx(), getAD_Table_ID(), get_TrxName());
-	}		
+	}
+	
+	/**
+	 * 
+	 * @return array of {@link TableInfo}
+	 */
+	public TableInfo[] getTableInfos() {
+		AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + getFromClause());
+		return sqlParser.getTableInfo(0);
+	}
 }	//	MInfoWindow

@@ -26,7 +26,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_Movement
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="I_Movement")
 public class X_I_Movement extends PO implements I_I_Movement, I_Persistent 
 {
@@ -34,12 +34,27 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_I_Movement (Properties ctx, int I_Movement_ID, String trxName)
     {
       super (ctx, I_Movement_ID, trxName);
+      /** if (I_Movement_ID == 0)
+        {
+			setI_IsImported (false);
+// N
+			setI_Movement_ID (0);
+			setProcessed (false);
+// N
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_Movement (Properties ctx, int I_Movement_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_Movement_ID, trxName, virtualColumns);
       /** if (I_Movement_ID == 0)
         {
 			setI_IsImported (false);
@@ -80,21 +95,20 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
     }
 
 	/** Set Trx Organization.
-		@param AD_OrgTrx_ID 
-		Performing or initiating organization
-	  */
+		@param AD_OrgTrx_ID Performing or initiating organization
+	*/
 	public void setAD_OrgTrx_ID (int AD_OrgTrx_ID)
 	{
-		if (AD_OrgTrx_ID < 1) 
+		if (AD_OrgTrx_ID < 1)
 			set_Value (COLUMNNAME_AD_OrgTrx_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_OrgTrx_ID, Integer.valueOf(AD_OrgTrx_ID));
 	}
 
 	/** Get Trx Organization.
 		@return Performing or initiating organization
 	  */
-	public int getAD_OrgTrx_ID () 
+	public int getAD_OrgTrx_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_OrgTrx_ID);
 		if (ii == null)
@@ -109,21 +123,20 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -132,9 +145,8 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Business Partner Key.
-		@param BPartnerValue 
-		Key of the Business Partner
-	  */
+		@param BPartnerValue Key of the Business Partner
+	*/
 	public void setBPartnerValue (String BPartnerValue)
 	{
 		set_Value (COLUMNNAME_BPartnerValue, BPartnerValue);
@@ -143,15 +155,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Business Partner Key.
 		@return Key of the Business Partner
 	  */
-	public String getBPartnerValue () 
+	public String getBPartnerValue()
 	{
 		return (String)get_Value(COLUMNNAME_BPartnerValue);
 	}
 
 	/** Set Campaign Key.
-		@param CampaignValue 
-		Text key of the Campaign
-	  */
+		@param CampaignValue Text key of the Campaign
+	*/
 	public void setCampaignValue (String CampaignValue)
 	{
 		set_Value (COLUMNNAME_CampaignValue, CampaignValue);
@@ -160,7 +171,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Campaign Key.
 		@return Text key of the Campaign
 	  */
-	public String getCampaignValue () 
+	public String getCampaignValue()
 	{
 		return (String)get_Value(COLUMNNAME_CampaignValue);
 	}
@@ -171,22 +182,21 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 			.getPO(getC_BPartner_ID(), get_TrxName());
 	}
 
-	/** Set Business Partner .
-		@param C_BPartner_ID 
-		Identifies a Business Partner
-	  */
+	/** Set Business Partner.
+		@param C_BPartner_ID Identifies a Business Partner
+	*/
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
-		if (C_BPartner_ID < 1) 
+		if (C_BPartner_ID < 1)
 			set_Value (COLUMNNAME_C_BPartner_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 		@return Identifies a Business Partner
 	  */
-	public int getC_BPartner_ID () 
+	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
 		if (ii == null)
@@ -201,21 +211,20 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Campaign.
-		@param C_Campaign_ID 
-		Marketing Campaign
-	  */
+		@param C_Campaign_ID Marketing Campaign
+	*/
 	public void setC_Campaign_ID (int C_Campaign_ID)
 	{
-		if (C_Campaign_ID < 1) 
+		if (C_Campaign_ID < 1)
 			set_Value (COLUMNNAME_C_Campaign_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Campaign_ID, Integer.valueOf(C_Campaign_ID));
 	}
 
 	/** Get Campaign.
 		@return Marketing Campaign
 	  */
-	public int getC_Campaign_ID () 
+	public int getC_Campaign_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Campaign_ID);
 		if (ii == null)
@@ -230,21 +239,20 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Document Type.
-		@param C_DocType_ID 
-		Document type or rules
-	  */
+		@param C_DocType_ID Document type or rules
+	*/
 	public void setC_DocType_ID (int C_DocType_ID)
 	{
-		if (C_DocType_ID < 0) 
+		if (C_DocType_ID < 0)
 			set_Value (COLUMNNAME_C_DocType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_DocType_ID, Integer.valueOf(C_DocType_ID));
 	}
 
 	/** Get Document Type.
 		@return Document type or rules
 	  */
-	public int getC_DocType_ID () 
+	public int getC_DocType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocType_ID);
 		if (ii == null)
@@ -259,21 +267,20 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
+		@param C_Project_ID Financial Project
+	*/
 	public void setC_Project_ID (int C_Project_ID)
 	{
-		if (C_Project_ID < 1) 
+		if (C_Project_ID < 1)
 			set_Value (COLUMNNAME_C_Project_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
 	}
 
 	/** Get Project.
 		@return Financial Project
 	  */
-	public int getC_Project_ID () 
+	public int getC_Project_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
 		if (ii == null)
@@ -282,9 +289,8 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Delivery Rule.
-		@param DeliveryRule 
-		Defines the timing of Delivery
-	  */
+		@param DeliveryRule Defines the timing of Delivery
+	*/
 	public void setDeliveryRule (String DeliveryRule)
 	{
 		set_Value (COLUMNNAME_DeliveryRule, DeliveryRule);
@@ -293,15 +299,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Delivery Rule.
 		@return Defines the timing of Delivery
 	  */
-	public String getDeliveryRule () 
+	public String getDeliveryRule()
 	{
 		return (String)get_Value(COLUMNNAME_DeliveryRule);
 	}
 
 	/** Set Delivery Via.
-		@param DeliveryViaRule 
-		How the order will be delivered
-	  */
+		@param DeliveryViaRule How the order will be delivered
+	*/
 	public void setDeliveryViaRule (String DeliveryViaRule)
 	{
 		set_Value (COLUMNNAME_DeliveryViaRule, DeliveryViaRule);
@@ -310,15 +315,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Delivery Via.
 		@return How the order will be delivered
 	  */
-	public String getDeliveryViaRule () 
+	public String getDeliveryViaRule()
 	{
 		return (String)get_Value(COLUMNNAME_DeliveryViaRule);
 	}
 
 	/** Set Document Type Name.
-		@param DocTypeName 
-		Name of the Document Type
-	  */
+		@param DocTypeName Name of the Document Type
+	*/
 	public void setDocTypeName (String DocTypeName)
 	{
 		set_Value (COLUMNNAME_DocTypeName, DocTypeName);
@@ -327,15 +331,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Document Type Name.
 		@return Name of the Document Type
 	  */
-	public String getDocTypeName () 
+	public String getDocTypeName()
 	{
 		return (String)get_Value(COLUMNNAME_DocTypeName);
 	}
 
 	/** Set Document No.
-		@param DocumentNo 
-		Document sequence number of the document
-	  */
+		@param DocumentNo Document sequence number of the document
+	*/
 	public void setDocumentNo (String DocumentNo)
 	{
 		set_Value (COLUMNNAME_DocumentNo, DocumentNo);
@@ -344,15 +347,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Document No.
 		@return Document sequence number of the document
 	  */
-	public String getDocumentNo () 
+	public String getDocumentNo()
 	{
 		return (String)get_Value(COLUMNNAME_DocumentNo);
 	}
 
 	/** Set Freight Cost Rule.
-		@param FreightCostRule 
-		Method for charging Freight
-	  */
+		@param FreightCostRule Method for charging Freight
+	*/
 	public void setFreightCostRule (String FreightCostRule)
 	{
 		set_Value (COLUMNNAME_FreightCostRule, FreightCostRule);
@@ -361,15 +363,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Freight Cost Rule.
 		@return Method for charging Freight
 	  */
-	public String getFreightCostRule () 
+	public String getFreightCostRule()
 	{
 		return (String)get_Value(COLUMNNAME_FreightCostRule);
 	}
 
 	/** Set Import Error Message.
-		@param I_ErrorMsg 
-		Messages generated from import process
-	  */
+		@param I_ErrorMsg Messages generated from import process
+	*/
 	public void setI_ErrorMsg (String I_ErrorMsg)
 	{
 		set_Value (COLUMNNAME_I_ErrorMsg, I_ErrorMsg);
@@ -378,15 +379,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Import Error Message.
 		@return Messages generated from import process
 	  */
-	public String getI_ErrorMsg () 
+	public String getI_ErrorMsg()
 	{
 		return (String)get_Value(COLUMNNAME_I_ErrorMsg);
 	}
 
 	/** Set Imported.
-		@param I_IsImported 
-		Has this import been processed
-	  */
+		@param I_IsImported Has this import been processed
+	*/
 	public void setI_IsImported (boolean I_IsImported)
 	{
 		set_Value (COLUMNNAME_I_IsImported, Boolean.valueOf(I_IsImported));
@@ -395,7 +395,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Imported.
 		@return Has this import been processed
 	  */
-	public boolean isI_IsImported () 
+	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
 		if (oo != null) 
@@ -408,18 +408,19 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set I_Movement_ID.
-		@param I_Movement_ID I_Movement_ID	  */
+		@param I_Movement_ID I_Movement_ID
+	*/
 	public void setI_Movement_ID (int I_Movement_ID)
 	{
-		if (I_Movement_ID < 1) 
+		if (I_Movement_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_I_Movement_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_I_Movement_ID, Integer.valueOf(I_Movement_ID));
 	}
 
 	/** Get I_Movement_ID.
 		@return I_Movement_ID	  */
-	public int getI_Movement_ID () 
+	public int getI_Movement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_I_Movement_ID);
 		if (ii == null)
@@ -428,7 +429,8 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set I_Movement_UU.
-		@param I_Movement_UU I_Movement_UU	  */
+		@param I_Movement_UU I_Movement_UU
+	*/
 	public void setI_Movement_UU (String I_Movement_UU)
 	{
 		set_Value (COLUMNNAME_I_Movement_UU, I_Movement_UU);
@@ -436,13 +438,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 
 	/** Get I_Movement_UU.
 		@return I_Movement_UU	  */
-	public String getI_Movement_UU () 
+	public String getI_Movement_UU()
 	{
 		return (String)get_Value(COLUMNNAME_I_Movement_UU);
 	}
 
 	/** Set Locator To Key.
-		@param LocatorToValue Locator To Key	  */
+		@param LocatorToValue Locator To Key
+	*/
 	public void setLocatorToValue (String LocatorToValue)
 	{
 		set_Value (COLUMNNAME_LocatorToValue, LocatorToValue);
@@ -450,15 +453,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 
 	/** Get Locator To Key.
 		@return Locator To Key	  */
-	public String getLocatorToValue () 
+	public String getLocatorToValue()
 	{
 		return (String)get_Value(COLUMNNAME_LocatorToValue);
 	}
 
 	/** Set Locator Key.
-		@param LocatorValue 
-		Key of the Warehouse Locator
-	  */
+		@param LocatorValue Key of the Warehouse Locator
+	*/
 	public void setLocatorValue (String LocatorValue)
 	{
 		set_Value (COLUMNNAME_LocatorValue, LocatorValue);
@@ -467,7 +469,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Locator Key.
 		@return Key of the Warehouse Locator
 	  */
-	public String getLocatorValue () 
+	public String getLocatorValue()
 	{
 		return (String)get_Value(COLUMNNAME_LocatorValue);
 	}
@@ -479,21 +481,20 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Locator.
-		@param M_Locator_ID 
-		Warehouse Locator
-	  */
+		@param M_Locator_ID Warehouse Locator
+	*/
 	public void setM_Locator_ID (int M_Locator_ID)
 	{
-		if (M_Locator_ID < 1) 
+		if (M_Locator_ID < 1)
 			set_Value (COLUMNNAME_M_Locator_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Locator_ID, Integer.valueOf(M_Locator_ID));
 	}
 
 	/** Get Locator.
 		@return Warehouse Locator
 	  */
-	public int getM_Locator_ID () 
+	public int getM_Locator_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Locator_ID);
 		if (ii == null)
@@ -508,21 +509,20 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Locator To.
-		@param M_LocatorTo_ID 
-		Location inventory is moved to
-	  */
+		@param M_LocatorTo_ID Location inventory is moved to
+	*/
 	public void setM_LocatorTo_ID (int M_LocatorTo_ID)
 	{
-		if (M_LocatorTo_ID < 1) 
+		if (M_LocatorTo_ID < 1)
 			set_Value (COLUMNNAME_M_LocatorTo_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_LocatorTo_ID, Integer.valueOf(M_LocatorTo_ID));
 	}
 
 	/** Get Locator To.
 		@return Location inventory is moved to
 	  */
-	public int getM_LocatorTo_ID () 
+	public int getM_LocatorTo_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_LocatorTo_ID);
 		if (ii == null)
@@ -537,21 +537,20 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Inventory Move.
-		@param M_Movement_ID 
-		Movement of Inventory
-	  */
+		@param M_Movement_ID Movement of Inventory
+	*/
 	public void setM_Movement_ID (int M_Movement_ID)
 	{
-		if (M_Movement_ID < 1) 
+		if (M_Movement_ID < 1)
 			set_Value (COLUMNNAME_M_Movement_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Movement_ID, Integer.valueOf(M_Movement_ID));
 	}
 
 	/** Get Inventory Move.
 		@return Movement of Inventory
 	  */
-	public int getM_Movement_ID () 
+	public int getM_Movement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Movement_ID);
 		if (ii == null)
@@ -566,21 +565,20 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Move Line.
-		@param M_MovementLine_ID 
-		Inventory Move document Line
-	  */
+		@param M_MovementLine_ID Inventory Move document Line
+	*/
 	public void setM_MovementLine_ID (int M_MovementLine_ID)
 	{
-		if (M_MovementLine_ID < 1) 
+		if (M_MovementLine_ID < 1)
 			set_Value (COLUMNNAME_M_MovementLine_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_MovementLine_ID, Integer.valueOf(M_MovementLine_ID));
 	}
 
 	/** Get Move Line.
 		@return Inventory Move document Line
 	  */
-	public int getM_MovementLine_ID () 
+	public int getM_MovementLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_MovementLine_ID);
 		if (ii == null)
@@ -589,9 +587,8 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Movement Date.
-		@param MovementDate 
-		Date a product was moved in or out of inventory
-	  */
+		@param MovementDate Date a product was moved in or out of inventory
+	*/
 	public void setMovementDate (Timestamp MovementDate)
 	{
 		set_Value (COLUMNNAME_MovementDate, MovementDate);
@@ -600,15 +597,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Movement Date.
 		@return Date a product was moved in or out of inventory
 	  */
-	public Timestamp getMovementDate () 
+	public Timestamp getMovementDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_MovementDate);
 	}
 
 	/** Set Movement Quantity.
-		@param MovementQty 
-		Quantity of a product moved.
-	  */
+		@param MovementQty Quantity of a product moved.
+	*/
 	public void setMovementQty (BigDecimal MovementQty)
 	{
 		set_Value (COLUMNNAME_MovementQty, MovementQty);
@@ -617,7 +613,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Movement Quantity.
 		@return Quantity of a product moved.
 	  */
-	public BigDecimal getMovementQty () 
+	public BigDecimal getMovementQty()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_MovementQty);
 		if (bd == null)
@@ -632,21 +628,20 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Product.
-		@param M_Product_ID 
-		Product, Service, Item
-	  */
+		@param M_Product_ID Product, Service, Item
+	*/
 	public void setM_Product_ID (int M_Product_ID)
 	{
-		if (M_Product_ID < 1) 
+		if (M_Product_ID < 1)
 			set_Value (COLUMNNAME_M_Product_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
 	}
 
 	/** Get Product.
 		@return Product, Service, Item
 	  */
-	public int getM_Product_ID () 
+	public int getM_Product_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
@@ -661,21 +656,20 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Shipper.
-		@param M_Shipper_ID 
-		Method or manner of product delivery
-	  */
+		@param M_Shipper_ID Method or manner of product delivery
+	*/
 	public void setM_Shipper_ID (int M_Shipper_ID)
 	{
-		if (M_Shipper_ID < 1) 
+		if (M_Shipper_ID < 1)
 			set_Value (COLUMNNAME_M_Shipper_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_Shipper_ID, Integer.valueOf(M_Shipper_ID));
 	}
 
 	/** Get Shipper.
 		@return Method or manner of product delivery
 	  */
-	public int getM_Shipper_ID () 
+	public int getM_Shipper_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_Shipper_ID);
 		if (ii == null)
@@ -684,9 +678,8 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Trx Org Key.
-		@param OrgTrxValue 
-		Key of the Transaction Organization
-	  */
+		@param OrgTrxValue Key of the Transaction Organization
+	*/
 	public void setOrgTrxValue (String OrgTrxValue)
 	{
 		set_Value (COLUMNNAME_OrgTrxValue, OrgTrxValue);
@@ -695,15 +688,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Trx Org Key.
 		@return Key of the Transaction Organization
 	  */
-	public String getOrgTrxValue () 
+	public String getOrgTrxValue()
 	{
 		return (String)get_Value(COLUMNNAME_OrgTrxValue);
 	}
 
 	/** Set Org Key.
-		@param OrgValue 
-		Key of the Organization
-	  */
+		@param OrgValue Key of the Organization
+	*/
 	public void setOrgValue (String OrgValue)
 	{
 		set_Value (COLUMNNAME_OrgValue, OrgValue);
@@ -712,15 +704,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Org Key.
 		@return Key of the Organization
 	  */
-	public String getOrgValue () 
+	public String getOrgValue()
 	{
 		return (String)get_Value(COLUMNNAME_OrgValue);
 	}
 
 	/** Set Priority.
-		@param PriorityRule 
-		Priority of a document
-	  */
+		@param PriorityRule Priority of a document
+	*/
 	public void setPriorityRule (String PriorityRule)
 	{
 		set_Value (COLUMNNAME_PriorityRule, PriorityRule);
@@ -729,15 +720,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Priority.
 		@return Priority of a document
 	  */
-	public String getPriorityRule () 
+	public String getPriorityRule()
 	{
 		return (String)get_Value(COLUMNNAME_PriorityRule);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -746,7 +736,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -759,7 +749,8 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -767,7 +758,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -780,9 +771,8 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	}
 
 	/** Set Product Key.
-		@param ProductValue 
-		Key of the Product
-	  */
+		@param ProductValue Key of the Product
+	*/
 	public void setProductValue (String ProductValue)
 	{
 		set_Value (COLUMNNAME_ProductValue, ProductValue);
@@ -791,15 +781,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Product Key.
 		@return Key of the Product
 	  */
-	public String getProductValue () 
+	public String getProductValue()
 	{
 		return (String)get_Value(COLUMNNAME_ProductValue);
 	}
 
 	/** Set Project Key.
-		@param ProjectValue 
-		Key of the Project
-	  */
+		@param ProjectValue Key of the Project
+	*/
 	public void setProjectValue (String ProjectValue)
 	{
 		set_Value (COLUMNNAME_ProjectValue, ProjectValue);
@@ -808,13 +797,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get Project Key.
 		@return Key of the Project
 	  */
-	public String getProjectValue () 
+	public String getProjectValue()
 	{
 		return (String)get_Value(COLUMNNAME_ProjectValue);
 	}
 
 	/** Set ShipperName.
-		@param ShipperName ShipperName	  */
+		@param ShipperName ShipperName
+	*/
 	public void setShipperName (String ShipperName)
 	{
 		set_Value (COLUMNNAME_ShipperName, ShipperName);
@@ -822,15 +812,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 
 	/** Get ShipperName.
 		@return ShipperName	  */
-	public String getShipperName () 
+	public String getShipperName()
 	{
 		return (String)get_Value(COLUMNNAME_ShipperName);
 	}
 
 	/** Set User Element List 1.
-		@param User1_ID 
-		User defined list element #1
-	  */
+		@param User1_ID User defined list element #1
+	*/
 	public void setUser1_ID (String User1_ID)
 	{
 		set_Value (COLUMNNAME_User1_ID, User1_ID);
@@ -839,15 +828,14 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get User Element List 1.
 		@return User defined list element #1
 	  */
-	public String getUser1_ID () 
+	public String getUser1_ID()
 	{
 		return (String)get_Value(COLUMNNAME_User1_ID);
 	}
 
 	/** Set User Element List 2.
-		@param User2_ID 
-		User defined list element #2
-	  */
+		@param User2_ID User defined list element #2
+	*/
 	public void setUser2_ID (String User2_ID)
 	{
 		set_Value (COLUMNNAME_User2_ID, User2_ID);
@@ -856,7 +844,7 @@ public class X_I_Movement extends PO implements I_I_Movement, I_Persistent
 	/** Get User Element List 2.
 		@return User defined list element #2
 	  */
-	public String getUser2_ID () 
+	public String getUser2_ID()
 	{
 		return (String)get_Value(COLUMNNAME_User2_ID);
 	}

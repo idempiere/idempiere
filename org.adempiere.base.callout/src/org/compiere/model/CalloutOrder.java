@@ -802,16 +802,6 @@ public class CalloutOrder extends CalloutEngine
 		Env.setContext(ctx, WindowNo, "EnforcePriceLimit", pp.isEnforcePriceLimit() ? "Y" : "N");
 		Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
 
-		//	Check/Update Warehouse Setting
-		//	int M_Warehouse_ID = Env.getContextAsInt(ctx, WindowNo, "M_Warehouse_ID");
-		//	Integer wh = (Integer)mTab.getValue("M_Warehouse_ID");
-		//	if (wh.intValue() != M_Warehouse_ID)
-		//	{
-		//		mTab.setValue("M_Warehouse_ID", Integer.valueOf(M_Warehouse_ID));
-		//		ADialog.warn(,WindowNo, "WarehouseChanged");
-		//	}
-
-
 		if (Env.isSOTrx(ctx, WindowNo))
 		{
 			MProduct product = MProduct.get (ctx, M_Product_ID.intValue());
@@ -882,7 +872,7 @@ public class CalloutOrder extends CalloutEngine
 		}
 		mTab.setValue("M_AttributeSetInstance_ID", null);
 		mTab.setValue("S_ResourceAssignment_ID", null);
-		mTab.setValue("C_UOM_ID", Integer.valueOf(100));	//	EA
+		mTab.setValue("C_UOM_ID", Integer.valueOf(SystemIDs.C_UOM_EACH));	//	EA
 
 		Env.setContext(ctx, WindowNo, "DiscountSchema", "N");
 		String sql = "SELECT ChargeAmt FROM C_Charge WHERE C_Charge_ID=?";
@@ -981,9 +971,10 @@ public class CalloutOrder extends CalloutEngine
 		if (log.isLoggable(Level.FINE)) log.fine("Bill BP_Location=" + billC_BPartner_Location_ID);
 
 		//
-		int C_Tax_ID = Tax.get (ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
+		String deliveryViaRule = Env.getContext(ctx, WindowNo, I_C_Order.COLUMNNAME_DeliveryViaRule, true);
+		int C_Tax_ID = Core.getTaxLookup().get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
 			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID,
-			"Y".equals(Env.getContext(ctx, WindowNo, "IsSOTrx")), null);
+			"Y".equals(Env.getContext(ctx, WindowNo, "IsSOTrx")), deliveryViaRule, null);
 		if (log.isLoggable(Level.INFO)) log.info("Tax ID=" + C_Tax_ID);
 		//
 		if (C_Tax_ID == 0)

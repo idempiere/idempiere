@@ -48,7 +48,7 @@ import org.compiere.util.ValueNamePair;
  * 
  * @author Teo Sarca
  * 		<li>BF [ 2860022 ] MQuery.get() is generating restrictions for non-existent column
- * 			https://sourceforge.net/tracker/?func=detail&aid=2860022&group_id=176962&atid=879332
+ * 			https://sourceforge.net/p/adempiere/bugs/2099/
  */
 public class MQuery implements Serializable, Cloneable
 {
@@ -92,7 +92,8 @@ public class MQuery implements Serializable, Cloneable
 			SQL = "SELECT ip.ParameterName,ip.P_String,ip.P_String_To,"			//	1..3
 				+ "ip.P_Number,ip.P_Number_To,"									//	4..5
 				+ "ip.P_Date,ip.P_Date_To, ip.Info,ip.Info_To, "				//	6..9
-				+ "pp.Name, pp.IsRange, pp.AD_Reference_ID, pp.Query "			//	10..13
+				+ "pp.Name, pp.IsRange, pp.AD_Reference_ID, pp.Query, "			//	10..13
+				+ "pp.AD_Process_ID, pp.AD_Process_Para_ID "					//	14..15
 				+ "FROM AD_PInstance_Para ip, AD_PInstance i, AD_Process_Para pp "
 				+ "WHERE i.AD_PInstance_ID=ip.AD_PInstance_ID"
 				+ " AND pp.AD_Process_ID=i.AD_Process_ID"
@@ -103,7 +104,8 @@ public class MQuery implements Serializable, Cloneable
 		else
 			SQL = "SELECT ip.ParameterName,ip.P_String,ip.P_String_To, ip.P_Number,ip.P_Number_To,"
 				+ "ip.P_Date,ip.P_Date_To, ip.Info,ip.Info_To, "
-				+ "ppt.Name, pp.IsRange, pp.AD_Reference_ID, pp.Query "
+				+ "ppt.Name, pp.IsRange, pp.AD_Reference_ID, pp.Query, "
+				+ "pp.AD_Process_ID, pp.AD_Process_Para_ID "
 				+ "FROM AD_PInstance_Para ip, AD_PInstance i, AD_Process_Para pp, AD_Process_Para_Trl ppt "
 				+ "WHERE i.AD_PInstance_ID=ip.AD_PInstance_ID"
 				+ " AND pp.AD_Process_ID=i.AD_Process_ID"
@@ -155,6 +157,11 @@ public class MQuery implements Serializable, Cloneable
 				boolean isRange = "Y".equals(rs.getString(11));
 				//
 				int Reference_ID = rs.getInt(12);
+
+				MUserDefProcParameter udpp = MUserDefProcParameter.get(ctx, rs.getInt(15), rs.getInt(14));
+				if (udpp != null)
+					Reference_ID = udpp.getAD_Reference_ID();
+
 				String P_Query = rs.getString(13);
 				//
 				if (s_log.isLoggable(Level.FINE)) s_log.fine(ParameterName + " S=" + P_String + "-" + P_String_To
@@ -1066,7 +1073,7 @@ public class MQuery implements Serializable, Cloneable
 
 	/**
 	 * 	Is Query Active
-	 * 	@return true if number of restrictions > 0
+	 * 	@return true if number of restrictions &gt; 0
 	 */
 	public boolean isActive()
 	{
@@ -1346,12 +1353,12 @@ public class MQuery implements Serializable, Cloneable
 	}	//	getRestrictionSQL
 
 	/**
-	 * 
 	 * @param ColumnName
-	 * @param Operator
 	 * @param Code
+	 * @param Code_To
 	 * @param InfoName
 	 * @param InfoDisplay
+	 * @param InfoDisplay_To
 	 * @param andCondition
 	 * @param depth
 	 * @return

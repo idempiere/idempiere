@@ -66,15 +66,15 @@ import org.compiere.util.Util;
  * 				<li>BF [ 1787833 ] ModelInterfaceGenerator: don't write timestamp
  * 				<li>FR [ 1803309 ] Model generator: generate get method for Search cols
  * 				<li>BF [ 1817768 ] Isolate hardcoded table direct columns
- * 					https://sourceforge.net/tracker/?func=detail&atid=879332&aid=1817768&group_id=176962
+ * 					https://sourceforge.net/p/adempiere/bugs/827/
  * 				<li>FR [ 2343096 ] Model Generator: Improve Reference Class Detection
  * 				<li>BF [ 2528434 ] ModelInterfaceGenerator: generate getters for common fields
  * 				<li>--
  * 				<li>FR [ 2848449 ] ModelClassGenerator: Implement model getters
- *					https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2848449&group_id=176962
+ *					https://sourceforge.net/p/adempiere/feature-requests/812/
  * @author Teo Sarca, teo.sarca@gmail.com
  * 				<li>FR [ 3020635 ] Model Generator should use FQ class names
- * 					https://sourceforge.net/tracker/?func=detail&aid=3020635&group_id=176962&atid=879335
+ * 					https://sourceforge.net/p/adempiere/feature-requests/987/
  * @author Victor Perez, e-Evolution
  * 				<li>FR [ 1785001 ] Using ModelPackage of EntityType to Generate Model Class
  */
@@ -248,7 +248,7 @@ public class ModelInterfaceGenerator
 				+ "FROM AD_Column c "
 				+ "WHERE c.AD_Table_ID=?"
 
-				+ " AND c.IsActive='Y'"
+				+ " AND c.IsActive='Y' AND (c.ColumnSQL IS NULL OR c.ColumnSQL NOT LIKE '@SQL%') "
 				+ (!Util.isEmpty(entityTypeFilter) ? " AND c." + entityTypeFilter : "")
 				+ " ORDER BY c.ColumnName";
 		PreparedStatement pstmt = null;
@@ -381,10 +381,10 @@ public class ModelInterfaceGenerator
 	public void generateJavaComment(String startOfComment, String propertyName,	String description, StringBuilder result) {
 		result.append("\n")
 			  .append("\t/** ").append(startOfComment).append(" ")
-			  .append(propertyName);
+			  .append(Util.maskHTML(propertyName));
 
 		if (description != null && description.length() > 0)
-			result.append(".\n\t  * ").append(description).append(NL);
+			result.append(".\n\t  * ").append(Util.maskHTML(description)).append(NL);
 
 		result.append("\t  */\n");
 	}
@@ -609,7 +609,7 @@ public class ModelInterfaceGenerator
 
 	/**
 	 * Get EntityType Model Package.
-	 * @author Victor Perez - [ 1785001 ] Using ModelPackage of EntityType to Generate Model Class
+	 * author Victor Perez - [ 1785001 ] Using ModelPackage of EntityType to Generate Model Class
 	 * @param entityType
 	 * @return
 	 */
@@ -755,7 +755,7 @@ public class ModelInterfaceGenerator
 	 * @param sourceFolder
 	 * @param packageName
 	 * @param entityType
-	 * @param tableLike
+	 * @param tableName table Like
 	 * @param columnEntityType
 	 */
 	public static void generateSource(String sourceFolder, String packageName, String entityType, String tableName, String columnEntityType)

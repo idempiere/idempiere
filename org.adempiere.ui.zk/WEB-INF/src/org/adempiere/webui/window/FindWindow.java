@@ -43,6 +43,7 @@ import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.component.Button;
+import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ComboItem;
@@ -313,7 +314,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param findFields findFields
      * @param minRecords minRecords
      * @param adTabId
-     * @param AbstractADWindowContent windowPanel
+     * @param windowPanel AbstractADWindowContent
     **/
     public FindWindow (int targetWindowNo, int targetTabNo, String title,
             int AD_Table_ID, String tableName, String whereExtended,
@@ -1420,19 +1421,29 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            }
 	            if(!selected) listColumn.setSelectedIndex(0);
 
-	            if (liCol != null)
-	            	addOperators(liCol, listOperator);
-
 	            selected = false;
-	            for (int i = 0; i < op.length; i++)
-	            {
-	            	ValueNamePair item = op[i];
-	            	ComboItem li = new ComboItem(Msg.getMsg(Env.getCtx(), item.getName()), item.getValue()); 
-	            	listOperator.appendChild(li);
-	            	if(item.getValue().equals(operator))
+	            if (liCol != null) {
+	            	addOperators(liCol, listOperator);
+	            	for (Component listitem : listOperator.getChildren()) {
+	            		if (listitem instanceof ComboItem) {
+	            			if (((ComboItem)listitem).getValue().equals(operator)) {
+	            				listOperator.setSelectedItem((ComboItem)listitem);
+	            				selected = true;
+	            				break;
+	            			}
+	            		}
+	            	}
+	            } else {
+	            	for (int i = 0; i < op.length; i++)
 	            	{
-	            		listOperator.setSelectedItem(li);
-	            		selected = true;
+	            		ValueNamePair item = op[i];
+	            		ComboItem li = new ComboItem(Msg.getMsg(Env.getCtx(), item.getName()), item.getValue()); 
+	            		listOperator.appendChild(li);
+	            		if(item.getValue().equals(operator))
+	            		{
+	            			listOperator.setSelectedItem(li);
+	            			selected = true;
+	            		}
 	            	}
 	            }
 	            if(!selected) listOperator.setSelectedIndex(0);
@@ -1951,8 +1962,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         	if(history.length() > 0)
         	{
         		historyCombo.setAttribute("history", history);
-        		//historyCombo.setSelectedItem(new Comboitem(history));
-        		//historyCombo.setSelectedItem(new Comboitem(history, history));
         		historyCombo.setSelectedIndex(getHistoryIndex(history)+1);
         	}
     	}
@@ -2015,7 +2024,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				long time = 0;
 				try
 				{
-					time = DisplayType.getDateFormat_JDBC().parse(in).getTime();
+					time = DisplayType.getTimestampFormat_Default().parse(in).getTime();
 					editor.setValue(new Timestamp(time));
 				}
 				catch (Exception e)
@@ -2028,9 +2037,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				editor.setValue(new Timestamp(time));
 			}
 			else if (dt == DisplayType.YesNo)
-				editor.setValue(Boolean.valueOf(in));
+			{
+				boolean val = ("Y".equalsIgnoreCase(in) || "true".equalsIgnoreCase(in));
+				editor.setValue(val);
+			}
 			else
+			{
 				editor.setValue(in);
+			}
 
 			editor.addValueChangeListener(this);
 
@@ -2103,7 +2117,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            ValueNamePair vnp = column.getSelectedItem().getValue();
 	            String ColumnName = vnp.getValue();
 	            String tableUID = table.getSelectedItem() != null ? table.getSelectedItem().getValue().toString() : "";
-	            String infoName = column.toString();
+	            String infoName = ColumnName;
 	            
 	            GridField field = null;
 				boolean isProductCategoryField = false;
@@ -2184,6 +2198,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            	  if(dtbox.getValue() != null)
 	            		 value = new Timestamp(((Date)dtbox.getValue()).getTime());
 	            }
+	            else if(compo instanceof Checkbox && cellQueryFrom.getAttribute("value") instanceof Boolean) {
+	            	value = ((boolean) cellQueryFrom.getAttribute("value") ? "Y" : "N");
+	            }
 	            else {
 	            	value = cellQueryFrom.getAttribute("value");
 	            }
@@ -2250,12 +2267,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                	  if(dtbox.getValue() != null)
 	                		 value2 = new Timestamp(((Date)dtbox.getValue()).getTime());
 	                }
+	                else if(compo instanceof Checkbox && cellQueryTo.getAttribute("value") instanceof Boolean) {
+	                	value2 = ((boolean) cellQueryTo.getAttribute("value") ? "Y" : "N");
+	                }
 	                else {
-	                	value2 = cellQueryFrom.getAttribute("value");
+	                	value2 = cellQueryTo.getAttribute("value");
 	                }
 	                
-	                
-	                value2 = cellQueryTo.getAttribute("value");
 	                if (value2 == null)
 	                    continue;
 	                Object parsedValue2 = null;
@@ -2368,7 +2386,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			String name = selected;
 			if ((fQueryName.getSelectedIndex() == 0 || name.equals(m_sNew)) && saveQuery){ // New query - needs a name
 
-				FDialog.warn (m_targetWindowNo, this, "NeedsName", name);
+				Dialog.warn(m_targetWindowNo, "NeedsName", name);
 				return;
 			}
 			if (saveQuery){
@@ -2395,16 +2413,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				} else	if (code.length() <= 0){ // Delete the query
 					if (uq == null) 
 					{
-						FDialog.warn (m_targetWindowNo, this, "NeedsQuery", name);
+						Dialog.warn(m_targetWindowNo, "NeedsQuery", name);
 						return;
 					}
 					if (uq.delete(true))
 					{
-						FDialog.info (m_targetWindowNo, this, "Deleted", name);
+						Dialog.info(m_targetWindowNo, "Deleted", name);
 						refreshUserQueries();
 					}
 					else
-						FDialog.warn (m_targetWindowNo, this, "DeleteError", name);
+						Dialog.warn(m_targetWindowNo, "DeleteError", name);
 					return;
 				}
 				uq.setCode (code.toString());
@@ -2517,14 +2535,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                         m_query.addRestriction(ColumnSQL.toString(), oper, value, ColumnName, wed.getDisplay());
                         appendCode(code, ColumnName, oper, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
                     }
-                    
-                    /*
-                    if (value.toString().indexOf('%') != -1)
-                        m_query.addRestriction(ColumnName, MQuery.LIKE, value, ColumnName, ved.getDisplay());
-                    else
-                        m_query.addRestriction(ColumnName, MQuery.EQUAL, value, ColumnName, ved.getDisplay());
-                    */
-                    // end globalqss patch
             	}
             } else if (valueTo != null && valueTo.toString().length() > 0) {
             	// filled upper limit without filling lower limit
@@ -2832,7 +2842,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         //  Test for no records
         if (getNoOfRecords(m_query, true) != 0) {
         	if (m_total == COUNTING_RECORDS_TIMED_OUT) {
-        		FDialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
+        		Dialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
         	} else {
                 if (advancedPanel != null) {
                 	advancedPanel.getItems().clear();
@@ -2914,7 +2924,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
         if (getNoOfRecords(m_query, true) != 0) {
         	if (m_total == COUNTING_RECORDS_TIMED_OUT) {
-        		FDialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
+        		Dialog.error(m_targetWindowNo, "InfoQueryTimeOutError");
         	} else {
                 dispose();
         	}
@@ -3001,19 +3011,17 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
         //  No Records
         if (m_total == 0 && alertRecords)
-            FDialog.warn(m_targetWindowNo, this, "FindZeroRecords", null);
+            Dialog.warn(m_targetWindowNo, "FindZeroRecords", null);
         //  More then allowed
         if (m_gridTab != null && alertRecords && m_total != COUNTING_RECORDS_TIMED_OUT && m_gridTab.isQueryMax(m_total))
         {
-            FDialog.error(m_targetWindowNo, this, "FindOverMax",
+            Dialog.error(m_targetWindowNo, "FindOverMax",
                 m_total + " > " + m_gridTab.getMaxQueryRecords());
             m_total = 0; // return 0 if more then allowed - teo_sarca [ 1708717 ]
         }
         else
             if (log.isLoggable(Level.CONFIG)) log.config("#" + m_total);
-        //
-        /*if (query != null)
-            statusBar.setStatusToolTip (query.getWhereClause());*/
+
         return m_total;
 
     }   //  getNoOfRecords
@@ -3181,7 +3189,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             StringBuilder errMsg = new StringBuilder();
             errMsg.append(field.getColumnName()).append(" = ").append(in).append(" - ").append(error);
             //
-            FDialog.error(0, this, "ValidationError", errMsg.toString());
+            Dialog.error(0, "ValidationError", errMsg.toString());
             return null;
         }
 
@@ -3441,10 +3449,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	        	attributeSQL.append(" AND value ");
 
 	        }
-//	        else if(attribute.getAttributeValueType().equals(MAttribute.ATTRIBUTEVALUETYPE_TableDirect)) {
-//	        	
-//	        	attributeSQL.append(" AND record_ID ");
-//	        }   
 
 		return attributeSQL.toString();
 	}	// getAttributeSQL
@@ -3524,16 +3528,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	       	//String
 	       	editor.setValue(value);
 	    }
-//	    else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_TableDirect)) {
-//	       	
-//	       	int AD_Column_ID = attribute.getAD_Column_ID();
-//	    	MLookup attributes = MLookupFactory.get(Env.getCtx(), m_targetWindowNo, AD_Column_ID, DisplayType.TableDir, Env.getLanguage(Env.getCtx()), 
-//	    			attribute.getAD_Column().getColumnName(), 0, true, null);
-//	    	editor = new WTableDirEditor(attribute.getAD_Column().getName(), true, false, true, attributes);    
-//	    	
-//	    	editor.setValue(Integer.valueOf(in));	
-//	    }     
-	 	        //
+
 	    editor.addValueChangeListener(this);	       
 	    editor.setReadWrite(enabled);
 	    editor.setVisible(enabled);
@@ -3708,21 +3703,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
         	editor = new WStringEditor("Test", true, false, true, 40, 40, null, null);
         }
-//        else if(attributeValue.equals(MAttribute.ATTRIBUTEVALUETYPE_TableDirect)) {
-//        	
-//        	int AD_Column_ID = attribute.getAD_Column_ID();
-//    		MLookup orders = MLookupFactory.get(Env.getCtx(), m_targetWindowNo, AD_Column_ID, DisplayType.TableDir, Env.getLanguage(Env.getCtx()), 
-//    				attribute.getAD_Column().getColumnName(), 0, true, null);
-//    		editor = new WTableDirEditor(attribute.getAD_Column().getName(), true, false, true, orders);    
-//    		 	
-//        }     
 
-        //
         editor.addValueChangeListener(this);
         editor.setValue(null);
         editor.setReadWrite(enabled);
         editor.setVisible(enabled);
-        //editor.dynamicDisplay();
 
         return editor.getComponent();
 
@@ -3747,7 +3732,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             //  Return Integer
             if (dt.equals(String.valueOf(MAttribute.ATTRIBUTEVALUETYPE_AD_Reference_ID))
             		|| dt.equals(MAttribute.ATTRIBUTEVALUETYPE_List))
-//            		|| dt.equals(MAttribute.ATTRIBUTEVALUETYPE_TableDirect))
             {
                 if (value instanceof Integer)
                     return value;
@@ -3792,7 +3776,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             StringBuilder errMsg = new StringBuilder();
             errMsg.append(attribute.getName()).append(" = ").append(value).append(" - ").append(error);
             //
-            FDialog.error(0, this, "ValidationError", errMsg.toString());
+            Dialog.error(0, "ValidationError", errMsg.toString());
             return null;
         }
 

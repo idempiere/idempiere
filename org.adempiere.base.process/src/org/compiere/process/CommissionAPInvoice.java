@@ -81,7 +81,6 @@ public class CommissionAPInvoice extends SvrProcess
 		invoice.setClientOrg(com.getAD_Client_ID(), com.getAD_Org_ID());
 		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);	//	API
 		invoice.setBPartner(bp);
-	//	invoice.setDocumentNo (comRun.getDocumentNo());		//	may cause unique constraint
 		invoice.setSalesRep_ID(getAD_User_ID());	//	caller
 		//
 		if (com.getC_Currency_ID() != invoice.getC_Currency_ID())
@@ -101,10 +100,15 @@ public class CommissionAPInvoice extends SvrProcess
 		iLine.setTax();
 		if (!iLine.save())
 			throw new IllegalStateException("CommissionAPInvoice - cannot save Invoice Line");
+
+		comRun.setC_Invoice_ID(invoice.getC_Invoice_ID());
+		comRun.setProcessed(true);
+		comRun.saveEx();
+
 		//
 		addBufferLog(invoice.get_ID(), null, null, Msg.getElement(getCtx(), MInvoice.COLUMNNAME_C_Invoice_ID) + " #" + invoice.getDocumentNo(), MInvoice.Table_ID, invoice.get_ID());
 		//
-		return "@Success@";
+		return "@Created@";
 	}	//	doIt
 
 }	//	CommissionAPInvoice

@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for MFA_RegisteredDevice
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="MFA_RegisteredDevice")
 public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice, I_Persistent 
 {
@@ -31,12 +31,24 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_MFA_RegisteredDevice (Properties ctx, int MFA_RegisteredDevice_ID, String trxName)
     {
       super (ctx, MFA_RegisteredDevice_ID, trxName);
+      /** if (MFA_RegisteredDevice_ID == 0)
+        {
+			setAD_User_ID (0);
+			setMFADeviceIdentifier (null);
+			setMFA_RegisteredDevice_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_MFA_RegisteredDevice (Properties ctx, int MFA_RegisteredDevice_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, MFA_RegisteredDevice_ID, trxName, virtualColumns);
       /** if (MFA_RegisteredDevice_ID == 0)
         {
 			setAD_User_ID (0);
@@ -80,21 +92,20 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -103,9 +114,8 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
 	}
 
 	/** Set Expire On.
-		@param Expiration 
-		Expire On
-	  */
+		@param Expiration Expire On
+	*/
 	public void setExpiration (Timestamp Expiration)
 	{
 		set_Value (COLUMNNAME_Expiration, Expiration);
@@ -114,15 +124,14 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
 	/** Get Expire On.
 		@return Expire On
 	  */
-	public Timestamp getExpiration () 
+	public Timestamp getExpiration()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_Expiration);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -131,15 +140,14 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set MFA Device Identifier.
-		@param MFADeviceIdentifier 
-		Multi-factor Authentication Device Identifier
-	  */
+		@param MFADeviceIdentifier Multi-factor Authentication Device Identifier
+	*/
 	public void setMFADeviceIdentifier (String MFADeviceIdentifier)
 	{
 		set_Value (COLUMNNAME_MFADeviceIdentifier, MFADeviceIdentifier);
@@ -148,24 +156,25 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
 	/** Get MFA Device Identifier.
 		@return Multi-factor Authentication Device Identifier
 	  */
-	public String getMFADeviceIdentifier () 
+	public String getMFADeviceIdentifier()
 	{
 		return (String)get_Value(COLUMNNAME_MFADeviceIdentifier);
 	}
 
 	/** Set MFA Registered Device.
-		@param MFA_RegisteredDevice_ID MFA Registered Device	  */
+		@param MFA_RegisteredDevice_ID MFA Registered Device
+	*/
 	public void setMFA_RegisteredDevice_ID (int MFA_RegisteredDevice_ID)
 	{
-		if (MFA_RegisteredDevice_ID < 1) 
+		if (MFA_RegisteredDevice_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_MFA_RegisteredDevice_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_MFA_RegisteredDevice_ID, Integer.valueOf(MFA_RegisteredDevice_ID));
 	}
 
 	/** Get MFA Registered Device.
 		@return MFA Registered Device	  */
-	public int getMFA_RegisteredDevice_ID () 
+	public int getMFA_RegisteredDevice_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_MFA_RegisteredDevice_ID);
 		if (ii == null)
@@ -174,7 +183,8 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
 	}
 
 	/** Set MFA_RegisteredDevice_UU.
-		@param MFA_RegisteredDevice_UU MFA_RegisteredDevice_UU	  */
+		@param MFA_RegisteredDevice_UU MFA_RegisteredDevice_UU
+	*/
 	public void setMFA_RegisteredDevice_UU (String MFA_RegisteredDevice_UU)
 	{
 		set_Value (COLUMNNAME_MFA_RegisteredDevice_UU, MFA_RegisteredDevice_UU);
@@ -182,7 +192,7 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
 
 	/** Get MFA_RegisteredDevice_UU.
 		@return MFA_RegisteredDevice_UU	  */
-	public String getMFA_RegisteredDevice_UU () 
+	public String getMFA_RegisteredDevice_UU()
 	{
 		return (String)get_Value(COLUMNNAME_MFA_RegisteredDevice_UU);
 	}

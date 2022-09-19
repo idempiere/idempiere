@@ -51,7 +51,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.apps.form.PayPrint;
 import org.compiere.model.MLookup;
@@ -77,7 +77,7 @@ import org.zkoss.zul.South;
 import com.lowagie.text.pdf.PdfReader;
 
 /**
- *  Payment Print & Export
+ *  Payment Print and Export
  *
  * 	@author 	Jorg Janke
  * 	@version 	$Id: VPayPrint.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
@@ -366,7 +366,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			fDocumentNo.setValue(documentNo);
 
 		if(msg != null && msg.length() > 0)
-			FDialog.error(m_WindowNo, form, msg);
+			Dialog.error(m_WindowNo, msg);
 		
 		getPluginFeatures();
 	}   //  loadPaymentRuleInfo
@@ -442,10 +442,10 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			
 			if (no >= 0) {
 				Filedownload.save(new FileInputStream(tempFile), m_PaymentExport.getContentType(), filenameForDownload);
-				FDialog.info(m_WindowNo, form, "Saved",
+				Dialog.info(m_WindowNo, "Saved",
 						Msg.getMsg(Env.getCtx(), "NoOfLines") + "=" + no);
 
-				FDialog.ask(m_WindowNo, form, "VPayPrintSuccess?", new Callback<Boolean>() {
+				Dialog.ask(m_WindowNo, "VPayPrintSuccess?", new Callback<Boolean>() {
 					
 					@Override
 					public void onCallback(Boolean result) 
@@ -459,7 +459,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 					}
 				});
 			} else {
-				FDialog.error(m_WindowNo, form, "Error", err.toString());
+				Dialog.error(m_WindowNo, "Error", err.toString());
 			}
 			dispose();
 		}
@@ -486,7 +486,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	 */
 	protected void confirm_cmd_print()
 	{
-		FDialog.ask(m_WindowNo, form, "CreatePayments?", new Callback<Boolean>() {
+		Dialog.ask(m_WindowNo, "CreatePayments?", new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 
@@ -529,7 +529,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			MPaySelectionCheck.confirmPrint(m_checks[i], m_batch);
 
 			//	ReportCtrl will check BankAccountDoc for PrintFormat
-			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.CHECK, check.get_ID());
+			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.CHECK, check.get_ID(), m_WindowNo);
 			try
 			{
 				MPrintFormat format = re.getPrintFormat();
@@ -590,7 +590,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			DB.executeUpdate(sb.toString(), null);
 		}
 
-		FDialog.ask(m_WindowNo, form, "VPayPrintPrintRemittance", new Callback<Boolean>() {
+		Dialog.ask(m_WindowNo, "VPayPrintPrintRemittance", new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 
@@ -602,7 +602,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 					for (int i = 0; i < m_checks.length; i++)
 					{
 						MPaySelectionCheck check = m_checks[i];
-						ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.REMITTANCE, check.get_ID());
+						ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.REMITTANCE, check.get_ID(), m_WindowNo);
 						try
 						{
 							MPrintFormat format = re.getPrintFormat();
@@ -666,7 +666,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		if (m_C_PaySelection_ID <= 0 || m_C_BankAccount_ID == -1
 			|| fPaymentRule.getSelectedIndex() == -1 || fDocumentNo.getValue() == null)
 		{
-			FDialog.error(m_WindowNo, form, "VPayPrintNoRecords",
+			Dialog.error(m_WindowNo, "VPayPrintNoRecords",
 				"(" + Msg.translate(Env.getCtx(), "C_PaySelectionLine_ID") + "=0)");
 			return false;
 		}
@@ -679,7 +679,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		//
 		if (m_checks == null || m_checks.length == 0)
 		{
-			FDialog.error(m_WindowNo, form, "VPayPrintNoRecords",
+			Dialog.error(m_WindowNo, "VPayPrintNoRecords",
 				"(" + Msg.translate(Env.getCtx(), "C_PaySelectionLine_ID") + " #0");
 			return false;
 		}

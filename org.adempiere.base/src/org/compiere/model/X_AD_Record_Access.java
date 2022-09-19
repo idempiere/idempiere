@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Record_Access
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Record_Access")
 public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Persistent 
 {
@@ -31,12 +31,29 @@ public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Record_Access (Properties ctx, int AD_Record_Access_ID, String trxName)
     {
       super (ctx, AD_Record_Access_ID, trxName);
+      /** if (AD_Record_Access_ID == 0)
+        {
+			setAD_Role_ID (0);
+			setAD_Table_ID (0);
+			setIsDependentEntities (false);
+// N
+			setIsExclude (true);
+// Y
+			setIsReadOnly (false);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Record_Access (Properties ctx, int AD_Record_Access_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Record_Access_ID, trxName, virtualColumns);
       /** if (AD_Record_Access_ID == 0)
         {
 			setAD_Role_ID (0);
@@ -79,7 +96,8 @@ public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Pers
     }
 
 	/** Set AD_Record_Access_UU.
-		@param AD_Record_Access_UU AD_Record_Access_UU	  */
+		@param AD_Record_Access_UU AD_Record_Access_UU
+	*/
 	public void setAD_Record_Access_UU (String AD_Record_Access_UU)
 	{
 		set_Value (COLUMNNAME_AD_Record_Access_UU, AD_Record_Access_UU);
@@ -87,7 +105,7 @@ public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Pers
 
 	/** Get AD_Record_Access_UU.
 		@return AD_Record_Access_UU	  */
-	public String getAD_Record_Access_UU () 
+	public String getAD_Record_Access_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Record_Access_UU);
 	}
@@ -99,21 +117,20 @@ public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Pers
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
 		if (ii == null)
@@ -128,21 +145,20 @@ public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Pers
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -159,9 +175,8 @@ public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Pers
     }
 
 	/** Set Dependent Entities.
-		@param IsDependentEntities 
-		Also check access in dependent entities
-	  */
+		@param IsDependentEntities Also check access in dependent entities
+	*/
 	public void setIsDependentEntities (boolean IsDependentEntities)
 	{
 		set_Value (COLUMNNAME_IsDependentEntities, Boolean.valueOf(IsDependentEntities));
@@ -170,7 +185,7 @@ public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Pers
 	/** Get Dependent Entities.
 		@return Also check access in dependent entities
 	  */
-	public boolean isDependentEntities () 
+	public boolean isDependentEntities()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDependentEntities);
 		if (oo != null) 
@@ -183,9 +198,8 @@ public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Pers
 	}
 
 	/** Set Exclude.
-		@param IsExclude 
-		Exclude access to the data - if not selected Include access to the data
-	  */
+		@param IsExclude Exclude access to the data - if not selected Include access to the data
+	*/
 	public void setIsExclude (boolean IsExclude)
 	{
 		set_Value (COLUMNNAME_IsExclude, Boolean.valueOf(IsExclude));
@@ -194,7 +208,7 @@ public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Pers
 	/** Get Exclude.
 		@return Exclude access to the data - if not selected Include access to the data
 	  */
-	public boolean isExclude () 
+	public boolean isExclude()
 	{
 		Object oo = get_Value(COLUMNNAME_IsExclude);
 		if (oo != null) 
@@ -207,9 +221,8 @@ public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Pers
 	}
 
 	/** Set Read Only.
-		@param IsReadOnly 
-		Field is read only
-	  */
+		@param IsReadOnly Field is read only
+	*/
 	public void setIsReadOnly (boolean IsReadOnly)
 	{
 		set_Value (COLUMNNAME_IsReadOnly, Boolean.valueOf(IsReadOnly));
@@ -218,7 +231,7 @@ public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Pers
 	/** Get Read Only.
 		@return Field is read only
 	  */
-	public boolean isReadOnly () 
+	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
 		if (oo != null) 
@@ -231,21 +244,20 @@ public class X_AD_Record_Access extends PO implements I_AD_Record_Access, I_Pers
 	}
 
 	/** Set Record ID.
-		@param Record_ID 
-		Direct internal record ID
-	  */
+		@param Record_ID Direct internal record ID
+	*/
 	public void setRecord_ID (int Record_ID)
 	{
-		if (Record_ID < 0) 
+		if (Record_ID < 0)
 			set_ValueNoCheck (COLUMNNAME_Record_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
 	}
 
 	/** Get Record ID.
 		@return Direct internal record ID
 	  */
-	public int getRecord_ID () 
+	public int getRecord_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
 		if (ii == null)

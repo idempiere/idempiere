@@ -100,24 +100,44 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	 * Synchronize information on other accounts with same email in the same credential
 	 */
 	public void syncOthers() {
-		final String script = "UPDATE AD_AuthorizationAccount "
-				+ "SET AccessToken=?, AccessTokenTimestamp=?, ExpireInSeconds=? "
+		final String clientSql =
+				"SELECT DISTINCT AD_Client_ID "
+				+ "FROM AD_AuthorizationAccount "
 				+ "WHERE AD_AuthorizationAccount_ID!=? "
 				+ "AND EMail=? "
 				+ "AND AD_AuthorizationCredential_ID=? "
 				+ "AND IsAuthorized='Y' "
 				+ "AND RefreshToken IS NOT NULL";
-		String accessToken = getAccessToken();
-		accessToken = SecureEngine.encrypt(accessToken, getAD_Client_ID());
-		DB.executeUpdateEx(script.toString(), new Object[] {
-				accessToken,
-				getAccessTokenTimestamp(),
-				getExpireInSeconds(),
+		int[] clientIds = DB.getIDsEx(get_TrxName(), clientSql,
 				getAD_AuthorizationAccount_ID(),
 				getEMail(),
-				getAD_AuthorizationCredential_ID()
-				},
-				get_TrxName());
+				getAD_AuthorizationCredential_ID());
+		if (clientIds.length > 0) {
+			final String script = "UPDATE AD_AuthorizationAccount "
+					+ "SET AccessToken=?, AccessTokenTimestamp=?, ExpireInSeconds=? "
+					+ "WHERE AD_AuthorizationAccount_ID!=? "
+					+ "AND EMail=? "
+					+ "AND AD_AuthorizationCredential_ID=? "
+					+ "AND IsAuthorized='Y' "
+					+ "AND RefreshToken IS NOT NULL "
+					+ "AND AD_Client_ID=?";
+			MColumn column = MColumn.get(getCtx(), Table_Name, COLUMNNAME_AccessToken);
+			for (int clientId : clientIds) {
+				String accessToken = getAccessToken();
+				if (column.isEncrypted())
+					accessToken = SecureEngine.encrypt(accessToken, clientId);
+				DB.executeUpdateEx(script.toString(), new Object[] {
+							accessToken,
+							getAccessTokenTimestamp(),
+							getExpireInSeconds(),
+							getAD_AuthorizationAccount_ID(),
+							getEMail(),
+							getAD_AuthorizationCredential_ID(),
+							clientId
+						},
+						get_TrxName());
+			}
+		}
 	}
 
 	/**

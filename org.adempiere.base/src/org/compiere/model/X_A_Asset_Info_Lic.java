@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Info_Lic
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Info_Lic")
 public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Persistent 
 {
@@ -34,12 +34,23 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_A_Asset_Info_Lic (Properties ctx, int A_Asset_Info_Lic_ID, String trxName)
     {
       super (ctx, A_Asset_Info_Lic_ID, trxName);
+      /** if (A_Asset_Info_Lic_ID == 0)
+        {
+			setA_Asset_ID (0);
+			setA_Asset_Info_Lic_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Info_Lic (Properties ctx, int A_Asset_Info_Lic_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Info_Lic_ID, trxName, virtualColumns);
       /** if (A_Asset_Info_Lic_ID == 0)
         {
 			setA_Asset_ID (0);
@@ -82,21 +93,20 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 	}
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -105,18 +115,19 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 	}
 
 	/** Set A_Asset_Info_Lic_ID.
-		@param A_Asset_Info_Lic_ID A_Asset_Info_Lic_ID	  */
+		@param A_Asset_Info_Lic_ID A_Asset_Info_Lic_ID
+	*/
 	public void setA_Asset_Info_Lic_ID (int A_Asset_Info_Lic_ID)
 	{
-		if (A_Asset_Info_Lic_ID < 1) 
+		if (A_Asset_Info_Lic_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Info_Lic_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_A_Asset_Info_Lic_ID, Integer.valueOf(A_Asset_Info_Lic_ID));
 	}
 
 	/** Get A_Asset_Info_Lic_ID.
 		@return A_Asset_Info_Lic_ID	  */
-	public int getA_Asset_Info_Lic_ID () 
+	public int getA_Asset_Info_Lic_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Info_Lic_ID);
 		if (ii == null)
@@ -133,7 +144,8 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
     }
 
 	/** Set A_Asset_Info_Lic_UU.
-		@param A_Asset_Info_Lic_UU A_Asset_Info_Lic_UU	  */
+		@param A_Asset_Info_Lic_UU A_Asset_Info_Lic_UU
+	*/
 	public void setA_Asset_Info_Lic_UU (String A_Asset_Info_Lic_UU)
 	{
 		set_Value (COLUMNNAME_A_Asset_Info_Lic_UU, A_Asset_Info_Lic_UU);
@@ -141,13 +153,14 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 
 	/** Get A_Asset_Info_Lic_UU.
 		@return A_Asset_Info_Lic_UU	  */
-	public String getA_Asset_Info_Lic_UU () 
+	public String getA_Asset_Info_Lic_UU()
 	{
 		return (String)get_Value(COLUMNNAME_A_Asset_Info_Lic_UU);
 	}
 
 	/** Set Issuing Agency.
-		@param A_Issuing_Agency Issuing Agency	  */
+		@param A_Issuing_Agency Issuing Agency
+	*/
 	public void setA_Issuing_Agency (String A_Issuing_Agency)
 	{
 		set_Value (COLUMNNAME_A_Issuing_Agency, A_Issuing_Agency);
@@ -155,13 +168,14 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 
 	/** Get Issuing Agency.
 		@return Issuing Agency	  */
-	public String getA_Issuing_Agency () 
+	public String getA_Issuing_Agency()
 	{
 		return (String)get_Value(COLUMNNAME_A_Issuing_Agency);
 	}
 
 	/** Set Asset License Fee.
-		@param A_License_Fee Asset License Fee	  */
+		@param A_License_Fee Asset License Fee
+	*/
 	public void setA_License_Fee (BigDecimal A_License_Fee)
 	{
 		set_Value (COLUMNNAME_A_License_Fee, A_License_Fee);
@@ -169,7 +183,7 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 
 	/** Get Asset License Fee.
 		@return Asset License Fee	  */
-	public BigDecimal getA_License_Fee () 
+	public BigDecimal getA_License_Fee()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_License_Fee);
 		if (bd == null)
@@ -178,7 +192,8 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 	}
 
 	/** Set Asset License No.
-		@param A_License_No Asset License No	  */
+		@param A_License_No Asset License No
+	*/
 	public void setA_License_No (String A_License_No)
 	{
 		set_Value (COLUMNNAME_A_License_No, A_License_No);
@@ -186,13 +201,14 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 
 	/** Get Asset License No.
 		@return Asset License No	  */
-	public String getA_License_No () 
+	public String getA_License_No()
 	{
 		return (String)get_Value(COLUMNNAME_A_License_No);
 	}
 
 	/** Set Asset Renewal Date.
-		@param A_Renewal_Date Asset Renewal Date	  */
+		@param A_Renewal_Date Asset Renewal Date
+	*/
 	public void setA_Renewal_Date (Timestamp A_Renewal_Date)
 	{
 		set_Value (COLUMNNAME_A_Renewal_Date, A_Renewal_Date);
@@ -200,15 +216,14 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 
 	/** Get Asset Renewal Date.
 		@return Asset Renewal Date	  */
-	public Timestamp getA_Renewal_Date () 
+	public Timestamp getA_Renewal_Date()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_A_Renewal_Date);
 	}
 
 	/** Set Account State.
-		@param A_State 
-		State of the Credit Card or Account holder
-	  */
+		@param A_State State of the Credit Card or Account holder
+	*/
 	public void setA_State (String A_State)
 	{
 		set_Value (COLUMNNAME_A_State, A_State);
@@ -217,15 +232,14 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 	/** Get Account State.
 		@return State of the Credit Card or Account holder
 	  */
-	public String getA_State () 
+	public String getA_State()
 	{
 		return (String)get_Value(COLUMNNAME_A_State);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_ValueNoCheck (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -234,7 +248,7 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -247,7 +261,8 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 	}
 
 	/** Set Description.
-		@param Text Description	  */
+		@param Text Description
+	*/
 	public void setText (String Text)
 	{
 		set_Value (COLUMNNAME_Text, Text);
@@ -255,7 +270,7 @@ public class X_A_Asset_Info_Lic extends PO implements I_A_Asset_Info_Lic, I_Pers
 
 	/** Get Description.
 		@return Description	  */
-	public String getText () 
+	public String getText()
 	{
 		return (String)get_Value(COLUMNNAME_Text);
 	}

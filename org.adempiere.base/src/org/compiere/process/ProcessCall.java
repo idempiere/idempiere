@@ -47,7 +47,7 @@ public interface ProcessCall
 	public boolean startProcess (Properties ctx, ProcessInfo pi, Trx trx);
 
 	/**
-	 * @param processMonitor
+	 * @param processUI
 	 */
 	public void setProcessUI(IProcessUI processUI);
 

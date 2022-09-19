@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Modification
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Modification")
 public class X_AD_Modification extends PO implements I_AD_Modification, I_Persistent 
 {
@@ -31,12 +31,27 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Modification (Properties ctx, int AD_Modification_ID, String trxName)
     {
       super (ctx, AD_Modification_ID, trxName);
+      /** if (AD_Modification_ID == 0)
+        {
+			setAD_Modification_ID (0);
+			setEntityType (null);
+// @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setName (null);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Modification WHERE EntityType='@EntityType@'
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Modification (Properties ctx, int AD_Modification_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Modification_ID, trxName, virtualColumns);
       /** if (AD_Modification_ID == 0)
         {
 			setAD_Modification_ID (0);
@@ -77,21 +92,20 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
     }
 
 	/** Set Modification.
-		@param AD_Modification_ID 
-		System Modification or Extension
-	  */
+		@param AD_Modification_ID System Modification or Extension
+	*/
 	public void setAD_Modification_ID (int AD_Modification_ID)
 	{
-		if (AD_Modification_ID < 1) 
+		if (AD_Modification_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Modification_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Modification_ID, Integer.valueOf(AD_Modification_ID));
 	}
 
 	/** Get Modification.
 		@return System Modification or Extension
 	  */
-	public int getAD_Modification_ID () 
+	public int getAD_Modification_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Modification_ID);
 		if (ii == null)
@@ -100,7 +114,8 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 	}
 
 	/** Set AD_Modification_UU.
-		@param AD_Modification_UU AD_Modification_UU	  */
+		@param AD_Modification_UU AD_Modification_UU
+	*/
 	public void setAD_Modification_UU (String AD_Modification_UU)
 	{
 		set_Value (COLUMNNAME_AD_Modification_UU, AD_Modification_UU);
@@ -108,15 +123,14 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 
 	/** Get AD_Modification_UU.
 		@return AD_Modification_UU	  */
-	public String getAD_Modification_UU () 
+	public String getAD_Modification_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Modification_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -125,7 +139,7 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -133,9 +147,8 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 	/** EntityType AD_Reference_ID=389 */
 	public static final int ENTITYTYPE_AD_Reference_ID=389;
 	/** Set Entity Type.
-		@param EntityType 
-		Dictionary Entity Type; Determines ownership and synchronization
-	  */
+		@param EntityType Dictionary Entity Type; Determines ownership and synchronization
+	*/
 	public void setEntityType (String EntityType)
 	{
 
@@ -145,15 +158,14 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 	/** Get Entity Type.
 		@return Dictionary Entity Type; Determines ownership and synchronization
 	  */
-	public String getEntityType () 
+	public String getEntityType()
 	{
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -162,15 +174,14 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -179,7 +190,7 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -193,9 +204,8 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
     }
 
 	/** Set Sequence.
-		@param SeqNo 
-		Method of ordering records; lowest number comes first
-	  */
+		@param SeqNo Method of ordering records; lowest number comes first
+	*/
 	public void setSeqNo (int SeqNo)
 	{
 		set_Value (COLUMNNAME_SeqNo, Integer.valueOf(SeqNo));
@@ -204,7 +214,7 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 	/** Get Sequence.
 		@return Method of ordering records; lowest number comes first
 	  */
-	public int getSeqNo () 
+	public int getSeqNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SeqNo);
 		if (ii == null)
@@ -213,9 +223,8 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 	}
 
 	/** Set Version.
-		@param Version 
-		Version of the table definition
-	  */
+		@param Version Version of the table definition
+	*/
 	public void setVersion (String Version)
 	{
 		set_Value (COLUMNNAME_Version, Version);
@@ -224,7 +233,7 @@ public class X_AD_Modification extends PO implements I_AD_Modification, I_Persis
 	/** Get Version.
 		@return Version of the table definition
 	  */
-	public String getVersion () 
+	public String getVersion()
 	{
 		return (String)get_Value(COLUMNNAME_Version);
 	}

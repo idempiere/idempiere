@@ -36,7 +36,6 @@ import org.compiere.model.MOrderLine;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
 import org.compiere.model.Query;
-import org.compiere.model.Tax;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -160,11 +159,15 @@ public class CalloutRMA extends CalloutEngine {
 			pp.setPriceDate(invoice.getDateInvoiced());
 
 			precision = invoice.getPrecision();
-			taxId = Tax.get(ctx, M_Product_ID, 0,
+			String deliveryViaRule = null;
+			if (invoice.getC_Order_ID() > 0) {
+				deliveryViaRule = new MOrder(ctx, invoice.getC_Order_ID(), null).getDeliveryViaRule();
+			}
+			taxId = Core.getTaxLookup().get(ctx, M_Product_ID, 0,
 					invoice.getDateInvoiced(), invoice.getDateInvoiced(),
 					AD_Org_ID, rma.getShipment().getM_Warehouse_ID(), 
 					invoice.getC_BPartner_Location_ID(), // should be bill to
-					invoice.getC_BPartner_Location_ID(), rma.isSOTrx(), null);
+					invoice.getC_BPartner_Location_ID(), rma.isSOTrx(), deliveryViaRule, null);
 		} 
 		else 
 		{
@@ -175,11 +178,11 @@ public class CalloutRMA extends CalloutEngine {
 				pp.setPriceDate(order.getDateOrdered());
 
 				precision = order.getPrecision();
-				taxId = Tax.get(ctx, M_Product_ID, 0,
+				taxId = Core.getTaxLookup().get(ctx, M_Product_ID, 0,
 						order.getDateOrdered(), order.getDateOrdered(),
 						AD_Org_ID, order.getM_Warehouse_ID(), 
 						order.getC_BPartner_Location_ID(), // should be bill to
-						order.getC_BPartner_Location_ID(), rma.isSOTrx(), null);
+						order.getC_BPartner_Location_ID(), rma.isSOTrx(), order.getDeliveryViaRule(), null);
 			} 
 			else
 				return "No Invoice/Order found the Shipment/Receipt associated";

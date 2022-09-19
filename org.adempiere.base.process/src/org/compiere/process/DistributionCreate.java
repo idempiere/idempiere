@@ -52,9 +52,6 @@ public class DistributionCreate extends SvrProcess
 	/**	Distribution List		*/
 	private int				p_M_DistributionList_ID;
 	
-//	DatePromised
-//	C_DocType_ID
-	
 	/**	Distribution List		*/
 	private MDistributionList m_dl;
 	/** Single Order			*/

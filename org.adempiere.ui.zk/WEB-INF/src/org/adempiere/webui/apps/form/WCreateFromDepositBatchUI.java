@@ -38,7 +38,7 @@ import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.CreateFromDepositBatch;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankStatement;
@@ -47,6 +47,7 @@ import org.compiere.model.MDepositBatch;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -67,10 +68,14 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 {
 	private WCreateFromWindow window;
 	
+	/**
+	 * 
+	 * @param tab
+	 */
 	public WCreateFromDepositBatchUI(GridTab tab) 
 	{
 		super(tab);
-		log.info(getGridTab().toString());
+		if (log.isLoggable(Level.INFO)) log.info(getGridTab().toString());
 		
 		window = new WCreateFromWindow(this, getGridTab().getWindowNo());
 		
@@ -125,14 +130,10 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 	protected Label dateToLabel = new Label("-");
 	protected WDateEditor dateToField = new WDateEditor("DateTo", false, false, true, Msg.translate(Env.getCtx(), "DateTo"));
 
-	/**
-	 *  Dynamic Init
-	 *  @throws Exception if Lookups cannot be initialized
-	 *  @return true if initialized
-	 */
-	public boolean dynInit() throws Exception
+	@Override
+	protected boolean dynInit() throws Exception
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		
 		super.dynInit();
 		
@@ -143,7 +144,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 				
 		if (getGridTab().getValue("C_DepositBatch_ID") == null)
 		{
-			FDialog.error(0, window, "SaveErrorRowNotFound");
+			Dialog.error(0, "SaveErrorRowNotFound");
 			return false;
 		}
 		
@@ -157,19 +158,16 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		bankAccountField.setValue(Integer.valueOf(C_BankAccount_ID));
 		//  initial Loading
 		authorizationField = new WStringEditor ("authorization", false, false, true, 10, 30, null, null);
-//		authorizationField.getComponent().addEventListener(Events.ON_CHANGE, this);
 
 		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, MColumn.getColumn_ID(MPayment.Table_Name, MPayment.COLUMNNAME_C_DocType_ID), DisplayType.TableDir);
 		documentTypeField = new WTableDirEditor (MPayment.COLUMNNAME_C_DocType_ID,false,false,true,lookup);
 		int C_DocType_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "C_DocType_ID");
 		documentTypeField.setValue(Integer.valueOf(C_DocType_ID));
-//		documentTypeField.getComponent().addEventListener(Events.ON_CHANGE, this);
 		
 		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, MColumn.getColumn_ID(MPayment.Table_Name, MPayment.COLUMNNAME_TenderType), DisplayType.List);
 		tenderTypeField = new WTableDirEditor (MPayment.COLUMNNAME_TenderType,false,false,true,lookup);
-//		tenderTypeField.getComponent().addEventListener(Events.ON_CHANGE, this);
 		
-		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, 3499, DisplayType.Search);
+		lookup = MLookupFactory.get (Env.getCtx(), p_WindowNo, 0, SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID, DisplayType.Search);
 		bPartnerLookup = new WSearchEditor ("C_BPartner_ID", false, false, true, lookup);
 		
 		Timestamp date = null;
@@ -269,7 +267,7 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 	/**
 	 *  Action Listener
 	 *  @param e event
-	 * @throws Exception 
+	 *  @throws Exception 
 	 */
 	public void onEvent(Event e) throws Exception
 	{
@@ -281,14 +279,21 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		}
 	}
 	
+	/**
+	 * load payments for selected bank account
+	 */
 	protected void loadBankAccount()
 	{
-		loadTableOIS(getBankAccountData(bankAccountField.getValue(), bPartnerLookup.getValue(), 
+		loadTableOIS(getBankAccountData((Integer)bankAccountField.getValue(), (Integer)bPartnerLookup.getValue(), 
 				documentNoField.getValue().toString(), dateFromField.getValue(), dateToField.getValue(),
 				amtFromField.getValue(), amtToField.getValue(), 
-				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getValue().toString()));
+				(Integer)documentTypeField.getValue(), (String)tenderTypeField.getValue(), authorizationField.getValue().toString()));
 	}
 	
+	/**
+	 * load data into list box
+	 * @param data
+	 */
 	protected void loadTableOIS (Vector<?> data)
 	{
 		window.getWListbox().clear();
@@ -304,11 +309,13 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		configureMiniTable(window.getWListbox());
 	}
 	
+	@Override
 	public void showWindow()
 	{
 		window.setVisible(true);
 	}
 	
+	@Override
 	public void closeWindow()
 	{
 		window.dispose();

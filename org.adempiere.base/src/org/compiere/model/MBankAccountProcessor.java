@@ -58,7 +58,7 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 	 *  @param C_Currency_ID Currency (ignored)
 	 *  @param Amt Amount (ignored)
 	 *	@param trxName transaction
-	 *  @return Array of BankAccount[0] & PaymentProcessor[1] or null
+	 *  @return Array of BankAccount[0] and PaymentProcessor[1] or null
 	 */
 	public static MBankAccountProcessor[] find (Properties ctx,
 		String tender, String CCType,

@@ -36,7 +36,8 @@ public class MRevenueRecognitionRun extends X_C_RevenueRecognition_Run
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
-	 *	@param C_RevenueRecognition_ID id
+	 *	@param C_RevenueRecognition_Run_ID id
+	 *  @param trxName
 	 */
 	public MRevenueRecognitionRun (Properties ctx, int C_RevenueRecognition_Run_ID, String trxName)
 	{

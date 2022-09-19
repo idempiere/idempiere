@@ -38,7 +38,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.I_AD_Field;
 import org.compiere.model.MField;
 import org.compiere.model.MRole;
@@ -100,11 +100,11 @@ public class QuickCustomizeGridViewPanel extends Panel {
 
 	/**
 	 * Sort Tab Constructor
-	 *
-	 * @param WindowNo
-	 *            Window No
+	 * @param WindowNo Window No
+	 * @param AD_Tab_ID
+	 * @param AD_User_ID
 	 * @param columnsWidth
-	 * @param GridTab
+	 * @param gridFieldIds
 	 */
 	public QuickCustomizeGridViewPanel(int WindowNo, int AD_Tab_ID, int AD_User_ID, Map <Integer, String> columnsWidth, ArrayList <Integer> gridFieldIds)
 	{
@@ -425,7 +425,7 @@ public class QuickCustomizeGridViewPanel extends Panel {
 			}
 			getParent().detach();
 		} else {
-			FDialog.error(m_WindowNo, null, "SaveError", custom.toString());
+			Dialog.error(m_WindowNo, "SaveError", custom.toString());
 		}
 	} // saveData
 

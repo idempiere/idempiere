@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for PP_Order_Node_Asset
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_Node_Asset")
 public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, I_Persistent 
 {
@@ -31,12 +31,26 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_PP_Order_Node_Asset (Properties ctx, int PP_Order_Node_Asset_ID, String trxName)
     {
       super (ctx, PP_Order_Node_Asset_ID, trxName);
+      /** if (PP_Order_Node_Asset_ID == 0)
+        {
+			setA_Asset_ID (0);
+			setPP_Order_ID (0);
+			setPP_Order_Node_Asset_ID (0);
+			setPP_Order_Node_ID (0);
+			setPP_Order_Workflow_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_Node_Asset (Properties ctx, int PP_Order_Node_Asset_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_Node_Asset_ID, trxName, virtualColumns);
       /** if (PP_Order_Node_Asset_ID == 0)
         {
 			setA_Asset_ID (0);
@@ -82,21 +96,20 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 	}
 
 	/** Set Asset.
-		@param A_Asset_ID 
-		Asset used internally or by customers
-	  */
+		@param A_Asset_ID Asset used internally or by customers
+	*/
 	public void setA_Asset_ID (int A_Asset_ID)
 	{
-		if (A_Asset_ID < 1) 
+		if (A_Asset_ID < 1)
 			set_Value (COLUMNNAME_A_Asset_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_A_Asset_ID, Integer.valueOf(A_Asset_ID));
 	}
 
 	/** Get Asset.
 		@return Asset used internally or by customers
 	  */
-	public int getA_Asset_ID () 
+	public int getA_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_ID);
 		if (ii == null)
@@ -111,21 +124,20 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 	}
 
 	/** Set Manufacturing Order.
-		@param PP_Order_ID 
-		Manufacturing Order
-	  */
+		@param PP_Order_ID Manufacturing Order
+	*/
 	public void setPP_Order_ID (int PP_Order_ID)
 	{
-		if (PP_Order_ID < 1) 
+		if (PP_Order_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_ID, Integer.valueOf(PP_Order_ID));
 	}
 
 	/** Get Manufacturing Order.
 		@return Manufacturing Order
 	  */
-	public int getPP_Order_ID () 
+	public int getPP_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_ID);
 		if (ii == null)
@@ -134,18 +146,19 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 	}
 
 	/** Set Manufacturing Order Activity Asset.
-		@param PP_Order_Node_Asset_ID Manufacturing Order Activity Asset	  */
+		@param PP_Order_Node_Asset_ID Manufacturing Order Activity Asset
+	*/
 	public void setPP_Order_Node_Asset_ID (int PP_Order_Node_Asset_ID)
 	{
-		if (PP_Order_Node_Asset_ID < 1) 
+		if (PP_Order_Node_Asset_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Node_Asset_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Node_Asset_ID, Integer.valueOf(PP_Order_Node_Asset_ID));
 	}
 
 	/** Get Manufacturing Order Activity Asset.
 		@return Manufacturing Order Activity Asset	  */
-	public int getPP_Order_Node_Asset_ID () 
+	public int getPP_Order_Node_Asset_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_Node_Asset_ID);
 		if (ii == null)
@@ -154,7 +167,8 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 	}
 
 	/** Set PP_Order_Node_Asset_UU.
-		@param PP_Order_Node_Asset_UU PP_Order_Node_Asset_UU	  */
+		@param PP_Order_Node_Asset_UU PP_Order_Node_Asset_UU
+	*/
 	public void setPP_Order_Node_Asset_UU (String PP_Order_Node_Asset_UU)
 	{
 		set_Value (COLUMNNAME_PP_Order_Node_Asset_UU, PP_Order_Node_Asset_UU);
@@ -162,7 +176,7 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 
 	/** Get PP_Order_Node_Asset_UU.
 		@return PP_Order_Node_Asset_UU	  */
-	public String getPP_Order_Node_Asset_UU () 
+	public String getPP_Order_Node_Asset_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PP_Order_Node_Asset_UU);
 	}
@@ -174,21 +188,20 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 	}
 
 	/** Set Manufacturing Order Activity.
-		@param PP_Order_Node_ID 
-		Workflow Node (activity), step or process
-	  */
+		@param PP_Order_Node_ID Workflow Node (activity), step or process
+	*/
 	public void setPP_Order_Node_ID (int PP_Order_Node_ID)
 	{
-		if (PP_Order_Node_ID < 1) 
+		if (PP_Order_Node_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Node_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Node_ID, Integer.valueOf(PP_Order_Node_ID));
 	}
 
 	/** Get Manufacturing Order Activity.
 		@return Workflow Node (activity), step or process
 	  */
-	public int getPP_Order_Node_ID () 
+	public int getPP_Order_Node_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_Node_ID);
 		if (ii == null)
@@ -203,18 +216,19 @@ public class X_PP_Order_Node_Asset extends PO implements I_PP_Order_Node_Asset, 
 	}
 
 	/** Set Manufacturing Order Workflow.
-		@param PP_Order_Workflow_ID Manufacturing Order Workflow	  */
+		@param PP_Order_Workflow_ID Manufacturing Order Workflow
+	*/
 	public void setPP_Order_Workflow_ID (int PP_Order_Workflow_ID)
 	{
-		if (PP_Order_Workflow_ID < 1) 
+		if (PP_Order_Workflow_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Workflow_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PP_Order_Workflow_ID, Integer.valueOf(PP_Order_Workflow_ID));
 	}
 
 	/** Get Manufacturing Order Workflow.
 		@return Manufacturing Order Workflow	  */
-	public int getPP_Order_Workflow_ID () 
+	public int getPP_Order_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PP_Order_Workflow_ID);
 		if (ii == null)

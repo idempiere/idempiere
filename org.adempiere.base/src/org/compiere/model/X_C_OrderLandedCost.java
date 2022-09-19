@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_OrderLandedCost
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_OrderLandedCost")
 public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Persistent 
 {
@@ -32,12 +32,30 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_OrderLandedCost (Properties ctx, int C_OrderLandedCost_ID, String trxName)
     {
       super (ctx, C_OrderLandedCost_ID, trxName);
+      /** if (C_OrderLandedCost_ID == 0)
+        {
+			setAmt (Env.ZERO);
+// 0
+			setC_Order_ID (0);
+			setC_OrderLandedCost_ID (0);
+			setLandedCostDistribution (null);
+// Q
+			setM_CostElement_ID (0);
+			setProcessed (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_OrderLandedCost (Properties ctx, int C_OrderLandedCost_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_OrderLandedCost_ID, trxName, virtualColumns);
       /** if (C_OrderLandedCost_ID == 0)
         {
 			setAmt (Env.ZERO);
@@ -81,9 +99,8 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
     }
 
 	/** Set Amount.
-		@param Amt 
-		Amount
-	  */
+		@param Amt Amount
+	*/
 	public void setAmt (BigDecimal Amt)
 	{
 		set_Value (COLUMNNAME_Amt, Amt);
@@ -92,7 +109,7 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	/** Get Amount.
 		@return Amount
 	  */
-	public BigDecimal getAmt () 
+	public BigDecimal getAmt()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Amt);
 		if (bd == null)
@@ -107,21 +124,20 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	}
 
 	/** Set Order.
-		@param C_Order_ID 
-		Order
-	  */
+		@param C_Order_ID Order
+	*/
 	public void setC_Order_ID (int C_Order_ID)
 	{
-		if (C_Order_ID < 1) 
+		if (C_Order_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Order_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Order_ID, Integer.valueOf(C_Order_ID));
 	}
 
 	/** Get Order.
 		@return Order
 	  */
-	public int getC_Order_ID () 
+	public int getC_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
 		if (ii == null)
@@ -130,18 +146,19 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	}
 
 	/** Set Estimated Landed Cost.
-		@param C_OrderLandedCost_ID Estimated Landed Cost	  */
+		@param C_OrderLandedCost_ID Estimated Landed Cost
+	*/
 	public void setC_OrderLandedCost_ID (int C_OrderLandedCost_ID)
 	{
-		if (C_OrderLandedCost_ID < 1) 
+		if (C_OrderLandedCost_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_OrderLandedCost_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_OrderLandedCost_ID, Integer.valueOf(C_OrderLandedCost_ID));
 	}
 
 	/** Get Estimated Landed Cost.
 		@return Estimated Landed Cost	  */
-	public int getC_OrderLandedCost_ID () 
+	public int getC_OrderLandedCost_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_OrderLandedCost_ID);
 		if (ii == null)
@@ -150,7 +167,8 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	}
 
 	/** Set C_OrderLandedCost_UU.
-		@param C_OrderLandedCost_UU C_OrderLandedCost_UU	  */
+		@param C_OrderLandedCost_UU C_OrderLandedCost_UU
+	*/
 	public void setC_OrderLandedCost_UU (String C_OrderLandedCost_UU)
 	{
 		set_Value (COLUMNNAME_C_OrderLandedCost_UU, C_OrderLandedCost_UU);
@@ -158,15 +176,14 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 
 	/** Get C_OrderLandedCost_UU.
 		@return C_OrderLandedCost_UU	  */
-	public String getC_OrderLandedCost_UU () 
+	public String getC_OrderLandedCost_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_OrderLandedCost_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -175,7 +192,7 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -193,9 +210,8 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	/** Weight = W */
 	public static final String LANDEDCOSTDISTRIBUTION_Weight = "W";
 	/** Set Cost Distribution.
-		@param LandedCostDistribution 
-		Landed Cost Distribution
-	  */
+		@param LandedCostDistribution Landed Cost Distribution
+	*/
 	public void setLandedCostDistribution (String LandedCostDistribution)
 	{
 
@@ -205,7 +221,7 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	/** Get Cost Distribution.
 		@return Landed Cost Distribution
 	  */
-	public String getLandedCostDistribution () 
+	public String getLandedCostDistribution()
 	{
 		return (String)get_Value(COLUMNNAME_LandedCostDistribution);
 	}
@@ -217,21 +233,20 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	}
 
 	/** Set Cost Element.
-		@param M_CostElement_ID 
-		Product Cost Element
-	  */
+		@param M_CostElement_ID Product Cost Element
+	*/
 	public void setM_CostElement_ID (int M_CostElement_ID)
 	{
-		if (M_CostElement_ID < 1) 
+		if (M_CostElement_ID < 1)
 			set_Value (COLUMNNAME_M_CostElement_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_M_CostElement_ID, Integer.valueOf(M_CostElement_ID));
 	}
 
 	/** Get Cost Element.
 		@return Product Cost Element
 	  */
-	public int getM_CostElement_ID () 
+	public int getM_CostElement_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostElement_ID);
 		if (ii == null)
@@ -240,9 +255,8 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -251,7 +265,7 @@ public class X_C_OrderLandedCost extends PO implements I_C_OrderLandedCost, I_Pe
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 

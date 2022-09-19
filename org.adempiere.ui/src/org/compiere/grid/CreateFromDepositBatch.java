@@ -32,28 +32,37 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Create C_DepositBatchLine for C_DepositBatch from C_Payment
  * @author Elaine
  *
  */
 public abstract class CreateFromDepositBatch extends CreateFromBatch 
 {
+	/**
+	 * 
+	 * @param mTab
+	 */
 	public CreateFromDepositBatch(GridTab mTab) 
 	{
 		super(mTab);
 		if (log.isLoggable(Level.INFO)) log.info(mTab.toString());
 	}
 
-	public boolean dynInit() throws Exception
+	@Override
+	protected boolean dynInit() throws Exception
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		setTitle(Msg.getElement(Env.getCtx(), "C_DepositBatch_ID") + " .. " + Msg.translate(Env.getCtx(), "CreateFrom"));
 
 		return true;
 	}
 	
-	protected Vector<Vector<Object>> getBankAccountData(Object BankAccount, Object BPartner, String DocumentNo, 
-			Object DateFrom, Object DateTo, Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode)
+	/**
+	 * @return transaction records (selection,datetrx,[c_payment_id,documentno],[c_currency_id,iso_code],payamt,converted amt,bp name)
+	 */
+	@Override
+	protected Vector<Vector<Object>> getBankAccountData(Integer BankAccount, Integer BPartner, String DocumentNo, 
+			Timestamp DateFrom, Timestamp DateTo, BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode)
 	{
 		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 		
@@ -77,7 +86,7 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), getTrxName());
 			setParameters(pstmt, BankAccount, BPartner, DocumentNo, DateFrom, DateTo, AmtFrom, AmtTo, DocType, TenderType, AuthCode);
 			rs = pstmt.executeQuery();
 			while(rs.next())
@@ -108,6 +117,10 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 		return data;
 	}
 	
+	/**
+	 * set class/type of columns
+	 * @param miniTable
+	 */
 	protected void configureMiniTable(IMiniTable miniTable)
 	{
 		miniTable.setColumnClass(0, Boolean.class, false);      //  0-Selection
@@ -121,6 +134,10 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 		miniTable.autoSize();
 	}
 	
+	/**
+	 * Create C_DepositBatchLine
+	 */
+	@Override	
 	public boolean save(IMiniTable miniTable, String trxName)
 	{
 		//  fixed values
@@ -139,12 +156,10 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 				pp = (KeyNamePair) miniTable.getValueAt(i, 3);               //  3-Currency
 				int C_Currency_ID = pp.getKey();
 				BigDecimal TrxAmt = (BigDecimal) miniTable.getValueAt(i, 4); //  4-PayAmt
-			//	BigDecimal StmtAmt = (BigDecimal) miniTable.getValueAt(i, 5);//  5-Conv Amt
 				//
 				if (log.isLoggable(Level.FINE)) log.fine("Line Date=" + trxDate + ", Payment=" + C_Payment_ID + ", Currency=" + C_Currency_ID + ", Amt=" + TrxAmt);
 				//	
 				MDepositBatchLine dbl = new MDepositBatchLine(db);
-				//	dbl.setStatementLineDate(trxDate);
 				dbl.setPayment(new MPayment(Env.getCtx(), C_Payment_ID, trxName));
 				if(!dbl.save())
 					log.log(Level.SEVERE, "Line not created #" + i);
@@ -153,6 +168,10 @@ public abstract class CreateFromDepositBatch extends CreateFromBatch
 		return true;
 	}
 
+	/**
+	 * 
+	 * @return column header names (select,date,c_payment_id,c_currency_id,amount,converted amount,c_bpartner_id)
+	 */
 	protected Vector<String> getOISColumnNames()
 	{
 		//  Header Info

@@ -46,7 +46,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
 import org.compiere.model.MSMTP;
 import org.compiere.model.MSysConfig;
@@ -247,7 +246,32 @@ public final class EMail implements Serializable
 	 *	Send Mail direct
 	 *	@return OK or error message
 	 */
-	public String send ()
+	public String send()
+	{
+		String msg;
+		try {
+			msg = send(false);
+		} catch (Exception e) {
+			msg = e.getLocalizedMessage();
+		}
+		return msg;
+	}
+
+	/**
+	 *	Send Mail direct
+	 *	@return OK or error message
+	 */
+	public String sendEx() throws Exception
+	{
+		return send(true);
+	}
+
+	/**
+	 *	Send Mail direct
+	 *	@return OK or error message
+	 * @throws Exception 
+	 */
+	public String send(boolean throwException) throws Exception
 	{
 		if (!m_forceUseTenantSmtp && getFrom() != null) {
 			MSMTP smtp = MSMTP.get(m_ctx, Env.getAD_Client_ID(m_ctx), getFrom().getAddress());
@@ -288,12 +312,9 @@ public final class EMail implements Serializable
 			props.put("mail.debug", "true");
 		//
 
-		MAuthorizationAccount authAccount = null;
 		boolean isOAuth2 = false;
-		if (m_auth != null) {
-			authAccount = MAuthorizationAccount.getEMailAccount(m_auth.getPasswordAuthentication().getUserName());
-			isOAuth2 = (authAccount != null);
-		}
+		if (m_auth != null)
+			isOAuth2 = m_auth.isOAuth2();
 
 		Session session = null;
 		try
@@ -318,13 +339,15 @@ public final class EMail implements Serializable
 			    props.put("mail.smtp.auth.login.disable","true");
 			    props.put("mail.smtp.auth.plain.disable","true");
 			    props.put("mail.debug.auth", "true");
-				m_auth = new EMailAuthenticator (m_auth.getPasswordAuthentication().getUserName(), authAccount.refreshAndGetAccessToken());
+				m_auth = new EMailAuthenticator (m_auth.getPasswordAuthentication().getUserName(), m_auth.getPasswordAuthentication().getPassword());
 			}
 			session = Session.getInstance(props);
 			session.setDebug(CLogMgt.isLevelFinest());
 		}
 		catch (SecurityException se)
 		{
+			if (throwException)
+				throw se;
 			log.log(Level.WARNING, "Auth=" + m_auth + " - " + se.toString());
 			m_sentMsg = se.toString();
 			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
@@ -332,6 +355,8 @@ public final class EMail implements Serializable
 		}
 		catch (Exception e)
 		{
+			if (throwException)
+				throw e;
 			log.log(Level.SEVERE, "Auth=" + m_auth, e);
 			m_sentMsg = e.toString();
 			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
@@ -420,6 +445,8 @@ public final class EMail implements Serializable
 		}
 		catch (MessagingException me)
 		{
+			if (throwException)
+				throw me;
 			me.printStackTrace();
 			Exception ex = me;
 			StringBuilder sb = new StringBuilder("(ME)");
@@ -504,6 +531,8 @@ public final class EMail implements Serializable
 		}
 		catch (Exception e)
 		{
+			if (throwException)
+				throw e;
 			log.log(Level.SEVERE, "", e);
 			m_sentMsg = e.getLocalizedMessage();
 			Env.getCtx().put(EMAIL_SEND_MSG, m_sentMsg);
@@ -560,13 +589,13 @@ public final class EMail implements Serializable
 	 */
 	private void dumpMessage()
 	{
-		if (m_msg == null)
+		if (m_msg == null || !log.isLoggable(Level.FINEST))
 			return;
 		try
 		{
 			Enumeration<?> e = m_msg.getAllHeaderLines ();
 			while (e.hasMoreElements ())
-				if (log.isLoggable(Level.FINE)) log.fine("- " + e.nextElement ());
+				log.finest("- " + e.nextElement ());
 		}
 		catch (MessagingException ex)
 		{
@@ -585,8 +614,8 @@ public final class EMail implements Serializable
 
 	/**
 	 * 	Get Message ID or null
-	 * 	@return Message ID e.g. <20030130004739.15377.qmail@web13506.mail.yahoo.com>
-	 *  <25699763.1043887247538.JavaMail.jjanke@main>
+	 * 	@return Message ID e.g. &lt;20030130004739.15377.qmail@web13506.mail.yahoo.com&gt;
+	 *  &lt;25699763.1043887247538.JavaMail.jjanke@main&gt;
 	 */
 	public String getMessageID()
 	{
@@ -966,7 +995,7 @@ public final class EMail implements Serializable
 
 	/**
 	 *	Add url based file Attachment
-	 * 	@param uri url content to attach
+	 * 	@param url url content to attach
 	 */
 	public void addAttachment (URI url)
 	{

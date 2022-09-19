@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_TaxGroup
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_TaxGroup")
 public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent 
 {
@@ -32,12 +32,24 @@ public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_TaxGroup (Properties ctx, int C_TaxGroup_ID, String trxName)
     {
       super (ctx, C_TaxGroup_ID, trxName);
+      /** if (C_TaxGroup_ID == 0)
+        {
+			setC_TaxGroup_ID (0);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_TaxGroup (Properties ctx, int C_TaxGroup_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_TaxGroup_ID, trxName, virtualColumns);
       /** if (C_TaxGroup_ID == 0)
         {
 			setC_TaxGroup_ID (0);
@@ -75,18 +87,19 @@ public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent
     }
 
 	/** Set Tax Group.
-		@param C_TaxGroup_ID Tax Group	  */
+		@param C_TaxGroup_ID Tax Group
+	*/
 	public void setC_TaxGroup_ID (int C_TaxGroup_ID)
 	{
-		if (C_TaxGroup_ID < 1) 
+		if (C_TaxGroup_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_TaxGroup_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_TaxGroup_ID, Integer.valueOf(C_TaxGroup_ID));
 	}
 
 	/** Get Tax Group.
 		@return Tax Group	  */
-	public int getC_TaxGroup_ID () 
+	public int getC_TaxGroup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_TaxGroup_ID);
 		if (ii == null)
@@ -95,7 +108,8 @@ public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent
 	}
 
 	/** Set C_TaxGroup_UU.
-		@param C_TaxGroup_UU C_TaxGroup_UU	  */
+		@param C_TaxGroup_UU C_TaxGroup_UU
+	*/
 	public void setC_TaxGroup_UU (String C_TaxGroup_UU)
 	{
 		set_Value (COLUMNNAME_C_TaxGroup_UU, C_TaxGroup_UU);
@@ -103,15 +117,14 @@ public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent
 
 	/** Get C_TaxGroup_UU.
 		@return C_TaxGroup_UU	  */
-	public String getC_TaxGroup_UU () 
+	public String getC_TaxGroup_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_TaxGroup_UU);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -120,15 +133,14 @@ public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -137,15 +149,14 @@ public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -154,7 +165,7 @@ public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -168,9 +179,8 @@ public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent
     }
 
 	/** Set Search Key.
-		@param Value 
-		Search key for the record in the format required - must be unique
-	  */
+		@param Value Search key for the record in the format required - must be unique
+	*/
 	public void setValue (String Value)
 	{
 		set_Value (COLUMNNAME_Value, Value);
@@ -179,7 +189,7 @@ public class X_C_TaxGroup extends PO implements I_C_TaxGroup, I_Persistent
 	/** Get Search Key.
 		@return Search key for the record in the format required - must be unique
 	  */
-	public String getValue () 
+	public String getValue()
 	{
 		return (String)get_Value(COLUMNNAME_Value);
 	}

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BPartner
  *  @author iDempiere (generated) 
- *  @version Development 9.0
+ *  @version Release 10
  */
 public interface I_C_BPartner 
 {
@@ -70,8 +70,8 @@ public interface I_C_BPartner
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -105,12 +105,12 @@ public interface I_C_BPartner
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -130,12 +130,12 @@ public interface I_C_BPartner
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -336,12 +336,14 @@ public interface I_C_BPartner
     public static final String COLUMNNAME_DUNS = "DUNS";
 
 	/** Set D-U-N-S.
-	  * Dun & Bradstreet Number
+	  * Dun &amp;
+ Bradstreet Number
 	  */
 	public void setDUNS (String DUNS);
 
 	/** Get D-U-N-S.
-	  * Dun & Bradstreet Number
+	  * Dun &amp;
+ Bradstreet Number
 	  */
 	public String getDUNS();
 
@@ -778,12 +780,14 @@ public interface I_C_BPartner
     public static final String COLUMNNAME_ReferenceNo = "ReferenceNo";
 
 	/** Set Reference No.
-	  * Your customer or vendor number at the Business Partner's site
+	  * Your customer or vendor number at the Business Partner&#039;
+s site
 	  */
 	public void setReferenceNo (String ReferenceNo);
 
 	/** Get Reference No.
-	  * Your customer or vendor number at the Business Partner's site
+	  * Your customer or vendor number at the Business Partner&#039;
+s site
 	  */
 	public String getReferenceNo();
 
@@ -832,12 +836,14 @@ public interface I_C_BPartner
     public static final String COLUMNNAME_ShareOfCustomer = "ShareOfCustomer";
 
 	/** Set Share.
-	  * Share of Customer's business as a percentage
+	  * Share of Customer&#039;
+s business as a percentage
 	  */
 	public void setShareOfCustomer (int ShareOfCustomer);
 
 	/** Get Share.
-	  * Share of Customer's business as a percentage
+	  * Share of Customer&#039;
+s business as a percentage
 	  */
 	public int getShareOfCustomer();
 

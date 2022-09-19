@@ -55,13 +55,13 @@ import org.compiere.util.Env;
  *	@author Trifon Trifonov
  *	@author victor.perez@e-evolution.com, www.e-evolution.com
  * <li> BF2875989 Deactivate replication records are include to replication
- * <li> https://sourceforge.net/tracker/?func=detail&aid=2875989&group_id=176962&atid=879332
+ * <li> https://sourceforge.net/p/adempiere/bugs/2167/
  * <li>[ 2195090 ] Stabilization of replication
- * <li>https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2936561&group_id=176962
+ * <li>https://sourceforge.net/p/adempiere/bugs/2294/
  * <li> BF2947615 The document recplicacion not working
- * <li> https://sourceforge.net/tracker/?func=detail&aid=2947615&group_id=176962&atid=879332
+ * <li> https://sourceforge.net/p/adempiere/bugs/2307/
  * <li> The Replication should can use the Strategy from the org
- * <li> https://sourceforge.net/tracker/?func=detail&aid=3014094&group_id=176962&atid=879335
+ * <li> https://sourceforge.net/p/adempiere/feature-requests/979/
  *
  *	@version $Id$
  */
@@ -101,7 +101,7 @@ public class ExportModelValidator implements ModelValidator {
 			if (log.isLoggable(Level.INFO)) log.info(client.toString());
 			loadReplicationStrategy(engine);
 		} else {
-			log.warning("Export Model Validator cannot be used as a global validator, it needs to be defined in a per-client (tenant) basis");
+			log.warning("Export Model Validator cannot be used as a global validator, it needs to be defined in a per-tenant basis");
 			return;
 		}
 	}

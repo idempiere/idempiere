@@ -42,7 +42,7 @@ import org.compiere.util.ValueNamePair;
  *  
  *  @author Teo Sarca
  *  	<li>BF [ 2854358 ] SyncColumn should load table in transaction
- *  		https://sourceforge.net/tracker/?func=detail&aid=2854358&group_id=176962&atid=879332
+ *  		https://sourceforge.net/p/adempiere/bugs/2080/
  */
 @org.adempiere.base.annotation.Process
 public class ColumnSync extends SvrProcess
@@ -113,7 +113,7 @@ public class ColumnSync extends SvrProcess
 		Connection conn = null;
 		ResultSet rs = null;
 		try {
-			conn = DB.getConnectionRO();
+			conn = DB.getConnection();
 			DatabaseMetaData md = conn.getMetaData();
 			String catalog = DB.getDatabase().getCatalog();
 			String schema = DB.getDatabase().getSchema();

@@ -29,9 +29,7 @@ import org.compiere.util.Env;
  * @version $Id: MBPartnerLocation.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  * @author Teo Sarca, www.arhipac.ro <li>FR [ 2788465 ]
  *         MBPartnerLocation.getForBPartner method add trxName
- *         https://sourceforge
- *         .net/tracker/index.php?func=detail&aid=2788465&group_id
- *         =176962&atid=879335
+ *         https://sourceforge.net/p/adempiere/feature-requests/715/
  */
 public class MBPartnerLocation extends X_C_BPartner_Location {
 	/**
@@ -156,6 +154,10 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 		this.m_location = copy.m_location != null ? new MLocation(ctx, copy.m_location, trxName) : null;
 		this.m_uniqueName = copy.m_uniqueName;
 		this.m_unique = copy.m_unique;
+	}
+
+	public MBPartnerLocation(Properties ctx, int C_BPartner_Location_ID, String trxName, String... virtualColumns) {
+		super(ctx, C_BPartner_Location_ID, trxName, virtualColumns);
 	}
 
 	/** Cached Location */

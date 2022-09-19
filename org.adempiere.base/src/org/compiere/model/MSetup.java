@@ -149,7 +149,7 @@ public final class MSetup
 		m_client.setName(m_clientName);
 		if (!m_client.save())
 		{
-			String err = "Client NOT created";
+			String err = "Tenant NOT created";
 			log.log(Level.SEVERE, err);
 			m_info.append(err);
 			m_trx.rollback();
@@ -179,7 +179,7 @@ public final class MSetup
 		//  Trees and Client Info
 		if (!m_client.setupClientInfo(m_lang))
 		{
-			String err = "Client Info NOT created";
+			String err = "Tenant Info NOT created";
 			log.log(Level.SEVERE, err);
 			m_info.append(err);
 			m_trx.rollback();
@@ -244,6 +244,7 @@ public final class MSetup
 		admin.setPreferenceType(MRole.PREFERENCETYPE_Client);
 		admin.setIsShowAcct(true);
 		admin.setIsAccessAdvanced(true);
+		admin.setIsClientAdministrator(true);
 		if (!admin.save())
 		{
 			String err = "Admin Role A NOT inserted";
@@ -271,6 +272,7 @@ public final class MSetup
 		user.setClientOrg(m_client);
 		user.setName(name);
 		user.setIsAccessAdvanced(false);
+		user.setIsClientAdministrator(false);
 		if (!user.save())
 		{
 			String err = "User Role A NOT inserted";
@@ -999,7 +1001,7 @@ public final class MSetup
 	
 	/**************************************************************************
 	 *  Create Default main entities.
-	 *  - Dimensions & BPGroup, Prod Category)
+	 *  - Dimensions and BPGroup, Prod Category)
 	 *  - Location, Locator, Warehouse
 	 *  - PriceList
 	 *  - Cashbook, PaymentTerm

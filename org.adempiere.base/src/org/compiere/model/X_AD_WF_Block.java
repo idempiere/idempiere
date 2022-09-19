@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Block
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_Block")
 public class X_AD_WF_Block extends PO implements I_AD_WF_Block, I_Persistent 
 {
@@ -31,12 +31,24 @@ public class X_AD_WF_Block extends PO implements I_AD_WF_Block, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_WF_Block (Properties ctx, int AD_WF_Block_ID, String trxName)
     {
       super (ctx, AD_WF_Block_ID, trxName);
+      /** if (AD_WF_Block_ID == 0)
+        {
+			setAD_WF_Block_ID (0);
+			setAD_Workflow_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WF_Block (Properties ctx, int AD_WF_Block_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WF_Block_ID, trxName, virtualColumns);
       /** if (AD_WF_Block_ID == 0)
         {
 			setAD_WF_Block_ID (0);
@@ -74,21 +86,20 @@ public class X_AD_WF_Block extends PO implements I_AD_WF_Block, I_Persistent
     }
 
 	/** Set Workflow Block.
-		@param AD_WF_Block_ID 
-		Workflow Transaction Execution Block
-	  */
+		@param AD_WF_Block_ID Workflow Transaction Execution Block
+	*/
 	public void setAD_WF_Block_ID (int AD_WF_Block_ID)
 	{
-		if (AD_WF_Block_ID < 1) 
+		if (AD_WF_Block_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Block_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WF_Block_ID, Integer.valueOf(AD_WF_Block_ID));
 	}
 
 	/** Get Workflow Block.
 		@return Workflow Transaction Execution Block
 	  */
-	public int getAD_WF_Block_ID () 
+	public int getAD_WF_Block_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WF_Block_ID);
 		if (ii == null)
@@ -97,7 +108,8 @@ public class X_AD_WF_Block extends PO implements I_AD_WF_Block, I_Persistent
 	}
 
 	/** Set AD_WF_Block_UU.
-		@param AD_WF_Block_UU AD_WF_Block_UU	  */
+		@param AD_WF_Block_UU AD_WF_Block_UU
+	*/
 	public void setAD_WF_Block_UU (String AD_WF_Block_UU)
 	{
 		set_Value (COLUMNNAME_AD_WF_Block_UU, AD_WF_Block_UU);
@@ -105,7 +117,7 @@ public class X_AD_WF_Block extends PO implements I_AD_WF_Block, I_Persistent
 
 	/** Get AD_WF_Block_UU.
 		@return AD_WF_Block_UU	  */
-	public String getAD_WF_Block_UU () 
+	public String getAD_WF_Block_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_WF_Block_UU);
 	}
@@ -117,21 +129,20 @@ public class X_AD_WF_Block extends PO implements I_AD_WF_Block, I_Persistent
 	}
 
 	/** Set Workflow.
-		@param AD_Workflow_ID 
-		Workflow or combination of tasks
-	  */
+		@param AD_Workflow_ID Workflow or combination of tasks
+	*/
 	public void setAD_Workflow_ID (int AD_Workflow_ID)
 	{
-		if (AD_Workflow_ID < 1) 
+		if (AD_Workflow_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Workflow_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Workflow_ID, Integer.valueOf(AD_Workflow_ID));
 	}
 
 	/** Get Workflow.
 		@return Workflow or combination of tasks
 	  */
-	public int getAD_Workflow_ID () 
+	public int getAD_Workflow_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Workflow_ID);
 		if (ii == null)
@@ -140,9 +151,8 @@ public class X_AD_WF_Block extends PO implements I_AD_WF_Block, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -151,15 +161,14 @@ public class X_AD_WF_Block extends PO implements I_AD_WF_Block, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -168,7 +177,7 @@ public class X_AD_WF_Block extends PO implements I_AD_WF_Block, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

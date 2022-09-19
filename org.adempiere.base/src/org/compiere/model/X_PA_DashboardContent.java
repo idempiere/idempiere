@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_DashboardContent
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PA_DashboardContent")
 public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220907L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
@@ -47,8 +47,35 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 // Y
 			setIsEmbedReportContent (false);
 // N
+			setIsMaximizable (false);
+// N
 			setIsShowInDashboard (true);
 // 'Y'
+			setIsShowTitle (true);
+// Y
+			setName (null);
+			setPA_DashboardContent_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_DashboardContent_ID, trxName, virtualColumns);
+      /** if (PA_DashboardContent_ID == 0)
+        {
+			setIsCollapsedByDefault (false);
+// N
+			setIsCollapsible (true);
+// Y
+			setIsEmbedReportContent (false);
+// N
+			setIsMaximizable (false);
+// N
+			setIsShowInDashboard (true);
+// 'Y'
+			setIsShowTitle (true);
+// Y
 			setName (null);
 			setPA_DashboardContent_ID (0);
         } */
@@ -89,18 +116,19 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set Chart.
-		@param AD_Chart_ID Chart	  */
+		@param AD_Chart_ID Chart
+	*/
 	public void setAD_Chart_ID (int AD_Chart_ID)
 	{
-		if (AD_Chart_ID < 1) 
+		if (AD_Chart_ID < 1)
 			set_Value (COLUMNNAME_AD_Chart_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Chart_ID, Integer.valueOf(AD_Chart_ID));
 	}
 
 	/** Get Chart.
 		@return Chart	  */
-	public int getAD_Chart_ID () 
+	public int getAD_Chart_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Chart_ID);
 		if (ii == null)
@@ -115,21 +143,20 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set Process.
-		@param AD_Process_ID 
-		Process or Report
-	  */
+		@param AD_Process_ID Process or Report
+	*/
 	public void setAD_Process_ID (int AD_Process_ID)
 	{
-		if (AD_Process_ID < 1) 
+		if (AD_Process_ID < 1)
 			set_Value (COLUMNNAME_AD_Process_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
 	}
 
 	/** Get Process.
 		@return Process or Report
 	  */
-	public int getAD_Process_ID () 
+	public int getAD_Process_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
@@ -144,23 +171,49 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set Role.
-		@param AD_Role_ID 
-		Responsibility Role
-	  */
+		@param AD_Role_ID Responsibility Role
+	*/
 	public void setAD_Role_ID (int AD_Role_ID)
 	{
-		if (AD_Role_ID < 0) 
+		if (AD_Role_ID < 0)
 			set_Value (COLUMNNAME_AD_Role_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Role_ID, Integer.valueOf(AD_Role_ID));
 	}
 
 	/** Get Role.
 		@return Responsibility Role
 	  */
-	public int getAD_Role_ID () 
+	public int getAD_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Role_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_StatusLine)MTable.get(getCtx(), org.compiere.model.I_AD_StatusLine.Table_ID)
+			.getPO(getAD_StatusLine_ID(), get_TrxName());
+	}
+
+	/** Set Status Line.
+		@param AD_StatusLine_ID Status Line
+	*/
+	public void setAD_StatusLine_ID (int AD_StatusLine_ID)
+	{
+		if (AD_StatusLine_ID < 1)
+			set_Value (COLUMNNAME_AD_StatusLine_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_StatusLine_ID, Integer.valueOf(AD_StatusLine_ID));
+	}
+
+	/** Get Status Line.
+		@return Status Line	  */
+	public int getAD_StatusLine_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StatusLine_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -173,21 +226,20 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_Value (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -202,21 +254,20 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
-		if (AD_Window_ID < 1) 
+		if (AD_Window_ID < 1)
 			set_Value (COLUMNNAME_AD_Window_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Window_ID, Integer.valueOf(AD_Window_ID));
 	}
 
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -225,9 +276,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set Column No.
-		@param ColumnNo 
-		Dashboard content column number
-	  */
+		@param ColumnNo Dashboard content column number
+	*/
 	public void setColumnNo (int ColumnNo)
 	{
 		set_Value (COLUMNNAME_ColumnNo, Integer.valueOf(ColumnNo));
@@ -236,7 +286,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/** Get Column No.
 		@return Dashboard content column number
 	  */
-	public int getColumnNo () 
+	public int getColumnNo()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ColumnNo);
 		if (ii == null)
@@ -245,9 +295,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -256,7 +305,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -265,12 +314,13 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	public static final int GOALDISPLAY_AD_Reference_ID=53316;
 	/** Chart = C */
 	public static final String GOALDISPLAY_Chart = "C";
+	/** Gauge Indicator = G */
+	public static final String GOALDISPLAY_GaugeIndicator = "G";
 	/** HTML Table = T */
 	public static final String GOALDISPLAY_HTMLTable = "T";
 	/** Set Goal Display.
-		@param GoalDisplay 
-		Type of goal display on dashboard
-	  */
+		@param GoalDisplay Type of goal display on dashboard
+	*/
 	public void setGoalDisplay (String GoalDisplay)
 	{
 
@@ -280,13 +330,14 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/** Get Goal Display.
 		@return Type of goal display on dashboard
 	  */
-	public String getGoalDisplay () 
+	public String getGoalDisplay()
 	{
 		return (String)get_Value(COLUMNNAME_GoalDisplay);
 	}
 
 	/** Set HTML.
-		@param HTML HTML	  */
+		@param HTML HTML
+	*/
 	public void setHTML (String HTML)
 	{
 		set_Value (COLUMNNAME_HTML, HTML);
@@ -294,15 +345,14 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 
 	/** Get HTML.
 		@return HTML	  */
-	public String getHTML () 
+	public String getHTML()
 	{
 		return (String)get_Value(COLUMNNAME_HTML);
 	}
 
 	/** Set Collapsed By Default.
-		@param IsCollapsedByDefault 
-		Flag to set the initial state of collapsible field group.
-	  */
+		@param IsCollapsedByDefault Flag to set the initial state of collapsible field group.
+	*/
 	public void setIsCollapsedByDefault (boolean IsCollapsedByDefault)
 	{
 		set_Value (COLUMNNAME_IsCollapsedByDefault, Boolean.valueOf(IsCollapsedByDefault));
@@ -311,7 +361,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/** Get Collapsed By Default.
 		@return Flag to set the initial state of collapsible field group.
 	  */
-	public boolean isCollapsedByDefault () 
+	public boolean isCollapsedByDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCollapsedByDefault);
 		if (oo != null) 
@@ -324,9 +374,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set Collapsible.
-		@param IsCollapsible 
-		Flag to indicate the state of the dashboard panel
-	  */
+		@param IsCollapsible Flag to indicate the state of the dashboard panel
+	*/
 	public void setIsCollapsible (boolean IsCollapsible)
 	{
 		set_Value (COLUMNNAME_IsCollapsible, Boolean.valueOf(IsCollapsible));
@@ -335,7 +384,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/** Get Collapsible.
 		@return Flag to indicate the state of the dashboard panel
 	  */
-	public boolean isCollapsible () 
+	public boolean isCollapsible()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCollapsible);
 		if (oo != null) 
@@ -348,9 +397,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set Embed Report Content.
-		@param IsEmbedReportContent 
-		Embed report content into dashboard
-	  */
+		@param IsEmbedReportContent Embed report content into dashboard
+	*/
 	public void setIsEmbedReportContent (boolean IsEmbedReportContent)
 	{
 		set_Value (COLUMNNAME_IsEmbedReportContent, Boolean.valueOf(IsEmbedReportContent));
@@ -359,7 +407,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/** Get Embed Report Content.
 		@return Embed report content into dashboard
 	  */
-	public boolean isEmbedReportContent () 
+	public boolean isEmbedReportContent()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEmbedReportContent);
 		if (oo != null) 
@@ -371,10 +419,31 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return false;
 	}
 
+	/** Set Maximizable.
+		@param IsMaximizable Maximizable
+	*/
+	public void setIsMaximizable (boolean IsMaximizable)
+	{
+		set_Value (COLUMNNAME_IsMaximizable, Boolean.valueOf(IsMaximizable));
+	}
+
+	/** Get Maximizable.
+		@return Maximizable	  */
+	public boolean isMaximizable()
+	{
+		Object oo = get_Value(COLUMNNAME_IsMaximizable);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Show in Dashboard.
-		@param IsShowInDashboard 
-		Show the dashlet in the dashboard
-	  */
+		@param IsShowInDashboard Show the dashlet in the dashboard
+	*/
 	public void setIsShowInDashboard (boolean IsShowInDashboard)
 	{
 		set_Value (COLUMNNAME_IsShowInDashboard, Boolean.valueOf(IsShowInDashboard));
@@ -383,7 +452,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/** Get Show in Dashboard.
 		@return Show the dashlet in the dashboard
 	  */
-	public boolean isShowInDashboard () 
+	public boolean isShowInDashboard()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowInDashboard);
 		if (oo != null) 
@@ -395,8 +464,31 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return false;
 	}
 
+	/** Set Show Title.
+		@param IsShowTitle Show Title
+	*/
+	public void setIsShowTitle (boolean IsShowTitle)
+	{
+		set_Value (COLUMNNAME_IsShowTitle, Boolean.valueOf(IsShowTitle));
+	}
+
+	/** Get Show Title.
+		@return Show Title	  */
+	public boolean isShowTitle()
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowTitle);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Show on Login.
-		@param IsShowinLogin Show on Login	  */
+		@param IsShowinLogin Show on Login
+	*/
 	public void setIsShowinLogin (boolean IsShowinLogin)
 	{
 		set_Value (COLUMNNAME_IsShowinLogin, Boolean.valueOf(IsShowinLogin));
@@ -404,7 +496,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 
 	/** Get Show on Login.
 		@return Show on Login	  */
-	public boolean isShowinLogin () 
+	public boolean isShowinLogin()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowinLogin);
 		if (oo != null) 
@@ -417,9 +509,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set Line No.
-		@param Line 
-		Unique line for this document
-	  */
+		@param Line Unique line for this document
+	*/
 	public void setLine (BigDecimal Line)
 	{
 		set_Value (COLUMNNAME_Line, Line);
@@ -428,7 +519,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/** Get Line No.
 		@return Unique line for this document
 	  */
-	public BigDecimal getLine () 
+	public BigDecimal getLine()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Line);
 		if (bd == null)
@@ -437,9 +528,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -448,7 +538,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -462,18 +552,19 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
     }
 
 	/** Set Dashboard Content.
-		@param PA_DashboardContent_ID Dashboard Content	  */
+		@param PA_DashboardContent_ID Dashboard Content
+	*/
 	public void setPA_DashboardContent_ID (int PA_DashboardContent_ID)
 	{
-		if (PA_DashboardContent_ID < 1) 
+		if (PA_DashboardContent_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_PA_DashboardContent_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_PA_DashboardContent_ID, Integer.valueOf(PA_DashboardContent_ID));
 	}
 
 	/** Get Dashboard Content.
 		@return Dashboard Content	  */
-	public int getPA_DashboardContent_ID () 
+	public int getPA_DashboardContent_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_DashboardContent_ID);
 		if (ii == null)
@@ -482,7 +573,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set PA_DashboardContent_UU.
-		@param PA_DashboardContent_UU PA_DashboardContent_UU	  */
+		@param PA_DashboardContent_UU PA_DashboardContent_UU
+	*/
 	public void setPA_DashboardContent_UU (String PA_DashboardContent_UU)
 	{
 		set_Value (COLUMNNAME_PA_DashboardContent_UU, PA_DashboardContent_UU);
@@ -490,7 +582,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 
 	/** Get PA_DashboardContent_UU.
 		@return PA_DashboardContent_UU	  */
-	public String getPA_DashboardContent_UU () 
+	public String getPA_DashboardContent_UU()
 	{
 		return (String)get_Value(COLUMNNAME_PA_DashboardContent_UU);
 	}
@@ -502,21 +594,20 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set Goal.
-		@param PA_Goal_ID 
-		Performance Goal
-	  */
+		@param PA_Goal_ID Performance Goal
+	*/
 	public void setPA_Goal_ID (int PA_Goal_ID)
 	{
-		if (PA_Goal_ID < 1) 
+		if (PA_Goal_ID < 1)
 			set_Value (COLUMNNAME_PA_Goal_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_PA_Goal_ID, Integer.valueOf(PA_Goal_ID));
 	}
 
 	/** Get Goal.
 		@return Performance Goal
 	  */
-	public int getPA_Goal_ID () 
+	public int getPA_Goal_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_PA_Goal_ID);
 		if (ii == null)
@@ -525,9 +616,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	}
 
 	/** Set Process Parameters.
-		@param ProcessParameters 
-		Comma separated process parameter list
-	  */
+		@param ProcessParameters Comma separated process parameter list
+	*/
 	public void setProcessParameters (String ProcessParameters)
 	{
 		set_Value (COLUMNNAME_ProcessParameters, ProcessParameters);
@@ -536,15 +626,14 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/** Get Process Parameters.
 		@return Comma separated process parameter list
 	  */
-	public String getProcessParameters () 
+	public String getProcessParameters()
 	{
 		return (String)get_Value(COLUMNNAME_ProcessParameters);
 	}
 
 	/** Set Gadget URI.
-		@param ZulFilePath 
-		URI for Dashboard Gadget
-	  */
+		@param ZulFilePath URI for Dashboard Gadget
+	*/
 	public void setZulFilePath (String ZulFilePath)
 	{
 		set_Value (COLUMNNAME_ZulFilePath, ZulFilePath);
@@ -553,7 +642,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/** Get Gadget URI.
 		@return URI for Dashboard Gadget
 	  */
-	public String getZulFilePath () 
+	public String getZulFilePath()
 	{
 		return (String)get_Value(COLUMNNAME_ZulFilePath);
 	}

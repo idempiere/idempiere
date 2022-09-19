@@ -38,6 +38,7 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -54,8 +55,8 @@ public class RequisitionTest extends AbstractTestCase {
 
 	@Test
 	public void testComplete() {
-		int purchaseRequisition = 127;
-		int standardPriceList = 101;
+		int purchaseRequisition = DictionaryIDs.C_DocType.PURCHASE_REQUISITION.id;
+		int standardPriceList = DictionaryIDs.M_PriceList.STANDARD.id;
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		MRequisition requisition = new MRequisition(Env.getCtx(), 0, getTrxName());
 		requisition.setC_DocType_ID(purchaseRequisition);
@@ -70,8 +71,8 @@ public class RequisitionTest extends AbstractTestCase {
 		requisition.setPriorityRule(MRequisition.PRIORITYRULE_Medium);
 		requisition.saveEx();
 		
-		int seeder = 143;
-		int each = 100;
+		int seeder = DictionaryIDs.M_Product.SEEDER.id;
+		int each = DictionaryIDs.C_UOM.EACH.id;
 		MRequisitionLine line = new MRequisitionLine(requisition);
 		line.setM_Product_ID(seeder);
 		line.setC_UOM_ID(each);

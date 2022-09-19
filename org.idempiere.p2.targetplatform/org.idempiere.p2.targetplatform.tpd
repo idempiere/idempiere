@@ -1,9 +1,9 @@
 
-target "idempiere-210901"
+target "idempiere-220825"
 
 with source configurePhase allEnvironments
 
-location "https://idempiere.github.io/binary.file/p2.zk/9.6.0.1" {
+location "https://idempiere.github.io/binary.file/p2.zk/9.6.2" {
 	zcommon
 	zel
 	zhtml
@@ -28,6 +28,12 @@ location "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
 }
 
 location "https://download.eclipse.org/eclipse/updates/4.20" {
+	//dependency for com.google.http-client.google-http-client
+	org.apache.httpcomponents.httpclient
+	org.apache.httpcomponents.httpcore
+}
+
+location eclipse-2022-03 "https://download.eclipse.org/eclipse/updates/4.23" {
 	// equinox core framework
 	org.eclipse.osgi
 	//<< equinox framework starter kit
@@ -35,14 +41,15 @@ location "https://download.eclipse.org/eclipse/updates/4.20" {
 	org.apache.felix.gogo.runtime
 	org.apache.felix.gogo.shell
 	org.apache.felix.scr
-	org.apache.httpcomponents.httpclient
-	org.apache.httpcomponents.httpcore
+	org.apache.httpcomponents.client5.httpclient5
+	org.apache.httpcomponents.core5.httpcore5
+	org.apache.httpcomponents.core5.httpcore5-h2
 	org.eclipse.core.jobs
 	org.eclipse.ecf
 	org.eclipse.ecf.filetransfer
 	org.eclipse.ecf.identity
 	org.eclipse.ecf.provider.filetransfer
-	org.eclipse.ecf.provider.filetransfer.httpclient45
+	org.eclipse.ecf.provider.filetransfer.httpclient5
 	org.eclipse.ecf.provider.filetransfer.ssl
 	org.eclipse.equinox.app
 	org.eclipse.equinox.common
@@ -61,7 +68,7 @@ location "https://download.eclipse.org/eclipse/updates/4.20" {
 	org.eclipse.equinox.p2.jarprocessor
 	org.eclipse.equinox.p2.metadata
 	org.eclipse.equinox.p2.metadata.repository
-    org.eclipse.equinox.p2.operations
+	org.eclipse.equinox.p2.operations
 	org.eclipse.equinox.p2.repository
 	org.eclipse.equinox.p2.touchpoint.eclipse
 	org.eclipse.equinox.p2.touchpoint.natives
@@ -99,11 +106,13 @@ location "https://download.eclipse.org/eclipse/updates/4.20" {
 	org.eclipse.core.resources
 	org.eclipse.core.variables
 	org.eclipse.jdt.core
-	org.eclipse.text
-	
+	org.eclipse.text	
+}
+
+location eclipse-2022-03 "https://download.eclipse.org/eclipse/updates/4.23" {
 	//<< for test
 	org.opentest4j
-	org.apiguardian
+	org.apiguardian	
 	org.junit
 	org.junit.jupiter.api
 	org.junit.jupiter.params
@@ -115,13 +124,14 @@ location "https://download.eclipse.org/eclipse/updates/4.20" {
 	org.junit.platform.launcher
 	org.junit.platform.runner
 	org.junit.platform.suite.api
+	org.junit.platform.suite.commons
+	org.junit.platform.suite.engine
 	org.eclipse.pde.junit.runtime
 	org.eclipse.jdt.junit.runtime
 	org.eclipse.jdt.junit5.runtime
-	//>>
 }
 
-location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository" {
+location orbit-2021-06-R20210602031627 "https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository" {
 	org.apache.ant
 	org.apache.xml.resolver
 	org.w3c.css.sac

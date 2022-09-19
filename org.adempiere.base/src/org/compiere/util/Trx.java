@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -54,10 +55,10 @@ import org.compiere.model.PO;
  *  @author Teo Sarca, http://www.arhipac.ro
  *  			<li>FR [ 2080217 ] Implement TrxRunnable
  *  			<li>BF [ 2876927 ] Oracle JDBC driver problem
- *  				https://sourceforge.net/tracker/?func=detail&atid=879332&aid=2876927&group_id=176962
+ *  				https://sourceforge.net/p/adempiere/bugs/2173/
  *  @author Teo Sarca, teo.sarca@gmail.com
  *  		<li>BF [ 2849122 ] PO.AfterSave is not rollback on error - add releaseSavepoint method
- *  			https://sourceforge.net/tracker/index.php?func=detail&aid=2849122&group_id=176962&atid=879332#
+ *  			https://sourceforge.net/p/adempiere/bugs/2073/
  */
 public class Trx
 {
@@ -127,11 +128,25 @@ public class Trx
 	 */
 	public static String createTrxName (String prefix)
 	{
-		if (prefix == null || prefix.length() == 0)
+		String displayName = null;
+		if (prefix == null || prefix.length() == 0) {
 			prefix = "Trx";
+			if (MSysConfig.getBooleanValue(MSysConfig.TRX_AUTOSET_DISPLAY_NAME, false)) {
+				StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+				Optional<String> stackName = walker.walk(frames -> frames.map(
+						stackFrame -> stackFrame.getClassName() + "." +
+									  stackFrame.getMethodName() + ":" +
+									  stackFrame.getLineNumber())
+						.filter(f -> ! f.startsWith(Trx.class.getName() + "."))
+						.findFirst());
+				displayName = (stackName.orElse(null));
+			}
+		}
 		prefix += "_" + UUID.randomUUID(); //System.currentTimeMillis();
 		//create transaction entry
-		Trx.get(prefix, true);
+		Trx trx = Trx.get(prefix, true);
+		if (displayName != null)
+			trx.setDisplayName(displayName);
 		return prefix;
 	}	//	createTrxName
 
@@ -353,8 +368,9 @@ public class Trx
 
 	/**
 	 * 	Rollback
-	 *  @param throwException if true, re-throws exception
+	 *  @param savepoint
 	 *	@return true if success, false if failed or transaction already rollback
+	 *  @throws SQLException
 	 */
 	public boolean rollback(Savepoint savepoint) throws SQLException
 	{
@@ -482,8 +498,11 @@ public class Trx
 		if (m_connection == null)
 			return true;
 		
-		if (isActive())
-			commit();
+		try {
+			if (isActive() && !m_connection.isReadOnly())
+				commit();
+		} catch (SQLException e) {			
+		}
 			
 		//	Close Connection
 		try
@@ -495,6 +514,18 @@ public class Trx
 		}
 		finally
 		{
+			//ensure connection return to pool with readonly=false
+			try 
+			{
+				if (m_connection.isReadOnly())
+				{
+					m_connection.setReadOnly(false);
+				}
+			}
+			catch (SQLException e)
+			{
+				log.log(Level.SEVERE, m_trxName, e);
+			}	
 			try
 			{
 				m_connection.close();
@@ -593,7 +624,7 @@ public class Trx
 	/**
 	 * @return Trx[]
 	 */
-	public static Trx[] getActiveTransactions()
+	public static Trx[] getOpenTransactions()
 	{
 		Collection<Trx> collections = s_cache.values();
 		Trx[] trxs = new Trx[collections.size()];
@@ -601,7 +632,16 @@ public class Trx
 		
 		return trxs;
 	}
-	
+
+	/**
+	 * @return Trx[]
+	 * @deprecated - wrong method name fixed with IDEMPIERE-5355 - please use getOpenTransactions
+	 */
+	public static Trx[] getActiveTransactions()
+	{
+		return getOpenTransactions();
+	}
+
 	/**
 	 * @see #run(String, TrxRunnable)
 	 */

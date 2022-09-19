@@ -155,8 +155,8 @@ public class GridElement extends PrintElement
 
 	
 	/**************************************************************************
-	 * 	Layout & Calculate Image Size.
-	 * 	Set p_width & p_height
+	 * 	Layout and Calculate Image Size.
+	 * 	Set p_width and p_height
 	 * 	@return true if calculated
 	 */
 	protected boolean calculateSize()

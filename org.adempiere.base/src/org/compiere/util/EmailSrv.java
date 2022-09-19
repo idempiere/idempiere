@@ -521,10 +521,10 @@ public class EmailSrv {
 	
 	/**
 	 * http://www.oracle.com/technetwork/java/javamail/faq/index.html#unsupen
-	 * @param msg
+	 * @param txtPart
 	 * @return
-	 * @throws IOException 
-	 * @throws MessagingException 
+	 * @throws MessagingException
+	 * @throws IOException
 	 */
 	public static String getTextFromMailPart (Part txtPart) throws MessagingException, IOException{
 		String text = null;
@@ -852,7 +852,6 @@ public class EmailSrv {
 		 * @param emailRaw
 		 * @param mailStore
 		 * @param mailFolder
-		 * @return
 		 * @throws MessagingException
 		 */
 		public void processEmailError (EmailContent emailHeader, Message emailRaw, Store mailStore, Folder mailFolder) throws MessagingException;

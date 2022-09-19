@@ -213,6 +213,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
     {
     	Env.setCtx(ctx);
     	// clear the org ID - to force a logout if the user pushes Refresh on RolePanel
+		Env.setContext(ctx, "#AD_Org_ID_ChangeRole", Env.getAD_Org_ID(ctx));
 		Env.setContext(ctx, Env.AD_ORG_ID, "");
     	getDesktop().getSession().setAttribute(SessionContextListener.SESSION_CTX, ctx);
     	

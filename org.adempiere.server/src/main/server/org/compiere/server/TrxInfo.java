@@ -37,15 +37,16 @@ import org.compiere.util.Trx;
  *
  */
 public class TrxInfo implements Serializable {
-
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -4002703843474813148L;
-	
+	private static final long serialVersionUID = 5884131137700945750L;
+
 	private String displayName;
+	private String trxName;
 	private Date startTime;
 	private String stackTrace;
+	private boolean isActive;
 
 	/**
 	 * 
@@ -53,15 +54,22 @@ public class TrxInfo implements Serializable {
 	private TrxInfo() {
 	}
 
-	public static TrxInfo[] getActiveTransactions() {
+	/**
+	 * Get the open transactions
+	 * @param onlyActive return just active transactions
+	 * @return
+	 */
+	public static TrxInfo[] getOpenTransactions(boolean onlyActive) {
 		List<TrxInfo> list = new ArrayList<>();
-		Trx[] trxs = Trx.getActiveTransactions();
+		Trx[] trxs = Trx.getOpenTransactions();
 		for (Trx trx : trxs) {
-			if (trx != null && trx.isActive()) {
+			if (trx != null && (!onlyActive || trx.isActive())) {
 				TrxInfo ti = new TrxInfo();
 				ti.displayName = trx.getDisplayName();
+				ti.trxName = trx.getTrxName();
 				ti.startTime = trx.getStartTime();
 				ti.stackTrace = trx.getStrackTrace();
+				ti.isActive = trx.isActive();
 				list.add(ti);
 			}
 		}
@@ -69,10 +77,33 @@ public class TrxInfo implements Serializable {
 	}
 
 	/**
+	 * Get all the open transactions
+	 * @return
+	 */
+	public static TrxInfo[] getOpenTransactions() {
+		return getOpenTransactions(false);
+	}
+
+	/**
+	 * Get the active transactions
+	 * @return
+	 */
+	public static TrxInfo[] getActiveTransactions() {
+		return getOpenTransactions(true);
+	}
+
+	/**
 	 * @return the displayName
 	 */
 	public String getDisplayName() {
 		return displayName;
+	}
+
+	/**
+	 * @return the trxName
+	 */
+	public String getTrxName() {
+		return trxName;
 	}
 
 	/**
@@ -88,4 +119,12 @@ public class TrxInfo implements Serializable {
 	public String getStackTrace() {
 		return stackTrace;
 	}	
+
+	/**
+	 * @return Active status
+	 */
+	public boolean isActive() {
+		return isActive;
+	}
+
 }

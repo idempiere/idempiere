@@ -21,7 +21,7 @@ public class Doc_DepreciationEntry extends Doc
 {
 	/**
 	 *  Constructor
-	 * 	@param ass accounting schemata
+	 * 	@param as accounting schemata
 	 * 	@param rs record
 	 * 	@parem trxName trx
 	 */

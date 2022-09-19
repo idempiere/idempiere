@@ -24,7 +24,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.model.I_AD_ImpFormat;
-import static org.compiere.model.SystemIDs.*;
+import org.compiere.model.I_I_BPartner;
+import org.compiere.model.I_I_ElementValue;
+import org.compiere.model.I_I_Product;
+import org.compiere.model.I_I_ReportLine;
 import org.compiere.model.X_AD_ImpFormat;
 import org.compiere.model.X_I_GLJournal;
 import org.compiere.util.CLogger;
@@ -36,9 +39,9 @@ import org.compiere.util.Env;
  *
  *  @author Jorg Janke
  *  @author Trifon Trifonov, Catura AG (www.catura.de)
- *				<li>FR [ 3010957 ] Custom Separator Character, http://sourceforge.net/tracker/?func=detail&aid=3010957&group_id=176962&atid=879335 </li>
+ *				<li>FR [ 3010957 ] Custom Separator Character, https://sourceforge.net/p/adempiere/feature-requests/975/ </li>
  *  @author eugen.hanussek@klst.com
- *  			<li>BF [ 3564464 ] Import File Loader discards input records , https://sourceforge.net/tracker/?func=detail&aid=3564464&group_id=176962&atid=879332 </li>
+ *  			<li>BF [ 3564464 ] Import File Loader discards input records , https://sourceforge.net/p/adempiere/bugs/2727/ </li>
  *
  *  @version $Id$
  */
@@ -152,24 +155,24 @@ public final class ImpFormat
 		m_tableUniqueParent = "";
 		m_tableUniqueChild = "";
 
-		if (m_AD_Table_ID == TABLE_I_PRODUCT)		//	I_Product
+		if (m_AD_Table_ID == I_I_Product.Table_ID)		//	I_Product
 		{
 			m_tableUnique1 = "UPC";						//	UPC = unique
 			m_tableUnique2 = "Value";
 			m_tableUniqueChild = "VendorProductNo";		//	Vendor No may not be unique !
 			m_tableUniqueParent = "BPartner_Value";		//			Makes it unique
 		}
-		else if (m_AD_Table_ID == TABLE_I_BPARTNER)		//	I_BPartner
+		else if (m_AD_Table_ID == I_I_BPartner.Table_ID)		//	I_BPartner
 		{
 			// gody: 20070113 to allow multiple contacts per BP			
 			// m_tableUnique1 = "Value";				//	the key
 		}
-		else if (m_AD_Table_ID == TABLE_I_ELEMENTVALUE)		//	I_ElementValue
+		else if (m_AD_Table_ID == I_I_ElementValue.Table_ID)		//	I_ElementValue
 		{
 			m_tableUniqueParent = "ElementName";			//	the parent key
 			m_tableUniqueChild = "Value";					//	the key
 		}
-		else if (m_AD_Table_ID == TABLE_I_REPORTLINE)		//	I_ReportLine
+		else if (m_AD_Table_ID == I_I_ReportLine.Table_ID)		//	I_ReportLine
 		{
 			m_tableUniqueParent = "ReportLineSetName";		//	the parent key
 			m_tableUniqueChild = "Name";					//	the key
@@ -388,10 +391,14 @@ public final class ImpFormat
 				if (!concat) {
 					entry.append(row.getColumnName());
 					entry.append("=");
-					if (row.isString())
+					if (row.isString()) {
 						entry.append("'");
-					else if (row.isDate())
-						entry.append("TO_DATE('");
+					} else if (row.isDate()) {
+						if (DB.isPostgreSQL())
+							entry.append("TO_TIMESTAMP('");
+						else
+							entry.append("TO_DATE('");
+					}
 				}
 			}
 

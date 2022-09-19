@@ -49,7 +49,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
@@ -60,6 +60,7 @@ import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -92,7 +93,7 @@ public class ProcessParameterPanel extends Panel implements
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2388338147222636369L;
+	private static final long serialVersionUID = -6099317911368929787L;
 
 	/**
 	 * Dynamic generated Parameter panel.
@@ -145,6 +146,7 @@ public class ProcessParameterPanel extends Panel implements
 	private ArrayList<GridField> m_mFields = new ArrayList<GridField>();
 	private ArrayList<GridField> m_mFields2 = new ArrayList<GridField>();
 	private ArrayList<Space> m_separators = new ArrayList<Space>();
+	private ArrayList<Row> m_Rows = new ArrayList<Row>();
 	//
 	private Grid centerPanel = null;
 	private Map<String, List<Row>> fieldGroupContents = new HashMap<String, List<Row>>();
@@ -331,6 +333,7 @@ public class ProcessParameterPanel extends Panel implements
 				
 				row.setGroup(currentGroup);
         		rows.appendChild(row);
+        		m_Rows.add(row);
                 if (rowList != null)
         			rowList.add(row);
 				if (log.isLoggable(Level.INFO)) log.info(listVO.get(i).ColumnName + listVO.get(i).SeqNo);
@@ -420,7 +423,6 @@ public class ProcessParameterPanel extends Panel implements
         if (label.getDecorator() != null)
         	div.appendChild(label.getDecorator());
         row.appendChild(div);
-
 		//
 		if (voF.isRange) {
 			Div box = new Div();
@@ -535,7 +537,7 @@ public class ProcessParameterPanel extends Panel implements
 		} // field loop
 
 		if (sb.length() != 0) {
-			FDialog.error(m_WindowNo, this, "FillMandatory", sb.toString());
+			Dialog.error(m_WindowNo, "FillMandatory", sb.toString());
 			return false;
 		}
 
@@ -545,7 +547,7 @@ public class ProcessParameterPanel extends Panel implements
 			for(IProcessParameterListener listener : listeners) {
 				String error = listener.validate(this);
 				if (!Util.isEmpty(error)) {
-					FDialog.error(m_WindowNo, this, error);
+					Dialog.error(m_WindowNo, error);
 					return false;
 				}
 			}
@@ -629,6 +631,59 @@ public class ProcessParameterPanel extends Panel implements
 		return true;
 	}	//	loadParameters
 
+	/*
+	 * Load parameters from Process Info
+	 */
+	public boolean loadParametersFromProcessInfo(ProcessInfo pi)
+	{
+		log.config("");
+
+		ProcessInfoParameter[] params = pi.getParameter();
+		for (int j = 0; j < m_mFields.size(); j++)
+		{
+			GridField mField = (GridField)m_mFields.get(j);
+
+			if (!mField.isEditablePara(true))
+				continue;
+
+			//	Get Values
+			WEditor editor = (WEditor)m_wEditors.get(j);
+			WEditor editor2 = (WEditor)m_wEditors2.get(j);
+
+			editor.setValue(null);
+			if (editor2 != null)
+				editor2.setValue(null);
+
+			for ( int i = 0; i<params.length; i++)
+			{
+				ProcessInfoParameter para = params[i];
+				if ( mField.getColumnName().equals(para.getParameterName()) )
+				{
+					editor.setValue(para.getParameter());
+					if (editor2 != null)
+						editor2.setValue(para.getParameter_To());
+
+					if (editor.getValue() != null) {
+				ValueChangeEvent changeEvent = new ValueChangeEvent(editor, editor.getColumnName(), null, editor.getValue());
+				valueChange(changeEvent);
+					}
+					if (editor2 != null && editor2.getValue() != null) {
+					    ValueChangeEvent changeEvent = new ValueChangeEvent(editor2, editor2.getColumnName(), null, editor2.getValue());
+					    valueChange(changeEvent);
+					}
+
+					log.fine(para.toString());
+					break;
+				}
+			} // for every parameter
+
+		}	//	for every field
+
+		dynamicDisplay();
+
+		return true;
+	}	//	loadParameters
+
 	/**
 	 * Save Parameter values
 	 * 
@@ -651,6 +706,13 @@ public class ProcessParameterPanel extends Panel implements
 			Object result2 = null;
 			if (editor2 != null)
 				result2 = editor2.getValue();
+			//Save only parameters which are set
+			if((result == null) && (result2 == null))
+				continue;
+			if(result instanceof String) { 
+				if (Util.isEmpty((String)result) && (result2 == null || Util.isEmpty((String)result2))) 
+					continue;
+			}
 
 			// Create Parameter
 			MPInstancePara para = MPInstancePara.getOrCreate(Env.getCtx(),
@@ -934,6 +996,9 @@ public class ProcessParameterPanel extends Panel implements
 			if (mField.isDisplayed(true)) {
 				if (!editor.isVisible()) {
 					editor.setVisible(true);
+					m_Rows.get(i).setVisible(true);
+					m_Rows.get(i).setAttribute(Group.GROUP_ROW_VISIBLE_KEY, "true");
+					
 					if (mField.getVO().isRange) {
 						m_separators.get(i).setVisible(true);
 						m_wEditors2.get(i).setVisible(true);
@@ -948,6 +1013,9 @@ public class ProcessParameterPanel extends Panel implements
 				}
 			} else if (editor.isVisible()) {
 				editor.setVisible(false);
+				m_Rows.get(i).setVisible(false);
+				m_Rows.get(i).setAttribute(Group.GROUP_ROW_VISIBLE_KEY, "false");
+				
 				if (mField.getVO().isRange) {
 					m_separators.get(i).setVisible(false);
 					m_wEditors2.get(i).setVisible(false);
@@ -972,7 +1040,7 @@ public class ProcessParameterPanel extends Panel implements
 	/**
 	 * Restore window context.
 	 * 
-	 * @author teo_sarca [ 1699826 ]
+	 * author teo_sarca [ 1699826 ]
 	 * @see org.compiere.model.GridField#restoreValue()
 	 */
 	protected void restoreContext() {
@@ -1080,6 +1148,10 @@ public class ProcessParameterPanel extends Panel implements
 
 		}
 
+	}
+
+	public int getWindowNo() {
+		return m_WindowNo;
 	}
 
 } // ProcessParameterPanel

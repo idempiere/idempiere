@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_FieldSuggestion
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_FieldSuggestion")
 public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_Persistent 
 {
@@ -30,12 +30,35 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_FieldSuggestion (Properties ctx, int AD_FieldSuggestion_ID, String trxName)
     {
       super (ctx, AD_FieldSuggestion_ID, trxName);
+      /** if (AD_FieldSuggestion_ID == 0)
+        {
+			setAD_Field_ID (0);
+			setAD_FieldSuggestion_ID (0);
+			setAD_FieldSuggestion_UU (null);
+			setAD_Language (null);
+			setAD_UserClient_ID (0);
+			setAD_User_ID (0);
+			setFieldSuggestionTarget (null);
+// E
+			setIsApproved (false);
+// N
+			setIsUpdateBaseLanguage (true);
+// Y
+			setProcessed (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_FieldSuggestion (Properties ctx, int AD_FieldSuggestion_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_FieldSuggestion_ID, trxName, virtualColumns);
       /** if (AD_FieldSuggestion_ID == 0)
         {
 			setAD_Field_ID (0);
@@ -84,9 +107,8 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
     }
 
 	/** Set Accept.
-		@param AcceptSuggestion 
-		Accept suggested changes
-	  */
+		@param AcceptSuggestion Accept suggested changes
+	*/
 	public void setAcceptSuggestion (String AcceptSuggestion)
 	{
 		set_Value (COLUMNNAME_AcceptSuggestion, AcceptSuggestion);
@@ -95,7 +117,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** Get Accept.
 		@return Accept suggested changes
 	  */
-	public String getAcceptSuggestion () 
+	public String getAcceptSuggestion()
 	{
 		return (String)get_Value(COLUMNNAME_AcceptSuggestion);
 	}
@@ -107,21 +129,20 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	}
 
 	/** Set Field.
-		@param AD_Field_ID 
-		Field on a database table
-	  */
+		@param AD_Field_ID Field on a database table
+	*/
 	public void setAD_Field_ID (int AD_Field_ID)
 	{
-		if (AD_Field_ID < 1) 
+		if (AD_Field_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Field_ID, Integer.valueOf(AD_Field_ID));
 	}
 
 	/** Get Field.
 		@return Field on a database table
 	  */
-	public int getAD_Field_ID () 
+	public int getAD_Field_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Field_ID);
 		if (ii == null)
@@ -130,18 +151,19 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	}
 
 	/** Set Field Suggestions.
-		@param AD_FieldSuggestion_ID Field Suggestions	  */
+		@param AD_FieldSuggestion_ID Field Suggestions
+	*/
 	public void setAD_FieldSuggestion_ID (int AD_FieldSuggestion_ID)
 	{
-		if (AD_FieldSuggestion_ID < 1) 
+		if (AD_FieldSuggestion_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_FieldSuggestion_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_FieldSuggestion_ID, Integer.valueOf(AD_FieldSuggestion_ID));
 	}
 
 	/** Get Field Suggestions.
 		@return Field Suggestions	  */
-	public int getAD_FieldSuggestion_ID () 
+	public int getAD_FieldSuggestion_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldSuggestion_ID);
 		if (ii == null)
@@ -150,7 +172,8 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	}
 
 	/** Set Field Suggestions UUID.
-		@param AD_FieldSuggestion_UU Field Suggestions UUID	  */
+		@param AD_FieldSuggestion_UU Field Suggestions UUID
+	*/
 	public void setAD_FieldSuggestion_UU (String AD_FieldSuggestion_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_FieldSuggestion_UU, AD_FieldSuggestion_UU);
@@ -158,7 +181,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 
 	/** Get Field Suggestions UUID.
 		@return Field Suggestions UUID	  */
-	public String getAD_FieldSuggestion_UU () 
+	public String getAD_FieldSuggestion_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_FieldSuggestion_UU);
 	}
@@ -166,9 +189,8 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** AD_Language AD_Reference_ID=106 */
 	public static final int AD_LANGUAGE_AD_Reference_ID=106;
 	/** Set Language.
-		@param AD_Language 
-		Language for this entity
-	  */
+		@param AD_Language Language for this entity
+	*/
 	public void setAD_Language (String AD_Language)
 	{
 
@@ -178,7 +200,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** Get Language.
 		@return Language for this entity
 	  */
-	public String getAD_Language () 
+	public String getAD_Language()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Language);
 	}
@@ -190,9 +212,8 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	}
 
 	/** Set Tab.
-		@param AD_Tab_ID 
-		Tab within a Window
-	  */
+		@param AD_Tab_ID Tab within a Window
+	*/
 	public void setAD_Tab_ID (int AD_Tab_ID)
 	{
 		throw new IllegalArgumentException ("AD_Tab_ID is virtual column");	}
@@ -200,7 +221,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** Get Tab.
 		@return Tab within a Window
 	  */
-	public int getAD_Tab_ID () 
+	public int getAD_Tab_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Tab_ID);
 		if (ii == null)
@@ -215,18 +236,19 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	}
 
 	/** Set Tenant of User.
-		@param AD_UserClient_ID Tenant of User	  */
+		@param AD_UserClient_ID Tenant of User
+	*/
 	public void setAD_UserClient_ID (int AD_UserClient_ID)
 	{
-		if (AD_UserClient_ID < 1) 
+		if (AD_UserClient_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_UserClient_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_UserClient_ID, Integer.valueOf(AD_UserClient_ID));
 	}
 
 	/** Get Tenant of User.
 		@return Tenant of User	  */
-	public int getAD_UserClient_ID () 
+	public int getAD_UserClient_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_UserClient_ID);
 		if (ii == null)
@@ -241,21 +263,20 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -270,9 +291,8 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	}
 
 	/** Set Window.
-		@param AD_Window_ID 
-		Data entry or display window
-	  */
+		@param AD_Window_ID Data entry or display window
+	*/
 	public void setAD_Window_ID (int AD_Window_ID)
 	{
 		throw new IllegalArgumentException ("AD_Window_ID is virtual column");	}
@@ -280,7 +300,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** Get Window.
 		@return Data entry or display window
 	  */
-	public int getAD_Window_ID () 
+	public int getAD_Window_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Window_ID);
 		if (ii == null)
@@ -289,9 +309,8 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	}
 
 	/** Set Compare.
-		@param CompareSuggestion 
-		Compare suggested text with original text
-	  */
+		@param CompareSuggestion Compare suggested text with original text
+	*/
 	public void setCompareSuggestion (String CompareSuggestion)
 	{
 		set_Value (COLUMNNAME_CompareSuggestion, CompareSuggestion);
@@ -300,15 +319,14 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** Get Compare.
 		@return Compare suggested text with original text
 	  */
-	public String getCompareSuggestion () 
+	public String getCompareSuggestion()
 	{
 		return (String)get_Value(COLUMNNAME_CompareSuggestion);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -317,7 +335,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
@@ -329,7 +347,8 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** Field = F */
 	public static final String FIELDSUGGESTIONTARGET_Field = "F";
 	/** Set Apply Suggestion To.
-		@param FieldSuggestionTarget Apply Suggestion To	  */
+		@param FieldSuggestionTarget Apply Suggestion To
+	*/
 	public void setFieldSuggestionTarget (String FieldSuggestionTarget)
 	{
 
@@ -338,15 +357,14 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 
 	/** Get Apply Suggestion To.
 		@return Apply Suggestion To	  */
-	public String getFieldSuggestionTarget () 
+	public String getFieldSuggestionTarget()
 	{
 		return (String)get_Value(COLUMNNAME_FieldSuggestionTarget);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -355,15 +373,14 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Approved.
-		@param IsApproved 
-		Indicates if this document requires approval
-	  */
+		@param IsApproved Indicates if this document requires approval
+	*/
 	public void setIsApproved (boolean IsApproved)
 	{
 		set_Value (COLUMNNAME_IsApproved, Boolean.valueOf(IsApproved));
@@ -372,7 +389,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** Get Approved.
 		@return Indicates if this document requires approval
 	  */
-	public boolean isApproved () 
+	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
 		if (oo != null) 
@@ -385,7 +402,8 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	}
 
 	/** Set Update Base Language.
-		@param IsUpdateBaseLanguage Update Base Language	  */
+		@param IsUpdateBaseLanguage Update Base Language
+	*/
 	public void setIsUpdateBaseLanguage (boolean IsUpdateBaseLanguage)
 	{
 		set_Value (COLUMNNAME_IsUpdateBaseLanguage, Boolean.valueOf(IsUpdateBaseLanguage));
@@ -393,7 +411,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 
 	/** Get Update Base Language.
 		@return Update Base Language	  */
-	public boolean isUpdateBaseLanguage () 
+	public boolean isUpdateBaseLanguage()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUpdateBaseLanguage);
 		if (oo != null) 
@@ -406,9 +424,8 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -417,15 +434,14 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Processed.
-		@param Processed 
-		The document has been processed
-	  */
+		@param Processed The document has been processed
+	*/
 	public void setProcessed (boolean Processed)
 	{
 		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
@@ -434,7 +450,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** Get Processed.
 		@return The document has been processed
 	  */
-	public boolean isProcessed () 
+	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
 		if (oo != null) 
@@ -447,9 +463,8 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	}
 
 	/** Set Reject.
-		@param RejectSuggestion 
-		Reject suggested changes
-	  */
+		@param RejectSuggestion Reject suggested changes
+	*/
 	public void setRejectSuggestion (String RejectSuggestion)
 	{
 		set_Value (COLUMNNAME_RejectSuggestion, RejectSuggestion);
@@ -458,7 +473,7 @@ public class X_AD_FieldSuggestion extends PO implements I_AD_FieldSuggestion, I_
 	/** Get Reject.
 		@return Reject suggested changes
 	  */
-	public String getRejectSuggestion () 
+	public String getRejectSuggestion()
 	{
 		return (String)get_Value(COLUMNNAME_RejectSuggestion);
 	}

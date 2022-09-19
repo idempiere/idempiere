@@ -192,7 +192,11 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 
 		columnName = this.getColumnName();
-		if (columnName.equals("C_BPartner_ID"))
+
+		if (Util.isEmpty(m_tableName))
+			setTableAndKeyColumn();
+
+		if (m_tableName.equals("C_BPartner"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true, false, lookup);
 			if (ThemeManager.isUseFontIconForImage())
@@ -200,7 +204,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			else
 				imageUrl = ThemeManager.getThemeResource("images/BPartner16.png");
 		}
-		else if (columnName.equals("M_Product_ID"))
+		else if (m_tableName.equals("M_Product"))
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
 			if (ThemeManager.isUseFontIconForImage())
@@ -338,8 +342,10 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			boolean isQuickFormComp = false;
 			if (getComponent().getAttribute(QuickGridTabRowRenderer.IS_QUICK_FORM_COMPONENT) != null)
 				isQuickFormComp = (boolean) getComponent().getAttribute(QuickGridTabRowRenderer.IS_QUICK_FORM_COMPONENT);
-			
-			if ((getComponent().getText() == null || getComponent().getText().length() == 0) && !isQuickFormComp)
+
+			if (   (getComponent().getText() == null || getComponent().getText().length() == 0)
+				&& !isQuickFormComp
+				&& isReadWrite())
 			{
 				// open Info window similar to swing client
 				if (infoPanel != null)
@@ -480,7 +486,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		//safety check: if focus is going no where, focus back to self
 		String uid = getComponent().getCombobox().getUuid();
-		String script = "setTimeout(function(){try{var e = zk.Widget.$('#" + uid +
+		String script = "setTimeout(function(){try{let e = zk.Widget.$('#" + uid +
 				"').$n(); if (jq(':focus').size() == 0) e.focus();} catch(error){}}, 100);";
 		Clients.response(new AuScript(script));
 		
@@ -880,7 +886,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		public void onPageAttached(Page newpage, Page oldpage) {
 			super.onPageAttached(newpage, oldpage);
 			if (newpage != null) {
-				String w = "try{var btn=jq('#'+this.parent.uuid+' @button').zk.$();}catch(err){}";
+				String w = "try{let btn=jq('#'+this.parent.uuid+' @button').zk.$();}catch(err){}";
 				if (ThemeManager.isUseFontIconForImage()) {
 					String sclass = "z-icon-spinner z-icon-spin";
 					getCombobox().setWidgetListener("onChange", "try{"+w+"btn.setIconSclass('" + sclass + "');"

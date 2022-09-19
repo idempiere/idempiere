@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintLabel
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintLabel")
 public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent 
 {
@@ -31,12 +31,28 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_PrintLabel (Properties ctx, int AD_PrintLabel_ID, String trxName)
     {
       super (ctx, AD_PrintLabel_ID, trxName);
+      /** if (AD_PrintLabel_ID == 0)
+        {
+			setAD_LabelPrinter_ID (0);
+			setAD_PrintLabel_ID (0);
+			setAD_Table_ID (0);
+			setIsLandscape (false);
+			setLabelHeight (0);
+			setLabelWidth (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PrintLabel (Properties ctx, int AD_PrintLabel_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PrintLabel_ID, trxName, virtualColumns);
       /** if (AD_PrintLabel_ID == 0)
         {
 			setAD_LabelPrinter_ID (0);
@@ -84,21 +100,20 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	}
 
 	/** Set Label printer.
-		@param AD_LabelPrinter_ID 
-		Label Printer Definition
-	  */
+		@param AD_LabelPrinter_ID Label Printer Definition
+	*/
 	public void setAD_LabelPrinter_ID (int AD_LabelPrinter_ID)
 	{
-		if (AD_LabelPrinter_ID < 1) 
+		if (AD_LabelPrinter_ID < 1)
 			set_Value (COLUMNNAME_AD_LabelPrinter_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_LabelPrinter_ID, Integer.valueOf(AD_LabelPrinter_ID));
 	}
 
 	/** Get Label printer.
 		@return Label Printer Definition
 	  */
-	public int getAD_LabelPrinter_ID () 
+	public int getAD_LabelPrinter_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_LabelPrinter_ID);
 		if (ii == null)
@@ -107,21 +122,20 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	}
 
 	/** Set Print Label.
-		@param AD_PrintLabel_ID 
-		Label Format to print
-	  */
+		@param AD_PrintLabel_ID Label Format to print
+	*/
 	public void setAD_PrintLabel_ID (int AD_PrintLabel_ID)
 	{
-		if (AD_PrintLabel_ID < 1) 
+		if (AD_PrintLabel_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_PrintLabel_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_PrintLabel_ID, Integer.valueOf(AD_PrintLabel_ID));
 	}
 
 	/** Get Print Label.
 		@return Label Format to print
 	  */
-	public int getAD_PrintLabel_ID () 
+	public int getAD_PrintLabel_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintLabel_ID);
 		if (ii == null)
@@ -130,7 +144,8 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	}
 
 	/** Set AD_PrintLabel_UU.
-		@param AD_PrintLabel_UU AD_PrintLabel_UU	  */
+		@param AD_PrintLabel_UU AD_PrintLabel_UU
+	*/
 	public void setAD_PrintLabel_UU (String AD_PrintLabel_UU)
 	{
 		set_Value (COLUMNNAME_AD_PrintLabel_UU, AD_PrintLabel_UU);
@@ -138,7 +153,7 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 
 	/** Get AD_PrintLabel_UU.
 		@return AD_PrintLabel_UU	  */
-	public String getAD_PrintLabel_UU () 
+	public String getAD_PrintLabel_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_PrintLabel_UU);
 	}
@@ -150,21 +165,20 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	}
 
 	/** Set Table.
-		@param AD_Table_ID 
-		Database Table information
-	  */
+		@param AD_Table_ID Database Table information
+	*/
 	public void setAD_Table_ID (int AD_Table_ID)
 	{
-		if (AD_Table_ID < 1) 
+		if (AD_Table_ID < 1)
 			set_Value (COLUMNNAME_AD_Table_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
 	}
 
 	/** Get Table.
 		@return Database Table information
 	  */
-	public int getAD_Table_ID () 
+	public int getAD_Table_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
@@ -173,9 +187,8 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -184,15 +197,14 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Landscape.
-		@param IsLandscape 
-		Landscape orientation
-	  */
+		@param IsLandscape Landscape orientation
+	*/
 	public void setIsLandscape (boolean IsLandscape)
 	{
 		set_Value (COLUMNNAME_IsLandscape, Boolean.valueOf(IsLandscape));
@@ -201,7 +213,7 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	/** Get Landscape.
 		@return Landscape orientation
 	  */
-	public boolean isLandscape () 
+	public boolean isLandscape()
 	{
 		Object oo = get_Value(COLUMNNAME_IsLandscape);
 		if (oo != null) 
@@ -214,9 +226,8 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	}
 
 	/** Set Label Height.
-		@param LabelHeight 
-		Height of the label
-	  */
+		@param LabelHeight Height of the label
+	*/
 	public void setLabelHeight (int LabelHeight)
 	{
 		set_Value (COLUMNNAME_LabelHeight, Integer.valueOf(LabelHeight));
@@ -225,7 +236,7 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	/** Get Label Height.
 		@return Height of the label
 	  */
-	public int getLabelHeight () 
+	public int getLabelHeight()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LabelHeight);
 		if (ii == null)
@@ -234,9 +245,8 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	}
 
 	/** Set Label Width.
-		@param LabelWidth 
-		Width of the Label
-	  */
+		@param LabelWidth Width of the Label
+	*/
 	public void setLabelWidth (int LabelWidth)
 	{
 		set_Value (COLUMNNAME_LabelWidth, Integer.valueOf(LabelWidth));
@@ -245,7 +255,7 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	/** Get Label Width.
 		@return Width of the Label
 	  */
-	public int getLabelWidth () 
+	public int getLabelWidth()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_LabelWidth);
 		if (ii == null)
@@ -254,9 +264,8 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -265,7 +274,7 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -279,9 +288,8 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
     }
 
 	/** Set Printer Name.
-		@param PrinterName 
-		Name of the Printer
-	  */
+		@param PrinterName Name of the Printer
+	*/
 	public void setPrinterName (String PrinterName)
 	{
 		set_Value (COLUMNNAME_PrinterName, PrinterName);
@@ -290,7 +298,7 @@ public class X_AD_PrintLabel extends PO implements I_AD_PrintLabel, I_Persistent
 	/** Get Printer Name.
 		@return Name of the Printer
 	  */
-	public String getPrinterName () 
+	public String getPrinterName()
 	{
 		return (String)get_Value(COLUMNNAME_PrinterName);
 	}

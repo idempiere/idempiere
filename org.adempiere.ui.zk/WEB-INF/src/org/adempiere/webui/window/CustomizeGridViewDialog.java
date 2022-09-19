@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.ADTabpanel;
 import org.adempiere.webui.adwindow.GridView;
 import org.adempiere.webui.adwindow.QuickGridView;
@@ -35,11 +36,11 @@ public class CustomizeGridViewDialog extends Window {
 
 	/**
 	 *	Standard Constructor
-	 * 	@param WindowNo window no
+	 * 	@param windowNo window no
 	 *  @param AD_Tab_ID tab
 	 * 	@param AD_User_ID user
-	 * @param columnsWidth 
-	 * @param isQuickForm 
+	 *  @param columnsWidth 
+	 *  @param isQuickForm 
 	 */
 	public CustomizeGridViewDialog(int windowNo, int AD_Tab_ID, int AD_User_ID, Map<Integer, String> columnsWidth,
 			ArrayList<Integer> gridFieldIds, boolean isQuickForm) {
@@ -108,9 +109,20 @@ public class CustomizeGridViewDialog extends Window {
 	/**
 	 * show grid view customization dialog for tabPanel
 	 * @param tabPanel
-	 * @return true if saved is ok
+	 * @return ignore the return value, it is not working correctly
+	 * @deprecated
 	 */
 	public static boolean onCustomize(ADTabpanel tabPanel) {
+		onCustomize(tabPanel, null);
+		return true;
+	}
+
+	/**
+	 * Show grid view customization dialog for tabPanel
+	 * @param tabPanel
+	 * @param callback
+	 */
+	public static void onCustomize(ADTabpanel tabPanel, Callback<Boolean> callback) {
 		Columns columns = tabPanel.getGridView().getListbox().getColumns();
 		List<Component> columnList = columns.getChildren();
 		GridField[] fields = tabPanel.getGridView().getFields();
@@ -130,7 +142,7 @@ public class CustomizeGridViewDialog extends Window {
 			gridFieldIds.add(fields[i].getAD_Field_ID());
 
 		}
-		return showCustomize(0, tabPanel.getGridTab().getAD_Tab_ID(), columnsWidth,gridFieldIds,tabPanel.getGridView(), null, false);
+		showCustomize(0, tabPanel.getGridTab().getAD_Tab_ID(), columnsWidth,gridFieldIds,tabPanel.getGridView(), null, false, callback);
 	}
 	
 	/**
@@ -141,10 +153,30 @@ public class CustomizeGridViewDialog extends Window {
 	 * @param gridFieldIds list fieldId current display in gridview
 	 * @param gridPanel
 	 * @param isQuickForm
-	 * @param quickGridView 
+	 * @param quickGridView
+	 * @return ignore the return value, it is not working correctly
+	 * @deprecated 
 	 */
 	public static boolean showCustomize(int WindowNo, int AD_Tab_ID, Map <Integer, String> columnsWidth, ArrayList <Integer> gridFieldIds, GridView gridPanel,
 		QuickGridView quickGridView, boolean isQuickForm)
+	{
+		showCustomize(WindowNo, AD_Tab_ID, columnsWidth, gridFieldIds, gridPanel, quickGridView, isQuickForm, null);
+		return true;
+	}
+	
+	/**
+	 * Show User customize (modal)
+	 * @param WindowNo window no
+	 * @param AD_Tab_ID
+	 * @param columnsWidth 
+	 * @param gridFieldIds list fieldId current display in gridview
+	 * @param gridPanel
+	 * @param quickGridView
+	 * @param isQuickForm
+	 * @param callback 
+	 */
+	public static void showCustomize(int WindowNo, int AD_Tab_ID, Map <Integer, String> columnsWidth, ArrayList <Integer> gridFieldIds, GridView gridPanel,
+		QuickGridView quickGridView, boolean isQuickForm, Callback<Boolean> callback)
 	{
 		CustomizeGridViewDialog customizeWindow = new CustomizeGridViewDialog(WindowNo, AD_Tab_ID, Env.getAD_User_ID(Env.getCtx()), columnsWidth, gridFieldIds,
 				isQuickForm);
@@ -156,8 +188,11 @@ public class CustomizeGridViewDialog extends Window {
 		{
 			customizeWindow.setGridPanel(gridPanel);
 		}
+		customizeWindow.addCallback(Window.AFTER_PAGE_DETACHED, t -> {
+			if (callback != null)
+				callback.onCallback(customizeWindow.isSaved());
+		});
 		AEnv.showWindow(customizeWindow);
-		return customizeWindow.isSaved();
 	} // showCustomize
 
 	/**

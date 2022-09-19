@@ -57,7 +57,7 @@ public class MDepositBatch extends X_C_DepositBatch
 	private static final long serialVersionUID = 7691820074981291939L;
 
 	/**
-	 *  Create & Load existing Persistent Object
+	 *  Create and Load existing Persistent Object
 	 *  @param ctx context
 	 *  @param C_DepositBatch_ID  The unique ID of the object
 	 *  @param trxName transaction name	
@@ -279,7 +279,7 @@ public class MDepositBatch extends X_C_DepositBatch
 	public MDepositBatchLine[] getLines()
 	{
 		ArrayList<MDepositBatchLine> list = new ArrayList<MDepositBatchLine>();
-		String sql = "SELECT * FROM C_DepositBatchLine WHERE C_DepositBatch_ID=? ORDER BY Line";
+		String sql = "SELECT * FROM C_DepositBatchLine WHERE C_DepositBatch_ID=? ORDER BY Line,C_DepositBatchLine_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

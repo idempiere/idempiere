@@ -73,6 +73,7 @@ public class HTMLExtension implements IHTMLExtension {
 		href.addAttribute ("componentId", componentId);
 		href.addAttribute ("foreignColumnName", dataElement.getForeignColumnName());
 		href.addAttribute ("value", dataElement.getValueAsString());
+		href.addAttribute ("displayValue", dataElement.getValueDisplay(Env.getLanguage(Env.getCtx())));
 	}
 
 	public void extendRowElement(ConcreteElement row, PrintData printData) {
@@ -123,12 +124,29 @@ public class HTMLExtension implements IHTMLExtension {
 			if (!reportIco.startsWith("/") && !contextPath.endsWith("/"))
 				reportImageURL.append("/");
 			reportImageURL.append(reportIco);
-		}		
+		}
+
+		StringBuilder drillAssistantImageURL = new StringBuilder();
+		String drillAssistantIco = ThemeManager.getThemeResource("images/Zoom16.png");
+		if (drillAssistantIco.startsWith("~./")) {
+			if (Executions.getCurrent() != null) {
+				drillAssistantImageURL.append(Executions.encodeURL(drillAssistantIco));
+			}
+		} else {
+			drillAssistantImageURL.append(contextPath);
+			if (!drillAssistantIco.startsWith("/") && !contextPath.endsWith("/"))
+				drillAssistantImageURL.append("/");
+			drillAssistantImageURL.append(drillAssistantIco);
+		}
+
 		reportBody.addAttribute("windowIco",windowImageURL.toString());
 		reportBody.addAttribute("reportIco", reportImageURL.toString());
 		reportBody.addAttribute ("reportLabel", Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "Report").replace("&", ""));
 		reportBody.addAttribute ("windowLabel", Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "Window"));
 		
+		reportBody.addAttribute("drillAssistantIco", drillAssistantImageURL.toString());
+		reportBody.addAttribute ("drillAssistantLabel", Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "DrillAssistant").replace("&", ""));
+
 	}
 	
 	public String getFullPathStyle() {

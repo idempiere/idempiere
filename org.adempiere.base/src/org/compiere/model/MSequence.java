@@ -184,7 +184,7 @@ public class MSequence extends X_AD_Sequence
 		{
 			try
 			{
-				conn = DB.getConnectionID();
+				conn = DB.getConnection(false);
 				//	Error
 				if (conn == null)
 					return -1;
@@ -195,7 +195,8 @@ public class MSequence extends X_AD_Sequence
 				//
 				if (DB.getDatabase().isQueryTimeoutSupported())
 				{
-					pstmt.setQueryTimeout(QUERY_TIME_OUT);
+					int timeout = MSysConfig.getIntValue(MSysConfig.MSEQUENCE_GETNEXT_TIMEOUT, QUERY_TIME_OUT, Env.getAD_Client_ID(Env.getCtx())); // default 30 seconds
+					pstmt.setQueryTimeout(timeout);
 				}
 				rs = pstmt.executeQuery();
 				if (s_log.isLoggable(Level.FINEST)) s_log.finest("AC=" + conn.getAutoCommit() + ", RO=" + conn.isReadOnly()
@@ -285,7 +286,7 @@ public class MSequence extends X_AD_Sequence
 	 *	@param AD_Client_ID client
 	 *	@param TableName table name
 	 * 	@param trxName optional Transaction Name
-	 *  @param PO - used to get the date, org and parse context variables
+	 *  @param po - used to get the date, org and parse context variables
 	 *	@return document no or null
 	 */
 	public static String getDocumentNo (int AD_Client_ID, String TableName, String trxName, PO po)
@@ -388,7 +389,7 @@ public class MSequence extends X_AD_Sequence
 			if (trx != null)
 				conn = trx.getConnection();
 			else
-				conn = DB.getConnectionID();
+				conn = DB.getConnection(false);
 			//	Error
 			if (conn == null)
 				return null;
@@ -432,7 +433,8 @@ public class MSequence extends X_AD_Sequence
 			//
 			if (DB.getDatabase().isQueryTimeoutSupported())
 			{
-				pstmt.setQueryTimeout(QUERY_TIME_OUT);
+				int timeout = MSysConfig.getIntValue(MSysConfig.MSEQUENCE_GETNEXT_TIMEOUT, QUERY_TIME_OUT, Env.getAD_Client_ID(Env.getCtx())); // default 30 seconds
+				pstmt.setQueryTimeout(timeout);
 			}
 			rs = pstmt.executeQuery();
 
@@ -1091,9 +1093,7 @@ public class MSequence extends X_AD_Sequence
 
 	/**
 	 *	Get next number for Key column
-	 *  @param AD_Client_ID client
 	 *  @param TableName table name
-	 * 	@param trxName optional Transaction Name
 	 *  @return next no or (-1=error)
 	 */
 	public static synchronized int getNextOfficialID_HTTP (String TableName)
@@ -1112,9 +1112,7 @@ public class MSequence extends X_AD_Sequence
 
 	/**
 	 *	Get next number for Key column
-	 *  @param AD_Client_ID client
 	 *  @param TableName table name
-	 * 	@param trxName optional Transaction Name
 	 *  @return next no or (-1=error)
 	 */
 	public static synchronized int getNextProjectID_HTTP (String TableName)
@@ -1199,6 +1197,8 @@ public class MSequence extends X_AD_Sequence
 			"AD_REPLICATION_LOG",
 			"AD_SCHEDULERLOG",
 			"AD_SESSION",
+			"AD_USERPREFERENCE",
+			"AD_WLISTBOX_CUSTOMIZATION",
 			"AD_WORKFLOWPROCESSORLOG",
 			"CM_WEBACCESSLOG",
 			"C_ACCTPROCESSORLOG",

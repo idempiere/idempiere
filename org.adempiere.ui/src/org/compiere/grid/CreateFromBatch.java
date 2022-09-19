@@ -35,13 +35,38 @@ import org.compiere.util.Msg;
  */
 public abstract class CreateFromBatch extends CreateFrom 
 {
+	/**
+	 * 
+	 * @param gridTab
+	 */
 	public CreateFromBatch(GridTab gridTab) 
 	{
 		super(gridTab);
 	}
 	
+	@Deprecated
 	public String getSQLWhere(Object BPartner, String DocumentNo, Object DateFrom, Object DateTo, 
 			Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode)
+	{
+		return getSQLWhere((Integer)BPartner, DocumentNo, (Timestamp)DateFrom, (Timestamp)DateTo, 
+				(BigDecimal)AmtFrom, (BigDecimal)AmtTo, (Integer)DocType, (String)TenderType, AuthCode);
+	}
+	
+	/**
+	 * 
+	 * @param BPartner
+	 * @param DocumentNo
+	 * @param DateFrom
+	 * @param DateTo
+	 * @param AmtFrom
+	 * @param AmtTo
+	 * @param DocType
+	 * @param TenderType
+	 * @param AuthCode
+	 * @return where clause
+	 */
+	protected String getSQLWhere(Integer BPartner, String DocumentNo, Timestamp DateFrom, Timestamp DateTo, 
+			BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode)
 	{
 		StringBuilder sql = new StringBuilder();
 		sql.append("WHERE p.Processed='Y' AND p.IsReconciled='N'");
@@ -56,32 +81,28 @@ public abstract class CreateFromBatch extends CreateFrom
 		if(BPartner != null)
 			sql.append(" AND p.C_BPartner_ID=?");
 		
-		if(DocumentNo.length() > 0)
+		if(DocumentNo != null && DocumentNo.length() > 0)
 			sql.append(" AND UPPER(p.DocumentNo) LIKE ?");
-		if(AuthCode.length() > 0)
+		if(AuthCode != null && AuthCode.length() > 0)
 			sql.append(" AND p.R_AuthCode LIKE ?");
 		
 		if(AmtFrom != null || AmtTo != null)
 		{
-			BigDecimal from = (BigDecimal) AmtFrom;
-			BigDecimal to = (BigDecimal) AmtTo;
-			if(from == null && to != null)
+			if(AmtFrom == null && AmtTo != null)
 				sql.append(" AND p.PayAmt <= ?");
-			else if(from != null && to == null)
+			else if(AmtFrom != null && AmtTo == null)
 				sql.append(" AND p.PayAmt >= ?");
-			else if(from != null && to != null)
+			else if(AmtFrom != null && AmtTo != null)
 				sql.append(" AND p.PayAmt BETWEEN ? AND ?");
 		}
 		
 		if(DateFrom != null || DateTo != null)
 		{
-			Timestamp from = (Timestamp) DateFrom;
-			Timestamp to = (Timestamp) DateTo;
-			if(from == null && to != null)
+			if(DateFrom == null && DateTo != null)
 				sql.append(" AND TRUNC(p.DateTrx) <= ?");
-			else if(from != null && to == null)
+			else if(DateFrom != null && DateTo == null)
 				sql.append(" AND TRUNC(p.DateTrx) >= ?");
-			else if(from != null && to != null)
+			else if(DateFrom != null && DateTo != null)
 				sql.append(" AND TRUNC(p.DateTrx) BETWEEN ? AND ?");
 		}
 
@@ -89,64 +110,78 @@ public abstract class CreateFromBatch extends CreateFrom
 		return sql.toString();
 	}
 	
+	@Deprecated
 	void setParameters(PreparedStatement pstmt, Object BankAccount, Object BPartner, String DocumentNo, Object DateFrom, Object DateTo, 
 			Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode)
 	throws SQLException
 	{
-		//  Get StatementDate
-		//Timestamp ts = (Timestamp) getGridTab().getValue("StatementDate");
-		//if (ts == null)
-			//ts = new Timestamp(System.currentTimeMillis());
-
+		setParameters(pstmt, (Integer)BankAccount, (Integer)BPartner, DocumentNo, (Timestamp)DateFrom, (Timestamp)DateTo, 
+				(BigDecimal)AmtFrom, (BigDecimal)AmtTo, (Integer)DocType, (String)TenderType, AuthCode);
+	}
+	
+	/**
+	 * 
+	 * @param pstmt
+	 * @param BankAccount
+	 * @param BPartner
+	 * @param DocumentNo
+	 * @param DateFrom
+	 * @param DateTo
+	 * @param AmtFrom
+	 * @param AmtTo
+	 * @param DocType
+	 * @param TenderType
+	 * @param AuthCode
+	 * @throws SQLException
+	 */
+	protected void setParameters(PreparedStatement pstmt, Integer BankAccount, Integer BPartner, String DocumentNo, Timestamp DateFrom, Timestamp DateTo, 
+			BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode)
+	throws SQLException
+	{
 		int index = 1;
 		
-		//pstmt.setTimestamp(index++, ts);		
-		pstmt.setInt(index++, BankAccount != null ? (Integer) BankAccount : (Integer) getGridTab().getValue("C_BankAccount_ID"));
+		pstmt.setInt(index++, BankAccount != null ? BankAccount : (Integer) getGridTab().getValue("C_BankAccount_ID"));
 		
 		if(DocType != null)
-			pstmt.setInt(index++, (Integer) DocType);
+			pstmt.setInt(index++, DocType);
 		
 		if(TenderType != null && TenderType.toString().length() > 0)
-			pstmt.setString(index++, (String) TenderType);
+			pstmt.setString(index++, TenderType);
 		
 		if(BPartner != null)
-			pstmt.setInt(index++, (Integer) BPartner);
+			pstmt.setInt(index++, BPartner);
 		
-		if(DocumentNo.length() > 0)
+		if(DocumentNo != null && DocumentNo.length() > 0)
 			pstmt.setString(index++, getSQLText(DocumentNo));
 		
-		if(AuthCode.length() > 0)
+		if(AuthCode != null && AuthCode.length() > 0)
 			pstmt.setString(index++, getSQLText(AuthCode));
 		
 		if(AmtFrom != null || AmtTo != null)
 		{
-			BigDecimal from = (BigDecimal) AmtFrom;
-			BigDecimal to = (BigDecimal) AmtTo;
-			if (log.isLoggable(Level.FINE)) log.fine("Amt From=" + from + ", To=" + to);
-			if(from == null && to != null)
-				pstmt.setBigDecimal(index++, to);
-			else if(from != null && to == null)
-				pstmt.setBigDecimal(index++, from);
-			else if(from != null && to != null)
+			if (log.isLoggable(Level.FINE)) log.fine("Amt From=" + AmtFrom + ", To=" + AmtTo);
+			if(AmtFrom == null && AmtTo != null)
+				pstmt.setBigDecimal(index++, AmtTo);
+			else if(AmtFrom != null && AmtTo == null)
+				pstmt.setBigDecimal(index++, AmtFrom);
+			else if(AmtFrom != null && AmtTo != null)
 			{
-				pstmt.setBigDecimal(index++, from);
-				pstmt.setBigDecimal(index++, to);
+				pstmt.setBigDecimal(index++, AmtFrom);
+				pstmt.setBigDecimal(index++, AmtTo);
 			}
 		}
 		
 		if(DateFrom != null || DateTo != null)
 		{
-			Timestamp from = (Timestamp) DateFrom;
-			Timestamp to = (Timestamp) DateTo;
-			if (log.isLoggable(Level.FINE)) log.fine("Date From=" + from + ", To=" + to);
-			if(from == null && to != null)
-				pstmt.setTimestamp(index++, to);
-			else if(from != null && to == null)
-				pstmt.setTimestamp(index++, from);
-			else if(from != null && to != null)
+			if (log.isLoggable(Level.FINE)) log.fine("Date From=" + DateFrom + ", To=" + DateTo);
+			if(DateFrom == null && DateTo != null)
+				pstmt.setTimestamp(index++, DateTo);
+			else if(DateFrom != null && DateTo == null)
+				pstmt.setTimestamp(index++, DateFrom);
+			else if(DateFrom != null && DateTo != null)
 			{
-				pstmt.setTimestamp(index++, from);
-				pstmt.setTimestamp(index++, to);
+				pstmt.setTimestamp(index++, DateFrom);
+				pstmt.setTimestamp(index++, DateTo);
 			}
 		}
 	}
@@ -160,9 +195,32 @@ public abstract class CreateFromBatch extends CreateFrom
 		return s;
 	}
 	
-	protected abstract Vector<Vector<Object>> getBankAccountData(Object BankAccount, Object BPartner, String DocumentNo, 
-			Object DateFrom, Object DateTo, Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode);
+	@Deprecated
+	protected Vector<Vector<Object>> getBankAccountData(Object BankAccount, Object BPartner, String DocumentNo, 
+			Object DateFrom, Object DateTo, Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode)
+	{
+		return getBankAccountData((Integer)BankAccount, (Integer)BPartner, DocumentNo, (Timestamp)DateFrom, (Timestamp)DateTo, 
+				(BigDecimal)AmtFrom, (BigDecimal)AmtTo, (Integer)DocType, (String)TenderType, AuthCode);
+	}
 	
+	/**
+	 * 
+	 * @param BankAccount
+	 * @param BPartner
+	 * @param DocumentNo
+	 * @param DateFrom
+	 * @param DateTo
+	 * @param AmtFrom
+	 * @param AmtTo
+	 * @param DocType
+	 * @param TenderType
+	 * @param AuthCode
+	 * @return list of transaction records (usually payments) for bank account
+	 */
+	protected abstract Vector<Vector<Object>> getBankAccountData(Integer BankAccount, Integer BPartner, String DocumentNo, 
+			Timestamp DateFrom, Timestamp DateTo, BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode);
+	
+	@Override
 	public void info(IMiniTable miniTable, IStatusBar statusBar)
 	{		
 		DecimalFormat format = DisplayType.getNumberFormat(DisplayType.Amount);

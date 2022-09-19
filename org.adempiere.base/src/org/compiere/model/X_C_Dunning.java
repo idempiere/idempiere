@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Dunning
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_Dunning")
 public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent 
 {
@@ -31,12 +31,26 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_Dunning (Properties ctx, int C_Dunning_ID, String trxName)
     {
       super (ctx, C_Dunning_ID, trxName);
+      /** if (C_Dunning_ID == 0)
+        {
+			setC_Dunning_ID (0);
+			setCreateLevelsSequentially (false);
+			setIsDefault (false);
+			setName (null);
+			setSendDunningLetter (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_Dunning (Properties ctx, int C_Dunning_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_Dunning_ID, trxName, virtualColumns);
       /** if (C_Dunning_ID == 0)
         {
 			setC_Dunning_ID (0);
@@ -76,21 +90,20 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
     }
 
 	/** Set Dunning.
-		@param C_Dunning_ID 
-		Dunning Rules for overdue invoices
-	  */
+		@param C_Dunning_ID Dunning Rules for overdue invoices
+	*/
 	public void setC_Dunning_ID (int C_Dunning_ID)
 	{
-		if (C_Dunning_ID < 1) 
+		if (C_Dunning_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_Dunning_ID, Integer.valueOf(C_Dunning_ID));
 	}
 
 	/** Get Dunning.
 		@return Dunning Rules for overdue invoices
 	  */
-	public int getC_Dunning_ID () 
+	public int getC_Dunning_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Dunning_ID);
 		if (ii == null)
@@ -99,7 +112,8 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
 	}
 
 	/** Set C_Dunning_UU.
-		@param C_Dunning_UU C_Dunning_UU	  */
+		@param C_Dunning_UU C_Dunning_UU
+	*/
 	public void setC_Dunning_UU (String C_Dunning_UU)
 	{
 		set_Value (COLUMNNAME_C_Dunning_UU, C_Dunning_UU);
@@ -107,15 +121,14 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
 
 	/** Get C_Dunning_UU.
 		@return C_Dunning_UU	  */
-	public String getC_Dunning_UU () 
+	public String getC_Dunning_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_Dunning_UU);
 	}
 
 	/** Set Create levels sequentially.
-		@param CreateLevelsSequentially 
-		Create Dunning Letter by level sequentially
-	  */
+		@param CreateLevelsSequentially Create Dunning Letter by level sequentially
+	*/
 	public void setCreateLevelsSequentially (boolean CreateLevelsSequentially)
 	{
 		set_Value (COLUMNNAME_CreateLevelsSequentially, Boolean.valueOf(CreateLevelsSequentially));
@@ -124,7 +137,7 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
 	/** Get Create levels sequentially.
 		@return Create Dunning Letter by level sequentially
 	  */
-	public boolean isCreateLevelsSequentially () 
+	public boolean isCreateLevelsSequentially()
 	{
 		Object oo = get_Value(COLUMNNAME_CreateLevelsSequentially);
 		if (oo != null) 
@@ -137,9 +150,8 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -148,15 +160,14 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -165,7 +176,7 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -178,9 +189,8 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -189,7 +199,7 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -203,9 +213,8 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
     }
 
 	/** Set Send dunning letters.
-		@param SendDunningLetter 
-		Indicates if dunning letters will be sent
-	  */
+		@param SendDunningLetter Indicates if dunning letters will be sent
+	*/
 	public void setSendDunningLetter (boolean SendDunningLetter)
 	{
 		set_Value (COLUMNNAME_SendDunningLetter, Boolean.valueOf(SendDunningLetter));
@@ -214,7 +223,7 @@ public class X_C_Dunning extends PO implements I_C_Dunning, I_Persistent
 	/** Get Send dunning letters.
 		@return Indicates if dunning letters will be sent
 	  */
-	public boolean isSendDunningLetter () 
+	public boolean isSendDunningLetter()
 	{
 		Object oo = get_Value(COLUMNNAME_SendDunningLetter);
 		if (oo != null) 

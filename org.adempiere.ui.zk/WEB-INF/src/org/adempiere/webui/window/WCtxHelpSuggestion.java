@@ -16,6 +16,7 @@ import org.compiere.model.MForm;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTab;
+import org.compiere.model.MTable;
 import org.compiere.model.MTask;
 import org.compiere.model.MUserDefInfo;
 import org.compiere.model.PO;
@@ -66,7 +67,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 	 * default constructor
 	 */
 	public WCtxHelpSuggestion(MCtxHelpMsg ctxHelpMsg) {
-		this.ctxHelpMsg = ctxHelpMsg;
+		this.ctxHelpMsg = new MCtxHelpMsg(ctxHelpMsg.getCtx(), ctxHelpMsg.getAD_CtxHelpMsg_ID(), ctxHelpMsg.get_TrxName());
 		layout();
 	}
 
@@ -182,9 +183,9 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 			onSave0(trx);
 			trx.commit(true);
 			if (ctxHelpMsg != null && ctxHelpMsg.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx())) {
-				FDialog.info(0, this, Msg.getMsg(Env.getCtx(), "Your changes have been saved."));
+				Dialog.info(0, Msg.getMsg(Env.getCtx(), "Your changes have been saved."));
 			} else {
-				FDialog.info(0, this, Msg.getMsg(Env.getCtx(),"Your suggestions have been submitted for review"));
+				Dialog.info(0, Msg.getMsg(Env.getCtx(),"Your suggestions have been submitted for review"));
 			}
 		} catch (Exception e) {
 			trx.rollback();
@@ -223,8 +224,17 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 				ctxHelp.saveEx();
 				
 				if (po != null) {
-					po.set_ValueOfColumn("AD_CtxHelp_ID", ctxHelp.getAD_CtxHelp_ID());
-					po.saveEx(trx.getTrxName());
+					if (po.is_Immutable()) {
+						// get a new not immutable PO
+						MTable table = MTable.get(po.get_Table_ID());
+						PO mutablePO = table.getPO(po.get_ID(), trx.getTrxName());
+						mutablePO.set_ValueOfColumn("AD_CtxHelp_ID", ctxHelp.getAD_CtxHelp_ID());
+						mutablePO.saveEx(trx.getTrxName());
+						po.load(trx.getTrxName());
+					} else {
+						po.set_ValueOfColumn("AD_CtxHelp_ID", ctxHelp.getAD_CtxHelp_ID());
+						po.saveEx(trx.getTrxName());
+					}
 				}
 				
 				suggestion.setAD_CtxHelp_ID(ctxHelp.getAD_CtxHelp_ID());

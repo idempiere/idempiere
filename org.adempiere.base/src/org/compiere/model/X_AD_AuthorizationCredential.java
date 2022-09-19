@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AuthorizationCredential
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_AuthorizationCredential")
 public class X_AD_AuthorizationCredential extends PO implements I_AD_AuthorizationCredential, I_Persistent 
 {
@@ -31,12 +31,28 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationCredential (Properties ctx, int AD_AuthorizationCredential_ID, String trxName)
     {
       super (ctx, AD_AuthorizationCredential_ID, trxName);
+      /** if (AD_AuthorizationCredential_ID == 0)
+        {
+			setAD_AuthorizationCredential_ID (0);
+			setAD_AuthorizationProvider_ID (0);
+			setAD_AuthorizationScopeList (null);
+			setAuthorizationClientId (null);
+			setAuthorizationClientSecret (null);
+			setAuthorizationRedirectURL (null);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_AuthorizationCredential (Properties ctx, int AD_AuthorizationCredential_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_AuthorizationCredential_ID, trxName, virtualColumns);
       /** if (AD_AuthorizationCredential_ID == 0)
         {
 			setAD_AuthorizationCredential_ID (0);
@@ -78,18 +94,19 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
     }
 
 	/** Set Authorization Credential.
-		@param AD_AuthorizationCredential_ID Authorization Credential	  */
+		@param AD_AuthorizationCredential_ID Authorization Credential
+	*/
 	public void setAD_AuthorizationCredential_ID (int AD_AuthorizationCredential_ID)
 	{
-		if (AD_AuthorizationCredential_ID < 1) 
+		if (AD_AuthorizationCredential_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationCredential_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_AuthorizationCredential_ID, Integer.valueOf(AD_AuthorizationCredential_ID));
 	}
 
 	/** Get Authorization Credential.
 		@return Authorization Credential	  */
-	public int getAD_AuthorizationCredential_ID () 
+	public int getAD_AuthorizationCredential_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AuthorizationCredential_ID);
 		if (ii == null)
@@ -98,7 +115,8 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 	}
 
 	/** Set AD_AuthorizationCredential_UU.
-		@param AD_AuthorizationCredential_UU AD_AuthorizationCredential_UU	  */
+		@param AD_AuthorizationCredential_UU AD_AuthorizationCredential_UU
+	*/
 	public void setAD_AuthorizationCredential_UU (String AD_AuthorizationCredential_UU)
 	{
 		set_Value (COLUMNNAME_AD_AuthorizationCredential_UU, AD_AuthorizationCredential_UU);
@@ -106,7 +124,7 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 
 	/** Get AD_AuthorizationCredential_UU.
 		@return AD_AuthorizationCredential_UU	  */
-	public String getAD_AuthorizationCredential_UU () 
+	public String getAD_AuthorizationCredential_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationCredential_UU);
 	}
@@ -118,18 +136,19 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 	}
 
 	/** Set Authorization Provider.
-		@param AD_AuthorizationProvider_ID Authorization Provider	  */
+		@param AD_AuthorizationProvider_ID Authorization Provider
+	*/
 	public void setAD_AuthorizationProvider_ID (int AD_AuthorizationProvider_ID)
 	{
-		if (AD_AuthorizationProvider_ID < 1) 
+		if (AD_AuthorizationProvider_ID < 1)
 			set_Value (COLUMNNAME_AD_AuthorizationProvider_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_AuthorizationProvider_ID, Integer.valueOf(AD_AuthorizationProvider_ID));
 	}
 
 	/** Get Authorization Provider.
 		@return Authorization Provider	  */
-	public int getAD_AuthorizationProvider_ID () 
+	public int getAD_AuthorizationProvider_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AuthorizationProvider_ID);
 		if (ii == null)
@@ -150,7 +169,8 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 	/** Storage = Storage */
 	public static final String AD_AUTHORIZATIONSCOPELIST_Storage = "Storage";
 	/** Set Scope List.
-		@param AD_AuthorizationScopeList Scope List	  */
+		@param AD_AuthorizationScopeList Scope List
+	*/
 	public void setAD_AuthorizationScopeList (String AD_AuthorizationScopeList)
 	{
 
@@ -159,13 +179,14 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 
 	/** Get Scope List.
 		@return Scope List	  */
-	public String getAD_AuthorizationScopeList () 
+	public String getAD_AuthorizationScopeList()
 	{
 		return (String)get_Value(COLUMNNAME_AD_AuthorizationScopeList);
 	}
 
 	/** Set Authorization client-id.
-		@param AuthorizationClientId Authorization client-id	  */
+		@param AuthorizationClientId Authorization client-id
+	*/
 	public void setAuthorizationClientId (String AuthorizationClientId)
 	{
 		set_Value (COLUMNNAME_AuthorizationClientId, AuthorizationClientId);
@@ -173,13 +194,14 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 
 	/** Get Authorization client-id.
 		@return Authorization client-id	  */
-	public String getAuthorizationClientId () 
+	public String getAuthorizationClientId()
 	{
 		return (String)get_Value(COLUMNNAME_AuthorizationClientId);
 	}
 
 	/** Set Authorization client-secret.
-		@param AuthorizationClientSecret Authorization client-secret	  */
+		@param AuthorizationClientSecret Authorization client-secret
+	*/
 	public void setAuthorizationClientSecret (String AuthorizationClientSecret)
 	{
 		set_Value (COLUMNNAME_AuthorizationClientSecret, AuthorizationClientSecret);
@@ -187,13 +209,14 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 
 	/** Get Authorization client-secret.
 		@return Authorization client-secret	  */
-	public String getAuthorizationClientSecret () 
+	public String getAuthorizationClientSecret()
 	{
 		return (String)get_Value(COLUMNNAME_AuthorizationClientSecret);
 	}
 
 	/** Set Authorization Redirect URL.
-		@param AuthorizationRedirectURL Authorization Redirect URL	  */
+		@param AuthorizationRedirectURL Authorization Redirect URL
+	*/
 	public void setAuthorizationRedirectURL (String AuthorizationRedirectURL)
 	{
 		set_Value (COLUMNNAME_AuthorizationRedirectURL, AuthorizationRedirectURL);
@@ -201,15 +224,14 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 
 	/** Get Authorization Redirect URL.
 		@return Authorization Redirect URL	  */
-	public String getAuthorizationRedirectURL () 
+	public String getAuthorizationRedirectURL()
 	{
 		return (String)get_Value(COLUMNNAME_AuthorizationRedirectURL);
 	}
 
 	/** Set Comment/Help.
-		@param Help 
-		Comment or Hint
-	  */
+		@param Help Comment or Hint
+	*/
 	public void setHelp (String Help)
 	{
 		set_Value (COLUMNNAME_Help, Help);
@@ -218,15 +240,14 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 	/** Get Comment/Help.
 		@return Comment or Hint
 	  */
-	public String getHelp () 
+	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -235,7 +256,7 @@ public class X_AD_AuthorizationCredential extends PO implements I_AD_Authorizati
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

@@ -45,6 +45,7 @@ import org.compiere.model.MOrgInfo;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRole;
 import org.compiere.model.MScheduler;
 import org.compiere.model.MSchedulerLog;
@@ -53,6 +54,7 @@ import org.compiere.model.MSchedulerRecipient;
 import org.compiere.model.MSession;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
+import org.compiere.model.SystemIDs;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -132,7 +134,12 @@ public class Scheduler extends AdempiereServer
 		Env.setContext(getCtx(), Env.DATE, dateFormat4Timestamp.format(ts)+" 00:00:00" );    //  JDBC format
 
 		//Create new Session and set #AD_Session_ID to context
-		MSession session = MSession.get(getCtx(), true);
+		MSession session = MSession.get(Env.getCtx());
+		if(session == null) {
+			session = MSession.create(Env.getCtx());
+		} else {
+			session = new MSession(Env.getCtx(), session.getAD_Session_ID(), null);
+		}
 		MProcess process = new MProcess(getCtx(), scheduler.getAD_Process_ID(), null);
 		try
 		{
@@ -187,7 +194,8 @@ public class Scheduler extends AdempiereServer
 		int AD_Table_ID = scheduler.getAD_Table_ID();
 		int Record_ID = scheduler.getRecord_ID();
 		//
-		MPInstance pInstance = new MPInstance(process, Record_ID);
+		MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), Record_ID);
+		pInstance.saveEx();
 		fillParameter(pInstance);
 		//
 		pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(), AD_Table_ID, Record_ID);
@@ -198,6 +206,7 @@ public class Scheduler extends AdempiereServer
 		pi.setIsBatch(true);
 		pi.setPrintPreview(true);
 		pi.setReportType(scheduler.getReportOutputType());
+		pi.setAD_Scheduler_ID(scheduler.getAD_Scheduler_ID());
 		int AD_PrintFormat_ID = scheduler.getAD_PrintFormat_ID();
 		if (AD_PrintFormat_ID > 0) 
 		{
@@ -326,7 +335,7 @@ public class Scheduler extends AdempiereServer
 					String mailContent = "";
 					
 					if (mailTemplate.is_new()){
-						mailContent = scheduler.getDescription();
+						mailContent = scheduler.getDescription() != null ? scheduler.getDescription() : "";
 					}else{
 						mailTemplate.setUser(user);
 						mailTemplate.setLanguage(Env.getContext(getCtx(), Env.LANGUAGE));
@@ -351,7 +360,7 @@ public class Scheduler extends AdempiereServer
 							pLog.saveEx();
 						}
 					} else {
-						if (!client.sendEMail(from, user, schedulerName, mailContent + "\n" + pi.getSummary() + " " + pi.getLogInfo(), null)) {
+						if (!client.sendEMail(from, user, schedulerName, mailContent + "\n" + pi.getSummary() + "\n" + pi.getLogInfo(), null)) {
 							StringBuilder summary = new StringBuilder(Msg.getMsg(Env.getCtx(), "SchedulerSendNotificationFailed"));
 							summary.append(user.getName());
 							String error = (String) Env.getCtx().remove(EMail.EMAIL_SEND_MSG);
@@ -412,7 +421,7 @@ public class Scheduler extends AdempiereServer
 							
 								UploadResponse response = handlers[0].uploadMedia(new UploadMedia(fileName, contentType, new FileInputStream(file), file.length()), account);
 								if (response.getLink() != null) {
-									MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID), Msg.getMsg(Env.getCtx(), "UploadSucess"));
+									MSchedulerLog pLog = new MSchedulerLog(get(getCtx(), AD_Scheduler_ID), Msg.getMsg(Env.getCtx(), "UploadSuccess"));
 									pLog.setTextMsg("User: " + upload.getAD_User().getName() + " Account: " + account.getEMail() + 
 											" Link: " + response.getLink());
 									pLog.setIsError(false);
@@ -496,7 +505,7 @@ public class Scheduler extends AdempiereServer
 		else if (scheduler.getUpdatedBy() > 0)
 			AD_User_ID = scheduler.getUpdatedBy();
 		else
-			AD_User_ID = 100; //fall back to SuperUser
+			AD_User_ID = SystemIDs.USER_SUPERUSER; //fall back to SuperUser
 		return AD_User_ID;
 	}
 	
@@ -507,10 +516,12 @@ public class Scheduler extends AdempiereServer
 	protected void fillParameter(MPInstance pInstance)
 	{
 		MSchedulerPara[] sParams = get(getCtx(), AD_Scheduler_ID).getParameters (false);
-		MPInstancePara[] iParams = pInstance.getParameters();
-		for (int pi = 0; pi < iParams.length; pi++)
+		MProcessPara[] processParams = pInstance.getProcessParameters();
+		for (int pi = 0; pi < processParams.length; pi++)
 		{
-			MPInstancePara iPara = iParams[pi];
+			MPInstancePara iPara = new MPInstancePara (pInstance, processParams[pi].getSeqNo());
+			iPara.setParameterName(processParams[pi].getColumnName());
+			iPara.setInfo(processParams[pi].getName());
 			for (int np = 0; np < sParams.length; np++)
 			{
 				MSchedulerPara sPara = sParams[np];
@@ -531,6 +542,12 @@ public class Scheduler extends AdempiereServer
 					{
 						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty");
 						break;
+					}
+					if( DisplayType.isText(sPara.getDisplayType())
+							&& Util.isEmpty(String.valueOf(value)) 
+							&& Util.isEmpty(String.valueOf(toValue))) {
+						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty string");
+							break;
 					}
 
 					//	Convert to Type

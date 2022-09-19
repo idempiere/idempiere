@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PromotionGroup
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_PromotionGroup")
 public class X_M_PromotionGroup extends PO implements I_M_PromotionGroup, I_Persistent 
 {
@@ -31,12 +31,23 @@ public class X_M_PromotionGroup extends PO implements I_M_PromotionGroup, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_PromotionGroup (Properties ctx, int M_PromotionGroup_ID, String trxName)
     {
       super (ctx, M_PromotionGroup_ID, trxName);
+      /** if (M_PromotionGroup_ID == 0)
+        {
+			setM_PromotionGroup_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_PromotionGroup (Properties ctx, int M_PromotionGroup_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_PromotionGroup_ID, trxName, virtualColumns);
       /** if (M_PromotionGroup_ID == 0)
         {
 			setM_PromotionGroup_ID (0);
@@ -73,9 +84,8 @@ public class X_M_PromotionGroup extends PO implements I_M_PromotionGroup, I_Pers
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -84,24 +94,25 @@ public class X_M_PromotionGroup extends PO implements I_M_PromotionGroup, I_Pers
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Promotion Group.
-		@param M_PromotionGroup_ID Promotion Group	  */
+		@param M_PromotionGroup_ID Promotion Group
+	*/
 	public void setM_PromotionGroup_ID (int M_PromotionGroup_ID)
 	{
-		if (M_PromotionGroup_ID < 1) 
+		if (M_PromotionGroup_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_PromotionGroup_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_PromotionGroup_ID, Integer.valueOf(M_PromotionGroup_ID));
 	}
 
 	/** Get Promotion Group.
 		@return Promotion Group	  */
-	public int getM_PromotionGroup_ID () 
+	public int getM_PromotionGroup_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_PromotionGroup_ID);
 		if (ii == null)
@@ -110,7 +121,8 @@ public class X_M_PromotionGroup extends PO implements I_M_PromotionGroup, I_Pers
 	}
 
 	/** Set M_PromotionGroup_UU.
-		@param M_PromotionGroup_UU M_PromotionGroup_UU	  */
+		@param M_PromotionGroup_UU M_PromotionGroup_UU
+	*/
 	public void setM_PromotionGroup_UU (String M_PromotionGroup_UU)
 	{
 		set_Value (COLUMNNAME_M_PromotionGroup_UU, M_PromotionGroup_UU);
@@ -118,15 +130,14 @@ public class X_M_PromotionGroup extends PO implements I_M_PromotionGroup, I_Pers
 
 	/** Get M_PromotionGroup_UU.
 		@return M_PromotionGroup_UU	  */
-	public String getM_PromotionGroup_UU () 
+	public String getM_PromotionGroup_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_PromotionGroup_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -135,7 +146,7 @@ public class X_M_PromotionGroup extends PO implements I_M_PromotionGroup, I_Pers
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}

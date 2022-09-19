@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaySchedule
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="C_PaySchedule")
 public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent 
 {
@@ -33,12 +33,29 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_C_PaySchedule (Properties ctx, int C_PaySchedule_ID, String trxName)
     {
       super (ctx, C_PaySchedule_ID, trxName);
+      /** if (C_PaySchedule_ID == 0)
+        {
+			setC_PaymentTerm_ID (0);
+			setC_PaySchedule_ID (0);
+			setDiscount (Env.ZERO);
+			setDiscountDays (0);
+			setGraceDays (0);
+			setIsValid (false);
+			setNetDays (0);
+			setPercentage (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_PaySchedule (Properties ctx, int C_PaySchedule_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_PaySchedule_ID, trxName, virtualColumns);
       /** if (C_PaySchedule_ID == 0)
         {
 			setC_PaymentTerm_ID (0);
@@ -87,21 +104,20 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	}
 
 	/** Set Payment Term.
-		@param C_PaymentTerm_ID 
-		The terms of Payment (timing, discount)
-	  */
+		@param C_PaymentTerm_ID The terms of Payment (timing, discount)
+	*/
 	public void setC_PaymentTerm_ID (int C_PaymentTerm_ID)
 	{
-		if (C_PaymentTerm_ID < 1) 
+		if (C_PaymentTerm_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_PaymentTerm_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_PaymentTerm_ID, Integer.valueOf(C_PaymentTerm_ID));
 	}
 
 	/** Get Payment Term.
 		@return The terms of Payment (timing, discount)
 	  */
-	public int getC_PaymentTerm_ID () 
+	public int getC_PaymentTerm_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaymentTerm_ID);
 		if (ii == null)
@@ -118,21 +134,20 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
     }
 
 	/** Set Payment Schedule.
-		@param C_PaySchedule_ID 
-		Payment Schedule Template
-	  */
+		@param C_PaySchedule_ID Payment Schedule Template
+	*/
 	public void setC_PaySchedule_ID (int C_PaySchedule_ID)
 	{
-		if (C_PaySchedule_ID < 1) 
+		if (C_PaySchedule_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_C_PaySchedule_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_C_PaySchedule_ID, Integer.valueOf(C_PaySchedule_ID));
 	}
 
 	/** Get Payment Schedule.
 		@return Payment Schedule Template
 	  */
-	public int getC_PaySchedule_ID () 
+	public int getC_PaySchedule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_PaySchedule_ID);
 		if (ii == null)
@@ -141,7 +156,8 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	}
 
 	/** Set C_PaySchedule_UU.
-		@param C_PaySchedule_UU C_PaySchedule_UU	  */
+		@param C_PaySchedule_UU C_PaySchedule_UU
+	*/
 	public void setC_PaySchedule_UU (String C_PaySchedule_UU)
 	{
 		set_Value (COLUMNNAME_C_PaySchedule_UU, C_PaySchedule_UU);
@@ -149,15 +165,14 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 
 	/** Get C_PaySchedule_UU.
 		@return C_PaySchedule_UU	  */
-	public String getC_PaySchedule_UU () 
+	public String getC_PaySchedule_UU()
 	{
 		return (String)get_Value(COLUMNNAME_C_PaySchedule_UU);
 	}
 
 	/** Set Discount %.
-		@param Discount 
-		Discount in percent
-	  */
+		@param Discount Discount in percent
+	*/
 	public void setDiscount (BigDecimal Discount)
 	{
 		set_Value (COLUMNNAME_Discount, Discount);
@@ -166,7 +181,7 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	/** Get Discount %.
 		@return Discount in percent
 	  */
-	public BigDecimal getDiscount () 
+	public BigDecimal getDiscount()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Discount);
 		if (bd == null)
@@ -175,9 +190,8 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	}
 
 	/** Set Discount Days.
-		@param DiscountDays 
-		Number of days from invoice date to be eligible for discount
-	  */
+		@param DiscountDays Number of days from invoice date to be eligible for discount
+	*/
 	public void setDiscountDays (int DiscountDays)
 	{
 		set_Value (COLUMNNAME_DiscountDays, Integer.valueOf(DiscountDays));
@@ -186,7 +200,7 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	/** Get Discount Days.
 		@return Number of days from invoice date to be eligible for discount
 	  */
-	public int getDiscountDays () 
+	public int getDiscountDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DiscountDays);
 		if (ii == null)
@@ -195,9 +209,8 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	}
 
 	/** Set Grace Days.
-		@param GraceDays 
-		Days after due date to send first dunning letter
-	  */
+		@param GraceDays Days after due date to send first dunning letter
+	*/
 	public void setGraceDays (int GraceDays)
 	{
 		set_Value (COLUMNNAME_GraceDays, Integer.valueOf(GraceDays));
@@ -206,7 +219,7 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	/** Get Grace Days.
 		@return Days after due date to send first dunning letter
 	  */
-	public int getGraceDays () 
+	public int getGraceDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_GraceDays);
 		if (ii == null)
@@ -215,9 +228,8 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	}
 
 	/** Set Valid.
-		@param IsValid 
-		Element is valid
-	  */
+		@param IsValid Element is valid
+	*/
 	public void setIsValid (boolean IsValid)
 	{
 		set_Value (COLUMNNAME_IsValid, Boolean.valueOf(IsValid));
@@ -226,7 +238,7 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	/** Get Valid.
 		@return Element is valid
 	  */
-	public boolean isValid () 
+	public boolean isValid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValid);
 		if (oo != null) 
@@ -255,9 +267,8 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	/** Sunday = 7 */
 	public static final String NETDAY_Sunday = "7";
 	/** Set Net Day.
-		@param NetDay 
-		Day when payment is due net
-	  */
+		@param NetDay Day when payment is due net
+	*/
 	public void setNetDay (String NetDay)
 	{
 
@@ -267,15 +278,14 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	/** Get Net Day.
 		@return Day when payment is due net
 	  */
-	public String getNetDay () 
+	public String getNetDay()
 	{
 		return (String)get_Value(COLUMNNAME_NetDay);
 	}
 
 	/** Set Net Days.
-		@param NetDays 
-		Net Days in which payment is due
-	  */
+		@param NetDays Net Days in which payment is due
+	*/
 	public void setNetDays (int NetDays)
 	{
 		set_Value (COLUMNNAME_NetDays, Integer.valueOf(NetDays));
@@ -284,7 +294,7 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	/** Get Net Days.
 		@return Net Days in which payment is due
 	  */
-	public int getNetDays () 
+	public int getNetDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_NetDays);
 		if (ii == null)
@@ -293,9 +303,8 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	}
 
 	/** Set Percentage.
-		@param Percentage 
-		Percent of the entire amount
-	  */
+		@param Percentage Percent of the entire amount
+	*/
 	public void setPercentage (BigDecimal Percentage)
 	{
 		set_Value (COLUMNNAME_Percentage, Percentage);
@@ -304,7 +313,7 @@ public class X_C_PaySchedule extends PO implements I_C_PaySchedule, I_Persistent
 	/** Get Percentage.
 		@return Percent of the entire amount
 	  */
-	public BigDecimal getPercentage () 
+	public BigDecimal getPercentage()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Percentage);
 		if (bd == null)

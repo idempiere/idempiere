@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ShippingProcessorCfg
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="M_ShippingProcessorCfg")
 public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcessorCfg, I_Persistent 
 {
@@ -31,12 +31,25 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_M_ShippingProcessorCfg (Properties ctx, int M_ShippingProcessorCfg_ID, String trxName)
     {
       super (ctx, M_ShippingProcessorCfg_ID, trxName);
+      /** if (M_ShippingProcessorCfg_ID == 0)
+        {
+			setHostAddress (null);
+			setHostPort (0);
+			setM_ShippingProcessorCfg_ID (0);
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_ShippingProcessorCfg (Properties ctx, int M_ShippingProcessorCfg_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_ShippingProcessorCfg_ID, trxName, virtualColumns);
       /** if (M_ShippingProcessorCfg_ID == 0)
         {
 			setHostAddress (null);
@@ -75,9 +88,8 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
     }
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -86,15 +98,14 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Host Address.
-		@param HostAddress 
-		Host Address URL or DNS
-	  */
+		@param HostAddress Host Address URL or DNS
+	*/
 	public void setHostAddress (String HostAddress)
 	{
 		set_Value (COLUMNNAME_HostAddress, HostAddress);
@@ -103,15 +114,14 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	/** Get Host Address.
 		@return Host Address URL or DNS
 	  */
-	public String getHostAddress () 
+	public String getHostAddress()
 	{
 		return (String)get_Value(COLUMNNAME_HostAddress);
 	}
 
 	/** Set Host port.
-		@param HostPort 
-		Host Communication Port
-	  */
+		@param HostPort Host Communication Port
+	*/
 	public void setHostPort (int HostPort)
 	{
 		set_Value (COLUMNNAME_HostPort, Integer.valueOf(HostPort));
@@ -120,7 +130,7 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	/** Get Host port.
 		@return Host Communication Port
 	  */
-	public int getHostPort () 
+	public int getHostPort()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_HostPort);
 		if (ii == null)
@@ -129,18 +139,19 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	}
 
 	/** Set Shipping Processor Configuration.
-		@param M_ShippingProcessorCfg_ID Shipping Processor Configuration	  */
+		@param M_ShippingProcessorCfg_ID Shipping Processor Configuration
+	*/
 	public void setM_ShippingProcessorCfg_ID (int M_ShippingProcessorCfg_ID)
 	{
-		if (M_ShippingProcessorCfg_ID < 1) 
+		if (M_ShippingProcessorCfg_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_M_ShippingProcessorCfg_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_M_ShippingProcessorCfg_ID, Integer.valueOf(M_ShippingProcessorCfg_ID));
 	}
 
 	/** Get Shipping Processor Configuration.
 		@return Shipping Processor Configuration	  */
-	public int getM_ShippingProcessorCfg_ID () 
+	public int getM_ShippingProcessorCfg_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_ShippingProcessorCfg_ID);
 		if (ii == null)
@@ -149,7 +160,8 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	}
 
 	/** Set M_ShippingProcessorCfg_UU.
-		@param M_ShippingProcessorCfg_UU M_ShippingProcessorCfg_UU	  */
+		@param M_ShippingProcessorCfg_UU M_ShippingProcessorCfg_UU
+	*/
 	public void setM_ShippingProcessorCfg_UU (String M_ShippingProcessorCfg_UU)
 	{
 		set_Value (COLUMNNAME_M_ShippingProcessorCfg_UU, M_ShippingProcessorCfg_UU);
@@ -157,15 +169,14 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 
 	/** Get M_ShippingProcessorCfg_UU.
 		@return M_ShippingProcessorCfg_UU	  */
-	public String getM_ShippingProcessorCfg_UU () 
+	public String getM_ShippingProcessorCfg_UU()
 	{
 		return (String)get_Value(COLUMNNAME_M_ShippingProcessorCfg_UU);
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -174,7 +185,7 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -188,9 +199,8 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
     }
 
 	/** Set Proxy address.
-		@param ProxyAddress 
-		 Address of your proxy server
-	  */
+		@param ProxyAddress  Address of your proxy server
+	*/
 	public void setProxyAddress (String ProxyAddress)
 	{
 		set_Value (COLUMNNAME_ProxyAddress, ProxyAddress);
@@ -199,15 +209,14 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	/** Get Proxy address.
 		@return  Address of your proxy server
 	  */
-	public String getProxyAddress () 
+	public String getProxyAddress()
 	{
 		return (String)get_Value(COLUMNNAME_ProxyAddress);
 	}
 
 	/** Set Proxy logon.
-		@param ProxyLogon 
-		Logon of your proxy server
-	  */
+		@param ProxyLogon Logon of your proxy server
+	*/
 	public void setProxyLogon (String ProxyLogon)
 	{
 		set_Value (COLUMNNAME_ProxyLogon, ProxyLogon);
@@ -216,15 +225,14 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	/** Get Proxy logon.
 		@return Logon of your proxy server
 	  */
-	public String getProxyLogon () 
+	public String getProxyLogon()
 	{
 		return (String)get_Value(COLUMNNAME_ProxyLogon);
 	}
 
 	/** Set Proxy password.
-		@param ProxyPassword 
-		Password of your proxy server
-	  */
+		@param ProxyPassword Password of your proxy server
+	*/
 	public void setProxyPassword (String ProxyPassword)
 	{
 		set_Value (COLUMNNAME_ProxyPassword, ProxyPassword);
@@ -233,15 +241,14 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	/** Get Proxy password.
 		@return Password of your proxy server
 	  */
-	public String getProxyPassword () 
+	public String getProxyPassword()
 	{
 		return (String)get_Value(COLUMNNAME_ProxyPassword);
 	}
 
 	/** Set Proxy port.
-		@param ProxyPort 
-		Port of your proxy server
-	  */
+		@param ProxyPort Port of your proxy server
+	*/
 	public void setProxyPort (int ProxyPort)
 	{
 		set_Value (COLUMNNAME_ProxyPort, Integer.valueOf(ProxyPort));
@@ -250,7 +257,7 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	/** Get Proxy port.
 		@return Port of your proxy server
 	  */
-	public int getProxyPort () 
+	public int getProxyPort()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ProxyPort);
 		if (ii == null)
@@ -259,7 +266,8 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 	}
 
 	/** Set Service Path.
-		@param ServicePath Service Path	  */
+		@param ServicePath Service Path
+	*/
 	public void setServicePath (String ServicePath)
 	{
 		set_Value (COLUMNNAME_ServicePath, ServicePath);
@@ -267,13 +275,14 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 
 	/** Get Service Path.
 		@return Service Path	  */
-	public String getServicePath () 
+	public String getServicePath()
 	{
 		return (String)get_Value(COLUMNNAME_ServicePath);
 	}
 
 	/** Set Shipping Processor Class.
-		@param ShippingProcessorClass Shipping Processor Class	  */
+		@param ShippingProcessorClass Shipping Processor Class
+	*/
 	public void setShippingProcessorClass (String ShippingProcessorClass)
 	{
 		set_Value (COLUMNNAME_ShippingProcessorClass, ShippingProcessorClass);
@@ -281,7 +290,7 @@ public class X_M_ShippingProcessorCfg extends PO implements I_M_ShippingProcesso
 
 	/** Get Shipping Processor Class.
 		@return Shipping Processor Class	  */
-	public String getShippingProcessorClass () 
+	public String getShippingProcessorClass()
 	{
 		return (String)get_Value(COLUMNNAME_ShippingProcessorClass);
 	}

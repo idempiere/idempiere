@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for CM_ChatUpdate
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatUpdate")
 public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent 
 {
@@ -30,12 +30,24 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_CM_ChatUpdate (Properties ctx, int CM_ChatUpdate_ID, String trxName)
     {
       super (ctx, CM_ChatUpdate_ID, trxName);
+      /** if (CM_ChatUpdate_ID == 0)
+        {
+			setAD_User_ID (0);
+			setCM_Chat_ID (0);
+			setIsSelfService (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_CM_ChatUpdate (Properties ctx, int CM_ChatUpdate_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, CM_ChatUpdate_ID, trxName, virtualColumns);
       /** if (CM_ChatUpdate_ID == 0)
         {
 			setAD_User_ID (0);
@@ -79,21 +91,20 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -108,21 +119,20 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 	}
 
 	/** Set Chat.
-		@param CM_Chat_ID 
-		Chat or discussion thread
-	  */
+		@param CM_Chat_ID Chat or discussion thread
+	*/
 	public void setCM_Chat_ID (int CM_Chat_ID)
 	{
-		if (CM_Chat_ID < 1) 
+		if (CM_Chat_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_CM_Chat_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_CM_Chat_ID, Integer.valueOf(CM_Chat_ID));
 	}
 
 	/** Get Chat.
 		@return Chat or discussion thread
 	  */
-	public int getCM_Chat_ID () 
+	public int getCM_Chat_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_CM_Chat_ID);
 		if (ii == null)
@@ -131,7 +141,8 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 	}
 
 	/** Set CM_ChatUpdate_UU.
-		@param CM_ChatUpdate_UU CM_ChatUpdate_UU	  */
+		@param CM_ChatUpdate_UU CM_ChatUpdate_UU
+	*/
 	public void setCM_ChatUpdate_UU (String CM_ChatUpdate_UU)
 	{
 		set_Value (COLUMNNAME_CM_ChatUpdate_UU, CM_ChatUpdate_UU);
@@ -139,15 +150,14 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 
 	/** Get CM_ChatUpdate_UU.
 		@return CM_ChatUpdate_UU	  */
-	public String getCM_ChatUpdate_UU () 
+	public String getCM_ChatUpdate_UU()
 	{
 		return (String)get_Value(COLUMNNAME_CM_ChatUpdate_UU);
 	}
 
 	/** Set Self-Service.
-		@param IsSelfService 
-		This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
+		@param IsSelfService This is a Self-Service entry or this entry can be changed via Self-Service
+	*/
 	public void setIsSelfService (boolean IsSelfService)
 	{
 		set_Value (COLUMNNAME_IsSelfService, Boolean.valueOf(IsSelfService));
@@ -156,7 +166,7 @@ public class X_CM_ChatUpdate extends PO implements I_CM_ChatUpdate, I_Persistent
 	/** Get Self-Service.
 		@return This is a Self-Service entry or this entry can be changed via Self-Service
 	  */
-	public boolean isSelfService () 
+	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
 		if (oo != null) 

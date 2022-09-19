@@ -19,15 +19,11 @@ package org.idempiere.webservices.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
-
-import org.compiere.model.I_Persistent;
-import org.compiere.model.MTable;
-import org.compiere.model.PO;
-import org.compiere.model.POInfo;
+import org.compiere.model.*;
 
 /** Generated Model for WS_WebService_Para
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebService_Para")
 public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_Persistent 
 {
@@ -35,12 +31,24 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_WS_WebService_Para (Properties ctx, int WS_WebService_Para_ID, String trxName)
     {
       super (ctx, WS_WebService_Para_ID, trxName);
+      /** if (WS_WebService_Para_ID == 0)
+        {
+			setParameterType (null);
+			setWS_WebService_Para_ID (0);
+			setWS_WebServiceType_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_WS_WebService_Para (Properties ctx, int WS_WebService_Para_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, WS_WebService_Para_ID, trxName, virtualColumns);
       /** if (WS_WebService_Para_ID == 0)
         {
 			setParameterType (null);
@@ -78,9 +86,8 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
     }
 
 	/** Set Constant Value.
-		@param ConstantValue 
-		Constant value
-	  */
+		@param ConstantValue Constant value
+	*/
 	public void setConstantValue (String ConstantValue)
 	{
 		set_Value (COLUMNNAME_ConstantValue, ConstantValue);
@@ -89,13 +96,14 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 	/** Get Constant Value.
 		@return Constant value
 	  */
-	public String getConstantValue () 
+	public String getConstantValue()
 	{
 		return (String)get_Value(COLUMNNAME_ConstantValue);
 	}
 
 	/** Set Parameter Name.
-		@param ParameterName Parameter Name	  */
+		@param ParameterName Parameter Name
+	*/
 	public void setParameterName (String ParameterName)
 	{
 		set_ValueNoCheck (COLUMNNAME_ParameterName, ParameterName);
@@ -103,7 +111,7 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 
 	/** Get Parameter Name.
 		@return Parameter Name	  */
-	public String getParameterName () 
+	public String getParameterName()
 	{
 		return (String)get_Value(COLUMNNAME_ParameterName);
 	}
@@ -115,7 +123,8 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 	/** Free = F */
 	public static final String PARAMETERTYPE_Free = "F";
 	/** Set Parameter Type.
-		@param ParameterType Parameter Type	  */
+		@param ParameterType Parameter Type
+	*/
 	public void setParameterType (String ParameterType)
 	{
 
@@ -124,24 +133,25 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 
 	/** Get Parameter Type.
 		@return Parameter Type	  */
-	public String getParameterType () 
+	public String getParameterType()
 	{
 		return (String)get_Value(COLUMNNAME_ParameterType);
 	}
 
 	/** Set Web Service Parameters.
-		@param WS_WebService_Para_ID Web Service Parameters	  */
+		@param WS_WebService_Para_ID Web Service Parameters
+	*/
 	public void setWS_WebService_Para_ID (int WS_WebService_Para_ID)
 	{
-		if (WS_WebService_Para_ID < 1) 
+		if (WS_WebService_Para_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_WS_WebService_Para_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_WS_WebService_Para_ID, Integer.valueOf(WS_WebService_Para_ID));
 	}
 
 	/** Get Web Service Parameters.
 		@return Web Service Parameters	  */
-	public int getWS_WebService_Para_ID () 
+	public int getWS_WebService_Para_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebService_Para_ID);
 		if (ii == null)
@@ -150,7 +160,8 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 	}
 
 	/** Set WS_WebService_Para_UU.
-		@param WS_WebService_Para_UU WS_WebService_Para_UU	  */
+		@param WS_WebService_Para_UU WS_WebService_Para_UU
+	*/
 	public void setWS_WebService_Para_UU (String WS_WebService_Para_UU)
 	{
 		set_Value (COLUMNNAME_WS_WebService_Para_UU, WS_WebService_Para_UU);
@@ -158,7 +169,7 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 
 	/** Get WS_WebService_Para_UU.
 		@return WS_WebService_Para_UU	  */
-	public String getWS_WebService_Para_UU () 
+	public String getWS_WebService_Para_UU()
 	{
 		return (String)get_Value(COLUMNNAME_WS_WebService_Para_UU);
 	}
@@ -170,18 +181,19 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 	}
 
 	/** Set Web Service Type.
-		@param WS_WebServiceType_ID Web Service Type	  */
+		@param WS_WebServiceType_ID Web Service Type
+	*/
 	public void setWS_WebServiceType_ID (int WS_WebServiceType_ID)
 	{
-		if (WS_WebServiceType_ID < 1) 
+		if (WS_WebServiceType_ID < 1)
 			set_Value (COLUMNNAME_WS_WebServiceType_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_WS_WebServiceType_ID, Integer.valueOf(WS_WebServiceType_ID));
 	}
 
 	/** Get Web Service Type.
 		@return Web Service Type	  */
-	public int getWS_WebServiceType_ID () 
+	public int getWS_WebServiceType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_WS_WebServiceType_ID);
 		if (ii == null)

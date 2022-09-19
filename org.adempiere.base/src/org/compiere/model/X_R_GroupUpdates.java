@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_GroupUpdates
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="R_GroupUpdates")
 public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persistent 
 {
@@ -30,12 +30,24 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_GroupUpdates (Properties ctx, int R_GroupUpdates_ID, String trxName)
     {
       super (ctx, R_GroupUpdates_ID, trxName);
+      /** if (R_GroupUpdates_ID == 0)
+        {
+			setAD_User_ID (0);
+			setIsSelfService (false);
+			setR_Group_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_GroupUpdates (Properties ctx, int R_GroupUpdates_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_GroupUpdates_ID, trxName, virtualColumns);
       /** if (R_GroupUpdates_ID == 0)
         {
 			setAD_User_ID (0);
@@ -79,21 +91,20 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -102,9 +113,8 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 	}
 
 	/** Set Self-Service.
-		@param IsSelfService 
-		This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
+		@param IsSelfService This is a Self-Service entry or this entry can be changed via Self-Service
+	*/
 	public void setIsSelfService (boolean IsSelfService)
 	{
 		set_Value (COLUMNNAME_IsSelfService, Boolean.valueOf(IsSelfService));
@@ -113,7 +123,7 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 	/** Get Self-Service.
 		@return This is a Self-Service entry or this entry can be changed via Self-Service
 	  */
-	public boolean isSelfService () 
+	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
 		if (oo != null) 
@@ -132,21 +142,20 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 	}
 
 	/** Set Group.
-		@param R_Group_ID 
-		Request Group
-	  */
+		@param R_Group_ID Request Group
+	*/
 	public void setR_Group_ID (int R_Group_ID)
 	{
-		if (R_Group_ID < 1) 
+		if (R_Group_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Group_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Group_ID, Integer.valueOf(R_Group_ID));
 	}
 
 	/** Get Group.
 		@return Request Group
 	  */
-	public int getR_Group_ID () 
+	public int getR_Group_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Group_ID);
 		if (ii == null)
@@ -155,7 +164,8 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 	}
 
 	/** Set R_GroupUpdates_UU.
-		@param R_GroupUpdates_UU R_GroupUpdates_UU	  */
+		@param R_GroupUpdates_UU R_GroupUpdates_UU
+	*/
 	public void setR_GroupUpdates_UU (String R_GroupUpdates_UU)
 	{
 		set_Value (COLUMNNAME_R_GroupUpdates_UU, R_GroupUpdates_UU);
@@ -163,7 +173,7 @@ public class X_R_GroupUpdates extends PO implements I_R_GroupUpdates, I_Persiste
 
 	/** Get R_GroupUpdates_UU.
 		@return R_GroupUpdates_UU	  */
-	public String getR_GroupUpdates_UU () 
+	public String getR_GroupUpdates_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_GroupUpdates_UU);
 	}

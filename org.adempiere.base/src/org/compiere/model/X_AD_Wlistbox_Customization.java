@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Wlistbox_Customization
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Wlistbox_Customization")
 public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Customization, I_Persistent 
 {
@@ -30,12 +30,25 @@ public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Cus
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210927L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Wlistbox_Customization (Properties ctx, int AD_Wlistbox_Customization_ID, String trxName)
     {
       super (ctx, AD_Wlistbox_Customization_ID, trxName);
+      /** if (AD_Wlistbox_Customization_ID == 0)
+        {
+			setAD_User_ID (0);
+			setAD_Wlistbox_Customization_ID (0);
+			setCustom (null);
+			setWlistboxName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Wlistbox_Customization (Properties ctx, int AD_Wlistbox_Customization_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Wlistbox_Customization_ID, trxName, virtualColumns);
       /** if (AD_Wlistbox_Customization_ID == 0)
         {
 			setAD_User_ID (0);
@@ -52,7 +65,7 @@ public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Cus
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {
@@ -80,21 +93,20 @@ public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Cus
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -103,18 +115,19 @@ public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Cus
 	}
 
 	/** Set Customization of the Wlistbox.
-		@param AD_Wlistbox_Customization_ID Customization of the Wlistbox	  */
+		@param AD_Wlistbox_Customization_ID Customization of the Wlistbox
+	*/
 	public void setAD_Wlistbox_Customization_ID (int AD_Wlistbox_Customization_ID)
 	{
-		if (AD_Wlistbox_Customization_ID < 1) 
+		if (AD_Wlistbox_Customization_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_Wlistbox_Customization_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_Wlistbox_Customization_ID, Integer.valueOf(AD_Wlistbox_Customization_ID));
 	}
 
 	/** Get Customization of the Wlistbox.
 		@return Customization of the Wlistbox	  */
-	public int getAD_Wlistbox_Customization_ID () 
+	public int getAD_Wlistbox_Customization_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Wlistbox_Customization_ID);
 		if (ii == null)
@@ -123,7 +136,8 @@ public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Cus
 	}
 
 	/** Set AD_Wlistbox_Customization_UU.
-		@param AD_Wlistbox_Customization_UU AD_Wlistbox_Customization_UU	  */
+		@param AD_Wlistbox_Customization_UU AD_Wlistbox_Customization_UU
+	*/
 	public void setAD_Wlistbox_Customization_UU (String AD_Wlistbox_Customization_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_AD_Wlistbox_Customization_UU, AD_Wlistbox_Customization_UU);
@@ -131,13 +145,14 @@ public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Cus
 
 	/** Get AD_Wlistbox_Customization_UU.
 		@return AD_Wlistbox_Customization_UU	  */
-	public String getAD_Wlistbox_Customization_UU () 
+	public String getAD_Wlistbox_Customization_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_Wlistbox_Customization_UU);
 	}
 
 	/** Set Custom.
-		@param Custom Custom	  */
+		@param Custom Custom
+	*/
 	public void setCustom (String Custom)
 	{
 		set_Value (COLUMNNAME_Custom, Custom);
@@ -145,13 +160,14 @@ public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Cus
 
 	/** Get Custom.
 		@return Custom	  */
-	public String getCustom () 
+	public String getCustom()
 	{
 		return (String)get_Value(COLUMNNAME_Custom);
 	}
 
 	/** Set WlistboxName.
-		@param WlistboxName WlistboxName	  */
+		@param WlistboxName WlistboxName
+	*/
 	public void setWlistboxName (String WlistboxName)
 	{
 		set_Value (COLUMNNAME_WlistboxName, WlistboxName);
@@ -159,7 +175,7 @@ public class X_AD_Wlistbox_Customization extends PO implements I_AD_Wlistbox_Cus
 
 	/** Get WlistboxName.
 		@return WlistboxName	  */
-	public String getWlistboxName () 
+	public String getWlistboxName()
 	{
 		return (String)get_Value(COLUMNNAME_WlistboxName);
 	}

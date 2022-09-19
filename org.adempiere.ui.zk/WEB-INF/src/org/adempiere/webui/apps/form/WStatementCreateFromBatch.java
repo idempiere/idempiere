@@ -41,7 +41,7 @@ import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.StatementCreateFromBatch;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MColumn;
@@ -67,11 +67,15 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 {
 	private WCreateFromForm form;
 	
+	/**
+	 * default constructor
+	 */
 	public WStatementCreateFromBatch()
 	{
 		form = new WCreateFromForm(this);
 	}
 	
+	@Override
 	public void initForm()
 	{
 		try
@@ -127,16 +131,12 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	
 	protected Grid parameterBankLayout;
 
-	/**
-	 *  Dynamic Init
-	 *  @throws Exception if Lookups cannot be initialized
-	 *  @return true if initialized
-	 */
-	public boolean dynInit() throws Exception
+	@Override
+	protected boolean dynInit() throws Exception
 	{
 		super.dynInit();
 		
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		
 		//Refresh button
 		Button refreshButton = form.getConfirmPanel().createButton(ConfirmPanel.A_REFRESH);
@@ -145,7 +145,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		
 		if (form.getGridTab() != null && form.getGridTab().getValue("C_BankStatement_ID") == null)
 		{
-			FDialog.error(0, form, "SaveErrorRowNotFound");
+			Dialog.error(0, "SaveErrorRowNotFound");
 			return false;
 		}
 		
@@ -180,6 +180,9 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		return true;
 	}   //  dynInit
 	
+	/**
+	 * handle onClientInfo event
+	 */
 	protected void onClientInfo()
 	{
 		if (ClientInfo.isMobile() && parameterBankLayout != null && parameterBankLayout.getColumns() != null)
@@ -269,6 +272,10 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		}
 	}
 
+	/**
+	 * Configure layout of parameter grid
+	 * @param parameterBankLayout
+	 */
 	protected void setupColumns(Grid parameterBankLayout) {
 		Columns columns = new Columns();
 		parameterBankLayout.appendChild(columns);
@@ -298,11 +305,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		}
 	}
 	
-	/**
-	 *  Action Listener
-	 *  @param e event
-	 * @throws Exception 
-	 */
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("Action=" + e.getTarget().getId());
@@ -313,15 +316,20 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		}
 	}
 	
+	@Override
 	public void executeQuery()
 	{
-		loadTableOIS(getBankAccountData(bankAccountField.getValue(), bPartnerLookup.getValue(), 
+		loadTableOIS(getBankAccountData((Integer)bankAccountField.getValue(), (Integer)bPartnerLookup.getValue(), 
 				documentNoField.getValue().toString(), dateFromField.getValue(), dateToField.getValue(),
 				amtFromField.getValue(), amtToField.getValue(), 
-				documentTypeField.getValue(), tenderTypeField.getValue(), authorizationField.getValue().toString(),
+				(Integer)documentTypeField.getValue(), (String)tenderTypeField.getValue(), authorizationField.getValue().toString(),
 				form.getGridTab()));
 	}
 	
+	/**
+	 * load data into list box
+	 * @param data
+	 */
 	protected void loadTableOIS (Vector<?> data)
 	{
 		form.getWListbox().clear();
@@ -337,6 +345,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		configureMiniTable(form.getWListbox());
 	}
 	
+	@Override
 	public ADForm getForm() 
 	{
 		return form;

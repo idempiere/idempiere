@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WorkflowProcessor
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_WorkflowProcessor")
 public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor, I_Persistent 
 {
@@ -32,12 +32,27 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_WorkflowProcessor (Properties ctx, int AD_WorkflowProcessor_ID, String trxName)
     {
       super (ctx, AD_WorkflowProcessor_ID, trxName);
+      /** if (AD_WorkflowProcessor_ID == 0)
+        {
+			setAD_Schedule_ID (0);
+			setAD_WorkflowProcessor_ID (0);
+			setKeepLogDays (0);
+// 7
+			setName (null);
+			setSupervisor_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WorkflowProcessor (Properties ctx, int AD_WorkflowProcessor_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WorkflowProcessor_ID, trxName, virtualColumns);
       /** if (AD_WorkflowProcessor_ID == 0)
         {
 			setAD_Schedule_ID (0);
@@ -84,18 +99,19 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	}
 
 	/** Set Schedule.
-		@param AD_Schedule_ID Schedule	  */
+		@param AD_Schedule_ID Schedule
+	*/
 	public void setAD_Schedule_ID (int AD_Schedule_ID)
 	{
-		if (AD_Schedule_ID < 1) 
+		if (AD_Schedule_ID < 1)
 			set_Value (COLUMNNAME_AD_Schedule_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_AD_Schedule_ID, Integer.valueOf(AD_Schedule_ID));
 	}
 
 	/** Get Schedule.
 		@return Schedule	  */
-	public int getAD_Schedule_ID () 
+	public int getAD_Schedule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Schedule_ID);
 		if (ii == null)
@@ -104,21 +120,20 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	}
 
 	/** Set Workflow Processor.
-		@param AD_WorkflowProcessor_ID 
-		Workflow Processor Server
-	  */
+		@param AD_WorkflowProcessor_ID Workflow Processor Server
+	*/
 	public void setAD_WorkflowProcessor_ID (int AD_WorkflowProcessor_ID)
 	{
-		if (AD_WorkflowProcessor_ID < 1) 
+		if (AD_WorkflowProcessor_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WorkflowProcessor_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WorkflowProcessor_ID, Integer.valueOf(AD_WorkflowProcessor_ID));
 	}
 
 	/** Get Workflow Processor.
 		@return Workflow Processor Server
 	  */
-	public int getAD_WorkflowProcessor_ID () 
+	public int getAD_WorkflowProcessor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WorkflowProcessor_ID);
 		if (ii == null)
@@ -127,7 +142,8 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	}
 
 	/** Set AD_WorkflowProcessor_UU.
-		@param AD_WorkflowProcessor_UU AD_WorkflowProcessor_UU	  */
+		@param AD_WorkflowProcessor_UU AD_WorkflowProcessor_UU
+	*/
 	public void setAD_WorkflowProcessor_UU (String AD_WorkflowProcessor_UU)
 	{
 		set_Value (COLUMNNAME_AD_WorkflowProcessor_UU, AD_WorkflowProcessor_UU);
@@ -135,15 +151,14 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 
 	/** Get AD_WorkflowProcessor_UU.
 		@return AD_WorkflowProcessor_UU	  */
-	public String getAD_WorkflowProcessor_UU () 
+	public String getAD_WorkflowProcessor_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_WorkflowProcessor_UU);
 	}
 
 	/** Set Alert over Priority.
-		@param AlertOverPriority 
-		Send alert email when over priority
-	  */
+		@param AlertOverPriority Send alert email when over priority
+	*/
 	public void setAlertOverPriority (int AlertOverPriority)
 	{
 		set_Value (COLUMNNAME_AlertOverPriority, Integer.valueOf(AlertOverPriority));
@@ -152,7 +167,7 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	/** Get Alert over Priority.
 		@return Send alert email when over priority
 	  */
-	public int getAlertOverPriority () 
+	public int getAlertOverPriority()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AlertOverPriority);
 		if (ii == null)
@@ -161,9 +176,8 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	}
 
 	/** Set Date last run.
-		@param DateLastRun 
-		Date the process was last run.
-	  */
+		@param DateLastRun Date the process was last run.
+	*/
 	public void setDateLastRun (Timestamp DateLastRun)
 	{
 		set_Value (COLUMNNAME_DateLastRun, DateLastRun);
@@ -172,15 +186,14 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	/** Get Date last run.
 		@return Date the process was last run.
 	  */
-	public Timestamp getDateLastRun () 
+	public Timestamp getDateLastRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateLastRun);
 	}
 
 	/** Set Date next run.
-		@param DateNextRun 
-		Date the process will run next
-	  */
+		@param DateNextRun Date the process will run next
+	*/
 	public void setDateNextRun (Timestamp DateNextRun)
 	{
 		set_Value (COLUMNNAME_DateNextRun, DateNextRun);
@@ -189,15 +202,14 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	/** Get Date next run.
 		@return Date the process will run next
 	  */
-	public Timestamp getDateNextRun () 
+	public Timestamp getDateNextRun()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DateNextRun);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -206,15 +218,14 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Inactivity Alert Days.
-		@param InactivityAlertDays 
-		Send Alert when there is no activity after days (0= no alert)
-	  */
+		@param InactivityAlertDays Send Alert when there is no activity after days (0= no alert)
+	*/
 	public void setInactivityAlertDays (int InactivityAlertDays)
 	{
 		set_Value (COLUMNNAME_InactivityAlertDays, Integer.valueOf(InactivityAlertDays));
@@ -223,7 +234,7 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	/** Get Inactivity Alert Days.
 		@return Send Alert when there is no activity after days (0= no alert)
 	  */
-	public int getInactivityAlertDays () 
+	public int getInactivityAlertDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_InactivityAlertDays);
 		if (ii == null)
@@ -232,9 +243,8 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	}
 
 	/** Set Days to keep Log.
-		@param KeepLogDays 
-		Number of days to keep the log entries
-	  */
+		@param KeepLogDays Number of days to keep the log entries
+	*/
 	public void setKeepLogDays (int KeepLogDays)
 	{
 		set_Value (COLUMNNAME_KeepLogDays, Integer.valueOf(KeepLogDays));
@@ -243,7 +253,7 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	/** Get Days to keep Log.
 		@return Number of days to keep the log entries
 	  */
-	public int getKeepLogDays () 
+	public int getKeepLogDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_KeepLogDays);
 		if (ii == null)
@@ -252,9 +262,8 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -263,7 +272,7 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
@@ -277,7 +286,8 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
     }
 
 	/** Set Process Now.
-		@param Processing Process Now	  */
+		@param Processing Process Now
+	*/
 	public void setProcessing (boolean Processing)
 	{
 		set_Value (COLUMNNAME_Processing, Boolean.valueOf(Processing));
@@ -285,7 +295,7 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 
 	/** Get Process Now.
 		@return Process Now	  */
-	public boolean isProcessing () 
+	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
 		if (oo != null) 
@@ -298,9 +308,8 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	}
 
 	/** Set Reminder Days.
-		@param RemindDays 
-		Days between sending Reminder Emails for a due or inactive Document
-	  */
+		@param RemindDays Days between sending Reminder Emails for a due or inactive Document
+	*/
 	public void setRemindDays (int RemindDays)
 	{
 		set_Value (COLUMNNAME_RemindDays, Integer.valueOf(RemindDays));
@@ -309,7 +318,7 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	/** Get Reminder Days.
 		@return Days between sending Reminder Emails for a due or inactive Document
 	  */
-	public int getRemindDays () 
+	public int getRemindDays()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_RemindDays);
 		if (ii == null)
@@ -324,21 +333,20 @@ public class X_AD_WorkflowProcessor extends PO implements I_AD_WorkflowProcessor
 	}
 
 	/** Set Supervisor.
-		@param Supervisor_ID 
-		Supervisor for this user/organization - used for escalation and approval
-	  */
+		@param Supervisor_ID Supervisor for this user/organization - used for escalation and approval
+	*/
 	public void setSupervisor_ID (int Supervisor_ID)
 	{
-		if (Supervisor_ID < 1) 
+		if (Supervisor_ID < 1)
 			set_Value (COLUMNNAME_Supervisor_ID, null);
-		else 
+		else
 			set_Value (COLUMNNAME_Supervisor_ID, Integer.valueOf(Supervisor_ID));
 	}
 
 	/** Get Supervisor.
 		@return Supervisor for this user/organization - used for escalation and approval
 	  */
-	public int getSupervisor_ID () 
+	public int getSupervisor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Supervisor_ID);
 		if (ii == null)

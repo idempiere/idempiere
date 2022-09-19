@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for R_CategoryUpdates
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="R_CategoryUpdates")
 public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Persistent 
 {
@@ -30,12 +30,24 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_R_CategoryUpdates (Properties ctx, int R_CategoryUpdates_ID, String trxName)
     {
       super (ctx, R_CategoryUpdates_ID, trxName);
+      /** if (R_CategoryUpdates_ID == 0)
+        {
+			setAD_User_ID (0);
+			setIsSelfService (false);
+			setR_Category_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_CategoryUpdates (Properties ctx, int R_CategoryUpdates_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_CategoryUpdates_ID, trxName, virtualColumns);
       /** if (R_CategoryUpdates_ID == 0)
         {
 			setAD_User_ID (0);
@@ -79,21 +91,20 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
 	}
 
 	/** Set User/Contact.
-		@param AD_User_ID 
-		User within the system - Internal or Business Partner Contact
-	  */
+		@param AD_User_ID User within the system - Internal or Business Partner Contact
+	*/
 	public void setAD_User_ID (int AD_User_ID)
 	{
-		if (AD_User_ID < 1) 
+		if (AD_User_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
 		@return User within the system - Internal or Business Partner Contact
 	  */
-	public int getAD_User_ID () 
+	public int getAD_User_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
 		if (ii == null)
@@ -102,9 +113,8 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
 	}
 
 	/** Set Self-Service.
-		@param IsSelfService 
-		This is a Self-Service entry or this entry can be changed via Self-Service
-	  */
+		@param IsSelfService This is a Self-Service entry or this entry can be changed via Self-Service
+	*/
 	public void setIsSelfService (boolean IsSelfService)
 	{
 		set_Value (COLUMNNAME_IsSelfService, Boolean.valueOf(IsSelfService));
@@ -113,7 +123,7 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
 	/** Get Self-Service.
 		@return This is a Self-Service entry or this entry can be changed via Self-Service
 	  */
-	public boolean isSelfService () 
+	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
 		if (oo != null) 
@@ -132,21 +142,20 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
 	}
 
 	/** Set Category.
-		@param R_Category_ID 
-		Request Category
-	  */
+		@param R_Category_ID Request Category
+	*/
 	public void setR_Category_ID (int R_Category_ID)
 	{
-		if (R_Category_ID < 1) 
+		if (R_Category_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_R_Category_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_R_Category_ID, Integer.valueOf(R_Category_ID));
 	}
 
 	/** Get Category.
 		@return Request Category
 	  */
-	public int getR_Category_ID () 
+	public int getR_Category_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_R_Category_ID);
 		if (ii == null)
@@ -155,7 +164,8 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
 	}
 
 	/** Set R_CategoryUpdates_UU.
-		@param R_CategoryUpdates_UU R_CategoryUpdates_UU	  */
+		@param R_CategoryUpdates_UU R_CategoryUpdates_UU
+	*/
 	public void setR_CategoryUpdates_UU (String R_CategoryUpdates_UU)
 	{
 		set_Value (COLUMNNAME_R_CategoryUpdates_UU, R_CategoryUpdates_UU);
@@ -163,7 +173,7 @@ public class X_R_CategoryUpdates extends PO implements I_R_CategoryUpdates, I_Pe
 
 	/** Get R_CategoryUpdates_UU.
 		@return R_CategoryUpdates_UU	  */
-	public String getR_CategoryUpdates_UU () 
+	public String getR_CategoryUpdates_UU()
 	{
 		return (String)get_Value(COLUMNNAME_R_CategoryUpdates_UU);
 	}

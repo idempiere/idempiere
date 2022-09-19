@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_WorkflowProcessorLog
  *  @author iDempiere (generated) 
- *  @version Development 9.0 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_WorkflowProcessorLog")
 public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProcessorLog, I_Persistent 
 {
@@ -30,12 +30,24 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20210917L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_WorkflowProcessorLog (Properties ctx, int AD_WorkflowProcessorLog_ID, String trxName)
     {
       super (ctx, AD_WorkflowProcessorLog_ID, trxName);
+      /** if (AD_WorkflowProcessorLog_ID == 0)
+        {
+			setAD_WorkflowProcessor_ID (0);
+			setAD_WorkflowProcessorLog_ID (0);
+			setIsError (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WorkflowProcessorLog (Properties ctx, int AD_WorkflowProcessorLog_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WorkflowProcessorLog_ID, trxName, virtualColumns);
       /** if (AD_WorkflowProcessorLog_ID == 0)
         {
 			setAD_WorkflowProcessor_ID (0);
@@ -79,21 +91,20 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	}
 
 	/** Set Workflow Processor.
-		@param AD_WorkflowProcessor_ID 
-		Workflow Processor Server
-	  */
+		@param AD_WorkflowProcessor_ID Workflow Processor Server
+	*/
 	public void setAD_WorkflowProcessor_ID (int AD_WorkflowProcessor_ID)
 	{
-		if (AD_WorkflowProcessor_ID < 1) 
+		if (AD_WorkflowProcessor_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WorkflowProcessor_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WorkflowProcessor_ID, Integer.valueOf(AD_WorkflowProcessor_ID));
 	}
 
 	/** Get Workflow Processor.
 		@return Workflow Processor Server
 	  */
-	public int getAD_WorkflowProcessor_ID () 
+	public int getAD_WorkflowProcessor_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WorkflowProcessor_ID);
 		if (ii == null)
@@ -102,21 +113,20 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	}
 
 	/** Set Workflow Processorl Log.
-		@param AD_WorkflowProcessorLog_ID 
-		Result of the execution of the Workflow Processor
-	  */
+		@param AD_WorkflowProcessorLog_ID Result of the execution of the Workflow Processor
+	*/
 	public void setAD_WorkflowProcessorLog_ID (int AD_WorkflowProcessorLog_ID)
 	{
-		if (AD_WorkflowProcessorLog_ID < 1) 
+		if (AD_WorkflowProcessorLog_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_AD_WorkflowProcessorLog_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_AD_WorkflowProcessorLog_ID, Integer.valueOf(AD_WorkflowProcessorLog_ID));
 	}
 
 	/** Get Workflow Processorl Log.
 		@return Result of the execution of the Workflow Processor
 	  */
-	public int getAD_WorkflowProcessorLog_ID () 
+	public int getAD_WorkflowProcessorLog_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_WorkflowProcessorLog_ID);
 		if (ii == null)
@@ -125,7 +135,8 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	}
 
 	/** Set AD_WorkflowProcessorLog_UU.
-		@param AD_WorkflowProcessorLog_UU AD_WorkflowProcessorLog_UU	  */
+		@param AD_WorkflowProcessorLog_UU AD_WorkflowProcessorLog_UU
+	*/
 	public void setAD_WorkflowProcessorLog_UU (String AD_WorkflowProcessorLog_UU)
 	{
 		set_Value (COLUMNNAME_AD_WorkflowProcessorLog_UU, AD_WorkflowProcessorLog_UU);
@@ -133,15 +144,14 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 
 	/** Get AD_WorkflowProcessorLog_UU.
 		@return AD_WorkflowProcessorLog_UU	  */
-	public String getAD_WorkflowProcessorLog_UU () 
+	public String getAD_WorkflowProcessorLog_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_WorkflowProcessorLog_UU);
 	}
 
 	/** Set Binary Data.
-		@param BinaryData 
-		Binary Data
-	  */
+		@param BinaryData Binary Data
+	*/
 	public void setBinaryData (byte[] BinaryData)
 	{
 		set_Value (COLUMNNAME_BinaryData, BinaryData);
@@ -150,15 +160,14 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	/** Get Binary Data.
 		@return Binary Data
 	  */
-	public byte[] getBinaryData () 
+	public byte[] getBinaryData()
 	{
 		return (byte[])get_Value(COLUMNNAME_BinaryData);
 	}
 
 	/** Set Description.
-		@param Description 
-		Optional short description of the record
-	  */
+		@param Description Optional short description of the record
+	*/
 	public void setDescription (String Description)
 	{
 		set_Value (COLUMNNAME_Description, Description);
@@ -167,15 +176,14 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	/** Get Description.
 		@return Optional short description of the record
 	  */
-	public String getDescription () 
+	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
 	/** Set Error.
-		@param IsError 
-		An Error occurred in the execution
-	  */
+		@param IsError An Error occurred in the execution
+	*/
 	public void setIsError (boolean IsError)
 	{
 		set_Value (COLUMNNAME_IsError, Boolean.valueOf(IsError));
@@ -184,7 +192,7 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	/** Get Error.
 		@return An Error occurred in the execution
 	  */
-	public boolean isError () 
+	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
 		if (oo != null) 
@@ -197,9 +205,8 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	}
 
 	/** Set Reference.
-		@param Reference 
-		Reference for this record
-	  */
+		@param Reference Reference for this record
+	*/
 	public void setReference (String Reference)
 	{
 		set_Value (COLUMNNAME_Reference, Reference);
@@ -208,15 +215,14 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	/** Get Reference.
 		@return Reference for this record
 	  */
-	public String getReference () 
+	public String getReference()
 	{
 		return (String)get_Value(COLUMNNAME_Reference);
 	}
 
 	/** Set Summary.
-		@param Summary 
-		Textual summary of this request
-	  */
+		@param Summary Textual summary of this request
+	*/
 	public void setSummary (String Summary)
 	{
 		set_Value (COLUMNNAME_Summary, Summary);
@@ -225,15 +231,14 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	/** Get Summary.
 		@return Textual summary of this request
 	  */
-	public String getSummary () 
+	public String getSummary()
 	{
 		return (String)get_Value(COLUMNNAME_Summary);
 	}
 
 	/** Set Text Message.
-		@param TextMsg 
-		Text Message
-	  */
+		@param TextMsg Text Message
+	*/
 	public void setTextMsg (String TextMsg)
 	{
 		set_Value (COLUMNNAME_TextMsg, TextMsg);
@@ -242,7 +247,7 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	/** Get Text Message.
 		@return Text Message
 	  */
-	public String getTextMsg () 
+	public String getTextMsg()
 	{
 		return (String)get_Value(COLUMNNAME_TextMsg);
 	}

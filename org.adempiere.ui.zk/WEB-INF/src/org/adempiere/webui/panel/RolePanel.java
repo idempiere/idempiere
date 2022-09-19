@@ -40,7 +40,7 @@ import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -589,7 +589,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	int AD_Role_ID = Env.getAD_Role_ID(ctx);
     	lstRole.setValue(AD_Role_ID);
     	updateOrganisationList();
-    	int AD_Org_ID = Env.getAD_Org_ID(ctx);
+    	int AD_Org_ID = Env.getContextAsInt(ctx, "#AD_Org_ID_ChangeRole");
     	lstOrganisation.setValue(AD_Org_ID);
     	updateWarehouseList();
     	int M_Warehouse_ID = Env.getContextAsInt(ctx, Env.M_WAREHOUSE_ID);
@@ -636,7 +636,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         if (! Util.isEmpty(msg))
 		{
 			Env.getCtx().clear();
-			FDialog.error(0, this, "Error", msg, new Callback<Integer>() {					
+			Dialog.error(0, "Error", msg, new Callback<Integer>() {					
 				@Override
 				public void onCallback(Integer result) {
 					Events.echoEvent(new Event(ON_DEFER_LOGOUT, component));

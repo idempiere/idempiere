@@ -69,21 +69,21 @@ public class ZKUpdateUtil {
 	}
 	
 	public static void setCSSHeight(HtmlBasedComponent component) {
-		String script = "setTimeout(function() { var e = jq('#" + component.getUuid() + "');";
-		script = script + "var b=zk.Widget.$('#" + component.getUuid() + "'); ";
+		String script = "setTimeout(function() { let e = jq('#" + component.getUuid() + "');";
+		script = script + "let b=zk.Widget.$('#" + component.getUuid() + "'); ";
 		script = script + "b.setHeight(e.css('height')); }, 50 );";
 		Clients.response(new AuScript(script));
 	}
 	
 	public static void setCSSWidth(HtmlBasedComponent component) {
-		String script = "setTimeout(function() { var e = jq('#" + component.getUuid() + "');";
-		script = script + "var b=zk.Widget.$('#" + component.getUuid() + "'); ";
+		String script = "setTimeout(function() { let e = jq('#" + component.getUuid() + "');";
+		script = script + "let b=zk.Widget.$('#" + component.getUuid() + "'); ";
 		script = script + "b.setWidth(e.css('width')); }, 50 );";
 		Clients.response(new AuScript(script));
 	}
 	
 	/**
-	 * Set height of popup, window or dialog to heightInPixel. Set height to 100% if heightInPixel > desktopHeight
+	 * Set height of popup, window or dialog to heightInPixel. Set height to 100% if heightInPixel &gt; desktopHeight
 	 * @param comp
 	 * @param heightInPixel Height in Pixel
 	 */
@@ -97,7 +97,7 @@ public class ZKUpdateUtil {
 	}
 	
 	/**
-	 * Set width of popup, window or dialog to widthInPixel. Set width to 100% if widthInPixel > desktopWidth
+	 * Set width of popup, window or dialog to widthInPixel. Set width to 100% if widthInPixel &gt; desktopWidth
 	 * @param comp
 	 * @param widthInPixel
 	 */

@@ -42,7 +42,7 @@ import org.adempiere.webui.component.SimpleListModel;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.I_AD_Field;
 import org.compiere.model.MField;
 import org.compiere.model.MRefList;
@@ -88,9 +88,11 @@ public class CustomizeGridViewPanel extends Panel
 	/**
 	 *	Sort Tab Constructor
 	 *
-	 *  @param WindowNo Window No
-	 * @param columnsWidth 
-	 *  @param GridTab
+	 * @param WindowNo Window No
+	 * @param AD_Tab_ID
+	 * @param AD_User_ID
+	 * @param columnsWidth
+	 * @param gridFieldIds
 	 */
 	public CustomizeGridViewPanel(int WindowNo, int AD_Tab_ID, int AD_User_ID, Map<Integer, String> columnsWidth,ArrayList<Integer> gridFieldIds)
 	{
@@ -600,13 +602,12 @@ public class CustomizeGridViewPanel extends Panel
 		ok = MTabCustomization.saveData(Env.getCtx(), m_AD_Tab_ID, m_AD_User_ID, custom.toString(), dView, null, false, isAutoHide);
 		if(ok) {
 			m_saved = true;
-			// FDialog.info(m_WindowNo, null, "Saved");
 			getParent().detach();
 			if(gridPanel!=null){
 				Events.postEvent("onCustomizeGrid", gridPanel, null);
 			}
 		} else {
-			FDialog.error(m_WindowNo, null, "SaveError", custom.toString());
+			Dialog.error(m_WindowNo, "SaveError", custom.toString());
 		}
 	}	//	saveData
 

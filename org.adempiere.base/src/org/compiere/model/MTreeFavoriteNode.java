@@ -75,9 +75,9 @@ public class MTreeFavoriteNode extends X_AD_Tree_Favorite_Node
 	 */
 	public static MTreeFavoriteNode getFavouriteTreeNodeFromMenuID(int AD_Tree_Favorite_ID, int Menu_ID)
 	{
-		Query query = new Query(Env.getCtx(), MTreeFavoriteNode.Table_Name, "AD_Tree_Favorite_ID=? AND AD_Menu_ID=? AND IsFavourite='Y'", null);
+		Query query = new Query(Env.getCtx(), MTreeFavoriteNode.Table_Name, "AD_Tree_Favorite_ID=? AND AD_Menu_ID=? AND IsFavourite='Y' AND AD_Client_ID IN (0,?)", null);
 		query.setOnlyActiveRecords(true);
-		query.setParameters(new Object[] { AD_Tree_Favorite_ID, Menu_ID });
+		query.setParameters(new Object[] { AD_Tree_Favorite_ID, Menu_ID, Env.getAD_Client_ID(Env.getCtx()) });
 		return query.first();
 	} // getFavouriteTreeNodeFromMenuID
 
