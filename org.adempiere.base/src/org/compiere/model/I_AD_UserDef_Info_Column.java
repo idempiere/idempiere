@@ -301,6 +301,19 @@ public interface I_AD_UserDef_Info_Column
 	  */
 	public String getIsMandatory();
 
+    /** Column name IsQueryAfterChange */
+    public static final String COLUMNNAME_IsQueryAfterChange = "IsQueryAfterChange";
+
+	/** Set Query After Change.
+	  * Issues a query request after the user has made changes to the field
+	  */
+	public void setIsQueryAfterChange (String IsQueryAfterChange);
+
+	/** Get Query After Change.
+	  * Issues a query request after the user has made changes to the field
+	  */
+	public String getIsQueryAfterChange();
+
     /** Column name IsQueryCriteria */
     public static final String COLUMNNAME_IsQueryCriteria = "IsQueryCriteria";
 

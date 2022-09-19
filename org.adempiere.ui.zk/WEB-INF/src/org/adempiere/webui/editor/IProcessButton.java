@@ -27,6 +27,8 @@ public interface IProcessButton {
 	 *  @return AD_Process_ID or 0
 	 */
 	public int getProcess_ID();
+	
+	public int getInfoWindow_ID();
 
 	public IADTabpanel getADTabpanel();
 

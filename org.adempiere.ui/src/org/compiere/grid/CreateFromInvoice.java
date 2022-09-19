@@ -22,25 +22,14 @@ import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.compiere.apps.IStatusBar;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
-import org.compiere.model.MCurrency;
 import org.compiere.model.MInOut;
-import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
-import org.compiere.model.MInvoiceLine;
-import org.compiere.model.MInvoicePaySchedule;
-import org.compiere.model.MMatchInv;
 import org.compiere.model.MOrder;
-import org.compiere.model.MOrderLine;
-import org.compiere.model.MOrderPaySchedule;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
-import org.compiere.model.MRMALine;
-import org.compiere.model.MUOMConversion;
-import org.compiere.model.PO;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -457,169 +446,12 @@ public abstract class CreateFromInvoice extends CreateFrom
 					+ ", OrderLine_ID=" + C_OrderLine_ID + ", InOutLine_ID=" + M_InOutLine_ID);
 
 				//	Create new Invoice Line
-				MInvoiceLine invoiceLine = new MInvoiceLine (invoice);
-				invoiceLine.setM_Product_ID(M_Product_ID, C_UOM_ID);	//	Line UOM
-				invoiceLine.setQty(QtyEntered);							//	Invoiced/Entered
-				BigDecimal QtyInvoiced = null;
-				if (M_Product_ID > 0 && product.getC_UOM_ID() != C_UOM_ID) {
-					QtyInvoiced = MUOMConversion.convertProductFrom(Env.getCtx(), M_Product_ID, C_UOM_ID, QtyEntered);
-				}
-				if (QtyInvoiced == null)
-					QtyInvoiced = QtyEntered;
-				invoiceLine.setQtyInvoiced(QtyInvoiced);
-
-				//  Info
-				MOrderLine orderLine = null;
-				if (C_OrderLine_ID != 0)
-					orderLine = new MOrderLine (Env.getCtx(), C_OrderLine_ID, trxName);
-				//
-				MRMALine rmaLine = null;
-				if (M_RMALine_ID > 0)
-					rmaLine = new MRMALine (Env.getCtx(), M_RMALine_ID, null);
-				//
-				MInOutLine inoutLine = null;
-				if (M_InOutLine_ID != 0)
-				{
-					inoutLine = new MInOutLine (Env.getCtx(), M_InOutLine_ID, trxName);
-					if (orderLine == null && inoutLine.getC_OrderLine_ID() != 0)
-					{
-						C_OrderLine_ID = inoutLine.getC_OrderLine_ID();
-						orderLine = new MOrderLine (Env.getCtx(), C_OrderLine_ID, trxName);
-					}
-				}
-				else if (C_OrderLine_ID > 0)
-				{
-					String whereClause = "EXISTS (SELECT 1 FROM M_InOut io WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID AND io.DocStatus IN ('CO','CL'))";
-					MInOutLine[] lines = MInOutLine.getOfOrderLine(Env.getCtx(),
-						C_OrderLine_ID, whereClause, trxName);
-					if (log.isLoggable(Level.FINE)) log.fine ("Receipt Lines with OrderLine = #" + lines.length);
-					if (lines.length > 0)
-					{
-						for (int j = 0; j < lines.length; j++)
-						{
-							MInOutLine line = lines[j];
-							// qty matched
-							BigDecimal qtyMatched = Env.ZERO;
-							for (MMatchInv match : MMatchInv.getInOutLine(Env.getCtx(), line.getM_InOutLine_ID(), trxName)) {
-								qtyMatched = qtyMatched.add(match.getQty());
-							}
-							if (line.getQtyEntered().subtract(qtyMatched).compareTo(QtyEntered) == 0)
-							{
-								inoutLine = line;
-								M_InOutLine_ID = inoutLine.getM_InOutLine_ID();
-								break;
-							}
-						}
-//						if (inoutLine == null)
-//						{
-//							inoutLine = lines[0];	//	first as default
-//							M_InOutLine_ID = inoutLine.getM_InOutLine_ID();
-//						}
-					}
-				}
-				else if (M_RMALine_ID != 0)
-				{
-					String whereClause = "EXISTS (SELECT 1 FROM M_InOut io WHERE io.M_InOut_ID=M_InOutLine.M_InOut_ID AND io.DocStatus IN ('CO','CL'))";
-					MInOutLine[] lines = MInOutLine.getOfRMALine(Env.getCtx(), M_RMALine_ID, whereClause, null);
-					if (log.isLoggable(Level.FINE)) log.fine ("Receipt Lines with RMALine = #" + lines.length);
-					if (lines.length > 0)
-					{
-						for (int j = 0; j < lines.length; j++)
-						{
-							MInOutLine line = lines[j];
-							BigDecimal alreadyInvoiced = rmaLine.getQtyInvoiced() != null ? rmaLine.getQtyInvoiced() : BigDecimal.ZERO;
-							if (rmaLine.getQty().subtract(alreadyInvoiced).compareTo(QtyEntered) >= 0)
-							{
-								inoutLine = line;
-								M_InOutLine_ID = inoutLine.getM_InOutLine_ID();
-								break;
-							}
-						}
-						if (rmaLine == null)
-						{
-							inoutLine = lines[0];	//	first as default
-							M_InOutLine_ID = inoutLine.getM_InOutLine_ID();
-						}
-					}
-
-				}
-				//	get Ship info
-				
-				//	Shipment Info
-				if (inoutLine != null)
-				{
-					invoiceLine.setShipLine(inoutLine);		//	overwrites
-					if(invoiceLine.getC_UOM_ID()!=inoutLine.getC_UOM_ID()) {
-						invoiceLine.setC_UOM_ID(inoutLine.getC_UOM_ID());						
-						BigDecimal PriceEntered = MUOMConversion.convertProductFrom (invoice.getCtx(), M_Product_ID, 
-								inoutLine.getC_UOM_ID(), invoiceLine.getPriceEntered());
-							if (PriceEntered == null)
-								throw new AdempiereException("No Conversion For Price=" + invoiceLine.getPriceEntered());
-						invoiceLine.setPriceEntered(PriceEntered);						
-					}						
-				}
-				else {
-					log.fine("No Receipt Line");
-					//	Order Info
-					if (orderLine != null)
-					{
-						invoiceLine.setOrderLine(orderLine);	//	overwrites
-					}
-					else
-					{
-						log.fine("No Order Line");
-						invoiceLine.setPrice();
-						invoiceLine.setTax();
-					}
-
-					//RMA Info
-					if (rmaLine != null)
-					{
-						invoiceLine.setRMALine(rmaLine);		//	overwrites
-					}
-					else
-						log.fine("No RMA Line");
-				}
-				invoiceLine.saveEx();
+				invoice.createLineFrom(C_OrderLine_ID, M_InOutLine_ID, M_RMALine_ID, M_Product_ID, C_UOM_ID, QtyEntered);
 			}   //   if selected
 		}   //  for all rows
-
-		if (p_order != null) {
-			invoice.setPaymentRule(p_order.getPaymentRule());
-			invoice.setC_PaymentTerm_ID(p_order.getC_PaymentTerm_ID());
-			invoice.saveEx();
-			invoice.load(invoice.get_TrxName()); // refresh from DB
-			// copy payment schedule from order if invoice doesn't have a current payment schedule
-			MOrderPaySchedule[] opss = MOrderPaySchedule.getOrderPaySchedule(invoice.getCtx(), p_order.getC_Order_ID(), 0, invoice.get_TrxName());
-			MInvoicePaySchedule[] ipss = MInvoicePaySchedule.getInvoicePaySchedule(invoice.getCtx(), invoice.getC_Invoice_ID(), 0, invoice.get_TrxName());
-			if (ipss.length == 0 && opss.length > 0) {
-				BigDecimal ogt = p_order.getGrandTotal();
-				BigDecimal igt = invoice.getGrandTotal();
-				BigDecimal percent = Env.ONE;
-				if (ogt.compareTo(igt) != 0)
-					percent = igt.divide(ogt, 10, RoundingMode.HALF_UP);
-				MCurrency cur = MCurrency.get(p_order.getCtx(), p_order.getC_Currency_ID());
-				int scale = cur.getStdPrecision();
-			
-				for (MOrderPaySchedule ops : opss) {
-					MInvoicePaySchedule ips = new MInvoicePaySchedule(invoice.getCtx(), 0, invoice.get_TrxName());
-					PO.copyValues(ops, ips);
-					if (percent != Env.ONE) {
-						BigDecimal propDueAmt = ops.getDueAmt().multiply(percent);
-						if (propDueAmt.scale() > scale)
-							propDueAmt = propDueAmt.setScale(scale, RoundingMode.HALF_UP);
-						ips.setDueAmt(propDueAmt);
-					}
-					ips.setC_Invoice_ID(invoice.getC_Invoice_ID());
-					ips.setAD_Org_ID(ops.getAD_Org_ID());
-					ips.setProcessing(ops.isProcessing());
-					ips.setIsActive(ops.isActive());
-					ips.saveEx();
-				}
-				invoice.validatePaySchedule();
-				invoice.saveEx();
-			}
-		}
+		
+		//  Update Header
+		invoice.updateFrom(p_order);
 
 		return true;
 	}   //  saveInvoice

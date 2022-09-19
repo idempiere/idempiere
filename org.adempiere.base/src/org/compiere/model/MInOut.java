@@ -73,7 +73,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5791054523079936837L;
+	private static final long serialVersionUID = -8699990804131725782L;
 
 	/**
 	 * 	Create Shipment From Order
@@ -1052,13 +1052,6 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
             log.saveError("OrderOrRMA", "");
             return false;
         }
-
-		//	Shipment - Needs Order/RMA
-		if (!getMovementType().contentEquals(MInOut.MOVEMENTTYPE_CustomerReturns) && isSOTrx() && getC_Order_ID() == 0 && getM_RMA_ID() == 0)
-		{
-			log.saveError("FillMandatory", Msg.translate(getCtx(), "C_Order_ID"));
-			return false;
-		}
 
         if (isSOTrx() && getM_RMA_ID() != 0)
         {
@@ -2777,5 +2770,170 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Create Line from orderline/invoiceline/rmaline
+	 * @param C_OrderLine_ID
+	 * @param C_InvoiceLine_ID
+	 * @param M_RMALine_ID
+	 * @param M_Product_ID
+	 * @param C_UOM_ID
+	 * @param Qty
+	 * @param M_Locator_ID
+	 */
+	public void createLineFrom(int C_OrderLine_ID, int C_InvoiceLine_ID, int M_RMALine_ID, 
+			int M_Product_ID, int C_UOM_ID, BigDecimal Qty, int M_Locator_ID)
+	{
+		MInvoiceLine il = null;
+		if (C_InvoiceLine_ID != 0)
+			il = new MInvoiceLine (Env.getCtx(), C_InvoiceLine_ID, get_TrxName());
+		
+		MInOutLine iol = new MInOutLine (this);
+		iol.setM_Product_ID(M_Product_ID, C_UOM_ID);	//	Line UOM
+		iol.setQty(Qty);							//	Movement/Entered
+		//
+		MOrderLine ol = null;
+		MRMALine rmal = null;
+		if (C_OrderLine_ID != 0)
+		{
+			iol.setC_OrderLine_ID(C_OrderLine_ID);
+			ol = new MOrderLine (Env.getCtx(), C_OrderLine_ID, get_TrxName());
+			if (ol.getQtyEntered().compareTo(ol.getQtyOrdered()) != 0)
+			{
+				iol.setMovementQty(Qty
+						.multiply(ol.getQtyOrdered())
+						.divide(ol.getQtyEntered(), 12, RoundingMode.HALF_UP));
+				iol.setC_UOM_ID(ol.getC_UOM_ID());
+			}
+			iol.setM_AttributeSetInstance_ID(ol.getM_AttributeSetInstance_ID());
+			iol.setDescription(ol.getDescription());
+			//
+			iol.setC_Project_ID(ol.getC_Project_ID());
+			iol.setC_ProjectPhase_ID(ol.getC_ProjectPhase_ID());
+			iol.setC_ProjectTask_ID(ol.getC_ProjectTask_ID());
+			iol.setC_Activity_ID(ol.getC_Activity_ID());
+			iol.setC_Campaign_ID(ol.getC_Campaign_ID());
+			iol.setAD_OrgTrx_ID(ol.getAD_OrgTrx_ID());
+			iol.setUser1_ID(ol.getUser1_ID());
+			iol.setUser2_ID(ol.getUser2_ID());
+		}
+		else if (il != null)
+		{
+			if (il.getQtyEntered().compareTo(il.getQtyInvoiced()) != 0)
+			{
+				iol.setMovementQty(Qty
+						.multiply(il.getQtyInvoiced())
+						.divide(il.getQtyEntered(), 12, RoundingMode.HALF_UP));
+				iol.setC_UOM_ID(il.getC_UOM_ID());
+			}
+			iol.setDescription(il.getDescription());
+			iol.setC_Project_ID(il.getC_Project_ID());
+			iol.setC_ProjectPhase_ID(il.getC_ProjectPhase_ID());
+			iol.setC_ProjectTask_ID(il.getC_ProjectTask_ID());
+			iol.setC_Activity_ID(il.getC_Activity_ID());
+			iol.setC_Campaign_ID(il.getC_Campaign_ID());
+			iol.setAD_OrgTrx_ID(il.getAD_OrgTrx_ID());
+			iol.setUser1_ID(il.getUser1_ID());
+			iol.setUser2_ID(il.getUser2_ID());
+		}
+		else if (M_RMALine_ID != 0)
+		{
+			rmal = new MRMALine(Env.getCtx(), M_RMALine_ID, get_TrxName());
+			iol.setM_RMALine_ID(M_RMALine_ID);
+			iol.setQtyEntered(Qty);
+			iol.setDescription(rmal.getDescription());
+			iol.setM_AttributeSetInstance_ID(rmal.getM_AttributeSetInstance_ID());
+			iol.setC_Project_ID(rmal.getC_Project_ID());
+			iol.setC_ProjectPhase_ID(rmal.getC_ProjectPhase_ID());
+			iol.setC_ProjectTask_ID(rmal.getC_ProjectTask_ID());
+			iol.setC_Activity_ID(rmal.getC_Activity_ID());
+			iol.setAD_OrgTrx_ID(rmal.getAD_OrgTrx_ID());
+			iol.setUser1_ID(rmal.getUser1_ID());
+			iol.setUser2_ID(rmal.getUser2_ID());
+		}
+
+		//	Charge
+		if (M_Product_ID == 0)
+		{
+			if (ol != null && ol.getC_Charge_ID() != 0)			//	from order
+				iol.setC_Charge_ID(ol.getC_Charge_ID());
+			else if (il != null && il.getC_Charge_ID() != 0)	//	from invoice
+				iol.setC_Charge_ID(il.getC_Charge_ID());
+			else if (rmal != null && rmal.getC_Charge_ID() != 0) // from rma
+				iol.setC_Charge_ID(rmal.getC_Charge_ID());
+		}
+		// Set locator
+		iol.setM_Locator_ID(M_Locator_ID);
+		iol.saveEx();
+		//	Create Invoice Line Link
+		if (il != null)
+		{
+			il.setM_InOutLine_ID(iol.getM_InOutLine_ID());
+			il.saveEx();
+		}
+	}
+	
+	/**
+	 * Update from order/invoice/rma
+	 * - if linked to another order/invoice/rma - remove link
+	 * - if no link set it
+	 * @param order
+	 * @param invoice
+	 * @param rma
+	 */
+	public void updateFrom(MOrder order, MInvoice invoice, MRMA rma)
+	{
+		if (order != null && order.getC_Order_ID() != 0)
+		{
+			setC_Order_ID (order.getC_Order_ID());
+			setAD_OrgTrx_ID(order.getAD_OrgTrx_ID());
+			setC_Project_ID(order.getC_Project_ID());
+			setC_Campaign_ID(order.getC_Campaign_ID());
+			setC_Activity_ID(order.getC_Activity_ID());
+			setUser1_ID(order.getUser1_ID());
+			setUser2_ID(order.getUser2_ID());
+
+			if ( order.isDropShip() )
+			{
+				setM_Warehouse_ID( order.getM_Warehouse_ID() );
+				setIsDropShip(order.isDropShip());
+				setDropShip_BPartner_ID(order.getDropShip_BPartner_ID());
+				setDropShip_Location_ID(order.getDropShip_Location_ID());
+				setDropShip_User_ID(order.getDropShip_User_ID());
+				if (MOrder.DELIVERYVIARULE_Shipper.equals(order.getDeliveryViaRule()) && order.getM_Shipper_ID() > 0)
+				{
+					setDeliveryViaRule(order.getDeliveryViaRule());
+					setM_Shipper_ID(order.getM_Shipper_ID());
+				}
+			}
+		}
+		if (invoice != null && invoice.getC_Invoice_ID() != 0)
+		{
+			if (getC_Order_ID() == 0)
+				setC_Order_ID (invoice.getC_Order_ID());
+			setC_Invoice_ID (invoice.getC_Invoice_ID());
+			setAD_OrgTrx_ID(invoice.getAD_OrgTrx_ID());
+			setC_Project_ID(invoice.getC_Project_ID());
+			setC_Campaign_ID(invoice.getC_Campaign_ID());
+			setC_Activity_ID(invoice.getC_Activity_ID());
+			setUser1_ID(invoice.getUser1_ID());
+			setUser2_ID(invoice.getUser2_ID());
+		}
+		if (rma != null && rma.getM_RMA_ID() != 0)
+		{
+			MInOut originalIO = rma.getShipment();
+			setIsSOTrx(rma.isSOTrx());
+			setC_Order_ID(0);
+			setC_Invoice_ID(0);
+			setM_RMA_ID(rma.getM_RMA_ID());
+			setAD_OrgTrx_ID(originalIO.getAD_OrgTrx_ID());
+			setC_Project_ID(originalIO.getC_Project_ID());
+			setC_Campaign_ID(originalIO.getC_Campaign_ID());
+			setC_Activity_ID(originalIO.getC_Activity_ID());
+			setUser1_ID(originalIO.getUser1_ID());
+			setUser2_ID(originalIO.getUser2_ID());
+		}
+		saveEx();
 	}
 }	//	MInOut

@@ -34,7 +34,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220920L;
 
     /** Standard Constructor */
     public X_C_Invoice (Properties ctx, int C_Invoice_ID, String trxName)
@@ -62,7 +62,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 			setDocumentNo (null);
 			setGrandTotal (Env.ZERO);
 			setIsApproved (false);
-// @IsApproved@
+// N
 			setIsDiscountPrinted (false);
 			setIsInDispute (false);
 // N
@@ -113,7 +113,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 			setDocumentNo (null);
 			setGrandTotal (Env.ZERO);
 			setIsApproved (false);
-// @IsApproved@
+// N
 			setIsDiscountPrinted (false);
 			setIsInDispute (false);
 // N
@@ -750,6 +750,22 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 		return (String)get_Value(COLUMNNAME_CreateFrom);
 	}
 
+	/** Set Create lines from.
+		@param CreateLinesFrom Process which will generate a new document lines based on an existing document
+	*/
+	public void setCreateLinesFrom (String CreateLinesFrom)
+	{
+		set_Value (COLUMNNAME_CreateLinesFrom, CreateLinesFrom);
+	}
+
+	/** Get Create lines from.
+		@return Process which will generate a new document lines based on an existing document
+	  */
+	public String getCreateLinesFrom()
+	{
+		return (String)get_Value(COLUMNNAME_CreateLinesFrom);
+	}
+
 	/** Set Rate.
 		@param CurrencyRate Currency Conversion Rate
 	*/
@@ -894,6 +910,88 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	public String getDocAction()
 	{
 		return (String)get_Value(COLUMNNAME_DocAction);
+	}
+
+	/** DocBaseType AD_Reference_ID=183 */
+	public static final int DOCBASETYPE_AD_Reference_ID=183;
+	/** AP Credit Memo = APC */
+	public static final String DOCBASETYPE_APCreditMemo = "APC";
+	/** AP Invoice = API */
+	public static final String DOCBASETYPE_APInvoice = "API";
+	/** AP Payment = APP */
+	public static final String DOCBASETYPE_APPayment = "APP";
+	/** AR Credit Memo = ARC */
+	public static final String DOCBASETYPE_ARCreditMemo = "ARC";
+	/** AR Pro Forma Invoice = ARF */
+	public static final String DOCBASETYPE_ARProFormaInvoice = "ARF";
+	/** AR Invoice = ARI */
+	public static final String DOCBASETYPE_ARInvoice = "ARI";
+	/** AR Receipt = ARR */
+	public static final String DOCBASETYPE_ARReceipt = "ARR";
+	/** Payment Allocation = CMA */
+	public static final String DOCBASETYPE_PaymentAllocation = "CMA";
+	/** Bank Statement = CMB */
+	public static final String DOCBASETYPE_BankStatement = "CMB";
+	/** Cash Journal = CMC */
+	public static final String DOCBASETYPE_CashJournal = "CMC";
+	/** Distribution Order = DOO */
+	public static final String DOCBASETYPE_DistributionOrder = "DOO";
+	/** Fixed Assets Addition = FAA */
+	public static final String DOCBASETYPE_FixedAssetsAddition = "FAA";
+	/** Fixed Assets Disposal = FAD */
+	public static final String DOCBASETYPE_FixedAssetsDisposal = "FAD";
+	/** Fixed Assets Depreciation = FDP */
+	public static final String DOCBASETYPE_FixedAssetsDepreciation = "FDP";
+	/** GL Document = GLD */
+	public static final String DOCBASETYPE_GLDocument = "GLD";
+	/** GL Journal = GLJ */
+	public static final String DOCBASETYPE_GLJournal = "GLJ";
+	/** Payroll = HRP */
+	public static final String DOCBASETYPE_Payroll = "HRP";
+	/** Manufacturing Cost Collector = MCC */
+	public static final String DOCBASETYPE_ManufacturingCostCollector = "MCC";
+	/** Material Physical Inventory = MMI */
+	public static final String DOCBASETYPE_MaterialPhysicalInventory = "MMI";
+	/** Material Movement = MMM */
+	public static final String DOCBASETYPE_MaterialMovement = "MMM";
+	/** Material Production = MMP */
+	public static final String DOCBASETYPE_MaterialProduction = "MMP";
+	/** Material Receipt = MMR */
+	public static final String DOCBASETYPE_MaterialReceipt = "MMR";
+	/** Material Delivery = MMS */
+	public static final String DOCBASETYPE_MaterialDelivery = "MMS";
+	/** Maintenance Order = MOF */
+	public static final String DOCBASETYPE_MaintenanceOrder = "MOF";
+	/** Manufacturing Order = MOP */
+	public static final String DOCBASETYPE_ManufacturingOrder = "MOP";
+	/** Quality Order = MQO */
+	public static final String DOCBASETYPE_QualityOrder = "MQO";
+	/** Match Invoice = MXI */
+	public static final String DOCBASETYPE_MatchInvoice = "MXI";
+	/** Match PO = MXP */
+	public static final String DOCBASETYPE_MatchPO = "MXP";
+	/** Project Issue = PJI */
+	public static final String DOCBASETYPE_ProjectIssue = "PJI";
+	/** Purchase Order = POO */
+	public static final String DOCBASETYPE_PurchaseOrder = "POO";
+	/** Purchase Requisition = POR */
+	public static final String DOCBASETYPE_PurchaseRequisition = "POR";
+	/** Sales Order = SOO */
+	public static final String DOCBASETYPE_SalesOrder = "SOO";
+	/** Set Document BaseType.
+		@param DocBaseType Logical type of document
+	*/
+	public void setDocBaseType (String DocBaseType)
+	{
+
+		throw new IllegalArgumentException ("DocBaseType is virtual column");	}
+
+	/** Get Document BaseType.
+		@return Logical type of document
+	  */
+	public String getDocBaseType()
+	{
+		return (String)get_Value(COLUMNNAME_DocBaseType);
 	}
 
 	/** DocStatus AD_Reference_ID=131 */

@@ -147,5 +147,25 @@ public class Callout_AD_Column extends CalloutEngine
 
 		return "";
 	}
+	
+	public String process (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		Integer AD_Process_ID = (Integer) value;
+		if (AD_Process_ID == null || AD_Process_ID.intValue() == 0)
+			return "";
+		
+		mTab.setValue(I_AD_Column.COLUMNNAME_AD_InfoWindow_ID, null);
+		return "";
+	}
+	
+	public String infoWindow (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		Integer AD_InfoWindow_ID = (Integer) value;
+		if (AD_InfoWindow_ID == null || AD_InfoWindow_ID.intValue() == 0)
+			return "";
+		
+		mTab.setValue(I_AD_Column.COLUMNNAME_AD_Process_ID, null);
+		return "";
+	}
 
 }

@@ -333,6 +333,19 @@ public final class ConfirmPanel extends Div
     }
 
     /**
+     * add button to the front of right side of the confirm panel
+     * @param button button
+     */
+    public void addComponentsBeforeRight(Button button)
+    {
+    	if (!buttonMap.containsKey(button.getId()))
+    		buttonMap.put(button.getId(), button);
+    	pnlBtnRight.insertBefore(button, pnlBtnRight.getFirstChild());
+        if (useSmallButtonClassForSmallScreen)
+        	LayoutUtils.addSclass(SMALL_SCREEN_BUTTON_CLASS, button);
+    }
+    
+    /**
      * IDEMPIERE-1334
      * add button to the center side of the confirm panel
      * @param button button

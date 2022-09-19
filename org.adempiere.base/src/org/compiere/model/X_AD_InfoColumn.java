@@ -31,7 +31,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220920L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -54,6 +54,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 			setIsIdentifier (false);
 // N
 			setIsMandatory (false);
+// N
+			setIsQueryAfterChange (false);
 // N
 			setIsQueryCriteria (false);
 			setIsReadOnly (true);
@@ -86,6 +88,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 			setIsIdentifier (false);
 // N
 			setIsMandatory (false);
+// N
+			setIsQueryAfterChange (false);
 // N
 			setIsQueryCriteria (false);
 			setIsReadOnly (true);
@@ -574,6 +578,29 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatory);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Query After Change.
+		@param IsQueryAfterChange Issues a query request after the user has made changes to the field
+	*/
+	public void setIsQueryAfterChange (boolean IsQueryAfterChange)
+	{
+		set_Value (COLUMNNAME_IsQueryAfterChange, Boolean.valueOf(IsQueryAfterChange));
+	}
+
+	/** Get Query After Change.
+		@return Issues a query request after the user has made changes to the field
+	  */
+	public boolean isQueryAfterChange()
+	{
+		Object oo = get_Value(COLUMNNAME_IsQueryAfterChange);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

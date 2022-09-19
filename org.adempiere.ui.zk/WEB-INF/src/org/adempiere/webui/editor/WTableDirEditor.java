@@ -105,6 +105,8 @@ ContextMenuListener, IZoomableEditor
 
 	private boolean onselecting = false;
 
+	private boolean retainSelectedValueAfterRefresh = true;
+	
 	/**
 	 * 
 	 * @param gridField
@@ -453,7 +455,7 @@ ContextMenuListener, IZoomableEditor
 	                	}
 	            	}
 	        	}	        	        
-	            if (!found && oldValue != null)
+	            if (!found && oldValue != null && isRetainSelectedValueAfterRefresh())
 	            {
 	            	NamePair pair = lookup.getDirect(oldValue, false, true);
 	            	if (pair != null) {
@@ -970,5 +972,21 @@ ContextMenuListener, IZoomableEditor
 				refreshLookupList();
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @return true if current selected value is always retain after refresh of list
+	 */
+	public boolean isRetainSelectedValueAfterRefresh() {
+		return retainSelectedValueAfterRefresh;
+	}
+
+	/**
+	 * set whether current selected value is always retain after refresh of list
+	 * @param retainSelectedValueAfterRefresh
+	 */
+	public void setRetainSelectedValueAfterRefresh(boolean retainSelectedValueAfterRefresh) {
+		this.retainSelectedValueAfterRefresh = retainSelectedValueAfterRefresh;
 	}
 }

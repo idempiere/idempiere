@@ -399,6 +399,19 @@ public interface I_C_Invoice
 	  */
 	public String getCreateFrom();
 
+    /** Column name CreateLinesFrom */
+    public static final String COLUMNNAME_CreateLinesFrom = "CreateLinesFrom";
+
+	/** Set Create lines from.
+	  * Process which will generate a new document lines based on an existing document
+	  */
+	public void setCreateLinesFrom (String CreateLinesFrom);
+
+	/** Get Create lines from.
+	  * Process which will generate a new document lines based on an existing document
+	  */
+	public String getCreateLinesFrom();
+
     /** Column name CurrencyRate */
     public static final String COLUMNNAME_CurrencyRate = "CurrencyRate";
 
@@ -489,6 +502,19 @@ public interface I_C_Invoice
 	  * The targeted status of the document
 	  */
 	public String getDocAction();
+
+    /** Column name DocBaseType */
+    public static final String COLUMNNAME_DocBaseType = "DocBaseType";
+
+	/** Set Document BaseType.
+	  * Logical type of document
+	  */
+	public void setDocBaseType (String DocBaseType);
+
+	/** Get Document BaseType.
+	  * Logical type of document
+	  */
+	public String getDocBaseType();
 
     /** Column name DocStatus */
     public static final String COLUMNNAME_DocStatus = "DocStatus";
