@@ -535,7 +535,7 @@ UPDATE AD_ViewColumn SET ColumnName='M_InOut_CreateFrom_v_ID',Updated=TO_TIMESTA
 ;
 
 -- Sep 1, 2022, 2:58:28 PM SGT
-CREATE OR REPLACE VIEW M_InOut_CreateFrom_v(Q ty, Multiplier, C_UOM_ID, M_Locator_ID, M_Product_ID, C_Charge_ID, VendorProductNo, Line, C_OrderLine_ID, C_InvoiceLine_ID, M_RMALine_ID, C_BPartner_ID, C_Order_ID, C_Invoice_ID, M_RMA_ID, M_InOut_CreateFrom_v_ID, AD_Client_ID, AD_Org_ID, IsActive, UPC, M_Warehouse_ID, IsSOTrx, AD_Table_ID) 
+CREATE OR REPLACE VIEW M_InOut_CreateFrom_v(Qty, Multiplier, C_UOM_ID, M_Locator_ID, M_Product_ID, C_Charge_ID, VendorProductNo, Line, C_OrderLine_ID, C_InvoiceLine_ID, M_RMALine_ID, C_BPartner_ID, C_Order_ID, C_Invoice_ID, M_RMA_ID, M_InOut_CreateFrom_v_ID, AD_Client_ID, AD_Org_ID, IsActive, UPC, M_Warehouse_ID, IsSOTrx, AD_Table_ID) 
 AS SELECT l.qtyordered - sum(COALESCE(m.qty, 0)) - COALESCE(( SELECT sum(iol.movementqty) AS sum FROM m_inoutline iol JOIN m_inout io ON iol.m_inout_id = io.m_inout_id           WHERE l.c_orderline_id = iol.c_orderline_id AND io.processed = 'N'), 0) AS Qty, 
 CASE WHEN l.qtyordered = 0 THEN 0 ELSE l.qtyentered / l.qtyordered END AS Multiplier, l.c_uom_id AS C_UOM_ID, p.m_locator_id AS M_Locator_ID, COALESCE(l.m_product_id, 0) AS M_Product_ID, COALESCE(l.c_charge_id, 0) AS C_Charge_ID, 
 po.vendorproductno AS VendorProductNo, l.line AS Line, l.c_orderline_id AS C_OrderLine_ID, 0 AS C_InvoiceLine_ID, 0 AS M_RMALine_ID, l.c_bpartner_id AS C_BPartner_ID, l.c_order_id AS C_Order_ID, 0 AS C_Invoice_ID, 0 AS M_RMA_ID,
