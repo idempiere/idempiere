@@ -13,6 +13,7 @@
 package org.adempiere.base;
 
 import org.compiere.model.GridFieldVO;
+import org.compiere.model.InfoColumnVO;
 import org.compiere.model.Lookup;
 
 /**
@@ -34,4 +35,11 @@ public interface ILookupFactory {
 	 * @return true if the field's displaytype uses lookup
 	 */
 	public boolean isLookup(GridFieldVO gridFieldVO);
+
+	/**
+	 * 
+	 * @param infoColumnVO
+	 * @return true if the field's displaytype uses lookup
+	 */
+	public boolean isLookup(InfoColumnVO infoColumnVO);
 }
