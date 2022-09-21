@@ -30,7 +30,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220920L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Column (Properties ctx, int AD_UserDef_Info_Column_ID, String trxName)
@@ -436,6 +436,29 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	public String getIsMandatory()
 	{
 		return (String)get_Value(COLUMNNAME_IsMandatory);
+	}
+
+	/** IsQueryAfterChange AD_Reference_ID=319 */
+	public static final int ISQUERYAFTERCHANGE_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ISQUERYAFTERCHANGE_No = "N";
+	/** Yes = Y */
+	public static final String ISQUERYAFTERCHANGE_Yes = "Y";
+	/** Set Query After Change.
+		@param IsQueryAfterChange Issues a query request after the user has made changes to the field
+	*/
+	public void setIsQueryAfterChange (String IsQueryAfterChange)
+	{
+
+		set_Value (COLUMNNAME_IsQueryAfterChange, IsQueryAfterChange);
+	}
+
+	/** Get Query After Change.
+		@return Issues a query request after the user has made changes to the field
+	  */
+	public String getIsQueryAfterChange()
+	{
+		return (String)get_Value(COLUMNNAME_IsQueryAfterChange);
 	}
 
 	/** IsQueryCriteria AD_Reference_ID=319 */

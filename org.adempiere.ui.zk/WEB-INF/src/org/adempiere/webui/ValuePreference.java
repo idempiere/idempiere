@@ -130,7 +130,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		//  Create Editor
 		@SuppressWarnings("unused")
 		ValuePreference vp = new ValuePreference (WindowNo,
-			AD_Client_ID, AD_Org_ID, AD_User_ID, AD_Window_ID, mField.getAD_Process_ID_Of_Panel(), mField.getAD_Infowindow_ID(),
+			AD_Client_ID, AD_Org_ID, AD_User_ID, AD_Window_ID, mField.getAD_Process_ID_Of_Panel(), mField.getAD_InfoWindow_ID_of_Panel(),
 			Attribute, DisplayAttribute, Value, DisplayValue,
 			displayType, AD_Reference_ID, ref);
 	}   //  create
