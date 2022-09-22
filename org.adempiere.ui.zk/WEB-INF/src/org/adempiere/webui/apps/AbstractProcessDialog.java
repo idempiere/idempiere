@@ -1276,6 +1276,16 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			}
 		}, new Event("onAskForInput"));
 	}
+	
+	@Override
+	public void askForSecretInput(final String message, final Callback<String> callback) {
+		Executions.schedule(getDesktop(), new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				Dialog.askForSecretInput(m_WindowNo, message, callback);
+			}
+		}, new Event("onAskForInput"));
+	}
 
 	@Override
 	public void askForInput(final String message, MLookup lookup, int editorType, final Callback<Object> callback) {

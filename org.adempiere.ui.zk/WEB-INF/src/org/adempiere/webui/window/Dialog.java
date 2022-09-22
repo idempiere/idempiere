@@ -387,7 +387,16 @@ public final class Dialog {
     	askForInput(windowNo, adMessage, "", callback);
     }
     
+    public static void askForSecretInput(int windowNo, String adMessage, final Callback<String> callback) {
+    	askForInput(windowNo, adMessage, "", callback, true);
+    }
+    
     public static void askForInput(int windowNo, String adMessage, String title, final Callback<String> callback) {
+    	askForInput(windowNo, adMessage, title, callback, false);
+    }
+    
+    public static void askForInput(int windowNo, String adMessage, String title, final Callback<String> callback, boolean isInputProtected) {
+    	System.out.println("Secretisimo : " + isInputProtected);
     	Callback<String> msgCallback = null;
     	if (callback != null) 
     	{
@@ -403,7 +412,7 @@ public final class Dialog {
     	message = formatDialogMessage(message);
     	
     	Messagebox.showDialog(message, dialogTitle, 
-        		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, msgCallback, (msgCallback == null));
+        		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, msgCallback, (msgCallback == null), isInputProtected);
     }
 
     /**

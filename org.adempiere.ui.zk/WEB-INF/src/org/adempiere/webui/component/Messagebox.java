@@ -26,6 +26,7 @@ import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WPasswordEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
@@ -271,11 +272,17 @@ public class Messagebox extends Window implements EventListener<Event>
 
 	public int show(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal)
 	{
+		return show(message, title, buttons, icon, editor, isInputMandatory, callback, modal, false);
+	}
+	
+	public int show(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal, boolean isInputProtected)
+	{
+		System.out.println("passwd: " + isInputProtected);
 		this.msg = message;
 		this.imgSrc = icon;
 		this.callback = callback;
 		if (editor == null)
-			inputField = new WStringEditor();
+			inputField = isInputProtected ? new WPasswordEditor() : new WStringEditor();
 		else
 			inputField = editor;
 		this.isInputMandatory = isInputMandatory;
@@ -369,10 +376,20 @@ public class Messagebox extends Window implements EventListener<Event>
 		return showDialog(message, title, buttons, icon, editor, false, callback, modal);
 	}
 	
+	public static int showDialog(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal, boolean isInputProtected) 
+	{
+		return showDialog(message, title, buttons, icon, null, false, callback, modal, isInputProtected);
+	}
+	
 	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal)
 	{
+		return showDialog(message, title, buttons, icon, editor, isInputMandatory, callback, modal, false);
+	}
+	
+	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal, boolean isInputProtected)
+	{
 		Messagebox msg = new Messagebox();
-		return msg.show(message, title, buttons, icon, editor, isInputMandatory, callback, modal);
+		return msg.show(message, title, buttons, icon, editor, isInputMandatory, callback, modal, isInputProtected);
 	}
 	
     // Andreas Sumerauer IDEMPIERE 4702
