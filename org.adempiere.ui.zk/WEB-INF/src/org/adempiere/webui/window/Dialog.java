@@ -396,7 +396,6 @@ public final class Dialog {
     }
     
     public static void askForInput(int windowNo, String adMessage, String title, final Callback<String> callback, boolean isInputProtected) {
-    	System.out.println("Secretisimo : " + isInputProtected);
     	Callback<String> msgCallback = null;
     	if (callback != null) 
     	{

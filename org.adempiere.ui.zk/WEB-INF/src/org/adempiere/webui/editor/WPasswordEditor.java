@@ -28,10 +28,6 @@ import org.compiere.model.GridField;
 public class WPasswordEditor extends WStringEditor
 {
 	
-	/**
-	 * 
-	 * @param gridField
-	 */
     public WPasswordEditor()
     {
         super();

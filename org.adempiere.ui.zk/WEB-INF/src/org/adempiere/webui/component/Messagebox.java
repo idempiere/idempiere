@@ -277,7 +277,6 @@ public class Messagebox extends Window implements EventListener<Event>
 	
 	public int show(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal, boolean isInputProtected)
 	{
-		System.out.println("passwd: " + isInputProtected);
 		this.msg = message;
 		this.imgSrc = icon;
 		this.callback = callback;
