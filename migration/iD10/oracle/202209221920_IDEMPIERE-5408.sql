@@ -37,70 +37,90 @@ UPDATE AD_Field SET IsDisplayed='Y', SeqNo=20, AD_Reference_Value_ID=NULL, AD_Va
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=30, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=317
+UPDATE AD_Field SET SeqNo=30,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=317
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=40, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=318
+UPDATE AD_Field SET SeqNo=40,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=318
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=50, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=319
+UPDATE AD_Field SET SeqNo=50,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=319
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=60, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=10318
+UPDATE AD_Field SET SeqNo=60,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=10318
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=70, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5160
+UPDATE AD_Field SET SeqNo=70,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5160
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=80, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5759
+UPDATE AD_Field SET SeqNo=80,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5759
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=90, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11025
+UPDATE AD_Field SET SeqNo=90,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11025
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=100, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11205
+UPDATE AD_Field SET SeqNo=100,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11205
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=110, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3813
+UPDATE AD_Field SET SeqNo=110,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=3813
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=120, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5887
+UPDATE AD_Field SET SeqNo=120,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5887
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=130, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200594
+UPDATE AD_Field SET SeqNo=130,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200594
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=140, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200595
+UPDATE AD_Field SET SeqNo=140,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200595
 ;
 
 -- Sep 22, 2022, 7:24:07 PM CEST
-UPDATE AD_Field SET SeqNo=150, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5161
+UPDATE AD_Field SET SeqNo=150,Updated=TO_TIMESTAMP('2022-09-22 19:24:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5161
 ;
 
 -- Sep 22, 2022, 7:24:08 PM CEST
-UPDATE AD_Field SET SeqNo=160, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5162
+UPDATE AD_Field SET SeqNo=160,Updated=TO_TIMESTAMP('2022-09-22 19:24:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5162
 ;
 
 -- Sep 22, 2022, 7:24:08 PM CEST
-UPDATE AD_Field SET SeqNo=170, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5163
+UPDATE AD_Field SET SeqNo=170,Updated=TO_TIMESTAMP('2022-09-22 19:24:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5163
 ;
 
 -- Sep 22, 2022, 7:24:08 PM CEST
-UPDATE AD_Field SET SeqNo=180, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5164
+UPDATE AD_Field SET SeqNo=180,Updated=TO_TIMESTAMP('2022-09-22 19:24:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5164
 ;
 
 -- Sep 22, 2022, 7:24:08 PM CEST
-UPDATE AD_Field SET SeqNo=0, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2022-09-22 19:24:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204476
+UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2022-09-22 19:24:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204476
+;
+
+-- Sep 23, 2022, 9:40:32 PM CEST
+INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated,CreatedBy,UpdatedBy,IsActive,Name,Value,Description,EntityType,ConfigurationLevel,AD_SysConfig_UU) VALUES (200207,0,0,TO_TIMESTAMP('2022-09-23 21:40:32','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2022-09-23 21:40:32','YYYY-MM-DD HH24:MI:SS'),100,100,'Y','LOGIN_PREFIX_SEPARATOR','/','Define the separator between tenant and user when using login prefix','D','S','401baee7-ed2b-4c46-89f9-93ba324411b7')
+;
+
+-- Sep 23, 2022, 9:41:35 PM CEST
+INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated,CreatedBy,UpdatedBy,IsActive,Name,Value,Description,EntityType,ConfigurationLevel,AD_SysConfig_UU) VALUES (200208,0,0,TO_TIMESTAMP('2022-09-23 21:41:35','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2022-09-23 21:41:35','YYYY-MM-DD HH24:MI:SS'),100,100,'Y','LOGIN_WITH_TENANT_PREFIX','N','Accepted values are (N)o | (A)llow | (F)orce.  WARNING: Before setting Force you must fill properly the login prefixes on all tenants.','D','S','9e5af823-d8c6-4019-8f0e-a6d894f3a9cb')
+;
+
+-- Sep 23, 2022, 9:42:25 PM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Tenant not specified at login',0,0,'Y',TO_TIMESTAMP('2022-09-23 21:42:24','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-09-23 21:42:24','YYYY-MM-DD HH24:MI:SS'),100,200786,'MissingLoginTenant','D','073cb962-7666-4fa3-b471-ca9af693eb3a')
+;
+
+-- Sep 23, 2022, 9:42:38 PM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','User not specified at login',0,0,'Y',TO_TIMESTAMP('2022-09-23 21:42:37','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-09-23 21:42:37','YYYY-MM-DD HH24:MI:SS'),100,200787,'MissingLoginUser','D','0ec843b3-1082-4fac-8dac-a75d0e2f0673')
+;
+
+-- Sep 23, 2022, 9:42:46 PM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Tenant {0} not found',0,0,'Y',TO_TIMESTAMP('2022-09-23 21:42:46','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-09-23 21:42:46','YYYY-MM-DD HH24:MI:SS'),100,200788,'TenantNotFound','D','b806368b-55e7-4d5f-af17-5317c8eefd6c')
 ;
 

@@ -127,7 +127,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         
         if( m_clientKNPairs.length == 1  &&  !m_show ){
         	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) m_clientKNPairs[0].getID());
-        	MUser user = MUser.get (m_ctx, m_userName);
+        	MUser user = MUser.get (m_ctx, Login.getAppUser(m_userName));
         	m_userpreference=new UserPreference();
         	m_userpreference.loadPreference(user.get_ID());        	
         }
@@ -568,7 +568,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	} else {
         	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) null);
     	}
-    	MUser user = MUser.get (m_ctx, m_userName);
+    	MUser user = MUser.get (m_ctx, Login.getAppUser(m_userName));
     	if (user != null) {
     		Env.setContext(m_ctx, Env.AD_USER_ID, user.getAD_User_ID() );
     		Env.setContext(m_ctx, Env.AD_USER_NAME, user.getName() );

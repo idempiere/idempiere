@@ -173,15 +173,24 @@ public class LoginPanel extends Window implements EventListener<Event>
 							    {
 							    	onUserIdChange(AD_User_ID);
 							    	if (MSystem.isZKRememberUserAllowed()) {
+							    		String fillUser = null;
 							    		if (email_login) {
-							    			txtUserId.setValue(user.getEMail());
+							    			fillUser = user.getEMail();
 							    		} else {
 							    			if (user.getLDAPUser() != null && user.getLDAPUser().length() > 0) {
-							    				txtUserId.setValue(user.getLDAPUser());
+							    				fillUser = user.getLDAPUser();
 							    			} else {
-							    				txtUserId.setValue(user.getName());
+							    				fillUser = user.getName();
 							    			}
 							    		}
+							    		if (MSystem.allowLoginPrefix()) {
+							    			MClient client = MClient.get(session.getAD_Client_ID());
+							    			if (! Util.isEmpty(client.getLoginPrefix())) {
+								    			String separator = MSysConfig.getValue(MSysConfig.LOGIN_PREFIX_SEPARATOR, "/");
+								    			fillUser = client.getLoginPrefix() + separator + fillUser;
+							    			}
+							    		}
+						    			txtUserId.setValue(fillUser);
 								    	chkRememberMe.setChecked(true);
 							    	}
 							    	if (MSystem.isZKRememberPasswordAllowed()) {
