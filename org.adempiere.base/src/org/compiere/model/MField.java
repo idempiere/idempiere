@@ -210,9 +210,12 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 				setIsAllowCopy("Y");
 		}
 		if (getAD_Reference_ID() <= 0) {
-			setAD_Reference_Value_ID(0);
-			setAD_Val_Rule_ID(0);
-			setIsToolbarButton(null);
+			if (getAD_Reference_Value_ID()!=0)
+				setAD_Reference_Value_ID(0);
+			if (getAD_Val_Rule_ID()!=0)
+				setAD_Val_Rule_ID(0);
+			if (getIsToolbarButton() != null)
+				setIsToolbarButton(null);
 		}
 
 		//validate logic expression
