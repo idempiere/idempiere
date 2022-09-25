@@ -42,7 +42,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.Charge;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -55,8 +55,8 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 
 /**
  * This class represents the Custom Form for generating charges
@@ -349,17 +349,17 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         int elementValueId = createElementValue (value, name, m_chbIsExpense.isChecked());
         if (elementValueId == 0)
         {
-            FDialog.error(form.getWindowNo(), form, "ChargeNotCreated", name);
+            Dialog.error(form.getWindowNo(), "ChargeNotCreated", name);
             return;
         }
         //  Create Charge
         int chargeId = createCharge(name, elementValueId);
         if (chargeId == 0)
         {
-            FDialog.error(form.getWindowNo(), form, "ChargeNotCreated", name);
+            Dialog.error(form.getWindowNo(), "ChargeNotCreated", name);
             return;
         }
-        FDialog.info(form.getWindowNo(), form, "ChargeCreated", name);
+        Dialog.info(form.getWindowNo(), "ChargeCreated", name);
     }   //  createNew
 
     /**
@@ -372,11 +372,11 @@ public class WCharge extends Charge implements IFormController, EventListener<Ev
         createAccount(m_tblData);
         if (listCreated.length() > 0)
         {
-            FDialog.info(form.getWindowNo(), form, "ChargeCreated", listCreated.toString());
+            Dialog.info(form.getWindowNo(), "ChargeCreated", listCreated.toString());
         }
         if (listRejected.length() > 0)
         {
-            FDialog.error(form.getWindowNo(), form, "ChargeNotCreated", listRejected.toString());
+            Dialog.error(form.getWindowNo(), "ChargeNotCreated", listRejected.toString());
         }
         
         m_selectedCount = 0;

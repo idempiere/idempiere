@@ -12,7 +12,7 @@
 	<properties>
 		<revision>10.0.0-SNAPSHOT</revision>
 		<jdk.version>11</jdk.version>
-		<tycho.version>2.7.3</tycho.version>
+		<tycho.version>2.7.5</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.17.0</jp.version>
@@ -31,6 +31,7 @@
 		<url.file.srv>https://raw.githubusercontent.com/idempiere/binary.file/master</url.file.srv>
 		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.test.feature.feature.group</extra.ui.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
+		<skipClean>false</skipClean>
 	</properties>
 
 	<build>
@@ -175,6 +176,25 @@
 											<goal>
 												declarative-services
 											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-antrun-plugin
+										</artifactId>
+										<versionRange>
+											[1.8,)
+										</versionRange>
+										<goals>
+											<goal>run</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -490,6 +510,14 @@
 				  <artifactId>tycho-surefire-plugin</artifactId>
 				  <version>${tycho.version}</version>
 				</plugin>
+				<plugin>
+				  <groupId>org.eclipse.tycho</groupId>
+				  <artifactId>tycho-ds-plugin</artifactId>
+				  <version>${tycho.version}</version>
+				  <configuration>
+					 <skip>true</skip>
+				  </configuration>
+			    </plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -505,6 +533,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<skip>${skipClean}</skip>
 					<filesets>
 						<fileset>
 							<directory>${project.basedir}/lib</directory>

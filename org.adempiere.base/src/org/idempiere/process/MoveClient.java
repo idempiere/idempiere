@@ -214,7 +214,7 @@ public class MoveClient extends SvrProcess {
 		try {
 			try {
 				if (p_IsCopyClient) {
-					externalConn = DB.getConnectionRO();
+					externalConn = DB.getConnection();
 				} else {
 					externalConn = DB.getDatabase(p_JDBC_URL).getDriverConnection(p_JDBC_URL, p_UserName, p_Password);
 				}

@@ -256,7 +256,7 @@ public class UUIDGenerator extends SvrProcess {
 		//	Find Column in Database
 		Connection conn = null;
 		try {
-			conn = DB.getConnectionRO();
+			conn = DB.getConnection();
 			DatabaseMetaData md = conn.getMetaData();
 			String catalog = DB.getDatabase().getCatalog();
 			String schema = DB.getDatabase().getSchema();

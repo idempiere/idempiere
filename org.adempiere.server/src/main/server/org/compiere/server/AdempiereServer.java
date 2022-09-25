@@ -34,6 +34,7 @@ import org.compiere.model.MSystem;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -202,7 +203,7 @@ public abstract class AdempiereServer implements Runnable
 		else if (po.get_ValueAsInt("UpdatedBy") > 0)
 			AD_User_ID = po.get_ValueAsInt("UpdatedBy");
 		else
-			AD_User_ID = 100; //fall back to SuperUser
+			AD_User_ID = SystemIDs.USER_SUPERUSER; //fall back to SuperUser
 		return AD_User_ID;
 	}
 	

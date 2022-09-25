@@ -51,17 +51,22 @@ import org.compiere.model.MFactAcct;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MPayment;
+import org.compiere.model.MPriceList;
+import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MProduct;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * @author Elaine Tan - etantg
@@ -72,6 +77,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Invoice Total=12,587.48, Period 1
@@ -169,14 +175,15 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalList);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
 			deleteConversionRate(cr3);
-			rollback();
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Invoice Total=12,587.48
@@ -187,7 +194,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5053
 	 */
 	public void testAllocateInvoicePaymentPosting_2() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Timestamp date = currentDate;
@@ -257,12 +264,13 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Payment Total=12,000, Period 1
@@ -271,7 +279,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4200
 	 */
 	public void testAllocateInvoicePaymentPosting_3() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Calendar cal = Calendar.getInstance();
@@ -327,13 +335,14 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Payment Total=12,000
@@ -342,7 +351,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4200
 	 */
 	public void testAllocateInvoicePaymentPosting_4() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.AGRI_TECH.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Timestamp date = currentDate;
@@ -388,12 +397,13 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Invoice1 Total=9,362.50, Period 1
@@ -408,7 +418,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4200
 	 */
 	public void testAllocateInvoicePaymentPosting_5() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Calendar cal = Calendar.getInstance();
@@ -536,13 +546,14 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Invoice1 Total=9,362.50
@@ -674,12 +685,13 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Payment Total=12,000, Period 1
@@ -690,7 +702,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4127
 	 */
 	public void testAllocateInvoicePaymentPosting_7() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id, getTrxName()); 
+		DB.getDatabase().forUpdate(bpartner, 0);
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Calendar cal = Calendar.getInstance();
@@ -774,13 +787,14 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Payment Total=12,000
@@ -791,7 +805,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4127
 	 */
 	public void testAllocateInvoicePaymentPosting_8() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id, getTrxName()); // C&W Construction
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Timestamp date = currentDate;
@@ -808,6 +822,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 		try {
 			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
 			BigDecimal payAmt = new BigDecimal(12000);
+			DB.getDatabase().forUpdate(bpartner, 0);
 			MPayment payment = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date, payAmt, euro.getC_Currency_ID(), C_ConversionType_ID);
 			completeDocument(payment);
 			postDocument(payment);
@@ -865,12 +880,13 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period)
 	 * Invoice Total=12,000, Period 1
@@ -881,7 +897,9 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4127
 	 */
 	public void testAllocateInvoicePaymentPosting_9() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.AGRI_TECH.id, getTrxName());
+		DB.getDatabase().forUpdate(bpartner, 0);
+		
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Calendar cal = Calendar.getInstance();
@@ -963,13 +981,14 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period)
 	 * Invoice Total=12,000
@@ -980,7 +999,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4127
 	 */
 	public void testAllocateInvoicePaymentPosting_10() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Timestamp date = currentDate;
@@ -1052,12 +1071,341 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, null, currBalLineList);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
+	/**
+	 * Test the allocation posting (different period + reversal)
+	 * Invoice Total=1000, Period 1
+	 * Payment1 Total=1000, Period 2
+	 * Payment2 Total=1000, Period 3 (Reversal)
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5339
+	 */
+	public void testAllocateInvoicePaymentPosting_11() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); // C&W Construction
+		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(currentDate.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+		Timestamp date1 = new Timestamp(cal.getTimeInMillis());
+		
+		cal.setTimeInMillis(currentDate.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Timestamp date2 = new Timestamp(cal.getTimeInMillis());
+		
+		Timestamp date3 = currentDate;
+		
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.SPOT.id; // Spot
+		
+		MCurrency aud = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // AUD
+		MCurrency eur = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		BigDecimal audToEur = new BigDecimal(0.7);
+		MConversionRate cr1a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date1, audToEur, true);
+		BigDecimal audToUsd = new BigDecimal(0.8);
+		MConversionRate cr1b = createConversionRate(aud.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, audToUsd, true);
+		
+		audToEur = new BigDecimal(0.8);
+		MConversionRate cr2a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date2, audToEur, true);
+		audToUsd = new BigDecimal(0.9);
+		MConversionRate cr2b = createConversionRate(aud.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, audToUsd, true);
+		
+		audToEur = new BigDecimal(0.8);
+		MConversionRate cr3a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date3, audToEur, true);
+		audToUsd = new BigDecimal(0.9);
+		MConversionRate cr3b = createConversionRate(aud.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date3, audToUsd, true);
+		
+		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
+		priceList.setName("Export AUD " + System.currentTimeMillis());
+		MCurrency australianDollar = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // Australian Dollar (AUD)
+		priceList.setC_Currency_ID(australianDollar.getC_Currency_ID());
+		priceList.setPricePrecision(australianDollar.getStdPrecision());
+		priceList.saveEx();
+		
+		MPriceListVersion plv = new MPriceListVersion(priceList);
+		plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.SALES_2001.id); // Sales 2001
+		plv.setValidFrom(currentDate);
+		plv.saveEx();
+		
+		try {
+			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
+			MInvoice invoice = createInvoice(true, bpartner, date1, priceList.getM_PriceList_ID(), C_ConversionType_ID);
+			BigDecimal qty = BigDecimal.ONE;
+			BigDecimal price = new BigDecimal(1000);
+			createInvoiceLine(invoice, 10, null, charge, qty, price);
+			completeDocument(invoice);
+			postDocument(invoice);
+			
+			BigDecimal payAmt = new BigDecimal(1000);
+			MPayment payment = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date2, payAmt, aud.getC_Currency_ID(), C_ConversionType_ID);
+			completeDocument(payment);
+			postDocument(payment);
+			
+			MAllocationHdr alloc = createAllocationHdr(date2, aud.getC_Currency_ID());
+			BigDecimal allocAmount = new BigDecimal(1000);
+			createAllocationLine(alloc, allocAmount, invoice, payment);
+			completeDocument(alloc);
+			postDocument(alloc);
+			
+			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment.getC_Payment_ID(), getTrxName());
+			
+			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
+			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
+			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr2b.getMultiplyRate());
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr2b.getMultiplyRate());
+			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
+			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
+			BigDecimal gainLossAmt = new BigDecimal(100).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
+			gainLossLineList.add(new PostingLine(usd, Env.ZERO, gainLossAmt));
+			tradeLineList.add(new PostingLine(usd, gainLossAmt, Env.ZERO));
+			
+			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
+			
+			paymentLineList = new ArrayList<PostingLine>();
+			tradeLineList = new ArrayList<PostingLine>();
+			gainLossLineList = new ArrayList<PostingLine>();
+			accountedDrAmt = getAccountedAmount(eur, allocAmount, cr2a.getMultiplyRate());
+			accountedCrAmt = getAccountedAmount(eur, allocAmount, cr2a.getMultiplyRate());
+			paymentLineList.add(new PostingLine(eur, accountedDrAmt, Env.ZERO));
+			tradeLineList.add(new PostingLine(eur, Env.ZERO, accountedCrAmt));
+			gainLossAmt = new BigDecimal(100).setScale(eur.getStdPrecision(), RoundingMode.HALF_UP);
+			gainLossLineList.add(new PostingLine(eur, Env.ZERO, gainLossAmt));
+			tradeLineList.add(new PostingLine(eur, gainLossAmt, Env.ZERO));
+			
+			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
+			
+			reverseDocument(payment, false);
+			MPayment reversalPayment = new MPayment(Env.getCtx(), payment.getReversal_ID(), getTrxName());
+			postDocument(reversalPayment);
+			
+			MAllocationHdr reversalAlloc = null;
+			allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment.getC_Payment_ID(), getTrxName());
+			for (MAllocationHdr allocation : allocList) {
+				if (allocation.getReversal_ID() > 0 && allocation.getReversal_ID() < allocation.get_ID()) {
+					reversalAlloc = allocation;
+					break;
+				}
+			}
+			
+			if (reversalAlloc == null)
+				reversalAlloc = new MAllocationHdr(Env.getCtx(), alloc.getReversal_ID(), getTrxName());
+		
+			allocList = new MAllocationHdr[] { reversalAlloc };
+			
+			paymentLineList = new ArrayList<PostingLine>();
+			tradeLineList = new ArrayList<PostingLine>();
+			gainLossLineList = new ArrayList<PostingLine>();
+			accountedDrAmt = getAccountedAmount(usd, allocAmount, cr3b.getMultiplyRate());
+			accountedCrAmt = getAccountedAmount(usd, allocAmount, cr3b.getMultiplyRate());
+			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
+			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
+			gainLossAmt = new BigDecimal(100).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
+			gainLossLineList.add(new PostingLine(usd, gainLossAmt, Env.ZERO));
+			tradeLineList.add(new PostingLine(usd, Env.ZERO, gainLossAmt));
+			
+			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
+			
+			paymentLineList = new ArrayList<PostingLine>();
+			tradeLineList = new ArrayList<PostingLine>();
+			gainLossLineList = new ArrayList<PostingLine>();
+			accountedDrAmt = getAccountedAmount(eur, allocAmount, cr3a.getMultiplyRate());
+			accountedCrAmt = getAccountedAmount(eur, allocAmount, cr3a.getMultiplyRate());
+			tradeLineList.add(new PostingLine(eur, accountedDrAmt, Env.ZERO));
+			paymentLineList.add(new PostingLine(eur, Env.ZERO, accountedCrAmt));
+			gainLossAmt = new BigDecimal(100).setScale(eur.getStdPrecision(), RoundingMode.HALF_UP);
+			gainLossLineList.add(new PostingLine(eur, gainLossAmt, Env.ZERO));
+			tradeLineList.add(new PostingLine(eur, Env.ZERO, gainLossAmt));
+			
+			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
+		} finally {
+			rollback();
+			
+			deleteConversionRate(cr1a);
+			deleteConversionRate(cr1b);
+			deleteConversionRate(cr2a);
+			deleteConversionRate(cr2b);
+			deleteConversionRate(cr3a);
+			deleteConversionRate(cr3b);
+			
+			plv.deleteEx(true);
+			priceList.deleteEx(true);
+		}
+	}
+	
+	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
+	/**
+	 * Test the allocation posting (different period + reversal)
+	 * Payment Total=1000, Period 1
+	 * Invoice Total=1000, Period 2
+	 * Invoice Total=1000, Period 3 (Reversal)
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-5339
+	 */
+	public void testAllocateInvoicePaymentPosting_12() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); 
+		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(currentDate.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+		Timestamp date1 = new Timestamp(cal.getTimeInMillis());
+		
+		cal.setTimeInMillis(currentDate.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Timestamp date2 = new Timestamp(cal.getTimeInMillis());
+		
+		Timestamp date3 = currentDate;
+		
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.SPOT.id; // Spot
+		
+		MCurrency aud = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // AUD
+		MCurrency eur = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
+		BigDecimal audToEur = new BigDecimal(0.7);
+		MConversionRate cr1a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date1, audToEur, true);
+		BigDecimal audToUsd = new BigDecimal(0.8);
+		MConversionRate cr1b = createConversionRate(aud.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date1, audToUsd, true);
+		
+		audToEur = new BigDecimal(0.8);
+		MConversionRate cr2a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date2, audToEur, true);
+		audToUsd = new BigDecimal(0.9);
+		MConversionRate cr2b = createConversionRate(aud.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date2, audToUsd, true);
+		
+		audToEur = new BigDecimal(0.8);
+		MConversionRate cr3a = createConversionRate(aud.getC_Currency_ID(), eur.getC_Currency_ID(), C_ConversionType_ID, date3, audToEur, true);
+		audToUsd = new BigDecimal(0.9);
+		MConversionRate cr3b = createConversionRate(aud.getC_Currency_ID(), usd.getC_Currency_ID(), C_ConversionType_ID, date3, audToUsd, true);
+		
+		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
+		priceList.setName("Export AUD " + System.currentTimeMillis());
+		MCurrency australianDollar = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // Australian Dollar (AUD)
+		priceList.setC_Currency_ID(australianDollar.getC_Currency_ID());
+		priceList.setPricePrecision(australianDollar.getStdPrecision());
+		priceList.saveEx();
+		
+		MPriceListVersion plv = new MPriceListVersion(priceList);
+		plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.SALES_2001.id); // Sales 2001
+		plv.setValidFrom(currentDate);
+		plv.saveEx();
+		
+		try {
+			MBankAccount ba = getBankAccount(usd.getC_Currency_ID());
+			BigDecimal payAmt = new BigDecimal(1000);
+			MPayment payment = createPayment(true, bpartner, ba.getC_BankAccount_ID(), date1, payAmt, aud.getC_Currency_ID(), C_ConversionType_ID);
+			completeDocument(payment);
+			postDocument(payment);
+			
+			MInvoice invoice = createInvoice(true, bpartner, date2, priceList.getM_PriceList_ID(), C_ConversionType_ID);
+			BigDecimal qty = BigDecimal.ONE;
+			BigDecimal price = new BigDecimal(1000);
+			createInvoiceLine(invoice, 10, null, charge, qty, price);
+			completeDocument(invoice);
+			postDocument(invoice);
+			
+			MAllocationHdr alloc = createAllocationHdr(date2, aud.getC_Currency_ID());
+			BigDecimal allocAmount = new BigDecimal(1000);
+			createAllocationLine(alloc, allocAmount, invoice, payment);
+			completeDocument(alloc);
+			postDocument(alloc);
+			
+			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment.getC_Payment_ID(), getTrxName());
+			
+			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
+			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
+			ArrayList<PostingLine> gainLossLineList = new ArrayList<PostingLine>();
+			BigDecimal accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1b.getMultiplyRate());
+			BigDecimal accountedCrAmt = getAccountedAmount(usd, allocAmount, cr1b.getMultiplyRate());
+			paymentLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
+			tradeLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
+			BigDecimal gainLossAmt = new BigDecimal(100).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
+			gainLossLineList.add(new PostingLine(usd, gainLossAmt, Env.ZERO));
+			tradeLineList.add(new PostingLine(usd, Env.ZERO, gainLossAmt));
+			
+			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
+			
+			paymentLineList = new ArrayList<PostingLine>();
+			tradeLineList = new ArrayList<PostingLine>();
+			gainLossLineList = new ArrayList<PostingLine>();
+			accountedDrAmt = getAccountedAmount(eur, allocAmount, cr1a.getMultiplyRate());
+			accountedCrAmt = getAccountedAmount(eur, allocAmount, cr1a.getMultiplyRate());
+			paymentLineList.add(new PostingLine(eur, accountedDrAmt, Env.ZERO));
+			tradeLineList.add(new PostingLine(eur, Env.ZERO, accountedCrAmt));
+			gainLossAmt = new BigDecimal(100).setScale(eur.getStdPrecision(), RoundingMode.HALF_UP);
+			gainLossLineList.add(new PostingLine(eur, gainLossAmt, Env.ZERO));
+			tradeLineList.add(new PostingLine(eur, Env.ZERO, gainLossAmt));
+			
+			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
+			
+			reverseDocument(invoice, false);
+			MInvoice reversalInvoice = new MInvoice(Env.getCtx(), invoice.getReversal_ID(), getTrxName());
+			postDocument(reversalInvoice);
+			
+			MAllocationHdr reversalAlloc = null;
+			allocList = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
+			for (MAllocationHdr allocation : allocList) {
+				if (allocation.getReversal_ID() > 0 && allocation.getReversal_ID() < allocation.get_ID()) {
+					reversalAlloc = allocation;
+					break;
+				}
+			}
+			
+			if (reversalAlloc == null)
+				reversalAlloc = new MAllocationHdr(Env.getCtx(), alloc.getReversal_ID(), getTrxName());
+		
+			allocList = new MAllocationHdr[] { reversalAlloc };
+			
+			paymentLineList = new ArrayList<PostingLine>();
+			tradeLineList = new ArrayList<PostingLine>();
+			gainLossLineList = new ArrayList<PostingLine>();
+			accountedDrAmt = getAccountedAmount(usd, allocAmount, cr1b.getMultiplyRate());
+			accountedCrAmt = getAccountedAmount(usd, allocAmount, cr1b.getMultiplyRate());
+			tradeLineList.add(new PostingLine(usd, accountedDrAmt, Env.ZERO));
+			paymentLineList.add(new PostingLine(usd, Env.ZERO, accountedCrAmt));
+			gainLossAmt = new BigDecimal(100).setScale(usd.getStdPrecision(), RoundingMode.HALF_UP);
+			gainLossLineList.add(new PostingLine(usd, Env.ZERO, gainLossAmt));
+			tradeLineList.add(new PostingLine(usd, gainLossAmt, Env.ZERO));
+			
+			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
+			
+			paymentLineList = new ArrayList<PostingLine>();
+			tradeLineList = new ArrayList<PostingLine>();
+			gainLossLineList = new ArrayList<PostingLine>();
+			accountedDrAmt = getAccountedAmount(eur, allocAmount, cr1a.getMultiplyRate());
+			accountedCrAmt = getAccountedAmount(eur, allocAmount, cr1a.getMultiplyRate());
+			tradeLineList.add(new PostingLine(eur, accountedDrAmt, Env.ZERO));
+			paymentLineList.add(new PostingLine(eur, Env.ZERO, accountedCrAmt));
+			gainLossAmt = new BigDecimal(100).setScale(eur.getStdPrecision(), RoundingMode.HALF_UP);
+			gainLossLineList.add(new PostingLine(eur, Env.ZERO, gainLossAmt));
+			tradeLineList.add(new PostingLine(eur, gainLossAmt, Env.ZERO));
+			
+			testAllocationPosting(ass, allocList, paymentLineList, tradeLineList, gainLossLineList, null);
+		} finally {
+			rollback();
+
+			deleteConversionRate(cr1a);
+			deleteConversionRate(cr1b);
+			deleteConversionRate(cr2a);
+			deleteConversionRate(cr2b);
+			deleteConversionRate(cr3a);
+			deleteConversionRate(cr3b);
+			
+			plv.deleteEx(true);
+			priceList.deleteEx(true);			
+		}
+	}
+	
+	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + reversal)
 	 * Invoice Total=1000, Period 1
@@ -1114,13 +1462,14 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, gainLossLineList, null);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period + reversal)
 	 * Invoice Total=1000
@@ -1128,7 +1477,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testAllocateInvoicePosting_2() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Timestamp date = currentDate;
@@ -1166,12 +1515,13 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + offset)
 	 * Invoice Total=1000, Period 1
@@ -1179,7 +1529,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testAllocateInvoicePosting_3() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
@@ -1237,13 +1587,14 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, gainLossLineList, null);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period + offset)
 	 * Invoice Total=1000
@@ -1251,7 +1602,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testAllocateInvoicePosting_4() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id); 
 		MCharge charge = MCharge.get(Env.getCtx(), DictionaryIDs.C_Charge.FREIGHT.id); // Freight Charges
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		Timestamp date = currentDate;
@@ -1298,12 +1649,13 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, null, tradeLineList, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + reversal)
 	 * Payment Total=1000, Period 1
@@ -1311,7 +1663,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testAllocatePaymentPosting_1() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.AGRI_TECH.id); 
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -1356,13 +1708,14 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, gainLossLineList, null);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period + reversal)
 	 * Payment Total=1000, Period 1
@@ -1404,12 +1757,13 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (different period + offset)
 	 * Payment Total=1000, Period 1
@@ -1417,7 +1771,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4696
 	 */
 	public void testAllocatePaymentPosting_3() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id);
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		Calendar cal = Calendar.getInstance();
@@ -1468,13 +1822,14 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, gainLossLineList, null);
 		} finally {
+			rollback();
 			deleteConversionRate(cr1);
 			deleteConversionRate(cr2);
-			rollback();
 		}
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * Test the allocation posting (same period + offset)
 	 * Payment Total=1000
@@ -1522,8 +1877,8 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			
 			testAllocationPosting(ass, allocList, paymentLineList, null, null, null);
 		} finally {
-			deleteConversionRate(cr);
 			rollback();
+			deleteConversionRate(cr);
 		}
 	}
 		
@@ -1534,34 +1889,11 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 	
 	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
 			Timestamp date, BigDecimal rate, boolean isMultiplyRate) {
-		MConversionRate cr = new MConversionRate(Env.getCtx(), 0, null);
-		cr.setC_Currency_ID(C_Currency_ID);
-		cr.setC_Currency_ID_To(C_Currency_ID_To);
-		cr.setC_ConversionType_ID(C_ConversionType_ID);
-		cr.setValidFrom(date);
-		cr.setValidTo(date);
-		if (isMultiplyRate)
-			cr.setMultiplyRate(rate);
-		else
-			cr.setDivideRate(rate);
-		cr.saveEx();
-		return cr;
+		return ConversionRateHelper.createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, isMultiplyRate);
 	}
 	
 	private void deleteConversionRate(MConversionRate cr) {
-		String whereClause = "ValidFrom=? AND ValidTo=? "
-				+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
-				+ "AND C_ConversionType_ID=? "
-				+ "AND AD_Client_ID=? AND AD_Org_ID=?";
-		MConversionRate reciprocal = new Query(Env.getCtx(), MConversionRate.Table_Name, whereClause, null)
-				.setParameters(cr.getValidFrom(), cr.getValidTo(), 
-						cr.getC_Currency_ID_To(), cr.getC_Currency_ID(),
-						cr.getC_ConversionType_ID(),
-						cr.getAD_Client_ID(), cr.getAD_Org_ID())
-				.firstOnly();
-		if (reciprocal != null)
-			reciprocal.deleteEx(true);
-		cr.deleteEx(true);
+		ConversionRateHelper.deleteConversionRate(cr);
 	}
 	
 	private MInvoice createInvoice(boolean isSOTrx, MBPartner bpartner, Timestamp date, int M_PriceList_ID, int C_ConversionType_ID) {

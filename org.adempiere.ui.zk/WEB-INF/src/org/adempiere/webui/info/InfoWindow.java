@@ -17,9 +17,10 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.impexp.AbstractExcelExporter;
+import org.adempiere.impexp.AbstractXLSXExporter;
 import org.adempiere.model.IInfoColumn;
 import org.adempiere.model.MInfoProcess;
 import org.adempiere.model.MInfoRelated;
@@ -65,7 +66,7 @@ import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.EmbedWinInfo;
 import org.compiere.minigrid.IDColumn;
@@ -101,6 +102,8 @@ import org.idempiere.ui.zk.media.WMediaOptions;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -131,16 +134,16 @@ import org.zkoss.zul.Vlayout;
  * @contributor xolali 	IDEMPIERE-1045 Sub-Info Tabs  (reviewed by red1)
  */
 public class InfoWindow extends InfoPanel implements ValueChangeListener, EventListener<Event> {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7909883495636121689L;
+	private static final long serialVersionUID = -5482739724937721227L;
+	
+	private static final String ON_QUERY_AFTER_CHANGE = "onQueryAfterChange";
 	
 	protected Grid parameterGrid;
 	private Borderlayout layout;
 	private Vbox southBody;
 	/** List of WEditors            */
     protected List<WEditor> editors;
+    protected List<WEditor> queryAfterChangeEditors;
     protected List<WEditor> identifiers;
     protected Properties infoContext;
 
@@ -237,6 +240,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				lookup, AD_InfoWindow_ID, queryValue);		
 		this.m_gridfield = field;
 
+		addEventListener(ON_QUERY_AFTER_CHANGE, e -> postQueryAfterChangeEvent());
+		
    		//Xolali IDEMPIERE-1045
    		contentPanel.addActionListener(new EventListener<Event>() {
    			public void onEvent(Event event) throws Exception {
@@ -287,7 +292,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				prepareTable();
 				processQueryValue();
-			}			
+			}	
 		}
 		
 		if (ClientInfo.isMobile()) {
@@ -297,6 +302,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		// F3P: add export button
 		if (!isAutoComplete)
 			initExport();
+	}
+	
+	/**
+	 * set focus to first parameter editor
+	 */
+	public void focusToFirstEditor()
+	{
+		if (editors != null && editors.size() > 0)
+		{
+			Component component = editors.get(0).getComponent();
+			if (component instanceof HtmlBasedComponent)
+			{
+				((HtmlBasedComponent) component).focus();
+			}
+		}
 	}
 	
 	/** 
@@ -538,6 +558,18 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		btMenuProcess.setVisible(ipMenu.getChildren().size() > 0);
 	}
 
+	/**
+	 * move process buttons from left side of center to the front of right side
+	 */
+	public void moveProcessButtonsToBeforeRight() {
+		if (btProcessList == null || btProcessList.isEmpty())
+			return;
+		
+		for(Button btn : btProcessList) {
+			confirmPanel.addComponentsBeforeRight(btn);
+		}
+	}
+	
 	protected void processQueryValue() {
 		isQueryByUser = true;
 		for (int i = 0; i < identifiers.size(); i++) {
@@ -663,6 +695,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				if(infoColumn.isQueryCriteria()) {
 					vo = vo.clone(infoContext, p_WindowNo, 0, vo.AD_Window_ID, 0, false);
 					vo.IsReadOnly = false;
+					vo.TabNo = Env.TAB_INFO;					
 					gridField = new GridField(vo);
 					List<Object[]> list = parameterTree.get(infoColumn.getSeqNoSelection());
 					if (list == null) {
@@ -857,7 +890,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					
 					columnInfo = new ColumnInfo(infoColumn.getNameTrl(), colSQL, DisplayType.getClass(infoColumn.getAD_Reference_ID(), true), infoColumn.isReadOnly() || haveNotProcess);
 				}
-				else if (DisplayType.isLookup(infoColumn.getAD_Reference_ID()))
+				else if (LookupFactoryHelper.isLookup(infoColumn))
 				{
 					if (infoColumn.getAD_Reference_ID() == DisplayType.List)
 					{
@@ -1479,6 +1512,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		if (!update) {
 			editors = new ArrayList<WEditor>();
+			queryAfterChangeEditors = new ArrayList<>();
 			identifiers = new ArrayList<WEditor>();
 		}
 
@@ -1560,6 +1594,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	        editor.dynamicDisplay();
 	        editor.addValueChangeListener(this);
 	        editor.fillHorizontal();
+	        if (editor instanceof WTableDirEditor)
+	        {
+	        	((WTableDirEditor) editor).setRetainSelectedValueAfterRefresh(false);
+	        }
         }
         Label label = editor.getLabel();
         Component fieldEditor = editor.getComponent();
@@ -1581,6 +1619,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         addSearchParameter(label, fieldEditor);
         
         editors.add(editor);
+        if (infoColumn.isQueryAfterChange()) {
+        	queryAfterChangeEditors.add(editor);
+        }
         
         editor.showMenu();
         
@@ -1792,8 +1833,30 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), evt.getNewValue().toString());
             }
             dynamicDisplay(editor);
+            
+            if (queryAfterChangeEditors != null && queryAfterChangeEditors.contains(editor)) {            	
+            	Events.postEvent(ON_QUERY_AFTER_CHANGE, this, null);
+            }
         }
 		
+	}
+
+	protected void postQueryAfterChangeEvent() {
+		if (Executions.getCurrent().getAttribute(ON_USER_QUERY_ATTR) != null)
+    		return;
+		
+		for (WEditor editor : queryAfterChangeEditors) {
+			if (!editor.isVisible())
+				continue;
+			
+			if (editor.getValue() == null) {
+				Executions.getCurrent().setAttribute(ON_USER_QUERY_ATTR, Boolean.TRUE);
+				onQueryCallback(null);
+				return;
+			}
+		}
+		
+		onUserQuery();
 	}
 
 	protected void dynamicDisplay(WEditor editor) {
@@ -2008,12 +2071,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				if (log.isLoggable(Level.INFO))
 					log.log(Level.INFO, countSql, e);
-				FDialog.error(p_WindowNo, INFO_QUERY_TIME_OUT_ERROR);
+				Dialog.error(p_WindowNo, INFO_QUERY_TIME_OUT_ERROR);
 			}
 			else
 			{
 				log.log(Level.SEVERE, countSql, e);
-				FDialog.error(p_WindowNo, "DBExecuteError", e.getMessage());
+				Dialog.error(p_WindowNo, "DBExecuteError", e.getMessage());
 			}
 			m_count = -2;
 		}
@@ -2029,7 +2092,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		{
 			if (promptError)
 			{
-				FDialog.error(getWindowNo(), this, "InfoFindOverMax",
+				Dialog.error(getWindowNo(), "InfoFindOverMax",
 		                m_count + " > " + infoWindow.getMaxQueryRecords());
 			}
 	        m_count = 0;
@@ -2404,7 +2467,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					}
 					
 					String msg = Msg.translate(ctx, sbError.toString());
-					FDialog.error(0, this, "ValidationError", msg); // TODO messaggio
+					Dialog.error(0, "ValidationError", msg); // TODO messaggio
 				}
 				else	
 					changeIsValid = true;
@@ -2413,7 +2476,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				log.log(Level.SEVERE, "Error executing validation SQL: " + validationSQL, e);
 				
-				FDialog.error(0, this, "Error", validationSQL); // TODO messaggio
+				Dialog.error(0, "Error", validationSQL); // TODO messaggio
 				changeIsValid = false;
 			}
 		}
@@ -2612,7 +2675,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     exportButton = ButtonFactory.createNamedButton("Export", false, true);        
     exportButton.setId("Export");
     exportButton.setEnabled(false);       
-    exportButton.addEventListener(Events.ON_CLICK, new XlsExportAction());
+    exportButton.addEventListener(Events.ON_CLICK, new XlsxExportAction());
 
     confirmPanel.addComponentsLeft(exportButton);
 	}
@@ -2651,21 +2714,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return -1;
 	}
 
-	private class XlsExportAction implements EventListener<Event>
+	private class XlsxExportAction implements EventListener<Event>
 	{		
 		@Override
 		public void onEvent(Event evt) throws Exception
 		{
 			if(evt.getTarget() == exportButton)
 			{
-				XlsExporter exporter = new XlsExporter();
+				XlsxExporter exporter = new XlsxExporter();
 				
 				exporter.doExport();
 			}
 		}
 	}
 	
-	private class XlsExporter extends AbstractExcelExporter
+	private class XlsxExporter extends AbstractXLSXExporter
 	{
 		private ResultSet m_rs = null;
 		private int rowCount = -1;
@@ -2677,7 +2740,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			
 			String dataSql = buildDataSQL(0, 0);
 			
-			File file = File.createTempFile(infoWindow.get_Translation("Name")+"_", ".xls");
+			File file = File.createTempFile(infoWindow.get_Translation("Name")+"_", ".xlsx");
 			
 			testCount();
 			
@@ -2693,7 +2756,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				{
 					String trxName = Trx.createTrxName("InfoPanelLoad:");
 					trx  = Trx.get(trxName, true);
-					trx.setDisplayName(getClass().getName()+"_exportXls");
+					trx.setDisplayName(getClass().getName()+"_exportXlsx");
 					pstmt = DB.prepareStatement(dataSql, trxName);
 					setParameters (pstmt, false);	//	no count
 
@@ -2715,8 +2778,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					currentRow = -1;
 				}
 				
-				AMedia media = new AMedia(file.getName(), null, Medias.EXCEL_MIME_TYPE, file, true);
-				IMediaView view = Extensions.getMediaView(Medias.EXCEL_MIME_TYPE, Medias.EXCEL_FILE_EXT, ClientInfo.isMobile());
+				AMedia media = new AMedia(file.getName(), null, Medias.EXCEL_XML_MIME_TYPE, file, true);
+				IMediaView view = Extensions.getMediaView(Medias.EXCEL_XML_MIME_TYPE, Medias.EXCEL_XML_FILE_EXT, ClientInfo.isMobile());
 				Map<MAuthorizationAccount, IUploadService> uploadServicesMap = MAuthorizationAccount.getUserUploadServices();
 				if (view != null || uploadServicesMap.size() > 0) {				
 					WMediaOptions options = new WMediaOptions(media, view != null ? () -> {

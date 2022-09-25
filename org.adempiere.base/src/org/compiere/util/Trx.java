@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -127,11 +128,25 @@ public class Trx
 	 */
 	public static String createTrxName (String prefix)
 	{
-		if (prefix == null || prefix.length() == 0)
+		String displayName = null;
+		if (prefix == null || prefix.length() == 0) {
 			prefix = "Trx";
+			if (MSysConfig.getBooleanValue(MSysConfig.TRX_AUTOSET_DISPLAY_NAME, false)) {
+				StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+				Optional<String> stackName = walker.walk(frames -> frames.map(
+						stackFrame -> stackFrame.getClassName() + "." +
+									  stackFrame.getMethodName() + ":" +
+									  stackFrame.getLineNumber())
+						.filter(f -> ! f.startsWith(Trx.class.getName() + "."))
+						.findFirst());
+				displayName = (stackName.orElse(null));
+			}
+		}
 		prefix += "_" + UUID.randomUUID(); //System.currentTimeMillis();
 		//create transaction entry
-		Trx.get(prefix, true);
+		Trx trx = Trx.get(prefix, true);
+		if (displayName != null)
+			trx.setDisplayName(displayName);
 		return prefix;
 	}	//	createTrxName
 
@@ -609,7 +624,7 @@ public class Trx
 	/**
 	 * @return Trx[]
 	 */
-	public static Trx[] getActiveTransactions()
+	public static Trx[] getOpenTransactions()
 	{
 		Collection<Trx> collections = s_cache.values();
 		Trx[] trxs = new Trx[collections.size()];
@@ -617,7 +632,16 @@ public class Trx
 		
 		return trxs;
 	}
-	
+
+	/**
+	 * @return Trx[]
+	 * @deprecated - wrong method name fixed with IDEMPIERE-5355 - please use getOpenTransactions
+	 */
+	public static Trx[] getActiveTransactions()
+	{
+		return getOpenTransactions();
+	}
+
 	/**
 	 * @see #run(String, TrxRunnable)
 	 */

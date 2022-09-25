@@ -187,6 +187,7 @@ Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  web.js.ckez.ext.CKeditor.vendor,
  web.js.html2canvas,
  web.js.jawwa.atmosphere,
+ web.js.dragdrop.attachment,
  web.js.jquery.maskedinput,
  web.js.org.idempiere.commons,
  web.js.org.idempiere.websocket,
@@ -212,7 +213,8 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  com.sun.activation.jakarta.activation;bundle-version="1.2.1",
  org.adempiere.base.process,
  com.github.librepdf.openpdf;bundle-version="1.3.26",
- com.github.librepdf.openpdf-fonts-extra;bundle-version="1.3.26"
+ com.github.librepdf.openpdf-fonts-extra;bundle-version="1.3.26",
+ org.idempiere.zk.billboard
 Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Web-ContextPath: webui

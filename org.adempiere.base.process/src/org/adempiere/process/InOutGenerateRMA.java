@@ -99,7 +99,7 @@ public class InOutGenerateRMA extends SvrProcess
         
         String sql = "SELECT rma.M_RMA_ID FROM M_RMA rma, T_Selection "
             + "WHERE rma.DocStatus='CO' AND rma.IsSOTrx='N' AND rma.AD_Client_ID=? "
-            + "AND rma.InOut_ID = T_Selection.T_Selection_ID " 
+            + "AND rma.M_RMA_ID = T_Selection.T_Selection_ID " 
             + "AND T_Selection.AD_PInstance_ID=? ";
         
         PreparedStatement pstmt = null;
@@ -136,7 +136,7 @@ public class InOutGenerateRMA extends SvrProcess
             + "INNER JOIN M_RMA rma ON dt.C_DocType_ID=rma.C_DocType_ID "
             + "WHERE rma.M_RMA_ID=?";
         
-        int docTypeId = DB.getSQLValue(null, docTypeSQl, M_RMA_ID);
+        int docTypeId = DB.getSQLValue(get_TrxName(), docTypeSQl, M_RMA_ID);
         
         return docTypeId;
     }
@@ -147,7 +147,7 @@ public class InOutGenerateRMA extends SvrProcess
         
         if (docTypeId == -1)
         {
-            throw new IllegalStateException("Could not get invoice document type for Vendor RMA");
+            throw new IllegalStateException("Could not get shipment document type for Vendor RMA");
         }
         
         MInOut originalReceipt = rma.getShipment();

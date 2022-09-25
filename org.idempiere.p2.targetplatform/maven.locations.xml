@@ -1139,7 +1139,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.jfree</groupId>
       <artifactId>jfreechart</artifactId>
-      <version>1.5.3</version>
+      <version>1.0.19</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}

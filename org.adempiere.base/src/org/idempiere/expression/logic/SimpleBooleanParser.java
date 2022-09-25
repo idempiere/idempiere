@@ -20,8 +20,8 @@ public class SimpleBooleanParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		AND=1, OR=2, NOT=3, TRUE=4, FALSE=5, GT=6, GE=7, LT=8, LE=9, EQ=10, NE=11, 
-		RE=12, LPAREN=13, RPAREN=14, DECIMAL=15, VARIABLE=16, QTEXT=17, DQTEXT=18, 
-		TEXT=19, WS=20;
+		RE=12, LPAREN=13, RPAREN=14, DECIMAL=15, VARIABLE=16, COMMA=17, QCOMMA=18, 
+		QTEXT=19, QCSVTEXT=20, DQCOMMA=21, DQTEXT=22, DQCSVTEXT=23, TEXT=24, WS=25;
 	public static final int
 		RULE_parse = 0, RULE_expression = 1, RULE_comparator = 2, RULE_binary = 3, 
 		RULE_bool = 4;
@@ -35,15 +35,16 @@ public class SimpleBooleanParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'&'", "'|'", "'$!'", "'true'", "'false'", "'>'", "'>='", "'<'", 
-			"'<='", "'='", null, "'~'", "'('", "')'"
+			"'<='", "'='", null, "'~'", "'('", "')'", null, null, "','", "'','", 
+			null, null, "'\",'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, "AND", "OR", "NOT", "TRUE", "FALSE", "GT", "GE", "LT", "LE", "EQ", 
-			"NE", "RE", "LPAREN", "RPAREN", "DECIMAL", "VARIABLE", "QTEXT", "DQTEXT", 
-			"TEXT", "WS"
+			"NE", "RE", "LPAREN", "RPAREN", "DECIMAL", "VARIABLE", "COMMA", "QCOMMA", 
+			"QTEXT", "QCSVTEXT", "DQCOMMA", "DQTEXT", "DQCSVTEXT", "TEXT", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -187,12 +188,30 @@ public class SimpleBooleanParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class DoubleQuotedCSVTextContext extends ExpressionContext {
+		public TerminalNode DQCSVTEXT() { return getToken(SimpleBooleanParser.DQCSVTEXT, 0); }
+		public DoubleQuotedCSVTextContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitDoubleQuotedCSVText(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class ContextVariablesContext extends ExpressionContext {
 		public TerminalNode VARIABLE() { return getToken(SimpleBooleanParser.VARIABLE, 0); }
 		public ContextVariablesContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitContextVariables(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class QuotedCSVTextContext extends ExpressionContext {
+		public TerminalNode QCSVTEXT() { return getToken(SimpleBooleanParser.QCSVTEXT, 0); }
+		public QuotedCSVTextContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof SimpleBooleanVisitor ) return ((SimpleBooleanVisitor<? extends T>)visitor).visitQuotedCSVText(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -284,7 +303,7 @@ public class SimpleBooleanParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(26);
+			setState(28);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case LPAREN:
@@ -309,7 +328,7 @@ public class SimpleBooleanParser extends Parser {
 				setState(18);
 				match(NOT);
 				setState(19);
-				expression(9);
+				expression(11);
 				}
 				break;
 			case TRUE:
@@ -331,13 +350,31 @@ public class SimpleBooleanParser extends Parser {
 				match(VARIABLE);
 				}
 				break;
+			case QCSVTEXT:
+				{
+				_localctx = new QuotedCSVTextContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(22);
+				match(QCSVTEXT);
+				}
+				break;
 			case QTEXT:
 				{
 				_localctx = new QuotedTextContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(22);
+				setState(23);
 				match(QTEXT);
+				}
+				break;
+			case DQCSVTEXT:
+				{
+				_localctx = new DoubleQuotedCSVTextContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(24);
+				match(DQCSVTEXT);
 				}
 				break;
 			case DQTEXT:
@@ -345,7 +382,7 @@ public class SimpleBooleanParser extends Parser {
 				_localctx = new DoubleQuotedTextContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(23);
+				setState(25);
 				match(DQTEXT);
 				}
 				break;
@@ -354,7 +391,7 @@ public class SimpleBooleanParser extends Parser {
 				_localctx = new TextContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(24);
+				setState(26);
 				match(TEXT);
 				}
 				break;
@@ -363,7 +400,7 @@ public class SimpleBooleanParser extends Parser {
 				_localctx = new DecimalExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(25);
+				setState(27);
 				match(DECIMAL);
 				}
 				break;
@@ -371,7 +408,7 @@ public class SimpleBooleanParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(38);
+			setState(40);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -379,7 +416,7 @@ public class SimpleBooleanParser extends Parser {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(36);
+					setState(38);
 					_errHandler.sync(this);
 					switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 					case 1:
@@ -387,12 +424,12 @@ public class SimpleBooleanParser extends Parser {
 						_localctx = new ComparatorExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						((ComparatorExpressionContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(28);
-						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
-						setState(29);
-						((ComparatorExpressionContext)_localctx).op = comparator();
 						setState(30);
-						((ComparatorExpressionContext)_localctx).right = expression(9);
+						if (!(precpred(_ctx, 10))) throw new FailedPredicateException(this, "precpred(_ctx, 10)");
+						setState(31);
+						((ComparatorExpressionContext)_localctx).op = comparator();
+						setState(32);
+						((ComparatorExpressionContext)_localctx).right = expression(11);
 						}
 						break;
 					case 2:
@@ -400,18 +437,18 @@ public class SimpleBooleanParser extends Parser {
 						_localctx = new BinaryExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						((BinaryExpressionContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
-						setState(32);
-						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
-						setState(33);
-						((BinaryExpressionContext)_localctx).op = binary();
 						setState(34);
-						((BinaryExpressionContext)_localctx).right = expression(8);
+						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
+						setState(35);
+						((BinaryExpressionContext)_localctx).op = binary();
+						setState(36);
+						((BinaryExpressionContext)_localctx).right = expression(10);
 						}
 						break;
 					}
 					} 
 				}
-				setState(40);
+				setState(42);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			}
@@ -454,7 +491,7 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(41);
+			setState(43);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << GT) | (1L << GE) | (1L << LT) | (1L << LE) | (1L << EQ) | (1L << NE) | (1L << RE))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -498,7 +535,7 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(43);
+			setState(45);
 			_la = _input.LA(1);
 			if ( !(_la==AND || _la==OR) ) {
 			_errHandler.recoverInline(this);
@@ -542,7 +579,7 @@ public class SimpleBooleanParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(45);
+			setState(47);
 			_la = _input.LA(1);
 			if ( !(_la==TRUE || _la==FALSE) ) {
 			_errHandler.recoverInline(this);
@@ -575,28 +612,29 @@ public class SimpleBooleanParser extends Parser {
 	private boolean expression_sempred(ExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
-			return precpred(_ctx, 8);
+			return precpred(_ctx, 10);
 		case 1:
-			return precpred(_ctx, 7);
+			return precpred(_ctx, 9);
 		}
 		return true;
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\26\62\4\2\t\2\4\3"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\33\64\4\2\t\2\4\3"+
 		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
-		"\3\3\3\3\3\3\3\3\3\3\3\5\3\35\n\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\7\3"+
-		"\'\n\3\f\3\16\3*\13\3\3\4\3\4\3\5\3\5\3\6\3\6\3\6\2\3\4\7\2\4\6\b\n\2"+
-		"\5\3\2\b\16\3\2\3\4\3\2\6\7\2\65\2\f\3\2\2\2\4\34\3\2\2\2\6+\3\2\2\2\b"+
-		"-\3\2\2\2\n/\3\2\2\2\f\r\5\4\3\2\r\16\7\2\2\3\16\3\3\2\2\2\17\20\b\3\1"+
-		"\2\20\21\7\17\2\2\21\22\5\4\3\2\22\23\7\20\2\2\23\35\3\2\2\2\24\25\7\5"+
-		"\2\2\25\35\5\4\3\13\26\35\5\n\6\2\27\35\7\22\2\2\30\35\7\23\2\2\31\35"+
-		"\7\24\2\2\32\35\7\25\2\2\33\35\7\21\2\2\34\17\3\2\2\2\34\24\3\2\2\2\34"+
-		"\26\3\2\2\2\34\27\3\2\2\2\34\30\3\2\2\2\34\31\3\2\2\2\34\32\3\2\2\2\34"+
-		"\33\3\2\2\2\35(\3\2\2\2\36\37\f\n\2\2\37 \5\6\4\2 !\5\4\3\13!\'\3\2\2"+
-		"\2\"#\f\t\2\2#$\5\b\5\2$%\5\4\3\n%\'\3\2\2\2&\36\3\2\2\2&\"\3\2\2\2\'"+
-		"*\3\2\2\2(&\3\2\2\2()\3\2\2\2)\5\3\2\2\2*(\3\2\2\2+,\t\2\2\2,\7\3\2\2"+
-		"\2-.\t\3\2\2.\t\3\2\2\2/\60\t\4\2\2\60\13\3\2\2\2\5\34&(";
+		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3\37\n\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
+		"\3\3\7\3)\n\3\f\3\16\3,\13\3\3\4\3\4\3\5\3\5\3\6\3\6\3\6\2\3\4\7\2\4\6"+
+		"\b\n\2\5\3\2\b\16\3\2\3\4\3\2\6\7\29\2\f\3\2\2\2\4\36\3\2\2\2\6-\3\2\2"+
+		"\2\b/\3\2\2\2\n\61\3\2\2\2\f\r\5\4\3\2\r\16\7\2\2\3\16\3\3\2\2\2\17\20"+
+		"\b\3\1\2\20\21\7\17\2\2\21\22\5\4\3\2\22\23\7\20\2\2\23\37\3\2\2\2\24"+
+		"\25\7\5\2\2\25\37\5\4\3\r\26\37\5\n\6\2\27\37\7\22\2\2\30\37\7\26\2\2"+
+		"\31\37\7\25\2\2\32\37\7\31\2\2\33\37\7\30\2\2\34\37\7\32\2\2\35\37\7\21"+
+		"\2\2\36\17\3\2\2\2\36\24\3\2\2\2\36\26\3\2\2\2\36\27\3\2\2\2\36\30\3\2"+
+		"\2\2\36\31\3\2\2\2\36\32\3\2\2\2\36\33\3\2\2\2\36\34\3\2\2\2\36\35\3\2"+
+		"\2\2\37*\3\2\2\2 !\f\f\2\2!\"\5\6\4\2\"#\5\4\3\r#)\3\2\2\2$%\f\13\2\2"+
+		"%&\5\b\5\2&\'\5\4\3\f\')\3\2\2\2( \3\2\2\2($\3\2\2\2),\3\2\2\2*(\3\2\2"+
+		"\2*+\3\2\2\2+\5\3\2\2\2,*\3\2\2\2-.\t\2\2\2.\7\3\2\2\2/\60\t\3\2\2\60"+
+		"\t\3\2\2\2\61\62\t\4\2\2\62\13\3\2\2\2\5\36(*";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

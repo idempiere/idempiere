@@ -231,6 +231,34 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
+
+	/** Set Info Window.
+		@param AD_InfoWindow_ID Info and search/select Window
+	*/
+	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
+	{
+		if (AD_InfoWindow_ID < 1)
+			set_Value (COLUMNNAME_AD_InfoWindow_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
+	}
+
+	/** Get Info Window.
+		@return Info and search/select Window
+	  */
+	public int getAD_InfoWindow_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
@@ -685,16 +713,16 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 		return false;
 	}
 
-	/** Set Autocomplete.
-		@param IsAutocomplete Automatic completion for textfields
+	/** Set Auto complete.
+		@param IsAutocomplete Automatic completion for text fields
 	*/
 	public void setIsAutocomplete (boolean IsAutocomplete)
 	{
 		set_Value (COLUMNNAME_IsAutocomplete, Boolean.valueOf(IsAutocomplete));
 	}
 
-	/** Get Autocomplete.
-		@return Automatic completion for textfields
+	/** Get Auto complete.
+		@return Automatic completion for text fields
 	  */
 	public boolean isAutocomplete()
 	{

@@ -573,7 +573,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			}
 		} else {
 			if (!slot.isAssignment()) {
-				FDialog.error(0, this, "No available time slot for the selected day.");
+				Dialog.error(0, "No available time slot for the selected day.");
 				return;
 			}
 			

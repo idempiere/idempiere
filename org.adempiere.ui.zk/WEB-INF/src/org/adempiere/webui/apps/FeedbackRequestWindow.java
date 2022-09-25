@@ -37,7 +37,7 @@ import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.apache.commons.io.IOUtils;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MColumn;
@@ -303,12 +303,12 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 			
 			if (success)
 			{
-				FDialog.info(0, null, Msg.getMsg(Env.getCtx(), "Saved"));
+				Dialog.info(0, Msg.getMsg(Env.getCtx(), "Saved"));
 			}
 			else
 			{
 				trx.rollback();
-				FDialog.error(0, this, Msg.getMsg(Env.getCtx(), "SaveError"));
+				Dialog.error(0, Msg.getMsg(Env.getCtx(), "SaveError"));
 			}
 		} finally {
 			trx.close();

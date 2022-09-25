@@ -872,7 +872,7 @@ public class CalloutOrder extends CalloutEngine
 		}
 		mTab.setValue("M_AttributeSetInstance_ID", null);
 		mTab.setValue("S_ResourceAssignment_ID", null);
-		mTab.setValue("C_UOM_ID", Integer.valueOf(100));	//	EA
+		mTab.setValue("C_UOM_ID", Integer.valueOf(SystemIDs.C_UOM_EACH));	//	EA
 
 		Env.setContext(ctx, WindowNo, "DiscountSchema", "N");
 		String sql = "SELECT ChargeAmt FROM C_Charge WHERE C_Charge_ID=?";

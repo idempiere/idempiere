@@ -41,7 +41,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -124,6 +124,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     private ToolBarButton btnChat;
     
     private ToolBarButton btnPostIt;
+    
+    private ToolBarButton btnLabel;
 
     private ToolBarButton btnCustomize;
 
@@ -232,6 +234,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnAttachment = createButton("Attachment", "Attachment", "Attachment");
         btnPostIt = createButton("PostIt", "PostIt", "PostIt");
         btnChat = createButton("Chat", "Chat", "Chat");
+        btnLabel = createButton("Label", "Label", "Label");
         btnGridToggle = createButton("Toggle", "Multi", "Toggle");
         btnGridToggle.setTooltiptext(btnGridToggle.getTooltiptext()+ "    Alt+T");
         btnParentRecord = createButton("ParentRecord", "Parent", "ParentRecord");
@@ -580,7 +583,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		    	if (msg == null) {
 		    		msg = "Could not invoke Toolbar listener method: " + methodName + "()";
 		    	}
-		    	FDialog.error(windowNo, this, "Error", msg);
+		    	Dialog.error(windowNo, "Error", msg);
 		    	log.log(Level.SEVERE, msg, e);
 		    }
 		}
@@ -606,7 +609,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     public void enableSave(boolean enabled)
     {
         this.btnSave.setDisabled(!enabled);
-    	this.btnSaveAndCreate.setDisabled(!enabled);
+        this.btnSaveAndCreate.setDisabled(!(isNewEnabled() || isSaveEnable()));
     }
 
     public boolean isSaveEnable() {
@@ -640,6 +643,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     public void enableNew(boolean enabled)
     {
         this.btnNew.setDisabled(!enabled);
+        this.btnSaveAndCreate.setDisabled(!(isNewEnabled() || isSaveEnable()));
     }
 
     public void enableCopy(boolean enabled)
@@ -734,6 +738,15 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     public void enablePostIt(boolean enabled)
     {
         this.btnPostIt.setDisabled(!enabled);
+    }
+    
+    /**
+     * Enable/disable the label button
+     * @param enabled
+     */
+    public void enableLabel(boolean enabled)
+    {
+        this.btnLabel.setDisabled(!enabled);
     }
 
     public Event getEvent()

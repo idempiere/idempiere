@@ -77,6 +77,14 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 	public int getProcess_ID() {
 		return mToolbarButton.getAD_Process_ID();
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.adempiere.webui.editor.IProcessButton#getInfoWindow_ID()
+	 */
+	@Override
+	public int getInfoWindow_ID() {
+		return 0;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.adempiere.webui.editor.IProcessButton#getADTabpanel()

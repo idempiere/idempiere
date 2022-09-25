@@ -22,10 +22,13 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
+import org.adempiere.base.upload.IUploadService;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
@@ -52,9 +55,10 @@ import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
+import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MColumn;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MPeriod;
@@ -69,6 +73,10 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.ui.zk.media.IMediaView;
+import org.idempiere.ui.zk.media.Medias;
+import org.idempiere.ui.zk.media.WMediaOptions;
+import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -799,9 +807,26 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			RModelExcelExporter exporter = new RModelExcelExporter(m_rmodel);
 			File file;
 			try {
-				file = new File(FileUtil.getTempMailName(Msg.getMsg(Env.getCtx(), TITLE), ".xls"));
+				file = new File(FileUtil.getTempMailName(Msg.getMsg(Env.getCtx(), TITLE), ".xlsx"));
 				exporter.export(file, Env.getLanguage(Env.getCtx()));
-				Filedownload.save(file, "application/vnd.ms-excel");
+				AMedia media = new AMedia(file.getName(), null, Medias.EXCEL_XML_MIME_TYPE, file, true);
+				IMediaView view = Extensions.getMediaView(Medias.EXCEL_XML_MIME_TYPE, Medias.EXCEL_XML_FILE_EXT, ClientInfo.isMobile());
+				Map<MAuthorizationAccount, IUploadService> uploadServicesMap = MAuthorizationAccount.getUserUploadServices();
+				if (view != null || uploadServicesMap.size() > 0) {
+					WMediaOptions options = new WMediaOptions(media, view != null ? () -> {
+						Window viewWindow = new Window();
+						viewWindow.setWidth("100%");
+						viewWindow.setHeight("100%");
+						viewWindow.setTitle(media.getName());
+						viewWindow.setAttribute(Window.MODE_KEY, Mode.EMBEDDED);
+						AEnv.showWindow(viewWindow);
+						view.renderMediaView(viewWindow, media, false);
+					} : null, uploadServicesMap);
+					options.setPage(getPage());
+					options.doHighlighted();
+				} else {
+					Filedownload.save(file, Medias.EXCEL_XML_MIME_TYPE);
+				}
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}			
@@ -1311,11 +1336,11 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		{
 			// IDEMPIERE-2392
 			if (! MPeriod.isOpen(Env.getCtx(), m_data.AD_Table_ID, m_data.Record_ID, null)) {
-				FDialog.error(0, WAcctViewer.this, "Error", Msg.getMsg(Env.getCtx(), "PeriodClosed"));
+				Dialog.error(0, "Error", Msg.getMsg(Env.getCtx(), "PeriodClosed"));
 				return;
 			}
 
-			FDialog.ask(m_data.WindowNo, this, "PostImmediate?", new Callback<Boolean>() {
+			Dialog.ask(m_data.WindowNo, "PostImmediate?", new Callback<Boolean>() {
 				
 				@Override
 				public void onCallback(Boolean result) 
@@ -1328,7 +1353,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 							m_data.AD_Table_ID, m_data.Record_ID, force);
 						//setCursor(Cursor.getDefaultCursor());
 						if (error != null)
-							FDialog.error(0, WAcctViewer.this, "PostingError-N", error);
+							Dialog.error(0, "PostingError-N", error);
 
 						actionQuery();
 					}

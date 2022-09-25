@@ -75,12 +75,17 @@ public class DashboardRunnable implements Runnable, Serializable
 		desktop = null;
 	}
 
+	/**
+	 * @param tmp
+	 * @param desktop
+	 */
 	public DashboardRunnable(DashboardRunnable tmp, Desktop desktop) {
 		this(desktop);
 		this.dashboardPanels = tmp.dashboardPanels;
 		tmp.cleanup();
 	}
 
+	@Override
 	public void run()
 	{
 		if (dashboardPanels != null && desktop != null && desktop.get() != null

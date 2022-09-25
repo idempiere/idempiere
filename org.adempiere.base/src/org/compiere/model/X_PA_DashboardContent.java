@@ -33,7 +33,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220712L;
+	private static final long serialVersionUID = 20220907L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
@@ -46,6 +46,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 			setIsCollapsible (true);
 // Y
 			setIsEmbedReportContent (false);
+// N
+			setIsMaximizable (false);
 // N
 			setIsShowInDashboard (true);
 // 'Y'
@@ -67,6 +69,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 			setIsCollapsible (true);
 // Y
 			setIsEmbedReportContent (false);
+// N
+			setIsMaximizable (false);
 // N
 			setIsShowInDashboard (true);
 // 'Y'
@@ -188,6 +192,33 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_StatusLine)MTable.get(getCtx(), org.compiere.model.I_AD_StatusLine.Table_ID)
+			.getPO(getAD_StatusLine_ID(), get_TrxName());
+	}
+
+	/** Set Status Line.
+		@param AD_StatusLine_ID Status Line
+	*/
+	public void setAD_StatusLine_ID (int AD_StatusLine_ID)
+	{
+		if (AD_StatusLine_ID < 1)
+			set_Value (COLUMNNAME_AD_StatusLine_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_StatusLine_ID, Integer.valueOf(AD_StatusLine_ID));
+	}
+
+	/** Get Status Line.
+		@return Status Line	  */
+	public int getAD_StatusLine_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_StatusLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -283,6 +314,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	public static final int GOALDISPLAY_AD_Reference_ID=53316;
 	/** Chart = C */
 	public static final String GOALDISPLAY_Chart = "C";
+	/** Gauge Indicator = G */
+	public static final String GOALDISPLAY_GaugeIndicator = "G";
 	/** HTML Table = T */
 	public static final String GOALDISPLAY_HTMLTable = "T";
 	/** Set Goal Display.
@@ -386,6 +419,28 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return false;
 	}
 
+	/** Set Maximizable.
+		@param IsMaximizable Maximizable
+	*/
+	public void setIsMaximizable (boolean IsMaximizable)
+	{
+		set_Value (COLUMNNAME_IsMaximizable, Boolean.valueOf(IsMaximizable));
+	}
+
+	/** Get Maximizable.
+		@return Maximizable	  */
+	public boolean isMaximizable()
+	{
+		Object oo = get_Value(COLUMNNAME_IsMaximizable);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Show in Dashboard.
 		@param IsShowInDashboard Show the dashlet in the dashboard
 	*/
@@ -409,28 +464,6 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return false;
 	}
 
-	/** Set Show on Login.
-		@param IsShowinLogin Show on Login
-	*/
-	public void setIsShowinLogin (boolean IsShowinLogin)
-	{
-		set_Value (COLUMNNAME_IsShowinLogin, Boolean.valueOf(IsShowinLogin));
-	}
-
-	/** Get Show on Login.
-		@return Show on Login	  */
-	public boolean isShowinLogin()
-	{
-		Object oo = get_Value(COLUMNNAME_IsShowinLogin);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set Show Title.
 		@param IsShowTitle Show Title
 	*/
@@ -444,6 +477,28 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	public boolean isShowTitle()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowTitle);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show on Login.
+		@param IsShowinLogin Show on Login
+	*/
+	public void setIsShowinLogin (boolean IsShowinLogin)
+	{
+		set_Value (COLUMNNAME_IsShowinLogin, Boolean.valueOf(IsShowinLogin));
+	}
+
+	/** Get Show on Login.
+		@return Show on Login	  */
+	public boolean isShowinLogin()
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowinLogin);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

@@ -1116,7 +1116,6 @@ public class CConnection implements Serializable, Cloneable
 	 *  @param transactionIsolation Connection transaction level
 	 *  @return Connection
 	 */
-	@SuppressWarnings("unused")
 	public Connection getConnection (boolean autoCommit, int transactionIsolation)
 	{
 		Connection conn = null;
@@ -1133,18 +1132,7 @@ public class CConnection implements Serializable, Cloneable
 
 		try
 		{
-		//	if (!Ini.isClient()			//	Server
-		//		&& trxLevel != Connection.TRANSACTION_READ_COMMITTED)		// PO_LOB.save()
-		//	{
-			//Exception ee = null;
-			try
-			{
-				conn = m_db.getCachedConnection(this, autoCommit, transactionIsolation);
-			}
-			catch (Exception e)
-			{
-				//ee = e;
-			}
+			conn = m_db.getCachedConnection(this, autoCommit, transactionIsolation);
 			//	Verify Connection
 			if (conn != null)
 			{
@@ -1160,19 +1148,13 @@ public class CConnection implements Serializable, Cloneable
 			String msg = ule.getLocalizedMessage()
 				+ " -> Did you set the LD_LIBRARY_PATH ? - " + getConnectionURL();
 			m_dbException = new Exception(msg);
-			log.severe(msg);
+			System.err.println(msg);
 		}
 		catch (SQLException ex)
 		{
 			m_dbException = ex;
 			if (conn == null)
 			{
-				//log might cause infinite loop since it will try to acquire database connection again
-				/*
-				log.log(Level.SEVERE, getConnectionURL ()
-					+ ", (1) AutoCommit=" + autoCommit + ",TrxIso=" + getTransactionIsolationInfo(transactionIsolation)
-					+ " - " + ex.getMessage());
-				*/
 				System.err.println(getConnectionURL ()
 						+ ", (1) AutoCommit=" + autoCommit + ",TrxIso=" + getTransactionIsolationInfo(transactionIsolation)
 						+ " - " + ex.getMessage());
@@ -1181,29 +1163,24 @@ public class CConnection implements Serializable, Cloneable
 			{
 				try
 				{
-					log.severe(getConnectionURL ()
+					System.err.println(getConnectionURL ()
 						+ ", (2) AutoCommit=" + conn.getAutoCommit() + "->" + autoCommit
 						+ ", TrxIso=" + getTransactionIsolationInfo(conn.getTransactionIsolation()) + "->" + getTransactionIsolationInfo(transactionIsolation)
-					//	+ " (" + getDbUid() + "/" + getDbPwd() + ")"
 						+ " - " + ex.getMessage());
 				}
 				catch (Exception ee)
 				{
-					log.severe(getConnectionURL ()
-						+ ", (3) AutoCommit=" + autoCommit + ", TrxIso=" + getTransactionIsolationInfo(transactionIsolation)
-					//	+ " (" + getDbUid() + "/" + getDbPwd() + ")"
-						+ " - " + ex.getMessage());
+					System.err.println(getConnectionURL ()
+							+ ", (1) AutoCommit=" + autoCommit + ",TrxIso=" + getTransactionIsolationInfo(transactionIsolation)
+							+ " - " + ex.getMessage());
 				}
 			}
 		}
 		catch (Exception ex)
 		{
 			m_dbException = ex;
-			//log might cause infinite loop since it will try to acquire database connection again
-			//log.log(Level.SEVERE, getConnectionURL(), ex);
 			System.err.println(getConnectionURL() + " - " + ex.getLocalizedMessage());
 		}
-	//	System.err.println ("CConnection.getConnection - " + conn);
 		return conn;
 	}	//  getConnection
 
@@ -1214,7 +1191,7 @@ public class CConnection implements Serializable, Cloneable
 	public Exception getDatabaseException ()
 	{
 		return m_dbException;
-	} 	//  getConnectionException
+	}
 
 	/*************************************************************************/
 

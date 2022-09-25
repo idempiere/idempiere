@@ -268,7 +268,7 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     }
 
     @Override
-    public Object getValue()
+    public BigDecimal getValue()
     {
         return getComponent().getValue();
     }

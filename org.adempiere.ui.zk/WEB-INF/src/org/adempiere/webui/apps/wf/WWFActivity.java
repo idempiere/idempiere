@@ -42,7 +42,7 @@ import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -50,6 +50,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -152,7 +153,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		setTooltipText(bRefresh, "Refresh");
 
         MLookup lookup = MLookupFactory.get(Env.getCtx(), m_WindowNo,
-                0, 10443, DisplayType.Search);
+                0, SystemIDs.COLUMN_AD_WF_ACTIVITY_AD_USER_ID, DisplayType.Search);
         fForward = new WSearchEditor(lookup, Msg.translate(
                 Env.getCtx(), "AD_User_ID"), "", true, false, true);
 
@@ -621,7 +622,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				}
 				if (!m_activity.forwardTo(fw, textMsg))
 				{
-					FDialog.error(m_WindowNo, this, "CannotForward");
+					Dialog.error(m_WindowNo, "CannotForward");
 					trx.rollback();
 					trx.close();
 					return;
@@ -642,7 +643,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				}
 				if (value == null || value.length() == 0)
 				{
-					FDialog.error(m_WindowNo, this, "FillMandatory", Msg.getMsg(Env.getCtx(), "Answer"));
+					Dialog.error(m_WindowNo, "FillMandatory", Msg.getMsg(Env.getCtx(), "Answer"));
 					trx.rollback();
 					trx.close();
 					return;
@@ -658,7 +659,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				catch (Exception e)
 				{
 					log.log(Level.SEVERE, node.getName(), e);
-					FDialog.error(m_WindowNo, this, "Error", e.toString());
+					Dialog.error(m_WindowNo, "Error", e.toString());
 					trx.rollback();
 					trx.close();
 					return;
@@ -678,7 +679,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				catch (Exception e)
 				{
 					log.log(Level.SEVERE, node.getName(), e);
-					FDialog.error(m_WindowNo, this, "Error", e.toString());
+					Dialog.error(m_WindowNo, "Error", e.toString());
 					trx.rollback();
 					trx.close();
 					return;
