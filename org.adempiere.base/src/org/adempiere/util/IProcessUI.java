@@ -81,6 +81,14 @@ public interface IProcessUI {
 	public void ask(String message, Callback<Boolean> callback);
 	
 	public void askForInput(String message, Callback<String> callback);
+	
+	/**
+	 * Prompt for user secret input.
+	 * 
+	 * @param title
+	 * @param callback
+	 */
+	public void askForSecretInput(String message, Callback<String> callback);
 
 	/**
 	 * Prompt user for input with a configurable DisplayType (String, Number, TableDir or Search)

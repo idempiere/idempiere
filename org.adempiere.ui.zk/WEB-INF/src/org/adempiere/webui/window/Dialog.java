@@ -34,6 +34,7 @@ import org.adempiere.webui.editor.WChosenboxListEditor;
 import org.adempiere.webui.editor.WChosenboxSearchEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WNumberEditor;
+import org.adempiere.webui.editor.WPasswordEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
@@ -404,6 +405,25 @@ public final class Dialog {
     	
     	Messagebox.showDialog(message, dialogTitle, 
         		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, msgCallback, (msgCallback == null));
+    }
+    
+    public static void askForSecretInput(int windowNo, String adMessage, final Callback<String> callback) {
+    	Callback<String> msgCallback = null;
+    	if (callback != null) 
+    	{
+    		msgCallback = new Callback<String>() {
+				@Override
+				public void onCallback(String result) {
+					callback.onCallback(result);
+				}
+			};
+    	}
+    	String dialogTitle = getDialogTitle("", windowNo);
+    	String message = constructMessage(adMessage, null);
+    	message = formatDialogMessage(message);
+    	
+    	Messagebox.showDialog(message, dialogTitle,
+        		Messagebox.OK | Messagebox.INPUT, Messagebox.QUESTION, new WPasswordEditor(), msgCallback, (msgCallback == null));
     }
 
     /**
