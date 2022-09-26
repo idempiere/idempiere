@@ -387,7 +387,9 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	
 	private KeyNamePair findTablePrintFormat(KeyNamePair drillTable) {
 		
-		Integer printFormatID = new Query(Env.getCtx(), MPrintFormat.Table_Name, " AD_Table_ID = ? AND AD_Client_ID = ? ", null).setParameters(drillTable.getKey(), Env.getAD_Client_ID(Env.getCtx())).firstId();
+		Integer printFormatID = new Query(Env.getCtx(), MPrintFormat.Table_Name, " AD_Table_ID = ? AND AD_Client_ID IN (0,?) ", null)
+				.setOrderBy(" IsDefault DESC, Created DESC ")
+				.setParameters(drillTable.getKey(), Env.getAD_Client_ID(Env.getCtx())).firstId();
 		return new KeyNamePair((printFormatID != null && printFormatID > 0) ? printFormatID : 0, drillTable.getName());
 	}
 
