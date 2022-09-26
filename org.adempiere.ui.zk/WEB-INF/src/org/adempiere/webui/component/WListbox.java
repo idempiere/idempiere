@@ -176,15 +176,32 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	    {
 	    	if (this.getItemRenderer() instanceof WListItemRenderer)
 	    	{
+	    		boolean clearTableColumns = false;
 	    		WListItemRenderer renderer = (WListItemRenderer) this.getItemRenderer();
 	    		if (renderer.getTableColumns().size() != head.getChildren().size())
 	    		{
-	    			head.getChildren().clear();
+	    			clearTableColumns = true;
 	    		}
 	    		else
 	    		{
-	    			return;
+	    			List<WTableColumn> m_tableColumns = renderer.getTableColumns();
+	    			for (int columnIndex = 0; columnIndex < m_tableColumns.size(); columnIndex++)
+	    	        {
+	    				WTableColumn column = m_tableColumns.get(columnIndex);
+	    				ListHeader header = renderer.getListHeader(columnIndex);
+	    				if (header != null && !header.getLabel().equals(column.getHeaderValue()))
+	    				{
+	    					clearTableColumns = true;
+	    					break;
+	    				}
+	    			}
+	    			
+	    			if (!clearTableColumns)
+	    				return;
 	    		}
+	    		
+	    		if (clearTableColumns)
+	    			head.getChildren().clear();
 	    	}
 	    	else
 	    	{

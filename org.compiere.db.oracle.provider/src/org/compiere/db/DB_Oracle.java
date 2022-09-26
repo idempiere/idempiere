@@ -731,7 +731,8 @@ public class DB_Oracle implements AdempiereDatabase
     			poolProperties.put("password", connection.getDbPwd());
     		}
     		
-    		HikariConfig hikariConfig = new HikariConfig(poolProperties);    		
+    		HikariConfig hikariConfig = new HikariConfig(poolProperties);
+    		hikariConfig.setDriverClassName(DRIVER);
     		m_ds = new HikariDataSource(hikariConfig);
             
             m_connectionURL = m_ds.getJdbcUrl();

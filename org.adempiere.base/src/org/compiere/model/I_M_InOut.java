@@ -276,6 +276,19 @@ public interface I_M_InOut
 	  */
 	public String getCreateFrom();
 
+    /** Column name CreateLinesFrom */
+    public static final String COLUMNNAME_CreateLinesFrom = "CreateLinesFrom";
+
+	/** Set Create lines from.
+	  * Process which will generate a new document lines based on an existing document
+	  */
+	public void setCreateLinesFrom (String CreateLinesFrom);
+
+	/** Get Create lines from.
+	  * Process which will generate a new document lines based on an existing document
+	  */
+	public String getCreateLinesFrom();
+
     /** Column name CreatePackage */
     public static final String COLUMNNAME_CreatePackage = "CreatePackage";
 
