@@ -329,7 +329,8 @@ public class DashboardController implements EventListener<Event> {
 	private Panel newGadgetPanel(MDashboardPreference dp, MDashboardContent dc) {
 		Panel panel;
 		panel = new Panel();
-		Caption caption = new Caption(dc.get_Translation(MDashboardContent.COLUMNNAME_Name));
+		String dcName = dc.get_Translation(MDashboardContent.COLUMNNAME_Name);
+		Caption caption = new Caption(dcName);
 		panel.appendChild(caption);
 		panel.setAttribute(MDashboardPreference.COLUMNNAME_PA_DashboardContent_ID, dp.getPA_DashboardContent_ID());
 		panel.setAttribute(MDashboardPreference.COLUMNNAME_PA_DashboardPreference_ID, dp.getPA_DashboardPreference_ID());
@@ -339,7 +340,7 @@ public class DashboardController implements EventListener<Event> {
 		panel.setMaximizable(dc.isMaximizable());
 
 		String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
-		if(description != null) {
+		if(!Util.isEmpty(description, true) && !description.equalsIgnoreCase(dcName)) {
 			renderHelpButton(caption, description);
 		}
 		

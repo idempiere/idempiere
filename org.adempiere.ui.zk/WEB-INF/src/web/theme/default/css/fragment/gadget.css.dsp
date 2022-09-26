@@ -68,6 +68,7 @@
 
 .z-caption-content .z-toolbarbutton {
 	vertical-align: middle;
+	margin-bottom: 2px;
 }
 
 .dashboard-layout {
