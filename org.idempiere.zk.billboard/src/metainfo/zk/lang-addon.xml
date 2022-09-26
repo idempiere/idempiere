@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<language-addon>
+    <addon-name>billboard</addon-name>
+    <depends>zul</depends>
+    <language-name>xul/html</language-name>
+  	<version>
+		<version-class>org.idempiere.zk.billboard.Version</version-class>
+		<version-uid>3.5.1.20220908</version-uid>
+	</version>   
+	<component>
+		<component-name>billboard</component-name>
+		<component-class>org.idempiere.zk.billboard.Billboard</component-class>		
+		<mold>
+			<mold-name>default</mold-name>
+			<widget-class>zul.billboard.Billboard</widget-class>
+			<mold-uri>mold/billboard.js</mold-uri>
+		</mold>
+	</component>
+	
+	<stylesheet href="~./js/zul/billboard/css/billboard.css" type="text/css"/>
+	<javascript-module name="zul.billboard" version="3.5.1.20220908"/>
+	<!-- this js module doesn't actually exists and it is here for billboard.css version -->
+	<javascript-module name="zul.billboard.css" version="3.5.1.20220905"/>
+</language-addon>

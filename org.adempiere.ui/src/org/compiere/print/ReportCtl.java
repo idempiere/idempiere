@@ -255,12 +255,12 @@ public class ReportCtl
 			String TableName = MTable.getTableName(ctx, format.getAD_Table_ID());
 			MQuery query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 			PrintInfo info = new PrintInfo(pi);
-			re = new ReportEngine(ctx, format, query, info, pi.isSummary());
+			re = new ReportEngine(ctx, format, query, info, pi.isSummary(), null, WindowNo);
 		}
 		//
 		// Create Report Engine normally
 		else {
-			re = ReportEngine.get(Env.getCtx(), pi);
+			re = ReportEngine.get(Env.getCtx(), pi, WindowNo);
 			if (re == null)
 			{
 				pi.setSummary("No ReportEngine");
@@ -272,7 +272,6 @@ public class ReportCtl
 			re.setReportType(pi.getReportType());
 		}
 		re.setLanguageID(pi.getLanguageID());
-		re.setWindowNo(WindowNo);
 		re.setIsReplaceTabContent(pi.isReplaceTabContent());
 		createOutput(re, pi.isPrintPreview(), null);
 		return true;
@@ -314,8 +313,7 @@ public class ReportCtl
 		}
 		PrintInfo info = new PrintInfo(pi);
 
-		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info, pi.isSummary());
-		re.setWindowNo(WindowNo);
+		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info, pi.isSummary(), null, WindowNo);
 		if (pi.getReportType() != null) {
 			re.setReportType(pi.getReportType());
 		}
@@ -382,12 +380,11 @@ public class ReportCtl
 	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, IProcessUI parent, int WindowNo,
 			boolean IsDirectPrint, String printerName)
 	{
-		ReportEngine re = ReportEngine.get (Env.getCtx(), type, Record_ID);
+		ReportEngine re = ReportEngine.get (Env.getCtx(), type, Record_ID, WindowNo);
 		if (re == null)
 		{
 			throw new AdempiereException("NoDocPrintFormat");
 		}
-		re.setWindowNo(WindowNo);
 		if (customPrintFormat!=null) {
 			// Use custom print format if available
 			re.setPrintFormat(customPrintFormat);
