@@ -27,25 +27,25 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 ;
 
 -- Sep 9, 2022, 10:17:02 AM CEST
-INSERT INTO AD_StatusLine (AD_StatusLine_ID,AD_Client_ID,AD_Org_ID,AD_StatusLine_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Message_ID,SQLStatement) VALUES (200021,0,0,'63f54ea1-b43f-4f43-9af1-6d8a591015bb',TO_TIMESTAMP('2022-09-09 10:17:02','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','KPI/Average Sales',TO_TIMESTAMP('2022-09-09 10:17:02','YYYY-MM-DD HH24:MI:SS'),100,200782,'SELECT AVG(TotalLines) FROM C_Order WHERE AD_CLient_ID = @#AD_Client_ID@ AND issotrx=''Y'' AND IsProposal = ''N'' AND DATE_TRUNC(''day'',dateordered) BETWEEN DATE_TRUNC(''day'',NOW() -INTERVAL ''1 year'') AND  DATE_TRUNC(''day'',NOW())')
+INSERT INTO AD_StatusLine (AD_StatusLine_ID,AD_Client_ID,AD_Org_ID,AD_StatusLine_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Message_ID,SQLStatement) VALUES (200021,0,0,'63f54ea1-b43f-4f43-9af1-6d8a591015bb',TO_TIMESTAMP('2022-09-09 10:17:02','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','KPI/Average Sales',TO_TIMESTAMP('2022-09-09 10:17:02','YYYY-MM-DD HH24:MI:SS'),100,200782,'SELECT AVG(TotalLines) FROM C_Order WHERE AD_CLient_ID = @#AD_Client_ID@ AND issotrx=''Y'' AND trunc(DateOrdered, ''DD'') BETWEEN trunc(now() -INTERVAL ''1 year'', ''DD'') AND  trunc(now(), ''DD'')')
 ;
 
 -- Sep 9, 2022, 10:17:20 AM CEST
 INSERT INTO AD_StatusLine (AD_StatusLine_ID,AD_Client_ID,AD_Org_ID,AD_StatusLine_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Message_ID,SQLStatement) VALUES (200022,0,0,'53f41a48-b5fc-4016-b8b6-5c450efff3ab',TO_TIMESTAMP('2022-09-09 10:17:20','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','KPI_Gross Profit Margin YTD',TO_TIMESTAMP('2022-09-09 10:17:20','YYYY-MM-DD HH24:MI:SS'),100,200783,'SELECT 
-  ROUND (SUM(((revenue-COGS)/revenue)*100) FILTER (WHERE kpidata.year = date_trunc(''year'', now())),2)::numeric as revenue_YTD ,
-  ROUND (SUM(((revenue-COGS)/revenue)*100) FILTER (WHERE kpidata.year  = date_trunc(''year'', now() - INTERVAL ''1 year'')),2)::numeric revenue_YTD_P,
-  round((SUM(((revenue-COGS)/revenue)*100) FILTER (WHERE kpidata.year = date_trunc(''year'', now())) / NULLIF(SUM(((revenue-COGS)/revenue)*100) FILTER (WHERE kpidata.year = date_trunc(''year'', now() - INTERVAL ''1 year'')), 0) - 1) * 100, 2)::numeric as diff
+  ROUND (SUM(CASE WHEN kpidata.year = trunc(now(), ''Y'') THEN ((revenue-COGS)/revenue)*100 ELSE 0 END),2) as revenue_YTD ,
+  ROUND (SUM(CASE WHEN kpidata.year  = trunc(now() - INTERVAL ''1 year'', ''Y'') THEN ((revenue-COGS)/revenue)*100 ELSE 0 END),2) revenue_YTD_P,
+  round((SUM(CASE WHEN kpidata.year = trunc(now(), ''Y'') THEN ((revenue-COGS)/revenue)*100 ELSE 0 END) / NULLIF(SUM(CASE WHEN kpidata.year = trunc(now() - INTERVAL ''1 year'', ''Y'') THEN ((revenue-COGS)/revenue)*100 ELSE 0 END), 0) - 1) * 100, 2) as diff
   FROM
 (
 SELECT 
-   DATE_TRUNC(''year'',DateAcct) AS year,
+   trunc(DateAcct, ''Y'') AS year,
   COALESCE(SUM(totallines), 1) AS revenue,
   SUM(subq.cogs) as COGS
 FROM C_Invoice
 LEFT JOIN LATERAL ( SELECT SUM(iol.PriceLimit*iol.qtyEntered) as cogs FROM C_InvoiceLine iol WHERE iol.C_Invoice_ID = C_Invoice.C_Invoice_ID ) as subq ON 1=1
 where ad_client_id=@#AD_Client_ID@ and issotrx=''Y'' 
-AND ( (DateAcct + INTERVAL ''1 year'' >= date_trunc(''year'', now()) AND DateAcct + INTERVAL ''1 year'' < now() )
-OR ( DateAcct >= date_trunc(''year'', now()) AND DateAcct  <= now()))
+AND ( (DateAcct + INTERVAL ''1 year'' >= trunc(now(), ''Y'') AND DateAcct + INTERVAL ''1 year'' < now() )
+OR ( DateAcct >= trunc(now(), ''Y'') AND DateAcct  <= now()))
 GROUP BY year
 ) kpidata')
 ;
@@ -67,7 +67,7 @@ INSERT INTO PA_DashboardPreference (AD_Client_ID,AD_Org_ID,AD_Role_ID,AD_User_ID
 ;
 
 -- Sep 9, 2022, 10:28:53 AM CEST
-UPDATE AD_StatusLine SET SQLStatement='SELECT AVG(TotalLines) FROM C_Order WHERE AD_CLient_ID = @#AD_Client_ID@ AND issotrx=''Y'' AND DATE_TRUNC(''day'',dateordered) BETWEEN DATE_TRUNC(''day'',NOW() -INTERVAL ''1 year'') AND  DATE_TRUNC(''day'',NOW())',Updated=TO_TIMESTAMP('2022-09-09 10:28:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_StatusLine_ID=200021
+UPDATE AD_StatusLine SET SQLStatement='SELECT AVG(TotalLines) FROM C_Order WHERE AD_CLient_ID = @#AD_Client_ID@ AND issotrx=''Y'' AND trunc(DateOrdered, ''D'') BETWEEN trunc(now() - INTERVAL ''1 year'', ''D'') AND trunc(now(), ''D'')',Updated=TO_TIMESTAMP('2022-09-09 10:28:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_StatusLine_ID=200021
 ;
 
 -- Sep 9, 2022, 10:53:44 AM CEST
@@ -86,15 +86,15 @@ UPDATE AD_Message SET Value='KPI-2-ORDERS',Updated=TO_TIMESTAMP('2022-09-09 10:5
 
 -- Sep 9, 2022, 10:55:43 AM CEST
 UPDATE AD_StatusLine SET Name='KPI_This Month Orders', SQLStatement='select 
-  COALESCE (ROUND (SUM(orders) FILTER (WHERE kpidata.month = date_trunc(''month'', now())),0),0)::numeric as orders_MTD ,
-  COALESCE (ROUND (SUM(orders) FILTER (WHERE kpidata.month = date_trunc(''month'', now() - INTERVAL ''1 month'')),0),0)::numeric orders_MTD_P,  round((SUM(orders) FILTER (WHERE kpidata.month = date_trunc(''month'', now())) / NULLIF(SUM(orders) FILTER (WHERE kpidata.month = date_trunc(''month'', now() - INTERVAL ''1 month'')),0) - 1) * 100, 2)::numeric as diff
+  COALESCE (ROUND (SUM(CASE WHEN kpidata.month = trunc(now(), ''MM'') THEN orders ELSE 0 END),0),0) as orders_MTD ,
+  COALESCE (ROUND (SUM(CASE WHEN kpidata.month = trunc(now() - INTERVAL ''1 month'', ''MM'') THEN orders ELSE 0 END),0),0) orders_MTD_P,  round((SUM(CASE WHEN kpidata.month = trunc(now(), ''MM'') THEN orders ELSE 0 END) / NULLIF(SUM(CASE WHEN kpidata.month = trunc(now() - INTERVAL ''1 month'', ''MM'') THEN orders ELSE 0 END),0) - 1) * 100, 2) as diff
  FROM
 (
 SELECT 
-   DATE_TRUNC(''month'',monthFrom) AS month,
+   trunc(monthFrom, ''MM'') AS month,
   COUNT(c_order_id) AS orders
-FROM  generate_series(DATE_TRUNC(''month'', now() - INTERVAL ''1 month''), DATE_TRUNC(''month'', now()), ''1 month'') as monthFrom
-LEFT JOIN c_order  ON DATE_TRUNC(''month'',dateordered) = monthFrom AND ad_client_id=@#AD_Client_ID@ and issotrx=''Y'' AND  IsProposal = ''N''
+FROM  generate_series(trunc(now() - INTERVAL ''1 month'', ''MM''), trunc(now(), ''MM''), ''1 month'') as monthFrom
+LEFT JOIN c_order ON trunc(DateOrdered, ''MM'') = monthFrom AND ad_client_id=@#AD_Client_ID@ and issotrx=''Y''
 GROUP BY month
 ) kpidata',Updated=TO_TIMESTAMP('2022-09-09 10:55:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_StatusLine_ID=200022
 ;
@@ -105,15 +105,15 @@ UPDATE PA_DashboardContent SET Name='This Month Orders',Updated=TO_TIMESTAMP('20
 
 -- Sep 9, 2022, 10:59:52 AM CEST
 UPDATE AD_StatusLine SET SQLStatement='select 
-  COALESCE (ROUND (SUM(orders) FILTER (WHERE kpidata.month = date_trunc(''month'', now())),0),0)::numeric as orders_MTD ,
-  COALESCE (ROUND (SUM(orders) FILTER (WHERE kpidata.month = date_trunc(''month'', now() - INTERVAL ''1 month'')),0),0)::numeric orders_MTD_P,  round((SUM(orders) FILTER (WHERE kpidata.month = date_trunc(''month'', now())) / NULLIF(SUM(orders) FILTER (WHERE kpidata.month = date_trunc(''month'', now() - INTERVAL ''1 month'')),0) - 1) * 100, 2)::numeric as diff
+  COALESCE (ROUND (SUM(CASE WHEN kpidata.month = trunc(now(), ''MM'') THEN orders ELSE 0 END),0),0) as orders_MTD ,
+  COALESCE (ROUND (SUM(CASE WHEN kpidata.month = trunc(now() - INTERVAL ''1 month'', ''MM'') THEN orders ELSE 0 END),0),0) orders_MTD_P,  round((SUM(CASE WHEN kpidata.month = trunc(now(), ''MM'') THEN orders ELSE 0 END) / NULLIF(SUM(CASE WHEN kpidata.month = trunc(now() - INTERVAL ''1 month'', ''MM'') THEN orders ELSE 0 END),0) - 1) * 100, 2) as diff
  FROM
 (
 SELECT 
-   DATE_TRUNC(''month'',monthFrom) AS month,
+   trunc(monthFrom, ''MM'') AS month,
   COUNT(c_order_id) AS orders
-FROM  generate_series(DATE_TRUNC(''month'', now() - INTERVAL ''1 month''), DATE_TRUNC(''month'', now()), ''1 month'') as monthFrom
-LEFT JOIN c_order  ON DATE_TRUNC(''month'',dateordered) = monthFrom AND ad_client_id=@#AD_Client_ID@ and issotrx=''Y''
+FROM  generate_series(trunc(now() - INTERVAL ''1 month'', ''MM''), trunc(now(), ''MM''), ''1 month'') as monthFrom
+LEFT JOIN c_order ON trunc(DateOrdered, ''MM'') = monthFrom AND ad_client_id=@#AD_Client_ID@ and issotrx=''Y''
 GROUP BY month
 ) kpidata',Updated=TO_TIMESTAMP('2022-09-09 10:59:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_StatusLine_ID=200022
 ;
