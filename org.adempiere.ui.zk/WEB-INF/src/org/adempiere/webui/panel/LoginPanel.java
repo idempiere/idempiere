@@ -183,7 +183,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 							    				fillUser = user.getName();
 							    			}
 							    		}
-							    		if (MSystem.allowLoginPrefix()) {
+							    		if (MSystem.isUseLoginPrefix()) {
 							    			MClient client = MClient.get(session.getAD_Client_ID());
 							    			if (! Util.isEmpty(client.getLoginPrefix())) {
 								    			String separator = MSysConfig.getValue(MSysConfig.LOGIN_PREFIX_SEPARATOR, "/");

@@ -1292,11 +1292,11 @@ public class Login
 		}
 
 		MClient client = null;
-		if (MSystem.allowLoginPrefix()) {
+		if (MSystem.isUseLoginPrefix()) {
 			String app_tenant = Login.getAppTenant(app_user);
 			app_user = Login.getAppUser(app_user);
 			boolean hasTenant = ! Util.isEmpty(app_tenant, true);
-			if (MSystem.forceLoginPrefix() && ! hasTenant) {
+			if (MSystem.isLoginPrefixMandatory() && ! hasTenant) {
 				loginErrMsg = Msg.getMsg(m_ctx, "MissingLoginTenant");
 				return null;
 			}
@@ -1578,7 +1578,7 @@ public class Login
 	 */
 	private static String getAppTenant(String app_user) {
 		String appTenant = null;
-		if (MSystem.allowLoginPrefix()) {
+		if (MSystem.isUseLoginPrefix()) {
 			String separator = MSysConfig.getValue(MSysConfig.LOGIN_PREFIX_SEPARATOR, "/");
 			int idxSep = app_user.indexOf(separator);
 			if (idxSep >= 0)
@@ -1594,7 +1594,7 @@ public class Login
 	 */
 	public static String getAppUser(String app_user) {
 		String appUser = app_user;
-		if (MSystem.allowLoginPrefix()) {
+		if (MSystem.isUseLoginPrefix()) {
 			String separator = MSysConfig.getValue(MSysConfig.LOGIN_PREFIX_SEPARATOR, "/");
 			int idxSep = app_user.indexOf(separator);
 			if (idxSep >= 0)
