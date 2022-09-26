@@ -557,6 +557,17 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 		} else
 			m_headers.set(index, header);
 	}
+	
+	/**
+	 * get custom list header
+	 * @param index
+	 * @return
+	 */
+	public ListHeader getListHeader(int index) {
+		if (m_headers.size() <= index)
+			return null;
+		return m_headers.get(index);
+	}
 
     /**
      * Obtain the comparator for a given column.

@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.WGraph;
@@ -77,6 +78,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -98,6 +100,7 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Include;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Toolbar;
@@ -132,6 +135,7 @@ public class DashboardController implements EventListener<Event> {
 	private static final String IS_ADDITIONAL_COLUMN_ATTRIBUTE = "IsAdditionalColumn";
 	private static final String IS_SHOW_IN_DASHBOARD_ATTRIBUTE = "IsShowInDashboard";
 	private static final String FLEX_GROW_ATTRIBUTE = "FlexGrow";
+	private static final String IMAGES_CONTEXT_HELP_PNG = "images/Help16.png";
 
 	private final static int DEFAULT_DASHBOARD_WIDTH = 99;
 	private final static String DASHBOARD_LAYOUT_COLUMNS = "C";
@@ -325,7 +329,8 @@ public class DashboardController implements EventListener<Event> {
 	private Panel newGadgetPanel(MDashboardPreference dp, MDashboardContent dc) {
 		Panel panel;
 		panel = new Panel();
-		Caption caption = new Caption(dc.get_Translation(MDashboardContent.COLUMNNAME_Name));
+		String dcName = dc.get_Translation(MDashboardContent.COLUMNNAME_Name);
+		Caption caption = new Caption(dcName);
 		panel.appendChild(caption);
 		panel.setAttribute(MDashboardPreference.COLUMNNAME_PA_DashboardContent_ID, dp.getPA_DashboardContent_ID());
 		panel.setAttribute(MDashboardPreference.COLUMNNAME_PA_DashboardPreference_ID, dp.getPA_DashboardPreference_ID());
@@ -335,20 +340,41 @@ public class DashboardController implements EventListener<Event> {
 		panel.setMaximizable(dc.isMaximizable());
 
 		String description = dc.get_Translation(MDashboardContent.COLUMNNAME_Description);
-	if(description != null)
-		panel.setTooltiptext(description);
-
-	panel.setCollapsible(dc.isCollapsible());
-	panel.setOpen(!dp.isCollapsedByDefault());
-	panel.addEventListener(Events.ON_OPEN, this);
-	if (!ClientInfo.isMobile()) {
-		panel.setDroppable("true");
-		panel.getCaption().setDraggable("true");
-		panel.addEventListener(Events.ON_DROP, this);
+		if(!Util.isEmpty(description, true) && !description.equalsIgnoreCase(dcName)) {
+			renderHelpButton(caption, description);
+		}
+		
+		panel.setCollapsible(dc.isCollapsible());
+		panel.setOpen(!dp.isCollapsedByDefault());
+		panel.addEventListener(Events.ON_OPEN, this);
+		if (!ClientInfo.isMobile()) {
+			panel.setDroppable("true");
+			panel.getCaption().setDraggable("true");
+			panel.addEventListener(Events.ON_DROP, this);
+		}
+		panel.setBorder("normal");
+	
+			return panel;
 	}
-	panel.setBorder("normal");
-
-		return panel;
+	
+	private void renderHelpButton(Caption caption, String text) {
+		ToolBarButton help = new ToolBarButton();
+		caption.appendChild(help);
+		if (ThemeManager.isUseFontIconForImage())
+			help.setIconSclass("z-icon-Help");
+		else
+			help.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
+		Popup popup = new Popup();
+		popup.setSclass("dashboard-content-help");
+		popup.setPopup(popup);
+		Text t = new Text(text);
+		popup.appendChild(t);
+		help.setTooltip(popup);
+		help.addEventListener(Events.ON_CLICK, (Event event) -> {
+			popup.setPage(help.getPage());
+			popup.open(help, "after_start");
+			LayoutUtils.autoDetachOnClose(popup);
+		});
 	}
 
 	private void renderGadgetPanel(MDashboardContent dc, Panel panel) throws Exception {
