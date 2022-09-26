@@ -143,7 +143,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	{
 		StringBuilder sb = new StringBuilder(getSelectClause())
 			.append(" ")
-			.append(getWhereClause());
+			.append("WHERE " + getWhereClause());
 		//	Date Restriction
 		if (getDateColumn() != null 
 			&& MMeasure.MEASUREDATATYPE_QtyAmountInTime.equals(MeasureDataType)
@@ -221,7 +221,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 		
 		//	** WHERE
 		sb.append(" ")
-			.append(getWhereClause());
+			.append("WHERE " + getWhereClause());
 		//	Date Restriction
 		if (getDateColumn() != null
 			&& startDate != null
@@ -261,7 +261,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 		if (index == -1)
 			throw new IllegalArgumentException("Cannot find FROM " + from);
 		sql.append(from.substring(index)).append(" ")
-			.append(getWhereClause());
+			.append("WHERE " + getWhereClause());
 		//	Date Range
 		if (getDateColumn() != null 
 			&& !MGoal.MEASUREDISPLAY_Total.equals(MeasureDisplay))
@@ -482,7 +482,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 			return finalSQL;
 		if (role == null)
 			role = MRole.getDefault();
-		String retValue = role.addAccessSQL(finalSQL, tableName, true, false);
+		String retValue = role.addAccessSQL(finalSQL, null, true, false);
 		return retValue;
 	}	//	addRestrictions
 
