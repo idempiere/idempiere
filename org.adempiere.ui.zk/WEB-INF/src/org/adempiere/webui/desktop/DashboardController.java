@@ -359,21 +359,29 @@ public class DashboardController implements EventListener<Event> {
 	
 	private void renderHelpButton(Caption caption, String text) {
 		ToolBarButton help = new ToolBarButton();
-		caption.appendChild(help);
+		help.setVisible(false);
 		if (ThemeManager.isUseFontIconForImage())
 			help.setIconSclass("z-icon-Help");
 		else
 			help.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HELP_PNG));
+		caption.appendChild(help);
 		Popup popup = new Popup();
-		popup.setSclass("dashboard-content-help");
 		popup.setPopup(popup);
 		Text t = new Text(text);
+		popup.setSclass("dashboard-content-help");
 		popup.appendChild(t);
 		help.setTooltip(popup);
-		help.addEventListener(Events.ON_CLICK, (Event event) -> {
+		help.addEventListener(Events.ON_MOUSE_OVER, (Event event) -> {
 			popup.setPage(help.getPage());
 			popup.open(help, "after_start");
 			LayoutUtils.autoDetachOnClose(popup);
+		});
+		caption.addEventListener(Events.ON_MOUSE_OVER, (Event event) -> {
+			help.setVisible(true);
+		});
+		caption.addEventListener(Events.ON_MOUSE_OUT, (Event event) -> {
+			popup.detach();
+			help.setVisible(false);
 		});
 	}
 
