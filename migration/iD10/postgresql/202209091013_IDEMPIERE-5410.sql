@@ -82,17 +82,19 @@ UPDATE AD_Message SET Value='KPI-2-ORDERS',Updated=TO_TIMESTAMP('2022-09-09 10:5
 ;
 
 -- Sep 9, 2022, 10:55:43 AM CEST
-UPDATE AD_StatusLine SET Name='KPI_This Month Orders', SQLStatement='select 
-  COALESCE (ROUND (SUM(CASE WHEN kpidata.month = trunc(now(), ''MM'') THEN orders ELSE 0 END),0),0) as orders_MTD ,
-  COALESCE (ROUND (SUM(CASE WHEN kpidata.month = trunc(now() - INTERVAL ''1 month'', ''MM'') THEN orders ELSE 0 END),0),0) orders_MTD_P,  round((SUM(CASE WHEN kpidata.month = trunc(now(), ''MM'') THEN orders ELSE 0 END) / NULLIF(SUM(CASE WHEN kpidata.month = trunc(now() - INTERVAL ''1 month'', ''MM'') THEN orders ELSE 0 END),0) - 1) * 100, 2) as diff
+UPDATE AD_StatusLine SET Name='KPI_This Month Orders', SQLStatement='with months(monthFrom) as (select trunc(add_months(current_timestamp,-1), ''MM'') from dual union select trunc(current_timestamp, ''MM'') from dual)
+select 
+  COALESCE (ROUND (SUM(CASE WHEN kpidata.month = trunc(current_timestamp, ''MM'') THEN orders ELSE 0 END),0),0) as orders_MTD ,
+  COALESCE (ROUND (SUM(CASE WHEN kpidata.month = trunc(add_months(current_timestamp,-1),''MM'') THEN orders ELSE 0 END),0),0) orders_MTD_P,  
+  round((SUM(CASE WHEN kpidata.month = trunc(current_timestamp, ''MM'') THEN orders ELSE 0 END) / NULLIF(SUM(CASE WHEN kpidata.month = trunc(add_months(current_timestamp,-1),''MM'') THEN orders ELSE 0 END),0) - 1) * 100, 2) as diff
  FROM
 (
 SELECT 
-   trunc(monthFrom, ''MM'') AS month,
+  trunc(months.monthFrom, ''MM'') AS month,
   COUNT(c_order_id) AS orders
-FROM  generate_series(trunc(now() - INTERVAL ''1 month'', ''MM''), trunc(now(), ''MM''), ''1 month'') as monthFrom
-LEFT JOIN c_order ON trunc(DateOrdered, ''MM'') = monthFrom AND ad_client_id=@#AD_Client_ID@ and issotrx=''Y''
-GROUP BY month
+FROM  months
+LEFT JOIN c_order ON trunc(DateOrdered, ''MM'') = months.monthFrom AND ad_client_id=@#AD_Client_ID@ and issotrx=''Y''
+GROUP BY trunc(months.monthFrom, ''MM'')
 ) kpidata',Updated=TO_TIMESTAMP('2022-09-09 10:55:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_StatusLine_ID=200022
 ;
 
@@ -101,17 +103,19 @@ UPDATE PA_DashboardContent SET Name='This Month Orders',Updated=TO_TIMESTAMP('20
 ;
 
 -- Sep 9, 2022, 10:59:52 AM CEST
-UPDATE AD_StatusLine SET SQLStatement='select 
-  COALESCE (ROUND (SUM(CASE WHEN kpidata.month = trunc(now(), ''MM'') THEN orders ELSE 0 END),0),0) as orders_MTD ,
-  COALESCE (ROUND (SUM(CASE WHEN kpidata.month = trunc(now() - INTERVAL ''1 month'', ''MM'') THEN orders ELSE 0 END),0),0) orders_MTD_P,  round((SUM(CASE WHEN kpidata.month = trunc(now(), ''MM'') THEN orders ELSE 0 END) / NULLIF(SUM(CASE WHEN kpidata.month = trunc(now() - INTERVAL ''1 month'', ''MM'') THEN orders ELSE 0 END),0) - 1) * 100, 2) as diff
+UPDATE AD_StatusLine SET SQLStatement='with months(monthFrom) as (select trunc(add_months(current_timestamp,-1), ''MM'') from dual union select trunc(current_timestamp, ''MM'') from dual)
+select 
+  COALESCE (ROUND (SUM(CASE WHEN kpidata.month = trunc(current_timestamp, ''MM'') THEN orders ELSE 0 END),0),0) as orders_MTD ,
+  COALESCE (ROUND (SUM(CASE WHEN kpidata.month = trunc(add_months(current_timestamp,-1),''MM'') THEN orders ELSE 0 END),0),0) orders_MTD_P,  
+  round((SUM(CASE WHEN kpidata.month = trunc(current_timestamp, ''MM'') THEN orders ELSE 0 END) / NULLIF(SUM(CASE WHEN kpidata.month = trunc(add_months(current_timestamp,-1),''MM'') THEN orders ELSE 0 END),0) - 1) * 100, 2) as diff
  FROM
 (
 SELECT 
-   trunc(monthFrom, ''MM'') AS month,
+  trunc(months.monthFrom, ''MM'') AS month,
   COUNT(c_order_id) AS orders
-FROM  generate_series(trunc(now() - INTERVAL ''1 month'', ''MM''), trunc(now(), ''MM''), ''1 month'') as monthFrom
-LEFT JOIN c_order ON trunc(DateOrdered, ''MM'') = monthFrom AND ad_client_id=@#AD_Client_ID@ and issotrx=''Y''
-GROUP BY month
+FROM  months
+LEFT JOIN c_order ON trunc(DateOrdered, ''MM'') = months.monthFrom AND ad_client_id=@#AD_Client_ID@ and issotrx=''Y''
+GROUP BY trunc(months.monthFrom, ''MM'')
 ) kpidata',Updated=TO_TIMESTAMP('2022-09-09 10:59:52','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_StatusLine_ID=200022
 ;
 
