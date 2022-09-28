@@ -27,6 +27,14 @@ import org.compiere.model.GridField;
  */
 public class WPasswordEditor extends WStringEditor
 {
+
+    public WPasswordEditor()
+    {
+        super();
+        super.setTypePassword(true);
+        setChangeEventWhenEditing(false);
+    }
+    
 	/**
 	 * 
 	 * @param gridField

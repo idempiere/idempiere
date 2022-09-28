@@ -102,14 +102,14 @@ public class MTaxTest extends AbstractTestCase {
 		bp.setIsTaxExempt(true);
 		bp.saveEx();
 		
-		int id = Core.getTaxLookup().get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, 0, getLoginDate(), getLoginDate(), getAD_Org_ID(), getM_Warehouse_ID(), 
+		int id = Core.getTaxLookup().get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id, 0, getLoginDate(), getLoginDate(), getAD_Org_ID(), getM_Warehouse_ID(), 
 				bp.getPrimaryC_BPartner_Location_ID(), bp.getPrimaryC_BPartner_Location_ID(), true, null, getTrxName());
 		assertEquals(taxExemptId, id, "Unexpected tax id");
 		
 		bp.setIsTaxExempt(false);
 		bp.saveEx();
 		
-		id = Core.getTaxLookup().get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, 0, getLoginDate(), getLoginDate(), getAD_Org_ID(), getM_Warehouse_ID(), 
+		id = Core.getTaxLookup().get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id, 0, getLoginDate(), getLoginDate(), getAD_Org_ID(), getM_Warehouse_ID(), 
 				bp.getPrimaryC_BPartner_Location_ID(), bp.getPrimaryC_BPartner_Location_ID(), true, null, getTrxName());
 		assertTrue(id != taxExemptId, "Unexpected tax id: " + id);
 		assertEquals(DictionaryIDs.C_Tax.STANDARD.id, id, "Unexpected tax id");
@@ -138,7 +138,7 @@ public class MTaxTest extends AbstractTestCase {
 			CacheMgt.get().reset();
 			
 			//need to create product with trx as order line get product from cache
-			MProduct p = MProduct.get(DictionaryIDs.M_Product.MULCH.id);
+			MProduct p = MProduct.get(DictionaryIDs.M_Product.AZALEA_BUSH.id);
 			product = new MProduct(Env.getCtx(), 0, null);
 			product.setM_Product_Category_ID(p.getM_Product_Category_ID());
 			product.setC_TaxCategory_ID(category.get_ID());
@@ -281,7 +281,7 @@ public class MTaxTest extends AbstractTestCase {
 			CacheMgt.get().reset();
 			
 			//need to create product with trx as order line get product from cache
-			MProduct p = MProduct.get(DictionaryIDs.M_Product.MULCH.id);
+			MProduct p = MProduct.get(DictionaryIDs.M_Product.AZALEA_BUSH.id);
 			product = new MProduct(Env.getCtx(), 0, null);
 			product.setM_Product_Category_ID(p.getM_Product_Category_ID());
 			product.setC_TaxCategory_ID(category.get_ID());

@@ -47,7 +47,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6183338435199702786L;
+	private static final long serialVersionUID = -598787772963815399L;
 
 	/**
 	 *  Return the SQL statement used for the MFieldVO.create
@@ -313,6 +313,8 @@ public class GridFieldVO implements Serializable, Cloneable
 					vo.Callout = rs.getString (i);
 				else if (columnName.equalsIgnoreCase("AD_Process_ID"))
 					vo.AD_Process_ID = rs.getInt (i);
+				else if (columnName.equalsIgnoreCase("AD_InfoWindow_ID"))
+					vo.AD_InfoWindow_ID = rs.getInt (i);
 				else if (columnName.equalsIgnoreCase("ReadOnlyLogic"))
 					vo.ReadOnlyLogic = rs.getString (i);
 				else if (columnName.equalsIgnoreCase("MandatoryLogic"))
@@ -389,7 +391,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	 *  @param rs result set AD_Process_Para
 	 *  @return MFieldVO
 	 */
-	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int ProcessIDOfPanel, int WindowIDOfPanel, int adInfoPaneId, ResultSet rs)
+	public static GridFieldVO createParameter (Properties ctx, int WindowNo, int ProcessIDOfPanel, int WindowIDOfPanel, int InfoWindowIDOfPanel, ResultSet rs)
 	{
 		GridFieldVO vo = new GridFieldVO (ctx, WindowNo, 0, 0, 0, false);
 		vo.isProcess = true;
@@ -398,7 +400,7 @@ public class GridFieldVO implements Serializable, Cloneable
 		vo.IsUpdateable = true;
 		vo.AD_Process_ID_Of_Panel = ProcessIDOfPanel;
 		vo.AD_Window_ID_Of_Panel = WindowIDOfPanel;
-		vo.AD_Infowindow_ID = adInfoPaneId;
+		vo.AD_InfoWindow_ID_Of_Panel = InfoWindowIDOfPanel;
 		
 		try
 		{
@@ -577,7 +579,7 @@ public class GridFieldVO implements Serializable, Cloneable
 		vo.AD_Reference_Value_ID = AD_Reference_Value_ID;
 		vo.IsMandatory = IsMandatory;
 		vo.IsEncryptedField= IsEncrypted;			
-		vo.AD_Infowindow_ID = infoWindowID;
+		vo.AD_InfoWindow_ID_Of_Panel = infoWindowID;
 		vo.AD_Window_ID_Of_Panel = WindowIDOfPanel;
 		vo.Placeholder = Placeholder;
 		//
@@ -658,7 +660,7 @@ public class GridFieldVO implements Serializable, Cloneable
 	/**
 	 * AD_Infowindow_ID call process. user in case from info window call process.
 	 */
-	public int          AD_Infowindow_ID;
+	public int          AD_InfoWindow_ID_Of_Panel;
 	/** AD_Tab_ID					*/
 	public int			AD_Tab_ID;
 	/** Is the Tab Read Only        */
@@ -739,6 +741,8 @@ public class GridFieldVO implements Serializable, Cloneable
 	public String       Callout = "";
 	/**	Process			*/
 	public int          AD_Process_ID = 0;
+	/** Info Window		*/
+	public int			AD_InfoWindow_ID = 0;
 	/**	Description		*/
 	public String       Description = "";
 	/**	Help			*/

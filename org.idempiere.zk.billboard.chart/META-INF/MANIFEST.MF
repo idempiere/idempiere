@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Billboard.js Chart
+Bundle-SymbolicName: org.idempiere.zk.billboard.chart
+Bundle-Version: 10.0.0.qualifier
+Bundle-Activator: org.idempiere.zk.billboard.chart.Activator
+Bundle-Vendor: iDempiere
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Automatic-Module-Name: org.idempiere.zk.billboard.chart
+Import-Package: org.osgi.framework,
+ org.osgi.service.component,
+ org.osgi.service.component.annotations
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.adempiere.ui.zk,
+ org.adempiere.base,
+ zul,
+ zcommon,
+ zel,
+ zhtml,
+ zjavassist,
+ zk,
+ zkbind,
+ zkplus,
+ zkwebfragment,
+ zweb,
+ org.idempiere.zk.billboard
+Service-Component: OSGI-INF/org.idempiere.zk.billboard.chart.ChartRendererServiceImpl.xml

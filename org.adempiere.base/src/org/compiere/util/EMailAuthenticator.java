@@ -41,18 +41,20 @@ public class EMailAuthenticator extends Authenticator
 	 */
 	public EMailAuthenticator (String username, String password)
 	{
-		MAuthorizationAccount authAccount = MAuthorizationAccount.getEMailAccount(username);
-		if (authAccount != null)
+		m_authAccount = MAuthorizationAccount.getEMailAccount(username);
+		if (m_authAccount != null)
 		{
 			m_isOAuth2 = true;
 			try
 			{
-				password = authAccount.refreshAndGetAccessToken();
+				password = m_authAccount.refreshAndGetAccessToken();
 			}
 			catch (GeneralSecurityException | IOException e)
 			{
 				throw new AdempiereException(e);
 			}
+			if (m_authAccount.getPreferred_UserName() != null)
+				username = m_authAccount.getPreferred_UserName();
 		}
 
 		m_pass = new PasswordAuthentication (username, password);
@@ -72,6 +74,8 @@ public class EMailAuthenticator extends Authenticator
 	private PasswordAuthentication 	m_pass = null;
 	/**	Is OAuth2		*/
 	private boolean m_isOAuth2 = false;
+	/** Authorization Account   */
+	private MAuthorizationAccount m_authAccount = null;
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(EMailAuthenticator.class);
 
@@ -83,6 +87,15 @@ public class EMailAuthenticator extends Authenticator
 	{
 		return m_pass;
 	}	//	getPasswordAuthentication
+
+	/**
+	 *	Get OAuth2 Authorization Account
+	 * 	@return Authorization Account
+	 */
+	protected MAuthorizationAccount getAuthorizationAccount()
+	{
+		return m_authAccount;
+	}	//	getAuthorizationAccount
 
 	/**
 	 * If the authenticator is using OAuth2 account

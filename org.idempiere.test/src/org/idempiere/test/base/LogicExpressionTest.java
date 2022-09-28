@@ -96,6 +96,15 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
 		Env.setContext(Env.getCtx(), "$Element_AY", "N");
 		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		
+		expr = "@LineType@=\"C\"&@CalculationType@='A,R,S'";
+		Env.setContext(Env.getCtx(), "LineType", "C");
+		Env.setContext(Env.getCtx(), "CalculationType", "B");
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "CalculationType", "A");
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "CalculationType", "A,R,S");
+		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
 	}
 	
 	@Test
@@ -129,6 +138,35 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	@Test
 	public void testIn() {
 		String expr = "@LineType@=C&@CalculationType@=A,R,S";
+		testInARS(expr);
+		expr = "@LineType@='C'&@CalculationType@='A','R','S'";
+		testInARS(expr);
+		expr = "@LineType@=\"C\"&@CalculationType@=\"A\",\"R\",\"S\"";
+		testInARS(expr);
+
+		expr = "@Name@='Name 1','Name 2','Name 3'";
+		testInName123(expr);
+		expr = "@Name@=\"Name 1\",\"Name 2\",\"Name 3\"";
+		testInName123(expr);
+	}
+
+	private void testInName123(String expr) {
+		Env.setContext(Env.getCtx(), "Name", (String)null);
+		assertFalse(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "Name", "Name 2");
+		assertTrue(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "Name", "Name 4");
+		assertFalse(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
+		
+		Env.setContext(Env.getCtx(), "Name", (String)null);
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "Name", "Name 2");
+		assertTrue(LogicEvaluator.evaluateLogic(evaluatee, expr));
+		Env.setContext(Env.getCtx(), "Name", "Name 4");
+		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
+	}
+
+	private void testInARS(String expr) {
 		Env.setContext(Env.getCtx(), "LineType", (String)null);
 		Env.setContext(Env.getCtx(), "CalculationType", (String)null);
 		assertFalse(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));

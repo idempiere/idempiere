@@ -65,7 +65,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.GridTabDataBinder;
 import org.adempiere.webui.util.TreeUtils;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridField;
@@ -118,9 +118,9 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Style;
-import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Tabs;
+import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vlayout;
@@ -1339,7 +1339,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
     		}
     		else
     		{
-    			FDialog.error(windowNo, e.getMessage());
+    			Dialog.error(windowNo, e.getMessage());
     		}
     	}
     }
@@ -1656,7 +1656,7 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
             String msg = gridTab.processFieldChange(mField);     //  Dependencies & Callout
             if (msg.length() > 0)
             {
-                FDialog.error(windowNo, this, msg);
+                Dialog.error(windowNo, msg);
             }
         }
         //if (col >= 0)

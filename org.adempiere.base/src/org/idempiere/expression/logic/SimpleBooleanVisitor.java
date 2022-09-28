@@ -40,12 +40,26 @@ public interface SimpleBooleanVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBoolExpression(SimpleBooleanParser.BoolExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code doubleQuotedCSVText}
+	 * labeled alternative in {@link SimpleBooleanParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDoubleQuotedCSVText(SimpleBooleanParser.DoubleQuotedCSVTextContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code contextVariables}
 	 * labeled alternative in {@link SimpleBooleanParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitContextVariables(SimpleBooleanParser.ContextVariablesContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code quotedCSVText}
+	 * labeled alternative in {@link SimpleBooleanParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitQuotedCSVText(SimpleBooleanParser.QuotedCSVTextContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code notExpression}
 	 * labeled alternative in {@link SimpleBooleanParser#expression}.

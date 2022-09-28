@@ -36,6 +36,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MOrder;
 import org.compiere.model.MRMA;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -50,7 +51,7 @@ import org.zkoss.zul.North;
 
 /**
  * Generate Shipment (manual) view class
- *
+ * @deprecated ticket IDEMPIERE-1963 replaced this with an Info Window
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VInOutGen")
 public class WInOutGen extends InOutGen implements IFormController, EventListener<Event>, ValueChangeListener
@@ -163,7 +164,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 	public void dynInit() throws Exception
 	{
 		//	C_OrderLine.M_Warehouse_ID
-		MLookup orgL = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, 11474 /* M_Requisition.M_Warehouse_ID */, DisplayType.TableDir);
+		MLookup orgL = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, SystemIDs.COLUMN_M_REQUISITION_M_WAREHOUSE_ID, DisplayType.TableDir);
 		fWarehouse = new WTableDirEditor ("M_Warehouse_ID", true, false, true, orgL);
 		lWarehouse.setText(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
 		fWarehouse.addValueChangeListener(this);
@@ -178,7 +179,7 @@ public class WInOutGen extends InOutGen implements IFormController, EventListene
 		docAction.setValue(DocAction.ACTION_Complete);
 		// docAction.addValueChangeListener(this); // IDEMPIERE-768
 		//	C_Order.C_BPartner_ID
-		MLookup bpL = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, 2762, DisplayType.Search);
+		MLookup bpL = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, SystemIDs.COLUMN_C_ORDER_C_BPARTNER_ID, DisplayType.Search);
 		fBPartner = new WSearchEditor("C_BPartner_ID", false, false, true, bpL);
 		lBPartner.setText(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
 		fBPartner.addValueChangeListener(this);

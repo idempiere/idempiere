@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -68,7 +67,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7597852750014990009L;
+	private static final long serialVersionUID = -8937680640915708588L;
+
 
 	/**
 	 * 	Get Default (Client) Role
@@ -336,10 +336,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		this.m_columnAccess = copy.m_columnAccess != null ? Arrays.copyOf(copy.m_columnAccess, copy.m_columnAccess.length) : null;
 		this.m_recordAccess = copy.m_recordAccess != null ? Arrays.copyOf(copy.m_recordAccess, copy.m_recordAccess.length) : null;
 		this.m_recordDependentAccess = copy.m_recordDependentAccess != null ? Arrays.copyOf(copy.m_recordDependentAccess, copy.m_recordDependentAccess.length) : null;
-		this.m_tableAccessLevel = copy.m_tableAccessLevel != null ? new HashMap<Integer, String>(copy.m_tableAccessLevel) : null;
-		this.m_tableName = copy.m_tableName != null ? new HashMap<String, Integer>(copy.m_tableName) : null;
-		this.m_viewName = copy.m_viewName != null ? new HashSet<String>(copy.m_viewName) : null;
-		this.m_tableIdName = copy.m_tableIdName != null ? new HashMap<String, String>(copy.m_tableIdName) : null;
 		this.m_windowAccess = copy.m_windowAccess != null ? new HashMap<Integer, Boolean>(copy.m_windowAccess) : null;
 		this.m_processAccess = copy.m_processAccess != null ? new HashMap<Integer, Boolean>(copy.m_processAccess) : null;
 		this.m_taskAccess = copy.m_taskAccess != null ? new HashMap<Integer, Boolean>(copy.m_taskAccess) : null;
@@ -708,16 +704,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	private MRecordAccess[]			m_recordAccess = null;
 	/** List of Dependent Record Access		*/
 	private MRecordAccess[]			m_recordDependentAccess = null;
-	
-	/**	Table Data Access Level	*/
-	private HashMap<Integer,String>		m_tableAccessLevel = null;
-	/**	Table Name				*/
-	private HashMap<String,Integer>		m_tableName = null;
-	/** View Name				*/
-	private Set<String>	m_viewName = null;
-	/** ID Column Name **/
-	private HashMap<String,String>		m_tableIdName = null;
-	
+
 	/**	Window Access			*/
 	private HashMap<Integer,Boolean>	m_windowAccess = null;
 	/**	Process Access			*/
@@ -758,7 +745,6 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	{
 		loadOrgAccess(reload);
 		loadTableAccess(reload);
-		loadTableInfo(reload);
 		loadColumnAccess(reload);
 		loadRecordAccess(reload);
 		if (reload)
@@ -956,70 +942,27 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	}	//	loadTableAccess
 
 	/**
-	 * 	Load Table Access and Name
-	 *	@param reload reload
-	 */
-	private void loadTableInfo (boolean reload)
-	{
-		if (m_tableAccessLevel != null && m_tableName != null && !reload)
-			return;
-		m_tableAccessLevel = new HashMap<Integer,String>(300);
-		m_tableName = new HashMap<String,Integer>(300);
-		m_viewName = new HashSet<String>(300);
-		m_tableIdName = new HashMap<String,String>(300);
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "SELECT AD_Table_ID, AccessLevel, TableName, IsView, "
-			+ "(SELECT ColumnName FROM AD_COLUMN WHERE AD_COLUMN.AD_TABLE_ID = AD_TABLE.AD_TABLE_ID AND UPPER(AD_COLUMN.COLUMNNAME) = UPPER(AD_TABLE.TABLENAME) || '_ID') "
-			+ "FROM AD_Table WHERE IsActive='Y'";
-		try
-		{
-			pstmt = DB.prepareStatement(sql, get_TrxName());
-			rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				Integer ii = Integer.valueOf(rs.getInt(1));
-				m_tableAccessLevel.put(ii, rs.getString(2));
-				String tableName = rs.getString(3); 
-				m_tableName.put(tableName, ii);
-				String isView = rs.getString(4);
-				if ("Y".equals(isView))
-				{
-					m_viewName.add(tableName.toUpperCase());
-				}
-				String idColumn = rs.getString(5);
-				if (idColumn != null && idColumn.trim().length() > 0)
-				{
-					m_tableIdName.put(tableName.toUpperCase(), idColumn);
-				}
-			} 
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-		}
-		if (log.isLoggable(Level.FINE)) log.fine("#" + m_tableAccessLevel.size()); 
-	}	//	loadTableAccessLevel
-
-	/**
 	 * Check if tableName is a view
 	 * @param tableName
 	 * @return boolean
 	 */
 	private boolean isView(String tableName)
 	{
-		if (m_viewName == null)
-			loadAccess(true);
-		return m_viewName.contains(tableName.toUpperCase());
+		MTable table = MTable.get(getCtx(), tableName);
+		if (table == null)
+			return false;
+		return MTable.get(getCtx(), tableName).isView();
 	}
-	
+
 	private String getIdColumnName(String tableName)
 	{
-		return m_tableIdName.get(tableName.toUpperCase());
+		StringBuilder colkey = new StringBuilder(tableName).append("_ID");
+		MTable table = MTable.get(getCtx(), tableName);
+		if (table == null)
+			return null;
+		if (MTable.get(getCtx(), tableName).columnExists(colkey.toString()))
+			return colkey.toString();
+		return null;
 	}
 	
 	/**
@@ -1421,12 +1364,15 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	{
 		if (ro)				//	role can always read
 			return true;
-		//
-		loadTableInfo(false);
 		//	AccessLevel
 		//		1 = Org - 2 = Client - 4 = System
 		//		3 = Org+Client - 6 = Client+System - 7 = All
-		String roleAccessLevel = (String)m_tableAccessLevel.get(Integer.valueOf(AD_Table_ID));
+		MTable table = MTable.get(AD_Table_ID);
+		if (table == null) {
+			log.warning("No Table Found with AD_Table_ID=" + AD_Table_ID);
+			return false;
+		}
+		String roleAccessLevel = table.getAccessLevel();
 		if (roleAccessLevel == null)
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("NO - No AccessLevel - AD_Table_ID=" + AD_Table_ID);
@@ -1481,12 +1427,22 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			return false;
 		loadColumnAccess(false);
 
-		// Verify access to process for buttons
 		MColumn column = MColumn.get(Env.getCtx(), AD_Column_ID, trxName);
-		if (column.getAD_Reference_ID() == DisplayType.Button && column.getAD_Process_ID() > 0) {
-			Boolean access = MRole.getDefault().getProcessAccess(column.getAD_Process_ID());
-			if (access == null)
-				return false;
+		if (column.getAD_Reference_ID() == DisplayType.Button) {
+			if (column.getAD_Process_ID() > 0)
+			{
+				// Verify access to process for buttons
+				Boolean access = MRole.getDefault().getProcessAccess(column.getAD_Process_ID());
+				if (access == null)
+					return false;
+			}
+			else if (column.getAD_InfoWindow_ID() > 0)
+			{
+				// Verify access to info window for buttons
+				Boolean access = MRole.getDefault().getInfoAccess(column.getAD_InfoWindow_ID());
+				if (access == null)
+					return false;
+			}
 		}
 
 		boolean retValue = true;		//	assuming exclusive
@@ -2463,11 +2419,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 */
 	private int getAD_Table_ID (String tableName)
 	{
-		loadTableInfo(false);
-		Integer ii = (Integer)m_tableName.get(tableName);
-		if (ii != null)
-			return ii.intValue();
-		return 0;
+		MTable table = MTable.get(getCtx(), tableName);
+		if (table == null)
+			return 0;
+		return table.getAD_Table_ID();
 	}	//	getAD_Table_ID
 
 	/**
@@ -2897,9 +2852,9 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 */
 	private void loadSubstitutedRoles(boolean reload)
 	{
-		if (this.m_parent != null)
+		if (this.m_parent != null || isMasterRole())
 		{
-			// load only if this is logged role (no parent roles) 
+			// load only if this is logged role (no parent or master roles) 
 			return;
 		}
 		//

@@ -181,7 +181,7 @@ public final class Env
 	public static void exitEnv (int status)
 	{
 		//hengsin, avoid unncessary query of session when exit without log in
-		if (DB.isConnected(false)) {
+		if (DB.isConnected()) {
 			//	End Session
 			MSession session = MSession.get(Env.getCtx());	//	finish
 			if (session != null) {
@@ -688,9 +688,6 @@ public final class Env
 		if (ctx == null || context == null)
 			throw new IllegalArgumentException ("Require Context");
 		String s = ctx.getProperty(WindowNo+"|"+TabNo+"|"+context);
-		// If TAB_INFO, don't check Window and Global context - teo_sarca BF [ 2017987 ]
-		if (TAB_INFO == TabNo)
-			return s != null ? s : "";
 		//
 		if (Util.isEmpty(s) && ! onlyTab)
 			return getContext(ctx, WindowNo, context, onlyWindow);

@@ -113,11 +113,15 @@ public class ProcessInfoUtil
 	}	//	setSummaryFromDB
 
 	/**
-	 *	Set Log of Process.
+	 *	Set Log of Process from Database JUST when they are not already in memory
 	 * 	@param pi process info
 	 */
 	public static void setLogFromDB (ProcessInfo pi)
 	{
+        ProcessInfoLog m_logs[] = pi.getLogs();
+        if (m_logs != null && m_logs.length > 0)
+        	return;
+
 	//	s_log.fine("setLogFromDB - AD_PInstance_ID=" + pi.getAD_PInstance_ID());
 		String sql = "SELECT Log_ID, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID,Record_ID "				             
 			+ "FROM AD_PInstance_Log "
@@ -171,7 +175,6 @@ public class ProcessInfoUtil
 					logs[i].getAD_Table_ID(), logs[i].getRecord_ID());
 			il.save();
 		}
-		pi.setLogList(null);	//	otherwise log entries are twice
 	}   //  saveLogToDB
 
 	/**

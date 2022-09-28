@@ -9,20 +9,82 @@
 	</parent>
 	<artifactId>org.idempiere.p2</artifactId>
 	<packaging>eclipse-repository</packaging>
-
+	<properties>
+		<materializeProduct>package</materializeProduct>
+	</properties>
 	<build>
 		<plugins>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<delete file="${project.basedir}/target/local-artifacts.properties" quiet="true"/>
+								<delete
+									dir="${project.basedir}/target/repository" quiet="true"/>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-publisher-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-publish-osgi-ee</id>
+						<goals>
+							<goal>publish-osgi-ee</goal>
+						</goals>
+						<phase>${materializeProduct}</phase>
+					</execution>
+					<execution>
+						<id>default-publish-categories</id>
+						<goals>
+							<goal>publish-categories</goal>
+						</goals>
+						<phase>${materializeProduct}</phase>
+					</execution>
+					<execution>
+						<id>default-publish-products</id>
+						<goals>
+							<goal>publish-products</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+					<execution>
+						<id>default-attach-artifacts</id>
+						<goals>
+							<goal>attach-artifacts</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-p2-repository-plugin</artifactId>
 				<executions>
 					<execution>
-						<!-- install the product using the p2 director -->
-						<id>build-site-p2</id>
+						<id>default-assemble-repository</id>
 						<goals>
 							<goal>assemble-repository</goal>
 						</goals>
+						<phase>package</phase>
+					</execution>
+					<execution>
+						<id>default-archive-repository</id>
+						<goals>
+							<goal>archive-repository</goal>
+						</goals>
+						<phase>package</phase>
 					</execution>
 				</executions>
 				<configuration>
@@ -34,17 +96,17 @@
 					<xzCompress>false</xzCompress>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-p2-director-plugin</artifactId>
 				<executions>
 					<execution>
 						<!-- install the product using the p2 director -->
-						<id>materialize-products</id>
+						<id>default-materialize-products</id>
 						<goals>
 							<goal>materialize-products</goal>
 						</goals>
+						<phase>${materializeProduct}</phase>
 					</execution>
 				</executions>
 				<configuration>
@@ -58,7 +120,6 @@
 					</products>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.eclipse.tycho.extras</groupId>
 				<artifactId>tycho-eclipserun-plugin</artifactId>
@@ -67,13 +128,14 @@
 				</configuration>
 				<executions>
 					<execution>
+						<id>default-eclipse-run</id>
 						<goals>
 							<goal>eclipse-run</goal>
 						</goals>
-						<phase>package</phase>
+						<phase>${materializeProduct}</phase>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
-	</build>
+	</build>	
 </project>

@@ -57,7 +57,7 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.PaySelect;
 import org.compiere.model.MPaySelection;
 import org.compiere.model.MSysConfig;
@@ -327,7 +327,7 @@ public class WPaySelect extends PaySelect
 			fieldBankAccount.appendItem(bi.toString(), bi);
 
 		if (fieldBankAccount.getItemCount() == 0)
-			FDialog.error(m_WindowNo, form, "VPaySelectNoBank");
+			Dialog.error(m_WindowNo, "VPaySelectNoBank");
 		else
 			fieldBankAccount.setSelectedIndex(0);
 		
@@ -390,7 +390,7 @@ public class WPaySelect extends PaySelect
 		if (log.isLoggable(Level.CONFIG)) log.config("PayDate=" + payDate);
 		
 		if (fieldBankAccount.getItemCount() == 0) {
-			FDialog.error(m_WindowNo, form, "VPaySelectNoBank");
+			Dialog.error(m_WindowNo, "VPaySelectNoBank");
 			return;
 		}
 			
@@ -454,7 +454,7 @@ public class WPaySelect extends PaySelect
 				loadTableInfo();
 				
 				//  Ask to Open Print Form
-				FDialog.ask(m_WindowNo, form, "VPaySelectPrint?", new Callback<Boolean>() {
+				Dialog.ask(m_WindowNo, "VPaySelectPrint?", new Callback<Boolean>() {
 	
 					@Override
 					public void onCallback(Boolean result) 
@@ -548,14 +548,14 @@ public class WPaySelect extends PaySelect
 		
 		if(msg != null && msg.length() > 0)		
 		{
-			FDialog.error(m_WindowNo, form, "SaveError", msg);
+			Dialog.error(m_WindowNo, "SaveError", msg);
 			return;
 		}
 
 		
 		if (MSysConfig.getBooleanValue(MSysConfig.PAYMENT_SELECTION_MANUAL_ASK_INVOKE_GENERATE, true, m_ps.getAD_Client_ID(), m_ps.getAD_Org_ID())) {
 		  //  Ask to Post it
-		  FDialog.ask(m_WindowNo, form, "VPaySelectGenerate?", new Callback<Boolean>() {
+		  Dialog.ask(m_WindowNo, "VPaySelectGenerate?", new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 
@@ -587,7 +587,7 @@ public class WPaySelect extends PaySelect
 								public void onEvent(Event event) throws Exception {
 									if (!dialog.isCancel()) {
 										if (dialog.getProcessInfo().isError()) {
-											FDialog.error(m_WindowNo, form, Msg.parseTranslation(Env.getCtx(), dialog.getProcessInfo().getSummary()));
+											Dialog.error(m_WindowNo, Msg.parseTranslation(Env.getCtx(), dialog.getProcessInfo().getSummary()));
 											return;
 										}
 									}
@@ -654,7 +654,7 @@ public class WPaySelect extends PaySelect
 		Executions.schedule(form.getDesktop(), new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				FDialog.ask(m_WindowNo, null, message, callback);
+				Dialog.ask(m_WindowNo, message, callback);
 			}
 		}, new Event("onAsk"));		
 	}
@@ -670,7 +670,17 @@ public class WPaySelect extends PaySelect
 		Executions.schedule(form.getDesktop(), new EventListener<Event>() {
 			@Override
 			public void onEvent(Event event) throws Exception {
-				FDialog.askForInput(m_WindowNo, null, message, callback);
+				Dialog.askForInput(m_WindowNo, message, callback);
+			}
+		}, new Event("onAskForInput"));
+	}
+	
+	@Override
+	public void askForSecretInput(final String message, final Callback<String> callback) {
+		Executions.schedule(form.getDesktop(), new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				Dialog.askForSecretInput(m_WindowNo, message, callback);
 			}
 		}, new Event("onAskForInput"));
 	}

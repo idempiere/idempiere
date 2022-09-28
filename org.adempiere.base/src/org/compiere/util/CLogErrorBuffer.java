@@ -216,13 +216,14 @@ public class CLogErrorBuffer extends Handler
 				String methodName = record.getSourceMethodName();	//
 				if (methodName == null)
 					methodName = "";
-				if (DB.isConnected(false)
-					&& methodName != null
+				if (methodName != null
 					&& !methodName.equals("saveError")
 					&& !methodName.equals("get_Value")
 					&& !methodName.equals("dataSave")
 					&& loggerName.indexOf("Issue") == -1
 					&& loggerName.indexOf("CConnection") == -1
+					&& !loggerName.startsWith("com.zaxxer.hikari")
+					&& DB.isConnected()
 					)
 				{
 					// create issue on a separate thread in order to eventually
@@ -245,7 +246,8 @@ public class CLogErrorBuffer extends Handler
 						&& !methodName.equals("get_Value")
 						&& !methodName.equals("dataSave")
 						&& loggerName.indexOf("Issue") == -1
-						&& loggerName.indexOf("CConnection") == -1)
+						&& loggerName.indexOf("CConnection") == -1
+						&& !loggerName.startsWith("com.zaxxer.hikari"))
 					{
 						System.err.println(getFormatter().format(record));
 					}

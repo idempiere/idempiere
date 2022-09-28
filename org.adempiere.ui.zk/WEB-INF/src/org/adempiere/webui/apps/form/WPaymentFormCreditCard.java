@@ -31,7 +31,7 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.PaymentFormCreditCard;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBankAccountProcessor;
@@ -279,9 +279,9 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		
 		boolean ok = save(newCCType, kNumberField.getText(), kExpField.getText(), (BigDecimal) kAmountField.getValue(), trxName);		
 		if(!ok)
-			FDialog.error(getWindowNo(), window, "PaymentError", processMsg);
+			Dialog.error(getWindowNo(), "PaymentError", processMsg);
 		else if (processMsg != null)
-			FDialog.info(getWindowNo(), window, "PaymentCreated", processMsg);
+			Dialog.info(getWindowNo(), "PaymentCreated", processMsg);
 		
 		return ok;
 	}
@@ -298,12 +298,12 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		
 		boolean ok = processOnline(CCType, kNumberField.getText(), kApprovalField.getText(), kExpField.getText());
 		if (!ok)
-			FDialog.error(getWindowNo(), window, "PaymentNotProcessed", processMsg);
+			Dialog.error(getWindowNo(), "PaymentNotProcessed", processMsg);
 		else 
 		{
 			loadData();
 			if (processMsg != null)
-				FDialog.info(getWindowNo(), window, "PaymentProcessed", processMsg);
+				Dialog.info(getWindowNo(), "PaymentProcessed", processMsg);
 		}
 	}   //  online
 	

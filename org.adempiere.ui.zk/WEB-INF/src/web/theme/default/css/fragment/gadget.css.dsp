@@ -10,10 +10,30 @@
 	background-image: none; background-color: #FFFFFF;
 }
 
+.statusline-wrapper > .z-panel-head {
+	position: absolute;
+	top: 1;
+	z-index: 1;
+	width: calc(100% - 10px);
+}
+
+.dashboard-widget > .z-panel-body {
+	height: 100%;
+}
+
+.statusline-wrapper {
+	height: 100%;
+}
+
+.statusline-wrapper > .z-panel-body {
+	position: relative;
+	top: 0;
+	height: 100%;
+}
+
 .z-panel {
-	border-radius: 5px;
-	border: 1px solid #d8d8d8;
-	border-bottom-width: 1px;
+	border-radius: 3px;
+	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 }
 
 .z-panel-noborder {
@@ -22,6 +42,7 @@
 
 .z-panelchildren {
 	border: none;
+	height: 100%;
 }
 
 .z-panel-head {
@@ -32,7 +53,7 @@
 .z-panel-head .z-panel-header {
 	padding: 0 0 2px 0;
 	color: #262626; 
-	background: #F4F4F4;
+	background: white;
 	font-weight: 300;
 	font-size: 13px;
 }	
@@ -40,9 +61,14 @@
 .z-caption .z-caption-content {
 	padding: 1px 1px 1px 6px;
 	color: #262626; 
-	font-weight: 300;
+	font-weight: 500;
 	font-size: 13px;
 	cursor: move;
+}
+
+.z-caption-content .z-toolbarbutton {
+	vertical-align: middle;
+	margin-bottom: 2px;
 }
 
 .dashboard-layout {
@@ -57,6 +83,7 @@
 	margin-right: auto;
 	position: relative;
 	width: 99%;	
+	height: 100%;
 }
 
 .dashboard-widget-max {
@@ -208,8 +235,47 @@
 	width: 100%;
 }
 
+.gauge-indicator-title {
+	text-align: center;
+	padding-top: 1px; 
+	padding-bottom: 1px;
+	line-height:12px;
+}
+
+.performance-gadget {
+	display: flex;
+ 	justify-content: center;
+ 	align-items: center;
+	cursor: pointer;
+}
+
+.performance-gadget > .z-div {
+	width: 100%;	
+}
+
+@media screen and (min-width: 768px) {
+	.dashboard-row .chart-gadget {
+		max-height: 300px; 
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.dashboard-row .chart-gadget {
+		max-height: 150px; 
+	}
+}
+
 .dashboard-widget.dashboard-widget-max .chart-gadget {
 	height: 100% !important; 
+}
+
+.statusline-gadget {
+	display: flex;
+	flex-direction: column;
+ 	justify-content: center;
+ 	align-items: center;
+ 	padding: 40px 0px 10px;
+ 	height: 100%;
 }
 
 .help-content
@@ -267,3 +333,11 @@
   vertical-align: middle;
 }
 <%-- User Favorite Dashboard Panel End --%>
+
+.z-anchorchildren .z-hlayout {
+	white-space: normal;
+}
+
+.desktop-home-tabpanel .z-hlayout-inner {
+	padding: 5px !important;
+}

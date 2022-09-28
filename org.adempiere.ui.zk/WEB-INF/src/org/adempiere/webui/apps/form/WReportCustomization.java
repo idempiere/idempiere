@@ -47,7 +47,7 @@ import org.adempiere.webui.panel.WRCTabPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
@@ -161,7 +161,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
  		catch(Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
-			FDialog.error(m_WindowNo, "LoadError", e.getLocalizedMessage());
+			Dialog.error(m_WindowNo, "LoadError", e.getLocalizedMessage());
 		}
 	}
 	
@@ -175,7 +175,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 
 		headerPanel.appendChild(new Separator("vertical"));
 
-		fm =m_reportEngine.getPrintFormat();
+		fm = new MPrintFormat(m_ctx, m_reportEngine.getPrintFormat().getAD_PrintFormat_ID(), null);
 		name.setValue(fm.getName());
 
 		if (Env.isMultiLingualDocument(m_ctx))
@@ -453,7 +453,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 		log.config("");
 		if (!m_isCanExport)
 		{
-			FDialog.error(m_WindowNo, "AccessCannotExport","Export");
+			Dialog.error(m_WindowNo, "AccessCannotExport","Export");
 			return;
 		}
 		
@@ -520,7 +520,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			ListItem li = cboType.getSelectedItem();
 			if(li == null || li.getValue() == null)
 			{
-				FDialog.error(m_WindowNo, winExportFile, "FileInvalidExtension");
+				Dialog.error(m_WindowNo, "FileInvalidExtension");
 				return;
 			}
 			
@@ -581,7 +581,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			}
 			else
 			{
-				FDialog.error(m_WindowNo, winExportFile, "FileInvalidExtension");
+				Dialog.error(m_WindowNo, "FileInvalidExtension");
 				return;
 			}
 
