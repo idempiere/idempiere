@@ -49,6 +49,7 @@ import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
 import org.compiere.model.PO;
 import org.compiere.model.SystemIDs;
+import org.compiere.model.X_C_BP_Relation;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
@@ -361,4 +362,108 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		rmaLine.load(getTrxName());
 		assertEquals(1, rmaLine.getQtyInvoiced().intValue());
 	}
+
+	@Test
+	public void testGenerateInvoiceRelatedBP() { // IDEMPIERE-5433
+		X_C_BP_Relation bpr = new X_C_BP_Relation(Env.getCtx(), 0, getTrxName());
+		bpr.setName("C&W may pay invoices for Seed");
+		bpr.setC_BPartner_ID(DictionaryIDs.C_BPartner.SEED_FARM.id);
+		bpr.setC_BPartnerRelation_ID(DictionaryIDs.C_BPartner.C_AND_W.id);
+		bpr.setC_BPartnerRelation_Location_ID(DictionaryIDs.C_BPartner_Location.C_AND_W_STAMFORD.id);
+		bpr.setIsBillTo(true);
+		bpr.setIsRemitTo(true);
+		bpr.saveEx();
+
+		MOrder order1 = new MOrder(Env.getCtx(), 0, getTrxName());
+		order1.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		order1.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order1.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order1.setInvoiceRule(MOrder.INVOICERULE_Immediate);
+		order1.setDocStatus(DocAction.STATUS_Drafted);
+		order1.setDocAction(DocAction.ACTION_Complete);
+		order1.setBill_BPartner_ID(DictionaryIDs.C_BPartner.C_AND_W.id);
+		order1.setBill_Location_ID(DictionaryIDs.C_BPartner_Location.C_AND_W_STAMFORD.id);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order1.setDateOrdered(today);
+		order1.setDatePromised(today);
+		order1.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order1);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.SEEDER.id));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		ProcessInfo info1 = MWorkflow.runDocumentActionWorkflow(order1, DocAction.ACTION_Complete);
+		assertFalse(info1.isError(), info1.getSummary());
+		order1.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, order1.getDocStatus());
+		line1.load(getTrxName());
+		assertEquals(1, line1.getQtyReserved().intValue());
+		assertEquals(0, line1.getQtyInvoiced().intValue());
+
+		MOrder order2 = new MOrder(Env.getCtx(), 0, getTrxName());
+		order2.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id));
+		order2.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order2.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order2.setInvoiceRule(MOrder.INVOICERULE_Immediate);
+		order2.setDocStatus(DocAction.STATUS_Drafted);
+		order2.setDocAction(DocAction.ACTION_Complete);
+		order2.setBill_BPartner_ID(DictionaryIDs.C_BPartner.C_AND_W.id);
+		order2.setBill_Location_ID(DictionaryIDs.C_BPartner_Location.C_AND_W_STAMFORD.id);
+		order2.setDateOrdered(today);
+		order2.setDatePromised(today);
+		order2.saveEx();
+
+		MOrderLine line2 = new MOrderLine(order2);
+		line2.setLine(10);
+		line2.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.WEEDER.id));
+		line2.setQty(new BigDecimal("1"));
+		line2.setDatePromised(today);
+		line2.saveEx();
+
+		ProcessInfo info2 = MWorkflow.runDocumentActionWorkflow(order2, DocAction.ACTION_Complete);
+		assertFalse(info2.isError(), info2.getSummary());
+		order2.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, order2.getDocStatus());
+		line2.load(getTrxName());
+		assertEquals(1, line2.getQtyReserved().intValue());
+		assertEquals(0, line2.getQtyInvoiced().intValue());
+
+		int AD_Process_ID = SystemIDs.PROCESS_C_INVOICE_GENERATE;
+		MPInstance instance = new MPInstance(Env.getCtx(), AD_Process_ID, 0);
+		instance.saveEx();
+
+		//call process
+		ProcessInfo pi = new ProcessInfo ("InvoiceGenerate", AD_Process_ID);
+		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
+
+		//	Add Parameter - Selection=Y
+		MPInstancePara ip = new MPInstancePara(instance, 10);
+		ip.setParameter("DateInvoiced",today);
+		ip.saveEx();
+		// Org
+		ip = new MPInstancePara(instance, 20);
+		ip.setParameter("AD_Org_ID", DictionaryIDs.AD_Org.HQ.id);
+		ip.saveEx();
+		//Add Document action parameter
+		ip = new MPInstancePara(instance, 50);
+		ip.setParameter("DocAction", MOrder.DOCACTION_Prepare);
+		ip.saveEx();
+		// Consolidate
+		ip = new MPInstancePara(instance, 60);
+		ip.setParameter("ConsolidateDocument", true);
+		ip.saveEx();
+
+		ServerProcessCtl processCtl = new ServerProcessCtl(pi, getTrx());
+		processCtl.setManagedTrxForJavaProcess(false);
+		processCtl.run();
+
+		assertFalse(pi.isError(), pi.getSummary());
+		// It must create two invoices because they are for different ship BP
+		// even if they have the same Bill BP and Location
+		assertEquals(pi.getSummary(), "Created = 2");
+	}
+
 }
