@@ -199,6 +199,16 @@ public final class DictionaryIDs {
 		}
 	}
 	
+	public enum C_ElementValue {
+		CHECKING_IN_TRANSFER(509);
+		
+		public final int id;
+		
+		private C_ElementValue(int id) {
+			this.id = id;
+		}
+	}
+	
 	public enum C_PaymentTerm {
 		NET_30(100),
 		IMMEDIATE(105),

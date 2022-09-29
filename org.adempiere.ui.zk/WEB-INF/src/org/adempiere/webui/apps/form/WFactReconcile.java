@@ -1,10 +1,38 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - anozimada                                                         *
+ * - hengsin                                                           *
+ * - carlosruiz                                                        *
+ * - druiz                                                             *
+ * - nmicoud                                                           *
+ **********************************************************************/
 package org.adempiere.webui.apps.form;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -60,6 +88,11 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VFactReconcile")
+/**
+ * 
+ * https://wiki.idempiere.org/en/NF1.0_GL_Reconciliation
+ *
+ */
 public class WFactReconcile extends FactReconcile 
 implements IFormController, EventListener<Event>, WTableModelListener, ValueChangeListener{
 	
@@ -67,8 +100,6 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 
 	/** Format                  */
 	private DecimalFormat   m_format = DisplayType.getNumberFormat(DisplayType.Amount);
-	/** Number of selected rows */
-	private int             m_noSelected = 0;
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(WFactReconcile.class);
 	
@@ -79,19 +110,15 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	{
 		Env.setContext(Env.getCtx(), form.getWindowNo(), "IsSOTrx", "Y");   //  defaults to no
 		try
-		{
-			super.dynInit();
+		{			
 			dynInit();
 			zkInit();
-			//calculate();
-			//southPanel.appendChild(new Separator());
-			//southPanel.appendChild(statusBar);
 		}
 		catch(Exception e)
 		{
-			log.log(Level.SEVERE, "", e);
+			log.log(Level.SEVERE, e.getMessage(), e);
 		}
-	}	//	init
+	}
 	
 	private Borderlayout mainLayout = new Borderlayout();
 	private Panel parameterPanel = new Panel();
@@ -136,7 +163,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	private boolean checkAllSelected = true;
 	
 	/**
-	 *  Static Init
+	 *  init UI
 	 *  @throws Exception
 	 */
 	private void zkInit() throws Exception
@@ -150,7 +177,6 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		bZoomDoc.addActionListener(this);
 		bGenerate.setEnabled(false);
 		bReset.setEnabled(false);
-		//bRefresh.setText(Msg.getMsg(Env.getCtx(), "Query"));
 		bGenerate.setLabel(Msg.getMsg(Env.getCtx(),"Process"));
 		bReset.setLabel(Msg.getMsg(Env.getCtx(),"Reset"));
 		bZoom.setLabel(Msg.translate(Env.getCtx(), "Fact_Acct_ID"));
@@ -179,11 +205,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		
 
 		differenceLabel.setText(Msg.getMsg(Env.getCtx(), "Difference"));
-		//differenceField.setBackground(AdempierePLAF.getFieldBackground_Inactive());
-		//differenceField.setEditable(false);
 		differenceField.setText("0");
-		//differenceField.setColumns(8);
-		//differenceField.setHorizontalAlignment(SwingConstants.RIGHT);
 		//
 		bGenerate.addActionListener(this);
 		bCancel.addActionListener(this);
@@ -244,7 +266,6 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		mainLayout.appendChild(center);
 		center.appendChild(miniTable);
 		ZKUpdateUtil.setWidth(miniTable, "100%");
-		//ZKUpdateUtil.setHeight(miniTable, "99%");
 		center.setStyle("border: none");
 		
 		// Command Panel
@@ -297,10 +318,10 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	 *  Dynamic Init (prepare dynamic fields)
 	 *  @throws Exception if Lookups cannot be initialized
 	 */
+	 @Override
 	public void dynInit() throws Exception
 	{
-
-		m_AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
+		super.dynInit();
 
 		//  AcctSchema
 		int AD_Column_ID = FactReconcile.col_C_AcctSchema_ID;        //  Fact_Acct.C_AcctSchema_ID
@@ -341,7 +362,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		fieldAccount = new WTableDirEditor("C_ElementValue_ID", true, false, true, lookupAccount);
 	}
 	
-	public void loadData(){
+	private void loadData(){
 		
 		if(fieldAccount.isNullOrEmpty())
 			throw new WrongValueException(fieldAccount.getComponent(), Msg.getMsg(Env.getCtx(), "FillMandatory"));
@@ -400,32 +421,18 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	 *  Calculate selected rows.
 	 *  - add up selected rows
 	 */
-	public void calculateSelection()
+	private void calculateSelection()
 	{
-		m_noSelected = 0;
-		BigDecimal selectedAmt = Env.ZERO;
-
-		int rows = miniTable.getRowCount();
-		for (int i = 0; i < rows; i++)
-		{
-			boolean isSelected = (Boolean)miniTable.getModel().getValueAt(i, selectedColIndex);
-			if (isSelected)
-			{
-				BigDecimal amt = (BigDecimal)miniTable.getModel().getValueAt(i, amtColIndex);
-				if (amt != null)
-					selectedAmt = selectedAmt.add(amt);
-				m_noSelected++;
-			}
-		}
+		calculateSelection(miniTable);
 
 		//  Information
 		StringBuilder info = new StringBuilder();
 		info.append(m_noSelected).append(" ").append(Msg.getMsg(Env.getCtx(), "Selected")).append(" / ").append(miniTable.getRowCount());
 		
-		differenceField.setText(m_format.format(selectedAmt));
+		differenceField.setText(m_format.format(m_selectedAmt));
 		dataStatus.setText(info.toString());
 		//
-		bGenerate.setEnabled(m_noSelected != 0 && Env.ZERO.compareTo(selectedAmt) == 0 && !isReconciled.isSelected());
+		bGenerate.setEnabled(m_noSelected != 0 && Env.ZERO.compareTo(m_selectedAmt) == 0 && !isReconciled.isSelected());
 		bReset.setEnabled(m_noSelected > 0 && isReconciled.isSelected());
 	}   //  calculateSelection
 	
@@ -475,7 +482,6 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 
 	@Override
 	public void onEvent(Event event) throws Exception {
-		log.config("");
 		if (event.getTarget().equals(bGenerate))
 			generateReconciliation();
 		
@@ -499,36 +505,18 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	}
 	
 	private void generateReconciliation() {
-		log.info("");
-		//
-		//miniTable.stopEditor(true);
 		if (miniTable.getRowCount() == 0)
 			return;
-		//miniTable.setRowSelectionInterval(0,0);
 		calculateSelection();
 		if (m_noSelected == 0)
 			return;
 		
-		String format = "yyyy-MM-dd HH:mm:ss.SSS";
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		String time = sdf.format(cal.getTime());
-
-		for ( int r = 0; r < miniTable.getModel().getRowCount(); r++ )
-		{
-			boolean isSelected = (Boolean)miniTable.getModel().getValueAt(r, selectedColIndex);
-			
-			if (isSelected)
-			{
-				KeyNamePair pp = (KeyNamePair)miniTable.getModel().getValueAt(r, idColIndex);
-				
-				int factId = pp.getKey();
-
-				boolean result = generate(factId, time);
-				if(!result)
-					continue;
-
-				((ListModelTable) miniTable.getModel()).remove(r--);
+		List<Integer> generated =  new ArrayList<>();
+		generate(miniTable, generated);
+		if (generated.size() > 0) {
+			Collections.reverse(generated);
+			for(int i : generated) {
+				miniTable.getModel().remove(i);
 			}
 		}
 
@@ -541,8 +529,6 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	 */
 	protected void zoom (int tableID)
 	{
-		log.info("");
-		
 		int selected = miniTable.getSelectedRow();
 		
 		if ( selected == -1 )
@@ -561,31 +547,21 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	}	//	zoom
 	
 	private void resetReconciliation() {
-		log.info("");
 		if (miniTable.getRowCount() == 0)
 			return;
 		calculateSelection();
 		if (m_noSelected == 0)
 			return;
 
-		for ( int r = 0; r < miniTable.getModel().getRowCount(); r++ )
-		{
-			boolean isSelected = (Boolean)miniTable.getModel().getValueAt(r, selectedColIndex);
-			
-			if (isSelected)
-			{
-				KeyNamePair pp = (KeyNamePair)miniTable.getModel().getValueAt(r, idColIndex);
-				
-				int factId = pp.getKey();
-
-				boolean result = reset(factId);
-				if(!result)
-					continue;
-
-				((ListModelTable) miniTable.getModel()).remove(r--);
+		List<Integer> resets =  new ArrayList<>();
+		reset(miniTable, resets);
+		if (resets.size() > 0) {
+			Collections.reverse(resets);
+			for(int i : resets) {
+				miniTable.getModel().remove(i);
 			}
 		}
-
+		
 		bSelect.setPressed(false);
 	}
 
@@ -594,7 +570,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		return form;
 	}
 
-	void onbSelect() {
+	private void onbSelect() {
 		ListModelTable model = miniTable.getModel();
 		int rows = model.getSize();
 		Boolean selectAll = bSelect.isPressed() ? Boolean.FALSE : Boolean.TRUE;
@@ -605,6 +581,6 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		checkAllSelected = true;
 		miniTable.setModel(model);
 		calculateSelection();
-	}
+	}	
 }
 
