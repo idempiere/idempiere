@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_ViewComponent
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_ViewComponent 
 {
@@ -177,6 +177,19 @@ public interface I_AD_ViewComponent
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsDistinct */
+    public static final String COLUMNNAME_IsDistinct = "IsDistinct";
+
+	/** Set Distinct.
+	  * Select Distinct
+	  */
+	public void setIsDistinct (boolean IsDistinct);
+
+	/** Get Distinct.
+	  * Select Distinct
+	  */
+	public boolean isDistinct();
 
     /** Column name IsUnionAll */
     public static final String COLUMNNAME_IsUnionAll = "IsUnionAll";
