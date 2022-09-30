@@ -349,7 +349,6 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			return;
 		String PaymentRule = pp.getValue();
 
-		log.info("PaymentRule=" + PaymentRule);
 		fNoPayments.setText(" ");
 
 		String msg = loadPaymentRuleInfo(m_C_PaySelection_ID, PaymentRule);
@@ -414,7 +413,6 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		if (fPaymentRule.getSelectedItem() == null)
 			return;
 		String PaymentRule = fPaymentRule.getSelectedItem().toValueNamePair().getValue();
-		log.info(PaymentRule);
 		if (!getChecks(PaymentRule))
 			return;
 
