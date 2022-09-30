@@ -415,6 +415,8 @@
         <setEntry value="org.idempiere.keikai@default:false"/>
         <setEntry value="org.idempiere.printformat.editor@default:default"/>
         <setEntry value="org.idempiere.webservices@default:default"/>
+        <setEntry value="org.idempiere.zk.billboard.chart@default:default"/>
+        <setEntry value="org.idempiere.zk.billboard@default:false"/>
         <setEntry value="org.idempiere.zk.extra@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
