@@ -1,28 +1,8 @@
 # Pull Request Checklist
 
-## Follow the project code guidelines.
-
-Please read carefully the [Contributing to Core](https://wiki.idempiere.org/en/Contributing_to_Trunk) guidelines before starting the development. 
-
-This is a list of the common issues, standards and guidelines when contributing to iDempiere's core. Following all the recommendations will make the merging process smoother for everyone involved.
-
-## Description
-
-Please ensure that information in JIRA is sufficient, it must contain a natural language description of the changes proposed, when relevant is important to add information about how to test and the possible collateral effects that the ticket can impact.
-
-Please include here the link to the corresponding JIRA ticket in the description, this helps with navigating back and forth between JIRA and GitHub.
-
-## Run the unit tests.
-
-* Make sure the changes you want to commit pass all the core unit tests. 
-* If the new code does not pass a unit test because the unit test was wrong, fix the unit test in the same pull request.
-* If you're adding something new, please add the corresponding unit test.
-
-You can learn more about unit tests in iDempiere with this [video](https://www.youtube.com/watch?v=bO71gw3is5I).
-
 ## Checklist:
 
-- [ ] My code follows the code guidelines of this project
+- [ ] My code follows the [code guidelines](https://wiki.idempiere.org/en/Contributing_to_Trunk) of this project
 - [ ] My code follows the best practices of this project
 - [ ] I have performed a self-review of my own code
 - [ ] My code is easy to understand and review. 
