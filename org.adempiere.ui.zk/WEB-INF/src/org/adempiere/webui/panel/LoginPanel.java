@@ -102,7 +102,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6130436148212949636L;
+	private static final long serialVersionUID = -7859522563172088496L;
 
 	public static final String ROLE_TYPES_WEBUI = "NULL,ZK,SS";  //webui,support+null
 
@@ -615,6 +615,13 @@ public class LoginPanel extends Window implements EventListener<Event>
         }
         else
         {
+            if (clientsKNPairs.length == 1) {
+            	Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, (String) clientsKNPairs[0].getID());
+            	MUser user = MUser.get(Env.getCtx(), Login.getAppUser(userId));
+            	if (user != null)
+            		Env.setContext(Env.getCtx(), Env.AD_USER_ID, user.getAD_User_ID() );
+            }
+
         	String langName = null;
         	if ( lstLanguage.getSelectedItem() != null )
         		langName = (String) lstLanguage.getSelectedItem().getLabel();
