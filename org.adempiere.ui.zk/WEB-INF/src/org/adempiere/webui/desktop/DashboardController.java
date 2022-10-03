@@ -90,6 +90,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.MaximizeEvent;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Anchorchildren;
 import org.zkoss.zul.Anchorlayout;
 import org.zkoss.zul.Caption;
@@ -358,7 +359,8 @@ public class DashboardController implements EventListener<Event> {
 	}
 	
 	private void renderHelpButton(Caption caption, String text) {
-		ToolBarButton help = new ToolBarButton();
+		A help = new A();
+		help.setSclass("dashboard-content-help-icon");
 		help.setVisible(false);
 		if (ThemeManager.isUseFontIconForImage())
 			help.setIconSclass("z-icon-Help");
