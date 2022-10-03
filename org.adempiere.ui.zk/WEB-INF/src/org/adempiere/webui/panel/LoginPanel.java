@@ -683,7 +683,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	
 	private void btnResetPasswordClicked()
 	{
-		String userId = txtUserId.getValue();
+		String userId = Login.getAppUser(txtUserId.getValue());
 		if (Util.isEmpty(userId))
     		throw new IllegalArgumentException(Msg.getMsg(ctx, "FillMandatory") + " " + lblUserId.getValue());
 		
