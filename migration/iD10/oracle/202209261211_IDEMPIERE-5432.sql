@@ -4,28 +4,22 @@ SELECT register_migration_script('202209261211_IDEMPIERE-5432.sql') FROM dual;
 SET SQLBLANKLINES ON
 SET DEFINE OFF
 
--- Sep 26, 2022, 12:11:19 PM CEST
-UPDATE PA_MeasureCalc SET WhereClause='IsSOTrx=''Y'' AND Processed=''Y''',Updated=TO_TIMESTAMP('2022-09-26 12:11:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_MeasureCalc_ID=101
+-- Sep 30, 2022, 5:04:55 PM CEST
+UPDATE AD_Window SET Help='The Performance Measure Calculation defines how performance measures will be calculated.
+The sql needs to return a single value.  Please check examples.<br>
+The date restriction is defined in the Goal.
+Any restrictions for Organizations, Business Partners, Products, etc. are as Performance Goal Restrictions.',Updated=TO_TIMESTAMP('2022-09-30 17:04:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Window_ID=213
 ;
 
--- Sep 26, 2022, 12:11:26 PM CEST
-UPDATE PA_MeasureCalc SET WhereClause='C_Invoice.IsSOTrx=''Y'' AND C_Invoice.Processed=''Y''',Updated=TO_TIMESTAMP('2022-09-26 12:11:26','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_MeasureCalc_ID=100
+-- Sep 30, 2022, 5:04:55 PM CEST
+UPDATE AD_WF_Node SET Name='Performance Measure Calculation', Description='Define how you calculate your performance measures', Help='The Performance Measure Calculation defines how performance measures will be calculated.
+The sql needs to return a single value.  Please check examples.<br>
+The date restriction is defined in the Goal.
+Any restrictions for Organizations, Business Partners, Products, etc. are as Performance Goal Restrictions.',Updated=TO_TIMESTAMP('2022-09-30 17:04:55','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_WF_Node_ID=148
 ;
 
--- Sep 26, 2022, 12:11:32 PM CEST
-UPDATE PA_MeasureCalc SET WhereClause='C_Invoice.IsSOTrx=''Y'' AND C_Invoice.Processed=''Y'' AND C_Invoice.IsPaid=''Y''
-',Updated=TO_TIMESTAMP('2022-09-26 12:11:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_MeasureCalc_ID=104
-;
-
--- Sep 26, 2022, 12:11:36 PM CEST
-UPDATE PA_MeasureCalc SET WhereClause='C_Invoice.IsSOTrx=''Y'' AND C_Invoice.Processed=''Y''',Updated=TO_TIMESTAMP('2022-09-26 12:11:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_MeasureCalc_ID=102
-;
-
--- Sep 26, 2022, 12:11:40 PM CEST
-UPDATE PA_MeasureCalc SET WhereClause='IsCustomer=''Y''',Updated=TO_TIMESTAMP('2022-09-26 12:11:40','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_MeasureCalc_ID=103
-;
-
--- Sep 26, 2022, 12:11:43 PM CEST
-UPDATE PA_MeasureCalc SET WhereClause='IsSOTrx=''Y'' AND Processed=''Y''',Updated=TO_TIMESTAMP('2022-09-26 12:11:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE PA_MeasureCalc_ID=105
+-- Sep 30, 2022, 5:05:48 PM CEST
+UPDATE AD_Tab SET Help='The Performance Measure Calculation defines how performance measures will be calculated. See examples.<br>
+The SELECT definition must contain the SELECT and FROM keywords in upper case.  The WHERE clause can only contain values of the main table (e.g. when selecting from Header and lines, only header variables can be used in the where clause) and be fully qualified if there is more then one table.',Updated=TO_TIMESTAMP('2022-09-30 17:05:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=369
 ;
 

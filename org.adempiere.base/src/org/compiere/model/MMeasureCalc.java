@@ -39,7 +39,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3143013490477454559L;
+	private static final long serialVersionUID = -1334100963468705584L;
 
 	/**
 	 * 	Get MMeasureCalc from Cache (immutable)
@@ -143,7 +143,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 	{
 		StringBuilder sb = new StringBuilder(getSelectClause())
 			.append(" ")
-			.append("WHERE " + getWhereClause());
+			.append(getWhereClause());
 		//	Date Restriction
 		if (getDateColumn() != null 
 			&& MMeasure.MEASUREDATATYPE_QtyAmountInTime.equals(MeasureDataType)
@@ -221,7 +221,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 		
 		//	** WHERE
 		sb.append(" ")
-			.append("WHERE " + getWhereClause());
+			.append(getWhereClause());
 		//	Date Restriction
 		if (getDateColumn() != null
 			&& startDate != null
@@ -261,7 +261,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 		if (index == -1)
 			throw new IllegalArgumentException("Cannot find FROM " + from);
 		sql.append(from.substring(index)).append(" ")
-			.append("WHERE " + getWhereClause());
+			.append(getWhereClause());
 		//	Date Range
 		if (getDateColumn() != null 
 			&& !MGoal.MEASUREDISPLAY_Total.equals(MeasureDisplay))
@@ -513,6 +513,17 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 
 		makeImmutable();
 		return this;
+	}
+
+	/**
+	 * Get the Where clause adding the WHERE keyword when needed
+	 */
+	@Override
+	public String getWhereClause() {
+		String whereClause = super.getWhereClause();
+		if (! whereClause.toLowerCase().startsWith("where "))
+			whereClause = "WHERE " + whereClause;
+		return whereClause;
 	}
 
 }	//	MMeasureCalc
