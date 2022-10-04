@@ -146,6 +146,8 @@ public final class MSetup
 		m_clientName = name;
 		m_client = new MClient(m_ctx, 0, true, m_trx.getTrxName());
 		m_client.setValue(m_clientName);
+		if (MSystem.isUseLoginPrefix())
+			m_client.setLoginPrefix(m_clientName);
 		m_client.setName(m_clientName);
 		if (!m_client.save())
 		{
