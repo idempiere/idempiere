@@ -177,6 +177,7 @@ public class Login
 	 * The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
 	 * @deprecated
 	 */
+	@Deprecated(since = "2", forRemoval = true)
 	protected KeyNamePair[] getRoles (CConnection cc,
 		String app_user, String app_pwd, boolean force)
 	{
@@ -211,8 +212,9 @@ public class Login
 	 *  @param app_user Principal
 	 *  @return role array or null if in error.
 	 *  The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
-	 *  @deprecated use public KeyNamePair[] getRoles(String app_user, KeyNamePair client)
+	 *  @deprecated use {@link #getRoles(String, KeyNamePair)}
 	 */
+	@Deprecated(since = "2", forRemoval = true)
 	public KeyNamePair[] getRoles (Principal app_user)
 	{
 		if (app_user == null)
@@ -231,8 +233,9 @@ public class Login
 	 *  @param app_pwd password
 	 *  @return role array or null if in error.
 	 *  The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
-	 *  @deprecated use public KeyNamePair[] getRoles(String app_user, KeyNamePair client)
+	 *  @deprecated use use {@link #getRoles(String, KeyNamePair)}
 	 */
+	@Deprecated(since = "2", forRemoval = true)
 	public KeyNamePair[] getRoles (String app_user, String app_pwd)
 	{
 		return getRoles (app_user, app_pwd, false);
@@ -245,12 +248,11 @@ public class Login
 	 *  @param force ignore pwd
 	 *  @return role array or null if in error.
 	 *  The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
-	 *  @deprecated use public KeyNamePair[] getRoles(String app_user, KeyNamePair client)
+	 *  @deprecated use {@link #getRoles(String, KeyNamePair)}
 	 */
+	@Deprecated(since = "2", forRemoval = true)
 	private KeyNamePair[] getRoles (String app_user, String app_pwd, boolean force)
 	{
-		// deprecate this method - it cannot manage loginprefix for tenants
-		// use public KeyNamePair[] getRoles(String app_user, KeyNamePair client) approach instead
 		if (log.isLoggable(Level.INFO)) log.info("User=" + app_user);
 
 		//long start = System.currentTimeMillis();
