@@ -56,7 +56,7 @@ public class MSystem extends X_AD_System
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3090872841676580202L;
+	private static final long serialVersionUID = -1917493005917422880L;
 
 	/**
 	 * 	Load System Record
@@ -519,6 +519,24 @@ public class MSystem extends X_AD_System
 		if (secureProps != null && secureProps.equals("false"))
 			return false;
 		return true;
+	}
+
+	/**
+	 * The system allows to use login prefix for tenant
+	 * @return
+	 */
+	public static boolean isUseLoginPrefix() {
+		String loginWithTenantPrefix = MSysConfig.getValue(MSysConfig.LOGIN_WITH_TENANT_PREFIX, "N");
+		return "F".equals(loginWithTenantPrefix) || "A".equals(loginWithTenantPrefix);
+	}
+
+	/**
+	 * The system forces to use login prefix for tenant
+	 * @return
+	 */
+	public static boolean isLoginPrefixMandatory() {
+		String loginWithTenantPrefix = MSysConfig.getValue(MSysConfig.LOGIN_WITH_TENANT_PREFIX, "N");
+		return "F".equals(loginWithTenantPrefix);
 	}
 
 }	//	MSystem

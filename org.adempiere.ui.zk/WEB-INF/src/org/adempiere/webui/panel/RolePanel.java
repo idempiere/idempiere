@@ -80,7 +80,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -618446343598384819L;
+	private static final long serialVersionUID = -1159253307008488232L;
 
 	protected LoginWindow wndLogin;
 	protected Login login;
@@ -98,11 +98,13 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     
 	protected UserPreference m_userpreference=null;
 
-	protected boolean m_show = true;
+	protected boolean m_showRolePanel = true;
 
 	private RolePanel component;
 
 	private boolean isChangeRole = false;
+
+	private boolean m_isClientDefined;
 
 	public boolean isChangeRole() {
 		return isChangeRole;
@@ -117,17 +119,18 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 
 	private static final String ON_DEFER_LOGOUT = "onDeferLogout";
 
-	public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
+	public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isClientDefined) {
     	this.wndLogin = loginWindow;
     	m_ctx = ctx;
     	m_userName = userName;    	
     	login = new Login(ctx);
-    	m_show = show;
+    	m_showRolePanel = show;
+    	m_isClientDefined = isClientDefined;
         m_clientKNPairs = clientsKNPairs;
         
-        if( m_clientKNPairs.length == 1  &&  !m_show ){
+        if( m_clientKNPairs.length == 1  &&  !m_showRolePanel ){
         	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) m_clientKNPairs[0].getID());
-        	MUser user = MUser.get (m_ctx, m_userName);
+        	MUser user = MUser.get (m_ctx, Login.getAppUser(m_userName));
         	m_userpreference=new UserPreference();
         	m_userpreference.loadPreference(user.get_ID());        	
         }
@@ -138,15 +141,15 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         this.setId("rolePanel");
         this.setSclass("login-box");
 
-        if (! m_show) {
+        if (! m_showRolePanel) {
         	// check if all mandatory fields are ok to not show
         	if (   lstRole.getSelectedItem() == null || lstRole.getSelectedItem().getValue() == null
        			|| lstClient.getSelectedItem() == null || lstClient.getSelectedItem().getValue() == null
        			|| lstOrganisation.getSelectedItem() == null || lstOrganisation.getSelectedItem().getValue() == null) {
-        		m_show = true;
+        		m_showRolePanel = true;
         	}
         }
-        if (m_show) {
+        if (m_showRolePanel) {
         	AuFocus auf = null;
             if (lstClient.getItemCount() > 1) {
             	auf = new AuFocus(lstClient);
@@ -156,8 +159,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
            		auf = new AuFocus(lstOrganisation);
             }
             Clients.response(auf);
-        } else {
-        	validateRoles();
         }
     }
 
@@ -348,7 +349,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	//  initial client - Elaine 2009/02/06
     	UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
 		String initDefault = userPreference.getProperty(UserPreference.P_CLIENT);
-		if( initDefault.length() == 0 &&  !m_show  &&  m_userpreference != null )
+		if( initDefault.length() == 0 &&  !m_showRolePanel  &&  m_userpreference != null )
 		{
 			initDefault=m_userpreference.getProperty( UserPreference.P_CLIENT );
 		}
@@ -365,7 +366,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 	lstClient.setSelectedItem(ci);
             }
             if (lstClient.getSelectedIndex() == -1 && lstClient.getItemCount() > 0) {
-            	m_show = true; // didn't find default client
+            	m_showRolePanel = true; // didn't find default client
             	lstClient.setSelectedIndex(0);
             }
         }
@@ -402,7 +403,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         	//  initial role
         	UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
 			String initDefault = userPreference.getProperty(UserPreference.P_ROLE);
-			if( initDefault.length() == 0 &&  !m_show  &&  m_userpreference != null )
+			if( initDefault.length() == 0 &&  !m_showRolePanel  &&  m_userpreference != null )
 			{
 				initDefault=m_userpreference.getProperty( UserPreference.P_ROLE );
 			}
@@ -422,7 +423,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                     	lstRole.setSelectedItem(ci);
                 }
                 if (lstRole.getSelectedIndex() == -1 && lstRole.getItemCount() > 0) {
-                	m_show = true; // didn't find default role
+                	m_showRolePanel = true; // didn't find default role
                 	lstRole.setSelectedIndex(0);
                 }
             }
@@ -451,7 +452,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 			//  initial organisation - Elaine 2009/02/06
         	UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
 			String initDefault = userPreference.getProperty(UserPreference.P_ORG);
-			if( initDefault.length() == 0  &&  !m_show  &&  m_userpreference != null )
+			if( initDefault.length() == 0  &&  !m_showRolePanel  &&  m_userpreference != null )
 			{
 				initDefault=m_userpreference.getProperty( UserPreference.P_ORG );
 			}
@@ -471,7 +472,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 
                 }
                 if (lstOrganisation.getSelectedIndex() == -1 && lstOrganisation.getItemCount() > 0) {
-                	m_show = true; // didn't find default organisation
+                	m_showRolePanel = true; // didn't find default organisation
                 	lstOrganisation.setSelectedIndex(0);
                 }
             }
@@ -499,7 +500,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 			//  initial warehouse - Elaine 2009/02/06
         	UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
 			String initDefault = userPreference.getProperty(UserPreference.P_WAREHOUSE);
-			if( initDefault.length() == 0 &&  !m_show  &&  m_userpreference != null )
+			if( initDefault.length() == 0 &&  !m_showRolePanel  &&  m_userpreference != null )
 			{
 				initDefault=m_userpreference.getProperty( UserPreference.P_WAREHOUSE );
 			}
@@ -516,7 +517,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                     	lstWarehouse.setSelectedItem(ci);
                 }
                 if (lstWarehouse.getSelectedIndex() == -1 && lstWarehouse.getItemCount() > 0) {
-                	m_show = true; // didn't find default warehouse
+                	m_showRolePanel = true; // didn't find default warehouse
                 	lstWarehouse.setSelectedIndex(0);
                 }
             }
@@ -542,13 +543,13 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         }
         if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
         {
-            validateRoles();
+            validateRoles(false);
         }
         else if (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
         {
         	if (isChangeRole()) {
         		changeRole(ctxBeforeChangeRole);
-        		validateRoles();
+        		validateRoles(false);
         	} else {
         		ctxBeforeChangeRole = null;
         		SessionManager.logoutSession();
@@ -568,7 +569,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	} else {
         	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) null);
     	}
-    	MUser user = MUser.get (m_ctx, m_userName);
+    	MUser user = MUser.get (m_ctx, Login.getAppUser(m_userName));
     	if (user != null) {
     		Env.setContext(m_ctx, Env.AD_USER_ID, user.getAD_User_ID() );
     		Env.setContext(m_ctx, Env.AD_USER_NAME, user.getName() );
@@ -598,9 +599,10 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 
     /**
      *  validate Roles
+     * @param isMFAValidated
      *
     **/
-    public void validateRoles()
+    public void validateRoles(boolean isMFAValidated)
     {
     	Clients.clearBusy();
     	Comboitem lstItemRole = lstRole.getSelectedItem();
@@ -660,7 +662,10 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 			MRole.getDefault(m_ctx, true);
 		//
 
-		wndLogin.validateMFA(orgKNPair);
+		if (m_isClientDefined || isMFAValidated)
+			wndLogin.loginCompleted(login, orgKNPair, this);
+		else
+			wndLogin.validateMFA(orgKNPair, m_isClientDefined, m_userName, m_showRolePanel, m_clientKNPairs);
     }
 
 	public boolean isDeferrable() {
@@ -668,6 +673,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	}
 
 	public boolean show() {
-		return m_show;
+		return m_showRolePanel;
 	}
 }

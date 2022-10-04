@@ -23,26 +23,36 @@
 
 package org.adempiere.webui.window;
 
+import java.sql.Timestamp;
 import java.util.Locale;
 import java.util.Properties;
 
+import javax.servlet.http.HttpSession;
+
+import org.adempiere.util.Callback;
 import org.adempiere.webui.IWebClient;
 import org.adempiere.webui.component.FWindow;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ChangePasswordPanel;
 import org.adempiere.webui.panel.LoginPanel;
 import org.adempiere.webui.panel.ResetPasswordPanel;
 import org.adempiere.webui.panel.RolePanel;
 import org.adempiere.webui.panel.ValidateMFAPanel;
 import org.adempiere.webui.session.SessionContextListener;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Login;
+import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -62,7 +72,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2783026164782754864L;
+	private static final long serialVersionUID = 8570332386555237381L;
 
 	protected IWebClient app;
     protected Properties ctx;
@@ -71,6 +81,8 @@ public class LoginWindow extends FWindow implements EventListener<Event>
     protected ChangePasswordPanel pnlChangePassword;
     protected ValidateMFAPanel pnlValidateMFA = null;
     protected RolePanel pnlRole;
+
+	private static final String ON_DEFER_LOGOUT = "onDeferLogout";
 
     public LoginWindow() {}
 
@@ -83,6 +95,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
         this.setStyle("background-color: transparent");
         // add listener on 'ENTER' key for the login window
         addEventListener(Events.ON_OK,this);
+		this.addEventListener(ON_DEFER_LOGOUT, this);
         setWidgetListener("onOK", "zAu.cmd0.showBusy(null)");
     }
 
@@ -97,17 +110,31 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 
     public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
     {
-        createRolePanel(userName, show, clientsKNPairs);
-        this.getChildren().clear();
-        if (pnlRole.show())
-        	this.appendChild(pnlRole);
-        else
-        	this.appendChild(pnlValidateMFA);
+    	boolean isClientDefined = (clientsKNPairs.length == 1);
+		if (pnlRole == null)
+			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined);
+    	if (isClientDefined) {
+    		createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
+    	} else {
+            showRolePanel(userName, show, clientsKNPairs, isClientDefined, false);
+            if (! pnlRole.show())
+            	createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
+    	}
     }
 
-	protected void createRolePanel(String userName, boolean show,
-			KeyNamePair[] clientsKNPairs) {
-		pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs);
+	public void showRolePanel(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isClientDefined, boolean isMFAValidated) {
+        this.getChildren().clear();
+        if (pnlRole.show()) {
+        	this.appendChild(pnlRole);
+        } else if (isMFAValidated) {
+        	pnlRole.validateRoles(isMFAValidated);
+        } else {
+        	if (!isClientDefined)
+        		if (pnlValidateMFA == null)
+        			createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
+        		else
+        			this.appendChild(pnlValidateMFA);
+        }
 	}
     
     public void changePassword(String userName, String userPassword, boolean show, KeyNamePair[] clientsKNPairs)
@@ -135,20 +162,55 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 		pnlResetPassword = new ResetPasswordPanel(ctx, this, userName, noSecurityQuestion);
 	}
 
-	public void validateMFA(KeyNamePair orgKNPair) {
+	public void validateMFA(KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
     	Clients.clearBusy();
-		createValidateMFAPanel(orgKNPair);
-        this.getChildren().clear();
-        this.appendChild(pnlValidateMFA);
+		createValidateMFAPanel(orgKNPair, isClientDefined, userName, show, clientsKNPairs);
 	}
 
-	private void createValidateMFAPanel(KeyNamePair orgKNPair) {
+	private void createValidateMFAPanel(KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
 		if (pnlValidateMFA == null)
-			pnlValidateMFA = new ValidateMFAPanel(ctx, this, orgKNPair);
+			pnlValidateMFA = new ValidateMFAPanel(ctx, this, orgKNPair, isClientDefined, userName, show, clientsKNPairs);
+		if (pnlValidateMFA.show()) {
+	        this.getChildren().clear();
+	        this.appendChild(pnlValidateMFA);
+		}
 	}
 
-	public void loginCompleted()
+	public void loginCompleted(Login login, KeyNamePair m_orgKNPair, Window component)
     {
+		Session currSess = Executions.getCurrent().getDesktop().getSession();
+		HttpSession httpSess = (HttpSession) currSess.getNativeSession();
+		int timeout = MSysConfig.getIntValue(MSysConfig.ZK_SESSION_TIMEOUT_IN_SECONDS, -2,
+				Env.getAD_Client_ID(Env.getCtx()), Env.getAD_Org_ID(Env.getCtx()));
+		if (timeout != -2) // default to -2 meaning not set
+			httpSess.setMaxInactiveInterval(timeout);
+
+		String msg = login.validateLogin(m_orgKNPair);
+		if (!Util.isEmpty(msg)) {
+			Env.getCtx().clear();
+			FDialog.error(0, this, "Error", msg, new Callback<Integer>() {
+				@Override
+				public void onCallback(Integer result) {
+					Events.echoEvent(new Event(ON_DEFER_LOGOUT, component));
+				}
+			});
+			return;
+		}
+		// See if a popup should encourage user to change its password
+		if (!MUser.get(Env.getCtx()).isNoPasswordReset()) {
+			int notifyDay = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_PASSWORD_NOTIFY_DAY, 0);
+			int pwdAgeDay = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_PASSWORD_AGE_DAY, 0);
+			if (notifyDay > 0 && pwdAgeDay > 0) {
+				Timestamp limit = TimeUtil.addDays(MUser.get(Env.getCtx()).getDatePasswordChanged(), pwdAgeDay);
+				Timestamp notifyAfter = TimeUtil.addDays(limit, -notifyDay);
+				Timestamp now = TimeUtil.getDay(null);
+
+				if (now.after(notifyAfter))
+					FDialog.warn(0, null, "", Msg.getMsg(Env.getCtx(), "YourPasswordWillExpireInDays",
+							new Object[] { TimeUtil.getDaysBetween(now, limit) }));
+			}
+		}
+
         app.loginCompleted();
     }
 
@@ -173,7 +235,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
            RolePanel rolePanel = (RolePanel)this.getFellowIfAny("rolePanel");
            if (rolePanel != null)
            {
-               rolePanel.validateRoles();
+               rolePanel.validateRoles(false);
                return;
            }
            
@@ -201,6 +263,8 @@ public class LoginWindow extends FWindow implements EventListener<Event>
         	   validateMFAPanel.validateMFAComplete(true);
         	   return;
            }
+       } else if (ON_DEFER_LOGOUT.equals(event.getName())) {
+		   SessionManager.logoutSession();
        }
     }
     
