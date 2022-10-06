@@ -222,6 +222,21 @@ public interface I_AD_UserDef_Field
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException;
 
+    /** Column name AlwaysUpdatableLogic */
+    public static final String COLUMNNAME_AlwaysUpdatableLogic = "AlwaysUpdatableLogic";
+
+	/** Set Always Updatable Logic.
+	  * Logic to determine if field is Updatable irrespective if record&#039;
+s active status or processed status. This logic Applicable only if Always Updatable is Yes.
+	  */
+	public void setAlwaysUpdatableLogic (String AlwaysUpdatableLogic);
+
+	/** Get Always Updatable Logic.
+	  * Logic to determine if field is Updatable irrespective if record&#039;
+s active status or processed status. This logic Applicable only if Always Updatable is Yes.
+	  */
+	public String getAlwaysUpdatableLogic();
+
     /** Column name ColumnSpan */
     public static final String COLUMNNAME_ColumnSpan = "ColumnSpan";
 
