@@ -38,7 +38,7 @@ import java.util.Vector;
 import org.compiere.apps.form.FactReconcile;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
-import org.compiere.model.MClient;
+import org.compiere.model.MClientInfo;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MPayment;
@@ -85,8 +85,8 @@ public class FactReconcileFormTest extends AbstractTestCase {
 			assertTrue(Util.isEmpty(error, true), error);
 		}
 		
-		Query query = new Query(Env.getCtx(), MFactAcct.Table_Name, "AD_Table_ID=? AND Record_ID=? AND Account_ID=?", getTrxName());
-		MFactAcct paymentFact = query.setParameters(MPayment.Table_ID, payment.get_ID(), DictionaryIDs.C_ElementValue.CHECKING_IN_TRANSFER.id).first();
+		Query query = new Query(Env.getCtx(), MFactAcct.Table_Name, "AD_Table_ID=? AND Record_ID=? AND Account_ID=? AND C_AcctSchema_ID=?", getTrxName());
+		MFactAcct paymentFact = query.setParameters(MPayment.Table_ID, payment.get_ID(), DictionaryIDs.C_ElementValue.CHECKING_IN_TRANSFER.id, MClientInfo.get(getAD_Client_ID()).getC_AcctSchema1_ID()).first();
 		assertNotNull(paymentFact, "Faild to retrieve MFactAcct checking in transfer record for payment");
 		
 		MBankStatement stmt = new MBankStatement(Env.getCtx(), 0, getTrxName());
@@ -110,7 +110,7 @@ public class FactReconcileFormTest extends AbstractTestCase {
 			String error = DocumentEngine.postImmediate(Env.getCtx(), stmt.getAD_Client_ID(), MBankStatement.Table_ID, stmt.get_ID(), true, getTrxName());
 			assertTrue(Util.isEmpty(error, true), error);
 		}
-		MFactAcct statementFact = query.setParameters(MBankStatement.Table_ID, stmt.get_ID(), DictionaryIDs.C_ElementValue.CHECKING_IN_TRANSFER.id).first();
+		MFactAcct statementFact = query.setParameters(MBankStatement.Table_ID, stmt.get_ID(), DictionaryIDs.C_ElementValue.CHECKING_IN_TRANSFER.id, MClientInfo.get(getAD_Client_ID()).getC_AcctSchema1_ID()).first();
 		assertNotNull(statementFact, "Faild to retrieve MFactAcct checking in transfer record for bank statement");
 		
 		FactReconcileImpl fri = new FactReconcileImpl();
@@ -192,7 +192,7 @@ public class FactReconcileFormTest extends AbstractTestCase {
 		
 		protected FactReconcileImpl() {			
 			m_trxName = getTrxName();
-			m_C_AcctSchema_ID = MClient.get(Env.getCtx()).getAcctSchema().get_ID();
+			m_C_AcctSchema_ID = MClientInfo.get(getAD_Client_ID()).getC_AcctSchema1_ID();
 			m_AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 		}
 		
