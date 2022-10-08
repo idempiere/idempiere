@@ -108,6 +108,9 @@ public class MAttachmentEntry
 	/** Lazy Data Source */
 	private IAttachmentLazyDataSource m_ds = null;
 
+	/** True if the entry has been updated (on upload, when a file with same name is already there) */
+	private boolean m_isUpdated = false;
+
 	/**
 	 * @return Returns the data.
 	 */
@@ -350,6 +353,14 @@ public class MAttachmentEntry
 	 */
 	public IAttachmentLazyDataSource getLazyDataSource() {
 		return m_ds;
+	}
+
+	public void setUpdated(boolean updated) {
+		m_isUpdated = updated;
+	}
+
+	public boolean isUpdated() {
+		return m_isUpdated;
 	}
 
 }	//	MAttachmentItem
