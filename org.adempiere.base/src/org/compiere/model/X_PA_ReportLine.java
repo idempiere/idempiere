@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PA_ReportLine")
 public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221008L;
 
     /** Standard Constructor */
     public X_PA_ReportLine (Properties ctx, int PA_ReportLine_ID, String trxName)
@@ -372,6 +372,69 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 		return (String)get_Value(COLUMNNAME_OverlineStrokeType);
 	}
 
+	/** Set Report Line.
+		@param PA_ReportLine_ID Report Line
+	*/
+	public void setPA_ReportLine_ID (int PA_ReportLine_ID)
+	{
+		if (PA_ReportLine_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_PA_ReportLine_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_PA_ReportLine_ID, Integer.valueOf(PA_ReportLine_ID));
+	}
+
+	/** Get Report Line.
+		@return Report Line	  */
+	public int getPA_ReportLine_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set PA_ReportLine_UU.
+		@param PA_ReportLine_UU PA_ReportLine_UU
+	*/
+	public void setPA_ReportLine_UU (String PA_ReportLine_UU)
+	{
+		set_Value (COLUMNNAME_PA_ReportLine_UU, PA_ReportLine_UU);
+	}
+
+	/** Get PA_ReportLine_UU.
+		@return PA_ReportLine_UU	  */
+	public String getPA_ReportLine_UU()
+	{
+		return (String)get_Value(COLUMNNAME_PA_ReportLine_UU);
+	}
+
+	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException
+	{
+		return (org.compiere.model.I_PA_ReportLineSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLineSet.Table_ID)
+			.getPO(getPA_ReportLineSet_ID(), get_TrxName());
+	}
+
+	/** Set Report Line Set.
+		@param PA_ReportLineSet_ID Report Line Set
+	*/
+	public void setPA_ReportLineSet_ID (int PA_ReportLineSet_ID)
+	{
+		if (PA_ReportLineSet_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_PA_ReportLineSet_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_PA_ReportLineSet_ID, Integer.valueOf(PA_ReportLineSet_ID));
+	}
+
+	/** Get Report Line Set.
+		@return Report Line Set	  */
+	public int getPA_ReportLineSet_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportLineSet_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** PAAmountType AD_Reference_ID=53328 */
 	public static final int PAAMOUNTTYPE_AD_Reference_ID=53328;
 	/** Balance (expected sign) = B */
@@ -430,69 +493,6 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 		return (String)get_Value(COLUMNNAME_PAPeriodType);
 	}
 
-	/** Set Report Line.
-		@param PA_ReportLine_ID Report Line
-	*/
-	public void setPA_ReportLine_ID (int PA_ReportLine_ID)
-	{
-		if (PA_ReportLine_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_PA_ReportLine_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_PA_ReportLine_ID, Integer.valueOf(PA_ReportLine_ID));
-	}
-
-	/** Get Report Line.
-		@return Report Line	  */
-	public int getPA_ReportLine_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportLine_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException
-	{
-		return (org.compiere.model.I_PA_ReportLineSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportLineSet.Table_ID)
-			.getPO(getPA_ReportLineSet_ID(), get_TrxName());
-	}
-
-	/** Set Report Line Set.
-		@param PA_ReportLineSet_ID Report Line Set
-	*/
-	public void setPA_ReportLineSet_ID (int PA_ReportLineSet_ID)
-	{
-		if (PA_ReportLineSet_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_PA_ReportLineSet_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_PA_ReportLineSet_ID, Integer.valueOf(PA_ReportLineSet_ID));
-	}
-
-	/** Get Report Line Set.
-		@return Report Line Set	  */
-	public int getPA_ReportLineSet_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_PA_ReportLineSet_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set PA_ReportLine_UU.
-		@param PA_ReportLine_UU PA_ReportLine_UU
-	*/
-	public void setPA_ReportLine_UU (String PA_ReportLine_UU)
-	{
-		set_Value (COLUMNNAME_PA_ReportLine_UU, PA_ReportLine_UU);
-	}
-
-	/** Get PA_ReportLine_UU.
-		@return PA_ReportLine_UU	  */
-	public String getPA_ReportLine_UU()
-	{
-		return (String)get_Value(COLUMNNAME_PA_ReportLine_UU);
-	}
-
 	/** PostingType AD_Reference_ID=125 */
 	public static final int POSTINGTYPE_AD_Reference_ID=125;
 	/** Actual = A */
@@ -505,7 +505,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	public static final String POSTINGTYPE_Reservation = "R";
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
-	/** Set PostingType.
+	/** Set Posting Type.
 		@param PostingType The type of posted amount for the transaction
 	*/
 	public void setPostingType (String PostingType)
@@ -514,12 +514,30 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 		set_Value (COLUMNNAME_PostingType, PostingType);
 	}
 
-	/** Get PostingType.
+	/** Get Posting Type.
 		@return The type of posted amount for the transaction
 	  */
 	public String getPostingType()
 	{
 		return (String)get_Value(COLUMNNAME_PostingType);
+	}
+
+	/** Set Rounding Precision.
+		@param RoundingPrecision Rounding Precision
+	*/
+	public void setRoundingPrecision (int RoundingPrecision)
+	{
+		set_Value (COLUMNNAME_RoundingPrecision, Integer.valueOf(RoundingPrecision));
+	}
+
+	/** Get Rounding Precision.
+		@return Rounding Precision	  */
+	public int getRoundingPrecision()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_RoundingPrecision);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Sequence.

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ReportLine
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_PA_ReportLine 
 {
@@ -228,6 +228,35 @@ public interface I_PA_ReportLine
 	/** Get Overline Stroke Type	  */
 	public String getOverlineStrokeType();
 
+    /** Column name PA_ReportLine_ID */
+    public static final String COLUMNNAME_PA_ReportLine_ID = "PA_ReportLine_ID";
+
+	/** Set Report Line	  */
+	public void setPA_ReportLine_ID (int PA_ReportLine_ID);
+
+	/** Get Report Line	  */
+	public int getPA_ReportLine_ID();
+
+    /** Column name PA_ReportLine_UU */
+    public static final String COLUMNNAME_PA_ReportLine_UU = "PA_ReportLine_UU";
+
+	/** Set PA_ReportLine_UU	  */
+	public void setPA_ReportLine_UU (String PA_ReportLine_UU);
+
+	/** Get PA_ReportLine_UU	  */
+	public String getPA_ReportLine_UU();
+
+    /** Column name PA_ReportLineSet_ID */
+    public static final String COLUMNNAME_PA_ReportLineSet_ID = "PA_ReportLineSet_ID";
+
+	/** Set Report Line Set	  */
+	public void setPA_ReportLineSet_ID (int PA_ReportLineSet_ID);
+
+	/** Get Report Line Set	  */
+	public int getPA_ReportLineSet_ID();
+
+	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException;
+
     /** Column name PAAmountType */
     public static final String COLUMNNAME_PAAmountType = "PAAmountType";
 
@@ -254,47 +283,27 @@ public interface I_PA_ReportLine
 	  */
 	public String getPAPeriodType();
 
-    /** Column name PA_ReportLine_ID */
-    public static final String COLUMNNAME_PA_ReportLine_ID = "PA_ReportLine_ID";
-
-	/** Set Report Line	  */
-	public void setPA_ReportLine_ID (int PA_ReportLine_ID);
-
-	/** Get Report Line	  */
-	public int getPA_ReportLine_ID();
-
-    /** Column name PA_ReportLineSet_ID */
-    public static final String COLUMNNAME_PA_ReportLineSet_ID = "PA_ReportLineSet_ID";
-
-	/** Set Report Line Set	  */
-	public void setPA_ReportLineSet_ID (int PA_ReportLineSet_ID);
-
-	/** Get Report Line Set	  */
-	public int getPA_ReportLineSet_ID();
-
-	public org.compiere.model.I_PA_ReportLineSet getPA_ReportLineSet() throws RuntimeException;
-
-    /** Column name PA_ReportLine_UU */
-    public static final String COLUMNNAME_PA_ReportLine_UU = "PA_ReportLine_UU";
-
-	/** Set PA_ReportLine_UU	  */
-	public void setPA_ReportLine_UU (String PA_ReportLine_UU);
-
-	/** Get PA_ReportLine_UU	  */
-	public String getPA_ReportLine_UU();
-
     /** Column name PostingType */
     public static final String COLUMNNAME_PostingType = "PostingType";
 
-	/** Set PostingType.
+	/** Set Posting Type.
 	  * The type of posted amount for the transaction
 	  */
 	public void setPostingType (String PostingType);
 
-	/** Get PostingType.
+	/** Get Posting Type.
 	  * The type of posted amount for the transaction
 	  */
 	public String getPostingType();
+
+    /** Column name RoundingPrecision */
+    public static final String COLUMNNAME_RoundingPrecision = "RoundingPrecision";
+
+	/** Set Rounding Precision	  */
+	public void setRoundingPrecision (int RoundingPrecision);
+
+	/** Get Rounding Precision	  */
+	public int getRoundingPrecision();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";
