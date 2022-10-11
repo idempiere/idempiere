@@ -29,16 +29,14 @@ import org.compiere.util.Trx;
 public class Merge 
 {
 	/**	Window No			*/
-	public int         	m_WindowNo = 0;
+	protected int         	m_WindowNo = 0;
 	/**	Total Count			*/
-	public int				m_totalCount = 0;
+	protected int				m_totalCount = 0;
 	/** Error Log			*/
-	public StringBuffer	m_errorLog = new StringBuffer();
-	/**	Connection			*/
-	//private Connection		m_con = null;
+	protected StringBuffer	m_errorLog = new StringBuffer();
 	private Trx 			m_trx = null;         
 	/**	Logger			*/
-	public static final CLogger log = CLogger.getCLogger(Merge.class);
+	protected static final CLogger log = CLogger.getCLogger(Merge.class);
 
 	public static String	AD_ORG_ID = "AD_Org_ID";
 	public static String	C_BPARTNER_ID = "C_BPartner_ID";
@@ -46,26 +44,30 @@ public class Merge
 	public static String	M_PRODUCT_ID = "M_Product_ID";
 
 	/** Tables to delete (not update) for AD_Org	*/
-	public static String[]	s_delete_Org = new String[]
+	protected static String[]	s_delete_Org = new String[]
 		{"AD_OrgInfo", "AD_Role_OrgAccess"};
 	/** Tables to delete (not update) for AD_User	*/
-	public static String[]	s_delete_User = new String[]
+	protected static String[]	s_delete_User = new String[]
 		{"AD_User_Roles"};
 	/** Tables to delete (not update) for C_BPartner	*/
-	public static String[]	s_delete_BPartner = new String[]
+	protected static String[]	s_delete_BPartner = new String[]
 		{"C_BP_Employee_Acct", "C_BP_Vendor_Acct", "C_BP_Customer_Acct", 
 		"T_Aging"};
 	/** Tables to delete (not update) for M_Product		*/
-	public static String[]	s_delete_Product = new String[]
+	protected static String[]	s_delete_Product = new String[]
 		{"M_Product_PO", "M_Replenish", "T_Replenish", 
 		"M_ProductPrice", 
 		"M_Cost", // teo_sarca [ 1704554 ]
-		"M_Product_Trl", "M_Product_Acct"};		//	M_Storage
+		"M_Product_Trl", "M_Product_Acct"};
 
-	public String[]	m_columnName = null;
-	public String[]	m_deleteTables = null;
+	protected String[]	m_columnName = null;
+	protected String[]	m_deleteTables = null;
 	
-	public void updateDeleteTable(String columnName)
+	/**
+	 * Determine the list of tables to delete records from columnName 
+	 * @param columnName
+	 */
+	protected void updateDeleteTable(String columnName)
 	{
 		//	** Update **
 		if (columnName.equals(AD_ORG_ID))
@@ -81,7 +83,7 @@ public class Merge
 
 	/**
 	 * 	Merge.
-	 *	@param ColumnName column
+	 *	@param ColumnName ID column (M_Product_ID, AD_Org_ID, C_BPartner_ID or AD_User_ID)
 	 *	@param from_ID from
 	 *	@param to_ID to
 	 *	@return true if merged
@@ -92,6 +94,8 @@ public class Merge
 		if (log.isLoggable(Level.CONFIG)) log.config(ColumnName
 			+ " - From=" + from_ID + ",To=" + to_ID);
 
+		updateDeleteTable(ColumnName);
+		
 		boolean success = true;
 		m_totalCount = 0;
 		m_errorLog = new StringBuffer();
@@ -140,7 +144,7 @@ public class Merge
 			{
 				sql = "DELETE FROM " + TableName + " WHERE " + ColumnName + "=" + from_ID;
 				
-				if ( DB.executeUpdate(sql, m_trx.getTrxName()) < 0 )
+				if ( DB.executeUpdateEx(sql, m_trx.getTrxName()) < 0 )
 				{
 					m_errorLog.append(Env.NL).append("DELETE FROM ").append(TableName)
 					.append(" - ");
@@ -184,7 +188,7 @@ public class Merge
 	 * 	@param to_ID to
 	 * 	@return -1 for error or number of changes
 	 */
-	public int mergeTable (String TableName, String ColumnName, int from_ID, int to_ID)
+	protected int mergeTable (String TableName, String ColumnName, int from_ID, int to_ID)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine(TableName + "." + ColumnName + " - From=" + from_ID + ",To=" + to_ID);
 		String sql = "UPDATE " + TableName
@@ -208,7 +212,7 @@ public class Merge
 				+ " AND " + X_M_Cost.COLUMNNAME_CumulatedQty + "=0";
 		}
 
-		int count = DB.executeUpdate(sql, m_trx.getTrxName());
+		int count = DB.executeUpdateEx(sql, m_trx.getTrxName());
 		if (count < 0)
 		{
 			count = -1;
