@@ -31,7 +31,7 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221008L;
+	private static final long serialVersionUID = 20221010L;
 
     /** Standard Constructor */
     public X_PA_ReportLine (Properties ctx, int PA_ReportLine_ID, String trxName)
@@ -41,6 +41,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
         {
 			setIsInverseDebitCreditOnly (false);
 // N
+			setIsMultiplyPercentageBy100 (true);
+// Y
 			setIsPrinted (true);
 // Y
 			setLineType (null);
@@ -60,6 +62,8 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
         {
 			setIsInverseDebitCreditOnly (false);
 // N
+			setIsMultiplyPercentageBy100 (true);
+// Y
 			setIsPrinted (true);
 // Y
 			setLineType (null);
@@ -183,6 +187,29 @@ public class X_PA_ReportLine extends PO implements I_PA_ReportLine, I_Persistent
 	public boolean isInverseDebitCreditOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInverseDebitCreditOnly);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Multiply Percentage by 100.
+		@param IsMultiplyPercentageBy100 Multiply number by 100
+	*/
+	public void setIsMultiplyPercentageBy100 (boolean IsMultiplyPercentageBy100)
+	{
+		set_Value (COLUMNNAME_IsMultiplyPercentageBy100, Boolean.valueOf(IsMultiplyPercentageBy100));
+	}
+
+	/** Get Multiply Percentage by 100.
+		@return Multiply number by 100
+	  */
+	public boolean isMultiplyPercentageBy100()
+	{
+		Object oo = get_Value(COLUMNNAME_IsMultiplyPercentageBy100);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

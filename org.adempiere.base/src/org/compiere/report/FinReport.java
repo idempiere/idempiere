@@ -780,7 +780,8 @@ public class FinReport extends SvrProcess
 						}
 						// end fix bug [ 1563664 ]
 						if (m_lines[line].isCalculationTypePercent()) {
-							sb.append(" *100");
+							if (m_lines[line].isMultiplyPercentageBy100())
+								sb.append(" *100");
 
 							if (m_lines[line].getRoundingPrecision() > 0) 
 								sb.append(", ").append(m_lines[line].getRoundingPrecision()).append(")");
@@ -815,6 +816,10 @@ public class FinReport extends SvrProcess
 					{
 						if (col > 0)
 							sb.append(",");
+						
+						if (m_lines[line].isCalculationTypePercent() && m_lines[line].getRoundingPrecision() > 0)
+							sb.append("ROUND(");
+						
 						sb.append ("COALESCE(r1.Col_").append (col).append(",0)");
 						// fix bug [ 1563664 ] Errors in values shown in Financial Reports
 						// Carlos Ruiz - globalqss
@@ -828,8 +833,13 @@ public class FinReport extends SvrProcess
 							sb.append ("CASE WHEN r2.Col_").append (col).append("=0 THEN NULL ELSE r2.Col_").append (col).append(" END");
 						}
 						// end fix bug [ 1563664 ]
-						if (m_lines[line].isCalculationTypePercent())
-							sb.append(" *100");
+						if (m_lines[line].isCalculationTypePercent()) {
+							if (m_lines[line].isMultiplyPercentageBy100())
+								sb.append(" *100");
+
+							if (m_lines[line].getRoundingPrecision() > 0) 
+								sb.append(", ").append(m_lines[line].getRoundingPrecision()).append(")");
+						}
 					}
 				}
 				sb.append(" FROM T_Report r2 WHERE r2.AD_PInstance_ID=").append(getAD_PInstance_ID())

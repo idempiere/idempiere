@@ -141,6 +141,19 @@ public interface I_PA_ReportLine
 	  */
 	public boolean isInverseDebitCreditOnly();
 
+    /** Column name IsMultiplyPercentageBy100 */
+    public static final String COLUMNNAME_IsMultiplyPercentageBy100 = "IsMultiplyPercentageBy100";
+
+	/** Set Multiply Percentage by 100.
+	  * Multiply number by 100
+	  */
+	public void setIsMultiplyPercentageBy100 (boolean IsMultiplyPercentageBy100);
+
+	/** Get Multiply Percentage by 100.
+	  * Multiply number by 100
+	  */
+	public boolean isMultiplyPercentageBy100();
+
     /** Column name IsPrinted */
     public static final String COLUMNNAME_IsPrinted = "IsPrinted";
 
