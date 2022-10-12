@@ -66,11 +66,6 @@
 	cursor: move;
 }
 
-.z-caption-content .z-toolbarbutton {
-	vertical-align: middle;
-	margin-bottom: 2px;
-}
-
 .dashboard-layout {
 	width: 100%;
 	height: 100%;
@@ -340,4 +335,9 @@
 
 .desktop-home-tabpanel .z-hlayout-inner {
 	padding: 5px !important;
+}
+
+.dashboard-content-help-icon {
+	padding: 5px;
+	cursor: default;
 }

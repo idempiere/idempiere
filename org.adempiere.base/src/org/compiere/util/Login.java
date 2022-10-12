@@ -36,6 +36,7 @@ import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.model.I_M_Warehouse;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MClient;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MCountry;
 import org.compiere.model.MMFARegisteredDevice;
@@ -176,6 +177,7 @@ public class Login
 	 * The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
 	 * @deprecated
 	 */
+	@Deprecated(since = "2", forRemoval = true)
 	protected KeyNamePair[] getRoles (CConnection cc,
 		String app_user, String app_pwd, boolean force)
 	{
@@ -210,8 +212,9 @@ public class Login
 	 *  @param app_user Principal
 	 *  @return role array or null if in error.
 	 *  The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
-	 *  @deprecated use public KeyNamePair[] getRoles(String app_user, KeyNamePair client)
+	 *  @deprecated use {@link #getRoles(String, KeyNamePair)}
 	 */
+	@Deprecated(since = "2", forRemoval = true)
 	public KeyNamePair[] getRoles (Principal app_user)
 	{
 		if (app_user == null)
@@ -230,8 +233,9 @@ public class Login
 	 *  @param app_pwd password
 	 *  @return role array or null if in error.
 	 *  The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
-	 *  @deprecated use public KeyNamePair[] getRoles(String app_user, KeyNamePair client)
+	 *  @deprecated use use {@link #getRoles(String, KeyNamePair)}
 	 */
+	@Deprecated(since = "2", forRemoval = true)
 	public KeyNamePair[] getRoles (String app_user, String app_pwd)
 	{
 		return getRoles (app_user, app_pwd, false);
@@ -244,8 +248,9 @@ public class Login
 	 *  @param force ignore pwd
 	 *  @return role array or null if in error.
 	 *  The error (NoDatabase, UserPwdError, DBLogin) is saved in the log
-	 *  @deprecated use public KeyNamePair[] getRoles(String app_user, KeyNamePair client)
+	 *  @deprecated use {@link #getRoles(String, KeyNamePair)}
 	 */
+	@Deprecated(since = "2", forRemoval = true)
 	private KeyNamePair[] getRoles (String app_user, String app_pwd, boolean force)
 	{
 		if (log.isLoggable(Level.INFO)) log.info("User=" + app_user);
@@ -1288,6 +1293,28 @@ public class Login
 			// if not authenticated, use AD_User as backup (just for non-LDAP users)
 		}
 
+		MClient client = null;
+		if (MSystem.isUseLoginPrefix()) {
+			String app_tenant = Login.getAppTenant(app_user);
+			app_user = Login.getAppUser(app_user);
+			boolean hasTenant = ! Util.isEmpty(app_tenant, true);
+			if (MSystem.isLoginPrefixMandatory() && ! hasTenant) {
+				loginErrMsg = Msg.getMsg(m_ctx, "MissingLoginTenant");
+				return null;
+			}
+			if (Util.isEmpty(app_user, true)) {
+				loginErrMsg = Msg.getMsg(m_ctx, "MissingLoginUser");
+				return null;
+			}
+			if (hasTenant) {
+				client = MClient.getByLoginPrefix(app_tenant);
+				if (client == null) {
+					loginErrMsg = Msg.getMsg(m_ctx, "TenantNotFound", new Object[] {app_tenant});
+					return null;
+				}
+			}
+		}
+
 		boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		KeyNamePair[] retValue = null;
@@ -1312,7 +1339,8 @@ public class Login
 				.append("         WHERE c.AD_Client_ID=AD_User.AD_Client_ID")
 				.append("         AND c.IsActive='Y') AND ")
 				.append(" AD_User.IsActive='Y'");
-		
+		if (client != null)
+			where.append(" AND AD_Client_ID IN (0,").append(client.getAD_Client_ID()).append(")");
 		List<MUser> users = null;
 		try {
 			PO.setCrossTenantSafe();
@@ -1428,6 +1456,8 @@ public class Login
                    .append(" WHERE ur.IsActive='Y'")
                    .append(" AND u.IsActive='Y'")
                    .append(" AND cli.IsActive='Y'");
+				if (client != null)
+					sql.append(" AND r.AD_Client_ID=").append(client.getAD_Client_ID());
 				if (! Util.isEmpty(whereRoleType)) {
 					sql.append(" AND ").append(whereRoleType);
 				}
@@ -1543,6 +1573,38 @@ public class Login
 		return retValue;
 	}
 
+	/**
+	 * Get the tenant from the login text when using login prefix
+	 * @param app_user
+	 * @return
+	 */
+	private static String getAppTenant(String app_user) {
+		String appTenant = null;
+		if (MSystem.isUseLoginPrefix()) {
+			String separator = MSysConfig.getValue(MSysConfig.LOGIN_PREFIX_SEPARATOR, "/");
+			int idxSep = app_user.indexOf(separator);
+			if (idxSep >= 0)
+				appTenant = app_user.substring(0, idxSep);
+		}
+		return appTenant;
+	}
+
+	/**
+	 * Get the user from the login text
+	 * @param app_user
+	 * @return
+	 */
+	public static String getAppUser(String app_user) {
+		String appUser = app_user;
+		if (MSystem.isUseLoginPrefix()) {
+			String separator = MSysConfig.getValue(MSysConfig.LOGIN_PREFIX_SEPARATOR, "/");
+			int idxSep = app_user.indexOf(separator);
+			if (idxSep >= 0)
+				appUser = app_user.substring(idxSep + 1);
+		}
+		return appUser;
+	}
+
 	public KeyNamePair[] getRoles(String app_user, KeyNamePair client) {
 		return getRoles(app_user, client, null);
 	}
@@ -1593,7 +1655,7 @@ public class Login
 		{
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, client.getKey());
-			pstmt.setString(2, app_user);
+			pstmt.setString(2, getAppUser(app_user));
 			rs = pstmt.executeQuery();
 
 			if (!rs.next())

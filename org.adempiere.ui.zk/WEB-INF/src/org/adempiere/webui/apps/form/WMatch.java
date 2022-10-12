@@ -81,11 +81,6 @@ import org.zkoss.zul.Vlayout;
 public class WMatch extends Match
 	implements IFormController, EventListener<Event>, WTableModelListener
 {
-	/**
-	 * 
-	 */
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = -6383121932802974801L;
 	private CustomForm form = new CustomForm();
 
 	/**
@@ -94,8 +89,9 @@ public class WMatch extends Match
 	public WMatch()
 	{
 		m_WindowNo = form.getWindowNo();
-		log.info("WinNo=" + m_WindowNo
-			+ " - AD_Client_ID=" + m_AD_Client_ID + ", AD_Org_ID=" + m_AD_Org_ID + ", By=" + m_by);
+		if (log.isLoggable(Level.INFO))
+			log.info("WinNo=" + m_WindowNo
+				+ " - AD_Client_ID=" + m_AD_Client_ID + ", AD_Org_ID=" + m_AD_Org_ID + ", By=" + m_by);
 		Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", "N");
 
 		try
@@ -122,7 +118,7 @@ public class WMatch extends Match
 		{
 			ClientInfo.onClientInfo(form, this::onClientInfo);
 		}
-	}	//	init
+	}
 
 	/**	Window No			*/
 	private int         	m_WindowNo = 0;
@@ -145,11 +141,6 @@ public class WMatch extends Match
 		Msg.translate(Env.getCtx(), "Matched")};
 	private static final int		MODE_NOTMATCHED = 0;
 	private static final int		MODE_MATCHED = 1;
-
-	/**	Indexes in Table			*/
-	private static final int		I_QTY = 6;
-	private static final int		I_MATCHED = 7;
-
 
 	private BigDecimal      m_xMatched = Env.ZERO;
 	private BigDecimal      m_xMatchedTo = Env.ZERO;
@@ -293,7 +284,7 @@ public class WMatch extends Match
 		ZKUpdateUtil.setVflex(xMatchedTable, true);
 				
 		centerPanel.setStyle("min-height: 300px;");
-	}   //  jbInit
+	}
 
 	protected void layoutParameterAndSummary() {
 		setupParameterColumns();
@@ -391,16 +382,7 @@ public class WMatch extends Match
 	 */
 	private void dynInit()
 	{
-		ColumnInfo[] layout = new ColumnInfo[] {
-			new ColumnInfo(" ",                                         ".", IDColumn.class, false, false, ""),
-			new ColumnInfo(Msg.translate(Env.getCtx(), "DocumentNo"),   ".", String.class),             //  1
-			new ColumnInfo(Msg.translate(Env.getCtx(), "Date"),         ".", Timestamp.class),
-			new ColumnInfo(Msg.translate(Env.getCtx(), "C_BPartner_ID"),".", KeyNamePair.class, "."),   //  3
-			new ColumnInfo(Msg.translate(Env.getCtx(), "Line"),         ".", KeyNamePair.class, "."),
-			new ColumnInfo(Msg.translate(Env.getCtx(), "M_Product_ID"), ".", KeyNamePair.class, "."),   //  5
-			new ColumnInfo(Msg.translate(Env.getCtx(), "Qty"),          ".", Double.class),
-			new ColumnInfo(Msg.translate(Env.getCtx(), "Matched"),      ".", Double.class)
-		};
+		ColumnInfo[] layout = getColumnLayout();
 
 		xMatchedTable.prepareTable(layout, "", "", false, "");
 		xMatchedToTable.prepareTable(layout, "", "", true, "");
@@ -417,7 +399,6 @@ public class WMatch extends Match
 		sameProduct.addActionListener(this);
 		sameQty.addActionListener(this);
 		
-		//  Init Yvonne
 		String selection = (String)matchFrom.getSelectedItem().getValue();
 		SimpleListModel model = new SimpleListModel(cmd_matchFrom((String)matchFrom.getSelectedItem().getLabel()));
 		matchTo.setItemRenderer(model);
@@ -477,6 +458,7 @@ public class WMatch extends Match
 	 *  Action Listener
 	 *  @param e event
 	 */
+	@Override
 	public void onEvent (Event e)
 	{
 		Integer product = onlyProduct.getValue()!=null?(Integer)onlyProduct.getValue():null;
@@ -485,7 +467,6 @@ public class WMatch extends Match
 		Timestamp to = dateTo.getValue()!=null?(Timestamp)dateTo.getValue():null;
 		
 		if (e.getTarget() == matchFrom) {
-			//cmd_matchFrom((String)matchFrom.getSelectedItem().getLabel());
 			String selection = (String)matchFrom.getSelectedItem().getValue();
 			SimpleListModel model = new SimpleListModel(cmd_matchFrom((String)matchFrom.getSelectedItem().getLabel()));
 			matchTo.setItemRenderer(model);
@@ -503,7 +484,6 @@ public class WMatch extends Match
 			cmd_matchTo();
 		else if (e.getTarget() == bSearch)
 		{
-			//cmd_search();
 			xMatchedTable = (WListbox)cmd_search(xMatchedTable, matchFrom.getSelectedIndex(), (String)matchTo.getSelectedItem().getLabel(), product, vendor, from, to, matchMode.getSelectedIndex() == MODE_MATCHED);
 
 			xMatched.setValue(Env.ZERO);
@@ -516,7 +496,6 @@ public class WMatch extends Match
 		}
 		else if (e.getTarget() == bProcess)
 		{
-			//cmd_process();
 			cmd_process(xMatchedTable, xMatchedToTable, matchMode.getSelectedIndex(), matchFrom.getSelectedIndex(), matchTo.getSelectedItem().getLabel(), m_xMatched);
 			xMatchedTable = (WListbox) cmd_search(xMatchedTable, matchFrom.getSelectedIndex(), (String)matchTo.getSelectedItem().getLabel(), product, vendor, from, to, matchMode.getSelectedIndex() == MODE_MATCHED);
 			xMatched.setValue(Env.ZERO);
@@ -533,7 +512,7 @@ public class WMatch extends Match
 			cmd_searchTo();
 		else if (AEnv.contains(xMatchedTable, e.getTarget()))
 			cmd_searchTo();
-	}   //  actionPerformed
+	}
 
 	
 	/**
@@ -541,7 +520,6 @@ public class WMatch extends Match
 	 */
 	private void cmd_matchTo()
 	{
-	//	log.fine( "VMatch.cmd_matchTo");
 		int index = matchTo.getSelectedIndex();
 		String selection = (String)matchTo.getModel().getElementAt(index);
 		xMatchedToBorder.setValue(selection);
@@ -596,6 +574,7 @@ public class WMatch extends Match
 	 *  Table Model Listener - calculate matchd Qty
 	 *  @param e event
 	 */
+	@Override
 	public void tableChanged (WTableModelEvent e)
 	{
 		if (e.getColumn() != 0)
@@ -638,7 +617,7 @@ public class WMatch extends Match
 		statusBar.setStatusDB(noRows + "");
 	}   //  tableChanged
 
-
+	@Override
 	public ADForm getForm() {
 		return form;
 	}

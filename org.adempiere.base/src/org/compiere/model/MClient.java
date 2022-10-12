@@ -53,11 +53,11 @@ import org.idempiere.cache.ImmutablePOSupport;
  * 			<li>BF [ 1886480 ] Print Format Item Trl not updated even if not multilingual
  */
 public class MClient extends X_AD_Client implements ImmutablePOSupport
-{	
+{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1820358079361924020L;
+	private static final long serialVersionUID = 2479547777642328967L;
 
 	/**
 	 * 	Get client from cache (immutable)
@@ -120,6 +120,30 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 		list.toArray (retValue);
 		return retValue;
 	}	//	getAll
+
+	/**
+	 * Get a MClient object based on LoginPrefix
+	 * @param loginPrefix
+	 * @return MClient
+	 */
+	public static MClient getByLoginPrefix(String loginPrefix) {
+		MClient client = null;
+		try {
+			PO.setCrossTenantSafe();
+			client = new Query(Env.getCtx(), Table_Name, "LoginPrefix=?", (String)null)
+					.setOnlyActiveRecords(true)
+					.setParameters(loginPrefix)
+					.first();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
+		if (client != null ) {
+			Integer key = Integer.valueOf(client.getAD_Client_ID());
+			if (! s_cache.containsKey(key))
+				s_cache.put (Integer.valueOf(client.getAD_Client_ID()), client, e -> new MClient(Env.getCtx(), e));
+		}
+		return client;
+	}
 
 	/**
 	 * 	Get optionally cached client
