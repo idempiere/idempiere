@@ -625,7 +625,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 	}	//	getAD_OrgBP_ID_Int
 
 	/**
-	 * 	Get Primary C_BPartner_Location_ID
+	 * 	Get Primary C_BPartner_Location_ID (BillTo or First)
 	 *	@return C_BPartner_Location_ID
 	 */
 	public int getPrimaryC_BPartner_Location_ID()
@@ -651,7 +651,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 	}	//	getPrimaryC_BPartner_Location_ID
 	
 	/**
-	 * 	Get Primary C_BPartner_Location
+	 * 	Get Primary C_BPartner_Location (BillTo or First)
 	 *	@return C_BPartner_Location
 	 */
 	public MBPartnerLocation getPrimaryC_BPartner_Location()

@@ -235,8 +235,9 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 					to_Info = m_to[i].getDisplay ();
 				}
 			}
-		}	//	get first merge pair
+		}
 
+		//process first merge pair, ignore the rest
 		if (from_ID == 0 || from_ID == to_ID)
 			return;
 
@@ -253,8 +254,6 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 			{
 				if (result)
 				{
-					updateDeleteTable(columnNameRef);
-
 					Clients.showBusy("");
 					runnable = new MergeRunnable(columnNameRef, fromIdRef, toIdRef);
 					Clients.response(new AuEcho(form, "runProcess", null));
@@ -264,7 +263,7 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 		});				
 	}   //  actionPerformed
 	
-	class MergeRunnable implements Runnable {
+	private class MergeRunnable implements Runnable {
 		private int to_ID;
 		private int from_ID;
 		private String columnName;
@@ -285,11 +284,17 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 		}		
 	}
 
+	/**
+	 * execute merge, call from echo event
+	 */
 	public void runProcess() 
 	{
 		runnable.run();
 	}
 	
+	/**
+	 * clean up, call form echo event
+	 */
 	public void onAfterProcess() 
 	{
 		if (m_success)
@@ -306,8 +311,9 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 		dispose();
 	}
 
+	@Override
 	public ADForm getForm() 
 	{
 		return form;
 	}
-}	//	VMerge
+}
