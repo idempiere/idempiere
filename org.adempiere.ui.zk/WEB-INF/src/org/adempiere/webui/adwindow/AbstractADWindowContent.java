@@ -1326,8 +1326,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			}
 
 			MPInstance instance = new MPInstance(ctx, pi.getAD_PInstance_ID(), "false");
-			if (!instance.isRunAsJob()){
-				// when run as job, don't expect see its effect when close parameter panel, so don't refresh 
+			if (!instance.isRunAsJob() && !dialog.isCancel()){
+				// when run as job or canceled, don't expect see its effect when close parameter panel, so don't refresh
 				onRefresh(true, false);
 			}
 
@@ -3731,13 +3731,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				}
 				Executions.schedule(getComponent().getDesktop(), e -> dialog.focus(), new Event("onPostShowProcessModalDialog"));
 			}
-			if (adTabbox.getSelectedGridTab().isQuickForm()) {
-				adTabbox.getSelectedGridTab().dataRefreshAll(false, false);
-			}
-			else
-			{
-				onRefresh(true, false);
-			}
+			// no need to refresh here, it will be refreshed when the process finishes
+			// see onEvent WINDOW_CLOSE for ProcessModalDialog
 		}
 	}
 
