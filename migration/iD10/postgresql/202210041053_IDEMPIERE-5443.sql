@@ -1,5 +1,5 @@
--- CLDE-748
-SELECT register_migration_script('202210041053_PlaceholderForTicket.sql') FROM dual;
+-- IDEMPIERE-5443
+SELECT register_migration_script('202210041053_IDEMPIERE-5443.sql') FROM dual;
 
 -- Oct 4, 2022, 4:07:25 PM CEST
 INSERT INTO AD_Reference (AD_Reference_ID,Name,Description,ValidationType,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,IsOrderByValue,AD_Reference_UU) VALUES (200217,'DateSelectionMode','Date Selection Mode','L',0,0,'Y',TO_TIMESTAMP('2022-10-04 16:07:25','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-10-04 16:07:25','YYYY-MM-DD HH24:MI:SS'),100,'D','N','c7a6eae8-e3af-4072-aced-cdd10a18f8da')
