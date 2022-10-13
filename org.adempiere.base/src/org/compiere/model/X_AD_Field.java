@@ -33,7 +33,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220315L;
+	private static final long serialVersionUID = 20220718L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -437,6 +437,22 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Always Updatable Logic.
+		@param AlwaysUpdatableLogic Logic to determine if field is Updatable irrespective if record&#039;s active status or processed status. This logic Applicable only if Always Updatable is Yes.
+	*/
+	public void setAlwaysUpdatableLogic (String AlwaysUpdatableLogic)
+	{
+		set_Value (COLUMNNAME_AlwaysUpdatableLogic, AlwaysUpdatableLogic);
+	}
+
+	/** Get Always Updatable Logic.
+		@return Logic to determine if field is Updatable irrespective if record&#039;s active status or processed status. This logic Applicable only if Always Updatable is Yes.
+	  */
+	public String getAlwaysUpdatableLogic()
+	{
+		return (String)get_Value(COLUMNNAME_AlwaysUpdatableLogic);
 	}
 
 	/** Set Column Span.

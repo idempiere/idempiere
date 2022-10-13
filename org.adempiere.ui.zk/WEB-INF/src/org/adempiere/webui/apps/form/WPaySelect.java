@@ -674,4 +674,14 @@ public class WPaySelect extends PaySelect
 			}
 		}, new Event("onAskForInput"));
 	}
+	
+	@Override
+	public void askForSecretInput(final String message, final Callback<String> callback) {
+		Executions.schedule(form.getDesktop(), new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				Dialog.askForSecretInput(m_WindowNo, message, callback);
+			}
+		}, new Event("onAskForInput"));
+	}
 }   //  VPaySelect

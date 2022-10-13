@@ -681,7 +681,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			else
 				chooseSaveParameter(saveName, lastRun);
 		}else if (event.getTarget().equals(bOK)){
-			if (runAsJobField.isChecked() && getNotificationType() == null)
+			if (isBackgroundJob() && getNotificationType() == null)
 				throw new WrongValueException(notificationTypeField.getComponent(), Msg.getMsg(m_ctx, "FillMandatory") + notificationTypeLabel.getValue());
 			saveReportOption();
 		}
@@ -1265,6 +1265,16 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 				MPInstance.publishChangedEvent(AD_User_ID);
 			}
 		}
+	}
+	
+	@Override
+	public void askForSecretInput(final String message, final Callback<String> callback) {
+		Executions.schedule(getDesktop(), new EventListener<Event>() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				Dialog.askForSecretInput(m_WindowNo, message, callback);
+			}
+		}, new Event("onAskForInput"));
 	}
 
 	@Override

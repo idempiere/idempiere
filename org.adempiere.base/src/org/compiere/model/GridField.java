@@ -83,7 +83,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -632698704437797176L;
+	private static final long serialVersionUID = 496387784464611123L;
 
 	/**
 	 *  Field Constructor.
@@ -444,8 +444,30 @@ public class GridField
 		}
 
 		//  Fields always updateable
-		if (m_vo.IsAlwaysUpdateable)      //  Zoom
+		if (m_vo.IsAlwaysUpdateable)
+		{
 			return true;
+		}
+		
+		//  Do we have a Always updatable rule
+		if (checkContext && m_vo.AlwaysUpdatableLogic.length() > 0)
+		{
+			boolean isAlwaysUpdatable = false;
+			if (m_vo.AlwaysUpdatableLogic.startsWith("@SQL=")) {
+				isAlwaysUpdatable = Evaluator.parseSQLLogic(m_vo.AlwaysUpdatableLogic, m_vo.ctx, m_vo.WindowNo,
+						m_vo.TabNo, m_vo.ColumnName);
+			} else {
+				isAlwaysUpdatable = Evaluator.evaluateLogic(this, m_vo.AlwaysUpdatableLogic);
+				if (log.isLoggable(Level.FINEST))
+					log.finest(m_vo.ColumnName + " R/O(" + m_vo.AlwaysUpdatableLogic + ") => R/W-" + isAlwaysUpdatable);
+
+			}
+			if(isAlwaysUpdatable)
+				return true;
+		}
+		
+		
+			
 
 		//check tab context
 		if (checkContext && getGridTab() != null &&
@@ -489,11 +511,19 @@ public class GridField
 					return false;
 				if (!MRole.getDefault(ctx, false).isColumnAccess(AD_Table_ID, m_vo.AD_Column_ID, false))
 					return false;
-				if (getDisplayType() == DisplayType.Button && getAD_Process_ID() > 0) {
-					// Verify access to process for buttons
-					Boolean access = MRole.getDefault().getProcessAccess(getAD_Process_ID());
-					if (access == null || !access.booleanValue())
-						return false;
+				if (getDisplayType() == DisplayType.Button) {
+					if (getAD_Process_ID() > 0) {
+						// Verify access to process for buttons
+						Boolean access = MRole.getDefault().getProcessAccess(getAD_Process_ID());
+						if (access == null || !access.booleanValue())
+							return false;
+					}
+					else if (getAD_InfoWindow_ID() > 0) {
+						// Verify access to info window for buttons
+						Boolean access = MRole.getDefault().getInfoAccess(getAD_InfoWindow_ID());
+						if (access == null || !access.booleanValue())
+							return false;
+					}
 				}
 				
 			}
@@ -837,15 +867,15 @@ public class GridField
 		String defStr = "";
 		if (getAD_Process_ID_Of_Panel() > 0) {
 			defStr = Env.getPreference(m_vo.ctx, getAD_Window_ID_Of_Panel(),
-					getAD_Infowindow_ID(), getAD_Process_ID_Of_Panel(),
+					getAD_InfoWindow_ID_of_Panel(), getAD_Process_ID_Of_Panel(),
 					m_vo.ColumnName);
 
 			// when have no preference set for field, and field lie in process
 			// dialog call from infoWindow
-			if (defStr.equals("") && getAD_Infowindow_ID() > 0) {
+			if (defStr.equals("") && getAD_InfoWindow_ID_of_Panel() > 0) {
 				// try get preference for current infoWindow but all process
 				defStr = Env.getPreference(m_vo.ctx, Env.adWindowDummyID,
-						getAD_Infowindow_ID(), 0, m_vo.ColumnName);
+						getAD_InfoWindow_ID_of_Panel(), 0, m_vo.ColumnName);
 
 				if (defStr.equals("")) {
 					// try get preference for current process but all infoWindow
@@ -884,9 +914,9 @@ public class GridField
 				return createDefault(defStr);
 			}
 			// <- End of suggested changes
-		} else if (getAD_Infowindow_ID() > 0) {
+		} else if (getAD_InfoWindow_ID_of_Panel() > 0) {
 			defStr = Env.getPreference(m_vo.ctx, getAD_Window_ID_Of_Panel(),
-					getAD_Infowindow_ID(), m_vo.ColumnName);
+					getAD_InfoWindow_ID_of_Panel(), m_vo.ColumnName);
 			if (!defStr.equals("")) {
 				if (log.isLoggable(Level.FINE))
 					log.fine("[Process Parameter Preference] "
@@ -1081,7 +1111,42 @@ public class GridField
 		//  cannot be validated
 		if (!isLookup() || m_lookup == null)
 			return true;
-		if (m_lookup.containsKeyNoDirect(m_value)) {
+		if (getDisplayType() == DisplayType.ChosenMultipleSelectionList) {
+			boolean allValid = true;
+			for (String vals : ((String)m_value).split(",")) {
+				if (! m_lookup.containsKeyNoDirect(vals)) {
+					if (m_lookup.get(vals) == null) {
+						allValid = false;
+						break;
+					}
+					String name = m_lookup.get(vals).getName();
+					if (name.startsWith(MLookup.INACTIVE_S) && name.endsWith(MLookup.INACTIVE_E)) {
+						allValid = false;
+						break;
+					}
+				}
+			}
+			if (allValid)
+				return true;
+		} else if (getDisplayType() == DisplayType.ChosenMultipleSelectionTable || getDisplayType() == DisplayType.ChosenMultipleSelectionSearch) {
+			boolean allValid = true;
+			for (String vals : ((String)m_value).split(",")) {
+				Integer vali = Integer.valueOf(vals);
+				if (! m_lookup.containsKeyNoDirect(vali)) {
+					if (m_lookup.get(vali) == null) {
+						allValid = false;
+						break;
+					}
+					String name = m_lookup.get(vali).getName();
+					if (name.startsWith(MLookup.INACTIVE_S) && name.endsWith(MLookup.INACTIVE_E)) {
+						allValid = false;
+						break;
+					}
+				}
+			}
+			if (allValid)
+				return true;
+		} else if (m_lookup.containsKeyNoDirect(m_value)) {
 			String name = m_lookup.get(m_value).getName();
 			if (! ( name.startsWith(MLookup.INACTIVE_S) && name.endsWith(MLookup.INACTIVE_E) ) ) {
 				return true;
@@ -1386,8 +1451,8 @@ public class GridField
 		return m_vo.AD_Window_ID_Of_Panel > 0 ? m_vo.AD_Window_ID_Of_Panel : m_vo.AD_Window_ID;		
 	}
 	
-	public int getAD_Infowindow_ID(){
-		return m_vo.AD_Infowindow_ID;
+	public int getAD_InfoWindow_ID_of_Panel(){
+		return m_vo.AD_InfoWindow_ID_Of_Panel;
 	}
 	
 	/** get AD_Chart_ID
@@ -1759,6 +1824,14 @@ public class GridField
 	public int getAD_Process_ID()
 	{
 		return m_vo.AD_Process_ID;
+	}
+	/**
+	 * 	Get AD_InfoWindow_ID
+	 *	@return info window
+	 */
+	public int getAD_InfoWindow_ID()
+	{
+		return m_vo.AD_InfoWindow_ID;
 	}
 	/**
 	 * 	Get Description

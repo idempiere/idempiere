@@ -14,8 +14,8 @@ import org.idempiere.adInterface.x10.CompositeRequestDocument;
 import org.idempiere.adInterface.x10.CompositeResponsesDocument;
 
 @Path("/composite_service/")
-@Consumes("application/xml") 
-@Produces("application/xml")
+@Consumes({"application/xml", "application/json"}) 
+@Produces({"application/xml", "application/json"})
 @WebService(targetNamespace="http://idempiere.org/ADInterface/1_0")
 @SOAPBinding(style=Style.RPC,use=Use.LITERAL,parameterStyle=ParameterStyle.WRAPPED)
 public interface CompositeService {

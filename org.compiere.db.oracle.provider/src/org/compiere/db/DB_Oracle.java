@@ -721,17 +721,18 @@ public class DB_Oracle implements AdempiereDatabase
     		Properties poolProperties = getPoolProperties();
     		// Do not override values which might have been read from the users
     		// hikaricp.properties file.
-    		if(!poolProperties.contains("jdbcUrl")) {
+    		if(!poolProperties.containsKey("jdbcUrl")) {
     			poolProperties.put("jdbcUrl", getConnectionURL(connection));
     		}
-    		if (!poolProperties.contains("username")) {
+    		if (!poolProperties.containsKey("username")) {
     			poolProperties.put("username", connection.getDbUid());
     		}
-    		if (!poolProperties.contains("password")) {
+    		if (!poolProperties.containsKey("password")) {
     			poolProperties.put("password", connection.getDbPwd());
     		}
     		
-    		HikariConfig hikariConfig = new HikariConfig(poolProperties);    		
+    		HikariConfig hikariConfig = new HikariConfig(poolProperties);
+    		hikariConfig.setDriverClassName(DRIVER);
     		m_ds = new HikariDataSource(hikariConfig);
             
             m_connectionURL = m_ds.getJdbcUrl();

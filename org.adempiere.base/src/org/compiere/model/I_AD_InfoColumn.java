@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_InfoColumn
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_InfoColumn 
 {
@@ -44,8 +44,8 @@ public interface I_AD_InfoColumn
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -120,12 +120,12 @@ public interface I_AD_InfoColumn
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -276,12 +276,12 @@ public interface I_AD_InfoColumn
     public static final String COLUMNNAME_InputFieldValidation = "InputFieldValidation";
 
 	/** Set Input field validation.
-	  * Input field validaton query
+	  * Input field validation query
 	  */
 	public void setInputFieldValidation (String InputFieldValidation);
 
 	/** Get Input field validation.
-	  * Input field validaton query
+	  * Input field validation query
 	  */
 	public String getInputFieldValidation();
 
@@ -301,13 +301,13 @@ public interface I_AD_InfoColumn
     /** Column name IsAutocomplete */
     public static final String COLUMNNAME_IsAutocomplete = "IsAutocomplete";
 
-	/** Set Autocomplete.
-	  * Automatic completion for textfields
+	/** Set Auto complete.
+	  * Automatic completion for text fields
 	  */
 	public void setIsAutocomplete (boolean IsAutocomplete);
 
-	/** Get Autocomplete.
-	  * Automatic completion for textfields
+	/** Get Auto complete.
+	  * Automatic completion for text fields
 	  */
 	public boolean isAutocomplete();
 
@@ -375,6 +375,19 @@ public interface I_AD_InfoColumn
 	  * Data entry is required in this column
 	  */
 	public boolean isMandatory();
+
+    /** Column name IsQueryAfterChange */
+    public static final String COLUMNNAME_IsQueryAfterChange = "IsQueryAfterChange";
+
+	/** Set Query After Change.
+	  * Issues a query request after the user has made changes to the field
+	  */
+	public void setIsQueryAfterChange (boolean IsQueryAfterChange);
+
+	/** Get Query After Change.
+	  * Issues a query request after the user has made changes to the field
+	  */
+	public boolean isQueryAfterChange();
 
     /** Column name IsQueryCriteria */
     public static final String COLUMNNAME_IsQueryCriteria = "IsQueryCriteria";
