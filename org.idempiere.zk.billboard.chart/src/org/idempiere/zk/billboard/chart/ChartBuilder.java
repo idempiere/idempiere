@@ -183,7 +183,7 @@ public class ChartBuilder {
 			category = " TRUNC(" + ds.getDateColumn() + ", '" + unit + "') ";
 		}
 		
-		String series = DB.TO_STRING(ds.getName());
+		String series = DB.TO_STRING(ds.get_Translation(MChartDatasource.COLUMNNAME_Name));
 		boolean hasSeries = false;
 		if (ds.getSeriesColumn() != null)
 		{
@@ -454,9 +454,9 @@ public class ChartBuilder {
 			billboard.setLegend(true, false);
 			billboard.addLegendOptions("location", "bottom"); //bottom, right
 		}
-		billboard.setTickAxisLabel(mChart.getDomainLabel());
-		billboard.setValueAxisLabel(mChart.getRangeLabel());
-		billboard.setTitle(mChart.getName());
+		billboard.setTickAxisLabel(mChart.get_Translation(MChart.COLUMNNAME_DomainLabel));
+		billboard.setValueAxisLabel(mChart.get_Translation(MChart.COLUMNNAME_RangeLabel));
+		billboard.setTitle(mChart.get_Translation(MChart.COLUMNNAME_Name));
 		billboard.setType(type);
 		return billboard;
 	}
