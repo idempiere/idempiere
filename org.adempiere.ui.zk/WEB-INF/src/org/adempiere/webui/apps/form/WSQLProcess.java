@@ -65,7 +65,7 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -2038792517003449189L;
+	private static final long serialVersionUID = -4661224754061326223L;
 
 	/** Log. */
     private static final CLogger  log = CLogger.getCLogger(WSQLProcess.class);
@@ -183,7 +183,6 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
      *  Process a semicolon delimited list of SQL Statements.
      *
      *  @param sqlStatements    one or more statements separated by a semicolon (';')
-     *  @param allowDML         whether to allow DML statements
      *  @return a string summarizing the results
      */
     public static String processStatements (String sqlStatements) {
@@ -205,7 +204,6 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
      *  Process SQL Statements.
      *
      *  @param sqlStatement a single SQL statement
-     *  @param allowDML     whether to allow DML statements
      *  @return a string summarizing the results
      */
     public static String processStatement (String sqlStatement) {
@@ -292,14 +290,14 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
 		return result.toString();
     }
 
-
-    /*
-     * (non-Javadoc)
-     * @see org.adempiere.webui.panel.ADForm#onEvent(org.zkoss.zk.ui.event.Event)
+    /**
+     *  Process the events for this form
+     *  @param event
      */
     public void onEvent(Event event) throws Exception {
     	if (event.getTarget() == m_btnSql)
     		m_txbResultField.setText(processStatements (m_txbSqlField.getText()));
 		super.onEvent(event);
     }
+
 }
