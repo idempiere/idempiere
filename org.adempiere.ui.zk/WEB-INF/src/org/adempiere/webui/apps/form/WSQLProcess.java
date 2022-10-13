@@ -97,11 +97,6 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
     private static final String REGEX_REMOVE_LEADING_SPACES = "^\\s+";
 
     /**
-     * REGEX_REMOVE_SPACES_AFTER_PARENTHESIS
-     */
-    private static final String REGEX_REMOVE_SPACES_AFTER_PARENTHESIS = "^\\(\\s+";
-
-    /**
      * Default constructor.
      */
     public WSQLProcess() {
@@ -229,14 +224,13 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
 		String cleanSQL = SQL
 				.replaceAll(REGEX_REMOVE_COMMENTS, "")
 				.replaceAll(REGEX_REMOVE_QUOTED_STRINGS, "")
-				.replaceFirst(REGEX_REMOVE_LEADING_SPACES, "")
-				.replaceFirst(REGEX_REMOVE_SPACES_AFTER_PARENTHESIS, "(");
+				.replaceFirst(REGEX_REMOVE_LEADING_SPACES, "");
 
 		String[] allowedKeywords = MSysConfig.getValue(MSysConfig.ALLOWED_KEYWORDS_IN_SQL_FORM, "ALTER ,ANALYZE,COMMENT ,CREATE ,DELETE ,DROP ,GRANT ,INSERT ,REINDEX ,REVOKE ,SET ,UPDATE ,TRUNCATE ,VACUUM ").split(",");
 		boolean error = true;
 		for (int i = 0; i < allowedKeywords.length; i++) {
 			if (cleanSQL.startsWith(allowedKeywords[i])) {
-				error = false;	
+				error = false;
 				break;
 			}
 		}
