@@ -258,7 +258,7 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
 			MIssue issue = new MIssue(Env.getCtx(), 0, null);
 			issue.setIssueSummary("SQL executed on SQL Process form");
 			issue.setStackTrace(sql);
-			issue.setResponseText(result.toString().replaceFirst("SQL> " + sql + Env.NL, ""));
+			issue.setResponseText(result.toString().replace("SQL> " + sql + Env.NL, ""));
 			issue.setIssueSource(MIssue.ISSUESOURCE_Form);
 			issue.setUserName(Env.getContext(Env.getCtx(), Env.AD_USER_NAME));
 			issue.setAD_Form_ID(SystemIDs.FORM_SQL_PROCESS);
