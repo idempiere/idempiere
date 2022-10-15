@@ -1791,10 +1791,10 @@ public class FinReport extends SvrProcess
 			BigDecimal multiplier = (BigDecimal) m_lines[line].get_Value(MReportColumn.COLUMNNAME_Multiplier);
 			if ( multiplier != null ) {
 				StringBuilder cols = new StringBuilder();
-				for (int colidx = 0; colidx <= 30; colidx++) {
+				for (int column = 0; column < m_columns.length; column++) {
 					if (cols.length() > 0)
 						cols.append(",");
-					cols.append("Col_").append(colidx).append("=Col_").append(colidx).append("*").append(multiplier);
+					cols.append("Col_").append(column).append("=Col_").append(column).append("*").append(multiplier);
 				}
 				String sql = "UPDATE T_Report SET " + cols.toString() + " WHERE AD_PInstance_ID=? AND PA_ReportLine_ID=?";
 				int no = DB.executeUpdateEx(sql, new Object[] {getAD_PInstance_ID(), m_lines[line].getPA_ReportLine_ID()}, get_TrxName());
@@ -1804,10 +1804,10 @@ public class FinReport extends SvrProcess
 			Integer roundFactor = (Integer) m_lines[line].get_Value(MReportColumn.COLUMNNAME_RoundFactor);
 			if ( roundFactor != null ) {
 				StringBuilder cols = new StringBuilder();
-				for (int colidx = 0; colidx <= 30; colidx++) {
+				for (int column = 0; column < m_columns.length; column++) {
 					if (cols.length() > 0)
 						cols.append(",");
-					cols.append("Col_").append(colidx).append("=ROUND(Col_").append(colidx).append(",").append(roundFactor).append(")");
+					cols.append("Col_").append(column).append("=ROUND(Col_").append(column).append(",").append(roundFactor).append(")");
 				}
 				String sql = "UPDATE T_Report SET " + cols.toString() + " WHERE AD_PInstance_ID=? AND PA_ReportLine_ID=?";
 				int no = DB.executeUpdateEx(sql, new Object[] {getAD_PInstance_ID(), m_lines[line].getPA_ReportLine_ID()}, get_TrxName());
