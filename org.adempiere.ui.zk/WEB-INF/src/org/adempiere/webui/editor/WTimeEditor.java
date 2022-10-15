@@ -128,6 +128,9 @@ public class WTimeEditor extends WEditor implements ContextMenuListener
 
 	        if (date != null)
 	        {
+	        	// newValue = new Timestamp(date.getTime()); // Before IDEMPIERE-5399
+	        	
+	        	/* IDEMPIERE-5399
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(date);
 				cal.set(Calendar.YEAR, 1970);
@@ -136,6 +139,19 @@ public class WTimeEditor extends WEditor implements ContextMenuListener
 				Date dateIn1970 = new Date(cal.getTimeInMillis());
 				getComponent().setValue(dateIn1970);
 	            newValue = new Timestamp(dateIn1970.getTime());
+	            */
+	        	
+	        	//IDEMPIERE-5399 - possible patch
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(date);
+				cal.set(Calendar.YEAR, 1970);
+				cal.set(Calendar.MONTH, 0);
+				cal.set(Calendar.DAY_OF_MONTH, 1);
+				cal.set(Calendar.MILLISECOND, 1);
+				Date dateIn1970 = new Date(cal.getTimeInMillis());
+				getComponent().setValue(dateIn1970);
+	            newValue = new Timestamp(dateIn1970.getTime());
+	            
 	        }
 
 	        if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
