@@ -213,10 +213,12 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
 			else
 				sb.append(c);
 		}
-		String sql = sb.toString().trim();
-		if (sql.length() == 0)
+		String sql = sb.toString();
+		if (sql.trim().length() == 0)
 			return "";
 		//
+		if (!sql.contains(" ")) // command is a single word (f.e. ANALYZE), add space at the end
+			sql += " ";
 		StringBuilder result = new StringBuilder("SQL> ")
 				.append(sql)
 				.append(Env.NL);
@@ -226,10 +228,10 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
 				.replaceAll(REGEX_REMOVE_QUOTED_STRINGS, "")
 				.replaceFirst(REGEX_REMOVE_LEADING_SPACES, "");
 
-		String[] allowedKeywords = MSysConfig.getValue(MSysConfig.ALLOWED_KEYWORDS_IN_SQL_FORM, "ALTER ,ANALYZE,COMMENT ,CREATE ,DELETE ,DROP ,GRANT ,INSERT ,REINDEX ,REVOKE ,SET ,UPDATE ,TRUNCATE ,VACUUM ").split(",");
+		String[] allowedKeywords = MSysConfig.getValue(MSysConfig.ALLOWED_KEYWORDS_IN_SQL_FORM, "ALTER,ANALYZE,COMMENT,CREATE,DELETE,DROP,GRANT,INSERT,REINDEX,REVOKE,SET,UPDATE,TRUNCATE,VACUUM").split(",");
 		boolean error = true;
 		for (int i = 0; i < allowedKeywords.length; i++) {
-			if (cleanSQL.startsWith(allowedKeywords[i])) {
+			if (cleanSQL.startsWith(allowedKeywords[i] + " ")) {
 				error = false;
 				break;
 			}
