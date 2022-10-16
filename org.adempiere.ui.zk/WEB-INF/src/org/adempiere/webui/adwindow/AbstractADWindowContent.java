@@ -3731,8 +3731,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				}
 				Executions.schedule(getComponent().getDesktop(), e -> dialog.focus(), new Event("onPostShowProcessModalDialog"));
 			}
-			// no need to refresh here, it will be refreshed when the process finishes
-			// see onEvent WINDOW_CLOSE for ProcessModalDialog
 		}
 	}
 
