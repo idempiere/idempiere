@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ReportColumn
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_PA_ReportColumn 
 {
@@ -44,8 +44,8 @@ public interface I_PA_ReportColumn
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_PA_ReportColumn
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -321,12 +321,12 @@ public interface I_PA_ReportColumn
     /** Column name IsAdhocConversion */
     public static final String COLUMNNAME_IsAdhocConversion = "IsAdhocConversion";
 
-	/** Set Adhoc Conversion.
+	/** Set Ad hoc Conversion.
 	  * Perform conversion for all amounts to currency
 	  */
 	public void setIsAdhocConversion (boolean IsAdhocConversion);
 
-	/** Get Adhoc Conversion.
+	/** Get Ad hoc Conversion.
 	  * Perform conversion for all amounts to currency
 	  */
 	public boolean isAdhocConversion();
@@ -528,6 +528,19 @@ public interface I_PA_ReportColumn
 
 	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
 
+    /** Column name Multiplier */
+    public static final String COLUMNNAME_Multiplier = "Multiplier";
+
+	/** Set Multiplier.
+	  * Type Multiplier (Credit = -1)
+	  */
+	public void setMultiplier (BigDecimal Multiplier);
+
+	/** Get Multiplier.
+	  * Type Multiplier (Credit = -1)
+	  */
+	public BigDecimal getMultiplier();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -588,12 +601,12 @@ public interface I_PA_ReportColumn
     public static final String COLUMNNAME_Org_ID = "Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setOrg_ID (int Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getOrg_ID();
 
@@ -663,12 +676,12 @@ public interface I_PA_ReportColumn
     /** Column name PostingType */
     public static final String COLUMNNAME_PostingType = "PostingType";
 
-	/** Set PostingType.
+	/** Set Posting Type.
 	  * The type of posted amount for the transaction
 	  */
 	public void setPostingType (String PostingType);
 
-	/** Get PostingType.
+	/** Get Posting Type.
 	  * The type of posted amount for the transaction
 	  */
 	public String getPostingType();
@@ -698,6 +711,15 @@ public interface I_PA_ReportColumn
 	  * Period offset (0 is current)
 	  */
 	public BigDecimal getRelativePeriodTo();
+
+    /** Column name RoundFactor */
+    public static final String COLUMNNAME_RoundFactor = "RoundFactor";
+
+	/** Set Round Factor	  */
+	public void setRoundFactor (int RoundFactor);
+
+	/** Get Round Factor	  */
+	public int getRoundFactor();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";
