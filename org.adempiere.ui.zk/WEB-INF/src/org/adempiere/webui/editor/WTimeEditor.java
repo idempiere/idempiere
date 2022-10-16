@@ -43,7 +43,7 @@ public class WTimeEditor extends WEditor implements ContextMenuListener
         logger = CLogger.getCLogger(WDateEditor.class);
     }
 
-    private Timestamp oldValue = new Timestamp(0);
+    private Timestamp oldValue = null;
 
     /**
     *
