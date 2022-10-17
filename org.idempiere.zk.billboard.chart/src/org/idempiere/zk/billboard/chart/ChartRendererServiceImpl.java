@@ -146,14 +146,14 @@ public class ChartRendererServiceImpl implements IChartRendererService {
 			else if (timeUnit.equals(MChart.TIMEUNIT_Month)) 
 			{
 				billboard.setTimeSeriesInterval("1 months");
-				billboard.setTimeSeriesFormat("%b %Y"); // e.g. Sep 2008
+				billboard.setTimeSeriesFormat("%Y-%m"); // e.g. 2008-09
 				if (noOfPeriod != 0)
 					c.add(Calendar.MONTH, -1 * (noOfPeriod - 1));
 			}
 			else if (timeUnit.equals(MChart.TIMEUNIT_Quarter)) 
 			{
 				billboard.setTimeSeriesInterval("3 months");
-				billboard.setTimeSeriesFormat("%b %Y"); // e.g. Sep 2008
+				billboard.setTimeSeriesFormat("%Y-%m"); // e.g. 2008-09
 				if (noOfPeriod != 0)
 					c.add(Calendar.MONTH, -1 * (noOfPeriod - 1) * 3);
 			}
