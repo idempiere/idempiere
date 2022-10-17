@@ -44,13 +44,12 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5465323173669763683L;
+	private static final long serialVersionUID = 9018760438155531804L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
     public static final String ALLOCATION_DESCRIPTION = "ALLOCATION_DESCRIPTION";
     public static final String ALLOW_APPLY_PAYMENT_TO_CREDITMEMO = "ALLOW_APPLY_PAYMENT_TO_CREDITMEMO";
-	public static final String ALLOWED_KEYWORDS_IN_SQL_FORM = "ALLOWED_KEYWORDS_IN_SQL_FORM";
     public static final String ALLOW_OVER_APPLIED_PAYMENT = "ALLOW_OVER_APPLIED_PAYMENT";
     public static final String ALLOW_REVERSAL_OF_RECONCILED_PAYMENT = "ALLOW_REVERSAL_OF_RECONCILED_PAYMENT";
     public static final String ALogin_ShowDate = "ALogin_ShowDate";
@@ -103,6 +102,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
     public static final String FEEDBACK_EMAIL_CC = "FEEDBACK_EMAIL_CC";
     public static final String FEEDBACK_EMAIL_TO = "FEEDBACK_EMAIL_TO";
+	public static final String FORM_SQL_PROCESS_ALLOWED_KEYWORDS = "FORM_SQL_PROCESS_ALLOWED_KEYWORDS";
     public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
     public static final String HTML_REPORT_MINIFY = "HTML_REPORT_MINIFY";
     public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
