@@ -12,7 +12,7 @@
 	<properties>
 		<revision>10.0.0-SNAPSHOT</revision>
 		<jdk.version>11</jdk.version>
-		<tycho.version>2.7.5</tycho.version>
+		<tycho.version>3.1.0-SNAPSHOT</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.17.0</jp.version>
@@ -29,10 +29,19 @@
 		<idempiere-orbit-url>https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository</idempiere-orbit-url>
 		<idempiere-orbit-repository-id>orbit-2021-06-R20210602031627</idempiere-orbit-repository-id>
 		<url.file.srv>https://raw.githubusercontent.com/idempiere/binary.file/master</url.file.srv>
-		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.test.feature.feature.group</extra.ui.install>
+		<extra.ui.install>org.eclipse.equinox.p2.director,org.idempiere.equinox.p2.director.feature.feature.group,org.idempiere.test.feature.feature.group</extra.ui.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
 		<skipClean>false</skipClean>
+		<maven.compiler.source>11</maven.compiler.source>
+    	<maven.compiler.target>11</maven.compiler.target>
 	</properties>
+
+	<pluginRepositories>
+	   <pluginRepository>
+		  <id>tycho-snapshots</id>
+		  <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
+	   </pluginRepository>
+	</pluginRepositories>
 
 	<build>
 		<pluginManagement>
@@ -681,7 +690,7 @@
 			            <executionEnvironmentDefault>JavaSE-${jdk.version}</executionEnvironmentDefault>
 			            <executionEnvironment>JavaSE-${jdk.version}</executionEnvironment>
 		            </configuration>
-		        </plugin>
+		        </plugin>		        
 		      </plugins>
 	        </build>
 		</profile>

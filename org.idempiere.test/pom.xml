@@ -56,7 +56,7 @@
 					</argLine>
 					<testRuntime>p2Installed</testRuntime>
 					<skipTests>${skipTests}</skipTests>
-					<providerHint>junit58</providerHint>
+					<providerHint>junit59</providerHint>
 				</configuration>
 			</plugin>
 			<plugin>
