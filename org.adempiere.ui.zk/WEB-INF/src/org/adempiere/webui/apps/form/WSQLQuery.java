@@ -213,7 +213,7 @@ public class WSQLQuery extends ADForm implements EventListener<Event>
 			return result.toString();
 		}
 
-		int timeout = MSysConfig.getIntValue(MSysConfig.FORM_SQL_QUERY_TIMEOUT_IN_SECONDS, 10);
+		int timeout = MSysConfig.getIntValue(MSysConfig.FORM_SQL_QUERY_TIMEOUT_IN_SECONDS, 120);
 		int maxRecords = MSysConfig.getIntValue(MSysConfig.FORM_SQL_QUERY_MAX_RECORDS, 500);
 		String[] allowedKeywords = MSysConfig.getValue(MSysConfig.FORM_SQL_QUERY_ALLOWED_KEYWORDS, "SELECT ,WITH ,SHOW ").split(",");
 		boolean isError = true;
