@@ -228,7 +228,7 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
 				.replaceAll(REGEX_REMOVE_QUOTED_STRINGS, "")
 				.replaceFirst(REGEX_REMOVE_LEADING_SPACES, "");
 
-		String[] allowedKeywords = MSysConfig.getValue(MSysConfig.ALLOWED_KEYWORDS_IN_SQL_FORM, "ALTER,ANALYZE,COMMENT,CREATE,DELETE,DROP,GRANT,INSERT,REINDEX,REVOKE,SET,UPDATE,TRUNCATE,VACUUM").split(",");
+		String[] allowedKeywords = MSysConfig.getValue(MSysConfig.FORM_SQL_PROCESS_ALLOWED_KEYWORDS, "ALTER,ANALYZE,COMMENT,CREATE,DELETE,DROP,GRANT,INSERT,REINDEX,REVOKE,SET,UPDATE,TRUNCATE,VACUUM").split(",");
 		boolean error = true;
 		for (int i = 0; i < allowedKeywords.length; i++) {
 			if (cleanSQL.startsWith(allowedKeywords[i] + " ")) {
