@@ -49,7 +49,8 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.DateRangePicker;
+import org.adempiere.webui.window.DateRangeButton;
+import org.adempiere.webui.window.DateRangeEditor;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.model.GridField;
@@ -464,13 +465,23 @@ public class ProcessParameterPanel extends Panel implements
 			box.appendChild(separator);
 			box.appendChild(editor2.getComponent());
 			row.appendChild(box);
-			
 			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime)) 
 					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))) {
-				
-				DateRangePicker calRange = new DateRangePicker(editor, editor2);
-				box.appendChild(calRange);
-				calRange.setVisible(editor.isVisible());
+				DateRangeButton dateRangeButton = new DateRangeButton(editor, editor2);
+				box.appendChild(dateRangeButton);
+				dateRangeButton.setVisible(editor.isVisible());
+				dateRangeButton.setDisabled(!(editor.isReadWrite() && editor2.isReadWrite()));
+				editor.setDateRangeButton(dateRangeButton);
+			}
+			else if(mField.getDisplayType() == DisplayType.DateRangePicker) {
+				editor.setVisible(false, true);
+				editor2.setVisible(false, true);
+				DateRangeEditor dateRangeEditor = new DateRangeEditor(editor, editor2, true);
+				box.appendChild(dateRangeEditor);
+				dateRangeEditor.setVisible(mField.isDisplayed(true));
+				label.setVisible(dateRangeEditor.isVisible());
+				dateRangeEditor.setReadOnly(!(editor.isReadWrite() && editor2.isReadWrite()));
+				editor.setDateRangeEditor(dateRangeEditor);
 			}
 		} else {
 			row.appendChild(editor.getComponent());
@@ -882,6 +893,10 @@ public class ProcessParameterPanel extends Panel implements
 		String propName = evt.getPropertyName();
 		if (evt.getSource() instanceof WEditor) {
 			WEditor editor = (WEditor) evt.getSource();
+			if(editor.getDateRangeEditor() != null) {
+				DateRangeEditor dateRangeEditor = editor.getDateRangeEditor();
+				dateRangeEditor.valueChange(evt);
+			}
 			if (m_wEditors2.contains(editor)) {
 				// is a _To editor for ranges
 				propName += "_2";  // same as web services
@@ -1039,6 +1054,23 @@ public class ProcessParameterPanel extends Panel implements
 				if (editor.isMandatory() && editor.getLabel() != null && m_wEditors2.get(i).isNullOrEmpty()) {
 					LayoutUtils.addSclass("idempiere-mandatory-label", editor.getLabel());
 				}
+			}
+			if(editor.getDateRangeButton() != null) {
+				editor.getDateRangeButton().setDisabled(!(editor.isReadWrite() && m_wEditors2.get(i).isReadWrite()));
+			}
+			// Handle Dynamic Display for Date Range Picker
+			if(mField.getDisplayType() == DisplayType.DateRangePicker) {
+				DateRangeEditor dateRangeEditor = editor.getDateRangeEditor();
+				dateRangeEditor.setVisible(editor.isVisible());
+				m_Rows.get(i).setVisible(editor.isVisible());
+				m_Rows.get(i).setAttribute(Group.GROUP_ROW_VISIBLE_KEY, editor.isVisible());
+				editor.setVisible(false, true);
+				if (mField.getVO().isRange) {
+					m_separators.get(i).setVisible(false);
+					m_wEditors2.get(i).setVisible(false ,true);
+				}
+				dateRangeEditor.setFieldMandatoryStyle();
+				dateRangeEditor.setReadOnly(!(editor.isReadWrite() && m_wEditors2.get(i).isReadWrite()));
 			}
 		}
 		if (getParent() != null) {

@@ -173,3 +173,7 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Selected Time Range',0,0,'Y',TO_TIMESTAMP('2022-10-11 17:00:16','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-10-11 17:00:16','YYYY-MM-DD HH24:MI:SS'),100,200796,'SelectedTimeRange','D','16d9cce7-fff1-4375-8bbb-af300c3c1a18')
 ;
 
+-- Oct 4, 2022, 10:53:02 AM CEST
+INSERT INTO AD_Reference (AD_Reference_ID,Name,ValidationType,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,IsOrderByValue,AD_Reference_UU) VALUES (200216,'Date Range Picker','D',0,0,'Y',TO_TIMESTAMP('2022-10-04 10:53:02','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-10-04 10:53:02','YYYY-MM-DD HH24:MI:SS'),100,'D','N','1abdcf89-bf04-42cb-8596-7b1093d339ae')
+;
+

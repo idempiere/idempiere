@@ -42,6 +42,8 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeButton;
+import org.adempiere.webui.window.DateRangeEditor;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -106,6 +108,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	private boolean isProcessParameter;
 	
 	private String sValidInput;
+	
+	private DateRangeEditor dateRangeEditor;
+	
+	private DateRangeButton dateRangeButton;
 
 	/**
 	 * call to show context menu of this field.
@@ -458,7 +464,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     	return listeners.remove(listener);
     }
 
-    protected void fireValueChange(ValueChangeEvent event)
+    public void fireValueChange(ValueChangeEvent event)
     {
     	//copy to array to avoid concurrent modification exception
     	ValueChangeListener[] vcl = new ValueChangeListener[listeners.size()];
@@ -491,12 +497,22 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     public abstract boolean isReadWrite();
 
     /**
+    *
+    * @param visible
+    */
+   public void setVisible(boolean visible)
+   {
+	   this.setVisible(visible, visible);
+   }
+    
+    /**
      *
      * @param visible
+     * @param labelVisible
      */
-    public void setVisible(boolean visible)
+    public void setVisible(boolean visible, boolean labelVisible)
     {
-        label.setVisible(visible);
+    	label.setVisible(labelVisible);
         component.setVisible(visible);
     }
 
@@ -963,5 +979,37 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	@Override
 	public boolean isValid(String input) {
 		return Util.isEmpty(sValidInput) ? true : sValidInput.equals(input);
+	}
+
+	/**
+	 * Get Date Range Editor if available
+	 * @return DateRangeEditor
+	 */
+	public DateRangeEditor getDateRangeEditor() {
+		return dateRangeEditor;
+	}
+
+	/**
+	 * Set Date Range Editor
+	 * @param DateRangeEditor
+	 */
+	public void setDateRangeEditor(DateRangeEditor dateRangeEditor) {
+		this.dateRangeEditor = dateRangeEditor;
+	}
+
+	/**
+	 * Get Date Range Button if available
+	 * @return DateRangeButton
+	 */
+	public DateRangeButton getDateRangeButton() {
+		return dateRangeButton;
+	}
+
+	/**
+	 * Set Date Range Button
+	 * @param DateRangeButton
+	 */
+	public void setDateRangeButton(DateRangeButton dateRangeButton) {
+		this.dateRangeButton = dateRangeButton;
 	}
 }

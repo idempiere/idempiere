@@ -24,7 +24,6 @@
 **********************************************************************/
 package org.adempiere.webui.window;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,24 +31,21 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ComboItem;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
-import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Textbox;
-import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.factory.ButtonFactory;
-import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.MChart;
 import org.compiere.model.MRefList;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkoss.zhtml.Br;
 import org.zkoss.zk.ui.Component;
@@ -58,13 +54,14 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Popup;
+import org.zkoss.zul.Spinner;
 
 /**
 *
 * @author Peter Takacs, Cloudempiere
 *
 */
-public class DateRangePicker extends ToolBarButton implements EventListener<Event> {
+public class DateRangePicker extends Popup implements EventListener<Event> {
 	
 	/**
 	 * 
@@ -86,10 +83,9 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 	private static final String DATESELECTIONMODE_BETWEEN = "07";
 	private static final String DATESELECTIONMODE_QUICK = "08";
 	
-	private static final String IMAGES_CONTEXT_HISTORY_PNG = "images/History16.png";
-	
+	private Button okBtn;
 	private Combobox modeCombobox;
-	private NumberBox numberBox;
+	private Spinner numberBox;
 	private Combobox unitCombobox;
 	private Textbox dateTextBox;
 	private org.zkoss.zul.Calendar cal;
@@ -100,6 +96,8 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 	private WEditor editor2;
 	private Date dateFrom;
 	private Date dateTo;
+	private Date oldValueFrom;
+	private Date oldValueTo;
 	
 	private ArrayList<Listbox> quickListBoxesArray = new ArrayList<Listbox>();
 	private ListItem selectedQuickListItem;
@@ -112,30 +110,22 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 		
 		this.editor = editor;
 		this.editor2 = editor2;
-		
-		if (ThemeManager.isUseFontIconForImage())
-			setIconSclass("z-icon-History");
-		else
-			setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HISTORY_PNG));
-		
 		init();
 	}
 
 	private void init() {
 		
 		Div div = new Div();
-		Popup popup = new Popup();
-		Button okBtn = ButtonFactory.createNamedButton(Msg.getMsg(Env.getCtx(), "UpdateFilter"), true, false);;
-		Button cancelBtn = ButtonFactory.createNamedButton(Msg.getMsg(Env.getCtx(), "Cancel"), true, false);;
+		okBtn = ButtonFactory.createNamedButton(Msg.getMsg(Env.getCtx(), "UpdateFilter"), true, false);
+		Button cancelBtn = ButtonFactory.createNamedButton(Msg.getMsg(Env.getCtx(), "Cancel"), true, false);
 		
 		modeCombobox = new Combobox();
 		modeCombobox.setSclass("date-picker-component");
 		modeCombobox.setWidth("90px");
 		modeCombobox.addEventListener(Events.ON_SELECT, this);
 		
-		numberBox = new NumberBox(true);
+		numberBox = new Spinner(1);
 		numberBox.setStyle("margin: 5px;");
-		numberBox.setValue(0);
 		numberBox.addEventListener(Events.ON_CHANGE, this);
 		
 		unitCombobox = new Combobox();
@@ -161,13 +151,19 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 		
 		okBtn.setSclass("date-picker-component");
 		okBtn.addEventListener(Events.ON_CLICK, event -> {
+			if(Util.isEmpty(dateTextBox.getValue())) {
+				oldValueFrom = dateFrom;
+				oldValueTo = dateTo;
+				dateFrom = null;
+				dateTo = null;
+			}
 			editor.setValue(dateFrom);
 			editor2.setValue(dateTo);
-			popup.detach();
+			this.detach();
 		});
 		cancelBtn.setSclass("date-picker-component");
 		cancelBtn.addEventListener(Events.ON_CLICK, event -> {
-			popup.detach();
+			this.detach();
 		});
 		
 		quickListBoxes = new Div();
@@ -199,7 +195,7 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 		div.appendChild(modeCombobox);
 		div.appendChild(numberBox);
 		div.appendChild(unitCombobox);
-		popup.appendChild(div);
+		this.appendChild(div);
 		
 		div = new Div();
 		div.setSclass("date-picker-container");
@@ -207,7 +203,7 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 		div.appendChild(cal);
 		div.appendChild(cal2);
 		div.appendChild(quickListBoxes);
-		popup.appendChild(div);
+		this.appendChild(div);
 		
 		div = new Div();
 		div.setSclass("date-picker-container");
@@ -215,23 +211,16 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 		div.appendChild(dateTextBoxLabel);
 		div.appendChild(new Br());
 		div.appendChild(dateTextBox);
-		popup.appendChild(div);
+		this.appendChild(div);
 		
 		div = new Div();
 		div.setSclass("date-picker-container");
 		div.setStyle("text-align: right;");
-		div.appendChild(cancelBtn);
 		div.appendChild(okBtn);
-		popup.appendChild(div);
+		div.appendChild(cancelBtn);
+		this.appendChild(div);
 		
-		popup.setStyle("min-width: 320px;");
-		
-		this.setTooltip(popup);
-		this.addEventListener(Events.ON_CLICK, event -> {
-			popup.setPage(this.getPage());
-			popup.open(this, "after_end");
-			LayoutUtils.autoDetachOnClose(popup);
-		});
+		this.setStyle("min-width: 320px;");
 		updateUI();
 		setDisplayValue();
 	}
@@ -295,7 +284,8 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 					selectedQuickListItem = listBox.getSelectedItem();
 			}
 		}
-		setDisplayValue();
+		if(!Util.isEmpty(dateTextBox.getValue()) || !event.getTarget().equals(dateTextBox))
+			setDisplayValue();
 	}
 	
 	private void setDisplayValue() {
@@ -309,16 +299,22 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 		switch (modeCombobox.getSelectedItem().getValue().toString()) {
 			case DATESELECTIONMODE_AFTER:
 				returnVal = Msg.getMsg(Env.getCtx(), "AfterDate", new Object[] {DisplayType.getDateFormat().format(ts)});
+				oldValueFrom = dateFrom;
+				oldValueTo = dateTo;
 				dateFrom = ts;
 				dateTo = null;
 				break;
 			case DATESELECTIONMODE_BEFORE:
 				returnVal = Msg.getMsg(Env.getCtx(), "BeforeDate", new Object[] {DisplayType.getDateFormat().format(ts)});
+				oldValueFrom = dateFrom;
+				oldValueTo = dateTo;
 				dateFrom = null;
 				dateTo = ts;
 				break;
 			case DATESELECTIONMODE_BETWEEN:
 				returnVal = DisplayType.getDateFormat().format(cal.getValue()) + " - " + DisplayType.getDateFormat().format(cal2.getValue());
+				oldValueFrom = dateFrom;
+				oldValueTo = dateTo;
 				dateFrom = new Timestamp(cal.getValue().getTime());
 				dateTo = new Timestamp(cal2.getValue().getTime());
 				break;
@@ -329,6 +325,8 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 				break;
 			case DATESELECTIONMODE_ON:
 				returnVal = Msg.getMsg(Env.getCtx(), "OnDate", new Object[] {DisplayType.getDateFormat().format(ts)});
+				oldValueFrom = dateFrom;
+				oldValueTo = dateTo;
 				dateFrom = ts;
 				dateTo = ts;
 				break;
@@ -339,6 +337,8 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 					boolean isToDate = (boolean) selectedQuickListItem.getAttribute("IsToDate");
 					Date dateFrom = (Date) selectedQuickListItem.getAttribute("DateFrom");
 					Date[] dates = getInterval(unit, offset, isToDate, dateFrom);
+					this.oldValueFrom = this.dateFrom;
+					this.oldValueTo = this.dateTo;
 					this.dateFrom = new Timestamp(dates[0].getTime());
 					this.dateTo = new Timestamp(dates[1].getTime());
 					returnVal = DisplayType.getDateFormat().format(this.dateFrom) + " - " + DisplayType.getDateFormat().format(this.dateTo);
@@ -354,17 +354,24 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 		
 		String mode = modeCombobox.getSelectedItem().getValue().toString();
 		String unit = unitCombobox.getSelectedItem().getValue().toString();
-		BigDecimal numBoxValue = numberBox.getValue();
+		Integer numBoxValue = numberBox.getValue();
 		Date[] dates;
 		
+		if(numBoxValue == null) {
+			numBoxValue = 0;
+			numberBox.setValue(numBoxValue);
+		}
+		
 		if(mode.equalsIgnoreCase(DATESELECTIONMODE_PREVIOUS))
-			numBoxValue = numBoxValue.negate();
+			numBoxValue = -numBoxValue;
 		
 		if(mode.equalsIgnoreCase(DATESELECTIONMODE_CURRENT))
 			dates = getInterval(unit, 0, false, null);
 		else 
 			dates = getInterval(unit, numBoxValue.intValue(), true, null);
 		
+		oldValueFrom = dateFrom;
+		oldValueTo = dateTo;
 		dateFrom = new Timestamp(dates[0].getTime());
 		dateTo = new Timestamp(dates[1].getTime());
 		return DisplayType.getDateFormat().format(dateFrom) + " - " + DisplayType.getDateFormat().format(dateTo);
@@ -576,7 +583,51 @@ public class DateRangePicker extends ToolBarButton implements EventListener<Even
 		return div;
 	}
 	
-	public boolean isAsap() {
-		return true;
+	/**
+	 * Get Date Textbox
+	 * @return Textbox
+	 */
+	public Textbox getDateTextbox() {
+		return dateTextBox;
+	}
+	
+	/**
+	 * Get Update Button
+	 * @return Button
+	 */
+	public Button getUpdateButton() {
+		return okBtn;
+	}
+
+	/**
+	 * Get Value From
+	 * @return
+	 */
+	public Date getValueFrom() {
+		return dateFrom;
+	}
+	
+	/**
+	 * Get Old Value From
+	 * @return
+	 */
+	public Date getOldValueFrom() {
+		return oldValueFrom;
+	}
+
+	/**
+	 * Get Value To
+	 * @return
+	 */
+	public Date getValueTo() {
+		return dateTo;
+	}
+
+	/**
+	 * Get Old Value To
+	 * @return
+	 */
+	public Date getOldValueTo() {
+		return oldValueTo;
 	}
 }

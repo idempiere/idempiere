@@ -153,3 +153,9 @@ input[type="checkbox"]:focus
 	font-weight: bold;
 	margin: 5px;
 }
+
+.date-picker-calendar-button {
+	position: absolute;
+    right: 5px;
+    top: 9px;
+}
