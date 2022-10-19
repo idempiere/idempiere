@@ -50,6 +50,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Trx;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -214,6 +215,7 @@ public class WSQLQuery extends ADForm implements EventListener<Event>
 
 		int timeout = MSysConfig.getIntValue(MSysConfig.FORM_SQL_QUERY_TIMEOUT_IN_SECONDS, 120);
 		int maxRecords = MSysConfig.getIntValue(MSysConfig.FORM_SQL_QUERY_MAX_RECORDS, 500);
+
 		String[] allowedKeywords = MSysConfig.getValue(MSysConfig.FORM_SQL_QUERY_ALLOWED_KEYWORDS, "SELECT ,WITH ,SHOW ").split(",");
 		boolean isError = true;
 		for (int i = 0; i < allowedKeywords.length; i++) {
@@ -234,11 +236,18 @@ public class WSQLQuery extends ADForm implements EventListener<Event>
 		frozen.setColumns(1);
 		listbox.appendChild(frozen);
 
+		Trx trx = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			long start = System.currentTimeMillis();
-			pstmt = DB.prepareNormalReadReplicaStatement(sql, null);
+
+			String trxName = Trx.createTrxName("WSQLQuery");
+			trx = Trx.get(trxName, false);
+			trx.setDisplayName(getClass().getName()+"_processStatement");
+			trx.getConnection().setReadOnly(true);
+
+			pstmt = DB.prepareNormalReadReplicaStatement(sql, trxName);
 			pstmt.setQueryTimeout(timeout);
 			rs = pstmt.executeQuery();
 			
@@ -248,6 +257,7 @@ public class WSQLQuery extends ADForm implements EventListener<Event>
 				String columnName = meta.getColumnLabel(col);
 				header.add(columnName);
 			}
+
 			while (rs.next ()) {
 				if (count >= maxRecords) {
 					result.append("Maximum of " + maxRecords + " records reached.  ");
@@ -288,7 +298,12 @@ public class WSQLQuery extends ADForm implements EventListener<Event>
 			listbox.setItemRenderer(renderer);
 			listbox.initialiseHeader();
 			listbox.setSizedByContent(true);
+			trx.commit();
+
 		} catch (Exception e) {
+			if (trx != null) {
+				trx.rollback();
+			}
 			if (DBException.isTimeout(e)) {
 				result.append("Maximum of " + timeout + " seconds reached, query cancelled.");
 			} else {
@@ -300,6 +315,10 @@ public class WSQLQuery extends ADForm implements EventListener<Event>
 		} finally {
 			DB.close(rs, pstmt);
 			rs = null; pstmt = null;
+			if (trx != null) {
+				trx.close();
+				trx = null;
+			}
 		}
 
 		return result.toString();
