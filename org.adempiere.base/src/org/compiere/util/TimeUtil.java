@@ -831,8 +831,14 @@ public class TimeUtil
 		return retValue;
 	}
 
-	/** Returns number of non business days between 2 dates */
+	/** Returns number of non business days between 2 dates for the country based on current tenant language */
 	public static int getBusinessDaysBetween(Timestamp startDate, Timestamp endDate, int clientID, String trxName)
+	{
+		return getBusinessDaysBetween(startDate, endDate, clientID, MCountry.getDefault().getC_Country_ID(), trxName);
+	}
+
+	/** Returns number of non business days between 2 dates for a specified country */
+	public static int getBusinessDaysBetween(Timestamp startDate, Timestamp endDate, int clientID, int countryID, String trxName)
 	{
 		int retValue = 0;
 
@@ -848,7 +854,7 @@ public class TimeUtil
 		}
 
 		final String sql = "SELECT Date1 FROM C_NonBusinessDay WHERE IsActive='Y' AND AD_Client_ID=? AND Date1 BETWEEN ? AND ? AND COALESCE(C_Country_ID,0) IN (0, ?)";
-		List<Object> nbd = DB.getSQLValueObjectsEx(trxName, sql, clientID, startDate, endDate, MCountry.getDefault().getC_Country_ID());
+		List<Object> nbd = DB.getSQLValueObjectsEx(trxName, sql, clientID, startDate, endDate, countryID);
 
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(startDate);
