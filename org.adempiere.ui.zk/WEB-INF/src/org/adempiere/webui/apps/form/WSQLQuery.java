@@ -65,7 +65,6 @@ import org.zkoss.zul.South;
  *
  * The statement to be executed can be restricted using SysConfig
  */
-@org.idempiere.ui.zk.annotation.Form(name = "org.adempiere.webui.apps.form.WSQLQuery")
 public class WSQLQuery extends ADForm implements EventListener<Event>
 {
 	/**
