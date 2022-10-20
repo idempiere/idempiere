@@ -130,7 +130,6 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_DASHBOARD_CONTENT = 200122;
 	public final static int REFERENCE_DATATYPE_DATE = 15;
 	public final static int REFERENCE_DATATYPE_DATETIME = 16;
-	public final static int REFERENCE_DATATYPE_DATE_RANGE_PICKER = 200216;
 	public final static int REFERENCE_DATATYPE_FILENAME = 39;
 	public final static int REFERENCE_DATATYPE_FILEPATH = 38;
 	public final static int REFERENCE_DATATYPE_ID = 13;

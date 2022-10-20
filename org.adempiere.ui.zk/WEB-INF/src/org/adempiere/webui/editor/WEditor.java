@@ -43,7 +43,6 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.DateRangeButton;
-import org.adempiere.webui.window.DateRangeEditor;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -108,8 +107,6 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	private boolean isProcessParameter;
 	
 	private String sValidInput;
-	
-	private DateRangeEditor dateRangeEditor;
 	
 	private DateRangeButton dateRangeButton;
 
@@ -464,7 +461,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     	return listeners.remove(listener);
     }
 
-    public void fireValueChange(ValueChangeEvent event)
+    protected void fireValueChange(ValueChangeEvent event)
     {
     	//copy to array to avoid concurrent modification exception
     	ValueChangeListener[] vcl = new ValueChangeListener[listeners.size()];
@@ -980,23 +977,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	public boolean isValid(String input) {
 		return Util.isEmpty(sValidInput) ? true : sValidInput.equals(input);
 	}
-
-	/**
-	 * Get Date Range Editor if available
-	 * @return DateRangeEditor
-	 */
-	public DateRangeEditor getDateRangeEditor() {
-		return dateRangeEditor;
-	}
-
-	/**
-	 * Set Date Range Editor
-	 * @param DateRangeEditor
-	 */
-	public void setDateRangeEditor(DateRangeEditor dateRangeEditor) {
-		this.dateRangeEditor = dateRangeEditor;
-	}
-
+	
 	/**
 	 * Get Date Range Button if available
 	 * @return DateRangeButton
