@@ -44,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6051379187578888484L;
+	private static final long serialVersionUID = 3930163278298291002L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -102,6 +102,10 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String FEEDBACK_EMAIL_CC = "FEEDBACK_EMAIL_CC";
     public static final String FEEDBACK_EMAIL_TO = "FEEDBACK_EMAIL_TO";
     public static final String FORM_SQL_PROCESS_ALLOWED_KEYWORDS = "FORM_SQL_PROCESS_ALLOWED_KEYWORDS";
+    public static final String FORM_SQL_QUERY_ALLOWED_KEYWORDS = "FORM_SQL_QUERY_ALLOWED_KEYWORDS";
+    public static final String FORM_SQL_QUERY_LOG_ISSUE = "FORM_SQL_QUERY_LOG_ISSUE";
+    public static final String FORM_SQL_QUERY_MAX_RECORDS = "FORM_SQL_QUERY_MAX_RECORDS";
+    public static final String FORM_SQL_QUERY_TIMEOUT_IN_SECONDS = "FORM_SQL_QUERY_TIMEOUT_IN_SECONDS";
     public static final String GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS = "GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS";
     public static final String HTML_REPORT_THEME = "HTML_REPORT_THEME";
     public static final String IBAN_VALIDATION = "IBAN_VALIDATION";
