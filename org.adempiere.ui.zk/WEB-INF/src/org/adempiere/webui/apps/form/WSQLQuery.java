@@ -298,7 +298,6 @@ public class WSQLQuery extends ADForm implements EventListener<Event>
 			listbox.setItemRenderer(renderer);
 			listbox.initialiseHeader();
 			listbox.setSizedByContent(true);
-			trx.commit();
 
 		} catch (Exception e) {
 			if (trx != null) {
