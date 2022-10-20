@@ -440,7 +440,7 @@ public final class Msg
 		String retStr = msg;
 		try
 		{
-			retStr = MessageFormat.format(msg, args);	//	format string
+			retStr = new MessageFormat(msg, Language.getLocale(ad_language)).format(args);	//	format string
 		}
 		catch (Exception e)
 		{
