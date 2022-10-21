@@ -24,7 +24,6 @@
 package org.adempiere.webui.panel;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -662,8 +661,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         if (! Adempiere.DB_VERSION.equals(version)) {
             String AD_Message = "DatabaseVersionError";
             //  Code assumes Database version {0}, but Database has Version {1}.
-            String msg = Msg.getMsg(ctx, AD_Message);   //  complete message
-            msg = MessageFormat.format(msg, new Object[] {Adempiere.DB_VERSION, version});
+            String msg = Msg.getMsg(ctx, AD_Message, new Object[] {Adempiere.DB_VERSION, version});   //  complete message
             throw new ApplicationException(msg);
         }
 
