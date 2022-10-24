@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.webui.AdempiereWebUI;
@@ -42,7 +43,6 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -108,7 +108,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	
 	private String sValidInput;
 	
-	private DateRangeButton dateRangeButton;
+	private final List<DynamicDisplayListener> dynamicDisplayListeners = new ArrayList<>();
 
 	/**
 	 * call to show context menu of this field.
@@ -621,6 +621,9 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     	{
     		updateStyle();
     	}
+
+	if (!dynamicDisplayListeners.isEmpty())
+		dynamicDisplayListeners.stream().forEach(e -> e.onDynamicDisplay(ctx, this));
     }
 
 	public void updateStyle(boolean applyDictionaryStyle) {
@@ -979,18 +982,31 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	}
 	
 	/**
-	 * Get Date Range Button if available
-	 * @return DateRangeButton
+	 * add listener
+	 * @param listener
 	 */
-	public DateRangeButton getDateRangeButton() {
-		return dateRangeButton;
+	public void addDynamicDisplayListener(DynamicDisplayListener listener) {
+		dynamicDisplayListeners.add(listener);
 	}
 
 	/**
-	 * Set Date Range Button
-	 * @param DateRangeButton
+	 *
+	 * @param listener
+	 * @return true if listener is found and remove from listener list
 	 */
-	public void setDateRangeButton(DateRangeButton dateRangeButton) {
-		this.dateRangeButton = dateRangeButton;
+	public boolean removeDynamicDisplayListener(DynamicDisplayListener listener) {
+		return dynamicDisplayListeners.remove(listener);
+	}
+
+	/**
+	 * interface for dynamic display event
+	 */
+	public static interface DynamicDisplayListener {
+		/**
+		 * call when editor's dynamicDisplay(ctx) method is call
+		 * @param ctx
+		 * @param editor
+		 */
+		void onDynamicDisplay(Properties ctx, WEditor editor);
 	}
 }

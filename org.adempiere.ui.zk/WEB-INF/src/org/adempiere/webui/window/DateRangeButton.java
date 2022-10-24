@@ -24,10 +24,13 @@
 **********************************************************************/
 package org.adempiere.webui.window;
 
+import java.util.Properties;
+
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.theme.ThemeManager;
+import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Events;
 
 /**
@@ -35,7 +38,7 @@ import org.zkoss.zk.ui.event.Events;
 * @author Peter Takacs, Cloudempiere
 *
 */
-public class DateRangeButton extends ToolBarButton {
+public class DateRangeButton extends ToolBarButton implements WEditor.DynamicDisplayListener {
 
 	/**
 	 * 
@@ -71,5 +74,14 @@ public class DateRangeButton extends ToolBarButton {
 			popup.open(this, "after_end");
 			LayoutUtils.autoDetachOnClose(popup);
 		});
+
+		editor.addDynamicDisplayListener(this);
+		onDynamicDisplay(Env.getCtx(), editor);
+	}
+
+	@Override
+	public void onDynamicDisplay(Properties ctx, WEditor editor) {
+		setVisible(this.editor.isVisible() && editor2.isVisible());
+		setDisabled(!(this.editor.isReadWrite() && editor2.isReadWrite()));
 	}
 }

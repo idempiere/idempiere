@@ -468,9 +468,6 @@ public class ProcessParameterPanel extends Panel implements
 					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))) {
 				DateRangeButton dateRangeButton = new DateRangeButton(editor, editor2);
 				box.appendChild(dateRangeButton);
-				dateRangeButton.setVisible(editor.isVisible());
-				dateRangeButton.setDisabled(!(editor.isReadWrite() && editor2.isReadWrite()));
-				editor.setDateRangeButton(dateRangeButton);
 			}
 		} else {
 			row.appendChild(editor.getComponent());
@@ -1039,9 +1036,6 @@ public class ProcessParameterPanel extends Panel implements
 				if (editor.isMandatory() && editor.getLabel() != null && m_wEditors2.get(i).isNullOrEmpty()) {
 					LayoutUtils.addSclass("idempiere-mandatory-label", editor.getLabel());
 				}
-			}
-			if(editor.getDateRangeButton() != null) {
-				editor.getDateRangeButton().setDisabled(!(editor.isReadWrite() && m_wEditors2.get(i).isReadWrite()));
 			}
 		}
 		if (getParent() != null) {
