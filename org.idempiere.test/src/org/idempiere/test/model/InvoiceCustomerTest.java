@@ -39,6 +39,7 @@ import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MInvoiceTax;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MPInstance;
@@ -47,6 +48,7 @@ import org.compiere.model.MPayment;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
+import org.compiere.model.MTax;
 import org.compiere.model.PO;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
@@ -360,5 +362,42 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		assertFalse(pi.isError(), pi.getSummary());
 		rmaLine.load(getTrxName());
 		assertEquals(1, rmaLine.getQtyInvoiced().intValue());
+	}
+	
+	@Test
+	public void testInvoiceWithParentTax() {
+		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		MBPartner bp = new MBPartner (Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
+		DB.getDatabase().forUpdate(bp, 0);
+		invoice.setBPartner(bp);
+		invoice.setIsSOTrx(true);
+		invoice.setC_DocTypeTarget_ID();
+		invoice.saveEx();
+		
+		MInvoiceLine line = new MInvoiceLine(invoice);
+		line.setM_Product_ID(DictionaryIDs.M_Product.AZALEA_BUSH.id);
+		line.setQty(new BigDecimal("1"));
+		line.setC_Tax_ID(DictionaryIDs.C_Tax.GST_PST.id);
+		line.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		invoice.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+		
+		MTax tax = new MTax(Env.getCtx(), line.getC_Tax_ID(), null);
+		MTax[] childs = tax.getChildTaxes(true);
+		MInvoiceTax[] invoiceTaxes = invoice.getTaxes(true);
+		assertEquals(childs.length, invoiceTaxes.length, "Unexpected number of MInvoiceTax records");
+		int match = 0;
+		for (MInvoiceTax invoiceTax : invoiceTaxes) {
+			for (MTax c : childs) {
+				if (c.getC_Tax_ID() == invoiceTax.getC_Tax_ID()) {
+					match++;
+					break;
+				}
+			}
+		}
+		assertEquals(invoiceTaxes.length, match, "MInvoiceTax record doesn't match child tax records");
 	}
 }

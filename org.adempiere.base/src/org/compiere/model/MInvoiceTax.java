@@ -165,7 +165,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 				invoiceTax.set_TrxName(trxName);
 				invoiceTax.setClientOrg(line);
 				invoiceTax.setC_Invoice_ID(line.getC_Invoice_ID());
-				invoiceTax.setC_Tax_ID(line.getC_Tax_ID());
+				invoiceTax.setC_Tax_ID(cTax.getC_Tax_ID());
 				invoiceTax.setPrecision(precision);
 				invoiceTax.setIsTaxIncluded(line.isTaxIncluded());
 				invoiceTaxes.add(invoiceTax);

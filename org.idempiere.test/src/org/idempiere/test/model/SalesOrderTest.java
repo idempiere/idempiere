@@ -46,6 +46,7 @@ import org.compiere.model.MInOutLineMA;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MOrderTax;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPayment;
@@ -53,6 +54,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MStorageReservation;
 import org.compiere.model.MStorageReservationLog;
+import org.compiere.model.MTax;
 import org.compiere.model.MTransaction;
 import org.compiere.model.MUOM;
 import org.compiere.model.MWarehouse;
@@ -1479,5 +1481,46 @@ public class SalesOrderTest extends AbstractTestCase {
 		onHand2 = MStorageOnHand.getQtyOnHand(fert.get_ID(), getM_Warehouse_ID(), asi2.get_ID(), getTrxName()).intValue();
 		assertEquals(onHand1, onHand2);
 		assertEquals(0, onHand1);
+	}
+	
+	@Test
+	public void testOrderWithParentTax() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+		
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.setC_Tax_ID(DictionaryIDs.C_Tax.GST_PST.id);
+		line1.saveEx();		
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Unexpected Order document status");
+		
+		MTax tax = new MTax(Env.getCtx(), line1.getC_Tax_ID(), null);
+		MTax[] childs = tax.getChildTaxes(true);
+		MOrderTax[] orderTaxes = order.getTaxes(true);
+		assertEquals(childs.length, orderTaxes.length, "Unexpected number of MOrderTax records");
+		int match = 0;
+		for (MOrderTax orderTax : orderTaxes) {
+			for (MTax c : childs) {
+				if (c.getC_Tax_ID() == orderTax.getC_Tax_ID()) {
+					match++;
+					break;
+				}
+			}
+		}
+		assertEquals(orderTaxes.length, match, "MOrdexTax record doesn't match child tax records");
 	}
 }

@@ -209,7 +209,7 @@ public class MOrderTax extends X_C_OrderTax
 				orderTax.set_TrxName(trxName);
 				orderTax.setClientOrg(line);
 				orderTax.setC_Order_ID(line.getC_Order_ID());
-				orderTax.setC_Tax_ID(line.getC_Tax_ID());
+				orderTax.setC_Tax_ID(cTax.getC_Tax_ID());
 				orderTax.setPrecision(precision);
 				orderTax.setIsTaxIncluded(line.isTaxIncluded());
 				orderTaxes.add(orderTax);
