@@ -201,7 +201,7 @@ public class MRMATax extends X_M_RMATax
 				rmaTax.set_TrxName(trxName);
 				rmaTax.setClientOrg(line);
 				rmaTax.setM_RMA_ID(line.getM_RMA_ID());
-				rmaTax.setC_Tax_ID(line.getC_Tax_ID());
+				rmaTax.setC_Tax_ID(cTax.getC_Tax_ID());
 				rmaTax.setPrecision(precision);
 				rmaTax.setIsTaxIncluded(line.getParent().isTaxIncluded());
 				rmaTaxes.add(rmaTax);
