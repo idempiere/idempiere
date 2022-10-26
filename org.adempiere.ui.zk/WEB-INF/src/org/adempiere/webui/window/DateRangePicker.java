@@ -153,7 +153,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		
 		okBtn.setSclass("date-picker-component");
 		okBtn.addEventListener(Events.ON_CLICK, event -> {
-			if(dateTo.before(dateFrom))
+			if(dateFrom != null && dateTo != null && dateTo.before(dateFrom))
 				throw new WrongValueException(dateTextBox, Msg.getMsg(Env.getCtx(), "EndDateAfterStartDate"));
 			setTimesOnDates();
 			if(Util.isEmpty(dateTextBox.getValue())) {
@@ -392,8 +392,8 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		if(dateFrom == null)
 			dateFrom = new Date(System.currentTimeMillis());
 		
-		Calendar cal1 = Calendar.getInstance();
-		Calendar cal2 = Calendar.getInstance();
+		Calendar cal1 = Calendar.getInstance(Env.getLocale(Env.getCtx()));
+		Calendar cal2 = Calendar.getInstance(Env.getLocale(Env.getCtx()));
 		cal1.setTime(dateFrom);
 		cal2.setTime(dateFrom);
 		
@@ -435,8 +435,9 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 				hasTimeUnitForRange = false;
 			}
 			if(timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Week)) {
-				cal1.set(iDayUnit, Calendar.MONDAY);
-				cal2.set(iDayUnit, Calendar.SUNDAY);
+				cal1.set(iDayUnit, cal1.getFirstDayOfWeek());
+				cal2.set(iDayUnit, cal2.getFirstDayOfWeek());
+				cal2.add(iDayUnit, 6);
 			}
 			else if(timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Quarter)){
 				if(cal1.after(new GregorianCalendar(cal1.get(Calendar.YEAR), Calendar.OCTOBER, 1))) {
@@ -455,11 +456,11 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 					cal1.set(Calendar.MONTH, Calendar.JANUARY);
 					cal2.set(Calendar.MONTH, Calendar.MARCH);
 				}
-				cal1.set(Calendar.DAY_OF_MONTH, 1);
+				cal1.set(Calendar.DAY_OF_MONTH, cal1.getActualMinimum(iDayUnit));
 				cal2.set(Calendar.DAY_OF_MONTH, cal2.getActualMaximum(Calendar.DAY_OF_MONTH));
 			}
 			else if (!timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Day)) {
-				cal1.set(iDayUnit, 1);
+				cal1.set(iDayUnit, cal1.getActualMinimum(iDayUnit));
 				cal2.set(iDayUnit, cal2.getActualMaximum(iDayUnit));
 			}
 			
@@ -503,22 +504,25 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 	}
 
 	private void setTimesOnDates() {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(dateFrom);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		dateFrom = new Timestamp(cal.getTime().getTime());
-
-		cal.setTime(dateTo);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		cal.add(Calendar.DAY_OF_MONTH, 1);
-		cal.add(Calendar.MILLISECOND, -1);
-		dateTo = new Timestamp(cal.getTime().getTime());
+		Calendar cal = Calendar.getInstance(Env.getLocale(Env.getCtx()));
+		if(dateFrom != null) {
+			cal.setTime(dateFrom);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			dateFrom = new Timestamp(cal.getTime().getTime());
+		}
+		if(dateTo != null) {
+			cal.setTime(dateTo);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+			cal.add(Calendar.MILLISECOND, -1);
+			dateTo = new Timestamp(cal.getTime().getTime());
+		}
 	}
 
 	private ListItem createItem(String value, String timeUnit, int offset, Date dateFrom) {
@@ -531,9 +535,9 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 	
 	private Div getQuickModeContent() {
 		
-		Calendar cNow = Calendar.getInstance();
+		Calendar cNow = Calendar.getInstance(Env.getLocale(Env.getCtx()));
 		cNow.setTime(new Date(System.currentTimeMillis()));
-		Calendar c = Calendar.getInstance();
+		Calendar c = Calendar.getInstance(Env.getLocale(Env.getCtx()));
 		c.setTime(new Date(System.currentTimeMillis()));
 		
 		Div wrapperDiv1 = new Div();
