@@ -71,7 +71,7 @@ public class DateRangeButton extends ToolBarButton implements WEditor.DynamicDis
 		this.setTooltip(popup);
 		this.addEventListener(Events.ON_CLICK, event -> {
 			popup.setPage(this.getPage());
-			popup.open(this, "after_end");
+			popup.open(this, "after_center");
 			LayoutUtils.autoDetachOnClose(popup);
 		});
 

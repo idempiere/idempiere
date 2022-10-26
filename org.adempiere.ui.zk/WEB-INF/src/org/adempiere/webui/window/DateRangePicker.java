@@ -47,11 +47,12 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
-import org.zkoss.zhtml.Br;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Spinner;
@@ -116,18 +117,19 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 	private void init() {
 		
 		Div div = new Div();
-		okBtn = ButtonFactory.createNamedButton(Msg.getMsg(Env.getCtx(), "UpdateFilter"), true, false);
-		Button cancelBtn = ButtonFactory.createNamedButton(Msg.getMsg(Env.getCtx(), "Cancel"), true, false);
-		
+		okBtn = ButtonFactory.createNamedButton(Msg.getMsg(Env.getCtx(), "ApplyFilter"), true, false);
+		okBtn.setStyle("color: white; background: #A9A9A9; float: right;");
+
 		modeCombobox = new Combobox();
 		modeCombobox.setSclass("date-picker-component");
 		modeCombobox.setWidth("90px");
 		modeCombobox.addEventListener(Events.ON_SELECT, this);
 		
 		numberBox = new Spinner(1);
+		numberBox.setConstraint("no empty, min 1");
 		numberBox.setStyle("margin: 5px;");
-		numberBox.addEventListener(Events.ON_CHANGE, this);
-		
+		numberBox.addEventListener(Events.ON_CHANGING, this);
+
 		unitCombobox = new Combobox();
 		unitCombobox.setSclass("date-picker-component");
 		unitCombobox.setWidth("90px");
@@ -151,6 +153,9 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		
 		okBtn.setSclass("date-picker-component");
 		okBtn.addEventListener(Events.ON_CLICK, event -> {
+			if(dateTo.before(dateFrom))
+				throw new WrongValueException(dateTextBox, Msg.getMsg(Env.getCtx(), "EndDateAfterStartDate"));
+			setTimesOnDates();
 			if(Util.isEmpty(dateTextBox.getValue())) {
 				oldValueFrom = dateFrom;
 				oldValueTo = dateTo;
@@ -159,10 +164,6 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 			}
 			editor.setValue(dateFrom);
 			editor2.setValue(dateTo);
-			this.detach();
-		});
-		cancelBtn.setSclass("date-picker-component");
-		cancelBtn.addEventListener(Events.ON_CLICK, event -> {
 			this.detach();
 		});
 		
@@ -174,7 +175,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		ValueNamePair[] modes = MRefList.getList(Env.getCtx(), REFERENCE_DATESELECTIONMODE, false, "Value");
 		for(ValueNamePair mode : modes) {
 			ComboItem item = new ComboItem(mode.getName(), mode.getValue());
-			if(mode.getValue().equalsIgnoreCase(DATESELECTIONMODE_QUICK))
+			if(mode.getValue().equalsIgnoreCase(DATESELECTIONMODE_CURRENT))
 				selectedOnOpen = item;
 			modeCombobox.appendChild(item);
 		}
@@ -187,9 +188,14 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		ValueNamePair[] units = MRefList.getList(Env.getCtx(), REFERENCE_TIMEUNIT, false);
 		for(ValueNamePair timeUnit : units) {
 			ComboItem item = new ComboItem(timeUnit.getName(), timeUnit.getValue());
+			if(timeUnit.getValue().equalsIgnoreCase(MChart.TIMEUNIT_Month))
+				selectedOnOpen = item;
 			unitCombobox.appendChild(item);
 		}
-		unitCombobox.setSelectedIndex(0);
+		if(selectedOnOpen != null)
+			unitCombobox.setSelectedItem(selectedOnOpen);
+		else
+			modeCombobox.setSelectedIndex(0);
 		
 		div.setSclass("date-picker-container");
 		div.appendChild(modeCombobox);
@@ -209,15 +215,9 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		div.setSclass("date-picker-container");
 		div.setStyle("margin: 10px 0 10px 0;");
 		div.appendChild(dateTextBoxLabel);
-		div.appendChild(new Br());
-		div.appendChild(dateTextBox);
-		this.appendChild(div);
-		
-		div = new Div();
+		div.appendChild(dateTextBox);		
 		div.setSclass("date-picker-container");
-		div.setStyle("text-align: right;");
 		div.appendChild(okBtn);
-		div.appendChild(cancelBtn);
 		this.appendChild(div);
 		
 		this.setStyle("min-width: 320px;");
@@ -284,6 +284,13 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 					selectedQuickListItem = listBox.getSelectedItem();
 			}
 		}
+		if(target instanceof Spinner) {
+			String actValue = String.valueOf(((InputEvent)event).getValue());
+			if(!Util.isEmpty(actValue))
+				numberBox.setValue(Integer.valueOf(actValue));
+		}
+		
+		dateTextBox.clearErrorMessage();
 		if(!Util.isEmpty(dateTextBox.getValue()) || !event.getTarget().equals(dateTextBox))
 			setDisplayValue();
 	}
@@ -334,9 +341,8 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 				if(selectedQuickListItem != null) {
 					String unit = (String) selectedQuickListItem.getAttribute("TimeUnit");
 					int offset = (int) selectedQuickListItem.getAttribute("Offset");
-					boolean isToDate = (boolean) selectedQuickListItem.getAttribute("IsToDate");
 					Date dateFrom = (Date) selectedQuickListItem.getAttribute("DateFrom");
-					Date[] dates = getInterval(unit, offset, isToDate, dateFrom);
+					Date[] dates = getInterval(unit, unit, offset, false, false, dateFrom);
 					this.oldValueFrom = this.dateFrom;
 					this.oldValueTo = this.dateTo;
 					this.dateFrom = new Timestamp(dates[0].getTime());
@@ -345,7 +351,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 				}
 				break;
 			default:
-				break;
+				throw new AdempiereException("InvalidDateSelectionMode");
 		}
 		return returnVal;
 	}
@@ -366,19 +372,23 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 			numBoxValue = -numBoxValue;
 		
 		if(mode.equalsIgnoreCase(DATESELECTIONMODE_CURRENT))
-			dates = getInterval(unit, 0, false, null);
-		else 
-			dates = getInterval(unit, numBoxValue.intValue(), true, null);
-		
+			dates = getInterval(unit, 0);
+		else
+			dates = getInterval(unit, numBoxValue.intValue());
+
 		oldValueFrom = dateFrom;
 		oldValueTo = dateTo;
 		dateFrom = new Timestamp(dates[0].getTime());
 		dateTo = new Timestamp(dates[1].getTime());
 		return DisplayType.getDateFormat().format(dateFrom) + " - " + DisplayType.getDateFormat().format(dateTo);
 	}
-	
-	private Date[] getInterval(String timeUnit, int offset, boolean isToDate, Date dateFrom) {
-		
+
+	private Date[] getInterval(String timeUnit, int offset) {
+		return getInterval(timeUnit, null, offset, false, false, null);
+	}
+
+	private Date[] getInterval(String timeUnit, String timeUnitForRange, int offset, boolean isToDate, boolean includeThis, Date dateFrom) {
+
 		if(dateFrom == null)
 			dateFrom = new Date(System.currentTimeMillis());
 		
@@ -416,20 +426,19 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 			default:
 				throw new AdempiereException("TimeUnitNotSupported");
 		}
-		
-		if(isToDate) {
-			if(offset < 0)
-				cal1.add(iUnit, offset);
-			else if (offset > 0)
-				cal2.add(iUnit, offset);
-		}
-		else {
+
+		if(!Util.isEmpty(timeUnitForRange) || !isToDate){
+			boolean hasTimeUnitForRange = true;
 			// Set first and last Day of the given time period
-			if(timeUnit.equalsIgnoreCase(MChart.TIMEUNIT_Week)) {
+			if(Util.isEmpty(timeUnitForRange)) {
+				timeUnitForRange = timeUnit;
+				hasTimeUnitForRange = false;
+			}
+			if(timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Week)) {
 				cal1.set(iDayUnit, Calendar.MONDAY);
 				cal2.set(iDayUnit, Calendar.SUNDAY);
 			}
-			else if(timeUnit.equalsIgnoreCase(MChart.TIMEUNIT_Quarter)){
+			else if(timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Quarter)){
 				if(cal1.after(new GregorianCalendar(cal1.get(Calendar.YEAR), Calendar.OCTOBER, 1))) {
 					cal1.set(Calendar.MONTH, Calendar.OCTOBER);
 					cal2.set(Calendar.MONTH, Calendar.DECEMBER);
@@ -449,29 +458,73 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 				cal1.set(Calendar.DAY_OF_MONTH, 1);
 				cal2.set(Calendar.DAY_OF_MONTH, cal2.getActualMaximum(Calendar.DAY_OF_MONTH));
 			}
-			else if (!timeUnit.equalsIgnoreCase(MChart.TIMEUNIT_Day)) {
+			else if (!timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Day)) {
 				cal1.set(iDayUnit, 1);
 				cal2.set(iDayUnit, cal2.getActualMaximum(iDayUnit));
 			}
 			
 			// Add the offset
-			if(offset != 0) {
+			if(hasTimeUnitForRange && offset != 0) {
 				cal1.add(iUnit, offset);
 				cal2.add(iUnit, offset);
 			}
+			else if(!hasTimeUnitForRange && !isToDate) {
+				if(offset < 0) {
+					cal1.add(iUnit, offset);
+					if(!includeThis) {
+						if(timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Quarter))
+							cal2.add(iUnit, -3);
+						else
+							cal2.add(iUnit, -1);
+					}
+				}
+				else if (offset > 0) {
+					if(!includeThis) {
+						if(timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Quarter))
+							cal1.add(iUnit, 3);
+						else
+							cal1.add(iUnit, 1);
+					}
+					cal2.add(iUnit, offset);
+				}
+			}
 		}
-		
+		else if(isToDate) {
+			if(offset < 0)
+				cal1.add(iUnit, offset);
+			else if (offset > 0)
+				cal2.add(iUnit, offset);
+		}
+
 		Date date1 = cal1.getTime();
 		Date date2 = cal2.getTime();
 		
 		return new Date[] {date1, date2};
 	}
-	
-	private ListItem createItem(String value, String timeUnit, int offset, boolean isToDate, Date dateFrom) {
+
+	private void setTimesOnDates() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dateFrom);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		dateFrom = new Timestamp(cal.getTime().getTime());
+
+		cal.setTime(dateTo);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		cal.add(Calendar.MILLISECOND, -1);
+		dateTo = new Timestamp(cal.getTime().getTime());
+	}
+
+	private ListItem createItem(String value, String timeUnit, int offset, Date dateFrom) {
 		ListItem item = new ListItem(value, value);
 		item.setAttribute("Offset", offset);
 		item.setAttribute("TimeUnit", timeUnit);
-		item.setAttribute("IsToDate", isToDate);
 		item.setAttribute("DateFrom", dateFrom);
 		return item;
 	}
@@ -516,7 +569,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 			
 			for(int i = idx; i <= monthIdx; i++) {
 				c.set(Calendar.MONTH, i);
-				item = createItem(months[i].getName(), MChart.TIMEUNIT_Month, 0, false, new Date(c.getTimeInMillis()));
+				item = createItem(months[i].getName(), MChart.TIMEUNIT_Month, 0, new Date(c.getTimeInMillis()));
 				box.appendChild(item);
 				idx=i;
 			}
@@ -545,7 +598,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		idx = 0;
 		for(ValueNamePair quarter : quarters) {
 			c.set(Calendar.MONTH, idx);
-			item = createItem(quarter.getName(), MChart.TIMEUNIT_Quarter, 0, false, new Date(c.getTimeInMillis()));
+			item = createItem(quarter.getName(), MChart.TIMEUNIT_Quarter, 0, new Date(c.getTimeInMillis()));
 			box.appendChild(item);
 			idx+=3;
 		}
@@ -567,7 +620,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		box.setCheckmark(true);
 		
 		for(int i=0; i>=-3; i--) {
-			item = createItem(String.valueOf(c.get(Calendar.YEAR)), MChart.TIMEUNIT_Year, i, false, null);
+			item = createItem(String.valueOf(c.get(Calendar.YEAR)), MChart.TIMEUNIT_Year, i, null);
 			box.appendChild(item);
 			c.add(Calendar.YEAR, -1);
 		}

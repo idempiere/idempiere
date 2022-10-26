@@ -139,7 +139,7 @@ input[type="checkbox"]:focus
 }
 
 .date-picker-component {
-	display: inline-block;
+	display: inline-grid;
 	min-height: 25px;
 	border-radius: 5px;
 	margin: 0px 5px 5px 0px !important;
