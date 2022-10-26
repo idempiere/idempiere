@@ -82,6 +82,7 @@ import org.compiere.model.MInventory;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MMovement;
 import org.compiere.model.MOrder;
+import org.compiere.model.MPInstance;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProject;
@@ -1838,10 +1839,12 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		int AD_PrintFormat_ID = 0;
 		boolean IsForm = false;
 		int Client_ID = -1;
+		
+		MPInstance instance = null;
 
 		//	Get AD_Table_ID and TableName
 		StringBuilder sql = new StringBuilder("SELECT rv.AD_ReportView_ID,rv.WhereClause,")
-			.append(" t.AD_Table_ID,t.TableName, pf.AD_PrintFormat_ID, pf.IsForm, pf.AD_Client_ID ")
+			.append(" t.AD_Table_ID,t.TableName, pf.AD_PrintFormat_ID, pf.IsForm, pf.AD_Client_ID, pi.AD_PInstance_ID ")
 			.append("FROM AD_PInstance pi")
 			.append(" INNER JOIN AD_Process p ON (pi.AD_Process_ID=p.AD_Process_ID)")
 			.append(" INNER JOIN AD_ReportView rv ON (p.AD_ReportView_ID=rv.AD_ReportView_ID)")
@@ -1867,6 +1870,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				AD_PrintFormat_ID = rs.getInt(5);		//	required
 				IsForm = "Y".equals(rs.getString(6));	//	required
 				Client_ID = rs.getInt(7);
+				instance = new MPInstance(ctx, rs.getInt(8), null);
+				instance.setAD_PrintFormat_ID(AD_PrintFormat_ID);
+				instance.saveEx();
 			}
 		}
 		catch (SQLException e1)
@@ -1881,7 +1887,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		if (AD_ReportView_ID == 0)
 		{
 			//	Check Print format in Report Directly
-			sql = new StringBuilder("SELECT t.AD_Table_ID,t.TableName, pf.AD_PrintFormat_ID, pf.IsForm ")
+			sql = new StringBuilder("SELECT t.AD_Table_ID,t.TableName, pf.AD_PrintFormat_ID, pf.IsForm, pi.AD_PInstance_ID ")
 				.append("FROM AD_PInstance pi")
 				.append(" INNER JOIN AD_Process p ON (pi.AD_Process_ID=p.AD_Process_ID)")
 				.append(" INNER JOIN AD_PrintFormat pf ON (p.AD_PrintFormat_ID=pf.AD_PrintFormat_ID)")
@@ -1899,6 +1905,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 					AD_PrintFormat_ID = rs.getInt(3);		//	required
 					IsForm = "Y".equals(rs.getString(4));	//	required
 					Client_ID = AD_Client_ID;
+					instance = new MPInstance(ctx, rs.getInt(5), null);
 				}
 			}
 			catch (SQLException e1)
@@ -1914,6 +1921,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				log.log(Level.SEVERE, "Report Info NOT found AD_PInstance_ID=" + pi.getAD_PInstance_ID() 
 					+ ",AD_Client_ID=" + AD_Client_ID);
 				return null;
+			}
+			else
+			{
+				instance.setAD_PrintFormat_ID(AD_PrintFormat_ID);
+				instance.saveEx();
 			}
 		}
 
