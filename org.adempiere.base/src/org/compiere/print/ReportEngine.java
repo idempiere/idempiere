@@ -1844,7 +1844,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 
 		//	Get AD_Table_ID and TableName
 		StringBuilder sql = new StringBuilder("SELECT rv.AD_ReportView_ID,rv.WhereClause,")
-			.append(" t.AD_Table_ID,t.TableName, pf.AD_PrintFormat_ID, pf.IsForm, pf.AD_Client_ID, pi.AD_PInstance_ID ")
+			.append(" t.AD_Table_ID,t.TableName, pf.AD_PrintFormat_ID, pf.IsForm, pf.AD_Client_ID ")
 			.append("FROM AD_PInstance pi")
 			.append(" INNER JOIN AD_Process p ON (pi.AD_Process_ID=p.AD_Process_ID)")
 			.append(" INNER JOIN AD_ReportView rv ON (p.AD_ReportView_ID=rv.AD_ReportView_ID)")
@@ -1870,8 +1870,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				AD_PrintFormat_ID = rs.getInt(5);		//	required
 				IsForm = "Y".equals(rs.getString(6));	//	required
 				Client_ID = rs.getInt(7);
-				instance = new MPInstance(ctx, rs.getInt(8), null);
+				instance = new MPInstance(ctx, pi.getAD_PInstance_ID(), null);
 				instance.setAD_PrintFormat_ID(AD_PrintFormat_ID);
+				setDefaultReportTypeToPInstance(ctx, instance, AD_PrintFormat_ID);
 				instance.saveEx();
 			}
 		}
@@ -1887,7 +1888,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		if (AD_ReportView_ID == 0)
 		{
 			//	Check Print format in Report Directly
-			sql = new StringBuilder("SELECT t.AD_Table_ID,t.TableName, pf.AD_PrintFormat_ID, pf.IsForm, pi.AD_PInstance_ID ")
+			sql = new StringBuilder("SELECT t.AD_Table_ID,t.TableName, pf.AD_PrintFormat_ID, pf.IsForm ")
 				.append("FROM AD_PInstance pi")
 				.append(" INNER JOIN AD_Process p ON (pi.AD_Process_ID=p.AD_Process_ID)")
 				.append(" INNER JOIN AD_PrintFormat pf ON (p.AD_PrintFormat_ID=pf.AD_PrintFormat_ID)")
@@ -1905,7 +1906,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 					AD_PrintFormat_ID = rs.getInt(3);		//	required
 					IsForm = "Y".equals(rs.getString(4));	//	required
 					Client_ID = AD_Client_ID;
-					instance = new MPInstance(ctx, rs.getInt(5), null);
+					instance = new MPInstance(ctx, pi.getAD_PInstance_ID(), null);
 				}
 			}
 			catch (SQLException e1)
@@ -1922,9 +1923,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 					+ ",AD_Client_ID=" + AD_Client_ID);
 				return null;
 			}
-			else
+			else if(instance != null)
 			{
 				instance.setAD_PrintFormat_ID(AD_PrintFormat_ID);
+				setDefaultReportTypeToPInstance(ctx, instance, AD_PrintFormat_ID);
 				instance.saveEx();
 			}
 		}
@@ -2743,6 +2745,17 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		}
 		else {
 			return src;
+		}
+	}
+	
+	public static void setDefaultReportTypeToPInstance(Properties ctx, MPInstance instance, int printFormatID) {
+		if(Util.isEmpty(instance.getReportType())) {
+			MPrintFormat pf = new MPrintFormat(ctx, printFormatID, null);
+			String type = pf.isForm()
+				// a42niem - provide explicit default and check on client/org specifics
+				? MSysConfig.getValue(MSysConfig.ZK_REPORT_FORM_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(ctx),Env.getAD_Org_ID(ctx))
+				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(ctx),Env.getAD_Org_ID(ctx));
+			instance.setReportType(type);
 		}
 	}
 }	//	ReportEngine

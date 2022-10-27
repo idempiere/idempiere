@@ -630,11 +630,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		if (!isReport() && !isJasperReport()){
 			return;
 		}
-		if(freportType.getSelectedItem() != null && !Util.isEmpty(freportType.getSelectedItem().getValue())) {
+		if(freportType.getSelectedItem() != null) {
 			getProcessInfo().setReportType(freportType.getSelectedItem().getValue().toString());
-		}
-		else {
-			getProcessInfo().setReportType(MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE, "HTML"));
 		}
 		if (!isReport()){
 			return;
