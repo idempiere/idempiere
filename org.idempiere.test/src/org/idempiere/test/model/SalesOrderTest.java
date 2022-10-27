@@ -1501,16 +1501,19 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.setC_Tax_ID(DictionaryIDs.C_Tax.GST_PST.id);
-		line1.saveEx();		
+		line1.saveEx();
+		
+		MTax tax = new MTax(Env.getCtx(), line1.getC_Tax_ID(), null);
+		MTax[] childs = tax.getChildTaxes(true);
+		MOrderTax[] orderTaxes = order.getTaxes(true);
+		assertEquals(childs.length, orderTaxes.length, "Unexpected number of MOrderTax records");
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Unexpected Order document status");
 		
-		MTax tax = new MTax(Env.getCtx(), line1.getC_Tax_ID(), null);
-		MTax[] childs = tax.getChildTaxes(true);
-		MOrderTax[] orderTaxes = order.getTaxes(true);
+		orderTaxes = order.getTaxes(true);
 		assertEquals(childs.length, orderTaxes.length, "Unexpected number of MOrderTax records");
 		int match = 0;
 		for (MOrderTax orderTax : orderTaxes) {

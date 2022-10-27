@@ -380,14 +380,17 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		line.setC_Tax_ID(DictionaryIDs.C_Tax.GST_PST.id);
 		line.saveEx();
 		
+		MTax tax = new MTax(Env.getCtx(), line.getC_Tax_ID(), null);
+		MTax[] childs = tax.getChildTaxes(true);
+		MInvoiceTax[] invoiceTaxes = invoice.getTaxes(true);
+		assertEquals(childs.length, invoiceTaxes.length, "Unexpected number of MInvoiceTax records");
+		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
 		assertFalse(info.isError(), info.getSummary());
 		invoice.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 		
-		MTax tax = new MTax(Env.getCtx(), line.getC_Tax_ID(), null);
-		MTax[] childs = tax.getChildTaxes(true);
-		MInvoiceTax[] invoiceTaxes = invoice.getTaxes(true);
+		invoiceTaxes = invoice.getTaxes(true);
 		assertEquals(childs.length, invoiceTaxes.length, "Unexpected number of MInvoiceTax records");
 		int match = 0;
 		for (MInvoiceTax invoiceTax : invoiceTaxes) {
