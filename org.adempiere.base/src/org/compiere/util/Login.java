@@ -1307,7 +1307,7 @@ public class Login
 			if (hasTenant) {
 				client = MClient.getByLoginPrefix(app_tenant);
 				if (client == null) {
-					loginErrMsg = Msg.getMsg(m_ctx, "TenantNotFound", new Object[] {app_tenant});
+					loginErrMsg = Msg.getMsg(m_ctx, "FailedLogin");
 					return null;
 				}
 			}
