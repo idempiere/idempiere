@@ -66,6 +66,7 @@ import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.EmbedWinInfo;
@@ -1547,6 +1548,27 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		evalDisplayLogic();
 		if (!update)
 			initParameters();
+		
+		for (WEditor editor : editors) {
+			if (editor.getGridField() != null && DisplayType.isDate(editor.getGridField().getDisplayType())) {
+				InfoColumnVO vo = findInfoColumnParameter(editor.getGridField());
+				if (vo == null) continue;
+				if (X_AD_InfoColumn.QUERYOPERATOR_LeEq.equals(vo.getQueryOperator())) {
+					for (WEditor editor1 : editors) {
+						if (editor1 == editor || editor1.getGridField() == null)
+							continue;
+						InfoColumnVO vo1 = findInfoColumnParameter(editor1.getGridField());
+						if (vo1 == null) continue;
+						if (X_AD_InfoColumn.QUERYOPERATOR_GtEq.equals(vo1.getQueryOperator()) && editor1.getGridField().getColumnName().equals(editor.getGridField().getColumnName())) {
+							DateRangeButton drb = new DateRangeButton(editor1, editor);
+							editor.getComponent().getParent().appendChild(drb);
+							break;
+						}
+					}
+				}
+			}
+		}
+		
 		if (!isAutoComplete)
 			dynamicDisplay(null);
 	}
