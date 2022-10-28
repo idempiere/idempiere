@@ -91,6 +91,8 @@ public class InvoiceGenerate extends SvrProcess
 	private BigDecimal p_MinimumAmtInvSched = null;
 	/**	Per Invoice Savepoint */
 	private Savepoint m_savepoint = null;
+	/** BPartner on the last order processed */
+	private int m_bpartnerID = 0;
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -176,7 +178,7 @@ public class InvoiceGenerate extends SvrProcess
 			//
 			sql.append(") AND o.C_DocType_ID IN (SELECT C_DocType_ID FROM C_DocType ")
 					.append("WHERE DocBaseType='SOO' AND DocSubTypeSO NOT IN ('ON','OB','WR')) ")
-				.append("ORDER BY AD_Org_ID, M_Warehouse_ID, PriorityRule, C_BPartner_ID, Bill_Location_ID, C_Order_ID");
+				.append("ORDER BY AD_Org_ID, M_Warehouse_ID, PriorityRule, C_BPartner_ID, Bill_Location_ID, Bill_User_ID, C_Order_ID");
 		}
 	//	sql += " FOR UPDATE";
 		
@@ -227,10 +229,13 @@ public class InvoiceGenerate extends SvrProcess
 				StringBuilder msgsup = new StringBuilder(Msg.getMsg(getCtx(), "Processing")).append(" ").append(order.getDocumentInfo());
 				statusUpdate(msgsup.toString());
 				
-				//	New Invoice Location
-				if (!p_ConsolidateDocument 
-					|| (m_invoice != null 
-					&& m_invoice.getC_BPartner_Location_ID() != order.getBill_Location_ID()) )
+				//	New BPartner, or new Invoice Location, or new Invoice Contact
+				if (!p_ConsolidateDocument
+						|| (m_bpartnerID != 0
+						&& m_bpartnerID != order.getC_BPartner_ID())
+						|| (m_invoice != null 
+						&& (m_invoice.getC_BPartner_Location_ID() != order.getBill_Location_ID() ||
+							m_invoice.getAD_User_ID() != order.getBill_User_ID()) ) )
 					completeInvoice();
 				boolean completeOrder = MOrder.INVOICERULE_AfterOrderDelivered.equals(order.getInvoiceRule());
 				
@@ -349,6 +354,7 @@ public class InvoiceGenerate extends SvrProcess
 						m_line += 1000;
 					}
 				}	//	complete Order
+				m_bpartnerID = order.getC_BPartner_ID();
 			}	//	for all orders
 		}
 		catch (Exception e)
