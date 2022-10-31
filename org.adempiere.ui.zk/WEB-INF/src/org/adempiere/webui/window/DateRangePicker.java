@@ -541,11 +541,11 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		c.setTime(new Date(System.currentTimeMillis()));
 		
 		Div wrapperDiv1 = new Div();
-		wrapperDiv1.setStyle("max-width: 420px; display: flex; border-top: 2px solid #CFCFCF;");
+		wrapperDiv1.setStyle("width: 420px; display: flex; border-top: 2px solid #CFCFCF;");
 		
 		// Months
 		Div wrapperDiv2 = new Div();
-		wrapperDiv2.setStyle("max-width: 420px; display: flex;");
+		wrapperDiv2.setStyle("width: 420px; display: flex;");
 
 		Label label = new Label(Msg.getMsg(Env.getCtx(), "CurrentYearMonths"));
 		label.setSclass("date-picker-label");
@@ -563,7 +563,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		while (monthIdx <= Calendar.DECEMBER) {
 			innerDiv = new Div();
 			innerDiv.setSclass("date-picker-component");
-			innerDiv.setStyle("margin: 5px 5px 16px 5px !important;");
+			innerDiv.setStyle("margin: 5px 5px 16px 5px !important; width: 33%;");
 			
 			box = new Listbox();
 			box.addEventListener(Events.ON_SELECT, this);
@@ -589,6 +589,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		c = cNow;
 		innerDiv = new Div();
 		innerDiv.setSclass("date-picker-component");
+		innerDiv.setStyle("width: 50%;");
 		label = new Label(Msg.getMsg(Env.getCtx(), "CurrentYearQuarters"));
 		label.setSclass("date-picker-label");
 		innerDiv.appendChild(label);
@@ -614,6 +615,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		// Year
 		innerDiv = new Div();
 		innerDiv.setSclass("date-picker-component");
+		innerDiv.setStyle("width: 50%;");
 		label = new Label(Msg.getMsg(Env.getCtx(), "Year"));
 		label.setSclass("date-picker-label");
 		innerDiv.appendChild(label);
