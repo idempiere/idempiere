@@ -44,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1225938049955333281L;
+	private static final long serialVersionUID = 6713313334256328240L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -128,6 +128,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String LOCATION_MAX_CITY_ROWS = "LOCATION_MAX_CITY_ROWS";
     public static final String LOGIN_HELP_URL = "LOGIN_HELP_URL";
 	public static final String LOGIN_PREFIX_SEPARATOR = "LOGIN_PREFIX_SEPARATOR";
+    public static final String LOGIN_SELECTION_HELP_URL = "LOGIN_SELECTION_HELP_URL";
     public static final String LOGIN_SHOW_RESETPASSWORD = "LOGIN_SHOW_RESETPASSWORD";
     public static final String LOGIN_WITH_TENANT_PREFIX = "LOGIN_WITH_TENANT_PREFIX";
     public static final String MAIL_DONT_SEND_TO_ADDRESS = "MAIL_DONT_SEND_TO_ADDRESS";
