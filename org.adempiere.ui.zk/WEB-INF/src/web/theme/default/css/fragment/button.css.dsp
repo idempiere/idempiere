@@ -139,3 +139,34 @@
 .btn-cancel.z-button [class^="z-icon-"]:before {
 	color: red;	
 }
+
+.btn-negate-gray {
+	background-color: #f5f5f5;
+  	background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
+  	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
+  	background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
+  	background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
+  	background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);
+  	background-repeat: repeat-x;
+}
+
+.btn-negate-red {
+	background-color: #FE261B;
+  	background-image: -moz-linear-gradient(top, #FE261B, #FE261B);
+  	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FE261B), to(#FE261B));
+  	background-image: -webkit-linear-gradient(top, #FE261B, #FE261B);
+  	background-image: -o-linear-gradient(top, #FE261B, #FE261B);
+  	background-image: linear-gradient(to bottom, #FE261B, #FE261B);
+  	background-repeat: repeat-x;
+  	text-shadow: none;
+}
+
+.btn-negate {
+	margin: 0px 0px 0px 6px !important;
+	min-width: 20px;
+	padding: 0px;
+	min-height: 20px;
+	font-weight: lighter;
+	font-size: 10px;
+	border: 0px;
+}

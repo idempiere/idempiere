@@ -1048,15 +1048,17 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	}
 
 	@Override
-	public String intersectClauseForCSV(String columnName, String csv) {
+	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("string_to_array(")
+		if(isNotClause)
+			builder.append("NOT");
+		builder.append("(string_to_array(")
 			.append(columnName)
 			.append(",',')");
 		builder.append(" && "); //intersect
 		builder.append("string_to_array(")
 			.append(DB.TO_STRING(csv))
-			.append(",',')");
+			.append(",','))");
 
 		return builder.toString();
 	}

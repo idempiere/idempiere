@@ -2597,6 +2597,7 @@ public final class DB
 		return ProxyFactory.newCPreparedStatement(resultSetType, resultSetConcurrency, sql, trxName);
 	}
 
+	
 	/**
 	 * @param columnName
 	 * @param csv comma separated value
@@ -2604,8 +2605,24 @@ public final class DB
 	 */
 	public static String inClauseForCSV(String columnName, String csv) 
 	{
+		return inClauseForCSV(columnName, csv, false);
+	}
+	
+	/**
+	 * @param columnName
+	 * @param csv comma separated value
+	 * @param isNotClause
+	 * @return IN clause
+	 */
+	public static String inClauseForCSV(String columnName, String csv, boolean isNotClause) 
+	{
 		StringBuilder builder = new StringBuilder();
-		builder.append(columnName).append(" IN (");
+		builder.append(columnName);
+		
+		if(isNotClause)
+			builder.append(" NOT ");
+		
+		builder.append(" IN (");
 		String[] values = csv.split("[,]");
 		for(int i = 0; i < values.length; i++)
 		{
@@ -2648,7 +2665,18 @@ public final class DB
 	 */
 	public static String intersectClauseForCSV(String columnName, String csv)
 	{
-		return getDatabase().intersectClauseForCSV(columnName, csv);
+		return intersectClauseForCSV(columnName, csv, false);
+	}
+	/**
+	 * 
+	 * @param columnName
+	 * @param csv
+	 * @param isNotClause
+	 * @return intersect sql clause
+	 */
+	public static String intersectClauseForCSV(String columnName, String csv, boolean isNotClause)
+	{
+		return getDatabase().intersectClauseForCSV(columnName, csv, isNotClause);
 	}
 	
 	/**

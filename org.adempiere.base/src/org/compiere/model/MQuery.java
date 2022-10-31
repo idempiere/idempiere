@@ -93,7 +93,8 @@ public class MQuery implements Serializable, Cloneable
 				+ "ip.P_Number,ip.P_Number_To,"									//	4..5
 				+ "ip.P_Date,ip.P_Date_To, ip.Info,ip.Info_To, "				//	6..9
 				+ "pp.Name, pp.IsRange, pp.AD_Reference_ID, pp.Query, "			//	10..13
-				+ "pp.AD_Process_ID, pp.AD_Process_Para_ID "					//	14..15
+				+ "pp.AD_Process_ID, pp.AD_Process_Para_ID, "					//	14..15
+				+ "ip.IsNotClause "
 				+ "FROM AD_PInstance_Para ip, AD_PInstance i, AD_Process_Para pp "
 				+ "WHERE i.AD_PInstance_ID=ip.AD_PInstance_ID"
 				+ " AND pp.AD_Process_ID=i.AD_Process_ID"
@@ -105,7 +106,8 @@ public class MQuery implements Serializable, Cloneable
 			SQL = "SELECT ip.ParameterName,ip.P_String,ip.P_String_To, ip.P_Number,ip.P_Number_To,"
 				+ "ip.P_Date,ip.P_Date_To, ip.Info,ip.Info_To, "
 				+ "ppt.Name, pp.IsRange, pp.AD_Reference_ID, pp.Query, "
-				+ "pp.AD_Process_ID, pp.AD_Process_Para_ID "
+				+ "pp.AD_Process_ID, pp.AD_Process_Para_ID, "
+				+ "ip.IsNotClause "
 				+ "FROM AD_PInstance_Para ip, AD_PInstance i, AD_Process_Para pp, AD_Process_Para_Trl ppt "
 				+ "WHERE i.AD_PInstance_ID=ip.AD_PInstance_ID"
 				+ " AND pp.AD_Process_ID=i.AD_Process_ID"
@@ -163,10 +165,12 @@ public class MQuery implements Serializable, Cloneable
 					Reference_ID = udpp.getAD_Reference_ID();
 
 				String P_Query = rs.getString(13);
+				boolean isNotClause = "Y".equals(rs.getString(16));
 				//
 				if (s_log.isLoggable(Level.FINE)) s_log.fine(ParameterName + " S=" + P_String + "-" + P_String_To
 					+ ", N=" + P_Number + "-" + P_Number_To + ", D=" + P_Date + "-" + P_Date_To
-					+ "; Name=" + Name + ", Info=" + Info + "-" + Info_To + ", Range=" + isRange);
+					+ "; Name=" + Name + ", Info=" + Info + "-" + Info_To + ", Range=" + isRange
+					+ ", Not Clause=" + isNotClause);
 				//
 				//custom query or column not exists - render as report parameters
 				if (!Util.isEmpty(P_Query) || (table != null && table.getColumn(ParameterName) == null))
@@ -185,17 +189,17 @@ public class MQuery implements Serializable, Cloneable
 							String columnName = TableName + "." + ParameterName;		
 							int cnt = DB.getSQLValueEx(null, "SELECT Count(*) From AD_Column WHERE IsActive='Y' AND AD_Client_ID=0 AND Upper(ColumnName)=? AND AD_Reference_ID=?", ParameterName.toUpperCase(), DisplayType.ChosenMultipleSelectionList);
 							if (cnt > 0)
-								query.addRestriction(DB.intersectClauseForCSV(columnName, P_String), MQuery.EQUAL, Name, Info);
+								query.addRestriction(DB.intersectClauseForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
 							else
-								query.addRestriction(DB.inClauseForCSV(columnName, P_String), MQuery.EQUAL, Name, Info);
+								query.addRestriction(DB.inClauseForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
 						} 
 						else if (Reference_ID == DisplayType.ChosenMultipleSelectionTable || Reference_ID == DisplayType.ChosenMultipleSelectionSearch)
 						{
 							String columnName = TableName + "." + ParameterName;
 							if (columnName.endsWith("_ID"))
-								query.addRestriction(DB.inClauseForCSV(columnName, P_String), MQuery.EQUAL, Name, Info);
+								query.addRestriction(DB.inClauseForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
 							else
-								query.addRestriction(DB.intersectClauseForCSV(columnName, P_String), MQuery.EQUAL, Name, Info);
+								query.addRestriction(DB.intersectClauseForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
 						}
 						else
 						{
