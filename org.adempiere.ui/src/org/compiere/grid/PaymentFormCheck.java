@@ -42,12 +42,17 @@ public abstract class PaymentFormCheck extends PaymentForm {
 	private static final String PAYMENTRULE = MInvoice.PAYMENTRULE_Check;
 	
 	/** Start Payment */
-	public int 					m_C_Payment_ID = 0;
-	public MPayment 			m_mPayment = null;
-	public MPayment 			m_mPaymentOriginal = null;
+	protected int 					m_C_Payment_ID = 0;
+	protected MPayment 			m_mPayment = null;
+	protected MPayment 			m_mPaymentOriginal = null;
 	/** Start Bank Account */
-	public int 					m_C_BankAccount_ID = 0;
+	protected int 					m_C_BankAccount_ID = 0;
 	
+	/**
+	 * 
+	 * @param windowNo
+	 * @param mTab
+	 */
 	public PaymentFormCheck(int windowNo, GridTab mTab) {
 		super(windowNo, mTab);
 	}
@@ -76,7 +81,12 @@ public abstract class PaymentFormCheck extends PaymentForm {
 			m_C_BankAccount_ID = m_mPayment.getC_BankAccount_ID();
 	}
 	
-	public KeyNamePair selectedBankAccount;
+	protected KeyNamePair selectedBankAccount;
+	
+	/**
+	 * set default selected bank account and return list of active bank account records
+	 * @return list of active bank account
+	 */
 	public ArrayList<KeyNamePair> getBankAccountList() {
 		selectedBankAccount = null;
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
@@ -132,8 +142,19 @@ public abstract class PaymentFormCheck extends PaymentForm {
 		return ok;
 	}
 	
-	public String processMsg = null;
-	public boolean save(int newC_BankAccount_ID, String routing, String number, String check, BigDecimal amount, String trxName)
+	protected String processMsg = null;
+	
+	/**
+	 * 
+	 * @param C_BankAccount_ID
+	 * @param routing routing number
+	 * @param number account number
+	 * @param check check number
+	 * @param amount
+	 * @param trxName
+	 * @return true if save successfully
+	 */
+	public boolean save(int C_BankAccount_ID, String routing, String number, String check, BigDecimal amount, String trxName)
 	{
 		// set trxname for class objects
 		if (m_mPayment != null)
@@ -222,14 +243,13 @@ public abstract class PaymentFormCheck extends PaymentForm {
 		if (log.isLoggable(Level.FINE)) log.fine("Payment - " + PAYMENTRULE);
 		//  Set Amount
 		m_mPayment.setAmount(m_C_Currency_ID, payAmount);
-		m_mPayment.setBankCheck(newC_BankAccount_ID, m_isSOTrx, routing,
+		m_mPayment.setBankCheck(C_BankAccount_ID, m_isSOTrx, routing,
 			number, check);
 		m_mPayment.setC_BPartner_ID(m_C_BPartner_ID);
 		m_mPayment.setC_Invoice_ID(C_Invoice_ID);
 		if (order != null)
 		{
-			m_mPayment.setC_Order_ID(C_Order_ID);
-			m_needSave = true;
+			m_mPayment.setC_Order_ID(C_Order_ID);			
 		}
 		m_mPayment.setDateTrx(m_DateAcct);
 		m_mPayment.setDateAcct(m_DateAcct);
@@ -251,11 +271,26 @@ public abstract class PaymentFormCheck extends PaymentForm {
 		}
 		else
 			if (log.isLoggable(Level.FINE)) log.fine("NotDraft " + m_mPayment);
+				
+		return true;
+	}
+
+	@Override
+	protected void afterSave(boolean success)
+	{
+		if (!success)
+			return;
 		
 		/**********************
 		 *	Save Values to mTab
 		 */
-		log.config("Saving changes");
+		//refresh
+		getGridTab().dataRefresh(false);
+		Object paymentIdValue = getGridTab().getValue("C_Payment_ID");
+		if (paymentIdValue != null && paymentIdValue instanceof Number)
+			m_C_Payment_ID = ((Number)paymentIdValue).intValue();
+		else
+			m_C_Payment_ID = 0;
 		//	Set Payment
 		if (m_mPayment.getC_Payment_ID() != m_C_Payment_ID)
 		{
@@ -263,15 +298,27 @@ public abstract class PaymentFormCheck extends PaymentForm {
 				getGridTab().setValue("C_Payment_ID", null);
 			else
 				getGridTab().setValue("C_Payment_ID", Integer.valueOf(m_mPayment.getC_Payment_ID()));
+			m_needSave = true;
 		}
-		return true;
 	}
-		
+	
+	/**
+	 * 
+	 * @param C_Currency_ID
+	 * @param PayAmt
+	 * @return if online payment processor have been configured for tender type check
+	 */
 	public boolean isBankAccountProcessorExist(int C_Currency_ID, BigDecimal PayAmt)
 	{
 		return isBankAccountProcessorExist(Env.getCtx(), MPayment.TENDERTYPE_Check, "", Env.getAD_Client_ID(Env.getCtx()), C_Currency_ID, PayAmt, null);
 	}
 	
+	/**
+	 * Get online payment processor configuration for tender type check
+	 * @param C_Currency_ID
+	 * @param PayAmt
+	 * @return {@link MBankAccountProcessor}
+	 */
 	public MBankAccountProcessor getBankAccountProcessor(int C_Currency_ID, BigDecimal PayAmt)
 	{
 		return getBankAccountProcessor(Env.getCtx(), MPayment.TENDERTYPE_Check, "", Env.getAD_Client_ID(Env.getCtx()), C_Currency_ID, PayAmt, null);

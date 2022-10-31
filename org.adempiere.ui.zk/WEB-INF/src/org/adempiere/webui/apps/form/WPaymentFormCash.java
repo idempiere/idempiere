@@ -16,7 +16,6 @@ package org.adempiere.webui.apps.form;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
@@ -34,19 +33,16 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.PaymentFormCash;
 import org.compiere.model.GridTab;
-import org.compiere.model.MConversionRate;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 
 /**
  * 
  * @author Elaine
  *
  */
-public class WPaymentFormCash extends PaymentFormCash implements EventListener<Event> {
+public class WPaymentFormCash extends PaymentFormCash {
 
 	private WPaymentFormWindow window;
 	
@@ -54,8 +50,6 @@ public class WPaymentFormCash extends PaymentFormCash implements EventListener<E
 	private Listbox bBankAccountCombo = ListboxFactory.newDropdownListbox();
 	private Label bCashBookLabel = new Label();
 	private Listbox bCashBookCombo = ListboxFactory.newDropdownListbox();
-	private Label bCurrencyLabel = new Label();
-	private Listbox bCurrencyCombo = ListboxFactory.newDropdownListbox();
 	private Label bDateLabel = new Label();
 	private WDateEditor bDateField;
 	private Label bAmountLabel = new Label();
@@ -74,7 +68,6 @@ public class WPaymentFormCash extends PaymentFormCash implements EventListener<E
 		Grid bPanelLayout = GridFactory.newGridLayout();
 		window.getPanel().appendChild(bPanelLayout);
 		bCashBookLabel.setText(Msg.translate(Env.getCtx(), "C_CashBook_ID"));
-		bCurrencyLabel.setText(Msg.translate(Env.getCtx(), "C_Currency_ID"));
 		bAmountLabel.setText(Msg.getMsg(Env.getCtx(), "Amount"));
 		//bAmountField.setText("");
 		bDateLabel.setText(Msg.translate(Env.getCtx(), "DateAcct"));
@@ -105,10 +98,6 @@ public class WPaymentFormCash extends PaymentFormCash implements EventListener<E
 		}
 		
 		row = rows.newRow();
-		row.appendChild(bCurrencyLabel.rightAlign());
-		row.appendChild(bCurrencyCombo);
-		
-		row = rows.newRow();
 		row.appendChild(bDateLabel.rightAlign());
 		row.appendChild(bDateField.getComponent());
 		
@@ -133,23 +122,6 @@ public class WPaymentFormCash extends PaymentFormCash implements EventListener<E
 		//	Accounting Date
 		bDateField.setValue(m_DateAcct);
 		
-		// Is the currency an EMU currency?
-		Integer C_Currency_ID = Integer.valueOf(m_C_Currency_ID);
-		if (s_Currencies.containsKey(C_Currency_ID)) {
-			Enumeration<Integer> en = s_Currencies.keys();
-			while (en.hasMoreElements()) {
-				Object key = en.nextElement();
-				bCurrencyCombo.addItem(s_Currencies.get(key));
-			}
-			bCurrencyCombo.addActionListener(this);
-			bCurrencyCombo.setSelectedKeyNamePair(s_Currencies.get(C_Currency_ID));
-		} 
-		else // No EMU Currency
-		{
-			bCurrencyLabel.setVisible(false); // Cash
-			bCurrencyCombo.setVisible(false);
-		}
-		
 		ArrayList<KeyNamePair> list = getBankAccountList();
 		for (KeyNamePair pp : list)
 			bBankAccountCombo.addItem(pp);
@@ -166,16 +138,6 @@ public class WPaymentFormCash extends PaymentFormCash implements EventListener<E
 		//	Set Selection
 		if (selectedCashBook != null)
 			bCashBookCombo.setSelectedKeyNamePair(selectedCashBook);
-	}
-	
-	public void onEvent(Event e)
-	{
-		if (e.getTarget() == bCurrencyCombo)
-		{
-			KeyNamePair pp = bCurrencyCombo.getSelectedItem().toKeyNamePair();
-			BigDecimal amt = MConversionRate.convert(Env.getCtx(), m_Amount, m_C_Currency_ID, pp.getKey(), m_AD_Client_ID, m_AD_Org_ID);
-			bAmountField.setValue(amt);
-		}
 	}
 	
 	@Override

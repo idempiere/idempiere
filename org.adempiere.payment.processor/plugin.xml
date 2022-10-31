@@ -46,5 +46,13 @@
             priority="0">
       </processor>
    </extension>
+   <extension
+         id="org.compiere.model.PP_Dummy"
+         name="Dummy Payment Processor"
+         point="org.compiere.model.PaymentProcessor">
+      <processor
+            class="org.compiere.model.PP_Dummy">
+      </processor>
+   </extension>
 
 </plugin>
