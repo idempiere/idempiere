@@ -107,6 +107,16 @@ public final class DictionaryIDs {
 		}
 	}
 	
+	public enum C_BPartner_Location {
+		C_AND_W_STAMFORD(112);
+
+		public final int id;
+
+		private C_BPartner_Location(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum C_Charge {
 		BANK(100),
 		COMMISSIONS(101),

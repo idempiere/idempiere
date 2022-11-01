@@ -23,6 +23,11 @@ import org.compiere.model.GridTab;
  */
 public class WPaymentFormDirectDeposit extends WPaymentFormDirect {
 	
+	/**
+	 * 
+	 * @param windowNo
+	 * @param mTab
+	 */
 	public WPaymentFormDirectDeposit(int windowNo, GridTab mTab) {
 		super(windowNo, mTab, false);
 	}

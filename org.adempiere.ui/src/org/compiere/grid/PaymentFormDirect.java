@@ -26,6 +26,7 @@ import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPayment;
+import org.compiere.model.MRole;
 import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -41,10 +42,16 @@ public abstract class PaymentFormDirect extends PaymentForm {
 	private String PAYMENTRULE;
 	
 	/** Start Payment */
-	public int 					m_C_Payment_ID = 0;
-	public MPayment 			m_mPayment = null;
-	public MPayment 			m_mPaymentOriginal = null;
+	protected int 				m_C_Payment_ID = 0;
+	protected MPayment 			m_mPayment = null;
+	protected MPayment 			m_mPaymentOriginal = null;
 	
+	/**
+	 * 
+	 * @param windowNo
+	 * @param mTab
+	 * @param isDebit
+	 */
 	public PaymentFormDirect(int windowNo, GridTab mTab, boolean isDebit) {
 		super(windowNo, mTab);
 		PAYMENTRULE = isDebit ? MInvoice.PAYMENTRULE_DirectDebit : MInvoice.PAYMENTRULE_DirectDeposit;
@@ -71,23 +78,27 @@ public abstract class PaymentFormDirect extends PaymentForm {
 		}
 	}
 	
-	public ArrayList<KeyNamePair> getBPBankAccountList() {
+	/**
+	 * 
+	 * @return List of active bank accounts
+	 */
+	public ArrayList<KeyNamePair> getBankAccountList() {
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 		
 		/**
-		 * 	Load Accounts
+		 *  Load Bank Accounts
 		 */
-		String SQL = "SELECT a.C_BP_BankAccount_ID, NVL(b.Name, ' ')||'_'||NVL(a.AccountNo, ' ') AS Acct "
-			+ "FROM C_BP_BankAccount a"
-			+ " LEFT OUTER JOIN C_Bank b ON (a.C_Bank_ID=b.C_Bank_ID) "
-			+ "WHERE C_BPartner_ID=?"
-			+ "AND a.IsActive='Y' AND a.IsACH='Y'";
+		String SQL = MRole.getDefault().addAccessSQL(
+			"SELECT C_BankAccount_ID, ba.Name || ' ' || ba.AccountNo, ba.IsDefault "
+			+ "FROM C_BankAccount ba"
+			+ " INNER JOIN C_Bank b ON (ba.C_Bank_ID=b.C_Bank_ID) "
+			+ "WHERE b.IsActive='Y' AND ba.IsActive='Y' ORDER BY ba.IsDefault DESC ",
+			"ba", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement(SQL, null);
-			pstmt.setInt(1, m_C_BPartner_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -121,8 +132,17 @@ public abstract class PaymentFormDirect extends PaymentForm {
 		return ok;
 	}
 	
-	public String processMsg;
-	public boolean save(int newC_BankAccount_ID, String routing, String number, String trxName)
+	protected String processMsg;
+	
+	/**
+	 * 
+	 * @param C_BankAccount_ID
+	 * @param routing routing number
+	 * @param number account number
+	 * @param trxName
+	 * @return true if save successfully
+	 */
+	public boolean save(int C_BankAccount_ID, String routing, String number, String trxName)
 	{
 		// set trxname for class objects
 		if (m_mPayment != null)
@@ -211,13 +231,12 @@ public abstract class PaymentFormDirect extends PaymentForm {
 		 */
 		//  Set Amount
 		m_mPayment.setAmount(m_C_Currency_ID, payAmount);
-		m_mPayment.setBankACH(newC_BankAccount_ID, m_isSOTrx, PAYMENTRULE, routing, number);
+		m_mPayment.setBankACH(C_BankAccount_ID, m_isSOTrx, PAYMENTRULE, routing, number);
 		m_mPayment.setC_BPartner_ID(m_C_BPartner_ID);
 		m_mPayment.setC_Invoice_ID(C_Invoice_ID);
 		if (order != null)
 		{
-			m_mPayment.setC_Order_ID(C_Order_ID);
-			m_needSave = true;
+			m_mPayment.setC_Order_ID(C_Order_ID);					
 		}
 		m_mPayment.setDateTrx(m_DateAcct);
 		m_mPayment.setDateAcct(m_DateAcct);
@@ -240,10 +259,25 @@ public abstract class PaymentFormDirect extends PaymentForm {
 		else
 			if (log.isLoggable(Level.FINE)) log.fine("NotDraft " + m_mPayment);
 		
+		return true;
+	}
+
+	@Override
+	protected void afterSave(boolean success) 
+	{
+		if (!success)
+			return;
+		
 		/**********************
 		 *	Save Values to mTab
 		 */
-		log.config("Saving changes");
+		//refresh
+		getGridTab().dataRefresh(false);
+		Object paymentIdValue = getGridTab().getValue("C_Payment_ID");
+		if (paymentIdValue != null && paymentIdValue instanceof Number)
+			m_C_Payment_ID = ((Number)paymentIdValue).intValue();
+		else
+			m_C_Payment_ID = 0;
 		//	Set Payment
 		if (m_mPayment.getC_Payment_ID() != m_C_Payment_ID)
 		{
@@ -251,17 +285,24 @@ public abstract class PaymentFormDirect extends PaymentForm {
 				getGridTab().setValue("C_Payment_ID", null);
 			else
 				getGridTab().setValue("C_Payment_ID", Integer.valueOf(m_mPayment.getC_Payment_ID()));
+			m_needSave = true;
 		}
-		
-		return true;
 	}
 	
+	/**
+	 * 
+	 * @return true if online payment processor have been configured for direct* tender type
+	 */
 	public boolean isBankAccountProcessorExist()
 	{
 		String tender = PAYMENTRULE.equals(MInvoice.PAYMENTRULE_DirectDebit) ? MPayment.TENDERTYPE_DirectDebit : MPayment.TENDERTYPE_DirectDeposit;
 		return isBankAccountProcessorExist(Env.getCtx(), tender, "", Env.getAD_Client_ID(Env.getCtx()), m_C_Currency_ID, m_Amount, null);
 	}
 	
+	/**
+	 * Get online payment processor configured for direct* tender type
+	 * @return {@link MBankAccountProcessor}
+	 */
 	public MBankAccountProcessor getBankAccountProcessor()
 	{
 		String tender = PAYMENTRULE.equals(MInvoice.PAYMENTRULE_DirectDebit) ? MPayment.TENDERTYPE_DirectDebit : MPayment.TENDERTYPE_DirectDeposit;
