@@ -577,7 +577,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	private void openLoginHelp() {
 		String lang = Env.getContext(Env.getCtx(), Env.LANGUAGE);
 		lang = lang.substring(0, 2);
-		String helpURL = MSysConfig.getValue(MSysConfig.LOGIN_SELECTION_HELP_URL, "https://wiki.idempiere.org/{lang}/Login_Selection_Help");
+		String helpURL = MSysConfig.getValue(MSysConfig.LOGIN_SELECT_ROLE_HELP_URL, "https://wiki.idempiere.org/{lang}/Login_Select_Role_Help");
 		if (helpURL.contains("{lang}")) {
 			String rawURL = helpURL;
 			helpURL = Util.replace(rawURL, "{lang}", lang);
