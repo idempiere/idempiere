@@ -30,6 +30,7 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_COSTPRICE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DASHBOARD_CONTENT;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATETIME;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATE_RANGE_PICKER;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_FILENAME;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_FILEPATH;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ID;
@@ -179,6 +180,8 @@ public final class DisplayType
 	
 	public static final int TimeZoneId = REFERENCE_DATATYPE_TIMEZONE;
 	
+	public static final int DateRangePicker = REFERENCE_DATATYPE_DATE_RANGE_PICKER;
+
 	/**
 	 *	- New Display Type
 		INSERT INTO AD_REFERENCE
@@ -352,7 +355,7 @@ public final class DisplayType
 	 */
 	public static boolean isDate (int displayType)
 	{
-		if (displayType == Date || displayType == DateTime || displayType == Time)
+		if (displayType == Date || displayType == DateTime || displayType == Time || displayType == DateRangePicker)
 			return true;
 		
 		if (isTimestampWithTimeZone(displayType))

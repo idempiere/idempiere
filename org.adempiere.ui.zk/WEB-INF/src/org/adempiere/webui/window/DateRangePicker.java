@@ -99,7 +99,8 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 	private Date dateTo;
 	private Date oldValueFrom;
 	private Date oldValueTo;
-	
+	private String displayValue;
+
 	private ArrayList<Listbox> quickListBoxesArray = new ArrayList<Listbox>();
 	private ListItem selectedQuickListItem;
 	
@@ -122,12 +123,12 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 
 		modeCombobox = new Combobox();
 		modeCombobox.setSclass("date-picker-component");
-		modeCombobox.setWidth("90px");
+		modeCombobox.setWidth("120px");
 		modeCombobox.addEventListener(Events.ON_SELECT, this);
 		
 		numberBox = new Spinner(1);
 		numberBox.setConstraint("no empty, min 1");
-		numberBox.setStyle("margin: 5px;");
+		numberBox.setSclass("date-picker-component");
 		numberBox.addEventListener(Events.ON_CHANGING, this);
 
 		unitCombobox = new Combobox();
@@ -153,6 +154,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		
 		okBtn.setSclass("date-picker-component");
 		okBtn.addEventListener(Events.ON_CLICK, event -> {
+			setDateTextBoxAndDisplayValue();
 			if(dateFrom != null && dateTo != null && dateTo.before(dateFrom))
 				throw new WrongValueException(dateTextBox, Msg.getMsg(Env.getCtx(), "EndDateAfterStartDate"));
 			setTimesOnDates();
@@ -171,16 +173,16 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		quickListBoxes.appendChild(getQuickModeContent());
 		
 		// Load Modes to ListBox
-		ComboItem selectedOnOpen = null; 
+		ComboItem defaultSelectedItem = null; 
 		ValueNamePair[] modes = MRefList.getList(Env.getCtx(), REFERENCE_DATESELECTIONMODE, false, "Value");
 		for(ValueNamePair mode : modes) {
 			ComboItem item = new ComboItem(mode.getName(), mode.getValue());
-			if(mode.getValue().equalsIgnoreCase(DATESELECTIONMODE_CURRENT))
-				selectedOnOpen = item;
+			if(mode.getValue().equalsIgnoreCase(DATESELECTIONMODE_CURRENT))	// select 'Current' as default mode
+				defaultSelectedItem = item;
 			modeCombobox.appendChild(item);
 		}
-		if(selectedOnOpen != null)
-			modeCombobox.setSelectedItem(selectedOnOpen);
+		if(defaultSelectedItem != null)
+			modeCombobox.setSelectedItem(defaultSelectedItem);
 		else
 			modeCombobox.setSelectedIndex(0);
 		
@@ -188,12 +190,12 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		ValueNamePair[] units = MRefList.getList(Env.getCtx(), REFERENCE_TIMEUNIT, false);
 		for(ValueNamePair timeUnit : units) {
 			ComboItem item = new ComboItem(timeUnit.getName(), timeUnit.getValue());
-			if(timeUnit.getValue().equalsIgnoreCase(MChart.TIMEUNIT_Month))
-				selectedOnOpen = item;
+			if(timeUnit.getValue().equalsIgnoreCase(MChart.TIMEUNIT_Month))	// select 'Month' as default unit
+				defaultSelectedItem = item;
 			unitCombobox.appendChild(item);
 		}
-		if(selectedOnOpen != null)
-			unitCombobox.setSelectedItem(selectedOnOpen);
+		if(defaultSelectedItem != null)
+			unitCombobox.setSelectedItem(defaultSelectedItem);
 		else
 			modeCombobox.setSelectedIndex(0);
 		
@@ -222,7 +224,10 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		
 		this.setStyle("min-width: 320px;");
 		updateUI();
-		setDisplayValue();
+		setDateTextBoxAndDisplayValue();
+		
+		// load default values
+		displayValue = getDisplayValueFromEditors();
 	}
 
 	private void updateUI() {
@@ -292,31 +297,26 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		
 		dateTextBox.clearErrorMessage();
 		if(!Util.isEmpty(dateTextBox.getValue()) || !event.getTarget().equals(dateTextBox))
-			setDisplayValue();
+			setDateTextBoxAndDisplayValue();
 	}
 	
-	private void setDisplayValue() {
-		String displayValue = getDisplayValue();
-		dateTextBox.setValue(displayValue);
+	private void setDateTextBoxAndDisplayValue() {
+		String dateTextBoxValue = getDateTextBoxValue();
+		dateTextBox.setValue(dateTextBoxValue);
 	}
 
-	private String getDisplayValue() {
+	private String getDateTextBoxValue() {
+		displayValue = "";
 		String returnVal = "";
-		Timestamp ts = new Timestamp(cal.getValue().getTime());
+		
 		switch (modeCombobox.getSelectedItem().getValue().toString()) {
-			case DATESELECTIONMODE_AFTER:
-				returnVal = Msg.getMsg(Env.getCtx(), "AfterDate", new Object[] {DisplayType.getDateFormat().format(ts)});
-				oldValueFrom = dateFrom;
-				oldValueTo = dateTo;
-				dateFrom = ts;
-				dateTo = null;
-				break;
+			case DATESELECTIONMODE_PREVIOUS:
+			case DATESELECTIONMODE_NEXT:
+			case DATESELECTIONMODE_CURRENT:
 			case DATESELECTIONMODE_BEFORE:
-				returnVal = Msg.getMsg(Env.getCtx(), "BeforeDate", new Object[] {DisplayType.getDateFormat().format(ts)});
-				oldValueFrom = dateFrom;
-				oldValueTo = dateTo;
-				dateFrom = null;
-				dateTo = ts;
+			case DATESELECTIONMODE_AFTER:
+			case DATESELECTIONMODE_ON:
+				returnVal = getIntervalHumanReadable();
 				break;
 			case DATESELECTIONMODE_BETWEEN:
 				returnVal = DisplayType.getDateFormat().format(cal.getValue()) + " - " + DisplayType.getDateFormat().format(cal2.getValue());
@@ -324,18 +324,6 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 				oldValueTo = dateTo;
 				dateFrom = new Timestamp(cal.getValue().getTime());
 				dateTo = new Timestamp(cal2.getValue().getTime());
-				break;
-			case DATESELECTIONMODE_CURRENT:
-			case DATESELECTIONMODE_NEXT:
-			case DATESELECTIONMODE_PREVIOUS:
-				returnVal = getInterval();
-				break;
-			case DATESELECTIONMODE_ON:
-				returnVal = Msg.getMsg(Env.getCtx(), "OnDate", new Object[] {DisplayType.getDateFormat().format(ts)});
-				oldValueFrom = dateFrom;
-				oldValueTo = dateTo;
-				dateFrom = ts;
-				dateTo = ts;
 				break;
 			case DATESELECTIONMODE_QUICK:
 				if(selectedQuickListItem != null) {
@@ -353,11 +341,38 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 			default:
 				throw new AdempiereException("InvalidDateSelectionMode");
 		}
+		if(Util.isEmpty(displayValue))
+			displayValue = returnVal;
+		
 		return returnVal;
 	}
 	
-	private String getInterval() {
+	public String getDisplayValueFromEditors() {
+		Timestamp value = (Timestamp) editor.getValue();
+		Timestamp value2 = (Timestamp) editor2.getValue();
+		String sValue = null;
+		String sValue2 = null;
+
+		if(value != null)
+			sValue = DisplayType.getDateFormat().format((Timestamp) editor.getValue());
+		if(value2 != null)
+			sValue2 = DisplayType.getDateFormat().format((Timestamp) editor2.getValue());
+
+		if(value == null && value2 == null)
+			return "";
+		else if(value == null && value2 != null)
+			return Msg.getMsg(Env.getCtx(), "BeforeDate", new Object[] {sValue2});
+		else if(value != null && value2 == null)
+			return Msg.getMsg(Env.getCtx(), "AfterDate", new Object[] {sValue});
+		else if(value.equals(value2))
+			return Msg.getMsg(Env.getCtx(), "OnDate", new Object[] {sValue});
+		else
+			return DisplayType.getDateFormat().format(value) + " - " + DisplayType.getDateFormat().format(value2);
+	}
+
+	private String getIntervalHumanReadable() {
 		
+		Timestamp ts = new Timestamp(cal.getValue().getTime());
 		String mode = modeCombobox.getSelectedItem().getValue().toString();
 		String unit = unitCombobox.getSelectedItem().getValue().toString();
 		Integer numBoxValue = numberBox.getValue();
@@ -366,6 +381,31 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		if(numBoxValue == null) {
 			numBoxValue = 0;
 			numberBox.setValue(numBoxValue);
+		}
+		
+		if(mode.equalsIgnoreCase(DATESELECTIONMODE_AFTER)) {
+			displayValue = Msg.getMsg(Env.getCtx(), "AfterDate", new Object[] {DisplayType.getDateFormat().format(ts)});
+			oldValueFrom = dateFrom;
+			oldValueTo = dateTo;
+			dateFrom = ts;
+			dateTo = null;
+			return displayValue;
+		}
+		else if(mode.equalsIgnoreCase(DATESELECTIONMODE_BEFORE)) {
+			displayValue = Msg.getMsg(Env.getCtx(), "BeforeDate", new Object[] {DisplayType.getDateFormat().format(ts)});
+			oldValueFrom = dateFrom;
+			oldValueTo = dateTo;
+			dateFrom = null;
+			dateTo = ts;
+			return displayValue;
+		}
+		else if(mode.equalsIgnoreCase(DATESELECTIONMODE_ON)) {
+			displayValue = Msg.getMsg(Env.getCtx(), "OnDate", new Object[] {DisplayType.getDateFormat().format(ts)});
+			oldValueFrom = dateFrom;
+			oldValueTo = dateTo;
+			dateFrom = ts;
+			dateTo = ts;
+			return displayValue;
 		}
 		
 		if(mode.equalsIgnoreCase(DATESELECTIONMODE_PREVIOUS))
@@ -380,6 +420,8 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		oldValueTo = dateTo;
 		dateFrom = new Timestamp(dates[0].getTime());
 		dateTo = new Timestamp(dates[1].getTime());
+		
+		displayValue = datesToHumanReadable(mode, unit, numBoxValue);
 		return DisplayType.getDateFormat().format(dateFrom) + " - " + DisplayType.getDateFormat().format(dateTo);
 	}
 
@@ -503,6 +545,36 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		return new Date[] {date1, date2};
 	}
 
+	private String datesToHumanReadable(String mode, String unit, Integer numBoxValue) {
+		String msgVal = "";
+
+		if(numBoxValue < 0)
+			numBoxValue = -numBoxValue;
+		if(mode.equalsIgnoreCase(DATESELECTIONMODE_CURRENT))
+			numBoxValue = -1;
+		
+		switch (unit) {
+			case MChart.TIMEUNIT_Day:
+				msgVal = "DatePickerDay";
+				break;
+			case MChart.TIMEUNIT_Month:
+				msgVal = "DatePickerMonth";
+				break;
+			case MChart.TIMEUNIT_Quarter:
+				msgVal = "DatePickerQuarter";
+				break;
+			case MChart.TIMEUNIT_Week:
+				msgVal = "DatePickerWeek";
+				break;
+			case MChart.TIMEUNIT_Year:
+				msgVal = "DatePickerYear";
+				break;
+			default:
+				throw new AdempiereException("TimeUnitNotSupported");
+		}
+		return Msg.getMsg(Env.getCtx(), msgVal, new Object[]{modeCombobox.getSelectedItem().getLabel(), numBoxValue});
+	}
+	
 	private void setTimesOnDates() {
 		Calendar cal = Calendar.getInstance(Env.getLocale(Env.getCtx()));
 		if(dateFrom != null) {
@@ -688,5 +760,13 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 	 */
 	public Date getOldValueTo() {
 		return oldValueTo;
+	}
+	
+	/**
+	 * Get Display Value
+	 * @return String
+	 */
+	public String getValue() {
+		return this.displayValue;
 	}
 }

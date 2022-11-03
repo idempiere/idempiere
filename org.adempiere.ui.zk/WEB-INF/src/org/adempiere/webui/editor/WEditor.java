@@ -43,6 +43,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeEditor;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -109,6 +110,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	private String sValidInput;
 	
 	private final List<DynamicDisplayListener> dynamicDisplayListeners = new ArrayList<>();
+	
+	private DateRangeEditor dateRangeEditor;
 
 	/**
 	 * call to show context menu of this field.
@@ -461,7 +464,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     	return listeners.remove(listener);
     }
 
-    protected void fireValueChange(ValueChangeEvent event)
+    public void fireValueChange(ValueChangeEvent event)
     {
     	//copy to array to avoid concurrent modification exception
     	ValueChangeListener[] vcl = new ValueChangeListener[listeners.size()];
@@ -1008,5 +1011,21 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 		 * @param editor
 		 */
 		void onDynamicDisplay(Properties ctx, WEditor editor);
+	}
+	
+	/**
+	* Get Date Range Editor if available
+	* @return DateRangeEditor
+	*/
+	public DateRangeEditor getDateRangeEditor() {
+		return dateRangeEditor;
+	}
+	
+	/**
+	* Set Date Range Editor
+	* @param DateRangeEditor
+	*/
+	public void setDateRangeEditor(DateRangeEditor dateRangeEditor) {
+		this.dateRangeEditor = dateRangeEditor;
 	}
 }
