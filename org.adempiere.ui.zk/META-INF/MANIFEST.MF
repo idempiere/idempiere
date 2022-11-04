@@ -78,7 +78,18 @@ DynamicImport-Package: action.images
 Bundle-ClassPath: .,
  lib/ckez.jar,
  lib/daisydiff.jar,
- lib/owasp-java-html-sanitizer.jar
+ lib/owasp-java-html-sanitizer.jar,
+ lib/asm.jar,
+ lib/common-2.48.jar,
+ lib/content-type.jar,
+ lib/jackson-annotations.jar,
+ lib/jackson-core.jar,
+ lib/jackson-databind.jar,
+ lib/json-smart.jar,
+ lib/msal4j.jar,
+ lib/nimbus-jose-jwt.jar,
+ lib/oauth2-oidc-sdk.jar,
+ lib/slf4j-api.jar
 Export-Package: fi.jawsy.jawwa.zk.atmosphere,
  metainfo.zk,
  org.adempiere.webui,
@@ -214,7 +225,7 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.base.process,
  com.github.librepdf.openpdf;bundle-version="1.3.26",
  com.github.librepdf.openpdf-fonts-extra;bundle-version="1.3.26",
- org.idempiere.zk.billboard
+ org.idempiere.zk.billboard;resolution:=optional
 Bundle-Activator: org.adempiere.webui.WebUIActivator
 Eclipse-ExtensibleAPI: true
 Web-ContextPath: webui

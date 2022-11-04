@@ -1628,7 +1628,8 @@ public class Login
 			.append("FROM AD_User u")
 			.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
 			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
-		sql.append("WHERE u.Password IS NOT NULL AND ur.AD_Client_ID=? AND ");		
+		//sql.append("WHERE u.Password IS NOT NULL AND ur.AD_Client_ID=? AND ");
+		sql.append("WHERE ur.AD_Client_ID=? AND ");
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		if (email_login)
 			sql.append("u.EMail=?");
@@ -1752,6 +1753,267 @@ public class Login
 		if (MMFARegistration.userHasValidRegistration())
 			return true;
 		return false;
+	}
+	
+	public KeyNamePair[] getClientsSSO(String app_user, String roleTypes) {
+		if (log.isLoggable(Level.INFO)) log.info("User=" + app_user);
+
+		if (Util.isEmpty(app_user))
+		{
+			log.warning("No Apps User");
+			return null;
+		}
+
+		//	Authentication
+		boolean authenticated = false;
+		MSystem system = MSystem.get(m_ctx);
+		if (system == null)
+			throw new IllegalStateException("No System Info");
+		
+		loginErrMsg = null;
+		isPasswordExpired = false;
+
+		//boolean hash_password = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false);
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+		KeyNamePair[] retValue = null;
+		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
+		ArrayList<Integer> clientsValidated = new ArrayList<Integer>();
+
+		//StringBuilder where = new StringBuilder("Password IS NOT NULL AND ");
+		StringBuilder where = new StringBuilder("");
+		if (email_login)
+			where.append("EMail=?");
+		else
+			where.append("COALESCE(LDAPUser,Name)=?");
+		String whereRoleType = MRole.getWhereRoleType(roleTypes, "r");
+		where.append(" AND")
+				.append(" EXISTS (SELECT * FROM AD_User_Roles ur")
+				.append("         INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID)")
+				.append("         WHERE ur.AD_User_ID=AD_User.AD_User_ID AND ur.IsActive='Y' AND r.IsActive='Y'");
+		if (! Util.isEmpty(whereRoleType)) {
+			where.append(" AND ").append(whereRoleType);
+		}
+		where.append(") AND ")
+				.append(" EXISTS (SELECT * FROM AD_Client c")
+				.append("         WHERE c.AD_Client_ID=AD_User.AD_Client_ID")
+				.append("         AND c.IsActive='Y') AND ")
+				.append(" AD_User.IsActive='Y'");
+		
+		List<MUser> users = null;
+		try {
+			PO.setCrossTenantSafe();
+			users = new Query(m_ctx, MUser.Table_Name, where.toString(), null)
+					.setParameters(app_user)
+					.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
+					.list();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
+		
+		if (users.size() == 0) {
+			log.saveError("UserPwdError", app_user, false);
+			return null;
+		}
+
+		int MAX_ACCOUNT_LOCK_MINUTES = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES, 0);
+		int MAX_INACTIVE_PERIOD_DAY = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_INACTIVE_PERIOD_DAY, 0);
+		int MAX_PASSWORD_AGE = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_PASSWORD_AGE_DAY, 0);
+		long now = new Date().getTime();
+		for (MUser user : users) {
+			if (MAX_ACCOUNT_LOCK_MINUTES > 0 && user.isLocked() && user.getDateAccountLocked() != null)
+			{
+				long minutes = (now - user.getDateAccountLocked().getTime()) / (1000 * 60);
+				if (minutes > MAX_ACCOUNT_LOCK_MINUTES)
+				{
+					boolean inactive = false;
+					if (MAX_INACTIVE_PERIOD_DAY > 0 && user.getDateLastLogin() != null && !user.isNoExpire())
+					{
+						long days = (now - user.getDateLastLogin().getTime()) / (1000 * 60 * 60 * 24);
+						if (days > MAX_INACTIVE_PERIOD_DAY)
+							inactive = true;
+					}
+					
+					if (!inactive)
+					{
+						user.setIsLocked(false);
+						user.setDateAccountLocked(null);
+						user.setFailedLoginCount(0);
+						Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, user.getAD_Client_ID());
+						if (!user.save())
+							log.severe("Failed to unlock user account");
+					}
+				}					
+			}
+			
+			if (MAX_INACTIVE_PERIOD_DAY > 0 && !user.isLocked() && user.getDateLastLogin() != null && !user.isNoExpire())
+			{
+				long days = (now - user.getDateLastLogin().getTime()) / (1000 * 60 * 60 * 24);
+				if (days > MAX_INACTIVE_PERIOD_DAY)
+				{
+					user.setIsLocked(true);
+					user.setDateAccountLocked(new Timestamp(now));
+					Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, user.getAD_Client_ID());
+					if (!user.save())
+						log.severe("Failed to lock user account");
+				}
+			}
+		}
+		
+		boolean validButLocked = false;
+		for (MUser user : users) {
+			if (clientsValidated.contains(user.getAD_Client_ID())) {
+				log.severe("Two users with password with the same name/email combination on same tenant: " + app_user);
+				return null;
+			}
+			clientsValidated.add(user.getAD_Client_ID());
+			boolean valid = false;
+			// authenticated by ldap
+			if (authenticated) {
+				valid = true;
+			} else {
+				valid = true;
+			}
+			
+			if (valid ) {
+				if (user.isLocked())
+				{
+					validButLocked = true;
+					continue;
+				}
+				
+				if (authenticated){
+					// use Ldap because don't check password age
+				}
+				else if (user.isExpired())
+					isPasswordExpired = true;
+				else if (MAX_PASSWORD_AGE > 0 && !user.isNoPasswordReset())
+				{
+					if (user.getDatePasswordChanged() == null)
+						user.setDatePasswordChanged(new Timestamp(now));
+					
+					long days = (now - user.getDatePasswordChanged().getTime()) / (1000 * 60 * 60 * 24);
+					if (days > MAX_PASSWORD_AGE)
+					{
+						user.setIsExpired(true);
+						isPasswordExpired = true;
+					}
+				}
+												
+				StringBuilder sql= new StringBuilder("SELECT  DISTINCT cli.AD_Client_ID, cli.Name, u.AD_User_ID, u.Name");
+			      sql.append(" FROM AD_User_Roles ur")
+                   .append(" INNER JOIN AD_User u on (ur.AD_User_ID=u.AD_User_ID)")
+                   .append(" INNER JOIN AD_Client cli on (ur.AD_Client_ID=cli.AD_Client_ID)")
+                   .append(" WHERE ur.IsActive='Y'")
+                   .append(" AND u.IsActive='Y'")
+                   .append(" AND cli.IsActive='Y'")
+                   .append(" AND ur.AD_User_ID=? ORDER BY cli.Name");
+			      PreparedStatement pstmt=null;
+			      ResultSet rs=null;
+			      try{
+			    	  pstmt=DB.prepareStatement(sql.toString(),null);
+			    	  pstmt.setInt(1, user.getAD_User_ID());
+			    	  rs=pstmt.executeQuery();
+		
+			    	  while (rs.next() && rs!=null){
+			    		  int AD_Client_ID=rs.getInt(1);
+			    		  String Name=rs.getString(2);
+			    		  KeyNamePair p = new KeyNamePair(AD_Client_ID,Name);
+				          clientList.add(p);
+			    	  }
+			        }catch (SQLException ex)
+					{
+						log.log(Level.SEVERE, sql.toString(), ex);
+						retValue = null;
+					}
+					finally
+					{
+						DB.close(rs, pstmt);
+						rs = null; pstmt = null;
+					}			  
+			}
+		}
+		if (clientList.size() > 0)
+			authenticated=true;
+
+		if (authenticated) {
+			if (Ini.isClient())
+			{
+				if (MSystem.isSwingRememberUserAllowed())
+					Ini.setProperty(Ini.P_UID, app_user);
+				else
+					Ini.setProperty(Ini.P_UID, "");
+
+			}
+			retValue = new KeyNamePair[clientList.size()];
+			clientList.toArray(retValue);
+			if (log.isLoggable(Level.FINE)) log.fine("User=" + app_user + " - roles #" + retValue.length);
+			
+			for (MUser user : users) 
+			{
+				user.setFailedLoginCount(0);
+				user.setDateLastLogin(new Timestamp(now));
+				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, user.getAD_Client_ID());
+				if (!user.save())
+					log.severe("Failed to update user record with date last login (" + user.getName() + " / clientID = " + user.getAD_Client_ID() + ")");
+			}
+		}
+		else if (validButLocked)
+		{
+			// User account ({0}) is locked, please contact the system administrator
+			loginErrMsg = Msg.getMsg(m_ctx, "UserAccountLocked", new Object[] {app_user});
+		}
+		else 
+		{
+			boolean foundLockedAccount = false;
+			for (MUser user : users) 
+			{
+				if (user.isLocked())
+				{
+					foundLockedAccount = true;
+					continue;
+				}
+				
+				int count = user.getFailedLoginCount() + 1;
+				
+				boolean reachMaxAttempt = false;
+				int MAX_LOGIN_ATTEMPT = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_LOGIN_ATTEMPT, 0);
+				if (MAX_LOGIN_ATTEMPT > 0 && count >= MAX_LOGIN_ATTEMPT)
+				{
+					// Reached the maximum number of login attempts, user account ({0}) is locked
+					loginErrMsg = Msg.getMsg(m_ctx, "ReachedMaxLoginAttempts", new Object[] {app_user});
+					reachMaxAttempt = true;
+				}
+				else if (MAX_LOGIN_ATTEMPT > 0)
+				{
+					if (count == MAX_LOGIN_ATTEMPT -1){ 
+						// Invalid User ID or Password (Login Attempts: {0} / {1})
+						loginErrMsg = Msg.getMsg(m_ctx, "FailedLoginAttempt", new Object[] {count, MAX_LOGIN_ATTEMPT});
+						reachMaxAttempt = false;
+					}else{
+						loginErrMsg = Msg.getMsg(m_ctx,"FailedLogin", true);
+					}
+				
+				}
+				else
+				{
+					reachMaxAttempt = false;
+				}
+				
+				user.setFailedLoginCount(count);
+				user.setIsLocked(reachMaxAttempt);
+				user.setDateAccountLocked(user.isLocked() ? new Timestamp(now) : null);
+				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, user.getAD_Client_ID());
+				if (!user.save())
+					log.severe("Failed to update user record with increase failed login count");
+			}
+			
+			if (loginErrMsg == null && foundLockedAccount)
+			{
+				// User account ({0}) is locked, please contact the system administrator
+				loginErrMsg = Msg.getMsg(m_ctx, "UserAccountLocked", new Object[] {app_user});				
+			}
+		}
+		return retValue;
 	}
 
 }	//	Login

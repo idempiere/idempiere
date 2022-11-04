@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.idempiere</groupId>
@@ -36,6 +35,56 @@
 									<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
 									<artifactId>owasp-java-html-sanitizer</artifactId>
 									<version>20200713.1</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.microsoft.azure</groupId>
+									<artifactId>msal4j</artifactId>
+									<version>1.11.3</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.nimbusds</groupId>
+									<artifactId>oauth2-oidc-sdk</artifactId>
+									<version>9.35</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.nimbusds</groupId>
+									<artifactId>content-type</artifactId>
+									<version>2.2</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.slf4j</groupId>
+									<artifactId>slf4j-api</artifactId>
+									<version>1.7.36</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.nimbusds</groupId>
+									<artifactId>nimbus-jose-jwt</artifactId>
+									<version>9.22</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>net.minidev</groupId>
+									<artifactId>json-smart</artifactId>
+									<version>2.4.8</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.fasterxml.jackson.core</groupId>
+									<artifactId>jackson-annotations</artifactId>
+									<version>2.13.2</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.fasterxml.jackson.core</groupId>
+									<artifactId>jackson-core</artifactId>
+									<version>2.13.2</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.fasterxml.jackson.core</groupId>
+									<artifactId>jackson-databind</artifactId>
+									<version>2.13.2.2</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>net.minidev</groupId>
+									<artifactId>asm</artifactId>
+									<version>1.0.2</version>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>

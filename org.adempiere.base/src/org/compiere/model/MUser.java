@@ -1047,7 +1047,8 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			.append("FROM AD_User u")
 			.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
 			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
-		sql.append("WHERE u.Password IS NOT NULL AND ur.AD_Client_ID=? AND ");		//	#1/2
+		//sql.append("WHERE u.Password IS NOT NULL AND ur.AD_Client_ID=? AND ");		//	#1/2
+		sql.append("WHERE ur.AD_Client_ID=? AND ");
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		if (email_login)
 			sql.append("u.EMail=?");
