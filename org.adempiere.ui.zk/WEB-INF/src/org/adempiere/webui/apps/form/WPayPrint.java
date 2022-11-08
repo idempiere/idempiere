@@ -577,7 +577,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	{
 		AtomicReference<ValueNamePair> error = new AtomicReference<>();
 		
-		boolean ok = getChecks(PaymentRule, fDocumentNo.getValue(), error, PaymentRule);
+		boolean ok = getChecks(PaymentRule, fDocumentNo.getValue(), error, null);
 		if (!ok) 
 		{
 			if (error.get() != null)
