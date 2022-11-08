@@ -36,6 +36,7 @@ import java.util.Map;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
+import org.compiere.model.MRole;
 import org.compiere.model.PO;
 import org.compiere.util.KeyNamePair;
 
@@ -101,14 +102,36 @@ public class MiniTableImpl implements IMiniTable {
 		m_layout = layout;
 		m_tableColumns.clear();
 		model.clear();
+		StringBuilder sql = new StringBuilder ("SELECT ");
 		for (int columnIndex = 0; columnIndex < layout.length; columnIndex++) {
+			//  create sql
+            if (columnIndex > 0)
+            {
+                sql.append(", ");
+            }
+            sql.append(layout[columnIndex].getColSQL());
+
+            //  adding ID column
+            if (layout[columnIndex].isKeyPairCol())
+            {
+                sql.append(",").append(layout[columnIndex].getKeyPairColSQL());
+            }
+            
 			addColumn(layout[columnIndex].getColHeader(), layout[columnIndex].getColDescription(), layout[columnIndex].getAD_Reference_ID(), layout[columnIndex].getColClass());
 			if (layout[columnIndex].getColClass() == IDColumn.class)
             {
                 m_keyColumnIndex = columnIndex;
             }
 		}
-		return null;
+		
+		sql.append( " FROM ").append(from);
+	    sql.append(" WHERE ").append(where);
+		
+        String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
+                                                    tableName,
+                                                    MRole.SQL_FULLYQUALIFIED,
+                                                    MRole.SQL_RO);
+        return finalSQL;
 	}
 
 	@Override
