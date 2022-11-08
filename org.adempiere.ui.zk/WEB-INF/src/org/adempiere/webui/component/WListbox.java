@@ -459,7 +459,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
                                                         MRole.SQL_FULLYQUALIFIED,
                                                         MRole.SQL_RO);
 
-            logger.finest(finalSQL);
+            if (logger.isLoggable(Level.FINEST)) logger.finest(finalSQL);
 
             return finalSQL;
         }
