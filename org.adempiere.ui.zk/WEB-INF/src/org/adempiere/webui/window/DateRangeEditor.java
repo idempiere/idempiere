@@ -95,8 +95,7 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 
 		Button btn = popup.getUpdateButton();
 		btn.addEventListener(Events.ON_CLICK, e -> {
-			this.fireValueChangeEvent();
-			textbox.setValue(popup.getValue());
+			textbox.setValue(popup.getDisplayValue());
 		});
 		editor.addValueChangeListener(this);
 		editor2.addValueChangeListener(this);
@@ -105,7 +104,7 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 
 	@Override
 	public void valueChange(ValueChangeEvent evt) {
-		textbox.setValue(popup.getDisplayValueFromEditors());
+		textbox.setValue(popup.getDisplayValue());
 	}
 
 	/**
@@ -127,13 +126,6 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 	private boolean isNullOrEmpty(WEditor editor) {
 		Object value = editor.getValue();
 		return value == null || value.toString().trim().length() == 0;
-	}
-
-	private void fireValueChangeEvent() {
-		ValueChangeEvent changeEvent = new ValueChangeEvent(this, editor.getColumnName(), popup.getOldValueFrom(), popup.getValueFrom());
-		editor.fireValueChange(changeEvent);
-		changeEvent = new ValueChangeEvent(this, editor2.getColumnName(), popup.getOldValueTo(), popup.getValueTo());
-		editor2.fireValueChange(changeEvent);
 	}
 
 	/**

@@ -149,6 +149,7 @@ public class ProcessParameterPanel extends Panel implements
 	private ArrayList<GridField> m_mFields2 = new ArrayList<GridField>();
 	private ArrayList<Space> m_separators = new ArrayList<Space>();
 	private ArrayList<Row> m_Rows = new ArrayList<Row>();
+	private ArrayList<DateRangeEditor> m_dateRangeEditors = new ArrayList<DateRangeEditor>();
 	//
 	private Grid centerPanel = null;
 	private Map<String, List<Row>> fieldGroupContents = new HashMap<String, List<Row>>();
@@ -470,7 +471,7 @@ public class ProcessParameterPanel extends Panel implements
 				DateRangeButton dateRangeButton = new DateRangeButton(editor, editor2);
 				box.appendChild(dateRangeButton);
 			}
-			else if(mField.getDisplayType() == DisplayType.DateRangePicker) {
+			if(mField.getDisplayType() == DisplayType.DateRangePicker) {
 				editor.setVisible(false, true);
 				editor2.setVisible(false, true);
 				DateRangeEditor dateRangeEditor = new DateRangeEditor(editor, editor2, true);
@@ -478,13 +479,17 @@ public class ProcessParameterPanel extends Panel implements
 				dateRangeEditor.setVisible(mField.isDisplayed(true));
 				label.setVisible(dateRangeEditor.isVisible());
 				dateRangeEditor.setReadOnly(!(editor.isReadWrite() && editor2.isReadWrite()));
-				editor.setDateRangeEditor(dateRangeEditor);
+				m_dateRangeEditors.add(dateRangeEditor);
+			}
+			else {
+				m_dateRangeEditors.add(null);
 			}
 		} else {
 			row.appendChild(editor.getComponent());
 			m_mFields2.add(null);
 			m_wEditors2.add(null);
 			m_separators.add(null);
+			m_dateRangeEditors.add(null);
 		}
 	} // createField
 
@@ -890,10 +895,6 @@ public class ProcessParameterPanel extends Panel implements
 		String propName = evt.getPropertyName();
 		if (evt.getSource() instanceof WEditor) {
 			WEditor editor = (WEditor) evt.getSource();
-			if(editor.getDateRangeEditor() != null) {
-				DateRangeEditor dateRangeEditor = editor.getDateRangeEditor();
-				dateRangeEditor.valueChange(evt);
-			}
 			if (m_wEditors2.contains(editor)) {
 				// is a _To editor for ranges
 				propName += "_2";  // same as web services
@@ -1054,17 +1055,19 @@ public class ProcessParameterPanel extends Panel implements
 			}
 			// Handle Dynamic Display for Date Range Picker
 			if(mField.getDisplayType() == DisplayType.DateRangePicker) {
-				DateRangeEditor dateRangeEditor = editor.getDateRangeEditor();
-				dateRangeEditor.setVisible(editor.isVisible());
-				m_Rows.get(i).setVisible(editor.isVisible());
-				m_Rows.get(i).setAttribute(Group.GROUP_ROW_VISIBLE_KEY, editor.isVisible());
-				editor.setVisible(false, true);
-				if (mField.getVO().isRange) {
-					m_separators.get(i).setVisible(false);
-					m_wEditors2.get(i).setVisible(false ,true);
+				DateRangeEditor dateRangeEditor = m_dateRangeEditors.get(i);
+				if(dateRangeEditor != null) {
+					dateRangeEditor.setVisible(editor.isVisible());
+					m_Rows.get(i).setVisible(editor.isVisible());
+					m_Rows.get(i).setAttribute(Group.GROUP_ROW_VISIBLE_KEY, editor.isVisible());
+					editor.setVisible(false, true);
+					if (mField.getVO().isRange) {
+						m_separators.get(i).setVisible(false);
+						m_wEditors2.get(i).setVisible(false ,true);
+					}
+					dateRangeEditor.setFieldMandatoryStyle();
+					dateRangeEditor.setReadOnly(!(editor.isReadWrite() && m_wEditors2.get(i).isReadWrite()));
 				}
-				dateRangeEditor.setFieldMandatoryStyle();
-				dateRangeEditor.setReadOnly(!(editor.isReadWrite() && m_wEditors2.get(i).isReadWrite()));
 			}
 		}
 		if (getParent() != null) {
