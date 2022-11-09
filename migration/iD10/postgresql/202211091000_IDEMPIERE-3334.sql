@@ -7,10 +7,12 @@ context := any global or window context <br>
 value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
-Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+Examples:  <br>
+<ul>
+<li> @AD_Table_ID@=14 | @Language@!GERGER</li>
+<li> @PriceLimit@>10 | @PriceList@>@PriceActual@</li>
+<li> @Name@>J</li>
+</ul>
 Strings may be in single quotes (optional)',200003,'ReadOnlyLogic',2000,'N','N','N','N','N',0,'N',14,0,0,'Y',TO_TIMESTAMP('2017-04-07 09:46:14','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2017-04-07 09:46:14','YYYY-MM-DD HH24:MI:SS'),100,1663,'Y','N','D','N','N','N','Y','2c970c5d-b093-4b8a-b7df-da5260cb3afc','Y',0,'N','N')
 ;
 
@@ -42,10 +44,12 @@ context := any global or window context <br>
 value := strings or numbers<br>
 logic operators	:= AND or OR with the previous result from left to right <br>
 operand := eq{=}, gt{&gt;}, le{&lt;}, not{~^!} <br>
-Examples: <br>
-@AD_Table_ID@=14 | @Language@!GERGER <br>
-@PriceLimit@>10 | @PriceList@>@PriceActual@<br>
-@Name@>J<br>
+Examples:  <br>
+<ul>
+<li> @AD_Table_ID@=14 | @Language@!GERGER</li>
+<li> @PriceLimit@>10 | @PriceList@>@PriceActual@</li>
+<li> @Name@>J</li>
+</ul>
 Strings may be in single quotes (optional)',200002,212976,'Y','@IsCustomization@=Y',0,140,0,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2017-04-07 09:49:00','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2017-04-07 09:49:00','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','d721042e-1aa8-4c00-8c8c-615b7202bc7a','Y',140,1,1,1,'N','N','N')
 ;
 
@@ -65,6 +69,6 @@ UPDATE AD_Field SET SeqNo=130, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, 
 UPDATE AD_Field SET SeqNo=140, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2017-04-07 09:49:33','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202547
 ;
 
-SELECT register_migration_script('201704071000_IDEMPIERE-3334.sql') FROM dual
+SELECT register_migration_script('202211091000_IDEMPIERE-3334.sql') FROM dual
 ;
 
