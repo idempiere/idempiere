@@ -67,7 +67,7 @@ public class TimeUtilTest extends AbstractTestCase {
 			else
 				weekTarget = Timestamp.from(sdf.parse("2022-10-24 00:00:00.000").toInstant());
 			truncated = TimeUtil.trunc(source, TimeUtil.TRUNC_WEEK);
-			assertEquals(weekTarget, truncated, "TRUNC_WEEKnot working as expected");
+			assertEquals(weekTarget, truncated, "TRUNC_WEEK not working as expected");
 			
 			Timestamp monthTarget = Timestamp.from(sdf.parse("2022-10-01 00:00:00.000").toInstant());
 			truncated = TimeUtil.trunc(source, TimeUtil.TRUNC_MONTH);
