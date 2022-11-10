@@ -130,10 +130,14 @@ public class ReportCtl
 
 		MPInstance instance = new MPInstance(Env.getCtx(), pi.getAD_PInstance_ID(), null);
 
-		if (pi.getReportType() != null)
-			instance.setReportType(pi.getReportType());
 		if (pi.getSerializableObject() != null)
 			instance.setAD_PrintFormat_ID(((MPrintFormat)pi.getSerializableObject()).getAD_PrintFormat_ID());
+		
+		if (pi.getReportType() != null)
+			instance.setReportType(pi.getReportType());
+		else if(instance.getAD_PrintFormat_ID() > 0)
+			ReportEngine.setDefaultReportTypeToPInstance(Env.getCtx(), instance, instance.getAD_PrintFormat_ID());
+		
 		instance.setIsSummary(pi.isSummary());
 		instance.setAD_Language_ID(pi.getLanguageID());
 		instance.setIsProcessing(true);
