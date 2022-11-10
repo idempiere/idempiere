@@ -104,6 +104,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	private Date oldValueFrom;
 	private Date oldValueTo;
 	private String displayValue;
+	private boolean enableValueChange = true;
 
 	private ArrayList<Listbox> quickListBoxesArray = new ArrayList<Listbox>();
 	private ListItem selectedQuickListItem;
@@ -154,8 +155,9 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		dateTextBoxLabel.setSclass("date-picker-label");
 		
 		dateTextBox = new Textbox();
+		dateTextBox.setReadonly(true);
 		dateTextBox.setSclass("date-picker-component");
-		dateTextBox.setStyle("min-width: 170px;");
+		dateTextBox.setStyle("min-width: 170px; background: white !important");
 		dateTextBox.setValue(DisplayType.getDateFormat().format(cal.getValue()));
 		dateTextBox.addEventListener(Events.ON_CHANGE, this);
 		
@@ -170,8 +172,10 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 				dateFrom = null;
 				dateTo = null;
 			}
+			enableValueChange = false;
 			editor.setValue(dateFrom);
 			editor2.setValue(dateTo);
+			enableValueChange = true;
 			this.detach();
 		});
 		
@@ -184,6 +188,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			ComboItem item = new ComboItem(mode.getName(), mode.getValue());
 			modeCombobox.appendChild(item);
 		}
+		modeCombobox.setSelectedIndex(0);
 		
 		// Load Units to ListBox
 		ValueNamePair[] units = MRefList.getList(Env.getCtx(), REFERENCE_TIMEUNIT, false);
@@ -191,6 +196,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			ComboItem item = new ComboItem(timeUnit.getName(), timeUnit.getValue());
 			unitCombobox.appendChild(item);
 		}
+		unitCombobox.setSelectedIndex(0);
 		
 		div.setSclass("date-picker-container");
 		div.appendChild(modeCombobox);
@@ -320,8 +326,6 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		dateTextBox.clearErrorMessage();
 		if(!Util.isEmpty(dateTextBox.getValue()) || !event.getTarget().equals(dateTextBox)) {
 			setDateTextBoxAndDisplayValue();
-			cal.setValue(dateFrom);
-			cal2.setValue(dateTo);
 		}
 	}
 	
@@ -461,7 +465,12 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	}
 	
 	private String[] autodetectUnitAndCorrectMode(Timestamp today, String predictedMode) {
-		if(dateFrom == null || dateTo == null) // use case: modes Before, After, On - unit is not needed
+		// use case: modes Before, After, On - unit is not needed
+		Date d1 = dateFrom;
+		Date d2 = dateTo;
+		d1 = setTimesOnDates(d1, null)[0];
+		d2 = setTimesOnDates(d2, null)[0];
+		if(d1 == null || d2 == null || (d1.compareTo(d2) == 0))
 			return null;
 		
 		if(dateFrom.after(dateTo))
@@ -976,23 +985,23 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 
 	@Override
 	public void valueChange(ValueChangeEvent evt) {
-		dateFrom = (Date) editor.getValue();
-		dateTo = (Date) editor2.getValue();
-		if(dateFrom != null || dateTo != null) { // Set the picker to defined Default Logic
-			Date[] dates = setTimesOnDates(dateFrom, dateTo);
-			dateFrom = dates[0];
-			dateTo = dates[1];
-			loadPickerSelection();
- 		}
- 		else {
- 			// If no Default Logic defined, set Current Month as selected range
- 			setPickerSelection(DATESELECTIONMODE_CURRENT, MChart.TIMEUNIT_Month, 0);
- 			Date[] dates = setTimesOnDates(dateFrom, dateTo);
-			dateFrom = dates[0];
-			dateTo = dates[1];
- 			editor.setValue(dateFrom);
- 			editor2.setValue(dateTo);
- 		}
-		updateUI();
+		if(enableValueChange) {
+			dateFrom = (Date) editor.getValue();
+			dateTo = (Date) editor2.getValue();
+			if(dateFrom != null || dateTo != null) { // Set the picker to defined Default Logic
+				Date[] dates = setTimesOnDates(dateFrom, dateTo);
+				dateFrom = dates[0];
+				dateTo = dates[1];
+				loadPickerSelection();
+	 		}
+	 		else {
+	 			// If no Default Logic defined, set Current Month as selected range
+	 			setPickerSelection(DATESELECTIONMODE_CURRENT, MChart.TIMEUNIT_Month, 0);
+	 			Date[] dates = setTimesOnDates(dateFrom, dateTo);
+				dateFrom = dates[0];
+				dateTo = dates[1];
+	 		}
+			updateUI();
+		}
 	}
 }
