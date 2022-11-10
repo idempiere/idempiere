@@ -48,6 +48,7 @@
         <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
     </listAttribute>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
@@ -81,9 +82,12 @@
         <setEntry value="bctsp@default:default"/>
         <setEntry value="bcutil@default:default"/>
         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
-        <setEntry value="com.fasterxml.jackson.core.jackson-annotations@default:default"/>
-        <setEntry value="com.fasterxml.jackson.core.jackson-core@default:default"/>
-        <setEntry value="com.fasterxml.jackson.core.jackson-databind@default:default"/>
+        <setEntry value="com.fasterxml.jackson.core.jackson-annotations*2.12.4@default:default"/>
+        <setEntry value="com.fasterxml.jackson.core.jackson-annotations*2.13.4@default:default"/>
+        <setEntry value="com.fasterxml.jackson.core.jackson-core*2.12.4@default:default"/>
+        <setEntry value="com.fasterxml.jackson.core.jackson-core*2.13.4@default:default"/>
+        <setEntry value="com.fasterxml.jackson.core.jackson-databind*2.12.4@default:default"/>
+        <setEntry value="com.fasterxml.jackson.core.jackson-databind*2.13.4.2@default:default"/>
         <setEntry value="com.fasterxml.jackson.dataformat.jackson-dataformat-xml@default:default"/>
         <setEntry value="com.fasterxml.jackson.datatype.jackson-datatype-guava@default:default"/>
         <setEntry value="com.fasterxml.jackson.datatype.jackson-datatype-joda@default:default"/>
@@ -106,6 +110,8 @@
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.barbecue@default:default"/>
         <setEntry value="com.jaspersoft.studio.bundles.itext@default:default"/>
+        <setEntry value="com.nimbusds.content-type@default:default"/>
+        <setEntry value="com.nimbusds.nimbus-jose-jwt@default:default"/>
         <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.istack.commons-runtime@default:default"/>
         <setEntry value="com.sun.mail.gimap@default:default"/>
@@ -142,8 +148,14 @@
         <setEntry value="javax.websocket-api@default:default"/>
         <setEntry value="joda-time@default:default"/>
         <setEntry value="json@default:default"/>
+        <setEntry value="lang-tag@default:default"/>
+        <setEntry value="msal4j@default:true"/>
+        <setEntry value="net.minidev.accessors-smart@default:default"/>
+        <setEntry value="net.minidev.asm@default:default"/>
+        <setEntry value="net.minidev.json-smart@default:default"/>
         <setEntry value="net.sf.jasperreports.engine@default:default"/>
         <setEntry value="net.sf.supercsv.super-csv@default:default"/>
+        <setEntry value="oauth2-oidc-sdk@default:default"/>
         <setEntry value="org.antlr.antlr4-runtime@default:default"/>
         <setEntry value="org.apache.activemq.activemq-client@default:default"/>
         <setEntry value="org.apache.ant@default:default"/>
@@ -327,11 +339,11 @@
         <setEntry value="org.krysalis.barcode4j@default:default"/>
         <setEntry value="org.mortbay.jasper.apache-el@default:true"/>
         <setEntry value="org.mortbay.jasper.apache-jsp@default:true"/>
+        <setEntry value="org.objectweb.asm*9.2.0@default:default"/>
         <setEntry value="org.objectweb.asm.commons@default:default"/>
         <setEntry value="org.objectweb.asm.tree.analysis@default:default"/>
         <setEntry value="org.objectweb.asm.tree@default:default"/>
         <setEntry value="org.objectweb.asm.util@default:default"/>
-        <setEntry value="org.objectweb.asm@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
         <setEntry value="org.sat4j.pb@default:default"/>
@@ -344,6 +356,7 @@
         <setEntry value="slf4j.api*1.7.30@default:default"/>
         <setEntry value="slf4j.jcl@default:false"/>
         <setEntry value="stax2-api@default:default"/>
+        <setEntry value="wrapped.com.github.stephenc.jcip.jcip-annotations@default:default"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
         <setEntry value="wrapped.com.google.zxing.javase@default:default"/>
         <setEntry value="wrapped.com.sun.net.httpserver.http@default:default"/>
@@ -415,8 +428,6 @@
         <setEntry value="org.idempiere.keikai@default:false"/>
         <setEntry value="org.idempiere.printformat.editor@default:default"/>
         <setEntry value="org.idempiere.webservices@default:default"/>
-        <setEntry value="org.idempiere.zk.billboard.chart@default:default"/>
-        <setEntry value="org.idempiere.zk.billboard@default:false"/>
         <setEntry value="org.idempiere.zk.extra@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>

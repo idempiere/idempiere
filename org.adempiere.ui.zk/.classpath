@@ -10,15 +10,5 @@
 	<classpathentry exported="true" kind="lib" path="lib/ckez.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/daisydiff.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/owasp-java-html-sanitizer.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/msal4j.jar"/>
-	<classpathentry kind="lib" path="lib/content-type.jar"/>
-	<classpathentry kind="lib" path="lib/nimbus-jose-jwt.jar"/>
-	<classpathentry kind="lib" path="lib/oauth2-oidc-sdk.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api.jar"/>
-	<classpathentry kind="lib" path="lib/json-smart.jar"/>
-	<classpathentry kind="lib" path="lib/asm.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-annotations.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-core.jar"/>
-	<classpathentry kind="lib" path="lib/jackson-databind.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
