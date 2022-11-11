@@ -106,7 +106,7 @@ public class ProjectCreateAsset extends SvrProcess
 		
 		assetAdd.saveEx();
 		if (!assetAdd.processIt(DocAction.ACTION_Complete)) {
-			return "Error Process Asset Addition";
+			return "Error Process Asset Addition: " + assetAdd.getProcessMsg();
 		}
 		assetAdd.saveEx();
 		
