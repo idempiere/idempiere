@@ -42,6 +42,7 @@ import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListModelTable;
 import org.adempiere.webui.component.Menupopup;
+import org.adempiere.webui.component.NumberBox;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Tab;
@@ -127,6 +128,7 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Vlayout;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  * AD_InfoWindow implementation
@@ -1810,10 +1812,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         outerParent.setStyle("display: flex;");
         outerParent.appendChild(fieldEditor);
         if(fieldEditor2 != null) {
+		Label dash = new Label("-");
+			dash.setStyle("padding-left:3px;padding-right:3px;display:flex;align-items:center;");
+			outerParent.appendChild(dash);
         	outerParent.appendChild(fieldEditor2);
         	if(editor.getGridField() != null && DisplayType.isDate(editor.getGridField().getDisplayType())) {
         		DateRangeButton drb = (new DateRangeButton(editor, editor2));
         		outerParent.appendChild(drb);
+			drb.setDateButtonVisible(false);
+		}
+		if (fieldEditor instanceof InputElement && fieldEditor2 instanceof InputElement) {
+			((InputElement)fieldEditor).setPlaceholder(Msg.getMsg(Env.getCtx(), "From"));
+			((InputElement)fieldEditor2).setPlaceholder(Msg.getMsg(Env.getCtx(), "To"));
+		} else if (fieldEditor instanceof NumberBox && fieldEditor2 instanceof NumberBox) {
+			((NumberBox)fieldEditor).getDecimalbox().setPlaceholder(Msg.getMsg(Env.getCtx(), "From"));
+			((NumberBox)fieldEditor2).getDecimalbox().setPlaceholder(Msg.getMsg(Env.getCtx(), "To"));
         	}
         }
         panel.appendChild(outerParent);
