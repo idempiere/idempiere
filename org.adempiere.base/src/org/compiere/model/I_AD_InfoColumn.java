@@ -218,6 +218,21 @@ public interface I_AD_InfoColumn
 	  */
 	public String getDefaultValue();
 
+    /** Column name DefaultValue2 */
+    public static final String COLUMNNAME_DefaultValue2 = "DefaultValue2";
+
+	/** Set Default Logic 2.
+	  * Default value hierarchy, separated by ;
+
+	  */
+	public void setDefaultValue2 (String DefaultValue2);
+
+	/** Get Default Logic 2.
+	  * Default value hierarchy, separated by ;
+
+	  */
+	public String getDefaultValue2();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -402,6 +417,19 @@ public interface I_AD_InfoColumn
 	  */
 	public boolean isQueryCriteria();
 
+    /** Column name IsRange */
+    public static final String COLUMNNAME_IsRange = "IsRange";
+
+	/** Set Range.
+	  * The parameter is a range of values
+	  */
+	public void setIsRange (boolean IsRange);
+
+	/** Get Range.
+	  * The parameter is a range of values
+	  */
+	public boolean isRange();
+
     /** Column name IsReadOnly */
     public static final String COLUMNNAME_IsReadOnly = "IsReadOnly";
 
@@ -436,6 +464,15 @@ public interface I_AD_InfoColumn
 
 	/** Get Placeholder	  */
 	public String getPlaceholder();
+
+    /** Column name Placeholder2 */
+    public static final String COLUMNNAME_Placeholder2 = "Placeholder2";
+
+	/** Set Placeholder2	  */
+	public void setPlaceholder2 (String Placeholder2);
+
+	/** Get Placeholder2	  */
+	public String getPlaceholder2();
 
     /** Column name QueryFunction */
     public static final String COLUMNNAME_QueryFunction = "QueryFunction";
