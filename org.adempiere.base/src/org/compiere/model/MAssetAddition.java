@@ -436,9 +436,8 @@ public class MAssetAddition extends X_A_Asset_Addition
 	{
 		if(!isProcessed())
 		{
-			String str = Env.getContext(getCtx(), "#IsCanApproveOwnDoc");
-			boolean isApproved = "Y".equals(str); //ARHIPAC.toBoolean(str, false);
-			if (log.isLoggable(Level.FINE)) log.fine("#IsCanApproveOwnDoc=" + str + "=" + isApproved);
+			boolean isApproved = MRole.getDefault().isCanApproveOwnDoc();
+			if (log.isLoggable(Level.FINE)) log.fine("IsCanApproveOwnDoc=" + isApproved);
 			setIsApproved(isApproved);
 		}
 	}
