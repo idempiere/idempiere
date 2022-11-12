@@ -434,9 +434,11 @@ public class MAssetAddition extends X_A_Asset_Addition
 	 */
 	public void setIsApproved()
 	{
-		if(!isProcessed() && MRole.getDefault().isCanApproveOwnDoc())
+		if(!isProcessed())
 		{
-			setIsApproved(true);
+			boolean isApproved = MRole.getDefault().isCanApproveOwnDoc();
+			if (log.isLoggable(Level.FINE)) log.fine("IsCanApproveOwnDoc=" + isApproved);
+			setIsApproved(isApproved);
 		}
 	}
 	
