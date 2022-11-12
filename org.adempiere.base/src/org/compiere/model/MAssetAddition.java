@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -539,7 +540,16 @@ public class MAssetAddition extends X_A_Asset_Addition
 				throw new AssetException(sb.toString());
 			}
 		}
-		
+
+		// Validate Source - Invoice
+		if (A_SOURCETYPE_Invoice.equals(getA_SourceType()))
+		{
+			if (getC_Invoice_ID() <= 0)
+			{
+				throw new FillMandatoryException(COLUMNNAME_C_Invoice_ID);
+			}
+		}
+
 		// Call model validators
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
 		if (m_processMsg != null)
@@ -952,6 +962,8 @@ public class MAssetAddition extends X_A_Asset_Addition
 		if (A_SOURCETYPE_Invoice.equals(sourceType) && isProcessed())
 		{
 			int C_InvoiceLine_ID = getC_InvoiceLine_ID();
+			if (C_InvoiceLine_ID == 0)
+				throw new AdempiereException("No Invoice Line");
 			MInvoiceLine invoiceLine = new MInvoiceLine(getCtx(), C_InvoiceLine_ID, get_TrxName());
 			invoiceLine.setA_Processed(!isReversal);
 			invoiceLine.setA_Asset_ID(isReversal ? 0 : getA_Asset_ID());
