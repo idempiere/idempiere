@@ -237,8 +237,6 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
  			Date[] dates = setTimesOnDates(dateFrom, dateTo);
 			dateFrom = dates[0];
 			dateTo = dates[1];
- 			editor.setValue(dateFrom);
- 			editor2.setValue(dateTo);
  		}
 		updateUI();
 	}
