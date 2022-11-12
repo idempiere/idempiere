@@ -495,4 +495,16 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
+	
+	public enum R_RequestType {
+		REQUEST_FOR_QUOTATION(100),
+		SERVICE_REQUEST(101),
+		WARRANTY(102);
+		
+		public final int id;
+
+		private R_RequestType(int id) {
+			this.id = id;
+		}
+	}
 }
