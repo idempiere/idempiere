@@ -236,7 +236,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		if (project.get_ValueAsInt("C_ConversionType_ID")>0) {
 			setC_ConversionType_ID(project.get_ValueAsInt("C_ConversionType_ID"));
 		}
-		setSourceAmt(project.getCommittedAmt());
+		setSourceAmt(project.getProjectBalanceAmt());
 		setDateDoc(new Timestamp (System.currentTimeMillis()));
 		setA_CreateAsset(true); //added by @win as create from project will certainly for createnew
 	
