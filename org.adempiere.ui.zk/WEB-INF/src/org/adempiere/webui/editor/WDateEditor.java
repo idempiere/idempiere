@@ -171,7 +171,7 @@ public class WDateEditor extends WEditor implements ContextMenuListener
     		oldValue = null;
     		getComponent().setValue(null);
     		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, value);
-	        super.fireValueChange(changeEvent);
+            super.fireValueChange(changeEvent);
     	}
     	else if (value instanceof Timestamp)
         {
@@ -186,7 +186,7 @@ public class WDateEditor extends WEditor implements ContextMenuListener
     		{
     			getComponent().setText(value.toString());
     			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, value);
-    	        super.fireValueChange(changeEvent);
+                super.fireValueChange(changeEvent);
     		} catch (Exception e) {}
     		if (getComponent().getValue() != null)
     			oldValue = Timestamp.valueOf(getComponent().getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());

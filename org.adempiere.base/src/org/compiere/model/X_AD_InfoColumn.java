@@ -31,7 +31,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220914L;
+	private static final long serialVersionUID = 20221102L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -58,6 +58,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 			setIsQueryAfterChange (false);
 // N
 			setIsQueryCriteria (false);
+			setIsRange (false);
+// N
 			setIsReadOnly (true);
 // Y
 			setName (null);
@@ -92,6 +94,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 			setIsQueryAfterChange (false);
 // N
 			setIsQueryCriteria (false);
+			setIsRange (false);
+// N
 			setIsReadOnly (true);
 // Y
 			setName (null);
@@ -366,6 +370,22 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 		return (String)get_Value(COLUMNNAME_DefaultValue);
 	}
 
+	/** Set Default Logic 2.
+		@param DefaultValue2 Default value hierarchy, separated by ;
+	*/
+	public void setDefaultValue2 (String DefaultValue2)
+	{
+		set_Value (COLUMNNAME_DefaultValue2, DefaultValue2);
+	}
+
+	/** Get Default Logic 2.
+		@return Default value hierarchy, separated by ;
+	  */
+	public String getDefaultValue2()
+	{
+		return (String)get_Value(COLUMNNAME_DefaultValue2);
+	}
+
 	/** Set Description.
 		@param Description Optional short description of the record
 	*/
@@ -633,6 +653,29 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 		return false;
 	}
 
+	/** Set Range.
+		@param IsRange The parameter is a range of values
+	*/
+	public void setIsRange (boolean IsRange)
+	{
+		set_Value (COLUMNNAME_IsRange, Boolean.valueOf(IsRange));
+	}
+
+	/** Get Range.
+		@return The parameter is a range of values
+	  */
+	public boolean isRange()
+	{
+		Object oo = get_Value(COLUMNNAME_IsRange);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Read Only.
 		@param IsReadOnly Field is read only
 	*/
@@ -695,6 +738,21 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 		return (String)get_Value(COLUMNNAME_Placeholder);
 	}
 
+	/** Set Placeholder2.
+		@param Placeholder2 Placeholder2
+	*/
+	public void setPlaceholder2 (String Placeholder2)
+	{
+		set_Value (COLUMNNAME_Placeholder2, Placeholder2);
+	}
+
+	/** Get Placeholder2.
+		@return Placeholder2	  */
+	public String getPlaceholder2()
+	{
+		return (String)get_Value(COLUMNNAME_Placeholder2);
+	}
+
 	/** Set Query Function.
 		@param QueryFunction Database function for query
 	*/
@@ -725,10 +783,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public static final String QUERYOPERATOR_Gt = ">";
 	/** &gt;= = &gt;= */
 	public static final String QUERYOPERATOR_GtEq = ">=";
-	/** Like = Like */
-	public static final String QUERYOPERATOR_Like = "Like";
 	/** Full Like = LIKE */
 	public static final String QUERYOPERATOR_FullLike = "LIKE";
+	/** Like = Like */
+	public static final String QUERYOPERATOR_Like = "Like";
 	/** Set Query Operator.
 		@param QueryOperator Operator for database query
 	*/

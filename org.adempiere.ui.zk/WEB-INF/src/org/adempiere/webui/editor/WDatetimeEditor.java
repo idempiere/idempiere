@@ -214,14 +214,14 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     			ZonedDateTime zdt = ts.toInstant().atZone(getComponent().getDatebox().getTimeZone().toZoneId());
     			getComponent().setValueInZonedDateTime(zdt);
     			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, value);
-    	        super.fireValueChange(changeEvent);
+                super.fireValueChange(changeEvent);
     		}
     		else
     		{
 	    		LocalDateTime localTime = ts.toLocalDateTime();
 	    		getComponent().setValueInLocalDateTime(localTime);
 	    		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, value);
-		        super.fireValueChange(changeEvent);
+	            super.fireValueChange(changeEvent);
     		}
             oldValue = ts;
         }

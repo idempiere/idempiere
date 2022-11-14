@@ -463,6 +463,7 @@ public class GridFieldVO implements Serializable, Cloneable
 		voT.FieldLength = voF.FieldLength;
 		voT.DisplayLength = voF.FieldLength;
 		voT.DefaultValue = voF.DefaultValue2;
+		voT.Placeholder = voF.Placeholder2;
 		voT.Placeholder2 = voF.Placeholder2;
 		voT.VFormat = voF.VFormat;
 		voT.FormatPattern = voF.FormatPattern;

@@ -325,7 +325,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		if (port > 0 && port != 80) {
 			localHttpAddr.append(":").append(port);
 		}
-		Env.setContext(ctx, Env.LOCAL_HTTP_ADDRESS, localHttpAddr.toString());		
+		Env.setContext(ctx, Env.LOCAL_HTTP_ADDRESS, localHttpAddr.toString());
+		Env.setContext(ctx, Env.IS_CAN_APPROVE_OWN_DOC, MRole.getDefault().isCanApproveOwnDoc());
 		Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
 		
 		//init favorite

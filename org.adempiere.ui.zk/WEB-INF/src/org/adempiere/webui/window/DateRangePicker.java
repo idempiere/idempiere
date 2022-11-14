@@ -40,6 +40,8 @@ import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.compiere.model.MChart;
 import org.compiere.model.MRefList;
@@ -64,7 +66,7 @@ import org.zkoss.zul.Spinner;
 * @author Peter Takacs, Cloudempiere
 *
 */
-public class DateRangePicker extends Popup implements EventListener<Event> {
+public class DateRangePicker extends Popup implements EventListener<Event>, ValueChangeListener {
 	
 	/**
 	 * 
@@ -102,6 +104,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 	private Date oldValueFrom;
 	private Date oldValueTo;
 	private String displayValue;
+	private boolean enableValueChange = true;
 
 	private ArrayList<Listbox> quickListBoxesArray = new ArrayList<Listbox>();
 	private ListItem selectedQuickListItem;
@@ -118,6 +121,9 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 	}
 
 	private void init() {
+		
+		editor.addValueChangeListener(this);
+		editor2.addValueChangeListener(this);
 		
 		Div div = new Div();
 		okBtn = ButtonFactory.createNamedButton(Msg.getMsg(Env.getCtx(), "ApplyFilter"), true, false);
@@ -149,8 +155,9 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		dateTextBoxLabel.setSclass("date-picker-label");
 		
 		dateTextBox = new Textbox();
+		dateTextBox.setReadonly(true);
 		dateTextBox.setSclass("date-picker-component");
-		dateTextBox.setStyle("min-width: 170px;");
+		dateTextBox.setStyle("min-width: 170px; background: white !important");
 		dateTextBox.setValue(DisplayType.getDateFormat().format(cal.getValue()));
 		dateTextBox.addEventListener(Events.ON_CHANGE, this);
 		
@@ -165,8 +172,10 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 				dateFrom = null;
 				dateTo = null;
 			}
+			enableValueChange = false;
 			editor.setValue(dateFrom);
 			editor2.setValue(dateTo);
+			enableValueChange = true;
 			this.detach();
 		});
 		
@@ -179,6 +188,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 			ComboItem item = new ComboItem(mode.getName(), mode.getValue());
 			modeCombobox.appendChild(item);
 		}
+		modeCombobox.setSelectedIndex(0);
 		
 		// Load Units to ListBox
 		ValueNamePair[] units = MRefList.getList(Env.getCtx(), REFERENCE_TIMEUNIT, false);
@@ -186,6 +196,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 			ComboItem item = new ComboItem(timeUnit.getName(), timeUnit.getValue());
 			unitCombobox.appendChild(item);
 		}
+		unitCombobox.setSelectedIndex(0);
 		
 		div.setSclass("date-picker-container");
 		div.appendChild(modeCombobox);
@@ -226,8 +237,6 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
  			Date[] dates = setTimesOnDates(dateFrom, dateTo);
 			dateFrom = dates[0];
 			dateTo = dates[1];
- 			editor.setValue(dateFrom);
- 			editor2.setValue(dateTo);
  		}
 		updateUI();
 	}
@@ -315,8 +324,6 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		dateTextBox.clearErrorMessage();
 		if(!Util.isEmpty(dateTextBox.getValue()) || !event.getTarget().equals(dateTextBox)) {
 			setDateTextBoxAndDisplayValue();
-			cal.setValue(dateFrom);
-			cal2.setValue(dateTo);
 		}
 	}
 	
@@ -384,10 +391,12 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		
 		detectedMode = autodetectMode(today);
 		if(detectedMode != null) {
-			String[] arr = autodetectUnitAndCorrectMode(today);
-			detectedUnit = arr[0];
-			if(!Util.isEmpty(arr[1]))
-				detectedMode = arr[1];
+			String[] arr = autodetectUnitAndCorrectMode(today, detectedMode);
+			if(arr != null) {
+				detectedUnit = arr[0];
+				if(!Util.isEmpty(arr[1]))
+					detectedMode = arr[1];
+			}
 		}
 		
 		if(!Util.isEmpty(detectedMode) && !Util.isEmpty(detectedUnit)) {
@@ -395,17 +404,31 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		}
 		
 		for(Comboitem item : modeCombobox.getItems()) {
-			if(item.getValue().equals(detectedMode))
+			if(item.getValue().equals(detectedMode)) {
 				modeCombobox.setSelectedItem(item);
+				break;
+			}
 		}
 		for(Comboitem item : unitCombobox.getItems()) {
-			if(item.getValue().equals(detectedUnit))
+			if(item.getValue().equals(detectedUnit)) {
 				unitCombobox.setSelectedItem(item);
+				break;
+			}
 		}
 		int numBoxValue = Math.abs(detectedOffset) >= 1 ? Math.abs(detectedOffset) : 1; 
 		numberBox.setValue(numBoxValue);
-		cal.setValue(dateFrom);
-		cal2.setValue(dateTo);
+		if(dateFrom == null) {
+			cal.setValue(dateTo);
+			cal2.setValue(dateTo);
+		}
+		else if(dateTo == null) {
+			cal.setValue(dateFrom);
+			cal2.setValue(dateFrom);
+		}
+		else {
+			cal.setValue(dateFrom);
+			cal2.setValue(dateTo);
+		}
 		setDateTextBoxAndDisplayValue();
 	}
 	
@@ -417,7 +440,7 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 		if(d1 != null && d2 == null)
 			return DATESELECTIONMODE_AFTER;
 		else if(d1 == null && d2 != null)
-			return DATESELECTIONMODE_BETWEEN;
+			return DATESELECTIONMODE_BEFORE;
 		else if(d1.compareTo(d2) == 0)
 			return DATESELECTIONMODE_ON;
 		
@@ -425,23 +448,34 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 			return null;
 		
 		if(d1.before(today)){
-			if(d2.before(today) || d2.compareTo(today) == 0)
+			if(d2.before(today))
 				return DATESELECTIONMODE_PREVIOUS;
 			else if(d2.after(today))
 				return DATESELECTIONMODE_CURRENT;
+			else
+				return DATESELECTIONMODE_BETWEEN;
 		}
-		else if(d1.after(today) || d1.compareTo(today) == 0){
+		else if(d1.after(today)){
 			return DATESELECTIONMODE_NEXT;
 		}
-		return "";
+		else
+			return DATESELECTIONMODE_BETWEEN;
 	}
 	
-	private String[] autodetectUnitAndCorrectMode(Timestamp today) {
+	private String[] autodetectUnitAndCorrectMode(Timestamp today, String predictedMode) {
+		// use case: modes Before, After, On - unit is not needed
+		Date d1 = dateFrom;
+		Date d2 = dateTo;
+		d1 = setTimesOnDates(d1, null)[0];
+		d2 = setTimesOnDates(d2, null)[0];
+		if(d1 == null || d2 == null || (d1.compareTo(d2) == 0))
+			return null;
+		
 		if(dateFrom.after(dateTo))
 			return null;
 		
 		String detectedUnit = "";
-		String correctedMode = "";
+		String correctedMode = predictedMode;
 		Calendar calendar = Calendar.getInstance(Env.getLocale(Env.getCtx()));
 		Calendar calendar2 = Calendar.getInstance(Env.getLocale(Env.getCtx()));
 		Calendar calendarToday = Calendar.getInstance(Env.getLocale(Env.getCtx()));
@@ -464,10 +498,10 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 					calendar.get(Calendar.MONTH) == Calendar.APRIL ||
 					calendar.get(Calendar.MONTH) == Calendar.JULY ||
 					calendar.get(Calendar.MONTH) == Calendar.OCTOBER) &&
-					(calendar2.get(Calendar.MONTH) == Calendar.JANUARY ||
-					calendar2.get(Calendar.MONTH) == Calendar.APRIL ||
-					calendar2.get(Calendar.MONTH) == Calendar.JULY ||
-					calendar2.get(Calendar.MONTH) == Calendar.OCTOBER) &&
+					(calendar2.get(Calendar.MONTH) == Calendar.MARCH ||
+					calendar2.get(Calendar.MONTH) == Calendar.JUNE ||
+					calendar2.get(Calendar.MONTH) == Calendar.SEPTEMBER ||
+					calendar2.get(Calendar.MONTH) == Calendar.DECEMBER) &&
 					(calendar.get(Calendar.MONTH) != calendar2.get(Calendar.MONTH)))
 				detectedUnit = MChart.TIMEUNIT_Quarter;
 			else
@@ -480,18 +514,24 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 			timeUnit = Calendar.WEEK_OF_YEAR;
 		}
 		else {
-			detectedUnit = MChart.TIMEUNIT_Day;
-			timeUnit = Calendar.DAY_OF_YEAR;
+			if(predictedMode.equalsIgnoreCase(DATESELECTIONMODE_CURRENT))
+				correctedMode = DATESELECTIONMODE_BETWEEN;
+			else {
+				detectedUnit = MChart.TIMEUNIT_Day;
+				timeUnit = Calendar.DAY_OF_YEAR;
+			}
 		}
-		
-		testCalendar.add(timeUnit, -1);
+		int testOffset = 1;
+		if(detectedUnit.equalsIgnoreCase(MChart.TIMEUNIT_Quarter))
+			testOffset = 3;	// three months = 1 quarter
+		testCalendar.add(timeUnit, -testOffset);
 		if(testCalendar.getTime().after(dateTo)) {
 			detectedUnit = MChart.TIMEUNIT_Day;
 			correctedMode = DATESELECTIONMODE_BETWEEN;
 		}
 		
 		testCalendar = (Calendar) calendarToday.clone();
-		testCalendar.add(timeUnit, 1);
+		testCalendar.add(timeUnit, testOffset);
 		if(testCalendar.getTime().before(dateFrom)) {
 			detectedUnit = MChart.TIMEUNIT_Day;
 			correctedMode = DATESELECTIONMODE_BETWEEN;
@@ -939,5 +979,27 @@ public class DateRangePicker extends Popup implements EventListener<Event> {
 	 */
 	public String getDisplayValue() {
 		return this.displayValue;
+	}
+
+	@Override
+	public void valueChange(ValueChangeEvent evt) {
+		if(enableValueChange) {
+			dateFrom = (Date) editor.getValue();
+			dateTo = (Date) editor2.getValue();
+			if(dateFrom != null || dateTo != null) { // Set the picker to defined Default Logic
+				Date[] dates = setTimesOnDates(dateFrom, dateTo);
+				dateFrom = dates[0];
+				dateTo = dates[1];
+				loadPickerSelection();
+	 		}
+	 		else {
+	 			// If no Default Logic defined, set Current Month as selected range
+	 			setPickerSelection(DATESELECTIONMODE_CURRENT, MChart.TIMEUNIT_Month, 0);
+	 			Date[] dates = setTimesOnDates(dateFrom, dateTo);
+				dateFrom = dates[0];
+				dateTo = dates[1];
+	 		}
+			updateUI();
+		}
 	}
 }

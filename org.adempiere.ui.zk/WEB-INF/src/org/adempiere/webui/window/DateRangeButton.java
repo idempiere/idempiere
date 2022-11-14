@@ -28,6 +28,7 @@ import java.util.Properties;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.util.Env;
@@ -83,5 +84,19 @@ public class DateRangeButton extends ToolBarButton implements WEditor.DynamicDis
 	public void onDynamicDisplay(Properties ctx, WEditor editor) {
 		setVisible(this.editor.isVisible() && editor2.isVisible());
 		setDisabled(!(this.editor.isReadWrite() && editor2.isReadWrite()));
+	}
+
+
+	/**
+	 * set visibility of date button
+	 * @param visible
+	 */
+	public void setDateButtonVisible(boolean visible) {
+		if (editor instanceof WDateEditor && editor2 instanceof WDateEditor) {
+			WDateEditor de1 = (WDateEditor) editor;
+			WDateEditor de2 = (WDateEditor) editor2;
+			de1.getComponent().setButtonVisible(visible);
+			de2.getComponent().setButtonVisible(visible);
+		}
 	}
 }
