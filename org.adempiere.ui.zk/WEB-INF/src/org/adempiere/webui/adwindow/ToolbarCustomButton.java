@@ -18,7 +18,6 @@ import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.component.ToolBarButton;
 import org.compiere.model.MToolBarButton;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
@@ -156,22 +155,15 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 	}
 
 	private boolean validateLogic(String logic, int tabNo) {
-		boolean isSQL = false;
 		boolean isValid = false;
 
-		if (logic.startsWith("@SQL=")) {
-			logic = logic.substring(5, logic.length());
-			isSQL = true;
+		if (logic.startsWith("@SQL="))
+		{
+			isValid = Evaluator.parseSQLLogic(logic, Env.getCtx(), windowNo, tabNo, "");
 		}
-
-		logic = Env.parseContext(Env.getCtx(), windowNo, tabNo, logic, false);
-
-		if (isSQL) {
-			int result = DB.getSQLValue(null, logic);
-
-			if (result == 1)
-				isValid = true;
-		} else {
+		else
+		{
+			logic = Env.parseContext(Env.getCtx(), windowNo, tabNo, logic, false);
 			isValid = Evaluator.evaluateLogic(this, logic);
 		}
 
