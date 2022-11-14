@@ -49,7 +49,6 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.DateRangeEditor;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.IProcessParameter;
@@ -468,10 +467,6 @@ public class ProcessParameterPanel extends Panel implements
 			row.appendChild(box);
 			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime)) 
 					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))) {
-				DateRangeButton dateRangeButton = new DateRangeButton(editor, editor2);
-				box.appendChild(dateRangeButton);
-			}
-			if(mField.getDisplayType() == DisplayType.DateRangePicker) {
 				editor.setVisible(false, true);
 				editor2.setVisible(false, true);
 				DateRangeEditor dateRangeEditor = new DateRangeEditor(editor, editor2, true);
@@ -1015,6 +1010,10 @@ public class ProcessParameterPanel extends Panel implements
 		for (int i = 0; i < m_wEditors.size(); i++) {
 			WEditor editor = m_wEditors.get(i);
 			GridField mField = editor.getGridField();
+			GridField mField2 = null;
+			if (mField.getVO().isRange) {
+				mField2 = m_wEditors2.get(i).getGridField();
+			}
 			if (mField.isDisplayed(true)) {
 				if (!editor.isVisible()) {
 					editor.setVisible(true);
@@ -1054,7 +1053,9 @@ public class ProcessParameterPanel extends Panel implements
 				}
 			}
 			// Handle Dynamic Display for Date Range Picker
-			if(mField.getDisplayType() == DisplayType.DateRangePicker) {
+			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime))
+					&& mField2 != null
+					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))) {
 				DateRangeEditor dateRangeEditor = m_dateRangeEditors.get(i);
 				if(dateRangeEditor != null) {
 					dateRangeEditor.setVisible(editor.isVisible());
