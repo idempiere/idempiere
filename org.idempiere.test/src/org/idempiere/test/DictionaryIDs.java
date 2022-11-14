@@ -34,6 +34,26 @@ public final class DictionaryIDs {
 	private DictionaryIDs() {
 	}
 
+	public enum A_Asset_Group {
+		EQUIPMENT(50007);
+
+		public final int id;
+
+		private A_Asset_Group(int id) {
+			this.id = id;
+		}
+	}
+
+	public enum A_Asset_Group_Acct {
+		EQUIPMENT_DOLLAR(200002);
+
+		public final int id;
+
+		private A_Asset_Group_Acct(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum AD_Org {
 		HQ(11),
 		STORE_CENTRAL(12),
@@ -74,7 +94,17 @@ public final class DictionaryIDs {
 			this.id = id;
 		}
 	}
-	
+
+	public enum C_AcctSchema {
+		DOLLAR(101);
+
+		public final int id;
+
+		private C_AcctSchema(int id) {
+			this.id = id;
+		}
+	}
+
 	public enum C_BankAccount {
 		ACCOUNT_1234(100),
 		ACCOUNT_5678(101),
@@ -422,7 +452,8 @@ public final class DictionaryIDs {
 		PATIOSET(145),
 		DOC(146),
 		TSHIRT_RL(147),
-		TSHIRT_GL(148);
+		TSHIRT_GL(148),
+		ASSET_VEHICLE(200001);
 		
 		public final int id;
 
