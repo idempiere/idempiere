@@ -215,7 +215,7 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 	protected boolean beforeSave(boolean newRecord) {
 
 		// To avoid conflicts with tenant level messages, the value cannot start with numeric and |
-		if (getValue().contains("|")) {
+		if (getValue() != null && getValue().contains("|")) {
 
 			String prefix = getValue().substring(0, getValue().indexOf("|"));
 
