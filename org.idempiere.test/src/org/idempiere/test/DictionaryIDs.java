@@ -117,6 +117,16 @@ public final class DictionaryIDs {
 		}
 	}
 
+	public enum C_Calendar {
+		GARDENWORLD_CALENDAR(102);
+		
+		public final int id;
+		
+		private C_Calendar(int id) {
+			this.id = id;
+		}
+	}
+	
 	public enum C_Charge {
 		BANK(100),
 		COMMISSIONS(101),
@@ -482,6 +492,18 @@ public final class DictionaryIDs {
 		public final int id;
 
 		private M_Warehouse(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum R_RequestType {
+		REQUEST_FOR_QUOTATION(100),
+		SERVICE_REQUEST(101),
+		WARRANTY(102);
+		
+		public final int id;
+
+		private R_RequestType(int id) {
 			this.id = id;
 		}
 	}
