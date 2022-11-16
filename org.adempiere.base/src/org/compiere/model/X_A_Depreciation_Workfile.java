@@ -34,7 +34,7 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221118L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Workfile (Properties ctx, int A_Depreciation_Workfile_ID, String trxName)
@@ -51,9 +51,9 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 			setA_Asset_ID (0);
 			setA_Asset_Life_Current_Year (Env.ZERO);
 // 0
-			setA_Asset_Life_Years (0);
+			setA_Asset_Life_Years (Env.ZERO);
 // 0
-			setA_Asset_Life_Years_F (0);
+			setA_Asset_Life_Years_F (Env.ZERO);
 // 0
 			setA_Curr_Dep_Exp (Env.ZERO);
 // 0
@@ -73,9 +73,9 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 // 0
 			setUseLifeMonths_F (0);
 // 0
-			setUseLifeYears (0);
+			setUseLifeYears (Env.ZERO);
 // 0
-			setUseLifeYears_F (0);
+			setUseLifeYears_F (Env.ZERO);
 // 0
         } */
     }
@@ -95,9 +95,9 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 			setA_Asset_ID (0);
 			setA_Asset_Life_Current_Year (Env.ZERO);
 // 0
-			setA_Asset_Life_Years (0);
+			setA_Asset_Life_Years (Env.ZERO);
 // 0
-			setA_Asset_Life_Years_F (0);
+			setA_Asset_Life_Years_F (Env.ZERO);
 // 0
 			setA_Curr_Dep_Exp (Env.ZERO);
 // 0
@@ -117,9 +117,9 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 // 0
 			setUseLifeMonths_F (0);
 // 0
-			setUseLifeYears (0);
+			setUseLifeYears (Env.ZERO);
 // 0
-			setUseLifeYears_F (0);
+			setUseLifeYears_F (Env.ZERO);
 // 0
         } */
     }
@@ -255,37 +255,37 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 	/** Set Life Years.
 		@param A_Asset_Life_Years Life Years
 	*/
-	public void setA_Asset_Life_Years (int A_Asset_Life_Years)
+	public void setA_Asset_Life_Years (BigDecimal A_Asset_Life_Years)
 	{
-		set_Value (COLUMNNAME_A_Asset_Life_Years, Integer.valueOf(A_Asset_Life_Years));
+		set_Value (COLUMNNAME_A_Asset_Life_Years, A_Asset_Life_Years);
 	}
 
 	/** Get Life Years.
 		@return Life Years	  */
-	public int getA_Asset_Life_Years()
+	public BigDecimal getA_Asset_Life_Years()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Life_Years);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Asset_Life_Years);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Life Years (fiscal).
 		@param A_Asset_Life_Years_F Life Years (fiscal)
 	*/
-	public void setA_Asset_Life_Years_F (int A_Asset_Life_Years_F)
+	public void setA_Asset_Life_Years_F (BigDecimal A_Asset_Life_Years_F)
 	{
-		set_Value (COLUMNNAME_A_Asset_Life_Years_F, Integer.valueOf(A_Asset_Life_Years_F));
+		set_Value (COLUMNNAME_A_Asset_Life_Years_F, A_Asset_Life_Years_F);
 	}
 
 	/** Get Life Years (fiscal).
 		@return Life Years (fiscal)	  */
-	public int getA_Asset_Life_Years_F()
+	public BigDecimal getA_Asset_Life_Years_F()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_A_Asset_Life_Years_F);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_A_Asset_Life_Years_F);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Remaining Amt.
@@ -935,37 +935,37 @@ public class X_A_Depreciation_Workfile extends PO implements I_A_Depreciation_Wo
 	/** Set Usable Life - Years.
 		@param UseLifeYears Years of the usable life of the asset
 	*/
-	public void setUseLifeYears (int UseLifeYears)
+	public void setUseLifeYears (BigDecimal UseLifeYears)
 	{
-		set_Value (COLUMNNAME_UseLifeYears, Integer.valueOf(UseLifeYears));
+		set_Value (COLUMNNAME_UseLifeYears, UseLifeYears);
 	}
 
 	/** Get Usable Life - Years.
 		@return Years of the usable life of the asset
 	  */
-	public int getUseLifeYears()
+	public BigDecimal getUseLifeYears()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_UseLifeYears);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_UseLifeYears);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Use Life - Years (fiscal).
 		@param UseLifeYears_F Use Life - Years (fiscal)
 	*/
-	public void setUseLifeYears_F (int UseLifeYears_F)
+	public void setUseLifeYears_F (BigDecimal UseLifeYears_F)
 	{
-		set_Value (COLUMNNAME_UseLifeYears_F, Integer.valueOf(UseLifeYears_F));
+		set_Value (COLUMNNAME_UseLifeYears_F, UseLifeYears_F);
 	}
 
 	/** Get Use Life - Years (fiscal).
 		@return Use Life - Years (fiscal)	  */
-	public int getUseLifeYears_F()
+	public BigDecimal getUseLifeYears_F()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_UseLifeYears_F);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_UseLifeYears_F);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 }
