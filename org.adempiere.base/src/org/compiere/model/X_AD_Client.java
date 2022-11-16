@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Client
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Client")
 public class X_AD_Client extends PO implements I_AD_Client, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20220922L;
 
     /** Standard Constructor */
     public X_AD_Client (Properties ctx, int AD_Client_ID, String trxName)
@@ -369,16 +369,16 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 		return false;
 	}
 
-	/** Set IsUseASP.
-		@param IsUseASP IsUseASP
+	/** Set Is Use ASP.
+		@param IsUseASP Is Use ASP
 	*/
 	public void setIsUseASP (boolean IsUseASP)
 	{
 		set_Value (COLUMNNAME_IsUseASP, Boolean.valueOf(IsUseASP));
 	}
 
-	/** Get IsUseASP.
-		@return IsUseASP	  */
+	/** Get Is Use ASP.
+		@return Is Use ASP	  */
 	public boolean isUseASP()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUseASP);
@@ -412,6 +412,21 @@ public class X_AD_Client extends PO implements I_AD_Client, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Login Prefix.
+		@param LoginPrefix Login Prefix
+	*/
+	public void setLoginPrefix (String LoginPrefix)
+	{
+		set_Value (COLUMNNAME_LoginPrefix, LoginPrefix);
+	}
+
+	/** Get Login Prefix.
+		@return Login Prefix	  */
+	public String getLoginPrefix()
+	{
+		return (String)get_Value(COLUMNNAME_LoginPrefix);
 	}
 
 	/** MMPolicy AD_Reference_ID=335 */

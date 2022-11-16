@@ -24,7 +24,6 @@
 package org.adempiere.webui.panel;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -66,6 +65,7 @@ import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.compiere.util.WebUtil;
 import org.zkoss.lang.Strings;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
@@ -102,7 +102,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6130436148212949636L;
+	private static final long serialVersionUID = -7859522563172088496L;
 
 	public static final String ROLE_TYPES_WEBUI = "NULL,ZK,SS";  //webui,support+null
 
@@ -173,15 +173,24 @@ public class LoginPanel extends Window implements EventListener<Event>
 							    {
 							    	onUserIdChange(AD_User_ID);
 							    	if (MSystem.isZKRememberUserAllowed()) {
+							    		String fillUser = null;
 							    		if (email_login) {
-							    			txtUserId.setValue(user.getEMail());
+							    			fillUser = user.getEMail();
 							    		} else {
 							    			if (user.getLDAPUser() != null && user.getLDAPUser().length() > 0) {
-							    				txtUserId.setValue(user.getLDAPUser());
+							    				fillUser = user.getLDAPUser();
 							    			} else {
-							    				txtUserId.setValue(user.getName());
+							    				fillUser = user.getName();
 							    			}
 							    		}
+							    		if (MSystem.isUseLoginPrefix()) {
+							    			MClient client = MClient.get(session.getAD_Client_ID());
+							    			if (! Util.isEmpty(client.getLoginPrefix())) {
+								    			String separator = MSysConfig.getValue(MSysConfig.LOGIN_PREFIX_SEPARATOR, "/");
+								    			fillUser = client.getLoginPrefix() + separator + fillUser;
+							    			}
+							    		}
+						    			txtUserId.setValue(fillUser);
 								    	chkRememberMe.setChecked(true);
 							    	}
 							    	if (MSystem.isZKRememberPasswordAllowed()) {
@@ -467,11 +476,15 @@ public class LoginPanel extends Window implements EventListener<Event>
     }
 
 	private void openLoginHelp() {
-		String langName = (String) lstLanguage.getSelectedItem().getValue();
-		langName = langName.substring(0, 2);
-		String helpURL = MSysConfig.getValue(MSysConfig.LOGIN_HELP_URL, "http://wiki.idempiere.org/{lang}/Login_Help");
-		if (helpURL.contains("{lang}"))
-			helpURL = Util.replace(helpURL, "{lang}", langName);
+		String lang = (String) lstLanguage.getSelectedItem().getValue();
+		lang = lang.substring(0, 2);
+		String helpURL = MSysConfig.getValue(MSysConfig.LOGIN_HELP_URL, "https://wiki.idempiere.org/{lang}/Login_Help");
+		if (helpURL.contains("{lang}")) {
+			String rawURL = helpURL;
+			helpURL = Util.replace(rawURL, "{lang}", lang);
+			if (!"en".equals(lang) && !WebUtil.isUrlOk(helpURL))
+				helpURL = Util.replace(rawURL, "{lang}", "en"); // default to English
+		}
 		try {
 			Executions.getCurrent().sendRedirect(helpURL, "_blank");
 		}
@@ -606,6 +619,13 @@ public class LoginPanel extends Window implements EventListener<Event>
         }
         else
         {
+            if (clientsKNPairs.length == 1) {
+            	Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, (String) clientsKNPairs[0].getID());
+            	MUser user = MUser.get(Env.getCtx(), Login.getAppUser(userId));
+            	if (user != null)
+            		Env.setContext(Env.getCtx(), Env.AD_USER_ID, user.getAD_User_ID() );
+            }
+
         	String langName = null;
         	if ( lstLanguage.getSelectedItem() != null )
         		langName = (String) lstLanguage.getSelectedItem().getLabel();
@@ -646,8 +666,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         if (! Adempiere.DB_VERSION.equals(version)) {
             String AD_Message = "DatabaseVersionError";
             //  Code assumes Database version {0}, but Database has Version {1}.
-            String msg = Msg.getMsg(ctx, AD_Message);   //  complete message
-            msg = MessageFormat.format(msg, new Object[] {Adempiere.DB_VERSION, version});
+            String msg = Msg.getMsg(ctx, AD_Message, new Object[] {Adempiere.DB_VERSION, version});   //  complete message
             throw new ApplicationException(msg);
         }
 
@@ -667,7 +686,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 	
 	private void btnResetPasswordClicked()
 	{
-		String userId = txtUserId.getValue();
+		String userId = Login.getAppUser(txtUserId.getValue());
 		if (Util.isEmpty(userId))
     		throw new IllegalArgumentException(Msg.getMsg(ctx, "FillMandatory") + " " + lblUserId.getValue());
 		

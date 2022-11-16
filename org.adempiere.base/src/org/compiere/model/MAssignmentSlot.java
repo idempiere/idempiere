@@ -140,15 +140,15 @@ public class MAssignmentSlot implements Comparator<Object>
 	/** toString displays formatted time from	*/
 	public static final int	DISPLAY_TIME_FROM = 1;
 	/** toString displays formatted time from-to		*/
-	public static final int	DISPLAY_TIME_FROM_TO = 1;
+	public static final int	DISPLAY_TIME_FROM_TO = 2;
 	/** toString displays formatted day time from-to	*/
-	public static final int	DISPLAY_DATETIME_FROM_TO = 1;
+	public static final int	DISPLAY_DATETIME_FROM_TO = 3;
 	/** toString displays name					*/
-	public static final int	DISPLAY_NAME = 1;
+	public static final int	DISPLAY_NAME = 4;
 	/** toString displays name and optional description	*/
-	public static final int	DISPLAY_NAME_DESCRIPTION = 1;
+	public static final int	DISPLAY_NAME_DESCRIPTION = 5;
 	/** toString displays formatted all info	*/
-	public static final int	DISPLAY_FULL = 1;
+	public static final int	DISPLAY_FULL = 6;
 
 	/**	DisplayMode								*/
 	private int				m_displayMode = DISPLAY_FULL;

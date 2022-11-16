@@ -336,3 +336,8 @@
 .desktop-home-tabpanel .z-hlayout-inner {
 	padding: 5px !important;
 }
+
+.dashboard-content-help-icon {
+	padding: 5px;
+	cursor: default;
+}

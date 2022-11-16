@@ -33,6 +33,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.PaymentFormDirect;
 import org.compiere.model.GridTab;
+import org.compiere.model.MBankAccount;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -61,16 +62,22 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 	private Label tRoutingText = new Label();
 	private Label tNumberText = new Label();
 	
+	/**
+	 * 
+	 * @param windowNo
+	 * @param mTab
+	 * @param isDebit
+	 */
 	public WPaymentFormDirect(int windowNo, GridTab mTab, boolean isDebit) {
 		super(windowNo, mTab, isDebit);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}
 	
-	public void init() {		
+	protected void init() {		
 		Grid tPanelLayout = GridFactory.newGridLayout();
 		window.getPanel().appendChild(tPanelLayout);
-		tAccountLabel.setText(Msg.translate(Env.getCtx(), "C_BP_BankAccount_ID"));
+		tAccountLabel.setText(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));
 		tRoutingField.setCols(8);
 		tNumberField.setCols(10);
 		tRoutingText.setText(Msg.translate(Env.getCtx(), "RoutingNo"));
@@ -114,6 +121,8 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 
 	@Override
 	public void loadData() {		
+		super.loadData();
+		
 		if (m_C_Payment_ID != 0)
 		{
 			tRoutingField.setText(m_mPayment.getRoutingNo());
@@ -121,7 +130,7 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 			tStatus.setText(m_mPayment.getR_PnRef());
 		}
 		
-		ArrayList<KeyNamePair> list = getBPBankAccountList();
+		ArrayList<KeyNamePair> list = getBankAccountList();
 		for (KeyNamePair pp : list)
 			tAccountCombo.addItem(pp);
 		
@@ -132,6 +141,7 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 		setBankAccountProcessor(bankAccountProcessor);
 	}
 	
+	@Override
 	public void onEvent(Event e)
 	{
 		if (e.getTarget() == tOnline) 
@@ -148,10 +158,10 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 		 */
 		boolean dataOK = true;
 		ListItem selected =  tAccountCombo.getSelectedItem();
-		KeyNamePair bpba = selected != null ? selected.toKeyNamePair() : null;
-		if (bpba == null)
+		KeyNamePair ba = selected != null ? selected.toKeyNamePair() : null;
+		if (ba == null)
 		{
-			Dialog.error(getWindowNo(), "PaymentBPBankNotFound");
+			Dialog.error(getWindowNo(), "FillMandatory", Msg.translate(Env.getCtx(), MBankAccount.COLUMNNAME_C_BankAccount_ID));
 			dataOK = false;
 		}
 		//
@@ -161,10 +171,13 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 
 	@Override
 	public boolean saveChangesInTrx(final String trxName) {		
-		boolean ok = save(0, tRoutingField.getText(), tNumberField.getText(), trxName);		
+		ListItem selected =  tAccountCombo.getSelectedItem();
+		KeyNamePair ba = selected != null ? selected.toKeyNamePair() : null;
+		int C_BankAccount_ID = ba != null ? ba.getKey() : 0;
+		boolean ok = save(C_BankAccount_ID, tRoutingField.getText(), tNumberField.getText(), trxName);		
 		if (!ok)
 			Dialog.error(getWindowNo(), "PaymentError", processMsg);
-		else if (processMsg != null)
+		else
 			Dialog.info(getWindowNo(), "PaymentCreated", m_mPayment.getDocumentNo());
 		
 		return ok;

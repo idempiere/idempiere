@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportColumn
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PA_ReportColumn")
 public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221011L;
 
     /** Standard Constructor */
     public X_PA_ReportColumn (Properties ctx, int PA_ReportColumn_ID, String trxName)
@@ -605,7 +605,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		return ii.intValue();
 	}
 
-	/** Set Adhoc Conversion.
+	/** Set Ad hoc Conversion.
 		@param IsAdhocConversion Perform conversion for all amounts to currency
 	*/
 	public void setIsAdhocConversion (boolean IsAdhocConversion)
@@ -613,7 +613,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		set_Value (COLUMNNAME_IsAdhocConversion, Boolean.valueOf(IsAdhocConversion));
 	}
 
-	/** Get Adhoc Conversion.
+	/** Get Ad hoc Conversion.
 		@return Perform conversion for all amounts to currency
 	  */
 	public boolean isAdhocConversion()
@@ -978,6 +978,25 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		return ii.intValue();
 	}
 
+	/** Set Multiplier.
+		@param Multiplier Type Multiplier (Credit = -1)
+	*/
+	public void setMultiplier (BigDecimal Multiplier)
+	{
+		set_ValueNoCheck (COLUMNNAME_Multiplier, Multiplier);
+	}
+
+	/** Get Multiplier.
+		@return Type Multiplier (Credit = -1)
+	  */
+	public BigDecimal getMultiplier()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Multiplier);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 	/** Set Name.
 		@param Name Alphanumeric identifier of the entity
 	*/
@@ -1075,7 +1094,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	}
 
 	/** Set Organization.
-		@param Org_ID Organizational entity within client
+		@param Org_ID Organizational entity within tenant
 	*/
 	public void setOrg_ID (int Org_ID)
 	{
@@ -1086,7 +1105,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	}
 
 	/** Get Organization.
-		@return Organizational entity within client
+		@return Organizational entity within tenant
 	  */
 	public int getOrg_ID()
 	{
@@ -1231,7 +1250,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	public static final String POSTINGTYPE_Reservation = "R";
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
-	/** Set PostingType.
+	/** Set Posting Type.
 		@param PostingType The type of posted amount for the transaction
 	*/
 	public void setPostingType (String PostingType)
@@ -1240,7 +1259,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		set_Value (COLUMNNAME_PostingType, PostingType);
 	}
 
-	/** Get PostingType.
+	/** Get Posting Type.
 		@return The type of posted amount for the transaction
 	  */
 	public String getPostingType()
@@ -1284,6 +1303,24 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Round Factor.
+		@param RoundFactor Round Factor
+	*/
+	public void setRoundFactor (int RoundFactor)
+	{
+		set_Value (COLUMNNAME_RoundFactor, Integer.valueOf(RoundFactor));
+	}
+
+	/** Get Round Factor.
+		@return Round Factor	  */
+	public int getRoundFactor()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_RoundFactor);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Sequence.
