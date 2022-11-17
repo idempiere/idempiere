@@ -601,7 +601,7 @@ public class ProcessParameterPanel extends Panel implements
 						bNegate = (Button) editor.getComponent().getAttribute("isNotClause");
 					
 					if(bNegate != null) {
-						if(para.get_ValueAsBoolean("P_IsNotClause")) {
+						if(para.isNotClause()) {
 							bNegate.setSclass("btn-negate btn-negate-red");
 							bNegate.setAttribute("isSelected", true);
 						} 
