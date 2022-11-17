@@ -147,9 +147,10 @@ public class HTMLExtension implements IHTMLExtension {
 		if (urlFile != null) {
 			FileOutputStream cssStream = null;
 			File cssFile = null;
+			InputStream stream = null;
 			try {
 				// copy the resource to a temporary file to process it with 2pack
-				InputStream stream = urlFile.openStream();
+				stream = urlFile.openStream();
 				cssFile = File.createTempFile("report", ".css");
 				cssStream = new FileOutputStream(cssFile);
 			    byte[] buffer = new byte[1024];
@@ -164,6 +165,13 @@ public class HTMLExtension implements IHTMLExtension {
 					try {
 						cssStream.close();
 					} catch (Exception e2) {}
+				}
+				if (stream != null) {
+					try {
+						stream.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			return cssFile.getAbsolutePath();

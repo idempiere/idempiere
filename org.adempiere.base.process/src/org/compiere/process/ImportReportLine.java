@@ -434,10 +434,10 @@ public class ImportReportLine extends SvrProcess
 						.append(" WHERE I_ReportLine_ID=").append(I_ReportLine_ID).append(") ")
 						.append("WHERE PA_ReportSource_ID=").append(PA_ReportSource_ID).append(" ")
 						.append(clientCheck);
-					PreparedStatement pstmt_updateSource = DB.prepareStatement
-						(sqlt.toString(), get_TrxName());
+					PreparedStatement pstmt_updateSource = null;
 					try
 					{
+						pstmt_updateSource = DB.prepareStatement(sqlt.toString(), get_TrxName());
 						no = pstmt_updateSource.executeUpdate();
 						if (log.isLoggable(Level.FINEST)) log.finest("Update ReportSource = " + no + ", I_ReportLine_ID=" + I_ReportLine_ID + ", PA_ReportSource_ID=" + PA_ReportSource_ID);
 						noUpdateSource++;
@@ -487,6 +487,8 @@ public class ImportReportLine extends SvrProcess
 			pstmt_insertSource = null;
 			DB.close(pstmt_setImported);
 			pstmt_setImported = null;
+			DB.close(pstmt_deleteSource);
+			pstmt_deleteSource = null;
 		}
 
 		//	Set Error to indicator to not imported

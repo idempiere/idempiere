@@ -432,21 +432,27 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 					prefix += "_".repeat(3-prefix.length());
 				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				File file = File.createTempFile(prefix, ".xls", new File(path));
-		        FileOutputStream fos = new FileOutputStream(file);
-	
-				// coding For Excel:
-				JRXlsExporter exporterXLS = new JRXlsExporter();
-				SimpleXlsReportConfiguration xlsConfig = new SimpleXlsReportConfiguration();
-				xlsConfig.setOnePagePerSheet(false);
-	
-				if (!isList){
-					jasperPrintList = new ArrayList<>();
-					jasperPrintList.add(jasperPrint);
+				FileOutputStream fos = null;
+				try {
+			        fos = new FileOutputStream(file);
+		
+					// coding For Excel:
+					JRXlsExporter exporterXLS = new JRXlsExporter();
+					SimpleXlsReportConfiguration xlsConfig = new SimpleXlsReportConfiguration();
+					xlsConfig.setOnePagePerSheet(false);
+		
+					if (!isList){
+						jasperPrintList = new ArrayList<>();
+						jasperPrintList.add(jasperPrint);
+					}
+					exporterXLS.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+					exporterXLS.setExporterOutput(new SimpleOutputStreamExporterOutput(fos));
+					exporterXLS.setConfiguration(xlsConfig);
+					exporterXLS.exportReport();
+				} finally {
+					if (fos != null)
+						fos.close();
 				}
-				exporterXLS.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
-				exporterXLS.setExporterOutput(new SimpleOutputStreamExporterOutput(fos));
-				exporterXLS.setConfiguration(xlsConfig);
-				exporterXLS.exportReport();
 				return new AMedia(m_title+"."+EXCEL_FILE_EXT, EXCEL_FILE_EXT, EXCEL_MIME_TYPE, file, true);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
@@ -468,21 +474,27 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 					prefix += "_".repeat(3-prefix.length());
 				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				File file = File.createTempFile(prefix, "."+EXCEL_XML_FILE_EXT, new File(path));
-		        FileOutputStream fos = new FileOutputStream(file);
+				FileOutputStream fos = null;
+				try {
+			        fos = new FileOutputStream(file);
 	
-				// coding For Excel:
-				JRXlsxExporter exporterXLSX = new JRXlsxExporter();
-				SimpleXlsxReportConfiguration xlsxConfig = new SimpleXlsxReportConfiguration();
-				xlsxConfig.setOnePagePerSheet(false);
-	
-				if (!isList){
-					jasperPrintList = new ArrayList<>();
-					jasperPrintList.add(jasperPrint);
+					// coding For Excel:
+					JRXlsxExporter exporterXLSX = new JRXlsxExporter();
+					SimpleXlsxReportConfiguration xlsxConfig = new SimpleXlsxReportConfiguration();
+					xlsxConfig.setOnePagePerSheet(false);
+		
+					if (!isList){
+						jasperPrintList = new ArrayList<>();
+						jasperPrintList.add(jasperPrint);
+					}
+					exporterXLSX.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+					exporterXLSX.setExporterOutput(new SimpleOutputStreamExporterOutput(fos));
+					exporterXLSX.setConfiguration(xlsxConfig);
+					exporterXLSX.exportReport();
+				} finally {
+					if (fos != null)
+						fos.close();
 				}
-				exporterXLSX.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
-				exporterXLSX.setExporterOutput(new SimpleOutputStreamExporterOutput(fos));
-				exporterXLSX.setConfiguration(xlsxConfig);
-				exporterXLSX.exportReport();
 				return new AMedia(m_title+"."+EXCEL_XML_FILE_EXT, EXCEL_XML_FILE_EXT, EXCEL_XML_MIME_TYPE, file, true);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
@@ -504,16 +516,21 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 					prefix += "_".repeat(3-prefix.length());
 				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				File file = File.createTempFile(prefix, "."+CSV_FILE_EXT, new File(path));
-				FileOutputStream fos = new FileOutputStream(file);
-				JRCsvExporter exporter= new JRCsvExporter();
-				if (!isList){
-					jasperPrintList = new ArrayList<>();
-					jasperPrintList.add(jasperPrint);
-				}
-				exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
-				exporter.setExporterOutput(new SimpleWriterExporterOutput(fos));
-				exporter.exportReport();
-	
+				FileOutputStream fos = null;
+				try {
+			        fos = new FileOutputStream(file);
+					JRCsvExporter exporter= new JRCsvExporter();
+					if (!isList){
+						jasperPrintList = new ArrayList<>();
+						jasperPrintList.add(jasperPrint);
+					}
+					exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+					exporter.setExporterOutput(new SimpleWriterExporterOutput(fos));
+					exporter.exportReport();
+				} finally {
+					if (fos != null)
+						fos.close();
+				}	
 				return new AMedia(m_title+"."+CSV_FILE_EXT, CSV_FILE_EXT, CSV_MIME_TYPE, file, false);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
@@ -535,19 +552,24 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 					prefix += "_".repeat(3-prefix.length());
 				if (log.isLoggable(Level.FINE)) log.log(Level.FINE, "Path="+path + " Prefix="+prefix);
 				File file = File.createTempFile(prefix, "."+SSV_FILE_EXT, new File(path));
-				FileOutputStream fos = new FileOutputStream(file);
-				JRCsvExporter exporter= new JRCsvExporter();
-				SimpleCsvExporterConfiguration csvConfig = new SimpleCsvExporterConfiguration();
-				csvConfig.setFieldDelimiter(";");
-				if (!isList){
-					jasperPrintList = new ArrayList<>();
-					jasperPrintList.add(jasperPrint);
+				FileOutputStream fos = null;
+				try {
+					fos = new FileOutputStream(file);
+					JRCsvExporter exporter= new JRCsvExporter();
+					SimpleCsvExporterConfiguration csvConfig = new SimpleCsvExporterConfiguration();
+					csvConfig.setFieldDelimiter(";");
+					if (!isList){
+						jasperPrintList = new ArrayList<>();
+						jasperPrintList.add(jasperPrint);
+					}
+					exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+					exporter.setExporterOutput(new SimpleWriterExporterOutput(fos));
+					exporter.setConfiguration(csvConfig);
+					exporter.exportReport();
+				} finally {
+					if (fos != null)
+						fos.close();
 				}
-				exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
-				exporter.setExporterOutput(new SimpleWriterExporterOutput(fos));
-				exporter.setConfiguration(csvConfig);
-				exporter.exportReport();
-	
 				return new AMedia(m_title+"."+SSV_FILE_EXT, SSV_FILE_EXT, CSV_MIME_TYPE, file, false);
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)

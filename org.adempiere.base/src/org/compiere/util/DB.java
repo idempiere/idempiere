@@ -1258,9 +1258,14 @@ public final class DB
 	{
 		// Bugfix Gunther Hoppe, 02.09.2005, vpj-cd e-evolution
 		CStatementVO info = new CStatementVO (RowSet.TYPE_SCROLL_INSENSITIVE, RowSet.CONCUR_READ_ONLY, DB.getDatabase().convertStatement(sql));
-		CPreparedStatement stmt = ProxyFactory.newCPreparedStatement(info);
-		RowSet retValue = stmt.getRowSet();
-		close(stmt);
+		CPreparedStatement stmt = null;
+		RowSet retValue = null;
+		try {
+			stmt = ProxyFactory.newCPreparedStatement(info);
+			retValue = stmt.getRowSet();
+		} finally {
+			close(stmt);			
+		}
 		return retValue;
 	}	//	getRowSet
 

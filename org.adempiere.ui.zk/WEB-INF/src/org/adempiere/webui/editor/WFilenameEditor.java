@@ -170,13 +170,19 @@ public class WFilenameEditor extends WEditor
 			if (file.inMemory()) {
 				bytes = file.getByteData();
 			} else {
-				InputStream is = file.getStreamData();
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				byte[] buf = new byte[ 1000 ];
-				int byteread = 0;
-				while (( byteread=is.read(buf) )!=-1)
-					baos.write(buf,0,byteread);
-				bytes = baos.toByteArray();
+				InputStream is = null;
+				try {
+					is = file.getStreamData();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					byte[] buf = new byte[ 1000 ];
+					int byteread = 0;
+					while (( byteread=is.read(buf) )!=-1)
+						baos.write(buf,0,byteread);
+					bytes = baos.toByteArray();
+				} finally {
+					if (is != null)
+						is.close();
+				}
 			}
 
 			fos.write(bytes);

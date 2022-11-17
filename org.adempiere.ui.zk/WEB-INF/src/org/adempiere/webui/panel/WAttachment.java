@@ -739,21 +739,26 @@ public class WAttachment extends Window implements EventListener<Event>
 	private byte[] getMediaData(Media media)  {
 		byte[] bytes = null;
 		
-		try{
-			
-	      if (media.inMemory())
-		     	bytes = media.isBinary() ? media.getByteData() : media.getStringData().getBytes(getCharset(media.getContentType()));
-		  else {
-			 InputStream is = media.getStreamData();
-			 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			 byte[] buf = new byte[ 1000 ];
-			 int byteread = 0;
-			 
-				  while (( byteread=is.read(buf) )!=-1)
-					baos.write(buf,0,byteread);
-			
-			bytes = baos.toByteArray();
-		 }
+		try {
+
+			if (media.inMemory())
+				bytes = media.isBinary() ? media.getByteData() : media.getStringData().getBytes(getCharset(media.getContentType()));
+			else {
+				InputStream is = null;
+				try {
+					is = media.getStreamData();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					byte[] buf = new byte[1000];
+					int byteread = 0;
+
+					while ((byteread = is.read(buf)) != -1)
+						baos.write(buf, 0, byteread);
+					bytes = baos.toByteArray();
+				} finally {
+					if (is != null)
+						is.close();
+				}
+			}
 		} catch (IOException e) {
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			throw new IllegalStateException(e.getLocalizedMessage());

@@ -201,6 +201,7 @@ public class InOutGenerate extends SvrProcess
 		}
 		catch (Exception e)
 		{
+			DB.close(pstmt);
 			throw new AdempiereException(e);
 		}
 		return generate(pstmt);
