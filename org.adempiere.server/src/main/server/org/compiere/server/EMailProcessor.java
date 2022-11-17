@@ -267,16 +267,45 @@ public class EMailProcessor
 
 			if (log.isLoggable(Level.INFO)) log.info("processInBox - Total=" + noProcessed + " - Errors=" + noError);
 		} finally {
-			if (errorFolder != null && errorFolder.isOpen())
-				errorFolder.close(false);
-			if (requestFolder != null && requestFolder.isOpen())
-				requestFolder.close(false);
-			if (workflowFolder != null && workflowFolder.isOpen())
-				workflowFolder.close(false);
-			if (inbox != null && inbox.isOpen())
-				inbox.close(true);
-			if (folder != null && folder.isOpen())
-				folder.close(false);
+			if (errorFolder != null && errorFolder.isOpen()) {
+				try {
+					errorFolder.close(false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (requestFolder != null && requestFolder.isOpen()) {
+				try {
+					requestFolder.close(false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}				
+			}
+			
+			if (workflowFolder != null && workflowFolder.isOpen()) {
+				try {
+					workflowFolder.close(false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (inbox != null && inbox.isOpen()) {
+				try {
+					inbox.close(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (folder != null && folder.isOpen()) {
+				try {
+					folder.close(false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return noProcessed;
 	}	//	processInBox

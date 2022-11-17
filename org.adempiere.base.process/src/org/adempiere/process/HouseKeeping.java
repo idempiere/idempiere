@@ -31,6 +31,7 @@ package org.adempiere.process;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -130,7 +131,14 @@ public class HouseKeeping extends SvrProcess{
 			finally
 			{
 				if (file != null)
-					file.close();
+				{
+					try {
+						file.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}					
+				}				
+				
 				DB.close(rs, pstmt);
 				pstmt = null;
 				rs=null;
