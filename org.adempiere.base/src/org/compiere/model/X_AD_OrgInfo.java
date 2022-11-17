@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_OrgInfo
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_OrgInfo")
 public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221101L;
 
     /** Standard Constructor */
     public X_AD_OrgInfo (Properties ctx, int AD_OrgInfo_ID, String trxName)
@@ -185,6 +185,22 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 		return ii.intValue();
 	}
 
+	/** Set D-U-N-S.
+		@param DUNS Dun &amp; Bradstreet Number
+	*/
+	public void setDUNS (String DUNS)
+	{
+		set_Value (COLUMNNAME_DUNS, DUNS);
+	}
+
+	/** Get D-U-N-S.
+		@return Dun &amp; Bradstreet Number
+	  */
+	public String getDUNS()
+	{
+		return (String)get_Value(COLUMNNAME_DUNS);
+	}
+
 	public org.compiere.model.I_M_Warehouse getDropShip_Warehouse() throws RuntimeException
 	{
 		return (org.compiere.model.I_M_Warehouse)MTable.get(getCtx(), org.compiere.model.I_M_Warehouse.Table_ID)
@@ -211,22 +227,6 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set D-U-N-S.
-		@param DUNS Dun &amp; Bradstreet Number
-	*/
-	public void setDUNS (String DUNS)
-	{
-		set_Value (COLUMNNAME_DUNS, DUNS);
-	}
-
-	/** Get D-U-N-S.
-		@return Dun &amp; Bradstreet Number
-	  */
-	public String getDUNS()
-	{
-		return (String)get_Value(COLUMNNAME_DUNS);
 	}
 
 	/** Set EMail Address.
@@ -422,6 +422,22 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 	public String getTaxID()
 	{
 		return (String)get_Value(COLUMNNAME_TaxID);
+	}
+
+	/** Set Time Zone.
+		@param TimeZone Time zone name
+	*/
+	public void setTimeZone (String TimeZone)
+	{
+		set_Value (COLUMNNAME_TimeZone, TimeZone);
+	}
+
+	/** Get Time Zone.
+		@return Time zone name
+	  */
+	public String getTimeZone()
+	{
+		return (String)get_Value(COLUMNNAME_TimeZone);
 	}
 
 	public org.compiere.model.I_C_Bank getTransferBank() throws RuntimeException

@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 
 /**
@@ -168,8 +169,18 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	protected boolean beforeSave(boolean newRecord)
 	{
 		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
+			String timeZoneId = null;
+			if((getAD_Client_ID() == 0 && getAD_Org_ID() == 0) || getAD_Org_ID() > 0) {
+				MOrgInfo orgInfo = MOrgInfo.get(getAD_Org_ID());
+				timeZoneId = orgInfo.getTimeZone();
+			}
+			
+			if(Util.isEmpty(timeZoneId, true)) {
+				MClientInfo clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID());
+				timeZoneId = clientInfo.getTimeZone();
+			}
 			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern(),
-					MClientInfo.get(getCtx(), getAD_Client_ID()).getTimeZone());
+					timeZoneId);
 			if (nextWork > 0)
 				setDateNextRun(new Timestamp(nextWork));
 		}

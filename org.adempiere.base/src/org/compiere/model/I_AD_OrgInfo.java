@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_OrgInfo
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_OrgInfo 
 {
@@ -44,23 +44,10 @@ public interface I_AD_OrgInfo
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
-
-    /** Column name AD_Org_ID */
-    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
-
-	/** Set Organization.
-	  * Organizational entity within client
-	  */
-	public void setAD_Org_ID (int AD_Org_ID);
-
-	/** Get Organization.
-	  * Organizational entity within client
-	  */
-	public int getAD_Org_ID();
 
     /** Column name AD_OrgInfo_UU */
     public static final String COLUMNNAME_AD_OrgInfo_UU = "AD_OrgInfo_UU";
@@ -85,6 +72,19 @@ public interface I_AD_OrgInfo
 	public int getAD_OrgType_ID();
 
 	public org.compiere.model.I_AD_OrgType getAD_OrgType() throws RuntimeException;
+
+    /** Column name AD_Org_ID */
+    public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
+
+	/** Set Organization.
+	  * Organizational entity within tenant
+	  */
+	public void setAD_Org_ID (int AD_Org_ID);
+
+	/** Get Organization.
+	  * Organizational entity within tenant
+	  */
+	public int getAD_Org_ID();
 
     /** Column name C_Calendar_ID */
     public static final String COLUMNNAME_C_Calendar_ID = "C_Calendar_ID";
@@ -132,21 +132,6 @@ public interface I_AD_OrgInfo
 	  */
 	public int getCreatedBy();
 
-    /** Column name DropShip_Warehouse_ID */
-    public static final String COLUMNNAME_DropShip_Warehouse_ID = "DropShip_Warehouse_ID";
-
-	/** Set Drop Ship Warehouse.
-	  * The (logical) warehouse to use for recording drop ship receipts and shipments.
-	  */
-	public void setDropShip_Warehouse_ID (int DropShip_Warehouse_ID);
-
-	/** Get Drop Ship Warehouse.
-	  * The (logical) warehouse to use for recording drop ship receipts and shipments.
-	  */
-	public int getDropShip_Warehouse_ID();
-
-	public org.compiere.model.I_M_Warehouse getDropShip_Warehouse() throws RuntimeException;
-
     /** Column name DUNS */
     public static final String COLUMNNAME_DUNS = "DUNS";
 
@@ -161,6 +146,21 @@ public interface I_AD_OrgInfo
  Bradstreet Number
 	  */
 	public String getDUNS();
+
+    /** Column name DropShip_Warehouse_ID */
+    public static final String COLUMNNAME_DropShip_Warehouse_ID = "DropShip_Warehouse_ID";
+
+	/** Set Drop Ship Warehouse.
+	  * The (logical) warehouse to use for recording drop ship receipts and shipments.
+	  */
+	public void setDropShip_Warehouse_ID (int DropShip_Warehouse_ID);
+
+	/** Get Drop Ship Warehouse.
+	  * The (logical) warehouse to use for recording drop ship receipts and shipments.
+	  */
+	public int getDropShip_Warehouse_ID();
+
+	public org.compiere.model.I_M_Warehouse getDropShip_Warehouse() throws RuntimeException;
 
     /** Column name EMail */
     public static final String COLUMNNAME_EMail = "EMail";
@@ -304,6 +304,19 @@ public interface I_AD_OrgInfo
 	  * Tax Identification
 	  */
 	public String getTaxID();
+
+    /** Column name TimeZone */
+    public static final String COLUMNNAME_TimeZone = "TimeZone";
+
+	/** Set Time Zone.
+	  * Time zone name
+	  */
+	public void setTimeZone (String TimeZone);
+
+	/** Get Time Zone.
+	  * Time zone name
+	  */
+	public String getTimeZone();
 
     /** Column name TransferBank_ID */
     public static final String COLUMNNAME_TransferBank_ID = "TransferBank_ID";

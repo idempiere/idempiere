@@ -27,6 +27,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.MClientInfo;
+import org.compiere.model.MOrgInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -123,10 +124,14 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 		
 		if (isTimestampWithTimeZone()) 
 		{
-			MClientInfo clientInfo = MClientInfo.get();
-			String timezoneId = clientInfo.getTimeZone();
-			if (Util.isEmpty(timezoneId, true))
-				timezoneId = Env.getContext(Env.getCtx(), Env.CLIENT_INFO_TIME_ZONE);
+			MOrgInfo orgInfo = MOrgInfo.get(Env.getAD_Org_ID(Env.getCtx()));
+			String timezoneId = orgInfo.getTimeZone();
+			if (Util.isEmpty(timezoneId, true)) {
+				MClientInfo clientInfo = MClientInfo.get();
+				timezoneId = clientInfo.getTimeZone();
+				if (Util.isEmpty(timezoneId, true))
+					timezoneId = Env.getContext(Env.getCtx(), Env.CLIENT_INFO_TIME_ZONE);
+			}
 			
 			if (!Util.isEmpty(timezoneId, true))
 			{
