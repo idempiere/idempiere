@@ -34,7 +34,8 @@
 				timeSeries: null,
 				timeSeriesInterval: null,
 				timeSeriesFormat: null,
-				xAxisAngle: null				
+				xAxisAngle: null,
+				chart: null				
 			},
 			
 			_dataPrepare : function() {
@@ -216,7 +217,7 @@
 								model.data["colors"] = colors;
 							}
 						}
-						var chart = bb.generate(model);						
+						wgt.chart = bb.generate(model);						
 					}
 				}
 			},
@@ -237,6 +238,10 @@
 			
 			unbind_ : function() {
 				this.$supers(Billboard, 'unbind_', arguments);
+				if (this.chart) {
+					this.chart.destroy();					
+					this.chart = null;
+				}
 			},
 			
 			doClick_ : function(event) {

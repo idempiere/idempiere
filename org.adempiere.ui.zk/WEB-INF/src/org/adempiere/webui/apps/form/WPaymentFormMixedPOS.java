@@ -58,4 +58,8 @@ public class WPaymentFormMixedPOS extends PaymentFormMixedPOS {
 	public Object getWindow() {
 		return window;
 	}
+	
+	@Override
+	protected void afterSave(boolean success) {		
+	}
 }

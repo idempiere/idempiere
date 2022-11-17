@@ -44,7 +44,7 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 	private static final long serialVersionUID = 2710316463655831868L;
 
 	private PaymentForm paymentForm;
-//	private int windowNo;
+	private int windowNo;
 	
 	private Panel mainPanel = new Panel();
 	private Panel centerPanel = new Panel();
@@ -60,7 +60,7 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		super();
 		
 		this.paymentForm = paymentForm;
-//		this.windowNo = windowNo;
+		this.windowNo = windowNo;
 
 		try {
 			zkInit();
@@ -77,6 +77,10 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 			ZKUpdateUtil.setWindowWidthX(this, 500);
 		this.setShadow(true);
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+	}
+	
+	protected int getWindowNo() {
+		return this.windowNo;
 	}
 	
 	private void zkInit() throws Exception {

@@ -368,6 +368,7 @@ public class ImportAccount extends SvrProcess
 			.append("WHERE i.C_ElementValue_ID IS NOT NULL AND e.AD_Tree_ID IS NOT NULL")
 			.append(" AND i.I_IsImported='Y' AND Processed='N' AND i.AD_Client_ID=").append(m_AD_Client_ID);
 		int noParentUpdate = 0;
+		PreparedStatement updateStmt = null;
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
@@ -376,7 +377,7 @@ public class ImportAccount extends SvrProcess
 			String updateSQL = "UPDATE AD_TreeNode SET Parent_ID=?, SeqNo=? "
 				+ "WHERE AD_Tree_ID=? AND Node_ID=?";
 			//begin e-evolution vpj-cd 15 nov 2005 PostgreSQL
-			PreparedStatement updateStmt = DB.prepareStatement(updateSQL, ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE, get_TrxName());
+			updateStmt = DB.prepareStatement(updateSQL, ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_UPDATABLE, get_TrxName());
 			//end	
 			//
 			while (rs.next())
@@ -405,6 +406,8 @@ public class ImportAccount extends SvrProcess
 		}
 		finally
 		{
+			DB.close(updateStmt);
+			updateStmt = null;
 			DB.close(rs, pstmt);
 			rs = null;
 			pstmt = null;
