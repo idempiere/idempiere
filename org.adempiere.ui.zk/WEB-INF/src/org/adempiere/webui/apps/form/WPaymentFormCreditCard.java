@@ -68,13 +68,18 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 	private Button kOnline = ButtonFactory.createNamedButton("Online");
 	private Label kStatus = new Label();
 	
+	/**
+	 * 
+	 * @param windowNo
+	 * @param mTab
+	 */
 	public WPaymentFormCreditCard(int windowNo, GridTab mTab) {
 		super(windowNo, mTab);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}
 	
-	public void init() {
+	protected void init() {
 		Grid kLayout = GridFactory.newGridLayout();
 		window.getPanel().appendChild(kLayout);		
 		kNumberField.setMaxlength(16);
@@ -226,6 +231,7 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		}
 	}
 	
+	@Override
 	public void onEvent(Event e)
 	{
 		if (e.getTarget() == kOnline) {
@@ -296,7 +302,7 @@ public class WPaymentFormCreditCard extends PaymentFormCreditCard implements Eve
 		ValueNamePair vp = kTypeCombo.getSelectedItem().toValueNamePair();
 		String CCType = vp.getValue();
 		
-		boolean ok = processOnline(CCType, kNumberField.getText(), kApprovalField.getText(), kExpField.getText());
+		boolean ok = processOnline(CCType, kNumberField.getText(), kApprovalField.getValue(), kExpField.getText());
 		if (!ok)
 			Dialog.error(getWindowNo(), "PaymentNotProcessed", processMsg);
 		else 

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Group_Acct
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_A_Asset_Group_Acct 
 {
@@ -99,8 +99,8 @@ public interface I_A_Asset_Group_Acct
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -265,12 +265,12 @@ public interface I_A_Asset_Group_Acct
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -394,12 +394,12 @@ public interface I_A_Asset_Group_Acct
     /** Column name PostingType */
     public static final String COLUMNNAME_PostingType = "PostingType";
 
-	/** Set PostingType.
+	/** Set Posting Type.
 	  * The type of posted amount for the transaction
 	  */
 	public void setPostingType (String PostingType);
 
-	/** Get PostingType.
+	/** Get Posting Type.
 	  * The type of posted amount for the transaction
 	  */
 	public String getPostingType();
@@ -457,19 +457,19 @@ public interface I_A_Asset_Group_Acct
 	/** Set Usable Life - Years.
 	  * Years of the usable life of the asset
 	  */
-	public void setUseLifeYears (int UseLifeYears);
+	public void setUseLifeYears (BigDecimal UseLifeYears);
 
 	/** Get Usable Life - Years.
 	  * Years of the usable life of the asset
 	  */
-	public int getUseLifeYears();
+	public BigDecimal getUseLifeYears();
 
     /** Column name UseLifeYears_F */
     public static final String COLUMNNAME_UseLifeYears_F = "UseLifeYears_F";
 
 	/** Set Use Life - Years (fiscal)	  */
-	public void setUseLifeYears_F (int UseLifeYears_F);
+	public void setUseLifeYears_F (BigDecimal UseLifeYears_F);
 
 	/** Get Use Life - Years (fiscal)	  */
-	public int getUseLifeYears_F();
+	public BigDecimal getUseLifeYears_F();
 }

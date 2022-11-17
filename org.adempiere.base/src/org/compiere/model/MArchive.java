@@ -48,7 +48,7 @@ public class MArchive extends X_AD_Archive {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6934821005476123632L;
+	private static final long serialVersionUID = -6343913337999164991L;
 
 	/**
 	 * Get Archives
@@ -147,7 +147,8 @@ public class MArchive extends X_AD_Archive {
 		setC_BPartner_ID(info.getC_BPartner_ID());
 	} // MArchive
 
-	public MStorageProvider provider;
+	protected MStorageProvider provider;
+	
 	/**
 	 * Get the isStoreArchiveOnFileSystem and archivePath for the client.
 	 * 
@@ -175,8 +176,12 @@ public class MArchive extends X_AD_Archive {
 		return sb.toString();
 	} // toString
 
-	public byte[] getBinaryData() {
-		
+	/**
+	 * Get data as byte[] from storage provider
+	 * 
+	 * @return byte[] or null
+	 */
+	public byte[] getBinaryData() {		
 		IArchiveStore prov = provider.getArchiveStore();
 		if (prov != null)
 			return prov.loadLOBData(this,provider);
@@ -196,7 +201,7 @@ public class MArchive extends X_AD_Archive {
 	} // getInputStream
 
 	/**
-	 * Save Binary Data to file system or db.
+	 * Save Binary Data through storage provider
 	 * 
 	 * @param inflatedData
 	 *            inflated data
@@ -258,10 +263,20 @@ public class MArchive extends X_AD_Archive {
 		return path.toString();
 	}
 
+	/**
+	 * Get byte data from BinaryData column.
+	 * Usually, your code should call getBinaryData() instead (using provider).
+	 * @return byte[]
+	 */
 	public byte[] getByteData(){
 		return super.getBinaryData();
 	}
 	
+	/**
+	 * Store byte data to BinaryData column.
+	 * Usually, your code should call setBinaryData() instead (using provider).
+	 * @param BinaryData
+	 */
 	public void setByteData(byte[] BinaryData){
 		super.setBinaryData(BinaryData);
 	}
@@ -369,4 +384,60 @@ public class MArchive extends X_AD_Archive {
 		return destZipFile;
 	}
 
+	/**
+	 * Get number of document and report archive by table and record id
+	 * 
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param trxName
+	 * @return int[], [0] = report count and [1] = document count
+	 */
+	public static int[] getReportAndDocumentCountByRecordId(int AD_Table_ID, int Record_ID, String trxName) {
+		int reportCount = 0;
+		int documentCount = 0;
+		StringBuilder sql = new StringBuilder("SELECT IsReport, COUNT(*) FROM AD_Archive ")
+				.append("WHERE (AD_Table_ID=? AND Record_ID=?) ");
+		if (AD_Table_ID == MBPartner.Table_ID)
+			sql.append(" OR C_BPartner_ID=?");
+		sql.append(" GROUP BY IsReport"); 
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql.toString(), trxName);
+			pstmt.setInt(1, AD_Table_ID);
+			pstmt.setInt(2, Record_ID);
+			if (AD_Table_ID == MBPartner.Table_ID)
+				pstmt.setInt(3, Record_ID);
+			rs = pstmt.executeQuery ();
+			while (rs.next ())
+			{
+				if ("Y".equals(rs.getString(1)))
+					reportCount += rs.getInt(2);
+				else
+					documentCount += rs.getInt(2);
+			}
+		}
+		catch (Exception e)
+		{
+			throw new AdempiereException(e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+		}
+		return new int[] {reportCount, documentCount};
+	}
+	
+	/**
+	 * Get number of report archive by table id
+	 * 
+	 * @param AD_Table_ID
+	 * @param trxName
+	 * @return Number of report archive for AD_Table_ID
+	 */
+	public static int getReportCountByTableId(int AD_Table_ID, String trxName) {
+		String sql = "SELECT COUNT(*) FROM AD_Archive WHERE AD_Table_ID=? AND IsReport='Y'";
+		return DB.getSQLValueEx(trxName, sql, AD_Table_ID);
+	}
 } // MArchive

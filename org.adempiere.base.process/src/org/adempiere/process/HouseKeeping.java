@@ -31,6 +31,7 @@ package org.adempiere.process;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -103,7 +104,7 @@ public class HouseKeeping extends SvrProcess{
 			String pathFile = houseKeeping.getBackupFolder();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 			String dateString = dateFormat.format(date);
-			FileWriter file = new FileWriter(pathFile+File.separator+tableName+dateString+".xml");
+			FileWriter file = null;
 			StringBuilder sql = new StringBuilder("SELECT * FROM ").append(tableName);
 			if (whereClause != null && whereClause.length() > 0)				
 				sql.append(" WHERE ").append(whereClause);
@@ -112,6 +113,7 @@ public class HouseKeeping extends SvrProcess{
 			StringBuffer linexml = null;
 			try
 			{
+				file = new FileWriter(pathFile+File.separator+tableName+dateString+".xml");
 				pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
@@ -121,7 +123,6 @@ public class HouseKeeping extends SvrProcess{
 				}
 				if(linexml != null)
 					file.write(linexml.toString());
-				file.close();
 			}
 			catch (Exception e)
 			{
@@ -129,6 +130,15 @@ public class HouseKeeping extends SvrProcess{
 			}
 			finally
 			{
+				if (file != null)
+				{
+					try {
+						file.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}					
+				}				
+				
 				DB.close(rs, pstmt);
 				pstmt = null;
 				rs=null;

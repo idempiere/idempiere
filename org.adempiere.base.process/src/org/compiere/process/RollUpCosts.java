@@ -175,23 +175,28 @@ public class RollUpCosts extends SvrProcess {
 			    " JOIN PP_PRODUCT_BOMLINE bl ON b.PP_PRODUCT_BOM_ID = bl.PP_PRODUCT_BOM_ID" +
 			    " WHERE b.AD_Client_ID=" + getAD_Client_ID() +" AND b.IsActive='Y' AND bl.IsActive='Y' AND b.BOMType='A' AND b.BOMUse='A')";
 			Trx trx = Trx.get(get_TrxName(), false);
-		    RowSet results = DB.getRowSet(sql);
-			while (results.next())
-			{
-				Savepoint savepoint = trx.setSavepoint(null);
-				int id= results.getInt(1);
-				String error = rollUpCosts(id);
-				if (!Util.isEmpty(error))
+			RowSet results = null;
+			try {
+				results = DB.getRowSet(sql);
+				while (results.next())
 				{
-					addLog(getAD_PInstance_ID(), null, null, "Rollup BOM Cost is not applicable for the product " + MProduct.get(getCtx(), id).getName() 
-							+ ". Details: " + error, MProduct.Table_ID, product_id);
-					trx.rollback(savepoint);
+					Savepoint savepoint = trx.setSavepoint(null);
+					int id= results.getInt(1);
+					String error = rollUpCosts(id);
+					if (!Util.isEmpty(error))
+					{
+						addLog(getAD_PInstance_ID(), null, null, "Rollup BOM Cost is not applicable for the product " + MProduct.get(getCtx(), id).getName() 
+								+ ". Details: " + error, MProduct.Table_ID, product_id);
+						trx.rollback(savepoint);
+					}
+					else
+					{
+						trx.releaseSavepoint(savepoint);
+						count++;
+					}
 				}
-				else
-				{
-					trx.releaseSavepoint(savepoint);
-					count++;
-				}
+			} finally {
+				DB.close(results);
 			}
 		}
 		else //do it for all products 
@@ -201,25 +206,30 @@ public class RollUpCosts extends SvrProcess {
 			   " JOIN PP_PRODUCT_BOMLINE bl ON b.PP_PRODUCT_BOM_ID = bl.PP_PRODUCT_BOM_ID" +
 			   " WHERE b.AD_Client_ID=" + getAD_Client_ID() +" AND b.IsActive='Y' AND bl.IsActive='Y' AND b.BOMType='A' AND b.BOMUse='A')";
 			Trx trx = Trx.get(get_TrxName(), false);
-	        RowSet results = DB.getRowSet(sql);
-		    while (results.next())
-		    {
-		    	Savepoint savepoint = trx.setSavepoint(null);
-		    	int id= results.getInt(1);		    	
-				String error = rollUpCosts(id);
-				if (!Util.isEmpty(error))
+			RowSet results = null;
+			try {
+				results = DB.getRowSet(sql);
+				while (results.next())
 				{
-					addLog(getAD_PInstance_ID(), null, null, "Rollup BOM Cost is not applicable for the product " + MProduct.get(getCtx(), id).getName() 
-							+ ". Details: " + error, MProduct.Table_ID, product_id);
-					trx.rollback(savepoint);
+					Savepoint savepoint = trx.setSavepoint(null);
+					int id= results.getInt(1);
+					String error = rollUpCosts(id);
+					if (!Util.isEmpty(error))
+					{
+						addLog(getAD_PInstance_ID(), null, null, "Rollup BOM Cost is not applicable for the product " + MProduct.get(getCtx(), id).getName() 
+								+ ". Details: " + error, MProduct.Table_ID, product_id);
+						trx.rollback(savepoint);
+					}
+					else
+					{
+						trx.releaseSavepoint(savepoint);
+						count++;
+					}
 				}
-				else
-				{
-					trx.releaseSavepoint(savepoint);
-					count++;
-				}
-		    }
-	    }
+			} finally {
+				DB.close(results);
+			}
+		}
 		
 		return count + " Product Cost Updated.";
 	}

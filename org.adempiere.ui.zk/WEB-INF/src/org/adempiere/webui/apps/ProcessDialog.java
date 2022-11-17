@@ -571,6 +571,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		}
 		
 		if (pdfList.size() > 1) {
+			List<PdfReader> pdfReaders = new ArrayList<PdfReader>();
 			try {
 				File outFile = File.createTempFile("PrintShipments", ".pdf");					
 				Document document = null;
@@ -579,6 +580,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 				{
 					String fileName = f.getAbsolutePath();
 					PdfReader reader = new PdfReader(fileName);
+					pdfReaders.add(reader);
 					reader.consolidateNamedDestinations();
 					if (document == null)
 					{
@@ -602,6 +604,11 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			} finally {
+				for (PdfReader reader : pdfReaders)
+				{
+					if (reader != null)
+						reader.close();
+				}
 				//do no harm calling this twice
 				hideBusyDialog();
 			}
@@ -656,6 +663,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		}
 		
 		if (pdfList.size() > 1) {
+			List<PdfReader> pdfReaders = new ArrayList<PdfReader>();
 			try {
 				File outFile = File.createTempFile("PrintInvoices", ".pdf");					
 				Document document = null;
@@ -663,6 +671,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 				for (File f : pdfList) 
 				{
 					PdfReader reader = new PdfReader(f.getAbsolutePath());
+					pdfReaders.add(reader);
 					if (document == null)
 					{
 						document = new Document(reader.getPageSizeWithRotation(1));
@@ -685,6 +694,11 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			} finally {
+				for (PdfReader reader : pdfReaders)
+				{
+					if (reader != null)
+						reader.close();
+				}
 				//do no harm calling this twice
 				hideBusyDialog();
 			}

@@ -51,6 +51,7 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.model.GridField;
@@ -465,6 +466,11 @@ public class ProcessParameterPanel extends Panel implements
 			box.appendChild(separator);
 			box.appendChild(editor2.getComponent());
 			row.appendChild(box);
+			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime)) 
+					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))) {
+				DateRangeButton dateRangeButton = new DateRangeButton(editor, editor2);
+				box.appendChild(dateRangeButton);
+			}
 		} else {
 			box.appendChild(editor.getComponent());
 			m_mFields2.add(null);

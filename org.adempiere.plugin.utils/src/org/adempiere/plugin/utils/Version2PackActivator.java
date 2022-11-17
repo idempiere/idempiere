@@ -194,9 +194,10 @@ public class Version2PackActivator extends AbstractActivator{
 			String suffix = "_"+path.substring(path.lastIndexOf("2Pack_"));
 			logger.log(Level.WARNING, "Installing " + getName() + " " + path + " ...");
 			FileOutputStream zipstream = null;
+			InputStream stream = null;
 			try {
 				// copy the resource to a temporary file to process it with 2pack
-				InputStream stream = packout.openStream();
+				stream = packout.openStream();
 				File zipfile = File.createTempFile(getName()+"_", suffix);
 				zipstream = new FileOutputStream(zipfile);
 			    byte[] buffer = new byte[1024];
@@ -214,6 +215,11 @@ public class Version2PackActivator extends AbstractActivator{
 				if (zipstream != null) {
 					try {
 						zipstream.close();
+					} catch (Exception e2) {}
+				}
+				if (stream != null) {
+					try {
+						stream.close();
 					} catch (Exception e2) {}
 				}
 			}
