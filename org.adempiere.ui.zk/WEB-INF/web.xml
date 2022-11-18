@@ -8,6 +8,18 @@
 		<param-name>org.eclipse.jetty.servlet.SessionCookie</param-name>
 		<param-value>WEBUI_SESSIONID</param-value>
 	</context-param>
+
+	<filter>
+		<display-name>iDempiere WebUI Filter</display-name>
+		<filter-name>idempiereWebuiFilter</filter-name>
+		<filter-class>org.adempiere.webui.sso.filter.SSOWebuiFilter</filter-class>
+		<async-supported>true</async-supported>
+	</filter>
+	<filter-mapping>
+		<filter-name>idempiereWebuiFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<servlet>
       <servlet-name>AtmosphereServlet</servlet-name>
       <servlet-class>org.atmosphere.cpr.AtmosphereServlet</servlet-class>

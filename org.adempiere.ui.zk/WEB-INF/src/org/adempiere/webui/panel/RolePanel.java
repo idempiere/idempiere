@@ -26,6 +26,7 @@ package org.adempiere.webui.panel;
 import java.sql.Timestamp;
 import java.util.Properties;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
@@ -434,6 +435,12 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
                 	lstRole.setSelectedIndex(0);
                 }
             }
+			else
+			{
+				boolean isAlreadyAuthenticate = "Y".equalsIgnoreCase(Env.getContext(Env.getCtx(), Env.SSO_IS_ALREADY_AUTHENTICATE));
+				if (isAlreadyAuthenticate)
+					throw new AdempiereException("UserNoRoleError");
+			}
             //
 
     		// If we have only one role, we can make readonly the combobox

@@ -214,7 +214,8 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		ArrayList<Integer> clientsValidated = new ArrayList<Integer>();
 		MUser retValue = null;
 		
-		StringBuilder where = new StringBuilder("Password IS NOT NULL AND ");
+		boolean isAlreadyAuthenticate = "Y".equalsIgnoreCase(Env.getContext(Env.getCtx(), Env.SSO_IS_ALREADY_AUTHENTICATE));
+		StringBuilder where = new StringBuilder(isAlreadyAuthenticate ? "" : " u.Password IS NOT NULL AND");
 		if (email_login)
 			where.append("EMail=?");
 		else

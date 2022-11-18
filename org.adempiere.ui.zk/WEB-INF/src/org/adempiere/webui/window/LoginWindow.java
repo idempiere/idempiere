@@ -26,9 +26,11 @@ package org.adempiere.webui.window;
 import java.sql.Timestamp;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpSession;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.IWebClient;
 import org.adempiere.webui.component.FWindow;
@@ -40,15 +42,22 @@ import org.adempiere.webui.panel.RolePanel;
 import org.adempiere.webui.panel.ValidateMFAPanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.sso.ISSOPrinciple;
+import org.adempiere.webui.sso.SSOUtils;
+import org.adempiere.webui.sso.filter.SSOWebuiFilter;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.UserPreference;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.compiere.util.ValueNamePair;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
@@ -73,6 +82,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 	 * 
 	 */
 	private static final long serialVersionUID = 8570332386555237381L;
+	protected static final CLogger log = CLogger.getCLogger(LoginWindow.class);
 
 	protected IWebClient app;
     protected Properties ctx;
@@ -91,7 +101,8 @@ public class LoginWindow extends FWindow implements EventListener<Event>
     	this.ctx = Env.getCtx();
         this.app = app;
         initComponents();
-        this.appendChild(pnlLogin);
+		if (pnlLogin != null)
+			this.appendChild(pnlLogin);
         this.setStyle("background-color: transparent");
         // add listener on 'ENTER' key for the login window
         addEventListener(Events.ON_OK,this);
@@ -99,10 +110,68 @@ public class LoginWindow extends FWindow implements EventListener<Event>
         setWidgetListener("onOK", "zAu.cmd0.showBusy(null)");
     }
 
-    private void initComponents()
-    {
-        createLoginPanel();
-    }
+	private void initComponents()
+	{
+		Object result = getDesktop().getSession().getAttribute(ISSOPrinciple.SSO_PRINCIPLE_SESSION_NAME);
+		if (result == null)
+		{
+			createLoginPanel();
+		}
+		else
+		{
+			ssoLogin(result);
+		}
+	}
+
+	/**
+	 * Show role panel after SSO authentication.
+	 * 
+	 * @param result session principle to get user and language.
+	 */
+	private void ssoLogin(Object result)
+	{
+		String errorMessage = null;
+		try
+		{
+			ISSOPrinciple ssoPrinciple = SSOWebuiFilter.getSSOPrinciple();
+			String username = ssoPrinciple.getUserName(result);
+			Language language = ssoPrinciple.getLanguage(result);
+			boolean isEmailLogin = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+			if (Util.isEmpty(username))
+				throw new AdempiereException("No Apps " + (isEmailLogin ? "Email" : "User"));
+			if (language == null)
+				language = Language.getBaseLanguage();
+
+			Env.setContext(ctx, UserPreference.LANGUAGE_NAME, language.getName());
+			Locale locale = language.getLocale();
+			getDesktop().getSession().setAttribute(Attributes.PREFERRED_LOCALE, locale);
+
+			Login login = new Login(ctx);
+			Env.setContext(ctx, Env.SSO_IS_ALREADY_AUTHENTICATE, true);
+			KeyNamePair[] clients = login.getClients(username, null, null);
+			if (clients != null)
+				loginOk(username, true, clients);
+			else
+			{
+				log.log(Level.WARNING,"No Client found for user:" + username);
+				ValueNamePair error = CLogger.retrieveError();
+				if (error == null)
+					error = CLogger.retrieveWarning();
+				errorMessage = Msg.getMsg(language, error.getValue(), new Object[] { error.getName() });
+			}
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, e.getMessage(), e);
+			errorMessage = e.getLocalizedMessage();
+		}
+
+		if (!Util.isEmpty(errorMessage))
+		{
+			SSOUtils.setErrorMessageText(errorMessage);
+			Executions.sendRedirect(SSOUtils.ERROR_VALIDATION);
+		}
+	}
 
 	protected void createLoginPanel() {
 		pnlLogin = new LoginPanel(ctx, this);
