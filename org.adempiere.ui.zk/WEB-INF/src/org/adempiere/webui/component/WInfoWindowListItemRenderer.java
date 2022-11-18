@@ -37,7 +37,10 @@ import org.compiere.model.MStyle;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.KeyNamePair;
+import org.zkoss.zhtml.Text;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Span;
 
 public class WInfoWindowListItemRenderer extends WListItemRenderer
 {
@@ -83,46 +86,46 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 			final WEditor editor = WebEditorFactory.getEditor(gridField, false);
 
 			if(model.isSelected(obj)) // First index may be null
-		{
-			if(infoColumn.isReadOnly() == false 
-					&& columnIndex > 0)
 			{
-				ListCell listCell = new ListCell();
-
-				
-				// Set editor value
-				
-				Object value = table.getValueAt(rowIndex, columnIndex);
-				
-				if(value instanceof IDColumn)
+				if(infoColumn.isReadOnly() == false 
+						&& columnIndex > 0)
 				{
-					IDColumn idc = (IDColumn)value;
-					value = idc.getRecord_ID();
-				}
-				else if(value instanceof KeyNamePair)
-				{
-					KeyNamePair knp = (KeyNamePair)value;
-					value = knp.getKey();
-				}
-				
-				editor.setValue(value);
-				
-				editor.addValueChangeListener(new ValueChangeListener()
-				{					
-					@Override
-					public void valueChange(ValueChangeEvent evt)
+					ListCell listCell = new ListCell();
+	
+					
+					// Set editor value
+					
+					Object value = table.getValueAt(rowIndex, columnIndex);
+					
+					if(value instanceof IDColumn)
 					{
-						infoWindow.onCellEditCallback(evt, rowIndex, columnIndex, editor, gridField);
+						IDColumn idc = (IDColumn)value;
+						value = idc.getRecord_ID();
 					}
-				});
-				
-				listCell.appendChild(editor.getComponent());
-				listcell = listCell;
+					else if(value instanceof KeyNamePair)
+					{
+						KeyNamePair knp = (KeyNamePair)value;
+						value = knp.getKey();
+					}
+					
+					editor.setValue(value);
+					
+					editor.addValueChangeListener(new ValueChangeListener()
+					{					
+						@Override
+						public void valueChange(ValueChangeEvent evt)
+						{
+							infoWindow.onCellEditCallback(evt, rowIndex, columnIndex, editor, gridField);
+						}
+					});
+					
+					listCell.appendChild(editor.getComponent());
+					listcell = listCell;
+				}
 			}
-		}
-		
-		if(listcell == null)
-			listcell = super.getCellComponent(table, field, rowIndex, columnIndex);
+			
+			if(listcell == null)
+				listcell = super.getCellComponent(table, field, rowIndex, columnIndex);
 		
 			if (gridField.getAD_FieldStyle_ID() > 0)
 			{
@@ -149,14 +152,15 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 						return value;
 					}
 				});
-				if (styleStr != null && styleStr.startsWith(MStyle.SCLASS_PREFIX)) {
-					String sclass = styleStr.substring(MStyle.SCLASS_PREFIX.length());
-					listcell.setSclass(sclass);
-				} else if (style != null && styleStr.startsWith(MStyle.ZCLASS_PREFIX)) {
-					String zclass = styleStr.substring(MStyle.ZCLASS_PREFIX.length());
-					listcell.setZclass(zclass);
-				} else {
-					ZkCssHelper.appendStyle(listcell, styleStr);
+				if(style.getAD_StyleScope().equals(MStyle.AD_STYLESCOPE_SpanChild)) {
+					Span span = new Span();
+					span.appendChild(new Text(listcell.getValue()));
+					listcell.setLabel(null);
+					listcell.appendChild(span);
+					setStyle(span, styleStr);
+				}
+				else {
+					setStyle(listcell, styleStr);
 				}
 			}
 		}
@@ -167,6 +171,18 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 		return listcell;
 	}
 
+	private void setStyle(HtmlBasedComponent component, String style) {
+		if (style != null && style.startsWith(MStyle.SCLASS_PREFIX)) {
+			String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
+			component.setSclass(sclass);
+		} else if (style != null && style.startsWith(MStyle.ZCLASS_PREFIX)) {
+			String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
+			component.setZclass(zclass);
+		} else {
+			ZkCssHelper.appendStyle(component, style);
+		}
+	}
+	
 //
 //	//devCoffee #5960 - Get CSS Style if pass through display logic.
 //	private String getStatusStyle(ListCell listcell, PO po) {
