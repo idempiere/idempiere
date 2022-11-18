@@ -1205,9 +1205,11 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	listPanel.dynamicDisplay(col);
         }
         
-        for (ToolbarProcessButton btn : toolbarProcessButtons) {
-        	btn.dynamicDisplay();
-        }
+		for (ToolbarProcessButton btn : toolbarProcessButtons) {
+			btn.dynamicDisplay();
+			btn.readOnlyLogic();
+			btn.pressedLogic();
+		}
 
         Events.sendEvent(this, new Event(ON_DYNAMIC_DISPLAY_EVENT, this));
         echoDeferSetSelectedNodeEvent();
