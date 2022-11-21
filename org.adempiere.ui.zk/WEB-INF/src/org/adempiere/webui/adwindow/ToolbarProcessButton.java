@@ -158,7 +158,6 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 		if (logic.startsWith("@SQL=")) {
 			isValid = Evaluator.parseSQLLogic(logic, Env.getCtx(), windowNo, tabNo, getColumnName());
 		} else {
-			logic = Env.parseContext(Env.getCtx(), windowNo, tabNo, logic, false);
 			isValid = Evaluator.evaluateLogic(this, logic);
 		}
 
