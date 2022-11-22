@@ -163,7 +163,6 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 		}
 		else
 		{
-			logic = Env.parseContext(Env.getCtx(), windowNo, tabNo, logic, false);
 			isValid = Evaluator.evaluateLogic(this, logic);
 		}
 
