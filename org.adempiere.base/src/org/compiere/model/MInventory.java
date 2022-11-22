@@ -526,6 +526,34 @@ public class MInventory extends X_M_Inventory implements DocAction
 				}
 	
 				//If Quantity Count minus Quantity Book = Zero, then no change in Inventory
+				if(MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv)) {
+					// We want to update Date Last Inventory on this records as well. 
+					if (line.getM_AttributeSetInstance_ID() == 0 ) {							
+						MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
+								null, MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), true, line.getM_Locator_ID(), get_TrxName(), false);	
+						if(storages != null) {
+							for(MStorageOnHand storage: storages) {										
+								storage.setDateLastInventory(getMovementDate());
+								if (!storage.save(get_TrxName())) {
+									m_processMsg = "Storage not updated(2)";
+									return DocAction.STATUS_Invalid;
+								}		
+							}						
+						}												
+					} else {
+						MStorageOnHand[] storages = MStorageOnHand.getAll(getCtx(), line.getM_Locator_ID(), 
+								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), null, false, get_TrxName());						
+						if(storages != null) {
+							for(MStorageOnHand storage: storages) {										
+								storage.setDateLastInventory(getMovementDate());
+								if (!storage.save(get_TrxName())) {
+									m_processMsg = "Storage not updated(2)";
+									return DocAction.STATUS_Invalid;
+								}		
+							}						
+						}	
+					}														
+				}
 				if (qtyDiff.signum() == 0)
 					continue;
 	

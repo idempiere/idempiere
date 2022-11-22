@@ -242,7 +242,55 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		list.toArray(retValue);
 		return retValue;
 	}	//	getAll
-
+	
+	/**
+	 * 	Get Storage Info
+	 *	@param ctx context
+	 *	@param M_Locator_ID locator
+	 *	@param M_Product_ID product
+	 *	@param M_AttributeSetInstance_ID instance
+	 *  @param dateMPolicy
+	 *  @param ignoreZeroQty
+	 *	@param trxName transaction
+	 *	@return existing or null
+	 */
+	public static MStorageOnHand[] getAll (Properties ctx, 
+		int M_Locator_ID, int M_Product_ID, int M_AttributeSetInstance_ID, Timestamp dateMPolicy, boolean ignoreZeroQty, String trxName)
+	{
+		String sqlWhere = "M_Locator_ID=? AND M_Product_ID=? AND ";
+		
+		if (M_AttributeSetInstance_ID == 0)
+			sqlWhere += "(M_AttributeSetInstance_ID=? OR M_AttributeSetInstance_ID IS NULL)";
+		else
+			sqlWhere += "M_AttributeSetInstance_ID=?";
+		
+		if(ignoreZeroQty)
+			sqlWhere += " AND QtyOnHand<>0 ";
+		
+		if (dateMPolicy != null)
+			sqlWhere += " AND DateMaterialPolicy=trunc(cast(? as date))";
+		
+		Query query = new Query(ctx, MStorageOnHand.Table_Name, sqlWhere, trxName);
+		
+		if (dateMPolicy != null)
+			query.setParameters(M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, dateMPolicy);
+		else
+			query.setParameters(M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID);
+		
+		List<MStorageOnHand> list = query.list();
+		
+		if (list == null) {
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("Not Found - M_Locator_ID=" + M_Locator_ID 
+					+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
+		} else {
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("M_Locator_ID=" + M_Locator_ID 
+					+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
+		}
+		
+		MStorageOnHand[] retValue = new MStorageOnHand[list.size()];
+		list.toArray(retValue);
+		return retValue;
+	}	//	getAll
 	
 	/**
 	 * 	Get Storage Info for Product across warehouses
