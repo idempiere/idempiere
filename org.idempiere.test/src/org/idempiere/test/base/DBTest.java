@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -274,4 +275,20 @@ public class DBTest extends AbstractTestCase
 		}
 		assertEquals(3, match);
 	}
+
+	@Test
+	public void test_NVL() throws Exception
+	{
+		// multi datatype NVL
+		// numeric, integer
+		BigDecimal result = DB.getSQLValueBDEx(null, "SELECT NVL(GrandTotal, 0) FROM C_Order WHERE C_Order_ID=100");
+		assertTrue(result != null);
+		// integer, numeric
+		result = DB.getSQLValueBDEx(null, "SELECT NVL(10, C_Order_ID) FROM C_Order WHERE C_Order_ID=100");
+		assertTrue(result != null);
+		// Varchar, Text
+		String resultStr = DB.getSQLValueStringEx(null, "SELECT NVL(Description, C_Charge_ID||' ') FROM C_Charge WHERE C_Charge_ID=101");
+		assertTrue(resultStr != null);
+	}
+	
 }
