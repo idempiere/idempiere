@@ -459,12 +459,20 @@ public class MPInstance extends X_AD_PInstance
 		List<MPInstance> list = new ArrayList<MPInstance>();
 		List<String> paramsStrAdded = new ArrayList<String>();
 
-		List<MPInstance> namedInstances = new Query(ctx, Table_Name, "AD_Process_ID=? AND AD_User_ID=? AND Name IS NOT NULL", null)
-			.setClient_ID()
+		StringBuilder whereClause = new StringBuilder("AD_Process_ID = ? AND Name IS NOT NULL AND (")
+				.append(" (AD_Client_ID = 0 AND AD_Role_ID IS NULL AND AD_User_ID IS NULL)")
+				.append(" OR (AD_Client_ID = ? ")
+				.append(" AND (AD_Org_ID IS NULL OR AD_Org_ID IN (0, ?))")
+				.append(" AND (AD_Role_ID IS NULL OR AD_Role_ID = ? OR AD_Role_ID IN (SELECT Included_Role_ID FROM AD_Role_Included WHERE AD_Role_ID = ? AND IsActive = 'Y'))")
+				.append(" AND (AD_User_ID IS NULL OR AD_User_ID = ?)")
+				.append("))");
+
+		List<MPInstance> namedInstances = new Query(ctx, Table_Name, whereClause.toString(), null)
 			.setOnlyActiveRecords(true)
-			.setParameters(AD_Process_ID, AD_User_ID)
+			.setParameters(AD_Process_ID, Env.getAD_Client_ID(ctx), Env.getAD_Org_ID(ctx), Env.getAD_Role_ID(ctx), Env.getAD_Role_ID(ctx), AD_User_ID)
 			.setOrderBy("Name")
 			.list();
+
 		for (MPInstance namedInstance : namedInstances) {
 			list.add(namedInstance);
 			paramsStrAdded.add(namedInstance.getParamsStr());
