@@ -28,3 +28,13 @@ BEGIN
 END;
 $function$
 ;
+
+CREATE or REPLACE FUNCTION nvl (text, text ) RETURNS text
+LANGUAGE plpgsql
+IMMUTABLE 
+AS $function$  
+BEGIN
+    RETURN COALESCE($1, $2);
+END;
+$function$
+;
