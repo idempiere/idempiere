@@ -38,6 +38,7 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.grid.AbstractWQuickEntry;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -51,6 +52,7 @@ import org.compiere.model.MColumn;
 import org.compiere.model.MLocation;
 import org.compiere.model.MLocator;
 import org.compiere.model.MLookup;
+import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -249,11 +251,14 @@ ContextMenuListener, IZoomableEditor
         int posPoint = tableName_temp.indexOf(".");
 		String tableName = tableName_temp.substring(0, posPoint);
 		
+		boolean enableDrill = false;
+		if(getGridField() != null && getGridField().getGridTab() != null && getGridField().getColumnName().endsWith("_ID"))
+			enableDrill = true;
         if (tableName.toUpperCase().equals("C_BPARTNER_LOCATION"))    				
 		{
-			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, true, lookup);
+			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, true, enableDrill, lookup);
 		} else {
-        	popupMenu = new WEditorPopupMenu(zoom, true, isShowPreference(), false, false, false, lookup);
+        	popupMenu = new WEditorPopupMenu(zoom, true, isShowPreference(), false, false, false, enableDrill, lookup);
 		}
     	addChangeLogMenu(popupMenu);
     	
@@ -655,6 +660,25 @@ ContextMenuListener, IZoomableEditor
     	return lookup;
     }
     
+    protected void actionDrill() {
+    	if(getGridField() == null && getGridField().getGridTab() == null)
+    		return;
+    	
+    	String columnName = getGridField().getColumnName();;
+    	String tableName = "";
+    	
+    	if(columnName.endsWith("_ID"))
+    		tableName = columnName.substring(0, columnName.length()-3);
+    	else
+    		return;
+		MQuery query = new MQuery(tableName);
+		query.addRestriction(columnName, MQuery.EQUAL, oldValue);
+		int windowNo = getGridField().getGridTab().getWindowNo();
+		DrillData data = new DrillData(query, columnName, oldValue, columnName, null);
+		
+		AEnv.actionDrill(data, windowNo);
+	}
+    
 	/**
 	 *	Action - Special Quick Entry Screen
 	 *  @param newRecord true if new record should be created
@@ -774,6 +798,10 @@ ContextMenuListener, IZoomableEditor
 				actionRefresh();
 				getLabel().setText(">" + champ + "<");
 			}
+		}
+		else if (WEditorPopupMenu.DRILL_EVENT.equals(evt.getContextEvent()))
+		{
+			actionDrill();
 		}
 		// IDEMPIERE 90
 	}

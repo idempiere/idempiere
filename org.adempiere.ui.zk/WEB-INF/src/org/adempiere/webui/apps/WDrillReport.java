@@ -62,7 +62,6 @@ import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zhtml.Tr;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlNativeComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -100,10 +99,9 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	/**
 	 *
 	 * @param data
-	 * @param parent
 	 * @param WindowNo
 	 */
-	public WDrillReport(DrillData data, Component parent, int WindowNo) {
+	public WDrillReport(DrillData data, int WindowNo) {
 		super();
 		this.windowNo = WindowNo;
 		drillReportCtl = new DrillReportCtl(data.getQuery().getTableName(), data.getQuery(), data.getColumnName(), data.getValue(), data.getDisplayValue(), WindowNo);
