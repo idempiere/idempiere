@@ -133,3 +133,23 @@ input[type="checkbox"]:focus
     color: #252525 !important;
     opacity: .8;
 }
+
+.date-picker-container {
+	padding-left: 5px;
+}
+
+.date-picker-component {
+	display: inline-grid;
+	min-height: 25px;
+	border-radius: 5px;
+	margin: 0px 5px 5px 0px !important;
+}
+
+.date-picker-component .z-listbox {
+	border: none;
+}
+
+.date-picker-label {
+	font-weight: bold;
+	margin: 5px;
+}

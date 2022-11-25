@@ -1731,7 +1731,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		            	sb.append(origmsg);
 					} else {
 		            	String adMessageQuot = Util.replace(adMessage.toString(), "'", "''");
-		            	sb.append(MessageFormat.format(adMessageQuot, arguments));
+				sb.append(new MessageFormat(adMessageQuot, Env.getLanguage(Env.getCtx()).getLocale()).format(arguments));
 	            	}
 	            }
 	            else

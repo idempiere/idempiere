@@ -201,7 +201,7 @@ public class MRMATax extends X_M_RMATax
 				rmaTax.set_TrxName(trxName);
 				rmaTax.setClientOrg(line);
 				rmaTax.setM_RMA_ID(line.getM_RMA_ID());
-				rmaTax.setC_Tax_ID(line.getC_Tax_ID());
+				rmaTax.setC_Tax_ID(cTax.getC_Tax_ID());
 				rmaTax.setPrecision(precision);
 				rmaTax.setIsTaxIncluded(line.getParent().isTaxIncluded());
 				rmaTaxes.add(rmaTax);
@@ -288,8 +288,13 @@ public class MRMATax extends X_M_RMATax
 		//
 		boolean documentLevel = getTax().isDocumentLevel();
 		MTax tax = getTax();
+		int parentTaxId = tax.getParent_Tax_ID();
 		//
-		String sql = "SELECT LineNetAmt FROM M_RMALine WHERE M_RMA_ID=? AND C_Tax_ID=?";
+		String sql = "SELECT LineNetAmt FROM M_RMALine WHERE M_RMA_ID=? ";
+		if (parentTaxId > 0)
+			sql += "AND C_Tax_ID IN (?, ?) ";
+		else
+			sql += "AND C_Tax_ID=? ";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -297,6 +302,8 @@ public class MRMATax extends X_M_RMATax
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, getM_RMA_ID());
 			pstmt.setInt (2, getC_Tax_ID());
+			if (parentTaxId > 0)
+				pstmt.setInt(3,  parentTaxId);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{

@@ -126,14 +126,8 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 		String displayLogic = mToolbarButton.getDisplayLogic();
 		if (displayLogic == null || displayLogic.trim().length() == 0)
 			return;
-		
-		boolean visible = true;
-		if (displayLogic.startsWith("@SQL=")) {
-			visible = Evaluator.parseSQLLogic(displayLogic, Env.getCtx(), windowNo, adTabpanel.getTabNo(), mToolbarButton.getActionName());
-		}else {
-			visible = Evaluator.evaluateLogic(this, displayLogic);	
-		}
 
+		boolean visible = validateLogic(displayLogic, adTabpanel.getTabNo());
 		button.setVisible(visible);
 	}
 
@@ -145,4 +139,36 @@ public class ToolbarProcessButton implements IProcessButton, Evaluatee {
 	    else
 	    	return Env.getContext (Env.getCtx(), windowNo, tabNo, variableName, false, true);
 	}
+
+	public void readOnlyLogic() {
+
+		String readOnlyLogic = mToolbarButton.getReadOnlyLogic();
+		if (readOnlyLogic == null || readOnlyLogic.trim().length() == 0)
+			return;
+
+		boolean disabled = validateLogic(readOnlyLogic, adTabpanel.getTabNo());
+		button.setDisabled(disabled);
+	} // readOnlyLogic
+
+	public void pressedLogic() {
+
+		String pressedLogic = mToolbarButton.getPressedLogic();
+		if (pressedLogic == null || pressedLogic.trim().length() == 0)
+			return;
+
+		boolean isPressed = validateLogic(pressedLogic, adTabpanel.getTabNo());
+		button.setAttribute(ProcessButtonPopup.BUTTON_ATTRIBUTE_PRESSED, isPressed ? "Y" : "N");
+	} // pressedLogic
+
+	private boolean validateLogic(String logic, int tabNo) {
+
+		boolean isValid = false;
+		if (logic.startsWith("@SQL=")) {
+			isValid = Evaluator.parseSQLLogic(logic, Env.getCtx(), windowNo, tabNo, getColumnName());
+		} else {
+			isValid = Evaluator.evaluateLogic(this, logic);
+		}
+
+		return isValid;
+	} // validateLogic
 }

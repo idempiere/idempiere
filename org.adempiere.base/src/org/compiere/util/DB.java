@@ -30,7 +30,6 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -583,8 +582,7 @@ public final class DB
 
         String AD_Message = "DatabaseVersionError";
         //  Code assumes Database version {0}, but Database has Version {1}.
-        String msg = Msg.getMsg(ctx, AD_Message);   //  complete message
-        msg = MessageFormat.format(msg, new Object[] {Adempiere.DB_VERSION, version});
+        String msg = Msg.getMsg(ctx, AD_Message, new Object[] {Adempiere.DB_VERSION, version});   //  complete message
         System.err.println(msg);
         return false;
 	}   //  isDatabaseOK
@@ -635,8 +633,7 @@ public final class DB
 
         String AD_Message = "BuildVersionError";
         // The program assumes build version {0}, but database has build Version {1}.
-        String msg = Msg.getMsg(ctx, AD_Message);   //  complete message
-        msg = MessageFormat.format(msg, new Object[] {buildClient, buildDatabase});
+        String msg = Msg.getMsg(ctx, AD_Message, new Object[] {buildClient, buildDatabase});   //  complete message
         if (! failOnBuild) {
         	log.warning(msg);
         	return true;
@@ -1221,9 +1218,14 @@ public final class DB
 	{
 		// Bugfix Gunther Hoppe, 02.09.2005, vpj-cd e-evolution
 		CStatementVO info = new CStatementVO (RowSet.TYPE_SCROLL_INSENSITIVE, RowSet.CONCUR_READ_ONLY, DB.getDatabase().convertStatement(sql));
-		CPreparedStatement stmt = ProxyFactory.newCPreparedStatement(info);
-		RowSet retValue = stmt.getRowSet();
-		close(stmt);
+		CPreparedStatement stmt = null;
+		RowSet retValue = null;
+		try {
+			stmt = ProxyFactory.newCPreparedStatement(info);
+			retValue = stmt.getRowSet();
+		} finally {
+			close(stmt);			
+		}
 		return retValue;
 	}	//	getRowSet
 

@@ -1,0 +1,82 @@
+-- IDEMPIERE-5451 Create a form SQL Query - similar to SQL process to execute queries (FHCA-3849)
+SELECT register_migration_script('202210131930_IDEMPIERE-5451.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Oct 13, 2022, 7:30:19 PM CEST
+INSERT INTO AD_Form (AD_Form_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,Help,Classname,AccessLevel,EntityType,IsBetaFunctionality,AD_Form_UU) VALUES (200018,0,0,'Y',TO_TIMESTAMP('2022-10-13 19:30:19','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-10-13 19:30:19','YYYY-MM-DD HH24:MI:SS'),100,'SQL Process','Process SQL Queries','Process SQL Queries','org.adempiere.webui.apps.form.WSQLQuery','4','D','N','c14e305d-8d88-4ee5-9cf6-b2e5ce1213b6')
+;
+
+-- Oct 13, 2022, 7:30:35 PM CEST
+UPDATE AD_Form SET Name='SQL Query',Updated=TO_TIMESTAMP('2022-10-13 19:30:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Form_ID=200018
+;
+
+-- Oct 13, 2022, 7:31:00 PM CEST
+INSERT INTO AD_Menu (AD_Menu_ID,Name,Description,Action,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,IsSOTrx,AD_Form_ID,IsReadOnly,EntityType,IsCentrallyMaintained,AD_Menu_UU) VALUES (200218,'SQL Query','Process SQL Queries','X',0,0,'Y',TO_TIMESTAMP('2022-10-13 19:31:00','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-10-13 19:31:00','YYYY-MM-DD HH24:MI:SS'),100,'N','N',200018,'N','D','Y','08ed5ba3-ade5-41af-8abc-a10066e072e3')
+;
+
+-- Oct 13, 2022, 7:31:00 PM CEST
+INSERT INTO AD_TreeNodeMM (AD_Client_ID,AD_Org_ID, IsActive,Created,CreatedBy,Updated,UpdatedBy, AD_Tree_ID, Node_ID, Parent_ID, SeqNo, AD_TreeNodeMM_UU) SELECT t.AD_Client_ID, 0, 'Y', getDate(), 100, getDate(), 100,t.AD_Tree_ID, 200218, 0, 999, Generate_UUID() FROM AD_Tree t WHERE t.AD_Client_ID=0 AND t.IsActive='Y' AND t.IsAllNodes='Y' AND t.TreeType='MM' AND NOT EXISTS (SELECT * FROM AD_TreeNodeMM e WHERE e.AD_Tree_ID=t.AD_Tree_ID AND Node_ID=200218)
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=12,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=200218
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=13,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=289
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=14,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=302
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=15,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=200168
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=16,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=200169
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=17,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=303
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=18,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=200047
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=19,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=200048
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=20,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=321
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=21,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=461
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=22,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=53193
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=23,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=200161
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=24,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=53322
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=25,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=383
+;
+
+-- Oct 13, 2022, 7:31:15 PM CEST
+UPDATE AD_TreeNodeMM SET Parent_ID=155, SeqNo=26,Updated=TO_TIMESTAMP('2022-10-13 19:31:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=200177
+;
+
