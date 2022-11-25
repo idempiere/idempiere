@@ -255,7 +255,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@return existing or null
 	 */
 	public static MStorageOnHand[] getAll (Properties ctx, 
-		int M_Locator_ID, int M_Product_ID, int M_AttributeSetInstance_ID, Timestamp dateMPolicy, boolean ignoreZeroQty, String trxName)
+		int M_Product_ID, int M_Locator_ID, int M_AttributeSetInstance_ID, Timestamp dateMPolicy, boolean ignoreZeroQty, String trxName)
 	{
 		String sqlWhere = "M_Locator_ID=? AND M_Product_ID=? AND ";
 		
@@ -279,11 +279,11 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		
 		List<MStorageOnHand> list = query.list();
 		
-		if (list == null) {
+		if (list == null || list.isEmpty()) {
 			if (s_log.isLoggable(Level.FINE)) s_log.fine("Not Found - M_Locator_ID=" + M_Locator_ID 
 					+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
 		} else {
-			if (s_log.isLoggable(Level.FINE)) s_log.fine("M_Locator_ID=" + M_Locator_ID 
+			if (s_log.isLoggable(Level.FINE)) s_log.fine("Found " + list.size() + " - M_Locator_ID=" + M_Locator_ID 
 					+ ", M_Product_ID=" + M_Product_ID + ", M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
 		}
 		

@@ -526,7 +526,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				}
 	
 				//If Quantity Count minus Quantity Book = Zero, then no change in Inventory
-				if(MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv)) {
+				if(MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv) && !isReversal()) {
 					// We want to update Date Last Inventory on this records as well. 
 					if (line.getM_AttributeSetInstance_ID() == 0 ) {							
 						MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), getM_Warehouse_ID(), line.getM_Product_ID(), 0,
@@ -535,7 +535,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 							for(MStorageOnHand storage: storages) {										
 								storage.setDateLastInventory(getMovementDate());
 								if (!storage.save(get_TrxName())) {
-									m_processMsg = "Storage not updated(2)";
+									m_processMsg = "Storage on hand not updated for DateLastInventory";
 									return DocAction.STATUS_Invalid;
 								}		
 							}						
@@ -547,7 +547,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 							for(MStorageOnHand storage: storages) {										
 								storage.setDateLastInventory(getMovementDate());
 								if (!storage.save(get_TrxName())) {
-									m_processMsg = "Storage not updated(2)";
+									m_processMsg = "Storage on hand not updated for DateLastInventory";
 									return DocAction.STATUS_Invalid;
 								}		
 							}						
@@ -606,19 +606,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 								return DocAction.STATUS_Invalid;
 							}
 	
-							// Only Update Date Last Inventory if is a Physical Inventory
-							if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
-							{	
-								MStorageOnHand storage = MStorageOnHand.get(getCtx(), line.getM_Locator_ID(), 
-										line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),ma.getDateMaterialPolicy(),get_TrxName());						
-								storage.setDateLastInventory(getMovementDate());
-								if (!storage.save(get_TrxName()))
-								{
-									m_processMsg = "Storage not updated(2)";
-									return DocAction.STATUS_Invalid;
-								}
-							}
-	
 							String m_MovementType =null;
 							if(QtyMA.negate().compareTo(Env.ZERO) > 0 )
 								m_MovementType = MTransaction.MOVEMENTTYPE_InventoryIn;
@@ -662,20 +649,6 @@ public class MInventory extends X_M_Inventory implements DocAction
 							String lastError = CLogger.retrieveErrorString("");
 							m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
 							return DocAction.STATUS_Invalid;
-						}
-	
-						// Only Update Date Last Inventory if is a Physical Inventory
-						if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
-						{	
-							MStorageOnHand storage = MStorageOnHand.get(getCtx(), line.getM_Locator_ID(), 
-									line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),dateMPolicy, get_TrxName());						
-	
-							storage.setDateLastInventory(getMovementDate());
-							if (!storage.save(get_TrxName()))
-							{
-								m_processMsg = "Storage not updated(2)";
-								return DocAction.STATUS_Invalid;
-							}
 						}
 	
 						String m_MovementType = null;
