@@ -475,7 +475,7 @@ public final class AEnv
 				int width = SessionManager.getAppDesktop().getClientInfo().screenWidth * 42 / 100;
 				drillReport.setWidth(width + "px");
 				drillReport.setPosition("center");
-				drillReport.setAttribute(Window.MODE_KEY, Window.MODE_POPUP);
+				drillReport.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 				AEnv.showWindow(drillReport);
 			}
 		}

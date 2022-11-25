@@ -704,12 +704,6 @@ ContextMenuListener, IZoomableEditor
 			m_keyColumnName = getColumnName();
 			m_tableName = m_keyColumnName.substring(0, m_keyColumnName.length()-3);
 		}
-		if (m_keyColumnName.equals("M_Product_ID")) {
-			//	Reset
-			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_Product_ID", "0");
-			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_AttributeSetInstance_ID", "0");
-			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_Locator_ID", "0");
-		}
 	}
     
 	/**
