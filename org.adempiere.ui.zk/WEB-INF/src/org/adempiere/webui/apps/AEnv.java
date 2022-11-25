@@ -450,7 +450,7 @@ public final class AEnv
 			Dialog.error(windowNo, "AccessCannotReport", data.getQuery().getTableName());
 			return;
 		}
-		if (AD_Table_ID != 0) {
+		if (AD_Table_ID > 0) {
 			WDrillReport drillReport = new WDrillReport(data, windowNo);
 
 			Object window = SessionManager.getAppDesktop().findWindow(windowNo);

@@ -199,7 +199,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			setTableAndKeyColumn();
 
 		boolean enableDrill = false;
-		if(getGridField() != null && getGridField().getGridTab() != null && getGridField().getColumnName().endsWith("_ID"))
+		if(getGridField() != null && getGridField().getGridTab() != null && getGridField().getColumnName().endsWith("_ID")
+				&& MRole.getDefault().isCanReport(getGridField().getGridTab().getAD_Table_ID()))
 			enableDrill = true;
 		
 		if (m_tableName.equals("C_BPartner"))
@@ -504,15 +505,15 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	}	//	actionText
 
 	protected void actionDrill() {
-		if(getGridField() == null && getGridField().getGridTab() == null)
+		if(getGridField() == null || getGridField().getGridTab() == null)
     		return;
     	
-		if(!columnName.endsWith("_ID"))
+		if(!m_keyColumnName.endsWith("_ID"))
     		return;
 		MQuery query = new MQuery(m_tableName);
-		query.addRestriction(columnName, MQuery.EQUAL, value);
+		query.addRestriction(m_keyColumnName, MQuery.EQUAL, value);
 		int windowNo = getGridField().getGridTab().getWindowNo();
-		DrillData data = new DrillData(query, columnName, value, columnName, null);
+		DrillData data = new DrillData(query, m_keyColumnName, value, null, null);
 		
 		AEnv.actionDrill(data, windowNo);
 	}

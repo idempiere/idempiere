@@ -37,8 +37,8 @@ import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
-import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.DrillEvent.DrillData;
+import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.grid.AbstractWQuickEntry;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
@@ -110,6 +110,8 @@ ContextMenuListener, IZoomableEditor
     
     private Lookup  lookup;
     private Object oldValue;
+    private String m_tableName = null;
+	private String m_keyColumnName = null;
 
     public static final String SHORT_LIST_EVENT = "SHORT_LIST";	// IDEMPIERE 90
     protected boolean onlyShortListItems;	// IDEMPIERE 90
@@ -252,7 +254,8 @@ ContextMenuListener, IZoomableEditor
 		String tableName = tableName_temp.substring(0, posPoint);
 		
 		boolean enableDrill = false;
-		if(getGridField() != null && getGridField().getGridTab() != null && getGridField().getColumnName().endsWith("_ID"))
+		if(getGridField() != null && getGridField().getGridTab() != null && getGridField().getColumnName().endsWith("_ID") 
+				&& MRole.getDefault().isCanReport(getGridField().getGridTab().getAD_Table_ID()))
 			enableDrill = true;
         if (tableName.toUpperCase().equals("C_BPARTNER_LOCATION"))    				
 		{
@@ -661,22 +664,52 @@ ContextMenuListener, IZoomableEditor
     }
     
     protected void actionDrill() {
-    	if(getGridField() == null && getGridField().getGridTab() == null)
+    	if(getGridField() == null || getGridField().getGridTab() == null)
     		return;
-    	
-    	String columnName = getGridField().getColumnName();;
-    	String tableName = "";
-    	
-    	if(columnName.endsWith("_ID"))
-    		tableName = columnName.substring(0, columnName.length()-3);
-    	else
+    	if(m_tableName == null)
+    		setTableAndKeyColumn();
+    	if(m_keyColumnName == null)
+    		m_keyColumnName = getGridField().getColumnName();
+    	if(!m_keyColumnName.endsWith("_ID"))
     		return;
-		MQuery query = new MQuery(tableName);
-		query.addRestriction(columnName, MQuery.EQUAL, oldValue);
+		MQuery query = new MQuery(m_tableName);
+		query.addRestriction(m_keyColumnName, MQuery.EQUAL, oldValue);
 		int windowNo = getGridField().getGridTab().getWindowNo();
-		DrillData data = new DrillData(query, columnName, oldValue, columnName, null);
+		DrillData data = new DrillData(query, m_keyColumnName, oldValue, null, null);
 		
 		AEnv.actionDrill(data, windowNo);
+	}
+    
+    /**
+	 * 	Sets m_tableName and m_keyColumnName
+	 */
+	private void setTableAndKeyColumn() {
+		if (lookup != null && lookup instanceof MLookup) {
+			// foreign table defined in lookup
+			m_keyColumnName = ((MLookup)lookup).getColumnName();
+			if (m_keyColumnName.contains(".")) {
+				m_tableName = m_keyColumnName.substring(0, m_keyColumnName.indexOf("."));
+				m_keyColumnName = m_keyColumnName.substring(m_keyColumnName.indexOf(".")+1);
+			} else {
+				m_tableName = m_keyColumnName.substring(0, m_keyColumnName.length()-3);
+			}
+		} else if (getGridField() != null && getGridField().getGridTab() != null && getGridField().getAD_Column_ID() > 0) {
+			// field - this editor comes from a window, when it comes from process parameter it doesn't have a gridtab
+			MColumn column = MColumn.get(Env.getCtx(), getGridField().getAD_Column_ID());
+			m_tableName = column.getReferenceTableName();
+			MTable table = MTable.get(Env.getCtx(), m_tableName);
+			m_keyColumnName = table.getKeyColumns()[0];
+		} else {
+			// no field - the search editor is defined programatically
+			m_keyColumnName = getColumnName();
+			m_tableName = m_keyColumnName.substring(0, m_keyColumnName.length()-3);
+		}
+		if (m_keyColumnName.equals("M_Product_ID")) {
+			//	Reset
+			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_Product_ID", "0");
+			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_AttributeSetInstance_ID", "0");
+			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_Locator_ID", "0");
+		}
 	}
     
 	/**
