@@ -478,7 +478,8 @@ public class ProcessParameterPanel extends Panel implements
 			m_separators.add(null);
 			if(DisplayType.isChosenMultipleSelection(mField.getDisplayType())) {
 				Button bNegate = ButtonFactory.createButton("", null, null);
-				bNegate.setIconSclass("z-icon-exclamation");
+				bNegate.setTooltiptext("Include selected values");
+				bNegate.setIconSclass("z-icon-Ok");
 				bNegate.setSclass("btn-negate btn-negate-gray");
 				bNegate.setAttribute("isSelected", false);
 				bNegate.addActionListener(this);
@@ -608,10 +609,14 @@ public class ProcessParameterPanel extends Panel implements
 					
 					if(bNegate != null) {
 						if(para.isNotClause()) {
+							bNegate.setTooltiptext("Exclude selected values");
+							bNegate.setIconSclass("z-icon-Cancel");
 							bNegate.setSclass("btn-negate btn-negate-red");
 							bNegate.setAttribute("isSelected", true);
 						} 
 						else {
+							bNegate.setTooltiptext("Include selected values");
+							bNegate.setIconSclass("z-icon-Ok");
 							bNegate.setSclass("btn-negate btn-negate-gray");
 							bNegate.setAttribute("isSelected", false);
 						}
@@ -960,9 +965,13 @@ public class ProcessParameterPanel extends Panel implements
     			Button bNegate = (Button)event.getTarget();
     			boolean isSelected = !(boolean)bNegate.getAttribute("isSelected");
     			if(isSelected) {
+    				bNegate.setTooltiptext("Exclude selected values");
+    				bNegate.setIconSclass("z-icon-Cancel");
     				bNegate.setSclass("btn-negate btn-negate-red");
     			} 
     			else {
+    				bNegate.setTooltiptext("Include selected values");
+    				bNegate.setIconSclass("z-icon-Ok");
     				bNegate.setSclass("btn-negate btn-negate-gray");
     			}
     			bNegate.setAttribute("isSelected", isSelected);

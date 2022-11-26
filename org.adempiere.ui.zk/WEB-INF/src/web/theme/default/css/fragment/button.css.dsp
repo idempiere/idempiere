@@ -161,6 +161,21 @@
   	text-shadow: none;
 }
 
+.btn-negate-red:hover {
+	background-color: #FE261B;
+  	background-image: -moz-linear-gradient(top, #FE261B, #FE261B);
+  	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FE261B), to(#FE261B));
+  	background-image: -webkit-linear-gradient(top, #FE261B, #FE261B);
+  	background-image: -o-linear-gradient(top, #FE261B, #FE261B);
+  	background-image: linear-gradient(to bottom, #FE261B, #FE261B);
+  	background-repeat: repeat-x;
+  	text-shadow: none;
+}
+
+.btn-negate-red [class^="z-icon-"] {
+	color: #FFFFFF;
+}
+
 .btn-negate {
 	margin: 0px 0px 0px 6px !important;
 	min-width: 20px;
