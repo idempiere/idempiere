@@ -962,7 +962,12 @@ public class DB_Oracle implements AdempiereDatabase
 		
 		return builder.toString();
 	}
-
+	
+	@Override
+	public String intersectClauseForCSV(String columnName, String csv) {
+		return intersectClauseForCSV(columnName, csv, false);
+	}
+	
 	@Override
 	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause) {
 		StringBuilder builder = new StringBuilder();
