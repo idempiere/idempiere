@@ -57,7 +57,8 @@ public class PO_Record
 		X_AD_Note.Table_ID,
 		X_AD_RecentItem.Table_ID,
 		X_AD_PostIt.Table_ID,
-		X_AD_LabelAssignment.Table_ID	
+		X_AD_LabelAssignment.Table_ID,
+		X_AD_WF_Activity.Table_ID
 	};
 	/**	Cascade Table Names			*/
 	private static String[]	s_cascadeNames = new String[]{
@@ -66,7 +67,8 @@ public class PO_Record
 		X_AD_Note.Table_Name,
 		X_AD_RecentItem.Table_Name,
 		X_AD_PostIt.Table_Name,
-		X_AD_LabelAssignment.Table_Name
+		X_AD_LabelAssignment.Table_Name,
+		X_AD_WF_Activity.Table_Name
 	};
 
 	/**	Restrict Table ID			*/
