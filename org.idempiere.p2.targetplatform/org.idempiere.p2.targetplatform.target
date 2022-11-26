@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-220825" sequenceNumber="1661415971">
+<target name="idempiere-221125" sequenceNumber="1669422892">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="zcommon" version="9.6.2"/>
@@ -15,7 +15,7 @@
       <unit id="zul" version="9.6.2"/>
       <unit id="zweb" version="9.6.2"/>
       <unit id="zweb-dsp" version="9.6.2"/>
-      <repository location="https://idempiere.github.io/binary.file/p2.zk/9.6.2"/>
+      <repository id="binary-file-zk" location="https://idempiere.github.io/binary.file/p2.zk/9.6.2"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="jakarta.xml.ws-api" version="2.3.3.v202109010034"/>
@@ -25,12 +25,12 @@
       <unit id="com.sun.xml.fastinfoset.FastInfoset" version="1.2.18.v202109010034"/>
       <unit id="org.apache.felix.webconsole" version="4.6.4.v202109010034"/>
       <unit id="org.apache.poi.ooxml-schemas" version="4.1.2.v202109010034"/>
-      <repository location="https://idempiere.github.io/binary.file/p2.repackaged/9.0.0"/>
+      <repository id="binary-file-repackaged" location="https://idempiere.github.io/binary.file/p2.repackaged/9.0.0"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.apache.httpcomponents.httpclient" version="4.5.13.v20210128-2225"/>
       <unit id="org.apache.httpcomponents.httpcore" version="4.4.14.v20210128-2225"/>
-      <repository location="https://download.eclipse.org/eclipse/updates/4.20"/>
+      <repository id="eclipse-2021-06" location="https://download.eclipse.org/eclipse/updates/4.20"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="org.opentest4j" version="1.2.0.v20211018-1956"/>
@@ -139,7 +139,7 @@
       <unit id="com.jaspersoft.studio.bundles.itext" version="2.1.7.js8_b01"/>
       <unit id="org.w3c.dom.svg.patch" version="1.1.0.b02"/>
       <unit id="org.krysalis.barcode4j" version="2.1.0"/>
-      <repository location="https://sourceforge.net/projects/jasperstudio/files/updatesite/6.17.0"/>
+      <repository id="jasperstudio-updatesite" location="https://sourceforge.net/projects/jasperstudio/files/updatesite/6.17.0"/>
     </location>
     <!-- com.google -->
     <location includeSource="true" missingManifest="generate" type="Maven">
