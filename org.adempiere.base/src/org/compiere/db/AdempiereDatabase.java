@@ -347,6 +347,14 @@ public interface AdempiereDatabase
 	 * @param isNotClause
 	 * @return subset sql clause
 	 */
+	public String intersectClauseForCSV(String columnName, String csv);
+	
+	/**
+	 * @param columnName
+	 * @param csv comma separated value
+	 * @param isNotClause
+	 * @return subset sql clause
+	 */
 	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause);
 	
 	/**
