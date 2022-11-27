@@ -75,6 +75,7 @@ import org.compiere.model.GridWindow;
 import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MColumn;
 import org.compiere.model.MPreference;
+import org.compiere.model.MProcess;
 import org.compiere.model.MRole;
 import org.compiere.model.MStyle;
 import org.compiere.model.MSysConfig;
@@ -2042,16 +2043,27 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
 	 * @return List<WButtonEditor>
 	 */
 	public List<Button> getToolbarButtons() {
+		return getToolbarButtons(false);
+	}
+	
+	/**
+	 * Get all visible button editors
+	 * @param isPrintButton
+	 * @return List<WButtonEditor>
+	 */
+	public List<Button> getToolbarButtons(boolean isPrintButton) {
 		List<Button> buttonList = new ArrayList<Button>();
 		for(WButtonEditor editor : toolbarButtonEditors) {
+			MProcess process = MProcess.get(editor.getProcess_ID());
 			if (editor.getComponent() != null 
-					&& editor.getComponent().isVisible()) {
+					&& editor.getComponent().isVisible() && isPrintButton == process.isReport()) {
 				buttonList.add(editor.getComponent());
 			}
 		}
 		
 		for(ToolbarProcessButton processButton : toolbarProcessButtons) {
-			if (processButton.getButton().isVisible()) {
+			MProcess process = MProcess.get(processButton.getProcess_ID());
+			if (processButton.getButton().isVisible() && isPrintButton == process.isReport()) {
 				buttonList.add(processButton.getButton());
 			}
 		}
