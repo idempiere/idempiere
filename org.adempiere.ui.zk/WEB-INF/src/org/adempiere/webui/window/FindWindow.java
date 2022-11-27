@@ -3282,8 +3282,20 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             if (winMain.getComponent().getSelectedIndex() == 1)
             {
 	            Component component = editor.getComponent();
-	            listcell = (ListCell)component.getParent();
-	            listcell.setAttribute("value", evt.getNewValue());
+	            Component parent = component.getParent();
+	            if(parent != null) {
+	            	if(parent instanceof ListCell) {
+	            		listcell = (ListCell) parent;
+	            		listcell.setAttribute("value", evt.getNewValue());
+	            	}
+	            	else {	// use case: Date To editor with Date Range Button
+	            		Component secondParent = parent.getParent();
+	            		if(secondParent instanceof ListCell) {
+		            		listcell = (ListCell) secondParent;
+		            		listcell.setAttribute("value", evt.getNewValue());
+		            	}
+	            	}
+	            }
 	            ctx = m_advanceCtx;
             }
             else

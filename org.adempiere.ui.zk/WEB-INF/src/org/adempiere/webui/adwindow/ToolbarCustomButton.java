@@ -16,10 +16,12 @@ package org.adempiere.webui.adwindow;
 import org.adempiere.base.IServiceHolder;
 import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
+import org.adempiere.webui.component.ToolBarButton;
 import org.compiere.model.MToolBarButton;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -104,7 +106,69 @@ public class ToolbarCustomButton implements EventListener<Event>, Evaluatee {
 
 		toolbarButton.setVisible(visible);
 	}
-	
+
+	public void pressedLogic() {
+		if (toolbarButton.getParent() == null)
+			return;
+
+		String pressedLogic = mToolbarButton.getPressedLogic();
+
+		if (Util.isEmpty(pressedLogic, true))
+			return;
+
+		ADWindow window = ADWindow.get(windowNo);
+
+		if (window == null)
+			return;
+
+		IADTabpanel adTabpanel = window.getADWindowContent().getADTab().getSelectedTabpanel();
+
+		if (adTabpanel == null || adTabpanel.getRecord_ID() <= 0)
+			return;
+
+		boolean isPressed = validateLogic(pressedLogic, adTabpanel.getTabNo());
+		((ToolBarButton) toolbarButton).setPressed(isPressed);
+	}
+
+	public void readOnlyLogic() {
+		if (toolbarButton.getParent() == null)
+			return;
+
+		String readOnlyLogic = mToolbarButton.getReadOnlyLogic();
+
+		if (Util.isEmpty(readOnlyLogic, true))
+			return;
+
+		ADWindow window = ADWindow.get(windowNo);
+
+		if (window == null)
+			return;
+
+		IADTabpanel adTabpanel = window.getADWindowContent().getADTab().getSelectedTabpanel();
+
+		if (adTabpanel == null || adTabpanel.getRecord_ID() <= 0)
+			return;
+
+		boolean isReadOnly = validateLogic(readOnlyLogic, adTabpanel.getTabNo());
+
+		toolbarButton.setDisabled(isReadOnly);
+	}
+
+	private boolean validateLogic(String logic, int tabNo) {
+		boolean isValid = false;
+
+		if (logic.startsWith("@SQL="))
+		{
+			isValid = Evaluator.parseSQLLogic(logic, Env.getCtx(), windowNo, tabNo, "");
+		}
+		else
+		{
+			isValid = Evaluator.evaluateLogic(this, logic);
+		}
+
+		return isValid;
+	}
+
 	public Toolbarbutton getToolbarbutton() {
 		return toolbarButton;
 	}
