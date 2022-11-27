@@ -137,8 +137,11 @@ import org.zkoss.zul.impl.InputElement;
  * @contributor xolali 	IDEMPIERE-1045 Sub-Info Tabs  (reviewed by red1)
  */
 public class InfoWindow extends InfoPanel implements ValueChangeListener, EventListener<Event> {
-	private static final long serialVersionUID = -5482739724937721227L;
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2327249405074671115L;
+
 	private static final String ON_QUERY_AFTER_CHANGE = "onQueryAfterChange";
 	
 	protected Grid parameterGrid;
@@ -279,7 +282,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			initInfoProcess();
 			// when have a process, force multi select mode
 			if (haveProcess)
-				p_multipleSelection = true;
+				setMultipleSelection(true);
 		}		
 						
 		if (!isAutoComplete)
