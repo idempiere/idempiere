@@ -435,6 +435,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		else
 			fAnswerButton.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 		fTextMsg.setReadonly(!(selIndex >= 0));
+		fTextMsg.setValue("");
 		bZoom.setEnabled(selIndex >= 0);
 		bOK.setEnabled(selIndex >= 0);
 		fForward.setValue(null);
