@@ -47,7 +47,7 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	<javascript-module name="org.idempiere.websocket" version="202011211500"/>	
 	<javascript-module name="jawwa.atmosphere" version="202110220730"/>
 	<javascript-module name="adempiere.local.storage" version="202011151100"/>
-	<javascript-moudle name="html2canvas" version="1.3.1"/>
+	<javascript-module name="html2canvas" version="1.3.1"/>
 	<javascript-module name="org.idempiere.commons" version="202111051000"/>
 	<javascript-module name="jquery.maskedinput" version="1.4.1" />
 	<javascript-module name="photobooth"	version="0.7-rsd3" />
@@ -56,6 +56,6 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	
 	<!-- this js module doesn't actually exists and it is here for default theme version -->
 	<!-- since loading of  js module is on demand, it doesn't cause any error as long as you don't try to load it -->
-	<javascript-module name="idempiere.theme.default" version="202206201201" />
+	<javascript-module name="idempiere.theme.default" version="202211251722" />
 
 </language>
