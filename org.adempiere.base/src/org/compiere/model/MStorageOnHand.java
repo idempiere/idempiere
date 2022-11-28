@@ -787,7 +787,14 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		BigDecimal diffQtyOnHand,Timestamp dateMPolicy, String trxName)
 	{
-		return add(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, diffQtyOnHand, dateMPolicy, trxName);
+		return add(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, diffQtyOnHand, dateMPolicy, null, trxName);
+	}
+	
+	public static boolean add (Properties ctx, int M_Locator_ID, 
+		int M_Product_ID, int M_AttributeSetInstance_ID,
+		BigDecimal diffQtyOnHand,Timestamp dateMPolicy, String trxName)
+	{
+		return add(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, diffQtyOnHand, dateMPolicy, null, trxName);
 	}
 	
 	/**
@@ -804,7 +811,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 */
 	public static boolean add (Properties ctx, int M_Locator_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
-		BigDecimal diffQtyOnHand,Timestamp dateMPolicy, String trxName)
+		BigDecimal diffQtyOnHand,Timestamp dateMPolicy, Timestamp dateLastInventory, String trxName)
 	{
 		if (diffQtyOnHand == null || diffQtyOnHand.signum() == 0)
 			return true;
@@ -824,6 +831,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			return false;
 		}
 
+		if(dateLastInventory != null)
+			storage.updateDateLastInventory(dateLastInventory);
 		storage.addQtyOnHand(diffQtyOnHand);
 		if (s_log.isLoggable(Level.FINE)) {
 			StringBuilder diffText = new StringBuilder("(OnHand=").append(diffQtyOnHand).append(") -> ").append(storage.toString());
@@ -852,6 +861,19 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		}
 	}
 
+	/**
+	 * Update Date Last Inventory
+	 * @param dateLastInv
+	 */
+	public void updateDateLastInventory(Timestamp dateLastInv) {
+		final String sql = "UPDATE M_StorageOnHand SET DateLastInventory=? " +
+				"WHERE M_Product_ID=? AND M_Locator_ID=? AND M_AttributeSetInstance_ID=? AND DateMaterialPolicy=?";
+		DB.executeUpdateEx(sql, 
+			new Object[] {dateLastInv, getM_Product_ID(), getM_Locator_ID(), getM_AttributeSetInstance_ID(), getDateMaterialPolicy()}, 
+			get_TrxName());
+		load(get_TrxName());
+	}
+	
 	/**************************************************************************
 	 * 	Get Location with highest Locator Priority and a sufficient OnHand Qty
 	 * 	@param M_Warehouse_ID warehouse

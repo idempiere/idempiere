@@ -599,7 +599,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 									line.getM_Locator_ID(),
 									line.getM_Product_ID(), 
 									ma.getM_AttributeSetInstance_ID(), 
-									QtyMA.negate(),ma.getDateMaterialPolicy(), get_TrxName()))
+									QtyMA.negate(),ma.getDateMaterialPolicy(), getMovementDate(), get_TrxName()))
 							{
 								String lastError = CLogger.retrieveErrorString("");
 								m_processMsg = "Cannot correct Inventory (MA) - " + lastError;
@@ -644,7 +644,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 								line.getM_Locator_ID(),
 								line.getM_Product_ID(), 
 								line.getM_AttributeSetInstance_ID(), 
-								qtyDiff,dateMPolicy,get_TrxName()))
+								qtyDiff,dateMPolicy,getMovementDate(),get_TrxName()))
 						{
 							String lastError = CLogger.retrieveErrorString("");
 							m_processMsg = "Cannot correct Inventory OnHand (MA) - " + lastError;
