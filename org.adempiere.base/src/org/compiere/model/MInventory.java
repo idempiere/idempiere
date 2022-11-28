@@ -541,8 +541,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 							}						
 						}												
 					} else {
-						MStorageOnHand[] storages = MStorageOnHand.getAll(getCtx(), line.getM_Locator_ID(), 
-								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), null, false, get_TrxName());						
+						MStorageOnHand[] storages = MStorageOnHand.getAll(getCtx(), line.getM_Product_ID(), 
+								line.getM_Locator_ID(),	line.getM_AttributeSetInstance_ID(), null, false, get_TrxName());						
 						if(storages != null) {
 							for(MStorageOnHand storage: storages) {										
 								storage.setDateLastInventory(getMovementDate());

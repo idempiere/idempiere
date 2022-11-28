@@ -244,15 +244,15 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	}	//	getAll
 	
 	/**
-	 * 	Get Storage Info
-	 *	@param ctx context
-	 *	@param M_Locator_ID locator
-	 *	@param M_Product_ID product
-	 *	@param M_AttributeSetInstance_ID instance
-	 *  @param dateMPolicy
-	 *  @param ignoreZeroQty
-	 *	@param trxName transaction
-	 *	@return existing or null
+	 * Get Storage Info
+	 * @param ctx context
+	 * @param M_Product_ID product
+	 * @param M_Locator_ID locator
+	 * @param M_AttributeSetInstance_ID instance
+	 * @param dateMPolicy
+	 * @param ignoreZeroQty
+	 * @param trxName transaction
+	 * @return existing or null
 	 */
 	public static MStorageOnHand[] getAll (Properties ctx, 
 		int M_Product_ID, int M_Locator_ID, int M_AttributeSetInstance_ID, Timestamp dateMPolicy, boolean ignoreZeroQty, String trxName)
