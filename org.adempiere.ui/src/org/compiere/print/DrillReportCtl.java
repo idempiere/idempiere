@@ -393,8 +393,10 @@ public class DrillReportCtl {
 
 
 	/**
-	 * 	Launch Report Process
-	 * 	@param pf print format
+	 * 
+	 * @param AD_Process_DrillRule_ID
+	 * @param AD_PrintFormat_ID
+	 * @return
 	 * @throws Exception
 	 */
 	public ProcessInfo getDrillProcessProcessInfo (int AD_Process_DrillRule_ID, int AD_PrintFormat_ID) throws Exception
@@ -479,8 +481,8 @@ public class DrillReportCtl {
 				MProcessDrillRulePara sPara = sParams[p];
 				if(processPara. getColumnName().equals(m_ColumnName))
 				{
-					iPara.setParameter(DisplayType.isID(sPara.getDisplayType()) ? Integer.valueOf((String) m_Value) : (String) m_Value);
-					iPara.setInfo(!Util.isEmpty(m_DisplayValue) ? m_DisplayValue : (String) m_Value);
+					iPara.setParameter(DisplayType.isID(sPara.getDisplayType()) ? new BigDecimal(String.valueOf(m_Value)) : String.valueOf(m_Value));
+					iPara.setInfo(!Util.isEmpty(m_DisplayValue) ? m_DisplayValue : String.valueOf(m_Value));
 					isKeyParameterSet = true;
 					iParams.add(iPara);
 					continue;
