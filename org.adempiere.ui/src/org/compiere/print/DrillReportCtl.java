@@ -370,10 +370,11 @@ public class DrillReportCtl {
 			if (m_Query.getColumnName(0).equals(m_Query.getTableName()+"_ID")) {
 				Object vrec = m_Query.getCode(0);
 				if (vrec instanceof Integer) {
-					Record_ID = ((Integer)m_Query.getCode(0)).intValue();
+					Record_ID = ((Integer)vrec).intValue();
 				} else {
 					try {
-						Record_ID = Integer.parseInt(m_Query.getCode(0).toString());
+						if(vrec != null)
+							Record_ID = Integer.parseInt(m_Query.getCode(0).toString());
 					} catch (NumberFormatException e) {
 						log.info(e.getMessage());
 					}
