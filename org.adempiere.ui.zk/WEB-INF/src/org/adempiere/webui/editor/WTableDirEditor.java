@@ -1001,7 +1001,7 @@ ContextMenuListener, IZoomableEditor
 		/**
 		 * generated serial
 		 */
-		private static final long serialVersionUID = 3543247404379028327L;
+		private static final long serialVersionUID = -4812453960647095621L;
 		private WTableDirEditor editor;
 		
 		protected CCacheListener(String tableName, WTableDirEditor editor) {
@@ -1010,7 +1010,7 @@ ContextMenuListener, IZoomableEditor
 		}
 
 		@Override
-		public int reset() {			
+		public int reset(int recordId) {
 			if (editor.getComponent().getDesktop() != null && editor.isReadWrite()) {
 				refreshLookupList();
 			}
