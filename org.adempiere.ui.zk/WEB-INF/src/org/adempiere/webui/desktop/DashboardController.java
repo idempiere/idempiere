@@ -1283,7 +1283,7 @@ public class DashboardController implements EventListener<Event> {
 		int AD_Table_ID = 0;
 		int Record_ID = 0;
 		//
-		MPInstance pInstance = new MPInstance(process, Record_ID);
+		MPInstance pInstance = new MPInstance(Env.getCtx(), AD_Process_ID, Record_ID);
 		pInstance.setIsProcessing(true);
 		pInstance.saveEx();
 		try {
@@ -1334,7 +1334,13 @@ public class DashboardController implements EventListener<Event> {
 				int pos = s.indexOf("=");
 				String key = s.substring(0, pos);
 				String value = s.substring(pos + 1);
-				paramMap.put(key, value);
+				if(key.equalsIgnoreCase("@AD_PrintFormat_ID")) {
+					pInstance.setAD_PrintFormat_ID(Integer.valueOf(value));
+					pInstance.saveEx();
+				}
+				else {
+					paramMap.put(key, value);
+				}
 			}
 			MProcessPara[] processParams = pInstance.getProcessParameters();
 			for (int pi = 0; pi < processParams.length; pi++)
