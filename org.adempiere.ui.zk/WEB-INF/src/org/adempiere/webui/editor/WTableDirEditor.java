@@ -928,7 +928,7 @@ ContextMenuListener, IZoomableEditor
 		/**
 		 * generated serial
 		 */
-		private static final long serialVersionUID = 3543247404379028327L;
+		private static final long serialVersionUID = 7813673017009600392L;
 		private WTableDirEditor editor;
 		
 		protected CCacheListener(String tableName, WTableDirEditor editor) {
@@ -938,13 +938,19 @@ ContextMenuListener, IZoomableEditor
 
 		@Override
 		public int reset() {			
-			if (editor.getComponent().getDesktop() != null && editor.isReadWrite()) {
-				refreshLookupList();
-			}
+			refreshLookupList();
 			return 0;					
 		}
 
+		@Override
+		public int reset(int recordId) {
+			refreshLookupList();
+			return 0;
+		}
+
 		private void refreshLookupList() {
+			if (editor.getComponent().getDesktop() == null || !editor.isReadWrite())
+				return;
 			Desktop desktop = editor.getComponent().getDesktop();
 			boolean alive = false;
 			if (desktop.isAlive() && desktop.getSession() != null) {
@@ -968,9 +974,7 @@ ContextMenuListener, IZoomableEditor
 				
 		@Override
 		public void newRecord(int record_ID) {
-			if (editor.getComponent().getDesktop() != null && editor.isReadWrite()) {
-				refreshLookupList();
-			}
+			refreshLookupList();
 		}
 	}
 
