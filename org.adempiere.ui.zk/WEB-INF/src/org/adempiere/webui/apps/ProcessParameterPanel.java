@@ -478,10 +478,11 @@ public class ProcessParameterPanel extends Panel implements
 			m_separators.add(null);
 			if(DisplayType.isChosenMultipleSelection(mField.getDisplayType())) {
 				Button bNegate = ButtonFactory.createButton("", null, null);
-				bNegate.setTooltiptext("Include selected values");
-				bNegate.setIconSclass("z-icon-Ok");
-				bNegate.setSclass("btn-negate btn-negate-gray");
+				bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
+				bNegate.setIconSclass("z-icon-IncludeSelected");
+				bNegate.setSclass("btn-negate btn-negate-include");
 				bNegate.setAttribute("isSelected", false);
+				bNegate.setVisible(false);
 				bNegate.addActionListener(this);
 				box.appendChild(bNegate);
 				editor.getComponent().setAttribute("isNotClause", bNegate);
@@ -607,21 +608,6 @@ public class ProcessParameterPanel extends Panel implements
 					if(editor.getComponent() != null)
 						bNegate = (Button) editor.getComponent().getAttribute("isNotClause");
 					
-					if(bNegate != null) {
-						if(para.isNotClause()) {
-							bNegate.setTooltiptext("Exclude selected values");
-							bNegate.setIconSclass("z-icon-Cancel");
-							bNegate.setSclass("btn-negate btn-negate-red");
-							bNegate.setAttribute("isSelected", true);
-						} 
-						else {
-							bNegate.setTooltiptext("Include selected values");
-							bNegate.setIconSclass("z-icon-Ok");
-							bNegate.setSclass("btn-negate btn-negate-gray");
-							bNegate.setAttribute("isSelected", false);
-						}
-					}
-					
 					if (para.getP_Date() != null || para.getP_Date_To() != null )
 					{
 						editor.setValue(para.getP_Date());
@@ -656,6 +642,23 @@ public class ProcessParameterPanel extends Panel implements
 					    valueChange(changeEvent);
 					}
 
+					if(bNegate != null) {
+						if(para.isNotClause()) {
+							bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "ExcludeSelectedValues"));
+							bNegate.setIconSclass("z-icon-ExcludeSelected");
+							bNegate.setSclass("btn-negate btn-negate-exclude");
+							bNegate.setAttribute("isSelected", true);
+						} 
+						else {
+							bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
+							bNegate.setIconSclass("z-icon-IncludeSelected");
+							bNegate.setSclass("btn-negate btn-negate-include");
+							bNegate.setAttribute("isSelected", false);
+						}
+						
+						if(editor.getValue() != null)
+							bNegate.setVisible(true);
+					}
 					log.fine(para.toString());
 					break;
 				}
@@ -958,21 +961,36 @@ public class ProcessParameterPanel extends Panel implements
     		dynamicDisplay();
     	}
     	else if (event.getName().equals("onPostEditorValueChange")) {
-    		onPostEditorValueChange((WEditor)event.getData());
+    		WEditor editor = (WEditor)event.getData();
+    		onPostEditorValueChange(editor);
+    		if(editor.getComponent() != null) {
+				Button bNegate = (Button) editor.getComponent().getAttribute("isNotClause");
+				if (bNegate != null) {
+					if (editor.getValue() != null) {
+						bNegate.setVisible(true);
+					} else {
+						bNegate.setVisible(false);
+						bNegate.setAttribute("isSelected", false);
+						bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
+	    				bNegate.setIconSclass("z-icon-IncludeSelected");
+	    				bNegate.setSclass("btn-negate btn-negate-include");
+					}
+				}
+    		}
     	}
     	else if (event.getName().equals(Events.ON_CLICK)) {
     		if(event.getTarget() instanceof Button) {
     			Button bNegate = (Button)event.getTarget();
     			boolean isSelected = !(boolean)bNegate.getAttribute("isSelected");
     			if(isSelected) {
-    				bNegate.setTooltiptext("Exclude selected values");
-    				bNegate.setIconSclass("z-icon-Cancel");
-    				bNegate.setSclass("btn-negate btn-negate-red");
+    				bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "ExcludeSelectedValues"));
+    				bNegate.setIconSclass("z-icon-ExcludeSelected");
+    				bNegate.setSclass("btn-negate btn-negate-exclude");
     			} 
     			else {
-    				bNegate.setTooltiptext("Include selected values");
-    				bNegate.setIconSclass("z-icon-Ok");
-    				bNegate.setSclass("btn-negate btn-negate-gray");
+    				bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
+    				bNegate.setIconSclass("z-icon-IncludeSelected");
+    				bNegate.setSclass("btn-negate btn-negate-include");
     			}
     			bNegate.setAttribute("isSelected", isSelected);
     		}
