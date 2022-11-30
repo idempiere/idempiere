@@ -232,12 +232,15 @@ public final class DisplayType
 			if (service != null)
 				return service.isID(displayType);
 		}
-		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+		if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 					.filter(e -> e.getService() != null && e.getService().isID(displayType))
 					.findFirst();
-		if (found.isPresent()) {
-			s_displayTypeFactoryCache.put(displayType, found.get());
-			return true;
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return found.get().getService().isID(displayType);
+			}
+			s_displayTypeFactoryCache.put(displayType, null);
 		}
 		
 		return false;
@@ -261,12 +264,15 @@ public final class DisplayType
 			if (service != null)
 				return service.isNumeric(displayType);
 		}
-		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+		if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 					.filter(e -> e.getService() != null && e.getService().isNumeric(displayType))
 					.findFirst();
-		if (found.isPresent()) {
-			s_displayTypeFactoryCache.put(displayType, found.get());
-			return true;
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return found.get().getService().isNumeric(displayType);
+			}
+			s_displayTypeFactoryCache.put(displayType, null);
 		}
 		
 		return false;
@@ -296,13 +302,16 @@ public final class DisplayType
 				return v != null ? v.intValue() : 0;
 			}
 		}
-		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+		if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 					.filter(e -> e.getService() != null && e.getService().getDefaultPrecision(displayType) != null)
 					.findFirst();
-		if (found.isPresent()) {
-			s_displayTypeFactoryCache.put(displayType, found.get());
-			Integer v = found.get().getService().getDefaultPrecision(displayType);
-			return v != null ? v.intValue() : 0;
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				Integer v = found.get().getService().getDefaultPrecision(displayType);
+				return v != null ? v.intValue() : 0;
+			}
+			s_displayTypeFactoryCache.put(displayType, null);
 		}
 		return 0;
 	}	//	getDefaultPrecision
@@ -334,12 +343,15 @@ public final class DisplayType
 			if (service != null)
 				return service.isText(displayType);
 		}
-		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+		if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 					.filter(e -> e.getService() != null && e.getService().isText(displayType))
 					.findFirst();
-		if (found.isPresent()) {
-			s_displayTypeFactoryCache.put(displayType, found.get());
-			return true;
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return found.get().getService().isText(displayType);
+			}
+			s_displayTypeFactoryCache.put(displayType, null);
 		}
 		return false;
 	}	//	isText
@@ -364,12 +376,15 @@ public final class DisplayType
 			if (service != null)
 				return service.isDate(displayType);
 		}
-		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+		if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 					.filter(e -> e.getService() != null && e.getService().isDate(displayType))
 					.findFirst();
-		if (found.isPresent()) {
-			s_displayTypeFactoryCache.put(displayType, found.get());
-			return true;
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return found.get().getService().isDate(displayType);
+			}
+			s_displayTypeFactoryCache.put(displayType, null);
 		}
 		
 		return false;
@@ -394,12 +409,15 @@ public final class DisplayType
 			if (service != null)
 				return service.isList(displayType);
 		}
-		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+		if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 					.filter(e -> e.getService() != null && e.getService().isList(displayType))
 					.findFirst();
-		if (found.isPresent()) {
-			s_displayTypeFactoryCache.put(displayType, found.get());
-			return true;
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return found.get().getService().isList(displayType);
+			}
+			s_displayTypeFactoryCache.put(displayType, null);
 		}
 		
 		return false;
@@ -427,12 +445,15 @@ public final class DisplayType
 			if (service != null)
 				return service.isLookup(displayType);
 		}
-		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+		if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 					.filter(e -> e.getService() != null && e.getService().isLookup(displayType))
 					.findFirst();
-		if (found.isPresent()) {
-			s_displayTypeFactoryCache.put(displayType, found.get());
-			return true;
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return found.get().getService().isLookup(displayType);
+			}
+			s_displayTypeFactoryCache.put(displayType, null);
 		}
 		
 		return false;
@@ -455,12 +476,15 @@ public final class DisplayType
 			if (service != null)
 				return service.isLOB(displayType);
 		}
-		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+		if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 					.filter(e -> e.getService() != null && e.getService().isLOB(displayType))
 					.findFirst();
-		if (found.isPresent()) {
-			s_displayTypeFactoryCache.put(displayType, found.get());
-			return true;
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return found.get().getService().isLOB(displayType);
+			}
+			s_displayTypeFactoryCache.put(displayType, null);
 		}
 		
 		return false;
@@ -556,12 +580,15 @@ public final class DisplayType
 						return f;
 				}
 			}
-			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+			if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+				Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 						.filter(e -> e.getService() != null && e.getService().getNumberFormat(displayType, language, pattern) != null)
 						.findFirst();
-			if (found.isPresent()) {
-				s_displayTypeFactoryCache.put(displayType, found.get());
-				return found.get().getService().getNumberFormat(displayType, language, pattern);
+				if (found.isPresent()) {
+					s_displayTypeFactoryCache.put(displayType, found.get());
+					return found.get().getService().getNumberFormat(displayType, language, pattern);
+				}
+				s_displayTypeFactoryCache.put(displayType, null);
 			}
 			
 			format.setMaximumIntegerDigits(MAX_DIGITS);
@@ -687,12 +714,15 @@ public final class DisplayType
 						return v;
 				}
 			}
-			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+			if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+				Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 						.filter(e -> e.getService() != null && e.getService().getDateFormat(displayType, language, pattern) != null)
 						.findFirst();
-			if (found.isPresent()) {
-				s_displayTypeFactoryCache.put(displayType, found.get());
-				return found.get().getService().getDateFormat(displayType, language, pattern);
+				if (found.isPresent()) {
+					s_displayTypeFactoryCache.put(displayType, found.get());
+					return found.get().getService().getDateFormat(displayType, language, pattern);
+				}
+				s_displayTypeFactoryCache.put(displayType, null);
 			}
 		}
 
@@ -774,12 +804,15 @@ public final class DisplayType
 						return v;
 				}
 			}
-			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+			if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+				Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 						.filter(e -> e.getService() != null && e.getService().getClass(displayType, yesNoAsBoolean) != null)
 						.findFirst();
-			if (found.isPresent()) {
-				s_displayTypeFactoryCache.put(displayType, found.get());
-				return found.get().getService().getClass(displayType, yesNoAsBoolean);
+				if (found.isPresent()) {
+					s_displayTypeFactoryCache.put(displayType, found.get());
+					return found.get().getService().getClass(displayType, yesNoAsBoolean);
+				}
+				s_displayTypeFactoryCache.put(displayType, null);
 			}
 		}
 		//
@@ -865,12 +898,15 @@ public final class DisplayType
 					return v;
 			}
 		}
-		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+		if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 					.filter(e -> e.getService() != null && e.getService().getSQLDataType(displayType, columnName, fieldLength) != null)
 					.findFirst();
-		if (found.isPresent()) {
-			s_displayTypeFactoryCache.put(displayType, found.get());
-			return found.get().getService().getSQLDataType(displayType, columnName, fieldLength);
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return found.get().getService().getSQLDataType(displayType, columnName, fieldLength);
+			}
+			s_displayTypeFactoryCache.put(displayType, null);
 		}
 		
 		if (!DisplayType.isText(displayType))
@@ -969,12 +1005,15 @@ public final class DisplayType
 					return v;
 			}
 		}
-		Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+		if (! s_displayTypeFactoryCache.containsKey(displayType)) {
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
 					.filter(e -> e.getService() != null && e.getService().getDescription(displayType) != null)
 					.findFirst();
-		if (found.isPresent()) {
-			s_displayTypeFactoryCache.put(displayType, found.get());
-			return found.get().getService().getDescription(displayType);
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return found.get().getService().getDescription(displayType);
+			}
+			s_displayTypeFactoryCache.put(displayType, null);
 		}
 		
 		//
