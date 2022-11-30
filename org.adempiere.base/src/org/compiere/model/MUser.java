@@ -60,7 +60,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1351277092193923708L;
+	private static final long serialVersionUID = -227056750112307527L;
 
 	/**
 	 * Get active Users of BPartner
@@ -1084,6 +1084,56 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		return retValue;
 	}
 	
+	/**
+	 * Returns true if the user is a system user - without same username in other tenants
+	 * @return
+	 */
+	public static boolean isSystemUser(String name) {
+		if (name == null || name.length() == 0) {
+			s_log.warning ("Invalid Name = " + name);
+			return false;
+		}
+		StringBuilder sql = new StringBuilder("SELECT DISTINCT u.AD_User_ID, u.AD_Client_ID ")
+			.append("FROM AD_User u")
+			.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
+			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
+		sql.append("WHERE u.Password IS NOT NULL AND ");		//	#1/2
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+		if (email_login)
+			sql.append("u.EMail=?");
+		else
+			sql.append("COALESCE(u.LDAPUser,u.Name)=?");
+		sql.append(" AND u.IsActive='Y'")
+			.append(" AND EXISTS (SELECT * FROM AD_Client c WHERE u.AD_Client_ID=c.AD_Client_ID AND c.IsActive='Y')")
+			.append(" ORDER BY u.AD_Client_ID");
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		boolean retValue = false;
+		try {
+			pstmt = DB.prepareStatement (sql.toString(), null);
+			pstmt.setString (1, name);
+			rs = pstmt.executeQuery ();
+			if (rs.next()) {
+				int clientId = rs.getInt(2);
+				if (clientId == 0)
+					retValue = true;
+				if (rs.next())
+					retValue = false;
+			}
+		}
+		catch (Exception e)
+		{
+			s_log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		return retValue;
+	}
+
 	@Override
 	public String getEMailUser() {
 		// IDEMPIERE-722

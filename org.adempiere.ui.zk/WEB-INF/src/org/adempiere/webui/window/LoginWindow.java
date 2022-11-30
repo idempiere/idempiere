@@ -110,7 +110,14 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 
     public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
     {
-    	boolean isClientDefined = (clientsKNPairs.length == 1);
+    	boolean isClientDefined = false;
+    	if (clientsKNPairs.length == 1) {
+    		isClientDefined = true;
+    	} else {
+    		// Verify if is a System user
+    		if (MUser.isSystemUser(Login.getAppUser(userName)))
+    			isClientDefined = true;
+    	}
 		if (pnlRole == null)
 			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined);
     	if (isClientDefined) {
