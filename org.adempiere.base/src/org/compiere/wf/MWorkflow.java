@@ -1088,7 +1088,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		ProcessInfo processInfo = new ProcessInfo (((DocAction)po).getDocumentInfo(),column.getAD_Process_ID(),po.get_Table_ID(),po.get_ID());
 		processInfo.setTransactionName(po.get_TrxName());
 		processInfo.setPO(po);
-		ServerProcessCtl.process(processInfo, Trx.get(processInfo.getTransactionName(), false));
+		ServerProcessCtl.process(processInfo, !Util.isEmpty(processInfo.getTransactionName(), true) ? Trx.get(processInfo.getTransactionName(), false) : null);
 		return processInfo;
 	}
 }	//	MWorkflow_ID

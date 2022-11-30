@@ -453,7 +453,7 @@ public class ImportFixedAsset extends SvrProcess
 					if (isUpdate)
 					{
 						MAsset asset = MAsset.get(getCtx(), ifa.getA_Asset_ID(), get_TrxName());
-						for (MAssetGroupAcct assetgrpacct :  MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), asset.getA_Asset_Group_ID()))
+						for (MAssetGroupAcct assetgrpacct :  MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), asset.getA_Asset_Group_ID(), null, get_TrxName()))
 						{			
 							if (assetgrpacct.getAD_Org_ID() == 0 || assetgrpacct.getAD_Org_ID() == asset.getAD_Org_ID()) 
 							{

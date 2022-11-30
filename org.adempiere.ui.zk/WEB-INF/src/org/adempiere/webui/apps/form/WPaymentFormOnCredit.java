@@ -44,13 +44,18 @@ public class WPaymentFormOnCredit extends PaymentFormOnCredit {
 	private Label pTermLabel = new Label();
 	private Listbox pTermCombo = ListboxFactory.newDropdownListbox();
 		
+	/**
+	 * 
+	 * @param windowNo
+	 * @param mTab
+	 */
 	public WPaymentFormOnCredit(int windowNo, GridTab mTab) {
 		super(windowNo, mTab);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}
 	
-	public void init() {
+	protected void init() {
 		Grid pPanelLayout = GridFactory.newGridLayout();
 		window.getPanel().appendChild(pPanelLayout);
 		pTermLabel.setText(Msg.translate(Env.getCtx(), "C_PaymentTerm_ID"));

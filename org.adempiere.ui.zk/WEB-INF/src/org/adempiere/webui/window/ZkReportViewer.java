@@ -41,12 +41,10 @@ import org.adempiere.util.Callback;
 import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
-import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessModalDialog;
-import org.adempiere.webui.apps.WDrillReport;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
@@ -816,7 +814,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 					DrillEvent de = (DrillEvent) event;
 					if (de.getData() != null && de.getData() instanceof DrillData) {
 						DrillData data = (DrillData) de.getData();
-							executeDrill(data, event.getTarget());
+							AEnv.actionDrill(data, m_WindowNo);
 					}
 				}
 				
@@ -1247,52 +1245,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private void cmd_render() {
 		postRenderReportEvent();		
 	}
-
-	/**
-	 * 	Execute Drill to Query
-	 * 	@param data query
-	 *  @param component
-	 */
-	private void executeDrill (DrillData data, Component component)
-	{
-		int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
-		if (!MRole.getDefault().isCanReport(AD_Table_ID))
-		{
-			Dialog.error(m_WindowNo, "AccessCannotReport", data.getQuery().getTableName());
-			return;
-		}
-		if (AD_Table_ID != 0) {
-			WDrillReport drillReport = new WDrillReport(data, component, m_WindowNo);
-
-			Object window = SessionManager.getAppDesktop().findWindow(m_WindowNo);
-			if (window != null && window instanceof Component && window instanceof ISupportMask){
-				final ISupportMask parent = LayoutUtils.showWindowWithMask(drillReport, (Component)window, LayoutUtils.OVERLAP_PARENT);
-				drillReport.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-					@Override
-					public void onEvent(Event event) throws Exception {
-						parent.hideMask();
-					}
-				});
-			}else if (window != null && window instanceof Component){
-				final Mask mask = LayoutUtils.showWindowWithMask(drillReport, (Component)window, null);
-				drillReport.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-					@Override
-					public void onEvent(Event event) throws Exception {
-						mask.hideMask();
-					}
-				});
-			}else{
-				// Add proper width width
-				int width = SessionManager.getAppDesktop().getClientInfo().screenWidth * 42 / 100;
-				drillReport.setWidth(width + "px");
-				drillReport.setPosition("center");
-				drillReport.setAttribute(Window.MODE_KEY, Window.MODE_MODAL);
-				AEnv.showWindow(drillReport);
-			}
-		}
-		else
-			log.warning("No Table found for " + data.getQuery().getWhereClause(true));
-	}	//	executeDrill
 	
 	/**
 	 * 	Execute Drill to Query
@@ -1584,7 +1536,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 }	// cmd_reRun
 	
 	protected void setLanguage (){
-		if (MClient.get(m_ctx).isMultiLingualDocument() && wLanguage.getValue() != null){
+		if (MClient.get(m_ctx).isMultiLingualDocument() && wLanguage != null && wLanguage.getValue() != null){
 			MLanguage language = new MLanguage (m_ctx, (int)wLanguage.getValue(), null);
 			Language lang = new Language(language.getName(), language.getAD_Language(), language.getLocale());
 			m_reportEngine.setLanguageID(language.getAD_Language_ID());

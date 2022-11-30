@@ -510,7 +510,7 @@ public final class Dialog {
         }
         
         String dialogTitle = getDialogTitle(title, windowNo);
-    	String message = constructMessage(adMessage, null);
+    	String message = constructMessage(adMessage, additionalMessage);
     	message = formatDialogMessage(message);
     	
     	Messagebox.showDialog(message, dialogTitle, Messagebox.OK, Messagebox.INFORMATION);

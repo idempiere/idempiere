@@ -13,6 +13,7 @@ import org.adempiere.webui.panel.WDocActionPanel;
 import org.compiere.model.GridTab;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -31,6 +32,8 @@ public class ProcessButtonPopup extends Menupopup implements EventListener<Event
 	private static final String DOCUMENT_ACTION_MENUITEM_ATTRIBUTE = "document-action-menuitem";
 	private static final String DOC_ACTION_PANEL_ATTRIBUTE = "doc-action-panel";
 	private static final String BUTTON_ATTRIBUTE = "button";
+	public static final String BUTTON_ATTRIBUTE_PRESSED = "buttonPressed";
+
 	/**
 	 * generated serial id
 	 */
@@ -52,6 +55,15 @@ public class ProcessButtonPopup extends Menupopup implements EventListener<Event
 			Menuitem mi = new Menuitem(button.getLabel());
 			appendChild(mi);
 			mi.setAttribute(BUTTON_ATTRIBUTE, button);
+			//
+			String pressed = (String) button.getAttribute(BUTTON_ATTRIBUTE_PRESSED);
+			if (!Util.isEmpty(pressed, true)) {
+				if (pressed.trim().equalsIgnoreCase("Y")) {
+					mi.setSclass("z-toolbarbutton-checked");
+				} else {
+					mi.removeSclass("z-toolbarbutton-checked");
+				}
+			}
 			mi.addEventListener(Events.ON_CLICK, this);
 			if (button.isDisabled())
 				mi.setDisabled(true);

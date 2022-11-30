@@ -24,7 +24,6 @@
 package org.adempiere.webui.panel;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -66,6 +65,7 @@ import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.compiere.util.WebUtil;
 import org.zkoss.lang.Strings;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
@@ -476,11 +476,15 @@ public class LoginPanel extends Window implements EventListener<Event>
     }
 
 	private void openLoginHelp() {
-		String langName = (String) lstLanguage.getSelectedItem().getValue();
-		langName = langName.substring(0, 2);
-		String helpURL = MSysConfig.getValue(MSysConfig.LOGIN_HELP_URL, "http://wiki.idempiere.org/{lang}/Login_Help");
-		if (helpURL.contains("{lang}"))
-			helpURL = Util.replace(helpURL, "{lang}", langName);
+		String lang = (String) lstLanguage.getSelectedItem().getValue();
+		lang = lang.substring(0, 2);
+		String helpURL = MSysConfig.getValue(MSysConfig.LOGIN_HELP_URL, "https://wiki.idempiere.org/{lang}/Login_Help");
+		if (helpURL.contains("{lang}")) {
+			String rawURL = helpURL;
+			helpURL = Util.replace(rawURL, "{lang}", lang);
+			if (!"en".equals(lang) && !WebUtil.isUrlOk(helpURL))
+				helpURL = Util.replace(rawURL, "{lang}", "en"); // default to English
+		}
 		try {
 			Executions.getCurrent().sendRedirect(helpURL, "_blank");
 		}
@@ -662,8 +666,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         if (! Adempiere.DB_VERSION.equals(version)) {
             String AD_Message = "DatabaseVersionError";
             //  Code assumes Database version {0}, but Database has Version {1}.
-            String msg = Msg.getMsg(ctx, AD_Message);   //  complete message
-            msg = MessageFormat.format(msg, new Object[] {Adempiere.DB_VERSION, version});
+            String msg = Msg.getMsg(ctx, AD_Message, new Object[] {Adempiere.DB_VERSION, version});   //  complete message
             throw new ApplicationException(msg);
         }
 

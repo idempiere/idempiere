@@ -45,6 +45,9 @@
 	font-weight: bold;
 	content: "\f068";
 }
+.z-icon-DeSelectAll:before {
+	content: "\f248";
+}
 .z-icon-Detail:before {	
 	content: "\f0d7";
 }
@@ -275,7 +278,7 @@
 	content: "\f144";
 }
 .z-icon-Reset:before {
-	content: "\f0e2";
+	content: "\f12d";
 }
 .z-icon-Save:before {	
 	content: "\f0c7";
@@ -287,7 +290,7 @@
 	content: "\f002";
 }
 .z-icon-SelectAll:before {
-	content: "\f248";
+	content: "\f247";
 }
 .z-icon-SendMail:before {
 	content: "\f003";
