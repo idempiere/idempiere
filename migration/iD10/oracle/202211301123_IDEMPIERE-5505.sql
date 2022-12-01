@@ -86,3 +86,16 @@ UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2022-11-30 11:25:11','YYYY-MM-
 UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2022-11-30 11:25:11','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204839
 ;
 
+update gl_category set value = substr(name, 0, 40);
+
+-- Dec 1, 2022, 11:38:22 AM CET
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_TIMESTAMP('2022-12-01 11:38:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=215691
+;
+
+-- Dec 1, 2022, 11:38:25 AM CET
+ALTER TABLE GL_Category MODIFY Value VARCHAR2(40 CHAR)
+;
+
+-- Dec 1, 2022, 11:38:25 AM CET
+ALTER TABLE GL_Category MODIFY Value NOT NULL
+;
