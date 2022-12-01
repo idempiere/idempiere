@@ -503,6 +503,20 @@ public final class DisplayType
 			return false;
 	}
 	
+	/**
+	 * 
+	 * @param displayType
+	 * @return true if displayType is a ChosenMultipleSelection
+	 */
+	public static boolean isChosenMultipleSelection(int displayType)
+	{
+		if (displayType == ChosenMultipleSelectionList || displayType == ChosenMultipleSelectionSearch
+				|| displayType == ChosenMultipleSelectionTable)
+			return true;
+		else
+			return false;
+	}
+	
 	/**************************************************************************
 	 *	Return Format for numeric DisplayType
 	 *  @param displayType Display Type (default Number)
