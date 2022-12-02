@@ -99,3 +99,20 @@ ALTER TABLE GL_Category MODIFY Value VARCHAR2(60 CHAR)
 -- Dec 1, 2022, 11:38:25 AM CET
 ALTER TABLE GL_Category MODIFY Value NOT NULL
 ;
+
+-- Dec 2, 2022, 12:29:15 PM CET
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201143,'0c0e1984-8dcc-491f-b07e-1f9749bd006a',TO_TIMESTAMP('2022-12-02 12:29:15','YYYY-MM-DD HH24:MI:SS'),10,'D','Y','gl_category_value',TO_TIMESTAMP('2022-12-02 12:29:15','YYYY-MM-DD HH24:MI:SS'),10,218,'N','Y','N','N')
+;
+
+-- Dec 2, 2022, 12:29:21 PM CET
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201538,'0d5a810a-771a-4df1-b431-0e0ad2b852fa',TO_TIMESTAMP('2022-12-02 12:29:21','YYYY-MM-DD HH24:MI:SS'),10,'D','Y',TO_TIMESTAMP('2022-12-02 12:29:21','YYYY-MM-DD HH24:MI:SS'),10,1531,201143,10)
+;
+
+-- Dec 2, 2022, 12:29:24 PM CET
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201539,'538e44e3-c865-4db5-b549-d90c11630f9d',TO_TIMESTAMP('2022-12-02 12:29:23','YYYY-MM-DD HH24:MI:SS'),10,'D','Y',TO_TIMESTAMP('2022-12-02 12:29:23','YYYY-MM-DD HH24:MI:SS'),10,215691,201143,20)
+;
+
+-- Dec 2, 2022, 12:29:28 PM CET
+CREATE UNIQUE INDEX gl_category_value ON GL_Category (AD_Client_ID,Value)
+;
+
