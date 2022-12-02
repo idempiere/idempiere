@@ -110,7 +110,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 
     public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
     {
-    	boolean isClientDefined = (clientsKNPairs.length == 1);
+    	boolean isClientDefined = (clientsKNPairs.length == 1 || ! Util.isEmpty(Env.getContext(ctx, Env.AD_USER_ID)));
 		if (pnlRole == null)
 			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined);
     	if (isClientDefined) {
