@@ -2610,6 +2610,14 @@ public class GridField
 		return m_vo.IsQuickForm;
 	}
 
+	/**
+	 * Display Date In Words
+	 * @return true if date range has to be displayed in words
+	 */
+	public boolean isDisplayDateInWords() {
+		return m_vo.isDisplayDateInWords;
+	}
+	
 	public void processUIVirtualColumn() {
 		String sql = m_vo.ColumnSQL.substring(5);
 		sql = Env.parseContext(Env.getCtx(), getWindowNo(), sql, false);

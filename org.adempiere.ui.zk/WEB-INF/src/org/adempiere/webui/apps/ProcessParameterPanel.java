@@ -49,6 +49,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.DateRangeEditor;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.IProcessParameter;
@@ -221,7 +222,7 @@ public class ProcessParameterPanel extends Panel implements
 		if (Env.isBaseLanguage(Env.getCtx(), "AD_Process_Para"))
 			sql = "SELECT p.Name, p.Description, p.Help, "
 					+ "p.AD_Reference_ID, p.AD_Process_Para_ID, "
-					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.ColumnName, "
+					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.IsDisplayDateInWords, p.ColumnName, "
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic, p.Placeholder, p.Placeholder2, p.isAutoComplete, "
@@ -235,7 +236,7 @@ public class ProcessParameterPanel extends Panel implements
 		else
 			sql = "SELECT t.Name, t.Description, t.Help, "
 					+ "p.AD_Reference_ID, p.AD_Process_Para_ID, "
-					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.ColumnName, "
+					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.IsDisplayDateInWords, p.ColumnName, "
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern,p.MandatoryLogic, t.Placeholder, t.Placeholder2, p.isAutoComplete, "
@@ -467,14 +468,21 @@ public class ProcessParameterPanel extends Panel implements
 			row.appendChild(box);
 			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime)) 
 					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))) {
-				editor.setVisible(false, true);
-				editor2.setVisible(false, true);
-				DateRangeEditor dateRangeEditor = new DateRangeEditor(editor, editor2, true);
-				box.appendChild(dateRangeEditor);
-				dateRangeEditor.setVisible(mField.isDisplayed(true));
-				label.setVisible(dateRangeEditor.isVisible());
-				dateRangeEditor.setReadOnly(!(editor.isReadWrite() && editor2.isReadWrite()));
-				m_dateRangeEditors.add(dateRangeEditor);
+				if(mField.isDisplayDateInWords()) {
+					editor.setVisible(false, true);
+					editor2.setVisible(false, true);
+					DateRangeEditor dateRangeEditor = new DateRangeEditor(editor, editor2, true);
+					box.appendChild(dateRangeEditor);
+					dateRangeEditor.setVisible(mField.isDisplayed(true));
+					label.setVisible(dateRangeEditor.isVisible());
+					dateRangeEditor.setReadOnly(!(editor.isReadWrite() && editor2.isReadWrite()));
+					m_dateRangeEditors.add(dateRangeEditor);
+				}
+				else {
+					DateRangeButton dateRangeButton = new DateRangeButton(editor, editor2);
+					box.appendChild(dateRangeButton);
+					m_dateRangeEditors.add(null);
+				}
 			}
 			else {
 				m_dateRangeEditors.add(null);
@@ -1055,7 +1063,8 @@ public class ProcessParameterPanel extends Panel implements
 			// Handle Dynamic Display for Date Range Picker
 			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime))
 					&& mField2 != null
-					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))) {
+					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))
+					&& mField.isDisplayDateInWords()) {
 				DateRangeEditor dateRangeEditor = m_dateRangeEditors.get(i);
 				if(dateRangeEditor != null) {
 					dateRangeEditor.setVisible(editor.isVisible());
