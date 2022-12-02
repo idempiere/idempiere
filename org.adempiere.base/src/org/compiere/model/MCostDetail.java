@@ -732,15 +732,15 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param M_Product_ID product
 	 *	@param M_AttributeSetInstance_ID asi
 	 *	@param M_CostElement_ID optional cost element for Freight
-	 *	@param Amt amt
-	 *	@param Qty qty
-	 *	@param Description optional description
+	 *	@param amt Amount
+	 *	@param qty Quantity
+	 *	@param description optional description
 	 *	@param trxName transaction
 	 */
 	public MCostDetail (MAcctSchema as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
-		int M_CostElement_ID, BigDecimal Amt, BigDecimal Qty,
-		String Description, String trxName)
+		int M_CostElement_ID, BigDecimal amt, BigDecimal qty,
+		String description, String trxName)
 	{
 		this (as.getCtx(), 0, trxName);
 		setClientOrg(as.getAD_Client_ID(), AD_Org_ID);
@@ -749,10 +749,14 @@ public class MCostDetail extends X_M_CostDetail
 		setM_AttributeSetInstance_ID (M_AttributeSetInstance_ID);
 		//
 		setM_CostElement_ID(M_CostElement_ID);
-		//
-		setAmt (Amt);
-		setQty (Qty);
-		setDescription(Description);
+		//amount must follow the sign of qty
+		if (amt.signum() != 0 && qty.signum() != 0 && amt.signum() != qty.signum())
+		{
+			amt = amt.negate();
+		}
+		setAmt (amt);
+		setQty (qty);
+		setDescription(description);
 	}	//	MCostDetail
 	
 	/**
