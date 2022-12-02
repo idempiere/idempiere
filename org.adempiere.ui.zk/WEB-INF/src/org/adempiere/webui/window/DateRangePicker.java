@@ -32,13 +32,20 @@ import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ComboItem;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
+import org.adempiere.webui.component.Tab;
+import org.adempiere.webui.component.Tabbox;
+import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.Tabpanels;
+import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
@@ -50,6 +57,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.zhtml.Br;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -96,6 +104,14 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	private org.zkoss.zul.Calendar cal;
 	private org.zkoss.zul.Calendar cal2;
 	private Div quickListBoxes;
+	private Tabbox tabbox;
+	private Tabs tabs;
+	private Tabpanels tabpanels;
+	private Tab fromTab;
+	private Tab toTab;
+	private Tabpanel fromTabPanel;
+	private Tabpanel toTabPanel;
+	private Div midDiv;
 	
 	private WEditor editor;
 	private WEditor editor2;
@@ -105,6 +121,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	private Date oldValueTo;
 	private String displayValue;
 	private boolean enableValueChange = true;
+	private boolean isMobile = ClientInfo.isMobile() && ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1);
 
 	private ArrayList<Listbox> quickListBoxesArray = new ArrayList<Listbox>();
 	private ListItem selectedQuickListItem;
@@ -127,7 +144,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		
 		Div div = new Div();
 		okBtn = ButtonFactory.createNamedButton(Msg.getMsg(Env.getCtx(), "ApplyFilter"), true, false);
-		okBtn.setStyle("color: white; background: #A9A9A9; float: right;");
+		okBtn.setStyle("color: white; background: #A9A9A9;");
 
 		modeCombobox = new Combobox();
 		modeCombobox.setSclass("date-picker-component");
@@ -143,6 +160,23 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		unitCombobox.setSclass("date-picker-component");
 		unitCombobox.setWidth("90px");
 		unitCombobox.addEventListener(Events.ON_SELECT, this);
+		
+		// Tabs visible on "Between" mode, mobile screen
+		tabbox = new Tabbox();
+		tabs = new Tabs();
+		tabbox.appendChild(tabs);
+		tabpanels = new Tabpanels();
+		tabbox.appendChild(tabpanels);
+
+		fromTab = new Tab(Msg.getMsg(Env.getCtx(), "From"));
+		tabs.appendChild(fromTab);
+		toTab = new Tab(Msg.getMsg(Env.getCtx(), "To"));
+		tabs.appendChild(toTab);
+		
+		fromTabPanel = new Tabpanel();
+		toTabPanel = new Tabpanel();
+		tabpanels.appendChild(fromTabPanel);
+		tabpanels.appendChild(toTabPanel);
 		
 		cal = new org.zkoss.zul.Calendar();
 		cal.setSclass("date-picker-component");
@@ -188,6 +222,10 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			ComboItem item = new ComboItem(mode.getName(), mode.getValue());
 			modeCombobox.appendChild(item);
 		}
+		if(isMobile) {
+			// disable "Quick" mode
+			modeCombobox.removeItemAt(modeCombobox.getItemCount()-1);
+		}
 		modeCombobox.setSelectedIndex(0);
 		
 		// Load Units to ListBox
@@ -200,17 +238,23 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		
 		div.setSclass("date-picker-container");
 		div.appendChild(modeCombobox);
+		if (isMobile) {
+			ZkCssHelper.appendStyle(modeCombobox, "margin: 0px 5px 10px 0px !important;");
+			div.appendChild(new Br());
+		}
 		div.appendChild(numberBox);
+		
 		div.appendChild(unitCombobox);
 		this.appendChild(div);
 		
-		div = new Div();
-		div.setSclass("date-picker-container");
-		div.setStyle("Margin-top: 10px;");
-		div.appendChild(cal);
-		div.appendChild(cal2);
-		div.appendChild(quickListBoxes);
-		this.appendChild(div);
+		midDiv = new Div();
+		midDiv.appendChild(tabbox);
+		midDiv.setSclass("date-picker-container");
+		midDiv.setStyle("Margin-top: 10px;");
+		midDiv.appendChild(cal);
+		midDiv.appendChild(cal2);
+		midDiv.appendChild(quickListBoxes);
+		this.appendChild(midDiv);
 		
 		div = new Div();
 		div.setSclass("date-picker-container");
@@ -218,10 +262,20 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		div.appendChild(dateTextBoxLabel);
 		div.appendChild(dateTextBox);		
 		div.setSclass("date-picker-container");
+		if (isMobile) {
+			div.appendChild(new Br());
+			ZkCssHelper.appendStyle(okBtn, "margin: 5px 5px 5px 0px !important;");
+		}
+		else {
+			ZkCssHelper.appendStyle(okBtn, "float: right;");
+		}
 		div.appendChild(okBtn);
 		this.appendChild(div);
 		
-		this.setStyle("min-width: 320px;");
+		if(isMobile)
+			this.setStyle("min-width: 350px;");
+		else
+			this.setStyle("min-width: 320px;");
 		
 		dateFrom = (Date) editor.getValue();
 		dateTo = (Date) editor2.getValue();
@@ -257,11 +311,27 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	}
 	
 	private void updateUI() {
+		
 		String selectedMode = modeCombobox.getSelectedItem().getValue().toString();
+		
+		if(selectedMode.equalsIgnoreCase(DATESELECTIONMODE_BETWEEN) && isMobile) {
+			cal.detach();
+			fromTabPanel.appendChild(cal);
+			cal2.detach();
+			toTabPanel.appendChild(cal2);
+		}
+		else {
+			cal.detach();
+			midDiv.appendChild(cal);
+			cal2.detach();
+			midDiv.appendChild(cal2);
+		}
+		
 		switch (selectedMode) {
 		case DATESELECTIONMODE_AFTER:
 		case DATESELECTIONMODE_BEFORE:
 		case DATESELECTIONMODE_ON:
+			tabbox.setVisible(false);
 			numberBox.setVisible(false);
 			unitCombobox.setVisible(false);
 			cal.setVisible(true);
@@ -269,6 +339,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			quickListBoxes.setVisible(false);
 			break;
 		case DATESELECTIONMODE_BETWEEN:
+			tabbox.setVisible(isMobile);
 			numberBox.setVisible(false);
 			unitCombobox.setVisible(false);
 			cal.setVisible(true);
@@ -276,6 +347,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			quickListBoxes.setVisible(false);
 			break;
 		case DATESELECTIONMODE_CURRENT:
+			tabbox.setVisible(false);
 			numberBox.setVisible(false);
 			unitCombobox.setVisible(true);
 			cal.setVisible(false);
@@ -284,6 +356,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			break;
 		case DATESELECTIONMODE_NEXT:
 		case DATESELECTIONMODE_PREVIOUS:
+			tabbox.setVisible(false);
 			numberBox.setVisible(true);
 			unitCombobox.setVisible(true);
 			cal.setVisible(false);
@@ -291,6 +364,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			quickListBoxes.setVisible(false);
 			break;
 		case DATESELECTIONMODE_QUICK:
+			tabbox.setVisible(false);
 			numberBox.setVisible(false);
 			unitCombobox.setVisible(false);
 			cal.setVisible(false);

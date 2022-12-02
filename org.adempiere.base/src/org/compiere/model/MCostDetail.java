@@ -1001,6 +1001,7 @@ public class MCostDetail extends X_M_CostDetail
 		history.setM_CostDetail_ID(this.getM_CostDetail_ID());
 		history.setM_CostElement_ID(ce.getM_CostElement_ID());
 		history.setM_CostType_ID(cost.getM_CostType_ID());
+		history.setM_Product_ID(cost.getM_Product_ID());
 		history.setClientOrg(cost.getAD_Client_ID(), cost.getAD_Org_ID());
 		history.setOldQty(cost.getCurrentQty());
 		history.setOldCostPrice(cost.getCurrentCostPrice());

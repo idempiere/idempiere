@@ -179,7 +179,7 @@ public class InvoiceGenerate extends SvrProcess
 			//
 			sql.append(") AND o.C_DocType_ID IN (SELECT C_DocType_ID FROM C_DocType ")
 					.append("WHERE DocBaseType='SOO' AND DocSubTypeSO NOT IN ('ON','OB','WR')) ")
-				.append("ORDER BY AD_Org_ID, M_Warehouse_ID, PriorityRule, C_BPartner_ID, Bill_Location_ID, Bill_User_ID, C_Order_ID");
+				.append("ORDER BY o.AD_Org_ID, o.M_Warehouse_ID, o.PriorityRule, o.C_BPartner_ID, o.Bill_Location_ID, o.Bill_User_ID, o.C_Order_ID");
 		}
 	//	sql += " FOR UPDATE";
 		
@@ -206,6 +206,7 @@ public class InvoiceGenerate extends SvrProcess
 		}
 		catch (Exception e)
 		{
+			DB.close(pstmt);
 			throw new AdempiereException(e);
 		}
 		return generate(pstmt);

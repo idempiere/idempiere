@@ -1218,9 +1218,14 @@ public final class DB
 	{
 		// Bugfix Gunther Hoppe, 02.09.2005, vpj-cd e-evolution
 		CStatementVO info = new CStatementVO (RowSet.TYPE_SCROLL_INSENSITIVE, RowSet.CONCUR_READ_ONLY, DB.getDatabase().convertStatement(sql));
-		CPreparedStatement stmt = ProxyFactory.newCPreparedStatement(info);
-		RowSet retValue = stmt.getRowSet();
-		close(stmt);
+		CPreparedStatement stmt = null;
+		RowSet retValue = null;
+		try {
+			stmt = ProxyFactory.newCPreparedStatement(info);
+			retValue = stmt.getRowSet();
+		} finally {
+			close(stmt);			
+		}
 		return retValue;
 	}	//	getRowSet
 
@@ -2597,6 +2602,7 @@ public final class DB
 		return ProxyFactory.newCPreparedStatement(resultSetType, resultSetConcurrency, sql, trxName);
 	}
 
+	
 	/**
 	 * @param columnName
 	 * @param csv comma separated value
@@ -2604,8 +2610,24 @@ public final class DB
 	 */
 	public static String inClauseForCSV(String columnName, String csv) 
 	{
+		return inClauseForCSV(columnName, csv, false);
+	}
+	
+	/**
+	 * @param columnName
+	 * @param csv comma separated value
+	 * @param isNotClause
+	 * @return IN clause
+	 */
+	public static String inClauseForCSV(String columnName, String csv, boolean isNotClause) 
+	{
 		StringBuilder builder = new StringBuilder();
-		builder.append(columnName).append(" IN (");
+		builder.append(columnName);
+		
+		if(isNotClause)
+			builder.append(" NOT ");
+		
+		builder.append(" IN (");
 		String[] values = csv.split("[,]");
 		for(int i = 0; i < values.length; i++)
 		{
@@ -2648,7 +2670,18 @@ public final class DB
 	 */
 	public static String intersectClauseForCSV(String columnName, String csv)
 	{
-		return getDatabase().intersectClauseForCSV(columnName, csv);
+		return intersectClauseForCSV(columnName, csv, false);
+	}
+	/**
+	 * 
+	 * @param columnName
+	 * @param csv
+	 * @param isNotClause
+	 * @return intersect sql clause
+	 */
+	public static String intersectClauseForCSV(String columnName, String csv, boolean isNotClause)
+	{
+		return getDatabase().intersectClauseForCSV(columnName, csv, isNotClause);
 	}
 	
 	/**

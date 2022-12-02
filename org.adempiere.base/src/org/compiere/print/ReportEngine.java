@@ -1871,7 +1871,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				IsForm = "Y".equals(rs.getString(6));	//	required
 				Client_ID = rs.getInt(7);
 				instance = new MPInstance(ctx, pi.getAD_PInstance_ID(), null);
-				instance.setAD_PrintFormat_ID(AD_PrintFormat_ID);
+				if(instance.getAD_PrintFormat_ID() <= 0)
+					instance.setAD_PrintFormat_ID(AD_PrintFormat_ID);
+				else
+					AD_PrintFormat_ID = instance.getAD_PrintFormat_ID();
 				setDefaultReportTypeToPInstance(ctx, instance, AD_PrintFormat_ID);
 				instance.saveEx();
 			}
