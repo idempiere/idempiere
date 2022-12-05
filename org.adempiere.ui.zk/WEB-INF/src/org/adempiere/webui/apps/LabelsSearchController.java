@@ -149,7 +149,7 @@ public class LabelsSearchController implements EventListener<Event>{
 			sql.append("SELECT ");
 			sql.append("   AD_Label.AD_Label_ID, ");
 			sql.append("   AD_Label.Name, ");
-			sql.append("   COUNT(*), ");
+			sql.append("   COUNT(AD_LabelAssignment.AD_LabelAssignment_ID), ");
 			sql.append("   CASE ");
 			sql.append("     WHEN AD_Label.AD_LabelCategory_ID > 0 AND AD_LabelCategory.IsCanBeUsedInAllTables = 'N' ");
 			sql.append("       AND AD_LabelCategoryTable.AD_Table_ID <> ").append(labelsPanel.getAD_Table_ID()).append(" THEN 'N' ");
@@ -166,7 +166,7 @@ public class LabelsSearchController implements EventListener<Event>{
 			sql.append("       AND AD_LabelCategoryTable.AD_Table_ID <> ").append(labelsPanel.getAD_Table_ID()).append(" THEN 'N' ");
 			sql.append("     ELSE 'Y' ");
 			sql.append("   END ");
-			sql.append(" ORDER BY COUNT(*) DESC");
+			sql.append(" ORDER BY COUNT(AD_LabelAssignment.AD_LabelAssignment_ID) DESC");
 
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
