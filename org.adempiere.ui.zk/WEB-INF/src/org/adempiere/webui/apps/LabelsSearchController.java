@@ -144,33 +144,37 @@ public class LabelsSearchController implements EventListener<Event>{
 			boolean found = false;
 			int currentIndex = 0;
 			int foundIndex = 0;
-			
-			String sql = "SELECT"
-					+ "   AD_Label.AD_Label_ID,"
-					+ "   AD_Label.Name,"
-					+ "   COUNT(AD_LabelAssignment.*),"
-					+ "   CASE " 
-					+ "     WHEN AD_Label.AD_LabelCategory_ID > 0 AND AD_LabelCategory.IsCanBeUsedInAllTables = 'N'"
-					+ "       AND AD_LabelCategoryTable.AD_Table_ID <> ? THEN 'N'"
-					+ "     ELSE 'Y'"
-					+ "   END AS IsAllowed"
-					+ " FROM AD_Label"
-					+ " LEFT JOIN AD_LabelAssignment ON AD_LabelAssignment.AD_Label_ID = AD_Label.AD_Label_ID"
-					+ " LEFT JOIN AD_LabelCategory ON AD_LabelCategory.AD_LabelCategory_ID = AD_LabelCategory.AD_LabelCategory_ID"
-					+ " LEFT JOIN AD_LabelCategoryTable ON AD_LabelCategoryTable.AD_LabelCategory_ID = AD_LabelCategory.AD_LabelCategory_ID"
-					+ " WHERE AD_Label.AD_Client_ID = ? AND AD_Label.Name ILIKE ?"
-					+ " GROUP BY AD_Label.AD_Label_ID, AD_Label.Name, IsAllowed"
-					+ " ORDER BY COUNT(AD_LabelAssignment.*) DESC";
-					//+ " FETCH FIRST 15 ROWS ONLY";
-			
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT ");
+			sql.append("   AD_Label.AD_Label_ID, ");
+			sql.append("   AD_Label.Name, ");
+			sql.append("   COUNT(*), ");
+			sql.append("   CASE ");
+			sql.append("     WHEN AD_Label.AD_LabelCategory_ID > 0 AND AD_LabelCategory.IsCanBeUsedInAllTables = 'N' ");
+			sql.append("       AND AD_LabelCategoryTable.AD_Table_ID <> ").append(labelsPanel.getAD_Table_ID()).append(" THEN 'N' ");
+			sql.append("     ELSE 'Y' ");
+			sql.append("   END AS IsAllowed ");
+			sql.append(" FROM AD_Label ");
+			sql.append(" LEFT JOIN AD_LabelAssignment ON AD_LabelAssignment.AD_Label_ID = AD_Label.AD_Label_ID ");
+			sql.append(" LEFT JOIN AD_LabelCategory ON AD_LabelCategory.AD_LabelCategory_ID = AD_LabelCategory.AD_LabelCategory_ID ");
+			sql.append(" LEFT JOIN AD_LabelCategoryTable ON AD_LabelCategoryTable.AD_LabelCategory_ID = AD_LabelCategory.AD_LabelCategory_ID ");
+			sql.append(" WHERE AD_Label.AD_Client_ID = ? AND LOWER(AD_Label.Name) LIKE LOWER(?) ");
+			sql.append(" GROUP BY AD_Label.AD_Label_ID, AD_Label.Name, ");
+			sql.append("   CASE ");
+			sql.append("     WHEN AD_Label.AD_LabelCategory_ID > 0 AND AD_LabelCategory.IsCanBeUsedInAllTables = 'N' ");
+			sql.append("       AND AD_LabelCategoryTable.AD_Table_ID <> ").append(labelsPanel.getAD_Table_ID()).append(" THEN 'N' ");
+			sql.append("     ELSE 'Y' ");
+			sql.append("   END ");
+			sql.append(" ORDER BY COUNT(*) DESC");
+
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			
 			try {
-				pstmt = DB.prepareStatement(sql, null);
-				pstmt.setInt(1, labelsPanel.getAD_Table_ID());
-				pstmt.setInt(2, Env.getAD_Client_ID(Env.getCtx()));
-				pstmt.setString(3, "%" + value + "%");
+				pstmt = DB.prepareStatement(sql.toString(), null);
+				pstmt.setInt(1, Env.getAD_Client_ID(Env.getCtx()));
+				pstmt.setString(2, "%" + value + "%");
 
 				rs = pstmt.executeQuery();
 				
