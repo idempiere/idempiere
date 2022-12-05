@@ -1,9 +1,9 @@
 
-target "idempiere-221125"
+target "idempiere-221205"
 
 with source configurePhase allEnvironments
 
-location zk "https://idempiere.github.io/binary.file/p2.zk/9.6.2" {
+location zk "https://idempiere.github.io/binary.file/p2.zk/9.6.3" {
 	zcommon
 	zel
 	zhtml
