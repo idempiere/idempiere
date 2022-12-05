@@ -40,3 +40,4 @@ UPDATE AD_Column SET IsIdentifier='Y', SeqNo=2,Updated=TO_DATE('2022-11-21 17:18
 ;
 
 SELECT register_migration_script('202211111143_IDEMPIERE-5371.sql') FROM dual;
+

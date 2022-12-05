@@ -639,7 +639,9 @@ public class MPInstance extends X_AD_PInstance
 	protected boolean beforeSave (boolean newRecord)
 	{
 		if (newRecord) {
-			setAD_Session_ID(Env.getContextAsInt(Env.getCtx(), "#AD_Session_ID"));
+			int sessionId = Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID);
+			if (sessionId > 0)
+				setAD_Session_ID(Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID));
 		}
 		
 		return true;
