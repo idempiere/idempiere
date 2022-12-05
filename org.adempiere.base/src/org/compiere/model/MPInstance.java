@@ -641,7 +641,7 @@ public class MPInstance extends X_AD_PInstance
 		if (newRecord) {
 			int sessionId = Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID);
 			if (sessionId > 0)
-				setAD_Session_ID(Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID));
+				setAD_Session_ID(sessionId);
 		}
 		
 		return true;
