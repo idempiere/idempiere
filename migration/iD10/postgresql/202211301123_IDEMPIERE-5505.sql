@@ -113,3 +113,6 @@ INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexCol
 CREATE UNIQUE INDEX gl_category_value ON GL_Category (AD_Client_ID,Value)
 ;
 
+-- Dec 5, 2022, 10:38:37 PM CET
+INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU,StartNewMonth,IsOrgLevelSequence) VALUES ('DocumentNo_GL_Category',1000000,'N','N','DocumentNo/Value for Table GL_Category','Y','N',11,0,TO_TIMESTAMP('2022-12-05 22:38:36','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-12-05 22:38:36','YYYY-MM-DD HH24:MI:SS'),100,200451,'Y',1000000,1,200000,'504179b4-e4d6-4a95-9215-d6254338943e','N','N')
+;
