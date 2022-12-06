@@ -66,6 +66,9 @@
 	color: yellow;
 	font-family: FontAwesome;
 }
+.z-icon-ExcludeSelected:before {
+	content: "\f05e";
+}
 .z-icon-Expand:before {
 	content: "\f0d7";
 }
@@ -116,6 +119,9 @@
 }
 .z-icon-Import:before {
 	content: "\f0ee";		
+}
+.z-icon-IncludeSelected:before {
+	content: "\f05d";
 }
 .z-icon-Info:before {	
 	content: "\f0eb";

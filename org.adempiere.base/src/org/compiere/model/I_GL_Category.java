@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for GL_Category
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_GL_Category 
 {
@@ -165,6 +165,19 @@ public interface I_GL_Category
 	  */
 	public String getName();
 
+    /** Column name PrintName */
+    public static final String COLUMNNAME_PrintName = "PrintName";
+
+	/** Set Print Text.
+	  * The label text to be printed on a document or correspondence.
+	  */
+	public void setPrintName (String PrintName);
+
+	/** Get Print Text.
+	  * The label text to be printed on a document or correspondence.
+	  */
+	public String getPrintName();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -180,4 +193,17 @@ public interface I_GL_Category
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name Value */
+    public static final String COLUMNNAME_Value = "Value";
+
+	/** Set Search Key.
+	  * Search key for the record in the format required - must be unique
+	  */
+	public void setValue (String Value);
+
+	/** Get Search Key.
+	  * Search key for the record in the format required - must be unique
+	  */
+	public String getValue();
 }
