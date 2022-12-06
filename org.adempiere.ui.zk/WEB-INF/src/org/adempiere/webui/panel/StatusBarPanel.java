@@ -125,7 +125,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
         LayoutUtils.addSclass("status-db", statusDB);
         east.appendChild(statusDbHbox);
         east.setStyle("text-align: left; ");
-        ZKUpdateUtil.setWidth(east, "50px");
+        ZKUpdateUtil.setHflex(east, "min");
 
         this.appendChild(statusBar);
 
