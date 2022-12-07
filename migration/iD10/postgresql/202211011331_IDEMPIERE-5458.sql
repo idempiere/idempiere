@@ -8,12 +8,3 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnN
 -- Nov 1, 2022, 1:31:26 PM BRT
 ALTER TABLE AD_OrgInfo ADD COLUMN TimeZone VARCHAR(60) DEFAULT NULL 
 ;
-
--- Nov 1, 2022, 1:31:26 PM BRT
-INSERT INTO t_alter_column values('ad_orginfo','AD_Org_ID','NUMERIC(10)',null,null)
-;
-
--- Nov 1, 2022, 1:31:26 PM BRT
-INSERT INTO t_alter_column values('ad_orginfo','AD_Client_ID','NUMERIC(10)',null,null)
-;
-
