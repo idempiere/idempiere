@@ -684,7 +684,14 @@ public class GridTabCSVImporter implements IGridTabImporter
 						PO po = currentGridTab.getTableModel().getPO(currentGridTab.getCurrentRow());		
 						//Keep master record for details validation 
 						if(currentGridTab.equals(gridTab))
+						{
 							masterRecord = po;
+						}
+						else
+						{
+							if (currentGridTab.getParentTab() != null)
+								currentGridTab.getParentTab().dataRefresh(false);
+						}
 
 						if( isInsertMode() ) {
 							logMsg = Msg.getMsg(Env.getCtx(), "Inserted") + " " + po.toString();
