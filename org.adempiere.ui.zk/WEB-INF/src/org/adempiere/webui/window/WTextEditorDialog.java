@@ -15,6 +15,7 @@ package org.adempiere.webui.window;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -27,7 +28,9 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
 import org.zkforge.ckez.CKeditor;
@@ -219,6 +222,20 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 			onCancel();
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			if (editable) {
+
+				if (maxSize > 0) {
+					int currentSize = 0;
+					if (tabbox.getSelectedIndex() == 0)
+						currentSize = textBox.getText().length();
+					else
+						currentSize = editor.getValue().length();
+
+					if (currentSize > maxSize) {
+						Dialog.error(0, "Error", Msg.getMsg(Env.getCtx(), "TextEditorDialogCurrentSizeExceedMaxSize", new Object[] {currentSize, maxSize}));
+						return;
+					}
+				}
+
 				if (tabbox.getSelectedIndex() == 0) {
 					text = textBox.getText();
 					detach();
@@ -230,9 +247,18 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 					
 			}			
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_RESET)) {
-			textBox.setText(text);
-			if (editor != null)
-				editor.setValue(text);
+
+			Dialog.ask(0, "TextEditorDialogResetConfirmation", new Callback<Boolean>() {
+
+				@Override
+				public void onCallback(Boolean result) {
+					if (result) {
+						textBox.setText(text);
+						if (editor != null)
+							editor.setValue(text);
+					}
+				}
+			});
 		} else if (event.getName().equals(Events.ON_SELECT)) {
 			if (editable) {
 				if (tabbox.getSelectedIndex() == 0) {
