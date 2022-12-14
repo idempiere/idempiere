@@ -12,3 +12,7 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','You''ll lose all your unsaved changes ; proceed?',0,0,'Y',TO_TIMESTAMP('2022-12-12 10:23:54','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2022-12-12 10:23:54','YYYY-MM-DD HH24:MI:SS'),10,200807,'TextEditorDialogResetConfirmation','D','be8f0bc2-a758-43b2-8fad-8da3f95351f7')
 ;
 
+-- Dec 14, 2022, 1:58:58 PM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Text',0,0,'Y',TO_TIMESTAMP('2022-12-14 13:58:57','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2022-12-14 13:58:57','YYYY-MM-DD HH24:MI:SS'),10,200808,'Text','D','4306a604-0bfe-4aee-b719-bff41279cf5c')
+;
+

@@ -128,7 +128,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		ZKUpdateUtil.setVflex(tabbox, "1");
 		ZKUpdateUtil.setHflex(tabbox, "1");
 		
-		Tab tab = new Tab("Text");
+		Tab tab = new Tab(Msg.getMsg(Env.getCtx(), "Text"));
 		tabs.appendChild(tab);
 		
 		Tabpanel tabPanel = new Tabpanel();
