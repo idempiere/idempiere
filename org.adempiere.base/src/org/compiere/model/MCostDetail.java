@@ -748,12 +748,7 @@ public class MCostDetail extends X_M_CostDetail
 		setM_Product_ID (M_Product_ID);
 		setM_AttributeSetInstance_ID (M_AttributeSetInstance_ID);
 		//
-		setM_CostElement_ID(M_CostElement_ID);
-		//amount must follow the sign of qty
-		if (amt.signum() != 0 && qty.signum() != 0 && amt.signum() != qty.signum())
-		{
-			amt = amt.negate();
-		}
+		setM_CostElement_ID(M_CostElement_ID);		
 		setAmt (amt);
 		setQty (qty);
 		setDescription(description);
