@@ -35,6 +35,8 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MAttributeSet;
+import org.compiere.model.MAttributeSetExclude;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
@@ -43,6 +45,7 @@ import org.compiere.model.MCostDetail;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MInOutLineMA;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MOrder;
@@ -51,6 +54,8 @@ import org.compiere.model.MPriceList;
 import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProduct;
+import org.compiere.model.MProductCategory;
+import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.MProductPrice;
 import org.compiere.model.MProduction;
 import org.compiere.model.MProductionLine;
@@ -69,7 +74,9 @@ import org.eevolution.model.MPPProductBOMLine;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
+@Isolated
 public class AveragePOCostingTest extends AbstractTestCase {
 
 	public AveragePOCostingTest() {
@@ -479,6 +486,201 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		}
 	}
 	
+	@Test
+	public void testMRAndShipmentByLot() {
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+		
+		MProductCategory lotLevel = new MProductCategory(Env.getCtx(), 0, null);
+		lotLevel.setName("testMaterialReceiptLot");
+		lotLevel.saveEx();
+				
+		MProduct product = null;
+		MAttributeSetExclude exclude = null;
+		MAttributeSetExclude exclude1 = null;
+		try {
+			MAttributeSet mas = new MAttributeSet(Env.getCtx(), DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id, getTrxName());
+			mas.setMandatoryType(MAttributeSet.MANDATORYTYPE_NotMandatory);
+			mas.saveEx();
+			
+			exclude = new MAttributeSetExclude(Env.getCtx(), 0, null);
+			exclude.setM_AttributeSet_ID(mas.get_ID());
+			exclude.setAD_Table_ID(MOrderLine.Table_ID);
+			exclude.setIsSOTrx(true);
+			exclude.saveEx();
+			
+			exclude1 = new MAttributeSetExclude(Env.getCtx(), 0, null);
+			exclude1.setM_AttributeSet_ID(mas.get_ID());
+			exclude1.setAD_Table_ID(MInOutLine.Table_ID);
+			exclude1.setIsSOTrx(true);
+			exclude1.saveEx();
+			
+			MProductCategoryAcct lotLevelAcct = MProductCategoryAcct.get(lotLevel.get_ID(), as.get_ID());
+			lotLevelAcct = new MProductCategoryAcct(Env.getCtx(), lotLevelAcct);
+			lotLevelAcct.setCostingLevel(MAcctSchema.COSTINGLEVEL_BatchLot);
+			lotLevelAcct.saveEx();
+			
+			product = new MProduct(Env.getCtx(), 0, null);
+			product.setM_Product_Category_ID(lotLevel.get_ID());
+			product.setName("testMaterialReceiptLot");
+			product.setProductType(MProduct.PRODUCTTYPE_Item);
+			product.setIsStocked(true);
+			product.setIsSold(true);
+			product.setIsPurchased(true);
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			product.saveEx();
+			
+			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
+			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
+			pp.setM_Product_ID(product.get_ID());
+			pp.setPriceStd(new BigDecimal("2"));
+			pp.setPriceList(new BigDecimal("2"));
+			pp.saveEx();
+			
+			MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi1.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			asi1.setLot("Lot1");
+			asi1.saveEx();			
+			MInOutLine line1 = createPOAndMRForProduct(product.get_ID(), asi1, new BigDecimal("2.00"));
+			
+			MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi2.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			asi2.setLot("Lot2");
+			asi2.saveEx();			
+			MInOutLine line2 = createPOAndMRForProduct(product.get_ID(), asi2, new BigDecimal("3.00"));
+			
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", line1.getC_OrderLine_ID(), asi1.get_ID(), as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for order line1");
+			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+			assertEquals(new BigDecimal("2").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", line2.getC_OrderLine_ID(), asi2.get_ID(), as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for order line1");
+			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+			assertEquals(new BigDecimal("3").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			
+			product.set_TrxName(getTrxName());
+			MCost cost1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getCostingMethod());
+			assertNotNull(cost1, "MCost record not found");
+			assertEquals(new BigDecimal("2.00"), cost1.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP));
+			
+			MCost cost2 = product.getCostingRecord(as, getAD_Org_ID(), asi2.get_ID(), as.getCostingMethod());
+			assertNotNull(cost2, "MCost record not found");
+			assertEquals(new BigDecimal("3.00"), cost2.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP));
+			
+			//shipment
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+			order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+			order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			order.setDatePromised(today);
+			order.saveEx();
+			
+			MOrderLine ol1 = new MOrderLine(order);
+			ol1.setLine(10);
+			//Azalea Bush
+			ol1.setProduct(product);
+			ol1.setQty(new BigDecimal("2"));
+			ol1.setDatePromised(today);
+			ol1.saveEx();
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			order.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Unexpected document status");
+			
+			MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
+			shipment.setDocStatus(DocAction.STATUS_Drafted);
+			shipment.setDocAction(DocAction.ACTION_Complete);
+			shipment.saveEx();
+			
+			MInOutLine shipmentLine = new MInOutLine(shipment);
+			shipmentLine.setOrderLine(ol1, 0, new BigDecimal("2"));
+			shipmentLine.setQty(new BigDecimal("2"));
+			shipmentLine.saveEx();
+			
+			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			shipment.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus(), "Unexpected document status");
+			
+			MInOutLineMA[] linema = MInOutLineMA.get(Env.getCtx(), shipmentLine.get_ID(), getTrxName());
+			assertEquals(2, linema.length, "Unexpected number of MInOutLineMA records");
+			assertEquals(linema[0].getM_AttributeSetInstance_ID(), asi1.get_ID(), "Unexpected M_AttributeSetInstance_ID for MInOutLineMA 1");
+			assertEquals(linema[1].getM_AttributeSetInstance_ID(), asi2.get_ID(), "Unexpected M_AttributeSetInstance_ID for MInOutLineMA 2");
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), linema[0].getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for order line1");
+			assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+			assertEquals(new BigDecimal("2").negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), linema[1].getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for order line1");
+			assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+			assertEquals(new BigDecimal("3").negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			
+			//reverse shipment
+			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Reverse_Accrual);
+			assertFalse(info.isError(), info.getSummary());
+			shipment.load(getTrxName());
+			assertEquals(DocAction.STATUS_Reversed, shipment.getDocStatus(), "Unexpected document status");
+			
+			MInOut reversal = new MInOut(Env.getCtx(), shipment.getReversal_ID(), getTrxName());
+			MInOutLine[] reversalLines = reversal.getLines();
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", reversalLines[0].getM_InOutLine_ID(), asi1.getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for order line1");
+			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+			assertEquals(new BigDecimal("2").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", reversalLines[0].getM_InOutLine_ID(), asi2.getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for order line1");
+			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+			assertEquals(new BigDecimal("3").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+			
+			cost1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getCostingMethod());
+			assertNotNull(cost1, "MCost record not found");
+			assertEquals(new BigDecimal("2.00"), cost1.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP));
+			
+			cost2 = product.getCostingRecord(as, getAD_Org_ID(), asi2.get_ID(), as.getCostingMethod());
+			assertNotNull(cost2, "MCost record not found");
+			assertEquals(new BigDecimal("3.00"), cost2.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP));
+			
+			//reverse MR2
+			MInOut mr2 = new MInOut(Env.getCtx(), line2.getM_InOut_ID(), getTrxName());
+			info = MWorkflow.runDocumentActionWorkflow(mr2, DocAction.ACTION_Reverse_Accrual);
+			assertFalse(info.isError(), info.getSummary());
+			mr2.load(getTrxName());
+			assertEquals(DocAction.STATUS_Reversed, mr2.getDocStatus(), "Unexpected document status");
+			
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", line2.getC_OrderLine_ID(), asi2.getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for order line2");
+			assertEquals(0, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+			assertEquals(new BigDecimal("0").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+		} finally {
+			rollback();
+			
+			if (exclude != null)
+				exclude.deleteEx(true);
+			
+			if (exclude1 != null)
+				exclude1.deleteEx(true);
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
+			}
+			
+			lotLevel.deleteEx(true);
+		}
+	}
+	
 	private MInOutLine createPOAndMRForProduct(int productId, MAttributeSetInstance asi, BigDecimal price) {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
@@ -499,6 +701,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		line1.setDatePromised(today);
 		if (price != null)
 			line1.setPrice(price);
+		if (asi != null)
+			line1.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
 		line1.saveEx();
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
