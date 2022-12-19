@@ -681,6 +681,63 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		}
 	}
 	
+	@Test
+	public void testCostAdjustment() {
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+		if (cost == null || cost.getCurrentCostPrice().signum() == 0 || cost.getCurrentQty().signum() == 0) {
+			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null);
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+		}
+		assertNotNull(cost, "No MCost Record");
+		BigDecimal currentCost = cost.getCurrentCostPrice();
+		BigDecimal adjustment = new BigDecimal("0.25");
+		
+		MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
+		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.COST_ADJUSTMENT.id);
+		inventory.setC_Currency_ID(as.getC_Currency_ID());
+		inventory.setCostingMethod(as.getCostingMethod());
+		inventory.saveEx();
+		
+		MInventoryLine line = new MInventoryLine(Env.getCtx(), 0, getTrxName());
+		line.setM_Inventory_ID(inventory.get_ID());
+		line.setM_Product_ID(DictionaryIDs.M_Product.MULCH.id);
+		line.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
+		line.setCurrentCostPrice(currentCost);
+		line.setNewCostPrice(currentCost.add(adjustment));
+		line.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
+		inventory.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus(), "Unexpected Document Status");
+		
+		MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", line.getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
+		assertNotNull(cd, "MCostDetail not found for internal use line");
+		assertEquals(0, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+		assertEquals(adjustment.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+		cost.load(getTrxName());
+		assertEquals(currentCost.add(adjustment).setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+		
+		//reverse cost adjustment
+		info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Reverse_Accrual);
+		inventory.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Reversed, inventory.getDocStatus(), "Unexpected Document Status");
+		
+		MInventory reversal = new MInventory(Env.getCtx(), inventory.getReversal_ID(), getTrxName());
+		MInventoryLine[] reversalLines = reversal.getLines(true);
+		cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", reversalLines[0].getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
+		assertNotNull(cd, "MCostDetail not found for internal use line");
+		assertEquals(0, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+		assertEquals(adjustment.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+		cost.load(getTrxName());
+		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+	}
+	
 	private MInOutLine createPOAndMRForProduct(int productId, MAttributeSetInstance asi, BigDecimal price) {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
