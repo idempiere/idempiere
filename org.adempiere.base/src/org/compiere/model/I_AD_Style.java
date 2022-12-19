@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Style
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 9
  */
 public interface I_AD_Style 
 {
@@ -44,8 +44,8 @@ public interface I_AD_Style
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Tenant.
-	  * Tenant for this installation.
+	/** Get Client.
+	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,27 +53,14 @@ public interface I_AD_Style
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within tenant
+	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
-
-    /** Column name AD_StyleScope */
-    public static final String COLUMNNAME_AD_StyleScope = "AD_StyleScope";
-
-	/** Set Scope.
-	  * The user is able to change the behaviour, how to apply css style regarding to scope of HTML Dom element. As legacy mode, apply style to td table cell.
-	  */
-	public void setAD_StyleScope (String AD_StyleScope);
-
-	/** Get Scope.
-	  * The user is able to change the behaviour, how to apply css style regarding to scope of HTML Dom element. As legacy mode, apply style to td table cell.
-	  */
-	public String getAD_StyleScope();
 
     /** Column name AD_Style_ID */
     public static final String COLUMNNAME_AD_Style_ID = "AD_Style_ID";

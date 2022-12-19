@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Style
  *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @version Release 9 - $Id$ */
 @org.adempiere.base.Model(table="AD_Style")
 public class X_AD_Style extends PO implements I_AD_Style, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_Style extends PO implements I_AD_Style, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221118L;
+	private static final long serialVersionUID = 20220116L;
 
     /** Standard Constructor */
     public X_AD_Style (Properties ctx, int AD_Style_ID, String trxName)
@@ -38,8 +38,6 @@ public class X_AD_Style extends PO implements I_AD_Style, I_Persistent
       super (ctx, AD_Style_ID, trxName);
       /** if (AD_Style_ID == 0)
         {
-			setAD_StyleScope (null);
-// T
 			setAD_Style_ID (0);
 			setAD_Style_UU (null);
 			setEntityType (null);
@@ -54,8 +52,6 @@ public class X_AD_Style extends PO implements I_AD_Style, I_Persistent
       super (ctx, AD_Style_ID, trxName, virtualColumns);
       /** if (AD_Style_ID == 0)
         {
-			setAD_StyleScope (null);
-// T
 			setAD_Style_ID (0);
 			setAD_Style_UU (null);
 			setEntityType (null);
@@ -91,29 +87,6 @@ public class X_AD_Style extends PO implements I_AD_Style, I_Persistent
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
-
-	/** AD_StyleScope AD_Reference_ID=200226 */
-	public static final int AD_STYLESCOPE_AD_Reference_ID=200226;
-	/** Span Child = S */
-	public static final String AD_STYLESCOPE_SpanChild = "S";
-	/** Table Cell = T */
-	public static final String AD_STYLESCOPE_TableCell = "T";
-	/** Set Scope.
-		@param AD_StyleScope The user is able to change the behaviour, how to apply css style regarding to scope of HTML Dom element. As legacy mode, apply style to td table cell.
-	*/
-	public void setAD_StyleScope (String AD_StyleScope)
-	{
-
-		set_Value (COLUMNNAME_AD_StyleScope, AD_StyleScope);
-	}
-
-	/** Get Scope.
-		@return The user is able to change the behaviour, how to apply css style regarding to scope of HTML Dom element. As legacy mode, apply style to td table cell.
-	  */
-	public String getAD_StyleScope()
-	{
-		return (String)get_Value(COLUMNNAME_AD_StyleScope);
-	}
 
 	/** Set Style.
 		@param AD_Style_ID CSS style for field and label

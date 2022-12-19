@@ -38,7 +38,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.KeyNamePair;
 import org.zkoss.zhtml.Text;
-import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Span;
 
@@ -152,15 +151,19 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 						return value;
 					}
 				});
-				if(style.getAD_StyleScope().equals(MStyle.AD_STYLESCOPE_SpanChild)) {
-					Span span = new Span();
-					span.appendChild(new Text(listcell.getValue()));
-					listcell.setLabel(null);
-					listcell.appendChild(span);
-					setStyle(span, styleStr);
-				}
-				else {
-					setStyle(listcell, styleStr);
+				Span span = new Span();
+				span.appendChild(new Text(listcell.getValue()));
+				listcell.setLabel(null);
+				listcell.appendChild(span);
+				
+				if (styleStr != null && styleStr.startsWith(MStyle.SCLASS_PREFIX)) {
+					String sclass = styleStr.substring(MStyle.SCLASS_PREFIX.length());
+					span.setSclass(sclass);
+				} else if (styleStr != null && styleStr.startsWith(MStyle.ZCLASS_PREFIX)) {
+					String zclass = styleStr.substring(MStyle.ZCLASS_PREFIX.length());
+					span.setZclass(zclass);
+				} else {
+					ZkCssHelper.appendStyle(span, styleStr);
 				}
 			}
 		}
@@ -169,18 +172,6 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 			listcell = super.getCellComponent(table, field, rowIndex, columnIndex);
 
 		return listcell;
-	}
-
-	private void setStyle(HtmlBasedComponent component, String style) {
-		if (style != null && style.startsWith(MStyle.SCLASS_PREFIX)) {
-			String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
-			component.setSclass(sclass);
-		} else if (style != null && style.startsWith(MStyle.ZCLASS_PREFIX)) {
-			String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
-			component.setZclass(zclass);
-		} else {
-			ZkCssHelper.appendStyle(component, style);
-		}
 	}
 	
 //
