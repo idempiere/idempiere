@@ -371,7 +371,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			if (cost == null || cost.getCurrentCostPrice().signum() == 0 || cost.getCurrentQty().signum() == 0) {
 				createPOAndMRForProduct(DictionaryIDs.M_Product.AZALEA_BUSH.id, null, null);
-				cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+				cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			}
 			BigDecimal azbCost = cost.getCurrentCostPrice();
 			
