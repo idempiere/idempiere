@@ -61,6 +61,7 @@ import org.compiere.model.MProduction;
 import org.compiere.model.MProductionLine;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -736,6 +737,59 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertEquals(adjustment.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 		cost.load(getTrxName());
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+	}
+	
+	@Test
+	public void testPhysicalInventory() {
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+		createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null);
+		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+		assertNotNull(cost, "No MCost Record");
+		BigDecimal currentCost = cost.getCurrentCostPrice();
+		
+		MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
+		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
+		inventory.saveEx();
+		
+		MInventoryLine line = new MInventoryLine(Env.getCtx(), 0, getTrxName());
+		line.setM_Inventory_ID(inventory.get_ID());
+		line.setM_Product_ID(DictionaryIDs.M_Product.MULCH.id);
+		line.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+		BigDecimal qtyOnHand = MStorageOnHand.getQtyOnHandForLocator(line.getM_Product_ID(), line.getM_Locator_ID(), 0, getTrxName());
+		line.setQtyBook(qtyOnHand);
+		line.setQtyCount(line.getQtyBook().add(new BigDecimal("1")));
+		line.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
+		inventory.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus(), "Unexpected Document Status");
+		
+		MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", line.getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
+		assertNotNull(cd, "MCostDetail not found for internal use line");
+		assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+		cost.load(getTrxName());
+		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+		
+		//reverse physical inventory
+		info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Reverse_Accrual);
+		inventory.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Reversed, inventory.getDocStatus(), "Unexpected Document Status");
+		
+		MInventory reversal = new MInventory(Env.getCtx(), inventory.getReversal_ID(), getTrxName());
+		MInventoryLine[] reversalLines = reversal.getLines(true);
+		cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", reversalLines[0].getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
+		assertNotNull(cd, "MCostDetail not found for internal use line");
+		assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+		assertEquals(currentCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+		cost.load(getTrxName());
+		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
+	
 	}
 	
 	private MInOutLine createPOAndMRForProduct(int productId, MAttributeSetInstance asi, BigDecimal price) {
