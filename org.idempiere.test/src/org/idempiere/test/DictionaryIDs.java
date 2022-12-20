@@ -381,6 +381,24 @@ public final class DictionaryIDs {
 		}
 	}
 	
+	public enum M_CostElement {
+		MATERIAL(100),
+		FREIGHT(101),
+		FIFO(102),
+		AVERAGE_PO(103),
+		AVERAGE_INVOICE(104),
+		LABOR(105),
+		BURDEN(50000),
+		OVERHEAD(50001),
+		OUTSIDE_PROCESSING(50002);
+
+		public final int id;
+		
+		private M_CostElement(int id) {
+			this.id = id;
+		}
+	}
+	
 	public enum M_DiscountSchema {
 		SALES_2001(100),
 		PURCHASE_2001(101),

@@ -663,6 +663,27 @@ public class MCostDetail extends X_M_CostDetail
 		return retValue;
 	}	//	get
 	
+	/**************************************************************************
+	 * 	Get Cost Detail Records
+	 *	@param ctx context
+	 *	@param whereClause where clause
+	 *	@param ID 1st parameter
+	 *  @param M_AttributeSetInstance_ID ASI
+	 *	@param trxName trx
+	 *	@return list of cost detail record
+	 */
+	public static List<MCostDetail> list (Properties ctx, String whereClause, 
+		int ID, int M_AttributeSetInstance_ID, int C_AcctSchema_ID, String trxName)
+	{
+		StringBuilder localWhereClause = new StringBuilder(whereClause)
+			.append(" AND M_AttributeSetInstance_ID=?")
+			.append(" AND C_AcctSchema_ID=?");
+		List<MCostDetail> retValue = new Query(ctx,I_M_CostDetail.Table_Name,localWhereClause.toString(),trxName)
+		.setParameters(ID,M_AttributeSetInstance_ID,C_AcctSchema_ID)
+		.list();
+		return retValue;
+	}	//	get
+	
 	/**
 	 * 	Process Cost Details for product
 	 *	@param product product
