@@ -1484,7 +1484,8 @@ public class DashboardController implements EventListener<Event> {
 
 			if (pp != null) {
 
-				MLookupInfo mli = MLookupFactory.getLookupInfo(Env.getCtx(), 0, 0, pp.getAD_Reference_ID(), Env.getLanguage(Env.getCtx()), "", pp.getAD_Reference_Value_ID(), false, "");
+				MLookupInfo mli = MLookupFactory.getLookupInfo(Env.getCtx(), 0, 0, pp.getAD_Reference_ID(), Env.getLanguage(Env.getCtx()), pp.getColumnName(), pp.getAD_Reference_Value_ID(), false, "");
+
 
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
