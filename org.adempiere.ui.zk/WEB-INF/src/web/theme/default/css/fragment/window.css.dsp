@@ -153,3 +153,59 @@ input[type="checkbox"]:focus
 	font-weight: bold;
 	margin: 5px;
 }
+
+.related-to-editor .z-toolbarbutton {
+	padding: 4px 0px 0px 1px;
+    margin: 0px;
+    display: inline-block;
+    background-image: none;
+    position: absolute;
+    background-color: #F7F7F7;
+    width: 22px;
+    height: 24px;
+    min-height: 24px;
+    right: 0px;
+    top: 1px;
+    border: 1px solid #CFCFCF;
+    border-radius: 0;
+}
+
+.related-to-dialog {
+	min-width: 400px;
+}
+
+.related-to-dialog-content {
+	display: flex;
+	padding: 10px;
+}
+
+.related-to-dialog-labels {
+	display: grid;
+    text-align: right;
+    align-items: center;
+}
+
+.related-to-dialog-fields {
+	display: grid;
+	width: 77%;
+}
+
+.related-to-dialog-fields .editor-button {
+	top: 8px !important;
+}
+
+.related-to-dialog-content .z-combobox, .related-to-dialog-content .z-textbox {
+	width: 98% !important;
+	margin: 8px 5px;
+}
+
+.related-to-dialog-confirm {
+	text-align: end;
+    padding: 10px;
+}
+
+.related-to-dialog-confirm .z-button {
+	margin: 0px 5px !important;
+	height: 30px;
+	padding: 0px 10px;
+}

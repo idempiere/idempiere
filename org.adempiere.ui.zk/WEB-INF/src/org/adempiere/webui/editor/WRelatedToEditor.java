@@ -1,16 +1,37 @@
+/**********************************************************************
+* This file is part of iDempiere ERP Open Source                      *
+* http://www.idempiere.org                                            *
+*                                                                     *
+* Copyright (C) Contributors                                          *
+*                                                                     *
+* This program is free software; you can redistribute it and/or       *
+* modify it under the terms of the GNU General Public License         *
+* as published by the Free Software Foundation; either version 2      *
+* of the License, or (at your option) any later version.              *
+*                                                                     *
+* This program is distributed in the hope that it will be useful,     *
+* but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+* GNU General Public License for more details.                        *
+*                                                                     *
+* You should have received a copy of the GNU General Public License   *
+* along with this program; if not, write to the Free Software         *
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+* MA 02110-1301, USA.                                                 *
+*                                                                     *
+* Contributors:                                                       *
+* - Igor Pojzl, Cloudempiere                                          *
+* - Peter Takacs, Cloudempiere                                        *
+**********************************************************************/
 package org.adempiere.webui.editor;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.component.Combobox;
+import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
@@ -18,6 +39,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.GridTabDataBinder;
 import org.adempiere.webui.window.WFieldRecordInfo;
+import org.adempiere.webui.window.WRelatedToDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
@@ -25,183 +47,147 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
-import org.compiere.model.StateChangeEvent;
-import org.compiere.model.StateChangeListener;
-import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Vlayout;
 
-public class WRelatedToEditor extends WEditor implements ContextMenuListener, IZoomableEditor, StateChangeListener {
-
-	private static final CLogger log = CLogger.getCLogger(WRelatedToEditor.class);
+/**
+ * 
+ * @author Peter Takacs, Cloudempiere
+ *
+ */
+public class WRelatedToEditor extends WEditor implements ContextMenuListener, IZoomableEditor {
 	
 	private boolean m_ReadWrite;
 	private Object oldValue;
-	private Object value;
 	private Object oldTableID;
-	private GridTabDataBinder dataBinder;
 	
 	private GridField tableIDGridField;
 	private WEditor tableIDEditor;
+	private GridTabDataBinder dataBinder;
 	
 	private Div wrapperDiv;
-	private Combobox recordsCombobox;
-	private ToolBarButton okButton;
+	private Textbox recordTextBox;
 	private ToolBarButton editButton;
-	
-	private String editorMode = EDITOR_MODE_EDIT;
+	private ToolBarButton zoomButton;
 	
 	protected String selectedTableName = "";
 	protected String selectedRecordIdentifyer = "";
 	
-	private static final String IMAGES_CONTEXT_OK_PNG = "images/Ok16.png";
+	private static final String IMAGES_CONTEXT_ZOOM_PNG = "images/Zoom16.png";
 	private static final String IMAGES_CONTEXT_EDIT_RECORD_PNG = "images/EditRecord16.png";
-	
-	private static final String EDITOR_MODE_EDIT = "e";
-	private static final String EDITOR_MODE_SAVED = "s";
 
 	public WRelatedToEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
 		super(new Vlayout(), gridField, tableEditor, editorConfiguration);
 		init();
 	}
-	
-	private void init() {
-		log.warning("----------");
 
+	private void init() {
 		wrapperDiv = new Div();
-		wrapperDiv.setStyle("display: flex;");
+		wrapperDiv.setSclass("related-to-editor");
 		wrapperDiv.setParent(this.getComponent());
+		wrapperDiv.addEventListener(Events.ON_RIGHT_CLICK, this);
 
 		if(gridTab != null) {
-			gridTab.addStateChangeListener(this);
 			tableIDGridField = gridTab.getField("AD_Table_ID");
 			tableIDEditor = WebEditorFactory.getEditor(tableIDGridField, true);
+			
 			if(tableIDGridField.getValue() != null)
 				tableIDEditor.setValue(tableIDGridField.getValue());
+						
+			dataBinder = new GridTabDataBinder(gridTab);
+			tableIDEditor.addValueChangeListener(dataBinder);
 			
 			tableIDGridField.addPropertyChangeListener(tableIDEditor);
-			this.dataBinder = new GridTabDataBinder(gridTab);
-			tableIDEditor.addValueChangeListener(dataBinder);
 			tableIDGridField.addPropertyChangeListener(new PropertyChangeListener() {
-	
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
 					if(evt.getNewValue() != oldTableID) {
 						oldTableID = evt.getNewValue();
-						initRecords();
-						recordsCombobox.setValue(value);
+						setValue(oldValue);
 					}
 				}
 			});
 			tableIDEditor.getComponent().addEventListener(Events.ON_SELECT, this);
-			wrapperDiv.appendChild(tableIDEditor.getComponent());
 			oldTableID = tableIDGridField.getValue();
 		}
 		
-		
-		recordsCombobox = new Combobox();
-		recordsCombobox.setAutocomplete(true);
-		recordsCombobox.setAutodrop(true);
-		recordsCombobox.setParent(wrapperDiv);
-		recordsCombobox.addEventListener(Events.ON_SELECT, this);
-		initRecords();
-		
-		okButton = new ToolBarButton();
-		if (ThemeManager.isUseFontIconForImage())
-			okButton.setIconSclass("z-icon-Ok");
-		else
-			okButton.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_OK_PNG));
-		okButton.setParent(wrapperDiv);
-		okButton.addEventListener(Events.ON_CLICK, this);
+		recordTextBox = new Textbox();
+		recordTextBox.setParent(wrapperDiv);
+		recordTextBox.setWidth("100%");
+		recordTextBox.setReadonly(true);
 		
 		editButton = new ToolBarButton();
+		editButton.setStyle("right: 21px;");
 		if (ThemeManager.isUseFontIconForImage())
 			editButton.setIconSclass("z-icon-Edit");
 		else
 			editButton.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_EDIT_RECORD_PNG));
 		editButton.setParent(wrapperDiv);
 		editButton.addEventListener(Events.ON_CLICK, this);
+
+		zoomButton = new ToolBarButton();
+		if (ThemeManager.isUseFontIconForImage())
+			zoomButton.setIconSclass("z-icon-Zoom");
+		else
+			zoomButton.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_ZOOM_PNG));
+		zoomButton.setParent(wrapperDiv);
+		zoomButton.addEventListener(Events.ON_CLICK, this);
 		
-		if (gridField != null) 
+		if (gridField != null)
         {
-        	popupMenu = new WEditorPopupMenu(true, true, isShowPreference());
-        	popupMenu.addMenuListener(this);
-        	addChangeLogMenu(popupMenu);
+			popupMenu = new WEditorPopupMenu(true, true, isShowPreference());
+			popupMenu.addMenuListener(this);
+			addChangeLogMenu(popupMenu);
         }
-		updateUI(EDITOR_MODE_SAVED);
-		setMandatory();
-	}
-	
-	private void updateUI(String displayMode) {
-		if(editorMode.equalsIgnoreCase(displayMode))
-			return;
-		if(tableIDEditor == null)
-			displayMode = EDITOR_MODE_SAVED;
-		
-		if(displayMode.equalsIgnoreCase(EDITOR_MODE_SAVED)) {
-			if(tableIDEditor != null)
-				tableIDEditor.setVisible(false);
-			recordsCombobox.setWidth("100%");
-			recordsCombobox.setReadonly(true);
-			recordsCombobox.setButtonVisible(false);
-			okButton.setVisible(false);
-			editButton.setVisible(true);
-		}
-		else if(displayMode.equalsIgnoreCase(EDITOR_MODE_EDIT)) {
-			tableIDEditor.setVisible(true);
-			recordsCombobox.setWidth("60%");
-			recordsCombobox.setReadonly(false);
-			recordsCombobox.setButtonVisible(true);
-			okButton.setVisible(true);
-			editButton.setVisible(false);
-		}
-		editorMode = displayMode;
 	}
 	
 	public void actionRefresh(Object value)
-    {    	
-		log.warning("----------");
+    {
 		setValue(value);
     }
 	
 	@Override
 	public void actionZoom()
 	{
-		log.warning("----------");
-    	MTable savedTable = new MTable(Env.getCtx(), (Integer) tableIDGridField.getValue(), null);
-    	
-    	String[] keyColumns = savedTable.getKeyColumns();
-    	String keyColumn = null;
-    	if(keyColumns.length > 0) {
-    		keyColumn = keyColumns[0];	//	guess
-    	}
-    	
-    	String where = keyColumn + "=" + gridTab.getValue("Record_ID");
-    	PO po = new Query(Env.getCtx(), savedTable, where, null).first();
-    	int AD_Window_ID = savedTable.getAD_Window_ID();
-    	
-		if (AD_Window_ID > 0) {	
-	    	if(!Util.isEmpty(keyColumn)) {
+		MTable savedTable = new MTable(Env.getCtx(), (Integer) tableIDGridField.getValue(), null);
+	
+		String[] keyColumns = savedTable.getKeyColumns();
+		String keyColumn = null;
+		if(keyColumns.length > 0) {
+			keyColumn = keyColumns[0];	//	guess
+		}
+	
+		String where = keyColumn + "=" + gridTab.getValue("Record_ID");
+		PO po = new Query(Env.getCtx(), savedTable, where, null).first();
+		boolean isSOTrx = true;
+		if(po.columnExists("IsSOTrx")) {
+			isSOTrx = po.get_ValueAsBoolean("IsSOTrx");
+		}
+		int AD_Window_ID;
+		if(isSOTrx)
+			AD_Window_ID = savedTable.getAD_Window_ID();
+		else
+			AD_Window_ID = savedTable.getPO_Window_ID();
+
+		if (AD_Window_ID > 0) {
+			if(!Util.isEmpty(keyColumn)) {
 				MQuery zoomQuery = new MQuery();
 				zoomQuery.addRestriction(keyColumn, MQuery.EQUAL, (Integer)po.get_Value(keyColumn));
-				zoomQuery.setRecordCount(1);	//	guess
-				
-		    	AEnv.zoom(AD_Window_ID, zoomQuery);
-	    	}
+				zoomQuery.setRecordCount(1);
+	
+				AEnv.zoom(AD_Window_ID, zoomQuery);
+			}
 		}
 	}
-	
+
 	@Override
-	public void onMenu(ContextMenuEvent evt) 
+	public void onMenu(ContextMenuEvent evt)
 	{
-		log.warning("----------");
 		if (WEditorPopupMenu.REQUERY_EVENT.equals(evt.getContextEvent()))
 		{
 			actionRefresh(oldValue);
@@ -223,18 +209,14 @@ public class WRelatedToEditor extends WEditor implements ContextMenuListener, IZ
 
 	@Override
 	public void setReadWrite(boolean readWrite) {
-		log.warning("----------");
 		m_ReadWrite = readWrite;
-		if (gridField != null && gridTab != null && recordsCombobox != null) {
-			for (Comboitem item : recordsCombobox.getItems()) {
-				item.setDisabled(!readWrite);
-			}
-		}
+		if(editButton != null)
+			editButton.setDisabled(!readWrite);
+		
 	}
 
 	@Override
 	public boolean isReadWrite() {
-		log.warning("----------");
 		return m_ReadWrite;
 	}
 
@@ -248,51 +230,37 @@ public class WRelatedToEditor extends WEditor implements ContextMenuListener, IZ
 	
 	@Override
 	public void setValue(Object value) {
-		log.warning("----------");
-		this.value = value;
 		if (value == null || value.toString().trim().length() == 0)
-    	{
-    		oldValue = null;
-    		value = null;
-    		recordsCombobox.setValue(null);
-    	}
+		{
+			oldValue = null;
+			value = null;
+			recordTextBox.setValue("");
+		}
 		else {
 			if(oldTableID != tableIDGridField.getValue()) {
-				initRecords();
 				oldTableID = tableIDGridField.getValue();
 			}
-			recordsCombobox.setValue(value);
-			if(!recordsCombobox.isSelected(value)) {
-				recordsCombobox.setValue(null);
+			if(value != null && oldTableID != null) {
+				Integer recordID = Integer.parseInt(String.valueOf(value));
+				Integer tableID = Integer.parseInt(String.valueOf(oldTableID));
+				if(recordID != null && tableID != null)
+					recordTextBox.setValue(getIdentifierColumns(tableID, recordID));
 			}
 		}
 
-			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, value);
-	        super.fireValueChange(changeEvent);
-			oldValue = value;
-//		}
-		
+		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, value);
+        super.fireValueChange(changeEvent);
+		oldValue = value;
+
 	}
 
 	@Override
 	public Object getValue() {
-		log.warning("----------");
-		Object retVal = null;
-        Comboitem selItem = recordsCombobox.getSelectedItem();
-        if (selItem != null)
-        {
-            retVal = selItem.getValue();
-            if ((retVal instanceof Integer) && (Integer)retVal == -1)
-            	retVal = null;
-            else if ((retVal instanceof String) && "".equals(retVal))
-            	retVal = null;
-        }
-        return retVal;
+		return oldValue;
 	}
 
 	@Override
 	public String getDisplay() {
-		log.warning("----------");
 		if(((Integer) tableIDGridField.getValue() != null) && ((Integer) gridField.getValue() != null))
 			return getIdentifierColumns((Integer) tableIDGridField.getValue(), (Integer) gridField.getValue());
 		else
@@ -302,115 +270,46 @@ public class WRelatedToEditor extends WEditor implements ContextMenuListener, IZ
 	@Override
     public String getDisplayTextForGridView(Object value) {
 		String s = "";
-		if(gridField.getValue().equals(value)) {
+		if(value != null &&  value.equals(gridField.getValue())) {
 			this.setValue(value);
 			s = getDisplay();
 			if ("<0>".equals(s)) {
-	    		s = "";
-	    	}
+			s = "";
+			}
 		}
 		else {
 			this.setValue(value);
 			s = "<"+value+">";
 		}
-    	return s;
+		return s;
     }
 
 	@Override
 	public void onEvent(Event event) throws Exception {
-		log.warning("----------");
-		if(event.getName().equalsIgnoreCase(Events.ON_SELECT)) {
-			if (event.getTarget().equals(tableIDEditor.getComponent())) {
-				initRecords();
-				this.setValue(null);
-			}
-			else if (event.getTarget().equals(recordsCombobox)) {
-				
-				Comboitem selectedItem = recordsCombobox.getSelectedItem();
-				if(selectedItem != null)
-					setValue(selectedItem.getValue());
-			}
-		}
 		if(event.getName().equalsIgnoreCase(Events.ON_CLICK)) {
-			if(event.getTarget().equals(okButton)) {
-				
-				if(recordsCombobox.getSelectedItem() == null) {
-					recordsCombobox.setStyle("color:red;");
-					recordsCombobox.setPlaceholder("Select Record");
-				}
-				else {
-					updateUI(EDITOR_MODE_SAVED);
-				}
+			if(event.getTarget().equals(zoomButton)) {
+				actionZoom();
 			}
 			else if(event.getTarget().equals(editButton)) {
-				updateUI(EDITOR_MODE_EDIT);
+				new WRelatedToDialog(recordTextBox.getPage(), this, tableIDGridField);
+			}
+		}
+		else if(event.getName().equalsIgnoreCase(Events.ON_RIGHT_CLICK)) {
+			if(event.getTarget().equals(wrapperDiv)) {
+				popupMenu.open(wrapperDiv);
 			}
 		}
 	}
-	
-	private void setMandatory() {
-		log.warning("----------");
-		
-		if(tableIDGridField != null) {
-			boolean isTableIdMandatory = ((Integer) tableIDGridField.getValue() == null) || ((Integer) tableIDGridField.getValue() <= 0);
-			tableIDGridField.setMandatory(isTableIdMandatory);
-			tableIDEditor.setMandatory(tableIDGridField.isMandatory(false));
-		}
-		boolean isRecordIdMandatory = ((Integer) gridField.getValue() == null) || ((Integer) gridField.getValue() <= 0);
-		gridField.setMandatory(isRecordIdMandatory);
-		this.setMandatory(gridField.isMandatory(false));
-	}
-    
-    protected void initRecords() {
-    	log.warning("----------");
-    	recordsCombobox.removeAllItems();
-    	if(tableIDGridField == null || tableIDGridField.getValue() == null)
-    		return;
-    	MTable mTable = MTable.get(Env.getCtx(), (int)tableIDGridField.getValue(), null);
-    	String[] keyColumns = mTable.getKeyColumns();
-    	
-    	if(keyColumns.length > 0) {
-	    	String keyColumn = keyColumns[0];
-	    	
-	    	String sql = "SELECT " + keyColumn
-	    			+ " FROM " + mTable.getTableName();
-	    	
-	    	PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
-			{
-				pstmt = DB.prepareStatement(sql, null);
-				rs = pstmt.executeQuery();
-				
-				while (rs.next()){
-					String identifier = getIdentifierColumns((int)tableIDGridField.getValue(), rs.getInt(1));
-					recordsCombobox.appendItem(identifier, rs.getInt(1));
-				}
-			}
-			catch (SQLException ex)
-			{
-				log.log(Level.SEVERE, sql, ex);
-			}
-			finally
-			{
-				DB.close(rs, pstmt);
-				rs = null;
-				pstmt = null;
-			}
-    	}
-//    	for(Comboitem item : recordsCombobox.getItems()) {
-//    		if(item.getValue() != null && item.getValue().equals((Integer) gridField.getValue())) {
-//    			recordsCombobox.setSelectedItem(item);
-//    			break;
-//    		}
-//    	}
-    	
-    }
-    
-    protected String getIdentifierColumns(int tableID, int recordID) {
-    	log.warning("----------");
-    	String value = String.valueOf(tableID);
-    	if ((tableID > 0) && (recordID > 0)) {
+
+	/**
+	 * Get Identifier String from AD_Table_ID and Record_ID
+	 * @param tableID
+	 * @param recordID
+	 * @return String
+	 */
+	public static String getIdentifierColumns(int tableID, int recordID) {
+		String value = String.valueOf(tableID);
+		if ((tableID > 0) && (recordID > 0)) {
 			MTable mTable = MTable.get(Env.getCtx(), tableID);
 			String tableName = mTable.getTableName();
 			
@@ -429,8 +328,8 @@ public class WRelatedToEditor extends WEditor implements ContextMenuListener, IZ
 						displayColumn.append("||'").append(separator).append("'||");
 					
 					displayColumn.append("NVL(")
-								.append(DB.TO_CHAR(identifierColumn.getColumnName(), 
-													identifierColumn.getAD_Reference_ID(), 
+								.append(DB.TO_CHAR(identifierColumn.getColumnName(),
+													identifierColumn.getAD_Reference_ID(),
 													Env.getAD_Language(Env.getCtx())))
 								.append(",'')");
 				}
@@ -443,17 +342,6 @@ public class WRelatedToEditor extends WEditor implements ContextMenuListener, IZ
 				value = DB.getSQLValueStringEx(null, sql.toString(), recordID);
 			}
 		}
-    	return value;
+		return value;
     }
-
-	@Override
-	public void stateChange(StateChangeEvent event) {
-		log.warning(event.toString());
-		if(event.getEventType() == StateChangeEvent.DATA_NEW) {
-			updateUI(EDITOR_MODE_EDIT);
-		}
-		else {
-			updateUI(EDITOR_MODE_SAVED);
-		}
-	}
 }
