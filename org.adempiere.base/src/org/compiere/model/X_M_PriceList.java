@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PriceList
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_PriceList")
 public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_PriceList (Properties ctx, int M_PriceList_ID, String trxName)
@@ -103,7 +103,7 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 			.getPO(getBasePriceList_ID(), get_TrxName());
 	}
 
-	/** Set Base Pricelist.
+	/** Set Base Price List.
 		@param BasePriceList_ID Pricelist to be used, if product not found on this pricelist
 	*/
 	public void setBasePriceList_ID (int BasePriceList_ID)
@@ -114,7 +114,7 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 			set_Value (COLUMNNAME_BasePriceList_ID, Integer.valueOf(BasePriceList_ID));
 	}
 
-	/** Get Base Pricelist.
+	/** Get Base Price List.
 		@return Pricelist to be used, if product not found on this pricelist
 	  */
 	public int getBasePriceList_ID()
@@ -238,16 +238,16 @@ public class X_M_PriceList extends PO implements I_M_PriceList, I_Persistent
 		return false;
 	}
 
-	/** Set isPresentForProduct.
-		@param isPresentForProduct isPresentForProduct
+	/** Set Is Present For Product.
+		@param isPresentForProduct Is Present For Product
 	*/
 	public void setisPresentForProduct (boolean isPresentForProduct)
 	{
 		set_Value (COLUMNNAME_isPresentForProduct, Boolean.valueOf(isPresentForProduct));
 	}
 
-	/** Get isPresentForProduct.
-		@return isPresentForProduct	  */
+	/** Get Is Present For Product.
+		@return Is Present For Product	  */
 	public boolean isPresentForProduct()
 	{
 		Object oo = get_Value(COLUMNNAME_isPresentForProduct);

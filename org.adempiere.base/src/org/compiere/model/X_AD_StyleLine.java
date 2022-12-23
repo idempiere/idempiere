@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_StyleLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_StyleLine")
 public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_StyleLine extends PO implements I_AD_StyleLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_StyleLine (Properties ctx, int AD_StyleLine_ID, String trxName)

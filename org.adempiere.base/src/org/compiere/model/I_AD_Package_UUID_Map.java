@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Package_UUID_Map
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_Package_UUID_Map 
 {
@@ -44,8 +44,8 @@ public interface I_AD_Package_UUID_Map
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_AD_Package_UUID_Map
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -66,12 +66,12 @@ public interface I_AD_Package_UUID_Map
     public static final String COLUMNNAME_AD_Package_UUID_Map_ID = "AD_Package_UUID_Map_ID";
 
 	/** Set UUID Mapping.
-	  * UUID Mapping between client
+	  * UUID Mapping between tenant
 	  */
 	public void setAD_Package_UUID_Map_ID (int AD_Package_UUID_Map_ID);
 
 	/** Get UUID Mapping.
-	  * UUID Mapping between client
+	  * UUID Mapping between tenant
 	  */
 	public int getAD_Package_UUID_Map_ID();
 
@@ -132,12 +132,12 @@ public interface I_AD_Package_UUID_Map
     public static final String COLUMNNAME_Source_UUID = "Source_UUID";
 
 	/** Set Source UUID.
-	  * UUID from the source client
+	  * UUID from the source tenant
 	  */
 	public void setSource_UUID (String Source_UUID);
 
 	/** Get Source UUID.
-	  * UUID from the source client
+	  * UUID from the source tenant
 	  */
 	public String getSource_UUID();
 
@@ -145,12 +145,12 @@ public interface I_AD_Package_UUID_Map
     public static final String COLUMNNAME_Target_UUID = "Target_UUID";
 
 	/** Set Target UUID.
-	  * New UUID created by the pack in client
+	  * New UUID created by the pack in tenant
 	  */
 	public void setTarget_UUID (String Target_UUID);
 
 	/** Get Target UUID.
-	  * New UUID created by the pack in client
+	  * New UUID created by the pack in tenant
 	  */
 	public String getTarget_UUID();
 

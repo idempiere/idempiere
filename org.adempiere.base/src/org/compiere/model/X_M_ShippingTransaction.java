@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_ShippingTransaction
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_ShippingTransaction")
 public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransaction, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_ShippingTransaction (Properties ctx, int M_ShippingTransaction_ID, String trxName)
@@ -543,7 +543,7 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 		return bd;
 	}
 
-	/** Set Date received.
+	/** Set Date Received.
 		@param DateReceived Date a product was received
 	*/
 	public void setDateReceived (Timestamp DateReceived)
@@ -551,7 +551,7 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 		set_Value (COLUMNNAME_DateReceived, DateReceived);
 	}
 
-	/** Get Date received.
+	/** Get Date Received.
 		@return Date a product was received
 	  */
 	public Timestamp getDateReceived()
@@ -1207,16 +1207,16 @@ public class X_M_ShippingTransaction extends PO implements I_M_ShippingTransacti
 		return false;
 	}
 
-	/** Set Priviledged Rate.
-		@param IsPriviledgedRate Priviledged Rate
+	/** Set Privileged Rate.
+		@param IsPriviledgedRate Privileged Rate
 	*/
 	public void setIsPriviledgedRate (boolean IsPriviledgedRate)
 	{
 		set_Value (COLUMNNAME_IsPriviledgedRate, Boolean.valueOf(IsPriviledgedRate));
 	}
 
-	/** Get Priviledged Rate.
-		@return Priviledged Rate	  */
+	/** Get Privileged Rate.
+		@return Privileged Rate	  */
 	public boolean isPriviledgedRate()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPriviledgedRate);

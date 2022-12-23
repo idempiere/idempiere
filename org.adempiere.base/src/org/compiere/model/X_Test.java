@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Test
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="Test")
 public class X_Test extends PO implements I_Test, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_Test (Properties ctx, int Test_ID, String trxName)
@@ -611,5 +611,21 @@ public class X_Test extends PO implements I_Test, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Timestamp.
+		@param T_Timestamp Timestamp with time zone
+	*/
+	public void setT_Timestamp (Timestamp T_Timestamp)
+	{
+		set_Value (COLUMNNAME_T_Timestamp, T_Timestamp);
+	}
+
+	/** Get Timestamp.
+		@return Timestamp with time zone
+	  */
+	public Timestamp getT_Timestamp()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_T_Timestamp);
 	}
 }

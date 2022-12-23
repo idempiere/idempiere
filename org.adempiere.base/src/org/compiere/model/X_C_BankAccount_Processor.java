@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_BankAccount_Processor
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_BankAccount_Processor")
 public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Processor, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_BankAccount_Processor (Properties ctx, int C_BankAccount_Processor_ID, String trxName)
@@ -722,7 +722,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 		return (String)get_Value(COLUMNNAME_Password);
 	}
 
-	/** Set Require CreditCard Verification Code.
+	/** Set Require Credit Card Verification Code.
 		@param RequireVV Require 3/4 digit Credit Verification Code
 	*/
 	public void setRequireVV (boolean RequireVV)
@@ -730,7 +730,7 @@ public class X_C_BankAccount_Processor extends PO implements I_C_BankAccount_Pro
 		set_Value (COLUMNNAME_RequireVV, Boolean.valueOf(RequireVV));
 	}
 
-	/** Get Require CreditCard Verification Code.
+	/** Get Require Credit Card Verification Code.
 		@return Require 3/4 digit Credit Verification Code
 	  */
 	public boolean isRequireVV()

@@ -34,7 +34,7 @@ public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221028L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_PInstance_Para (Properties ctx, int AD_PInstance_Para_ID, String trxName)
@@ -164,7 +164,7 @@ public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Pe
 		return (String)get_Value(COLUMNNAME_Info_To);
 	}
 
-	/** Set Is not clause.
+	/** Set Not Clause.
 		@param IsNotClause Indicates if a chosen multiple component value must be negate
 	*/
 	public void setIsNotClause (boolean IsNotClause)
@@ -172,7 +172,7 @@ public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Pe
 		set_Value (COLUMNNAME_IsNotClause, Boolean.valueOf(IsNotClause));
 	}
 
-	/** Get Is not clause.
+	/** Get Not Clause.
 		@return Indicates if a chosen multiple component value must be negate
 	  */
 	public boolean isNotClause()
@@ -186,6 +186,29 @@ public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Pe
 		}
 		return false;
 	}
+
+	/** Set Parameter Name.
+		@param ParameterName Parameter Name
+	*/
+	public void setParameterName (String ParameterName)
+	{
+		set_Value (COLUMNNAME_ParameterName, ParameterName);
+	}
+
+	/** Get Parameter Name.
+		@return Parameter Name	  */
+	public String getParameterName()
+	{
+		return (String)get_Value(COLUMNNAME_ParameterName);
+	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair() 
+    {
+        return new KeyNamePair(get_ID(), getParameterName());
+    }
 
 	/** Set Process Date.
 		@param P_Date Process Parameter
@@ -288,29 +311,6 @@ public class X_AD_PInstance_Para extends PO implements I_AD_PInstance_Para, I_Pe
 	{
 		return (String)get_Value(COLUMNNAME_P_String_To);
 	}
-
-	/** Set Parameter Name.
-		@param ParameterName Parameter Name
-	*/
-	public void setParameterName (String ParameterName)
-	{
-		set_Value (COLUMNNAME_ParameterName, ParameterName);
-	}
-
-	/** Get Parameter Name.
-		@return Parameter Name	  */
-	public String getParameterName()
-	{
-		return (String)get_Value(COLUMNNAME_ParameterName);
-	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
-    {
-        return new KeyNamePair(get_ID(), getParameterName());
-    }
 
 	/** Set Sequence.
 		@param SeqNo Method of ordering records; lowest number comes first

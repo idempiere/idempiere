@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for A_Depreciation
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation")
 public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_A_Depreciation (Properties ctx, int A_Depreciation_ID, String trxName)
@@ -124,16 +124,16 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
 		return (String)get_Value(COLUMNNAME_A_Depreciation_UU);
 	}
 
-	/** Set DepreciationType.
-		@param DepreciationType DepreciationType
+	/** Set Depreciation Type.
+		@param DepreciationType Depreciation Type
 	*/
 	public void setDepreciationType (String DepreciationType)
 	{
 		set_Value (COLUMNNAME_DepreciationType, DepreciationType);
 	}
 
-	/** Get DepreciationType.
-		@return DepreciationType	  */
+	/** Get Depreciation Type.
+		@return Depreciation Type	  */
 	public String getDepreciationType()
 	{
 		return (String)get_Value(COLUMNNAME_DepreciationType);
