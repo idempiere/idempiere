@@ -272,7 +272,8 @@ public class DashboardController implements EventListener<Event> {
 			if (panel != null && panel.getAttribute(PANEL_EMPTY_ATTRIBUTE) == null)
 	        		dashboardColumnLayout.appendChild(panel);
 	        	if (!update) {
-		            renderGadgetPanel(dc, panel);
+	        		final Panel fp = panel;
+	        		Executions.schedule(dashboardLayout.getDesktop(), e-> renderGadgetPanel(dc, fp), new Event("onRenderGadgetPanel"));
 	        	}
 	        }
             
@@ -321,9 +322,9 @@ public class DashboardController implements EventListener<Event> {
 		}
         //
                 
-        if (!update && !dashboardRunnable.isEmpty())
+        if (!update)
         {
-		startDashboardRunnable(parent);
+        	startDashboardRunnable(parent);		
 		}
 	}
 
@@ -399,7 +400,6 @@ public class DashboardController implements EventListener<Event> {
 	}
 
 	private void startDashboardRunnable(Component parent) {
-		dashboardRunnable.refreshDashboard(false);
 		// default Update every one minutes
 		int interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_REFRESH_INTERVAL, 60000);
 		dashboardTimer = new Timer();
@@ -511,7 +511,8 @@ public class DashboardController implements EventListener<Event> {
 	        		dashboardLineLayout.appendChild(panel);
 	        	}
 	        	if (!update) {
-		            renderGadgetPanel(dc, panel);
+	        		final Panel fp = panel;
+	        		Executions.schedule(dashboardLayout.getDesktop(), e-> renderGadgetPanel(dc, fp), new Event("onRenderGadgetPanel"));
 	        	}
 	        }
             
@@ -564,9 +565,9 @@ public class DashboardController implements EventListener<Event> {
 		}
         //
                 
-        if (!update && !dashboardRunnable.isEmpty())
+        if (!update)
         {
-		startDashboardRunnable(parent);
+        	startDashboardRunnable(parent);
 		}
 	}
 	
