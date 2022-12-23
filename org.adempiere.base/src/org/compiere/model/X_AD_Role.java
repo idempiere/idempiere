@@ -33,7 +33,7 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220303L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Role (Properties ctx, int AD_Role_ID, String trxName)
@@ -653,7 +653,7 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	}
 
 	/** Set Access all Orgs.
-		@param IsAccessAllOrgs Access all Organizations (no org access control) of the client
+		@param IsAccessAllOrgs Access all Organizations (no org access control) of the tenant
 	*/
 	public void setIsAccessAllOrgs (boolean IsAccessAllOrgs)
 	{
@@ -661,7 +661,7 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	}
 
 	/** Get Access all Orgs.
-		@return Access all Organizations (no org access control) of the client
+		@return Access all Organizations (no org access control) of the tenant
 	  */
 	public boolean isAccessAllOrgs()
 	{
@@ -767,16 +767,16 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		return false;
 	}
 
-	/** Set Client Administrator.
-		@param IsClientAdministrator This role is a client administrator
+	/** Set Tenant Administrator.
+		@param IsClientAdministrator This role is a tenant administrator
 	*/
 	public void setIsClientAdministrator (boolean IsClientAdministrator)
 	{
 		set_Value (COLUMNNAME_IsClientAdministrator, Boolean.valueOf(IsClientAdministrator));
 	}
 
-	/** Get Client Administrator.
-		@return This role is a client administrator
+	/** Get Tenant Administrator.
+		@return This role is a tenant administrator
 	  */
 	public boolean isClientAdministrator()
 	{
@@ -790,16 +790,16 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		return false;
 	}
 
-	/** Set IsDiscountAllowedOnTotal.
-		@param IsDiscountAllowedOnTotal IsDiscountAllowedOnTotal
+	/** Set Is Discount Allowed On Total.
+		@param IsDiscountAllowedOnTotal Is Discount Allowed On Total
 	*/
 	public void setIsDiscountAllowedOnTotal (boolean IsDiscountAllowedOnTotal)
 	{
 		set_Value (COLUMNNAME_IsDiscountAllowedOnTotal, Boolean.valueOf(IsDiscountAllowedOnTotal));
 	}
 
-	/** Get IsDiscountAllowedOnTotal.
-		@return IsDiscountAllowedOnTotal	  */
+	/** Get Is Discount Allowed On Total.
+		@return Is Discount Allowed On Total	  */
 	public boolean isDiscountAllowedOnTotal()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDiscountAllowedOnTotal);
@@ -812,16 +812,16 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		return false;
 	}
 
-	/** Set IsDiscountUptoLimitPrice.
-		@param IsDiscountUptoLimitPrice IsDiscountUptoLimitPrice
+	/** Set Is Discount Up to Limit Price.
+		@param IsDiscountUptoLimitPrice Is Discount Up to Limit Price
 	*/
 	public void setIsDiscountUptoLimitPrice (boolean IsDiscountUptoLimitPrice)
 	{
 		set_Value (COLUMNNAME_IsDiscountUptoLimitPrice, Boolean.valueOf(IsDiscountUptoLimitPrice));
 	}
 
-	/** Get IsDiscountUptoLimitPrice.
-		@return IsDiscountUptoLimitPrice	  */
+	/** Get Is Discount Up to Limit Price.
+		@return Is Discount Up to Limit Price	  */
 	public boolean isDiscountUptoLimitPrice()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDiscountUptoLimitPrice);
@@ -1154,16 +1154,16 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set UserDiscount.
-		@param UserDiscount UserDiscount
+	/** Set User Discount.
+		@param UserDiscount User Discount
 	*/
 	public void setUserDiscount (BigDecimal UserDiscount)
 	{
 		set_Value (COLUMNNAME_UserDiscount, UserDiscount);
 	}
 
-	/** Get UserDiscount.
-		@return UserDiscount	  */
+	/** Get User Discount.
+		@return User Discount	  */
 	public BigDecimal getUserDiscount()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_UserDiscount);
@@ -1183,7 +1183,7 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	/** System = S   */
 	public static final String USERLEVEL_System = "S  ";
 	/** Set User Level.
-		@param UserLevel System Client Organization
+		@param UserLevel System Tenant Organization
 	*/
 	public void setUserLevel (String UserLevel)
 	{
@@ -1192,7 +1192,7 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	}
 
 	/** Get User Level.
-		@return System Client Organization
+		@return System Tenant Organization
 	  */
 	public String getUserLevel()
 	{

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for CM_ChatType
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatType")
 public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_CM_ChatType extends PO implements I_CM_ChatType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_CM_ChatType (Properties ctx, int CM_ChatType_ID, String trxName)

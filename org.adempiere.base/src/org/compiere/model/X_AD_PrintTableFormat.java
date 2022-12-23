@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintTableFormat
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintTableFormat")
 public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_PrintTableFormat (Properties ctx, int AD_PrintTableFormat_ID, String trxName)
@@ -585,7 +585,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 	}
 
 	/** Set Multi Line Header.
-		@param IsMultiLineHeader Print column headers on mutliple lines if necessary.
+		@param IsMultiLineHeader Print column headers on multiple lines if necessary.
 	*/
 	public void setIsMultiLineHeader (boolean IsMultiLineHeader)
 	{
@@ -593,7 +593,7 @@ public class X_AD_PrintTableFormat extends PO implements I_AD_PrintTableFormat, 
 	}
 
 	/** Get Multi Line Header.
-		@return Print column headers on mutliple lines if necessary.
+		@return Print column headers on multiple lines if necessary.
 	  */
 	public boolean isMultiLineHeader()
 	{

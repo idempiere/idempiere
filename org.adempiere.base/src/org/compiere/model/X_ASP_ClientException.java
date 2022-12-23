@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for ASP_ClientException
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="ASP_ClientException")
 public class X_ASP_ClientException extends PO implements I_ASP_ClientException, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_ASP_ClientException (Properties ctx, int ASP_ClientException_ID, String trxName)
@@ -335,8 +335,8 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 		return ii.intValue();
 	}
 
-	/** Set Client Exception.
-		@param ASP_ClientException_ID Client Exception
+	/** Set Tenant Exception.
+		@param ASP_ClientException_ID Tenant Exception
 	*/
 	public void setASP_ClientException_ID (int ASP_ClientException_ID)
 	{
@@ -346,8 +346,8 @@ public class X_ASP_ClientException extends PO implements I_ASP_ClientException, 
 			set_ValueNoCheck (COLUMNNAME_ASP_ClientException_ID, Integer.valueOf(ASP_ClientException_ID));
 	}
 
-	/** Get Client Exception.
-		@return Client Exception	  */
+	/** Get Tenant Exception.
+		@return Tenant Exception	  */
 	public int getASP_ClientException_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_ClientException_ID);

@@ -31,7 +31,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220225L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_PrintFormatItem (Properties ctx, int AD_PrintFormatItem_ID, String trxName)
@@ -40,8 +40,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
       /** if (AD_PrintFormatItem_ID == 0)
         {
 			setAD_PrintFormatChild_ID (0);
-			setAD_PrintFormatItem_ID (0);
 			setAD_PrintFormat_ID (0);
+			setAD_PrintFormatItem_ID (0);
 			setFieldAlignmentType (null);
 // D
 			setImageIsAttached (false);
@@ -67,10 +67,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 			setIsPageBreak (false);
 			setIsPrintBarcodeText (true);
 // Y
-			setIsPrintInstanceAttributes (false);
-// N
 			setIsPrinted (true);
 // Y
+			setIsPrintInstanceAttributes (false);
+// N
 			setIsRelativePosition (true);
 // Y
 			setIsRunningTotal (false);
@@ -106,8 +106,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
       /** if (AD_PrintFormatItem_ID == 0)
         {
 			setAD_PrintFormatChild_ID (0);
-			setAD_PrintFormatItem_ID (0);
 			setAD_PrintFormat_ID (0);
+			setAD_PrintFormatItem_ID (0);
 			setFieldAlignmentType (null);
 // D
 			setImageIsAttached (false);
@@ -133,10 +133,10 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 			setIsPageBreak (false);
 			setIsPrintBarcodeText (true);
 // Y
-			setIsPrintInstanceAttributes (false);
-// N
 			setIsPrinted (true);
 // Y
+			setIsPrintInstanceAttributes (false);
+// N
 			setIsRelativePosition (true);
 // Y
 			setIsRunningTotal (false);
@@ -333,6 +333,34 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
+
+	/** Set Print Format.
+		@param AD_PrintFormat_ID Data Print Format
+	*/
+	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
+	{
+		if (AD_PrintFormat_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_PrintFormat_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
+	}
+
+	/** Get Print Format.
+		@return Data Print Format
+	  */
+	public int getAD_PrintFormat_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Print Format Item.
 		@param AD_PrintFormatItem_ID Item/Column in the Print format
 	*/
@@ -368,34 +396,6 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public String getAD_PrintFormatItem_UU()
 	{
 		return (String)get_Value(COLUMNNAME_AD_PrintFormatItem_UU);
-	}
-
-	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
-			.getPO(getAD_PrintFormat_ID(), get_TrxName());
-	}
-
-	/** Set Print Format.
-		@param AD_PrintFormat_ID Data Print Format
-	*/
-	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
-	{
-		if (AD_PrintFormat_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_AD_PrintFormat_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
-	}
-
-	/** Get Print Format.
-		@return Data Print Format
-	  */
-	public int getAD_PrintFormat_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
 	}
 
 	public org.compiere.model.I_AD_PrintGraph getAD_PrintGraph() throws RuntimeException
@@ -455,14 +455,14 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final String BARCODETYPE_Code128CCharacterSet = "28C";
 	/** Codabar 2 of 7 linear = 2o9 */
 	public static final String BARCODETYPE_Codabar2Of7Linear = "2o9";
-	/** Code 39 with Checksum = 39C */
-	public static final String BARCODETYPE_Code39WithChecksum = "39C";
 	/** Code 39 w/o Checksum = 39c */
 	public static final String BARCODETYPE_Code39WOChecksum = "39c";
-	/** Code 39  3 of 9 linear with Checksum = 3O9 */
-	public static final String BARCODETYPE_Code393Of9LinearWithChecksum = "3O9";
+	/** Code 39 with Checksum = 39C */
+	public static final String BARCODETYPE_Code39WithChecksum = "39C";
 	/** Code 39  3 of 9 linear w/o Checksum = 3o9 */
 	public static final String BARCODETYPE_Code393Of9LinearWOChecksum = "3o9";
+	/** Code 39  3 of 9 linear with Checksum = 3O9 */
+	public static final String BARCODETYPE_Code393Of9LinearWithChecksum = "3O9";
 	/** PDF417 two dimensional = 417 */
 	public static final String BARCODETYPE_PDF417TwoDimensional = "417";
 	/** SCC-14 shipping code UCC/EAN 128 = C14 */
@@ -471,6 +471,8 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final String BARCODETYPE_SSCC_18NumberUCCEAN128 = "C18";
 	/** Code 128 dynamically switching = C28 */
 	public static final String BARCODETYPE_Code128DynamicallySwitching = "C28";
+	/** Code 39 linear w/o Checksum = c39 */
+	public static final String BARCODETYPE_Code39LinearWOChecksum = "c39";
 	/** Code 39 linear with Checksum = C39 */
 	public static final String BARCODETYPE_Code39LinearWithChecksum = "C39";
 	/** Codeabar linear = COD */
@@ -493,16 +495,14 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public static final String BARCODETYPE_UCC128 = "U28";
 	/** UPC-A = UPA */
 	public static final String BARCODETYPE_UPC_A = "UPA";
+	/** Code 39 USD3 w/o Checksum = us3 */
+	public static final String BARCODETYPE_Code39USD3WOChecksum = "us3";
 	/** Code 39 USD3 with Checksum = US3 */
 	public static final String BARCODETYPE_Code39USD3WithChecksum = "US3";
 	/** Codabar USD-4 linear = US4 */
 	public static final String BARCODETYPE_CodabarUSD_4Linear = "US4";
 	/** US Postal Service UCC/EAN 128 = USP */
 	public static final String BARCODETYPE_USPostalServiceUCCEAN128 = "USP";
-	/** Code 39 linear w/o Checksum = c39 */
-	public static final String BARCODETYPE_Code39LinearWOChecksum = "c39";
-	/** Code 39 USD3 w/o Checksum = us3 */
-	public static final String BARCODETYPE_Code39USD3WOChecksum = "us3";
 	/** Set Barcode Type.
 		@param BarcodeType Type of barcode
 	*/
@@ -1030,29 +1030,6 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		return false;
 	}
 
-	/** Set Print Attributes.
-		@param IsPrintInstanceAttributes Print each attributes as report column instead of printing the description of attribute set instance
-	*/
-	public void setIsPrintInstanceAttributes (boolean IsPrintInstanceAttributes)
-	{
-		set_Value (COLUMNNAME_IsPrintInstanceAttributes, Boolean.valueOf(IsPrintInstanceAttributes));
-	}
-
-	/** Get Print Attributes.
-		@return Print each attributes as report column instead of printing the description of attribute set instance
-	  */
-	public boolean isPrintInstanceAttributes()
-	{
-		Object oo = get_Value(COLUMNNAME_IsPrintInstanceAttributes);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set Printed.
 		@param IsPrinted Indicates if this document / line is printed
 	*/
@@ -1067,6 +1044,29 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	public boolean isPrinted()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPrinted);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Print Attributes.
+		@param IsPrintInstanceAttributes Print each attributes as report column instead of printing the description of attribute set instance
+	*/
+	public void setIsPrintInstanceAttributes (boolean IsPrintInstanceAttributes)
+	{
+		set_Value (COLUMNNAME_IsPrintInstanceAttributes, Boolean.valueOf(IsPrintInstanceAttributes));
+	}
+
+	/** Get Print Attributes.
+		@return Print each attributes as report column instead of printing the description of attribute set instance
+	  */
+	public boolean isPrintInstanceAttributes()
+	{
+		Object oo = get_Value(COLUMNNAME_IsPrintInstanceAttributes);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

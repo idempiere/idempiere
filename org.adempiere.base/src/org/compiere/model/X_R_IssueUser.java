@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueUser
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="R_IssueUser")
 public class X_R_IssueUser extends PO implements I_R_IssueUser, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_R_IssueUser extends PO implements I_R_IssueUser, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_R_IssueUser (Properties ctx, int R_IssueUser_ID, String trxName)
@@ -127,7 +127,7 @@ public class X_R_IssueUser extends PO implements I_R_IssueUser, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	/** Set IssueUser.
+	/** Set Issue User.
 		@param R_IssueUser_ID User who reported issues
 	*/
 	public void setR_IssueUser_ID (int R_IssueUser_ID)
@@ -138,7 +138,7 @@ public class X_R_IssueUser extends PO implements I_R_IssueUser, I_Persistent
 			set_ValueNoCheck (COLUMNNAME_R_IssueUser_ID, Integer.valueOf(R_IssueUser_ID));
 	}
 
-	/** Get IssueUser.
+	/** Get Issue User.
 		@return User who reported issues
 	  */
 	public int getR_IssueUser_ID()

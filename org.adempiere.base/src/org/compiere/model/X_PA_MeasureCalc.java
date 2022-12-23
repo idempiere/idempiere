@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_MeasureCalc
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PA_MeasureCalc")
 public class X_PA_MeasureCalc extends PO implements I_PA_MeasureCalc, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_PA_MeasureCalc extends PO implements I_PA_MeasureCalc, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PA_MeasureCalc (Properties ctx, int PA_MeasureCalc_ID, String trxName)

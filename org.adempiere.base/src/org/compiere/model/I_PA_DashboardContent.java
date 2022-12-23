@@ -297,15 +297,6 @@ public interface I_PA_DashboardContent
 	  */
 	public boolean isShowInDashboard();
 
-    /** Column name IsShowTitle */
-    public static final String COLUMNNAME_IsShowTitle = "IsShowTitle";
-
-	/** Set Show Title	  */
-	public void setIsShowTitle (boolean IsShowTitle);
-
-	/** Get Show Title	  */
-	public boolean isShowTitle();
-
     /** Column name IsShowinLogin */
     public static final String COLUMNNAME_IsShowinLogin = "IsShowinLogin";
 
@@ -314,6 +305,15 @@ public interface I_PA_DashboardContent
 
 	/** Get Show on Login	  */
 	public boolean isShowinLogin();
+
+    /** Column name IsShowTitle */
+    public static final String COLUMNNAME_IsShowTitle = "IsShowTitle";
+
+	/** Set Show Title	  */
+	public void setIsShowTitle (boolean IsShowTitle);
+
+	/** Get Show Title	  */
+	public boolean isShowTitle();
 
     /** Column name Line */
     public static final String COLUMNNAME_Line = "Line";

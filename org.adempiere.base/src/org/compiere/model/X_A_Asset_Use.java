@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Use
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Use")
 public class X_A_Asset_Use extends PO implements I_A_Asset_Use, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_A_Asset_Use extends PO implements I_A_Asset_Use, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_A_Asset_Use (Properties ctx, int A_Asset_Use_ID, String trxName)
@@ -178,16 +178,16 @@ public class X_A_Asset_Use extends PO implements I_A_Asset_Use, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	/** Set UseDate.
-		@param UseDate UseDate
+	/** Set Use Date.
+		@param UseDate Use Date
 	*/
 	public void setUseDate (Timestamp UseDate)
 	{
 		set_Value (COLUMNNAME_UseDate, UseDate);
 	}
 
-	/** Get UseDate.
-		@return UseDate	  */
+	/** Get Use Date.
+		@return Use Date	  */
 	public Timestamp getUseDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_UseDate);

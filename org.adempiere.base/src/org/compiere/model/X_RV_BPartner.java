@@ -33,7 +33,7 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220321L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_RV_BPartner (Properties ctx, int RV_BPartner_ID, String trxName)
@@ -2618,7 +2618,7 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 			.getPO(getPO_PriceList_ID(), get_TrxName());
 	}
 
-	/** Set Purchase Pricelist.
+	/** Set Purchase Price List.
 		@param PO_PriceList_ID Price List used by this Business Partner
 	*/
 	public void setPO_PriceList_ID (int PO_PriceList_ID)
@@ -2629,7 +2629,7 @@ public class X_RV_BPartner extends PO implements I_RV_BPartner, I_Persistent
 			set_ValueNoCheck (COLUMNNAME_PO_PriceList_ID, Integer.valueOf(PO_PriceList_ID));
 	}
 
-	/** Get Purchase Pricelist.
+	/** Get Purchase Price List.
 		@return Price List used by this Business Partner
 	  */
 	public int getPO_PriceList_ID()

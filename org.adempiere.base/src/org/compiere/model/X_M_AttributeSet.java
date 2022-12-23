@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_AttributeSet
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_AttributeSet")
 public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_AttributeSet (Properties ctx, int M_AttributeSet_ID, String trxName)
@@ -138,16 +138,16 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 		return ii.intValue();
 	}
 
-	/** Set IsAutoGenerateLot.
-		@param IsAutoGenerateLot IsAutoGenerateLot
+	/** Set Is Auto Generate Lot.
+		@param IsAutoGenerateLot Is Auto Generate Lot
 	*/
 	public void setIsAutoGenerateLot (boolean IsAutoGenerateLot)
 	{
 		set_Value (COLUMNNAME_IsAutoGenerateLot, Boolean.valueOf(IsAutoGenerateLot));
 	}
 
-	/** Get IsAutoGenerateLot.
-		@return IsAutoGenerateLot	  */
+	/** Get Is Auto Generate Lot.
+		@return Is Auto Generate Lot	  */
 	public boolean isAutoGenerateLot()
 	{
 		Object oo = get_Value(COLUMNNAME_IsAutoGenerateLot);
@@ -404,8 +404,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 	public static final int M_ATTRIBUTESET_TYPE_AD_Reference_ID=200115;
 	/** Material Management System = MMS */
 	public static final String M_ATTRIBUTESET_TYPE_MaterialManagementSystem = "MMS";
-	/** Set AttributeSet Type.
-		@param M_AttributeSet_Type AttributeSet Type
+	/** Set Attribute Set Type.
+		@param M_AttributeSet_Type Attribute Set Type
 	*/
 	public void setM_AttributeSet_Type (String M_AttributeSet_Type)
 	{
@@ -413,8 +413,8 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 		set_Value (COLUMNNAME_M_AttributeSet_Type, M_AttributeSet_Type);
 	}
 
-	/** Get AttributeSet Type.
-		@return AttributeSet Type	  */
+	/** Get Attribute Set Type.
+		@return Attribute Set Type	  */
 	public String getM_AttributeSet_Type()
 	{
 		return (String)get_Value(COLUMNNAME_M_AttributeSet_Type);
@@ -515,7 +515,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
         return new KeyNamePair(get_ID(), getName());
     }
 
-	/** Set SerNo Char End Overwrite.
+	/** Set Ser No Char End Overwrite.
 		@param SerNoCharEOverwrite Serial Number End Indicator overwrite - default empty
 	*/
 	public void setSerNoCharEOverwrite (String SerNoCharEOverwrite)
@@ -523,7 +523,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 		set_Value (COLUMNNAME_SerNoCharEOverwrite, SerNoCharEOverwrite);
 	}
 
-	/** Get SerNo Char End Overwrite.
+	/** Get Ser No Char End Overwrite.
 		@return Serial Number End Indicator overwrite - default empty
 	  */
 	public String getSerNoCharEOverwrite()
@@ -531,7 +531,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 		return (String)get_Value(COLUMNNAME_SerNoCharEOverwrite);
 	}
 
-	/** Set SerNo Char Start Overwrite.
+	/** Set Ser No Char Start Overwrite.
 		@param SerNoCharSOverwrite Serial Number Start Indicator overwrite - default #
 	*/
 	public void setSerNoCharSOverwrite (String SerNoCharSOverwrite)
@@ -539,7 +539,7 @@ public class X_M_AttributeSet extends PO implements I_M_AttributeSet, I_Persiste
 		set_Value (COLUMNNAME_SerNoCharSOverwrite, SerNoCharSOverwrite);
 	}
 
-	/** Get SerNo Char Start Overwrite.
+	/** Get Ser No Char Start Overwrite.
 		@return Serial Number Start Indicator overwrite - default #
 	  */
 	public String getSerNoCharSOverwrite()

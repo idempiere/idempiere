@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for A_Asset_Reval
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_A_Asset_Reval 
 {
@@ -104,17 +104,17 @@ public interface I_A_Asset_Reval
     /** Column name A_Change_Acumulated_Depr */
     public static final String COLUMNNAME_A_Change_Acumulated_Depr = "A_Change_Acumulated_Depr";
 
-	/** Set Change Acumulated Depreciation	  */
+	/** Set Change Accumulated Depreciation	  */
 	public void setA_Change_Acumulated_Depr (BigDecimal A_Change_Acumulated_Depr);
 
-	/** Get Change Acumulated Depreciation	  */
+	/** Get Change Accumulated Depreciation	  */
 	public BigDecimal getA_Change_Acumulated_Depr();
 
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -122,12 +122,12 @@ public interface I_A_Asset_Reval
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -241,12 +241,12 @@ public interface I_A_Asset_Reval
     /** Column name PostingType */
     public static final String COLUMNNAME_PostingType = "PostingType";
 
-	/** Set PostingType.
+	/** Set Posting Type.
 	  * The type of posted amount for the transaction
 	  */
 	public void setPostingType (String PostingType);
 
-	/** Get PostingType.
+	/** Get Posting Type.
 	  * The type of posted amount for the transaction
 	  */
 	public String getPostingType();

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Find
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Find")
 public class X_AD_Find extends PO implements I_AD_Find, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_AD_Find extends PO implements I_AD_Find, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Find (Properties ctx, int AD_Find_ID, String trxName)
