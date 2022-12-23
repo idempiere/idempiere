@@ -73,7 +73,6 @@ import org.apache.ecs.xhtml.td;
 import org.apache.ecs.xhtml.th;
 import org.apache.ecs.xhtml.thead;
 import org.apache.ecs.xhtml.tr;
-import org.compiere.model.I_AD_PrintFormat;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MDunningRunEntry;
@@ -2556,7 +2555,6 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		private String cssStr;
 		public CSSInfo (MPrintFormatItem item){
 			MPrintFont mPrintFont = null;
-			I_AD_PrintFormat m_printFormat = item.getAD_PrintFormat();
 			
 			if (item.getAD_PrintFont_ID() > 0) 
 			{
