@@ -101,7 +101,7 @@ public class TrialBalance extends SvrProcess
 		+ " AmtAcctDr, AmtAcctCr, AmtAcctBalance, C_UOM_ID, Qty,"
 		+ " M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID, C_LocFrom_ID,C_LocTo_ID,"
 		+ " C_SalesRegion_ID, C_Project_ID, C_Campaign_ID, C_Activity_ID,"
-		+ " User1_ID, User2_ID, A_Asset_ID, Description, LevelNo)";
+		+ " User1_ID, User2_ID, A_Asset_ID, Description, LevelNo, T_TrialBalance_UU)";
 
 	
 	/**
@@ -392,7 +392,7 @@ public class TrialBalance extends SvrProcess
 		else
 			sql.append (p_User2_ID);
 		sql.append(", null, '");
-		sql.append(Msg.getMsg(getCtx(), "opening.balance") + "', 0 ");
+		sql.append(Msg.getMsg(getCtx(), "opening.balance") + "', 0, generate_uuid() ");
 		//
 		sql.append(" FROM Fact_Acct WHERE AD_Client_ID=").append(getAD_Client_ID())
 			.append (" AND ").append(m_parameterWhere)
@@ -446,7 +446,7 @@ public class TrialBalance extends SvrProcess
 		//	C_SalesRegion_ID, C_Project_ID, C_Campaign_ID, C_Activity_ID,
 		sql.append ("C_SalesRegion_ID, C_Project_ID, C_Campaign_ID, C_Activity_ID,");
 		//	User1_ID, User2_ID, A_Asset_ID, Description)
-		sql.append ("User1_ID, User2_ID, A_Asset_ID, Description, 10 ");
+		sql.append ("User1_ID, User2_ID, A_Asset_ID, Description, 10, generate_uuid() ");
 		//
 		sql.append(" FROM Fact_Acct WHERE AD_Client_ID=").append(getAD_Client_ID())
 			.append (" AND ").append(m_parameterWhere)
