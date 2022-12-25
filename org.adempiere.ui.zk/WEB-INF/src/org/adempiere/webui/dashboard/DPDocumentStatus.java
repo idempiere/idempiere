@@ -104,4 +104,9 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 	public boolean isPooling() {
 		return true;
 	}
+
+	@Override
+	public boolean isLazy() {
+		return true;
+	}
 }

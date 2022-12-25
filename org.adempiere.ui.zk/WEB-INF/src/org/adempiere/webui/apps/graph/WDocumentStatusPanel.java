@@ -102,7 +102,7 @@ public class WDocumentStatusPanel extends Panel {
 			Row row = new Row();
 			rows.appendChild(row);
 
-			WDocumentStatusIndicator pi = new WDocumentStatusIndicator(m_indicators[i]);
+			WDocumentStatusIndicator pi = new WDocumentStatusIndicator(m_indicators[i], true);
 			row.appendChild(pi);
 			indicatorList.add(pi);
 		}
