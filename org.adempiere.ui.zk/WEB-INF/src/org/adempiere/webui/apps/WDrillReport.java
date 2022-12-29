@@ -62,7 +62,6 @@ import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zhtml.Tr;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlNativeComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -100,10 +99,9 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	/**
 	 *
 	 * @param data
-	 * @param parent
 	 * @param WindowNo
 	 */
-	public WDrillReport(DrillData data, Component parent, int WindowNo) {
+	public WDrillReport(DrillData data, int WindowNo) {
 		super();
 		this.windowNo = WindowNo;
 		drillReportCtl = new DrillReportCtl(data.getQuery().getTableName(), data.getQuery(), data.getColumnName(), data.getValue(), data.getDisplayValue(), WindowNo);
@@ -327,19 +325,19 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		a.appendChild(new Text(".."));
 		header.appendChild(a);
 
-		KeyNamePair[] drillPrintFormats = drillPrintFormatMap != null ? drillPrintFormatMap.get(drillTable.getKey()) : new KeyNamePair[]{findTablePrintFormat(drillTable)};
-		for (int j = 0; j < drillPrintFormats.length; j++)
+		KeyNamePair[] drillRules = drillPrintFormatMap != null ? drillPrintFormatMap.get(drillTable.getKey()) : new KeyNamePair[]{findTablePrintFormat(drillTable)};
+		for (int j = 0; j < drillRules.length; j++)
 		{
-			KeyNamePair drillPrintFormat = drillPrintFormats[j];
+			KeyNamePair drillRule = drillRules[j];
 
-			KeyNamePair[] printFormats = isDrillProcessRule ? drillReportCtl.getDrillProcessRulesPrintFormatMap(drillPrintFormat.getKey()) : new KeyNamePair[] {drillPrintFormat} ;
+			KeyNamePair[] printFormats = isDrillProcessRule ? drillReportCtl.getDrillProcessRulesPrintFormatMap(drillRule.getKey()) : new KeyNamePair[] {drillRule} ;
 
 			// create new Print Format
 			if ((printFormats.length <= 0) && isDrillProcessRule)
 			{
 				KeyNamePair[] pfArray = {null};
 				MPrintFormat pf = null;
-				MProcessDrillRule dr = MProcessDrillRule.get(Env.getCtx(), drillPrintFormat.getKey());
+				MProcessDrillRule dr = MProcessDrillRule.get(Env.getCtx(), drillRule.getKey());
 				if(dr != null) {
 					int AD_ReportView_ID = dr.getAD_ReportView_ID();
 					if (AD_ReportView_ID == 0)
@@ -360,7 +358,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 					printFormats = pfArray;
 				}
 				if (printFormats.length <= 0) {
-					int AD_Table_ID = new Query(Env.getCtx(), MTable.Table_Name, " Name = ? ", null).setParameters(drillPrintFormat.getName()).firstId();
+					int AD_Table_ID = new Query(Env.getCtx(), MTable.Table_Name, " Name = ? ", null).setParameters(drillRule.getName()).firstId();
 					pf = MPrintFormat.createFromTable(Env.getCtx(), AD_Table_ID);
 					pfArray[0] = new KeyNamePair(pf.getAD_PrintFormat_ID(), pf.getName());
 					printFormats = pfArray;
@@ -370,13 +368,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 				String hdr = printFormat.getName();
 				if (hdr != null && hdr.length() > 0)
 				{
-					// field
-					if ((printFormat.getKey() <= 0) && isDrillProcessRule) {
-						table.appendChild(getPrintFormatHeader(printFormat, drillPrintFormat));
-
-					} else {
-						table.appendChild(getPrintFormatBox(printFormat, tabIndex, j, tabIndex, null, printFormats.length == 1));
-					}
+					table.appendChild(getPrintFormatBox(printFormat, tabIndex, j, tabIndex, isDrillProcessRule ? drillTable : null, drillRule, printFormats.length == 1));
 				}
 			}
 		}
@@ -444,22 +436,7 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		return table;
 	}
 
-	private Tr getPrintFormatHeader(KeyNamePair drillPrintFormat, KeyNamePair drillProcessRule) {
-		Tr tr = new Tr();
-		tr.setWidgetAttribute("class", "drill-window-field-header");
-
-		Td td = new Td();
-		td.setStyle("width: 100%; border-bottom: 1px solid gray;");
-		td.setColspan(3);
-		tr.appendChild(td);
-		H4 h4 = new H4();
-		h4.appendChild(new Text(drillProcessRule != null ? drillProcessRule.getName(): drillPrintFormat.getName()));
-
-		td.appendChild(h4);
-		return tr;
-	}
-
-	private Tr getPrintFormatBox(KeyNamePair drillPrintFormat, int reportIndex, int formatIndex, int groupIndex, KeyNamePair drillTable, boolean isSinglePrintFormat)
+	private Tr getPrintFormatBox(KeyNamePair drillPrintFormat, int reportIndex, int formatIndex, int groupIndex, KeyNamePair drillTable, KeyNamePair drillRule, boolean isSinglePrintFormat)
 	{
 
 		Tr tr = new Tr();
@@ -496,14 +473,14 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		a.setAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME, drillPrintFormat.getKey());
 		a.setAttribute(DRILL_REPORT_TABLE_NAME, drillPrintFormat.getName());
 		if(drillTable != null) {
-			a.setAttribute(DRILL_PROCESS_RULE_ID_NAME, drillTable.getKey());
+			a.setAttribute(DRILL_PROCESS_RULE_ID_NAME, drillRule.getKey());
 		}
 		td.appendChild(a);
 
 		String description = "";
 
 		if(drillTable != null && isSinglePrintFormat) {
-			MProcessDrillRule dr = MProcessDrillRule.get(Env.getCtx(), drillTable.getKey());
+			MProcessDrillRule dr = MProcessDrillRule.get(Env.getCtx(), drillRule.getKey());
 			if(dr != null) {
 				if (!Util.isEmpty(dr.getDescription()))
 					description = dr.getDescription();
@@ -536,9 +513,9 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		}
 		if(event.getTarget().getAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME) != null) {
 			if(event.getTarget().getAttribute(DRILL_PROCESS_RULE_ID_NAME) != null) {
-				ProcessInfo pi = drillReportCtl.getDrillProcessProcessInfo((int) event.getTarget().getAttribute(DRILL_PROCESS_RULE_ID_NAME), (int) event.getTarget().getAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME));
 				Integer processDrillRuleID = (Integer) event.getTarget().getAttribute(DRILL_PROCESS_RULE_ID_NAME);
 				MProcessDrillRule drillRule = new MProcessDrillRule(Env.getCtx(), processDrillRuleID, null);
+				ProcessInfo pi = drillReportCtl.getDrillProcessProcessInfo(processDrillRuleID, (int) event.getTarget().getAttribute(DRILL_REPORT_PRINTFORMAT_ID_NAME));
 				String showHelp = !Util.isEmpty(showHelp = drillRule.getShowHelp()) ? showHelp : MProcess.SHOWHELP_RunSilently_TakeDefaults;
 				pi.setShowHelp(showHelp);
 				ProcessModalDialog processModalDialog = new ProcessModalDialog(this, windowNo, false, pi);

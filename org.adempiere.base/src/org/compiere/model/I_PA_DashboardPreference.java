@@ -125,7 +125,7 @@ public interface I_PA_DashboardPreference
     public static final String COLUMNNAME_FlexGrow = "FlexGrow";
 
 	/** Set Flex Grow.
-	  * Defines the number of units taken from max gadget
+	  * This defines the ability for a flex item to grow if necessary. It accepts a unitless value that serves as a proportion. It dictates what amount of the available space inside the flex container the item should take up.
 	  */
 	public void setFlexGrow (int FlexGrow);
 

@@ -122,9 +122,7 @@ public class ProductionTest extends AbstractTestCase {
 			
 	@Test
 	public void testAutoProduce() {
-		int mulchId = 137;
-		int joeBlock = 118;
-		MProduct mulch = MProduct.get(mulchId);
+		MProduct mulch = MProduct.get(DictionaryIDs.M_Product.MULCH.id);
 		
 		MProduct mulchX = new MProduct(Env.getCtx(), 0, null);
 		mulchX.setName("MulchX2");
@@ -139,7 +137,7 @@ public class ProductionTest extends AbstractTestCase {
 		mulchX.saveEx();
 		
 		try {
-			createPOAndMRForProduct(mulchId);  // create some stock to avoid negative qty average cost exception
+			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id);  // create some stock to avoid negative qty average cost exception
 			
 			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
 			bom.setM_Product_ID(mulchX.get_ID());		
@@ -149,7 +147,7 @@ public class ProductionTest extends AbstractTestCase {
 			bom.saveEx();
 			
 			MPPProductBOMLine line = new MPPProductBOMLine(bom);
-			line.setM_Product_ID(mulchId);
+			line.setM_Product_ID(DictionaryIDs.M_Product.MULCH.id);
 			line.setQtyBOM(new BigDecimal("2"));
 			line.saveEx();
 	
@@ -158,8 +156,7 @@ public class ProductionTest extends AbstractTestCase {
 			mulchX.saveEx();
 			
 			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-			//Joe Block
-			order.setBPartner(MBPartner.get(Env.getCtx(), joeBlock));
+			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 			order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 			order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 			order.setDocStatus(DocAction.STATUS_Drafted);
@@ -218,7 +215,7 @@ public class ProductionTest extends AbstractTestCase {
 			assertTrue(productionLines.length==2,"Number of production line is not 2 as expected ("+productionLines.length+")");
 			assertTrue(productionLines[0].getM_Product_ID()==shipmentLine.getM_Product_ID(), "Production Line Production <> Shipment Line Product");
 			assertTrue(productionLines[0].getMovementQty().equals(shipmentLine.getMovementQty()), "Production Line Qty <> Shipment Line Qty");
-			assertTrue(productionLines[1].getM_Product_ID()==mulchId,"Production Line 2 Product is not the expected component product");
+			assertTrue(productionLines[1].getM_Product_ID()==DictionaryIDs.M_Product.MULCH.id,"Production Line 2 Product is not the expected component product");
 			assertTrue(productionLines[1].getMovementQty().intValue()==-2,"Production Line 2 Qty is not the expected component qty");
 		} finally {
 			rollback();

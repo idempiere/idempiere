@@ -33,7 +33,7 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220414L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_BankTransfer (Properties ctx, int C_BankTransfer_ID, String trxName)

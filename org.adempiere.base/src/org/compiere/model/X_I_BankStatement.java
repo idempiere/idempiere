@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for I_BankStatement
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="I_BankStatement")
 public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_I_BankStatement extends PO implements I_I_BankStatement, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_I_BankStatement (Properties ctx, int I_BankStatement_ID, String trxName)

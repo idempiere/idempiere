@@ -1013,6 +1013,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
         				.append(",").append(X_AD_PInstance_Para.COLUMNNAME_P_Date_To)
         				.append(",").append(X_AD_PInstance_Para.COLUMNNAME_Info)
         				.append(",").append(X_AD_PInstance_Para.COLUMNNAME_Info_To)
+        				.append(",").append(X_AD_PInstance_Para.COLUMNNAME_IsNotClause)
         				.append(" FROM ").append(X_AD_PInstance_Para.Table_Name)
         				.append(" WHERE ").append(X_AD_PInstance_Para.COLUMNNAME_AD_PInstance_ID+"=?");
         PreparedStatement pstmt = null;
@@ -1067,8 +1068,10 @@ public class ReportStarter implements ProcessCall, ClientProcess
                 // Add parameter info - teo_sarca FR [ 2581145 ]
                 String info = rs.getString(8);
                 String infoTo = rs.getString(9);
+                String isNotClause = rs.getString(10);
         		params.put(name+"_Info1", (info != null ? info : ""));
         		params.put(name+"_Info2", (infoTo != null ? infoTo : ""));
+        		params.put(name+"_NOT", isNotClause);
             }
         }
         catch (SQLException e)

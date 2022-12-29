@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for ASP_ClientLevel
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="ASP_ClientLevel")
 public class X_ASP_ClientLevel extends PO implements I_ASP_ClientLevel, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_ASP_ClientLevel extends PO implements I_ASP_ClientLevel, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_ASP_ClientLevel (Properties ctx, int ASP_ClientLevel_ID, String trxName)
@@ -84,8 +84,8 @@ public class X_ASP_ClientLevel extends PO implements I_ASP_ClientLevel, I_Persis
       return sb.toString();
     }
 
-	/** Set Client Level.
-		@param ASP_ClientLevel_ID Client Level
+	/** Set Tenant Level.
+		@param ASP_ClientLevel_ID Tenant Level
 	*/
 	public void setASP_ClientLevel_ID (int ASP_ClientLevel_ID)
 	{
@@ -95,8 +95,8 @@ public class X_ASP_ClientLevel extends PO implements I_ASP_ClientLevel, I_Persis
 			set_ValueNoCheck (COLUMNNAME_ASP_ClientLevel_ID, Integer.valueOf(ASP_ClientLevel_ID));
 	}
 
-	/** Get Client Level.
-		@return Client Level	  */
+	/** Get Tenant Level.
+		@return Tenant Level	  */
 	public int getASP_ClientLevel_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_ASP_ClientLevel_ID);

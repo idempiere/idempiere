@@ -2,7 +2,7 @@
 <feature
       id="org.idempiere.p2.targetplatform.mirror.feature"
       label="Target Platform Mirror Feature"
-      version="10.0.0.qualifier"
+      version="11.0.0.qualifier"
       provider-name="iDempiere">
 
    <description url="http://www.example.com/description">

@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for WS_WebServiceFieldInput
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebServiceFieldInput")
 public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFieldInput, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_WS_WebServiceFieldInput (Properties ctx, int WS_WebServiceFieldInput_ID, String trxName)
@@ -223,7 +223,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	}
 
 	/** Set Allow Null Value.
-		@param IsNullIdentifier Should allow null value for identifiere field
+		@param IsNullIdentifier Should allow null value for identifier field
 	*/
 	public void setIsNullIdentifier (boolean IsNullIdentifier)
 	{
@@ -231,7 +231,7 @@ public class X_WS_WebServiceFieldInput extends PO implements I_WS_WebServiceFiel
 	}
 
 	/** Get Allow Null Value.
-		@return Should allow null value for identifiere field
+		@return Should allow null value for identifier field
 	  */
 	public boolean isNullIdentifier()
 	{

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PasswordRule
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_PasswordRule")
 public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_PasswordRule (Properties ctx, int AD_PasswordRule_ID, String trxName)
@@ -155,7 +155,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Alphabetical Sequence.
-		@param AlphabeticalSequence Lenght of alphabetical sequence to validate
+		@param AlphabeticalSequence Length of alphabetical sequence to validate
 	*/
 	public void setAlphabeticalSequence (int AlphabeticalSequence)
 	{
@@ -163,7 +163,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Get Alphabetical Sequence.
-		@return Lenght of alphabetical sequence to validate
+		@return Length of alphabetical sequence to validate
 	  */
 	public int getAlphabeticalSequence()
 	{
@@ -174,7 +174,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set Days Reuse Password.
-		@param Days_Reuse_Password Define number of day can reuser password
+		@param Days_Reuse_Password Define number of day can reuse password
 	*/
 	public void setDays_Reuse_Password (int Days_Reuse_Password)
 	{
@@ -182,7 +182,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Get Days Reuse Password.
-		@return Define number of day can reuser password
+		@return Define number of day can reuse password
 	  */
 	public int getDays_Reuse_Password()
 	{
@@ -436,7 +436,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Set QWERTY Sequence.
-		@param QWERTYSequence Lenght of QWERTY sequences to validate
+		@param QWERTYSequence Length of QWERTY sequences to validate
 	*/
 	public void setQWERTYSequence (int QWERTYSequence)
 	{
@@ -444,7 +444,7 @@ public class X_AD_PasswordRule extends PO implements I_AD_PasswordRule, I_Persis
 	}
 
 	/** Get QWERTY Sequence.
-		@return Lenght of QWERTY sequences to validate
+		@return Length of QWERTY sequences to validate
 	  */
 	public int getQWERTYSequence()
 	{

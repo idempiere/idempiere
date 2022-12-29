@@ -34,14 +34,20 @@ import java.util.logging.Level;
 import javax.servlet.ServletRequest;
 
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.ISupportMask;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.acct.Doc;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_AD_Window;
@@ -52,6 +58,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MReference;
+import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -71,6 +78,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 
 import com.lowagie.text.DocumentException;
 
@@ -429,6 +438,47 @@ public final class AEnv
         }
     }
 
+    /**
+	 *  Opens the Drill Assistant
+	 * 	@param data query
+	 *  @param component
+	 */
+    public static void actionDrill(DrillData data, int windowNo) {
+    	int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
+		if (!MRole.getDefault().isCanReport(AD_Table_ID))
+		{
+			Dialog.error(windowNo, "AccessCannotReport", data.getQuery().getTableName());
+			return;
+		}
+		if (AD_Table_ID > 0) {
+			WDrillReport drillReport = new WDrillReport(data, windowNo);
+
+			Object window = SessionManager.getAppDesktop().findWindow(windowNo);
+			if (window != null && window instanceof Component && window instanceof ISupportMask){
+				final ISupportMask parent = LayoutUtils.showWindowWithMask(drillReport, (Component)window, LayoutUtils.OVERLAP_PARENT);
+				drillReport.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						parent.hideMask();
+					}
+				});
+			}else if (window != null && window instanceof Component){
+				final Mask mask = LayoutUtils.showWindowWithMask(drillReport, (Component)window, null);
+				drillReport.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						mask.hideMask();
+					}
+				});
+			}else{
+				drillReport.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+				AEnv.showWindow(drillReport);
+			}
+		}
+		else
+			log.warning("No Table found for " + data.getQuery().getWhereClause(true));
+    }
+    
     /**
      * open zoom window with query
      * @param AD_Window_ID

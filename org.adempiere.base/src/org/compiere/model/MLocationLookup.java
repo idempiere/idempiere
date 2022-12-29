@@ -137,9 +137,18 @@ public final class MLocationLookup extends Lookup
 	 */
 	public String getColumnName()
 	{
-		return "C_Location_ID";
+		return "C_Location.C_Location_ID";
 	}   //  getColumnName
 
+	/**
+	 *	Get Zoom - Location Window
+	 *  @return Zoom AD_Window_ID
+	 */
+	@Override
+	public int getZoom() {
+		return MTable.get(MLocation.Table_ID).getAD_Window_ID();
+	}
+	
 	/**
 	 *	Return data as sorted Array - not implemented
 	 *  @param mandatory mandatory

@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_AllUsers_V
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_AllUsers_V")
 public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_AllUsers_V (Properties ctx, int AD_AllUsers_V_ID, String trxName)
@@ -85,8 +85,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 			.getPO(getAD_AllClients_V_ID(), get_TrxName());
 	}
 
-	/** Set Client (All).
-		@param AD_AllClients_V_ID Client (All)
+	/** Set Tenant (All).
+		@param AD_AllClients_V_ID Tenant (All)
 	*/
 	public void setAD_AllClients_V_ID (int AD_AllClients_V_ID)
 	{
@@ -96,8 +96,8 @@ public class X_AD_AllUsers_V extends PO implements I_AD_AllUsers_V, I_Persistent
 			set_ValueNoCheck (COLUMNNAME_AD_AllClients_V_ID, Integer.valueOf(AD_AllClients_V_ID));
 	}
 
-	/** Get Client (All).
-		@return Client (All)	  */
+	/** Get Tenant (All).
+		@return Tenant (All)	  */
 	public int getAD_AllClients_V_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_AllClients_V_ID);

@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.EditorBox;
@@ -47,6 +48,7 @@ import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.DateRangeButton;
@@ -425,10 +427,10 @@ public class ProcessParameterPanel extends Panel implements
         	div.appendChild(label.getDecorator());
         row.appendChild(div);
 		//
+        Div box = new Div();
+		box.setStyle("display: flex; align-items: center;");
+		ZKUpdateUtil.setWidth(box, "100%");
 		if (voF.isRange) {
-			Div box = new Div();
-			box.setStyle("display: flex; align-items: center;");
-			ZKUpdateUtil.setWidth(box, "100%");
 			box.appendChild(editor.getComponent());
 			ZKUpdateUtil.setWidth((HtmlBasedComponent) editor.getComponent(), "49%");
 			//
@@ -470,11 +472,23 @@ public class ProcessParameterPanel extends Panel implements
 				box.appendChild(dateRangeButton);
 			}
 		} else {
-			row.appendChild(editor.getComponent());
+			box.appendChild(editor.getComponent());
 			m_mFields2.add(null);
 			m_wEditors2.add(null);
 			m_separators.add(null);
+			if(DisplayType.isChosenMultipleSelection(mField.getDisplayType())) {
+				Button bNegate = ButtonFactory.createButton("", null, null);
+				bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
+				bNegate.setIconSclass("z-icon-IncludeSelected");
+				bNegate.setSclass("btn-negate btn-negate-include");
+				bNegate.setAttribute("isSelected", false);
+				bNegate.setVisible(false);
+				bNegate.addActionListener(this);
+				box.appendChild(bNegate);
+				editor.getComponent().setAttribute("isNotClause", bNegate);
+			}
 		}
+		row.appendChild(box);
 	} // createField
 
 	private void setEditorPlaceHolder(WEditor editor, String msg) {
@@ -590,6 +604,10 @@ public class ProcessParameterPanel extends Panel implements
 				MPInstancePara para = params[i];
 				if ( mField.getColumnName().equals(para.getParameterName()) )
 				{
+					Button bNegate = null;
+					if(editor.getComponent() != null)
+						bNegate = (Button) editor.getComponent().getAttribute("isNotClause");
+					
 					if (para.getP_Date() != null || para.getP_Date_To() != null )
 					{
 						editor.setValue(para.getP_Date());
@@ -624,6 +642,23 @@ public class ProcessParameterPanel extends Panel implements
 					    valueChange(changeEvent);
 					}
 
+					if(bNegate != null) {
+						if(para.isNotClause()) {
+							bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "ExcludeSelectedValues"));
+							bNegate.setIconSclass("z-icon-ExcludeSelected");
+							bNegate.setSclass("btn-negate btn-negate-exclude");
+							bNegate.setAttribute("isSelected", true);
+						} 
+						else {
+							bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
+							bNegate.setIconSclass("z-icon-IncludeSelected");
+							bNegate.setSclass("btn-negate btn-negate-include");
+							bNegate.setAttribute("isSelected", false);
+						}
+						
+						if(editor.getValue() != null)
+							bNegate.setVisible(true);
+					}
 					log.fine(para.toString());
 					break;
 				}
@@ -726,6 +761,14 @@ public class ProcessParameterPanel extends Panel implements
 			GridField mField = (GridField) m_mFields.get(i);
 			para.setParameterName(mField.getColumnName());			
 
+			Button bNegate = null;
+			if(editor.getComponent() != null)
+				bNegate = (Button)editor.getComponent().getAttribute("isNotClause");
+			
+			if(bNegate != null) {
+				para.setIsNotClause((boolean)bNegate.getAttribute("isSelected"));
+			}
+			
 			// Date
 			if (result instanceof Timestamp || result2 instanceof Timestamp) {
 				if (result instanceof Timestamp)
@@ -918,7 +961,39 @@ public class ProcessParameterPanel extends Panel implements
     		dynamicDisplay();
     	}
     	else if (event.getName().equals("onPostEditorValueChange")) {
-    		onPostEditorValueChange((WEditor)event.getData());
+    		WEditor editor = (WEditor)event.getData();
+    		onPostEditorValueChange(editor);
+    		if(editor.getComponent() != null) {
+				Button bNegate = (Button) editor.getComponent().getAttribute("isNotClause");
+				if (bNegate != null) {
+					if (editor.getValue() != null) {
+						bNegate.setVisible(true);
+					} else {
+						bNegate.setVisible(false);
+						bNegate.setAttribute("isSelected", false);
+						bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
+	    				bNegate.setIconSclass("z-icon-IncludeSelected");
+	    				bNegate.setSclass("btn-negate btn-negate-include");
+					}
+				}
+    		}
+    	}
+    	else if (event.getName().equals(Events.ON_CLICK)) {
+    		if(event.getTarget() instanceof Button) {
+    			Button bNegate = (Button)event.getTarget();
+    			boolean isSelected = !(boolean)bNegate.getAttribute("isSelected");
+    			if(isSelected) {
+    				bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "ExcludeSelectedValues"));
+    				bNegate.setIconSclass("z-icon-ExcludeSelected");
+    				bNegate.setSclass("btn-negate btn-negate-exclude");
+    			} 
+    			else {
+    				bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
+    				bNegate.setIconSclass("z-icon-IncludeSelected");
+    				bNegate.setSclass("btn-negate btn-negate-include");
+    			}
+    			bNegate.setAttribute("isSelected", isSelected);
+    		}
     	}
 	}
 
@@ -1009,6 +1084,13 @@ public class ProcessParameterPanel extends Panel implements
 						m_separators.get(i).setVisible(true);
 						m_wEditors2.get(i).setVisible(true);
 					}
+					
+					Button bNegate = null;
+					if(editor.getComponent() != null)
+						bNegate = (Button) editor.getComponent().getAttribute("isNotClause");
+					if(bNegate != null) {
+						bNegate.setVisible(true);
+					}
 				}
 				boolean rw = mField.isEditablePara(true); // r/w - check if field is Editable
 				editor.setReadWrite(rw);
@@ -1025,6 +1107,13 @@ public class ProcessParameterPanel extends Panel implements
 				if (mField.getVO().isRange) {
 					m_separators.get(i).setVisible(false);
 					m_wEditors2.get(i).setVisible(false);
+				}
+				
+				Button bNegate = null;
+				if(editor.getComponent() != null)
+					bNegate = (Button) editor.getComponent().getAttribute("isNotClause");
+				if(bNegate != null) {
+					bNegate.setVisible(false);
 				}
 			}
 			editor.setMandatory(mField.isMandatory(true));
