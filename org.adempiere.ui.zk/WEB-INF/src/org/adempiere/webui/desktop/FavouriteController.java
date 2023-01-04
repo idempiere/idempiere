@@ -79,7 +79,12 @@ public class FavouriteController
 			m_AD_Tree_Favorite_ID = vTree.getAD_Tree_Favorite_ID();
 		}
 
-		vTree = (MTreeFavorite) MTable.get(Env.getCtx(), MTreeFavorite.Table_ID).getPO(m_AD_Tree_Favorite_ID, null);
+		try {
+			PO.setCrossTenantSafe();
+			vTree = (MTreeFavorite) MTable.get(Env.getCtx(), MTreeFavorite.Table_ID).getPO(m_AD_Tree_Favorite_ID, null);
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
 
 		rootNode = vTree.getRoot();
 		Enumeration<?> enTop = rootNode.children();
