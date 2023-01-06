@@ -98,8 +98,6 @@ public final class MLookup extends Lookup implements Serializable
 	public static final String  INACTIVE_S = "~";
 	/** Inactive Marker End         */
 	public static final String  INACTIVE_E = "~";
-	/** Number of max rows to load	*/
-	private static final int	MAX_ROWS = 5000;
 	/**	Indicator for Null			*/
 	private static Integer 		MINUS_ONE = Integer.valueOf(-1);
 
@@ -997,6 +995,8 @@ public final class MLookup extends Lookup implements Serializable
 		 */
 		protected void doRun()
 		{
+			/** Number of max rows to load	*/
+			int	MAX_ROWS = MSysConfig.getIntValue(MSysConfig.MAX_ROWS_IN_LOOKUP, 10000, Env.getAD_Client_ID(Env.getCtx()));
 			long startTime = System.currentTimeMillis();
 			StringBuilder sql = new StringBuilder().append(m_info.Query);
 
