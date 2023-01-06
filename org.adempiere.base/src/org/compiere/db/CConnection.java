@@ -1076,7 +1076,7 @@ public class CConnection implements Serializable, Cloneable
 			}
 			catch (NoClassDefFoundError ee)
 			{
-				System.err.println("Environment Error - Check idempiere.properties - " + ee);
+				log.severe("Environment Error - Check idempiere.properties - " + ee);
 				if (Ini.isClient())
 				{
 					if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog
@@ -1148,14 +1148,14 @@ public class CConnection implements Serializable, Cloneable
 			String msg = ule.getLocalizedMessage()
 				+ " -> Did you set the LD_LIBRARY_PATH ? - " + getConnectionURL();
 			m_dbException = new Exception(msg);
-			System.err.println(msg);
+			log.severe(msg);
 		}
 		catch (SQLException ex)
 		{
 			m_dbException = ex;
 			if (conn == null)
 			{
-				System.err.println(getConnectionURL ()
+				log.severe(getConnectionURL ()
 						+ ", (1) AutoCommit=" + autoCommit + ",TrxIso=" + getTransactionIsolationInfo(transactionIsolation)
 						+ " - " + ex.getMessage());
 			}
@@ -1163,14 +1163,14 @@ public class CConnection implements Serializable, Cloneable
 			{
 				try
 				{
-					System.err.println(getConnectionURL ()
+					log.severe(getConnectionURL ()
 						+ ", (2) AutoCommit=" + conn.getAutoCommit() + "->" + autoCommit
 						+ ", TrxIso=" + getTransactionIsolationInfo(conn.getTransactionIsolation()) + "->" + getTransactionIsolationInfo(transactionIsolation)
 						+ " - " + ex.getMessage());
 				}
 				catch (Exception ee)
 				{
-					System.err.println(getConnectionURL ()
+					log.severe(getConnectionURL ()
 							+ ", (1) AutoCommit=" + autoCommit + ",TrxIso=" + getTransactionIsolationInfo(transactionIsolation)
 							+ " - " + ex.getMessage());
 				}
@@ -1179,7 +1179,7 @@ public class CConnection implements Serializable, Cloneable
 		catch (Exception ex)
 		{
 			m_dbException = ex;
-			System.err.println(getConnectionURL() + " - " + ex.getLocalizedMessage());
+			log.severe(getConnectionURL() + " - " + ex.getLocalizedMessage());
 		}
 		return conn;
 	}	//  getConnection
