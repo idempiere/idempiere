@@ -768,7 +768,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			}
 			catch (Exception e) {
 				message = e.getMessage();
-				Dialog.warn(0, "URLnotValid", message);
+				Dialog.warn(0, "URLnotValid", message, null);
 			}
 		}
 		else if (toRoute.equals(event.getTarget()))
@@ -787,7 +787,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 				}
 				catch (Exception e) {
 					message = e.getMessage();
-					Dialog.warn(0, "URLnotValid", message);
+					Dialog.warn(0, "URLnotValid", message, null);
 				}
 			}
 		}

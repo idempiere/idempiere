@@ -490,7 +490,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 		}
 		catch (Exception e) {
 			String message = e.getMessage();
-			Dialog.warn(0, "URLnotValid", message);
+			Dialog.warn(0, "URLnotValid", message, null);
 		}
 	}
 
