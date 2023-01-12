@@ -266,7 +266,7 @@ public class AbstractService {
 			}
 	        if (!bAccess.booleanValue())
 	        {
-	            return "Web Service Error: Login role does not have access to the service type";
+	            return "Web Service Error: Login role does not have access to the service type '" + serviceTypeValue + "'";
 	        }			
 		}
         
