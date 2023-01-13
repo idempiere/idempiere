@@ -51,12 +51,14 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.sys.ComponentCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Grid;
@@ -169,13 +171,18 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		}
 	}
 
+	/**
+	 * 
+	 * @param field
+	 * @return column index, -1 if not found
+	 */
 	public int getColumnIndex(GridField field) {
 		GridField[] fields = gridPanel.getFields();
 		for(int i = 0; i < fields.length; i++) {
 			if (fields[i] == field)
 				return i;
 		}
-		return 0;
+		return -1;
 	}
 
 	private Component createReadonlyCheckbox(Object value) {
@@ -342,9 +349,6 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		final int MAX_TEXT_LENGTH = MSysConfig.getIntValue(MSysConfig.MAX_TEXT_LENGTH_ON_GRID_VIEW,MAX_TEXT_LENGTH_DEFAULT,Env.getAD_Client_ID(Env.getCtx()));
 		if (text != null && text.length() > MAX_TEXT_LENGTH)
 			display = text.substring(0, MAX_TEXT_LENGTH - 3) + "...";
-		// since 5.0.8, the org.zkoss.zhtml.Text is encoded by default
-//		if (display != null)
-//			display = XMLs.encodeText(display);
 		label.setValue(display);
 		if (text != null && text.length() > MAX_TEXT_LENGTH)
 			label.setTooltiptext(text);
@@ -539,11 +543,14 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				if (readOnlyEditor != null) {
 					readOnlyEditors.put(gridPanelFields[i], readOnlyEditor);
 				}
-				
-				editor.getComponent().setWidgetOverride("fieldHeader", HelpController.escapeJavascriptContent(gridPanelFields[i].getHeader()));
-    			editor.getComponent().setWidgetOverride("fieldDescription", HelpController.escapeJavascriptContent(gridPanelFields[i].getDescription()));
-    			editor.getComponent().setWidgetOverride("fieldHelp", HelpController.escapeJavascriptContent(gridPanelFields[i].getHelp()));
-    			editor.getComponent().setWidgetListener("onFocus", "zWatch.fire('onFieldTooltip', this, null, this.fieldHeader(), this.fieldDescription(), this.fieldHelp());");
+								    			
+    			if (editor.getComponent() instanceof AbstractComponent) {
+    				editor.getComponent().setWidgetOverride("fieldHeader", HelpController.escapeJavascriptContent(gridPanelFields[i].getHeader()));
+        			editor.getComponent().setWidgetOverride("fieldDescription", HelpController.escapeJavascriptContent(gridPanelFields[i].getDescription()));
+        			editor.getComponent().setWidgetOverride("fieldHelp", HelpController.escapeJavascriptContent(gridPanelFields[i].getHelp()));
+    				editor.getComponent().setWidgetListener("onFocus", "zWatch.fire('onFieldTooltip', this, null, this.fieldHeader(), this.fieldDescription(), this.fieldHelp());");
+    				((AbstractComponent)editor.getComponent()).addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, (t) -> {((AbstractComponent)t).setWidgetListener("onFocus", null);});
+    			}
     			
     			//	Default Focus
     			if (defaultFocusField == null && gridPanelFields[i].isDefaultFocus())
@@ -778,6 +785,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	/**
 	 * @see RowRendererExt#getControls()
 	 */
+	@Override
 	public int getControls() {
 		return DETACH_ON_RENDER;
 	}
@@ -785,6 +793,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	/**
 	 * @see RowRendererExt#newCell(Row)
 	 */
+	@Override
 	public Component newCell(Row row) {
 		return null;
 	}
@@ -792,6 +801,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	/**
 	 * @see RowRendererExt#newRow(Grid)
 	 */
+	@Override
 	public Row newRow(Grid grid) {
 		return null;
 	}
@@ -799,18 +809,21 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	/**
 	 * @see RendererCtrl#doCatch(Throwable)
 	 */
+	@Override
 	public void doCatch(Throwable ex) throws Throwable {
 	}
 
 	/**
 	 * @see RendererCtrl#doFinally()
 	 */
+	@Override
 	public void doFinally() {
 	}
 
 	/**
 	 * @see RendererCtrl#doTry()
 	 */
+	@Override
 	public void doTry() {
 	}
 
@@ -847,6 +860,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		}
 	}
 
+	/**
+	 * 
+	 * @param toFocus
+	 */
 	protected void focusToEditor(WEditor toFocus) {
 		Component c = toFocus.getComponent();
 		if (c instanceof EditorBox) {
@@ -915,7 +932,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 
 	/**
-	 * @return boolean
+	 * @return true if it is in edit mode, false otherwise
 	 */
 	public boolean isEditing() {
 		return editing;
