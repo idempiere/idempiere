@@ -2305,7 +2305,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         if (adTabbox.getDirtyADTabpanel() == null) {
         	doOnFind();
         } else {
-            onSave(false, false, new Callback<Boolean>() {
+            onSave(false, true, new Callback<Boolean>() {
     			@Override
     			public void onCallback(Boolean result) {
     				if (result) {

@@ -2912,6 +2912,8 @@ public class MOrder extends X_C_Order implements DocAction
 		MOrderLine[] lines = getLines();
 		for (MOrderLine line : lines)
 		{
+			if (line.isDescription())
+				continue;
             MTax tax = new MTax(line.getCtx(), line.getC_Tax_ID(), line.get_TrxName());
             MTaxProvider provider = providers.get(tax.getC_TaxProvider_ID());
             if (provider == null)
