@@ -87,7 +87,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4235323239552159150L;
+	private static final long serialVersionUID = 3113890082757258790L;
 
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(AboutWindow.class);
@@ -103,7 +103,6 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	protected Tab tabPlugins;
 
 	protected Button btnAdempiereLog;
-	protected Button btnReloadLogProps;
 
 	private Listbox levelListBox;
 
@@ -253,13 +252,6 @@ public class AboutWindow extends Window implements EventListener<Event> {
 				btnAdempiereLog.addEventListener(Events.ON_CLICK, this);
 				hbox.appendChild(new Space());
 				hbox.appendChild(btnAdempiereLog);
-
-				btnReloadLogProps = new Button("Reload Log Props");
-				btnReloadLogProps.setTooltiptext("Reload the configuration of log levels from idempiere.properties file");
-				LayoutUtils.addSclass("txt-btn", btnReloadLogProps);
-				btnReloadLogProps.addEventListener(Events.ON_CLICK, this);
-				hbox.appendChild(new Space());
-				hbox.appendChild(btnReloadLogProps);
 			}
 		}
 
@@ -460,8 +452,6 @@ public class AboutWindow extends Window implements EventListener<Event> {
 			cmd_errorEMail();
 		else if (event.getTarget() == btnAdempiereLog)
 			downloadAdempiereLogFile();
-		else if (event.getTarget() == btnReloadLogProps)
-			reloadLogProps();
 		else if (event.getTarget() == levelListBox)
 			setTraceLevel();
 		else if (Events.ON_CLICK.equals(event.getName()))
@@ -518,10 +508,9 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	private void setTraceLevel() {
 		Listitem item = levelListBox.getSelectedItem();
 		if (item != null && item.getValue() != null) {
-			Level level = (Level) item.getValue();
-			CLogMgt.setLevel(level);
-			Ini.setProperty(Ini.P_TRACELEVEL, CLogMgt.getLevel().getName());
+			Ini.setProperty(Ini.P_TRACELEVEL, item.getValue().toString());
 			Ini.saveProperties(false);
+			reloadLogProps();
 		}
 	}
 

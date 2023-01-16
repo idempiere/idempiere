@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -310,7 +311,15 @@ public class CLogMgt
 					
 			//	JDBC if ALL
 			setJDBCDebug(level.intValue() == Level.ALL.intValue());
-			//
+
+			// Set the log level for all the existing loggers
+			LogManager mgr = LogManager.getLogManager();
+			Iterator<String> ln = mgr.getLoggerNames().asIterator();
+			while (ln.hasNext()) {
+				String cl = ln.next();
+				CLogger.getCLogger(cl, false).setLevel(level);
+			}
+			getRootLogger().setLevel(level);
 		}
 		else
 		{
