@@ -21,7 +21,7 @@ UPDATE AD_Message SET MsgType='E',Updated=TO_TIMESTAMP('2022-12-23 19:07:33','YY
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','BOM {0} for product {1} does not have lines',0,0,'Y',TO_TIMESTAMP('2022-12-23 19:08:10','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-12-23 19:08:10','YYYY-MM-DD HH24:MI:SS'),100,200814,'BOMForProductDoesNotHaveLines','D','356544c0-e10f-4bb9-9215-a93b2f67243f')
 ;
 
--- Dec 23, 2022, 7:11:09 PM BRT
-UPDATE AD_Process_Para SET ReadOnlyLogic=NULL,Updated=TO_TIMESTAMP('2022-12-23 19:11:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=53461
+-- Jan 14, 2023, 6:10:27 PM CET
+UPDATE AD_Process_Para SET ReadOnlyLogic='@M_Product_ID@>0 & @_WinInfo_AD_Window_ID:0@>0',Updated=TO_TIMESTAMP('2023-01-14 18:10:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=53461
 ;
 
