@@ -29,7 +29,6 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
@@ -180,15 +179,8 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 					setAD_Table_ID(reportView.getAD_Table_ID());
 			}
 		}
+		setIsValid();
 		return super.beforeSave(newRecord);
-	}
-
-	@Override
-	protected boolean afterSave(boolean newRecord, boolean success) {
-		if(success) {
-			validate();
-		}
-		return super.afterSave(newRecord, success);
 	}
 	
 	/**
@@ -227,7 +219,7 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 	 * @param processID
 	 * @return true - all mandatory parameters are set; false - at least one mandatory parameter is not set
 	 */
-	public boolean allMandatoryParaSet() {
+	private boolean allMandatoryParaSet() {
 		boolean isValid = false;
 		MProcess process = new MProcess(Env.getCtx(), getAD_Process_ID(), null);
 		for(MProcessPara processPara : process.getParameters()) {
@@ -250,11 +242,9 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 	}
 	
 	/**
-	 * Validate Drill Rule - update IsValid
+	 * Validate Drill Rule - set IsValid
 	 */
-	public void validate() {
-		String sql = " UPDATE " + MProcessDrillRule.Table_Name + " SET " + MProcessDrillRule.COLUMNNAME_IsValid + " = ? "
-				+ " WHERE " + MProcessDrillRule.Table_Name + "_ID = ?";
-		DB.executeUpdateEx(sql, new Object[] {allMandatoryParaSet() ? "Y" : "N", getAD_Process_DrillRule_ID()}, get_TrxName());
+	public void setIsValid() {
+		setIsValid(allMandatoryParaSet());
 	}
 }

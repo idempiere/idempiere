@@ -101,8 +101,7 @@ public class MProcessDrillRulePara extends X_AD_Process_DrillRule_Para implement
 	@Override
 	protected boolean afterSave(boolean newRecord, boolean success) {
 		if(success) {
-			String whereClause = MProcessPara.COLUMNNAME_AD_Process_Para_ID + " = ? ";
-			MProcessPara processPara = new Query(getCtx(), MProcessPara.Table_Name, whereClause, get_TrxName()).setParameters(getAD_Process_Para_ID()).first();
+			MProcessPara processPara = new MProcessPara(getCtx(), getAD_Process_Para_ID(), get_TrxName());
 			boolean isValid = (processPara.isRange() && (!Util.isEmpty(getParameterDefault()) || !Util.isEmpty(getParameterToDefault()))) ||
 					((!processPara.isRange() && !Util.isEmpty(getParameterDefault())));
 			if(processPara.isMandatory()) {
@@ -115,8 +114,7 @@ public class MProcessDrillRulePara extends X_AD_Process_DrillRule_Para implement
 	@Override
 	protected boolean afterDelete (boolean success) {
 		if(success) {
-			String whereClause = MProcessPara.COLUMNNAME_AD_Process_Para_ID + " = ? ";
-			MProcessPara processPara = new Query(getCtx(), MProcessPara.Table_Name, whereClause, get_TrxName()).setParameters(getAD_Process_Para_ID()).first();
+			MProcessPara processPara = new MProcessPara(getCtx(), getAD_Process_Para_ID(), get_TrxName());
 			if(processPara.isMandatory()) {
 				validateParent(new Object[] {"N", getAD_Process_DrillRule_ID()});
 			}
