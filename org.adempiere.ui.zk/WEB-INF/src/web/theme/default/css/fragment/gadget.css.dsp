@@ -17,8 +17,13 @@
 	width: calc(100% - 10px);
 }
 
+.dashboard-widget.z-panel {
+	display: flex; 
+	flex-direction: column; 
+	justify-content: stretch;
+}
 .dashboard-widget > .z-panel-body {
-	height: 100%;
+	flex-grow: 1;
 }
 
 .statusline-wrapper {
@@ -95,7 +100,6 @@
 	border: 1px solid lightgray; 
 	margin:auto;
 	width: 99%;
-	height: 90%;
 }
 
 .favourites-box {

@@ -52,7 +52,7 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 	@Override
 	public void refresh(ServerPushTemplate template) {
 		statusPanel.refresh();
-		template.execute(this);
+		template.executeAsync(this);
 	}
 
 	@Override
@@ -102,6 +102,11 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 	
 	@Override
 	public boolean isPooling() {
+		return true;
+	}
+
+	@Override
+	public boolean isLazy() {
 		return true;
 	}
 }
