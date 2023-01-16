@@ -997,6 +997,10 @@ public final class MLookup extends Lookup implements Serializable
 		{
 			/** Number of max rows to load	*/
 			int	MAX_ROWS = MSysConfig.getIntValue(MSysConfig.MAX_ROWS_IN_LOOKUP, 10000, Env.getAD_Client_ID(Env.getCtx()));
+			if (MAX_ROWS > 50000) {
+				log.warning("SysConfig MAX_ROWS_IN_LOOKUP set back to maximum allowed value of 50.000");
+				MAX_ROWS = 50000;  // impose hardcoded limit of 50.000
+			}
 			long startTime = System.currentTimeMillis();
 			StringBuilder sql = new StringBuilder().append(m_info.Query);
 
