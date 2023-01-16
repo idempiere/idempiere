@@ -436,15 +436,24 @@ public class DashboardController implements EventListener<Event> {
 		List<Component> components = new ArrayList<>();
 		asyncRenderComponents(dashboardContent, dashboardRunnable, appDesktop, contextPath, panelChildren, components, zulComponent);
 		if (components.size() > 0) {
-			spt.executeAsync(() -> {
-				panelChildren.getChildren().clear();
-				for(Component c : components) {
-					panelChildren.appendChild(c);
-					if (c instanceof DashboardPanel) {
-						if (((DashboardPanel) c).isLazy())
-							((DashboardPanel) c).refresh(spt);
-					}
+			for(Component c : components) {
+				if (c.getParent() != panelChildren) {
+					spt.executeAsync(() -> panelChildren.appendChild(c));
+				}
+				if (c instanceof DashboardPanel) {
+					DashboardPanel dpanel = (DashboardPanel) c;
+					if (dpanel.isLazy()) {
+						try {
+							dpanel.refresh(spt);
+						} catch (Exception e) {
+							logger.log(Level.SEVERE, e.getMessage(), e);
+						}
+					} 					
 				}				
+			}						
+			spt.executeAsync(() -> {
+				if (panelChildren.getFirstChild() != null && panelChildren.getFirstChild() instanceof BusyDialog)
+					panelChildren.getFirstChild().detach();
 			});			
 		} else {
 			spt.executeAsync(() -> {
@@ -674,13 +683,13 @@ public class DashboardController implements EventListener<Event> {
 	 * @param dashboardRunnable
 	 * @param appDesktop
 	 * @param contextPath
-	 * @param panelChildren
+	 * @param parentComponent
 	 * @param components
 	 * @param zulComponent
 	 * @throws Exception
 	 */
-	private void asyncRenderComponents(MDashboardContent dashboardContent, DashboardRunnable dashboardRunnable, IDesktop appDesktop, String contextPath, Panelchildren panelChildren, 
-			List<Component> components, Component zulComponent) throws Exception {
+	private void asyncRenderComponents(MDashboardContent dashboardContent, DashboardRunnable dashboardRunnable, IDesktop appDesktop, String contextPath, 
+			HtmlBasedComponent parentComponent, List<Component> components, Component zulComponent) throws Exception {
 		// HTML content
         String htmlContent = dashboardContent.get_ID() > 0 ? dashboardContent.get_Translation(MDashboardContent.COLUMNNAME_HTML) : null;
         if(htmlContent != null)
@@ -747,13 +756,18 @@ public class DashboardController implements EventListener<Event> {
 			{
 				String processParameters = dashboardContent.getProcessParameters();
 
+				Div layout = new Div();
+				layout.setHeight("100%");
+				layout.setStyle("display: flex;flex-direction: column;");
+				components.add(layout);
 				Iframe iframe = new Iframe();
 				iframe.setSclass("dashboard-report-iframe");
-				components.add(iframe);
+				iframe.setStyle("flex-grow: 1;");
+				layout.appendChild(iframe);
 				iframe.setContent(generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, appDesktop, contextPath));
 
 				Toolbar toolbar = new Toolbar();
-				components.add(toolbar);
+				layout.appendChild(toolbar);
 				btn.setLabel(Msg.getMsg(Env.getCtx(), "OpenRunDialog"));
 				toolbar.appendChild(btn);
 				
@@ -796,7 +810,7 @@ public class DashboardController implements EventListener<Event> {
             	options.colorMap.put(WPerformanceIndicator.DIAL_BACKGROUND, new Color(224, 224, 224, 1));
             	WPAWidget paWidget = new WPAWidget(goal, options, dashboardContent.isShowTitle());
             	components.add(paWidget);
-            	LayoutUtils.addSclass("performance-gadget", panelChildren);
+            	LayoutUtils.addSclass("performance-gadget", parentComponent);
             } else {
             	//link to open performance detail
             	Div div = new Div();
@@ -882,21 +896,20 @@ public class DashboardController implements EventListener<Event> {
     		div.appendChild(statusLineHtml);
     		div.setSclass("statusline-gadget");
     		components.add(div);
-    		LayoutUtils.addSclass("statusline-wrapper", ((HtmlBasedComponent) panelChildren.getParent()));
+    		LayoutUtils.addSclass("statusline-wrapper", ((HtmlBasedComponent) parentComponent.getParent()));
     	}
 	}
 	
 	/**
-	 *
-	 * @param content
+	 * Synchronous render of gadget content in foreground ui thread
+	 * @param content must be an instanceof {@link HtmlBasedComponent}
 	 * @param dashboardContent
 	 * @param dashboardRunnable
-	 * @return
+	 * @return true if gadget dashboard is not empty
 	 * @throws Exception
 	 */
 	public boolean render(Component content, MDashboardContent dashboardContent, DashboardRunnable dashboardRunnable) throws Exception {		
 		List<Component> components = new ArrayList<>();
-		List<String> cssClass = new ArrayList<>();
 		Component zulComponent = null;
 		if (!Util.isEmpty(dashboardContent.getZulFilePath(), true)) {
         	try {	        	        		
@@ -905,16 +918,23 @@ public class DashboardController implements EventListener<Event> {
         		throw new AdempiereException(e);
         	}
 		}
-		asyncRenderComponents(dashboardContent, dashboardRunnable, SessionManager.getAppDesktop(), Executions.getCurrent().getContextPath(), (Panelchildren)content, components, zulComponent);		
+		HtmlBasedComponent parentComponent = (HtmlBasedComponent) content;
+		asyncRenderComponents(dashboardContent, dashboardRunnable, SessionManager.getAppDesktop(), Executions.getCurrent().getContextPath(), parentComponent, components, zulComponent);		
 		boolean empty = components.isEmpty();
 		ServerPushTemplate spt = new ServerPushTemplate(content.getDesktop());
-		for(String css : cssClass)
-			LayoutUtils.addSclass(css, (HtmlBasedComponent) content);
 		for(Component c : components) {
-			content.appendChild(c);
+			if (c.getParent() != parentComponent) {
+				parentComponent.appendChild(c);
+			}
 			if (c instanceof DashboardPanel) {
-				if (((DashboardPanel) c).isLazy())
-					((DashboardPanel) c).refresh(spt);
+				DashboardPanel dpanel = (DashboardPanel) c;
+				if (dpanel.isLazy()) {
+					try {
+						dpanel.refresh(spt);
+					} catch (Exception e) {
+						logger.log(Level.SEVERE, e.getMessage(), e);
+					}
+				}
 			}
 		}
 		
