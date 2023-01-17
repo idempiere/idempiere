@@ -811,7 +811,7 @@ public class DashboardController implements EventListener<Event> {
             	options.colorMap.put(WPerformanceIndicator.DIAL_BACKGROUND, new Color(224, 224, 224, 1));
             	WPAWidget paWidget = new WPAWidget(goal, options, dashboardContent.isShowTitle());
             	components.add(paWidget);
-            	LayoutUtils.addSclass("performance-gadget", parentComponent);
+            	spt.executeAsync(() -> LayoutUtils.addSclass("performance-gadget", parentComponent));
             } else {
             	//link to open performance detail
             	Div div = new Div();
