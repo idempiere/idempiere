@@ -3031,7 +3031,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				}
 			}
 		};
-		onSave(false, false, callback);
+		onSave(false, true, callback);
 	}
 
 	/**
