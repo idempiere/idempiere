@@ -3055,7 +3055,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				}
 			}
 		};
-		onSave(false, false, callback);
+		onSave(false, true, callback);
 	}
 
 	private void onReport0() {
@@ -3304,7 +3304,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		if (adTabbox.needSave(true, false))
 		{
-			onSave(false, false, new Callback<Boolean>() {
+			onSave(false, true, new Callback<Boolean>() {
 				@Override
 				public void onCallback(Boolean result) {
 					if (result) {
