@@ -434,7 +434,7 @@ public class DashboardController implements EventListener<Event> {
 	private void asyncRenderGadgetPanel(ServerPushTemplate spt, MDashboardContent dashboardContent, Panel panel, IDesktop appDesktop, String contextPath, 
 			Panelchildren panelChildren, Component zulComponent) throws Exception {
 		List<Component> components = new ArrayList<>();
-		asyncRenderComponents(dashboardContent, dashboardRunnable, appDesktop, contextPath, panelChildren, components, zulComponent);
+		asyncRenderComponents(dashboardContent, dashboardRunnable, appDesktop, contextPath, panelChildren, components, zulComponent, spt);
 		if (components.size() > 0) {
 			for(Component c : components) {
 				if (c.getParent() != panelChildren) {
@@ -686,10 +686,11 @@ public class DashboardController implements EventListener<Event> {
 	 * @param parentComponent
 	 * @param components
 	 * @param zulComponent
+	 * @param spt 
 	 * @throws Exception
 	 */
 	private void asyncRenderComponents(MDashboardContent dashboardContent, DashboardRunnable dashboardRunnable, IDesktop appDesktop, String contextPath, 
-			HtmlBasedComponent parentComponent, List<Component> components, Component zulComponent) throws Exception {
+			HtmlBasedComponent parentComponent, List<Component> components, Component zulComponent, ServerPushTemplate spt) throws Exception {
 		// HTML content
         String htmlContent = dashboardContent.get_ID() > 0 ? dashboardContent.get_Translation(MDashboardContent.COLUMNNAME_HTML) : null;
         if(htmlContent != null)
@@ -810,7 +811,7 @@ public class DashboardController implements EventListener<Event> {
             	options.colorMap.put(WPerformanceIndicator.DIAL_BACKGROUND, new Color(224, 224, 224, 1));
             	WPAWidget paWidget = new WPAWidget(goal, options, dashboardContent.isShowTitle());
             	components.add(paWidget);
-            	LayoutUtils.addSclass("performance-gadget", parentComponent);
+            	spt.executeAsync(() -> LayoutUtils.addSclass("performance-gadget", parentComponent));
             } else {
             	//link to open performance detail
             	Div div = new Div();
@@ -896,7 +897,7 @@ public class DashboardController implements EventListener<Event> {
     		div.appendChild(statusLineHtml);
     		div.setSclass("statusline-gadget");
     		components.add(div);
-    		LayoutUtils.addSclass("statusline-wrapper", ((HtmlBasedComponent) parentComponent.getParent()));
+    		spt.executeAsync(() -> LayoutUtils.addSclass("statusline-wrapper", ((HtmlBasedComponent) parentComponent.getParent())));
     	}
 	}
 	
@@ -918,10 +919,11 @@ public class DashboardController implements EventListener<Event> {
         		throw new AdempiereException(e);
         	}
 		}
-		HtmlBasedComponent parentComponent = (HtmlBasedComponent) content;
-		asyncRenderComponents(dashboardContent, dashboardRunnable, SessionManager.getAppDesktop(), Executions.getCurrent().getContextPath(), parentComponent, components, zulComponent);		
-		boolean empty = components.isEmpty();
 		ServerPushTemplate spt = new ServerPushTemplate(content.getDesktop());
+		HtmlBasedComponent parentComponent = (HtmlBasedComponent) content;
+		asyncRenderComponents(dashboardContent, dashboardRunnable, SessionManager.getAppDesktop(), Executions.getCurrent().getContextPath(), parentComponent, components, 
+				zulComponent, spt);		
+		boolean empty = components.isEmpty();		
 		for(Component c : components) {
 			if (c.getParent() != parentComponent) {
 				parentComponent.appendChild(c);

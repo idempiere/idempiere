@@ -20,9 +20,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+import org.adempiere.util.ContextRunnable;
 import org.adempiere.util.ServerContext;
+import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Desktop;
@@ -132,7 +135,20 @@ public class DashboardRunnable implements Runnable, Serializable
 	    		if (pooling && !dashboardPanels.get(i).isPooling())
 	    			continue;
 	    		
-	    		dashboardPanels.get(i).refresh(template);
+	    		final DashboardPanel dpanel = dashboardPanels.get(i); 
+	    		BusyDialog busyDialog = new BusyDialog();
+                busyDialog.setShadow(false);                
+                dpanel.getParent().insertBefore(busyDialog, dpanel.getParent().getFirstChild());
+	    		ContextRunnable cr = new ContextRunnable() {
+	    			@Override
+					protected void doRun() {
+	    				dpanel.refresh(template);
+	    				template.execute(() -> {
+	    					busyDialog.detach();
+	    				});
+	    			}
+	    		};
+	    		Adempiere.getThreadPoolExecutor().submit(cr);
 	    	}
 		}
 		finally
