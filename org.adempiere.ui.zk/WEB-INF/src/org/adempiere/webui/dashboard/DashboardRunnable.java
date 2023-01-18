@@ -143,7 +143,7 @@ public class DashboardRunnable implements Runnable, Serializable
 	    			@Override
 					protected void doRun() {
 	    				dpanel.refresh(template);
-	    				template.execute(() -> {
+	    				template.executeAsync(() -> {
 	    					busyDialog.detach();
 	    				});
 	    			}
