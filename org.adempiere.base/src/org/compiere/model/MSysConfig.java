@@ -44,7 +44,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 866905075383466975L;
+	private static final long serialVersionUID = -1169550637760344445L;
 
 	public static final String ADDRESS_VALIDATION = "ADDRESS_VALIDATION";
     public static final String ALERT_SEND_ATTACHMENT_AS_XLS = "ALERT_SEND_ATTACHMENT_AS_XLS";
@@ -137,7 +137,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String MAIL_SEND_CREDENTIALS = "MAIL_SEND_CREDENTIALS";
     public static final String MAX_ACTIVITIES_IN_LIST = "MAX_ACTIVITIES_IN_LIST";
     public static final String MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER = "MAX_RESULTS_PER_SEARCH_IN_DOCUMENT_CONTROLLER";
-	public static final String MAX_ROWS_IN_LOOKUP = "MAX_ROWS_IN_LOOKUP";
+	public static final String MAX_ROWS_IN_TABLE_COMBOLIST = "MAX_ROWS_IN_TABLE_COMBOLIST";
     public static final String MAX_TEXT_LENGTH_ON_GRID_VIEW = "MAX_TEXT_LENGTH_ON_GRID_VIEW";
     public static final String MENU_INFOUPDATER_SLEEP_MS = "MENU_INFOUPDATER_SLEEP_MS";
     public static final String MESSAGES_AT_TENANT_LEVEL = "MESSAGES_AT_TENANT_LEVEL";
