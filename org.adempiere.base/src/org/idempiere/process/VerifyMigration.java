@@ -97,9 +97,6 @@ public class VerifyMigration extends SvrProcess {
 	 * @return number of records inserted in AD_VerifyMigration
 	 */
 	private int verifyCustomizationsInChangeLog() {
-		/* For each LAST customization change log record (changes to official records in official tables)
-		 *   Report if there is a difference between the actual value in the database and the value changed by customization
-		 */
 		int cnt = 0;
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT * ");
@@ -120,6 +117,7 @@ public class VerifyMigration extends SvrProcess {
 		sql.append("          cl.Record_ID");
 		try (PreparedStatement pstmt = DB.prepareStatement(sql.toString(), get_TrxName())) {
 			ResultSet rs = pstmt.executeQuery();
+			// For each LAST customization change log record (changes to official records in official tables)
 			while (rs.next()) {
 				MChangeLog cl = new MChangeLog(getCtx(), rs, get_TrxName());
 				MTable table = MTable.get(cl.getAD_Table_ID());
@@ -127,6 +125,7 @@ public class VerifyMigration extends SvrProcess {
 				PO po = table.getPO(cl.getRecord_ID(), get_TrxName());
 				Object currentValue = po.get_Value(column.getColumnName());
 				String expectedValue = cl.getNewValue();
+				// Report if there is a difference between the actual value in the database and the value changed by customization
 				if (   (currentValue == null && expectedValue != null)
 					|| (currentValue != null && expectedValue == null)
 					|| (currentValue != null && ! currentValue.toString().equals(expectedValue))) {
