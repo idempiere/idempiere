@@ -63,7 +63,7 @@ public class DiscardThisVerifyMigration extends SvrProcess {
 
 		int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_VerifyMigration WHERE AD_PInstance_ID=? AND IsActive='Y' AND IsIgnore='Y'", p_AD_PInstance_ID);
 		if (cnt > 0)
-			return "@Error@ @VM_HasIgnoredRecords@"; // throw new AdempiereException(Msg.getMsg(getCtx(), "VM_HasIgnoredRecords"));
+			return "@Error@ @VM_HasIgnoredRecords@";
 
 		cnt = DB.executeUpdateEx("DELETE FROM AD_VerifyMigration WHERE AD_PInstance_ID=?", new Object[] {p_AD_PInstance_ID}, get_TrxName());
 		DB.executeUpdateEx("UPDATE AD_PInstance SET IsActive='N' WHERE AD_PInstance_ID=?", new Object[] {p_AD_PInstance_ID}, get_TrxName());
