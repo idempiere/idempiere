@@ -59,8 +59,10 @@ public class VerifyMigration extends SvrProcess {
 
 	/* Date To */
 	private Timestamp p_DateTo = null;
-	/* SeqNo */
+	/* SeqNo to insert into AD_VerifyMigration stepping 10 */
 	private int m_SeqNo = 0;
+	/* Counter of records inserted in AD_VerifyMigration */
+	int m_cnt = 0;
 
 	@Override
 	protected void prepare() {
@@ -83,21 +85,18 @@ public class VerifyMigration extends SvrProcess {
 		if (log.isLoggable(Level.INFO))
 			log.info("DateTo" + p_DateTo);
 
-		int cnt = 0;
+		verifyCustomizationsInChangeLog();
 
-		cnt = cnt + verifyCustomizationsInChangeLog();
-
-		cnt = cnt + verifyCustomViewColumns();
+		verifyCustomViewColumns();
 
 		addLog(getAD_PInstance_ID(), null, null, Msg.getElement(getCtx(), MPInstance.COLUMNNAME_AD_PInstance_ID) + " " + getAD_PInstance_ID(), MPInstance.Table_ID, getAD_PInstance_ID());
-		return "@Inserted@ " + cnt;
+		return "@Inserted@ " + m_cnt;
 	}
 
 	/**
 	 * @return number of records inserted in AD_VerifyMigration
 	 */
-	private int verifyCustomizationsInChangeLog() {
-		int cnt = 0;
+	private void verifyCustomizationsInChangeLog() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT * ");
 		sql.append("FROM   AD_ChangeLog cl ");
@@ -122,7 +121,32 @@ public class VerifyMigration extends SvrProcess {
 				MChangeLog cl = new MChangeLog(getCtx(), rs, get_TrxName());
 				MTable table = MTable.get(cl.getAD_Table_ID());
 				MColumn column = MColumn.get(cl.getAD_Column_ID());
+				if (!column.isAllowLogging() || !table.isChangeLog())
+					continue; // do not process as the table or column was marked as not logging
+				String tabcol = table.getTableName() + "." + column.getColumnName();
+				MUser user = MUser.get(cl.getCreatedBy());
 				PO po = table.getPO(cl.getRecord_ID(), get_TrxName());
+				if (po == null) {
+					// the customized record does not exist in the database
+					String msg = Msg.getMsg(getCtx(), "VM_CustomizedRecordDoesNotExist",
+							// A customized record does not exist in the database.  The column {0} was customized on {1,date,long} by {2} in record {3} that no longer exists
+							new Object[] {
+									tabcol,
+									cl.getCreated(),
+									user.getName(),
+									cl.getRecord_ID()
+							});
+					addVerifyMigration(
+							cl.getAD_Table_ID(),
+							cl.getAD_Column_ID(),
+							cl.getRecord_ID(),
+							cl.getAD_ChangeLog_ID(),
+							msg,
+							null,
+							null,
+							MVerifyMigration.PRIORITYRULE_Medium);
+					continue;
+				}
 				Object currentValue = po.get_Value(column.getColumnName());
 				String expectedValue = cl.getNewValue();
 				// Report if there is a difference between the actual value in the database and the value changed by customization
@@ -130,8 +154,6 @@ public class VerifyMigration extends SvrProcess {
 					|| (currentValue != null && expectedValue == null)
 					|| (currentValue != null && ! currentValue.toString().equals(expectedValue))) {
 					if (! MVerifyMigration.isIgnored(cl.getAD_ChangeLog_ID(), cl.getAD_Table_ID(), cl.getAD_Column_ID(), cl.getRecord_ID(), get_TrxName())) {
-						String tabcol = table.getTableName() + "." + column.getColumnName();
-						MUser user = MUser.get(cl.getCreatedBy());
 						String msg = Msg.getMsg(getCtx(), "VM_ExpectedValueDiffersFromCurrentValue",
 								// Expected Value differs from Current Value.  The column {0} in record {1} was customized on {2,date,long} by {3}
 								new Object[] {
@@ -140,37 +162,28 @@ public class VerifyMigration extends SvrProcess {
 										cl.getCreated(),
 										user.getName()
 								});
-						m_SeqNo += 10;
-						MVerifyMigration vm = new MVerifyMigration(
-								getCtx(),
-								getAD_PInstance_ID(),
+						addVerifyMigration(
 								cl.getAD_Table_ID(),
 								cl.getAD_Column_ID(),
 								cl.getRecord_ID(),
 								cl.getAD_ChangeLog_ID(),
 								msg,
-								m_SeqNo,
 								currentValue,
 								expectedValue,
-								MVerifyMigration.PRIORITYRULE_High,
-								get_TrxName());
-						vm.saveEx();
-						cnt++;
+								MVerifyMigration.PRIORITYRULE_High);
 					}
 				}
 			}
 		} catch (SQLException e) {
 			throw new DBException(e, sql.toString());
 		}
-		return cnt;
 	}
 
 	/**
 	 * @return number of records inserted in AD_VerifyMigration
 	 * @throws SQLException 
 	 */
-	private int verifyCustomViewColumns() throws SQLException {
-		int cnt = 0;
+	private void verifyCustomViewColumns() throws SQLException {
 		// custom view columns
 		List<MViewColumn> viewColumns = new Query(getCtx(), MViewColumn.Table_Name, "EntityType!='D'", get_TrxName())
 				.setOnlyActiveRecords(true)
@@ -211,22 +224,15 @@ public class VerifyMigration extends SvrProcess {
 										viewColumn.getCreated(),
 										user.getName()
 								});
-						m_SeqNo += 10;
-						MVerifyMigration vm = new MVerifyMigration(
-								getCtx(),
-								getAD_PInstance_ID(),
+						addVerifyMigration(
 								MViewColumn.Table_ID,
 								-1,
 								viewColumn.getAD_ViewColumn_ID(),
 								-1,
 								msg,
-								m_SeqNo,
 								null,
 								null,
-								MVerifyMigration.PRIORITYRULE_High,
-								get_TrxName());
-						vm.saveEx();
-						cnt++;
+								MVerifyMigration.PRIORITYRULE_High);
 					}
 				}
 			} finally {
@@ -239,7 +245,37 @@ public class VerifyMigration extends SvrProcess {
 				}
 			}
 		}
-		return cnt;
+	}
+
+	/**
+	 * Adds a record to verify migration
+	 * @param tableId
+	 * @param columnId
+	 * @param recordId
+	 * @param changeLogId
+	 * @param msg
+	 * @param currentValue
+	 * @param expectedValue
+	 * @param priorityRule
+	 */
+	private void addVerifyMigration(int tableId, int columnId, int recordId, int changeLogId, String msg,
+			Object currentValue, String expectedValue, String priorityRule) {
+		m_SeqNo += 10;
+		MVerifyMigration vm = new MVerifyMigration(
+				getCtx(),
+				getAD_PInstance_ID(),
+				tableId,
+				columnId,
+				recordId,
+				changeLogId,
+				msg,
+				m_SeqNo,
+				currentValue,
+				expectedValue,
+				priorityRule,
+				get_TrxName());
+		vm.saveEx();
+		m_cnt++;
 	}
 
 }
