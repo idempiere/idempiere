@@ -593,9 +593,13 @@ public final class MLookup extends Lookup implements Serializable
 					directValue = p;
 					vnpCache.put(p.getValue(), p);
 				}
-				if (rs.next())
-					log.log(Level.SEVERE, m_info.KeyColumn + ": Not unique (first returned) for "
-						+ key + " SQL=" + m_info.QueryDirect);
+				if (rs.next()) {
+					Level level = Level.SEVERE;
+					if (MChangeLog.Table_Name.equals(m_info.TableName))
+						level = Level.INFO;
+					if (log.isLoggable(level))
+						log.log(level, m_info.KeyColumn + ": Not unique (first returned) for " + key + " SQL=" + m_info.QueryDirect);
+				}
 			}
 			else
 			{
