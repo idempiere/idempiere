@@ -30,7 +30,6 @@
 package org.adempiere.webui.dashboard;
 
 import org.adempiere.util.ContextRunnable;
-import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.graph.WDocumentStatusPanel;
 import org.adempiere.webui.component.ToolBarButton;
@@ -102,12 +101,12 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
     		BusyDialog busyDialog = new BusyDialog();
             busyDialog.setShadow(false);
             getParent().insertBefore(busyDialog, getParent().getFirstChild());
-			ServerPushTemplate template = new ServerPushTemplate(AEnv.getDesktop());
+			ServerPushTemplate template = new ServerPushTemplate(getDesktop());
     		ContextRunnable cr = new ContextRunnable() {
     			@Override
 				protected void doRun() {
     				refresh(template);
-    				template.execute(() -> {
+    				template.executeAsync(() -> {
     					busyDialog.detach();
     				});
     			}
