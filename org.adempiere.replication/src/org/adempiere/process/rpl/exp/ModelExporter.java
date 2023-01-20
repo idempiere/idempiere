@@ -30,6 +30,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.compiere.model.MEXPFormat;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MReplicationStrategy;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.X_AD_ReplicationTable;
@@ -89,7 +90,7 @@ public class ModelExporter extends SvrProcess {
 			else if (name.equals("FileName"))
 				p_FileName = (String)para.getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 		
 		if(p_EXP_Format_ID == 0)

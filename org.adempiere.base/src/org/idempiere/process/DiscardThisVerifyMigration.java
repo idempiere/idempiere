@@ -28,6 +28,7 @@ package org.idempiere.process;
 
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
@@ -48,8 +49,7 @@ public class DiscardThisVerifyMigration extends SvrProcess {
 			String name = para.getParameterName();
 			switch (name) {
 			default:
-				if (log.isLoggable(Level.INFO))
-					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 				break;
 			}
 		}

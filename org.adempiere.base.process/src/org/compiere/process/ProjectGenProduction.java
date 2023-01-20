@@ -24,6 +24,7 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProduction;
 import org.compiere.model.MProject;
@@ -64,7 +65,7 @@ public class ProjectGenProduction extends SvrProcess
 			else if (name.equals("C_ProjectLine_ID"))
 				m_C_ProjectLine_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

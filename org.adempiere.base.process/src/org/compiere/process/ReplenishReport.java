@@ -35,6 +35,7 @@ import org.compiere.model.MMovementLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrg;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRequisition;
 import org.compiere.model.MRequisitionLine;
@@ -93,7 +94,7 @@ public class ReplenishReport extends SvrProcess
 			else if (name.equals("C_DocType_ID"))
 				p_C_DocType_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

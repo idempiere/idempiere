@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MMovement;
 import org.compiere.model.MMovementLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRefList;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.util.DB;
@@ -57,7 +58,7 @@ public class StorageCleanup extends SvrProcess
 			else if (name.equals("C_DocType_ID"))
 				p_C_DocType_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

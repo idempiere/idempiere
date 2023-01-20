@@ -21,6 +21,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.process.UUIDGenerator;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -41,7 +43,10 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -770944613761780314L;
+	private static final long serialVersionUID = -1757466458508655102L;
+
+	/** Static Logger					*/
+	private static CLogger		s_log = CLogger.getCLogger (MProcessPara.class);
 
 	/**
 	 * 	Get MProcessPara from Cache (immutable)
@@ -376,6 +381,29 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 
 		makeImmutable();
 		return this;
+	}
+
+	/**
+	 * Write in log when an unexpected parameter is processed
+	 * If the parameter is defined in dictionary log at INFO level as a custom parameter
+	 * Otherwise log at SEVERE level as unknown parameter
+	 * @param processId
+	 * @param para
+	 */
+	public static void validateUnknownParameter(int processId, ProcessInfoParameter para) {
+		MProcess process = MProcess.get(processId);
+		StringBuilder msg = new StringBuilder("Process ").append(process.getValue()).append(" - ");
+		Level level;
+		if (process.getParameter(para.getParameterName()) == null) {
+			msg.append("Unknown");
+			level = Level.SEVERE;
+		} else {
+			msg.append("Custom");
+			level = Level.INFO;
+		}
+		msg.append(" Parameter: ").append(para.getParameterName()).append("=").append(para.getInfo());
+		if (s_log.isLoggable(level))
+			s_log.log(level, msg.toString());			
 	}
 
 }	//	MProcessPara

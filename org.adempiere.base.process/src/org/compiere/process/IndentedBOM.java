@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCost;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.X_T_BOM_Indented;
 import org.compiere.util.Env;
@@ -68,7 +69,7 @@ public class IndentedBOM extends SvrProcess
 			else if (name.equals(MCost.COLUMNNAME_M_Product_ID))
 				p_M_Product_ID = para.getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 	} // prepare
 

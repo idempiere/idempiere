@@ -23,6 +23,7 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.Env;
 
 /**
@@ -55,7 +56,7 @@ public class OrderRePrice extends SvrProcess
 			else if (name.equals("C_Invoice_ID"))
 				p_C_Invoice_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

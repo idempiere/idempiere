@@ -40,6 +40,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
@@ -271,7 +272,7 @@ public class PrepareMigrationScripts extends SvrProcess {
 			else if (name.equals("ScriptsPath"))
 				path = (String) para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 
 	}
