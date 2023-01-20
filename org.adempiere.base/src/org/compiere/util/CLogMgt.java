@@ -308,14 +308,22 @@ public class CLogMgt
 			{
 				initialize(true);
 			}
-					
+			else
+			{
+				for (Handler handler : handlers)
+				{
+					handler.setLevel(level);
+				}
+			}
+
 			//	JDBC if ALL
 			setJDBCDebug(level.intValue() == Level.ALL.intValue());
 
 			// Set the log level for all the existing loggers
 			LogManager mgr = LogManager.getLogManager();
 			Iterator<String> ln = mgr.getLoggerNames().asIterator();
-			while (ln.hasNext()) {
+			while (ln.hasNext())
+			{
 				String cl = ln.next();
 				CLogger.getCLogger(cl, false).setLevel(level);
 			}
