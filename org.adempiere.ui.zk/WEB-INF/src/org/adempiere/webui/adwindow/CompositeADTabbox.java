@@ -86,6 +86,10 @@ public class CompositeADTabbox extends AbstractADTabbox
     public CompositeADTabbox(){    	    	
     }
 
+    /**
+     * Create detail panel at bottom
+     * @return {@link DetailPane}
+     */
     protected DetailPane createDetailPane() {
     	DetailPane detailPane = new DetailPane();
     	detailPane.setEventListener(new EventListener<Event>() {
@@ -285,6 +289,11 @@ public class CompositeADTabbox extends AbstractADTabbox
 		}
 	}
     
+    /**
+     * Edit selected detail tab
+     * @param row
+     * @param formView
+     */
     protected void onEditDetail(int row, boolean formView) {
     	
 		int oldIndex = selectedIndex;
@@ -318,6 +327,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 		}
 	}
     
+    @Override
     protected Component doCreatePart(Component parent)
     {
     	layout = new Vlayout();
@@ -550,15 +560,18 @@ public class CompositeADTabbox extends AbstractADTabbox
     /**
      * Return the selected Tab Panel
      */
+    @Override
     public IADTabpanel getSelectedTabpanel()
     {
         return tabPanelList.isEmpty() ? null : tabPanelList.get(selectedIndex);
     }
 
+    @Override
     public int getSelectedIndex() {
     	return selectedIndex;
     }
 
+    @Override
 	public void setSelectionEventListener(EventListener<Event> listener) {
 		selectionListener = listener; 
 	}
@@ -575,8 +588,8 @@ public class CompositeADTabbox extends AbstractADTabbox
         newTabpanel.setVisible(true);
 
         headerTab = newTabpanel;
-        layout.getChildren().clear();
-		layout.appendChild(headerTab);
+        if (headerTab.getParent() != layout)
+        	layout.appendChild(headerTab);
 		
 		//set state
 		headerTab.setDetailPaneMode(false);
@@ -643,7 +656,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 							if (tabPanel.isActivated() && !tabPanel.isGridView()) {
 				    			tabPanel.switchRowPresentation();
 				    		}
-							if (tabPanel.getParent() != null) tabPanel.detach();
+							if (tabPanel.getParent() != null) 
+								tabPanel.setVisible(false);
 						}
 						tabPanel.setDetailPaneMode(true);
 						detailPane.setADTabpanel(tabIndex, tabPanel, tabLabel, enable.booleanValue());
@@ -797,6 +811,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 		return breadCrumb;
 	}
 
+	@Override
 	public Component getComponent() {
 		return layout;
 	}
@@ -875,6 +890,10 @@ public class CompositeADTabbox extends AbstractADTabbox
 		}
 	}
 
+	/**
+	 * 
+	 * @return true if selected detail tab have been activated
+	 */
 	public boolean isDetailActivated() {
 		if (headerTab instanceof ADTabpanel) {
 			ADTabpanel atp = (ADTabpanel) headerTab;

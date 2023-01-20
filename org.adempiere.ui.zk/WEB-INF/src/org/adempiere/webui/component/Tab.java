@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ManageImageCache;
 import org.compiere.model.MImage;
@@ -31,6 +32,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.zkoss.image.Image;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.Include;
@@ -180,16 +183,27 @@ public class Tab extends org.zkoss.zul.Tab
 			((Tabbox)getTabbox()).removeTabFromActiveSeq(this);
 		}
 
+		//Workaround for detached HTML input element leak
+		if (panel != null) {
+			Executions.schedule(getDesktop(), e -> panel.detach(), new Event("onCloseLinkedPanel"));
+		}
+		
 		detach();
 		
 		if (panel != null) {
+			//Workaround for detached HTML input element leak
+			if (panel.getChildren().size() > 0) {
+				Component[] childs = panel.getChildren().toArray(new Component[0]);
+				for(Component c : childs) {
+					AEnv.detachInputElement(c);
+				}
+			}
 			// B60-ZK-1160: Exception when closing tab with included content
 			// Must clean up included content before detaching tab panel
 			Component include = panel.getFirstChild();
 			if (include instanceof Include) {
 				include.detach();
 			}
-			panel.detach();
 		}
 	}
 	

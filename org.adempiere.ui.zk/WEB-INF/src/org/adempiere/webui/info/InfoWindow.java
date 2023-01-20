@@ -1,6 +1,24 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
 package org.adempiere.webui.info;
 
 import java.io.File;
@@ -128,6 +146,7 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Vlayout;
+import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.impl.InputElement;
 
 /**
@@ -155,9 +174,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     protected Properties infoContext;
 
     /** embedded Panel **/
-    Tabbox embeddedPane = new Tabbox();
-    ArrayList <EmbedWinInfo> embeddedWinList = new ArrayList <EmbedWinInfo>();
-    Map<Integer, RelatedInfoWindow> relatedMap = new HashMap<>();
+    protected Tabbox embeddedPane = new Tabbox();
+    protected ArrayList <EmbedWinInfo> embeddedWinList = new ArrayList <EmbedWinInfo>();
+    protected Map<Integer, RelatedInfoWindow> relatedMap = new HashMap<>();
 
 	/** Max Length of Fields */
     public static final int FIELDLENGTH = 20;
@@ -579,6 +598,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}
 	
+	/**
+	 * process query value from input element
+	 */
 	protected void processQueryValue() {
 		isQueryByUser = true;
 		for (int i = 0; i < identifiers.size(); i++) {
@@ -650,6 +672,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}
 	
+	/**
+	 * load info window definition
+	 * @return true if loaded ok
+	 */
 	protected boolean loadInfoDefinition() {
 		if (infoWindow != null) {
 			String tableName = null;
@@ -790,7 +816,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}
 
-	//private InfoColumnVO[] topinfoColumns;//infoWindow.getInfoColumns(tableInfos);
+	/**
+	 * load related info
+	 * @return true if loaded ok
+	 */
 	protected boolean loadInfoRelatedTabs() {
 		if (infoWindow == null)
 			return false;
@@ -891,6 +920,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return true;
 	}
 
+	/**
+	 * setup list box and construct sql query clause
+	 */
 	protected void prepareTable() {		
 		List<ColumnInfo> list = new ArrayList<ColumnInfo>();
 		String keyTableAlias = tableInfos[0].getSynonym() != null && tableInfos[0].getSynonym().trim().length() > 0 
@@ -970,6 +1002,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		prepareTable(columnInfos, infoWindow.getFromClause(), p_whereClause, infoWindow.getOrderByClause());		
 	}
 
+	/**
+	 * 
+	 * @param tableInfos
+	 * @param gridField
+	 * @param infoColumn
+	 * @return {@link ColumnInfo}
+	 */
 	protected ColumnInfo createLookupColumnInfo(TableInfo[] tableInfos,
 			GridField gridField, InfoColumnVO infoColumn) {
 		String columnName = gridField.getColumnName();
@@ -1186,6 +1225,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return sql;
 	}
 
+	/**
+	 * 
+	 * @param gridField
+	 * @return {@link InfoColumnVO} if found, null otherwise
+	 */
 	protected InfoColumnVO findInfoColumn(GridField gridField) {
 		for(int i = 0; i < gridFields.size(); i++) {
 			if (gridFields.get(i) == gridField) {
@@ -1195,6 +1239,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param gridField
+	 * @return {@link InfoColumnVO} if found, null otherwise
+	 */
 	protected InfoColumnVO findInfoColumnParameter(GridField gridField) {
 		for (Integer i : parameterTree.keySet()) {
 			List<Object[]> list = parameterTree.get(i);
@@ -1279,6 +1328,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 	}
 	
+	/**
+	 * 
+	 * @param editor
+	 * @param infoColumnVO
+	 * @param pstmt
+	 * @param parameterIndex current parameter index
+	 * @return current parameter index
+	 * @throws SQLException
+	 */
 	protected int setParameter(WEditor editor, InfoColumnVO infoColumnVO, PreparedStatement pstmt, int parameterIndex) throws SQLException {
 		if(editor == null)
 			return parameterIndex;
@@ -1437,6 +1495,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 	}
 	
+	/**
+	 * layout window UI elements
+	 */
 	protected void renderWindow()
 	{	
 		// Load User Def
@@ -1497,8 +1558,22 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			cbbProcess.setDisabled(true);
 		}
 		// IDEMPIERE-1334 end
+		
+		paging = new Paging();
+		paging.setPageSize(pageSize);
+		paging.setTotalSize(0);
+		paging.setDetailed(true);
+		paging.addEventListener(ZulEvents.ON_PAGING, this);
+		paging.setActivePage(0);
+		pageNo = 0;
+		insertPagingComponent();
+		paging.setVisible(false);
 	}
 
+	/**
+	 * layout footer
+	 * @param south
+	 */
 	protected void renderFooter(South south) {		
 		southBody = new Vbox();
 		ZKUpdateUtil.setHflex(southBody, "1");
@@ -1509,11 +1584,16 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		southBody.appendChild(statusBar);
 	}
 
+	@Override
 	protected void insertPagingComponent() {
 		southBody.insertBefore(paging, southBody.getFirstChild());
 		layout.invalidate();
 	}
 	
+	/**
+	 * layout center content pane
+	 * @param center
+	 */
 	protected void renderContentPane(Center center) {				
 		Div div = new Div();
 		div.setStyle("width :100%; height: 100%");
@@ -1554,15 +1634,26 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		center.appendChild(inner);
 	}
 
+	/**
+	 * layout query parameter pane
+	 * @param north
+	 */
 	protected void renderParameterPane(North north) {
 		createParameterPanel();        
 		north.appendChild(parameterGrid);
 	}
 
+	/**
+	 * create query parameter panel
+	 */
 	protected void createParameterPanel() {
 		layoutParameterGrid(false);
 	}
 	
+	/**
+	 * layout query parameter panel
+	 * @param update
+	 */
 	protected void layoutParameterGrid(boolean update) {
 		if (!update) {
 			parameterGrid = GridFactory.newGridLayout();
@@ -1659,6 +1750,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			dynamicDisplay(null);
 	}
 	
+	/**
+	 * evaluate display logic for input parameters
+	 */
 	protected void evalDisplayLogic() {
 		int idx = 0;
 		for(WEditor editor : editors) {
@@ -1684,7 +1778,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	
 	/**
      *  Add Selection Column to first Tab
-	 * @param infoColumn 
+	 *  @param infoColumn 
      *  @param mField field
     **/
     protected void addSelectionColumn(InfoColumnVO infoColumn, GridField mField, GridField mField2)
@@ -1765,6 +1859,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
     }   // addSelectionColumn
 
+    /**
+     * add search parameter
+     * @param editor
+     * @param editor2
+     */
 	protected void addSearchParameter(WEditor editor, WEditor editor2) {
 		Label label = editor.getLabel();
 		Component fieldEditor = editor.getComponent();
@@ -1835,6 +1934,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         panel.appendChild(outerParent);
 	}
 
+	/**
+	 * 
+	 * @return number of columns for parameter grid
+	 */
 	protected int getNoOfParameterColumns() {
 		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
 			return 2;
@@ -1844,6 +1947,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			return 6;
 	}
 
+	/**
+	 * create checkbox for AND
+	 */
 	protected void createAndCheckbox() {
 		checkAND = new Checkbox();
 		checkAND.setLabel(Msg.getMsg(Env.getCtx(), "SearchAND", true));
@@ -1856,6 +1962,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		checkAND.addEventListener(Events.ON_CHECK, this);
 	}
 	
+	/**
+	 * 
+	 * @param columnName
+	 * @return column index, -1 if not found
+	 */
 	protected int findColumnIndex(String columnName) {
 		for(int i = 0; i < columnInfos.length; i++) {
 			GridField field = columnInfos[i].getGridField();
@@ -1995,6 +2106,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 	}
 
+	/**
+	 * Post query event if all editor with IsQueryAfterChange=True have been populated
+	 */
 	protected void postQueryAfterChangeEvent() {
 		if (Executions.getCurrent().getAttribute(ON_USER_QUERY_ATTR) != null)
     		return;
@@ -2013,6 +2127,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		onUserQuery();
 	}
 
+	/**
+	 * @param editor
+	 */
 	protected void dynamicDisplay(WEditor editor) {
 		validateField(editor);
 		evalDisplayLogic();
@@ -2043,7 +2160,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			otherEditor.dynamicDisplay();
 		}
 	}
-	
+
+	@Override
 	public void onEvent(Event event)
     {
 		if (event.getName().equals(Events.ON_FOCUS) && event.getTarget() != null && 
@@ -2134,11 +2252,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		onQueryCallback (null);
 		
-		if (paging != null)
-			paging.setParent(null);
 		layout.invalidate();
 	}
 	
+	/**
+	 * 
+	 * @param editor
+	 */
 	protected void resetParameters(WEditor editor) {
 		if(editor == null)
 			return;
@@ -2172,6 +2292,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}
 	
+	/**
+	 * handle on client info event
+	 */
 	protected void onClientInfo() {
 		int t = getNoOfParameterColumns();
 		if (t > 0 && noOfParameterColumn > 0 && t != noOfParameterColumn) {
@@ -2275,7 +2398,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}	//	testCount
 
 	/** Return true if there is an 'IsActive' criteria */
-	boolean hasIsActiveEditor() {
+	protected boolean hasIsActiveEditor() {
 		for (WEditor editor : editors) {
 			if (editor.getGridField() != null && "IsActive".equals(editor.getGridField().getColumnName())) {
 				return true;
@@ -2288,7 +2411,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * author xolali IDEMPIERE-1045
 	 * getInfoColumnslayout(MInfoWindow info)
 	 * @param info
-	 * @return
+	 * @return list of {@link ColumnInfo}
 	 */
 	public ArrayList<ColumnInfo> getInfoColumnslayout(MInfoWindow info){
 
@@ -2531,7 +2654,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 	
 	// Edit Callback method and original values management
-	
+	/**
+	 * 
+	 * @param row
+	 * @param editingColumn
+	 * @param editingValue
+	 * @return {@link Properties}
+	 */
 	public Properties getRowaAsCtx(int row, int editingColumn, Object editingValue)
 	{
 		ListModelTable model = contentPanel.getModel();
@@ -2597,6 +2726,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return ctx;
 	}
 	
+	/**
+	 * 
+	 * @param event
+	 * @param rowIndex
+	 * @param colIndex
+	 * @param editor
+	 * @param field
+	 */
 	public void onCellEditCallback(ValueChangeEvent event, int rowIndex, int colIndex, WEditor editor, GridField field)
 	{		
 		Object val = event.getNewValue();
@@ -2643,7 +2780,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					}
 					
 					String msg = Msg.translate(ctx, sbError.toString());
-					Dialog.error(0, "ValidationError", msg); // TODO messaggio
+					Dialog.error(0, "ValidationError", msg);
 				}
 				else	
 					changeIsValid = true;
@@ -2652,7 +2789,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				log.log(Level.SEVERE, "Error executing validation SQL: " + validationSQL, e);
 				
-				Dialog.error(0, "Error", validationSQL); // TODO messaggio
+				Dialog.error(0, "Error", validationSQL);
 				changeIsValid = false;
 			}
 		}
@@ -2679,6 +2816,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}
 	
+	/**
+	 * 
+	 * @param rowIndex
+	 */
 	protected void restoreOriginalValues(int rowIndex)
 	{
 		Integer viewIdKey = getColumnValue(rowIndex);
@@ -2696,6 +2837,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}
 	
+	/**
+	 * 
+	 * @param rowIndex
+	 */
 	protected void cacheOriginalValues(int rowIndex)
 	{
 		Integer viewIdKey = getColumnValue(rowIndex);
@@ -2845,7 +2990,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	}
 	
 	// F3P: Export function
-	
+	/**
+	 * init export button
+	 */
 	protected void initExport()
 	{
     exportButton = ButtonFactory.createNamedButton("Export", false, true);        
@@ -2856,6 +3003,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     confirmPanel.addComponentsLeft(exportButton);
 	}
 
+	/**
+	 * enable/disable export button
+	 */
 	protected void enableExportButton()
 	{
 		if(exportButton == null)
