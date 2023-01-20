@@ -2940,20 +2940,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	}
     }
     
-
-
     public void dispose()
     {
-        log.config("");
-
         //  Find SQL
         DB.close(m_pstmt);
         m_pstmt = null;
         
         //
-        super.dispose();
-        
+        setVisible(false);        
         isvalid = false;
+        
+        //simulate real dispose/detach
+        Events.sendEvent(this, new Event(DialogEvents.ON_WINDOW_CLOSE, this, null));
     }   //  dispose
 
     /**
@@ -3408,9 +3406,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				setAttribute(ON_POST_VISIBLE_ATTR, Boolean.TRUE);
 				Events.echoEvent("OnPostVisible", this, null);
 			}
-		} else {
-			//auto detach
-			detach();
+			isvalid = true;
 		}
 		return ret;
 	}

@@ -77,6 +77,7 @@ import org.zkoss.zk.ui.sys.DesktopCache;
 import org.zkoss.zk.ui.sys.SessionCtrl;
 import org.zkoss.zk.ui.sys.WebAppCtrl;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Style;
 import org.zkoss.zul.Window;
 
 /**
@@ -328,6 +329,17 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(ctx, Env.LOCAL_HTTP_ADDRESS, localHttpAddr.toString());
 		Env.setContext(ctx, Env.IS_CAN_APPROVE_OWN_DOC, MRole.getDefault().isCanApproveOwnDoc());
 		Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
+		
+		//add dynamic style
+		StringBuilder cssContent = new StringBuilder();
+		cssContent.append(".adtab-form-borderlayout .z-south-collapsed:before { ");
+		cssContent.append("content: \"");
+		cssContent.append(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Detail")));
+		cssContent.append("\"; ");
+		cssContent.append("} ");
+		Style style = new Style();
+		style.setContent(cssContent.toString());
+		appendChild(style);
 		
 		//init favorite
 		FavouriteController.getInstance(currSess);
