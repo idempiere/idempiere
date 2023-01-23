@@ -75,11 +75,16 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
         doAddTab(gTab, tabPanel);                
     }//  addTab
     
+    /**
+     * handle add tab to tabbox
+     * @param tab
+     * @param tabPanel
+     */
     protected abstract void doAddTab(GridTab tab, IADTabpanel tabPanel);
 
 	/**
      * @param index of tab panel
-     * @return
+     * @return true if enable
      */
     public boolean isEnabledAt(int index) 
     {
@@ -102,10 +107,10 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     }
     
     /**
-     * 
+     * Updated selected tab index
      * @param oldIndex
      * @param newIndex
-     * @return
+     * @return true if successfully switch to newIndex
      */
     public boolean updateSelectedIndex(int oldIndex, int newIndex)
     {
@@ -186,8 +191,17 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
 		}
 	}
 
+    /**
+     * handle tab selection changed event
+     * @param oldIndex
+     * @param newIndex
+     */
     protected abstract void doTabSelectionChanged(int oldIndex, int newIndex);
 
+    /**
+     * @param index tab index
+     * @return true if tab is visible
+     */
     public boolean isDisplay(int index) {
     	if (index >= tabPanelList.size())
     		return false;
@@ -203,10 +217,22 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
     	return true;
     }
 
+    /**
+     * @param fromIndex
+     * @param toIndex
+     * @return true if can navigate to toIndex
+     */
 	public boolean canNavigateTo(int fromIndex, int toIndex) {
 		return canNavigateTo(fromIndex, toIndex, false);
 	}
 
+	/**
+	 * 
+	 * @param fromIndex
+	 * @param toIndex
+	 * @param checkRecordID true to validate record id of fromIndex tab
+	 * @return true if can navigate to toIndex tab
+	 */
 	public boolean canNavigateTo(int fromIndex, int toIndex, boolean checkRecordID) {
     	IADTabpanel newTab = tabPanelList.get(toIndex);
     	if (newTab instanceof ADTabpanel) 
@@ -308,6 +334,9 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
         
     } //  evaluate
 
+    /**
+     * Update display state of tab (visibility, activation and if need invalidate)
+     */
     protected abstract void updateTabState();
 
 	/**
@@ -318,6 +347,10 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
         return tabPanelList.size();
     }
     
+    /**
+     * @param index
+     * @return {@link IADTabpanel}
+     */
     public IADTabpanel getADTabpanel(int index)
     {
         try
@@ -331,11 +364,18 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
         }
     }
     
+    /**
+     * Set newIndex as selected tab
+     * @param newIndex
+     */
     public void setSelectedIndex(int newIndex) {
     	int oldIndex = getSelectedIndex();
     	updateSelectedIndex(oldIndex, newIndex);
     }
 
+    /**
+     * @param abstractADWindowPanel
+     */
 	public void setADWindowPanel(AbstractADWindowContent abstractADWindowPanel) {
 		this.adWindowPanel = abstractADWindowPanel;
 	}

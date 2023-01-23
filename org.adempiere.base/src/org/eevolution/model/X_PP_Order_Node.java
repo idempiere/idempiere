@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_Node
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_Node")
 public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent 
 {
@@ -35,7 +35,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PP_Order_Node (Properties ctx, int PP_Order_Node_ID, String trxName)
@@ -740,16 +740,16 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Duration Requiered.
-		@param DurationRequiered Duration Requiered
+	/** Set Duration Required.
+		@param DurationRequiered Duration Required
 	*/
 	public void setDurationRequiered (int DurationRequiered)
 	{
 		set_Value (COLUMNNAME_DurationRequiered, Integer.valueOf(DurationRequiered));
 	}
 
-	/** Get Duration Requiered.
-		@return Duration Requiered	  */
+	/** Get Duration Required.
+		@return Duration Required	  */
 	public int getDurationRequiered()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DurationRequiered);
@@ -1134,16 +1134,16 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return bd;
 	}
 
-	/** Set Qty Requiered.
-		@param QtyRequiered Qty Requiered
+	/** Set Qty Required.
+		@param QtyRequiered Qty Required
 	*/
 	public void setQtyRequiered (BigDecimal QtyRequiered)
 	{
 		set_Value (COLUMNNAME_QtyRequiered, QtyRequiered);
 	}
 
-	/** Get Qty Requiered.
-		@return Qty Requiered	  */
+	/** Get Qty Required.
+		@return Qty Required	  */
 	public BigDecimal getQtyRequiered()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyRequiered);
@@ -1153,7 +1153,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	/** Set Scrap %.
-		@param QtyScrap Scrap % Quantity for this componet
+		@param QtyScrap Scrap % Quantity for this component
 	*/
 	public void setQtyScrap (BigDecimal QtyScrap)
 	{
@@ -1161,7 +1161,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	/** Get Scrap %.
-		@return Scrap % Quantity for this componet
+		@return Scrap % Quantity for this component
 	  */
 	public BigDecimal getQtyScrap()
 	{
@@ -1227,16 +1227,16 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Setup Time Requiered.
-		@param SetupTimeRequiered Setup Time Requiered
+	/** Set Setup Time Required.
+		@param SetupTimeRequiered Setup Time Required
 	*/
 	public void setSetupTimeRequiered (int SetupTimeRequiered)
 	{
 		set_Value (COLUMNNAME_SetupTimeRequiered, Integer.valueOf(SetupTimeRequiered));
 	}
 
-	/** Get Setup Time Requiered.
-		@return Setup Time Requiered	  */
+	/** Get Setup Time Required.
+		@return Setup Time Required	  */
 	public int getSetupTimeRequiered()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SetupTimeRequiered);

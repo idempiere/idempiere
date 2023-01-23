@@ -467,12 +467,12 @@ public interface I_C_Invoice
     /** Column name DatePrinted */
     public static final String COLUMNNAME_DatePrinted = "DatePrinted";
 
-	/** Set Date printed.
+	/** Set Date Printed.
 	  * Date the document was printed.
 	  */
 	public void setDatePrinted (Timestamp DatePrinted);
 
-	/** Get Date printed.
+	/** Get Date Printed.
 	  * Date the document was printed.
 	  */
 	public Timestamp getDatePrinted();

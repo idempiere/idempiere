@@ -29,10 +29,13 @@
 
 package org.adempiere.webui.dashboard;
 
+import org.adempiere.util.ContextRunnable;
+import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.graph.WDocumentStatusPanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.compiere.Adempiere;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -52,7 +55,7 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 	@Override
 	public void refresh(ServerPushTemplate template) {
 		statusPanel.refresh();
-		template.execute(this);
+		template.executeAsync(this);
 	}
 
 	@Override
@@ -95,13 +98,30 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 		String eventName = event.getName();
 
 		if (eventName.equals(Events.ON_CLICK)) {
-			statusPanel.refresh();
-			statusPanel.updateUI();
+    		BusyDialog busyDialog = new BusyDialog();
+            busyDialog.setShadow(false);
+            getParent().insertBefore(busyDialog, getParent().getFirstChild());
+			ServerPushTemplate template = new ServerPushTemplate(getDesktop());
+    		ContextRunnable cr = new ContextRunnable() {
+    			@Override
+				protected void doRun() {
+    				refresh(template);
+    				template.executeAsync(() -> {
+    					busyDialog.detach();
+    				});
+    			}
+    		};
+    		Adempiere.getThreadPoolExecutor().submit(cr);
 		}
 	}	
 	
 	@Override
 	public boolean isPooling() {
+		return true;
+	}
+
+	@Override
+	public boolean isLazy() {
 		return true;
 	}
 }

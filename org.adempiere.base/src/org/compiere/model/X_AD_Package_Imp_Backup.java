@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Imp_Backup
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Package_Imp_Backup")
 public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Backup, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp_Backup (Properties ctx, int AD_Package_Imp_Backup_ID, String trxName)
@@ -279,16 +279,16 @@ public class X_AD_Package_Imp_Backup extends PO implements I_AD_Package_Imp_Back
 		return ii.intValue();
 	}
 
-	/** Set ColValue.
-		@param ColValue ColValue
+	/** Set Col Value.
+		@param ColValue Col Value
 	*/
 	public void setColValue (String ColValue)
 	{
 		set_Value (COLUMNNAME_ColValue, ColValue);
 	}
 
-	/** Get ColValue.
-		@return ColValue	  */
+	/** Get Col Value.
+		@return Col Value	  */
 	public String getColValue()
 	{
 		return (String)get_Value(COLUMNNAME_ColValue);

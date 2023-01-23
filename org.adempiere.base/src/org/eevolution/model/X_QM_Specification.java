@@ -24,7 +24,7 @@ import org.compiere.model.*;
 
 /** Generated Model for QM_Specification
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="QM_Specification")
 public class X_QM_Specification extends PO implements I_QM_Specification, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_QM_Specification extends PO implements I_QM_Specification, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_QM_Specification (Properties ctx, int QM_Specification_ID, String trxName)

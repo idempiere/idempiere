@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_TreeNode
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_TreeNode")
 public class X_AD_TreeNode extends PO implements I_AD_TreeNode, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_TreeNode extends PO implements I_AD_TreeNode, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_TreeNode (Properties ctx, int AD_TreeNode_ID, String trxName)

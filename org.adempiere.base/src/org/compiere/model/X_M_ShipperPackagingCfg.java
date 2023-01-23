@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ShipperPackagingCfg
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_ShipperPackagingCfg")
 public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingCfg, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_ShipperPackagingCfg extends PO implements I_M_ShipperPackagingC
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_ShipperPackagingCfg (Properties ctx, int M_ShipperPackagingCfg_ID, String trxName)

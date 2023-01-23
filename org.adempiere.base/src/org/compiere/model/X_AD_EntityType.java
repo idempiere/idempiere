@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_EntityType
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_EntityType")
 public class X_AD_EntityType extends PO implements I_AD_EntityType, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_EntityType extends PO implements I_AD_EntityType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_EntityType (Properties ctx, int AD_EntityType_ID, String trxName)
@@ -188,7 +188,7 @@ public class X_AD_EntityType extends PO implements I_AD_EntityType, I_Persistent
 		return (String)get_Value(COLUMNNAME_Help);
 	}
 
-	/** Set ModelPackage.
+	/** Set Model Package.
 		@param ModelPackage Java Package of the model classes
 	*/
 	public void setModelPackage (String ModelPackage)
@@ -196,7 +196,7 @@ public class X_AD_EntityType extends PO implements I_AD_EntityType, I_Persistent
 		set_Value (COLUMNNAME_ModelPackage, ModelPackage);
 	}
 
-	/** Get ModelPackage.
+	/** Get Model Package.
 		@return Java Package of the model classes
 	  */
 	public String getModelPackage()

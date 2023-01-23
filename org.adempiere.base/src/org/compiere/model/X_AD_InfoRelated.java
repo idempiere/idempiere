@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoRelated
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoRelated")
 public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_InfoRelated (Properties ctx, int AD_InfoRelated_ID, String trxName)
@@ -99,8 +99,8 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
       return sb.toString();
     }
 
-	/** Set InfoRelated.
-		@param AD_InfoRelated_ID InfoRelated
+	/** Set Info Related.
+		@param AD_InfoRelated_ID Info Related
 	*/
 	public void setAD_InfoRelated_ID (int AD_InfoRelated_ID)
 	{
@@ -110,8 +110,8 @@ public class X_AD_InfoRelated extends PO implements I_AD_InfoRelated, I_Persiste
 			set_ValueNoCheck (COLUMNNAME_AD_InfoRelated_ID, Integer.valueOf(AD_InfoRelated_ID));
 	}
 
-	/** Get InfoRelated.
-		@return InfoRelated	  */
+	/** Get Info Related.
+		@return Info Related	  */
 	public int getAD_InfoRelated_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoRelated_ID);

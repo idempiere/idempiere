@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_ShipperPickupTypes
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_ShipperPickupTypes")
 public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_M_ShipperPickupTypes extends PO implements I_M_ShipperPickupTypes
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_ShipperPickupTypes (Properties ctx, int M_ShipperPickupTypes_ID, String trxName)

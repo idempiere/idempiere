@@ -2443,7 +2443,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 			String name = selected;
 			if ((fQueryName.getSelectedIndex() == 0 || name.equals(m_sNew)) && saveQuery){ // New query - needs a name
 
-				Dialog.warn(m_targetWindowNo, "NeedsName", name);
+				Dialog.warn(m_targetWindowNo, "NeedsName", name, null);
 				return;
 			}
 			if (saveQuery){
@@ -2470,7 +2470,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				} else	if (code.length() <= 0){ // Delete the query
 					if (uq == null) 
 					{
-						Dialog.warn(m_targetWindowNo, "NeedsQuery", name);
+						Dialog.warn(m_targetWindowNo, "NeedsQuery", name, null);
 						return;
 					}
 					if (uq.delete(true))
@@ -2479,7 +2479,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 						refreshUserQueries();
 					}
 					else
-						Dialog.warn(m_targetWindowNo, "DeleteError", name);
+						Dialog.warn(m_targetWindowNo, "DeleteError", name, null);
 					return;
 				}
 				uq.setCode (code.toString());
@@ -2940,20 +2940,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	}
     }
     
-
-
     public void dispose()
     {
-        log.config("");
-
         //  Find SQL
         DB.close(m_pstmt);
         m_pstmt = null;
         
         //
-        super.dispose();
-        
+        setVisible(false);        
         isvalid = false;
+        
+        //simulate real dispose/detach
+        Events.sendEvent(this, new Event(DialogEvents.ON_WINDOW_CLOSE, this, null));
     }   //  dispose
 
     /**
@@ -3408,9 +3406,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				setAttribute(ON_POST_VISIBLE_ATTR, Boolean.TRUE);
 				Events.echoEvent("OnPostVisible", this, null);
 			}
-		} else {
-			//auto detach
-			detach();
+			isvalid = true;
 		}
 		return ret;
 	}

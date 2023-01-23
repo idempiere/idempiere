@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_RfQLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_RfQLine")
 public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_C_RfQLine extends PO implements I_C_RfQLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_RfQLine (Properties ctx, int C_RfQLine_ID, String trxName)

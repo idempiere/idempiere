@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaymentProcessor
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_PaymentProcessor")
 public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_PaymentProcessor (Properties ctx, int C_PaymentProcessor_ID, String trxName)
@@ -681,7 +681,7 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 		return ii.intValue();
 	}
 
-	/** Set Require CreditCard Verification Code.
+	/** Set Require Credit Card Verification Code.
 		@param RequireVV Require 3/4 digit Credit Verification Code
 	*/
 	public void setRequireVV (boolean RequireVV)
@@ -689,7 +689,7 @@ public class X_C_PaymentProcessor extends PO implements I_C_PaymentProcessor, I_
 		set_Value (COLUMNNAME_RequireVV, Boolean.valueOf(RequireVV));
 	}
 
-	/** Get Require CreditCard Verification Code.
+	/** Get Require Credit Card Verification Code.
 		@return Require 3/4 digit Credit Verification Code
 	  */
 	public boolean isRequireVV()

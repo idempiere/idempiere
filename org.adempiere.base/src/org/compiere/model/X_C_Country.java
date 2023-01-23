@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Country
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_Country")
 public class X_C_Country extends PO implements I_C_Country, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_Country extends PO implements I_C_Country, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_Country (Properties ctx, int C_Country_ID, String trxName)
@@ -494,16 +494,16 @@ public class X_C_Country extends PO implements I_C_Country, I_Persistent
 		return (String)get_Value(COLUMNNAME_LookupClassName);
 	}
 
-	/** Set Lookup Client ID.
-		@param LookupClientID The ClientID or Login submitted to the Lookup URL
+	/** Set Lookup Tenant ID.
+		@param LookupClientID The Client ID or Login submitted to the Lookup URL
 	*/
 	public void setLookupClientID (String LookupClientID)
 	{
 		set_Value (COLUMNNAME_LookupClientID, LookupClientID);
 	}
 
-	/** Get Lookup Client ID.
-		@return The ClientID or Login submitted to the Lookup URL
+	/** Get Lookup Tenant ID.
+		@return The Client ID or Login submitted to the Lookup URL
 	  */
 	public String getLookupClientID()
 	{

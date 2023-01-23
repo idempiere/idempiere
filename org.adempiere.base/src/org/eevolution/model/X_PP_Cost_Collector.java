@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Cost_Collector
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PP_Cost_Collector")
 public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Persistent 
 {
@@ -35,7 +35,7 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PP_Cost_Collector (Properties ctx, int PP_Cost_Collector_ID, String trxName)
@@ -526,16 +526,16 @@ public class X_PP_Cost_Collector extends PO implements I_PP_Cost_Collector, I_Pe
 		return bd;
 	}
 
-	/** Set Is BatchTime.
-		@param IsBatchTime Is BatchTime
+	/** Set Is Batch Time.
+		@param IsBatchTime Is Batch Time
 	*/
 	public void setIsBatchTime (boolean IsBatchTime)
 	{
 		set_Value (COLUMNNAME_IsBatchTime, Boolean.valueOf(IsBatchTime));
 	}
 
-	/** Get Is BatchTime.
-		@return Is BatchTime	  */
+	/** Get Is Batch Time.
+		@return Is Batch Time	  */
 	public boolean isBatchTime()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBatchTime);
