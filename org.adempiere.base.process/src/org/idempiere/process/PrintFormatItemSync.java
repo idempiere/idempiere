@@ -27,6 +27,7 @@ package org.idempiere.process;
 
 import java.util.ArrayList;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.Query;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
@@ -66,6 +67,8 @@ public class PrintFormatItemSync extends SvrProcess {
 				p_language = para[i].getParameterAsString();
 			else if (name.equals("Source"))
 				p_source = para[i].getParameterAsString();
+			else
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 
