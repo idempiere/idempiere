@@ -136,7 +136,7 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 	 */
 	public static MProcessDrillRule[] getByTable(Properties ctx, int AD_Table_ID, String trxName) {
 
-		String whereClause = " AD_Table_ID = ? ";
+		String whereClause = " AD_Table_ID = ? AND IsValid = 'Y' ";
 		List<MProcessDrillRule> processDrillRules = new Query(ctx, MProcessDrillRule.Table_Name, whereClause, trxName)
 				.setParameters(AD_Table_ID)
 				.setClient_ID()
