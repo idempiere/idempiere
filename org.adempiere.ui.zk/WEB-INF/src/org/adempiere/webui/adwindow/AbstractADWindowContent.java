@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.Callback;
@@ -1981,7 +1982,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
 
         if (adTabbox.getSelectedGridTab().getTabLevel() == 0 && record_ID != masterRecord) {
-        	clenFindWindowHashMap();
+        	cleanFindWindowHashMap();
         	masterRecord = record_ID;
         }
 
@@ -4119,8 +4120,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 * Clean all the detail cached FindWindow objects
 	 * when the master record is changed
 	 */
-	private void clenFindWindowHashMap() {
+	private void cleanFindWindowHashMap() {		
+		List<FindWindow> list = tabFindWindowHashMap.entrySet().stream().filter(e -> e.getKey().getTabLevel() != 0)
+			.map(Map.Entry::getValue)
+	        .collect(Collectors.toList());
 		tabFindWindowHashMap.keySet().removeIf(tab -> tab.getTabLevel() != 0);
+		if (!list.isEmpty()) {
+			list.forEach(e -> AEnv.detachInputElement(e));
+			Executions.schedule(getComponent().getDesktop(), e -> list.forEach(f -> f.detach()), new Event("onDetachCacheFindWindow"));
+		}
 	}
 	
 	private void clearTitleRelatedContext() {
