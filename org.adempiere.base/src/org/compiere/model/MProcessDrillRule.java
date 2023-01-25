@@ -179,7 +179,6 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 					setAD_Table_ID(reportView.getAD_Table_ID());
 			}
 		}
-		setIsValid();
 		return super.beforeSave(newRecord);
 	}
 	
@@ -244,7 +243,7 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 	/**
 	 * Validate Drill Rule - set IsValid
 	 */
-	public void setIsValid() {
+	public void validate() {
 		setIsValid(allMandatoryParaSet());
 	}
 }

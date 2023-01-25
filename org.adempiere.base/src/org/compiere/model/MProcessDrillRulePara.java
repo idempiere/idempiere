@@ -28,8 +28,6 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.DB;
-import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.model.IProcessParameter;
 
@@ -96,35 +94,5 @@ public class MProcessDrillRulePara extends X_AD_Process_DrillRule_Para implement
 	@Override
 	public void setParentID(int id) {
 		setAD_Process_DrillRule_ID(id);
-	}
-	
-	@Override
-	protected boolean afterSave(boolean newRecord, boolean success) {
-		if(success) {
-			MProcessPara processPara = new MProcessPara(getCtx(), getAD_Process_Para_ID(), get_TrxName());
-			boolean isValid = (processPara.isRange() && (!Util.isEmpty(getParameterDefault()) || !Util.isEmpty(getParameterToDefault()))) ||
-					((!processPara.isRange() && !Util.isEmpty(getParameterDefault())));
-			if(processPara.isMandatory()) {
-				validateParent(new Object[] {isValid ? "Y" : "N", getAD_Process_DrillRule_ID()});
-			}
-		}
-		return super.afterSave(newRecord, success);
-	}
-	
-	@Override
-	protected boolean afterDelete (boolean success) {
-		if(success) {
-			MProcessPara processPara = new MProcessPara(getCtx(), getAD_Process_Para_ID(), get_TrxName());
-			if(processPara.isMandatory()) {
-				validateParent(new Object[] {"N", getAD_Process_DrillRule_ID()});
-			}
-		}
-		return super.afterDelete(success);
-	}
-	
-	private void validateParent(Object[] para) {
-			String sql = " UPDATE " + MProcessDrillRule.Table_Name + " SET " + MProcessDrillRule.COLUMNNAME_IsValid + " = ? "
-					+ " WHERE " + MProcessDrillRule.Table_Name + "_ID = ?";
-			DB.executeUpdateEx(sql, para, get_TrxName());
 	}
 }

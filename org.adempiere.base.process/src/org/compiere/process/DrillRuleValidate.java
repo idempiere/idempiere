@@ -54,7 +54,7 @@ public class DrillRuleValidate extends SvrProcess
 		throws Exception
 	{
 		MProcessDrillRule drillRule = new MProcessDrillRule(getCtx(), p_AD_Process_DrillRule_ID, null);
-		drillRule.setIsValid();
+		drillRule.validate();
 		drillRule.saveEx();
 
 		return drillRule.isValid() ? "@OK@" : "@NotValid@";
