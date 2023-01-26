@@ -185,7 +185,10 @@ public class Tab extends org.zkoss.zul.Tab
 
 		//Workaround for detached HTML input element leak
 		if (panel != null) {
-			Executions.schedule(getDesktop(), e -> panel.detach(), new Event("onCloseLinkedPanel"));
+			if (getDesktop() != null)
+				Executions.schedule(getDesktop(), e -> panel.detach(), new Event("onCloseLinkedPanel"));
+			else
+				panel.detach();
 		}
 		
 		detach();
