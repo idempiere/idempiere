@@ -19,6 +19,7 @@ package org.compiere.install;
 import java.util.logging.Level;
 
 import org.compiere.model.MLanguage;
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
@@ -61,7 +62,7 @@ public class LanguageMaintenance extends SvrProcess
 			else if (name.equals("MaintenanceMode"))
 				p_MaintenanceMode = (String)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_AD_Language_ID = getRecord_ID();
 	}	//	prepare

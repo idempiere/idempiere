@@ -22,6 +22,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MProjectLine;
@@ -100,7 +101,7 @@ public class ProjectIssue extends SvrProcess
 			else if (name.equals("Description"))
 				m_Description = (String)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		  }
 	}	//	prepare
 

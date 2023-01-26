@@ -31,7 +31,6 @@ import java.sql.Savepoint;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.logging.Level;
 
 import javax.sql.RowSet;
 
@@ -41,6 +40,7 @@ import org.compiere.model.MCostElement;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -87,7 +87,7 @@ public class RollUpCosts extends SvrProcess {
 			else if (name.equals("C_Charge_ID"))
 				charge_id = para[i].getParameterAsInt();
 			else
-				log.log(Level.WARNING, "Unknown Parameter: " + name);		
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		
 		if (getTable_ID() == MProduct.Table_ID)

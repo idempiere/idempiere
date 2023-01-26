@@ -4,6 +4,7 @@
 package org.idempiere.fa.process;
 
 import org.compiere.model.MDepreciationWorkfile;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfoParameter;
@@ -33,6 +34,7 @@ public class A_Depreciation_Workfile_Build extends SvrProcess
 					A_Depreciation_Workfile_ID = 0;
 			}
 			else {
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 			}
 		}
 	}

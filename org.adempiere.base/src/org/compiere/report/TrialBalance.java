@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MElementValue;
 import org.compiere.model.MPeriod;
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
@@ -155,7 +156,7 @@ public class TrialBalance extends SvrProcess
 			else if (name.equals("IsGroupByOrg"))
 				p_IsGroupByOrg = para[i].getParameterAsBoolean();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		//	Mandatory C_AcctSchema_ID
 		m_parameterWhere.append("C_AcctSchema_ID=").append(p_C_AcctSchema_ID);

@@ -23,6 +23,7 @@ import org.compiere.model.MBPartner;
 import org.compiere.model.MPaySelection;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaySelectionLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_C_Order;
 import org.compiere.util.AdempiereUserError;
  
@@ -61,7 +62,7 @@ public class PaySelectionCreateCheck extends SvrProcess
 			else if (name.equalsIgnoreCase(MPaySelection.COLUMNNAME_IsOnePaymentPerInvoice))
 				p_onepaymentPerInvoice = para[i].getParameterAsBoolean();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_C_PaySelection_ID = getRecord_ID();
 		if (p_PaymentRule != null && p_PaymentRule.equals(X_C_Order.PAYMENTRULE_DirectDebit))

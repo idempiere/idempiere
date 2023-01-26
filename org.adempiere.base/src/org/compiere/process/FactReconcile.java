@@ -25,6 +25,7 @@ import org.adempiere.process.UUIDGenerator;
 import org.compiere.model.MColumn;
 import org.compiere.model.MElementValue;
 import org.compiere.model.MFactReconciliation;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRule;
 import org.compiere.model.MSequence;
 import org.compiere.model.PO;
@@ -57,7 +58,7 @@ public class FactReconcile extends SvrProcess
 			else if (name.equals("Account_ID"))
 				accountID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 			
 			if ( accountID > 0 )
 				account = new MElementValue(getCtx(), accountID, get_TrxName());

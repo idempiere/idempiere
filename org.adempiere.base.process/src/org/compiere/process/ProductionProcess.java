@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.I_M_ProductionPlan;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduction;
 import org.compiere.model.MProductionLine;
 import org.compiere.model.MProductionPlan;
@@ -40,7 +41,7 @@ public class ProductionProcess extends SvrProcess {
 			else if (name.equals("MovementDate"))
 				p_MovementDate = (Timestamp)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);		
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		
 		p_M_Production_ID = getRecord_ID();

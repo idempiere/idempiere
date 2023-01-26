@@ -38,6 +38,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.db.CConnection;
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSequence;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
@@ -112,7 +113,7 @@ public class MoveClient extends SvrProcess {
 			} else if ("IsSkipSomeValidations".equals(name)) {
 				p_IsSkipSomeValidations = para.getParameterAsBoolean();
 			} else {
-				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 	}
