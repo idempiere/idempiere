@@ -806,7 +806,18 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		return layout;
 	}
 
+	@Override
 	public void logout() {
+		if (layout != null && layout.getDesktop() != null 
+			&& Executions.getCurrent() != null && Executions.getCurrent().getNativeRequest() != null) {
+			AEnv.detachInputElement(layout);
+			Executions.schedule(layout.getDesktop(), e -> asyncLogout(), new Event("onAsyncLogout"));
+		} else {
+			asyncLogout();
+		}
+	}
+	
+	private void asyncLogout() {
 		unbindEventManager();
 		if (dashboardController != null) {
 			dashboardController.onLogOut();
@@ -819,8 +830,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		}
 		if (layout != null) {
 			layout.detach();
-		}
-		layout = null;
+			layout = null;
+		}		
 		pnlHead = null;
 		max = null;
 		m_desktop = null;
