@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -81,6 +82,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.util.Locales;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
@@ -296,9 +298,13 @@ public class DashboardController implements EventListener<Event> {
 	        		}
 	        		final Component zulComponent = zComponent;
 	        		ContextRunnable cr = new ContextRunnable() {
+	        			
+	        			private Locale locale = Locales.getCurrent();
+	        			
 						@Override
 						protected void doRun() {
 							try {
+								Locales.setThreadLocal(locale);
 								asyncRenderGadgetPanel(spt, dc, fp, appDesktop, contextPath, panelChildren, zulComponent);
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -595,9 +601,13 @@ public class DashboardController implements EventListener<Event> {
 	        		}
 	        		final Component zulComponent = zComponent;
 	        		ContextRunnable cr = new ContextRunnable() {
+	        			
+	        			private Locale locale = Locales.getCurrent();
+	        			
 						@Override
 						protected void doRun() {
 							try {
+								Locales.setThreadLocal(locale);
 								asyncRenderGadgetPanel(spt, dc, fp, appDesktop, contextPath, panelChildren, zulComponent);
 							} catch (Exception e) {
 								e.printStackTrace();
