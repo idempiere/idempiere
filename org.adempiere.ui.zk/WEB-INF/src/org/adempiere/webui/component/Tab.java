@@ -184,15 +184,17 @@ public class Tab extends org.zkoss.zul.Tab
 		}
 
 		//Workaround for detached HTML input element leak
+		boolean attached = getDesktop() != null;
 		if (panel != null) {
-			Executions.schedule(getDesktop(), e -> panel.detach(), new Event("onCloseLinkedPanel"));
+			if (attached)
+				Executions.schedule(getDesktop(), e -> panel.detach(), new Event("onCloseLinkedPanel"));
 		}
 		
 		detach();
 		
 		if (panel != null) {
 			//Workaround for detached HTML input element leak
-			if (panel.getChildren().size() > 0) {
+			if (attached && panel.getChildren().size() > 0) {
 				Component[] childs = panel.getChildren().toArray(new Component[0]);
 				for(Component c : childs) {
 					AEnv.detachInputElement(c);
@@ -204,6 +206,9 @@ public class Tab extends org.zkoss.zul.Tab
 			if (include instanceof Include) {
 				include.detach();
 			}
+			
+			if (!attached)
+				panel.detach();
 		}
 	}
 	

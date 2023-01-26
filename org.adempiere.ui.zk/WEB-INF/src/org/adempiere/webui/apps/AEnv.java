@@ -80,6 +80,7 @@ import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.impl.InputElement;
 
 import com.lowagie.text.DocumentException;
@@ -881,7 +882,7 @@ public final class AEnv
 	 * @param c
 	 */
 	public static void detachInputElement(Component c) {
-		if (c instanceof InputElement) {
+		if (c instanceof InputElement || c instanceof Button) {
 			c.detach();
 		}
 		if (c.getChildren().size() > 0) {

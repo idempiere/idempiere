@@ -628,17 +628,19 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		if (Env.getCtx().get(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER) != null)
 			properties.put(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER, Env.getCtx().get(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER));
 
+		//desktop cleanup
+		IDesktop appDesktop = getAppDeskop();
+		if (appDesktop != null)
+			appDesktop.logout(T -> {if (T) asyncChangeRole(httpRequest.getSession(), locale, properties);});
+	}
+	
+	private void asyncChangeRole(HttpSession httpSession, Locale locale, Properties properties) {
 		//stop key listener
 		if (keyListener != null) {
 			keyListener.detach();
 			keyListener = null;
 		}
 		
-		//desktop cleanup
-		IDesktop appDesktop = getAppDeskop();
-		if (appDesktop != null)
-			appDesktop.logout();
-
     	//remove all children component
     	getChildren().clear();
     	
@@ -648,7 +650,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	this.setPage(page);
         
     	//clear session attributes
-    	Enumeration<String> attributes = httpRequest.getSession().getAttributeNames();
+    	Enumeration<String> attributes = httpSession.getAttributeNames();
     	while(attributes.hasMoreElements()) {
     		String attribute = attributes.nextElement();
     		
@@ -656,7 +658,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     		if (attribute.contains("zkoss."))
     			continue;
     		
-    		httpRequest.getSession().removeAttribute(attribute);
+    		httpSession.removeAttribute(attribute);
     	}
 
     	//logout ad_session
