@@ -30,6 +30,7 @@ import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.model.MBroadcastMessage;
+import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
@@ -806,7 +807,30 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		return layout;
 	}
 
+	@Override
 	public void logout() {
+		logout(null);
+	}
+	
+	@Override
+	public void logout(Callback<Boolean> callback) {
+		if (layout != null && layout.getDesktop() != null 
+			&& Executions.getCurrent() != null && Executions.getCurrent().getNativeRequest() != null) {
+			//close all tabs
+			List<Component> tabs = windowContainer.getComponent().getTabs().getChildren();
+	    	int end = tabs.size() - 1;
+	    	for (int i = end; i >= 0; i--) {
+	    		((Tab)tabs.get( i )).close();
+	    	}
+	    	AEnv.detachInputElement(layout);
+	    	//schedule async logout
+			Executions.schedule(layout.getDesktop(), e -> asyncLogout(callback), new Event("onAsyncLogout"));
+		} else {
+			asyncLogout(callback);
+		}
+	}
+	
+	private void asyncLogout(Callback<Boolean> callback) {
 		unbindEventManager();
 		if (dashboardController != null) {
 			dashboardController.onLogOut();
@@ -817,10 +841,17 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 			sideController.onLogOut();
 			sideController = null;
 		}
-		if (layout != null) {
-			layout.detach();
+		
+		if (callback != null) {
+			if (layout != null && layout.getDesktop() != null 
+					&& Executions.getCurrent() != null && Executions.getCurrent().getNativeRequest() != null) {
+				Executions.schedule(layout.getDesktop(), e -> callback.onCallback(Boolean.TRUE), new Event("onAsyncLogoutCallback"));
+			} else {
+				callback.onCallback(Boolean.TRUE);
+			}
 		}
-		layout = null;
+		
+		layout = null;		
 		pnlHead = null;
 		max = null;
 		m_desktop = null;
@@ -1012,6 +1043,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		updateHelpContext(X_AD_CtxHelp.CTXTYPE_Task, taskId);
 	}
 
+	@Override
     public boolean isPendingWindow() {
         List<Object> windows = getWindows();
         if (windows != null) {

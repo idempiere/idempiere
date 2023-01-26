@@ -424,7 +424,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 				Tab tab = (Tab)event.getTarget();
 				org.zkoss.zul.Tabpanel panel = tab.getLinkedPanel();
 				if (panel == null) {
-					System.console().printf("error");
+					return;
 				}
 				Component component = panel.getFirstChild();
 				if (component != null && component.getAttribute(ITabOnSelectHandler.ATTRIBUTE_KEY) instanceof ITabOnSelectHandler)
@@ -740,6 +740,9 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
      */
     public void setTabTitle(int tabNo, String title, String tooltip)
     {
+    	if (tabNo < 0 || tabNo >= tabbox.getTabs().getChildren().size())
+    		return;
+    	
     	org.zkoss.zul.Tabs tabs = tabbox.getTabs();
     	Tab tab = (Tab) tabs.getChildren().get(tabNo);
     	setTabTitle(title, tab);
