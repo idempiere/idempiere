@@ -24,6 +24,7 @@ import org.compiere.model.MBPartner;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProductPO;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectLine;
@@ -70,7 +71,7 @@ public class ProjectGenPO extends SvrProcess
 			else if (name.equals("ConsolidateDocument"))
 				m_ConsolidateDocument = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

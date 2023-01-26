@@ -39,6 +39,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.model.MChangeLog;
 import org.compiere.model.MColumn;
 import org.compiere.model.MPInstance;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.MVerifyMigration;
@@ -73,8 +74,7 @@ public class VerifyMigration extends SvrProcess {
 				p_DateTo = para.getParameterAsTimestamp();
 				break;
 			default:
-				if (log.isLoggable(Level.INFO))
-					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 				break;
 			}
 		}

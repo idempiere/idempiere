@@ -28,6 +28,7 @@ import org.compiere.model.MAccount;
 import org.compiere.model.MJournal;
 import org.compiere.model.MJournalBatch;
 import org.compiere.model.MJournalLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_I_GLJournal;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -84,7 +85,7 @@ public class ImportGLJournal extends SvrProcess
 			else if (name.equals("DeleteOldImported"))
 				m_DeleteOldImported = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

@@ -28,6 +28,7 @@ import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MLocation;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MUser;
 import org.compiere.model.X_I_Invoice;
 import org.compiere.util.DB;
@@ -73,7 +74,7 @@ public class ImportInvoice extends SvrProcess
 			else if (name.equals("DocAction"))
 				m_docAction = (String)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if (m_DateValue == null)
 			m_DateValue = new Timestamp (System.currentTimeMillis());

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.MPeriodControl;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
@@ -58,7 +59,7 @@ public class PeriodStatus extends SvrProcess
 			else if (name.equals("*RecordIDs*"))
 				;
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_C_Period_IDs = getRecord_IDs();
 		if (p_C_Period_IDs == null || p_C_Period_IDs.size() == 0) {

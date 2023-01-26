@@ -39,6 +39,7 @@ import org.compiere.model.MBankAccount;
 import org.compiere.model.MCash;
 import org.compiere.model.MCashBook;
 import org.compiere.model.MCashLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -104,7 +105,7 @@ public class ImmediateBankTransfer extends SvrProcess
 			else if (name.equals("DateAcct"))
 				p_DateAcct = (Timestamp)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

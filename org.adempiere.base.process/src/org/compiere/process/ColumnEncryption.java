@@ -33,6 +33,7 @@ import java.util.logging.Level;
 
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CacheMgt;
@@ -96,7 +97,7 @@ public class ColumnEncryption extends SvrProcess {
 			else if (name.equals("TestValue"))
 				p_TestValue = (String) para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_AD_Column_ID = getRecord_ID();
 	} // prepare

@@ -30,6 +30,7 @@ import org.compiere.model.MCommissionDetail;
 import org.compiere.model.MCommissionLine;
 import org.compiere.model.MCommissionRun;
 import org.compiere.model.MCurrency;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MUser;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.AdempiereUserError;
@@ -66,7 +67,7 @@ public class CommissionCalc extends SvrProcess
 			else if (name.equals("StartDate"))
 				p_StartDate = (Timestamp)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

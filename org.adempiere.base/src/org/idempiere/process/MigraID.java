@@ -29,8 +29,8 @@ package org.idempiere.process;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSequence;
 import org.compiere.model.MTable;
 import org.compiere.model.MTree;
@@ -69,7 +69,7 @@ public class MigraID extends SvrProcess {
 			} else if ("Target_UUID".equals(name)) {
 				p_UUID_To = para.getParameterAsString();
 			} else {
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 	}

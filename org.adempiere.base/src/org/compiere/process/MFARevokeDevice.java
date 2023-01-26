@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.MMFARegisteredDevice;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
@@ -56,8 +57,7 @@ public class MFARevokeDevice extends SvrProcess {
 			case "MFARevokeAll": p_MFARevokeAll = para.getParameterAsBoolean(); break;
 			case "MFA_RegisteredDevice_ID": p_MFA_RegisteredDevice_ID = para.getParameterAsInt(); break;
 			default:
-				if (log.isLoggable(Level.INFO))
-					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 				break;
 			}
 		}

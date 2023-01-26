@@ -26,6 +26,7 @@ import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.Env;
  
 /**
@@ -62,7 +63,7 @@ public class InvoiceCreateInOut extends SvrProcess
 			else if (name.equals(PARAM_M_Warehouse_ID))
 				p_M_Warehouse_ID = para.getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 		p_C_Invoice_ID = getRecord_ID();
 	}	//	prepare

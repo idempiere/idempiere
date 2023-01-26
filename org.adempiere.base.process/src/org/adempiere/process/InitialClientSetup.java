@@ -36,6 +36,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.Adempiere;
 import org.compiere.model.MCity;
 import org.compiere.model.MCurrency;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSetup;
 import org.compiere.model.MSysConfig;
 import org.compiere.print.PrintUtil;
@@ -162,7 +163,7 @@ public class InitialClientSetup extends SvrProcess
 			else if (name.equals("NormalUserEmail"))
 				p_NormalUserEmail = (String) para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}
 
