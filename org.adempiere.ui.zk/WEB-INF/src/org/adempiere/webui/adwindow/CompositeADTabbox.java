@@ -48,6 +48,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -395,7 +396,8 @@ public class CompositeADTabbox extends AbstractADTabbox
 					return;
 				
 				IADTabpanel tabPanel = (IADTabpanel) event.getTarget();
-				if (tabPanel != headerTab && headerTab.getDetailPane() != null) {
+				//call onActivateDetail if it is detail tab panel
+				if (tabPanel != headerTab && headerTab.getDetailPane() != null && tabPanel.getTabLevel() > headerTab.getTabLevel()) {
 					if (b != null && b.booleanValue()) {
 						onActivateDetail(tabPanel);
 						if (headerTab instanceof ADTabpanel) {
@@ -593,11 +595,17 @@ public class CompositeADTabbox extends AbstractADTabbox
 		
 		//set state
 		headerTab.setDetailPaneMode(false);
-		getBreadCrumb().getFirstChild().setVisible(false);
+		//show empty path, update later with actual path in onTabSelectionChangedEcho
+		getBreadCrumb().getFirstChild().getChildren().clear();
+		getBreadCrumb().getFirstChild().appendChild(new Label(""));
 		
 		Events.sendEvent(new Event(ON_POST_TAB_SELECTION_CHANGED_EVENT, layout, oldIndex > newIndex));
 	}
 
+	/**
+	 * first after tab selection change event, follow by onTabSelectionChangedEcho event
+	 * @param back
+	 */
 	private void onPostTabSelectionChanged(Boolean back) {
 		if (headerTab instanceof ADTabpanel && !headerTab.getGridTab().isSortTab()) {			 			
 			List<Object[]> list = new ArrayList<Object[]>();
@@ -633,13 +641,21 @@ public class CompositeADTabbox extends AbstractADTabbox
 				} 
 			}						
 		}	
+		
+		updateBreadCrumb();
+		
 		Events.echoEvent(new Event(ON_TAB_SELECTION_CHANGED_ECHO_EVENT, layout, back));
 	}
 	
+	/**
+	 * final UI update event for tab selection change
+	 * @param back
+	 */
 	private void onTabSelectionChangedEcho(Boolean back) {
 		if (headerTab instanceof ADTabpanel) {
 			DetailPane detailPane = headerTab.getDetailPane();
 			
+			//setup tabs of detail pane
 			if (detailPane != null) {
 				@SuppressWarnings("unchecked")
 				List<Object[]> list = (List<Object[]>) detailPane.removeAttribute("detailpane.tablist");
@@ -703,9 +719,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 					}
 				}				
 			}
-		}
-		updateBreadCrumb();
-        getBreadCrumb().getFirstChild().setVisible(true);
+		}		
         
         updateTabState();
         
@@ -727,6 +741,9 @@ public class CompositeADTabbox extends AbstractADTabbox
         }
 	}
 
+	/**
+	 * update breadcrumb path
+	 */
 	private void updateBreadCrumb() {		
 		BreadCrumb breadCrumb = getBreadCrumb();
 		breadCrumb.reset();
@@ -750,8 +767,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 			}
 		}
 		ADTabLabel tabLabel = tabLabelList.get(selectedIndex);
-		breadCrumb.addPath(tabLabel.label, Integer.toString(selectedIndex), false);				
-		breadCrumb.setVisible(true);			
+		breadCrumb.addPath(tabLabel.label, Integer.toString(selectedIndex), false);	
+		if (!breadCrumb.isVisible())
+			breadCrumb.setVisible(true);			
 		
 		LinkedHashMap<String, String> links = new LinkedHashMap<String, String>();
 		int parentIndex = 0;
@@ -982,6 +1000,10 @@ public class CompositeADTabbox extends AbstractADTabbox
 		return null;
 	}
 
+	/**
+	 * activate detail tab panel
+	 * @param tabPanel
+	 */
 	private void onActivateDetail(IADTabpanel tabPanel) {
 		tabPanel.createUI();			
 		if (headerTab.getGridTab().isNew()) {
@@ -1072,6 +1094,9 @@ public class CompositeADTabbox extends AbstractADTabbox
 		return null;
 	}
 
+	/**
+	 * show last error message from CLogger
+	 */
 	private void showLastError() {
 		String msg = CLogger.retrieveErrorString(null);
 		if (msg != null)
