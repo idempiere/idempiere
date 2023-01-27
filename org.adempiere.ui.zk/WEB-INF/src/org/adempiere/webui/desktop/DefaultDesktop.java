@@ -823,6 +823,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	    		((Tab)tabs.get( i )).close();
 	    	}
 	    	AEnv.detachInputElement(layout);
+	    	layout.setVisible(false);
 	    	//schedule async logout
 			Executions.schedule(layout.getDesktop(), e -> asyncLogout(callback), new Event("onAsyncLogout"));
 		} else {
