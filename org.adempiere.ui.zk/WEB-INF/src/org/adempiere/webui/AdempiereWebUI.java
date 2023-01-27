@@ -630,8 +630,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 
 		//desktop cleanup
 		IDesktop appDesktop = getAppDeskop();
+		HttpSession session = httpRequest.getSession();
 		if (appDesktop != null)
-			appDesktop.logout(T -> {if (T) asyncChangeRole(httpRequest.getSession(), locale, properties);});
+			appDesktop.logout(T -> {if (T) asyncChangeRole(session, locale, properties);});
 	}
 	
 	private void asyncChangeRole(HttpSession httpSession, Locale locale, Properties properties) {
