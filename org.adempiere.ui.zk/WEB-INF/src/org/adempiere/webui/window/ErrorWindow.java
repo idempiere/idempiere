@@ -12,8 +12,8 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
+import org.adempiere.base.sso.ISSOPrinciple;
 import org.adempiere.webui.component.FWindow;
-import org.adempiere.webui.sso.ISSOPrinciple;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;

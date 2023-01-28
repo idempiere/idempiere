@@ -633,7 +633,6 @@ public class LoginPanel extends Window implements EventListener<Event>
         		langName = Language.getBaseLanguage().getName();
         	Language language = findLanguage(langName);
             Env.setContext(ctx, UserPreference.LANGUAGE_NAME, language.getName()); // Elaine 2009/02/06
-            Env.setContext(ctx, Env.SSO_IS_ALREADY_AUTHENTICATE, false);
 
             if (login.isPasswordExpired())
             	wndLogin.changePassword(userId, userPassword, chkSelectRole.isChecked(), clientsKNPairs);

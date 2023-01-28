@@ -137,7 +137,6 @@ public final class Env
 	public static final String SYSTEM_NAME = "#System_Name";
 	public static final String UI_CLIENT = "#UIClient";
 	public static final String USER_LEVEL = "#User_Level";
-	public static final String SSO_IS_ALREADY_AUTHENTICATE = "#SSO_IS_ALREADY_AUTHENTICATE";
 
 	private static final String PREFIX_SYSTEM_VARIABLE = "$env.";
 

@@ -10,6 +10,11 @@
 	self.setTitle(ThemeManager.getBrowserTitle());
 ]]>
 </zscript>
+<script>
+<![CDATA[
+	zk.load("adempiere.local.storage");
+]]>
+</script>
 <window width="60%" mode="highlighted">
 <vbox style="padding: 5px">
 <window use="org.adempiere.webui.window.ErrorWindow" id="ErrorWindow"/>

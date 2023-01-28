@@ -194,6 +194,11 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		return user;
 	}
 	
+	public static MUser get (Properties ctx, String name, String password)
+	{
+		return MUser.get(ctx, name, password, false);
+	}
+	
 	/**
 	 * 	Get User
 	 *	@param ctx context
@@ -201,9 +206,9 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	 *	@param password password
 	 *	@return user or null
 	 */
-	public static MUser get (Properties ctx, String name, String password)
+	public static MUser get (Properties ctx, String name, String password, boolean isSSOLogin)
 	{
-		if (name == null || name.length() == 0 || password == null || password.length() == 0)
+		if (name == null || name.length() == 0 || (!isSSOLogin && (password == null || password.length() == 0)))
 		{
 			s_log.warning ("Invalid Name/Password = " + name);
 			return null;
@@ -214,8 +219,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 		ArrayList<Integer> clientsValidated = new ArrayList<Integer>();
 		MUser retValue = null;
 		
-		boolean isAlreadyAuthenticate = "Y".equalsIgnoreCase(Env.getContext(Env.getCtx(), Env.SSO_IS_ALREADY_AUTHENTICATE));
-		StringBuilder where = new StringBuilder(isAlreadyAuthenticate ? "" : " u.Password IS NOT NULL AND");
+		StringBuilder where = new StringBuilder("Password IS NOT NULL AND ");
 		if (email_login)
 			where.append("EMail=?");
 		else
@@ -251,8 +255,9 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			if (system == null)
 				throw new IllegalStateException("No System Info");
 			
-			
-			if (system.isLDAP() && ! Util.isEmpty(user.getLDAPUser())) {
+			if (isSSOLogin) {
+				valid = true;
+			} else if (system.isLDAP() && ! Util.isEmpty(user.getLDAPUser())) {
 				valid = system.isLDAP(name, password);
 			} else if (hash_password) {
 				valid = user.authenticateHash(password);

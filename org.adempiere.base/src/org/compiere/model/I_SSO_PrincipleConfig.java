@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for SSO_PrincipleConfig
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 10
  */
 public interface I_SSO_PrincipleConfig 
 {
@@ -44,8 +44,8 @@ public interface I_SSO_PrincipleConfig
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_SSO_PrincipleConfig
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -207,6 +207,32 @@ public interface I_SSO_PrincipleConfig
 	  * SSO Tenant ID
 	  */
 	public String getSSO_AuthorizationTenantID();
+
+    /** Column name SSO_IDempMonitorRedirectURIs */
+    public static final String COLUMNNAME_SSO_IDempMonitorRedirectURIs = "SSO_IDempMonitorRedirectURIs";
+
+	/** Set iDempiere Monitor Redirect URIs.
+	  * iDempiere Monitor Redirect URIs
+	  */
+	public void setSSO_IDempMonitorRedirectURIs (String SSO_IDempMonitorRedirectURIs);
+
+	/** Get iDempiere Monitor Redirect URIs.
+	  * iDempiere Monitor Redirect URIs
+	  */
+	public String getSSO_IDempMonitorRedirectURIs();
+
+    /** Column name SSO_OSGIRedirectURIs */
+    public static final String COLUMNNAME_SSO_OSGIRedirectURIs = "SSO_OSGIRedirectURIs";
+
+	/** Set Felix Web Console Redirect URIs.
+	  * Apache Felix Web Console Bundles Redirect URIs
+	  */
+	public void setSSO_OSGIRedirectURIs (String SSO_OSGIRedirectURIs);
+
+	/** Get Felix Web Console Redirect URIs.
+	  * Apache Felix Web Console Bundles Redirect URIs
+	  */
+	public String getSSO_OSGIRedirectURIs();
 
     /** Column name SSO_PrincipleConfig_ID */
     public static final String COLUMNNAME_SSO_PrincipleConfig_ID = "SSO_PrincipleConfig_ID";

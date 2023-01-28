@@ -22,19 +22,31 @@ import java.util.Properties;
 
 /** Generated Model for SSO_PrincipleConfig
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 10 - $Id$ */
+@org.adempiere.base.Model(table="SSO_PrincipleConfig")
 public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221104L;
+	private static final long serialVersionUID = 20230123L;
 
     /** Standard Constructor */
     public X_SSO_PrincipleConfig (Properties ctx, int SSO_PrincipleConfig_ID, String trxName)
     {
       super (ctx, SSO_PrincipleConfig_ID, trxName);
+      /** if (SSO_PrincipleConfig_ID == 0)
+        {
+			setSSO_PrincipleConfig_ID (0);
+			setSSO_Provider (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_SSO_PrincipleConfig (Properties ctx, int SSO_PrincipleConfig_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, SSO_PrincipleConfig_ID, trxName, virtualColumns);
       /** if (SSO_PrincipleConfig_ID == 0)
         {
 			setSSO_PrincipleConfig_ID (0);
@@ -65,15 +77,14 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_SSO_PrincipleConfig[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_SSO_PrincipleConfig[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
 	/** Set Default.
-		@param IsDefault 
-		Default value
-	  */
+		@param IsDefault Default value
+	*/
 	public void setIsDefault (boolean IsDefault)
 	{
 		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
@@ -82,7 +93,7 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	/** Get Default.
 		@return Default value
 	  */
-	public boolean isDefault () 
+	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
 		if (oo != null) 
@@ -95,9 +106,8 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	}
 
 	/** Set Name.
-		@param Name 
-		Alphanumeric identifier of the entity
-	  */
+		@param Name Alphanumeric identifier of the entity
+	*/
 	public void setName (String Name)
 	{
 		set_Value (COLUMNNAME_Name, Name);
@@ -106,15 +116,14 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	/** Get Name.
 		@return Alphanumeric identifier of the entity
 	  */
-	public String getName () 
+	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
 	/** Set Application Client ID.
-		@param SSO_ApplicationClientID 
-		SSO Application Client ID
-	  */
+		@param SSO_ApplicationClientID SSO Application Client ID
+	*/
 	public void setSSO_ApplicationClientID (String SSO_ApplicationClientID)
 	{
 		set_Value (COLUMNNAME_SSO_ApplicationClientID, SSO_ApplicationClientID);
@@ -123,15 +132,14 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	/** Get Application Client ID.
 		@return SSO Application Client ID
 	  */
-	public String getSSO_ApplicationClientID () 
+	public String getSSO_ApplicationClientID()
 	{
 		return (String)get_Value(COLUMNNAME_SSO_ApplicationClientID);
 	}
 
 	/** Set Application Discovery URI.
-		@param SSO_ApplicationDiscoveryURI 
-		SSO Application Discovery URI
-	  */
+		@param SSO_ApplicationDiscoveryURI SSO Application Discovery URI
+	*/
 	public void setSSO_ApplicationDiscoveryURI (String SSO_ApplicationDiscoveryURI)
 	{
 		set_Value (COLUMNNAME_SSO_ApplicationDiscoveryURI, SSO_ApplicationDiscoveryURI);
@@ -140,15 +148,14 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	/** Get Application Discovery URI.
 		@return SSO Application Discovery URI
 	  */
-	public String getSSO_ApplicationDiscoveryURI () 
+	public String getSSO_ApplicationDiscoveryURI()
 	{
 		return (String)get_Value(COLUMNNAME_SSO_ApplicationDiscoveryURI);
 	}
 
 	/** Set Application Domain.
-		@param SSO_ApplicationDomain 
-		SSO Application Domain
-	  */
+		@param SSO_ApplicationDomain SSO Application Domain
+	*/
 	public void setSSO_ApplicationDomain (String SSO_ApplicationDomain)
 	{
 		set_Value (COLUMNNAME_SSO_ApplicationDomain, SSO_ApplicationDomain);
@@ -157,15 +164,14 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	/** Get Application Domain.
 		@return SSO Application Domain
 	  */
-	public String getSSO_ApplicationDomain () 
+	public String getSSO_ApplicationDomain()
 	{
 		return (String)get_Value(COLUMNNAME_SSO_ApplicationDomain);
 	}
 
 	/** Set Application Logout URL.
-		@param SSO_ApplicationLogoutURL 
-		SSO Application Logout URL
-	  */
+		@param SSO_ApplicationLogoutURL SSO Application Logout URL
+	*/
 	public void setSSO_ApplicationLogoutURL (String SSO_ApplicationLogoutURL)
 	{
 		set_Value (COLUMNNAME_SSO_ApplicationLogoutURL, SSO_ApplicationLogoutURL);
@@ -174,15 +180,14 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	/** Get Application Logout URL.
 		@return SSO Application Logout URL
 	  */
-	public String getSSO_ApplicationLogoutURL () 
+	public String getSSO_ApplicationLogoutURL()
 	{
 		return (String)get_Value(COLUMNNAME_SSO_ApplicationLogoutURL);
 	}
 
 	/** Set Application Redirect URIs.
-		@param SSO_ApplicationRedirectURIs 
-		SSO Application Redirect URIs
-	  */
+		@param SSO_ApplicationRedirectURIs SSO Application Redirect URIs
+	*/
 	public void setSSO_ApplicationRedirectURIs (String SSO_ApplicationRedirectURIs)
 	{
 		set_Value (COLUMNNAME_SSO_ApplicationRedirectURIs, SSO_ApplicationRedirectURIs);
@@ -191,15 +196,14 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	/** Get Application Redirect URIs.
 		@return SSO Application Redirect URIs
 	  */
-	public String getSSO_ApplicationRedirectURIs () 
+	public String getSSO_ApplicationRedirectURIs()
 	{
 		return (String)get_Value(COLUMNNAME_SSO_ApplicationRedirectURIs);
 	}
 
 	/** Set Application Secret Key.
-		@param SSO_ApplicationSecretKey 
-		SSO Application Secret Key
-	  */
+		@param SSO_ApplicationSecretKey SSO Application Secret Key
+	*/
 	public void setSSO_ApplicationSecretKey (String SSO_ApplicationSecretKey)
 	{
 		set_Value (COLUMNNAME_SSO_ApplicationSecretKey, SSO_ApplicationSecretKey);
@@ -208,15 +212,14 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	/** Get Application Secret Key.
 		@return SSO Application Secret Key
 	  */
-	public String getSSO_ApplicationSecretKey () 
+	public String getSSO_ApplicationSecretKey()
 	{
 		return (String)get_Value(COLUMNNAME_SSO_ApplicationSecretKey);
 	}
 
 	/** Set Tenant ID.
-		@param SSO_AuthorizationTenantID 
-		SSO Tenant ID
-	  */
+		@param SSO_AuthorizationTenantID SSO Tenant ID
+	*/
 	public void setSSO_AuthorizationTenantID (String SSO_AuthorizationTenantID)
 	{
 		set_Value (COLUMNNAME_SSO_AuthorizationTenantID, SSO_AuthorizationTenantID);
@@ -225,24 +228,57 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	/** Get Tenant ID.
 		@return SSO Tenant ID
 	  */
-	public String getSSO_AuthorizationTenantID () 
+	public String getSSO_AuthorizationTenantID()
 	{
 		return (String)get_Value(COLUMNNAME_SSO_AuthorizationTenantID);
 	}
 
+	/** Set iDempiere Monitor Redirect URIs.
+		@param SSO_IDempMonitorRedirectURIs iDempiere Monitor Redirect URIs
+	*/
+	public void setSSO_IDempMonitorRedirectURIs (String SSO_IDempMonitorRedirectURIs)
+	{
+		set_Value (COLUMNNAME_SSO_IDempMonitorRedirectURIs, SSO_IDempMonitorRedirectURIs);
+	}
+
+	/** Get iDempiere Monitor Redirect URIs.
+		@return iDempiere Monitor Redirect URIs
+	  */
+	public String getSSO_IDempMonitorRedirectURIs()
+	{
+		return (String)get_Value(COLUMNNAME_SSO_IDempMonitorRedirectURIs);
+	}
+
+	/** Set Felix Web Console Redirect URIs.
+		@param SSO_OSGIRedirectURIs Apache Felix Web Console Bundles Redirect URIs
+	*/
+	public void setSSO_OSGIRedirectURIs (String SSO_OSGIRedirectURIs)
+	{
+		set_Value (COLUMNNAME_SSO_OSGIRedirectURIs, SSO_OSGIRedirectURIs);
+	}
+
+	/** Get Felix Web Console Redirect URIs.
+		@return Apache Felix Web Console Bundles Redirect URIs
+	  */
+	public String getSSO_OSGIRedirectURIs()
+	{
+		return (String)get_Value(COLUMNNAME_SSO_OSGIRedirectURIs);
+	}
+
 	/** Set SSO Configuration.
-		@param SSO_PrincipleConfig_ID SSO Configuration	  */
+		@param SSO_PrincipleConfig_ID SSO Configuration
+	*/
 	public void setSSO_PrincipleConfig_ID (int SSO_PrincipleConfig_ID)
 	{
-		if (SSO_PrincipleConfig_ID < 1) 
+		if (SSO_PrincipleConfig_ID < 1)
 			set_ValueNoCheck (COLUMNNAME_SSO_PrincipleConfig_ID, null);
-		else 
+		else
 			set_ValueNoCheck (COLUMNNAME_SSO_PrincipleConfig_ID, Integer.valueOf(SSO_PrincipleConfig_ID));
 	}
 
 	/** Get SSO Configuration.
 		@return SSO Configuration	  */
-	public int getSSO_PrincipleConfig_ID () 
+	public int getSSO_PrincipleConfig_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SSO_PrincipleConfig_ID);
 		if (ii == null)
@@ -251,7 +287,8 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	}
 
 	/** Set SSO Configuration UU.
-		@param SSO_PrincipleConfig_UU SSO Configuration UU	  */
+		@param SSO_PrincipleConfig_UU SSO Configuration UU
+	*/
 	public void setSSO_PrincipleConfig_UU (String SSO_PrincipleConfig_UU)
 	{
 		set_ValueNoCheck (COLUMNNAME_SSO_PrincipleConfig_UU, SSO_PrincipleConfig_UU);
@@ -259,7 +296,7 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 
 	/** Get SSO Configuration UU.
 		@return SSO Configuration UU	  */
-	public String getSSO_PrincipleConfig_UU () 
+	public String getSSO_PrincipleConfig_UU()
 	{
 		return (String)get_Value(COLUMNNAME_SSO_PrincipleConfig_UU);
 	}
@@ -267,9 +304,8 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	/** SSO_Provider AD_Reference_ID=200213 */
 	public static final int SSO_PROVIDER_AD_Reference_ID=200213;
 	/** Set SSO Provider.
-		@param SSO_Provider 
-		Single Sign-On (SSO) Providers ( Microsoft Azure , Google, Jump Cloud etc..)
-	  */
+		@param SSO_Provider Single Sign-On (SSO) Providers ( Microsoft Azure , Google, Jump Cloud etc..)
+	*/
 	public void setSSO_Provider (String SSO_Provider)
 	{
 
@@ -279,7 +315,7 @@ public class X_SSO_PrincipleConfig extends PO implements I_SSO_PrincipleConfig, 
 	/** Get SSO Provider.
 		@return Single Sign-On (SSO) Providers ( Microsoft Azure , Google, Jump Cloud etc..)
 	  */
-	public String getSSO_Provider () 
+	public String getSSO_Provider()
 	{
 		return (String)get_Value(COLUMNNAME_SSO_Provider);
 	}

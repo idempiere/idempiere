@@ -24,8 +24,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.adempiere.webui.sso.ISSOPrinciple;
-import org.adempiere.webui.sso.SSOUtils;
+import org.adempiere.base.sso.ISSOPrinciple;
+import org.adempiere.base.sso.SSOUtils;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 
@@ -38,7 +38,7 @@ public class SSOWebuiFilter implements Filter
 {
 	/** Logger */
 	protected static CLogger		log				= CLogger.getCLogger(SSOWebuiFilter.class);
-	//TODO as this is static, will not work on multi tenant environment
+	// TODO as this is static, will not work on multi tenant environment
 	private static ISSOPrinciple	m_SSOPrinciple	= null;
 
 	/**
@@ -60,7 +60,6 @@ public class SSOWebuiFilter implements Filter
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
 	{
-
 		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
 		if (isSSOEnable && request instanceof HttpServletRequest)
 		{
@@ -79,19 +78,19 @@ public class SSOWebuiFilter implements Filter
 					if (m_SSOPrinciple.hasAuthenticationCode(httpRequest, httpResponse))
 					{
 						// Use authentication code get get token
-						m_SSOPrinciple.getAuthenticationToken(httpRequest, httpResponse);
+						m_SSOPrinciple.getAuthenticationToken(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 					}
 					else if (!m_SSOPrinciple.isAuthenticated(httpRequest, httpResponse))
 					{
 						// Redirect to SSO sing in page for authentication
-						m_SSOPrinciple.redirectForAuthentication(httpRequest, httpResponse);
+						m_SSOPrinciple.redirectForAuthentication(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 						return;
 					}
 					else if (m_SSOPrinciple.isAccessTokenExpired(httpRequest, httpResponse))
 					{
 						// Refresh token after expired
 						isRedirectToLoginOnError = true;
-						m_SSOPrinciple.refreshToken(httpRequest, httpResponse);
+						m_SSOPrinciple.refreshToken(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 					}
 				}
 			}
@@ -107,7 +106,7 @@ public class SSOWebuiFilter implements Filter
 				else
 				{
 					httpResponse.setStatus(500);
-					httpResponse.sendRedirect(SSOUtils.ERROR_API + exc.getMessage());
+					httpResponse.sendRedirect(SSOUtils.ERROR_API);
 				}
 				return;
 			}

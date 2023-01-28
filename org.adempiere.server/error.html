@@ -9,14 +9,5 @@
 <h1>iDempiere Server Error </h1>
 <p>The iDempiere Server encountered a unrecoverable error.</p>
 <h2>Please notify the administrator.</h2>
-<p id="errorMessage"></p>
-<a href="/webui/index.zul" >Try again</a><br />
-<script>
-if(window.location.href.search('error=') != -1)
-{
-	var errorMsg = decodeURI(window.location.href.substring(window.location.href.search('error=') + 6));
-	document.getElementById("errorMessage").innerHTML = errorMsg;
-}
-</script>
 </body>
 </html>

@@ -11,42 +11,26 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
 
-package org.adempiere.webui.sso;
+package org.adempiere.base.sso;
 
 import java.util.List;
 
 import org.adempiere.base.Service;
+import org.compiere.model.I_SSO_PrincipleConfig;
 import org.compiere.model.MSSOPrincipleConfig;
-import org.compiere.util.Env;
-import org.compiere.util.Msg;
-import org.zkoss.lang.Strings;
-import org.zkoss.zk.au.out.AuScript;
-import org.zkoss.zk.ui.util.Clients;
 
 /**
  * @author Logilite Technologies
  */
 public class SSOUtils
 {
-	public static final String	ERROR_API			= "/error.html?error=";
+	public static final String	ERROR_API			= "/error.html";
 
 	public static final String	ERROR_VALIDATION	= "/error.zul";
 
-	/**
-	 * Update the error message in error.zul
-	 * 
-	 * @param errorMsg
-	 */
-	public static void setErrorMessageText(String errorMsg)
-	{
-		String continueMsg = Msg.getMsg(Env.getCtx(), "continue").trim();
-		errorMsg =  Msg.getMsg(Env.getCtx(), errorMsg).trim();
-		errorMsg = Strings.escape(errorMsg, "\"");
-		String errorScript = "adempiere.set(\"zkErrorMsg\", \"" + errorMsg + "\");";
-		errorScript += " adempiere.set(\"zkContinueText\", \"" + continueMsg + "\");";
-		final String scr = errorScript;
-		Clients.response("ssoErrorScript", new AuScript(null, scr));
-	}
+	public static final String	SSO_MODE_OSGI		= "SSO_MODE_OSGI";
+	public static final String	SSO_MODE_WEBUI		= "SSO_MODE_WEBUI";
+	public static final String	SSO_MODE_MONITIOR	= "SSO_MODE_MONITIOR";
 
 	public static ISSOPrinciple getSSOPrinciple()
 	{
@@ -62,5 +46,14 @@ public class SSOUtils
 				break;
 		}
 		return principle;
+	}
+	
+	public static String getRedirectedURL(String redirectMode, I_SSO_PrincipleConfig config)
+	{
+		if (SSO_MODE_OSGI.equalsIgnoreCase(redirectMode))
+			return config.getSSO_OSGIRedirectURIs();
+		else if (SSO_MODE_MONITIOR.equalsIgnoreCase(redirectMode))
+			return config.getSSO_IDempMonitorRedirectURIs();
+		return config.getSSO_ApplicationRedirectURIs();
 	}
 }

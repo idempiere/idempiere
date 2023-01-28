@@ -13,9 +13,23 @@ package org.adempiere.eclipse.equinox.http.servlet;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import javax.servlet.*;
+import java.util.logging.Level;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.adempiere.base.sso.ISSOPrinciple;
+import org.adempiere.base.sso.SSOUtils;
+import org.compiere.model.MSysConfig;
+import org.compiere.util.CLogger;
 
 /**
  * 
@@ -38,7 +52,11 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 
 	private static final long serialVersionUID = 1309373924501049438L;
 
-	private ServletConfigAdaptor servletConfig;
+	/** Logger */
+	protected static CLogger		log					= CLogger.getCLogger(BridgeFilter.class);
+	private ServletConfigAdaptor	servletConfig;
+	
+	private static ISSOPrinciple	m_SSOPrinciple		= null;
 
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.servletConfig = new ServletConfigAdaptor(filterConfig);
@@ -48,12 +66,53 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
+		
+		boolean isRedirectToLoginOnError = false;
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
+		if (isSSOEnable) {
+			try {
+				if (m_SSOPrinciple == null) {
+					m_SSOPrinciple = SSOUtils.getSSOPrinciple();
+				}
+
+				if (m_SSOPrinciple != null) {
+					if (m_SSOPrinciple.hasAuthenticationCode(req, resp)) {
+						// Use authentication code to get token
+						m_SSOPrinciple.getAuthenticationToken(req, resp, SSOUtils.SSO_MODE_OSGI);
+					} else if (!m_SSOPrinciple.isAuthenticated(req, resp)) {
+						// Redirect to SSO sing in page for authentication
+						m_SSOPrinciple.redirectForAuthentication(req, resp, SSOUtils.SSO_MODE_OSGI);
+						return;
+					} else if (m_SSOPrinciple.isAccessTokenExpired(req, resp)) {
+						// Refresh token after expired
+						isRedirectToLoginOnError = true;
+						m_SSOPrinciple.refreshToken(req, resp, SSOUtils.SSO_MODE_OSGI);
+					}
+				}
+			} catch (Throwable exc) {
+				log.log(Level.SEVERE, "Exception while authenticating: ", exc);
+				if (m_SSOPrinciple != null)
+					m_SSOPrinciple.removePrincipleFromSession(req);
+				if (isRedirectToLoginOnError) {
+					resp.sendRedirect("osgi/system/console/bundles");
+				} else {
+					resp.setStatus(500);
+					resp.sendRedirect(SSOUtils.ERROR_API);
+				}
+				return;
+			}
+		}
 		// Call process class with FilterChain.
 		super.process(req, resp, chain);
 	}
 
 	public ServletConfig getServletConfig() {
 		return servletConfig;
+	}
+	
+	public static ISSOPrinciple getSSOPrinciple()
+	{
+		return m_SSOPrinciple;
 	}
 
 	/**

@@ -30,6 +30,8 @@ import java.util.logging.Level;
 
 import javax.servlet.http.HttpSession;
 
+import org.adempiere.base.sso.ISSOPrinciple;
+import org.adempiere.base.sso.SSOUtils;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.IWebClient;
@@ -42,11 +44,10 @@ import org.adempiere.webui.panel.RolePanel;
 import org.adempiere.webui.panel.ValidateMFAPanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
-import org.adempiere.webui.sso.ISSOPrinciple;
-import org.adempiere.webui.sso.SSOUtils;
 import org.adempiere.webui.sso.filter.SSOWebuiFilter;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
+import org.adempiere.webui.util.ZkSSOUtils;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
@@ -147,10 +148,10 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 			getDesktop().getSession().setAttribute(Attributes.PREFERRED_LOCALE, locale);
 
 			Login login = new Login(ctx);
-			Env.setContext(ctx, Env.SSO_IS_ALREADY_AUTHENTICATE, true);
-			KeyNamePair[] clients = login.getClients(username, null, null);
+			boolean isShowRolePanel = MSysConfig.getBooleanValue(MSysConfig.SSO_SELECT_ROLE, true);
+			KeyNamePair[] clients = login.getClients(username, null, null, true);
 			if (clients != null)
-				loginOk(username, true, clients);
+				loginOk(username, isShowRolePanel, clients, true);
 			else
 			{
 				log.log(Level.WARNING,"No Client found for user:" + username);
@@ -168,7 +169,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 
 		if (!Util.isEmpty(errorMessage))
 		{
-			SSOUtils.setErrorMessageText(errorMessage);
+			ZkSSOUtils.setErrorMessageText(errorMessage);
 			Executions.sendRedirect(SSOUtils.ERROR_VALIDATION);
 		}
 	}
@@ -176,12 +177,17 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 	protected void createLoginPanel() {
 		pnlLogin = new LoginPanel(ctx, this);
 	}
-
+	
     public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
+    {
+    	loginOk(userName, show, clientsKNPairs, false);
+    }
+
+    public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isSSOLogin)
     {
     	boolean isClientDefined = (clientsKNPairs.length == 1);
 		if (pnlRole == null)
-			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined);
+			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined, isSSOLogin);
     	if (isClientDefined) {
     		createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
     	} else {

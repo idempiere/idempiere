@@ -10,7 +10,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.webui.sso;
+package org.adempiere.base.sso;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -30,15 +30,15 @@ public interface ISSOPrinciple
 
 	public boolean hasAuthenticationCode(HttpServletRequest request, HttpServletResponse response);
 
-	public void getAuthenticationToken(HttpServletRequest request, HttpServletResponse response) throws Throwable;
+	public void getAuthenticationToken(HttpServletRequest request, HttpServletResponse response, String redirectMode) throws Throwable;
 
 	public boolean isAuthenticated(HttpServletRequest request, HttpServletResponse response);
 
-	public void redirectForAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException;
+	public void redirectForAuthentication(HttpServletRequest request, HttpServletResponse response, String redirectMode) throws IOException;
 
 	public boolean isAccessTokenExpired(HttpServletRequest request, HttpServletResponse response);
 
-	public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws Throwable;
+	public void refreshToken(HttpServletRequest request, HttpServletResponse response, String redirectMode) throws Throwable;
 
 	public void removePrincipleFromSession(HttpServletRequest httpRequest);
 

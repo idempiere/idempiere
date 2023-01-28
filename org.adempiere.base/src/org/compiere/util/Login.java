@@ -1253,14 +1253,28 @@ public class Login
 	}
 
 	/**
+	 * Validate Client Login. Sets Context with login info
+	 * 
+	 * @param app_user  user id
+	 * @param app_pwd   password
+	 * @param roleTypes comma separated list of the role types allowed to login
+	 *                  (NULL can be added)
+	 * @return client array or null if in error.
+	 */
+	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes) {
+		return getClients(app_user, app_pwd, null, false);
+	}
+
+	/**
 	 *  Validate Client Login.
 	 *  Sets Context with login info
 	 *  @param app_user user id
 	 *  @param app_pwd password
 	 *  @param roleTypes comma separated list of the role types allowed to login (NULL can be added)
+	 *  @param isOnlyUser check only base on user Name
 	 *  @return client array or null if in error.
 	 */
-	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes) {
+	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes, boolean isOnlyUser) {
 		if (log.isLoggable(Level.INFO)) log.info("User=" + app_user);
 
 		if (Util.isEmpty(app_user))
@@ -1275,8 +1289,7 @@ public class Login
 		if (system == null)
 			throw new IllegalStateException("No System Info");
 
-		boolean isAlreadyAuthenticate = "Y".equalsIgnoreCase(Env.getContext(Env.getCtx(), Env.SSO_IS_ALREADY_AUTHENTICATE));
-		if (!isAlreadyAuthenticate  && (app_pwd == null || app_pwd.length() == 0))
+		if (!isOnlyUser && (app_pwd == null || app_pwd.length() == 0))
 		{
 			log.warning("No Apps Password");
 			return null;
@@ -1285,7 +1298,7 @@ public class Login
 		loginErrMsg = null;
 		isPasswordExpired = false;
 
-		if (!isAlreadyAuthenticate && system.isLDAP())
+		if (!isOnlyUser && system.isLDAP())
 		{
 			authenticated = system.isLDAP(app_user, app_pwd);
 			if (authenticated) {
@@ -1322,7 +1335,7 @@ public class Login
 		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
 		ArrayList<Integer> clientsValidated = new ArrayList<Integer>();
 
-		StringBuilder where = new StringBuilder(isAlreadyAuthenticate ? "" : "Password IS NOT NULL AND ");
+		StringBuilder where = new StringBuilder("Password IS NOT NULL AND ");
 		if (email_login)
 			where.append("EMail=?");
 		else
@@ -1354,7 +1367,7 @@ public class Login
 		}
 		
 		if (users.size() == 0) {
-			log.saveError(isAlreadyAuthenticate ? "UserNotFoundError": "UserPwdError", app_user, false);
+			log.saveError(isOnlyUser ? "UserNotFoundError": "UserPwdError", app_user, false);
 			return null;
 		}
 		
@@ -1412,7 +1425,7 @@ public class Login
 			clientsValidated.add(user.getAD_Client_ID());
 			boolean valid = false;
 			// authenticated by ldap
-			if (authenticated || isAlreadyAuthenticate) {
+			if (authenticated || isOnlyUser) {
 				valid = true;
 			} else {
 				if (!system.isLDAP() || Util.isEmpty(user.getLDAPUser())) {
@@ -1623,7 +1636,6 @@ public class Login
 		if (client == null)
 			throw new IllegalArgumentException("Tenant missing");
 
-		boolean isAlreadyAuthenticate = "Y".equalsIgnoreCase(Env.getContext(Env.getCtx(), Env.SSO_IS_ALREADY_AUTHENTICATE));
 		String whereRoleType = MRole.getWhereRoleType(roleTypes, "r");
 		ArrayList<KeyNamePair> rolesList = new ArrayList<KeyNamePair>();
 		KeyNamePair[] retValue = null;
@@ -1631,7 +1643,7 @@ public class Login
 			.append("FROM AD_User u")
 			.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
 			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
-		sql.append("WHERE ur.AD_Client_ID=? ").append(isAlreadyAuthenticate ? "" : " AND u.Password IS NOT NULL ").append(" AND ");
+		sql.append("WHERE ur.AD_Client_ID=? AND u.Password IS NOT NULL AND ");
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		if (email_login)
 			sql.append("u.EMail=?");
