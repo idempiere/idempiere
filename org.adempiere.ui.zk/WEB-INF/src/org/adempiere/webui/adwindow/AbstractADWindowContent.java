@@ -3751,7 +3751,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				}
 			}
 
-			ProcessModalDialog dialog = new ProcessModalDialog(this, curWindowNo, adtabPanel.getGridTab().getTabNo(), pi, startWOasking);
+			ProcessModalDialog dialog;
+			if (adtabPanel != null && adtabPanel.getGridTab() != null)
+				dialog = new ProcessModalDialog(this, curWindowNo, adtabPanel.getGridTab().getTabNo(), pi, startWOasking);
+			else
+				dialog = new ProcessModalDialog(this, curWindowNo, pi, startWOasking);
 
 			if (dialog.isValid())
 			{
