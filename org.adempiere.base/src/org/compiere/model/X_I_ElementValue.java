@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_ElementValue
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="I_ElementValue")
 public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_I_ElementValue extends PO implements I_I_ElementValue, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_I_ElementValue (Properties ctx, int I_ElementValue_ID, String trxName)

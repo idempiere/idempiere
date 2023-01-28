@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for MFA_Method
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="MFA_Method")
 public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_MFA_Method extends PO implements I_MFA_Method, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_MFA_Method (Properties ctx, int MFA_Method_ID, String trxName)

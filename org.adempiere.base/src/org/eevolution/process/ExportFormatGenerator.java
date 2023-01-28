@@ -23,6 +23,7 @@ import org.compiere.model.I_EXP_Format;
 import org.compiere.model.MColumn;
 import org.compiere.model.MEXPFormat;
 import org.compiere.model.MEXPFormatLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MWindow;
@@ -75,7 +76,7 @@ public class ExportFormatGenerator extends SvrProcess
 				p_IsInsertRecord = "Y".equals(para.getParameter());
 			}	
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 	}	//	prepare
 

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Tab_Customization
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Tab_Customization")
 public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)

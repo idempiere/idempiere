@@ -34,7 +34,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220913L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_Invoice (Properties ctx, int C_Invoice_ID, String trxName)
@@ -833,7 +833,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DateOrdered);
 	}
 
-	/** Set Date printed.
+	/** Set Date Printed.
 		@param DatePrinted Date the document was printed.
 	*/
 	public void setDatePrinted (Timestamp DatePrinted)
@@ -841,7 +841,7 @@ public class X_C_Invoice extends PO implements I_C_Invoice, I_Persistent
 		set_Value (COLUMNNAME_DatePrinted, DatePrinted);
 	}
 
-	/** Get Date printed.
+	/** Get Date Printed.
 		@return Date the document was printed.
 	  */
 	public Timestamp getDatePrinted()

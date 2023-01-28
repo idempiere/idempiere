@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_JournalGeneratorLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="GL_JournalGeneratorLine")
 public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGeneratorLine, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_GL_JournalGeneratorLine extends PO implements I_GL_JournalGenerat
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_GL_JournalGeneratorLine (Properties ctx, int GL_JournalGeneratorLine_ID, String trxName)

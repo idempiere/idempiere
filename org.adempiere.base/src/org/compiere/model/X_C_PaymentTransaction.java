@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_PaymentTransaction
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_PaymentTransaction")
 public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_C_PaymentTransaction extends PO implements I_C_PaymentTransaction
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_PaymentTransaction (Properties ctx, int C_PaymentTransaction_ID, String trxName)

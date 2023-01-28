@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for MFA_RegisteredDevice
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="MFA_RegisteredDevice")
 public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_MFA_RegisteredDevice extends PO implements I_MFA_RegisteredDevice
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_MFA_RegisteredDevice (Properties ctx, int MFA_RegisteredDevice_ID, String trxName)

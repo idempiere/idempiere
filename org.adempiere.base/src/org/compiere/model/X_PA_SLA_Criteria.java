@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_SLA_Criteria
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PA_SLA_Criteria")
 public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_PA_SLA_Criteria extends PO implements I_PA_SLA_Criteria, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PA_SLA_Criteria (Properties ctx, int PA_SLA_Criteria_ID, String trxName)

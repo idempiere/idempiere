@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for PP_Order_Cost
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_Cost")
 public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_PP_Order_Cost extends PO implements I_PP_Order_Cost, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PP_Order_Cost (Properties ctx, int PP_Order_Cost_ID, String trxName)

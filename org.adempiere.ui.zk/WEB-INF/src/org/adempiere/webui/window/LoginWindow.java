@@ -62,6 +62,7 @@ import org.compiere.util.ValueNamePair;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -185,7 +186,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 
     public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isSSOLogin)
     {
-    	boolean isClientDefined = (clientsKNPairs.length == 1);
+    	boolean isClientDefined = (clientsKNPairs.length == 1 || ! Util.isEmpty(Env.getContext(ctx, Env.AD_USER_ID)));
 		if (pnlRole == null)
 			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined, isSSOLogin);
     	if (isClientDefined) {
@@ -375,4 +376,10 @@ public class LoginWindow extends FWindow implements EventListener<Event>
     	pnlRole.setChangeRole(true);
     	pnlRole.changeRole(ctx);
     }
+
+	@Override
+	public void onPageDetached(Page page) {
+		setWidgetListener("onOK", null);
+		super.onPageDetached(page);
+	}
 }

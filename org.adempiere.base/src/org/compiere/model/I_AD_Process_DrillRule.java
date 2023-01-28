@@ -21,10 +21,10 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Process_DrillRule
- *  @author iDempiere (generated)
+ *  @author iDempiere (generated) 
  *  @version Release 10
  */
-public interface I_AD_Process_DrillRule
+public interface I_AD_Process_DrillRule 
 {
 
     /** TableName=AD_Process_DrillRule */
@@ -35,7 +35,7 @@ public interface I_AD_Process_DrillRule
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 6 - System - Client
+    /** AccessLevel = 6 - System - Client 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(6);
 

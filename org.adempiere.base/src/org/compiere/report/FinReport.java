@@ -28,6 +28,7 @@ import org.compiere.model.I_C_ValidCombination;
 import org.compiere.model.I_T_Report;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MPeriod;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MReportCube;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
@@ -146,7 +147,7 @@ public class FinReport extends SvrProcess
 			else if (name.equals("PA_ReportCube_ID"))
 				p_PA_ReportCube_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		//	Optional Org
 		if (p_Org_ID != 0)

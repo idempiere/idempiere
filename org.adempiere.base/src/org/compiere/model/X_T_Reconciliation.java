@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for T_Reconciliation
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="T_Reconciliation")
 public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_T_Reconciliation extends PO implements I_T_Reconciliation, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_T_Reconciliation (Properties ctx, int T_Reconciliation_ID, String trxName)

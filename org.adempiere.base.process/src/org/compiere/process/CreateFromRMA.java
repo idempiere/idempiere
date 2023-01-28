@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRMA;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
@@ -63,7 +64,7 @@ public class CreateFromRMA extends SvrProcess
 			else if (name.equals("M_RMA_ID"))
 				p_M_RMA_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}
 

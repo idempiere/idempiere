@@ -187,7 +187,8 @@ public class ProcessInfoUtil
 		String sql = "SELECT p.ParameterName,"         			    	//  1
 			+ " p.P_String,p.P_String_To, p.P_Number,p.P_Number_To,"    //  2/3 4/5
 			+ " p.P_Date,p.P_Date_To, p.Info,p.Info_To, "               //  6/7 8/9
-			+ " i.AD_Client_ID, i.AD_Org_ID, i.AD_User_ID "				//	10..12
+			+ " i.AD_Client_ID, i.AD_Org_ID, i.AD_User_ID, "			//	10..12
+			+ " p.IsNotClause "											//  13
 			+ "FROM AD_PInstance_Para p"
 			+ " INNER JOIN AD_PInstance i ON (p.AD_PInstance_ID=i.AD_PInstance_ID) "
 			+ "WHERE p.AD_PInstance_ID=? "
@@ -221,7 +222,8 @@ public class ProcessInfoUtil
 				String Info = rs.getString(8);
 				String Info_To = rs.getString(9);
 				//
-				list.add (new ProcessInfoParameter(ParameterName, Parameter, Parameter_To, Info, Info_To));
+				boolean isNotClause = "Y".equals(rs.getString(13));
+				list.add (new ProcessInfoParameter(ParameterName, Parameter, Parameter_To, Info, Info_To, isNotClause));
 				//
 				if (pi.getAD_Client_ID() == null)
 					pi.setAD_Client_ID (rs.getInt(10));

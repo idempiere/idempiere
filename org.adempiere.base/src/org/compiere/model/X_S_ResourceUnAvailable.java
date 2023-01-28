@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_ResourceUnAvailable
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="S_ResourceUnAvailable")
 public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailable, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_S_ResourceUnAvailable extends PO implements I_S_ResourceUnAvailab
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_S_ResourceUnAvailable (Properties ctx, int S_ResourceUnAvailable_ID, String trxName)

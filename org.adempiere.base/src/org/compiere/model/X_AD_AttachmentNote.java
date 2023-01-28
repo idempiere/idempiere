@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_AttachmentNote
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_AttachmentNote")
 public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_AttachmentNote extends PO implements I_AD_AttachmentNote, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_AttachmentNote (Properties ctx, int AD_AttachmentNote_ID, String trxName)

@@ -93,7 +93,6 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		ZKUpdateUtil.setHflex(bxRecentItems, "1");
 		this.setSclass("recentitems-box");
 		recentItemsContent.appendChild(bxRecentItems);
-		createRecentItemsPanel();
 		
 		Toolbar recentItemsToolbar = new Toolbar();
 		this.appendChild(recentItemsToolbar);
@@ -160,11 +159,6 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 				topic.subscribe(topicSubscriber);
 			}
 		}
-	}
-
-	private void createRecentItemsPanel()
-	{
-		refresh();
 	}
 
     /**
@@ -365,6 +359,11 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		cleanup();
 	}
 	
+	@Override
+	public boolean isLazy() {
+		return true;
+	}
+
 	static class TopicSubscriber implements ITopicSubscriber<Integer> {
 		@Override
 		public void onMessage(Integer message) {

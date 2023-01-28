@@ -55,6 +55,8 @@ public class WDocumentStatusPanel extends Panel {
 	/** Document Status Indicators	*/
 	private MDocumentStatus[] 	m_indicators = null;
 
+	private int lastRefreshCount;
+
 	/**	Logger	*/
 	private static final CLogger log = CLogger.getCLogger (WDocumentStatusPanel.class);
 
@@ -102,27 +104,28 @@ public class WDocumentStatusPanel extends Panel {
 			Row row = new Row();
 			rows.appendChild(row);
 
-			WDocumentStatusIndicator pi = new WDocumentStatusIndicator(m_indicators[i]);
+			WDocumentStatusIndicator pi = new WDocumentStatusIndicator(m_indicators[i], true);
 			row.appendChild(pi);
 			indicatorList.add(pi);
 		}
 	}	//	init
 
 	public void refresh() {
-		int count = 0;
+		lastRefreshCount = 0;
 		for (WDocumentStatusIndicator indicator : indicatorList) {
 			indicator.refresh();
 			if (indicator.getDocumentStatus().getAD_Client_ID() == 0)
-				count += indicator.getStatusCount();
+				lastRefreshCount += indicator.getStatusCount();
 		}
-		EventQueue<Event> queue = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, true);
-		Event event = new Event(IDesktop.ON_ACTIVITIES_CHANGED_EVENT, null, count);
-		queue.publish(event);
+		
 	}
 
-	public void updateUI() {
+	public void updateUI() {		
 		for (WDocumentStatusIndicator indicator : indicatorList) {
 			indicator.updateUI();
 		}
+		EventQueue<Event> queue = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, true);
+		Event event = new Event(IDesktop.ON_ACTIVITIES_CHANGED_EVENT, null, lastRefreshCount);
+		queue.publish(event);		
 	}
 }

@@ -25,8 +25,7 @@
 **********************************************************************/
 package org.idempiere.process;
 
-import java.util.logging.Level;
-
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
@@ -45,8 +44,7 @@ public class VerifyLanguageConfiguration extends SvrProcess
 	{
 		for (ProcessInfoParameter para : getParameter())
 		{
-			String name = para.getParameterName();
-			log.log(Level.SEVERE, "Unknown Parameter: " + name);
+			MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 	}	//	prepare
 
