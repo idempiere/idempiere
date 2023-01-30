@@ -83,7 +83,7 @@ public class ServletRegistration extends Registration {
 					if (req.getPathInfo().endsWith("logout"))
 					{
 						req.getSession().removeAttribute(ISSOPrinciple.SSO_PRINCIPLE_SESSION_NAME);
-						resp.sendRedirect(req.getRequestURI());
+						resp.sendRedirect("osgi/system/console/bundles");
 					}
 				}
 				else
