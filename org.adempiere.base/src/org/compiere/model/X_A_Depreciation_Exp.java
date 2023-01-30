@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Exp
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation_Exp")
 public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Exp (Properties ctx, int A_Depreciation_Exp_ID, String trxName)
@@ -688,7 +688,7 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 	public static final String POSTINGTYPE_Reservation = "R";
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
-	/** Set PostingType.
+	/** Set Posting Type.
 		@param PostingType The type of posted amount for the transaction
 	*/
 	public void setPostingType (String PostingType)
@@ -697,7 +697,7 @@ public class X_A_Depreciation_Exp extends PO implements I_A_Depreciation_Exp, I_
 		set_Value (COLUMNNAME_PostingType, PostingType);
 	}
 
-	/** Get PostingType.
+	/** Get Posting Type.
 		@return The type of posted amount for the transaction
 	  */
 	public String getPostingType()

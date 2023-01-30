@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.I_AD_Role_Included;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRole;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -65,6 +66,8 @@ public class CopyRole extends SvrProcess
 				m_AD_Client_ID = para[i].getParameterAsInt();
 			else if (name.equals("AD_Org_ID"))
 				m_AD_Org_ID = para[i].getParameterAsInt();
+			else
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}		
 	}	//	prepare
 

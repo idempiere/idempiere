@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MAging;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRole;
 import org.compiere.util.DB;
 import org.compiere.util.TimeUtil;
@@ -85,7 +86,7 @@ public class Aging extends SvrProcess
 			else if (name.equals("IsListInvoices"))
 				p_IsListInvoices = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if (p_StatementDate == null)
 			p_StatementDate = new Timestamp (System.currentTimeMillis());

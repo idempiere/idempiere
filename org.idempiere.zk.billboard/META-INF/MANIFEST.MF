@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Billboard
 Bundle-SymbolicName: org.idempiere.zk.billboard
-Bundle-Version: 10.0.0.qualifier
+Bundle-Version: 11.0.0.qualifier
 Bundle-Vendor: iDempiere
 Automatic-Module-Name: org.idempiere.zk.billboard
 Bundle-RequiredExecutionEnvironment: JavaSE-11

@@ -24,7 +24,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_PromotionLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_PromotionLine")
 public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_M_PromotionLine extends PO implements I_M_PromotionLine, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_PromotionLine (Properties ctx, int M_PromotionLine_ID, String trxName)

@@ -991,6 +991,24 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 				}
 			}
 		}
+		pressedLogic();
+		readOnlyLogic();
+	}
+	
+	private void pressedLogic()
+	{
+		for (ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons)
+		{
+			toolbarCustomBtn.pressedLogic();
+		}
+	}
+
+	private void readOnlyLogic()
+	{
+		for (ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons)
+		{
+			toolbarCustomBtn.readOnlyLogic();
+		}
 	}
 
 	@Override

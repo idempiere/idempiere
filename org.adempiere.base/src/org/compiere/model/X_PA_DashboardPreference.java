@@ -32,7 +32,7 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220823L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PA_DashboardPreference (Properties ctx, int PA_DashboardPreference_ID, String trxName)
@@ -44,6 +44,8 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 // 0
 			setAD_User_ID (0);
 // 0
+			setFlexGrow (0);
+// 1
 			setIsCollapsedByDefault (false);
 // N
 			setIsShowInDashboard (true);
@@ -63,6 +65,8 @@ public class X_PA_DashboardPreference extends PO implements I_PA_DashboardPrefer
 // 0
 			setAD_User_ID (0);
 // 0
+			setFlexGrow (0);
+// 1
 			setIsCollapsedByDefault (false);
 // N
 			setIsShowInDashboard (true);

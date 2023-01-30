@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.DB;
 
 /**
@@ -63,7 +64,7 @@ public class ImportReportLine extends SvrProcess
 			else if (name.equals("DeleteOldImported"))
 				m_deleteOldImported = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if (m_DateValue == null)
 			m_DateValue = new Timestamp (System.currentTimeMillis());

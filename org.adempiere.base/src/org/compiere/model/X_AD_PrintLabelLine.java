@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintLabelLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_PrintLabelLine")
 public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_PrintLabelLine extends PO implements I_AD_PrintLabelLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_PrintLabelLine (Properties ctx, int AD_PrintLabelLine_ID, String trxName)

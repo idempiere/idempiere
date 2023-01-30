@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Report
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PA_Report")
 public class X_PA_Report extends PO implements I_PA_Report, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PA_Report (Properties ctx, int PA_Report_ID, String trxName)
@@ -232,7 +232,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	/** Set Jasper Process.
-		@param JasperProcess_ID The Jasper Process used by the printengine if any process defined
+		@param JasperProcess_ID The Jasper Process used by the print engine if any process defined
 	*/
 	public void setJasperProcess_ID (int JasperProcess_ID)
 	{
@@ -243,7 +243,7 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	/** Get Jasper Process.
-		@return The Jasper Process used by the printengine if any process defined
+		@return The Jasper Process used by the print engine if any process defined
 	  */
 	public int getJasperProcess_ID()
 	{

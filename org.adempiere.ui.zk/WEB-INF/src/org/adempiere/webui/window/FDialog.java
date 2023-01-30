@@ -103,6 +103,8 @@ public class FDialog
     }
 
 	/**
+	 * @deprecated Use {@link Dialog}.warn(windowNo, adMessage, message, null) instead
+	 * 
 	 *	Display warning with warning icon
 	 *	@param	windowNo	Number of Window
      *  @param comp

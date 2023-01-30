@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_Process_DrillRule
- *  @author iDempiere (generated)
+ *  @author iDempiere (generated) 
  *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Process_DrillRule")
-public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule, I_Persistent
+public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220628L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Process_DrillRule (Properties ctx, int AD_Process_DrillRule_ID, String trxName)
@@ -65,7 +65,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
     }
 
     /** AccessLevel
-      * @return 6 - System - Client
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {

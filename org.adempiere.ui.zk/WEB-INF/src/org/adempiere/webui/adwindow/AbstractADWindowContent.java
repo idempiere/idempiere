@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.Callback;
@@ -254,6 +255,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         return comp;
     }
 
+	/**
+	 * 
+	 * @return {@link BreadCrumb}
+	 */
 	public BreadCrumb getBreadCrumb()
 	{
 		return breadCrumb;
@@ -293,6 +298,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
     protected abstract IADTabbox createADTab();
 
+    /**
+     * handle switching of editing status
+     * @param editStatus true if editing (dirty)
+     */
     protected abstract void switchEditStatus(boolean editStatus);
     
     /**
@@ -793,7 +802,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	        	getComponent().addEventListener("onInitialQuery", new EventListener<Event>() {
 					@Override
 					public void onEvent(Event event) throws Exception {
-						getComponent().getParent().appendChild(findWindow);
+						if (findWindow.getParent() != getComponent().getParent())
+							getComponent().getParent().appendChild(findWindow);
 						LayoutUtils.openEmbeddedWindow(getComponent().getParent(), findWindow, "overlap");						
 					}
 				});
@@ -824,11 +834,19 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		findWindow.setContentStyle("background-color: #fff; width: 99%; margin: auto;");
 	}
 
+	/**
+	 * 
+	 * @return title of window
+	 */
     public String getTitle()
     {
         return title;
     }
     
+    /**
+     * 
+     * @return {@link MImage}
+     */
     public MImage getImage()
     {
     	return image;
@@ -837,6 +855,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     /**
      * @see ToolbarListener#onDetailRecord()
      */
+    @Override
     public void onDetailRecord()
     {
     	adTabbox.onDetailRecord();
@@ -845,6 +864,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
      * @see ToolbarListener#onParentRecord()
      */
+    @Override
     public void onParentRecord()
     {
     	List<BreadCrumbLink> parents = breadCrumb.getParentLinks();
@@ -856,6 +876,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     /**
      * @see ToolbarListener#onFirst()
      */
+    @Override
     public void onFirst()
     {
     	Callback<Boolean> callback = new Callback<Boolean>() {
@@ -873,6 +894,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     /**
      * @see ToolbarListener#onLast()
      */
+    @Override
     public void onLast()
     {
         Callback<Boolean> callback = new Callback<Boolean>() {
@@ -890,6 +912,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     /**
      * @see ToolbarListener#onNext()
      */
+    @Override
     public void onNext()
     {
         Callback<Boolean> callback = new Callback<Boolean>() {
@@ -907,6 +930,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     /**
      * @see ToolbarListener#onPrevious()
      */
+    @Override
     public void onPrevious()
     {
         Callback<Boolean> callback = new Callback<Boolean>() {
@@ -922,7 +946,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     }
 
     /**
-     * @see ToolbarListener#onPrevious()
+     * handle tree navigation
+     * @param gt
+     * @param rowIndex
      */
     public void onTreeNavigate(final GridTab gt, final int rowIndex)
     {
@@ -931,7 +957,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     		public void onCallback(Boolean result) {
     			if (result) {
     				gt.navigate(rowIndex);
-    				//focusToActivePanel();
     			}
     		}
     	};
@@ -955,6 +980,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
 	 *	@see ToolbarListener#onLock()
 	 */
+	@Override
 	public void onLock()
 	{
 		if (!toolbar.isPersonalLock)
@@ -1017,6 +1043,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     /**
      * @see ToolbarListener#onAttachment()
      */
+	@Override
     public void onAttachment()
     {
 		int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
@@ -1049,6 +1076,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		win.focus();
 	}
 
+	@Override
     public void onChat()
     {
     	int recordId = adTabbox.getSelectedGridTab().getRecord_ID();
@@ -1093,6 +1121,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	chat.showWindow();
     }
 
+	/**
+	 * handle post it event
+	 */
     public void onPostIt()
     {
     	int recordId = adTabbox.getSelectedGridTab().getRecord_ID();
@@ -1146,6 +1177,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     /**
      * @see ToolbarListener#onToggle()
      */
+	@Override
     public void onToggle()
     {
     	adTabbox.getSelectedTabpanel().switchRowPresentation();
@@ -1257,6 +1289,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      * @param event
      * @see EventListener#onEvent(Event)
      */
+	@Override
     public void onEvent(Event event)
     {
     	if (CompositeADTabbox.ON_SELECTION_CHANGED_EVENT.equals(event.getName()))
@@ -1407,6 +1440,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 	}
 
+	/**
+	 * save (if needed) and execute callback
+	 * @param callback
+	 */
 	public void saveAndNavigate(final Callback<Boolean> callback) {
 		if (adTabbox != null)
 		{
@@ -1566,6 +1603,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 * @param e
 	 * @see DataStatusListener#dataStatusChanged(DataStatusEvent)
 	 */
+	@Override
     public void dataStatusChanged(DataStatusEvent e)
     {
     	//ignore non-ui thread event.
@@ -1791,7 +1829,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         		isImporting = gridTable.isImporting();
         	}
         	if (!isImporting) {
-        		Dialog.warn(curWindowNo, e.getAD_Message(), e.getInfo());
+        		Dialog.warn(curWindowNo, e.getAD_Message(), e.getInfo(), null);
         		e.setConfirmed(true);   //  show just once - if MTable.setCurrentRow is involved the status event is re-issued
         	}
         }
@@ -1944,7 +1982,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
 
         if (adTabbox.getSelectedGridTab().getTabLevel() == 0 && record_ID != masterRecord) {
-        	clenFindWindowHashMap();
+        	cleanFindWindowHashMap();
         	masterRecord = record_ID;
         }
 
@@ -1955,9 +1993,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         toolbar.enableRequests(!isNewRow);
 		toolbar.setPressed("Find", adTabbox.getSelectedGridTab().isQueryActive() || 
 				(!isNewRow && (m_onlyCurrentRows || m_onlyCurrentDays > 0)));
-		/*if (adTabbox.getSelectedGridTab().isQueryActive() && 
-				tabFindWindowHashMap.get(adTabbox.getSelectedGridTab()) != null) 
-			findWindow = tabFindWindowHashMap.get(adTabbox.getSelectedGridTab());*/
 		toolbar.refreshUserQuery(adTabbox.getSelectedGridTab().getAD_Tab_ID(), getCurrentFindWindow() != null ? getCurrentFindWindow().getAD_UserQuery_ID() : 0);
 
         toolbar.enablePrint(adTabbox.getSelectedGridTab().isPrinted() && !isNewRow);
@@ -2091,51 +2126,21 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     /**
      * @see ToolbarListener#onRefresh()
      */
+	@Override
     public void onRefresh()
     {
     	GridTab gridTab = adTabbox.getSelectedGridTab();
-    	/*if (gridTab != null && gridTab.getTableModel() != null)
-    	{
-    		gridTab.getTableModel().resetCacheSortState();
-    	}
-    	Column sortColumn = findCurrentSortColumn();*/
     	onRefresh(true, false);
-    	/*if (sortColumn != null)
-    	{
-    		sortColumn.setSortDirection("natural");
-    	}*/
     	if (gridTab.isSortTab()) { // refresh is not refreshing sort tabs
     		IADTabpanel tabPanel = adTabbox.getSelectedTabpanel();
     		tabPanel.query(false, 0, 0);
     	}
     }
-/*
-    private Column findCurrentSortColumn() {
-		IADTabpanel iadtabpanel = getADTab().getSelectedTabpanel();
-		if (iadtabpanel instanceof ADTabpanel) {
-			ADTabpanel adtabpanel = (ADTabpanel) iadtabpanel;
-			Grid grid = adtabpanel.getGridView().getListbox();
-			Columns columns = grid.getColumns();
-			if (columns != null) {
-				List<?> list = columns.getChildren();
-				for(int i = 0; i < list.size(); i++)
-				{
-					Component c = (Component) list.get(i);
-					if (c instanceof Column) {
-						Column column = (Column) c;
-						if (!"natural".equals(column.getSortDirection())) {
-							return column;
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
-*/
+	
     /**
      * @see ToolbarListener#onHelp()
      */
+	@Override
     public void onHelp()
     {	
     	closeToolbarPopup("Help");
@@ -2289,6 +2294,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     /**
      * @see ToolbarListener#onFind()
      */
+    @Override
     public void onFind()
     {
         if (adTabbox.getSelectedGridTab() == null)
@@ -2300,7 +2306,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
         if (adTabbox.getDirtyADTabpanel() == null) {
         	doOnFind();
         } else {
-            onSave(false, false, new Callback<Boolean>() {
+            onSave(false, true, new Callback<Boolean>() {
     			@Override
     			public void onCallback(Boolean result) {
     				if (result) {
@@ -2373,7 +2379,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			});
         }
 
-        getComponent().getParent().appendChild(getCurrentFindWindow());
+        if (getCurrentFindWindow().getParent() != getComponent().getParent())
+        	getComponent().getParent().appendChild(getCurrentFindWindow());
+        else
+        	getCurrentFindWindow().setVisible(true);
         showBusyMask(getCurrentFindWindow());                
         LayoutUtils.openEmbeddedWindow(toolbar, getCurrentFindWindow(), "after_start");
 	}
@@ -2515,6 +2524,12 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		});
     }
 
+    /**
+     * 
+     * @param onSaveEvent
+     * @param onNavigationEvent
+     * @param callback
+     */
     public void onSave(final boolean onSaveEvent, final boolean onNavigationEvent, final Callback<Boolean> callback) {
     	final Callback<Boolean> postCallback = new Callback<Boolean>() {
 			@Override
@@ -2543,6 +2558,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, preCallback);
 	}
 
+    /**
+     * handle WPaymentEditor.ON_SAVE_PAYMENT event.
+     * Do not call this directly
+     */
 	public void onSavePayment()
     {
     	onSave(false, false, new Callback<Boolean>() {
@@ -2555,9 +2574,6 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		});
     }
 
-    /**
-     * @param onSaveEvent
-     */
     private void onSaveCallback(final boolean onSaveEvent, final boolean onNavigationEvent, final Callback<Boolean> callback)
     {
     	final boolean wasChanged = toolbar.isSaveEnable();
@@ -2720,6 +2736,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
 	 * @see ToolbarListener#onSaveCreate()
 	 */
+	@Override
 	public void onSaveCreate()
     {
     	onSave(true, true, new Callback<Boolean>() {
@@ -3031,12 +3048,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				}
 			}
 		};
-		onSave(false, false, callback);
+		onSave(false, true, callback);
 	}
 
 	/**
      * @see ToolbarListener#onReport()
      */
+	@Override
 	public void onReport() {
 		if (!MRole.getDefault().isCanReport(adTabbox.getSelectedGridTab().getAD_Table_ID()))
 		{
@@ -3055,7 +3073,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				}
 			}
 		};
-		onSave(false, false, callback);
+		onSave(false, true, callback);
 	}
 
 	private void onReport0() {
@@ -3066,6 +3084,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
      * @see ToolbarListener#onZoomAcross()
      */
+	@Override
 	public void onZoomAcross() {
 		if (toolbar.getEvent() != null)
 		{
@@ -3098,6 +3117,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
      * @see ToolbarListener#onActiveWorkflows()
      */
+	@Override
 	public void onActiveWorkflows() {
 		if (toolbar.getEvent() != null)
 		{
@@ -3128,6 +3148,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
      * @see ToolbarListener#onRequests()
      */
+	@Override
 	public void onRequests()
 	{
 		if (toolbar.getEvent() != null)
@@ -3149,6 +3170,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
      * @see ToolbarListener#onProductInfo()
      */
+	@Override
 	public void onProductInfo()
 	{
 		closeToolbarPopup("ProductInfo");
@@ -3161,6 +3183,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
      * @see ToolbarListener#onArchive()
      */
+	@Override
 	public void onArchive()
 	{
 		if (toolbar.getEvent() != null)
@@ -3304,7 +3327,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 
 		if (adTabbox.needSave(true, false))
 		{
-			onSave(false, false, new Callback<Boolean>() {
+			onSave(false, true, new Callback<Boolean>() {
 				@Override
 				public void onCallback(Boolean result) {
 					if (result) {
@@ -3528,6 +3551,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		return mask;
 	}
 	
+	/**
+	 * hide busy mask
+	 */
 	public void hideBusyMask() {
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();
@@ -3538,6 +3564,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 	}
 	
+	/**
+	 * show busy mask over window
+	 * @param window
+	 */
 	public void showBusyMask(Window window) {
 		getComponent().getParent().appendChild(getMask());
 		StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
@@ -3595,6 +3625,14 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param wButton
+	 * @param startWOasking
+	 * @param table_ID
+	 * @param record_ID
+	 * @param isProcessMandatory
+	 */
 	public void executeButtonProcess(final IProcessButton wButton,
 			final boolean startWOasking, final int table_ID, final int record_ID,
 			boolean isProcessMandatory) {
@@ -3713,7 +3751,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				}
 			}
 
-			ProcessModalDialog dialog = new ProcessModalDialog(this, curWindowNo, pi, startWOasking);
+			ProcessModalDialog dialog;
+			if (adtabPanel != null && adtabPanel.getGridTab() != null)
+				dialog = new ProcessModalDialog(this, curWindowNo, adtabPanel.getGridTab().getTabNo(), pi, startWOasking);
+			else
+				dialog = new ProcessModalDialog(this, curWindowNo, pi, startWOasking);
 
 			if (dialog.isValid())
 			{
@@ -3797,6 +3839,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 * @param event
 	 * @see ActionListener#actionPerformed(ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(final ActionEvent event)
 	{
 		Runnable runnable = new Runnable() {
@@ -3857,6 +3900,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 	}	//	processButtonCallout
 
+	/**
+	 * 
+	 * @param button
+	 * @return {@link IADTabpanel}
+	 */
 	public IADTabpanel findADTabpanel(IProcessButton button) {
 		IADTabpanel adtab = null;
 		if (button.getADTabpanel() != null)
@@ -3982,6 +4030,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 * @see CustomizeGridViewDialog
      * @see ToolbarListener#onCustomize()
      */
+	@Override
 	public void onCustomize() {
 		ADTabpanel tabPanel = (ADTabpanel) getADTab().getSelectedTabpanel();
 		CustomizeGridViewDialog.onCustomize(tabPanel, b -> {
@@ -4013,18 +4062,35 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		}
 	}
 
+	/**
+	 * 
+	 * @return true if dirty
+	 */
 	public boolean isPendingChanges() {
 		return adTabbox.getDirtyADTabpanel() != null;
 	}
 
+	/**
+	 * 
+	 * @param adwindow
+	 */
 	public void setADWindow(ADWindow adwindow) {
 		this.adwindow = adwindow;
 	}
 	
+	/**
+	 * 
+	 * @return {@link ADWindow}
+	 */
 	public ADWindow getADWindow() {
 		return adwindow;
 	}
 	
+	/**
+	 * 
+	 * @param findFields
+	 * @return true if find window found and init ok
+	 */
 	public boolean getFindWindow(GridField[] findFields) {
 		FindWindow findWindow = getCurrentFindWindow();
 		if (findWindow != null && isCurrentFindWindowValid()) {
@@ -4046,6 +4112,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		return true;
 	}
 	
+	/**
+	 * 
+	 * @return {@link FindWindow}
+	 */
 	public FindWindow getCurrentFindWindow() {
 		return tabFindWindowHashMap.get(adTabbox.getSelectedGridTab());
 	}
@@ -4054,8 +4124,15 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 * Clean all the detail cached FindWindow objects
 	 * when the master record is changed
 	 */
-	private void clenFindWindowHashMap() {
+	private void cleanFindWindowHashMap() {		
+		List<FindWindow> list = tabFindWindowHashMap.entrySet().stream().filter(e -> e.getKey().getTabLevel() != 0)
+			.map(Map.Entry::getValue)
+	        .collect(Collectors.toList());
 		tabFindWindowHashMap.keySet().removeIf(tab -> tab.getTabLevel() != 0);
+		if (!list.isEmpty()) {
+			list.forEach(e -> AEnv.detachInputElement(e));
+			Executions.schedule(getComponent().getDesktop(), e -> list.forEach(f -> f.detach()), new Event("onDetachCacheFindWindow"));
+		}
 	}
 	
 	private void clearTitleRelatedContext() {
@@ -4114,10 +4191,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	/**
 	 * Implementation to work key listener for the current open Quick Form.
 	 */
-	QuickGridView currQGV = null;
+	protected QuickGridView currQGV = null;
 
 	/**
-	 * @return
+	 * @return {@link QuickGridView}
 	 */
 	public QuickGridView getCurrQGV()
 	{

@@ -41,6 +41,7 @@ import org.compiere.model.MLocation;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrderPaySchedule;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.PO;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -124,7 +125,7 @@ public class InvoiceGenerate extends SvrProcess
 			else if (name.equals("MinimumAmt"))
 				p_MinimumAmt = para[i].getParameterAsBigDecimal();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 
 		//	Login Date
@@ -179,7 +180,7 @@ public class InvoiceGenerate extends SvrProcess
 			//
 			sql.append(") AND o.C_DocType_ID IN (SELECT C_DocType_ID FROM C_DocType ")
 					.append("WHERE DocBaseType='SOO' AND DocSubTypeSO NOT IN ('ON','OB','WR')) ")
-				.append("ORDER BY AD_Org_ID, M_Warehouse_ID, PriorityRule, C_BPartner_ID, Bill_Location_ID, Bill_User_ID, C_Order_ID");
+				.append("ORDER BY o.AD_Org_ID, o.M_Warehouse_ID, o.PriorityRule, o.C_BPartner_ID, o.Bill_Location_ID, o.Bill_User_ID, o.C_Order_ID");
 		}
 	//	sql += " FOR UPDATE";
 		

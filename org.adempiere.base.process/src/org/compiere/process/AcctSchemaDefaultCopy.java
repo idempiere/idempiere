@@ -23,6 +23,7 @@ import org.adempiere.process.UUIDGenerator;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaDefault;
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.PO;
 import org.compiere.model.X_C_BP_Customer_Acct;
@@ -69,7 +70,7 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 			else if (name.equals("CopyOverwriteAcct"))
 				p_CopyOverwriteAcct = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 		

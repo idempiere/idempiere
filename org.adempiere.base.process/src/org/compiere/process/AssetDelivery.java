@@ -26,6 +26,7 @@ import org.compiere.model.MAsset;
 import org.compiere.model.MAssetDelivery;
 import org.compiere.model.MClient;
 import org.compiere.model.MMailText;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProductDownload;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
@@ -81,7 +82,7 @@ public class AssetDelivery extends SvrProcess
 			else if (name.equals("AttachAsset"))
 				m_AttachAsset = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if (m_GuaranteeDate == null)
 			m_GuaranteeDate = new Timestamp (System.currentTimeMillis());

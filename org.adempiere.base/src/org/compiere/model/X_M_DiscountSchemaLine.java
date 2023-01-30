@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DiscountSchemaLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_DiscountSchemaLine")
 public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaLine (Properties ctx, int M_DiscountSchemaLine_ID, String trxName)
@@ -659,8 +659,8 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 		return ii.intValue();
 	}
 
-	/** Set Discount Pricelist.
-		@param M_DiscountSchemaLine_ID Line of the pricelist trade discount schema
+	/** Set Discount Price List.
+		@param M_DiscountSchemaLine_ID Line of the price list trade discount schema
 	*/
 	public void setM_DiscountSchemaLine_ID (int M_DiscountSchemaLine_ID)
 	{
@@ -670,8 +670,8 @@ public class X_M_DiscountSchemaLine extends PO implements I_M_DiscountSchemaLine
 			set_ValueNoCheck (COLUMNNAME_M_DiscountSchemaLine_ID, Integer.valueOf(M_DiscountSchemaLine_ID));
 	}
 
-	/** Get Discount Pricelist.
-		@return Line of the pricelist trade discount schema
+	/** Get Discount Price List.
+		@return Line of the price list trade discount schema
 	  */
 	public int getM_DiscountSchemaLine_ID()
 	{

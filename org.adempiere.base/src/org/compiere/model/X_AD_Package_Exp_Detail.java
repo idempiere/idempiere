@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Exp_Detail
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Package_Exp_Detail")
 public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Detail, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp_Detail (Properties ctx, int AD_Package_Exp_Detail_ID, String trxName)
@@ -652,8 +652,8 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public static final String DBTYPE_SQLServer = "SQL";
 	/** Sybase = Sybase */
 	public static final String DBTYPE_Sybase = "Sybase";
-	/** Set DBType.
-		@param DBType DBType
+	/** Set DB Type.
+		@param DBType DB Type
 	*/
 	public void setDBType (String DBType)
 	{
@@ -661,8 +661,8 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 		set_Value (COLUMNNAME_DBType, DBType);
 	}
 
-	/** Get DBType.
-		@return DBType	  */
+	/** Get DB Type.
+		@return DB Type	  */
 	public String getDBType()
 	{
 		return (String)get_Value(COLUMNNAME_DBType);

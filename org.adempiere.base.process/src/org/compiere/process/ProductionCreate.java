@@ -2,9 +2,9 @@ package org.compiere.process;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.compiere.model.I_M_ProductionPlan;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduction;
 import org.compiere.model.MProductionPlan;
 import org.compiere.model.Query;
@@ -43,7 +43,7 @@ public class ProductionCreate extends SvrProcess {
 			else if ("PP_Product_BOM_ID".equals(name))
 				p_PP_Product_BOM_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.WARNING, "Unknown Parameter: " + name);		
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		
 		p_M_Production_ID = getRecord_ID();

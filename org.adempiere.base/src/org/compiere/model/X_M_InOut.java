@@ -34,7 +34,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220913L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_InOut (Properties ctx, int M_InOut_ID, String trxName)
@@ -565,7 +565,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DateOrdered);
 	}
 
-	/** Set Date printed.
+	/** Set Date Printed.
 		@param DatePrinted Date the document was printed.
 	*/
 	public void setDatePrinted (Timestamp DatePrinted)
@@ -573,7 +573,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		set_Value (COLUMNNAME_DatePrinted, DatePrinted);
 	}
 
-	/** Get Date printed.
+	/** Get Date Printed.
 		@return Date the document was printed.
 	  */
 	public Timestamp getDatePrinted()
@@ -581,7 +581,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DatePrinted);
 	}
 
-	/** Set Date received.
+	/** Set Date Received.
 		@param DateReceived Date a product was received
 	*/
 	public void setDateReceived (Timestamp DateReceived)
@@ -589,7 +589,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		set_Value (COLUMNNAME_DateReceived, DateReceived);
 	}
 
-	/** Get Date received.
+	/** Get Date Received.
 		@return Date a product was received
 	  */
 	public Timestamp getDateReceived()

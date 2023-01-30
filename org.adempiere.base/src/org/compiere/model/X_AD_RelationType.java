@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_RelationType
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_RelationType")
 public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_RelationType extends PO implements I_AD_RelationType, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_RelationType (Properties ctx, int AD_RelationType_ID, String trxName)

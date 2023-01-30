@@ -510,6 +510,10 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		if (!Env.isSOTrx(Env.getCtx(), m_WindowNo))
 			return 0; // No product restrictions for PO
 
+		String ignoreProduct = Env.getContext(Env.getCtx(), m_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE+"IgnoreProductInLocatorEditor");
+		if ("Y".equalsIgnoreCase(ignoreProduct))
+			return 0;
+
 		String only_Product = null;
 		if (gridField != null && gridField.getVO().TabNo > 0)
 			only_Product = Env.getContext(Env.getCtx(), m_WindowNo, gridField.getVO().TabNo, "M_Product_ID", false, true);

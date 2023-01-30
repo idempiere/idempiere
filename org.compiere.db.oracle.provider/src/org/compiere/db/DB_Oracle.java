@@ -962,17 +962,26 @@ public class DB_Oracle implements AdempiereDatabase
 		
 		return builder.toString();
 	}
-
+	
 	@Override
 	public String intersectClauseForCSV(String columnName, String csv) {
+		return intersectClauseForCSV(columnName, csv, false);
+	}
+	
+	@Override
+	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("toTableOfVarchar2(")
 			.append(columnName)
 			.append(")");
 		builder.append(" MULTISET INTERSECT ")
 			.append("toTableOfVarchar2(")
-			.append(DB.TO_STRING(csv))
-			.append(") IS NOT EMPTY");
+			.append(DB.TO_STRING(csv)).append(") IS ");
+		
+		if(!isNotClause)
+			builder.append("NOT "); 
+			
+		builder.append("EMPTY");
 		
 		return builder.toString();
 	}

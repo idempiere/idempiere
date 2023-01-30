@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Conversion_Rate
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_Conversion_Rate")
 public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_Conversion_Rate extends PO implements I_C_Conversion_Rate, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_Conversion_Rate (Properties ctx, int C_Conversion_Rate_ID, String trxName)

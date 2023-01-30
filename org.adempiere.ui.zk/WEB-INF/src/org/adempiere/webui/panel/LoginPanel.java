@@ -76,6 +76,7 @@ import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
@@ -83,6 +84,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.sys.ComponentCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Checkbox;
@@ -346,6 +348,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         pnlButtons.addActionListener(this);
         Button okBtn = pnlButtons.getButton(ConfirmPanel.A_OK);
         okBtn.setWidgetListener("onClick", "zAu.cmd0.showBusy(null)");
+        okBtn.addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, t -> ((AbstractComponent)t).setWidgetListener("onClick", null));
 
         Button helpButton = pnlButtons.createButton(ConfirmPanel.A_HELP);
 		helpButton.addEventListener(Events.ON_CLICK, this);
@@ -490,7 +493,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 		}
 		catch (Exception e) {
 			String message = e.getMessage();
-			Dialog.warn(0, "URLnotValid", message);
+			Dialog.warn(0, "URLnotValid", message, null);
 		}
 	}
 

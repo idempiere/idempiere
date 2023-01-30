@@ -114,6 +114,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	private static final CLogger log = CLogger.getCLogger(AbstractProcessDialog.class);
 
 	protected int m_WindowNo;
+	protected int m_TabNo;
 	private Properties m_ctx;
 	private int m_AD_Process_ID;
 	private ProcessInfo m_pi = null;
@@ -158,8 +159,26 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 */
 	protected boolean init(Properties ctx, int WindowNo, int AD_Process_ID, ProcessInfo pi, boolean autoStart, boolean isDisposeOnComplete)
 	{
+		return init(ctx, WindowNo, 0, AD_Process_ID, pi, autoStart, isDisposeOnComplete);
+	}
+
+	/**
+	 * layout as below
+	 * 
+	 * @param  ctx
+	 * @param  WindowNo
+	 * @param  TabNo
+	 * @param  AD_Process_ID
+	 * @param  pi
+	 * @param  autoStart
+	 * @param  isDisposeOnComplete
+	 * @return
+	 */
+	protected boolean init(Properties ctx, int WindowNo, int TabNo, int AD_Process_ID, ProcessInfo pi, boolean autoStart, boolean isDisposeOnComplete)
+	{
 		m_ctx = ctx;
 		m_WindowNo = WindowNo;
+		m_TabNo = TabNo;
 		m_AD_Process_ID = AD_Process_ID;
 		setProcessInfo(pi);
 		m_disposeOnComplete = isDisposeOnComplete;
@@ -214,7 +233,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		m_pi.setTitle(m_Name);
 		m_pi.setAD_Process_UU(m_AD_Process_UU);
 		
-		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_pi);		
+		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_TabNo, m_pi);	
 		if ( !parameterPanel.init() ) {
 			if (m_ShowHelp != null && MProcess.SHOWHELP_DonTShowHelp.equals(m_ShowHelp))
 				autoStart = true;

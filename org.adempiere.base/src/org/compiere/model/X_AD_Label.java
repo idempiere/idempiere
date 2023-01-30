@@ -30,7 +30,7 @@ public class X_AD_Label extends PO implements I_AD_Label, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220525L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Label (Properties ctx, int AD_Label_ID, String trxName)

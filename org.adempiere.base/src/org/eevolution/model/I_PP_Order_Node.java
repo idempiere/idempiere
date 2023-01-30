@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PP_Order_Node
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 @SuppressWarnings("all")
 public interface I_PP_Order_Node 
@@ -59,8 +59,8 @@ public interface I_PP_Order_Node
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -113,12 +113,12 @@ public interface I_PP_Order_Node
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -413,10 +413,10 @@ public interface I_PP_Order_Node
     /** Column name DurationRequiered */
     public static final String COLUMNNAME_DurationRequiered = "DurationRequiered";
 
-	/** Set Duration Requiered	  */
+	/** Set Duration Required	  */
 	public void setDurationRequiered (int DurationRequiered);
 
-	/** Get Duration Requiered	  */
+	/** Get Duration Required	  */
 	public int getDurationRequiered();
 
     /** Column name EntityType */
@@ -651,22 +651,22 @@ public interface I_PP_Order_Node
     /** Column name QtyRequiered */
     public static final String COLUMNNAME_QtyRequiered = "QtyRequiered";
 
-	/** Set Qty Requiered	  */
+	/** Set Qty Required	  */
 	public void setQtyRequiered (BigDecimal QtyRequiered);
 
-	/** Get Qty Requiered	  */
+	/** Get Qty Required	  */
 	public BigDecimal getQtyRequiered();
 
     /** Column name QtyScrap */
     public static final String COLUMNNAME_QtyScrap = "QtyScrap";
 
 	/** Set Scrap %.
-	  * Scrap % Quantity for this componet
+	  * Scrap % Quantity for this component
 	  */
 	public void setQtyScrap (BigDecimal QtyScrap);
 
 	/** Get Scrap %.
-	  * Scrap % Quantity for this componet
+	  * Scrap % Quantity for this component
 	  */
 	public BigDecimal getQtyScrap();
 
@@ -708,10 +708,10 @@ public interface I_PP_Order_Node
     /** Column name SetupTimeRequiered */
     public static final String COLUMNNAME_SetupTimeRequiered = "SetupTimeRequiered";
 
-	/** Set Setup Time Requiered	  */
+	/** Set Setup Time Required	  */
 	public void setSetupTimeRequiered (int SetupTimeRequiered);
 
-	/** Get Setup Time Requiered	  */
+	/** Get Setup Time Required	  */
 	public int getSetupTimeRequiered();
 
     /** Column name SplitElement */

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_MigrationScript
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_MigrationScript")
 public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_MigrationScript extends PO implements I_AD_MigrationScript, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_MigrationScript (Properties ctx, int AD_MigrationScript_ID, String trxName)

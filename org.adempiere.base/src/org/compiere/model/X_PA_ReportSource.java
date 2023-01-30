@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_ReportSource
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PA_ReportSource")
 public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PA_ReportSource (Properties ctx, int PA_ReportSource_ID, String trxName)
@@ -733,7 +733,7 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	}
 
 	/** Set Organization.
-		@param Org_ID Organizational entity within client
+		@param Org_ID Organizational entity within tenant
 	*/
 	public void setOrg_ID (int Org_ID)
 	{
@@ -744,7 +744,7 @@ public class X_PA_ReportSource extends PO implements I_PA_ReportSource, I_Persis
 	}
 
 	/** Get Organization.
-		@return Organizational entity within client
+		@return Organizational entity within tenant
 	  */
 	public int getOrg_ID()
 	{

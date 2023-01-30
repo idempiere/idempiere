@@ -29,6 +29,7 @@ import org.compiere.model.MDunningRunEntry;
 import org.compiere.model.MDunningRunLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MPayment;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -84,7 +85,7 @@ public class DunningRunCreate extends SvrProcess
 			else if (name.equals("AD_Org_ID"))
 				p_AD_Org_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_C_DunningRun_ID = getRecord_ID();
 	}	//	prepare

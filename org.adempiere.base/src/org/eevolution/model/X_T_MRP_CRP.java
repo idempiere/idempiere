@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for T_MRP_CRP
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="T_MRP_CRP")
 public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_T_MRP_CRP extends PO implements I_T_MRP_CRP, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_T_MRP_CRP (Properties ctx, int T_MRP_CRP_ID, String trxName)
