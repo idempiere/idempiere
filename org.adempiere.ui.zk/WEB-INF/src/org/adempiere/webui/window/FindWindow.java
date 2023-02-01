@@ -353,6 +353,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         LayoutUtils.addSclass("find-window", this);
         
         addEventListener(Events.ON_CANCEL, e -> onCancel());
+        setFireWindowCloseEventOnDetach(false);
     }
     
     public boolean initialize() 
@@ -2940,6 +2941,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	}
     }
     
+    /**
+     * hide window and fire {@link DialogEvents#ON_WINDOW_CLOSE} event
+     */
     public void dispose()
     {
         //  Find SQL
