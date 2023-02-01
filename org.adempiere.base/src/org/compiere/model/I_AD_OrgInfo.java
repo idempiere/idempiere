@@ -305,6 +305,19 @@ public interface I_AD_OrgInfo
 	  */
 	public String getTaxID();
 
+    /** Column name TimeZone */
+    public static final String COLUMNNAME_TimeZone = "TimeZone";
+
+	/** Set Time Zone.
+	  * Time zone name
+	  */
+	public void setTimeZone (String TimeZone);
+
+	/** Get Time Zone.
+	  * Time zone name
+	  */
+	public String getTimeZone();
+
     /** Column name TransferBank_ID */
     public static final String COLUMNNAME_TransferBank_ID = "TransferBank_ID";
 

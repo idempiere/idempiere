@@ -424,6 +424,22 @@ public class X_AD_OrgInfo extends PO implements I_AD_OrgInfo, I_Persistent
 		return (String)get_Value(COLUMNNAME_TaxID);
 	}
 
+	/** Set Time Zone.
+		@param TimeZone Time zone name
+	*/
+	public void setTimeZone (String TimeZone)
+	{
+		set_Value (COLUMNNAME_TimeZone, TimeZone);
+	}
+
+	/** Get Time Zone.
+		@return Time zone name
+	  */
+	public String getTimeZone()
+	{
+		return (String)get_Value(COLUMNNAME_TimeZone);
+	}
+
 	public org.compiere.model.I_C_Bank getTransferBank() throws RuntimeException
 	{
 		return (org.compiere.model.I_C_Bank)MTable.get(getCtx(), org.compiere.model.I_C_Bank.Table_ID)
