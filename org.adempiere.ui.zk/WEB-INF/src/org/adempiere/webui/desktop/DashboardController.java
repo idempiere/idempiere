@@ -33,7 +33,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
@@ -53,6 +52,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.util.ZkContextRunnable;
 import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.Adempiere;
 import org.compiere.model.I_AD_Menu;
@@ -295,7 +295,7 @@ public class DashboardController implements EventListener<Event> {
         	        	}
 	        		}
 	        		final Component zulComponent = zComponent;
-	        		ContextRunnable cr = new ContextRunnable() {
+	        		ZkContextRunnable cr = new ZkContextRunnable() {
 						@Override
 						protected void doRun() {
 							try {
@@ -594,7 +594,7 @@ public class DashboardController implements EventListener<Event> {
         	        	}
 	        		}
 	        		final Component zulComponent = zComponent;
-	        		ContextRunnable cr = new ContextRunnable() {
+	        		ZkContextRunnable cr = new ZkContextRunnable() {
 						@Override
 						protected void doRun() {
 							try {
