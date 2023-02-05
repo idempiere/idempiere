@@ -29,12 +29,12 @@
 
 package org.adempiere.webui.dashboard;
 
-import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.graph.WDocumentStatusPanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.adempiere.webui.util.ZkContextRunnable;
 import org.compiere.Adempiere;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -102,7 +102,7 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
             busyDialog.setShadow(false);
             getParent().insertBefore(busyDialog, getParent().getFirstChild());
 			ServerPushTemplate template = new ServerPushTemplate(getDesktop());
-    		ContextRunnable cr = new ContextRunnable() {
+    		ZkContextRunnable cr = new ZkContextRunnable() {
     			@Override
 				protected void doRun() {
     				refresh(template);
