@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
-import org.adempiere.util.ContextRunnable;
 import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.LayoutUtils;
@@ -50,6 +49,7 @@ import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.util.ZkContextRunnable;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
@@ -1142,7 +1142,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		return downloadFiles;
 	}
 	
-	private class ProcessDialogRunnable extends ContextRunnable
+	private class ProcessDialogRunnable extends ZkContextRunnable
 	{
 		private Trx m_trx;
 		
