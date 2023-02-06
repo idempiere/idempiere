@@ -31,7 +31,7 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221202L;
+	private static final long serialVersionUID = 20230206L;
 
     /** Standard Constructor */
     public X_AD_Process_Para (Properties ctx, int AD_Process_Para_ID, String trxName)
@@ -43,6 +43,8 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 			setAD_Process_Para_ID (0);
 			setAD_Reference_ID (0);
 			setColumnName (null);
+			setDateRangeOption (null);
+// D
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFieldLength (0);
@@ -50,8 +52,6 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 // N
 			setIsCentrallyMaintained (true);
 // Y
-			setIsDisplayDateInWords (false);
-// N
 			setIsEncrypted (false);
 // N
 			setIsMandatory (false);
@@ -72,6 +72,8 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 			setAD_Process_Para_ID (0);
 			setAD_Reference_ID (0);
 			setColumnName (null);
+			setDateRangeOption (null);
+// D
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFieldLength (0);
@@ -79,8 +81,6 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 // N
 			setIsCentrallyMaintained (true);
 // Y
-			setIsDisplayDateInWords (false);
-// N
 			setIsEncrypted (false);
 // N
 			setIsMandatory (false);
@@ -339,6 +339,29 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 		return (String)get_Value(COLUMNNAME_ColumnName);
 	}
 
+	/** DateRangeOption AD_Reference_ID=200228 */
+	public static final int DATERANGEOPTION_AD_Reference_ID=200228;
+	/** Date Editor and Range Picker = D */
+	public static final String DATERANGEOPTION_DateEditorAndRangePicker = "D";
+	/** Text and Range Picker = T */
+	public static final String DATERANGEOPTION_TextAndRangePicker = "T";
+	/** Set Date Range Option.
+		@param DateRangeOption Options, how the date editor will be displayed.
+	*/
+	public void setDateRangeOption (String DateRangeOption)
+	{
+
+		set_Value (COLUMNNAME_DateRangeOption, DateRangeOption);
+	}
+
+	/** Get Date Range Option.
+		@return Options, how the date editor will be displayed.
+	  */
+	public String getDateRangeOption()
+	{
+		return (String)get_Value(COLUMNNAME_DateRangeOption);
+	}
+
 	/** Set Default Logic.
 		@param DefaultValue Default value hierarchy, separated by ;
 	*/
@@ -494,28 +517,6 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public boolean isCentrallyMaintained()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCentrallyMaintained);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Display Date In Words.
-		@param IsDisplayDateInWords Display Date In Words
-	*/
-	public void setIsDisplayDateInWords (boolean IsDisplayDateInWords)
-	{
-		set_Value (COLUMNNAME_IsDisplayDateInWords, Boolean.valueOf(IsDisplayDateInWords));
-	}
-
-	/** Get Display Date In Words.
-		@return Display Date In Words	  */
-	public boolean isDisplayDateInWords()
-	{
-		Object oo = get_Value(COLUMNNAME_IsDisplayDateInWords);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

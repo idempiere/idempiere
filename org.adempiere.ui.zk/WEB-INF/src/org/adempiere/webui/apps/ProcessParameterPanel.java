@@ -62,6 +62,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
@@ -224,7 +225,7 @@ public class ProcessParameterPanel extends Panel implements
 		if (Env.isBaseLanguage(Env.getCtx(), "AD_Process_Para"))
 			sql = "SELECT p.Name, p.Description, p.Help, "
 					+ "p.AD_Reference_ID, p.AD_Process_Para_ID, "
-					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.IsDisplayDateInWords, p.ColumnName, "
+					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.dateRangeOption, p.ColumnName, "
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic, p.Placeholder, p.Placeholder2, p.isAutoComplete, "
@@ -238,7 +239,7 @@ public class ProcessParameterPanel extends Panel implements
 		else
 			sql = "SELECT t.Name, t.Description, t.Help, "
 					+ "p.AD_Reference_ID, p.AD_Process_Para_ID, "
-					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.IsDisplayDateInWords, p.ColumnName, "
+					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.dateRangeOption, p.ColumnName, "
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern,p.MandatoryLogic, t.Placeholder, t.Placeholder2, p.isAutoComplete, "
@@ -470,7 +471,7 @@ public class ProcessParameterPanel extends Panel implements
 			row.appendChild(box);
 			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime)) 
 					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))) {
-				if(mField.isDisplayDateInWords()) {
+				if(MProcessPara.DATERANGEOPTION_TextAndRangePicker.equalsIgnoreCase(mField.getDateRangeOption())) {
 					editor.setVisible(false, true);
 					editor2.setVisible(false, true);
 					DateRangeEditor dateRangeEditor = new DateRangeEditor(editor, editor2, true);
@@ -1153,7 +1154,7 @@ public class ProcessParameterPanel extends Panel implements
 			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime))
 					&& mField2 != null
 					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))
-					&& mField.isDisplayDateInWords()) {
+					&& MProcessPara.DATERANGEOPTION_TextAndRangePicker.equalsIgnoreCase(mField.getDateRangeOption())) {
 				DateRangeEditor dateRangeEditor = m_dateRangeEditors.get(i);
 				if(dateRangeEditor != null) {
 					dateRangeEditor.setVisible(editor.isVisible());

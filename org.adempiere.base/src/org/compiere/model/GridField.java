@@ -2611,11 +2611,11 @@ public class GridField
 	}
 
 	/**
-	 * Display Date In Words
-	 * @return true if date range has to be displayed in words
+	 * Get Date Range Options
+	 * @return The option, how the date editor will be displayed.
 	 */
-	public boolean isDisplayDateInWords() {
-		return m_vo.isDisplayDateInWords;
+	public String getDateRangeOption() {
+		return m_vo.dateRangeOption;
 	}
 	
 	public void processUIVirtualColumn() {

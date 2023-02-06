@@ -360,7 +360,7 @@ public class GridFieldVO implements Serializable, Cloneable
 			vo.ValueMin = rs.getString("ValueMin");
 			vo.ValueMax = rs.getString("ValueMax");
 			vo.isRange = rs.getString("IsRange").equals("Y");
-			vo.isDisplayDateInWords = rs.getString("IsDisplayDateInWords").equals("Y");
+			vo.dateRangeOption = rs.getString("DateRangeOption");
 			//
 			vo.AD_Reference_Value_ID = rs.getInt("AD_Reference_Value_ID");
 			vo.ValidationCode = rs.getString("ValidationCode");
@@ -471,7 +471,7 @@ public class GridFieldVO implements Serializable, Cloneable
 		voT.ValueMin = voF.ValueMin;
 		voT.ValueMax = voF.ValueMax;
 		voT.isRange = voF.isRange;
-		voT.isDisplayDateInWords = voF.isDisplayDateInWords;
+		voT.dateRangeOption = voF.dateRangeOption;
 		//
 		// Genied: For a range parameter the second field 
 		// lookup behaviour should match the first one.
@@ -709,10 +709,10 @@ public class GridFieldVO implements Serializable, Cloneable
 
 	/**	Process Parameter Range		*/
 	public boolean      isRange = false;
-	/**	Process Parameter Range		*/
-	public boolean      isDisplayDateInWords = false;
 	/**	Process Parameter Value2	*/
 	public String       DefaultValue2 = "";
+	/**	Date Range Option		*/
+	public String      dateRangeOption = "";
 
 	/** Lookup Value Object     */
 	public MLookupInfo  lookupInfo = null;

@@ -199,6 +199,19 @@ public interface I_AD_Process_Para
 	  */
 	public int getCreatedBy();
 
+    /** Column name DateRangeOption */
+    public static final String COLUMNNAME_DateRangeOption = "DateRangeOption";
+
+	/** Set Date Range Option.
+	  * Options, how the date editor will be displayed.
+	  */
+	public void setDateRangeOption (String DateRangeOption);
+
+	/** Get Date Range Option.
+	  * Options, how the date editor will be displayed.
+	  */
+	public String getDateRangeOption();
+
     /** Column name DefaultValue */
     public static final String COLUMNNAME_DefaultValue = "DefaultValue";
 
@@ -334,15 +347,6 @@ public interface I_AD_Process_Para
 	  * Information maintained in System Element table
 	  */
 	public boolean isCentrallyMaintained();
-
-    /** Column name IsDisplayDateInWords */
-    public static final String COLUMNNAME_IsDisplayDateInWords = "IsDisplayDateInWords";
-
-	/** Set Display Date In Words	  */
-	public void setIsDisplayDateInWords (boolean IsDisplayDateInWords);
-
-	/** Get Display Date In Words	  */
-	public boolean isDisplayDateInWords();
 
     /** Column name IsEncrypted */
     public static final String COLUMNNAME_IsEncrypted = "IsEncrypted";
