@@ -37,7 +37,7 @@ import org.adempiere.webui.editor.WPAttributeEditor;
 import org.adempiere.webui.editor.WPasswordEditor;
 import org.adempiere.webui.editor.WPaymentEditor;
 import org.adempiere.webui.editor.WRadioGroupEditor;
-import org.adempiere.webui.editor.WRelatedToEditor;
+import org.adempiere.webui.editor.WRecordIDEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
@@ -233,7 +233,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         }
 		else if (displayType == DisplayType.RelatedTo)
         {
-        	editor = new WRelatedToEditor(gridField, tableEditor, editorConfiguration);
+        	editor = new WRecordIDEditor(gridField, tableEditor, editorConfiguration);
         }
         else
         {

@@ -28,7 +28,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.editor.WRelatedToEditor;
+import org.adempiere.webui.editor.WRecordIDEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.factory.ButtonFactory;
@@ -62,7 +62,7 @@ public class WRelatedToDialog extends Window implements EventListener<Event> {
 	private static final long serialVersionUID = 8126107952514403099L;
 	
 	private Page page;
-	private WRelatedToEditor editor;
+	private WRecordIDEditor editor;
 	private GridField tableIDGridField;
 	
 	private Div contentDiv;
@@ -78,7 +78,7 @@ public class WRelatedToDialog extends Window implements EventListener<Event> {
 	
 	private Integer value;
 	
-	public WRelatedToDialog(Page page, WRelatedToEditor editor, GridField tableIDGridField) {
+	public WRelatedToDialog(Page page, WRecordIDEditor editor, GridField tableIDGridField) {
 		super();
 		
 		this.page = page;
@@ -116,7 +116,7 @@ public class WRelatedToDialog extends Window implements EventListener<Event> {
 		confirmPanelDiv.setSclass("related-to-dialog-confirm");
 		
 		parentTextBox.setReadonly(true);
-		parentTextBox.setValue(WRelatedToEditor.getIdentifierColumns(
+		parentTextBox.setValue(WRecordIDEditor.getIdentifierColumns(
 				editor.getGridField().getGridTab().getAD_Table_ID(), editor.getGridField().getGridTab().getRecord_ID()));
 		
 		tableIDEditorCopy.getComponent().addEventListener(Events.ON_SELECT, this);

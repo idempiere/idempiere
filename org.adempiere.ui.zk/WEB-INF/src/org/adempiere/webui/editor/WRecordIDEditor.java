@@ -60,7 +60,7 @@ import org.zkoss.zul.Vlayout;
  * @author Peter Takacs, Cloudempiere
  *
  */
-public class WRelatedToEditor extends WEditor implements ContextMenuListener, IZoomableEditor {
+public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZoomableEditor {
 	
 	private boolean m_ReadWrite;
 	private Object oldValue;
@@ -81,7 +81,7 @@ public class WRelatedToEditor extends WEditor implements ContextMenuListener, IZ
 	private static final String IMAGES_CONTEXT_ZOOM_PNG = "images/Zoom16.png";
 	private static final String IMAGES_CONTEXT_EDIT_RECORD_PNG = "images/EditRecord16.png";
 
-	public WRelatedToEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+	public WRecordIDEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
 		super(new Vlayout(), gridField, tableEditor, editorConfiguration);
 		init();
 	}
