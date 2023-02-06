@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Group
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Group")
 public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_A_Asset_Group (Properties ctx, int A_Asset_Group_ID, String trxName)
@@ -301,16 +301,16 @@ public class X_A_Asset_Group extends PO implements I_A_Asset_Group, I_Persistent
 		return false;
 	}
 
-	/** Set IsFixedAsset.
-		@param IsFixedAsset IsFixedAsset
+	/** Set Is Fixed Asset.
+		@param IsFixedAsset Is Fixed Asset
 	*/
 	public void setIsFixedAsset (boolean IsFixedAsset)
 	{
 		set_Value (COLUMNNAME_IsFixedAsset, Boolean.valueOf(IsFixedAsset));
 	}
 
-	/** Get IsFixedAsset.
-		@return IsFixedAsset	  */
+	/** Get Is Fixed Asset.
+		@return Is Fixed Asset	  */
 	public boolean isFixedAsset()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFixedAsset);

@@ -33,7 +33,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220718L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -428,7 +428,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	/** Set Always Updatable Logic.
-		@param AlwaysUpdatableLogic Logic to determine if field is Updatable irrespective if record&#039;s active status or processed status. This logic Applicable only if Always Updatable is Yes.
+		@param AlwaysUpdatableLogic Logic to determine if field is Updatable irrespective if record&#039;s active status or processed status. This logic Applicable only if Always Updatable is N.
 	*/
 	public void setAlwaysUpdatableLogic (String AlwaysUpdatableLogic)
 	{
@@ -436,7 +436,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	}
 
 	/** Get Always Updatable Logic.
-		@return Logic to determine if field is Updatable irrespective if record&#039;s active status or processed status. This logic Applicable only if Always Updatable is Yes.
+		@return Logic to determine if field is Updatable irrespective if record&#039;s active status or processed status. This logic Applicable only if Always Updatable is N.
 	  */
 	public String getAlwaysUpdatableLogic()
 	{

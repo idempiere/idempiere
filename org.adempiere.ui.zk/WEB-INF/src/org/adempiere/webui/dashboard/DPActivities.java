@@ -178,4 +178,9 @@ public class DPActivities extends DashboardPanel implements EventListener<Event>
             }
         }
 	}
+
+	@Override
+	public boolean isLazy() {
+		return true;
+	}
 }

@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
-import org.adempiere.util.ContextRunnable;
 import org.adempiere.util.IProcessUI;
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.LayoutUtils;
@@ -50,6 +49,7 @@ import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.util.ZkContextRunnable;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
@@ -114,6 +114,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	private static final CLogger log = CLogger.getCLogger(AbstractProcessDialog.class);
 
 	protected int m_WindowNo;
+	protected int m_TabNo;
 	private Properties m_ctx;
 	private int m_AD_Process_ID;
 	private ProcessInfo m_pi = null;
@@ -158,8 +159,26 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 */
 	protected boolean init(Properties ctx, int WindowNo, int AD_Process_ID, ProcessInfo pi, boolean autoStart, boolean isDisposeOnComplete)
 	{
+		return init(ctx, WindowNo, 0, AD_Process_ID, pi, autoStart, isDisposeOnComplete);
+	}
+
+	/**
+	 * layout as below
+	 * 
+	 * @param  ctx
+	 * @param  WindowNo
+	 * @param  TabNo
+	 * @param  AD_Process_ID
+	 * @param  pi
+	 * @param  autoStart
+	 * @param  isDisposeOnComplete
+	 * @return
+	 */
+	protected boolean init(Properties ctx, int WindowNo, int TabNo, int AD_Process_ID, ProcessInfo pi, boolean autoStart, boolean isDisposeOnComplete)
+	{
 		m_ctx = ctx;
 		m_WindowNo = WindowNo;
+		m_TabNo = TabNo;
 		m_AD_Process_ID = AD_Process_ID;
 		setProcessInfo(pi);
 		m_disposeOnComplete = isDisposeOnComplete;
@@ -214,7 +233,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		m_pi.setTitle(m_Name);
 		m_pi.setAD_Process_UU(m_AD_Process_UU);
 		
-		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_pi);		
+		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_TabNo, m_pi);	
 		if ( !parameterPanel.init() ) {
 			if (m_ShowHelp != null && MProcess.SHOWHELP_DonTShowHelp.equals(m_ShowHelp))
 				autoStart = true;
@@ -1123,7 +1142,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		return downloadFiles;
 	}
 	
-	private class ProcessDialogRunnable extends ContextRunnable
+	private class ProcessDialogRunnable extends ZkContextRunnable
 	{
 		private Trx m_trx;
 		

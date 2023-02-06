@@ -316,6 +316,7 @@ public class Doc_Inventory extends Doc
 							p_Error = "Original Physical Inventory not posted yet";
 							return null;
 						}
+						costs = dr.getAcctBalance(); //get original cost
 					}
 		
 					//  InventoryDiff   DR      CR
@@ -356,8 +357,7 @@ public class Doc_Inventory extends Doc
 							{
 								p_Error = "Original Physical Inventory not posted yet";
 								return null;
-							}
-							costs = cr.getAcctBalance(); //get original cost
+							}							
 						}
 					}
 				}
@@ -386,11 +386,15 @@ public class Doc_Inventory extends Doc
 							{
 								MInventoryLineMA ma = mas[j];				
 								BigDecimal maCost = costMap.get(line.get_ID()+ "_"+ ma.getM_AttributeSetInstance_ID());		
-
+								BigDecimal qty = ma.getMovementQty();
+								if (qty.signum() != line.getQty().signum())
+									qty = qty.negate();
+								if (maCost.signum() != costDetailAmt.signum())
+									maCost = maCost.negate();
 								if (!MCostDetail.createInventory(as, line.getAD_Org_ID(),
 										line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
 										line.get_ID(), 0,
-										maCost, ma.getMovementQty().negate(),
+										maCost, qty,
 										line.getDescription(), getTrxName()))
 								{
 									p_Error = "Failed to create cost detail record";
@@ -401,10 +405,11 @@ public class Doc_Inventory extends Doc
 					} 
 					else
 					{
+						BigDecimal amt = costDetailAmt;
 						if (!MCostDetail.createInventory(as, line.getAD_Org_ID(),
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 								line.get_ID(), 0,
-								costDetailAmt, line.getQty(),
+								amt, line.getQty(),
 								line.getDescription(), getTrxName()))
 						{
 							p_Error = "Failed to create cost detail record";
@@ -415,10 +420,11 @@ public class Doc_Inventory extends Doc
 				else
 				{
 					//	Cost Detail
+					BigDecimal amt = costDetailAmt;
 					if (!MCostDetail.createInventory(as, line.getAD_Org_ID(),
 						line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 						line.get_ID(), 0,
-						costDetailAmt, line.getQty(),
+						amt, line.getQty(),
 						line.getDescription(), getTrxName()))
 					{
 						p_Error = "Failed to create cost detail record";

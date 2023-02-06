@@ -140,15 +140,24 @@ public interface I_AD_PInstance_Para
     /** Column name IsNotClause */
     public static final String COLUMNNAME_IsNotClause = "IsNotClause";
 
-	/** Set Is not clause.
+	/** Set Not Clause.
 	  * Indicates if a chosen multiple component value must be negate
 	  */
 	public void setIsNotClause (boolean IsNotClause);
 
-	/** Get Is not clause.
+	/** Get Not Clause.
 	  * Indicates if a chosen multiple component value must be negate
 	  */
 	public boolean isNotClause();
+
+    /** Column name ParameterName */
+    public static final String COLUMNNAME_ParameterName = "ParameterName";
+
+	/** Set Parameter Name	  */
+	public void setParameterName (String ParameterName);
+
+	/** Get Parameter Name	  */
+	public String getParameterName();
 
     /** Column name P_Date */
     public static final String COLUMNNAME_P_Date = "P_Date";
@@ -227,15 +236,6 @@ public interface I_AD_PInstance_Para
 	  * Process Parameter
 	  */
 	public String getP_String_To();
-
-    /** Column name ParameterName */
-    public static final String COLUMNNAME_ParameterName = "ParameterName";
-
-	/** Set Parameter Name	  */
-	public void setParameterName (String ParameterName);
-
-	/** Get Parameter Name	  */
-	public String getParameterName();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";

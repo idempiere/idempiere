@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DistributionList
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_DistributionList")
 public class X_M_DistributionList extends PO implements I_M_DistributionList, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_DistributionList extends PO implements I_M_DistributionList, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_DistributionList (Properties ctx, int M_DistributionList_ID, String trxName)

@@ -80,6 +80,8 @@ import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.impl.InputElement;
 
 import com.lowagie.text.DocumentException;
 
@@ -873,5 +875,21 @@ public final class AEnv
     		Executions.getCurrent().setAttribute(attribute, Boolean.TRUE);
     	}
     	return false;
+	}
+	
+	/**
+	 * Workaround for detached HTML input element leak
+	 * @param c
+	 */
+	public static void detachInputElement(Component c) {
+		if (c instanceof InputElement || c instanceof Button) {
+			c.detach();
+		}
+		if (c.getChildren().size() > 0) {
+			Component[] childs = c.getChildren().toArray(new Component[0]);
+			for(Component c1 : childs) {
+				detachInputElement(c1);
+			}
+		}		
 	}
 }	//	AEnv

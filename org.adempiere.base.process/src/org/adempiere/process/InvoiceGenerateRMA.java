@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
 import org.compiere.process.DocAction;
@@ -71,7 +72,7 @@ public class InvoiceGenerateRMA extends SvrProcess
             else if (name.equals("DocAction"))
                 p_docAction = (String)para[i].getParameter();
             else
-                log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
         }
         
     	m_dateinvoiced = Env.getContextAsDate(getCtx(), Env.DATE);

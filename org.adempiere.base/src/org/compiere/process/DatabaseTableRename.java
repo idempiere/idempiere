@@ -26,10 +26,10 @@
 package org.compiere.process;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MClient;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MSequence;
 import org.compiere.model.MTab;
@@ -54,8 +54,7 @@ public class DatabaseTableRename extends SvrProcess {
 			if ("NewTableName".equals(name)) {
 				p_NewTableName = para.getParameterAsString();
 			} else {
-				if (log.isLoggable(Level.INFO))
-					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 		p_AD_Table_ID = getRecord_ID();

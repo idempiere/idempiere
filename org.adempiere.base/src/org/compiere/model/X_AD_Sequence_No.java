@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Sequence_No
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Sequence_No")
 public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Sequence_No (Properties ctx, int AD_Sequence_No_ID, String trxName)
@@ -127,7 +127,7 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 		return (String)get_Value(COLUMNNAME_AD_Sequence_No_UU);
 	}
 
-	/** Set YearMonth.
+	/** Set Year Month.
 		@param CalendarYearMonth YYYYMM
 	*/
 	public void setCalendarYearMonth (String CalendarYearMonth)
@@ -135,7 +135,7 @@ public class X_AD_Sequence_No extends PO implements I_AD_Sequence_No, I_Persiste
 		set_ValueNoCheck (COLUMNNAME_CalendarYearMonth, CalendarYearMonth);
 	}
 
-	/** Get YearMonth.
+	/** Get Year Month.
 		@return YYYYMM
 	  */
 	public String getCalendarYearMonth()

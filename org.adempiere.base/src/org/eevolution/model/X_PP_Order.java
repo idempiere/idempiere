@@ -27,7 +27,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order")
 public class X_PP_Order extends PO implements I_PP_Order, I_Persistent 
 {
@@ -35,7 +35,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PP_Order (Properties ctx, int PP_Order_ID, String trxName)
@@ -724,16 +724,16 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 		return bd;
 	}
 
-	/** Set Float Befored.
-		@param FloatBefored Float Befored
+	/** Set Float Before.
+		@param FloatBefored Float Before
 	*/
 	public void setFloatBefored (BigDecimal FloatBefored)
 	{
 		set_Value (COLUMNNAME_FloatBefored, FloatBefored);
 	}
 
-	/** Get Float Befored.
-		@return Float Befored	  */
+	/** Get Float Before.
+		@return Float Before	  */
 	public BigDecimal getFloatBefored()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_FloatBefored);
@@ -1199,16 +1199,16 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 		return false;
 	}
 
-	/** Set Qty Batchs.
-		@param QtyBatchs Qty Batchs
+	/** Set Qty Batch.
+		@param QtyBatchs Qty Batch
 	*/
 	public void setQtyBatchs (BigDecimal QtyBatchs)
 	{
 		set_ValueNoCheck (COLUMNNAME_QtyBatchs, QtyBatchs);
 	}
 
-	/** Get Qty Batchs.
-		@return Qty Batchs	  */
+	/** Get Qty Batch.
+		@return Qty Batch	  */
 	public BigDecimal getQtyBatchs()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyBatchs);
@@ -1330,7 +1330,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Set Scrap %.
-		@param QtyScrap Scrap % Quantity for this componet
+		@param QtyScrap Scrap % Quantity for this component
 	*/
 	public void setQtyScrap (BigDecimal QtyScrap)
 	{
@@ -1338,7 +1338,7 @@ public class X_PP_Order extends PO implements I_PP_Order, I_Persistent
 	}
 
 	/** Get Scrap %.
-		@return Scrap % Quantity for this componet
+		@return Scrap % Quantity for this component
 	  */
 	public BigDecimal getQtyScrap()
 	{

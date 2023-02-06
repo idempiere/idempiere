@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for WS_WebService_Para
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="WS_WebService_Para")
 public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_WS_WebService_Para extends PO implements I_WS_WebService_Para, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_WS_WebService_Para (Properties ctx, int WS_WebService_Para_ID, String trxName)

@@ -45,6 +45,7 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.taskdefs.Zip;
 import org.compiere.install.Translation;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfoParameter;
@@ -86,7 +87,7 @@ public class TranslationImpExp extends SvrProcess {
 			} else if ("FileName".equals(name)) {
 				p_FileName = para.getParameterAsString();
 			} else {
-				if (log.isLoggable(Level.INFO)) log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 	}

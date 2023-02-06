@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.M_Element;
 import org.compiere.model.PO;
@@ -70,7 +71,7 @@ public class UUIDGenerator extends SvrProcess {
 			else if (param.getParameterName().equals("IsFillUUID"))
 				isFillUUID = param.getParameterAsBoolean();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + param.getParameterName());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), param);
 		}
 	}
 

@@ -1,0 +1,38 @@
+-- IDEMPIERE-5458
+SELECT register_migration_script('202212221947_IDEMPIERE-5458.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Dec 22, 2022, 7:47:23 PM BRT
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (207517,'Time Zone','Time zone name',170,215633,'Y',60,180,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2022-12-22 19:47:22','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2022-12-22 19:47:22','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','91adaa04-3962-4dfb-8357-958d325a063b','Y',180,5)
+;
+
+-- Dec 22, 2022, 7:47:39 PM BRT
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=130, XPosition=4, ColumnSpan=2,Updated=TO_TIMESTAMP('2022-12-22 19:47:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207517
+;
+
+-- Dec 22, 2022, 7:47:39 PM BRT
+UPDATE AD_Field SET SeqNo=140,Updated=TO_TIMESTAMP('2022-12-22 19:47:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=58855
+;
+
+-- Dec 22, 2022, 7:47:39 PM BRT
+UPDATE AD_Field SET SeqNo=150,Updated=TO_TIMESTAMP('2022-12-22 19:47:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=58852
+;
+
+-- Dec 22, 2022, 7:47:39 PM BRT
+UPDATE AD_Field SET SeqNo=160,Updated=TO_TIMESTAMP('2022-12-22 19:47:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=58854
+;
+
+-- Dec 22, 2022, 7:47:39 PM BRT
+UPDATE AD_Field SET SeqNo=170,Updated=TO_TIMESTAMP('2022-12-22 19:47:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=58853
+;
+
+-- Dec 22, 2022, 7:47:39 PM BRT
+UPDATE AD_Field SET SeqNo=180,Updated=TO_TIMESTAMP('2022-12-22 19:47:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=57532
+;
+
+-- Dec 22, 2022, 7:47:39 PM BRT
+UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2022-12-22 19:47:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204544
+;
+

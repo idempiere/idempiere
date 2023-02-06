@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_PriceList
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_M_PriceList 
 {
@@ -44,8 +44,8 @@ public interface I_M_PriceList
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,24 +53,24 @@ public interface I_M_PriceList
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
     /** Column name BasePriceList_ID */
     public static final String COLUMNNAME_BasePriceList_ID = "BasePriceList_ID";
 
-	/** Set Base Pricelist.
+	/** Set Base Price List.
 	  * Pricelist to be used, if product not found on this pricelist
 	  */
 	public void setBasePriceList_ID (int BasePriceList_ID);
 
-	/** Get Base Pricelist.
+	/** Get Base Price List.
 	  * Pricelist to be used, if product not found on this pricelist
 	  */
 	public int getBasePriceList_ID();
@@ -176,10 +176,10 @@ public interface I_M_PriceList
     /** Column name isPresentForProduct */
     public static final String COLUMNNAME_isPresentForProduct = "isPresentForProduct";
 
-	/** Set isPresentForProduct	  */
+	/** Set Is Present For Product	  */
 	public void setisPresentForProduct (boolean isPresentForProduct);
 
-	/** Get isPresentForProduct	  */
+	/** Get Is Present For Product	  */
 	public boolean isPresentForProduct();
 
     /** Column name IsSOPriceList */

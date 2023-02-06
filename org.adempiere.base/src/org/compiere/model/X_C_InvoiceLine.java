@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_InvoiceLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_InvoiceLine")
 public class X_C_InvoiceLine extends PO implements I_C_InvoiceLine, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_InvoiceLine extends PO implements I_C_InvoiceLine, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_InvoiceLine (Properties ctx, int C_InvoiceLine_ID, String trxName)
@@ -657,16 +657,16 @@ public class X_C_InvoiceLine extends PO implements I_C_InvoiceLine, I_Persistent
 		return false;
 	}
 
-	/** Set IsFixedAssetInvoice.
-		@param IsFixedAssetInvoice IsFixedAssetInvoice
+	/** Set Is Fixed Asset Invoice.
+		@param IsFixedAssetInvoice Is Fixed Asset Invoice
 	*/
 	public void setIsFixedAssetInvoice (boolean IsFixedAssetInvoice)
 	{
 		set_Value (COLUMNNAME_IsFixedAssetInvoice, Boolean.valueOf(IsFixedAssetInvoice));
 	}
 
-	/** Get IsFixedAssetInvoice.
-		@return IsFixedAssetInvoice	  */
+	/** Get Is Fixed Asset Invoice.
+		@return Is Fixed Asset Invoice	  */
 	public boolean isFixedAssetInvoice()
 	{
 		Object oo = get_Value(COLUMNNAME_IsFixedAssetInvoice);

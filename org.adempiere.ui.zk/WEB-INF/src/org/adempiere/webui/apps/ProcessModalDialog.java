@@ -117,6 +117,18 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 */
 	public ProcessModalDialog(EventListener<Event> listener, int WindowNo, ProcessInfo pi, boolean autoStart)
 	{
+		this(listener, WindowNo, 0, pi, autoStart);
+	}
+
+	/**
+	 * @param listener
+	 * @param WindowNo
+	 * @param TabNo
+	 * @param pi
+	 * @param autoStart
+	 */
+	public ProcessModalDialog(EventListener<Event> listener, int WindowNo, int TabNo, ProcessInfo pi, boolean autoStart)
+	{
 		super();
 		
 		if (listener != null) 
@@ -128,7 +140,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		log.info("Process=" + pi.getAD_Process_ID());
 		try
 		{
-			init(Env.getCtx(), WindowNo, pi.getAD_Process_ID(), pi, autoStart, true);
+			init(Env.getCtx(), WindowNo, TabNo, pi.getAD_Process_ID(), pi, autoStart, true);
 			if (mainParameterLayout != null)// when auto start it's null
 			{
 				mainParameterLayout.setStyle("max-height:" + ClientInfo.get().desktopHeight + "px");

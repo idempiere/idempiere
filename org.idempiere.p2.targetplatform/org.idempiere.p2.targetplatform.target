@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="idempiere-221125" sequenceNumber="1669422892">
+<target name="idempiere-221205" sequenceNumber="1670222123">
   <locations>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
-      <unit id="zcommon" version="9.6.2"/>
-      <unit id="zel" version="9.6.2"/>
-      <unit id="zhtml" version="9.6.2"/>
-      <unit id="zjavassist" version="9.6.2"/>
-      <unit id="zk" version="9.6.2"/>
-      <unit id="zkbind" version="9.6.2"/>
-      <unit id="zkplus" version="9.6.2"/>
-      <unit id="zkwebfragment" version="9.6.2"/>
-      <unit id="zul" version="9.6.2"/>
-      <unit id="zweb" version="9.6.2"/>
-      <unit id="zweb-dsp" version="9.6.2"/>
-      <repository id="zk" location="https://idempiere.github.io/binary.file/p2.zk/9.6.2"/>
+      <unit id="zcommon" version="9.6.3"/>
+      <unit id="zel" version="9.6.3"/>
+      <unit id="zhtml" version="9.6.3"/>
+      <unit id="zjavassist" version="9.6.3"/>
+      <unit id="zk" version="9.6.3"/>
+      <unit id="zkbind" version="9.6.3"/>
+      <unit id="zkplus" version="9.6.3"/>
+      <unit id="zkwebfragment" version="9.6.3"/>
+      <unit id="zul" version="9.6.3"/>
+      <unit id="zweb" version="9.6.3"/>
+      <unit id="zweb-dsp" version="9.6.3"/>
+      <repository id="zk" location="https://idempiere.github.io/binary.file/p2.zk/9.6.3"/>
     </location>
     <location includeMode="slicer" includeAllPlatforms="true" includeSource="true" includeConfigurePhase="true" type="InstallableUnit">
       <unit id="jakarta.xml.ws-api" version="2.3.3.v202109010034"/>

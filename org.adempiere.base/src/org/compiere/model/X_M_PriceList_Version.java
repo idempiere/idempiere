@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_PriceList_Version
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_PriceList_Version")
 public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, I_Persistent 
 {
@@ -32,7 +32,7 @@ public class X_M_PriceList_Version extends PO implements I_M_PriceList_Version, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_PriceList_Version (Properties ctx, int M_PriceList_Version_ID, String trxName)

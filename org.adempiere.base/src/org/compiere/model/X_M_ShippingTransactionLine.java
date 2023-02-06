@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_ShippingTransactionLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_ShippingTransactionLine")
 public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTransactionLine, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_ShippingTransactionLine extends PO implements I_M_ShippingTrans
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_ShippingTransactionLine (Properties ctx, int M_ShippingTransactionLine_ID, String trxName)

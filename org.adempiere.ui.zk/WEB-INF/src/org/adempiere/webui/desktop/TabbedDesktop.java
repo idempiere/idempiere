@@ -346,15 +346,19 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 				if (windowNo == (Integer)att)
 				{
 					Tab tab = panel.getLinkedTab();
-					panel.getLinkedTab().onClose();
-					if (tab.getParent() == null)
-					{
-						unregisterWindow(windowNo);
+					if (tab != null) {
+						panel.getLinkedTab().onClose();
+						if (tab.getParent() == null)
+						{
+							unregisterWindow(windowNo);
+							return true;
+						}
+						else
+						{
+							return false;
+						}
+					} else {
 						return true;
-					}
-					else
-					{
-						return false;
 					}
 				}
 			}

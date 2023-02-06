@@ -389,8 +389,8 @@ public class WPaySelect extends PaySelect
 			
 		
 		BankInfo bi = fieldBankAccount.getSelectedItem().getValue();
-		
-		ValueNamePair paymentRule = (ValueNamePair) fieldPaymentRule.getSelectedItem().getValue();
+
+		ValueNamePair paymentRule = (fieldPaymentRule.getSelectedItem() != null ? (ValueNamePair) fieldPaymentRule.getSelectedItem().getValue() : null);
 		KeyNamePair bpartner = (KeyNamePair) fieldBPartner.getSelectedItem().getValue();
 		KeyNamePair docType = (KeyNamePair) fieldDtype.getSelectedItem().getValue();
 

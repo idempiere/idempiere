@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_GoalRestriction
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PA_GoalRestriction")
 public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PA_GoalRestriction (Properties ctx, int PA_GoalRestriction_ID, String trxName)
@@ -253,7 +253,7 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
     }
 
 	/** Set Organization.
-		@param Org_ID Organizational entity within client
+		@param Org_ID Organizational entity within tenant
 	*/
 	public void setOrg_ID (int Org_ID)
 	{
@@ -264,7 +264,7 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
 	}
 
 	/** Get Organization.
-		@return Organizational entity within client
+		@return Organizational entity within tenant
 	  */
 	public int getOrg_ID()
 	{

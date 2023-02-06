@@ -31,7 +31,7 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220217L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButton (Properties ctx, int AD_ToolBarButton_ID, String trxName)
@@ -406,16 +406,16 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 		return false;
 	}
 
-	/** Set KeyCode.
-		@param KeyStroke_KeyCode KeyCode for shortcuts
+	/** Set Key Code.
+		@param KeyStroke_KeyCode Key Code for shortcuts
 	*/
 	public void setKeyStroke_KeyCode (int KeyStroke_KeyCode)
 	{
 		set_Value (COLUMNNAME_KeyStroke_KeyCode, Integer.valueOf(KeyStroke_KeyCode));
 	}
 
-	/** Get KeyCode.
-		@return KeyCode for shortcuts
+	/** Get Key Code.
+		@return Key Code for shortcuts
 	  */
 	public int getKeyStroke_KeyCode()
 	{

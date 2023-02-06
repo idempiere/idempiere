@@ -19,6 +19,7 @@ package org.compiere.sla;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSLACriteria;
 import org.compiere.model.MSLAGoal;
 import org.compiere.process.ProcessInfoParameter;
@@ -47,11 +48,10 @@ public class SLAGoalProcess extends SvrProcess
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
-			String name = para[i].getParameterName();
 			if (para[i].getParameter() == null)
 				;
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_PA_SLA_Goal_ID = getRecord_ID();
 	}	//	prepare

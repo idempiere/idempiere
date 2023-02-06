@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_AlertProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_AlertProcessorLog")
 public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_AlertProcessorLog extends PO implements I_AD_AlertProcessorLog
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_AlertProcessorLog (Properties ctx, int AD_AlertProcessorLog_ID, String trxName)

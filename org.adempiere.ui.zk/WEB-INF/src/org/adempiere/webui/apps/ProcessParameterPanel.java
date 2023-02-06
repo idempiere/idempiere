@@ -109,8 +109,23 @@ public class ProcessParameterPanel extends Panel implements
 	 *            process info
 	 */
 	public ProcessParameterPanel(int WindowNo, ProcessInfo pi) {
+		this(WindowNo, 0, pi);
+	}
+
+	/**
+	 * Dynamic generated Parameter panel.
+	 * 
+	 * @param WindowNo
+	 *            window
+	 *  @param tabNo
+	 *            tabNo
+	 * @param pi
+	 *            process info
+	 */
+	public ProcessParameterPanel(int WindowNo,int tabNo, ProcessInfo pi) {
 		//
 		m_WindowNo = WindowNo;
+		m_TabNo = tabNo;
 		m_processInfo = pi;
 		m_AD_Window_ID = AEnv.getADWindowID (WindowNo);		
 		this.m_InfoWindowID = pi.getAD_InfoWindow_ID();
@@ -136,6 +151,7 @@ public class ProcessParameterPanel extends Panel implements
 	}
 
 	private int m_WindowNo;
+	private int m_TabNo;
 	private ProcessInfo m_processInfo;
 	// AD_Window of window below this dialog in case show parameter dialog panel
 	private int			m_AD_Window_ID = 0;	
@@ -272,7 +288,7 @@ public class ProcessParameterPanel extends Panel implements
 				hasFields = true;
 
 				// Create Field
-				GridFieldVO voF = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_processInfo.getAD_Process_ID(), m_AD_Window_ID, m_InfoWindowID,rs);
+				GridFieldVO voF = GridFieldVO.createParameter(Env.getCtx(), m_WindowNo, m_TabNo, m_processInfo.getAD_Process_ID(), m_AD_Window_ID, m_InfoWindowID,rs);
 				listVO.add(voF);
 			}
 			Collections.sort(listVO, new GridFieldVO.SeqNoComparator());

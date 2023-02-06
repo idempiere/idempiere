@@ -21,6 +21,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoicePaySchedule;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -41,11 +42,10 @@ public class InvoicePayScheduleValidate extends SvrProcess
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
-			String name = para[i].getParameterName();
 			if (para[i].getParameter() == null)
 				;
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

@@ -5,9 +5,9 @@ package org.adempiere.base.process;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.compiere.model.MField;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.M_Element;
 import org.compiere.model.X_AD_FieldSuggestion;
 import org.compiere.process.ProcessInfoParameter;
@@ -47,7 +47,7 @@ public class AcceptFieldSuggestion extends SvrProcess {
 			else if (name.equals("FieldSuggestionTarget"))
 				p_fieldSuggestionTarget = para.getParameterAsString();
 			else
-				log.log(Level.WARNING, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 
 	}

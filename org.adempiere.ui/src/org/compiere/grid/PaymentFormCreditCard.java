@@ -435,7 +435,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	 */
 	public boolean processOnline(String CCType, String CCNumber, String CCVV, String CCExp)
 	{
-		return processOnline(CCType, CCNumber, CCVV, CCExp, 0);
+		return processOnline(CCType, CCNumber, CCVV, CCExp, 0, (String)null);
 	}
 	
 	/**
@@ -445,9 +445,10 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 	 * @param CCVV credit card ccv
 	 * @param CCExp credit card expire date
 	 * @param C_PaymentProcessor_ID optional payment processor id. use the first configure if this is 0
+	 * @param trxName optional trx name
 	 * @return true if process successfully
 	 */
-	public boolean processOnline(String CCType, String CCNumber, String CCVV, String CCExp, int C_PaymentProcessor_ID)
+	public boolean processOnline(String CCType, String CCNumber, String CCVV, String CCExp, int C_PaymentProcessor_ID, String trxName)
 	{
 		processMsg = null;
 		boolean error = false;
@@ -478,7 +479,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		if (isCreditMemo)
 			payAmount = m_Amount.negate();
 		
-		MPaymentTransaction mpt = new MPaymentTransaction(Env.getCtx(), 0, null);
+		MPaymentTransaction mpt = new MPaymentTransaction(Env.getCtx(), 0, trxName);
 		mpt.setAD_Org_ID(m_AD_Org_ID);
 		mpt.setCreditCard(MPayment.TRXTYPE_Sales, CCType, CCNumber, CCVV != null ? CCVV : "", CCExp);
 		mpt.setAmount(m_C_Currency_ID, payAmount);
@@ -499,7 +500,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 		}
 		else
 		{
-			MPaymentProcessor paymentProcessor = new MPaymentProcessor(mpt.getCtx(), mpt.getC_PaymentProcessor_ID(), null);
+			MPaymentProcessor paymentProcessor = new MPaymentProcessor(mpt.getCtx(), mpt.getC_PaymentProcessor_ID(), trxName);
 			if (paymentProcessor.getTrxType() != null)
 				mpt.setTrxType(paymentProcessor.getTrxType());
 		}
@@ -532,7 +533,7 @@ public abstract class PaymentFormCreditCard extends PaymentForm {
 				m_needSave = true;
 				if (mpt.getC_Payment_ID() > 0)
 				{
-					m_mPayment = new MPayment(mpt.getCtx(), mpt.getC_Payment_ID(), null);
+					m_mPayment = new MPayment(mpt.getCtx(), mpt.getC_Payment_ID(), trxName);
 					String info = m_mPayment.getR_RespMsg() + " (" + m_mPayment.getR_AuthCode() + ") ID=" + m_mPayment.getR_PnRef();
 					processMsg = info + "\n" + m_mPayment.getDocumentNo();
 					saveChanges();

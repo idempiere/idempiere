@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_IssueRecommendation
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="R_IssueRecommendation")
 public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendation, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_R_IssueRecommendation extends PO implements I_R_IssueRecommendati
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_R_IssueRecommendation (Properties ctx, int R_IssueRecommendation_ID, String trxName)

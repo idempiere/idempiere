@@ -143,7 +143,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		editor2.addValueChangeListener(this);
 		
 		Div div = new Div();
-		okBtn = ButtonFactory.createNamedButton(Msg.getMsg(Env.getCtx(), "ApplyFilter"), true, false);
+		okBtn = ButtonFactory.createNamedButton("ApplyFilter", true, false);
 		okBtn.setStyle("color: white; background: #A9A9A9;");
 
 		modeCombobox = new Combobox();
