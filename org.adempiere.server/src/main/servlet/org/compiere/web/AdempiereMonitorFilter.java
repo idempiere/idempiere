@@ -110,15 +110,15 @@ public class AdempiereMonitorFilter implements Filter
 					if (m_SSOPrinciple != null) {
 						if (m_SSOPrinciple.hasAuthenticationCode(req, resp)) {
 							// Use authentication code get get token
-							m_SSOPrinciple.getAuthenticationToken(req, resp, SSOUtils.SSO_MODE_MONITIOR);
+							m_SSOPrinciple.getAuthenticationToken(req, resp, SSOUtils.SSO_MODE_MONITOR);
 						} else if (!m_SSOPrinciple.isAuthenticated(req, resp)) {
 							// Redirect to SSO sing in page for authentication
-							m_SSOPrinciple.redirectForAuthentication(req, resp, SSOUtils.SSO_MODE_MONITIOR);
+							m_SSOPrinciple.redirectForAuthentication(req, resp, SSOUtils.SSO_MODE_MONITOR);
 							return;
 						} else if (m_SSOPrinciple.isAccessTokenExpired(req, resp)) {
 							// Refresh token after expired
 							isRedirectToLoginOnError = true;
-							m_SSOPrinciple.refreshToken(req, resp, SSOUtils.SSO_MODE_MONITIOR);
+							m_SSOPrinciple.refreshToken(req, resp, SSOUtils.SSO_MODE_MONITOR);
 						}
 						// validate the user
 						if (checkSSOAuthorization(session.getAttribute(ISSOPrinciple.SSO_PRINCIPLE_SESSION_NAME)))

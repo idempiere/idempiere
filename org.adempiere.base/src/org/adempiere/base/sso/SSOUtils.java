@@ -30,7 +30,7 @@ public class SSOUtils
 
 	public static final String	SSO_MODE_OSGI		= "SSO_MODE_OSGI";
 	public static final String	SSO_MODE_WEBUI		= "SSO_MODE_WEBUI";
-	public static final String	SSO_MODE_MONITIOR	= "SSO_MODE_MONITIOR";
+	public static final String	SSO_MODE_MONITOR	= "SSO_MODE_MONITOR";
 
 	public static ISSOPrinciple getSSOPrinciple()
 	{
@@ -52,7 +52,7 @@ public class SSOUtils
 	{
 		if (SSO_MODE_OSGI.equalsIgnoreCase(redirectMode))
 			return config.getSSO_OSGIRedirectURIs();
-		else if (SSO_MODE_MONITIOR.equalsIgnoreCase(redirectMode))
+		else if (SSO_MODE_MONITOR.equalsIgnoreCase(redirectMode))
 			return config.getSSO_IDempMonitorRedirectURIs();
 		return config.getSSO_ApplicationRedirectURIs();
 	}
