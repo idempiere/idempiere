@@ -46,7 +46,7 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_PRINTNAME;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_PRODUCTATTRIBUTE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_QUANTITY;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_RADIOGROUP_LIST;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_RELATED_TO;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_RECORD_ID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ROWID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_SEARCH;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_SINGLE_SELECTION_GRID;
@@ -176,7 +176,7 @@ public final class DisplayType
 	
 	public static final int ChosenMultipleSelectionSearch = REFERENCE_DATATYPE_CHOSEN_MULTIPLE_SELECTION_SEARCH;
 	
-	public static final int RelatedTo = REFERENCE_DATATYPE_RELATED_TO;
+	public static final int RecordID = REFERENCE_DATATYPE_RECORD_ID;
 	
 	
 
@@ -228,7 +228,7 @@ public final class DisplayType
 		if (displayType == ID || displayType == Table || displayType == TableDir
 			|| displayType == Search || displayType == Location || displayType == Locator
 			|| displayType == Account || displayType == Assignment || displayType == PAttribute
-			|| displayType == Image || displayType == Chart	|| displayType == RelatedTo)
+			|| displayType == Image || displayType == Chart	|| displayType == RecordID)
 			return true;
 		
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);

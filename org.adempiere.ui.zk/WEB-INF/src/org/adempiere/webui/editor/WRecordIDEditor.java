@@ -39,7 +39,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.GridTabDataBinder;
 import org.adempiere.webui.window.WFieldRecordInfo;
-import org.adempiere.webui.window.WRelatedToDialog;
+import org.adempiere.webui.window.WRecordIDDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
@@ -88,7 +88,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 
 	private void init() {
 		wrapperDiv = new Div();
-		wrapperDiv.setSclass("related-to-editor");
+		wrapperDiv.setSclass("recordid-editor");
 		wrapperDiv.setParent(this.getComponent());
 		wrapperDiv.addEventListener(Events.ON_RIGHT_CLICK, this);
 
@@ -291,7 +291,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 				actionZoom();
 			}
 			else if(event.getTarget().equals(editButton)) {
-				new WRelatedToDialog(recordTextBox.getPage(), this, tableIDGridField);
+				new WRecordIDDialog(recordTextBox.getPage(), this, tableIDGridField);
 			}
 		}
 		else if(event.getName().equalsIgnoreCase(Events.ON_RIGHT_CLICK)) {

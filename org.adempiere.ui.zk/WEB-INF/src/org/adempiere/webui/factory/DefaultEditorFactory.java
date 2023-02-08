@@ -231,7 +231,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         {
         	editor = new WTimeZoneEditor(gridField, tableEditor);
         }
-		else if (displayType == DisplayType.RelatedTo)
+		else if (displayType == DisplayType.RecordID)
         {
         	editor = new WRecordIDEditor(gridField, tableEditor, editorConfiguration);
         }

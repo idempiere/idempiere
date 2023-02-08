@@ -54,7 +54,7 @@ import org.zkoss.zul.Vlayout;
  * @author Peter Takacs, Cloudempiere
  *
  */
-public class WRelatedToDialog extends Window implements EventListener<Event> {
+public class WRecordIDDialog extends Window implements EventListener<Event> {
 
 	/**
 	 * 
@@ -78,7 +78,7 @@ public class WRelatedToDialog extends Window implements EventListener<Event> {
 	
 	private Integer value;
 	
-	public WRelatedToDialog(Page page, WRecordIDEditor editor, GridField tableIDGridField) {
+	public WRecordIDDialog(Page page, WRecordIDEditor editor, GridField tableIDGridField) {
 		super();
 		
 		this.page = page;
@@ -109,11 +109,11 @@ public class WRelatedToDialog extends Window implements EventListener<Event> {
 		setClosable(true);
 		setTitle(Msg.getMsg(Env.getCtx(), "ChooseRelatedRecord"));
 		setPosition("center");
-		setSclass("related-to-dialog");
+		setSclass("recordid-dialog");
 		doHighlighted();
 		
-		contentDiv.setSclass("related-to-dialog-content");
-		confirmPanelDiv.setSclass("related-to-dialog-confirm");
+		contentDiv.setSclass("recordid-dialog-content");
+		confirmPanelDiv.setSclass("recordid-dialog-confirm");
 		
 		parentTextBox.setReadonly(true);
 		parentTextBox.setValue(WRecordIDEditor.getIdentifierColumns(
@@ -124,9 +124,9 @@ public class WRelatedToDialog extends Window implements EventListener<Event> {
 		recordsEditor.setValue(value);
 		
 		okBtn.addEventListener(Events.ON_CLICK, this);
-		okBtn.setSclass("related-to-dialog-confirm");
+		okBtn.setSclass("recordid-dialog-confirm");
 		cancelBtn.addEventListener(Events.ON_CLICK, this);
-		cancelBtn.setSclass("related-to-dialog-confirm");
+		cancelBtn.setSclass("recordid-dialog-confirm");
 		
 		Text text = new Text(Msg.getMsg(Env.getCtx(), "Parent"));
 		labelsDiv.appendChild(text);
@@ -134,9 +134,9 @@ public class WRelatedToDialog extends Window implements EventListener<Event> {
 		labelsDiv.appendChild(text);
 		text = new Text(Msg.getMsg(Env.getCtx(), "Record"));
 		labelsDiv.appendChild(text);
-		labelsDiv.setSclass("related-to-dialog-labels");
+		labelsDiv.setSclass("recordid-dialog-labels");
 		
-		fieldsDiv.setSclass("related-to-dialog-fields");
+		fieldsDiv.setSclass("recordid-dialog-fields");
 		
 		fieldsDiv.appendChild(parentTextBox);
 		fieldsDiv.appendChild(tableIDEditorCopy.getComponent());

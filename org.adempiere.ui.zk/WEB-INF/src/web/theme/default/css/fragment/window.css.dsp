@@ -154,7 +154,7 @@ input[type="checkbox"]:focus
 	margin: 5px;
 }
 
-.related-to-editor .z-toolbarbutton {
+.recordid-editor .z-toolbarbutton {
 	padding: 4px 0px 0px 1px;
     margin: 0px;
     display: inline-block;
@@ -170,41 +170,41 @@ input[type="checkbox"]:focus
     border-radius: 0;
 }
 
-.related-to-dialog {
+.recordid-dialog {
 	min-width: 400px;
 }
 
-.related-to-dialog-content {
+.recordid-dialog-content {
 	display: flex;
 	padding: 10px;
 }
 
-.related-to-dialog-labels {
+.recordid-dialog-labels {
 	display: grid;
     text-align: right;
     align-items: center;
 }
 
-.related-to-dialog-fields {
+.recordid-dialog-fields {
 	display: grid;
 	width: 77%;
 }
 
-.related-to-dialog-fields .editor-button {
+.recordid-dialog-fields .editor-button {
 	top: 8px !important;
 }
 
-.related-to-dialog-content .z-combobox, .related-to-dialog-content .z-textbox {
+.recordid-dialog-content .z-combobox, .recordid-dialog-content .z-textbox {
 	width: 98% !important;
 	margin: 8px 5px;
 }
 
-.related-to-dialog-confirm {
+.recordid-dialog-confirm {
 	text-align: end;
     padding: 10px;
 }
 
-.related-to-dialog-confirm .z-button {
+.recordid-dialog-confirm .z-button {
 	margin: 0px 5px !important;
 	height: 30px;
 	padding: 0px 10px;
