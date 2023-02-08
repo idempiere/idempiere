@@ -319,6 +319,9 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         pnlButtons.getButton(ConfirmPanel.A_CANCEL).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
         this.appendChild(div);
+        
+        if(validLstLanguage!=null)
+        	languageChanged(validLstLanguage);
 	}
 
     private void initComponents()
@@ -435,7 +438,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 			lstLanguage.setAutocomplete(true);
 			lstLanguage.setAutodrop(true);
 			lstLanguage.setId("lstLanguage");
-			lstLanguage.addEventListener(Events.ON_SELECT, this);
 			ZKUpdateUtil.setWidth(lstLanguage, "220px");
 
 			// Update Language List
@@ -444,17 +446,23 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 			String[] availableLanguages = Language.getNames();
 			for (String langName : availableLanguages)
 			{
-				language = Language.getLanguage(langName);
-				if (!supported.contains(language.getAD_Language()))
+				Language lang = Language.getLanguage(langName);
+				if (!supported.contains(lang.getAD_Language()))
 					continue;
-				lstLanguage.appendItem(langName, language.getAD_Language());
+				lstLanguage.appendItem(langName, lang.getAD_Language());
 			}
-
-			if (lstLanguage.getItems().size() > 0)
+			
+			if(language!=null)
+			{
+				validLstLanguage = language.getName();
+				lstLanguage.setValue(validLstLanguage);
+			}
+			else if (lstLanguage.getItems().size() > 0)
 			{
 				validLstLanguage = (String) lstLanguage.getItems().get(0).getLabel();
 				lstLanguage.setValue(validLstLanguage);
 			}
+			lstLanguage.addEventListener(Events.ON_SELECT, this);
 		}
 
         setUserID();
@@ -544,15 +552,19 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	{
 		Language language = findLanguage(langName);
 		lblClient.setValue(Msg.getMsg(language, "Client"));
-		lblRole.setValue(Msg.getMsg(language,"Role"));
-		lblDef.setValue(Msg.getMsg(language,"Defaults"));
-		lblOrganisation.setValue(Msg.getMsg(language,"Organization"));
-		lblWarehouse.setValue(Msg.getMsg(language,"Warehouse"));
-    	lblLanguage.setValue(Msg.getMsg(language, "Language"));
-    	lblDate.setValue(Msg.getMsg(language,"Date"));
-    	pnlButtons.getButton(ConfirmPanel.A_OK).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_OK)));
-    	pnlButtons.getButton(ConfirmPanel.A_HELP).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_HELP)));
-    	pnlButtons.getButton(ConfirmPanel.A_CANCEL).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_CANCEL)));
+		lblRole.setValue(Msg.getMsg(language, "Role"));
+		lblDef.setValue(Msg.getMsg(language, "Defaults"));
+		lblOrganisation.setValue(Msg.getMsg(language, "Organization"));
+		lblWarehouse.setValue(Msg.getMsg(language, "Warehouse"));
+		lblLanguage.setValue(Msg.getMsg(language, "Language"));
+		lblDate.setValue(Msg.getMsg(language, "Date"));
+		if (pnlButtons != null) {
+			pnlButtons.getButton(ConfirmPanel.A_OK).setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_OK)));
+			pnlButtons.getButton(ConfirmPanel.A_HELP)
+					.setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_HELP)));
+			pnlButtons.getButton(ConfirmPanel.A_CANCEL)
+					.setLabel(Util.cleanAmp(Msg.getMsg(language, ConfirmPanel.A_CANCEL)));
+		}
 	}
     
 	private Language findLanguage(String langName)
