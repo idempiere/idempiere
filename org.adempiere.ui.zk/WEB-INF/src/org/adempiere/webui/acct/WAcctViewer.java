@@ -104,11 +104,10 @@ import org.zkoss.zul.Space;
  *  @author Elaine Tan
  *  @author Low Heng Sin
  */
-
 public class WAcctViewer extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3440375640756094077L;
 
@@ -207,7 +206,6 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	/**
 	 *  Default constructor
 	 */
-
 	public WAcctViewer()
 	{
 		this (0, 0, 0);
@@ -220,14 +218,13 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	 *  @param AD_Table_ID Table
 	 *  @param Record_ID Record
 	 */
-
 	public WAcctViewer(int AD_Client_ID, int AD_Table_ID, int Record_ID)
 	{
 		super ();
 
-		log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
+		if (log.isLoggable(Level.INFO))
+			log.info("AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID);
 
-		//setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		m_windowNo = SessionManager.getAppDesktop().registerWindow(this);
 		m_data = new WAcctViewerData (Env.getCtx(), m_windowNo, AD_Client_ID, AD_Table_ID);
 
@@ -242,9 +239,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		catch(Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
-			//dispose();
 		}
-	} // AcctViewer
+	}
 
 	/**
 	 *  Static Init.
@@ -257,7 +253,6 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	 *  </pre>
 	 *  @throws Exception
 	 */
-
 	private void init() throws Exception
 	{
 		// Selection Panel
@@ -450,8 +445,6 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		ZKUpdateUtil.setHflex(sortBy4, "1");
 		row.appendChild(group4);
 
-		//"images/InfoAccount16.png"
-
 		Groupbox groupDisplay = new Groupbox();
 		Caption capDisplay = new Caption(Msg.getMsg(Env.getCtx(), "Display"));
 		groupDisplay.appendChild(capDisplay);
@@ -549,11 +542,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		resultPanel.appendChild(resultCenter);
 		ZKUpdateUtil.setHflex(table, "1");
 		ZKUpdateUtil.setVflex(table, true);
-		//ZKUpdateUtil.setHeight(table, "99%");
-		//table.setStyle("position: absolute;");
 		resultCenter.appendChild(table);
 		ZKUpdateUtil.setHflex(table, "1");
-		//ZKUpdateUtil.setVflex(table, "1");
 		table.addEventListener(Events.ON_DOUBLE_CLICK, this);
 		if (ClientInfo.isMobile())
 			table.setSizedByContent(true);
@@ -599,7 +589,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		layout.setParent(this);
 		ZKUpdateUtil.setHeight(layout, "100%");
 		ZKUpdateUtil.setWidth(layout, "100%");
-		layout.setStyle("background-color: transparent; margin: 0; position: absolute; padding: 0;");
+		layout.setStyle("background-color: transparent; margin: 0; position: relative; padding: 0;");
 
 		Center center = new Center();
 		center.setParent(layout);
@@ -618,7 +608,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 
 		this.setTitle(Msg.getMsg(Env.getCtx(), TITLE));
 		this.setClosable(true);
-		this.setStyle("position: absolute; width: 100%; height: 100%;");
+		this.setStyle("position: relative; width: 100%; height: 100%;");
 		this.setSizable(true);
 		this.setMaximizable(true);
 	}
@@ -629,7 +619,6 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	 *  @param AD_Table_ID table
 	 *  @param Record_ID record
 	 */
-
 	private void dynInit (int AD_Table_ID, int Record_ID)
 	{
 		m_data.validateAcctSchemas(Record_ID);
@@ -702,6 +691,12 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			stateChanged();
 	} // dynInit
 
+	/**
+	 * set selected table and record id
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @return true if AD_Table_ID is found, false otherwise
+	 */
 	private boolean setSelectedTable(int AD_Table_ID, int Record_ID)
 	{
 		int cnt = selTable.getItemCount();
@@ -727,9 +722,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	}
 
 	/**
-	 *  Dispose
+	 *  Dispose window
 	 */
-
 	public void dispose()
 	{
 		m_data.dispose();
@@ -738,11 +732,10 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	} // dispose;
 
 	/**************************************************************************
-	 *  Tab Changed
+	 *  After Tab Selection Changed
 	 */
 	public void stateChanged()
 	{
-	//	log.info( "AcctViewer.stateChanged");
 		boolean visible = m_data.documentQuery && tabResult.isSelected();
 
 		bRePost.setVisible(visible);
@@ -756,11 +749,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	 *  Event Performed (Event Listener)
 	 *  @param e Event
 	 */
-
 	public void onEvent(Event e) throws Exception
 	{
-		// log.info(e.getActionCommand());
-
 		Object source = e.getTarget();
 
 		if (source == tabResult)
@@ -802,6 +792,10 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		}
 	} // onEvent
 
+	/**
+	 * export to excel
+	 * show excel viewer if available
+	 */
 	private void actionExport() {
 		if (m_rmodel != null && m_rmodel.getRowCount() > 0) {
 			RModelExcelExporter exporter = new RModelExcelExporter(m_rmodel);
@@ -835,9 +829,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	}
 
 	/**
-	 * 	New Acct Schema
+	 * 	Handle Acct Schema selection
 	 */
-
 	private void actionAcctSchema()
 	{
 		Listitem listitem = selAcctSchema.getSelectedItem();
@@ -853,7 +846,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		m_data.C_AcctSchema_ID = kp.getKey();
 		m_data.ASchema = MAcctSchema.get(Env.getCtx(), m_data.C_AcctSchema_ID);
 
-		log.info(m_data.ASchema.toString());
+		if (log.isLoggable(Level.INFO))
+			log.info(m_data.ASchema.toString());
 
 		//  Sort Options
 
@@ -916,7 +910,6 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	 * 	Add to Sort
 	 *	@param vn name pair
 	 */
-
 	private void sortAddItem(ValueNamePair vn)
 	{
 		sortBy1.appendItem(vn.getName(), vn);
@@ -926,9 +919,9 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	} // sortAddItem
 
 	/**
-	 *  Query
+	 *  Query.
+	 *  Delegate to {@link WAcctViewerData#query()}
 	 */
-
 	private void actionQuery()
 	{
 		//  Parameter Info
@@ -1171,7 +1164,6 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	/**
 	 *  Document selection
 	 */
-
 	private void actionDocument()
 	{
 		boolean doc = selDocument.isChecked();
@@ -1193,9 +1185,8 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	} // actionDocument
 
 	/**
-	 *  Save Table selection (reset Record selection)
+	 *  Handle Table selection (reset Record selection)
 	 */
-
 	private void actionTable()
 	{
 		Listitem listitem = selTable.getSelectedItem();
@@ -1217,17 +1208,15 @@ public class WAcctViewer extends Window implements EventListener<Event>
 	} // actionTable
 
 	/**
-	 *  Action Button
+	 *  Handle Info Button action
+	 *  Show info window
 	 *
 	 *  @param button pressed button
-	 *  @return ID
-	 * @throws Exception
+	 *  @throws Exception
 	 */
-
 	private void actionButton(final Button button) throws Exception
 	{
 		final String keyColumn = button.getName();
-		log.info(keyColumn);
 		String whereClause = "(IsSummary='N' OR IsSummary IS NULL)";
 		String lookupColumn = keyColumn;
 
@@ -1321,14 +1310,12 @@ public class WAcctViewer extends Window implements EventListener<Event>
 				
 			}
 		});
-		AEnv.showWindow(info);
-		
+		AEnv.showWindow(info);		
 	} // actionButton
 
 	/**
 	 *  RePost Record
 	 */
-
 	private void actionRePost()
 	{
 		if (m_data.documentQuery
@@ -1362,7 +1349,9 @@ public class WAcctViewer extends Window implements EventListener<Event>
 		}
 	} // actionRePost
 
-	// Elaine 2009/07/29
+	/**
+	 * zoom to table id + record id
+	 */
 	private void actionZoom()
 	{
 		int selected = table.getSelectedIndex();
@@ -1380,8 +1369,10 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			AEnv.zoom(AD_Table_ID, Record_ID);
 		}
 	}
-	//
-	
+
+	/**
+	 * zoom to fact acct window (double click action)
+	 */
 	private void actionZoomFactAcct() {
 		int selected = table.getSelectedIndex();
 		if(selected == -1) return;
