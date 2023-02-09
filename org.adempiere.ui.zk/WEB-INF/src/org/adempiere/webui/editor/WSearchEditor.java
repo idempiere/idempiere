@@ -197,7 +197,8 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		if (Util.isEmpty(m_tableName))
 			setTableAndKeyColumn();
-
+		if (Util.isEmpty(m_tableName))
+			m_tableName = "";
 		boolean enableDrill = false;
 		if(getGridField() != null && getGridField().getGridTab() != null && getGridField().getColumnName().endsWith("_ID")
 				&& MRole.getDefault().isCanReport(getGridField().getGridTab().getAD_Table_ID()))
@@ -749,7 +750,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			} else {
 				m_tableName = m_keyColumnName.substring(0, m_keyColumnName.length()-3);
 			}
-		} else if (getGridField() != null && getGridField().getGridTab() != null && getGridField().getAD_Column_ID() > 0) {
+		} else if (getGridField() != null && getGridField().getGridTab() != null && getGridField().getAD_Column_ID() > 0 && !Util.isEmpty(m_keyColumnName)) {
 			// field - this search editor comes from a window, when it comes from process parameter it doesn't have a gridtab
 			MColumn column = MColumn.get(Env.getCtx(), getGridField().getAD_Column_ID());
 			m_tableName = column.getReferenceTableName();

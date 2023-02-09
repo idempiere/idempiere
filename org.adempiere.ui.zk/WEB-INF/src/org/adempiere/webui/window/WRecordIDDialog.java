@@ -102,7 +102,8 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
     	cancelBtn = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL, true, true);;
     	tableIDEditorCopy = new WTableDirEditor("AD_Table_ID", false, false, true, tableIDGridField.getLookup(), true);
 		tableIDEditorCopy.setValue(tableIDGridField.getValue());
-    	recordsEditor = new WSearchEditor("Record_ID", false, false, true, getRecordsLookup());
+		MLookup recordsLookup = getRecordsLookup();
+    	recordsEditor = recordsLookup != null ? new WSearchEditor("Record_ID", false, false, true, recordsLookup) : new WSearchEditor(editor.getGridField());
     	parentTextBox = new Textbox();
     	
 		setPage(page);
@@ -170,14 +171,15 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		if(event.getName().equalsIgnoreCase(Events.ON_SELECT)) {
 			if (event.getTarget().equals(tableIDEditorCopy.getComponent())) {
 				recordsEditor.getComponent().detach();
-				recordsEditor = new WSearchEditor("Record_ID", false, false, true, getRecordsLookup());
+				MLookup recordsLookup = getRecordsLookup();
+		    	recordsEditor = recordsLookup != null ? new WSearchEditor("Record_ID", false, false, true, recordsLookup) : new WSearchEditor(editor.getGridField());
 				fieldsDiv.appendChild(recordsEditor.getComponent());
 			}
 		}
 	}
 	
 	private MLookup getRecordsLookup() {
-		if(tableIDEditorCopy == null || tableIDEditorCopy.getValue() == null)
+		if(tableIDEditorCopy == null || tableIDEditorCopy.getValue() == null)	
 			return null;
 		MTable mTable = MTable.get(Env.getCtx(), (int)tableIDEditorCopy.getValue(), null);
 		String[] keyColumns = mTable.getKeyColumns();
