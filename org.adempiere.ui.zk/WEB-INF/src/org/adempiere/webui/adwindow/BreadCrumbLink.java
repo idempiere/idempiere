@@ -16,8 +16,8 @@ package org.adempiere.webui.adwindow;
 import org.zkoss.zul.A;
 
 /**
+ * Link component for {@link BreadCrumb}
  * @author hengsin
- *
  */
 public class BreadCrumbLink extends A {
 	
@@ -26,12 +26,19 @@ public class BreadCrumbLink extends A {
 	 */
 	private static final long serialVersionUID = 170361731431877695L;
 	
+	/** id for path (tab index) **/
 	private String pathId;
 
+	/**
+	 * @return path id
+	 */
 	public String getPathId() {
 		return pathId;
 	}
 
+	/**
+	 * @param pathId
+	 */
 	public void setPathId(String pathId) {
 		this.pathId = pathId;
 	}

@@ -30,6 +30,7 @@ import java.util.Properties;
 import javax.servlet.http.HttpSession;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.IWebClient;
 import org.adempiere.webui.component.FWindow;
 import org.adempiere.webui.component.Window;
@@ -297,7 +298,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 		else
 			loginName = user.getLDAPUser() != null ? user.getLDAPUser() : user.getName();
     	loginOk(loginName, true, login.getClients());
-    	getDesktop().getSession().setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
+    	getDesktop().getSession().setAttribute(AdempiereWebUI.CHECK_AD_USER_ID_ATTR, Env.getAD_User_ID(ctx));
     	pnlRole.setChangeRole(true);
     	pnlRole.changeRole(ctx);
     }
