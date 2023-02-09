@@ -31,6 +31,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.util.LogAuthFailure;
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -660,7 +661,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 		// [ adempiere-ZK Web Client-2832968 ] User context lost?
 		// https://sourceforge.net/p/adempiere/zk-web-client/303/
 		// it's harmless, if there is no bug then this must never fail        
-        currSess.setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
+        currSess.setAttribute(AdempiereWebUI.CHECK_AD_USER_ID_ATTR, Env.getAD_User_ID(ctx));
 		// End of temporary code for [ adempiere-ZK Web Client-2832968 ] User context lost?
 
         /* Check DB version */

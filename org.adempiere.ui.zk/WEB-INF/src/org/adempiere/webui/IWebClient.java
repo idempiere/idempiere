@@ -18,56 +18,61 @@ import org.compiere.model.MUser;
 import org.zkforge.keylistener.Keylistener;
 
 /**
- * 
+ * Interface for web client
  * @author hengsin
  *
  */
 public interface IWebClient {
 
 	/**
-	 * login completed
+	 * handle login completed
 	 */
 	public void loginCompleted();
 
 	/**
-	 * logout
+	 * handle logout
 	 */
 	public void logout();
 
 	/**
-	 * logout after browser destroyed
+	 * auto logout after close of browser tab
 	 */
 	public void logoutAfterTabDestroyed();
 
 	/**
-	 * 
+	 * Get {@link IDesktop} instance
 	 * @return IDesktop
 	 */
 	public IDesktop getAppDeskop();
 
 	/**
-	 * 
+	 * load user preference by user id
 	 * @param userId
 	 * @return UserPreference
 	 */
 	public UserPreference loadUserPreference(int userId);
 
 	/**
-	 * 
+	 * Get current user preference
 	 * @return UserPreference
 	 */
 	public UserPreference getUserPreference();
 	
 	/**
-	 * change Role
+	 * handle change Role
 	 */
 	public void changeRole(MUser user);
 
 	/**
-	 * @return keylistener
+	 * Get global key listener
+	 * @return {@link Keylistener}
 	 */
 	public abstract Keylistener getKeylistener();
 	
+	/**
+	 * Get current ClientInfo
+	 * @return {@link ClientInfo}
+	 */
 	default ClientInfo getClientInfo() {
 		return getAppDeskop().getClientInfo();
 	}
