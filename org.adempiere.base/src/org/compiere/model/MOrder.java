@@ -987,12 +987,6 @@ public class MOrder extends X_C_Order implements DocAction
 				log.saveWarning("WarehouseOrgConflict", "");
 		}
 
-		boolean disallowNegInv = wh.isDisallowNegativeInv();
-		String DeliveryRule = getDeliveryRule();
-		if((disallowNegInv && DELIVERYRULE_Force.equals(DeliveryRule)) ||
-				(DeliveryRule == null || DeliveryRule.length()==0))
-			setDeliveryRule(DELIVERYRULE_Availability);
-		
 		//	Reservations in Warehouse
 		if (!newRecord && is_ValueChanged("M_Warehouse_ID"))
 		{
