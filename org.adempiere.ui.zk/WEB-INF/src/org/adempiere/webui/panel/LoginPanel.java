@@ -521,7 +521,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 			for(int i = 0; i < lstLanguage.getItemCount(); i++)
 			{
 				Comboitem li = lstLanguage.getItemAtIndex(i);
-				if(li.getLabel().equals(initDefault))
+				if (li.getLabel().equals(initDefault) || li.getValue().equals(initDefault))
 				{
 					lstLanguage.setSelectedIndex(i);
 					languageChanged(li.getLabel()); // Elaine 2009/04/17 language changed

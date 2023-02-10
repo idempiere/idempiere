@@ -1271,10 +1271,10 @@ public class Login
 	 *  @param app_user user id
 	 *  @param app_pwd password
 	 *  @param roleTypes comma separated list of the role types allowed to login (NULL can be added)
-	 *  @param isOnlyUser check only base on user Name
+	 *  @param isSSOLogin check only base on user Name
 	 *  @return client array or null if in error.
 	 */
-	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes, boolean isOnlyUser) {
+	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes, boolean isSSOLogin) {
 		if (log.isLoggable(Level.INFO)) log.info("User=" + app_user);
 
 		if (Util.isEmpty(app_user))
@@ -1289,7 +1289,7 @@ public class Login
 		if (system == null)
 			throw new IllegalStateException("No System Info");
 
-		if (!isOnlyUser && (app_pwd == null || app_pwd.length() == 0))
+		if (!isSSOLogin && (app_pwd == null || app_pwd.length() == 0))
 		{
 			log.warning("No Apps Password");
 			return null;
@@ -1298,7 +1298,7 @@ public class Login
 		loginErrMsg = null;
 		isPasswordExpired = false;
 
-		if (!isOnlyUser && system.isLDAP())
+		if (!isSSOLogin && system.isLDAP())
 		{
 			authenticated = system.isLDAP(app_user, app_pwd);
 			if (authenticated) {
@@ -1367,7 +1367,7 @@ public class Login
 		}
 		
 		if (users.size() == 0) {
-			log.saveError(isOnlyUser ? "UserNotFoundError": "UserPwdError", app_user, false);
+			log.saveError(isSSOLogin ? "UserNotFoundError": "UserPwdError", app_user, false);
 			return null;
 		}
 		
@@ -1387,7 +1387,7 @@ public class Login
 			clientsValidated.add(user.getAD_Client_ID());
 			boolean valid = false;
 			// authenticated by ldap
-			if (authenticated || isOnlyUser) {
+			if (authenticated || isSSOLogin) {
 				valid = true;
 			} else {
 				if (!system.isLDAP() || Util.isEmpty(user.getLDAPUser())) {
@@ -1652,7 +1652,7 @@ public class Login
 			.append("FROM AD_User u")
 			.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
 			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
-		sql.append("WHERE ur.AD_Client_ID=? AND u.Password IS NOT NULL AND ");
+		sql.append("WHERE u.Password IS NOT NULL AND ur.AD_Client_ID=? AND ");		
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		if (email_login)
 			sql.append("u.EMail=?");

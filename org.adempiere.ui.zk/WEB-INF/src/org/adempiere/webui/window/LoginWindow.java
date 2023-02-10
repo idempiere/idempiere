@@ -152,7 +152,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 			boolean isShowRolePanel = MSysConfig.getBooleanValue(MSysConfig.SSO_SELECT_ROLE, true);
 			KeyNamePair[] clients = login.getClients(username, null, null, true);
 			if (clients != null)
-				loginOk(username, isShowRolePanel, clients, true);
+				loginOk(username, isShowRolePanel, clients);
 			else
 			{
 				log.log(Level.WARNING,"No Client found for user:" + username);
@@ -178,17 +178,12 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 	protected void createLoginPanel() {
 		pnlLogin = new LoginPanel(ctx, this);
 	}
-	
-    public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
-    {
-    	loginOk(userName, show, clientsKNPairs, false);
-    }
 
-    public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isSSOLogin)
+    public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
     {
     	boolean isClientDefined = (clientsKNPairs.length == 1 || ! Util.isEmpty(Env.getContext(ctx, Env.AD_USER_ID)));
 		if (pnlRole == null)
-			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined, isSSOLogin);
+			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined);
     	if (isClientDefined) {
     		createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
     	} else {

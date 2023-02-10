@@ -118,7 +118,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	private RolePanel component;
 
 	private boolean isChangeRole = false;
-	private boolean m_isSSOLogin = false;
 
 	private boolean m_isClientDefined;
 
@@ -135,7 +134,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 
 	private static final String ON_DEFER_LOGOUT = "onDeferLogout";
 
-	public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isClientDefined, boolean isSSOLogin) {
+	public RolePanel(Properties ctx, LoginWindow loginWindow, String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isClientDefined) {
     	this.wndLogin = loginWindow;
     	m_ctx = ctx;
     	m_userName = userName;    	
@@ -143,7 +142,6 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	m_showRolePanel = show;
     	m_isClientDefined = isClientDefined;
         m_clientKNPairs = clientsKNPairs;
-        m_isSSOLogin = isSSOLogin;
         
         if( m_clientKNPairs.length == 1  &&  !m_showRolePanel ){
         	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) m_clientKNPairs[0].getID());
@@ -272,20 +270,17 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	tr.appendChild(td);
     	td.appendChild(lstWarehouse);
     	
-		if (m_isSSOLogin)
-		{
-			tr = new Tr();
-			tr.setId("rowLanguage");
-			table.appendChild(tr);
-			td = new Td();
-			tr.appendChild(td);
-			td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-			td.appendChild(lblLanguage.rightAlign());
-			td = new Td();
-			td.setSclass(ITheme.LOGIN_FIELD_CLASS);
-			tr.appendChild(td);
-			td.appendChild(lstLanguage);
-		}
+    	tr = new Tr();
+    	tr.setId("rowLanguage");
+    	table.appendChild(tr);
+    	td = new Td();
+    	tr.appendChild(td);
+    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+    	td.appendChild(lblLanguage.rightAlign());
+    	td = new Td();
+    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+    	tr.appendChild(td);
+    	td.appendChild(lstLanguage);
 
     	tr = new Tr();
         tr.setId("rowDate");
@@ -432,38 +427,35 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         	lstDate.setReadWrite(false);
         }
         
-        if(m_isSSOLogin)
-		{
-			lstLanguage = new Combobox();
-			lstLanguage.setAutocomplete(true);
-			lstLanguage.setAutodrop(true);
-			lstLanguage.setId("lstLanguage");
-			ZKUpdateUtil.setWidth(lstLanguage, "220px");
+        lstLanguage = new Combobox();
+        lstLanguage.setAutocomplete(true);
+        lstLanguage.setAutodrop(true);
+        lstLanguage.setId("lstLanguage");
+        ZKUpdateUtil.setWidth(lstLanguage, "220px");
 
-			// Update Language List
-			lstLanguage.getItems().clear();
-			ArrayList<String> supported = Env.getLoginLanguages();
-			String[] availableLanguages = Language.getNames();
-			for (String langName : availableLanguages)
-			{
-				Language lang = Language.getLanguage(langName);
-				if (!supported.contains(lang.getAD_Language()))
-					continue;
-				lstLanguage.appendItem(langName, lang.getAD_Language());
-			}
-			
-			if(language!=null)
-			{
-				validLstLanguage = language.getName();
-				lstLanguage.setValue(validLstLanguage);
-			}
-			else if (lstLanguage.getItems().size() > 0)
-			{
-				validLstLanguage = (String) lstLanguage.getItems().get(0).getLabel();
-				lstLanguage.setValue(validLstLanguage);
-			}
-			lstLanguage.addEventListener(Events.ON_SELECT, this);
-		}
+        // Update Language List
+        lstLanguage.getItems().clear();
+        ArrayList<String> supported = Env.getLoginLanguages();
+        String[] availableLanguages = Language.getNames();
+        for (String langName : availableLanguages)
+        {
+        	Language lang = Language.getLanguage(langName);
+        	if (!supported.contains(lang.getAD_Language()))
+        		continue;
+        	lstLanguage.appendItem(langName, lang.getAD_Language());
+        }
+
+        if(language!=null)
+        {
+        	validLstLanguage = language.getName();
+        	lstLanguage.setValue(validLstLanguage);
+        }
+        else if (lstLanguage.getItems().size() > 0)
+        {
+        	validLstLanguage = (String) lstLanguage.getItems().get(0).getLabel();
+        	lstLanguage.setValue(validLstLanguage);
+        }
+        lstLanguage.addEventListener(Events.ON_SELECT, this);
 
         setUserID();
         updateRoleList();
@@ -519,8 +511,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
         }
         setUserID();
         updateOrganisationList();
-        if(m_isSSOLogin)
-        	updateLanguage();
+       	updateLanguage();
     }
     
     private void updateLanguage()
@@ -794,7 +785,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	Comboitem lstItemClient = lstClient.getSelectedItem();
     	Comboitem lstItemOrg = lstOrganisation.getSelectedItem();
     	Comboitem lstItemWarehouse = lstWarehouse.getSelectedItem();
-    	Comboitem lstItemLanguage = m_isSSOLogin ? lstLanguage.getSelectedItem() : null;
+    	Comboitem lstItemLanguage = lstLanguage.getSelectedItem();
 
         if(lstItemRole == null || lstItemRole.getValue() == null)
         {
@@ -835,7 +826,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 
 		// Elaine 2009/02/06 save preference to AD_Preference
 		UserPreference userPreference = SessionManager.getSessionApplication().getUserPreference();
-		if(m_isSSOLogin && lstItemLanguage != null && lstItemLanguage.getValue() != null)
+		if (lstItemLanguage != null && lstItemLanguage.getValue() != null)
 			userPreference.setProperty(UserPreference.P_LANGUAGE,  (String) lstItemLanguage.getValue());
 		else
 		userPreference.setProperty(UserPreference.P_LANGUAGE, Env.getContext(m_ctx, UserPreference.LANGUAGE_NAME));
@@ -849,29 +840,26 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 		// force reload of default role when more than 1 client
 		if (lstClient.getChildren().size() > 1)
 			MRole.getDefault(m_ctx, true);
-		if (m_isSSOLogin)
-		{
-			String langName = null;
-			if (lstLanguage.getSelectedItem() != null)
-				langName = (String) lstLanguage.getSelectedItem().getLabel();
-			else
-				langName = Language.getBaseLanguage().getName();
-			Language language = findLanguage(langName);
-			Env.setContext(m_ctx, UserPreference.LANGUAGE_NAME, language.getName());
+		String langName = null;
+		if (lstLanguage.getSelectedItem() != null)
+			langName = (String) lstLanguage.getSelectedItem().getLabel();
+		else
+			langName = Language.getBaseLanguage().getName();
+		Language language = findLanguage(langName);
+		Env.setContext(m_ctx, UserPreference.LANGUAGE_NAME, language.getName());
 
-			Locale locale = language.getLocale();
-			Desktop desktop = Executions.getCurrent().getDesktop();
-			desktop.getSession().setAttribute(Attributes.PREFERRED_LOCALE, locale);
-			try
-			{
-				Clients.reloadMessages(locale);
-			}
-			catch (IOException e)
-			{
-				Dialog.warn(0, e.getLocalizedMessage(), e.getMessage());
-			}
-			Locales.setThreadLocal(locale);
+		Locale locale = language.getLocale();
+		Desktop desktop = Executions.getCurrent().getDesktop();
+		desktop.getSession().setAttribute(Attributes.PREFERRED_LOCALE, locale);
+		try
+		{
+			Clients.reloadMessages(locale);
 		}
+		catch (IOException e)
+		{
+			Dialog.warn(0, e.getLocalizedMessage(), e.getMessage());
+		}
+		Locales.setThreadLocal(locale);
 
 		if (m_isClientDefined || isMFAValidated)
 			wndLogin.loginCompleted(login, orgKNPair, this);
