@@ -350,7 +350,6 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         
         this.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "findWindow");
         this.setId("findWindow_"+targetWindowNo+"_"+targetTabNo);
-        System.out.println("this.setId -> findWindow_"+targetWindowNo+"_"+targetTabNo);
         LayoutUtils.addSclass("find-window", this);
         
         addEventListener(Events.ON_CANCEL, e -> onCancel());
