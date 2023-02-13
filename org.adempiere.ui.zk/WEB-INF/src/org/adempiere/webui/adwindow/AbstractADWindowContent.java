@@ -4332,6 +4332,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		if (findWindow != null && isCurrentFindWindowValid()) {
 			toolbar.setSelectedUserQuery(findWindow.getAD_UserQuery_ID());
 		} else {
+			if (findWindow != null) {
+				if (findWindow.getParent() != null)
+					findWindow.getParent().removeChild(findWindow);
+				tabFindWindowHashMap.remove(adTabbox.getSelectedGridTab(), findWindow);
+			}
 			findWindow = new FindWindow (adTabbox.getSelectedGridTab().getWindowNo(), adTabbox.getSelectedGridTab().getTabNo(), adTabbox.getSelectedGridTab().getName(),
 					adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getTableName(),
 					adTabbox.getSelectedGridTab().getWhereExtended(), findFields, 1, adTabbox.getSelectedGridTab().getAD_Tab_ID(), this);
