@@ -29,6 +29,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Textbox;
@@ -43,12 +44,14 @@ import org.adempiere.webui.window.WRecordIDDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MColumn;
 import org.compiere.model.MQuery;
+import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
@@ -108,7 +111,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 				public void propertyChange(PropertyChangeEvent evt) {
 					if(evt.getNewValue() != oldTableID) {
 						oldTableID = evt.getNewValue();
-						setValue(null);
+						setValue(null, false);
 					}
 				}
 			});
@@ -155,17 +158,19 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	public void actionZoom()
 	{
 		Integer tableID = (Integer) tableIDGridField.getValue();
-		if(tableID == null || tableID <= 0)
+		Integer recordID = (Integer) gridTab.getValue("Record_ID");
+		if(tableID == null || tableID <= 0 || recordID == null || recordID <= 0)
 			return;
+		if (!MRole.getDefault().isTableAccess(tableID, false))
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccessTableNoView"));
 		MTable savedTable = new MTable(Env.getCtx(), tableID, null);
-	
 		String[] keyColumns = savedTable.getKeyColumns();
 		String keyColumn = null;
 		if(keyColumns.length > 0) {
 			keyColumn = keyColumns[0];	//	guess
 		}
 	
-		String where = keyColumn + "=" + gridTab.getValue("Record_ID");
+		String where = keyColumn + "=" + recordID;
 		PO po = new Query(Env.getCtx(), savedTable, where, null).first();
 		boolean isSOTrx = true;
 		if(po.columnExists("IsSOTrx")) {
@@ -225,14 +230,24 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 
 	public  void propertyChange(PropertyChangeEvent evt)
 	{
-		if ("FieldValue".equals(evt.getPropertyName()))
+		if (GridField.PROPERTY.equals(evt.getPropertyName()))
 		{
-			setValue(evt.getNewValue());
+			setValue(evt.getNewValue(), false);
 		}
 	}
 	
 	@Override
 	public void setValue(Object value) {
+		setValue(value, true);
+	}
+	
+	/**
+	 * 	Set Value
+	 *	@param value value
+	 *	@param fire data binding
+	 */
+	
+	private void setValue (Object value, boolean fire) {
 		if (value == null || value.toString().trim().length() == 0)
 		{
 			oldValue = null;
@@ -251,8 +266,11 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			}
 		}
 
-		ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, value);
-        super.fireValueChange(changeEvent);
+//		Data Binding
+		if (fire) {
+			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, value);
+			super.fireValueChange(changeEvent);
+		}
 		oldValue = value;
 
 	}

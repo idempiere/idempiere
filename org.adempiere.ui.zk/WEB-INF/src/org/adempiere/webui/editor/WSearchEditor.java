@@ -262,7 +262,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 		Object curValue = this.value;
         this.value = value;
-		if (value != null && !"".equals(String.valueOf(value)))
+		if (value != null && !"".equals(String.valueOf(value)) && lookup != null)
 		{		
 			NamePair namePair = lookup.get(value);
 			if (namePair != null)
