@@ -671,7 +671,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		MColumn column = table.getColumn(columnName);
 		String baseColumn = column.isVirtualColumn() ? columnSql : columnName;
 
-		String embedded = AD_Reference_Value_ID > 0 ? MLookupFactory.getLookup_TableEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, AD_Reference_Value_ID)
+		String embedded = AD_Reference_Value_ID > 0 ? MLookupFactory.getLookup_TableEmbed(Env.getLanguage(Env.getCtx()), baseColumn, p_tableName, AD_Reference_Value_ID)
 				: MLookupFactory.getLookup_TableDirEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, baseColumn);
 		embedded = "(" + embedded + ")";
 	
