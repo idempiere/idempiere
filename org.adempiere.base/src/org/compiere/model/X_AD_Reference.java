@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Reference
  *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Reference")
 public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20230213L;
 
     /** Standard Constructor */
     public X_AD_Reference (Properties ctx, int AD_Reference_ID, String trxName)
@@ -43,6 +43,8 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
+			setShowInactive (null);
+// N
 			setValidationType (null);
         } */
     }
@@ -57,6 +59,8 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setName (null);
+			setShowInactive (null);
+// N
 			setValidationType (null);
         } */
     }
@@ -252,6 +256,45 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	/** ShowInactive AD_Reference_ID=200230 */
+	public static final int SHOWINACTIVE_AD_Reference_ID=200230;
+	/** No = N */
+	public static final String SHOWINACTIVE_No = "N";
+	/** Yes = Y */
+	public static final String SHOWINACTIVE_Yes = "Y";
+	/** Set Show Inactive.
+		@param ShowInactive Show Inactive Records
+	*/
+	public void setShowInactive (String ShowInactive)
+	{
+
+		set_Value (COLUMNNAME_ShowInactive, ShowInactive);
+	}
+
+	/** Get Show Inactive.
+		@return Show Inactive Records
+	  */
+	public String getShowInactive()
+	{
+		return (String)get_Value(COLUMNNAME_ShowInactive);
+	}
+
+	/** Set Value Format.
+		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	*/
+	public void setVFormat (String VFormat)
+	{
+		set_Value (COLUMNNAME_VFormat, VFormat);
+	}
+
+	/** Get Value Format.
+		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	  */
+	public String getVFormat()
+	{
+		return (String)get_Value(COLUMNNAME_VFormat);
+	}
+
 	/** ValidationType AD_Reference_ID=2 */
 	public static final int VALIDATIONTYPE_AD_Reference_ID=2;
 	/** DataType = D */
@@ -275,21 +318,5 @@ public class X_AD_Reference extends PO implements I_AD_Reference, I_Persistent
 	public String getValidationType()
 	{
 		return (String)get_Value(COLUMNNAME_ValidationType);
-	}
-
-	/** Set Value Format.
-		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
-	*/
-	public void setVFormat (String VFormat)
-	{
-		set_Value (COLUMNNAME_VFormat, VFormat);
-	}
-
-	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
-	  */
-	public String getVFormat()
-	{
-		return (String)get_Value(COLUMNNAME_VFormat);
 	}
 }
