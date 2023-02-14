@@ -111,11 +111,10 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 				public void propertyChange(PropertyChangeEvent evt) {
 					if(evt.getNewValue() != oldTableID) {
 						oldTableID = evt.getNewValue();
-						setValue(null, false);
+						setValue(null);
 					}
 				}
 			});
-			tableIDEditor.getComponent().addEventListener(Events.ON_SELECT, this);
 			oldTableID = tableIDGridField.getValue();
 		}
 		
@@ -318,11 +317,6 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 		else if(event.getName().equalsIgnoreCase(Events.ON_RIGHT_CLICK)) {
 			if(event.getTarget().equals(wrapperDiv)) {
 				popupMenu.open(wrapperDiv);
-			}
-		}
-		else if(event.getName().equalsIgnoreCase(Events.ON_SELECT)) {
-			if (event.getTarget().equals(tableIDEditor.getComponent())) {
-				this.setValue(null);
 			}
 		}
 	}
