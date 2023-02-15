@@ -269,8 +269,23 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @param DocBaseType base type
 	 * @param AD_Org_ID Organization
 	 *	@return true if open
+	 *	@deprecated Use {@link #isOpen(Properties, Timestamp, String, int, boolean)}
 	 */
 	public static boolean isOpen (Properties ctx, Timestamp DateAcct, String DocBaseType, int AD_Org_ID)
+	{
+		return isOpen(ctx, DateAcct, DocBaseType, AD_Org_ID, true);
+	}
+	
+	/**
+	 * 	Is standard Period Open for Document Base Type
+	 *	@param ctx context
+	 * @param DateAcct date
+	 * @param DocBaseType base type
+	 * @param AD_Org_ID Organization
+	 * @param isDocAction is document action
+	 *	@return true if open
+	 */
+	public static boolean isOpen (Properties ctx, Timestamp DateAcct, String DocBaseType, int AD_Org_ID, boolean isDocAction)
 	{
 		if (DateAcct == null)
 		{
@@ -288,7 +303,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			s_log.warning("No Period for " + DateAcct + " (" + DocBaseType + ")");
 			return false;
 		}
-		boolean open = period.isOpen(DocBaseType, DateAcct);
+		boolean open = period.isOpen(DocBaseType, DateAcct, isDocAction);
 		if (!open)
 			s_log.warning(period.getName()
 				+ ": Not open for " + DocBaseType + " (" + DateAcct + ")");
@@ -301,8 +316,22 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @param tableID
 	 * @param recordID
 	 * @return true if open
+	 * @deprecated Use {@link #isOpen(Properties, int, int, boolean, String)} instead.
 	 */
 	public static boolean isOpen (Properties ctx, int tableID, int recordID, String trxName) {
+		return MPeriod.isOpen(ctx, tableID, recordID, true, trxName);
+	}
+	
+	/**
+	 * Is standard Period Open - based on tableID+recordID (for IDEMPIERE-2392)
+	 * @param ctx context
+	 * @param tableID
+	 * @param recordID
+	 * @param isDocAction
+	 * @param trxName
+	 * @return true if open
+	 */
+	public static boolean isOpen (Properties ctx, int tableID, int recordID, boolean isDocAction, String trxName) {
 		MTable table = MTable.get(ctx, tableID);
 		PO po = table.getPO(recordID, trxName);
 
@@ -405,13 +434,13 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			// special case for journal that has direct period
 			int periodID = po.get_ValueAsInt("C_Period_ID");
 			MPeriod period = MPeriod.get(ctx, periodID);
-			boolean open = period.isOpen(docBaseType, dateAcct);
+			boolean open = period.isOpen(docBaseType, dateAcct, isDocAction);
 			if (!open)
 				s_log.warning(period.getName() + ": Not open for " + docBaseType + " (" + dateAcct + ")");
 			return open;
 		}
 
-		return isOpen(ctx, dateAcct, docBaseType, orgID);
+		return isOpen(ctx, dateAcct, docBaseType, orgID, isDocAction);
 	}	//	isOpen
 
 	/**
@@ -663,8 +692,24 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * 			<li>if null, this period should be in auto period range
 	 * @return true if open
 	 * @since 3.3.1b
+	 * @deprecated Use {@link #isOpen(String, Timestamp, boolean)} instead.
 	 */
 	public boolean isOpen (String DocBaseType, Timestamp dateAcct)
+	{
+		return isOpen(DocBaseType, dateAcct, true);
+	}
+	
+	/**
+	 * Is Period Open for Doc Base Type
+	 * @param DocBaseType document base type
+	 * @param dateAcct date;
+	 * 			Applies only for "Auto Period Control":
+	 * 			<li>if not null, date should be in auto period range (today - OpenHistory, today+OpenHistory)
+	 * 			<li>if null, this period should be in auto period range
+	 * @return true if open
+	 * @since 3.3.1b
+	 */
+	public boolean isOpen (String DocBaseType, Timestamp dateAcct, boolean isDocAction)
 	{
 		if (!isActive())
 		{
@@ -724,7 +769,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			return false;
 		}
 		if (log.isLoggable(Level.FINE)) log.fine(getName() + ": " + DocBaseType);
-		return pc.isOpen();
+		return pc.isOpen(isDocAction);
 	}	//	isOpen
 
 	/**
@@ -863,11 +908,30 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @param AD_Org_ID Organization
 	 * @throws PeriodClosedException if period is closed
 	 * @see #isOpen(Properties, Timestamp, String, int)
+	 * @deprecated Use {@link #testPeriodOpen(Properties, Timestamp, String, int, boolean)} instead.
 	 */
 	public static void testPeriodOpen(Properties ctx, Timestamp dateAcct, String docBaseType, int AD_Org_ID)
 	throws PeriodClosedException 
 	{
 		if (!MPeriod.isOpen(ctx, dateAcct, docBaseType, AD_Org_ID)) {
+			throw new PeriodClosedException(dateAcct, docBaseType);
+		}
+	}
+	
+	/**
+	 * Convenient method for testing if a period is open
+	 * @param ctx
+	 * @param dateAcct
+	 * @param docBaseType
+	 * @param AD_Org_ID Organization
+	 * @param isDocAction
+	 * @throws PeriodClosedException if period is closed
+	 * @see #isOpen(Properties, Timestamp, String, int)
+	 */
+	public static void testPeriodOpen(Properties ctx, Timestamp dateAcct, String docBaseType, int AD_Org_ID, boolean isDocAction)
+	throws PeriodClosedException 
+	{
+		if (!MPeriod.isOpen(ctx, dateAcct, docBaseType, AD_Org_ID, isDocAction)) {
 			throw new PeriodClosedException(dateAcct, docBaseType);
 		}
 	}
@@ -896,12 +960,29 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @param AD_Org_ID Organization
 	 * @throws PeriodClosedException
 	 * @see {@link #isOpen(Properties, Timestamp, String, int)}
+	 * @deprecated Use {@link #testPeriodOpen(Properties, Timestamp, int, int, boolean)} instead.
 	 */
 	public static void testPeriodOpen(Properties ctx, Timestamp dateAcct, int C_DocType_ID, int AD_Org_ID)
 	throws PeriodClosedException
 	{
 		MDocType dt = MDocType.get(ctx, C_DocType_ID);
 		testPeriodOpen(ctx, dateAcct, dt.getDocBaseType(),  AD_Org_ID);
+	}
+	
+	/**
+	 * Convenient method for testing if a period is open
+	 * @param ctx
+	 * @param dateAcct
+	 * @param C_DocType_ID
+	 * @param AD_Org_ID Organization
+	 * @throws PeriodClosedException
+	 * @see {@link #isOpen(Properties, Timestamp, String, int)}
+	 */
+	public static void testPeriodOpen(Properties ctx, Timestamp dateAcct, int C_DocType_ID, int AD_Org_ID, boolean isDocAction)
+	throws PeriodClosedException
+	{
+		MDocType dt = MDocType.get(ctx, C_DocType_ID);
+		testPeriodOpen(ctx, dateAcct, dt.getDocBaseType(),  AD_Org_ID, isDocAction);
 	}
 	
 	/**

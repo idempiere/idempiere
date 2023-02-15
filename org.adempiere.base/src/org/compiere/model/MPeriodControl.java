@@ -126,10 +126,24 @@ public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupp
 	/**
 	 * 	Is Period Open
 	 *	@return true if open
+	 *	@deprecated Use {@link #isOpen(boolean)} instead.
 	 */
 	public boolean isOpen()
 	{
-		return PERIODSTATUS_Open.equals(getPeriodStatus());
+		return isOpen(true);
+	}
+	
+	/**
+	 * 	Is Period Open
+	 * 	@param isDocAction
+	 *	@return true if open
+	 */
+	public boolean isOpen(boolean isDocAction)
+	{
+		if(isDocAction)
+			return PERIODSTATUS_Open.equals(getPeriodStatus());
+		else
+			return PERIODSTATUS_Open.equals(getPeriodStatus()) || PERIODSTATUS_DocumentClosed.equals(getPeriodStatus()); 
 	}	//	isOpen
 
 	

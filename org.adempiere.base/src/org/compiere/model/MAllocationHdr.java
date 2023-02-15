@@ -314,7 +314,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 			log.warning ("No transaction");
 		if (isPosted())
 		{
-			MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MDocType.DOCBASETYPE_PaymentAllocation, getAD_Org_ID());
+			MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MDocType.DOCBASETYPE_PaymentAllocation, getAD_Org_ID(), false);
 			setPosted(false);
 			MFactAcct.deleteEx (Table_ID, get_ID(), trxName);
 		}

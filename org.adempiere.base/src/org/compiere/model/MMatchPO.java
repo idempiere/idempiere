@@ -1239,7 +1239,7 @@ public class MMatchPO extends X_M_MatchPO
 	{
 		if (isPosted())
 		{
-			MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MDocType.DOCBASETYPE_MatchPO, getAD_Org_ID());
+			MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MDocType.DOCBASETYPE_MatchPO, getAD_Org_ID(), false);
 			setPosted(false);
 			MFactAcct.deleteEx (Table_ID, get_ID(), get_TrxName());
 		}

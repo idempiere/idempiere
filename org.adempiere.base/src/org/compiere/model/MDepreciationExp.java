@@ -202,7 +202,7 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 		// Try to delete postings
 		if (isPosted())
 		{
-			MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_GLDocument, getAD_Org_ID());
+			MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_GLDocument, getAD_Org_ID(), false);
 			MDepreciationEntry.deleteFacts(this);
 		}
 		return true;
