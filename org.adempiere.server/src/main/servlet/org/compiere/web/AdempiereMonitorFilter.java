@@ -99,7 +99,6 @@ public class AdempiereMonitorFilter implements Filter
 			boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
 			HttpServletRequest req = (HttpServletRequest)request;
 			HttpServletResponse resp = (HttpServletResponse)response;
-			HttpSession session = req.getSession(true);
 			boolean isRedirectToLoginOnError = false;
 			if (isSSOEnable) {
 				try {
@@ -121,13 +120,13 @@ public class AdempiereMonitorFilter implements Filter
 							m_SSOPrinciple.refreshToken(req, resp, SSOUtils.SSO_MODE_MONITOR);
 						}
 						// validate the user
-						if (checkSSOAuthorization(session.getAttribute(ISSOPrinciple.SSO_PRINCIPLE_SESSION_NAME)))
+						if (checkSSOAuthorization(req.getSession().getAttribute(ISSOPrinciple.SSO_PRINCIPLE_SESSION_NAME)))
 						{
 							chain.doFilter(request, response);
 							return;
 						}
 					}
-					session.removeAttribute(ISSOPrinciple.SSO_PRINCIPLE_SESSION_NAME);
+					req.getSession().removeAttribute(ISSOPrinciple.SSO_PRINCIPLE_SESSION_NAME);
 				} catch (Throwable exc) {
 					log.log(Level.SEVERE, "Exception while authenticating: ", exc);
 					if (m_SSOPrinciple != null)
@@ -143,6 +142,7 @@ public class AdempiereMonitorFilter implements Filter
 			}
 			else
 			{
+				HttpSession session = req.getSession(true);
 				// Previously checked
 				Long compare = (Long) session.getAttribute(AUTHORIZATION);
 				if (compare != null && compare.compareTo(m_authorization) == 0) {

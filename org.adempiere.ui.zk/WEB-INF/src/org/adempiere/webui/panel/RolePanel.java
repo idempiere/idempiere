@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Properties;
 
+import org.adempiere.base.sso.SSOUtils;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
@@ -865,6 +866,8 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 			wndLogin.loginCompleted(login, orgKNPair, this);
 		else
 			wndLogin.validateMFA(orgKNPair, m_isClientDefined, m_userName, m_showRolePanel, m_clientKNPairs);
+		
+		desktop.getSession().setAttribute(SSOUtils.ISCHANGEROLE_REQUEST, false);
     }
 
 	public boolean isDeferrable() {

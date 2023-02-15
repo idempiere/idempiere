@@ -30,6 +30,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.adempiere.base.sso.SSOUtils;
 import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextURLHandler;
 import org.adempiere.webui.apps.AEnv;
@@ -662,6 +663,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     		httpSession.removeAttribute(attribute);
     	}
 
+    	httpSession.setAttribute(SSOUtils.ISCHANGEROLE_REQUEST, true);
     	//logout ad_session
     	AEnv.logout();
 		

@@ -24,13 +24,17 @@ import org.compiere.model.MSSOPrincipleConfig;
  */
 public class SSOUtils
 {
-	public static final String	ERROR_API			= "/error.html";
+	public static final String	ERROR_API				= "/error.html";
 
-	public static final String	ERROR_VALIDATION	= "/error.zul";
+	public static final String	ERROR_VALIDATION		= "/error.zul";
 
-	public static final String	SSO_MODE_OSGI		= "SSO_MODE_OSGI";
-	public static final String	SSO_MODE_WEBUI		= "SSO_MODE_WEBUI";
-	public static final String	SSO_MODE_MONITOR	= "SSO_MODE_MONITOR";
+	public static final String	SSO_MODE_OSGI			= "SSO_MODE_OSGI";
+	public static final String	SSO_MODE_WEBUI			= "SSO_MODE_WEBUI";
+	public static final String	SSO_MODE_MONITOR		= "SSO_MODE_MONITOR";
+
+	public static final String	ISCHANGEROLE_REQUEST	= "ISCHANGEROLE_REQUEST";
+
+	public static final String	EVENT_ON_AFTER_SSOLOGIN	= "onAfterSSOLogin";
 
 	public static ISSOPrinciple getSSOPrinciple()
 	{
@@ -48,6 +52,7 @@ public class SSOUtils
 		return principle;
 	}
 	
+
 	public static String getRedirectedURL(String redirectMode, I_SSO_PrincipleConfig config)
 	{
 		if (SSO_MODE_OSGI.equalsIgnoreCase(redirectMode))

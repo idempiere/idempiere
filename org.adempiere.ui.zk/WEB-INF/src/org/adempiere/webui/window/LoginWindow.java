@@ -150,9 +150,14 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 
 			Login login = new Login(ctx);
 			boolean isShowRolePanel = MSysConfig.getBooleanValue(MSysConfig.SSO_SELECT_ROLE, true);
+			
+			// show role panel when change role 
+			if(getDesktop().getSession().hasAttribute(SSOUtils.ISCHANGEROLE_REQUEST))
+				isShowRolePanel = isShowRolePanel || (boolean) getDesktop().getSession().getAttribute(SSOUtils.ISCHANGEROLE_REQUEST);
+			
 			KeyNamePair[] clients = login.getClients(username, null, null, true);
 			if (clients != null)
-				loginOk(username, isShowRolePanel, clients);
+				loginOk(username, isShowRolePanel, clients, true);
 			else
 			{
 				log.log(Level.WARNING,"No Client found for user:" + username);
@@ -179,19 +184,44 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 		pnlLogin = new LoginPanel(ctx, this);
 	}
 
-    public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
-    {
-    	boolean isClientDefined = (clientsKNPairs.length == 1 || ! Util.isEmpty(Env.getContext(ctx, Env.AD_USER_ID)));
+	public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
+	{
+		loginOk(userName, show, clientsKNPairs, false);
+	}
+
+    public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isSSOLogin)
+	{
+		boolean isClientDefined = (clientsKNPairs.length == 1 || !Util.isEmpty(Env.getContext(ctx, Env.AD_USER_ID)));
 		if (pnlRole == null)
 			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined);
-    	if (isClientDefined) {
+		if (isSSOLogin)
+		{
+			this.addEventListener(SSOUtils.EVENT_ON_AFTER_SSOLOGIN, new EventListener<Event>() {
+
+				@Override
+				public void onEvent(Event arg0) throws Exception
+				{
+					validateMFPanel(userName, show, clientsKNPairs, isClientDefined);
+				}
+			});
+			Events.echoEvent(SSOUtils.EVENT_ON_AFTER_SSOLOGIN, this, null);
+		}
+		else
+		{
+			validateMFPanel(userName, show, clientsKNPairs, isClientDefined);
+		}
+	}
+
+	private void validateMFPanel(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isClientDefined)
+	{
+		if (isClientDefined) {
     		createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
     	} else {
             showRolePanel(userName, show, clientsKNPairs, isClientDefined, false);
-            if (! pnlRole.show())
+			if (!pnlRole.show())
             	createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
     	}
-    }
+	}
 
 	public void showRolePanel(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isClientDefined, boolean isMFAValidated) {
         this.getChildren().clear();
