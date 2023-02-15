@@ -73,6 +73,7 @@ import org.compiere.model.MUser;
 import org.compiere.model.MUserDefProc;
 import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
+import org.compiere.model.X_AD_PInstance;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -101,15 +102,22 @@ import org.zkoss.zul.Html;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Vlayout;
 
+/**
+ * Abstract dialog base class for execution of process/report.
+ * @see ProcessModalDialog
+ * @see ProcessDialog 
+ */
 public abstract class AbstractProcessDialog extends Window implements IProcessUI, EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 484056046177205235L;
 
-	private static final String ON_COMPLETE = "onComplete";
-	private static final String ON_STATUS_UPDATE = "onStatusUpdate";
+	/** Event to fire on complete of execution of process/report **/
+	private static final String ON_COMPLETE_EVENT = "onComplete";
+	/** Event to update status text of process dialog. Event data: status text message. **/
+	private static final String ON_STATUS_UPDATE_EVENT = "onStatusUpdate";
 	
 	private static final CLogger log = CLogger.getCLogger(AbstractProcessDialog.class);
 
@@ -118,29 +126,47 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	private Properties m_ctx;
 	private int m_AD_Process_ID;
 	private ProcessInfo m_pi = null;
+	/** if true, auto call {@link #dispose()} in {@link #ON_COMPLETE_EVENT} handler. **/
 	private boolean m_disposeOnComplete;
-
+	/** Panel for process paramters **/
 	private ProcessParameterPanel parameterPanel = null;
+	/** Checkbox to toggle running process/report as background job **/
 	private Checkbox runAsJobField = null;
 	private Label notificationTypeLabel = null;
+	/** 
+	 * Drop down editor for {@link X_AD_PInstance#NOTIFICATIONTYPE_AD_Reference_ID} list.
+	 * For background job notification when {@link #runAsJobField} is checked. 
+	 */
 	private WTableDirEditor notificationTypeField = null;
 
 	private BusyDialog progressWindow;	
 	
+	/** translated process name */
 	private String		    m_Name = null;
+	/** translated process description */
 	private String		    m_Description = null;
+	/** translated process help */
 	private String		    m_Help = null;
-	private String          m_ShowHelp = null; // Determine if a Help Process Window is shown
+	/** Determine if a Help Process Window is shown **/
+	private String          m_ShowHelp = null; 
+	/** initial panel header message **/
 	private String initialMessage;
-	
+	/** true if dialog is still valid, i.e not dispose yet **/
 	private boolean m_valid = true;
+	/** true if dialog have been cancelled by user **/
 	private boolean m_cancel = false;
-		
+	
+	/** Reference to process thread/task **/
 	private Future<?> future;
+	/** files for download by user **/
 	private List<File> downloadFiles;
+	/** true when UI have been locked, i.e busy **/
 	private boolean m_locked = false;
 	private String	m_AD_Process_UU = "";
 		
+	/**
+	 * default constructor
+	 */
 	protected AbstractProcessDialog()
 	{
 		super();		
@@ -163,7 +189,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 
 	/**
-	 * layout as below
+	 * layout dialog
 	 * 
 	 * @param  ctx
 	 * @param  WindowNo
@@ -172,7 +198,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 * @param  pi
 	 * @param  autoStart
 	 * @param  isDisposeOnComplete
-	 * @return
+	 * @return true if init is ok.
 	 */
 	protected boolean init(Properties ctx, int WindowNo, int TabNo, int AD_Process_ID, ProcessInfo pi, boolean autoStart, boolean isDisposeOnComplete)
 	{
@@ -183,7 +209,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		setProcessInfo(pi);
 		m_disposeOnComplete = isDisposeOnComplete;
 		
-		log.config("");
+		if (log.isLoggable(Level.CONFIG))
+			log.config("");
 		//
 		StringBuilder buildMsg = new StringBuilder();
 		boolean trl = !Env.isBaseLanguage(m_ctx, "AD_Process");
@@ -222,7 +249,6 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		//
 		this.setTitle(m_Name);
 
-		//	Move from APanel.actionButton
 		if (m_pi == null) {
 			m_pi = new WProcessInfo(m_Name, AD_Process_ID);
 			// Set Replace Tab Content
@@ -233,8 +259,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		m_pi.setTitle(m_Name);
 		m_pi.setAD_Process_UU(m_AD_Process_UU);
 		
-		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_TabNo, m_pi);	
+		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_TabNo, m_pi);
 		if ( !parameterPanel.init() ) {
+			//auto start if no parameters and DonTShowHelp.
 			if (m_ShowHelp != null && MProcess.SHOWHELP_DonTShowHelp.equals(m_ShowHelp))
 				autoStart = true;
 			
@@ -263,21 +290,33 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		return true;
 	}
 	
+	/** top part of {@link #mainParameterLayout} **/
 	protected HtmlBasedComponent topParameterLayout;
+	/** bottom part of {@link #mainParameterLayout} **/
 	protected HtmlBasedComponent bottomParameterLayout;
+	/** main content layout **/
 	protected HtmlBasedComponent mainParameterLayout;
 	protected WTableDirEditor fPrintFormat;
 	private WEditor fLanguageType;
 	protected Listbox freportType;
 	private Checkbox chbIsSummary;
+	/** ok button to run process/report **/
 	protected Button bOK;
+	/** cancel button to dismiss dialog **/
 	protected Button bCancel;
+	/** List of name/label for save process parameters **/
 	protected Combobox fSavedName=new Combobox();
+	/** button to save process parameters **/
 	private Button bSave=ButtonFactory.createNamedButton("Save");
+	/** button to delete saved process parameters **/
 	private Button bDelete=ButtonFactory.createNamedButton("Delete");
+	/** List of save parameters **/
 	private List<MPInstance> savedParams;
 	private Label lSaved;
 	
+	/**
+	 * layout dialog
+	 */
 	protected void layout(){
 		overalLayout();
 		topLayout(topParameterLayout);
@@ -285,6 +324,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 	}
 	
+	/**
+	 * Layout {@link #mainParameterLayout}, {@link #topParameterLayout} and {@link #bottomParameterLayout}.
+	 */
 	protected void overalLayout(){
 		mainParameterLayout = new Div();
 		mainParameterLayout.setSclass("main-parameter-layout"); 
@@ -300,6 +342,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		mainParameterLayout.appendChild(bottomParameterLayout);		
 	}
 	
+	/**
+	 * Layout content of {@link #topParameterLayout}
+	 * @param topParameterLayout
+	 */
 	protected void topLayout(HtmlBasedComponent topParameterLayout) {
 		// message
 		setHeadMessage (topParameterLayout, initialMessage);
@@ -313,6 +359,12 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		inputParameterLayout(inputParameterLayout);
 	}
 	
+	/**
+	 * Create header message of {@link #topParameterLayout}
+	 * @param parent
+	 * @param contentMsg
+	 * @return content component for contentMsg
+	 */
 	protected HtmlBasedComponent setHeadMessage (HtmlBasedComponent parent, String contentMsg){
 		// message
 		HtmlBasedComponent messageParameterLayout = new Vlayout();
@@ -332,6 +384,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		return content;
 	}
 	
+	/**
+	 * Layout parameter part of {@link #topParameterLayout}.
+	 * {@link #parameterPanel}, {@link #runAsJobField} and {@link #notificationTypeField}.
+	 * @param parent
+	 */
 	protected void inputParameterLayout (HtmlBasedComponent parent) {
 		parent.appendChild(parameterPanel);
 		
@@ -403,6 +460,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 	}
 	
+	/**
+	 * Layout content of {@link #bottomParameterLayout}.
+	 * Report option, save parameter and action buttons.
+	 * @param bottomParameterLayout
+	 */
 	protected void bottomLayout(HtmlBasedComponent bottomParameterLayout) {
 		reportOptionLayout(bottomParameterLayout);
 		
@@ -418,6 +480,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		buttonLayout (bottomContainer);
 	}
 	
+	/**
+	 * Render report option part of {@link #bottomParameterLayout}.
+	 * @param bottomParameterLayout
+	 */
 	protected void reportOptionLayout(HtmlBasedComponent bottomParameterLayout) {
 		if (!isReport() && !isJasperReport())
 			return;//if not a report not need show this pannel
@@ -428,6 +494,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		reportOptionLayout.setValign("middle");
 		bottomParameterLayout.appendChild(reportOptionLayout);
 
+		//output type: html, pdf, etc
 		Label lreportType = new Label(Msg.translate(Env.getCtx(), "view.report"));
 		lreportType.setSclass("option-input-parameter view-report-label");
 		freportType = new Listbox();
@@ -440,6 +507,8 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 		if (!isReport())
 			return;
+		
+		//summary option
 		chbIsSummary = new Checkbox();
 		chbIsSummary.setSclass("option-input-parameter");
 		Label lPrintFormat = new Label(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
@@ -447,11 +516,13 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		Label lIsSummary = new Label(Msg.translate(Env.getCtx(), "Summary"));
 		lIsSummary.setSclass("option-input-parameter");
 
+		//print formats
 		MClient client = MClient.get(m_ctx);
 		listPrintFormat(client);
 
 		reportOptionLayout.appendChild(lPrintFormat);
 		reportOptionLayout.appendChild(fPrintFormat.getComponent());
+		//selection of language
 		if (client.isMultiLingualDocument()){
 			Label lLanguageType = new Label(Msg.translate(Env.getCtx(), MLanguage.COLUMNNAME_AD_Language_ID));
 			reportOptionLayout.appendChild(lLanguageType);
@@ -464,16 +535,26 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		reportOptionLayout.appendChild(chbIsSummary);
 	}
 
+	/**
+	 * @return true if current process is with IsReport=Y AND JasperReport Is NULL.
+	 */
 	protected boolean isReport () {
 		MProcess pr = MProcess.get(m_ctx, m_AD_Process_ID);
 		return pr.isReport() && pr.getJasperReport() == null;
 	}
 	
+	/**
+	 * @return true if current process is with IsReport=Y AND JasperReport Is Not NULL.
+	 */
 	protected boolean isJasperReport () {
 		MProcess pr = MProcess.get(m_ctx, m_AD_Process_ID);
 		return pr.isReport() && pr.getJasperReport() != null;
 	}
 	
+	/**
+	 * Layout UI to load/save process parameters
+	 * @param bottomParameterLayout
+	 */
 	protected void savePrameterLayout(HtmlBasedComponent bottomParameterLayout) {
 		Hlayout savePrameterLayout = new Hlayout();
 		savePrameterLayout.setSclass("save-parameter-container");
@@ -503,6 +584,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		querySaved();
 	}
 	
+	/**
+	 * Load saved process parameters
+	 */
 	protected void querySaved() 
 	{
 		//user query
@@ -517,6 +601,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		fSavedName.setValue("");
 	}
 	
+	/**
+	 * Action buttons for dialog
+	 * @param bottomParameterLayout
+	 */
 	protected void buttonLayout (HtmlBasedComponent bottomParameterLayout) {
 		HtmlBasedComponent confParaPanel =new Div();
 		confParaPanel.setSclass("button-container");
@@ -536,6 +624,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		
 	}
 	
+	/**
+	 * Fill {@link #fPrintFormat}
+	 * @param client
+	 */
 	private void listPrintFormat(MClient client)
 	{
 		int AD_Column_ID = 0;
@@ -590,6 +682,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		setReportTypeAndPrintFormat(getLastRun());
 	}
 	
+	/**
+	 * Fill {@link #freportType} for Jasper Report.
+	 */
 	private void listReportTypeJasper()
 	{
 		boolean m_isCanExport = MRole.getDefault().isCanExport();
@@ -598,6 +693,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		setReportTypeAndPrintFormat(getLastRun());
 	}
 	
+	/**
+	 * @return Last run {@link MPInstance} record for current logged in user.
+	 */
 	protected MPInstance getLastRun() {
 		final String where = "AD_Process_ID = ? AND AD_User_ID = ? AND Name IS NULL ";
 		return new Query(Env.getCtx(), MPInstance.Table_Name, where, null)
@@ -607,6 +705,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 				.first();
 	}
 
+	/**
+	 * Fill {@link #freportType}
+	 * @param m_isCanExport true to include excel and csv.
+	 */
 	private void fillReportType(boolean m_isCanExport) {
 		freportType.removeAllItems();
 		freportType.setMold("select");
@@ -623,6 +725,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		freportType.setSelectedIndex(-1);
 	}
 
+	/**
+	 * Set value for {@link #fPrintFormat}, {@link #fLanguageType}, {@link #freportType} and {@link #chbIsSummary} from instance.
+	 * @param instance
+	 */
 	private void setReportTypeAndPrintFormat(MPInstance instance)
 	{
 		if (fPrintFormat != null && instance != null
@@ -645,6 +751,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		    chbIsSummary.setSelected(instance.isSummary());
 	}
 	
+	/**
+	 * Update process info ({@link ProcessInfo}) with selected report options ({@link #freportType},
+	 * {@link #fPrintFormat}, {@link #fLanguageType} and {@link #chbIsSummary}).
+	 */
 	protected void saveReportOption (){
 		if (!isReport() && !isJasperReport()){
 			return;
@@ -669,11 +779,16 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			getProcessInfo().setLanguageID(MLanguage.get(getCtx(), Env.getLanguage(getCtx())).getAD_Language_ID());
 	}
 	
+	/**
+	 * Auto start process upon instantiation of process dialog.
+	 * Delegate to {@link #startProcess0()}.
+	 */
 	protected void autoStart()
 	{
 		startProcess0();
 	}
 	
+	@Override
 	public void onEvent(Event event) 
 	{
 		Component component = event.getTarget();
@@ -683,9 +798,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			mainParameterLayout.invalidate();
 
 		}
-		else if (event.getName().equals(ON_COMPLETE))
+		else if (event.getName().equals(ON_COMPLETE_EVENT))
 			onComplete();
-		else if (event.getName().equals(ON_STATUS_UPDATE))
+		else if (event.getName().equals(ON_STATUS_UPDATE_EVENT))
 			onStatusUpdate(event);
 		else if (event.getTarget().equals(bSave) || event.getTarget().equals(bDelete) || event.getTarget().equals(fSavedName)){
 			String saveName = null;
@@ -708,52 +823,62 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 	}
 	
+	/**
+	 * Save process parameters and report options.
+	 * Set MPInstance.Name = saveName.
+	 * @param saveName
+	 */
 	protected void updateSaveParameter(String saveName) {
-			// Update existing
-			if (fSavedName.getSelectedIndex() > -1 && savedParams != null) {
-				for (int i = 0; i < savedParams.size(); i++) {
-					if (savedParams.get(i).getName().equals(saveName)) {
-						getProcessInfo().setAD_PInstance_ID(savedParams.get(i)
-								.getAD_PInstance_ID());
-						for (MPInstancePara para : savedParams.get(i)
-								.getParameters()) {
-							para.deleteEx(true);
-						}
-						getParameterPanel().saveParameters();
-						
-						saveReportOptionToInstance(savedParams.get(i));
-						
-						savedParams.get(i).saveEx();
-						
-						getProcessInfo().setAD_PInstance_ID(0);
+		// Update existing
+		if (fSavedName.getSelectedIndex() > -1 && savedParams != null) {
+			for (int i = 0; i < savedParams.size(); i++) {
+				if (savedParams.get(i).getName().equals(saveName)) {
+					getProcessInfo().setAD_PInstance_ID(savedParams.get(i)
+							.getAD_PInstance_ID());
+					for (MPInstancePara para : savedParams.get(i)
+							.getParameters()) {
+						para.deleteEx(true);
 					}
+					getParameterPanel().saveParameters();
+					
+					saveReportOptionToInstance(savedParams.get(i));
+					
+					savedParams.get(i).saveEx();
+					
+					getProcessInfo().setAD_PInstance_ID(0);
 				}
 			}
-			// create new
-			else {
-				MPInstance instance = null;
-				try {
-					instance = new MPInstance(Env.getCtx(),
-							getProcessInfo().getAD_Process_ID(), getProcessInfo().getRecord_ID());
-					instance.setName(saveName);
-					saveReportOptionToInstance(instance);
-					instance.saveEx();
-					getProcessInfo().setAD_PInstance_ID(instance.getAD_PInstance_ID());
-					// Get Parameters
-					if (getParameterPanel() != null) {
-						if (!getParameterPanel().saveParameters()) {
-							throw new AdempiereSystemError(Msg.getMsg(
-									Env.getCtx(), "SaveParameterError"));
-						}
+		}
+		// create new
+		else {
+			MPInstance instance = null;
+			try {
+				instance = new MPInstance(Env.getCtx(),
+						getProcessInfo().getAD_Process_ID(), getProcessInfo().getRecord_ID());
+				instance.setName(saveName);
+				saveReportOptionToInstance(instance);
+				instance.saveEx();
+				getProcessInfo().setAD_PInstance_ID(instance.getAD_PInstance_ID());
+				// Get Parameters
+				if (getParameterPanel() != null) {
+					if (!getParameterPanel().saveParameters()) {
+						throw new AdempiereSystemError(Msg.getMsg(
+								Env.getCtx(), "SaveParameterError"));
 					}
-				} catch (Exception ex) {
-					log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
 				}
+			} catch (Exception ex) {
+				log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
 			}
-			querySaved();
-			fSavedName.setSelectedItem(getComboItem(saveName));
+		}
+		//reload fSavedName
+		querySaved();
+		fSavedName.setSelectedItem(getComboItem(saveName));
 	}
 	
+	/**
+	 * Save report options (output type, print format, language and IsSummary) to instance.
+	 * @param instance {@link MPInstance}
+	 */
 	protected void saveReportOptionToInstance (MPInstance instance){
 		if (!isReport() && !isJasperReport())
 			return;
@@ -782,6 +907,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		instance.setIsSummary(chbIsSummary.isSelected());
 	}
 	
+	/**
+	 * Find {@link #fSavedName} item for value.
+	 * @param value
+	 * @return {@link Comboitem} found.
+	 */
 	public  Comboitem getComboItem( String value) {
 		Comboitem item = null;
 		for (int i = 0; i < fSavedName.getItems().size(); i++) {
@@ -794,7 +924,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 		return item;
 	}
-		
+
+	/**
+	 * Delete saved MPInstance by saveName.
+	 * @param saveName
+	 */
 	protected void deleteSaveParameter(String saveName) {
 		Object o = fSavedName.getSelectedItem();
 		if (savedParams != null && o != null) {
@@ -808,6 +942,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		querySaved();
 	}
 
+	/**
+	 * Load MPInstance by saveName.
+	 * @param saveName
+	 * @param lastRun
+	 */
 	protected void chooseSaveParameter(String saveName, boolean lastRun) {
 		if (savedParams != null && saveName != null) {
 			for (int i = 0; i < savedParams.size(); i++) {
@@ -819,15 +958,22 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		boolean enabled = !Util.isEmpty(saveName);
 		bSave.setEnabled(enabled && !lastRun);
 		bDelete.setEnabled(enabled && fSavedName.getSelectedIndex() > -1
-				&& !lastRun);
-	
+				&& !lastRun);	
 	}
 	
+	/**
+	 * Load parameter values and report options from instance.
+	 * @param instance {@link MPInstance}
+	 */
 	protected void loadSavedParams(MPInstance instance) {
 		getParameterPanel().loadParameters(instance);
 		setReportTypeAndPrintFormat(instance);
 	}
 	
+	/**
+	 * Run process.
+	 * Delegate to {@link #startProcess0()}.
+	 */
 	protected void startProcess()
 	{
 		if (!parameterPanel.validateParameters())
@@ -842,12 +988,19 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		startProcess0();
 	}
 	
+	/**
+	 * Cancel/dismiss process dialog.
+	 */
 	protected void cancelProcess() 
 	{
 		m_cancel = true;
 		this.dispose();
 	}
 	
+	/**
+	 * Create new {@link #progressWindow}.
+	 * @return {@link BusyDialog}
+	 */
 	protected BusyDialog createBusyDialog() 
 	{
 		progressWindow = new BusyDialog();
@@ -855,6 +1008,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		return progressWindow;
 	}
 	
+	/**
+	 * Close {@link #progressWindow}.
+	 */
 	protected void closeBusyDialog() 
 	{
 		if (progressWindow != null) {
@@ -869,6 +1025,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		m_valid = false;
 	}	//	dispose
 	
+	/**
+	 * Run process.
+	 */
 	private void startProcess0()
 	{		
 		if (!isBackgroundJob())
@@ -882,12 +1041,20 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		Clients.response(new AuEcho(this, isBackgroundJob() ? "runBackgroundJob" : "runProcess", this));
 	}
 	
+	/**
+	 * Run process. Echo event from {@link #startProcess0()}.
+	 */
 	public void runProcess() 
 	{
 		Events.sendEvent(DialogEvents.ON_BEFORE_RUN_PROCESS, this, null);
 		future = Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new ProcessDialogRunnable(null), getDesktop()));
 	}
 
+	/**
+	 * Run process as background job (runBackgroundJob event echo from {@link #startProcess0()}).
+	 * <br/>
+	 * The different with {@link #runProcess()} is this method doesn't wait for completion of process.
+	 */
 	public void runBackgroundJob() 
 	{
 		Properties m_ctx = getCtx();
@@ -959,6 +1126,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 	}
 	
+	/**
+	 * Handle {@link #ON_COMPLETE_EVENT}
+	 */
 	private void onComplete()
 	{
 		ProcessInfo m_pi = getProcessInfo();
@@ -986,6 +1156,10 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			dispose();
 	}
 	
+	/**
+	 * Handle {@link #ON_STATUS_UPDATE_EVENT}
+	 * @param event
+	 */
 	private void onStatusUpdate(Event event) 
 	{
 		String message = (String) event.getData();
@@ -993,6 +1167,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 			progressWindow.statusUpdate(message);
 	}
 
+	/**
+	 * Lock UI by showing of busy dialog ({@link #progressWindow}).
+	 */
 	@Override
 	public void lockUI(ProcessInfo pi) {
 		if (m_locked || Executions.getCurrent() == null) 
@@ -1001,8 +1178,14 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		showBusyDialog();
 	}
 	
+	/**
+	 * Show process in progress dialog.
+	 */
 	public abstract void showBusyDialog();
 
+	/**
+	 * Unlock dialog upon completion of process (or upon submission of job if process is running as background job).
+	 */
 	@Override
 	public void unlockUI(ProcessInfo pi) {
 		if (!m_locked) 
@@ -1026,14 +1209,23 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 	}
 	
+	/**
+	 * Close process in progress dialog and update UI with the result of process execution. 
+	 */
 	private void doUnlockUI()
 	{
 		hideBusyDialog();
 		updateUI();		
 	}
 	
+	/**
+	 * Close process in progress dialog.
+	 */
 	public abstract void hideBusyDialog();
 	
+	/**
+	 * Update UI with the result of process execution.
+	 */
 	public abstract void updateUI();
 
 	@Override
@@ -1045,7 +1237,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	public void statusUpdate(String message) {
 		Desktop desktop = getDesktop();
 		if (desktop != null && desktop.isAlive())
-			Executions.schedule(desktop, this, new Event(ON_STATUS_UPDATE, this, message));
+			Executions.schedule(desktop, this, new Event(ON_STATUS_UPDATE_EVENT, this, message));
 	}
 
 	@Override
@@ -1064,20 +1256,21 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	}
 
 	/**
-	 * 
-	 * @return ProcessInfo
+	 * @return {@link ProcessInfo}
 	 */
 	public ProcessInfo getProcessInfo() {
 		return m_pi;
 	}
 	
+	/**
+	 * @param pi
+	 */
 	public void setProcessInfo(ProcessInfo pi) {
 		m_pi = pi;
 	}
 
 	/**
-	 * is dialog still valid
-	 * @return boolean
+	 * @return true if dialog is still valid (i.e not completed and not cancel).
 	 */
 	public boolean isValid()
 	{
@@ -1092,60 +1285,97 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		return m_cancel;
 	}
 	
+	/**
+	 * @return cache environment context reference
+	 */
 	public Properties getCtx()
 	{
 		return m_ctx;
 	}
 
+	/**
+	 * @return register window number.
+	 */
 	public int getWindowNo()
 	{
 		return m_WindowNo;
 	}
 	
+	/**
+	 * @return AD_Process_ID
+	 */
 	public int getAD_Process_ID()
 	{
 		return m_AD_Process_ID;
 	}
 		
+	/**
+	 * @return {@link ProcessParameterPanel} instance
+	 */
 	public ProcessParameterPanel getParameterPanel()
 	{
 		return parameterPanel;
 	}
 	
+	/**
+	 * @return translated process name
+	 */
 	public String getName()
 	{
 		return m_Name;
 	}
 
+	/**
+	 * @return DonTShowHelp, ShowHelp or Silent.
+	 */
 	public String getShowHelp()
 	{
 		return m_ShowHelp;
 	}
 
+	/**
+	 * @return initial panel header message
+	 */
 	public String getInitialMessage()
 	{
 		return initialMessage;
 	}
 	
+	/**
+	 * @return true if run process as background job.
+	 */
 	public boolean isBackgroundJob()
 	{
 		return runAsJobField != null && runAsJobField.isChecked();
 	}
 	
+	/**
+	 * @return Notification type - None, Email, Notice or Email+Notice.
+	 */
 	public String getNotificationType()
 	{
 		return (String) notificationTypeField.getValue();
 	}
 	
+	/**
+	 * @return list of files for user download
+	 */
 	public List<File> getDownloadFiles()
 	{
 		return downloadFiles;
 	}
 	
+	/**
+	 * Runnable to run process in background thread.
+	 * Notify process dialog with {@link AbstractProcessDialog#ON_COMPLETE_EVENT} event. 
+	 */
 	private class ProcessDialogRunnable extends ZkContextRunnable
 	{
 		private Trx m_trx;
 		
+		/**
+		 * @param trx
+		 */
 		private ProcessDialogRunnable(Trx trx) 
 		{
 			super();			
@@ -1164,11 +1394,15 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 				m_pi.setSummary(ex.getLocalizedMessage());
 				log.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
 			} finally {
-				Executions.schedule(getDesktop(), AbstractProcessDialog.this, new Event(ON_COMPLETE, AbstractProcessDialog.this, null));
+				Executions.schedule(getDesktop(), AbstractProcessDialog.this, new Event(ON_COMPLETE_EVENT, AbstractProcessDialog.this, null));
 			}		
 		}
 	}
 	
+	/**
+	 * Runnable to run process as background job.
+	 * Send email or notice notification to user upon completion of job. 
+	 */
 	private class BackgroundJobRunnable implements Runnable
 	{
 		private Properties m_ctx;
@@ -1313,6 +1547,9 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		Dialog.askForInput(message, lookup, editorType, callback, getDesktop(), m_WindowNo);
 	}
 
+	/**
+	 * Merge pdfList and show with {@link SimplePDFViewer}.
+	 */
 	@Override
 	public void showReports(List<File> pdfList) {
 

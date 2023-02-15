@@ -33,7 +33,7 @@ import org.compiere.util.Evaluator;
 import org.compiere.util.Util;
 
 /**
- * Abstract model and controller for AD_Tab+AD_Field. UI part is implemented in sub class.
+ * Abstract base class for header+details AD_Tabs UI for AD_Window.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author  <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date    Feb 25, 2007
@@ -41,12 +41,12 @@ import org.compiere.util.Util;
  */
 public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabbox
 {
-    /** Logger                  */
+    /** Logger **/
     private static final CLogger  log = CLogger.getCLogger (AbstractADTabbox.class);
-    /** List of dependent Variables     */
+    /** List of variables/columnName that's reference by one or more gridTab logic expression **/
     private ArrayList<String>   m_dependents = new ArrayList<String>();
     
-    /** AD tab panels associated to this tab box */
+    /** List of {@link IADTabpanel} instance manage by this AbstractADTabbox instance **/
     protected List<IADTabpanel> tabPanelList = new ArrayList<IADTabpanel>();
     /** Parent part, the content part of AD Window **/
 	protected AbstractADWindowContent adWindowPanel;
