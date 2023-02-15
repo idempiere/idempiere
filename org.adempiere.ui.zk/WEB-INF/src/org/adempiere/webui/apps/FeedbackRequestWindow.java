@@ -64,7 +64,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.South;
 
 /**
- * 
+ * Window to capture feedback request from user.
  * @author hengsin
  *
  */
@@ -77,13 +77,19 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 
 	private static final CLogger log = CLogger.getCLogger(FeedbackRequestWindow.class);
 	
+	/** Fields for {@link MRequest} **/
 	protected WTableDirEditor requestTypeField, priorityField, salesRepField;
 	protected Textbox txtSummary;
 	protected ConfirmPanel confirmPanel;
 	
+	/** attachments uploaded by user **/
 	protected List<DataSource> attachments = new ArrayList<DataSource>();
+	/** Div to host list of {@link AttachmentItem} **/
 	protected Div attachmentBox;
 	
+	/**
+	 * Default constructor
+	 */
 	public FeedbackRequestWindow() {
 		
 		super();
@@ -114,6 +120,7 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 			throw new RuntimeException(Msg.getMsg(Env.getCtx(), "AccessTableNoUpdate"));
 		}
 		
+		//layout window
 		Label lblRequestType = new Label(Msg.getElement(Env.getCtx(), "R_RequestType_ID"));
 		Label lblPriority = new Label(Msg.getElement(Env.getCtx(), "Priority"));
 		Label lblSummary = new Label(Msg.getElement(Env.getCtx(), "Summary"));
@@ -236,6 +243,7 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		addAttachment(FeedbackManager.getLogAttachment(false), false);
 	}
 	
+	@Override
 	public void onEvent(Event e) throws Exception {
 		if (e.getTarget() == confirmPanel.getButton(ConfirmPanel.A_OK)) {
 			Clients.clearBusy();
@@ -271,6 +279,10 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		}
 	}
 
+	/**
+	 * Save request
+	 * @throws IOException
+	 */
 	protected void saveRequest() throws IOException {
 		Trx trx = Trx.get(Trx.createTrxName("SaveNewRequest"), true);
 		trx.setDisplayName(getClass().getName()+"_saveRequest");
@@ -315,6 +327,11 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		}
 	}
 
+	/**
+	 * Create new MRequest record.
+	 * @param trx
+	 * @return {@link MRequest}
+	 */
 	protected MRequest createMRequest(Trx trx) {
 		MRequest request = new MRequest(Env.getCtx(), 0, trx.getTrxName());
 		request.setAD_Org_ID(Env.getAD_Org_ID(Env.getCtx()));
@@ -325,6 +342,11 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		return request;
 	}
 
+	/**
+	 * Add attachment from user.
+	 * @param dataSource
+	 * @param removable
+	 */
 	public void addAttachment(DataSource dataSource, boolean removable) {
 		attachments.add(dataSource);
 		AttachmentItem item = new AttachmentItem(dataSource, attachments, removable);
@@ -332,6 +354,11 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		getFirstChild().invalidate();
 	}
 	
+	/**
+	 * Get byte[] from media.
+	 * @param media
+	 * @return byte[]
+	 */
 	private byte[] getMediaData(Media media) {
 		byte[] bytes = null;
 		
@@ -358,6 +385,11 @@ public class FeedbackRequestWindow extends Window implements EventListener<Event
 		return bytes;
 	}
 	
+	/**
+	 * Get character set from contentType (i.e from charset=).
+	 * @param contentType
+	 * @return character set (default is UTF-8)
+	 */
 	private String getCharset(String contentType) {
 		if (contentType != null) {
 			int j = contentType.indexOf("charset=");
