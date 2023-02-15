@@ -39,7 +39,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
-import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -845,10 +844,8 @@ public final class MLookup extends Lookup implements Serializable
 		{
 			//force refresh
 			m_lookup.clear();
-			MReference ref = MReference.get(Env.getCtx(), m_info.AD_Reference_Value_ID);
-			boolean onlyActive = (ref == null 
-					|| Util.isEmpty(ref.getShowInactive()) 
-					|| MReference.SHOWINACTIVE_No.equalsIgnoreCase(ref.getShowInactive()));
+			MReference ref = m_info.AD_Reference_Value_ID > 0 ? MReference.get(Env.getCtx(),m_info.AD_Reference_Value_ID) : null;
+			boolean onlyActive = ref == null || !ref.isShowInactiveRecords();
 			fillComboBox(isMandatory(), true, onlyActive, false, isShortList()); // idempiere 90		
 			return m_lookup.size();
 		}

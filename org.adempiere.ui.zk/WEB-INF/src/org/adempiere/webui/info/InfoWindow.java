@@ -1067,11 +1067,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		StringBuilder builder = new StringBuilder();
 		MTable table = MTable.get(Env.getCtx(), infoWindow.getAD_Table_ID());
-		MReference ref = m_gridfield != null ? MReference.get(Env.getCtx(), m_gridfield.getAD_Reference_Value_ID()) : null;
-		boolean onlyActive = (ref == null 
-				|| Util.isEmpty(ref.getShowInactive()) 
-				|| MReference.SHOWINACTIVE_No.equalsIgnoreCase(ref.getShowInactive()));
-		if (!hasIsActiveEditor() && table.get_ColumnIndex("IsActive") >=0 && onlyActive) {
+		MReference ref = m_gridfield != null && m_gridfield.getAD_Reference_Value_ID() > 0 ? MReference.get(Env.getCtx(), m_gridfield.getAD_Reference_Value_ID()) : null;
+		boolean onlyActive = ref == null || !ref.isShowInactiveRecords();
+		if (!hasIsActiveEditor() && table.get_ColumnIndex("IsActive") >= 0 && onlyActive) {
 			if (p_whereClause != null && p_whereClause.trim().length() > 0) {
 				builder.append(" AND ");
 			}

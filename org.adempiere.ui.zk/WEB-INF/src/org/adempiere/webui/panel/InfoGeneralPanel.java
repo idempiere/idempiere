@@ -319,10 +319,8 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		//  Prepare table
 		StringBuilder where = new StringBuilder();
 		if(m_gridfield != null) {
-			MReference ref = MReference.get(Env.getCtx(), m_gridfield.getAD_Reference_Value_ID());
-			if(ref == null 
-					|| Util.isEmpty(ref.getShowInactive()) 
-					|| MReference.SHOWINACTIVE_No.equalsIgnoreCase(ref.getShowInactive())) {
+			MReference ref = m_gridfield.getAD_Reference_Value_ID() > 0 ? MReference.get(Env.getCtx(), m_gridfield.getAD_Reference_Value_ID()) : null;
+			if(ref == null || !ref.isShowInactiveRecords()) {
 			
 				where = new StringBuilder(p_tableName).append(".").append("IsActive='Y'");
 			}
