@@ -1105,7 +1105,7 @@ public abstract class Doc
 			m_period = MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID(), (String)null);
 		//	Is Period Open?
 		if (m_period != null
-			&& m_period.isOpen(getDocumentType(), getDateAcct(), false))
+			&& m_period.isOpen(getDocumentType(), getDateAcct(), true))
 			m_C_Period_ID = m_period.getC_Period_ID();
 		else
 			m_C_Period_ID = -1;

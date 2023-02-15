@@ -1322,7 +1322,7 @@ public class WAcctViewer extends Window implements EventListener<Event>
 			&& m_data.AD_Table_ID != 0 && m_data.Record_ID != 0)
 		{
 			// IDEMPIERE-2392
-			if (! MPeriod.isOpen(Env.getCtx(), m_data.AD_Table_ID, m_data.Record_ID, false, null)) {
+			if (! MPeriod.isOpen(Env.getCtx(), m_data.AD_Table_ID, m_data.Record_ID, null, true)) {
 				Dialog.error(0, "Error", Msg.getMsg(Env.getCtx(), "PeriodClosed"));
 				return;
 			}

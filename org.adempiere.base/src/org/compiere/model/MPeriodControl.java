@@ -33,8 +33,7 @@ public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupp
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3743823984541572396L;
-
+	private static final long serialVersionUID = -7818843756246170549L;
 
 	/**
 	 * 	Standard Constructor
@@ -126,27 +125,26 @@ public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupp
 	/**
 	 * 	Is Period Open
 	 *	@return true if open
-	 *	@deprecated Use {@link #isOpen(boolean)} instead.
 	 */
 	public boolean isOpen()
 	{
-		return isOpen(true);
-	}
-	
-	/**
-	 * 	Is Period Open
-	 * 	@param isDocAction
-	 *	@return true if open
-	 */
-	public boolean isOpen(boolean isDocAction)
-	{
-		if(isDocAction)
-			return PERIODSTATUS_Open.equals(getPeriodStatus());
-		else
-			return PERIODSTATUS_Open.equals(getPeriodStatus()) || PERIODSTATUS_DocumentClosed.equals(getPeriodStatus()); 
+		return isOpen(false);
 	}	//	isOpen
 
-	
+	/**
+	 * 	Is Period Open
+	 * @param forPosting - check if the period is open for posting, false is for DocAction
+	 *	@return true if open
+	 */
+	public boolean isOpen(boolean forPosting)
+	{
+		if (forPosting)
+			return PERIODSTATUS_Open.equals(getPeriodStatus())
+				|| PERIODSTATUS_DocumentClosed.equals(getPeriodStatus());
+		else
+			return PERIODSTATUS_Open.equals(getPeriodStatus());
+	}	//	isOpen
+
 	/**
 	 * 	String Representation
 	 *	@return info

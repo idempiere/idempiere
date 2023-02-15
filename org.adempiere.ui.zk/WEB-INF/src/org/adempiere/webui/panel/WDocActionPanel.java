@@ -174,7 +174,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		PO po = table.getPO(gridTab.getRecord_ID(), null);
 		boolean periodOpen = true;
 		if (po instanceof DocAction)
-			periodOpen = MPeriod.isOpen(Env.getCtx(), m_AD_Table_ID, gridTab.getRecord_ID(), false, null);
+			periodOpen = MPeriod.isOpen(Env.getCtx(), m_AD_Table_ID, gridTab.getRecord_ID(), null);
 
 		String[] docActionHolder = new String[]{DocAction};
 		index = DocumentEngine.getValidActions(DocStatus, Processing, OrderType, IsSOTrx,
