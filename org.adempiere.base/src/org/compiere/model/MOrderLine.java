@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IProductPricing;
@@ -1062,5 +1063,23 @@ public class MOrderLine extends X_C_OrderLine
 	public void clearParent()
 	{
 		this.m_parent = null;
+	}
+
+	/**
+	 * Get the description stripping the Close tag that was created when closing the order
+	 * @return
+	 */
+	public String getDescriptionStrippingCloseTag() {
+		// Strip Close() tags from description
+		String desc = getDescription();
+		if (desc == null)
+			desc = "";
+		Pattern pattern = Pattern.compile("( \\| )?Close \\(.*\\)");
+		String[] parts = pattern.split(desc);
+		desc = "";
+		for (String s : parts) {
+			desc = desc.concat(s);
+		}
+		return desc;
 	}
 }	//	MOrderLine
