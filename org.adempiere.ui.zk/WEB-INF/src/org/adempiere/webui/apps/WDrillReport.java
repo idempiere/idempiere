@@ -70,14 +70,14 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 
 /**
- *
+ * Drill assistant dialog
  * @author Igor Pojzl, Cloudempiere
  *
  */
 public class WDrillReport extends Window implements EventListener<Event>  {
 
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5143424676962140799L;
 
@@ -88,10 +88,14 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	private static final String DRILL_REPORT_TABLE_NAME = "TableName";
 
 	private DrillReportCtl drillReportCtl;
+	/** generated unique window name prefix **/
 	private String winpref;
 
+	/** tabpanel for related table drill **/
 	private Tabpanel tabPanel;
+	/** tab for related table drill **/
 	private Tab tableTab;
+	/** true if {@link #tabPanel} loaded **/
 	private boolean tablesLoaded = false;
 
 	private int windowNo = 0;
@@ -150,6 +154,10 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		td.appendChild(getContent());
 	}
 
+	/**
+	 * Header text
+	 * @return {@link Table}
+	 */
 	private Table getHeader()
 	{
 		Table table = new Table();
@@ -202,6 +210,10 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		return table;
 	}
 
+	/**
+	 * Tabbox with Drill Rules and Related Tables tab.
+	 * @return {@link Tabbox}
+	 */
 	private Tabbox getContent()
 	{
 
@@ -236,6 +248,14 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		return tabbox;
 	}
 
+	/**
+	 * Table with links for all process and nested table for print formats for each process.
+	 * @param tabIndex
+	 * @param drillTables [AD_Process_ID,Process Name]
+	 * @param drillPrintFormatMap AD_Process_ID:[AD_Process_DrillRule_ID,Name]
+	 * @param isDrillProcessRule true for drill rules, false for related tables
+	 * @return {@link Table}
+	 */
 	private Table getTabContent(int tabIndex, KeyNamePair[] drillTables, HashMap<Integer, KeyNamePair[]> drillPrintFormatMap, boolean isDrillProcessRule)
 	{
 		Table table = new Table();
@@ -276,7 +296,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 			td.appendChild(getTablesBox(tabIndex, drillTables));
 			for (int i = 0; i < size; i++)
 			{
-
 				KeyNamePair drillTable = drillTables[i];
 
 				// tab
@@ -292,6 +311,15 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		return table;
 	}
 
+	/**
+	 * Table with process name and print formats
+	 * @param drillTable [AD_Process_ID,Process Name]
+	 * @param tabIndex
+	 * @param groupIndex
+	 * @param drillPrintFormatMap AD_Process_ID:[AD_Process_DrillRule_ID,Name]
+	 * @param isDrillProcessRule
+	 * @return {@link Table}
+	 */
 	private Table getDrillTableBox(KeyNamePair drillTable, int tabIndex, int groupIndex, HashMap<Integer, KeyNamePair[]> drillPrintFormatMap, boolean isDrillProcessRule)
 	{
 		Table table = new Table();
@@ -325,11 +353,14 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		a.appendChild(new Text(".."));
 		header.appendChild(a);
 
+		//[AD_Process_DrillRule_ID,Name]
 		KeyNamePair[] drillRules = drillPrintFormatMap != null ? drillPrintFormatMap.get(drillTable.getKey()) : new KeyNamePair[]{findTablePrintFormat(drillTable)};
 		for (int j = 0; j < drillRules.length; j++)
 		{
+			//(AD_Process_DrillRule_ID,Name) or (AD_PrintFormat_ID,Name)
 			KeyNamePair drillRule = drillRules[j];
 
+			//[AD_PrintFormat_ID,Name]
 			KeyNamePair[] printFormats = isDrillProcessRule ? drillReportCtl.getDrillProcessRulesPrintFormatMap(drillRule.getKey()) : new KeyNamePair[] {drillRule} ;
 
 			// create new Print Format
@@ -376,7 +407,10 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		return table;
 	}
 
-	
+	/**
+	 * @param drillTable KeyNamePair(AD_Process_ID,Process Name)
+	 * @return KeyNamePair(AD_PrintFormat_ID,Name)
+	 */
 	private KeyNamePair findTablePrintFormat(KeyNamePair drillTable) {
 		
 		Integer printFormatID = new Query(Env.getCtx(), MPrintFormat.Table_Name, " AD_Table_ID = ? AND AD_Client_ID IN (0,?) ", null)
@@ -385,7 +419,12 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		return new KeyNamePair((printFormatID != null && printFormatID > 0) ? printFormatID : 0, drillTable.getName());
 	}
 
-
+	/**
+	 * Link for process in drillTables
+	 * @param tabIndex
+	 * @param drillTables [AD_Process_ID,Process Name]
+	 * @return {@link Table}
+	 */
 	private Table getTablesBox(int tabIndex, KeyNamePair[] drillTables)
 	{
 		Table table = new Table();
@@ -436,6 +475,17 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		return table;
 	}
 
+	/**
+	 * Link and description for print format. 
+	 * @param drillPrintFormat KeyNamePair(AD_PrintFormat_ID,Name)
+	 * @param reportIndex
+	 * @param formatIndex
+	 * @param groupIndex
+	 * @param drillTable KeyNamePair(AD_Process_ID,Name)
+	 * @param drillRule KeyNamePair(AD_Process_DrillRule_ID,Name)
+	 * @param isSinglePrintFormat
+	 * @return {@link Tr}
+	 */
 	private Tr getPrintFormatBox(KeyNamePair drillPrintFormat, int reportIndex, int formatIndex, int groupIndex, KeyNamePair drillTable, KeyNamePair drillRule, boolean isSinglePrintFormat)
 	{
 
@@ -451,15 +501,12 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 		H4 h4 = new H4();
 		h4.appendChild(new Text(drillPrintFormat.getName()));
 
-
 		td.appendChild(h4);
 		a = new A();
 		a.setHref("#"+winpref+"Rep"+reportIndex+"-"+groupIndex);
 		a.setWidgetAttribute("title", "Up one level");
 		a.appendChild(new Text(".."));
 		td.appendChild(a);
-
-
 
 		td = new Td();
 		td.setStyle("width: 10%");
@@ -494,7 +541,6 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 					description = pf.getDescription();
 			}
 		}
-
 
 		td = new Td();
 		td.setStyle("width: 60");
