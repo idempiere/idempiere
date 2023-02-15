@@ -83,6 +83,9 @@ public class PeriodControlStatus extends SvrProcess
 		//	Open
 		if (MPeriodControl.PERIODACTION_OpenPeriod.equals(pc.getPeriodAction()))
 			pc.setPeriodStatus(MPeriodControl.PERIODSTATUS_Open);
+		//	Document Close
+		if (MPeriodControl.PERIODACTION_DocumentClosePeriod.equals(pc.getPeriodAction()))
+			pc.setPeriodStatus(MPeriodControl.PERIODSTATUS_DocumentClosed);
 		//	Close
 		if (MPeriodControl.PERIODACTION_ClosePeriod.equals(pc.getPeriodAction()))
 			pc.setPeriodStatus(MPeriodControl.PERIODSTATUS_Closed);
