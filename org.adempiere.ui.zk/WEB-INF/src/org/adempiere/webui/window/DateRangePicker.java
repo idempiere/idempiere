@@ -24,6 +24,11 @@
 **********************************************************************/
 package org.adempiere.webui.window;
 
+import static org.compiere.model.SystemIDs.REFERENCE_DATESELECTIONMODE;
+import static org.compiere.model.SystemIDs.REFERENCE_MONTHS;
+import static org.compiere.model.SystemIDs.REFERENCE_QUARTERS;
+import static org.compiere.model.SystemIDs.REFERENCE_TIMEUNIT;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -75,18 +80,12 @@ import org.zkoss.zul.Spinner;
 *
 */
 public class DateRangePicker extends Popup implements EventListener<Event>, ValueChangeListener {
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7959690713224781610L;
+	private static final long serialVersionUID = -1674676283499219325L;
 	
 	// AD_Reference_ID
-	private static final int REFERENCE_TIMEUNIT = 53376;
-	private static final int REFERENCE_DATESELECTIONMODE = 200217;
-	private static final int REFERENCE_MONTHS = 200221;
-	private static final int REFERENCE_QUARTERS = 200222;
-	
 	private static final String DATESELECTIONMODE_PREVIOUS = "01";
 	private static final String DATESELECTIONMODE_NEXT = "02";
 	private static final String DATESELECTIONMODE_CURRENT = "03";

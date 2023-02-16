@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PeriodControl
  *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_PeriodControl")
 public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20230215L;
 
     /** Standard Constructor */
     public X_C_PeriodControl (Properties ctx, int C_PeriodControl_ID, String trxName)
@@ -248,6 +248,8 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	public static final int PERIODACTION_AD_Reference_ID=176;
 	/** Close Period = C */
 	public static final String PERIODACTION_ClosePeriod = "C";
+	/** Document Close Period = D */
+	public static final String PERIODACTION_DocumentClosePeriod = "D";
 	/** &lt;No Action&gt; = N */
 	public static final String PERIODACTION_NoAction = "N";
 	/** Open Period = O */
@@ -275,6 +277,8 @@ public class X_C_PeriodControl extends PO implements I_C_PeriodControl, I_Persis
 	public static final int PERIODSTATUS_AD_Reference_ID=177;
 	/** Closed = C */
 	public static final String PERIODSTATUS_Closed = "C";
+	/** Document closed = D */
+	public static final String PERIODSTATUS_DocumentClosed = "D";
 	/** Never opened = N */
 	public static final String PERIODSTATUS_NeverOpened = "N";
 	/** Open = O */

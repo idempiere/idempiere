@@ -86,9 +86,9 @@ import org.zkoss.zul.impl.InputElement;
 import org.zkoss.zul.impl.XulElement;
 
 /**
- * Process Parameter Panel, based on existing ProcessParameter dialog. -
- * Embedded in ProcessDialog - checks, if parameters exist and inquires and
- * saves them
+ * Process Parameter Panel.
+ * Embedded in {@link ProcessDialog} and {@link ProcessModalDialog}.
+ * Capture parameters input, validate and save to DB.
  * 
  * @author Low Heng Sin
  * @version 2006-12-01
@@ -96,17 +96,18 @@ import org.zkoss.zul.impl.XulElement;
 public class ProcessParameterPanel extends Panel implements
 		ValueChangeListener, IProcessParameter, EventListener<Event> {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -6099317911368929787L;
 
+	/** Event post from {@link #valueChange(ValueChangeEvent)} **/
+	private static final String ON_POST_EDITOR_VALUE_CHANGE_EVENT = "onPostEditorValueChange";
+	
 	/**
 	 * Dynamic generated Parameter panel.
 	 * 
-	 * @param WindowNo
-	 *            window
-	 * @param pi
-	 *            process info
+	 * @param WindowNo register window number
+	 * @param pi process info
 	 */
 	public ProcessParameterPanel(int WindowNo, ProcessInfo pi) {
 		this(WindowNo, 0, pi);
@@ -115,12 +116,9 @@ public class ProcessParameterPanel extends Panel implements
 	/**
 	 * Dynamic generated Parameter panel.
 	 * 
-	 * @param WindowNo
-	 *            window
-	 *  @param tabNo
-	 *            tabNo
-	 * @param pi
-	 *            process info
+	 * @param WindowNo register window number
+	 * @param tabNo tabNo
+	 * @param pi process info
 	 */
 	public ProcessParameterPanel(int WindowNo,int tabNo, ProcessInfo pi) {
 		//
@@ -132,9 +130,12 @@ public class ProcessParameterPanel extends Panel implements
 		//
 		initComponent();
 		addEventListener("onDynamicDisplay", this);
-		addEventListener("onPostEditorValueChange", this);
+		addEventListener(ON_POST_EDITOR_VALUE_CHANGE_EVENT, this);
 	} // ProcessParameterPanel
 	
+	/**
+	 * Layout UI
+	 */
 	private void initComponent() {
 		centerPanel = GridFactory.newGridLayout();
 		this.appendChild(centerPanel);
@@ -153,28 +154,39 @@ public class ProcessParameterPanel extends Panel implements
 	private int m_WindowNo;
 	private int m_TabNo;
 	private ProcessInfo m_processInfo;
-	// AD_Window of window below this dialog in case show parameter dialog panel
+	/** AD_Window_ID if process dialog is launch by AD_Window **/
 	private int			m_AD_Window_ID = 0;	
-	// infoWindowID of infoWindow below this dialog in case call process from infoWindow
+	/** Info_Window_ID if process dialog is launch by Info Window **/
 	private int 		m_InfoWindowID = 0;
 	/** Logger */
 	private static final CLogger log = CLogger
 			.getCLogger(ProcessParameterPanel.class);
-
-	//
+	
+	/** parameter editor list **/
 	private ArrayList<WEditor> m_wEditors = new ArrayList<WEditor>();
-	private ArrayList<WEditor> m_wEditors2 = new ArrayList<WEditor>(); // for ranges
+	/** to parameter editor list for range parameter **/
+	private ArrayList<WEditor> m_wEditors2 = new ArrayList<WEditor>();
+	/** parameter field list **/
 	private ArrayList<GridField> m_mFields = new ArrayList<GridField>();
+	/** to parameter field list for range parameter **/
 	private ArrayList<GridField> m_mFields2 = new ArrayList<GridField>();
 	private ArrayList<Space> m_separators = new ArrayList<Space>();
+	/** all rows of {@link #centerPanel} **/
 	private ArrayList<Row> m_Rows = new ArrayList<Row>();
+	/** list of all date range editors **/
 	private ArrayList<DateRangeEditor> m_dateRangeEditors = new ArrayList<DateRangeEditor>();
 	//
+	/** layout grid for parameter fields **/
 	private Grid centerPanel = null;
+	/** Group Name:Rows for parameter field **/
 	private Map<String, List<Row>> fieldGroupContents = new HashMap<String, List<Row>>();
+	/** Group Name:Rows for group header **/
     private Map<String, List<org.zkoss.zul.Row>> fieldGroupHeaders = new HashMap<String, List<org.zkoss.zul.Row>>();
+    /** rows of current rendering group **/
 	private ArrayList<Row> rowList;
+	/** all groups of field type collapsible or tab **/
 	private List<Group> allCollapsibleGroups = new ArrayList<Group>();
+	/** current rendering group **/
 	private Group currentGroup;
 
 	/**
@@ -189,12 +201,12 @@ public class ProcessParameterPanel extends Panel implements
 	} // dispose
 
 	/**
-	 * Read Fields to display
+	 * Render all visible fields
 	 * 
 	 * @return true if loaded OK
 	 */
 	public boolean init() {
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 
 		// ASP
 		MClient client = MClient.get(Env.getCtx());
@@ -388,12 +400,13 @@ public class ProcessParameterPanel extends Panel implements
 	} // initDialog
 
 	/**
-	 * Create Field. - creates Fields and adds it to m_mFields list - creates
-	 * Editor and adds it to m_vEditors list Handeles Ranges by adding
-	 * additional mField/vEditor.
+	 * Create editor and adds it to {@link #m_wEditors}.
+	 * <br/>
+	 * For range type field, create the to field and add it to {@link #m_mFields2} and
+	 * create the to editor and adds it to {@link #m_wEditors2}.
 	 * <p>
-	 * mFields are used for default value and mandatory checking; vEditors are
-	 * used to retrieve the value (no data binding)
+	 * mField is used for default value and mandatory checking and editor is
+	 * used to capture input value from user (no data binding).
 	 * 
 	 * @param voF GridFieldVO
 	 * @param mField
@@ -406,7 +419,7 @@ public class ProcessParameterPanel extends Panel implements
 		editor.getComponent().addEventListener(Events.ON_FOCUS, this);
 		editor.addValueChangeListener(this);
 		editor.dynamicDisplay();
-		// MField => VEditor - New Field value to be updated to editor
+		// MField => editor - New Field value to be updated to editor
 		mField.addPropertyChangeListener(editor);
 		// Set Default
 		Object defaultObject = mField.getDefaultForPanel();
@@ -449,6 +462,7 @@ public class ProcessParameterPanel extends Panel implements
         Div box = new Div();
 		box.setStyle("display: flex; align-items: center;");
 		ZKUpdateUtil.setWidth(box, "100%");
+		//create to field and editor
 		if (voF.isRange) {
 			box.appendChild(editor.getComponent());
 			ZKUpdateUtil.setWidth((HtmlBasedComponent) editor.getComponent(), "49%");
@@ -512,6 +526,7 @@ public class ProcessParameterPanel extends Panel implements
 			m_wEditors2.add(null);
 			m_separators.add(null);
 			m_dateRangeEditors.add(null);
+			//add not in support for multi selection field
 			if(DisplayType.isChosenMultipleSelection(mField.getDisplayType())) {
 				Button bNegate = ButtonFactory.createButton("", null, null);
 				bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
@@ -527,6 +542,11 @@ public class ProcessParameterPanel extends Panel implements
 		row.appendChild(box);
 	} // createField
 
+	/**
+	 * set place holder message
+	 * @param editor
+	 * @param msg
+	 */
 	private void setEditorPlaceHolder(WEditor editor, String msg) {
 		Component c = editor.getComponent();
 		if (c instanceof InputElement) {
@@ -548,17 +568,15 @@ public class ProcessParameterPanel extends Panel implements
 	 * @return true if parameters are valid
 	 */
 	public boolean validateParameters() {
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 
-		/**
-		 * Mandatory fields see - MTable.getMandatory
-		 */
+		//mandatory fields validation
 		StringBuilder sb = new StringBuilder();
 		int size = m_mFields.size();
 		for (int i = 0; i < size; i++) {
 			GridField field = (GridField) m_mFields.get(i);
 			if (field.isMandatory(true)) // check context
-			{
+			{				
 				WEditor wEditor = (WEditor) m_wEditors.get(i);
 				Object data = wEditor.getValue();
 				if (data == null || data.toString().length() == 0) {
@@ -597,6 +615,7 @@ public class ProcessParameterPanel extends Panel implements
 			return false;
 		}
 
+		/** call {@link IProcessParameterListener} validate(ProcessParameterPanel) **/
 		if (m_processInfo.getAD_Process_ID() > 0) {
 			String className = MProcess.get(Env.getCtx(), m_processInfo.getAD_Process_ID()).getClassname();
 			List<IProcessParameterListener> listeners = Extensions.getProcessParameterListeners(className, null);
@@ -612,12 +631,13 @@ public class ProcessParameterPanel extends Panel implements
 		return true;
 	}	//	validateParameters
 	
-	/* 
+	/** 
 	 * load parameters from saved instance
+	 * @param instance
 	 */
 	public boolean loadParameters(MPInstance instance)
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 
 		MPInstancePara[] params = instance.getParameters();
 		for (int j = 0; j < m_mFields.size(); j++)
@@ -708,12 +728,13 @@ public class ProcessParameterPanel extends Panel implements
 		return true;
 	}	//	loadParameters
 
-	/*
+	/**
 	 * Load parameters from Process Info
+	 * @param pi
 	 */
 	public boolean loadParametersFromProcessInfo(ProcessInfo pi)
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 
 		ProcessInfoParameter[] params = pi.getParameter();
 		for (int j = 0; j < m_mFields.size(); j++)
@@ -762,12 +783,12 @@ public class ProcessParameterPanel extends Panel implements
 	}	//	loadParameters
 
 	/**
-	 * Save Parameter values
+	 * Save parameter values to {@link MPInstancePara}.
 	 * 
 	 * @return true if parameters saved
 	 */
 	public boolean saveParameters() {
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 
 		if (!validateParameters())
 			return false;
@@ -859,21 +880,19 @@ public class ProcessParameterPanel extends Panel implements
 	} // saveParameters
 
 	/**
-	 * Get Parameter values without saving
+	 * Get parameter values from editors without saving to DB.
 	 * 
-	 * @return list of parameter values
+	 * @return MPInstancePara[], list of parameter values.
 	 */
 	public MPInstancePara[] getParameters() {
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 
 		if (!validateParameters())
 			return new MPInstancePara[0];
 
 		List<MPInstancePara> paras = new ArrayList<MPInstancePara>();
 		
-		/**********************************************************************
-		 * Save Now
-		 */
+		/** create MPInstancePara from editors and add to paras (without saving MPInstancePara to DB) **/
 		for (int i = 0; i < m_mFields.size(); i++) {
 			// Get Values
 			WEditor editor = (WEditor) m_wEditors.get(i);
@@ -948,12 +967,10 @@ public class ProcessParameterPanel extends Panel implements
 
 	
 	/**
-	 * Editor Listener
+	 * Editor value change listener.
 	 * 
-	 * @param evt
-	 *            ValueChangeEvent
+	 * @param evt ValueChangeEvent
 	 */
-
 	public void valueChange(ValueChangeEvent evt) {
 		String propName = evt.getPropertyName();
 		if (evt.getSource() instanceof WEditor) {
@@ -967,7 +984,7 @@ public class ProcessParameterPanel extends Panel implements
 				processDependencies (changedField);
 				// future processCallout (changedField);
 			}
-			Events.postEvent("onPostEditorValueChange", this, evt.getSource());
+			Events.postEvent(ON_POST_EDITOR_VALUE_CHANGE_EVENT, this, evt.getSource());
 		}
 		processNewValue(evt.getNewValue(), propName);
 	}
@@ -975,6 +992,7 @@ public class ProcessParameterPanel extends Panel implements
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if (event.getName().equals(Events.ON_FOCUS)) {
+			//update tooltip text inside desktop help panel.
     		for (WEditor editor : m_wEditors)
     		{
     			if (editor.isComponentOfEditor(event.getTarget()))
@@ -996,7 +1014,7 @@ public class ProcessParameterPanel extends Panel implements
     	else if (event.getName().equals("onDynamicDisplay")) {
     		dynamicDisplay();
     	}
-    	else if (event.getName().equals("onPostEditorValueChange")) {
+    	else if (event.getName().equals(ON_POST_EDITOR_VALUE_CHANGE_EVENT)) {
     		WEditor editor = (WEditor)event.getData();
     		onPostEditorValueChange(editor);
     		if(editor.getComponent() != null) {
@@ -1016,6 +1034,7 @@ public class ProcessParameterPanel extends Panel implements
     	}
     	else if (event.getName().equals(Events.ON_CLICK)) {
     		if(event.getTarget() instanceof Button) {
+    			//from not in button of multi selection field
     			Button bNegate = (Button)event.getTarget();
     			boolean isSelected = !(boolean)bNegate.getAttribute("isSelected");
     			if(isSelected) {
@@ -1033,6 +1052,12 @@ public class ProcessParameterPanel extends Panel implements
     	}
 	}
 
+	/**
+	 * Handle ON_POST_EDITOR_VALUE_CHANGE_EVENT event.
+	 * <br/>
+	 * Call {@link IProcessParameterListener#validate(ProcessParameterPanel)}.
+	 * @param editor
+	 */
 	private void onPostEditorValueChange(WEditor editor) {
 		if (m_processInfo.getAD_Process_ID() > 0) {
 			String className = MProcess.get(Env.getCtx(), m_processInfo.getAD_Process_ID()).getClassname();
@@ -1049,7 +1074,7 @@ public class ProcessParameterPanel extends Panel implements
 	}
 	
 	/**
-	 *  Evaluate Dependencies
+	 *  Notify dependent fields.
 	 *  @param changedField changed field
 	 */
 	private void processDependencies (GridField changedField)
@@ -1068,6 +1093,11 @@ public class ProcessParameterPanel extends Panel implements
 		}
 	}   //  processDependencies
 
+	/**
+	 * Reset field value to null if field depends on columnName.
+	 * @param field
+	 * @param columnName column name of changed field
+	 */
 	private void verifyChangedField(GridField field, String columnName) {
 		ArrayList<String> list = field.getDependentOn();
 		if (list.contains(columnName)) {
@@ -1086,6 +1116,11 @@ public class ProcessParameterPanel extends Panel implements
 		}
 	}
 	
+	/**
+	 * Process new value from {@link #valueChange(ValueChangeEvent)}.
+	 * @param value
+	 * @param name
+	 */
 	private void processNewValue(Object value, String name) {
 		if (value == null)
 			value = new String("");
@@ -1106,6 +1141,9 @@ public class ProcessParameterPanel extends Panel implements
 		Events.postEvent("onDynamicDisplay", this, (Object)null);
 	}
 
+	/**
+	 * Dynamic update the UI state and properties of all fields.
+	 */
 	private void dynamicDisplay() {
 		for (int i = 0; i < m_wEditors.size(); i++) {
 			WEditor editor = m_wEditors.get(i);
@@ -1215,6 +1253,10 @@ public class ProcessParameterPanel extends Panel implements
 		m_processInfo = processInfo;
 	}
 	
+	/**
+	 * focus to first visible field editor.
+	 * @return true if there is at least one visible field editor.
+	 */
 	public boolean focusToFirstEditor() {
 		if (m_wEditors.isEmpty())
 			return false;
@@ -1227,6 +1269,9 @@ public class ProcessParameterPanel extends Panel implements
 		return false;
 	}
 
+	/**
+	 * @param toFocus
+	 */
 	private void focusToEditor(WEditor toFocus) {
 		Component c = toFocus.getComponent();
 		if (c instanceof EditorBox) {
@@ -1254,7 +1299,7 @@ public class ProcessParameterPanel extends Panel implements
 	}
 
 	/**
-	 * Get parameter field value to editor by column name
+	 * Get parameter field to editor by column name
 	 * @param columnName
 	 * @return editor
 	 */
@@ -1268,7 +1313,7 @@ public class ProcessParameterPanel extends Panel implements
 	}
 	
 	/**
-	 * @return true if editor is showing dialog awaiting user action
+	 * @return true if editor is showing dialog awaiting user action (usually info window).
 	 */
 	public boolean isWaitingForDialog() {
 		for (int i = 0; i < m_mFields.size(); i++) {
@@ -1287,6 +1332,9 @@ public class ProcessParameterPanel extends Panel implements
 		return false;
 	}
 	
+	/**
+	 * Field label ON_CLICK listener for {@link IZoomableEditor}.
+	 */
 	static class ZoomListener implements EventListener<Event> {
 
 		private IZoomableEditor searchEditor;
@@ -1304,6 +1352,9 @@ public class ProcessParameterPanel extends Panel implements
 
 	}
 
+	/**
+	 * @return register window number.
+	 */
 	public int getWindowNo() {
 		return m_WindowNo;
 	}

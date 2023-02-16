@@ -41,6 +41,7 @@ import org.compiere.model.MFactAcct;
 import org.compiere.model.MJournal;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MRefList;
+import org.compiere.model.SystemIDs;
 import org.compiere.report.core.RColumn;
 import org.compiere.report.core.RModel;
 import org.compiere.util.CLogger;
@@ -53,8 +54,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 
 /**
- *  Account Viewer State - maintains State information for the Account Viewer
- *  Based on class AcctViewerData
+ *  State and data access helper for {@link WAcctViewer}
  *
  *  @author Niraj Sohun
  *  		July 27, 2007
@@ -68,68 +68,70 @@ public class WAcctViewerData
 	/** Client				*/
 	public int AD_Client_ID;
 	
-	/** All Acct Schema		*/
+	/** All Accounting Schemas for client		*/
 	public MAcctSchema[] ASchemas = null;
 	
-	/** This Acct Schema	*/
+	/** Selected Accounting Schema	*/
 	public MAcctSchema ASchema = null;
 
 	//  Selection Info
 	
-	/** Document Query		*/
+	/** Document Query - query with {@link #AD_Table_ID} and {@link #Record_ID}	*/
 	public boolean documentQuery = false;
 	
-	/** Acct Schema			*/
+	/** Selected Accounting Schema ID		*/
 	public int C_AcctSchema_ID = 0;
 	
-	/** Posting Type		*/
+	/** Selected Posting Type	*/
 	public String PostingType = "";
 	
-	/** Organization		*/
+	/** Selected Organization ID */
 	public int AD_Org_ID = 0;
 	
-	/** Date From			*/
+	/** Date From, for DateAcct filter */
 	public Timestamp DateFrom = null;
 	
-	/** Date To				*/
+	/** Date To, for DateAcct filter */
 	public Timestamp DateTo = null;
 
 	//  Document Table Selection Info
 	
-	/** Table ID			*/
+	/** Selected Table ID for {@link #documentQuery} */
 	public int AD_Table_ID;
 	
-	/** Record				*/
+	/** Selected Record ID for {@link #documentQuery} */
 	public int Record_ID;
 
-	/** Containing Column and Query     */
+	/** ColumnName:Filter */
 	public HashMap<String,String> whereInfo = new HashMap<String,String>();
 	
-	/** Containing TableName and AD_Table_ID    */
+	/** TableName:AD_Table_ID */
 	public HashMap<String,Integer> tableInfo = new HashMap<String,Integer>();
 
 	//  Display Info
 	
-	/** Display Qty			*/
-	boolean displayQty = false;
+	/** Display Qty	Columns		*/
+	protected boolean displayQty = false;
 	
-	/** Display Source Surrency	*/
-	boolean displaySourceAmt = false;
+	/** Display Source Amount Columns */
+	protected boolean displaySourceAmt = false;
 	
 	/** Display Document info	*/
-	boolean displayDocumentInfo = false;
+	protected boolean displayDocumentInfo = false;
 
-	String sortBy1 = "";
-	String sortBy2 = "";
-	String sortBy3 = "";
-	String sortBy4 = "";
+	//order by
+	protected String sortBy1 = "";
+	protected String sortBy2 = "";
+	protected String sortBy3 = "";
+	protected String sortBy4 = "";
 
-	boolean group1 = false;
-	boolean group2 = false;
-	boolean group3 = false;
-	boolean group4 = false;
+	//group by
+	protected boolean group1 = false;
+	protected boolean group2 = false;
+	protected boolean group3 = false;
+	protected boolean group4 = false;
 
-	/** Leasing Columns		*/
+	/** Leading Columns. Number of columns shown before Accounted and Source Amount Columns.	*/
 	private int m_leadingColumns = 0;
 	
 	/** UserElement1 Reference	*/
@@ -148,7 +150,6 @@ public class WAcctViewerData
 	 *  @param ad_Client_ID client
 	 * 	@param ad_Table_ID table
 	 */
-	
 	public WAcctViewerData (Properties ctx, int windowNo, int ad_Client_ID, int ad_Table_ID)
 	{
 		WindowNo = windowNo;
@@ -168,8 +169,7 @@ public class WAcctViewerData
 	
 	/**
 	 *  Dispose
-	 */
-	
+	 */	
 	public void dispose()
 	{
 		ASchemas = null;
@@ -182,8 +182,8 @@ public class WAcctViewerData
 	} // dispose
 	
 	/**
-	 * GL Journal only posts in one Accounting Schema
-	 * if the record is a GL Journal, remove the others from the array
+	 * GL Journal only posts in one Accounting Schema.
+	 * If the record is a GL Journal, remove the other accounting schema from {@link #ASchemas}
 	 * @param Record_ID
 	 */
 	protected void validateAcctSchemas(int Record_ID)
@@ -191,7 +191,7 @@ public class WAcctViewerData
 		if (Record_ID > 0 && AD_Table_ID == MJournal.Table_ID) {
 			MJournal journal = new MJournal(Env.getCtx(), Record_ID, null);
 			
-			if (journal != null) {
+			if (journal.getGL_Journal_ID() == Record_ID) {
 				ASchemas = new MAcctSchema[1];
 				ASchemas[0] = MAcctSchema.get(Env.getCtx(), journal.getC_AcctSchema_ID());
 				ASchema = ASchemas[0];
@@ -199,11 +199,10 @@ public class WAcctViewerData
 		}
 	} // validateAcctSchemas
 	
-	/**************************************************************************
+	/**
 	 *  Fill Accounting Schema
 	 *  @param cb Listbox to be filled
-	 */
-	
+	 */	
 	protected void fillAcctSchema (Listbox cb)
 	{
 		for (int i = 0; i < ASchemas.length; i++)
@@ -214,10 +213,9 @@ public class WAcctViewerData
 	} // fillAcctSchema
 	
 	/**
-	 *  Fill Posting Type
-	 *  @param cb Listox to be filled
-	 */
-	
+	 *  Fill Posting Type from {@link SystemIDs#REFERENCE_POSTING_TYPE} list.
+	 *  @param cb Listbox to be filled
+	 */	
 	protected void fillPostingType (Listbox cb)
 	{
 		int AD_Reference_ID = REFERENCE_POSTING_TYPE;
@@ -230,18 +228,15 @@ public class WAcctViewerData
 	} // fillPostingType
 	
 	/**
-	 *  Fill Table with
+	 *  Fill Listbox with
 	 *      ValueNamePair (TableName, translatedKeyColumnName)
-	 *  and tableInfo with (TableName, AD_Table_ID)
+	 *  and {@link #tableInfo} with (TableName, AD_Table_ID)
 	 *  and select the entry for AD_Table_ID
 	 *
 	 *  @param cb Listbox to be filled
-	 */
-	
+	 */	
 	protected void fillTable (Listbox cb)
 	{
-		ValueNamePair select = null;
-
 		String sql = "SELECT AD_Table_ID, TableName FROM AD_Table t "
 			+ "WHERE EXISTS (SELECT * FROM AD_Column c"
 			+ " WHERE t.AD_Table_ID=c.AD_Table_ID AND c.ColumnName='Posted')"
@@ -261,10 +256,7 @@ public class WAcctViewerData
 
 				ValueNamePair pp = new ValueNamePair(tableName, name);
 				cb.appendItem(pp.getName(),pp);
-				tableInfo.put (tableName, Integer.valueOf(id));
-				
-				if (id == AD_Table_ID)
-					select = pp;
+				tableInfo.put (tableName, Integer.valueOf(id));				
 			}
 		}
 		catch (SQLException e)
@@ -276,18 +268,14 @@ public class WAcctViewerData
 			DB.close(rs, pstmt);
 			rs = null;
 			pstmt = null;
-		}
-		
-		if (select != null)
-			;//cb.setSelectedItem(select);
+		}		
 	} // fillTable
 	
 	/**
 	 *  Fill Org
 	 *
 	 *  @param cb Listbox to be filled
-	 */
-	
+	 */	
 	protected void fillOrg (Listbox cb)
 	{
 		KeyNamePair pp = new KeyNamePair(0, "");
@@ -320,7 +308,7 @@ public class WAcctViewerData
 	} // fillOrg
 	
 	/**
-	 *  Get Button Text
+	 *  Get Info Button Text
 	 *
 	 *  @param tableName table
 	 *  @param columnName column
@@ -362,10 +350,9 @@ public class WAcctViewerData
 		return retValue;
 	} // getButtonText
 
-	/**************************************************************************
 	/**
-	 *  Create Query and submit
-	 *  @return Report Model
+	 *  Create query and execute
+	 *  @return {@link RModel} query result
 	 */
 	
 	protected RModel query()
@@ -502,10 +489,9 @@ public class WAcctViewerData
 	} // query
 
 	/**
-	 *  Create Report Model (Columns)
-	 *  @return Report Model
-	 */
-	
+	 *  Create new Report Model (Setup Columns) instance
+	 *  @return {@link RModel}
+	 */	
 	private RModel getRModel()
 	{
 		Properties ctx = Env.getCtx();
@@ -596,10 +582,9 @@ public class WAcctViewerData
 	} // createRModel
 	
 	/**
-	 *  Create the key columns in sequence
+	 *  Create the list of key/mandatory columns to display in viewer
 	 *  @return List of Key Columns
 	 */
-
 	private ArrayList<String> createKeyColumns()
 	{
 		ArrayList<String> columns = new ArrayList<String>();

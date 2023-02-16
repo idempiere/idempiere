@@ -21,7 +21,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
- * Helper class for any component want implement {@link ISupportMask}
+ * Helper class for {@link ISupportMask} implementation
  * Just make a instance of this class and let it do everything  
  * @author hieplq
  *
@@ -39,7 +39,7 @@ public class ShowMaskWrapper implements ISupportMask {
 	private Mask maskObj;
 	
 	/**
-	 * comp is component want implement this interface 
+	 * comp is component that implement ISupportMask 
 	 * @param comp
 	 */
 	public ShowMaskWrapper (Component comp){
