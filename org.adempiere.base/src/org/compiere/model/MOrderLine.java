@@ -57,7 +57,7 @@ public class MOrderLine extends X_C_OrderLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7152360636393521683L;
+	private static final long serialVersionUID = 7994694334621222461L;
 
 	/**
 	 * 	Get Order Unreserved Qty
