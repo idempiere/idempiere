@@ -40,6 +40,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Urlbox;
+import org.adempiere.webui.editor.DateRangeEditor;
 import org.adempiere.webui.editor.IZoomableEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
@@ -52,7 +53,6 @@ import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.DateRangeButton;
-import org.adempiere.webui.window.DateRangeEditor;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.IProcessParameter;
 import org.compiere.model.GridField;
@@ -170,6 +170,7 @@ public class ProcessParameterPanel extends Panel implements
 	private ArrayList<GridField> m_mFields = new ArrayList<GridField>();
 	/** to parameter field list for range parameter **/
 	private ArrayList<GridField> m_mFields2 = new ArrayList<GridField>();
+	/** list of separators **/
 	private ArrayList<Space> m_separators = new ArrayList<Space>();
 	/** all rows of {@link #centerPanel} **/
 	private ArrayList<Row> m_Rows = new ArrayList<Row>();
@@ -504,7 +505,7 @@ public class ProcessParameterPanel extends Panel implements
 				if(MProcessPara.DATERANGEOPTION_TextAndRangePicker.equalsIgnoreCase(mField.getDateRangeOption())) {
 					editor.setVisible(false, true);
 					editor2.setVisible(false, true);
-					DateRangeEditor dateRangeEditor = new DateRangeEditor(editor, editor2, true);
+					DateRangeEditor dateRangeEditor = new DateRangeEditor(editor, editor2);
 					box.appendChild(dateRangeEditor);
 					dateRangeEditor.setVisible(mField.isDisplayed(true));
 					label.setVisible(dateRangeEditor.isVisible());

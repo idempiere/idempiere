@@ -22,17 +22,19 @@
 * Contributors:                                                       *
 * - Peter Takacs, Cloudempiere                                        *
 **********************************************************************/
-package org.adempiere.webui.window;
+package org.adempiere.webui.editor;
+
+import java.util.Objects;
 
 import org.adempiere.webui.LayoutUtils;
-import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.ZkCssHelper;
-import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.window.DateRangePicker;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 
@@ -51,18 +53,18 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 	private static final String IMAGES_CONTEXT_CALENDAR_PNG = "images/Calendar16.png";
 
 	private Textbox textbox;
-	ToolBarButton popupBtn;
+	private ToolBarButton popupBtn;
 	private DateRangePicker popup;
-	private boolean isProcessParameter;
 	private WEditor editor;
 	private WEditor editor2;
 
 	/**
 	 * Constructor
+	 * @param editor
+	 * @param editor2
 	 */
-	public DateRangeEditor(WEditor editor, WEditor editor2, boolean isProcessParameter) {
+	public DateRangeEditor(WEditor editor, WEditor editor2) {
 		super();
-		this.isProcessParameter = isProcessParameter;
 		this.editor = editor;
 		this.editor2 = editor2;
 		init();
@@ -86,25 +88,17 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 		this.appendChild(popupBtn);
 
 		popup = new DateRangePicker(editor, editor2);
-		popupBtn.setTooltip(popup);
 		popupBtn.addEventListener(Events.ON_CLICK, event -> {
 			popup.setPage(popupBtn.getPage());
 			popup.open(popupBtn, "after_center");
 			LayoutUtils.autoDetachOnClose(popup);
 		});
-
-		Button btn = popup.getUpdateButton();
-		btn.addEventListener(Events.ON_CLICK, e -> {
-			textbox.setValue(popup.getDisplayValue());
-		});
-		editor.addValueChangeListener(this);
-		editor2.addValueChangeListener(this);
-		valueChange(null);
+		popup.addValueChangeListener(this);
 	}
 
 	@Override
 	public void valueChange(ValueChangeEvent evt) {
-		textbox.setValue(popup.getDisplayValue());
+		textbox.setValue(evt.getNewValue() != null ? popup.getDisplayValue() : "");
 	}
 
 	/**
@@ -119,13 +113,13 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 	}
 
 	private boolean isMandatoryStyle() {
-		return editor.isMandatory() && editor.isReadWrite() && (isProcessParameter || editor.getGridField().isEditable(true)) && isNullOrEmpty(editor)
-				|| editor2.isMandatory() && editor2.isReadWrite() && (isProcessParameter || editor2.getGridField().isEditable(true)) && isNullOrEmpty(editor2);
+		return editor.isMandatory() && editor.isReadWrite() && editor.getGridField().isEditable(true) && isNullOrEmpty(editor)
+				|| editor2.isMandatory() && editor2.isReadWrite() && editor2.getGridField().isEditable(true) && isNullOrEmpty(editor2);
 	}
 
 	private boolean isNullOrEmpty(WEditor editor) {
 		Object value = editor.getValue();
-		return value == null || value.toString().trim().length() == 0;
+		return Util.isEmpty(Objects.toString(value, ""), true);
 	}
 
 	/**
