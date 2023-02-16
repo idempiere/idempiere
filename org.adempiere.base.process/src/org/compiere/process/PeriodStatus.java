@@ -20,11 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MPeriod;
 import org.compiere.model.MPeriodControl;
 import org.compiere.model.MProcessPara;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -87,6 +90,15 @@ public class PeriodStatus extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		int no = 0;
+		
+		for(int periodID : p_C_Period_IDs) {
+			MPeriod p = new MPeriod(getCtx(), periodID, get_TrxName());
+			if((MPeriodControl.PERIODACTION_ClosePeriod.equalsIgnoreCase(p_PeriodAction) 
+					|| MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equalsIgnoreCase(p_PeriodAction))
+					&& p.hasUnpostedDocs())
+				throw new AdempiereException(Msg.getMsg(getCtx(), "PostUnpostedDocs"));
+		}
+		
 		if (log.isLoggable(Level.INFO)) log.info((p_C_PeriodControl_IDs != null
 					? "C_PeriodControl_ID=" + p_C_PeriodControl_IDs
 					: "C_Period_ID=" + p_C_Period_IDs) + ", PeriodAction=" + p_PeriodAction);

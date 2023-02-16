@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -1000,4 +1001,53 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 		return this;
 	}
 
+    public boolean hasUnpostedDocs() {
+    	return hasUnpostedDocs(0);
+    }
+    
+    public boolean hasUnpostedDocs(int periodControlID) {
+    	
+    	String sql = " SELECT 1 "
+    			+ " FROM RV_UnPosted up "
+    			+ " WHERE up.DocStatus IN('CO', 'CL') AND up.AD_Client_ID = ? AND up.DateAcct BETWEEN ? AND ? ";
+    	if(getAD_Org_ID() > 0)
+    		sql += " AND up.AD_Org_ID = ? ";
+    	if(periodControlID > 0)
+    		sql += " AND up.DocBaseType = ? ";
+    	
+    	PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, get_TrxName());
+			
+			int idx = 1;
+			pstmt.setInt(idx++, Env.getAD_Client_ID(Env.getCtx()));
+			pstmt.setTimestamp(idx++, getStartDate());
+			pstmt.setTimestamp(idx++, getEndDate());
+			if(getAD_Org_ID() > 0)
+	    		pstmt.setInt(idx++, getAD_Org_ID());
+	    	if(periodControlID > 0) {
+	    		MPeriodControl pc = new MPeriodControl(getCtx(), periodControlID, get_TrxName()); 
+	    		pstmt.setString(idx++, pc.getDocBaseType());
+	    	}
+	    	
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				return true;
+			}
+		}
+		catch (SQLException e)
+		{
+			throw new DBException(e, sql);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+    	return false;
+    }
+    
 }	//	MPeriod
