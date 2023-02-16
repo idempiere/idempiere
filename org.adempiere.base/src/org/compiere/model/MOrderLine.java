@@ -1070,16 +1070,15 @@ public class MOrderLine extends X_C_OrderLine
 	 * @return
 	 */
 	public String getDescriptionStrippingCloseTag() {
-		// Strip Close() tags from description
-		String desc = getDescription();
-		if (desc == null)
-			desc = "";
+		String description = getDescription();
+		if (description == null)
+			return description;
 		Pattern pattern = Pattern.compile("( \\| )?Close \\(.*\\)");
-		String[] parts = pattern.split(desc);
-		desc = "";
-		for (String s : parts) {
-			desc = desc.concat(s);
-		}
-		return desc;
+		String[] parts = pattern.split(description);
+		StringBuilder description_sb = new StringBuilder();
+		for (String s : parts)
+			description_sb.append(s);
+		return description_sb.toString();
 	}
+
 }	//	MOrderLine
