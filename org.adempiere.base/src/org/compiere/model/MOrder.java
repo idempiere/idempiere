@@ -2762,6 +2762,9 @@ public class MOrder extends X_C_Order implements DocAction
 		if (m_processMsg != null)
 			return false;	
 		
+		// Test period
+		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
+		
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		String DocSubTypeSO = dt.getDocSubTypeSO();
 		
