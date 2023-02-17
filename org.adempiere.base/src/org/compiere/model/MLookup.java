@@ -844,7 +844,9 @@ public final class MLookup extends Lookup implements Serializable
 		{
 			//force refresh
 			m_lookup.clear();
-			fillComboBox(isMandatory(), true, true, false, isShortList()); // idempiere 90		
+			MReference ref = m_info.AD_Reference_Value_ID > 0 ? MReference.get(Env.getCtx(),m_info.AD_Reference_Value_ID) : null;
+			boolean onlyActive = ref == null || !ref.isShowInactiveRecords();
+			fillComboBox(isMandatory(), true, onlyActive, false, isShortList()); // idempiere 90		
 			return m_lookup.size();
 		}
 		finally
