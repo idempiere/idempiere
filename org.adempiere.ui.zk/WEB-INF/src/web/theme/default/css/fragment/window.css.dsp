@@ -165,7 +165,7 @@ input[type="checkbox"]:focus
     height: 24px;
     min-height: 24px;
     right: 0px;
-    top: 1px;
+    top: 6px;
     border: 1px solid #CFCFCF;
     border-radius: 0;
 }

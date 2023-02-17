@@ -237,8 +237,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		if (value == null)
 			return "";
 
+		GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
 		if (rowIndex >= 0) {
-			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
 			if (!isForceGetValue && !gridField.isDisplayed(gridRowCtx, true)) {
 				return "";
 			}
@@ -251,7 +251,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		else if (readOnlyEditors.get(gridField) != null) 
 		{
 			WEditor editor = readOnlyEditors.get(gridField);			
-			return editor.getDisplayTextForGridView(value);
+			return editor.getDisplayTextForGridView(gridRowCtx, value);
 		}
     	else
     		return value.toString();
