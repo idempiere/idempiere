@@ -58,6 +58,16 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 	 */
 	public WDocumentStatusIndicator(MDocumentStatus documentStatus)
 	{
+		this(documentStatus, false);
+	}
+	
+	/**
+	 * 	Constructor
+	 *	@param documentStatus
+	 *  @param lazy
+	 */
+	public WDocumentStatusIndicator(MDocumentStatus documentStatus, boolean lazy)
+	{
 		super();
 
 		m_documentStatus = documentStatus;
@@ -65,8 +75,11 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 		init();
 		this.setSclass("activities-box");
 		
-		refresh();
-		updateUI();
+		if (!lazy) 
+		{
+			refresh();
+			updateUI();
+		}
 	}	//	WDocumentStatusIndicator
 
 	private MDocumentStatus		m_documentStatus = null;

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PInstance_Para
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_PInstance_Para 
 {
@@ -44,8 +44,8 @@ public interface I_AD_PInstance_Para
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_AD_PInstance_Para
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -136,6 +136,19 @@ public interface I_AD_PInstance_Para
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsNotClause */
+    public static final String COLUMNNAME_IsNotClause = "IsNotClause";
+
+	/** Set Not Clause.
+	  * Indicates if a chosen multiple component value must be negate
+	  */
+	public void setIsNotClause (boolean IsNotClause);
+
+	/** Get Not Clause.
+	  * Indicates if a chosen multiple component value must be negate
+	  */
+	public boolean isNotClause();
 
     /** Column name ParameterName */
     public static final String COLUMNNAME_ParameterName = "ParameterName";

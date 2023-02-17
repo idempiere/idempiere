@@ -38,7 +38,6 @@ import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pdf.Document;
 import org.adempiere.util.Callback;
-import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
@@ -71,6 +70,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.util.ZkContextRunnable;
 import org.compiere.model.GridField;
 import org.compiere.model.MArchive;
 import org.compiere.model.MAttachment;
@@ -1797,7 +1797,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 	}
 	
-	static class PDFRendererRunnable extends ContextRunnable implements IServerPushCallback {
+	static class PDFRendererRunnable extends ZkContextRunnable implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
 
@@ -1833,7 +1833,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 	}
 	
-	static class HTMLRendererRunnable extends ContextRunnable implements IServerPushCallback {
+	static class HTMLRendererRunnable extends ZkContextRunnable implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
 		public HTMLRendererRunnable(ZkReportViewer viewer) {
@@ -1868,7 +1868,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}		
 	}
 	
-	static class XLSRendererRunnable extends ContextRunnable  implements IServerPushCallback {
+	static class XLSRendererRunnable extends ZkContextRunnable  implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
 
@@ -1904,7 +1904,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 	}
 
-	static class CSVRendererRunnable extends ContextRunnable  implements IServerPushCallback {
+	static class CSVRendererRunnable extends ZkContextRunnable  implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
 
@@ -1938,7 +1938,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 	}
 	
-	protected static class XLSXRendererRunnable extends ContextRunnable implements IServerPushCallback
+	protected static class XLSXRendererRunnable extends ZkContextRunnable implements IServerPushCallback
 	{
 
 		private ZkReportViewer viewer;

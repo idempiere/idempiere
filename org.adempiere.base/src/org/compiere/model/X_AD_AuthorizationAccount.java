@@ -33,7 +33,7 @@ public class X_AD_AuthorizationAccount extends PO implements I_AD_AuthorizationA
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220906L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_AuthorizationAccount (Properties ctx, int AD_AuthorizationAccount_ID, String trxName)

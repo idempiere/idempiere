@@ -161,6 +161,8 @@ public class Doc_ProjectIssue extends Doc
 		if (product != null && product.get_ID() > 0 && !product.isService() && product.isStocked()) {
 			BigDecimal costDetailQty = m_line.getQty();
 			BigDecimal costDetailAmt = cost;
+			if (m_line.getQty().signum() != m_line.getProductCost().getQty().signum())
+				costDetailAmt = costDetailAmt.negate();
 			if (!MCostDetail.createProjectIssue(as, m_line.getAD_Org_ID(),
 				m_line.getM_Product_ID(), m_line.getM_AttributeSetInstance_ID(),
 				m_line.get_ID(), 0,

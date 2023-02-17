@@ -27,6 +27,8 @@ import java.util.logging.Level;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MElementValue;
 import org.compiere.model.MPeriod;
+import org.compiere.model.MProcessPara;
+
 import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfoParameter;
@@ -151,7 +153,7 @@ public class FinStatement extends SvrProcess
 			else if (name.equals("UserElement2_ID"))
 				p_UserElement2_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		//	Mandatory C_AcctSchema_ID, PostingType
 		m_parameterWhere.append("C_AcctSchema_ID=").append(p_C_AcctSchema_ID)

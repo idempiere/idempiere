@@ -53,11 +53,13 @@ public class AtmosphereServerPush implements ServerPush {
 
 	private static final String ON_ACTIVATE_DESKTOP = "onActivateDesktop";
 
+	/** default timeout of of 2 minutes **/
 	public static final int DEFAULT_TIMEOUT = 1000 * 60 * 2;
 
     private final AtomicReference<Desktop> desktop = new AtomicReference<Desktop>();
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+    /** asynchronous request reference as AtmosphereResource **/
     private final AtomicReference<AtmosphereResource> resource = new AtomicReference<AtmosphereResource>();
     private final int timeout;
     
@@ -66,6 +68,9 @@ public class AtmosphereServerPush implements ServerPush {
     private final Object _mutex = new Object();
     private List<Schedule<Event>> schedules = new ArrayList<>();
 
+    /**
+     * default constructor
+     */
     public AtmosphereServerPush() {
         String timeoutString = Library.getProperty("fi.jawsy.jawwa.zk.atmosphere.timeout");
         if (timeoutString == null || timeoutString.trim().length() == 0) {
@@ -120,10 +125,19 @@ public class AtmosphereServerPush implements ServerPush {
     	return true;
     }
 
+    /**
+     * release current AtmosphereResource
+     * @param resource
+     */
     public void clearResource(AtmosphereResource resource) {
         this.resource.compareAndSet(resource, null);
     }
 
+    /**
+     * commit/resume response for current AtmosphereResource 
+     * @return true if resource is available
+     * @throws IOException
+     */
     private boolean commitResponse() throws IOException {    	
         AtmosphereResource resource = this.resource.getAndSet(null);
         if (resource != null) {
@@ -224,6 +238,10 @@ public class AtmosphereServerPush implements ServerPush {
         startClientPush(desktop);
     }
 
+	/**
+	 * start serverpush request at client side
+	 * @param desktop
+	 */
 	private void startClientPush(Desktop desktop) {
 		Clients.response("jawwa.atmosphere.serverpush", new AuScript(null, "jawwa.atmosphere.startServerPush('" + desktop.getId() + "', " + timeout
                 + ");"));
@@ -256,6 +274,10 @@ public class AtmosphereServerPush implements ServerPush {
         }
     }
 
+    /**
+     * handle asynchronous server push request (long polling request)
+     * @param resource
+     */
     public void onRequest(AtmosphereResource resource) {
     	if (log.isTraceEnabled()) {
 	  		log.trace(resource.transport().name());
@@ -267,6 +289,7 @@ public class AtmosphereServerPush implements ServerPush {
             return;
         }
 
+        //suspend request for server push event
 	  	if (!resource.isSuspended()) {
 	  		//browser default timeout is 2 minutes
 	  		resource.suspend(5, TimeUnit.MINUTES); 

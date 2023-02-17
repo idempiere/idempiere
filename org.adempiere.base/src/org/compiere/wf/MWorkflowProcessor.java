@@ -25,10 +25,12 @@ import org.compiere.model.AdempiereProcessor;
 import org.compiere.model.AdempiereProcessor2;
 import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.MClientInfo;
+import org.compiere.model.MOrgInfo;
 import org.compiere.model.MSchedule;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WorkflowProcessor;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 
 /**
@@ -143,8 +145,20 @@ public class MWorkflowProcessor extends X_AD_WorkflowProcessor
 	protected boolean beforeSave(boolean newRecord)
 	{
 		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
+			String timeZoneId = null;
+			if((getAD_Client_ID() == 0 && getAD_Org_ID() == 0) || getAD_Org_ID() > 0) {
+				MOrgInfo orgInfo = MOrgInfo.get(getAD_Org_ID());
+				timeZoneId = orgInfo.getTimeZone();
+			}
+			
+			if(Util.isEmpty(timeZoneId, true)) {
+				MClientInfo clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID());
+				if (clientInfo == null)
+					clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
+				timeZoneId = clientInfo.getTimeZone();
+			}
 			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern(),
-					MClientInfo.get(getCtx(), getAD_Client_ID()).getTimeZone());
+					timeZoneId);
 			if (nextWork > 0)
 				setDateNextRun(new Timestamp(nextWork));
 		}

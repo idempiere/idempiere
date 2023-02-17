@@ -852,7 +852,7 @@ public class GridField
 				if (defStr.equals("@SysDate@"))				//	System Time
 					return new Timestamp (System.currentTimeMillis());
 				else if (defStr.indexOf('@') != -1)			//	it is a variable
-					defStr = Env.parseContext(m_vo.ctx, m_vo.WindowNo, defStr.trim(), false, false);
+					defStr = Env.parseContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, defStr.trim(), false, false);
 				else if (defStr.indexOf("'") != -1)			//	it is a 'String'
 					defStr = defStr.replace('\'', ' ').trim();
 

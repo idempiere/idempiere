@@ -1148,8 +1148,8 @@ public class MSequence extends X_AD_Sequence
 			// its various parts: protocol, host, port, filename.  Check the protocol
 			URL url = new URL(completeUrl);
 			String protocol = url.getProtocol();
-			if (!protocol.equals("http"))
-				throw new IllegalArgumentException("URL must use 'http:' protocol");
+			if (!protocol.equals("https") && !protocol.equals("http"))
+				throw new IllegalArgumentException("URL must use 'http:' or 'https:' protocol");
 			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setAllowUserInteraction(false);

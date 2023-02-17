@@ -1105,7 +1105,7 @@ public abstract class Doc
 			m_period = MPeriod.get(getCtx(), getDateAcct(), getAD_Org_ID(), (String)null);
 		//	Is Period Open?
 		if (m_period != null
-			&& m_period.isOpen(getDocumentType(), getDateAcct()))
+			&& m_period.isOpen(getDocumentType(), getDateAcct(), true))
 			m_C_Period_ID = m_period.getC_Period_ID();
 		else
 			m_C_Period_ID = -1;
@@ -1481,7 +1481,7 @@ public abstract class Doc
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, getTrxName());
 			if (para_1 == -1)   //  GL Accounts
 				pstmt.setInt (1, as.getC_AcctSchema_ID());
 			else

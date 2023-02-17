@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for IMP_ProcessorLog
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="IMP_ProcessorLog")
 public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_IMP_ProcessorLog extends PO implements I_IMP_ProcessorLog, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_IMP_ProcessorLog (Properties ctx, int IMP_ProcessorLog_ID, String trxName)

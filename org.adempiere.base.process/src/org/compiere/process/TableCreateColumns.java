@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.M_Element;
 import org.compiere.model.PO;
@@ -73,7 +74,7 @@ public class TableCreateColumns extends SvrProcess
 			else if (name.equals("AllTables"))
 				p_AllTables = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_AD_Table_ID = getRecord_ID();
 	}	//	prepare

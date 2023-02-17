@@ -31,7 +31,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221102L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -783,10 +783,10 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public static final String QUERYOPERATOR_Gt = ">";
 	/** &gt;= = &gt;= */
 	public static final String QUERYOPERATOR_GtEq = ">=";
-	/** Full Like = LIKE */
-	public static final String QUERYOPERATOR_FullLike = "LIKE";
 	/** Like = Like */
 	public static final String QUERYOPERATOR_Like = "Like";
+	/** Full Like = LIKE */
+	public static final String QUERYOPERATOR_FullLike = "LIKE";
 	/** Set Query Operator.
 		@param QueryOperator Operator for database query
 	*/

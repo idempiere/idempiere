@@ -21,6 +21,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MWarehouse;
 import org.compiere.util.DB;
 
@@ -69,6 +70,8 @@ public class InventoryValue extends SvrProcess
 				p_C_Currency_ID = para[i].getParameterAsInt();
 			else if (name.equals("M_CostElement_ID"))
 				p_M_CostElement_ID = para[i].getParameterAsInt();
+			else
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if (p_DateValue == null)
 			p_DateValue = new Timestamp (System.currentTimeMillis());

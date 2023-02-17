@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for ASP_Form
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Form")
 public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_ASP_Form extends PO implements I_ASP_Form, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_ASP_Form (Properties ctx, int ASP_Form_ID, String trxName)

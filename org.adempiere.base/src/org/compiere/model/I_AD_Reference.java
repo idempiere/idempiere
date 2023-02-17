@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Reference
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 11
  */
 public interface I_AD_Reference 
 {
@@ -44,8 +44,8 @@ public interface I_AD_Reference
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -68,12 +68,12 @@ public interface I_AD_Reference
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -195,6 +195,19 @@ public interface I_AD_Reference
 	  */
 	public String getName();
 
+    /** Column name ShowInactive */
+    public static final String COLUMNNAME_ShowInactive = "ShowInactive";
+
+	/** Set Show Inactive.
+	  * Show Inactive Records
+	  */
+	public void setShowInactive (String ShowInactive);
+
+	/** Get Show Inactive.
+	  * Show Inactive Records
+	  */
+	public String getShowInactive();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 
@@ -210,19 +223,6 @@ public interface I_AD_Reference
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
-
-    /** Column name ValidationType */
-    public static final String COLUMNNAME_ValidationType = "ValidationType";
-
-	/** Set Validation type.
-	  * Different method of validating data
-	  */
-	public void setValidationType (String ValidationType);
-
-	/** Get Validation type.
-	  * Different method of validating data
-	  */
-	public String getValidationType();
 
     /** Column name VFormat */
     public static final String COLUMNNAME_VFormat = "VFormat";
@@ -242,4 +242,17 @@ _lLoOaAcCa09&quot;
 
 	  */
 	public String getVFormat();
+
+    /** Column name ValidationType */
+    public static final String COLUMNNAME_ValidationType = "ValidationType";
+
+	/** Set Validation type.
+	  * Different method of validating data
+	  */
+	public void setValidationType (String ValidationType);
+
+	/** Get Validation type.
+	  * Different method of validating data
+	  */
+	public String getValidationType();
 }

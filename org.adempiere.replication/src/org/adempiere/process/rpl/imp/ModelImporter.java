@@ -31,6 +31,7 @@ package org.adempiere.process.rpl.imp;
 import java.util.logging.Level;
 
 import org.adempiere.process.rpl.XMLHelper;
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
@@ -88,7 +89,7 @@ public class ModelImporter extends SvrProcess {
 			else if (name.equals("FileName"))
 				p_FileName = (String)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		
 		if(p_EXP_Format_ID == 0)

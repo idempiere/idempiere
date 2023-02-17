@@ -160,8 +160,12 @@ public class CalloutGLJournal extends CalloutEngine
 		
 		//  Source info
 		Integer Currency_ID = (Integer)mTab.getValue("C_Currency_ID");
+		if(Currency_ID == null)
+			return "";
 		int C_Currency_ID = Currency_ID.intValue();
 		Integer ConversionType_ID = (Integer)mTab.getValue("C_ConversionType_ID");
+		if(ConversionType_ID == null)
+			return "";
 		int C_ConversionType_ID = ConversionType_ID.intValue();
 		Timestamp DateAcct = (Timestamp)mTab.getValue("DateAcct");
 		if (DateAcct == null)

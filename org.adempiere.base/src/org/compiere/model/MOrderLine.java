@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IProductPricing;
@@ -56,7 +57,7 @@ public class MOrderLine extends X_C_OrderLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7152360636393521683L;
+	private static final long serialVersionUID = 7994694334621222461L;
 
 	/**
 	 * 	Get Order Unreserved Qty
@@ -1063,4 +1064,21 @@ public class MOrderLine extends X_C_OrderLine
 	{
 		this.m_parent = null;
 	}
+
+	/**
+	 * Get the description stripping the Close tag that was created when closing the order
+	 * @return
+	 */
+	public String getDescriptionStrippingCloseTag() {
+		String description = getDescription();
+		if (description == null)
+			return description;
+		Pattern pattern = Pattern.compile("( \\| )?Close \\(.*\\)");
+		String[] parts = pattern.split(description);
+		StringBuilder description_sb = new StringBuilder();
+		for (String s : parts)
+			description_sb.append(s);
+		return description_sb.toString();
+	}
+
 }	//	MOrderLine

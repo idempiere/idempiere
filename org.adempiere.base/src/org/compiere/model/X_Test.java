@@ -662,4 +662,20 @@ public class X_Test extends PO implements I_Test, I_Persistent
 			 return Env.ZERO;
 		return bd;
 	}
+
+	/** Set Timestamp.
+		@param T_Timestamp Timestamp with time zone
+	*/
+	public void setT_Timestamp (Timestamp T_Timestamp)
+	{
+		set_Value (COLUMNNAME_T_Timestamp, T_Timestamp);
+	}
+
+	/** Get Timestamp.
+		@return Timestamp with time zone
+	  */
+	public Timestamp getT_Timestamp()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_T_Timestamp);
+	}
 }

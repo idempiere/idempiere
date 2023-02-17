@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for R_RequestAction
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestAction")
 public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_R_RequestAction (Properties ctx, int R_RequestAction_ID, String trxName)
@@ -380,7 +380,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 		return (Timestamp)get_Value(COLUMNNAME_DateCompletePlan);
 	}
 
-	/** Set Date next action.
+	/** Set Date Next Action.
 		@param DateNextAction Date that this request should be acted on
 	*/
 	public void setDateNextAction (Timestamp DateNextAction)
@@ -388,7 +388,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 		set_ValueNoCheck (COLUMNNAME_DateNextAction, DateNextAction);
 	}
 
-	/** Get Date next action.
+	/** Get Date Next Action.
 		@return Date that this request should be acted on
 	  */
 	public Timestamp getDateNextAction()

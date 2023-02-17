@@ -10,6 +10,7 @@ import org.compiere.model.MAssetAddition;
 import org.compiere.model.MAssetGroupAcct;
 import org.compiere.model.MDepreciationWorkfile;
 import org.compiere.model.MIFixedAsset;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
 import org.compiere.model.X_I_FixedAsset;
@@ -66,7 +67,7 @@ public class ImportFixedAsset extends SvrProcess
 			else if (name.equals("IsValidateOnly"))
 				p_IsValidateOnly = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

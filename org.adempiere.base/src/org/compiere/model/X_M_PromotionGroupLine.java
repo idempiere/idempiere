@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_PromotionGroupLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_PromotionGroupLine")
 public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_M_PromotionGroupLine extends PO implements I_M_PromotionGroupLine
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_PromotionGroupLine (Properties ctx, int M_PromotionGroupLine_ID, String trxName)
