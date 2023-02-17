@@ -145,6 +145,10 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
     {
 		super(new NumberBox(displayType == DisplayType.Integer), columnName, title, null, mandatory,
 				readonly, updateable);
+
+		if (!DisplayType.isNumeric(displayType)) 
+			throw new IllegalArgumentException("DisplayType must be numeric");
+
 		this.displayType = displayType;
 		init();
 	}
