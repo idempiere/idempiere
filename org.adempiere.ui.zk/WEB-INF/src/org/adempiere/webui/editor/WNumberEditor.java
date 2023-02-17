@@ -63,7 +63,16 @@ public class WNumberEditor extends WEditor implements ContextMenuListener
 
     public WNumberEditor()
     {
-    	this("Number", false, false, true, DisplayType.Number, "");
+    	this(DisplayType.Number);
+    }
+
+    /**
+    *
+    * @param displayType
+    */
+    public WNumberEditor(int displayType)
+    {
+    	this("Number", false, false, true, displayType, "");
     }
 
     /**
