@@ -57,7 +57,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3016788523921605808L;
+	private static final long serialVersionUID = -2625074973303489939L;
 
 	/**
 	 * Get Period from Cache (immutable)
@@ -1001,19 +1001,29 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 		return this;
 	}
 
+    /**
+     * Has the period un-posted documents
+     * @return boolean - true if there is at least 1 un-posted document in the period
+     */
     public boolean hasUnpostedDocs() {
     	return hasUnpostedDocs(0);
     }
     
+    /**
+     * Hast the period control un-posted documents
+     * @param periodControlID
+     * @return boolean - true if there is at least 1 un-posted document in the period control
+     */
     public boolean hasUnpostedDocs(int periodControlID) {
     	
     	String sql = " SELECT 1 "
     			+ " FROM RV_UnPosted up "
-    			+ " WHERE up.DocStatus IN('CO', 'CL') AND up.AD_Client_ID = ? AND up.DateAcct BETWEEN ? AND ? ";
+    			+ " WHERE up.AD_Client_ID = ? AND up.DateAcct BETWEEN ? AND ? ";
     	if(getAD_Org_ID() > 0)
     		sql += " AND up.AD_Org_ID = ? ";
     	if(periodControlID > 0)
     		sql += " AND up.DocBaseType = ? ";
+    	sql += " FETCH FIRST 1 ROWS ONLY ";
     	
     	PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1025,8 +1035,11 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			pstmt.setInt(idx++, Env.getAD_Client_ID(Env.getCtx()));
 			pstmt.setTimestamp(idx++, getStartDate());
 			pstmt.setTimestamp(idx++, getEndDate());
-			if(getAD_Org_ID() > 0)
-	    		pstmt.setInt(idx++, getAD_Org_ID());
+			if(getAD_Org_ID() > 0) {
+				MYear year = new MYear(getCtx(), getC_Year_ID(), get_TrxName());
+				MCalendar calendar = new MCalendar(getCtx(), year.getC_Calendar_ID(), get_TrxName());
+	    		pstmt.setInt(idx++, calendar.getAD_Org_ID());
+			}
 	    	if(periodControlID > 0) {
 	    		MPeriodControl pc = new MPeriodControl(getCtx(), periodControlID, get_TrxName()); 
 	    		pstmt.setString(idx++, pc.getDocBaseType());

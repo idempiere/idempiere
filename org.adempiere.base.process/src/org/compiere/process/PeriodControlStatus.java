@@ -20,13 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MPeriodControl;
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MRefList;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CacheMgt;
+import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.ValueNamePair;
 
 
 /**
@@ -72,14 +74,21 @@ public class PeriodControlStatus extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		if (log.isLoggable(Level.INFO)) log.info ("C_PeriodControl_ID=" + p_C_PeriodControl_IDs);
+		
+		boolean hasUnpostedDocs = false;
+		ArrayList<MPeriodControl> skipped = new ArrayList<MPeriodControl>();
+		
 		for (int p_C_PeriodControl_ID : p_C_PeriodControl_IDs) {
 			MPeriodControl pc = new MPeriodControl (getCtx(), p_C_PeriodControl_ID, get_TrxName());
 			MPeriod p = new MPeriod(getCtx(), pc.getC_Period_ID(), get_TrxName());
 
 			if((MPeriodControl.PERIODACTION_ClosePeriod.equalsIgnoreCase(pc.getPeriodAction()) 
 					|| MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equalsIgnoreCase(pc.getPeriodAction()))
-					&& p.hasUnpostedDocs(p_C_PeriodControl_ID))
-				throw new AdempiereException(Msg.getMsg(getCtx(), "PostUnpostedDocs"));
+					&& p.hasUnpostedDocs(p_C_PeriodControl_ID)) {
+				hasUnpostedDocs = true;
+				skipped.add(new MPeriodControl(getCtx(), p_C_PeriodControl_ID, get_TrxName()));
+				continue;
+			}
 			
 			if (pc.get_ID() == 0)
 				throw new AdempiereUserError("@NotFound@  @C_PeriodControl_ID@=" + p_C_PeriodControl_ID);
@@ -109,8 +118,25 @@ public class PeriodControlStatus extends SvrProcess
 			if (!ok)
 				return "@Error@";
 		}
+		String returnVal = "@OK";
+		
+		// return the list of period controls with un-posted documents
+		if(hasUnpostedDocs) {
+			returnVal = Msg.getMsg(getCtx(), "CouldNotClosePeriodControl");
+			for(MPeriodControl pc : skipped) {
+				String displayValue = "a";
+				for(ValueNamePair vnp : MRefList.getList(Env.getCtx(),MPeriodControl.DOCBASETYPE_AD_Reference_ID,false)){
+					 if(vnp.getValue().equals(pc.getDocBaseType())){
+						 displayValue = vnp.getName(); 
+						break;
+					 }
+				 }
+				addLog(pc.getC_PeriodControl_ID(), null, null, displayValue, MPeriodControl.Table_ID, pc.getC_PeriodControl_ID());
+			}
+		}
+			
 		CacheMgt.get().reset("C_PeriodControl", 0);
-		return "@OK@";
+		return returnVal;
 	}	//	doIt
 
 }	//	PeriodControlStatus
