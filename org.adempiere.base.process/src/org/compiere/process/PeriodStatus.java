@@ -24,6 +24,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MPeriodControl;
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
@@ -95,7 +96,8 @@ public class PeriodStatus extends SvrProcess
 			MPeriod p = new MPeriod(getCtx(), periodID, get_TrxName());
 			if((MPeriodControl.PERIODACTION_ClosePeriod.equalsIgnoreCase(p_PeriodAction) 
 					|| MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equalsIgnoreCase(p_PeriodAction))
-					&& p.hasUnpostedDocs())
+					&& p.hasUnpostedDocs()
+					&& MSysConfig.getBooleanValue(MSysConfig.FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE, true))
 				throw new AdempiereException(Msg.getMsg(getCtx(), "PostUnpostedDocs"));
 		}
 		

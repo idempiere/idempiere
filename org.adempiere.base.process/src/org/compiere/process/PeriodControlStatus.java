@@ -24,6 +24,7 @@ import org.compiere.model.MPeriod;
 import org.compiere.model.MPeriodControl;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MRefList;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
@@ -84,7 +85,8 @@ public class PeriodControlStatus extends SvrProcess
 
 			if((MPeriodControl.PERIODACTION_ClosePeriod.equalsIgnoreCase(pc.getPeriodAction()) 
 					|| MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equalsIgnoreCase(pc.getPeriodAction()))
-					&& p.hasUnpostedDocs(p_C_PeriodControl_ID)) {
+					&& p.hasUnpostedDocs(p_C_PeriodControl_ID)
+					&& MSysConfig.getBooleanValue(MSysConfig.FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE, true)) {
 				hasUnpostedDocs = true;
 				skipped.add(new MPeriodControl(getCtx(), p_C_PeriodControl_ID, get_TrxName()));
 				continue;

@@ -102,6 +102,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
     public static final String FEEDBACK_EMAIL_CC = "FEEDBACK_EMAIL_CC";
     public static final String FEEDBACK_EMAIL_TO = "FEEDBACK_EMAIL_TO";
+    public static final String FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE = "FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE";
     public static final String FORM_SQL_PROCESS_ALLOWED_KEYWORDS = "FORM_SQL_PROCESS_ALLOWED_KEYWORDS";
     public static final String FORM_SQL_QUERY_ALLOWED_KEYWORDS = "FORM_SQL_QUERY_ALLOWED_KEYWORDS";
     public static final String FORM_SQL_QUERY_LOG_ISSUE = "FORM_SQL_QUERY_LOG_ISSUE";
