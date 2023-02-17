@@ -42,16 +42,29 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Bandpopup;
 import org.zkoss.zul.Div;
 
-public class LabelsSearch extends Div implements EventListener<Event> {
+/**
+ * Component to search AD_Label* records.
+ */
+public class LabelsSearch extends Div implements EventListener<Event> {	
+	/**
+	 * generated serial id
+	 */
 	private static final long serialVersionUID = -8793878697269469837L;
-	private static final String ON_ENTER_KEY = "onEnterKey";
-	private static final String ON_CREATE_ECHO = "onCreateEcho";
-	private static final String ON_SEARCH = "onSearch";
-	private Bandbox bandbox;	
+	/** Event send from client side upon keyDown of enter key **/
+	private static final String ON_ENTER_KEY_EVENT = "onEnterKey";
+	/** Event echo from {@link #onPageAttached(Page, Page)} **/
+	private static final String ON_CREATE_ECHO_EVENT = "onCreateEcho";
+	/** Event to execute search. **/
+	private static final String ON_SEARCH_EVENT = "onSearch";
+	/** {@link #bandbox} attribute to store value from last {@link Events#ON_CHANGING} event **/
+	private static final String LAST_ONCHANGING_ATTR = "last.onchanging";
+	/** Bandbox to capture search text from user and display result in popup **/
+	private Bandbox bandbox;
+	/** Controller to perform search on AD_Label* records **/
 	private LabelsSearchController controller;
 
 	/**
-	 * Standard constructot
+	 * Standard constructor
 	 * @param controller
 	 */
 	public LabelsSearch(LabelsSearchController controller) {
@@ -59,6 +72,9 @@ public class LabelsSearch extends Div implements EventListener<Event> {
 		init();
 	}
 
+	/**
+	 * Layout UI and setup listeners
+	 */
 	private void init() {
 		bandbox = new Bandbox();
 		appendChild(bandbox);
@@ -77,22 +93,24 @@ public class LabelsSearch extends Div implements EventListener<Event> {
 		bandbox.appendChild(popup);		
 		controller.create(popup);
 		
-		addEventListener(ON_SEARCH, this);
-		addEventListener(ON_CREATE_ECHO, this);		
+		addEventListener(ON_SEARCH_EVENT, this);
+		addEventListener(ON_CREATE_ECHO_EVENT, this);		
 		addEventListener(LabelsSearchController.ON_POST_SELECT_LABELITEM_EVENT, this);
-		bandbox.addEventListener(ON_ENTER_KEY, this);
+		bandbox.addEventListener(ON_ENTER_KEY_EVENT, this);
 	}
 
 	@Override
 	public void onEvent(Event event) throws Exception {
-		if (Events.ON_CHANGING.equals(event.getName())) {			
+		if (Events.ON_CHANGING.equals(event.getName())) {
+			//post ON_SEARCH_EVENT for ON_CHANGING event from bandbox
 			InputEvent inputEvent = (InputEvent) event;
 			String value = inputEvent.getValue();		
-			bandbox.setAttribute("last.onchanging", value);
-			Events.postEvent(ON_SEARCH, this, value);		
+			bandbox.setAttribute(LAST_ONCHANGING_ATTR, value);
+			Events.postEvent(ON_SEARCH_EVENT, this, value);		
 		} else if (Events.ON_CHANGE.equals(event.getName())) {
-			bandbox.removeAttribute("last.onchanging");
+			bandbox.removeAttribute(LAST_ONCHANGING_ATTR);
         } else if (Events.ON_CTRL_KEY.equals(event.getName())) {
+        	//handle keyboard navigation for bandbox items
         	KeyEvent ke = (KeyEvent) event;
         	if (ke.getKeyCode() == KeyEvent.UP) {
         		if (bandbox.getFirstChild().isVisible()) {
@@ -111,32 +129,33 @@ public class LabelsSearch extends Div implements EventListener<Event> {
         			}
         		}
         	}
-        } else if (event.getName().equals(ON_SEARCH)) {
+        } else if (event.getName().equals(ON_SEARCH_EVENT)) {
         	String value = (String) event.getData();
        		controller.search(value);
 			bandbox.focus();
-        } else if (event.getName().equals(ON_CREATE_ECHO)) {
+        } else if (event.getName().equals(ON_CREATE_ECHO_EVENT)) {
+        	//setup client side keyDown listener for enter key
     		StringBuilder script = new StringBuilder("jq('#")
     			.append(bandbox.getUuid())
     			.append("').bind('keydown', function(e) {var code=e.keyCode||e.which;if(code==13){")
     			.append("var widget=zk.Widget.$(this);")
     			.append("var event=new zk.Event(widget,'")
-    			.append(ON_ENTER_KEY)
+    			.append(ON_ENTER_KEY_EVENT)
     			.append("',{},{toServer:true});")
     			.append("zAu.send(event);")
     			.append("}});");
     		Clients.evalJavaScript(script.toString());
-        } else if (event.getName().equals(ON_ENTER_KEY)) {
+        } else if (event.getName().equals(ON_ENTER_KEY_EVENT)) {
         	if (event.getTarget() instanceof Bandbox) {
 	        	controller.onSelect(controller.getSelectedItem());
         	}     	
         } else if (event.getName().equals(Events.ON_SELECT)) {
-        	String value = (String) bandbox.getAttribute("last.onchanging");
+        	String value = (String) bandbox.getAttribute(LAST_ONCHANGING_ATTR);
         	if (value == null) {
         		value = bandbox.getValue();
         	}
         	
-        	Events.postEvent(ON_SEARCH, this, value);
+        	Events.postEvent(ON_SEARCH_EVENT, this, value);
         }
 		
 		if (event.getName().equals(LabelsSearchController.ON_POST_SELECT_LABELITEM_EVENT)) {
@@ -150,11 +169,11 @@ public class LabelsSearch extends Div implements EventListener<Event> {
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
-		Events.echoEvent(ON_CREATE_ECHO, this, null);		
+		Events.echoEvent(ON_CREATE_ECHO_EVENT, this, null);		
 	}
 	
 	/**
-	 * Close the search dropdown
+	 * Close {@link #bandbox} popup
 	 */
 	public void closePopup() {
 		if (bandbox != null) {
@@ -163,7 +182,7 @@ public class LabelsSearch extends Div implements EventListener<Event> {
 	}
 	
 	/**
-	 * Set height of the search dropdown
+	 * Set height {@link #bandbox} dropdown
 	 */
 	public void onClientInfo() {
 		ZKUpdateUtil.setWindowHeightX(bandbox.getDropdown(), ClientInfo.get().desktopHeight-50);	

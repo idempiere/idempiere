@@ -56,7 +56,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4813116760490243399L;
+	private static final long serialVersionUID = 3016788523921605808L;
 
 	/**
 	 * Get Period from Cache (immutable)
@@ -270,7 +270,21 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @param AD_Org_ID Organization
 	 *	@return true if open
 	 */
-	public static boolean isOpen (Properties ctx, Timestamp DateAcct, String DocBaseType, int AD_Org_ID)
+	public static boolean isOpen(Properties ctx, Timestamp DateAcct, String DocBaseType, int AD_Org_ID)
+	{
+		return isOpen(ctx, DateAcct, DocBaseType, AD_Org_ID, false);
+	}
+
+	/**
+	 * 	Is standard Period Open for Document Base Type
+	 *	@param ctx context
+	 * @param DateAcct date
+	 * @param DocBaseType base type
+	 * @param AD_Org_ID Organization
+	 * @param forPosting - check if the period is open for posting, false is for DocAction
+	 *	@return true if open
+	 */
+	public static boolean isOpen (Properties ctx, Timestamp DateAcct, String DocBaseType, int AD_Org_ID, boolean forPosting)
 	{
 		if (DateAcct == null)
 		{
@@ -288,7 +302,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			s_log.warning("No Period for " + DateAcct + " (" + DocBaseType + ")");
 			return false;
 		}
-		boolean open = period.isOpen(DocBaseType, DateAcct);
+		boolean open = period.isOpen(DocBaseType, DateAcct, forPosting);
 		if (!open)
 			s_log.warning(period.getName()
 				+ ": Not open for " + DocBaseType + " (" + DateAcct + ")");
@@ -300,9 +314,23 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @param ctx context
 	 * @param tableID
 	 * @param recordID
+	 * @param trxName
 	 * @return true if open
 	 */
-	public static boolean isOpen (Properties ctx, int tableID, int recordID, String trxName) {
+	public static boolean isOpen(Properties ctx, int tableID, int recordID, String trxName) {
+		return isOpen (ctx, tableID, recordID, trxName, false);
+	}
+
+	/**
+	 * Is standard Period Open - based on tableID+recordID (for IDEMPIERE-2392)
+	 * @param ctx context
+	 * @param tableID
+	 * @param recordID
+	 * @param trxName
+	 * @param forPosting - check if the period is open for posting, false is for DocAction
+	 * @return true if open
+	 */
+	public static boolean isOpen (Properties ctx, int tableID, int recordID, String trxName, boolean forPosting) {
 		MTable table = MTable.get(ctx, tableID);
 		PO po = table.getPO(recordID, trxName);
 
@@ -405,13 +433,13 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			// special case for journal that has direct period
 			int periodID = po.get_ValueAsInt("C_Period_ID");
 			MPeriod period = MPeriod.get(ctx, periodID);
-			boolean open = period.isOpen(docBaseType, dateAcct);
+			boolean open = period.isOpen(docBaseType, dateAcct, forPosting);
 			if (!open)
 				s_log.warning(period.getName() + ": Not open for " + docBaseType + " (" + dateAcct + ")");
 			return open;
 		}
 
-		return isOpen(ctx, dateAcct, docBaseType, orgID);
+		return isOpen(ctx, dateAcct, docBaseType, orgID, forPosting);
 	}	//	isOpen
 
 	/**
@@ -666,6 +694,21 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 */
 	public boolean isOpen (String DocBaseType, Timestamp dateAcct)
 	{
+		return isOpen(DocBaseType, dateAcct, false);
+	}
+
+	/**
+	 * Is Period Open for Doc Base Type
+	 * @param DocBaseType document base type
+	 * @param dateAcct date;
+	 * 			Applies only for "Auto Period Control":
+	 * 			<li>if not null, date should be in auto period range (today - OpenHistory, today+OpenHistory)
+	 * 			<li>if null, this period should be in auto period range
+	 * @param forPosting - check if the period is open for posting, false is for DocAction
+	 * @return true if open
+	 */
+	public boolean isOpen (String DocBaseType, Timestamp dateAcct, boolean forPosting)
+	{
 		if (!isActive())
 		{
 			s_log.warning("Period not active: " + getName());
@@ -724,7 +767,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			return false;
 		}
 		if (log.isLoggable(Level.FINE)) log.fine(getName() + ": " + DocBaseType);
-		return pc.isOpen();
+		return pc.isOpen(forPosting);
 	}	//	isOpen
 
 	/**

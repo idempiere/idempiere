@@ -18,9 +18,9 @@ package org.compiere.report;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.logging.Level;
 
 import org.compiere.model.MPeriod;
+import org.compiere.model.MProcessPara;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -84,7 +84,7 @@ public class BankRegister extends SvrProcess
 			else if (name.equals("C_BankAccount_ID"))
 				p_C_BankAccount_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		m_parameterWhere.append(" fa.AD_Table_ID = (Select AD_Table_ID From AD_Table Where TableName = 'C_Payment') ");
 		m_parameterWhere.append(" And b.C_Bank_ID = " + p_C_Bank_ID);

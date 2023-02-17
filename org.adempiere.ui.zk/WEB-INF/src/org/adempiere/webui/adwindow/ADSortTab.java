@@ -78,10 +78,13 @@ import org.zkoss.zul.event.ListDataEvent;
 public class ADSortTab extends Panel implements IADTabpanel
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4302282658814599752L;
 
+	/**
+	 * default constructor
+	 */
 	public ADSortTab()
 	{
 	}
@@ -133,7 +136,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 	private Button bUp = ButtonFactory.createButton(null, ThemeManager.getThemeResource("images/MoveUp16.png"), null);
 	private Button bDown = ButtonFactory.createButton(null, ThemeManager.getThemeResource("images/MoveDown16.png"), null);
 	//
-	SimpleListModel noModel = new SimpleListModel() {
+	protected SimpleListModel noModel = new SimpleListModel() {
 		/**
 		 * 
 		 */
@@ -153,12 +156,13 @@ public class ADSortTab extends Panel implements IADTabpanel
 			fireEvent(ListDataEvent.INTERVAL_ADDED, index, index);
 		}
 	};
-	SimpleListModel yesModel = new SimpleListModel();
-	Listbox noList = new Listbox();
-	Listbox yesList = new Listbox();
+	protected SimpleListModel yesModel = new SimpleListModel();
+	protected Listbox noList = new Listbox();
+	protected Listbox yesList = new Listbox();
 
 	private GridTab gridTab;
 	private boolean uiCreated;
+	/** true if tab have been activated **/
 	private boolean active = false;
 	private boolean isChanged;
 	private boolean detailPaneMode;
@@ -277,7 +281,8 @@ public class ADSortTab extends Panel implements IADTabpanel
 			m_IdentifierSql = identifierSql.toString();
 		//
 		noLabel.setValue(Msg.getMsg(Env.getCtx(), "Available"));
-		log.fine(m_ColumnSortName);
+		if (log.isLoggable(Level.FINE))
+			log.fine(m_ColumnSortName);
 	}	//	dynInit
 
 	/**
@@ -520,14 +525,19 @@ public class ADSortTab extends Panel implements IADTabpanel
 		}
 	}
 
+	/**
+	 * @return true if tab has changes
+	 */
 	public boolean isChanged() {
 		return isChanged;
 	}
 	
 	/**
+	 * Move an item between yes and no list.
+	 * Delegate to {@link #migrateLists(Listbox, Listbox, int)}
 	 * @param event
 	 */
-	void migrateValueAcrossLists (Event event)
+	protected void migrateValueAcrossLists (Event event)
 	{
 		Object source = event.getTarget();
 		if (source instanceof ListItem) {
@@ -544,7 +554,13 @@ public class ADSortTab extends Panel implements IADTabpanel
 		migrateLists (listFrom,listTo,endIndex);
 	}	//	migrateValueAcrossLists
 
-	void migrateLists (Listbox listFrom , Listbox listTo , int endIndex)
+	/**
+	 * Move an item from listFrom to listTo.
+	 * @param listFrom
+	 * @param listTo
+	 * @param endIndex destination index
+	 */
+	protected void migrateLists (Listbox listFrom , Listbox listTo , int endIndex)
 	{
 		int index = 0; 
 		SimpleListModel lmFrom = (listFrom == yesList) ? yesModel:noModel;
@@ -577,10 +593,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 	}
 
 	/**
-	 * 	Move within Yes List
+	 * 	Move an item within Yes List
 	 *	@param event event
 	 */
-	void migrateValueWithinYesList (Event event)
+	protected void migrateValueWithinYesList (Event event)
 	{
 		Object[] selObjects = yesList.getSelectedItems().toArray();
 		if (selObjects == null)
@@ -643,10 +659,10 @@ public class ADSortTab extends Panel implements IADTabpanel
 
 
 	/**
-	 * 	Move within Yes List with Drag Event and Multiple Choice
+	 * 	Move items within Yes List with Drag Event and Multiple Choice
 	 *	@param event event
 	 */
-	void migrateValueWithinYesList (int endIndex, List<ListElement> selObjects)
+	protected void migrateValueWithinYesList (int endIndex, List<ListElement> selObjects)
 	{
 		int iniIndex =0;
 		Arrays.sort(selObjects.toArray());	
@@ -667,8 +683,9 @@ public class ADSortTab extends Panel implements IADTabpanel
 		setIsChanged(true);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.compiere.grid.APanelTab#registerAPanel(APanel)
+	/**
+	 * Set AD Window content part that own this ADSortTab instance.
+	 * @param panel
 	 */
 	public void registerAPanel (AbstractADWindowContent panel)
 	{
@@ -676,14 +693,15 @@ public class ADSortTab extends Panel implements IADTabpanel
 	}	//	registerAPanel
 
 
-	/** (non-Javadoc)
+	/**
+	 * Save changes to db.
 	 */
 	public void saveData()
 	{
 		if (!adWindowPanel.getToolbar().isSaveEnable())
 			return;
-		log.fine("");
 		boolean ok = true;
+		//TODO: should use model instead to enable change log and event handling
 		StringBuilder info = new StringBuilder();
 		StringBuffer sql = null;
 		//	noList - Set SortColumn to null and optional YesNo Column to 'N'
@@ -851,6 +869,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		{
 		}
 
+		@Override
 		public void onEvent(Event event) throws Exception {
 			if (event instanceof DropEvent)
 			{
@@ -884,6 +903,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		}
 	}
 
+	@Override
 	public void activate(boolean b) {
 		if (b) {
 	    	if (getAttribute(ATTR_ON_ACTIVATE_POSTED) != null) {
@@ -899,6 +919,7 @@ public class ADSortTab extends Panel implements IADTabpanel
         Events.postEvent(event);
 	}
 
+	@Override
 	public void createUI() {
 		if (uiCreated) return;
 		try
@@ -913,64 +934,80 @@ public class ADSortTab extends Panel implements IADTabpanel
 		uiCreated = true;
 	}
 
+	@Override
 	public void dynamicDisplay(int i) {
 	}
 
+	@Deprecated(forRemoval = true, since = "11")
 	public void editRecord(boolean b) {
 	}
 
+	@Override
 	public String getDisplayLogic() {
 		return gridTab.getDisplayLogic();
 	}
 
+	@Override
 	public GridTab getGridTab() {
 		return gridTab;
 	}
 
+	@Override
 	public int getTabLevel() {
 		return gridTab.getTabLevel();
 	}
 
+	@Override
     public String getTableName()
     {
         return gridTab.getTableName();
     }
 
+	@Override
 	public int getRecord_ID() {
 		return gridTab.getRecord_ID();
 	}
 
+	@Override
 	public String getTitle() {
 		return gridTab.getName();
 	}
 
+	@Override
 	public boolean isCurrent() {
 		return gridTab != null ? gridTab.isCurrent() : false;
 	}
 
+	@Override
 	public void query() {
 		loadData();
 	}
 
+	@Override
 	public void query(boolean currentRows, int currentDays, int i) {
 		loadData();
 	}
 
+	@Override
 	public void refresh() {
 		createUI();
 		loadData();
 	}
 
+	@Override
 	public void switchRowPresentation() {
 	}
 
+	@Override
 	public String get_ValueAsString(String variableName) {
 		return Env.getContext(Env.getCtx(), m_WindowNo, variableName);
 	}
 
+	@Override
 	public void afterSave(boolean onSaveEvent) {
 	}
 
+	@Override
 	public boolean onEnterKey() {
 		return false;
 	}
@@ -991,6 +1028,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		ZKUpdateUtil.setVflex(this, "true");
 	}
 	
+	@Override
 	public boolean isDetailPaneMode() {
 		return this.detailPaneMode;
 	}
@@ -1053,6 +1091,7 @@ public class ADSortTab extends Panel implements IADTabpanel
 		noList.setModel(noModel);
 	}
 
+	@Override
 	public ADTreePanel getTreePanel() {
 		return null;
 	}

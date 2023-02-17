@@ -62,6 +62,8 @@ public class Window extends org.zkoss.zul.Window implements ISupportMask
     /*** Replace current tab content ***/
     public static final String REPLACE = "replace";
     
+    private boolean fireWindowCloseEventOnDetach = true;
+    
     public Window()
     {
         super();
@@ -83,7 +85,8 @@ public class Window extends org.zkoss.zul.Window implements ISupportMask
 		super.onPageDetached(page);
 		if (Executions.getCurrent() != null && Executions.getCurrent().getDesktop() != null &&
 				Executions.getCurrent().getDesktop().getExecution() != null) {
-			Events.sendEvent(this, new Event(DialogEvents.ON_WINDOW_CLOSE, this, null));
+			if (fireWindowCloseEventOnDetach)
+				Events.sendEvent(this, new Event(DialogEvents.ON_WINDOW_CLOSE, this, null));
 		}
 	}
 	
@@ -145,5 +148,21 @@ public class Window extends org.zkoss.zul.Window implements ISupportMask
 	@Override
 	public Component getMaskComponent() {		
 		return showMaskWrapper.getMaskComponent();
+	}
+
+	/**
+	 * 
+	 * @return true if {@link DialogEvents#ON_WINDOW_CLOSE} event is fire when window is detach from page
+	 */
+	public boolean isFireWindowCloseEventOnDetach() {
+		return fireWindowCloseEventOnDetach;
+	}
+
+	/**
+	 * 
+	 * @param fireWindowCloseEventOnDetach true to fire {@link DialogEvents#ON_WINDOW_CLOSE} event when window is detach from page (default is true)
+	 */
+	public void setFireWindowCloseEventOnDetach(boolean fireWindowCloseEventOnDetach) {
+		this.fireWindowCloseEventOnDetach = fireWindowCloseEventOnDetach;
 	}
 }

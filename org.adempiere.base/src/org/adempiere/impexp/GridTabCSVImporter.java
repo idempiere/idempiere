@@ -374,7 +374,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 				GridField field 	= gridTab.getField(columnName);
 
 				if (field == null)
-					throwAdempiereException(Msg.getMsg(Env.getCtx(), "FieldNotFound" , new Object[] {columnName}) );
+					throwAdempiereException(Msg.getMsg(Env.getCtx(), "FieldNotFoundInTab" , new Object[] {columnName, gridTab.getName()}) );
 				else if(isKeyColumn && !isThereKey)
 					isThereKey =true;
 				else if (!isThereDocAction &&

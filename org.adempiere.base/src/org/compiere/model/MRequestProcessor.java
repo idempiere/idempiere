@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Request Processor Model
@@ -242,11 +243,20 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	protected boolean beforeSave(boolean newRecord)
 	{
 		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
-			MClientInfo clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID());
-			if (clientInfo == null)
-				clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
+			String timeZoneId = null;
+			if((getAD_Client_ID() == 0 && getAD_Org_ID() == 0) || getAD_Org_ID() > 0) {
+				MOrgInfo orgInfo = MOrgInfo.get(getAD_Org_ID());
+				timeZoneId = orgInfo.getTimeZone();
+			}
+			
+			if(Util.isEmpty(timeZoneId, true)) {
+				MClientInfo clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID());
+				if (clientInfo == null)
+					clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
+				timeZoneId = clientInfo.getTimeZone();
+			}
 			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern(),
-					clientInfo.getTimeZone());
+					timeZoneId);
 			if (nextWork > 0)
 				setDateNextRun(new Timestamp(nextWork));
 		}

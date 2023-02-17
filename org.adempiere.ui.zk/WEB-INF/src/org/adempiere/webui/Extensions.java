@@ -50,7 +50,7 @@ import org.idempiere.ui.zk.media.IMediaViewProvider;
 import org.zkoss.zk.ui.Component;
 
 /**
- *
+ * Entry point to get implementation instance for UI extensions (through OSGI service or Equinox extension).
  * @author viola
  * @author hengsin
  *
@@ -372,8 +372,8 @@ public class Extensions {
 	}
 	
 	/**
-	 * @param  tabType
-	 * @return         {@link IADTabpanel}
+	 * @param  tabType build in - FORM or SORT, custom - through IADTabPanelFactory extension
+	 * @return {@link IADTabpanel}
 	 */
 	public static IADTabpanel getADTabPanel(String tabType)
 	{

@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.adempiere.util.ContextRunnable;
 import org.adempiere.util.ServerContext;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.adempiere.webui.util.ZkContextRunnable;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
 import org.zkoss.util.Locales;
@@ -139,7 +139,7 @@ public class DashboardRunnable implements Runnable, Serializable
 	    		BusyDialog busyDialog = new BusyDialog();
                 busyDialog.setShadow(false);                
                 dpanel.getParent().insertBefore(busyDialog, dpanel.getParent().getFirstChild());
-	    		ContextRunnable cr = new ContextRunnable() {
+	    		ZkContextRunnable cr = new ZkContextRunnable() {
 	    			@Override
 					protected void doRun() {
 	    				dpanel.refresh(template);

@@ -37,9 +37,11 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.model.GridField;
 import org.compiere.model.I_C_ElementValue;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MReference;
 import org.compiere.model.MTable;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -96,13 +98,14 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean multipleSelection, String whereClause)
 	{
-		this(queryValue, windowNo, tableName, keyColumn, multipleSelection, whereClause, true);
+		this(queryValue, windowNo, tableName, keyColumn, multipleSelection, whereClause, true, null);
 	}
 
-	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean multipleSelection, String whereClause, boolean lookup)
+	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean multipleSelection, String whereClause, boolean lookup, GridField field)
 	{
 		super(windowNo, tableName, keyColumn, multipleSelection, whereClause, lookup, 0, queryValue);
 
+		setGridfield(field);
 		setTitle(Msg.getMsg(Env.getCtx(), "Info"));
 
 		try
@@ -314,11 +317,20 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			return false;
 
 		//  Prepare table
+		StringBuilder where = new StringBuilder();
+		if(m_gridfield != null) {
+			MReference ref = m_gridfield.getAD_Reference_Value_ID() > 0 ? MReference.get(Env.getCtx(), m_gridfield.getAD_Reference_Value_ID()) : null;
+			if(ref == null || !ref.isShowInactiveRecords()) {
+			
+				where = new StringBuilder(p_tableName).append(".").append("IsActive='Y'");
+			}
+		}
 
-		StringBuilder where = new StringBuilder(p_tableName).append(".").append("IsActive='Y'");
-
-		if (p_whereClause.length() > 0)
-			where.append(" AND (").append(p_whereClause).append(")");
+		if (p_whereClause.length() > 0) {
+			if(where.length() > 0)
+				where.append(" AND ");
+			where.append(" (").append(p_whereClause).append(")");
+		}
 		prepareTable(m_generalLayout, p_tableName, where.toString(), "2");
 		contentPanel.repaint();
 		
@@ -671,7 +683,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		MColumn column = table.getColumn(columnName);
 		String baseColumn = column.isVirtualColumn() ? columnSql : columnName;
 
-		String embedded = AD_Reference_Value_ID > 0 ? MLookupFactory.getLookup_TableEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, AD_Reference_Value_ID)
+		String embedded = AD_Reference_Value_ID > 0 ? MLookupFactory.getLookup_TableEmbed(Env.getLanguage(Env.getCtx()), baseColumn, p_tableName, AD_Reference_Value_ID)
 				: MLookupFactory.getLookup_TableDirEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, baseColumn);
 		embedded = "(" + embedded + ")";
 	

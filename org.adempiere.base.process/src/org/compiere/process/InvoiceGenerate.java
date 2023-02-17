@@ -41,6 +41,7 @@ import org.compiere.model.MLocation;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MOrderPaySchedule;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.PO;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -124,7 +125,7 @@ public class InvoiceGenerate extends SvrProcess
 			else if (name.equals("MinimumAmt"))
 				p_MinimumAmt = para[i].getParameterAsBigDecimal();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 
 		//	Login Date

@@ -67,7 +67,7 @@ public class BOMVerify extends SvrProcess
 			else if (name.equals("IsReValidate"))
 				p_IsReValidate = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if ( p_M_Product_ID == 0 )
 			p_M_Product_ID = getRecord_ID();

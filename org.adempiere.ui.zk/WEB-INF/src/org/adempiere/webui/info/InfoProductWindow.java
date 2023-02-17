@@ -53,6 +53,7 @@ import org.adempiere.webui.panel.InvoiceHistory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
+import org.compiere.model.GridField;
 import org.compiere.model.MDocType;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -146,13 +147,31 @@ public class InfoProductWindow extends InfoWindow {
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
+	 * @param field
+	 */
+	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
+			String queryValue, boolean multipleSelection, String whereClause,
+			int AD_InfoWindow_ID, boolean lookup, GridField field) {
+		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
+				whereClause, AD_InfoWindow_ID, lookup, field);
+	}
+	
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
+	 * @param whereClause
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
 	 * @param predefinedContextVariables
 	 */
 	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
-			int AD_InfoWindow_ID, boolean lookup, String predefinedContextVariables) {
+			int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
-				whereClause, AD_InfoWindow_ID, lookup, null, predefinedContextVariables);
+				whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
 	}
 
 	@Override

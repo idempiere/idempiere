@@ -23,6 +23,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MColumn;
 import org.compiere.model.MIndexColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.MTableIndex;
 import org.compiere.util.DB;
@@ -56,7 +57,7 @@ public class CreateTableIndex extends SvrProcess {
 			else if (name.equals("AD_Table_ID"))
 				p_AD_Table_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}
 

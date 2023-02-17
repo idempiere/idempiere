@@ -349,10 +349,11 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         this.setMaximizable(false);
         
         this.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "findWindow");
-        this.setId("findWindow_"+targetWindowNo);
+        this.setId("findWindow_"+targetWindowNo+"_"+targetTabNo);
         LayoutUtils.addSclass("find-window", this);
         
         addEventListener(Events.ON_CANCEL, e -> onCancel());
+        setFireWindowCloseEventOnDetach(false);
     }
     
     public boolean initialize() 
@@ -388,6 +389,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	if ((title == null && m_title != null) || (title != null && m_title == null) || !(title.equals(m_title))) return false;
     	if (AD_Table_ID != m_AD_Table_ID) return false;
     	if ((tableName == null && m_tableName != null) || (tableName != null && m_tableName == null) || !(tableName.equals(m_tableName))) return false;
+    	if (whereExtended.contains("@"))
+    		whereExtended = Env.parseContext(Env.getCtx(), targetWindowNo, whereExtended, false);
+    	if (m_whereExtended.contains("@"))
+    		m_whereExtended = Env.parseContext(Env.getCtx(), targetWindowNo, whereExtended, false);
     	if ((whereExtended == null && m_whereExtended != null) || (whereExtended != null && m_whereExtended == null) || !(whereExtended.equals(m_whereExtended))) return false;
     	if (adTabId != m_AD_Tab_ID) return false;
     	if ((findFields == null && m_findFields != null) || (findFields != null && m_findFields == null) || (findFields.length != m_findFields.length)) return false;
@@ -2940,6 +2945,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	}
     }
     
+    /**
+     * hide window and fire {@link DialogEvents#ON_WINDOW_CLOSE} event
+     */
     public void dispose()
     {
         //  Find SQL
