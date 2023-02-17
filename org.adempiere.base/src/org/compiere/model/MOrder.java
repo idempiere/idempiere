@@ -27,7 +27,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 
 import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
@@ -80,7 +79,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7784588474522162502L;
+	private static final long serialVersionUID = 1298245367836653594L;
 
 	/**
 	 * 	Create new Order by copying
@@ -548,11 +547,13 @@ public class MOrder extends X_C_Order implements DocAction
 			line.setQtyInvoiced(Env.ZERO);
 			line.setQtyReserved(Env.ZERO);
 			line.setQtyLostSales(Env.ZERO);
+			line.setQty(fromLines[i].getQtyEntered());
 			line.setDateDelivered(null);
 			line.setDateInvoiced(null);
-			//
 			line.setOrder(this);
 			line.set_ValueNoCheck ("C_OrderLine_ID", I_ZERO);	//	new
+			if (!counter && MOrder.STATUS_Closed.equals(otherOrder.getDocStatus()))
+				line.setDescription(line.getDescriptionStrippingCloseTag());
 			//	References
 			if (!copyASI)
 			{
@@ -2681,17 +2682,7 @@ public class MOrder extends X_C_Order implements DocAction
 				line.setQtyLostSales(Env.ZERO);
 				//	QtyEntered unchanged
 				
-				// Strip Close() tags from description
-				String desc = line.getDescription();
-				if (desc == null)
-					desc = "";
-				Pattern pattern = Pattern.compile("( \\| )?Close \\(.*\\)");
-				String[] parts = pattern.split(desc);
-				desc = "";
-				for (String s : parts) {
-					desc = desc.concat(s);
-				}
-				line.setDescription(desc);
+				line.setDescription(line.getDescriptionStrippingCloseTag());
 				if (!line.save(get_TrxName()))
 					return "Couldn't save orderline";
 			}
