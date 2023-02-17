@@ -4,6 +4,14 @@ SELECT register_migration_script('202302161520_IDEMPIERE-5582.sql') FROM dual;
 SET SQLBLANKLINES ON
 SET DEFINE OFF
 
--- That UPDATE removes all Default Values from Vitual Columns.
-UPDATE AD_Column SET DefaultValue = NULL
-WHERE ColumnSQL IS NOT NULL AND DefaultValue IS NOT NULL
+-- Feb 17, 2023, 5:20:47 PM BRT
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_TIMESTAMP('2023-02-17 17:20:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=14395
+;
+
+-- Feb 17, 2023, 5:24:39 PM BRT
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_TIMESTAMP('2023-02-17 17:24:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=13481
+;
+
+-- Feb 17, 2023, 5:25:34 PM BRT
+UPDATE AD_Column SET DefaultValue=NULL,Updated=TO_TIMESTAMP('2023-02-17 17:25:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=14335
+;
