@@ -34,6 +34,8 @@ import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.panel.InfoPaymentPanel;
 import org.adempiere.webui.panel.InfoProductPanel;
 import org.compiere.model.GridField;
+import org.compiere.model.I_C_Order;
+import org.compiere.model.I_M_InOut;
 import org.compiere.model.Lookup;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInfoWindow;
@@ -169,10 +171,25 @@ public class DefaultInfoFactory implements IInfoFactory {
 		}
 		else if (col.equals("C_BPartner_ID"))
 		{
-			InfoWindow infoWindow = new InfoBPartnerWindow(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID, true, field);
-			if (infoWindow.loadedOK())
-				return infoWindow;
-			
+			String originalIsSOTrx = null;
+			try {
+				if (   field != null
+					&& I_C_Order.COLUMNNAME_DropShip_BPartner_ID.equals(field.getColumnName())
+					&& field.getGridTab() != null
+					&& (   field.getGridTab().getTableName().equals(I_C_Order.Table_Name)
+					    || field.getGridTab().getTableName().equals(I_M_InOut.Table_Name))) {
+					originalIsSOTrx = Env.getContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx");
+					String tempIsSOTrx = ("Y".equals(originalIsSOTrx) ? "N" : "Y");
+					Env.setContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx", tempIsSOTrx);
+				}
+				InfoWindow infoWindow = new InfoBPartnerWindow(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID, true, field);
+				if (infoWindow.loadedOK())
+					return infoWindow;
+			} finally {
+				if (originalIsSOTrx != null)
+					Env.setContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx", originalIsSOTrx);
+			}
+
 			boolean isSOTrx = true;     //  default
 
 			if (Env.getContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx").equals("N"))
