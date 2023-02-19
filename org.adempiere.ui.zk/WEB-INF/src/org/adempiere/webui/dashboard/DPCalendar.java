@@ -597,4 +597,9 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 			trx.removeTrxEventListener(this);
 		}		
 	}
+
+	@Override
+	public boolean isLazy() {
+		return true;
+	}
 }

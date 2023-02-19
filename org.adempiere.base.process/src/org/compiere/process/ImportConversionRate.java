@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.compiere.model.MConversionRate;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_I_Conversion_Rate;
 import org.compiere.util.DB;
 
@@ -73,7 +74,7 @@ public class ImportConversionRate extends SvrProcess
 			else if (name.equals("DeleteOldImported"))
 				p_DeleteOldImported = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

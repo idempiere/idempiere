@@ -37,10 +37,10 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
 
 import org.adempiere.model.GenericPO;
 import org.compiere.model.MHouseKeeping;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -67,7 +67,7 @@ public class HouseKeeping extends SvrProcess{
 			else if (name.equals("AD_HouseKeeping_ID"))
 				p_AD_HouseKeeping_ID = parameter[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), parameter[i]);
 		}
 		if (p_AD_HouseKeeping_ID == 0)
 			p_AD_HouseKeeping_ID = getRecord_ID();		

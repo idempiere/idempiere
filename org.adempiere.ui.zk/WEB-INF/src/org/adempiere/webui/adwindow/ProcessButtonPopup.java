@@ -1,6 +1,27 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - hengsin                         								   *
+ **********************************************************************/
 package org.adempiere.webui.adwindow;
 
 import java.util.List;
@@ -25,13 +46,16 @@ import org.zkoss.zul.Menuseparator;
 
 /**
  * @author hengsin
- *
  */
 public class ProcessButtonPopup extends Menupopup implements EventListener<Event> {
 	
-	private static final String DOCUMENT_ACTION_MENUITEM_ATTRIBUTE = "document-action-menuitem";
+	/** sclass for document action menu items **/
+	private static final String DOCUMENT_ACTION_MENUITEM_SCLASS = "document-action-menuitem";
+	/** Menupopup attribute to store reference to WDocActionPanel **/
 	private static final String DOC_ACTION_PANEL_ATTRIBUTE = "doc-action-panel";
+	/** Menupopup/Menuitem attribute to store reference to Button **/
 	private static final String BUTTON_ATTRIBUTE = "button";
+	/** Button yes/no attribute (Y/N) to store whether button is pressed **/
 	public static final String BUTTON_ATTRIBUTE_PRESSED = "buttonPressed";
 
 	/**
@@ -39,6 +63,11 @@ public class ProcessButtonPopup extends Menupopup implements EventListener<Event
 	 */
 	private static final long serialVersionUID = 304878472233552113L;
 
+	/**
+	 * Render buttons as menu items.
+	 * Special treatment for DocAction - render each available document action as a sub menu item.
+	 * @param buttons
+	 */
 	public void render(List<Button> buttons) {
 		this.setSclass("z-menu-noimage");
 		
@@ -88,7 +117,7 @@ public class ProcessButtonPopup extends Menupopup implements EventListener<Event
 				for(Listitem action : actions) {
 					Menuitem mi = new Menuitem(action.getLabel());
 					mi.setValue((String)action.getValue());
-					mi.setSclass(DOCUMENT_ACTION_MENUITEM_ATTRIBUTE);
+					mi.setSclass(DOCUMENT_ACTION_MENUITEM_SCLASS);
 					mi.addEventListener(Events.ON_CLICK, this);
 					popup.appendChild(mi);
 				}
@@ -99,7 +128,7 @@ public class ProcessButtonPopup extends Menupopup implements EventListener<Event
 	@Override
 	public void onEvent(Event event) throws Exception {
 		Menuitem mi = (Menuitem) event.getTarget();
-		if (DOCUMENT_ACTION_MENUITEM_ATTRIBUTE.equals(mi.getSclass())) {
+		if (DOCUMENT_ACTION_MENUITEM_SCLASS.equals(mi.getSclass())) {
 			final Button button = (Button) mi.getParent().getAttribute(BUTTON_ATTRIBUTE);
 			WDocActionPanel panel = (WDocActionPanel) mi.getParent().getAttribute(DOC_ACTION_PANEL_ATTRIBUTE);
 			panel.setSelectedItem(mi.getValue());

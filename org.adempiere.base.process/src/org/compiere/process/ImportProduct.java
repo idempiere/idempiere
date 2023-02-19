@@ -27,6 +27,7 @@ import org.adempiere.model.ImportValidator;
 import org.adempiere.process.ImportProcess;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductPO;
 import org.compiere.model.MProductPrice;
@@ -74,7 +75,7 @@ public class ImportProduct extends SvrProcess implements ImportProcess
 			else if (name.equals("M_PriceList_Version_ID"))
 				p_M_PriceList_Version_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if (m_DateValue == null)
 			m_DateValue = new Timestamp (System.currentTimeMillis());

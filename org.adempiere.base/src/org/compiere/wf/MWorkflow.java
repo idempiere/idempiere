@@ -89,7 +89,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	 */
 	public static MWorkflow get (Properties ctx, int AD_Workflow_ID)
 	{
-		String key = Env.getAD_Language(ctx) + "_" + AD_Workflow_ID;
+		String key = Env.getAD_Language(ctx) + "_" + Env.getAD_Client_ID(ctx) + "_" + AD_Workflow_ID;
 		MWorkflow retValue = s_cache.get(ctx, key, e -> new MWorkflow(ctx, e));
 		if (retValue != null)
 			return retValue;

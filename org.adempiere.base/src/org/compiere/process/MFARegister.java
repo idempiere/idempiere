@@ -33,6 +33,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.IMFAMechanism;
 import org.compiere.model.MMFAMethod;
 import org.compiere.model.MMFARegistration;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.Msg;
 
@@ -59,8 +60,7 @@ public class MFARegister extends SvrProcess {
 			case "MFA_Method_ID": p_MFA_Method_ID = para.getParameterAsInt(); break;
 			case "ParameterValue": p_ParameterValue = para.getParameterAsString(); break;
 			default:
-				if (log.isLoggable(Level.INFO))
-					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 				break;
 			}
 		}

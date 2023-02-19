@@ -68,12 +68,12 @@ import org.zkoss.zul.Vlayout;
 public class ValuePreference extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7594680475358417813L;
 
 	/**
-	 *  Factory
+	 *  Show value preference dialog
 	 *  @param ref
 	 *  @param mField	field
 	 *  @param aValue	value
@@ -89,7 +89,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	}   //  start
 
 	/**
-	 *  Factory
+	 *  Show value preference dialog
 	 *  @param ref
 	 *  @param mField	field
 	 *  @param aValue	value
@@ -127,7 +127,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		int AD_Org_ID = Env.getContextAsInt(Env.getCtx(), WindowNo, "AD_Org_ID");
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
 		
-		//  Create Editor
+		//  Create and show value preference dialog 
 		@SuppressWarnings("unused")
 		ValuePreference vp = new ValuePreference (WindowNo,
 			AD_Client_ID, AD_Org_ID, AD_User_ID, AD_Window_ID, mField.getAD_Process_ID_Of_Panel(), mField.getAD_InfoWindow_ID_of_Panel(),
@@ -135,42 +135,8 @@ public class ValuePreference extends Window implements EventListener<Event>
 			displayType, AD_Reference_ID, ref);
 	}   //  create
 
-	/**
-	 *  Create the popup menu item to start the ValuePreference editor.
-	 *  <code>
-	 *  .. add method
-	 *  public void setField (MField mField)
-	 *  {
-	 *      m_mField = mField;
-	 *      if (m_mField != null)
-	 *          ValuePreference.addMenu (this, m_popupMenu);
-	 *	}   //  setField
-	 *
-	 *  .. in actionPerformed add ..
-	 *  if (e.getActionCommand().equals(ValuePreference.NAME))
-	 *  {
-	 *      ValuePreference.start (m_mField, getValue(), DisplayValue);
-	 *      return;
-	 *  }
-	 *  </code>
-	 *  @param l listener
-	 *  @param popupMenu menu
-	 *  @return JMenuItem
-	 */
-	/*
-	public static CMenuItem addMenu (ActionListener l, JPopupMenu popupMenu)
-	{
-		CMenuItem mi = new CMenuItem (Msg.getMsg(Env.getCtx(), NAME), s_icon);
-		mi.setActionCommand(NAME);
-		mi.addActionListener(l);
-		popupMenu.add(mi);
-		return mi;
-	}*/   //  addMenu
-
-	/** The Name of the Editor      */
+	/** The Name of the Dialog      */
 	public static final String      NAME = "ValuePreference";
-	/** The Menu Icon               */
-	//private static String ICON_URL = "images/VPreference16.png";
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(ValuePreference.class);
 	private AbstractADWindowContent adwindowContent;
@@ -189,7 +155,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	 *  @param DisplayValue value display
 	 *  @param displayType display type
 	 *  @param AD_Reference_ID reference
-	 * @param ref 
+	 *  @param ref 
 	 */
 	public ValuePreference (int WindowNo,
 		int AD_Client_ID, int AD_Org_ID, int AD_User_ID, int AD_Window_ID, int AD_Process_ID_Of_Panel, int AD_Infowindow_ID,
@@ -439,7 +405,6 @@ public class ValuePreference extends Window implements EventListener<Event>
 		//  ActionListener
 		cbClient.setEnabled(false);
 		cbClient.setChecked(true);
-	//	cbClient.addActionListener(this);
 		
 		//	Can Change Org
 		if (MRole.PREFERENCETYPE_Client.equals(m_role.getPreferenceType()))
@@ -498,7 +463,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		}
 		else
 			setExplanation();
-	}   //  actionPerformed
+	}
 
 	private void onCancel() {
 		this.detach();
@@ -557,8 +522,6 @@ public class ValuePreference extends Window implements EventListener<Event>
 	 */
 	public int delete()
 	{
-		log.info("");
-
 		StringBuilder sql = new StringBuilder ("DELETE FROM AD_Preference WHERE ");
 		sql.append("AD_Client_ID=").append(cbClient.isChecked() ? m_AD_Client_ID : 0);
 		sql.append(" AND AD_Org_ID=").append(cbOrg.isChecked() ? m_AD_Org_ID : 0);
@@ -654,12 +617,10 @@ public class ValuePreference extends Window implements EventListener<Event>
 	}   //  getContextKey
 
 	/**
-	 *  Save to Disk
+	 *  Save to DB
 	 */
 	public void insert()
 	{
-		log.info("");
-
 		//  --- Delete first
 		int no = delete();
 		

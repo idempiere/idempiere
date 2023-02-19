@@ -171,6 +171,9 @@ public class ProcessInfo implements Serializable
 
 	private int m_AD_Scheduler_ID = 0;
 	
+	/** For scheduler: true to notify scheduler recipients with process execution result using AD_Scheduler.R_MailTexT_ID mail template (if define). Default is true. **/
+	private boolean isNotifyRecipients = true;
+	
 	public int getLanguageID() {
 		return languageID;
 	}
@@ -994,4 +997,17 @@ public class ProcessInfo implements Serializable
 		this.m_AD_Scheduler_ID = AD_Scheduler_ID;
 	}
 	
+	/**
+	 * @return true if scheduler should notify scheduler recipients with process execution result
+	 */
+	public boolean isNotifyRecipients() {
+		return isNotifyRecipients;
+	}
+
+	/**
+	 * @param isNotifyRecipients if true, scheduler should notify scheduler recipients with process execution result
+	 */
+	public void setNotifyRecipients(boolean isNotifyRecipients) {
+		this.isNotifyRecipients = isNotifyRecipients;
+	}
 }   //  ProcessInfo

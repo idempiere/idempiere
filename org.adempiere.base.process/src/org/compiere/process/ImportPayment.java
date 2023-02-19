@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MBankAccount;
 import org.compiere.model.MPayment;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_I_Payment;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
@@ -71,7 +72,7 @@ public class ImportPayment extends SvrProcess
 			else if (name.equals("DocAction"))
 				m_docAction = (String)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		m_ctx = Env.getCtx();
 	}	//	prepare

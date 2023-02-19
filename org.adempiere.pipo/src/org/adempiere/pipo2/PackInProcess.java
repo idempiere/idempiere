@@ -23,6 +23,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -63,7 +64,8 @@ public class PackInProcess extends SvrProcess {
 					packageName = param.getParameter().toString();
 				} else if ("Version".equals(param.getParameterName())) {
 					packageVersion = param.getParameter().toString();
-				}
+				} else
+					MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), param);
 			}
 		}
 	} // prepare

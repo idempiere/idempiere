@@ -98,8 +98,6 @@ public final class MLookup extends Lookup implements Serializable
 	public static final String  INACTIVE_S = "~";
 	/** Inactive Marker End         */
 	public static final String  INACTIVE_E = "~";
-	/** Number of max rows to load	*/
-	private static final int	MAX_ROWS = 5000;
 	/**	Indicator for Null			*/
 	private static Integer 		MINUS_ONE = Integer.valueOf(-1);
 
@@ -593,9 +591,13 @@ public final class MLookup extends Lookup implements Serializable
 					directValue = p;
 					vnpCache.put(p.getValue(), p);
 				}
-				if (rs.next())
-					log.log(Level.SEVERE, m_info.KeyColumn + ": Not unique (first returned) for "
-						+ key + " SQL=" + m_info.QueryDirect);
+				if (rs.next()) {
+					Level level = Level.SEVERE;
+					if (MChangeLog.Table_Name.equals(m_info.TableName))
+						level = Level.INFO;
+					if (log.isLoggable(level))
+						log.log(level, m_info.KeyColumn + ": Not unique (first returned) for " + key + " SQL=" + m_info.QueryDirect);
+				}
 			}
 			else
 			{
@@ -842,7 +844,9 @@ public final class MLookup extends Lookup implements Serializable
 		{
 			//force refresh
 			m_lookup.clear();
-			fillComboBox(isMandatory(), true, true, false, isShortList()); // idempiere 90		
+			MReference ref = m_info.AD_Reference_Value_ID > 0 ? MReference.get(Env.getCtx(),m_info.AD_Reference_Value_ID) : null;
+			boolean onlyActive = ref == null || !ref.isShowInactiveRecords();
+			fillComboBox(isMandatory(), true, onlyActive, false, isShortList()); // idempiere 90		
 			return m_lookup.size();
 		}
 		finally
@@ -993,6 +997,12 @@ public final class MLookup extends Lookup implements Serializable
 		 */
 		protected void doRun()
 		{
+			/** Number of max rows to load	*/
+			int	MAX_ROWS = MSysConfig.getIntValue(MSysConfig.MAX_ROWS_IN_TABLE_COMBOLIST, 10000, Env.getAD_Client_ID(Env.getCtx()));
+			if (MAX_ROWS > 50000) {
+				log.warning("SysConfig MAX_ROWS_IN_TABLE_COMBOLIST set back to maximum allowed value of 50.000");
+				MAX_ROWS = 50000;  // impose hardcoded limit of 50.000
+			}
 			long startTime = System.currentTimeMillis();
 			StringBuilder sql = new StringBuilder().append(m_info.Query);
 

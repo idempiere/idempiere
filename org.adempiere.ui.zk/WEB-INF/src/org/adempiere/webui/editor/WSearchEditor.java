@@ -922,6 +922,12 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 				}
 			}
 		}
+
+		@Override
+		public void onPageDetached(Page page) {
+			setWidgetListener("onChange", null);
+			super.onPageDetached(page);
+		}
 		
 	}	
 }

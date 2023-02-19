@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.model.MClient;
 import org.compiere.model.MInterestArea;
 import org.compiere.model.MMailText;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
 import org.compiere.util.DB;
@@ -87,7 +88,7 @@ public class SendMailText extends SvrProcess
 			else if (name.equals("AD_User_ID"))
 				m_AD_User_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

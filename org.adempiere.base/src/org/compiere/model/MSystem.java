@@ -76,7 +76,12 @@ public class MSystem extends X_AD_System
 		//
 		if (!Ini.isClient() && system.setInfo())
 		{
-			system.saveEx();
+			try {
+				PO.setCrossTenantSafe();
+				system.saveEx();
+			} finally {
+				PO.clearCrossTenantSafe();
+			}
 		}
 		s_system.put(0, new MSystem(Env.getCtx(), system));
 		return system;

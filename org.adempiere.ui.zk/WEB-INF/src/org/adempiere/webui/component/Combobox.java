@@ -23,6 +23,7 @@ import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.IdSpace;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
@@ -172,15 +173,6 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
     	return item.getValue().equals(value);
     }
     
-    //TODO: Find zk6 replacement
-    /** Returns RS_NO_WIDTH|RS_NO_HEIGHT.
-	 */
-    /*
-	protected int getRealStyleFlags() {
-		return super.getRealStyleFlags() & 0x0006;
-	}
-	*/
-    
     //http://jira.idempiere.com/browse/IDEMPIERE-443
     //undocumented api hack to ensure onSelect always fire for mouse selection
     public void clearLastSel() {
@@ -196,4 +188,10 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
     	String script = "(function(me){let id='#'+me.uuid+'-pp .z-comboitem-selected';let selected=zk($(id));if(selected.jq.length==1)selected.scrollIntoView();})(this)";
         setWidgetListener("onKeyUp", script);
     }
+
+	@Override
+	public void onPageDetached(Page page) {
+		setWidgetListener("onKeyUp", null);
+		super.onPageDetached(page);
+	}        
 }

@@ -3,6 +3,7 @@ package org.adempiere.process;
 import java.math.BigDecimal;
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_M_ShipperCfg;
 import org.compiere.model.X_M_ShipperLabelsCfg;
 import org.compiere.model.X_M_ShipperPackagingCfg;
@@ -27,7 +28,7 @@ public class ShipperCopyFrom extends SvrProcess
 			else if (name.equals(X_M_ShipperCfg.COLUMNNAME_M_ShipperCfg_ID))
 				p_M_ShipperCfg_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}
 

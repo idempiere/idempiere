@@ -67,7 +67,7 @@ public class DefaultWebAppInit implements WebAppInit {
 	}	
 	
 	/**
-	 * Process modle event of table system config
+	 * Process model event of table system config
 	 * @author hieplq
 	 *
 	 */

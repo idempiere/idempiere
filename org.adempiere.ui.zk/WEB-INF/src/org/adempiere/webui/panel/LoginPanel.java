@@ -31,6 +31,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.util.LogAuthFailure;
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -76,6 +77,7 @@ import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
@@ -83,6 +85,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.sys.ComponentCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Checkbox;
@@ -346,6 +349,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         pnlButtons.addActionListener(this);
         Button okBtn = pnlButtons.getButton(ConfirmPanel.A_OK);
         okBtn.setWidgetListener("onClick", "zAu.cmd0.showBusy(null)");
+        okBtn.addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, t -> ((AbstractComponent)t).setWidgetListener("onClick", null));
 
         Button helpButton = pnlButtons.createButton(ConfirmPanel.A_HELP);
 		helpButton.addEventListener(Events.ON_CLICK, this);
@@ -490,7 +494,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 		}
 		catch (Exception e) {
 			String message = e.getMessage();
-			Dialog.warn(0, "URLnotValid", message);
+			Dialog.warn(0, "URLnotValid", message, null);
 		}
 	}
 
@@ -657,7 +661,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 		// [ adempiere-ZK Web Client-2832968 ] User context lost?
 		// https://sourceforge.net/p/adempiere/zk-web-client/303/
 		// it's harmless, if there is no bug then this must never fail        
-        currSess.setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
+        currSess.setAttribute(AdempiereWebUI.CHECK_AD_USER_ID_ATTR, Env.getAD_User_ID(ctx));
 		// End of temporary code for [ adempiere-ZK Web Client-2832968 ] User context lost?
 
         /* Check DB version */
