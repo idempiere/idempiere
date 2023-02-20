@@ -19,6 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
@@ -217,7 +218,32 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 			if (getIsToolbarButton() != null)
 				setIsToolbarButton(null);
 		}
-
+		
+		// set Table field read only if appears in combination with Record ID (Display Type Record ID)
+		MTab parent = MTab.get(getAD_Tab_ID());
+		if(getAD_Column().getColumnName().equalsIgnoreCase("AD_Table_ID")) {
+			for(MField field : parent.getFields(false, get_TrxName())) {
+				if(field.getAD_Column().getColumnName().equalsIgnoreCase("Record_ID")) {
+					if(field.getAD_Column().getAD_Reference_ID() == DisplayType.RecordID && !this.isReadOnly()) {
+						this.setIsReadOnly(true);
+					}
+					break;
+				}
+			}
+		}
+		if(getAD_Column().getColumnName().equalsIgnoreCase("Record_ID")) {
+			for(MField field : parent.getFields(false, get_TrxName())) {
+				if(field.getAD_Column().getColumnName().equalsIgnoreCase("AD_Table_ID")) {
+					if(this.getAD_Column().getAD_Reference_ID() == DisplayType.RecordID && !field.isReadOnly()) {
+						field.setIsReadOnly(true);
+						field.saveEx();
+					}
+					break;
+				}
+			}
+		}
+		//
+		
 		//validate logic expression
 		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
 			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith("@SQL=")) {
