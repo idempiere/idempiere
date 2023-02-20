@@ -181,9 +181,11 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 			if (event.getTarget().equals(tableIDEditor.getComponent())) {
 				// the Record_ID should be cleared when a different AD_Table_ID is selected
 				recordsEditor.getComponent().detach();
-				int tableID = Integer.parseInt(Objects.toString(tableIDEditor.getValue(), ""));
-		    	recordsEditor = new WSearchEditor("Record_ID", false, false, true, editor.getRecordsLookup(tableID));
-				fieldsDiv.appendChild(recordsEditor.getComponent());
+				int tableID = Integer.parseInt(Objects.toString(tableIDEditor.getValue(), "-1"));
+				if(tableID > 0) {
+			    	recordsEditor = new WSearchEditor("Record_ID", false, false, true, editor.getRecordsLookup(tableID));
+					fieldsDiv.appendChild(recordsEditor.getComponent());
+				}
 			}
 		}
 	}

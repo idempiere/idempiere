@@ -206,7 +206,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 				tableID = tableIDGridField.getValue();
 			}
 			int tableID = Integer.parseInt(String.valueOf(this.tableID));
-			int recordID = Integer.parseInt(Objects.toString(evt.getNewValue(), ""));
+			int recordID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
 			MTable table = MTable.get(Env.getCtx(), tableID);
 			
 			table.getPO(recordID, null);	// calls po.checkCrossTenant() method
