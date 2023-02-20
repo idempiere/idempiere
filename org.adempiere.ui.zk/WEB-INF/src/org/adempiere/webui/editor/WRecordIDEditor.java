@@ -26,6 +26,7 @@
 package org.adempiere.webui.editor;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Objects;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.GridRowCtx;
@@ -64,7 +65,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	/** Is Read/Write enabled on the editor */
 	private boolean m_ReadWrite;
 	/** Old value (Record_ID) */
-	private Object oldValue;
+	private Object recordID;
 	/** Old value (AD_Table_ID) */
 	private Object tableID;
 	
@@ -108,7 +109,6 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 		if(tableIDGridField == null) {
 			throw new RuntimeException("AD_Table_ID field not found");
 		}
-		tableID = tableIDGridField.getValue();
 		
 		recordTextBox = new Textbox();
 		recordTextBox.setParent(getComponent());
@@ -152,11 +152,14 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 		Integer tableID = Integer.parseInt(s != "null" ? s : "0");
 		s = String.valueOf(gridTab.getValue("Record_ID"));
 		Integer recordID = Integer.parseInt(s != "null" ? s : "0");
-		if(tableID <= 0 || recordID <= 0)
+		if(tableID <= 0 || recordID < 0)
 			return;
 		if (!MRole.getDefault().isTableAccess(tableID, false))
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccessTableNoView"));
+		MTable table = MTable.get(Env.getCtx(), tableID);
 
+		table.getPO(recordID, null);	// calls po.checkCrossTenant() method
+		
 		AEnv.zoom(tableID, recordID);
 	}
 
@@ -165,7 +168,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	{
 		if (WEditorPopupMenu.REQUERY_EVENT.equals(evt.getContextEvent()))
 		{
-			actionRefresh(oldValue);
+			actionRefresh(recordID);
 		}
 		else if (WEditorPopupMenu.ZOOM_EVENT.equals(evt.getContextEvent()))
 		{
@@ -199,6 +202,15 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	{
 		if (GridField.PROPERTY.equals(evt.getPropertyName()))
 		{
+			if(tableID != tableIDGridField.getValue()) {
+				tableID = tableIDGridField.getValue();
+			}
+			int tableID = Integer.parseInt(String.valueOf(this.tableID));
+			int recordID = Integer.parseInt(Objects.toString(evt.getNewValue(), ""));
+			MTable table = MTable.get(Env.getCtx(), tableID);
+			
+			table.getPO(recordID, null);	// calls po.checkCrossTenant() method
+			
 			setValue(evt.getNewValue(), false);
 		}
 	}
@@ -217,7 +229,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	private void setValue (Object value, boolean fire) {
 		if (value == null || value.toString().trim().length() == 0)
 		{
-			oldValue = null;
+			recordID = null;
 			value = null;
 			recordTextBox.setValue("");
 		}
@@ -228,23 +240,23 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			if(value != null && tableID != null) {
 				int recordID = Integer.parseInt(String.valueOf(value));
 				int tableID = Integer.parseInt(String.valueOf(this.tableID));
-				if(recordID > 0 && tableID > 0)
+				if(recordID >= 0 && tableID > 0)
 					recordTextBox.setValue(getIdentifier(tableID, recordID));
 			}
 		}
 
 		if (fire) {
 			// Record_ID
-			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), oldValue, value);
+			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), recordID, value);
 			super.fireValueChange(changeEvent);
 		}
-		oldValue = value;
+		recordID = value;
 
 	}
 
 	@Override
 	public Object getValue() {
-		return oldValue;
+		return recordID;
 	}
 
 	@Override

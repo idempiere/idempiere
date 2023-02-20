@@ -24,6 +24,8 @@
 **********************************************************************/
 package org.adempiere.webui.window;
 
+import java.util.Objects;
+
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Textbox;
@@ -179,7 +181,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 			if (event.getTarget().equals(tableIDEditor.getComponent())) {
 				// the Record_ID should be cleared when a different AD_Table_ID is selected
 				recordsEditor.getComponent().detach();
-				int tableID = Integer.parseInt(String.valueOf(tableIDEditor.getValue()));
+				int tableID = Integer.parseInt(Objects.toString(tableIDEditor.getValue(), ""));
 		    	recordsEditor = new WSearchEditor("Record_ID", false, false, true, editor.getRecordsLookup(tableID));
 				fieldsDiv.appendChild(recordsEditor.getComponent());
 			}
