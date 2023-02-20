@@ -98,7 +98,7 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 
 	@Override
 	public void valueChange(ValueChangeEvent evt) {
-		textbox.setValue(evt.getNewValue() != null ? popup.getDisplayValue() : "");
+		textbox.setValue(evt.getNewValue() != null ? evt.getNewValue().toString() : "");
 	}
 
 	/**
@@ -113,8 +113,8 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 	}
 
 	private boolean isMandatoryStyle() {
-		return editor.isMandatory() && editor.isReadWrite() && editor.getGridField().isEditable(true) && isNullOrEmpty(editor)
-				|| editor2.isMandatory() && editor2.isReadWrite() && editor2.getGridField().isEditable(true) && isNullOrEmpty(editor2);
+		return (editor.isMandatory() && editor.isReadWrite() && editor.getGridField().isEditable(true) && isNullOrEmpty(editor))
+				|| (editor2.isMandatory() && editor2.isReadWrite() && editor2.getGridField().isEditable(true) && isNullOrEmpty(editor2));
 	}
 
 	private boolean isNullOrEmpty(WEditor editor) {
