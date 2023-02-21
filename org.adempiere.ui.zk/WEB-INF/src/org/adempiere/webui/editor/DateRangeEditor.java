@@ -27,6 +27,7 @@ package org.adempiere.webui.editor;
 import java.util.Objects;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.ZkCssHelper;
@@ -35,18 +36,21 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.window.DateRangePicker;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 
 /**
-*
-* @author Peter Takacs, Cloudempiere
-*
-*/
+ * Composite component of a read only Textbox and ToolbarButton.<br/>
+ * ToolbarButton open {@link DateRangePicker} to edit the value of from and to editor. Result is then shown in
+ * the read only Textbox.
+ * @author Peter Takacs, Cloudempiere
+ *
+ */
 public class DateRangeEditor extends Div implements ValueChangeListener {
 
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3329360781729704243L;
 
@@ -57,6 +61,7 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 	private DateRangePicker popup;
 	private WEditor editor;
 	private WEditor editor2;
+	private Label dateRangeText;
 
 	/**
 	 * Constructor
@@ -70,6 +75,10 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 		init();
 	}
 
+	/**
+	 * Layout UI.
+	 * Horizontal layout of Textbox and ToolBarButton.
+	 */
 	private void init() {
 
 		this.setWidth("100%");
@@ -94,11 +103,30 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 			LayoutUtils.autoDetachOnClose(popup);
 		});
 		popup.addValueChangeListener(this);
+
+		dateRangeText = new Label();
+		this.appendChild(dateRangeText);
+		dateRangeText.setStyle("font-size: x-small;font-weight: normal;position: absolute;display: block;");
+		dateRangeText.setVisible(false);
 	}
 
 	@Override
 	public void valueChange(ValueChangeEvent evt) {
 		textbox.setValue(evt.getNewValue() != null ? evt.getNewValue().toString() : "");
+		if (evt.getNewValue() != null) {
+			if (textbox.getValue().equals(popup.getDateRangeText())) {
+				dateRangeText.setValue("");
+				dateRangeText.setVisible(false);
+			} else {
+				dateRangeText.setValue(popup.getDateRangeText());
+				dateRangeText.setVisible(true);
+				if (getPage() != null)
+					LayoutUtils.positionComponent(popupBtn, dateRangeText, "start_before");
+			}
+		} else {
+			dateRangeText.setValue("");
+			dateRangeText.setVisible(false);
+		}
 	}
 
 	/**
@@ -132,5 +160,13 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 			textbox.setStyle("width: 100%;");
 		else
 			textbox.setStyle("width: 100%; background: white !important");
+	}
+
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		if (newpage != null && dateRangeText.isVisible() && !Util.isEmpty(dateRangeText.getValue())) {
+			LayoutUtils.positionComponent(popupBtn, dateRangeText, "start_before");
+		}
 	}
 }

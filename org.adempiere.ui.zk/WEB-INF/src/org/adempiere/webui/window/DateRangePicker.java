@@ -419,6 +419,13 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			displayValue = dateTextBoxValue;
 	}
 
+	/**
+	 * @return date range text, for e.g "01/01/2023 - 01/31/2023"
+	 */
+	public String getDateRangeText() {
+		return dateTextBox.getValue();
+	}
+
 	private String getDateTextBoxValue() {
 		String returnVal = "";
 		Date[] dates;
