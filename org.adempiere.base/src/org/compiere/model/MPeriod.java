@@ -1018,7 +1018,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
     	
     	String sql = " SELECT 1 "
     			+ " FROM RV_UnPosted up "
-    			+ " WHERE up.AD_Client_ID = ? AND up.DateAcct BETWEEN ? AND ? ";
+    			+ " WHERE up.DocStatus IN('CO', 'CL', 'RE') AND up.AD_Client_ID = ? AND up.DateAcct BETWEEN ? AND ? ";
     	if(getAD_Org_ID() > 0)
     		sql += " AND up.AD_Org_ID = ? ";
     	if(periodControlID > 0)
