@@ -98,7 +98,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 
 	private void init() {
 		if(gridTab == null) {
-			throw new IllegalArgumentException("gridTab is null");
+			return;
 		}
 		
 		tableIDGridField = gridTab.getField("AD_Table_ID");
