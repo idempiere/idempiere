@@ -663,6 +663,8 @@ public class CacheTest extends AbstractTestCase {
 		//IDisplayTypeFactory
 		TestActivator.context.registerService(IDisplayTypeFactory.class, new FakeDisplayTypeFactory(), null);
 		cacheName = "IDisplayTypeFactory";
+		boolean isLOB = DisplayType.isLOB(FakeDisplayTypeFactory.DISPLAY_TYPE);
+		assertFalse(isLOB);
 		boolean isText = DisplayType.isText(FakeDisplayTypeFactory.DISPLAY_TYPE);
 		assertTrue(isText);
 		cache = findByNameAndKey(cacheName, FakeDisplayTypeFactory.DISPLAY_TYPE);
