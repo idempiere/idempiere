@@ -2875,14 +2875,18 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         }
         else
         {
-        	//Workaround for detached HTML input element leak
-        	if (getChildren().size() > 0) {
-				Component[] childs = getChildren().toArray(new Component[0]);
-				for(Component c : childs) {
-					AEnv.detachInputElement(c);
+		//detach if attach to page
+		if (getDesktop() != null)
+		{
+			//Workaround for detached HTML input element leak
+			if (getChildren().size() > 0) {
+					Component[] childs = getChildren().toArray(new Component[0]);
+					for(Component c : childs) {
+						AEnv.detachInputElement(c);
+					}
 				}
-			}
-        	Executions.schedule(getDesktop(), e -> this.detach(), new Event("onAsyncDetach"));
+			Executions.schedule(getDesktop(), e -> this.detach(), new Event("onAsyncDetach"));
+		}
         }
     }   //  dispose
 
