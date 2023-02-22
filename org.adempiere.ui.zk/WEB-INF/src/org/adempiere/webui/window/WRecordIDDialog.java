@@ -76,6 +76,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 	private Button cancelBtn;
 	private Textbox parentTextBox;
 	private WSearchEditor recordsEditor;
+	private Text recordsEditorLabel;
 	
 	/**
 	 * Constructor
@@ -150,8 +151,9 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		labelsDiv.appendChild(text);
 		text = new Text(Msg.getMsg(Env.getCtx(), "Table"));
 		labelsDiv.appendChild(text);
-		text = new Text(Msg.getMsg(Env.getCtx(), "Record"));
-		labelsDiv.appendChild(text);
+		recordsEditorLabel = new Text(Msg.getMsg(Env.getCtx(), "Record"));
+		if (recordsEditor != null)
+			labelsDiv.appendChild(recordsEditorLabel);
 		labelsDiv.setSclass("recordid-dialog-labels");
 		
 		fieldsDiv.setSclass("recordid-dialog-fields");
@@ -200,11 +202,14 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		if(event.getName().equalsIgnoreCase(Events.ON_SELECT)) {
 			if (event.getTarget().equals(tableIDEditor.getComponent())) {
 				// the Record_ID should be cleared when a different AD_Table_ID is selected
-				if (recordsEditor != null)
+				if (recordsEditor != null) {
+					recordsEditorLabel.detach();
 					recordsEditor.getComponent().detach();
+				}
 				int tableID = Integer.parseInt(Objects.toString(tableIDEditor.getValue(), "-1"));
 				if(tableID > 0) {
 			    	recordsEditor = new WSearchEditor("Record_ID", false, false, true, editor.getRecordsLookup(tableID));
+			    	labelsDiv.appendChild(recordsEditorLabel);
 					fieldsDiv.appendChild(recordsEditor.getComponent());
 					recordsEditor.getComponent().focus();
 				} else {
