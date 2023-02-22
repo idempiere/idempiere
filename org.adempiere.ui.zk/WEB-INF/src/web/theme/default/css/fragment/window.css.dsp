@@ -154,6 +154,10 @@ input[type="checkbox"]:focus
 	margin: 5px;
 }
 
+.recordid-editor {
+	display: inline-block;
+	position: relative;
+}
 .recordid-editor .z-toolbarbutton {
 	padding: 4px 0px 0px 1px;
     margin: 0px;
@@ -165,7 +169,7 @@ input[type="checkbox"]:focus
     height: 24px;
     min-height: 24px;
     right: 0px;
-    top: 6px;
+    top: 3px;
     border: 1px solid #CFCFCF;
     border-radius: 0;
 }

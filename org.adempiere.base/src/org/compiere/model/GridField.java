@@ -374,14 +374,6 @@ public class GridField
 	}	//	isMandatory
 
 	/**
-	 * Set if the field is mandatory
-	 * @param mandatory
-	 */
-	public void setMandatory(boolean mandatory) {
-		m_vo.IsMandatory = mandatory;
-	}
-	
-	/**
 	 *	Is parameter Editable - checks if parameter is Read Only
 	 *  @param checkContext if true checks Context
 	 *  @return true, if editable

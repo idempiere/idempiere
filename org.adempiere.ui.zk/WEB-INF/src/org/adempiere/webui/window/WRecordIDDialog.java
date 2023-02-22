@@ -53,18 +53,18 @@ import org.zkoss.zul.Vlayout;
 public class WRecordIDDialog extends Window implements EventListener<Event> {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8126107952514403099L;
 	
-	/** Page for the window */
-	private Page page;
 	/** Record_ID editor from which the window is opened */
 	private WRecordIDEditor editor;
 	/** Current tab's AD_Table_ID GrodField */
 	private GridField tableIDGridField;
-	/** Current value (Record_ID) */
+	/** Current Record_ID value from {@link #editor} */
 	private Integer recordIDValue;
+	/** Current AD_Table_ID value from {@link #editor} */
+	private Integer tableIDValue;
 	
 	// UI components
 	private Div contentDiv;
@@ -86,18 +86,30 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 	public WRecordIDDialog(Page page, WRecordIDEditor editor, GridField tableIDGridField) {
 		super();
 		
-		this.page = page;
 		this.editor = editor;
 		this.tableIDGridField = tableIDGridField;
-		if(editor.getValue() instanceof String)
-			this.recordIDValue = Integer.valueOf((String)editor.getValue());
-		else
+		if(editor.getValue() instanceof Integer) {
 			this.recordIDValue = (Integer)editor.getValue();
-		
-		init();
+		} else {
+			if (editor.getValue() == null)
+				this.recordIDValue = null;
+			else
+				this.recordIDValue = Integer.valueOf(editor.getValue().toString());
+		}
+
+		if (editor.getAD_Table_ID() instanceof Integer) {
+			tableIDValue = (Integer) editor.getAD_Table_ID();
+		} else {
+			if (editor.getAD_Table_ID() == null)
+				tableIDValue = null;
+			else
+				tableIDValue = Integer.valueOf(editor.getAD_Table_ID().toString());
+		}
+
+		init(page);
 	}
 	
-	private void init() {
+	private void init(Page page) {
 		Vlayout vLayout = new Vlayout();
 		labelsDiv = new Div();
 		fieldsDiv = new Div();
@@ -106,10 +118,9 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
     	okBtn = ButtonFactory.createNamedButton(ConfirmPanel.A_OK, true, true);
     	cancelBtn = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL, true, true);;
     	tableIDEditor = new WTableDirEditor("AD_Table_ID", false, false, true, tableIDGridField.getLookup(), true);
-		tableIDEditor.setValue(tableIDGridField.getValue());
-		editor.setAD_Table_ID(tableIDGridField.getValue());
-		int tableID = Integer.parseInt(String.valueOf(tableIDGridField.getValue()));
-    	recordsEditor = new WSearchEditor("Record_ID", false, false, true, editor.getRecordsLookup(tableID));
+		tableIDEditor.setValue(tableIDValue);
+		int tableID = tableIDValue != null ? tableIDValue.intValue() : 0;
+		recordsEditor = tableID > 0 ? new WSearchEditor("Record_ID", false, false, true, editor.getRecordsLookup(tableID)) : null;
     	parentTextBox = new Textbox();
     	
 		setPage(page);
@@ -127,7 +138,8 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		
 		tableIDEditor.getComponent().addEventListener(Events.ON_SELECT, this);
 		
-		recordsEditor.setValue(recordIDValue);
+		if (recordsEditor != null)
+			recordsEditor.setValue(recordIDValue);
 		
 		okBtn.addEventListener(Events.ON_CLICK, this);
 		okBtn.setSclass("recordid-dialog-confirm");
@@ -146,7 +158,8 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		
 		fieldsDiv.appendChild(parentTextBox);
 		fieldsDiv.appendChild(tableIDEditor.getComponent());
-		fieldsDiv.appendChild(recordsEditor.getComponent());
+		if (recordsEditor != null)
+			fieldsDiv.appendChild(recordsEditor.getComponent());
 		
 		contentDiv.appendChild(labelsDiv);
 		contentDiv.appendChild(fieldsDiv);
@@ -159,17 +172,24 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		
 		appendChild(vLayout);
 		doHighlighted();
+
+		tableIDEditor.getComponent().focus();
 	}
 	
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if(event.getName().equalsIgnoreCase(Events.ON_CLICK)) {
 			if(event.getTarget().equals(okBtn)) {
+				if (tableIDEditor.getValue() != null) {
+					if (recordsEditor == null || recordsEditor.getValue() == null) {
+						Dialog.error(editor.getGridField().getWindowNo(), "Mandatory", Msg.getMsg(Env.getCtx(), "Record"));
+						return;
+					}
+				}
+
 				// set the selected values to the editors
-				recordIDValue = (Integer) recordsEditor.getValue();
-				tableIDGridField.getGridTab().setValue("AD_Table_ID", tableIDEditor.getValue());
-				editor.setAD_Table_ID(tableIDGridField.getValue());
-				editor.setValue(recordIDValue);
+				editor.setAD_Table_ID(tableIDEditor.getValue());
+				editor.setValue(recordsEditor.getValue());
 				onClose();
 			}
 			else if(event.getTarget().equals(cancelBtn)) {
@@ -180,11 +200,15 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		if(event.getName().equalsIgnoreCase(Events.ON_SELECT)) {
 			if (event.getTarget().equals(tableIDEditor.getComponent())) {
 				// the Record_ID should be cleared when a different AD_Table_ID is selected
-				recordsEditor.getComponent().detach();
+				if (recordsEditor != null)
+					recordsEditor.getComponent().detach();
 				int tableID = Integer.parseInt(Objects.toString(tableIDEditor.getValue(), "-1"));
 				if(tableID > 0) {
 			    	recordsEditor = new WSearchEditor("Record_ID", false, false, true, editor.getRecordsLookup(tableID));
 					fieldsDiv.appendChild(recordsEditor.getComponent());
+					recordsEditor.getComponent().focus();
+				} else {
+					tableIDEditor.getComponent().focus();
 				}
 			}
 		}

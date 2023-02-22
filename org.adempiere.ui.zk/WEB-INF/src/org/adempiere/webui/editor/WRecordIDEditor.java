@@ -50,7 +50,7 @@ import org.compiere.model.MTable;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
@@ -65,14 +65,12 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	/** Is Read/Write enabled on the editor */
 	private boolean m_ReadWrite;
 	/** Old value (Record_ID) */
-	private Object recordID;
+	private Object recordIDValue;
 	/** Old value (AD_Table_ID) */
-	private Object tableID;
+	private Object tableIDValue;
 	
 	/** Current tab's AD_Table_ID GrodField */
 	private GridField tableIDGridField;
-	/** Current tab's AD_Table_ID editor */
-	private WEditor tableIDEditor;
 	
 	// UI components
 	private Textbox recordTextBox;
@@ -92,16 +90,15 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	public WRecordIDEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
 		super(new Div(), gridField, tableEditor, editorConfiguration);
 		
-		((HtmlBasedComponent) getComponent()).setSclass("recordid-editor");
+		getComponent().setSclass("recordid-editor");
 		getComponent().addEventListener(Events.ON_RIGHT_CLICK, this);
 		
 		init();
 	}
 
 	private void init() {
-
 		if(gridTab == null) {
-			return;
+			throw new IllegalArgumentException("gridTab is null");
 		}
 		
 		tableIDGridField = gridTab.getField("AD_Table_ID");
@@ -110,6 +107,12 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			throw new RuntimeException("AD_Table_ID field not found");
 		}
 		
+		tableIDGridField.addPropertyChangeListener(evt -> {
+			if (GridField.PROPERTY.equals(evt.getPropertyName())) {
+				tableIDValue = evt.getNewValue();
+			}
+		});
+
 		recordTextBox = new Textbox();
 		recordTextBox.setParent(getComponent());
 		recordTextBox.setWidth("100%");
@@ -123,6 +126,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			editButton.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_EDIT_RECORD_PNG));
 		editButton.setParent(getComponent());
 		editButton.addEventListener(Events.ON_CLICK, this);
+		editButton.setTooltiptext(Msg.getMsg(Env.getCtx(), "Edit"));
 
 		zoomButton = new ToolBarButton();
 		if (ThemeManager.isUseFontIconForImage())
@@ -131,6 +135,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			zoomButton.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_ZOOM_PNG));
 		zoomButton.setParent(getComponent());
 		zoomButton.addEventListener(Events.ON_CLICK, this);
+		zoomButton.setTooltiptext(Msg.getMsg(Env.getCtx(), "Zoom"));
 		
 		if (gridField != null)
         {
@@ -140,35 +145,32 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
         }
 	}
 	
-	public void actionRefresh(Object value)
+	private void actionRefresh()
     {
-		setValue(value);
+		recordTextBox.setValue(getDisplay());
     }
 	
 	@Override
 	public void actionZoom()
 	{
-		String s = String.valueOf(gridTab.getValue("AD_Table_ID"));
-		Integer tableID = Integer.parseInt(s != "null" ? s : "0");
-		s = String.valueOf(gridTab.getValue("Record_ID"));
-		Integer recordID = Integer.parseInt(s != "null" ? s : "0");
+		String s = tableIDValue != null ? String.valueOf(tableIDValue) : "";
+		int tableID = s.length() > 0 ? Integer.parseInt(s) : 0;
+		s = recordIDValue != null ? String.valueOf(recordIDValue) : "";
+		int recordID = s.length() > 0 ? Integer.parseInt(s) : 0;
 		if(tableID <= 0 || recordID < 0)
 			return;
 		if (!MRole.getDefault().isTableAccess(tableID, false))
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccessTableNoView"));
-		MTable table = MTable.get(Env.getCtx(), tableID);
-
-		table.getPO(recordID, null);	// calls po.checkCrossTenant() method
-		
 		AEnv.zoom(tableID, recordID);
 	}
+
 
 	@Override
 	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.REQUERY_EVENT.equals(evt.getContextEvent()))
 		{
-			actionRefresh(recordID);
+			actionRefresh();
 		}
 		else if (WEditorPopupMenu.ZOOM_EVENT.equals(evt.getContextEvent()))
 		{
@@ -198,19 +200,17 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 		return m_ReadWrite;
 	}
 
-	public  void propertyChange(PropertyChangeEvent evt)
+	public void propertyChange(PropertyChangeEvent evt)
 	{
 		if (GridField.PROPERTY.equals(evt.getPropertyName()))
 		{
-			if(tableID != tableIDGridField.getValue()) {
-				tableID = tableIDGridField.getValue();
-			}
-			int tableID = Integer.parseInt(String.valueOf(this.tableID));
+			int tableID =  tableIDValue != null ? Integer.parseInt(String.valueOf(tableIDValue)) : 0;
 			int recordID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
-			MTable table = MTable.get(Env.getCtx(), tableID);
-			
-			table.getPO(recordID, null);	// calls po.checkCrossTenant() method
-			
+			if (tableID > 0 && recordID >= 0)
+			{
+				MTable table = MTable.get(Env.getCtx(), tableID);
+				table.getPO(recordID, null);	// calls po.checkCrossTenant() method
+			}
 			setValue(evt.getNewValue(), false);
 		}
 	}
@@ -227,19 +227,17 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	 */
 	
 	private void setValue (Object value, boolean fire) {
-		if (value == null || value.toString().trim().length() == 0)
-		{
-			recordID = null;
+		recordTextBox.setValue("");
+		if (value == null || Util.isEmpty(value.toString(), true)) {
 			value = null;
-			recordTextBox.setValue("");
-		}
-		else {
-			if(tableID != tableIDGridField.getValue()) {
-				tableID = tableIDGridField.getValue();
+		} else {
+			//get initial ad_table_id value
+			if (tableIDValue == null) {
+				tableIDValue = tableIDGridField.getValue();
 			}
-			if(value != null && tableID != null) {
+			if(value != null && tableIDValue != null) {
 				int recordID = Integer.parseInt(String.valueOf(value));
-				int tableID = Integer.parseInt(String.valueOf(this.tableID));
+				int tableID = Integer.parseInt(String.valueOf(tableIDValue));
 				if(recordID >= 0 && tableID > 0)
 					recordTextBox.setValue(getIdentifier(tableID, recordID));
 			}
@@ -247,23 +245,22 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 
 		if (fire) {
 			// Record_ID
-			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), recordID, value);
+			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), recordIDValue, value);
 			super.fireValueChange(changeEvent);
 		}
-		recordID = value;
-
+		recordIDValue = value;
 	}
 
 	@Override
 	public Object getValue() {
-		return recordID;
+		return recordIDValue;
 	}
 
 	@Override
 	public String getDisplay() {
-		if((tableIDGridField.getValue() != null) && (gridField.getValue() != null)) {
-			int tableID = Integer.parseInt(String.valueOf(tableIDGridField.getValue()));
-			int recordID = Integer.parseInt(String.valueOf(gridField.getValue()));
+		if((tableIDValue != null) && (recordIDValue != null)) {
+			int tableID = Integer.parseInt(String.valueOf(tableIDValue));
+			int recordID = Integer.parseInt(String.valueOf(recordIDValue));
 			return getIdentifier(tableID, recordID);
 		}
 		else {
@@ -325,7 +322,8 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	 * @return String
 	 */
 	public String getIdentifier(int tableID, int recordID) {
-		return getRecordsLookup(tableID).getDisplay(recordID);
+		MLookup lookup = getRecordsLookup(tableID);
+		return lookup != null ? lookup.getDisplay(recordID) : null;
     }
 	
 	/**
@@ -333,7 +331,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	 * @return Object
 	 */
 	public Object getAD_Table_ID() {
-		return tableID;
+		return tableIDValue;
 	}
 	
 	/**
@@ -343,11 +341,16 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	public void setAD_Table_ID(Object tableID){
 		// Data Binding
 		// AD_Table_ID
-		if(tableIDEditor == null)
-			tableIDEditor = WebEditorFactory.getEditor(tableIDGridField, true);
-		ValueChangeEvent changeEvent = new ValueChangeEvent(tableIDEditor, tableIDEditor.getColumnName(), tableID, gridTab.getValue("AD_Table_ID"));
+		Object oldValue = gridTab.getValue("AD_Table_ID");
+		gridTab.setValue(tableIDGridField, tableID);
+		ValueChangeEvent changeEvent = new ValueChangeEvent(this, "AD_Table_ID", oldValue, tableID);
 		super.fireValueChange(changeEvent);
 
-		this.tableID = tableID;
+		tableIDValue = tableID;
+	}
+
+	@Override
+	public Div getComponent() {
+		return (Div) super.getComponent();
 	}
 }

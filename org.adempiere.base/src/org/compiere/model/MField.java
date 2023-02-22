@@ -218,23 +218,25 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 			if (getIsToolbarButton() != null)
 				setIsToolbarButton(null);
 		}
-		
+
 		// set Table field read only if appears in combination with Record ID (Display Type Record ID)
-		MTab parent = MTab.get(getAD_Tab_ID());
-		if(getAD_Column().getColumnName().equalsIgnoreCase("AD_Table_ID")) {
+		MColumn column = MColumn.get(getAD_Column_ID());
+		if(column.getColumnName().equalsIgnoreCase("AD_Table_ID")) {
+			MTab parent = MTab.get(getAD_Tab_ID());
 			for(MField field : parent.getFields(false, get_TrxName())) {
-				if(field.getAD_Column().getColumnName().equalsIgnoreCase("Record_ID")) {
-					if(field.getAD_Column().getAD_Reference_ID() == DisplayType.RecordID && !this.isReadOnly()) {
+				if(MColumn.get(field.getAD_Column_ID()).getColumnName().equalsIgnoreCase("Record_ID")) {
+					if(MColumn.get(field.getAD_Column_ID()).getAD_Reference_ID() == DisplayType.RecordID && !this.isReadOnly()) {
 						this.setIsReadOnly(true);
 					}
 					break;
 				}
 			}
 		}
-		if(getAD_Column().getColumnName().equalsIgnoreCase("Record_ID")) {
+		if(column.getColumnName().equalsIgnoreCase("Record_ID") && column.getAD_Reference_ID() == DisplayType.RecordID) {
+			MTab parent = MTab.get(getAD_Tab_ID());
 			for(MField field : parent.getFields(false, get_TrxName())) {
-				if(field.getAD_Column().getColumnName().equalsIgnoreCase("AD_Table_ID")) {
-					if(this.getAD_Column().getAD_Reference_ID() == DisplayType.RecordID && !field.isReadOnly()) {
+				if(MColumn.get(field.getAD_Column_ID()).getColumnName().equalsIgnoreCase("AD_Table_ID")) {
+					if(!field.isReadOnly()) {
 						field.setIsReadOnly(true);
 						field.saveEx();
 					}
