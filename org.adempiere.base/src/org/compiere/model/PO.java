@@ -2644,8 +2644,8 @@ public abstract class PO
 	private boolean doUpdate(boolean withValues) {
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
-				
-		String where = get_WhereClause(true);
+
+		String where = withValues ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
 		
 		List<Object> optimisticLockingParams = new ArrayList<Object>();
 		if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
@@ -2737,6 +2737,17 @@ public abstract class PO
 				//  values
 				if (value == Null.NULL)
 					sql.append("NULL");
+				else if (value instanceof Integer && p_info.isColumnLookup(i))
+				{
+					MColumn col = MColumn.get(p_info.getAD_Column_ID(columnName));
+					String refTableName = col.getReferenceTableName();
+					MTable refTable = MTable.get(Env.getCtx(), refTableName);
+					String refKeyColumnName = refTable.getKeyColumns()[0];
+					String refUUColumnName = MTable.getUUIDColumnName(refTableName);
+					String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
+							+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
+					sql.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+				}
 				else if (value instanceof Integer || value instanceof BigDecimal)
 					sql.append(value);
 				else if (c == Boolean.class)
@@ -3038,7 +3049,7 @@ public abstract class PO
 	{
 		//  Set ID for single key - Multi-Key values need explicitly be set previously
 		if (m_IDs.length == 1 && p_info.hasKeyColumn()
-			&& m_KeyColumns[0].endsWith("_ID"))	//	AD_Language, EntityType
+			&& m_KeyColumns[0].endsWith("_ID") && !isLogSQLScript())	//	AD_Language, EntityType
 		{
 			int no = saveNew_getID();
 			if (no <= 0)
@@ -3172,10 +3183,27 @@ public abstract class PO
 			{				
 				try
 				{
-					if (c == Object.class) //  may have need to deal with null values differently
+					if (m_IDs.length == 1 && p_info.hasKeyColumn()
+							&& m_KeyColumns[0].endsWith("_ID") && m_KeyColumns[0].equals(p_info.getColumnName(i)))
+					{
+						MSequence sequence = MSequence.get(Env.getCtx(), p_info.getTableName(), get_TrxName(), true);
+						sqlValues.append("nextidfunc("+sequence.getAD_Sequence_ID()+",'N')");
+					}
+					else if (c == Object.class) //  may have need to deal with null values differently
 						sqlValues.append (saveNewSpecial (value, i));
 					else if (value == null || value.equals (Null.NULL))
 						sqlValues.append ("NULL");
+					else if (value instanceof Integer && p_info.isColumnLookup(i))
+					{
+						MColumn col = MColumn.get(p_info.getAD_Column_ID(p_info.getColumnName(i)));
+						String refTableName = col.getReferenceTableName();
+						MTable refTable = MTable.get(Env.getCtx(), refTableName);
+						String refKeyColumnName = refTable.getKeyColumns()[0];
+						String refUUColumnName = MTable.getUUIDColumnName(refTable.getTableName());
+						String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
+								+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
+						sqlValues.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+					}
 					else if (value instanceof Integer || value instanceof BigDecimal)
 						sqlValues.append (value);
 					else if (c == Boolean.class)
@@ -3267,28 +3295,6 @@ public abstract class PO
 					params.add(value);
 				}
 			}
-
-			//	Change Log	- Only
-			String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
-			if (   session != null
-				&& m_IDs.length == 1
-				&& p_info.isAllowLogging(i)		//	logging allowed
-				&& !p_info.isEncrypted(i)		//	not encrypted
-				&& !p_info.isVirtualColumn(i)	//	no virtual column
-				&& !"Password".equals(p_info.getColumnName(i))
-				&& (insertLog.equalsIgnoreCase("Y")
-						|| (insertLog.equalsIgnoreCase("K") && p_info.getColumn(i).IsKey))
-				)
-				{
-					// change log on new
-					MChangeLog cLog = session.changeLog (
-							m_trxName, AD_ChangeLog_ID,
-							p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-							get_ID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert);
-					if (cLog != null)
-						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
-				}
-
 		}
 		//	Custom Columns
 		if (m_custom != null)
@@ -3336,6 +3342,36 @@ public abstract class PO
 		boolean ok = no == 1;
 		if (ok)
 		{
+			if (withValues && m_IDs.length == 1 && p_info.hasKeyColumn()
+					&& m_KeyColumns[0].endsWith("_ID"))
+			{
+				int id = DB.getSQLValueEx(get_TrxName(), "SELECT " + m_KeyColumns[0] + " FROM "
+						+ p_info.getTableName() + " WHERE " + getUUIDColumnName() + "=?", get_ValueAsString(getUUIDColumnName()));
+				m_IDs[0] = Integer.valueOf(id);
+				set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
+				
+				int ki = p_info.getColumnIndex(m_KeyColumns[0]);
+				//	Change Log	- Only
+				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
+				if (   session != null
+					&& m_IDs.length == 1
+					&& p_info.isAllowLogging(ki)		//	logging allowed
+					&& !p_info.isEncrypted(ki)		//	not encrypted
+					&& !p_info.isVirtualColumn(ki)	//	no virtual column
+					&& !"Password".equals(p_info.getColumnName(ki))
+					&& (insertLog.equalsIgnoreCase("Y")
+							|| (insertLog.equalsIgnoreCase("K") && p_info.getColumn(ki).IsKey))
+					)
+				{
+					// change log on new
+					MChangeLog cLog = session.changeLog (
+							m_trxName, AD_ChangeLog_ID,
+							p_info.getAD_Table_ID(), p_info.getColumn(ki).AD_Column_ID,
+							get_ID(), getAD_Client_ID(), getAD_Org_ID(), null, id, MChangeLog.EVENTCHANGELOG_Insert);
+					if (cLog != null)
+						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
+				}
+			}
 			ok = lobSave();
 			if (!load(m_trxName))		//	re-read Info
 			{
