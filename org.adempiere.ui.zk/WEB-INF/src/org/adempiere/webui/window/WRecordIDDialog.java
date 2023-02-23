@@ -203,6 +203,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 				if (recordsEditor != null) {
 					recordsEditorLabel.detach();
 					recordsEditor.getComponent().detach();
+					editor.setValue(null);
 				}
 				int tableID = Integer.parseInt(Objects.toString(tableIDEditor.getValue(), "-1"));
 				if(tableID > 0) {
