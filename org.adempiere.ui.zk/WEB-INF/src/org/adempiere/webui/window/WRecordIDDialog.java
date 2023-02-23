@@ -122,7 +122,6 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		tableIDEditor.setValue(tableIDValue);
 		int tableID = tableIDValue != null ? tableIDValue.intValue() : 0;
 		recordsEditor = tableID > 0 ? new WSearchEditor("Record_ID", false, false, true, editor.getRecordsLookup(tableID)) : null;
-    	parentTextBox = new Textbox();
     	
 		setPage(page);
 		setClosable(true);
@@ -133,9 +132,12 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		contentDiv.setSclass("recordid-dialog-content");
 		confirmPanelDiv.setSclass("recordid-dialog-confirm");
 		
-		parentTextBox.setReadonly(true);
-		parentTextBox.setValue(editor.getIdentifier(
-				editor.getGridField().getGridTab().getAD_Table_ID(), editor.getGridField().getGridTab().getRecord_ID()));
+		if (editor.getGridField().getGridTab() != null) {
+			parentTextBox = new Textbox();
+			parentTextBox.setReadonly(true);
+			parentTextBox.setValue(editor.getIdentifier(
+					editor.getGridField().getGridTab().getAD_Table_ID(), editor.getGridField().getGridTab().getRecord_ID()));
+		}
 		
 		tableIDEditor.getComponent().addEventListener(Events.ON_SELECT, this);
 		
@@ -147,9 +149,11 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		cancelBtn.addEventListener(Events.ON_CLICK, this);
 		cancelBtn.setSclass("recordid-dialog-confirm");
 		
-		Text text = new Text(Msg.getMsg(Env.getCtx(), "Parent"));
-		labelsDiv.appendChild(text);
-		text = new Text(Msg.getMsg(Env.getCtx(), "Table"));
+		if (parentTextBox != null) {
+			Text text = new Text(Msg.getMsg(Env.getCtx(), "Parent"));
+			labelsDiv.appendChild(text);
+		}
+		Text text = new Text(Msg.getMsg(Env.getCtx(), "Table"));
 		labelsDiv.appendChild(text);
 		recordsEditorLabel = new Text(Msg.getMsg(Env.getCtx(), "Record"));
 		if (recordsEditor != null)
@@ -158,7 +162,8 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		
 		fieldsDiv.setSclass("recordid-dialog-fields");
 		
-		fieldsDiv.appendChild(parentTextBox);
+		if (parentTextBox != null)
+			fieldsDiv.appendChild(parentTextBox);
 		fieldsDiv.appendChild(tableIDEditor.getComponent());
 		if (recordsEditor != null)
 			fieldsDiv.appendChild(recordsEditor.getComponent());
@@ -182,13 +187,6 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 	public void onEvent(Event event) throws Exception {
 		if(event.getName().equalsIgnoreCase(Events.ON_CLICK)) {
 			if(event.getTarget().equals(okBtn)) {
-				if (tableIDEditor.getValue() != null) {
-					if (recordsEditor == null || recordsEditor.getValue() == null) {
-						Dialog.error(editor.getGridField().getWindowNo(), "Mandatory", Msg.getMsg(Env.getCtx(), "Record"));
-						return;
-					}
-				}
-
 				// set the selected values to the editors
 				editor.setAD_Table_ID(tableIDEditor.getValue());
 				editor.setValue(recordsEditor.getValue());

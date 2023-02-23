@@ -38,9 +38,11 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.window.FindWindow;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WRecordIDDialog;
 import org.compiere.model.GridField;
+import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -51,8 +53,10 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.sys.ComponentCtrl;
 import org.zkoss.zul.Div;
 
 /**
@@ -97,21 +101,26 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	}
 
 	private void init() {
-		if(gridTab == null) {
-			return;
-		}
-		
-		tableIDGridField = gridTab.getField("AD_Table_ID");
-		
-		if(tableIDGridField == null) {
-			throw new RuntimeException("AD_Table_ID field not found");
-		}
-		
-		tableIDGridField.addPropertyChangeListener(evt -> {
-			if (GridField.PROPERTY.equals(evt.getPropertyName())) {
-				tableIDValue = evt.getNewValue();
+		if(gridTab != null) {
+			tableIDGridField = gridTab.getField("AD_Table_ID");
+
+			if(tableIDGridField == null) {
+				throw new RuntimeException("AD_Table_ID field not found");
 			}
-		});
+
+			tableIDGridField.addPropertyChangeListener(evt -> {
+				if (GridField.PROPERTY.equals(evt.getPropertyName())) {
+					tableIDValue = evt.getNewValue();
+				}
+			});
+		} else {
+			String tableIdTxt = Env.getContext(gridField.getVO().ctx, gridField.getWindowNo(), FindWindow.TABNO, "AD_Table_ID", true);
+			if (!Util.isEmpty(tableIdTxt, true)) {
+				tableIDValue = Integer.parseInt(tableIdTxt);
+			}
+
+			getComponent().addCallback(ComponentCtrl.AFTER_PAGE_ATTACHED, t -> afterPageAttached(t));
+		}
 
 		recordTextBox = new Textbox();
 		recordTextBox.setParent(getComponent());
@@ -145,6 +154,43 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
         }
 	}
 	
+	private void afterPageAttached(Object t) {
+		if (t instanceof Component) {
+			Component component = (Component) t;
+			Component parent = component.getParent();
+			while (parent != null) {
+				if (parent instanceof FindWindow)
+					break;
+				parent = parent.getParent();
+			}
+
+			if (parent != null && parent instanceof FindWindow) {
+				FindWindow fw = (FindWindow) parent;
+				GridField field = fw.getTargetMField("AD_Table_ID");
+				if (field != null) {
+					//search field initialisation code duplicated from FindWindow
+					field = field.clone(gridField.getVO().ctx);
+					field.loadLookupNoValidate();
+					Lookup lookup = field.getLookup();
+				if (lookup != null && lookup instanceof MLookup)
+				{
+					MLookup mLookup = (MLookup) lookup;
+					mLookup.getLookupInfo().tabNo = FindWindow.TABNO;
+
+					if (field.getVO().ValidationCodeLookup != null && !field.getVO().ValidationCodeLookup.isEmpty())
+					{
+						mLookup.getLookupInfo().ValidationCode = field.getVO().ValidationCodeLookup;
+							mLookup.getLookupInfo().IsValidated = false;
+					}
+				}
+				tableIDGridField = field;
+				if (tableIDValue != null)
+					tableIDGridField.setValue(tableIDValue, false);
+				}
+			}
+		}
+	}
+
 	private void actionRefresh()
     {
 		recordTextBox.setValue(getDisplay());
@@ -232,7 +278,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			value = null;
 		} else {
 			//get initial ad_table_id value
-			if (tableIDValue == null) {
+			if (tableIDValue == null && tableIDGridField != null) {
 				tableIDValue = tableIDGridField.getValue();
 			}
 			if(value != null && tableIDValue != null) {
@@ -270,11 +316,15 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	
 	@Override
     public String getDisplayTextForGridView(GridRowCtx gridRowCtx, Object value) {
-		String key = gridTab.getWindowNo() + "|AD_Table_ID";
-		Object rowTableIdValue = gridRowCtx.get(key);
-		int rowTableID = Integer.parseInt(String.valueOf(rowTableIdValue));
-		int rowRecordID = Integer.parseInt(String.valueOf(value));
-		return getIdentifier(rowTableID, rowRecordID);
+		if (gridTab != null) {
+			String key = gridTab.getWindowNo() + "|AD_Table_ID";
+			Object rowTableIdValue = gridRowCtx.get(key);
+			int rowTableID = Integer.parseInt(String.valueOf(rowTableIdValue));
+			int rowRecordID = Integer.parseInt(String.valueOf(value));
+			return getIdentifier(rowTableID, rowRecordID);
+		} else {
+			return "";
+		}
     }
 
 	@Override
@@ -284,7 +334,16 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 				actionZoom();
 			}
 			else if(event.getTarget().equals(editButton)) {
-				new WRecordIDDialog(recordTextBox.getPage(), this, tableIDGridField);
+				if (tableIDGridField != null) {
+					//for find window context
+					if (gridTab == null) {
+						String tableIdTxt = Env.getContext(gridField.getVO().ctx, gridField.getWindowNo(), FindWindow.TABNO, "AD_Table_ID", true);
+						if (!Util.isEmpty(tableIdTxt, true)) {
+							tableIDValue = Integer.parseInt(tableIdTxt);
+						}
+					}
+					new WRecordIDDialog(recordTextBox.getPage(), this, tableIDGridField);
+				}
 			}
 		}
 		else if(event.getName().equalsIgnoreCase(Events.ON_RIGHT_CLICK)) {
@@ -309,8 +368,8 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			keyColumn = keyColumns[0];
 		MColumn mColumn = MColumn.get(Env.getCtx(), mTable.getTableName(), keyColumn);
 			
-		int tabNo = gridTab.getTabNo();
-		int windowNo = gridTab.getWindowNo();
+		int tabNo = gridTab != null ? gridTab.getTabNo() : FindWindow.TABNO;
+		int windowNo = gridTab != null ? gridTab.getWindowNo() : gridField.getWindowNo();
 		MLookupInfo lookupInfo = MLookupFactory.getLookupInfo (Env.getCtx(), windowNo, tabNo, mColumn.getAD_Column_ID(), DisplayType.Search);
 		return new MLookup(lookupInfo, tabNo);
     }
@@ -341,10 +400,15 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	public void setAD_Table_ID(Object tableID){
 		// Data Binding
 		// AD_Table_ID
-		Object oldValue = gridTab.getValue("AD_Table_ID");
-		gridTab.setValue(tableIDGridField, tableID);
-		ValueChangeEvent changeEvent = new ValueChangeEvent(this, "AD_Table_ID", oldValue, tableID);
-		super.fireValueChange(changeEvent);
+		if (gridTab != null) {
+			Object oldValue = gridTab.getValue("AD_Table_ID");
+			gridTab.setValue(tableIDGridField, tableID);
+			ValueChangeEvent changeEvent = new ValueChangeEvent(this, "AD_Table_ID", oldValue, tableID);
+			super.fireValueChange(changeEvent);
+		} else {
+			ValueChangeEvent changeEvent = new ValueChangeEvent(this, "AD_Table_ID", tableIDValue, tableID);
+			super.fireValueChange(changeEvent);
+		}
 
 		tableIDValue = tableID;
 	}

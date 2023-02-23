@@ -1801,15 +1801,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                else if (listbox.getId().equals(listColumn.getId()) || listbox.getId().equals(listOperator.getId())) 
 	                {
 	                	addRowEditor(componentFrom, (ListCell)row.getFellow("cellQueryFrom"+row.getId()));
-				if (editorTo != null && editorTo.getGridField() != null && DisplayType.isDate(editorTo.getGridField().getDisplayType()))
-				{
-					Div div = createDateRangeWrapper(editorFrom, editorTo);
-					addRowEditor(div,(ListCell)row.getFellow("cellQueryTo"+row.getId()));
-				}
-				else
-				{
-					addRowEditor(componentTo,(ListCell)row.getFellow("cellQueryTo"+row.getId()));
-				}
+						if (editorTo != null && editorTo.getGridField() != null && DisplayType.isDate(editorTo.getGridField().getDisplayType()))
+						{
+							Div div = createDateRangeWrapper(editorFrom, editorTo);
+							addRowEditor(div,(ListCell)row.getFellow("cellQueryTo"+row.getId()));
+						}
+						else
+						{
+							addRowEditor(componentTo,(ListCell)row.getFellow("cellQueryTo"+row.getId()));
+						}
 	                }
                 }
             }
@@ -2773,7 +2773,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         findField.setGridTab(null);
         WEditor editor = null;
         if (findField.isKey() 
-        		|| (!DisplayType.isLookup(findField.getDisplayType()) && DisplayType.isID(findField.getDisplayType())))
+			|| (!DisplayType.isLookup(findField.getDisplayType()) && DisplayType.isID(findField.getDisplayType())
+				 && findField.getDisplayType() != DisplayType.RecordID))
         {
             editor = new WNumberEditor(findField);
 		}
