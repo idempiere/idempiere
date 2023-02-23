@@ -201,9 +201,9 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 			if (event.getTarget().equals(tableIDEditor.getComponent())) {
 				// the Record_ID should be cleared when a different AD_Table_ID is selected
 				if (recordsEditor != null) {
+					recordsEditor.setValue(null);
 					recordsEditorLabel.detach();
 					recordsEditor.getComponent().detach();
-					editor.setValue(null);
 				}
 				int tableID = Integer.parseInt(Objects.toString(tableIDEditor.getValue(), "-1"));
 				if(tableID > 0) {
