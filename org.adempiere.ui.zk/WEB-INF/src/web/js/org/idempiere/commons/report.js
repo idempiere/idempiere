@@ -29,8 +29,8 @@ window.idempiere.drillDown = function(cmpid, column, value){
 	zAu.send(event);
 };
 
-window.idempiere.showColumnMenu = function(doc, e, columnName, row) {
-	let d = idempiere.getMenu (doc, e.target.getAttribute ("componentId"), e.target.getAttribute ("foreignColumnName"), e.target.getAttribute ("value"), e.target.getAttribute ("displayValue"));
+window.idempiere.showColumnMenu = function(doc, e, columnName, row, isUseFontIcons) {
+	let d = idempiere.getMenu (doc, e.target.getAttribute ("componentId"), e.target.getAttribute ("foreignColumnName"), e.target.getAttribute ("value"), e.target.getAttribute ("displayValue"), isUseFontIcons);
 	
 	let posx = 0;
 	let posy = 0;
@@ -56,7 +56,7 @@ window.idempiere.showColumnMenu = function(doc, e, columnName, row) {
 	setTimeout(f, 3000);
 };
 
-window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, displayValue){
+window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, displayValue, isUseFontIcons){
 	doc.contextMenu = null;
 	if (componentId != null){	
 		//menu div
@@ -88,10 +88,18 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, 
 		
 		let windowIco = doc.body.getAttribute ("windowIco");
 		if (typeof windowIco === 'string' && windowIco.length > 0) {
-			let image = doc.createElement("img"); 
-			image.src = windowIco;
-			image.setAttribute("align", "middle");
-			href.appendChild(image);
+			if(isUseFontIcons) {
+				let icon = doc.createElement("span");
+				icon.style.fontFamily = "FontAwesome";
+				icon.classList.add("windowIco");
+				windowMenu.appendChild(icon);
+			}
+			else {
+				let image = doc.createElement("img"); 
+				image.src = windowIco;
+				image.setAttribute("align", "middle");
+				href.appendChild(image);
+			}
 		}
 		href.appendChild(doc.createTextNode(doc.body.getAttribute ("windowLabel")));
 		
@@ -114,10 +122,18 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, 
 		menu.appendChild(report);
 		let reportIco = doc.body.getAttribute ("reportIco");
 		if (typeof reportIco === 'string' && reportIco.length > 0) {
-			let reportimage = doc.createElement("img"); 
-			reportimage.src = reportIco;
-			reportimage.setAttribute("align", "middle");
-			reportHref.appendChild(reportimage);
+			if(isUseFontIcons) {
+				let icon = doc.createElement("span");
+				icon.style.fontFamily = "FontAwesome";
+				icon.classList.add("reportIco");
+				report.appendChild(icon);
+			}
+			else {
+				let reportimage = doc.createElement("img"); 
+				reportimage.src = reportIco;
+				reportimage.setAttribute("align", "middle");
+				reportHref.appendChild(reportimage);
+			}
 		}
 		reportHref.appendChild(doc.createTextNode(doc.body.getAttribute ("reportLabel")));
 
@@ -140,10 +156,18 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, 
 		menu.appendChild(reportDrill);
 		let drillIco = doc.body.getAttribute ("drillAssistantIco");
 		if (typeof drillIco === 'string' && drillIco.length > 0) {
-			let drillimage = doc.createElement("img");
-			drillimage.src = drillIco;
-			drillimage.setAttribute("align", "middle");
-			reportDrillHref.appendChild(drillimage);
+			if(isUseFontIcons) {
+				let icon = doc.createElement("span");
+				icon.style.fontFamily = "FontAwesome";
+				icon.classList.add("drillIco");
+				reportDrill.appendChild(icon);
+			}
+			else {
+				let drillimage = doc.createElement("img");
+				drillimage.src = drillIco;
+				drillimage.setAttribute("align", "middle");
+				reportDrillHref.appendChild(drillimage);
+			}
 		}
 		reportDrillHref.appendChild(doc.createTextNode(doc.body.getAttribute ("drillAssistantLabel")));
 

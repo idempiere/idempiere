@@ -69,7 +69,7 @@ public class HTMLExtension implements IHTMLExtension {
 	
 	public void extendIDColumn(int row, ConcreteElement columnElement, a href,
 			PrintDataElement dataElement) {
-		href.addAttribute("onclick", "parent.idempiere.showColumnMenu(document, event, '" + dataElement.getColumnName() + "', " + row + ")");		
+		href.addAttribute("onclick", "parent.idempiere.showColumnMenu(document, event, '" + dataElement.getColumnName() + "', " + row + ", " + ThemeManager.isUseFontIconForImage() + ")");		
 		href.addAttribute ("componentId", componentId);
 		href.addAttribute ("foreignColumnName", dataElement.getForeignColumnName());
 		href.addAttribute ("value", dataElement.getValueAsString());
@@ -101,50 +101,63 @@ public class HTMLExtension implements IHTMLExtension {
 
 	public void setWebAttribute (body reportBody){
 		// set attribute value for create menu context
-		StringBuilder windowImageURL = new StringBuilder();
-		String windowIco = ThemeManager.getThemeResource("images/mWindow.png");
-		if (windowIco.startsWith("~./")) {
-			if (Executions.getCurrent() != null) {
-				windowImageURL.append(Executions.encodeURL(windowIco));
-			}
-		} else {
-			windowImageURL.append(contextPath);
-			if (!windowIco.startsWith("/") && !contextPath.endsWith("/"))
-				windowImageURL.append("/");
-			windowImageURL.append(windowIco);
+		StringBuilder windowIconAttr = new StringBuilder();
+		if(ThemeManager.isUseFontIconForImage()) {
+			windowIconAttr.append("z-icon-Window");
 		}
-		StringBuilder reportImageURL = new StringBuilder();
-		String reportIco = ThemeManager.getThemeResource("images/mReport.png");
-		if (reportIco.startsWith("~./")) {
-			if (Executions.getCurrent() != null) {
-				reportImageURL.append(Executions.encodeURL(reportIco));
+		else {
+			String windowIco = ThemeManager.getThemeResource("images/mWindow.png");
+			if (windowIco.startsWith("~./")) {
+				if (Executions.getCurrent() != null) {
+					windowIconAttr.append(Executions.encodeURL(windowIco));
+				}
+			} else {
+				windowIconAttr.append(contextPath);
+				if (!windowIco.startsWith("/") && !contextPath.endsWith("/"))
+					windowIconAttr.append("/");
+				windowIconAttr.append(windowIco);
 			}
-		} else {
-			reportImageURL.append(contextPath);
-			if (!reportIco.startsWith("/") && !contextPath.endsWith("/"))
-				reportImageURL.append("/");
-			reportImageURL.append(reportIco);
 		}
-
-		StringBuilder drillAssistantImageURL = new StringBuilder();
-		String drillAssistantIco = ThemeManager.getThemeResource("images/Zoom16.png");
-		if (drillAssistantIco.startsWith("~./")) {
-			if (Executions.getCurrent() != null) {
-				drillAssistantImageURL.append(Executions.encodeURL(drillAssistantIco));
+		StringBuilder reportIconAttr = new StringBuilder();
+		if(ThemeManager.isUseFontIconForImage()) {
+			reportIconAttr.append("z-icon-Report");
+		}
+		else {
+			String reportIco = ThemeManager.getThemeResource("images/mReport.png");
+			if (reportIco.startsWith("~./")) {
+				if (Executions.getCurrent() != null) {
+					reportIconAttr.append(Executions.encodeURL(reportIco));
+				}
+			} else {
+				reportIconAttr.append(contextPath);
+				if (!reportIco.startsWith("/") && !contextPath.endsWith("/"))
+					reportIconAttr.append("/");
+				reportIconAttr.append(reportIco);
 			}
-		} else {
-			drillAssistantImageURL.append(contextPath);
-			if (!drillAssistantIco.startsWith("/") && !contextPath.endsWith("/"))
-				drillAssistantImageURL.append("/");
-			drillAssistantImageURL.append(drillAssistantIco);
 		}
-
-		reportBody.addAttribute("windowIco",windowImageURL.toString());
-		reportBody.addAttribute("reportIco", reportImageURL.toString());
+		StringBuilder drillAssistantIconAttr = new StringBuilder();
+		if(ThemeManager.isUseFontIconForImage()) {
+			drillAssistantIconAttr.append("z-icon-Zoom");
+		}
+		else {
+			String drillAssistantIco = ThemeManager.getThemeResource("images/Zoom16.png");
+			if (drillAssistantIco.startsWith("~./")) {
+				if (Executions.getCurrent() != null) {
+					drillAssistantIconAttr.append(Executions.encodeURL(drillAssistantIco));
+				}
+			} else {
+				drillAssistantIconAttr.append(contextPath);
+				if (!drillAssistantIco.startsWith("/") && !contextPath.endsWith("/"))
+					drillAssistantIconAttr.append("/");
+				drillAssistantIconAttr.append(drillAssistantIco);
+			}
+		}
+		reportBody.addAttribute("windowIco",windowIconAttr.toString());
+		reportBody.addAttribute("reportIco", reportIconAttr.toString());
 		reportBody.addAttribute ("reportLabel", Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "Report").replace("&", ""));
 		reportBody.addAttribute ("windowLabel", Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "Window"));
 		
-		reportBody.addAttribute("drillAssistantIco", drillAssistantImageURL.toString());
+		reportBody.addAttribute("drillAssistantIco", drillAssistantIconAttr.toString());
 		reportBody.addAttribute ("drillAssistantLabel", Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "DrillAssistant").replace("&", ""));
 
 	}
