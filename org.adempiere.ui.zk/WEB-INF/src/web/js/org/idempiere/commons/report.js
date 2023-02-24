@@ -91,7 +91,7 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, 
 			if(isUseFontIcons) {
 				let icon = doc.createElement("span");
 				icon.style.fontFamily = "FontAwesome";
-				icon.classList.add("windowIco");
+				icon.classList.add(windowIco);
 				windowMenu.appendChild(icon);
 			}
 			else {
@@ -125,7 +125,7 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, 
 			if(isUseFontIcons) {
 				let icon = doc.createElement("span");
 				icon.style.fontFamily = "FontAwesome";
-				icon.classList.add("reportIco");
+				icon.classList.add(reportIco);
 				report.appendChild(icon);
 			}
 			else {
@@ -159,7 +159,7 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, 
 			if(isUseFontIcons) {
 				let icon = doc.createElement("span");
 				icon.style.fontFamily = "FontAwesome";
-				icon.classList.add("drillIco");
+				icon.classList.add(drillIco);
 				reportDrill.appendChild(icon);
 			}
 			else {
