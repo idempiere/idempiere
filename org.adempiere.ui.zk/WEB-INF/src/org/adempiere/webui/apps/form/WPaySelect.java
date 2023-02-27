@@ -83,53 +83,75 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 
 /**
- *  Create Manual Payments From (AP) Invoices or (AR) Credit Memos.
- *  Allows user to select Invoices for payment.
- *  When Processed, PaySelection is created
- *  and optionally posted/generated and printed
- *
- *  @author Jorg Janke
- *  @version $Id: VPaySelect.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
+ *  Create Manual Payments From (AP) Invoices or (AR) Credit Memos.<br/>
+ *  Allows user to select Invoices for payment.<br/>
+ *  When Processed, PaySelection is created and optionally process and printed.
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VPaySelect")
 public class WPaySelect extends PaySelect
 	implements IFormController, EventListener<Event>, WTableModelListener, ValueChangeListener
 {
+	/** Custom form/window instance */
 	protected CustomForm form = new CustomForm();
-	//
+	
+	/** Main panel of {@link #form} */
 	private Panel mainPanel = new Panel();
+	/** Layout of {@link #mainPanel} */
 	private Borderlayout mainLayout = new Borderlayout();
+	
+	/** Parameters panel. North of {@link #mainLayout} */
 	private Panel parameterPanel = new Panel();
 	private Label labelBankAccount = new Label();
+	/** Bank account parameter */
 	private Listbox fieldBankAccount = ListboxFactory.newDropdownListbox();
+	/** Layout of {@link #parameterPanel} */
 	private Grid parameterLayout = GridFactory.newGridLayout();
+	/** Label of {@link #labelBalance} */
 	private Label labelBankBalance = new Label();
+	/** Bank account currency */
 	private Label labelCurrency = new Label();
+	/** Current bank account balance */
 	private Label labelBalance = new Label();
 	private Checkbox onlyDue = new Checkbox();
 	private Checkbox onlyPositiveBalance = new Checkbox();
 	private Label labelBPartner = new Label();
 	private Listbox fieldBPartner = ListboxFactory.newDropdownListbox();
-	private Label dataStatus = new Label();
-	private WListbox miniTable = ListboxFactory.newDataTable();
-	private ConfirmPanel commandPanel = new ConfirmPanel(true, false, false, false, false, false, false);
-	private Button bCancel = commandPanel.getButton(ConfirmPanel.A_CANCEL);
-	private Button bGenerate = commandPanel.createButton(ConfirmPanel.A_PROCESS);
-	private Button bRefresh = commandPanel.createButton(ConfirmPanel.A_REFRESH);
 	private Label labelPayDate = new Label();
+	/** C_PaySelection.PayDate */
 	private WDateEditor fieldPayDate = new WDateEditor();
 	private Label labelPaymentRule = new Label();
 	private Listbox fieldPaymentRule = ListboxFactory.newDropdownListbox();
 	private Label labelDtype = new Label();
+	/** Document Type */
 	private Listbox fieldDtype = ListboxFactory.newDropdownListbox();
-	private Panel southPanel;
+	/** MPaySelection.COLUMNNAME_IsOnePaymentPerInvoice */
 	private Checkbox chkOnePaymentPerInv = new Checkbox();
+	
+	/** Center of {@link #mainLayout}. Open document list. */
+	private WListbox miniTable = ListboxFactory.newDataTable();
+	
+	/** South of {@link #mainLayout} */
+	private Panel southPanel;
+	
+	/** Child of {@link #southPanel} */
+	private Hlayout statusBar = new Hlayout();
+	/** Child of {@link #statusBar} */
+	private Label dataStatus = new Label();
+	
+	/** Child of {@link #southPanel} */
+	private ConfirmPanel commandPanel = new ConfirmPanel(true, false, false, false, false, false, false);
+	private Button bCancel = commandPanel.getButton(ConfirmPanel.A_CANCEL);
+	/** Child of {@link #commandPanel} */
+	private Button bGenerate = commandPanel.createButton(ConfirmPanel.A_PROCESS);
+	
+	/** Child of {@link #parameterLayout} */
+	private Button bRefresh = commandPanel.createButton(ConfirmPanel.A_REFRESH);
+	
 	private ProcessInfo m_pi;
 	private boolean m_isLock;
-	private Hlayout statusBar = new Hlayout();
 	
 	/**
-	 *	Initialize Panel
+	 * Default constructor
 	 */
 	public WPaySelect()
 	{
@@ -151,12 +173,11 @@ public class WPaySelect extends PaySelect
 	}
 
 	/**
-	 *  Init UI component and layout
+	 *  Layout {@link #form}
 	 *  @throws Exception
 	 */
 	private void zkInit() throws Exception
 	{
-		//
 		form.appendChild(mainPanel);
 		mainPanel.appendChild(mainLayout);
 		mainPanel.setStyle("width: 100%; height: 100%; padding: 0; margin: 0");
@@ -305,13 +326,13 @@ public class WPaySelect extends PaySelect
 		//
 		commandPanel.addButton(bGenerate);
 		commandPanel.getButton(ConfirmPanel.A_OK).setVisible(false);
-	}   //  jbInit
+	}
 
 	/**
-	 *  Dynamic Init.
-	 *  - Load Bank Info
-	 *  - Load BPartner
-	 *  - Init Table
+	 *  Dynamic Initialization. <br/>
+	 *  - Load Bank Accounts. <br/>
+	 *  - Load BPartners. <br/>
+	 *  - Initialize {@link #miniTable}. <br/>
 	 */
 	private void dynInit()
 	{
@@ -342,7 +363,7 @@ public class WPaySelect extends PaySelect
 	}   //  dynInit
 
 	/**
-	 *  Load Bank Info - Load Info from Bank Account and valid Documents (PaymentRule)
+	 * Load Bank Info - Load Info from Bank Account and valid Documents (PaymentRule)
 	 */
 	protected void loadBankInfo()
 	{		
@@ -364,7 +385,7 @@ public class WPaySelect extends PaySelect
 	}   //  loadBankInfo
 
 	/**
-	 *  Load open documents
+	 * Load open documents into {@link #miniTable}
 	 */
 	protected void loadTableInfo()
 	{
@@ -386,8 +407,7 @@ public class WPaySelect extends PaySelect
 			Dialog.error(m_WindowNo, "VPaySelectNoBank");
 			return;
 		}
-			
-		
+					
 		BankInfo bi = fieldBankAccount.getSelectedItem().getValue();
 
 		ValueNamePair paymentRule = (fieldPaymentRule.getSelectedItem() != null ? (ValueNamePair) fieldPaymentRule.getSelectedItem().getValue() : null);
@@ -405,7 +425,7 @@ public class WPaySelect extends PaySelect
 	}   //  loadTableInfo
 
 	/**
-	 * 	Dispose
+	 * Close form.
 	 */
 	public void dispose()
 	{
@@ -413,9 +433,9 @@ public class WPaySelect extends PaySelect
 	}	//	dispose
 
 	
-	/**************************************************************************
-	 *  ActionListener
-	 *  @param e event
+	/**
+	 * Event Listener
+	 * @param e event
 	 */
 	@Override
 	public void onEvent (Event e)
@@ -510,7 +530,7 @@ public class WPaySelect extends PaySelect
 	}
 
 	/**
-	 *  Calculate selected rows.
+	 *  Calculate selected rows.<br/>
 	 *  - add up selected rows
 	 */
 	public void calculateSelection()
@@ -521,7 +541,7 @@ public class WPaySelect extends PaySelect
 	}   //  calculateSelection
 
 	/**
-	 *  Generate PaySelection
+	 *  Generate C_PaySelection records.
 	 */
 	protected void generatePaySelect()
 	{
@@ -545,12 +565,10 @@ public class WPaySelect extends PaySelect
 			Dialog.error(m_WindowNo, "SaveError", msg);
 			return;
 		}
-
 		
 		if (MSysConfig.getBooleanValue(MSysConfig.PAYMENT_SELECTION_MANUAL_ASK_INVOKE_GENERATE, true, m_ps.getAD_Client_ID(), m_ps.getAD_Org_ID())) {
-		  //  Ask to Post it
+		  //  Open dialog to create MPaySelectionCheck records.
 		  Dialog.ask(m_WindowNo, "VPaySelectGenerate?", new Callback<Boolean>() {
-
 			@Override
 			public void onCallback(Boolean result) 
 			{
@@ -559,7 +577,7 @@ public class WPaySelect extends PaySelect
 					miniTable.clearSelection();
 					loadTableInfo();
 					//  Prepare Process 
-					int AD_Proces_ID = PROCESS_C_PAYSELECTION_CREATEPAYMENT;	//	C_PaySelection_CreatePayment
+					int AD_Proces_ID = PROCESS_C_PAYSELECTION_CREATEPAYMENT;	//	PaySelectionCreateCheck
 
 					//	Execute Process
 					ProcessModalDialog dialog = new ProcessModalDialog(WPaySelect.this, m_WindowNo, 
@@ -591,8 +609,7 @@ public class WPaySelect extends PaySelect
 							log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 						}
 					}
-				}
-				
+				}				
 			}
 		  });				
 		} else {
@@ -603,8 +620,8 @@ public class WPaySelect extends PaySelect
 	}   //  generatePaySelect
 	
 	/**
-	 *  Lock User Interface
-	 *  Called from the Worker before processing
+	 *  Lock User Interface.
+	 *  Called from the Worker before processing.
 	 */
 	public void lockUI (ProcessInfo pi)
 	{
@@ -615,7 +632,7 @@ public class WPaySelect extends PaySelect
 
 	/**
 	 *  Unlock User Interface.
-	 *  Called from the Worker when processing is done
+	 *  Called from the Worker when processing is done.
 	 */
 	public void unlockUI (ProcessInfo pi)
 	{
@@ -628,7 +645,6 @@ public class WPaySelect extends PaySelect
 	}
 
 	/**
-	 * 
 	 * @return true if UI is lock
 	 */
 	public boolean isUILocked() {
@@ -641,7 +657,6 @@ public class WPaySelect extends PaySelect
 	}
 	
 	/**
-	 * 
 	 * @return {@link ProcessInfo}
 	 */
 	public ProcessInfo getProcessInfo() {
