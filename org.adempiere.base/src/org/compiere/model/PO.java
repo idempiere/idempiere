@@ -57,6 +57,7 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
 import org.compiere.acct.Doc;
+import org.compiere.dbPort.Convert;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
@@ -2638,7 +2639,8 @@ public abstract class PO
 			String sysProperty = Env.getCtx().getProperty("LogMigrationScript", "N");
 			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
 		}
-		return logMigrationScript;
+		
+		return logMigrationScript ? !Convert.isDontLogTable(p_info.getTableName()) : false;
 	}
 
 	private boolean doUpdate(boolean withValues) {
@@ -2739,14 +2741,22 @@ public abstract class PO
 					sql.append("NULL");
 				else if (value instanceof Integer && p_info.isColumnLookup(i))
 				{
-					MColumn col = MColumn.get(p_info.getAD_Column_ID(columnName));
-					String refTableName = col.getReferenceTableName();
-					MTable refTable = MTable.get(Env.getCtx(), refTableName);
-					String refKeyColumnName = refTable.getKeyColumns()[0];
-					String refUUColumnName = MTable.getUUIDColumnName(refTableName);
-					String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
-							+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
-					sql.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+					Integer idValue = (Integer) value;
+					if (idValue <= MTable.MAX_OFFICIAL_ID) 
+					{
+						sql.append(value);
+					}
+					else
+					{
+						MColumn col = MColumn.get(p_info.getAD_Column_ID(columnName));
+						String refTableName = col.getReferenceTableName();
+						MTable refTable = MTable.get(Env.getCtx(), refTableName);
+						String refKeyColumnName = refTable.getKeyColumns()[0];
+						String refUUColumnName = MTable.getUUIDColumnName(refTableName);
+						String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
+								+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
+						sql.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+					}
 				}
 				else if (value instanceof Integer || value instanceof BigDecimal)
 					sql.append(value);
@@ -3042,6 +3052,38 @@ public abstract class PO
 	}
 
 	/**
+	 * @return true if centralized id is turn on and should be used for tableName
+	 */
+	private boolean isUseCentralizedId(String tableName)
+	{
+		String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
+		boolean adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		if (adempiereSys && Env.getAD_Client_ID(Env.getCtx()) > 11)
+			adempiereSys = false;
+		
+		if (adempiereSys)
+		{
+			boolean b = MSysConfig.getBooleanValue(MSysConfig.DICTIONARY_ID_USE_CENTRALIZED_ID, true);
+			if (b)
+				return !MSequence.isExceptionCentralized(tableName);
+			else
+				return b;
+		}
+		else
+		{
+			boolean queryProjectServer = false;
+			if (MSequence.isTableWithEntityType(tableName))
+				queryProjectServer = true;
+			if (!queryProjectServer && MSequence.Table_Name.equalsIgnoreCase(tableName))
+				queryProjectServer = true;
+			if (queryProjectServer && !MSequence.isExceptionCentralized(tableName)) {
+				return MSysConfig.getBooleanValue(MSysConfig.PROJECT_ID_USE_CENTRALIZED_ID, false);
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 *  Create New Record
 	 *  @return true if new record inserted
 	 */
@@ -3049,7 +3091,7 @@ public abstract class PO
 	{
 		//  Set ID for single key - Multi-Key values need explicitly be set previously
 		if (m_IDs.length == 1 && p_info.hasKeyColumn()
-			&& m_KeyColumns[0].endsWith("_ID") && !isLogSQLScript())	//	AD_Language, EntityType
+			&& m_KeyColumns[0].endsWith("_ID") && (isUseCentralizedId(p_info.getTableName()) || !isLogSQLScript()))	//	AD_Language, EntityType
 		{
 			int no = saveNew_getID();
 			if (no <= 0)
@@ -3184,7 +3226,7 @@ public abstract class PO
 				try
 				{
 					if (m_IDs.length == 1 && p_info.hasKeyColumn()
-							&& m_KeyColumns[0].endsWith("_ID") && m_KeyColumns[0].equals(p_info.getColumnName(i)))
+							&& m_KeyColumns[0].endsWith("_ID") && m_KeyColumns[0].equals(p_info.getColumnName(i)) && !isUseCentralizedId(p_info.getTableName()))
 					{
 						MSequence sequence = MSequence.get(Env.getCtx(), p_info.getTableName(), get_TrxName(), true);
 						sqlValues.append("nextidfunc("+sequence.getAD_Sequence_ID()+",'N')");
@@ -3195,14 +3237,22 @@ public abstract class PO
 						sqlValues.append ("NULL");
 					else if (value instanceof Integer && p_info.isColumnLookup(i))
 					{
-						MColumn col = MColumn.get(p_info.getAD_Column_ID(p_info.getColumnName(i)));
-						String refTableName = col.getReferenceTableName();
-						MTable refTable = MTable.get(Env.getCtx(), refTableName);
-						String refKeyColumnName = refTable.getKeyColumns()[0];
-						String refUUColumnName = MTable.getUUIDColumnName(refTable.getTableName());
-						String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
-								+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
-						sqlValues.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+						Integer idValue = (Integer) value;
+						if (idValue <= MTable.MAX_OFFICIAL_ID) 
+						{
+							sqlValues.append(value);
+						}
+						else
+						{
+							MColumn col = MColumn.get(p_info.getAD_Column_ID(p_info.getColumnName(i)));
+							String refTableName = col.getReferenceTableName();
+							MTable refTable = MTable.get(Env.getCtx(), refTableName);
+							String refKeyColumnName = refTable.getKeyColumns()[0];
+							String refUUColumnName = MTable.getUUIDColumnName(refTable.getTableName());
+							String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
+									+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
+							sqlValues.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+						}
 					}
 					else if (value instanceof Integer || value instanceof BigDecimal)
 						sqlValues.append (value);
@@ -3295,6 +3345,30 @@ public abstract class PO
 					params.add(value);
 				}
 			}
+
+			if (!withValues || isUseCentralizedId(p_info.getTableName()))
+			{
+				//	Change Log	- Only
+				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
+				if (   session != null
+					&& m_IDs.length == 1
+					&& p_info.isAllowLogging(i)		//	logging allowed
+					&& !p_info.isEncrypted(i)		//	not encrypted
+					&& !p_info.isVirtualColumn(i)	//	no virtual column
+					&& !"Password".equals(p_info.getColumnName(i))
+					&& (insertLog.equalsIgnoreCase("Y")
+							|| (insertLog.equalsIgnoreCase("K") && p_info.getColumn(i).IsKey))
+					)
+				{
+					// change log on new
+					MChangeLog cLog = session.changeLog (
+							m_trxName, AD_ChangeLog_ID,
+							p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
+							get_ID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert);
+					if (cLog != null)
+						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
+				}
+			}
 		}
 		//	Custom Columns
 		if (m_custom != null)
@@ -3343,7 +3417,7 @@ public abstract class PO
 		if (ok)
 		{
 			if (withValues && m_IDs.length == 1 && p_info.hasKeyColumn()
-					&& m_KeyColumns[0].endsWith("_ID"))
+					&& m_KeyColumns[0].endsWith("_ID") && !isUseCentralizedId(p_info.getTableName()))
 			{
 				int id = DB.getSQLValueEx(get_TrxName(), "SELECT " + m_KeyColumns[0] + " FROM "
 						+ p_info.getTableName() + " WHERE " + getUUIDColumnName() + "=?", get_ValueAsString(getUUIDColumnName()));

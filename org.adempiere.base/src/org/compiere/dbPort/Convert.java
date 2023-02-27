@@ -46,6 +46,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
+import org.compiere.util.Util;
 
 /**
  *  Convert SQL to Target DB
@@ -572,6 +573,21 @@ public abstract class Convert
 			"T_TRANSACTION",
 			"T_TRIALBALANCE"
 		};
+	
+	/**
+	 * @param tableName
+	 * @return true if log migration script should ignore tableName
+	 */
+	public static boolean isDontLogTable(String tableName) {
+		if (Util.isEmpty(tableName))
+			return false;
+		
+		for (String t : dontLogTables) {
+			if (t.equalsIgnoreCase(tableName))
+				return true;
+		}
+		return false;
+	}
 	
 	private static boolean dontLog(String statement) {
 		// Do not log *Access records - teo_Sarca BF [ 2782095 ]
