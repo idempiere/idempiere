@@ -77,42 +77,58 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
 /**
- * Generate custom form window
- * 
+ * Window for use together with {@link GenForm} to support the select source document and generate new target document UI pattern.
  */
 public class WGenForm extends ADForm implements EventListener<Event>, WTableModelListener
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4240430312911412710L;
 
+	/** Controller */
 	private GenForm genForm;
 	
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(WGenForm.class);
-	//
+	/** Center of form. Tabbox with Select and Generate tab. */
 	private Tabbox tabbedPane = new Tabbox();
+	/** Layout for Select tab */
 	private Borderlayout selPanel = new Borderlayout();
+	/** Grid layout for North of {@link #selPanel} */
 	private Grid selNorthPanel = GridFactory.newGridLayout();
+	/** Action buttons panel. South of {@link #selPanel} */
 	private ConfirmPanel confirmPanelSel = new ConfirmPanel(true, true, false, false, false, false, false);
+	/** Action buttons panel. South of {@link #genPanel} */
 	private ConfirmPanel confirmPanelGen = new ConfirmPanel(false, false, false, false, false, false, false);
+	/** Status bar. South of form */
 	private StatusBarPanel statusBar = new StatusBarPanel();
+	/** Layout for Generate tab */
 	private Borderlayout genPanel = new Borderlayout();
+	/** Child of {@link #messageDiv}. Info text from execution of Generate process */
 	private Html info = new Html();
+	/** Data grid for source document selection. Center of {@link #selPanel} */
 	private WListbox miniTable = ListboxFactory.newDataTable();
 	private BusyDialog progressWindow;
+	/** Center of {@link #genPanel}. Info text from execution of Generate process */
 	private Div messageDiv;
+	/** Child of {@link #messageDiv}. Show message and link from {@link ProcessInfoLog} */
 	private Table logMessageTable;
 	
 	private int[] m_ids;
 	
+	/**
+	 * @param genForm
+	 */
 	public WGenForm(GenForm genForm)
 	{
-		log.info("");
+		if (log.isLoggable(Level.INFO)) log.info("");
 		this.genForm = genForm;
 	}
 	
+	/**
+	 * Layout form
+	 */
 	@Override
 	protected void initForm() 
 	{
@@ -144,19 +160,18 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	}	//	init
 	
 	/**
-	 *	Static Init.
-	 *  <pre>
-	 *  selPanel (tabbed)
-	 *      fOrg, fBPartner
-	 *      scrollPane & miniTable
-	 *  genPanel
-	 *      info
-	 *  </pre>
+	 *	Layout Select and Generate tab.
+	 *  <br/>
+	 *  {@link #selPanel} tab:
+	 *  <li>fOrg, fBPartner</li>
+	 *  <li>scrollPane & miniTable</li>
+	 *  <br/>
+	 *  {@link #genPanel} tab:
+	 *  <li>info</li>
 	 *  @throws Exception
 	 */
 	void zkInit() throws Exception
 	{
-		//
 		ZKUpdateUtil.setWidth(selPanel, "100%");
 		ZKUpdateUtil.setHeight(selPanel, "100%");
 		selPanel.setStyle("border: none; position: relative");
@@ -210,9 +225,9 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	}	//	jbInit
 
 	/**
-	 *	Dynamic Init.
-	 *	- Create GridController and Panel
-	 *	- AD_Column_ID from C_Order
+	 *	Dynamic Init.<br/>
+	 *	- Configure {@link #miniTable}<br/>
+	 *	- Setup listeners
 	 */
 	public void dynInit()
 	{
@@ -227,6 +242,10 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		button.setEnabled(false);
 	}	//	dynInit
 
+	/**
+	 * Handle onClick event from {@link ConfirmPanel#A_REFRESH} button.<br/>
+	 * Echo onExecuteQuery event.
+	 */
 	public void postQueryEvent() 
     {
 		Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));
@@ -234,7 +253,8 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
     }
     
     /**
-     * Dont call this directly, use internally to handle execute query event 
+     * Dont call this directly, use internally to handle onExecuteQuery event. <br/>
+     * Call {@link GenForm#executeQuery()}. 
      */
     public void onExecuteQuery()
     {
@@ -249,12 +269,13 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
     }
     
 	/**
-	 *	Action Listener
+	 *	Event Listener
 	 *  @param e event
 	 */
+    @Override
 	public void onEvent(Event e) throws Exception
 	{
-		log.info("Cmd=" + e.getTarget().getId());
+		if (log.isLoggable(Level.INFO)) log.info("Event Target Id=" + e.getTarget().getId());
 		//
 		if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
 		{
@@ -287,10 +308,10 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		{
 			super.onEvent(e);
 		}				
-	}	//	actionPerformed
+	}
 
 	/**
-	 *  Table Model Listener
+	 *  Table Model Listener for {@link #miniTable}.
 	 *  @param e event
 	 */
 	public void tableChanged(WTableModelEvent e)
@@ -320,8 +341,8 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	}	//	saveSelection
 
 	
-	/**************************************************************************
-	 *	Generate Shipments
+	/**
+	 *	Generate Document
 	 */
 	public void generate()
 	{
@@ -332,7 +353,8 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	}	//	generate
 
 	/**
-	 * Internal use, don't call this directly
+	 * Handle runProcess event echo from {@link #generate()} (don't call this directly). <br/>
+	 * Call {@link WProcessCtl#run()} to execute generate document process.
 	 */
 	public void runProcess() 
 	{
@@ -345,8 +367,8 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 	}
 	
 	/**
-	 *  Complete generating shipments.
-	 *  Called from Unlock UI
+	 *  After complete generating documents.<br/>
+	 *  Called from Unlock UI.
 	 *  @param pi process info
 	 */
 	private void generateComplete ()
@@ -356,7 +378,7 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 			progressWindow = null;
 		}
 		
-		//  Switch Tabs
+		// Set Generate tab as the active tab to display result from generate document process.
 		tabbedPane.getTabpanel(1).getLinkedTab().setDisabled(false);
 		tabbedPane.setSelectedIndex(1);		
 		//
@@ -365,11 +387,10 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		iText.append("<b>").append(genForm.getProcessInfo().getSummary())
 			.append("</b><br>(")
 			.append(Msg.getMsg(Env.getCtx(), genForm.getTitle()))
-			//  Shipments are generated depending on the Delivery Rule selection in the Order
 			.append(")<br><br>");
 		info.setContent(iText.toString());
 		
-		//If log Message Table presents, remove it
+		//If log Message Table exists, remove it first
 		if(logMessageTable!=null){
 			messageDiv.removeChild(logMessageTable);
 		}
@@ -387,7 +408,9 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		
 	}   //  generateShipments_complete
 	
-	
+	/**
+	 * Handle onAfterProcess event echo from {@link #generateComplete()}.
+	 */
 	public void onAfterProcess()
 	{
 		//	OK to print
@@ -406,9 +429,12 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		});
 	}
 	
+	/**
+	 * Print generated documents.
+	 */
 	public void onPrint() 
 	{
-//		Loop through all items
+		// Loop through all items
 		List<File> pdfList = new ArrayList<File>();
 		for (int i = 0; i < m_ids.length; i++)
 		{
@@ -476,27 +502,39 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		generateComplete();
 	}   //  unlockUI
 	
+	/**
+	 * Close window
+	 */
 	public void dispose() {
 		SessionManager.getAppDesktop().closeActiveWindow();
 	}
 	
+	/**
+	 * @return {@link Grid} Parameter panel
+	 */
 	public Grid getParameterPanel()
 	{
 		return selNorthPanel;
 	}
 	
+	/**
+	 * @return {@link WListbox} source document list.
+	 */
 	public WListbox getMiniTable()
 	{
 		return miniTable;
 	}
 	
+	/**
+	 * @return {@link StatusBarPanel}
+	 */
 	public StatusBarPanel getStatusBar()
 	{
 		return statusBar;
 	}
 	
 	/**
-	 *append process log info to response panel
+	 * Append process log info to {@link #logMessageTable}.
 	 * @param m_logs
 	 */
 	private void appendRecordLogInfo(ProcessInfoLog[] m_logs) {
@@ -512,8 +550,6 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 		logMessageTable.setDynamicProperty("cellspacing", "0");
 		logMessageTable.setDynamicProperty("width", "100%");
     	
-    	this.appendChild(logMessageTable);
-
     	boolean datePresents = false;
 		boolean numberPresents = false;
 		boolean msgPresents = false;
@@ -526,7 +562,6 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 			if (log.getP_Msg() != null)
 				msgPresents = true;
 		}
-
 		
     	for (int i = 0; i < m_logs.length; i++)
 		{
@@ -575,6 +610,5 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 			}
 		}
     	messageDiv.appendChild(logMessageTable);
-	}
-	
+	}	
 }

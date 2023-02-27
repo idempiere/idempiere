@@ -44,6 +44,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.StatementCreateFromBatch;
 import org.compiere.model.MBankStatement;
+import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -58,13 +59,14 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hbox;
 
 /**
- * 
+ * Form to create bank statement line ({@link MBankStatementLine}) from transactions (payment, receipt, etc).
  * @author Elaine
  *
  */
 @org.idempiere.ui.zk.annotation.Form
 public class WStatementCreateFromBatch extends StatementCreateFromBatch implements IFormController, EventListener<Event>
 {
+	/** Create From Form instance */
 	private WCreateFromForm form;
 	
 	/**
@@ -102,35 +104,49 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	private final static CLogger log = CLogger.getCLogger(WStatementCreateFromBatch.class);
 	
 	protected Label bankAccountLabel = new Label();
+	/** Bank account parameter */
 	protected WTableDirEditor bankAccountField;
 	
 	protected Label documentNoLabel = new Label(Msg.translate(Env.getCtx(), "DocumentNo"));
+	/** Document number parameter */
 	protected WStringEditor documentNoField = new WStringEditor();
 
 	protected Label documentTypeLabel = new Label();
+	/** Document type parameter */
 	protected WTableDirEditor documentTypeField;
 
 	protected Label authorizationLabel = new Label();
+	/** Authorization code parameter */
 	protected WStringEditor authorizationField = new WStringEditor();
 
 	protected Label tenderTypeLabel = new Label();
+	/** Tender type parameter */
 	protected WTableDirEditor tenderTypeField;
 	
 	protected Label amtFromLabel = new Label(Msg.translate(Env.getCtx(), "PayAmt"));
+	/** Amount from parameter */
 	protected WNumberEditor amtFromField = new WNumberEditor("AmtFrom", false, false, true, DisplayType.Amount, Msg.translate(Env.getCtx(), "AmtFrom"));
 	protected Label amtToLabel = new Label("-");
+	/** Amount to parameter */
 	protected WNumberEditor amtToField = new WNumberEditor("AmtTo", false, false, true, DisplayType.Amount, Msg.translate(Env.getCtx(), "AmtTo"));
 	
 	protected Label BPartner_idLabel = new Label(Msg.translate(Env.getCtx(), "BPartner"));
+	/** Business partner parameter */
 	protected WEditor bPartnerLookup;
 
 	protected Label dateFromLabel = new Label(Msg.translate(Env.getCtx(), "DateTrx"));
+	/** Date from parameter */
 	protected WDateEditor dateFromField = new WDateEditor("DateFrom", false, false, true, Msg.translate(Env.getCtx(), "DateFrom"));
 	protected Label dateToLabel = new Label("-");
+	/** Date to parameter */
 	protected WDateEditor dateToField = new WDateEditor("DateTo", false, false, true, Msg.translate(Env.getCtx(), "DateTo"));
 	
+	/** Layout of parameter panel */
 	protected Grid parameterBankLayout;
 
+	/**
+	 * Dynamic initialization of UI components.
+	 */
 	@Override
 	protected boolean dynInit() throws Exception
 	{
@@ -181,7 +197,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	}   //  dynInit
 	
 	/**
-	 * handle onClientInfo event
+	 * handle onClientInfo event from browser
 	 */
 	protected void onClientInfo()
 	{
@@ -208,6 +224,10 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		}
 	}
 
+	/**
+	 * Layout {@link #form}
+	 * @throws Exception
+	 */
 	protected void zkInit() throws Exception
 	{
 		bankAccountLabel.setText(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));
@@ -273,7 +293,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	}
 
 	/**
-	 * Configure layout of parameter grid
+	 * Setup columns of {@link #parameterBankLayout}
 	 * @param parameterBankLayout
 	 */
 	protected void setupColumns(Grid parameterBankLayout) {
@@ -327,7 +347,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 	}
 	
 	/**
-	 * load data into list box
+	 * load data into list box ({@link WCreateFromForm#getWListbox()})
 	 * @param data
 	 */
 	protected void loadTableOIS (Vector<?> data)

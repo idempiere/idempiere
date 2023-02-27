@@ -22,6 +22,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
+import org.compiere.grid.IPaymentForm;
 import org.compiere.grid.PaymentForm;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -32,29 +33,37 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 
 /**
- * 
+ * Window for {@link IPaymentForm}.
  * @author Elaine
- *
  */
 public class WPaymentFormWindow extends Window implements EventListener<Event>, DialogEvents {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 2710316463655831868L;
 
+	/** Form Controller */
 	private PaymentForm paymentForm;
 	private int windowNo;
 	
+	/** Main panel of form */
 	private Panel mainPanel = new Panel();
+	/** Center of {@link #mainLayout} */
 	private Panel centerPanel = new Panel();
+	/** Layout of {@link #mainPanel} */
 	private Borderlayout mainLayout = new Borderlayout();
+	/** South of {@link #mainLayout}. Action buttons panel. */
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
-	
+	/** True when UI is lock */
 	private boolean m_isLocked = false;
+	/** Status of initialization */ 
 	private boolean initOK = false;
 	private BusyDialog progressWindow;
 	
+	/**
+	 * @param paymentForm
+	 * @param windowNo
+	 */
 	public WPaymentFormWindow(PaymentForm paymentForm, int windowNo)
 	{
 		super();
@@ -79,10 +88,17 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 	}
 	
+	/**
+	 * @return window number
+	 */
 	protected int getWindowNo() {
 		return this.windowNo;
 	}
 	
+	/**
+	 * Layout form.
+	 * @throws Exception
+	 */
 	private void zkInit() throws Exception {
 		this.appendChild(mainPanel);
 		mainPanel.appendChild(mainLayout);
@@ -104,34 +120,45 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		confirmPanel.addActionListener(this);
 	}
 	
+	/**
+	 * Dynamic initialization.
+	 * Call {@link PaymentForm#dynInit()}.
+	 * @return initialization status
+	 * @throws Exception
+	 */
 	private boolean dynInit() throws Exception {
 		boolean isInitOK = paymentForm.dynInit();
 		centerPanel.setVisible(!paymentForm.isOnlyRule());
 		return isInitOK;
 	}
 	
+	/**
+	 * @return {@link #centerPanel}
+	 */
 	public Panel getPanel() {
 		return centerPanel;
 	}
 	
-	/**************************************************************************
-	 * Action Listener
+	/**
+	 * Event Listener
 	 * 
-	 * @param e
-	 *            event
+	 * @param e event
 	 */
 	public void onEvent(Event e) {
 		// Finish
 		if (e.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			if (paymentForm.checkMandatory()) {
-				paymentForm.saveChanges(); // cannot recover
+				paymentForm.saveChanges();
 				dispose();
 			}
 		} else if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
-			dispose();
-		
-	} // actionPerformed
+			dispose();		
+	}
 	
+	/**
+	 * Handle runProcessOnline event.
+	 * Call {@link PaymentForm#processOnline()}.
+	 */
 	public void runProcessOnline() {
 		try {
 			paymentForm.processOnline();
@@ -140,6 +167,9 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		}
 	}
 	
+	/**
+	 * Unlock and update UI.
+	 */
 	public void unlockUI() {
 		if (!m_isLocked) return;
 		
@@ -148,6 +178,9 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		updateUI();
 	}
 	
+	/**
+	 * Lock UI and show in progress dialog.
+	 */
 	public void lockUI() {
 		if (m_isLocked) return;
 		
@@ -156,6 +189,9 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		showBusyDialog();
 	}
 	
+	/**
+	 * Close in progress dialog.
+	 */
 	private void hideBusyDialog() {
 		if (progressWindow != null) {
 			progressWindow.dispose();
@@ -163,17 +199,27 @@ public class WPaymentFormWindow extends Window implements EventListener<Event>, 
 		}
 	}
 
+	/**
+	 * Update UI after completion of processing/save.<br/>
+	 * Call from {@link #unlockUI()}.
+	 */
 	private void updateUI() {
 		if (paymentForm.isApproved())
 			dispose();
 	}
 	
+	/**
+	 * Show in progress window.
+	 */
 	private void showBusyDialog() {
 		progressWindow = new BusyDialog();
 		progressWindow.setPage(this.getPage());
 		progressWindow.doHighlighted();
 	}
 	
+	/**
+	 * @return true if initialization have been completed sucessfully
+	 */
 	public boolean isInitOK()
 	{
 		return initOK;
