@@ -26,16 +26,15 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
 /**
- * 
+ * Form to create shipment package lines (M_PackageLine) from shipment lines (through M_PackageMPS).
  * @author Elaine
- *
  */
 public class WCreateFromPackageShipmentUI extends CreateFromPackageShipment
 {
+	/** Create from window instance */
 	private WCreateFromWindow window;
 
 	/**
-	 * 
 	 * @param mTab
 	 */
 	public WCreateFromPackageShipmentUI(GridTab mTab) 
@@ -59,9 +58,12 @@ public class WCreateFromPackageShipmentUI extends CreateFromPackageShipment
 		AEnv.showWindow(window);
 	}
 
-	/**	Logger			*/
+	/**	Logger */
 	private static final CLogger log = CLogger.getCLogger(WCreateFromPackageShipmentUI.class);
 	
+	/**
+	 * Load shipments lines
+	 */
 	@Override
 	protected boolean dynInit() throws Exception
 	{

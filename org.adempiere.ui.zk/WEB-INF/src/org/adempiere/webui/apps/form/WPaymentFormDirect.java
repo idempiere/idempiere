@@ -45,28 +45,32 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Space;
 
 /**
- * 
+ * Abstract base payment form class for payment rule direct debit and direct deposit.
  * @author Elaine
  *
  */
 public abstract class WPaymentFormDirect extends PaymentFormDirect implements EventListener<Event> {
-
+	/** Payment form window instance */
 	private WPaymentFormWindow window;
 	
 	private Label tAccountLabel = new Label();
+	/** Bank accounts */
 	private Listbox tAccountCombo = ListboxFactory.newDropdownListbox();
 	private Button tOnline = new Button();
+	/** Routing number */
 	private Textbox tRoutingField = new Textbox();
+	/** Account number */
 	private Textbox tNumberField = new Textbox();
 	private Label tStatus = new Label();
+	/** Label for {@link #tRoutingField} */
 	private Label tRoutingText = new Label();
+	/** Label for {@link #tNumberField} */
 	private Label tNumberText = new Label();
 	
 	/**
-	 * 
 	 * @param windowNo
 	 * @param mTab
-	 * @param isDebit
+	 * @param isDebit true for direct debit, false for direct deposit
 	 */
 	public WPaymentFormDirect(int windowNo, GridTab mTab, boolean isDebit) {
 		super(windowNo, mTab, isDebit);
@@ -74,6 +78,9 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 		init();
 	}
 	
+	/**
+	 * Layout {@link #window}
+	 */
 	protected void init() {		
 		Grid tPanelLayout = GridFactory.newGridLayout();
 		window.getPanel().appendChild(tPanelLayout);
