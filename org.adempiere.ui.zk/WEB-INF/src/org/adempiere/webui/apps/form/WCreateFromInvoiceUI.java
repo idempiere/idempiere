@@ -56,22 +56,22 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Space;
 
 /**
- * 
+ * Form to create Invoice Lines from Purchase Order, Material Receipt or Vendor RMA.
  * @author hengsin
- *
  */
 public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventListener<Event>, ValueChangeListener
 {
+	/** UI form instance */
 	private WCreateFromWindow window;
 	
 	/**
-	 * 
 	 * @param tab
 	 */
 	public WCreateFromInvoiceUI(GridTab tab) 
 	{
 		super(tab);
-		log.info(getGridTab().toString());
+		if (log.isLoggable(Level.INFO))
+			log.info(getGridTab().toString());
 		
 		window = new WCreateFromWindow(this, getGridTab().getWindowNo());
 		
@@ -92,19 +92,22 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		AEnv.showWindow(window);
 	}
 	
-	/** Window No               */
+	/** Window No */
 	private int p_WindowNo;
 
-	/**	Logger			*/
+	/**	Logger */
 	private static final CLogger log = CLogger.getCLogger(WCreateFromInvoiceUI.class);
 		
 	protected Label bPartnerLabel = new Label();
+	/** Business partner parameter field */
 	protected WEditor bPartnerField;
 	
 	protected Label orderLabel = new Label();
+	/** Orders parameter field */
 	protected Listbox orderField = ListboxFactory.newDropdownListbox();
 	
 	protected Label shipmentLabel = new Label();
+	/** Shipments parameter field */
 	protected Listbox shipmentField = ListboxFactory.newDropdownListbox();
     
     /** Label for the rma selection */
@@ -112,9 +115,15 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
     /** Combo box for selecting RMA document */
     protected Listbox rmaField = ListboxFactory.newDropdownListbox();
 
+    /** Grid layout for parameter panel */
 	private Grid parameterStdLayout;
 	
 	private boolean isCreditMemo = false;
+	
+	/** true when form is handling an event */
+	private boolean m_actionActive = false;
+	/** Number of column for {@link #parameterStdLayout} */
+	private int noOfParameterColumn;
 	
 	@Override
 	public boolean dynInit() throws Exception
@@ -143,6 +152,10 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		return true;
 	}   //  dynInit
 	
+	/**
+	 * Layout {@link #window}
+	 * @throws Exception
+	 */
 	protected void zkInit() throws Exception
 	{
 		bPartnerLabel.setText(Msg.getElement(Env.getCtx(), "C_BPartner_ID"));
@@ -194,6 +207,10 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
         hideEmptyRow(rows);
 	}
 
+	/**
+	 * Hide a row if all parameter fields within a row is invisible. 
+	 * @param rows
+	 */
 	private void hideEmptyRow(org.zkoss.zul.Rows rows) {
 		for(Component a : rows.getChildren()) {
 			Row row = (Row) a;
@@ -221,10 +238,6 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		}
 	}
 
-	private boolean 	m_actionActive = false;
-
-	private int noOfParameterColumn;
-	
 	@Override
 	public void onEvent(Event e) throws Exception
 	{
@@ -286,7 +299,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		window.tableChanged(null);
 	}   //  vetoableChange
 	
-	/**************************************************************************
+	/**
 	 *  Load BPartner Field
 	 *  @param forInvoice true if Invoices are to be created, false receipts
 	 *  @throws Exception if Lookups cannot be initialized
@@ -329,6 +342,10 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 		initBPDetails(C_BPartner_ID);
 	}   //  initBPartnerOIS
 	
+	/**
+	 * Call {@link #initBPShipmentDetails(int)} and {@link #initBPRMADetails(int)}.
+	 * @param C_BPartner_ID
+	 */
 	private void initBPDetails(int C_BPartner_ID) 
 	{
 		initBPShipmentDetails(C_BPartner_ID);
@@ -336,7 +353,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	}
 
 	/**
-	 * Load PBartner dependent Shipment Field.
+	 * Load BPartner dependent Shipments.
 	 * @param C_BPartner_ID
 	 */
 	private void initBPShipmentDetails(int C_BPartner_ID)
@@ -359,7 +376,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	}
 	
 	/**
-	 * Load RMA that are candidates for billing
+	 * Load RMA documents that are candidates for billing
 	 * @param C_BPartner_ID BPartner
 	 */
 	private void initBPRMADetails(int C_BPartner_ID)
@@ -379,9 +396,9 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	}
 
 	/**
-	 *  Load Order Line records
+	 *  Load Order Line records.
 	 *  @param C_Order_ID Order
-	 *  @param forInvoice true if for invoice vs. delivery qty
+	 *  @param forInvoice true for invoice line, false for inout line
 	 */
 	protected void loadOrder (int C_Order_ID, boolean forInvoice)
 	{
@@ -407,7 +424,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	}
 	
 	/**
-	 *  Load datas into list box
+	 *  Load data into list box
 	 *  @param data data
 	 */
 	protected void loadTableOIS (Vector<?> data)
@@ -443,7 +460,7 @@ public class WCreateFromInvoiceUI extends CreateFromInvoice implements EventList
 	}
 	
 	/**
-	 * configure layout of parameter grid
+	 * Setup columns for parameterGrid
 	 * @param parameterGrid
 	 */
 	protected void setupColumns(Grid parameterGrid) {

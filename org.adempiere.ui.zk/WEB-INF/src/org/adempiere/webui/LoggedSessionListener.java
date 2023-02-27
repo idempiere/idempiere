@@ -77,7 +77,6 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
 	public void contextInitialized(ServletContextEvent arg0) {
 		DestroyAllSession();
 		
-		// bring from depricate class WebUIServlet
 		/** Initialise context for the current thread*/
         Properties serverContext = new Properties();
         serverContext.put(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER, new ServerContextURLHandler() {
@@ -91,7 +90,7 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
         File file = new File(propertyFile);
         if (!file.exists())
         {
-        	throw new IllegalStateException("idempiere.properties is not setup. PropertyFile="+propertyFile);
+        	throw new IllegalStateException("idempiere.properties file missing. Path="+file.getAbsolutePath());
         }
         if (!Adempiere.isStarted())
         {
