@@ -25,6 +25,7 @@
 package org.compiere.process;
 
 import org.compiere.model.MProcessDrillRule;
+import org.compiere.util.Msg;
 
 /**
  * 	Validate Drill Rule Parameters
@@ -56,7 +57,10 @@ public class DrillRuleValidate extends SvrProcess
 		MProcessDrillRule drillRule = new MProcessDrillRule(getCtx(), p_AD_Process_DrillRule_ID, null);
 		drillRule.validate();
 		drillRule.saveEx();
-
+		if(getAD_Client_ID() == 0 && drillRule.hasMandatoryProcessPara() 
+				&& !MProcessDrillRule.SHOWHELP_ShowHelp.equalsIgnoreCase(drillRule.getShowHelp())) {
+			return "@NotValid@" + ": " + Msg.getMsg(getCtx(), "DrillParameterTenantCheck");
+		}
 		return drillRule.isValid() ? "@OK@" : "@NotValid@";
 	}
 	

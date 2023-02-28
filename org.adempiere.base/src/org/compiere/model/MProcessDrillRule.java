@@ -136,10 +136,9 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 	 */
 	public static MProcessDrillRule[] getByTable(Properties ctx, int AD_Table_ID, String trxName) {
 
-		String whereClause = " AD_Table_ID = ? AND IsValid = 'Y' ";
+		String whereClause = " AD_Table_ID = ? AND IsValid = 'Y' AND " + MProcessDrillRule.Table_Name + "." + MProcessDrillRule.COLUMNNAME_AD_Client_ID + " IN (0,?)";
 		List<MProcessDrillRule> processDrillRules = new Query(ctx, MProcessDrillRule.Table_Name, whereClause, trxName)
-				.setParameters(AD_Table_ID)
-				.setClient_ID()
+				.setParameters(AD_Table_ID, Env.getAD_Client_ID(ctx))
 				.setOnlyActiveRecords(true)
 				.list();
 
@@ -155,13 +154,12 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 	 */
 	public static MProcessDrillRule[] getByColumnName(Properties ctx, String columnName, String trxName) {
 
-		String whereClause = " IsValid = 'Y' ";
+		String whereClause = " IsValid = 'Y' AND " + MProcessDrillRule.Table_Name + "." + MProcessDrillRule.COLUMNNAME_AD_Client_ID + " IN (0,?)";
 		List<MProcessDrillRule> processDrillRules = new Query(ctx, MProcessDrillRule.Table_Name, whereClause, trxName)
 				.addJoinClause(" INNER JOIN AD_Process_Para pp ON "
 								+ MProcessDrillRule.Table_Name + "." + MProcessDrillRule.COLUMNNAME_AD_Process_Para_ID + " = pp." + MProcessPara.COLUMNNAME_AD_Process_Para_ID
 								+ " AND " + MProcessPara.COLUMNNAME_ColumnName + " = ?")
-				.setParameters(columnName)
-				.setClient_ID()
+				.setParameters(columnName, Env.getAD_Client_ID(ctx))
 				.setOnlyActiveRecords(true)
 				.list();
 
@@ -216,7 +214,6 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 	
 	/**
 	 * Are all mandatory parameters defined among the Drill Rule Parameters
-	 * @param processID
 	 * @return true - all mandatory parameters are set; false - at least one mandatory parameter is not set
 	 */
 	private boolean allMandatoryParaSet() {
@@ -242,9 +239,30 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 	}
 	
 	/**
+	 * Has any Drill Rule Parameters with a mandatory Process Parameter
+	 * @return boolean true if has at least one Drill Rule Parameter with a mandatory Process Parameter
+	 */
+	public boolean hasMandatoryProcessPara() {
+		MProcess process = new MProcess(Env.getCtx(), getAD_Process_ID(), null);
+		for(MProcessPara processPara : process.getParameters()) {
+			if(processPara.isMandatory())
+				return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * Validate Drill Rule - set IsValid
 	 */
 	public void validate() {
-		setIsValid(allMandatoryParaSet());
+		if(getAD_Client_ID() == 0 && hasMandatoryProcessPara() && !SHOWHELP_ShowHelp.equalsIgnoreCase(getShowHelp())) {
+			setIsValid(false);
+		}
+		else if(SHOWHELP_ShowHelp.equalsIgnoreCase(getShowHelp())) {
+			setIsValid(true);
+		}
+		else {
+			setIsValid(allMandatoryParaSet());
+		}
 	}
 }
