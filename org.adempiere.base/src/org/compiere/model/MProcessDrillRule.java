@@ -179,6 +179,7 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 					setAD_Table_ID(reportView.getAD_Table_ID());
 			}
 		}
+		validate();
 		return super.beforeSave(newRecord);
 	}
 	
@@ -220,7 +221,7 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 	 */
 	private boolean allMandatoryParaSet() {
 		boolean isValid = false;
-		MProcess process = new MProcess(Env.getCtx(), getAD_Process_ID(), null);
+		MProcess process = new MProcess(Env.getCtx(), getAD_Process_ID(), get_TrxName());
 		for(MProcessPara processPara : process.getParameters()) {
 			if(processPara.isMandatory()) {
 				for(MProcessDrillRulePara drillRulePara : getParameters(true)) {
