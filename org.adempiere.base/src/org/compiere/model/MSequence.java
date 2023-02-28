@@ -86,7 +86,7 @@ public class MSequence extends X_AD_Sequence
 		} 
 		else
 		{
-			String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
+			String sysProperty = Env.getCtx().getProperty(Ini.P_ADEMPIERESYS, "N");
 			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
 		}
 		if (adempiereSys && AD_Client_ID > 11)
@@ -315,7 +315,7 @@ public class MSequence extends X_AD_Sequence
 		} 
 		else
 		{
-			String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
+			String sysProperty = Env.getCtx().getProperty(Ini.P_ADEMPIERESYS, "N");
 			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
 		}
 		if (adempiereSys && Env.getAD_Client_ID(Env.getCtx()) > 11)
@@ -1103,7 +1103,7 @@ public class MSequence extends X_AD_Sequence
 		String prm_PASSWORD = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_PASSWORD);  // "password_inseguro";
 		String prm_TABLE = TableName;
 		String prm_ALTKEY = "";  // TODO: generate alt-key based on key of table
-		String prm_COMMENT = Env.getContext(Env.getCtx(), "MigrationScriptComment");
+		String prm_COMMENT = Env.getContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment);
 		String prm_PROJECT = new String("Adempiere");
 
 		return getNextID_HTTP(TableName, website, prm_USER,
@@ -1122,7 +1122,7 @@ public class MSequence extends X_AD_Sequence
 		String prm_PASSWORD = MSysConfig.getValue(MSysConfig.PROJECT_ID_PASSWORD);  // "password_inseguro";
 		String prm_TABLE = TableName;
 		String prm_ALTKEY = "";  // TODO: generate alt-key based on key of table
-		String prm_COMMENT = Env.getContext(Env.getCtx(), "MigrationScriptComment");
+		String prm_COMMENT = Env.getContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment);
 		String prm_PROJECT = MSysConfig.getValue(MSysConfig.PROJECT_ID_PROJECT);
 
 		return getNextID_HTTP(TableName, website, prm_USER,

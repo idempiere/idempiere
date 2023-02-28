@@ -57,7 +57,6 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
 import org.compiere.acct.Doc;
-import org.compiere.dbPort.Convert;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
@@ -67,7 +66,6 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
-import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.SecureEngine;
@@ -2631,16 +2629,11 @@ public abstract class PO
 		return saveFinish (false, ok);
 	}   //  saveUpdate
 
+	/**
+	 * @return true if sql migration script should be logged for changes to this PO instance
+	 */
 	private boolean isLogSQLScript() {
-		boolean logMigrationScript = false;
-		if (Ini.isClient()) {
-			logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
-		} else {
-			String sysProperty = Env.getCtx().getProperty("LogMigrationScript", "N");
-			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
-		}
-		
-		return logMigrationScript ? !Convert.isDontLogTable(p_info.getTableName()) : false;
+		return Env.isLogMigrationScript(p_info.getTableName());
 	}
 
 	private boolean doUpdate(boolean withValues) {
@@ -2739,6 +2732,36 @@ public abstract class PO
 				//  values
 				if (value == Null.NULL)
 					sql.append("NULL");
+				else if (value instanceof Integer && "Record_ID".equalsIgnoreCase(columnName))
+				{
+					Integer idValue = (Integer) value;
+					if (idValue <= MTable.MAX_OFFICIAL_ID) 
+					{
+						sql.append(value);
+					}
+					else if (p_info.getColumnIndex("AD_Table_ID") >= 0)
+					{
+						int tableId = get_ValueAsInt("AD_Table_ID");
+						if (tableId > 0)
+						{
+							MTable refTable = MTable.get(Env.getCtx(), tableId);
+							String refTableName = refTable.getTableName();
+							String refKeyColumnName = refTable.getKeyColumns()[0];
+							String refUUColumnName = MTable.getUUIDColumnName(refTableName);
+							String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
+									+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
+							sql.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+						}
+						else
+						{
+							sql.append(value);
+						}
+					}
+					else
+					{
+						sql.append(value);
+					}
+				}
 				else if (value instanceof Integer && p_info.isColumnLookup(i))
 				{
 					Integer idValue = (Integer) value;
@@ -3052,38 +3075,6 @@ public abstract class PO
 	}
 
 	/**
-	 * @return true if centralized id is turn on and should be used for tableName
-	 */
-	private boolean isUseCentralizedId(String tableName)
-	{
-		String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
-		boolean adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
-		if (adempiereSys && Env.getAD_Client_ID(Env.getCtx()) > 11)
-			adempiereSys = false;
-		
-		if (adempiereSys)
-		{
-			boolean b = MSysConfig.getBooleanValue(MSysConfig.DICTIONARY_ID_USE_CENTRALIZED_ID, true);
-			if (b)
-				return !MSequence.isExceptionCentralized(tableName);
-			else
-				return b;
-		}
-		else
-		{
-			boolean queryProjectServer = false;
-			if (MSequence.isTableWithEntityType(tableName))
-				queryProjectServer = true;
-			if (!queryProjectServer && MSequence.Table_Name.equalsIgnoreCase(tableName))
-				queryProjectServer = true;
-			if (queryProjectServer && !MSequence.isExceptionCentralized(tableName)) {
-				return MSysConfig.getBooleanValue(MSysConfig.PROJECT_ID_USE_CENTRALIZED_ID, false);
-			}
-		}
-		return false;
-	}
-	
-	/**
 	 *  Create New Record
 	 *  @return true if new record inserted
 	 */
@@ -3091,7 +3082,7 @@ public abstract class PO
 	{
 		//  Set ID for single key - Multi-Key values need explicitly be set previously
 		if (m_IDs.length == 1 && p_info.hasKeyColumn()
-			&& m_KeyColumns[0].endsWith("_ID") && (isUseCentralizedId(p_info.getTableName()) || !isLogSQLScript()))	//	AD_Language, EntityType
+			&& m_KeyColumns[0].endsWith("_ID") && (Env.isUseCentralizedId(p_info.getTableName()) || !isLogSQLScript()))	//	AD_Language, EntityType
 		{
 			int no = saveNew_getID();
 			if (no <= 0)
@@ -3226,7 +3217,7 @@ public abstract class PO
 				try
 				{
 					if (m_IDs.length == 1 && p_info.hasKeyColumn()
-							&& m_KeyColumns[0].endsWith("_ID") && m_KeyColumns[0].equals(p_info.getColumnName(i)) && !isUseCentralizedId(p_info.getTableName()))
+							&& m_KeyColumns[0].endsWith("_ID") && m_KeyColumns[0].equals(p_info.getColumnName(i)) && !Env.isUseCentralizedId(p_info.getTableName()))
 					{
 						MSequence sequence = MSequence.get(Env.getCtx(), p_info.getTableName(), get_TrxName(), true);
 						sqlValues.append("nextidfunc("+sequence.getAD_Sequence_ID()+",'N')");
@@ -3235,6 +3226,36 @@ public abstract class PO
 						sqlValues.append (saveNewSpecial (value, i));
 					else if (value == null || value.equals (Null.NULL))
 						sqlValues.append ("NULL");
+					else if (value instanceof Integer && "Record_ID".equalsIgnoreCase(p_info.getColumnName(i)))
+					{
+						Integer idValue = (Integer) value;
+						if (idValue <= MTable.MAX_OFFICIAL_ID) 
+						{
+							sqlValues.append(value);
+						}
+						else if (p_info.getColumnIndex("AD_Table_ID") >= 0)
+						{
+							int tableId = get_ValueAsInt("AD_Table_ID");
+							if (tableId > 0)
+							{
+								MTable refTable = MTable.get(Env.getCtx(), tableId);
+								String refTableName = refTable.getTableName();
+								String refKeyColumnName = refTable.getKeyColumns()[0];
+								String refUUColumnName = MTable.getUUIDColumnName(refTableName);
+								String refUUValue = DB.getSQLValueString(get_TrxName(), "SELECT " + refUUColumnName + " FROM "
+										+ refTableName + " WHERE " + refKeyColumnName + "=?", (Integer)value);
+								sqlValues.append("toRecordId('"+ refTableName + "','" + refUUValue + "')");
+							}
+							else
+							{
+								sqlValues.append(value);
+							}
+						}
+						else
+						{
+							sqlValues.append(value);
+						}
+					}
 					else if (value instanceof Integer && p_info.isColumnLookup(i))
 					{
 						Integer idValue = (Integer) value;
@@ -3346,7 +3367,7 @@ public abstract class PO
 				}
 			}
 
-			if (!withValues || isUseCentralizedId(p_info.getTableName()))
+			if (!withValues || Env.isUseCentralizedId(p_info.getTableName()))
 			{
 				//	Change Log	- Only
 				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
@@ -3417,7 +3438,7 @@ public abstract class PO
 		if (ok)
 		{
 			if (withValues && m_IDs.length == 1 && p_info.hasKeyColumn()
-					&& m_KeyColumns[0].endsWith("_ID") && !isUseCentralizedId(p_info.getTableName()))
+					&& m_KeyColumns[0].endsWith("_ID") && !Env.isUseCentralizedId(p_info.getTableName()))
 			{
 				int id = DB.getSQLValueEx(get_TrxName(), "SELECT " + m_KeyColumns[0] + " FROM "
 						+ p_info.getTableName() + " WHERE " + getUUIDColumnName() + "=?", get_ValueAsString(getUUIDColumnName()));

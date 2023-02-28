@@ -42,6 +42,7 @@ import java.util.regex.Pattern;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.Adempiere;
 import org.compiere.db.Database;
+import org.compiere.model.I_AD_UserPreference;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -458,7 +459,7 @@ public abstract class Convert
 			try {
 				if (fosScriptOr == null || fosScriptPg == null) {
 					String now = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
-					prm_COMMENT = Env.getContext(Env.getCtx(), "MigrationScriptComment");
+					prm_COMMENT = Env.getContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment);
 					String pattern = "(IDEMPIERE-[0-9]*)";
 					Pattern p = Pattern.compile(pattern);
 					Matcher m = p.matcher(prm_COMMENT);
@@ -520,7 +521,7 @@ public abstract class Convert
 		if (Ini.isClient()) {
 			logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
 		} else {
-			String sysProperty = Env.getCtx().getProperty("LogMigrationScript", "N");
+			String sysProperty = Env.getCtx().getProperty(Ini.P_LOGMIGRATIONSCRIPT, "N");
 			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
 		}
 		return logMigrationScript;
@@ -582,6 +583,10 @@ public abstract class Convert
 		if (Util.isEmpty(tableName))
 			return false;
 		
+		// Don't log trl - those will be created/maintained using synchronize terminology
+		if (tableName.endsWith("_TRL"))
+			return true;
+		
 		for (String t : dontLogTables) {
 			if (t.equalsIgnoreCase(tableName))
 				return true;
@@ -635,6 +640,12 @@ public abstract class Convert
 		return false;
 	}
 
+	/**
+	 * Use writer to append SQL statement to an output media (usually file).
+	 * @param w {@link Writer}
+	 * @param statement SQL statement
+	 * @throws IOException
+	 */
 	private static void writeLogMigrationScript(Writer w, String statement) throws IOException
 	{
 		// log time and date
