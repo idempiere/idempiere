@@ -3797,7 +3797,7 @@ public abstract class PO
 				}
 		
 				//	The Delete Statement
-				String where = get_WhereClause(true);
+				String where = isLogSQLScript() ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
 				List<Object> optimisticLockingParams = new ArrayList<Object>();
 				if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
 				{
@@ -4284,7 +4284,7 @@ public abstract class PO
 		//
 		String tableName = p_info.getTableName();
 		String keyColumn = m_KeyColumns[0];
-		StringBuilder sql = new StringBuilder ("DELETE  FROM  ")
+		StringBuilder sql = new StringBuilder ("DELETE FROM ")
 			.append(tableName).append("_Trl WHERE ")
 			.append(keyColumn).append("=").append(get_ID());
 		int no = DB.executeUpdate(sql.toString(), trxName);

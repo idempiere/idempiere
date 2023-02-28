@@ -443,6 +443,11 @@ public abstract class Convert
 	 */
 	public abstract boolean isOracle();
 
+	/**
+	 * Log oraStatement and pgStatement to SQL migration script file.
+	 * @param oraStatement
+	 * @param pgStatement
+	 */
 	public synchronized static void logMigrationScript(String oraStatement, String pgStatement) {
 		// Check AdempiereSys
 		// check property Log migration script
@@ -458,26 +463,10 @@ public abstract class Convert
 			String prm_COMMENT = null;
 			try {
 				if (fosScriptOr == null || fosScriptPg == null) {
-					String now = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
 					prm_COMMENT = Env.getContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment);
-					String pattern = "(IDEMPIERE-[0-9]*)";
-					Pattern p = Pattern.compile(pattern);
-					Matcher m = p.matcher(prm_COMMENT);
-					String ticket = null;
-					if (m.find())
-						ticket = m.group(1);
-					if (ticket == null)
-						ticket = "PlaceholderForTicket";
-					fileName = now + "_" + ticket + ".sql";
-					String version = Adempiere.MAIN_VERSION.substring(8);
-					boolean isIDE = Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base"));
-					String homeScript;
-					if (isIDE)
-						homeScript = Adempiere.getAdempiereHome() + File.separator;
-					else
-						homeScript = System.getProperty("java.io.tmpdir") + File.separator;
-					folderOr = homeScript + "migration" + File.separator + "iD" + version + File.separator + "oracle" + File.separator;
-					folderPg = homeScript + "migration" + File.separator + "iD" + version + File.separator + "postgresql" + File.separator;
+					fileName = getMigrationScriptFileName(prm_COMMENT);
+					folderOr = getMigrationScriptFolder("oracle");
+					folderPg = getMigrationScriptFolder("postgresql");
 					Files.createDirectories(Paths.get(folderOr));
 					Files.createDirectories(Paths.get(folderPg));
 				}
@@ -514,6 +503,42 @@ public abstract class Convert
 	}
 
 	/**
+	 * @param ticketComment
+	 * @return migration script file name
+	 */
+	public static String getMigrationScriptFileName(String ticketComment) {
+		// [timestamp]_[ticket].sql
+		String fileName;
+		String now = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());					
+		String pattern = "(IDEMPIERE-[0-9]*)";
+		Pattern p = Pattern.compile(pattern);
+		Matcher m = p.matcher(ticketComment);
+		String ticket = null;
+		if (m.find())
+			ticket = m.group(1);
+		if (ticket == null)
+			ticket = "PlaceholderForTicket";
+		fileName = now + "_" + ticket + ".sql";
+		return fileName;
+	}
+
+	/**
+	 * @param dbtype oracle or postgresql
+	 * @return absolute migration script folder path for dbtype 
+	 */
+	public static String getMigrationScriptFolder(String dbtype) {
+		// migration/iD[version]/[oracle|postgresql] directory		
+		String version = Adempiere.MAIN_VERSION.substring(8);
+		boolean isIDE = Files.isDirectory(Paths.get(Adempiere.getAdempiereHome() + File.separator + "org.adempiere.base"));
+		String homeScript;
+		if (isIDE)
+			homeScript = Adempiere.getAdempiereHome() + File.separator;
+		else
+			homeScript = System.getProperty("java.io.tmpdir") + File.separator;
+		return homeScript + "migration" + File.separator + "iD" + version + File.separator + dbtype + File.separator;
+	}
+	
+	/**
 	 * @return true if it is in log migration script mode
 	 */
 	public static boolean isLogMigrationScript() {
@@ -526,7 +551,6 @@ public abstract class Convert
 		}
 		return logMigrationScript;
 	}
-
 
 	private static String [] dontLogTables = new String[] {
 			"AD_ACCESSLOG",
@@ -619,6 +643,8 @@ public abstract class Convert
 		if (uppStmt.matches("UPDATE .*_TRL SET .*"))
 			return true;
 		if (uppStmt.matches("INSERT INTO .*_TRL .*"))
+			return true;
+		if (uppStmt.matches("DELETE FROM .*_TRL .*"))
 			return true;
 		// Don't log tree custom table statements (not present in core)
 		if (uppStmt.startsWith("INSERT INTO AD_TREENODE ") && uppStmt.contains(" AND T.TREETYPE='TL' AND T.AD_TABLE_ID="))
