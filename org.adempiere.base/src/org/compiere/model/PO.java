@@ -468,6 +468,17 @@ public abstract class PO
 	}   //  getID
 
 	/**
+	 * @return UUID value
+	 */
+	public String get_UUID() {
+		String uidColumn = getUUIDColumnName();
+		if (p_info.getColumnIndex(uidColumn) >=0)
+			return get_ValueAsString(uidColumn);
+		else
+			return null;
+	}
+	
+	/**
 	 * 	Get Context
 	 * 	@return context
 	 */
@@ -4353,7 +4364,9 @@ public abstract class PO
 		if (uuidColumn != null && uuidFunction)
 			sb.append(",").append(PO.getUUIDColumnName(acctTableName));
 		//	..	SELECT
-		sb.append(") SELECT ").append(get_ID())
+		sb.append(") SELECT ").append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+				 ? "toRecordId("+DB.TO_STRING(get_TableName())+","+DB.TO_STRING(get_UUID())+")" 
+				 : get_ID())
 			.append(", p.C_AcctSchema_ID, p.AD_Client_ID,0,'Y', getDate(),")
 			.append(getUpdatedBy()).append(",getDate(),").append(getUpdatedBy());
 		for (int i = 0; i < s_acctColumns.size(); i++)
@@ -4362,12 +4375,19 @@ public abstract class PO
 			sb.append(",generate_uuid()");
 		//	.. 	FROM
 		sb.append(" FROM ").append(acctBaseTable)
-			.append(" p WHERE p.AD_Client_ID=").append(getAD_Client_ID());
+			.append(" p WHERE p.AD_Client_ID=")
+			.append(getAD_Client_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+					? "toRecordId('AD_Client',"+DB.TO_STRING(MClient.get(getAD_Client_ID()).getAD_Client_UU())+")" 
+					: getAD_Client_ID());
 		if (whereClause != null && whereClause.length() > 0)
 			sb.append (" AND ").append(whereClause);
 		sb.append(" AND NOT EXISTS (SELECT * FROM ").append(acctTableName)
 			.append(" e WHERE e.C_AcctSchema_ID=p.C_AcctSchema_ID AND e.")
-			.append(get_TableName()).append("_ID=").append(get_ID()).append(")");
+			.append(get_TableName()).append("_ID=");
+		if (get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()))
+			sb.append("toRecordId(").append(DB.TO_STRING(get_TableName())).append(",").append(DB.TO_STRING(get_UUID())).append("))");
+		else
+			sb.append(get_ID()).append(")");
 		//
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		if (no > 0) {
@@ -4435,24 +4455,41 @@ public abstract class PO
 		else
 			sb.append(") ");
 		sb.append("SELECT t.AD_Client_ID, 0, 'Y', getDate(), "+getUpdatedBy()+", getDate(), "+getUpdatedBy()+","
-				+ "t.AD_Tree_ID, ").append(get_ID()).append(", 0, 999");
+				+ "t.AD_Tree_ID, ")
+		  .append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+				  ? "toRecordId("+DB.TO_STRING(get_TableName())+","+DB.TO_STRING(get_UUID())+")" 
+				  : get_ID())
+		  .append(", 0, 999");
 		if (uuidColumn != null && uuidFunction)
 			sb.append(", Generate_UUID() ");
 		else
 			sb.append(" ");
 		sb.append("FROM AD_Tree t "
-				+ "WHERE t.AD_Client_ID=").append(getAD_Client_ID()).append(" AND t.IsActive='Y'");
+				+ "WHERE t.AD_Client_ID=")
+		  .append(getAD_Client_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+				  ? "toRecordId('AD_Client',"+DB.TO_STRING(MClient.get(getAD_Client_ID()).getAD_Client_UU())+")" 
+				  : getAD_Client_ID())
+		  .append(" AND t.IsActive='Y'");
 		//	Account Element Value handling
 		if (C_Element_ID != 0)
 			sb.append(" AND EXISTS (SELECT * FROM C_Element ae WHERE ae.C_Element_ID=")
-				.append(C_Element_ID).append(" AND t.AD_Tree_ID=ae.AD_Tree_ID)");
+			  .append(C_Element_ID > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+					  ? "toRecordId('C_Element',"+DB.TO_STRING(new MElement(getCtx(), C_Element_ID, get_TrxName()).getC_Element_UU())+")" 
+					  : C_Element_ID)
+			  .append(" AND t.AD_Tree_ID=ae.AD_Tree_ID)");
 		else	//	std trees
 			sb.append(" AND t.IsAllNodes='Y' AND t.TreeType='").append(treeType).append("'");
 		if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
-			sb.append(" AND t.AD_Table_ID=").append(get_Table_ID());
+			sb.append(" AND t.AD_Table_ID=")
+			  .append(get_Table_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+					  ? "toRecordId('AD_Table',"+DB.TO_STRING(MTable.get(get_Table_ID()).getAD_Table_UU())+")" 
+					  : get_Table_ID());
 		//	Duplicate Check
 		sb.append(" AND NOT EXISTS (SELECT * FROM " + MTree_Base.getNodeTableName(treeType) + " e "
-				+ "WHERE e.AD_Tree_ID=t.AD_Tree_ID AND Node_ID=").append(get_ID()).append(")");
+				+ "WHERE e.AD_Tree_ID=t.AD_Tree_ID AND Node_ID=")
+		  .append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
+				  ? "toRecordId("+DB.TO_STRING(get_TableName())+","+DB.TO_STRING(get_UUID())+")" 
+				  : get_ID()).append(")");
 		int no = DB.executeUpdate(sb.toString(), get_TrxName());
 		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=" + treeType);
