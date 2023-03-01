@@ -81,6 +81,9 @@ public class DrillReportCtl {
 
 	private String m_DisplayValue;
 
+	/** Process ID of the source Report */
+	private int m_AD_Process_ID;
+
 	/** Drill Tables Map */
 	private KeyNamePair[] drillTables;
 
@@ -103,12 +106,13 @@ public class DrillReportCtl {
 	 * @param displayValue
 	 * @param WindowNo
 	 */
-	public DrillReportCtl(String TableName, MQuery query, String ColumnName, Object Value, String displayValue, int WindowNo) {
+	public DrillReportCtl(String TableName, MQuery query, String ColumnName, Object Value, String displayValue, int WindowNo, int processID) {
 		this.m_TableName = TableName;
 		this.m_ColumnName = ColumnName;
 		this.m_Value = Value;
 		this.m_WindowNo = WindowNo;
 		this.m_DisplayValue = displayValue;
+		this.m_AD_Process_ID = processID;
 
 		m_Query = query;
 
@@ -180,7 +184,7 @@ public class DrillReportCtl {
 			MProcessDrillRule[] processDrillRules = MProcessDrillRule.getByColumnName(Env.getCtx(), m_ColumnName, null);
 			for( MProcessDrillRule drillProcesRule: processDrillRules) {
 				MProcess process = MProcess.get(drillProcesRule.getAD_Process_ID());
-				if(process == null)
+				if(process == null || process.getAD_Process_ID() == m_AD_Process_ID)
 					continue;
 
 				drillProcessMap.put(drillProcesRule.getAD_Process_ID(), process.get_Translation(MProcess.COLUMNNAME_Name));
