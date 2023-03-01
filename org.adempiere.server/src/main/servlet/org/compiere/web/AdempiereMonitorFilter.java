@@ -140,7 +140,8 @@ public class AdempiereMonitorFilter implements Filter
 					return;
 				}
 			}
-			else
+
+			if (m_SSOPrinciple == null || !isSSOEnable)
 			{
 				HttpSession session = req.getSession(true);
 				// Previously checked
