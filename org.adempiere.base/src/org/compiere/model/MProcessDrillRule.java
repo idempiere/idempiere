@@ -220,7 +220,7 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 		boolean isValid = false;
 		MProcess process = new MProcess(Env.getCtx(), getAD_Process_ID(), get_TrxName());
 		for(MProcessPara processPara : process.getParameters()) {
-			if(processPara.isMandatory()) {
+			if(processPara.isMandatory() && processPara.getAD_Process_Para_ID() != getAD_Process_Para_ID()) {
 				for(MProcessDrillRulePara drillRulePara : getParameters(true)) {
 					if(drillRulePara.getAD_Process_Para_ID() == processPara.getAD_Process_Para_ID()) {
 						String defPara = drillRulePara.getParameterDefault();
