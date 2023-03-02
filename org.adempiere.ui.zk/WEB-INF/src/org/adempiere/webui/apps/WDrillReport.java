@@ -105,10 +105,20 @@ public class WDrillReport extends Window implements EventListener<Event>  {
 	 * @param data
 	 * @param WindowNo
 	 */
-	public WDrillReport(DrillData data, int WindowNo) {
+	public WDrillReport(DrillData data, int windowNo) {
+		this(data, windowNo, 0);
+	}
+
+	/**
+	 *
+	 * @param data
+	 * @param WindowNo
+	 * @param processID
+	 */
+	public WDrillReport(DrillData data, int windowNo, int processID) {
 		super();
-		this.windowNo = WindowNo;
-		drillReportCtl = new DrillReportCtl(data.getQuery().getTableName(), data.getQuery(), data.getColumnName(), data.getValue(), data.getDisplayValue(), WindowNo);
+		this.windowNo = windowNo;
+		drillReportCtl = new DrillReportCtl(data.getQuery().getTableName(), data.getQuery(), data.getColumnName(), data.getValue(), data.getDisplayValue(), windowNo, processID);
 
 		this.setTitle(Msg.getMsg(Env.getCtx(), "DrillAssistant"));
 		this.setClosable(true);
