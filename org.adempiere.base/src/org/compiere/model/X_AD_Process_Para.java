@@ -31,7 +31,7 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20230206L;
 
     /** Standard Constructor */
     public X_AD_Process_Para (Properties ctx, int AD_Process_Para_ID, String trxName)
@@ -43,6 +43,8 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 			setAD_Process_Para_ID (0);
 			setAD_Reference_ID (0);
 			setColumnName (null);
+			setDateRangeOption (null);
+// D
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFieldLength (0);
@@ -70,6 +72,8 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 			setAD_Process_Para_ID (0);
 			setAD_Reference_ID (0);
 			setColumnName (null);
+			setDateRangeOption (null);
+// D
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFieldLength (0);
@@ -333,6 +337,29 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public String getColumnName()
 	{
 		return (String)get_Value(COLUMNNAME_ColumnName);
+	}
+
+	/** DateRangeOption AD_Reference_ID=200228 */
+	public static final int DATERANGEOPTION_AD_Reference_ID=200228;
+	/** Date Editor and Range Picker = D */
+	public static final String DATERANGEOPTION_DateEditorAndRangePicker = "D";
+	/** Text and Range Picker = T */
+	public static final String DATERANGEOPTION_TextAndRangePicker = "T";
+	/** Set Date Range Option.
+		@param DateRangeOption Options, how the date editor will be displayed.
+	*/
+	public void setDateRangeOption (String DateRangeOption)
+	{
+
+		set_Value (COLUMNNAME_DateRangeOption, DateRangeOption);
+	}
+
+	/** Get Date Range Option.
+		@return Options, how the date editor will be displayed.
+	  */
+	public String getDateRangeOption()
+	{
+		return (String)get_Value(COLUMNNAME_DateRangeOption);
 	}
 
 	/** Set Default Logic.
@@ -688,6 +715,22 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 		return ii.intValue();
 	}
 
+	/** Set Value Format.
+		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	*/
+	public void setVFormat (String VFormat)
+	{
+		set_Value (COLUMNNAME_VFormat, VFormat);
+	}
+
+	/** Get Value Format.
+		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
+	  */
+	public String getVFormat()
+	{
+		return (String)get_Value(COLUMNNAME_VFormat);
+	}
+
 	/** Set Max. Value.
 		@param ValueMax Maximum Value for a field
 	*/
@@ -718,21 +761,5 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public String getValueMin()
 	{
 		return (String)get_Value(COLUMNNAME_ValueMin);
-	}
-
-	/** Set Value Format.
-		@param VFormat Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
-	*/
-	public void setVFormat (String VFormat)
-	{
-		set_Value (COLUMNNAME_VFormat, VFormat);
-	}
-
-	/** Get Value Format.
-		@return Format of the value; Can contain fixed format elements, Variables: &quot;_lLoOaAcCa09&quot;
-	  */
-	public String getVFormat()
-	{
-		return (String)get_Value(COLUMNNAME_VFormat);
 	}
 }
