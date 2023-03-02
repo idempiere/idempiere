@@ -43,8 +43,7 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1757466458508655102L;
-
+	private static final long serialVersionUID = -1357447647930552555L;
 	/** Static Logger					*/
 	private static CLogger		s_log = CLogger.getCLogger (MProcessPara.class);
 
