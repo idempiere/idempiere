@@ -96,7 +96,7 @@ public class ProcessParameterPanel extends Panel implements
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -6099317911368929787L;
+	private static final long serialVersionUID = -1398301240136128512L;
 
 	/** Event post from {@link #valueChange(ValueChangeEvent)} **/
 	private static final String ON_POST_EDITOR_VALUE_CHANGE_EVENT = "onPostEditorValueChange";
@@ -253,7 +253,7 @@ public class ProcessParameterPanel extends Panel implements
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic, p.Placeholder, p.Placeholder2, p.isAutoComplete, "
 					+ "'' AS ValidationCodeLookup, "
-					+ "fg.Name AS FieldGroup, fg.FieldGroupType, fg.IsCollapsedByDefault "
+					+ "fg.Name AS FieldGroup, fg.FieldGroupType, fg.IsCollapsedByDefault, p.IsShowNegateButton "
 					+ "FROM AD_Process_Para p"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
 					+ " LEFT OUTER JOIN AD_FieldGroup fg ON (p.AD_FieldGroup_ID=fg.AD_FieldGroup_ID) "
@@ -267,7 +267,7 @@ public class ProcessParameterPanel extends Panel implements
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern,p.MandatoryLogic, t.Placeholder, t.Placeholder2, p.isAutoComplete, "
 					+ "'' AS ValidationCodeLookup, "
-					+ "fgt.Name AS FieldGroup, fg.FieldGroupType, fg.IsCollapsedByDefault "
+					+ "fgt.Name AS FieldGroup, fg.FieldGroupType, fg.IsCollapsedByDefault, p.IsShowNegateButton "
 					+ "FROM AD_Process_Para p"
 					+ " INNER JOIN AD_Process_Para_Trl t ON (p.AD_Process_Para_ID=t.AD_Process_Para_ID)"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
@@ -505,7 +505,7 @@ public class ProcessParameterPanel extends Panel implements
 			m_wEditors2.add(null);
 			m_separators.add(null);
 			//add not in support for multi selection field
-			if(DisplayType.isChosenMultipleSelection(mField.getDisplayType())) {
+			if(DisplayType.isChosenMultipleSelection(mField.getDisplayType()) && voF.IsShowNegateButton) {
 				Button bNegate = ButtonFactory.createButton("", null, null);
 				bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
 				bNegate.setIconSclass("z-icon-IncludeSelected");

@@ -386,6 +386,7 @@ public class GridFieldVO implements Serializable, Cloneable
 			vo.FieldGroup = rs.getString("FieldGroup");
 			vo.FieldGroupType = rs.getString("FieldGroupType");
 			vo.IsCollapsedByDefault = "Y".equals(rs.getString("IsCollapsedByDefault"));
+			vo.IsShowNegateButton = "Y".equals(rs.getString("IsShowNegateButton"));
 		}
 		catch (SQLException e)
 		{
@@ -765,6 +766,9 @@ public class GridFieldVO implements Serializable, Cloneable
 
 	/* Allow to show field in Quick Form */
 	public boolean IsQuickForm = false;
+
+	/** Show Negate button (only for Chosen Multiple fields) */
+	public boolean IsShowNegateButton = false;
 
 	/**
 	 *  Set Context including contained elements

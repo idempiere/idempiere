@@ -351,7 +351,13 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 				LogicEvaluator.validate(getDisplayLogic());
 			}
 		}
-		
+
+		if (newRecord && DisplayType.isChosenMultipleSelection(getAD_Reference_ID())) {
+			MProcess p = MProcess.get(getAD_Process_ID());
+			if (Util.isEmpty(p.getClassname()) && Util.isEmpty(p.getJasperReport()))
+				setIsShowNegateButton(true);
+		}
+
 		return true;
 	}	//	beforeSave
 
