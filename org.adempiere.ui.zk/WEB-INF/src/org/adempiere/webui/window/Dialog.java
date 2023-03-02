@@ -347,6 +347,8 @@ public final class Dialog {
 			return new WStringEditor();
 		case DisplayType.Number:
 			return new WNumberEditor();
+		case DisplayType.Integer:
+			return new WNumberEditor(editorType);
 		case DisplayType.TableDir:
 			return new WTableDirEditor(lookup, "", "", true, false, true);
 		case DisplayType.Search:

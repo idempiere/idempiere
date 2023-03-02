@@ -14,17 +14,17 @@
 package org.adempiere.webui.apps.form;
 
 import org.compiere.model.GridTab;
+import org.compiere.model.X_C_Order;
 
 
 /**
- * 
+ * Form for direct debit payment rule ({@link X_C_Order#PAYMENTRULE_DirectDebit}).
  * @author Elaine
  *
  */
 public class WPaymentFormDirectDebit extends WPaymentFormDirect {
 
 	/**
-	 * 
 	 * @param windowNo
 	 * @param mTab
 	 */

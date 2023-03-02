@@ -1,6 +1,27 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - hengsin                         								   *
+ **********************************************************************/
 package org.adempiere.webui.apps.form;
 
 import java.util.LinkedList;
@@ -33,34 +54,44 @@ import org.zkoss.zul.Timer;
 import org.zkoss.zul.Vlayout;
 
 /**
+ * Form to compare suggested text from AD_FieldSuggestion with the original text from AD_Field.
  * @author hengsin
- *
  */
 @org.idempiere.ui.zk.annotation.Form
 public class CompareFieldSuggestion extends ADForm {
 
-	private static final String NEW_VALUE = "newValue";
+	/** Timer attribute to store text value from Textbox onChanging event. */
+	private static final String NEW_VALUE_ATTR = "newValue";
+	
 	/**
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = -100362034024824442L;
+	/** Grid layout for content of form */
 	private Grid grid;
 	private ConfirmPanel confirmPanel;
+	/** Cell to show diff between original and changed description */
 	private Cell descriptionDiff;
+	/** Cell to show diff between original and changed name */
 	private Cell nameDiff;
+	/** Cell to show diff between original and changed help */
 	private Cell helpDiff;
 	private Textbox nameTextbox;
 	private Textbox descriptionTextbox;
 	private Textbox helpTextbox;
 	private MField field;
+	/** AD Language from calling GridTab */
 	private String AD_Language;
 	private diff_match_patch diff;
+	/** Timer to process onChanging text from {@link #nameTextbox} asynchronously */
 	private Timer nameTimer;
+	/** Timer to process onChanging text from {@link #descriptionTextbox} asynchronously */
 	private Timer descriptionTimer;
+	/** Timer to process onChanging text from {@link #helpTextbox} asynchronously */
 	private Timer helpTimer;
 
 	/**
-	 * 
+	 * default constructor
 	 */
 	public CompareFieldSuggestion() {
 	}
@@ -119,6 +150,9 @@ public class CompareFieldSuggestion extends ADForm {
 		renderGrid();
 	}
 
+	/**
+	 * Render content grid.
+	 */
 	private void renderGrid() {
 		Component c = SessionManager.getAppDesktop().getActiveWindow();
 		ADWindow adwindow = ADWindow.findADWindow(c);
@@ -155,6 +189,7 @@ public class CompareFieldSuggestion extends ADForm {
 		
 		String original = field.get_Translation("Name", AD_Language);
 		row.appendCellChild(new Label(original));
+		//suggested text from AD_FieldSuggestion
 		String changed = (String) gridTab.getValue("Name");
 		nameTextbox = new Textbox(changed);
 		row.appendCellChild(nameTextbox);
@@ -173,6 +208,7 @@ public class CompareFieldSuggestion extends ADForm {
 		
 		original = field.get_Translation("Description", AD_Language);
 		row.appendCellChild(new Label(original));
+		//suggested text from AD_FieldSuggestion
 		changed = (String) gridTab.getValue("Description");
 		descriptionTextbox = new Textbox(changed);
 		descriptionTextbox.setRows(4);		
@@ -193,6 +229,7 @@ public class CompareFieldSuggestion extends ADForm {
 		
 		original = field.get_Translation("Help", AD_Language);
 		row.appendCellChild(new Label(original));
+		//suggested text from AD_FieldSuggestion
 		changed = (String) gridTab.getValue("Help");
 		helpTextbox = new Textbox(changed);
 		helpTextbox.setRows(8);
@@ -211,6 +248,11 @@ public class CompareFieldSuggestion extends ADForm {
 		this.addEventListener(Events.ON_OK, this);
 	}
 
+	/**
+	 * @param original
+	 * @param changed
+	 * @return difference between original and changed
+	 */
 	private Html diff(String original, String changed) {
 		if (original == null) original = "";
 		if (changed == null) changed = "";
@@ -233,7 +275,7 @@ public class CompareFieldSuggestion extends ADForm {
 		} else if (event.getTarget() == nameTextbox) {	
 			if (event.getName().equals(Events.ON_CHANGING)) {
 				InputEvent inputEvent = (InputEvent) event;
-				nameTimer.setAttribute(NEW_VALUE, inputEvent.getValue());
+				nameTimer.setAttribute(NEW_VALUE_ATTR, inputEvent.getValue());
 				if (nameTimer.isRunning()) {
 					return;
 				} else {
@@ -247,7 +289,7 @@ public class CompareFieldSuggestion extends ADForm {
 		} else if (event.getTarget() == descriptionTextbox) {
 			if (event.getName().equals(Events.ON_CHANGING)) {
 				InputEvent inputEvent = (InputEvent) event;
-				descriptionTimer.setAttribute(NEW_VALUE, inputEvent.getValue());
+				descriptionTimer.setAttribute(NEW_VALUE_ATTR, inputEvent.getValue());
 				if (descriptionTimer.isRunning()) {
 					return;
 				} else {
@@ -261,7 +303,7 @@ public class CompareFieldSuggestion extends ADForm {
 		} else if (event.getTarget() == helpTextbox) {
 			if (event.getName().equals(Events.ON_CHANGING)) {
 				InputEvent inputEvent = (InputEvent) event;
-				helpTimer.setAttribute(NEW_VALUE, inputEvent.getValue());
+				helpTimer.setAttribute(NEW_VALUE_ATTR, inputEvent.getValue());
 				if (helpTimer.isRunning()) {
 					return;
 				} else {
@@ -273,34 +315,49 @@ public class CompareFieldSuggestion extends ADForm {
 					helpTimer.stop();
 			}
 		} else if (event.getTarget() == nameTimer) {
-			onNameChanged((String) nameTimer.removeAttribute(NEW_VALUE));
+			onNameChanged((String) nameTimer.removeAttribute(NEW_VALUE_ATTR));
 		} else if (event.getTarget() == descriptionTimer) {
-			onDescriptionChanged((String) descriptionTimer.removeAttribute(NEW_VALUE));
+			onDescriptionChanged((String) descriptionTimer.removeAttribute(NEW_VALUE_ATTR));
 		} else if (event.getTarget() == helpTimer) {
-			onHelpChanged((String) helpTimer.removeAttribute(NEW_VALUE));
+			onHelpChanged((String) helpTimer.removeAttribute(NEW_VALUE_ATTR));
 		} else {
 			super.onEvent(event);
 		}
 	}
 
+	/**
+	 * Handle changes from {@link #helpTextbox}.
+	 * @param text
+	 */
 	private void onHelpChanged(String text) {
 		helpDiff.getChildren().clear();
 		Html html = diff(field.get_Translation("Help", AD_Language), text);
 		helpDiff.appendChild(html);
 	}
 
+	/**
+	 * Handle changes from {@link #descriptionTextbox}.
+	 * @param text
+	 */
 	private void onDescriptionChanged(String text) {
 		descriptionDiff.getChildren().clear();
 		Html html = diff(field.get_Translation("Description", AD_Language), text);
 		descriptionDiff.appendChild(html);
 	}
 
+	/**
+	 * Handle changes from {@link #nameTextbox}.
+	 * @param text
+	 */
 	private void onNameChanged(String text) {
 		nameDiff.getChildren().clear();
 		Html html = diff(field.get_Translation("Name", AD_Language), text);
 		nameDiff.appendChild(html);
 	}
 
+	/**
+	 * Apply changes to calling GridTab (AD_FieldSuggestion).
+	 */
 	private void applyChanges() {
 		Component c = SessionManager.getAppDesktop().getActiveWindow();
 		ADWindow adwindow = ADWindow.findADWindow(c);

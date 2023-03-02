@@ -81,6 +81,9 @@ public class DrillReportCtl {
 
 	private String m_DisplayValue;
 
+	/** Process ID of the source Report */
+	private int m_AD_Process_ID;
+
 	/** Drill Tables Map */
 	private KeyNamePair[] drillTables;
 
@@ -95,20 +98,21 @@ public class DrillReportCtl {
 
 	/**
 	 *
-	 * @param ctx
 	 * @param TableName
 	 * @param query
 	 * @param ColumnName
 	 * @param Value
 	 * @param displayValue
 	 * @param WindowNo
+	 * @param processID
 	 */
-	public DrillReportCtl(String TableName, MQuery query, String ColumnName, Object Value, String displayValue, int WindowNo) {
+	public DrillReportCtl(String TableName, MQuery query, String ColumnName, Object Value, String displayValue, int WindowNo, int processID) {
 		this.m_TableName = TableName;
 		this.m_ColumnName = ColumnName;
 		this.m_Value = Value;
 		this.m_WindowNo = WindowNo;
 		this.m_DisplayValue = displayValue;
+		this.m_AD_Process_ID = processID;
 
 		m_Query = query;
 
@@ -179,9 +183,9 @@ public class DrillReportCtl {
 		if(!Util.isEmpty(m_ColumnName)) {
 			MProcessDrillRule[] processDrillRules = MProcessDrillRule.getByColumnName(Env.getCtx(), m_ColumnName, null);
 			for( MProcessDrillRule drillProcesRule: processDrillRules) {
-				MProcess process = MProcess.get(drillProcesRule.getAD_Process_ID());
-				if(process == null)
+				if (drillProcesRule.getAD_Process_ID() == 0 || drillProcesRule.getAD_Process_ID() == m_AD_Process_ID)
 					continue;
+				MProcess process = MProcess.get(drillProcesRule.getAD_Process_ID());
 
 				drillProcessMap.put(drillProcesRule.getAD_Process_ID(), process.get_Translation(MProcess.COLUMNNAME_Name));
 
@@ -499,6 +503,7 @@ public class DrillReportCtl {
 				iPara.setParameter(DisplayType.isID(sPara.getDisplayType()) ? new BigDecimal(String.valueOf(m_Value)) : String.valueOf(m_Value));
 				iPara.setInfo(!Util.isEmpty(m_DisplayValue) ? m_DisplayValue : String.valueOf(m_Value));
 				iParams.add(iPara);
+				processParasExclDrillRuleParas.remove(processPara);
 				continue;
 			}
 

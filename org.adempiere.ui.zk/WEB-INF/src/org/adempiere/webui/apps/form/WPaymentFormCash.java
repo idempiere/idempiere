@@ -33,17 +33,17 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.PaymentFormCash;
 import org.compiere.model.GridTab;
+import org.compiere.model.X_C_Order;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Form for cash payment rule ({@link X_C_Order#PAYMENTRULE_Cash}).
  * @author Elaine
- *
  */
 public class WPaymentFormCash extends PaymentFormCash {
-
+	/** Payment form window instance */
 	private WPaymentFormWindow window;
 	
 	private Label bBankAccountLabel = new Label();
@@ -55,6 +55,10 @@ public class WPaymentFormCash extends PaymentFormCash {
 	private Label bAmountLabel = new Label();
 	private WNumberEditor bAmountField = new WNumberEditor();
 	
+	/**
+	 * @param windowNo
+	 * @param mTab
+	 */
 	public WPaymentFormCash(int windowNo, GridTab mTab) {
 		super(windowNo, mTab);
 		bDateField = new WDateEditor("DateAcct", false, false, true, "DateAcct");
@@ -64,6 +68,9 @@ public class WPaymentFormCash extends PaymentFormCash {
 		bAmountField.setValue(m_Amount);
 	}
 	
+	/**
+	 * Layout {@link #window}
+	 */
 	public void init() {
 		Grid bPanelLayout = GridFactory.newGridLayout();
 		window.getPanel().appendChild(bPanelLayout);

@@ -175,7 +175,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/** Table ID					*/
 	private int					m_AD_Table_ID = 0;
 	private boolean				m_isCanExport;
-	
+	/** Process ID					*/
+	private int 				m_AD_Process_ID = 0;
+
 	private MQuery 		m_ddQ = null;
 	private MQuery 		m_daQ = null;
 	private Menuitem 	m_ddM = null;
@@ -787,11 +789,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "_WinInfo_AD_Window_ID", true);
 		if (AD_Window_ID == 0)
 			AD_Window_ID = Env.getZoomWindowID(m_reportEngine.getQuery());
-		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
-		updateToolbarAccess(AD_Window_ID, AD_Process_ID);
-		
+		m_AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
+		updateToolbarAccess(AD_Window_ID, m_AD_Process_ID);
+
 		this.setBorder("normal");
-		
+
 		this.addEventListener("onZoom", new EventListener<Event>() {
 			
 			public void onEvent(Event event) throws Exception {
@@ -814,7 +816,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 					DrillEvent de = (DrillEvent) event;
 					if (de.getData() != null && de.getData() instanceof DrillData) {
 						DrillData data = (DrillData) de.getData();
-							AEnv.actionDrill(data, m_WindowNo);
+						AEnv.actionDrill(data, m_WindowNo, m_AD_Process_ID);
 					}
 				}
 				
