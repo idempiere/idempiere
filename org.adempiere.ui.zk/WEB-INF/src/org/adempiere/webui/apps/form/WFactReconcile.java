@@ -71,6 +71,7 @@ import org.compiere.apps.form.FactReconcile;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MFactAcct;
+import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.X_C_ElementValue;
@@ -97,15 +98,16 @@ import org.zkoss.zul.South;
 public class WFactReconcile extends FactReconcile 
 implements IFormController, EventListener<Event>, WTableModelListener, ValueChangeListener{
 	
+	/** Form window instance */
 	private CustomForm form = new CustomForm();
 
-	/** Format                  */
+	/** Amount Format */
 	private DecimalFormat   m_format = DisplayType.getNumberFormat(DisplayType.Amount);
-	/**	Logger			*/
+	/**	Logger */
 	private static final CLogger log = CLogger.getCLogger(WFactReconcile.class);
 	
 	/**
-	 *	Initialize Panel
+	 *	Default constructor
 	 */
 	public WFactReconcile()
 	{
@@ -121,55 +123,65 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		}
 	}
 	
+	/** Main layout of {@link #form} */
 	private Borderlayout mainLayout = new Borderlayout();
+	/** Parameters panel. North of {@link #mainLayout} */
 	private Panel parameterPanel = new Panel();
-	private Label labelAcctSchema = new Label();
-	private WTableDirEditor fieldAcctSchema = null;
+	/** Grid layout of {@link #parameterPanel} */
 	private Grid parameterLayout = GridFactory.newGridLayout();
+	private Label labelAcctSchema = new Label();
+	/** Accounting schema parameter */
+	private WTableDirEditor fieldAcctSchema = null;	
 	private Label labelOrg = new Label();
+	/** Organization parameter */
 	private WTableDirEditor fieldOrg = null;
 	private Label labelReconciled = new Label();
+	/** Reconciled Yes/No parameter */
 	private Checkbox isReconciled = new Checkbox();
 	private Label labelAccount = new Label();
+	/** Account parameter */
 	private WTableDirEditor fieldAccount = null;
 	private Label labelBPartner = new Label();
+	/** Business Partner parameter */
 	private WSearchEditor fieldBPartner = null;
+	private Label labelDateAcct = new Label();
+	/** Accounting Date parameter */
+	private WDateEditor  fieldDateAcct = new WDateEditor();
+	private Label labelDateAcct2 = new Label();
+	/** Accounting Date2 parameter */
+	private WDateEditor  fieldDateAcct2 = new WDateEditor();	
+	private Label labelProduct = new Label();
+	/** Product parameter */
+	private WSearchEditor fieldProduct = null;
 	
-	// data panel
 	private Label dataStatus = new Label();
+	/** Data grid. Center of {@link #mainLayout} */
 	private WListbox miniTable = ListboxFactory.newDataTable();
 	
-	// command panel
+	/** Command panel. South of {@link #mainLayout} */
 	private Panel commandPanel = new Panel();
-	ConfirmPanel cp = new ConfirmPanel();
+	/** Grid layout of {@link #commandPanel} */
+	private Grid commandLayout = GridFactory.newGridLayout();
+	protected ConfirmPanel cp = new ConfirmPanel();
 	private Button bCancel = cp.createButton(ConfirmPanel.A_CANCEL);
 	private Button bGenerate = cp.createButton(ConfirmPanel.A_PROCESS);
 	private Button bReset = cp.createButton(ConfirmPanel.A_RESET);
 	private Button bZoom = cp.createButton(ConfirmPanel.A_ZOOM);
-	private Button bZoomDoc = cp.createButton(ConfirmPanel.A_ZOOM);
-	private Grid commandLayout = GridFactory.newGridLayout();
-	private Button bRefresh = cp.createButton(ConfirmPanel.A_REFRESH);
-	private Label labelDateAcct = new Label();
-	private WDateEditor  fieldDateAcct = new WDateEditor();
-	private Label labelDateAcct2 = new Label();
-	private WDateEditor  fieldDateAcct2 = new WDateEditor();
-	
-	private Label labelProduct = new Label();
-	private WSearchEditor fieldProduct = null;
-	private boolean loading = false;
+	private Button bZoomDoc = cp.createButton(ConfirmPanel.A_ZOOM);	
+	private Button bRefresh = cp.createButton(ConfirmPanel.A_REFRESH);		
 	private Label differenceLabel = new Label();
 	private Textbox differenceField = new Textbox();
-
 	private ToolBarButton bSelect = new ToolBarButton("SelectAll");
 	private boolean checkAllSelected = true;
 	
+	private boolean loading = false;
+	
 	/**
-	 *  init UI
+	 *  Layout {@link #form}
 	 *  @throws Exception
 	 */
 	private void zkInit() throws Exception
 	{
-		//
 		form.appendChild(mainLayout);
 		parameterPanel.appendChild(parameterLayout);
 		bRefresh.addActionListener(this);
@@ -363,8 +375,10 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		fieldAccount = new WTableDirEditor("C_ElementValue_ID", true, false, true, lookupAccount);
 	}
 	
-	private void loadData(){
-		
+	 /**
+	  * Load data into {@link #miniTable}.
+	  */
+	private void loadData(){		
 		if(fieldAccount.isNullOrEmpty())
 			throw new WrongValueException(fieldAccount.getComponent(), Msg.getMsg(Env.getCtx(), "FillMandatory"));
 		
@@ -420,7 +434,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	
 	/**
 	 *  Calculate selected rows.
-	 *  - add up selected rows
+	 *  <li>add up selected rows</li>
 	 */
 	private void calculateSelection()
 	{
@@ -505,6 +519,10 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		
 	}
 	
+	/**
+	 * Call {@link #generate(org.compiere.minigrid.IMiniTable, List)} 
+	 * to generate {@link MFactReconciliation} record from selected row in miniTable.
+	 */
 	private void generateReconciliation() {
 		if (miniTable.getRowCount() == 0)
 			return;
@@ -525,8 +543,9 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	}
 	
 	/**
-	 *	Zoom to target
-	 *  @param tableID table id
+	 *	Zoom to window for current focus row of {@link #miniTable}.
+	 *  @param tableID if tableID is MFactAcct.Table_ID, zoom to window for MFactAcct. otherwise
+	 *  zoom to AD_Table_ID and Record_ID value of focus row.
 	 */
 	protected void zoom (int tableID)
 	{
@@ -547,6 +566,10 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		}
 	}	//	zoom
 	
+	/**
+	 * Call {@link #reset(org.compiere.minigrid.IMiniTable, List)} to 
+	 * Reset/Delete {@link MFactReconciliation} record from selected row in {@link #miniTable}.
+	 */
 	private void resetReconciliation() {
 		if (miniTable.getRowCount() == 0)
 			return;
@@ -571,6 +594,10 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		return form;
 	}
 
+	/**
+	 * Handle {@link #bSelect} ON_CLICK event.<br/>
+	 * Select/Deselect all rows of {@link #miniTable}.
+	 */
 	private void onbSelect() {
 		ListModelTable model = miniTable.getModel();
 		int rows = model.getSize();

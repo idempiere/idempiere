@@ -51,7 +51,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1632375949585292635L;
+	private static final long serialVersionUID = 6190279880520042885L;
 
 	public static final String EVENT_ATTRIBUTE = "EVENT";
     public static final String ZOOM_EVENT = "ZOOM";
@@ -291,7 +291,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         	if (ThemeManager.isUseFontIconForImage())
         		drillItem.setIconSclass("z-icon-Window");
             else
-            	drillItem.setImage(ThemeManager.getThemeResource("images/Window16.png"));
+            	drillItem.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
         	drillItem.addEventListener(Events.ON_CLICK, this);
         	this.appendChild(drillItem);
         }

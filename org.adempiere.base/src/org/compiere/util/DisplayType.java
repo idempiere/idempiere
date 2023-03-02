@@ -183,7 +183,7 @@ public final class DisplayType
 	public static final int TimestampWithTimeZone = REFERENCE_DATATYPE_TIMESTAMP_WITH_TIMEZONE;
 	
 	public static final int TimeZoneId = REFERENCE_DATATYPE_TIMEZONE;
-	
+
 	/**
 	 *	- New Display Type
 		INSERT INTO AD_REFERENCE

@@ -213,3 +213,9 @@ input[type="checkbox"]:focus
 	height: 30px;
 	padding: 0px 10px;
 }
+
+.date-picker-calendar-button {
+	position: absolute;
+    right: 0px;
+    top: 5px;
+}

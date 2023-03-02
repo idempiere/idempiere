@@ -96,7 +96,7 @@ import com.lowagie.text.DocumentException;
  */
 public final class AEnv
 {
-	/** Environment context attribute for Locale **/
+	/** Environment context attribute for Locale */
 	public static final String LOCALE = Env.LOCALE;
 	
 	/**
@@ -259,12 +259,12 @@ public final class AEnv
 		AEnv.zoom(s_workflow_Window_ID, query);
 	}	//	startWorkflowProcess
 
-	/** Cache Workflow Window ID **/
+	/** Cache Workflow Window ID */
 	private static int		s_workflow_Window_ID = 0;
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(AEnv.class);
 
-	/**	Register AD Window Cache **/
+	/**	Register AD Window Cache */
 	private static Map<String, CCache<Integer,GridWindowVO>> windowCache = new HashMap<String, CCache<Integer,GridWindowVO>>();
 
 	/**
@@ -321,7 +321,7 @@ public final class AEnv
 		if (mWindowVO == null)
 			return null;
 
-		//  Check context
+		//  Check context (Just in case, usually both is ServerContextPropertiesWrapper)
 		if (!mWindowVO.ctx.equals(Env.getCtx()))
 		{
 			//  Add Window properties to context
@@ -453,17 +453,27 @@ public final class AEnv
     /**
 	 *  Opens the Drill Assistant
 	 * 	@param data query
-	 *  @param component
+	 *  @param windowNo
 	 */
     public static void actionDrill(DrillData data, int windowNo) {
-    	int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
-		if (!MRole.getDefault().isCanReport(AD_Table_ID))
-		{
-			Dialog.error(windowNo, "AccessCannotReport", data.getQuery().getTableName());
-			return;
-		}
+	actionDrill(data, windowNo, 0);
+    }
+
+    /**
+	 *  Opens the Drill Assistant
+	 * 	@param data query
+	 *  @param windowNo
+	 *  @param processID Source Report
+	 */
+    public static void actionDrill(DrillData data, int windowNo, int processID) {
+	int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
 		if (AD_Table_ID > 0) {
-			WDrillReport drillReport = new WDrillReport(data, windowNo);
+			if (!MRole.getDefault().isCanReport(AD_Table_ID))
+			{
+				Dialog.error(windowNo, "AccessCannotReport", data.getQuery().getTableName());
+				return;
+			}
+			WDrillReport drillReport = new WDrillReport(data, windowNo, processID);
 
 			Object window = SessionManager.getAppDesktop().findWindow(windowNo);
 			if (window != null && window instanceof Component && window instanceof ISupportMask){
@@ -824,17 +834,12 @@ public final class AEnv
 	}
 	
 	/**
-	 * Get adWindowId below gridField
-	 * when field lie in window, it's id of this window
-	 * when field lie in process parameter dialog it's ad_window_id of window open this process
-	 * when field lie in process parameter open in a standalone window (run process from menu) return id of dummy window
+	 * Get AD_Window_ID from windowNo.
 	 * @param windowNo
-	 * @return
+	 * @return AD_Window_ID or {@link Env#adWindowDummyID} (if it is ProcessDialog of InfoWindow)
 	 */
 	public static int getADWindowID (int windowNo){
 		int adWindowID = 0;
-		// form process parameter panel
-		
 		Object  window = SessionManager.getAppDesktop().findWindow(windowNo);
 		// case show a process dialog, window is below window of process dialog
 		if (window != null && window instanceof ADWindow){

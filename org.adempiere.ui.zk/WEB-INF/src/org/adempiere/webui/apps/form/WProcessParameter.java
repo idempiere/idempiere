@@ -32,12 +32,13 @@ import org.compiere.util.Util;
 import org.idempiere.model.IProcessParameter;
 
 /**
+ * Form to create MSchedulerPara or MProcessDrillRulePara records.
  * @author hengsin
- *
  */
 @org.idempiere.ui.zk.annotation.Form
 public class WProcessParameter implements IFormController {
 
+	/** Form/window UI instance */
 	private WProcessParameterForm parameterForm = null;
 	
 	/**
@@ -56,22 +57,22 @@ public class WProcessParameter implements IFormController {
 	}
 
 	/**
-	 * Save parameters
-	 * @param paras
+	 * Create MSchedulerPara or MProcessDrillRulePara from paras.
+	 * @param instanceParas
 	 * @param tableName
 	 */
-	public void saveParameters(MPInstancePara[] paras, String tableName) {
+	public void saveParameters(MPInstancePara[] instanceParas, String tableName) {
 
 		MTable table = MTable.get(Env.getCtx(), tableName);
 		PO po = table.getPO(parameterForm.getProcessInfo().getRecord_ID(), null);
 		String idColumn = "";
 
 		int AD_Process_ID = po.get_ValueAsInt("AD_Process_ID"); //scheduler.getAD_Process_ID();
-		if (AD_Process_ID > 0 && paras.length > 0) {
+		if (AD_Process_ID > 0 && instanceParas.length > 0) {
 			MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
 			MProcessPara[] processParameters = process.getParameters();
 			
-			//delete parameters
+			//clear old before create new
 			if(tableName.equalsIgnoreCase(MScheduler.Table_Name)) {
 				idColumn = "AD_Scheduler_ID";
 				MScheduler scheduler = new MScheduler(Env.getCtx(), po.get_ID(), null);
@@ -88,9 +89,9 @@ public class WProcessParameter implements IFormController {
 					para.deleteEx(true);
 				}
 			}
-			//
+			
 			//child table always must have "_Para" suffix
-			for(MPInstancePara para : paras) {
+			for(MPInstancePara instancePara : instanceParas) {
 				table = MTable.get(Env.getCtx(), tableName+"_Para");
 				IProcessParameter poPara = null;
 				if(tableName.equalsIgnoreCase(MScheduler.Table_Name))
@@ -99,37 +100,37 @@ public class WProcessParameter implements IFormController {
 					poPara = new MProcessDrillRulePara(Env.getCtx(), 0, null);
 				poPara.setParentID(po.get_ValueAsInt(idColumn));
 				for(MProcessPara processPara : processParameters) {
-					if (processPara.getColumnName().equals(para.getParameterName())) {
+					if (processPara.getColumnName().equals(instancePara.getParameterName())) {
 						poPara.setAD_Process_Para_ID(processPara.getAD_Process_Para_ID());
 						if (DisplayType.isNumeric(processPara.getAD_Reference_ID())) {
-							if (para.get_Value(MPInstancePara.COLUMNNAME_P_Number) != null)
-								poPara.setParameterDefault(para.getP_Number().toString());
-							if (processPara.isRange() && para.get_Value(MPInstancePara.COLUMNNAME_P_Number_To) != null) 
-								poPara.setParameterToDefault(para.getP_Number_To().toString());
+							if (instancePara.get_Value(MPInstancePara.COLUMNNAME_P_Number) != null)
+								poPara.setParameterDefault(instancePara.getP_Number().toString());
+							if (processPara.isRange() && instancePara.get_Value(MPInstancePara.COLUMNNAME_P_Number_To) != null) 
+								poPara.setParameterToDefault(instancePara.getP_Number_To().toString());
 						} else if (DisplayType.isID(processPara.getAD_Reference_ID())) {
-							if (para.get_Value(MPInstancePara.COLUMNNAME_P_Number) != null)
-								poPara.setParameterDefault(Integer.toString(para.getP_Number().intValue()));
-							if (processPara.isRange() && para.get_Value(MPInstancePara.COLUMNNAME_P_Number_To) != null)
-								poPara.setParameterToDefault(Integer.toString(para.getP_Number_To().intValue()));
+							if (instancePara.get_Value(MPInstancePara.COLUMNNAME_P_Number) != null)
+								poPara.setParameterDefault(Integer.toString(instancePara.getP_Number().intValue()));
+							if (processPara.isRange() && instancePara.get_Value(MPInstancePara.COLUMNNAME_P_Number_To) != null)
+								poPara.setParameterToDefault(Integer.toString(instancePara.getP_Number_To().intValue()));
 						} else if (DisplayType.isDate(processPara.getAD_Reference_ID())) {
-							if (para.getP_Date() != null)
-								poPara.setParameterDefault(para.getP_Date().toString());
-							if (processPara.isRange() && para.getP_Date_To() != null)
-								poPara.setParameterToDefault(para.getP_Date_To().toString());
+							if (instancePara.getP_Date() != null)
+								poPara.setParameterDefault(instancePara.getP_Date().toString());
+							if (processPara.isRange() && instancePara.getP_Date_To() != null)
+								poPara.setParameterToDefault(instancePara.getP_Date_To().toString());
 						} else {
-							poPara.setParameterDefault(para.getP_String());
-							if (processPara.isRange() && para.getP_String_To() != null)
-								poPara.setParameterToDefault(para.getP_String_To());
+							poPara.setParameterDefault(instancePara.getP_String());
+							if (processPara.isRange() && instancePara.getP_String_To() != null)
+								poPara.setParameterToDefault(instancePara.getP_String_To());
 						}
-						if (!Util.isEmpty(para.getInfo())) {
-							poPara.setDescription(para.getInfo());
+						if (!Util.isEmpty(instancePara.getInfo())) {
+							poPara.setDescription(instancePara.getInfo());
 						}
-						if (!Util.isEmpty(para.getInfo_To())) {
+						if (!Util.isEmpty(instancePara.getInfo_To())) {
 							String s = poPara.getDescription();
 							if (Util.isEmpty(s))
-								s = para.getInfo_To();
+								s = instancePara.getInfo_To();
 							else
-								s = s + ", " + para.getInfo_To();
+								s = s + ", " + instancePara.getInfo_To();
 							poPara.setDescription(s);
 						}
 						break;

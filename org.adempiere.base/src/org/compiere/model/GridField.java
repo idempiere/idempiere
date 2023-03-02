@@ -2610,6 +2610,14 @@ public class GridField
 		return m_vo.IsQuickForm;
 	}
 
+	/**
+	 * Get Date Range Options
+	 * @return The option, how the date editor will be displayed.
+	 */
+	public String getDateRangeOption() {
+		return m_vo.dateRangeOption;
+	}
+	
 	public void processUIVirtualColumn() {
 		String sql = m_vo.ColumnSQL.substring(5);
 		sql = Env.parseContext(Env.getCtx(), getWindowNo(), sql, false);
