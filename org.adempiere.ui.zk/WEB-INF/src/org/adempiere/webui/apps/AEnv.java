@@ -453,7 +453,7 @@ public final class AEnv
     /**
 	 *  Opens the Drill Assistant
 	 * 	@param data query
-	 *  @param component
+	 *  @param windowNo
 	 */
     public static void actionDrill(DrillData data, int windowNo) {
 	actionDrill(data, windowNo, 0);
@@ -462,17 +462,17 @@ public final class AEnv
     /**
 	 *  Opens the Drill Assistant
 	 * 	@param data query
-	 *  @param component
+	 *  @param windowNo
 	 *  @param processID Source Report
 	 */
     public static void actionDrill(DrillData data, int windowNo, int processID) {
 	int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
-		if (!MRole.getDefault().isCanReport(AD_Table_ID))
-		{
-			Dialog.error(windowNo, "AccessCannotReport", data.getQuery().getTableName());
-			return;
-		}
 		if (AD_Table_ID > 0) {
+			if (!MRole.getDefault().isCanReport(AD_Table_ID))
+			{
+				Dialog.error(windowNo, "AccessCannotReport", data.getQuery().getTableName());
+				return;
+			}
 			WDrillReport drillReport = new WDrillReport(data, windowNo, processID);
 
 			Object window = SessionManager.getAppDesktop().findWindow(windowNo);

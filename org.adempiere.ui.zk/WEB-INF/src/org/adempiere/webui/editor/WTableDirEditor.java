@@ -664,14 +664,14 @@ ContextMenuListener, IZoomableEditor
     }
     
     protected void actionDrill() {
-		if(getGridField() == null || getGridField().getGridTab() == null)
-			return;
-		if(m_tableName == null)
-			setTableAndKeyColumn();
-		if(m_keyColumnName == null)
-			m_keyColumnName = getGridField().getColumnName();
-		if(!m_keyColumnName.endsWith("_ID"))
-			return;
+    	if(getGridField() == null || getGridField().getGridTab() == null)
+    		return;
+    	if(m_tableName == null)
+    		setTableAndKeyColumn();
+    	if(m_keyColumnName == null)
+    		m_keyColumnName = getGridField().getColumnName();
+    	if(!m_keyColumnName.endsWith("_ID"))
+    		return;
 		MQuery query = new MQuery(m_tableName);
 		query.addRestriction(m_keyColumnName, MQuery.EQUAL, oldValue);
 		int windowNo = getGridField().getGridTab().getWindowNo();

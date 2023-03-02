@@ -98,13 +98,13 @@ public class DrillReportCtl {
 
 	/**
 	 *
-	 * @param ctx
 	 * @param TableName
 	 * @param query
 	 * @param ColumnName
 	 * @param Value
 	 * @param displayValue
 	 * @param WindowNo
+	 * @param processID
 	 */
 	public DrillReportCtl(String TableName, MQuery query, String ColumnName, Object Value, String displayValue, int WindowNo, int processID) {
 		this.m_TableName = TableName;
@@ -183,9 +183,9 @@ public class DrillReportCtl {
 		if(!Util.isEmpty(m_ColumnName)) {
 			MProcessDrillRule[] processDrillRules = MProcessDrillRule.getByColumnName(Env.getCtx(), m_ColumnName, null);
 			for( MProcessDrillRule drillProcesRule: processDrillRules) {
-				MProcess process = MProcess.get(drillProcesRule.getAD_Process_ID());
-				if(process == null || process.getAD_Process_ID() == m_AD_Process_ID)
+				if (drillProcesRule.getAD_Process_ID() == 0 || drillProcesRule.getAD_Process_ID() == m_AD_Process_ID)
 					continue;
+				MProcess process = MProcess.get(drillProcesRule.getAD_Process_ID());
 
 				drillProcessMap.put(drillProcesRule.getAD_Process_ID(), process.get_Translation(MProcess.COLUMNNAME_Name));
 
