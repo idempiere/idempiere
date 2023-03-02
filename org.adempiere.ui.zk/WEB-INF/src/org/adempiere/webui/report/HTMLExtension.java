@@ -34,9 +34,8 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.Executions;
 
 /**
- * 
+ * Default implementation for HTML report extension
  * @author hengsin
- *
  */
 public class HTMLExtension implements IHTMLExtension {
 
@@ -46,6 +45,11 @@ public class HTMLExtension implements IHTMLExtension {
 	private String styleURL;
 	private String contextPath;
 
+	/**
+	 * @param contextPath
+	 * @param classPrefix
+	 * @param componentId
+	 */
 	public HTMLExtension(String contextPath, String classPrefix, String componentId) {
 
 		String theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
@@ -67,6 +71,17 @@ public class HTMLExtension implements IHTMLExtension {
 		this.contextPath = contextPath;
 	}
 	
+	@Override
+	public String getWebFontLinks() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("<link rel=\"stylesheet\" href=\"")
+			.append(contextPath)
+			.append("/css/font-awesome.css.dsp")
+			.append("\">");
+		return builder.toString();
+	}
+
+	@Override
 	public void extendIDColumn(int row, ConcreteElement columnElement, a href,
 			PrintDataElement dataElement) {
 		href.addAttribute("onclick", "parent.idempiere.showColumnMenu(document, event, '" + dataElement.getColumnName() + "', " + row + ", " + ThemeManager.isUseFontIconForImage() + ")");		
@@ -76,6 +91,7 @@ public class HTMLExtension implements IHTMLExtension {
 		href.addAttribute ("displayValue", dataElement.getValueDisplay(Env.getLanguage(Env.getCtx())));
 	}
 
+	@Override
 	public void extendRowElement(ConcreteElement row, PrintData printData) {
 		PrintDataElement pkey = printData.getPKey();
 		if (pkey != null)
@@ -87,18 +103,22 @@ public class HTMLExtension implements IHTMLExtension {
 		}
 	}
 
+	@Override
 	public String getClassPrefix() {
 		return classPrefix;
 	}
 
+	@Override
 	public String getScriptURL() {
 		return scriptURL;
 	}
 
+	@Override
 	public String getStyleURL() {
 		return styleURL;
 	}
 
+	@Override
 	public void setWebAttribute (body reportBody){
 		// set attribute value for create menu context
 		StringBuilder windowIconAttr = new StringBuilder();
@@ -161,7 +181,8 @@ public class HTMLExtension implements IHTMLExtension {
 		reportBody.addAttribute ("drillAssistantLabel", Msg.getMsg(AEnv.getLanguage(Env.getCtx()), "DrillAssistant").replace("&", ""));
 
 	}
-	
+
+	@Override
 	public String getFullPathStyle() {
 		String theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
 		if (! theme.startsWith("/"))
