@@ -40,6 +40,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Urlbox;
+import org.adempiere.webui.editor.DateRangeEditor;
 import org.adempiere.webui.editor.IZoomableEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
@@ -61,6 +62,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
@@ -168,9 +170,13 @@ public class ProcessParameterPanel extends Panel implements
 	private ArrayList<GridField> m_mFields = new ArrayList<GridField>();
 	/** to parameter field list for range parameter **/
 	private ArrayList<GridField> m_mFields2 = new ArrayList<GridField>();
+	/** list of separators **/
 	private ArrayList<Space> m_separators = new ArrayList<Space>();
 	/** all rows of {@link #centerPanel} **/
 	private ArrayList<Row> m_Rows = new ArrayList<Row>();
+	/** list of all date range editors **/
+	private ArrayList<DateRangeEditor> m_dateRangeEditors = new ArrayList<DateRangeEditor>();
+	//
 	/** layout grid for parameter fields **/
 	private Grid centerPanel = null;
 	/** Group Name:Rows for parameter field **/
@@ -248,7 +254,7 @@ public class ProcessParameterPanel extends Panel implements
 		if (Env.isBaseLanguage(Env.getCtx(), "AD_Process_Para"))
 			sql = "SELECT p.Name, p.Description, p.Help, "
 					+ "p.AD_Reference_ID, p.AD_Process_Para_ID, "
-					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.ColumnName, "
+					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.dateRangeOption, p.ColumnName, "
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic, p.Placeholder, p.Placeholder2, p.isAutoComplete, "
@@ -262,7 +268,7 @@ public class ProcessParameterPanel extends Panel implements
 		else
 			sql = "SELECT t.Name, t.Description, t.Help, "
 					+ "p.AD_Reference_ID, p.AD_Process_Para_ID, "
-					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.ColumnName, "
+					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.dateRangeOption, p.ColumnName, "
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern,p.MandatoryLogic, t.Placeholder, t.Placeholder2, p.isAutoComplete, "
@@ -496,14 +502,31 @@ public class ProcessParameterPanel extends Panel implements
 			row.appendChild(box);
 			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime)) 
 					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))) {
-				DateRangeButton dateRangeButton = new DateRangeButton(editor, editor2);
-				box.appendChild(dateRangeButton);
+				if(MProcessPara.DATERANGEOPTION_TextAndRangePicker.equalsIgnoreCase(mField.getDateRangeOption())) {
+					editor.setVisible(false, true);
+					editor2.setVisible(false, true);
+					DateRangeEditor dateRangeEditor = new DateRangeEditor(editor, editor2);
+					box.appendChild(dateRangeEditor);
+					dateRangeEditor.setVisible(mField.isDisplayed(true));
+					label.setVisible(dateRangeEditor.isVisible());
+					dateRangeEditor.setReadOnly(!(editor.isReadWrite() && editor2.isReadWrite()));
+					m_dateRangeEditors.add(dateRangeEditor);
+				}
+				else {
+					DateRangeButton dateRangeButton = new DateRangeButton(editor, editor2);
+					box.appendChild(dateRangeButton);
+					m_dateRangeEditors.add(null);
+				}
+			}
+			else {
+				m_dateRangeEditors.add(null);
 			}
 		} else {
 			box.appendChild(editor.getComponent());
 			m_mFields2.add(null);
 			m_wEditors2.add(null);
 			m_separators.add(null);
+			m_dateRangeEditors.add(null);
 			//add not in support for multi selection field
 			if(DisplayType.isChosenMultipleSelection(mField.getDisplayType())) {
 				Button bNegate = ButtonFactory.createButton("", null, null);
@@ -1126,6 +1149,10 @@ public class ProcessParameterPanel extends Panel implements
 		for (int i = 0; i < m_wEditors.size(); i++) {
 			WEditor editor = m_wEditors.get(i);
 			GridField mField = editor.getGridField();
+			GridField mField2 = null;
+			if (mField.getVO().isRange) {
+				mField2 = m_wEditors2.get(i).getGridField();
+			}
 			if (mField.isDisplayed(true)) {
 				if (!editor.isVisible()) {
 					editor.setVisible(true);
@@ -1176,6 +1203,25 @@ public class ProcessParameterPanel extends Panel implements
 				// Add mandatory style on label when Parameter To is still blank
 				if (editor.isMandatory() && editor.getLabel() != null && m_wEditors2.get(i).isNullOrEmpty()) {
 					LayoutUtils.addSclass("idempiere-mandatory-label", editor.getLabel());
+				}
+			}
+			// Handle Dynamic Display for Date Range Picker
+			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime))
+					&& mField2 != null
+					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))
+					&& MProcessPara.DATERANGEOPTION_TextAndRangePicker.equalsIgnoreCase(mField.getDateRangeOption())) {
+				DateRangeEditor dateRangeEditor = m_dateRangeEditors.get(i);
+				if(dateRangeEditor != null) {
+					dateRangeEditor.setVisible(editor.isVisible());
+					m_Rows.get(i).setVisible(editor.isVisible());
+					m_Rows.get(i).setAttribute(Group.GROUP_ROW_VISIBLE_KEY, editor.isVisible());
+					editor.setVisible(false, true);
+					if (mField.getVO().isRange) {
+						m_separators.get(i).setVisible(false);
+						m_wEditors2.get(i).setVisible(false ,true);
+					}
+					dateRangeEditor.setFieldMandatoryStyle();
+					dateRangeEditor.setReadOnly(!(editor.isReadWrite() && m_wEditors2.get(i).isReadWrite()));
 				}
 			}
 		}
