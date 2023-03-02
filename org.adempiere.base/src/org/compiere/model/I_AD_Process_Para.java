@@ -199,6 +199,19 @@ public interface I_AD_Process_Para
 	  */
 	public int getCreatedBy();
 
+    /** Column name DateRangeOption */
+    public static final String COLUMNNAME_DateRangeOption = "DateRangeOption";
+
+	/** Set Date Range Option.
+	  * Options, how the date editor will be displayed.
+	  */
+	public void setDateRangeOption (String DateRangeOption);
+
+	/** Get Date Range Option.
+	  * Options, how the date editor will be displayed.
+	  */
+	public String getDateRangeOption();
+
     /** Column name DefaultValue */
     public static final String COLUMNNAME_DefaultValue = "DefaultValue";
 

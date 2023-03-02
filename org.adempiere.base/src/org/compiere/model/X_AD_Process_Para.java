@@ -43,6 +43,8 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 			setAD_Process_Para_ID (0);
 			setAD_Reference_ID (0);
 			setColumnName (null);
+			setDateRangeOption (null);
+// D
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFieldLength (0);
@@ -72,6 +74,8 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 			setAD_Process_Para_ID (0);
 			setAD_Reference_ID (0);
 			setColumnName (null);
+			setDateRangeOption (null);
+// D
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
 			setFieldLength (0);
@@ -337,6 +341,29 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public String getColumnName()
 	{
 		return (String)get_Value(COLUMNNAME_ColumnName);
+	}
+
+	/** DateRangeOption AD_Reference_ID=200228 */
+	public static final int DATERANGEOPTION_AD_Reference_ID=200228;
+	/** Date Editor and Range Picker = D */
+	public static final String DATERANGEOPTION_DateEditorAndRangePicker = "D";
+	/** Text and Range Picker = T */
+	public static final String DATERANGEOPTION_TextAndRangePicker = "T";
+	/** Set Date Range Option.
+		@param DateRangeOption Options, how the date editor will be displayed.
+	*/
+	public void setDateRangeOption (String DateRangeOption)
+	{
+
+		set_Value (COLUMNNAME_DateRangeOption, DateRangeOption);
+	}
+
+	/** Get Date Range Option.
+		@return Options, how the date editor will be displayed.
+	  */
+	public String getDateRangeOption()
+	{
+		return (String)get_Value(COLUMNNAME_DateRangeOption);
 	}
 
 	/** Set Default Logic.
