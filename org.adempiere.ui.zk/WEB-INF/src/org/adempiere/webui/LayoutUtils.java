@@ -202,7 +202,28 @@ public final class LayoutUtils {
 			.append("');");
 		Clients.response("_openPopupWindow_", new AuScript(window, script.toString()));
 	}
-	
+
+	/**
+	 * position component relative to ref component
+	 * @param ref
+	 * @param component
+	 * @param position Refer to https://www.zkoss.org/javadoc/latest/jsdoc/_global_/jqzk.html#position-_global_.Dimension-_global_.String-_global_.Map-
+	 */
+	public static void positionComponent(Component ref, Component component, String position) {
+		StringBuilder script = new StringBuilder();
+		script.append("(function() {let w = zk('#")
+			.append(component.getUuid())
+			.append("'); ")
+			.append("let ref=zk.Widget.$('#")
+			.append(ref.getUuid())
+			.append("'); ")
+			.append("w.position(")
+			.append("ref.$n(),'")
+			.append(position)
+			.append("');})()");
+		Clients.response("_positionComponent_", new AuScript(component, script.toString()));
+	}
+
 	/**
 	 * open embedded window relative to ref component
 	 * @param ref

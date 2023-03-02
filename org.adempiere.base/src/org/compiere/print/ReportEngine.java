@@ -766,6 +766,11 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				doc.getBody().setNeedClosingTag(false);
 				doc.appendHead("<meta charset=\"UTF-8\" />");
 				
+				if (extension != null && !Util.isEmpty(extension.getWebFontLinks(), true))
+				{
+					doc.appendHead(extension.getWebFontLinks());
+				}
+
 				if (extension != null && extension.getStyleURL() != null)
 				{
 					// maybe cache style content with key is path
