@@ -499,6 +499,7 @@ public class DrillReportCtl {
 				iPara.setParameter(DisplayType.isID(sPara.getDisplayType()) ? new BigDecimal(String.valueOf(m_Value)) : String.valueOf(m_Value));
 				iPara.setInfo(!Util.isEmpty(m_DisplayValue) ? m_DisplayValue : String.valueOf(m_Value));
 				iParams.add(iPara);
+				processParasExclDrillRuleParas.remove(processPara);
 				continue;
 			}
 
