@@ -86,7 +86,7 @@ public class MSequence extends X_AD_Sequence
 		} 
 		else
 		{
-			String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
+			String sysProperty = Env.getCtx().getProperty(Ini.P_ADEMPIERESYS, "N");
 			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
 		}
 		if (adempiereSys && AD_Client_ID > 11)
@@ -315,7 +315,7 @@ public class MSequence extends X_AD_Sequence
 		} 
 		else
 		{
-			String sysProperty = Env.getCtx().getProperty("AdempiereSys", "N");
+			String sysProperty = Env.getCtx().getProperty(Ini.P_ADEMPIERESYS, "N");
 			adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
 		}
 		if (adempiereSys && Env.getAD_Client_ID(Env.getCtx()) > 11)
@@ -1103,7 +1103,7 @@ public class MSequence extends X_AD_Sequence
 		String prm_PASSWORD = MSysConfig.getValue(MSysConfig.DICTIONARY_ID_PASSWORD);  // "password_inseguro";
 		String prm_TABLE = TableName;
 		String prm_ALTKEY = "";  // TODO: generate alt-key based on key of table
-		String prm_COMMENT = Env.getContext(Env.getCtx(), "MigrationScriptComment");
+		String prm_COMMENT = Env.getContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment);
 		String prm_PROJECT = new String("Adempiere");
 
 		return getNextID_HTTP(TableName, website, prm_USER,
@@ -1122,7 +1122,7 @@ public class MSequence extends X_AD_Sequence
 		String prm_PASSWORD = MSysConfig.getValue(MSysConfig.PROJECT_ID_PASSWORD);  // "password_inseguro";
 		String prm_TABLE = TableName;
 		String prm_ALTKEY = "";  // TODO: generate alt-key based on key of table
-		String prm_COMMENT = Env.getContext(Env.getCtx(), "MigrationScriptComment");
+		String prm_COMMENT = Env.getContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment);
 		String prm_PROJECT = MSysConfig.getValue(MSysConfig.PROJECT_ID_PROJECT);
 
 		return getNextID_HTTP(TableName, website, prm_USER,
@@ -1219,7 +1219,11 @@ public class MSequence extends X_AD_Sequence
 			"T_TRIALBALANCE"
 		};
 
-	private static boolean isExceptionCentralized(String tableName) {
+	/**
+	 * @param tableName
+	 * @return true if centralized id shouldn't be used for tableName
+	 */
+	public static boolean isExceptionCentralized(String tableName) {
 
 		for (String exceptionTable : dontUseCentralized) {
 			if (tableName.equalsIgnoreCase(exceptionTable))
@@ -1232,8 +1236,12 @@ public class MSequence extends X_AD_Sequence
 	
 	private static CCache<String,String> tablesWithEntityType = new CCache<String,String>(Table_Name, "TablesWithEntityType", 60, 0, false, 0);
 	
-	private synchronized static boolean isTableWithEntityType(String tableName) {
-		if (tablesWithEntityType == null || tablesWithEntityType.size() == 0) {
+	/**
+	 * @param tableName
+	 * @return true if tableName has entity type column name
+	 */
+	public static synchronized boolean isTableWithEntityType(String tableName) {
+		if (tablesWithEntityType.size() == 0) {
 			final String sql = "SELECT TableName FROM AD_Table WHERE AD_Table_ID IN (SELECT AD_Table_ID FROM AD_Column WHERE ColumnName='EntityType') ORDER BY TableName";
 			List<List<Object>> list = DB.getSQLArrayObjectsEx(null, sql);
 			for (List<Object> row : list) {
