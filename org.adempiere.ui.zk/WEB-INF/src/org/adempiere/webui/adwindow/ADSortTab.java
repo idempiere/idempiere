@@ -21,7 +21,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -42,12 +44,15 @@ import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.event.DropEvent;
@@ -701,66 +706,102 @@ public class ADSortTab extends Panel implements IADTabpanel
 		if (!adWindowPanel.getToolbar().isSaveEnable())
 			return;
 		boolean ok = true;
-		//TODO: should use model instead to enable change log and event handling
 		StringBuilder info = new StringBuilder();
-		StringBuffer sql = null;
-		//	noList - Set SortColumn to null and optional YesNo Column to 'N'
-		for (int i = 0; i < noModel.getSize(); i++)
-		{
-			ListElement pp = (ListElement)noModel.getElementAt(i);
-			if (!pp.isUpdateable())
-				continue;
-			if(pp.getSortNo() == 0 && (m_ColumnYesNoName == null || !pp.isYes()))
-				continue; // no changes
-			//
-			sql = new StringBuffer();
-			sql.append("UPDATE ").append(m_TableName)
-			.append(" SET ").append(m_ColumnSortName).append("=0");
-			if (m_ColumnYesNoName != null)
-				sql.append(",").append(m_ColumnYesNoName).append("='N'");
-			sql.append(", Updated=getDate(), UpdatedBy=").append(Env.getAD_User_ID(Env.getCtx()));
-			sql.append(" WHERE ").append(m_KeyColumnName).append("=").append(pp.getKey());
-			if (DB.executeUpdate(sql.toString(), null) == 1) {
-				pp.setSortNo(0);
-				pp.setIsYes(false);
+		MTable table = MTable.get(Env.getCtx(), m_TableName);
+		Map<Integer, ListElement> noModelBackup = new HashMap<>();
+		Map<Integer, ListElement> yesModelBackup = new HashMap<>();
+		
+		Trx trx = Trx.get(Trx.createTrxName("ADSortTab_save"), true);
+		try {
+			trx.start();
+			//	noList - Set SortColumn to null and optional YesNo Column to 'N'
+			for (int i = 0; i < noModel.getSize(); i++)
+			{
+				ListElement pp = (ListElement)noModel.getElementAt(i);
+				if (!pp.isUpdateable())
+					continue;
+				if(pp.getSortNo() == 0 && (m_ColumnYesNoName == null || !pp.isYes()))
+					continue; // no changes
+				//			
+				PO po = table.getPO(pp.getKey(), trx.getTrxName());
+				po.set_ValueOfColumn(m_ColumnSortName, 0);
+				if (m_ColumnYesNoName != null)
+					po.set_ValueOfColumn(m_ColumnYesNoName, "N");
+				try {
+					po.saveEx();
+					ListElement backup = new ListElement(pp.getKey(), pp.getName(), pp.getSortNo(), pp.isYes(), pp.getAD_Client_ID(), pp.getAD_Org_ID());
+					noModelBackup.put(i, backup);
+					pp.setSortNo(0);
+					pp.setIsYes(false);
+				} catch (Exception e) {
+					ok = false;
+					trx.rollback();
+					if (info.length() > 0)
+						info.append(", ");
+					info.append(pp.getName());
+					log.log(Level.SEVERE, "NoModel - Not updated: " + m_KeyColumnName + "=" + pp.getKey(), e);
+					break;
+				}
 			}
-			else {
-				ok = false;
-				if (info.length() > 0)
-					info.append(", ");
-				info.append(pp.getName());
-				log.log(Level.SEVERE, "NoModel - Not updated: " + m_KeyColumnName + "=" + pp.getKey());
+			
+			if (ok) {
+				//	yesList - Set SortColumn to value and optional YesNo Column to 'Y'
+				int index = 0;
+				for (int i = 0; i < yesModel.getSize(); i++)
+				{
+					ListElement pp = (ListElement)yesModel.getElementAt(i);
+					if (!pp.isUpdateable())
+						continue;
+					index += 10;
+					if(pp.getSortNo() == index && (m_ColumnYesNoName == null || pp.isYes()))
+						continue; // no changes
+					//
+					PO po = table.getPO(pp.getKey(), trx.getTrxName());
+					po.set_ValueOfColumn(m_ColumnSortName, index);
+					if (m_ColumnYesNoName != null)
+						po.set_ValueOfColumn(m_ColumnYesNoName, "Y");
+					try {
+						po.saveEx();
+						ListElement backup = new ListElement(pp.getKey(), pp.getName(), pp.getSortNo(), pp.isYes(), pp.getAD_Client_ID(), pp.getAD_Org_ID());
+						yesModelBackup.put(i, backup);
+						pp.setSortNo(index);
+						pp.setIsYes(true);
+					} catch (Exception e) {
+						ok = false;
+						trx.rollback();
+						if (info.length() > 0)
+							info.append(", ");
+						info.append(pp.getName());
+						log.log(Level.SEVERE, "YesModel - Not updated: " + m_KeyColumnName + "=" + pp.getKey(), e);
+						break;
+					}
+				}
 			}
-		}
-		//	yesList - Set SortColumn to value and optional YesNo Column to 'Y'
-		int index = 0;
-		for (int i = 0; i < yesModel.getSize(); i++)
-		{
-			ListElement pp = (ListElement)yesModel.getElementAt(i);
-			if (!pp.isUpdateable())
-				continue;
-			index += 10;
-			if(pp.getSortNo() == index && (m_ColumnYesNoName == null || pp.isYes()))
-				continue; // no changes
-			//
-			sql = new StringBuffer();
-			sql.append("UPDATE ").append(m_TableName)
-			.append(" SET ").append(m_ColumnSortName).append("=").append(index);
-			if (m_ColumnYesNoName != null)
-				sql.append(",").append(m_ColumnYesNoName).append("='Y'");
-			sql.append(", Updated=getDate(), UpdatedBy=").append(Env.getAD_User_ID(Env.getCtx()));
-			sql.append(" WHERE ").append(m_KeyColumnName).append("=").append(pp.getKey());
-			if (DB.executeUpdate(sql.toString(), null) == 1) {
-				pp.setSortNo(index);
-				pp.setIsYes(true);
+			
+			if (ok) {
+				try {
+					trx.commit(true);
+				} catch (Exception e) {
+					ok = false;
+					trx.rollback();
+					info.append("Failed to commit database transaction");
+					log.log(Level.SEVERE, "Failed to commit database transaction", e);
+				}
 			}
-			else {
-				ok = false;
-				if (info.length() > 0)
-					info.append(", ");
-				info.append(pp.getName());
-				log.log(Level.SEVERE, "YesModel - Not updated: " + m_KeyColumnName + "=" + pp.getKey());
+			
+			if (!ok) {
+				//rollback changes to yes and no model
+				for(Integer index : noModelBackup.keySet()) {
+					ListElement e = noModelBackup.get(index);
+					noModel.setElementAt(e, index);
+				}
+				for(Integer index : yesModelBackup.keySet()) {
+					ListElement e = yesModelBackup.get(index);
+					yesModel.setElementAt(e, index);
+				}
 			}
+		} finally {
+			trx.close();
 		}
 		//
 		if (ok) {
