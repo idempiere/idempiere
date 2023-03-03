@@ -113,7 +113,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 
 			int AD_Tree_ID = getDefaultMenuTreeId();
 
-			final String sql1 = "SELECT COUNT(Parent_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID=? AND Node_ID=?";
+			final String sql1 = "SELECT COUNT(Node_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID=? AND Node_ID=?";
 			int countRecords = DB.getSQLValueEx(getTrxName(ctx), sql1, AD_Tree_ID, mMenu.getAD_Menu_ID());
 			if (countRecords > 0) {
 				int oldseqNo = 0;
