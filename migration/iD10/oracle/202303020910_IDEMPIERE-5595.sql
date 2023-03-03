@@ -176,3 +176,5 @@ UPDATE AD_Field SET SeqNo=320,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-M
 UPDATE AD_Field SET SeqNo=330,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=206410
 ;
 
+UPDATE AD_Process_Para SET IsShowNegateButton='Y' WHERE AD_Process_ID IN 
+(SELECT AD_Process_ID FROM AD_Process WHERE ClassName IS NULL AND JasperReport IS null);
