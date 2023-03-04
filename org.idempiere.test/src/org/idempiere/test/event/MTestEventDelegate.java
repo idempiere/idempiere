@@ -22,22 +22,39 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.adempiere.base;
+package org.idempiere.test.event;
 
-import org.osgi.service.component.annotations.Component;
+import org.adempiere.base.annotation.EventTopicDelegate;
+import org.adempiere.base.annotation.ModelEventTopic;
+import org.adempiere.base.event.annotations.ModelEventDelegate;
+import org.adempiere.base.event.annotations.po.BeforeChange;
+import org.adempiere.base.event.annotations.po.BeforeNew;
+import org.compiere.model.MTest;
+import org.osgi.service.event.Event;
 
-@Component(immediate = true, service = {DefaultAnnotationBasedEventManager.class})
-public class DefaultAnnotationBasedEventManager extends AnnotationBasedEventManager {
+/**
+ * @author hengsin
+ */
+@EventTopicDelegate
+@ModelEventTopic(modelClass = MTest.class)
+public class MTestEventDelegate extends ModelEventDelegate<MTest> {
 
 	/**
-	 * default constructor
+	 * @param po
+	 * @param event
 	 */
-	public DefaultAnnotationBasedEventManager() {
+	public MTestEventDelegate(MTest po, Event event) {
+		super(po, event);
 	}
 
-	@Override
-	public String[] getPackages() {
-		return new String[] {"org.adempiere.base.event.delegate"};
+	@BeforeChange
+	@BeforeNew
+	public void onBeforeChange() {
+		String desc = getModel().getDescription();
+		if (desc != null)
+			desc = desc + "MTestEventDelegate";
+		else
+			desc = "MTestEventDelegate";
+		getModel().setDescription(desc);
 	}
-
 }

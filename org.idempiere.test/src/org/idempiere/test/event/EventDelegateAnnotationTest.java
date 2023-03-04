@@ -22,22 +22,44 @@
  * Contributors:                                                       *
  * - hengsin                         								   *
  **********************************************************************/
-package org.adempiere.base;
+package org.idempiere.test.event;
 
-import org.osgi.service.component.annotations.Component;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Component(immediate = true, service = {DefaultAnnotationBasedEventManager.class})
-public class DefaultAnnotationBasedEventManager extends AnnotationBasedEventManager {
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-	/**
-	 * default constructor
-	 */
-	public DefaultAnnotationBasedEventManager() {
+import org.adempiere.base.Core;
+import org.adempiere.base.DefaultAnnotationBasedEventManager;
+import org.compiere.model.MTest;
+import org.compiere.util.Env;
+import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.TestActivator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
+import org.osgi.service.event.EventHandler;
+
+/**
+ * @author hengsin
+ */
+@Isolated
+public class EventDelegateAnnotationTest extends AbstractTestCase {
+
+	public EventDelegateAnnotationTest() {
 	}
 
-	@Override
-	public String[] getPackages() {
-		return new String[] {"org.adempiere.base.event.delegate"};
+	@Test
+	public void testAnnotatedEventDelegate() {
+		DefaultAnnotationBasedEventManager mgr = Core.getDefaultAnnotationBasedEventManager();
+		CompletableFuture<List<EventHandler>> completable = mgr.scan(TestActivator.context, MTestEventDelegate.class.getPackageName());
+		completable.join();
+		
+		String desc = "test";
+		MTest mtest = new MTest(Env.getCtx(), 0, getTrxName());
+		mtest.setName("testAnnotatedEventDelegate");
+		mtest.setDescription(desc);
+		mtest.saveEx();
+		
+		assertEquals(desc + "MTestEventDelegate", mtest.getDescription(), "MTestEventDelegate not handling before new event as expected");
 	}
-
 }
