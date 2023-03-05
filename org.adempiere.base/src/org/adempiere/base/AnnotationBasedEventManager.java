@@ -74,9 +74,9 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 
 	private static final CLogger s_log = CLogger.getCLogger(AnnotationBasedEventManager.class); 
 	
-	private IEventManager eventManager;
-	private BundleContext bundleContext;
-	private List<EventHandler> handlers = new ArrayList<>();
+	protected IEventManager eventManager;
+	protected BundleContext bundleContext;
+	protected List<EventHandler> handlers = new ArrayList<>();
 
 	private ServiceTracker<IEventManager, IEventManager> serviceTracker;
 	
@@ -156,7 +156,7 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 	 * @param packageNames one or more package to scan
 	 * @return CompletableFuture<List<EventHandler>>
 	 */
-	private CompletableFuture<List<EventHandler>> scan(BundleContext context, boolean logScanDuration, String ...packageNames) {
+	protected CompletableFuture<List<EventHandler>> scan(BundleContext context, boolean logScanDuration, String ...packageNames) {
 		long start = logScanDuration ? System.currentTimeMillis() : 0;
 		final CompletableFuture<List<EventHandler>> completable = new CompletableFuture<>();
 		ClassLoader classLoader = context.getBundle().adapt(BundleWiring.class).getClassLoader();
