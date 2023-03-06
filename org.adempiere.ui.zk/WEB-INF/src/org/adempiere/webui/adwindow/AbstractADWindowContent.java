@@ -2413,6 +2413,22 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
             breadCrumb.enableLastNavigation(adTabbox.getSelectedGridTab().getCurrentRow() + 1 < adTabbox.getSelectedGridTab().getRowCount());
             toolbar.enableTabNavigation(false);
             toolbar.enableIgnore(true);
+
+            if (adTabbox.getSelectedGridTab().isSingleRow()) 
+            {
+            	if (adTabbox.getSelectedTabpanel().isGridView())
+            	{
+            		adTabbox.getSelectedTabpanel().switchRowPresentation();
+            	}
+            }
+
+            if (adTabbox.getSelectedTabpanel().isGridView())
+            {
+            	adTabbox.getSelectedTabpanel().getGridView().onEditCurrentRow();
+            }
+
+            focusToActivePanel();
+
             if (postCallback != null)
             	postCallback.onCallback(true);
             
