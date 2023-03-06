@@ -43,8 +43,7 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1757466458508655102L;
-
+	private static final long serialVersionUID = -1357447647930552555L;
 	/** Static Logger					*/
 	private static CLogger		s_log = CLogger.getCLogger (MProcessPara.class);
 
@@ -351,7 +350,13 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 				LogicEvaluator.validate(getDisplayLogic());
 			}
 		}
-		
+
+		if (newRecord && DisplayType.isChosenMultipleSelection(getAD_Reference_ID())) {
+			MProcess p = MProcess.get(getAD_Process_ID());
+			if (Util.isEmpty(p.getClassname()) && Util.isEmpty(p.getProcedureName()) && Util.isEmpty(p.getJasperReport()))
+				setIsShowNegateButton(true);
+		}
+
 		return true;
 	}	//	beforeSave
 
