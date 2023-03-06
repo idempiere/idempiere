@@ -2866,7 +2866,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         findField.setGridTab(null);
         WEditor editor = null;
         if (findField.isKey() 
-        		|| (!DisplayType.isLookup(findField.getDisplayType()) && DisplayType.isID(findField.getDisplayType())))
+			|| (!DisplayType.isLookup(findField.getDisplayType()) && DisplayType.isID(findField.getDisplayType())
+				 && findField.getDisplayType() != DisplayType.RecordID))
         {
             editor = new WNumberEditor(findField);
 		}

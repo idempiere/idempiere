@@ -848,8 +848,8 @@ public class GridFieldVO implements Serializable, Cloneable
 	 *	@param TabReadOnly r/o
 	 *	@return Field or null
 	 */
-	public GridFieldVO clone(Properties Ctx, int windowNo, int tabNo, 
-		int ad_Window_ID, int ad_Tab_ID, 
+	public GridFieldVO clone(Properties ctx, int windowNo, int tabNo,
+		int ad_Window_ID, int ad_Tab_ID,
 		boolean TabReadOnly)
 	{
 		GridFieldVO clone = null;

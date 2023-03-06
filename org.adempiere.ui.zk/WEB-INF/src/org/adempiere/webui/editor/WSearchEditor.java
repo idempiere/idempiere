@@ -197,7 +197,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		if (Util.isEmpty(m_tableName))
 			setTableAndKeyColumn();
-
+		
 		boolean enableDrill = false;
 		if(getGridField() != null && getGridField().getGridTab() != null && getGridField().getColumnName().endsWith("_ID")
 				&& MRole.getDefault().isCanReport(getGridField().getGridTab().getAD_Table_ID()))
@@ -261,7 +261,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 		Object curValue = this.value;
         this.value = value;
-		if (value != null && !"".equals(String.valueOf(value)))
+        if (value != null && !"".equals(String.valueOf(value)))
 		{		
 			NamePair namePair = lookup.get(value);
 			if (namePair != null)

@@ -473,6 +473,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			+ " AND tab.Ad_Tab_ID=(SELECT MIN(mt.AD_Tab_ID) FROM AD_tab mt WHERE mt.AD_Window_ID=t.AD_Window_ID AND mt.AD_Table_ID=t.AD_Table_ID AND mt.IsActive='Y')"
 			+ " AND (c.IsKey='Y' OR "
 				+ " (f.IsEncrypted='N' AND f.ObscureType IS NULL)) "
+			+ " AND c.IsActive = 'Y' "
 			+ "ORDER BY c.IsKey DESC, f.SeqNo";
 
 		try

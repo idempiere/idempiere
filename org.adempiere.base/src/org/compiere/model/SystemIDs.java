@@ -148,6 +148,7 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_PRODUCTATTRIBUTE = 35;
 	public final static int REFERENCE_DATATYPE_QUANTITY = 29;
 	public final static int REFERENCE_DATATYPE_RADIOGROUP_LIST= 200152;
+	public final static int REFERENCE_DATATYPE_RECORD_ID = 200202;
 	public final static int REFERENCE_DATATYPE_ROWID = 26;
 	public final static int REFERENCE_DATATYPE_SEARCH = 30;
 	public final static int REFERENCE_DATATYPE_SINGLE_SELECTION_GRID = 200127;
