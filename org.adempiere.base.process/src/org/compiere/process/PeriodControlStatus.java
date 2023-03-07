@@ -81,26 +81,24 @@ public class PeriodControlStatus extends SvrProcess
 		
 		for (int p_C_PeriodControl_ID : p_C_PeriodControl_IDs) {
 			MPeriodControl pc = new MPeriodControl (getCtx(), p_C_PeriodControl_ID, get_TrxName());
-			MPeriod p = new MPeriod(getCtx(), pc.getC_Period_ID(), get_TrxName());
-
-			if((MPeriodControl.PERIODACTION_ClosePeriod.equalsIgnoreCase(pc.getPeriodAction()) 
-					|| MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equalsIgnoreCase(pc.getPeriodAction()))
-					&& p.hasUnpostedDocs(p_C_PeriodControl_ID)
-					&& MSysConfig.getBooleanValue(MSysConfig.FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE, true)) {
-				hasUnpostedDocs = true;
-				skipped.add(new MPeriodControl(getCtx(), p_C_PeriodControl_ID, get_TrxName()));
-				continue;
-			}
-			
 			if (pc.get_ID() == 0)
 				throw new AdempiereUserError("@NotFound@  @C_PeriodControl_ID@=" + p_C_PeriodControl_ID);
 			//	Permanently closed
 			if (MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equals(pc.getPeriodStatus()))
 				throw new AdempiereUserError("@PeriodStatus@ = " + pc.getPeriodStatus());
 			//	No Action
-			if (MPeriodControl.PERIODACTION_NoAction.equals(pc.getPeriodAction()))
-				return "@OK@";
 		
+			MPeriod p = MPeriod.get(pc.getC_Period_ID());
+			if ((   MPeriodControl.PERIODACTION_ClosePeriod.equalsIgnoreCase(pc.getPeriodAction())
+				 || MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equalsIgnoreCase(pc.getPeriodAction()))
+				&& MSysConfig.getBooleanValue(MSysConfig.FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE, true, getAD_Client_ID())
+				&& p.hasUnpostedDocs(p_C_PeriodControl_ID)
+				) {
+				hasUnpostedDocs = true;
+				skipped.add(pc);
+				continue;
+			}
+
 			//	Open
 			if (MPeriodControl.PERIODACTION_OpenPeriod.equals(pc.getPeriodAction()))
 				pc.setPeriodStatus(MPeriodControl.PERIODSTATUS_Open);
@@ -123,16 +121,16 @@ public class PeriodControlStatus extends SvrProcess
 		String returnVal = "@OK";
 		
 		// return the list of period controls with un-posted documents
-		if(hasUnpostedDocs) {
+		if (hasUnpostedDocs) {
 			returnVal = Msg.getMsg(getCtx(), "CouldNotClosePeriodControl");
-			for(MPeriodControl pc : skipped) {
+			for (MPeriodControl pc : skipped) {
 				String displayValue = "a";
-				for(ValueNamePair vnp : MRefList.getList(Env.getCtx(),MPeriodControl.DOCBASETYPE_AD_Reference_ID,false)){
-					 if(vnp.getValue().equals(pc.getDocBaseType())){
-						 displayValue = vnp.getName(); 
+				for (ValueNamePair vnp : MRefList.getList(Env.getCtx(),MPeriodControl.DOCBASETYPE_AD_Reference_ID,false)) {
+					if (vnp.getValue().equals(pc.getDocBaseType())) {
+						displayValue = vnp.getName();
 						break;
-					 }
-				 }
+					}
+				}
 				addLog(pc.getC_PeriodControl_ID(), null, null, displayValue, MPeriodControl.Table_ID, pc.getC_PeriodControl_ID());
 			}
 		}

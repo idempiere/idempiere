@@ -1010,37 +1010,36 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
     }
     
     /**
-     * Hast the period control un-posted documents
+     * Has the period control un-posted documents
      * @param periodControlID
      * @return boolean - true if there is at least 1 un-posted document in the period control
      */
     public boolean hasUnpostedDocs(int periodControlID) {
-    	
-    	String sql = " SELECT 1 "
-    			+ " FROM RV_UnPosted up "
-    			+ " WHERE up.DocStatus IN('CO', 'CL', 'RE') AND up.AD_Client_ID = ? AND up.DateAcct BETWEEN ? AND ? ";
-    	if(getAD_Org_ID() > 0)
-    		sql += " AND up.AD_Org_ID = ? ";
-    	if(periodControlID > 0)
-    		sql += " AND up.DocBaseType = ? ";
-    	sql += " FETCH FIRST 1 ROWS ONLY ";
-    	
+
+		StringBuilder sql = new StringBuilder("SELECT 1 FROM RV_UnPosted up "
+				+ "WHERE up.DocStatus IN('CO', 'CL', 'RE', 'VO') AND up.AD_Client_ID=? AND up.DateAcct BETWEEN ? AND ? ");
+		sql.append(" AND AD_Org_ID IN (SELECT AD_Org_ID FROM AD_OrgInfo WHERE AD_Client_ID=? AND (C_Calendar_ID=?");
+		if (getC_Calendar_ID() == MClientInfo.get().getC_Calendar_ID()) {
+			sql.append(" OR C_Calendar_ID IS NULL");
+		}
+		sql.append(")) ");
+		if (periodControlID > 0)
+			sql.append(" AND up.DocBaseType = ? ");
+		sql.append(" FETCH FIRST 1 ROWS ONLY");
+
     	PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, get_TrxName());
-			
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
+
 			int idx = 1;
 			pstmt.setInt(idx++, Env.getAD_Client_ID(Env.getCtx()));
 			pstmt.setTimestamp(idx++, getStartDate());
 			pstmt.setTimestamp(idx++, getEndDate());
-			if(getAD_Org_ID() > 0) {
-				MYear year = new MYear(getCtx(), getC_Year_ID(), get_TrxName());
-				MCalendar calendar = new MCalendar(getCtx(), year.getC_Calendar_ID(), get_TrxName());
-	    		pstmt.setInt(idx++, calendar.getAD_Org_ID());
-			}
-	    	if(periodControlID > 0) {
+			pstmt.setInt(idx++, Env.getAD_Client_ID(Env.getCtx()));
+		pstmt.setInt(idx++, getC_Calendar_ID());
+		if (periodControlID > 0) {
 	    		MPeriodControl pc = new MPeriodControl(getCtx(), periodControlID, get_TrxName()); 
 	    		pstmt.setString(idx++, pc.getDocBaseType());
 	    	}
@@ -1053,7 +1052,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 		}
 		catch (SQLException e)
 		{
-			throw new DBException(e, sql);
+			throw new DBException(e, sql.toString());
 		}
 		finally
 		{
