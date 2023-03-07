@@ -20,11 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MPeriod;
 import org.compiere.model.MPeriodControl;
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -97,6 +101,26 @@ public class PeriodStatus extends SvrProcess
 		if (Util.isEmpty(p_PeriodAction) || MPeriodControl.PERIODACTION_NoAction.equals(p_PeriodAction)) {
 			return "-";
 		}
+
+		if ((   MPeriodControl.PERIODACTION_ClosePeriod.equalsIgnoreCase(p_PeriodAction)
+			 || MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equalsIgnoreCase(p_PeriodAction))
+			&& MSysConfig.getBooleanValue(MSysConfig.FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE, true, getAD_Client_ID())) {
+			if (p_C_Period_IDs != null) {
+				for (int periodID : p_C_Period_IDs) {
+					MPeriod p = MPeriod.get(periodID);
+					if (p.hasUnpostedDocs())
+						throw new AdempiereException(Msg.getMsg(getCtx(), "PostUnpostedDocs"));
+				}
+			} else {
+				for (int periodControlID : p_C_PeriodControl_IDs) {
+					MPeriodControl pc = new MPeriodControl(getCtx(), periodControlID, get_TrxName());
+					MPeriod p = MPeriod.get(pc.getC_Period_ID());
+					if (p.hasUnpostedDocs(periodControlID))
+						throw new AdempiereException(Msg.getMsg(getCtx(), "PostUnpostedDocs"));
+				}
+			}
+		}
+
 		StringBuilder sql = new StringBuilder ("UPDATE C_PeriodControl SET PeriodStatus=?, PeriodAction='N', Updated=getDate(), UpdatedBy=? WHERE ");
 		//	WHERE
 		StringBuilder wherepc = new StringBuilder();
