@@ -1261,6 +1261,50 @@ public class GridField
 		return true;
 	}	//	isDisplayed
 
+	/**************************************************************************
+	 *	Is the Displayed Grid Column Visible ?
+	 *  @param checkContext - check environment (requires correct row position)
+	 *  @return true, if visible
+	 */
+	public boolean isDisplayedGrid (boolean checkContext)
+	{
+		return isDisplayedGrid(m_vo.ctx, checkContext);
+	}
+
+	/**************************************************************************
+	 *	Is the Displayed Grid Column Visible ?
+	 *  @param checkContext - check environment (requires correct row position)
+	 *  @return true, if visible
+	 */
+	public boolean isDisplayedGrid (final Properties ctx, boolean checkContext)
+	{
+		//  ** static content **
+		//  not displayed
+		if (!m_vo.IsDisplayedGrid)
+			return false;
+		//  no restrictions
+		if (m_vo.DisplayLogic.equals(""))
+			return true;
+
+		//  ** dynamic content **
+		if (checkContext)
+		{
+			if (m_vo.DisplayLogic.startsWith("@SQL=")) {
+				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
+			}
+			Evaluatee evaluatee = new Evaluatee() {
+				public String get_ValueAsString(String variableName) {
+					return GridField.this.get_ValueAsString(ctx, variableName);
+				}
+			};
+			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName 
+				+ " (" + m_vo.DisplayLogic + ") => " + retValue);
+			return retValue;
+		}
+		return true;
+	}	//	isDisplayedGrid
+
 	/**
 	 * 	Get Variable Value (Evaluatee)
 	 *	@param variableName name
