@@ -5550,7 +5550,7 @@ public abstract class PO
 			throw new AdempiereException("Foreign ID " + recordId + " not found in " + ft.getTableName());
 		if (pocid == 0 && !systemAccess)
 			throw new AdempiereException("System ID " + recordId + " cannot be used in " + ft.getTableName());
-		int curcid = Env.getAD_Client_ID(getCtx());
+		int curcid = getAD_Client_ID();
 		if (pocid > 0 && pocid != curcid)
 			throw new AdempiereException("Cross tenant ID " + recordId + " not allowed in " + ft.getTableName());
 	}
