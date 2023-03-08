@@ -5520,11 +5520,15 @@ public abstract class PO
 	 * @return true if all the foreign keys are valid
 	 */
 	private void checkRecordIDCrossTenant() {
-		int idxTableId = p_info.getColumnIndex("AD_Table_ID");
-		if (idxTableId < 0)
+		// exclude read-only high-traffic tables
+		if (   MChangeLog.Table_Name.equals(get_TableName())
+			|| MRecentItem.Table_Name.equals(get_TableName()))
 			return;
 		int idxRecordId = p_info.getColumnIndex("Record_ID");
 		if (idxRecordId < 0)
+			return;
+		int idxTableId = p_info.getColumnIndex("AD_Table_ID");
+		if (idxTableId < 0)
 			return;
 		if ( ! (is_new() || is_ValueChanged(idxTableId) || is_ValueChanged(idxRecordId)))
 			return;
