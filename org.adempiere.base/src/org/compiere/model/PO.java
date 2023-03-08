@@ -2215,6 +2215,7 @@ public abstract class PO
 		
 		checkValidContext();
 		checkCrossTenant(true);
+		checkRecordIDCrossTenant();
 		CLogger.resetLast();
 		boolean newRecord = is_new();	//	save locally as load resets
 		if (!newRecord && !is_Changed())
@@ -5512,6 +5513,46 @@ public abstract class PO
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Verify Foreign key based on AD_Table_ID+Record_ID for cross tenant
+	 * @return true if all the foreign keys are valid
+	 */
+	private void checkRecordIDCrossTenant() {
+		int idxTableId = p_info.getColumnIndex("AD_Table_ID");
+		if (idxTableId < 0)
+			return;
+		int idxRecordId = p_info.getColumnIndex("Record_ID");
+		if (idxRecordId < 0)
+			return;
+		if ( ! (is_new() || is_ValueChanged(idxTableId) || is_ValueChanged(idxRecordId)))
+			return;
+		int recordId = get_ValueAsInt(idxRecordId);
+		if (recordId <= 0)
+			return;
+		int tableId = get_ValueAsInt(idxTableId);
+		MTable ft = MTable.get(getCtx(), tableId);
+		boolean systemAccess = false;
+		String accessLevel = ft.getAccessLevel();
+		if (   MTable.ACCESSLEVEL_All.equals(accessLevel)
+			|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
+			|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) {
+			systemAccess = true;
+		}
+		StringBuilder sql = new StringBuilder("SELECT AD_Client_ID FROM ")
+				.append(ft.getTableName())
+				.append(" WHERE ")
+				.append(ft.getKeyColumns()[0])
+				.append("=?");
+		int pocid = DB.getSQLValue(get_TrxName(), sql.toString(), recordId);
+		if (pocid < 0)
+			throw new AdempiereException("Foreign ID " + recordId + " not found in " + ft.getTableName());
+		if (pocid == 0 && !systemAccess)
+			throw new AdempiereException("System ID " + recordId + " cannot be used in " + ft.getTableName());
+		int curcid = getAD_Client_ID();
+		if (pocid > 0 && pocid != curcid)
+			throw new AdempiereException("Cross tenant ID " + recordId + " not allowed in " + ft.getTableName());
 	}
 
 	/**
