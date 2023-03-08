@@ -288,7 +288,7 @@ public class Doc_InOut extends Doc
 				{
 					//	Set AmtAcctDr from Original Shipment/Receipt
 					if (!dr.updateReverseLine (MInOut.Table_ID,
-							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
+							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE, true))
 					{
 						if (! product.isStocked())	{ //	ignore service
 							fact.remove(dr);
@@ -317,7 +317,7 @@ public class Doc_InOut extends Doc
 				{
 					//	Set AmtAcctCr from Original Shipment/Receipt
 					if (!cr.updateReverseLine (MInOut.Table_ID,
-							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
+							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE, false))
 					{
 						p_Error = Msg.getMsg(getCtx(),"Original Shipment/Receipt not posted yet");
 						return null;
