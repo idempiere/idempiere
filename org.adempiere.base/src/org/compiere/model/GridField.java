@@ -454,10 +454,15 @@ public class GridField
 		{
 			boolean isAlwaysUpdatable = false;
 			if (m_vo.AlwaysUpdatableLogic.startsWith("@SQL=")) {
-				isAlwaysUpdatable = Evaluator.parseSQLLogic(m_vo.AlwaysUpdatableLogic, m_vo.ctx, m_vo.WindowNo,
+				isAlwaysUpdatable = Evaluator.parseSQLLogic(m_vo.AlwaysUpdatableLogic, ctx, m_vo.WindowNo,
 						m_vo.TabNo, m_vo.ColumnName);
 			} else {
-				isAlwaysUpdatable = Evaluator.evaluateLogic(this, m_vo.AlwaysUpdatableLogic);
+				Evaluatee evaluatee = new Evaluatee() {
+					public String get_ValueAsString(String variableName) {
+						return GridField.this.get_ValueAsString(ctx, variableName);
+					}
+				};
+				isAlwaysUpdatable = Evaluator.evaluateLogic(evaluatee, m_vo.AlwaysUpdatableLogic);
 				if (log.isLoggable(Level.FINEST))
 					log.finest(m_vo.ColumnName + " R/O(" + m_vo.AlwaysUpdatableLogic + ") => R/W-" + isAlwaysUpdatable);
 
@@ -466,9 +471,6 @@ public class GridField
 				return true;
 		}
 		
-		
-			
-
 		//check tab context
 		if (checkContext && getGridTab() != null &&
 			! "Y".equals(Env.getContext(Env.getCtx(), getWindowNo(), "_QUICK_ENTRY_MODE_")))
@@ -534,13 +536,18 @@ public class GridField
 		{
 			if (m_vo.ReadOnlyLogic.startsWith("@SQL="))
 			{
-				boolean retValue = !Evaluator.parseSQLLogic(m_vo.ReadOnlyLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
+				boolean retValue = !Evaluator.parseSQLLogic(m_vo.ReadOnlyLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 				if (!retValue)
 					return false;
 			}
 			else
 			{
-				boolean retValue = !Evaluator.evaluateLogic(this, m_vo.ReadOnlyLogic);
+				Evaluatee evaluatee = new Evaluatee() {
+					public String get_ValueAsString(String variableName) {
+						return GridField.this.get_ValueAsString(ctx, variableName);
+					}
+				};
+				boolean retValue = !Evaluator.evaluateLogic(evaluatee, m_vo.ReadOnlyLogic);
 				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
 				if (!retValue)
 					return false;
@@ -1290,7 +1297,7 @@ public class GridField
 		if (checkContext)
 		{
 			if (m_vo.DisplayLogic.startsWith("@SQL=")) {
-				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
+				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 			}
 			Evaluatee evaluatee = new Evaluatee() {
 				public String get_ValueAsString(String variableName) {
