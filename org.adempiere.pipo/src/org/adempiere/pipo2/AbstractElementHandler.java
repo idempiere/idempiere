@@ -68,7 +68,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
 		impDetail.setType(type);
 		impDetail.setName("");
 		impDetail.setAction("");
-		impDetail.setRecord_ID(1);
+		impDetail.setRecord_ID(0);
 		impDetail.setTableName(tableName);
 		impDetail.setAD_Table_ID(tableId);
 		impDetail.saveEx(getTrxName(ctx));
