@@ -446,6 +446,12 @@ public class DashboardController implements EventListener<Event> {
 					if (dpanel.isLazy()) {
 						try {
 							dpanel.refresh(spt);
+							if(dpanel.isEmpty()) {
+								spt.executeAsync(() -> {
+									panel.detach();
+									panel.setAttribute(PANEL_EMPTY_ATTRIBUTE, Boolean.TRUE);
+								});
+							}
 						} catch (Exception e) {
 							logger.log(Level.SEVERE, e.getMessage(), e);
 						}
