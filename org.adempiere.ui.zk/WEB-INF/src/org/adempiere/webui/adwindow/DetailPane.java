@@ -1395,6 +1395,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	        	if (gridTab.isNew() || gridTab.getRowCount() == 0)
 	        		return;
 	        	DataStatusEvent dse = new DataStatusEvent(gridTab, gridTab.getRowCount(), gridTab.needSave(true, true), true, false);
+	        	dse.AD_Table_ID = gridTab.getAD_Table_ID();
 	        	gridTab.updateDataStatusEventProperties(dse);
 	        	dse.setCurrentRow(gridTab.getCurrentRow());
 	        	String title = Msg.getMsg(Env.getCtx(), "Who") + btnRecordInfo.getLabel();
