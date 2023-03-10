@@ -55,4 +55,12 @@ public abstract class DashboardPanel extends Window implements IDashboardPanel {
 	public boolean isLazy() {
 		return false;
 	}
+	
+	/**
+	 * Empty Dashboard Panels are not rendered on the Dashboard
+	 * @return true if the panel is empty
+	 */
+	public boolean isEmpty() {
+		return false;
+	}
 }
