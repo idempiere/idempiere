@@ -129,7 +129,6 @@ public class UUIDGenerator extends SvrProcess {
 
 					//update db
 					if (isFillUUID) {
-						// COMMENT NEXT LINE ON RELEASE WORK
 						String msg = updateUUID(mColumn, null);
 						if (! Util.isEmpty(msg)) {
 							addBufferLog(0, null, null, msg, 0, 0);
@@ -140,11 +139,23 @@ public class UUIDGenerator extends SvrProcess {
 					if (column.isActive()) {
 						if (isFillUUID) {
 							MColumn mColumn = MColumn.get(getCtx(), AD_Column_ID);
-							// COMMENT NEXT LINE ON RELEASE WORK
 							String msg = updateUUID(mColumn, null);
 							if (! Util.isEmpty(msg)) {
 								addBufferLog(0, null, null, msg, 0, 0);
 							}
+						}
+					} else {
+						StringBuilder sqlclear = new StringBuilder("UPDATE ")
+								.append(cTableName)
+								.append(" SET ")
+								.append(columnName)
+								.append("=NULL WHERE ")
+								.append(columnName)
+								.append(" IS NOT NULL");
+						int cnt = DB.executeUpdateEx(sqlclear.toString(), get_TrxName());
+						if (cnt > 0) {
+							String msg = cnt + " UUID cleared from table " + cTableName;
+							addBufferLog(0, null, null, msg, 0, 0);
 						}
 					}
 				}
