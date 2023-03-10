@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import static org.compiere.model.MSysConfig.LOG_PREFIX;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.sql.Timestamp;
@@ -24,6 +26,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import org.compiere.model.MSysConfig;
 
 /**
  *	idempiere Log File Handler
@@ -319,7 +322,7 @@ public class CLogFile extends Handler
 				m_doneHeader = true;
 			}
 			//
-			m_writer.write (msg);
+			m_writer.write (getPrefix() + msg);
 			m_records++;
 			//
 			if (record.getLevel() == Level.SEVERE
@@ -333,6 +336,22 @@ public class CLogFile extends Handler
 			reportError ("writing", ex, ErrorManager.WRITE_FAILURE);
 		}
 	}	//	publish
+
+	private String getPrefix() {
+		try
+		{
+			if (DB.isConnected()) {
+				String prefix = MSysConfig.getValue(LOG_PREFIX, Env.getAD_Client_ID(Env.getCtx()));
+				if (!Util.isEmpty(prefix))
+					return Env.parseContext(Env.getCtx(), 0, prefix, false);
+			}
+		}
+		catch (Exception ex)
+		{
+			reportError ("LogPrefix", ex, ErrorManager.FORMAT_FAILURE);
+		}
+		return "";
+	}
 
 	/**
 	 * 	Flush
