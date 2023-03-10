@@ -136,12 +136,15 @@ public class UUIDGenerator extends SvrProcess {
 						}
 					}
 				} else {
-					if (isFillUUID) {
-						MColumn mColumn = MColumn.get(getCtx(), AD_Column_ID);
-						// COMMENT NEXT LINE ON RELEASE WORK
-						String msg = updateUUID(mColumn, null);
-						if (! Util.isEmpty(msg)) {
-							addBufferLog(0, null, null, msg, 0, 0);
+					MColumn column = MColumn.get(AD_Column_ID);
+					if (column.isActive()) {
+						if (isFillUUID) {
+							MColumn mColumn = MColumn.get(getCtx(), AD_Column_ID);
+							// COMMENT NEXT LINE ON RELEASE WORK
+							String msg = updateUUID(mColumn, null);
+							if (! Util.isEmpty(msg)) {
+								addBufferLog(0, null, null, msg, 0, 0);
+							}
 						}
 					}
 				}
