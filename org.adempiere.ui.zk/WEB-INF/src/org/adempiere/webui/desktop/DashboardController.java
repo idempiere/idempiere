@@ -781,23 +781,27 @@ public class DashboardController implements EventListener<Event> {
 					Iframe iframe = new Iframe();
 					iframe.setSclass("dashboard-report-iframe");
 					iframe.setStyle("flex-grow: 1;");
-					layout.appendChild(iframe);
 					iframe.setContent(generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, appDesktop, contextPath));
+					if(iframe.getContent() != null)
+						layout.appendChild(iframe);
+					else
+						layout.appendChild(createFillMandatoryLabel());
 	
 					Toolbar toolbar = new Toolbar();
 					layout.appendChild(toolbar);
 					btn.setLabel(Msg.getMsg(Env.getCtx(), "OpenRunDialog"));
 					toolbar.appendChild(btn);
 					
-					btn = new ToolBarButton();
-					btn.setAttribute("AD_Process_ID", AD_Process_ID);
-					btn.setAttribute("ProcessParameters", processParameters);
-					btn.setAttribute("AD_PrintFormat_ID", dashboardContent.getAD_PrintFormat_ID());
-					btn.addEventListener(Events.ON_CLICK, this);
-					btn.setLabel(Msg.getMsg(Env.getCtx(), "ViewReportInNewTab"));
-					toolbar.appendChild(new Separator("vertical"));
-					toolbar.appendChild(btn);
-	
+					if(iframe.getContent() != null) {
+						btn = new ToolBarButton();
+						btn.setAttribute("AD_Process_ID", AD_Process_ID);
+						btn.setAttribute("ProcessParameters", processParameters);
+						btn.setAttribute("AD_PrintFormat_ID", dashboardContent.getAD_PrintFormat_ID());
+						btn.addEventListener(Events.ON_CLICK, this);
+						btn.setLabel(Msg.getMsg(Env.getCtx(), "ViewReportInNewTab"));
+						toolbar.appendChild(new Separator("vertical"));
+						toolbar.appendChild(btn);
+					}
 					btn = new ToolBarButton();
 					if (ThemeManager.isUseFontIconForImage()) {
 						btn.setIconSclass("z-icon-Refresh");
@@ -1123,6 +1127,21 @@ public class DashboardController implements EventListener<Event> {
 		}
 	}
 	
+	private Div createFillMandatoryLabel() {
+		Div wrapper = new Div();
+		wrapper.setStyle("padding: 11px; color: red; display: flex; flex-direction: column;");
+		
+		Div msgText = new Div();
+		msgText.appendChild(new Text(Msg.getMsg(Env.getCtx(), "FillMandatoryParametersDashboard", true)));
+		wrapper.appendChild(msgText);
+		
+		Div msgTip = new Div();
+		msgTip.setStyle("font-style: italic; opacity: 50%;");
+		msgTip.appendChild(new Text(Msg.getMsg(Env.getCtx(), "FillMandatoryParametersDashboard", false)));
+		wrapper.appendChild(msgTip);
+		return wrapper;
+	}
+	
 	private void createDashboardPreference(int AD_User_ID, int AD_Role_ID)
 	{
 		MDashboardContent[] dcs = MDashboardContentAccess.get(Env.getCtx(),AD_Role_ID, AD_User_ID, null);
@@ -1432,7 +1451,8 @@ public class DashboardController implements EventListener<Event> {
 		pInstance.setIsProcessing(true);
 		pInstance.saveEx();
 		try {
-			fillParameter(pInstance, parameters);
+			if(!fillParameter(pInstance, parameters))
+				return null;
 			//
 			ProcessInfo pi = new ProcessInfo (process.getName(), process.getAD_Process_ID(),
 				AD_Table_ID, Record_ID);
@@ -1458,7 +1478,8 @@ public class DashboardController implements EventListener<Event> {
 
 	private AMedia generateReport(int AD_Process_ID, int AD_PrintFormat_ID, String parameters, IDesktop appDesktop, String contextPath) throws Exception {
 		ReportEngine re = runReport(AD_Process_ID, AD_PrintFormat_ID, parameters);
-
+		if(re == null)
+			return null;
 		File file = FileUtil.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(contextPath, "rp", 
 				appDesktop.getComponent().getUuid()));
@@ -1470,28 +1491,32 @@ public class DashboardController implements EventListener<Event> {
    		new ZkReportViewerProvider().openViewer(re);
    	}
 
-	private void fillParameter(MPInstance pInstance, String parameters) {		
+   	/**
+   	 * Fill Parameters
+   	 * @param pInstance
+   	 * @param parameters
+   	 * @return true if the parameters were filled successfully 
+   	 */
+	private boolean fillParameter(MPInstance pInstance, String parameters) {	
+		MProcessPara[] processParams = pInstance.getProcessParameters();
 		if (parameters != null && parameters.trim().length() > 0) {
-			Map<String, String> paramMap = new HashMap<String, String>();
-			String[] params = parameters.split("[,]");
-			for (String s : params)
-			{
-				int pos = s.indexOf("=");
-				String key = s.substring(0, pos);
-				String value = s.substring(pos + 1);
-				paramMap.put(key, value);
-			}
-			MProcessPara[] processParams = pInstance.getProcessParameters();
+			Map<String, String> paramMap = MDashboardContent.parseProcessParameters(parameters);
 			for (int pi = 0; pi < processParams.length; pi++)
 			{
 				MPInstancePara iPara = new MPInstancePara (pInstance, processParams[pi].getSeqNo());
 				iPara.setParameterName(processParams[pi].getColumnName());
 				iPara.setInfo(processParams[pi].getName());
 				
+				MProcessPara sPara = processParams[pi];
+				
 				String variable = paramMap.get(iPara.getParameterName());
 
-				if (Util.isEmpty(variable))
-					continue;
+				if (Util.isEmpty(variable)) {
+					if(sPara.isMandatory())
+						return false;	// empty mandatory parameter
+					else
+						continue;
+				}
 
 				boolean isTo = false;
 
@@ -1542,7 +1567,12 @@ public class DashboardController implements EventListener<Event> {
 					 //	No Value
 					 if (value == null)
 					 {
-						 continue;
+						 if(sPara.isMandatory()) {
+							 return false;	// empty mandatory parameter
+						 }
+						 else {
+							 continue;
+						 }
 					 }
 					 if( DisplayType.isText(iPara.getDisplayType())
 								&& Util.isEmpty(String.valueOf(value))) {
@@ -1616,7 +1646,15 @@ public class DashboardController implements EventListener<Event> {
 					 isTo = true;
 				 }
 			}
-		}				
+		}
+		else {
+			for(MProcessPara processPara : processParams) {
+				if(processPara.isMandatory()) {
+					return false;	// empty mandatory parameter
+				}
+			}
+		}
+		return true;
 	}
 
 	private String getDisplay(MPInstance i, MPInstancePara ip, int id) {
