@@ -638,6 +638,10 @@ public final class DisplayType
 		}
 		else
 		{
+			format.setMaximumIntegerDigits(MAX_DIGITS);
+			format.setMaximumFractionDigits(MAX_FRACTION);
+			format.setMinimumFractionDigits(1);
+
 			//not custom type, don't have to check factory
 			if (displayType < 1000000)
 				return format;
@@ -665,10 +669,7 @@ public final class DisplayType
 				}
 				s_customDisplayTypeNegativeCache.put(customTypeKey, Boolean.TRUE);
 			}
-			
-			format.setMaximumIntegerDigits(MAX_DIGITS);
-			format.setMaximumFractionDigits(MAX_FRACTION);
-			format.setMinimumFractionDigits(1);
+
 		}
 		return format;
 	}	//	getDecimalFormat
