@@ -1136,6 +1136,9 @@ public final class FactLine extends X_Fact_Acct
 	 * 	@param multiplier targetQty/documentQty
 	 *  @param first get first reverseline (when false get last) in case there is more than one
 	 * 	@return true if success
+	 * 
+	 * NOTE: first/last are required in cases where the original DR/CR postings are done in the same account
+	 * in this case looking just for the first posting is wrong and results in a non-balanced reversal posting
 	 */
 	public boolean updateReverseLine (int AD_Table_ID, int Record_ID, int Line_ID,
 		BigDecimal multiplier, boolean first)
