@@ -71,6 +71,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MStatusLine;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
@@ -445,6 +446,12 @@ public class DashboardController implements EventListener<Event> {
 					if (dpanel.isLazy()) {
 						try {
 							dpanel.refresh(spt);
+							if(dpanel.isEmpty()) {
+								spt.executeAsync(() -> {
+									panel.detach();
+									panel.setAttribute(PANEL_EMPTY_ATTRIBUTE, Boolean.TRUE);
+								});
+							}
 						} catch (Exception e) {
 							logger.log(Level.SEVERE, e.getMessage(), e);
 						}
@@ -746,57 +753,68 @@ public class DashboardController implements EventListener<Event> {
     	int AD_Process_ID = dashboardContent.getAD_Process_ID();
     	if(AD_Process_ID > 0)
     	{
-        	String sql = "SELECT AD_MENU_ID FROM AD_MENU WHERE AD_Process_ID=?";
-        	int AD_Menu_ID = DB.getSQLValueEx(null, sql, AD_Process_ID);
-			ToolBarButton btn = new ToolBarButton();
-			MMenu menu = new MMenu(Env.getCtx(), AD_Menu_ID, null);					
-			btn.setAttribute("AD_Menu_ID", AD_Menu_ID);
-			btn.addEventListener(Events.ON_CLICK, this);					
-			
-			if (dashboardContent.isEmbedReportContent()) 
-			{
-				String processParameters = dashboardContent.getProcessParameters();
-
-				Div layout = new Div();
-				layout.setHeight("100%");
-				layout.setStyle("display: flex;flex-direction: column;");
-				components.add(layout);
-				Iframe iframe = new Iframe();
-				iframe.setSclass("dashboard-report-iframe");
-				iframe.setStyle("flex-grow: 1;");
-				layout.appendChild(iframe);
-				iframe.setContent(generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, appDesktop, contextPath));
-
-				Toolbar toolbar = new Toolbar();
-				layout.appendChild(toolbar);
-				btn.setLabel(Msg.getMsg(Env.getCtx(), "OpenRunDialog"));
-				toolbar.appendChild(btn);
+    		boolean systemAccess = false;
+    		MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
+			String accessLevel = process.getAccessLevel();
+			if (   MTable.ACCESSLEVEL_All.equals(accessLevel)
+				|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
+				|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) {
+				systemAccess = true;
+			}
+    		int thisClientId = Env.getAD_Client_ID(Env.getCtx());
+    		if((thisClientId == 0 && systemAccess) || thisClientId != 0) {
+	        	String sql = "SELECT AD_Menu_ID FROM AD_Menu WHERE AD_Process_ID=?";
+	        	int AD_Menu_ID = DB.getSQLValueEx(null, sql, AD_Process_ID);
+				ToolBarButton btn = new ToolBarButton();
+				MMenu menu = new MMenu(Env.getCtx(), AD_Menu_ID, null);					
+				btn.setAttribute("AD_Menu_ID", AD_Menu_ID);
+				btn.addEventListener(Events.ON_CLICK, this);					
 				
-				btn = new ToolBarButton();
-				btn.setAttribute("AD_Process_ID", AD_Process_ID);
-				btn.setAttribute("ProcessParameters", processParameters);
-				btn.setAttribute("AD_PrintFormat_ID", dashboardContent.getAD_PrintFormat_ID());
-				btn.addEventListener(Events.ON_CLICK, this);
-				btn.setLabel(Msg.getMsg(Env.getCtx(), "ViewReportInNewTab"));
-				toolbar.appendChild(new Separator("vertical"));
-				toolbar.appendChild(btn);
-
-				btn = new ToolBarButton();
-				if (ThemeManager.isUseFontIconForImage()) {
-					btn.setIconSclass("z-icon-Refresh");
-					btn.setSclass("trash-toolbarbutton");
+				if (dashboardContent.isEmbedReportContent()) 
+				{
+					String processParameters = dashboardContent.getProcessParameters();
+	
+					Div layout = new Div();
+					layout.setHeight("100%");
+					layout.setStyle("display: flex;flex-direction: column;");
+					components.add(layout);
+					Iframe iframe = new Iframe();
+					iframe.setSclass("dashboard-report-iframe");
+					iframe.setStyle("flex-grow: 1;");
+					layout.appendChild(iframe);
+					iframe.setContent(generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, appDesktop, contextPath));
+	
+					Toolbar toolbar = new Toolbar();
+					layout.appendChild(toolbar);
+					btn.setLabel(Msg.getMsg(Env.getCtx(), "OpenRunDialog"));
+					toolbar.appendChild(btn);
+					
+					btn = new ToolBarButton();
+					btn.setAttribute("AD_Process_ID", AD_Process_ID);
+					btn.setAttribute("ProcessParameters", processParameters);
+					btn.setAttribute("AD_PrintFormat_ID", dashboardContent.getAD_PrintFormat_ID());
+					btn.addEventListener(Events.ON_CLICK, this);
+					btn.setLabel(Msg.getMsg(Env.getCtx(), "ViewReportInNewTab"));
+					toolbar.appendChild(new Separator("vertical"));
+					toolbar.appendChild(btn);
+	
+					btn = new ToolBarButton();
+					if (ThemeManager.isUseFontIconForImage()) {
+						btn.setIconSclass("z-icon-Refresh");
+						btn.setSclass("trash-toolbarbutton");
+					}
+					else
+						btn.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
+	
+					btn.addEventListener(Events.ON_CLICK, e -> iframe.setContent(generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, appDesktop, contextPath)));
+					toolbar.appendChild(btn);				
 				}
 				else
-					btn.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
-
-				btn.addEventListener(Events.ON_CLICK, e -> iframe.setContent(generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, appDesktop, contextPath)));
-				toolbar.appendChild(btn);				
-			}
-			else
-			{
-				btn.setLabel(menu.getName());
-				components.add(btn);
-			}
+				{
+					btn.setLabel(menu.getName());
+					components.add(btn);
+				}
+    		}
     	}
 
     	// Goal

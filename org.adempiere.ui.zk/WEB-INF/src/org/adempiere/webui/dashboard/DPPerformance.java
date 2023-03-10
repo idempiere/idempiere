@@ -104,4 +104,9 @@ public class DPPerformance extends DashboardPanel {
 	public boolean isLazy() {
 		return true;
 	}
+	
+	@Override
+	public boolean isEmpty() {
+		return performanceData.length <= 0;
+	}
 }
