@@ -2652,7 +2652,7 @@ public abstract class PO
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
 
-		String where = withValues ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
+		String where = withValues && get_ID() > MTable.MAX_OFFICIAL_ID ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
 		
 		List<Object> optimisticLockingParams = new ArrayList<Object>();
 		if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
