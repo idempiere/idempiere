@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -1043,8 +1044,9 @@ public class DataEngine
 						//	Display and Value Column
 						if (pdc.hasAlias())
 						{
+							int displayIndex = counter++;
 							//	DisplayColumn first
-							String display = rs.getString(counter++);
+							String display = rs.getString(displayIndex);
 							if (pdc.getColumnName().endsWith("_ID"))
 							{
 								int id = rs.getInt(counter++);
@@ -1061,24 +1063,46 @@ public class DataEngine
 								{
 									/** START DEVCOFFEE: script column **/
 									int displayType = pdc.getDisplayType();
-									if (display.startsWith("@SCRIPT")) {
-										display = display.replace("@SCRIPT", "");
-										Object value = parseVariable(display, pdc, pd);
-										Interpreter bsh = new Interpreter ();
-										try {
-											value = bsh.eval(value.toString());
-										}
-										catch (EvalError e) {
-											log.severe(e.getMessage());
-										}
-										if (value instanceof Number)
-											displayType = DisplayType.Number;
-										else if (value instanceof Boolean)
-											displayType = DisplayType.YesNo;
-										else if (value instanceof Date)
-											displayType = DisplayType.Date;
-										else
+									MPrintFormatItem pfItem = new MPrintFormatItem(Env.getCtx(), pdc.getAD_PrintFormatItem_ID(), null);
+									//if(rs.getMetaData().getColumnName(displayIndex).contains("SCRIPTCOLUMN")) {	// ScriptColumn
+									if(MPrintFormatItem.PRINTFORMATTYPE_Script.equalsIgnoreCase(pfItem.getPrintFormatType())) {	// ScriptColumn	
+										Object value = rs.getObject(displayIndex);
+										int columnType = rs.getMetaData().getColumnType(displayIndex);
+
+										// String, Text
+										if (columnType == Types.CHAR || columnType == Types.VARCHAR)
+										{
 											displayType = DisplayType.Text;
+										}
+										else if (columnType == Types.DATE || columnType == Types.TIME
+												|| columnType == Types.TIMESTAMP)
+										{
+											displayType = DisplayType.DateTime;
+										}
+										// Number
+										else if (columnType == Types.INTEGER || columnType == Types.SMALLINT
+											|| columnType == Types.DECIMAL || columnType == Types.NUMERIC)
+											displayType = DisplayType.Number;
+									
+										if (display.startsWith("@SCRIPT")) {
+											display = display.replace("@SCRIPT", "");
+//											Object value = parseVariable(display, pdc, pd);
+											Interpreter bsh = new Interpreter ();
+											try {
+												value = bsh.eval(value.toString());
+											}
+											catch (EvalError e) {
+												log.severe(e.getMessage());
+											}
+											if (value instanceof Number)
+												displayType = DisplayType.Number;
+											else if (value instanceof Boolean)
+												displayType = DisplayType.YesNo;
+											else if (value instanceof Date)
+												displayType = DisplayType.Date;
+											else
+												displayType = DisplayType.Text;
+										}
 										pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), (Serializable) value, displayType, pdc.getFormatPattern());
 									} else {
 										ValueNamePair pp = new ValueNamePair(id, display);
