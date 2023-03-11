@@ -3177,7 +3177,6 @@ public abstract class PO
 	}   //  saveNew
 
 	private boolean doInsert(boolean withValues) {
-		int index;
 		lobReset();
 
 		//	Change Log
@@ -3188,9 +3187,94 @@ public abstract class PO
 
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
-		
+				
 		//	SQL
-		StringBuilder sqlInsert = new StringBuilder("INSERT INTO ");
+		StringBuilder sqlInsert = new StringBuilder();
+		AD_ChangeLog_ID = buildInsertSQL(sqlInsert, withValues, params, session, AD_ChangeLog_ID, false);
+		//
+		int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName) 
+							: DB.executeUpdate(sqlInsert.toString(), params.toArray(), false, m_trxName);
+		boolean ok = no == 1;
+		if (ok)
+		{
+			if (withValues && m_IDs.length == 1 && p_info.hasKeyColumn()
+					&& m_KeyColumns[0].endsWith("_ID") && !Env.isUseCentralizedId(p_info.getTableName()))
+			{
+				int id = DB.getSQLValueEx(get_TrxName(), "SELECT " + m_KeyColumns[0] + " FROM "
+						+ p_info.getTableName() + " WHERE " + getUUIDColumnName() + "=?", get_ValueAsString(getUUIDColumnName()));
+				m_IDs[0] = Integer.valueOf(id);
+				set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
+				
+				int ki = p_info.getColumnIndex(m_KeyColumns[0]);
+				//	Change Log	- Only
+				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
+				if (   session != null
+					&& m_IDs.length == 1
+					&& p_info.isAllowLogging(ki)		//	logging allowed
+					&& !p_info.isEncrypted(ki)		//	not encrypted
+					&& !p_info.isVirtualColumn(ki)	//	no virtual column
+					&& !"Password".equals(p_info.getColumnName(ki))
+					&& (insertLog.equalsIgnoreCase("Y")
+							|| (insertLog.equalsIgnoreCase("K") && p_info.getColumn(ki).IsKey))
+					)
+				{
+					// change log on new
+					MChangeLog cLog = session.changeLog (
+							m_trxName, AD_ChangeLog_ID,
+							p_info.getAD_Table_ID(), p_info.getColumn(ki).AD_Column_ID,
+							get_ID(), getAD_Client_ID(), getAD_Org_ID(), null, id, MChangeLog.EVENTCHANGELOG_Insert);
+					if (cLog != null)
+						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
+				}
+			}
+			ok = lobSave();
+			if (!load(m_trxName))		//	re-read Info
+			{
+				if (m_trxName == null)
+					log.log(Level.SEVERE, "reloading");
+				else
+					log.log(Level.SEVERE, "[" + m_trxName + "] - reloading");
+				ok = false;;
+			}
+		}
+		else
+		{
+			String msg = "Not inserted - ";
+			if (CLogMgt.isLevelFiner())
+				msg += sqlInsert.toString();
+			else
+				msg += get_TableName();
+			if (m_trxName == null)
+				log.log(Level.WARNING, msg);
+			else
+				log.log(Level.WARNING, "[" + m_trxName + "]" + msg);
+		}
+		return ok;
+	}
+
+	/**
+	 * Export data as insert SQL statement
+	 */
+	public String toInsertSQL() 
+	{
+		StringBuilder sqlInsert = new StringBuilder();
+		buildInsertSQL(sqlInsert, true, null, null, 0, true);
+		return sqlInsert.toString();
+	}
+	
+	/**
+	 * Build insert SQL statement and capture change log
+	 * @param sqlInsert
+	 * @param withValues true to create statement with column values, false to use parameter binding (i.e with ?)
+	 * @param params statement parameters when withValues is false
+	 * @param session to capture change log. null when call from toInsertSQL (i.e to build sql only, not for real insert to DB)
+	 * @param AD_ChangeLog_ID initial change log id
+	 * @param generateScriptOnly true if it is to generate sql script only, false for real DB insert
+	 * @return last AD_ChangeLog_ID
+	 */
+	protected int buildInsertSQL(StringBuilder sqlInsert, boolean withValues, List<Object> params, MSession session,
+			int AD_ChangeLog_ID, boolean generateScriptOnly) {
+		sqlInsert.append("INSERT INTO ");
 		sqlInsert.append(p_info.getTableName()).append(" (");
 		StringBuilder sqlValues = new StringBuilder(") VALUES (");
 		int size = get_ColumnCount();
@@ -3212,6 +3296,13 @@ public abstract class PO
 					continue;
 			}
 
+			//do not export secure column
+			if (generateScriptOnly)
+			{
+				if (p_info.isEncrypted(i) || p_info.isSecure(i) || "Password".equalsIgnoreCase(p_info.getColumnName(i)))
+					continue;
+			}
+			
 			//	** add column **
 			if (doComma)
 			{
@@ -3229,10 +3320,17 @@ public abstract class PO
 				try
 				{
 					if (m_IDs.length == 1 && p_info.hasKeyColumn()
-							&& m_KeyColumns[0].endsWith("_ID") && m_KeyColumns[0].equals(p_info.getColumnName(i)) && !Env.isUseCentralizedId(p_info.getTableName()))
+							&& m_KeyColumns[0].endsWith("_ID") && m_KeyColumns[0].equals(p_info.getColumnName(i)) && (generateScriptOnly || !Env.isUseCentralizedId(p_info.getTableName())))
 					{
-						MSequence sequence = MSequence.get(Env.getCtx(), p_info.getTableName(), get_TrxName(), true);
-						sqlValues.append("nextidfunc("+sequence.getAD_Sequence_ID()+",'N')");
+						if (generateScriptOnly && get_ID() > 0 && get_ID() <= MTable.MAX_OFFICIAL_ID)
+						{
+							sqlValues.append(value);
+						}
+						else
+						{
+							MSequence sequence = MSequence.get(Env.getCtx(), p_info.getTableName(), get_TrxName(), true);
+							sqlValues.append("nextidfunc("+sequence.getAD_Sequence_ID()+",'N')");
+						}
 					}
 					else if (c == Object.class) //  may have need to deal with null values differently
 						sqlValues.append (saveNewSpecial (value, i));
@@ -3379,11 +3477,11 @@ public abstract class PO
 				}
 			}
 
-			if (!withValues || Env.isUseCentralizedId(p_info.getTableName()))
+			if (session != null && (!withValues || Env.isUseCentralizedId(p_info.getTableName())))
 			{
 				//	Change Log	- Only
 				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
-				if (   session != null
+				if (!generateScriptOnly && session != null
 					&& m_IDs.length == 1
 					&& p_info.isAllowLogging(i)		//	logging allowed
 					&& !p_info.isEncrypted(i)		//	not encrypted
@@ -3410,7 +3508,7 @@ public abstract class PO
 			while (it.hasNext())
 			{
 				String column = (String)it.next();
-				index = p_info.getColumnIndex(column);
+				int index = p_info.getColumnIndex(column);
 				String value = (String)m_custom.get(column);
 				if (value == null)
 					continue;
@@ -3443,65 +3541,7 @@ public abstract class PO
 		}
 		sqlInsert.append(sqlValues)
 			.append(")");
-		//
-		int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName) 
-							: DB.executeUpdate(sqlInsert.toString(), params.toArray(), false, m_trxName);
-		boolean ok = no == 1;
-		if (ok)
-		{
-			if (withValues && m_IDs.length == 1 && p_info.hasKeyColumn()
-					&& m_KeyColumns[0].endsWith("_ID") && !Env.isUseCentralizedId(p_info.getTableName()))
-			{
-				int id = DB.getSQLValueEx(get_TrxName(), "SELECT " + m_KeyColumns[0] + " FROM "
-						+ p_info.getTableName() + " WHERE " + getUUIDColumnName() + "=?", get_ValueAsString(getUUIDColumnName()));
-				m_IDs[0] = Integer.valueOf(id);
-				set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
-				
-				int ki = p_info.getColumnIndex(m_KeyColumns[0]);
-				//	Change Log	- Only
-				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
-				if (   session != null
-					&& m_IDs.length == 1
-					&& p_info.isAllowLogging(ki)		//	logging allowed
-					&& !p_info.isEncrypted(ki)		//	not encrypted
-					&& !p_info.isVirtualColumn(ki)	//	no virtual column
-					&& !"Password".equals(p_info.getColumnName(ki))
-					&& (insertLog.equalsIgnoreCase("Y")
-							|| (insertLog.equalsIgnoreCase("K") && p_info.getColumn(ki).IsKey))
-					)
-				{
-					// change log on new
-					MChangeLog cLog = session.changeLog (
-							m_trxName, AD_ChangeLog_ID,
-							p_info.getAD_Table_ID(), p_info.getColumn(ki).AD_Column_ID,
-							get_ID(), getAD_Client_ID(), getAD_Org_ID(), null, id, MChangeLog.EVENTCHANGELOG_Insert);
-					if (cLog != null)
-						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
-				}
-			}
-			ok = lobSave();
-			if (!load(m_trxName))		//	re-read Info
-			{
-				if (m_trxName == null)
-					log.log(Level.SEVERE, "reloading");
-				else
-					log.log(Level.SEVERE, "[" + m_trxName + "] - reloading");
-				ok = false;;
-			}
-		}
-		else
-		{
-			String msg = "Not inserted - ";
-			if (CLogMgt.isLevelFiner())
-				msg += sqlInsert.toString();
-			else
-				msg += get_TableName();
-			if (m_trxName == null)
-				log.log(Level.WARNING, msg);
-			else
-				log.log(Level.WARNING, "[" + m_trxName + "]" + msg);
-		}
-		return ok;
+		return AD_ChangeLog_ID;
 	}
 
 	/**
