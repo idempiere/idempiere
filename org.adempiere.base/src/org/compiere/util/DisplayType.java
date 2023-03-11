@@ -78,6 +78,7 @@ import org.adempiere.base.Service;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
 import org.compiere.model.MLanguage;
+import org.compiere.model.MTable;
 
 /**
  *	System Display Types.
@@ -232,7 +233,7 @@ public final class DisplayType
 			return true;
 		
 		//not custom type, don't have to check factory
-		if (displayType < 1000000)
+		if (displayType <= MTable.MAX_OFFICIAL_ID)
 			return false;
 		
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
@@ -271,7 +272,7 @@ public final class DisplayType
 			return true;
 		
 		//not custom type, don't have to check factory
-		if (displayType < 1000000)
+		if (displayType <= MTable.MAX_OFFICIAL_ID)
 			return false;
 				
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
@@ -314,7 +315,7 @@ public final class DisplayType
 			return 4;
 		
 		//not custom type, don't have to check factory
-		if (displayType < 1000000)
+		if (displayType <= MTable.MAX_OFFICIAL_ID)
 			return 0;
 				
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
@@ -365,7 +366,7 @@ public final class DisplayType
 			return true;
 		
 		//not custom type, don't have to check factory
-		if (displayType < 1000000)
+		if (displayType <= MTable.MAX_OFFICIAL_ID)
 			return false;
 
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
@@ -406,7 +407,7 @@ public final class DisplayType
 			return true;
 		
 		//not custom type, don't have to check factory
-		if (displayType < 1000000)
+		if (displayType <= MTable.MAX_OFFICIAL_ID)
 			return false;
 		
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
@@ -447,7 +448,7 @@ public final class DisplayType
 			return true;
 		
 		//not custom type, don't have to check factory
-		if (displayType < 1000000)
+		if (displayType <= MTable.MAX_OFFICIAL_ID)
 			return false;
 		
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
@@ -491,7 +492,7 @@ public final class DisplayType
 			return true;
 		
 		//not custom type, don't have to check factory
-		if (displayType < 1000000)
+		if (displayType <= MTable.MAX_OFFICIAL_ID)
 			return false;
 
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
@@ -530,7 +531,7 @@ public final class DisplayType
 			return true;
 		
 		//not custom type, don't have to check factory
-		if (displayType < 1000000)
+		if (displayType <= MTable.MAX_OFFICIAL_ID)
 			return false;
 
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
@@ -643,7 +644,7 @@ public final class DisplayType
 			format.setMinimumFractionDigits(1);
 
 			//not custom type, don't have to check factory
-			if (displayType < 1000000)
+			if (displayType <= MTable.MAX_OFFICIAL_ID)
 				return format;
 			
 			IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
@@ -780,7 +781,7 @@ public final class DisplayType
 				format = myLanguage.getDateTimeFormat();
 			return setTimeZone(format);
 		}
-		else if (displayType >= 1000000) { //custom display type
+		else if (displayType > MTable.MAX_OFFICIAL_ID) { //custom display type
 			IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
 			if (cache != null) {
 				IDisplayTypeFactory service = cache.getService();
@@ -873,7 +874,7 @@ public final class DisplayType
 			return String.class;
 		else if (isLOB(displayType))	//	CLOB is String
 			return byte[].class;
-		else if (displayType >= 1000000) // custom display type
+		else if (displayType > MTable.MAX_OFFICIAL_ID) // custom display type
 		{
 			IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
 			if (cache != null) {
