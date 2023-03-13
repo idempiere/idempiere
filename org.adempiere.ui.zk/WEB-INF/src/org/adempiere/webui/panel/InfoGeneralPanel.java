@@ -480,7 +480,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			AD_Window_ID = table.getAD_Window_ID();
 		} else {
 			AD_Window_ID = DB.getSQLValueEx(null, "SELECT a.AD_Window_ID FROM AD_Window a INNER JOIN AD_Tab b ON (a.AD_Window_ID=b.AD_Window_ID) WHERE a.IsActive='Y' "
-					+ "AND b.IsActive='Y' AND b.TabLevel=0 AND b.AD_Table_ID=? ORDER BY a.AD_Window_ID", AD_Table_ID);
+					+ "AND b.IsActive='Y' AND b.AD_Table_ID=? ORDER BY b.TabLevel, a.AD_Window_ID", AD_Table_ID);
 		}
 		ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
 		sql = "SELECT c.ColumnName, c.AD_Reference_ID, c.IsKey, f.IsDisplayed, c.AD_Reference_Value_ID, c.ColumnSql, c.AD_Column_ID "
@@ -492,7 +492,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			+ " AND tab.IsSortTab='N'"
 			+ " AND tab.Ad_Tab_ID=(SELECT MIN(mt.AD_Tab_ID) FROM AD_tab mt WHERE mt.AD_Window_ID=? AND mt.AD_Table_ID=t.AD_Table_ID AND mt.IsActive='Y')"
 			+ " AND (c.IsKey='Y' OR "
-				+ " (f.IsEncrypted='N' AND f.ObscureType IS NULL)) "			
+				+ " (f.IsEncrypted='N' AND f.ObscureType IS NULL)) "
 			+ " AND c.IsActive = 'Y' "
 			+ "ORDER BY c.IsKey DESC, f.SeqNo";
 
