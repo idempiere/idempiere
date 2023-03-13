@@ -1395,6 +1395,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected void prepareTable(ColumnInfo[] layout, String from, String where,
 			String orderBy) {
 		super.prepareTable(layout, from, where, orderBy);
+
+		addViewIDToQuery();
+		addKeyViewToQuery();
+
 		if (m_sqlMain.indexOf("@") >= 0) {
 			String sql = Env.parseContext(infoContext, p_WindowNo, m_sqlMain, true);
 			if (sql == null || sql.length() == 0) {
@@ -1403,10 +1407,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				m_sqlMain = sql;
 			}
 		}
-		
-		addViewIDToQuery();
-		addKeyViewToQuery();
-		
+
 		if (m_sqlMain.length() > 0 &&  infoWindow.isDistinct()) {
 			m_sqlMain = m_sqlMain.substring("SELECT ".length());
 			m_sqlMain = "SELECT DISTINCT " + m_sqlMain;			
