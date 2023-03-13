@@ -1127,6 +1127,10 @@ public class DashboardController implements EventListener<Event> {
 		}
 	}
 	
+	/**
+	 * Create Fill Mandatory Process Parameters error label for the reports in dashboard
+	 * @return Div
+	 */
 	private Div createFillMandatoryLabel() {
 		Div wrapper = new Div();
 		wrapper.setSclass("fill-mandatory-process-para-wrapper");

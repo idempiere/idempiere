@@ -178,6 +178,11 @@ public class MDashboardContent extends X_PA_DashboardContent
     		.getPO(getAD_Menu_ID(), get_TrxName());
     }
     
+    /**
+     * Parse Process Parameters
+     * @param parameters
+     * @return HashMap<String parameterName, String value>
+     */
     public static Map<String, String> parseProcessParameters(String parameters)	{
     	Map<String, String> paramMap = new HashMap<String, String>();
     	if (parameters != null && parameters.trim().length() > 0) {
