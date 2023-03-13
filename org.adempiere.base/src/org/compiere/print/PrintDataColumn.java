@@ -69,6 +69,7 @@ public class PrintDataColumn
 	private String		m_alias;
 	private boolean		m_pageBreak;
 	private String      m_FormatPattern;
+	private String		m_PrintFormatType;
 
 	/*************************************************************************/
 
@@ -172,6 +173,14 @@ public class PrintDataColumn
 	
 	public String getFormatPattern() {
 		return m_FormatPattern;
+	}
+
+	public String getPrintFormatType() {
+		return m_PrintFormatType;
+	}
+
+	public void setPrintFormatType(String m_PrintFormatType) {
+		this.m_PrintFormatType = m_PrintFormatType;
 	}
 
 }	//	PrintDataColumn
