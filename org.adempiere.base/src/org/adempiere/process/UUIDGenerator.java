@@ -55,6 +55,8 @@ public class UUIDGenerator extends SvrProcess {
 
 	private boolean isFillUUID = false;
 
+	private boolean isClearUUID = false;
+
 	/**	Logger							*/
 	private static final CLogger log = CLogger.getCLogger(UUIDGenerator.class);
 
@@ -70,6 +72,8 @@ public class UUIDGenerator extends SvrProcess {
 				tableName = param.getParameter().toString();
 			else if (param.getParameterName().equals("IsFillUUID"))
 				isFillUUID = param.getParameterAsBoolean();
+			else if (param.getParameterName().equals("IsClearUUID"))
+				isClearUUID = param.getParameterAsBoolean();
 			else
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), param);
 		}
@@ -145,17 +149,19 @@ public class UUIDGenerator extends SvrProcess {
 							}
 						}
 					} else {
-						StringBuilder sqlclear = new StringBuilder("UPDATE ")
-								.append(cTableName)
-								.append(" SET ")
-								.append(columnName)
-								.append("=NULL WHERE ")
-								.append(columnName)
-								.append(" IS NOT NULL");
-						int cnt = DB.executeUpdateEx(sqlclear.toString(), get_TrxName());
-						if (cnt > 0) {
-							String msg = cnt + " UUID cleared from table " + cTableName;
-							addBufferLog(0, null, null, msg, 0, 0);
+						if (isClearUUID) {
+							StringBuilder sqlclear = new StringBuilder("UPDATE ")
+									.append(cTableName)
+									.append(" SET ")
+									.append(columnName)
+									.append("=NULL WHERE ")
+									.append(columnName)
+									.append(" IS NOT NULL");
+							int cnt = DB.executeUpdateEx(sqlclear.toString(), get_TrxName());
+							if (cnt > 0) {
+								String msg = cnt + " UUID cleared from table " + cTableName;
+								addBufferLog(0, null, null, msg, 0, 0);
+							}
 						}
 					}
 				}
