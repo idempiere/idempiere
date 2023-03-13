@@ -317,8 +317,6 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		int Record_ID = -1;
 		if (dse.Record_ID instanceof Integer)
 			Record_ID = ((Integer)dse.Record_ID).intValue();
-		else
-			log.info("dynInit - Invalid Record_ID=" + dse.Record_ID);
 
 		MTable dbtable = null;
 		if (dse.AD_Table_ID != 0)
@@ -332,6 +330,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 				String uuid = null;
 				if (po.is_new()) {
 					if (Record_ID == 0 && MTable.isZeroIDTable(dbtable.getTableName())) {
+						// Need to read the UUID directly from database because the PO cannot be used with zero ID records
 						StringBuilder sql = new StringBuilder("SELECT ")
 								.append(uuidcol)
 								.append(" FROM ")
@@ -342,14 +341,18 @@ public class WRecordInfo extends Window implements EventListener<Event>
 						uuid = DB.getSQLValueString(null, sql.toString());
 					}
 				} else {
-					uuid = po.get_ValueAsString(uuidcol);
+					uuid = po.get_UUID();
 				}
 				if (!Util.isEmpty(uuid))
 					m_info.append("\n ").append(uuidcol).append("=").append(uuid);
 				if (po.get_KeyColumns().length == 1) {
+					String ticketURL;
+					if (Record_ID <= 0)
+						ticketURL = AEnv.getZoomUrlTableUU(po);
+					else
+						ticketURL = AEnv.getZoomUrlTableID(po);
 					m_permalink.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 						public void onEvent(Event event) throws Exception {
-							String ticketURL = AEnv.getZoomUrlTableID(po);
 							StringBuffer sb = new StringBuffer("navigator.clipboard.writeText(\"")
 								.append(ticketURL)
 								.append("\");");
@@ -359,12 +362,13 @@ public class WRecordInfo extends Window implements EventListener<Event>
 					});
 				}
 				m_permalink.setVisible(po.get_KeyColumns().length == 1);
+				final String whereClause = po.get_WhereClause(true, uuid);
 				m_copySelect.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 					public void onEvent(Event event) throws Exception {
 						StringBuffer query = new StringBuffer("navigator.clipboard.writeText(\"SELECT * FROM ")
 							.append(po.get_TableName())
 							.append(" WHERE ")
-							.append(po.get_WhereClause(true));
+							.append(whereClause);
 						query.append("\");");
 						Clients.evalJavaScript(query.toString());
 						Notification.show(Msg.getMsg(Env.getCtx(), "Copied"), Notification.TYPE_INFO, m_copySelect, "end_before", 1000);

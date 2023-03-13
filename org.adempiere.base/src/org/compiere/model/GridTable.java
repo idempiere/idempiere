@@ -2381,14 +2381,15 @@ public class GridTable extends AbstractTableModel
 	{
 		int size = m_fields.size();
 		StringBuilder singleRowWHERE = null;
+		StringBuilder singleRowUUWHERE = null;
 		StringBuilder multiRowWHERE = null;
 		String tableName = getTableName();
 		for (int col = 0; col < size; col++)
 		{
 			GridField field = (GridField)m_fields.get (col);
+			String columnName = field.getColumnName();
 			if (field.isKey())
 			{
-				String columnName = field.getColumnName();
 				Object value = rowData[col]; 
 				if (value == null)
 				{
@@ -2404,7 +2405,6 @@ public class GridTable extends AbstractTableModel
 			}
 			else if (field.isParentColumn())
 			{
-				String columnName = field.getColumnName();
 				Object value = rowData[col]; 
 				if (value == null)
 				{
@@ -2425,9 +2425,22 @@ public class GridTable extends AbstractTableModel
 					multiRowWHERE.append (tableName).append(".").append(columnName)
 						.append ("=").append (DB.TO_STRING(value.toString()));
 			}
+			if (columnName.equals(PO.getUUIDColumnName(tableName)))
+			{
+				Object value = rowData[col]; 
+				if (value == null)
+				{
+					log.log(Level.WARNING, "UUID data is null - " + columnName);
+					return null;
+				}
+				singleRowUUWHERE = new StringBuilder(tableName).append(".").append(PO.getUUIDColumnName(tableName))
+						.append ("=").append (DB.TO_STRING(value.toString()));
+			}
 		}	//	for all columns
 		if (singleRowWHERE != null)
 			return singleRowWHERE.toString();
+		if (singleRowUUWHERE != null)
+			return singleRowUUWHERE.toString();
 		if (multiRowWHERE != null)
 			return multiRowWHERE.toString();
 		log.log(Level.WARNING, "No key Found");

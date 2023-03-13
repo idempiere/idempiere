@@ -59,6 +59,7 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIME;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIMESTAMP_WITH_TIMEZONE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIMEZONE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_URL;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_UUID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
 
 import java.text.DateFormat;
@@ -155,6 +156,8 @@ public final class DisplayType
 	public static final int FileName  = REFERENCE_DATATYPE_FILENAME;
 	/** Display Type 40	URL	*/
 	public static final int URL  = REFERENCE_DATATYPE_URL;
+	/** Display Type 200231	UUID */
+	public static final int UUID  = REFERENCE_DATATYPE_UUID;
 	/** Display Type 42	PrinterName	*/
 	public static final int PrinterName  = REFERENCE_DATATYPE_PRINTNAME;
 	//	Candidates:
@@ -362,7 +365,8 @@ public final class DisplayType
 			|| displayType == ChosenMultipleSelectionList
 			|| displayType == ChosenMultipleSelectionTable
 			|| displayType == ChosenMultipleSelectionSearch
-			|| displayType == TimeZoneId)
+			|| displayType == TimeZoneId
+			|| displayType == UUID)
 			return true;
 		
 		//not custom type, don't have to check factory
@@ -1084,6 +1088,8 @@ public final class DisplayType
 			return "Payment";
 		if (displayType == Chart)
 			return "Chart";
+		if (displayType == UUID)
+			return "UUID";
 		
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
 		if (cache != null) {

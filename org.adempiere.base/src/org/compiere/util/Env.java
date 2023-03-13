@@ -2110,6 +2110,15 @@ public final class Env
 		return AD_Window_ID;
 	}
 	
+	public static int getZoomWindowUU(int AD_Table_ID, String Record_UU) {
+		return getZoomWindowUU(AD_Table_ID, Record_UU, 0);
+	}
+
+	public static int getZoomWindowUU(int AD_Table_ID, String Record_UU, int windowNo)
+	{
+		return getZoomWindowIDOrUU(AD_Table_ID, -1, Record_UU, windowNo);
+	}
+
 	public static int getZoomWindowID(int AD_Table_ID, int Record_ID)
 	{
 		return getZoomWindowID(AD_Table_ID, Record_ID, 0);
@@ -2117,7 +2126,12 @@ public final class Env
 
 	public static int getZoomWindowID(int AD_Table_ID, int Record_ID, int windowNo)
 	{
-		int AD_Window_ID = MZoomCondition.findZoomWindowByTableId(AD_Table_ID, Record_ID, windowNo);
+		return getZoomWindowIDOrUU(AD_Table_ID, Record_ID, null, windowNo);
+	}
+
+	public static int getZoomWindowIDOrUU(int AD_Table_ID, int Record_ID, String Record_UU, int windowNo)
+	{
+		int AD_Window_ID = MZoomCondition.findZoomWindowByTableIdOrUU(AD_Table_ID, Record_ID, Record_UU, windowNo);
 		if (AD_Window_ID <= 0)
 		{
 			MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
@@ -2133,13 +2147,17 @@ public final class Env
 			boolean isSOTrx = true;
 			if (table.getPO_Window_ID() != 0)
 			{
-				String whereClause = table.getTableName() + "_ID=" + Record_ID;
+				String whereClause;
+				if (Record_UU != null)
+					whereClause = PO.getUUIDColumnName(table.getTableName()) + "=" + DB.TO_STRING(Record_UU);
+				else
+					whereClause = table.getTableName() + "_ID=" + Record_ID;
 				isSOTrx = DB.isSOTrx(table.getTableName(), whereClause, windowNo);
 				if (!isSOTrx)
 					AD_Window_ID = table.getPO_Window_ID();
 			}
 
-			if (log.isLoggable(Level.CONFIG)) log.config(table.getTableName() + " - Record_ID=" + Record_ID + " (IsSOTrx=" + isSOTrx + ")");
+			if (log.isLoggable(Level.CONFIG)) log.config(table.getTableName() + " - Record_ID=" + Record_ID + " - Record_UU=" + Record_UU + " (IsSOTrx=" + isSOTrx + ")");
 		}
 		return AD_Window_ID;
 	}
@@ -2252,4 +2270,5 @@ public final class Env
 		}
 		return false;
 	}
+
 }   //  Env

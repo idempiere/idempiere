@@ -382,19 +382,29 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     private void processParameters() {
     	String action = getPrmString("Action");
     	if ("Zoom".equalsIgnoreCase(action)) {
+    		MTable table = null;
     		int tableID = getPrmInt("AD_Table_ID");
     		if (tableID == 0) {
     			String tableName = getPrmString("TableName");
     			if (!Util.isEmpty(tableName)) {
-    				MTable table = MTable.get(Env.getCtx(), tableName);
+    				table = MTable.get(Env.getCtx(), tableName);
     				if (table != null) {
     					tableID = table.getAD_Table_ID();
     				}
     			}
+    		} else {
+    			table = MTable.get(Env.getCtx(), tableID);
     		}
-    		int recordID = getPrmInt("Record_ID");
-    		if (tableID > 0) {
-    			AEnv.zoom(tableID, recordID);
+    		if (table != null) {
+        		String recordUU = getPrmString("Record_UU");
+        		if (!Util.isEmpty(recordUU)) {
+        			AEnv.zoomUU(tableID, recordUU);
+        		} else {
+            		int recordID = getPrmInt("Record_ID");
+            		if (tableID > 0) {
+            			AEnv.zoom(tableID, recordID);
+            		}
+        		}
     		}
     	}
     	m_URLParameters = null;

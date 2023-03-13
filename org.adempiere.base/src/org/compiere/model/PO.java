@@ -1855,12 +1855,12 @@ public abstract class PO
 				m_KeyColumns = new String[] {ColumnName};
 				if (p_info.getColumnName(i).endsWith("_ID"))
 				{
-				Integer ii = (Integer)get_Value(i);
-				if (ii == null)
-					m_IDs = new Object[] {I_ZERO};
-				else
-					m_IDs = new Object[] {ii};
-				if (log.isLoggable(Level.FINEST)) log.finest("(PK) " + ColumnName + "=" + ii);
+					Integer ii = (Integer)get_Value(i);
+					if (ii == null)
+						m_IDs = new Object[] {I_ZERO};
+					else
+						m_IDs = new Object[] {ii};
+					if (log.isLoggable(Level.FINEST)) log.finest("(PK) " + ColumnName + "=" + ii);
 				}
 				else
 				{
@@ -1875,6 +1875,23 @@ public abstract class PO
 			}
 		}	//	primary key search
 
+		//	Search for UUID Key
+		for (int i = 0; i < p_info.getColumnCount(); i++)
+		{
+			String ColumnName = p_info.getColumnName(i);
+			if (ColumnName.equals(PO.getUUIDColumnName(get_TableName())))
+			{
+				m_KeyColumns = new String[] {ColumnName};
+				Object oo = get_Value(i);
+				if (oo == null)
+					m_IDs = new Object[] {null};
+				else
+					m_IDs = new Object[] {oo};
+				if (log.isLoggable(Level.FINEST)) log.finest("(UU) " + ColumnName + "=" + oo);
+				return;
+			}
+		}	//	UUID key search
+
 		//	Search for Parents
 		ArrayList<String> columnNames = new ArrayList<String>();
 		for (int i = 0; i < p_info.getColumnCount(); i++)
@@ -1885,7 +1902,7 @@ public abstract class PO
 		//	Set FKs
 		int size = columnNames.size();
 		if (size == 0)
-			throw new IllegalStateException("No PK nor FK - " + p_info.getTableName());
+			throw new IllegalStateException("No PK, UU nor FK - " + p_info.getTableName());
 		m_IDs = new Object[size];
 		m_KeyColumns = new String[size];
 		for (int i = 0; i < size; i++)

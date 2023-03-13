@@ -355,7 +355,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 			return -1;
 		if (string.equals(io.toString()))
 			return i;
-		if (parameterName.endsWith("_ID") && ADLookup.isUUID(string)) {
+		if (parameterName.endsWith("_ID") && Util.isUUID(string)) {
 			String tableName = parameterName.substring(0, parameterName.length()-3);
 			StringBuilder sql = new StringBuilder("SELECT ");
 			sql.append(parameterName).append(" FROM ").append(tableName)
@@ -454,7 +454,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		if (xmlInt != null) {
 			// String xml <...> blocks
 		    String content = xmlInt.toString().replaceAll("<[^>]*>", "");
-		    if (! Util.isEmpty(content, true) && ADLookup.isUUID(content))
+		    if (! Util.isEmpty(content, true) && Util.isUUID(content))
 		    	return content;
 		}
 
