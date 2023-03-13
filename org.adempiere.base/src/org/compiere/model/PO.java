@@ -5522,10 +5522,6 @@ public abstract class PO
 	private void checkRecordIDCrossTenant() {
 		if (isSafeCrossTenant.get())
 			return;
-		// exclude read-only high-traffic tables
-		if (   MChangeLog.Table_Name.equals(get_TableName())
-			|| MRecentItem.Table_Name.equals(get_TableName()))
-			return;
 		int idxRecordId = p_info.getColumnIndex("Record_ID");
 		if (idxRecordId < 0)
 			return;
