@@ -1129,14 +1129,14 @@ public class DashboardController implements EventListener<Event> {
 	
 	private Div createFillMandatoryLabel() {
 		Div wrapper = new Div();
-		wrapper.setStyle("padding: 11px; color: red; display: flex; flex-direction: column;");
+		wrapper.setSclass("fill-mandatory-process-para-wrapper");
 		
 		Div msgText = new Div();
 		msgText.appendChild(new Text(Msg.getMsg(Env.getCtx(), "FillMandatoryParametersDashboard", true)));
 		wrapper.appendChild(msgText);
 		
 		Div msgTip = new Div();
-		msgTip.setStyle("font-style: italic; opacity: 50%;");
+		msgTip.setSclass("fill-mandatory-process-para-tip");
 		msgTip.appendChild(new Text(Msg.getMsg(Env.getCtx(), "FillMandatoryParametersDashboard", false)));
 		wrapper.appendChild(msgTip);
 		return wrapper;
@@ -1511,7 +1511,7 @@ public class DashboardController implements EventListener<Event> {
 				
 				String variable = paramMap.get(iPara.getParameterName());
 
-				if (Util.isEmpty(variable)) {
+				if (Util.isEmpty(variable, true)) {
 					if(sPara.isMandatory())
 						return false;	// empty mandatory parameter
 					else

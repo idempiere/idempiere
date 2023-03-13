@@ -202,10 +202,10 @@ public class MDashboardContent extends X_PA_DashboardContent
 		
 		int processID = getAD_Process_ID();
 		if(processID > 0) {
-			MProcess process = new MProcess(getCtx(), processID, get_TrxName());
+			MProcess process = MProcess.get(processID);
 			Map<String, String> paramMap = parseProcessParameters(getProcessParameters());
 			for(MProcessPara processPara : process.getParameters()) {
-				if(processPara.isMandatory() && Util.isEmpty(paramMap.get(processPara.getColumnName()))) {
+				if(processPara.isMandatory() && Util.isEmpty(paramMap.get(processPara.getColumnName()), true)) {
 					throw new AdempiereException(Msg.getMsg(getCtx(), "FillMandatoryParametersDashboard"));
 				}
 			}

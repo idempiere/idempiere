@@ -345,3 +345,15 @@
 	padding: 5px;
 	cursor: default;
 }
+
+.fill-mandatory-process-para-wrapper {
+	padding: 11px;
+	color: red;
+	display: flex;
+	flex-direction: column;
+}
+
+.fill-mandatory-process-para-tip {
+	font-style: italic;
+	opacity: 50%;
+}
