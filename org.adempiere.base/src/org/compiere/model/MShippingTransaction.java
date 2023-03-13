@@ -107,9 +107,13 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 			msg.append(getErrorMessage());
 		msg.append("\nAction: " + getAction());
 		history.setTextMsg(msg.toString());
-		
-		history.saveEx();
-		
+		try {
+			PO.setCrossTenantSafe();
+			history.saveEx();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
+
 		setProcessed(processed);
 		return processed;
 	}
