@@ -1579,9 +1579,6 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return true;
 
 		//  ** dynamic content **
-		String parsed = Env.parseContext (m_vo.ctx, 0, dl, false, false).trim();
-		if (parsed.length() == 0)
-			return true;
 		boolean retValue = Evaluator.evaluateLogic(this, dl);
 		if (log.isLoggable(Level.CONFIG)) log.config(m_vo.Name + " (" + dl + ") => " + retValue);
 		return retValue;
