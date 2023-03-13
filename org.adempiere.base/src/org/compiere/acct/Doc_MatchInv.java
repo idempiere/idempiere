@@ -207,7 +207,7 @@ public class Doc_MatchInv extends Doc
 		if (m_matchInv.isReversal())
 		{
 			if (!dr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-					m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+					m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, true))
 			{
 				p_Error = "Failed to create reversal entry";
 				return null;
@@ -217,7 +217,7 @@ public class Doc_MatchInv extends Doc
 		{
 			if (!dr.updateReverseLine (MInOut.Table_ID, 		//	Amt updated
 				m_receiptLine.getM_InOut_ID(), m_receiptLine.getM_InOutLine_ID(),
-				multiplier))
+				multiplier, true))
 			{
 				p_Error = "Mat.Receipt not posted yet";
 				return null;
@@ -256,7 +256,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, false))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
@@ -268,7 +268,7 @@ public class Doc_MatchInv extends Doc
 
 				//	Set AmtAcctCr/Dr from Invoice (sets also Project)
 				if (!cr.updateReverseLine (MInvoice.Table_ID, 		//	Amt updated
-					m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), multiplier))
+					m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), multiplier, false))
 				{
 					p_Error = "Invoice not posted yet";
 					return null;
@@ -290,7 +290,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, false))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
@@ -719,7 +719,7 @@ public class Doc_MatchInv extends Doc
 		if (m_matchInv.isReversal())
 		{
 			if (!dr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-					m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+					m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, true))
 			{
 				p_Error = "Failed to create reversal entry";
 				return null;
@@ -729,7 +729,7 @@ public class Doc_MatchInv extends Doc
 		{
 			if (!dr.updateReverseLine (MInOut.Table_ID, 		//	Amt updated
 				m_receiptLine.getM_InOut_ID(), m_receiptLine.getM_InOutLine_ID(),
-				multiplier))
+				multiplier, true))
 			{
 				p_Error = "Mat.Shipment not posted yet";
 				return null;
@@ -769,7 +769,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, false))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
@@ -781,7 +781,7 @@ public class Doc_MatchInv extends Doc
 
 				//	Set AmtAcctCr/Dr from Invoice (sets also Project)
 				if (!cr.updateReverseLine (MInvoice.Table_ID, 		//	Amt updated
-					m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), multiplier))
+					m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), multiplier, false))
 				{
 					p_Error = "Invoice not posted yet";
 					return null;
@@ -803,7 +803,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, false))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
@@ -988,7 +988,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!dr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, true))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
@@ -1000,7 +1000,7 @@ public class Doc_MatchInv extends Doc
 
 				//	Set AmtAcctCr/Dr from Invoice (sets also Project)
 				if (!dr.updateReverseLine (MInvoice.Table_ID, 		//	Amt updated
-						refInvLine.getC_Invoice_ID(), refInvLine.getC_InvoiceLine_ID(), multiplier))
+						refInvLine.getC_Invoice_ID(), refInvLine.getC_InvoiceLine_ID(), multiplier, true))
 				{
 					p_Error = "Invoice not posted yet";
 					return null;
@@ -1022,7 +1022,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!dr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, true))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
@@ -1078,7 +1078,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, false))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
@@ -1090,7 +1090,7 @@ public class Doc_MatchInv extends Doc
 
 				//	Set AmtAcctCr/Dr from Invoice (sets also Project)
 				if (!cr.updateReverseLine (MInvoice.Table_ID, 		//	Amt updated
-					m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), multiplier))
+					m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), multiplier, false))
 				{
 					p_Error = "Invoice not posted yet";
 					return null;
@@ -1112,7 +1112,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, false))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
