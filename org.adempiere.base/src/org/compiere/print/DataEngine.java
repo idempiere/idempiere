@@ -24,7 +24,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -295,7 +294,7 @@ public class DataEngine
 			.append("c.ColumnSQL, COALESCE(pfi.FormatPattern, c.FormatPattern) ")		//	24, 25
 			//BEGIN http://jira.idempiere.com/browse/IDEMPIERE-153
 			/** START DEVCOFFEE: script column **/
-			.append(" , pfi.isDesc, pfi.Script, pfi.Name, pfi.AD_PrintFormatItem_ID ") // 26..29
+			.append(" , pfi.isDesc, pfi.Script, pfi.Name, pfi.AD_PrintFormatItem_ID, pfi.PrintFormatType ") // 26..30
 			//END
 			.append("FROM AD_PrintFormat pf")
 			.append(" INNER JOIN AD_PrintFormatItem pfi ON (pf.AD_PrintFormat_ID=pfi.AD_PrintFormat_ID)")
@@ -394,6 +393,8 @@ public class DataEngine
 				boolean isPageBreak = "Y".equals(rs.getString(17));
 				
 				String formatPattern = rs.getString(25);
+				
+				String printFormatType = rs.getString(30);
 				
 				//BEGIN http://jira.idempiere.com/browse/IDEMPIERE-153
 				boolean isDesc = "Y".equals(rs.getString(26));
@@ -683,6 +684,7 @@ public class DataEngine
 
 				//
 				pdc.setFormatPattern(formatPattern);
+				pdc.setPrintFormatType(printFormatType);
 				columns.add(pdc);
 			}	//	for all Fields in Tab
 		}
@@ -1063,30 +1065,13 @@ public class DataEngine
 								{
 									/** START DEVCOFFEE: script column **/
 									int displayType = pdc.getDisplayType();
-									MPrintFormatItem pfItem = new MPrintFormatItem(Env.getCtx(), pdc.getAD_PrintFormatItem_ID(), null);
-									//if(rs.getMetaData().getColumnName(displayIndex).contains("SCRIPTCOLUMN")) {	// ScriptColumn
-									if(MPrintFormatItem.PRINTFORMATTYPE_Script.equalsIgnoreCase(pfItem.getPrintFormatType())) {	// ScriptColumn	
+									if(MPrintFormatItem.PRINTFORMATTYPE_Script.equalsIgnoreCase(pdc.getPrintFormatType())) {	// ScriptColumn	
 										Object value = rs.getObject(displayIndex);
-										int columnType = rs.getMetaData().getColumnType(displayIndex);
-
-										// String, Text
-										if (columnType == Types.CHAR || columnType == Types.VARCHAR)
-										{
-											displayType = DisplayType.Text;
-										}
-										else if (columnType == Types.DATE || columnType == Types.TIME
-												|| columnType == Types.TIMESTAMP)
-										{
-											displayType = DisplayType.DateTime;
-										}
-										// Number
-										else if (columnType == Types.INTEGER || columnType == Types.SMALLINT
-											|| columnType == Types.DECIMAL || columnType == Types.NUMERIC)
-											displayType = DisplayType.Number;
+										displayType = getDisplayType(value);
 									
 										if (display.startsWith("@SCRIPT")) {
 											display = display.replace("@SCRIPT", "");
-//											Object value = parseVariable(display, pdc, pd);
+											value = parseVariable(display, pdc, pd);
 											Interpreter bsh = new Interpreter ();
 											try {
 												value = bsh.eval(value.toString());
@@ -1094,14 +1079,7 @@ public class DataEngine
 											catch (EvalError e) {
 												log.severe(e.getMessage());
 											}
-											if (value instanceof Number)
-												displayType = DisplayType.Number;
-											else if (value instanceof Boolean)
-												displayType = DisplayType.YesNo;
-											else if (value instanceof Date)
-												displayType = DisplayType.Date;
-											else
-												displayType = DisplayType.Text;
+											displayType = getDisplayType(value);
 										}
 										pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), (Serializable) value, displayType, pdc.getFormatPattern());
 									} else {
@@ -1335,6 +1313,22 @@ public class DataEngine
 	}	//	printRunningTotal
 
 	/**
+	 * Get Display Type of value
+	 * @param value
+	 * @return int Display Type
+	 */
+	private int getDisplayType(Object value) {
+		if (value instanceof Number)
+			return DisplayType.Number;
+		else if (value instanceof Boolean)
+			return DisplayType.YesNo;
+		else if (value instanceof Date)
+			return DisplayType.Date;
+		else
+			return DisplayType.Text;
+	}
+	
+	/**
 	 * Parse expression, replaces @tag@ with pdc values and/or execute functions
 	 * @param expression
 	 * @param pdc
@@ -1409,6 +1403,7 @@ public class DataEngine
 
 		return outStr.toString();
 	}
+	
 	/*************************************************************************
 	 * 	Test
 	 * 	@param args args
