@@ -425,7 +425,7 @@ public class Doc_MatchPO extends Doc
 				FactLine cr = fact.createLine(null,
 					m_pc.getAccount(ProductCost.ACCTTYPE_P_PPV, as),
 					as.getC_Currency_ID(), Env.ONE);
-				if (!cr.updateReverseLine(MMatchPO.Table_ID, m_matchPO.getM_MatchPO_ID(), 0, Env.ONE, false)) 
+				if (!cr.updateReverseLine(MMatchPO.Table_ID, m_matchPO.getM_MatchPO_ID(), 0, Env.ONE)) 
 				{
 					fact.remove(cr);
 					cr = null;
@@ -435,7 +435,7 @@ public class Doc_MatchPO extends Doc
 					//  PPV Offset
 					FactLine dr = fact.createLine(null,
 						getAccount(Doc.ACCTTYPE_PPVOffset, as), as.getC_Currency_ID(), Env.ONE);
-					if (!dr.updateReverseLine(MMatchPO.Table_ID, m_matchPO.getM_MatchPO_ID(), 0, Env.ONE, true)) 
+					if (!dr.updateReverseLine(MMatchPO.Table_ID, m_matchPO.getM_MatchPO_ID(), 0, Env.ONE, cr)) 
 					{						
 						p_Error = Msg.getMsg(Env.getCtx(), "FailedToCreateReversalEntryForACCTTYPE_PPVOffset");
 						return null;

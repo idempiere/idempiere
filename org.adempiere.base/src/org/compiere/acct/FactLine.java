@@ -1123,7 +1123,7 @@ public final class FactLine extends X_Fact_Acct
 	public boolean updateReverseLine (int AD_Table_ID, int Record_ID, int Line_ID,
 		BigDecimal multiplier)
 	{
-		return updateReverseLine(AD_Table_ID, Record_ID, Line_ID, multiplier, true);
+		return updateReverseLine(AD_Table_ID, Record_ID, Line_ID, multiplier, null);
 	}
 
 	/**************************************************************************
@@ -1134,14 +1134,14 @@ public final class FactLine extends X_Fact_Acct
 	 * 	@param Record_ID record
 	 * 	@param Line_ID line
 	 * 	@param multiplier targetQty/documentQty
-	 *  @param first get first reverseline (when false get last) in case there is more than one
+	 *  @param otherLine reversal line created before this. if not null, this reversal should reverse the opposite sign.
 	 * 	@return true if success
 	 * 
-	 * NOTE: first/last are required in cases where the original DR/CR postings are done in the same account
+	 * NOTE: otherLine is required in cases where the original DR/CR postings are done in the same account
 	 * in this case looking just for the first posting is wrong and results in a non-balanced reversal posting
 	 */
 	public boolean updateReverseLine (int AD_Table_ID, int Record_ID, int Line_ID,
-		BigDecimal multiplier, boolean first)
+		BigDecimal multiplier, FactLine otherLine)
 	{
 		boolean success = false;
 
@@ -1162,10 +1162,16 @@ public final class FactLine extends X_Fact_Acct
 		if (MMovement.Table_ID == AD_Table_ID)
 			sql.append(" AND M_Locator_ID=?");
 		// end MZ
-		sql.append(" ORDER BY Fact_Acct_ID");
-		if (! first)
-			sql.append(" DESC");
+		if (otherLine != null) 
+		{
+			if (otherLine.getAmtAcctDr().signum() == 0 && otherLine.getAmtAcctCr().signum() != 0)
+				sql.append(" AND AmtAcctDr = 0 AND AmtAcctCr != 0 ");
+			else if (otherLine.getAmtAcctDr().signum() != 0 && otherLine.getAmtAcctCr().signum() == 0)
+				sql.append(" AND AmtAcctCr = 0 AND AmtAcctDr != 0 ");
+		}
 		
+		sql.append(" ORDER BY Fact_Acct_ID");
+				
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
