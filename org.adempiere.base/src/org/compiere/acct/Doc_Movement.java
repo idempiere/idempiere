@@ -214,7 +214,7 @@ public class Doc_Movement extends Doc
 			{
 				//	Set AmtAcctCr from Original Movement
 				if (!cr.updateReverseLine (MMovement.Table_ID,
-						m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
+						m_Reversal_ID, line.getReversalLine_ID(),Env.ONE, dr))
 				{
 					p_Error = "Original Inventory Move not posted yet";
 					return null;

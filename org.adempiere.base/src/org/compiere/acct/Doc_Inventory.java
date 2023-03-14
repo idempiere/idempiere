@@ -353,7 +353,7 @@ public class Doc_Inventory extends Doc
 						{
 							//	Set AmtAcctCr from Original Phys.Inventory
 							if (!cr.updateReverseLine (MInventory.Table_ID,
-									m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
+									m_Reversal_ID, line.getReversalLine_ID(),Env.ONE, dr))
 							{
 								p_Error = "Original Physical Inventory not posted yet";
 								return null;
