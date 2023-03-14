@@ -38,12 +38,14 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.compiere.model.GridField;
+import org.compiere.model.MLookup;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -134,8 +136,12 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		tableIDEditor.setValue(tableIDValue);
 		
 		int tableID = tableIDValue != null ? tableIDValue.intValue() : 0;
-		recordsEditor = tableID > 0 ? new WSearchEditor("Record_ID", false, false, true, editor.getRecordsLookup(tableID)) : null;
-    	
+		MLookup recordsLookup = editor.getRecordsLookup(tableID);
+		if(recordsLookup != null)
+			recordsEditor = tableID > 0 ? new WSearchEditor("Record_ID", false, false, true, recordsLookup) : null;
+		else 
+			throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn"));
+		
 		setPage(page);
 		setClosable(true);
 		setTitle(Msg.getMsg(Env.getCtx(), "ChooseRelatedRecord"));
@@ -222,10 +228,16 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 			}
 			int tableID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
 			if(tableID > 0) {
-		    	recordsEditor = new WSearchEditor("Record_ID", false, false, true, editor.getRecordsLookup(tableID));
-		    	labelsDiv.appendChild(recordsEditorLabel);
-				fieldsDiv.appendChild(recordsEditor.getComponent());
-				recordsEditor.getComponent().focus();
+				MLookup recordsLookup = editor.getRecordsLookup(tableID);
+				if(recordsLookup != null) {
+					recordsEditor = tableID > 0 ? new WSearchEditor("Record_ID", false, false, true, recordsLookup) : null;
+			    	labelsDiv.appendChild(recordsEditorLabel);
+					fieldsDiv.appendChild(recordsEditor.getComponent());
+					recordsEditor.getComponent().focus();
+				}
+				else {
+					throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn"));
+				}
 			} else if(tableIDEditor.getComponent() instanceof HtmlBasedComponent) {
 				((HtmlBasedComponent) tableIDEditor.getComponent()).focus();
 			}
