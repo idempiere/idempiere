@@ -21,6 +21,7 @@ import static org.compiere.model.SystemIDs.COLUMN_C_INVOICELINE_M_PRODUCT_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -889,7 +890,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 	@Override
 	public String getDisplayTextForGridView(Object value) {
-		String s = super.getDisplayTextForGridView(value);
+		String s = Objects.toString(super.getDisplayTextForGridView(value), "");
 		if (ClientInfo.isMobile() && MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR, true)) {
 			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, null, Env.getAD_Client_ID(Env.getCtx()));
 			if (!Util.isEmpty(separator, true) && s.indexOf(separator) >= 0) {

@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.swing.table.AbstractTableModel;
@@ -850,7 +851,7 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 					if (paging != null && paging.getPageSize() > 0) {
 						rowIndex = (paging.getActivePage() * paging.getPageSize()) + rowIndex;
 					}
-					String display = renderer.getDisplayTextWithEditorCheck(values[valueIndex], gridFields[index], rowIndex);
+					String display = Objects.toString(renderer.getDisplayTextWithEditorCheck(values[valueIndex], gridFields[index], rowIndex), "");
 					if (!Util.isEmpty(display, true)) {
 						hideColumn = false;
 						break;

@@ -118,3 +118,14 @@ div.z-listbox-body .z-listcell {
 	height: 20px;
 }
 
+.z-grid-color-fieldtype-wrapper {
+	height: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.z-grid-color-fieldtype {
+	width: 95%;
+	height: 80%;
+}

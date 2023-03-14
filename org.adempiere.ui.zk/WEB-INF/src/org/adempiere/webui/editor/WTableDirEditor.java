@@ -23,6 +23,7 @@ package org.adempiere.webui.editor;
 import java.beans.PropertyChangeEvent;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.swing.event.ListDataEvent;
@@ -862,7 +863,7 @@ ContextMenuListener, IZoomableEditor
 		
 	@Override
 	public String getDisplayTextForGridView(Object value) {
-		String s = super.getDisplayTextForGridView(value);
+		String s = Objects.toString(super.getDisplayTextForGridView(value), "");
 		if (ClientInfo.isMobile( )&& MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_MOBILE_LINE_BREAK_AS_IDENTIFIER_SEPARATOR, true)) {
 			String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, null, Env.getAD_Client_ID(Env.getCtx()));
 			if (!Util.isEmpty(separator, true) && s.indexOf(separator) >= 0) {

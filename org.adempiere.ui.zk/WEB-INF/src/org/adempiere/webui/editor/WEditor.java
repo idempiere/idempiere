@@ -565,11 +565,11 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
      */
     abstract public String getDisplay();
     
-    public String getDisplayTextForGridView(Object value) {
+    public Object getDisplayTextForGridView(Object value) {
     	return getDisplayTextForGridView(null, value);
     }
     
-    public String getDisplayTextForGridView(GridRowCtx gridRowCtx, Object value) {
+    public Object getDisplayTextForGridView(GridRowCtx gridRowCtx, Object value) {
     	this.setValue(value);
     	String s = getDisplay();
     	if ("<0>".equals(s)) {

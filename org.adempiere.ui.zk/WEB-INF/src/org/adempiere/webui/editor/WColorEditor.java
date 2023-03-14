@@ -29,8 +29,11 @@ package org.adempiere.webui.editor;
 
 import java.util.logging.Level;
 
+import org.adempiere.util.GridRowCtx;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Textbox;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -45,6 +48,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Menuitem;
 
 /**
@@ -266,11 +270,17 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 	}
 
 	@Override
-	public String getDisplayTextForGridView(Object value) {
+	public Object getDisplayTextForGridView(GridRowCtx gridRowCtx, Object value) {
 		if (value == null) {
 			return "";
 		} else {
-			return (String)value;
+			Div wrapper = new Div();
+			LayoutUtils.addSclass("z-grid-color-fieldtype-wrapper", wrapper);
+			Div colorDiv = new Div();
+			LayoutUtils.addSclass("z-grid-color-fieldtype", colorDiv);
+			ZkCssHelper.appendStyle(colorDiv, "background:"+value+";");
+			wrapper.appendChild(colorDiv);
+			return wrapper;
 		}
 	}
 }

@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import org.adempiere.webui.component.ListModelTable;
@@ -455,7 +456,7 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 						if (editor != null)
 						{
 							editor.setValue(key);
-							value = new KeyNamePair(key, editor.getDisplayTextForGridView(key));
+							value = new KeyNamePair(key, Objects.toString(editor.getDisplayTextForGridView(key), ""));
 						}
 						else
 						{
@@ -470,7 +471,7 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 				WEditor editor = editorMap.get(columnsLayout[col].getColSQL());
 				if (editor != null)
 				{
-					value = new ValueNamePair(key, editor.getDisplayTextForGridView(key));
+					value = new ValueNamePair(key, Objects.toString(editor.getDisplayTextForGridView(key), ""));
 				}
 				else
 				{

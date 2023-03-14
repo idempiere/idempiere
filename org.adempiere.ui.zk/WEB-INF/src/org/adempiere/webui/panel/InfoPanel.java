@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -764,7 +765,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 						if (editor != null)
 						{
 							editor.setValue(key);
-							value = new KeyNamePair(key, editor.getDisplayTextForGridView(key));
+							value = new KeyNamePair(key, Objects.toString(editor.getDisplayTextForGridView(key), ""));	//FIXME
 						}					
 						else
 						{
@@ -779,7 +780,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				WEditor editor = editorMap.get(p_layout[col].getColSQL());
 				if (editor != null)
 				{
-					value = new ValueNamePair(key, editor.getDisplayTextForGridView(key));
+					value = new ValueNamePair(key, Objects.toString(editor.getDisplayTextForGridView(key), ""));
 				}					
 				else
 				{

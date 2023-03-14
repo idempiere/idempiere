@@ -13,10 +13,12 @@
 package org.adempiere.webui.adwindow;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.adempiere.util.GridRowCtx;
@@ -253,7 +255,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 * @param rowIndex
 	 * @return display text
 	 */
-	protected String getDisplayTextWithEditorCheck(Object value, GridField gridField, int rowIndex) {
+	protected Object getDisplayTextWithEditorCheck(Object value, GridField gridField, int rowIndex) {
 		WEditor readOnlyEditor = readOnlyEditors.get(gridField);
 		if (readOnlyEditor == null) {
 			readOnlyEditor = WebEditorFactory.getEditor(gridField, true, readOnlyEditorConfiguration);
@@ -271,7 +273,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 * @param rowIndex
 	 * @return display text
 	 */
-	public String getDisplayText(Object value, GridField gridField, int rowIndex){
+	public Object getDisplayText(Object value, GridField gridField, int rowIndex){
 		return getDisplayText(value, gridField, rowIndex, false);
 	}
 	
@@ -284,7 +286,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 * to override IsDisplay result.
 	 * @return display text
 	 */
-	private String getDisplayText(Object value, GridField gridField, int rowIndex, boolean isForceGetValue)
+	private Object getDisplayText(Object value, GridField gridField, int rowIndex, boolean isForceGetValue)
 	{
 		if (value == null)
 			return "";
@@ -336,19 +338,30 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 			editor.addActionListener(buttonListener);
 			component = editor.getComponent();
 		} else {
-			String text = getDisplayText(value, gridField, rowIndex, isForceGetValue);
-			WEditor editor = getEditorCell(gridField);
-			if (editor.getDisplayComponent() == null){
-				Label label = new Label();
-				setLabelText(text, label);
-				component = label;
-			}else{
-				component = editor.getDisplayComponent();
-				if (component instanceof Html){
-					((Html)component).setContent(text);
+			Object displayElement = getDisplayText(value, gridField, rowIndex, isForceGetValue);
+			if(displayElement instanceof String 
+					|| displayElement instanceof Number
+					|| displayElement instanceof Date) {
+				String text = Objects.toString(displayElement, "");
+				WEditor editor = getEditorCell(gridField);
+				if (editor.getDisplayComponent() == null){
+					Label label = new Label();
+					setLabelText(text, label);
+					component = label;
 				}else{
-					throw new UnsupportedOperationException("neet a componet has setvalue function");
+					component = editor.getDisplayComponent();
+					if (component instanceof Html){
+						((Html)component).setContent(text);
+					}else{
+						throw new UnsupportedOperationException("neet a componet has setvalue function");
+					}
 				}
+			}
+			else if (displayElement instanceof Component){
+				component = (Component) displayElement;
+			}
+			else {
+				throw new UnsupportedOperationException("unsupported component");
 			}
 		}
 		applyFieldStyle(gridField, rowIndex, (HtmlBasedComponent) component);
@@ -458,7 +471,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 					if (component instanceof Label) {
 						Label label = (Label)component;
 						label.getChildren().clear();
-						String text = getDisplayText(entry.getValue().getValue(), entry.getValue().getGridField(), -1);
+						Object displayElement = getDisplayText(entry.getValue().getValue(), entry.getValue().getGridField(), -1);
+						String text = "";
+						if(displayElement instanceof String)
+							text = Objects.toString(displayElement, "");
 						setLabelText(text, label);
 					} else if (component instanceof Checkbox) {
 						Checkbox checkBox = (Checkbox)component;
@@ -468,7 +484,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 						else
 							checkBox.setChecked(false);
 					} else if (component instanceof Html){
-						((Html)component).setContent(getDisplayText(entry.getValue().getValue(), entry.getValue().getGridField(), -1));
+						((Html)component).setContent(Objects.toString(getDisplayText(entry.getValue().getValue(), entry.getValue().getGridField(), -1), ""));	//FIXME
 					}
 				}
 				if (row == null)

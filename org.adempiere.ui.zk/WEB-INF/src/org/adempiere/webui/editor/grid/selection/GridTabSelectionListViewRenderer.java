@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.adempiere.webui.component.ListCell;
 import org.adempiere.webui.component.ListItem;
@@ -142,7 +143,7 @@ public class GridTabSelectionListViewRenderer implements ListitemRenderer<GridTa
 			cell = new Listcell("", null);
 			cell.appendChild(editor.getComponent());
 		} else {
-			String text = getDisplayText(gridField, value);
+			String text = Objects.toString(getDisplayText(gridField, value), "");
 			String display = text;
 			if (text != null && text.length() > MAX_TEXT_LENGTH)
 				display = text.substring(0, MAX_TEXT_LENGTH - 3) + "...";
@@ -186,7 +187,7 @@ public class GridTabSelectionListViewRenderer implements ListitemRenderer<GridTa
 		return item;
 	}
 
-	private String getDisplayText(GridField gridField, Object value)
+	private Object getDisplayText(GridField gridField, Object value)
 	{
 		if (value == null)
 			return "";
