@@ -16,8 +16,6 @@
  *****************************************************************************/
 package org.compiere.util;
 
-import static org.compiere.model.MSysConfig.LOG_PREFIX;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.sql.Timestamp;
@@ -25,8 +23,6 @@ import java.util.logging.ErrorManager;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-
-import org.compiere.model.MSysConfig;
 
 /**
  *	idempiere Log File Handler
@@ -337,18 +333,15 @@ public class CLogFile extends Handler
 		}
 	}	//	publish
 
-	private String getPrefix() {
+	private String getPrefix()
+	{
 		try
 		{
-			if (DB.isConnected()) {
-				String prefix = MSysConfig.getValue(LOG_PREFIX, Env.getAD_Client_ID(Env.getCtx()));
-				if (!Util.isEmpty(prefix))
-					return Env.parseContext(Env.getCtx(), 0, prefix, false);
-			}
+			return Env.parseContext(Env.getCtx(), 0, System.getProperty("org.idempiere.FileLogPrefix"), false);
 		}
 		catch (Exception ex)
 		{
-			reportError ("LogPrefix", ex, ErrorManager.FORMAT_FAILURE);
+			reportError ("LogFilePrefix", ex, ErrorManager.FORMAT_FAILURE);
 		}
 		return "";
 	}
