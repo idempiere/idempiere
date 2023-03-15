@@ -29,6 +29,7 @@ package org.adempiere.webui.editor;
 
 import java.util.logging.Level;
 
+import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -41,10 +42,13 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.sys.ComponentCtrl;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Menuitem;
 
 /**
@@ -101,7 +105,14 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		colorbox.setClientAttribute("type", "color");
 		colorbox.setStyle("position:absolute;top:0;left:0;height:0px !important;width:0px !important;"
 				+ "border:none !important;margin:0 !important;padding:0 !important;visibility:hidden;");
-		getComponent().appendChild(colorbox);
+		
+		//append colorbox to getComponent doesn't with with table/grid
+		if (!tableEditor) {
+			getComponent().appendChild(colorbox);
+		} else {
+			getComponent().getTextbox().addCallback(ComponentCtrl.AFTER_PAGE_ATTACHED, t -> afterPageAttached());
+			getComponent().getTextbox().addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, t -> afterPageDetached());
+		}
 
 		colorbox.addEventListener("onInput", e -> {
 			processNewValue((String)e.getData());
@@ -119,6 +130,34 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 				+ "  this.domUnlisten_(this.$n(),'oninput','__doOnInput');"
 				+ "  this.$supers('unbind_',arguments);"
 				+ "}");
+	}
+
+	/**
+	 * Handle after page detached callback. This is use when editor is use within grid/table.
+	 * @return null
+	 */
+	private Object afterPageDetached() {
+		if (colorbox.getPage() != null && colorbox.getParent() != getComponent()) {
+			colorbox.detach();
+		}
+		
+		//need to attach callback again as editor is reuse in grid view
+		getComponent().getTextbox().addCallback(ComponentCtrl.AFTER_PAGE_ATTACHED, t -> afterPageAttached());
+		getComponent().getTextbox().addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, t -> afterPageDetached());
+		
+		return null;
+	}
+
+	/**
+	 * Handle after page attached callback. This is use when editor is use within grid/table.
+	 * @return null
+	 */
+	private Object afterPageAttached() {
+		if (colorbox.getParent() == null) {
+			colorbox.setPage(this.getComponent().getPage());
+		}
+		fillTextbox();
+		return null;
 	}
 
 	private void init()
@@ -193,13 +232,21 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 	private void fillTextbox() {
 		String style="background-color: transparent !important;";
 		if (!Util.isEmpty(oldValue, true))
-			style = "background: linear-gradient(to right, rgba(255,0,0,0) 50%, "
-					+ oldValue + " 50%) !important;";
+			style = getBackgroundFillStyle(oldValue);
 		String script = "jq('#"+getComponent().getTextbox().getUuid()+"').attr('style','"+style+"');";
-		if (Executions.getCurrent() != null)
+		if (Executions.getCurrent() != null && getComponent().getPage() != null)
 			Clients.response(new AuScript(script));
 		else if (getComponent().getDesktop() != null)
 			Executions.schedule(getComponent().getDesktop(), e -> Clients.response(new AuScript(script)), new Event("onFillTextBox"));
+	}
+
+	/**
+	 * @param color hex color string
+	 * @return background fill style
+	 */
+	protected String getBackgroundFillStyle(String color) {
+		return "background: linear-gradient(to right, rgba(255,0,0,0) 50%, "
+				+ color + " 50%) !important;";
 	}
 
 	@Override
@@ -236,7 +283,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		}
 	}
 
-	public void openColorPicker() { // TODO color picker is opening at upper left ; better to open it at center of screen
+	public void openColorPicker() {
 		String uid = colorbox.getUuid();
 		String script = "(function(){let wgt = zk.Widget.$('#"+uid+"');wgt.$n().click();})()";
 		Clients.response(new AuScript(script));		
@@ -266,11 +313,18 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 	}
 
 	@Override
-	public String getDisplayTextForGridView(Object value) {
+	public String getDisplayTextForGridView(GridRowCtx gridRowCtx, Object value) {
 		if (value == null) {
 			return "";
 		} else {
-			return (String)value;
+			String style = getBackgroundFillStyle(value.toString());
+			return "<div style='" + style + "'>"+value.toString()+"</div>";
 		}
 	}
+
+	@Override
+	public Component getDisplayComponent() {
+		return new Html();
+	}
+	
 }
