@@ -44,6 +44,7 @@ public class HTMLExtension implements IHTMLExtension {
 	private String scriptURL;
 	private String styleURL;
 	private String contextPath;
+	private String processID;
 
 	/**
 	 * @param contextPath
@@ -51,6 +52,15 @@ public class HTMLExtension implements IHTMLExtension {
 	 * @param componentId
 	 */
 	public HTMLExtension(String contextPath, String classPrefix, String componentId) {
+		this(contextPath, classPrefix, componentId, "");
+	}
+	
+	/**
+	 * @param contextPath
+	 * @param classPrefix
+	 * @param componentId
+	 */
+	public HTMLExtension(String contextPath, String classPrefix, String componentId, String processID) {
 
 		String theme = MSysConfig.getValue(MSysConfig.HTML_REPORT_THEME, "/", Env.getAD_Client_ID(Env.getCtx()));
 
@@ -69,6 +79,7 @@ public class HTMLExtension implements IHTMLExtension {
 			this.styleURL = contextPath + theme + "css/report.css";
 		}
 		this.contextPath = contextPath;
+		this.processID = processID;
 	}
 	
 	@Override
@@ -84,7 +95,7 @@ public class HTMLExtension implements IHTMLExtension {
 	@Override
 	public void extendIDColumn(int row, ConcreteElement columnElement, a href,
 			PrintDataElement dataElement) {
-		href.addAttribute("onclick", "parent.idempiere.showColumnMenu(document, event, '" + dataElement.getColumnName() + "', " + row + ", " + ThemeManager.isUseFontIconForImage() + ")");		
+		href.addAttribute("onclick", "parent.idempiere.showColumnMenu(document, event, '" + dataElement.getColumnName() + "', " + row + ", " + ThemeManager.isUseFontIconForImage() + ", " + processID + ")");		
 		href.addAttribute ("componentId", componentId);
 		href.addAttribute ("foreignColumnName", dataElement.getForeignColumnName());
 		href.addAttribute ("value", dataElement.getValueAsString());
