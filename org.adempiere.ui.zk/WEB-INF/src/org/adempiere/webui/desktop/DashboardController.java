@@ -47,6 +47,8 @@ import org.adempiere.webui.apps.graph.model.ChartModel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
+import org.adempiere.webui.event.DrillEvent;
+import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -82,6 +84,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.json.JSONArray;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
@@ -95,6 +98,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.MaximizeEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Anchorchildren;
 import org.zkoss.zul.Anchorlayout;
@@ -170,6 +174,7 @@ public class DashboardController implements EventListener<Event> {
 	 * @param isShowInDashboard
 	 */
 	public void render(Component parent, IDesktop desktopImpl, boolean isShowInDashboard) {
+		
 		String layoutOrientation = MSysConfig.getValue(MSysConfig.DASHBOARD_LAYOUT_ORIENTATION, Env.getAD_Client_ID(Env.getCtx()));
         if(layoutOrientation.equals(DASHBOARD_LAYOUT_ROWS) && isShowInDashboard)
         	renderRows(parent, desktopImpl, isShowInDashboard, false);
@@ -772,6 +777,7 @@ public class DashboardController implements EventListener<Event> {
 				
 				if (dashboardContent.isEmbedReportContent()) 
 				{
+	    			addDrillAcrossEventListener(AD_Process_ID, appDesktop);
 					String processParameters = dashboardContent.getProcessParameters();
 	
 					Div layout = new Div();
@@ -959,6 +965,30 @@ public class DashboardController implements EventListener<Event> {
 		}
 		
     	return !empty;
+	}
+	
+	/**
+	 * Add Drill Across Event Listener to Border Layout
+	 * @param processID
+	 */
+	private void addDrillAcrossEventListener(int processID, IDesktop appDesktop) {
+		appDesktop.getComponent().addEventListener(DrillEvent.ON_DRILL_ACROSS, new EventListener<Event>() {
+			public void onEvent(Event event) throws Exception {
+				if (event instanceof DrillEvent) {
+					Clients.clearBusy();
+					DrillEvent de = (DrillEvent) event;
+					if (de.getData() != null && de.getData() instanceof DrillData) {
+						DrillData data = (DrillData) de.getData();
+						if(data.getData() instanceof JSONArray) {
+							JSONArray jsonData = (JSONArray) data.getData();
+							if(jsonData.indexOf(String.valueOf(processID)) < 0)
+								return;
+						}
+						AEnv.actionDrill(data, 0, processID);	// WindowNo of Home tab is always 0
+					}
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -1461,7 +1491,7 @@ public class DashboardController implements EventListener<Event> {
 
 		File file = FileUtil.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(contextPath, "rp", 
-				appDesktop.getComponent().getUuid()));
+				appDesktop.getComponent().getUuid(), String.valueOf(AD_Process_ID)));
 		return new AMedia(re.getName(), "html", "text/html", file, false);
 	}
 
