@@ -337,11 +337,14 @@ public class CLogFile extends Handler
 	{
 		try
 		{
-			return Env.parseContext(Env.getCtx(), 0, System.getProperty("org.idempiere.FileLogPrefix"), false);
+			String prefix = System.getProperty("org.idempiere.FileLogPrefix");
+			if (!Util.isEmpty(prefix))
+				return Env.parseContext(Env.getCtx(), 0, prefix, false);
 		}
 		catch (Exception ex)
 		{
 			reportError ("LogFilePrefix", ex, ErrorManager.FORMAT_FAILURE);
+			System.setProperty("org.idempiere.FileLogPrefix", "");
 		}
 		return "";
 	}
