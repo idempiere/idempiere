@@ -768,7 +768,6 @@ public class DashboardController implements EventListener<Event> {
 			}
     		int thisClientId = Env.getAD_Client_ID(Env.getCtx());
     		if((thisClientId == 0 && systemAccess) || thisClientId != 0) {
-    			addDrillAcrossEventListener(AD_Process_ID, appDesktop);
 	        	String sql = "SELECT AD_Menu_ID FROM AD_Menu WHERE AD_Process_ID=?";
 	        	int AD_Menu_ID = DB.getSQLValueEx(null, sql, AD_Process_ID);
 				ToolBarButton btn = new ToolBarButton();
@@ -778,6 +777,7 @@ public class DashboardController implements EventListener<Event> {
 				
 				if (dashboardContent.isEmbedReportContent()) 
 				{
+	    			addDrillAcrossEventListener(AD_Process_ID, appDesktop);
 					String processParameters = dashboardContent.getProcessParameters();
 	
 					Div layout = new Div();
