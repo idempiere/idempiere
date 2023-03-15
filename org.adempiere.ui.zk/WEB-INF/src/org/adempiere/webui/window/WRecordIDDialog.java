@@ -139,8 +139,6 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		MLookup recordsLookup = editor.getRecordsLookup(tableID);
 		if(recordsLookup != null)
 			recordsEditor = tableID > 0 ? new WSearchEditor("Record_ID", false, false, true, recordsLookup) : null;
-		else 
-			throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn"));
 		
 		setPage(page);
 		setClosable(true);
@@ -207,7 +205,8 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 			if(event.getTarget().equals(okBtn)) {
 				// set the selected values to the editors
 				editor.setAD_Table_ID(tableIDEditor.getValue());
-				editor.setValue(recordsEditor.getValue());
+				if(recordsEditor != null)
+					editor.setValue(recordsEditor.getValue());
 				onClose();
 			}
 			else if(event.getTarget().equals(cancelBtn)) {
