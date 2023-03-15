@@ -102,7 +102,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Anchorchildren;
 import org.zkoss.zul.Anchorlayout;
-import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
@@ -138,10 +137,6 @@ public class DashboardController implements EventListener<Event> {
 	private Timer dashboardTimer;
 	private boolean isShowInDashboard;
 	private int noOfCols;
-	/**	Parent of the Dashboard Layout */
-	private Component dcParent;
-	/** Window No	*/
-	protected int m_WindowNo = -1;
 
 	private static final String PANEL_EMPTY_ATTRIBUTE = "panel.empty";
 	private static final String COLUMN_NO_ATTRIBUTE = "ColumnNo";
@@ -179,19 +174,6 @@ public class DashboardController implements EventListener<Event> {
 	 * @param isShowInDashboard
 	 */
 	public void render(Component parent, IDesktop desktopImpl, boolean isShowInDashboard) {
-		render(parent, -1, desktopImpl, isShowInDashboard);
-	}
-	
-	/**
-	 *
-	 * @param parent
-	 * @param windowNo
-	 * @param desktopImpl
-	 * @param isShowInDashboard
-	 */
-	public void render(Component parent, int windowNo, IDesktop desktopImpl, boolean isShowInDashboard) {
-		this.dcParent = parent;
-		this.m_WindowNo = windowNo;
 		
 		String layoutOrientation = MSysConfig.getValue(MSysConfig.DASHBOARD_LAYOUT_ORIENTATION, Env.getAD_Client_ID(Env.getCtx()));
         if(layoutOrientation.equals(DASHBOARD_LAYOUT_ROWS) && isShowInDashboard)
@@ -786,9 +768,7 @@ public class DashboardController implements EventListener<Event> {
 			}
     		int thisClientId = Env.getAD_Client_ID(Env.getCtx());
     		if((thisClientId == 0 && systemAccess) || thisClientId != 0) {
-    			if(m_WindowNo >= 0) {
-    				addDrillAcrossEventListener(AD_Process_ID);
-    			}
+    			addDrillAcrossEventListener(AD_Process_ID, appDesktop);
 	        	String sql = "SELECT AD_Menu_ID FROM AD_Menu WHERE AD_Process_ID=?";
 	        	int AD_Menu_ID = DB.getSQLValueEx(null, sql, AD_Process_ID);
 				ToolBarButton btn = new ToolBarButton();
@@ -991,32 +971,24 @@ public class DashboardController implements EventListener<Event> {
 	 * Add Drill Across Event Listener to Border Layout
 	 * @param processID
 	 */
-	private void addDrillAcrossEventListener(int processID) {
-		Component parent = dcParent;
-		while(parent.getParent() != null) {
-			if(parent instanceof Borderlayout) {
-				parent.addEventListener(DrillEvent.ON_DRILL_ACROSS, new EventListener<Event>() {
-    				
-    				public void onEvent(Event event) throws Exception {
-    					if (event instanceof DrillEvent) {
-    						Clients.clearBusy();
-    						DrillEvent de = (DrillEvent) event;
-    						if (de.getData() != null && de.getData() instanceof DrillData) {
-    							DrillData data = (DrillData) de.getData();
-    							if(data.getData() instanceof JSONArray) {
-    								JSONArray jsonData = (JSONArray) data.getData();
-    								if(jsonData.indexOf(String.valueOf(processID)) < 0)
-    									return;
-    							}
-    							AEnv.actionDrill(data, m_WindowNo, processID);
-    						}
-    					}
-    				}
-    			});
-				break;
+	private void addDrillAcrossEventListener(int processID, IDesktop appDesktop) {
+		appDesktop.getComponent().addEventListener(DrillEvent.ON_DRILL_ACROSS, new EventListener<Event>() {
+			public void onEvent(Event event) throws Exception {
+				if (event instanceof DrillEvent) {
+					Clients.clearBusy();
+					DrillEvent de = (DrillEvent) event;
+					if (de.getData() != null && de.getData() instanceof DrillData) {
+						DrillData data = (DrillData) de.getData();
+						if(data.getData() instanceof JSONArray) {
+							JSONArray jsonData = (JSONArray) data.getData();
+							if(jsonData.indexOf(String.valueOf(processID)) < 0)
+								return;
+						}
+						AEnv.actionDrill(data, 0, processID);	// WindowNo of Home tab is always 0
+					}
+				}
 			}
-			parent = parent.getParent();
-		}
+		});
 	}
 	
 	@Override

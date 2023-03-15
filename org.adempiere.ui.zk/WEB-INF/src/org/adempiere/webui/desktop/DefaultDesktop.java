@@ -174,9 +174,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
     // Right side Quick info is visible
     private boolean    isQuickInfoOpen    = true;
-    
-    /** Window No	*/
-	protected int m_WindowNo = -1;
 
     public DefaultDesktop()
     {
@@ -377,7 +374,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         homeTab.appendChild(busyDialog);
         
         // register as 0
-        m_WindowNo = registerWindow(homeTab);
+        registerWindow(homeTab);
         
         BroadcastMessageWindow messageWindow = new BroadcastMessageWindow(pnlHead);
         BroadcastMsgUtil.showPendingMessage(Env.getAD_User_ID(Env.getCtx()), messageWindow);
@@ -566,7 +563,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	{		
 		homeTab.getChildren().clear();		
 
-		dashboardController.render(homeTab, m_WindowNo, this, true);
+		dashboardController.render(homeTab, this, true);
 		
 		homeTab.setAttribute(HOME_TAB_RENDER_ATTR, Boolean.TRUE);
 	
