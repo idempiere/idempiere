@@ -479,8 +479,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		if (table.getAD_Window_ID() > 0) {
 			AD_Window_ID = table.getAD_Window_ID();
 		} else {
-			AD_Window_ID = DB.getSQLValueEx(null, "SELECT a.AD_Window_ID FROM AD_Window a INNER JOIN AD_Tab b ON (a.AD_Window_ID=b.AD_Window_ID) WHERE a.IsActive='Y' "
-					+ "AND b.IsActive='Y' AND b.AD_Table_ID=? ORDER BY b.TabLevel, a.AD_Window_ID", AD_Table_ID);
+			AD_Window_ID = table.getWindowIDFromMenu();
 		}
 		ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
 		sql = "SELECT c.ColumnName, c.AD_Reference_ID, c.IsKey, f.IsDisplayed, c.AD_Reference_Value_ID, c.ColumnSql, c.AD_Column_ID "
