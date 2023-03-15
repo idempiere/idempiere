@@ -614,8 +614,23 @@ public class MLookupFactory
 	 *  @param AD_Reference_Value_ID reference value
 	 *	@return	SELECT Name FROM Table
 	 */
-	static public String getLookup_TableEmbed (Language language,
+	public static String getLookup_TableEmbed (Language language,
 		String BaseColumn, String BaseTable, int AD_Reference_Value_ID)
+	{
+		return getLookup_TableEmbed(language, BaseColumn, BaseColumn, BaseTable, AD_Reference_Value_ID);
+	}
+
+	/**
+	 *	Get Embedded Lookup SQL for Table Lookup
+	 *  @param language report language
+	 * 	@param BaseColumn base column name
+	 *  @param ColumnSQL 
+	 * 	@param BaseTable base table name
+	 *  @param AD_Reference_Value_ID reference value
+	 *	@return	SELECT Name FROM Table
+	 */
+	public static String getLookup_TableEmbed (Language language,
+		String BaseColumn, String ColumnSQL, String BaseTable, int AD_Reference_Value_ID)
 	{
 		String sql = "SELECT t.TableName,ck.ColumnName AS KeyColumn,"
 			+ "cd.ColumnName AS DisplayColumn,rt.isValueDisplayed,cd.IsTranslated, cd.AD_Column_ID AS columnDisplay_ID "
@@ -666,7 +681,7 @@ public class MLookupFactory
 
 		boolean showID = DisplayColumn.equals(TableName+"_ID");
 		if (showID) {
-			return getLookup_TableDirEmbed(language, DisplayColumn, BaseTable, BaseColumn);
+			return getLookup_TableDirEmbed(language, DisplayColumn, BaseTable, ColumnSQL);
 		}
 
 		// If it's self referencing then use other alias - teo_sarca [ 1739544 ]

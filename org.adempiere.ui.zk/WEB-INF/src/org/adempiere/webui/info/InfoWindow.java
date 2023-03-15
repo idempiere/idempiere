@@ -1020,7 +1020,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		boolean haveNotProcess = !haveProcess; // A field is editabile only if is not readonly and theres a process;
 				
 		int index = infoColumn.getSelectClause().indexOf(".");
-		if (index == infoColumn.getSelectClause().lastIndexOf("."))
+		if (index >= 0 && index == infoColumn.getSelectClause().lastIndexOf("."))
 		{
 			String synonym = infoColumn.getSelectClause().substring(0, index);
 			for(TableInfo tableInfo : tableInfos)

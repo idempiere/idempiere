@@ -488,7 +488,7 @@ public class DataEngine
 					if (ColumnSQL.length() > 0)
 					{
 						lookupSQL = ColumnSQL;
-						eSql = MLookupFactory.getLookup_TableEmbed(m_language, ColumnSQL, tableName, AD_Reference_Value_ID);
+						eSql = MLookupFactory.getLookup_TableEmbed(m_language, ColumnName, ColumnSQL, tableName, AD_Reference_Value_ID);
 					}
 					else
 					{
