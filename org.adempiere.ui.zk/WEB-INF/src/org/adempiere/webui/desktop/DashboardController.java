@@ -785,7 +785,7 @@ public class DashboardController implements EventListener<Event> {
 					if(iframe.getContent() != null)
 						layout.appendChild(iframe);
 					else
-						layout.appendChild(createFillMandatoryLabel());
+						layout.appendChild(createFillMandatoryLabel(dashboardContent));
 	
 					Toolbar toolbar = new Toolbar();
 					layout.appendChild(toolbar);
@@ -1131,18 +1131,14 @@ public class DashboardController implements EventListener<Event> {
 	 * Create Fill Mandatory Process Parameters error label for the reports in dashboard
 	 * @return Div
 	 */
-	private Div createFillMandatoryLabel() {
+	private Div createFillMandatoryLabel(MDashboardContent dc) {
 		Div wrapper = new Div();
 		wrapper.setSclass("fill-mandatory-process-para-wrapper");
 		
 		Div msgText = new Div();
-		msgText.appendChild(new Text(Msg.getMsg(Env.getCtx(), "FillMandatoryParametersDashboard", true)));
+		msgText.appendChild(new Text(Msg.getMsg(Env.getCtx(), "FillMandatoryParametersDashboard", new Object[] {dc.getEmptyMandatoryProcessPara()})));
+		LayoutUtils.addSclass("fill-mandatory-process-para-text", msgText);
 		wrapper.appendChild(msgText);
-		
-		Div msgTip = new Div();
-		msgTip.setSclass("fill-mandatory-process-para-tip");
-		msgTip.appendChild(new Text(Msg.getMsg(Env.getCtx(), "FillMandatoryParametersDashboard", false)));
-		wrapper.appendChild(msgTip);
 		return wrapper;
 	}
 	

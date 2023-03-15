@@ -198,21 +198,38 @@ public class MDashboardContent extends X_PA_DashboardContent
     	return paramMap;
     }
     
+    /**
+     * Parse all Process Parameters that are mandatory and not set
+     * @return String of comma separated parameter names
+     */
+    public String getEmptyMandatoryProcessPara() {
+    	StringBuilder emptyPara = new StringBuilder();
+    	int processID = getAD_Process_ID();
+		if(processID > 0) {
+			MProcess process = MProcess.get(processID);
+			Map<String, String> paramMap = parseProcessParameters(getProcessParameters());
+			for(MProcessPara processPara : process.getParameters()) {
+				if(processPara.isMandatory() && Util.isEmpty(paramMap.get(processPara.getColumnName()), true)) {
+					if(!Util.isEmpty(emptyPara.toString(), true))
+						emptyPara.append(", ");
+					emptyPara.append(processPara.getColumnName());
+				}
+			}
+		}
+		return emptyPara.toString();
+    }
+    
     /*
 	 * 	Before Save
 	 *	@param newRecord new
 	 *	@return 
 	 */
 	protected boolean beforeSave (boolean newRecord) {
-		
-		int processID = getAD_Process_ID();
-		if(processID > 0) {
-			MProcess process = MProcess.get(processID);
-			Map<String, String> paramMap = parseProcessParameters(getProcessParameters());
-			for(MProcessPara processPara : process.getParameters()) {
-				if(processPara.isMandatory() && Util.isEmpty(paramMap.get(processPara.getColumnName()), true)) {
-					throw new AdempiereException(Msg.getMsg(getCtx(), "FillMandatoryParametersDashboard"));
-				}
+		// all mandatory process parameters need to be set
+		if(getAD_Process_ID() > 0) {
+			String emptyPara = getEmptyMandatoryProcessPara();
+			if(!Util.isEmpty(emptyPara)) {
+				throw new AdempiereException(Msg.getMsg(getCtx(), "FillMandatoryParametersDashboard", new Object[] {emptyPara}));
 			}
 		}
 		return true;
