@@ -47,6 +47,8 @@ import org.adempiere.webui.apps.graph.model.ChartModel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
+import org.adempiere.webui.event.DrillEvent;
+import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -82,6 +84,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.json.JSONArray;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
@@ -95,9 +98,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.MaximizeEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Anchorchildren;
 import org.zkoss.zul.Anchorlayout;
+import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Caption;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
@@ -133,6 +138,10 @@ public class DashboardController implements EventListener<Event> {
 	private Timer dashboardTimer;
 	private boolean isShowInDashboard;
 	private int noOfCols;
+	/**	Parent of the Dashboard Layout */
+	private Component dcParent;
+	/** Window No	*/
+	protected int m_WindowNo = -1;
 
 	private static final String PANEL_EMPTY_ATTRIBUTE = "panel.empty";
 	private static final String COLUMN_NO_ATTRIBUTE = "ColumnNo";
@@ -170,6 +179,20 @@ public class DashboardController implements EventListener<Event> {
 	 * @param isShowInDashboard
 	 */
 	public void render(Component parent, IDesktop desktopImpl, boolean isShowInDashboard) {
+		render(parent, -1, desktopImpl, isShowInDashboard);
+	}
+	
+	/**
+	 *
+	 * @param parent
+	 * @param windowNo
+	 * @param desktopImpl
+	 * @param isShowInDashboard
+	 */
+	public void render(Component parent, int windowNo, IDesktop desktopImpl, boolean isShowInDashboard) {
+		this.dcParent = parent;
+		this.m_WindowNo = windowNo;
+		
 		String layoutOrientation = MSysConfig.getValue(MSysConfig.DASHBOARD_LAYOUT_ORIENTATION, Env.getAD_Client_ID(Env.getCtx()));
         if(layoutOrientation.equals(DASHBOARD_LAYOUT_ROWS) && isShowInDashboard)
         	renderRows(parent, desktopImpl, isShowInDashboard, false);
@@ -763,6 +786,9 @@ public class DashboardController implements EventListener<Event> {
 			}
     		int thisClientId = Env.getAD_Client_ID(Env.getCtx());
     		if((thisClientId == 0 && systemAccess) || thisClientId != 0) {
+    			if(m_WindowNo >= 0) {
+    				addDrillAcrossEventListener(AD_Process_ID);
+    			}
 	        	String sql = "SELECT AD_Menu_ID FROM AD_Menu WHERE AD_Process_ID=?";
 	        	int AD_Menu_ID = DB.getSQLValueEx(null, sql, AD_Process_ID);
 				ToolBarButton btn = new ToolBarButton();
@@ -959,6 +985,38 @@ public class DashboardController implements EventListener<Event> {
 		}
 		
     	return !empty;
+	}
+	
+	/**
+	 * Add Drill Across Event Listener to Border Layout
+	 * @param processID
+	 */
+	private void addDrillAcrossEventListener(int processID) {
+		Component parent = dcParent;
+		while(parent.getParent() != null) {
+			if(parent instanceof Borderlayout) {
+				parent.addEventListener(DrillEvent.ON_DRILL_ACROSS, new EventListener<Event>() {
+    				
+    				public void onEvent(Event event) throws Exception {
+    					if (event instanceof DrillEvent) {
+    						Clients.clearBusy();
+    						DrillEvent de = (DrillEvent) event;
+    						if (de.getData() != null && de.getData() instanceof DrillData) {
+    							DrillData data = (DrillData) de.getData();
+    							if(data.getData() instanceof JSONArray) {
+    								JSONArray jsonData = (JSONArray) data.getData();
+    								if(jsonData.indexOf(String.valueOf(processID)) < 0)
+    									return;
+    							}
+    							AEnv.actionDrill(data, m_WindowNo, processID);
+    						}
+    					}
+    				}
+    			});
+				break;
+			}
+			parent = parent.getParent();
+		}
 	}
 	
 	@Override
@@ -1461,7 +1519,7 @@ public class DashboardController implements EventListener<Event> {
 
 		File file = FileUtil.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(contextPath, "rp", 
-				appDesktop.getComponent().getUuid()));
+				appDesktop.getComponent().getUuid(), String.valueOf(AD_Process_ID)));
 		return new AMedia(re.getName(), "html", "text/html", file, false);
 	}
 

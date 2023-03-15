@@ -64,7 +64,7 @@ public class DrillCommand implements AuService {
 		MQuery query = new MQuery(tableName);
 		query.addRestriction(columnName, MQuery.EQUAL, code);
 
-		Events.postEvent(new DrillEvent(request.getCommand(), comp, new DrillEvent.DrillData(query, columnName, code, displayValue, null )));
+		Events.postEvent(new DrillEvent(request.getCommand(), comp, new DrillEvent.DrillData(query, columnName, code, displayValue, data )));
 
 		return true;
 	}
