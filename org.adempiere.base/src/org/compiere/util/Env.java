@@ -2123,8 +2123,11 @@ public final class Env
 			MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
 			AD_Window_ID = table.getAD_Window_ID();
 			//  Nothing to Zoom to
-			if (AD_Window_ID == 0)
-				return AD_Window_ID;
+			if (AD_Window_ID == 0) 
+			{
+				AD_Window_ID = table.getWindowIDFromMenu();
+				return AD_Window_ID > 0 ? AD_Window_ID : 0;
+			}
 			
 			//	PO Zoom ?
 			boolean isSOTrx = true;

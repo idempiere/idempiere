@@ -846,5 +846,16 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return this;
 	}
 
+	/**
+	 * Get first AD_Window that's using this table from AD_Menu.
+	 * @return AD_Window_ID or -1 if not found
+	 */
+	public int getWindowIDFromMenu() {
+		return DB.getSQLValueEx(null, "SELECT a.AD_Window_ID FROM AD_Window a "
+				+ "INNER JOIN AD_Tab b ON (a.AD_Window_ID=b.AD_Window_ID) "
+				+ "INNER JOIN AD_Menu m ON (a.AD_Window_ID=m.AD_Window_ID AND m.IsActive='Y' AND m.Action='W') "
+				+ "WHERE a.IsActive='Y' AND b.IsActive='Y' AND b.AD_Table_ID=? ORDER BY b.TabLevel, a.AD_Window_ID", getAD_Table_ID());
+	}
+
 	
 }	//	MTable
