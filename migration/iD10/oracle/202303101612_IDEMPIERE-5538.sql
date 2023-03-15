@@ -20,3 +20,7 @@ UPDATE AD_Field SET IsAdvancedField='Y',Updated=TO_TIMESTAMP('2023-03-10 16:13:5
 UPDATE AD_ToolBarButton SET DisplayLogic='@AD_Client_ID@=@#AD_Client_ID@',Updated=TO_TIMESTAMP('2023-03-15 13:35:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200123
 ;
 
+-- Mar 15, 2023, 3:27:28 PM CET
+UPDATE AD_Tab SET ReadOnlyLogic='@AD_Client_ID@!@#AD_Client_ID@',Updated=TO_TIMESTAMP('2023-03-15 15:27:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200309
+;
+
