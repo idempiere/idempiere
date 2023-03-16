@@ -30,15 +30,22 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WRecordIDEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.compiere.model.GridField;
+import org.compiere.model.MLookup;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zhtml.Text;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -50,7 +57,7 @@ import org.zkoss.zul.Vlayout;
  * @author Peter Takacs, Cloudempiere
  *
  */
-public class WRecordIDDialog extends Window implements EventListener<Event> {
+public class WRecordIDDialog extends Window implements EventListener<Event>, ValueChangeListener {
 
 	/**
 	 * generated serial id
@@ -71,7 +78,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 	private Div labelsDiv;
 	private Div fieldsDiv;
 	private Div confirmPanelDiv;
-	private WTableDirEditor tableIDEditor;
+	private WEditor tableIDEditor;
 	private Button okBtn;
 	private Button cancelBtn;
 	private Textbox parentTextBox;
@@ -117,12 +124,22 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		contentDiv = new Div();
 		confirmPanelDiv = new Div();
     	okBtn = ButtonFactory.createNamedButton(ConfirmPanel.A_OK, true, true);
-    	cancelBtn = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL, true, true);;
-    	tableIDEditor = new WTableDirEditor("AD_Table_ID", false, false, true, tableIDGridField.getLookup(), true);
-		tableIDEditor.setValue(tableIDValue);
-		int tableID = tableIDValue != null ? tableIDValue.intValue() : 0;
-		recordsEditor = tableID > 0 ? new WSearchEditor("Record_ID", false, false, true, editor.getRecordsLookup(tableID)) : null;
+    	cancelBtn = ButtonFactory.createNamedButton(ConfirmPanel.A_CANCEL, true, true);
     	
+    	if(DisplayType.Search == tableIDGridField.getDisplayType()) {
+    		tableIDEditor = new WSearchEditor("AD_Table_ID", false, false, true, tableIDGridField.getLookup());
+    	}
+    	else {
+    		tableIDEditor = new WTableDirEditor("AD_Table_ID", false, false, true, tableIDGridField.getLookup(), true);
+    	}
+    	tableIDEditor.addValueChangeListener(this);
+		tableIDEditor.setValue(tableIDValue);
+		
+		int tableID = tableIDValue != null ? tableIDValue.intValue() : 0;
+		MLookup recordsLookup = editor.getRecordsLookup(tableID);
+		if(recordsLookup != null)
+			recordsEditor = new WSearchEditor("Record_ID", false, false, true, recordsLookup);
+		
 		setPage(page);
 		setClosable(true);
 		setTitle(Msg.getMsg(Env.getCtx(), "ChooseRelatedRecord"));
@@ -138,8 +155,6 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 			parentTextBox.setValue(editor.getIdentifier(
 					editor.getGridField().getGridTab().getAD_Table_ID(), editor.getGridField().getGridTab().getRecord_ID()));
 		}
-		
-		tableIDEditor.getComponent().addEventListener(Events.ON_SELECT, this);
 		
 		if (recordsEditor != null)
 			recordsEditor.setValue(recordIDValue);
@@ -179,8 +194,9 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 		
 		appendChild(vLayout);
 		doHighlighted();
-
-		tableIDEditor.getComponent().focus();
+		
+		if(tableIDEditor.getComponent() instanceof HtmlBasedComponent)
+			((HtmlBasedComponent) tableIDEditor.getComponent()).focus();
 	}
 	
 	@Override
@@ -189,7 +205,8 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 			if(event.getTarget().equals(okBtn)) {
 				// set the selected values to the editors
 				editor.setAD_Table_ID(tableIDEditor.getValue());
-				editor.setValue(recordsEditor.getValue());
+				if(recordsEditor != null)
+					editor.setValue(recordsEditor.getValue());
 				onClose();
 			}
 			else if(event.getTarget().equals(cancelBtn)) {
@@ -197,23 +214,31 @@ public class WRecordIDDialog extends Window implements EventListener<Event> {
 				onClose();
 			}
 		}
-		if(event.getName().equalsIgnoreCase(Events.ON_SELECT)) {
-			if (event.getTarget().equals(tableIDEditor.getComponent())) {
-				// the Record_ID should be cleared when a different AD_Table_ID is selected
-				if (recordsEditor != null) {
-					recordsEditor.setValue(null);
-					recordsEditorLabel.detach();
-					recordsEditor.getComponent().detach();
-				}
-				int tableID = Integer.parseInt(Objects.toString(tableIDEditor.getValue(), "-1"));
-				if(tableID > 0) {
-			    	recordsEditor = new WSearchEditor("Record_ID", false, false, true, editor.getRecordsLookup(tableID));
-			    	labelsDiv.appendChild(recordsEditorLabel);
-					fieldsDiv.appendChild(recordsEditor.getComponent());
-					recordsEditor.getComponent().focus();
-				} else {
-					tableIDEditor.getComponent().focus();
-				}
+	}
+	
+	@Override
+	public void valueChange(ValueChangeEvent evt) {
+		if (evt.getSource().equals(tableIDEditor)) {
+			// the Record_ID should be cleared when a different AD_Table_ID is selected
+			if (recordsEditor != null) {
+				recordsEditor.setValue(null);
+				recordsEditorLabel.detach();
+				recordsEditor.getComponent().detach();
+			}
+			int tableID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
+			
+			MLookup recordsLookup = editor.getRecordsLookup(tableID);
+			if(recordsLookup != null) {
+				recordsEditor = new WSearchEditor("Record_ID", false, false, true, recordsLookup);
+		    	labelsDiv.appendChild(recordsEditorLabel);
+				fieldsDiv.appendChild(recordsEditor.getComponent());
+				recordsEditor.getComponent().focus();
+			}
+			else if(tableID > 0) {
+				throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn"));
+			}
+			else if(tableIDEditor.getComponent() instanceof HtmlBasedComponent) {
+				((HtmlBasedComponent) tableIDEditor.getComponent()).focus();
 			}
 		}
 	}
