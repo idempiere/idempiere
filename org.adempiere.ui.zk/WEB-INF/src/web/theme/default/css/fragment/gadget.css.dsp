@@ -345,3 +345,18 @@
 	padding: 5px;
 	cursor: default;
 }
+
+.fill-mandatory-process-para-wrapper {
+	padding: 11px;
+	display: flex;
+	flex-direction: column;
+	max-width: 500px;
+}
+
+.fill-mandatory-process-para-text {
+    background: #C62223;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    opacity: 90%;
+}
