@@ -356,7 +356,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	/**
 	 * Get Lookup
 	 * @param tableID
-	 * @return null if the table doesn't have a key column, else {@link MLookup}
+	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
 	 */
 	public MLookup getRecordsLookup(int tableID) {
 		if(tableID <= 0)	

@@ -138,7 +138,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		int tableID = tableIDValue != null ? tableIDValue.intValue() : 0;
 		MLookup recordsLookup = editor.getRecordsLookup(tableID);
 		if(recordsLookup != null)
-			recordsEditor = tableID > 0 ? new WSearchEditor("Record_ID", false, false, true, recordsLookup) : null;
+			recordsEditor = new WSearchEditor("Record_ID", false, false, true, recordsLookup);
 		
 		setPage(page);
 		setClosable(true);
@@ -226,18 +226,18 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 				recordsEditor.getComponent().detach();
 			}
 			int tableID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
-			if(tableID > 0) {
-				MLookup recordsLookup = editor.getRecordsLookup(tableID);
-				if(recordsLookup != null) {
-					recordsEditor = tableID > 0 ? new WSearchEditor("Record_ID", false, false, true, recordsLookup) : null;
-			    	labelsDiv.appendChild(recordsEditorLabel);
-					fieldsDiv.appendChild(recordsEditor.getComponent());
-					recordsEditor.getComponent().focus();
-				}
-				else {
-					throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn"));
-				}
-			} else if(tableIDEditor.getComponent() instanceof HtmlBasedComponent) {
+			
+			MLookup recordsLookup = editor.getRecordsLookup(tableID);
+			if(recordsLookup != null) {
+				recordsEditor = new WSearchEditor("Record_ID", false, false, true, recordsLookup);
+		    	labelsDiv.appendChild(recordsEditorLabel);
+				fieldsDiv.appendChild(recordsEditor.getComponent());
+				recordsEditor.getComponent().focus();
+			}
+			else if(tableID > 0) {
+				throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn"));
+			}
+			else if(tableIDEditor.getComponent() instanceof HtmlBasedComponent) {
 				((HtmlBasedComponent) tableIDEditor.getComponent()).focus();
 			}
 		}
