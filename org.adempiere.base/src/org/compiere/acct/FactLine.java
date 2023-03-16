@@ -63,7 +63,7 @@ public final class FactLine extends X_Fact_Acct
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -533308106857819424L;
+	private static final long serialVersionUID = -601720541421664784L;
 
 	/**
 	 *	Constructor
@@ -1110,7 +1110,6 @@ public final class FactLine extends X_Fact_Acct
 		return new_Account_ID;
 	}   //  createRevenueRecognition
 
-
 	/**************************************************************************
 	 * 	Update Line with reversed Original Amount in Accounting Currency.
 	 * 	Also copies original dimensions like Project, etc.
@@ -1123,6 +1122,26 @@ public final class FactLine extends X_Fact_Acct
 	 */
 	public boolean updateReverseLine (int AD_Table_ID, int Record_ID, int Line_ID,
 		BigDecimal multiplier)
+	{
+		return updateReverseLine(AD_Table_ID, Record_ID, Line_ID, multiplier, null);
+	}
+
+	/**************************************************************************
+	 * 	Update Line with reversed Original Amount in Accounting Currency.
+	 * 	Also copies original dimensions like Project, etc.
+	 * 	Called from Doc_MatchInv
+	 * 	@param AD_Table_ID table
+	 * 	@param Record_ID record
+	 * 	@param Line_ID line
+	 * 	@param multiplier targetQty/documentQty
+	 *  @param otherLine reversal line created before this. if not null, this reversal should reverse the opposite sign.
+	 * 	@return true if success
+	 * 
+	 * NOTE: otherLine is required in cases where the original DR/CR postings are done in the same account
+	 * in this case looking just for the first posting is wrong and results in a non-balanced reversal posting
+	 */
+	public boolean updateReverseLine (int AD_Table_ID, int Record_ID, int Line_ID,
+		BigDecimal multiplier, FactLine otherLine)
 	{
 		boolean success = false;
 
@@ -1143,8 +1162,16 @@ public final class FactLine extends X_Fact_Acct
 		if (MMovement.Table_ID == AD_Table_ID)
 			sql.append(" AND M_Locator_ID=?");
 		// end MZ
-		sql.append(" ORDER BY Fact_Acct_ID ");
+		if (otherLine != null) 
+		{
+			if (otherLine.getAmtAcctDr().signum() == 0 && otherLine.getAmtAcctCr().signum() != 0)
+				sql.append(" AND AmtAcctDr = 0 AND AmtAcctCr != 0 ");
+			else if (otherLine.getAmtAcctDr().signum() != 0 && otherLine.getAmtAcctCr().signum() == 0)
+				sql.append(" AND AmtAcctCr = 0 AND AmtAcctDr != 0 ");
+		}
 		
+		sql.append(" ORDER BY Fact_Acct_ID");
+				
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

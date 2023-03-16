@@ -294,7 +294,7 @@ public class DataEngine
 			.append("c.ColumnSQL, COALESCE(pfi.FormatPattern, c.FormatPattern) ")		//	24, 25
 			//BEGIN http://jira.idempiere.com/browse/IDEMPIERE-153
 			/** START DEVCOFFEE: script column **/
-			.append(" , pfi.isDesc, pfi.Script, pfi.Name, pfi.AD_PrintFormatItem_ID ") // 26..29
+			.append(" , pfi.isDesc, pfi.Script, pfi.Name, pfi.AD_PrintFormatItem_ID, pfi.PrintFormatType ") // 26..30
 			//END
 			.append("FROM AD_PrintFormat pf")
 			.append(" INNER JOIN AD_PrintFormatItem pfi ON (pf.AD_PrintFormat_ID=pfi.AD_PrintFormat_ID)")
@@ -393,6 +393,8 @@ public class DataEngine
 				boolean isPageBreak = "Y".equals(rs.getString(17));
 				
 				String formatPattern = rs.getString(25);
+				
+				String printFormatType = rs.getString(30);
 				
 				//BEGIN http://jira.idempiere.com/browse/IDEMPIERE-153
 				boolean isDesc = "Y".equals(rs.getString(26));
@@ -682,6 +684,7 @@ public class DataEngine
 
 				//
 				pdc.setFormatPattern(formatPattern);
+				pdc.setPrintFormatType(printFormatType);
 				columns.add(pdc);
 			}	//	for all Fields in Tab
 		}
@@ -1043,8 +1046,9 @@ public class DataEngine
 						//	Display and Value Column
 						if (pdc.hasAlias())
 						{
+							int displayIndex = counter++;
 							//	DisplayColumn first
-							String display = rs.getString(counter++);
+							String display = rs.getString(displayIndex);
 							if (pdc.getColumnName().endsWith("_ID"))
 							{
 								int id = rs.getInt(counter++);
@@ -1061,24 +1065,22 @@ public class DataEngine
 								{
 									/** START DEVCOFFEE: script column **/
 									int displayType = pdc.getDisplayType();
-									if (display.startsWith("@SCRIPT")) {
-										display = display.replace("@SCRIPT", "");
-										Object value = parseVariable(display, pdc, pd);
-										Interpreter bsh = new Interpreter ();
-										try {
-											value = bsh.eval(value.toString());
+									if(MPrintFormatItem.PRINTFORMATTYPE_Script.equalsIgnoreCase(pdc.getPrintFormatType())) {	// ScriptColumn	
+										Object value = rs.getObject(displayIndex);
+										displayType = getDisplayType(value);
+									
+										if (display.startsWith("@SCRIPT")) {
+											display = display.replace("@SCRIPT", "");
+											value = parseVariable(display, pdc, pd);
+											Interpreter bsh = new Interpreter ();
+											try {
+												value = bsh.eval(value.toString());
+											}
+											catch (EvalError e) {
+												log.severe(e.getMessage());
+											}
+											displayType = getDisplayType(value);
 										}
-										catch (EvalError e) {
-											log.severe(e.getMessage());
-										}
-										if (value instanceof Number)
-											displayType = DisplayType.Number;
-										else if (value instanceof Boolean)
-											displayType = DisplayType.YesNo;
-										else if (value instanceof Date)
-											displayType = DisplayType.Date;
-										else
-											displayType = DisplayType.Text;
 										pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), (Serializable) value, displayType, pdc.getFormatPattern());
 									} else {
 										ValueNamePair pp = new ValueNamePair(id, display);
@@ -1311,6 +1313,22 @@ public class DataEngine
 	}	//	printRunningTotal
 
 	/**
+	 * Get Display Type of value
+	 * @param value
+	 * @return int Display Type
+	 */
+	private int getDisplayType(Object value) {
+		if (value instanceof Number)
+			return DisplayType.Number;
+		else if (value instanceof Boolean)
+			return DisplayType.YesNo;
+		else if (value instanceof Date)
+			return DisplayType.Date;
+		else
+			return DisplayType.Text;
+	}
+	
+	/**
 	 * Parse expression, replaces @tag@ with pdc values and/or execute functions
 	 * @param expression
 	 * @param pdc
@@ -1385,6 +1403,7 @@ public class DataEngine
 
 		return outStr.toString();
 	}
+	
 	/*************************************************************************
 	 * 	Test
 	 * 	@param args args
