@@ -430,7 +430,6 @@ public class DashboardController implements EventListener<Event> {
 	 * @param spt
 	 * @param dashboardContent
 	 * @param panel
-	 * @param appDesktop
 	 * @param contextPath
 	 * @param panelChildren
 	 * @param zulComponent
@@ -691,7 +690,6 @@ public class DashboardController implements EventListener<Event> {
 	 * Create gadget components in background thread
 	 * @param dashboardContent
 	 * @param dashboardRunnable
-	 * @param appDesktop
 	 * @param contextPath
 	 * @param parentComponent
 	 * @param components
@@ -785,7 +783,7 @@ public class DashboardController implements EventListener<Event> {
 					Iframe iframe = new Iframe();
 					iframe.setSclass("dashboard-report-iframe");
 					iframe.setStyle("flex-grow: 1;");
-					iframe.setContent(generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, appDesktop, contextPath));
+					iframe.setContent(generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, parentComponent, contextPath));
 					if(iframe.getContent() != null)
 						layout.appendChild(iframe);
 					else
