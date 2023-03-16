@@ -58,6 +58,8 @@ public class MProcessDrillRulePara extends X_AD_Process_DrillRule_Para implement
 
 	/** Parameter Column Name		*/
 	private MProcessPara	m_parameter = null;
+	/** Parent						*/
+	private MProcessDrillRule	m_parent = null;
 
 
 	/**
@@ -94,5 +96,34 @@ public class MProcessDrillRulePara extends X_AD_Process_DrillRule_Para implement
 	@Override
 	public void setParentID(int id) {
 		setAD_Process_DrillRule_ID(id);
+	}
+	
+	/**
+	 * 	Get Parent
+	 *	@return parent
+	 */
+	public MProcessDrillRule getParent()
+	{
+		if (m_parent == null)
+			m_parent = new MProcessDrillRule(getCtx(), getAD_Process_DrillRule_ID(), get_TrxName());
+		return m_parent;
+	}	//	getParent
+	
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if(success) {
+			getParent().validate();
+			getParent().saveEx(get_TrxName());
+		}
+		return super.afterSave(newRecord, success);
+	}
+
+	@Override
+	protected boolean afterDelete (boolean success) {
+		if(success) {
+			getParent().validate();
+			getParent().saveEx(get_TrxName());
+		}
+		return super.afterDelete(success);
 	}
 }
