@@ -617,21 +617,6 @@ public class MLookupFactory
 	public static String getLookup_TableEmbed (Language language,
 		String BaseColumn, String BaseTable, int AD_Reference_Value_ID)
 	{
-		return getLookup_TableEmbed(language, BaseColumn, BaseColumn, BaseTable, AD_Reference_Value_ID);
-	}
-
-	/**
-	 *	Get Embedded Lookup SQL for Table Lookup
-	 *  @param language report language
-	 * 	@param BaseColumn base column name
-	 *  @param ColumnSQL 
-	 * 	@param BaseTable base table name
-	 *  @param AD_Reference_Value_ID reference value
-	 *	@return	SELECT Name FROM Table
-	 */
-	public static String getLookup_TableEmbed (Language language,
-		String BaseColumn, String ColumnSQL, String BaseTable, int AD_Reference_Value_ID)
-	{
 		String sql = "SELECT t.TableName,ck.ColumnName AS KeyColumn,"
 			+ "cd.ColumnName AS DisplayColumn,rt.isValueDisplayed,cd.IsTranslated, cd.AD_Column_ID AS columnDisplay_ID "
 			+ "FROM AD_Ref_Table rt"
@@ -679,9 +664,14 @@ public class MLookupFactory
 			pstmt = null;
 		}
 
+		int Column_ID = MColumn.getColumn_ID(BaseTable, BaseColumn);
+		MColumn column = MColumn.get(Env.getCtx(), Column_ID);
 		boolean showID = DisplayColumn.equals(TableName+"_ID");
 		if (showID) {
-			return getLookup_TableDirEmbed(language, DisplayColumn, BaseTable, ColumnSQL);
+			if (column.isVirtualColumn())
+				return getLookup_TableDirEmbed(language, DisplayColumn, BaseTable, column.getColumnSQL());
+			else
+				return getLookup_TableDirEmbed(language, DisplayColumn, BaseTable, BaseColumn);
 		}
 
 		// If it's self referencing then use other alias - teo_sarca [ 1739544 ]
@@ -740,8 +730,6 @@ public class MLookupFactory
 
 		embedSQL.append(" WHERE ");
 		
-		int Column_ID = MColumn.getColumn_ID(BaseTable, BaseColumn);
-		MColumn column = MColumn.get(Env.getCtx(), Column_ID);
 		// If is not virtual column - teo_sarca [ 1739530 ]
 		if (!column.isVirtualColumn())
 		{
@@ -750,7 +738,7 @@ public class MLookupFactory
 		} else if (translated) {
 			embedSQL.append(TableNameAlias).append(".").append(KeyColumn).append("=").append(column.getColumnSQL(true));
 		} else {
-			embedSQL.append(KeyColumn).append("=").append(column.getColumnSQL(true));
+			embedSQL.append(TableNameAlias).append(".").append(KeyColumn).append("=").append(column.getColumnSQL(true));
 		}
 
 		return embedSQL.toString();
@@ -1022,8 +1010,7 @@ public class MLookupFactory
 		// If is not virtual column - teo_sarca [ 1739530 ]
 		if (! BaseColumn.trim().startsWith("(")) {
 			embedSQL.append(BaseTable).append(".").append(BaseColumn);
-		}
-		else {
+		} else {
 			embedSQL.append(BaseColumn);
 		}
 		embedSQL.append("=").append(TableName).append(".").append(ColumnName);

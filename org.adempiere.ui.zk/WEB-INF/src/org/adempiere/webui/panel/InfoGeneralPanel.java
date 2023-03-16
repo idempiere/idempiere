@@ -692,20 +692,15 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		MColumn column = table.getColumn(columnName);
 		String embedded;
 		if (AD_Reference_Value_ID > 0) {
-			if (column.isVirtualColumn()) {
-				embedded = MLookupFactory.getLookup_TableEmbed(Env.getLanguage(Env.getCtx()), columnName, columnSql, p_tableName, AD_Reference_Value_ID);
-			} else {
-				embedded = MLookupFactory.getLookup_TableEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, AD_Reference_Value_ID);
-			}
+			embedded = MLookupFactory.getLookup_TableEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, AD_Reference_Value_ID);
 		} else {
-			if (column.isVirtualColumn()) {
-				embedded = MLookupFactory.getLookup_TableDirEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, columnSql);
-			} else {
+			if (column.isVirtualColumn())
+				embedded = MLookupFactory.getLookup_TableDirEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, column.getColumnSQL());
+			else
 				embedded = MLookupFactory.getLookup_TableDirEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, columnName);
-			}
 		}
 		embedded = "(" + embedded + ")";
-	
+
 		if (embedded.contains("@"))
 			embedded = "NULL";
 		
