@@ -42,23 +42,29 @@ import org.zkoss.zul.Menupopup;
  */
 public class WPerformanceIndicator extends Panel implements EventListener<Event>
 {
+	/**
+	 * generated serial id
+	 */
+	private static final long serialVersionUID = 4102528939759426552L;
+	
+	/** Event after chart have been rendered */
+	public static final String ON_AFTER_RENDER_CHART_EVENT = "onAfterRenderChart";
 	public static final String TICK_COLOR = "tickColor";
 	public static final String NEEDLE_COLOR = "needleColor";
 	public static final String DIAL_BACKGROUND = "dialBackground";
 	public static final String CHART_BACKGROUND = "chartBackground";
+	
 	/**
-	 *
+	 * @param goal
 	 */
-	private static final long serialVersionUID = 3580494126343850939L;
-
 	public WPerformanceIndicator(MGoal goal)
 	{
 		this(goal, null);
 	}
 	
 	/**
-	 * 	Constructor
-	 *	@param goal goal model
+	 * @param goal goal model
+	 * @param options 
 	 */
 	public WPerformanceIndicator(MGoal goal, Options options)
 	{
@@ -99,7 +105,7 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 	/** Integer Number Format		*/
 	private static DecimalFormat	s_format = DisplayType.getNumberFormat(DisplayType.Integer);
 
-	Menupopup 					popupMenu = new Menupopup();
+	protected Menupopup 		popupMenu = new Menupopup();
 	private Menuitem 			mRefresh = new Menuitem(Msg.getMsg(Env.getCtx(), "Refresh"), ThemeManager.getThemeResource("images/Refresh16.png"));
 
 	private Color chartBackground = new Color(0.0f, 0.0f, 0.0f, 0.0f);
@@ -107,7 +113,7 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 	private Color needleColor = Color.darkGray;
 	private Color tickColor = Color.darkGray;
 	
-	ChartPanel chartPanel;
+	protected ChartPanel chartPanel;
 
 	/**
 	 * 	Get Goal
@@ -119,7 +125,7 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 	}	//	getGoal
 
      /**
-	 * 	Init Graph Display
+	 * 	Initialization
 	 *  Kinamo (pelgrim)
 	 */
 	private void init()
@@ -142,10 +148,12 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 			text.append(" ").append(Msg.getMsg(Env.getCtx(), "of")).append(" ")
 				.append(s_format.format(m_goal.getMeasureTarget()));
 		setTooltiptext(text.toString());
-			
+		
+		//chart render in after size event
 		addEventListener(Events.ON_AFTER_SIZE, this);
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception
 	{
 		if (Events.ON_AFTER_SIZE.equals(event.getName())) 
@@ -159,6 +167,10 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 		}
 	}
 	
+	/**
+	 * Handle after size event. Call {@link #renderChart(int, int)}
+	 * @param event
+	 */
 	private void onAfterSize(AfterSizeEvent event) {
 		int width = event.getWidth();
 		if (width == 0)
@@ -183,14 +195,23 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 			} 
 		}
 		this.getChildren().clear();
-		renderChart(width, height);		
+		renderChart(width, height);
+		Events.sendEvent(this, new Event(ON_AFTER_RENDER_CHART_EVENT));
 	}
 
+	/**
+	 * @return title
+	 */
 	public String getTitle() 
 	{
 		return m_text;
 	}
 	
+	/**
+	 * render chart
+	 * @param chartWidth
+	 * @param chartHeight
+	 */
 	private void renderChart(int chartWidth, int chartHeight) 
 	{
 		IndicatorModel model = new IndicatorModel();
@@ -207,6 +228,9 @@ public class WPerformanceIndicator extends Panel implements EventListener<Event>
 		this.getFirstChild().addEventListener(Events.ON_CLICK, this);
 	}
 	
+	/**
+	 * Class for color map options
+	 */
 	public static class Options {
 		public Map<String, Color> colorMap;
 	}	
