@@ -356,7 +356,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	/**
 	 * Get Lookup
 	 * @param tableID
-	 * @return {@link MLookup}
+	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
 	 */
 	public MLookup getRecordsLookup(int tableID) {
 		if(tableID <= 0)	
@@ -366,6 +366,8 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 		String keyColumn = "";
 		if(keyColumns.length > 0)
 			keyColumn = keyColumns[0];
+		else
+			return null;
 		MColumn mColumn = MColumn.get(Env.getCtx(), mTable.getTableName(), keyColumn);
 			
 		int tabNo = gridTab != null ? gridTab.getTabNo() : FindWindow.TABNO;
@@ -382,7 +384,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	 */
 	public String getIdentifier(int tableID, int recordID) {
 		MLookup lookup = getRecordsLookup(tableID);
-		return lookup != null ? lookup.getDisplay(recordID) : null;
+		return lookup != null ? lookup.getDisplay(recordID) : "";
     }
 	
 	/**
