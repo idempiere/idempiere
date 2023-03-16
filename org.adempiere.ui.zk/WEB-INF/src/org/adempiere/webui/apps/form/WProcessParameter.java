@@ -137,6 +137,9 @@ public class WProcessParameter implements IFormController {
 					}
 				}
 				poPara.saveEx();
+				if(tableName.equalsIgnoreCase(MProcessDrillRule.Table_Name)) {
+					((MProcessDrillRule)po).validate();
+				}
 			}
 		}		
 	}
