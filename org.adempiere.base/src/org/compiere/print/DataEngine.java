@@ -484,16 +484,10 @@ public class DataEngine
 						|| (AD_Reference_ID == DisplayType.Search && AD_Reference_Value_ID != 0)
 					)
 				{
-					String eSql;
+					String eSql = MLookupFactory.getLookup_TableEmbed(m_language, ColumnName, tableName, AD_Reference_Value_ID);
+
 					if (ColumnSQL.length() > 0)
-					{
 						lookupSQL = ColumnSQL;
-						eSql = MLookupFactory.getLookup_TableEmbed(m_language, ColumnSQL, tableName, AD_Reference_Value_ID);
-					}
-					else
-					{
-						eSql = MLookupFactory.getLookup_TableEmbed(m_language, ColumnName, tableName, AD_Reference_Value_ID);
-					}
 
 					//  DisplayColumn
 					String display = ColumnName;
