@@ -29,13 +29,11 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
-import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -166,9 +164,6 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MColumn>	s_cache	= new ImmutableIntPOCache<Integer,MColumn>(Table_Name, 20);
-	
-	/**	Static Logger	*/
-	private static CLogger	s_log	= CLogger.getCLogger (MColumn.class);
 	
 	/**************************************************************************
 	 * 	Standard Constructor
@@ -689,7 +684,6 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		return sb.toString ();
 	}	//	toString
 	
-	//begin vpj-cd e-evolution
 	/**
 	 * 	get Column ID
 	 *  @param TableName
@@ -697,37 +691,14 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	 *	@return int retValue
 	 */
 	public static int getColumn_ID(String TableName,String columnName) {
-		int m_table_id = MTable.getTable_ID(TableName);
-		if (m_table_id == 0)
+		MTable table = MTable.get(Env.getCtx(), TableName);
+		if (table == null)
 			return 0;
-			
-		int retValue = 0;
-		String SQL = "SELECT AD_Column_ID FROM AD_Column WHERE AD_Table_ID = ?  AND columnname = ?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(SQL, null);
-			pstmt.setInt(1, m_table_id);
-			pstmt.setString(2, columnName);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				retValue = rs.getInt(1);
-		}
-		catch (SQLException e)
-		{
-			s_log.log(Level.SEVERE, SQL, e);
-			retValue = -1;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		return retValue;
+		MColumn column = table.getColumn(columnName);
+		if (column == null)
+			return 0;
+		return column.getAD_Column_ID();
 	}
-	//end vpj-cd e-evolution
 	
 	/**
 	* Get Table Id for a column
