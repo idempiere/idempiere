@@ -81,14 +81,15 @@ public class ModelClassGenerator
 		this.packageName = packageName;
 
 		MTable table = MTable.get(AD_Table_ID);
-		boolean uuidTable = table.getKeyColumns().length != 1;
+		boolean multiKeyTable = table.getKeyColumns().length != 1;
+		boolean tableHasIds = table.getKeyColumns().length > 0;
 
 		//	create column access methods
 		StringBuilder mandatory = new StringBuilder();
-		StringBuilder sb = createColumns(AD_Table_ID, mandatory, entityTypeFilter, uuidTable);
+		StringBuilder sb = createColumns(AD_Table_ID, mandatory, entityTypeFilter, multiKeyTable);
 
 		// Header
-		String className = createHeader(AD_Table_ID, sb, mandatory, packageName, uuidTable);
+		String className = createHeader(AD_Table_ID, sb, mandatory, packageName, multiKeyTable, tableHasIds);
 
 		// Save
 		if ( ! directory.endsWith(File.separator) )
@@ -112,10 +113,11 @@ public class ModelClassGenerator
 	 * 	@param sb buffer
 	 * 	@param mandatory init call for mandatory columns
 	 * 	@param packageName package name
-	 *  @param uuidTable 
+	 *  @param multiKeyTable 
+	 *  @param tableHasIds 
 	 * 	@return class name
 	 */
-	private String createHeader (int AD_Table_ID, StringBuilder sb, StringBuilder mandatory, String packageName, boolean uuidTable)
+	private String createHeader (int AD_Table_ID, StringBuilder sb, StringBuilder mandatory, String packageName, boolean multiKeyTable, boolean tableHasIds)
 	{
 		String tableName = "";
 		int accessLevel = 0;
@@ -190,10 +192,11 @@ public class ModelClassGenerator
 			 .append("\t */").append(NL)
 			 .append("\tprivate static final long serialVersionUID = ")
 			 .append(String.format("%1$tY%1$tm%1$td", new Timestamp(System.currentTimeMillis())))
-		 	 .append("L;").append(NL)
+		 	 .append("L;").append(NL);
 
-			//	Standard Constructor
-			 .append(NL)
+		 if (tableHasIds) {
+			//	Standard ID Constructor
+			 start.append(NL)
 			 .append("    /** Standard Constructor */").append(NL)
 			 .append("    public ").append(className).append(" (Properties ctx, int ").append(keyColumn).append(", String trxName)").append(NL)
 			 .append("    {").append(NL)
@@ -205,7 +208,7 @@ public class ModelClassGenerator
 			 .append("    }").append(NL)
 			//	Constructor End
 
-			//	Standard Constructor + Virtual Columns
+			//	Standard ID Constructor + Virtual Columns
 			 .append(NL)
 			 .append("    /** Standard Constructor */").append(NL)
 			 .append("    public ").append(className).append(" (Properties ctx, int ").append(keyColumn).append(", String trxName, String ... virtualColumns)").append(NL)
@@ -215,11 +218,12 @@ public class ModelClassGenerator
 			 .append("        {").append(NL)
 			 .append(mandatory)
 			 .append("        } */").append(NL)
-			 .append("    }").append(NL)
+			 .append("    }").append(NL);
 			//	Constructor End
+		 }
 
-				//	Standard Constructor
-			 .append(NL)
+				//	Standard UUID Constructor
+		 start.append(NL)
 			 .append("    /** Standard Constructor */").append(NL)
 			 .append("    public ").append(className).append(" (Properties ctx, String ").append(uuidColumn).append(", String trxName)").append(NL)
 			 .append("    {").append(NL)
@@ -231,7 +235,7 @@ public class ModelClassGenerator
 			 .append("    }").append(NL)
 			//	Constructor End
 
-			//	Standard Constructor + Virtual Columns
+			//	Standard UUID Constructor + Virtual Columns
 			 .append(NL)
 			 .append("    /** Standard Constructor */").append(NL)
 			 .append("    public ").append(className).append(" (Properties ctx, String ").append(uuidColumn).append(", String trxName, String ... virtualColumns)").append(NL)
@@ -280,7 +284,7 @@ public class ModelClassGenerator
 			 .append("    public String toString()").append(NL)
 			 .append("    {").append(NL)
 			 .append("      StringBuilder sb = new StringBuilder (\"").append(className).append("[\")").append(NL)
-			 .append("        .append(").append(uuidTable ? "get_UUID" : "get_ID").append("())");
+			 .append("        .append(").append(multiKeyTable ? "get_UUID" : "get_ID").append("())");
 		if (hasName)
 			start.append(".append(\",Name=\").append(getName())");
 		start.append(".append(\"]\");").append(NL)
@@ -301,10 +305,10 @@ public class ModelClassGenerator
 	 * 	@param AD_Table_ID table
 	 * 	@param mandatory init call for mandatory columns
 	 *  @param entityTypeFilter 
-	 *  @param uuidTable 
+	 *  @param multiKeyTable 
 	 * 	@return set/get method
 	 */
-	private StringBuilder createColumns (int AD_Table_ID, StringBuilder mandatory, String entityTypeFilter, boolean uuidTable)
+	private StringBuilder createColumns (int AD_Table_ID, StringBuilder mandatory, String entityTypeFilter, boolean multiKeyTable)
 	{
 		StringBuilder sb = new StringBuilder();
 		String sql = "SELECT c.ColumnName, c.IsUpdateable, c.IsMandatory,"		//	1..3
@@ -358,7 +362,7 @@ public class ModelClassGenerator
 				//
 				if (seqNo == 1 && IsIdentifier) {
 					if (!isKeyNamePairCreated) {
-						if (uuidTable)
+						if (multiKeyTable)
 							sb.append(createValueNamePair(columnName, displayType));
 						else
 							sb.append(createKeyNamePair(columnName, displayType));

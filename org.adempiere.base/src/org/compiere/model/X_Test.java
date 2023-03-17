@@ -34,7 +34,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230216L;
+	private static final long serialVersionUID = 20230317L;
 
     /** Standard Constructor */
     public X_Test (Properties ctx, int Test_ID, String trxName)
@@ -58,6 +58,28 @@ public class X_Test extends PO implements I_Test, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_Test (Properties ctx, String Test_UU, String trxName)
+    {
+      super (ctx, Test_UU, trxName);
+      /** if (Test_UU == null)
+        {
+			setName (null);
+			setTest_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_Test (Properties ctx, String Test_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, Test_UU, trxName, virtualColumns);
+      /** if (Test_UU == null)
+        {
+			setName (null);
+			setTest_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_Test (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +87,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org
+      * @return 7 - System - Client - Org 
       */
     protected int get_AccessLevel()
     {

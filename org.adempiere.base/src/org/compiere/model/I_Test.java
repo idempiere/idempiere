@@ -35,7 +35,7 @@ public interface I_Test
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 7 - System - Client - Org
+    /** AccessLevel = 7 - System - Client - Org 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(7);
 

@@ -9,3 +9,7 @@ INSERT INTO AD_Reference (AD_Reference_ID,Name,Description,ValidationType,AD_Cli
 UPDATE AD_Field SET DisplayLogic='@AD_Reference_ID@=13 | @IsKey@=Y',Updated=TO_TIMESTAMP('2023-03-13 20:42:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=161
 ;
 
+-- Mar 17, 2023, 1:18:24 PM CET
+UPDATE AD_Process_Para SET ReadOnlyLogic=NULL,Updated=TO_TIMESTAMP('2023-03-17 13:18:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200361
+;
+
