@@ -24,6 +24,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+
 /**
  *	idempiere Log File Handler
  *
@@ -318,7 +319,7 @@ public class CLogFile extends Handler
 				m_doneHeader = true;
 			}
 			//
-			m_writer.write (getPrefix() + msg);
+			m_writer.write (msg);
 			m_records++;
 			//
 			if (record.getLevel() == Level.SEVERE
@@ -332,22 +333,6 @@ public class CLogFile extends Handler
 			reportError ("writing", ex, ErrorManager.WRITE_FAILURE);
 		}
 	}	//	publish
-
-	private String getPrefix()
-	{
-		try
-		{
-			String prefix = System.getProperty("org.idempiere.FileLogPrefix");
-			if (!Util.isEmpty(prefix))
-				return Env.parseContext(Env.getCtx(), 0, prefix, false);
-		}
-		catch (Exception ex)
-		{
-			reportError ("LogFilePrefix", ex, ErrorManager.FORMAT_FAILURE);
-			System.setProperty("org.idempiere.FileLogPrefix", "");
-		}
-		return "";
-	}
 
 	/**
 	 * 	Flush
