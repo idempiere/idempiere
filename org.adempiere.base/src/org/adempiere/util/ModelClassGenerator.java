@@ -175,13 +175,13 @@ public class ModelClassGenerator
 		createImports(start);
 		//	Class
 		start.append("/** Generated Model for ").append(tableName).append(NL)
-			 .append(" *  @author iDempiere (generated) ").append(NL)
+			 .append(" *  @author iDempiere (generated)").append(NL)
 			 .append(" *  @version ").append(Adempiere.MAIN_VERSION).append(" - $Id$ */").append(NL)
 			 .append("@org.adempiere.base.Model(table=\"").append(tableName).append("\")").append(NL)
 			 .append("public class ").append(className)
 			 	.append(" extends PO")
 			 	.append(" implements I_").append(tableName)
-			 	.append(", I_Persistent ")
+			 	.append(", I_Persistent")
 			 	.append(NL)
 			 .append("{").append(NL)
 
@@ -260,7 +260,7 @@ public class ModelClassGenerator
 			// accessLevel
 			 .append(NL)
 			 .append("    /** AccessLevel").append(NL)
-			 .append("      * @return ").append(accessLevelInfo).append(NL)
+			 .append("      * @return ").append(accessLevelInfo.toString().trim()).append(NL)
 			 .append("      */").append(NL)
 			 .append("    protected int get_AccessLevel()").append(NL)
 			 .append("    {").append(NL)
@@ -579,10 +579,10 @@ public class ModelClassGenerator
 		}
 		else if (clazz.equals(Boolean.class)) {
 			sb.append("Object oo = ").append(getValue).append("(").append ("COLUMNNAME_").append(columnName).append(");").append(NL)
-				.append("\t\tif (oo != null) ").append(NL)
+				.append("\t\tif (oo != null)").append(NL)
 				.append("\t\t{").append(NL)
-				.append("\t\t\t if (oo instanceof Boolean) ").append(NL)
-				.append("\t\t\t\t return ((Boolean)oo).booleanValue(); ").append(NL)
+				.append("\t\t\t if (oo instanceof Boolean)").append(NL)
+				.append("\t\t\t\t return ((Boolean)oo).booleanValue();").append(NL)
 				.append("\t\t\treturn \"Y\".equals(oo);").append(NL)
 				.append("\t\t}").append(NL)
 				.append("\t\treturn false;").append(NL);
@@ -767,7 +767,7 @@ public class ModelClassGenerator
 			.append("    /** Get Record ID/ColumnName").append(NL)
 			.append("        @return ID/ColumnName pair").append(NL)
 			.append("      */").append(NL)
-			.append("    public KeyNamePair getKeyNamePair() ").append(NL)
+			.append("    public KeyNamePair getKeyNamePair()").append(NL)
 			.append("    {").append(NL)
 			.append("        return new KeyNamePair(get_ID(), ").append(method).append(");").append(NL)
 			.append("    }").append(NL)
@@ -792,7 +792,7 @@ public class ModelClassGenerator
 			.append("    /** Get Record UU/ColumnName").append(NL)
 			.append("        @return UU/ColumnName pair").append(NL)
 			.append("      */").append(NL)
-			.append("    public ValueNamePair getValueNamePair() ").append(NL)
+			.append("    public ValueNamePair getValueNamePair()").append(NL)
 			.append("    {").append(NL)
 			.append("        return new ValueNamePair(get_UUID(), ").append(method).append(");").append(NL)
 			.append("    }").append(NL)

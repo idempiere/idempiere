@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for TestUU
- *  @author iDempiere (generated) 
+ *  @author iDempiere (generated)
  *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="TestUU")
-public class X_TestUU extends PO implements I_TestUU, I_Persistent 
+public class X_TestUU extends PO implements I_TestUU, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230317L;
+	private static final long serialVersionUID = 20230318L;
 
     /** Standard Constructor */
     public X_TestUU (Properties ctx, String TestUU_UU, String trxName)
@@ -59,7 +59,7 @@ public class X_TestUU extends PO implements I_TestUU, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {

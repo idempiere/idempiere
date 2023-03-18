@@ -66,7 +66,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2509844209115894798L;
+	private static final long serialVersionUID = -8036408095622443747L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -318,6 +318,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 
 	/**	Columns				*/
 	private MColumn[]	m_columns = null;
+	/** Key Columns					*/
+	private String[]	m_KeyColumns = null;
 	/** column name to index map **/
 	private Map<String, Integer> m_columnNameMap;
 	/** ad_column_id to index map **/
@@ -455,27 +457,33 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 */
 	public String[] getKeyColumns()
 	{
+		if (m_KeyColumns != null)
+			return m_KeyColumns;
 		getColumns(false);
 		ArrayList<String> list = new ArrayList<String>();
 		//
 		for (int i = 0; i < m_columns.length; i++)
 		{
 			MColumn column = m_columns[i];
-			if (column.isKey())
-				return new String[]{column.getColumnName()};
+			if (column.isKey()) {
+				m_KeyColumns = new String[]{column.getColumnName()};
+				return m_KeyColumns;
+			}
 			if (column.isParent())
 				list.add(column.getColumnName());
 		}
 		//check uuid key
 		if (list.isEmpty()) {
-			for(MColumn column : m_columns) {
-				if (column.getColumnName().equals(PO.getUUIDColumnName(getTableName())))
-					return new String[]{column.getColumnName()};
+			MColumn uuColumn = getColumn(PO.getUUIDColumnName(getTableName()));
+			if (uuColumn != null) {
+				m_KeyColumns = new String[]{uuColumn.getColumnName()};
+				return m_KeyColumns;
 			}
 		}
 		String[] retValue = new String[list.size()];
 		retValue = list.toArray(retValue);
-		return retValue;
+		m_KeyColumns = retValue;
+		return m_KeyColumns;
 	}	//	getKeyColumns
 	
 	/**
@@ -483,16 +491,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 */
 	public boolean isUUIDKeyTable()
 	{
-		boolean hasUUIDColumn = false;
-		for(MColumn column : m_columns) {
-			if (column.isKey())
-				return false;
-			if (column.isParent())
-				return false;
-			if (!hasUUIDColumn && column.getColumnName().equals(PO.getUUIDColumnName(getTableName())))
-				hasUUIDColumn = true;
-		}
-		return hasUUIDColumn;
+		String uuColName = PO.getUUIDColumnName(getTableName());
+		return (getKeyColumns() != null && getKeyColumns()[0].equals(uuColName));
 	}
 	
 	/**
