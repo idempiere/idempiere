@@ -81,15 +81,15 @@ public class ModelClassGenerator
 		this.packageName = packageName;
 
 		MTable table = MTable.get(AD_Table_ID);
-		boolean multiKeyTable = table.getKeyColumns().length != 1;
-		boolean tableHasIds = table.getKeyColumns().length > 0;
+		boolean uuidKeyTable = table.isUUIDKeyTable() || table.getKeyColumns().length > 1 || (table.getKeyColumns().length == 1 && (!table.getColumn(table.getKeyColumns()[0]).isKey()));
+		boolean tableHasIds = table.getKeyColumns().length > 0 && !table.isUUIDKeyTable();
 
 		//	create column access methods
 		StringBuilder mandatory = new StringBuilder();
-		StringBuilder sb = createColumns(AD_Table_ID, mandatory, entityTypeFilter, multiKeyTable);
+		StringBuilder sb = createColumns(AD_Table_ID, mandatory, entityTypeFilter, uuidKeyTable);
 
 		// Header
-		String className = createHeader(AD_Table_ID, sb, mandatory, packageName, multiKeyTable, tableHasIds);
+		String className = createHeader(AD_Table_ID, sb, mandatory, packageName, uuidKeyTable, tableHasIds);
 
 		// Save
 		if ( ! directory.endsWith(File.separator) )
@@ -113,11 +113,11 @@ public class ModelClassGenerator
 	 * 	@param sb buffer
 	 * 	@param mandatory init call for mandatory columns
 	 * 	@param packageName package name
-	 *  @param multiKeyTable 
+	 *  @param uuidKeyTable 
 	 *  @param tableHasIds 
 	 * 	@return class name
 	 */
-	private String createHeader (int AD_Table_ID, StringBuilder sb, StringBuilder mandatory, String packageName, boolean multiKeyTable, boolean tableHasIds)
+	private String createHeader (int AD_Table_ID, StringBuilder sb, StringBuilder mandatory, String packageName, boolean uuidKeyTable, boolean tableHasIds)
 	{
 		String tableName = "";
 		int accessLevel = 0;
@@ -284,7 +284,7 @@ public class ModelClassGenerator
 			 .append("    public String toString()").append(NL)
 			 .append("    {").append(NL)
 			 .append("      StringBuilder sb = new StringBuilder (\"").append(className).append("[\")").append(NL)
-			 .append("        .append(").append(multiKeyTable ? "get_UUID" : "get_ID").append("())");
+			 .append("        .append(").append(uuidKeyTable ? "get_UUID" : "get_ID").append("())");
 		if (hasName)
 			start.append(".append(\",Name=\").append(getName())");
 		start.append(".append(\"]\");").append(NL)
@@ -305,10 +305,10 @@ public class ModelClassGenerator
 	 * 	@param AD_Table_ID table
 	 * 	@param mandatory init call for mandatory columns
 	 *  @param entityTypeFilter 
-	 *  @param multiKeyTable 
+	 *  @param uuidKeyTable 
 	 * 	@return set/get method
 	 */
-	private StringBuilder createColumns (int AD_Table_ID, StringBuilder mandatory, String entityTypeFilter, boolean multiKeyTable)
+	private StringBuilder createColumns (int AD_Table_ID, StringBuilder mandatory, String entityTypeFilter, boolean uuidKeyTable)
 	{
 		StringBuilder sb = new StringBuilder();
 		String sql = "SELECT c.ColumnName, c.IsUpdateable, c.IsMandatory,"		//	1..3
@@ -362,7 +362,7 @@ public class ModelClassGenerator
 				//
 				if (seqNo == 1 && IsIdentifier) {
 					if (!isKeyNamePairCreated) {
-						if (multiKeyTable)
+						if (uuidKeyTable)
 							sb.append(createValueNamePair(columnName, displayType));
 						else
 							sb.append(createKeyNamePair(columnName, displayType));

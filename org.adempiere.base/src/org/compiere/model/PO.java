@@ -286,9 +286,20 @@ public abstract class PO
 		m_setErrorsFilled = false;
 
 		if (rs != null)
+		{
 			load(rs);
+		}
 		else
-			load(UUID, trxName, virtualColumns);
+		{
+			if (UUID != null && UUID.length() == 0) //	new
+			{
+				initNewRecord();
+			}
+			else
+			{
+				loadPO(UUID, trxName, virtualColumns);
+			}
+		}
 
 		checkCrossTenant(false);
 	}   //  PO
@@ -1434,12 +1445,19 @@ public abstract class PO
 		}
 		else	//	new
 		{
-			loadDefaults();
-			m_createNew = true;
-			setKeyInfo();	//	sets m_IDs
-			loadComplete(true);
+			initNewRecord();
 		}
 	}	//	load
+
+	/**
+	 * Prepare PO for capturing of new record
+	 */
+	private void initNewRecord() {
+		loadDefaults();
+		m_createNew = true;
+		setKeyInfo();	//	sets m_IDs
+		loadComplete(true);
+	}
 
 	/**
 	 * Load record with UUID
@@ -1462,7 +1480,7 @@ public abstract class PO
 		if (log.isLoggable(Level.FINEST))
 			log.finest("uuID=" + uuID);
 			
-		load(uuID,trxName, virtualColumns);
+		loadPO(uuID,trxName, virtualColumns);
 	} // loadByUU
 
 	/**
@@ -1472,27 +1490,19 @@ public abstract class PO
 	 *  @return true if loaded
 	 */
 	public boolean load (String trxName, String ... virtualColumns) {
-		return load(null, trxName, virtualColumns);
+		return loadPO(null, trxName, virtualColumns);
 	}
 	
 	/**
-	 *  (re)Load record with uuID
-	 *  @param uuID RecrodUU
+	 *  (re)Load record with uuID or {@link #m_IDs}
+	 *  @param uuID RecrodUU if not null, load by uuID, otherwise by m_IDs
 	 *  @param trxName transaction
 	 *  @param virtualColumns names of virtual columns to load along with the regular table columns
 	 *  @return true if loaded
 	 */
-	protected boolean load (String uuID, String trxName, String ... virtualColumns)
+	protected boolean loadPO (String uuID, String trxName, String ... virtualColumns)
 	{
 		if (log.isLoggable(Level.FINEST)) log.finest("UU=" + uuID);
-		if (uuID != null && uuID.length() == 0) //	new
-		{
-			loadDefaults();
-			m_createNew = true;
-			setKeyInfo();	//	sets m_IDs
-			loadComplete(true);
-			return true;
-		}
 
 		m_trxName = trxName;
 		boolean success = true;

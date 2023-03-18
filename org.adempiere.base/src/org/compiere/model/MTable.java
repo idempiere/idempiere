@@ -466,10 +466,34 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 			if (column.isParent())
 				list.add(column.getColumnName());
 		}
+		//check uuid key
+		if (list.isEmpty()) {
+			for(MColumn column : m_columns) {
+				if (column.getColumnName().equals(PO.getUUIDColumnName(getTableName())))
+					return new String[]{column.getColumnName()};
+			}
+		}
 		String[] retValue = new String[list.size()];
 		retValue = list.toArray(retValue);
 		return retValue;
 	}	//	getKeyColumns
+	
+	/**
+	 * @return true if table key is _UU instead of _ID or composite parent key.
+	 */
+	public boolean isUUIDKeyTable()
+	{
+		boolean hasUUIDColumn = false;
+		for(MColumn column : m_columns) {
+			if (column.isKey())
+				return false;
+			if (column.isParent())
+				return false;
+			if (!hasUUIDColumn && column.getColumnName().equals(PO.getUUIDColumnName(getTableName())))
+				hasUUIDColumn = true;
+		}
+		return hasUUIDColumn;
+	}
 	
 	/**
 	 * 	Get Identifier Columns of Table
