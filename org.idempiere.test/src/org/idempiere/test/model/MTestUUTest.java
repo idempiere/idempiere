@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Properties;
 
 import org.compiere.model.MTestUU;
+import org.compiere.model.PO;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
@@ -64,7 +65,7 @@ public class MTestUUTest extends AbstractTestCase {
 	public void testInsertingTestUU() {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
-		MTestUU testuu = new MTestUU(ctx, "", trxName);
+		MTestUU testuu = new MTestUU(ctx, PO.UUID_NEW_RECORD, trxName);
 		testuu.setName("Test UU record created on JUnit test");
 		testuu.saveEx();
 		testuu.load(trxName);

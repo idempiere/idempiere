@@ -2129,7 +2129,7 @@ public final class Env
 		return getZoomWindowIDOrUU(AD_Table_ID, Record_ID, null, windowNo);
 	}
 
-	public static int getZoomWindowIDOrUU(int AD_Table_ID, int Record_ID, String Record_UU, int windowNo)
+	private static int getZoomWindowIDOrUU(int AD_Table_ID, int Record_ID, String Record_UU, int windowNo)
 	{
 		int AD_Window_ID = MZoomCondition.findZoomWindowByTableIdOrUU(AD_Table_ID, Record_ID, Record_UU, windowNo);
 		if (AD_Window_ID <= 0)

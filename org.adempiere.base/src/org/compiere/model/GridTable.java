@@ -2435,7 +2435,10 @@ public class GridTable extends AbstractTableModel
 						
 		if (singleRowWHERE != null)
 			return singleRowWHERE.toString();
-		
+
+		if (multiRowWHERE != null)
+			return multiRowWHERE.toString();
+
 		if (uidColumn >= 0)
 		{
 			Object value = rowData[uidColumn]; 
@@ -2452,10 +2455,7 @@ public class GridTable extends AbstractTableModel
 		}
 		if (singleRowUUWHERE != null)
 			return singleRowUUWHERE.toString();
-		
-		if (multiRowWHERE != null)
-			return multiRowWHERE.toString();
-		
+
 		log.log(Level.WARNING, "No key Found");
 		return null;
 	}	//	getWhereClause
