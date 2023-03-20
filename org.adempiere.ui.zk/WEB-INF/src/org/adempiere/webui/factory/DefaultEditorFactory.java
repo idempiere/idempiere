@@ -158,7 +158,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         }
 
         /** Table Direct */
-        else if (displayType == DisplayType.TableDir ||
+        else if (displayType == DisplayType.TableDir || displayType == DisplayType.TableDirUU ||
                 displayType == DisplayType.Table || displayType == DisplayType.List)
         {
             editor = new WTableDirEditor(gridField, tableEditor, editorConfiguration);
@@ -174,7 +174,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         	editor = new WUrlEditor(gridField, tableEditor, editorConfiguration);
         }
 
-        else if (displayType == DisplayType.Search)
+        else if (displayType == DisplayType.Search || displayType == DisplayType.SearchUU)
         {
         	editor = new WSearchEditor(gridField, tableEditor, editorConfiguration);
         }

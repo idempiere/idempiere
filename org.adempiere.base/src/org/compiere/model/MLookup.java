@@ -1176,7 +1176,11 @@ public final class MLookup extends Lookup implements Serializable
 					}
 					else
 					{
-						String value = rs.getString(2);
+						String value;
+						if (m_info.KeyColumn.endsWith("_UU"))
+							value = rs.getString(1);
+						else
+							value = rs.getString(2);
 						ValueNamePair p = new ValueNamePair(value, name.toString());
 						m_lookup.put(value, p);
 						vnpCache.add(p);

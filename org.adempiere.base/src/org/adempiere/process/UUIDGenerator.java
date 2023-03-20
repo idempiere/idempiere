@@ -121,7 +121,7 @@ public class UUIDGenerator extends SvrProcess {
 					}
 					mColumn.setAD_Element_ID(AD_Element_ID);
 					mColumn.setColumnName(columnName);
-					mColumn.setAD_Reference_ID(DisplayType.String);
+					mColumn.setAD_Reference_ID(DisplayType.UUID);
 					mColumn.setEntityType("U");
 					mColumn.setFieldLength(36);
 					mColumn.setName(columnName);

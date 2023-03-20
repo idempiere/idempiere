@@ -50,6 +50,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.M_Element;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_WF_Node;
 import org.compiere.model.X_AD_Workflow;
@@ -596,7 +597,7 @@ public class CreateTable extends SvrProcess {
 			column.setIsMandatory(true);
 			column.setFieldLength(LENGTH_22);
 		}
-		else if (element.getColumnName().equalsIgnoreCase(table.getTableName() + "_UU")) { // UUID column
+		else if (element.getColumnName().equalsIgnoreCase(PO.getUUIDColumnName(table.getTableName()))) { // UUID column
 			column.setAD_Reference_ID(REFERENCE_DATATYPE_UUID);
 			column.setFieldLength(LENGTH_36);
 		}

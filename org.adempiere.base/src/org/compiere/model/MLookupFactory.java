@@ -762,9 +762,9 @@ public class MLookupFactory
 	static private MLookupInfo getLookup_TableDir (Properties ctx, Language language,
 		int WindowNo, String ColumnName)
 	{
-		if (!ColumnName.endsWith("_ID"))
+		if (!ColumnName.endsWith("_ID") && !ColumnName.endsWith("_UU"))
 		{
-			String error = "Key does not end with '_ID': " + ColumnName;
+			String error = "Key does not end with '_ID' or '_UU': " + ColumnName;
 			s_log.log(Level.SEVERE, error, new Exception(error));
 			return null;
 		}

@@ -135,6 +135,7 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_FILENAME = 39;
 	public final static int REFERENCE_DATATYPE_FILEPATH = 38;
 	public final static int REFERENCE_DATATYPE_ID = 13;
+	public final static int REFERENCE_DATATYPE_UUID = 200231;
 	public final static int REFERENCE_DATATYPE_IMAGE = 32;
 	public final static int REFERENCE_DATATYPE_INTEGER = 11;
 	public final static int REFERENCE_DATATYPE_LIST = 17;
@@ -151,17 +152,19 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_RECORD_ID = 200202;
 	public final static int REFERENCE_DATATYPE_ROWID = 26;
 	public final static int REFERENCE_DATATYPE_SEARCH = 30;
+	public final static int REFERENCE_DATATYPE_SEARCH_UU = 200235;
 	public final static int REFERENCE_DATATYPE_SINGLE_SELECTION_GRID = 200127;
 	public final static int REFERENCE_DATATYPE_STRING = 10;
 	public final static int REFERENCE_DATATYPE_TABLE = 18;
+	public final static int REFERENCE_DATATYPE_TABLE_UU = 200233;
 	public final static int REFERENCE_DATATYPE_TABLEDIR = 19;
+	public final static int REFERENCE_DATATYPE_TABLEDIR_UU = 200234;
 	public final static int REFERENCE_DATATYPE_TEXT = 14;
 	public final static int REFERENCE_DATATYPE_TEXTLONG = 36;
 	public final static int REFERENCE_DATATYPE_TIME = 24;
 	public final static int REFERENCE_DATATYPE_TIMESTAMP_WITH_TIMEZONE = 200133;
 	public final static int REFERENCE_DATATYPE_TIMEZONE = 200135;
 	public final static int REFERENCE_DATATYPE_URL = 40;
-	public final static int REFERENCE_DATATYPE_UUID = 200231;
 	public final static int REFERENCE_DATATYPE_YES_NO = 20;
 
 	public final static int REFERENCE_ACCOUNT = 175;

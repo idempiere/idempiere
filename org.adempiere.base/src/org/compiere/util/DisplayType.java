@@ -49,10 +49,13 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_RADIOGROUP_LIST;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_RECORD_ID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ROWID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_SEARCH;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_SEARCH_UU;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_SINGLE_SELECTION_GRID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_STRING;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLEDIR;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLEDIR_UU;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLE_UU;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TEXT;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TEXTLONG;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIME;
@@ -102,6 +105,8 @@ public final class DisplayType
 	public static final int Amount     = REFERENCE_DATATYPE_AMOUNT;
 	/** Display Type 13	ID	*/
 	public static final int ID         = REFERENCE_DATATYPE_ID;
+	/** Display Type 200231	UUID */
+	public static final int UUID  = REFERENCE_DATATYPE_UUID;
 	/** Display Type 14	Text	*/
 	public static final int Text       = REFERENCE_DATATYPE_TEXT;
 	/** Display Type 15	Date	*/
@@ -112,8 +117,12 @@ public final class DisplayType
 	public static final int List       = REFERENCE_DATATYPE_LIST;
 	/** Display Type 18	Table	*/
 	public static final int Table      = REFERENCE_DATATYPE_TABLE;
+	/** Display Type 200233	Table	*/
+	public static final int TableUU      = REFERENCE_DATATYPE_TABLE_UU;
 	/** Display Type 19	TableDir	*/
 	public static final int TableDir   = REFERENCE_DATATYPE_TABLEDIR;
+	/** Display Type 200234	*/
+	public static final int TableDirUU   = REFERENCE_DATATYPE_TABLEDIR_UU;
 	/** Display Type 20	YN	*/
 	public static final int YesNo      = REFERENCE_DATATYPE_YES_NO;
 	/** Display Type 21	Location	*/
@@ -136,6 +145,8 @@ public final class DisplayType
 	public static final int Quantity   = REFERENCE_DATATYPE_QUANTITY;
 	/** Display Type 30	Search	*/
 	public static final int Search     = REFERENCE_DATATYPE_SEARCH;
+	/** Display Type 200235	Search	*/
+	public static final int SearchUU     = REFERENCE_DATATYPE_SEARCH_UU;
 	/** Display Type 31	Locator	*/
 	public static final int Locator    = REFERENCE_DATATYPE_LOCATOR;
 	/** Display Type 32 Image	*/
@@ -156,8 +167,6 @@ public final class DisplayType
 	public static final int FileName  = REFERENCE_DATATYPE_FILENAME;
 	/** Display Type 40	URL	*/
 	public static final int URL  = REFERENCE_DATATYPE_URL;
-	/** Display Type 200231	UUID */
-	public static final int UUID  = REFERENCE_DATATYPE_UUID;
 	/** Display Type 42	PrinterName	*/
 	public static final int PrinterName  = REFERENCE_DATATYPE_PRINTNAME;
 	//	Candidates:
@@ -366,7 +375,8 @@ public final class DisplayType
 			|| displayType == ChosenMultipleSelectionTable
 			|| displayType == ChosenMultipleSelectionSearch
 			|| displayType == TimeZoneId
-			|| displayType == UUID)
+			|| displayType == UUID
+			|| displayType == TableDirUU || displayType == TableUU || displayType == SearchUU)
 			return true;
 		
 		//not custom type, don't have to check factory
@@ -487,8 +497,10 @@ public final class DisplayType
 	 */
 	public static boolean isLookup(int displayType)
 	{
-		if (displayType == List || displayType == Table
-			|| displayType == TableDir || displayType == Search
+		if (displayType == List
+			|| displayType == Table || displayType == TableUU
+			|| displayType == TableDir || displayType == TableDirUU
+			|| displayType == Search || displayType == SearchUU
 			|| displayType == RadiogroupList
 			|| displayType == ChosenMultipleSelectionTable
 			|| displayType == ChosenMultipleSelectionSearch
