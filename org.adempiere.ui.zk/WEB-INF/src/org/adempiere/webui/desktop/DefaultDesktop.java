@@ -37,16 +37,13 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessDialog;
-import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
-import org.adempiere.webui.event.DrillEvent;
 import org.adempiere.webui.event.MenuListener;
 import org.adempiere.webui.event.ZKBroadCastManager;
-import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.BroadcastMessageWindow;
 import org.adempiere.webui.panel.HeaderPanel;
@@ -56,13 +53,11 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.I_AD_Preference;
 import org.compiere.model.MMenu;
 import org.compiere.model.MPreference;
-import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MTreeFavorite;
@@ -205,9 +200,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
     	headerContainer = page.getFellow("northBody");
     	pnlHead = (HeaderPanel) headerContainer.getFellow("header");
         
-        layout.addEventListener("onZoom", this);
-        layout.addEventListener(DrillEvent.ON_DRILL_DOWN, this);
-
         West w = layout.getWest();
         w.addEventListener(Events.ON_OPEN, new EventListener<Event>() {
 			@Override
@@ -703,24 +695,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         	if (change)
         		updateUI();
         }
-        else if (event instanceof ZoomEvent) 
-		{
-        	Clients.clearBusy();
-			ZoomEvent ze = (ZoomEvent) event;
-			if (ze.getData() != null && ze.getData() instanceof MQuery) {
-				AEnv.zoom((MQuery) ze.getData());
-			}
-		}
-		
-        else if (event instanceof DrillEvent)
-		{
-        	Clients.clearBusy();
-			DrillEvent de = (DrillEvent) event;
-			if (de.getData() != null && de.getData() instanceof MQuery) {
-				MQuery query = (MQuery) de.getData();
-				executeDrill(query);
-			}
-		}
     }
 
 	protected void restoreHeader() {
@@ -764,22 +738,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		updateHeaderCollapsedPreference(true);
 	}
 
-	/**
-	 * 	Execute Drill to Query
-	 * 	@param query query
-	 */
-   	private void executeDrill (MQuery query)
-	{
-		int AD_Table_ID = MTable.getTable_ID(query.getTableName());
-		if (!MRole.getDefault().isCanReport(AD_Table_ID))
-		{
-			Dialog.error(0, "AccessCannotReport", query.getTableName());
-			return;
-		}
-		if (AD_Table_ID != 0)
-			new WReport(AD_Table_ID, query);		
-	}	//	executeDrill
-   	
 	/**
 	 *
 	 * @param page
