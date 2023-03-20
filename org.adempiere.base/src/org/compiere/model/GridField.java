@@ -1858,7 +1858,7 @@ public class GridField
 	{
 		if (m_parentValue != null)
 			return m_parentValue.booleanValue();
-		if (!DisplayType.isID(m_vo.displayType) || m_vo.TabNo == 0)
+		if ( ( !DisplayType.isID(m_vo.displayType) && !DisplayType.isUUID(m_vo.displayType) ) || m_vo.TabNo == 0)
 			m_parentValue = Boolean.FALSE;
 		else 
 		{

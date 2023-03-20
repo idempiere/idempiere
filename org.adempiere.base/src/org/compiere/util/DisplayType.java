@@ -272,6 +272,45 @@ public final class DisplayType
 	}	//	isID
 
 	/**
+	 *	Returns true if UUID (TableUU, SearchUU, ..).
+	 *  (stored as String)
+	 *  @param displayType Display Type
+	 *  @return true if UUID
+	 */
+	public static boolean isUUID (int displayType)
+	{
+		if (displayType == UUID || displayType == TableUU || displayType == TableDirUU
+			|| displayType == SearchUU)
+			return true;
+
+		//not custom type, don't have to check factory
+		if (displayType <= MTable.MAX_OFFICIAL_ID)
+			return false;
+
+		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
+		if (cache != null) {
+			IDisplayTypeFactory service = cache.getService();
+			if (service != null)
+				return service.isUUID(displayType);
+			else
+				s_displayTypeFactoryCache.remove(displayType);
+		}
+		String customTypeKey = displayType+"|isUUID";
+		if (! s_customDisplayTypeNegativeCache.containsKey(customTypeKey)) {
+			Optional<IServiceReferenceHolder<IDisplayTypeFactory>> found = getDisplayTypeFactories().stream()
+					.filter(e -> e.getService() != null && e.getService().isUUID(displayType))
+					.findFirst();
+			if (found.isPresent()) {
+				s_displayTypeFactoryCache.put(displayType, found.get());
+				return true;
+			}
+			s_customDisplayTypeNegativeCache.put(customTypeKey, Boolean.TRUE);
+		}
+
+		return false;
+	}	//	isUUID
+
+	/**
 	 *	Returns true, if DisplayType is numeric (Amount, Number, Quantity, Integer).
 	 *  (stored as BigDecimal)
 	 *  @param displayType Display Type

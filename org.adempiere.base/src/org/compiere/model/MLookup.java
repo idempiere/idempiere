@@ -584,7 +584,11 @@ public final class MLookup extends Lookup implements Serializable
 				}
 				else
 				{
-					String value = rs.getString(2);
+					String value;
+					if (m_info.KeyColumn.endsWith("_UU"))
+						value = rs.getString(1);
+					else
+						value = rs.getString(2);
 					ValueNamePair p = new ValueNamePair(value, name.toString());
 					if (saveInCache)		//	save if
 						m_lookup.put(value, p);
@@ -720,7 +724,11 @@ public final class MLookup extends Lookup implements Serializable
 					}
 					else
 					{
-						String value = rs.getString(2);
+						String value;
+						if (m_info.KeyColumn.endsWith("_UU"))
+							value = rs.getString(1);
+						else
+							value = rs.getString(2);
 						ValueNamePair p = new ValueNamePair(value, name.toString());
 						vnpCache.put(p.getValue(), p);
 						Integer idx  = notInCaches.get(p.getValue());
