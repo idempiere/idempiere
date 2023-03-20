@@ -159,7 +159,8 @@ public class DefaultEditorFactory implements IEditorFactory {
 
         /** Table Direct */
         else if (displayType == DisplayType.TableDir || displayType == DisplayType.TableDirUU ||
-                displayType == DisplayType.Table || displayType == DisplayType.List)
+                displayType == DisplayType.Table || displayType == DisplayType.TableUU ||
+                displayType == DisplayType.List)
         {
             editor = new WTableDirEditor(gridField, tableEditor, editorConfiguration);
         }

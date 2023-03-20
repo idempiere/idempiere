@@ -371,7 +371,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 
-		if (displayType == DisplayType.Table && getAD_Reference_Value_ID() <= 0)
+		if ((displayType == DisplayType.Table || displayType == DisplayType.TableUU) && getAD_Reference_Value_ID() <= 0)
 		{
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Reference_Value_ID"));
 			return false;

@@ -29,14 +29,6 @@ import static org.compiere.model.SystemIDs.REFERENCE_AD_LANGUAGE;
 import static org.compiere.model.SystemIDs.REFERENCE_AD_USER;
 import static org.compiere.model.SystemIDs.REFERENCE_AD_USER_SALESREP;
 import static org.compiere.model.SystemIDs.REFERENCE_C_DOCTYPE;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_BUTTON;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_DATE;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LIST;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_NUMBER;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_STRING;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLE;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLEDIR;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_UUID;
 import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTACTION;
 import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTSTATUS;
 import static org.compiere.model.SystemIDs.REFERENCE_POSTED;
@@ -495,7 +487,7 @@ public class CreateTable extends SvrProcess {
 			column.setIsParent(true);
 		}
 		else if (columnName.equals("Value") || columnName.equals("Name") || columnName.equals("DocumentNo")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_STRING);
+			column.setAD_Reference_ID(DisplayType.String);
 			column.setIsUpdateable(true);
 			column.setIsSelectionColumn(true);
 
@@ -514,7 +506,7 @@ public class CreateTable extends SvrProcess {
 			column.setFieldLength(length);
 		}
 		else if (columnName.equals("Description") || columnName.equals("Help")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_STRING);
+			column.setAD_Reference_ID(DisplayType.String);
 			column.setIsUpdateable(true);
 			int length = LENGTH_0;
 			if (columnName.equals("Description"))
@@ -526,21 +518,21 @@ public class CreateTable extends SvrProcess {
 				column.setIsTranslated(true);
 		}
 		else if (columnName.equals("C_Currency_ID")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_TABLEDIR);
+			column.setAD_Reference_ID(DisplayType.TableDir);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_22);
 			column.setDefaultValue("@C_Currency_ID@");
 		}
 		else if (columnName.equals("DateAcct") || columnName.equals("DateTrx")) { 
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_DATE);
+			column.setAD_Reference_ID(DisplayType.Date);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_7);
 			column.setDefaultValue("@#Date@");
 		}
 		else if (columnName.equals("DocAction")) { 
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_BUTTON);
+			column.setAD_Reference_ID(DisplayType.Button);
 			column.setAD_Reference_Value_ID(REFERENCE_DOCUMENTACTION);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
@@ -549,7 +541,7 @@ public class CreateTable extends SvrProcess {
 			column.setIsToolbarButton(MColumn.ISTOOLBARBUTTON_Window);
 		}
 		else if (columnName.equals("DocStatus")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_LIST);
+			column.setAD_Reference_ID(DisplayType.List);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_2);
@@ -557,24 +549,24 @@ public class CreateTable extends SvrProcess {
 			column.setDefaultValue(DocAction.STATUS_Drafted);
 		}
 		else if (columnName.equals("ProcessedOn")) { 
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_NUMBER);
+			column.setAD_Reference_ID(DisplayType.Number);
 			column.setFieldLength(LENGTH_20);
 		}
 		else if (columnName.equals("C_DocType_ID")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_TABLEDIR);
+			column.setAD_Reference_ID(DisplayType.TableDir);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_22);
 		}
 		else if (columnName.equals("C_DocTypeTarget_ID")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_TABLE);
+			column.setAD_Reference_ID(DisplayType.Table);
 			column.setAD_Reference_Value_ID(REFERENCE_C_DOCTYPE);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_22);
 		}
 		else if (columnName.equals("Posted")) {
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_BUTTON);
+			column.setAD_Reference_ID(DisplayType.Button);
 			column.setIsMandatory(true);
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_1);
@@ -598,7 +590,7 @@ public class CreateTable extends SvrProcess {
 			column.setFieldLength(LENGTH_22);
 		}
 		else if (element.getColumnName().equalsIgnoreCase(PO.getUUIDColumnName(table.getTableName()))) { // UUID column
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_UUID);
+			column.setAD_Reference_ID(DisplayType.UUID);
 			column.setFieldLength(LENGTH_36);
 		}
 		else if (element.getColumnName().equalsIgnoreCase((table.getTableName().substring(0, table.getTableName().length()-4)) + "_ID")) { // ID of parent table (for translation tables)
