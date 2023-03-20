@@ -38,6 +38,7 @@ import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.apps.graph.WGraph;
 import org.adempiere.webui.apps.graph.WPAWidget;
@@ -48,6 +49,7 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
 import org.adempiere.webui.event.DrillEvent;
+import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
@@ -55,6 +57,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.util.ZkContextRunnable;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.ZkReportViewerProvider;
 import org.compiere.Adempiere;
 import org.compiere.model.I_AD_Menu;
@@ -71,6 +74,8 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MQuery;
+import org.compiere.model.MRole;
 import org.compiere.model.MStatusLine;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -984,13 +989,51 @@ public class DashboardController implements EventListener<Event> {
 							if(jsonData.indexOf(String.valueOf(processID)) < 0)
 								return;
 						}
-						AEnv.actionDrill(data, 0, processID);	// WindowNo of Home tab is always 0
+						AEnv.actionDrill(data, SessionManager.getAppDesktop().findWindowNo(component), processID);
 					}
+				}
+			}
+		});
+
+		component.addEventListener("onZoom", event -> {
+			Clients.clearBusy();
+			if (event instanceof ZoomEvent) {
+				ZoomEvent ze = (ZoomEvent) event;
+				if (ze.getData() != null && ze.getData() instanceof MQuery) {
+					AEnv.zoom((MQuery) ze.getData());
+				}
+			}
+		});
+
+		component.addEventListener(DrillEvent.ON_DRILL_DOWN, event -> {
+			Clients.clearBusy();
+			if (event instanceof DrillEvent) {
+				DrillEvent de = (DrillEvent) event;
+				if (de.getData() != null && de.getData() instanceof DrillData) {
+					DrillData data = (DrillData) de.getData();
+					MQuery query = data.getQuery();
+					executeDrill(query);
 				}
 			}
 		});
 	}
 	
+	/**
+	 * 	Execute Drill to Query
+	 * 	@param query query
+	 */
+	private void executeDrill (MQuery query)
+	{
+		int AD_Table_ID = MTable.getTable_ID(query.getTableName());
+		if (!MRole.getDefault().isCanReport(AD_Table_ID))
+		{
+			Dialog.error(0, "AccessCannotReport", query.getTableName());
+			return;
+		}
+		if (AD_Table_ID != 0)
+			new WReport(AD_Table_ID, query);
+	}	//	executeDrill
+
 	@Override
 	public void onEvent(Event event) throws Exception {
 		Component comp = event.getTarget();

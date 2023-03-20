@@ -64,6 +64,12 @@ public interface IDesktop extends UIPart {
 	public Object findWindow(int WindowNo);
 
 	/**
+	 * @param component
+	 * @return register window no or -1 if not found
+	 */
+	public int findWindowNo(Component component);
+
+	/**
 	 * close active window
 	 * @return boolean
 	 */
