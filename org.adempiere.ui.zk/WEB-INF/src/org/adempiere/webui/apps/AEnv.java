@@ -177,6 +177,25 @@ public final class AEnv
 	}	//	zoom
 
 	/*************************************************************************
+	 * 	Zoom to AD Window by AD_Table_ID and Record_UU.
+	 *	@param AD_Table_ID
+	 *	@param Record_UU
+	 */
+	public static void zoomUU(int AD_Table_ID, String Record_UU)
+	{
+		int AD_Window_ID = Env.getZoomWindowUU(AD_Table_ID, Record_UU);
+		//  Nothing to Zoom to
+		if (AD_Window_ID == 0)
+			return;
+		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
+		MQuery query = MQuery.getEqualQuery(PO.getUUIDColumnName(table.getTableName()), Record_UU);
+		query.setZoomTableName(table.getTableName());
+		query.setZoomColumnName(table.getUUIDColumnName());
+		query.setZoomValue(Record_UU);
+		zoom(AD_Window_ID, query);
+	}	//	zoom
+
+	/*************************************************************************
 	 * 	Zoom to AD Window by AD_Table_ID and Record_ID.
 	 *	@param AD_Table_ID
 	 *	@param Record_ID
@@ -890,6 +909,15 @@ public final class AEnv
 			sport = ":" + port;
 		m_ApplicationUrl = sch + "://" + Executions.getCurrent().getServerName() + sport + Executions.getCurrent().getContextPath() +  Executions.getCurrent().getDesktop().getRequestPath();
 		return m_ApplicationUrl;
+	}
+
+	/**
+	 * @param po
+	 * @return URL link for direct access to the record using AD_Table_ID+Record_UUID
+	 */
+	public static String getZoomUrlTableUU(PO po)
+	{
+		return getApplicationUrl() + "?Action=Zoom&AD_Table_ID=" + po.get_Table_ID() + "&Record_UU=" + po.get_UUID();
 	}
 
 	/**

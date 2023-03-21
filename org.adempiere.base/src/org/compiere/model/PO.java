@@ -113,7 +113,10 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3153695115162945843L;
+	private static final long serialVersionUID = 1569541357840608310L;
+
+	/* String key to create a new record based in UUID constructor */
+	public static final String UUID_NEW_RECORD = "";
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -153,13 +156,24 @@ public abstract class PO
 
 	/**
 	 *  Create and Load existing Persistent Object
-	 *  @param ID The unique ID of the object
 	 *  @param ctx context
+	 *  @param ID The unique ID of the object
 	 *  @param trxName transaction name
 	 */
 	public PO (Properties ctx, int ID, String trxName)
 	{
 		this (ctx, ID, trxName, null, (String[]) null);
+	}   //  PO
+
+	/**
+	 *  Create and Load existing Persistent Object
+	 *  @param ctx context
+	 *  @param UUID The unique UUID of the object
+	 *  @param trxName transaction name
+	 */
+	public PO (Properties ctx, String UUID, String trxName)
+	{
+		this (ctx, UUID, trxName, null, (String[]) null);
 	}   //  PO
 
 	/**
@@ -172,6 +186,18 @@ public abstract class PO
 	public PO (Properties ctx, int ID, String trxName, String ... virtualColumns)
 	{
 		this (ctx, ID, trxName, null, virtualColumns);
+	}
+
+	/**
+	 * Create and load existing Persistent Object
+	 * @param ctx Context
+	 * @param UUID Unique UUID of the object
+	 * @param trxName Transaction name
+	 * @param virtualColumns names of virtual columns to load along with the regular table columns
+	 */
+	public PO (Properties ctx, String UUID, String trxName, String ... virtualColumns)
+	{
+		this (ctx, UUID, trxName, null, virtualColumns);
 	}
 
 	/**
@@ -224,6 +250,59 @@ public abstract class PO
 			load(rs);
 		else
 			load(ID, trxName, virtualColumns);
+
+		checkCrossTenant(false);
+	}   //  PO
+
+	/**
+	 *  Create and Load existing Persistent Object.
+	 *  <pre>
+	 *  You load
+	 * 		- an existing single key record with 	new PO (ctx, Record_ID)
+	 * 			or									new PO (ctx, Record_ID, trxName)
+	 * 			or									new PO (ctx, rs, get_TrxName())
+	 * 		- a new single key record with			new PO (ctx, 0)
+	 * 		- an existing multi key record with		new PO (ctx, rs, get_TrxName())
+	 * 		- a new multi key record with			new PO (ctx, null)
+	 *  The ID for new single key records is created automatically,
+	 *  you need to set the IDs for multi-key records explicitly.
+	 *	</pre>
+	 *  @param ctx context
+	 *  @param UUID the UUID if "", the record defaults are applied - ignored if re exists
+	 *  @param trxName transaction name
+	 *  @param rs optional - load from current result set position (no navigation, not closed)
+	 *  @param virtualColumns optional - names of virtual columns to load along with the regular table columns
+	 */
+	public PO (Properties ctx, String UUID, String trxName, ResultSet rs, String ... virtualColumns)
+	{
+		p_ctx = ctx != null ? ctx : Env.getCtx();
+		m_trxName = trxName;
+
+		p_info = initPO(ctx);
+		if (p_info == null || p_info.getTableName() == null)
+			throw new IllegalArgumentException ("Invalid PO Info - " + p_info);
+		//
+		int size = p_info.getColumnCount();
+		m_oldValues = new Object[size];
+		m_newValues = new Object[size];
+		m_setErrors = new ValueNamePair[size];
+		m_setErrorsFilled = false;
+
+		if (rs != null)
+		{
+			load(rs);
+		}
+		else
+		{
+			if (UUID != null && UUID.length() == 0) //	new
+			{
+				initNewRecord();
+			}
+			else
+			{
+				loadPO(UUID, trxName, virtualColumns);
+			}
+		}
 
 		checkCrossTenant(false);
 	}   //  PO
@@ -1369,12 +1448,19 @@ public abstract class PO
 		}
 		else	//	new
 		{
-			loadDefaults();
-			m_createNew = true;
-			setKeyInfo();	//	sets m_IDs
-			loadComplete(true);
+			initNewRecord();
 		}
 	}	//	load
+
+	/**
+	 * Prepare PO for capturing of new record
+	 */
+	private void initNewRecord() {
+		loadDefaults();
+		m_createNew = true;
+		setKeyInfo();	//	sets m_IDs
+		loadComplete(true);
+	}
 
 	/**
 	 * Load record with UUID
@@ -1397,7 +1483,7 @@ public abstract class PO
 		if (log.isLoggable(Level.FINEST))
 			log.finest("uuID=" + uuID);
 			
-		load(uuID,trxName, virtualColumns);
+		loadPO(uuID,trxName, virtualColumns);
 	} // loadByUU
 
 	/**
@@ -1407,18 +1493,20 @@ public abstract class PO
 	 *  @return true if loaded
 	 */
 	public boolean load (String trxName, String ... virtualColumns) {
-		return load(null, trxName, virtualColumns);
+		return loadPO(null, trxName, virtualColumns);
 	}
 	
 	/**
-	 *  (re)Load record with uuID
-	 *  @param uuID RecrodUU
+	 *  (re)Load record with uuID or {@link #m_IDs}
+	 *  @param uuID RecrodUU if not null, load by uuID, otherwise by m_IDs
 	 *  @param trxName transaction
 	 *  @param virtualColumns names of virtual columns to load along with the regular table columns
 	 *  @return true if loaded
 	 */
-	protected boolean load (String uuID, String trxName, String ... virtualColumns)
+	protected boolean loadPO (String uuID, String trxName, String ... virtualColumns)
 	{
+		if (log.isLoggable(Level.FINEST)) log.finest("UU=" + uuID);
+
 		m_trxName = trxName;
 		boolean success = true;
 		StringBuilder sql = new StringBuilder("SELECT ");
@@ -1855,12 +1943,12 @@ public abstract class PO
 				m_KeyColumns = new String[] {ColumnName};
 				if (p_info.getColumnName(i).endsWith("_ID"))
 				{
-				Integer ii = (Integer)get_Value(i);
-				if (ii == null)
-					m_IDs = new Object[] {I_ZERO};
-				else
-					m_IDs = new Object[] {ii};
-				if (log.isLoggable(Level.FINEST)) log.finest("(PK) " + ColumnName + "=" + ii);
+					Integer ii = (Integer)get_Value(i);
+					if (ii == null)
+						m_IDs = new Object[] {I_ZERO};
+					else
+						m_IDs = new Object[] {ii};
+					if (log.isLoggable(Level.FINEST)) log.finest("(PK) " + ColumnName + "=" + ii);
 				}
 				else
 				{
@@ -1884,31 +1972,55 @@ public abstract class PO
 		}
 		//	Set FKs
 		int size = columnNames.size();
-		if (size == 0)
-			throw new IllegalStateException("No PK nor FK - " + p_info.getTableName());
-		m_IDs = new Object[size];
-		m_KeyColumns = new String[size];
-		for (int i = 0; i < size; i++)
+		if (size > 0)
 		{
-			m_KeyColumns[i] = (String)columnNames.get(i);
-			if (m_KeyColumns[i].endsWith("_ID"))
+			m_IDs = new Object[size];
+			m_KeyColumns = new String[size];
+			for (int i = 0; i < size; i++)
 			{
-				Integer ii = null;
-				try
+				m_KeyColumns[i] = (String)columnNames.get(i);
+				if (m_KeyColumns[i].endsWith("_ID"))
 				{
-					ii = (Integer)get_Value(m_KeyColumns[i]);
+					Integer ii = null;
+					try
+					{
+						ii = (Integer)get_Value(m_KeyColumns[i]);
+					}
+					catch (Exception e)
+					{
+						log.log(Level.SEVERE, "", e);
+					}
+					if (ii != null)
+						m_IDs[i] = ii;
 				}
-				catch (Exception e)
-				{
-					log.log(Level.SEVERE, "", e);
-				}
-				if (ii != null)
-					m_IDs[i] = ii;
+				else
+					m_IDs[i] = get_Value(m_KeyColumns[i]);
+				if (log.isLoggable(Level.FINEST)) log.finest("(FK) " + m_KeyColumns[i] + "=" + m_IDs[i]);
 			}
-			else
-				m_IDs[i] = get_Value(m_KeyColumns[i]);
-			if (log.isLoggable(Level.FINEST)) log.finest("(FK) " + m_KeyColumns[i] + "=" + m_IDs[i]);
 		}
+
+		if (m_KeyColumns == null || m_KeyColumns.length == 0)
+		{
+			//	Search for UUID Key
+			for (int i = 0; i < p_info.getColumnCount(); i++)
+			{
+				String ColumnName = p_info.getColumnName(i);
+				if (ColumnName.equals(PO.getUUIDColumnName(get_TableName())))
+				{
+					m_KeyColumns = new String[] {ColumnName};
+					Object oo = get_Value(i);
+					if (oo == null)
+						m_IDs = new Object[] {null};
+					else
+						m_IDs = new Object[] {oo};
+					if (log.isLoggable(Level.FINEST)) log.finest("(UU) " + ColumnName + "=" + oo);
+					return;
+				}
+			}	//	UUID key search
+		}
+
+		if (m_KeyColumns.length == 0)
+			throw new IllegalStateException("No PK, UU nor FK - " + p_info.getTableName());
 	}	//	setKeyInfo
 
 

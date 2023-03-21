@@ -36,6 +36,7 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_NUMBER;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_STRING;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TABLEDIR;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_UUID;
 import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTACTION;
 import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTSTATUS;
 import static org.compiere.model.SystemIDs.REFERENCE_POSTED;
@@ -596,7 +597,7 @@ public class CreateTable extends SvrProcess {
 			column.setFieldLength(LENGTH_22);
 		}
 		else if (element.getColumnName().equalsIgnoreCase(table.getTableName() + "_UU")) { // UUID column
-			column.setAD_Reference_ID(REFERENCE_DATATYPE_STRING);
+			column.setAD_Reference_ID(REFERENCE_DATATYPE_UUID);
 			column.setFieldLength(LENGTH_36);
 		}
 		else if (element.getColumnName().equalsIgnoreCase((table.getTableName().substring(0, table.getTableName().length()-4)) + "_ID")) { // ID of parent table (for translation tables)
