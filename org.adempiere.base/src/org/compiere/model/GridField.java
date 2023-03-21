@@ -83,7 +83,7 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 496387784464611123L;
+	private static final long serialVersionUID = 405469916055906825L;
 
 	/**
 	 *  Field Constructor.
@@ -591,6 +591,13 @@ public class GridField
 		m_inserting = inserting;
 	}   //  setInserting
 
+	public void setDefaultLogic(String defaultValue) {
+		m_vo.DefaultValue = defaultValue;
+	}
+
+	public void setDefault2Logic(String defaultValue2) {
+		m_vo.DefaultValue2 = defaultValue2;
+	}
 	
 	/**************************************************************************
 	 *	Create default value.
