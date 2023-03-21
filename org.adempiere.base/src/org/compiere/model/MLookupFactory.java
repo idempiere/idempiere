@@ -603,6 +603,11 @@ public class MLookupFactory
 		lookupDisplayColumns.add(lookupDisplayColumn != null ? lookupDisplayColumn : DisplayColumn);
 		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
 		retValue.lookupDisplayColumns = lookupDisplayColumns;
+		if(list != null) {
+			for (LookupDisplayColumn ldc : list) {
+				retValue.lookupDisplayColumnNames.add(ldc.ColumnName);
+			}
+		}
 		return retValue;
 	}	//	getLookup_Table
 
