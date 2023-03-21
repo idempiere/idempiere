@@ -660,6 +660,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				+ " FOREIGN KEY (" + getColumnName() + ") REFERENCES "
 				+ AD_Table(AD_Table_ID) ON DELETE CASCADE
 		**/
+		MTable table = MTable.get(getAD_Table_ID());
 		// IDEMPIERE-965
 		if (getColumnName().equals(PO.getUUIDColumnName(tableName))) {
 			StringBuilder indexName = new StringBuilder().append(getColumnName()).append("_idx");
@@ -667,7 +668,12 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				indexName = new StringBuilder().append(getColumnName().substring(0, 25));
 				indexName.append("uuidx");
 			}
-			StringBuilder msgreturn = new StringBuilder("CONSTRAINT ").append(indexName).append(" UNIQUE (").append(getColumnName()).append(")");
+			String constraintType;
+			if (table.isUUIDKeyTable())
+				constraintType = "PRIMARY KEY";
+			else
+				constraintType = "UNIQUE";
+			StringBuilder msgreturn = new StringBuilder("CONSTRAINT ").append(indexName).append(" ").append(constraintType).append(" (").append(getColumnName()).append(")");
 			return msgreturn.toString();
 		}
 		return "";
