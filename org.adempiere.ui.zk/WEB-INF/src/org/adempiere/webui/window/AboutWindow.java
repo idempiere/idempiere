@@ -448,7 +448,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		separator = new Separator();
 		separator.setParent(vbox);
 		link = new ToolBarButton();
-		link.setLabel("Mattermost Channels");
+		link.setLabel("Online Support");
 		link.setHref("https://mattermost.idempiere.org");
 		link.setTarget("_blank");
 		link.setParent(vbox);
