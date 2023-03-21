@@ -921,6 +921,18 @@ public class DashboardController implements EventListener<Event> {
     	if(AD_StatusLine_ID > 0) {
     		MStatusLine sl = new MStatusLine(Env.getCtx(), AD_StatusLine_ID, null);
     		final Html statusLineHtml = new Html();
+    		statusLineHtml.addEventListener(Events.ON_AFTER_SIZE, new EventListener<AfterSizeEvent>() {
+				@Override
+				public void onEvent(AfterSizeEvent event) throws Exception {
+	        		int width = event.getWidth()*90/100;
+	        		int height = event.getHeight();
+	        		//set normal height
+	        		if (height == 0) {
+	        			height = width * 85 / 100;
+	        			statusLineHtml.setHeight(height+"px");
+	        		}
+				}
+			});
     		statusLineHtml.setContent(sl.parseLine(0));
     		Div div = new Div();
     		div.appendChild(statusLineHtml);
