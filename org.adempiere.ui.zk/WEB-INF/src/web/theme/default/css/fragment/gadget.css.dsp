@@ -261,6 +261,7 @@
  	justify-content: center;
  	align-items: center;
  	height: 100%;
+	padding: 10px 0px;
 }
 
 .help-content
