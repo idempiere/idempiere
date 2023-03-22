@@ -92,6 +92,10 @@ public class GridField
 	private static final Character SYSTEM_PREFERENCE_DEFAULT = '5';
 	private static final Character PANEL_PREFERENCE_DEFAULT = '6';
 	private static final Character DATA_TYPE_DEFAULT = '7';
+	private static final String DEFAULT_PRIORITY_ORDER = "123457";
+	
+	//default is preference for field > special case > default logic > sql default > data-type default
+	private static final String DEFAULT_PRIORITY_ORDER_FOR_PANEL = "623";
 
 	/**
 	 *  Field Constructor.
@@ -632,11 +636,9 @@ public class GridField
 		if (isIgnoreDefault())
 			return null;
 		
-		String orderGetDefault = "123457";// this value can put to system configuration
-		
 		Object defaultValue = null;
 		
-		if ((defaultValue = getDefault (orderGetDefault)) != null){
+		if ((defaultValue = getDefault (DEFAULT_PRIORITY_ORDER)) != null){
 			return defaultValue;
 		}
 		
@@ -652,9 +654,7 @@ public class GridField
 	 * @return
 	 */
 	public Object getDefaultForPanel (){
-		//default is preference for field > special case > default logic > sql default > data-type default
-		String defaultSeq = "623";
-		return getDefault (MSysConfig.getValue(MSysConfig.ZK_SEQ_DEFAULT_VALUE_PANEL, defaultSeq, Env.getAD_Client_ID(m_vo.ctx)));
+		return getDefault (MSysConfig.getValue(MSysConfig.ZK_SEQ_DEFAULT_VALUE_PANEL, DEFAULT_PRIORITY_ORDER_FOR_PANEL, Env.getAD_Client_ID(m_vo.ctx)));
 	}
 	
 	/**
