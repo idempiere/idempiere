@@ -23,6 +23,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Combinationbox;
+import org.adempiere.webui.component.ComboEditorBox;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.Datebox;
 import org.adempiere.webui.component.DatetimeBox;
@@ -831,6 +832,8 @@ public class QuickGridTabRowRenderer
 		else if (component instanceof Paymentbox && (((Paymentbox) component).isEnabled() && ((Paymentbox) component).isVisible()))
 			return true;
 		else if (component instanceof PAttributebox && !((PAttributebox) component).getTextbox().isReadonly() && (((PAttributebox) component).isEnabled() && ((PAttributebox) component).isVisible()))
+			return true;
+		else if (component instanceof ComboEditorBox && !((ComboEditorBox) component).getCombobox().isReadonly() && (((ComboEditorBox) component).isEnabled() && ((ComboEditorBox) component).isVisible()))
 			return true;
 		else
 			return false;
