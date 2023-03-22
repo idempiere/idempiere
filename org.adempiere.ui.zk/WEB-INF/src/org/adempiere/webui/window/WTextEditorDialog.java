@@ -284,7 +284,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	}
 	
 	private void onSize() {
-		editor.invalidate();
+		if(editor != null)
+			editor.invalidate();
 	}
 	
 	private void updateStatus(int newLength) {
