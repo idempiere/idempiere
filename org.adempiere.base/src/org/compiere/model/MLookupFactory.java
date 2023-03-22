@@ -601,8 +601,14 @@ public class MLookupFactory
 		if (isValueDisplayed)
 			lookupDisplayColumns.add("Value");
 		lookupDisplayColumns.add(lookupDisplayColumn != null ? lookupDisplayColumn : DisplayColumn);
-		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
 		retValue.lookupDisplayColumns = lookupDisplayColumns;
+		if(list != null) {
+			retValue.lookupDisplayColumnNames = new ArrayList<>();
+			for (LookupDisplayColumn ldc : list) {
+				retValue.lookupDisplayColumnNames.add(ldc.ColumnName);
+			}
+		}
+		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
 		return retValue;
 	}	//	getLookup_Table
 
