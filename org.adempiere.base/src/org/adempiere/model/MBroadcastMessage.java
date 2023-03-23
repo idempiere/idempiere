@@ -100,22 +100,26 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage implements Immutabl
      */
 	public static MBroadcastMessage get (Properties ctx, int AD_BroadcastMessage_ID)
 	{
-		try {
-            PO.setCrossTenantSafe();
-            Integer key = Integer.valueOf(AD_BroadcastMessage_ID);
-            MBroadcastMessage retValue = s_cache.get(ctx, key, e -> new MBroadcastMessage(ctx, e));
-            if (retValue == null) {
-                retValue = new MBroadcastMessage(ctx, AD_BroadcastMessage_ID, (String) null);
-                if (retValue.get_ID() == AD_BroadcastMessage_ID) {
-                    s_cache.put(key, retValue, e -> new MBroadcastMessage(Env.getCtx(), e));
-                    return retValue;
-                }
-                return null;
-            }
-            return retValue;
-        } finally {
-            PO.clearCrossTenantSafe();
-        }
+		Integer key = Integer.valueOf(AD_BroadcastMessage_ID);
+		MBroadcastMessage retValue = s_cache.get(ctx, key, e -> new MBroadcastMessage(ctx, e));
+		if (retValue == null)
+		{
+			try {
+	            PO.setCrossTenantSafe();
+	            // Here we can receive messages from another tenant and discard them
+				retValue = new MBroadcastMessage (ctx, AD_BroadcastMessage_ID, (String)null);
+	        } finally {
+	            PO.clearCrossTenantSafe();
+	        }
+			if (retValue.get_ID() != AD_BroadcastMessage_ID)
+				return null;
+			s_cache.put(key, retValue, e -> new MBroadcastMessage(Env.getCtx(), e));
+		}
+		if (retValue != null
+			&& retValue.getAD_Client_ID() != 0
+			&& retValue.getAD_Client_ID() != Env.getAD_Client_ID(ctx))
+			return null;
+		return retValue;
 	}	//	get
     
 	
