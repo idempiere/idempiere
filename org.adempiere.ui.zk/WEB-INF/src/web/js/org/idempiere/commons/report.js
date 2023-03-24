@@ -15,10 +15,10 @@ window.idempiere.zoomWindow = function(cmpid, column, value, windowuu){
 	zAu.send(event);
 };
 
-window.idempiere.drillAcross = function(cmpid, column, value, displayValue){
+window.idempiere.drillAcross = function(cmpid, column, value, displayValue, processID){
 	zAu.cmd0.showBusy(null);
 	let widget = zk.Widget.$(cmpid);
-	let event = new zk.Event(widget, 'onDrillAcross', {data: [column, value, displayValue]}, {toServer: true});
+	let event = new zk.Event(widget, 'onDrillAcross', {data: [column, value, displayValue, processID]}, {toServer: true});
 	zAu.send(event);
 };
 
@@ -29,8 +29,8 @@ window.idempiere.drillDown = function(cmpid, column, value){
 	zAu.send(event);
 };
 
-window.idempiere.showColumnMenu = function(doc, e, columnName, row, isUseFontIcons) {
-	let d = idempiere.getMenu (doc, e.target.getAttribute ("componentId"), e.target.getAttribute ("foreignColumnName"), e.target.getAttribute ("value"), e.target.getAttribute ("displayValue"), isUseFontIcons);
+window.idempiere.showColumnMenu = function(doc, e, columnName, row, isUseFontIcons, processID) {
+	let d = idempiere.getMenu (doc, e.target.getAttribute ("componentId"), e.target.getAttribute ("foreignColumnName"), e.target.getAttribute ("value"), e.target.getAttribute ("displayValue"), isUseFontIcons, processID);
 	
 	let posx = 0;
 	let posy = 0;
@@ -56,7 +56,7 @@ window.idempiere.showColumnMenu = function(doc, e, columnName, row, isUseFontIco
 	setTimeout(f, 3000);
 };
 
-window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, displayValue, isUseFontIcons){
+window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, displayValue, isUseFontIcons, processID){
 	doc.contextMenu = null;
 	if (componentId != null){	
 		//menu div
@@ -157,7 +157,8 @@ window.idempiere.getMenu = function(doc, componentId, foreignColumnName, value, 
 		reportDrillHref.style.textDecorationColor = "inherit";
 		reportDrillHref.style.fontSize = "11px";
 		reportDrillHref.style.verticalAlign = "middle";
-		reportDrillHref.setAttribute("onclick", "parent.idempiere.drillAcross('" + componentId + "','" + foreignColumnName + "','" + value + "','" + displayValue + "')");
+		console.log(processID);
+		reportDrillHref.setAttribute("onclick", "parent.idempiere.drillAcross('" + componentId + "','" + foreignColumnName + "','" + value + "','" + displayValue + "','" + processID + "')");
 
 		let drillIco = doc.body.getAttribute ("drillAssistantIco");
 		if (typeof drillIco === 'string' && drillIco.length > 0) {

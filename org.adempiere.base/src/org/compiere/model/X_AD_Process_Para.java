@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Process_Para
  *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Process_Para")
 public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230206L;
+	private static final long serialVersionUID = 20230302L;
 
     /** Standard Constructor */
     public X_AD_Process_Para (Properties ctx, int AD_Process_Para_ID, String trxName)
@@ -56,6 +56,8 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 // N
 			setIsMandatory (false);
 			setIsRange (false);
+			setIsShowNegateButton (false);
+// N
 			setName (null);
 			setSeqNo (0);
 // @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Process_Para WHERE AD_Process_ID=@AD_Process_ID@
@@ -85,6 +87,8 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 // N
 			setIsMandatory (false);
 			setIsRange (false);
+			setIsShowNegateButton (false);
+// N
 			setName (null);
 			setSeqNo (0);
 // @SQL=SELECT NVL(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_Process_Para WHERE AD_Process_ID=@AD_Process_ID@
@@ -586,6 +590,29 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public boolean isRange()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRange);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show Negate Button.
+		@param IsShowNegateButton Show Negate Button for Chosen Multiple editors
+	*/
+	public void setIsShowNegateButton (boolean IsShowNegateButton)
+	{
+		set_Value (COLUMNNAME_IsShowNegateButton, Boolean.valueOf(IsShowNegateButton));
+	}
+
+	/** Get Show Negate Button.
+		@return Show Negate Button for Chosen Multiple editors
+	  */
+	public boolean isShowNegateButton()
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowNegateButton);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

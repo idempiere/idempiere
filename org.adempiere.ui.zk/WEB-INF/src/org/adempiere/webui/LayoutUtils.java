@@ -401,13 +401,14 @@ public final class LayoutUtils {
 	public static ISupportMask findMaskParent (Component child, Class<?> parentClass){
 		Component parent = child;
 		ISupportMask trueParent = null;		
-		while ((parent = parent.getParent()) != null){
+		while (parent != null) {
 			if (ISupportMask.class.isInstance(parent)){
 				if (parentClass == null || parentClass.isInstance(parent)){						
 					trueParent = (ISupportMask)parent;
 					break;
 				}
 			}
+			parent = parent.getParent();
 		}
 		return trueParent;
 	}

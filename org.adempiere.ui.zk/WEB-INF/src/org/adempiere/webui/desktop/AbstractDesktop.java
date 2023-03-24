@@ -27,6 +27,7 @@ import org.adempiere.webui.part.AbstractUIPart;
 import org.compiere.model.MMenu;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
@@ -155,7 +156,26 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 			return null;
 	}
 	
-    /**
+    @Override
+	public int findWindowNo(Component component) {
+	if (component == null)
+		return -1;
+
+	List<Object> windows = getWindows();
+	if (windows != null) {
+		if (windows.contains(component))
+			return windows.indexOf(component);
+			Component parent = component.getParent();
+			while (parent != null) {
+				if (windows.contains(parent))
+					return windows.indexOf(parent);
+				parent = parent.getParent();
+			}
+	}
+		return -1;
+	}
+
+	/**
      * @param win
      */
     public void showWindow(Window win) 

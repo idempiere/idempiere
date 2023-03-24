@@ -444,6 +444,14 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		link.setHref("http://groups.google.com/group/idempiere");
 		link.setTarget("_blank");
 		link.setParent(vbox);
+		
+		separator = new Separator();
+		separator.setParent(vbox);
+		link = new ToolBarButton();
+		link.setLabel("Online Support");
+		link.setHref("https://mattermost.idempiere.org");
+		link.setTarget("_blank");
+		link.setParent(vbox);
 
 		return tabPanel;
 	}

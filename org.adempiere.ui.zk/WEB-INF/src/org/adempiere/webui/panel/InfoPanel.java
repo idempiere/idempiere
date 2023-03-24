@@ -1276,10 +1276,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
      */
 	protected String buildDataSQL(int start, int end) {
 		String dataSql;
-		String dynWhere = getSQLWhere();
+		String dynWhere = getSQLWhere();   //  includes first AND
         StringBuilder sql = new StringBuilder (m_sqlMain);
-        if (dynWhere.length() > 0)
-            sql.append(dynWhere);   //  includes first AND
+        if (dynWhere.length() > 0) {
+			if(sql.toString().trim().endsWith("WHERE")) {
+				dynWhere = dynWhere.replaceFirst("AND", " ");
+			}
+			sql.append(dynWhere);
+		}
         
         if (sql.toString().trim().endsWith("WHERE")) {
         	int index = sql.lastIndexOf(" WHERE");
@@ -1420,11 +1424,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			queryTimeout = MSysConfig.getIntValue(MSysConfig.ZK_INFO_QUERY_TIME_OUT, 0, Env.getAD_Client_ID(Env.getCtx()));
 		
 		long start = System.currentTimeMillis();
-		String dynWhere = getSQLWhere();
+		String dynWhere = getSQLWhere();   //  includes first AND
 		StringBuilder sql = new StringBuilder (m_sqlCount);
 
-		if (dynWhere.length() > 0)
-			sql.append(dynWhere);   //  includes first AND
+		if (dynWhere.length() > 0) {
+			if(sql.toString().trim().endsWith("WHERE")) {
+				dynWhere = dynWhere.replaceFirst("AND", " ");
+			}
+			sql.append(dynWhere);
+		}
 
 		String countSql = Msg.parseTranslation(Env.getCtx(), sql.toString());	//	Variables
 		if (countSql.trim().endsWith("WHERE")) {
@@ -2867,14 +2875,18 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         }
         else
         {
-        	//Workaround for detached HTML input element leak
-        	if (getChildren().size() > 0) {
-				Component[] childs = getChildren().toArray(new Component[0]);
-				for(Component c : childs) {
-					AEnv.detachInputElement(c);
+		//detach if attach to page
+		if (getDesktop() != null)
+		{
+			//Workaround for detached HTML input element leak
+			if (getChildren().size() > 0) {
+					Component[] childs = getChildren().toArray(new Component[0]);
+					for(Component c : childs) {
+						AEnv.detachInputElement(c);
+					}
 				}
-			}
-        	Executions.schedule(getDesktop(), e -> this.detach(), new Event("onAsyncDetach"));
+			Executions.schedule(getDesktop(), e -> this.detach(), new Event("onAsyncDetach"));
+		}
         }
     }   //  dispose
 

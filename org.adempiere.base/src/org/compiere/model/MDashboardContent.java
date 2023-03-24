@@ -5,10 +5,15 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * @author teo_sarca
@@ -172,4 +177,61 @@ public class MDashboardContent extends X_PA_DashboardContent
     	return (I_AD_Menu)MTable.get(getCtx(), I_AD_Menu.Table_Name)
     		.getPO(getAD_Menu_ID(), get_TrxName());
     }
+    
+    /**
+     * Parse Process Parameters
+     * @param parameters
+     * @return HashMap<String parameterName, String value>
+     */
+    public static Map<String, String> parseProcessParameters(String parameters)	{
+    	Map<String, String> paramMap = new HashMap<String, String>();
+    	if (parameters != null && parameters.trim().length() > 0) {
+			String[] params = parameters.split("[,]");
+			for (String s : params)
+			{
+				int pos = s.indexOf("=");
+				String key = s.substring(0, pos);
+				String value = s.substring(pos + 1);
+				paramMap.put(key, value);
+			}
+    	}
+    	return paramMap;
+    }
+    
+    /**
+     * Parse all Process Parameters that are mandatory and not set
+     * @return String of comma separated parameter names
+     */
+    public String getEmptyMandatoryProcessPara() {
+    	StringBuilder emptyPara = new StringBuilder();
+    	int processID = getAD_Process_ID();
+		if(processID > 0) {
+			MProcess process = MProcess.get(processID);
+			Map<String, String> paramMap = parseProcessParameters(getProcessParameters());
+			for(MProcessPara processPara : process.getParameters()) {
+				if(processPara.isMandatory() && Util.isEmpty(paramMap.get(processPara.getColumnName()), true)) {
+					if(!Util.isEmpty(emptyPara.toString(), true))
+						emptyPara.append(", ");
+					emptyPara.append(processPara.getColumnName());
+				}
+			}
+		}
+		return emptyPara.toString();
+    }
+    
+    /*
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return 
+	 */
+	protected boolean beforeSave (boolean newRecord) {
+		// all mandatory process parameters need to be set
+		if(getAD_Process_ID() > 0) {
+			String emptyPara = getEmptyMandatoryProcessPara();
+			if(!Util.isEmpty(emptyPara)) {
+				throw new AdempiereException(Msg.getMsg(getCtx(), "FillMandatoryParametersDashboard", new Object[] {emptyPara}));
+			}
+		}
+		return true;
+	}
 }

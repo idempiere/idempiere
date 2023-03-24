@@ -119,4 +119,13 @@
             priority="0">
       </exporter>
    </extension>
+   <extension
+         id="org.adempiere.impexp.GridTabSQLInsertExporter"
+         name="Export data as SQL insert statement"
+         point="org.adempiere.base.IGridTabExporter">
+      <exporter
+            class="org.adempiere.impexp.GridTabSQLInsertExporter"
+            priority="0">
+      </exporter>
+   </extension>
 </plugin>

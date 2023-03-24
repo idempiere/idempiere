@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Process_DrillRule
  *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Process_DrillRule")
 public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20230109L;
 
     /** Standard Constructor */
     public X_AD_Process_DrillRule (Properties ctx, int AD_Process_DrillRule_ID, String trxName)
@@ -41,6 +41,8 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 			setAD_Process_DrillRule_ID (0);
 			setAD_Process_ID (0);
 			setAD_Process_Para_ID (0);
+			setIsValid (false);
+// N
 			setName (null);
         } */
     }
@@ -54,6 +56,8 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 			setAD_Process_DrillRule_ID (0);
 			setAD_Process_ID (0);
 			setAD_Process_Para_ID (0);
+			setIsValid (false);
+// N
 			setName (null);
         } */
     }
@@ -275,6 +279,29 @@ public class X_AD_Process_DrillRule extends PO implements I_AD_Process_DrillRule
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Valid.
+		@param IsValid Element is valid
+	*/
+	public void setIsValid (boolean IsValid)
+	{
+		set_Value (COLUMNNAME_IsValid, Boolean.valueOf(IsValid));
+	}
+
+	/** Get Valid.
+		@return Element is valid
+	  */
+	public boolean isValid()
+	{
+		Object oo = get_Value(COLUMNNAME_IsValid);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Name.

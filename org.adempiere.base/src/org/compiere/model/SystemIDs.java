@@ -148,6 +148,7 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_PRODUCTATTRIBUTE = 35;
 	public final static int REFERENCE_DATATYPE_QUANTITY = 29;
 	public final static int REFERENCE_DATATYPE_RADIOGROUP_LIST= 200152;
+	public final static int REFERENCE_DATATYPE_RECORD_ID = 200202;
 	public final static int REFERENCE_DATATYPE_ROWID = 26;
 	public final static int REFERENCE_DATATYPE_SEARCH = 30;
 	public final static int REFERENCE_DATATYPE_SINGLE_SELECTION_GRID = 200127;
@@ -160,6 +161,7 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_TIMESTAMP_WITH_TIMEZONE = 200133;
 	public final static int REFERENCE_DATATYPE_TIMEZONE = 200135;
 	public final static int REFERENCE_DATATYPE_URL = 40;
+	public final static int REFERENCE_DATATYPE_UUID = 200231;
 	public final static int REFERENCE_DATATYPE_YES_NO = 20;
 
 	public final static int REFERENCE_ACCOUNT = 175;

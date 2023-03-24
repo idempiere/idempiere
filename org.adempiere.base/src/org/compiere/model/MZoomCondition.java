@@ -278,6 +278,29 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 	 */
 	public static int findZoomWindowByTableId(int AD_Table_ID, int recordID, int windowNo)
 	{
+		return findZoomWindowByTableIdOrUU(AD_Table_ID, recordID, null, windowNo);
+	}
+
+	/**
+	 * find AD_Window_ID from matching zoom condition record
+	 * @param AD_Table_ID
+	 * @param recordUU
+	 * @return AD_Window_ID
+	 */
+	public static int findZoomWindowByTableUU(int AD_Table_ID, String recordUU, int windowNo)
+	{
+		return findZoomWindowByTableIdOrUU(AD_Table_ID, -1, recordUU, windowNo);
+	}
+
+	/**
+	 * find AD_Window_ID from matching zoom condition record
+	 * @param AD_Table_ID
+	 * @param recordID
+	 * @param recordUU
+	 * @return AD_Window_ID
+	 */
+	public static int findZoomWindowByTableIdOrUU(int AD_Table_ID, int recordID, String recordUU, int windowNo)
+	{
 		final int winNo = windowNo;
 		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);		
 		MZoomCondition[] conditions = MZoomCondition.getConditions(AD_Table_ID);
@@ -289,7 +312,11 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 				}
 			};
 
-			String whereClause = table.getTableName() + "_ID="+recordID;
+			String whereClause;
+			if (recordUU != null)
+				whereClause = PO.getUUIDColumnName(table.getTableName())+"="+DB.TO_STRING(recordUU);
+			else
+				whereClause = table.getTableName() + "_ID="+recordID;
 			for (MZoomCondition condition : conditions)
 			{
 				if (! Util.isEmpty(condition.getZoomLogic())) {

@@ -289,8 +289,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		if (value == null)
 			return "";
 
+		GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
 		if (rowIndex >= 0) {
-			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
 			if (!isForceGetValue && !gridField.isDisplayed(gridRowCtx, true)) {
 				return "";
 			}
@@ -303,7 +303,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		else if (readOnlyEditors.get(gridField) != null) 
 		{
 			WEditor editor = readOnlyEditors.get(gridField);			
-			return editor.getDisplayTextForGridView(value);
+			return editor.getDisplayTextForGridView(gridRowCtx, value);
 		}
     	else
     		return value.toString();
@@ -327,6 +327,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		} else if (gridField.isHeading()) {
 			component = createInvisibleComponent();
 		} else if (gridField.getDisplayType() == DisplayType.Button) {
+			// Each row renderer --- ctx per row wise
 			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
 			WButtonEditor editor = new WButtonEditor(gridField, rowIndex);
 			editor.setValue(gridTab.getValue(rowIndex, gridField.getColumnName()));
@@ -650,7 +651,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				}
 				
 				GridRowCtx ctx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
-				if (! (gridPanelFields[i].isDisplayed(ctx, true) || gridPanelFields[i].isDisplayedGrid())){
+				if (!gridPanelFields[i].isDisplayedGrid(ctx, true)){
 					// IDEMPIERE-2253 
 					component.setVisible(false);
 				}
@@ -813,7 +814,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		            Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab) 
 		            	: gridPanelFields[i].getVO().ctx;
 		            //check context
-					if (!gridPanelFields[i].isDisplayed(ctx, true)){
+					if (!gridPanelFields[i].isDisplayedGrid(ctx, true)){
 						// IDEMPIERE-2253 
 						editor.getComponent().setVisible(false);
 					}

@@ -590,7 +590,8 @@ public class DrillReportCtl {
 						+ " (=" + value + "=) " + value.getClass().getName());
 				}
 				// Mandatory check
-				if(processPara.isMandatory() && Util.isEmpty(sPara.getParameterDefault())) {
+				if(processPara.isMandatory() && Util.isEmpty(sPara.getParameterDefault()) 
+						&& !MProcessDrillRule.SHOWHELP_ShowHelp.equalsIgnoreCase(processDrillRule.getShowHelp())) {
 					if((!processPara.isRange()) || (processPara.isRange() && Util.isEmpty(sPara.getParameterToDefault())))
 						throw new AdempiereException(Msg.parseTranslation(Env.getCtx(), "@FillMandatoryDrillRulePara@"));
 				}
@@ -607,9 +608,11 @@ public class DrillReportCtl {
 		}	//	Drill Rule Parameter loop
 		
 		// Mandatory check
-		for(MProcessPara unsetProcessPara : processParasExclDrillRuleParas) {
-			if(unsetProcessPara.isMandatory()) {
-				throw new AdempiereException(Msg.parseTranslation(Env.getCtx(), "@FillMandatoryDrillRulePara@"));
+		if(!MProcessDrillRule.SHOWHELP_ShowHelp.equalsIgnoreCase(processDrillRule.getShowHelp())) {
+			for(MProcessPara unsetProcessPara : processParasExclDrillRuleParas) {
+				if(unsetProcessPara.isMandatory()) {
+					throw new AdempiereException(Msg.parseTranslation(Env.getCtx(), "@FillMandatoryDrillRulePara@"));
+				}
 			}
 		}
 		pi.setParameter(iParams.toArray(new ProcessInfoParameter[0]));

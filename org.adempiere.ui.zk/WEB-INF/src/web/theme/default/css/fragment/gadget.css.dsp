@@ -10,13 +10,6 @@
 	background-image: none; background-color: #FFFFFF;
 }
 
-.statusline-wrapper > .z-panel-head {
-	position: absolute;
-	top: 1;
-	z-index: 1;
-	width: calc(100% - 10px);
-}
-
 .dashboard-widget.z-panel {
 	display: flex; 
 	flex-direction: column; 
@@ -27,12 +20,6 @@
 }
 
 .statusline-wrapper {
-	height: 100%;
-}
-
-.statusline-wrapper > .z-panel-body {
-	position: relative;
-	top: 0;
 	height: 100%;
 }
 
@@ -273,8 +260,8 @@
 	flex-direction: column;
  	justify-content: center;
  	align-items: center;
- 	padding: 40px 0px 10px;
  	height: 100%;
+	padding: 10px 0px;
 }
 
 .help-content
@@ -344,4 +331,19 @@
 .dashboard-content-help-icon {
 	padding: 5px;
 	cursor: default;
+}
+
+.fill-mandatory-process-para-wrapper {
+	padding: 11px;
+	display: flex;
+	flex-direction: column;
+	max-width: 500px;
+}
+
+.fill-mandatory-process-para-text {
+    background: #C62223;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    opacity: 90%;
 }

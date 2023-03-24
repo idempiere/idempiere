@@ -102,6 +102,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
     public static final String FEEDBACK_EMAIL_CC = "FEEDBACK_EMAIL_CC";
     public static final String FEEDBACK_EMAIL_TO = "FEEDBACK_EMAIL_TO";
+    public static final String FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE = "FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE";
     public static final String FORM_SQL_PROCESS_ALLOWED_KEYWORDS = "FORM_SQL_PROCESS_ALLOWED_KEYWORDS";
     public static final String FORM_SQL_QUERY_ALLOWED_KEYWORDS = "FORM_SQL_QUERY_ALLOWED_KEYWORDS";
     public static final String FORM_SQL_QUERY_LOG_ISSUE = "FORM_SQL_QUERY_LOG_ISSUE";
@@ -197,6 +198,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_BUTTON_STYLE = "ZK_BUTTON_STYLE";
     public static final String ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE = "ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE";
     public static final String ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL = "ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL";
+    /** @deprecated not use for the new billboard implementation */
+    @Deprecated(forRemoval = true, since = "11")
     public static final String ZK_DASHBOARD_PERFORMANCE_TIMEOUT = "ZK_DASHBOARD_PERFORMANCE_TIMEOUT";
     public static final String ZK_DASHBOARD_REFRESH_INTERVAL = "ZK_DASHBOARD_REFRESH_INTERVAL";
     public static final String ZK_DECIMALBOX_PROCESS_DOTKEYPAD = "ZK_DECIMALBOX_PROCESS_DOTKEYPAD";

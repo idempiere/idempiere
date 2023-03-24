@@ -1020,7 +1020,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		boolean haveNotProcess = !haveProcess; // A field is editabile only if is not readonly and theres a process;
 				
 		int index = infoColumn.getSelectClause().indexOf(".");
-		if (index == infoColumn.getSelectClause().lastIndexOf("."))
+		if (index >= 0 && index == infoColumn.getSelectClause().lastIndexOf("."))
 		{
 			String synonym = infoColumn.getSelectClause().substring(0, index);
 			for(TableInfo tableInfo : tableInfos)
@@ -1398,6 +1398,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	protected void prepareTable(ColumnInfo[] layout, String from, String where,
 			String orderBy) {
 		super.prepareTable(layout, from, where, orderBy);
+
+		addViewIDToQuery();
+		addKeyViewToQuery();
+
 		if (m_sqlMain.indexOf("@") >= 0) {
 			String sql = Env.parseContext(infoContext, p_WindowNo, m_sqlMain, true);
 			if (sql == null || sql.length() == 0) {
@@ -1406,10 +1410,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				m_sqlMain = sql;
 			}
 		}
-		
-		addViewIDToQuery();
-		addKeyViewToQuery();
-		
+
 		if (m_sqlMain.length() > 0 &&  infoWindow.isDistinct()) {
 			m_sqlMain = m_sqlMain.substring("SELECT ".length());
 			m_sqlMain = "SELECT DISTINCT " + m_sqlMain;			
