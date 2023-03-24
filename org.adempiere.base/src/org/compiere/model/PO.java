@@ -5534,6 +5534,8 @@ public abstract class PO
 		if (recordId <= 0)
 			return;
 		int tableId = get_ValueAsInt(idxTableId);
+		if (tableId <= 0)
+			return;
 		MTable ft = MTable.get(getCtx(), tableId);
 		boolean systemAccess = false;
 		String accessLevel = ft.getAccessLevel();
