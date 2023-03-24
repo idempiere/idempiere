@@ -33,6 +33,7 @@ import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WTask;
+import org.compiere.model.MForm;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MQuery;
 import org.compiere.model.MTask;
@@ -95,7 +96,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 			//do not show window title when open as tab
 			form.setTitle(null);
 			preOpenNewTab();
-			windowContainer.addWindow(tabPanel, form.getFormName(), true, null);
+			windowContainer.addWindow(tabPanel, form.getFormName(), true, DecorateInfo.get(MForm.get(formId)));
 			form.focus();
 		} else {
 			form.setAttribute(Window.MODE_KEY, form.getWindowMode());

@@ -25,6 +25,7 @@ import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ManageImageCache;
+import org.compiere.model.MForm;
 import org.compiere.model.MImage;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MUserDefInfo;
@@ -153,6 +154,12 @@ public class Tab extends org.zkoss.zul.Tab
 
 				return new DecorateInfo(image);
 			}
+			return null;
+		}
+
+		public static DecorateInfo get(MForm form){
+			if (form != null)
+				return new DecorateInfo(form.getImageURL());
 			return null;
 		}
 	}
