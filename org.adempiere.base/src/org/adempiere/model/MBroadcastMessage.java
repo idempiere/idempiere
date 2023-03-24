@@ -104,14 +104,21 @@ public class MBroadcastMessage extends X_AD_BroadcastMessage implements Immutabl
 		MBroadcastMessage retValue = s_cache.get(ctx, key, e -> new MBroadcastMessage(ctx, e));
 		if (retValue == null)
 		{
-			retValue = new MBroadcastMessage (ctx, AD_BroadcastMessage_ID, (String)null);
-			if (retValue.get_ID() == AD_BroadcastMessage_ID)
-			{
-				s_cache.put(key, retValue, e -> new MBroadcastMessage(Env.getCtx(), e));
-				return retValue;
-			}
-			return null;
+			try {
+	            PO.setCrossTenantSafe();
+	            // Here we can receive messages from another tenant and discard them
+				retValue = new MBroadcastMessage (ctx, AD_BroadcastMessage_ID, (String)null);
+	        } finally {
+	            PO.clearCrossTenantSafe();
+	        }
+			if (retValue.get_ID() != AD_BroadcastMessage_ID)
+				return null;
+			s_cache.put(key, retValue, e -> new MBroadcastMessage(Env.getCtx(), e));
 		}
+		if (retValue != null
+			&& retValue.getAD_Client_ID() != 0
+			&& retValue.getAD_Client_ID() != Env.getAD_Client_ID(ctx))
+			return null;
 		return retValue;
 	}	//	get
     
