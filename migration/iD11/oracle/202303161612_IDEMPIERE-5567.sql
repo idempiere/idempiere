@@ -36,3 +36,19 @@ UPDATE AD_Field SET DisplayLogic='@AD_Reference_ID@=17 | @AD_Reference_ID@=18 | 
 UPDATE AD_Field SET DisplayLogic='@AD_Reference_ID@=17 | @AD_Reference_ID@=18 | @AD_Reference_ID@=30 | @AD_Reference_ID@=28 | @AD_Reference_ID@=200152 | @AD_Reference_ID@=200161 | @AD_Reference_ID@=200162 | @AD_Reference_ID@=200163 | @AD_Reference_ID@=200233 | @AD_Reference_ID@=200235',Updated=TO_TIMESTAMP('2023-03-16 18:38:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=171
 ;
 
+-- Mar 24, 2023, 5:28:41 PM CET
+INSERT INTO AD_Reference (AD_Reference_ID,Name,ValidationType,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,IsOrderByValue,AD_Reference_UU,ShowInactive) VALUES (200237,'AD_Table with ID or UU Column','T',0,0,'Y',TO_TIMESTAMP('2023-03-24 17:28:41','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-03-24 17:28:41','YYYY-MM-DD HH24:MI:SS'),100,'D','N','23255e3a-0bf4-43f9-afdf-419ab47e21ff','N')
+;
+
+-- Mar 24, 2023, 5:29:41 PM CET
+INSERT INTO AD_Ref_Table (AD_Reference_ID,AD_Table_ID,AD_Key,AD_Display,WhereClause,OrderByClause,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsValueDisplayed,EntityType,AD_Ref_Table_UU) VALUES (200237,100,100,100,'AD_Table.IsView=''N'' AND AD_Table.IsActive=''Y'' AND EXISTS (SELECT 1 FROM AD_Column c WHERE c.AD_Table_ID=AD_Table.AD_Table_ID AND (UPPER(c.ColumnName)=UPPER(AD_Table.TableName)||''_ID'' OR UPPER(c.ColumnName)=UPPER(AD_Table.TableName)||''_UU'') AND c.IsActive=''Y'')','AD_Table.TableName',0,0,'Y',TO_TIMESTAMP('2023-03-24 17:29:41','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-03-24 17:29:41','YYYY-MM-DD HH24:MI:SS'),100,'N','D','908b6255-4cf4-4d76-9208-acc5e36c6add')
+;
+
+-- Mar 24, 2023, 5:29:58 PM CET
+UPDATE AD_Process_Para SET AD_Reference_Value_ID=200237,Updated=TO_TIMESTAMP('2023-03-24 17:29:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Process_Para_ID=200264
+;
+
+-- Mar 24, 2023, 6:49:29 PM CET
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','UUID Columns must end with suffix _UU',0,0,'Y',TO_TIMESTAMP('2023-03-24 18:49:28','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-03-24 18:49:28','YYYY-MM-DD HH24:MI:SS'),100,200827,'UUColumnsMustEndWithUU','D','183dfdda-b98b-4702-a942-11eaf0d5f816')
+;
+

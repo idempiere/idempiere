@@ -5632,8 +5632,15 @@ public abstract class PO
 			String fktab = vnp.getName();
 			int index = get_ColumnIndex(fkcol); 
 			if (is_new() || is_ValueChanged(index)) {
-				int fkval = get_ValueAsInt(index);
-				if (fkval > 0) {
+				Object fkval = null;
+				if (fkcol.endsWith("_UU")) {
+					fkval = get_Value(index).toString();
+				} else {
+					fkval = Integer.valueOf(get_ValueAsInt(index));
+				}
+				if (fkval != null
+					&& (   (fkval instanceof Integer && ((Integer)fkval).intValue() > 0)
+						|| (fkval instanceof String && ((String)fkval).length() > 0) )) {
 					MTable ft = MTable.get(getCtx(), fktab);
 					boolean systemAccess = false;
 					String accessLevel = ft.getAccessLevel();
@@ -5725,7 +5732,8 @@ public abstract class PO
 		int size = get_ColumnCount();
 		for (int i = 0; i < size; i++) {
 			int dt = p_info.getColumnDisplayType(i);
-			if (dt != DisplayType.ID && DisplayType.isID(dt)) {
+			if (   (dt != DisplayType.ID   && DisplayType.isID(dt)  )
+				|| (dt != DisplayType.UUID && DisplayType.isUUID(dt)) ) {
 				MColumn col = MColumn.get(p_info.getColumn(i).AD_Column_ID);
 				if ("AD_Client_ID".equals(col.getColumnName())) {
 					// ad_client_id is verified with checkValidClient

@@ -33,6 +33,7 @@ import java.util.Properties;
 
 import org.compiere.model.MTestUU;
 import org.compiere.model.PO;
+import org.compiere.model.X_TestUUDet;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
@@ -46,6 +47,7 @@ import org.junit.jupiter.api.Test;
 public class MTestUUTest extends AbstractTestCase {
 
 	private static final String TestRecordInGardenWorld = "8858ecc2-cf1d-405f-987f-793536037e76";
+	private static final String TestRecordInSystem = "4e148b89-bdd9-48a6-8a8a-7609092f965c";
 
 	public MTestUUTest() {
 	}
@@ -84,6 +86,26 @@ public class MTestUUTest extends AbstractTestCase {
 		testuu.deleteEx(true);
 		MTestUU testuu2 = new MTestUU(ctx, TestRecordInGardenWorld, trxName);
 	    assertFalse(testuu2.get_UUID().equals(TestRecordInGardenWorld));
+	}
+
+	@Test
+	public void testInsertingTestUUDet() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		X_TestUUDet testuudet = new X_TestUUDet(ctx, PO.UUID_NEW_RECORD, trxName);
+		testuudet.setName("Test UU Det record created on JUnit test");
+		testuudet.setTestUU_UU(TestRecordInGardenWorld);
+		testuudet.setAltTestUU_UU(TestRecordInSystem);
+		assertTrue(testuudet.validForeignKeys());
+		testuudet.saveEx();
+		testuudet.load(trxName);
+	    assertEquals("Test UU Det record created on JUnit test", testuudet.getName());
+	    String uukey = testuudet.getTestUUDet_UU();
+	    String uuid = testuudet.get_UUID();
+	    assertTrue(Util.isUUID(uukey));
+	    assertEquals(uukey, uuid);
+	    assertEquals(testuudet.getAltTestUU_UU(), TestRecordInSystem);
+	    assertEquals(testuudet.getTestUU_UU(), TestRecordInGardenWorld);
 	}
 
 }
