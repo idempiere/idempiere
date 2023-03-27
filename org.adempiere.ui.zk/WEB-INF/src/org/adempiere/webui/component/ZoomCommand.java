@@ -25,11 +25,13 @@ import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- * 
+ * {@link Desktop} listener for onZoom {@link AuRequest}.<br/>
+ * Create {@link ZoomEvent} from {@link AuRequest} and post to the component that send the {@link AuRequest}.
  * @author hengsin
  *
  */
@@ -38,6 +40,7 @@ public class ZoomCommand implements AuService {
 	public ZoomCommand() {
 	}
 
+	@Override
 	public boolean service(AuRequest request, boolean everError) {
 		if (!ZoomEvent.EVENT_NAME.equals(request.getCommand()))
 			return false;

@@ -41,11 +41,12 @@ import org.zkoss.zul.South;
 public class FolderBrowser extends Window implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5477614056976038703L;
 	
 	private Textbox txtPath = new Textbox();
+	/** Listbox of folders and files */
 	private Listbox listDir = new Listbox();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 
@@ -53,13 +54,15 @@ public class FolderBrowser extends Window implements EventListener<Event>
 	private String path;
 	private File root;
 
+	/**
+	 * Default constructor
+	 */
 	public FolderBrowser()
 	{
 		this(null, false);
 	}
 
 	/**
-	 *
 	 * @param browseForFolder
 	 */
 	public FolderBrowser(boolean browseForFolder)
@@ -68,9 +71,8 @@ public class FolderBrowser extends Window implements EventListener<Event>
 	}
 
 	/**
-	 *
-	 * @param rootPath
-	 * @param browseForFolder
+	 * @param rootPath Optional root folder. If null, take ZK_ROOT_FOLDER_BROWSER from AD_SysConfig or iDempiere home as root folder.
+	 * @param browseForFolder true for folder browser, false for file.
 	 */
 	public FolderBrowser(String rootPath, boolean browseForFolder)
 	{
@@ -117,6 +119,10 @@ public class FolderBrowser extends Window implements EventListener<Event>
 		AEnv.showWindow(this);
 	}
 	
+	/**
+	 * Get files and folders under dirPath
+	 * @param dirPath Directory path
+	 */
 	private void getFileListing(String dirPath)
 	{		
 		File dir = new File(dirPath);
@@ -169,6 +175,7 @@ public class FolderBrowser extends Window implements EventListener<Event>
 		txtPath.setValue(dir.getAbsolutePath());
 	}
 	
+	@Override
 	public void onEvent(Event e) throws Exception 
 	{	
 		if(e.getName().equals(Events.ON_DOUBLE_CLICK) && e.getTarget() instanceof ListItem)
@@ -224,6 +231,9 @@ public class FolderBrowser extends Window implements EventListener<Event>
 		}
 	}
 	
+	/**
+	 * @return selected path
+	 */
 	public String getPath()
 	{
 		return path;

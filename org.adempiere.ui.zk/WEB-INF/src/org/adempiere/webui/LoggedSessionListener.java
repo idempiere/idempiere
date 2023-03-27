@@ -49,6 +49,7 @@ import org.compiere.util.WebUtil;
  * Sync state of {@link HttpSession} and AD_Session
  */
 public class LoggedSessionListener implements HttpSessionListener, ServletContextListener, ServerStateChangeListener{
+	/** Http Session Id:HttpSession */
 	private static Hashtable<String, HttpSession> AD_SessionList = new Hashtable<String, HttpSession>();
 	private static final CLogger logger = CLogger.getCLogger(LoggedSessionListener.class);
 	
@@ -107,6 +108,9 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
          */
 	}
 	
+	/**
+	 * Update all active AD_Session records (Processed=N) to inactive (Processed=Y)
+	 */
 	private void DestroyAllSession() {
 		if (!Adempiere.isStarted())
 		{
@@ -124,6 +128,11 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
 		Adempiere.removeServerStateChangeListener(this);
 	}
 	
+	/**
+	 * Update AD_Session record to inactive (Processed=Y) by session id and server name
+	 * @param sessionID Http Session Id
+	 * @param serverName
+	 */
 	private void removeADSession(String sessionID, String serverName) {
 		String sql = "UPDATE AD_Session SET Processed='Y' WHERE WebSession=? AND ServerName=? AND Processed='N'";
 		int no = DB.executeUpdate(sql, new Object[] {sessionID, serverName}, false, null);

@@ -139,7 +139,6 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 		ZKUpdateUtil.setVflex(pluginsTable, "1");
 		ZKUpdateUtil.setHflex(pluginsTable, "1");
 		refreshPluginTable();
-		pluginsTable.autoSize();
 		pluginsTable.addEventListener(Events.ON_SELECT, this);
 
 		pluginActions = new Listbox(new KeyNamePair[] { new KeyNamePair(PLUGIN_ACTION_NONE, ""),

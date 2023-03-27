@@ -20,20 +20,25 @@ package org.adempiere.webui.component;
 import org.adempiere.webui.LayoutUtils;
 
 /**
+ * Extend {@link org.zkoss.zul.Toolbarbutton}
  * @author Sendy Yagambrum
  * @date July, 10 2007
  */
 public class ToolBarButton extends org.zkoss.zul.Toolbarbutton
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1214319982911389339L;
 
     private String name;
     
-    private boolean pressed; // Elaine 2008/12/09
+    /** true if using toggle mode and checked */
+    private boolean pressed;
     
+    /**
+     * Default constructor
+     */
     public ToolBarButton() {
     	setAutodisable("self");
     }
@@ -53,6 +58,10 @@ public class ToolBarButton extends org.zkoss.zul.Toolbarbutton
 		}
 	}
     
+    /**
+     * Set to toggle or default mode.
+     * @param pressed true for toggle mode.
+     */
     public void setPressed(boolean pressed) {
     	this.pressed = pressed; // Elaine 2008/12/09
     	
@@ -67,23 +76,34 @@ public class ToolBarButton extends org.zkoss.zul.Toolbarbutton
 		}
     }
     
-    // Elaine 2008/12/09
+    /**
+     * @return true if toggle mode and checked
+     */
     public boolean isPressed()
     {
     	return pressed;
     }
-    //
 
+    /**
+     * @param name
+     */
 	public ToolBarButton(String name) {
     	super();
     	this.name = name;
     	setAutodisable("self");
     }
     
+	/**
+	 * @return name of button
+	 */
     public String getName() {
     	return name;
     }
     
+    /**
+     * Set name of button
+     * @param name
+     */
     public void setName(String name) {
     	this.name = name;
     }

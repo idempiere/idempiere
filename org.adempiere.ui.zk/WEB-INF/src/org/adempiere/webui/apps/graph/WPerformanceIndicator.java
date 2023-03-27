@@ -36,7 +36,7 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 
 /**
- * 	Performance Indicator
+ * 	Panel with chart for {@link MGoal}
  *
  *  @author hengsin
  */

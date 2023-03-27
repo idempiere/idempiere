@@ -134,8 +134,8 @@ public class GridView extends Vlayout implements EventListener<Event>, IdSpace, 
 	private int pageSize = DEFAULT_PAGE_SIZE;
 
 	/**
-	 * list field display in grid mode, in case user customize grid
-	 * this list container only display list.
+	 * fields display in grid mode, in case user customize grid,
+	 * this list include only display fields.
 	 */
 	private GridField[] gridFields;
 	

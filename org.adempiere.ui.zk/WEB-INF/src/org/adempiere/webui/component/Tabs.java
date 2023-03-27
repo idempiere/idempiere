@@ -28,27 +28,29 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabpanels;
 
-/**
- *
+/** 
+ * Extend {@link org.zkoss.zul.Tabs}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 2, 2007
  * @version $Revision: 0.10 $
  */
 public class Tabs extends org.zkoss.zul.Tabs implements EventListener<Event>
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 4939779587719677815L;
 
+	/**
+	 * Default constructor
+	 */
 	public Tabs()
     {
         super();
     }
 	
 	/**
-	 * override to set drag/drop for {@link Tab} already add to {@link Tabs} before {@link Tabs} add to {@link Tabbox}
+	 * override to set drag/drop for {@link Tab} already added to {@link Tabs} before {@link Tabs} added to {@link Tabbox}
 	 */
 	@Override
 	public void setParent(Component parent) {
@@ -144,7 +146,7 @@ public class Tabs extends org.zkoss.zul.Tabs implements EventListener<Event>
 		if (dropComp instanceof Tab) {
 			dropIndex = this.getChildren().indexOf(dropComp);
 			dropPanel = tabpanels.getChildren().get(dropIndex);
-		}// other case is drop to tabs
+		}// else is drop to tabs
 		
 		int draggIndex = this.getChildren().indexOf(draggComp);
 		Component draggPanel = tabpanels.getChildren().get(draggIndex);

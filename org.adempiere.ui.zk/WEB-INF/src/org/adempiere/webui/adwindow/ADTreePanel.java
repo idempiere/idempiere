@@ -158,7 +158,6 @@ public class ADTreePanel extends Panel implements EventListener<Event>
     {
         String eventName = event.getName();
         
-        // Elaine 2009/02/27 - expand tree
         if (eventName.equals(Events.ON_CHECK) && event.getTarget() == expandToggle)
         {
         	Clients.showBusy(null);
@@ -169,7 +168,6 @@ public class ADTreePanel extends Panel implements EventListener<Event>
         	expandOnCheck();
         	Clients.clearBusy();
         }
-        //
     }
     
     /**

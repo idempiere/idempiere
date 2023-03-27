@@ -39,23 +39,38 @@ import org.compiere.util.Evaluatee;
 import org.compiere.util.KeyNamePair;
 import org.zkoss.zul.Listcell;
 
+/**
+ * List item renderer for Info Window list box. 
+ */
 public class WInfoWindowListItemRenderer extends WListItemRenderer
 {
 	private InfoColumnVO[]	gridDisplayedInfoColumns = null;
 	private ColumnInfo[]	gridDisplayedColumnInfos = null;
 	private InfoWindow infoWindow = null;
 
+	/**
+	 * @param infoWindow
+	 */
 	public WInfoWindowListItemRenderer(InfoWindow infoWindow)
 	{
 		this.infoWindow = infoWindow;
 	}
 
+	/**
+	 * @param infoWindow
+	 * @param columnNames
+	 */
 	public WInfoWindowListItemRenderer(InfoWindow infoWindow, List<? extends String> columnNames)
 	{
 		super(columnNames);
 		this.infoWindow = infoWindow;
 	}
 	
+	/**
+	 * Set columns to display 
+	 * @param infoColumns
+	 * @param columnInfos
+	 */
 	public void setGridDisplaydInfoColumns(InfoColumnVO[] infoColumns, ColumnInfo[] columnInfos)
 	{
 		this.gridDisplayedInfoColumns = infoColumns;
@@ -77,57 +92,52 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 		
 		InfoColumnVO infoColumn = gridDisplayedInfoColumns[columnIndex];
 		if (infoColumn != null)
-		{
-		
+		{		
 			final GridField gridField = gridDisplayedColumnInfos[columnIndex].getGridField();
 			final WEditor editor = WebEditorFactory.getEditor(gridField, false);
 
 			if(model.isSelected(obj)) // First index may be null
-		{
-			if(infoColumn.isReadOnly() == false 
-					&& columnIndex > 0)
 			{
-				ListCell listCell = new ListCell();
-
-				
-				// Set editor value
-				
-				Object value = table.getValueAt(rowIndex, columnIndex);
-				
-				if(value instanceof IDColumn)
+				if(infoColumn.isReadOnly() == false && columnIndex > 0)
 				{
-					IDColumn idc = (IDColumn)value;
-					value = idc.getRecord_ID();
-				}
-				else if(value instanceof KeyNamePair)
-				{
-					KeyNamePair knp = (KeyNamePair)value;
-					value = knp.getKey();
-				}
-				
-				editor.setValue(value);
-				
-				editor.addValueChangeListener(new ValueChangeListener()
-				{					
-					@Override
-					public void valueChange(ValueChangeEvent evt)
+					ListCell listCell = new ListCell();
+					
+					// Set editor value				
+					Object value = table.getValueAt(rowIndex, columnIndex);
+					
+					if(value instanceof IDColumn)
 					{
-						infoWindow.onCellEditCallback(evt, rowIndex, columnIndex, editor, gridField);
+						IDColumn idc = (IDColumn)value;
+						value = idc.getRecord_ID();
 					}
-				});
-				
-				listCell.appendChild(editor.getComponent());
-				listcell = listCell;
+					else if(value instanceof KeyNamePair)
+					{
+						KeyNamePair knp = (KeyNamePair)value;
+						value = knp.getKey();
+					}
+					
+					editor.setValue(value);
+					
+					editor.addValueChangeListener(new ValueChangeListener()
+					{					
+						@Override
+						public void valueChange(ValueChangeEvent evt)
+						{
+							infoWindow.onCellEditCallback(evt, rowIndex, columnIndex, editor, gridField);
+						}
+					});
+					
+					listCell.appendChild(editor.getComponent());
+					listcell = listCell;
+				}
 			}
-		}
 		
-		if(listcell == null)
-			listcell = super.getCellComponent(table, field, rowIndex, columnIndex);
+			if(listcell == null)
+				listcell = super.getCellComponent(table, field, rowIndex, columnIndex);
 		
 			if (gridField.getAD_FieldStyle_ID() > 0)
 			{
 				MStyle style = MStyle.get(Env.getCtx(), gridField.getAD_FieldStyle_ID());
-				//devCoffee #5960
 				String styleStr = style.buildStyle(ThemeManager.getTheme(), new Evaluatee() {
 
 					@Override
@@ -166,51 +176,4 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 
 		return listcell;
 	}
-
-//
-//	//devCoffee #5960 - Get CSS Style if pass through display logic.
-//	private String getStatusStyle(ListCell listcell, PO po) {
-//		if(po instanceof MInfoWindow) {
-//			if(po.get_ValueAsInt("AD_FieldStyle_ID") != 0 && listcell != null) {
-//				try {
-//					MTable t = new MTable(Env.getCtx(), po.get_ValueAsInt("AD_Table_ID"), null);
-//					PO recordPO = (PO) new Query(Env.getCtx(), t.getTableName(), t.getTableName() + "_ID =" + listcell.getValue(), null).first();
-//
-//					List<X_AD_StyleLine> lines = new Query(Env.getCtx(), X_AD_StyleLine.Table_Name, "AD_Style_ID = " + po.get_ValueAsInt("AD_FieldStyle_ID"), null).list();
-//
-//					StringBuilder styleBuilder = new StringBuilder();
-//					for (X_AD_StyleLine line : lines)
-//					{
-//						String inlineStyle = line.getInlineStyle().trim();
-//						String displayLogic = line.getDisplayLogic();
-//						String theme = line.getTheme();
-//						if (!Util.isEmpty(theme)) {
-//							if (!ThemeManager.getTheme().equals(theme))
-//								continue;
-//						}
-//						if (!Util.isEmpty(displayLogic))
-//						{
-//							if (!Evaluator.evaluateLogic(recordPO, displayLogic))
-//								continue;
-//						}
-//						if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
-//							styleBuilder.append("; ");
-//
-//						styleBuilder.append(inlineStyle);
-//					}
-//
-//					//listcell.setStyle(styleBuilder.toString());
-//					return styleBuilder.toString();
-//				} catch (Exception e) {
-//					throw new AdempiereException(e.getMessage());
-//				}
-//			}
-//		}
-//
-//		return "";
-//	}
-
-
-
-
 }

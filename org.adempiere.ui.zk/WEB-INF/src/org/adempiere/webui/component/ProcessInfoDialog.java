@@ -48,14 +48,14 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Separator;
 
 /**
- * 
+ * Dialog to display {@link ProcessInfo} details.
  * @author milap.doshi
  * @author Deepak Pansheriya
  */
 public class ProcessInfoDialog extends Window implements EventListener<Event> {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1712025652050086903L;
 
@@ -63,13 +63,17 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	
 	private Text lblMsg = new Text();
 	private Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
+	/** Button to print document from {@link #m_logs} */
 	private Button btnPrint = ButtonFactory.createNamedButton(ConfirmPanel.A_PRINT);
+	/** Info or Error image icon */
 	private Image img = new Image();
+	/** Array of ProcessInfoLog from ProcessInfo */
 	private ProcessInfoLog[] m_logs;
 	
 	public static final String INFORMATION = "~./zul/img/msgbox/info-btn.png";
 	public static final String ERROR = "~./zul/img/msgbox/info-btn.png";
 
+	/** If true, auto close dialog after user has click on zoom to window link */
 	private boolean isAutoCloseAfterZoom = false;
 	
 	/**
@@ -97,8 +101,8 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	
 	/**
 	 * show result after run a process
-	 * @param pi
-	 * @param needFillLogFromDb
+	 * @param pi ProcessInfo
+	 * @param needFillLogFromDb true to load ProcessInfoLog from DB
 	 */
 	public ProcessInfoDialog(ProcessInfo pi, boolean needFillLogFromDb) {
 		if (needFillLogFromDb)
@@ -107,10 +111,11 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	}
 	
 	/**
-	 * 
+	 * Layout dialog
 	 * @param title
 	 * @param header
-	 * @param m_logs
+	 * @param pi ProcessInfo
+	 * @param m_logs ProcessInfoLog[]
 	 */
 	private void init(String title, String header, ProcessInfo pi, ProcessInfoLog[] m_logs) {
 		this.setTitle(title);
@@ -120,8 +125,6 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		this.setBorder("normal");
 		this.setContentStyle("background-color:#ffffff;");
 		
-		//this.setId(title);
-
 		lblMsg.setEncode(false);
 		lblMsg.setValue(header);
 
@@ -231,6 +234,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (event == null)
 			return;
@@ -244,10 +248,9 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	}
 	
 	/**
-	 * On Print
+	 * Print all printable documents in {@link #m_logs}
 	 */
-	private void onPrint() {
-		
+	private void onPrint() {		
 		Clients.clearBusy();
 		// Loop through all items
 		List<File> pdfList = new ArrayList<File>();
@@ -285,8 +288,7 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	}
 	
 	/**
-	 * Is Printable
-	 * @return boolean
+	 * @return true if there are printable document in {@link #m_logs}
 	 */
 	public boolean isPrintable() {
 		if (m_logs == null)
@@ -322,11 +324,11 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	
 	/**
 	 * after run a process, call this function to show result in a dialog 
-	 * @param pi
+	 * @param pi ProcessInfo
 	 * @param windowNo
-	 * @param comp
+	 * @param comp Component
 	 * @param needFillLogFromDb if ProcessInfoUtil.setLogFromDB(pi) is called by outer function, 
-	 * just pass false, other pass true to avoid duplicate message 
+	 * just pass false, otherwise pass true to avoid duplicate message 
 	 */
 	public static ProcessInfoDialog showProcessInfo (ProcessInfo pi, int windowNo, final Component comp, boolean needFillLogFromDb) {						
 		ProcessInfoDialog dialog = new ProcessInfoDialog(pi, needFillLogFromDb);

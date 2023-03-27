@@ -310,9 +310,10 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	}
 	
 	/**
-	 * get component to display value of a field.
-	 * when display is boolean or button, return correspond component
-	 * other return a label with text get from {@link #getDisplayText(Object, GridField, int, boolean)} 
+	 * Get component to display value of a field.<br/>
+	 * When display type is boolean or button, return corresponding component.<br/>
+	 * Otherwise, use Label or Component from {@link WEditor#getDisplayComponent()} to display text from {@link #getDisplayText(Object, GridField, int, boolean)} 
+	 * (As it is, only {@link Html} is supported for {@link WEditor#getDisplayComponent()}).
 	 * @param rowIndex
 	 * @param value
 	 * @param gridField
@@ -347,7 +348,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				if (component instanceof Html){
 					((Html)component).setContent(text);
 				}else{
-					throw new UnsupportedOperationException("neet a componet has setvalue function");
+					throw new UnsupportedOperationException("Only implemented for Html component.");
 				}
 			}
 		}

@@ -25,7 +25,7 @@ import org.zkoss.zk.ui.IdSpace;
 import org.zkoss.zul.Tab;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Tabpanel}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -33,18 +33,23 @@ import org.zkoss.zul.Tab;
 public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISupportMask
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1057250877531248907L;
 
+	/** optional onClose handler */
 	private ITabOnCloseHandler onCloseHandler = null;
     
     private boolean enabled;
 
+    @Deprecated
 	private int tabLevel;
 
 	protected ShowMaskWrapper showMaskWrapper = new ShowMaskWrapper(this);
 	
+	/**
+	 * @return true if enable, false otherwise
+	 */
     public boolean isEnabled()
     {
         return enabled;
@@ -52,31 +57,46 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISuppor
 
     @Override
 	public boolean setVisible(boolean visible) {
-		// TODO Auto-generated method stub
 		return super.setVisible(visible);
 	}
 
 	@Override
 	protected void setVisibleDirectly(boolean visible) {
-		// TODO Auto-generated method stub
 		super.setVisibleDirectly(visible);
 	}
 
+	/**
+	 * Enable/disable tab panel
+	 * @param enabled
+	 */
 	public void setEnabled(boolean enabled)
     {
         this.enabled = enabled;
     }
     
+	/**
+	 * @return AD_Tab Tab level
+	 */
+	@Deprecated
     public int getTabLevel() 
     {
     	return tabLevel;    	
     }
     
+    /**
+     * Set AD_Tab tab level 
+     * @param l Tab level
+     */
+    @Deprecated
     public void setTabLevel(int l)
     {
     	tabLevel = l;
     }
 
+    /**
+     * Call {@link #onCloseHandler} (if not null).<br/>
+     * If {@link #onCloseHandler} is null, close linked tab.
+     */
 	public void onClose() {
 		if (onCloseHandler != null) {
 			onCloseHandler.onClose(this);
@@ -87,6 +107,10 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISuppor
 		}
 	}
 	
+	/**
+	 * Set on close handler
+	 * @param handler ITabOnCloseHandler
+	 */
 	public void setOnCloseHandler(ITabOnCloseHandler handler) {
 		this.onCloseHandler = handler;
 	}
