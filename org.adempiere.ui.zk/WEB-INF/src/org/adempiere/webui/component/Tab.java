@@ -158,7 +158,7 @@ public class Tab extends org.zkoss.zul.Tab
 		}
 
 		public static DecorateInfo get(MForm form){
-			if (form != null)
+			if (form != null && !Util.isEmpty(form.getImageURL(), true))
 				return new DecorateInfo(form.getImageURL());
 			return null;
 		}
