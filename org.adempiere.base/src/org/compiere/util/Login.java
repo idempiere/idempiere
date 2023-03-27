@@ -789,6 +789,8 @@ public class Login
 			if (AD_Client_ID != 0 && MSysConfig.getBooleanValue(MSysConfig.SYSTEM_IN_MAINTENANCE_MODE, false, AD_Client_ID))
 				return Msg.getMsg(m_ctx, "SystemInMaintenance");
 		}
+		
+		Env.setPredefinedVariables(Env.getCtx(), -1, MRole.getDefault().getPredefinedContextVariables());
 
 		return null;
 	}	//	validateLogin
