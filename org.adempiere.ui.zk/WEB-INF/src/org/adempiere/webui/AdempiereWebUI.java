@@ -357,6 +357,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		}
 		Env.setContext(ctx, Env.LOCAL_HTTP_ADDRESS, localHttpAddr.toString());
 		Env.setContext(ctx, Env.IS_CAN_APPROVE_OWN_DOC, MRole.getDefault().isCanApproveOwnDoc());
+		Env.setPredefinedVariables(Env.getCtx(), -1, MRole.getDefault().getPredefinedContextVariables());
+
 		Clients.response(new AuScript("zAu.cmd0.clearBusy()"));
 		
 		//add dynamic style for AD tab
