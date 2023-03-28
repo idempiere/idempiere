@@ -20,18 +20,23 @@ package org.adempiere.webui.component;
 import org.zkoss.zul.Toolbar;
 
 /**
- *
+ * Extend {@link Toolbar}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
+ * @deprecated Replace by {@link ToolBar} 
  */
+@Deprecated
 public class FToolbar extends Toolbar
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7108523012451551639L;
 
+	/**
+	 * @return id of component
+	 */
 	public String getName()
     {
         return getId();

@@ -129,11 +129,6 @@ import org.zkoss.zul.impl.XulElement;
 /**
  * UI for an AD_Tab content (AD_Tab + AD_Fields).
  *
- * This class is based on org.compiere.grid.GridController written by Jorg Janke.
- * Changes have been brought for UI compatibility.
- *
- * @author Jorg Janke
- *
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date Feb 25, 2007
  * @version $Revision: 0.10 $

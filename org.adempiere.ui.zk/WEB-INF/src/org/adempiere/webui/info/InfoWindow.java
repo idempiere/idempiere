@@ -872,8 +872,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 				embeddedTbl.setMultiSelection(false);
 
-				embeddedTbl.autoSize();
-
 				embeddedTbl.getModel().addTableModelListener(this);
 				ZKUpdateUtil.setVflex(embeddedTbl, "1");
 

@@ -62,7 +62,7 @@ public class WRequest implements EventListener<Event>
 		m_C_BPartner_ID = C_BPartner_ID;
 		getRequests(invoker);
 		
-	}	//	AReport
+	}	//	WRequest
 
 	/**	The Table						*/
 	private int			m_AD_Table_ID;

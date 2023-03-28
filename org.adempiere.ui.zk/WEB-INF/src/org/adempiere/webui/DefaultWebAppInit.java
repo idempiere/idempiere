@@ -29,17 +29,17 @@ import org.zkoss.zk.ui.WebApp;
 import org.zkoss.zk.ui.util.WebAppInit;
 
 /**
- * Handle web app init event to sync config store in web config file and database 
+ * Handle web app init event to manage configuration from zk.xml and AD_SysConfig 
  * @author hieplq
  *
  */
 public class DefaultWebAppInit implements WebAppInit {
-
+	/** AD_SysConfig change listener */
 	private static SystemConfigHandler systemConfigChangeHandler;	
 	protected WebApp  webApp = null;
 	
 	/**
-	 * Register listen model change
+	 * Register model change listener
 	 */
 	@Override
 	public void init(WebApp wapp) throws Exception {
@@ -67,7 +67,7 @@ public class DefaultWebAppInit implements WebAppInit {
 	}	
 	
 	/**
-	 * Process model event of table system config
+	 * Process model event of AD_SysConfig table
 	 * @author hieplq
 	 *
 	 */
@@ -177,7 +177,7 @@ public class DefaultWebAppInit implements WebAppInit {
 		 */
 		protected void afterChange (PO po){
 			if (po instanceof X_AD_SysConfig){												
-				// when change ZK_BROWSER_TITLE, set web config to new value
+				// after change of ZK_BROWSER_TITLE, set app name of webApp to new value
 				if (MSysConfig.ZK_BROWSER_TITLE.equals(((X_AD_SysConfig) po).getName())){
 					String configAppname = ((X_AD_SysConfig) po).getValue();
 					webApp.setAppName(configAppname);

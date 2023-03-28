@@ -17,22 +17,30 @@
 
 package org.adempiere.webui.component;
 
-
+/**
+ * Extend {@link org.zkoss.zul.Column} 
+ */
 public class Column extends org.zkoss.zul.Column
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8036743691725958481L;
 
+	/**
+	 * default constructor
+	 */
 	public Column()
     {
     	this(null);
     }
 
-    public Column(String str)
+	/**
+	 * @param label column label/header
+	 */
+    public Column(String label)
     {
-    	this.setLabel(str);
+    	this.setLabel(label);
     }
 
 }

@@ -22,8 +22,9 @@ import java.beans.PropertyChangeSupport;
 
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.ValueNamePair;
+
 /**
- *
+ * Extend {@link org.zkoss.zul.Listitem}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 25, 2007
  * @version $Revision: 0.10 $
@@ -31,31 +32,47 @@ import org.compiere.util.ValueNamePair;
 public class ListItem extends org.zkoss.zul.Listitem
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8052056834118074979L;
 	private PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
     
+	/**
+	 * @param label
+	 * @param value
+	 */
     public ListItem(String label, Object value)
     {
         super(label, value);
     }
     
+    /**
+     * Default constructor
+     */
     public ListItem()
     {
     	super();
     }
     
+    /**
+     * @param l PropertyChangeListener
+     */
     public synchronized void addPropertyChangeListener(PropertyChangeListener l)
 	{
 		m_propertyChangeListeners.addPropertyChangeListener(l);
 	}
     
+    /**
+     * @return KeyNamePair(Value, Label)
+     */
     public KeyNamePair toKeyNamePair() 
     {
     	return new KeyNamePair((Integer)getValue(), getLabel());
     }
     
+    /**
+     * @return ValueNamePair(Value, Label)
+     */
     public ValueNamePair toValueNamePair() {
     	return new ValueNamePair((String)getValue(), getLabel());
     }

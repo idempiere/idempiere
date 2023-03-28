@@ -18,8 +18,8 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * {@link BundleActivator} for web UI
- * Start {@link WindowValidatorManager}
+ * {@link BundleActivator} for web client.
+ * Start {@link WindowValidatorManager}.
  * @author hengsin
  */
 public class WebUIActivator implements BundleActivator {

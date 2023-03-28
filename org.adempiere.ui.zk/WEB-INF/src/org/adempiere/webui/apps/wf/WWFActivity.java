@@ -77,7 +77,7 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Vlayout;
 
 /**
- * Direct port from WFActivity
+ * Workflow activity form
  * @author hengsin
  *
  */
@@ -85,7 +85,7 @@ import org.zkoss.zul.Vlayout;
 public class WWFActivity extends ADForm implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1658595186719510159L;
 	/**	Window No					*/
@@ -127,12 +127,19 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	private WListbox listbox = new WListbox();
 
 	private final static String HISTORY_DIV_START_TAG = "<div style='overflow-y:scroll;height: 100px; border: 1px solid #7F9DB9;'>";
+	
+	/**
+	 * default constructor
+	 */
 	public WWFActivity()
 	{
 		super();
 		LayoutUtils.addSclass("workflow-activity-form", this);
 	}
 
+	/**
+	 * Load activities and layout form
+	 */
     protected void initForm()
     {
         loadActivities();
@@ -161,12 +168,20 @@ public class WWFActivity extends ADForm implements EventListener<Event>
         display(-1);
     }
 
+    /**
+     * set tooltip text of btn
+     * @param btn
+     * @param key AD_Message key
+     */
 	private void setTooltipText(Button btn, String key) {
 		String text = Util.cleanAmp(Msg.translate(Env.getCtx(), key));
 		if (!Util.isEmpty(text, true))
 			btn.setTooltiptext(text);
 	}
 
+	/**
+	 * Layout form
+	 */
 	private void init()
 	{
 		Grid grid = new Grid();
@@ -303,6 +318,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		this.setStyle("height: 100%; width: 100%; position: relative;");
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception
 	{
 		Component comp = event.getTarget();
@@ -342,7 +358,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 	/**
 	 * Get active activities count
-	 * @return int
+	 * @return pending activities count
 	 */
 	public int getActivitiesCount()
 	{
@@ -357,7 +373,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 	/**
 	 * 	Load Activities
-	 * 	@return int
+	 * 	@return number of activities loaded
 	 */
 	public int loadActivities()
 	{
@@ -422,7 +438,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	}	//	loadActivities
 
 	/**
-	 * 	Reset Display
+	 * 	Reset form and return activity at selIndex
 	 *	@param selIndex select index
 	 *	@return selected activity
 	 */
@@ -464,8 +480,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	}	//	resetDisplay
 
 	/**
-	 * 	Display.
-	 * 	Fill Editors
+	 * Display activity at index
+	 * @param index
 	 */
 	public void display (int index)
 	{
@@ -537,7 +553,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 
 	/**
-	 * 	Zoom
+	 * Zoom to workflow activity window
 	 */
 	private void cmd_zoom()
 	{
@@ -548,7 +564,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	}	//	cmd_zoom
 
 	/**
-	 * 	Answer Button
+	 * 	Action Button
 	 */
 	private void cmd_button()
 	{
@@ -565,8 +581,9 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 			MQuery query = MQuery.getEqualQuery(ColumnName, Record_ID);
 			boolean IsSOTrx = m_activity.isSOTrx();
 			//
-			log.info("Zoom to AD_Window_ID=" + AD_Window_ID
-				+ " - " + query + " (IsSOTrx=" + IsSOTrx + ")");
+			if (log.isLoggable(Level.INFO))
+				log.info("Zoom to AD_Window_ID=" + AD_Window_ID
+					+ " - " + query + " (IsSOTrx=" + IsSOTrx + ")");
 
 			AEnv.zoom(AD_Window_ID, query);
 		}

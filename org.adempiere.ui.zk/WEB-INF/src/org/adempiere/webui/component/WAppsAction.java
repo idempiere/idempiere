@@ -27,11 +27,12 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
+ *  <pre>
  *  Application Action.
  *      Creates Action with Button
  *      The ActionCommand is translated for display
  *      If translated text contains &amp;, the next character is the Mnemonic
- *
+ *  </pre>
  *  @author     Andrew Kimball
  */
 public class WAppsAction
@@ -52,7 +53,7 @@ public class WAppsAction
     *
     *  @param   action base action command - used as AD_Message for Text and Icon name
     *  @param   accelerator optional keystroke for accelerator
-    *  @param   toolTipText text, if null defered from action
+    *  @param   toolTipText text, if null deferred from action
     */
    public WAppsAction (String action, String accelerator, String toolTipText) throws IOException
    {
@@ -67,7 +68,6 @@ public class WAppsAction
        {
            m_accelerator = accelerator;
        }
-
 
        //  Data
        if (newToolTipText == null)
@@ -114,15 +114,16 @@ public class WAppsAction
    }   //  Action
    
    private Button  m_button;
-
+   /** Action Command */
    private String m_action = null;
+   /** shortcut key. not implemented. */
    private String m_accelerator = null;
 
    /**
-    *  Get Icon with name action
+    *  Get image with name action
     *  @param name name
     *  @param small small
-    *  @return Icon
+    *  @return image URI
     */
    private URI getImage(String name, boolean small) throws IOException
    {
@@ -141,7 +142,6 @@ public class WAppsAction
    }   //  getName
 
    /**
-    *  Return Button
     *  @return Button
     */
    public Button getButton()
@@ -149,7 +149,10 @@ public class WAppsAction
        return m_button;
    }   //  getButton
 
-
+   /**
+    * Support for this is not implemented yet.
+    * @return shortcut key
+    */
     public String getCtrlKeys()
     {
         return this.m_accelerator;

@@ -45,6 +45,9 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 
+/**
+ * Panel with one or more {@link WPerformanceIndicator}
+ */
 public class WPAPanel extends Panel implements EventListener<Event>
 {	
 	/**
@@ -53,7 +56,10 @@ public class WPAPanel extends Panel implements EventListener<Event>
 	private static final long serialVersionUID = -6367672112341229048L;
 
 	/**
-	 * 	Load Performance Goals for current login user
+	 * 	Load Performance Goals for current login user.<br/>
+	 *  For asynchronous use case, load MGoal[] through this method in non event listener thread
+	 *  and call {@link #setGoals(MGoal[], Options)} in event listener thread to update UI. To
+	 *  keep UI responsive, we need to avoid running long operation in event listener thread.
 	 *	@return MGoal[]
 	 */
 	public static MGoal[] loadGoal()
@@ -136,7 +142,7 @@ public class WPAPanel extends Panel implements EventListener<Event>
 	}	//	init
 
 	/**
-	 * 	Event Listener for Drill Down
+	 * 	Open {@link WPerformanceDetail}
 	 *	@param e event
 	 */
 	@Override

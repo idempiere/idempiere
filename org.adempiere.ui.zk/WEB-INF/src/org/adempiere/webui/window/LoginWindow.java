@@ -32,7 +32,6 @@ import javax.servlet.http.HttpSession;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.IWebClient;
-import org.adempiere.webui.component.FWindow;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ChangePasswordPanel;
 import org.adempiere.webui.panel.LoginPanel;
@@ -69,7 +68,7 @@ import org.zkoss.zk.ui.util.Clients;
  * @author <a href="mailto:sendy.yagambrum@posterita.org">Sendy Yagambrum</a>
  * @date    July 18, 2007
  */
-public class LoginWindow extends FWindow implements EventListener<Event>
+public class LoginWindow extends Window implements EventListener<Event>
 {
 	/**
 	 * 
