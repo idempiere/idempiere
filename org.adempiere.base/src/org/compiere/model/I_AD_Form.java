@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Form
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_Form 
 {
@@ -177,6 +177,19 @@ public interface I_AD_Form
 	  * Comment or Hint
 	  */
 	public String getHelp();
+
+    /** Column name ImageURL */
+    public static final String COLUMNNAME_ImageURL = "ImageURL";
+
+	/** Set Image URL.
+	  * URL of  image
+	  */
+	public void setImageURL (String ImageURL);
+
+	/** Get Image URL.
+	  * URL of  image
+	  */
+	public String getImageURL();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

@@ -83,7 +83,19 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 496387784464611123L;
+	private static final long serialVersionUID = 405469916055906825L;
+	
+	private static final Character SPECIAL_CASE_DEFAULT = '1';
+	private static final Character SQL_DEFAULT = '2';
+	private static final Character DEFAULT_LOGIC = '3';
+	private static final Character USER_PREFERENCE_DEFAULT = '4';
+	private static final Character SYSTEM_PREFERENCE_DEFAULT = '5';
+	private static final Character PANEL_PREFERENCE_DEFAULT = '6';
+	private static final Character DATA_TYPE_DEFAULT = '7';
+	private static final String DEFAULT_PRIORITY_ORDER = "123457";
+	
+	//default is preference for field > special case > default logic > sql default > data-type default
+	private static final String DEFAULT_PRIORITY_ORDER_FOR_PANEL = "623";
 
 	/**
 	 *  Field Constructor.
@@ -591,6 +603,13 @@ public class GridField
 		m_inserting = inserting;
 	}   //  setInserting
 
+	public void setDefaultLogic(String defaultValue) {
+		m_vo.DefaultValue = defaultValue;
+	}
+
+	public void setDefault2Logic(String defaultValue2) {
+		m_vo.DefaultValue2 = defaultValue2;
+	}
 	
 	/**************************************************************************
 	 *	Create default value.
@@ -617,11 +636,9 @@ public class GridField
 		if (isIgnoreDefault())
 			return null;
 		
-		String orderGetDefault = "123457";// this value can put to system configuration
-		
 		Object defaultValue = null;
 		
-		if ((defaultValue = getDefault (orderGetDefault)) != null){
+		if ((defaultValue = getDefault (DEFAULT_PRIORITY_ORDER)) != null){
 			return defaultValue;
 		}
 		
@@ -637,9 +654,7 @@ public class GridField
 	 * @return
 	 */
 	public Object getDefaultForPanel (){
-		//default is preference for field > special case > default logic > sql default > data-type default
-		String defaultSeq = "623";
-		return getDefault (MSysConfig.getValue(MSysConfig.ZK_SEQ_DEFAULT_VALUE_PANEL, defaultSeq, Env.getAD_Client_ID(m_vo.ctx)));
+		return getDefault (MSysConfig.getValue(MSysConfig.ZK_SEQ_DEFAULT_VALUE_PANEL, DEFAULT_PRIORITY_ORDER_FOR_PANEL, Env.getAD_Client_ID(m_vo.ctx)));
 	}
 	
 	/**
@@ -664,7 +679,7 @@ public class GridField
 	public Object getDefault(ParseSeq seqGetDefaultValue){
 		Object defaultValue = null;
 		for (Character seqType : seqGetDefaultValue){
-			if (   seqType == '3'  // default from Expression 
+			if (   seqType == DEFAULT_LOGIC  // default from Expression 
 				&& m_vo.DefaultValue != null
 				&& m_vo.DefaultValue.toUpperCase().equals("NULL")) // IDEMPIERE-2678
 				return null;
@@ -688,17 +703,17 @@ public class GridField
 	 * @return
 	 */
 	protected Object getDefaultValueByType (Character defaultValueType){
-		if (defaultValueType.equals('1')){
+		if (defaultValueType.equals(SPECIAL_CASE_DEFAULT)) {
 			return defaultForSpecialCase();
-		}else if (defaultValueType.equals('2')){
+		}else if (defaultValueType.equals(SQL_DEFAULT)) {
 			return defaultFromSQLExpression();
-		}else if (defaultValueType.equals('3')){
+		}else if (defaultValueType.equals(DEFAULT_LOGIC)) {
 			return defaultFromExpression();
-		}else if (defaultValueType.equals('4') || defaultValueType.equals('5')){
+		}else if (defaultValueType.equals(USER_PREFERENCE_DEFAULT) || defaultValueType.equals(SYSTEM_PREFERENCE_DEFAULT)) {
 			return defaultFromPreference(defaultValueType);
-		}else if (defaultValueType.equals('6')){
+		}else if (defaultValueType.equals(PANEL_PREFERENCE_DEFAULT)) {
 			return defaultFromPreferenceForPanel();
-		}else if (defaultValueType.equals('7')){
+		}else if (defaultValueType.equals(DATA_TYPE_DEFAULT)) {
 			return defaultFromDatatype();
 		}
 		

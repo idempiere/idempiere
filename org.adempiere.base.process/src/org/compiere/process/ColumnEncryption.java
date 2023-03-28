@@ -25,13 +25,10 @@
  **********************************************************************/
 package org.compiere.process;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
-import org.compiere.db.AdempiereDatabase;
 import org.compiere.model.MColumn;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
@@ -40,7 +37,6 @@ import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.SecureEngine;
-import org.compiere.util.Trx;
 
 /**
  * Column Encryption Test
@@ -64,18 +60,6 @@ public class ColumnEncryption extends SvrProcess {
 
 	/** The Column */
 	private int p_AD_Column_ID = 0;
-
-	/**
-	 * All the resizing and encrypting database are managed by this
-	 * transaction.
-	 */
-	private Trx m_trx;
-	
-	/**
-	 * All the resizing and encrypting database work goes through this
-	 * connection.
-	 */
-	private Connection m_conn;
 
 	private int count;
 	
@@ -213,25 +197,14 @@ public class ColumnEncryption extends SvrProcess {
 		// If only user chooses both encrypt the contents and override current
 		// settings resize the physical column and encrypt all its contents.
 		if (p_ChangeSetting && column.isEncrypted() != p_IsEncrypted) {
-			// Init the transaction and setup the connection.
-			m_trx = Trx.get(get_TrxName(), true);
-			if ((m_conn = m_trx.getConnection()) == null) {
-				log.warning("No connections available");
-				throw new Exception();
-			}
-			m_conn.setAutoCommit(false);
-
 			int columnID = column.get_ID();
 			MTable table = MTable.get(getCtx(), column.getAD_Table_ID());
-			String tableName = table.getTableName();
-
 			if (p_IsEncrypted) {
 				// Check if the encryption exceeds the current length.
 				int oldLength = column.getFieldLength();
-				int newLength = encryptedColumnLength(oldLength);
+				int newLength = encryptedColumnLength(p_MaxLength > 0 ? p_MaxLength : oldLength);
 				if (newLength > oldLength) {
-					if (changeFieldLength(columnID, columnName, newLength,
-							tableName) == -1) {
+					if (changeFieldLength(table, column, newLength) < 0) {
 						log.warning("EncryptError [ChangeFieldLength]: "
 								+ "ColumnID=" + columnID + ", NewLength="
 								+ newLength);
@@ -324,10 +297,8 @@ public class ColumnEncryption extends SvrProcess {
 		ResultSet rs = null;
 		
 		try {
-			String selectSqlStr = DB.getDatabase().convertStatement(selectSql.toString());
-			selectStmt = m_conn.prepareStatement(selectSqlStr,
-					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-			updateStmt = m_conn.prepareStatement(updateSql.toString());
+			selectStmt = DB.prepareStatement(selectSql.toString(), get_TrxName());
+			updateStmt = DB.prepareStatement(updateSql.toString(), get_TrxName());
 	
 			rs = selectStmt.executeQuery();
 	
@@ -402,10 +373,8 @@ public class ColumnEncryption extends SvrProcess {
 		ResultSet rs = null;
 		
 		try {
-			String selectSqlStr = DB.getDatabase().convertStatement(selectSql.toString());
-			selectStmt = m_conn.prepareStatement(selectSqlStr,
-					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-			updateStmt = m_conn.prepareStatement(updateSql.toString());
+			selectStmt = DB.prepareStatement(selectSql.toString(), get_TrxName());
+			updateStmt = DB.prepareStatement(updateSql.toString(), get_TrxName());
 	
 			rs = selectStmt.executeQuery();
 	
@@ -452,91 +421,29 @@ public class ColumnEncryption extends SvrProcess {
 
 	/**
 	 * Change the column length.
-	 * 
-	 * @param columnID
-	 *            ID of the column
-	 * @param tableName
-	 *            The name of the table which owns the column
-	 * @param length
-	 *            New length of the column
+	 * @param table the table which owns the column
+	 * @param column the column to be extended
+	 * @param length New length of the column
 	 * @return The number of rows effected, 1 upon success and -1 for failure.
+	 * @throws Exception
 	 */
-	private int changeFieldLength(int columnID, String columnName, int length,
-			String tableName) throws Exception {
-		int rowsEffected = -1;
+	private int changeFieldLength(MTable table, MColumn column, int length) throws Exception {
+		column.setFieldLength(length);
+		column.saveEx();
 
-		// Select SQL
-		String selectSql = "SELECT FieldLength FROM AD_Column WHERE AD_Column_ID=?";
-
-		String dataType = "NVARCHAR2";
-		if (DB.isOracle()) {
-			Connection conn = Trx.get(get_TrxName(), false).getConnection();
-			AdempiereDatabase db = DB.getDatabase();
-			DatabaseMetaData md = conn.getMetaData();
-			String catalog = db.getCatalog();
-			String schema = db.getSchema();
-			ResultSet rs = null;
-			try {
-				rs = md.getColumns(catalog, schema, tableName.toUpperCase(), columnName.toUpperCase());
-				if (rs.next()) {
-					dataType = rs.getString ("TYPE_NAME");
-				}
-			} finally {
-				DB.close(rs);
+		String sql = column.getSQLModify(table, false);
+		int no = -1;			
+		if (sql.indexOf(DB.SQLSTATEMENT_SEPARATOR) == -1) {
+			no = DB.executeUpdateEx(sql.toString(), get_TrxName());
+		} else {
+			String statements[] = sql.toString().split(DB.SQLSTATEMENT_SEPARATOR);
+			for (int i = 0; i < statements.length; i++) {
+				int count = DB.executeUpdateEx(statements[i], get_TrxName());
+				no += count;
 			}
 		}
-		
-		// Alter SQL
-		StringBuilder alterSql = new StringBuilder();
-		alterSql.append("ALTER TABLE ").append(tableName);
-		alterSql.append(" MODIFY ").append(columnName);
-		alterSql.append(" ").append(dataType).append("(");
-		alterSql.append(length).append(") ");
 
-		// Update SQL
-		StringBuilder updateSql = new StringBuilder();
-		updateSql.append("UPDATE AD_Column");
-		updateSql.append(" SET FieldLength=").append(length);
-		updateSql.append(" WHERE AD_Column_ID=").append(columnID);
-
-		PreparedStatement selectStmt = null;
-		ResultSet rs = null;
-		
-		try {
-			selectSql = DB.getDatabase().convertStatement(selectSql);
-			selectStmt = m_conn.prepareStatement(selectSql,
-					ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-	
-			selectStmt.setInt(1, columnID);
-			rs = selectStmt.executeQuery();
-	
-			if (rs.next()) {
-				// Change the column size physically.
-				alterSql = new StringBuilder(DB.getDatabase().convertStatement(alterSql.toString()));
-				if (DB.executeUpdate(alterSql.toString(), false, m_trx
-								.getTrxName()) == -1) {
-					log.severe("EncryptError [ChangeFieldLength]: ColumnID="
-							+ columnID + ", NewLength=" + length);
-					throw new Exception();
-				}
-	
-				// Change the column size in AD.
-				updateSql = new StringBuilder(DB.getDatabase().convertStatement(updateSql.toString()));
-				if (DB.executeUpdate(updateSql.toString(), false, m_trx
-						.getTrxName()) == -1) {
-					log.severe("EncryptError [ChangeFieldLength]: ColumnID="
-							+ columnID + ", NewLength=" + length);
-					throw new Exception();
-				}
-			}
-		} finally {
-			DB.close(rs, selectStmt);
-		}
-
-		// Update number of rows effected.
-		rowsEffected++;
-
-		return rowsEffected;
+		return no;
 	} // changeFieldLength
 
 	@Override

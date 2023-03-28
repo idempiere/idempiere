@@ -273,10 +273,11 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	 */
 	
 	private void setValue (Object value, boolean fire) {
-		recordTextBox.setValue("");
 		if (value == null || Util.isEmpty(value.toString(), true)) {
+			recordTextBox.setValue("");
 			value = null;
 		} else {
+			recordTextBox.setValue(value.toString());
 			//get initial ad_table_id value
 			if (tableIDValue == null && tableIDGridField != null) {
 				tableIDValue = tableIDGridField.getValue();
@@ -289,7 +290,12 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			}
 		}
 
-		if (fire) {
+		if (fire 
+			&& 
+			 (     (value == null && recordIDValue != null) 
+				|| (value != null && recordIDValue == null) 
+				|| !value.equals(recordIDValue)
+			 )) {
 			// Record_ID
 			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), recordIDValue, value);
 			super.fireValueChange(changeEvent);
@@ -304,26 +310,42 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 
 	@Override
 	public String getDisplay() {
+		if (recordIDValue == null)
+			return "";
 		if((tableIDValue != null) && (recordIDValue != null)) {
-			int tableID = Integer.parseInt(String.valueOf(tableIDValue));
-			int recordID = Integer.parseInt(String.valueOf(recordIDValue));
+			int tableID;
+			int recordID;
+			try {
+				tableID = Integer.parseInt(String.valueOf(tableIDValue));
+				recordID = Integer.parseInt(String.valueOf(recordIDValue));
+			} catch (NumberFormatException e) {
+				return recordIDValue.toString();
+			}
 			return getIdentifier(tableID, recordID);
 		}
 		else {
-			return "";
+			return recordIDValue.toString();
 		}
 	}
 	
 	@Override
     public String getDisplayTextForGridView(GridRowCtx gridRowCtx, Object value) {
+		if (value == null)
+			return "";
 		if (gridTab != null) {
 			String key = gridTab.getWindowNo() + "|AD_Table_ID";
 			Object rowTableIdValue = gridRowCtx.get(key);
-			int rowTableID = Integer.parseInt(String.valueOf(rowTableIdValue));
-			int rowRecordID = Integer.parseInt(String.valueOf(value));
+			int rowTableID;
+			int rowRecordID;
+			try {
+				rowTableID = Integer.parseInt(String.valueOf(rowTableIdValue));
+				rowRecordID = Integer.parseInt(String.valueOf(value));
+			} catch (NumberFormatException e) {
+				return value.toString();
+			}
 			return getIdentifier(rowTableID, rowRecordID);
 		} else {
-			return "";
+			return value.toString();
 		}
     }
 
