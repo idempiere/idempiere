@@ -16,9 +16,8 @@ package org.adempiere.webui.apps.graph.model;
 import org.compiere.model.MChart;
 
 /**
- * 
+ * Model for chart (AD_Chart)
  * @author hengsin
- *
  */
 public class ChartModel {
 	public MChart chart;

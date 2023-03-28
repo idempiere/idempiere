@@ -42,13 +42,13 @@ import org.zkoss.zul.Window;
  */
 public class WLogin extends AbstractUIPart
 {
-	/** IWebClient instance ({@link AdempiereWebUI}) **/
+	/** IWebClient instance ({@link AdempiereWebUI}) */
 	private IWebClient app;
-	/** Main layout **/
+	/** Main layout */
 	private Borderlayout layout;
 	@Deprecated(forRemoval = true, since = "11")
 	private Window browserWarningWindow;
-	/** embedded window for login and role selection **/
+	/** embedded window for login and role selection */
 	private LoginWindow loginWindow;
 
 	/**
@@ -61,7 +61,9 @@ public class WLogin extends AbstractUIPart
     }
 
     /**
-     * Create UI from login.zul file. The main layout component ("layout") must be instance of {@link Borderlayout}.
+     * Create UI from login.zul file. <br/> 
+     * The main layout component ("layout") must be instance of {@link Borderlayout}. <br/>
+     * Get {@link #loginWindow} reference from zul using id "loginWindow".
      */
     @Override
     protected Component doCreatePart(Component parent)

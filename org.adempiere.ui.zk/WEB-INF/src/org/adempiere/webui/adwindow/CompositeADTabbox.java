@@ -27,6 +27,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.adwindow.DetailPane.Tabpanel;
 import org.adempiere.webui.component.ADTabListModel;
 import org.adempiere.webui.component.ADTabListModel.ADTabLabel;
+import org.adempiere.webui.component.Tabbox;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.DataStatusEvent;
@@ -56,8 +57,8 @@ import org.zkoss.zul.Vlayout;
 
 /**
  * Header and detail UI for AD_Tabs.
- * This class manage a list of tabs with the current selected tab as the attached and visible {@link ADTabpanel} instance.
- * Child tabs of selected tab is shown in {@link DetailPane} inside {@link ADTabpanel}.
+ * This class manage a list of tabs with the current selected tab as the visible {@link ADTabpanel} instance.
+ * Child tabs of selected tab is shown in {@link DetailPane} using {@link Tabbox}.
  * 
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>

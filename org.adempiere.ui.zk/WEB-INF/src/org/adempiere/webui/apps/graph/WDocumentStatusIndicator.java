@@ -96,7 +96,7 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 	}	//	getGoal
 
      /**
-	 * 	Init Graph Display
+	 * 	Init Document Status Display
 	 */
 	private void init()
 	{
@@ -150,7 +150,7 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 		this.addEventListener(Events.ON_CLICK, this);
 	}
 
-
+	@Override
 	public void onEvent(Event event) throws Exception
 	{
 		int AD_Window_ID = m_documentStatus.getAD_Window_ID();
@@ -171,6 +171,9 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 		
 	}
 
+	/**
+	 * Load {@link #m_documentStatus}
+	 */
 	public void refresh() {
 		MDocumentStatus refresh_documentStatus = MDocumentStatus.get(Env.getCtx(), m_documentStatus.getPA_DocumentStatus_ID());
 		if(refresh_documentStatus != null) {
@@ -179,13 +182,16 @@ public class WDocumentStatusIndicator extends Panel implements EventListener<Eve
 		statusCount = MDocumentStatus.evaluate(m_documentStatus);		
 	}
 
+	/**
+	 * Update UI with data loaded in {@link #refresh()}
+	 */
 	public void updateUI() {
 		statusLabel.setText(Integer.toString(statusCount));		
 	}
 
 	/**
 	 * Return the count for this indicator
-	 * @return
+	 * @return status count
 	 */
 	public int getStatusCount() {
 		return statusCount;

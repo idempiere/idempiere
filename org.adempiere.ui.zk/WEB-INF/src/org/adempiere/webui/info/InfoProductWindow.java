@@ -233,7 +233,6 @@ public class InfoProductWindow extends InfoWindow {
 		m_sqlWarehouse += " GROUP BY Warehouse";		
 		warehouseTbl.setMultiSelection(false);
 		warehouseTbl.setShowTotals(true);
-		warehouseTbl.autoSize();
 		warehouseTbl.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() +"|stock");
 
         ColumnInfo[] s_layoutSubstitute = new ColumnInfo[]{
@@ -251,7 +250,6 @@ public class InfoProductWindow extends InfoWindow {
         substituteTbl = ListboxFactory.newDataTableAutoSize();
         m_sqlSubstitute = substituteTbl.prepareTable(s_layoutSubstitute, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_SUBSTITUTERELATED_V");        
         substituteTbl.setMultiSelection(false);
-        substituteTbl.autoSize();
         substituteTbl.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() + "|substitute");
 
         ColumnInfo[] s_layoutRelated = new ColumnInfo[]{
@@ -270,7 +268,6 @@ public class InfoProductWindow extends InfoWindow {
         relatedTbl = ListboxFactory.newDataTableAutoSize();
         m_sqlRelated = relatedTbl.prepareTable(s_layoutRelated, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_SUBSTITUTERELATED_V");
         relatedTbl.setMultiSelection(false);
-        relatedTbl.autoSize();
         relatedTbl.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() + "|related");
         //Available to Promise Tab
 
@@ -310,7 +307,6 @@ public class InfoProductWindow extends InfoWindow {
         productpriceTbl = ListboxFactory.newDataTableAutoSize();
         m_sqlProductprice = productpriceTbl.prepareTable(s_layoutProductPrice, s_sqlFrom, s_sqlWhere, false, "pp") + " ORDER BY plv.ValidFrom DESC";
         productpriceTbl.setMultiSelection(false);
-        productpriceTbl.autoSize();
         productpriceTbl.setwListBoxName("AD_InfoWindow_UU|" + infoWindow.getAD_InfoWindow_UU() + "|price");
         
         tabbedPane = new Tabbox();

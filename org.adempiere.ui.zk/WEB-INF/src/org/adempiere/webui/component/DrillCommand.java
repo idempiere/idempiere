@@ -23,19 +23,24 @@ import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- * 
+ * {@link Desktop} listener for onDrillAcross and onDrillDown {@link AuRequest}.<br/>
+ * Create {@link DrillEvent} from {@link AuRequest} and post to the component that send the {@link AuRequest}. 
  * @author hengsin
- *
  */
 public class DrillCommand implements AuService {
 
+	/**
+	 * Default constructor
+	 */
 	public DrillCommand() {
 	}
 
+	@Override
 	public boolean service(AuRequest request, boolean everError) {
 		if (!DrillEvent.ON_DRILL_ACROSS.equals(request.getCommand())
 				&& !DrillEvent.ON_DRILL_DOWN.equals(request.getCommand()))

@@ -318,17 +318,18 @@ public final class LayoutUtils {
 	public static final int OVERLAP_SELF = 4;
 	
 	/**
-	 * show window with a mask below. mask over tabPanel, all window or only over a control, dependency ownModel flag.
-	 * when ownModel == {@link #OVERLAP_SELF}, window show overlap childOfOwn, 
-	 * 					when childOfOwn doesn't implement {@link ISupportMask} make new {@link Mask} object to make mask layout
-	 *                	ownModel == {@link #OVERLAP_ALL_PAGE}, window show overlap all page
-	 *                  ownModel == {@link #OVERLAP_TAB_PANEL}, window show overlap tabPanel
-	 *                  ownModel == {@link #OVERLAP_PARENT}, search near parent of childOfOwn implement {@link ISupportMask} if not exist user as OVERLAP_ALL_PAGE
+	 * show window with a mask below. Depends on ownModel flag, mask is shown over tabPanel, all window or over a component.
+	 * <pre>
+	 * when ownModel is
+	 * - {@link #OVERLAP_SELF}, mask childOfOwn. if childOfOwn doesn't implement {@link ISupportMask}, make new {@link Mask} object to mask it
+	 * - {@link #OVERLAP_ALL_PAGE}, window show overlap all page
+	 * - {@link #OVERLAP_TAB_PANEL}, window show overlap tabPanel
+	 * - {@link #OVERLAP_PARENT}, search nearest parent of childOfOwn that implement {@link ISupportMask}, if not found use as OVERLAP_ALL_PAGE
+	 * </pre>
 	 * @param window 
-	 * @param childOfOwn  
+	 * @param childOfOwn Component below window
 	 * @param ownModel OVERLAP_TAB_PANEL, OVERLAP_ALL_PAGE, OVERLAP_PARENT or OVERLAP_SELF
-	 * @return when show success return IMask object, it is own window, use {@link ISupportMask#hideMask()} to hidden mask. 
-	 * other return null.  
+	 * @return when show success return ISupportMask object, use {@link ISupportMask#hideMask()} to hide mask. 
 	 */
 	public static ISupportMask showWindowWithMask(Window window, Component childOfOwn, int ownModel){
 		ISupportMask ownWindow = null;
@@ -392,7 +393,7 @@ public final class LayoutUtils {
 	}
 	
 	/**
-	 * find parent of child component, parent must implement {@link ISupportMask}
+	 * find nearest parent of child component that implement {@link ISupportMask}.<br/>
 	 * if parentClass != null, parent class must extends parentClass
 	 * @param child
 	 * @param parentClass
@@ -414,7 +415,7 @@ public final class LayoutUtils {
 	}
 	
 	/**
-	 * Compact grid to limit (for e.g, to max of 2 column)
+	 * Compact grid to limit (for e.g, to max of 2 column).<br/>
 	 * Note: doesn't handle row span
 	 * @param grid
 	 * @param limit
@@ -479,7 +480,7 @@ public final class LayoutUtils {
 	}
 	
 	/**
-	 * Expand grid to min (for e.g, to min of 2 column)
+	 * Expand grid to min (for e.g, to min of 2 column).<br/>
 	 * Note: doesn't handle row span
 	 * @param grid
 	 * @param min
@@ -550,7 +551,7 @@ public final class LayoutUtils {
 	}
 	
 	/**
-	 * find first popup ancestor of comp
+	 * find first Popup ancestor of comp
 	 * @param comp
 	 * @return {@link Popup} if comp or one of its ancestor is Popup
 	 */

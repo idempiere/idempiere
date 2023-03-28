@@ -58,10 +58,10 @@ public class Actions {
 	}
 	
 	/**
-	 * Image name: actionId+"24.png".
-	 * Get image from current theme or plugin resource.
+	 * Image name: actionId+"24.png".<br/>
+	 * Get image from current theme or plugin resource.<br/>
 	 * For plugin resource, it will try the path /action/images/{theme}/{image name}, /action/images/default/{image name} and
-	 * /action/images/{image name}
+	 * /action/images/{image name}.
 	 * @param actionId
 	 * @return {@link AImage}
 	 */

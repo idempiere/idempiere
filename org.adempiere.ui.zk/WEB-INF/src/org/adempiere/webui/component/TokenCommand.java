@@ -21,19 +21,27 @@ import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- * Command class to handle user authentication token event
+ * {@link Desktop} listener for onUserToken {@link AuRequest}.<br/>
+ * Create {@link TokenEvent} from {@link AuRequest} and post to the component that send the {@link AuRequest}.
  * @author hengsin
- *
  */
 public class TokenCommand implements AuService {
 
+	/**
+	 * Default constructor
+	 */
 	public TokenCommand() {
 	}
 
+	/**
+	 * Post {@link TokenEvent} created from ON_USER_TOKEN {@link AuRequest} command. 
+	 */
+	@Override
 	public boolean service(AuRequest request, boolean everError) {
 		if (!TokenEvent.ON_USER_TOKEN.equals(request.getCommand()))
 				return false;

@@ -21,8 +21,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
- * Helper class for {@link ISupportMask} implementation
- * Just make a instance of this class and let it do everything  
+ * Helper class for {@link ISupportMask} implementation.
+ * Just make a instance of this class and let it do everything.
  * @author hieplq
  *
  */
@@ -117,9 +117,9 @@ public class ShowMaskWrapper implements ISupportMask {
 	}
 	
 	/**
-	 * check flag {@link ISupportMask#READY_SHOW_MASK_FLAG} ready in scope Component.REQUEST_SCOPE
+	 * check flag {@link ISupportMask#READY_SHOW_MASK_FLAG} exists in scope Component.REQUEST_SCOPE
 	 * @param comp
-	 * @return
+	 * @return true if flag exists
 	 */
 	public static boolean hasFlagShowMask (Component comp){
 		return (comp.getAttribute(ISupportMask.READY_SHOW_MASK_FLAG, Component.REQUEST_SCOPE) != null);

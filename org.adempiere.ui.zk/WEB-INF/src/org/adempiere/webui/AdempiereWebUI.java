@@ -81,7 +81,7 @@ import org.zkoss.zul.Style;
 import org.zkoss.zul.Window;
 
 /**
- *
+ * Entry point for iDempiere web client
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -90,10 +90,10 @@ import org.zkoss.zul.Window;
  */
 public class AdempiereWebUI extends Window implements EventListener<Event>, IWebClient
 {
-	/** {@link Session} attribute to hold current login user id value **/
+	/** {@link Session} attribute to hold current login user id value */
 	public static final String CHECK_AD_USER_ID_ATTR = "Check_AD_User_ID";
 
-	/** Boolean attribute to indicate the HTTP session of a Desktop have been invalidated **/
+	/** Boolean attribute to indicate the HTTP session of a Desktop have been invalidated */
 	public static final String DESKTOP_SESSION_INVALIDATED_ATTR = "DesktopSessionInvalidated";
 
 	/**
@@ -101,28 +101,34 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	 */
 	private static final long serialVersionUID = -6725805283410008847L;
 
-	/** {@link Desktop} attribute to hold {@link IDesktop} reference **/
+	/** {@link Desktop} attribute to hold {@link IDesktop} reference */
 	public static final String APPLICATION_DESKTOP_KEY = "application.desktop";
 
+	/** org.zkoss.zk.ui.WebApp.name preference from zk.xml */
 	public static String APP_NAME = null;
 
+	/** Match to version at lang-addon.xml */
     public static final String UID          = "1.0.0";
     
-    /** Attribute for widget instance name, use for Selenium test **/
+    /** Attribute for widget instance name, use for Selenium test */
     public static final String WIDGET_INSTANCE_NAME = "instanceName";
 
-    /** login and role selection window **/
+    /** login and role selection window */
     private WLogin             loginDesktop;
 
-    /** client info from browser **/
+    /** client info from browser */
     private ClientInfo		   clientInfo = new ClientInfo();
 
+    /** Language for current session */
 	private String langSession;
 
+	/** Current login user's preference */
 	private UserPreference userPreference;
 	
+	/** User preference DB model */
 	private MUserPreference userPreferences;
 
+	/** Global key listener */
 	private Keylistener keyListener;
 
 	private static final CLogger logger = CLogger.getCLogger(AdempiereWebUI.class);
@@ -130,15 +136,16 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	@Deprecated(forRemoval = true, since = "11")
 	public static final String EXECUTION_CARRYOVER_SESSION_KEY = "execution.carryover";
 
-	/** Session attribute to hold {@link ClientInfo} reference **/
+	/** Session attribute to hold {@link ClientInfo} reference */
 	private static final String CLIENT_INFO = "client.info";
 	
 	/** the use of event thread have been deprecated, this should always be false **/
 	private static boolean eventThreadEnabled = false;
 
+	/** Parameters map from browser URL */
 	private ConcurrentMap<String, String[]> m_URLParameters;
 
-	/** Login completed event **/
+	/** Login completed event */
 	private static final String ON_LOGIN_COMPLETED = "onLoginCompleted";
 	
 	/**
@@ -149,7 +156,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	this.setVisible(false);
 
     	userPreference = new UserPreference();
-    	// preserve the original URL parameters as is destroyed later on loging
+    	// preserve the original URL parameters as is destroyed later on login
     	m_URLParameters = new ConcurrentHashMap<String, String[]>(Executions.getCurrent().getParameterMap());
     	
     	this.addEventListener(ON_LOGIN_COMPLETED, this);
@@ -701,7 +708,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	}
 	
 	/**
-	 * change role, asynchronous callback from {@link IDesktop#logout(org.adempiere.util.Callback)}
+	 * change role, asynchronous callback from {@link #changeRole(MUser)}
 	 * @param httpSession
 	 * @param locale
 	 * @param properties
