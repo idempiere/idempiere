@@ -1198,4 +1198,20 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	{
 		return (String)get_Value(COLUMNNAME_UserLevel);
 	}
+	
+	/** Set Predefined Context Variables.
+	@param PredefinedContextVariables Predefined context variables to inject when opening a menu entry or a window
+	*/
+	public void setPredefinedContextVariables (String PredefinedContextVariables)
+	{
+		set_Value (COLUMNNAME_PredefinedContextVariables, PredefinedContextVariables);
+	}
+	
+	/** Get Predefined Context Variables.
+		@return Predefined context variables to inject when opening a menu entry or a window
+	  */
+	public String getPredefinedContextVariables()
+	{
+		return (String)get_Value(COLUMNNAME_PredefinedContextVariables);
+	}
 }
