@@ -207,8 +207,6 @@ public class MDashboardContent extends X_PA_DashboardContent
 			{
 				int pos = s.indexOf("=");
 				String key = s.substring(0, pos);
-				if(key.endsWith("IDs"))
-					key = key.substring(0, key.length()-1);
 				String value = s.substring(pos + 1);
 				paramMap.put(key, value);
 			}
