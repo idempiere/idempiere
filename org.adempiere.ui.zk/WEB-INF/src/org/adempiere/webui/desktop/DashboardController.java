@@ -1705,6 +1705,10 @@ public class DashboardController implements EventListener<Event> {
 							 iPara.setP_String_To(value.toString());
 							 iPara.setInfo_To(value.toString());
 						 }
+						 else if(DisplayType.isChosenMultipleSelection(iPara.getDisplayType())) {
+							 iPara.setP_String(value.toString());
+							 iPara.setInfo(getMultiSelectionDisplay(pInstance, iPara, value.toString()));
+						 }
 						 else {
 							 iPara.setP_String(value.toString());
 							 iPara.setInfo(value.toString());
@@ -1726,6 +1730,17 @@ public class DashboardController implements EventListener<Event> {
 		return true;
 	}
 
+	private String getMultiSelectionDisplay(MPInstance i, MPInstancePara ip, String value) {
+		String returnValue = "";
+		String[] splittedValues = value.split("[,]");
+		for(String sId : splittedValues) {
+			if(!Util.isEmpty(returnValue))
+				returnValue += ", ";
+			returnValue += getDisplay(i, ip, Integer.parseInt(sId));
+		}
+		return returnValue;
+	}
+	
 	private String getDisplay(MPInstance i, MPInstancePara ip, int id) {
 		try {
 			MProcessPara pp = MProcess.get(i.getAD_Process_ID()).getParameter(ip.getParameterName());

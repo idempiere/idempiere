@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.Env;
@@ -185,14 +188,40 @@ public class MDashboardContent extends X_PA_DashboardContent
      */
     public static Map<String, String> parseProcessParameters(String parameters)	{
     	Map<String, String> paramMap = new HashMap<String, String>();
+    	ArrayList<String> multiSelections = new ArrayList<String>();
+    	final String placeHolder = "<--MULTISELECTVALUE-->";
+    	String multiSelection;
+    	Pattern p = Pattern.compile("\"(.*?)\"");	// regex to extract values between double quotes: "(.*?)"
+    	Matcher m = p.matcher(parameters);
+    	
+    	// extract the multiselection values before splitting by [,]
+    	while (m.find()) {
+    		multiSelection = parameters.substring(m.start(), m.end());
+    		multiSelections.add(multiSelection.replace("\"", ""));
+    		parameters = parameters.replaceFirst(multiSelection, placeHolder);
+		}
+    	
     	if (parameters != null && parameters.trim().length() > 0) {
 			String[] params = parameters.split("[,]");
 			for (String s : params)
 			{
 				int pos = s.indexOf("=");
 				String key = s.substring(0, pos);
+				if(key.endsWith("IDs"))
+					key = key.substring(0, key.length()-1);
 				String value = s.substring(pos + 1);
 				paramMap.put(key, value);
+			}
+    	}
+    	
+    	// replace the multiselection values back
+    	if(multiSelections.size() > 0) {
+			int idx = 0;
+			for(Entry<String, String> e : paramMap.entrySet()) {
+				if(e.getValue().equals(placeHolder)) {
+					e.setValue(multiSelections.get(idx));
+					idx++;
+				}
 			}
     	}
     	return paramMap;
