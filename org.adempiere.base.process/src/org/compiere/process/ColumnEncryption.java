@@ -109,7 +109,7 @@ public class ColumnEncryption extends SvrProcess {
 		// Can it be enabled?
 		if (column.isKey() || column.isParent() || column.isStandardColumn() || column.isUUIDColumn()
 				|| column.isVirtualColumn() || column.isIdentifier()
-				|| column.isTranslated() || DisplayType.isLookup(dt)
+				|| column.isTranslated() || DisplayType.isLookup(dt) || DisplayType.isUUID(dt)
 				|| DisplayType.isLOB(dt) || DisplayType.isDate(dt) || DisplayType.isNumeric(dt)				
 				|| "DocumentNo".equalsIgnoreCase(column.getColumnName())
 				|| "Value".equalsIgnoreCase(column.getColumnName())

@@ -365,6 +365,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (m_vo.getFields() == null)
 			return false;
 
+		String uuidExpectedCol = PO.getUUIDColumnName(getTableName());
+		String uuidColumnName = null;
 		//  Add Fields
 		for (int f = 0; f < m_vo.getFields().size(); f++)
 		{
@@ -379,6 +381,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				if (field.isKey()) {
 					setKeyColumnName(columnName);
 				}
+				if (uuidExpectedCol.equals(columnName))
+					uuidColumnName = columnName;
 				//	Parent Column(s)
 				if (field.isParentColumn())
 					m_parents.add(columnName);
@@ -418,6 +422,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					m_depOnField.put(columnName, null);
 			}
 		}   //  for all fields
+
+		if (Util.isEmpty(getKeyColumnName()) && getParentColumnNames().size() == 0 && uuidColumnName != null) {
+			setKeyColumnName(uuidColumnName);
+		}
 
 		if (! m_mTable.getTableName().equals(X_AD_PInstance_Log.Table_Name)) { // globalqss, bug 1662433
 			//  Add Standard Fields
@@ -795,35 +803,14 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return query.getWhereClause(true);
 		}
 
-		String refColName = null;
 		//	Find Reference Column e.g. BillTo_ID -> C_BPartner_Location_ID
-		String sql = "SELECT cc.ColumnName "
+		final String sql1 = "SELECT cc.ColumnName "
 			+ "FROM AD_Column c"
 			+ " INNER JOIN AD_Ref_Table r ON (c.AD_Reference_Value_ID=r.AD_Reference_ID)"
 			+ " INNER JOIN AD_Column cc ON (r.AD_Key=cc.AD_Column_ID) "
-			+ "WHERE c.AD_Reference_ID IN (18,30)" 	//	Table/Search
+			+ "WHERE c.AD_Reference_ID IN (?,?,?,?)"
 			+ " AND c.ColumnName=?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, colName);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				refColName = rs.getString(1);
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, "(ref) - Column=" + colName, e);
-			return query.getWhereClause();
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
+		String refColName = DB.getSQLValueStringEx(null, sql1, DisplayType.Table, DisplayType.Search, DisplayType.TableUU, DisplayType.SearchUU);
 		//	Reference Column found
 		if (refColName != null)
 		{
@@ -837,41 +824,20 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		}
 
 		//	Column NOT in Tab - create EXISTS subquery
-		String tableName = null;
 		String tabKeyColumn = getKeyColumnName();
-
-		sql = "SELECT t.TableName "
+		final String sql2 = "SELECT t.TableName "
 			+ "FROM AD_Column c"
 			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
 			+ "WHERE c.ColumnName=? AND IsKey='Y'"		//	#1 Link Column
 			+ " AND EXISTS (SELECT * FROM AD_Column cc"
 			+ " WHERE cc.AD_Table_ID=t.AD_Table_ID AND cc.ColumnName=?)";	//	#2 Tab Key Column
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, colName);
-			pstmt.setString(2, tabKeyColumn);
-			rs = pstmt.executeQuery();
-			if (rs.next())
-				tableName = rs.getString(1);
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, "Column=" + colName + ", Key=" + tabKeyColumn, e);
-			return null;
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
+		String tableName = DB.getSQLValueStringEx(null, sql2, colName, tabKeyColumn);
 		//	Special Reference Handling
 		if (tabKeyColumn.equals("AD_Reference_ID"))
 		{
 			//	Column=AccessLevel, Key=AD_Reference_ID, Query=AccessLevel='6'
-			sql = "SELECT AD_Reference_ID FROM AD_Column WHERE ColumnName=?";
-			int AD_Reference_ID = DB.getSQLValue(null, sql, colName);
+			final String sql3 = "SELECT AD_Reference_ID FROM AD_Column WHERE ColumnName=?";
+			int AD_Reference_ID = DB.getSQLValueEx(null, sql3, colName);
 			return "AD_Reference_ID=" + AD_Reference_ID;
 		}
 

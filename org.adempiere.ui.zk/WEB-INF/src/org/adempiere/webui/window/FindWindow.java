@@ -100,6 +100,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MUserQuery;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.util.AdempiereSystemError;
@@ -2212,7 +2213,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            //  Column
 	            ListItem row = (ListItem)rowList.get(rowIndex);
 	            Combobox table = (Combobox)row.getFellow("listTable"+row.getId());
-    	        String exists="";  
+    	        StringBuilder exists = new StringBuilder();
 
     	        boolean isExists = false;
     	        boolean isExistCondition = false;
@@ -2256,8 +2257,15 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		            if (table.getSelectedItem() != null && !table.getSelectedItem().getValue().equals(m_AD_Tab_UU))
 					{       
 						if (!isCompositeExists) {
-							exists ="SELECT 1 FROM "+m_gridTab.getTableName()+" WHERE "+m_gridTab.getTableName()+"."+m_gridTab.getLinkColumnName()+" = "+m_tableName+"."+m_tableName+"_ID ";//  "+tab.getTableName()+".";
-							ColumnSQL = exists+" AND " + ColumnSQL;
+							MTable refTable = MTable.get(Env.getCtx(), m_tableName);
+							exists.append("SELECT 1 FROM ").append(m_gridTab.getTableName())
+							.append(" WHERE ").append(m_gridTab.getTableName()).append(".").append(m_gridTab.getLinkColumnName())
+							.append(" = ").append(m_tableName).append(".");
+							if (refTable.isUUIDKeyTable())
+								exists.append(PO.getUUIDColumnName(m_tableName));
+							else
+								exists.append(m_tableName).append("_ID ");
+							ColumnSQL = exists.toString() + " AND " + ColumnSQL;
 						}         
 
 						isExists = true;

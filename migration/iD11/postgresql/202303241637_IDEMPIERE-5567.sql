@@ -374,3 +374,71 @@ UPDATE AD_Field SET SeqNo=50,Updated=TO_TIMESTAMP('2023-03-24 17:02:33','YYYY-MM
 UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2023-03-24 17:02:33','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207592
 ;
 
+-- Mar 29, 2023, 8:16:07 PM CEST
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (203799,0,0,'Y',TO_TIMESTAMP('2023-03-29 20:15:52','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-03-29 20:15:52','YYYY-MM-DD HH24:MI:SS'),100,'TestUU_UUs','Multi TestUU',NULL,NULL,'Multi TestUU','D','fa2ddd35-2dfe-4771-ad64-a276e878427c')
+;
+
+-- Mar 29, 2023, 8:16:45 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (215809,0.0,'Multi TestUU',200384,'TestUU_UUs',2000,'N','N','Y','N','N',0,'N',200162,200236,0,0,'Y',TO_TIMESTAMP('2023-03-29 20:16:44','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-03-29 20:16:44','YYYY-MM-DD HH24:MI:SS'),100,203799,'Y','N','D','N','N','N','Y','efa1b7d2-8200-4bba-861b-87725ccf2099','Y','N','N','N','N')
+;
+
+-- Mar 29, 2023, 8:17:07 PM CEST
+UPDATE AD_Column SET IsMandatory='N',Updated=TO_TIMESTAMP('2023-03-29 20:17:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215809
+;
+
+-- Mar 29, 2023, 8:17:09 PM CEST
+ALTER TABLE TestUUDet ADD COLUMN TestUU_UUs VARCHAR(2000) DEFAULT NULL 
+;
+
+-- Mar 29, 2023, 8:17:31 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (207599,'Multi TestUU',200349,215809,'Y',2000,70,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-03-29 20:17:31','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-03-29 20:17:31','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','c1927d34-4a3e-4207-9f0a-e0748be9ad67','Y',70,5)
+;
+
+-- Mar 29, 2023, 8:17:47 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=60, XPosition=1,Updated=TO_TIMESTAMP('2023-03-29 20:17:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207599
+;
+
+-- Mar 29, 2023, 8:17:47 PM CEST
+UPDATE AD_Field SET SeqNo=70,Updated=TO_TIMESTAMP('2023-03-29 20:17:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207588
+;
+
+-- Mar 29, 2023, 8:18:17 PM CEST
+UPDATE AD_Element SET Name='Multi Test UU', PrintName='Multi Test UU',Updated=TO_TIMESTAMP('2023-03-29 20:18:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Element_ID=203799
+;
+
+-- Mar 29, 2023, 8:18:17 PM CEST
+UPDATE AD_Column SET ColumnName='TestUU_UUs', Name='Multi Test UU', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=203799
+;
+
+-- Mar 29, 2023, 8:18:17 PM CEST
+UPDATE AD_Process_Para SET ColumnName='TestUU_UUs', Name='Multi Test UU', Description=NULL, Help=NULL, AD_Element_ID=203799 WHERE UPPER(ColumnName)='TESTUU_UUS' AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL
+;
+
+-- Mar 29, 2023, 8:18:17 PM CEST
+UPDATE AD_Process_Para SET ColumnName='TestUU_UUs', Name='Multi Test UU', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=203799 AND IsCentrallyMaintained='Y'
+;
+
+-- Mar 29, 2023, 8:18:17 PM CEST
+UPDATE AD_InfoColumn SET ColumnName='TestUU_UUs', Name='Multi Test UU', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Element_ID=203799 AND IsCentrallyMaintained='Y'
+;
+
+-- Mar 29, 2023, 8:18:17 PM CEST
+UPDATE AD_Field SET Name='Multi Test UU', Description=NULL, Help=NULL, Placeholder=NULL WHERE AD_Column_ID IN (SELECT AD_Column_ID FROM AD_Column WHERE AD_Element_ID=203799) AND IsCentrallyMaintained='Y'
+;
+
+-- Mar 29, 2023, 8:18:17 PM CEST
+UPDATE AD_PrintFormatItem SET PrintName='Multi Test UU', Name='Multi Test UU' WHERE IsCentrallyMaintained='Y' AND EXISTS (SELECT * FROM AD_Column c WHERE c.AD_Column_ID=AD_PrintFormatItem.AD_Column_ID AND c.AD_Element_ID=203799)
+;
+
+-- Mar 29, 2023, 8:18:34 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (207600,'Multi Test UU',200350,215809,'Y',2000,70,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-03-29 20:18:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-03-29 20:18:34','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','e35c3192-8704-490f-a79a-88b746588d64','Y',70,5)
+;
+
+-- Mar 29, 2023, 8:18:42 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=60, XPosition=1,Updated=TO_TIMESTAMP('2023-03-29 20:18:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207600
+;
+
+-- Mar 29, 2023, 8:18:42 PM CEST
+UPDATE AD_Field SET SeqNo=70,Updated=TO_TIMESTAMP('2023-03-29 20:18:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207595
+;
+
