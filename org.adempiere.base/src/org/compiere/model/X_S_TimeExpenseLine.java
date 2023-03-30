@@ -586,6 +586,26 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 		return (String)get_Value(COLUMNNAME_Note);
 	}
 
+	/** Set Price.
+		@param PriceEntered 
+		Price Entered - the price based on the selected price list on header
+	  */
+	public void setPriceEntered (BigDecimal PriceEntered)
+	{
+		set_Value (COLUMNNAME_PriceEntered, PriceEntered);
+	}
+	
+	/** Get Price.
+		@return Price Entered - the price based on the selected price list on header
+	  */
+	public BigDecimal getPriceEntered () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceEntered);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 	/** Set Price Invoiced.
 		@param PriceInvoiced The priced invoiced to the customer (in the currency of the customer&#039;s AR price list) - 0 for default price
 	*/
