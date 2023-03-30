@@ -119,10 +119,15 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
 		}
 
 		String serverName = WebUtil.getServerName();
-		String sql = "UPDATE AD_Session SET Processed='Y' WHERE Processed='N' AND ServerName=?";
+		final String sql = "UPDATE AD_Session SET Processed='Y' WHERE Processed='N' AND ServerName=?";
 		int no = DB.executeUpdate(sql, new Object[] {serverName}, false, null);
 		if (no < 0) {
 			throw new AdempiereException("UpdateSession: Cannot Destroy All Session");
+		}
+		final String sqlp = "UPDATE AD_PInstance SET IsProcessing='N' WHERE IsProcessing='Y' AND EXISTS (SELECT 1 FROM AD_Session s WHERE s.AD_Session_ID=AD_PInstance.AD_Session_ID AND s.ServerName=?)";
+		int nop = DB.executeUpdate(sqlp, new Object[] {serverName}, false, null);
+		if (nop < 0) {
+			throw new AdempiereException("UpdateSession: Cannot Update All Process Instances");
 		}
 		
 		Adempiere.removeServerStateChangeListener(this);
