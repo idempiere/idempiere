@@ -161,6 +161,14 @@ public class PrintDataElement implements Serializable
 	}	//	getValue
 
 	/**
+	 * Set Node Value
+	 * @param value
+	 */
+	public void setValue(Serializable value) {
+		this.m_value = value;
+	}
+
+	/**
 	 * 	Get Function Value
 	 * 	@return length or numeric value
 	 */
