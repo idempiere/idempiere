@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -49,8 +50,8 @@ import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
 import org.adempiere.webui.event.DrillEvent;
-import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.event.DrillEvent.DrillData;
+import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -1730,18 +1731,18 @@ public class DashboardController implements EventListener<Event> {
 		return true;
 	}
 
-	private String getMultiSelectionDisplay(MPInstance i, MPInstancePara ip, String value) {
+	private String getMultiSelectionDisplay(MPInstance i, MPInstancePara ip, String values) {
 		String returnValue = "";
-		String[] splittedValues = value.split("[,]");
-		for(String sId : splittedValues) {
+		String[] splittedValues = values.split("[,]");
+		for(String value : splittedValues) {
 			if(!Util.isEmpty(returnValue))
 				returnValue += ", ";
-			returnValue += getDisplay(i, ip, Integer.parseInt(sId));
+			returnValue += getDisplay(i, ip, Util.isInteger(values) ? Integer.parseInt(values) : value);
 		}
 		return returnValue;
 	}
 	
-	private String getDisplay(MPInstance i, MPInstancePara ip, int id) {
+	private String getDisplay(MPInstance i, MPInstancePara ip, Object value) {
 		try {
 			MProcessPara pp = MProcess.get(i.getAD_Process_ID()).getParameter(ip.getParameterName());
 
@@ -1756,7 +1757,10 @@ public class DashboardController implements EventListener<Event> {
 				try
 				{
 					pstmt = DB.prepareStatement(mli.QueryDirect, null);
-					pstmt.setInt(1, id);
+					if(value instanceof Integer)
+						pstmt.setInt(1, (Integer)value);
+					else
+						pstmt.setString(1, Objects.toString(value, ""));
 
 					rs = pstmt.executeQuery();
 					if (rs.next()) {
@@ -1785,7 +1789,7 @@ public class DashboardController implements EventListener<Event> {
 			logger.log(Level.WARNING, "Failed to retrieve data to display for embedded report " + MProcess.get(i.getAD_Process_ID()).getName() + " : " + ip.getParameterName(), e);
 		}
 
-		return Integer.toString(id);
+		return Objects.toString(value, "");
 	}
 
 	/**

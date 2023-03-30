@@ -776,5 +776,36 @@ public class Util
 	{
 		return value == null ? false : value.matches(UUID_REGEX);
 	}
+	
+	/**
+	 * Is Integer
+	 * @param s
+	 * @return boolean: true if the String can be parsed to an Integer value
+	 */
+	public static boolean isInteger(String s) {
+	    return isInteger(s,10);
+	}
+
+	/**
+	 * Is Integer
+	 * @param s
+	 * @param radix
+	 * @return boolean: true if the String can be parsed to an Integer value
+	 */
+	public static boolean isInteger(String s, int radix) {
+	    if(s.isEmpty())
+	    	return false;
+	    for(int i = 0; i < s.length(); i++) {
+	        if(i == 0 && s.charAt(i) == '-') {
+	            if(s.length() == 1)
+	            	return false;
+	            else
+	            	continue;
+	        }
+	        if(Character.digit(s.charAt(i),radix) < 0)
+	        	return false;
+	    }
+	    return true;
+	}
 
 }   //  Util
