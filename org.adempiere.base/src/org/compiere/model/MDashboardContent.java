@@ -188,21 +188,26 @@ public class MDashboardContent extends X_PA_DashboardContent
      */
     public static Map<String, String> parseProcessParameters(String parameters)	{
     	Map<String, String> paramMap = new HashMap<String, String>();
-    	ArrayList<String> multiSelections = new ArrayList<String>();
-    	final String placeHolder = "<--MULTISELECTVALUE-->";
+    	Map<String, String> multiSelections = new HashMap<String, String>();
+    	final String placeHolder = "MULTISELECTVALUE";
     	String multiSelection;
-    	Pattern p = Pattern.compile("\"(.*?)\"");	// regex to extract values between double quotes: "(.*?)"
+    	String parsedParameters = parameters;
+		int idx = 0;
+    	Pattern p = Pattern.compile("\"(.*?)\"");	// regex to extract multiselection values between double quotes: "(.*?)"
     	Matcher m = p.matcher(parameters);
     	
     	// extract the multiselection values before splitting by [,]
     	while (m.find()) {
+    		String multiSelectionKey = placeHolder+idx;
     		multiSelection = parameters.substring(m.start(), m.end());
-    		multiSelections.add(multiSelection.replace("\"", ""));
-    		parameters = parameters.replaceFirst(multiSelection, placeHolder);
+    		multiSelections.put(multiSelectionKey, multiSelection.replace("\"", ""));
+    		parsedParameters = parsedParameters.replaceFirst(multiSelection, multiSelectionKey);
+    		idx++;
 		}
     	
-    	if (parameters != null && parameters.trim().length() > 0) {
-			String[] params = parameters.split("[,]");
+    	// split values by [,]
+    	if (parsedParameters != null && parsedParameters.trim().length() > 0) {
+			String[] params = parsedParameters.split("[,]");
 			for (String s : params)
 			{
 				int pos = s.indexOf("=");
@@ -212,12 +217,12 @@ public class MDashboardContent extends X_PA_DashboardContent
 			}
     	}
     	
-    	// replace the multiselection values back
+    	// insert the multiselection values back to the HashMap
     	if(multiSelections.size() > 0) {
-			int idx = 0;
+    		idx = 0;
 			for(Entry<String, String> e : paramMap.entrySet()) {
-				if(e.getValue().equals(placeHolder)) {
-					e.setValue(multiSelections.get(idx));
+				if(e.getValue().contains(placeHolder)) {
+					e.setValue(multiSelections.get(e.getValue()));
 					idx++;
 				}
 			}
