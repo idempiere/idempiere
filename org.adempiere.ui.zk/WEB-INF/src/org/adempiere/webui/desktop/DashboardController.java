@@ -1737,7 +1737,7 @@ public class DashboardController implements EventListener<Event> {
 		for(String value : splittedValues) {
 			if(!Util.isEmpty(returnValue))
 				returnValue += ", ";
-			returnValue += getDisplay(i, ip, Util.isInteger(values) ? Integer.parseInt(values) : value);
+			returnValue += getDisplay(i, ip, Util.isInteger(value) ? Integer.parseInt(value) : value);
 		}
 		return returnValue;
 	}
