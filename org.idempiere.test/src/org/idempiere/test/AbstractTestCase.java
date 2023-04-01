@@ -34,9 +34,13 @@ import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
+import org.compiere.model.MOrg;
 import org.compiere.model.MRole;
+import org.compiere.model.MWarehouse;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
+import org.compiere.util.Login;
 import org.compiere.util.Trx;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -144,6 +148,12 @@ public abstract class AbstractTestCase {
 				}
 			}
 		}
+		KeyNamePair knpo = new KeyNamePair(loginDetails.getOrganizationId(), MOrg.get(loginDetails.getOrganizationId()).getName());
+		KeyNamePair knpw = null;
+		if (loginDetails.getWarehouseId() > 0)
+			knpw = new KeyNamePair(loginDetails.getWarehouseId(), MWarehouse.get(loginDetails.getWarehouseId()).getName());
+		Login login = new Login(Env.getCtx());
+		login.loadPreferences(knpo, knpw, loginDetails.getLoginDate(), null);
 	}
 	
 	@AfterEach
