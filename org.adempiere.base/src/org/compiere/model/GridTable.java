@@ -2752,6 +2752,11 @@ public class GridTable extends AbstractTableModel
 			for (int i = 0; i < size; i++)
 			{
 				GridField field = (GridField)m_fields.get(i);
+				if (field.getGridTab() != null) {
+					//avoid getting default from previous row
+					String key = field.getVO().WindowNo+"|"+field.getVO().TabNo+"|"+field.getVO().ColumnName;
+					field.getVO().ctx.remove(key);
+				}
 				Object value = field.getDefault();
 				field.setValue(value, m_inserting);
 				field.validateValueNoDirect();
