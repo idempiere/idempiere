@@ -19,8 +19,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +73,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Evaluatee;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
@@ -94,7 +98,7 @@ import org.zkoss.zul.impl.XulElement;
  * @version 2006-12-01
  */
 public class ProcessParameterPanel extends Panel implements
-		ValueChangeListener, IProcessParameter, EventListener<Event> {
+		ValueChangeListener, IProcessParameter, EventListener<Event>, Evaluatee {
 	/**
 	 * generated serial id
 	 */
@@ -311,6 +315,7 @@ public class ProcessParameterPanel extends Panel implements
 				GridFieldVO voF = listVO.get(i);
 				GridField field = new GridField(voF);
 				m_mFields.add(field); // add to Fields
+				field.setParentEvaluatee(this);
 				
 				String fieldGroup = field.getFieldGroup();
 	        	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)) // group changed
@@ -1358,6 +1363,47 @@ public class ProcessParameterPanel extends Panel implements
 	 */
 	public int getWindowNo() {
 		return m_WindowNo;
+	}
+
+	@Override
+	public String get_ValueAsString(String variableName) {
+		for(WEditor editor : m_wEditors) {
+			if (editor.getGridField().getColumnName().equals(variableName)) {
+				//base on code in GridField.updateContext() method
+				int displayType = editor.getGridField().getVO().displayType;	
+				if (displayType == DisplayType.Text 
+					|| displayType == DisplayType.Memo
+					|| displayType == DisplayType.TextLong
+					|| displayType == DisplayType.Binary
+					|| displayType == DisplayType.RowID
+					|| editor.getGridField().isEncrypted())
+					return ""; //	ignore
+				
+				Object value = editor.getValue();
+				if (value == null)
+					return "";
+				else if (value instanceof Boolean)
+				{
+					return (((Boolean)value) ? "Y" : "N");
+				}
+				else if (value instanceof Timestamp)
+				{
+					String stringValue = null;
+					if (value != null && !value.toString().equals("")) {
+						Calendar c1 = Calendar.getInstance();
+						c1.setTime((Date) value);
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						stringValue = sdf.format(c1.getTime());
+					}
+					return stringValue;
+				}
+				else
+				{
+					return value.toString();
+				}
+			}
+		}
+		return null;
 	}
 
 } // ProcessParameterPanel
