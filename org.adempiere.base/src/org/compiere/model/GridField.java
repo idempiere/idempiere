@@ -1344,6 +1344,11 @@ public class GridField
 	 */
 	public String get_ValueAsString (Properties ctx, String variableName)
 	{
+		if (m_parentEvaluatee != null) {
+			String value = m_parentEvaluatee.get_ValueAsString(variableName);
+			if (value != null)
+				return value;
+		}
 		return new DefaultEvaluatee(getGridTab(), m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
 
@@ -2423,6 +2428,9 @@ public class GridField
 	
 	/** Is the initial context value for this field backup ? - teo_sarca [ 1699826 ] */
 	private boolean m_isBackupValue = false;
+
+	/** Optional Parent Evaluatee that take precedence over the value return from GridField's Evaluatee implementation */
+	private Evaluatee m_parentEvaluatee = null;
 	
 	/**
 	 * Backup the context value
@@ -2704,5 +2712,13 @@ public class GridField
 				setValue(valueStr, false);
 			}
 		}
+	}
+
+	/**
+	 * Set parent Evaluatee that take precedence over value return from GridField's Evaluatee implementation.
+	 * @param evaluatee
+	 */
+	public void setParentEvaluatee(Evaluatee evaluatee) {
+		m_parentEvaluatee  = evaluatee;
 	}
 }   //  GridField
