@@ -193,9 +193,8 @@ public class GridTabTest extends AbstractTestCase {
 		boolean displayGridOri = field.isDisplayed();
 		try {
 			/* IDEMPIERE-5560 */
-			DB.executeUpdateEx("UPDATE AD_Field SET IsDisplayed='N', IsDisplayedGrid='N' WHERE AD_Field_ID=?", new Object[] {FIELD_ORDERLINE_SHIPPER}, getTrxName());
-			// we need to commit here for the test case below to get the update
-			commit();
+			// must not use trx here for the test case below to get the update
+			DB.executeUpdateEx("UPDATE AD_Field SET IsDisplayed='N', IsDisplayedGrid='N' WHERE AD_Field_ID=?", new Object[] {FIELD_ORDERLINE_SHIPPER}, null);
 			CacheMgt.get().reset();
 
 			// Sales Order
@@ -253,6 +252,8 @@ public class GridTabTest extends AbstractTestCase {
 			assertTrue(gTab0.dataNew(false));
 			assertTrue(gTab0.isNew(), "Grid Tab dataNew call not working as expected");
 			gTab0.setValue(MOrder.COLUMNNAME_C_BPartner_ID, DictionaryIDs.C_BPartner.C_AND_W.id);
+			gTab0.setValue(MOrder.COLUMNNAME_C_DocTypeTarget_ID, DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+			gTab0.setValue(MOrder.COLUMNNAME_SalesRep_ID, DictionaryIDs.AD_User.GARDEN_USER.id);
 			assertTrue(gTab0.dataSave(true), CLogger.retrieveWarningString("Could not save order"));
 
 			GridTab gTab1 = gridWindow.getTab(1);
@@ -269,9 +270,7 @@ public class GridTabTest extends AbstractTestCase {
 		} finally {
 			// rollback the work from the test
 			rollback();
-			DB.executeUpdateEx("UPDATE AD_Field SET IsDisplayed=?, IsDisplayedGrid=? WHERE AD_Field_ID=?", new Object[] {displayOri, displayGridOri, FIELD_ORDERLINE_SHIPPER}, getTrxName());
-			// commit the cleanup
-			commit();
+			DB.executeUpdateEx("UPDATE AD_Field SET IsDisplayed=?, IsDisplayedGrid=? WHERE AD_Field_ID=?", new Object[] {displayOri, displayGridOri, FIELD_ORDERLINE_SHIPPER}, null);
 			CacheMgt.get().reset();
 		}
 
