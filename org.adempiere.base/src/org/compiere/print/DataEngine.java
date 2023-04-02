@@ -972,7 +972,7 @@ public class DataEngine
 									{
 										String valueString = value.toString();
 										if (value instanceof Timestamp)
-											valueString = DisplayType.getDateFormat(pdc.getDisplayType(), m_language).format(value);
+											valueString = DisplayType.getDateFormat(pdc.getDisplayType(), m_language, pdc.getFormatPattern()).format(value);
 										if (format.getTableFormat().isPrintFunctionSymbols())		//	Translate Sum, etc.
 											valueString	+= PrintDataFunction.getFunctionSymbol(functions[f]);
 										pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
@@ -1192,7 +1192,7 @@ public class DataEngine
 							{
 								String valueString = value.toString();
 								if (value instanceof Timestamp)
-									valueString = DisplayType.getDateFormat(pdc.getDisplayType(), m_language).format(value);
+									valueString = DisplayType.getDateFormat(pdc.getDisplayType(), m_language, pdc.getFormatPattern()).format(value);
 								if (format.getTableFormat().isPrintFunctionSymbols())		//	Translate Sum, etc.
 									valueString	+= PrintDataFunction.getFunctionSymbol(functions[f]);
 								pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(),
@@ -1232,6 +1232,8 @@ public class DataEngine
 							name = Msg.getMsg(format.getLanguage(), PrintDataFunction.getFunctionName(functions[f]));
 						else
 							name = PrintDataFunction.getFunctionSymbol(functions[f]);	//	Symbol
+						if (m_group.isFunctionColumn(pdc.getAD_PrintFormatItem_ID(), functions[f]))
+							name += " " + m_group.getValue(PrintDataGroup.TOTAL, pdc.getAD_PrintFormatItem_ID(), functions[f]);
 						pd.addNode(new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), name.trim(),
 								DisplayType.String, pdc.getFormatPattern()));
 					}
