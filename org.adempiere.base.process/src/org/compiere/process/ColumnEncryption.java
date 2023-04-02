@@ -193,45 +193,44 @@ public class ColumnEncryption extends SvrProcess {
 			}
 		}
 
-		count = 0;
-		// If only user chooses both encrypt the contents and override current
-		// settings resize the physical column and encrypt all its contents.
-		if (p_ChangeSetting && column.isEncrypted() != p_IsEncrypted) {
-			int columnID = column.get_ID();
-			MTable table = MTable.get(getCtx(), column.getAD_Table_ID());
-			if (p_IsEncrypted) {
-				// Check if the encryption exceeds the current length.
-				int oldLength = column.getFieldLength();
-				int newLength = encryptedColumnLength(p_MaxLength > 0 ? p_MaxLength : oldLength);
-				if (newLength > oldLength) {
-					if (changeFieldLength(table, column, newLength) < 0) {
-						log.warning("EncryptError [ChangeFieldLength]: "
-								+ "ColumnID=" + columnID + ", NewLength="
-								+ newLength);
+		if (error) {
+			msglog = new StringBuilder("Encryption NOT changed - Encryption=")
+					.append(column.isEncrypted());
+			addLog(0, null, null, msglog.toString());
+		} else {
+			count = 0;
+			// If only user chooses both encrypt the contents and override current
+			// settings resize the physical column and encrypt all its contents.
+			if (p_ChangeSetting && column.isEncrypted() != p_IsEncrypted) {
+				int columnID = column.get_ID();
+				MTable table = MTable.get(getCtx(), column.getAD_Table_ID());
+				if (p_IsEncrypted) {
+					// Check if the encryption exceeds the current length.
+					int oldLength = column.getFieldLength();
+					int newLength = encryptedColumnLength(p_MaxLength > 0 ? p_MaxLength : oldLength);
+					if (newLength > oldLength) {
+						if (changeFieldLength(table, column, newLength) < 0) {
+							log.warning("EncryptError [ChangeFieldLength]: "
+									+ "ColumnID=" + columnID + ", NewLength="
+									+ newLength);
+							throw new Exception();
+						}
+					}
+
+					// Encrypt column contents.
+					count = encryptColumnContents(columnName, column.getAD_Table_ID()); 
+					if (count == -1) {
+						log.warning("EncryptError: No records encrypted.");
+						throw new Exception();
+					}
+				} else {
+					// Decrypt column contents.
+					count = decryptColumnContents(columnName, column.getAD_Table_ID()); 
+					if (count == -1) {
+						log.warning("DecryptError: No records decrypted.");
 						throw new Exception();
 					}
 				}
-
-				// Encrypt column contents.
-				count = encryptColumnContents(columnName, column.getAD_Table_ID()); 
-				if (count == -1) {
-					log.warning("EncryptError: No records encrypted.");
-					throw new Exception();
-				}
-			} else {
-				// Decrypt column contents.
-				count = decryptColumnContents(columnName, column.getAD_Table_ID()); 
-				if (count == -1) {
-					log.warning("DecryptError: No records decrypted.");
-					throw new Exception();
-				}
-			}
-			
-			if (error || !p_ChangeSetting){
-				msglog = new StringBuilder("Encryption NOT changed - Encryption=")
-						.append(column.isEncrypted());
-				addLog(0, null, null, msglog.toString());
-			} else {
 				column.setIsEncrypted(p_IsEncrypted);
 				if (column.save()){
 					addLog(0, null, null, "#" + (p_IsEncrypted ? "Encrypted=" : "Decrypted=") +count);
@@ -240,9 +239,9 @@ public class ColumnEncryption extends SvrProcess {
 					addLog(0, null, null, msglog.toString());
 				} else
 					addLog(0, null, null, "Save Error");
+			} else {
+				addLog(0, null, null, "Can't perform " + (p_IsEncrypted ? "encryption. " : "decryption. ") + "Column is " + (p_IsEncrypted ? "already Encrypted." : " not Encrypted."));
 			}
-		} else {
-			addLog(0, null, null, "Can't perform " + (p_IsEncrypted ? "encryption. " : "decryption. ") + "Column is " + (p_IsEncrypted ? "already Encrypted." : " not Encrypted."));
 		}
 		
 		StringBuilder msgreturn = new StringBuilder("Encryption=").append(column.isEncrypted());
