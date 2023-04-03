@@ -755,7 +755,7 @@ public class CompositeADTabbox extends AbstractADTabbox
 								setDetailPaneStatusMessage(msg, false);
 							}
 
-							if (selectDetailPanel.getGridTab().isTreeTab()) {
+							if (selectDetailPanel.getGridTab().isTreeTab() && selectDetailPanel.getTreePanel() != null) {
 								if (selectDetailPanel.getGridTab().getTreeDisplayedOn().equals(MTab.TREEDISPLAYEDON_MasterTab))
 									selectDetailPanel.getTreePanel().getParent().setVisible(false);
 								else
