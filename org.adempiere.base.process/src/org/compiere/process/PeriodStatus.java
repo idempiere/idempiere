@@ -46,6 +46,8 @@ public class PeriodStatus extends SvrProcess
 	private List<Integer> p_C_PeriodControl_IDs = null;
 	/** Action						*/
 	private String		p_PeriodAction = null;
+	/** Period Group		*/
+	private int		p_C_PeriodDocGroup_ID = 0;
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -60,6 +62,8 @@ public class PeriodStatus extends SvrProcess
 				;
 			else if (name.equals("PeriodAction"))
 				p_PeriodAction = (String)para[i].getParameter();
+			else if (name.equals("C_PeriodDocGroup_ID"))
+				p_C_PeriodDocGroup_ID = para[i].getParameterAsInt();
 			else if (name.equals("*RecordIDs*"))
 				;
 			else
@@ -146,6 +150,11 @@ public class PeriodStatus extends SvrProcess
 			}
 		}
 		wherepc.append(") AND PeriodStatus<>'P' AND PeriodStatus<>?");
+		if(p_C_PeriodDocGroup_ID > 0) {
+			wherepc.append(" AND DocBaseType IN (")
+				.append(" SELECT gl.DocBaseType FROM C_PeriodDocGroupLine gl WHERE gl.C_PeriodDocGroup_ID = ").append(p_C_PeriodDocGroup_ID)
+				.append(")");
+		}
 		sql.append(wherepc);
 		StringBuilder sqlPeriods = new StringBuilder("SELECT DISTINCT C_Period_ID FROM C_PeriodControl WHERE ").append(wherepc);
 		int[] periods = DB.getIDsEx(get_TrxName(), sqlPeriods.toString(), p_PeriodAction);
