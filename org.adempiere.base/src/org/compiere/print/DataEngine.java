@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -896,7 +895,7 @@ public class DataEngine
 		boolean hasLevelNo = pd.hasLevelNo();
 		int levelNo = 0;
 		int reportLineID = 0;
-		ArrayList<PrintDataColumn> notParsedPdc = new ArrayList<PrintDataColumn>();
+		ArrayList<PrintDataColumn> scriptColumns = new ArrayList<PrintDataColumn>();
 		//
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1066,22 +1065,9 @@ public class DataEngine
 										displayType = getDisplayType(value);
 									
 										if (display.startsWith("@SCRIPT")) {
-											display = display.replace("@SCRIPT", "");
-											value = parseVariable(display, pdc, pd);
-											if(Objects.toString(value, "").startsWith("\"Item not found: ")) {
-												if(!notParsedPdc.contains(pdc))
-													notParsedPdc.add(pdc);
-												value = display;
-											}
-											else {
-												Interpreter bsh = new Interpreter ();
-												try {
-													value = bsh.eval(value.toString());
-												}
-												catch (EvalError e) {
-													log.severe(e.getMessage());
-												}
-											}
+											value = display.replace("@SCRIPT", "");
+											if(!scriptColumns.contains(pdc))
+												scriptColumns.add(pdc);
 											displayType = getDisplayType(value);
 										}
 										pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), (Serializable) value, displayType, pdc.getFormatPattern());
@@ -1176,12 +1162,21 @@ public class DataEngine
 			rs = null; pstmt = null;
 		}
 
-		// Try to parse the unparsed Print Data Elements of Script columns
+		// Parse Script column values
 		for(int i = 0; i < pd.getRowCount(); i++) {
-			for(PrintDataColumn c : notParsedPdc) {
+			for(PrintDataColumn c : scriptColumns) {
 				pd.setRowIndex(i);
 				PrintDataElement e = (PrintDataElement) pd.getNodeByPrintFormatItemId(c.getAD_PrintFormatItem_ID());
-				e.setValue(parseVariable(e.getValueAsString(), c, pd));
+				Object value = parseVariable(e.getValueAsString(), c, pd);
+				Interpreter bsh = new Interpreter ();
+				try {
+					value = bsh.eval(value.toString());
+				}
+				catch (EvalError err) {
+					log.severe(err.getMessage());
+				}
+				if(value instanceof Serializable)
+					e.setValue((Serializable) value);
 			}
 		}
 		//	--	we have all rows - finish
