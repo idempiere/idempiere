@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -213,18 +212,10 @@ public class MDashboardContent extends X_PA_DashboardContent
 				int pos = s.indexOf("=");
 				String key = s.substring(0, pos);
 				String value = s.substring(pos + 1);
-				paramMap.put(key, value);
-			}
-    	}
-    	
-    	// insert the multiselection values back to the HashMap
-    	if(multiSelections.size() > 0) {
-    		idx = 0;
-			for(Entry<String, String> e : paramMap.entrySet()) {
-				if(e.getValue().contains(placeHolder)) {
-					e.setValue(multiSelections.get(e.getValue()));
-					idx++;
+				if(value.startsWith(placeHolder)) {
+					value = multiSelections.get(value);	// insert the multiselection values back to the HashMap
 				}
+				paramMap.put(key, value);
 			}
     	}
     	return paramMap;
