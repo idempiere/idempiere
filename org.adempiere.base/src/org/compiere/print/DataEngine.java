@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -1062,12 +1063,13 @@ public class DataEngine
 									int displayType = pdc.getDisplayType();
 									if(MPrintFormatItem.PRINTFORMATTYPE_Script.equalsIgnoreCase(pdc.getPrintFormatType())) {	// ScriptColumn	
 										Object value = rs.getObject(displayIndex);
-										displayType = getDisplayType(value);
 									
 										if (display.startsWith("@SCRIPT")) {
-											value = display.replace("@SCRIPT", "");
 											if(!scriptColumns.contains(pdc))
 												scriptColumns.add(pdc);
+											displayType = DisplayType.Text;
+										}
+										else {
 											displayType = getDisplayType(value);
 										}
 										pde = new PrintDataElement(pdc.getAD_PrintFormatItem_ID(), pdc.getColumnName(), (Serializable) value, displayType, pdc.getFormatPattern());
@@ -1163,20 +1165,25 @@ public class DataEngine
 		}
 
 		// Parse Script column values
-		for(int i = 0; i < pd.getRowCount(); i++) {
-			for(PrintDataColumn c : scriptColumns) {
-				pd.setRowIndex(i);
-				PrintDataElement e = (PrintDataElement) pd.getNodeByPrintFormatItemId(c.getAD_PrintFormatItem_ID());
-				Object value = parseVariable(e.getValueAsString(), c, pd);
-				Interpreter bsh = new Interpreter ();
-				try {
-					value = bsh.eval(value.toString());
+		if(scriptColumns.size() > 0) {
+			for(int i = 0; i < pd.getRowCount(); i++) {
+				for(PrintDataColumn c : scriptColumns) {
+					pd.setRowIndex(i);
+					PrintDataElement e = (PrintDataElement) pd.getNodeByPrintFormatItemId(c.getAD_PrintFormatItem_ID());
+					Object value = parseVariable(e.getValueAsString().replace("@SCRIPT", ""), c, pd);
+					Interpreter bsh = new Interpreter();
+					try {
+						value = bsh.eval(value.toString());
+					}
+					catch (EvalError err) {
+						log.severe(err.getMessage());
+					}
+					e.setDisplayType(getDisplayType(value));
+					if(value instanceof Serializable)
+						e.setValue((Serializable) value);
+					else
+						e.setValue(Objects.toString(value, ""));
 				}
-				catch (EvalError err) {
-					log.severe(err.getMessage());
-				}
-				if(value instanceof Serializable)
-					e.setValue((Serializable) value);
 			}
 		}
 		//	--	we have all rows - finish

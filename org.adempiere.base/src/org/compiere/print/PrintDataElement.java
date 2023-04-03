@@ -332,6 +332,14 @@ public class PrintDataElement implements Serializable
 	}	//	getDisplayType
 
 	/**
+	 * 	Set Display Type
+	 */
+	public void setDisplayType(int displayType)
+	{
+		this.m_displayType = displayType;
+	}	//	setDisplayType
+	
+	/**
 	 * 	Is Value numeric
 	 * 	@return true if value is a numeric
 	 */
