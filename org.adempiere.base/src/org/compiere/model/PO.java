@@ -113,7 +113,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1569541357840608310L;
+	private static final long serialVersionUID = 1672197562752270736L;
 
 	/* String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -649,13 +649,26 @@ public abstract class PO
 	}   //  get_ValueE
 
 	/**
-	 * 	Get Column Value
-	 *	@param variableName name
-	 *	@return value or ""
+	 * Get String Value
+	 * @param columnName
+	 * @return String value
 	 */
-	public String get_ValueAsString (String variableName)
+	public String get_ValueAsString(String columnName)
 	{
-		Object value = get_Value (variableName);
+		int idx = get_ColumnIndex(columnName);
+		if (idx < 0)
+			return "";
+		return get_ValueAsString(idx);
+	}
+
+	/**
+	 * 	Get String Value
+	 *	@param idx column index
+	 *	@return String value or ""
+	 */
+	public String get_ValueAsString(int idx)
+	{
+		Object value = get_Value(idx);
 		if (value == null)
 			return "";
 		return value.toString();
@@ -5634,7 +5647,7 @@ public abstract class PO
 			if (is_new() || is_ValueChanged(index)) {
 				Object fkval = null;
 				if (fkcol.endsWith("_UU")) {
-					fkval = get_Value(index).toString();
+					fkval = get_ValueAsString(index);
 				} else {
 					fkval = Integer.valueOf(get_ValueAsInt(index));
 				}

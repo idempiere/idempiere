@@ -487,7 +487,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}	//	getKeyColumns
 	
 	/**
-	 * @return true if table key is _UU instead of _ID or composite parent key.
+	 * @return true if table key is _ID key.
 	 */
 	public boolean isIDKeyTable()
 	{

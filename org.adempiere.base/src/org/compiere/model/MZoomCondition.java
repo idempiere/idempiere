@@ -256,7 +256,7 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 									.append(" FROM ").append(parentTab.getTableName())
 									.append(" WHERE ");
 							if (parentTab.getLinkColumnName().endsWith("_UU")) {
-								sql.append(PO.getUUIDColumnName(parentTab.getTableName())).append("=").append(parentId);
+								sql.append(PO.getUUIDColumnName(parentTab.getTableName())).append("=").append(DB.TO_STRING(parentId.toString()));
 							} else {
 								sql.append(parentTab.getTableName()).append("_ID=").append(parentId);
 							}
