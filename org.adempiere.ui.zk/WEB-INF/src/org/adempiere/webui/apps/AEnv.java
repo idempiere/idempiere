@@ -211,6 +211,22 @@ public final class AEnv
 		zoom(AD_Window_ID, query);
 	}	//	zoom
 
+	/*************************************************************************
+	 * 	Zoom to AD Window by AD_Table_ID and Record_UU.
+	 *	@param AD_Table_ID
+	 *	@param Record_UU
+	 *	@param query initial query for destination AD Window
+	 *  @param windowNo
+	 */
+	public static void zoomUU(int AD_Table_ID, String Record_UU, MQuery query, int windowNo)
+	{
+		int AD_Window_ID = Env.getZoomWindowUU(AD_Table_ID, Record_UU, windowNo);
+		//  Nothing to Zoom to
+		if (AD_Window_ID == 0)
+			return;
+		zoom(AD_Window_ID, query);
+	}	//	zoom
+
 	/**
 	 * Call {@link #zoom(int, int, MQuery, int)}
 	 * @param AD_Table_ID
@@ -460,13 +476,18 @@ public final class AEnv
 		zoomQuery.setZoomValue(value);
 		zoomQuery.addRestriction(column, MQuery.EQUAL, value);
 		zoomQuery.setRecordCount(1);    //  guess
-        if (value instanceof Integer && ((Integer) value).intValue() >= 0 && zoomQuery != null && zoomQuery.getZoomTableName() != null) {
-        	int tableId = MTable.getTable_ID(zoomQuery.getZoomTableName());
-        	zoom(tableId, ((Integer) value).intValue(), zoomQuery, lookup.getWindowNo());
-        } else {
+		if (zoomQuery.getZoomTableName() != null) {
+			int tableId = -1;
+			tableId = MTable.getTable_ID(zoomQuery.getZoomTableName());
+	        if (value instanceof Integer && ((Integer) value).intValue() >= 0 && zoomQuery != null && zoomQuery.getZoomTableName() != null) {
+	        	zoom(tableId, ((Integer) value).intValue(), zoomQuery, lookup.getWindowNo());
+	        } else {
+	        	zoomUU(tableId, value.toString(), zoomQuery, lookup.getWindowNo());
+	        }
+		} else {
         	int windowId = lookup.getZoom(zoomQuery);
         	zoom(windowId, zoomQuery, lookup.getWindowNo());
-        }
+		}
     }
 
     /**

@@ -255,12 +255,13 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 							StringBuilder sql = new StringBuilder("SELECT ").append(parentTab.getLinkColumnName())
 									.append(" FROM ").append(parentTab.getTableName())
 									.append(" WHERE ");
-							if (parentTab.getLinkColumnName().endsWith("_UU")) {
+							MTable parentTable = MTable.get(Env.getCtx(), parentTab.getTableName());
+							if (parentTable.isUUIDKeyTable()) {
 								sql.append(PO.getUUIDColumnName(parentTab.getTableName())).append("=").append(DB.TO_STRING(parentId.toString()));
 							} else {
 								sql.append(parentTab.getTableName()).append("_ID=").append(parentId);
 							}
-							parentId = DB.getSQLValue(null, sql.toString());
+							parentId = null;
 							if (parentTab.getLinkColumnName().endsWith("_UU")) {
 								parentId = DB.getSQLValueString(null, sql.toString());
 							} else {
@@ -338,7 +339,7 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 			};
 
 			String whereClause;
-			if (recordUU != null)
+			if (table.isUUIDKeyTable())
 				whereClause = PO.getUUIDColumnName(table.getTableName())+"="+DB.TO_STRING(recordUU);
 			else
 				whereClause = table.getTableName() + "_ID="+recordID;
