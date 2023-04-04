@@ -20,11 +20,11 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-/** Generated Model for C_PeriodDocGroupLine
+/** Generated Model for C_DocBaseGroupLine
  *  @author iDempiere (generated)
  *  @version Release 11 - $Id$ */
-@org.adempiere.base.Model(table="C_PeriodDocGroupLine")
-public class X_C_PeriodDocGroupLine extends PO implements I_C_PeriodDocGroupLine, I_Persistent
+@org.adempiere.base.Model(table="C_DocBaseGroupLine")
+public class X_C_DocBaseGroupLine extends PO implements I_C_DocBaseGroupLine, I_Persistent
 {
 
 	/**
@@ -33,55 +33,55 @@ public class X_C_PeriodDocGroupLine extends PO implements I_C_PeriodDocGroupLine
 	private static final long serialVersionUID = 20230403L;
 
     /** Standard Constructor */
-    public X_C_PeriodDocGroupLine (Properties ctx, int C_PeriodDocGroupLine_ID, String trxName)
+    public X_C_DocBaseGroupLine (Properties ctx, int C_DocBaseGroupLine_ID, String trxName)
     {
-      super (ctx, C_PeriodDocGroupLine_ID, trxName);
-      /** if (C_PeriodDocGroupLine_ID == 0)
+      super (ctx, C_DocBaseGroupLine_ID, trxName);
+      /** if (C_DocBaseGroupLine_ID == 0)
         {
-			setC_PeriodDocGroupLine_ID (0);
-			setC_PeriodDocGroup_ID (0);
+			setC_DocBaseGroupLine_ID (0);
+			setC_DocBaseGroup_ID (0);
 			setDocBaseType (null);
         } */
     }
 
     /** Standard Constructor */
-    public X_C_PeriodDocGroupLine (Properties ctx, int C_PeriodDocGroupLine_ID, String trxName, String ... virtualColumns)
+    public X_C_DocBaseGroupLine (Properties ctx, int C_DocBaseGroupLine_ID, String trxName, String ... virtualColumns)
     {
-      super (ctx, C_PeriodDocGroupLine_ID, trxName, virtualColumns);
-      /** if (C_PeriodDocGroupLine_ID == 0)
+      super (ctx, C_DocBaseGroupLine_ID, trxName, virtualColumns);
+      /** if (C_DocBaseGroupLine_ID == 0)
         {
-			setC_PeriodDocGroupLine_ID (0);
-			setC_PeriodDocGroup_ID (0);
+			setC_DocBaseGroupLine_ID (0);
+			setC_DocBaseGroup_ID (0);
 			setDocBaseType (null);
         } */
     }
 
     /** Standard Constructor */
-    public X_C_PeriodDocGroupLine (Properties ctx, String C_PeriodDocGroupLine_UU, String trxName)
+    public X_C_DocBaseGroupLine (Properties ctx, String C_DocBaseGroupLine_UU, String trxName)
     {
-      super (ctx, C_PeriodDocGroupLine_UU, trxName);
-      /** if (C_PeriodDocGroupLine_UU == null)
+      super (ctx, C_DocBaseGroupLine_UU, trxName);
+      /** if (C_DocBaseGroupLine_UU == null)
         {
-			setC_PeriodDocGroupLine_ID (0);
-			setC_PeriodDocGroup_ID (0);
+			setC_DocBaseGroupLine_ID (0);
+			setC_DocBaseGroup_ID (0);
 			setDocBaseType (null);
         } */
     }
 
     /** Standard Constructor */
-    public X_C_PeriodDocGroupLine (Properties ctx, String C_PeriodDocGroupLine_UU, String trxName, String ... virtualColumns)
+    public X_C_DocBaseGroupLine (Properties ctx, String C_DocBaseGroupLine_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, C_PeriodDocGroupLine_UU, trxName, virtualColumns);
-      /** if (C_PeriodDocGroupLine_UU == null)
+      super (ctx, C_DocBaseGroupLine_UU, trxName, virtualColumns);
+      /** if (C_DocBaseGroupLine_UU == null)
         {
-			setC_PeriodDocGroupLine_ID (0);
-			setC_PeriodDocGroup_ID (0);
+			setC_DocBaseGroupLine_ID (0);
+			setC_DocBaseGroup_ID (0);
 			setDocBaseType (null);
         } */
     }
 
     /** Load Constructor */
-    public X_C_PeriodDocGroupLine (Properties ctx, ResultSet rs, String trxName)
+    public X_C_DocBaseGroupLine (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -103,71 +103,71 @@ public class X_C_PeriodDocGroupLine extends PO implements I_C_PeriodDocGroupLine
 
     public String toString()
     {
-      StringBuilder sb = new StringBuilder ("X_C_PeriodDocGroupLine[")
+      StringBuilder sb = new StringBuilder ("X_C_DocBaseGroupLine[")
         .append(get_ID()).append("]");
       return sb.toString();
     }
 
-	/** Set Period Group Line.
-		@param C_PeriodDocGroupLine_ID Line Items of a Period Group
+	/** Set Document Base Type Group Line.
+		@param C_DocBaseGroupLine_ID Line Items of a Document Base Type Group
 	*/
-	public void setC_PeriodDocGroupLine_ID (int C_PeriodDocGroupLine_ID)
+	public void setC_DocBaseGroupLine_ID (int C_DocBaseGroupLine_ID)
 	{
-		if (C_PeriodDocGroupLine_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_PeriodDocGroupLine_ID, null);
+		if (C_DocBaseGroupLine_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_DocBaseGroupLine_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_PeriodDocGroupLine_ID, Integer.valueOf(C_PeriodDocGroupLine_ID));
+			set_ValueNoCheck (COLUMNNAME_C_DocBaseGroupLine_ID, Integer.valueOf(C_DocBaseGroupLine_ID));
 	}
 
-	/** Get Period Group Line.
-		@return Line Items of a Period Group
+	/** Get Document Base Type Group Line.
+		@return Line Items of a Document Base Type Group
 	  */
-	public int getC_PeriodDocGroupLine_ID()
+	public int getC_DocBaseGroupLine_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_PeriodDocGroupLine_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocBaseGroupLine_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
-	/** Set C_PeriodDocGroupLine_UU.
-		@param C_PeriodDocGroupLine_UU C_PeriodDocGroupLine_UU
+	/** Set C_DocBaseGroupLine_UU.
+		@param C_DocBaseGroupLine_UU C_DocBaseGroupLine_UU
 	*/
-	public void setC_PeriodDocGroupLine_UU (String C_PeriodDocGroupLine_UU)
+	public void setC_DocBaseGroupLine_UU (String C_DocBaseGroupLine_UU)
 	{
-		set_Value (COLUMNNAME_C_PeriodDocGroupLine_UU, C_PeriodDocGroupLine_UU);
+		set_Value (COLUMNNAME_C_DocBaseGroupLine_UU, C_DocBaseGroupLine_UU);
 	}
 
-	/** Get C_PeriodDocGroupLine_UU.
-		@return C_PeriodDocGroupLine_UU	  */
-	public String getC_PeriodDocGroupLine_UU()
+	/** Get C_DocBaseGroupLine_UU.
+		@return C_DocBaseGroupLine_UU	  */
+	public String getC_DocBaseGroupLine_UU()
 	{
-		return (String)get_Value(COLUMNNAME_C_PeriodDocGroupLine_UU);
+		return (String)get_Value(COLUMNNAME_C_DocBaseGroupLine_UU);
 	}
 
-	public org.compiere.model.I_C_PeriodDocGroup getC_PeriodDocGroup() throws RuntimeException
+	public org.compiere.model.I_C_DocBaseGroup getC_DocBaseGroup() throws RuntimeException
 	{
-		return (org.compiere.model.I_C_PeriodDocGroup)MTable.get(getCtx(), org.compiere.model.I_C_PeriodDocGroup.Table_ID)
-			.getPO(getC_PeriodDocGroup_ID(), get_TrxName());
+		return (org.compiere.model.I_C_DocBaseGroup)MTable.get(getCtx(), org.compiere.model.I_C_DocBaseGroup.Table_ID)
+			.getPO(getC_DocBaseGroup_ID(), get_TrxName());
 	}
 
-	/** Set Period Group.
-		@param C_PeriodDocGroup_ID Group of Document Base Type for Period Control
+	/** Set Document Base Type Group.
+		@param C_DocBaseGroup_ID Group of Document Base Type for Period Control
 	*/
-	public void setC_PeriodDocGroup_ID (int C_PeriodDocGroup_ID)
+	public void setC_DocBaseGroup_ID (int C_DocBaseGroup_ID)
 	{
-		if (C_PeriodDocGroup_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_PeriodDocGroup_ID, null);
+		if (C_DocBaseGroup_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_DocBaseGroup_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_PeriodDocGroup_ID, Integer.valueOf(C_PeriodDocGroup_ID));
+			set_ValueNoCheck (COLUMNNAME_C_DocBaseGroup_ID, Integer.valueOf(C_DocBaseGroup_ID));
 	}
 
-	/** Get Period Group.
+	/** Get Document Base Type Group.
 		@return Group of Document Base Type for Period Control
 	  */
-	public int getC_PeriodDocGroup_ID()
+	public int getC_DocBaseGroup_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_PeriodDocGroup_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocBaseGroup_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

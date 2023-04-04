@@ -5,11 +5,11 @@ SET SQLBLANKLINES ON
 SET DEFINE OFF
 
 -- Apr 3, 2023, 11:40:52 AM CEST
-INSERT INTO AD_Table (AD_Table_ID,Name,Description,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable,IsShowInDrillOptions) VALUES (200385,'Period Group','Group of Document Base Type for Period Control','C_PeriodDocGroup',0,'6',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:40:51','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:40:51','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','6be7f778-7e56-4368-bc25-b57829e5b281','N','N','N','N','N')
+INSERT INTO AD_Table (AD_Table_ID,Name,Description,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable,IsShowInDrillOptions) VALUES (200385,'Document Base Type Group','Group of Document Base Type for Period Control','C_DocBaseGroup',0,'6',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:40:51','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:40:51','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','6be7f778-7e56-4368-bc25-b57829e5b281','N','N','N','N','N')
 ;
 
 -- Apr 3, 2023, 11:40:52 AM CEST
-INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('C_PeriodDocGroup',1000000,'N','N','Table C_PeriodDocGroup','Y','Y',0,0,TO_TIMESTAMP('2023-04-03 11:40:52','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:40:52','YYYY-MM-DD HH24:MI:SS'),100,200455,'Y',1000000,1,200000,'62225c22-e942-480e-8c07-0b6b771df383')
+INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('C_DocBaseGroup',1000000,'N','N','Table C_DocBaseGroup','Y','Y',0,0,TO_TIMESTAMP('2023-04-03 11:40:52','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:40:52','YYYY-MM-DD HH24:MI:SS'),100,200455,'Y',1000000,1,200000,'62225c22-e942-480e-8c07-0b6b771df383')
 ;
 
 -- Apr 3, 2023, 11:42:51 AM CEST
@@ -44,19 +44,19 @@ There are two reasons for de-activating and not deleting records:
 ;
 
 -- Apr 3, 2023, 11:42:53 AM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,PrintName,EntityType,AD_Element_UU) VALUES (203800,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:42:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:42:53','YYYY-MM-DD HH24:MI:SS'),100,'C_PeriodDocGroup_ID','Period Group','Group of Document Base Type for Period Control','Period Group','D','82acb1ec-ce94-48c7-a240-454c4afaa57d')
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,PrintName,EntityType,AD_Element_UU) VALUES (203800,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:42:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:42:53','YYYY-MM-DD HH24:MI:SS'),100,'C_DocBaseGroup_ID','Document Base Type Group','Group of Document Base Type for Period Control','Document Base Type Group','D','82acb1ec-ce94-48c7-a240-454c4afaa57d')
 ;
 
 -- Apr 3, 2023, 11:42:54 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (215817,0.0,'Period Group','Group of Document Base Type for Period Control',200385,'C_PeriodDocGroup_ID',22,'Y','N','Y','N','N','N',13,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:42:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:42:53','YYYY-MM-DD HH24:MI:SS'),100,203800,'N','N','D','N','11d610a4-c66c-4f69-9197-97c7921d6440','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (215817,0.0,'Document Base Type Group','Group of Document Base Type for Period Control',200385,'C_DocBaseGroup_ID',22,'Y','N','Y','N','N','N',13,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:42:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:42:53','YYYY-MM-DD HH24:MI:SS'),100,203800,'N','N','D','N','11d610a4-c66c-4f69-9197-97c7921d6440','N')
 ;
 
 -- Apr 3, 2023, 11:42:54 AM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203801,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:42:54','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:42:54','YYYY-MM-DD HH24:MI:SS'),100,'C_PeriodDocGroup_UU','C_PeriodDocGroup_UU','C_PeriodDocGroup_UU','D','7a706bc2-6a60-4cb5-8ca7-8524f7ed355c')
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203801,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:42:54','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:42:54','YYYY-MM-DD HH24:MI:SS'),100,'C_DocBaseGroup_UU','C_DocBaseGroup_UU','C_DocBaseGroup_UU','D','7a706bc2-6a60-4cb5-8ca7-8524f7ed355c')
 ;
 
 -- Apr 3, 2023, 11:42:54 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (215818,0.0,'C_PeriodDocGroup_UU',200385,'C_PeriodDocGroup_UU',36,'N','N','N','N','N','N',200231,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:42:54','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:42:54','YYYY-MM-DD HH24:MI:SS'),100,203801,'Y','N','D','N','41c27aa8-1866-4a72-ab80-c243a098cfca','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (215818,0.0,'C_DocBaseGroup_UU',200385,'C_DocBaseGroup_UU',36,'N','N','N','N','N','N',200231,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:42:54','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:42:54','YYYY-MM-DD HH24:MI:SS'),100,203801,'Y','N','D','N','41c27aa8-1866-4a72-ab80-c243a098cfca','N')
 ;
 
 -- Apr 3, 2023, 11:42:55 AM CEST
@@ -73,11 +73,11 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 ;
 
 -- Apr 3, 2023, 11:44:20 AM CEST
-INSERT INTO AD_Window (AD_Window_ID,Name,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,WindowType,Processing,EntityType,IsSOTrx,IsDefault,IsBetaFunctionality,AD_Window_UU) VALUES (200140,'Period Group',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:44:19','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:44:19','YYYY-MM-DD HH24:MI:SS'),100,'M','N','D','N','N','N','53871d7c-681f-418e-a28f-e128772fb5d8')
+INSERT INTO AD_Window (AD_Window_ID,Name,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,WindowType,Processing,EntityType,IsSOTrx,IsDefault,IsBetaFunctionality,AD_Window_UU) VALUES (200140,'Document Base Type Group',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:44:19','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:44:19','YYYY-MM-DD HH24:MI:SS'),100,'M','N','D','N','N','N','53871d7c-681f-418e-a28f-e128772fb5d8')
 ;
 
 -- Apr 3, 2023, 11:44:20 AM CEST
-INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsTranslationTab,IsReadOnly,OrderByClause,Processing,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU) VALUES (200351,'Period Group',200140,10,'Y',200385,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:44:20','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:44:20','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','C_PeriodDocGroup.Value','N',0,'N','D','Y','N','745e906f-4e34-43eb-84b8-bd2b484e3cb3')
+INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsTranslationTab,IsReadOnly,OrderByClause,Processing,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU) VALUES (200351,'Document Base Type Group',200140,10,'Y',200385,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:44:20','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:44:20','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','C_DocBaseGroup.Value','N',0,'N','D','Y','N','745e906f-4e34-43eb-84b8-bd2b484e3cb3')
 ;
 
 -- Apr 3, 2023, 11:44:20 AM CEST
@@ -102,11 +102,11 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 ;
 
 -- Apr 3, 2023, 11:44:22 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (207607,'Period Group','Group of Document Base Type for Period Control',200351,215817,'N',22,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:44:22','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:44:22','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','8ee037a0-a54f-448f-98b6-88597ec351fa','N',2)
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (207607,'Document Base Type Group','Group of Document Base Type for Period Control',200351,215817,'N',22,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:44:22','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:44:22','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','8ee037a0-a54f-448f-98b6-88597ec351fa','N',2)
 ;
 
 -- Apr 3, 2023, 11:44:22 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (207608,'C_PeriodDocGroup_UU',200351,215818,'N',36,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:44:22','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:44:22','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','e21dc874-5ddd-4906-80aa-27faa453dcc7','N',2)
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (207608,'C_DocBaseGroup_UU',200351,215818,'N',36,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:44:22','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:44:22','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','e21dc874-5ddd-4906-80aa-27faa453dcc7','N',2)
 ;
 
 -- Apr 3, 2023, 11:44:22 AM CEST
@@ -117,7 +117,7 @@ There are two reasons for de-activating and not deleting records:
 ;
 
 -- Apr 3, 2023, 11:44:23 AM CEST
-INSERT INTO AD_Menu (AD_Menu_ID,Name,Action,AD_Window_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,IsSOTrx,IsReadOnly,EntityType,AD_Menu_UU) VALUES (200226,'Period Group','W',200140,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:44:22','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:44:22','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','D','2fc1e2d9-cd0a-4bea-82d2-ed65e03c541e')
+INSERT INTO AD_Menu (AD_Menu_ID,Name,Action,AD_Window_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSummary,IsSOTrx,IsReadOnly,EntityType,AD_Menu_UU) VALUES (200226,'Document Base Type Group','W',200140,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:44:22','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:44:22','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N','D','2fc1e2d9-cd0a-4bea-82d2-ed65e03c541e')
 ;
 
 -- Apr 3, 2023, 11:44:23 AM CEST
@@ -153,11 +153,11 @@ UPDATE AD_Field SET SeqNo=10, IsReadOnly='Y',Updated=TO_TIMESTAMP('2023-04-03 11
 ;
 
 -- Apr 3, 2023, 11:46:55 AM CEST
-INSERT INTO AD_Table (AD_Table_ID,Name,Description,AD_Window_ID,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable,IsShowInDrillOptions) VALUES (200386,'Period Group Line','Line Items of a Period Group',200140,'C_PeriodDocGroupLine',0,'6',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:46:54','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:46:54','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','8c2fd0c3-9e15-4f0a-a172-2ab07c2e8479','N','N','N','N','N')
+INSERT INTO AD_Table (AD_Table_ID,Name,Description,AD_Window_ID,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable,IsShowInDrillOptions) VALUES (200386,'Document Base Type Group Line','Line Items of a Document Base Type Group',200140,'C_DocBaseGroupLine',0,'6',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:46:54','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:46:54','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','8c2fd0c3-9e15-4f0a-a172-2ab07c2e8479','N','N','N','N','N')
 ;
 
 -- Apr 3, 2023, 11:46:56 AM CEST
-INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('C_PeriodDocGroupLine',1000000,'N','N','Table C_PeriodDocGroupLine','Y','Y',0,0,TO_TIMESTAMP('2023-04-03 11:46:55','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:46:55','YYYY-MM-DD HH24:MI:SS'),100,200456,'Y',1000000,1,200000,'3554dcfa-c2c6-402c-b601-5908118547d5')
+INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('C_DocBaseGroupLine',1000000,'N','N','Table C_DocBaseGroupLine','Y','Y',0,0,TO_TIMESTAMP('2023-04-03 11:46:55','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:46:55','YYYY-MM-DD HH24:MI:SS'),100,200456,'Y',1000000,1,200000,'3554dcfa-c2c6-402c-b601-5908118547d5')
 ;
 
 -- Apr 3, 2023, 11:47:21 AM CEST
@@ -192,19 +192,19 @@ There are two reasons for de-activating and not deleting records:
 ;
 
 -- Apr 3, 2023, 11:47:23 AM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,PrintName,EntityType,AD_Element_UU) VALUES (203802,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:47:23','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:47:23','YYYY-MM-DD HH24:MI:SS'),100,'C_PeriodDocGroupLine_ID','Period Group Line','Line Items of a Period Group','Period Group Line','D','b788c72f-9e80-4efa-8832-5dfa310a38e7')
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,PrintName,EntityType,AD_Element_UU) VALUES (203802,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:47:23','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:47:23','YYYY-MM-DD HH24:MI:SS'),100,'C_DocBaseGroupLine_ID','Document Base Type Group Line','Line Items of a Document Base Type Group','Document Base Type Group Line','D','b788c72f-9e80-4efa-8832-5dfa310a38e7')
 ;
 
 -- Apr 3, 2023, 11:47:24 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (215829,0.0,'Period Group Line','Line Items of a Period Group',200386,'C_PeriodDocGroupLine_ID',22,'Y','N','Y','N','N','N',13,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:47:23','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:47:23','YYYY-MM-DD HH24:MI:SS'),100,203802,'N','N','D','N','200ce7df-99b3-4ffa-bc27-50953accc10f','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (215829,0.0,'Document Base Type Group Line','Line Items of a Document Base Type Group',200386,'C_DocBaseGroupLine_ID',22,'Y','N','Y','N','N','N',13,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:47:23','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:47:23','YYYY-MM-DD HH24:MI:SS'),100,203802,'N','N','D','N','200ce7df-99b3-4ffa-bc27-50953accc10f','N')
 ;
 
 -- Apr 3, 2023, 11:47:24 AM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203803,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:47:24','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:47:24','YYYY-MM-DD HH24:MI:SS'),100,'C_PeriodDocGroupLine_UU','C_PeriodDocGroupLine_UU','C_PeriodDocGroupLine_UU','D','b7a4b3a0-26cb-460e-a8be-42ee02ac904a')
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203803,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:47:24','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:47:24','YYYY-MM-DD HH24:MI:SS'),100,'C_DocBaseGroupLine_UU','C_DocBaseGroupLine_UU','C_DocBaseGroupLine_UU','D','b7a4b3a0-26cb-460e-a8be-42ee02ac904a')
 ;
 
 -- Apr 3, 2023, 11:47:24 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (215830,0.0,'C_PeriodDocGroupLine_UU',200386,'C_PeriodDocGroupLine_UU',36,'N','N','N','N','N','N',200231,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:47:24','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:47:24','YYYY-MM-DD HH24:MI:SS'),100,203803,'Y','N','D','N','ec7242a6-a2a3-403c-aa03-53fa39e743f3','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (215830,0.0,'C_DocBaseGroupLine_UU',200386,'C_DocBaseGroupLine_UU',36,'N','N','N','N','N','N',200231,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:47:24','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:47:24','YYYY-MM-DD HH24:MI:SS'),100,203803,'Y','N','D','N','ec7242a6-a2a3-403c-aa03-53fa39e743f3','N')
 ;
 
 -- Apr 3, 2023, 11:48:17 AM CEST
@@ -212,11 +212,11 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 ;
 
 -- Apr 3, 2023, 11:48:35 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (215832,0,'Period Group','Group of Document Base Type for Period Control',200386,'C_PeriodDocGroup_ID',22,'N','Y','Y','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:48:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:48:34','YYYY-MM-DD HH24:MI:SS'),100,203800,'N','N','D','N','N','N','Y','21e9a8e0-c556-4219-89bb-9dec3b940fc4','Y',0,'N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (215832,0,'Document Base Type Group','Group of Document Base Type for Period Control',200386,'C_DocBaseGroup_ID',22,'N','Y','Y','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:48:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:48:34','YYYY-MM-DD HH24:MI:SS'),100,203800,'N','N','D','N','N','N','Y','21e9a8e0-c556-4219-89bb-9dec3b940fc4','Y',0,'N','N','N','N')
 ;
 
 -- Apr 3, 2023, 11:49:13 AM CEST
-INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsTranslationTab,IsReadOnly,AD_Column_ID,OrderByClause,Processing,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU) VALUES (200352,'Period Group Line',200140,20,'Y',200386,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:49:13','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:49:13','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N',215832,'C_PeriodDocGroupLine.Created DESC','N',1,'N','D','Y','N','cbbfe720-616d-4ef9-9137-72078a61f763')
+INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsTranslationTab,IsReadOnly,AD_Column_ID,OrderByClause,Processing,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU) VALUES (200352,'Document Base Type Group Line',200140,20,'Y',200386,0,0,'Y',TO_TIMESTAMP('2023-04-03 11:49:13','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:49:13','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N',215832,'C_DocBaseGroupLine.Created DESC','N',1,'N','D','Y','N','cbbfe720-616d-4ef9-9137-72078a61f763')
 ;
 
 -- Apr 3, 2023, 11:49:13 AM CEST
@@ -228,15 +228,15 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 ;
 
 -- Apr 3, 2023, 11:49:14 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (207612,'Period Group','Group of Document Base Type for Period Control',200352,215832,'Y',22,30,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:49:14','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:49:14','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','f8d4b3aa-adaf-4d3d-bf67-adf04501220f','Y',20,2)
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (207612,'Document Base Type Group','Group of Document Base Type for Period Control',200352,215832,'Y',22,30,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:49:14','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:49:14','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','f8d4b3aa-adaf-4d3d-bf67-adf04501220f','Y',20,2)
 ;
 
 -- Apr 3, 2023, 11:49:14 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (207613,'Period Group Line','Line Items of a Period Group',200352,215829,'N',22,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:49:14','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:49:14','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','3f225d07-e648-4db7-9128-eb3bf241afa7','N',2)
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (207613,'Document Base Type Group Line','Line Items of a Document Base Type Group',200352,215829,'N',22,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:49:14','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:49:14','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','3f225d07-e648-4db7-9128-eb3bf241afa7','N',2)
 ;
 
 -- Apr 3, 2023, 11:49:14 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (207614,'C_PeriodDocGroupLine_UU',200352,215830,'N',36,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:49:14','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:49:14','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','b5498f5d-642e-4ff4-b64e-2e3b0606466f','N',2)
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (207614,'C_DocBaseGroupLine_UU',200352,215830,'N',36,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-04-03 11:49:14','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 11:49:14','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','b5498f5d-642e-4ff4-b64e-2e3b0606466f','N',2)
 ;
 
 -- Apr 3, 2023, 11:49:15 AM CEST
@@ -291,23 +291,23 @@ UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='UpdatedBy_CPeriodDocGrou
 ;
 
 -- Apr 3, 2023, 11:49:52 AM CEST
-CREATE TABLE C_PeriodDocGroup (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, C_PeriodDocGroup_ID NUMBER(10) NOT NULL, C_PeriodDocGroup_UU VARCHAR2(36 CHAR) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Help VARCHAR2(2000 CHAR) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Name VARCHAR2(60 CHAR) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, Value VARCHAR2(40 CHAR) DEFAULT NULL , CONSTRAINT C_PeriodDocGroup_Key PRIMARY KEY (C_PeriodDocGroup_ID), CONSTRAINT C_PeriodDocGroup_UU_idx UNIQUE (C_PeriodDocGroup_UU))
+CREATE TABLE C_DocBaseGroup (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, C_DocBaseGroup_ID NUMBER(10) NOT NULL, C_DocBaseGroup_UU VARCHAR2(36 CHAR) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Help VARCHAR2(2000 CHAR) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Name VARCHAR2(60 CHAR) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, Value VARCHAR2(40 CHAR) DEFAULT NULL , CONSTRAINT C_DocBaseGroup_Key PRIMARY KEY (C_DocBaseGroup_ID), CONSTRAINT C_DocBaseGroup_UU_idx UNIQUE (C_DocBaseGroup_UU))
 ;
 
 -- Apr 3, 2023, 11:49:52 AM CEST
-ALTER TABLE C_PeriodDocGroup ADD CONSTRAINT ADClient_CPeriodDocGroup FOREIGN KEY (AD_Client_ID) REFERENCES ad_client(ad_client_id) DEFERRABLE INITIALLY DEFERRED
+ALTER TABLE C_DocBaseGroup ADD CONSTRAINT ADClient_CPeriodDocGroup FOREIGN KEY (AD_Client_ID) REFERENCES ad_client(ad_client_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
 -- Apr 3, 2023, 11:49:52 AM CEST
-ALTER TABLE C_PeriodDocGroup ADD CONSTRAINT ADOrg_CPeriodDocGroup FOREIGN KEY (AD_Org_ID) REFERENCES ad_org(ad_org_id) DEFERRABLE INITIALLY DEFERRED
+ALTER TABLE C_DocBaseGroup ADD CONSTRAINT ADOrg_CPeriodDocGroup FOREIGN KEY (AD_Org_ID) REFERENCES ad_org(ad_org_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
 -- Apr 3, 2023, 11:49:52 AM CEST
-ALTER TABLE C_PeriodDocGroup ADD CONSTRAINT CreatedBy_CPeriodDocGroup FOREIGN KEY (CreatedBy) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
+ALTER TABLE C_DocBaseGroup ADD CONSTRAINT CreatedBy_CPeriodDocGroup FOREIGN KEY (CreatedBy) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
 -- Apr 3, 2023, 11:49:52 AM CEST
-ALTER TABLE C_PeriodDocGroup ADD CONSTRAINT UpdatedBy_CPeriodDocGroup FOREIGN KEY (UpdatedBy) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
+ALTER TABLE C_DocBaseGroup ADD CONSTRAINT UpdatedBy_CPeriodDocGroup FOREIGN KEY (UpdatedBy) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
 -- Apr 3, 2023, 11:50:01 AM CEST
@@ -331,35 +331,35 @@ UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='UpdatedBy_CPeriodDocGrou
 ;
 
 -- Apr 3, 2023, 11:50:01 AM CEST
-CREATE TABLE C_PeriodDocGroupLine (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, C_PeriodDocGroupLine_ID NUMBER(10) NOT NULL, C_PeriodDocGroupLine_UU VARCHAR2(36 CHAR) DEFAULT NULL , C_PeriodDocGroup_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, DocBaseType VARCHAR2(3 CHAR) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT C_PeriodDocGroupLine_Key PRIMARY KEY (C_PeriodDocGroupLine_ID), CONSTRAINT C_PeriodDocGroupLine_UU_idx UNIQUE (C_PeriodDocGroupLine_UU))
+CREATE TABLE C_DocBaseGroupLine (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, C_DocBaseGroupLine_ID NUMBER(10) NOT NULL, C_DocBaseGroupLine_UU VARCHAR2(36 CHAR) DEFAULT NULL , C_DocBaseGroup_ID NUMBER(10) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, DocBaseType VARCHAR2(3 CHAR) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT C_DocBaseGroupLine_Key PRIMARY KEY (C_DocBaseGroupLine_ID), CONSTRAINT C_DocBaseGroupLine_UU_idx UNIQUE (C_DocBaseGroupLine_UU))
 ;
 
 -- Apr 3, 2023, 11:50:01 AM CEST
-ALTER TABLE C_PeriodDocGroupLine ADD CONSTRAINT ADClient_CPeriodDocGroupLine FOREIGN KEY (AD_Client_ID) REFERENCES ad_client(ad_client_id) DEFERRABLE INITIALLY DEFERRED
+ALTER TABLE C_DocBaseGroupLine ADD CONSTRAINT ADClient_CPeriodDocGroupLine FOREIGN KEY (AD_Client_ID) REFERENCES ad_client(ad_client_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
 -- Apr 3, 2023, 11:50:01 AM CEST
-ALTER TABLE C_PeriodDocGroupLine ADD CONSTRAINT ADOrg_CPeriodDocGroupLine FOREIGN KEY (AD_Org_ID) REFERENCES ad_org(ad_org_id) DEFERRABLE INITIALLY DEFERRED
+ALTER TABLE C_DocBaseGroupLine ADD CONSTRAINT ADOrg_CPeriodDocGroupLine FOREIGN KEY (AD_Org_ID) REFERENCES ad_org(ad_org_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
 -- Apr 3, 2023, 11:50:01 AM CEST
-ALTER TABLE C_PeriodDocGroupLine ADD CONSTRAINT CPeriodDocGroup_CPeriodDocGrou FOREIGN KEY (C_PeriodDocGroup_ID) REFERENCES c_perioddocgroup(c_perioddocgroup_id) DEFERRABLE INITIALLY DEFERRED
+ALTER TABLE C_DocBaseGroupLine ADD CONSTRAINT CPeriodDocGroup_CPeriodDocGrou FOREIGN KEY (C_DocBaseGroup_ID) REFERENCES C_DocBaseGroup(C_DocBaseGroup_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
 -- Apr 3, 2023, 11:50:01 AM CEST
-ALTER TABLE C_PeriodDocGroupLine ADD CONSTRAINT CreatedBy_CPeriodDocGroupLine FOREIGN KEY (CreatedBy) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
+ALTER TABLE C_DocBaseGroupLine ADD CONSTRAINT CreatedBy_CPeriodDocGroupLine FOREIGN KEY (CreatedBy) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
 -- Apr 3, 2023, 11:50:01 AM CEST
-ALTER TABLE C_PeriodDocGroupLine ADD CONSTRAINT UpdatedBy_CPeriodDocGroupLine FOREIGN KEY (UpdatedBy) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
+ALTER TABLE C_DocBaseGroupLine ADD CONSTRAINT UpdatedBy_CPeriodDocGroupLine FOREIGN KEY (UpdatedBy) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
 -- Apr 3, 2023, 12:33:09 PM CEST
-INSERT INTO AD_Message (MsgType,MsgText,MsgTip,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Document Base Type must be unique for the Period Group.','A Period Group Line with this Document Base Type already exists.',0,0,'Y',TO_TIMESTAMP('2023-04-03 12:33:09','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 12:33:09','YYYY-MM-DD HH24:MI:SS'),100,200828,'PeriodDocGroupLineUniqueDocBaseTypeError','D','d543ef24-6ae1-4b78-a75a-b73822c1ecca')
+INSERT INTO AD_Message (MsgType,MsgText,MsgTip,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Document Base Type must be unique for the Document Base Type Group.','A Document Base Type Group Line with this Document Base Type already exists.',0,0,'Y',TO_TIMESTAMP('2023-04-03 12:33:09','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 12:33:09','YYYY-MM-DD HH24:MI:SS'),100,200828,'PeriodDocGroupLineUniqueDocBaseTypeError','D','d543ef24-6ae1-4b78-a75a-b73822c1ecca')
 ;
 
 -- Apr 3, 2023, 12:35:17 PM CEST
-INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Type,Code,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Val_Rule_UU) VALUES (200174,'C_PeriodDocGroupLine Document Base Type','S','AD_Ref_List.Value NOT IN (SELECT DocBaseType FROM C_PeriodDocGroupLine WHERE C_PeriodDocGroup_ID =@C_PeriodDocGroup_ID@)',0,0,'Y',TO_TIMESTAMP('2023-04-03 12:35:17','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 12:35:17','YYYY-MM-DD HH24:MI:SS'),100,'D','89f8acf2-512f-401f-8271-3c45b8dec03a')
+INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Type,Code,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Val_Rule_UU) VALUES (200174,'C_DocBaseGroupLine Document Base Type','S','AD_Ref_List.Value NOT IN (SELECT DocBaseType FROM C_DocBaseGroupLine WHERE C_DocBaseGroup_ID =@C_DocBaseGroup_ID@)',0,0,'Y',TO_TIMESTAMP('2023-04-03 12:35:17','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 12:35:17','YYYY-MM-DD HH24:MI:SS'),100,'D','89f8acf2-512f-401f-8271-3c45b8dec03a')
 ;
 
 -- Apr 3, 2023, 12:35:28 PM CEST
@@ -506,14 +506,34 @@ UPDATE AD_TreeNodeMM SET Parent_ID=164, SeqNo=4,Updated=TO_TIMESTAMP('2023-04-03
 UPDATE AD_InfoWindow SET FromClause='C_PeriodControl pc
 JOIN C_Period p ON (pc.C_Period_ID=p.C_Period_ID)
 JOIN C_Year y ON (p.C_Year_ID=y.C_Year_ID)
-LEFT JOIN C_PeriodDocGroupLine gl ON (gl.DocBaseType = pc.DocBaseType)', IsValid='Y',Updated=TO_TIMESTAMP('2023-04-03 12:40:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoWindow_ID=200019
+LEFT JOIN C_DocBaseGroupLine gl ON (gl.DocBaseType = pc.DocBaseType)', IsValid='Y',Updated=TO_TIMESTAMP('2023-04-03 12:40:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_InfoWindow_ID=200019
 ;
 
 -- Apr 3, 2023, 12:43:53 PM CEST
-INSERT INTO AD_InfoColumn (AD_InfoColumn_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,AD_InfoWindow_ID,EntityType,SelectClause,SeqNo,IsDisplayed,IsQueryCriteria,AD_Element_ID,AD_Reference_ID,AD_InfoColumn_UU,IsCentrallyMaintained,ColumnName,QueryOperator,IsIdentifier,SeqNoSelection,IsMandatory,IsKey,IsReadOnly,IsAutocomplete,IsQueryAfterChange,IsRange) VALUES (200281,0,0,'Y',TO_TIMESTAMP('2023-04-03 12:43:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 12:43:53','YYYY-MM-DD HH24:MI:SS'),100,'Period Group','Group of Document Base Type for Period Control',200019,'D','gl.C_PeriodDocGroup_ID',90,'N','Y',203800,19,'e1364242-d7e9-45c3-9649-16a66574b387','Y','C_PeriodDocGroup_ID','=','N',80,'N','N','Y','N','N','N')
+INSERT INTO AD_InfoColumn (AD_InfoColumn_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,AD_InfoWindow_ID,EntityType,SelectClause,SeqNo,IsDisplayed,IsQueryCriteria,AD_Element_ID,AD_Reference_ID,AD_InfoColumn_UU,IsCentrallyMaintained,ColumnName,QueryOperator,IsIdentifier,SeqNoSelection,IsMandatory,IsKey,IsReadOnly,IsAutocomplete,IsQueryAfterChange,IsRange) VALUES (200281,0,0,'Y',TO_TIMESTAMP('2023-04-03 12:43:53','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 12:43:53','YYYY-MM-DD HH24:MI:SS'),100,'Document Base Type Group','Group of Document Base Type for Period Control',200019,'D','gl.C_DocBaseGroup_ID',90,'N','Y',203800,19,'e1364242-d7e9-45c3-9649-16a66574b387','Y','C_DocBaseGroup_ID','=','N',80,'N','N','Y','N','N','N')
 ;
 
 -- Apr 3, 2023, 12:45:34 PM CEST
-INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,DisplayLogic,AD_Process_Para_UU,IsEncrypted,IsAutocomplete,DateRangeOption,IsShowNegateButton) VALUES (200434,0,0,'Y',TO_TIMESTAMP('2023-04-03 12:45:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 12:45:34','YYYY-MM-DD HH24:MI:SS'),100,'Period Group','Group of Document Base Type for Period Control',167,10,19,'N',22,'N','C_PeriodDocGroup_ID','Y','D',203800,'@C_Period_ID@>0','91179629-0224-44f0-bf7c-45eb91dd0b20','N','N','D','N')
+INSERT INTO AD_Process_Para (AD_Process_Para_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,Name,Description,AD_Process_ID,SeqNo,AD_Reference_ID,IsRange,FieldLength,IsMandatory,ColumnName,IsCentrallyMaintained,EntityType,AD_Element_ID,DisplayLogic,AD_Process_Para_UU,IsEncrypted,IsAutocomplete,DateRangeOption,IsShowNegateButton) VALUES (200434,0,0,'Y',TO_TIMESTAMP('2023-04-03 12:45:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-04-03 12:45:34','YYYY-MM-DD HH24:MI:SS'),100,'Document Base Type Group','Group of Document Base Type for Period Control',167,10,19,'N',22,'N','C_DocBaseGroup_ID','Y','D',203800,'@C_Period_ID@>0','91179629-0224-44f0-bf7c-45eb91dd0b20','N','N','D','N')
+;
+
+-- Apr 4, 2023, 8:33:08 AM CEST
+UPDATE AD_Message SET Value='DocBaseGroupLineUniqueDocBaseTypeError',Updated=TO_TIMESTAMP('2023-04-04 08:33:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Message_ID=200828
+;
+
+-- Apr 4, 2023, 8:34:28 AM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,Description,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,AD_Message_ID,TableIndexDrop,IsKey) VALUES (0,0,201180,'a7751a2c-2e7d-41a7-a29e-e2f552467421',TO_TIMESTAMP('2023-04-04 08:34:27','YYYY-MM-DD HH24:MI:SS'),100,'Document Base Type must be unique per Document Base Group','D','Y','c_docbasegroupline_docbasegroup',TO_TIMESTAMP('2023-04-04 08:34:27','YYYY-MM-DD HH24:MI:SS'),100,200386,'N','Y','N',200828,'N','N')
+;
+
+-- Apr 4, 2023, 8:35:19 AM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201617,'c508a21d-38fa-4500-a92b-399f12e6e936',TO_TIMESTAMP('2023-04-04 08:35:18','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-04 08:35:18','YYYY-MM-DD HH24:MI:SS'),100,215832,201180,10)
+;
+
+-- Apr 4, 2023, 8:35:27 AM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201618,'00c81404-eeb7-4bcc-b878-cdf6140a9fae',TO_TIMESTAMP('2023-04-04 08:35:27','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-04 08:35:27','YYYY-MM-DD HH24:MI:SS'),100,215831,201180,20)
+;
+
+-- Apr 4, 2023, 8:35:27 AM CEST
+CREATE UNIQUE INDEX c_docbasegroupline_docbasegroup ON C_DocBaseGroupLine (C_DocBaseGroup_ID,DocBaseType)
 ;
 

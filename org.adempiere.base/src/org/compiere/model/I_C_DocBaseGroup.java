@@ -20,15 +20,15 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for C_PeriodDocGroup
+/** Generated Interface for C_DocBaseGroup
  *  @author iDempiere (generated) 
  *  @version Release 11
  */
-public interface I_C_PeriodDocGroup 
+public interface I_C_DocBaseGroup 
 {
 
-    /** TableName=C_PeriodDocGroup */
-    public static final String Table_Name = "C_PeriodDocGroup";
+    /** TableName=C_DocBaseGroup */
+    public static final String Table_Name = "C_DocBaseGroup";
 
     /** AD_Table_ID=200385 */
     public static final int Table_ID = 200385;
@@ -62,27 +62,27 @@ public interface I_C_PeriodDocGroup
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_PeriodDocGroup_ID */
-    public static final String COLUMNNAME_C_PeriodDocGroup_ID = "C_PeriodDocGroup_ID";
+    /** Column name C_DocBaseGroup_ID */
+    public static final String COLUMNNAME_C_DocBaseGroup_ID = "C_DocBaseGroup_ID";
 
-	/** Set Period Group.
+	/** Set Document Base Type Group.
 	  * Group of Document Base Type for Period Control
 	  */
-	public void setC_PeriodDocGroup_ID (int C_PeriodDocGroup_ID);
+	public void setC_DocBaseGroup_ID (int C_DocBaseGroup_ID);
 
-	/** Get Period Group.
+	/** Get Document Base Type Group.
 	  * Group of Document Base Type for Period Control
 	  */
-	public int getC_PeriodDocGroup_ID();
+	public int getC_DocBaseGroup_ID();
 
-    /** Column name C_PeriodDocGroup_UU */
-    public static final String COLUMNNAME_C_PeriodDocGroup_UU = "C_PeriodDocGroup_UU";
+    /** Column name C_DocBaseGroup_UU */
+    public static final String COLUMNNAME_C_DocBaseGroup_UU = "C_DocBaseGroup_UU";
 
-	/** Set C_PeriodDocGroup_UU	  */
-	public void setC_PeriodDocGroup_UU (String C_PeriodDocGroup_UU);
+	/** Set C_DocBaseGroup_UU	  */
+	public void setC_DocBaseGroup_UU (String C_DocBaseGroup_UU);
 
-	/** Get C_PeriodDocGroup_UU	  */
-	public String getC_PeriodDocGroup_UU();
+	/** Get C_DocBaseGroup_UU	  */
+	public String getC_DocBaseGroup_UU();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

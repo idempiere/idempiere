@@ -25,67 +25,71 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.exceptions.AdempiereException;
-import org.compiere.util.Msg;
-
 /**
- * Period Group Line
+ * Document Base Type Group
  * 
  * @author Peter Takacs, Cloudempiere
  *
  */
-public class MPeriodDocGroupLine extends X_C_PeriodDocGroupLine {
+public class MDocBaseGroup extends X_C_DocBaseGroup {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8604315901539608261L;
+	private static final long serialVersionUID = -4619625345276666731L;
 	
-	/** Parent					*/
-	protected MPeriodDocGroup m_parent = null;
+	/**	Document Base Type Group Lines			*/
+	private MDocBaseGroupLine[]	m_lines;
 
-	public MPeriodDocGroupLine(Properties ctx, int C_PeriodDocGroupLine_ID, String trxName) {
-		super(ctx, C_PeriodDocGroupLine_ID, trxName);
+	public MDocBaseGroup(Properties ctx, int C_DocBaseGroup_ID, String trxName) {
+		super(ctx, C_DocBaseGroup_ID, trxName);
 	}
 
-	public MPeriodDocGroupLine(Properties ctx, int C_PeriodDocGroupLine_ID, String trxName, String[] virtualColumns) {
-		super(ctx, C_PeriodDocGroupLine_ID, trxName, virtualColumns);
+	public MDocBaseGroup(Properties ctx, int C_DocBaseGroup_ID, String trxName, String[] virtualColumns) {
+		super(ctx, C_DocBaseGroup_ID, trxName, virtualColumns);
 	}
 
-	public MPeriodDocGroupLine(Properties ctx, ResultSet rs, String trxName) {
+	public MDocBaseGroup(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 
-	public MPeriodDocGroupLine(Properties ctx, String C_PeriodDocGroupLine_UU, String trxName) {
-		super(ctx, C_PeriodDocGroupLine_UU, trxName);
+	public MDocBaseGroup(Properties ctx, String C_DocBaseGroup_UU, String trxName) {
+		super(ctx, C_DocBaseGroup_UU, trxName);
 	}
 
-	public MPeriodDocGroupLine(Properties ctx, String C_PeriodDocGroupLine_UU, String trxName,
+	public MDocBaseGroup(Properties ctx, String C_DocBaseGroup_UU, String trxName,
 			String[] virtualColumns) {
-		super(ctx, C_PeriodDocGroupLine_UU, trxName, virtualColumns);
+		super(ctx, C_DocBaseGroup_UU, trxName, virtualColumns);
 	}
 	
 	/**
-	 * 	Get Parent
-	 *	@return parent
+	 * 	Get Document Base Type Group Lines
+	 * 	@param requery
+	 * 	@return lines
 	 */
-	public MPeriodDocGroup getParent()
+	public MDocBaseGroupLine[] getLines (boolean requery)
 	{
-		if (m_parent == null)
-			m_parent = new MPeriodDocGroup(getCtx(), getC_PeriodDocGroup_ID(), get_TrxName());
-		return m_parent;
-	}
-	
-	@Override
-	protected boolean beforeSave (boolean newRecord) {
-		
-		for(MPeriodDocGroupLine line : getParent().getLines()) {
-			if(line.getDocBaseType().equalsIgnoreCase(this.getDocBaseType()))
-				throw new AdempiereException(Msg.getMsg(getCtx(), "PeriodDocGroupLineUniqueDocBaseTypeError"));
+		if (m_lines == null || m_lines.length == 0 || requery)
+		{
+			List<MDocBaseGroupLine> list = new Query(getCtx(), I_C_DocBaseGroupLine.Table_Name, MDocBaseGroup.COLUMNNAME_C_DocBaseGroup_ID+"=?", get_TrxName())
+					.setParameters(getC_DocBaseGroup_ID())
+					.list();		
+			m_lines =  list.toArray(new MDocBaseGroupLine[list.size()]);
 		}
-		
-		return true;
-	}
+		set_TrxName(m_lines, get_TrxName());
+		return m_lines;
+	}	//	getLines
+
+	/**
+	 * 	Get Document Base Type Group Lines
+	 * 	@return lines
+	 */
+	public MDocBaseGroupLine[] getLines()
+	{
+		return getLines(false);
+	}	//	getLines
+	
 }

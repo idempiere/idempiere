@@ -20,15 +20,15 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for C_PeriodDocGroupLine
+/** Generated Interface for C_DocBaseGroupLine
  *  @author iDempiere (generated) 
  *  @version Release 11
  */
-public interface I_C_PeriodDocGroupLine 
+public interface I_C_DocBaseGroupLine 
 {
 
-    /** TableName=C_PeriodDocGroupLine */
-    public static final String Table_Name = "C_PeriodDocGroupLine";
+    /** TableName=C_DocBaseGroupLine */
+    public static final String Table_Name = "C_DocBaseGroupLine";
 
     /** AD_Table_ID=200386 */
     public static final int Table_ID = 200386;
@@ -62,42 +62,42 @@ public interface I_C_PeriodDocGroupLine
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_PeriodDocGroupLine_ID */
-    public static final String COLUMNNAME_C_PeriodDocGroupLine_ID = "C_PeriodDocGroupLine_ID";
+    /** Column name C_DocBaseGroupLine_ID */
+    public static final String COLUMNNAME_C_DocBaseGroupLine_ID = "C_DocBaseGroupLine_ID";
 
-	/** Set Period Group Line.
-	  * Line Items of a Period Group
+	/** Set Document Base Type Group Line.
+	  * Line Items of a Document Base Type Group
 	  */
-	public void setC_PeriodDocGroupLine_ID (int C_PeriodDocGroupLine_ID);
+	public void setC_DocBaseGroupLine_ID (int C_DocBaseGroupLine_ID);
 
-	/** Get Period Group Line.
-	  * Line Items of a Period Group
+	/** Get Document Base Type Group Line.
+	  * Line Items of a Document Base Type Group
 	  */
-	public int getC_PeriodDocGroupLine_ID();
+	public int getC_DocBaseGroupLine_ID();
 
-    /** Column name C_PeriodDocGroupLine_UU */
-    public static final String COLUMNNAME_C_PeriodDocGroupLine_UU = "C_PeriodDocGroupLine_UU";
+    /** Column name C_DocBaseGroupLine_UU */
+    public static final String COLUMNNAME_C_DocBaseGroupLine_UU = "C_DocBaseGroupLine_UU";
 
-	/** Set C_PeriodDocGroupLine_UU	  */
-	public void setC_PeriodDocGroupLine_UU (String C_PeriodDocGroupLine_UU);
+	/** Set C_DocBaseGroupLine_UU	  */
+	public void setC_DocBaseGroupLine_UU (String C_DocBaseGroupLine_UU);
 
-	/** Get C_PeriodDocGroupLine_UU	  */
-	public String getC_PeriodDocGroupLine_UU();
+	/** Get C_DocBaseGroupLine_UU	  */
+	public String getC_DocBaseGroupLine_UU();
 
-    /** Column name C_PeriodDocGroup_ID */
-    public static final String COLUMNNAME_C_PeriodDocGroup_ID = "C_PeriodDocGroup_ID";
+    /** Column name C_DocBaseGroup_ID */
+    public static final String COLUMNNAME_C_DocBaseGroup_ID = "C_DocBaseGroup_ID";
 
-	/** Set Period Group.
+	/** Set Document Base Type Group.
 	  * Group of Document Base Type for Period Control
 	  */
-	public void setC_PeriodDocGroup_ID (int C_PeriodDocGroup_ID);
+	public void setC_DocBaseGroup_ID (int C_DocBaseGroup_ID);
 
-	/** Get Period Group.
+	/** Get Document Base Type Group.
 	  * Group of Document Base Type for Period Control
 	  */
-	public int getC_PeriodDocGroup_ID();
+	public int getC_DocBaseGroup_ID();
 
-	public org.compiere.model.I_C_PeriodDocGroup getC_PeriodDocGroup() throws RuntimeException;
+	public org.compiere.model.I_C_DocBaseGroup getC_DocBaseGroup() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";

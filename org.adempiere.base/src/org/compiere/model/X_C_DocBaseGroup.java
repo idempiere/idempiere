@@ -20,11 +20,11 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-/** Generated Model for C_PeriodDocGroup
+/** Generated Model for C_DocBaseGroup
  *  @author iDempiere (generated)
  *  @version Release 11 - $Id$ */
-@org.adempiere.base.Model(table="C_PeriodDocGroup")
-public class X_C_PeriodDocGroup extends PO implements I_C_PeriodDocGroup, I_Persistent
+@org.adempiere.base.Model(table="C_DocBaseGroup")
+public class X_C_DocBaseGroup extends PO implements I_C_DocBaseGroup, I_Persistent
 {
 
 	/**
@@ -33,51 +33,51 @@ public class X_C_PeriodDocGroup extends PO implements I_C_PeriodDocGroup, I_Pers
 	private static final long serialVersionUID = 20230403L;
 
     /** Standard Constructor */
-    public X_C_PeriodDocGroup (Properties ctx, int C_PeriodDocGroup_ID, String trxName)
+    public X_C_DocBaseGroup (Properties ctx, int C_DocBaseGroup_ID, String trxName)
     {
-      super (ctx, C_PeriodDocGroup_ID, trxName);
-      /** if (C_PeriodDocGroup_ID == 0)
+      super (ctx, C_DocBaseGroup_ID, trxName);
+      /** if (C_DocBaseGroup_ID == 0)
         {
-			setC_PeriodDocGroup_ID (0);
+			setC_DocBaseGroup_ID (0);
 			setName (null);
         } */
     }
 
     /** Standard Constructor */
-    public X_C_PeriodDocGroup (Properties ctx, int C_PeriodDocGroup_ID, String trxName, String ... virtualColumns)
+    public X_C_DocBaseGroup (Properties ctx, int C_DocBaseGroup_ID, String trxName, String ... virtualColumns)
     {
-      super (ctx, C_PeriodDocGroup_ID, trxName, virtualColumns);
-      /** if (C_PeriodDocGroup_ID == 0)
+      super (ctx, C_DocBaseGroup_ID, trxName, virtualColumns);
+      /** if (C_DocBaseGroup_ID == 0)
         {
-			setC_PeriodDocGroup_ID (0);
+			setC_DocBaseGroup_ID (0);
 			setName (null);
         } */
     }
 
     /** Standard Constructor */
-    public X_C_PeriodDocGroup (Properties ctx, String C_PeriodDocGroup_UU, String trxName)
+    public X_C_DocBaseGroup (Properties ctx, String C_DocBaseGroup_UU, String trxName)
     {
-      super (ctx, C_PeriodDocGroup_UU, trxName);
-      /** if (C_PeriodDocGroup_UU == null)
+      super (ctx, C_DocBaseGroup_UU, trxName);
+      /** if (C_DocBaseGroup_UU == null)
         {
-			setC_PeriodDocGroup_ID (0);
+			setC_DocBaseGroup_ID (0);
 			setName (null);
         } */
     }
 
     /** Standard Constructor */
-    public X_C_PeriodDocGroup (Properties ctx, String C_PeriodDocGroup_UU, String trxName, String ... virtualColumns)
+    public X_C_DocBaseGroup (Properties ctx, String C_DocBaseGroup_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, C_PeriodDocGroup_UU, trxName, virtualColumns);
-      /** if (C_PeriodDocGroup_UU == null)
+      super (ctx, C_DocBaseGroup_UU, trxName, virtualColumns);
+      /** if (C_DocBaseGroup_UU == null)
         {
-			setC_PeriodDocGroup_ID (0);
+			setC_DocBaseGroup_ID (0);
 			setName (null);
         } */
     }
 
     /** Load Constructor */
-    public X_C_PeriodDocGroup (Properties ctx, ResultSet rs, String trxName)
+    public X_C_DocBaseGroup (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -99,46 +99,46 @@ public class X_C_PeriodDocGroup extends PO implements I_C_PeriodDocGroup, I_Pers
 
     public String toString()
     {
-      StringBuilder sb = new StringBuilder ("X_C_PeriodDocGroup[")
+      StringBuilder sb = new StringBuilder ("X_C_DocBaseGroup[")
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
-	/** Set Period Group.
-		@param C_PeriodDocGroup_ID Group of Document Base Type for Period Control
+	/** Set Document Base Type Group.
+		@param C_DocBaseGroup_ID Group of Document Base Type for Period Control
 	*/
-	public void setC_PeriodDocGroup_ID (int C_PeriodDocGroup_ID)
+	public void setC_DocBaseGroup_ID (int C_DocBaseGroup_ID)
 	{
-		if (C_PeriodDocGroup_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_PeriodDocGroup_ID, null);
+		if (C_DocBaseGroup_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_C_DocBaseGroup_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_PeriodDocGroup_ID, Integer.valueOf(C_PeriodDocGroup_ID));
+			set_ValueNoCheck (COLUMNNAME_C_DocBaseGroup_ID, Integer.valueOf(C_DocBaseGroup_ID));
 	}
 
-	/** Get Period Group.
+	/** Get Document Base Type Group.
 		@return Group of Document Base Type for Period Control
 	  */
-	public int getC_PeriodDocGroup_ID()
+	public int getC_DocBaseGroup_ID()
 	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_PeriodDocGroup_ID);
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_DocBaseGroup_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
 	}
 
-	/** Set C_PeriodDocGroup_UU.
-		@param C_PeriodDocGroup_UU C_PeriodDocGroup_UU
+	/** Set C_DocBaseGroup_UU.
+		@param C_DocBaseGroup_UU C_DocBaseGroup_UU
 	*/
-	public void setC_PeriodDocGroup_UU (String C_PeriodDocGroup_UU)
+	public void setC_DocBaseGroup_UU (String C_DocBaseGroup_UU)
 	{
-		set_Value (COLUMNNAME_C_PeriodDocGroup_UU, C_PeriodDocGroup_UU);
+		set_Value (COLUMNNAME_C_DocBaseGroup_UU, C_DocBaseGroup_UU);
 	}
 
-	/** Get C_PeriodDocGroup_UU.
-		@return C_PeriodDocGroup_UU	  */
-	public String getC_PeriodDocGroup_UU()
+	/** Get C_DocBaseGroup_UU.
+		@return C_DocBaseGroup_UU	  */
+	public String getC_DocBaseGroup_UU()
 	{
-		return (String)get_Value(COLUMNNAME_C_PeriodDocGroup_UU);
+		return (String)get_Value(COLUMNNAME_C_DocBaseGroup_UU);
 	}
 
 	/** Set Comment/Help.
