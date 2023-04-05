@@ -29,6 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.sql.Timestamp;
+import java.util.Properties;
+
 import org.adempiere.base.Core;
 import org.compiere.model.DataStatusEvent;
 import org.compiere.model.DataStatusListener;
@@ -42,12 +45,16 @@ import org.compiere.model.MField;
 import org.compiere.model.MLookup;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MOrg;
 import org.compiere.model.MQuery;
+import org.compiere.model.MWarehouse;
 import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
+import org.compiere.util.Login;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -187,8 +194,27 @@ public class GridTabTest extends AbstractTestCase {
 
 	@Test
 	public void testInsert() {
+		Properties ctx = Env.getCtx();
 
-		MField field = new MField(Env.getCtx(), FIELD_ORDERLINE_SHIPPER, getTrxName());
+		String prefKey = "P" + SystemIDs.WINDOW_SALES_ORDER + "|" + MOrder.COLUMNNAME_C_DocTypeTarget_ID;
+		String pref = Env.getContext(ctx, prefKey);
+		if (pref.length() == 0) {
+			/* Call Load Preferences to fill the context variables required to process the defaults of the window */
+			int orgId = Env.getAD_Org_ID(ctx);
+			MOrg org = MOrg.get(orgId);
+			KeyNamePair knpo = new KeyNamePair(orgId, org.getName());
+			KeyNamePair knpw = null;
+			int whId = Env.getContextAsInt(ctx, Env.M_WAREHOUSE_ID);
+			if (whId > 0) {
+				MWarehouse wh = MWarehouse.get(whId);
+				knpw = new KeyNamePair(whId, wh.getName());
+			}
+			Timestamp loginDate = Env.getContextAsDate(ctx, Env.DATE);
+			Login login = new Login(ctx);
+			login.loadPreferences(knpo, knpw, loginDate, null);
+		}
+
+		MField field = MField.get(FIELD_ORDERLINE_SHIPPER);
 		boolean displayOri = field.isDisplayed();
 		boolean displayGridOri = field.isDisplayed();
 		try {
@@ -199,7 +225,7 @@ public class GridTabTest extends AbstractTestCase {
 
 			// Sales Order
 			int AD_Window_ID = SystemIDs.WINDOW_SALES_ORDER;
-			var gWindowVO = GridWindowVO.create(Env.getCtx(), 1, AD_Window_ID);
+			var gWindowVO = GridWindowVO.create(ctx, 1, AD_Window_ID);
 			var gridWindow = new GridWindow(gWindowVO, true);
 			int tabCount = gridWindow.getTabCount();
 			assertTrue(tabCount > 0, "Tab Count is Zero. AD_Window_ID=" + AD_Window_ID);
@@ -252,8 +278,9 @@ public class GridTabTest extends AbstractTestCase {
 			assertTrue(gTab0.dataNew(false));
 			assertTrue(gTab0.isNew(), "Grid Tab dataNew call not working as expected");
 			gTab0.setValue(MOrder.COLUMNNAME_C_BPartner_ID, DictionaryIDs.C_BPartner.C_AND_W.id);
-			gTab0.setValue(MOrder.COLUMNNAME_C_DocTypeTarget_ID, DictionaryIDs.C_DocType.STANDARD_ORDER.id);
-			gTab0.setValue(MOrder.COLUMNNAME_SalesRep_ID, DictionaryIDs.AD_User.GARDEN_USER.id);
+			// DocTypeTarget and SalesRep are set using the default in preference (this is to test correct assignment of defaults)
+			// gTab0.setValue(MOrder.COLUMNNAME_C_DocTypeTarget_ID, DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+			// gTab0.setValue(MOrder.COLUMNNAME_SalesRep_ID, DictionaryIDs.AD_User.GARDEN_USER.id);
 			assertTrue(gTab0.dataSave(true), CLogger.retrieveWarningString("Could not save order"));
 
 			GridTab gTab1 = gridWindow.getTab(1);
