@@ -293,7 +293,7 @@ public abstract class AbstractADTabbox extends AbstractUIPart implements IADTabb
                         if (oldTabpanel.getRecord_ID() + zeroValid <= 0)
                            	canJump = false;
     					// IDEMPIERE-651 Allow navigating to a detail when parent doesn't have ID
-    					if (! canJump && Util.isEmpty(oldTabpanel.getGridTab().getKeyColumnName()))
+    					if (! canJump && (Util.isEmpty(oldTabpanel.getGridTab().getKeyColumnName()) || oldTabpanel.getGridTab().getKeyColumnName().endsWith("_UU")))
     						canJump = true;
                     }
                 }

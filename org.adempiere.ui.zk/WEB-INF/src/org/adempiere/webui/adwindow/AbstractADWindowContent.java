@@ -107,6 +107,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MTable;
 import org.compiere.model.MUserPreference;
 import org.compiere.model.MWindow;
 import org.compiere.model.PO;
@@ -509,17 +510,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			{
 				gridWindow.initTab(tabIndex);
 				//init parent tab by parent ids
-				int[] parentIds = DB.getIDsEx(null, "SELECT " + gTab.getLinkColumnName() + " FROM " + gTab.getTableName() + " WHERE " + query.getWhereClause());
-				if (parentIds.length > 0)
+				StringBuilder sql = new StringBuilder("SELECT ").append(gTab.getLinkColumnName()).append(" FROM ").append(gTab.getTableName()).append(" WHERE ").append(query.getWhereClause());
+				List<Object> parentIds = DB.getSQLValueObjectsEx(null, sql.toString());
+				if (parentIds.size() > 0)
 				{
 					GridTab parentTab = null;
 					Map<Integer, MQuery>queryMap = new TreeMap<Integer, MQuery>();
 
-					for (int parentId : parentIds)
+					for (Object parentId : parentIds)
 					{
 						Map<Integer, Object[]>parentMap = new TreeMap<Integer, Object[]>();
 						int index = tabIndex;
-						int oldpid = parentId;
+						Object oldpid = parentId;
 						GridTab currentTab = gTab;
 						while (index > 0)
 						{
@@ -617,9 +619,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					
 					//set target detail tab as active tab and navigate to target record
     				int count = table.getRowCount();
+    				MTable tbl = MTable.get(ctx, table.getTableName());
     				for(int i = 0; i < count; i++)
     				{
-    					int id = -1;
+    					Object id = null;
     					if (zoomColumnIndex >= 0) 
     					{
     						Object zoomValue = table.getValueAt(i, zoomColumnIndex);
@@ -627,12 +630,19 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     						{
     							id = ((Number)zoomValue).intValue();
     						}
+    						else if (zoomValue != null && zoomValue instanceof String)
+    						{
+    							id = zoomValue.toString();
+    						}
     					}
     					else
     					{
-    						id = table.getKeyID(i);
+    						if (tbl.isUUIDKeyTable())
+    							id = table.getUUID(i);
+    						else
+    							id = table.getKeyID(i);
     					}
-    					if (id == ((Integer)query.getZoomValue()).intValue())
+    					if (id != null && id.equals(query.getZoomValue()))
     					{
     						setActiveTab(gridWindow.getTabIndex(gTab), null);
     						gTab.navigate(i);
@@ -3294,8 +3304,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		if (toolbar.getEvent() != null)
 		{
 			int record_ID = adTabbox.getSelectedGridTab().getRecord_ID();
-			if (record_ID <= 0)
-				return;
+			if (record_ID <= 0) {
+				MTable table = MTable.get(adTabbox.getSelectedGridTab().getAD_Table_ID());
+				if (!table.isUUIDKeyTable())
+					return;
+			}
 
 			//	Query
 			MQuery query = new MQuery();
