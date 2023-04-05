@@ -39,6 +39,7 @@ import org.adempiere.webui.event.TableValueChangeEvent;
 import org.adempiere.webui.event.TableValueChangeListener;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.MImage;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -348,10 +349,13 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 					}
 				}
 			}
-			// if ID column make it invisible
-			else if (value instanceof IDColumn)
+			// if ID or UUID column make it invisible
+			else if (value instanceof IDColumn || value instanceof UUIDColumn)
 			{
-				listcell.setValue(((IDColumn) value).getRecord_ID());
+				if (value instanceof IDColumn)
+					listcell.setValue(((IDColumn) value).getRecord_ID());
+				else
+					listcell.setValue(((UUIDColumn) value).getRecord_UU());
 				if (!table.isCheckmark()) {
 					table.setCheckmark(true);
 					table.removeEventListener(Events.ON_SELECT, this);
@@ -468,7 +472,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
         String headerText = headerValue.toString();
         if (m_headers.size() <= headerIndex || m_headers.get(headerIndex) == null)
         {
-        	if (classType != null && classType.isAssignableFrom(IDColumn.class))
+        	if (classType != null && (classType.isAssignableFrom(IDColumn.class) || classType.isAssignableFrom(UUIDColumn.class)))
         	{
         		header = new ListHeader("");
         		ZKUpdateUtil.setWidth(header, "30px");
@@ -500,7 +504,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	            		if (width > 0 && width < 180)
 	            			width = 180;
 	            	}
-	            	else if (classType.equals(IDColumn.class))
+	            	else if (classType.equals(IDColumn.class) || classType.equals(UUIDColumn.class))
 	            	{
 	            		header.setSort("none");
 	            		if (width < 30)
@@ -681,17 +685,24 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 			WListbox table = (WListbox) event.getTarget();
 			if (table.isCheckmark()) {
 				int cnt = table.getRowCount();
-				if (cnt == 0 || !(table.getValueAt(0, 0) instanceof IDColumn))
+				if (cnt == 0 || !(table.getValueAt(0, 0) instanceof IDColumn || table.getValueAt(0, 0) instanceof UUIDColumn))
 					return;
 
 				//update IDColumn
 				tableColumn = m_tableColumns.get(0);
 				for (int i = 0; i < cnt; i++) {
-					IDColumn idcolumn = (IDColumn) table.getValueAt(i, 0);
-					Listitem item = table.getItemAtIndex(i);
-
-					value = item.isSelected();
-					Boolean old = idcolumn.isSelected();
+					Boolean old;
+					if (table.getValueAt(i, 0) instanceof IDColumn) {
+						IDColumn idcolumn = (IDColumn) table.getValueAt(i, 0);
+						Listitem item = table.getItemAtIndex(i);
+						value = item.isSelected();
+						old = idcolumn.isSelected();
+					} else {
+						UUIDColumn uucolumn = (UUIDColumn) table.getValueAt(i, 0);
+						Listitem item = table.getItemAtIndex(i);
+						value = item.isSelected();
+						old = uucolumn.isSelected();
+					}
 
 					if (!old.equals(value)) {
 						vcEvent = new TableValueChangeEvent(source,

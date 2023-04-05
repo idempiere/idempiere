@@ -364,7 +364,7 @@ public class InfoProductWindow extends InfoWindow {
 			public void onEvent(Event event) throws Exception {
 				if (contentPanel.getLayout() != null) {
 					int M_Warehouse_ID = getSelectedWarehouseId();
-					Integer m_M_Product_ID = getSelectedRowKey();
+					Integer m_M_Product_ID = (Integer) getSelectedRowKey();
 					if (m_M_Product_ID != null)
 						initAtpTab(M_Warehouse_ID, m_M_Product_ID);
 				}
@@ -452,7 +452,7 @@ public class InfoProductWindow extends InfoWindow {
 	 * handle on click event for product attribute
 	 */
 	protected void onPAttributeClick() {
-		Integer productInteger = getSelectedRowKey();
+		Integer productInteger = (Integer) getSelectedRowKey();
 		if (productInteger == null) {
 			m_PAttributeButton.setEnabled(false);
 			return;
@@ -689,7 +689,7 @@ public class InfoProductWindow extends InfoWindow {
 	 */
 	protected void refresh(int M_Warehouse_ID, int M_PriceList_Version_ID)
 	{
-		int m_M_Product_ID = getSelectedRowKey();
+		int m_M_Product_ID = (Integer) getSelectedRowKey();
 		String sql = m_sqlWarehouse;
 		if (log.isLoggable(Level.FINEST)) log.finest(sql);
 		PreparedStatement pstmt = null;
@@ -933,7 +933,7 @@ public class InfoProductWindow extends InfoWindow {
 	@Override
 	protected void showHistory() {
 		log.info("");
-		Integer M_Product_ID = getSelectedRowKey();
+		Integer M_Product_ID = (Integer) getSelectedRowKey();
 		if (M_Product_ID == null)
 			return;
 		int M_Warehouse_ID = getSelectedWarehouseId();
@@ -973,7 +973,7 @@ public class InfoProductWindow extends InfoWindow {
 				String.valueOf(m_M_Locator_ID));
 		}
         //  publish for Callout to read
-        Integer ID = getSelectedRowKey();
+        Integer ID = (Integer) getSelectedRowKey();
         Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "M_Product_ID", ID == null ? "0" : ID.toString());
 	}
 

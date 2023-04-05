@@ -358,7 +358,7 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 
 		//  publish for Callout to read
 		
-		Integer ID = getSelectedRowKey();
+		Integer ID = (Integer) getSelectedRowKey();
 		Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "A_Asset_ID", ID == null ? "0" : ID.toString());
 	} // saveSelectionDetail
 
@@ -389,7 +389,7 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 	public void zoom()
 	{
 		log.info( "InfoAsset.zoom");
-		Integer A_Asset_ID = getSelectedRowKey();
+		Integer A_Asset_ID = (Integer) getSelectedRowKey();
 		
 		if (A_Asset_ID == null)
 			return;

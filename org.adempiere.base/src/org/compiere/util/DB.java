@@ -2410,22 +2410,54 @@ public final class DB
 	 * @param AD_PInstance_ID
 	 * @param saveKeys
 	 * @param trxName
+	 * @deprecated Preserved for Backward Compatibility, use createT_SelectionNewNP instead
 	 */
-	public static void createT_SelectionNew (int AD_PInstance_ID, Collection<KeyNamePair> saveKeys, String trxName)
+	public static void createT_SelectionNew (int AD_PInstance_ID, Collection<KeyNamePair> saveKeys, String trxName) {
+		Collection<NamePair> saveKeysNP = new ArrayList<NamePair>();
+		for (NamePair saveKey : saveKeys)
+			saveKeysNP.add(saveKey);
+		createT_SelectionNewNP(AD_PInstance_ID, saveKeysNP, trxName);
+	}
+
+	/**
+	 * Create persistent selection in T_Selection table
+	 * saveKeys is map with key is rowID, value is list value of all viewID
+	 * viewIDIndex is index of viewID need save.
+	 * @param AD_PInstance_ID
+	 * @param saveKeys can receive a collection of KeyNamePair (IDs) or ValueNamePair (UUIDs)
+	 * @param trxName
+	 */
+	public static void createT_SelectionNewNP (int AD_PInstance_ID, Collection<NamePair> saveKeys, String trxName)
 	{
 		StringBuilder insert = new StringBuilder();
-		insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID, ViewID) ");
 		int counter = 0;
-		for(KeyNamePair saveKey : saveKeys)
+		String initialInsert = "";
+		for(NamePair saveKey : saveKeys)
 		{
-			Integer selectedId = saveKey.getKey();
+			Object selectedId;
+			if (saveKey instanceof KeyNamePair) {
+				selectedId = ((KeyNamePair)saveKey).getKey();
+				if (counter == 0) {
+					initialInsert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID, ViewID) ";
+					insert.append(initialInsert);
+				}
+			} else {
+				selectedId = ((ValueNamePair)saveKey).getValue();
+				if (counter == 0) {
+					initialInsert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_UU, ViewID) ";
+					insert.append(initialInsert);
+				}
+			}
 			counter++;
 			if (counter > 1)
 				insert.append(" UNION ");
 			insert.append("SELECT ");
 			insert.append(AD_PInstance_ID);
 			insert.append(", ");
-			insert.append(selectedId);
+			if (selectedId instanceof Integer)
+				insert.append((Integer)selectedId);
+			else
+				insert.append(DB.TO_STRING(selectedId.toString()));
 			insert.append(", ");
 			
 			String viewIDValue = saveKey.getName();
@@ -2444,7 +2476,7 @@ public final class DB
 			{
 				DB.executeUpdateEx(insert.toString(), trxName);
 				insert = new StringBuilder();
-				insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID, ViewID) ");
+				insert.append(initialInsert);
 				counter = 0;
 			}
 		}

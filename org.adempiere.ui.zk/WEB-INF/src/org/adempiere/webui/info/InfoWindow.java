@@ -90,6 +90,7 @@ import org.adempiere.webui.window.Dialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.EmbedWinInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
@@ -197,8 +198,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	// F3P: Keep original values: when a row is unselected, restore original values
 		
 	private boolean hasEditable = false;
-	private Map<Integer, List<Object>> cacheOriginalValues = new HashMap<>();
-	private Map<Integer, List<Object>> temporarySelectedData = new HashMap<>(); 	
+	private Map<Object, List<Object>> cacheOriginalValues = new HashMap<>();
+	private Map<Object, List<Object>> temporarySelectedData = new HashMap<>(); 	
 	private WInfoWindowListItemRenderer infoWindowListItemRenderer = null;
 	
 	// F3P: export 
@@ -929,7 +930,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				: tableInfos[0].getTableName();
 					
 		String keySelectClause = keyTableAlias+"."+p_keyColumn;
-		list.add(new ColumnInfo(" ", keySelectClause, IDColumn.class, true, false, null, p_keyColumn));
+		if (p_keyColumn.endsWith("_UU"))
+			list.add(new ColumnInfo(" ", keySelectClause, UUIDColumn.class, true, false, null, p_keyColumn));
+		else
+			list.add(new ColumnInfo(" ", keySelectClause, IDColumn.class, true, false, null, p_keyColumn));
 		
 		List<InfoColumnVO> gridDisplayedIC = new ArrayList<>();				
 		gridDisplayedIC.add(null); // First column does not have any matching info column		
@@ -980,7 +984,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				gridDisplayedIC.add(infoColumn);
 				
 				if (keyColumnOfView == infoColumn.getAD_InfoColumn()){
-					if (columnInfo.getColClass().equals(IDColumn.class)) 
+					if (columnInfo.getColClass().equals(IDColumn.class) || columnInfo.getColClass().equals(UUIDColumn.class)) 
 						isIDColumnKeyOfView = true;
 					indexKeyOfView = list.size() - 1;
 				}
@@ -2708,6 +2712,11 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					IDColumn idc = (IDColumn)val;
 					val = idc.getRecord_ID();
 				}
+				else if(val instanceof UUIDColumn)
+				{
+					UUIDColumn idc = (UUIDColumn)val;
+					val = idc.getRecord_UU();
+				}
 				else if(val instanceof KeyNamePair)
 				{
 					KeyNamePair knp = (KeyNamePair)val;
@@ -2824,7 +2833,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	protected void restoreOriginalValues(int rowIndex)
 	{
-		Integer viewIdKey = getColumnValue(rowIndex);
+		Object viewIdKey = getColumnValue(rowIndex);
 		
 		if(cacheOriginalValues.containsKey(viewIdKey)) // Only cache if not cached to avoid caching subsequent modifications
 		{
@@ -2845,7 +2854,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	protected void cacheOriginalValues(int rowIndex)
 	{
-		Integer viewIdKey = getColumnValue(rowIndex);
+		Object viewIdKey = getColumnValue(rowIndex);
 		
 		if(cacheOriginalValues.containsKey(viewIdKey) == false) // Only cache if not cached to avoid caching subsequent modifications
 		{
@@ -2876,7 +2885,18 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				if(col0 instanceof IDColumn)
 				{
 					IDColumn idc = (IDColumn)col0;
-					
+					if(idc.isSelected())
+					{
+						cacheOriginalValues(row);
+					}
+					else
+					{
+						restoreOriginalValues(row);
+					}
+				}
+				else if(col0 instanceof UUIDColumn)
+				{
+					UUIDColumn idc = (UUIDColumn)col0;
 					if(idc.isSelected())
 					{
 						cacheOriginalValues(row);
@@ -2916,7 +2936,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			
 			for(int rowIndex:contentPanel.getSelectedIndices())
 			{
-				Integer keyViewValue = getColumnValue(rowIndex);
+				Object keyViewValue = getColumnValue(rowIndex);
 				@SuppressWarnings("unchecked")
 				List<Object> row = (List<Object>)model.get(rowIndex);
 				
@@ -2924,7 +2944,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				temporarySelectedData.put(keyViewValue, clonedRow);
 			}
 			
-			for(Entry<Integer, List<Object>> entry: recordSelectedData.entrySet())
+			for(Entry<Object, List<Object>> entry: recordSelectedData.entrySet())
 			{
 				ArrayList<Object> clonedRow = new ArrayList<>(entry.getValue());				
 				temporarySelectedData.put(entry.getKey(), clonedRow);
@@ -2948,7 +2968,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 
 	@Override
-	public boolean onRestoreSelectedItemIndexInPage(Integer keyViewValue, int rowIndex, Object oRow)
+	public boolean onRestoreSelectedItemIndexInPage(Object keyViewValue, int rowIndex, Object oRow)
 	{
 		if(hasEditable && temporarySelectedData != null)
 		{
@@ -2976,15 +2996,19 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			}
 			
 			// Restore isSelected status on IDColumn
-			Object id = (IDColumn)row.get(0);
-			
+			Object id = row.get(0);
 			if(id instanceof IDColumn)
 			{
 				IDColumn idc = (IDColumn)id;
 				idc.setSelected(true);
 			}
+			else if (id instanceof UUIDColumn)
+			{
+				UUIDColumn idc = (UUIDColumn)id;
+				idc.setSelected(true);
+			}
 			
-			// Restore listners
+			// Restore listeners
 			model.addTableModelListener(this);
 		}
 

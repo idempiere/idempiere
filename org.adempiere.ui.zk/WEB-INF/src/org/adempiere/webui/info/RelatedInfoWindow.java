@@ -33,6 +33,7 @@ import org.adempiere.webui.editor.WEditor;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.EmbedWinInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -120,6 +121,9 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 		if (parentId != null && parentId instanceof IDColumn){
 			IDColumn ID = (IDColumn) parentId;
 			linkPara = ID.getRecord_ID();
+		} else if (parentId != null && parentId instanceof IDColumn) {
+			UUIDColumn ID = (UUIDColumn) parentId;
+			linkPara = ID.getRecord_UU();
 		}else if (parentId != null){
 			linkPara = parentId.toString();
 		}
@@ -342,6 +346,9 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 			if (parentId != null && parentId instanceof IDColumn){
 				IDColumn ID = (IDColumn) parentId;
 				linkPara = ID.getRecord_ID();
+			} else if (parentId != null && parentId instanceof IDColumn) {
+				UUIDColumn ID = (UUIDColumn) parentId;
+				linkPara = ID.getRecord_UU();
 			}else if (parentId != null){
 				linkPara = parentId.toString();
 			}
@@ -423,9 +430,9 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 			Class<?> c = columnsLayout[col].getColClass();
 			int colIndex = col + colOffset;
 			if (c == IDColumn.class)
-			{
 				value = new IDColumn(rs.getInt(colIndex));
-			}
+			else if (c == UUIDColumn.class)
+				value = new UUIDColumn(rs.getString(colIndex));
 			else if (c == Boolean.class)
 				value = Boolean.valueOf("Y".equals(rs.getString(colIndex)));
 			else if (c == Timestamp.class)

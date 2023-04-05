@@ -125,7 +125,7 @@ public interface IMiniTable
 	 * 
 	 * @return row key
 	 */
-	public Integer getSelectedRowKey();
+	public Object getSelectedRowKey();
 	
 	/**
 	 * 

@@ -36,6 +36,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
+import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.MRole;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
@@ -237,8 +238,8 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		// F3P: If allowed, use idcolumn as a switch for read/write (Some logic as boolean)		
 		if(allowIDColumnForReadWrite 
 			&& column != 0
-			&& val instanceof IDColumn 
-			&& ((IDColumn)val).isSelected() == false)
+			&& (   (val instanceof IDColumn && ((IDColumn)val).isSelected() == false)
+				|| (val instanceof UUIDColumn && ((UUIDColumn)val).isSelected() == false) ))
 		{
 			return false;
 		}
@@ -418,7 +419,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
             {
                 setColorColumn(columnIndex);
             }
-            if (layout[columnIndex].getColClass() == IDColumn.class)
+            if (layout[columnIndex].getColClass() == IDColumn.class || layout[columnIndex].getColClass() == UUIDColumn.class)
             {
                 m_keyColumnIndex = columnIndex;
             }
@@ -626,6 +627,10 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 					{
 						data = new IDColumn(rs.getInt(rsColIndex));
 					}
+					else if (columnClass == UUIDColumn.class)
+					{
+						data = new UUIDColumn(rs.getString(rsColIndex));
+					}
 					else if (columnClass == Boolean.class)
 					{
 						data = Boolean.valueOf(rs.getString(rsColIndex).equals("Y"));
@@ -739,6 +744,10 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 					{
 						data = new IDColumn(((Integer)data).intValue());
 					}
+					else if (columnClass == UUIDColumn.class)
+					{
+						data = new UUIDColumn(data.toString());
+					}
 					else if (columnClass == Double.class)
 					{
 						data = Double.valueOf(((BigDecimal)data).doubleValue());
@@ -799,7 +808,11 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		{
 			data = ((IDColumn)data).getRecord_ID();
 		}
-		if (data instanceof Integer)
+		else if (data instanceof UUIDColumn)
+		{
+			data = ((UUIDColumn)data).getRecord_UU();
+		}
+		else if (data instanceof Integer)
 		{
 			return (Integer)data;
 		}
@@ -1066,7 +1079,6 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		int col = event.getColumn(); // column of table field which caused the event
 		int row = event.getRow(); // row of table field which caused the event
 		boolean newBoolean;
-		IDColumn idColumn;
 
 		// if the event was caused by an ID Column and the value is a boolean
 		// then set the IDColumn's select field
@@ -1076,11 +1088,19 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 				&& event.getNewValue() instanceof Boolean)
 			{
 				newBoolean = ((Boolean)event.getNewValue()).booleanValue();
-				idColumn = (IDColumn)this.getValueAt(row, col);
+				IDColumn idColumn = (IDColumn)this.getValueAt(row, col);
 				idColumn.setSelected(newBoolean);
 				this.setValueAt(idColumn, row, col);
 			}
-			// othewise just set the value in the model to the new value
+			else if (this.getValueAt(row, col) instanceof UUIDColumn
+				&& event.getNewValue() instanceof Boolean)
+			{
+				newBoolean = ((Boolean)event.getNewValue()).booleanValue();
+				UUIDColumn idColumn = (UUIDColumn)this.getValueAt(row, col);
+				idColumn.setSelected(newBoolean);
+				this.setValueAt(idColumn, row, col);
+			}
+			// otherwise just set the value in the model to the new value
 			else
 			{
 				this.setValueAt(event.getNewValue(), row, col);

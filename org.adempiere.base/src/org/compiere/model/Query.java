@@ -849,8 +849,12 @@ public class Query
 			//
 			if (whereBuffer.length() > 0)
 				whereBuffer.append(" AND ");
-			whereBuffer.append(" EXISTS (SELECT 1 FROM T_Selection s WHERE s.AD_PInstance_ID=?"
-					+" AND s.T_Selection_ID="+table.getTableName()+"."+keys[0]+")");
+			whereBuffer.append(" EXISTS (SELECT 1 FROM T_Selection s WHERE s.AD_PInstance_ID=? AND s.");
+			if (table.isUUIDKeyTable())
+				whereBuffer.append("T_Selection_UU=");
+			else
+				whereBuffer.append("T_Selection_ID=");
+			whereBuffer.append(table.getTableName()).append(".").append(keys[0]).append(")");
 		}
 		
 		StringBuilder sqlBuffer = new StringBuilder(selectClause);

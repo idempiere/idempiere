@@ -544,7 +544,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 	public void zoom()
 	{
 		log.info( "InfoInvoice.zoom");
-		Integer C_Invoice_ID = getSelectedRowKey();
+		Integer C_Invoice_ID = (Integer) getSelectedRowKey();
 		if (C_Invoice_ID == null)
 			return;
 		MQuery query = new MQuery("C_Invoice");
@@ -584,7 +584,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 	protected void saveSelectionDetail()
 	{
 		//  publish for Callout to read
-		Integer ID = getSelectedRowKey();
+		Integer ID = (Integer) getSelectedRowKey();
 		Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "C_Invoice_ID", ID == null ? "0" : ID.toString());
 		//
 		int C_InvoicePaySchedule_ID = 0;

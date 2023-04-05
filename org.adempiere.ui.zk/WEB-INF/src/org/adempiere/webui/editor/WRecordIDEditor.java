@@ -38,6 +38,7 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.FindWindow;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WRecordIDDialog;
@@ -201,13 +202,23 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	{
 		String s = tableIDValue != null ? String.valueOf(tableIDValue) : "";
 		int tableID = s.length() > 0 ? Integer.parseInt(s) : 0;
-		s = recordIDValue != null ? String.valueOf(recordIDValue) : "";
-		int recordID = s.length() > 0 ? Integer.parseInt(s) : 0;
-		if(tableID <= 0 || recordID < 0)
-			return;
-		if (!MRole.getDefault().isTableAccess(tableID, false))
-			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccessTableNoView"));
-		AEnv.zoom(tableID, recordID);
+		MTable table = MTable.get(tableID);
+		if (table.isUUIDKeyTable()) {
+			String recordUU = recordIDValue != null ? recordIDValue.toString() : "";
+			if(tableID <= 0)
+				return;
+			if (!MRole.getDefault().isTableAccess(tableID, false))
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccessTableNoView"));
+			AEnv.zoomUU(tableID, recordUU);
+		} else {
+			s = recordIDValue != null ? String.valueOf(recordIDValue) : "";
+			int recordID = s.length() > 0 ? Integer.parseInt(s) : 0;
+			if(tableID <= 0 || recordID < 0)
+				return;
+			if (!MRole.getDefault().isTableAccess(tableID, false))
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccessTableNoView"));
+			AEnv.zoom(tableID, recordID);
+		}
 	}
 
 
@@ -283,9 +294,14 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 				tableIDValue = tableIDGridField.getValue();
 			}
 			if(value != null && tableIDValue != null) {
-				int recordID = Integer.parseInt(String.valueOf(value));
 				int tableID = Integer.parseInt(String.valueOf(tableIDValue));
-				if(recordID >= 0 && tableID > 0)
+				MTable table = MTable.get(tableID);
+				Object recordID;
+				if (table.isUUIDKeyTable())
+					recordID = value.toString();
+				else
+					recordID = Integer.parseInt(String.valueOf(value));
+				if(recordID != null && tableID > 0)
 					recordTextBox.setValue(getIdentifier(tableID, recordID));
 			}
 		}
@@ -314,10 +330,14 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			return "";
 		if((tableIDValue != null) && (recordIDValue != null)) {
 			int tableID;
-			int recordID;
+			Object recordID;
 			try {
 				tableID = Integer.parseInt(String.valueOf(tableIDValue));
-				recordID = Integer.parseInt(String.valueOf(recordIDValue));
+				MTable table = MTable.get(tableID);
+				if (table.isUUIDKeyTable())
+					recordID = recordIDValue.toString();
+				else
+					recordID = Integer.parseInt(String.valueOf(recordIDValue));
 			} catch (NumberFormatException e) {
 				return recordIDValue.toString();
 			}
@@ -336,10 +356,14 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			String key = gridTab.getWindowNo() + "|AD_Table_ID";
 			Object rowTableIdValue = gridRowCtx.get(key);
 			int rowTableID;
-			int rowRecordID;
+			Object rowRecordID;
 			try {
 				rowTableID = Integer.parseInt(String.valueOf(rowTableIdValue));
-				rowRecordID = Integer.parseInt(String.valueOf(value));
+				MTable table = MTable.get(rowTableID);
+				if (table.isUUIDKeyTable())
+					rowRecordID = value.toString();
+				else
+					rowRecordID = Integer.parseInt(String.valueOf(value));
 			} catch (NumberFormatException e) {
 				return value.toString();
 			}
@@ -362,6 +386,15 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 						String tableIdTxt = Env.getContext(gridField.getVO().ctx, gridField.getWindowNo(), FindWindow.TABNO, "AD_Table_ID", true);
 						if (!Util.isEmpty(tableIdTxt, true)) {
 							tableIDValue = Integer.parseInt(tableIdTxt);
+						}
+					}
+					if (tableIDValue != null && tableIDValue instanceof Integer) {
+						MTable table = MTable.get((Integer)tableIDValue);
+						if (table.isUUIDKeyTable()) {
+							if (! getColumnName().endsWith("_UU")) {
+								Dialog.error(tableIDGridField.getWindowNo(), "UUTableNotCompatibleWithRecordID");
+								return;
+							}
 						}
 					}
 					new WRecordIDDialog(recordTextBox.getPage(), this, tableIDGridField);
@@ -404,7 +437,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	 * @param recordID
 	 * @return String
 	 */
-	public String getIdentifier(int tableID, int recordID) {
+	public String getIdentifier(int tableID, Object recordID) {
 		MLookup lookup = getRecordsLookup(tableID);
 		return lookup != null ? lookup.getDisplay(recordID) : "";
     }

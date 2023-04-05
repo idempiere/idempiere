@@ -477,7 +477,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	public void zoom()
 	{
 		log.info( "InfoPayment.zoom");
-		Integer C_Payment_ID = getSelectedRowKey();
+		Integer C_Payment_ID = (Integer) getSelectedRowKey();
 		if (C_Payment_ID == null)
 			return;
 		MQuery query = new MQuery("C_Payment");

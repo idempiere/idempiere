@@ -98,7 +98,7 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 				.append(nRows);
 			if (lookup instanceof MLookup) {
 				MLookup mlookup = (MLookup) lookup;
-				List<String> displayColumns = mlookup.getLookupInfo().lookupDisplayColumnNames;
+				List<String> displayColumns = mlookup.getLookupInfo().lookupDisplayColumns;
 				if (displayColumns != null && displayColumns.size() > 0) {
 					queryBuilder.append(",")
 						.append("searchcolumn:")
@@ -113,10 +113,10 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 				int rowCount = ip.getRowCount();
 				if (rowCount > 0) {
 					List<String> added = new ArrayList<String>();
-					List<Integer> keys = new ArrayList<Integer>();
+					List<Object> keys = new ArrayList<Object>();
 					for(int i = 0; i < rowCount; i++) {
-						Integer key = ip.getRowKeyAt(i);
-						if (key != null && key.intValue() > 0 && !keys.contains(key)) {
+						Object key = ip.getRowKeyAt(i);
+						if (key != null && (key instanceof Integer && ((Integer)key).intValue() > 0 || key instanceof String && key.toString().length() > 0) && !keys.contains(key)) {
 							keys.add(key);							
 						}
 						if (nRows > 0 && keys.size() >= nRows)

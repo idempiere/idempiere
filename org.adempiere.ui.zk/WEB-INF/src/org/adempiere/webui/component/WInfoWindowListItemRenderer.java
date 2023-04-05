@@ -31,6 +31,7 @@ import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.GridField;
 import org.compiere.model.InfoColumnVO;
 import org.compiere.model.MStyle;
@@ -109,6 +110,11 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 					{
 						IDColumn idc = (IDColumn)value;
 						value = idc.getRecord_ID();
+					}
+					else if(value instanceof UUIDColumn)
+					{
+						UUIDColumn idc = (UUIDColumn)value;
+						value = idc.getRecord_UU();
 					}
 					else if(value instanceof KeyNamePair)
 					{

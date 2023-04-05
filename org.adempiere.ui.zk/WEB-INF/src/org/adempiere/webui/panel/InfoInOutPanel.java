@@ -414,7 +414,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 	public void zoom()
 	{
 		log.info( "InfoInOut.zoom");
-		Integer M_InOut_ID = getSelectedRowKey();
+		Integer M_InOut_ID = (Integer) getSelectedRowKey();
 		if (M_InOut_ID == null)
 			return;
 		MQuery query = new MQuery("M_InOut");

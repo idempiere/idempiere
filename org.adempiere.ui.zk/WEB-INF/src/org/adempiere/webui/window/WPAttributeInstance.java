@@ -340,7 +340,7 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		boolean enabled = row != -1;
 		if (enabled)
 		{
-			Integer ID = m_table.getSelectedRowKey();
+			Integer ID = (Integer) m_table.getSelectedRowKey();
 			if (ID != null)
 			{
 				m_M_AttributeSetInstance_ID = ID.intValue();

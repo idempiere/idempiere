@@ -39,6 +39,8 @@ import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.compiere.model.GridField;
 import org.compiere.model.MLookup;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -152,8 +154,14 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		if (editor.getGridField().getGridTab() != null) {
 			parentTextBox = new Textbox();
 			parentTextBox.setReadonly(true);
-			parentTextBox.setValue(editor.getIdentifier(
-					editor.getGridField().getGridTab().getAD_Table_ID(), editor.getGridField().getGridTab().getRecord_ID()));
+			int tableId = editor.getGridField().getGridTab().getAD_Table_ID();
+			MTable table = MTable.get(tableID);
+			Object recordId;
+			if (table.isUUIDKeyTable())
+				recordId = editor.getGridField().getGridTab().getValue(PO.getUUIDColumnName(table.getTableName()));
+			else
+				recordId = editor.getGridField().getGridTab().getRecord_ID();
+			parentTextBox.setValue(editor.getIdentifier(tableId, recordId));
 		}
 		
 		if (recordsEditor != null)
@@ -219,14 +227,19 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 	@Override
 	public void valueChange(ValueChangeEvent evt) {
 		if (evt.getSource().equals(tableIDEditor)) {
+			int tableID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
+			MTable table = MTable.get(tableID);
+			if (table.isUUIDKeyTable()) {
+				if (! editor.getColumnName().endsWith("_UU"))
+					throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "UUTableNotCompatibleWithRecordID"));
+			}
+
 			// the Record_ID should be cleared when a different AD_Table_ID is selected
 			if (recordsEditor != null) {
 				recordsEditor.setValue(null);
 				recordsEditorLabel.detach();
 				recordsEditor.getComponent().detach();
 			}
-			int tableID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
-			
 			MLookup recordsLookup = editor.getRecordsLookup(tableID);
 			if(recordsLookup != null) {
 				recordsEditor = new WSearchEditor("Record_ID", false, false, true, recordsLookup);
