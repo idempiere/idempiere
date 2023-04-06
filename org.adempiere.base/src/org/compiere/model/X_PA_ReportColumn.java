@@ -33,7 +33,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221011L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PA_ReportColumn (Properties ctx, int PA_ReportColumn_ID, String trxName)
@@ -983,7 +983,7 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	*/
 	public void setMultiplier (BigDecimal Multiplier)
 	{
-		set_ValueNoCheck (COLUMNNAME_Multiplier, Multiplier);
+		set_Value (COLUMNNAME_Multiplier, Multiplier);
 	}
 
 	/** Get Multiplier.

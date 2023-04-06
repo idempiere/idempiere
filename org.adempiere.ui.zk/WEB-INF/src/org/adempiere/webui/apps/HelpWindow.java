@@ -38,15 +38,21 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
 
+/**
+ * Help for AD Window with contents generated from AD definition.
+ */
 public class HelpWindow extends Window {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7353411576541612026L;
 
 	private GridWindow gridWindow;
 	private String winpref;
 	
+	/**
+	 * @param gridWindow
+	 */
 	public HelpWindow(GridWindow gridWindow)
 	{
 		super();
@@ -95,6 +101,9 @@ public class HelpWindow extends Window {
 		html.setContent(doc.toString());
 	}
 	
+	/**
+	 * @return header {@link table}
+	 */
 	private table getHeader()
 	{
 		table table = new table("0", "0", "0", "100%", null);
@@ -180,6 +189,9 @@ public class HelpWindow extends Window {
 		return table;
 	}
 	
+	/**
+	 * @return content {@link table}
+	 */
 	private table getContent()
 	{
 		table table = new table("0", "0", "0", "100%", null);
@@ -202,6 +214,9 @@ public class HelpWindow extends Window {
 		return table;
 	}
 	
+	/**
+	 * @return content {@link table} for left pane
+	 */
 	private table getLeftContent()
 	{
 		table table = new table("0", "0", "0", "100%", null);
@@ -223,6 +238,9 @@ public class HelpWindow extends Window {
 		return table;
 	}
 	
+	/**
+	 * @return content {@link table} for right pane
+	 */
 	private table getRightContent()
 	{
 		table table = new table("0", "0", "0", "100%", null);
@@ -273,6 +291,12 @@ public class HelpWindow extends Window {
 		return table;
 	}
 	
+	/**
+	 * Name, description and help text for AD_Tab
+	 * @param tab
+	 * @param tabIndex
+	 * @return {@link table} with name, description and help text
+	 */
 	private table getTabBox(GridTab tab, int tabIndex)
 	{
 		table table = new table("0", "0", "0", "100%", null);
@@ -326,6 +350,12 @@ public class HelpWindow extends Window {
 		return table;
 	}
 	
+	/**
+	 * Links for all display field
+	 * @param tab
+	 * @param tabIndex
+	 * @return {@link table} with link for all display fields
+	 */
 	private table getFieldsBox(GridTab tab, int tabIndex)
 	{
 		table table = new table("0", "0", "0", "100%", null);
@@ -383,6 +413,13 @@ public class HelpWindow extends Window {
 		return table;
 	}
 	
+	/**
+	 * header/label, description and help text for a field.
+	 * @param field
+	 * @param tabIndex
+	 * @param fieldIndex
+	 * @return {@link table} with header/label, description and help text
+	 */
 	private table getFieldBox(GridField field, int tabIndex, int fieldIndex)
 	{
 		table table = new table("0", "0", "0", "100%", null);

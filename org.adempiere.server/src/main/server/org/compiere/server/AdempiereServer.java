@@ -38,6 +38,7 @@ import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *	Adempiere Server Base
@@ -112,10 +113,12 @@ public abstract class AdempiereServer implements Runnable
 
 	public void recalculateSleepMS()
 	{
+		int adOrgId = 0;
 		if (p_model instanceof PO) 
 		{
 			PO po = (PO) p_model;
 			po.load(null);
+			adOrgId = po.getAD_Org_ID();
 		}
 		m_sleepMS = 0;
 		m_nextWork = 0;
@@ -126,10 +129,21 @@ public abstract class AdempiereServer implements Runnable
 			m_nextWork = dateNextRun.getTime();
 		}
 		else
-		{			
+		{		
+			String timeZoneId = null;
+			if((p_model.getAD_Client_ID() == 0 && adOrgId == 0) || adOrgId > 0) {
+				MOrgInfo orgInfo = MOrgInfo.get(adOrgId);
+				timeZoneId = orgInfo.getTimeZone();
+			}
+			
+			if(Util.isEmpty(timeZoneId, true)) {
+				MClientInfo clientInfo = MClientInfo.get(getCtx(), p_model.getAD_Client_ID());
+				timeZoneId = clientInfo.getTimeZone();
+			}
+			
 			m_nextWork = MSchedule.getNextRunMS(now.getTime(),
 					p_model.getScheduleType(), p_model.getFrequencyType(),
-					p_model.getFrequency(), p_model.getCronPattern(), MClientInfo.get(getCtx(), p_model.getAD_Client_ID()).getTimeZone());
+					p_model.getFrequency(), p_model.getCronPattern(), timeZoneId);
 		}
 
 		if (m_nextWork > now.getTime())

@@ -15,11 +15,11 @@ package org.adempiere.process;
 
 import java.sql.Timestamp;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAddressTransaction;
 import org.compiere.model.MLocation;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSysConfig;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoParameter;
@@ -49,7 +49,7 @@ public class ValidateAddressProcess extends SvrProcess
 			else if (name.equals(MAddressTransaction.COLUMNNAME_C_AddressValidation_ID))
 				p_C_AddressValidation_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}
 

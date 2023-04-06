@@ -5,10 +5,10 @@ package org.adempiere.base.process;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.compiere.model.I_AD_CtxHelpMsg;
 import org.compiere.model.MCtxHelpMsg;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_CtxHelpSuggestion;
 import org.compiere.process.ProcessInfoParameter;
@@ -45,7 +45,7 @@ public class AcceptCtxHelpSuggestion extends SvrProcess {
 			else if (name.equals("IsSaveAsTenantCustomization"))
 				p_isSaveAsTenantCustomization = para.getParameterAsBoolean();
 			else
-				log.log(Level.WARNING, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
 
 	}

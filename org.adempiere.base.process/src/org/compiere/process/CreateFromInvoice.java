@@ -37,6 +37,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
 import org.compiere.util.AdempiereUserError;
@@ -67,7 +68,7 @@ public class CreateFromInvoice extends SvrProcess
 			else if (name.equals("C_Invoice_ID"))
 				p_C_Invoice_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}
 

@@ -27,6 +27,7 @@ import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MColumn;
 import org.compiere.model.MElementValue;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_I_ElementValue;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -77,7 +78,7 @@ public class ImportAccount extends SvrProcess
 			else if (name.equals("DeleteOldImported"))
 				m_deleteOldImported = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if (m_DateValue == null)
 			m_DateValue = new Timestamp (System.currentTimeMillis());

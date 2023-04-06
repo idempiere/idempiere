@@ -30,6 +30,7 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaySelectionLine;
 import org.compiere.model.MPayment;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.Env;
@@ -84,7 +85,7 @@ public class AllocationAuto extends SvrProcess
 			else if (name.equals("APAR"))
 				p_APAR = (String)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

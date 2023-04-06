@@ -1,0 +1,23 @@
+-- IDEMPIERE-5538
+SELECT register_migration_script('202303101612_IDEMPIERE-5538.sql') FROM dual;
+
+-- Mar 10, 2023, 4:12:07 PM CET
+UPDATE AD_Column SET IsUpdateable='N',Updated=TO_TIMESTAMP('2023-03-10 16:12:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214733
+;
+
+-- Mar 10, 2023, 4:13:51 PM CET
+UPDATE AD_Field SET IsAdvancedField='Y',Updated=TO_TIMESTAMP('2023-03-10 16:13:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206939
+;
+
+-- Mar 10, 2023, 4:13:56 PM CET
+UPDATE AD_Field SET IsAdvancedField='Y',Updated=TO_TIMESTAMP('2023-03-10 16:13:56','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206941
+;
+
+-- Mar 15, 2023, 1:35:41 PM CET
+UPDATE AD_ToolBarButton SET DisplayLogic='@AD_Client_ID@=@#AD_Client_ID@',Updated=TO_TIMESTAMP('2023-03-15 13:35:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_ToolBarButton_ID=200123
+;
+
+-- Mar 15, 2023, 3:27:28 PM CET
+UPDATE AD_Tab SET ReadOnlyLogic='@AD_Client_ID@!@#AD_Client_ID@',Updated=TO_TIMESTAMP('2023-03-15 15:27:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200309
+;
+

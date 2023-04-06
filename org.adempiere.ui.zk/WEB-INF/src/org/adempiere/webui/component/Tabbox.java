@@ -31,28 +31,39 @@ import org.zkoss.zul.Tabpanels;
 import org.zkoss.zul.Tabs;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Tabbox}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
 public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1400484283064851775L;
 	private boolean isSupportTabDragDrop = false;
 	private boolean isActiveBySeq = false;
 	private boolean isCheckVisibleOnlyForNextActive = true;
 
+	/**
+	 * Deque of tab by selection sequence. Each time when a Tab is selected by user, the Tab is push to front of queue.
+	 */
 	private Deque<Tab> activeTabSeq = new ArrayDeque<>();
+	
+	/**
+	 * Default constructor
+	 */
 	public Tabbox () {
 		super();
 		this.addEventListener(Events.ON_SELECT, this);
 	}
 	
+	/**
+	 * Get tab panel at index
+	 * @param index
+	 * @return Tabpanel. Throw IndexOutOfBoundsException if index is invalid.
+	 */
 	public Tabpanel getTabpanel(int index)
     {
         try
@@ -67,23 +78,32 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
         }
     }
     
+	/**
+	 * @return selected Tabpanel
+	 */
     public Tabpanel getSelectedTabpanel()
     {
         return getTabpanel(this.getSelectedIndex());
     }
     
+    /**
+     * @return true if drag and drop of tab is enable
+     */
     public boolean isSupportTabDragDrop() {
 		return isSupportTabDragDrop;
 	}
 
     /**
-     * let support drag&amp;drop {@link Tab}
+     * Set enable/disable the drag and drop of {@link Tab}
      * @param isSupportTabDragDrop
      */
 	public void setSupportTabDragDrop(boolean isSupportTabDragDrop) {
 		this.isSupportTabDragDrop = isSupportTabDragDrop;
 	}
 
+	/**
+	 * Send onPageAttached event
+	 */
 	@Override
 	public void onPageAttached(Page newpage, Page oldpage) {
 		super.onPageAttached(newpage, oldpage);
@@ -91,6 +111,9 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 		
 	}
 	
+	/**
+	 * Send onPageDetached event
+	 */
 	@Override
 	public void onPageDetached(Page page) {
 		super.onPageDetached(page);
@@ -109,10 +132,8 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 			Iterator itPrevSelectedTab = selectEvent.getPreviousSelectedItems().iterator();
 			if (itPrevSelectedTab.hasNext()) {
 				activeTabSeq.push((Tab)itPrevSelectedTab.next());
-			}
-			
-		}
-		
+			}			
+		}		
 	}
 
 	/**
@@ -126,17 +147,25 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 		super.setSelectedTab(tab);
 	}
 	
+	/**
+	 * @return true if set next active tab using {@link #activeTabSeq}
+	 */
 	public boolean isActiveBySeq() {
 		return isActiveBySeq;
 	}
 
+	/**
+	 * Enable/disable the use of {@link #activeTabSeq} for the setting of next active tab.
+	 * @param isActiveBySeq
+	 */
 	public void setActiveBySeq(boolean isActiveBySeq) {
 		this.isActiveBySeq = isActiveBySeq;
 	}
 	
 	/**
-	 * select next active tab by order store on stack folow FILO
-	 * @return
+	 * Get next active tab by selection sequence store on {@link #activeTabSeq}.
+	 * @param currentTab current Tab to skip/ignore
+	 * @return Tab or null if no valid candidate from {@link #activeTabSeq}.
 	 */
 	public Tab getNextActiveBySeq (Tab currentTab) {
 		Tab cadidateTabActive = null;
@@ -146,8 +175,8 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 				// move disable item to last stack it can be active late
 				cadidateTabActive = activeTabSeq.pop();
 				activeTabSeq.addLast(cadidateTabActive);
-			}else if (cadidateTabActive.getParent() == null || currentTab == cadidateTabActive) {// when call close other tab menu, remain tab = first tab on stack, so have to ignore it when find next tab
-				activeTabSeq.pop();// this tab is close by code or by close at unselected state so just remove it from stack
+			}else if (cadidateTabActive.getParent() == null || currentTab == cadidateTabActive) {
+				activeTabSeq.pop(); //not attached to page or == currentTab, remove
 			}else {
 				return activeTabSeq.pop();
 			}
@@ -157,20 +186,22 @@ public class Tabbox extends org.zkoss.zul.Tabbox implements EventListener<Event>
 	}
 	
 	/**
-	 * activeTabSeq is maintain by selected tab event, so when close by code or close on unselected state should call this function to save memory<br/>
-	 * in case don't call it, it still manage from {@link #getNextActiveBySeq(Tab)}
+	 * {@link #activeTabSeq} is maintain by selected tab event, so when a tab is close, code should call this function to save memory<br/>
 	 * @param closeTab
 	 */
 	public void removeTabFromActiveSeq (Tab closeTab) {
 		activeTabSeq.remove(closeTab);
 	}
 	
+	/**
+	 * @return true if {@link #activeTabSeq} should ignore invisible tab.
+	 */
 	public boolean isCheckVisibleOnlyForNextActive() {
 		return isCheckVisibleOnlyForNextActive;
 	}
 	
 	/**
-	 * Ignore invisible tab for next active by seq
+	 * Ignore invisible tab for next active by selection sequence
 	 * @param isVisibleOnly
 	 */
 	public void setCheckVisibleOnlyForNextActive(boolean isVisibleOnly) {

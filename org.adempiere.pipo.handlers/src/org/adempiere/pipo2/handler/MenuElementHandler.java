@@ -21,7 +21,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
@@ -114,9 +113,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 
 			int AD_Tree_ID = getDefaultMenuTreeId();
 
-			final String updateSeqNo = "UPDATE AD_TREENODEMM SET SeqNo=SeqNo+1 WHERE Parent_ID=? AND SeqNo>=? AND AD_Tree_ID=?";
-
-			final String sql1 = "SELECT COUNT(Parent_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID=? AND Node_ID=?";
+			final String sql1 = "SELECT COUNT(Node_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID=? AND Node_ID=?";
 			int countRecords = DB.getSQLValueEx(getTrxName(ctx), sql1, AD_Tree_ID, mMenu.getAD_Menu_ID());
 			if (countRecords > 0) {
 				int oldseqNo = 0;
@@ -163,14 +160,21 @@ public class MenuElementHandler extends AbstractElementHandler {
 				} finally {
 					DB.close(rs, pstmt);
 				}
-				if (seqNo != oldseqNo)
-					DB.executeUpdateEx(updateSeqNo, new Object[] {parentId, seqNo, AD_Tree_ID}, getTrxName(ctx));
+				if (seqNo != oldseqNo) {
+					String updateSeqNo = "UPDATE AD_TREENODEMM SET SeqNo=SeqNo+1 WHERE Parent_ID=" + parentId + " AND SeqNo>=" + seqNo + " AND AD_Tree_ID=" + AD_Tree_ID;
+					DB.executeUpdateEx(updateSeqNo, getTrxName(ctx));
+				}
 				final String updateSQL = "UPDATE AD_TREENODEMM SET Parent_ID=?, SeqNo=? WHERE AD_Tree_ID=? AND Node_ID=?";
 				DB.executeUpdateEx(updateSQL, new Object[] {parentId, seqNo, AD_Tree_ID, mMenu.getAD_Menu_ID()}, getTrxName(ctx));
 			} else {
-				DB.executeUpdateEx(updateSeqNo, new Object[] {parentId, seqNo, AD_Tree_ID}, getTrxName(ctx));
-				final String insertSQL = "INSERT INTO AD_TREENODEMM (AD_Client_ID, AD_Org_ID, CreatedBy, UpdatedBy,Parent_ID, SeqNo, AD_Tree_ID, Node_ID, AD_TREENODEMM_UU) VALUES(0,0,0,0,?,?,?,?,?)";
-				DB.executeUpdateEx(insertSQL, new Object[] {parentId, seqNo, AD_Tree_ID, mMenu.getAD_Menu_ID(), UUID.randomUUID().toString()}, getTrxName(ctx));
+				String updateSeqNo = "UPDATE AD_TREENODEMM SET SeqNo=SeqNo+1 WHERE Parent_ID=" + parentId + " AND SeqNo>=" + seqNo + " AND AD_Tree_ID=" + AD_Tree_ID;
+				DB.executeUpdateEx(updateSeqNo, getTrxName(ctx));
+				X_AD_TreeNodeMM nmm = new X_AD_TreeNodeMM(ctx.ctx, 0, getTrxName(ctx));
+				nmm.setParent_ID(parentId);
+				nmm.setSeqNo(seqNo);
+				nmm.setAD_Tree_ID(AD_Tree_ID);
+				nmm.setNode_ID(mMenu.getAD_Menu_ID());
+				nmm.saveEx();
 			}
 	}
 

@@ -23,7 +23,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_BroadcastMessage
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_BroadcastMessage")
 public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName)
@@ -328,7 +328,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	/** Set Log Acknowledge.
-		@param LogAcknowledge Want to Log the Acknowledgement of Message?
+		@param LogAcknowledge Want to Log the Acknowledgment of Message?
 	*/
 	public void setLogAcknowledge (boolean LogAcknowledge)
 	{
@@ -336,7 +336,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	/** Get Log Acknowledge.
-		@return Want to Log the Acknowledgement of Message?
+		@return Want to Log the Acknowledgment of Message?
 	  */
 	public boolean isLogAcknowledge()
 	{
@@ -350,8 +350,8 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 		return false;
 	}
 
-	/** Set Notification Client.
-		@param Notification_Client_ID Notification Client
+	/** Set Notification Tenant.
+		@param Notification_Client_ID Notification Tenant
 	*/
 	public void setNotification_Client_ID (int Notification_Client_ID)
 	{
@@ -361,8 +361,8 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 			set_Value (COLUMNNAME_Notification_Client_ID, Integer.valueOf(Notification_Client_ID));
 	}
 
-	/** Get Notification Client.
-		@return Notification Client
+	/** Get Notification Tenant.
+		@return Notification Tenant
 	  */
 	public int getNotification_Client_ID()
 	{
@@ -422,7 +422,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** User = U */
 	public static final String TARGET_User = "U";
 	/** Set Target.
-		@param Target Target client
+		@param Target Target tenant
 	*/
 	public void setTarget (String Target)
 	{
@@ -431,7 +431,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	/** Get Target.
-		@return Target client
+		@return Target tenant
 	  */
 	public String getTarget()
 	{

@@ -82,7 +82,6 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 		ZKUpdateUtil.setHflex(bxJobs, "1");
 		this.setSclass("recentitems-box");
 		jobsContent.appendChild(bxJobs);
-		createJobsPanel();
 		
 		Toolbar jobsToolbar = new Toolbar();
 		this.appendChild(jobsToolbar);
@@ -133,11 +132,6 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 		}
 	}
 
-	private void createJobsPanel()
-	{
-		refresh();
-	}
-	
 	@Override
 	public void onEvent(Event event) throws Exception 
 	{
@@ -279,6 +273,11 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 	public void onPageDetached(Page page) {
 		super.onPageDetached(page);
 		cleanup();
+	}
+	
+	@Override
+	public boolean isLazy() {
+		return true;
 	}
 	
 	static class TopicSubscriber implements ITopicSubscriber<Integer> {

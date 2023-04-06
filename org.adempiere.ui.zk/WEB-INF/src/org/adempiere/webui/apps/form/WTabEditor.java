@@ -85,7 +85,7 @@ import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.West;
 
 /**
- *
+ * Form to visually layout an AD_Tab.
  * @author Juan David Arboleda
  * @author Carlos Ruiz
  *
@@ -94,9 +94,10 @@ import org.zkoss.zul.West;
 public class WTabEditor extends TabEditor implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	// TODO: create messages Property, VisibleFields, NonVisibleField
-
+	/** Form/window UI instance */
 	private WTabEditorForm tabform = null;
 
+	/** Main layout of {@link #tabform} */
 	private Borderlayout mainLayout = new Borderlayout();
 
 	/** Window No */
@@ -107,44 +108,61 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 
-	WEditor editorName = null;
-	WEditor editorDescription = null;
-	WEditor editorHelp = null;
-	WEditor editorPlaceholder = null;
-	WEditor editorAD_FieldGroup_ID = null;
-	WEditor editorIsDisplayed = null;
-	WEditor editorSeqNo = null;
-	WEditor editorXPosition = null;
-	WEditor editorColumnSpan = null;
-	WEditor editorNumLines = null;
-	WEditor editorDisplayLogic = null;
-	WEditor editorMandatoryLogic = null;
-	WEditor editorReadOnlyLogic = null;
-	WEditor editorColumn = null;
-	WYesNoEditor editorIsReadOnly = null;
+	/** Properties editor for field (AD_Field). East of {@link #mainLayout} */
+	
+	protected WEditor editorName = null;
+	protected WEditor editorDescription = null;
+	protected WEditor editorHelp = null;
+	protected WEditor editorPlaceholder = null;
+	protected WEditor editorAD_FieldGroup_ID = null;
+	protected WEditor editorIsDisplayed = null;
+	protected WEditor editorSeqNo = null;
+	protected WEditor editorXPosition = null;
+	protected WEditor editorColumnSpan = null;
+	protected WEditor editorNumLines = null;
+	protected WEditor editorDisplayLogic = null;
+	protected WEditor editorMandatoryLogic = null;
+	protected WEditor editorReadOnlyLogic = null;
+	protected WEditor editorColumn = null;
+	protected WYesNoEditor editorIsReadOnly = null;
 
+	//Child of westVLayout
+	/** List of display fields */
 	private Listbox visible = new Listbox();
+	/** List of not dispaly fields */
 	private Listbox invisible = new Listbox();
 
 	// The grid components
-	Group currentGroup;
-	ArrayList<Row> rowList;
+	/** Current group. Temporary variable for form rendering in {@link #createUI()} */
+	protected Group currentGroup;
+	/** List of all form row */
+	protected ArrayList<Row> rowList;
 
-	Map<Cell, GridField> mapCellField = new HashMap<Cell, GridField>();
-	Map<Cell, Integer> mapEmptyCellField = new HashMap<Cell, Integer>();
+	protected Map<Cell, GridField> mapCellField = new HashMap<Cell, GridField>();
+	/** Cell:Integer to decode SeqNo and XPosition. Use to support DropEvent  */
+	protected Map<Cell, Integer> mapEmptyCellField = new HashMap<Cell, Integer>();
 
-	Grid form;
-	Vlayout centerVLayout;
-	Vlayout westVLayout;
+	/** Grid layout for fields. Child of {@link #centerVLayout} */
+	protected Grid form;
+	/** Center of {@link #mainLayout} */
+	protected Vlayout centerVLayout;
+	/** West of {@link #mainLayout} */
+	protected Vlayout westVLayout;
 
 	private static final int POSSEQMULTIPLIER = 10000000;
 
+	/**
+	 * Default constructor
+	 */
 	public WTabEditor()
 	{
 		tabform = new WTabEditorForm(this);
 		LayoutUtils.addSclass("tab-editor-form", tabform);
 	}
 
+	/**
+	 * Initialize form
+	 */
 	public void initForm() {
 		try
 		{
@@ -177,7 +195,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	}
 
 	/**
-	 * Initialize List of visible and non visible Fields
+	 * Initialize List of visible and not visible fields
 	 */
 	private void dynList()
 	{
@@ -197,8 +215,8 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	} // dynList
 
 	/**
-	 *  Initialize Tab panel editor
-	 *  Same createUI algorithm used on ADTabPanel
+	 *  Initialize Tab panel editor.
+	 *  Base on createUI algorithm from ADTabPanel.
 	 */
 	private void createUI() {
 		mapCellField.clear();
@@ -253,7 +271,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 
 				while (numCols - actualxpos + 1 > 0) {
 					row.appendCellChild(createSpacer(), 1);
-					setLastCellProps(row.getLastCell(), actualxpos, field.getSeqNo());
+					setEmptyCellProps(row.getLastCell(), actualxpos, field.getSeqNo());
 					actualxpos++;
 				}
 				row.setGroup(currentGroup);
@@ -283,7 +301,6 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 					Cell cell = (Cell) rowg.getFirstChild();
 					cell.setSclass("z-group-inner");
 					cell.setColspan(numCols + 1);
-//        			rowg.appendChild(cell);
         			if (X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(gridField.getFieldGroupType()) || gridField.getIsCollapsedByDefault())
         			{
 						rowg.setOpen(false);
@@ -301,7 +318,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 				// Fill right part of the row with spacers until number of columns
 				while (numCols - actualxpos + 1 > 0) {
 					row.appendCellChild(createSpacer(), 1);
-					setLastCellProps(row.getLastCell(), actualxpos, field.getSeqNo());
+					setEmptyCellProps(row.getLastCell(), actualxpos, field.getSeqNo());
 					actualxpos++;
 				}
 				row.setGroup(currentGroup);
@@ -314,7 +331,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 			// Fill left part of the field
 			if (gridField.getXPosition() - 1 - actualxpos > 0) {
 				row.appendCellChild(createSpacer(), gridField.getXPosition() - 1 - actualxpos);
-				setLastCellProps(row.getLastCell(), actualxpos, field.getSeqNo());
+				setEmptyCellProps(row.getLastCell(), actualxpos, field.getSeqNo());
 			}
         	boolean paintLabel = ! (gridField.getDisplayType() == DisplayType.Button || gridField.getDisplayType() == DisplayType.YesNo || gridField.isFieldOnly()); 
 			if (gridField.isHeading())
@@ -374,7 +391,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 			row.appendCellChild(createSpacer(), 1);
 			lastseq = lastseq + 10;
 			// make every empty space droppable at the end
-			setLastCellProps(row.getLastCell(), actualxpos, lastseq);
+			setEmptyCellProps(row.getLastCell(), actualxpos, lastseq);
 			actualxpos++;
 		}
 		row.setGroup(currentGroup);
@@ -383,6 +400,11 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 			rowList.add(row);
 	}
 
+	/**
+	 * Setup cell properties and listeners
+	 * @param lastCell
+	 * @param field
+	 */
 	private void setLastCellProps(Cell lastCell, GridField field) {
 		lastCell.setDraggable("true");
 		lastCell.setDroppable("true");
@@ -392,17 +414,29 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		mapCellField.put(lastCell, field);
 	}
 
-	private void setLastCellProps(Cell lastCell, int actualxpos, int seqNo) {
+	/**
+	 * Setup empty cell properties and listeners
+	 * @param lastCell
+	 * @param actualxpos
+	 * @param seqNo
+	 */
+	private void setEmptyCellProps(Cell lastCell, int actualxpos, int seqNo) {
 		lastCell.setDroppable("true");
 		lastCell.addEventListener(Events.ON_DROP, this);
 		int value = (actualxpos + 1) * POSSEQMULTIPLIER + seqNo;
 		mapEmptyCellField.put(lastCell, value);
 	}
 
+	/**
+	 * @return {@link Space}
+	 */
 	private Component createSpacer() {
 		return new Space();
 	}
 
+	/**
+	 * @return Number of column for grid form
+	 */
 	private int getNumColumns() {
 		int maxcol = 0;
         for (GridField gridField : getGridFields())
@@ -423,8 +457,8 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	}
 
 	/**
-	 *  Initialize Grid of Field's Properties
-	 *  return @Grid
+	 *  Create Grid of field properties editor.
+	 *  return {@link Grid}
 	 */
 	private Grid createPropertiesGrid()
 	{
@@ -527,7 +561,6 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		editorSeqNo = new WNumberEditor(MField.COLUMNNAME_SeqNo, false, true, false, DisplayType.Integer, labelSeqNo.getValue());
 		row.appendChild(labelSeqNo.rightAlign());
 		row.appendChild(editorSeqNo.getComponent());
-//		 editorSeqNo.addValueChangeListener(this);
 		row.setGroup(group);
 		rows.appendChild(row);
 
@@ -576,8 +609,6 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		((Textbox) editorDisplayLogic.getComponent()).setMultiline(true);
 		row.appendChild(labelDisplayLogic.rightAlign());
 		row.appendChild(editorDisplayLogic.getComponent());
-		//ZKUpdateUtil.setWidth((HtmlBasedComponent) row.getLastChild(), "100%");
-		//ZKUpdateUtil.setHeight((HtmlBasedComponent) row.getLastChild(), "80px");
 		editorDisplayLogic.addValueChangeListener(this);
 		row.setGroup(group);
 		rows.appendChild(row);
@@ -589,8 +620,6 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		((Textbox) editorMandatoryLogic.getComponent()).setMultiline(true);
 		row.appendChild(labelMandatoryLogic.rightAlign());
 		row.appendChild(editorMandatoryLogic.getComponent());
-		//ZKUpdateUtil.setWidth((HtmlBasedComponent) row.getLastChild(), "100%");
-		//ZKUpdateUtil.setHeight((HtmlBasedComponent) row.getLastChild(), "80px");
 		editorMandatoryLogic.addValueChangeListener(this);
 		row.setGroup(group);
 		rows.appendChild(row);
@@ -602,8 +631,6 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		((Textbox) editorReadOnlyLogic.getComponent()).setMultiline(true);
 		row.appendChild(labelReadOnlyLogic.rightAlign());
 		row.appendChild(editorReadOnlyLogic.getComponent());
-		//ZKUpdateUtil.setWidth((HtmlBasedComponent) row.getLastChild(), "100%");
-		//ZKUpdateUtil.setHeight((HtmlBasedComponent) row.getLastChild(), "80px");
 		editorReadOnlyLogic.addValueChangeListener(this);
 		row.setGroup(group);
 		rows.appendChild(row);
@@ -633,7 +660,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	}
 
 	/**
-	 * Static init
+	 * Layout {@link #tabform}
 	 * @throws Exception
 	 */
 	private void jbInit() throws Exception
@@ -700,7 +727,7 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	} // jbInit
 
 	/**
-	 * Dispose
+	 * Close form
 	 */
 	public void dispose()
 	{
@@ -708,9 +735,10 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 	} // dispose
 
 	/**
-	 * Action Listener
+	 * Event Listener
 	 * @param e event
 	 */
+	@Override
 	public void onEvent (Event e) throws Exception 
 	{
 		// select an item within the list -- set it active and show the properties
@@ -867,8 +895,13 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 			if (cmd_save())
 				tabform.detach();
 		}
-	} // actionPerformed
+	}
 
+	/**
+	 * Find ListItem from {@link #visible} with GridField from {@link #mapCellField}.
+	 * @param cell
+	 * @return {@link ListItem} or null
+	 */
 	private ListItem getItemFromCell(Cell cell) {
 		GridField field = mapCellField.get(cell);
 		if (field != null) {
@@ -882,6 +915,11 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		return null;
 	}
 
+	/**
+	 * Going through entries in {@link #mapCellField} and set background color for cell with editor for field.
+	 * Clear the background color of other cells. 
+	 * @param field
+	 */
 	private void setBackgroundField(MField field) {
 		Iterator<Entry<Cell, GridField>> it = mapCellField.entrySet().iterator();
 		while (it.hasNext()) {
@@ -894,9 +932,12 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 				cell.setStyle("");
 			}
 		}
-
 	}
 
+	/**
+	 * Populate properties editor for field (editorName, editorDescription, etc).
+	 * @param field
+	 */
 	private void setProperties(MField field) {
 		String displayLogic = field.getDisplayLogic() == null ? "" : field.getDisplayLogic();
 		String mandatoryLogic = field.getMandatoryLogic() == null ? "" : field.getMandatoryLogic();
@@ -939,11 +980,16 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 
 	}
 
+	@Override
 	public ADForm getForm()
 	{
 		return tabform;
 	}
 
+	/**
+	 * Update {@link #visible} and {@link #invisible}.
+	 * @param focusField
+	 */
 	private void updateLists(MField focusField) {
 		visible.removeAllItems();
 		invisible.removeAllItems();
@@ -974,6 +1020,9 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		}
 	}
 
+	/**
+	 * Handle value change event from field properties editor (editorName editorDescription, etc).
+	 */
 	@Override
 	public void valueChange(ValueChangeEvent e) {
 		// changed a value on the properties editors
@@ -1031,6 +1080,9 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 		}
 	}
 
+	/**
+	 * Re-create {@link #form}
+	 */
 	private void repaintGrid() {
 		centerVLayout.removeChild(form);
 		if (form.getRows() != null)

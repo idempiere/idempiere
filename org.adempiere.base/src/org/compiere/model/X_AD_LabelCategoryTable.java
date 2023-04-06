@@ -30,7 +30,7 @@ public class X_AD_LabelCategoryTable extends PO implements I_AD_LabelCategoryTab
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220525L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_LabelCategoryTable (Properties ctx, int AD_LabelCategoryTable_ID, String trxName)

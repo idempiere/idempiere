@@ -21,10 +21,10 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Process_DrillRule
- *  @author iDempiere (generated)
- *  @version Release 10
+ *  @author iDempiere (generated) 
+ *  @version Release 11
  */
-public interface I_AD_Process_DrillRule
+public interface I_AD_Process_DrillRule 
 {
 
     /** TableName=AD_Process_DrillRule */
@@ -35,7 +35,7 @@ public interface I_AD_Process_DrillRule
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 6 - System - Client
+    /** AccessLevel = 6 - System - Client 
      */
     BigDecimal accessLevel = BigDecimal.valueOf(6);
 
@@ -192,6 +192,19 @@ public interface I_AD_Process_DrillRule
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsValid */
+    public static final String COLUMNNAME_IsValid = "IsValid";
+
+	/** Set Valid.
+	  * Element is valid
+	  */
+	public void setIsValid (boolean IsValid);
+
+	/** Get Valid.
+	  * Element is valid
+	  */
+	public boolean isValid();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

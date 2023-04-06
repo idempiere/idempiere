@@ -33,7 +33,7 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220907L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
@@ -47,8 +47,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 // Y
 			setIsEmbedReportContent (false);
 // N
-			setIsMaximizable (false);
-// N
+			setIsMaximizable (true);
+// Y
 			setIsShowInDashboard (true);
 // 'Y'
 			setIsShowTitle (true);
@@ -70,8 +70,8 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 // Y
 			setIsEmbedReportContent (false);
 // N
-			setIsMaximizable (false);
-// N
+			setIsMaximizable (true);
+// Y
 			setIsShowInDashboard (true);
 // 'Y'
 			setIsShowTitle (true);
@@ -131,6 +131,34 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	public int getAD_Chart_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Chart_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_PrintFormat)MTable.get(getCtx(), org.compiere.model.I_AD_PrintFormat.Table_ID)
+			.getPO(getAD_PrintFormat_ID(), get_TrxName());
+	}
+
+	/** Set Print Format.
+		@param AD_PrintFormat_ID Data Print Format
+	*/
+	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID)
+	{
+		if (AD_PrintFormat_ID < 1)
+			set_Value (COLUMNNAME_AD_PrintFormat_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_PrintFormat_ID, Integer.valueOf(AD_PrintFormat_ID));
+	}
+
+	/** Get Print Format.
+		@return Data Print Format
+	  */
+	public int getAD_PrintFormat_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_PrintFormat_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -464,28 +492,6 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 		return false;
 	}
 
-	/** Set Show Title.
-		@param IsShowTitle Show Title
-	*/
-	public void setIsShowTitle (boolean IsShowTitle)
-	{
-		set_Value (COLUMNNAME_IsShowTitle, Boolean.valueOf(IsShowTitle));
-	}
-
-	/** Get Show Title.
-		@return Show Title	  */
-	public boolean isShowTitle()
-	{
-		Object oo = get_Value(COLUMNNAME_IsShowTitle);
-		if (oo != null) 
-		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
 	/** Set Show on Login.
 		@param IsShowinLogin Show on Login
 	*/
@@ -499,6 +505,28 @@ public class X_PA_DashboardContent extends PO implements I_PA_DashboardContent, 
 	public boolean isShowinLogin()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowinLogin);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show Title.
+		@param IsShowTitle Show Title
+	*/
+	public void setIsShowTitle (boolean IsShowTitle)
+	{
+		set_Value (COLUMNNAME_IsShowTitle, Boolean.valueOf(IsShowTitle));
+	}
+
+	/** Get Show Title.
+		@return Show Title	  */
+	public boolean isShowTitle()
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowTitle);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

@@ -23,32 +23,49 @@ import org.adempiere.webui.AdempiereIdGenerator;
 import org.adempiere.webui.LayoutUtils;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.IdSpace;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Comboitem;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Combobox}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
  */
 public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 {
+	/**
+	 * generated serial id
+	 */
+	private static final long serialVersionUID = -6278632602577424842L;
+	
+	/**
+	 * Default constructor
+	 */
     public Combobox() {
 		super();
 		override();
 		init();
 	}
 
+    /**
+     * @param value
+     * @throws WrongValueException
+     */
 	public Combobox(String value) throws WrongValueException {
 		super(value);
 		override();
 		init();
 	}
 
+	/**
+	 * Setup initial state of component
+	 */
 	private void init() {
+		//ctrl+down to open combobox dropdown
 		this.setCtrlKeys("^#down");
 		this.addEventListener(Events.ON_CTRL_KEY, e -> {
 			if (this.isEnabled() && LayoutUtils.isReallyVisible(this)) {
@@ -59,6 +76,9 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 		});
 	}
 
+	/**
+	 * override "shallIgnoreClick_"
+	 */
 	private void override() {
 		// idempiere always want to show context ever on disable control
 		this.setWidgetOverride("shallIgnoreClick_", "function(evt) {"
@@ -67,10 +87,8 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 	}
 	
 	/**
-	 * 
+	 * @param enabled
 	 */
-	private static final long serialVersionUID = -6278632602577424842L;
-
 	public void setEnabled(boolean enabled)
     {
 		this.setDisabled(!enabled);
@@ -86,6 +104,11 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
         }
     }
     
+	/**
+	 * Add new combo item
+	 * @param label
+	 * @return added Comboitem 
+	 */
     public Comboitem appendItem(String label) 
     {
         ComboItem item = new ComboItem(label);
@@ -96,6 +119,9 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
         return item;
     }
 
+    /**
+     * @return true if enable, false otherwise
+     */
 	public boolean isEnabled() {
 		return !isDisabled();
 	}
@@ -110,6 +136,11 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 		}
 	}
 
+	/**
+	 * add new combo item
+	 * @param name
+	 * @param value
+	 */
 	public void appendItem(String name, Object value) {
 		ComboItem item = new ComboItem(name, value);
 		String id = AdempiereIdGenerator.escapeId(name);
@@ -119,10 +150,10 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
 	}
 	
 	 /** 
-     * Set selected item for the list box based on the value of list item
-     * set selected to none if no item found matching the value given or 
-     * value is null
-     * @param value Value of ListItem to set as selected
+     * Set selected item for the combo box based on the value of combo item.<br/>
+     * Set selected to none if no item found matching the value given or 
+     * value is null.
+     * @param value Value of ComboItem to set as selected
      */
     public void setValue(Object value)
     {
@@ -156,9 +187,8 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
     }
     
     /**
-     * 
      * @param value
-     * @return boolean
+     * @return true if current selected combo item is with value equal to value parameter 
      */
     public boolean isSelected(Object value) 
     {
@@ -171,15 +201,6 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
     	
     	return item.getValue().equals(value);
     }
-    
-    //TODO: Find zk6 replacement
-    /** Returns RS_NO_WIDTH|RS_NO_HEIGHT.
-	 */
-    /*
-	protected int getRealStyleFlags() {
-		return super.getRealStyleFlags() & 0x0006;
-	}
-	*/
     
     //http://jira.idempiere.com/browse/IDEMPIERE-443
     //undocumented api hack to ensure onSelect always fire for mouse selection
@@ -196,4 +217,10 @@ public class Combobox extends org.zkoss.zul.Combobox implements IdSpace
     	String script = "(function(me){let id='#'+me.uuid+'-pp .z-comboitem-selected';let selected=zk($(id));if(selected.jq.length==1)selected.scrollIntoView();})(this)";
         setWidgetListener("onKeyUp", script);
     }
+
+	@Override
+	public void onPageDetached(Page page) {
+		setWidgetListener("onKeyUp", null);
+		super.onPageDetached(page);
+	}        
 }

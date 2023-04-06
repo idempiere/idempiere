@@ -44,15 +44,14 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
 
 /**
- * 
+ * Handle on drop event of tree node
  * @author Low Heng Sin
- *
  */
 public class ADTreeOnDropListener implements EventListener<Event> {
 	
 	private SimpleTreeModel treeModel;
 	private MTree mTree;
-	private int windowNo;
+	private int windowNo;	
 	private Tree tree;
 	
 	private static final CLogger log = CLogger.getCLogger(ADTreeOnDropListener.class);
@@ -94,7 +93,8 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 	 */
 	private void moveNode(DefaultTreeNode<Object> movingNode, DefaultTreeNode<Object> toNode)
 	{
-		log.info(movingNode.toString() + " to " + toNode.toString());
+		if (log.isLoggable(Level.INFO))
+			log.info(movingNode.toString() + " to " + toNode.toString());
 
 		if (movingNode == toNode)
 			return;
@@ -111,9 +111,6 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 			int path[] = treeModel.getPath(toNode);
 			Treeitem toItem = tree.renderItemByPath(path);
 			
-			//tree.setSelectedItem(toItem);
-			//Events.sendEvent(tree, new Event(Events.ON_SELECT, tree));
-
 			MenuListener listener = new MenuListener(movingNode, toNode);
 
 			Menupopup popup = new Menupopup();
@@ -133,6 +130,12 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 		
 	}	//	moveNode
 	
+	/**
+	 * Move movingNode to after toNode or into toNode (if moveInto is true)
+	 * @param movingNode
+	 * @param toNode
+	 * @param moveInto true to insert movingNode into summary folder node
+	 */
 	private void moveNode(DefaultTreeNode<Object> movingNode, DefaultTreeNode<Object> toNode, boolean moveInto)
 	{
 		DefaultTreeNode<Object> newParent;
@@ -164,8 +167,6 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 		}
 		@SuppressWarnings("unused")
 		Treeitem movingItem = tree.renderItemByPath(path);		
-		//tree.setSelectedItem(movingItem);
-		//Events.sendEvent(tree, new Event(Events.ON_SELECT, tree));
 
 		//	***	Save changes to disk
 		Trx trx = Trx.get (Trx.createTrxName("ADTree"), true);
@@ -223,6 +224,13 @@ public class ADTreeOnDropListener implements EventListener<Event> {
 		}
 	}
 	
+	/**
+	 * Update parent_id and seqno of mtnMovingNode
+	 * @param mtnParentNode
+	 * @param mtnMovingNode
+	 * @param NodeIndex
+	 * @param trxName
+	 */
 	private void updateNodePO(MTreeNode mtnParentNode, MTreeNode mtnMovingNode, int NodeIndex, String trxName) {
 		StringBuilder whereClause = new StringBuilder("AD_Tree_ID=").append(mTree.getAD_Tree_ID())
 				.append(" AND Node_ID=").append(mtnMovingNode.getNode_ID());

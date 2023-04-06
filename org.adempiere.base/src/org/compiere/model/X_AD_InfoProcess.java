@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoProcess
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoProcess")
 public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_InfoProcess (Properties ctx, int AD_InfoProcess_ID, String trxName)
@@ -284,7 +284,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 	public static final String LAYOUTTYPE_List = "L";
 	/** Menu = M */
 	public static final String LAYOUTTYPE_Menu = "M";
-	/** Set LayoutType.
+	/** Set Layout Type.
 		@param LayoutType Layout type of info process
 	*/
 	public void setLayoutType (String LayoutType)
@@ -293,7 +293,7 @@ public class X_AD_InfoProcess extends PO implements I_AD_InfoProcess, I_Persiste
 		set_Value (COLUMNNAME_LayoutType, LayoutType);
 	}
 
-	/** Get LayoutType.
+	/** Get Layout Type.
 		@return Layout type of info process
 	  */
 	public String getLayoutType()

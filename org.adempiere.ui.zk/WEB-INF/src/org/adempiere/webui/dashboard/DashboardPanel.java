@@ -33,9 +33,11 @@ public abstract class DashboardPanel extends Window implements IDashboardPanel {
 		super();
 	}
 	
+	@Override
 	public void refresh(ServerPushTemplate template) {
 	}
 
+	@Override
 	public void updateUI() {
 	}
 	
@@ -43,6 +45,22 @@ public abstract class DashboardPanel extends Window implements IDashboardPanel {
 	 * @return true if this dashboard widget uses polling to update its content
 	 */
 	public boolean isPooling() {
+		return false;
+	}
+	
+	/**
+	 * Override this together with refresh and updateUI to implement background loading of gadget
+	 * @return true if panel created without loading of data
+	 */
+	public boolean isLazy() {
+		return false;
+	}
+	
+	/**
+	 * Empty Dashboard Panels are not rendered on the Dashboard
+	 * @return true if the panel is empty
+	 */
+	public boolean isEmpty() {
 		return false;
 	}
 }

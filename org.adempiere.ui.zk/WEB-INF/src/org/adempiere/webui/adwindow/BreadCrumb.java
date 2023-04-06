@@ -52,13 +52,20 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Window;
 
 /**
+ * Bread crumb component for AD Window
  * @author hengsin
- *
  */
 public class BreadCrumb extends Div implements EventListener<Event> {
 
+	/**
+	 * Event echo after ON_MOUSE_OVER event.
+	 */
 	private static final String ON_MOUSE_OVER_ECHO_EVENT = "onMouseOverEcho";
 	
+	/**
+	 * This is echo after some delay after ON_MOUSE_OUT event (to close linkPopup).
+	 * Also use as attribute to allow a rapid ON_MOUSE_OVER event to cancel the delay ON_MOUSE_OUT_ECHO_EVENT, thus keeping linkPopup open.
+	 **/
 	private static final String ON_MOUSE_OUT_ECHO_EVENT = "onMouseOutEcho";
 
 	/**
@@ -68,29 +75,39 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	
 	private static final String BTNPREFIX = "Btn";
 	
+	/** west layout for paths to a tab (for e.g "Business Partner > Location") **/
 	private Hlayout layout;
 
+	/** record navigation buttons **/
 	private ToolBarButton btnFirst, btnPrevious, btnNext, btnLast, btnRecordInfo;
 	
+	/** Label:TabIndex. Link to other tabs at same level (i.e other child tabs of the same parent tab). **/
 	private LinkedHashMap<String, String> links;
 
 	@SuppressWarnings("unused")
 	private int windowNo;
 	
+	/** BtnName:ToolBarButton. Map of all toolbar buttons. **/
 	private HashMap<String, ToolBarButton> buttons = new HashMap<String, ToolBarButton>();
 
+	/** Last DataStatusEvent from {@link AbstractADWindowContent#dataStatusChanged(DataStatusEvent)} **/
 	private DataStatusEvent m_dse;
 
+	/** Last data status text from {@link AbstractADWindowContent#dataStatusChanged(DataStatusEvent)} **/
 	private String m_text;
 
+	/** register ToolbarListener **/
 	private ToolbarListener toolbarListener;
 
+	/** east layout for record navigation buttons **/
 	private Hlayout toolbarContainer;
 
+	/** popup for link to other tabs at same level **/
 	protected Menupopup linkPopup;
 
 	private GridTab m_gridTab;
 
+	/** AD Window content part that own this bread crumb **/
 	private AbstractADWindowContent windowContent;
 
 	/**
@@ -140,7 +157,6 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 
 	/**
-	 * 
 	 * @param listener
 	 */
 	public void setToolbarListener(ToolbarListener listener) {
@@ -148,10 +164,10 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 	
 	/**
-	 * 
-	 * @param label
-	 * @param id
-	 * @param clickable
+	 * Add path to tab
+	 * @param label path label
+	 * @param id path id
+	 * @param clickable true to add clickable {@link BreadCrumbLink} false to add text label
 	 */
 	public void addPath(String label, String id, boolean clickable) {
 		if (clickable) {
@@ -181,7 +197,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 	
 	/**
-	 * 
+	 * Get parent BreadCrumbLinks
 	 * @return list of parent links
 	 */
 	public List<BreadCrumbLink> getParentLinks() {
@@ -195,7 +211,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	
 	/**
 	 * add links to other tabs at the same level
-	 * @param links
+	 * @param links Label:TabIndex map
 	 */
 	public void addLinks(LinkedHashMap<String, String> links) {
 		this.links = links;
@@ -368,7 +384,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 
 	/**
-	 * remove all links
+	 * remove all path and links
 	 */
 	public void reset() {
 		layout.getChildren().clear();
@@ -395,6 +411,13 @@ public class BreadCrumb extends Div implements EventListener<Event> {
         this.btnNext.setDisabled(!enabled);
     }
 
+    /**
+     * Create toolbar button.
+     * @param name
+     * @param image
+     * @param tooltip
+     * @return {@link ToolBarButton}
+     */
 	private ToolBarButton createButton(String name, String image, String tooltip)
     {
     	ToolBarButton btn = new ToolBarButton("");
@@ -425,6 +448,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
     }
 	
 	/**
+	 * Set record info text
      * @param text
      */
     public void setStatusDB (String text)
@@ -433,7 +457,8 @@ public class BreadCrumb extends Div implements EventListener<Event> {
     }
 
     /**
-     * @param text
+     * Data status from {@link AbstractADWindowContent#dataStatusChanged(DataStatusEvent)}
+     * @param text record info text (for e.g 1/1)
      * @param dse
      * @param gridTab 
      */
@@ -471,7 +496,7 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 	}
 
 	/**
-	 * 
+	 * Set visibility of record navigation toolbar
 	 * @param visible
 	 */
 	public void setNavigationToolbarVisibility(boolean visible) {
@@ -498,22 +523,37 @@ public class BreadCrumb extends Div implements EventListener<Event> {
 		}
 	}
 	
+	/**
+	 * @return true if previous button is enable
+	 */
 	public boolean isPreviousEnabled() {
 		return !btnPrevious.isDisabled();
 	}
 	
+	/**
+	 * @return true if next button is enable
+	 */
 	public boolean isNextEnabled() {
 		return !btnNext.isDisabled();
 	}
 	
+	/**
+	 * @return next ToolBarButton
+	 */
 	public ToolBarButton getNextButton() {
 		return btnNext;
 	}
 	
+	/**
+	 * @return previous ToolBarButton
+	 */
 	public ToolBarButton getPreviousButton() {
 		return btnPrevious;
 	}
 	
+	/**
+	 * @return true if path/link is empty
+	 */
 	public boolean isEmpty() {
 		return layout == null || layout.getChildren().isEmpty();
 	}

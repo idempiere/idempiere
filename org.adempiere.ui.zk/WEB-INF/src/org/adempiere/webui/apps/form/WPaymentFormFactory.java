@@ -18,14 +18,13 @@ import org.compiere.grid.IPaymentForm;
 import org.compiere.model.GridTab;
 
 /**
- * 
+ * Static method to initiate {@link IPaymentForm} instance.
  * @author Elaine
- *
  */
 public class WPaymentFormFactory {
 
 	/**
-	 * 
+	 * Call {@link Extensions#getPaymentForm(int, GridTab, String)}
 	 * @param windowNo
 	 * @param mTab
 	 * @param paymentRule

@@ -30,7 +30,7 @@ public class X_AD_LabelAssignment extends PO implements I_AD_LabelAssignment, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220525L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_LabelAssignment (Properties ctx, int AD_LabelAssignment_ID, String trxName)

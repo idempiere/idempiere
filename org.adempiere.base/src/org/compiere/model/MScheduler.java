@@ -28,6 +28,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
 
@@ -325,9 +326,21 @@ public class MScheduler extends X_AD_Scheduler
 		}
 		
 		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
-			MClientInfo clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID());
+			String timeZoneId = null;
+			if((getAD_Client_ID() == 0 && getAD_Org_ID() == 0) || getAD_Org_ID() > 0) {
+				MOrgInfo orgInfo = MOrgInfo.get(getAD_Org_ID());
+				timeZoneId = orgInfo.getTimeZone();
+			}
+			
+			if(Util.isEmpty(timeZoneId, true)) {
+				MClientInfo clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID());
+				if (clientInfo == null)
+					clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
+				timeZoneId = clientInfo.getTimeZone();
+			}
+
 			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern(),
-					clientInfo.getTimeZone());
+					timeZoneId);
 			if (nextWork > 0)
 				setDateNextRun(new Timestamp(nextWork));
 		}

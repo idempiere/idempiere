@@ -38,15 +38,12 @@ import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pdf.Document;
 import org.adempiere.util.Callback;
-import org.adempiere.util.ContextRunnable;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
-import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
 import org.adempiere.webui.apps.ProcessModalDialog;
-import org.adempiere.webui.apps.WDrillReport;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
@@ -73,6 +70,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.util.ZkContextRunnable;
 import org.compiere.model.GridField;
 import org.compiere.model.MArchive;
 import org.compiere.model.MAttachment;
@@ -177,7 +175,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/** Table ID					*/
 	private int					m_AD_Table_ID = 0;
 	private boolean				m_isCanExport;
-	
+	/** Process ID					*/
+	private int 				m_AD_Process_ID = 0;
+
 	private MQuery 		m_ddQ = null;
 	private MQuery 		m_daQ = null;
 	private Menuitem 	m_ddM = null;
@@ -789,11 +789,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "_WinInfo_AD_Window_ID", true);
 		if (AD_Window_ID == 0)
 			AD_Window_ID = Env.getZoomWindowID(m_reportEngine.getQuery());
-		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
-		updateToolbarAccess(AD_Window_ID, AD_Process_ID);
-		
+		m_AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
+		updateToolbarAccess(AD_Window_ID, m_AD_Process_ID);
+
 		this.setBorder("normal");
-		
+
 		this.addEventListener("onZoom", new EventListener<Event>() {
 			
 			public void onEvent(Event event) throws Exception {
@@ -816,7 +816,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 					DrillEvent de = (DrillEvent) event;
 					if (de.getData() != null && de.getData() instanceof DrillData) {
 						DrillData data = (DrillData) de.getData();
-							executeDrill(data, event.getTarget());
+						AEnv.actionDrill(data, m_WindowNo, m_AD_Process_ID);
 					}
 				}
 				
@@ -1247,52 +1247,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private void cmd_render() {
 		postRenderReportEvent();		
 	}
-
-	/**
-	 * 	Execute Drill to Query
-	 * 	@param data query
-	 *  @param component
-	 */
-	private void executeDrill (DrillData data, Component component)
-	{
-		int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
-		if (!MRole.getDefault().isCanReport(AD_Table_ID))
-		{
-			Dialog.error(m_WindowNo, "AccessCannotReport", data.getQuery().getTableName());
-			return;
-		}
-		if (AD_Table_ID != 0) {
-			WDrillReport drillReport = new WDrillReport(data, component, m_WindowNo);
-
-			Object window = SessionManager.getAppDesktop().findWindow(m_WindowNo);
-			if (window != null && window instanceof Component && window instanceof ISupportMask){
-				final ISupportMask parent = LayoutUtils.showWindowWithMask(drillReport, (Component)window, LayoutUtils.OVERLAP_PARENT);
-				drillReport.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-					@Override
-					public void onEvent(Event event) throws Exception {
-						parent.hideMask();
-					}
-				});
-			}else if (window != null && window instanceof Component){
-				final Mask mask = LayoutUtils.showWindowWithMask(drillReport, (Component)window, null);
-				drillReport.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
-					@Override
-					public void onEvent(Event event) throws Exception {
-						mask.hideMask();
-					}
-				});
-			}else{
-				// Add proper width width
-				int width = SessionManager.getAppDesktop().getClientInfo().screenWidth * 42 / 100;
-				drillReport.setWidth(width + "px");
-				drillReport.setPosition("center");
-				drillReport.setAttribute(Window.MODE_KEY, Window.MODE_MODAL);
-				AEnv.showWindow(drillReport);
-			}
-		}
-		else
-			log.warning("No Table found for " + data.getQuery().getWhereClause(true));
-	}	//	executeDrill
 	
 	/**
 	 * 	Execute Drill to Query
@@ -1584,7 +1538,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 }	// cmd_reRun
 	
 	protected void setLanguage (){
-		if (MClient.get(m_ctx).isMultiLingualDocument() && wLanguage.getValue() != null){
+		if (MClient.get(m_ctx).isMultiLingualDocument() && wLanguage != null && wLanguage.getValue() != null){
 			MLanguage language = new MLanguage (m_ctx, (int)wLanguage.getValue(), null);
 			Language lang = new Language(language.getName(), language.getAD_Language(), language.getLocale());
 			m_reportEngine.setLanguageID(language.getAD_Language_ID());
@@ -1845,7 +1799,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 	}
 	
-	static class PDFRendererRunnable extends ContextRunnable implements IServerPushCallback {
+	static class PDFRendererRunnable extends ZkContextRunnable implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
 
@@ -1881,7 +1835,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 	}
 	
-	static class HTMLRendererRunnable extends ContextRunnable implements IServerPushCallback {
+	static class HTMLRendererRunnable extends ZkContextRunnable implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
 		public HTMLRendererRunnable(ZkReportViewer viewer) {
@@ -1916,7 +1870,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}		
 	}
 	
-	static class XLSRendererRunnable extends ContextRunnable  implements IServerPushCallback {
+	static class XLSRendererRunnable extends ZkContextRunnable  implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
 
@@ -1952,7 +1906,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 	}
 
-	static class CSVRendererRunnable extends ContextRunnable  implements IServerPushCallback {
+	static class CSVRendererRunnable extends ZkContextRunnable  implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
 
@@ -1986,7 +1940,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 	}
 	
-	protected static class XLSXRendererRunnable extends ContextRunnable implements IServerPushCallback
+	protected static class XLSXRendererRunnable extends ZkContextRunnable implements IServerPushCallback
 	{
 
 		private ZkReportViewer viewer;

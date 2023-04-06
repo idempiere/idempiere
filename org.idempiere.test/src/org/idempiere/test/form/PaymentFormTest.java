@@ -517,7 +517,7 @@ public class PaymentFormTest extends AbstractTestCase {
 				processMsg = msg;
 				return false;
 			}
-			if (!processOnline(m_CCType, CCNumber, CCVV, CCExp)) 
+			if (!processOnline(m_CCType, CCNumber, CCVV, CCExp, 0, trxName)) 
 				return false;
 			return save(m_CCType, CCNumber, CCExp, m_Amount, trxName);
 		}

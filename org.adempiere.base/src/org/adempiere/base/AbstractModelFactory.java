@@ -50,6 +50,11 @@ public abstract class AbstractModelFactory implements IModelFactory {
 		{
 			return null;
 		}
+		MTable table = MTable.get(Env.getCtx(), tableName);
+		if (table != null && table.isUUIDKeyTable())
+		{
+			return null;
+		}
 
 		boolean errorLogged = false;
 		try

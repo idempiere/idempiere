@@ -30,8 +30,8 @@ import java.util.Properties;
 import javax.servlet.http.HttpSession;
 
 import org.adempiere.util.Callback;
+import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.IWebClient;
-import org.adempiere.webui.component.FWindow;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ChangePasswordPanel;
 import org.adempiere.webui.panel.LoginPanel;
@@ -52,6 +52,7 @@ import org.compiere.util.Util;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -67,7 +68,7 @@ import org.zkoss.zk.ui.util.Clients;
  * @author <a href="mailto:sendy.yagambrum@posterita.org">Sendy Yagambrum</a>
  * @date    July 18, 2007
  */
-public class LoginWindow extends FWindow implements EventListener<Event>
+public class LoginWindow extends Window implements EventListener<Event>
 {
 	/**
 	 * 
@@ -110,7 +111,7 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 
     public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs)
     {
-    	boolean isClientDefined = (clientsKNPairs.length == 1);
+    	boolean isClientDefined = (clientsKNPairs.length == 1 || ! Util.isEmpty(Env.getContext(ctx, Env.AD_USER_ID)));
 		if (pnlRole == null)
 			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined);
     	if (isClientDefined) {
@@ -296,8 +297,14 @@ public class LoginWindow extends FWindow implements EventListener<Event>
 		else
 			loginName = user.getLDAPUser() != null ? user.getLDAPUser() : user.getName();
     	loginOk(loginName, true, login.getClients());
-    	getDesktop().getSession().setAttribute("Check_AD_User_ID", Env.getAD_User_ID(ctx));
+    	getDesktop().getSession().setAttribute(AdempiereWebUI.CHECK_AD_USER_ID_ATTR, Env.getAD_User_ID(ctx));
     	pnlRole.setChangeRole(true);
     	pnlRole.changeRole(ctx);
     }
+
+	@Override
+	public void onPageDetached(Page page) {
+		setWidgetListener("onOK", null);
+		super.onPageDetached(page);
+	}
 }

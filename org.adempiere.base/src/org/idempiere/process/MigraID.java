@@ -29,17 +29,19 @@ package org.idempiere.process;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSequence;
 import org.compiere.model.MTable;
 import org.compiere.model.MTree;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 @org.adempiere.base.annotation.Process
@@ -69,7 +71,7 @@ public class MigraID extends SvrProcess {
 			} else if ("Target_UUID".equals(name)) {
 				p_UUID_To = para.getParameterAsString();
 			} else {
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 	}
@@ -93,7 +95,7 @@ public class MigraID extends SvrProcess {
 		String msg = "";
 
 		if (! Util.isEmpty(p_UUID_From)) {
-			String uuidCol = MTable.getUUIDColumnName(tableName);
+			String uuidCol = PO.getUUIDColumnName(tableName);
 			if (Util.isEmpty(p_UUID_To)) {
 				p_UUID_To = UUID.randomUUID().toString();
 			}
@@ -106,14 +108,22 @@ public class MigraID extends SvrProcess {
 			if (cnt <= 0) {
 				msg = "@Error@: UUID " + p_UUID_From + " not found on table " + tableName;
 			} else {
+				int id = -1;
 				msg = "UUID changed on table " + tableName + " from " + p_UUID_From + " to " + p_UUID_To;
-				StringBuilder sqlSB = new StringBuilder()
-						.append("SELECT  ").append(tableName).append("_ID")
-						.append(" FROM ").append(tableName)
-						.append(" WHERE ").append(uuidCol).append("=?");
-				int id = DB.getSQLValueEx(get_TrxName(), sqlSB.toString(), p_UUID_To);
-				addBufferLog(id, null, null, msg, p_AD_Table_ID, id);
+				if (table.isIDKeyTable()) {
+					StringBuilder sqlSB = new StringBuilder()
+							.append("SELECT  ").append(tableName).append("_ID")
+							.append(" FROM ").append(tableName)
+							.append(" WHERE ").append(uuidCol).append("=?");
+					id = DB.getSQLValueEx(get_TrxName(), sqlSB.toString(), p_UUID_To);
+				}
+				addBufferLog(0, null, null, msg, p_AD_Table_ID, id);
 				msg = "@OK@";
+				// migrateReferenceUU(tableName);
+				migrateChildren(tableName, false);
+				// migrateRecordUU();
+				// migrateAD_PreferenceUU(idCol);
+				// migrateTreesUU(tableName);
 			}
 		} else {
 			boolean seqCheck = false;
@@ -130,42 +140,56 @@ public class MigraID extends SvrProcess {
 				}
 			}
 			// convert ID
-			int cnt = updID(tableName, idCol);
+			int cnt = updID(tableName, idCol, true);
 			if (cnt <= 0) {
 				msg = "@Error@: ID " + p_ID_From + " not found on table " + tableName;
 			} else {
 				msg = "ID changed on table " + tableName + " from " + p_ID_From + " to " + p_ID_To;
 				addBufferLog(p_ID_From, null, null, msg, p_AD_Table_ID, p_ID_To);
 				msg = "@OK@";
-			}
-			migrateReference(tableName);
-			migrateChildren(tableName);
-			migrateRecordID();
-			migrateAD_Preference(idCol);
-			migrateTrees(tableName);
-			if ("C_DocType_ID".equals(idCol)) {
-				// special preference C_DocTypeTarget_ID
-				migrateAD_Preference("C_DocTypeTarget_ID");
-			}
-			// TODO: implement migration for SingleSelectionGrid and MultipleSelectionGrid
+				migrateReference(tableName);
+				migrateChildren(tableName, true);
+				migrateRecordID();
+				migrateAD_Preference(idCol);
+				migrateTrees(tableName);
+				if ("C_DocType_ID".equals(idCol)) {
+					// special preference C_DocTypeTarget_ID
+					migrateAD_Preference("C_DocTypeTarget_ID");
+				}
+				// TODO: implement migration for SingleSelectionGrid and MultipleSelectionGrid
 
-			if (seqCheck) {
-				MSequence seq = MSequence.get(getCtx(), tableName, get_TrxName());
-				if (seq != null) {
-					seq.validateTableIDValue(get_TrxName()); // ignore output messages
+				if (seqCheck) {
+					MSequence seq = MSequence.get(getCtx(), tableName, get_TrxName());
+					if (seq != null) {
+						seq.validateTableIDValue(get_TrxName()); // ignore output messages
+					}
 				}
 			}
 		}
 
+		/* Force showing error in commit - for example when violating foreign keys */
+		Trx.get(get_TrxName(), false).commit(true);
+
 		return msg;
 	}
 
-	private int updID(String tableName, String idCol) {
+	/**
+	 * Update key on table
+	 * @param tableName - table
+	 * @param idCol - id column
+	 * @param idKey - true when migrating ID keys, false when migrating UUID keys
+	 * @return count of records updated
+	 */
+	private int updID(String tableName, String idCol, boolean idKey) {
 		StringBuilder updIDSB = new StringBuilder()
 				.append("UPDATE ").append(tableName)
 				.append(" SET ").append(idCol).append("=?")
 				.append(" WHERE ").append(idCol).append("=?");
-		int cnt = DB.executeUpdateEx(updIDSB.toString(), new Object[] {p_ID_To, p_ID_From}, get_TrxName());
+		int cnt;
+		if (idKey)
+			cnt = DB.executeUpdateEx(updIDSB.toString(), new Object[] {p_ID_To, p_ID_From}, get_TrxName());
+		else
+			cnt = DB.executeUpdateEx(updIDSB.toString(), new Object[] {p_UUID_To, p_UUID_From}, get_TrxName());
 		return cnt;
 	}
 
@@ -194,7 +218,7 @@ public class MigraID extends SvrProcess {
 				for (List<Object> row : rows) {
 					String tableRef = (String) row.get(0);
 					String columnRef = (String) row.get(1);
-					int cnt = updID(tableRef, columnRef);
+					int cnt = updID(tableRef, columnRef, true);
 					if (cnt > 0) {
 						String msg = cnt + " reference records updated in " + tableRef + "." + columnRef;
 						addBufferLog(p_ID_From, null, null, msg, 0, 0);
@@ -205,7 +229,12 @@ public class MigraID extends SvrProcess {
 
 	}
 
-	private void migrateChildren(String tableName) {
+	/**
+	 * Migrate foreign keys for tableName
+	 * @param tableName - name of parent table to migrate children foreign keys
+	 * @param idKey - true when migrating ID keys, false when migrating UUID keys
+	 */
+	private void migrateChildren(String tableName, boolean idKey) {
 		final String sqlFK = ""
 				+ "SELECT t.TableName, c.ColumnName "
 				+ "FROM   AD_Table t, AD_Column c, AD_Reference r " 
@@ -213,10 +242,10 @@ public class MigraID extends SvrProcess {
 				+ "       AND t.IsActive = 'Y' AND t.IsView = 'N' " 
 				+ "       AND c.IsActive = 'Y' AND c.ColumnSql IS NULL "
 				+ "       AND c.AD_Reference_ID = r.AD_Reference_ID "
-				+ "       AND ( c.AD_Reference_ID IN ( 19/*Table Direct*/ ) "
-				+ "              OR ( c.AD_Reference_ID IN ( 30/*Search*/ ) "
+				+ "       AND ( c.AD_Reference_ID=? "
+				+ "              OR ( c.AD_Reference_ID=? "
 				+ "                   AND c.AD_Reference_Value_ID IS NULL ) ) "
-				+ "       AND UPPER(c.ColumnName) = UPPER(? || '_ID') "
+				+ "       AND UPPER(c.ColumnName) = UPPER(?) "
 				+ "UNION "
 				+ "SELECT t.TableName, c.ColumnName "
 				+ "FROM   AD_Table t, AD_Column c, AD_Reference r, AD_Ref_Table rt, AD_Table tr "
@@ -224,14 +253,29 @@ public class MigraID extends SvrProcess {
 				+ "       AND t.IsActive = 'Y' AND t.IsView = 'N' " 
 				+ "       AND c.IsActive = 'Y' AND c.ColumnSql IS NULL "
 				+ "       AND c.AD_Reference_ID = r.AD_Reference_ID "
-				+ "       AND ( c.AD_Reference_ID IN ( 18/*Table*/ ) "
-				+ "              OR ( c.AD_Reference_ID IN ( 30/*Search*/ ) "
+				+ "       AND ( c.AD_Reference_ID=? "
+				+ "              OR ( c.AD_Reference_ID=? "
 				+ "                   AND c.AD_Reference_Value_ID IS NOT NULL ) ) "
 				+ "       AND c.AD_Reference_Value_ID = rt.AD_Reference_ID "
 				+ "       AND rt.AD_Table_ID = tr.AD_Table_ID "
 				+ "       AND UPPER(tr.TableName) = UPPER(?) "
 				+ "ORDER  BY 1, 2";
-		List<List<Object>> rows = DB.getSQLArrayObjectsEx(get_TrxName(), sqlFK, tableName, tableName);
+		int tableDirRefId;
+		int searchRefId;
+		int tableRefId;
+		String foreignColName;
+		if (idKey) {
+			tableDirRefId = DisplayType.TableDir;
+			searchRefId = DisplayType.Search;
+			tableRefId = DisplayType.Table;
+			foreignColName = tableName + "_ID";
+		} else {
+			tableDirRefId = DisplayType.TableDirUU;
+			searchRefId = DisplayType.SearchUU;
+			tableRefId = DisplayType.TableUU;
+			foreignColName = PO.getUUIDColumnName(tableName);
+		}
+		List<List<Object>> rows = DB.getSQLArrayObjectsEx(get_TrxName(), sqlFK, tableDirRefId, searchRefId, foreignColName, tableRefId, searchRefId, tableName);
 		if (rows != null && rows.size() > 0) {
 			for (List<Object> row : rows) {
 				String tableRef = (String) row.get(0);
@@ -240,7 +284,7 @@ public class MigraID extends SvrProcess {
 				if ("EntityType".equals(columnRef) || "AD_Language".equals(columnRef)) {
 					continue;
 				}
-				int cnt = updID(tableRef, columnRef);
+				int cnt = updID(tableRef, columnRef, idKey);
 				if (cnt > 0) {
 					String msg = cnt + " children records updated in " + tableRef + "." + columnRef;
 					addBufferLog(p_ID_From, null, null, msg, 0, 0);
@@ -248,10 +292,10 @@ public class MigraID extends SvrProcess {
 			}
 		}
 		// Special case for C_BPartner.AD_OrgBP_ID defined as Button in dictionary
-		if ("AD_Org".equalsIgnoreCase(tableName)) {
+		if (idKey && "AD_Org".equalsIgnoreCase(tableName)) {
 			String tableRef = "C_BPartner";
 			String columnRef = "AD_OrgBP_ID";
-			int cnt = updID(tableRef, columnRef);
+			int cnt = updID(tableRef, columnRef, idKey);
 			if (cnt > 0) {
 				String msg = cnt + " children records updated in " + tableRef + "." + columnRef;
 				addBufferLog(p_ID_From, null, null, msg, 0, 0);

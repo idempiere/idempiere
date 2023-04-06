@@ -28,24 +28,24 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.grid.PaymentFormOnCredit;
 import org.compiere.model.GridTab;
+import org.compiere.model.X_C_Order;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Form for on credit payment rule ({@link X_C_Order#PAYMENTRULE_OnCredit}).
  * @author Elaine
- *
  */
 public class WPaymentFormOnCredit extends PaymentFormOnCredit {
-
+	/** Payment form window instance */
 	private WPaymentFormWindow window;
 		
 	private Label pTermLabel = new Label();
+	/** Payment terms */
 	private Listbox pTermCombo = ListboxFactory.newDropdownListbox();
 		
 	/**
-	 * 
 	 * @param windowNo
 	 * @param mTab
 	 */
@@ -54,7 +54,10 @@ public class WPaymentFormOnCredit extends PaymentFormOnCredit {
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}
-	
+
+	/**
+	 * Layout {@link #window}
+	 */
 	protected void init() {
 		Grid pPanelLayout = GridFactory.newGridLayout();
 		window.getPanel().appendChild(pPanelLayout);

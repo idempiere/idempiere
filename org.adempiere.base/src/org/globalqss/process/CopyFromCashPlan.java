@@ -17,10 +17,9 @@
 
 package org.globalqss.process;
 
-import java.util.logging.Level;
-
 import org.compiere.model.MCashPlan;
 import org.compiere.model.MCashPlanLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.PO;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -45,7 +44,7 @@ public class CopyFromCashPlan  extends SvrProcess {
 			if (name.equals("C_CashPlan_ID"))
 				p_C_CashPlanSource_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_C_CashPlanTarget_ID = getRecord_ID();
 	}

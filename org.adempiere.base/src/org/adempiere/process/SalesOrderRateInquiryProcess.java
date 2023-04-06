@@ -29,6 +29,7 @@ import org.adempiere.util.ShippingUtil;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MShipper;
 import org.compiere.model.MShipperLabels;
@@ -65,7 +66,7 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 			else if (name.equals(MShippingTransaction.COLUMNNAME_IsPriviledgedRate))
 				p_IsPriviledgedRate = ((String)para[i].getParameter()).equals("Y");
 			else
-				log.log(Level.SEVERE, "prepare - Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
     }
 	

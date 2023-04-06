@@ -1,0 +1,181 @@
+-- IDEMPIERE-5595
+SELECT register_migration_script('202303020910_IDEMPIERE-5595.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Mar 2, 2023, 9:10:17 AM CET
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (203791,0,0,'Y',TO_TIMESTAMP('2023-03-02 09:09:50','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2023-03-02 09:09:50','YYYY-MM-DD HH24:MI:SS'),10,'IsShowNegateButton','Show Negate Button','Show Negate Button for Chosen Multiple editors',NULL,'Show Negate Button','D','a40deb16-1d75-41b1-b93f-ac9907079815')
+;
+
+-- Mar 2, 2023, 9:11:32 AM CET
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml) VALUES (215776,0,'Show Negate Button','Show Negate Button for Chosen Multiple editors',285,'IsShowNegateButton','N',1,'N','N','Y','N','N',0,'N',20,0,0,'Y',TO_TIMESTAMP('2023-03-02 09:11:32','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2023-03-02 09:11:32','YYYY-MM-DD HH24:MI:SS'),10,203791,'Y','N','D','N','N','N','Y','82f6c4ec-189d-4c3a-959c-235afbbc51ba','Y',0,'N','N','N','N')
+;
+
+-- Mar 2, 2023, 9:27:16 AM CET
+ALTER TABLE AD_Process_Para ADD IsShowNegateButton CHAR(1) DEFAULT 'N' CHECK (IsShowNegateButton IN ('Y','N')) NOT NULL
+;
+
+-- Mar 2, 2023, 9:28:51 AM CET
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan) VALUES (207571,'Show Negate Button','Show Negate Button for Chosen Multiple editors',246,215776,'Y',1,310,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2023-03-02 09:28:50','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2023-03-02 09:28:50','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','b7022b17-3635-41dd-8ff3-932a6f9626c2','Y',290,2,2)
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=130,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=205238
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=140,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=5818
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=150,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2539
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=160,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2540
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=170,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2907
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=180,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2901
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=190,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2903
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=200,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=200097
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=210,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2904
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=220,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2544
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=230,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=205339
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=240,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2902
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=250,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=4398
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=260,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2906
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=270,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2905
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=280,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=205193
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=290,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=56333
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=300,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=56334
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=310,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=204372
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET SeqNo=320,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=206410
+;
+
+-- Mar 2, 2023, 9:28:59 AM CET
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=330, XPosition=5,Updated=TO_TIMESTAMP('2023-03-02 09:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=207571
+;
+
+-- Mar 2, 2023, 9:29:41 AM CET
+UPDATE AD_Field SET DisplayLogic='@AD_Reference_ID@ = 200161 | @AD_Reference_ID@ = 200163 | @AD_Reference_ID@ = 200162',Updated=TO_TIMESTAMP('2023-03-02 09:29:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=207571
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=170, XPosition=2,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=207571
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=180,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2907
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=190,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2901
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=200,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2903
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=210,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=200097
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=220,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2904
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=230,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2544
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=240,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=205339
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=250,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2902
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=260,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=4398
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=270,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2906
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=280,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=2905
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=290,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=205193
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=300,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=56333
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=310,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=56334
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=320,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=204372
+;
+
+-- Mar 2, 2023, 4:16:34 PM CET
+UPDATE AD_Field SET SeqNo=330,Updated=TO_TIMESTAMP('2023-03-02 16:16:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=206410
+;
+
+UPDATE AD_Process_Para SET IsShowNegateButton='Y' WHERE AD_Process_ID IN 
+(SELECT AD_Process_ID FROM AD_Process WHERE ClassName IS NULL AND JasperReport IS null);
+

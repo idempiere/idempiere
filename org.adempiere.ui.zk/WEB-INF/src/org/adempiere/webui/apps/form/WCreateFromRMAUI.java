@@ -43,16 +43,15 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
- * 
+ * Form to create RMA lines from shipment lines.
  * @author hengsin
- *
  */
 public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListener
 {
+	/** Create from window instance */
 	private WCreateFromWindow window;
 	
 	/**
-	 * 
 	 * @param tab
 	 */
 	public WCreateFromRMAUI(GridTab tab) 
@@ -79,19 +78,20 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 		AEnv.showWindow(window);
 	}
 	
-	/** Window No               */
+	/** Window No */
 	private int p_WindowNo;
 
-	/**	Logger			*/
+	/**	Logger */
 	private static final CLogger log = CLogger.getCLogger(WCreateFromRMAUI.class);
 		
 	protected Label bPartnerLabel = new Label();
+	/** Business partner parameter field */
 	protected WEditor bPartnerField;
 	
 	@Override
 	protected boolean dynInit() throws Exception
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		
 		super.dynInit();
 		
@@ -105,6 +105,10 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 		return true;
 	}   //  dynInit
 	
+	/**
+	 * Layout {@link #window}
+	 * @throws Exception
+	 */
 	protected void zkInit() throws Exception
 	{
 		bPartnerLabel.setText(Msg.getElement(Env.getCtx(), "C_BPartner_ID"));
@@ -142,7 +146,7 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 		window.tableChanged(null);
 	}   //  vetoableChange
 	
-	/**************************************************************************
+	/**
 	 *  Load BPartner Field
 	 *  @param forInvoice true if Invoices are to be created, false receipts
 	 *  @throws Exception if Lookups cannot be initialized
@@ -180,10 +184,9 @@ public class WCreateFromRMAUI extends CreateFromRMA implements ValueChangeListen
 		ListModelTable model = new ListModelTable(data);
 		model.addTableModelListener(window);
 		window.getWListbox().setData(model, getOISColumnNames());
-		//
-		
+		//		
 		configureMiniTable(window.getWListbox());
-	}   //  loadOrder
+	}
 	
 	@Override
 	public void showWindow()

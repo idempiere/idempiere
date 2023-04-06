@@ -34,7 +34,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220321L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_Order (Properties ctx, int C_Order_ID, String trxName)
@@ -73,7 +73,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 			setInvoiceRule (null);
 // I
 			setIsApproved (false);
-// @IsApproved@
+// N
 			setIsCreditApproved (false);
 			setIsDelivered (false);
 			setIsDiscountPrinted (false);
@@ -143,7 +143,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 			setInvoiceRule (null);
 // I
 			setIsApproved (false);
-// @IsApproved@
+// N
 			setIsCreditApproved (false);
 			setIsDelivered (false);
 			setIsDiscountPrinted (false);
@@ -254,16 +254,16 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set AmountRefunded.
-		@param AmountRefunded AmountRefunded
+	/** Set Amount Refunded.
+		@param AmountRefunded Amount Refunded
 	*/
 	public void setAmountRefunded (BigDecimal AmountRefunded)
 	{
 		set_Value (COLUMNNAME_AmountRefunded, AmountRefunded);
 	}
 
-	/** Get AmountRefunded.
-		@return AmountRefunded	  */
+	/** Get Amount Refunded.
+		@return Amount Refunded	  */
 	public BigDecimal getAmountRefunded()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmountRefunded);
@@ -272,16 +272,16 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		return bd;
 	}
 
-	/** Set AmountTendered.
-		@param AmountTendered AmountTendered
+	/** Set Amount Tendered.
+		@param AmountTendered Amount Tendered
 	*/
 	public void setAmountTendered (BigDecimal AmountTendered)
 	{
 		set_Value (COLUMNNAME_AmountTendered, AmountTendered);
 	}
 
-	/** Get AmountTendered.
-		@return AmountTendered	  */
+	/** Get Amount Tendered.
+		@return Amount Tendered	  */
 	public BigDecimal getAmountTendered()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_AmountTendered);
@@ -951,7 +951,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DateOrdered);
 	}
 
-	/** Set Date printed.
+	/** Set Date Printed.
 		@param DatePrinted Date the document was printed.
 	*/
 	public void setDatePrinted (Timestamp DatePrinted)
@@ -959,7 +959,7 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		set_Value (COLUMNNAME_DatePrinted, DatePrinted);
 	}
 
-	/** Get Date printed.
+	/** Get Date Printed.
 		@return Date the document was printed.
 	  */
 	public Timestamp getDatePrinted()
@@ -1530,16 +1530,16 @@ public class X_C_Order extends PO implements I_C_Order, I_Persistent
 		return false;
 	}
 
-	/** Set Priviledged Rate.
-		@param IsPriviledgedRate Priviledged Rate
+	/** Set Privileged Rate.
+		@param IsPriviledgedRate Privileged Rate
 	*/
 	public void setIsPriviledgedRate (boolean IsPriviledgedRate)
 	{
 		set_Value (COLUMNNAME_IsPriviledgedRate, Boolean.valueOf(IsPriviledgedRate));
 	}
 
-	/** Get Priviledged Rate.
-		@return Priviledged Rate	  */
+	/** Get Privileged Rate.
+		@return Privileged Rate	  */
 	public boolean isPriviledgedRate()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPriviledgedRate);

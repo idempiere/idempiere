@@ -34,7 +34,7 @@ import org.zkoss.zul.West;
 import org.zkoss.zul.Window;
 
 /**
- *
+ * Manage login window for login and role selection
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author  Low Heng Sin
  * @date    Mar 3, 2007
@@ -42,17 +42,30 @@ import org.zkoss.zul.Window;
  */
 public class WLogin extends AbstractUIPart
 {
-
+	/** IWebClient instance ({@link AdempiereWebUI}) */
 	private IWebClient app;
+	/** Main layout */
 	private Borderlayout layout;
+	@Deprecated(forRemoval = true, since = "11")
 	private Window browserWarningWindow;
+	/** embedded window for login and role selection */
 	private LoginWindow loginWindow;
 
+	/**
+	 * 
+	 * @param app
+	 */
     public WLogin(IWebClient app)
     {
         this.app = app;
     }
 
+    /**
+     * Create UI from login.zul file. <br/> 
+     * The main layout component ("layout") must be instance of {@link Borderlayout}. <br/>
+     * Get {@link #loginWindow} reference from zul using id "loginWindow".
+     */
+    @Override
     protected Component doCreatePart(Component parent)
     {
     	PageDefinition pageDefintion = Executions.getCurrent().getPageDefinition(ThemeManager.getThemeResource("zul/login/login.zul"));
@@ -107,6 +120,9 @@ public class WLogin extends AbstractUIPart
         return layout;
     }
 
+    /**
+     * detach/dispose window content
+     */
 	public void detach() {
 		layout.detach();
 		layout = null;
@@ -114,12 +130,15 @@ public class WLogin extends AbstractUIPart
 			browserWarningWindow.detach();
 	}
 
+	/**
+	 * @return {@link Component}
+	 */
 	public Component getComponent() {
 		return layout;
 	}
 
 	/**
-	 * Show change role window
+	 * Show change role panel in {@link #loginWindow}
 	 * @param locale
 	 * @param properties env context
 	 */

@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InventoryLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_InventoryLine")
 public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_InventoryLine (Properties ctx, int M_InventoryLine_ID, String trxName)
@@ -443,16 +443,16 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 		return bd;
 	}
 
-	/** Set QtyCsv.
-		@param QtyCsv QtyCsv
+	/** Set Qty Csv.
+		@param QtyCsv Qty Csv
 	*/
 	public void setQtyCsv (BigDecimal QtyCsv)
 	{
 		set_Value (COLUMNNAME_QtyCsv, QtyCsv);
 	}
 
-	/** Get QtyCsv.
-		@return QtyCsv	  */
+	/** Get Qty Csv.
+		@return Qty Csv	  */
 	public BigDecimal getQtyCsv()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyCsv);

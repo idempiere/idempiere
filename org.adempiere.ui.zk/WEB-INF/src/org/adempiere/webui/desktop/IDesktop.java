@@ -64,6 +64,12 @@ public interface IDesktop extends UIPart {
 	public Object findWindow(int WindowNo);
 
 	/**
+	 * @param component
+	 * @return register window no or -1 if not found
+	 */
+	public int findWindowNo(Component component);
+
+	/**
 	 * close active window
 	 * @return boolean
 	 */
@@ -201,17 +207,60 @@ public interface IDesktop extends UIPart {
 	 */
 	public void logout();
 	
+	/**
+	 * 
+	 * @param callback callback after logout
+	 */
+	public default void logout(Callback<Boolean> callback) {
+		logout();
+		if (callback != null) {
+			callback.onCallback(Boolean.TRUE);
+		}
+	}
+	
+	/**
+	 * update help content in help/info panel
+	 * @param ctxTypes
+	 * @param recordId
+	 */
 	public void updateHelpContext(String ctxType, int recordId);
 	
+	/**
+	 * update tooltip content in help/info panel
+	 * @param gridField
+	 */
 	public void updateHelpTooltip(GridField gridField);
 
+	/**
+	 * update tooltip content in help/info panel
+	 * @param hdr
+	 * @param desc
+	 * @param help
+	 * @param otherContent
+	 */
 	public void updateHelpTooltip(String hdr, String  desc, String help, String otherContent);
 
+	/**
+	 * update quick info (status line) in help/info panel
+	 * @param gridTab
+	 */
 	public void updateHelpQuickInfo(GridTab gridTab);
 
+	/**
+	 * 
+	 * @return true if there are changes not save yet
+	 */
 	public boolean isPendingWindow();
 
+	/**
+	 * update tab title by windowNo
+	 * @param title
+	 * @param windowNo
+	 */
 	public void setTabTitle(String title, int windowNo);
 	
+	/**
+	 * render home tab
+	 */
 	public void renderHomeTab();
 }

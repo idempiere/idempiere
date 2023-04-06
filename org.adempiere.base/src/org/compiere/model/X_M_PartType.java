@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for M_PartType
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_PartType")
 public class X_M_PartType extends PO implements I_M_PartType, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_M_PartType extends PO implements I_M_PartType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_PartType (Properties ctx, int M_PartType_ID, String trxName)

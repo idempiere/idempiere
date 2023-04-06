@@ -31,6 +31,7 @@ package org.adempiere.webui.apps.graph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Panel;
@@ -44,9 +45,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 
+/**
+ * Panel that hold one or more {@link WDocumentStatusIndicator}. 
+ */
 public class WDocumentStatusPanel extends Panel {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7473476079783059880L;
 
@@ -55,12 +59,14 @@ public class WDocumentStatusPanel extends Panel {
 	/** Document Status Indicators	*/
 	private MDocumentStatus[] 	m_indicators = null;
 
+	private int lastRefreshCount;
+
 	/**	Logger	*/
 	private static final CLogger log = CLogger.getCLogger (WDocumentStatusPanel.class);
 
 	/**
 	 * 	Get Panel if User has Document Status Indicators
-	 *	@return panel
+	 *	@return new WDocumentStatusPanel instance
 	 */
 	public static WDocumentStatusPanel get()
 	{
@@ -70,7 +76,7 @@ public class WDocumentStatusPanel extends Panel {
 		return new WDocumentStatusPanel(indicators);
 	}
 
-	/**************************************************************************
+	/**
 	 * 	Constructor
 	 *	@param Document Status Indicators
 	 */
@@ -82,11 +88,12 @@ public class WDocumentStatusPanel extends Panel {
 	}
 
 	/**
-	 * 	Static/Dynamic Init
+	 * Layout panel
 	 */
 	private void init()
 	{
-		log.info("");
+		if (log.isLoggable(Level.INFO))
+			log.info("");
 		Grid grid = new Grid();
 		appendChild(grid);
 		grid.setWidth("100%");
@@ -102,27 +109,34 @@ public class WDocumentStatusPanel extends Panel {
 			Row row = new Row();
 			rows.appendChild(row);
 
-			WDocumentStatusIndicator pi = new WDocumentStatusIndicator(m_indicators[i]);
+			WDocumentStatusIndicator pi = new WDocumentStatusIndicator(m_indicators[i], true);
 			row.appendChild(pi);
 			indicatorList.add(pi);
 		}
 	}	//	init
 
+	/**
+	 * Call {@link WDocumentStatusIndicator#refresh()} of {@link #indicatorList}.
+	 */
 	public void refresh() {
-		int count = 0;
+		lastRefreshCount = 0;
 		for (WDocumentStatusIndicator indicator : indicatorList) {
 			indicator.refresh();
 			if (indicator.getDocumentStatus().getAD_Client_ID() == 0)
-				count += indicator.getStatusCount();
+				lastRefreshCount += indicator.getStatusCount();
 		}
-		EventQueue<Event> queue = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, true);
-		Event event = new Event(IDesktop.ON_ACTIVITIES_CHANGED_EVENT, null, count);
-		queue.publish(event);
+		
 	}
 
-	public void updateUI() {
+	/**
+	 * Call {@link WDocumentStatusIndicator#updateUI()} of {@link #indicatorList}.
+	 */
+	public void updateUI() {		
 		for (WDocumentStatusIndicator indicator : indicatorList) {
 			indicator.updateUI();
 		}
+		EventQueue<Event> queue = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, true);
+		Event event = new Event(IDesktop.ON_ACTIVITIES_CHANGED_EVENT, null, lastRefreshCount);
+		queue.publish(event);		
 	}
 }

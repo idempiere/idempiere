@@ -83,7 +83,19 @@ public class GridField
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 496387784464611123L;
+	private static final long serialVersionUID = 405469916055906825L;
+	
+	private static final Character SPECIAL_CASE_DEFAULT = '1';
+	private static final Character SQL_DEFAULT = '2';
+	private static final Character DEFAULT_LOGIC = '3';
+	private static final Character USER_PREFERENCE_DEFAULT = '4';
+	private static final Character SYSTEM_PREFERENCE_DEFAULT = '5';
+	private static final Character PANEL_PREFERENCE_DEFAULT = '6';
+	private static final Character DATA_TYPE_DEFAULT = '7';
+	private static final String DEFAULT_PRIORITY_ORDER = "123457";
+	
+	//default is preference for field > special case > default logic > sql default > data-type default
+	private static final String DEFAULT_PRIORITY_ORDER_FOR_PANEL = "623";
 
 	/**
 	 *  Field Constructor.
@@ -454,10 +466,15 @@ public class GridField
 		{
 			boolean isAlwaysUpdatable = false;
 			if (m_vo.AlwaysUpdatableLogic.startsWith("@SQL=")) {
-				isAlwaysUpdatable = Evaluator.parseSQLLogic(m_vo.AlwaysUpdatableLogic, m_vo.ctx, m_vo.WindowNo,
+				isAlwaysUpdatable = Evaluator.parseSQLLogic(m_vo.AlwaysUpdatableLogic, ctx, m_vo.WindowNo,
 						m_vo.TabNo, m_vo.ColumnName);
 			} else {
-				isAlwaysUpdatable = Evaluator.evaluateLogic(this, m_vo.AlwaysUpdatableLogic);
+				Evaluatee evaluatee = new Evaluatee() {
+					public String get_ValueAsString(String variableName) {
+						return GridField.this.get_ValueAsString(ctx, variableName);
+					}
+				};
+				isAlwaysUpdatable = Evaluator.evaluateLogic(evaluatee, m_vo.AlwaysUpdatableLogic);
 				if (log.isLoggable(Level.FINEST))
 					log.finest(m_vo.ColumnName + " R/O(" + m_vo.AlwaysUpdatableLogic + ") => R/W-" + isAlwaysUpdatable);
 
@@ -466,9 +483,6 @@ public class GridField
 				return true;
 		}
 		
-		
-			
-
 		//check tab context
 		if (checkContext && getGridTab() != null &&
 			! "Y".equals(Env.getContext(Env.getCtx(), getWindowNo(), "_QUICK_ENTRY_MODE_")))
@@ -534,13 +548,18 @@ public class GridField
 		{
 			if (m_vo.ReadOnlyLogic.startsWith("@SQL="))
 			{
-				boolean retValue = !Evaluator.parseSQLLogic(m_vo.ReadOnlyLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
+				boolean retValue = !Evaluator.parseSQLLogic(m_vo.ReadOnlyLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 				if (!retValue)
 					return false;
 			}
 			else
 			{
-				boolean retValue = !Evaluator.evaluateLogic(this, m_vo.ReadOnlyLogic);
+				Evaluatee evaluatee = new Evaluatee() {
+					public String get_ValueAsString(String variableName) {
+						return GridField.this.get_ValueAsString(ctx, variableName);
+					}
+				};
+				boolean retValue = !Evaluator.evaluateLogic(evaluatee, m_vo.ReadOnlyLogic);
 				if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " R/O(" + m_vo.ReadOnlyLogic + ") => R/W-" + retValue);
 				if (!retValue)
 					return false;
@@ -584,6 +603,13 @@ public class GridField
 		m_inserting = inserting;
 	}   //  setInserting
 
+	public void setDefaultLogic(String defaultValue) {
+		m_vo.DefaultValue = defaultValue;
+	}
+
+	public void setDefault2Logic(String defaultValue2) {
+		m_vo.DefaultValue2 = defaultValue2;
+	}
 	
 	/**************************************************************************
 	 *	Create default value.
@@ -610,11 +636,9 @@ public class GridField
 		if (isIgnoreDefault())
 			return null;
 		
-		String orderGetDefault = "123457";// this value can put to system configuration
-		
 		Object defaultValue = null;
 		
-		if ((defaultValue = getDefault (orderGetDefault)) != null){
+		if ((defaultValue = getDefault (DEFAULT_PRIORITY_ORDER)) != null){
 			return defaultValue;
 		}
 		
@@ -630,9 +654,7 @@ public class GridField
 	 * @return
 	 */
 	public Object getDefaultForPanel (){
-		//default is preference for field > special case > default logic > sql default > data-type default
-		String defaultSeq = "623";
-		return getDefault (MSysConfig.getValue(MSysConfig.ZK_SEQ_DEFAULT_VALUE_PANEL, defaultSeq, Env.getAD_Client_ID(m_vo.ctx)));
+		return getDefault (MSysConfig.getValue(MSysConfig.ZK_SEQ_DEFAULT_VALUE_PANEL, DEFAULT_PRIORITY_ORDER_FOR_PANEL, Env.getAD_Client_ID(m_vo.ctx)));
 	}
 	
 	/**
@@ -657,7 +679,7 @@ public class GridField
 	public Object getDefault(ParseSeq seqGetDefaultValue){
 		Object defaultValue = null;
 		for (Character seqType : seqGetDefaultValue){
-			if (   seqType == '3'  // default from Expression 
+			if (   seqType == DEFAULT_LOGIC  // default from Expression 
 				&& m_vo.DefaultValue != null
 				&& m_vo.DefaultValue.toUpperCase().equals("NULL")) // IDEMPIERE-2678
 				return null;
@@ -681,17 +703,17 @@ public class GridField
 	 * @return
 	 */
 	protected Object getDefaultValueByType (Character defaultValueType){
-		if (defaultValueType.equals('1')){
+		if (defaultValueType.equals(SPECIAL_CASE_DEFAULT)) {
 			return defaultForSpecialCase();
-		}else if (defaultValueType.equals('2')){
+		}else if (defaultValueType.equals(SQL_DEFAULT)) {
 			return defaultFromSQLExpression();
-		}else if (defaultValueType.equals('3')){
+		}else if (defaultValueType.equals(DEFAULT_LOGIC)) {
 			return defaultFromExpression();
-		}else if (defaultValueType.equals('4') || defaultValueType.equals('5')){
+		}else if (defaultValueType.equals(USER_PREFERENCE_DEFAULT) || defaultValueType.equals(SYSTEM_PREFERENCE_DEFAULT)) {
 			return defaultFromPreference(defaultValueType);
-		}else if (defaultValueType.equals('6')){
+		}else if (defaultValueType.equals(PANEL_PREFERENCE_DEFAULT)) {
 			return defaultFromPreferenceForPanel();
-		}else if (defaultValueType.equals('7')){
+		}else if (defaultValueType.equals(DATA_TYPE_DEFAULT)) {
 			return defaultFromDatatype();
 		}
 		
@@ -844,7 +866,7 @@ public class GridField
 				if (defStr.equals("@SysDate@"))				//	System Time
 					return new Timestamp (System.currentTimeMillis());
 				else if (defStr.indexOf('@') != -1)			//	it is a variable
-					defStr = Env.parseContext(m_vo.ctx, m_vo.WindowNo, defStr.trim(), false, false);
+					defStr = Env.parseContext(m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, defStr.trim(), false, false);
 				else if (defStr.indexOf("'") != -1)			//	it is a 'String'
 					defStr = defStr.replace('\'', ' ').trim();
 
@@ -1261,6 +1283,50 @@ public class GridField
 		return true;
 	}	//	isDisplayed
 
+	/**************************************************************************
+	 *	Is the Displayed Grid Column Visible ?
+	 *  @param checkContext - check environment (requires correct row position)
+	 *  @return true, if visible
+	 */
+	public boolean isDisplayedGrid (boolean checkContext)
+	{
+		return isDisplayedGrid(m_vo.ctx, checkContext);
+	}
+
+	/**************************************************************************
+	 *	Is the Displayed Grid Column Visible ?
+	 *  @param checkContext - check environment (requires correct row position)
+	 *  @return true, if visible
+	 */
+	public boolean isDisplayedGrid (final Properties ctx, boolean checkContext)
+	{
+		//  ** static content **
+		//  not displayed
+		if (!m_vo.IsDisplayedGrid)
+			return false;
+		//  no restrictions
+		if (m_vo.DisplayLogic.equals(""))
+			return true;
+
+		//  ** dynamic content **
+		if (checkContext)
+		{
+			if (m_vo.DisplayLogic.startsWith("@SQL=")) {
+				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
+			}
+			Evaluatee evaluatee = new Evaluatee() {
+				public String get_ValueAsString(String variableName) {
+					return GridField.this.get_ValueAsString(ctx, variableName);
+				}
+			};
+			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName 
+				+ " (" + m_vo.DisplayLogic + ") => " + retValue);
+			return retValue;
+		}
+		return true;
+	}	//	isDisplayedGrid
+
 	/**
 	 * 	Get Variable Value (Evaluatee)
 	 *	@param variableName name
@@ -1278,6 +1344,11 @@ public class GridField
 	 */
 	public String get_ValueAsString (Properties ctx, String variableName)
 	{
+		if (m_parentEvaluatee != null) {
+			String value = m_parentEvaluatee.get_ValueAsString(variableName);
+			if (value != null)
+				return value;
+		}
 		return new DefaultEvaluatee(getGridTab(), m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
 
@@ -1787,7 +1858,7 @@ public class GridField
 	{
 		if (m_parentValue != null)
 			return m_parentValue.booleanValue();
-		if (!DisplayType.isID(m_vo.displayType) || m_vo.TabNo == 0)
+		if ( ( !DisplayType.isID(m_vo.displayType) && !DisplayType.isUUID(m_vo.displayType) ) || m_vo.TabNo == 0)
 			m_parentValue = Boolean.FALSE;
 		else 
 		{
@@ -2357,6 +2428,9 @@ public class GridField
 	
 	/** Is the initial context value for this field backup ? - teo_sarca [ 1699826 ] */
 	private boolean m_isBackupValue = false;
+
+	/** Optional Parent Evaluatee that take precedence over the value return from GridField's Evaluatee implementation */
+	private Evaluatee m_parentEvaluatee = null;
 	
 	/**
 	 * Backup the context value
@@ -2610,6 +2684,14 @@ public class GridField
 		return m_vo.IsQuickForm;
 	}
 
+	/**
+	 * Get Date Range Options
+	 * @return The option, how the date editor will be displayed.
+	 */
+	public String getDateRangeOption() {
+		return m_vo.dateRangeOption;
+	}
+	
 	public void processUIVirtualColumn() {
 		String sql = m_vo.ColumnSQL.substring(5);
 		sql = Env.parseContext(Env.getCtx(), getWindowNo(), sql, false);
@@ -2630,5 +2712,13 @@ public class GridField
 				setValue(valueStr, false);
 			}
 		}
+	}
+
+	/**
+	 * Set parent Evaluatee that take precedence over value return from GridField's Evaluatee implementation.
+	 * @param evaluatee
+	 */
+	public void setParentEvaluatee(Evaluatee evaluatee) {
+		m_parentEvaluatee  = evaluatee;
 	}
 }   //  GridField

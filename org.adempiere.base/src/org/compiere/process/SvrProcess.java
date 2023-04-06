@@ -282,6 +282,9 @@ public abstract class SvrProcess implements ProcessCall
 			success = false;
 
 		if (success) {
+			// if the connection has not been used, then the buffer log is never flushed
+			//   f.e. when the process uses local transactions like UUIDGenerator
+			m_trx.getConnection();
 			m_trx.addTrxEventListener(new TrxEventListener() {				
 				@Override
 				public void afterRollback(Trx trx, boolean success) {
