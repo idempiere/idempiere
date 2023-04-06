@@ -186,6 +186,7 @@ public class GridWindowVO implements Serializable
 			vo.WinWidth = window.getWinWidth();
 			//
 			vo.IsSOTrx = window.isSOTrx();
+			Env.setContext(ctx, WindowNo, "IsSOTrx", vo.IsSOTrx);
 			vo.AD_Window_UU = window.getAD_Window_UU();
 		}
 		else
