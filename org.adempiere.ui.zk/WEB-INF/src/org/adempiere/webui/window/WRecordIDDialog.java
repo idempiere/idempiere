@@ -71,7 +71,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 	/** Current tab's AD_Table_ID GrodField */
 	private GridField tableIDGridField;
 	/** Current Record_ID value from {@link #editor} */
-	private Integer recordIDValue;
+	private Object recordIDValue;
 	/** Current AD_Table_ID value from {@link #editor} */
 	private Integer tableIDValue;
 	
@@ -95,17 +95,8 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 	 */
 	public WRecordIDDialog(Page page, WRecordIDEditor editor, GridField tableIDGridField) {
 		super();
-		
+
 		this.editor = editor;
-		this.tableIDGridField = tableIDGridField;
-		if(editor.getValue() instanceof Integer) {
-			this.recordIDValue = (Integer)editor.getValue();
-		} else {
-			if (editor.getValue() == null)
-				this.recordIDValue = null;
-			else
-				this.recordIDValue = Integer.valueOf(editor.getValue().toString());
-		}
 
 		if (editor.getAD_Table_ID() instanceof Integer) {
 			tableIDValue = (Integer) editor.getAD_Table_ID();
@@ -114,6 +105,20 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 				tableIDValue = null;
 			else
 				tableIDValue = Integer.valueOf(editor.getAD_Table_ID().toString());
+		}
+
+
+		this.tableIDGridField = tableIDGridField;
+		if(editor.getValue() instanceof Integer) {
+			this.recordIDValue = (Integer)editor.getValue();
+		} else {
+			if (editor.getValue() == null)
+				this.recordIDValue = null;
+			else {
+				MTable table = MTable.get(tableIDValue);
+				if (editor.getValue() instanceof String && table != null && table.isUUIDKeyTable())
+					this.recordIDValue = editor.getValue().toString();
+			}
 		}
 
 		init(page);
