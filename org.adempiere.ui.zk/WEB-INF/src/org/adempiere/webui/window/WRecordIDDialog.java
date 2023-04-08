@@ -154,14 +154,13 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		if (editor.getGridField().getGridTab() != null) {
 			parentTextBox = new Textbox();
 			parentTextBox.setReadonly(true);
-			int tableId = editor.getGridField().getGridTab().getAD_Table_ID();
 			MTable table = MTable.get(tableID);
 			Object recordId;
 			if (table.isUUIDKeyTable())
 				recordId = editor.getGridField().getGridTab().getValue(PO.getUUIDColumnName(table.getTableName()));
 			else
 				recordId = editor.getGridField().getGridTab().getRecord_ID();
-			parentTextBox.setValue(editor.getIdentifier(tableId, recordId));
+			parentTextBox.setValue(editor.getIdentifier(tableID, recordId));
 		}
 		
 		if (recordsEditor != null)

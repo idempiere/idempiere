@@ -732,10 +732,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			Class<?> c = p_layout[col].getColClass();
 			int colIndex = col + colOffset;
 			if (c == IDColumn.class)
-			{
 		        value = new IDColumn(rs.getInt(colIndex));
-
-			}
+			else if (c == UUIDColumn.class)
+		        value = new UUIDColumn(rs.getString(colIndex));
 			else if (c == Boolean.class)
 		        value = Boolean.valueOf("Y".equals(rs.getString(colIndex)));
 			else if (c == Timestamp.class)

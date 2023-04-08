@@ -121,7 +121,7 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 		if (parentId != null && parentId instanceof IDColumn){
 			IDColumn ID = (IDColumn) parentId;
 			linkPara = ID.getRecord_ID();
-		} else if (parentId != null && parentId instanceof IDColumn) {
+		} else if (parentId != null && parentId instanceof UUIDColumn) {
 			UUIDColumn ID = (UUIDColumn) parentId;
 			linkPara = ID.getRecord_UU();
 		}else if (parentId != null){
@@ -346,7 +346,7 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 			if (parentId != null && parentId instanceof IDColumn){
 				IDColumn ID = (IDColumn) parentId;
 				linkPara = ID.getRecord_ID();
-			} else if (parentId != null && parentId instanceof IDColumn) {
+			} else if (parentId != null && parentId instanceof UUIDColumn) {
 				UUIDColumn ID = (UUIDColumn) parentId;
 				linkPara = ID.getRecord_UU();
 			}else if (parentId != null){

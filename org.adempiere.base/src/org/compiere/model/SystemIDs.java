@@ -150,6 +150,7 @@ public class SystemIDs
 	public final static int REFERENCE_DATATYPE_QUANTITY = 29;
 	public final static int REFERENCE_DATATYPE_RADIOGROUP_LIST= 200152;
 	public final static int REFERENCE_DATATYPE_RECORD_ID = 200202;
+	public final static int REFERENCE_DATATYPE_RECORD_UU = 200240;
 	public final static int REFERENCE_DATATYPE_ROWID = 26;
 	public final static int REFERENCE_DATATYPE_SCHEDULER_STATE = 200173;
 	public final static int REFERENCE_DATATYPE_SEARCH = 30;

@@ -47,6 +47,7 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_PRODUCTATTRIBUTE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_QUANTITY;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_RADIOGROUP_LIST;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_RECORD_ID;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_RECORD_UU;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ROWID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_SCHEDULER_STATE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_SEARCH;
@@ -194,6 +195,7 @@ public final class DisplayType
 
 	public static final int RecordID = REFERENCE_DATATYPE_RECORD_ID;
 	
+	public static final int RecordUU = REFERENCE_DATATYPE_RECORD_UU;
 	
 
 	public static final int TimestampWithTimeZone = REFERENCE_DATATYPE_TIMESTAMP_WITH_TIMEZONE;
@@ -283,7 +285,7 @@ public final class DisplayType
 	public static boolean isUUID (int displayType)
 	{
 		if (displayType == UUID || displayType == TableUU || displayType == TableDirUU
-			|| displayType == SearchUU)
+			|| displayType == SearchUU || displayType == RecordUU)
 			return true;
 
 		//not custom type, don't have to check factory
@@ -417,7 +419,7 @@ public final class DisplayType
 			|| displayType == ChosenMultipleSelectionTable
 			|| displayType == ChosenMultipleSelectionSearch
 			|| displayType == TimeZoneId
-			|| displayType == UUID
+			|| displayType == UUID || displayType == RecordUU
 			|| displayType == TableDirUU || displayType == TableUU || displayType == SearchUU)
 			return true;
 		
@@ -1135,6 +1137,8 @@ public final class DisplayType
 			return "RadiogroupList";
 		case RecordID:
 			return "RecordID";
+		case RecordUU:
+			return "RecordUU";
 		case RowID:
 			return "RowID";
 		case SchedulerState:

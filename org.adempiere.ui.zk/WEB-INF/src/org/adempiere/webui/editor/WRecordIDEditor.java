@@ -262,11 +262,16 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 		if (GridField.PROPERTY.equals(evt.getPropertyName()))
 		{
 			int tableID =  tableIDValue != null ? Integer.parseInt(String.valueOf(tableIDValue)) : 0;
-			int recordID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
-			if (tableID > 0 && recordID >= 0)
-			{
-				MTable table = MTable.get(Env.getCtx(), tableID);
-				table.getPO(recordID, null);	// calls po.checkCrossTenant() method
+			MTable table = MTable.get(tableID);
+			if (table.isUUIDKeyTable()) {
+				String recordUU = Objects.toString(evt.getNewValue(), "");
+				if (tableID > 0 && recordUU.length() > 0)
+					table.getPOByUU(recordUU, null);	// calls po.checkCrossTenant() method
+				
+			} else {
+				int recordID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
+				if (tableID > 0 && recordID >= 0)
+					table.getPO(recordID, null);	// calls po.checkCrossTenant() method
 			}
 			setValue(evt.getNewValue(), false);
 		}

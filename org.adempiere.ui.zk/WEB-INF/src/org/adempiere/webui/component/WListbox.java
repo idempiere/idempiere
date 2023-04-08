@@ -779,7 +779,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 *
 	 *  @return ID if key
 	 */
-	public Integer getSelectedRowKey()
+	public Object getSelectedRowKey()
 	{
 		if (m_layout == null)
 		{
@@ -798,24 +798,21 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 * @param index
 	 * @return
 	 */
-	public Integer getRowKeyAt (int index){
+	public Object getRowKeyAt (int index){
 		if (index < 0 || m_keyColumnIndex < 0)
 			return null;
 				
 		Object data = getModel().getDataAt(index, m_keyColumnIndex);
 
 		if (data instanceof IDColumn)
-		{
 			data = ((IDColumn)data).getRecord_ID();
-		}
 		else if (data instanceof UUIDColumn)
-		{
 			data = ((UUIDColumn)data).getRecord_UU();
-		}
-		else if (data instanceof Integer)
-		{
+
+		if (data instanceof Integer)
 			return (Integer)data;
-		}
+		if (data instanceof String)
+			return data;
 		return null;
 	}
 
@@ -832,7 +829,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		ListModelTable model = getModel();
 		List<Object> lsSelectedItem = new ArrayList<Object> ();  
 		for (int index = 0; index < model.getSize(); index++){
-			Integer key = getRowKeyAt(index);
+			Object key = getRowKeyAt(index);
 			if (key == null)
 				continue;
 			
@@ -846,7 +843,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	/**
 	 * @return key for first row (row 0). null if table is empty.
 	 */
-	public Integer getFirstRowKey()
+	public Object getFirstRowKey()
 	{
 		if (m_layout == null)
 		{
