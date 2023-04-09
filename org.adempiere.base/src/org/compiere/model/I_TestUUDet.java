@@ -131,6 +131,15 @@ public interface I_TestUUDet
 	/** Get Test UU	  */
 	public String getTestUU_UU();
 
+    /** Column name TestUU_UUs */
+    public static final String COLUMNNAME_TestUU_UUs = "TestUU_UUs";
+
+	/** Set Multi Test UU	  */
+	public void setTestUU_UUs (String TestUU_UUs);
+
+	/** Get Multi Test UU	  */
+	public String getTestUU_UUs();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

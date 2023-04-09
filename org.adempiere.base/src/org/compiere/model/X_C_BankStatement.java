@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_BankStatement
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_BankStatement")
-public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persistent 
+public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_C_BankStatement (Properties ctx, int C_BankStatement_ID, String trxName)
@@ -92,6 +92,62 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_BankStatement (Properties ctx, String C_BankStatement_UU, String trxName)
+    {
+      super (ctx, C_BankStatement_UU, trxName);
+      /** if (C_BankStatement_UU == null)
+        {
+			setC_BankAccount_ID (0);
+			setC_BankStatement_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setEndingBalance (Env.ZERO);
+			setIsApproved (false);
+// N
+			setIsManual (true);
+// Y
+			setName (null);
+// @#Date@
+			setPosted (false);
+// N
+			setProcessed (false);
+			setStatementDate (new Timestamp( System.currentTimeMillis() ));
+// @Date@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_BankStatement (Properties ctx, String C_BankStatement_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_BankStatement_UU, trxName, virtualColumns);
+      /** if (C_BankStatement_UU == null)
+        {
+			setC_BankAccount_ID (0);
+			setC_BankStatement_ID (0);
+			setDateAcct (new Timestamp( System.currentTimeMillis() ));
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setEndingBalance (Env.ZERO);
+			setIsApproved (false);
+// N
+			setIsManual (true);
+// Y
+			setName (null);
+// @#Date@
+			setPosted (false);
+// N
+			setProcessed (false);
+			setStatementDate (new Timestamp( System.currentTimeMillis() ));
+// @Date@
+        } */
+    }
+
     /** Load Constructor */
     public X_C_BankStatement (Properties ctx, ResultSet rs, String trxName)
     {
@@ -99,7 +155,7 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -438,10 +494,10 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -461,10 +517,10 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 	public boolean isManual()
 	{
 		Object oo = get_Value(COLUMNNAME_IsManual);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -504,7 +560,7 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -523,10 +579,10 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 	public boolean isPosted()
 	{
 		Object oo = get_Value(COLUMNNAME_Posted);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -546,10 +602,10 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -587,10 +643,10 @@ public class X_C_BankStatement extends PO implements I_C_BankStatement, I_Persis
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

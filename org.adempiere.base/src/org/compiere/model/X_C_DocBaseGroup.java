@@ -30,7 +30,7 @@ public class X_C_DocBaseGroup extends PO implements I_C_DocBaseGroup, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230403L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_C_DocBaseGroup (Properties ctx, int C_DocBaseGroup_ID, String trxName)
