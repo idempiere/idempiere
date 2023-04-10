@@ -5534,3 +5534,523 @@ UPDATE AD_TableIndex SET IsCreateConstraint='Y' WHERE IsCreateConstraint!='Y' AN
 201014 /* ws_webservice_uu_idx */
 );
 
+-- Apr 10, 2023, 12:27:56 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201181,'c8ed771e-ab78-4437-85c2-9bf1ea398db0',TO_TIMESTAMP('2023-04-10 12:27:56','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','A_Asset_Group_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:27:56','YYYY-MM-DD HH24:MI:SS'),100,200113,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:27:56 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201619,'e4b6beb8-363b-48d6-b29b-f46df2f69929',TO_TIMESTAMP('2023-04-10 12:27:56','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:27:56','YYYY-MM-DD HH24:MI:SS'),100,211026,201181,10)
+;
+
+-- Apr 10, 2023, 12:27:57 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201182,'9e451ffe-351d-46bd-a071-625a52bc9325',TO_TIMESTAMP('2023-04-10 12:27:56','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_AuthorizationAccount_uu_idx',TO_TIMESTAMP('2023-04-10 12:27:56','YYYY-MM-DD HH24:MI:SS'),100,200272,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:27:57 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201620,'4196ed05-a972-4370-9e3d-483a5e5e2b25',TO_TIMESTAMP('2023-04-10 12:27:57','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:27:57','YYYY-MM-DD HH24:MI:SS'),100,214398,201182,10)
+;
+
+-- Apr 10, 2023, 12:27:57 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201183,'a202326e-f42e-41bf-bb70-e9bdb4cb84c6',TO_TIMESTAMP('2023-04-10 12:27:57','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','ad_authorizationcredentiauuidx',TO_TIMESTAMP('2023-04-10 12:27:57','YYYY-MM-DD HH24:MI:SS'),100,200271,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:27:58 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201621,'3a46364e-7fa2-4980-a4ec-6170042e31bb',TO_TIMESTAMP('2023-04-10 12:27:57','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:27:57','YYYY-MM-DD HH24:MI:SS'),100,214383,201183,10)
+;
+
+-- Apr 10, 2023, 12:27:58 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201184,'c5d3bdc8-19dd-43d6-8a8a-c14cedc40a9b',TO_TIMESTAMP('2023-04-10 12:27:58','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','ad_authorizationprovider_uuidx',TO_TIMESTAMP('2023-04-10 12:27:58','YYYY-MM-DD HH24:MI:SS'),100,200269,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:27:58 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201622,'c2e758fe-1e1b-4dd4-ad96-6993112c2a89',TO_TIMESTAMP('2023-04-10 12:27:58','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:27:58','YYYY-MM-DD HH24:MI:SS'),100,214356,201184,10)
+;
+
+-- Apr 10, 2023, 12:27:59 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201185,'f2cb693f-7c0a-48dd-8cf1-f1c8f87261c1',TO_TIMESTAMP('2023-04-10 12:27:58','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','ad_authorizationscopeprovuuidx',TO_TIMESTAMP('2023-04-10 12:27:58','YYYY-MM-DD HH24:MI:SS'),100,200270,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:27:59 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201623,'cb09dff7-b202-4c6f-9faa-5f86db325b0c',TO_TIMESTAMP('2023-04-10 12:27:59','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:27:59','YYYY-MM-DD HH24:MI:SS'),100,214370,201185,10)
+;
+
+-- Apr 10, 2023, 12:27:59 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201186,'59da4738-cada-4420-958c-b7f0ca51b410',TO_TIMESTAMP('2023-04-10 12:27:59','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_BroadcastMessage_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:27:59','YYYY-MM-DD HH24:MI:SS'),100,200123,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:00 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201624,'a2027ee0-f4e8-46df-9d37-ea3a6aa19111',TO_TIMESTAMP('2023-04-10 12:27:59','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:27:59','YYYY-MM-DD HH24:MI:SS'),100,211152,201186,10)
+;
+
+-- Apr 10, 2023, 12:28:00 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201187,'e14d90f1-ec6a-49a7-8734-fe5f0d4a4ad0',TO_TIMESTAMP('2023-04-10 12:28:00','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_ChartDatasource_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:00','YYYY-MM-DD HH24:MI:SS'),100,200361,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:00 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201625,'0131a23a-fd17-449c-8adb-343d7e78e841',TO_TIMESTAMP('2023-04-10 12:28:00','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:00','YYYY-MM-DD HH24:MI:SS'),100,215307,201187,10)
+;
+
+-- Apr 10, 2023, 12:28:01 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201188,'2c2d2131-d67a-499c-a517-b6e1390e1bec',TO_TIMESTAMP('2023-04-10 12:28:00','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_Chart_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:00','YYYY-MM-DD HH24:MI:SS'),100,200122,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:01 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201626,'47279e75-ac84-4245-baf0-dccc8a527393',TO_TIMESTAMP('2023-04-10 12:28:01','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:01','YYYY-MM-DD HH24:MI:SS'),100,211140,201188,10)
+;
+
+-- Apr 10, 2023, 12:28:01 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201189,'55b43b58-3555-4079-a7ab-fe7dc33270d0',TO_TIMESTAMP('2023-04-10 12:28:01','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_Color_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:01','YYYY-MM-DD HH24:MI:SS'),100,200114,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:02 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201627,'a0540ee9-d4b6-48e4-8528-e1ca750aa5ea',TO_TIMESTAMP('2023-04-10 12:28:01','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:01','YYYY-MM-DD HH24:MI:SS'),100,211038,201189,10)
+;
+
+-- Apr 10, 2023, 12:28:02 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201190,'91ced12f-7683-431e-989c-8c67ae323f95',TO_TIMESTAMP('2023-04-10 12:28:02','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_CtxHelpSuggestion_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:02','YYYY-MM-DD HH24:MI:SS'),100,200210,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:02 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201628,'b4612c49-1519-40da-a8e5-7bb737421542',TO_TIMESTAMP('2023-04-10 12:28:02','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:02','YYYY-MM-DD HH24:MI:SS'),100,212801,201190,10)
+;
+
+-- Apr 10, 2023, 12:28:03 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201191,'80d3df1a-d7f8-4442-948b-139af51e31fb',TO_TIMESTAMP('2023-04-10 12:28:02','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_FieldSuggestion_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:02','YYYY-MM-DD HH24:MI:SS'),100,200209,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:03 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201629,'0ee1b620-2e9e-4a58-8eeb-3c98af06fbe1',TO_TIMESTAMP('2023-04-10 12:28:03','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:03','YYYY-MM-DD HH24:MI:SS'),100,212778,201191,10)
+;
+
+-- Apr 10, 2023, 12:28:04 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201192,'48e46157-25a8-434a-aeb3-f556b21888d7',TO_TIMESTAMP('2023-04-10 12:28:03','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_InfoProcess_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:03','YYYY-MM-DD HH24:MI:SS'),100,200129,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:04 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201630,'af597585-4ae3-4958-a0c9-47d97f5d2c86',TO_TIMESTAMP('2023-04-10 12:28:04','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:04','YYYY-MM-DD HH24:MI:SS'),100,211242,201192,10)
+;
+
+-- Apr 10, 2023, 12:28:04 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201193,'f4054740-e506-48fc-943d-a5a50f8334b8',TO_TIMESTAMP('2023-04-10 12:28:04','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_InfoRelated_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:04','YYYY-MM-DD HH24:MI:SS'),100,200089,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:04 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201631,'127d72ac-73cb-4d7f-ba60-25965765f7ca',TO_TIMESTAMP('2023-04-10 12:28:04','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:04','YYYY-MM-DD HH24:MI:SS'),100,210612,201193,10)
+;
+
+-- Apr 10, 2023, 12:28:05 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201194,'533d8bd7-f815-4b44-bd00-5ac6144d6326',TO_TIMESTAMP('2023-04-10 12:28:04','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_Label_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:04','YYYY-MM-DD HH24:MI:SS'),100,200345,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:05 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201632,'49d9b607-e77c-408c-b7c7-19406e9ce334',TO_TIMESTAMP('2023-04-10 12:28:05','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:05','YYYY-MM-DD HH24:MI:SS'),100,214866,201194,10)
+;
+
+-- Apr 10, 2023, 12:28:06 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201195,'0e15b563-debb-4da6-aefc-563d1ec2b381',TO_TIMESTAMP('2023-04-10 12:28:05','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_LabelAssignment_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:05','YYYY-MM-DD HH24:MI:SS'),100,200347,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:06 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201633,'06001e0f-f79f-4949-99cc-cbc125a059f9',TO_TIMESTAMP('2023-04-10 12:28:06','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:06','YYYY-MM-DD HH24:MI:SS'),100,214892,201195,10)
+;
+
+-- Apr 10, 2023, 12:28:07 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201196,'779fa30e-5eac-4c46-8f53-28de68141ccb',TO_TIMESTAMP('2023-04-10 12:28:06','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_LabelCategory_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:06','YYYY-MM-DD HH24:MI:SS'),100,200343,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:07 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201634,'fd68c3fd-2dda-4d96-b771-ada78112695c',TO_TIMESTAMP('2023-04-10 12:28:07','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:07','YYYY-MM-DD HH24:MI:SS'),100,214841,201196,10)
+;
+
+-- Apr 10, 2023, 12:28:07 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201197,'067d3b99-4ba2-47ca-8a78-2001dd9f6164',TO_TIMESTAMP('2023-04-10 12:28:07','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_LabelCategoryTable_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:07','YYYY-MM-DD HH24:MI:SS'),100,200348,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:08 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201635,'ed427d07-21cc-49f6-87ab-2dd8224051e7',TO_TIMESTAMP('2023-04-10 12:28:07','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:07','YYYY-MM-DD HH24:MI:SS'),100,214905,201197,10)
+;
+
+-- Apr 10, 2023, 12:28:08 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201198,'f894e354-ab0a-4879-a2c0-a248be2a53c4',TO_TIMESTAMP('2023-04-10 12:28:08','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_PostIt_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:08','YYYY-MM-DD HH24:MI:SS'),100,200215,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:09 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201636,'2ef6e882-81e4-4d8e-8284-92479f30800a',TO_TIMESTAMP('2023-04-10 12:28:08','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:08','YYYY-MM-DD HH24:MI:SS'),100,212933,201198,10)
+;
+
+-- Apr 10, 2023, 12:28:09 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201199,'98d85b3d-5681-488d-b46d-611dd6956554',TO_TIMESTAMP('2023-04-10 12:28:09','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_PrintColor_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:09','YYYY-MM-DD HH24:MI:SS'),100,200115,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:09 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201637,'a1e6459f-1913-4c42-8004-d52d4a7f780a',TO_TIMESTAMP('2023-04-10 12:28:09','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:09','YYYY-MM-DD HH24:MI:SS'),100,211050,201199,10)
+;
+
+-- Apr 10, 2023, 12:28:10 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201200,'25ceccca-cfc1-479b-b247-ece414876809',TO_TIMESTAMP('2023-04-10 12:28:10','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_PrintFormat_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:10','YYYY-MM-DD HH24:MI:SS'),100,200130,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:10 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201638,'dea6bd61-2829-4d69-8176-ef9cd2ccb02e',TO_TIMESTAMP('2023-04-10 12:28:10','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:10','YYYY-MM-DD HH24:MI:SS'),100,211271,201200,10)
+;
+
+-- Apr 10, 2023, 12:28:11 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201201,'7c977636-d1fc-429a-afe1-3caa95f17c07',TO_TIMESTAMP('2023-04-10 12:28:10','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_PrintHeaderFooter_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:10','YYYY-MM-DD HH24:MI:SS'),100,200240,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:11 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201639,'05895bdb-339c-46d3-8325-a3382fb168c3',TO_TIMESTAMP('2023-04-10 12:28:11','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:11','YYYY-MM-DD HH24:MI:SS'),100,213510,201201,10)
+;
+
+-- Apr 10, 2023, 12:28:11 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201202,'48197807-8007-454d-b4ce-0258f12fdf53',TO_TIMESTAMP('2023-04-10 12:28:11','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','ad_process_drillrule_trl_uuidx',TO_TIMESTAMP('2023-04-10 12:28:11','YYYY-MM-DD HH24:MI:SS'),100,200349,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:12 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201640,'0f63396b-fdc4-4822-8376-d16ba4f9b3e8',TO_TIMESTAMP('2023-04-10 12:28:11','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:11','YYYY-MM-DD HH24:MI:SS'),100,214925,201202,10)
+;
+
+-- Apr 10, 2023, 12:28:12 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201203,'b453fe5f-4ce2-4738-916e-bdc8ebaa325b',TO_TIMESTAMP('2023-04-10 12:28:12','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_ReportView_Column_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:12','YYYY-MM-DD HH24:MI:SS'),100,200109,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:12 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201641,'d4240e69-5764-4d04-a4cd-4f0e1b1f92cd',TO_TIMESTAMP('2023-04-10 12:28:12','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:12','YYYY-MM-DD HH24:MI:SS'),100,210937,201203,10)
+;
+
+-- Apr 10, 2023, 12:28:13 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201204,'d0c0f776-979c-4a05-9fc8-dd46d54e82a8',TO_TIMESTAMP('2023-04-10 12:28:12','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_SMTP_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:12','YYYY-MM-DD HH24:MI:SS'),100,200280,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:13 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201642,'7863155f-a829-4278-ad44-cc2a0bd14a60',TO_TIMESTAMP('2023-04-10 12:28:13','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:13','YYYY-MM-DD HH24:MI:SS'),100,214555,201204,10)
+;
+
+-- Apr 10, 2023, 12:28:14 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201205,'f3956787-a4f8-4173-9c98-f8068bb94b5f',TO_TIMESTAMP('2023-04-10 12:28:13','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_StatusLine_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:13','YYYY-MM-DD HH24:MI:SS'),100,200107,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:14 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201643,'cb9036ad-4dd5-457d-8acf-7916802a1ac0',TO_TIMESTAMP('2023-04-10 12:28:14','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:14','YYYY-MM-DD HH24:MI:SS'),100,210901,201205,10)
+;
+
+-- Apr 10, 2023, 12:28:14 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201206,'b5aeb883-03fa-4613-a212-77fa5f18eb0c',TO_TIMESTAMP('2023-04-10 12:28:14','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_StatusLineUsedIn_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:14','YYYY-MM-DD HH24:MI:SS'),100,200108,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:15 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201644,'04adda9c-063f-40b9-ab20-042fb0c9fb00',TO_TIMESTAMP('2023-04-10 12:28:14','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:14','YYYY-MM-DD HH24:MI:SS'),100,210914,201206,10)
+;
+
+-- Apr 10, 2023, 12:28:15 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201207,'cc5ce507-3b90-4206-a117-442285d41a5b',TO_TIMESTAMP('2023-04-10 12:28:15','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_Style_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:15','YYYY-MM-DD HH24:MI:SS'),100,200207,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:15 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201645,'cf3305ce-ec36-4da3-98ef-7a54cfa9f48a',TO_TIMESTAMP('2023-04-10 12:28:15','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:15','YYYY-MM-DD HH24:MI:SS'),100,212735,201207,10)
+;
+
+-- Apr 10, 2023, 12:28:16 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201208,'ad50beb7-8c6d-4d6c-9f87-0c77bc6cce0e',TO_TIMESTAMP('2023-04-10 12:28:15','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_StyleLine_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:15','YYYY-MM-DD HH24:MI:SS'),100,200208,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:16 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201646,'dc637eb5-1b40-410a-9770-3faf176f04d7',TO_TIMESTAMP('2023-04-10 12:28:16','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:16','YYYY-MM-DD HH24:MI:SS'),100,212747,201208,10)
+;
+
+-- Apr 10, 2023, 12:28:16 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201209,'2374d962-6434-42b1-940e-c88d988e91a7',TO_TIMESTAMP('2023-04-10 12:28:16','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_Tree_Favorite_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:16','YYYY-MM-DD HH24:MI:SS'),100,200220,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:17 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201647,'3be534b7-de18-42fa-895f-390b0a2d408e',TO_TIMESTAMP('2023-04-10 12:28:16','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:16','YYYY-MM-DD HH24:MI:SS'),100,213057,201209,10)
+;
+
+-- Apr 10, 2023, 12:28:17 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201210,'dd2d5cb4-22b7-4b0f-ac2a-434647c4c417',TO_TIMESTAMP('2023-04-10 12:28:17','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_Tree_Favorite_Node_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:17','YYYY-MM-DD HH24:MI:SS'),100,200221,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:17 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201648,'d64ca537-b484-4ce3-9235-dbb23552626a',TO_TIMESTAMP('2023-04-10 12:28:17','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:17','YYYY-MM-DD HH24:MI:SS'),100,213068,201210,10)
+;
+
+-- Apr 10, 2023, 12:28:18 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201211,'28922182-880f-4562-b1ad-e82597bcf0c3',TO_TIMESTAMP('2023-04-10 12:28:17','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_UserDef_Info_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:17','YYYY-MM-DD HH24:MI:SS'),100,200266,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:18 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201649,'f15c4856-8ac5-4060-9017-0e911b319f6c',TO_TIMESTAMP('2023-04-10 12:28:18','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:18','YYYY-MM-DD HH24:MI:SS'),100,214245,201211,10)
+;
+
+-- Apr 10, 2023, 12:28:18 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201212,'077c06e5-7dee-4a31-815b-7807683d6d7c',TO_TIMESTAMP('2023-04-10 12:28:18','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_UserDef_Info_Column_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:18','YYYY-MM-DD HH24:MI:SS'),100,200268,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:19 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201650,'2edd6f4a-d5d3-41b4-b4eb-a7e27676b149',TO_TIMESTAMP('2023-04-10 12:28:18','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:18','YYYY-MM-DD HH24:MI:SS'),100,214283,201212,10)
+;
+
+-- Apr 10, 2023, 12:28:19 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201213,'3497b836-7a2f-45c3-93fd-9f80e58d241a',TO_TIMESTAMP('2023-04-10 12:28:19','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_UserDef_Info_Related_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:19','YYYY-MM-DD HH24:MI:SS'),100,200267,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:19 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201651,'71eaca16-ec27-4ff4-901c-bdc85ac7cb50',TO_TIMESTAMP('2023-04-10 12:28:19','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:19','YYYY-MM-DD HH24:MI:SS'),100,214261,201213,10)
+;
+
+-- Apr 10, 2023, 12:28:20 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201214,'611cb316-50f4-48f7-ba69-19c2ef3a5632',TO_TIMESTAMP('2023-04-10 12:28:19','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_UserDef_Proc_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:19','YYYY-MM-DD HH24:MI:SS'),100,200232,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:20 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201652,'40782a2d-ce2f-4ecc-b61d-9e973e84afc1',TO_TIMESTAMP('2023-04-10 12:28:20','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:20','YYYY-MM-DD HH24:MI:SS'),100,213261,201214,10)
+;
+
+-- Apr 10, 2023, 12:28:20 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201215,'bb1ba939-d33c-405a-86c6-034f4acf2759',TO_TIMESTAMP('2023-04-10 12:28:20','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','ad_userdef_proc_parameteruuidx',TO_TIMESTAMP('2023-04-10 12:28:20','YYYY-MM-DD HH24:MI:SS'),100,200233,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:21 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201653,'d93adead-25aa-4c68-8e71-cf77cb367d35',TO_TIMESTAMP('2023-04-10 12:28:20','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:20','YYYY-MM-DD HH24:MI:SS'),100,213279,201215,10)
+;
+
+-- Apr 10, 2023, 12:28:21 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201216,'837047ab-db14-48f0-9231-e3c859250f75',TO_TIMESTAMP('2023-04-10 12:28:21','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_UserPreference_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:21','YYYY-MM-DD HH24:MI:SS'),100,200174,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:21 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201654,'45e78d46-9c4f-4166-9246-52da3b6de2ac',TO_TIMESTAMP('2023-04-10 12:28:21','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:21','YYYY-MM-DD HH24:MI:SS'),100,212167,201216,10)
+;
+
+-- Apr 10, 2023, 12:28:21 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201217,'bf7d3555-7930-41cd-8499-11f8c116f93e',TO_TIMESTAMP('2023-04-10 12:28:21','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_VerifyMigration_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:21','YYYY-MM-DD HH24:MI:SS'),100,200382,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:22 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201655,'f877511d-264e-4570-861f-df2fe7ed1e7c',TO_TIMESTAMP('2023-04-10 12:28:21','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:21','YYYY-MM-DD HH24:MI:SS'),100,215749,201217,10)
+;
+
+-- Apr 10, 2023, 12:28:22 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201218,'449ffe1f-15f6-4c92-b271-fbf5d2ae1a38',TO_TIMESTAMP('2023-04-10 12:28:22','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','AD_WF_ActivityApprover_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:22','YYYY-MM-DD HH24:MI:SS'),100,200226,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:22 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201656,'e80bc6bf-b6d0-4e30-ac12-7848d1916cae',TO_TIMESTAMP('2023-04-10 12:28:22','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:22','YYYY-MM-DD HH24:MI:SS'),100,213228,201218,10)
+;
+
+-- Apr 10, 2023, 12:28:23 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201219,'996200c6-14bd-4741-8ec4-28ed978c518a',TO_TIMESTAMP('2023-04-10 12:28:22','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_Activity_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:22','YYYY-MM-DD HH24:MI:SS'),100,200116,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:23 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201657,'2243f374-b39d-49ce-8059-f9b43891a053',TO_TIMESTAMP('2023-04-10 12:28:23','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:23','YYYY-MM-DD HH24:MI:SS'),100,211064,201219,10)
+;
+
+-- Apr 10, 2023, 12:28:23 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201220,'5291495c-2f73-4204-a4fc-0be93c494026',TO_TIMESTAMP('2023-04-10 12:28:23','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_BankTransfer_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:23','YYYY-MM-DD HH24:MI:SS'),100,200246,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:24 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201658,'bb33caf9-d31e-4a62-b121-ff01e1de6c31',TO_TIMESTAMP('2023-04-10 12:28:23','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:23','YYYY-MM-DD HH24:MI:SS'),100,213646,201220,10)
+;
+
+-- Apr 10, 2023, 12:28:24 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201221,'e8405818-9860-4730-b472-56b9fa5631b9',TO_TIMESTAMP('2023-04-10 12:28:24','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_Campaign_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:24','YYYY-MM-DD HH24:MI:SS'),100,200117,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:24 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201659,'3fa97672-8d3f-4901-84e8-d784e72f4564',TO_TIMESTAMP('2023-04-10 12:28:24','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:24','YYYY-MM-DD HH24:MI:SS'),100,211077,201221,10)
+;
+
+-- Apr 10, 2023, 12:28:25 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201222,'673043f6-3a5a-4e28-8780-6e479dc10e4d',TO_TIMESTAMP('2023-04-10 12:28:24','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_CountryGroup_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:24','YYYY-MM-DD HH24:MI:SS'),100,200146,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:25 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201660,'52143da2-973b-485c-b3f2-9d1c07c28b4f',TO_TIMESTAMP('2023-04-10 12:28:25','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:25','YYYY-MM-DD HH24:MI:SS'),100,211628,201222,10)
+;
+
+-- Apr 10, 2023, 12:28:25 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201223,'59ba41c3-6c85-4370-89d7-de3cc97bb5fc',TO_TIMESTAMP('2023-04-10 12:28:25','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_CountryGroupCountry_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:25','YYYY-MM-DD HH24:MI:SS'),100,200145,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:26 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201661,'6fdc4bf8-87df-4e15-ad2c-f3fdfabea94b',TO_TIMESTAMP('2023-04-10 12:28:25','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:25','YYYY-MM-DD HH24:MI:SS'),100,211608,201223,10)
+;
+
+-- Apr 10, 2023, 12:28:26 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201224,'5dd56dc0-91e7-47c1-a9e8-78513fe9bffc',TO_TIMESTAMP('2023-04-10 12:28:26','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_DocBaseGroup_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:26','YYYY-MM-DD HH24:MI:SS'),100,200385,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:26 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201662,'7e8bc861-e705-4740-866b-a8e0e2841f32',TO_TIMESTAMP('2023-04-10 12:28:26','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:26','YYYY-MM-DD HH24:MI:SS'),100,215818,201224,10)
+;
+
+-- Apr 10, 2023, 12:28:27 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201225,'2933034d-9c1d-41e4-bb45-da6ddf5e9a36',TO_TIMESTAMP('2023-04-10 12:28:26','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_DocBaseGroupLine_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:26','YYYY-MM-DD HH24:MI:SS'),100,200386,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:27 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201663,'41ae3ba1-2dac-477c-8882-680b49199f68',TO_TIMESTAMP('2023-04-10 12:28:27','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:27','YYYY-MM-DD HH24:MI:SS'),100,215830,201225,10)
+;
+
+-- Apr 10, 2023, 12:28:27 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201226,'c5ef98ae-9a74-4f4c-8e31-4081917f6856',TO_TIMESTAMP('2023-04-10 12:28:27','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_RecurringGroup_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:27','YYYY-MM-DD HH24:MI:SS'),100,200143,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:28 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201664,'a709a44d-b280-4970-9403-b21fcc937cee',TO_TIMESTAMP('2023-04-10 12:28:27','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:27','YYYY-MM-DD HH24:MI:SS'),100,211580,201226,10)
+;
+
+-- Apr 10, 2023, 12:28:28 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201227,'8bab0d89-a4e6-471c-b49b-239e0a80a7aa',TO_TIMESTAMP('2023-04-10 12:28:28','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_Region_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:28','YYYY-MM-DD HH24:MI:SS'),100,200118,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:28 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201665,'1a6d9d83-4cff-4bee-b89a-41d1c3b5f99d',TO_TIMESTAMP('2023-04-10 12:28:28','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:28','YYYY-MM-DD HH24:MI:SS'),100,211089,201227,10)
+;
+
+-- Apr 10, 2023, 12:28:29 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201228,'770587d0-7f88-40e8-8e50-203fc8986176',TO_TIMESTAMP('2023-04-10 12:28:28','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_RevenueRecog_Service_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:28','YYYY-MM-DD HH24:MI:SS'),100,53888,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:29 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201666,'6931a7f1-2150-43c3-acdc-5befcdb76814',TO_TIMESTAMP('2023-04-10 12:28:29','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:29','YYYY-MM-DD HH24:MI:SS'),100,213821,201228,10)
+;
+
+-- Apr 10, 2023, 12:28:29 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201229,'5164e2bd-632d-4eeb-a1d5-db90428ae96c',TO_TIMESTAMP('2023-04-10 12:28:29','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_SalesRegion_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:29','YYYY-MM-DD HH24:MI:SS'),100,200119,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:30 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201667,'adcbe450-3431-4dd7-b51d-e39362341761',TO_TIMESTAMP('2023-04-10 12:28:29','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:29','YYYY-MM-DD HH24:MI:SS'),100,211102,201229,10)
+;
+
+-- Apr 10, 2023, 12:28:30 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201230,'03742937-635a-49d7-a173-22c6117a9161',TO_TIMESTAMP('2023-04-10 12:28:30','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_SalesStage_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:30','YYYY-MM-DD HH24:MI:SS'),100,200124,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:30 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201668,'78e1222d-1076-416d-8543-eff31710a40f',TO_TIMESTAMP('2023-04-10 12:28:30','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:30','YYYY-MM-DD HH24:MI:SS'),100,211167,201230,10)
+;
+
+-- Apr 10, 2023, 12:28:30 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201231,'343032ca-c833-4236-8c81-4a813b29fb8f',TO_TIMESTAMP('2023-04-10 12:28:30','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','GL_Category_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:30','YYYY-MM-DD HH24:MI:SS'),100,200111,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:31 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201669,'3d496d0b-6248-4748-967d-6d1d40cd3828',TO_TIMESTAMP('2023-04-10 12:28:30','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:30','YYYY-MM-DD HH24:MI:SS'),100,210998,201231,10)
+;
+
+-- Apr 10, 2023, 12:28:31 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201232,'1539babd-5cd0-43bc-bdb6-7cfc5143fb4d',TO_TIMESTAMP('2023-04-10 12:28:31','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','MFA_Method_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:31','YYYY-MM-DD HH24:MI:SS'),100,200273,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:32 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201670,'0b313020-ead9-4d5e-bd76-bc8a8c396722',TO_TIMESTAMP('2023-04-10 12:28:31','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:31','YYYY-MM-DD HH24:MI:SS'),100,214437,201232,10)
+;
+
+-- Apr 10, 2023, 12:28:32 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201233,'74660870-9b82-4cc9-b909-2f18e3f74d44',TO_TIMESTAMP('2023-04-10 12:28:32','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','MFA_RegisteredDevice_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:32','YYYY-MM-DD HH24:MI:SS'),100,200274,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:32 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201671,'455b75f6-1ffc-45b2-9aa8-a64a3808986a',TO_TIMESTAMP('2023-04-10 12:28:32','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:32','YYYY-MM-DD HH24:MI:SS'),100,214456,201233,10)
+;
+
+-- Apr 10, 2023, 12:28:32 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201234,'5ec6f87b-7300-4079-8911-62c2cb4f35fa',TO_TIMESTAMP('2023-04-10 12:28:32','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','MFA_Registration_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:32','YYYY-MM-DD HH24:MI:SS'),100,200275,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:33 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201672,'b454ec37-6750-4b66-a84e-d623cdaa6c38',TO_TIMESTAMP('2023-04-10 12:28:32','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:32','YYYY-MM-DD HH24:MI:SS'),100,214471,201234,10)
+;
+
+-- Apr 10, 2023, 12:28:33 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201235,'3b105bef-6bae-4be3-9ed0-84752d2beaa5',TO_TIMESTAMP('2023-04-10 12:28:33','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','MFA_Rule_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:33','YYYY-MM-DD HH24:MI:SS'),100,200276,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:33 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201673,'d2e64f14-d904-4649-816d-7bf640629f75',TO_TIMESTAMP('2023-04-10 12:28:33','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:33','YYYY-MM-DD HH24:MI:SS'),100,214490,201235,10)
+;
+
+-- Apr 10, 2023, 12:28:34 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201236,'6aebc586-1283-4524-9e6d-d2c56411c3aa',TO_TIMESTAMP('2023-04-10 12:28:33','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','M_PriceList_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:33','YYYY-MM-DD HH24:MI:SS'),100,200120,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:34 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201674,'456c0bce-fa86-42d9-85c9-ab60f57e991e',TO_TIMESTAMP('2023-04-10 12:28:34','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:34','YYYY-MM-DD HH24:MI:SS'),100,211115,201236,10)
+;
+
+-- Apr 10, 2023, 12:28:34 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201237,'0e017668-e6c0-4357-873e-ec6738821111',TO_TIMESTAMP('2023-04-10 12:28:34','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','M_PriceList_Version_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:34','YYYY-MM-DD HH24:MI:SS'),100,200121,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:35 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201675,'e9449225-72f6-4638-b488-6eae87b267b6',TO_TIMESTAMP('2023-04-10 12:28:34','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:34','YYYY-MM-DD HH24:MI:SS'),100,211127,201237,10)
+;
+
+-- Apr 10, 2023, 12:28:35 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201238,'d277d731-0ecc-434c-99d4-8cf5f49bf14d',TO_TIMESTAMP('2023-04-10 12:28:35','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','M_Product_Category_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:35','YYYY-MM-DD HH24:MI:SS'),100,200112,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:35 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201676,'58e4634e-6a01-465d-b96c-451db6480c51',TO_TIMESTAMP('2023-04-10 12:28:35','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:35','YYYY-MM-DD HH24:MI:SS'),100,211012,201238,10)
+;
+
+-- Apr 10, 2023, 12:28:36 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201239,'ef7384cc-31d0-4b25-bd21-fc84cb39f840',TO_TIMESTAMP('2023-04-10 12:28:36','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','M_StorageReservationLog_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:36','YYYY-MM-DD HH24:MI:SS'),100,200281,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:36 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201677,'29c2fa87-7582-4fda-92b3-827dc21ab984',TO_TIMESTAMP('2023-04-10 12:28:36','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:36','YYYY-MM-DD HH24:MI:SS'),100,214605,201239,10)
+;
+
+-- Apr 10, 2023, 12:28:37 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201240,'f5455196-57a3-4c7d-851b-ab2232dcc71e',TO_TIMESTAMP('2023-04-10 12:28:36','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','PA_DocumentStatus_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:36','YYYY-MM-DD HH24:MI:SS'),100,200216,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:37 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201678,'cf627622-c6aa-4518-b619-f9474a3cb254',TO_TIMESTAMP('2023-04-10 12:28:37','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:37','YYYY-MM-DD HH24:MI:SS'),100,213007,201240,10)
+;
+
+-- Apr 10, 2023, 12:28:37 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201241,'37c3f556-1baf-4dbd-8a3a-fd416cfdc9b3',TO_TIMESTAMP('2023-04-10 12:28:37','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','PA_DocumentStatusAccess_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:37','YYYY-MM-DD HH24:MI:SS'),100,200278,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:37 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201679,'9b51bde4-32c4-4d9a-b29a-af420b890d08',TO_TIMESTAMP('2023-04-10 12:28:37','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:37','YYYY-MM-DD HH24:MI:SS'),100,214529,201241,10)
+;
+
+-- Apr 10, 2023, 12:28:38 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201242,'b4ef1f86-7829-41cd-828c-95a341b76c9c',TO_TIMESTAMP('2023-04-10 12:28:37','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','PA_DocumentStatus_Trl_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:37','YYYY-MM-DD HH24:MI:SS'),100,200217,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:38 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201680,'20cfd6cd-2581-4392-ab0e-1e6c9a0ec9b7',TO_TIMESTAMP('2023-04-10 12:28:38','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:38','YYYY-MM-DD HH24:MI:SS'),100,213010,201242,10)
+;
+
+-- Apr 10, 2023, 12:28:38 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201243,'e5e55d21-cdb4-403c-a940-3df970d59728',TO_TIMESTAMP('2023-04-10 12:28:38','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','TestUU_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:38','YYYY-MM-DD HH24:MI:SS'),100,200383,'Y','Y','N','Y')
+;
+
+-- Apr 10, 2023, 12:28:39 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201681,'2704f844-fd63-485e-8ae5-9b27080a229c',TO_TIMESTAMP('2023-04-10 12:28:38','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:38','YYYY-MM-DD HH24:MI:SS'),100,215785,201243,10)
+;
+
+-- Apr 10, 2023, 12:28:39 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201244,'a8fe46d6-949a-4cf1-b383-c1267917276d',TO_TIMESTAMP('2023-04-10 12:28:39','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','TestUUDet_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:39','YYYY-MM-DD HH24:MI:SS'),100,200384,'Y','Y','N','Y')
+;
+
+-- Apr 10, 2023, 12:28:39 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201682,'0bb1ec9a-a75b-4f25-be3d-8dc34b25786e',TO_TIMESTAMP('2023-04-10 12:28:39','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:39','YYYY-MM-DD HH24:MI:SS'),100,215802,201244,10)
+;
+
+-- Apr 10, 2023, 12:28:40 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201245,'74f168d1-8007-4e77-9b29-c5f200f369e5',TO_TIMESTAMP('2023-04-10 12:28:39','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','T_TrialBalance_uu_idx',TO_TIMESTAMP('2023-04-10 12:28:39','YYYY-MM-DD HH24:MI:SS'),100,753,'Y','Y','N','N')
+;
+
+-- Apr 10, 2023, 12:28:40 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201683,'d1f19e90-0342-4a9f-86bb-32b7d6f1e14b',TO_TIMESTAMP('2023-04-10 12:28:40','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-04-10 12:28:40','YYYY-MM-DD HH24:MI:SS'),100,215730,201245,10)
+;
+
