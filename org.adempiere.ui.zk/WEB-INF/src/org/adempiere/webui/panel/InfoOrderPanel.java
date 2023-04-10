@@ -515,7 +515,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 	public void zoom()
 	{
 		log.info("");
-		Integer C_Order_ID = (Integer) getSelectedRowKey();
+		Integer C_Order_ID = getSelectedRowKey();
 		if (C_Order_ID == null)
 			return;
 		MQuery query = new MQuery("C_Order");

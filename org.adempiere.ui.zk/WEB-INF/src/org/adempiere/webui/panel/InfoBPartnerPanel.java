@@ -510,7 +510,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
                 C_BPartner_Location_ID = ((KeyNamePair)data).getKey();
         }
         //  publish for Callout to read
-        Integer ID = (Integer) getSelectedRowKey();
+        Integer ID = getSelectedRowKey();
         Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "C_BPartner_ID", ID == null ? "0" : ID.toString());
         Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "AD_User_ID", String.valueOf(AD_User_ID));
         Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "C_BPartner_Location_ID", String.valueOf(C_BPartner_Location_ID));
@@ -524,7 +524,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 	protected void showHistory()
 	{
 		log.info("");
-		Integer C_BPartner_ID = (Integer) getSelectedRowKey();
+		Integer C_BPartner_ID = getSelectedRowKey();
 		if (C_BPartner_ID == null)
 			return;
 		InvoiceHistory ih = new InvoiceHistory (this, C_BPartner_ID.intValue(), 
@@ -548,7 +548,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 	public void zoom()
 	{
 		log.info( "InfoBPartner.zoom");
-		Integer C_BPartner_ID = (Integer) getSelectedRowKey();
+		Integer C_BPartner_ID = getSelectedRowKey();
 		if (C_BPartner_ID == null)
 			return;
 	//	AEnv.zoom(MBPartner.Table_ID, C_BPartner_ID.intValue(), true);	//	SO

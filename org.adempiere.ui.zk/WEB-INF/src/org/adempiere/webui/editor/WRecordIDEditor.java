@@ -262,16 +262,18 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 		if (GridField.PROPERTY.equals(evt.getPropertyName()))
 		{
 			int tableID =  tableIDValue != null ? Integer.parseInt(String.valueOf(tableIDValue)) : 0;
-			MTable table = MTable.get(tableID);
-			if (table.isUUIDKeyTable()) {
-				String recordUU = Objects.toString(evt.getNewValue(), "");
-				if (tableID > 0 && recordUU.length() > 0)
-					table.getPOByUU(recordUU, null);	// calls po.checkCrossTenant() method
-				
-			} else {
-				int recordID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
-				if (tableID > 0 && recordID >= 0)
-					table.getPO(recordID, null);	// calls po.checkCrossTenant() method
+			if (tableID > 0) {
+				MTable table = MTable.get(tableID);
+				if (table.isUUIDKeyTable()) {
+					String recordUU = Objects.toString(evt.getNewValue(), "");
+					if (tableID > 0 && recordUU.length() > 0)
+						table.getPOByUU(recordUU, null);	// calls po.checkCrossTenant() method
+					
+				} else {
+					int recordID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
+					if (tableID > 0 && recordID >= 0)
+						table.getPO(recordID, null);	// calls po.checkCrossTenant() method
+				}
 			}
 			setValue(evt.getNewValue(), false);
 		}
@@ -300,14 +302,16 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			}
 			if(value != null && tableIDValue != null) {
 				int tableID = Integer.parseInt(String.valueOf(tableIDValue));
-				MTable table = MTable.get(tableID);
-				Object recordID;
-				if (table.isUUIDKeyTable())
-					recordID = value.toString();
-				else
-					recordID = Integer.parseInt(String.valueOf(value));
-				if(recordID != null && tableID > 0)
-					recordTextBox.setValue(getIdentifier(tableID, recordID));
+				if (tableID > 0) {
+					MTable table = MTable.get(tableID);
+					Object recordID;
+					if (table.isUUIDKeyTable())
+						recordID = value.toString();
+					else
+						recordID = Integer.parseInt(String.valueOf(value));
+					if(recordID != null && tableID > 0)
+						recordTextBox.setValue(getIdentifier(tableID, recordID));
+				}
 			}
 		}
 
@@ -315,7 +319,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			&& 
 			 (     (value == null && recordIDValue != null) 
 				|| (value != null && recordIDValue == null) 
-				|| !value.equals(recordIDValue)
+				|| (value != null && !value.equals(recordIDValue))
 			 )) {
 			// Record_ID
 			ValueChangeEvent changeEvent = new ValueChangeEvent(this, this.getColumnName(), recordIDValue, value);

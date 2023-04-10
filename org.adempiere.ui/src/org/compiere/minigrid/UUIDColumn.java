@@ -29,7 +29,7 @@ package org.compiere.minigrid;
 * UUID Column for MiniGrid allows to select a column and maintains the record UUID
 * @author Carlos Ruiz - globalqss - bxservice
 */
-public class UUIDColumn
+public class UUIDColumn implements SelectableIDColumn
 {
 	/**
 	 *  UUID Column constructor

@@ -1138,7 +1138,7 @@ public final class DisplayType
 		case RecordID:
 			return "RecordID";
 		case RecordUU:
-			return "RecordUU";
+			return "RecordUUID";
 		case RowID:
 			return "RowID";
 		case SchedulerState:

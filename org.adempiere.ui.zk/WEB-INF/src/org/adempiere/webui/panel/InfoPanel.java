@@ -18,6 +18,7 @@
 package org.adempiere.webui.panel;
 
 import java.awt.event.MouseEvent;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -1514,7 +1515,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		}
 		else    //  singleSelection
 		{
-			Object data = getSelectedRowKey();
+			Serializable data = getSelectedRowKey();
 			if (data != null)
 				m_results.add(data);
 		}
@@ -1530,9 +1531,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 *  Get the key of currently selected row
 	 *  @return selected key
 	 */
-	protected Object getSelectedRowKey()
+	protected <T extends Serializable> T getSelectedRowKey()
 	{
-		Object key = contentPanel.getSelectedRowKey();
+		T key = contentPanel.getSelectedRowKey();
 
 		return key;
 	}   //  getSelectedRowKey

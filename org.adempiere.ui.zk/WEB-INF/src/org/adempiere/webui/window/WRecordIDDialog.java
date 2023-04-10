@@ -232,10 +232,12 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 	public void valueChange(ValueChangeEvent evt) {
 		if (evt.getSource().equals(tableIDEditor)) {
 			int tableID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
-			MTable table = MTable.get(tableID);
-			if (table.isUUIDKeyTable()) {
-				if (! editor.getColumnName().endsWith("_UU"))
-					throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "UUTableNotCompatibleWithRecordID"));
+			if (tableID > 0) {
+				MTable table = MTable.get(tableID);
+				if (table.isUUIDKeyTable()) {
+					if (! editor.getColumnName().endsWith("_UU"))
+						throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "UUTableNotCompatibleWithRecordID"));
+				}
 			}
 
 			// the Record_ID should be cleared when a different AD_Table_ID is selected

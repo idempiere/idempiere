@@ -90,6 +90,7 @@ import org.adempiere.webui.window.Dialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.EmbedWinInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.SelectableIDColumn;
 import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.model.GridField;
@@ -2882,21 +2883,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				Object col0 = contentPanel.getValueAt(row, 0);
 				
-				if(col0 instanceof IDColumn)
+				if(col0 instanceof SelectableIDColumn)
 				{
-					IDColumn idc = (IDColumn)col0;
-					if(idc.isSelected())
-					{
-						cacheOriginalValues(row);
-					}
-					else
-					{
-						restoreOriginalValues(row);
-					}
-				}
-				else if(col0 instanceof UUIDColumn)
-				{
-					UUIDColumn idc = (UUIDColumn)col0;
+					SelectableIDColumn idc = (SelectableIDColumn)col0;
+
 					if(idc.isSelected())
 					{
 						cacheOriginalValues(row);

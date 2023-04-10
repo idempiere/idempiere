@@ -78,7 +78,7 @@ public class InfoAssetWindow extends InfoWindow {
 		super.saveSelectionDetail();
 
         //  publish for Callout to read
-        Integer ID = (Integer) getSelectedRowKey();
+        Integer ID = getSelectedRowKey();
         Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "A_Asset_ID", ID == null ? "0" : ID.toString());
 	}
 

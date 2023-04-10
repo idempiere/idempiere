@@ -55,7 +55,6 @@ import org.compiere.model.X_AD_Element;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
-import org.compiere.util.NamePair;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -373,11 +372,11 @@ public class QueryTest extends AbstractTestCase {
 		assertTrue(AD_PInstance_ID > 0);
 
 		// Create selection list
-		List<NamePair> elements = new ArrayList<NamePair> ();
+		List<KeyNamePair> elements = new ArrayList<KeyNamePair> ();
 		elements.add(new KeyNamePair(102, null)); // AD_Element_ID=102 => AD_Client_ID
 		elements.add(new KeyNamePair(104, null)); // AD_Element_ID=104 => AD_Column_ID
 		DB.executeUpdateEx("DELETE FROM T_Selection WHERE AD_PInstance_ID="+AD_PInstance_ID, getTrxName());
-		DB.createT_SelectionNewNP (AD_PInstance_ID, elements, getTrxName());
+		DB.createT_SelectionNew (AD_PInstance_ID, elements, getTrxName());
 		
 		String whereClause = "1=1"; // some dummy where clause
 		int[] ids = new Query(Env.getCtx(), X_AD_Element.Table_Name, whereClause, getTrxName())

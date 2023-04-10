@@ -467,15 +467,27 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), false, getWhereClause());
 		if (ip != null && ip.loadedOK() && ip.getRowCount() == 1)
 		{
-			Object key = ip.getFirstRowKey();
-			if (key != null && (key instanceof Integer && ((Integer)key).intValue() > 0 || key instanceof String && key.toString().length() > 0))
+			if (ip.getFirstRowKey() instanceof Integer)
 			{
-				id = key.toString();
+				Integer key = (Integer) ip.getFirstRowKey();
+				if (key != null && key.intValue() > 0)
+				{
+					id = key.intValue();
+				}
 			}
+			else
+			{
+				Object key = ip.getFirstRowKey();
+				if (key != null && key.toString().length() > 0)
+				{
+					id = key.toString();
+				}
+			}
+
 		}
 		
 		//	No (unique) result
-		if (id == null)
+		if (id == null || (id instanceof Integer && ((Integer) id).intValue() <= 0))
 		{
 			//m_value = null;	// force re-display
 			if (ip != null && ip.loadedOK()) 

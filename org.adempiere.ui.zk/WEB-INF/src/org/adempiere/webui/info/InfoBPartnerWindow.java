@@ -86,7 +86,7 @@ public class InfoBPartnerWindow extends InfoWindow {
 	protected void showHistory()
 	{
 		log.info("");
-		Integer C_BPartner_ID = (Integer) getSelectedRowKey();
+		Integer C_BPartner_ID = getSelectedRowKey();
 		if (C_BPartner_ID == null)
 			return;
 		InvoiceHistory ih = new InvoiceHistory (this, C_BPartner_ID.intValue(), 
@@ -105,7 +105,7 @@ public class InfoBPartnerWindow extends InfoWindow {
  		super.saveSelectionDetail();
 
         //  publish for Callout to read
-        Integer ID = (Integer) getSelectedRowKey();
+        Integer ID = getSelectedRowKey();
         Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "C_BPartner_ID", ID == null ? "0" : ID.toString());
 	}
 	

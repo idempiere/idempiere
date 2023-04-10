@@ -39,6 +39,7 @@ import org.adempiere.webui.event.TableValueChangeEvent;
 import org.adempiere.webui.event.TableValueChangeListener;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.SelectableIDColumn;
 import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.MImage;
 import org.compiere.util.DisplayType;
@@ -691,18 +692,11 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 				//update IDColumn
 				tableColumn = m_tableColumns.get(0);
 				for (int i = 0; i < cnt; i++) {
-					Boolean old;
-					if (table.getValueAt(i, 0) instanceof IDColumn) {
-						IDColumn idcolumn = (IDColumn) table.getValueAt(i, 0);
-						Listitem item = table.getItemAtIndex(i);
-						value = item.isSelected();
-						old = idcolumn.isSelected();
-					} else {
-						UUIDColumn uucolumn = (UUIDColumn) table.getValueAt(i, 0);
-						Listitem item = table.getItemAtIndex(i);
-						value = item.isSelected();
-						old = uucolumn.isSelected();
-					}
+					SelectableIDColumn idcolumn = (SelectableIDColumn) table.getValueAt(i, 0);
+					Listitem item = table.getItemAtIndex(i);
+
+					value = item.isSelected();
+					Boolean old = idcolumn.isSelected();
 
 					if (!old.equals(value)) {
 						vcEvent = new TableValueChangeEvent(source,
