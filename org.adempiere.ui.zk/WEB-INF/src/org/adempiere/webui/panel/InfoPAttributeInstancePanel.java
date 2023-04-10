@@ -332,7 +332,7 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
 		boolean enabled = row != -1;
 		if (enabled)
 		{
-			Integer ID = (Integer) m_table.getSelectedRowKey();
+			Integer ID = m_table.getSelectedRowKey();
 			if (ID != null)
 			{
 				m_M_AttributeSetInstance_ID = ID.intValue();

@@ -387,7 +387,7 @@ public class QueryTest extends AbstractTestCase {
 		
 		for (int i = 0; i < elements.size(); i++)
 		{
-			int expected = ((KeyNamePair)elements.get(i)).getKey();
+			int expected = elements.get(i).getKey();
 			assertEquals(expected, ids[i], "Element "+i+" not equals");
 		}
 	}

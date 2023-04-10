@@ -396,7 +396,7 @@ public class InfoAssignmentPanel extends InfoPanel implements EventListener<Even
 	
 	public void zoom()
 	{
-		if (getSelectedRowKey() != null && (Integer)getSelectedRowKey() > 0)
+		if (getSelectedRowKey() != null && getSelectedRowKey() instanceof Integer && (Integer)getSelectedRowKey() > 0)
 		{
 			MQuery zoomQuery = new MQuery();   //  ColumnName might be changed in MTab.validateQuery
 	        String column = getKeyColumn();
