@@ -235,12 +235,24 @@ public class CreateTable extends SvrProcess {
 			createColumn(table, elementID.getColumnName());
 		}
 
+		String uucolName = PO.getUUIDColumnName(p_tableName);
 		M_Element elementUU = M_Element.get(getCtx(), p_tableName + "_UU");
 		if (elementUU == null) { // Create Element <TableName> + _UU
-			elementUU = new M_Element(getCtx(), p_tableName + "_UU", p_entityType, get_TrxName());
+			elementUU = new M_Element(getCtx(), uucolName, p_entityType, get_TrxName());
 			elementUU.saveEx();
 		}
-		createColumn(table, elementUU.getColumnName());
+		if (createColumn(table, elementUU.getColumnName()) > 0) {
+			// UUID Index and Constraint
+			MTableIndex tiuu = new MTableIndex(table, table.getTableName() + "_uu_idx");
+			tiuu.setIsCreateConstraint(true);
+			tiuu.setIsUnique(true);
+			tiuu.setIsKey(table.isUUIDKeyTable());
+			tiuu.saveEx();
+
+			MColumn uuColumn = getColumn(table, uucolName);
+			MIndexColumn icuu = new MIndexColumn(tiuu, uuColumn, 10);
+			icuu.saveEx();
+		}
 
 		if (p_isCreateColValue)
 			createColumn(table, "Value");
@@ -341,9 +353,9 @@ public class CreateTable extends SvrProcess {
 			ti.setIsKey(true);
 			ti.saveEx();
 			
-			MIndexColumn ic = new MIndexColumn(ti, new MColumn(getCtx(), colLanguageID, get_TrxName()), 1);
+			MIndexColumn ic = new MIndexColumn(ti, new MColumn(getCtx(), colLanguageID, get_TrxName()), 10);
 			ic.saveEx();
-			ic = new MIndexColumn(ti, new MColumn(getCtx(), colElementID, get_TrxName()), 2);
+			ic = new MIndexColumn(ti, new MColumn(getCtx(), colElementID, get_TrxName()), 20);
 			ic.saveEx();
 			
 			addLog(Msg.getMsg(getCtx(), "TrlCreatedSyncColumnValidateIndex"));
