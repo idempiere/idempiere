@@ -45,9 +45,12 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Toolbar;
 
+/**
+ * Dashboard gadget for {@link WDocumentStatusPanel} 
+ */
 public class DPDocumentStatus extends DashboardPanel implements EventListener<Event> {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7904122964566112177L;
 	private WDocumentStatusPanel statusPanel;
@@ -63,6 +66,9 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 		statusPanel.updateUI();
 	}
 
+	/**
+	 * Default constructor
+	 */
 	public DPDocumentStatus()
 	{
 		super();
@@ -94,6 +100,7 @@ public class DPDocumentStatus extends DashboardPanel implements EventListener<Ev
 		}
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		String eventName = event.getName();
 

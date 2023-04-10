@@ -48,21 +48,22 @@ import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabpanels;
 
 /**
- * A Tabbed MDI implementation
+ * Abstract base class for Tabbed MDI implementation
  * @author hengsin
- *
  */
 public abstract class TabbedDesktop extends AbstractDesktop {
-
+	/** Controller for open desktop windows. */
 	protected WindowContainer windowContainer;
 
+	/**
+	 * Default constructor
+	 */
 	public TabbedDesktop() {
 		super();
 		windowContainer = new WindowContainer();
 	}
 
 	/**
-     *
      * @param processId
      * @param soTrx
      * @return ProcessDialog
@@ -83,9 +84,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	}
 
     /**
-     *
      * @param formId
-     * @return ADWindow
+     * @return ADForm
      */
 	public ADForm openForm(int formId) {
 		ADForm form = ADForm.openForm(formId, null, null, getPredefinedContextVariables(), isMenuSOTrx());
@@ -107,7 +107,6 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	}
 
 	/**
-	 *
 	 * @param infoId
 	 */
 	@Override
@@ -128,7 +127,6 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	}
 	
 	/**
-	 *
 	 * @param workflow_ID
 	 */
 	public void openWorkflow(int workflow_ID) {
@@ -142,7 +140,6 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	}
 	
 	/**
-	 *
 	 * @param windowId
 	 * @param callback
 	 */
@@ -151,7 +148,6 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	}
 
 	/**
-	 *
 	 * @param windowId
      * @param query
      * @param callback
@@ -173,7 +169,6 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	}
 
 	/**
-     *
      * @param taskId
      */
 	public void openTask(int taskId) {
@@ -190,7 +185,6 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     }
 
 	/**
-	 *
 	 * @param url
 	 * @param title
 	 * @param closeable
@@ -202,7 +196,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     }
 
     /**
-     * @param content
+     * @param content HTML content
      * @param title
      * @param closeable
      */
@@ -218,8 +212,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     }
 
     /**
-     *
-     * @param fr
+     * @param fr Iframe
      * @param title
      * @param closeable
      */
@@ -268,7 +261,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	}
 
 	/**
-	 *
+	 * Show window in new tab
 	 * @param window
 	 */
 	protected void showEmbedded(Window window)
@@ -328,9 +321,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	}
 
 	/**
-	 *
 	 * @param windowNo
-	 * @return boolean
+	 * @return true if found and close
 	 */
 	public boolean closeWindow(int windowNo)
 	{
@@ -374,6 +366,9 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 	{
 	}
 	
+	/**
+	 * Runnable to create window content ({@link ADWindow#createPart(Object)})
+	 */
 	class OpenWindowRunnable implements Runnable {
 
 		private final ADWindow adWindow;
@@ -381,6 +376,12 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		private final DesktopTabpanel tabPanel;
 		private Callback<ADWindow> callback;
 
+		/**
+		 * @param adWindow
+		 * @param tab
+		 * @param tabPanel
+		 * @param callback
+		 */
 		protected OpenWindowRunnable(ADWindow adWindow, Tab tab, DesktopTabpanel tabPanel, Callback<ADWindow> callback) {
 			this.adWindow = adWindow;
 			this.tab = tab;
@@ -401,6 +402,10 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		}		
 	}
 
+	/**
+	 * @param title
+	 * @param windowNo 
+	 */
 	public void setTabTitle(String title, int windowNo) {
 		windowContainer.setTabTitle(title, windowNo);		
 	}

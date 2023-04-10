@@ -24,7 +24,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
- * Dashboard item: Performance Indicators
+ * Dashboard gadget: Performance Indicators
  * @author Elaine
  * @date November 20, 2008
  */
@@ -36,6 +36,7 @@ public class DPPerformance extends DashboardPanel {
 
 	/** performance chart panel */
 	private WPAPanel paPanel;
+	/** {@link MGoal} performance records */
 	private MGoal[] performanceData;
 	
 	/**

@@ -72,34 +72,56 @@ import org.zkoss.zul.Timer;
 import org.zkoss.zul.Toolbarbutton;
 
 /**
- * 
+ * Calendar window
  * @author Elaine
- *
  */
-public class CalendarWindow extends Window implements EventListener<Event>, ITabOnCloseHandler {
+public class CalendarWindow extends Window implements EventListener<Event>, ITabOnCloseHandler {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 1576992746053720647L;
 	private static final String ON_MOBILE_SET_SELECTED_TAB_ECHO = "onMobileSetSelectedTabEcho";
-
+	private static final String ON_MOVE_DATE_EVENT = "onMoveDate";
+	private static final String ON_UPDATE_VIEW_EVENT = "onUpdateView";
+	private static final String ON_MOUSE_OVER_EVENT = "onMouseOver";
+	private static final String ON_EVENT_UPDATE_EVENT = "onEventUpdate";
+	private static final String ON_EVENT_EDIT_EVENT = "onEventEdit";
+	private static final String ON_EVENT_CREATE_EVENT = "onEventCreate";
+	
+	/** Zk Calendar instance. Center of window. */
 	private Calendars calendars;
+	/** Calendar model for {@link #calendars} */
 	private SimpleCalendarModel scm;
+	/** Re-query button */
 	private Toolbarbutton btnRefresh;
+	/** List of request types */
 	private Listbox lbxRequestTypes;
+	/** Pie chart for calendar events. South of window. */
 	private Image myChart;
 	private Button btnCurrentDate, btnSwitchTimeZone;
+	/** Label for start and end date of current Calendar view */
 	private Label lblDate;
+	/** button to move Calendar to previous or next page */
 	private Component divArrowLeft, divArrowRight;
 	private Span FDOW;
+	/** List to select first day of a week (monday, tuesday, etc). Visible for week and month view. */
 	private Listbox lbxFDOW;
+	/** Tab for Day, Week, 5Day and Month view */
 	private Component divTabDay, divTabWeek, divTabWeekdays, divTabMonth;
+	/** Message Popup */
 	private Popup updateMsg;
+	/** Content of {@link #updateMsg} */
 	private	Label popupLabel;
+	/** Timer to close {@link #updateMsg} */
 	private Timer timer;
 	
+	/** Window for event */
 	private EventWindow eventWin;
 	
+	/**
+	 * Create window content from "zul/calendar/calendar.zul"
+	 * @param scm SimpleCalendarModel
+	 */
 	public CalendarWindow(SimpleCalendarModel scm) {
 
 		super();
@@ -112,7 +134,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		Component component = Executions.createComponents(ThemeManager.getThemeResource("zul/calendar/calendar.zul"), this, null);
 
 		Borderlayout borderlayout = (Borderlayout) component.getFellow("main");
-		borderlayout.setStyle("position: absolute");
+		borderlayout.setStyle("position: relative");
 		ZKUpdateUtil.setWidth(borderlayout, "100%");
 		ZKUpdateUtil.setHeight(borderlayout, "100%");
 
@@ -147,10 +169,10 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		lblDate.addEventListener(Events.ON_CREATE, this);
 		
 		divArrowLeft = component.getFellow("divArrowLeft");
-		divArrowLeft.addEventListener("onMoveDate", this);
+		divArrowLeft.addEventListener(ON_MOVE_DATE_EVENT, this);
 		
 		divArrowRight = component.getFellow("divArrowRight");
-		divArrowRight.addEventListener("onMoveDate", this);
+		divArrowRight.addEventListener(ON_MOVE_DATE_EVENT, this);
 		
 		FDOW = (Span) component.getFellow("FDOW");
 		FDOW.addEventListener(Events.ON_CREATE, this);
@@ -165,16 +187,16 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		}
 		
 		divTabDay = component.getFellow("divTabDay");
-		divTabDay.addEventListener("onUpdateView", this);
+		divTabDay.addEventListener(ON_UPDATE_VIEW_EVENT, this);
 		
 		divTabWeek = component.getFellow("divTabWeek");
-		divTabWeek.addEventListener("onUpdateView", this);
+		divTabWeek.addEventListener(ON_UPDATE_VIEW_EVENT, this);
 		
 		divTabWeekdays = component.getFellow("divTabWeekdays");
-		divTabWeekdays.addEventListener("onUpdateView", this);
+		divTabWeekdays.addEventListener(ON_UPDATE_VIEW_EVENT, this);
 		
 		divTabMonth = component.getFellow("divTabMonth");
-		divTabMonth.addEventListener("onUpdateView", this);
+		divTabMonth.addEventListener(ON_UPDATE_VIEW_EVENT, this);
 		
 		updateMsg = (Popup) component.getFellow("updateMsg");
 		
@@ -184,10 +206,10 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		
 		this.appendChild(component);
 
-		calendars.addEventListener("onEventCreate", this);
-		calendars.addEventListener("onEventEdit", this);
-		calendars.addEventListener("onEventUpdate", this);
-		calendars.addEventListener("onMouseOver", this);
+		calendars.addEventListener(ON_EVENT_CREATE_EVENT, this);
+		calendars.addEventListener(ON_EVENT_EDIT_EVENT, this);
+		calendars.addEventListener(ON_EVENT_UPDATE_EVENT, this);
+		calendars.addEventListener(ON_MOUSE_OVER_EVENT, this);
 
 		if (ClientInfo.isMobile()) {
 			addCallback(AFTER_PAGE_ATTACHED, t -> afterPageAttached());
@@ -203,6 +225,10 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		}				
 	}
 
+	/**
+	 * After page attached callback for mobile client. <br/>
+	 * Setup listener for {@link WindowContainer#ON_MOBILE_SET_SELECTED_TAB} event.
+	 */
 	private void afterPageAttached() {
 		Component p = getParent();
 		while (p != null) {
@@ -214,10 +240,15 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		}
 	}
 
+	/**
+	 * {@link WindowContainer#ON_MOBILE_SET_SELECTED_TAB} event.<br/>
+	 * Echo {@link #ON_MOBILE_SET_SELECTED_TAB_ECHO} event to redraw {@link #calendars}.
+	 */
 	private void onMobileSelected() {
 		Events.echoEvent(ON_MOBILE_SET_SELECTED_TAB_ECHO, this, null);
 	}
 
+	@Override
 	public void onClose(Tabpanel tabPanel){
 		//IDEMPIERE-1457: On close, remove calendars away scm			
 		calendars.setModel(null);
@@ -225,6 +256,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		tab.close();
 	}
 
+	@Override
 	public void onEvent(Event e) throws Exception {
 		String type = e.getName();
 
@@ -246,13 +278,13 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 			else if (e.getTarget() == lbxFDOW)
 				lbxFDOW.setSelectedIndex(0);
 		}
-		else if (type.equals("onMoveDate")) {
+		else if (type.equals(ON_MOVE_DATE_EVENT)) {
 			if (e.getTarget() == divArrowLeft)
 				divArrowClicked(false);
 			else if (e.getTarget() == divArrowRight)
 				divArrowClicked(true);
 		}
-		else if (type.equals("onUpdateView")) {
+		else if (type.equals(ON_UPDATE_VIEW_EVENT)) {
 			String text = String.valueOf(e.getData());
 			int days = Msg.getMsg(Env.getCtx(),"Day").equals(text) ? 1: Msg.getMsg(Env.getCtx(),"5Days").equals(text) ? 5: Msg.getMsg(Env.getCtx(),"Week").equals(text) ? 7: 0;
 			divTabClicked(days);
@@ -278,14 +310,14 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 				syncModel();
 			}
 		}
-		else if (type.equals("onEventCreate")) {
+		else if (type.equals(ON_EVENT_CREATE_EVENT)) {
 			if (e instanceof CalendarsEvent) {
 				CalendarsEvent calendarsEvent = (CalendarsEvent) e;
 				RequestWindow requestWin = new RequestWindow(calendarsEvent, this);
 				SessionManager.getAppDesktop().showWindow(requestWin);
 			}
 		}	
-		else if (type.equals("onEventEdit")) {
+		else if (type.equals(ON_EVENT_EDIT_EVENT)) {
 			if (e instanceof CalendarsEvent) {
 				CalendarsEvent calendarsEvent = (CalendarsEvent) e;
 				CalendarEvent calendarEvent = calendarsEvent.getCalendarEvent();
@@ -300,7 +332,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 				}
 			}
 		}
-		else if (type.equals("onEventUpdate")) {
+		else if (type.equals(ON_EVENT_UPDATE_EVENT)) {
 			if (e instanceof CalendarsEvent)
 			{
 				CalendarsEvent evt = (CalendarsEvent) e;
@@ -329,6 +361,9 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		}
 	}
 	
+	/**
+	 * Update {@link #myChart}
+	 */
 	private void syncModel() {
 		Hashtable<String,BigDecimal> ht = new Hashtable<String,BigDecimal>();
 		
@@ -362,6 +397,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 			pieDataset.setValue(name == null ? "" : name, Double.valueOf(size > 0 ? value.doubleValue()/size*100 : 0));
 		}
 		
+		//TODO replace with billboard chart
 		JFreeChart chart = ChartFactory.createPieChart(Msg.getMsg(Env.getCtx(),"EventsAnalysis"), pieDataset, true, true, true);
 		PiePlot plot = (PiePlot) chart.getPlot(); 
 		plot.setForegroundAlpha(0.5f);
@@ -377,10 +413,16 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		ht = null;
 	}
 	
+	/**
+	 * Refresh model and UI
+	 */
 	public void onRefresh() {
 		btnRefreshClicked();
 	}
 	
+	/**
+	 * Refresh model and UI
+	 */
 	private void btnRefreshClicked() {
 		int R_RequestType_ID = 0;
 		Listitem li = lbxRequestTypes.getSelectedItem();
@@ -411,6 +453,9 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		syncModel();
 	}
 	
+	/**
+	 * Set time zone of {@link #calendars}
+	 */
 	private void setTimeZone()
 	{
 		String alternateTimeZone = MSysConfig.getValue(MSysConfig.CALENDAR_ALTERNATE_TIMEZONE, "Pacific Time=PST", Env.getAD_Client_ID(Env.getCtx()));
@@ -424,6 +469,9 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		}
 	}
 	
+	/**
+	 * Update {@link #lblDate}
+	 */
 	private void updateDateLabel() {
 		Date b = calendars.getBeginDate();
 		Date e = calendars.getEndDate();
@@ -432,12 +480,18 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		lblDate.setValue(sdfV.format(b) + " - " + sdfV.format(e));
 	}
 	
+	/**
+	 * Set {@link #calendars} to current date
+	 */
 	private void btnCurrentDateClicked() {
 		calendars.setCurrentDate(Calendar.getInstance(calendars.getDefaultTimeZone()).getTime());
 		updateDateLabel();
 		syncModel();
 	}
 	
+	/**
+	 * Change {@link #calendars} time zone
+	 */
 	private void btnSwitchTimeZoneClicked() {
 		Map<?, ?> zone = calendars.getTimeZones();
 		if (!zone.isEmpty()) {
@@ -449,6 +503,10 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		syncModel();
 	}
 
+	/**
+	 * Move {@link #calendars} to next or previous page
+	 * @param isNext true for next page, false for previous page
+	 */
 	private void divArrowClicked(boolean isNext) {
 		if (isNext)
 			calendars.nextPage();
@@ -458,6 +516,10 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		syncModel();
 	}
 	
+	/**
+	 * On switching of calendar view (Days, Weeks, etc)
+	 * @param days
+	 */
 	private void divTabClicked(int days) {		
 		if (days > 0) {
 			calendars.setMold("default");
