@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Style
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_Style 
 {
@@ -144,6 +144,19 @@ public interface I_AD_Style
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsWrapWithSpan */
+    public static final String COLUMNNAME_IsWrapWithSpan = "IsWrapWithSpan";
+
+	/** Set Wrap With Span.
+	  * Wrap content in Span and apply the Style to it.
+	  */
+	public void setIsWrapWithSpan (boolean IsWrapWithSpan);
+
+	/** Get Wrap With Span.
+	  * Wrap content in Span and apply the Style to it.
+	  */
+	public boolean isWrapWithSpan();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

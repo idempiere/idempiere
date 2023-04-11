@@ -63,9 +63,11 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pdf.Document;
 import org.adempiere.print.export.PrintDataExcelExporter;
 import org.adempiere.print.export.PrintDataXLSXExporter;
+import org.apache.ecs.MultiPartElement;
 import org.apache.ecs.XhtmlDocument;
 import org.apache.ecs.xhtml.a;
 import org.apache.ecs.xhtml.script;
+import org.apache.ecs.xhtml.span;
 import org.apache.ecs.xhtml.style;
 import org.apache.ecs.xhtml.table;
 import org.apache.ecs.xhtml.tbody;
@@ -994,29 +996,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						{
 							td td = new td();
 							tr.addElement(td);
-							//set style
-							int AD_FieldStyle_ID = item.getAD_FieldStyle_ID();
-							if(AD_FieldStyle_ID > 0) {
-								MStyle style = MStyle.get(Env.getCtx(), AD_FieldStyle_ID);
-								X_AD_StyleLine[] lines = style.getStyleLines();
-								StringBuilder styleBuilder = new StringBuilder();
-								for (X_AD_StyleLine line : lines)
-								{
-									String inlineStyle = line.getInlineStyle().trim();
-									String displayLogic = line.getDisplayLogic();
-									if (!Util.isEmpty(displayLogic))
-									{
-										if (!Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), displayLogic))
-											continue;
-									}
-									if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
-										styleBuilder.append("; ");
-									styleBuilder.append(inlineStyle);
-								}
-								if(styleBuilder.length() > 0)
-									td.setStyle(styleBuilder.toString());
-							}
-							//
+							MStyle style = item.getAD_FieldStyle_ID() > 0 ? MStyle.get(Env.getCtx(), item.getAD_FieldStyle_ID()) : null;
 							Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
 									: m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 							if (obj == null || !isDisplayPFItem(item)){
@@ -1116,21 +1096,46 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 									}
 									if (isZoom) {
 										//link for column
-										a href = new a("javascript:void(0)");									
+										a href = new a("javascript:void(0)");
 										href.setID(pde.getColumnName() + "_" + row + "_a");									
 										td.addElement(href);
 										href.addElement(Util.maskHTML(value));
 										if (cssPrefix != null)
 											href.setClass(cssPrefix + "-href");
+										// Set Style
+										if(style != null && style.isWrapWithSpan())
+											setStyle(href, style);
+										else
+											setStyle(td, style);
 										extension.extendIDColumn(row, td, href, pde);
 									} else {
-										td.addElement(Util.maskHTML(value));
+										// Set Style
+										if(style != null && style.isWrapWithSpan()) {
+											span span = new span();
+											setStyle(span, style);
+											span.addElement(Util.maskHTML(value));
+											td.addElement(span);
+										}
+										else {
+											setStyle(td, style);
+											td.addElement(Util.maskHTML(value));
+										}
 									}
 
 								}
 								else
 								{
-									td.addElement(Util.maskHTML(value));
+									// Set Style
+									if(style != null && style.isWrapWithSpan()) {
+										span span = new span();
+										setStyle(span, style);
+										span.addElement(Util.maskHTML(value));
+										td.addElement(span);
+									}
+									else {
+										setStyle(td, style);
+										td.addElement(Util.maskHTML(value));
+									}
 								}
 								if (cssPrefix != null)
 								{
@@ -2763,5 +2768,29 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				: MSysConfig.getValue(MSysConfig.ZK_REPORT_TABLE_OUTPUT_TYPE,"PDF",Env.getAD_Client_ID(ctx),Env.getAD_Org_ID(ctx));
 			instance.setReportType(type);
 		}
+	}
+	
+	private void setStyle(MultiPartElement element, MStyle style) {
+		if (style == null || style.getAD_Style_ID() == 0)
+			return;
+
+		X_AD_StyleLine[] lines = style.getStyleLines();
+		StringBuilder styleBuilder = new StringBuilder();
+		for (X_AD_StyleLine line : lines)
+		{
+			String inlineStyle = line.getInlineStyle().trim();
+			String displayLogic = line.getDisplayLogic();
+			if (!Util.isEmpty(displayLogic))
+			{
+				if (!Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), displayLogic))
+					continue;
+			}
+			if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
+				styleBuilder.append("; ");
+			styleBuilder.append(inlineStyle);
+		}
+		if(styleBuilder.length() > 0)
+			element.setStyle(styleBuilder.toString());
+		//
 	}
 }	//	ReportEngine
