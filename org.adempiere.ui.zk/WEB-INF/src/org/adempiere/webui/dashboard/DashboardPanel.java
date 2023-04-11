@@ -17,17 +17,20 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ServerPushTemplate;
 
 /**
- * Custom dashboard item base class
+ * Base class for dashboard gadget/widget
  * @author Elaine
  * @date November 20, 2008
  */
 public abstract class DashboardPanel extends Window implements IDashboardPanel {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7424244218250118823L;
 
+	/**
+	 * Default constructor
+	 */
 	public DashboardPanel()
 	{
 		super();
@@ -57,7 +60,7 @@ public abstract class DashboardPanel extends Window implements IDashboardPanel {
 	}
 	
 	/**
-	 * Empty Dashboard Panels are not rendered on the Dashboard
+	 * Empty Dashboard Panel are not rendered on the Dashboard
 	 * @return true if the panel is empty
 	 */
 	public boolean isEmpty() {

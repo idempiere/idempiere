@@ -58,14 +58,14 @@ import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.South;
 
 /**
- * Favorite node login to open menu and its sequence configuration dialog
+ * Dialog to manage auto launch favourite items.
  * 
  * @author Logilite Technologies
  */
 public class LoginOpenSequenceDialog extends Window
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long		serialVersionUID	= -6200912526954948898L;
 
@@ -79,7 +79,9 @@ public class LoginOpenSequenceDialog extends Window
 
 	private ConfirmPanel			confirmPanel		= new ConfirmPanel(true, false, true, false, false, false);
 
+	/** model for {@link #noList} */
 	private SimpleListModel			noModel				= new SimpleListModel();
+	/** model for {@link #yesList} */
 	private SimpleListModel			yesModel			= new SimpleListModel();
 
 	private Listbox					noList				= new Listbox();
@@ -88,6 +90,7 @@ public class LoginOpenSequenceDialog extends Window
 	private Label					noLabel				= new Label();
 	private Label					yesLabel			= new Label();
 
+	/** List for auto launch sequence */
 	private ArrayList<Integer>		autoOpenSeqs		= new ArrayList<Integer>();
 	private int						m_AD_User_ID;
 
@@ -371,7 +374,7 @@ public class LoginOpenSequenceDialog extends Window
 	/**
 	 * @param event - Event
 	 */
-	void migrateValueAcrossLists(Event event)
+	protected void migrateValueAcrossLists(Event event)
 	{
 		Object source = event.getTarget();
 		if (source instanceof ListItem)
@@ -393,7 +396,7 @@ public class LoginOpenSequenceDialog extends Window
 	 * @param listTo
 	 * @param endIndex
 	 */
-	void migrateLists(Listbox listFrom, Listbox listTo, int endIndex)
+	protected void migrateLists(Listbox listFrom, Listbox listTo, int endIndex)
 	{
 		int index = 0;
 		SimpleListModel lmFrom = (SimpleListModel) listFrom.getModel();
@@ -425,7 +428,7 @@ public class LoginOpenSequenceDialog extends Window
 	 * 
 	 * @param event - Event
 	 */
-	void migrateValueWithinYesList(int endIndex, List<ListElement> selObjects)
+	protected void migrateValueWithinYesList(int endIndex, List<ListElement> selObjects)
 	{
 		int iniIndex = 0;
 		Arrays.sort(selObjects.toArray());
@@ -445,7 +448,7 @@ public class LoginOpenSequenceDialog extends Window
 	 * 
 	 * @param event - Event
 	 */
-	void migrateValueWithinYesList(Event event)
+	protected void migrateValueWithinYesList(Event event)
 	{
 		Object[] selObjects = yesList.getSelectedItems().toArray();
 
@@ -510,7 +513,7 @@ public class LoginOpenSequenceDialog extends Window
 	} // migrateValueWithinYesList
 
 	/**
-	 * Save Login open sequence no
+	 * Save auto launch configuration to DB
 	 */
 	public void saveData()
 	{
@@ -560,7 +563,7 @@ public class LoginOpenSequenceDialog extends Window
 	private static class ListElement extends NamePair
 	{
 		/**
-		 * 
+		 * generated serial id
 		 */
 		private static final long	serialVersionUID	= -1717531470895073281L;
 
@@ -621,13 +624,12 @@ public class LoginOpenSequenceDialog extends Window
 	} // ListElement
 
 	/**
-	 * Drag Listener
+	 * Listener for onDrop event
 	 */
 	private class DragListener implements EventListener<Event>
 	{
-
 		/**
-		 * Creates a ADSortTab.DragListener.
+		 * Default constructor
 		 */
 		public DragListener()
 		{

@@ -49,24 +49,33 @@ import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Vbox;
 
+/**
+ * Dashboard gadget: running background jobs (Run As Job in Process Dialog).
+ */
 public class DPRunningJobs extends DashboardPanel implements EventListener<Event>, EventHandler {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8515643315156488709L;
 
+	/** Job link ({@link A}) attribute to store AD_PInstance_ID value */
 	private static final String AD_PINSTANCE_ID_ATTR = "AD_PInstance_ID";
 	
 	private static TopicSubscriber topicSubscriber;
 
 	private Box bxJobs;
 
+	/** Login user id */
 	private int AD_User_ID;
 	
 	private WeakReference<Desktop> desktop;
 
+	/** Desktop cleanup listener to call {@link #cleanup()} */
 	private DesktopCleanup listener;
 	
+	/**
+	 * Default constructor
+	 */
 	public DPRunningJobs()
 	{
 		super();
@@ -114,12 +123,18 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 		};
 	}
 	
+	/**
+	 * Perform clean up
+	 */
 	protected void cleanup() 
 	{
 		EventManager.getInstance().unregister(this);
 		desktop = null;
 	}
 
+	/**
+	 * Setup {@link #topicSubscriber}
+	 */
 	private static synchronized void createTopicSubscriber() 
 	{
 		if (topicSubscriber == null) {
@@ -142,6 +157,10 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
             doOnClick(comp);
 	}
 
+	/**
+     * Handle onClick event from Job link/button
+     * @param comp Component
+     */
 	private void doOnClick(Component comp) 
 	{
 		if (comp instanceof A)
@@ -166,6 +185,9 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 		}
 	}
 
+	/**
+	 * Reload from DB
+	 */
 	private synchronized void refresh() 
 	{
 		// Please review here - is throwing NPE in some cases when user push repeatedly the refresh button
@@ -197,6 +219,10 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 		}
 	}
 	
+	/**
+	 * @param AD_User_ID
+	 * @return List of running background jobs for AD_User_ID
+	 */
 	public static List<MPInstance> getRunningJobForUser(int AD_User_ID) 
 	{
 		List<MPInstance> pis = new Query(Env.getCtx(), MPInstance.Table_Name, "Coalesce(AD_User_ID,0)=? AND IsProcessing='Y' AND IsRunAsJob='Y'", null)
@@ -224,7 +250,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 	}
 
 	/**
-	 * 
+	 * Update {@link #desktop} reference and setup {@link #listener}
 	 */
 	protected void updateDesktopReference() 
 	{
@@ -280,7 +306,14 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 		return true;
 	}
 	
+	/**
+	 * {@link ITopicSubscriber} for "onRunningJobChanged" topic. <br/>
+	 * Call {@link MPInstance#postOnChangedEvent(int)}.
+	 */
 	static class TopicSubscriber implements ITopicSubscriber<Integer> {
+		/**
+		 * @param message AD_User_ID
+		 */
 		@Override
 		public void onMessage(Integer message) {
 			MPInstance.postOnChangedEvent(message);

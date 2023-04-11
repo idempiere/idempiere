@@ -51,9 +51,9 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Style;
 
 /**
- * 
+ * Controller for open desktop windows. <br/>
+ * Implemented using {@link Tabbox}. 
  * @author Low Heng Sin
- *
  */
 public class WindowContainer extends AbstractUIPart implements EventListener<Event>
 {
