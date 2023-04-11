@@ -86,6 +86,16 @@ public class MEntityType extends X_AD_EntityType implements ImmutablePOSupport
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MEntityType.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_EntityType_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MEntityType(Properties ctx, String AD_EntityType_UU, String trxName) {
+        super(ctx, AD_EntityType_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Role Org Access Model
@@ -145,6 +146,18 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 		super(ctx, rs, trxName);
 	}	//	MRoleOrgAccess
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Role_OrgAccess_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRoleOrgAccess(Properties ctx, String AD_Role_OrgAccess_UU, String trxName) {
+        super(ctx, AD_Role_OrgAccess_UU, trxName);
+		if (Util.isEmpty(AD_Role_OrgAccess_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context
@@ -156,9 +169,16 @@ public class MRoleOrgAccess extends X_AD_Role_OrgAccess
 		super(ctx, 0, trxName);
 		if (ignored != 0)
 			throw new IllegalArgumentException("Multi-Key");
-		setIsReadOnly(false);
+		setInitialDefaults();
 	}	//	MRoleOrgAccess
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsReadOnly(false);
+	}
+
 	/**
 	 * 	Organization Constructor
 	 *	@param org org

@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.fa.exceptions.AssetAlreadyDepreciatedException;
 import org.idempiere.fa.exceptions.AssetNotImplementedException;
 import org.idempiere.fa.exceptions.AssetNotSupportedException;
@@ -31,17 +32,33 @@ implements DocAction
 	 */
 	private static final long serialVersionUID = 1763997880662445638L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Asset_Disposed_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAssetDisposed(Properties ctx, String A_Asset_Disposed_UU, String trxName) {
+        super(ctx, A_Asset_Disposed_UU, trxName);
+		if (Util.isEmpty(A_Asset_Disposed_UU))
+			setInitialDefaults();
+    }
+
 	public MAssetDisposed (Properties ctx, int A_Asset_Disposed_ID, String trxName)
 	{
 		super (ctx, A_Asset_Disposed_ID, trxName);
 		if (A_Asset_Disposed_ID == 0)
-		{
-			setProcessed (false);
-			setProcessing (false);
-		}
-		
+			setInitialDefaults();
 	}
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setProcessed (false);
+		setProcessing (false);
+	}
+
 	//@win: autocreate asset disposal from ar invoice
 	public static MAssetDisposed createAssetDisposed (MInvoiceLine invLine) {
 		MAssetDisposed assetDisposed = new MAssetDisposed(invLine);

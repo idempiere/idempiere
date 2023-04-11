@@ -16,6 +16,16 @@ public class MChart extends X_AD_Chart {
 	
 	private int windowNo=0;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Chart_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MChart(Properties ctx, String AD_Chart_UU, String trxName) {
+        super(ctx, AD_Chart_UU, trxName);
+    }
+
 	public MChart(Properties ctx, int AD_Chart_ID, String trxName) {
 		super(ctx, AD_Chart_ID, trxName);
 	}

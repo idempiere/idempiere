@@ -68,6 +68,16 @@ public class MPasswordRule extends X_AD_PasswordRule {
 
 	private static final String passay_prefix = "PASSAY_";
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PasswordRule_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPasswordRule(Properties ctx, String AD_PasswordRule_UU, String trxName) {
+        super(ctx, AD_PasswordRule_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param AD_PasswordRule_ID

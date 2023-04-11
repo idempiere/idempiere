@@ -165,6 +165,18 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MColumn>	s_cache	= new ImmutableIntPOCache<Integer,MColumn>(Table_Name, 20);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Column_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MColumn(Properties ctx, String AD_Column_UU, String trxName) {
+        super(ctx, AD_Column_UU, trxName);
+		if (Util.isEmpty(AD_Column_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -175,19 +187,24 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	{
 		super (ctx, AD_Column_ID, trxName);
 		if (AD_Column_ID == 0)
-		{
-			setIsAlwaysUpdateable (false);	// N
-			setIsEncrypted (false);
-			setIsIdentifier (false);
-			setIsKey (false);
-			setIsMandatory (false);
-			setIsParent (false);
-			setIsSelectionColumn (false);
-			setIsTranslated (false);
-			setIsUpdateable (true);	// Y
-			setVersion (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MColumn
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsAlwaysUpdateable (false);	// N
+		setIsEncrypted (false);
+		setIsIdentifier (false);
+		setIsKey (false);
+		setIsMandatory (false);
+		setIsParent (false);
+		setIsSelectionColumn (false);
+		setIsTranslated (false);
+		setIsUpdateable (true);	// Y
+		setVersion (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

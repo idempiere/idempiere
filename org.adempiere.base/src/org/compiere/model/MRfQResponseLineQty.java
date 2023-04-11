@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	RfQ Response Line Qty
@@ -37,6 +38,18 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 	 */
 	private static final long serialVersionUID = -4118030805518374853L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_RfQResponseLineQty_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRfQResponseLineQty(Properties ctx, String C_RfQResponseLineQty_UU, String trxName) {
+        super(ctx, C_RfQResponseLineQty_UU, trxName);
+		if (Util.isEmpty(C_RfQResponseLineQty_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context
@@ -47,12 +60,16 @@ public class MRfQResponseLineQty extends X_C_RfQResponseLineQty implements Compa
 	{
 		super (ctx, C_RfQResponseLineQty_ID, trxName);
 		if (C_RfQResponseLineQty_ID == 0)
-		{
-			setPrice (Env.ZERO);
-			setDiscount(Env.ZERO);
-		}
-
+			setInitialDefaults();
 	}	//	MRfQResponseLineQty
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setPrice (Env.ZERO);
+		setDiscount(Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

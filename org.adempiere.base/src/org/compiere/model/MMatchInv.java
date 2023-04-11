@@ -25,6 +25,7 @@ import java.util.Properties;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Match Invoice (Receipt&lt;&gt;Invoice) Model.
@@ -141,6 +142,18 @@ public class MMatchInv extends X_M_MatchInv
 	private static CLogger	s_log	= CLogger.getCLogger (MMatchInv.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_MatchInv_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMatchInv(Properties ctx, String M_MatchInv_UU, String trxName) {
+        super(ctx, M_MatchInv_UU, trxName);
+		if (Util.isEmpty(M_MatchInv_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -151,13 +164,18 @@ public class MMatchInv extends X_M_MatchInv
 	{
 		super (ctx, M_MatchInv_ID, trxName);
 		if (M_MatchInv_ID == 0)
-		{
-			setM_AttributeSetInstance_ID(0);
-			setPosted (false);
-			setProcessed (false);
-			setProcessing (false);
-		}
+			setInitialDefaults();
 	}	//	MMatchInv
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setM_AttributeSetInstance_ID(0);
+		setPosted (false);
+		setProcessed (false);
+		setProcessing (false);
+	}
 
 	/**
 	 * 	Load Constructor

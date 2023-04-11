@@ -33,6 +33,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *  GL Journal Model
@@ -58,6 +59,18 @@ public class MJournal extends X_GL_Journal implements DocAction
 	 */
 	private static final long serialVersionUID = 4661098755828765138L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param GL_Journal_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MJournal(Properties ctx, String GL_Journal_UU, String trxName) {
+        super(ctx, GL_Journal_UU, trxName);
+		if (Util.isEmpty(GL_Journal_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -68,20 +81,25 @@ public class MJournal extends X_GL_Journal implements DocAction
 	{
 		super (ctx, GL_Journal_ID, trxName);
 		if (GL_Journal_ID == 0)
-		{
-			setCurrencyRate (Env.ONE);
-			setDateDoc (new Timestamp(System.currentTimeMillis()));
-			setDocAction (DOCACTION_Complete);
-			setDocStatus (DOCSTATUS_Drafted);
-			setPostingType (POSTINGTYPE_Actual);
-			setTotalCr (Env.ZERO);
-			setTotalDr (Env.ZERO);
-			setIsApproved (false);
-			setIsPrinted (false);
-			setPosted (false);
-			setProcessed(false);
-		}
+			setInitialDefaults();
 	}	//	MJournal
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setCurrencyRate (Env.ONE);
+		setDateDoc (new Timestamp(System.currentTimeMillis()));
+		setDocAction (DOCACTION_Complete);
+		setDocStatus (DOCSTATUS_Drafted);
+		setPostingType (POSTINGTYPE_Actual);
+		setTotalCr (Env.ZERO);
+		setTotalDr (Env.ZERO);
+		setIsApproved (false);
+		setIsPrinted (false);
+		setPosted (false);
+		setProcessed(false);
+	}
 
 	/**
 	 * 	Load Constructor

@@ -48,6 +48,16 @@ public class MReplenish extends X_M_Replenish {
 	 */
 	private static final long serialVersionUID = -76806183034687720L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Replenish_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MReplenish(Properties ctx, String M_Replenish_UU, String trxName) {
+        super(ctx, M_Replenish_UU, trxName);
+    }
+
 	/**
      * Standard constructor
      * 

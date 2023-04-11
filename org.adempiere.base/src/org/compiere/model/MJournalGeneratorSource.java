@@ -45,6 +45,16 @@ public class MJournalGeneratorSource extends X_GL_JournalGeneratorSource
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MJournalGeneratorSource.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param GL_JournalGeneratorSource_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MJournalGeneratorSource(Properties ctx, String GL_JournalGeneratorSource_UU, String trxName) {
+        super(ctx, GL_JournalGeneratorSource_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

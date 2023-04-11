@@ -82,6 +82,16 @@ public class MFactAcct extends X_Fact_Acct
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MFactAcct.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param Fact_Acct_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MFactAcct(Properties ctx, String Fact_Acct_UU, String trxName) {
+        super(ctx, Fact_Acct_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

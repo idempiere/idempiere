@@ -35,6 +35,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 /**
  *	Currency Conversion Rate Model
@@ -288,6 +289,18 @@ public class MConversionRate extends X_C_Conversion_Rate
 	}	//	getRate
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Conversion_Rate_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MConversionRate(Properties ctx, String C_Conversion_Rate_UU, String trxName) {
+        super(ctx, C_Conversion_Rate_UU, trxName);
+		if (Util.isEmpty(C_Conversion_Rate_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -298,12 +311,17 @@ public class MConversionRate extends X_C_Conversion_Rate
 	{
 		super(ctx, C_Conversion_Rate_ID, trxName);
 		if (C_Conversion_Rate_ID == 0)
-		{
-			super.setDivideRate (Env.ZERO);
-			super.setMultiplyRate (Env.ZERO);
-			setValidFrom (new Timestamp(System.currentTimeMillis()));
-		}
+			setInitialDefaults();
 	}	//	MConversionRate
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		super.setDivideRate (Env.ZERO);
+		super.setMultiplyRate (Env.ZERO);
+		setValidFrom (new Timestamp(System.currentTimeMillis()));
+	}
 
 	/**
 	 * 	Load Constructor

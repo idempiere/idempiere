@@ -938,6 +938,18 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		return firstM_Locator_ID;
 	}	//	getM_Locator_ID
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_StorageOnHand_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MStorageOnHand(Properties ctx, String M_StorageOnHand_UU, String trxName) {
+        super(ctx, M_StorageOnHand_UU, trxName);
+		if (Util.isEmpty(M_StorageOnHand_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Persistency Constructor
 	 *	@param ctx context
@@ -949,10 +961,15 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		super(ctx, 0, trxName);
 		if (ignored != 0)
 			throw new IllegalArgumentException("Multi-Key");
-		//
-		setQtyOnHand (Env.ZERO);
-		
+		setInitialDefaults();
 	}	//	MStorageOnHand
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setQtyOnHand (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

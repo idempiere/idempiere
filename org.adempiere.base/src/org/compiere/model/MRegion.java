@@ -183,6 +183,16 @@ public class MRegion extends X_C_Region
 	private static CLogger		s_log = CLogger.getCLogger (MRegion.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Region_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRegion(Properties ctx, String C_Region_UU, String trxName) {
+        super(ctx, C_Region_UU, trxName);
+    }
+
 	/**************************************************************************
 	 *	Create empty Region
 	 * 	@param ctx context
@@ -192,9 +202,6 @@ public class MRegion extends X_C_Region
 	public MRegion (Properties ctx, int C_Region_ID, String trxName)
 	{
 		super (ctx, C_Region_ID, trxName);
-		if (C_Region_ID == 0)
-		{
-		}
 	}   //  MRegion
 
 	/**

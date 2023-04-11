@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 /**
  *	Dunning Run Model
@@ -41,6 +42,18 @@ public class MDunningRun extends X_C_DunningRun
 	 */
 	private static final long serialVersionUID = 6858939271415643483L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_DunningRun_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDunningRun(Properties ctx, String C_DunningRun_UU, String trxName) {
+        super(ctx, C_DunningRun_UU, trxName);
+		if (Util.isEmpty(C_DunningRun_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -51,11 +64,16 @@ public class MDunningRun extends X_C_DunningRun
 	{
 		super (ctx, C_DunningRun_ID, trxName);
 		if (C_DunningRun_ID == 0)
-		{
-			setDunningDate (new Timestamp(System.currentTimeMillis()));
-			setProcessed (false);
-		}	
+			setInitialDefaults();
 	}	//	MDunningRun
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDunningDate (new Timestamp(System.currentTimeMillis()));
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

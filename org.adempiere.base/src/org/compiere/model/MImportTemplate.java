@@ -50,6 +50,16 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MImportTemplate.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ImportTemplate_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MImportTemplate(Properties ctx, String AD_ImportTemplate_UU, String trxName) {
+        super(ctx, AD_ImportTemplate_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

@@ -84,6 +84,18 @@ public class MInventory extends X_M_Inventory implements DocAction
 			return null;
 	} //	get
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Inventory_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInventory(Properties ctx, String M_Inventory_UU, String trxName) {
+        super(ctx, M_Inventory_UU, trxName);
+		if (Util.isEmpty(M_Inventory_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context 
@@ -94,16 +106,21 @@ public class MInventory extends X_M_Inventory implements DocAction
 	{
 		super (ctx, M_Inventory_ID, trxName);
 		if (M_Inventory_ID == 0)
-		{
-			setMovementDate (new Timestamp(System.currentTimeMillis()));
-			setDocAction (DOCACTION_Complete);	// CO
-			setDocStatus (DOCSTATUS_Drafted);	// DR
-			setIsApproved (false);
-			setMovementDate (new Timestamp(System.currentTimeMillis()));	// @#Date@
-			setPosted (false);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MInventory
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setMovementDate (new Timestamp(System.currentTimeMillis()));
+		setDocAction (DOCACTION_Complete);	// CO
+		setDocStatus (DOCSTATUS_Drafted);	// DR
+		setIsApproved (false);
+		setMovementDate (new Timestamp(System.currentTimeMillis()));	// @#Date@
+		setPosted (false);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

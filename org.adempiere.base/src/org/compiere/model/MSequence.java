@@ -816,6 +816,18 @@ public class MSequence extends X_AD_Sequence
 	private static CLogger 		s_log = CLogger.getCLogger(MSequence.class);
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Sequence_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSequence(Properties ctx, String AD_Sequence_UU, String trxName) {
+        super(ctx, AD_Sequence_UU, trxName);
+		if (Util.isEmpty(AD_Sequence_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 *	Standard Constructor
 	 *	@param ctx context
@@ -826,17 +838,22 @@ public class MSequence extends X_AD_Sequence
 	{
 		super(ctx, AD_Sequence_ID, trxName);
 		if (AD_Sequence_ID == 0)
-		{
-			setIsTableID(false);
-			setStartNo (INIT_NO);
-			setCurrentNext (INIT_NO);
-			setCurrentNextSys (INIT_SYS_NO);
-			setIncrementNo (1);
-			setIsAutoSequence (true);
-			setIsAudited(false);
-			setStartNewYear(false);
-		}
+			setInitialDefaults();
 	}	//	MSequence
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsTableID(false);
+		setStartNo (INIT_NO);
+		setCurrentNext (INIT_NO);
+		setCurrentNextSys (INIT_SYS_NO);
+		setIncrementNo (1);
+		setIsAutoSequence (true);
+		setIsAudited(false);
+		setStartNewYear(false);
+	}
 
 	/**
 	 * 	Load Constructor

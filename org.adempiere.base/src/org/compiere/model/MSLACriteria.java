@@ -89,6 +89,16 @@ public class MSLACriteria extends X_PA_SLA_Criteria implements ImmutablePOSuppor
 	private static ImmutableIntPOCache<Integer,MSLACriteria>	s_cache	= new ImmutableIntPOCache<Integer,MSLACriteria>(Table_Name, 20);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_SLA_Criteria_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSLACriteria(Properties ctx, String PA_SLA_Criteria_UU, String trxName) {
+        super(ctx, PA_SLA_Criteria_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

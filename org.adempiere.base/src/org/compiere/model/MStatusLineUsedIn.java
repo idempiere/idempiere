@@ -34,6 +34,16 @@ public class MStatusLineUsedIn extends X_AD_StatusLineUsedIn
 	 */
 	private static final long serialVersionUID = -6341924761622666560L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_StatusLineUsedIn_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MStatusLineUsedIn(Properties ctx, String AD_StatusLineUsedIn_UU, String trxName) {
+        super(ctx, AD_StatusLineUsedIn_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

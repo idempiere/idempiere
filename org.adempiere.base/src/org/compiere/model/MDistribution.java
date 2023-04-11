@@ -29,6 +29,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	GL Distribution Model
@@ -254,6 +255,18 @@ public class MDistribution extends X_GL_Distribution
 		= new CCache<Integer,MDistribution[]>(Table_Name, 100);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param GL_Distribution_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDistribution(Properties ctx, String GL_Distribution_UU, String trxName) {
+        super(ctx, GL_Distribution_UU, trxName);
+		if (Util.isEmpty(GL_Distribution_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -264,25 +277,30 @@ public class MDistribution extends X_GL_Distribution
 	{
 		super (ctx, GL_Distribution_ID, trxName);
 		if (GL_Distribution_ID == 0)
-		{
-			setAnyAcct (true);	// Y
-			setAnyActivity (true);	// Y
-			setAnyBPartner (true);	// Y
-			setAnyCampaign (true);	// Y
-			setAnyLocFrom (true);	// Y
-			setAnyLocTo (true);	// Y
-			setAnyOrg (true);	// Y
-			setAnyOrgTrx (true);	// Y
-			setAnyProduct (true);	// Y
-			setAnyProject (true);	// Y
-			setAnySalesRegion (true);	// Y
-			setAnyUser1 (true);	// Y
-			setAnyUser2 (true);	// Y
-			//
-			setIsValid (false);	// N
-			setPercentTotal (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MDistribution
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAnyAcct (true);	// Y
+		setAnyActivity (true);	// Y
+		setAnyBPartner (true);	// Y
+		setAnyCampaign (true);	// Y
+		setAnyLocFrom (true);	// Y
+		setAnyLocTo (true);	// Y
+		setAnyOrg (true);	// Y
+		setAnyOrgTrx (true);	// Y
+		setAnyProduct (true);	// Y
+		setAnyProject (true);	// Y
+		setAnySalesRegion (true);	// Y
+		setAnyUser1 (true);	// Y
+		setAnyUser2 (true);	// Y
+		//
+		setIsValid (false);	// N
+		setPercentTotal (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 
 /**
@@ -35,6 +36,18 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	 */
 	private static final long serialVersionUID = 8514876566904723695L;
 		
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_PaymentProcessor_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPaymentProcessor(Properties ctx, String C_PaymentProcessor_UU, String trxName) {
+        super(ctx, C_PaymentProcessor_UU, trxName);
+		if (Util.isEmpty(C_PaymentProcessor_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 *	Payment Processor Model
 	 * 	@param ctx context
@@ -45,22 +58,27 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	{
 		super (ctx, C_PaymentProcessor_ID, trxName);
 		if (C_PaymentProcessor_ID == 0)
-		{
-			setCommission (Env.ZERO);
-			setAcceptVisa (false);
-			setAcceptMC (false);
-			setAcceptAMEX (false);
-			setAcceptDiners (false);
-			setCostPerTrx (Env.ZERO);
-			setAcceptCheck (false);
-			setRequireVV (false);
-			setAcceptCorporate (false);
-			setAcceptDiscover (false);
-			setAcceptATM (false);
-			setAcceptDirectDeposit(false);
-			setAcceptDirectDebit(false);
-		}
+			setInitialDefaults();
 	}	//	MPaymentProcessor
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setCommission (Env.ZERO);
+		setAcceptVisa (false);
+		setAcceptMC (false);
+		setAcceptAMEX (false);
+		setAcceptDiners (false);
+		setCostPerTrx (Env.ZERO);
+		setAcceptCheck (false);
+		setRequireVV (false);
+		setAcceptCorporate (false);
+		setAcceptDiscover (false);
+		setAcceptATM (false);
+		setAcceptDirectDeposit(false);
+		setAcceptDirectDebit(false);
+	}
 
 	/**
 	 *	Payment Processor Model

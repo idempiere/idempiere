@@ -79,6 +79,18 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	private static CLogger	s_log	= CLogger.getCLogger (MRequestProcessor.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_RequestProcessor_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRequestProcessor(Properties ctx, String R_RequestProcessor_UU, String trxName) {
+        super(ctx, R_RequestProcessor_UU, trxName);
+		if (Util.isEmpty(R_RequestProcessor_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -88,13 +100,18 @@ public class MRequestProcessor extends X_R_RequestProcessor
 	{
 		super (ctx, R_RequestProcessor_ID, trxName);
 		if (R_RequestProcessor_ID == 0)
-		{
-			setKeepLogDays (7);
-			setOverdueAlertDays (0);
-			setOverdueAssignDays (0);
-			setRemindDays (0);
-		}	
+			setInitialDefaults();
 	}	//	MRequestProcessor
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setKeepLogDays (7);
+		setOverdueAlertDays (0);
+		setOverdueAssignDays (0);
+		setRemindDays (0);
+	}
 
 	/**
 	 * 	Load Constructor

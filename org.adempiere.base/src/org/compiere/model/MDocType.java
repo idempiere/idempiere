@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -121,6 +122,18 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	/**	Cache					*/
 	static private ImmutableIntPOCache<Integer,MDocType>	s_cache = new ImmutableIntPOCache<Integer,MDocType>(Table_Name, 20);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_DocType_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDocType(Properties ctx, String C_DocType_UU, String trxName) {
+        super(ctx, C_DocType_UU, trxName);
+		if (Util.isEmpty(C_DocType_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -131,20 +144,25 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 	{
 		super(ctx, C_DocType_ID, trxName);
 		if (C_DocType_ID == 0)
-		{
-			setDocumentCopies (0);
-			setHasCharges (false);
-			setIsDefault (false);
-			setIsDocNoControlled (false);
-			setIsSOTrx (false);
-			setIsPickQAConfirm(false);
-			setIsShipConfirm(false);
-			setIsSplitWhenDifference(false);
-			setIsCreateCounter(true);
-			setIsDefaultCounterDoc(false);
-			setIsIndexed(true);
-		}
+			setInitialDefaults();
 	}	//	MDocType
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocumentCopies (0);
+		setHasCharges (false);
+		setIsDefault (false);
+		setIsDocNoControlled (false);
+		setIsSOTrx (false);
+		setIsPickQAConfirm(false);
+		setIsShipConfirm(false);
+		setIsSplitWhenDifference(false);
+		setIsCreateCounter(true);
+		setIsDefaultCounterDoc(false);
+		setIsIndexed(true);
+	}
 
 	/**
 	 * 	Load Constructor

@@ -133,6 +133,16 @@ public class M_Element extends X_AD_Element
 		return getOfColumn(ctx, AD_Column_ID, null);
 	}	//	get
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Element_UU  UUID key
+    * @param trxName Transaction
+    */
+    public M_Element(Properties ctx, String AD_Element_UU, String trxName) {
+        super(ctx, AD_Element_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

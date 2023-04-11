@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Util;
+
 /**
  * 	Change Notice Model
  *  @author Jorg Janke
@@ -31,6 +33,18 @@ public class MChangeNotice extends X_M_ChangeNotice
 	 */
 	private static final long serialVersionUID = -1252425132317509377L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_ChangeNotice_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MChangeNotice(Properties ctx, String M_ChangeNotice_UU, String trxName) {
+        super(ctx, M_ChangeNotice_UU, trxName);
+		if (Util.isEmpty(M_ChangeNotice_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -41,11 +55,16 @@ public class MChangeNotice extends X_M_ChangeNotice
 	{
 		super (ctx, M_ChangeNotice_ID, trxName);
 		if (M_ChangeNotice_ID == 0)
-		{
-			setIsApproved (false);	// N
-			setProcessed (false);
-		}	
+			setInitialDefaults();
 	}	//	MChangeNotice
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsApproved (false);	// N
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

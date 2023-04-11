@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 
 /**
@@ -38,6 +39,18 @@ public class MInvoiceBatchLine extends X_C_InvoiceBatchLine
 	 */
 	private static final long serialVersionUID = -4022629343631759064L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_InvoiceBatchLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInvoiceBatchLine(Properties ctx, String C_InvoiceBatchLine_UU, String trxName) {
+        super(ctx, C_InvoiceBatchLine_UU, trxName);
+		if (Util.isEmpty(C_InvoiceBatchLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -49,18 +62,23 @@ public class MInvoiceBatchLine extends X_C_InvoiceBatchLine
 	{
 		super (ctx, C_InvoiceBatchLine_ID, trxName);
 		if (C_InvoiceBatchLine_ID == 0)
-		{
-			setDateAcct (new Timestamp(System.currentTimeMillis()));	// @DateDoc@
-			setDateInvoiced (new Timestamp(System.currentTimeMillis()));	// @DateDoc@
-			setIsTaxIncluded (false);
-			setLineNetAmt (Env.ZERO);
-			setLineTotalAmt (Env.ZERO);
-			setPriceEntered (Env.ZERO);
-			setQtyEntered (Env.ONE);	// 1
-			setTaxAmt (Env.ZERO);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MInvoiceBatchLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDateAcct (new Timestamp(System.currentTimeMillis()));	// @DateDoc@
+		setDateInvoiced (new Timestamp(System.currentTimeMillis()));	// @DateDoc@
+		setIsTaxIncluded (false);
+		setLineNetAmt (Env.ZERO);
+		setLineTotalAmt (Env.ZERO);
+		setPriceEntered (Env.ZERO);
+		setQtyEntered (Env.ONE);	// 1
+		setTaxAmt (Env.ZERO);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

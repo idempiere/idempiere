@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	RfQ Line Qty Model
@@ -64,6 +65,18 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	/**	Cache						*/
 	private static CCache<Integer,MRfQLineQty>	s_cache	= new CCache<Integer,MRfQLineQty>(Table_Name, 20);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_RfQLineQty_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRfQLineQty(Properties ctx, String C_RfQLineQty_UU, String trxName) {
+        super(ctx, C_RfQLineQty_UU, trxName);
+		if (Util.isEmpty(C_RfQLineQty_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -74,12 +87,17 @@ public class MRfQLineQty extends X_C_RfQLineQty
 	{
 		super (ctx, C_RfQLineQty_ID, trxName);
 		if (C_RfQLineQty_ID == 0)
-		{
-			setIsOfferQty (false);
-			setIsPurchaseQty (false);
-			setQty (Env.ONE);	// 1
-		}
+			setInitialDefaults();
 	}	//	MRfQLineQty
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsOfferQty (false);
+		setIsPurchaseQty (false);
+		setQty (Env.ONE);	// 1
+	}
 
 	/**
 	 * 	Load Constructor

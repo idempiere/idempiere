@@ -83,6 +83,16 @@ public class MBankStatementMatcher extends X_C_BankStatementMatcher
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MBankStatementMatcher.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_BankStatementMatcher_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBankStatementMatcher(Properties ctx, String C_BankStatementMatcher_UU, String trxName) {
+        super(ctx, C_BankStatementMatcher_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

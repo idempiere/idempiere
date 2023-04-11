@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Util;
+
 /**
  *	Payment Batch Model
  *	
@@ -46,6 +48,18 @@ public class MPaymentBatch extends X_C_PaymentBatch
 		return retValue;
 	}	//	getForPaySelection
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_PaymentBatch_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPaymentBatch(Properties ctx, String C_PaymentBatch_UU, String trxName) {
+        super(ctx, C_PaymentBatch_UU, trxName);
+		if (Util.isEmpty(C_PaymentBatch_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -56,11 +70,16 @@ public class MPaymentBatch extends X_C_PaymentBatch
 	{
 		super(ctx, C_PaymentBatch_ID, trxName);
 		if (C_PaymentBatch_ID == 0)
-		{
-			setProcessed (false);
-			setProcessing (false);
-		}
+			setInitialDefaults();
 	}	//	MPaymentBatch
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setProcessed (false);
+		setProcessing (false);
+	}
 
 	/**
 	 * 	Load Constructor

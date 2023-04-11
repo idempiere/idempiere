@@ -152,6 +152,16 @@ public class MRegistrationAttribute extends X_A_RegistrationAttribute implements
 	private static ImmutableIntPOCache<Integer,MRegistrationAttribute> s_cache 
 		= new ImmutableIntPOCache<Integer,MRegistrationAttribute>(Table_Name, 20);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_RegistrationAttribute_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRegistrationAttribute(Properties ctx, String A_RegistrationAttribute_UU, String trxName) {
+        super(ctx, A_RegistrationAttribute_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

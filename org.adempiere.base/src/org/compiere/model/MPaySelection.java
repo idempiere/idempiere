@@ -19,8 +19,10 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	AP Payment Selection
@@ -36,6 +38,18 @@ public class MPaySelection extends X_C_PaySelection
      */
     private static final long serialVersionUID = -6521282913549455131L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_PaySelection_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPaySelection(Properties ctx, String C_PaySelection_UU, String trxName) {
+        super(ctx, C_PaySelection_UU, trxName);
+		if (Util.isEmpty(C_PaySelection_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -46,13 +60,18 @@ public class MPaySelection extends X_C_PaySelection
 	{
 		super(ctx, C_PaySelection_ID, trxName);
 		if (C_PaySelection_ID == 0)
-		{
-			setTotalAmt (Env.ZERO);
-			setIsApproved (false);
-			setProcessed (false);
-			setProcessing (false);
-		}
+			setInitialDefaults();
 	}	//	MPaySelection
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setTotalAmt (Env.ZERO);
+		setIsApproved (false);
+		setProcessed (false);
+		setProcessing (false);
+	}
 
 	/**
 	 * 	Load Constructor

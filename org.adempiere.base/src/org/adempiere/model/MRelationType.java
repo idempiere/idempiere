@@ -100,6 +100,16 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 	public int destinationRefId;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_RelationType_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRelationType(Properties ctx, String AD_RelationType_UU, String trxName) {
+        super(ctx, AD_RelationType_UU, trxName);
+    }
+
 	public MRelationType(Properties ctx, int AD_RelationType_ID, String trxName) {
 		super(ctx, AD_RelationType_ID, trxName);
 	}

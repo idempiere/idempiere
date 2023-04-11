@@ -27,6 +27,16 @@ public class MDepreciationMethod extends X_A_Depreciation_Method implements Immu
 	 */
 	private static final long serialVersionUID = -7477974832683140825L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Depreciation_Method_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDepreciationMethod(Properties ctx, String A_Depreciation_Method_UU, String trxName) {
+        super(ctx, A_Depreciation_Method_UU, trxName);
+    }
+
 	/** Standard Constructor */
 	public MDepreciationMethod (Properties ctx, int A_Depreciation_Method_ID, String trxName)
 	{

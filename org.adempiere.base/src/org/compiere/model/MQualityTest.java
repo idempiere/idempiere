@@ -10,6 +10,16 @@ public class MQualityTest extends X_M_QualityTest {
 	 */
 	private static final long serialVersionUID = -8585270006299484402L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_QualityTest_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MQualityTest(Properties ctx, String M_QualityTest_UU, String trxName) {
+        super(ctx, M_QualityTest_UU, trxName);
+    }
+
 	public MQualityTest(Properties ctx, int M_QualityTest_ID, String trxName) {
 		super(ctx, M_QualityTest_ID, trxName);
 	}

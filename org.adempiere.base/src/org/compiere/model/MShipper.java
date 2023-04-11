@@ -37,6 +37,16 @@ public class MShipper extends X_M_Shipper
 	private static final long serialVersionUID = -4026295839866634739L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Shipper_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MShipper(Properties ctx, String M_Shipper_UU, String trxName) {
+        super(ctx, M_Shipper_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

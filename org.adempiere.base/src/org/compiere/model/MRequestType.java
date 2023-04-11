@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -120,6 +121,18 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	}	//	get
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_RequestType_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRequestType(Properties ctx, String R_RequestType_UU, String trxName) {
+        super(ctx, R_RequestType_UU, trxName);
+		if (Util.isEmpty(R_RequestType_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -130,20 +143,25 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 	{
 		super(ctx, R_RequestType_ID, trxName);
 		if (R_RequestType_ID == 0)
-		{
-			setDueDateTolerance (7);
-			setIsDefault (false);
-			setIsEMailWhenDue (false);
-			setIsEMailWhenOverdue (false);
-			setIsSelfService (true);	// Y
-			setAutoDueDateDays(0);
-			setConfidentialType(CONFIDENTIALTYPE_PublicInformation);
-			setIsAutoChangeRequest(false);
-			setIsConfidentialInfo(false);
-			setIsIndexed(true);
-			setIsInvoiced(false);
-		}	
+			setInitialDefaults();
 	}	//	MRequestType
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDueDateTolerance (7);
+		setIsDefault (false);
+		setIsEMailWhenDue (false);
+		setIsEMailWhenOverdue (false);
+		setIsSelfService (true);	// Y
+		setAutoDueDateDays(0);
+		setConfidentialType(CONFIDENTIALTYPE_PublicInformation);
+		setIsAutoChangeRequest(false);
+		setIsConfidentialInfo(false);
+		setIsIndexed(true);
+		setIsInvoiced(false);
+	}
 
 	/**
 	 * 	Load Constructor

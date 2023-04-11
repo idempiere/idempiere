@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Order Tax Model
@@ -223,6 +224,18 @@ public class MOrderTax extends X_C_OrderTax
 	private static CLogger	s_log	= CLogger.getCLogger (MOrderTax.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_OrderTax_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MOrderTax(Properties ctx, String C_OrderTax_UU, String trxName) {
+        super(ctx, C_OrderTax_UU, trxName);
+		if (Util.isEmpty(C_OrderTax_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Persistence Constructor
 	 *	@param ctx context
@@ -234,10 +247,17 @@ public class MOrderTax extends X_C_OrderTax
 		super(ctx, 0, trxName);
 		if (ignored != 0)
 			throw new IllegalArgumentException("Multi-Key");
+		setInitialDefaults();
+	}	//	MOrderTax
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
 		setTaxAmt (Env.ZERO);
 		setTaxBaseAmt (Env.ZERO);
 		setIsTaxIncluded(false);
-	}	//	MOrderTax
+	}
 
 	/**
 	 * 	Load Constructor.

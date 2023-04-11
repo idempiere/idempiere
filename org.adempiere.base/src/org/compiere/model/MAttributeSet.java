@@ -27,6 +27,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -96,6 +97,18 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 		= new ImmutableIntPOCache<Integer,MAttributeSet> (Table_Name, 20);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_AttributeSet_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAttributeSet(Properties ctx, String M_AttributeSet_UU, String trxName) {
+        super(ctx, M_AttributeSet_UU, trxName);
+		if (Util.isEmpty(M_AttributeSet_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard constructor
 	 *	@param ctx context
@@ -106,18 +119,23 @@ public class MAttributeSet extends X_M_AttributeSet implements ImmutablePOSuppor
 	{
 		super (ctx, M_AttributeSet_ID, trxName);
 		if (M_AttributeSet_ID == 0)
-		{
-		//	setName (null);
-			setIsGuaranteeDate (false);
-			setIsGuaranteeDateMandatory (false);
-			setIsLot (false);
-			setIsLotMandatory (false);
-			setIsSerNo (false);
-			setIsSerNoMandatory (false);
-			setIsInstanceAttribute(false);
-			setMandatoryType (MANDATORYTYPE_NotMandatory);
-		}
+			setInitialDefaults();
 	}	//	MAttributeSet
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		//	setName (null);
+		setIsGuaranteeDate (false);
+		setIsGuaranteeDateMandatory (false);
+		setIsLot (false);
+		setIsLotMandatory (false);
+		setIsSerNo (false);
+		setIsSerNoMandatory (false);
+		setIsInstanceAttribute(false);
+		setMandatoryType (MANDATORYTYPE_NotMandatory);
+	}
 
 	/**
 	 * 	Load constructor

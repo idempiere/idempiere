@@ -71,6 +71,16 @@ public class MContactInterest extends X_R_ContactInterest
 	}	//	get
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_ContactInterest_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MContactInterest(Properties ctx, String R_ContactInterest_UU, String trxName) {
+        super(ctx, R_ContactInterest_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Persistency Constructor
 	 *	@param ctx context

@@ -37,6 +37,16 @@ public class MForecastLine extends X_M_ForecastLine
 	/** Parent					*/
 	private MForecast			m_parent = null;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_ForecastLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MForecastLine(Properties ctx, String M_ForecastLine_UU, String trxName) {
+        super(ctx, M_ForecastLine_UU, trxName);
+    }
+
 	/**
 	 * Standard Constructor
 	 * @param ctx context

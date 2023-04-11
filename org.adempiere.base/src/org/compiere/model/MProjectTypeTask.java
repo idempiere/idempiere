@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * 	Project Type Phase Task Model
@@ -34,15 +35,32 @@ public class MProjectTypeTask extends X_C_Task
 	 */
 	private static final long serialVersionUID = -5649262800489348606L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Task_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProjectTypeTask(Properties ctx, String C_Task_UU, String trxName) {
+        super(ctx, C_Task_UU, trxName);
+		if (Util.isEmpty(C_Task_UU))
+			setInitialDefaults();
+    }
+
 	public MProjectTypeTask (Properties ctx, int C_Task_ID, String trxName)
 	{
 		super (ctx, C_Task_ID, trxName);
 		if (C_Task_ID == 0)
-		{
-			setSeqNo (0);
-			setStandardQty (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MProjectTypeTask
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setSeqNo (0);
+		setStandardQty (Env.ZERO);
+	}
 
 	public MProjectTypeTask (Properties ctx, ResultSet rs, String trxName)
 	{

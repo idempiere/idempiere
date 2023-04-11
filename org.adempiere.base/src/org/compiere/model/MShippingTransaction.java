@@ -22,6 +22,16 @@ public class MShippingTransaction extends X_M_ShippingTransaction
 	 */
 	private static final long serialVersionUID = -2444841696998774096L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_ShippingTransaction_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MShippingTransaction(Properties ctx, String M_ShippingTransaction_UU, String trxName) {
+        super(ctx, M_ShippingTransaction_UU, trxName);
+    }
+
 	public MShippingTransaction(Properties ctx, int M_ShippingTransaction_ID, String trxName) 
 	{
 		super(ctx, M_ShippingTransaction_ID, trxName);

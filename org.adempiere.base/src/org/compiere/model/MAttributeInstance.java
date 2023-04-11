@@ -39,6 +39,16 @@ public class MAttributeInstance extends X_M_AttributeInstance
 	private static final long serialVersionUID = 5697542928282761922L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_AttributeInstance_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAttributeInstance(Properties ctx, String M_AttributeInstance_UU, String trxName) {
+        super(ctx, M_AttributeInstance_UU, trxName);
+    }
+
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context

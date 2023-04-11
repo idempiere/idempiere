@@ -29,6 +29,7 @@ import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Invoice Tax Model
@@ -178,6 +179,18 @@ public class MInvoiceTax extends X_C_InvoiceTax
 	private static CLogger	s_log	= CLogger.getCLogger (MInvoiceTax.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_InvoiceTax_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInvoiceTax(Properties ctx, String C_InvoiceTax_UU, String trxName) {
+        super(ctx, C_InvoiceTax_UU, trxName);
+		if (Util.isEmpty(C_InvoiceTax_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Persistency Constructor
 	 *	@param ctx context
@@ -189,10 +202,17 @@ public class MInvoiceTax extends X_C_InvoiceTax
 		super(ctx, 0, trxName);
 		if (ignored != 0)
 			throw new IllegalArgumentException("Multi-Key");
+		setInitialDefaults();
+	}	//	MInvoiceTax
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
 		setTaxAmt (Env.ZERO);
 		setTaxBaseAmt (Env.ZERO);
 		setIsTaxIncluded(false);
-	}	//	MInvoiceTax
+	}
 
 	/**
 	 * 	Load Constructor.

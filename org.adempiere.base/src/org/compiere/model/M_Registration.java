@@ -34,6 +34,19 @@ public class M_Registration extends X_AD_Registration
 	private static final long serialVersionUID = 7480114737626722067L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Registration_UU  UUID key
+    * @param trxName Transaction
+    */
+    public M_Registration(Properties ctx, String AD_Registration_UU, String trxName) {
+        super(ctx, AD_Registration_UU, trxName);
+		setAD_Client_ID(0);
+		setAD_Org_ID(0);
+		setAD_System_ID(0);
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -49,7 +62,7 @@ public class M_Registration extends X_AD_Registration
 	}	//	M_Registration
 
 	/**
-	 * 	Load Cosntructor
+	 * 	Load Constructor
 	 *	@param ctx context
 	 *	@param rs result set
 	 *	@param trxName transaction

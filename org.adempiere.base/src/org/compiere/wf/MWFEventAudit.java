@@ -109,6 +109,16 @@ public class MWFEventAudit extends X_AD_WF_EventAudit
 	}	//	get
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WF_EventAudit_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWFEventAudit(Properties ctx, String AD_WF_EventAudit_UU, String trxName) {
+        super(ctx, AD_WF_EventAudit_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 * 	@param ctx context

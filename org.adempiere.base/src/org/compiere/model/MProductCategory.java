@@ -29,6 +29,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -135,6 +136,18 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 	private static CLogger	s_log	= CLogger.getCLogger (MProductCategory.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Product_Category_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProductCategory(Properties ctx, String M_Product_Category_UU, String trxName) {
+        super(ctx, M_Product_Category_UU, trxName);
+		if (Util.isEmpty(M_Product_Category_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -145,13 +158,18 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 	{
 		super(ctx, M_Product_Category_ID, trxName);
 		if (M_Product_Category_ID == 0)
-		{
-			setMMPolicy (MMPOLICY_FiFo);	// F
-			setPlannedMargin (Env.ZERO);
-			setIsDefault (false);
-			setIsSelfService (true);	// Y
-		}
+			setInitialDefaults();
 	}	//	MProductCategory
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setMMPolicy (MMPOLICY_FiFo);	// F
+		setPlannedMargin (Env.ZERO);
+		setIsDefault (false);
+		setIsSelfService (true);	// Y
+	}
 
 	/**
 	 * 	Load Constructor

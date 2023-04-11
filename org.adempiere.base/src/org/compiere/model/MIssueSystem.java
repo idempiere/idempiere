@@ -95,6 +95,16 @@ public class MIssueSystem extends X_R_IssueSystem
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MIssueSystem.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_IssueSystem_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MIssueSystem(Properties ctx, String R_IssueSystem_UU, String trxName) {
+        super(ctx, R_IssueSystem_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

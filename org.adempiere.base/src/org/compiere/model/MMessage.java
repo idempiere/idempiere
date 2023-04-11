@@ -145,6 +145,16 @@ public class MMessage extends X_AD_Message implements ImmutablePOSupport
 	/** Static Logger					*/
 	private static CLogger 	s_log = CLogger.getCLogger(MMessage.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Message_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMessage(Properties ctx, String AD_Message_UU, String trxName) {
+        super(ctx, AD_Message_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

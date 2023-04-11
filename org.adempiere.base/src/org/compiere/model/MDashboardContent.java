@@ -147,10 +147,21 @@ public class MDashboardContent extends X_PA_DashboardContent
 		.setOrderBy(COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line);
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_DashboardContent_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDashboardContent(Properties ctx, String PA_DashboardContent_UU, String trxName) {
+        super(ctx, PA_DashboardContent_UU, trxName);
+    }
+
     public MDashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
     {
       super (ctx, PA_DashboardContent_ID, trxName);
     }
+
     public MDashboardContent (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);

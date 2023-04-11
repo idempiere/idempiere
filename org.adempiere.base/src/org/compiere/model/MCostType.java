@@ -33,6 +33,16 @@ public class MCostType extends X_M_CostType
 	 */
 	private static final long serialVersionUID = -2060640115481013228L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_CostType_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCostType(Properties ctx, String M_CostType_UU, String trxName) {
+        super(ctx, M_CostType_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

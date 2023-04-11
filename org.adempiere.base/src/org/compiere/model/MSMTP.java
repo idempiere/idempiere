@@ -44,14 +44,24 @@ public class MSMTP extends X_AD_SMTP implements ImmutablePOSupport {
 	/**	Cache */
 	private static ImmutablePOCache<String,MSMTP>	s_cache = new ImmutablePOCache<String,MSMTP>(Table_Name, 20);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_SMTP_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSMTP(Properties ctx, String AD_SMTP_UU, String trxName) {
+        super(ctx, AD_SMTP_UU, trxName);
+    }
+
 	/**
 	 * SMTP constructor
 	 * @param ctx			context
-	 * @param X_AD_SMTP_ID	ID
+	 * @param AD_SMTP_ID	ID
 	 * @param trxName		transaction
 	 */
-	public MSMTP(Properties ctx, int X_AD_SMTP_ID, String trxName) {
-		super(ctx, X_AD_SMTP_ID, trxName);
+	public MSMTP(Properties ctx, int AD_SMTP_ID, String trxName) {
+		super(ctx, AD_SMTP_ID, trxName);
 	} // MSMTP
 
 	/**

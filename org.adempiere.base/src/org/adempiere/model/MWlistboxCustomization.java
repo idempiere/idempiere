@@ -34,6 +34,16 @@ public class MWlistboxCustomization extends X_AD_Wlistbox_Customization {
 	 */
 	private static final long serialVersionUID = -493650011622455985L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Wlistbox_Customization_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWlistboxCustomization(Properties ctx, String AD_Wlistbox_Customization_UU, String trxName) {
+        super(ctx, AD_Wlistbox_Customization_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param AD_Wlistbox_Customization_ID

@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.IntPOCopyCache;
@@ -198,6 +199,18 @@ public class MBPGroup extends X_C_BP_Group implements ImmutablePOSupport
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MBPGroup.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_BP_Group_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBPGroup(Properties ctx, String C_BP_Group_UU, String trxName) {
+        super(ctx, C_BP_Group_UU, trxName);
+		if (Util.isEmpty(C_BP_Group_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -208,12 +221,17 @@ public class MBPGroup extends X_C_BP_Group implements ImmutablePOSupport
 	{
 		super (ctx, C_BP_Group_ID, trxName);
 		if (C_BP_Group_ID == 0)
-		{
-			setIsConfidentialInfo (false);	// N
-			setIsDefault (false);
-			setPriorityBase(PRIORITYBASE_Same);
-		}	
+			setInitialDefaults();
 	}	//	MBPGroup
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsConfidentialInfo (false);	// N
+		setIsDefault (false);
+		setPriorityBase(PRIORITYBASE_Same);
+	}
 
 	/**
 	 * 	Load Constructor

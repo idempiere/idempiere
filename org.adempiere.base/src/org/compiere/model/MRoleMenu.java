@@ -32,6 +32,16 @@ public class MRoleMenu extends X_U_RoleMenu
 	 */
 	private static final long serialVersionUID = 9022716123964882452L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param U_RoleMenu_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRoleMenu(Properties ctx, String U_RoleMenu_UU, String trxName) {
+        super(ctx, U_RoleMenu_UU, trxName);
+    }
+
 	public MRoleMenu(Properties ctx, int U_RoleMenu_ID, String trxName)
 	{
 		super(ctx, U_RoleMenu_ID, trxName);
