@@ -996,7 +996,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 						{
 							td td = new td();
 							tr.addElement(td);
-							MStyle style = MStyle.get(Env.getCtx(), item.getAD_FieldStyle_ID());
+							MStyle style = item.getAD_FieldStyle_ID() > 0 ? MStyle.get(Env.getCtx(), item.getAD_FieldStyle_ID()) : null;
 							Object obj = instanceAttributeColumn != null ? instanceAttributeColumn.getPrintDataElement(row)
 									: m_printData.getNodeByPrintFormatItemId(item.getAD_PrintFormatItem_ID());
 							if (obj == null || !isDisplayPFItem(item)){
@@ -1103,14 +1103,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 										if (cssPrefix != null)
 											href.setClass(cssPrefix + "-href");
 										// Set Style
-										if(style.isWrapWithSpan())
+										if(style != null && style.isWrapWithSpan())
 											setStyle(href, style);
 										else
 											setStyle(td, style);
 										extension.extendIDColumn(row, td, href, pde);
 									} else {
 										// Set Style
-										if(style.isWrapWithSpan()) {
+										if(style != null && style.isWrapWithSpan()) {
 											span span = new span();
 											setStyle(span, style);
 											span.addElement(Util.maskHTML(value));
@@ -1126,7 +1126,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 								else
 								{
 									// Set Style
-									if(style.isWrapWithSpan()) {
+									if(style != null && style.isWrapWithSpan()) {
 										span span = new span();
 										setStyle(span, style);
 										span.addElement(Util.maskHTML(value));
@@ -2771,26 +2771,26 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	}
 	
 	private void setStyle(MultiPartElement element, MStyle style) {
-		int styleID = style.getAD_Style_ID();
-		if(styleID > 0) {;
-			X_AD_StyleLine[] lines = style.getStyleLines();
-			StringBuilder styleBuilder = new StringBuilder();
-			for (X_AD_StyleLine line : lines)
+		if (style == null || style.getAD_Style_ID() == 0)
+			return;
+
+		X_AD_StyleLine[] lines = style.getStyleLines();
+		StringBuilder styleBuilder = new StringBuilder();
+		for (X_AD_StyleLine line : lines)
+		{
+			String inlineStyle = line.getInlineStyle().trim();
+			String displayLogic = line.getDisplayLogic();
+			if (!Util.isEmpty(displayLogic))
 			{
-				String inlineStyle = line.getInlineStyle().trim();
-				String displayLogic = line.getDisplayLogic();
-				if (!Util.isEmpty(displayLogic))
-				{
-					if (!Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), displayLogic))
-						continue;
-				}
-				if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
-					styleBuilder.append("; ");
-				styleBuilder.append(inlineStyle);
+				if (!Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), displayLogic))
+					continue;
 			}
-			if(styleBuilder.length() > 0)
-				element.setStyle(styleBuilder.toString());
+			if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
+				styleBuilder.append("; ");
+			styleBuilder.append(inlineStyle);
 		}
+		if(styleBuilder.length() > 0)
+			element.setStyle(styleBuilder.toString());
 		//
 	}
 }	//	ReportEngine
