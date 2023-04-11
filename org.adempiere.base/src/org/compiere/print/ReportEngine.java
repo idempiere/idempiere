@@ -1103,24 +1103,39 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 										if (cssPrefix != null)
 											href.setClass(cssPrefix + "-href");
 										// Set Style
-										setStyle(href, style);
+										if(style.isWrapWithSpan())
+											setStyle(href, style);
+										else
+											setStyle(td, style);
 										extension.extendIDColumn(row, td, href, pde);
 									} else {
 										// Set Style
-										span span = new span();
-										setStyle(span, style);
-										span.addElement(Util.maskHTML(value));
-										td.addElement(span);
+										if(style.isWrapWithSpan()) {
+											span span = new span();
+											setStyle(span, style);
+											span.addElement(Util.maskHTML(value));
+											td.addElement(span);
+										}
+										else {
+											setStyle(td, style);
+											td.addElement(Util.maskHTML(value));
+										}
 									}
 
 								}
 								else
 								{
 									// Set Style
-									span span = new span();
-									setStyle(span, style);
-									span.addElement(Util.maskHTML(value));
-									td.addElement(span);
+									if(style.isWrapWithSpan()) {
+										span span = new span();
+										setStyle(span, style);
+										span.addElement(Util.maskHTML(value));
+										td.addElement(span);
+									}
+									else {
+										setStyle(td, style);
+										td.addElement(Util.maskHTML(value));
+									}
 								}
 								if (cssPrefix != null)
 								{
