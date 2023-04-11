@@ -53,14 +53,12 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 
 /**
- * 
+ * Window for request
  * @author Elaine
- *
  */
-public class RequestWindow extends Window implements EventListener<Event> {
-	
+public class RequestWindow extends Window implements EventListener<Event> {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7757368164776005797L;
 
@@ -79,6 +77,10 @@ public class RequestWindow extends Window implements EventListener<Event> {
 	private Window parent;
 	private Calendar calBegin,calEnd;
 	
+	/**
+	 * @param ce CalendarsEvent
+	 * @param parent
+	 */
 	public RequestWindow(CalendarsEvent ce, Window parent) {
 		
 		super();
@@ -279,6 +281,7 @@ public class RequestWindow extends Window implements EventListener<Event> {
 		tbxEndTime.setValue(ce.getEndDate());
 	}
 	
+	@Override
 	public void onEvent(Event e) throws Exception {
 		if (m_readOnly)
 			this.detach();
@@ -322,7 +325,6 @@ public class RequestWindow extends Window implements EventListener<Event> {
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("R_Request_ID=" + request.getR_Request_ID());
 				Events.postEvent("onRefresh", parent, null);
-//				Events.echoEvent("onRefresh", parent, null);
 			}
 			else
 			{
@@ -336,7 +338,10 @@ public class RequestWindow extends Window implements EventListener<Event> {
 			this.detach();
 	}
 	
-	//Check, Start time is not  >=  End time, when Start Plan == Complete Plan
+	/**
+	 * Check, Start time is not  >=  End time, when Start Plan == Complete Plan
+	 * @return true if {@link #calBegin} >= {@link #calEnd}, false otherwise (true indicate error)
+	 */
 	private boolean checkTime()
 	{
 		calBegin = Calendar.getInstance();

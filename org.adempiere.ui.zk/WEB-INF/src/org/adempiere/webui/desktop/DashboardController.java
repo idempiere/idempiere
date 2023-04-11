@@ -124,8 +124,8 @@ import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vlayout;
 
 /**
+ * Dashboard renderer and controller
  * @author hengsin
- *
  */
 public class DashboardController implements EventListener<Event> {
 
@@ -134,14 +134,21 @@ public class DashboardController implements EventListener<Event> {
 	private Component prevParent;
 	private Component prevNext;
 
+	/** dashboard gadget panels */
 	private List<Panel> panelList = new ArrayList<Panel>();
+	/** For column orientation */
 	private List<Anchorchildren> columnList;
+	/** For row orientation */
 	private List<Anchorchildren> rowList;
 	private Anchorlayout dashboardLayout;
-	private Anchorchildren maximizedHolder;	
+	private Anchorchildren maximizedHolder;
+	/** Runnable for pooling refresh of dashboard gadgets */
 	private DashboardRunnable dashboardRunnable;
+	/** Timer for {@link #dashboardRunnable} */
 	private Timer dashboardTimer;
+	/** True for dashboard, false for left/right side panel */
 	private boolean isShowInDashboard;
+	/** number of columns for column oriented dashboard */
 	private int noOfCols;
 
 	private static final String PANEL_EMPTY_ATTRIBUTE = "panel.empty";
@@ -153,10 +160,15 @@ public class DashboardController implements EventListener<Event> {
 	private static final String FLEX_GROW_ATTRIBUTE = "FlexGrow";
 	private static final String IMAGES_CONTEXT_HELP_PNG = "images/Help16.png";
 
+	/** Default total width for column oriented layout (in percentage) */
 	private final static int DEFAULT_DASHBOARD_WIDTH = 99;
+	/** Column orientation */
 	private final static String DASHBOARD_LAYOUT_COLUMNS = "C";
+	/** Row orientation */
 	private final static String DASHBOARD_LAYOUT_ROWS = "R";
+	/** Max number of gadgets in a row. For row oriented layout. */
 	private final static int MAX_NO_OF_PREFS_IN_ROW = 10;
+	/** Default horizontal flex grow for dashboard gadget. For row oriented layout. */
 	private final static int DEFAULT_FLEX_GROW = 1;
 	
 	/**
@@ -174,10 +186,10 @@ public class DashboardController implements EventListener<Event> {
 	}
 	
 	/**
-	 *
-	 * @param parent
-	 * @param desktopImpl
-	 * @param isShowInDashboard
+	 * Render main or side dashboard
+	 * @param parent Parent Component of dashboard
+	 * @param desktopImpl IDesktop
+	 * @param isShowInDashboard true for main/center dashboard, false for left/right side dashboard
 	 */
 	public void render(Component parent, IDesktop desktopImpl, boolean isShowInDashboard) {
 		
@@ -188,6 +200,13 @@ public class DashboardController implements EventListener<Event> {
         	renderColumns(parent, desktopImpl, isShowInDashboard, false);
 	}
 	
+	/**
+	 * Render dashboard in column orientation
+	 * @param parent Component
+	 * @param desktopImpl IDesktop
+	 * @param isShowInDashboard true for dashboard, false for left/right side panel
+	 * @param update true for update, false for new 
+	 */
 	protected void renderColumns(Component parent, IDesktop desktopImpl, boolean isShowInDashboard, boolean update) {
 		this.isShowInDashboard = isShowInDashboard;
 		if (!update)
@@ -371,6 +390,12 @@ public class DashboardController implements EventListener<Event> {
 		}
 	}
 
+	/**
+	 * Create new gadget panel
+	 * @param dp
+	 * @param dc
+	 * @return {@link Panel}
+	 */
 	private Panel newGadgetPanel(MDashboardPreference dp, MDashboardContent dc) {
 		Panel panel;
 		panel = new Panel();
@@ -402,6 +427,11 @@ public class DashboardController implements EventListener<Event> {
 			return panel;
 	}
 	
+	/**
+	 * Render help button for individual dashboard gadget
+	 * @param caption
+	 * @param text
+	 */
 	private void renderHelpButton(Caption caption, String text) {
 		A help = new A();
 		help.setSclass("dashboard-content-help-icon");
@@ -433,12 +463,12 @@ public class DashboardController implements EventListener<Event> {
 
 	/**
 	 * Render gadget panel in background thread
-	 * @param spt
-	 * @param dashboardContent
-	 * @param panel
+	 * @param spt ServerPushTemplate
+	 * @param dashboardContent MDashboardContent
+	 * @param panel Panel
 	 * @param contextPath
-	 * @param panelChildren
-	 * @param zulComponent
+	 * @param panelChildren Panelchildren
+	 * @param zulComponent Component created from zul in Event Listener thread
 	 * @throws Exception
 	 */
 	private void asyncRenderGadgetPanel(ServerPushTemplate spt, MDashboardContent dashboardContent, Panel panel, String contextPath, 
@@ -479,6 +509,10 @@ public class DashboardController implements EventListener<Event> {
 		}		
 	}
 	
+	/**
+	 * Start {@link #dashboardRunnable} for pooling refresh of dashboard gadgets (using {@link #dashboardTimer})
+	 * @param parent
+	 */
 	private void startDashboardRunnable(Component parent) {
 		// default Update every one minutes
 		int interval = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_REFRESH_INTERVAL, 60000);
@@ -496,6 +530,13 @@ public class DashboardController implements EventListener<Event> {
 		dashboardTimer.setPage(parent.getPage());
 	}
 
+	/**
+	 * Render dashboard in row orientation
+	 * @param parent
+	 * @param desktopImpl
+	 * @param isShowInDashboard
+	 * @param update
+	 */
 	protected void renderRows(Component parent, IDesktop desktopImpl, boolean isShowInDashboard, boolean update) {
 		this.isShowInDashboard = isShowInDashboard;
 		if (!update)
@@ -670,7 +711,6 @@ public class DashboardController implements EventListener<Event> {
         {
 			logger.log(Level.WARNING, "Failed to create dashboard content", e);
 		}
-        //
                 
         if (!update)
         {
@@ -678,6 +718,12 @@ public class DashboardController implements EventListener<Event> {
 		}
 	}
 	
+	/**
+	 * Find dashboard gadget panel by PA_DashboardContent_ID and PA_DashboardPreference_ID
+	 * @param PA_DashboardContent_ID
+	 * @param PA_DashboardPreference_ID
+	 * @return {@link Panel}
+	 */
 	private Panel findPanel(int PA_DashboardContent_ID, int PA_DashboardPreference_ID) {
 		for(Panel panel : panelList) {
 			Object value1 = panel.getAttribute(MDashboardPreference.COLUMNNAME_PA_DashboardContent_ID);
@@ -694,13 +740,13 @@ public class DashboardController implements EventListener<Event> {
 
 	/**
 	 * Create gadget components in background thread
-	 * @param dashboardContent
-	 * @param dashboardRunnable
+	 * @param dashboardContent MDashboardContent
+	 * @param dashboardRunnable DashboardRunnable
 	 * @param contextPath
 	 * @param parentComponent
-	 * @param components
-	 * @param zulComponent
-	 * @param spt 
+	 * @param components list to add created Component
+	 * @param zulComponent Component created from zul in Event Listener thread
+	 * @param spt ServerPushTemplate
 	 * @throws Exception
 	 */
 	private void asyncRenderComponents(MDashboardContent dashboardContent, DashboardRunnable dashboardRunnable, String contextPath, 
@@ -932,10 +978,10 @@ public class DashboardController implements EventListener<Event> {
 	}
 	
 	/**
-	 * Synchronous render of gadget content in foreground ui thread
+	 * Synchronous render of gadget content in foreground UI (Event Listener) thread
 	 * @param content must be an instanceof {@link HtmlBasedComponent}
-	 * @param dashboardContent
-	 * @param dashboardRunnable
+	 * @param dashboardContent MDashboardContent
+	 * @param dashboardRunnable DashboardRunnable
 	 * @return true if gadget dashboard is not empty
 	 * @throws Exception
 	 */
@@ -974,8 +1020,9 @@ public class DashboardController implements EventListener<Event> {
 	}
 	
 	/**
-	 * Add Drill Across Event Listener to Border Layout
-	 * @param processID
+	 * Add onDrillAcross, onZoom and onDrillDown Event Listener to component
+	 * @param processID AD_Process_ID
+	 * @param component Component
 	 */
 	private void addDrillAcrossEventListener(int processID, Component component) {
 		component.addEventListener(DrillEvent.ON_DRILL_ACROSS, new EventListener<Event>() {
@@ -1021,7 +1068,7 @@ public class DashboardController implements EventListener<Event> {
 	
 	/**
 	 * 	Execute Drill to Query
-	 * 	@param query query
+	 * 	@param query MQuery
 	 */
 	private void executeDrill (MQuery query)
 	{
@@ -1212,6 +1259,11 @@ public class DashboardController implements EventListener<Event> {
 		return wrapper;
 	}
 	
+	/**
+	 * Create and save dashboard preference (MDashboardPreference) to DB.
+	 * @param AD_User_ID
+	 * @param AD_Role_ID
+	 */
 	private void createDashboardPreference(int AD_User_ID, int AD_Role_ID)
 	{
 		MDashboardContent[] dcs = MDashboardContentAccess.get(Env.getCtx(),AD_Role_ID, AD_User_ID, null);
@@ -1232,7 +1284,13 @@ public class DashboardController implements EventListener<Event> {
 		}
 	}
 	
-	
+	/**
+	 * Update dashboard preference (MDashboardPreference) in DB.
+	 * @param dps
+	 * @param dcs
+	 * @param ctx
+	 * @return true if there are changes
+	 */
 	private boolean updatePreferences(MDashboardPreference[] dps,MDashboardContent[] dcs, Properties ctx) {
 		boolean change = false;
 		for (int i = 0; i < dcs.length; i++) {
@@ -1273,6 +1331,11 @@ public class DashboardController implements EventListener<Event> {
 		return change;
 	}
 	
+	/**
+	 * Save dashboard preference (MDashboardPreference) to DB.
+	 * @param layout
+	 * @param prevLayout
+	 */
 	private void saveDashboardPreference(Component layout, Component prevLayout)
 	{
 		String layoutOrientation = MSysConfig.getValue(MSysConfig.DASHBOARD_LAYOUT_ORIENTATION, Env.getAD_Client_ID(Env.getCtx()));
@@ -1456,7 +1519,6 @@ public class DashboardController implements EventListener<Event> {
 	}
 	
 	/**
-	 * 
 	 * @param page
 	 * @param desktop
 	 */
@@ -1484,12 +1546,22 @@ public class DashboardController implements EventListener<Event> {
 		dashboardLayout = null;
 	}
 
+	/**
+	 * add dashboardPanel to {@link #dashboardRunnable}
+	 * @param dashboardPanel
+	 */
 	private void addDashboardPanel(DashboardPanel dashboardPanel) {
 		if (dashboardRunnable != null) {
 			dashboardRunnable.add(dashboardPanel);
 		}
 	}
 	
+	/**
+	 * Strip &lt;html&gt;, &lt;body&gt; and &lt;head&gt; tag
+	 * @param htmlString
+	 * @param all true to escpae &lt; and &gt;
+	 * @return stripped htmlString
+	 */
 	private String stripHtml(String htmlString, boolean all) {
 		htmlString = htmlString
 		.replace("<html>", "")
@@ -1506,6 +1578,13 @@ public class DashboardController implements EventListener<Event> {
 		return htmlString;
 	}
 	
+	/**
+	 * Run report
+	 * @param AD_Process_ID
+	 * @param AD_PrintFormat_ID
+	 * @param parameters Report parameters
+	 * @return {@link ReportEngine}
+	 */
 	private ReportEngine runReport(int AD_Process_ID, int AD_PrintFormat_ID, String parameters) {
    		MProcess process = MProcess.get(Env.getCtx(), AD_Process_ID);
 		if (!process.isReport() || process.getAD_ReportView_ID() == 0)
@@ -1546,6 +1625,16 @@ public class DashboardController implements EventListener<Event> {
 		
 	}
 
+	/**
+	 * Generate report media (html)
+	 * @param AD_Process_ID
+	 * @param AD_PrintFormat_ID
+	 * @param parameters
+	 * @param component
+	 * @param contextPath
+	 * @return {@link AMedia}
+	 * @throws Exception
+	 */
 	private AMedia generateReport(int AD_Process_ID, int AD_PrintFormat_ID, String parameters, Component component, String contextPath) throws Exception {
 		ReportEngine re = runReport(AD_Process_ID, AD_PrintFormat_ID, parameters);
 		if(re == null)
@@ -1556,6 +1645,12 @@ public class DashboardController implements EventListener<Event> {
 		return new AMedia(re.getName(), "html", "text/html", file, false);
 	}
 
+	/**
+	 * Run report and open in report viewer
+	 * @param AD_Process_ID
+	 * @param AD_PrintFormat_ID
+	 * @param parameters
+	 */
    	protected void openReportInViewer(int AD_Process_ID, int AD_PrintFormat_ID, String parameters) {
    		ReportEngine re = runReport(AD_Process_ID, AD_PrintFormat_ID, parameters);
    		new ZkReportViewerProvider().openViewer(re);
@@ -1747,9 +1842,7 @@ public class DashboardController implements EventListener<Event> {
 			MProcessPara pp = MProcess.get(i.getAD_Process_ID()).getParameter(ip.getParameterName());
 
 			if (pp != null) {
-
 				MLookupInfo mli = MLookupFactory.getLookupInfo(Env.getCtx(), 0, 0, pp.getAD_Reference_ID(), Env.getLanguage(Env.getCtx()), pp.getColumnName(), pp.getAD_Reference_Value_ID(), false, "");
-
 
 				PreparedStatement pstmt = null;
 				ResultSet rs = null;
@@ -1793,7 +1886,6 @@ public class DashboardController implements EventListener<Event> {
 	}
 
 	/**
-	 *
 	 * @param clientInfo
 	 */
 	public void updateLayout(ClientInfo clientInfo) {
@@ -1819,6 +1911,14 @@ public class DashboardController implements EventListener<Event> {
 		}			
 	}
 
+	/**
+	 * Render chart
+	 * @param chartPanel
+	 * @param width
+	 * @param height
+	 * @param model {@link ChartModel}
+	 * @param showTitle
+	 */
 	private void renderChart(final Div chartPanel, int width, int height, ChartModel model, boolean showTitle) {
 		List<IChartRendererService> list = Extensions.getChartRendererServices();
 		for (IChartRendererService renderer : list) {

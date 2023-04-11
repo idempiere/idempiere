@@ -21,8 +21,8 @@ package org.adempiere.webui.util;
 public interface IServerPushCallback {
 
 	/**
-	 * Callback method to perform UI related update. For performance reason, implementation of this method
-	 * must not perform potentially slow operation. 
+	 * Callback method to perform UI related update. To keep UI responsive, implementation of this method
+	 * must not perform potentially slow operation (to avoid holding on to the single Event Listener Thread for too long). 
 	 */
 	public void updateUI();
 	

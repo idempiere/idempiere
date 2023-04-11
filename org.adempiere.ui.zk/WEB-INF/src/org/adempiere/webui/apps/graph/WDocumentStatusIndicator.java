@@ -47,7 +47,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 
 /**
- * 	Document Status Indicator
+ * 	Document Status ({@link MDocumentStatus}) Indicator
  */
 public class WDocumentStatusIndicator extends Panel implements EventListener<Event> {
 	private static final long serialVersionUID = -9076405331101242792L;
