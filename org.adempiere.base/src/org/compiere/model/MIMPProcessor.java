@@ -43,9 +43,7 @@ import org.compiere.util.DB;
 /**
  * @author Trifon Trifonov
  */
-public class MIMPProcessor
-	extends X_IMP_Processor
-	implements AdempiereProcessor 
+public class MIMPProcessor extends X_IMP_Processor implements AdempiereProcessor 
 {
 	/**
 	 * 

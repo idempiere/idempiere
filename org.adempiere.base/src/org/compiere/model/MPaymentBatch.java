@@ -73,17 +73,18 @@ public class MPaymentBatch extends X_C_PaymentBatch
 		super(ctx, rs, trxName);
 	}	//	MPaymentBatch
 
-	/**
-	 * 	New Constructor
-	 *	@param ctx context
-	 *	@param Name name
-	 *	@param trxName trx
-	 */
-	public MPaymentBatch (Properties ctx, String Name, String trxName)
-	{
-		this (ctx, 0, trxName);
-		setName (Name);
-	}	//	MPaymentBatch
+	/* Old Constructor that sets the name replaced by UUID constructor in version 11 */
+	// /**
+	//  * 	New Constructor
+	//  *	@param ctx context
+	//  *	@param Name name
+	//  *	@param trxName trx
+	//  */
+	// public MPaymentBatch (Properties ctx, String Name, String trxName)
+	// {
+	// 	this (ctx, 0, trxName);
+	// 	setName (Name);
+	// }	//	MPaymentBatch
 
 	/**
 	 * 	Parent Constructor

@@ -26,7 +26,7 @@ import org.adempiere.exceptions.WarehouseInvalidForOrgException;
  * @author Victor Perez www.e-evolution.com     
  * @version $Id: MForecastLine.java,v 1.11 2005/05/17 05:29:52 vpj-cd Exp $
  */
-public class MForecastLine extends  X_M_ForecastLine
+public class MForecastLine extends X_M_ForecastLine
 {
 
 	

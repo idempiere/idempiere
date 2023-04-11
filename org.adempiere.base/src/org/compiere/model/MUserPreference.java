@@ -30,7 +30,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 
-public class MUserPreference extends X_AD_UserPreference{
+public class MUserPreference extends X_AD_UserPreference {
 	/**
 	 * 
 	 */

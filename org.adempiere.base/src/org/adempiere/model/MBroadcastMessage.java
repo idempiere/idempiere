@@ -32,7 +32,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  */
 public class MBroadcastMessage extends X_AD_BroadcastMessage implements ImmutablePOSupport
 {
-/**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3733943472482553977L;

@@ -35,9 +35,7 @@ import java.util.Properties;
 /**
  * @author Trifon Trifonov
  */
-public class MIMPProcessorLog 
-	extends X_IMP_ProcessorLog
-	implements AdempiereProcessorLog 
+public class MIMPProcessorLog extends X_IMP_ProcessorLog implements AdempiereProcessorLog 
 {
 	/**
 	 * 

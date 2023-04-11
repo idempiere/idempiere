@@ -24,7 +24,7 @@ import java.util.Properties;
  * 
  * @author victor.perez@e-evolution.com, www.e-evolution.com     
  */
-public class MForecast extends  X_M_Forecast
+public class MForecast extends X_M_Forecast
 {
 
 
