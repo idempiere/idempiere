@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.component;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,6 +37,8 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
+import org.compiere.minigrid.SelectableIDColumn;
+import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.MRole;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
@@ -57,7 +60,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	/**
 	 * generated serial id 
 	 */
-	private static final long serialVersionUID = -5501893389366975849L;
+	private static final long serialVersionUID = 3758442599469915640L;
 
 	/**	Logger. */
 	private static final CLogger logger = CLogger.getCLogger(WListbox.class);
@@ -237,8 +240,8 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		// F3P: If allowed, use idcolumn as a switch for read/write (Some logic as boolean)		
 		if(allowIDColumnForReadWrite 
 			&& column != 0
-			&& val instanceof IDColumn 
-			&& ((IDColumn)val).isSelected() == false)
+			&& val instanceof SelectableIDColumn 
+			&& ((SelectableIDColumn)val).isSelected() == false)
 		{
 			return false;
 		}
@@ -418,7 +421,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
             {
                 setColorColumn(columnIndex);
             }
-            if (layout[columnIndex].getColClass() == IDColumn.class)
+            if (layout[columnIndex].getColClass() == IDColumn.class || layout[columnIndex].getColClass() == UUIDColumn.class)
             {
                 m_keyColumnIndex = columnIndex;
             }
@@ -626,6 +629,10 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 					{
 						data = new IDColumn(rs.getInt(rsColIndex));
 					}
+					else if (columnClass == UUIDColumn.class)
+					{
+						data = new UUIDColumn(rs.getString(rsColIndex));
+					}
 					else if (columnClass == Boolean.class)
 					{
 						data = Boolean.valueOf(rs.getString(rsColIndex).equals("Y"));
@@ -739,6 +746,10 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 					{
 						data = new IDColumn(((Integer)data).intValue());
 					}
+					else if (columnClass == UUIDColumn.class)
+					{
+						data = new UUIDColumn(data.toString());
+					}
 					else if (columnClass == Double.class)
 					{
 						data = Double.valueOf(((BigDecimal)data).doubleValue());
@@ -768,9 +779,9 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 *  Get the key of currently selected row based on layout defined in
 	 *  {@link #prepareTable(ColumnInfo[], String, String, boolean, String)}.
 	 *
-	 *  @return ID if key
+	 *  @return ID (int) or UUID (String) - if key
 	 */
-	public Integer getSelectedRowKey()
+	public <T extends Serializable> T getSelectedRowKey()
 	{
 		if (m_layout == null)
 		{
@@ -787,22 +798,22 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 * IDEMPIERE-1334
 	 * get key of record at index
 	 * @param index
-	 * @return
+	 * @return ID (int) or UUID (String)
 	 */
-	public Integer getRowKeyAt (int index){
+	@SuppressWarnings("unchecked")
+	public <T extends Serializable> T getRowKeyAt (int index){
 		if (index < 0 || m_keyColumnIndex < 0)
 			return null;
 				
 		Object data = getModel().getDataAt(index, m_keyColumnIndex);
 
 		if (data instanceof IDColumn)
-		{
 			data = ((IDColumn)data).getRecord_ID();
-		}
-		if (data instanceof Integer)
-		{
-			return (Integer)data;
-		}
+		else if (data instanceof UUIDColumn)
+			data = ((UUIDColumn)data).getRecord_UU();
+
+		if (data instanceof Integer || data instanceof String)
+			return (T) data;
 		return null;
 	}
 
@@ -819,7 +830,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		ListModelTable model = getModel();
 		List<Object> lsSelectedItem = new ArrayList<Object> ();  
 		for (int index = 0; index < model.getSize(); index++){
-			Integer key = getRowKeyAt(index);
+			Object key = getRowKeyAt(index);
 			if (key == null)
 				continue;
 			
@@ -833,7 +844,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	/**
 	 * @return key for first row (row 0). null if table is empty.
 	 */
-	public Integer getFirstRowKey()
+	public <T extends Serializable> T getFirstRowKey()
 	{
 		if (m_layout == null)
 		{
@@ -1066,21 +1077,20 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 		int col = event.getColumn(); // column of table field which caused the event
 		int row = event.getRow(); // row of table field which caused the event
 		boolean newBoolean;
-		IDColumn idColumn;
 
 		// if the event was caused by an ID Column and the value is a boolean
 		// then set the IDColumn's select field
 		if (col >= 0 && row >=0)
 		{
-			if (this.getValueAt(row, col) instanceof IDColumn
+			if (this.getValueAt(row, col) instanceof SelectableIDColumn
 				&& event.getNewValue() instanceof Boolean)
 			{
 				newBoolean = ((Boolean)event.getNewValue()).booleanValue();
-				idColumn = (IDColumn)this.getValueAt(row, col);
+				SelectableIDColumn idColumn = (SelectableIDColumn)this.getValueAt(row, col);
 				idColumn.setSelected(newBoolean);
 				this.setValueAt(idColumn, row, col);
 			}
-			// othewise just set the value in the model to the new value
+			// otherwise just set the value in the model to the new value
 			else
 			{
 				this.setValueAt(event.getNewValue(), row, col);

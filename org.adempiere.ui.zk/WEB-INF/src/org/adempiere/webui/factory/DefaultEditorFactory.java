@@ -232,7 +232,7 @@ public class DefaultEditorFactory implements IEditorFactory {
         {
         	editor = new WTimeZoneEditor(gridField, tableEditor);
         }
-		else if (displayType == DisplayType.RecordID)
+		else if (displayType == DisplayType.RecordID || displayType == DisplayType.RecordUU)
         {
         	editor = new WRecordIDEditor(gridField, tableEditor, editorConfiguration);
         }

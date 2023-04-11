@@ -20,41 +20,15 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  * Contributors:                                                       *
- * - hengsin                         								   *
+ * - Carlos Ruiz - globalqss - bxservice                               *
  **********************************************************************/
-package org.adempiere.base.callout;
 
-import java.util.Properties;
+package org.compiere.minigrid;
 
-import org.adempiere.base.IColumnCallout;
-import org.adempiere.base.annotation.Callout;
-import org.compiere.model.GridField;
-import org.compiere.model.GridTab;
+public interface SelectableIDColumn {
 
-/**
- * Callout to clear Record_ID value after changes to AD_Table_ID.
- * @author hengsin
- *
- */
-@Callout(tableName = "*",columnName = "AD_Table_ID")
-public class TableIDCallout implements IColumnCallout {
+	public void setSelected(boolean selected);
 
-	/**
-	 * Default constructor
-	 */
-	public TableIDCallout() {
-	}
-	
-	@Override	
-	public String start(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue) {
-		GridField recordId = mTab.getField("Record_ID"); 
-		if (recordId != null) {
-			mTab.setValue(recordId, null);
-		}
-		GridField recordUU = mTab.getField("Record_UU"); 
-		if (recordUU != null) {
-			mTab.setValue(recordUU, null);
-		}
-		return null;
-	}
+	public boolean isSelected();
+
 }

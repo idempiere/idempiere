@@ -459,7 +459,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		}
 		if (log.isLoggable(Level.CONFIG)) log.config(getColumnName() + " - " + text);
 
-		int id = -1;
+		Object id = null;
 		
 		if (m_tableName == null)	//	sets table name & key column
 			setTableAndKeyColumn();
@@ -467,15 +467,27 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), false, getWhereClause());
 		if (ip != null && ip.loadedOK() && ip.getRowCount() == 1)
 		{
-			Integer key = ip.getFirstRowKey();
-			if (key != null && key.intValue() > 0)
+			if (ip.getFirstRowKey() instanceof Integer)
 			{
-				id = key.intValue();
+				Integer key = (Integer) ip.getFirstRowKey();
+				if (key != null && key.intValue() > 0)
+				{
+					id = key.intValue();
+				}
 			}
+			else
+			{
+				Object key = ip.getFirstRowKey();
+				if (key != null && key.toString().length() > 0)
+				{
+					id = key.toString();
+				}
+			}
+
 		}
 		
 		//	No (unique) result
-		if (id <= 0)
+		if (id == null || (id instanceof Integer && ((Integer) id).intValue() <= 0))
 		{
 			//m_value = null;	// force re-display
 			if (ip != null && ip.loadedOK()) 
@@ -492,7 +504,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (log.isLoggable(Level.FINE))
 			log.fine(getColumnName() + " - Unique ID=" + id);
 
-		actionCombo(Integer.valueOf(id));          //  data binding
+		actionCombo(id);          //  data binding
 		focusNext();
 
 		//safety check: if focus is going no where, focus back to self

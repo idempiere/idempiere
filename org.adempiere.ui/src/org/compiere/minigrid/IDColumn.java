@@ -22,7 +22,7 @@ package org.compiere.minigrid;
  * 	@author 	Jorg Janke
  * 	@version 	$Id: IDColumn.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
  */
-public class IDColumn
+public class IDColumn implements SelectableIDColumn
 {
 	/**
 	 *  ID Column constructor

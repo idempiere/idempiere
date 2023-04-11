@@ -343,8 +343,11 @@ public class WRecordInfo extends Window implements EventListener<Event>
 				} else {
 					uuid = po.get_UUID();
 				}
-				if (!Util.isEmpty(uuid))
-					m_info.append("\n ").append(uuidcol).append("=").append(uuid);
+				if (!Util.isEmpty(uuid)) {
+					StringBuilder uuinfo = new StringBuilder(uuidcol).append("=").append(uuid);
+					if (! m_info.toString().contains(uuinfo))
+						m_info.append("\n ").append(uuinfo);
+				}
 				if (po.get_KeyColumns().length == 1) {
 					String ticketURL;
 					if (Record_ID <= 0)
