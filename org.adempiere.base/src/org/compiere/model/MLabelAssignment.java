@@ -37,6 +37,16 @@ import org.compiere.util.DB;
 public class MLabelAssignment extends X_AD_LabelAssignment {
 	private static final long serialVersionUID = -964945898771768568L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_LabelAssignment_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MLabelAssignment(Properties ctx, String AD_LabelAssignment_UU, String trxName) {
+        super(ctx, AD_LabelAssignment_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

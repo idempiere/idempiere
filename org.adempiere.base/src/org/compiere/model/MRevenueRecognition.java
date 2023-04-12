@@ -35,6 +35,16 @@ public class MRevenueRecognition extends X_C_RevenueRecognition
 	 */
 	private static final long serialVersionUID = -8528224265258285903L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_RevenueRecognition_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRevenueRecognition(Properties ctx, String C_RevenueRecognition_UU, String trxName) {
+        super(ctx, C_RevenueRecognition_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

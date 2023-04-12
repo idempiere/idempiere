@@ -132,6 +132,18 @@ public class MPayment extends X_C_Payment
 		return retValue;
 	}	//	getOfBankTransfer
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Payment_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPayment(Properties ctx, String C_Payment_UU, String trxName) {
+        super(ctx, C_Payment_UU, trxName);
+		if (Util.isEmpty(C_Payment_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 *  Default Constructor
 	 *  @param ctx context
@@ -143,39 +155,44 @@ public class MPayment extends X_C_Payment
 		super (ctx, C_Payment_ID, trxName);
 		//  New
 		if (C_Payment_ID == 0)
-		{
-			setDocAction(DOCACTION_Complete);
-			setDocStatus(DOCSTATUS_Drafted);
-			setTrxType(TRXTYPE_Sales);
-			//
-			setR_AvsAddr (R_AVSZIP_Unavailable);
-			setR_AvsZip (R_AVSZIP_Unavailable);
-			//
-			setIsReceipt (true);
-			setIsApproved (false);
-			setIsReconciled (false);
-			setIsAllocated(false);
-			setIsOnline (false);
-			setIsSelfService(false);
-			setIsDelayedCapture (false);
-			setIsPrepayment(false);
-			setProcessed(false);
-			setProcessing(false);
-			setPosted (false);
-			//
-			setPayAmt(Env.ZERO);
-			setDiscountAmt(Env.ZERO);
-			setTaxAmt(Env.ZERO);
-			setWriteOffAmt(Env.ZERO);
-			setIsOverUnderPayment (true);
-			setOverUnderAmt(Env.ZERO);
-			//
-			setDateTrx (new Timestamp(System.currentTimeMillis()));
-			setDateAcct (getDateTrx());
-			setTenderType(TENDERTYPE_Check);
-		}
+			setInitialDefaults();
 	}   //  MPayment
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocAction(DOCACTION_Complete);
+		setDocStatus(DOCSTATUS_Drafted);
+		setTrxType(TRXTYPE_Sales);
+		//
+		setR_AvsAddr (R_AVSZIP_Unavailable);
+		setR_AvsZip (R_AVSZIP_Unavailable);
+		//
+		setIsReceipt (true);
+		setIsApproved (false);
+		setIsReconciled (false);
+		setIsAllocated(false);
+		setIsOnline (false);
+		setIsSelfService(false);
+		setIsDelayedCapture (false);
+		setIsPrepayment(false);
+		setProcessed(false);
+		setProcessing(false);
+		setPosted (false);
+		//
+		setPayAmt(Env.ZERO);
+		setDiscountAmt(Env.ZERO);
+		setTaxAmt(Env.ZERO);
+		setWriteOffAmt(Env.ZERO);
+		setIsOverUnderPayment (true);
+		setOverUnderAmt(Env.ZERO);
+		//
+		setDateTrx (new Timestamp(System.currentTimeMillis()));
+		setDateAcct (getDateTrx());
+		setTenderType(TENDERTYPE_Check);
+	}
+
 	/**
 	 *  Load Constructor
 	 *  @param ctx context

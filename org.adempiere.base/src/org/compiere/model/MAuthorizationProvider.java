@@ -36,6 +36,16 @@ public class MAuthorizationProvider extends X_AD_AuthorizationProvider {
 	 */
 	private static final long serialVersionUID = -5486619727437115587L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_AuthorizationProvider_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAuthorizationProvider(Properties ctx, String AD_AuthorizationProvider_UU, String trxName) {
+        super(ctx, AD_AuthorizationProvider_UU, trxName);
+    }
+
 	/**
 	 * Create empty Authorization Provider
 	 *

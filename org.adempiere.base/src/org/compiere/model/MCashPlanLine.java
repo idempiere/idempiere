@@ -38,6 +38,16 @@ public class MCashPlanLine extends X_C_CashPlanLine
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger(MCashPlanLine.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_CashPlanLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCashPlanLine(Properties ctx, String C_CashPlanLine_UU, String trxName) {
+        super(ctx, C_CashPlanLine_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

@@ -26,13 +26,22 @@ public class MProductionPlan extends X_M_ProductionPlan {
 	 */
 	private static final long serialVersionUID = 1830027775110768396L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_ProductionPlan_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProductionPlan(Properties ctx, String M_ProductionPlan_UU, String trxName) {
+        super(ctx, M_ProductionPlan_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param M_ProductionPlan_ID
 	 * @param trxName
 	 */
-	public MProductionPlan(Properties ctx, int M_ProductionPlan_ID,
-			String trxName) {
+	public MProductionPlan(Properties ctx, int M_ProductionPlan_ID, String trxName) {
 		super(ctx, M_ProductionPlan_ID, trxName);
 	}
 

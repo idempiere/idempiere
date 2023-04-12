@@ -58,6 +58,16 @@ public class MSearchDefinition extends X_AD_SearchDefinition {
 	public static final String DATATYPE_INTEGER = "I";
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_SearchDefinition_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSearchDefinition(Properties ctx, String AD_SearchDefinition_UU, String trxName) {
+        super(ctx, AD_SearchDefinition_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param AD_SearchDefinition_ID

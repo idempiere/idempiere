@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * 	Project Model
@@ -78,6 +79,18 @@ public class MProject extends X_C_Project
 	}	//	copyFrom
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Project_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProject(Properties ctx, String C_Project_UU, String trxName) {
+        super(ctx, C_Project_UU, trxName);
+		if (Util.isEmpty(C_Project_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -88,23 +101,28 @@ public class MProject extends X_C_Project
 	{
 		super (ctx, C_Project_ID, trxName);
 		if (C_Project_ID == 0)
-		{
-			setCommittedAmt (Env.ZERO);
-			setCommittedQty (Env.ZERO);
-			setInvoicedAmt (Env.ZERO);
-			setInvoicedQty (Env.ZERO);
-			setPlannedAmt (Env.ZERO);
-			setPlannedMarginAmt (Env.ZERO);
-			setPlannedQty (Env.ZERO);
-			setProjectBalanceAmt (Env.ZERO);
-			setProjInvoiceRule(PROJINVOICERULE_None);
-			setProjectLineLevel(PROJECTLINELEVEL_Project);
-			setIsCommitCeiling (false);
-			setIsCommitment (false);
-			setIsSummary (false);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MProject
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setCommittedAmt (Env.ZERO);
+		setCommittedQty (Env.ZERO);
+		setInvoicedAmt (Env.ZERO);
+		setInvoicedQty (Env.ZERO);
+		setPlannedAmt (Env.ZERO);
+		setPlannedMarginAmt (Env.ZERO);
+		setPlannedQty (Env.ZERO);
+		setProjectBalanceAmt (Env.ZERO);
+		setProjInvoiceRule(PROJINVOICERULE_None);
+		setProjectLineLevel(PROJECTLINELEVEL_Project);
+		setIsCommitCeiling (false);
+		setIsCommitment (false);
+		setIsSummary (false);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

@@ -34,6 +34,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 /**
  *  Payment Print/Export model.
@@ -512,6 +513,18 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	/** Logger								*/
 	static private CLogger	s_log = CLogger.getCLogger (MPaySelectionCheck.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_PaySelectionCheck_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPaySelectionCheck(Properties ctx, String C_PaySelectionCheck_UU, String trxName) {
+        super(ctx, C_PaySelectionCheck_UU, trxName);
+		if (Util.isEmpty(C_PaySelectionCheck_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 *	Constructor
 	 *  @param ctx context
@@ -522,15 +535,20 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 	{
 		super(ctx, C_PaySelectionCheck_ID, trxName);
 		if (C_PaySelectionCheck_ID == 0)
-		{
-			setPayAmt (Env.ZERO);
-			setDiscountAmt(Env.ZERO);
-			setWriteOffAmt(Env.ZERO);
-			setIsPrinted (false);
-			setIsReceipt (false);
-			setQty (0);
-		}
+			setInitialDefaults();
 	}   //  MPaySelectionCheck
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setPayAmt (Env.ZERO);
+		setDiscountAmt(Env.ZERO);
+		setWriteOffAmt(Env.ZERO);
+		setIsPrinted (false);
+		setIsReceipt (false);
+		setQty (0);
+	}
 
 	/**
 	 *	Load Constructor

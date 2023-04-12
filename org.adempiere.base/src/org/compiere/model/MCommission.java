@@ -23,6 +23,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Model for Commission.
@@ -40,6 +41,18 @@ public class MCommission extends X_C_Commission
 	 */
 	private static final long serialVersionUID = 2702487404398723180L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Commission_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCommission(Properties ctx, String C_Commission_UU, String trxName) {
+        super(ctx, C_Commission_UU, trxName);
+		if (Util.isEmpty(C_Commission_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -50,12 +63,17 @@ public class MCommission extends X_C_Commission
 	{
 		super(ctx, C_Commission_ID, trxName);
 		if (C_Commission_ID == 0)
-		{
-			setDocBasisType (DOCBASISTYPE_Invoice);	// I
-			setFrequencyType (FREQUENCYTYPE_Monthly);	// M
-			setListDetails (false);
-		}
+			setInitialDefaults();
 	}	//	MCommission
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocBasisType (DOCBASISTYPE_Invoice);	// I
+		setFrequencyType (FREQUENCYTYPE_Monthly);	// M
+		setListDetails (false);
+	}
 
 	/**
 	 * 	Load Constructor

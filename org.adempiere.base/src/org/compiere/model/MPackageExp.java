@@ -39,6 +39,16 @@ public class MPackageExp extends X_AD_Package_Exp
 	 */
 	private static final long serialVersionUID = -6295261491885604619L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Package_Exp_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPackageExp(Properties ctx, String AD_Package_Exp_UU, String trxName) {
+        super(ctx, AD_Package_Exp_UU, trxName);
+    }
+
 	/**
 	 * MPackageExp
 	 * @param ctx

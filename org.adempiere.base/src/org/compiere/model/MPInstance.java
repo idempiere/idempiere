@@ -35,6 +35,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
 import org.osgi.service.event.Event;
@@ -60,6 +61,18 @@ public class MPInstance extends X_AD_PInstance
 
 	private static CLogger		s_log = CLogger.getCLogger (MPInstance.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PInstance_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPInstance(Properties ctx, String AD_PInstance_UU, String trxName) {
+        super(ctx, AD_PInstance_UU, trxName);
+		if (Util.isEmpty(AD_PInstance_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -71,10 +84,15 @@ public class MPInstance extends X_AD_PInstance
 		super (ctx, AD_PInstance_ID, null);
 		//	New Process
 		if (AD_PInstance_ID == 0)
-		{
-			setIsProcessing (false);
-		}
+			setInitialDefaults();
 	}	//	MPInstance
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsProcessing (false);
+	}
 
 	/**
 	 * 	Load Constructor

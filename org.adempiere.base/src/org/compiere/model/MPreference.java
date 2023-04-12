@@ -35,6 +35,16 @@ public class MPreference extends X_AD_Preference
 	/**	Null Indicator				*/
 	public static String		NULL = "null";
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Preference_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPreference(Properties ctx, String AD_Preference_UU, String trxName) {
+        super(ctx, AD_Preference_UU, trxName);
+    }
+
 	/**
 	 * 	Standatrd Constructor
 	 *	@param ctx ctx

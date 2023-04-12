@@ -50,6 +50,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
 
@@ -269,6 +270,18 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		return null;
 	} //	get
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Invoice_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInvoice(Properties ctx, String C_Invoice_UU, String trxName) {
+        super(ctx, C_Invoice_UU, trxName);
+		if (Util.isEmpty(C_Invoice_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Invoice Constructor
 	 * 	@param ctx context
@@ -283,34 +296,39 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	public MInvoice(Properties ctx, int C_Invoice_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_Invoice_ID, trxName, virtualColumns);
 		if (C_Invoice_ID == 0)
-		{
-			setDocStatus (DOCSTATUS_Drafted);		//	Draft
-			setDocAction (DOCACTION_Complete);
-			//
-			setPaymentRule(PAYMENTRULE_OnCredit);	//	Payment Terms
+			setInitialDefaults();
+	}
 
-			setDateInvoiced (new Timestamp (System.currentTimeMillis ()));
-			setDateAcct (new Timestamp (System.currentTimeMillis ()));
-			//
-			setChargeAmt (Env.ZERO);
-			setTotalLines (Env.ZERO);
-			setGrandTotal (Env.ZERO);
-			//
-			setIsSOTrx (true);
-			setIsTaxIncluded (false);
-			setIsApproved (false);
-			setIsDiscountPrinted (false);
-			setIsPaid (false);
-			setSendEMail (false);
-			setIsPrinted (false);
-			setIsTransferred (false);
-			setIsSelfService(false);
-			setIsPayScheduleValid(false);
-			setIsInDispute(false);
-			setPosted(false);
-			super.setProcessed (false);
-			setProcessing(false);
-		}
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocStatus (DOCSTATUS_Drafted);		//	Draft
+		setDocAction (DOCACTION_Complete);
+		//
+		setPaymentRule(PAYMENTRULE_OnCredit);	//	Payment Terms
+
+		setDateInvoiced (new Timestamp (System.currentTimeMillis ()));
+		setDateAcct (new Timestamp (System.currentTimeMillis ()));
+		//
+		setChargeAmt (Env.ZERO);
+		setTotalLines (Env.ZERO);
+		setGrandTotal (Env.ZERO);
+		//
+		setIsSOTrx (true);
+		setIsTaxIncluded (false);
+		setIsApproved (false);
+		setIsDiscountPrinted (false);
+		setIsPaid (false);
+		setSendEMail (false);
+		setIsPrinted (false);
+		setIsTransferred (false);
+		setIsSelfService(false);
+		setIsPayScheduleValid(false);
+		setIsInDispute(false);
+		setPosted(false);
+		super.setProcessed (false);
+		setProcessing(false);
 	}
 
 	/**

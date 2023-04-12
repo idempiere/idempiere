@@ -40,6 +40,16 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 	 */
 	private static final long serialVersionUID = -2472970418557589702L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ZoomCondition_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MZoomCondition(Properties ctx, String AD_ZoomCondition_UU, String trxName) {
+        super(ctx, AD_ZoomCondition_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

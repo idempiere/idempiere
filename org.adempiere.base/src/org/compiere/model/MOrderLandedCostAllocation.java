@@ -35,13 +35,22 @@ public class MOrderLandedCostAllocation extends X_C_OrderLandedCostAllocation {
 	 */
 	private static final long serialVersionUID = -3876186097908624583L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_OrderLandedCostAllocation_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MOrderLandedCostAllocation(Properties ctx, String C_OrderLandedCostAllocation_UU, String trxName) {
+        super(ctx, C_OrderLandedCostAllocation_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param C_OrderLandedCostAllocation_ID
 	 * @param trxName
 	 */
-	public MOrderLandedCostAllocation(Properties ctx,
-			int C_OrderLandedCostAllocation_ID, String trxName) {
+	public MOrderLandedCostAllocation(Properties ctx, int C_OrderLandedCostAllocation_ID, String trxName) {
 		super(ctx, C_OrderLandedCostAllocation_ID, trxName);
 	}
 

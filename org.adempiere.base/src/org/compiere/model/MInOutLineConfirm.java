@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Ship Confirmation Line Model
@@ -36,6 +37,18 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 	 */
 	private static final long serialVersionUID = -2753405320678781177L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_InOutLineConfirm_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInOutLineConfirm(Properties ctx, String M_InOutLineConfirm_UU, String trxName) {
+        super(ctx, M_InOutLineConfirm_UU, trxName);
+		if (Util.isEmpty(M_InOutLineConfirm_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -46,12 +59,17 @@ public class MInOutLineConfirm extends X_M_InOutLineConfirm
 	{
 		super (ctx, M_InOutLineConfirm_ID, trxName);
 		if (M_InOutLineConfirm_ID == 0)
-		{
-			setDifferenceQty(Env.ZERO);
-			setScrappedQty(Env.ZERO);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MInOutLineConfirm
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDifferenceQty(Env.ZERO);
+		setScrappedQty(Env.ZERO);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Construvtor

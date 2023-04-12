@@ -145,6 +145,16 @@ public class MRule extends X_AD_Rule implements ImmutablePOSupport
 	/* The Engine */
 	ScriptEngine engine = null;
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Rule_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRule(Properties ctx, String AD_Rule_UU, String trxName) {
+        super(ctx, AD_Rule_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

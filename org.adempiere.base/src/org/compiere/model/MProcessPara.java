@@ -83,6 +83,18 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 		= new ImmutableIntPOCache<Integer, MProcessPara> (Table_Name, 20);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Process_Para_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProcessPara(Properties ctx, String AD_Process_Para_UU, String trxName) {
+        super(ctx, AD_Process_Para_UU, trxName);
+		if (Util.isEmpty(AD_Process_Para_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Constructor
 	 *	@param ctx context
@@ -93,15 +105,20 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	{
 		super (ctx, AD_Process_Para_ID, trxName);
 		if (AD_Process_Para_ID == 0)
-		{
-			setFieldLength (0);
-			setSeqNo (0);
-			setIsCentrallyMaintained (true);
-			setIsRange (false);
-			setIsMandatory (false);
-			setEntityType (ENTITYTYPE_UserMaintained);
-		}
+			setInitialDefaults();
 	}	//	MProcessPara
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setFieldLength (0);
+		setSeqNo (0);
+		setIsCentrallyMaintained (true);
+		setIsRange (false);
+		setIsMandatory (false);
+		setEntityType (ENTITYTYPE_UserMaintained);
+	}
 
 	/**
 	 * 	Load Constructor

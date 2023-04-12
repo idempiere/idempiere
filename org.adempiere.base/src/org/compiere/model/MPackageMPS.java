@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 public class MPackageMPS extends X_M_PackageMPS
 {
@@ -13,17 +14,34 @@ public class MPackageMPS extends X_M_PackageMPS
 	 */
 	private static final long serialVersionUID = 2426722699419960060L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_PackageMPS_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPackageMPS(Properties ctx, String M_PackageMPS_UU, String trxName) {
+        super(ctx, M_PackageMPS_UU, trxName);
+		if (Util.isEmpty(M_PackageMPS_UU))
+			setInitialDefaults(ctx);
+    }
+
 	public MPackageMPS(Properties ctx, int M_PackageMPS_ID, String trxName)
 	{
 		super(ctx, M_PackageMPS_ID, trxName);
 		if (M_PackageMPS_ID == 0)
-		{
-			MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
-			setC_UOM_Weight_ID(clientInfo.getC_UOM_Weight_ID());
-			setC_UOM_Length_ID(clientInfo.getC_UOM_Length_ID());
-		}
+			setInitialDefaults(ctx);
 	}
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults(Properties ctx) {
+		MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
+		setC_UOM_Weight_ID(clientInfo.getC_UOM_Weight_ID());
+		setC_UOM_Length_ID(clientInfo.getC_UOM_Length_ID());
+	}
+
 	public MPackageMPS(Properties ctx, ResultSet rs, String trxName) 
 	{
 		super(ctx, rs, trxName);

@@ -24,6 +24,7 @@
  **********************************************************************/
 package org.idempiere.test.ui;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -258,7 +259,7 @@ public class MiniTableImpl implements IMiniTable {
 	}
 
 	@Override
-	public Integer getSelectedRowKey() {
+	public <T extends Serializable> T getSelectedRowKey() {
 		int row = getSelectedRow();
 
 		// make common function
@@ -270,7 +271,8 @@ public class MiniTableImpl implements IMiniTable {
 	 * @param index
 	 * @return
 	 */
-	public Integer getRowKeyAt (int index){
+	@SuppressWarnings("unchecked")
+	public <T extends Serializable> T getRowKeyAt (int index){
 		if (index < 0 || m_keyColumnIndex < 0 || index >= model.size())
 			return null;
 		
@@ -283,7 +285,7 @@ public class MiniTableImpl implements IMiniTable {
 		}
 		if (data instanceof Integer)
 		{
-			return (Integer)data;
+			return (T)data;
 		}
 		return null;
 	}

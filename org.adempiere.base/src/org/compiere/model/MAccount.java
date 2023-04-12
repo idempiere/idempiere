@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -414,6 +415,18 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_ValidCombination_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAccount(Properties ctx, String C_ValidCombination_UU, String trxName) {
+        super(ctx, C_ValidCombination_UU, trxName);
+		if (Util.isEmpty(C_ValidCombination_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 *  Default constructor
 	 * 	@param ctx context
@@ -424,10 +437,15 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 	{
 		super (ctx, C_ValidCombination_ID, trxName);
 		if (C_ValidCombination_ID == 0)
-		{
-			setIsFullyQualified (false);
-		}
+			setInitialDefaults();
 	}   //  MAccount
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsFullyQualified (false);
+	}
 
 	/**
 	 *  Load constructor

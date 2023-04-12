@@ -30,6 +30,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Shipment Confirmation Model
@@ -93,6 +94,18 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MInOutConfirm.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_InOutConfirm_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInOutConfirm(Properties ctx, String M_InOutConfirm_UU, String trxName) {
+        super(ctx, M_InOutConfirm_UU, trxName);
+		if (Util.isEmpty(M_InOutConfirm_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -103,15 +116,20 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 	{
 		super (ctx, M_InOutConfirm_ID, trxName);
 		if (M_InOutConfirm_ID == 0)
-		{
-			setDocAction (DOCACTION_Complete);	// CO
-			setDocStatus (DOCSTATUS_Drafted);	// DR
-			setIsApproved (false);
-			setIsCancelled (false);
-			setIsInDispute(false);
-			super.setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MInOutConfirm
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocAction (DOCACTION_Complete);	// CO
+		setDocStatus (DOCSTATUS_Drafted);	// DR
+		setIsApproved (false);
+		setIsCancelled (false);
+		setIsInDispute(false);
+		super.setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

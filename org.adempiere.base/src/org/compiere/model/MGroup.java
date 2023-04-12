@@ -85,6 +85,16 @@ public class MGroup extends X_R_Group implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MGroup> s_cache = new ImmutableIntPOCache<Integer,MGroup>(Table_Name, 20);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_Group_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MGroup(Properties ctx, String R_Group_UU, String trxName) {
+        super(ctx, R_Group_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

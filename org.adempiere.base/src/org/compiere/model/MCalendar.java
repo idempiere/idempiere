@@ -111,6 +111,16 @@ public class MCalendar extends X_C_Calendar implements ImmutablePOSupport
 		= new ImmutableIntPOCache<Integer,MCalendar>(Table_Name, 20);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Calendar_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCalendar(Properties ctx, String C_Calendar_UU, String trxName) {
+        super(ctx, C_Calendar_UU, trxName);
+    }
+
 	/*************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

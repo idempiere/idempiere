@@ -305,6 +305,18 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	private static CLogger	s_log	= CLogger.getCLogger (MUser.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_User_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUser(Properties ctx, String AD_User_UU, String trxName) {
+        super(ctx, AD_User_UU, trxName);
+		if (Util.isEmpty(AD_User_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -315,11 +327,16 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	{
 		super (ctx, AD_User_ID, trxName);	//	0 is also System
 		if (AD_User_ID == 0)
-		{
-			setIsFullBPAccess (true);
-			setNotificationType(NOTIFICATIONTYPE_None);
-		}		
+			setInitialDefaults();
 	}	//	MUser
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsFullBPAccess (true);
+		setNotificationType(NOTIFICATIONTYPE_None);
+	}
 
 	/**
 	 * 	Parent Constructor

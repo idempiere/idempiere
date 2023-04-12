@@ -81,6 +81,16 @@ public class MActivity extends X_C_Activity implements ImmutablePOSupport
 		return null;
 	}
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Activity_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MActivity(Properties ctx, String C_Activity_UU, String trxName) {
+        super(ctx, C_Activity_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

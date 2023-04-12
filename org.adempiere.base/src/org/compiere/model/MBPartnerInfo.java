@@ -141,6 +141,16 @@ public class MBPartnerInfo extends X_RV_BPartner
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MBPartnerInfo.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param RV_BPartner_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBPartnerInfo(Properties ctx, String RV_BPartner_UU, String trxName) {
+        super(ctx, RV_BPartner_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Load Constructor
 	 *	@param ctx context

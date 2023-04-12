@@ -197,6 +197,20 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	private static CLogger	s_log	= CLogger.getCLogger (MWorkflow.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Workflow_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWorkflow(Properties ctx, String AD_Workflow_UU, String trxName) {
+        super(ctx, AD_Workflow_UU, trxName);
+		if (Util.isEmpty(AD_Workflow_UU))
+			setInitialDefaults();
+		loadTrl();
+		loadNodes();
+    }
+
 	/**************************************************************************
 	 * 	Create/Load Workflow
 	 * 	@param ctx Context
@@ -207,27 +221,32 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	{
 		super (ctx, AD_Workflow_ID, trxName);
 		if (AD_Workflow_ID == 0)
-		{
-		//	setAD_Workflow_ID (0);
-		//	setValue (null);
-		//	setName (null);
-			setAccessLevel (ACCESSLEVEL_Organization);
-			setAuthor ("ComPiere, Inc.");
-			setDurationUnit(DURATIONUNIT_Day);
-			setDuration (1);
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-			setIsDefault (false);
-			setPublishStatus (PUBLISHSTATUS_UnderRevision);	// U
-			setVersion (0);
-			setCost (Env.ZERO);
-			setWaitingTime (0);
-			setWorkingTime (0);
-			setIsBetaFunctionality(false);
-		}
+			setInitialDefaults();
 		loadTrl();
 		loadNodes();
 	}	//	MWorkflow
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		//	setAD_Workflow_ID (0);
+		//	setValue (null);
+		//	setName (null);
+		setAccessLevel (ACCESSLEVEL_Organization);
+		setAuthor ("ComPiere, Inc.");
+		setDurationUnit(DURATIONUNIT_Day);
+		setDuration (1);
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+		setIsDefault (false);
+		setPublishStatus (PUBLISHSTATUS_UnderRevision);	// U
+		setVersion (0);
+		setCost (Env.ZERO);
+		setWaitingTime (0);
+		setWorkingTime (0);
+		setIsBetaFunctionality(false);
+	}
+
 	/**
 	 * 	Load Constructor
 	 * 	@param ctx context

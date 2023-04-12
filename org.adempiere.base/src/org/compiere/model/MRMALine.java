@@ -28,6 +28,7 @@ import org.adempiere.model.ITaxProvider;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 
 /**
@@ -43,6 +44,19 @@ public class MRMALine extends X_M_RMALine
 	 */
 	private static final long serialVersionUID = 3088864372141663734L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_RMALine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRMALine(Properties ctx, String M_RMALine_UU, String trxName) {
+        super(ctx, M_RMALine_UU, trxName);
+		if (Util.isEmpty(M_RMALine_UU))
+			setInitialDefaults();
+		init();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -57,12 +71,16 @@ public class MRMALine extends X_M_RMALine
 	public MRMALine(Properties ctx, int M_RMALine_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_RMALine_ID, trxName, virtualColumns);
 		if (M_RMALine_ID == 0)
-		{
-			setQty(Env.ONE);
-			this.setQtyDelivered(Env.ZERO);
-		}
-
+			setInitialDefaults();
 		init();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setQty(Env.ONE);
+		this.setQtyDelivered(Env.ZERO);
 	}
 
 	/**

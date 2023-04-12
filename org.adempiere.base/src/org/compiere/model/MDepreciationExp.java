@@ -27,6 +27,16 @@ public class MDepreciationExp extends X_A_Depreciation_Exp
 	private static CLogger s_log = CLogger.getCLogger(MDepreciationExp.class);
 	private CLogger log = CLogger.getCLogger(this.getClass());
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Depreciation_Exp_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDepreciationExp(Properties ctx, String A_Depreciation_Exp_UU, String trxName) {
+        super(ctx, A_Depreciation_Exp_UU, trxName);
+    }
+
 	/** Standard Constructor */
 	public MDepreciationExp(Properties ctx, int A_Depreciation_Exp_ID, String trxName)
 	{

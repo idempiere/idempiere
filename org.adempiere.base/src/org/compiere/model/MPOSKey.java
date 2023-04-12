@@ -36,6 +36,16 @@ public class MPOSKey extends X_C_POSKey implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = -5138032789563975514L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_POSKey_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPOSKey(Properties ctx, String C_POSKey_UU, String trxName) {
+        super(ctx, C_POSKey_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

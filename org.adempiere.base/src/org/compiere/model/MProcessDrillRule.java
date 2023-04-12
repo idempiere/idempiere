@@ -84,6 +84,16 @@ public class MProcessDrillRule extends X_AD_Process_DrillRule implements Immutab
 	}
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Process_DrillRule_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProcessDrillRule(Properties ctx, String AD_Process_DrillRule_UU, String trxName) {
+        super(ctx, AD_Process_DrillRule_UU, trxName);
+    }
+
 	public MProcessDrillRule(Properties ctx, int AD_Process_DrillRule_ID, String trxName) {
 		super(ctx, AD_Process_DrillRule_ID, trxName);
 	}

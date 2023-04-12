@@ -35,6 +35,16 @@ public class MRequestAction extends X_R_RequestAction
 	private static final long serialVersionUID = 2902231219773596011L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_RequestAction_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRequestAction(Properties ctx, String R_RequestAction_UU, String trxName) {
+        super(ctx, R_RequestAction_UU, trxName);
+    }
+
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context

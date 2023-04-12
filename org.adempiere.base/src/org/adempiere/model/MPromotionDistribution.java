@@ -27,8 +27,17 @@ public class MPromotionDistribution extends X_M_PromotionDistribution {
 
 	private static final long serialVersionUID = 1532619121257280486L;
 
-	public MPromotionDistribution(Properties ctx,
-			int M_PromotionDistribution_ID, String trxName) {
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_PromotionDistribution_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPromotionDistribution(Properties ctx, String M_PromotionDistribution_UU, String trxName) {
+        super(ctx, M_PromotionDistribution_UU, trxName);
+    }
+
+	public MPromotionDistribution(Properties ctx, int M_PromotionDistribution_ID, String trxName) {
 		super(ctx, M_PromotionDistribution_ID, trxName);
 	}
 

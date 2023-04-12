@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *	RfQ Line
@@ -78,6 +79,18 @@ public class MRfQLine extends X_C_RfQLine
 		return null;
 	} //	get
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_RfQLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRfQLine(Properties ctx, String C_RfQLine_UU, String trxName) {
+        super(ctx, C_RfQLine_UU, trxName);
+		if (Util.isEmpty(C_RfQLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -88,10 +101,15 @@ public class MRfQLine extends X_C_RfQLine
 	{
 		super (ctx, C_RfQLine_ID, trxName);
 		if (C_RfQLine_ID == 0)
-		{
-			setLine (0);
-		}
+			setInitialDefaults();
 	}	//	MRfQLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setLine (0);
+	}
 
 	/**
 	 * 	Load Constructor

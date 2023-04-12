@@ -28,6 +28,7 @@ import org.compiere.model.X_AD_WF_NodeNext;
 import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -43,6 +44,18 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = 5965306487040965994L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WF_NodeNext_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWFNodeNext(Properties ctx, String AD_WF_NodeNext_UU, String trxName) {
+        super(ctx, AD_WF_NodeNext_UU, trxName);
+		if (Util.isEmpty(AD_WF_NodeNext_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Costructor
 	 *	@param ctx context
@@ -53,15 +66,20 @@ public class MWFNodeNext extends X_AD_WF_NodeNext implements ImmutablePOSupport
 	{
 		super (ctx, AD_WF_NodeNext_ID, trxName);
 		if (AD_WF_NodeNext_ID == 0)
-		{
-		//	setAD_WF_Next_ID (0);
-		//	setAD_WF_Node_ID (0);
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-			setIsStdUserWorkflow (false);
-			setSeqNo (10);	// 10
-		}
+			setInitialDefaults();
 	}	//	MWFNodeNext
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		//	setAD_WF_Next_ID (0);
+		//	setAD_WF_Node_ID (0);
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+		setIsStdUserWorkflow (false);
+		setSeqNo (10);	// 10
+	}
+
 	/**
 	 * 	Default Constructor
 	 * 	@param ctx context

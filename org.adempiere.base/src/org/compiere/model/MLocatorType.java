@@ -29,6 +29,7 @@ import java.util.Properties;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -78,6 +79,18 @@ public class MLocatorType extends X_M_LocatorType implements ImmutablePOSupport 
 	@SuppressWarnings("unused")
 	private static CLogger		s_log = CLogger.getCLogger (MLocatorType.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_LocatorType_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MLocatorType(Properties ctx, String M_LocatorType_UU, String trxName) {
+        super(ctx, M_LocatorType_UU, trxName);
+		if (Util.isEmpty(M_LocatorType_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Locator Constructor
 	 *	@param ctx Context
@@ -86,12 +99,18 @@ public class MLocatorType extends X_M_LocatorType implements ImmutablePOSupport 
 	 */
 	public MLocatorType (Properties ctx, int M_LocatorType_ID, String trxName) {
 		super (ctx, M_LocatorType_ID, trxName);
-		if (M_LocatorType_ID == 0) {
-			setIsAvailableForReplenishment (true);
-			setIsAvailableForReservation (true);
-			setIsAvailableForShipping (true);
-		}
+		if (M_LocatorType_ID == 0)
+			setInitialDefaults();
 	}	//	MLocatorType
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsAvailableForReplenishment (true);
+		setIsAvailableForReservation (true);
+		setIsAvailableForShipping (true);
+	}
 
 	/**
 	 * 	Load Constructor

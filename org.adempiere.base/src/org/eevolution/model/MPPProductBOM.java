@@ -233,6 +233,16 @@ public class MPPProductBOM extends X_PP_Product_BOM implements ImmutablePOSuppor
 	}
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PP_Product_BOM_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPPProductBOM(Properties ctx, String PP_Product_BOM_UU, String trxName) {
+        super(ctx, PP_Product_BOM_UU, trxName);
+    }
+
 	public MPPProductBOM(Properties ctx, int PP_Product_BOM_ID,String trxName)
 	{
 		super (ctx, PP_Product_BOM_ID, trxName);

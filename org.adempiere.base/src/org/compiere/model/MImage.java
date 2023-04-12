@@ -34,6 +34,7 @@ import javax.swing.ImageIcon;
 
 import org.adempiere.base.Core;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -109,6 +110,19 @@ public class MImage extends X_AD_Image implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MImage> s_cache = new ImmutableIntPOCache<Integer,MImage>(Table_Name, 20, 10);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Image_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MImage(Properties ctx, String AD_Image_UU, String trxName) {
+        super(ctx, AD_Image_UU, trxName);
+		if (Util.isEmpty(AD_Image_UU))
+			setName("-");
+		initImageStoreDetails(ctx, trxName);
+    }
+
 	/**
 	 *  Constructor
 	 *  @param ctx context

@@ -35,6 +35,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *  Journal Batch Model
@@ -92,6 +93,18 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	}	//	copyFrom
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param GL_JournalBatch_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MJournalBatch(Properties ctx, String GL_JournalBatch_UU, String trxName) {
+        super(ctx, GL_JournalBatch_UU, trxName);
+		if (Util.isEmpty(GL_JournalBatch_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Construvtore
 	 *	@param ctx context
@@ -102,17 +115,22 @@ public class MJournalBatch extends X_GL_JournalBatch implements DocAction
 	{
 		super (ctx, GL_JournalBatch_ID, trxName);
 		if (GL_JournalBatch_ID == 0)
-		{
-			setPostingType (POSTINGTYPE_Actual);
-			setDocAction (DOCACTION_Complete);
-			setDocStatus (DOCSTATUS_Drafted);
-			setTotalCr (Env.ZERO);
-			setTotalDr (Env.ZERO);
-			setProcessed (false);
-			setProcessing (false);
-			setIsApproved(false);
-		}
+			setInitialDefaults();
 	}	//	MJournalBatch
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setPostingType (POSTINGTYPE_Actual);
+		setDocAction (DOCACTION_Complete);
+		setDocStatus (DOCSTATUS_Drafted);
+		setTotalCr (Env.ZERO);
+		setTotalDr (Env.ZERO);
+		setProcessed (false);
+		setProcessing (false);
+		setIsApproved(false);
+	}
 
 	/**
 	 * 	Load Constructor

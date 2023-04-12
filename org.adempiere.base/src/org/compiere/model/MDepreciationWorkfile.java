@@ -14,6 +14,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.idempiere.fa.feature.UseLife;
 import org.idempiere.fa.feature.UseLifeImpl;
 import org.idempiere.fa.service.api.DepreciationDTO;
@@ -33,6 +34,18 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	 */
 	private static final long serialVersionUID = -3814417671427820714L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Depreciation_Workfile_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDepreciationWorkfile(Properties ctx, String A_Depreciation_Workfile_UU, String trxName) {
+        super(ctx, A_Depreciation_Workfile_UU, trxName);
+		if (Util.isEmpty(A_Depreciation_Workfile_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -43,16 +56,21 @@ public class MDepreciationWorkfile extends X_A_Depreciation_Workfile
 	{
 		super (ctx,A_Depreciation_Workfile_ID, trxName);
 		if (A_Depreciation_Workfile_ID == 0)
-		{
-			setPostingType(POSTINGTYPE_Actual);
-			setA_QTY_Current(Env.ZERO);
-			setA_Asset_Cost(Env.ZERO);
-			setA_Accumulated_Depr(Env.ZERO);
-			setA_Period_Posted(0);
-			setA_Current_Period(0);
-		}
+			setInitialDefaults();
 	}	//	MDepreciationWorkfile
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setPostingType(POSTINGTYPE_Actual);
+		setA_QTY_Current(Env.ZERO);
+		setA_Asset_Cost(Env.ZERO);
+		setA_Accumulated_Depr(Env.ZERO);
+		setA_Period_Posted(0);
+		setA_Current_Period(0);
+	}
+
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context

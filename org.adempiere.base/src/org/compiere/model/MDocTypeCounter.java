@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -241,6 +242,18 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	private static CLogger	s_log	= CLogger.getCLogger (MDocTypeCounter.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_DocTypeCounter_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDocTypeCounter(Properties ctx, String C_DocTypeCounter_UU, String trxName) {
+        super(ctx, C_DocTypeCounter_UU, trxName);
+		if (Util.isEmpty(C_DocTypeCounter_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -251,11 +264,16 @@ public class MDocTypeCounter extends X_C_DocTypeCounter implements ImmutablePOSu
 	{
 		super (ctx, C_DocTypeCounter_ID, trxName);
 		if (C_DocTypeCounter_ID == 0)
-		{
-			setIsCreateCounter (true);	// Y
-			setIsValid (false);
-		}	
+			setInitialDefaults();
 	}	//	MDocTypeCounter
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsCreateCounter (true);	// Y
+		setIsValid (false);
+	}
 
 	/**
 	 * 	Load Constructor

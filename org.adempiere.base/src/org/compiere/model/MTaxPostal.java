@@ -36,6 +36,16 @@ public class MTaxPostal extends X_C_TaxPostal implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = 2517717028191578304L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_TaxPostal_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTaxPostal(Properties ctx, String C_TaxPostal_UU, String trxName) {
+        super(ctx, C_TaxPostal_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

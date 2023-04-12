@@ -27,6 +27,16 @@ public class MPromotionReward extends X_M_PromotionReward {
 
 	private static final long serialVersionUID = -1466367082383341103L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_PromotionReward_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPromotionReward(Properties ctx, String M_PromotionReward_UU, String trxName) {
+        super(ctx, M_PromotionReward_UU, trxName);
+    }
+
 	public MPromotionReward(Properties ctx, int M_PromotionReward_ID,
 			String trxName) {
 		super(ctx, M_PromotionReward_ID, trxName);

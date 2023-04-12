@@ -56,6 +56,18 @@ public class MAcctProcessor extends X_C_AcctProcessor
 		return list.toArray(new MAcctProcessor[list.size()]);		
 	}	//	getActive
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_AcctProcessor_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAcctProcessor(Properties ctx, String C_AcctProcessor_UU, String trxName) {
+        super(ctx, C_AcctProcessor_UU, trxName);
+		if (Util.isEmpty(C_AcctProcessor_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Construvtor
 	 *	@param ctx context
@@ -66,10 +78,15 @@ public class MAcctProcessor extends X_C_AcctProcessor
 	{
 		super (ctx, C_AcctProcessor_ID, trxName);
 		if (C_AcctProcessor_ID == 0)
-		{
-			setKeepLogDays (7);	// 7
-		}	
+			setInitialDefaults();
 	}	//	MAcctProcessor
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setKeepLogDays (7);	// 7
+	}
 
 	/**
 	 * 	Load Constructor

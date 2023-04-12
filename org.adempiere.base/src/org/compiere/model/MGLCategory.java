@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -143,6 +144,18 @@ public class MGLCategory extends X_GL_Category implements ImmutablePOSupport
 		= new ImmutableIntPOCache<Integer, MGLCategory> (Table_Name, 5);
 	
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param GL_Category_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MGLCategory(Properties ctx, String GL_Category_UU, String trxName) {
+        super(ctx, GL_Category_UU, trxName);
+		if (Util.isEmpty(GL_Category_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -153,11 +166,16 @@ public class MGLCategory extends X_GL_Category implements ImmutablePOSupport
 	{
 		super (ctx, GL_Category_ID, trxName);
 		if (GL_Category_ID == 0)
-		{
-			setCategoryType (CATEGORYTYPE_Manual);
-			setIsDefault (false);
-		}
+			setInitialDefaults();
 	}	//	MGLCategory
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setCategoryType (CATEGORYTYPE_Manual);
+		setIsDefault (false);
+	}
 
 	/**
 	 * 	Load Constructor

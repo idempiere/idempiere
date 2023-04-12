@@ -24,13 +24,22 @@ public class MDashboardContentAccess extends X_PA_DashboardContent_Access {
 	 */
 	private static final long serialVersionUID = -4460812046437256244L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_DashboardContent_Access_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDashboardContentAccess(Properties ctx, String PA_DashboardContent_Access_UU, String trxName) {
+        super(ctx, PA_DashboardContent_Access_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param PA_DashboardContent_Access_ID
 	 * @param trxName
 	 */
-	public MDashboardContentAccess(Properties ctx,
-			int PA_DashboardContent_Access_ID, String trxName) {
+	public MDashboardContentAccess(Properties ctx, int PA_DashboardContent_Access_ID, String trxName) {
 		super(ctx, PA_DashboardContent_Access_ID, trxName);
 	}
 

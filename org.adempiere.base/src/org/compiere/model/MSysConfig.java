@@ -248,6 +248,16 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_USE_PDF_JS_VIEWER = "ZK_USE_PDF_JS_VIEWER";
     public static final String ZOOM_ACROSS_QUERY_TIMEOUT = "ZOOM_ACROSS_QUERY_TIMEOUT";
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_SysConfig_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSysConfig(Properties ctx, String AD_SysConfig_UU, String trxName) {
+        super(ctx, AD_SysConfig_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

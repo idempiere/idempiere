@@ -85,6 +85,17 @@ import org.compiere.util.Util;
 	/* Last saved line, to be retrieved on loaders */
 	private X_I_BankStatement m_lastSavedLine;
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_BankStatementLoader_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBankStatementLoader(Properties ctx, String C_BankStatementLoader_UU, String trxName) {
+        super(ctx, C_BankStatementLoader_UU, trxName);
+		init(null);
+    }
+
 	/**
 	 * 	Create a Statement Loader
 	 *  Added for compatibility with new PO infrastructure (bug# 968136)

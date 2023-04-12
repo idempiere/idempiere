@@ -24,6 +24,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	BOM Product/Component Model
@@ -63,6 +64,18 @@ public class MBOMProduct extends X_M_BOMProduct
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MBOMProduct.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_BOMProduct_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBOMProduct(Properties ctx, String M_BOMProduct_UU, String trxName) {
+        super(ctx, M_BOMProduct_UU, trxName);
+		if (Util.isEmpty(M_BOMProduct_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -73,13 +86,18 @@ public class MBOMProduct extends X_M_BOMProduct
 	{
 		super (ctx, M_BOMProduct_ID, trxName);
 		if (M_BOMProduct_ID == 0)
-		{
-			setBOMProductType (BOMPRODUCTTYPE_StandardProduct);	// S
-			setBOMQty (Env.ONE);
-			setIsPhantom (false);
-			setLeadTimeOffset (0);
-		}
+			setInitialDefaults();
 	}	//	MBOMProduct
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setBOMProductType (BOMPRODUCTTYPE_StandardProduct);	// S
+		setBOMQty (Env.ONE);
+		setIsPhantom (false);
+		setLeadTimeOffset (0);
+	}
 
 	/**
 	 * 	Parent Constructor

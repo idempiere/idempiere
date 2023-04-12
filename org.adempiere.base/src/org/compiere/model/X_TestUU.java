@@ -30,7 +30,7 @@ public class X_TestUU extends PO implements I_TestUU, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230318L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_TestUU (Properties ctx, String TestUU_UU, String trxName)
@@ -128,16 +128,16 @@ public class X_TestUU extends PO implements I_TestUU, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	/** Set TestUU_UU.
-		@param TestUU_UU TestUU_UU
+	/** Set Test UU.
+		@param TestUU_UU Test UU
 	*/
 	public void setTestUU_UU (String TestUU_UU)
 	{
 		set_Value (COLUMNNAME_TestUU_UU, TestUU_UU);
 	}
 
-	/** Get TestUU_UU.
-		@return TestUU_UU	  */
+	/** Get Test UU.
+		@return Test UU	  */
 	public String getTestUU_UU()
 	{
 		return (String)get_Value(COLUMNNAME_TestUU_UU);

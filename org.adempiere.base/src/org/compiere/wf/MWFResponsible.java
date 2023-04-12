@@ -90,6 +90,16 @@ public class MWFResponsible extends X_AD_WF_Responsible implements ImmutablePOSu
 	private static ImmutableIntPOCache<Integer,MWFResponsible>	s_cache	= new ImmutableIntPOCache<Integer,MWFResponsible>(Table_Name, 10);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WF_Responsible_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWFResponsible(Properties ctx, String AD_WF_Responsible_UU, String trxName) {
+        super(ctx, AD_WF_Responsible_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

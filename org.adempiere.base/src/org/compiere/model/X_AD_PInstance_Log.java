@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for AD_PInstance_Log
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_PInstance_Log")
-public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Persistent 
+public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_AD_PInstance_Log (Properties ctx, int AD_PInstance_Log_ID, String trxName)
@@ -57,6 +57,28 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_PInstance_Log (Properties ctx, String AD_PInstance_Log_UU, String trxName)
+    {
+      super (ctx, AD_PInstance_Log_UU, trxName);
+      /** if (AD_PInstance_Log_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setLog_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PInstance_Log (Properties ctx, String AD_PInstance_Log_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PInstance_Log_UU, trxName, virtualColumns);
+      /** if (AD_PInstance_Log_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setLog_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_PInstance_Log (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +86,7 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {

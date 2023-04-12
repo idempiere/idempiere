@@ -47,6 +47,16 @@ public class MEXPProcessorType extends X_EXP_Processor_Type {
 	private static CLogger	s_log	= CLogger.getCLogger (MEXPProcessorType.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param EXP_Processor_Type_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MEXPProcessorType(Properties ctx, String EXP_Processor_Type_UU, String trxName) {
+        super(ctx, EXP_Processor_Type_UU, trxName);
+    }
+
 	public MEXPProcessorType(Properties ctx, int EXP_Processor_Type_ID, String trxName) {
 		super(ctx, EXP_Processor_Type_ID, trxName);
 	}

@@ -33,14 +33,23 @@ public class MGoalRestriction extends X_PA_GoalRestriction
 	private static final long serialVersionUID = 4027980875091517732L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_GoalRestriction_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MGoalRestriction(Properties ctx, String PA_GoalRestriction_UU, String trxName) {
+        super(ctx, PA_GoalRestriction_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param PA_GoalRestriction_ID id
 	 *	@param trxName trx
 	 */
-	public MGoalRestriction (Properties ctx, int PA_GoalRestriction_ID,
-		String trxName)
+	public MGoalRestriction (Properties ctx, int PA_GoalRestriction_ID, String trxName)
 	{
 		super (ctx, PA_GoalRestriction_ID, trxName);
 	}	//	MGoalRestriction

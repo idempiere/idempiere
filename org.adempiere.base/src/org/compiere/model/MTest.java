@@ -37,8 +37,7 @@ public class MTest extends X_Test
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5750690186875693958L;
-
+	private static final long serialVersionUID = -5390179651635427303L;
 
 	/**
 	 * 	Constructor
@@ -60,6 +59,17 @@ public class MTest extends X_Test
 	public MTest(Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
+	}	//	MTest
+
+	/**
+	 * 	Constructor
+	 *	@param ctx context
+	 *	@param Test_UU
+	 *	@param trxName transaction
+	 */
+	public MTest(Properties ctx, String Test_UU, String trxName)
+	{
+		super (ctx, Test_UU, trxName);
 	}	//	MTest
 
 	/**

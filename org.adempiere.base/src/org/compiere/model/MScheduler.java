@@ -64,6 +64,18 @@ public class MScheduler extends X_AD_Scheduler
 		return retValue;
 	}	//	getActive
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Scheduler_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MScheduler(Properties ctx, String AD_Scheduler_UU, String trxName) {
+        super(ctx, AD_Scheduler_UU, trxName);
+		if (Util.isEmpty(AD_Scheduler_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -74,10 +86,15 @@ public class MScheduler extends X_AD_Scheduler
 	{
 		super (ctx, AD_Scheduler_ID, trxName);
 		if (AD_Scheduler_ID == 0)
-		{
-			setKeepLogDays (7);
-		}
+			setInitialDefaults();
 	}	//	MScheduler
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setKeepLogDays (7);
+	}
 
 	/**
 	 * 	Load Constructor

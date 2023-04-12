@@ -34,7 +34,7 @@ public class MColor extends X_AD_Color
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3054697070898921956L;
+	private static final long serialVersionUID = -2721945803283036539L;
 
 	/**
 	 *  Color Model
@@ -48,7 +48,14 @@ public class MColor extends X_AD_Color
 		if (AD_Color_ID == 0)
 			setName("-/-");
 	}   //  MColor
-	
+
+	public MColor(Properties ctx, String AD_Color_UU, String trxName)
+	{
+		super (ctx, AD_Color_UU, trxName);
+		if (AD_Color_UU.length() == 0)
+			setName("-/-");
+	}
+
 	public MColor(Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);

@@ -26,6 +26,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.eevolution.model.MDDOrderLine;
 
 /**
@@ -41,6 +42,18 @@ public class MMovementLine extends X_M_MovementLine
 	 */
 	private static final long serialVersionUID = -5614562023263896756L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_MovementLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMovementLine(Properties ctx, String M_MovementLine_UU, String trxName) {
+        super(ctx, M_MovementLine_UU, trxName);
+		if (Util.isEmpty(M_MovementLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Cosntructor
 	 *	@param ctx context
@@ -51,15 +64,20 @@ public class MMovementLine extends X_M_MovementLine
 	{
 		super (ctx, M_MovementLine_ID, trxName);
 		if (M_MovementLine_ID == 0)
-		{
-			setM_AttributeSetInstance_ID(0);	//	ID
-			setMovementQty (Env.ZERO);	// 1
-			setTargetQty (Env.ZERO);	// 0
-			setScrappedQty(Env.ZERO);
-			setConfirmedQty(Env.ZERO);
-			setProcessed (false);
-		}	
+			setInitialDefaults();
 	}	//	MMovementLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setM_AttributeSetInstance_ID(0);	//	ID
+		setMovementQty (Env.ZERO);	// 1
+		setTargetQty (Env.ZERO);	// 0
+		setScrappedQty(Env.ZERO);
+		setConfirmedQty(Env.ZERO);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

@@ -36,6 +36,16 @@ public class MAuthorizationScopeProv extends X_AD_AuthorizationScopeProv {
 	 */
 	private static final long serialVersionUID = -1862019802912162492L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_AuthorizationScopeProv_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAuthorizationScopeProv(Properties ctx, String AD_AuthorizationScopeProv_UU, String trxName) {
+        super(ctx, AD_AuthorizationScopeProv_UU, trxName);
+    }
+
 	/**
 	 * Create empty Authorization ScopeProvider
 	 *

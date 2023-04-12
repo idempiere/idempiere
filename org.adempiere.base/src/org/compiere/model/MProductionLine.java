@@ -26,6 +26,18 @@ public class MProductionLine extends X_M_ProductionLine {
 	protected MProduction productionParent;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_ProductionLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProductionLine(Properties ctx, String M_ProductionLine_UU, String trxName) {
+        super(ctx, M_ProductionLine_UU, trxName);
+		if (Util.isEmpty(M_ProductionLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx ctx
@@ -39,14 +51,19 @@ public class MProductionLine extends X_M_ProductionLine {
 	public MProductionLine(Properties ctx, int M_ProductionLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_ProductionLine_ID, trxName, virtualColumns);
 		if (M_ProductionLine_ID == 0)
-		{
-			setLine (0);
-			setM_AttributeSetInstance_ID (0);
-			setM_ProductionLine_ID (0);
-			setM_Production_ID (0);
-			setMovementQty (Env.ZERO);
-			setProcessed (false);
-		}
+			setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setLine (0);
+		setM_AttributeSetInstance_ID (0);
+		setM_ProductionLine_ID (0);
+		setM_Production_ID (0);
+		setMovementQty (Env.ZERO);
+		setProcessed (false);
 	}
 
 	public MProductionLine (Properties ctx, ResultSet rs, String trxName)

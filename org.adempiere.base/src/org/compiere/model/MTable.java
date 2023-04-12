@@ -246,6 +246,18 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return null;
 	}	//	getClass
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Table_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTable(Properties ctx, String AD_Table_UU, String trxName) {
+        super(ctx, AD_Table_UU, trxName);
+		if (Util.isEmpty(AD_Table_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -256,17 +268,22 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	{
 		super (ctx, AD_Table_ID, trxName);
 		if (AD_Table_ID == 0)
-		{
-			setAccessLevel (ACCESSLEVEL_SystemOnly);	// 4
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-			setIsChangeLog (false);
-			setIsDeleteable (false);
-			setIsHighVolume (false);
-			setIsSecurityEnabled (false);
-			setIsView (false);	// N
-			setReplicationType (REPLICATIONTYPE_Local);
-		}
+			setInitialDefaults();
 	}	//	MTable
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAccessLevel (ACCESSLEVEL_SystemOnly);	// 4
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+		setIsChangeLog (false);
+		setIsDeleteable (false);
+		setIsHighVolume (false);
+		setIsSecurityEnabled (false);
+		setIsView (false);	// N
+		setReplicationType (REPLICATIONTYPE_Local);
+	}
 
 	/**
 	 * 	Load Constructor
