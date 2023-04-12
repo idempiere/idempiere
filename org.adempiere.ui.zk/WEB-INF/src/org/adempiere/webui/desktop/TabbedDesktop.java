@@ -279,8 +279,11 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     		windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, title, true, true, null);
     	}
     	else if(Window.REPLACE.equals(window.getAttribute(Window.INSERT_POSITION_KEY))) {
-    		Tab refTab = (window instanceof ZkReportViewer) ? windowContainer.getTab(((ZkReportViewer)window).getWindowNo()) : windowContainer.getSelectedTab();
-    		windowContainer.replace((org.adempiere.webui.component.Tab)refTab, window, title);
+    		Tab refTab = null;
+    		if(window instanceof ZkReportViewer)
+    			refTab = windowContainer.getTab(((ZkReportViewer)window).getWindowNo());
+    		if(refTab != null)
+    			windowContainer.replace((org.adempiere.webui.component.Tab)refTab, window, title);
     	}
     	else {
     		windowContainer.addWindow(tabPanel, title, true, null);
