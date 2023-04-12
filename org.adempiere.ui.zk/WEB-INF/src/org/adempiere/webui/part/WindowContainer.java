@@ -584,7 +584,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	 * @param windowNo
 	 * @return org.zkoss.zul.Tab
 	 */
-	private org.zkoss.zul.Tab getTab(int windowNo) {
+	public org.zkoss.zul.Tab getTab(int windowNo) {
 		org.zkoss.zul.Tabpanels panels = tabbox.getTabpanels();
 		List<?> childrens = panels.getChildren();
 		for (Object child : childrens)

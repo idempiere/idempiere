@@ -2036,4 +2036,20 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		findWindow.setSizable(false);
 		findWindow.setContentStyle("background-color: #fff; width: 99%; margin: auto;");
 	}
+	
+	/**
+	 * Get Window No.
+	 * @return int
+	 */
+	public int getWindowNo() {
+		return m_WindowNo;
+	}
+	
+	/**
+	 * Set Window No.
+	 * @param m_WindowNo
+	 */
+	public void setWindowNo(int m_WindowNo) {
+		this.m_WindowNo = m_WindowNo;
+	}
 }
