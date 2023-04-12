@@ -224,6 +224,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private ToolBarButton bCloudUpload = new ToolBarButton();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
 	
+	/** Indicates, that the report is still running	 */
+	private boolean running = false;
+	
 	private final ExportFormat[] exportFormats = new ExportFormat[] {
 		new ExportFormat(POSTSCRIPT_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePS"), POSTSCRIPT_FILE_EXT, POSTSCRIPT_MIME_TYPE),
 		new ExportFormat(XML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXML"), XML_FILE_EXT, XML_MIME_TYPE),
@@ -249,6 +252,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		super();
 		
 		init = false;
+		running = true;
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
 		Env.setContext(re.getCtx(), m_WindowNo, "_WinInfo_IsReportViewer", "Y");
@@ -1114,9 +1118,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 	@Override
 	public void onClose(Tabpanel tabPanel) {
-		Tab tab = tabPanel.getLinkedTab();
-		tab.close();
-		cleanUp();
+		if(!running) {
+			Tab tab = tabPanel.getLinkedTab();
+			tab.close();
+			cleanUp();
+		}
 	}
 	
 	
@@ -1525,6 +1531,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi);
 		ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
 		this.getParent().appendChild(processModalDialog);
+		processModalDialog.setReportViewer(this);
 		if (ClientInfo.isMobile())
 		{
 			processModalDialog.doHighlighted();
@@ -1797,6 +1804,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			progressWindow.dispose();
 			progressWindow = null;
 		}
+		running = false;
 	}
 	
 	static class PDFRendererRunnable extends ZkContextRunnable implements IServerPushCallback {
@@ -2035,5 +2043,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			ZKUpdateUtil.setHeight(findWindow, "60%");
 		findWindow.setSizable(false);
 		findWindow.setContentStyle("background-color: #fff; width: 99%; margin: auto;");
+	}
+	
+	
+	/**
+	 * Set, if the report is running.
+	 * @param isRunning
+	 */
+	public void setIsRunning(boolean isRunning) {
+		this.running = isRunning;
 	}
 }

@@ -28,11 +28,14 @@ import java.util.logging.Level;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.DesktopTabpanel;
 import org.adempiere.webui.component.DocumentLink;
 import org.adempiere.webui.component.Mask;
+import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.panel.IHelpContext;
+import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.process.WProcessInfo;
 import org.adempiere.webui.session.SessionManager;
@@ -69,6 +72,7 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Tab;
 import org.zkoss.zul.Vlayout;
 
 import com.lowagie.text.Document;
@@ -87,7 +91,7 @@ import com.lowagie.text.pdf.PdfWriter;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessDialog extends AbstractProcessDialog implements EventListener<Event>, IHelpContext
+public class ProcessDialog extends AbstractProcessDialog implements EventListener<Event>, IHelpContext, ITabOnCloseHandler
 {
 	/**
 	 * generated serial id
@@ -127,6 +131,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
 	 */
 	private KeyEvent prevKeyEvent;
+	/** Indicates, that the report or process is still running	 */
+	private boolean running = false;
 
 	/**
 	 * Dialog to start a process/report
@@ -170,6 +176,11 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		super.onPageAttached(newpage, oldpage);
 		try {
 			SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
+			
+			Component parentTab = this.getParent();
+			if (parentTab != null && (parentTab.getClass().equals(Tabpanel.class) || parentTab.getClass().equals(DesktopTabpanel.class))) {
+				((Tabpanel)parentTab).setOnCloseHandler(this);
+			}
 		} catch (Exception e) {}
 	}
 
@@ -208,6 +219,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		if(component instanceof A && event.getName().equals((Events.ON_CLICK))){
 			doOnClick((A)component);
 		} else if (bOK.equals(component)) {
+			running = true;
 			super.onEvent(event);
 			
 			onOk();
@@ -360,6 +372,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	{		
 		hideBusyMask();
 		closeBusyDialog();
+		running = false;
 	}
 
 	@Override
@@ -778,6 +791,25 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		// If the process is a silent one and no errors occurred, close the dialog
 		if(getShowHelp() != null && MProcess.SHOWHELP_RunSilently_TakeDefaults.equals(getShowHelp()))
 			this.dispose();	
+	}
+
+	@Override
+	public void onClose(Tabpanel tabPanel) {
+		if(!running) {
+			Tab tab = tabPanel.getLinkedTab();
+			if (tab != null) {
+				tab.close();
+				cleanUp();
+			}
+		}
+	}
+
+	private void cleanUp() {
+		if (m_WindowNo >= 0)
+		{
+			SessionManager.getAppDesktop().unregisterWindow(m_WindowNo);
+			m_WindowNo = -1;
+		}
 	}
 	
 }	//	ProcessDialog

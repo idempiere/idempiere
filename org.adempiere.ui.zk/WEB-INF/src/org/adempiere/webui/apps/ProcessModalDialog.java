@@ -23,6 +23,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.model.MPInstance;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
@@ -65,6 +66,8 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 * Use to detect change of screen orientation and adapt layout accordingly. 
 	 */
 	private String orientation;
+	/** Parent Report Viewer - if opened from report's re-run button	 */
+	private ZkReportViewer reportViewer = null;
 
 	/**
 	 * @param WindowNo
@@ -320,6 +323,9 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		if(freportType != null && freportType.getSelectedItem() != null) {
 			getProcessInfo().setReportType(freportType.getSelectedItem().getValue().toString());
 		}
+		if(reportViewer != null)
+			reportViewer.setIsRunning(true);
+		
 		startProcess();
 	}	
 	
@@ -342,5 +348,13 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 				this.invalidate();
 			}
 		}
+	}
+
+	/**
+	 * Set Report Viewer
+	 * @param reportViewer
+	 */
+	public void setReportViewer(ZkReportViewer reportViewer) {
+		this.reportViewer = reportViewer;
 	}
 }	//	ProcessModalDialog
