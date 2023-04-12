@@ -1792,7 +1792,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();
 			StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
-			script.append(getParent().getUuid()).append("');w.busy=false;");
+			script.append(getParent().getUuid()).append("');if(w){w.busy=false;}");
 			script.append("})()");
 			Clients.response(new AuScript(script.toString()));
 		}
