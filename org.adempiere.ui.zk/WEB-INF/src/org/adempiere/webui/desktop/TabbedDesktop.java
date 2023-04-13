@@ -33,7 +33,6 @@ import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WTask;
-import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.model.MForm;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MQuery;
@@ -279,11 +278,13 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     		windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, title, true, true, null);
     	}
     	else if(Window.REPLACE.equals(window.getAttribute(Window.INSERT_POSITION_KEY))) {
-    		Tab refTab = null;
-    		if(window instanceof ZkReportViewer)
-    			refTab = windowContainer.getTab(((ZkReportViewer)window).getWindowNo());
-    		if(refTab != null)
-    			windowContainer.replace((org.adempiere.webui.component.Tab)refTab, window, title);
+			Tab refTab = windowContainer.getSelectedTab();
+			Object windowNoAttribute = window.getAttribute(WindowContainer.REPLACE_WINDOW_NO);
+			if (windowNoAttribute != null && windowNoAttribute instanceof Integer) {
+				int windowNo = (Integer)windowNoAttribute;
+				refTab = windowContainer.getTab(windowNo);
+			}
+			windowContainer.replace(refTab, window, title);
     	}
     	else {
     		windowContainer.addWindow(tabPanel, title, true, null);

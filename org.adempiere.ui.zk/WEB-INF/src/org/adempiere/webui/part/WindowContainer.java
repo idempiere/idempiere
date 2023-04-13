@@ -74,6 +74,8 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
 	public static final String DEFER_SET_SELECTED_TAB = "deferSetSelectedTab";
 	
 	private static final int DEFAULT_MAX_TITLE_LENGTH = 30;
+
+	public static final String REPLACE_WINDOW_NO = "replaceWindowNo";
     
     private Tabbox  tabbox;
     private ToolBar toolbar;
@@ -647,7 +649,7 @@ public class WindowContainer extends AbstractUIPart implements EventListener<Eve
      * @param title
      * @return
      */
-    public Tab replace(Tab refTab, Window comp, String title) {
+    public org.zkoss.zul.Tab replace(org.zkoss.zul.Tab refTab, Window comp, String title) {
     	 
          if (refTab == null)  
          {
