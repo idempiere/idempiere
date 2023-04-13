@@ -776,7 +776,8 @@ public abstract class SvrProcess implements ProcessCall
             if(field==null) {
             	String candidate = name.replace("_", "");
                 field = map.get(candidate);
-                notField = map.containsKey(candidate + "to") ? map.get(candidate + "to") : null;
+                toField = map.containsKey(candidate + "to") ? map.get(candidate + "to") : null;
+                notField = map.containsKey(candidate + "not") ? map.get(candidate + "not") : null;
             }
 
             if(field==null)
