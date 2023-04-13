@@ -27,6 +27,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.MRole;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 
 /**
@@ -43,7 +44,7 @@ public class CopyRole extends SvrProcess
 {
 	private int m_AD_Role_ID_From = 0;
 	private int m_AD_Role_ID_To = 0;
-	private int m_AD_Client_ID = 0;	
+	private Integer m_AD_Client_ID = null;	
 	private int m_AD_Org_ID = 0;
 	
 	/**
@@ -78,12 +79,15 @@ public class CopyRole extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{	
+		if(m_AD_Client_ID == null)
+			m_AD_Client_ID = Env.getAD_Client_ID(getCtx());
+		
 		if (! MRole.getDefault().isAccessAdvanced()) {
 			return "@Error@ @Advanced@ @Process@";
 		}
 
 		if (m_AD_Role_ID_From == m_AD_Role_ID_To)
-			throw new AdempiereException("Roles must be different");
+			throw new AdempiereException(Msg.getMsg(getCtx(), "RolesMustBeDifferent"));
 
 		String[] tables = new String[] {"AD_Window_Access", "AD_Process_Access", "AD_Form_Access",
 				"AD_Workflow_Access", "AD_Task_Access", "AD_Document_Action_Access", "AD_InfoWindow_Access",
@@ -138,7 +142,7 @@ public class CopyRole extends SvrProcess
 			addLog(action++, null, new BigDecimal(no), "New records inserted into " + table );
 		}
 	
-		return "Role copied";
+		return Msg.getMsg(getCtx(),"RoleCopied");
 	}	//	doIt
 
 }	//	CopyRole
