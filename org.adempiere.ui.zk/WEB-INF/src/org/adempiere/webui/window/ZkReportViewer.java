@@ -47,6 +47,7 @@ import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Mask;
@@ -781,9 +782,15 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		reportLink = new A();
 		reportLink.setTarget("_blank");
 		Div linkDiv = new Div();
-		linkDiv.setStyle("width:100%; height: 40px; padding-top: 4px; padding-bottom: 4px;");
+		linkDiv.setStyle("width:100%; height: 40px; padding: 4px;");
 		linkDiv.appendChild(reportLink);
-		south.appendChild(linkDiv);
+
+		Label rowCount = new Label(Msg.getMsg(m_ctx, "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount()}));
+		rowCount.setStyle("float: right;");
+		linkDiv.appendChild(rowCount);
+		
+		south.appendChild(linkDiv);		
+		
 		//m_WindowNo
 		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "_WinInfo_AD_Window_ID", true);
 		if (AD_Window_ID == 0)

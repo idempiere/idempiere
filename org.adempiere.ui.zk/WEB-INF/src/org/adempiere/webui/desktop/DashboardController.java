@@ -46,6 +46,7 @@ import org.adempiere.webui.apps.graph.WPAWidget;
 import org.adempiere.webui.apps.graph.WPerformanceDetail;
 import org.adempiere.webui.apps.graph.WPerformanceIndicator;
 import org.adempiere.webui.apps.graph.model.ChartModel;
+import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.dashboard.DashboardPanel;
 import org.adempiere.webui.dashboard.DashboardRunnable;
@@ -827,7 +828,8 @@ public class DashboardController implements EventListener<Event> {
 				{
 	    			addDrillAcrossEventListener(AD_Process_ID, parentComponent);
 					String processParameters = dashboardContent.getProcessParameters();
-	
+					ReportData reportData = generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, parentComponent, contextPath);
+					
 					Div layout = new Div();
 					layout.setHeight("100%");
 					layout.setStyle("display: flex;flex-direction: column;");
@@ -835,13 +837,14 @@ public class DashboardController implements EventListener<Event> {
 					Iframe iframe = new Iframe();
 					iframe.setSclass("dashboard-report-iframe");
 					iframe.setStyle("flex-grow: 1;");
-					iframe.setContent(generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, parentComponent, contextPath));
+					iframe.setContent(reportData.getContent());
 					if(iframe.getContent() != null)
 						layout.appendChild(iframe);
 					else
 						layout.appendChild(createFillMandatoryLabel(dashboardContent));
 	
 					Toolbar toolbar = new Toolbar();
+					LayoutUtils.addSclass("dashboard-report-toolbar", toolbar);
 					layout.appendChild(toolbar);
 					btn.setLabel(Msg.getMsg(Env.getCtx(), "OpenRunDialog"));
 					toolbar.appendChild(btn);
@@ -863,9 +866,18 @@ public class DashboardController implements EventListener<Event> {
 					}
 					else
 						btn.setImage(ThemeManager.getThemeResource("images/Refresh16.png"));
-	
-					btn.addEventListener(Events.ON_CLICK, e -> iframe.setContent(generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, parentComponent, contextPath)));
-					toolbar.appendChild(btn);				
+					
+					toolbar.appendChild(btn);	
+					
+					Label rowCountLabel = new Label(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {reportData.getRowCount()}));
+					LayoutUtils.addSclass("rowcount-label", rowCountLabel);
+					toolbar.appendChild(rowCountLabel);
+					
+					btn.addEventListener(Events.ON_CLICK, e -> {
+						ReportData refreshedData = generateReport(AD_Process_ID, dashboardContent.getAD_PrintFormat_ID(), processParameters, parentComponent, contextPath);
+						iframe.setContent(refreshedData.getContent());
+						rowCountLabel.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {refreshedData.getRowCount()}));
+					});			
 				}
 				else
 				{
@@ -1635,14 +1647,14 @@ public class DashboardController implements EventListener<Event> {
 	 * @return {@link AMedia}
 	 * @throws Exception
 	 */
-	private AMedia generateReport(int AD_Process_ID, int AD_PrintFormat_ID, String parameters, Component component, String contextPath) throws Exception {
+	private ReportData generateReport(int AD_Process_ID, int AD_PrintFormat_ID, String parameters, Component component, String contextPath) throws Exception {
 		ReportEngine re = runReport(AD_Process_ID, AD_PrintFormat_ID, parameters);
 		if(re == null)
 			return null;
 		File file = FileUtil.createTempFile(re.getName(), ".html");		
 		re.createHTML(file, false, AEnv.getLanguage(Env.getCtx()), new HTMLExtension(contextPath, "rp", 
 				component.getUuid(), String.valueOf(AD_Process_ID)));
-		return new AMedia(re.getName(), "html", "text/html", file, false);
+		return new ReportData(new AMedia(re.getName(), "html", "text/html", file, false), re);
 	}
 
 	/**
@@ -1924,6 +1936,43 @@ public class DashboardController implements EventListener<Event> {
 		for (IChartRendererService renderer : list) {
 			if (renderer.renderChart(chartPanel, width, height, model, showTitle))
 				break;
+		}
+	}
+	
+	/**
+	 * Holds information about the report: Report Content, Row Count
+	 */
+	public class ReportData {
+		/** Report content */
+		private AMedia content;
+		/** Report Row Count */
+		private int rowCount = 0;
+		
+		/**
+		 * Constructor
+		 * @param content
+		 * @param rowCount
+		 */
+		public ReportData(AMedia content, ReportEngine reportEngine) {
+			this.content = content;
+			if(reportEngine.getPrintData() != null)
+				this.rowCount = reportEngine.getPrintData().getRowCount();
+		}
+
+		/**
+		 * Get report content
+		 * @return AMedia content
+		 */
+		public AMedia getContent() {
+			return content;
+		}
+
+		/**
+		 * Get report row count
+		 * @return int row count
+		 */
+		public int getRowCount() {
+			return rowCount;
 		}
 	}
 }
