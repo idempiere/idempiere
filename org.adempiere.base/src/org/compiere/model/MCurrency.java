@@ -20,9 +20,10 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
-import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Currency Model.
@@ -36,6 +37,18 @@ public class MCurrency extends X_C_Currency implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = 4325153934518648373L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Currency_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCurrency(Properties ctx, String C_Currency_UU, String trxName) {
+        super(ctx, C_Currency_UU, trxName);
+		if (Util.isEmpty(C_Currency_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Currency Constructor
 	 *	@param ctx context
@@ -46,13 +59,18 @@ public class MCurrency extends X_C_Currency implements ImmutablePOSupport
 	{
 		super (ctx, C_Currency_ID, trxName);
 		if (C_Currency_ID == 0)
-		{
-			setIsEMUMember (false);
-			setIsEuro (false);
-			setStdPrecision (2);
-			setCostingPrecision (4);
-		}
+			setInitialDefaults();
 	}	//	MCurrency
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsEMUMember (false);
+		setIsEuro (false);
+		setStdPrecision (2);
+		setCostingPrecision (4);
+	}
 
 	/**
 	 * Resultset constructor

@@ -59,6 +59,16 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	/* Recent Item cached Label */
 	private String m_label;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_RecentItem_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRecentItem(Properties ctx, String AD_RecentItem_UU, String trxName) {
+        super(ctx, AD_RecentItem_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

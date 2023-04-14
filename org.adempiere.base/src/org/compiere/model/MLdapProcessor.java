@@ -75,6 +75,16 @@ public class MLdapProcessor extends X_AD_LdapProcessor implements AdempiereProce
 	/**	Logger	*/
 	private static CLogger log = CLogger.getCLogger (MLdapProcessor.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_LdapProcessor_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MLdapProcessor(Properties ctx, String AD_LdapProcessor_UU, String trxName) {
+        super(ctx, AD_LdapProcessor_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Ldap Processor
 	 *	@param ctx context

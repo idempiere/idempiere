@@ -2177,7 +2177,7 @@ public final class Env
 
 	/**	New Line 		 */
 	public static final String	NL = System.getProperty("line.separator");
-	/* Prefix for predefined context variables coming from menu or window definition */
+	/* Prefix for predefined context variables coming from menu, window or role definition */
 	public static final String PREFIX_PREDEFINED_VARIABLE = "+";
 
 
@@ -2192,14 +2192,14 @@ public final class Env
 
 
 	/**
-	 * Add in context predefined variables with prefix +, coming from menu or window definition
+	 * Add in context predefined variables with prefix +, coming from menu, window or role definition
 	 * Predefined variables must come separated by new lines in one of the formats:
 	 *   VAR=VALUE
 	 *   VAR="VALUE"
 	 *   VAR='VALUE'
 	 *  The + prefix is not required, is added here to the defined variables
 	 * @param ctx
-	 * @param windowNo
+	 * @param windowNo window number or -1 to global level
 	 * @param predefinedVariables
 	 */
 	public static void setPredefinedVariables(Properties ctx, int windowNo, String predefinedVariables) {
@@ -2216,7 +2216,10 @@ public final class Env
 							) {
 							value = value.substring(1, value.length()-1);
 						}
-						Env.setContext(ctx, windowNo, PREFIX_PREDEFINED_VARIABLE + var, value);
+						if (windowNo >= 0)
+							Env.setContext(ctx, windowNo, PREFIX_PREDEFINED_VARIABLE + var, value);
+						else
+							Env.setContext(ctx, PREFIX_PREDEFINED_VARIABLE + var, value);
 					}
 				}
 			}

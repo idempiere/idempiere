@@ -27,6 +27,16 @@ public class MPromotionPreCondition extends X_M_PromotionPreCondition {
 
 	private static final long serialVersionUID = 7344556244799964804L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_PromotionPreCondition_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPromotionPreCondition(Properties ctx, String M_PromotionPreCondition_UU, String trxName) {
+        super(ctx, M_PromotionPreCondition_UU, trxName);
+    }
+
 	public MPromotionPreCondition(Properties ctx,
 			int M_PromotionPreCondition_ID, String trxName) {
 		super(ctx, M_PromotionPreCondition_ID, trxName);

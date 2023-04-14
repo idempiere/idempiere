@@ -37,6 +37,16 @@ public class MRecordAccess extends X_AD_Record_Access
 	 */
 	private static final long serialVersionUID = -5115765616266528435L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Record_Access_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRecordAccess(Properties ctx, String AD_Record_Access_UU, String trxName) {
+        super(ctx, AD_Record_Access_UU, trxName);
+    }
+
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context

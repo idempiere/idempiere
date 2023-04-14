@@ -25,6 +25,7 @@ import java.util.Properties;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *  Journal Line Model
@@ -42,6 +43,18 @@ public class MJournalLine extends X_GL_JournalLine
 	 */
 	private static final long serialVersionUID = 253571209449736797L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param GL_JournalLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MJournalLine(Properties ctx, String GL_JournalLine_UU, String trxName) {
+        super(ctx, GL_JournalLine_UU, trxName);
+		if (Util.isEmpty(GL_JournalLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -52,17 +65,22 @@ public class MJournalLine extends X_GL_JournalLine
 	{
 		super (ctx, GL_JournalLine_ID, trxName);
 		if (GL_JournalLine_ID == 0)
-		{
-			setLine (0);
-			setAmtAcctCr (Env.ZERO);
-			setAmtAcctDr (Env.ZERO);
-			setAmtSourceCr (Env.ZERO);
-			setAmtSourceDr (Env.ZERO);
-			setCurrencyRate (Env.ONE);
-			setDateAcct (new Timestamp(System.currentTimeMillis()));
-			setIsGenerated (true);
-		}
+			setInitialDefaults();
 	}	//	MJournalLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setLine (0);
+		setAmtAcctCr (Env.ZERO);
+		setAmtAcctDr (Env.ZERO);
+		setAmtSourceCr (Env.ZERO);
+		setAmtSourceDr (Env.ZERO);
+		setCurrencyRate (Env.ONE);
+		setDateAcct (new Timestamp(System.currentTimeMillis()));
+		setIsGenerated (true);
+	}
 
 	/**
 	 * 	Load Constructor

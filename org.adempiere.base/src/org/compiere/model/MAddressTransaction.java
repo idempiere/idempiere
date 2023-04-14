@@ -34,6 +34,16 @@ public class MAddressTransaction extends X_C_AddressTransaction
 	 */
 	private static final long serialVersionUID = 8572809249265680649L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_AddressTransaction_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAddressTransaction(Properties ctx, String C_AddressTransaction_UU, String trxName) {
+        super(ctx, C_AddressTransaction_UU, trxName);
+    }
+
 	public MAddressTransaction(Properties ctx, int C_AddressTransaction_ID, String trxName) 
 	{
 		super(ctx, C_AddressTransaction_ID, trxName);

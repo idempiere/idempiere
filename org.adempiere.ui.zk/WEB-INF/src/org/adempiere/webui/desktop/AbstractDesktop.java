@@ -36,9 +36,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Window.Mode;
 
 /**
- * Base class for desktop implementation
+ * Abstract base class for {@link IDesktop} implementation
  * @author hengsin
- *
  */
 public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop {
 
@@ -50,11 +49,14 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	@SuppressWarnings("unused")
 	private static final CLogger logger = CLogger.getCLogger(AbstractDesktop.class);
 
+	/**
+	 * Default constructor
+	 */
 	public AbstractDesktop() {
 	}
 	
 	/**
-     * Event listener for menu item selection.
+     * Event listener for menu item selection.<br/>
      * Identifies the action associated with the selected
      * menu item and acts accordingly.
      * 
@@ -63,6 +65,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
      * @throws	ApplicationException	If the selected menu action has yet 
      * 									to be implemented
      */
+	@Override
     public void onMenuSelected(int menuId)
     {
         MMenu menu = MMenu.get(menuId); 
@@ -109,14 +112,13 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
     }
     
     /**
-	 * @return clientInfo
+	 * @return {@link ClientInfo}
 	 */
 	public ClientInfo getClientInfo() {
 		return clientInfo;
 	}
 
 	/**
-	 * 
 	 * @param clientInfo
 	 */
 	public void setClientInfo(ClientInfo clientInfo) {
@@ -125,6 +127,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	
 	/**
 	 * @param win
+	 * @param registered Window Number (start from 0)
 	 */
 	public int registerWindow(Object win) {
 		List<Object> windows = getWindows();
@@ -134,6 +137,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	}
 	
 	/**
+	 * Remove from registered window list and clear environment context
 	 * @param WindowNo
 	 */
 	public void unregisterWindow(int WindowNo) {
@@ -144,7 +148,7 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	}
    	
     /**
-     * 
+     * Find window by registered window number
      * @param WindowNo
      * @return Object
      */
@@ -158,24 +162,25 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	
     @Override
 	public int findWindowNo(Component component) {
-	if (component == null)
-		return -1;
-
-	List<Object> windows = getWindows();
-	if (windows != null) {
-		if (windows.contains(component))
-			return windows.indexOf(component);
-			Component parent = component.getParent();
-			while (parent != null) {
-				if (windows.contains(parent))
-					return windows.indexOf(parent);
-				parent = parent.getParent();
-			}
-	}
+		if (component == null)
+			return -1;
+	
+		List<Object> windows = getWindows();
+		if (windows != null) {
+			if (windows.contains(component))
+				return windows.indexOf(component);
+				Component parent = component.getParent();
+				while (parent != null) {
+					if (windows.contains(parent))
+						return windows.indexOf(parent);
+					parent = parent.getParent();
+				}
+		}
 		return -1;
 	}
 
 	/**
+	 * Delegate to {@link #showWindow(Window, String)}
      * @param win
      */
     public void showWindow(Window win) 
@@ -185,10 +190,10 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
     }
     
     /**
-     * when width of win set by stylesheet (css class or in style) win sometime don't in center.
-     * fix by find out method change to  {@link LayoutUtils#openOverlappedWindow(org.zkoss.zk.ui.Component, org.zkoss.zul.Window, String)}  
-     * @param win
-     * @param pos
+     * When width of win set by stylesheet (css class or in style) win sometime don't position in center.<br/>
+     * To workaround that, use {@link LayoutUtils#openOverlappedWindow(org.zkoss.zk.ui.Component, org.zkoss.zul.Window, String)}.  
+     * @param win Window
+     * @param pos see {@link org.zkoss.zul.Window#setPosition(String)}
      */
    	public void showWindow(final Window win, final String pos)
 	{
@@ -218,6 +223,12 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 		}
 	}
 
+   	/**
+   	 * 
+   	 * @param win Window
+   	 * @param pos see {@link org.zkoss.zul.Window#setPosition(String)}
+   	 * @param mode {@link Mode} (POPUP, OVERLAPPED, EMBEDDED or HIGHLIGHTED)
+   	 */
 	private void showNonModalWindow(final Window win, final String pos,
 			final Mode mode) {		
 		if (Mode.POPUP == mode)
@@ -238,10 +249,14 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 		}
 	}
    	
+	/**
+	 * Show {@link Mode#EMBEDDED} window
+	 * @param win
+	 */
    	protected abstract void showEmbedded(Window win);
 
 	/**
-   	 * 
+   	 * Show modal window.
    	 * @param win
    	 */
    	protected void showModal(final Window win)
@@ -289,9 +304,9 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
 	}
    	
    	/**
-   	 * 
-   	 * @param win
-   	 * @param position
+   	 * Show {@link Mode#POPUP} window
+   	 * @param win Window
+   	 * @param position see {@link org.zkoss.zul.Window#setPosition(String)}
    	 */
    	protected void showPopup(Window win, String position)
    	{
@@ -306,9 +321,9 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
    	}
    	
    	/**
-   	 * 
-   	 * @param win
-   	 * @param position
+   	 * Show {@link Mode#OVERLAPPED} window
+   	 * @param win Window
+   	 * @param position see {@link org.zkoss.zul.Window#setPosition(String)}
    	 */
    	protected void showOverlapped(Window win, String position)
    	{
@@ -323,9 +338,9 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
    	}
 	
 	/**
-	 * 
-	 * @param win
-	 * @param position
+	 * Show {@link Mode#HIGHLIGHTED} window
+	 * @param win Window
+	 * @param position see {@link org.zkoss.zul.Window#setPosition(String)}
 	 */
    	protected void showHighlighted(Window win, String position)
    	{
@@ -339,6 +354,9 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
    		win.focus();
    	}   	
 
+   	/**
+   	 * @return List of registered windows
+   	 */
     protected List<Object> getWindows(){
     	Desktop desktop = getComponent().getDesktop();
     	if (desktop != null) {
@@ -355,18 +373,30 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
     	}
     }
 
+    /**
+     * @param predefinedVariables
+     */
 	public void setPredefinedContextVariables(String predefinedVariables) {
 		this.predefinedContextVariables = predefinedVariables;
 	}
 
+	/**
+	 * @return {@link #predefinedContextVariables}
+	 */
 	protected String getPredefinedContextVariables() {
 		return this.predefinedContextVariables;
 	}
 
+	/**
+	 * @param isSOTrx
+	 */
 	public void setMenuIsSOTrx(boolean isSOTrx) {
 		this.menuIsSOTrx = isSOTrx;
 	}
 	
+	/**
+	 * @return {@link #menuIsSOTrx}
+	 */
 	protected boolean isMenuSOTrx() {
 		return this.menuIsSOTrx;
 	}

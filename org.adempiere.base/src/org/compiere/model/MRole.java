@@ -257,6 +257,18 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	private static final String ROLE_KEY = "org.compiere.model.DefaultRole";
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Role_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRole(Properties ctx, String AD_Role_UU, String trxName) {
+        super(ctx, AD_Role_UU, trxName);
+		if (Util.isEmpty(AD_Role_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *  NOTE - This method must not be used when the role is being requested to manage permissions,
@@ -270,23 +282,28 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		super (ctx, AD_Role_ID, trxName);
 		//	ID=0 == System Administrator
 		if (AD_Role_ID == SystemIDs.ROLE_SYSTEM)
-		{
-			setIsCanExport (true);
-			setIsCanReport (true);
-			setIsManual (false);
-			setIsPersonalAccess (false);
-			setIsPersonalLock (false);
-			setIsShowAcct (false);
-			setIsAccessAllOrgs(false);
-			setUserLevel (USERLEVEL_Organization);
-			setPreferenceType(PREFERENCETYPE_Organization);
-			setIsChangeLog(false);
-			setOverwritePriceLimit(false);
-			setIsUseUserOrgAccess(false);
-			setMaxQueryRecords(0);
-			setConfirmQueryRecords(0);
-		}
+			setInitialDefaults();
 	}	//	MRole
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsCanExport (true);
+		setIsCanReport (true);
+		setIsManual (false);
+		setIsPersonalAccess (false);
+		setIsPersonalLock (false);
+		setIsShowAcct (false);
+		setIsAccessAllOrgs(false);
+		setUserLevel (USERLEVEL_Organization);
+		setPreferenceType(PREFERENCETYPE_Organization);
+		setIsChangeLog(false);
+		setOverwritePriceLimit(false);
+		setIsUseUserOrgAccess(false);
+		setMaxQueryRecords(0);
+		setConfirmQueryRecords(0);
+	}
 
 	/**
 	 * 	Load Constructor

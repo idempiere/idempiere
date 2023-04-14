@@ -36,6 +36,16 @@ public class MDiscountSchemaLine extends X_M_DiscountSchemaLine implements Immut
 	 */
 	private static final long serialVersionUID = 5145958821951855437L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_DiscountSchemaLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDiscountSchemaLine(Properties ctx, String M_DiscountSchemaLine_UU, String trxName) {
+        super(ctx, M_DiscountSchemaLine_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

@@ -58,6 +58,16 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default implements Immuta
 	/**	Logger							*/
 	protected static CLogger			s_log = CLogger.getCLogger(MAcctSchemaDefault.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_AcctSchema_Default_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAcctSchemaDefault(Properties ctx, String C_AcctSchema_Default_UU, String trxName) {
+        super(ctx, C_AcctSchema_Default_UU, trxName);
+    }
+
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context

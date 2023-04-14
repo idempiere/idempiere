@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -213,6 +214,18 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MPriceList> s_cache = new ImmutableIntPOCache<Integer,MPriceList>(Table_Name, 5, 5);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_PriceList_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPriceList(Properties ctx, String M_PriceList_UU, String trxName) {
+        super(ctx, M_PriceList_UU, trxName);
+		if (Util.isEmpty(M_PriceList_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -223,14 +236,19 @@ public class MPriceList extends X_M_PriceList implements ImmutablePOSupport
 	{
 		super(ctx, M_PriceList_ID, trxName);
 		if (M_PriceList_ID == 0)
-		{
-			setEnforcePriceLimit (false);
-			setIsDefault (false);
-			setIsSOPriceList (false);
-			setIsTaxIncluded (false);
-			setPricePrecision (2);	// 2
-		}
+			setInitialDefaults();
 	}	//	MPriceList
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEnforcePriceLimit (false);
+		setIsDefault (false);
+		setIsSOPriceList (false);
+		setIsTaxIncluded (false);
+		setPricePrecision (2);	// 2
+	}
 
 	/**
 	 * 	Load Constructor

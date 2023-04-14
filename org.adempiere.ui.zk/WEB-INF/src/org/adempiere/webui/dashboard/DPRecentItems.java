@@ -53,31 +53,37 @@ import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Vbox;
 
 /**
- * Dashboard item: Recent Items
+ * Dashboard gadget: Recent Items
  * @author Carlos Ruiz / GlobalQSS
  * @date January 27, 2012
  */
 public class DPRecentItems extends DashboardPanel implements EventListener<Event>, EventHandler {
-
-	private static final String AD_RECENT_ITEM_ID_ATTR = "AD_RecentItem_ID";
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 662950038476166515L;
 
+	/** Recent item link ({@link A}) attribute to store AD_RecentItem_ID value */
+	private static final String AD_RECENT_ITEM_ID_ATTR = "AD_RecentItem_ID";
+	
+	/** Droppable identifier */
 	public static final String DELETE_RECENTITEMS_DROPPABLE = "deleteRecentItems";
 
 	private static TopicSubscriber topicSubscriber;
 
 	private Box bxRecentItems;
-
+	
+	/** Login user id */
 	private int AD_User_ID;
 	
 	private WeakReference<Desktop> desktop;
-
+	
+	/** Desktop cleanup listener to call {@link #cleanup()} */
 	private DesktopCleanup listener;
 
+	/**
+	 * Default constructor
+	 */
 	public DPRecentItems()
 	{
 		super();
@@ -145,11 +151,17 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		};
 	}
 
+	/**
+	 * Perform clean up
+	 */
 	protected void cleanup() {
 		EventManager.getInstance().unregister(this);
 		desktop = null;
 	}
 
+	/**
+	 * Setup {@link #topicSubscriber}
+	 */
 	private static synchronized void createTopicSubscriber() {
 		if (topicSubscriber == null) {
 			topicSubscriber = new TopicSubscriber();
@@ -162,7 +174,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 	}
 
     /**
-	 *	Make Recent Item remove persistent
+	 *	Remove recent item record from DB
 	 *  @param AD_RecentItem_ID Recent Item ID
 	 *  @return true if updated
 	 */
@@ -175,6 +187,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
     	}
 	}
 
+    @Override
     public void onEvent(Event event)
     {
         Component comp = event.getTarget();
@@ -200,6 +213,10 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
         }
 	}
 
+    /**
+     * Handle onClick event from recent item link/button
+     * @param comp Component
+     */
 	private void doOnClick(Component comp) {
 		if (comp instanceof A)
 		{
@@ -227,6 +244,9 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		}
 	}
 
+	/**
+	 * Reload from DB
+	 */
 	private synchronized void refresh() {
 		// Please review here - is throwing NPE in some cases when user push repeatedly the refresh button
 		List<?> childs = bxRecentItems.getChildren();
@@ -276,6 +296,10 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 
 	}
 
+	/**
+	 * Remove recent item link from {@link #bxRecentItems} and DB
+	 * @param btn {@link A}
+	 */
 	private void removeLink(A btn) {
 		String value = (String) btn.getAttribute(AD_RECENT_ITEM_ID_ATTR);
 
@@ -288,6 +312,9 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		}
 	}
 
+	/**
+	 * @return icon font class or icon image url
+	 */
 	private String getIconFile() {
 		if (ThemeManager.isUseFontIconForImage())
 			return "z-icon-Window";
@@ -311,7 +338,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 	}
 
 	/**
-	 * 
+	 * Update {@link #desktop} reference and setup {@link #listener}
 	 */
 	protected void updateDesktopReference() {
 		if ((desktop == null || desktop.get() == null) || (desktop.get() != null && desktop.get() != getDesktop())) {
@@ -364,7 +391,14 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 		return true;
 	}
 
+	/**
+	 * {@link ITopicSubscriber} for "onRecentItemChanged" topic. <br/>
+	 * Call {@link MRecentItem#postOnChangedEvent(int)}.
+	 */
 	static class TopicSubscriber implements ITopicSubscriber<Integer> {
+		/**
+		 * @param message AD_User_ID
+		 */
 		@Override
 		public void onMessage(Integer message) {
 			MRecentItem.postOnChangedEvent(message);

@@ -12,17 +12,18 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import org.adempiere.webui.desktop.DefaultDesktop;
 import org.zkoss.zk.ui.IdSpace;
 
 /**
- * Tabpanel use by desktop to host AD Window, implements IdSpace to avoid Id conflict 
+ * Tabpanel use by {@link DefaultDesktop} to display each open window (AD Window, form, process dialog, etc) as tab. Implements IdSpace to avoid Id conflict. 
  * @author Low Heng Sin
  *
  */
 public class DesktopTabpanel extends Tabpanel implements IdSpace {
 
 	/**
-	 * generated serail version id
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -7142048018260264752L;
 

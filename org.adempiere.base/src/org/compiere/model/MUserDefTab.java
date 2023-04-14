@@ -43,6 +43,16 @@ public class MUserDefTab extends X_AD_UserDef_Tab implements ImmutablePOSupport
 	/**	Cache of selected MUserDefTab entries 					**/
 	private static ImmutablePOCache<String,MUserDefTab> s_cache = new ImmutablePOCache<String,MUserDefTab>(Table_Name, 10);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_UserDef_Tab_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserDefTab(Properties ctx, String AD_UserDef_Tab_UU, String trxName) {
+        super(ctx, AD_UserDef_Tab_UU, trxName);
+    }
+
 	/**
 	 * 	Standard constructor.
 	 * 	You must implement this constructor for Adempiere Persistency

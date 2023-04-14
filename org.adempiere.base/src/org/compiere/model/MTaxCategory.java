@@ -17,10 +17,11 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
-import java.util.Properties;
 import java.util.List;
+import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.util.Util;
 
 /**
  * 	Tax Category Model
@@ -35,6 +36,18 @@ public class MTaxCategory extends X_C_TaxCategory
 	 */
 	private static final long serialVersionUID = -5521670797405300136L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_TaxCategory_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTaxCategory(Properties ctx, String C_TaxCategory_UU, String trxName) {
+        super(ctx, C_TaxCategory_UU, trxName);
+		if (Util.isEmpty(C_TaxCategory_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -45,10 +58,15 @@ public class MTaxCategory extends X_C_TaxCategory
 	{
 		super (ctx, C_TaxCategory_ID, trxName);
 		if (C_TaxCategory_ID == 0)
-		{
-			setIsDefault (false);
-		}
+			setInitialDefaults();
 	}	//	MTaxCategory
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDefault (false);
+	}
 
 	/**
 	 * 	Load Constructor

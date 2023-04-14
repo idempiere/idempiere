@@ -17,8 +17,17 @@ public class MProductionLineMA extends X_M_ProductionLineMA {
 	 */
 	private static final long serialVersionUID = -2633782218494352620L;
 
-	public MProductionLineMA(Properties ctx, int M_ProductionLineMA_ID,
-			String trxName) {
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_ProductionLineMA_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProductionLineMA(Properties ctx, String M_ProductionLineMA_UU, String trxName) {
+        super(ctx, M_ProductionLineMA_UU, trxName);
+    }
+
+	public MProductionLineMA(Properties ctx, int M_ProductionLineMA_ID, String trxName) {
 		super(ctx, M_ProductionLineMA_ID, trxName);
 	}
 

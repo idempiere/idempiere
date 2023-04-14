@@ -39,6 +39,16 @@ public class MPriceListVersion extends X_M_PriceList_Version implements Immutabl
 	 */
 	private static final long serialVersionUID = 1625884461739604147L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_PriceList_Version_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPriceListVersion(Properties ctx, String M_PriceList_Version_UU, String trxName) {
+        super(ctx, M_PriceList_Version_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

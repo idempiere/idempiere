@@ -33,6 +33,16 @@ public class MRegistrationValue extends X_A_RegistrationValue
 	 */
 	private static final long serialVersionUID = 3380153548447464552L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_RegistrationValue_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRegistrationValue(Properties ctx, String A_RegistrationValue_UU, String trxName) {
+        super(ctx, A_RegistrationValue_UU, trxName);
+    }
+
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context

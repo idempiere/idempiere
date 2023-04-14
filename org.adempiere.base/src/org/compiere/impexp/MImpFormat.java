@@ -40,6 +40,16 @@ public class MImpFormat extends X_AD_ImpFormat
 	 */
 	private static final long serialVersionUID = -3768339618622673968L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ImpFormat_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MImpFormat(Properties ctx, String AD_ImpFormat_UU, String trxName) {
+        super(ctx, AD_ImpFormat_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

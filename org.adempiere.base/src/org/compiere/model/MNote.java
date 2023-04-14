@@ -21,6 +21,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 
 /**
@@ -37,6 +38,18 @@ public class MNote extends X_AD_Note
 	private static final long serialVersionUID = -422120961441035731L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Note_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MNote(Properties ctx, String AD_Note_UU, String trxName) {
+        super(ctx, AD_Note_UU, trxName);
+		if (Util.isEmpty(AD_Note_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 * 	@param ctx context
@@ -47,11 +60,16 @@ public class MNote extends X_AD_Note
 	{
 		super (ctx, AD_Note_ID, trxName);
 		if (AD_Note_ID == 0)
-		{
-			setProcessed (false);
-			setProcessing(false);
-		}
+			setInitialDefaults();
 	}	//	MNote
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setProcessed (false);
+		setProcessing(false);
+	}
 
 	/**
 	 * 	Load Constructor

@@ -43,6 +43,16 @@ public class MProcessDrillRulePara extends X_AD_Process_DrillRule_Para implement
 	 */
 	private static final long serialVersionUID = 1460684182951511710L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Process_DrillRule_Para_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProcessDrillRulePara(Properties ctx, String AD_Process_DrillRule_Para_UU, String trxName) {
+        super(ctx, AD_Process_DrillRule_Para_UU, trxName);
+    }
+
 	public MProcessDrillRulePara(Properties ctx, int AD_Process_DrillRule_Para_ID, String trxName) {
 		super(ctx, AD_Process_DrillRule_Para_ID, trxName);
 	}

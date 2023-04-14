@@ -133,10 +133,10 @@ public interface I_TestUU
     /** Column name TestUU_UU */
     public static final String COLUMNNAME_TestUU_UU = "TestUU_UU";
 
-	/** Set TestUU_UU	  */
+	/** Set Test UU	  */
 	public void setTestUU_UU (String TestUU_UU);
 
-	/** Get TestUU_UU	  */
+	/** Get Test UU	  */
 	public String getTestUU_UU();
 
     /** Column name Updated */

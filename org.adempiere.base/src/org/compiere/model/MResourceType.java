@@ -99,6 +99,16 @@ public class MResourceType extends X_S_ResourceType implements ImmutablePOSuppor
 		return rt;
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param S_ResourceType_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MResourceType(Properties ctx, String S_ResourceType_UU, String trxName) {
+        super(ctx, S_ResourceType_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

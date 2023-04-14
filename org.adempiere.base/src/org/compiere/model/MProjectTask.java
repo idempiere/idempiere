@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * 	Project Phase Task Model
@@ -34,6 +35,18 @@ public class MProjectTask extends X_C_ProjectTask
 	 * 
 	 */
 	private static final long serialVersionUID = 6714520156233475723L;
+
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_ProjectTask_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProjectTask(Properties ctx, String C_ProjectTask_UU, String trxName) {
+        super(ctx, C_ProjectTask_UU, trxName);
+		if (Util.isEmpty(C_ProjectTask_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -49,10 +62,15 @@ public class MProjectTask extends X_C_ProjectTask
 	public MProjectTask(Properties ctx, int C_ProjectTask_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_ProjectTask_ID, trxName, virtualColumns);
 		if (C_ProjectTask_ID == 0)
-		{
-			setSeqNo (0);
-			setQty (Env.ZERO);
-		}
+			setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setSeqNo (0);
+		setQty (Env.ZERO);
 	}
 
 	/**

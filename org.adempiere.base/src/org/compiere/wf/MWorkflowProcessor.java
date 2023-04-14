@@ -63,6 +63,16 @@ public class MWorkflowProcessor extends X_AD_WorkflowProcessor
 	}	//	getActive
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WorkflowProcessor_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWorkflowProcessor(Properties ctx, String AD_WorkflowProcessor_UU, String trxName) {
+        super(ctx, AD_WorkflowProcessor_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

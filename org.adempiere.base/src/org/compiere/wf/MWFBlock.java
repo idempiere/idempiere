@@ -73,6 +73,16 @@ public class MWFBlock extends X_AD_WF_Block implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MWFBlock>	s_cache	= new ImmutableIntPOCache<Integer,MWFBlock>(Table_Name, 20);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WF_Block_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWFBlock(Properties ctx, String AD_WF_Block_UU, String trxName) {
+        super(ctx, AD_WF_Block_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

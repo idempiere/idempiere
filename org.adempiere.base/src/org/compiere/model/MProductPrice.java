@@ -60,6 +60,16 @@ public class MProductPrice extends X_M_ProductPrice implements ImmutablePOSuppor
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MProductPrice.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_ProductPrice_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProductPrice(Properties ctx, String M_ProductPrice_UU, String trxName) {
+        super(ctx, M_ProductPrice_UU, trxName);
+    }
+
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context

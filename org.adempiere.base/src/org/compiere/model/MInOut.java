@@ -302,11 +302,23 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 
 	}
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_InOut_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInOut(Properties ctx, String M_InOut_UU, String trxName) {
+        super(ctx, M_InOut_UU, trxName);
+		if (Util.isEmpty(M_InOut_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_InOut_ID
-	 *	@param trxName rx name
+	 *	@param trxName trx name
 	 */
 	public MInOut (Properties ctx, int M_InOut_ID, String trxName)
 	{
@@ -316,27 +328,32 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	public MInOut(Properties ctx, int M_InOut_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_InOut_ID, trxName, virtualColumns);
 		if (M_InOut_ID == 0)
-		{
-			setIsSOTrx (false);
-			setMovementDate (new Timestamp (System.currentTimeMillis ()));
-			setDateAcct (getMovementDate());
-			setDeliveryRule (DELIVERYRULE_Availability);
-			setDeliveryViaRule (DELIVERYVIARULE_Pickup);
-			setFreightCostRule (FREIGHTCOSTRULE_FreightIncluded);
-			setDocStatus (DOCSTATUS_Drafted);
-			setDocAction (DOCACTION_Complete);
-			setPriorityRule (PRIORITYRULE_Medium);
-			setNoPackages(0);
-			setIsInTransit(false);
-			setIsPrinted (false);
-			setSendEMail (false);
-			setIsInDispute(false);
-			//
-			setIsApproved(false);
-			super.setProcessed (false);
-			setProcessing(false);
-			setPosted(false);
-		}
+			setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsSOTrx (false);
+		setMovementDate (new Timestamp (System.currentTimeMillis ()));
+		setDateAcct (getMovementDate());
+		setDeliveryRule (DELIVERYRULE_Availability);
+		setDeliveryViaRule (DELIVERYVIARULE_Pickup);
+		setFreightCostRule (FREIGHTCOSTRULE_FreightIncluded);
+		setDocStatus (DOCSTATUS_Drafted);
+		setDocAction (DOCACTION_Complete);
+		setPriorityRule (PRIORITYRULE_Medium);
+		setNoPackages(0);
+		setIsInTransit(false);
+		setIsPrinted (false);
+		setSendEMail (false);
+		setIsInDispute(false);
+		//
+		setIsApproved(false);
+		super.setProcessed (false);
+		setProcessing(false);
+		setPosted(false);
 	}
 
 	/**

@@ -29,6 +29,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *	Invoice Payment Schedule Model 
@@ -97,6 +98,18 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	/** Static Logger					*/
 	private static CLogger		s_log = CLogger.getCLogger (MInvoicePaySchedule.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_InvoicePaySchedule_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInvoicePaySchedule(Properties ctx, String C_InvoicePaySchedule_UU, String trxName) {
+        super(ctx, C_InvoicePaySchedule_UU, trxName);
+		if (Util.isEmpty(C_InvoicePaySchedule_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -107,10 +120,15 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 	{
 		super(ctx, C_InvoicePaySchedule_ID, trxName);
 		if (C_InvoicePaySchedule_ID == 0)
-		{
-			setIsValid (false);
-		}
+			setInitialDefaults();
 	}	//	MInvoicePaySchedule
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsValid (false);
+	}
 
 	/**
 	 * 	Load Constructor

@@ -43,6 +43,16 @@ public class MMFAMethod extends X_MFA_Method {
 	 */
 	private static final long serialVersionUID = -7954271872310037840L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param MFA_Method_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMFAMethod(Properties ctx, String MFA_Method_UU, String trxName) {
+        super(ctx, MFA_Method_UU, trxName);
+    }
+
 	/**
 	 * Read/Create empty MFA Method
 	 *

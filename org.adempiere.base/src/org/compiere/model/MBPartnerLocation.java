@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * Partner Location Model
@@ -72,6 +73,18 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 		return retValue;
 	} // getForBPartner
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_BPartner_Location_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBPartnerLocation(Properties ctx, String C_BPartner_Location_UU, String trxName) {
+        super(ctx, C_BPartner_Location_UU, trxName);
+		if (Util.isEmpty(C_BPartner_Location_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * Default Constructor
 	 * 
@@ -85,15 +98,21 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	public MBPartnerLocation(Properties ctx, int C_BPartner_Location_ID,
 			String trxName) {
 		super(ctx, C_BPartner_Location_ID, trxName);
-		if (C_BPartner_Location_ID == 0) {
-			setName(".");
-			//
-			setIsShipTo(true);
-			setIsRemitTo(true);
-			setIsPayFrom(true);
-			setIsBillTo(true);
-		}
+		if (C_BPartner_Location_ID == 0)
+			setInitialDefaults();
 	} // MBPartner_Location
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setName(".");
+		//
+		setIsShipTo(true);
+		setIsRemitTo(true);
+		setIsPayFrom(true);
+		setIsBillTo(true);
+	}
 
 	/**
 	 * BP Parent Constructor

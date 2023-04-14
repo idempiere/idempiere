@@ -35,14 +35,23 @@ public class MRequestUpdate extends X_R_RequestUpdate
 	 */
 	private static final long serialVersionUID = -8862921042436867124L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_RequestUpdate_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRequestUpdate(Properties ctx, String R_RequestUpdate_UU, String trxName) {
+        super(ctx, R_RequestUpdate_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param R_RequestUpdate_ID id
 	 *	@param trxName trx
 	 */
-	public MRequestUpdate (Properties ctx, int R_RequestUpdate_ID,
-		String trxName)
+	public MRequestUpdate (Properties ctx, int R_RequestUpdate_ID, String trxName)
 	{
 		super (ctx, R_RequestUpdate_ID, trxName);
 	}	//	MRequestUpdate

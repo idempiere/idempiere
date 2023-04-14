@@ -92,6 +92,18 @@ public class MChat extends X_CM_Chat
 	private static CLogger s_log = CLogger.getCLogger (MChat.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param CM_Chat_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MChat(Properties ctx, String CM_Chat_UU, String trxName) {
+        super(ctx, CM_Chat_UU, trxName);
+		if (Util.isEmpty(CM_Chat_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -102,11 +114,16 @@ public class MChat extends X_CM_Chat
 	{
 		super (ctx, CM_Chat_ID, trxName);
 		if (CM_Chat_ID == 0)
-		{
-			setConfidentialType (CONFIDENTIALTYPE_PublicInformation);
-			setModerationType (MODERATIONTYPE_NotModerated);
-		}
+			setInitialDefaults();
 	}	//	MChat
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setConfidentialType (CONFIDENTIALTYPE_PublicInformation);
+		setModerationType (MODERATIONTYPE_NotModerated);
+	}
 
 	/**
 	 * 	Full Constructor

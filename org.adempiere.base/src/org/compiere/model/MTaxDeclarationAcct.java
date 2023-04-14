@@ -32,6 +32,16 @@ public class MTaxDeclarationAcct extends X_C_TaxDeclarationAcct
 	 */
 	private static final long serialVersionUID = -840113412342364029L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_TaxDeclarationAcct_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTaxDeclarationAcct(Properties ctx, String C_TaxDeclarationAcct_UU, String trxName) {
+        super(ctx, C_TaxDeclarationAcct_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx ctx

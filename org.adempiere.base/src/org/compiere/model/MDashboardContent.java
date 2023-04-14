@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.Env;
@@ -145,10 +147,21 @@ public class MDashboardContent extends X_PA_DashboardContent
 		.setOrderBy(COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line);
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_DashboardContent_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDashboardContent(Properties ctx, String PA_DashboardContent_UU, String trxName) {
+        super(ctx, PA_DashboardContent_UU, trxName);
+    }
+
     public MDashboardContent (Properties ctx, int PA_DashboardContent_ID, String trxName)
     {
       super (ctx, PA_DashboardContent_ID, trxName);
     }
+
     public MDashboardContent (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
@@ -185,13 +198,38 @@ public class MDashboardContent extends X_PA_DashboardContent
      */
     public static Map<String, String> parseProcessParameters(String parameters)	{
     	Map<String, String> paramMap = new HashMap<String, String>();
-    	if (parameters != null && parameters.trim().length() > 0) {
-			String[] params = parameters.split("[,]");
+		if (Util.isEmpty(parameters, true))
+			return paramMap;
+    	Map<String, String> multiSelections = new HashMap<String, String>();
+    	final String placeHolder = "_MULTISELECTVALUE_";
+    	String multiSelection;
+    	String parsedParameters = parameters;
+		int idx = 0;
+    	Pattern p = Pattern.compile("\"(.*?)\"");	// regex to extract multiselection values between double quotes: "(.*?)"
+    	Matcher m = p.matcher(parameters);
+    	
+    	// extract the multiselection values before splitting by [,]
+    	while (m.find()) {
+    		String multiSelectionKey = placeHolder+idx;
+    		multiSelection = parameters.substring(m.start(), m.end());
+    		multiSelections.put(multiSelectionKey, multiSelection.replace("\"", ""));
+    		parsedParameters = parsedParameters.replaceFirst(multiSelection, multiSelectionKey);
+    		idx++;
+		}
+    	
+    	// split values by [,]
+    	if (! Util.isEmpty(parsedParameters, true)) {
+			String[] params = parsedParameters.split("[,]");
 			for (String s : params)
 			{
 				int pos = s.indexOf("=");
+				if (pos < 0)
+					throw new AdempiereException(Msg.getMsg(Env.getCtx(), "WrongProcessParameters"));
 				String key = s.substring(0, pos);
 				String value = s.substring(pos + 1);
+				if(value.startsWith(placeHolder)) {
+					value = multiSelections.get(value);	// insert the multiselection values back to the HashMap
+				}
 				paramMap.put(key, value);
 			}
     	}
@@ -226,10 +264,11 @@ public class MDashboardContent extends X_PA_DashboardContent
 	 */
 	protected boolean beforeSave (boolean newRecord) {
 		// all mandatory process parameters need to be set
-		if(getAD_Process_ID() > 0) {
+		if (getAD_Process_ID() > 0 && isEmbedReportContent()) {
 			String emptyPara = getEmptyMandatoryProcessPara();
 			if(!Util.isEmpty(emptyPara)) {
-				throw new AdempiereException(Msg.getMsg(getCtx(), "FillMandatoryParametersDashboard", new Object[] {emptyPara}));
+				log.saveError("Error", Msg.getMsg(getCtx(), "FillMandatoryParametersDashboard", new Object[] {emptyPara}));
+				return false;
 			}
 		}
 		return true;

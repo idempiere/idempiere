@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.X_PA_ReportColumnSet;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 
 /**
@@ -39,6 +40,18 @@ public class MReportColumnSet extends X_PA_ReportColumnSet
 	 */
 	private static final long serialVersionUID = -3496781398287709753L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_ReportColumnSet_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MReportColumnSet(Properties ctx, String PA_ReportColumnSet_UU, String trxName) {
+        super(ctx, PA_ReportColumnSet_UU, trxName);
+		if (!Util.isEmpty(PA_ReportColumnSet_UU))
+			loadColumns();
+    }
+
 	/**
 	 * 	Constructor
 	 * 	@param ctx context
@@ -48,10 +61,7 @@ public class MReportColumnSet extends X_PA_ReportColumnSet
 	public MReportColumnSet (Properties ctx, int PA_ReportColumnSet_ID, String trxName)
 	{
 		super (ctx, PA_ReportColumnSet_ID, trxName);
-		if (PA_ReportColumnSet_ID == 0)
-		{
-		}
-		else
+		if (PA_ReportColumnSet_ID != 0)
 			loadColumns();
 	}	//	MReportColumnSet
 	

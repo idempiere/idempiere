@@ -32,21 +32,29 @@ import org.idempiere.cache.ImmutablePOSupport;
  */
 public class MBroadcastMessage extends X_AD_BroadcastMessage implements ImmutablePOSupport
 {
-/**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3733943472482553977L;
 	public final static String CLIENTINFO_BROADCAST_COMPONENT_ID = "#clientInfo_BroadcastComponentId";
 	static private ImmutableIntPOCache<Integer,MBroadcastMessage> s_cache = new ImmutableIntPOCache<Integer,MBroadcastMessage>("AD_BroadcastMessage", 30, 60);
 
-    public MBroadcastMessage(Properties ctx, int AD_BroadcastMessage_ID,
-	    String trxName)
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_BroadcastMessage_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBroadcastMessage(Properties ctx, String AD_BroadcastMessage_UU, String trxName) {
+        super(ctx, AD_BroadcastMessage_UU, trxName);
+    }
+
+    public MBroadcastMessage(Properties ctx, int AD_BroadcastMessage_ID, String trxName)
     {
 		super(ctx, AD_BroadcastMessage_ID, trxName);
 	}
     
-    public MBroadcastMessage(Properties ctx, ResultSet rs,
-    	    String trxName)
+    public MBroadcastMessage(Properties ctx, ResultSet rs, String trxName)
     {
     	super(ctx, rs, trxName);
     }

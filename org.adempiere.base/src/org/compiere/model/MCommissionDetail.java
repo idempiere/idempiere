@@ -36,6 +36,16 @@ public class MCommissionDetail extends X_C_CommissionDetail
 	 */
 	private static final long serialVersionUID = 1727857992121809494L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_CommissionDetail_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCommissionDetail(Properties ctx, String C_CommissionDetail_UU, String trxName) {
+        super(ctx, C_CommissionDetail_UU, trxName);
+    }
+
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context

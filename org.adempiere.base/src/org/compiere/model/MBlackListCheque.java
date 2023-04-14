@@ -31,6 +31,16 @@ public class MBlackListCheque extends X_U_BlackListCheque
 	 */
 	private static final long serialVersionUID = 6958839594386806390L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param U_BlackListCheque_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBlackListCheque(Properties ctx, String U_BlackListCheque_UU, String trxName) {
+        super(ctx, U_BlackListCheque_UU, trxName);
+    }
+
 	public MBlackListCheque(Properties ctx, int U_BlackListCheque_ID, String trxName)
     {
         super(ctx, U_BlackListCheque_ID, trxName);

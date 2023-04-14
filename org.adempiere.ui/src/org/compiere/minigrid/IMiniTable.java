@@ -26,6 +26,7 @@
  **********************************************************************/
 package org.compiere.minigrid;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 
 import org.compiere.model.PO;
@@ -125,7 +126,7 @@ public interface IMiniTable
 	 * 
 	 * @return row key
 	 */
-	public Integer getSelectedRowKey();
+	public <T extends Serializable> T getSelectedRowKey();
 	
 	/**
 	 * 

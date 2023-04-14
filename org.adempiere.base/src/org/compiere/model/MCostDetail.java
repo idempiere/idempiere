@@ -28,6 +28,7 @@ import org.compiere.acct.Doc;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * 	Cost Detail Model
@@ -714,6 +715,18 @@ public class MCostDetail extends X_M_CostDetail
 	private static CLogger 	s_log = CLogger.getCLogger (MCostDetail.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_CostDetail_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCostDetail(Properties ctx, String M_CostDetail_UU, String trxName) {
+        super(ctx, M_CostDetail_UU, trxName);
+		if (Util.isEmpty(M_CostDetail_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -724,16 +737,21 @@ public class MCostDetail extends X_M_CostDetail
 	{
 		super (ctx, M_CostDetail_ID, trxName);
 		if (M_CostDetail_ID == 0)
-		{
-			setM_AttributeSetInstance_ID (0);
-			setProcessed (false);
-			setAmt (Env.ZERO);
-			setQty (Env.ZERO);
-			setIsSOTrx (false);
-			setDeltaAmt (Env.ZERO);
-			setDeltaQty (Env.ZERO);
-		}	
+			setInitialDefaults();
 	}	//	MCostDetail
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setM_AttributeSetInstance_ID (0);
+		setProcessed (false);
+		setAmt (Env.ZERO);
+		setQty (Env.ZERO);
+		setIsSOTrx (false);
+		setDeltaAmt (Env.ZERO);
+		setDeltaQty (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

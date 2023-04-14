@@ -96,6 +96,17 @@ public class MArchive extends X_AD_Archive {
 	/** Logger */
 	private static CLogger s_log = CLogger.getCLogger(MArchive.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Archive_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MArchive(Properties ctx, String AD_Archive_UU, String trxName) {
+        super(ctx, AD_Archive_UU, trxName);
+		initArchiveStoreDetails(ctx, trxName);
+    }
+
 	/***************************************************************************
 	 * Standard Constructor
 	 * 

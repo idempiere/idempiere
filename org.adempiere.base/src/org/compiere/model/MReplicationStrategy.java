@@ -48,6 +48,16 @@ public class MReplicationStrategy extends X_AD_ReplicationStrategy {
 	private static CLogger	s_log	= CLogger.getCLogger (MReplicationStrategy.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ReplicationStrategy_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MReplicationStrategy(Properties ctx, String AD_ReplicationStrategy_UU, String trxName) {
+        super(ctx, AD_ReplicationStrategy_UU, trxName);
+    }
+
 	/**
 	 * Constructor
 	 * @param ctx

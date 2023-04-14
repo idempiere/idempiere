@@ -34,6 +34,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *  Payment Allocation Model.
@@ -159,6 +160,18 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	private static CLogger s_log = CLogger.getCLogger(MAllocationHdr.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_AllocationHdr_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAllocationHdr(Properties ctx, String C_AllocationHdr_UU, String trxName) {
+        super(ctx, C_AllocationHdr_UU, trxName);
+		if (Util.isEmpty(C_AllocationHdr_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -169,21 +182,26 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 	{
 		super (ctx, C_AllocationHdr_ID, trxName);
 		if (C_AllocationHdr_ID == 0)
-		{
-			setDateTrx (new Timestamp(System.currentTimeMillis()));
-			setDateAcct (getDateTrx());
-			setDocAction (DOCACTION_Complete);
-			setDocStatus (DOCSTATUS_Drafted);
-			setApprovalAmt (Env.ZERO);
-			setIsApproved (false);
-			setIsManual (false);
-			//
-			setPosted (false);
-			setProcessed (false);
-			setProcessing(false);
-			setC_DocType_ID(MDocType.getDocType("CMA"));
-		}
+			setInitialDefaults();
 	}	//	MAllocation
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDateTrx (new Timestamp(System.currentTimeMillis()));
+		setDateAcct (getDateTrx());
+		setDocAction (DOCACTION_Complete);
+		setDocStatus (DOCSTATUS_Drafted);
+		setApprovalAmt (Env.ZERO);
+		setIsApproved (false);
+		setIsManual (false);
+		//
+		setPosted (false);
+		setProcessed (false);
+		setProcessing(false);
+		setC_DocType_ID(MDocType.getDocType("CMA"));
+	}
 
 	/**
 	 * 	Mandatory New Constructor

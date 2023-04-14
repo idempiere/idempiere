@@ -115,6 +115,16 @@ public class MChangeLog extends X_AD_ChangeLog
 		super(ctx, rs, trxName);
 	}	//	MChangeLog
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ChangeLog_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MChangeLog(Properties ctx, String AD_ChangeLog_UU, String trxName) {
+        super(ctx, AD_ChangeLog_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

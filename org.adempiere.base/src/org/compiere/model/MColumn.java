@@ -165,6 +165,18 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MColumn>	s_cache	= new ImmutableIntPOCache<Integer,MColumn>(Table_Name, 20);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Column_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MColumn(Properties ctx, String AD_Column_UU, String trxName) {
+        super(ctx, AD_Column_UU, trxName);
+		if (Util.isEmpty(AD_Column_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -175,19 +187,24 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	{
 		super (ctx, AD_Column_ID, trxName);
 		if (AD_Column_ID == 0)
-		{
-			setIsAlwaysUpdateable (false);	// N
-			setIsEncrypted (false);
-			setIsIdentifier (false);
-			setIsKey (false);
-			setIsMandatory (false);
-			setIsParent (false);
-			setIsSelectionColumn (false);
-			setIsTranslated (false);
-			setIsUpdateable (true);	// Y
-			setVersion (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MColumn
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsAlwaysUpdateable (false);	// N
+		setIsEncrypted (false);
+		setIsIdentifier (false);
+		setIsKey (false);
+		setIsMandatory (false);
+		setIsParent (false);
+		setIsSelectionColumn (false);
+		setIsTranslated (false);
+		setIsUpdateable (true);	// Y
+		setVersion (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -371,7 +388,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 			}
 		}
 
-		if (displayType == DisplayType.Table && getAD_Reference_Value_ID() <= 0)
+		if ((displayType == DisplayType.Table || displayType == DisplayType.TableUU) && getAD_Reference_Value_ID() <= 0)
 		{
 			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Reference_Value_ID"));
 			return false;
@@ -537,7 +554,15 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		if (getAD_Reference_ID() != DisplayType.Button && get_Value(COLUMNNAME_AD_InfoWindow_ID) != null) {
 			set_Value(COLUMNNAME_AD_InfoWindow_ID, null);
 		}
-		
+
+		if (DisplayType.isUUID(getAD_Reference_ID())) {
+			set_Value(COLUMNNAME_FieldLength, 36);
+			if (! getColumnName().endsWith("_UU")) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "UUColumnsMustEndWithUU"));
+				return false;
+			}
+		}
+
 		return true;
 	}	//	beforeSave
 	
@@ -743,9 +768,9 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	public String getReferenceTableName() {
 		String foreignTable = null;
 		int refid = getAD_Reference_ID();
-		if (DisplayType.TableDir == refid || (DisplayType.Search == refid && getAD_Reference_Value_ID() == 0)) {
+		if (DisplayType.TableDir == refid || DisplayType.TableDirUU == refid || ((DisplayType.Search == refid || DisplayType.SearchUU == refid) && getAD_Reference_Value_ID() == 0)) {
 			foreignTable = getColumnName().substring(0, getColumnName().length()-3);
-		} else if (DisplayType.Table == refid || DisplayType.Search == refid) {
+		} else if (DisplayType.Table == refid || DisplayType.TableUU == refid || DisplayType.Search == refid || DisplayType.SearchUU == refid) {
 			MReference ref = MReference.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
 			if (MReference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
 				int cnt = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Ref_Table WHERE AD_Reference_ID=?", getAD_Reference_Value_ID());
@@ -969,8 +994,15 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 						DatabaseKey dbForeignKey = htForeignKeys.get(key);
 						if (dbForeignKey.getKeyColumns()[0].equalsIgnoreCase(column.getColumnName()))
 						{
-							DatabaseKey primaryKey = getPrimaryKey(md, referenceTableName);
-							if (primaryKey != null)
+							DatabaseKey primaryKey = null;
+							String uuidKey = null;
+							if (column.getColumnName().endsWith("_UU")) {
+								uuidKey = PO.getUUIDColumnName(referenceTableName);
+							} else {
+								primaryKey = MColumn.getPrimaryKey(md, referenceTableName);
+							}
+
+							if (primaryKey != null || uuidKey != null)
 							{
 								fkConstraintSql.append(DB.SQLSTATEMENT_SEPARATOR);
 								fkConstraintSql.append("ALTER TABLE ").append(table.getTableName());
@@ -1006,12 +1038,16 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 									StringBuilder fkConstraint = new StringBuilder();
 									fkConstraint.append("CONSTRAINT ").append(fkConstraintName);
 									fkConstraint.append(" FOREIGN KEY (").append(column.getColumnName()).append(") REFERENCES ");
-									fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
-									for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
-									{
-										if (primaryKey.getKeyColumns()[i] == null)
-											break;
-										fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
+									if (uuidKey != null) {
+										fkConstraint.append(referenceTableName).append("(").append(uuidKey);
+									} else {
+										fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
+										for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
+										{
+											if (primaryKey.getKeyColumns()[i] == null)
+												break;
+											fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
+										}
 									}
 									fkConstraint.append(")");
 
@@ -1124,9 +1160,15 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 				String referenceTableName = column.getReferenceTableName();
 				if (referenceTableName != null)
 				{
-					DatabaseKey primaryKey = MColumn.getPrimaryKey(md, referenceTableName);
+					DatabaseKey primaryKey = null;
+					String uuidKey = null;
+					if (column.getColumnName().endsWith("_UU")) {
+						uuidKey = PO.getUUIDColumnName(referenceTableName);
+					} else {
+						primaryKey = MColumn.getPrimaryKey(md, referenceTableName);
+					}
 					
-					if (primaryKey != null)
+					if (primaryKey != null || uuidKey != null)
 					{
 						String fkConstraintName = column.getFKConstraintName();						
 						if (fkConstraintName == null || fkConstraintName.trim().length() == 0)
@@ -1147,12 +1189,16 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 						StringBuilder fkConstraint = new StringBuilder();
 						fkConstraint.append("CONSTRAINT ").append(fkConstraintName);
 						fkConstraint.append(" FOREIGN KEY (").append(column.getColumnName()).append(") REFERENCES ");
-						fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
-						for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
-						{
-							if (primaryKey.getKeyColumns()[i] == null)
-								break;
-							fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
+						if (uuidKey != null) {
+							fkConstraint.append(referenceTableName).append("(").append(uuidKey);
+						} else {
+							fkConstraint.append(primaryKey.getKeyTable()).append("(").append(primaryKey.getKeyColumns()[0]);
+							for (int i = 1; i < primaryKey.getKeyColumns().length; i++)
+							{
+								if (primaryKey.getKeyColumns()[i] == null)
+									break;
+								fkConstraint.append(", ").append(primaryKey.getKeyColumns()[i]);
+							}
 						}
 						fkConstraint.append(")");
 						

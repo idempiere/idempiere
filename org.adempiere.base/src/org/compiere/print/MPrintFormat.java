@@ -63,6 +63,21 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = 7542581302442072662L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PrintFormat_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPrintFormat(Properties ctx, String AD_PrintFormat_UU, String trxName) {
+        super(ctx, AD_PrintFormat_UU, trxName);
+		//	Language=[Deutsch,Locale=de_DE,AD_Language=en_US,DatePattern=DD.MM.YYYY,DecimalPoint=false]
+		m_language = Env.getLanguage(ctx);
+		if (Util.isEmpty(AD_PrintFormat_UU))
+			setInitialDefaults();
+		m_items = getItems();
+    }
+
 	/**
 	 *	Public Constructor.
 	 * 	Use static get methods
@@ -76,14 +91,19 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		//	Language=[Deutsch,Locale=de_DE,AD_Language=en_US,DatePattern=DD.MM.YYYY,DecimalPoint=false]
 		m_language = Env.getLanguage(ctx);
 		if (AD_PrintFormat_ID == 0)
-		{
-			setStandardHeaderFooter(true);
-			setIsTableBased(true);
-			setIsForm(false);
-			setIsDefault(false);
-		}
+			setInitialDefaults();
 		m_items = getItems();
 	}	//	MPrintFormat
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setStandardHeaderFooter(true);
+		setIsTableBased(true);
+		setIsForm(false);
+		setIsDefault(false);
+	}
 
 	public void reloadItems() {
 		m_items = getItems();

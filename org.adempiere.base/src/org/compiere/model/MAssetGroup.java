@@ -23,6 +23,16 @@ public class MAssetGroup extends X_A_Asset_Group implements ImmutablePOSupport
 	/** Cache: ID -> MAssetGroup */
 	private static ImmutableIntPOCache<Integer, MAssetGroup> s_cache = new ImmutableIntPOCache<Integer, MAssetGroup>(Table_Name, 10, 0);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Asset_Group_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAssetGroup(Properties ctx, String A_Asset_Group_UU, String trxName) {
+        super(ctx, A_Asset_Group_UU, trxName);
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context

@@ -13,6 +13,16 @@ public class MAssetUse extends X_A_Asset_Use
 	 */
 	private static final long serialVersionUID = -1247516669047870893L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Asset_Use_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAssetUse(Properties ctx, String A_Asset_Use_UU, String trxName) {
+        super(ctx, A_Asset_Use_UU, trxName);
+    }
+
 	public MAssetUse (Properties ctx, int A_Asset_Use_ID, String trxName)
 	{
 		super (ctx, A_Asset_Use_ID, trxName);

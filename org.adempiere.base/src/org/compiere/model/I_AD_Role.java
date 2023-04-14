@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Role
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_Role 
 {
@@ -547,6 +547,19 @@ public interface I_AD_Role
 	  * Overwrite Price Limit if the Price List  enforces the Price Limit
 	  */
 	public boolean isOverwritePriceLimit();
+
+    /** Column name PredefinedContextVariables */
+    public static final String COLUMNNAME_PredefinedContextVariables = "PredefinedContextVariables";
+
+	/** Set Predefined Context Variables.
+	  * Predefined context variables to inject when opening a menu entry or a window
+	  */
+	public void setPredefinedContextVariables (String PredefinedContextVariables);
+
+	/** Get Predefined Context Variables.
+	  * Predefined context variables to inject when opening a menu entry or a window
+	  */
+	public String getPredefinedContextVariables();
 
     /** Column name PreferenceType */
     public static final String COLUMNNAME_PreferenceType = "PreferenceType";

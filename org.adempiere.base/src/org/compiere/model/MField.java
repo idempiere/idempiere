@@ -19,7 +19,6 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
@@ -73,6 +72,18 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 		return null;
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Field_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MField(Properties ctx, String AD_Field_UU, String trxName) {
+        super(ctx, AD_Field_UU, trxName);
+		if (Util.isEmpty(AD_Field_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -83,18 +94,23 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 	{
 		super (ctx, AD_Field_ID, trxName);
 		if (AD_Field_ID == 0)
-		{
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-			setIsCentrallyMaintained (true);	// Y
-			setIsDisplayed (true);	// Y
-			setIsDisplayedGrid (true);	// Y
-			setIsEncrypted (false);
-			setIsFieldOnly (false);
-			setIsHeading (false);
-			setIsReadOnly (false);
-			setIsSameLine (false);
-		}	
+			setInitialDefaults();
 	}	//	MField
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+		setIsCentrallyMaintained (true);	// Y
+		setIsDisplayed (true);	// Y
+		setIsDisplayedGrid (true);	// Y
+		setIsEncrypted (false);
+		setIsFieldOnly (false);
+		setIsHeading (false);
+		setIsReadOnly (false);
+		setIsSameLine (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -218,33 +234,6 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 			if (getIsToolbarButton() != null)
 				setIsToolbarButton(null);
 		}
-
-		// set Table field read only if appears in combination with Record ID (Display Type Record ID)
-		MColumn column = MColumn.get(getAD_Column_ID());
-		if(column.getColumnName().equalsIgnoreCase("AD_Table_ID")) {
-			MTab parent = MTab.get(getAD_Tab_ID());
-			for(MField field : parent.getFields(false, get_TrxName())) {
-				if(MColumn.get(field.getAD_Column_ID()).getColumnName().equalsIgnoreCase("Record_ID")) {
-					if(MColumn.get(field.getAD_Column_ID()).getAD_Reference_ID() == DisplayType.RecordID && !this.isReadOnly()) {
-						this.setIsReadOnly(true);
-					}
-					break;
-				}
-			}
-		}
-		if(column.getColumnName().equalsIgnoreCase("Record_ID") && column.getAD_Reference_ID() == DisplayType.RecordID) {
-			MTab parent = MTab.get(getAD_Tab_ID());
-			for(MField field : parent.getFields(false, get_TrxName())) {
-				if(MColumn.get(field.getAD_Column_ID()).getColumnName().equalsIgnoreCase("AD_Table_ID")) {
-					if(!field.isReadOnly()) {
-						field.setIsReadOnly(true);
-						field.saveEx();
-					}
-					break;
-				}
-			}
-		}
-		//
 		
 		//validate logic expression
 		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {

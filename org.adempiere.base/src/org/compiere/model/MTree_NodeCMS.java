@@ -114,6 +114,16 @@ public class MTree_NodeCMS extends X_AD_TreeNodeCMS
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MTree_NodeCMS.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_TreeNodeCMS_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTree_NodeCMS(Properties ctx, String AD_TreeNodeCMS_UU, String trxName) {
+        super(ctx, AD_TreeNodeCMS_UU, trxName);
+    }
+
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context

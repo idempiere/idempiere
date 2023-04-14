@@ -53,6 +53,16 @@ public class MCurrencyAcct extends X_C_Currency_Acct
 	}	//	get
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Currency_Acct_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCurrencyAcct(Properties ctx, String C_Currency_Acct_UU, String trxName) {
+        super(ctx, C_Currency_Acct_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Load Constructor
 	 *	@param ctx context

@@ -27,6 +27,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -137,6 +138,18 @@ public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSu
 	private static CLogger s_log = CLogger.getCLogger (MStatusCategory.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_StatusCategory_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MStatusCategory(Properties ctx, String R_StatusCategory_UU, String trxName) {
+        super(ctx, R_StatusCategory_UU, trxName);
+		if (Util.isEmpty(R_StatusCategory_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -147,10 +160,15 @@ public class MStatusCategory extends X_R_StatusCategory implements ImmutablePOSu
 	{
 		super (ctx, R_StatusCategory_ID, trxName);
 		if (R_StatusCategory_ID == 0)
-		{
-			setIsDefault (false);
-		}
+			setInitialDefaults();
 	}	//	RStatusCategory
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDefault (false);
+	}
 
 	/**
 	 * 	Load Constructor

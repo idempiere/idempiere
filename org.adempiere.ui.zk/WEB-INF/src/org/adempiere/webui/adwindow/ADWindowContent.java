@@ -48,9 +48,6 @@ import org.zkoss.zul.Vlayout;
 /**
  * Content area of {@link ADWindow}.
  * 
- * This class is based on org.compiere.apps.APanel written by Jorg Janke.
- * @author Jorg Janke
- *
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @author <a href="mailto:hengsin@gmail.com">Low Heng Sin</a>
  * @date Feb 25, 2007

@@ -83,6 +83,16 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 
 	private static CLogger s_log = CLogger.getCLogger(MToolBarButtonRestrict.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ToolBarButtonRestrict_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MToolBarButtonRestrict(Properties ctx, String AD_ToolBarButtonRestrict_UU, String trxName) {
+        super(ctx, AD_ToolBarButtonRestrict_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 * 	@param ctx context

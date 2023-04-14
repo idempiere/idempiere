@@ -86,6 +86,16 @@ public class MStorageProvider extends X_AD_StorageProvider implements ImmutableP
 		return rt;
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_StorageProvider_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MStorageProvider(Properties ctx, String AD_StorageProvider_UU, String trxName) {
+        super(ctx, AD_StorageProvider_UU, trxName);
+    }
+
 	public MStorageProvider(Properties ctx, int AD_StorageProvider_ID, String trxName) {
 		super(ctx, AD_StorageProvider_ID, trxName);
 	}

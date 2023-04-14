@@ -37,6 +37,16 @@ public class MDistributionListLine extends X_M_DistributionListLine
 	private static final long serialVersionUID = -8227610572847013425L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_DistributionListLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDistributionListLine(Properties ctx, String M_DistributionListLine_UU, String trxName) {
+        super(ctx, M_DistributionListLine_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

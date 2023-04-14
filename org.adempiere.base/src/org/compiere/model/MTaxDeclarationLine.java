@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * 	Tax Declaration Line Model
@@ -34,6 +35,18 @@ public class MTaxDeclarationLine extends X_C_TaxDeclarationLine
 	 */
 	private static final long serialVersionUID = 2723299110241208689L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_TaxDeclarationLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTaxDeclarationLine(Properties ctx, String C_TaxDeclarationLine_UU, String trxName) {
+        super(ctx, C_TaxDeclarationLine_UU, trxName);
+		if (Util.isEmpty(C_TaxDeclarationLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx ctx
@@ -44,12 +57,17 @@ public class MTaxDeclarationLine extends X_C_TaxDeclarationLine
 	{
 		super (ctx, C_TaxDeclarationLine_ID, trxName);
 		if (C_TaxDeclarationLine_ID == 0)
-		{
-			setIsManual(true);
-			setTaxAmt (Env.ZERO);
-			setTaxBaseAmt (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MTaxDeclarationLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsManual(true);
+		setTaxAmt (Env.ZERO);
+		setTaxBaseAmt (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

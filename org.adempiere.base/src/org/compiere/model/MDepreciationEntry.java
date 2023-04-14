@@ -17,6 +17,7 @@ import org.compiere.util.DB;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
+import org.compiere.util.Util;
 import org.idempiere.fa.exceptions.AssetArrayException;
 import org.idempiere.fa.exceptions.AssetException;
 
@@ -35,23 +36,40 @@ implements DocAction
 	private static final long serialVersionUID = 6631244784741228058L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Depreciation_Entry_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDepreciationEntry(Properties ctx, String A_Depreciation_Entry_UU, String trxName) {
+        super(ctx, A_Depreciation_Entry_UU, trxName);
+		if (Util.isEmpty(A_Depreciation_Entry_UU))
+			setInitialDefaults();
+    }
+
 	/** Standard Constructor */
 	public MDepreciationEntry(Properties ctx, int A_Depreciation_Entry_ID, String trxName)
 	{
 		super (ctx, A_Depreciation_Entry_ID, trxName);
 		if (A_Depreciation_Entry_ID == 0)
-		{
-			MAcctSchema acctSchema = MClient.get(getCtx()).getAcctSchema();
-			setC_AcctSchema_ID(acctSchema.get_ID());
-			setC_Currency_ID(acctSchema.getC_Currency_ID());
-			setA_Entry_Type (A_ENTRY_TYPE_Depreciation); // TODO: workaround
-			setPostingType (POSTINGTYPE_Actual);	// A
-			setProcessed (false);
-			setProcessing (false);
-			setPosted(false);
-		}
+			setInitialDefaults();
 	}
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		MAcctSchema acctSchema = MClient.get(getCtx()).getAcctSchema();
+		setC_AcctSchema_ID(acctSchema.get_ID());
+		setC_Currency_ID(acctSchema.getC_Currency_ID());
+		setA_Entry_Type (A_ENTRY_TYPE_Depreciation); // TODO: workaround
+		setPostingType (POSTINGTYPE_Actual);	// A
+		setProcessed (false);
+		setProcessing (false);
+		setPosted(false);
+	}
+
 	/** Load Constructor */
 	public MDepreciationEntry (Properties ctx, ResultSet rs, String trxName)
 	{

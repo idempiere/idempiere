@@ -32,8 +32,8 @@ import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Combobox;
-import org.adempiere.webui.component.FToolbar;
 import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.part.WindowContainer;
@@ -85,7 +85,7 @@ import org.zkoss.zul.impl.LabelImageElement;
  * @author Cristina Ghita, www.arhipac.ro
  * 				<li>FR [ 2076330 ] Add new methods in CWindowToolbar class
  */
-public class ADWindowToolbar extends FToolbar implements EventListener<Event>
+public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 {	
 	/**
 	 * generated serial id

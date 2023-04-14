@@ -34,10 +34,19 @@ public class MBPartnerProduct extends X_C_BPartner_Product
 	 */
 	private static final long serialVersionUID = -3890764013045208949L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_BPartner_Product_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBPartnerProduct(Properties ctx, String C_BPartner_Product_UU, String trxName) {
+        super(ctx, C_BPartner_Product_UU, trxName);
+    }
+
 	public MBPartnerProduct(Properties ctx, int C_BpartnerProduct_ID, String m_trxName)
     {
         super(ctx, C_BpartnerProduct_ID, m_trxName);
-        
     }
 	
 	public MBPartnerProduct(Properties ctx, ResultSet rs, String trxName) 

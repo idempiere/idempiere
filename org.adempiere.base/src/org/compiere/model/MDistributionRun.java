@@ -38,6 +38,16 @@ public class MDistributionRun extends X_M_DistributionRun
 	 */
 	private static final long serialVersionUID = -4355723603388382287L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_DistributionRun_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDistributionRun(Properties ctx, String M_DistributionRun_UU, String trxName) {
+        super(ctx, M_DistributionRun_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

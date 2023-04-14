@@ -15,6 +15,7 @@ package org.adempiere.base;
 
 import java.sql.ResultSet;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.PO;
 
 /**
@@ -37,6 +38,17 @@ public interface IModelFactory {
 	 *	@return PO for Record or null
 	 */
 	public PO getPO (String tableName, int Record_ID, String trxName);
+
+	/**************************************************************************
+	 * 	Get PO Class Instance
+	 *  @param tableName
+	 *	@param Record_UU record UUID
+	 *	@param trxName
+	 *	@return PO for Record or null
+	 */
+	default public PO getPO (String tableName, String Record_UU, String trxName) {
+		throw new AdempiereException("getPO for UUID constructor not implemented in this model factory class");
+	}
 
 	/**
 	 * 	Get PO Class Instance

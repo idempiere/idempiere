@@ -17,6 +17,9 @@
 
 package org.adempiere.webui.component;
 
+/**
+ * Background color constants 
+ */
 public final class BackgroundColours 
 {
 	public final static String MANDATORY = "background-color:#fbb5b5";

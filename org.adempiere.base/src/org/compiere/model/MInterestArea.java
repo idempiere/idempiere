@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -119,6 +120,18 @@ public class MInterestArea extends X_R_InterestArea implements ImmutablePOSuppor
 	private static CLogger s_log = CLogger.getCLogger (MInterestArea.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_InterestArea_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInterestArea(Properties ctx, String R_InterestArea_UU, String trxName) {
+        super(ctx, R_InterestArea_UU, trxName);
+		if (Util.isEmpty(R_InterestArea_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Constructor
 	 *	@param ctx context
@@ -129,10 +142,15 @@ public class MInterestArea extends X_R_InterestArea implements ImmutablePOSuppor
 	{
 		super (ctx, R_InterestArea_ID, trxName);
 		if (R_InterestArea_ID == 0)
-		{
-			setIsSelfService (false);
-		}
+			setInitialDefaults();
 	}	//	MInterestArea
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsSelfService (false);
+	}
 
 	/**
 	 * 	Loader Constructor

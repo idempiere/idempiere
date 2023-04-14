@@ -79,6 +79,16 @@ public class MCity extends X_C_City
 
 	/**	Region Cache				*/
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_City_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCity(Properties ctx, String C_City_UU, String trxName) {
+        super(ctx, C_City_UU, trxName);
+    }
+
 	/**************************************************************************
 	 *	Create empty City
 	 * 	@param ctx context
@@ -88,9 +98,6 @@ public class MCity extends X_C_City
 	public MCity (Properties ctx, int C_City_ID, String trxName)
 	{
 		super (ctx, C_City_ID, trxName);
-		if (C_City_ID == 0)
-		{
-		}
 	}   //  MCity
 	
 	

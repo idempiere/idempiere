@@ -350,8 +350,10 @@ public final class Dialog {
 		case DisplayType.Integer:
 			return new WNumberEditor(editorType);
 		case DisplayType.TableDir:
+		case DisplayType.TableDirUU:
 			return new WTableDirEditor(lookup, "", "", true, false, true);
 		case DisplayType.Search:
+		case DisplayType.SearchUU:
 			return new WSearchEditor(lookup, "", "", true, false, true);
 		case DisplayType.ChosenMultipleSelectionSearch:
 			return new WChosenboxSearchEditor(lookup, "", "", true, false, true);

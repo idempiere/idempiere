@@ -38,6 +38,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 /**
  * 	Product Cost Model
@@ -1441,6 +1442,18 @@ public class MCost extends X_M_Cost
 	private static CLogger 	s_log = CLogger.getCLogger (MCost.class);
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Cost_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCost(Properties ctx, String M_Cost_UU, String trxName) {
+        super(ctx, M_Cost_UU, trxName);
+		if (Util.isEmpty(M_Cost_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -1451,18 +1464,23 @@ public class MCost extends X_M_Cost
 	{
 		super (ctx, ignored, trxName);
 		if (ignored == 0)
-		{
-			setM_AttributeSetInstance_ID(0);
-			//
-			setCurrentCostPrice (Env.ZERO);
-			setFutureCostPrice (Env.ZERO);
-			setCurrentQty (Env.ZERO);
-			setCumulatedAmt (Env.ZERO);
-			setCumulatedQty (Env.ZERO);
-		}
+			setInitialDefaults();
 		else
 			throw new IllegalArgumentException("Multi-Key");
 	}	//	MCost
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setM_AttributeSetInstance_ID(0);
+		//
+		setCurrentCostPrice (Env.ZERO);
+		setFutureCostPrice (Env.ZERO);
+		setCurrentQty (Env.ZERO);
+		setCumulatedAmt (Env.ZERO);
+		setCumulatedQty (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

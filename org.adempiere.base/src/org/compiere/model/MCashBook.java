@@ -135,6 +135,16 @@ public class MCashBook extends X_C_CashBook implements ImmutablePOSupport
 	@SuppressWarnings("unused")
 	private static CLogger	s_log	= CLogger.getCLogger (MCashBook.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_CashBook_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCashBook(Properties ctx, String C_CashBook_UU, String trxName) {
+        super(ctx, C_CashBook_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

@@ -14,13 +14,18 @@ public class MTabCustomization extends X_AD_Tab_Customization {
 	 */
 	private static final long serialVersionUID = -4986336833193761507L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Tab_Customization_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTabCustomization(Properties ctx, String AD_Tab_Customization_UU, String trxName) {
+        super(ctx, AD_Tab_Customization_UU, trxName);
+    }
+
 	public MTabCustomization(Properties ctx, int AD_Tab_Customization_ID, String trxName) {
 		super(ctx, AD_Tab_Customization_ID, trxName);
-		if (AD_Tab_Customization_ID == 0)
-		{
-			setIsActive(true); 
-			
-		}		
 	}
 
 	public MTabCustomization(Properties ctx, ResultSet rs, String trxName) {

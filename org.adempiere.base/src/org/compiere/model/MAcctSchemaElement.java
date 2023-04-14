@@ -28,6 +28,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -189,6 +190,18 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 	private static CCache<Integer,MAcctSchemaElement[]> s_cache = new CCache<Integer,MAcctSchemaElement[]>(Table_Name, 10);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_AcctSchema_Element_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAcctSchemaElement(Properties ctx, String C_AcctSchema_Element_UU, String trxName) {
+        super(ctx, C_AcctSchema_Element_UU, trxName);
+		if (Util.isEmpty(C_AcctSchema_Element_UU))
+			setInitialDefaults();
+    }
+
 	/*************************************************************************
 	 * Standard Constructor
 	 * @param ctx context
@@ -199,11 +212,16 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 	{
 		super (ctx, C_AcctSchema_Element_ID, trxName);
 		if (C_AcctSchema_Element_ID == 0)
-		{
-			setIsBalanced (false);
-			setIsMandatory (false);
-		}
+			setInitialDefaults();
 	}	//	MAcctSchemaElement
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsBalanced (false);
+		setIsMandatory (false);
+	}
 
 	/**
 	 * Load Constructor

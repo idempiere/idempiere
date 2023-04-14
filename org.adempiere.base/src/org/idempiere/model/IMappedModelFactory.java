@@ -45,8 +45,23 @@ public interface IMappedModelFactory {
 	 * @param recordIdFunction
 	 * @param resultSetFunction
 	 */
+	default void addMapping(String tableName, Supplier<Class<?>> classSupplier,
+			BiFunction<Integer, String, ? extends PO> recordIdFunction,
+			BiFunction<ResultSet, String, ? extends PO> resultSetFunction) {
+		addMapping(tableName, classSupplier, recordIdFunction, null, resultSetFunction);
+	}
+
+	/**
+	 * add table name to class mapping
+	 * @param tableName
+	 * @param classSupplier
+	 * @param recordIdFunction
+	 * @param recordUUIDFunction
+	 * @param resultSetFunction
+	 */
 	void addMapping(String tableName, Supplier<Class<?>> classSupplier,
 			BiFunction<Integer, String, ? extends PO> recordIdFunction,
+			BiFunction<String, String, ? extends PO> recordUUIDFunction,
 			BiFunction<ResultSet, String, ? extends PO> resultSetFunction);
 
 	/**

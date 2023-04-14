@@ -513,6 +513,18 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	private int 					m_C_Calendar_ID = 0;
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Period_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPeriod(Properties ctx, String C_Period_UU, String trxName) {
+        super(ctx, C_Period_UU, trxName);
+		if (Util.isEmpty(C_Period_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -523,10 +535,15 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	{
 		super (ctx, C_Period_ID, trxName);
 		if (C_Period_ID == 0)
-		{
-			setPeriodType (PERIODTYPE_StandardCalendarPeriod);
-		}
+			setInitialDefaults();
 	}	//	MPeriod
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setPeriodType (PERIODTYPE_StandardCalendarPeriod);
+	}
 
 	/**
 	 * 	Load Constructor

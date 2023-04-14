@@ -20,6 +20,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * Favorite Tree Model
@@ -47,6 +48,18 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 	private ArrayList<MTreeNode>			m_buffer					= new ArrayList<MTreeNode>();
 	private MTreeNode						root						= null;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Tree_Favorite_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTreeFavorite(Properties ctx, String AD_Tree_Favorite_UU, String trxName) {
+        super(ctx, AD_Tree_Favorite_UU, trxName);
+		if (! Util.isEmpty(AD_Tree_Favorite_UU))
+			loadNode();
+    }
+
 	/**
 	 * Construct Tree Favorite Model
 	 * 
@@ -59,9 +72,7 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 		super(ctx, AD_Tree_Favorite_ID, trxName);
 
 		if (AD_Tree_Favorite_ID > 0)
-		{
 			loadNode();
-		}
 	}
 
 	public MTreeFavorite(Properties ctx, ResultSet rs, String trxName)

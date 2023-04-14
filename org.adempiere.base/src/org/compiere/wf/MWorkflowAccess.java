@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.compiere.model.MRole;
 import org.compiere.model.X_AD_Workflow_Access;
+import org.compiere.util.Util;
 
 
 /**
@@ -37,6 +38,18 @@ public class MWorkflowAccess extends X_AD_Workflow_Access
 	 */
 	private static final long serialVersionUID = 2598861248782340850L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Workflow_Access_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWorkflowAccess(Properties ctx, String AD_Workflow_Access_UU, String trxName) {
+        super(ctx, AD_Workflow_Access_UU, trxName);
+		if (Util.isEmpty(AD_Workflow_Access_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -49,12 +62,17 @@ public class MWorkflowAccess extends X_AD_Workflow_Access
 		if (ignored != 0)
 			throw new IllegalArgumentException("Multi-Key");
 		else
-		{
+			setInitialDefaults();
+	}	//	MWorkflowAccess
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
 		//	setAD_Role_ID (0);
 		//	setAD_Workflow_ID (0);
-			setIsReadWrite (true);
-		}
-	}	//	MWorkflowAccess
+		setIsReadWrite (true);
+	}
 
 	/**
 	 * 	Load Constructor

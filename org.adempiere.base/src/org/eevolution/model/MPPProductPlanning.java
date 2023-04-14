@@ -47,6 +47,16 @@ public class MPPProductPlanning extends X_PP_Product_Planning
 	private static CLogger log = CLogger.getCLogger(MPPProductPlanning.class); 
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PP_Product_Planning_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPPProductPlanning(Properties ctx, String PP_Product_Planning_UU, String trxName) {
+        super(ctx, PP_Product_Planning_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -56,9 +66,6 @@ public class MPPProductPlanning extends X_PP_Product_Planning
 	public MPPProductPlanning(Properties ctx, int pp_product_planning_id, String trxname)
 	{
 		super(ctx, pp_product_planning_id, trxname);
-		if (pp_product_planning_id == 0)
-		{    
-		}
 	}	//	MPPProductPlanning
 
 	/**

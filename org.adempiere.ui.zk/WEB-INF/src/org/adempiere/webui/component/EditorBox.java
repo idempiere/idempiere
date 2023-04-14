@@ -22,18 +22,21 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 
 /**
+ * Composite component with {@link Textbox} and {@link Button}
  * @author Low Heng Sin
  */
 public class EditorBox extends Div {
 	/**
-	 *
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3152111756471436612L;
-	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(
-			this);
+	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
 	protected Textbox txt;
 	protected Button btn;
 
+	/**
+	 * Default constructor
+	 */
 	public EditorBox() {
 		initComponents();
 	}
@@ -53,6 +56,9 @@ public class EditorBox extends Div {
 		btn.setImage(imageSrc);
 	}
 
+	/**
+	 * Layout component
+	 */
 	private void initComponents() {
 		txt = new Textbox();
 		txt.setSclass("editor-input");
@@ -69,13 +75,14 @@ public class EditorBox extends Div {
 	}
 
 	/**
-	 * @return textbox component
+	 * @return Textbox component
 	 */
 	public Textbox getTextbox() {
 		return txt;
 	}
 
 	/**
+	 * Set value to text box
 	 * @param value
 	 */
 	public void setText(String value) {
@@ -83,13 +90,15 @@ public class EditorBox extends Div {
 	}
 
 	/**
-	 * @return text
+	 * @return text from text box
 	 */
 	public String getText() {
 		return txt.getText();
 	}
 
 	/**
+	 * Enable/disable component.
+	 * Hide button when component is diable/readonly. 
 	 * @param enabled
 	 */
 	public void setEnabled(boolean enabled) {
@@ -111,15 +120,16 @@ public class EditorBox extends Div {
 	}
 
 	/**
-	 * @return boolean
+	 * @return true if enable, false otherwise
 	 */
 	public boolean isEnabled() {
 		return btn.isEnabled();
 	}
 
 	/**
-	 * @param evtnm
-	 * @param listener
+	 * If evtnm is ON_CLICK, add listener to {@link #btn}, else add listener to {@link #txt}
+	 * @param evtnm Event name
+	 * @param listener EventListener
 	 */
 	public boolean addEventListener(String evtnm, EventListener<?> listener) {
 		if (Events.ON_CLICK.equals(evtnm)) {
@@ -130,7 +140,7 @@ public class EditorBox extends Div {
 	}
 
 	/**
-	 * @param l
+	 * @param l PropertyChangeListener
 	 */
 	public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		m_propertyChangeListeners.addPropertyChangeListener(l);
@@ -150,6 +160,10 @@ public class EditorBox extends Div {
 		return btn;
 	}
 	
+	/**
+	 * Set grid view mode.
+	 * @param flag
+	 */
 	public void setTableEditorMode(boolean flag) {
 		if (flag) {
 			ZKUpdateUtil.setHflex(this, "0");

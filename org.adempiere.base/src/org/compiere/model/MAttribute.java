@@ -31,6 +31,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -92,6 +93,18 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 		return retValue;
 	}	//	getOfClient
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Attribute_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAttribute(Properties ctx, String M_Attribute_UU, String trxName) {
+        super(ctx, M_Attribute_UU, trxName);
+		if (Util.isEmpty(M_Attribute_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -102,12 +115,17 @@ public class MAttribute extends X_M_Attribute implements ImmutablePOSupport
 	{
 		super (ctx, M_Attribute_ID, trxName);
 		if (M_Attribute_ID == 0)
-		{
-			setAttributeValueType(ATTRIBUTEVALUETYPE_StringMax40);
-			setIsInstanceAttribute (false);
-			setIsMandatory (false);
-		}
+			setInitialDefaults();
 	}	//	MAttribute
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAttributeValueType(ATTRIBUTEVALUETYPE_StringMax40);
+		setIsInstanceAttribute (false);
+		setIsMandatory (false);
+	}
 
 	/**
 	 * 	Load Constructor

@@ -51,6 +51,10 @@ public class TableIDCallout implements IColumnCallout {
 		if (recordId != null) {
 			mTab.setValue(recordId, null);
 		}
+		GridField recordUU = mTab.getField("Record_UU"); 
+		if (recordUU != null) {
+			mTab.setValue(recordUU, null);
+		}
 		return null;
 	}
 }

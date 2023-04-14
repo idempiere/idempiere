@@ -88,6 +88,16 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule implements ImmutablePO
 	private static ImmutableIntPOCache<Integer,MInvoiceSchedule>	s_cache	= new ImmutableIntPOCache<Integer,MInvoiceSchedule>(Table_Name, 5);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_InvoiceSchedule_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInvoiceSchedule(Properties ctx, String C_InvoiceSchedule_UU, String trxName) {
+        super(ctx, C_InvoiceSchedule_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

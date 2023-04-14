@@ -13,8 +13,17 @@ public class MPasswordHistory extends X_AD_Password_History {
 	 */
 	private static final long serialVersionUID = -571685945938727000L;
 
-	public MPasswordHistory(Properties ctx, int AD_Password_History_ID,
-			String trxName) {
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Password_History_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPasswordHistory(Properties ctx, String AD_Password_History_UU, String trxName) {
+        super(ctx, AD_Password_History_UU, trxName);
+    }
+
+	public MPasswordHistory(Properties ctx, int AD_Password_History_ID, String trxName) {
 		super(ctx, AD_Password_History_ID, trxName);
 	}
 

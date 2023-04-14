@@ -37,6 +37,16 @@ public class MColumnAccess extends X_AD_Column_Access
 	 */
 	private static final long serialVersionUID = -2362624234744824977L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Column_Access_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MColumnAccess(Properties ctx, String AD_Column_Access_UU, String trxName) {
+        super(ctx, AD_Column_Access_UU, trxName);
+    }
+
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context

@@ -32,6 +32,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *	Cash Journal Model
@@ -139,6 +140,18 @@ public class MCash extends X_C_Cash implements DocAction
 	private static CLogger	s_log	= CLogger.getCLogger (MCash.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Cash_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCash(Properties ctx, String C_Cash_UU, String trxName) {
+        super(ctx, C_Cash_UU, trxName);
+		if (Util.isEmpty(C_Cash_UU))
+			setInitialDefaults(ctx);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -149,25 +162,30 @@ public class MCash extends X_C_Cash implements DocAction
 	{
 		super (ctx, C_Cash_ID, trxName);
 		if (C_Cash_ID == 0)
-		{
-			setBeginningBalance (Env.ZERO);
-			setEndingBalance (Env.ZERO);
-			setStatementDifference(Env.ZERO);
-			setDocAction(DOCACTION_Complete);
-			setDocStatus(DOCSTATUS_Drafted);
-			//
-			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
-			setStatementDate (today);	// @#Date@
-			setDateAcct (today);	// @#Date@
-			
-			StringBuilder name = new StringBuilder(DisplayType.getDateFormat(DisplayType.Date).format(today))
-			.append(" ").append(MOrg.get(ctx, getAD_Org_ID()).getValue());
-			setName (name.toString());
-			setIsApproved(false);
-			setPosted (false);	// N
-			setProcessed (false);
-		}
+			setInitialDefaults(ctx);
 	}	//	MCash
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults(Properties ctx) {
+		setBeginningBalance (Env.ZERO);
+		setEndingBalance (Env.ZERO);
+		setStatementDifference(Env.ZERO);
+		setDocAction(DOCACTION_Complete);
+		setDocStatus(DOCSTATUS_Drafted);
+		//
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		setStatementDate (today);	// @#Date@
+		setDateAcct (today);	// @#Date@
+		
+		StringBuilder name = new StringBuilder(DisplayType.getDateFormat(DisplayType.Date).format(today))
+		.append(" ").append(MOrg.get(ctx, getAD_Org_ID()).getValue());
+		setName (name.toString());
+		setIsApproved(false);
+		setPosted (false);	// N
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

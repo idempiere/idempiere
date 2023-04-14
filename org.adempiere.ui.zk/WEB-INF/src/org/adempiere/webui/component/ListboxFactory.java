@@ -45,6 +45,10 @@ public class ListboxFactory {
 		return dataTable;
 	}
 	
+	/**
+	 * Create new data table instance with sized by content on.
+	 * @return WListbox
+	 */
 	public static WListbox newDataTableAutoSize() {
 		WListbox listBox = newDataTable();
 		listBox.setSizedByContent(true);
@@ -52,6 +56,11 @@ public class ListboxFactory {
 		return listBox;
 	}
 
+	/**
+	 * Create combo mode Listbox from items.
+	 * @param items String[]
+	 * @return Listbox
+	 */
 	public static Listbox newDropdownListbox(String[] items) {
 		Listbox listbox = newDropdownListbox();
 		if (items != null && items.length > 0) {

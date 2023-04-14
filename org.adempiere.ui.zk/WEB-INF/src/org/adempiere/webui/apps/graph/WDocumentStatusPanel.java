@@ -31,6 +31,7 @@ package org.adempiere.webui.apps.graph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Panel;
@@ -44,9 +45,12 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueue;
 import org.zkoss.zk.ui.event.EventQueues;
 
+/**
+ * Panel that hold one or more {@link WDocumentStatusIndicator}. 
+ */
 public class WDocumentStatusPanel extends Panel {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7473476079783059880L;
 
@@ -62,7 +66,7 @@ public class WDocumentStatusPanel extends Panel {
 
 	/**
 	 * 	Get Panel if User has Document Status Indicators
-	 *	@return panel
+	 *	@return new WDocumentStatusPanel instance
 	 */
 	public static WDocumentStatusPanel get()
 	{
@@ -72,7 +76,7 @@ public class WDocumentStatusPanel extends Panel {
 		return new WDocumentStatusPanel(indicators);
 	}
 
-	/**************************************************************************
+	/**
 	 * 	Constructor
 	 *	@param Document Status Indicators
 	 */
@@ -84,11 +88,12 @@ public class WDocumentStatusPanel extends Panel {
 	}
 
 	/**
-	 * 	Static/Dynamic Init
+	 * Layout panel
 	 */
 	private void init()
 	{
-		log.info("");
+		if (log.isLoggable(Level.INFO))
+			log.info("");
 		Grid grid = new Grid();
 		appendChild(grid);
 		grid.setWidth("100%");
@@ -110,6 +115,9 @@ public class WDocumentStatusPanel extends Panel {
 		}
 	}	//	init
 
+	/**
+	 * Call {@link WDocumentStatusIndicator#refresh()} of {@link #indicatorList}.
+	 */
 	public void refresh() {
 		lastRefreshCount = 0;
 		for (WDocumentStatusIndicator indicator : indicatorList) {
@@ -120,6 +128,9 @@ public class WDocumentStatusPanel extends Panel {
 		
 	}
 
+	/**
+	 * Call {@link WDocumentStatusIndicator#updateUI()} of {@link #indicatorList}.
+	 */
 	public void updateUI() {		
 		for (WDocumentStatusIndicator indicator : indicatorList) {
 			indicator.updateUI();

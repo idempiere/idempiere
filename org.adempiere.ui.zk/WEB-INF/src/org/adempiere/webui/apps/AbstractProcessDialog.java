@@ -128,7 +128,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	private ProcessInfo m_pi = null;
 	/** if true, auto call {@link #dispose()} in {@link #ON_COMPLETE_EVENT} handler. **/
 	private boolean m_disposeOnComplete;
-	/** Panel for process paramters **/
+	/** Panel for process parameters **/
 	private ProcessParameterPanel parameterPanel = null;
 	/** Checkbox to toggle running process/report as background job **/
 	private Checkbox runAsJobField = null;
@@ -181,7 +181,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 	 * @param pi
 	 * @param autoStart
 	 * @param isDisposeOnComplete
-	 * @return
+	 * @return true if init is ok.
 	 */
 	protected boolean init(Properties ctx, int WindowNo, int AD_Process_ID, ProcessInfo pi, boolean autoStart, boolean isDisposeOnComplete)
 	{

@@ -86,6 +86,16 @@ public class MRequestCategory extends X_R_Category implements ImmutablePOSupport
 		= new ImmutableIntPOCache<Integer,MRequestCategory>(Table_Name, 20);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_Category_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRequestCategory(Properties ctx, String R_Category_UU, String trxName) {
+        super(ctx, R_Category_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

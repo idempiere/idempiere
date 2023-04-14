@@ -36,6 +36,16 @@ public class MPInstancePara extends X_AD_PInstance_Para
 	 */
 	private static final long serialVersionUID = -8407658637240252680L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PInstance_Para_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPInstancePara(Properties ctx, String AD_PInstance_Para_UU, String trxName) {
+        super(ctx, AD_PInstance_Para_UU, trxName);
+    }
+
 	/**
 	 * 	Persistence Constructor
 	 *	@param ctx context

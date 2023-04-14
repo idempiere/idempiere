@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -35,6 +36,18 @@ public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupp
 	 */
 	private static final long serialVersionUID = -7818843756246170549L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_PeriodControl_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPeriodControl(Properties ctx, String C_PeriodControl_UU, String trxName) {
+        super(ctx, C_PeriodControl_UU, trxName);
+		if (Util.isEmpty(C_PeriodControl_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -45,11 +58,16 @@ public class MPeriodControl extends X_C_PeriodControl implements ImmutablePOSupp
 	{
 		super(ctx, C_PeriodControl_ID, trxName);
 		if (C_PeriodControl_ID == 0)
-		{
-			setPeriodAction (PERIODACTION_NoAction);
-			setPeriodStatus (PERIODSTATUS_NeverOpened);
-		}
+			setInitialDefaults();
 	}	//	MPeriodControl
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setPeriodAction (PERIODACTION_NoAction);
+		setPeriodStatus (PERIODSTATUS_NeverOpened);
+	}
 
 	/**
 	 * 	Load Constructor

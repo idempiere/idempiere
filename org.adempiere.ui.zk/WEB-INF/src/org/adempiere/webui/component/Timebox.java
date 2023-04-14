@@ -28,13 +28,20 @@ import org.compiere.model.MLanguage;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 
+/**
+ * Extend {@link org.zkoss.zul.Timebox}
+ */
 public class Timebox extends org.zkoss.zul.Timebox
 {
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 3904468791491496039L;
 
+	/**
+	 * Default constructor.
+	 * Set initial format (time pattern) from login language.
+	 */
 	public Timebox() {
 		super();
 		MLanguage mlang = MLanguage.get(Env.getCtx(), Language.getLoginLanguage());

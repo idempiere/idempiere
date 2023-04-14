@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -41,6 +42,18 @@ public class MElementValue extends X_C_ElementValue implements ImmutablePOSuppor
 	 */
 	private static final long serialVersionUID = 6352667759697380460L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_ElementValue_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MElementValue(Properties ctx, String C_ElementValue_UU, String trxName) {
+        super(ctx, C_ElementValue_UU, trxName);
+		if (Util.isEmpty(C_ElementValue_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -51,20 +64,25 @@ public class MElementValue extends X_C_ElementValue implements ImmutablePOSuppor
 	{
 		super(ctx, C_ElementValue_ID, trxName);
 		if (C_ElementValue_ID == 0)
-		{
-			setIsSummary (false);
-			setAccountSign (ACCOUNTSIGN_Natural);
-			setAccountType (ACCOUNTTYPE_Expense);
-			setIsDocControlled(false);
-			setIsForeignCurrency(false);
-			setIsBankAccount(false);
-			//
-			setPostActual (true);
-			setPostBudget (true);
-			setPostEncumbrance (true);
-			setPostStatistical (true);
-		}
+			setInitialDefaults();
 	}	//	MElementValue
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsSummary (false);
+		setAccountSign (ACCOUNTSIGN_Natural);
+		setAccountType (ACCOUNTTYPE_Expense);
+		setIsDocControlled(false);
+		setIsForeignCurrency(false);
+		setIsBankAccount(false);
+		//
+		setPostActual (true);
+		setPostBudget (true);
+		setPostEncumbrance (true);
+		setPostStatistical (true);
+	}
 
 	/**
 	 * 	Load Constructor

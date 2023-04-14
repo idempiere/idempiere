@@ -71,6 +71,16 @@ public class MForm extends X_AD_Form implements ImmutablePOSupport
 		return null;
 	}	//	get
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Form_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MForm(Properties ctx, String AD_Form_UU, String trxName) {
+        super(ctx, AD_Form_UU, trxName);
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context
