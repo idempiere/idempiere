@@ -276,8 +276,8 @@ public abstract class TabbedDesktop extends AbstractDesktop {
     	preOpenNewTab();
     	if (Window.INSERT_NEXT.equals(window.getAttribute(Window.INSERT_POSITION_KEY))) {
     		windowContainer.insertAfter(windowContainer.getSelectedTab(), tabPanel, title, true, true, null);
-    	}
-    	else if(Window.REPLACE.equals(window.getAttribute(Window.INSERT_POSITION_KEY))) {
+		}
+		else if(Window.REPLACE.equals(window.getAttribute(Window.INSERT_POSITION_KEY))) {
 			Tab refTab = windowContainer.getSelectedTab();
 			Object windowNoAttribute = window.getAttribute(WindowContainer.REPLACE_WINDOW_NO);
 			if (windowNoAttribute != null && windowNoAttribute instanceof Integer) {
@@ -285,10 +285,10 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 				refTab = windowContainer.getTab(windowNo);
 			}
 			windowContainer.replace(refTab, window, title);
-    	}
-    	else {
-    		windowContainer.addWindow(tabPanel, title, true, null);
-    	}
+		}
+		else {
+	    	windowContainer.addWindow(tabPanel, title, true, null);
+		}
     	if (window instanceof IHelpContext)
 			Events.sendEvent(new Event(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT, window));
    	}

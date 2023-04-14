@@ -46,10 +46,10 @@ public class ZkReportViewerProvider implements ReportViewerProvider {
 			});
 		}
 	}
-	
+
 	protected void openReportViewWindow (ReportEngine report) {
 		ZkReportViewer viewer = new ZkReportViewer(report, report.getName());
-		
+
 		viewer.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 		viewer.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
 		if(report.isReplaceTabContent()) {
