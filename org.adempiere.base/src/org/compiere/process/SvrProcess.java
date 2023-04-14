@@ -762,12 +762,14 @@ public abstract class SvrProcess implements ProcessCall
             String name = parameter.getParameterName().trim().toLowerCase();
             Field field = map.get(name);
             Field toField = map.containsKey(name + "_to") ? map.get(name + "_to") : null;
+            Field notField = map.containsKey(name + "_not") ? map.get(name + "_not") : null;
 
             // try to match fields using the "p_" prefix convention
             if(field==null) {
             	String candidate = "p_" + name;
                 field = map.get(candidate);
                 toField = map.containsKey(candidate + "_to") ? map.get(candidate + "_to") : null;
+                notField = map.containsKey(candidate + "_not") ? map.get(candidate + "_not") : null;
             }
 
             // try to match fields with same name as metadata declaration after stripping "_"
@@ -775,6 +777,7 @@ public abstract class SvrProcess implements ProcessCall
             	String candidate = name.replace("_", "");
                 field = map.get(candidate);
                 toField = map.containsKey(candidate + "to") ? map.get(candidate + "to") : null;
+                notField = map.containsKey(candidate + "not") ? map.get(candidate + "not") : null;
             }
 
             if(field==null)
@@ -788,6 +791,8 @@ public abstract class SvrProcess implements ProcessCall
                     	toField.set(this, parameter.getParameter_ToAsInt());
                 } else if (type.equals(String.class)) {
                     field.set(this, (String) parameter.getParameter());
+                    if(notField != null)
+                    	notField.set(this, (boolean) parameter.isNotClause());
                 } else if (type.equals(java.sql.Timestamp.class)) {
                     field.set(this, (Timestamp) parameter.getParameter());
                     if(parameter.getParameter_To()!=null && toField != null)
