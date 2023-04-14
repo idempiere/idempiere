@@ -28,7 +28,6 @@ import java.util.logging.Level;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ConfirmPanel;
-import org.adempiere.webui.component.DesktopTabpanel;
 import org.adempiere.webui.component.DocumentLink;
 import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Tabpanel;
@@ -131,8 +130,6 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	 * Previous key event. use together with {@link #prevKeyEventTime} to detect double firing of key event from browser.
 	 */
 	private KeyEvent prevKeyEvent;
-	/** Indicates, that the report or process is still running	 */
-	private boolean running = false;
 
 	/**
 	 * Dialog to start a process/report
@@ -178,7 +175,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 			
 			Component parentTab = this.getParent();
-			if (parentTab != null && (parentTab.getClass().equals(Tabpanel.class) || parentTab.getClass().equals(DesktopTabpanel.class))) {
+			if (parentTab != null && parentTab instanceof Tabpanel) {
 				((Tabpanel)parentTab).setOnCloseHandler(this);
 			}
 		} catch (Exception e) {}
@@ -219,7 +216,6 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		if(component instanceof A && event.getName().equals((Events.ON_CLICK))){
 			doOnClick((A)component);
 		} else if (bOK.equals(component)) {
-			running = true;
 			super.onEvent(event);
 			
 			onOk();
@@ -372,7 +368,6 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 	{		
 		hideBusyMask();
 		closeBusyDialog();
-		running = false;
 	}
 
 	@Override
@@ -795,7 +790,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 
 	@Override
 	public void onClose(Tabpanel tabPanel) {
-		if(!running) {
+		if(!isUILocked()) {
 			Tab tab = tabPanel.getLinkedTab();
 			if (tab != null) {
 				tab.close();

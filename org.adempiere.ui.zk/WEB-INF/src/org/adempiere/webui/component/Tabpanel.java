@@ -116,6 +116,13 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISuppor
 	}
 	
 	/**
+	 * @return {@link ITabOnCloseHandler}
+	 */
+	public ITabOnCloseHandler getOnCloseHandler() {
+		return onCloseHandler;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override

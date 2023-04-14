@@ -20,10 +20,11 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.ZkReportViewer;
 import org.compiere.model.MPInstance;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfo;
@@ -31,6 +32,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -46,7 +48,7 @@ import org.zkoss.zk.ui.event.Events;
  *  @author     arboleda - globalqss
  *  - Implement ShowHelp option on processes and reports
  */
-public class ProcessModalDialog extends AbstractProcessDialog implements EventListener<Event>, DialogEvents
+public class ProcessModalDialog extends AbstractProcessDialog implements EventListener<Event>, DialogEvents, ITabOnCloseHandler
 {
 	/**
 	 * generated serial id
@@ -66,8 +68,10 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 * Use to detect change of screen orientation and adapt layout accordingly. 
 	 */
 	private String orientation;
-	/** Parent Report Viewer - if opened from report's re-run button	 */
-	private ZkReportViewer reportViewer = null;
+
+	private ITabOnCloseHandler originalOnCloseHandler;
+
+	private Tabpanel parentTabPanel;
 
 	/**
 	 * @param WindowNo
@@ -271,7 +275,11 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	
 	@Override
 	public void updateUI() {
-		
+		if (parentTabPanel != null) {
+			parentTabPanel.setOnCloseHandler(originalOnCloseHandler);
+			originalOnCloseHandler = null;
+			parentTabPanel = null;
+		}
 	}
 	
 	@Override
@@ -279,6 +287,32 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		closeBusyDialog();
 	}
 	
+	@Override
+	public void onPageAttached(Page newpage, Page oldpage) {
+		super.onPageAttached(newpage, oldpage);
+		Component parent = this.getParent();
+		while (parent != null) {
+			if (parent instanceof Tabpanel) {
+				parentTabPanel = (Tabpanel) parent;
+				originalOnCloseHandler = parentTabPanel.getOnCloseHandler();
+				parentTabPanel.setOnCloseHandler(this);
+				break;
+			}
+			parent = parent.getParent();
+		}
+	}
+
+
+	@Override
+	public void onPageDetached(Page page) {
+		super.onPageDetached(page);
+		if (parentTabPanel != null && isCancel()) {
+			parentTabPanel.setOnCloseHandler(originalOnCloseHandler);
+			originalOnCloseHandler = null;
+			parentTabPanel = null;
+		}
+	}
+
 	/**
 	 * handle events
 	 */
@@ -323,9 +357,6 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		if(freportType != null && freportType.getSelectedItem() != null) {
 			getProcessInfo().setReportType(freportType.getSelectedItem().getValue().toString());
 		}
-		if(reportViewer != null)
-			reportViewer.setIsRunning(true);
-		
 		startProcess();
 	}	
 	
@@ -350,11 +381,9 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		}
 	}
 
-	/**
-	 * Set Report Viewer
-	 * @param reportViewer
-	 */
-	public void setReportViewer(ZkReportViewer reportViewer) {
-		this.reportViewer = reportViewer;
+	@Override
+	public void onClose(Tabpanel tabPanel) {
+		return;
 	}
+
 }	//	ProcessModalDialog

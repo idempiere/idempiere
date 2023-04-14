@@ -62,7 +62,6 @@ import org.adempiere.webui.event.DrillEvent;
 import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.panel.ADForm;
-import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
@@ -125,7 +124,6 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vlayout;
@@ -146,13 +144,13 @@ import org.zkoss.zul.impl.XulElement;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>FR [ 1762466 ] Add "Window" menu to report viewer.
  * 				<li>FR [ 1894640 ] Report Engine: Excel Export support
- * 
+ *
  * @author Low Heng Sin
  */
-public class ZkReportViewer extends Window implements EventListener<Event>, ITabOnCloseHandler, IReportViewerExportSource {
-	
+public class ZkReportViewer extends Window implements EventListener<Event>, IReportViewerExportSource {
+
 	/**
-	 * generated serial id 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6307014622485159910L;
 	
@@ -223,10 +221,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	
 	private ToolBarButton bCloudUpload = new ToolBarButton();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
-	
-	/** Indicates, that the report is still running	 */
-	private boolean running = false;
-	
+
 	private final ExportFormat[] exportFormats = new ExportFormat[] {
 		new ExportFormat(POSTSCRIPT_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePS"), POSTSCRIPT_FILE_EXT, POSTSCRIPT_MIME_TYPE),
 		new ExportFormat(XML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXML"), XML_FILE_EXT, XML_MIME_TYPE),
@@ -250,9 +245,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	 */
 	public ZkReportViewer(ReportEngine re, String title) {		
 		super();
-		
+
 		init = false;
-		running = true;
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
 		Env.setContext(re.getCtx(), m_WindowNo, "_WinInfo_IsReportViewer", "Y");
@@ -429,6 +423,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
 		} catch (Exception e) {}
+		cleanUp();
 	}
 
 	private void init() {
@@ -843,8 +838,23 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		});
 		
 		init = true;
-		
+
 		Events.echoEvent("onPostInit", this, null);
+
+		setTabOnCloseHandler();
+	}
+
+	private void setTabOnCloseHandler() {
+		Component parent = this.getParent();
+		while (parent != null) {
+			if (parent instanceof Tabpanel) {
+				Tabpanel parentTabPanel = (Tabpanel) parent;
+				parentTabPanel.setOnCloseHandler(t -> {
+				});
+				break;
+			}
+			parent = parent.getParent();
+		}
 	}
 
 	/**
@@ -1116,27 +1126,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		super.onClose();
 	}	//	dispose
 
-	@Override
-	public void onClose(Tabpanel tabPanel) {
-		if(!running) {
-			Tab tab = tabPanel.getLinkedTab();
-			tab.close();
-			cleanUp();
-		}
-	}
-	
-	
-	@Override
-	public void setParent(Component parent) {
-		super.setParent(parent);
-		if (parent != null) {
-			if (parent instanceof Tabpanel) {
-				Tabpanel tabPanel = (Tabpanel) parent;
-				tabPanel.setOnCloseHandler(this);
-			}
-		}
-	}
-
 	private void cleanUp() {
 		if (m_reportEngine != null || m_WindowNo >= 0)
 		{
@@ -1179,8 +1168,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
         else if (event.getTarget() instanceof ProcessModalDialog)
         {
-        	if(DialogEvents.ON_WINDOW_CLOSE.equals(event.getName())) 
-        		hideBusyMask();
+		if(DialogEvents.ON_WINDOW_CLOSE.equals(event.getName()))
+		{
+			hideBusyMask();
+			ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
+			if (dialog.isCancel())
+			{
+				if (getDesktop() != null)
+					clearTabOnCloseHandler();
+			}
+		}
         }
 	}
 
@@ -1528,10 +1525,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			return;
 		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
 		pi.setReplaceTabContent();
+		setTabOnCloseHandler();
 		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi);
 		ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
 		this.getParent().appendChild(processModalDialog);
-		processModalDialog.setReportViewer(this);
 		if (ClientInfo.isMobile())
 		{
 			processModalDialog.doHighlighted();
@@ -1804,9 +1801,25 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			progressWindow.dispose();
 			progressWindow = null;
 		}
-		running = false;
+
+		if (getDesktop() != null)
+			clearTabOnCloseHandler();
 	}
-	
+
+	private void clearTabOnCloseHandler() {
+		Executions.schedule(getDesktop(), e -> {
+			Component parent = this.getParent();
+			while (parent != null) {
+				if (parent instanceof Tabpanel) {
+					Tabpanel parentTabPanel = (Tabpanel) parent;
+					parentTabPanel.setOnCloseHandler(null);
+					break;
+				}
+				parent = parent.getParent();
+			}
+		}, new Event("onClearTabOnCloseHandler"));
+	}
+
 	static class PDFRendererRunnable extends ZkContextRunnable implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
@@ -2043,14 +2056,5 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			ZKUpdateUtil.setHeight(findWindow, "60%");
 		findWindow.setSizable(false);
 		findWindow.setContentStyle("background-color: #fff; width: 99%; margin: auto;");
-	}
-	
-	
-	/**
-	 * Set, if the report is running.
-	 * @param isRunning
-	 */
-	public void setIsRunning(boolean isRunning) {
-		this.running = isRunning;
 	}
 }
