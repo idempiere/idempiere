@@ -1171,7 +1171,7 @@ public class CalloutOrder extends CalloutEngine
 		}
 
 		//	Line Net Amt
-		BigDecimal LineNetAmt = QtyOrdered.multiply(PriceActual);
+		BigDecimal LineNetAmt = QtyEntered.multiply(PriceEntered);
 		if (LineNetAmt.scale() > StdPrecision)
 			LineNetAmt = LineNetAmt.setScale(StdPrecision, RoundingMode.HALF_UP);
 		if (log.isLoggable(Level.INFO)) log.info("LineNetAmt=" + LineNetAmt);

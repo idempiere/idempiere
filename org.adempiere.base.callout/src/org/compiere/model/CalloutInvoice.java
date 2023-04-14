@@ -666,7 +666,7 @@ public class CalloutInvoice extends CalloutEngine
 		}
 
 		//	Line Net Amt
-		BigDecimal LineNetAmt = QtyInvoiced.multiply(PriceActual);
+		BigDecimal LineNetAmt = QtyEntered.multiply(PriceEntered);
 		if (LineNetAmt.scale() > StdPrecision)
 			LineNetAmt = LineNetAmt.setScale(StdPrecision, RoundingMode.HALF_UP);
 		if (log.isLoggable(Level.INFO)) log.info("amt = LineNetAmt=" + LineNetAmt);
