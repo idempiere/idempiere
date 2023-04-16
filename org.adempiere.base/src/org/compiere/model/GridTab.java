@@ -113,7 +113,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2604313946261586651L;
+	private static final long serialVersionUID = 4674027561845549215L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -2436,6 +2436,16 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		return m_mTable.getKeyID(m_currentRow);
 	}   //  getRecord_ID
+
+	/**
+	 *  Get Current Table UUID
+	 *  @return Record_UU
+	 */
+	public String getRecord_UU()
+	{
+		UUID uuid = m_mTable.getUUID(m_currentRow);
+		return (uuid == null ? null : uuid.toString());
+	}   //  getRecord_UU
 
 	/**
 	 *  Get Key ID of row

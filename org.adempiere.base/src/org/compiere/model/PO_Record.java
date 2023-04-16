@@ -94,35 +94,40 @@ public class PO_Record
 	 */
 	static boolean deleteCascade (int AD_Table_ID, int Record_ID, String trxName)
 	{
+		return deleteCascadeIDorUU (AD_Table_ID, Record_ID, null, trxName);
+	}	//	deleteCascade
+
+	/**
+	 * 	Delete Cascade including (selected)parent relationships
+	 *	@param AD_Table_ID table
+	 *	@param Record_UU record UUID
+	 *	@param trxName transaction
+	 *	@return false if could not be deleted
+	 */
+	static boolean deleteCascadeUU (int AD_Table_ID, String Record_UU, String trxName)
+	{
+		return deleteCascadeIDorUU (AD_Table_ID, -1, Record_UU, trxName);
+	}	//	deleteCascade
+
+	/**
+	 * 	Delete Cascade including (selected)parent relationships
+	 *	@param AD_Table_ID table
+	 *	@param Record_ID record
+	 *	@param Record_UU record UUID
+	 *	@param trxName transaction
+	 *	@return false if could not be deleted
+	 */
+	private static boolean deleteCascadeIDorUU (int AD_Table_ID, int Record_ID, String Record_UU, String trxName)
+	{
 		//	Table Loop
 		for (int i = 0; i < s_cascades.length; i++)
 		{
-			//	DELETE FROM table WHERE AD_Table_ID=#1 AND Record_ID=#2
-			if (s_cascades[i] != AD_Table_ID)
-			{
-				Object[] params = new Object[]{Integer.valueOf(AD_Table_ID), Integer.valueOf(Record_ID)};
-				if (s_cascadeNames[i].equals(X_AD_Attachment.Table_Name) || s_cascadeNames[i].equals(X_AD_Archive.Table_Name))
-				{
-					Query query = new Query(Env.getCtx(), s_cascadeNames[i], "AD_Table_ID=? AND Record_ID=?", trxName);
-					List<PO> list = query.setParameters(params).list();
-					for(PO po : list)
-					{
-						po.deleteEx(true);
-					}
-				}
-				else 
-				{
-					StringBuilder sql = new StringBuilder ("DELETE FROM ")
-							.append(s_cascadeNames[i])
-							.append(" WHERE AD_Table_ID=? AND Record_ID=?");
-					int no = DB.executeUpdate(sql.toString(), params, false, trxName);
-					if (no > 0) {
-						if (log.isLoggable(Level.CONFIG)) log.config(s_cascadeNames[i] + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-					} else if (no < 0) {
-						log.severe(s_cascadeNames[i] + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-						return false;
-					}
-				}
+			MTable table = MTable.get(s_cascades[i]);
+			if (Record_ID > 0 && s_cascades[i] != AD_Table_ID && table.columnExists("Record_ID")) {
+				deleteCascadeSQL(s_cascadeNames[i], "Record_ID=?", AD_Table_ID, Record_ID, null, trxName);
+			}
+			if (Record_UU != null && s_cascades[i] != AD_Table_ID && table.columnExists("Record_UU")) {
+				deleteCascadeSQL(s_cascadeNames[i], "Record_UU=?", AD_Table_ID, -1, Record_UU, trxName);
 			}
 		}
 		//	Parent Loop
@@ -131,35 +136,99 @@ public class PO_Record
 			if (s_parents[j] == AD_Table_ID)
 			{
 				int AD_Table_IDchild = s_parentChilds[j];
-				Object[] params = new Object[]{Integer.valueOf(AD_Table_IDchild), Integer.valueOf(Record_ID)};
 				for (int i = 0; i < s_cascades.length; i++)
 				{
-					StringBuilder sql = new StringBuilder ("DELETE FROM ")
-						.append(s_cascadeNames[i])
-						.append(" WHERE AD_Table_ID=? AND Record_ID IN (SELECT ")
-						.append(s_parentChildNames[j]).append("_ID FROM ")
-						.append(s_parentChildNames[j]).append(" WHERE ")
-						.append(s_parentNames[j]).append("_ID=?)");
-					int no = DB.executeUpdate(sql.toString(), params, false, trxName);
-					if (no > 0) {
-						if (log.isLoggable(Level.CONFIG)) log.config(s_cascadeNames[i] + " " + s_parentNames[j]  
-								+ " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-					} else if (no < 0) {
-						log.severe(s_cascadeNames[i] + " " + s_parentNames[j]
-								+ " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-						return false;
+					MTable table = MTable.get(s_cascades[i]);
+					StringBuilder whereIn = new StringBuilder ("Record_ID IN (SELECT ")
+							.append(s_parentChildNames[j]).append("_ID FROM ")
+							.append(s_parentChildNames[j]).append(" WHERE ")
+							.append(s_parentNames[j]).append("_ID=?)");
+					if (Record_ID > 0 && s_cascades[i] != AD_Table_IDchild && table.columnExists("Record_ID")) {
+						deleteCascadeSQL(s_cascadeNames[i], whereIn.toString(), AD_Table_IDchild, Record_ID, null, trxName);
+					}
+					if (Record_UU != null && s_cascades[i] != AD_Table_IDchild && table.columnExists("Record_UU")) {
+						deleteCascadeSQL(s_cascadeNames[i], whereIn.toString(), AD_Table_IDchild, -1, Record_UU, trxName);
 					}
 				}
 			}
 		}
 		return true;
-	}	//	deleteCascade
+	}	//	deleteCascadeIDorUU
 
-	//IDEMPIERE-2060
+	/**
+	 * @param deleteTableName
+	 * @param where
+	 * @param AD_Table_ID
+	 * @param Record_ID the ID of the record to be checked
+	 * @param Record_UU the UUID of the record to be checked (not checked if Record_ID > 0)
+	 * @param trxName
+	 */
+	private static void deleteCascadeSQL(String deleteTableName, String where, int AD_Table_ID, int Record_ID, String Record_UU, String trxName) {
+		//	DELETE FROM table WHERE AD_Table_ID=#1 AND Record_??=#2
+		Object[] params = new Object[]{Integer.valueOf(AD_Table_ID), Record_ID > 0 ? Integer.valueOf(Record_ID) : Record_UU};
+		if (deleteTableName.equals(X_AD_Attachment.Table_Name) || deleteTableName.equals(X_AD_Archive.Table_Name))
+		{
+			Query query = new Query(Env.getCtx(), deleteTableName, "AD_Table_ID=? AND " + where, trxName);
+			List<PO> list = query.setParameters(params).list();
+			for(PO po : list)
+			{
+				po.deleteEx(true);
+			}
+		}
+		else 
+		{
+			StringBuilder sql = new StringBuilder ("DELETE FROM ")
+					.append(deleteTableName)
+					.append(" WHERE AD_Table_ID=? AND ")
+					.append(where);
+			int no = DB.executeUpdate(sql.toString(), params, false, trxName);
+			if (no > 0) {
+				if (log.isLoggable(Level.CONFIG)) log.config(deleteTableName + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
+			} else if (no < 0) {
+				log.severe(deleteTableName + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
+			}
+		}
+	}
+
+	/**
+	 * IDEMPIERE-2060
+	 * @param tableName
+	 * @param Record_ID
+	 * @param trxName
+	 */
 	public static void deleteModelCascade(String tableName, int Record_ID, String trxName) {
-		//find dependent tables to delete cascade	
-		final String sql = ""
-				+ "SELECT t.TableName, "
+		deleteModelCascadeByIDorUU(tableName, Record_ID, null, trxName);
+	}
+
+	/**
+	 * @param tableName
+	 * @param Record_UU
+	 * @param trxName
+	 */
+	public static void deleteModelCascadeUU(String tableName, String Record_UU, String trxName) {
+		deleteModelCascadeByIDorUU(tableName, -1, Record_UU, trxName);
+	}
+
+	/**
+	 * @param tableName
+	 * @param Record_ID the ID of the record to be checked
+	 * @param Record_UU the UUID of the record to be checked (not checked if Record_ID > 0)
+	 * @param trxName
+	 */
+	private static void deleteModelCascadeByIDorUU(String tableName, int Record_ID, String Record_UU, String trxName) {
+		int refIdTable;
+		int refIdSearch;
+		if (Record_ID > 0) {
+			refIdTable = DisplayType.TableDir;
+			refIdSearch = DisplayType.Search;
+		} else {
+			refIdTable = DisplayType.TableDirUU;
+			refIdSearch = DisplayType.SearchUU;
+		}
+
+		//find dependent tables to delete cascade
+		StringBuilder sql = new StringBuilder()
+			.append("SELECT t.TableName, "
 				+ "       c.ColumnName "
 				+ "FROM   AD_Column c "
 				+ "       JOIN AD_Table t ON c.AD_Table_ID = t.AD_Table_ID "
@@ -168,13 +237,13 @@ public class PO_Record
 				+ "WHERE  t.IsView = 'N' "
 				+ "       AND t.IsActive = 'Y' "
 				+ "       AND c.IsActive = 'Y' "
-				+ "       AND ( ( c.AD_Reference_ID = " + DisplayType.TableDir
-				+ "               AND c.ColumnName = ? || '_ID' ) "
-				+ "              OR ( c.AD_Reference_ID IN ( " + DisplayType.Table + ", " + DisplayType.Search + " ) "
+				+ "       AND ( ( c.AD_Reference_ID = ").append(refIdTable)
+			.append("               AND c.ColumnName = ? || '_ID' ) "
+				+ "              OR ( c.AD_Reference_ID IN ( ").append(refIdTable).append(", ").append(refIdSearch).append(" ) "
 				+ "                   AND ( tr.TableName = ? OR ( tr.TableName IS NULL AND c.ColumnName = ? || '_ID' ) ) ) ) "
-				+ "       AND c.FKConstraintType = '" + MColumn.FKCONSTRAINTTYPE_ModelCascade + "' ";
+				+ "       AND c.FKConstraintType=").append(DB.TO_STRING(MColumn.FKCONSTRAINTTYPE_ModelCascade));
 
-		List<List<Object>> dependents = DB.getSQLArrayObjectsEx(trxName, sql, tableName, tableName, tableName);
+		List<List<Object>> dependents = DB.getSQLArrayObjectsEx(trxName, sql.toString(), tableName, tableName, tableName);
 		if (dependents != null) {
 			for (List<Object> row : dependents) {
 				String dependentTableName = (String) row.get(0);
@@ -183,7 +252,7 @@ public class PO_Record
 				List<PO> poList = new Query(Env.getCtx(), 
 						dependentTableName,
 						dependentWhere,
-						trxName).setParameters(Record_ID).list();
+						trxName).setParameters(Record_ID > 0 ? Record_ID : Record_UU).list();
 				for (PO po : poList) {
 					po.deleteEx(true, trxName);
 				}
@@ -200,19 +269,70 @@ public class PO_Record
 	 */
 	static String exists (int AD_Table_ID, int Record_ID, String trxName)
 	{
+		return existsIDorUU(AD_Table_ID, Record_ID, null, trxName);
+	}	//	exists
+
+	/**
+	 * 	An entry Exists for restrict table/record combination
+	 *	@param AD_Table_ID table
+	 *	@param Record_UU record UUID
+	 *	@param trxName transaction
+	 *	@return error message (Table Name) or null
+	 */
+	static String existsUU (int AD_Table_ID, String Record_UU, String trxName)
+	{
+		return existsIDorUU(AD_Table_ID, -1, Record_UU, trxName);
+	}	//	existsUU
+
+	/**
+	 * 	An entry Exists for restrict table/record combination
+	 *	@param AD_Table_ID table
+	 *	@param Record_ID record
+	 *	@param Record_UU record UUID
+	 *	@param trxName transaction
+	 *	@return error message (Table Name) or null
+	 */
+	private static String existsIDorUU (int AD_Table_ID, int Record_ID, String Record_UU, String trxName)
+	{
 		//	Table Loop only
 		for (int i = 0; i < s_restricts.length; i++)
 		{
-			//	SELECT COUNT(*) FROM table WHERE AD_Table_ID=#1 AND Record_ID=#2
-			StringBuilder sql = new StringBuilder ("SELECT COUNT(*) FROM ")
-				.append(s_restrictNames[i])
-				.append(" WHERE AD_Table_ID=? AND Record_ID=?");
-			int no = DB.getSQLValue(trxName, sql.toString(), AD_Table_ID, Record_ID);
-			if (no > 0)
-				return s_restrictNames[i];
+			MTable checkTable = MTable.get(Env.getCtx(), s_restrictNames[i]);
+			if (Record_ID > 0 && checkTable.columnExists("Record_ID")) {
+				int no = existsCountSQL(s_restrictNames[i], AD_Table_ID, Record_ID, null, trxName);
+				if (no > 0)
+					return s_restrictNames[i];
+			}
+			if (Record_UU != null && checkTable.columnExists("Record_UU")) {
+				int no = existsCountSQL(s_restrictNames[i], AD_Table_ID, -1, Record_UU, trxName);
+				if (no > 0)
+					return s_restrictNames[i];
+			}
 		}
 		return null;
-	}	//	exists
+	}	//	existsIDorUU
+
+	/**
+	 * @param checkTableName
+	 * @param columnName
+	 * @param AD_Table_ID
+	 * @param Record_ID the ID of the record to be checked
+	 * @param Record_UU the UUID of the record to be checked (not checked if Record_ID > 0)
+	 * @param trxName
+	 * @return
+	 */
+	private static int existsCountSQL(String checkTableName, int AD_Table_ID, int Record_ID, String Record_UU, String trxName) {
+		String columnName;
+		if (Record_ID > 0)
+			columnName = "Record_ID";
+		else
+			columnName = "Record_UU";
+		//	SELECT COUNT(*) FROM table WHERE AD_Table_ID=#1 AND Record_??=#2
+		StringBuilder sql = new StringBuilder ("SELECT COUNT(*) FROM ")
+			.append(checkTableName)
+			.append(" WHERE AD_Table_ID=? AND ").append(columnName).append("=?");
+		return DB.getSQLValue(trxName, sql.toString(), AD_Table_ID, Record_ID > 0 ? Record_ID : Record_UU);
+	}
 
 	/**
 	 * 	Validate all tables for AD_Table/Record_ID relationships

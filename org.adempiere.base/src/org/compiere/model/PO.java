@@ -2996,7 +2996,7 @@ public abstract class PO
 				MChangeLog cLog = session.changeLog (
 					m_trxName, AD_ChangeLog_ID,
 					p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-					get_ID(), getAD_Client_ID(), getAD_Org_ID(), oldV, newV, MChangeLog.EVENTCHANGELOG_Update);
+					get_ID(), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), oldV, newV, MChangeLog.EVENTCHANGELOG_Update);
 				if (cLog != null)
 					AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 			}
@@ -3347,7 +3347,7 @@ public abstract class PO
 					MChangeLog cLog = session.changeLog (
 							m_trxName, AD_ChangeLog_ID,
 							p_info.getAD_Table_ID(), p_info.getColumn(ki).AD_Column_ID,
-							get_ID(), getAD_Client_ID(), getAD_Org_ID(), null, id, MChangeLog.EVENTCHANGELOG_Insert);
+							get_ID(), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, id, MChangeLog.EVENTCHANGELOG_Insert);
 					if (cLog != null)
 						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 				}
@@ -3620,7 +3620,7 @@ public abstract class PO
 					MChangeLog cLog = session.changeLog (
 							m_trxName, AD_ChangeLog_ID,
 							p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-							get_ID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert);
+							get_ID(), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert);
 					if (cLog != null)
 						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 				}
@@ -3823,6 +3823,7 @@ public abstract class PO
 
 		int AD_Table_ID = p_info.getAD_Table_ID();
 		int Record_ID = get_ID();
+		String Record_UU = get_UUID();
 
 		if (!force)
 		{
@@ -3921,6 +3922,8 @@ public abstract class PO
 			}
 			//	Delete Restrict AD_Table_ID/Record_ID (Requests, ..)
 			String errorMsg = PO_Record.exists(AD_Table_ID, Record_ID, m_trxName);
+			if (errorMsg == null && Record_UU != null)
+				errorMsg = PO_Record.existsUU(AD_Table_ID, Record_UU, m_trxName);
 			if (errorMsg != null)
 			{
 				log.saveError("CannotDelete", errorMsg);
@@ -3967,11 +3970,13 @@ public abstract class PO
 				}
 				//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
 				PO_Record.deleteCascade(AD_Table_ID, Record_ID, localTrxName);
+				PO_Record.deleteCascadeUU(AD_Table_ID, Record_UU, localTrxName);
 
 				//delete cascade only for single key column record
 				if (m_KeyColumns != null && m_KeyColumns.length == 1) {
 					PO_Record.deleteModelCascade(p_info.getTableName(), Record_ID, localTrxName);
 				}
+				PO_Record.deleteModelCascadeUU(p_info.getTableName(), Record_UU, localTrxName);
 		
 				//	The Delete Statement
 				String where = isLogSQLScript() ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
@@ -4050,7 +4055,7 @@ public abstract class PO
 									MChangeLog cLog = session.changeLog (
 										m_trxName != null ? m_trxName : localTrxName, AD_ChangeLog_ID,
 										AD_Table_ID, p_info.getColumn(i).AD_Column_ID,
-										Record_ID, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete);
+										Record_ID, Record_UU, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete);
 									if (cLog != null)
 										AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 								}
