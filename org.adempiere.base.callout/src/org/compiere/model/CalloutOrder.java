@@ -1073,7 +1073,7 @@ public class CalloutOrder extends CalloutEngine
 			pp.setM_PriceList_Version_ID(M_PriceList_Version_ID);
 			//
 			PriceEntered = MUOMConversion.convertProductFrom (ctx, M_Product_ID,
-				C_UOM_To_ID, pp.getPriceStd());
+				C_UOM_To_ID, pp.getPriceStd(), 12);
 			if (PriceEntered == null)
 				PriceEntered = pp.getPriceStd();
 			//
@@ -1094,7 +1094,7 @@ public class CalloutOrder extends CalloutEngine
 		{
 			PriceActual = (BigDecimal)value;
 			PriceEntered = MUOMConversion.convertProductFrom (ctx, M_Product_ID,
-				C_UOM_To_ID, PriceActual);
+				C_UOM_To_ID, PriceActual, 12);
 			if (PriceEntered == null)
 				PriceEntered = PriceActual;
 			//
@@ -1106,7 +1106,7 @@ public class CalloutOrder extends CalloutEngine
 		{
 			PriceEntered = (BigDecimal)value;
 			PriceActual = MUOMConversion.convertProductTo (ctx, M_Product_ID,
-				C_UOM_To_ID, PriceEntered);
+				C_UOM_To_ID, PriceEntered, 12);
 			if (PriceActual == null)
 				PriceActual = PriceEntered;
 			//
@@ -1123,7 +1123,7 @@ public class CalloutOrder extends CalloutEngine
 			if (PriceActual.scale() > StdPrecision)
 				PriceActual = PriceActual.setScale(StdPrecision, RoundingMode.HALF_UP);
 			PriceEntered = MUOMConversion.convertProductFrom (ctx, M_Product_ID,
-				C_UOM_To_ID, PriceActual);
+				C_UOM_To_ID, PriceActual, 12);
 			if (PriceEntered == null)
 				PriceEntered = PriceActual;
 			mTab.setValue("PriceActual", PriceActual);
@@ -1153,7 +1153,7 @@ public class CalloutOrder extends CalloutEngine
 		{
 			PriceActual = PriceLimit;
 			PriceEntered = MUOMConversion.convertProductFrom (ctx, M_Product_ID,
-				C_UOM_To_ID, PriceLimit);
+				C_UOM_To_ID, PriceLimit, 12);
 			if (PriceEntered == null)
 				PriceEntered = PriceLimit;
 			if (log.isLoggable(Level.FINE)) log.fine("(under) PriceEntered=" + PriceEntered + ", Actual" + PriceLimit);
@@ -1171,7 +1171,7 @@ public class CalloutOrder extends CalloutEngine
 		}
 
 		//	Line Net Amt
-		BigDecimal LineNetAmt = QtyOrdered.multiply(PriceActual);
+		BigDecimal LineNetAmt = QtyEntered.multiply(PriceEntered);
 		if (LineNetAmt.scale() > StdPrecision)
 			LineNetAmt = LineNetAmt.setScale(StdPrecision, RoundingMode.HALF_UP);
 		if (log.isLoggable(Level.INFO)) log.info("LineNetAmt=" + LineNetAmt);
@@ -1227,7 +1227,7 @@ public class CalloutOrder extends CalloutEngine
 			boolean conversion = QtyEntered.compareTo(QtyOrdered) != 0;
 			PriceActual = (BigDecimal)mTab.getValue("PriceActual");
 			PriceEntered = MUOMConversion.convertProductFrom (ctx, M_Product_ID,
-				C_UOM_To_ID, PriceActual);
+				C_UOM_To_ID, PriceActual, 12);
 			if (PriceEntered == null)
 				PriceEntered = PriceActual;
 			if (log.isLoggable(Level.FINE)) log.fine("UOM=" + C_UOM_To_ID
