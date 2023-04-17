@@ -349,7 +349,7 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	public void setLineNetAmt ()
 	{
-		BigDecimal bd = getPriceActual().multiply(getQtyOrdered()); 
+		BigDecimal bd = getPriceEntered().multiply(getQtyEntered()); 
 		int precision = getPrecision();
 		if (bd.scale() > precision)
 			bd = bd.setScale(precision, RoundingMode.HALF_UP);
