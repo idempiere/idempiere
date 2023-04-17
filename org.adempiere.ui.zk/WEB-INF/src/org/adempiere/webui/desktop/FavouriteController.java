@@ -198,7 +198,8 @@ public class FavouriteController
 			if (treeModel != null)
 			{
 				DefaultTreeNode<Object> treeNode = treeModel.find(treeModel.getRoot(), favNode.getAD_Tree_Favorite_Node_ID());
-				treeModel.removeNode(treeNode);
+				if(treeNode != null)
+					treeModel.removeNode(treeNode);
 			}
 
 			nodeMap.remove(nodeId);
