@@ -123,10 +123,10 @@ public class PO_Record
 		for (int i = 0; i < s_cascades.length; i++)
 		{
 			MTable table = MTable.get(s_cascades[i]);
-			if (Record_ID > 0 && s_cascades[i] != AD_Table_ID && table.columnExists("Record_ID")) {
+			if (Record_ID > 0 && s_cascades[i] != AD_Table_ID && table.columnExistsInDictionary("Record_ID")) {
 				deleteCascadeSQL(s_cascadeNames[i], "Record_ID=?", AD_Table_ID, Record_ID, null, trxName);
 			}
-			if (Record_UU != null && s_cascades[i] != AD_Table_ID && table.columnExists("Record_UU")) {
+			if (Record_UU != null && s_cascades[i] != AD_Table_ID && table.columnExistsInDictionary("Record_UU")) {
 				deleteCascadeSQL(s_cascadeNames[i], "Record_UU=?", AD_Table_ID, -1, Record_UU, trxName);
 			}
 		}
@@ -143,10 +143,10 @@ public class PO_Record
 							.append(s_parentChildNames[j]).append("_ID FROM ")
 							.append(s_parentChildNames[j]).append(" WHERE ")
 							.append(s_parentNames[j]).append("_ID=?)");
-					if (Record_ID > 0 && s_cascades[i] != AD_Table_IDchild && table.columnExists("Record_ID")) {
+					if (Record_ID > 0 && s_cascades[i] != AD_Table_IDchild && table.columnExistsInDictionary("Record_ID")) {
 						deleteCascadeSQL(s_cascadeNames[i], whereIn.toString(), AD_Table_IDchild, Record_ID, null, trxName);
 					}
-					if (Record_UU != null && s_cascades[i] != AD_Table_IDchild && table.columnExists("Record_UU")) {
+					if (Record_UU != null && s_cascades[i] != AD_Table_IDchild && table.columnExistsInDictionary("Record_UU")) {
 						deleteCascadeSQL(s_cascadeNames[i], whereIn.toString(), AD_Table_IDchild, -1, Record_UU, trxName);
 					}
 				}
@@ -298,12 +298,12 @@ public class PO_Record
 		for (int i = 0; i < s_restricts.length; i++)
 		{
 			MTable checkTable = MTable.get(Env.getCtx(), s_restrictNames[i]);
-			if (Record_ID > 0 && checkTable.columnExists("Record_ID")) {
+			if (Record_ID > 0 && checkTable.columnExistsInDictionary("Record_ID")) {
 				int no = existsCountSQL(s_restrictNames[i], AD_Table_ID, Record_ID, null, trxName);
 				if (no > 0)
 					return s_restrictNames[i];
 			}
-			if (Record_UU != null && checkTable.columnExists("Record_UU")) {
+			if (Record_UU != null && checkTable.columnExistsInDictionary("Record_UU")) {
 				int no = existsCountSQL(s_restrictNames[i], AD_Table_ID, -1, Record_UU, trxName);
 				if (no > 0)
 					return s_restrictNames[i];
