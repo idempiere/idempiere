@@ -526,8 +526,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 				{
 					if (po.get_ID() != Record_ID && Record_ID > 0)
 						po = null;
-					else
-						return po;
+					return po;
 				}
 			}
 			s_modelFactoryCache.remove(tableName);
@@ -546,21 +545,19 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 					{
 						if (po.get_ID() != Record_ID && Record_ID > 0)
 							po = null;
-						else
-						{
-							s_modelFactoryCache.put(tableName, factory);
-							break;
-						}
+						s_modelFactoryCache.put(tableName, factory);
+						break;
 					}
 				}
 			}
 		}
 
-		if (po == null)
+		if (po == null && s_modelFactoryCache.get(tableName) == null)
 		{
 			po = new GenericPO(tableName, getCtx(), Record_ID, trxName);
 			if (po.get_ID() != Record_ID && Record_ID > 0)
 				po = null;
+			// TODO: how to add GenericPO to the s_modelFactoryCache ??
 		}
 
 		return po;
