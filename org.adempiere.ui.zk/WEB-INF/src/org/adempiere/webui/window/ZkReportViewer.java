@@ -1393,6 +1393,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		Object pp = li.getValue();
 		if (pp == null)
 			return;
+		
+		setTabOnCloseHandler();
 		//
 		MPrintFormat pf = null;
 		int AD_PrintFormat_ID = Integer.valueOf(pp.toString());
