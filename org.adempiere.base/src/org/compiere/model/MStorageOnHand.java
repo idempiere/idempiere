@@ -426,7 +426,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		{
 			sql += " AND s.QtyOnHand <> 0 ";
 		}
-		sql += "ORDER BY l.PriorityNo DESC, DateMaterialPolicy ";
+		sql += " ORDER BY l.PriorityNo DESC, DateMaterialPolicy ";
 		if (!FiFo)
 			sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
 		else
@@ -456,13 +456,13 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			
 			if (minGuaranteeDate != null)
 			{
-				sql += "AND (asi.GuaranteeDate IS NULL OR asi.GuaranteeDate>?) ";
+				sql += " AND (asi.GuaranteeDate IS NULL OR asi.GuaranteeDate>?) ";
 			}
 			
 			MProduct product = MProduct.get(Env.getCtx(), M_Product_ID);
 			
 			if(product.isUseGuaranteeDateForMPolicy()){
-				sql += "ORDER BY l.PriorityNo DESC, COALESCE(asi.GuaranteeDate,s.DateMaterialPolicy)";
+				sql += " ORDER BY l.PriorityNo DESC, COALESCE(asi.GuaranteeDate,s.DateMaterialPolicy)";
 				if (!FiFo)
 					sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
 				else
@@ -470,7 +470,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			}
 			else
 			{
-				sql += "ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
+				sql += " ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
 				if (!FiFo)
 					sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
 				else
@@ -613,14 +613,14 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		MProduct product = MProduct.get(Env.getCtx(), M_Product_ID, trxName);
 		
 		if(product.isUseGuaranteeDateForMPolicy()){
-			sql += "ORDER BY l.PriorityNo DESC, " +
+			sql += " ORDER BY l.PriorityNo DESC, " +
 				   "asi.GuaranteeDate";
 			if (!FiFo)
 				sql += " DESC";
 		}
 		else
 		{
-			sql += "ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
+			sql += " ORDER BY l.PriorityNo DESC, l.M_Locator_ID, s.DateMaterialPolicy";
 			if (!FiFo)
 				sql += " DESC, s.M_AttributeSetInstance_ID DESC ";
 			else
