@@ -38,6 +38,7 @@ import org.compiere.model.MStyle;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.ValueNamePair;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zul.Listcell;
@@ -123,6 +124,11 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 					{
 						KeyNamePair knp = (KeyNamePair)value;
 						value = knp.getKey();
+					}
+					else if(value instanceof ValueNamePair)
+					{
+						ValueNamePair vnp = (ValueNamePair)value;
+						value = vnp.getValue();
 					}
 					
 					editor.setValue(value);
