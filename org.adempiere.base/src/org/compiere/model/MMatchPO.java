@@ -488,7 +488,7 @@ public class MMatchPO extends X_M_MatchPO
 							{
 								//check m_matchinv not created with different qty
 								int cnt = DB.getSQLValueEx(sLine.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+sLine.getM_InOutLine_ID()
-										+" AND C_InvoiceLine_ID="+ matchPO.getC_InvoiceLine_ID() + "AND Qty != ?", retValue.getQty());
+										+" AND C_InvoiceLine_ID="+ matchPO.getC_InvoiceLine_ID() + " AND Qty != ?", retValue.getQty());
 								if (cnt <= 0) {
 									if (!matchPO.isPosted() && matchPO.getQty().compareTo(retValue.getQty()) >=0 )  // greater than or equal quantity
 									{

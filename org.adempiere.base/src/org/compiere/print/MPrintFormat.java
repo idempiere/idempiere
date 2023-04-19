@@ -242,7 +242,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			//	Display restrictions - Passwords, etc.
 			+ " AND NOT EXISTS (SELECT * FROM AD_Field f "
 				+ "WHERE pfi.AD_Column_ID=f.AD_Column_ID"
-				+ " AND (f.IsEncrypted='Y' OR f.ObscureType IS NOT NULL))"
+				+ " AND (f.IsEncrypted='Y' OR f.ObscureType IS NOT NULL)) "
 			+ "ORDER BY SeqNo";
 		MRole role = MRole.getDefault(getCtx(), false);
 		PreparedStatement pstmt = null;
@@ -892,8 +892,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			+ "WHERE IsActive='Y' AND AD_Tab_ID=(SELECT MIN(AD_Tab_ID) FROM AD_Tab WHERE AD_Table_ID=? AND IsActive='Y')"
 			+ " AND IsEncrypted='N' AND ObscureType IS NULL "
 			+ " AND AD_Column_ID NOT IN (SELECT pfi.AD_Column_ID FROM AD_PrintFormatItem pfi WHERE pfi.AD_PrintFormat_ID=? AND pfi.AD_Column_ID IS NOT NULL) "
-			+ " AND (AD_Column_ID IN (SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y')"
-			+ " OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y') = 0))"
+			+ " AND (AD_Column_ID IN (SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y') "
+			+ " OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y') = 0)) "
 			+ "ORDER BY COALESCE(IsDisplayed,'N') DESC, SortNo, SeqNo, Name";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -936,8 +936,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 				+ "FROM AD_Column "
 				+ "WHERE IsActive='Y' AND AD_Table_ID=? "
 				+ " AND AD_Column_ID NOT IN (SELECT pfi.AD_Column_ID FROM AD_PrintFormatItem pfi WHERE pfi.AD_PrintFormat_ID=? AND pfi.AD_Column_ID IS NOT NULL) "
-				+ " AND (AD_Column_ID IN (SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y')"
-				+ " OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=?) = 0 AND IsActive='Y'))"
+				+ " AND (AD_Column_ID IN (SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y') "
+				+ " OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=?) = 0 AND IsActive='Y')) "
 				+ "ORDER BY IsIdentifier DESC, SeqNo, Name";
 			try
 			{
