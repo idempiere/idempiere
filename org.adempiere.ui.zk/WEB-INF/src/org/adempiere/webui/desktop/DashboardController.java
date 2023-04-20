@@ -1956,7 +1956,7 @@ public class DashboardController implements EventListener<Event> {
 		public ReportData(AMedia content, ReportEngine reportEngine) {
 			this.content = content;
 			if(reportEngine.getPrintData() != null)
-				this.rowCount = reportEngine.getPrintData().getRowCount();
+				this.rowCount = reportEngine.getPrintData().getRowCount(false);
 		}
 
 		/**
@@ -1968,7 +1968,7 @@ public class DashboardController implements EventListener<Event> {
 		}
 
 		/**
-		 * Get report row count
+		 * Get report row count (function rows not included)
 		 * @return int row count
 		 */
 		public int getRowCount() {
