@@ -358,6 +358,8 @@ public abstract class AbstractDesktop extends AbstractUIPart implements IDesktop
    	 * @return List of registered windows
    	 */
     protected List<Object> getWindows(){
+    	if(getComponent() == null)
+    		return null;
     	Desktop desktop = getComponent().getDesktop();
     	if (desktop != null) {
 	    	Session session = desktop.getSession();
