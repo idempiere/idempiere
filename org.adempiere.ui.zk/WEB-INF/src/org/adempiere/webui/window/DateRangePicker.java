@@ -89,11 +89,12 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	private static final String DATESELECTIONMODE_PREVIOUS = "01";
 	private static final String DATESELECTIONMODE_NEXT = "02";
 	private static final String DATESELECTIONMODE_CURRENT = "03";
-    private static final String DATESELECTIONMODE_BEFORE = "04";
-    private static final String DATESELECTIONMODE_AFTER = "05";
-    private static final String DATESELECTIONMODE_ON = "06";
-	private static final String DATESELECTIONMODE_BETWEEN = "07";
-	private static final String DATESELECTIONMODE_QUICK = "08";
+	private static final String DATESELECTIONMODE_AGO = "04";
+    private static final String DATESELECTIONMODE_BEFORE = "05";
+    private static final String DATESELECTIONMODE_AFTER = "06";
+    private static final String DATESELECTIONMODE_ON = "07";
+	private static final String DATESELECTIONMODE_BETWEEN = "08";
+	private static final String DATESELECTIONMODE_QUICK = "09";
 	
 	private Button okBtn;
 	private Combobox modeCombobox;
@@ -365,6 +366,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			break;
 		case DATESELECTIONMODE_NEXT:
 		case DATESELECTIONMODE_PREVIOUS:
+		case DATESELECTIONMODE_AGO:
 			tabbox.setVisible(false);
 			numberBox.setVisible(true);
 			unitCombobox.setVisible(true);
@@ -434,6 +436,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			case DATESELECTIONMODE_PREVIOUS:
 			case DATESELECTIONMODE_NEXT:
 			case DATESELECTIONMODE_CURRENT:
+			case DATESELECTIONMODE_AGO:
 			case DATESELECTIONMODE_BEFORE:
 			case DATESELECTIONMODE_AFTER:
 			case DATESELECTIONMODE_ON:
@@ -703,11 +706,14 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			return displayValue;
 		}
 		
-		if(mode.equalsIgnoreCase(DATESELECTIONMODE_PREVIOUS))
+		if(mode.equalsIgnoreCase(DATESELECTIONMODE_PREVIOUS)
+				|| mode.equalsIgnoreCase(DATESELECTIONMODE_AGO))
 			numBoxValue = -numBoxValue;
 		
 		if(mode.equalsIgnoreCase(DATESELECTIONMODE_CURRENT))
 			dates = getInterval(unit, 0);
+		else if(mode.equalsIgnoreCase(DATESELECTIONMODE_AGO))
+			dates = getInterval(unit, unit, numBoxValue.intValue(), false, false, null);
 		else
 			dates = getInterval(unit, numBoxValue.intValue());
 
@@ -843,13 +849,24 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	}
 
 	private String datesToHumanReadable(String mode, String unit, Integer offset) {
-		String msgVal = "";
-		String modeVal = "";
-
+		
 		if(offset < 0)
 			offset = -offset;
 		if(mode.equalsIgnoreCase(DATESELECTIONMODE_CURRENT))
 			offset = -1;
+		
+		String unitVal = "";
+		
+		for(Comboitem item : unitCombobox.getItems()) {
+			if(item.getValue().equals(unit))
+				unitVal = item.getLabel();
+		}
+		
+		if(DATESELECTIONMODE_AGO.equals(mode))
+			return Msg.getMsg(Env.getCtx(), "DatePickerAgo", new Object[] {offset, unitVal});
+		
+		String msgVal = "";
+		String modeVal = "";
 		
 		switch (unit) {
 			case MChart.TIMEUNIT_Day:
