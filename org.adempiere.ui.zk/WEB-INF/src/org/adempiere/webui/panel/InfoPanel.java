@@ -2585,6 +2585,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 						parameters.add(knpData.getKey());
 						parameters.add(null);						
 					}
+					else if(data instanceof ValueNamePair)
+					{
+						ValueNamePair vnp = (ValueNamePair)data;
+						parameters.add(vnp.getValue());
+						parameters.add(null);
+						parameters.add(null);
+					}
 					else
 					{
 						parameters.add(data);
