@@ -332,8 +332,6 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	 */
 	public static ProcessInfoDialog showProcessInfo (ProcessInfo pi, int windowNo, final Component comp, boolean needFillLogFromDb) {						
 		ProcessInfoDialog dialog = new ProcessInfoDialog(pi, needFillLogFromDb);
-		if(dialog.getDesktop() == null)
-			return dialog;
 		final ISupportMask supportMask = LayoutUtils.showWindowWithMask(dialog, comp, LayoutUtils.OVERLAP_PARENT);
 		dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override
