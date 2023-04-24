@@ -2533,10 +2533,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	public void createT_Selection_InfoWindow(int AD_PInstance_ID)
 	{
-		MTable table = MTable.get(Env.getCtx(), getTableName());
+		MTable table = MTable.get(infoWindow.getAD_Table_ID());
 		StringBuilder insert = new StringBuilder();
 		insert.append("INSERT INTO T_Selection_InfoWindow (AD_PINSTANCE_ID, ");
-		if (table.isUUIDKeyTable())
+		if (table != null && table.isUUIDKeyTable())
 			insert.append("T_SELECTION_UU");
 		else
 			insert.append("T_SELECTION_ID");
@@ -2789,8 +2789,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	        fireValueChange(event);
     	}
     	else
-    	{    		
-    		int AD_Table_ID = MTable.getTable_ID(p_tableName);
+    	{
+    		int AD_Table_ID = infoWindow.getAD_Table_ID();
     		if (AD_Table_ID <= 0)
     		{
     			if (p_keyColumn.endsWith("_ID") || p_keyColumn.endsWith("_UU"))
