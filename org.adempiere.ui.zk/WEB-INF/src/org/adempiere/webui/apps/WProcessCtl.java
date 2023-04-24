@@ -116,7 +116,8 @@ public class WProcessCtl extends AbstractProcessCtl {
 				para.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 					@Override
 					public void onEvent(Event event) throws Exception {
-						parent.hideMask();
+						if(para.getDesktop() != null)
+							parent.hideMask();
 					}
 				});
 			} else if (window != null && window instanceof Component){
