@@ -36,6 +36,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
@@ -116,7 +117,7 @@ public class WProcessCtl extends AbstractProcessCtl {
 				para.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 					@Override
 					public void onEvent(Event event) throws Exception {
-						if(para.getDesktop() != null)
+						if(Executions.getCurrent() != null && Executions.getCurrent().getNativeRequest() != null)
 							parent.hideMask();
 					}
 				});
