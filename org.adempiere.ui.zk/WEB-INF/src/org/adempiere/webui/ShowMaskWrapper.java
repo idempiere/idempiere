@@ -18,6 +18,7 @@ import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.part.UIPart;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
@@ -113,7 +114,8 @@ public class ShowMaskWrapper implements ISupportMask {
 	 * @param comp
 	 */
 	public static void setFlagShowMask (Component comp){
-		comp.setAttribute(ISupportMask.READY_SHOW_MASK_FLAG, Integer.valueOf(1), Component.REQUEST_SCOPE);
+		if(Executions.getCurrent() != null && Executions.getCurrent().getNativeRequest() != null)
+			comp.setAttribute(ISupportMask.READY_SHOW_MASK_FLAG, Integer.valueOf(1), Component.REQUEST_SCOPE);
 	}
 	
 	/**
@@ -122,6 +124,7 @@ public class ShowMaskWrapper implements ISupportMask {
 	 * @return true if flag exists
 	 */
 	public static boolean hasFlagShowMask (Component comp){
-		return (comp.getAttribute(ISupportMask.READY_SHOW_MASK_FLAG, Component.REQUEST_SCOPE) != null);
+		return (Executions.getCurrent() != null && Executions.getCurrent().getNativeRequest() != null) 
+				&& (comp.getAttribute(ISupportMask.READY_SHOW_MASK_FLAG, Component.REQUEST_SCOPE) != null);
 	}
 }
