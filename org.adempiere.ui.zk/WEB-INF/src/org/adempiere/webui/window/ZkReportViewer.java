@@ -222,6 +222,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	
 	private ToolBarButton bCloudUpload = new ToolBarButton();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
+	/** Row count label */
+	private Label rowCount;
 
 	private final ExportFormat[] exportFormats = new ExportFormat[] {
 		new ExportFormat(POSTSCRIPT_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePS"), POSTSCRIPT_FILE_EXT, POSTSCRIPT_MIME_TYPE),
@@ -785,7 +787,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		linkDiv.setStyle("width:100%; height: 40px; padding: 4px;");
 		linkDiv.appendChild(reportLink);
 
-		Label rowCount = new Label(Msg.getMsg(m_ctx, "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount()}));
+		rowCount = new Label(Msg.getMsg(m_ctx, "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
 		rowCount.setStyle("float: right;");
 		linkDiv.appendChild(rowCount);
 		
@@ -1564,6 +1566,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		showBusyDialog();
 		setLanguage();
 		Events.echoEvent(ON_RENDER_REPORT_EVENT, this, null);
+		updateRowCount();
 	}
 
 
@@ -2065,5 +2068,13 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			ZKUpdateUtil.setHeight(findWindow, "60%");
 		findWindow.setSizable(false);
 		findWindow.setContentStyle("background-color: #fff; width: 99%; margin: auto;");
+	}
+	
+	/**
+	 * Update Row Count label
+	 */
+	private void updateRowCount() {
+		if(rowCount != null)
+			rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
 	}
 }

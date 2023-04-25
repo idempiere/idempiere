@@ -283,9 +283,18 @@ public class PrintData implements Serializable
 	 */
 	public int getRowCount()
 	{
-		return m_matrix.getRowCount();
+		return getRowCount(true);
 	}	//	getRowCount
 
+	/**
+	 * Get row count
+	 * @param includeFunctionRows
+	 * @return row count
+	 */
+	public int getRowCount(boolean includeFunctionRows) {
+		return includeFunctionRows ? m_matrix.getRowCount() : m_matrix.getRowCount() - m_functionRows.size();
+	}
+	
 	/**
 	 * 	Get Current Row Index
 	 * 	@return row index
