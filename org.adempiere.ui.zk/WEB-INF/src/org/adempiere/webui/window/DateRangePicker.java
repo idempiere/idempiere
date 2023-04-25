@@ -442,7 +442,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	 */
 	public String getDateRangeText() {
 		return dateTextBox.getValue();
-	} // getDateTextBoxValue
+	} // getDateRangeText
 
 	/**
 	 * Parse the value shown in DateTextBox, set dateFrom and dateTo values
