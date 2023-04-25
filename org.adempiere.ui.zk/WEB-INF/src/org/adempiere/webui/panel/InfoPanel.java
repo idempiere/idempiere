@@ -2790,7 +2790,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     	}
     	else
     	{
-    		int AD_Table_ID = infoWindow.getAD_Table_ID();
+    		int AD_Table_ID = infoWindow != null ? infoWindow.getAD_Table_ID() : -1;
     		if (AD_Table_ID <= 0)
     		{
     			if (p_keyColumn.endsWith("_ID") || p_keyColumn.endsWith("_UU"))
