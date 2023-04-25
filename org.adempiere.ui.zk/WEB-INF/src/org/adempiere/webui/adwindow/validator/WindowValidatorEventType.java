@@ -41,7 +41,11 @@ public enum WindowValidatorEventType {
 	BEFORE_SAVE("beforeSave"),
 	AFTER_SAVE("afterSave"),
 	BEFORE_COPY("beforeCopy"),
-	AFTER_COPY("afterCopy");
+	AFTER_COPY("afterCopy"),
+	BEFORE_DOC_ACTION("beforeDocAction"),
+	AFTER_DOC_ACTION("afterDocAction"),
+	BEFORE_PROCESS("beforeProcess"),
+	AFTER_PROCESS("afterProcess");
 	
 	/** Event name **/
 	private String name;

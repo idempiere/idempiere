@@ -182,6 +182,9 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
      */
 	private static final String ON_DEFER_SET_DETAILPANE_SELECTION_EVENT = "onDeferSetDetailpaneSelection";
 
+	/** ProcessModalDialog attribute to store reference for post process execution callback */
+	private static final String PROCESS_POST_CALLBACK_ATTRIBUTE = "processPostCallbackAttribute";
+	
 	private static final CLogger logger;
 
     static
@@ -1475,6 +1478,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			else
 			{
 				statusBar.setStatusLine(s, b, logs);
+			}
+						
+			if (dialog.getAttribute(PROCESS_POST_CALLBACK_ATTRIBUTE) != null && dialog.getAttribute(PROCESS_POST_CALLBACK_ATTRIBUTE) instanceof Callback<?>)
+			{
+				@SuppressWarnings("unchecked")
+				Callback<Boolean> callback = (Callback<Boolean>) dialog.getAttribute(PROCESS_POST_CALLBACK_ATTRIBUTE);
+	    		callback.onCallback(dialog.getProcessInfo() != null && !dialog.getProcessInfo().isError());
 			}
     	}
     	else if (ADTabpanel.ON_DYNAMIC_DISPLAY_EVENT.equals(event.getName()))
@@ -3639,9 +3649,29 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						if (!win.isStartProcess()) {								
 							return;
 						}
-						boolean startWOasking = true;
-						boolean isProcessMandatory = true;
-						executeButtonProcess(wButton, startWOasking, table_ID, recordIdParam, isProcessMandatory);
+						
+						final Callback<Boolean> postCallback = new Callback<Boolean>() {
+							@Override
+							public void onCallback(Boolean result) {
+								if (result) {
+									WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.AFTER_DOC_ACTION.getName());
+							    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, null);
+								}
+							}
+						};
+				    	Callback<Boolean> preCallback = new Callback<Boolean>() {
+							@Override
+							public void onCallback(Boolean result) {
+								if (result) {
+									boolean startWOasking = true;
+									boolean isProcessMandatory = true;
+									executeButtonProcess(wButton, startWOasking, table_ID, recordIdParam, isProcessMandatory, postCallback);
+								}
+							}
+						};
+						
+						WindowValidatorEvent validatorEvent = new WindowValidatorEvent(adwindow, WindowValidatorEventType.BEFORE_DOC_ACTION.getName(), wButton);
+				    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(validatorEvent, preCallback);						
 					}
 				});				
 				getComponent().getParent().appendChild(win);
@@ -3768,8 +3798,27 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			return;
 		}   //  Posted
 
-		executeButtonProcess(wButton, startWOasking, table_ID, record_ID,
-				isProcessMandatory);
+		final int finalRecordId = record_ID;
+		final Callback<Boolean> postCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					WindowValidatorEvent event = new WindowValidatorEvent(adwindow, WindowValidatorEventType.AFTER_PROCESS.getName());
+			    	WindowValidatorManager.getInstance().fireWindowValidatorEvent(event, null);
+				}
+			}
+		};
+    	Callback<Boolean> preCallback = new Callback<Boolean>() {
+			@Override
+			public void onCallback(Boolean result) {
+				if (result) {
+					executeButtonProcess(wButton, startWOasking, table_ID, finalRecordId, isProcessMandatory, postCallback);
+				}
+			}
+		};
+		
+		WindowValidatorEvent validatorEvent = new WindowValidatorEvent(adwindow, WindowValidatorEventType.BEFORE_PROCESS.getName(), wButton);
+		WindowValidatorManager.getInstance().fireWindowValidatorEvent(validatorEvent, preCallback);		
 	} // actionButton
 
 	/**
@@ -3865,10 +3914,11 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 * @param table_ID
 	 * @param record_ID
 	 * @param isProcessMandatory
+	 * @param callback 
 	 */
 	public void executeButtonProcess(final IProcessButton wButton,
 			final boolean startWOasking, final int table_ID, final int record_ID,
-			boolean isProcessMandatory) {
+			boolean isProcessMandatory, Callback<Boolean> callback) {
 		/**
 		 *  Start Process ----
 		 */
@@ -3896,7 +3946,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						if (wButton.getInfoWindow_ID() > 0)
 							executionButtonInfoWindow0(wButton);
 						else
-							executeButtonProcess0(wButton, startWOasking, table_ID, record_ID);
+							executeButtonProcess0(wButton, startWOasking, table_ID, record_ID, callback);
 					}
 				}
 			});
@@ -3906,7 +3956,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (wButton.getInfoWindow_ID() > 0)
 				executionButtonInfoWindow0(wButton);
 			else
-				executeButtonProcess0(wButton, startWOasking, table_ID, record_ID);
+				executeButtonProcess0(wButton, startWOasking, table_ID, record_ID, callback);
 		}
 	}
 
@@ -3916,9 +3966,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 * @param startWOasking
 	 * @param table_ID
 	 * @param record_ID
+	 * @param callback 
 	 */
 	private void executeButtonProcess0(final IProcessButton wButton,
-			boolean startWOasking, int table_ID, int record_ID) {
+			boolean startWOasking, int table_ID, int record_ID, Callback<Boolean> callback) {
 		// call form
 		MProcess pr = new MProcess(ctx, wButton.getProcess_ID(), null);
 		int adFormID = pr.getAD_Form_ID();
@@ -4001,6 +4052,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			{
 				dialog.setBorder("normal");				
 				getComponent().getParent().appendChild(dialog);
+				if (callback != null)
+					dialog.setAttribute(PROCESS_POST_CALLBACK_ATTRIBUTE, callback);
 				if (ClientInfo.isMobile())
 				{
 					dialog.doHighlighted();
@@ -4011,6 +4064,21 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 					LayoutUtils.openOverlappedWindow(getComponent(), dialog, "middle_center");
 				}
 				Executions.schedule(getComponent().getDesktop(), e -> dialog.focus(), new Event("onPostShowProcessModalDialog"));
+			}
+			else if (callback != null)
+			{
+				if (dialog.isCancel()) 
+				{
+					callback.onCallback(Boolean.FALSE);
+				} 
+				else 
+				{
+					pi = dialog.getProcessInfo();
+					if (pi == null || pi.isError())
+						callback.onCallback(Boolean.FALSE);
+					else
+						callback.onCallback(Boolean.TRUE);
+				}
 			}
 		}
 	}
