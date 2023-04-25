@@ -467,7 +467,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 	 *	@return	M_Warehouse_ID or 0
 	 */
 	
-	private int getOnly_Warehouse_ID()
+	protected int getOnly_Warehouse_ID()
 	{
 		//IDEMPIERE-4882 : Load Locator To field value as per Warehouse TO field value
 		String only_Warehouse=null;
@@ -505,7 +505,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 	 *	@return	M_Product_ID or 0
 	 */
 	
-	private int getOnly_Product_ID()
+	protected int getOnly_Product_ID()
 	{
 		if (!Env.isSOTrx(Env.getCtx(), m_WindowNo))
 			return 0; // No product restrictions for PO
@@ -601,5 +601,12 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 	public void dynamicDisplay(Properties ctx) {
 		super.dynamicDisplay(ctx);
 		m_mLocator.dynamicDisplay(ctx);
+	}
+
+	/**
+	 * @return {@link MLocatorLookup}
+	 */
+	public MLocatorLookup getMLocatorLookup() {
+		return m_mLocator;
 	}
 }
