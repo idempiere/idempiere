@@ -31,3 +31,25 @@ tr.z-group {
 .z-group-icon-open:before {
 	content: "\f0d7";
 }
+
+.z-listgroup-header {
+	padding-top: 8px;
+    padding-bottom: 8px;
+}
+.z-listgroup-header-content > .z-listitem-image.z-listitem-image-checkbox {
+	display: none;
+}
+.z-listgroup-icon {
+	display: inline-block;
+	font-family: FontAwesome;
+	font-weight: normal;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.z-listgroup-icon-close:before {
+	content: "\f0da";
+}
+.z-listgroup-icon-open:before {
+	content: "\f0d7";
+}
