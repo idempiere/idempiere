@@ -223,7 +223,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private ToolBarButton bCloudUpload = new ToolBarButton();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
 	/** Row count label */
-	Label rowCount;
+	private Label rowCount;
 
 	private final ExportFormat[] exportFormats = new ExportFormat[] {
 		new ExportFormat(POSTSCRIPT_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePS"), POSTSCRIPT_FILE_EXT, POSTSCRIPT_MIME_TYPE),
@@ -2074,6 +2074,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 * Update Row Count label
 	 */
 	private void updateRowCount() {
-		rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
+		if(rowCount != null)
+			rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
 	}
 }
