@@ -35,6 +35,7 @@ import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IProcessUI;
+import org.compiere.model.MLanguage;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MProcess;
@@ -415,12 +416,12 @@ public class ReportCtl
 			MPrintFormat format = re.getPrintFormat();
 			
 			// Set Print Format and Language to AD_Pinstance
-			if(instance.getAD_PrintFormat_ID() < 0 && format.getAD_PrintFormat_ID() > 0) {
+			if(instance.getAD_PrintFormat_ID() <= 0 && format.getAD_PrintFormat_ID() > 0) {
 				instance.setAD_PrintFormat_ID(format.getAD_PrintFormat_ID());
 				instance.saveEx();
 			}
-			if(instance.getAD_Language_ID() < 0 && re.getLanguageID() > 0) {
-				instance.setAD_Language_ID(re.getLanguageID());
+			if(instance.getAD_Language_ID() <= 0 && format.getLanguage() != null) {
+				instance.setAD_Language_ID(MLanguage.get(Env.getCtx(), format.getLanguage()).getAD_Language_ID());
 				instance.saveEx();
 			}
 			// We have a Jasper Print Format
