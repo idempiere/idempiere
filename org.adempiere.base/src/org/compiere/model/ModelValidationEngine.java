@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -573,9 +574,14 @@ public class ModelValidationEngine
 		EventManager.getInstance().sendEvent(event);
 		@SuppressWarnings("unchecked")
 		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
-		if (errors != null && !errors.isEmpty())
-			return errors.get(0);
-
+		if (errors != null && !errors.isEmpty()) {
+			Collections.reverse(errors);
+			StringBuilder eventErrors = new StringBuilder("");
+			for (String error : errors) {
+				eventErrors.append(error).append("<br>");
+			}
+			return eventErrors.toString();
+		}
 		return null;
 	}	//	fireDocValidate
 
