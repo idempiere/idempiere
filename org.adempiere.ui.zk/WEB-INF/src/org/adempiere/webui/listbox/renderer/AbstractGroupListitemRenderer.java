@@ -26,7 +26,6 @@ package org.adempiere.webui.listbox.renderer;
 
 import org.adempiere.webui.component.ListitemGroup;
 import org.adempiere.webui.component.ListitemGroup.ListitemGroupHeader;
-import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listgroup;
@@ -36,7 +35,13 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListitemRendererExt;
 
-
+/**
+ * Renderer for {@link Listbox} with single level grouping.<br/>
+ * Note that due to a class hierarchy issue, this wouldn't works with {@link org.adempiere.webui.component.Listbox}.<br/>
+ * Note2: not working very well with {@link Listbox#setCheckmark(true)}. Recommended to roll your own checkbox cell if you need multiple selection. 
+ * @author hengsin
+ * @param <T> Common ancestor type for Group and Item class.
+ */
 public abstract class AbstractGroupListitemRenderer<T> implements ListitemRenderer<T>, ListitemRendererExt, ListgroupRendererExt {
 	
 	public AbstractGroupListitemRenderer() {
@@ -79,7 +84,7 @@ public abstract class AbstractGroupListitemRenderer<T> implements ListitemRender
 	public abstract int getColumnCount();
 	
 	/**
-	 * @param data
+	 * @param data group
 	 * @return group header title
 	 */
 	public abstract String getGroupHeaderTitle(T data);
@@ -87,7 +92,7 @@ public abstract class AbstractGroupListitemRenderer<T> implements ListitemRender
 	/**
 	 * Renders the data to the specified list item.
 	 * @param item the listitem to render the result.
-	 * @param data data that is returned from {@link ListModel#getElementAt}
+	 * @param data item within a group
 	 * @param index the row/list index of the data that is currently being rendered
 	 */
 	public abstract void renderListitem(Listitem item, T data, int index);
@@ -95,18 +100,22 @@ public abstract class AbstractGroupListitemRenderer<T> implements ListitemRender
 	/**
 	 * Render group
 	 * @param item
-	 * @param data
+	 * @param data group
 	 * @param index
 	 */
 	public void renderGroup(Listitem item, T data, int index)
 	{
-		
+		ListitemGroupHeader cell = new ListitemGroupHeader();
+		cell.applyProperties();
+		cell.setSpan(getColumnCount());
+		cell.setTitle(getGroupHeaderTitle(data));
+		item.appendChild(cell);		
 	}
 	
 	/**
 	 * Render group footer
 	 * @param item
-	 * @param data
+	 * @param data footer
 	 * @param index
 	 */
 	public void renderGroupfoot(Listitem item, T data, int index)
@@ -118,14 +127,7 @@ public abstract class AbstractGroupListitemRenderer<T> implements ListitemRender
 	public void render(Listitem item, T data, int index) throws Exception {
 		if(item instanceof ListitemGroup)
     	{
-			item.removeChild(item.getFirstChild());
-    		
-    		ListitemGroupHeader cell = new ListitemGroupHeader();
-    		cell.applyProperties();
-    		cell.setSpan(getColumnCount());
-    		cell.setTitle(getGroupHeaderTitle(data));
-    		item.appendChild(cell);
-    		
+			item.removeChild(item.getFirstChild());    		
     		renderGroup(item, data, index);
     	}
     	else

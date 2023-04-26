@@ -34,13 +34,15 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listgroup;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Span;
 
 /**
- * Single level grouping for {@link Listbox} 
+ * Single level grouping for {@link Listbox}.<br/>
+ * Note that due to a class hierarchy issue, this wouldn't works with {@link org.adempiere.webui.component.Listbox}. 
  */
 public class ListitemGroup extends Listgroup {
 	/**
@@ -103,7 +105,7 @@ public class ListitemGroup extends Listgroup {
 	 * @return {@link ListitemGroupHeader}
 	 */
 	private ListitemGroupHeader getOrCreateGroupHeader() {
-		Component cell = getFirstChild();
+		Component cell = getChildren().size() == 0 || getChildren().size() == 1 ? getFirstChild() : getFirstChild().getNextSibling();
 		if (cell == null || cell instanceof ListitemGroupHeader) {
 			if (cell == null) cell = new ListitemGroupHeader();
 			cell.applyProperties();
@@ -180,8 +182,8 @@ public class ListitemGroup extends Listgroup {
 			
 			lbl = new Label();
 			lbl.setStyle("cursor: pointer");
-			lbl.addEventListener(Events.ON_CLICK, this);
 			appendChild(lbl);
+			lbl.addEventListener(Events.ON_CLICK, this);
 		}
 		
 		/**
@@ -213,7 +215,7 @@ public class ListitemGroup extends Listgroup {
 		 */
 		public void setOpen(boolean open) {
 			this.open = open;
-			span.setSclass(this.open ? "z-listgroup-icon-open" : "z-listgroup-icon-close");
+			span.setSclass(this.open ? "z-icon-listgroup-open" : "z-icon-listgroup-close");
 		}
 
 		@Override

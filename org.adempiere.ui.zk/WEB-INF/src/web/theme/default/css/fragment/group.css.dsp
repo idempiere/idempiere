@@ -32,24 +32,26 @@ tr.z-group {
 	content: "\f0d7";
 }
 
-.z-listgroup-header {
-	padding-top: 8px;
-    padding-bottom: 8px;
+div.z-listbox-body .z-listgroup-header {
+	padding-top: 4px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgb(207, 207, 207);
 }
-.z-listgroup-header-content > .z-listitem-image.z-listitem-image-checkbox {
+.z-listgroup-header-content > .z-listitem-checkable.z-listitem-checkbox {
 	display: none;
 }
 .z-listgroup-icon {
 	display: inline-block;
-	font-family: FontAwesome;
-	font-weight: normal;
+	font-weight: bold;
 	font-style: normal;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	height: 22px;
+	width: 22px;
+	font-size: 18px;
+	padding-top: 2px;
 }
-.z-listgroup-icon-close:before {
-	content: "\f0da";
+.z-icon-listgroup-close::before {
+	content: "\f105";
 }
-.z-listgroup-icon-open:before {
-	content: "\f0d7";
+.z-icon-listgroup-open::before {
+	content: "\f107";
 }
