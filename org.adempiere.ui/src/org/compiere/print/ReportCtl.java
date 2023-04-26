@@ -381,6 +381,7 @@ public class ReportCtl
 	 *  @param parent The window which invoked the printing
 	 *  @param WindowNo The windows number which invoked the printing
 	 * 	@param IsDirectPrint if true, prints directly - otherwise View
+	 * 	@param instance - AD_PInstance
 	 * 	@return true if success
 	 */
 	public static boolean startDocumentPrint(int type, int Record_ID, IProcessUI parent, int WindowNo,
@@ -396,6 +397,7 @@ public class ReportCtl
 	 *  @param parent The window which invoked the printing
 	 *  @param WindowNo The windows number which invoked the printing
 	 * 	@param printerName 	Specified printer name
+	 * 	@param instance - AD_PInstance
 	 * 	@return true if success
 	 */
 	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, IProcessUI parent, int WindowNo,
@@ -452,6 +454,7 @@ public class ReportCtl
 	 * 	Find/Create
 	 *	@param C_Payment_ID Payment
 	 * 	@param IsDirectPrint if true, prints directly - otherwise View
+	 * 	@param instance - AD_PInstance
 	 * 	@return true if success
 	 */
 	public static boolean startCheckPrint (int C_Payment_ID, boolean IsDirectPrint, MPInstance instance)
