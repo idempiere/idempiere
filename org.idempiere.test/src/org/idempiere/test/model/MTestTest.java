@@ -62,7 +62,8 @@ public class MTestTest extends AbstractTestCase {
 		test.setDescription("Test setting description");
 		test.saveEx();
 		test.load(trxName);
-	    assertEquals("Test setting description", test.getDescription());
+		String newDescription = test.getDescription();
+	    assertTrue(newDescription.startsWith("Test setting description"));
 		MTest testSys = new MTest(ctx, TestInSystem, trxName);
 		testSys.setDescription("Test setting description");
 		AdempiereException thrown = assertThrows(

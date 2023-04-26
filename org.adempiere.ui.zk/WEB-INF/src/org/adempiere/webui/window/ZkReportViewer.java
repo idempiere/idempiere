@@ -47,6 +47,7 @@ import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Mask;
@@ -221,6 +222,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	
 	private ToolBarButton bCloudUpload = new ToolBarButton();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
+	/** Row count label */
+	private Label rowCount;
 
 	private final ExportFormat[] exportFormats = new ExportFormat[] {
 		new ExportFormat(POSTSCRIPT_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePS"), POSTSCRIPT_FILE_EXT, POSTSCRIPT_MIME_TYPE),
@@ -781,9 +784,15 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		reportLink = new A();
 		reportLink.setTarget("_blank");
 		Div linkDiv = new Div();
-		linkDiv.setStyle("width:100%; height: 40px; padding-top: 4px; padding-bottom: 4px;");
+		linkDiv.setStyle("width:100%; height: 40px; padding: 4px;");
 		linkDiv.appendChild(reportLink);
-		south.appendChild(linkDiv);
+
+		rowCount = new Label(Msg.getMsg(m_ctx, "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
+		rowCount.setStyle("float: right;");
+		linkDiv.appendChild(rowCount);
+		
+		south.appendChild(linkDiv);		
+		
 		//m_WindowNo
 		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "_WinInfo_AD_Window_ID", true);
 		if (AD_Window_ID == 0)
@@ -1393,6 +1402,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		Object pp = li.getValue();
 		if (pp == null)
 			return;
+		
+		setTabOnCloseHandler();
 		//
 		MPrintFormat pf = null;
 		int AD_PrintFormat_ID = Integer.valueOf(pp.toString());
@@ -1555,6 +1566,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		showBusyDialog();
 		setLanguage();
 		Events.echoEvent(ON_RENDER_REPORT_EVENT, this, null);
+		updateRowCount();
 	}
 
 
@@ -2056,5 +2068,13 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			ZKUpdateUtil.setHeight(findWindow, "60%");
 		findWindow.setSizable(false);
 		findWindow.setContentStyle("background-color: #fff; width: 99%; margin: auto;");
+	}
+	
+	/**
+	 * Update Row Count label
+	 */
+	private void updateRowCount() {
+		if(rowCount != null)
+			rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
 	}
 }

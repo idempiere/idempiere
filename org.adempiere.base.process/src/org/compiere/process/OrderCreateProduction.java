@@ -76,6 +76,7 @@ public class OrderCreateProduction extends SvrProcess {
 				+ " AND C_OrderLine.Processed='Y'"
 				+ " AND p.IsBOM='Y'"
 				+ " AND p.IsVerified='Y'"
+				+ " AND p.IsAutoProduce='N'"
 				+ " AND NOT EXISTS (SELECT 1 FROM M_Production pr WHERE pr.C_OrderLine_ID=C_OrderLine.C_OrderLine_ID)";
 		List<MOrderLine> lines = new Query(getCtx(), MOrderLine.Table_Name, where, get_TrxName())
 				.addJoinClause("JOIN M_Product p ON (C_OrderLine.M_Product_ID=p.M_Product_ID)")

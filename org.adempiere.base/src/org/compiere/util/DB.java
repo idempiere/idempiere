@@ -2449,7 +2449,7 @@ public final class DB
 			insert.append(", ");
 			if (selectedId instanceof Integer) {
 				insert.append((Integer)selectedId);
-				insert.append(", ''");
+				insert.append(", ' '");
 			} else {
 				insert.append("0, ");
 				insert.append(DB.TO_STRING(selectedId.toString()));
@@ -2461,9 +2461,7 @@ public final class DB
 			if (viewIDValue == null){
 				insert.append("NULL");
 			}else{
-				insert.append("'");
-				insert.append(viewIDValue);
-				insert.append("'");
+				insert.append(DB.TO_STRING(viewIDValue));
 			}
 			
 			insert.append(" FROM DUAL ");

@@ -2443,6 +2443,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					createT_Selection_InfoWindow(pInstanceID);
 					recordSelectedData.clear();
 				}else if (ProcessModalDialog.ON_WINDOW_CLOSE.equals(event.getName())){ 
+					if (getDesktop() == null) 
+						return;
 					if (processModalDialog.isCancel()){
 						//clear back 
 						m_results.clear();
@@ -2533,10 +2535,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	public void createT_Selection_InfoWindow(int AD_PInstance_ID)
 	{
-		MTable table = MTable.get(Env.getCtx(), getTableName());
+		MTable table = MTable.get(infoWindow.getAD_Table_ID());
 		StringBuilder insert = new StringBuilder();
 		insert.append("INSERT INTO T_Selection_InfoWindow (AD_PINSTANCE_ID, ");
-		if (table.isUUIDKeyTable())
+		if (table != null && table.isUUIDKeyTable())
 			insert.append("T_SELECTION_UU");
 		else
 			insert.append("T_SELECTION_ID");
@@ -2628,6 +2630,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 						parameters.add(null);
 						parameters.add(knpData.getKey());
 						parameters.add(null);						
+					}
+					else if(data instanceof ValueNamePair)
+					{
+						ValueNamePair vnp = (ValueNamePair)data;
+						parameters.add(vnp.getValue());
+						parameters.add(null);
+						parameters.add(null);
 					}
 					else
 					{
@@ -2782,8 +2791,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	        fireValueChange(event);
     	}
     	else
-    	{    		
-    		int AD_Table_ID = MTable.getTable_ID(p_tableName);
+    	{
+    		int AD_Table_ID = infoWindow != null ? infoWindow.getAD_Table_ID() : -1;
     		if (AD_Table_ID <= 0)
     		{
     			if (p_keyColumn.endsWith("_ID") || p_keyColumn.endsWith("_UU"))
