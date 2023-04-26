@@ -606,7 +606,7 @@ public abstract class AbstractXLSXExporter
 		if (out == null)
 			fixColumnWidth(sheet, colnumMax);
 		else
-			closeTableSheet(sheet, sheetName, colnumMax);
+			closeTableSheet(sheet, sheetName, colnumMax + 1);
 		//
 
 		if (out != null)
