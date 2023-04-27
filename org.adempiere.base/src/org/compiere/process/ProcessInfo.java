@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
+import org.compiere.model.MPInstanceLog;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MSession;
@@ -691,6 +692,80 @@ public class ProcessInfo implements Serializable
 		return logs;
 	}	//	getLogs
 
+	
+	/**
+	 * Save Log to DB
+	 * @param Log_ID
+	 * @param P_ID
+	 * @param P_Date
+	 * @param P_Number
+	 * @param P_Msg
+	 * @param tableId
+	 * @param recordId
+	 */
+	public void saveLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg,int tableId,int recordId)
+	{
+		saveLog (new ProcessInfoLog (Log_ID, P_ID, P_Date, P_Number, P_Msg,tableId,recordId));
+	}
+	
+	/**
+	 * Save Log to DB
+	 * @param P_ID
+	 * @param P_Date
+	 * @param P_Number
+	 * @param P_Msg
+	 * @param tableId
+	 * @param recordId
+	 */
+	public void saveLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg ,int tableId,int recordId)
+	{
+		saveLog (new ProcessInfoLog (P_ID, P_Date, P_Number, P_Msg,tableId, recordId));
+	}
+	
+	/**************************************************************************
+	 * 	Save Log to DB
+	 *	@param Log_ID Log ID
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Message
+	 */
+	public void saveLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
+	{
+		saveLog (new ProcessInfoLog (Log_ID, P_ID, P_Date, P_Number, P_Msg));
+	}	//	saveLog
+
+	/**
+	 * 	Save Log to DB
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Message
+	 */
+	public void saveLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
+	{
+		saveLog (new ProcessInfoLog (P_ID, P_Date, P_Number, P_Msg));
+	}	//	saveLog
+
+	/**
+	 * 	Save Log to DB
+	 *	@param logEntry log entry
+	 */
+	public void saveLog (ProcessInfoLog logEntry)
+	{
+		if (logEntry == null)
+			return;
+		MPInstanceLog il = new MPInstanceLog(getAD_PInstance_ID(), 
+				logEntry.getLog_ID(), 
+				logEntry.getP_Date(),
+				logEntry.getP_ID(), 
+				logEntry.getP_Number(), 
+				logEntry.getP_Msg(),
+				logEntry.getAD_Table_ID(), 
+				logEntry.getRecord_ID());
+		il.save();
+	}	//	saveLog
+	
 	/**
 	 * Method getIDs
 	 * @return int[]

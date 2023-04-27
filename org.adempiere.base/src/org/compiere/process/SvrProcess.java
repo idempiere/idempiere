@@ -619,6 +619,42 @@ public abstract class SvrProcess implements ProcessCall
 	}
 
 	/**************************************************************************
+	 *  Save Log Entry with table name
+	 *  
+	 */
+	public void saveLog (int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId)
+	{
+		if (m_pi != null)
+			m_pi.saveLog(id, date, number, msg,tableId,recordId);
+		
+		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg + " - " + tableId + " - " + recordId);
+	}	//	saveLog
+
+	/**************************************************************************
+	 *  Save Log Entry
+	 *  @param date date or null
+	 *  @param id record id or 0
+	 *  @param number number or null
+	 *  @param msg message or null
+	 */
+	public void saveLog (int id, Timestamp date, BigDecimal number, String msg)
+	{
+		if (m_pi != null)
+			m_pi.saveLog(id, date, number, msg);
+		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
+	}	//	saveLog
+
+	/**
+	 * 	Save Log
+	 *	@param msg message
+	 */
+	public void saveLog (String msg)
+	{
+		if (msg != null)
+			saveLog (0, null, null, msg);
+	}	//	saveLog
+	
+	/**************************************************************************
 	 * 	Execute function
 	 * 	@param className class
 	 * 	@param methodName method
