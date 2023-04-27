@@ -694,7 +694,7 @@ public class ProcessInfo implements Serializable
 
 	
 	/**
-	 * Save Log to DB
+	 * Save Log to DB immediately
 	 * @param Log_ID
 	 * @param P_ID
 	 * @param P_Date
@@ -709,7 +709,7 @@ public class ProcessInfo implements Serializable
 	}
 	
 	/**
-	 * Save Log to DB
+	 * Save Log to DB immediately
 	 * @param P_ID
 	 * @param P_Date
 	 * @param P_Number
@@ -722,8 +722,8 @@ public class ProcessInfo implements Serializable
 		saveLog (new ProcessInfoLog (P_ID, P_Date, P_Number, P_Msg,tableId, recordId));
 	}
 	
-	/**************************************************************************
-	 * 	Save Log to DB
+	/**
+	 * 	Save Log to DB immediately
 	 *	@param Log_ID Log ID
 	 *	@param P_ID Process ID
 	 *	@param P_Date Process Date
@@ -736,7 +736,7 @@ public class ProcessInfo implements Serializable
 	}	//	saveLog
 
 	/**
-	 * 	Save Log to DB
+	 * 	Save Log to DB immediately
 	 *	@param P_ID Process ID
 	 *	@param P_Date Process Date
 	 *	@param P_Number Process Number
@@ -748,7 +748,7 @@ public class ProcessInfo implements Serializable
 	}	//	saveLog
 
 	/**
-	 * 	Save Log to DB
+	 * 	Save Log to DB immediately
 	 *	@param logEntry log entry
 	 */
 	public void saveLog (ProcessInfoLog logEntry)
