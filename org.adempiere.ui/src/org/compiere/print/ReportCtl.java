@@ -35,7 +35,6 @@ import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IProcessUI;
-import org.compiere.model.MLanguage;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MProcess;
@@ -180,11 +179,11 @@ public class ReportCtl
 				return startDocumentPrint(ReportEngine.DUNNING, pi.getRecord_ID(), parent, WindowNo, !pi.isPrintPreview());
 		   else if (pi.getAD_Process_ID() == PROCESS_RPT_FINREPORT			//	Financial Report
 				|| pi.getAD_Process_ID() == PROCESS_RPT_FINSTATEMENT)			//	Financial Statement
-			   return startFinReport (pi, WindowNo);
+			   return startFinReport (pi, WindowNo, instance);
 			/********************
 			 *	Standard Report
 			 *******************/
-			return startStandardReport (pi, WindowNo);
+			return startStandardReport (pi, WindowNo, instance);
 		}
 		finally {
 			instance.setIsProcessing(false);
@@ -213,6 +212,20 @@ public class ReportCtl
 	 *  @return true if OK
 	 */
 	static public boolean startStandardReport (ProcessInfo pi, int WindowNo, boolean IsDirectPrint)
+	{
+		return startStandardReport(pi, WindowNo, IsDirectPrint, null);
+	}
+	
+	/**************************************************************************
+	 *	Start Standard Report.
+	 *  - Get Table Info and submit
+	 *  @param pi Process Info
+	 *  @param WindowNo The windows number which invoked the printing
+	 *  @param IsDirectPrint if true, prints directly - otherwise View
+	 * 	@param instance - AD_PInstance
+	 *  @return true if OK
+	 */
+	static public boolean startStandardReport (ProcessInfo pi, int WindowNo, boolean IsDirectPrint, MPInstance instance)
 	{
 		pi.setPrintPreview(!IsDirectPrint);
 		return startStandardReport(pi, WindowNo);
@@ -248,6 +261,24 @@ public class ReportCtl
 	 */
 	static public boolean startStandardReport (ProcessInfo pi, int WindowNo)
 	{
+		return startStandardReport(pi, WindowNo, null);
+	}
+	
+	/**************************************************************************
+	 *	Start Standard Report.
+	 *  - Get Table Info and submit.<br>
+	 *  A report can be created from:
+	 *  <ol>
+	 *  <li>attached MPrintFormat, if any (see {@link ProcessInfo#setTransientObject(Object)}, {@link ProcessInfo#setSerializableObject(java.io.Serializable)}
+	 *  <li>process information (AD_Process.AD_PrintFormat_ID, AD_Process.AD_ReportView_ID)
+	 *  </ol>
+	 *  @param pi Process Info
+	 *  @param WindowNo The windows number which invoked the printing
+	 * 	@param instance - AD_PInstance
+	 *  @return true if OK
+	 */
+	static public boolean startStandardReport (ProcessInfo pi, int WindowNo, MPInstance instance)
+	{
 		ReportEngine re = null;
 		//
 		// Create Report Engine by using attached MPrintFormat (if any)
@@ -257,6 +288,9 @@ public class ReportCtl
 		if (o != null && o instanceof MPrintFormat) {
 			Properties ctx = Env.getCtx();
 			MPrintFormat format = (MPrintFormat)o;
+			if(instance != null) {
+				instance.updatePrintFormatAndLanguageIfEmpty(format);
+			}
 			String TableName = MTable.getTableName(ctx, format.getAD_Table_ID());
 			MQuery query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 			PrintInfo info = new PrintInfo(pi);
@@ -300,6 +334,18 @@ public class ReportCtl
 	 */
 	static public boolean startFinReport (ProcessInfo pi, int WindowNo)
 	{
+		return startFinReport(pi, WindowNo, null);
+	}
+	
+	/**
+	 *	Start Financial Report.
+	 *  @param pi Process Info
+	 *  @param WindowNo The windows number which invoked the printing
+	 * 	@param instance - AD_PInstance
+	 *  @return true if OK
+	 */
+	static public boolean startFinReport (ProcessInfo pi, int WindowNo, MPInstance instance)
+	{
 		@SuppressWarnings("unused")
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
 
@@ -316,6 +362,11 @@ public class ReportCtl
 			s_log.log(Level.SEVERE, "startFinReport - No PrintFormat");
 			return false;
 		}
+		
+		if(instance != null) {
+			instance.updatePrintFormatAndLanguageIfEmpty(format);
+		}
+		
 		PrintInfo info = new PrintInfo(pi);
 
 		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info, pi.isSummary(), null, WindowNo);
@@ -417,14 +468,8 @@ public class ReportCtl
 		{
 			MPrintFormat format = re.getPrintFormat();
 			
-			// Set Print Format and Language to AD_Pinstance
-			if(instance.getAD_PrintFormat_ID() <= 0 && format.getAD_PrintFormat_ID() > 0) {
-				instance.setAD_PrintFormat_ID(format.getAD_PrintFormat_ID());
-				instance.saveEx();
-			}
-			if(instance.getAD_Language_ID() <= 0 && format.getLanguage() != null) {
-				instance.setAD_Language_ID(MLanguage.get(Env.getCtx(), format.getLanguage()).getAD_Language_ID());
-				instance.saveEx();
+			if(instance != null) {
+				instance.updatePrintFormatAndLanguageIfEmpty(format);
 			}
 			// We have a Jasper Print Format
 			// ==============================
