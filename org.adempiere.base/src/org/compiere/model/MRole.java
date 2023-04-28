@@ -1233,7 +1233,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	{
 		if (!isCanReport())						//	Role Level block
 		{
-			log.warning ("Role denied");
+			log.warning ("Role denied (" + MRole.getDefaultRole().getAD_Role_ID() + ") tableID=" + AD_Table_ID);
 			return false;
 		}
 		if (!isTableAccess(AD_Table_ID, true))	//	No R/O Access to Table
@@ -1277,7 +1277,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	{
 		if (!isCanExport())						//	Role Level block
 		{
-			log.warning ("Role denied");
+			log.warning ("Role denied (" + MRole.getDefaultRole().getAD_Role_ID() + ") tableID=" + AD_Table_ID);
 			return false;
 		}
 		if (!isTableAccess(AD_Table_ID, true))	//	No R/O Access to Table
