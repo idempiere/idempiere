@@ -48,6 +48,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
 import org.compiere.model.MTest;
+import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
@@ -56,6 +57,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -421,4 +423,15 @@ public class QueryTest extends AbstractTestCase {
 		assertEquals(expected, testRecord.getTestVirtualQty().setScale(2, RoundingMode.HALF_UP), "Wrong value returned");
 	}
 
+	@Test
+	public void testTableDirectJoin() {
+		Query query = new Query(Env.getCtx(), MUser.Table_Name, MUser.COLUMNNAME_AD_User_ID + "=?", getTrxName());
+		query.addTableDirectJoin("C_BPartner");
+		query.setParameters(DictionaryIDs.AD_User.GARDEN_USER.id);
+		MUser user = query.first();
+		assertNotNull(user, "Failed to retrieve garden user record");
+		
+		String sql = query.getSQL();
+		assertTrue(sql.toLowerCase().contains("inner join c_bpartner on (ad_user.c_bpartner_id=c_bpartner.c_bpartner_id)"), "Unexpected SQL clause generated from query");
+	}
 }
