@@ -291,6 +291,19 @@ public class Query
 	}
 	
 	/**
+	 * Convenient method to add table direct type of joint.<br/>
+	 * For e.g, if foreignTableName is C_BPartner and TableName for Query is AD_User,<br/>
+	 * this will add join clause of <br/>
+	 * "INNER JOIN C_BPartner ON (AD_User.C_BPartner_ID=C_BPartner.C_BParner_ID)".
+	 * @param foreignTableName
+	 */
+	public void addTableDirectJoin(String foreignTableName) {
+		String foreignId = foreignTableName + "_ID";
+		addJoinClause("INNER JOIN " + foreignTableName + " ON (" + table.getTableName() + "." + foreignId 
+				+ "=" + foreignTableName + "." + foreignId + ")");
+	}
+	
+	/**
 	 * Return a list of all po that match the query criteria.
 	 * @return List
 	 * @throws DBException 

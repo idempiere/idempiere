@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -267,8 +268,14 @@ public class ModelValidationEngine
 		EventManager.getInstance().sendEvent(event);
 		@SuppressWarnings("unchecked")
 		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
-		if (errors != null && !errors.isEmpty())
-			return errors.get(0);
+		if (errors != null && !errors.isEmpty()) {
+			Collections.reverse(errors);
+			StringBuilder eventErrors = new StringBuilder("");
+			for (String error : errors) {
+				eventErrors.append(error).append("<br>");
+			}
+			return eventErrors.toString();
+		}
 
 		if ((AD_User_ID == SystemIDs.USER_SYSTEM || AD_User_ID == SystemIDs.USER_SUPERUSER) && AD_Role_ID == SystemIDs.ROLE_SYSTEM)
 			; // don't validate for user system on role system
@@ -406,8 +413,14 @@ public class ModelValidationEngine
 		EventManager.getInstance().sendEvent(event);
 		@SuppressWarnings("unchecked")
 		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
-		if (errors != null && !errors.isEmpty())
-			return errors.get(0);
+		if (errors != null && !errors.isEmpty()) {
+			Collections.reverse(errors);
+			StringBuilder eventErrors = new StringBuilder("");
+			for (String error : errors) {
+				eventErrors.append(error).append("<br>");
+			}
+			return eventErrors.toString();
+		}
 
 		return null;
 	}	//	fireModelChange
@@ -573,9 +586,14 @@ public class ModelValidationEngine
 		EventManager.getInstance().sendEvent(event);
 		@SuppressWarnings("unchecked")
 		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
-		if (errors != null && !errors.isEmpty())
-			return errors.get(0);
-
+		if (errors != null && !errors.isEmpty()) {
+			Collections.reverse(errors);
+			StringBuilder eventErrors = new StringBuilder("");
+			for (String error : errors) {
+				eventErrors.append(error).append("<br>");
+			}
+			return eventErrors.toString();
+		}
 		return null;
 	}	//	fireDocValidate
 
@@ -722,8 +740,14 @@ public class ModelValidationEngine
 		EventManager.getInstance().sendEvent(event);
 		@SuppressWarnings("unchecked")
 		List<String> errors = (List<String>) event.getProperty(IEventManager.EVENT_ERROR_MESSAGES);
-		if (errors != null && !errors.isEmpty())
-			return errors.get(0);
+		if (errors != null && !errors.isEmpty()) {
+			Collections.reverse(errors);
+			StringBuilder eventErrors = new StringBuilder("");
+			for (String error : errors) {
+				eventErrors.append(error).append("<br>");
+			}
+			return eventErrors.toString();
+		}
 
 		return null;
 	}	//	fireFactsValidate

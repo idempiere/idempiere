@@ -35,8 +35,10 @@ import java.util.Set;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.event.TableValueChangeEvent;
 import org.adempiere.webui.event.TableValueChangeListener;
+import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.SelectableIDColumn;
@@ -53,6 +55,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
@@ -60,6 +63,7 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListitemRendererExt;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  * Renderer for {@link org.adempiere.webui.component.ListItem}
@@ -117,7 +121,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	 * @param columnIndex	The index of the column for which details are to be retrieved.
 	 * @return	The details of the column at the specified index.
 	 */
-	private WTableColumn getColumn(int columnIndex)
+	public WTableColumn getColumn(int columnIndex)
 	{
 		try
 		{
@@ -201,14 +205,61 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 									  int rowIndex, int columnIndex)
 	{
 		ListCell listcell = new ListCell();
+		WTableColumn column = null;
 		if (m_tableColumns.size() > columnIndex) {
-			WTableColumn column = getColumn(columnIndex);
+			column = getColumn(columnIndex);
 			if (column != null && column.getHeaderValue() != null) {
 				listcell.setWidgetAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, column.getHeaderValue().toString());
 			}
 		}
 		boolean isCellEditable = table != null ? table.isCellEditable(rowIndex, columnIndex) : false;
 
+		//use custom editor configure through WTableColumn (if any)
+		if (column != null && column.getEditorProvider() != null) 
+		{
+        	WEditor editor = column.getEditorProvider().apply(new WTableColumn.EditorProviderParameters(table, rowIndex, columnIndex, value));
+        	if (editor != null) 
+        	{
+        		editor.setValue(value);
+        		if (isCellEditable) 
+        		{
+	        		editor.setReadWrite(true);
+	        		editor.setTableEditor(true);	        		
+	        		editor.addValueChangeListener(evt -> onValueChange(evt));
+	        		listcell.appendChild(editor.getComponent());	        		        		
+        		} 
+        		else 
+        		{    
+        			editor.setReadWrite(false);
+        			Component displayComponent = editor.getDisplayComponent();
+        			if (displayComponent != null && displayComponent instanceof Html) 
+        			{
+        				String text = editor.getDisplayTextForGridView(value);
+        				((Html)displayComponent).setContent(text);
+        				listcell.appendChild(displayComponent);
+        			} 
+        			else if (displayComponent != null && displayComponent instanceof Label)
+        			{
+        				String text = editor.getDisplay();
+        				((Label)displayComponent).setValue(text);
+        				listcell.appendChild(displayComponent);
+        			}
+        			else if (displayComponent != null && displayComponent instanceof InputElement)
+        			{
+        				String text = editor.getDisplay();
+        				((InputElement)displayComponent).setText(text);
+        				((InputElement)displayComponent).setReadonly(true);
+        				listcell.appendChild(displayComponent);
+        			}
+        			else 
+        			{        				
+    	        		listcell.appendChild(editor.getComponent());    	        		
+        			}
+        		}
+        		return listcell;
+        	}
+        }
+		
 		if (value != null)
 		{
 			if (value instanceof Boolean)
@@ -378,6 +429,24 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 		return listcell;
 	}
 
+	/**
+	 * Handle value change from custom editor created by {@link WTableColumn#getEditorProvider()}.
+	 * @param evt
+	 */
+	private void  onValueChange(ValueChangeEvent evt) {
+		WEditor editor = (WEditor) evt.getSource();
+		Component component = editor.getComponent();
+		int row = getRowPosition(component);
+		int col = getColumnPosition(component);
+		
+		WTableColumn tableColumn = getColumn(col);
+		TableValueChangeEvent vcEvent = new TableValueChangeEvent(component,
+				tableColumn.getHeaderValue().toString(),
+				row, col,
+				evt.getOldValue(), evt.getNewValue());
+
+		fireTableValueChange(vcEvent);
+	}
 
 	/**
 	 *  Update header of a Column.
