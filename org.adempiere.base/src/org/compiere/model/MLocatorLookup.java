@@ -542,4 +542,13 @@ public final class MLocatorLookup extends Lookup implements Serializable
 		m_ctx = ctx;
 		m_parsedValidation = null;		
 	}
+	
+	/**
+	 * Set SQL validation code for lookup
+	 * @param validationCode
+	 */
+	public void setValidationCode(String validationCode) 
+	{
+		m_validationCode = validationCode;
+	}
 }	//	MLocatorLookup
