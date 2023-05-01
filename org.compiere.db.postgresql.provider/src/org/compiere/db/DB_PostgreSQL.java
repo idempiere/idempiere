@@ -871,7 +871,24 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	}
 
 	public int getNextID(String name, String trxName) {
-		int m_sequence_id = DB.getSQLValueEx(trxName, "SELECT nextval('"+name.toLowerCase()+"')");
+		Trx trx = null;
+		int m_sequence_id = -1;
+		try {
+			// avoid cannot execute nextval() in a read-only transaction
+			if (trxName == null) {
+				trxName = Trx.createTrxName("getNextval");
+				trx = Trx.get(trxName, true);
+			}
+			m_sequence_id = DB.getSQLValueEx(trxName, "SELECT nextval('"+name.toLowerCase()+"')");
+		} catch (Exception e) {
+			if (trx != null) {
+				trx.rollback();
+			}
+		} finally {
+			if (trx != null) {
+				trx.close();
+			}
+		}
 		return m_sequence_id;
 	}
 
