@@ -717,7 +717,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 				if (result)
 				{
 					MArchive ar = m_archives[m_index];
-					ar.delete(true);
+					ar.deleteEx(true);
 					tabbox.setSelectedIndex(0);
 					cmd_query();
 					dynInit();
