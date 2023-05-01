@@ -265,7 +265,8 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 
 			// field group
 			String fieldGroup = gridField.getFieldGroup();
-			if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)) // group changed
+			if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)
+				&& !X_AD_FieldGroup.FIELDGROUPTYPE_DoNothing.equals(gridField.getFieldGroupType())) // group changed
 			{
 				currentFieldGroup = fieldGroup;
 

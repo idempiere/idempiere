@@ -31,7 +31,7 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20221224L;
+	private static final long serialVersionUID = 20230501L;
 
     /** Standard Constructor */
     public X_AD_FieldGroup (Properties ctx, int AD_FieldGroup_ID, String trxName)
@@ -147,6 +147,8 @@ public class X_AD_FieldGroup extends PO implements I_AD_FieldGroup, I_Persistent
 	public static final int FIELDGROUPTYPE_AD_Reference_ID=53000;
 	/** Collapse = C */
 	public static final String FIELDGROUPTYPE_Collapse = "C";
+	/** Do Nothing = D */
+	public static final String FIELDGROUPTYPE_DoNothing = "D";
 	/** Label = L */
 	public static final String FIELDGROUPTYPE_Label = "L";
 	/** Tab = T */

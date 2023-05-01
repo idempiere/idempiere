@@ -318,7 +318,8 @@ public class ProcessParameterPanel extends Panel implements
 				field.setParentEvaluatee(this);
 				
 				String fieldGroup = field.getFieldGroup();
-	        	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)) // group changed
+	        	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)
+	        		&& !X_AD_FieldGroup.FIELDGROUPTYPE_DoNothing.equals(field.getFieldGroupType())) // group changed
 	        	{
 	        		currentFieldGroup = fieldGroup;
 	        		
