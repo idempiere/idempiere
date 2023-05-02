@@ -30,6 +30,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
+import org.compiere.print.MPrintFormat;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -664,4 +665,19 @@ public class MPInstance extends X_AD_PInstance
 		
 		return true;
 	}	//	beforeSave
+	
+	/**
+	 * Set AD_PrintFormat_ID if empty, AD_Language_ID if empty and save the record.
+	 * @param pf
+	 */
+	public void updatePrintFormatAndLanguageIfEmpty(MPrintFormat format) {
+		if(getAD_PrintFormat_ID() <= 0 && format.getAD_PrintFormat_ID() > 0) {
+			setAD_PrintFormat_ID(format.getAD_PrintFormat_ID());
+			saveEx();
+		}
+		if(getAD_Language_ID() <= 0 && format.getLanguage() != null) {
+			setAD_Language_ID(MLanguage.get(Env.getCtx(), format.getLanguage()).getAD_Language_ID());
+			saveEx();
+		}
+	}
 }	//	MPInstance
