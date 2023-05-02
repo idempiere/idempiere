@@ -46,7 +46,7 @@ public class MPInstanceLog
 	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
 	  int P_ID, BigDecimal P_Number, String P_Msg)
 	{
-		this(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, 0, 0);
+		this(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, 0, 0, null);
 	}	//	MPInstance_Log
 
 	/**
@@ -63,6 +63,24 @@ public class MPInstanceLog
 	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
 			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID)
 	{
+		this(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, null);
+	}	//	MPInstance_Log
+	
+	/**
+	 * Full Constructor
+	 * @param AD_PInstance_ID
+	 * @param Log_ID
+	 * @param P_Date
+	 * @param P_ID
+	 * @param P_Number
+	 * @param P_Msg
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param PInstanceLogType Log Type
+	 */
+	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
+			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID, String PInstanceLogType)
+	{
 		setAD_PInstance_ID(AD_PInstance_ID);
 		setLog_ID(Log_ID);
 		setP_Date(P_Date);
@@ -71,6 +89,7 @@ public class MPInstanceLog
 		setP_Msg(P_Msg);
 		setAD_Table_ID(AD_Table_ID);
 		setRecord_ID(Record_ID);
+		setPInstanceLogType(PInstanceLogType);
 	}	//	MPInstance_Log
 
 	/**
@@ -97,6 +116,7 @@ public class MPInstanceLog
 	private String m_P_Msg;
 	private int m_AD_Table_ID;
 	private int m_Record_ID;
+	private String m_PInstanceLogType;
 
 
 	/**
@@ -121,8 +141,8 @@ public class MPInstanceLog
 
 
 	private final static String insertSql = "INSERT INTO AD_PInstance_Log "
-			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, AD_PInstance_Log_UU)"
-			+ " VALUES (?,?,?,?,?,?,?,?,?)";
+			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, AD_PInstance_Log_UU, PInstanceLogType)"
+			+ " VALUES (?,?,?,?,?,?,?,?,?,?)";
 
 	/**
 	 *	Save to Database
@@ -145,7 +165,7 @@ public class MPInstanceLog
 	private Object[] getInsertParams() {
 		MColumn colMsg = MColumn.get(Env.getCtx(), I_AD_PInstance_Log.Table_Name, I_AD_PInstance_Log.COLUMNNAME_P_Msg);
 		int maxMsgLength = colMsg.getFieldLength();
-		Object[] params = new Object[9];
+		Object[] params = new Object[10];
 		params[0] = m_AD_PInstance_ID;
 		params[1] = m_Log_ID;
 		if (m_P_Date != null)
@@ -165,6 +185,7 @@ public class MPInstanceLog
 		if (m_Record_ID != 0)
 			params[7] = m_Record_ID;
 		params[8] = UUID.randomUUID().toString();
+		params[9] = m_PInstanceLogType;
 		return params;
 	}
 
@@ -310,6 +331,22 @@ public class MPInstanceLog
 	public void setRecord_ID(int recordId)
 	{
 		m_Record_ID = recordId;
+	}
+
+	/**
+	 * Get Log Type
+	 * @return Log Type
+	 */
+	public String getPInstanceLogType() {
+		return m_PInstanceLogType;
+	}
+
+	/**
+	 * Set Log Type
+	 * @param m_PInstanceLogType
+	 */
+	public void setPInstanceLogType(String m_PInstanceLogType) {
+		this.m_PInstanceLogType = m_PInstanceLogType;
 	}
 
 } //	MPInstance_Log

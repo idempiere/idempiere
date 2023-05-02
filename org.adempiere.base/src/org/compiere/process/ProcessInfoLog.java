@@ -39,8 +39,9 @@ public class ProcessInfoLog implements Serializable
 	 *	@param P_Date Process Date
 	 *	@param P_Number Process Number
 	 *	@param P_Msg Process Messagre
+	 *	@param PInstanceLogType Log Type
 	 */
-	public ProcessInfoLog (int Log_ID,int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID)
+	public ProcessInfoLog (int Log_ID,int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID, String PInstanceLogType)
 	{
 		setLog_ID (Log_ID);
 		setP_ID (P_ID);
@@ -49,8 +50,21 @@ public class ProcessInfoLog implements Serializable
 		setP_Msg (P_Msg);
 		setAD_Table_ID(AD_Table_ID);
 		setRecord_ID(Record_ID);
+		setPInstanceLogType(PInstanceLogType);
 		
 	}	//	ProcessInfoLog
+	
+	/**
+	 * 	Create Process Info Log.
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Messagre
+	 */
+	public ProcessInfoLog (int Log_ID,int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, int AD_Table_ID ,int Record_ID)
+	{
+		this(Log_ID, P_ID, P_Date, P_Number, P_Msg, AD_Table_ID, Record_ID, null); 
+	}
 
 	public ProcessInfoLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg , int AD_Table_ID ,int Record_ID)
 	{
@@ -91,6 +105,7 @@ public class ProcessInfoLog implements Serializable
 	private String 		m_P_Msg;
 	private int 		m_AD_Table_ID;
 	private int 		m_Record_ID;
+	private String 		m_PInstanceLogType;
 
 	public int getAD_Table_ID() {
 		return m_AD_Table_ID;
@@ -190,6 +205,22 @@ public class ProcessInfoLog implements Serializable
 	public void setP_Msg (String P_Msg)
 	{
 		m_P_Msg = P_Msg;
+	}
+
+	/**
+	 * Get Log Type
+	 * @return Log Type
+	 */
+	public String getPInstanceLogType() {
+		return m_PInstanceLogType;
+	}
+
+	/**
+	 * Set Log Type
+	 * @param m_PInstanceLogType
+	 */
+	public void setPInstanceLogType(String m_PInstanceLogType) {
+		this.m_PInstanceLogType = m_PInstanceLogType;
 	}
 
 }	//	ProcessInfoLog

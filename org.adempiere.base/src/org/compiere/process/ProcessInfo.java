@@ -33,6 +33,7 @@ import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.X_AD_PInstance_Log;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -762,7 +763,8 @@ public class ProcessInfo implements Serializable
 				logEntry.getP_Number(), 
 				logEntry.getP_Msg(),
 				logEntry.getAD_Table_ID(), 
-				logEntry.getRecord_ID());
+				logEntry.getRecord_ID(),
+				!Util.isEmpty(logEntry.getPInstanceLogType()) ? logEntry.getPInstanceLogType() : X_AD_PInstance_Log.PINSTANCELOGTYPE_Tail);
 		il.save();
 	}	//	saveLog
 	
