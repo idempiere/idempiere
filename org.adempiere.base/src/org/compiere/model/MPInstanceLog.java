@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.compiere.util.DB;
@@ -142,7 +143,18 @@ public class MPInstanceLog
 
 	private final static String insertSql = "INSERT INTO AD_PInstance_Log "
 			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, AD_PInstance_Log_UU, PInstanceLogType)"
-			+ " VALUES (?,?,?,?,?,?,?,?,?,?)";
+			+ " VALUES (?,?,?,?,?,?,?,?,?,?) "
+			+ " ON CONFLICT (Log_ID, AD_PInstance_ID) "
+			+ " DO UPDATE "
+			+ " SET AD_PInstance_ID = ?, "
+			+ " P_Date = ?, "
+			+ " P_ID = ?, "
+			+ " P_Number = ?, "
+			+ " P_Msg = ?, "
+			+ " AD_Table_ID = ?, "
+			+ " Record_ID = ?, "
+			+ " AD_PInstance_Log_UU = ?, "
+			+ " PInstanceLogType = ? ";
 
 	/**
 	 *	Save to Database
@@ -165,28 +177,53 @@ public class MPInstanceLog
 	private Object[] getInsertParams() {
 		MColumn colMsg = MColumn.get(Env.getCtx(), I_AD_PInstance_Log.Table_Name, I_AD_PInstance_Log.COLUMNNAME_P_Msg);
 		int maxMsgLength = colMsg.getFieldLength();
-		Object[] params = new Object[10];
-		params[0] = m_AD_PInstance_ID;
-		params[1] = m_Log_ID;
-		if (m_P_Date != null)
-			params[2] = m_P_Date;
-		if (m_P_ID != 0)
-			params[3] = m_P_ID;
-		if (m_P_Number != null)
-			params[4] = m_P_Number;
+		ArrayList<Object> params = new ArrayList <Object>();	// insert parameters
+		ArrayList<Object> params2 = new ArrayList <Object>();	// update parameters
+		Object value = null;
+		
+		params.add(m_AD_PInstance_ID);
+		params2.add(m_AD_PInstance_ID);
+		
+		params.add(m_Log_ID);
+		
+		value = m_P_Date != null ? m_P_Date : null;
+		params.add(value);
+		params2.add(value);
+		
+		value = m_P_ID != 0 ? m_P_ID : null;
+		params.add(value);
+		params2.add(value);
+	
+		value = m_P_Number != null ? m_P_Number : null;
+		params.add(value);
+		params2.add(value);
+		
 		if (m_P_Msg != null) {
-			if (m_P_Msg.length() > maxMsgLength)
-				params[5] = m_P_Msg.substring(0,  maxMsgLength);
-			else
-				params[5] = m_P_Msg;
+				value = m_P_Msg.length() > maxMsgLength ? m_P_Msg.substring(0,  maxMsgLength) : m_P_Msg;
+				params.add(value);
+				params2.add(value);
 		}
-		if (m_AD_Table_ID != 0)
-			params[6] = m_AD_Table_ID;
-		if (m_Record_ID != 0)
-			params[7] = m_Record_ID;
-		params[8] = UUID.randomUUID().toString();
-		params[9] = m_PInstanceLogType;
-		return params;
+		else {
+			params.add(null);
+			params2.add(null);
+		}
+		
+		value = m_AD_Table_ID != 0 ? m_AD_Table_ID : null;
+		params.add(value);
+		params2.add(value);
+		
+		value = m_Record_ID != 0 ? m_Record_ID : null; 
+		params.add(value);
+		params2.add(value);
+		
+		params.add(UUID.randomUUID().toString());
+		params2.add(UUID.randomUUID().toString());
+		
+		params.add(m_PInstanceLogType);
+		params2.add(m_PInstanceLogType);
+		
+		params.addAll(params2);
+		return params.toArray();
 	}
 
 	/**

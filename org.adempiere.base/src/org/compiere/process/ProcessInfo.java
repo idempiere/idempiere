@@ -706,7 +706,7 @@ public class ProcessInfo implements Serializable
 	 */
 	public void saveLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg,int tableId,int recordId)
 	{
-		saveLog (new ProcessInfoLog (Log_ID, P_ID, P_Date, P_Number, P_Msg,tableId,recordId));
+		saveLog (new ProcessInfoLog (Log_ID, P_ID, P_Date, P_Number, P_Msg, tableId, recordId, X_AD_PInstance_Log.PINSTANCELOGTYPE_Status));
 	}
 	
 	/**
@@ -733,7 +733,7 @@ public class ProcessInfo implements Serializable
 	 */
 	public void saveLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
 	{
-		saveLog (new ProcessInfoLog (Log_ID, P_ID, P_Date, P_Number, P_Msg));
+		saveLog (new ProcessInfoLog (Log_ID, P_ID, P_Date, P_Number, P_Msg, X_AD_PInstance_Log.PINSTANCELOGTYPE_Status));
 	}	//	saveLog
 
 	/**

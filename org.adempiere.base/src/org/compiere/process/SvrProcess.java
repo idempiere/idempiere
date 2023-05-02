@@ -618,9 +618,48 @@ public abstract class SvrProcess implements ProcessCall
 		listEntryLog = null; // flushed - to avoid flushing it again in case is called
 	}
 
-	/**************************************************************************
+	/**
+	 *  Save Log Entry with exact Log_ID, update if exists
+	 *  @param logId Log_ID
+	 * 	@param id record id or 0
+	 *	@param date date or null
+	 * 	@param number number or null
+	 * 	@param msg message or null
+	 * 	@param tableId AD_Table_ID
+	 * 	@param recordId Record_ID
+	 */
+	public void saveLog (int logId, int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId)
+	{
+		if (m_pi != null)
+			m_pi.saveLog(logId, id, date, number, msg, tableId, recordId);
+		
+		if (log.isLoggable(Level.INFO)) log.info(logId + " - " + id + " - " + date + " - " + number + " - " + msg + " - " + tableId + " - " + recordId);
+	}	//	saveLog
+	
+	/**
+	 *  Save Log Entry with exact Log_ID, update if exists
+	 *  @param logId Log_ID
+	 * 	@param id record id or 0
+	 *	@param date date or null
+	 * 	@param number number or null
+	 * 	@param msg message or null
+	 */
+	public void saveLog (int logId, int id, Timestamp date, BigDecimal number, String msg)
+	{
+		if (m_pi != null)
+			m_pi.saveLog(logId, id, date, number, msg);
+		
+		if (log.isLoggable(Level.INFO)) log.info(logId + " - " + id + " - " + date + " - " + number + " - " + msg);
+	}	//	saveLog
+	
+	/**
 	 *  Save Log Entry with table name
-	 *  
+	 * 	@param id record id or 0
+	 *	@param date date or null
+	 * 	@param number number or null
+	 * 	@param msg message or null
+	 * 	@param tableId AD_Table_ID
+	 * 	@param recordId Record_ID
 	 */
 	public void saveLog (int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId)
 	{
@@ -630,7 +669,7 @@ public abstract class SvrProcess implements ProcessCall
 		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg + " - " + tableId + " - " + recordId);
 	}	//	saveLog
 
-	/**************************************************************************
+	/**
 	 *  Save Log Entry
 	 *  @param date date or null
 	 *  @param id record id or 0
