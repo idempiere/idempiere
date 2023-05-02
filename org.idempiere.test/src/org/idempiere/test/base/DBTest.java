@@ -14,6 +14,7 @@
 package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -331,6 +332,43 @@ public class DBTest extends AbstractTestCase
 				order.set_TrxName(null);
 				order.deleteEx(true);
 			}
+		} finally {
+			rollback();
+		}				
+	}
+	
+	@Test
+	public void testTrxTimeout() 
+	{
+		try {
+			MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+			DB.getDatabase().forUpdate(bp, 0);
+			
+			Exception exception = null;
+			Trx trx2 = Trx.get(Trx.createTrxName(), true);
+			MBPartner bp2 = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, trx2.getTrxName());
+			try {
+				Thread thread = new Thread (() -> { 
+					try {
+						Thread.sleep(5 * 1000);
+					} catch (InterruptedException e) {
+					}
+					if (trx2.isActive()) trx2.rollbackAndCloseOnTimeout();
+				});
+				thread.start();
+				DB.getDatabase().forUpdate(bp2, 10);
+			} catch (Exception e) {
+				exception = e;
+			} finally {
+				trx2.close();
+			}
+			assertNotNull(exception, "Exception not happens as expected");
+			assertTrue(exception instanceof DBException, "Exception not instanceof DBException");
+			DBException dbe = (DBException) exception;
+			if (DB.isPostgreSQL())
+				assertTrue("08006".equals(dbe.getSQLState()), "Trx2 not timeout as expected: " + dbe.getSQLException().getMessage());
+			else if (DB.isOracle())
+				assertTrue("08003".equals(dbe.getSQLState()), "Trx2 not timeout as expected: " + dbe.getSQLException().getMessage());
 		} finally {
 			rollback();
 		}				
