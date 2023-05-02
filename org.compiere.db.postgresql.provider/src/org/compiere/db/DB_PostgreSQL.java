@@ -977,7 +977,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 					sqlBuffer.append(" AND ");
 				sqlBuffer.append(keyColumns[i]).append("=?");
 			}
-			sqlBuffer.append(" FOR UPDATE ");
+			sqlBuffer.append(" FOR NO KEY UPDATE ");
 
 			Object[] parameters = new Object[keyColumns.length];
 			for(int i = 0; i < keyColumns.length; i++) {

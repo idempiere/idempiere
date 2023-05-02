@@ -20,17 +20,21 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.model.MBPartner;
+import org.compiere.model.MOrder;
 import org.compiere.model.MTable;
 import org.compiere.model.X_Test;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
@@ -291,4 +295,44 @@ public class DBTest extends AbstractTestCase
 		assertTrue(resultStr != null);
 	}
 	
+	@Test
+	public void testForUpdateAndForeignKey() 
+	{
+		try {
+			MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+			DB.getDatabase().forUpdate(bp, 0);
+			
+			SQLException sqlException = null;
+			Trx trx2 = Trx.get(Trx.createTrxName(), true);
+			MOrder order = null;
+			try {
+				order = new MOrder(Env.getCtx(), 0, trx2.getTrxName());
+				order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+				order.setC_BPartner_ID(bp.get_ID());
+				order.setDateOrdered(getLoginDate());
+				Thread thread = new Thread (() -> { 
+					try {
+						Thread.sleep(15 * 1000);
+					} catch (InterruptedException e) {
+					}
+					if (trx2.isActive()) trx2.rollbackAndCloseOnTimeout();
+				});
+				thread.start();
+				order.saveEx();		
+				trx2.commit(true);
+			} catch (SQLException e) {
+				sqlException = e;
+				order = null;
+			} finally {
+				trx2.close();
+			}
+			assertNull(sqlException, "Failed to save and commit order: " + (sqlException != null ? sqlException.getMessage() : ""));
+			if (order != null && order.get_ID() > 0) {
+				order.set_TrxName(null);
+				order.deleteEx(true);
+			}
+		} finally {
+			rollback();
+		}				
+	}
 }
