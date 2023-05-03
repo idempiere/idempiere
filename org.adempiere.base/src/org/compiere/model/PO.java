@@ -5537,6 +5537,8 @@ public abstract class PO
 		if (tableId <= 0)
 			return;
 		MTable ft = MTable.get(getCtx(), tableId);
+		if (ft.getKeyColumns().length > 1)
+			return; // multi-key-table
 		boolean systemAccess = false;
 		String accessLevel = ft.getAccessLevel();
 		if (   MTable.ACCESSLEVEL_All.equals(accessLevel)
