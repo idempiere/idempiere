@@ -29,7 +29,7 @@ import org.compiere.util.CCache;
 import org.osgi.framework.Constants;
 
 /**
- *
+ * Static methods to create new {@link WEditor} instance for {@link GridField}.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 12, 2007
  * @version $Revision: 0.10 $

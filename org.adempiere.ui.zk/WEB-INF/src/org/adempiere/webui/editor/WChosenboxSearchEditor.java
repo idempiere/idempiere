@@ -13,7 +13,6 @@
  *****************************************************************************/
 package org.adempiere.webui.editor;
 
-import java.beans.PropertyChangeEvent;
 import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -41,9 +40,11 @@ import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.zkoss.addon.chosenbox.Chosenbox;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -53,25 +54,32 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.ListSubModel;
 
 /**
- * 
+ * Default editor for {@link DisplayType#ChosenMultipleSelectionSearch}.
+ * Implemented with {@link ChosenSearchBox} component.
  * @author hengsin
- *
  */
 public class WChosenboxSearchEditor extends WEditor implements ContextMenuListener
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK, Events.ON_SELECT};
 	private Lookup 				lookup;
+	/** Foreign table name */
 	private String				m_tableName = null;
+	/** Foreign key column name */
 	private String				m_keyColumnName = null;
+	/** Column name for {@link #lookup} */
 	private String 				columnName;
+	/** comma separated value list of selected records */
     private String              value;
     private InfoPanel			infoPanel = null;
+    /** Image URL or font icon sclass for choosebox button */
 	private String 				imageUrl;
 	private MyListModel 		model = new MyListModel();
+	/** Model for {@link Chosenbox} */
 	private InfoListSubModel	subModel = null;
 
 	private static final CLogger log = CLogger.getCLogger(WChosenboxSearchEditor.class);
 	private static final int DEFAULT_MAX_AUTO_COMPLETE_ROWS = 500;
+	/** true when editor is handling ON_SELECT event */
 	private boolean onselecting;
 
 	/**
@@ -118,7 +126,6 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		getComponent().setEnabled(readWrite);
 	}
 
-
 	/**
 	 * Constructor for use if a grid field is unavailable
 	 *
@@ -144,6 +151,13 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		init();
 	}
 
+	/**
+	 * @param columnName
+	 * @param mandatory
+	 * @param readonly
+	 * @param updateable
+	 * @param lookup
+	 */
 	public WChosenboxSearchEditor(String columnName, boolean mandatory, boolean readonly, boolean updateable,
     		Lookup lookup)
 	{
@@ -163,7 +177,6 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 
 	/**
      * initialise editor
-     * @param columnName columnName
 	 */
 	private void init()
 	{
@@ -249,6 +262,9 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		return value;
 	}
 	
+	/**
+	 * @return comma separated value list of selected records
+	 */
 	private String getValueFromComponent()
 	{
 		StringBuilder retVal = new StringBuilder();
@@ -271,6 +287,9 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
         return retVal.length() > 0 ? retVal.toString() : null;
 	}
 
+	/**
+	 * @return comma separated name list of selected records
+	 */
 	@Override
 	public String getDisplay()
 	{
@@ -288,6 +307,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
         return display.toString();
 	}
 
+	@Override
 	public void onEvent(Event e)
 	{
 		if (Events.ON_CLICK.equals(e.getName()))
@@ -322,20 +342,16 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
     	}
 	}
 
+	/**
+	 * @param newValue
+	 * @return true if newValue is different from {@link #value}
+	 */
 	private boolean isValueChange(Object newValue) {
 		return (value == null && newValue != null) || (value != null && newValue == null) 
 			|| ((value != null && newValue != null) && !value.equals(newValue));
 	}
 	
 	@Override
-	public void propertyChange(PropertyChangeEvent evt)
-	{
-		if ("FieldValue".equals(evt.getPropertyName()))
-		{
-			setValue(evt.getNewValue());
-		}
-	}
-
 	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.PREFERENCE_EVENT.equals(evt.getContextEvent()))
@@ -350,6 +366,10 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		}
 	}
 
+	/**
+	 * Process selected items from info panel/window
+	 * @param value
+	 */
 	private void processSelectedKeys (Object value)
 	{
 		if (log.isLoggable(Level.FINE))
@@ -431,13 +451,19 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		
 	}	//	actionCombo
 
-
+	/**
+	 * Fire ValueChangeEvent for newValue
+	 * @param newValue
+	 */
 	protected void fireValueChangeEvent(Object newValue) {
 		ValueChangeEvent evt = new ValueChangeEvent(this, this.getColumnName(), getValue(), newValue);
 		// -> ADTabpanel - valuechange
 		fireValueChange(evt);
 	}
 
+	/**
+	 * Open info panel/window
+	 */
 	private void actionButton()
 	{
 		if (lookup == null)
@@ -461,7 +487,10 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 			showInfoPanel(ip);
 	}
 
-
+	/**
+	 * Open {@link InfoPanel}
+	 * @param ip InfoPanel
+	 */
 	protected void showInfoPanel(final InfoPanel ip) {
 		ip.setVisible(true);
 		ip.setStyle("border: 2px");
@@ -498,7 +527,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 	}
 
 	/**
-	 * 	Sets m_tableName and m_keyColumnName
+	 * 	Set {@link #m_tableName} and {@link #m_keyColumnName}
 	 */
 	private void setTableAndKeyColumn() {
 		if (lookup != null && lookup instanceof MLookup) {
@@ -529,6 +558,9 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		}
 	}
 	
+	/**
+	 * @return where clause from {@link #lookup} validation code.
+	 */
 	private String getWhereClause()
 	{
 		String whereClause = "";
@@ -563,7 +595,7 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		return whereClause;
 	}	//	getWhereClause
 
-
+	@Override
 	public String[] getEvents()
     {
         return LISTENER_EVENTS;
@@ -575,6 +607,9 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		getComponent().setTableEditorMode(b);
 	}
 
+	/**
+	 * @return {@link Lookup}
+	 */
 	public Lookup getLookup() {
 		return lookup;
 	}
@@ -588,10 +623,12 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
 		super.dynamicDisplay(ctx);
 	}
 	
+	/**
+	 * {@link ListSubModel} for {@link Chosenbox} auto complete
+	 */
 	private class MyListModel extends ListModelList<ValueNamePair> implements ListSubModel<ValueNamePair> {
-
 		/**
-		 * 
+		 * generated serial id
 		 */
 		private static final long serialVersionUID = -1210525428410505409L;
 
