@@ -269,8 +269,10 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
         btnParentRecord.setTooltiptext(btnParentRecord.getTooltiptext()+ "   Alt+Up");
         btnDetailRecord = createButton("DetailRecord", "Detail", "DetailRecord");
         btnDetailRecord.setTooltiptext(btnDetailRecord.getTooltiptext()+ "   Alt+Down");
-        btnReport = createButton("Report", "Report", "Report");
-        btnReport.setTooltiptext(btnReport.getTooltiptext()+ "    Alt+R");
+        if (MRole.getDefault().isCanReport()) {
+            btnReport = createButton("Report", "Report", "Report");
+            btnReport.setTooltiptext(btnReport.getTooltiptext()+ "    Alt+R");
+        }
         btnArchive = createButton("Archive", "Archive", "Archive");
         btnPrint = createButton("Print", "Print", "Print");
         btnPrint.setTooltiptext(btnPrint.getTooltiptext()+ "    Alt+P");
@@ -516,7 +518,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 		altKeyMap.put(KeyEvent.DOWN, btnDetailRecord);
 		altKeyMap.put(VK_F, btnFind);
 		altKeyMap.put(VK_Z, btnIgnore);
-		altKeyMap.put(VK_R, btnReport);		
+		if (btnReport != null)
+			altKeyMap.put(VK_R, btnReport);		
 		altKeyMap.put(VK_P, btnPrint);
 		altKeyMap.put(VK_O, btnProcess);
 		altKeyMap.put(VK_L, btnCustomize);
@@ -787,7 +790,8 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
      */
     public void enableReport(boolean enabled)
     {
-    	this.btnReport.setDisabled(!enabled);
+		if (btnReport != null)
+			this.btnReport.setDisabled(!enabled);
     }
 
     /**
