@@ -61,7 +61,9 @@ import org.zkoss.zk.ui.sys.ComponentCtrl;
 import org.zkoss.zul.Div;
 
 /**
- * 
+ * Default editor for {@link DisplayType#RecordID} and {@link DisplayType#RecordUU}.<br/>
+ * Implemented with composite component of {@link Textbox} and {@link ToolBarButton}.<br/>
+ * The editor uses {@link WRecordIDDialog} for edit or viewing. 
  * @author Peter Takacs, Cloudempiere
  *
  */
@@ -69,12 +71,12 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	
 	/** Is Read/Write enabled on the editor */
 	private boolean m_ReadWrite;
-	/** Old value (Record_ID) */
+	/** Record_ID or Record_UU value */
 	private Object recordIDValue;
-	/** Old value (AD_Table_ID) */
+	/** AD_Table_ID value */
 	private Object tableIDValue;
 	
-	/** Current tab's AD_Table_ID GrodField */
+	/** Current tab's AD_Table_ID GridField */
 	private GridField tableIDGridField;
 	
 	// UI components
@@ -82,7 +84,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	private ToolBarButton editButton;
 	private ToolBarButton zoomButton;
 	
-	// images
+	// image url for toolbar button
 	private static final String IMAGES_CONTEXT_ZOOM_PNG = "images/Zoom16.png";
 	private static final String IMAGES_CONTEXT_EDIT_RECORD_PNG = "images/EditRecord16.png";
 
@@ -101,6 +103,9 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 		init();
 	}
 
+	/**
+	 * Init component and context menu
+	 */
 	private void init() {
 		if(gridTab != null) {
 			tableIDGridField = gridTab.getField("AD_Table_ID");
@@ -155,6 +160,10 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
         }
 	}
 	
+	/**
+	 * Handle AFTER_PAGE_ATTACHED callback to get AD_Table_ID grid field from find window
+	 * @param t
+	 */
 	private void afterPageAttached(Object t) {
 		if (t instanceof Component) {
 			Component component = (Component) t;
@@ -173,25 +182,28 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 					field = field.clone(gridField.getVO().ctx);
 					field.loadLookupNoValidate();
 					Lookup lookup = field.getLookup();
-				if (lookup != null && lookup instanceof MLookup)
-				{
-					MLookup mLookup = (MLookup) lookup;
-					mLookup.getLookupInfo().tabNo = FindWindow.TABNO;
-
-					if (field.getVO().ValidationCodeLookup != null && !field.getVO().ValidationCodeLookup.isEmpty())
+					if (lookup != null && lookup instanceof MLookup)
 					{
-						mLookup.getLookupInfo().ValidationCode = field.getVO().ValidationCodeLookup;
+						MLookup mLookup = (MLookup) lookup;
+						mLookup.getLookupInfo().tabNo = FindWindow.TABNO;
+	
+						if (field.getVO().ValidationCodeLookup != null && !field.getVO().ValidationCodeLookup.isEmpty())
+						{
+							mLookup.getLookupInfo().ValidationCode = field.getVO().ValidationCodeLookup;
 							mLookup.getLookupInfo().IsValidated = false;
+						}
 					}
-				}
-				tableIDGridField = field;
-				if (tableIDValue != null)
-					tableIDGridField.setValue(tableIDValue, false);
+					tableIDGridField = field;
+					if (tableIDValue != null)
+						tableIDGridField.setValue(tableIDValue, false);
 				}
 			}
 		}
 	}
 
+	/**
+	 * Refresh text box display text
+	 */
 	private void actionRefresh()
     {
 		recordTextBox.setValue(getDisplay());
@@ -220,7 +232,6 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			AEnv.zoom(tableID, recordID);
 		}
 	}
-
 
 	@Override
 	public void onMenu(ContextMenuEvent evt)
@@ -257,6 +268,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 		return m_ReadWrite;
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent evt)
 	{
 		if (GridField.PROPERTY.equals(evt.getPropertyName()))
@@ -286,10 +298,9 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	
 	/**
 	 * 	Set Value
-	 *	@param value value
-	 *	@param fire data binding
-	 */
-	
+	 *	@param value new value
+	 *	@param fire true to fire value change event
+	 */	
 	private void setValue (Object value, boolean fire) {
 		if (value == null || Util.isEmpty(value.toString(), true)) {
 			recordTextBox.setValue("");
@@ -453,7 +464,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	
 	/**
 	 * Get AD_Table_ID
-	 * @return Object
+	 * @return AD_Table_ID value
 	 */
 	public Object getAD_Table_ID() {
 		return tableIDValue;

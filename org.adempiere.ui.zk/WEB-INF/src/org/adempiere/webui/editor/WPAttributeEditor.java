@@ -31,14 +31,17 @@ import org.adempiere.webui.window.WPAttributeDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
+import org.compiere.model.MPAttributeLookup;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- *
+ * Default editor for {@link DisplayType#PAttribute}.<br/>
+ * Implemented with {@link PAttributebox} component and {@link WPAttributeDialog} dialog.
  * @author Low Heng Sin
  *
  */
@@ -50,10 +53,12 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 
 	protected int m_WindowNo;
 
+	/** {@link MPAttributeLookup} */
 	protected Lookup m_mPAttribute;
 
 	protected int m_C_BPartner_ID;
-
+	
+	/** M_AttributeSetInstance_ID */
 	protected Object m_value;
 
 	/**	No Instance Key					*/
@@ -83,12 +88,14 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 		initComponents();
 	}
 
+	/**
+	 * Init component and context menu
+	 */
 	private void initComponents() {
 		if (ThemeManager.isUseFontIconForImage())
 			getComponent().getButton().setIconSclass("z-icon-PAttribute");
 		else
 			getComponent().setButtonImage(ThemeManager.getThemeResource("images/PAttribute16.png"));
-		// getComponent().addEventListener(Events.ON_CLICK, this); // IDEMPIERE-426 - dup listener, already set at WEditor
 
 		m_WindowNo = gridField.getWindowNo();
 		m_mPAttribute = gridField.getLookup();
@@ -141,6 +148,7 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 		return getComponent().getText();
 	}
 
+	@Override
 	public void onEvent(Event event)
 	{
 		if (Events.ON_CHANGE.equals(event.getName()) || Events.ON_OK.equals(event.getName()))
@@ -169,11 +177,10 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 	}
 
 	/**
-	 *  Start dialog
+	 *  Open {@link WPAttributeDialog}
 	 */
 	private void cmd_dialog()
 	{
-		//
 		Integer oldValue = (Integer)getValue ();
 		final int oldValueInt = oldValue == null ? 0 : oldValue.intValue ();
 		int M_AttributeSetInstance_ID = oldValueInt;
@@ -247,6 +254,11 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 		}
 	}   //  cmd_dialog
 
+	/**
+	 * Process new M_AttributeSetInstance_ID from {@link WPAttributeDialog}.
+	 * @param oldValueInt
+	 * @param M_AttributeSetInstance_ID
+	 */
 	private void processChanges(int oldValueInt, int M_AttributeSetInstance_ID) {
 		if (log.isLoggable(Level.FINEST)) log.finest("Changed M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID);
 		m_value = new Object();				//	force re-query display
@@ -264,11 +276,13 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 		}
 	}
 
+	@Override
 	public String[] getEvents()
     {
         return LISTENER_EVENTS;
     }
 
+	@Override
 	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.ZOOM_EVENT.equals(evt.getContextEvent()))
@@ -281,6 +295,9 @@ public class WPAttributeEditor extends WEditor implements ContextMenuListener
 		}
 	}
 
+	/**
+	 * Zoom to record of {@link #getValue()}.
+	 */
 	public void actionZoom()
 	{
 	   	AEnv.actionZoom(m_mPAttribute, getValue());

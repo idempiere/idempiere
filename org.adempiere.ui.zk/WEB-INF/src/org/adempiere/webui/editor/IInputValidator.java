@@ -33,12 +33,12 @@ public interface IInputValidator {
 	
 	/**
 	 * Get Valid Input
-	 * @return String
+	 * @return Expected input string from user
 	 */
 	public String getValidInput();
 	
 	/**
-	 * Set Valid Input
+	 * Set string to validate against user input
 	 * @param validInput
 	 */
 	public void setValidInput(String validInput);
@@ -46,7 +46,7 @@ public interface IInputValidator {
 	/**
 	 * Is Input Valid 
 	 * @param input
-	 * @return boolean
+	 * @return true if input validate against {@link #getValidInput()}
 	 */
 	public boolean isValid(String input);
 }

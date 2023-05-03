@@ -17,7 +17,6 @@
 
 package org.adempiere.webui.editor;
 
-import java.beans.PropertyChangeEvent;
 import java.util.logging.Level;
 
 import org.adempiere.webui.ValuePreference;
@@ -28,13 +27,15 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- *
+ * Default editor for {@link DisplayType#YesNo}. <br/>
+ * Implemented with {@link Checkbox} component.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 11, 2007
  * @version $Revision: 0.10 $
@@ -88,6 +89,9 @@ public class WYesNoEditor extends WEditor implements ContextMenuListener
 		init();
 	}
 
+    /**
+     * Init component and context menu
+     */
 	private void init()
     {
 		if (gridField != null)
@@ -102,6 +106,7 @@ public class WYesNoEditor extends WEditor implements ContextMenuListener
 		addChangeLogMenu(popupMenu);
     }
 
+	@Override
 	public void onEvent(Event event)
     {
     	if (Events.ON_CHECK.equalsIgnoreCase(event.getName()))
@@ -111,14 +116,6 @@ public class WYesNoEditor extends WEditor implements ContextMenuListener
 	        super.fireValueChange(changeEvent);
 	        oldValue = newValue;
     	}
-    }
-
-    public void propertyChange(PropertyChangeEvent evt)
-    {
-        if (evt.getPropertyName().equals(org.compiere.model.GridField.PROPERTY))
-        {
-            setValue(evt.getNewValue());
-        }
     }
 
     @Override
