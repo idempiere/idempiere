@@ -64,59 +64,50 @@ public class PO_Record
 	{
 		KeyNamePair[] cascades = getTablesWithRecordColumn(MColumn.FKCONSTRAINTTYPE_Cascade);
 		//	Table Loop
-		for (int i = 0; i < cascades.length; i++)
+		for (KeyNamePair table : cascades)
 		{
 			//	DELETE FROM table WHERE AD_Table_ID=#1 AND Record_ID=#2
-			if (cascades[i].getKey() != AD_Table_ID)
+			if (table.getKey() != AD_Table_ID)
 			{
-				Object[] params = new Object[]{Integer.valueOf(AD_Table_ID), Integer.valueOf(Record_ID)};
-				if (cascades[i].getName().equals(X_AD_Attachment.Table_Name) || cascades[i].getName().equals(X_AD_Archive.Table_Name))
+				List<PO> poList = new Query(Env.getCtx(), table.getName(), "AD_Table_ID=? AND Record_ID=?", trxName)
+						.setParameters(AD_Table_ID, Record_ID)
+						.list();
+				
+				int count = 0;
+				for(PO po : poList)
 				{
-					Query query = new Query(Env.getCtx(), cascades[i].getName(), "AD_Table_ID=? AND Record_ID=?", trxName);
-					List<PO> list = query.setParameters(params).list();
-					for(PO po : list)
-					{
-						po.deleteEx(true);
-					}
+					po.deleteEx(true);
+					count++;
 				}
-				else 
-				{
-					StringBuilder sql = new StringBuilder ("DELETE FROM ")
-							.append(cascades[i].getName())
-							.append(" WHERE AD_Table_ID=? AND Record_ID=?");
-					int no = DB.executeUpdate(sql.toString(), params, false, trxName);
-					if (no > 0) {
-						if (log.isLoggable(Level.CONFIG)) log.config(cascades[i].getName() + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-					} else if (no < 0) {
-						log.severe(cascades[i].getName() + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-						return false;
-					}
-				}
+				if (count > 0)
+					if (log.isLoggable(Level.CONFIG)) log.config(table.getName() + " (" + AD_Table_ID + "/" + Record_ID + ") #" + count);
 			}
 		}
 		//	Parent Loop
-		for (int j = 0; j < s_parents.length; j++)
+		for (int i = 0; i < s_parents.length; i++)
 		{
-			if (s_parents[j] == AD_Table_ID)
+			if (s_parents[i] == AD_Table_ID)
 			{
-				int AD_Table_IDchild = s_parentChilds[j];
-				Object[] params = new Object[]{Integer.valueOf(AD_Table_IDchild), Integer.valueOf(Record_ID)};
-				for (int i = 0; i < cascades.length; i++)
+				int AD_Table_IDchild = s_parentChilds[i];
+				for (KeyNamePair table : cascades)
 				{
-					StringBuilder sql = new StringBuilder ("DELETE FROM ")
-						.append(cascades[i].getName())
-						.append(" WHERE AD_Table_ID=? AND Record_ID IN (SELECT ")
-						.append(s_parentChildNames[j]).append("_ID FROM ")
-						.append(s_parentChildNames[j]).append(" WHERE ")
-						.append(s_parentNames[j]).append("_ID=?)");
-					int no = DB.executeUpdate(sql.toString(), params, false, trxName);
-					if (no > 0) {
-						if (log.isLoggable(Level.CONFIG)) log.config(cascades[i].getName() + " " + s_parentNames[j]  
-								+ " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-					} else if (no < 0) {
-						log.severe(cascades[i].getName() + " " + s_parentNames[j]
-								+ " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-						return false;
+					String whereClause = " AD_Table_ID=? AND Record_ID IN (SELECT "
+							+ s_parentChildNames[i] + "_ID FROM "
+							+ s_parentChildNames[i] + " WHERE "
+							+ s_parentNames[i] + "_ID=?) ";
+					List<PO> poList = new Query(Env.getCtx(), table.getName(), whereClause, trxName)
+							.setParameters(AD_Table_IDchild, Record_ID)
+							.list();
+					
+					int count = 0;
+					for(PO po : poList)
+					{
+						po.deleteEx(true);
+						count++;
+					}
+					if(count > 0) {
+						if (log.isLoggable(Level.CONFIG)) log.config(table.getName() + " " + s_parentNames[i]  
+								+ " (" + AD_Table_ID + "/" + Record_ID + ") #" + count);
 					}
 				}
 			}
@@ -166,23 +157,25 @@ public class PO_Record
 	 * @param Record_ID
 	 * @param trxName
 	 */
-	public static void deleteSetNull(int AD_Table_ID, int Record_ID, String trxName){
-		KeyNamePair[] toClear = getTablesWithRecordColumn(MColumn.FKCONSTRAINTTYPE_SetNull);
-		Object[] params = new Object[]{Integer.valueOf(AD_Table_ID), Integer.valueOf(Record_ID)};
+	public static void setRecordIdNull(int AD_Table_ID, int Record_ID, String trxName){
+		KeyNamePair[] tables = getTablesWithRecordColumn(MColumn.FKCONSTRAINTTYPE_SetNull);
 		// Table loop
-		for (KeyNamePair table : toClear) {
+		for (KeyNamePair table : tables) {
 			if(table.getKey() == AD_Table_ID)
 				continue;
 			
-			String sql = " UPDATE " + table.getName()
-				+ " SET Record_ID = NULL "
-				+ "	WHERE AD_Table_ID = ? AND Record_ID = ? ";
-			int no = DB.executeUpdate(sql, params, false, trxName);
+			List<PO> poList = new Query(Env.getCtx(), table.getName(), " AD_Table_ID = ? AND Record_ID = ? ", trxName)
+					.setParameters(AD_Table_ID, Record_ID)
+					.list();
 			
-			if (no > 0) {
-				if (log.isLoggable(Level.CONFIG)) log.config(table.getName() + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-			} else if (no < 0) {
-				log.severe(table.getName() + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
+			int count = 0;
+			for(PO po : poList) {
+				po.set_Value("Record_ID", null);
+				po.saveEx(trxName);
+				count++;
+			}
+			if (count > 0) {
+				if (log.isLoggable(Level.CONFIG)) log.config(table.getName() + " (" + AD_Table_ID + "/" + Record_ID + ") #" + count);
 			}
 		}
 	}

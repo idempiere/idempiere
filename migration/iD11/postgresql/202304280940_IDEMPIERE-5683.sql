@@ -1,10 +1,6 @@
 -- IDEMPIERE-5683
 SELECT register_migration_script('202304280940_IDEMPIERE-5683.sql') FROM dual;
 
--- Apr 28, 2023, 9:40:27 AM CEST
-UPDATE AD_Val_Rule SET Code='(AD_Ref_List.Value!=''M'' OR @AD_Reference_ID@ IN (18,19,30,200233,200234,200235,200202,200240))',Updated=TO_TIMESTAMP('2023-04-28 09:40:27','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200064
-;
-
 -- Apr 28, 2023, 9:41:24 AM CEST
 UPDATE AD_Field SET DisplayLogic='@AD_Reference_ID@=19 | @AD_Reference_ID@=30 | @AD_Reference_ID@=18 | @AD_Reference_ID@=21 | @AD_Reference_ID@=25 | @AD_Reference_ID@=31 | @AD_Reference_ID@=35 | @AD_Reference_ID@=33 | @AD_Reference_ID@=32 | @AD_Reference_ID@=53370 | @AD_Reference_ID@=200233 | @AD_Reference_ID@=200234 | @AD_Reference_ID@=200235 | @AD_Reference_ID@=200202 | @AD_Reference_ID@=200240',Updated=TO_TIMESTAMP('2023-04-28 09:41:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=202519
 ;

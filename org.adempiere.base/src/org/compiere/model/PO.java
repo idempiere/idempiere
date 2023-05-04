@@ -3973,8 +3973,8 @@ public abstract class PO
 					PO_Record.deleteModelCascade(p_info.getTableName(), Record_ID, localTrxName);
 				}
 
-				// Delete Set Null AD_Table_ID/Record_ID
-				PO_Record.deleteSetNull(AD_Table_ID, Record_ID, localTrxName);
+				// Set referencing Record_ID Null AD_Table_ID/Record_ID
+				PO_Record.setRecordIdNull(AD_Table_ID, Record_ID, localTrxName);
 				
 				//	The Delete Statement
 				String where = isLogSQLScript() ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
