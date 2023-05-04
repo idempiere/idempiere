@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -36,6 +37,9 @@ import org.compiere.util.KeyNamePair;
  */
 public class PO_Record
 {
+	/* Cache for arrays of KeyNamePair<AD_Table_ID, TableName> for types of deletion: Cascade, Set Null, No Action */
+	private static final CCache<String, KeyNamePair[]> s_po_record_tables_cache = new CCache<>(null, "PORecordTables", 3, 120, false, 3);
+	
 	/**	Parent Tables		*/
 	private static int[]	s_parents =	new int[]{
 		X_C_Order.Table_ID
@@ -62,7 +66,7 @@ public class PO_Record
 	 */
 	static boolean deleteCascade (int AD_Table_ID, int Record_ID, String trxName)
 	{
-		KeyNamePair[] cascades = getTablesWithRecordColumn(MColumn.FKCONSTRAINTTYPE_Cascade);
+		KeyNamePair[] cascades = getTablesWithRecordColumnFromCache(MColumn.FKCONSTRAINTTYPE_Cascade);
 		//	Table Loop
 		for (KeyNamePair table : cascades)
 		{
@@ -158,7 +162,7 @@ public class PO_Record
 	 * @param trxName
 	 */
 	public static void setRecordIdNull(int AD_Table_ID, int Record_ID, String trxName){
-		KeyNamePair[] tables = getTablesWithRecordColumn(MColumn.FKCONSTRAINTTYPE_SetNull);
+		KeyNamePair[] tables = getTablesWithRecordColumnFromCache(MColumn.FKCONSTRAINTTYPE_SetNull);
 		// Table loop
 		for (KeyNamePair table : tables) {
 			if(table.getKey() == AD_Table_ID)
@@ -189,7 +193,7 @@ public class PO_Record
 	 */
 	static String exists (int AD_Table_ID, int Record_ID, String trxName)
 	{
-		KeyNamePair[] restricts = getTablesWithRecordColumn(MColumn.FKCONSTRAINTTYPE_NoAction);
+		KeyNamePair[] restricts = getTablesWithRecordColumnFromCache(MColumn.FKCONSTRAINTTYPE_NoAction);
 		//	Table Loop only
 		for (int i = 0; i < restricts.length; i++)
 		{
@@ -251,7 +255,7 @@ public class PO_Record
 	 */
 	static private void validate (int AD_Table_ID, String TableName)
 	{
-		KeyNamePair[] cascades = getTablesWithRecordColumn(MColumn.FKCONSTRAINTTYPE_Cascade);
+		KeyNamePair[] cascades = getTablesWithRecordColumnFromCache(MColumn.FKCONSTRAINTTYPE_Cascade);
 		for (int i = 0; i < cascades.length; i++)
 		{
 			StringBuilder sql = new StringBuilder ("DELETE FROM ")
@@ -267,9 +271,23 @@ public class PO_Record
 	}	//	validate
 	
 	/**
+	 * Get array of tables which has a Record_ID or Record_UU column with the defined Constraint Type from cache
+	 * @param constraintType - FKConstraintType of AD_Column
+	 * @return array of KeyNamePair<AD_Table_ID, TableName>
+	 */
+	static private KeyNamePair[] getTablesWithRecordColumnFromCache(String constraintType) {
+		KeyNamePair[] tables = s_po_record_tables_cache.get(constraintType);
+		if(tables != null)
+			return tables;
+		tables = getTablesWithRecordColumn(constraintType);
+		s_po_record_tables_cache.put(constraintType, tables);
+		return tables;
+	}
+	
+	/**
 	 * Get array of tables which has a Record_ID or Record_UU column with the defined Constraint Type
 	 * @param constraintType - FKConstraintType of AD_Column
-	 * @return int array of KeyNamePair<AD_Table_ID, TableName> 
+	 * @return array of KeyNamePair<AD_Table_ID, TableName> 
 	 */
 	static private KeyNamePair[] getTablesWithRecordColumn(String constraintType) {
 		ArrayList<KeyNamePair> tables = new ArrayList<KeyNamePair>();
