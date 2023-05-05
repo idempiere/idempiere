@@ -121,7 +121,8 @@ public class CleanOrphanCascade extends SvrProcess
 			StringBuilder sqlRef = new StringBuilder();
 			sqlRef.append("SELECT DISTINCT t.AD_Table_ID, ")
 				.append("                t.TableName, ")
-				.append("                c.FKConstraintType ")
+				.append("                c.FKConstraintType, ")
+				.append("                c.IsMandatory ")
 				.append("FROM   ").append(tableName).append(" r ")
 				.append("       JOIN AD_Table t ON ( r.AD_Table_ID = t.AD_Table_ID ) ")
 				.append("       JOIN AD_Column c ON (t.AD_Table_ID = c.AD_Table_ID AND c.ColumnName = 'Record_ID') ")
@@ -132,6 +133,7 @@ public class CleanOrphanCascade extends SvrProcess
 					int refTableID = ((BigDecimal) row.get(0)).intValue();
 					String refTableName = row.get(1).toString();
 					String constraintType = Objects.toString(row.get(2), "");
+					Boolean isMandatory = row.get(3).toString().equalsIgnoreCase("Y");
 
 					MTable refTable = MTable.get(getCtx(), refTableID);
 					StringBuilder whereClause = new StringBuilder();
@@ -162,7 +164,10 @@ public class CleanOrphanCascade extends SvrProcess
 							po.deleteEx(true, get_TrxName());
 						}
 						else if(MColumn.FKCONSTRAINTTYPE_SetNull.equals(constraintType)) {
-							po.set_ValueNoCheck("Record_ID", null);
+							if(isMandatory)
+								po.set_ValueOfColumn("Record_ID", 0);
+							else
+								po.set_ValueOfColumn("Record_ID", null);
 							po.saveEx(get_TrxName());
 						}	
 						noDel++;

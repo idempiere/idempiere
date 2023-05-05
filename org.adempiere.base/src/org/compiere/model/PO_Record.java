@@ -174,7 +174,10 @@ public class PO_Record
 			
 			int count = 0;
 			for(PO po : poList) {
-				po.set_Value("Record_ID", null);
+				if(po.isColumnMandatory(po.get_ColumnIndex("Record_ID")))
+					po.set_Value("Record_ID", 0);
+				else
+					po.set_Value("Record_ID", null);
 				po.saveEx(trxName);
 				count++;
 			}
