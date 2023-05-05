@@ -72,6 +72,7 @@ import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WPaymentEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.editor.WYesNoEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -1841,6 +1842,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                else if (eventTarget.getId().equals(listColumn.getId()) || eventTarget.getId().equals(listOperator.getId())) 
 	                {
 	                	addRowEditor(componentFrom, (ListCell)row.getFellow("cellQueryFrom"+row.getId()));
+	                	if (editorFrom instanceof WYesNoEditor)
+	                		((ListCell)row.getFellow("cellQueryFrom"+row.getId())).setAttribute("value", editorFrom.getValue());
 						if (editorTo != null && editorTo.getGridField() != null && DisplayType.isDate(editorTo.getGridField().getDisplayType()))
 						{
 							Div div = createDateRangeWrapper(editorFrom, editorTo);
