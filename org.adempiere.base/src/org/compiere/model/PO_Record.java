@@ -18,13 +18,16 @@ package org.compiere.model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 
 /**
  * 	Maintain AD_Table_ID/Record_ID constraint
@@ -34,6 +37,9 @@ import org.compiere.util.Env;
  */
 public class PO_Record
 {
+	/* Cache for arrays of KeyNamePair<AD_Table_ID, TableName> for types of deletion: Cascade, Set Null, No Action */
+	private static final CCache<String, KeyNamePair[]> s_po_record_tables_cache = new CCache<>(null, "PORecordTables", 3, 120, false, 3);
+	
 	/**	Parent Tables		*/
 	private static int[]	s_parents =	new int[]{
 		X_C_Order.Table_ID
@@ -46,40 +52,6 @@ public class PO_Record
 	};
 	private static String[]	s_parentChildNames = new String[]{
 		X_C_OrderLine.Table_Name
-	};
-	
-	
-	
-	/**	Cascade Table ID			*/
-	private static int[]	s_cascades =	new int[]{
-		X_AD_Attachment.Table_ID,
-		X_AD_Archive.Table_ID,
-		X_AD_Note.Table_ID,
-		X_AD_RecentItem.Table_ID,
-		X_AD_PostIt.Table_ID,
-		X_AD_LabelAssignment.Table_ID	
-	};
-	/**	Cascade Table Names			*/
-	private static String[]	s_cascadeNames = new String[]{
-		X_AD_Attachment.Table_Name,
-		X_AD_Archive.Table_Name,
-		X_AD_Note.Table_Name,
-		X_AD_RecentItem.Table_Name,
-		X_AD_PostIt.Table_Name,
-		X_AD_LabelAssignment.Table_Name
-	};
-
-	/**	Restrict Table ID			*/
-	private static int[]	s_restricts =	new int[]{
-		X_R_Request.Table_ID,
-		X_CM_Chat.Table_ID
-	//	X_Fact_Acct.Table_ID
-	};
-	/**	Restrict Table Names			*/
-	private static String[]	s_restrictNames = new String[]{
-		X_R_Request.Table_Name,
-		X_CM_Chat.Table_Name
-	//	X_Fact_Acct.Table_Name
 	};
 
 	/**	Logger	*/
@@ -94,60 +66,52 @@ public class PO_Record
 	 */
 	static boolean deleteCascade (int AD_Table_ID, int Record_ID, String trxName)
 	{
+		KeyNamePair[] cascades = getTablesWithRecordColumnFromCache(MColumn.FKCONSTRAINTTYPE_Cascade);
 		//	Table Loop
-		for (int i = 0; i < s_cascades.length; i++)
+		for (KeyNamePair table : cascades)
 		{
 			//	DELETE FROM table WHERE AD_Table_ID=#1 AND Record_ID=#2
-			if (s_cascades[i] != AD_Table_ID)
+			if (table.getKey() != AD_Table_ID)
 			{
-				Object[] params = new Object[]{Integer.valueOf(AD_Table_ID), Integer.valueOf(Record_ID)};
-				if (s_cascadeNames[i].equals(X_AD_Attachment.Table_Name) || s_cascadeNames[i].equals(X_AD_Archive.Table_Name))
+				List<PO> poList = new Query(Env.getCtx(), table.getName(), "AD_Table_ID=? AND Record_ID=?", trxName)
+						.setParameters(AD_Table_ID, Record_ID)
+						.list();
+				
+				int count = 0;
+				for(PO po : poList)
 				{
-					Query query = new Query(Env.getCtx(), s_cascadeNames[i], "AD_Table_ID=? AND Record_ID=?", trxName);
-					List<PO> list = query.setParameters(params).list();
-					for(PO po : list)
-					{
-						po.deleteEx(true);
-					}
+					po.deleteEx(true);
+					count++;
 				}
-				else 
-				{
-					StringBuilder sql = new StringBuilder ("DELETE FROM ")
-							.append(s_cascadeNames[i])
-							.append(" WHERE AD_Table_ID=? AND Record_ID=?");
-					int no = DB.executeUpdate(sql.toString(), params, false, trxName);
-					if (no > 0) {
-						if (log.isLoggable(Level.CONFIG)) log.config(s_cascadeNames[i] + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-					} else if (no < 0) {
-						log.severe(s_cascadeNames[i] + " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-						return false;
-					}
-				}
+				if (count > 0)
+					if (log.isLoggable(Level.CONFIG)) log.config(table.getName() + " (" + AD_Table_ID + "/" + Record_ID + ") #" + count);
 			}
 		}
 		//	Parent Loop
-		for (int j = 0; j < s_parents.length; j++)
+		for (int i = 0; i < s_parents.length; i++)
 		{
-			if (s_parents[j] == AD_Table_ID)
+			if (s_parents[i] == AD_Table_ID)
 			{
-				int AD_Table_IDchild = s_parentChilds[j];
-				Object[] params = new Object[]{Integer.valueOf(AD_Table_IDchild), Integer.valueOf(Record_ID)};
-				for (int i = 0; i < s_cascades.length; i++)
+				int AD_Table_IDchild = s_parentChilds[i];
+				for (KeyNamePair table : cascades)
 				{
-					StringBuilder sql = new StringBuilder ("DELETE FROM ")
-						.append(s_cascadeNames[i])
-						.append(" WHERE AD_Table_ID=? AND Record_ID IN (SELECT ")
-						.append(s_parentChildNames[j]).append("_ID FROM ")
-						.append(s_parentChildNames[j]).append(" WHERE ")
-						.append(s_parentNames[j]).append("_ID=?)");
-					int no = DB.executeUpdate(sql.toString(), params, false, trxName);
-					if (no > 0) {
-						if (log.isLoggable(Level.CONFIG)) log.config(s_cascadeNames[i] + " " + s_parentNames[j]  
-								+ " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-					} else if (no < 0) {
-						log.severe(s_cascadeNames[i] + " " + s_parentNames[j]
-								+ " (" + AD_Table_ID + "/" + Record_ID + ") #" + no);
-						return false;
+					String whereClause = " AD_Table_ID=? AND Record_ID IN (SELECT "
+							+ s_parentChildNames[i] + "_ID FROM "
+							+ s_parentChildNames[i] + " WHERE "
+							+ s_parentNames[i] + "_ID=?) ";
+					List<PO> poList = new Query(Env.getCtx(), table.getName(), whereClause, trxName)
+							.setParameters(AD_Table_IDchild, Record_ID)
+							.list();
+					
+					int count = 0;
+					for(PO po : poList)
+					{
+						po.deleteEx(true);
+						count++;
+					}
+					if(count > 0) {
+						if (log.isLoggable(Level.CONFIG)) log.config(table.getName() + " " + s_parentNames[i]  
+								+ " (" + AD_Table_ID + "/" + Record_ID + ") #" + count);
 					}
 				}
 			}
@@ -192,6 +156,38 @@ public class PO_Record
 	}
 
 	/**
+	 * If a referencing Record ID or Record UU exists to the deleted record, set it to NULL 
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param trxName
+	 */
+	public static void setRecordIdNull(int AD_Table_ID, int Record_ID, String trxName){
+		KeyNamePair[] tables = getTablesWithRecordColumnFromCache(MColumn.FKCONSTRAINTTYPE_SetNull);
+		// Table loop
+		for (KeyNamePair table : tables) {
+			if(table.getKey() == AD_Table_ID)
+				continue;
+			
+			List<PO> poList = new Query(Env.getCtx(), table.getName(), " AD_Table_ID = ? AND Record_ID = ? ", trxName)
+					.setParameters(AD_Table_ID, Record_ID)
+					.list();
+			
+			int count = 0;
+			for(PO po : poList) {
+				if(po.isColumnMandatory(po.get_ColumnIndex("Record_ID")))
+					po.set_Value("Record_ID", 0);
+				else
+					po.set_Value("Record_ID", null);
+				po.saveEx(trxName);
+				count++;
+			}
+			if (count > 0) {
+				if (log.isLoggable(Level.CONFIG)) log.config(table.getName() + " (" + AD_Table_ID + "/" + Record_ID + ") #" + count);
+			}
+		}
+	}
+	
+	/**
 	 * 	An entry Exists for restrict table/record combination
 	 *	@param AD_Table_ID table
 	 *	@param Record_ID record
@@ -200,16 +196,17 @@ public class PO_Record
 	 */
 	static String exists (int AD_Table_ID, int Record_ID, String trxName)
 	{
+		KeyNamePair[] restricts = getTablesWithRecordColumnFromCache(MColumn.FKCONSTRAINTTYPE_NoAction);
 		//	Table Loop only
-		for (int i = 0; i < s_restricts.length; i++)
+		for (int i = 0; i < restricts.length; i++)
 		{
 			//	SELECT COUNT(*) FROM table WHERE AD_Table_ID=#1 AND Record_ID=#2
 			StringBuilder sql = new StringBuilder ("SELECT COUNT(*) FROM ")
-				.append(s_restrictNames[i])
+				.append(restricts[i].getName())
 				.append(" WHERE AD_Table_ID=? AND Record_ID=?");
 			int no = DB.getSQLValue(trxName, sql.toString(), AD_Table_ID, Record_ID);
 			if (no > 0)
-				return s_restrictNames[i];
+				return restricts[i].getName();
 		}
 		return null;
 	}	//	exists
@@ -261,19 +258,77 @@ public class PO_Record
 	 */
 	static private void validate (int AD_Table_ID, String TableName)
 	{
-		for (int i = 0; i < s_cascades.length; i++)
+		KeyNamePair[] cascades = getTablesWithRecordColumnFromCache(MColumn.FKCONSTRAINTTYPE_Cascade);
+		for (int i = 0; i < cascades.length; i++)
 		{
 			StringBuilder sql = new StringBuilder ("DELETE FROM ")
-				.append(s_cascadeNames[i])
+				.append(cascades[i].getName())
 				.append(" WHERE AD_Table_ID=").append(AD_Table_ID)
 				.append(" AND Record_ID NOT IN (SELECT ")
 				.append(TableName).append("_ID FROM ").append(TableName).append(")");
 			int no = DB.executeUpdate(sql.toString(), null);
 			if (no > 0)
-				if (log.isLoggable(Level.CONFIG)) log.config(s_cascadeNames[i] + " (" + AD_Table_ID + "/" + TableName 
+				if (log.isLoggable(Level.CONFIG)) log.config(cascades[i].getName() + " (" + AD_Table_ID + "/" + TableName 
 						+ ") Invalid #" + no);
 		}
 	}	//	validate
 	
+	/**
+	 * Get array of tables which has a Record_ID or Record_UU column with the defined Constraint Type from cache
+	 * @param constraintType - FKConstraintType of AD_Column
+	 * @return array of KeyNamePair<AD_Table_ID, TableName>
+	 */
+	static private KeyNamePair[] getTablesWithRecordColumnFromCache(String constraintType) {
+		KeyNamePair[] tables = s_po_record_tables_cache.get(constraintType);
+		if(tables != null)
+			return tables;
+		tables = getTablesWithRecordColumn(constraintType);
+		s_po_record_tables_cache.put(constraintType, tables);
+		return tables;
+	}
+	
+	/**
+	 * Get array of tables which has a Record_ID or Record_UU column with the defined Constraint Type
+	 * @param constraintType - FKConstraintType of AD_Column
+	 * @return array of KeyNamePair<AD_Table_ID, TableName> 
+	 */
+	static private KeyNamePair[] getTablesWithRecordColumn(String constraintType) {
+		ArrayList<KeyNamePair> tables = new ArrayList<KeyNamePair>();
+		
+		String sql = " SELECT t.AD_Table_ID, TableName "
+				+ "	FROM AD_Column c "
+				+ "	JOIN AD_Table t ON (c.AD_Table_ID = t.AD_Table_ID) "
+				+ "	WHERE c.ColumnName IN (?,?) AND c.FKConstraintType = ? ";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, null);
+			int idx = 1;
+			pstmt.setString(idx++, "Record_ID");
+			pstmt.setString(idx++, "Record_UU");
+			pstmt.setString(idx++, constraintType);
+			rs = pstmt.executeQuery ();
+			while (rs.next ())
+			{
+				tables.add(new KeyNamePair(rs.getInt(1), rs.getString(2)));
+			}
+		}
+		catch (Exception e)
+		{
+			log.log (Level.SEVERE, sql, e);
+		}
+		finally {
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+		
+		KeyNamePair[] tablesArray = new KeyNamePair[tables.size()];
+		for(int i=0; i<tables.size(); i++) {
+			tablesArray[i] = tables.get(i);
+		}
+		
+		return tablesArray;
+	}
 	
 }	//	PO_Record

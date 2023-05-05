@@ -3972,7 +3972,10 @@ public abstract class PO
 				if (m_KeyColumns != null && m_KeyColumns.length == 1) {
 					PO_Record.deleteModelCascade(p_info.getTableName(), Record_ID, localTrxName);
 				}
-		
+
+				// Set referencing Record_ID Null AD_Table_ID/Record_ID
+				PO_Record.setRecordIdNull(AD_Table_ID, Record_ID, localTrxName);
+				
 				//	The Delete Statement
 				String where = isLogSQLScript() ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
 				List<Object> optimisticLockingParams = new ArrayList<Object>();
