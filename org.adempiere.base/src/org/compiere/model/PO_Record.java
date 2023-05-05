@@ -295,15 +295,15 @@ public class PO_Record
 		String sql = " SELECT t.AD_Table_ID, TableName "
 				+ "	FROM AD_Column c "
 				+ "	JOIN AD_Table t ON (c.AD_Table_ID = t.AD_Table_ID) "
-				+ "	WHERE c.AD_Reference_ID IN (?,?) AND FKConstraintType = ? ";
+				+ "	WHERE c.ColumnName IN (?,?) AND c.FKConstraintType = ? ";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			int idx = 1;
-			pstmt.setInt(idx++, DisplayType.RecordID);
-			pstmt.setInt(idx++, DisplayType.RecordUU);
+			pstmt.setString(idx++, "Record_ID");
+			pstmt.setString(idx++, "Record_UU");
 			pstmt.setString(idx++, constraintType);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())

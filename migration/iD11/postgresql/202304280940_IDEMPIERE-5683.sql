@@ -24,3 +24,7 @@ AND
 )',Updated=TO_TIMESTAMP('2023-05-04 17:28:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200064
 ;
 
+-- May 5, 2023, 8:15:59 AM CEST
+DELETE FROM AD_Process_Para WHERE AD_Process_Para_UU='459a7f88-ec79-47cf-9c7b-7429ac565f55'
+;
+
