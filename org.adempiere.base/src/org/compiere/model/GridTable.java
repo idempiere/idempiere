@@ -2844,7 +2844,7 @@ public class GridTable extends AbstractTableModel
 			if (!ok)
 			{
 				ValueNamePair vp = CLogger.retrieveError();
-				if (vp != null)
+				if (vp != null && !(Util.isEmpty(vp.getValue()) || Util.isEmpty(vp.getName())))
 					fireDataStatusEEvent(vp);
 				else
 					fireDataStatusEEvent("DeleteError", "", true);

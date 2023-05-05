@@ -26,15 +26,16 @@ package org.idempiere.process;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.MTree_Base;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_UUID_Map;
+import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
@@ -53,6 +54,10 @@ public class CleanOrphanCascade extends SvrProcess
 	 */
 	protected void prepare()
 	{
+		for (ProcessInfoParameter para : getParameter())
+		{
+			MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
+		}
 	}	//	prepare
 
 	/**
@@ -119,20 +124,20 @@ public class CleanOrphanCascade extends SvrProcess
 			boolean isUUIDMap = X_AD_Package_UUID_Map.Table_Name.equals(tableName);
 
 			StringBuilder sqlRef = new StringBuilder();
-			sqlRef.append("SELECT DISTINCT t.AD_Table_ID, ")
-				.append("                t.TableName, ")
-				.append("                c.FKConstraintType, ")
-				.append("                c.IsMandatory ")
-				.append("FROM   ").append(tableName).append(" r ")
-				.append("       JOIN AD_Table t ON ( r.AD_Table_ID = t.AD_Table_ID ) ")
-				.append("       JOIN AD_Column c ON (t.AD_Table_ID = c.AD_Table_ID AND c.ColumnName = 'Record_ID') ")
-				.append("ORDER  BY t.Tablename");
+			sqlRef.append("SELECT DISTINCT t.AD_Table_ID, ");
+			sqlRef.append("                t.TableName, ");
+			sqlRef.append("                c.FKConstraintType, ");
+			sqlRef.append("                c.IsMandatory ");
+			sqlRef.append("FROM   ").append(tableName).append(" r ");
+			sqlRef.append("       JOIN AD_Table t ON ( r.AD_Table_ID = t.AD_Table_ID ) ");
+			sqlRef.append("       JOIN AD_Column c ON (t.AD_Table_ID = c.AD_Table_ID AND c.ColumnName = 'Record_ID') ");
+			sqlRef.append("ORDER  BY t.Tablename");
 			List<List<Object>> rowTables = DB.getSQLArrayObjectsEx(get_TrxName(), sqlRef.toString());
 			if (rowTables != null) {
 				for (List<Object> row : rowTables) {
 					int refTableID = ((BigDecimal) row.get(0)).intValue();
 					String refTableName = row.get(1).toString();
-					String constraintType = Objects.toString(row.get(2), "");
+					String constraintType = row.get(2).toString();
 					Boolean isMandatory = row.get(3).toString().equalsIgnoreCase("Y");
 
 					MTable refTable = MTable.get(getCtx(), refTableID);
@@ -157,23 +162,24 @@ public class CleanOrphanCascade extends SvrProcess
 						}
 					}
 
-					int noDel = 0;
+					int noDeleted = 0;
+					int noSetNull = 0;
 					List<PO> poList = new Query(getCtx(), tableName, whereClause.toString(), get_TrxName()).list();
 					for (PO po : poList) {
-						if(MColumn.FKCONSTRAINTTYPE_ModelCascade.equals(constraintType)) {
+						if (MColumn.FKCONSTRAINTTYPE_ModelCascade.equals(constraintType)) {
 							po.deleteEx(true, get_TrxName());
-						}
-						else if(MColumn.FKCONSTRAINTTYPE_SetNull.equals(constraintType)) {
-							if(isMandatory)
+							noDeleted++;
+						} else if (MColumn.FKCONSTRAINTTYPE_ModelSetNull.equals(constraintType)) {
+							if (isMandatory)
 								po.set_ValueOfColumn("Record_ID", 0);
 							else
 								po.set_ValueOfColumn("Record_ID", null);
 							po.saveEx(get_TrxName());
-						}	
-						noDel++;
+							noSetNull++;
+						}
 					}
-					if (noDel > 0) {
-						addLog(Msg.parseTranslation(getCtx(), noDel + " " + tableName + " " + "@Deleted@ -> " + refTableName));
+					if (noDeleted > 0 || noSetNull > 0) {
+						addLog(Msg.parseTranslation(getCtx(), tableName + ": " + noDeleted + " @Deleted@ / " + noSetNull + " @Reset@ -> " + refTableName));
 					}
 				}
 
@@ -195,8 +201,7 @@ public class CleanOrphanCascade extends SvrProcess
 			noDel++;
 		}
 		if (noDel > 0) {
-			addLog(Msg.parseTranslation(getCtx(), noDel + " " + treeTable + " " + "@Deleted@ -> " + foreignTable
-					+ (treeId > 0 ? " Tree=" + treeId: "" )));
+			addLog(Msg.parseTranslation(getCtx(), treeTable + ": " + noDel + " @Deleted@ -> " + foreignTable + (treeId > 0 ? " Tree=" + treeId: "" )));
 		}
 	}	//	delTree
 

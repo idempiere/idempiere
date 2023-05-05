@@ -33,7 +33,7 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20230505L;
 
     /** Standard Constructor */
     public X_AD_Column (Properties ctx, int AD_Column_ID, String trxName)
@@ -664,14 +664,18 @@ public class X_AD_Column extends PO implements I_AD_Column, I_Persistent
 	public static final int FKCONSTRAINTTYPE_AD_Reference_ID=200075;
 	/** Cascade = C */
 	public static final String FKCONSTRAINTTYPE_Cascade = "C";
-	/** Do Not Create = D */
-	public static final String FKCONSTRAINTTYPE_DoNotCreate = "D";
+	/** Do Not Create - Ignore = D */
+	public static final String FKCONSTRAINTTYPE_DoNotCreate_Ignore = "D";
 	/** Model Cascade = M */
 	public static final String FKCONSTRAINTTYPE_ModelCascade = "M";
-	/** No Action = N */
-	public static final String FKCONSTRAINTTYPE_NoAction = "N";
+	/** No Action - Forbid Deletion = N */
+	public static final String FKCONSTRAINTTYPE_NoAction_ForbidDeletion = "N";
+	/** Model No Action - Forbid Deletion = O */
+	public static final String FKCONSTRAINTTYPE_ModelNoAction_ForbidDeletion = "O";
 	/** Set Null = S */
 	public static final String FKCONSTRAINTTYPE_SetNull = "S";
+	/** Model Set Null = T */
+	public static final String FKCONSTRAINTTYPE_ModelSetNull = "T";
 	/** Set Constraint Type.
 		@param FKConstraintType Constraint Type
 	*/
