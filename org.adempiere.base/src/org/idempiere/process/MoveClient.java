@@ -621,7 +621,7 @@ public class MoveClient extends SvrProcess {
 						.append("         ON ( c.AD_Table_ID = t.AD_Table_ID ) ")
 						.append("WHERE  UPPER(t.TableName)=").append(DB.TO_STRING(tableName.toUpperCase()))
 						.append("       AND UPPER(c.ColumnName)=").append(DB.TO_STRING(columnName.toUpperCase()))
-						.append("       AND ( c.FKConstraintType IS NULL OR c.FKConstraintType=").append(DB.TO_STRING(MColumn.FKCONSTRAINTTYPE_DoNotCreate)).append(")");
+						.append("       AND ( c.FKConstraintType IS NULL OR c.FKConstraintType=").append(DB.TO_STRING(MColumn.FKCONSTRAINTTYPE_DoNotCreate_Ignore)).append(")");
 				int cntFk = countInExternal(sqlVerifFKSB.toString());
 				if (cntFk > 0) {
 					statusUpdate("Validating orphans for " + table.getTableName() + "." + columnName);
