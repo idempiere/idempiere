@@ -90,7 +90,8 @@ public class POTest extends AbstractTestCase
 
 		public MyTestPO(Properties ctx, boolean failOnSave, String trxName)
 		{
-			super(ctx, "Test_"+System.currentTimeMillis(), 10, trxName);
+			super(ctx, "Test_"+System.currentTimeMillis(), 10);
+			this.set_TrxName(trxName);
 			this.setDescription(""+getClass());
 			this.failOnSave = failOnSave;
 		}
@@ -139,7 +140,8 @@ public class POTest extends AbstractTestCase
 				"test",
 		};
 		// Create the test PO and save
-		MTest testPO = new MTest(Env.getCtx(), getClass().getName(), 1, getTrxName());
+		MTest testPO = new MTest(Env.getCtx(), getClass().getName(), 1);
+		testPO.set_TrxName(getTrxName());
 
 		for (String str : testStrings)
 		{
@@ -184,7 +186,8 @@ public class POTest extends AbstractTestCase
 		String bigString = sb.toString();
 		//
 		// Create the test PO:
-		MTest testPO = new MTest(Env.getCtx(), getClass().getName(), 1, getTrxName());
+		MTest testPO = new MTest(Env.getCtx(), getClass().getName(), 1);
+		testPO.set_TrxName(getTrxName());
 		//
 		// Getting Max Length:
 		POInfo info = POInfo.getPOInfo(Env.getCtx(), MTest.Table_ID);
@@ -472,7 +475,7 @@ public class POTest extends AbstractTestCase
 
 	@Test
 	public void testVirtualColumnLoad() {
-		MTest testPo = new MTest(Env.getCtx(), getClass().getName(), 1, getTrxName());
+		MTest testPo = new MTest(Env.getCtx(), getClass().getName(), 1);
 		testPo.save();
 
 		// asynchronous (default) virtual column loading

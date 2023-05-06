@@ -255,7 +255,7 @@ public class QueryTest extends AbstractTestCase {
 	public void testPaging() {
 		DB.executeUpdateEx("DELETE FROM Test WHERE Name LIKE 'QueryTest%'", getTrxName());
 		for (int i=101; i<=130; i++) {
-			PO testPo = new MTest(Env.getCtx(), "QueryTest", i, getTrxName());
+			PO testPo = new MTest(Env.getCtx(), "QueryTest", i);
 			testPo.save();
 		}
 		Query query = new Query(Env.getCtx(), MTest.Table_Name, "Name LIKE 'QueryTest%'", getTrxName())
@@ -397,7 +397,7 @@ public class QueryTest extends AbstractTestCase {
 	@Test
 	public void testVirtualColumnLoad() {
 		// create bogus record
-		PO testPo = new MTest(Env.getCtx(), getClass().getName(), 1, getTrxName());
+		PO testPo = new MTest(Env.getCtx(), getClass().getName(), 1);
 		testPo.save();
 
 		BigDecimal expected = new BigDecimal("123.45");
