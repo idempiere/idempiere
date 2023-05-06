@@ -242,6 +242,7 @@ public class PaySelectFormTest extends AbstractTestCase {
 								hdr.deleteEx(true);
 							}
 							DB.executeUpdateEx("UPDATE C_Invoice SET C_Payment_ID=NULL WHERE C_Payment_ID=?", new Object[] {payment.get_ID()}, null);
+							DB.executeUpdateEx("DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=?", new Object[] {MPayment.Table_ID, payment.get_ID()}, null);
 							payment.deleteEx(true);
 						}						
 					}
@@ -264,6 +265,7 @@ public class PaySelectFormTest extends AbstractTestCase {
 					MAllocationHdr hdr = new MAllocationHdr(Env.getCtx(), i, null);
 					hdr.deleteEx(true);
 				}
+				DB.executeUpdateEx("DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=?", new Object[] {MInvoice.Table_ID, invoice.get_ID()}, null);
 				invoice.deleteEx(true);
 			}
 		}
