@@ -164,53 +164,53 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		AEnv.showCenterScreen(this);
 	}	//	VPAttributeDialog
 
-	private int						m_WindowNo;
-	private MAttributeSetInstance	m_masi;
-	private int 					m_M_AttributeSetInstance_ID;
-	private int 					m_M_Locator_ID;
-	private String					m_M_AttributeSetInstanceName;
-	private int 					m_M_Product_ID;
-	private int						m_C_BPartner_ID;
-	private int						m_AD_Column_ID;
-	private int						m_WindowNoParent;
+	protected int						m_WindowNo;
+	protected MAttributeSetInstance	m_masi;
+	protected int 					m_M_AttributeSetInstance_ID;
+	protected int 					m_M_Locator_ID;
+	protected String					m_M_AttributeSetInstanceName;
+	protected int 					m_M_Product_ID;
+	protected int						m_C_BPartner_ID;
+	protected int						m_AD_Column_ID;
+	protected int						m_WindowNoParent;
 	/**	Enter Product Attributes		*/
-	private boolean					m_productWindow = false;
+	protected boolean					m_productWindow = false;
 	/**	Change							*/
-	private boolean					m_changed = false;
+	protected boolean					m_changed = false;
 	
 	private static final CLogger	log = CLogger.getCLogger(WPAttributeDialog.class);
 	/** Row Counter					*/
 	private int						m_row = 0;
 	/** List of Editors				*/
-	private ArrayList<WEditor>		m_editors = new ArrayList<WEditor>();
+	protected ArrayList<WEditor>		m_editors = new ArrayList<WEditor>();
 
-	private Checkbox	cbNewEdit = new Checkbox();
-	private Button		bNewRecord = new Button(Msg.getMsg(Env.getCtx(), "NewRecord"));
-	private Listbox		existingCombo = new Listbox();
-	private Button		bSelect = new Button(); 
+	protected Checkbox	cbNewEdit = new Checkbox();
+	protected Button		bNewRecord = new Button(Msg.getMsg(Env.getCtx(), "NewRecord"));
+	protected Listbox		existingCombo = new Listbox();
+	protected Button		bSelect = new Button(); 
 	//	Lot
-	private Textbox fieldLotString = new Textbox();
-	private Listbox fieldLot = new Listbox();
-	private Button bLot = new Button(Msg.getMsg (Env.getCtx(), "New"));
+	protected Textbox fieldLotString = new Textbox();
+	protected Listbox fieldLot = new Listbox();
+	protected Button bLot = new Button(Msg.getMsg (Env.getCtx(), "New"));
 	//	Lot Popup
-	Menupopup 					popupMenu = new Menupopup();
-	private Menuitem 			mZoom;
+	protected Menupopup 					popupMenu = new Menupopup();
+	protected Menuitem 			mZoom;
 	//	Ser No
-	private Textbox fieldSerNo = new Textbox();
-	private Button bSerNo = new Button(Msg.getMsg (Env.getCtx(), "New"));
+	protected Textbox fieldSerNo = new Textbox();
+	protected Button bSerNo = new Button(Msg.getMsg (Env.getCtx(), "New"));
 	//	Date
-	private Datebox fieldGuaranteeDate = new Datebox();
+	protected Datebox fieldGuaranteeDate = new Datebox();
 	//
-	private Textbox fieldDescription = new Textbox(); //TODO: set length to 20
+	protected Textbox fieldDescription = new Textbox(); //TODO: set length to 20
 	//
-	private Borderlayout mainLayout = new Borderlayout();
-	private Panel centerPanel = new Panel();
-	private Grid centerLayout = new Grid();
-	private Panel northPanel = new Panel();
-	private Grid northLayout = new Grid();
-	private ConfirmPanel confirmPanel = new ConfirmPanel (true);
+	protected Borderlayout mainLayout = new Borderlayout();
+	protected Panel centerPanel = new Panel();
+	protected Grid centerLayout = new Grid();
+	protected Panel northPanel = new Panel();
+	protected Grid northLayout = new Grid();
+	protected ConfirmPanel confirmPanel = new ConfirmPanel (true);
 	
-	private String m_columnName = null;
+	protected String m_columnName = null;
 
 	/**
 	 *	Layout
@@ -838,14 +838,14 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			log.log(Level.SEVERE, "not found - " + e);
 	}	//	actionPerformed
 
-	private void onCancel() {
+	protected void onCancel() {
 		m_changed = false;
 		m_M_AttributeSetInstance_ID = 0;
 		m_M_Locator_ID = 0;
 		dispose();
 	}
 
-	private void cmd_existingCombo() {
+	protected void cmd_existingCombo() {
 		ListItem pp = existingCombo.getSelectedItem();
 		if (pp != null && (Integer)pp.getValue() != -1)
 		{
@@ -865,7 +865,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		}
 	}
 
-	private void cmd_newRecord() {
+	protected void cmd_newRecord() {
 		cbNewEdit.setSelected(false);
 		cbNewEdit.setEnabled(false);
 		bNewRecord.setEnabled(false);
@@ -883,7 +883,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		fieldDescription.setText("");
 	}
 
-	private void cmd_edit() {
+	protected void cmd_edit() {
 		boolean check = cbNewEdit.isSelected();
 		for (int i = 0; i < m_editors.size(); i++)
 		{
@@ -896,7 +896,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	 * 	Instance Selection Button
 	 * 	@return true if selected
 	 */
-	private void cmd_select()
+	protected void cmd_select()
 	{
 		log.config("");
 		
@@ -965,7 +965,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	/**
 	 * 	Instance New/Edit
 	 */
-	private void cmd_newEdit()
+	protected void cmd_newEdit()
 	{
 		boolean rw = cbNewEdit.isChecked();
 		if (log.isLoggable(Level.CONFIG)) log.config("R/W=" + rw + " " + m_masi);
@@ -1005,7 +1005,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 	 *	Save Selection
 	 *	@return true if saved
 	 */
-	private boolean saveSelection()
+	protected boolean saveSelection()
 	{
 		log.info("");
 		

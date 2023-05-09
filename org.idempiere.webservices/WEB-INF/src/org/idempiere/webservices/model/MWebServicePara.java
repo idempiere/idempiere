@@ -47,6 +47,16 @@ public class MWebServicePara extends X_WS_WebService_Para
 	 */
 	private static final long serialVersionUID = 3561409141850981248L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param WS_WebService_Para_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWebServicePara(Properties ctx, String WS_WebService_Para_UU, String trxName) {
+        super(ctx, WS_WebService_Para_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -56,12 +66,6 @@ public class MWebServicePara extends X_WS_WebService_Para
 	public MWebServicePara (Properties ctx, int WS_WebService_Para_ID, String trxName)
 	{
 		super (ctx, WS_WebService_Para_ID, trxName);
-		/** if (WS_WebService_Para_ID == 0)
-        {
-			setName (null);
-			setValue (null);
-			WS_WebService_Para_ID (0);
-        } */
 	}	//	MWebServicePara
 
 	/**

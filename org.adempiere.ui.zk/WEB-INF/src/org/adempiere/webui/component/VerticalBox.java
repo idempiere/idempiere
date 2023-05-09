@@ -18,7 +18,7 @@
 package org.adempiere.webui.component;
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Vbox}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -26,7 +26,7 @@ package org.adempiere.webui.component;
 public class VerticalBox extends org.zkoss.zul.Vbox
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5995926218043737398L;
 }

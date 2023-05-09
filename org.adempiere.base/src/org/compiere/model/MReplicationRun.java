@@ -33,6 +33,16 @@ public class MReplicationRun extends X_AD_Replication_Run
 	 */
 	private static final long serialVersionUID = 7609847179225634980L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Replication_Run_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MReplicationRun(Properties ctx, String AD_Replication_Run_UU, String trxName) {
+        super(ctx, AD_Replication_Run_UU, trxName);
+    }
+
 	/**
 	 * 	Create new Run
 	 *	@param ctx context

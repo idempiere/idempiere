@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_CostHistory
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_CostHistory")
-public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent 
+public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_M_CostHistory (Properties ctx, int M_CostHistory_ID, String trxName)
@@ -72,6 +72,44 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_CostHistory (Properties ctx, String M_CostHistory_UU, String trxName)
+    {
+      super (ctx, M_CostHistory_UU, trxName);
+      /** if (M_CostHistory_UU == null)
+        {
+			setM_AttributeSetInstance_ID (0);
+			setM_CostDetail_ID (0);
+			setM_CostElement_ID (0);
+			setM_CostHistory_ID (0);
+			setM_CostHistory_UU (null);
+			setM_CostType_ID (0);
+			setNewCostPrice (Env.ZERO);
+			setNewQty (Env.ZERO);
+			setOldCostPrice (Env.ZERO);
+			setOldQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_CostHistory (Properties ctx, String M_CostHistory_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_CostHistory_UU, trxName, virtualColumns);
+      /** if (M_CostHistory_UU == null)
+        {
+			setM_AttributeSetInstance_ID (0);
+			setM_CostDetail_ID (0);
+			setM_CostElement_ID (0);
+			setM_CostHistory_ID (0);
+			setM_CostHistory_UU (null);
+			setM_CostType_ID (0);
+			setNewCostPrice (Env.ZERO);
+			setNewQty (Env.ZERO);
+			setOldCostPrice (Env.ZERO);
+			setOldQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_CostHistory (Properties ctx, ResultSet rs, String trxName)
     {
@@ -79,7 +117,7 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -244,6 +282,34 @@ public class X_M_CostHistory extends PO implements I_M_CostHistory, I_Persistent
 	public int getM_CostType_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_M_CostType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
+	{
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_ID)
+			.getPO(getM_Product_ID(), get_TrxName());
+	}
+
+	/** Set Product.
+		@param M_Product_ID Product, Service, Item
+	*/
+	public void setM_Product_ID (int M_Product_ID)
+	{
+		if (M_Product_ID < 1)
+			set_Value (COLUMNNAME_M_Product_ID, null);
+		else
+			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
+	}
+
+	/** Get Product.
+		@return Product, Service, Item
+	  */
+	public int getM_Product_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

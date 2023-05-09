@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for MFA_Registration
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="MFA_Registration")
-public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Persistent 
+public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_MFA_Registration (Properties ctx, int MFA_Registration_ID, String trxName)
@@ -66,6 +66,38 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_MFA_Registration (Properties ctx, String MFA_Registration_UU, String trxName)
+    {
+      super (ctx, MFA_Registration_UU, trxName);
+      /** if (MFA_Registration_UU == null)
+        {
+			setAD_User_ID (0);
+			setIsUserMFAPreferred (false);
+// N
+			setIsValid (false);
+// N
+			setMFA_Method_ID (0);
+			setMFA_Registration_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_MFA_Registration (Properties ctx, String MFA_Registration_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, MFA_Registration_UU, trxName, virtualColumns);
+      /** if (MFA_Registration_UU == null)
+        {
+			setAD_User_ID (0);
+			setIsUserMFAPreferred (false);
+// N
+			setIsValid (false);
+// N
+			setMFA_Method_ID (0);
+			setMFA_Registration_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_MFA_Registration (Properties ctx, ResultSet rs, String trxName)
     {
@@ -73,7 +105,7 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -121,6 +153,14 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 			 return 0;
 		return ii.intValue();
 	}
+
+    /** Get Record ID/ColumnName
+        @return ID/ColumnName pair
+      */
+    public KeyNamePair getKeyNamePair()
+    {
+        return new KeyNamePair(get_ID(), String.valueOf(getAD_User_ID()));
+    }
 
 	/** Set Expire On.
 		@param Expiration Expire On
@@ -185,10 +225,10 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	public boolean isUserMFAPreferred()
 	{
 		Object oo = get_Value(COLUMNNAME_IsUserMFAPreferred);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -208,10 +248,10 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	public boolean isValid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValid);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -387,14 +427,6 @@ public class X_MFA_Registration extends PO implements I_MFA_Registration, I_Pers
 	{
 		return (String)get_Value(COLUMNNAME_Name);
 	}
-
-    /** Get Record ID/ColumnName
-        @return ID/ColumnName pair
-      */
-    public KeyNamePair getKeyNamePair() 
-    {
-        return new KeyNamePair(get_ID(), getName());
-    }
 
 	/** Set Parameter Value.
 		@param ParameterValue Parameter Value

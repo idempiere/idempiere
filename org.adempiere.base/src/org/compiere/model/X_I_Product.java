@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_Product
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="I_Product")
-public class X_I_Product extends PO implements I_I_Product, I_Persistent 
+public class X_I_Product extends PO implements I_I_Product, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_I_Product (Properties ctx, int I_Product_ID, String trxName)
@@ -58,6 +58,28 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_I_Product (Properties ctx, String I_Product_UU, String trxName)
+    {
+      super (ctx, I_Product_UU, trxName);
+      /** if (I_Product_UU == null)
+        {
+			setI_IsImported (false);
+			setI_Product_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_Product (Properties ctx, String I_Product_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_Product_UU, trxName, virtualColumns);
+      /** if (I_Product_UU == null)
+        {
+			setI_IsImported (false);
+			setI_Product_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_I_Product (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +87,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -302,10 +324,10 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	public boolean isDiscontinued()
 	{
 		Object oo = get_Value(COLUMNNAME_Discontinued);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -419,10 +441,10 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -729,10 +751,10 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -751,10 +773,10 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -952,7 +974,7 @@ public class X_I_Product extends PO implements I_I_Product, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getValue());
     }

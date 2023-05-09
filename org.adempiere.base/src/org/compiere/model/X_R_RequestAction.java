@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for R_RequestAction
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_RequestAction")
-public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persistent 
+public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_R_RequestAction (Properties ctx, int R_RequestAction_ID, String trxName)
@@ -57,6 +57,28 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_RequestAction (Properties ctx, String R_RequestAction_UU, String trxName)
+    {
+      super (ctx, R_RequestAction_UU, trxName);
+      /** if (R_RequestAction_UU == null)
+        {
+			setR_RequestAction_ID (0);
+			setR_Request_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_RequestAction (Properties ctx, String R_RequestAction_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_RequestAction_UU, trxName, virtualColumns);
+      /** if (R_RequestAction_UU == null)
+        {
+			setR_RequestAction_ID (0);
+			setR_Request_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_RequestAction (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +86,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -380,7 +402,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 		return (Timestamp)get_Value(COLUMNNAME_DateCompletePlan);
 	}
 
-	/** Set Date next action.
+	/** Set Date Next Action.
 		@param DateNextAction Date that this request should be acted on
 	*/
 	public void setDateNextAction (Timestamp DateNextAction)
@@ -388,7 +410,7 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 		set_ValueNoCheck (COLUMNNAME_DateNextAction, DateNextAction);
 	}
 
-	/** Get Date next action.
+	/** Get Date Next Action.
 		@return Date that this request should be acted on
 	  */
 	public Timestamp getDateNextAction()
@@ -465,10 +487,10 @@ public class X_R_RequestAction extends PO implements I_R_RequestAction, I_Persis
 	public boolean isInvoiced()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInvoiced);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -36,14 +36,23 @@ public class MSchedulerPara extends X_AD_Scheduler_Para implements ImmutablePOSu
 	 */
 	private static final long serialVersionUID = -9178948165437974600L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Scheduler_Para_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSchedulerPara(Properties ctx, String AD_Scheduler_Para_UU, String trxName) {
+        super(ctx, AD_Scheduler_Para_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param AD_Scheduler_Para_ID id
 	 *	@param trxName transaction
 	 */
-	public MSchedulerPara (Properties ctx, int AD_Scheduler_Para_ID,
-		String trxName)
+	public MSchedulerPara (Properties ctx, int AD_Scheduler_Para_ID, String trxName)
 	{
 		super (ctx, AD_Scheduler_Para_ID, trxName);
 	}	//	MSchedulerPara

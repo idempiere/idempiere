@@ -34,6 +34,16 @@ public class MCampaign extends X_C_Campaign
 	 */
 	private static final long serialVersionUID = -5881057827687596119L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Campaign_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCampaign(Properties ctx, String C_Campaign_UU, String trxName) {
+        super(ctx, C_Campaign_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

@@ -22,16 +22,16 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 /** Generated Model for AD_BroadcastMessage
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_BroadcastMessage")
-public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, I_Persistent 
+public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_AD_BroadcastMessage (Properties ctx, int AD_BroadcastMessage_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_BroadcastMessage (Properties ctx, String AD_BroadcastMessage_UU, String trxName)
+    {
+      super (ctx, AD_BroadcastMessage_UU, trxName);
+      /** if (AD_BroadcastMessage_UU == null)
+        {
+			setAD_BroadcastMessage_ID (0);
+			setBroadcastFrequency (null);
+			setBroadcastMessage (null);
+			setBroadcastType (null);
+			setTarget (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_BroadcastMessage (Properties ctx, String AD_BroadcastMessage_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_BroadcastMessage_UU, trxName, virtualColumns);
+      /** if (AD_BroadcastMessage_UU == null)
+        {
+			setAD_BroadcastMessage_ID (0);
+			setBroadcastFrequency (null);
+			setBroadcastMessage (null);
+			setBroadcastType (null);
+			setTarget (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_BroadcastMessage (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -279,10 +307,10 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	public boolean isExpired()
 	{
 		Object oo = get_Value(COLUMNNAME_Expired);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -318,17 +346,17 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	public boolean isPublished()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPublished);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
 	}
 
 	/** Set Log Acknowledge.
-		@param LogAcknowledge Want to Log the Acknowledgement of Message?
+		@param LogAcknowledge Want to Log the Acknowledgment of Message?
 	*/
 	public void setLogAcknowledge (boolean LogAcknowledge)
 	{
@@ -336,22 +364,22 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	/** Get Log Acknowledge.
-		@return Want to Log the Acknowledgement of Message?
+		@return Want to Log the Acknowledgment of Message?
 	  */
 	public boolean isLogAcknowledge()
 	{
 		Object oo = get_Value(COLUMNNAME_LogAcknowledge);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
 	}
 
-	/** Set Notification Client.
-		@param Notification_Client_ID Notification Client
+	/** Set Notification Tenant.
+		@param Notification_Client_ID Notification Tenant
 	*/
 	public void setNotification_Client_ID (int Notification_Client_ID)
 	{
@@ -361,8 +389,8 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 			set_Value (COLUMNNAME_Notification_Client_ID, Integer.valueOf(Notification_Client_ID));
 	}
 
-	/** Get Notification Client.
-		@return Notification Client
+	/** Get Notification Tenant.
+		@return Notification Tenant
 	  */
 	public int getNotification_Client_ID()
 	{
@@ -386,10 +414,10 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -422,7 +450,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	/** User = U */
 	public static final String TARGET_User = "U";
 	/** Set Target.
-		@param Target Target client
+		@param Target Target tenant
 	*/
 	public void setTarget (String Target)
 	{
@@ -431,7 +459,7 @@ public class X_AD_BroadcastMessage extends PO implements I_AD_BroadcastMessage, 
 	}
 
 	/** Get Target.
-		@return Target client
+		@return Target tenant
 	  */
 	public String getTarget()
 	{

@@ -26,16 +26,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PP_Order_Node
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PP_Order_Node")
-public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent 
+public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_PP_Order_Node (Properties ctx, int PP_Order_Node_ID, String trxName)
@@ -101,6 +101,70 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_PP_Order_Node (Properties ctx, String PP_Order_Node_UU, String trxName)
+    {
+      super (ctx, PP_Order_Node_UU, trxName);
+      /** if (PP_Order_Node_UU == null)
+        {
+			setAction (null);
+// Z
+			setAD_WF_Node_ID (0);
+			setAD_Workflow_ID (0);
+			setCost (Env.ZERO);
+			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+			setIsCentrallyMaintained (false);
+			setJoinElement (null);
+// X
+			setLimit (0);
+			setName (null);
+			setPP_Order_ID (0);
+			setPP_Order_Node_ID (0);
+			setPP_Order_Workflow_ID (0);
+			setPriority (0);
+			setSplitElement (null);
+// X
+			setValue (null);
+			setWaitingTime (0);
+			setWorkingTime (0);
+			setXPosition (0);
+			setYPosition (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PP_Order_Node (Properties ctx, String PP_Order_Node_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PP_Order_Node_UU, trxName, virtualColumns);
+      /** if (PP_Order_Node_UU == null)
+        {
+			setAction (null);
+// Z
+			setAD_WF_Node_ID (0);
+			setAD_Workflow_ID (0);
+			setCost (Env.ZERO);
+			setEntityType (null);
+// @SQL=select get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) from dual
+			setIsCentrallyMaintained (false);
+			setJoinElement (null);
+// X
+			setLimit (0);
+			setName (null);
+			setPP_Order_ID (0);
+			setPP_Order_Node_ID (0);
+			setPP_Order_Workflow_ID (0);
+			setPriority (0);
+			setSplitElement (null);
+// X
+			setValue (null);
+			setWaitingTime (0);
+			setWorkingTime (0);
+			setXPosition (0);
+			setYPosition (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PP_Order_Node (Properties ctx, ResultSet rs, String trxName)
     {
@@ -108,7 +172,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -740,16 +804,16 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Duration Requiered.
-		@param DurationRequiered Duration Requiered
+	/** Set Duration Required.
+		@param DurationRequiered Duration Required
 	*/
 	public void setDurationRequiered (int DurationRequiered)
 	{
 		set_Value (COLUMNNAME_DurationRequiered, Integer.valueOf(DurationRequiered));
 	}
 
-	/** Get Duration Requiered.
-		@return Duration Requiered	  */
+	/** Get Duration Required.
+		@return Duration Required	  */
 	public int getDurationRequiered()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_DurationRequiered);
@@ -830,10 +894,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	public boolean isCentrallyMaintained()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCentrallyMaintained);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -852,10 +916,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	public boolean isMilestone()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMilestone);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -874,10 +938,10 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	public boolean isSubcontracting()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSubcontracting);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -962,7 +1026,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -1134,16 +1198,16 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return bd;
 	}
 
-	/** Set Qty Requiered.
-		@param QtyRequiered Qty Requiered
+	/** Set Qty Required.
+		@param QtyRequiered Qty Required
 	*/
 	public void setQtyRequiered (BigDecimal QtyRequiered)
 	{
 		set_Value (COLUMNNAME_QtyRequiered, QtyRequiered);
 	}
 
-	/** Get Qty Requiered.
-		@return Qty Requiered	  */
+	/** Get Qty Required.
+		@return Qty Required	  */
 	public BigDecimal getQtyRequiered()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyRequiered);
@@ -1153,7 +1217,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	/** Set Scrap %.
-		@param QtyScrap Scrap % Quantity for this componet
+		@param QtyScrap Scrap % Quantity for this component
 	*/
 	public void setQtyScrap (BigDecimal QtyScrap)
 	{
@@ -1161,7 +1225,7 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 	}
 
 	/** Get Scrap %.
-		@return Scrap % Quantity for this componet
+		@return Scrap % Quantity for this component
 	  */
 	public BigDecimal getQtyScrap()
 	{
@@ -1227,16 +1291,16 @@ public class X_PP_Order_Node extends PO implements I_PP_Order_Node, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Setup Time Requiered.
-		@param SetupTimeRequiered Setup Time Requiered
+	/** Set Setup Time Required.
+		@param SetupTimeRequiered Setup Time Required
 	*/
 	public void setSetupTimeRequiered (int SetupTimeRequiered)
 	{
 		set_Value (COLUMNNAME_SetupTimeRequiered, Integer.valueOf(SetupTimeRequiered));
 	}
 
-	/** Get Setup Time Requiered.
-		@return Setup Time Requiered	  */
+	/** Get Setup Time Required.
+		@return Setup Time Required	  */
 	public int getSetupTimeRequiered()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_SetupTimeRequiered);

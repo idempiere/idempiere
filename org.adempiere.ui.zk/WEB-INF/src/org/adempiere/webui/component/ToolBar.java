@@ -18,13 +18,14 @@
 package org.adempiere.webui.component;
 
 /**
+ * Extend {@link org.zkoss.zul.Toolbar}
  * @author Sendy Yagambrum
  * @date July, 10 2007
  */
 public class ToolBar extends org.zkoss.zul.Toolbar
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6908196335129904216L;
 }

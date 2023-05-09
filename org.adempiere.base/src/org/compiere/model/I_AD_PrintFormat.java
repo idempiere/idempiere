@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PrintFormat
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_PrintFormat 
 {
@@ -355,12 +355,12 @@ public interface I_AD_PrintFormat
     public static final String COLUMNNAME_JasperProcess_ID = "JasperProcess_ID";
 
 	/** Set Jasper Process.
-	  * The Jasper Process used by the printengine if any process defined
+	  * The Jasper Process used by the print engine if any process defined
 	  */
 	public void setJasperProcess_ID (int JasperProcess_ID);
 
 	/** Get Jasper Process.
-	  * The Jasper Process used by the printengine if any process defined
+	  * The Jasper Process used by the print engine if any process defined
 	  */
 	public int getJasperProcess_ID();
 

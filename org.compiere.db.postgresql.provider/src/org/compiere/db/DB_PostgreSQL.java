@@ -871,7 +871,24 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	}
 
 	public int getNextID(String name, String trxName) {
-		int m_sequence_id = DB.getSQLValueEx(trxName, "SELECT nextval('"+name.toLowerCase()+"')");
+		Trx trx = null;
+		int m_sequence_id = -1;
+		try {
+			// avoid cannot execute nextval() in a read-only transaction
+			if (trxName == null) {
+				trxName = Trx.createTrxName("getNextval");
+				trx = Trx.get(trxName, true);
+			}
+			m_sequence_id = DB.getSQLValueEx(trxName, "SELECT nextval('"+name.toLowerCase()+"')");
+		} catch (Exception e) {
+			if (trx != null) {
+				trx.rollback();
+			}
+		} finally {
+			if (trx != null) {
+				trx.close();
+			}
+		}
 		return m_sequence_id;
 	}
 
@@ -960,7 +977,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 					sqlBuffer.append(" AND ");
 				sqlBuffer.append(keyColumns[i]).append("=?");
 			}
-			sqlBuffer.append(" FOR UPDATE ");
+			sqlBuffer.append(" FOR NO KEY UPDATE ");
 
 			Object[] parameters = new Object[keyColumns.length];
 			for(int i = 0; i < keyColumns.length; i++) {
@@ -992,7 +1009,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 				}
 			} catch (Exception e) {
 				if (log.isLoggable(Level.INFO))log.log(Level.INFO, e.getLocalizedMessage(), e);
-				throw new DBException("Could not lock record for " + po.toString() + " caused by " + e.getLocalizedMessage());
+				throw new DBException("Could not lock record for " + po.toString() + " caused by " + e.getLocalizedMessage(), e);
 			} finally {
 				DB.close(rs, stmt);
 				rs = null;stmt = null;
@@ -1049,14 +1066,21 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
 	@Override
 	public String intersectClauseForCSV(String columnName, String csv) {
+		return intersectClauseForCSV(columnName, csv, false);
+	}
+	
+	@Override
+	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("string_to_array(")
+		if(isNotClause)
+			builder.append("NOT");
+		builder.append("(string_to_array(")
 			.append(columnName)
 			.append(",',')");
 		builder.append(" && "); //intersect
 		builder.append("string_to_array(")
 			.append(DB.TO_STRING(csv))
-			.append(",',')");
+			.append(",','))");
 
 		return builder.toString();
 	}

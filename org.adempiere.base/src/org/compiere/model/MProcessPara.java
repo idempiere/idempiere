@@ -21,6 +21,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.process.UUIDGenerator;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -41,7 +43,9 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -770944613761780314L;
+	private static final long serialVersionUID = -1357447647930552555L;
+	/** Static Logger					*/
+	private static CLogger		s_log = CLogger.getCLogger (MProcessPara.class);
 
 	/**
 	 * 	Get MProcessPara from Cache (immutable)
@@ -79,6 +83,18 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 		= new ImmutableIntPOCache<Integer, MProcessPara> (Table_Name, 20);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Process_Para_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProcessPara(Properties ctx, String AD_Process_Para_UU, String trxName) {
+        super(ctx, AD_Process_Para_UU, trxName);
+		if (Util.isEmpty(AD_Process_Para_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Constructor
 	 *	@param ctx context
@@ -89,15 +105,20 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 	{
 		super (ctx, AD_Process_Para_ID, trxName);
 		if (AD_Process_Para_ID == 0)
-		{
-			setFieldLength (0);
-			setSeqNo (0);
-			setIsCentrallyMaintained (true);
-			setIsRange (false);
-			setIsMandatory (false);
-			setEntityType (ENTITYTYPE_UserMaintained);
-		}
+			setInitialDefaults();
 	}	//	MProcessPara
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setFieldLength (0);
+		setSeqNo (0);
+		setIsCentrallyMaintained (true);
+		setIsRange (false);
+		setIsMandatory (false);
+		setEntityType (ENTITYTYPE_UserMaintained);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -346,23 +367,29 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 				LogicEvaluator.validate(getDisplayLogic());
 			}
 		}
-		
+
+		if (newRecord && DisplayType.isChosenMultipleSelection(getAD_Reference_ID())) {
+			MProcess p = MProcess.get(getAD_Process_ID());
+			if (Util.isEmpty(p.getClassname()) && Util.isEmpty(p.getProcedureName()) && Util.isEmpty(p.getJasperReport()))
+				setIsShowNegateButton(true);
+		}
+
 		return true;
 	}	//	beforeSave
 
 	public String getReferenceTableName() {
 		String foreignTable = null;
-		if (DisplayType.TableDir == getAD_Reference_ID()
-			|| (DisplayType.Search == getAD_Reference_ID() && getAD_Reference_Value_ID() == 0)) {
+		int refid = getAD_Reference_ID();
+		if (DisplayType.TableDir == refid || DisplayType.TableDirUU == refid || ((DisplayType.Search == refid || DisplayType.SearchUU == refid) && getAD_Reference_Value_ID() == 0)) {
 			foreignTable = getColumnName().substring(0, getColumnName().length()-3);
-		} else 	if (DisplayType.Table == getAD_Reference_ID() || DisplayType.Search == getAD_Reference_ID()) {
+		} else if (DisplayType.Table == refid || DisplayType.TableUU == refid || DisplayType.Search == refid || DisplayType.SearchUU == refid) {
 			MReference ref = MReference.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
 			if (MReference.VALIDATIONTYPE_TableValidation.equals(ref.getValidationType())) {
 				MRefTable rt = MRefTable.get(getCtx(), getAD_Reference_Value_ID(), get_TrxName());
 				if (rt != null)
 					foreignTable = rt.getAD_Table().getTableName();
 			}
-		} else 	if (DisplayType.isList(getAD_Reference_ID())) {
+		} else 	if (DisplayType.isList(refid)) {
 			foreignTable = "AD_Ref_List";
 		}
 
@@ -376,6 +403,29 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 
 		makeImmutable();
 		return this;
+	}
+
+	/**
+	 * Write in log when an unexpected parameter is processed
+	 * If the parameter is defined in dictionary log at INFO level as a custom parameter
+	 * Otherwise log at SEVERE level as unknown parameter
+	 * @param processId
+	 * @param para
+	 */
+	public static void validateUnknownParameter(int processId, ProcessInfoParameter para) {
+		MProcess process = MProcess.get(processId);
+		StringBuilder msg = new StringBuilder("Process ").append(process.getValue()).append(" - ");
+		Level level;
+		if (process.getParameter(para.getParameterName()) == null) {
+			msg.append("Unknown");
+			level = Level.SEVERE;
+		} else {
+			msg.append("Custom");
+			level = Level.INFO;
+		}
+		msg.append(" Parameter: ").append(para.getParameterName()).append("=").append(para.getInfo());
+		if (s_log.isLoggable(level))
+			s_log.log(level, msg.toString());			
 	}
 
 }	//	MProcessPara

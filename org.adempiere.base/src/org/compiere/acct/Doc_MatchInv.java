@@ -256,7 +256,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, dr))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
@@ -290,7 +290,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, dr))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
@@ -769,7 +769,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, dr))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
@@ -803,7 +803,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, dr))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
@@ -1078,7 +1078,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, dr))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
@@ -1112,7 +1112,7 @@ public class Doc_MatchInv extends Doc
 			if (m_matchInv.isReversal())
 			{
 				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, dr))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;

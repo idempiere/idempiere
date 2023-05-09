@@ -1,9 +1,9 @@
 
-target "idempiere-220825"
+target "idempiere-221205"
 
 with source configurePhase allEnvironments
 
-location "https://idempiere.github.io/binary.file/p2.zk/9.6.2" {
+location zk "https://idempiere.github.io/binary.file/p2.zk/9.6.3" {
 	zcommon
 	zel
 	zhtml
@@ -17,7 +17,7 @@ location "https://idempiere.github.io/binary.file/p2.zk/9.6.2" {
 	zweb-dsp
 }
 
-location "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
+location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
 	jakarta.xml.ws-api
 	org.atmosphere.runtime
 	com.google.guava
@@ -27,7 +27,7 @@ location "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
 	org.apache.poi.ooxml-schemas	
 }
 
-location "https://download.eclipse.org/eclipse/updates/4.20" {
+location eclipse "https://download.eclipse.org/eclipse/updates/4.20" {
 	//dependency for com.google.http-client.google-http-client
 	org.apache.httpcomponents.httpclient
 	org.apache.httpcomponents.httpcore
@@ -145,7 +145,7 @@ location orbit-2021-06-R20210602031627 "https://download.eclipse.org/tools/orbit
 	org.apache.commons.discovery	
 }	
 
-location "https://sourceforge.net/projects/jasperstudio/files/updatesite/6.17.0" {
+location jasperstudio "https://sourceforge.net/projects/jasperstudio/files/updatesite/6.17.0" {
     com.jaspersoft.studio.bundles.barbecue
     com.jaspersoft.studio.bundles.itext
     org.w3c.dom.svg.patch

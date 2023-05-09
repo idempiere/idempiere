@@ -149,6 +149,16 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 		.setOrderBy(orderByClause);
 	}
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_DashboardPreference_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDashboardPreference(Properties ctx, String PA_DashboardPreference_UU, String trxName) {
+        super(ctx, PA_DashboardPreference_UU, trxName);
+    }
+
 	/**
 	 *
 	 * @param ctx

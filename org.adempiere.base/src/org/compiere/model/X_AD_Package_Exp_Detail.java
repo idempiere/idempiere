@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Exp_Detail
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Package_Exp_Detail")
-public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Detail, I_Persistent 
+public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Detail, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp_Detail (Properties ctx, int AD_Package_Exp_Detail_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Package_Exp_Detail (Properties ctx, String AD_Package_Exp_Detail_UU, String trxName)
+    {
+      super (ctx, AD_Package_Exp_Detail_UU, trxName);
+      /** if (AD_Package_Exp_Detail_UU == null)
+        {
+			setAD_Package_Exp_Detail_ID (0);
+			setAD_Package_Exp_ID (0);
+			setProcessing (false);
+			setType (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Package_Exp_Detail (Properties ctx, String AD_Package_Exp_Detail_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Package_Exp_Detail_UU, trxName, virtualColumns);
+      /** if (AD_Package_Exp_Detail_UU == null)
+        {
+			setAD_Package_Exp_Detail_ID (0);
+			setAD_Package_Exp_ID (0);
+			setProcessing (false);
+			setType (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Package_Exp_Detail (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -335,7 +361,7 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Package_Exp_Detail_ID()));
     }
@@ -652,8 +678,8 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public static final String DBTYPE_SQLServer = "SQL";
 	/** Sybase = Sybase */
 	public static final String DBTYPE_Sybase = "Sybase";
-	/** Set DBType.
-		@param DBType DBType
+	/** Set DB Type.
+		@param DBType DB Type
 	*/
 	public void setDBType (String DBType)
 	{
@@ -661,8 +687,8 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 		set_Value (COLUMNNAME_DBType, DBType);
 	}
 
-	/** Get DBType.
-		@return DBType	  */
+	/** Get DB Type.
+		@return DB Type	  */
 	public String getDBType()
 	{
 		return (String)get_Value(COLUMNNAME_DBType);
@@ -809,10 +835,10 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -831,10 +857,10 @@ public class X_AD_Package_Exp_Detail extends PO implements I_AD_Package_Exp_Deta
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

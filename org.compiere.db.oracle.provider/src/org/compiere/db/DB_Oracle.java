@@ -929,7 +929,7 @@ public class DB_Oracle implements AdempiereDatabase
 				}
 			} catch (Exception e) {
 				if (log.isLoggable(Level.INFO))log.log(Level.INFO, e.getLocalizedMessage(), e);
-				throw new DBException("Could not lock record for " + po.toString() + " caused by " + e.getLocalizedMessage());
+				throw new DBException("Could not lock record for " + po.toString() + " caused by " + e.getLocalizedMessage(), e);
 			} finally {
 				DB.close(rs, stmt);
 			}			
@@ -962,17 +962,26 @@ public class DB_Oracle implements AdempiereDatabase
 		
 		return builder.toString();
 	}
-
+	
 	@Override
 	public String intersectClauseForCSV(String columnName, String csv) {
+		return intersectClauseForCSV(columnName, csv, false);
+	}
+	
+	@Override
+	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("toTableOfVarchar2(")
 			.append(columnName)
 			.append(")");
 		builder.append(" MULTISET INTERSECT ")
 			.append("toTableOfVarchar2(")
-			.append(DB.TO_STRING(csv))
-			.append(") IS NOT EMPTY");
+			.append(DB.TO_STRING(csv)).append(") IS ");
+		
+		if(!isNotClause)
+			builder.append("NOT "); 
+			
+		builder.append("EMPTY");
 		
 		return builder.toString();
 	}

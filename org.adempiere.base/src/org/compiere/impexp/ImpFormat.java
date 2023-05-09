@@ -313,7 +313,7 @@ public final class ImpFormat
 					+ "f.DataFormat,f.DecimalPoint,f.DivideBy100,f.ConstantValue,f.Callout,"		//	7..11
 					+ "f.Name, f.importprefix "														//  12..13
 					+ "FROM AD_ImpFormat_Row f,AD_Column c "
-					+ "WHERE f.AD_ImpFormat_ID=? AND f.AD_Column_ID=c.AD_Column_ID AND f.IsActive='Y'"
+					+ "WHERE f.AD_ImpFormat_ID=? AND f.AD_Column_ID=c.AD_Column_ID AND f.IsActive='Y' "
 					+ "ORDER BY f.SeqNo";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

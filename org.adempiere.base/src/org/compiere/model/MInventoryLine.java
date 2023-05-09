@@ -25,6 +25,7 @@ import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *  Physical Inventory Line Model
@@ -61,6 +62,18 @@ public class MInventoryLine extends X_M_InventoryLine
 			.firstOnly();
 	}	//	get
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_InventoryLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInventoryLine(Properties ctx, String M_InventoryLine_UU, String trxName) {
+        super(ctx, M_InventoryLine_UU, trxName);
+		if (Util.isEmpty(M_InventoryLine_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Default Constructor
 	 *	@param ctx context
@@ -75,14 +88,19 @@ public class MInventoryLine extends X_M_InventoryLine
 	public MInventoryLine(Properties ctx, int M_InventoryLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_InventoryLine_ID, trxName, virtualColumns);
 		if (M_InventoryLine_ID == 0)
-		{
-			setLine(0);
-			setM_AttributeSetInstance_ID(0);	//	FK
-			setInventoryType (INVENTORYTYPE_InventoryDifference);
-			setQtyBook (Env.ZERO);
-			setQtyCount (Env.ZERO);
-			setProcessed(false);
-		}
+			setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setLine(0);
+		setM_AttributeSetInstance_ID(0);	//	FK
+		setInventoryType (INVENTORYTYPE_InventoryDifference);
+		setQtyBook (Env.ZERO);
+		setQtyCount (Env.ZERO);
+		setProcessed(false);
 	}
 
 	/**

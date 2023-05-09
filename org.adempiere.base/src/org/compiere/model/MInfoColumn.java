@@ -44,6 +44,16 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 	 */
 	private static final long serialVersionUID = 3909164419255524834L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_InfoColumn_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInfoColumn(Properties ctx, String AD_InfoColumn_UU, String trxName) {
+        super(ctx, AD_InfoColumn_UU, trxName);
+    }
+
 	/**
 	 * 	Stanfard Constructor
 	 *	@param ctx context

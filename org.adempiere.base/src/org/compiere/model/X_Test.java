@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for Test
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="Test")
-public class X_Test extends PO implements I_Test, I_Persistent 
+public class X_Test extends PO implements I_Test, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_Test (Properties ctx, int Test_ID, String trxName)
@@ -58,6 +58,28 @@ public class X_Test extends PO implements I_Test, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_Test (Properties ctx, String Test_UU, String trxName)
+    {
+      super (ctx, Test_UU, trxName);
+      /** if (Test_UU == null)
+        {
+			setName (null);
+			setTest_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_Test (Properties ctx, String Test_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, Test_UU, trxName, virtualColumns);
+      /** if (Test_UU == null)
+        {
+			setName (null);
+			setTest_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_Test (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +87,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -105,6 +127,34 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	public int getAccount_Acct()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Account_Acct);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
+			.getPO(getAD_Table_ID(), get_TrxName());
+	}
+
+	/** Set Table.
+		@param AD_Table_ID Database Table information
+	*/
+	public void setAD_Table_ID (int AD_Table_ID)
+	{
+		if (AD_Table_ID < 1)
+			set_Value (COLUMNNAME_AD_Table_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Table_ID, Integer.valueOf(AD_Table_ID));
+	}
+
+	/** Get Table.
+		@return Database Table information
+	  */
+	public int getAD_Table_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Table_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -407,7 +457,7 @@ public class X_Test extends PO implements I_Test, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -426,10 +476,10 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -448,13 +498,50 @@ public class X_Test extends PO implements I_Test, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Record ID.
+		@param Record_ID Direct internal record ID
+	*/
+	public void setRecord_ID (int Record_ID)
+	{
+		if (Record_ID < 0)
+			set_Value (COLUMNNAME_Record_ID, null);
+		else
+			set_Value (COLUMNNAME_Record_ID, Integer.valueOf(Record_ID));
+	}
+
+	/** Get Record ID.
+		@return Direct internal record ID
+	  */
+	public int getRecord_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Record UUID.
+		@param Record_UU Record UUID
+	*/
+	public void setRecord_UU (String Record_UU)
+	{
+		set_Value (COLUMNNAME_Record_UU, Record_UU);
+	}
+
+	/** Get Record UUID.
+		@return Record UUID	  */
+	public String getRecord_UU()
+	{
+		return (String)get_Value(COLUMNNAME_Record_UU);
 	}
 
 	/** Set Amount.
@@ -611,5 +698,21 @@ public class X_Test extends PO implements I_Test, I_Persistent
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;
+	}
+
+	/** Set Timestamp.
+		@param T_Timestamp Timestamp with time zone
+	*/
+	public void setT_Timestamp (Timestamp T_Timestamp)
+	{
+		set_Value (COLUMNNAME_T_Timestamp, T_Timestamp);
+	}
+
+	/** Get Timestamp.
+		@return Timestamp with time zone
+	  */
+	public Timestamp getT_Timestamp()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_T_Timestamp);
 	}
 }

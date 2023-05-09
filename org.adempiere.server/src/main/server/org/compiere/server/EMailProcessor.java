@@ -114,7 +114,7 @@ public class EMailProcessor
 		//	Cleanup
 		try
 		{
-			if (m_store.isConnected())
+			if (m_store != null && m_store.isConnected())
 				m_store.close();
 		}
 		catch (Exception e)
@@ -181,92 +181,132 @@ public class EMailProcessor
 	protected int processInBox() throws Exception
 	{
 		//	Folder
-		Folder folder;
-		folder = m_store.getDefaultFolder();
-		if (folder == null)
-			throw new IllegalStateException("No default folder");
-		//	Open Inbox
-		Folder inbox = folder.getFolder("INBOX");
-		if (!inbox.exists())
-			throw new IllegalStateException("No Inbox");
-		inbox.open(Folder.READ_WRITE);
-		if (log.isLoggable(Level.FINE)) log.fine("processInBox - " + inbox.getName() 
-			+ "; Messages Total=" + inbox.getMessageCount()
-			+ "; New=" + inbox.getNewMessageCount());
-		
-		//	Open Request
-		Folder requestFolder = folder.getFolder("CRequest");
-		if (!requestFolder.exists() && !requestFolder.create(Folder.HOLDS_MESSAGES))
-			throw new IllegalStateException("Cannot create Request Folder");
-		requestFolder.open(Folder.READ_WRITE);
-
-		//	Open Workflow
-		Folder workflowFolder = folder.getFolder("CWorkflow");
-		if (!workflowFolder.exists() && !workflowFolder.create(Folder.HOLDS_MESSAGES))
-			throw new IllegalStateException("Cannot create Workflow Folder");
-		workflowFolder.open(Folder.READ_WRITE);
-		
-		//	Open Error
-		Folder errorFolder = folder.getFolder("AdempiereError");
-		if (!errorFolder.exists() && !errorFolder.create(Folder.HOLDS_MESSAGES))
-			throw new IllegalStateException("Cannot create Error Folder");
-		errorFolder.open(Folder.READ_WRITE);
-		
-		//	Messages
-		Message[] messages = inbox.getMessages();
-		/**
-		FetchProfile fp = new FetchProfile();
-		fp.add(FetchProfile.Item.ENVELOPE);
-		fp.add(FetchProfile.Item.FLAGS);
-		fp.add("X-Mailer");
-		inbox.fetch(messages, fp);
-		**/
-		//
+		Folder folder = null;
+		Folder inbox = null;
+		Folder requestFolder = null;
+		Folder workflowFolder = null;
+		Folder errorFolder = null;
 		int noProcessed = 0;
-		int noError = 0;
-		for (int i = 0; i < messages.length; i++)
-//		for (int i = messages.length-1; i >= 0; i--)	//	newest first
-		{
-			Message msg = messages[i];
-			int result = processMessage (msg);
-			if (result == REQUEST)
-			{
-				msg.setFlag(Flags.Flag.SEEN, true);
-				msg.setFlag(Flags.Flag.ANSWERED, true);
-				//	Copy to processed
-				requestFolder.appendMessages(new Message[]{msg});
-			}
-			else if (result == WORKFLOW)
-			{
-				msg.setFlag(Flags.Flag.SEEN, true);
-				msg.setFlag(Flags.Flag.ANSWERED, true);
-				//	Copy to processed
-				workflowFolder.appendMessages(new Message[]{msg});
-			}
-			else if (result == DELIVERY)
-			{
-				msg.setFlag(Flags.Flag.SEEN, true);
-				msg.setFlag(Flags.Flag.ANSWERED, true);
-			}
-			else	//	error
-			{
-				errorFolder.appendMessages(new Message[]{msg});
-				noError++;
-			}
-			//	Delete in InBox
-//			msg.setFlag(Flags.Flag.DELETED, true);
-//			Message[] deleted = inbox.expunge();
+		try {
+			folder = m_store.getDefaultFolder();
+			if (folder == null)
+				throw new IllegalStateException("No default folder");
+			//	Open Inbox
+			inbox = folder.getFolder("INBOX");
+			if (!inbox.exists())
+				throw new IllegalStateException("No Inbox");
+			inbox.open(Folder.READ_WRITE);
+			if (log.isLoggable(Level.FINE)) log.fine("processInBox - " + inbox.getName() 
+				+ "; Messages Total=" + inbox.getMessageCount()
+				+ "; New=" + inbox.getNewMessageCount());
+
+			//	Open Request
+			requestFolder = folder.getFolder("CRequest");
+			if (!requestFolder.exists() && !requestFolder.create(Folder.HOLDS_MESSAGES))
+				throw new IllegalStateException("Cannot create Request Folder");
+			requestFolder.open(Folder.READ_WRITE);
+
+			//	Open Workflow
+			workflowFolder = folder.getFolder("CWorkflow");
+			if (!workflowFolder.exists() && !workflowFolder.create(Folder.HOLDS_MESSAGES))
+				throw new IllegalStateException("Cannot create Workflow Folder");
+			workflowFolder.open(Folder.READ_WRITE);
+
+			//	Open Error
+			errorFolder = folder.getFolder("AdempiereError");
+			if (!errorFolder.exists() && !errorFolder.create(Folder.HOLDS_MESSAGES))
+				throw new IllegalStateException("Cannot create Error Folder");
+			errorFolder.open(Folder.READ_WRITE);
+
+			//	Messages
+			Message[] messages = inbox.getMessages();
+			/**
+			FetchProfile fp = new FetchProfile();
+			fp.add(FetchProfile.Item.ENVELOPE);
+			fp.add(FetchProfile.Item.FLAGS);
+			fp.add("X-Mailer");
+			inbox.fetch(messages, fp);
+			**/
 			//
-			noProcessed++;
+			int noError = 0;
+			for (int i = 0; i < messages.length; i++)
+//			for (int i = messages.length-1; i >= 0; i--)	//	newest first
+			{
+				Message msg = messages[i];
+				int result = processMessage (msg);
+				if (result == REQUEST)
+				{
+					msg.setFlag(Flags.Flag.SEEN, true);
+					msg.setFlag(Flags.Flag.ANSWERED, true);
+					//	Copy to processed
+					requestFolder.appendMessages(new Message[]{msg});
+				}
+				else if (result == WORKFLOW)
+				{
+					msg.setFlag(Flags.Flag.SEEN, true);
+					msg.setFlag(Flags.Flag.ANSWERED, true);
+					//	Copy to processed
+					workflowFolder.appendMessages(new Message[]{msg});
+				}
+				else if (result == DELIVERY)
+				{
+					msg.setFlag(Flags.Flag.SEEN, true);
+					msg.setFlag(Flags.Flag.ANSWERED, true);
+				}
+				else	//	error
+				{
+					errorFolder.appendMessages(new Message[]{msg});
+					noError++;
+				}
+				//	Delete in InBox
+//				msg.setFlag(Flags.Flag.DELETED, true);
+//				Message[] deleted = inbox.expunge();
+				//
+				noProcessed++;
+			}
+
+			if (log.isLoggable(Level.INFO)) log.info("processInBox - Total=" + noProcessed + " - Errors=" + noError);
+		} finally {
+			if (errorFolder != null && errorFolder.isOpen()) {
+				try {
+					errorFolder.close(false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (requestFolder != null && requestFolder.isOpen()) {
+				try {
+					requestFolder.close(false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}				
+			}
+			
+			if (workflowFolder != null && workflowFolder.isOpen()) {
+				try {
+					workflowFolder.close(false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (inbox != null && inbox.isOpen()) {
+				try {
+					inbox.close(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (folder != null && folder.isOpen()) {
+				try {
+					folder.close(false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
-		
-		if (log.isLoggable(Level.INFO)) log.info("processInBox - Total=" + noProcessed + " - Errors=" + noError);
-		//	Fini
-		errorFolder.close(false);
-		requestFolder.close(false);
-		workflowFolder.close(false);
-		//
-		inbox.close(true);
 		return noProcessed;
 	}	//	processInBox
 
@@ -462,12 +502,16 @@ public class EMailProcessor
 		if (content instanceof InputStream)
 		{
 			StringBuilder sb = new StringBuilder();
-			InputStream is = (InputStream)content;
-			int c;
-			while ((c = is.read()) != -1)
-				sb.append((char)c);
-			
-			is.close();
+			InputStream is = null;
+			try {
+				is = (InputStream)content;
+				int c;
+				while ((c = is.read()) != -1)
+					sb.append((char)c);
+			} finally {
+				if (is != null)
+					is.close();
+			}
 			deliveryMessage = sb.toString().trim();
 		}
 		else

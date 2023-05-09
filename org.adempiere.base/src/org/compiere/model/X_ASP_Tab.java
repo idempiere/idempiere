@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for ASP_Tab
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="ASP_Tab")
-public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent 
+public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_ASP_Tab (Properties ctx, int ASP_Tab_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_ASP_Tab (Properties ctx, String ASP_Tab_UU, String trxName)
+    {
+      super (ctx, ASP_Tab_UU, trxName);
+      /** if (ASP_Tab_UU == null)
+        {
+			setAD_Tab_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_ASP_Tab (Properties ctx, String ASP_Tab_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, ASP_Tab_UU, trxName, virtualColumns);
+      /** if (ASP_Tab_UU == null)
+        {
+			setAD_Tab_ID (0);
+			setASP_Status (null);
+// S
+        } */
+    }
+
     /** Load Constructor */
     public X_ASP_Tab (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -113,23 +137,23 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set AllFields.
-		@param AllFields AllFields
+	/** Set All Fields.
+		@param AllFields All Fields
 	*/
 	public void setAllFields (boolean AllFields)
 	{
 		set_Value (COLUMNNAME_AllFields, Boolean.valueOf(AllFields));
 	}
 
-	/** Get AllFields.
-		@return AllFields	  */
+	/** Get All Fields.
+		@return All Fields	  */
 	public boolean isAllFields()
 	{
 		Object oo = get_Value(COLUMNNAME_AllFields);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -225,7 +249,7 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getASP_Window_ID()));
     }
@@ -243,10 +267,10 @@ public class X_ASP_Tab extends PO implements I_ASP_Tab, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

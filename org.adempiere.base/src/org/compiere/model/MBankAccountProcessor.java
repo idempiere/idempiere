@@ -140,6 +140,16 @@ public class MBankAccountProcessor extends X_C_BankAccount_Processor {
 		return retValue;
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_BankAccount_Processor_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBankAccountProcessor(Properties ctx, String C_BankAccount_Processor_UU, String trxName) {
+        super(ctx, C_BankAccount_Processor_UU, trxName);
+    }
+
 	public MBankAccountProcessor (Properties ctx, int ignored, String trxName)
 	{
 		super(ctx, 0, trxName);

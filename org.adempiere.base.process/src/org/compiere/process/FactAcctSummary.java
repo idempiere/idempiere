@@ -18,8 +18,8 @@
 package org.compiere.process;
 
 import java.util.List;
-import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MReportCube;
 import org.compiere.model.Query;
 
@@ -49,7 +49,7 @@ public class FactAcctSummary extends SvrProcess {
 			else if ( p.getParameterName().equals("Force"))
 				p_force = p.getParameterAsBoolean();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + p.getParameterName());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), p);
 		}
 	}
 

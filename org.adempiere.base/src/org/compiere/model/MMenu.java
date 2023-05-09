@@ -131,6 +131,18 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MMenu.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Menu_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMenu(Properties ctx, String AD_Menu_UU, String trxName) {
+        super(ctx, AD_Menu_UU, trxName);
+		if (Util.isEmpty(AD_Menu_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -141,13 +153,18 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 	{
 		super (ctx, AD_Menu_ID, trxName);
 		if (AD_Menu_ID == 0)
-		{
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-			setIsReadOnly (false);	// N
-			setIsSOTrx (false);
-			setIsSummary (false);
-		}
+			setInitialDefaults();
 	}	//	MMenu
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+		setIsReadOnly (false);	// N
+		setIsSOTrx (false);
+		setIsSummary (false);
+	}
 
 	/**
 	 * 	Load Contrusctor

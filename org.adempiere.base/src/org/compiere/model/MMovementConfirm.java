@@ -32,6 +32,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.compiere.wf.MWorkflow;
 
@@ -85,6 +86,18 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	}	//	create
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_MovementConfirm_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMovementConfirm(Properties ctx, String M_MovementConfirm_UU, String trxName) {
+        super(ctx, M_MovementConfirm_UU, trxName);
+		if (Util.isEmpty(M_MovementConfirm_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -95,13 +108,18 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 	{
 		super (ctx, M_MovementConfirm_ID, trxName);
 		if (M_MovementConfirm_ID == 0)
-		{
-			setDocAction (DOCACTION_Complete);
-			setDocStatus (DOCSTATUS_Drafted);
-			setIsApproved (false);	// N
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MMovementConfirm
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocAction (DOCACTION_Complete);
+		setDocStatus (DOCSTATUS_Drafted);
+		setIsApproved (false);	// N
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

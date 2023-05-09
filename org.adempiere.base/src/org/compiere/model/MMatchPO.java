@@ -41,6 +41,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 
 /**
@@ -488,7 +489,7 @@ public class MMatchPO extends X_M_MatchPO
 							{
 								//check m_matchinv not created with different qty
 								int cnt = DB.getSQLValueEx(sLine.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+sLine.getM_InOutLine_ID()
-										+" AND C_InvoiceLine_ID="+ matchPO.getC_InvoiceLine_ID() + "AND Qty != ?", retValue.getQty());
+										+" AND C_InvoiceLine_ID="+ matchPO.getC_InvoiceLine_ID() + " AND Qty != ?", retValue.getQty());
 								if (cnt <= 0) {
 									if (!matchPO.isPosted() && matchPO.getQty().compareTo(retValue.getQty()) >=0 )  // greater than or equal quantity
 									{
@@ -758,6 +759,18 @@ public class MMatchPO extends X_M_MatchPO
 	private static CLogger	s_log	= CLogger.getCLogger (MMatchPO.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_MatchPO_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMatchPO(Properties ctx, String M_MatchPO_UU, String trxName) {
+        super(ctx, M_MatchPO_UU, trxName);
+		if (Util.isEmpty(M_MatchPO_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -768,13 +781,18 @@ public class MMatchPO extends X_M_MatchPO
 	{
 		super (ctx, M_MatchPO_ID, trxName);
 		if (M_MatchPO_ID == 0)
-		{
-			setM_AttributeSetInstance_ID(0);
-			setPosted (false);
-			setProcessed (false);
-			setProcessing (false);
-		}
+			setInitialDefaults();
 	}	//	MMatchPO
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setM_AttributeSetInstance_ID(0);
+		setPosted (false);
+		setProcessed (false);
+		setProcessing (false);
+	}
 
 	/**
 	 * 	Load Construor

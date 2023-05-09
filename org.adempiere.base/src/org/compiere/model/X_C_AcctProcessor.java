@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctProcessor
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctProcessor")
-public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persistent 
+public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_C_AcctProcessor (Properties ctx, int C_AcctProcessor_ID, String trxName)
@@ -64,6 +64,36 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_AcctProcessor (Properties ctx, String C_AcctProcessor_UU, String trxName)
+    {
+      super (ctx, C_AcctProcessor_UU, trxName);
+      /** if (C_AcctProcessor_UU == null)
+        {
+			setAD_Schedule_ID (0);
+			setC_AcctProcessor_ID (0);
+			setKeepLogDays (0);
+// 7
+			setName (null);
+			setSupervisor_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AcctProcessor (Properties ctx, String C_AcctProcessor_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AcctProcessor_UU, trxName, virtualColumns);
+      /** if (C_AcctProcessor_UU == null)
+        {
+			setAD_Schedule_ID (0);
+			setC_AcctProcessor_ID (0);
+			setKeepLogDays (0);
+// 7
+			setName (null);
+			setSupervisor_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_AcctProcessor (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +101,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -212,7 +242,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 		return ii.intValue();
 	}
 
-	/** Set Date last run.
+	/** Set Date Last Run.
 		@param DateLastRun Date the process was last run.
 	*/
 	public void setDateLastRun (Timestamp DateLastRun)
@@ -220,7 +250,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 		set_Value (COLUMNNAME_DateLastRun, DateLastRun);
 	}
 
-	/** Get Date last run.
+	/** Get Date Last Run.
 		@return Date the process was last run.
 	  */
 	public Timestamp getDateLastRun()
@@ -228,7 +258,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 		return (Timestamp)get_Value(COLUMNNAME_DateLastRun);
 	}
 
-	/** Set Date next run.
+	/** Set Date Next Run.
 		@param DateNextRun Date the process will run next
 	*/
 	public void setDateNextRun (Timestamp DateNextRun)
@@ -236,7 +266,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 		set_Value (COLUMNNAME_DateNextRun, DateNextRun);
 	}
 
-	/** Get Date next run.
+	/** Get Date Next Run.
 		@return Date the process will run next
 	  */
 	public Timestamp getDateNextRun()
@@ -298,7 +328,7 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -316,10 +346,10 @@ public class X_C_AcctProcessor extends PO implements I_C_AcctProcessor, I_Persis
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

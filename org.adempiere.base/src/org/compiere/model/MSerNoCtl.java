@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Util;
+
 /**
  *	Serial Number Control Model
  *	
@@ -32,6 +34,18 @@ public class MSerNoCtl extends X_M_SerNoCtl
 	 */
 	private static final long serialVersionUID = -6746210722573475011L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_SerNoCtl_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSerNoCtl(Properties ctx, String M_SerNoCtl_UU, String trxName) {
+        super(ctx, M_SerNoCtl_UU, trxName);
+		if (Util.isEmpty(M_SerNoCtl_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -42,12 +56,17 @@ public class MSerNoCtl extends X_M_SerNoCtl
 	{
 		super(ctx, M_SerNoCtl_ID, trxName);
 		if (M_SerNoCtl_ID == 0)
-		{
-			setStartNo (1);
-			setCurrentNext (1);
-			setIncrementNo (1);
-		}
+			setInitialDefaults();
 	}	//	MSerNoCtl
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setStartNo (1);
+		setCurrentNext (1);
+		setIncrementNo (1);
+	}
 
 	/**
 	 * 	Load Constructor

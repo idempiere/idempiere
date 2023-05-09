@@ -21,18 +21,21 @@ package org.compiere.process;
 
 import java.math.BigDecimal;
 
+import org.adempiere.base.annotation.Parameter;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.I_AD_Role_Included;
 import org.compiere.model.MRole;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 
 /**
  *	Copy role access records
  *	
  *  @author Robert Klein
- *  @ author Paul Bowden
+ *  @author Paul Bowden
+ *  @contributor Jose.Leite
  *  @version $Id: CopyRole.java,v 1.0$
  *  
  */
@@ -40,33 +43,17 @@ import org.compiere.util.Env;
 @org.adempiere.base.annotation.Process
 public class CopyRole extends SvrProcess
 {
-	private int m_AD_Role_ID_From = 0;
-	private int m_AD_Role_ID_To = 0;
-	private int m_AD_Client_ID = 0;	
-	private int m_AD_Org_ID = 0;
+	@Parameter
+	private int p_AD_Role_ID_From = 0;
+	@Parameter
+	private int p_AD_Role_ID_To = 0;
+	@Parameter
+	private int p_AD_Org_ID = 0;
 	
-	/**
-	 *  Prepare - e.g., get Parameters.
-	 */
-	protected void prepare()
-	{
+
+	protected void prepare(){	
 		
-		ProcessInfoParameter[] para = getParameter();
-		for (int i = 0; i < para.length; i++)
-		{
-			String name = para[i].getParameterName();
-			if (para[i].getParameter() == null)
-				;
-			else if (name.equals("AD_Role_ID") && i == 0)
-				m_AD_Role_ID_From = para[i].getParameterAsInt();
-			else if (name.equals("AD_Role_ID")&& i == 1)
-				m_AD_Role_ID_To = para[i].getParameterAsInt();
-			else if (name.equals("AD_Client_ID"))
-				m_AD_Client_ID = para[i].getParameterAsInt();
-			else if (name.equals("AD_Org_ID"))
-				m_AD_Org_ID = para[i].getParameterAsInt();
-		}		
-	}	//	prepare
+	}
 
 	/**
 	 * 	Copy the role access records
@@ -74,13 +61,14 @@ public class CopyRole extends SvrProcess
 	 *	@throws Exception
 	 */
 	protected String doIt() throws Exception
-	{	
+	{			
+		
 		if (! MRole.getDefault().isAccessAdvanced()) {
 			return "@Error@ @Advanced@ @Process@";
 		}
 
-		if (m_AD_Role_ID_From == m_AD_Role_ID_To)
-			throw new AdempiereException("Roles must be different");
+		if (p_AD_Role_ID_From == p_AD_Role_ID_To)
+			throw new AdempiereException(Msg.getMsg(getCtx(), "RolesMustBeDifferent"));
 
 		String[] tables = new String[] {"AD_Window_Access", "AD_Process_Access", "AD_Form_Access",
 				"AD_Workflow_Access", "AD_Task_Access", "AD_Document_Action_Access", "AD_InfoWindow_Access",
@@ -98,7 +86,7 @@ public class CopyRole extends SvrProcess
 			String table = tables[i];
 			String keycolumn = keycolumns[i];
 			
-			StringBuilder sql = new StringBuilder("DELETE FROM ").append(table).append(" WHERE AD_Role_ID = ").append(m_AD_Role_ID_To);
+			StringBuilder sql = new StringBuilder("DELETE FROM ").append(table).append(" WHERE AD_Role_ID = ").append(p_AD_Role_ID_To);
 			int no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 			addLog(action++, null, BigDecimal.valueOf(no), "Old records deleted from " + table );
 			
@@ -117,25 +105,25 @@ public class CopyRole extends SvrProcess
 				sql.append(", isReadWrite) ");
 			else
 				sql.append(") ");
-			sql.append("SELECT ").append(m_AD_Client_ID)
-				.append(", ").append(m_AD_Org_ID)
+			sql.append("SELECT ").append(Env.getAD_Client_ID(getCtx()))
+				.append(", ").append(p_AD_Org_ID)
 				.append(", getDate(), ").append(Env.getAD_User_ID(Env.getCtx()))
 				.append(", getDate(), ").append(Env.getAD_User_ID(Env.getCtx()))
-				.append(", ").append(m_AD_Role_ID_To)
+				.append(", ").append(p_AD_Role_ID_To)
 				.append(", ").append(keycolumn)
 				.append(", IsActive ");
 			if (column_SeqNo)
 				sql.append(", SeqNo ");
 			if (column_IsReadWrite)
 				sql.append(", isReadWrite ");
-			sql.append("FROM ").append(table).append(" WHERE AD_Role_ID = ").append(m_AD_Role_ID_From);
+			sql.append("FROM ").append(table).append(" WHERE AD_Role_ID = ").append(p_AD_Role_ID_From);
 
 			no = DB.executeUpdateEx (sql.toString(), get_TrxName());
 
 			addLog(action++, null, new BigDecimal(no), "New records inserted into " + table );
 		}
 	
-		return "Role copied";
+		return Msg.getMsg(getCtx(),"RoleCopied");
 	}	//	doIt
 
 }	//	CopyRole

@@ -17,13 +17,19 @@ import java.util.Properties;
 
 
 /**
+ * Base class to implement runnable that will execute code in session context
  * @author hengsin
- *
  */
 public abstract class ContextRunnable implements Runnable {
 
+	/**
+	 * current session context
+	 */
 	protected Properties context = null;
 	
+	/**
+	 * default constructor
+	 */
 	public ContextRunnable() {
 		this.context = ServerContext.getCurrentInstance();
 	}
@@ -34,12 +40,29 @@ public abstract class ContextRunnable implements Runnable {
 	@Override
 	public void run() {
 		try {
-			ServerContext.setCurrentInstance(context);
+			setup();
 			doRun();
 		} finally {
-			ServerContext.dispose();
+			cleanup();
 		}
 	}
 
+	/**
+	 * setup thread context
+	 */
+	protected void setup() {
+		ServerContext.setCurrentInstance(context);
+	}
+
+	/**
+	 * clean up thread context
+	 */
+	protected void cleanup() {
+		ServerContext.dispose();
+	}
+
+	/**
+	 * override to execute code in session context
+	 */
 	protected abstract void doRun();
 }

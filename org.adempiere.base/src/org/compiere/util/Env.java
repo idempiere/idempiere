@@ -47,6 +47,8 @@ import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextProvider;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
+import org.compiere.dbPort.Convert;
+import org.compiere.model.GridTab;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
@@ -54,6 +56,7 @@ import org.compiere.model.MLookupCache;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
 import org.compiere.model.MRole;
+import org.compiere.model.MSequence;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -141,7 +144,6 @@ public final class Env
 	private static final String PREFIX_SYSTEM_VARIABLE = "$env.";
 
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
-
 	
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
 
@@ -1596,7 +1598,19 @@ public final class Env
 				token = token.substring(0, idx);
 			}
 
-			String ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
+			String ctxInfo = null;
+			
+			if (token.equalsIgnoreCase(GridTab.CTX_Record_ID))
+			{
+				String keycolumnName = Env.getContext(Env.getCtx(), WindowNo, tabNo, GridTab.CTX_KeyColumnName,
+						onlyTab);
+				ctxInfo = Env.getContext(Env.getCtx(), WindowNo, tabNo, keycolumnName, onlyTab);
+			}
+			else
+			{
+				ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
+			}
+
 			if (ctxInfo.length() == 0 && (token.startsWith("#") || token.startsWith("$")) )
 				ctxInfo = getContext(ctx, token);	// get global context
 
@@ -2096,6 +2110,15 @@ public final class Env
 		return AD_Window_ID;
 	}
 	
+	public static int getZoomWindowUU(int AD_Table_ID, String Record_UU) {
+		return getZoomWindowUU(AD_Table_ID, Record_UU, 0);
+	}
+
+	public static int getZoomWindowUU(int AD_Table_ID, String Record_UU, int windowNo)
+	{
+		return getZoomWindowIDOrUU(AD_Table_ID, -1, Record_UU, windowNo);
+	}
+
 	public static int getZoomWindowID(int AD_Table_ID, int Record_ID)
 	{
 		return getZoomWindowID(AD_Table_ID, Record_ID, 0);
@@ -2103,26 +2126,38 @@ public final class Env
 
 	public static int getZoomWindowID(int AD_Table_ID, int Record_ID, int windowNo)
 	{
-		int AD_Window_ID = MZoomCondition.findZoomWindowByTableId(AD_Table_ID, Record_ID, windowNo);
+		return getZoomWindowIDOrUU(AD_Table_ID, Record_ID, null, windowNo);
+	}
+
+	private static int getZoomWindowIDOrUU(int AD_Table_ID, int Record_ID, String Record_UU, int windowNo)
+	{
+		int AD_Window_ID = MZoomCondition.findZoomWindowByTableIdOrUU(AD_Table_ID, Record_ID, Record_UU, windowNo);
 		if (AD_Window_ID <= 0)
 		{
 			MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
 			AD_Window_ID = table.getAD_Window_ID();
 			//  Nothing to Zoom to
-			if (AD_Window_ID == 0)
-				return AD_Window_ID;
+			if (AD_Window_ID == 0) 
+			{
+				AD_Window_ID = table.getWindowIDFromMenu();
+				return AD_Window_ID > 0 ? AD_Window_ID : 0;
+			}
 			
 			//	PO Zoom ?
 			boolean isSOTrx = true;
 			if (table.getPO_Window_ID() != 0)
 			{
-				String whereClause = table.getTableName() + "_ID=" + Record_ID;
+				String whereClause;
+				if (Record_UU != null)
+					whereClause = PO.getUUIDColumnName(table.getTableName()) + "=" + DB.TO_STRING(Record_UU);
+				else
+					whereClause = table.getTableName() + "_ID=" + Record_ID;
 				isSOTrx = DB.isSOTrx(table.getTableName(), whereClause, windowNo);
 				if (!isSOTrx)
 					AD_Window_ID = table.getPO_Window_ID();
 			}
 
-			if (log.isLoggable(Level.CONFIG)) log.config(table.getTableName() + " - Record_ID=" + Record_ID + " (IsSOTrx=" + isSOTrx + ")");
+			if (log.isLoggable(Level.CONFIG)) log.config(table.getTableName() + " - Record_ID=" + Record_ID + " - Record_UU=" + Record_UU + " (IsSOTrx=" + isSOTrx + ")");
 		}
 		return AD_Window_ID;
 	}
@@ -2142,7 +2177,7 @@ public final class Env
 
 	/**	New Line 		 */
 	public static final String	NL = System.getProperty("line.separator");
-	/* Prefix for predefined context variables coming from menu or window definition */
+	/* Prefix for predefined context variables coming from menu, window or role definition */
 	public static final String PREFIX_PREDEFINED_VARIABLE = "+";
 
 
@@ -2157,14 +2192,14 @@ public final class Env
 
 
 	/**
-	 * Add in context predefined variables with prefix +, coming from menu or window definition
+	 * Add in context predefined variables with prefix +, coming from menu, window or role definition
 	 * Predefined variables must come separated by new lines in one of the formats:
 	 *   VAR=VALUE
 	 *   VAR="VALUE"
 	 *   VAR='VALUE'
 	 *  The + prefix is not required, is added here to the defined variables
 	 * @param ctx
-	 * @param windowNo
+	 * @param windowNo window number or -1 to global level
 	 * @param predefinedVariables
 	 */
 	public static void setPredefinedVariables(Properties ctx, int windowNo, String predefinedVariables) {
@@ -2181,11 +2216,62 @@ public final class Env
 							) {
 							value = value.substring(1, value.length()-1);
 						}
-						Env.setContext(ctx, windowNo, PREFIX_PREDEFINED_VARIABLE + var, value);
+						if (windowNo >= 0)
+							Env.setContext(ctx, windowNo, PREFIX_PREDEFINED_VARIABLE + var, value);
+						else
+							Env.setContext(ctx, PREFIX_PREDEFINED_VARIABLE + var, value);
 					}
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param tableName
+	 * @return true if log migration script is turn on and should be used for tableName
+	 */
+	public static boolean isLogMigrationScript(String tableName) {
+		boolean logMigrationScript = false;
+		if (Ini.isClient()) {
+			logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
+		} else {
+			String sysProperty = Env.getCtx().getProperty(Ini.P_LOGMIGRATIONSCRIPT, "N");
+			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		}
+		
+		return logMigrationScript ? !Convert.isDontLogTable(tableName) : false;
+	}
+	
+	/**
+	 * @return true if centralized id is turn on and should be used for tableName
+	 */
+	public static boolean isUseCentralizedId(String tableName)
+	{
+		String sysProperty = Env.getCtx().getProperty(Ini.P_ADEMPIERESYS, "N");
+		boolean adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		if (adempiereSys && Env.getAD_Client_ID(Env.getCtx()) > 11)
+			adempiereSys = false;
+		
+		if (adempiereSys)
+		{
+			boolean b = MSysConfig.getBooleanValue(MSysConfig.DICTIONARY_ID_USE_CENTRALIZED_ID, true);
+			if (b)
+				return !MSequence.isExceptionCentralized(tableName);
+			else
+				return b;
+		}
+		else
+		{
+			boolean queryProjectServer = false;
+			if (MSequence.isTableWithEntityType(tableName))
+				queryProjectServer = true;
+			if (!queryProjectServer && MSequence.Table_Name.equalsIgnoreCase(tableName))
+				queryProjectServer = true;
+			if (queryProjectServer && !MSequence.isExceptionCentralized(tableName)) {
+				return MSysConfig.getBooleanValue(MSysConfig.PROJECT_ID_USE_CENTRALIZED_ID, false);
+			}
+		}
+		return false;
 	}
 
 }   //  Env

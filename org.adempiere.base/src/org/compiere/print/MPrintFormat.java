@@ -63,6 +63,21 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = 7542581302442072662L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PrintFormat_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPrintFormat(Properties ctx, String AD_PrintFormat_UU, String trxName) {
+        super(ctx, AD_PrintFormat_UU, trxName);
+		//	Language=[Deutsch,Locale=de_DE,AD_Language=en_US,DatePattern=DD.MM.YYYY,DecimalPoint=false]
+		m_language = Env.getLanguage(ctx);
+		if (Util.isEmpty(AD_PrintFormat_UU))
+			setInitialDefaults();
+		m_items = getItems();
+    }
+
 	/**
 	 *	Public Constructor.
 	 * 	Use static get methods
@@ -76,14 +91,19 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 		//	Language=[Deutsch,Locale=de_DE,AD_Language=en_US,DatePattern=DD.MM.YYYY,DecimalPoint=false]
 		m_language = Env.getLanguage(ctx);
 		if (AD_PrintFormat_ID == 0)
-		{
-			setStandardHeaderFooter(true);
-			setIsTableBased(true);
-			setIsForm(false);
-			setIsDefault(false);
-		}
+			setInitialDefaults();
 		m_items = getItems();
 	}	//	MPrintFormat
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setStandardHeaderFooter(true);
+		setIsTableBased(true);
+		setIsForm(false);
+		setIsDefault(false);
+	}
 
 	public void reloadItems() {
 		m_items = getItems();
@@ -242,7 +262,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			//	Display restrictions - Passwords, etc.
 			+ " AND NOT EXISTS (SELECT * FROM AD_Field f "
 				+ "WHERE pfi.AD_Column_ID=f.AD_Column_ID"
-				+ " AND (f.IsEncrypted='Y' OR f.ObscureType IS NOT NULL))"
+				+ " AND (f.IsEncrypted='Y' OR f.ObscureType IS NOT NULL)) "
 			+ "ORDER BY SeqNo";
 		MRole role = MRole.getDefault(getCtx(), false);
 		PreparedStatement pstmt = null;
@@ -892,8 +912,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 			+ "WHERE IsActive='Y' AND AD_Tab_ID=(SELECT MIN(AD_Tab_ID) FROM AD_Tab WHERE AD_Table_ID=? AND IsActive='Y')"
 			+ " AND IsEncrypted='N' AND ObscureType IS NULL "
 			+ " AND AD_Column_ID NOT IN (SELECT pfi.AD_Column_ID FROM AD_PrintFormatItem pfi WHERE pfi.AD_PrintFormat_ID=? AND pfi.AD_Column_ID IS NOT NULL) "
-			+ " AND (AD_Column_ID IN (SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y')"
-			+ " OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y') = 0))"
+			+ " AND (AD_Column_ID IN (SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y') "
+			+ " OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y') = 0)) "
 			+ "ORDER BY COALESCE(IsDisplayed,'N') DESC, SortNo, SeqNo, Name";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -936,8 +956,8 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 				+ "FROM AD_Column "
 				+ "WHERE IsActive='Y' AND AD_Table_ID=? "
 				+ " AND AD_Column_ID NOT IN (SELECT pfi.AD_Column_ID FROM AD_PrintFormatItem pfi WHERE pfi.AD_PrintFormat_ID=? AND pfi.AD_Column_ID IS NOT NULL) "
-				+ " AND (AD_Column_ID IN (SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y')"
-				+ " OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=?) = 0 AND IsActive='Y'))"
+				+ " AND (AD_Column_ID IN (SELECT AD_Column_ID FROM AD_ReportView_Column WHERE AD_ReportView_ID=? AND IsActive='Y') "
+				+ " OR ((SELECT COUNT(*) FROM AD_ReportView_Column WHERE AD_ReportView_ID=?) = 0 AND IsActive='Y')) "
 				+ "ORDER BY IsIdentifier DESC, SeqNo, Name";
 			try
 			{

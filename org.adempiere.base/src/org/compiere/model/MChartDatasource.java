@@ -19,8 +19,17 @@ public class MChartDatasource extends X_AD_ChartDatasource {
 	 */
 	private static final long serialVersionUID = 5108909995064477463L;
 
-	public MChartDatasource(Properties ctx, int AD_ChartDatasource_ID,
-			String trxName) {
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ChartDatasource_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MChartDatasource(Properties ctx, String AD_ChartDatasource_UU, String trxName) {
+        super(ctx, AD_ChartDatasource_UU, trxName);
+    }
+
+	public MChartDatasource(Properties ctx, int AD_ChartDatasource_ID, String trxName) {
 		super(ctx, AD_ChartDatasource_ID, trxName);
 	}
 

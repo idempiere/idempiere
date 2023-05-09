@@ -38,6 +38,7 @@ import java.util.logging.Level;
 
 import javax.sql.RowSet;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.Adempiere;
@@ -712,6 +713,17 @@ public final class DB
 	}	//	prepareStatement
 
 	/**
+	 *	Prepare Statement
+	 *  @param sql
+	 * 	@param trxName transaction
+	 *  @return Prepared Statement
+	 */
+	public static CPreparedStatement prepareStatement (Connection connection, String sql)
+	{
+		return prepareStatement(connection, sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+	}	//	prepareStatement
+	
+	/**
 	 *	Prepare Statement.
 	 *  @param sql
 	 *  @param resultSetType - ResultSet.TYPE_FORWARD_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.TYPE_SCROLL_SENSITIVE
@@ -742,6 +754,23 @@ public final class DB
 		return ProxyFactory.newCPreparedStatement(resultSetType, resultSetConcurrency, sql, trxName);
 	}	//	prepareStatement
 
+	/**
+	 *	Prepare Statement.
+	 *  @param sql sql statement
+	 *  @param resultSetType - ResultSet.TYPE_FORWARD_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.TYPE_SCROLL_SENSITIVE
+	 *  @param resultSetConcurrency - ResultSet.CONCUR_READ_ONLY or ResultSet.CONCUR_UPDATABLE
+	 * 	@param trxName transaction name
+	 *  @return Prepared Statement r/o or r/w depending on concur
+	 */
+	public static CPreparedStatement prepareStatement(Connection connection, String sql,
+		int resultSetType, int resultSetConcurrency)
+	{
+		if (sql == null || sql.length() == 0)
+			throw new IllegalArgumentException("No SQL");
+		//
+		return ProxyFactory.newCPreparedStatement(resultSetType, resultSetConcurrency, sql, connection);
+	}	//	prepareStatement
+	
 	/**
 	 *	Create Read Only Statement
 	 *  @return Statement
@@ -1218,9 +1247,14 @@ public final class DB
 	{
 		// Bugfix Gunther Hoppe, 02.09.2005, vpj-cd e-evolution
 		CStatementVO info = new CStatementVO (RowSet.TYPE_SCROLL_INSENSITIVE, RowSet.CONCUR_READ_ONLY, DB.getDatabase().convertStatement(sql));
-		CPreparedStatement stmt = ProxyFactory.newCPreparedStatement(info);
-		RowSet retValue = stmt.getRowSet();
-		close(stmt);
+		CPreparedStatement stmt = null;
+		RowSet retValue = null;
+		try {
+			stmt = ProxyFactory.newCPreparedStatement(info);
+			retValue = stmt.getRowSet();
+		} finally {
+			close(stmt);			
+		}
 		return retValue;
 	}	//	getRowSet
 
@@ -1237,19 +1271,21 @@ public final class DB
     	int retValue = -1;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
-    	Trx trx = null; 
+    	Connection conn = null; 
     	if (trxName == null)
-    	{
-    		trxName = Trx.createTrxName("getSQLValueEx");
-    		trx = Trx.get(trxName, true);    		
-    	}
+    		conn = DB.createConnection(true, Connection.TRANSACTION_READ_COMMITTED);
     	try
     	{
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.getConnection().setReadOnly(true);
+    			conn.setAutoCommit(false);
+    			conn.setReadOnly(true);
     		}
-    		pstmt = prepareStatement(sql, trxName);
+    		
+    		if (conn != null)
+    			pstmt = prepareStatement(conn, sql);
+    		else
+    			pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
     		if (rs.next())
@@ -1259,9 +1295,13 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.rollback();
+    			try {
+					conn.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
     		}
     		throw new DBException(e, sql);
     	}
@@ -1269,13 +1309,31 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.close();
+    			closeAndResetReadonlyConnection(conn);
     		}
     	}
     	return retValue;
     }
+
+	private static void closeAndResetReadonlyConnection(Connection conn) {
+		try {
+			conn.setAutoCommit(true);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			conn.setReadOnly(false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
     /**
      * Get String Value from sql
@@ -1336,19 +1394,21 @@ public final class DB
     	String retValue = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
-    	Trx trx = null; 
+    	Connection conn = null;
     	if (trxName == null)
-    	{
-    		trxName = Trx.createTrxName("getSQLValueEx");
-    		trx = Trx.get(trxName, true);    		
-    	}
+    		conn = DB.createConnection(true, Connection.TRANSACTION_READ_COMMITTED);
     	try
     	{
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.getConnection().setReadOnly(true);
+    			conn.setAutoCommit(false);
+    			conn.setReadOnly(true);
     		}
-    		pstmt = prepareStatement(sql, trxName);
+    		
+    		if (conn != null)
+    			pstmt = prepareStatement(conn, sql);
+    		else
+    			pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
     		if (rs.next())
@@ -1358,9 +1418,13 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.rollback();
+    			try {
+					conn.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
     		}
     		throw new DBException(e, sql);
     	}
@@ -1368,9 +1432,9 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.close();
+    			closeAndResetReadonlyConnection(conn);
     		}
     	}
     	return retValue;
@@ -1435,19 +1499,21 @@ public final class DB
     	BigDecimal retValue = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
-    	Trx trx = null; 
+    	Connection conn = null;
     	if (trxName == null)
-    	{
-    		trxName = Trx.createTrxName("getSQLValueEx");
-    		trx = Trx.get(trxName, true);    		
-    	}
+    		conn = DB.createConnection(true, Connection.TRANSACTION_READ_COMMITTED);
     	try
     	{
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.getConnection().setReadOnly(true);
+    			conn.setAutoCommit(false);
+    			conn.setReadOnly(true);
     		}
-    		pstmt = prepareStatement(sql, trxName);
+    		
+    		if (conn != null)
+    			pstmt = prepareStatement(conn, sql);
+    		else
+    			pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
     		if (rs.next())
@@ -1457,9 +1523,13 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.rollback();
+    			try {
+					conn.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
     		}
     		throw new DBException(e, sql);
     	}
@@ -1467,9 +1537,9 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.close();
+    			closeAndResetReadonlyConnection(conn);
     		}
     	}
     	return retValue;
@@ -1535,19 +1605,21 @@ public final class DB
     	Timestamp retValue = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
-    	Trx trx = null; 
+    	Connection conn = null;
     	if (trxName == null)
-    	{
-    		trxName = Trx.createTrxName("getSQLValueEx");
-    		trx = Trx.get(trxName, true);    		
-    	}
+    		conn = DB.createConnection(true, Connection.TRANSACTION_READ_COMMITTED);
     	try
     	{
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.getConnection().setReadOnly(true);
+    			conn.setAutoCommit(false);
+    			conn.setReadOnly(true);
     		}
-    		pstmt = prepareStatement(sql, trxName);
+    		
+    		if (conn != null)
+    			pstmt = prepareStatement(conn, sql);
+    		else
+    			pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
     		if (rs.next())
@@ -1557,9 +1629,13 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.rollback();
+    			try {
+					conn.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
     		}
     		throw new DBException(e, sql);
     	}
@@ -1567,9 +1643,9 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.close();
+    			closeAndResetReadonlyConnection(conn);
     		}
     	}
     	return retValue;
@@ -2333,24 +2409,51 @@ public final class DB
 	 * saveKeys is map with key is rowID, value is list value of all viewID
 	 * viewIDIndex is index of viewID need save.
 	 * @param AD_PInstance_ID
-	 * @param saveKeys
+	 * @param saveKeys - Collection of KeyNamePair
 	 * @param trxName
 	 */
-	public static void createT_SelectionNew (int AD_PInstance_ID, Collection<KeyNamePair> saveKeys, String trxName)
+	public static void createT_SelectionNew (int AD_PInstance_ID, Collection<KeyNamePair> saveKeys, String trxName) {
+		Collection<NamePair> saveKeysNP = new ArrayList<NamePair>();
+		for (NamePair saveKey : saveKeys)
+			saveKeysNP.add(saveKey);
+		createT_SelectionNewNP(AD_PInstance_ID, saveKeysNP, trxName);
+	}
+
+	/**
+	 * Create persistent selection in T_Selection table
+	 * saveKeys is map with key is rowID, value is list value of all viewID
+	 * viewIDIndex is index of viewID need save.
+	 * @param AD_PInstance_ID
+	 * @param saveKeys can receive a Collection of KeyNamePair (IDs) or ValueNamePair (UUIDs)
+	 * @param trxName
+	 */
+	public static void createT_SelectionNewNP (int AD_PInstance_ID, Collection<NamePair> saveKeys, String trxName)
 	{
-		StringBuilder insert = new StringBuilder();
-		insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID, ViewID) ");
+		String initialInsert = "INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID, T_SELECTION_UU, ViewID) ";
+		StringBuilder insert = new StringBuilder(initialInsert);
 		int counter = 0;
-		for(KeyNamePair saveKey : saveKeys)
+		for(NamePair saveKey : saveKeys)
 		{
-			Integer selectedId = saveKey.getKey();
+			Object selectedId;
+			if (saveKey instanceof KeyNamePair)
+				selectedId = ((KeyNamePair)saveKey).getKey();
+			else if (saveKey instanceof ValueNamePair)
+				selectedId = ((ValueNamePair)saveKey).getValue();
+			else
+				throw new AdempiereException("NamePair type not allowed in DB.createT_SelectionNewNP, just KeyNamePair or ValueNamePair are allowed");
 			counter++;
 			if (counter > 1)
 				insert.append(" UNION ");
 			insert.append("SELECT ");
 			insert.append(AD_PInstance_ID);
 			insert.append(", ");
-			insert.append(selectedId);
+			if (selectedId instanceof Integer) {
+				insert.append((Integer)selectedId);
+				insert.append(", ' '");
+			} else {
+				insert.append("0, ");
+				insert.append(DB.TO_STRING(selectedId.toString()));
+			}
 			insert.append(", ");
 			
 			String viewIDValue = saveKey.getName();
@@ -2358,9 +2461,7 @@ public final class DB
 			if (viewIDValue == null){
 				insert.append("NULL");
 			}else{
-				insert.append("'");
-				insert.append(viewIDValue);
-				insert.append("'");
+				insert.append(DB.TO_STRING(viewIDValue));
 			}
 			
 			insert.append(" FROM DUAL ");
@@ -2368,8 +2469,8 @@ public final class DB
 			if (counter >= 1000)
 			{
 				DB.executeUpdateEx(insert.toString(), trxName);
-				insert = new StringBuilder();
-				insert.append("INSERT INTO T_SELECTION(AD_PINSTANCE_ID, T_SELECTION_ID, ViewID) ");
+				insert.delete(0,  insert.length());
+				insert.append(initialInsert);
 				counter = 0;
 			}
 		}
@@ -2450,19 +2551,21 @@ public final class DB
 		List<Object> retValue = new ArrayList<Object>();
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
-    	Trx trx = null; 
+    	Connection conn = null;
     	if (trxName == null)
-    	{
-    		trxName = Trx.createTrxName("getSQLValueObjectsEx");
-    		trx = Trx.get(trxName, true);    		
-    	}
+    		conn = DB.createConnection(true, Connection.TRANSACTION_READ_COMMITTED);
     	try
     	{
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.getConnection().setReadOnly(true);
+    			conn.setAutoCommit(false);
+    			conn.setReadOnly(true);
     		}
-    		pstmt = prepareStatement(sql, trxName);
+    		
+    		if (conn != null)
+    			pstmt = prepareStatement(conn, sql);
+    		else
+    			pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
@@ -2480,9 +2583,13 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.rollback();
+    			try {
+					conn.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
     		}
     		throw new DBException(e, sql);
     	}
@@ -2490,9 +2597,9 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.close();
+    			closeAndResetReadonlyConnection(conn);
     		}
     	}
     	return retValue;
@@ -2511,19 +2618,21 @@ public final class DB
 		List<List<Object>> rowsArray = new ArrayList<List<Object>>();
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
-    	Trx trx = null; 
+    	Connection conn = null;
     	if (trxName == null)
-    	{
-    		trxName = Trx.createTrxName("getSQLArrayObjectsEx");
-    		trx = Trx.get(trxName, true);    		
-    	}
+    		conn = DB.createConnection(true, Connection.TRANSACTION_READ_COMMITTED);
     	try
     	{
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.getConnection().setReadOnly(true);
+    			conn.setAutoCommit(false);
+    			conn.setReadOnly(true);
     		}
-    		pstmt = prepareStatement(sql, trxName);
+    		
+    		if (conn != null)
+    			pstmt = prepareStatement(conn, sql);
+    		else
+    			pstmt = prepareStatement(sql, trxName);
     		setParameters(pstmt, params);
     		rs = pstmt.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
@@ -2541,9 +2650,13 @@ public final class DB
     	}
     	catch (SQLException e)
     	{
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.rollback();
+    			try {
+					conn.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
     		}
     		throw new DBException(e, sql);
     	}
@@ -2551,9 +2664,9 @@ public final class DB
     	{
     		close(rs, pstmt);
     		rs = null; pstmt = null;
-    		if (trx != null)
+    		if (conn != null)
     		{
-    			trx.close();
+    			closeAndResetReadonlyConnection(conn);
     		}
     	}
     	if (rowsArray.size() == 0)
@@ -2597,6 +2710,7 @@ public final class DB
 		return ProxyFactory.newCPreparedStatement(resultSetType, resultSetConcurrency, sql, trxName);
 	}
 
+	
 	/**
 	 * @param columnName
 	 * @param csv comma separated value
@@ -2604,8 +2718,24 @@ public final class DB
 	 */
 	public static String inClauseForCSV(String columnName, String csv) 
 	{
+		return inClauseForCSV(columnName, csv, false);
+	}
+	
+	/**
+	 * @param columnName
+	 * @param csv comma separated value
+	 * @param isNotClause
+	 * @return IN clause
+	 */
+	public static String inClauseForCSV(String columnName, String csv, boolean isNotClause) 
+	{
 		StringBuilder builder = new StringBuilder();
-		builder.append(columnName).append(" IN (");
+		builder.append(columnName);
+		
+		if(isNotClause)
+			builder.append(" NOT ");
+		
+		builder.append(" IN (");
 		String[] values = csv.split("[,]");
 		for(int i = 0; i < values.length; i++)
 		{
@@ -2648,7 +2778,18 @@ public final class DB
 	 */
 	public static String intersectClauseForCSV(String columnName, String csv)
 	{
-		return getDatabase().intersectClauseForCSV(columnName, csv);
+		return intersectClauseForCSV(columnName, csv, false);
+	}
+	/**
+	 * 
+	 * @param columnName
+	 * @param csv
+	 * @param isNotClause
+	 * @return intersect sql clause
+	 */
+	public static String intersectClauseForCSV(String columnName, String csv, boolean isNotClause)
+	{
+		return getDatabase().intersectClauseForCSV(columnName, csv, isNotClause);
 	}
 	
 	/**

@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for A_Depreciation
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation")
-public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persistent 
+public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_A_Depreciation (Properties ctx, int A_Depreciation_ID, String trxName)
@@ -60,6 +60,34 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Depreciation (Properties ctx, String A_Depreciation_UU, String trxName)
+    {
+      super (ctx, A_Depreciation_UU, trxName);
+      /** if (A_Depreciation_UU == null)
+        {
+			setA_Depreciation_ID (0);
+			setDepreciationType (null);
+			setName (null);
+			setProcessed (false);
+// N
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Depreciation (Properties ctx, String A_Depreciation_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Depreciation_UU, trxName, virtualColumns);
+      /** if (A_Depreciation_UU == null)
+        {
+			setA_Depreciation_ID (0);
+			setDepreciationType (null);
+			setName (null);
+			setProcessed (false);
+// N
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Depreciation (Properties ctx, ResultSet rs, String trxName)
     {
@@ -67,7 +95,7 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -124,16 +152,16 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
 		return (String)get_Value(COLUMNNAME_A_Depreciation_UU);
 	}
 
-	/** Set DepreciationType.
-		@param DepreciationType DepreciationType
+	/** Set Depreciation Type.
+		@param DepreciationType Depreciation Type
 	*/
 	public void setDepreciationType (String DepreciationType)
 	{
 		set_Value (COLUMNNAME_DepreciationType, DepreciationType);
 	}
 
-	/** Get DepreciationType.
-		@return DepreciationType	  */
+	/** Get Depreciation Type.
+		@return Depreciation Type	  */
 	public String getDepreciationType()
 	{
 		return (String)get_Value(COLUMNNAME_DepreciationType);
@@ -185,10 +213,10 @@ public class X_A_Depreciation extends PO implements I_A_Depreciation, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

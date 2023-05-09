@@ -37,10 +37,14 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.minigrid.UUIDColumn;
+import org.compiere.model.GridField;
 import org.compiere.model.I_C_ElementValue;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MReference;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -96,13 +100,14 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean multipleSelection, String whereClause)
 	{
-		this(queryValue, windowNo, tableName, keyColumn, multipleSelection, whereClause, true);
+		this(queryValue, windowNo, tableName, keyColumn, multipleSelection, whereClause, true, null);
 	}
 
-	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean multipleSelection, String whereClause, boolean lookup)
+	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean multipleSelection, String whereClause, boolean lookup, GridField field)
 	{
 		super(windowNo, tableName, keyColumn, multipleSelection, whereClause, lookup, 0, queryValue);
 
+		setGridfield(field);
 		setTitle(Msg.getMsg(Env.getCtx(), "Info"));
 
 		try
@@ -116,6 +121,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		}
 		catch (Exception e)
 		{
+			log.log(Level.SEVERE, e.getMessage(), e);
 			return;
 		}
 
@@ -314,11 +320,20 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			return false;
 
 		//  Prepare table
+		StringBuilder where = new StringBuilder();
+		if(m_gridfield != null) {
+			MReference ref = m_gridfield.getAD_Reference_Value_ID() > 0 ? MReference.get(Env.getCtx(), m_gridfield.getAD_Reference_Value_ID()) : null;
+			if(ref == null || !ref.isShowInactiveRecords()) {
+			
+				where = new StringBuilder(p_tableName).append(".").append("IsActive='Y'");
+			}
+		}
 
-		StringBuilder where = new StringBuilder(p_tableName).append(".").append("IsActive='Y'");
-
-		if (p_whereClause.length() > 0)
-			where.append(" AND (").append(p_whereClause).append(")");
+		if (p_whereClause.length() > 0) {
+			if(where.length() > 0)
+				where.append(" AND ");
+			where.append(" (").append(p_whereClause).append(")");
+		}
 		prepareTable(m_generalLayout, p_tableName, where.toString(), "2");
 		contentPanel.repaint();
 		
@@ -377,9 +392,11 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 	private boolean initInfoTable ()
 	{
-		//	Get Query Columns
+		MTable table = MTable.get(Env.getCtx(), p_tableName);
+		String uucolName = PO.getUUIDColumnName(p_tableName);
 
-		String sql = "SELECT c.ColumnName, t.AD_Table_ID, t.TableName, c.ColumnSql "
+		//	Get Query Columns
+		final String sqlqc = "SELECT c.ColumnName, t.AD_Table_ID, t.TableName, c.ColumnSql "
 			+ "FROM AD_Table t"
 			+ " INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID)"
 			+ "WHERE c.AD_Reference_ID IN (10,14)"
@@ -397,7 +414,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sqlqc, null);
 			pstmt.setString(1, p_tableName);
 			rs = pstmt.executeQuery();
 
@@ -424,7 +441,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sqlqc, e);
 			return false;
 		}
 		finally
@@ -453,32 +470,49 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		}
 
 		//  Set Title
-		String title = Msg.translate(Env.getCtx(), tableName + "_ID");  //  best bet
-
-		if (title.endsWith("_ID"))
-			title = Msg.translate(Env.getCtx(), tableName);             //  second best bet
+		String title = null;
+		if (table.isUUIDKeyTable())
+			title = Msg.translate(Env.getCtx(), uucolName);
+		else {
+			title = Msg.translate(Env.getCtx(), tableName + "_ID");  //  best bet
+			if (title.endsWith("_ID"))
+				title = Msg.translate(Env.getCtx(), tableName);             //  second best bet
+		}
 
 		setTitle(getTitle() + " " + title);
 
 		//	Get Display Columns
-
+		int AD_Window_ID = 0;
+		if (table.getAD_Window_ID() > 0) {
+			AD_Window_ID = table.getAD_Window_ID();
+		} else {
+			AD_Window_ID = table.getWindowIDFromMenu();
+		}
 		ArrayList<ColumnInfo> list = new ArrayList<ColumnInfo>();
-		sql = "SELECT c.ColumnName, c.AD_Reference_ID, c.IsKey, f.IsDisplayed, c.AD_Reference_Value_ID, c.ColumnSql, c.AD_Column_ID "
+		StringBuilder sqlc = new StringBuilder().append(
+			"SELECT c.ColumnName, c.AD_Reference_ID, c.IsKey, f.IsDisplayed, c.AD_Reference_Value_ID, c.ColumnSql, c.AD_Column_ID "
 			+ "FROM AD_Column c"
 			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID)"
-			+ " INNER JOIN AD_Tab tab ON (t.AD_Window_ID=tab.AD_Window_ID)"
+			+ " INNER JOIN AD_Tab tab ON (t.AD_Table_ID=tab.AD_Table_ID)"
 			+ " INNER JOIN AD_Field f ON (tab.AD_Tab_ID=f.AD_Tab_ID AND f.AD_Column_ID=c.AD_Column_ID) "
 			+ "WHERE t.AD_Table_ID=? "
 			+ " AND tab.IsSortTab='N'"
-			+ " AND tab.Ad_Tab_ID=(SELECT MIN(mt.AD_Tab_ID) FROM AD_tab mt WHERE mt.AD_Window_ID=t.AD_Window_ID AND mt.AD_Table_ID=t.AD_Table_ID AND mt.IsActive='Y')"
+			+ " AND tab.Ad_Tab_ID=(SELECT MIN(mt.AD_Tab_ID) FROM AD_tab mt WHERE mt.AD_Window_ID=? AND mt.AD_Table_ID=t.AD_Table_ID AND mt.IsActive='Y')"
 			+ " AND (c.IsKey='Y' OR "
 				+ " (f.IsEncrypted='N' AND f.ObscureType IS NULL)) "
-			+ "ORDER BY c.IsKey DESC, f.SeqNo";
+			+ " AND c.IsActive = 'Y' "
+			+ "ORDER BY ");
+		if (table.isUUIDKeyTable())
+			sqlc.append("CASE WHEN c.columnname=").append(DB.TO_STRING(uucolName)).append("THEN 0 ELSE 1 END");
+		else
+			sqlc.append("c.IsKey DESC");
+		sqlc.append(", f.SeqNo");
 
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sqlc.toString(), null);
 			pstmt.setInt(1, AD_Table_ID);
+			pstmt.setInt(2, AD_Window_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
@@ -502,6 +536,8 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 				if (isKey)
 					colClass = IDColumn.class;
+				else if (uucolName.equals(columnName) && table.isUUIDKeyTable())
+					colClass = UUIDColumn.class;
 				else if (!isDisplayed)
 					;
 				else if (displayType == DisplayType.YesNo)
@@ -556,7 +592,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		}
 		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			log.log(Level.SEVERE, sqlc.toString(), e);
 			return false;
 		}
 		finally
@@ -569,7 +605,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		if (list.size() == 0)
 		{
 			Dialog.error(p_WindowNo, "Error", "No Info Columns");
-			log.log(Level.SEVERE, "No Info for AD_Table_ID=" + AD_Table_ID + " - " + sql);
+			log.log(Level.SEVERE, "No Info for AD_Table_ID=" + AD_Table_ID + " - " + sqlc.toString());
 			return false;
 		}
 
@@ -669,12 +705,17 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		
 		MTable table = MTable.get(Env.getCtx(), p_tableName);
 		MColumn column = table.getColumn(columnName);
-		String baseColumn = column.isVirtualColumn() ? columnSql : columnName;
-
-		String embedded = AD_Reference_Value_ID > 0 ? MLookupFactory.getLookup_TableEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, AD_Reference_Value_ID)
-				: MLookupFactory.getLookup_TableDirEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, baseColumn);
+		String embedded;
+		if (AD_Reference_Value_ID > 0) {
+			embedded = MLookupFactory.getLookup_TableEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, AD_Reference_Value_ID);
+		} else {
+			if (column.isVirtualColumn())
+				embedded = MLookupFactory.getLookup_TableDirEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, column.getColumnSQL());
+			else
+				embedded = MLookupFactory.getLookup_TableDirEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, columnName);
+		}
 		embedded = "(" + embedded + ")";
-	
+
 		if (embedded.contains("@"))
 			embedded = "NULL";
 		

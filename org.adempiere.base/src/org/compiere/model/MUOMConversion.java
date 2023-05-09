@@ -711,6 +711,16 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		= new CCache<Integer,MUOMConversion[]>(Table_Name, Table_Name+"_Of_Product", 20); 
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_UOM_Conversion_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUOMConversion(Properties ctx, String C_UOM_Conversion_UU, String trxName) {
+        super(ctx, C_UOM_Conversion_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Default Constructor
 	 *	@param ctx context

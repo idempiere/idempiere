@@ -13,7 +13,6 @@
  *****************************************************************************/
 package org.adempiere.webui.editor;
 
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -77,7 +76,8 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.South;
 
 /**
- * 
+ * Default editor for {@link DisplayType#ChosenMultipleSelectionList} and {@link DisplayType#ChosenMultipleSelectionTable}.<br/>
+ * Implemented with {@link ChosenSearchBox} component.
  * @author hengsin
  *
  */
@@ -94,12 +94,16 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     }
     
     private Lookup  lookup;
+    /** comma separated value list of selected records */
     private Object oldValue;
 
+    /** CCache listener to auto refresh lookup */
 	private CCacheListener tableCacheListener;
 
+	/** true if editor is handling onSelect event */
 	private boolean onselecting = false;
 	
+	/** Model for {@link Chosenbox} inside {@link ChosenSearchBox} */
 	private ListModelList<ValueNamePair> model = new ListModelList<>();
 
 	/**
@@ -122,6 +126,13 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
         this(new ChosenSearchBox(new ChosenboxEditor()), gridField, tableEditor, editorConfiguration);
     }
     
+    /**
+     * 
+     * @param comp
+     * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
+     */
     private WChosenboxListEditor(Component comp, GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
         super(comp, gridField, tableEditor, editorConfiguration);
@@ -133,9 +144,9 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 	 * Constructor for use if a grid field is unavailable
 	 * 
 	 * @param lookup		Store of selectable data
-	 * @param label			column name (not displayed)
+	 * @param label			field label
 	 * @param description	description of component
-	 * @param mandatory		whether a selection must be made
+	 * @param mandatory		whether field is mandatory
 	 * @param readonly		whether or not the editor is read only
 	 * @param updateable	whether the editor contents can be changed
 	 */   
@@ -159,6 +170,15 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     	this(new ChosenSearchBox(new ChosenboxEditor()), lookup, label, description, mandatory, readonly, updateable);
     }
     
+    /**
+     * @param comp
+     * @param lookup
+     * @param label
+     * @param description
+     * @param mandatory
+     * @param readonly
+     * @param updateable
+     */
     private WChosenboxListEditor(Component comp, Lookup lookup, String label, String description, boolean mandatory, boolean readonly, boolean updateable)
     {
     	super(comp, label, description, mandatory, readonly, updateable);
@@ -174,7 +194,6 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 	}
     
     /**
-     * For ease of porting swing form
      * @param columnName
      * @param mandatory
      * @param isReadOnly
@@ -200,6 +219,14 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     	this(new ChosenSearchBox(new ChosenboxEditor()), columnName, mandatory, isReadOnly, isUpdateable, lookup);
     }
     
+    /**
+     * @param comp
+     * @param columnName
+     * @param mandatory
+     * @param isReadOnly
+     * @param isUpdateable
+     * @param lookup
+     */
     private WChosenboxListEditor(Component comp, String columnName, boolean mandatory, boolean isReadOnly, boolean isUpdateable, Lookup lookup)
     {
     	super(comp, columnName, null, null, mandatory, isReadOnly, isUpdateable);
@@ -211,6 +238,9 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     	init();
     }
     
+    /**
+     * Init component, lookup and popup menu
+     */
     private void init()
     {
         getComponent().setHflex("true"); 
@@ -226,6 +256,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		else
 			getComponent().getButton().setImage(imageUrl);
 
+		//open chosenbox dropdown
 		getComponent().getButton().addEventListener(Events.ON_CLICK, e -> {
 			if (getComponent().isEnabled()) {
 				if (!getComponent().getChosenbox().isOpen()) {
@@ -277,6 +308,9 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		updateModel();
 	}
 
+	/**
+	 * @return comma separated name list of selected records
+	 */
     @Override
     public String getDisplay()
     {
@@ -300,6 +334,9 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
         return oldValue;
     }
     
+    /**
+     * @return comma separated value list of selected records
+     */
     private String getValueFromComponent()
 	{
 		StringBuilder retVal = new StringBuilder();
@@ -323,7 +360,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 	}
 
     /**
-     * @param value
+     * @param value comma separated value list of selected records
      */
     public void setValue(Object value)
     {
@@ -331,7 +368,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     		return;
     	}
     	
-	if (value != null && value instanceof String && !Util.isEmpty((String) value, true))
+    	if (value != null && value instanceof String && !Util.isEmpty((String) value, true))
         {
     		String[] values = ((String)value).split("[,]");
             Set<ValueNamePair> selected = new LinkedHashSet<>();
@@ -399,6 +436,9 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		getComponent().setEnabled(readWrite);
 	}
 
+	/**
+	 * Update {@link #model}
+	 */
 	private void updateModel()
     {
     	List<ValueNamePair> list = new ArrayList<>();
@@ -453,6 +493,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 	/**
 	 * @param event
 	 */
+	@Override
     public void onEvent(Event event)
     {
     	if (Events.ON_SELECT.equalsIgnoreCase(event.getName()))
@@ -461,6 +502,10 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     	}
     }
     
+	/**
+	 * Handle ON_SELECT event
+	 * @param newValue
+	 */
     private void updateValue(Object newValue) {
     	try {
 			onselecting = true;
@@ -482,6 +527,10 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		}
     }
 
+    /**
+     * @param newValue
+     * @return true if newValue is different from {@link #oldValue}
+     */
 	private boolean isValueChange(Object newValue) {
 		return (oldValue == null && newValue != null) || (oldValue != null && newValue == null) 
 			|| ((oldValue != null && newValue != null) && !oldValue.equals(newValue));
@@ -494,7 +543,8 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
     }
 
 	/**
-	 * action for requery menu
+	 * Action for re-query menu.<br/>
+	 * Refresh lookup
 	 */
     protected void actionRefresh()
     {    	
@@ -555,15 +605,6 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		}
 	}
 	
-    @Override
-	public  void propertyChange(PropertyChangeEvent evt)
-	{
-		if ("FieldValue".equals(evt.getPropertyName()))
-		{
-			setValue(evt.getNewValue());
-		}
-	}
-	
 	@Override
 	public void dynamicDisplay(Properties ctx) 
 	{
@@ -578,6 +619,9 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		super.dynamicDisplay(ctx);
     }
 	
+	/**
+	 * Setup {@link #tableCacheListener}
+	 */
 	private void createCacheListener() {
 		if (lookup != null) {
 			String columnName = lookup.getColumnName();
@@ -589,8 +633,10 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		}
 	}
 	
-	private final static class ChosenboxEditor extends Chosenbox<ValueNamePair> {
-		
+	/**
+	 * Custom {@link Chosenbox} class for setup and cleanup of tableCacheListener
+	 */
+	private final static class ChosenboxEditor extends Chosenbox<ValueNamePair> {		
 		/**
 		 * generated serial id
 		 */
@@ -632,7 +678,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		}
 
 		/**
-		 * 
+		 * clean up tableCacheListener
 		 */
 		protected void cleanup() {
 			if (editor != null && editor.tableCacheListener != null) {
@@ -642,6 +688,9 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		}
 	}
 	
+	/**
+	 * CCache listener class to auto refresh lookup 
+	 */
 	private static class CCacheListener extends CCache<String, Object> {
 		/**
 		 * generated serial
@@ -682,6 +731,9 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 		}
 	}
 	
+	/**
+	 * Assistant dialog to manage selection of items and to change ordering of selected items. 
+	 */
 	private class WChosenboxListAssistant extends Window implements EventListener<Event> {
 		private static final long serialVersionUID = 1043859495570181469L;
 		private Button bAdd, bRemove, bUp, bDown;
@@ -734,12 +786,14 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			mainLayout.appendChild(center);
 			center.setAutoscroll(true);
 
+			//Listener for add and remove button
 			EventListener<Event> actionListener = new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
 					migrateValueAcrossLists(event);
 				}
 			};
 
+			//Listener for up and down button
 			EventListener<Event> actionListener2 = new EventListener<Event>() {
 				public void onEvent(Event event) throws Exception {
 					migrateValueWithinSelectedList(event);
@@ -815,6 +869,7 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			}
 		}
 	
+		@Override
 		public void onEvent(Event event) throws Exception {
 			if (event.getTarget() == bOk) {
 
@@ -841,6 +896,15 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			return btn;
 		}
 
+		/**
+		 * @param lb
+		 * @param model
+		 * @param mouseListener
+		 * @param crossListMouseListener
+		 * @param isItemDraggable
+		 * @param headerLabel
+		 * @param buttonsLayout
+		 */
 		private void initListboxAndModel(Listbox lb, SimpleListModel model, EventListener<Event> mouseListener, EventListener<Event> crossListMouseListener, boolean isItemDraggable, String headerLabel, Hlayout buttonsLayout) {
 			lb.addEventListener(Events.ON_RIGHT_CLICK, this);
 			ZKUpdateUtil.setHflex(lb, "1");
@@ -913,6 +977,10 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			return retValue;
 		}
 
+		/**
+		 * @param model
+		 * @return opposite model
+		 */
 		private SimpleListModel getModel(SimpleListModel model) {
 
 			SimpleListModel retValue = null;
@@ -925,6 +993,10 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			return retValue;
 		}
 
+		/**
+		 * Handle event from add button, remove button and double click. 
+		 * @param event
+		 */
 		private void migrateValueAcrossLists (Event event) {
 			Object source = event.getTarget();
 			if (source instanceof ListItem)
@@ -940,6 +1012,12 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			migrateLists (listFrom, listTo, endIndex);
 		}	//	migrateValueAcrossLists
 
+		/**
+		 * Move selected items from listFrom to listTo at endIndex
+		 * @param listFrom
+		 * @param listTo
+		 * @param endIndex 
+		 */
 		private void migrateLists (final Listbox listFrom, final Listbox listTo, final int endIndex) {
 			int index = 0; 
 			final SimpleListModel lmFrom = getModel(listFrom);
@@ -954,12 +1032,18 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 				selObjects.add(selObject);
 			}
 
-			doTransfer(index, selObjects, lmFrom, lmTo, listFrom, listTo, endIndex);
+			doTransfer(selObjects, lmFrom, lmTo, listTo, endIndex);
 		}
 
-		private void doTransfer(int index, List<ValueNamePair > selObjects, SimpleListModel lmFrom, SimpleListModel lmTo, Listbox listFrom , Listbox listTo , int endIndex) {
-
-			index = 0;
+		/**
+		 * Move selected items from lmFrom to lmTo at endIndex
+		 * @param selObjects
+		 * @param lmFrom
+		 * @param lmTo
+		 * @param listTo
+		 * @param endIndex
+		 */
+		private void doTransfer(List<ValueNamePair > selObjects, SimpleListModel lmFrom, SimpleListModel lmTo, Listbox listTo , int endIndex) {
 			Arrays.sort(selObjects.toArray());	
 			for (ValueNamePair  selObject : selObjects) {
 				lmFrom.removeElement(selObject);
@@ -972,10 +1056,14 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			}
 		}
 
+		/**
+		 * Listener for DropEvent 
+		 */
 		private class DragListener implements EventListener<Event> 	{
 			public DragListener() {
 			}
 
+			@Override
 			public void onEvent(Event event) throws Exception {
 				if (event instanceof DropEvent) {
 					int endIndex = 0;
@@ -1009,6 +1097,13 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			}
 		}
 
+		/**
+		 * Move selected items to endIndex
+		 * @param selModel
+		 * @param selListbox
+		 * @param endIndex
+		 * @param selObjects
+		 */
 		private void migrateValueWithinSelectedList (SimpleListModel selModel, Listbox selListbox, int endIndex, List<ValueNamePair > selObjects) {
 			int iniIndex =0;
 			Arrays.sort(selObjects.toArray());	
@@ -1029,6 +1124,11 @@ public class WChosenboxListEditor extends WEditor implements ContextMenuListener
 			}
 		}
 
+		/**
+		 * Handle event from up and down button. <br/>
+		 * Move selected items up/down within {@link #selectedList}.
+		 * @param event
+		 */
 		private void migrateValueWithinSelectedList (Event event) {
 			Object[] selObjects = selectedList.getSelectedItems().toArray();
 			if (selObjects == null)

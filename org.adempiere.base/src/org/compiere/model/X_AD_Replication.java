@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Replication
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Replication")
-public class X_AD_Replication extends PO implements I_AD_Replication, I_Persistent 
+public class X_AD_Replication extends PO implements I_AD_Replication, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_AD_Replication (Properties ctx, int AD_Replication_ID, String trxName)
@@ -74,6 +74,44 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Replication (Properties ctx, String AD_Replication_UU, String trxName)
+    {
+      super (ctx, AD_Replication_UU, trxName);
+      /** if (AD_Replication_UU == null)
+        {
+			setAD_Replication_ID (0);
+			setAD_ReplicationStrategy_ID (0);
+			setHostAddress (null);
+			setHostPort (0);
+// 80
+			setIsRMIoverHTTP (true);
+// Y
+			setName (null);
+			setRemote_Client_ID (0);
+			setRemote_Org_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Replication (Properties ctx, String AD_Replication_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Replication_UU, trxName, virtualColumns);
+      /** if (AD_Replication_UU == null)
+        {
+			setAD_Replication_ID (0);
+			setAD_ReplicationStrategy_ID (0);
+			setHostAddress (null);
+			setHostPort (0);
+// 80
+			setIsRMIoverHTTP (true);
+// Y
+			setName (null);
+			setRemote_Client_ID (0);
+			setRemote_Org_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Replication (Properties ctx, ResultSet rs, String trxName)
     {
@@ -81,7 +119,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -167,7 +205,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 		return (String)get_Value(COLUMNNAME_AD_Replication_UU);
 	}
 
-	/** Set Date last run.
+	/** Set Date Last Run.
 		@param DateLastRun Date the process was last run.
 	*/
 	public void setDateLastRun (Timestamp DateLastRun)
@@ -175,7 +213,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 		set_ValueNoCheck (COLUMNNAME_DateLastRun, DateLastRun);
 	}
 
-	/** Get Date last run.
+	/** Get Date Last Run.
 		@return Date the process was last run.
 	  */
 	public Timestamp getDateLastRun()
@@ -302,10 +340,10 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	public boolean isRMIoverHTTP()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRMIoverHTTP);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -330,7 +368,7 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -364,17 +402,17 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
 	}
 
-	/** Set Remote Client.
-		@param Remote_Client_ID Remote Client to be used to replicate / synchronize data with.
+	/** Set Remote Tenant.
+		@param Remote_Client_ID Remote Tenant to be used to replicate / synchronize data with.
 	*/
 	public void setRemote_Client_ID (int Remote_Client_ID)
 	{
@@ -384,8 +422,8 @@ public class X_AD_Replication extends PO implements I_AD_Replication, I_Persiste
 			set_ValueNoCheck (COLUMNNAME_Remote_Client_ID, Integer.valueOf(Remote_Client_ID));
 	}
 
-	/** Get Remote Client.
-		@return Remote Client to be used to replicate / synchronize data with.
+	/** Get Remote Tenant.
+		@return Remote Tenant to be used to replicate / synchronize data with.
 	  */
 	public int getRemote_Client_ID()
 	{

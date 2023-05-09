@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Role
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_Role 
 {
@@ -44,8 +44,8 @@ public interface I_AD_Role
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_AD_Role
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -313,12 +313,12 @@ public interface I_AD_Role
     public static final String COLUMNNAME_IsAccessAllOrgs = "IsAccessAllOrgs";
 
 	/** Set Access all Orgs.
-	  * Access all Organizations (no org access control) of the client
+	  * Access all Organizations (no org access control) of the tenant
 	  */
 	public void setIsAccessAllOrgs (boolean IsAccessAllOrgs);
 
 	/** Get Access all Orgs.
-	  * Access all Organizations (no org access control) of the client
+	  * Access all Organizations (no org access control) of the tenant
 	  */
 	public boolean isAccessAllOrgs();
 
@@ -390,32 +390,32 @@ public interface I_AD_Role
     /** Column name IsClientAdministrator */
     public static final String COLUMNNAME_IsClientAdministrator = "IsClientAdministrator";
 
-	/** Set Client Administrator.
-	  * This role is a client administrator
+	/** Set Tenant Administrator.
+	  * This role is a tenant administrator
 	  */
 	public void setIsClientAdministrator (boolean IsClientAdministrator);
 
-	/** Get Client Administrator.
-	  * This role is a client administrator
+	/** Get Tenant Administrator.
+	  * This role is a tenant administrator
 	  */
 	public boolean isClientAdministrator();
 
     /** Column name IsDiscountAllowedOnTotal */
     public static final String COLUMNNAME_IsDiscountAllowedOnTotal = "IsDiscountAllowedOnTotal";
 
-	/** Set IsDiscountAllowedOnTotal	  */
+	/** Set Is Discount Allowed On Total	  */
 	public void setIsDiscountAllowedOnTotal (boolean IsDiscountAllowedOnTotal);
 
-	/** Get IsDiscountAllowedOnTotal	  */
+	/** Get Is Discount Allowed On Total	  */
 	public boolean isDiscountAllowedOnTotal();
 
     /** Column name IsDiscountUptoLimitPrice */
     public static final String COLUMNNAME_IsDiscountUptoLimitPrice = "IsDiscountUptoLimitPrice";
 
-	/** Set IsDiscountUptoLimitPrice	  */
+	/** Set Is Discount Up to Limit Price	  */
 	public void setIsDiscountUptoLimitPrice (boolean IsDiscountUptoLimitPrice);
 
-	/** Get IsDiscountUptoLimitPrice	  */
+	/** Get Is Discount Up to Limit Price	  */
 	public boolean isDiscountUptoLimitPrice();
 
     /** Column name IsManual */
@@ -548,6 +548,19 @@ public interface I_AD_Role
 	  */
 	public boolean isOverwritePriceLimit();
 
+    /** Column name PredefinedContextVariables */
+    public static final String COLUMNNAME_PredefinedContextVariables = "PredefinedContextVariables";
+
+	/** Set Predefined Context Variables.
+	  * Predefined context variables to inject when opening a menu entry or a window
+	  */
+	public void setPredefinedContextVariables (String PredefinedContextVariables);
+
+	/** Get Predefined Context Variables.
+	  * Predefined context variables to inject when opening a menu entry or a window
+	  */
+	public String getPredefinedContextVariables();
+
     /** Column name PreferenceType */
     public static final String COLUMNNAME_PreferenceType = "PreferenceType";
 
@@ -604,22 +617,22 @@ public interface I_AD_Role
     /** Column name UserDiscount */
     public static final String COLUMNNAME_UserDiscount = "UserDiscount";
 
-	/** Set UserDiscount	  */
+	/** Set User Discount	  */
 	public void setUserDiscount (BigDecimal UserDiscount);
 
-	/** Get UserDiscount	  */
+	/** Get User Discount	  */
 	public BigDecimal getUserDiscount();
 
     /** Column name UserLevel */
     public static final String COLUMNNAME_UserLevel = "UserLevel";
 
 	/** Set User Level.
-	  * System Client Organization
+	  * System Tenant Organization
 	  */
 	public void setUserLevel (String UserLevel);
 
 	/** Get User Level.
-	  * System Client Organization
+	  * System Tenant Organization
 	  */
 	public String getUserLevel();
 }

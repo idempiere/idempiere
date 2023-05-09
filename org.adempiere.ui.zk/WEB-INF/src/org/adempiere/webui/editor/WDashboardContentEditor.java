@@ -1,6 +1,27 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - hengsin                         								   *
+ **********************************************************************/
 package org.adempiere.webui.editor;
 
 import java.util.logging.Level;
@@ -10,6 +31,7 @@ import org.adempiere.webui.desktop.DashboardController;
 import org.compiere.model.GridField;
 import org.compiere.model.MDashboardContent;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
@@ -20,6 +42,8 @@ import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 
 /**
+ * Default editor for {@link DisplayType#DashboardContent}.<br/>
+ * A readonly editor that render dashboard content from {@link MDashboardContents} to {@link Panel} component. 
  * @author hengsin
  *
  */
@@ -43,7 +67,7 @@ public class WDashboardContentEditor extends WEditor {
 	
 	/**
 	 * 
-	 * @param gridField
+	 * @param gridField GridField for PA_DashboardContent_ID
 	 * @param windowNo
 	 * @param tableEditor
 	 * @param editorConfiguration
@@ -76,8 +100,8 @@ public class WDashboardContentEditor extends WEditor {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.adempiere.webui.editor.WEditor#setReadWrite(boolean)
+	/**
+	 * No op.
 	 */
 	@Override
 	public void setReadWrite(boolean readWrite) {
@@ -91,29 +115,32 @@ public class WDashboardContentEditor extends WEditor {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.adempiere.webui.editor.WEditor#setValue(java.lang.Object)
+	/**
+	 * No op.
 	 */
 	@Override
 	public void setValue(Object value) {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.adempiere.webui.editor.WEditor#getValue()
+	/**
+	 * Always return null.
 	 */
 	@Override
 	public Object getValue() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.adempiere.webui.editor.WEditor#getDisplay()
+	/**
+	 * Always return null.
 	 */
 	@Override
 	public String getDisplay() {
 		return null;
 	}
 
+	/**
+	 * Post {@link #ON_RENDER_CONTENT} event to render dashboard content.
+	 */
 	@Override
 	public void dynamicDisplay() {
 		super.dynamicDisplay();
@@ -128,6 +155,10 @@ public class WDashboardContentEditor extends WEditor {
 		return (Panel) super.getComponent();
 	}
 
+	/**
+	 * Render dashboard content
+	 * @throws Exception
+	 */
 	private void render() throws Exception {
 		Panel panel = getComponent();
 		panel.setSclass("dashboard-field-panel");
@@ -139,8 +170,6 @@ public class WDashboardContentEditor extends WEditor {
 		
 		DashboardRunnable dashboardRunnable = new DashboardRunnable(panel.getDesktop());
 		dashboardController.render(div, content, dashboardRunnable);
-		if (!dashboardRunnable.isEmpty())
-			dashboardRunnable.refreshDashboard(false);
 		
 		pc.appendChild(div);
 	}

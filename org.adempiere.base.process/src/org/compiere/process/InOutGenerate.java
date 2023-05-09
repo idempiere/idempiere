@@ -34,6 +34,7 @@ import org.compiere.model.MLocator;
 import org.compiere.model.MLocatorType;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.Query;
@@ -124,7 +125,7 @@ public class InOutGenerate extends SvrProcess
 			else if (name.equals("MovementDate"))
                 p_DateShipped = (Timestamp)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		//  juddm - added ability to specify a shipment date from Generate Shipments
 		if (p_DateShipped == null) {
@@ -205,6 +206,7 @@ public class InOutGenerate extends SvrProcess
 		}
 		catch (Exception e)
 		{
+			DB.close(pstmt);
 			throw new AdempiereException(e);
 		}
 		return generate(pstmt);

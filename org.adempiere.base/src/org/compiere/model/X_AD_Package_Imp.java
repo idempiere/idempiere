@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_Imp
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Package_Imp")
-public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persistent 
+public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_AD_Package_Imp (Properties ctx, int AD_Package_Imp_ID, String trxName)
@@ -57,6 +57,30 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Package_Imp (Properties ctx, String AD_Package_Imp_UU, String trxName)
+    {
+      super (ctx, AD_Package_Imp_UU, trxName);
+      /** if (AD_Package_Imp_UU == null)
+        {
+			setAD_Package_Imp_ID (0);
+			setName (null);
+			setProcessing (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Package_Imp (Properties ctx, String AD_Package_Imp_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Package_Imp_UU, trxName, virtualColumns);
+      /** if (AD_Package_Imp_UU == null)
+        {
+			setAD_Package_Imp_ID (0);
+			setName (null);
+			setProcessing (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Package_Imp (Properties ctx, ResultSet rs, String trxName)
     {
@@ -64,7 +88,7 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -109,7 +133,7 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_Package_Imp_ID()));
     }
@@ -156,16 +180,16 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 		return (String)get_Value(COLUMNNAME_AD_Package_Imp_UU);
 	}
 
-	/** Set CreatedDate.
-		@param CreatedDate CreatedDate
+	/** Set Created Date.
+		@param CreatedDate Created Date
 	*/
 	public void setCreatedDate (String CreatedDate)
 	{
 		set_Value (COLUMNNAME_CreatedDate, CreatedDate);
 	}
 
-	/** Get CreatedDate.
-		@return CreatedDate	  */
+	/** Get Created Date.
+		@return Created Date	  */
 	public String getCreatedDate()
 	{
 		return (String)get_Value(COLUMNNAME_CreatedDate);
@@ -186,16 +210,16 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 		return (String)get_Value(COLUMNNAME_Creator);
 	}
 
-	/** Set CreatorContact.
-		@param CreatorContact CreatorContact
+	/** Set Creator Contact.
+		@param CreatorContact Creator Contact
 	*/
 	public void setCreatorContact (String CreatorContact)
 	{
 		set_Value (COLUMNNAME_CreatorContact, CreatorContact);
 	}
 
-	/** Get CreatorContact.
-		@return CreatorContact	  */
+	/** Get Creator Contact.
+		@return Creator Contact	  */
 	public String getCreatorContact()
 	{
 		return (String)get_Value(COLUMNNAME_CreatorContact);
@@ -293,10 +317,10 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -315,10 +339,10 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -353,25 +377,25 @@ public class X_AD_Package_Imp extends PO implements I_AD_Package_Imp, I_Persiste
 	public boolean isUninstall()
 	{
 		Object oo = get_Value(COLUMNNAME_Uninstall);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
 	}
 
-	/** Set UpdatedDate.
-		@param UpdatedDate UpdatedDate
+	/** Set Updated Date.
+		@param UpdatedDate Updated Date
 	*/
 	public void setUpdatedDate (String UpdatedDate)
 	{
 		set_Value (COLUMNNAME_UpdatedDate, UpdatedDate);
 	}
 
-	/** Get UpdatedDate.
-		@return UpdatedDate	  */
+	/** Get Updated Date.
+		@return Updated Date	  */
 	public String getUpdatedDate()
 	{
 		return (String)get_Value(COLUMNNAME_UpdatedDate);

@@ -188,9 +188,9 @@ public class ChartRendererServiceImpl implements IChartRendererService {
 				
 		if (Executions.getCurrent() != null)
 		{
-			String script = "var parent = jq('#" + parent.getUuid() + "');";
-			script += "var billboard = parent.children().first(); ";
-			script += "var div = parent.children().eq(1); ";
+			String script = "(function() {let parent = jq('#" + parent.getUuid() + "');";
+			script += "let billboard = parent.children().first(); ";
+			script += "let div = parent.children().eq(1); ";
 			script += "if (billboard.children().length == 0) {";
 			script += "div.show(); ";
 			script += "billboard.hide(); ";
@@ -198,7 +198,7 @@ public class ChartRendererServiceImpl implements IChartRendererService {
 			script += "else {";
 			script += "div.hide(); ";
 			script += "billboard.show(); ";
-			script += "}";			
+			script += "}})();";			
 			Clients.response(new AuScript(script));
 		}
 		

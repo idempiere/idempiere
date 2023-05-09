@@ -47,6 +47,7 @@ import org.apache.ecs.xhtml.tr;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
 import org.compiere.model.MSystem;
+import org.compiere.model.SystemIDs;
 
 /**
  *  Web Environment and debugging
@@ -150,7 +151,7 @@ public class WebEnv
 
 		Properties ctx = new Properties();
 		Env.setContext(ctx, Env.AD_CLIENT_ID, 0);
-		Env.setContext(ctx, Env.AD_USER_ID, 0);
+		Env.setContext(ctx, Env.AD_USER_ID, SystemIDs.USER_SYSTEM);
 		ServerContext.setCurrentInstance(ctx);
 		
 		//  Load Environment Variables (serverApps/src/web/WEB-INF/web.xml)

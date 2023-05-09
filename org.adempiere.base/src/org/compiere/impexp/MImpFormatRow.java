@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.model.X_AD_ImpFormat_Row;
+import org.compiere.util.Util;
 
 
 /**
@@ -36,6 +37,18 @@ public class MImpFormatRow extends X_AD_ImpFormat_Row
 	 */
 	private static final long serialVersionUID = 6251836513717968622L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ImpFormat_Row_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MImpFormatRow(Properties ctx, String AD_ImpFormat_Row_UU, String trxName) {
+        super(ctx, AD_ImpFormat_Row_UU, trxName);
+		if (Util.isEmpty(AD_ImpFormat_Row_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -46,16 +59,21 @@ public class MImpFormatRow extends X_AD_ImpFormat_Row
 	{
 		super (ctx, AD_ImpFormat_Row_ID, trxName);
 		if (AD_ImpFormat_Row_ID == 0)
-		{
+			setInitialDefaults();
+	}	//	MImpFormatRow
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
 		//	setAD_ImpFormat_ID (0);		Parent
 		//	setAD_Column_ID (0);
 		//	setDataType (null);
 		//	setName (null);
 		//	setSeqNo (10);
-			setDecimalPoint (".");
-			setDivideBy100 (false);
-		}
-	}	//	MImpFormatRow
+		setDecimalPoint (".");
+		setDivideBy100 (false);
+	}
 
 	/**
 	 * 	Load Constructor

@@ -324,6 +324,18 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	private static CCache<String,String> s_cache = new CCache<String,String>(Table_Name, 20);
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Ref_List_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRefList(Properties ctx, String AD_Ref_List_UU, String trxName) {
+        super(ctx, AD_Ref_List_UU, trxName);
+		if (Util.isEmpty(AD_Ref_List_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Persistency Constructor
 	 *	@param ctx context
@@ -334,10 +346,15 @@ public class MRefList extends X_AD_Ref_List implements ImmutablePOSupport
 	{
 		super (ctx, AD_Ref_List_ID, trxName);
 		if (AD_Ref_List_ID == 0)
-		{
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-		}
+			setInitialDefaults();
 	}	//	MRef_List
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+	}
 
 	/**
 	 * 	Load Contructor

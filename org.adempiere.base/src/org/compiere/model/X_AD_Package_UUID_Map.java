@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Package_UUID_Map
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Package_UUID_Map")
-public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, I_Persistent 
+public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_AD_Package_UUID_Map (Properties ctx, int AD_Package_UUID_Map_ID, String trxName)
@@ -61,6 +61,34 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Package_UUID_Map (Properties ctx, String AD_Package_UUID_Map_UU, String trxName)
+    {
+      super (ctx, AD_Package_UUID_Map_UU, trxName);
+      /** if (AD_Package_UUID_Map_UU == null)
+        {
+			setAD_Package_UUID_Map_ID (0);
+			setAD_Package_UUID_Map_UU (null);
+			setAD_Table_ID (0);
+			setSource_UUID (null);
+			setTarget_UUID (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Package_UUID_Map (Properties ctx, String AD_Package_UUID_Map_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Package_UUID_Map_UU, trxName, virtualColumns);
+      /** if (AD_Package_UUID_Map_UU == null)
+        {
+			setAD_Package_UUID_Map_ID (0);
+			setAD_Package_UUID_Map_UU (null);
+			setAD_Table_ID (0);
+			setSource_UUID (null);
+			setTarget_UUID (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Package_UUID_Map (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +96,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -90,7 +118,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
     }
 
 	/** Set UUID Mapping.
-		@param AD_Package_UUID_Map_ID UUID Mapping between client
+		@param AD_Package_UUID_Map_ID UUID Mapping between tenant
 	*/
 	public void setAD_Package_UUID_Map_ID (int AD_Package_UUID_Map_ID)
 	{
@@ -101,7 +129,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 	}
 
 	/** Get UUID Mapping.
-		@return UUID Mapping between client
+		@return UUID Mapping between tenant
 	  */
 	public int getAD_Package_UUID_Map_ID()
 	{
@@ -155,7 +183,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 	}
 
 	/** Set Source UUID.
-		@param Source_UUID UUID from the source client
+		@param Source_UUID UUID from the source tenant
 	*/
 	public void setSource_UUID (String Source_UUID)
 	{
@@ -163,7 +191,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 	}
 
 	/** Get Source UUID.
-		@return UUID from the source client
+		@return UUID from the source tenant
 	  */
 	public String getSource_UUID()
 	{
@@ -173,13 +201,13 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getSource_UUID());
     }
 
 	/** Set Target UUID.
-		@param Target_UUID New UUID created by the pack in client
+		@param Target_UUID New UUID created by the pack in tenant
 	*/
 	public void setTarget_UUID (String Target_UUID)
 	{
@@ -187,7 +215,7 @@ public class X_AD_Package_UUID_Map extends PO implements I_AD_Package_UUID_Map, 
 	}
 
 	/** Get Target UUID.
-		@return New UUID created by the pack in client
+		@return New UUID created by the pack in tenant
 	  */
 	public String getTarget_UUID()
 	{

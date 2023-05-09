@@ -72,6 +72,18 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 		return null;
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Field_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MField(Properties ctx, String AD_Field_UU, String trxName) {
+        super(ctx, AD_Field_UU, trxName);
+		if (Util.isEmpty(AD_Field_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -82,18 +94,23 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 	{
 		super (ctx, AD_Field_ID, trxName);
 		if (AD_Field_ID == 0)
-		{
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-			setIsCentrallyMaintained (true);	// Y
-			setIsDisplayed (true);	// Y
-			setIsDisplayedGrid (true);	// Y
-			setIsEncrypted (false);
-			setIsFieldOnly (false);
-			setIsHeading (false);
-			setIsReadOnly (false);
-			setIsSameLine (false);
-		}	
+			setInitialDefaults();
 	}	//	MField
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+		setIsCentrallyMaintained (true);	// Y
+		setIsDisplayed (true);	// Y
+		setIsDisplayedGrid (true);	// Y
+		setIsEncrypted (false);
+		setIsFieldOnly (false);
+		setIsHeading (false);
+		setIsReadOnly (false);
+		setIsSameLine (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -217,7 +234,7 @@ public class MField extends X_AD_Field implements ImmutablePOSupport
 			if (getIsToolbarButton() != null)
 				setIsToolbarButton(null);
 		}
-
+		
 		//validate logic expression
 		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
 			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith("@SQL=")) {

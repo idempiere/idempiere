@@ -17,25 +17,30 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ServerPushTemplate;
 
 /**
- * Custom dashboard item base class
+ * Base class for dashboard gadget/widget
  * @author Elaine
  * @date November 20, 2008
  */
 public abstract class DashboardPanel extends Window implements IDashboardPanel {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7424244218250118823L;
 
+	/**
+	 * Default constructor
+	 */
 	public DashboardPanel()
 	{
 		super();
 	}
 	
+	@Override
 	public void refresh(ServerPushTemplate template) {
 	}
 
+	@Override
 	public void updateUI() {
 	}
 	
@@ -43,6 +48,22 @@ public abstract class DashboardPanel extends Window implements IDashboardPanel {
 	 * @return true if this dashboard widget uses polling to update its content
 	 */
 	public boolean isPooling() {
+		return false;
+	}
+	
+	/**
+	 * Override this together with refresh and updateUI to implement background loading of gadget
+	 * @return true if panel created without loading of data
+	 */
+	public boolean isLazy() {
+		return false;
+	}
+	
+	/**
+	 * Empty Dashboard Panel are not rendered on the Dashboard
+	 * @return true if the panel is empty
+	 */
+	public boolean isEmpty() {
 		return false;
 	}
 }

@@ -11,6 +11,16 @@ public class MShippingProcessor extends X_M_ShippingProcessor
 	 */
 	private static final long serialVersionUID = -7635817773750467895L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_ShippingProcessor_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MShippingProcessor(Properties ctx, String M_ShippingProcessor_UU, String trxName) {
+        super(ctx, M_ShippingProcessor_UU, trxName);
+    }
+
 	public MShippingProcessor(Properties ctx, int M_ShippingProcessor_ID, String trxName) 
 	{
 		super(ctx, M_ShippingProcessor_ID, trxName);

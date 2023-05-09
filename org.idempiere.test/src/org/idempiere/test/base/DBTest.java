@@ -14,22 +14,28 @@
 package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.model.MBPartner;
+import org.compiere.model.MOrder;
 import org.compiere.model.MTable;
 import org.compiere.model.X_Test;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Trx;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
@@ -273,5 +279,98 @@ public class DBTest extends AbstractTestCase
 				match++;
 		}
 		assertEquals(3, match);
+	}
+
+	@Test
+	public void test_NVL() throws Exception
+	{
+		// multi datatype NVL
+		// numeric, integer
+		BigDecimal result = DB.getSQLValueBDEx(null, "SELECT NVL(GrandTotal, 0) FROM C_Order WHERE C_Order_ID=100");
+		assertTrue(result != null);
+		// integer, numeric
+		result = DB.getSQLValueBDEx(null, "SELECT NVL(10, C_Order_ID) FROM C_Order WHERE C_Order_ID=100");
+		assertTrue(result != null);
+		// Varchar, Text
+		String resultStr = DB.getSQLValueStringEx(null, "SELECT NVL(Description, C_Charge_ID||' ') FROM C_Charge WHERE C_Charge_ID=101");
+		assertTrue(resultStr != null);
+	}
+	
+	@Test
+	public void testForUpdateAndForeignKey() 
+	{
+		try {
+			MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+			DB.getDatabase().forUpdate(bp, 0);
+			
+			SQLException sqlException = null;
+			Trx trx2 = Trx.get(Trx.createTrxName(), true);
+			MOrder order = null;
+			try {
+				order = new MOrder(Env.getCtx(), 0, trx2.getTrxName());
+				order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+				order.setC_BPartner_ID(bp.get_ID());
+				order.setDateOrdered(getLoginDate());
+				Thread thread = new Thread (() -> { 
+					try {
+						Thread.sleep(15 * 1000);
+					} catch (InterruptedException e) {
+					}
+					if (trx2.isActive()) trx2.rollbackAndCloseOnTimeout();
+				});
+				thread.start();
+				order.saveEx();		
+				trx2.commit(true);
+			} catch (SQLException e) {
+				sqlException = e;
+				order = null;
+			} finally {
+				trx2.close();
+			}
+			assertNull(sqlException, "Failed to save and commit order: " + (sqlException != null ? sqlException.getMessage() : ""));
+			if (order != null && order.get_ID() > 0) {
+				order.set_TrxName(null);
+				order.deleteEx(true);
+			}
+		} finally {
+			rollback();
+		}				
+	}
+	
+	@Test
+	public void testTrxTimeout() 
+	{
+		try {
+			MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+			DB.getDatabase().forUpdate(bp, 0);
+			
+			Exception exception = null;
+			Trx trx2 = Trx.get(Trx.createTrxName(), true);
+			MBPartner bp2 = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, trx2.getTrxName());
+			try {
+				Thread thread = new Thread (() -> { 
+					try {
+						Thread.sleep(5 * 1000);
+					} catch (InterruptedException e) {
+					}
+					if (trx2.isActive()) trx2.rollbackAndCloseOnTimeout();
+				});
+				thread.start();
+				DB.getDatabase().forUpdate(bp2, 10);
+			} catch (Exception e) {
+				exception = e;
+			} finally {
+				trx2.close();
+			}
+			assertNotNull(exception, "Exception not happens as expected");
+			assertTrue(exception instanceof DBException, "Exception not instanceof DBException");
+			DBException dbe = (DBException) exception;
+			if (DB.isPostgreSQL())
+				assertTrue("08006".equals(dbe.getSQLState()), "Trx2 not timeout as expected: " + dbe.getSQLException().getMessage());
+			else if (DB.isOracle())
+				assertTrue("08003".equals(dbe.getSQLState()), "Trx2 not timeout as expected: " + dbe.getSQLException().getMessage());
+		} finally {
+			rollback();
+		}				
 	}
 }

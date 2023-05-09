@@ -23,15 +23,24 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Span;
 
 /**
- * 
+ * Blocking in progress dialog.
  * @author hengsin
  *
  */
 public class BusyDialog extends Window {
 
+	/**
+	 * generated serial id
+	 */
 	private static final long serialVersionUID = -779475945298887887L;
+	/**
+	 * Label component to display in progress message (default is Processing...).
+	 */
 	private Label label;
 
+	/**
+	 * Default constructor
+	 */
 	public BusyDialog() {
 		super();
 		LayoutUtils.addSclass("busy-dialog", this);
@@ -55,6 +64,10 @@ public class BusyDialog extends Window {
 		setShadow(true);
 	}
 
+	/**
+	 * Update in progress message.
+	 * @param message
+	 */
 	public void statusUpdate(String message) {
 		if (label != null) {
 			label.setText(message);

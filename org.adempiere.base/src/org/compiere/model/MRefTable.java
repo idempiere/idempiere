@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -31,6 +32,18 @@ public class MRefTable extends X_AD_Ref_Table implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = 5068032076487795624L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Ref_Table_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRefTable(Properties ctx, String AD_Ref_Table_UU, String trxName) {
+        super(ctx, AD_Ref_Table_UU, trxName);
+		if (Util.isEmpty(AD_Ref_Table_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -41,11 +54,16 @@ public class MRefTable extends X_AD_Ref_Table implements ImmutablePOSupport
 	{
 		super (ctx, AD_Reference_ID, trxName);
 		if (AD_Reference_ID == 0)
-		{
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-			setIsValueDisplayed (false);
-		}
+			setInitialDefaults();
 	}	//	MRefTable
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+		setIsValueDisplayed (false);
+	}
 
 	/**
 	 * 	Load Constructor

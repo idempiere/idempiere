@@ -37,6 +37,7 @@ import java.util.Properties;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
  
 /**
  *	Bank Statement Line Model
@@ -54,6 +55,18 @@ import org.compiere.util.Msg;
 
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_DepositBatchLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDepositBatchLine(Properties ctx, String C_DepositBatchLine_UU, String trxName) {
+        super(ctx, C_DepositBatchLine_UU, trxName);
+		if (Util.isEmpty(C_DepositBatchLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -64,11 +77,16 @@ import org.compiere.util.Msg;
 	{
 		super (ctx, C_DepositBatchLine_ID, trxName);
 		if (C_DepositBatchLine_ID == 0)
-		{
-			setPayAmt(Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MDepositBatchLine
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setPayAmt(Env.ZERO);
+	}
+
 	/**
 	 *	Load Constructor
 	 *	@param ctx context

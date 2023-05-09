@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Tax
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_C_Tax 
 {
@@ -361,10 +361,14 @@ public interface I_C_Tax
     /** Column name TaxPostingIndicator */
     public static final String COLUMNNAME_TaxPostingIndicator = "TaxPostingIndicator";
 
-	/** Set Posting Indicator	  */
+	/** Set Posting Indicator.
+	  * Type of input tax (deductible and non deductible)
+	  */
 	public void setTaxPostingIndicator (String TaxPostingIndicator);
 
-	/** Get Posting Indicator	  */
+	/** Get Posting Indicator.
+	  * Type of input tax (deductible and non deductible)
+	  */
 	public String getTaxPostingIndicator();
 
     /** Column name To_Country_ID */

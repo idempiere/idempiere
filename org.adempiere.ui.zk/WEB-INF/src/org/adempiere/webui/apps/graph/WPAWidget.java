@@ -33,15 +33,20 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 
+/**
+ * Dashboard gadget panel for individual {@link WPerformanceIndicator}
+ */
 public class WPAWidget extends Panel {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5684412399657327777L;
 	
-	/**************************************************************************
-	 * 	Constructor
+	/**
+	 * @param goal
+	 * @param options
+	 * @param isShowTitle
 	 */
 	public WPAWidget (MGoal goal, Options options, boolean isShowTitle)
 	{
@@ -51,7 +56,7 @@ public class WPAWidget extends Panel {
 	}
 	
 	/**
-	 * 	Static/Dynamic Init
+	 * Render panel
 	 * @param goal
 	 * @param options 
 	 */

@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_FAJournal
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="I_FAJournal")
-public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent 
+public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_I_FAJournal (Properties ctx, int I_FAJournal_ID, String trxName)
@@ -58,6 +58,28 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_I_FAJournal (Properties ctx, String I_FAJournal_UU, String trxName)
+    {
+      super (ctx, I_FAJournal_UU, trxName);
+      /** if (I_FAJournal_UU == null)
+        {
+			setI_FAJournal_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_FAJournal (Properties ctx, String I_FAJournal_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_FAJournal_UU, trxName, virtualColumns);
+      /** if (I_FAJournal_UU == null)
+        {
+			setI_FAJournal_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_I_FAJournal (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +87,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -557,16 +579,16 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Client Key.
-		@param ClientValue Key of the Client
+	/** Set Tenant Key.
+		@param ClientValue Key of the Tenant
 	*/
 	public void setClientValue (String ClientValue)
 	{
 		set_Value (COLUMNNAME_ClientValue, ClientValue);
 	}
 
-	/** Get Client Key.
-		@return Key of the Client
+	/** Get Tenant Key.
+		@return Key of the Tenant
 	  */
 	public String getClientValue()
 	{
@@ -816,8 +838,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	public static final String CURRENCYRATETYPE_Spot = "S";
 	/** User Type = U */
 	public static final String CURRENCYRATETYPE_UserType = "U";
-	/** Set CurrencyRateType.
-		@param CurrencyRateType CurrencyRateType
+	/** Set Currency Rate Type.
+		@param CurrencyRateType Currency Rate Type
 	*/
 	public void setCurrencyRateType (String CurrencyRateType)
 	{
@@ -825,8 +847,8 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 		set_Value (COLUMNNAME_CurrencyRateType, CurrencyRateType);
 	}
 
-	/** Get CurrencyRateType.
-		@return CurrencyRateType	  */
+	/** Get Currency Rate Type.
+		@return Currency Rate Type	  */
 	public String getCurrencyRateType()
 	{
 		return (String)get_Value(COLUMNNAME_CurrencyRateType);
@@ -1088,7 +1110,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getI_FAJournal_ID()));
     }
@@ -1122,10 +1144,10 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1270,7 +1292,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	public static final String POSTINGTYPE_Reservation = "R";
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
-	/** Set PostingType.
+	/** Set Posting Type.
 		@param PostingType The type of posted amount for the transaction
 	*/
 	public void setPostingType (String PostingType)
@@ -1279,7 +1301,7 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 		set_Value (COLUMNNAME_PostingType, PostingType);
 	}
 
-	/** Get PostingType.
+	/** Get Posting Type.
 		@return The type of posted amount for the transaction
 	  */
 	public String getPostingType()
@@ -1301,10 +1323,10 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1323,10 +1345,10 @@ public class X_I_FAJournal extends PO implements I_I_FAJournal, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

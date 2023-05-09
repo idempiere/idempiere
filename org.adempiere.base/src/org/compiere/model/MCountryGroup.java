@@ -79,6 +79,16 @@ public class MCountryGroup extends X_C_CountryGroup implements ImmutablePOSuppor
 	@SuppressWarnings("unused")
 	private static CLogger		s_log = CLogger.getCLogger (MCountryGroup.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_CountryGroup_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCountryGroup(Properties ctx, String C_CountryGroup_UU, String trxName) {
+        super(ctx, C_CountryGroup_UU, trxName);
+    }
+
 	/*************************************************************************
 	 *	Create empty Country
 	 * 	@param ctx context

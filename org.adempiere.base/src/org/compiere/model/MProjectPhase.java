@@ -26,6 +26,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * 	Project Phase Model
@@ -40,6 +41,18 @@ public class MProjectPhase extends X_C_ProjectPhase
 	 */
 	private static final long serialVersionUID = 5824045445920353065L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_ProjectPhase_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProjectPhase(Properties ctx, String C_ProjectPhase_UU, String trxName) {
+        super(ctx, C_ProjectPhase_UU, trxName);
+		if (Util.isEmpty(C_ProjectPhase_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -50,14 +63,19 @@ public class MProjectPhase extends X_C_ProjectPhase
 	{
 		super (ctx, C_ProjectPhase_ID, trxName);
 		if (C_ProjectPhase_ID == 0)
-		{
-			setCommittedAmt (Env.ZERO);
-			setIsCommitCeiling (false);
-			setIsComplete (false);
-			setSeqNo (0);
-			setQty (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MProjectPhase
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setCommittedAmt (Env.ZERO);
+		setIsCommitCeiling (false);
+		setIsComplete (false);
+		setSeqNo (0);
+		setQty (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

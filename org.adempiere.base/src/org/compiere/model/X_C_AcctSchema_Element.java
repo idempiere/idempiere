@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_AcctSchema_Element
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_AcctSchema_Element")
-public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element, I_Persistent 
+public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_C_AcctSchema_Element (Properties ctx, int C_AcctSchema_Element_ID, String trxName)
@@ -71,6 +71,44 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_AcctSchema_Element (Properties ctx, String C_AcctSchema_Element_UU, String trxName)
+    {
+      super (ctx, C_AcctSchema_Element_UU, trxName);
+      /** if (C_AcctSchema_Element_UU == null)
+        {
+			setC_AcctSchema_Element_ID (0);
+			setC_AcctSchema_ID (0);
+			setC_Element_ID (0);
+			setElementType (null);
+			setIsBalanced (false);
+			setIsMandatory (false);
+			setName (null);
+			setOrg_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM C_AcctSchema_Element WHERE C_AcctSchema_ID=@C_AcctSchema_ID@
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AcctSchema_Element (Properties ctx, String C_AcctSchema_Element_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AcctSchema_Element_UU, trxName, virtualColumns);
+      /** if (C_AcctSchema_Element_UU == null)
+        {
+			setC_AcctSchema_Element_ID (0);
+			setC_AcctSchema_ID (0);
+			setC_Element_ID (0);
+			setElementType (null);
+			setIsBalanced (false);
+			setIsMandatory (false);
+			setName (null);
+			setOrg_ID (0);
+			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM C_AcctSchema_Element WHERE C_AcctSchema_ID=@C_AcctSchema_ID@
+        } */
+    }
+
     /** Load Constructor */
     public X_C_AcctSchema_Element (Properties ctx, ResultSet rs, String trxName)
     {
@@ -78,7 +116,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -479,10 +517,10 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	public boolean isBalanced()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBalanced);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -502,10 +540,10 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	public boolean isMandatory()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMandatory);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -558,13 +596,13 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
 
 	/** Set Organization.
-		@param Org_ID Organizational entity within client
+		@param Org_ID Organizational entity within tenant
 	*/
 	public void setOrg_ID (int Org_ID)
 	{
@@ -575,7 +613,7 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	}
 
 	/** Get Organization.
-		@return Organizational entity within client
+		@return Organizational entity within tenant
 	  */
 	public int getOrg_ID()
 	{

@@ -28,6 +28,16 @@ public class MIFixedAsset extends X_I_FixedAsset
 	/** Default depreciation method */
 	private static final String s_defaultDepreciationType = "SL";
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param I_FixedAsset_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MIFixedAsset(Properties ctx, String I_FixedAsset_UU, String trxName) {
+        super(ctx, I_FixedAsset_UU, trxName);
+    }
+
 	/** Standard Constructor */
 	public MIFixedAsset (Properties ctx, int I_FixedAsset_ID, String trxName)
 	{

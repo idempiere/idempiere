@@ -56,6 +56,16 @@ public class MAuthorizationAccount extends X_AD_AuthorizationAccount {
 	 */
 	private static final long serialVersionUID = -6808970904951033494L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_AuthorizationAccount_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAuthorizationAccount(Properties ctx, String AD_AuthorizationAccount_UU, String trxName) {
+        super(ctx, AD_AuthorizationAccount_UU, trxName);
+    }
+
 	/**
 	 * Create empty Authorization Account
 	 *

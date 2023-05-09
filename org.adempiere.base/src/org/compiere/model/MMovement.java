@@ -33,6 +33,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *	Inventory Movement Model
@@ -56,6 +57,18 @@ public class MMovement extends X_M_Movement implements DocAction
 	 */
 	private static final long serialVersionUID = 5415969431202357692L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Movement_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMovement(Properties ctx, String M_Movement_UU, String trxName) {
+        super(ctx, M_Movement_UU, trxName);
+		if (Util.isEmpty(M_Movement_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -66,16 +79,21 @@ public class MMovement extends X_M_Movement implements DocAction
 	{
 		super (ctx, M_Movement_ID, trxName);
 		if (M_Movement_ID == 0)
-		{
-			setDocAction (DOCACTION_Complete);	// CO
-			setDocStatus (DOCSTATUS_Drafted);	// DR
-			setIsApproved (false);
-			setIsInTransit (false);
-			setMovementDate (new Timestamp(System.currentTimeMillis()));	// @#Date@
-			setPosted (false);
-			super.setProcessed (false);
-		}	
+			setInitialDefaults();
 	}	//	MMovement
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocAction (DOCACTION_Complete);	// CO
+		setDocStatus (DOCSTATUS_Drafted);	// DR
+		setIsApproved (false);
+		setIsInTransit (false);
+		setMovementDate (new Timestamp(System.currentTimeMillis()));	// @#Date@
+		setPosted (false);
+		super.setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

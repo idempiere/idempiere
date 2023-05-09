@@ -76,6 +76,16 @@ public class MUserRoles extends X_AD_User_Roles
 	private static CLogger	s_log	= CLogger.getCLogger (MUserRoles.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_User_Roles_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserRoles(Properties ctx, String AD_User_Roles_UU, String trxName) {
+        super(ctx, AD_User_Roles_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Persistence Constructor
 	 *	@param ctx context

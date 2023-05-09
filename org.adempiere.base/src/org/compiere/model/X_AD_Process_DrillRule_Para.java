@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Process_DrillRule_Para
  *  @author iDempiere (generated)
- *  @version Release 10 - $Id$ */
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_Process_DrillRule_Para")
 public class X_AD_Process_DrillRule_Para extends PO implements I_AD_Process_DrillRule_Para, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_Process_DrillRule_Para extends PO implements I_AD_Process_Dril
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220526L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_AD_Process_DrillRule_Para (Properties ctx, int AD_Process_DrillRule_Para_ID, String trxName)
@@ -54,6 +54,28 @@ public class X_AD_Process_DrillRule_Para extends PO implements I_AD_Process_Dril
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_Process_DrillRule_Para (Properties ctx, String AD_Process_DrillRule_Para_UU, String trxName)
+    {
+      super (ctx, AD_Process_DrillRule_Para_UU, trxName);
+      /** if (AD_Process_DrillRule_Para_UU == null)
+        {
+			setAD_Process_DrillRule_ID (0);
+			setAD_Process_Para_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_Process_DrillRule_Para (Properties ctx, String AD_Process_DrillRule_Para_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_Process_DrillRule_Para_UU, trxName, virtualColumns);
+      /** if (AD_Process_DrillRule_Para_UU == null)
+        {
+			setAD_Process_DrillRule_ID (0);
+			setAD_Process_Para_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_Process_DrillRule_Para (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +83,7 @@ public class X_AD_Process_DrillRule_Para extends PO implements I_AD_Process_Dril
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -78,7 +100,7 @@ public class X_AD_Process_DrillRule_Para extends PO implements I_AD_Process_Dril
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_Process_DrillRule_Para[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -88,8 +110,8 @@ public class X_AD_Process_DrillRule_Para extends PO implements I_AD_Process_Dril
 			.getPO(getAD_Process_DrillRule_ID(), get_TrxName());
 	}
 
-	/** Set Process Drill Rule.
-		@param AD_Process_DrillRule_ID Process Drill Rule
+	/** Set Drill Rule.
+		@param AD_Process_DrillRule_ID Drill Rule
 	*/
 	public void setAD_Process_DrillRule_ID (int AD_Process_DrillRule_ID)
 	{
@@ -99,8 +121,8 @@ public class X_AD_Process_DrillRule_Para extends PO implements I_AD_Process_Dril
 			set_ValueNoCheck (COLUMNNAME_AD_Process_DrillRule_ID, Integer.valueOf(AD_Process_DrillRule_ID));
 	}
 
-	/** Get Process Drill Rule.
-		@return Process Drill Rule	  */
+	/** Get Drill Rule.
+		@return Drill Rule	  */
 	public int getAD_Process_DrillRule_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_DrillRule_ID);

@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for C_AddressValidation
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="C_AddressValidation")
-public class X_C_AddressValidation extends PO implements I_C_AddressValidation, I_Persistent 
+public class X_C_AddressValidation extends PO implements I_C_AddressValidation, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_C_AddressValidation (Properties ctx, int C_AddressValidation_ID, String trxName)
@@ -62,6 +62,36 @@ public class X_C_AddressValidation extends PO implements I_C_AddressValidation, 
         } */
     }
 
+    /** Standard Constructor */
+    public X_C_AddressValidation (Properties ctx, String C_AddressValidation_UU, String trxName)
+    {
+      super (ctx, C_AddressValidation_UU, trxName);
+      /** if (C_AddressValidation_UU == null)
+        {
+			setC_AddressValidationCfg_ID (0);
+			setC_AddressValidation_ID (0);
+			setConnectionPassword (null);
+			setName (null);
+			setSeqNo (0);
+			setUserID (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_C_AddressValidation (Properties ctx, String C_AddressValidation_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, C_AddressValidation_UU, trxName, virtualColumns);
+      /** if (C_AddressValidation_UU == null)
+        {
+			setC_AddressValidationCfg_ID (0);
+			setC_AddressValidation_ID (0);
+			setConnectionPassword (null);
+			setName (null);
+			setSeqNo (0);
+			setUserID (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_C_AddressValidation (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +99,7 @@ public class X_C_AddressValidation extends PO implements I_C_AddressValidation, 
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {

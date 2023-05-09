@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_GoalRestriction
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="PA_GoalRestriction")
-public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_Persistent 
+public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_PA_GoalRestriction (Properties ctx, int PA_GoalRestriction_ID, String trxName)
@@ -59,6 +59,32 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_PA_GoalRestriction (Properties ctx, String PA_GoalRestriction_UU, String trxName)
+    {
+      super (ctx, PA_GoalRestriction_UU, trxName);
+      /** if (PA_GoalRestriction_UU == null)
+        {
+			setGoalRestrictionType (null);
+			setName (null);
+			setPA_Goal_ID (0);
+			setPA_GoalRestriction_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_PA_GoalRestriction (Properties ctx, String PA_GoalRestriction_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, PA_GoalRestriction_UU, trxName, virtualColumns);
+      /** if (PA_GoalRestriction_UU == null)
+        {
+			setGoalRestrictionType (null);
+			setName (null);
+			setPA_Goal_ID (0);
+			setPA_GoalRestriction_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_PA_GoalRestriction (Properties ctx, ResultSet rs, String trxName)
     {
@@ -66,7 +92,7 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -247,13 +273,13 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
 
 	/** Set Organization.
-		@param Org_ID Organizational entity within client
+		@param Org_ID Organizational entity within tenant
 	*/
 	public void setOrg_ID (int Org_ID)
 	{
@@ -264,7 +290,7 @@ public class X_PA_GoalRestriction extends PO implements I_PA_GoalRestriction, I_
 	}
 
 	/** Get Organization.
-		@return Organizational entity within client
+		@return Organizational entity within tenant
 	  */
 	public int getOrg_ID()
 	{

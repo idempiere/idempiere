@@ -37,11 +37,10 @@ import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.Popup;
 
 /**
- *	Application Zoom Across Launcher.
- *  Called from APanel; Queries available Zoom Targets for Table.
+ * Handle Zoom Across button action.
  *
- *  @author Jorg Janke
- *  @version $Id: AZoomAcross.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
+ * @author Jorg Janke
+ * @version $Id: AZoomAcross.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
  *
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL - FR [ 1762465 ]
  *
@@ -64,6 +63,12 @@ public class WZoomAcross
 		
 	}
 
+	/**
+	 * show zoom across popup menu
+	 * @param invoker
+	 * @param po
+	 * @param windowID
+	 */
 	public WZoomAcross(Component invoker, PO po, final int windowID) {
 		
 		if (log.isLoggable(Level.CONFIG)) log.config("PO=" + po+", WindowID="+windowID);
@@ -104,12 +109,18 @@ public class WZoomAcross
 		m_popup.open(invoker, "after_start");
 	}
 
-	private Menupopup 	m_popup = new Menupopup(); //"ZoomMenu"
+	/** popup menu for zoom across targets **/
+	private Menupopup 	m_popup = new Menupopup();
 	
 	private static final CLogger log = CLogger.getCLogger(WZoomAcross.class);
 
 	private final List<ZoomInfoFactory.ZoomInfo> zoomInfos = new ArrayList<ZoomInfoFactory.ZoomInfo>();
 
+	/**
+	 * find zoom across targets
+	 * @param po
+	 * @param windowID
+	 */
 	private void mkZoomTargets(final PO po, final int windowID) {
 	
 		for (final ZoomInfoFactory.ZoomInfo zoomInfo : ZoomInfoFactory.retrieveZoomInfos(po,
@@ -125,18 +136,18 @@ public class WZoomAcross
 	}
 	
 	/**
-	 * 	Launch Zoom
-	 *	@param pp KeyPair
+	 * 	Zoom to destination window
+	 *	@param zoomInfo
 	 */
 	private void launchZoom (final ZoomInfoFactory.ZoomInfo zoomInfo)
 	{
 		final int AD_Window_ID = zoomInfo.windowId;
 		final MQuery query = zoomInfo.query;
 		
-		log.info("AD_Window_ID=" + AD_Window_ID 
-			+ " - " + query); 
+		if (log.isLoggable(Level.INFO))
+			log.info("AD_Window_ID=" + AD_Window_ID  + " - " + query); 
 		
 		AEnv.zoom(AD_Window_ID, query);
 	}	//	launchZoom
 
-}	//	AZoom
+}

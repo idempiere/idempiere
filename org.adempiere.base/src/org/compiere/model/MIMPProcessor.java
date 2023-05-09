@@ -39,13 +39,12 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 /**
  * @author Trifon Trifonov
  */
-public class MIMPProcessor
-	extends X_IMP_Processor
-	implements AdempiereProcessor 
+public class MIMPProcessor extends X_IMP_Processor implements AdempiereProcessor 
 {
 	/**
 	 * 
@@ -54,19 +53,35 @@ public class MIMPProcessor
 
 	private static CLogger	s_log	= CLogger.getCLogger (MIMPProcessor.class);
 	
-	public MIMPProcessor(Properties ctx,
-			int EXP_ReplicationProcessor_ID, String trxName) 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param IMP_Processor_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MIMPProcessor(Properties ctx, String IMP_Processor_UU, String trxName) {
+        super(ctx, IMP_Processor_UU, trxName);
+		if (Util.isEmpty(IMP_Processor_UU))
+			setInitialDefaults();
+    }
+
+	public MIMPProcessor(Properties ctx, int EXP_ReplicationProcessor_ID, String trxName) 
 	{
 		super(ctx, EXP_ReplicationProcessor_ID, trxName);
 		if (EXP_ReplicationProcessor_ID == 0)
-		{
-			setName (/*client.getName() + " - " +*/ "Default Import Processor");
-			setFrequencyType (FREQUENCYTYPE_Hour);
-			setFrequency (1);
-			setKeepLogDays (7);
-		}	
+			setInitialDefaults();
 	}
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setName (/*client.getName() + " - " +*/ "Default Import Processor");
+		setFrequencyType (FREQUENCYTYPE_Hour);
+		setFrequency (1);
+		setKeepLogDays (7);
+	}
+
 	public MIMPProcessor(Properties ctx, ResultSet rs, String trxName) 
 	{
 		super(ctx, rs, trxName);

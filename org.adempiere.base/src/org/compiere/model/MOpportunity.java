@@ -27,6 +27,16 @@ public class MOpportunity extends X_C_Opportunity {
 	 */
 	private static final long serialVersionUID = 9052544341602655427L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Opportunity_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MOpportunity(Properties ctx, String C_Opportunity_UU, String trxName) {
+        super(ctx, C_Opportunity_UU, trxName);
+    }
+
 	public MOpportunity(Properties ctx, int C_Opportunity_ID, String trxName) {
 		super(ctx, C_Opportunity_ID, trxName);
 	}

@@ -35,14 +35,22 @@ import java.util.Properties;
 /**
  * @author Trifon Trifonov
  */
-public class MIMPProcessorLog 
-	extends X_IMP_ProcessorLog
-	implements AdempiereProcessorLog 
+public class MIMPProcessorLog extends X_IMP_ProcessorLog implements AdempiereProcessorLog 
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2314394818152867856L;
+
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param IMP_ProcessorLog_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MIMPProcessorLog(Properties ctx, String IMP_ProcessorLog_UU, String trxName) {
+        super(ctx, IMP_ProcessorLog_UU, trxName);
+    }
 
 	/**
 	 * 

@@ -16,6 +16,16 @@ public class MAssetProduct extends X_A_Asset_Product
 	 */
 	private static final long serialVersionUID = 2459915999284269350L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Asset_Product_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAssetProduct(Properties ctx, String A_Asset_Product_UU, String trxName) {
+        super(ctx, A_Asset_Product_UU, trxName);
+    }
+
 	/** Standard Constructor */
 	public MAssetProduct (Properties ctx, int A_Asset_Product_ID, String trxName)
 	{

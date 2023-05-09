@@ -25,16 +25,16 @@ import org.compiere.model.*;
 import org.compiere.util.Env;
 
 /** Generated Model for I_ProductPlanning
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="I_ProductPlanning")
-public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Persistent 
+public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_I_ProductPlanning (Properties ctx, int I_ProductPlanning_ID, String trxName)
@@ -64,6 +64,34 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_I_ProductPlanning (Properties ctx, String I_ProductPlanning_UU, String trxName)
+    {
+      super (ctx, I_ProductPlanning_UU, trxName);
+      /** if (I_ProductPlanning_UU == null)
+        {
+			setI_IsImported (false);
+			setI_ProductPlanning_ID (0);
+			setIsCreatePlan (false);
+			setIsPhantom (false);
+			setQty (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_ProductPlanning (Properties ctx, String I_ProductPlanning_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_ProductPlanning_UU, trxName, virtualColumns);
+      /** if (I_ProductPlanning_UU == null)
+        {
+			setI_IsImported (false);
+			setI_ProductPlanning_ID (0);
+			setIsCreatePlan (false);
+			setIsPhantom (false);
+			setQty (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_I_ProductPlanning (Properties ctx, ResultSet rs, String trxName)
     {
@@ -71,7 +99,7 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -272,10 +300,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -331,10 +359,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	public boolean isCreatePlan()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCreatePlan);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -353,10 +381,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	public boolean isMPS()
 	{
 		Object oo = get_Value(COLUMNNAME_IsMPS);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -376,10 +404,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	public boolean isPhantom()
 	{
 		Object oo = get_Value(COLUMNNAME_IsPhantom);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -758,10 +786,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -780,10 +808,10 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -949,16 +977,16 @@ public class X_I_ProductPlanning extends PO implements I_I_ProductPlanning, I_Pe
 		return bd;
 	}
 
-	/** Set Transfert Time.
-		@param TransfertTime Transfert Time
+	/** Set Transfer Time.
+		@param TransfertTime Transfer Time
 	*/
 	public void setTransfertTime (BigDecimal TransfertTime)
 	{
 		set_Value (COLUMNNAME_TransfertTime, TransfertTime);
 	}
 
-	/** Get Transfert Time.
-		@return Transfert Time	  */
+	/** Get Transfer Time.
+		@return Transfer Time	  */
 	public BigDecimal getTransfertTime()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TransfertTime);

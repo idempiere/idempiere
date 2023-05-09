@@ -65,6 +65,7 @@ public class SetupRes extends ListResourceBundle
 	{ "DatabaseServer", 		"Database Server" },
 	{ "JavaHomeInfo", 			"Java Home Folder" },
 	{ "JavaHome", 				"Java Home" },
+	{ "JavaOptions", 			"Java Options" },
 	{ "JNPPortInfo", 			"Application Server JNP Port" },
 	{ "JNPPort", 				"JNP Port" },
 	{ "MailUserInfo", 			"iDempiere Mail User" },

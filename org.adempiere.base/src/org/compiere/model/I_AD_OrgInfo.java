@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_OrgInfo
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 11
  */
 public interface I_AD_OrgInfo 
 {
@@ -44,8 +44,8 @@ public interface I_AD_OrgInfo
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_AD_OrgInfo
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -304,6 +304,19 @@ public interface I_AD_OrgInfo
 	  * Tax Identification
 	  */
 	public String getTaxID();
+
+    /** Column name TimeZone */
+    public static final String COLUMNNAME_TimeZone = "TimeZone";
+
+	/** Set Time Zone.
+	  * Time zone name
+	  */
+	public void setTimeZone (String TimeZone);
+
+	/** Get Time Zone.
+	  * Time zone name
+	  */
+	public String getTimeZone();
 
     /** Column name TransferBank_ID */
     public static final String COLUMNNAME_TransferBank_ID = "TransferBank_ID";

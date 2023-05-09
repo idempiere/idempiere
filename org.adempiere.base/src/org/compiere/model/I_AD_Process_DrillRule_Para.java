@@ -21,10 +21,10 @@ import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Process_DrillRule_Para
- *  @author iDempiere (generated)
- *  @version Release 10
+ *  @author iDempiere (generated) 
+ *  @version Release 11
  */
-public interface I_AD_Process_DrillRule_Para
+public interface I_AD_Process_DrillRule_Para 
 {
 
     /** TableName=AD_Process_DrillRule_Para */
@@ -35,9 +35,9 @@ public interface I_AD_Process_DrillRule_Para
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 3 - Client - Org
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(3);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -65,10 +65,10 @@ public interface I_AD_Process_DrillRule_Para
     /** Column name AD_Process_DrillRule_ID */
     public static final String COLUMNNAME_AD_Process_DrillRule_ID = "AD_Process_DrillRule_ID";
 
-	/** Set Process Drill Rule	  */
+	/** Set Drill Rule	  */
 	public void setAD_Process_DrillRule_ID (int AD_Process_DrillRule_ID);
 
-	/** Get Process Drill Rule	  */
+	/** Get Drill Rule	  */
 	public int getAD_Process_DrillRule_ID();
 
 	public org.compiere.model.I_AD_Process_DrillRule getAD_Process_DrillRule() throws RuntimeException;

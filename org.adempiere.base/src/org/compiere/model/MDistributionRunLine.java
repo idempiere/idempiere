@@ -37,6 +37,16 @@ public class MDistributionRunLine extends X_M_DistributionRunLine
 	private static final long serialVersionUID = 4106664830581774843L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_DistributionRunLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDistributionRunLine(Properties ctx, String M_DistributionRunLine_UU, String trxName) {
+        super(ctx, M_DistributionRunLine_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

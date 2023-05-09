@@ -91,6 +91,16 @@ public class MPrivateAccess extends X_AD_Private_Access
 	/**	Logger					*/
 	private static CLogger		s_log = CLogger.getCLogger(MPrivateAccess.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Private_Access_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPrivateAccess(Properties ctx, String AD_Private_Access_UU, String trxName) {
+        super(ctx, AD_Private_Access_UU, trxName);
+    }
+
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context

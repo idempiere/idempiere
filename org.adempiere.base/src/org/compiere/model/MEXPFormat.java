@@ -71,6 +71,16 @@ public class MEXPFormat extends X_EXP_Format implements ImmutablePOSupport {
 	private List<MEXPFormatLine> m_lines = null;
 	private List<MEXPFormatLine> m_lines_unique = null;
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param EXP_Format_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MEXPFormat(Properties ctx, String EXP_Format_UU, String trxName) {
+        super(ctx, EXP_Format_UU, trxName);
+    }
+
 	public MEXPFormat(Properties ctx, int EXP_Format_ID, String trxName) 
 	{	
 		super(ctx, EXP_Format_ID, trxName);

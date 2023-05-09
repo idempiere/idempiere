@@ -33,6 +33,16 @@ public class MReplication extends X_AD_Replication
 	 */
 	private static final long serialVersionUID = -562186299848949607L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Replication_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MReplication(Properties ctx, String AD_Replication_UU, String trxName) {
+        super(ctx, AD_Replication_UU, trxName);
+    }
+
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context

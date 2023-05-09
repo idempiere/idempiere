@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_Category
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="GL_Category")
-public class X_GL_Category extends PO implements I_GL_Category, I_Persistent 
+public class X_GL_Category extends PO implements I_GL_Category, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_GL_Category (Properties ctx, int GL_Category_ID, String trxName)
@@ -44,6 +44,7 @@ public class X_GL_Category extends PO implements I_GL_Category, I_Persistent
 			setGL_Category_ID (0);
 			setIsDefault (false);
 			setName (null);
+			setValue (null);
         } */
     }
 
@@ -58,6 +59,37 @@ public class X_GL_Category extends PO implements I_GL_Category, I_Persistent
 			setGL_Category_ID (0);
 			setIsDefault (false);
 			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_Category (Properties ctx, String GL_Category_UU, String trxName)
+    {
+      super (ctx, GL_Category_UU, trxName);
+      /** if (GL_Category_UU == null)
+        {
+			setCategoryType (null);
+// M
+			setGL_Category_ID (0);
+			setIsDefault (false);
+			setName (null);
+			setValue (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_Category (Properties ctx, String GL_Category_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_Category_UU, trxName, virtualColumns);
+      /** if (GL_Category_UU == null)
+        {
+			setCategoryType (null);
+// M
+			setGL_Category_ID (0);
+			setIsDefault (false);
+			setName (null);
+			setValue (null);
         } */
     }
 
@@ -68,7 +100,7 @@ public class X_GL_Category extends PO implements I_GL_Category, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -183,10 +215,10 @@ public class X_GL_Category extends PO implements I_GL_Category, I_Persistent
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -211,8 +243,40 @@ public class X_GL_Category extends PO implements I_GL_Category, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Print Text.
+		@param PrintName The label text to be printed on a document or correspondence.
+	*/
+	public void setPrintName (String PrintName)
+	{
+		set_Value (COLUMNNAME_PrintName, PrintName);
+	}
+
+	/** Get Print Text.
+		@return The label text to be printed on a document or correspondence.
+	  */
+	public String getPrintName()
+	{
+		return (String)get_Value(COLUMNNAME_PrintName);
+	}
+
+	/** Set Search Key.
+		@param Value Search key for the record in the format required - must be unique
+	*/
+	public void setValue (String Value)
+	{
+		set_Value (COLUMNNAME_Value, Value);
+	}
+
+	/** Get Search Key.
+		@return Search key for the record in the format required - must be unique
+	  */
+	public String getValue()
+	{
+		return (String)get_Value(COLUMNNAME_Value);
+	}
 }

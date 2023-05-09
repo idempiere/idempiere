@@ -17,12 +17,13 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
-import java.util.Properties;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -92,6 +93,18 @@ public class MPOS extends X_C_POS implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MPOS> s_cache = new ImmutableIntPOCache<Integer,MPOS>(Table_Name, 20);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_POS_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPOS(Properties ctx, String C_POS_UU, String trxName) {
+        super(ctx, C_POS_UU, trxName);
+		if (Util.isEmpty(C_POS_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -102,10 +115,15 @@ public class MPOS extends X_C_POS implements ImmutablePOSupport
 	{
 		super (ctx, C_POS_ID, trxName);
 		if (C_POS_ID == 0)
-		{
-			setIsModifyPrice (false);	// N
-		}	
+			setInitialDefaults();
 	}	//	MPOS
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsModifyPrice (false);	// N
+	}
 
 	/**
 	 * 	Load Constructor

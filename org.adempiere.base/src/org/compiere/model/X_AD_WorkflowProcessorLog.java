@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_WorkflowProcessorLog
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_WorkflowProcessorLog")
-public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProcessorLog, I_Persistent 
+public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProcessorLog, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_AD_WorkflowProcessorLog (Properties ctx, int AD_WorkflowProcessorLog_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_WorkflowProcessorLog (Properties ctx, String AD_WorkflowProcessorLog_UU, String trxName)
+    {
+      super (ctx, AD_WorkflowProcessorLog_UU, trxName);
+      /** if (AD_WorkflowProcessorLog_UU == null)
+        {
+			setAD_WorkflowProcessor_ID (0);
+			setAD_WorkflowProcessorLog_ID (0);
+			setIsError (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_WorkflowProcessorLog (Properties ctx, String AD_WorkflowProcessorLog_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_WorkflowProcessorLog_UU, trxName, virtualColumns);
+      /** if (AD_WorkflowProcessorLog_UU == null)
+        {
+			setAD_WorkflowProcessor_ID (0);
+			setAD_WorkflowProcessorLog_ID (0);
+			setIsError (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_WorkflowProcessorLog (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -112,7 +136,7 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 		return ii.intValue();
 	}
 
-	/** Set Workflow Processorl Log.
+	/** Set Workflow Processor Log.
 		@param AD_WorkflowProcessorLog_ID Result of the execution of the Workflow Processor
 	*/
 	public void setAD_WorkflowProcessorLog_ID (int AD_WorkflowProcessorLog_ID)
@@ -123,7 +147,7 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 			set_ValueNoCheck (COLUMNNAME_AD_WorkflowProcessorLog_ID, Integer.valueOf(AD_WorkflowProcessorLog_ID));
 	}
 
-	/** Get Workflow Processorl Log.
+	/** Get Workflow Processor Log.
 		@return Result of the execution of the Workflow Processor
 	  */
 	public int getAD_WorkflowProcessorLog_ID()
@@ -195,10 +219,10 @@ public class X_AD_WorkflowProcessorLog extends PO implements I_AD_WorkflowProces
 	public boolean isError()
 	{
 		Object oo = get_Value(COLUMNNAME_IsError);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

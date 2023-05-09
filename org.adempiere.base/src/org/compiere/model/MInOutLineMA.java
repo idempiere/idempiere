@@ -93,6 +93,16 @@ public class MInOutLineMA extends X_M_InOutLineMA
 		return DB.executeUpdate(sql, M_InOutLine_ID, trxName);
 	}	//	deleteInOutLineMA
 		
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_InOutLineMA_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInOutLineMA(Properties ctx, String M_InOutLineMA_UU, String trxName) {
+        super(ctx, M_InOutLineMA_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

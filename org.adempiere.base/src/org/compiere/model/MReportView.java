@@ -32,6 +32,16 @@ public class MReportView extends X_AD_ReportView implements ImmutablePOSupport {
 	static private ImmutableIntPOCache<Integer,MReportView> s_cache = new ImmutableIntPOCache<Integer,MReportView>(Table_Name, 30, 60);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ReportView_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MReportView(Properties ctx, String AD_ReportView_UU, String trxName) {
+        super(ctx, AD_ReportView_UU, trxName);
+    }
+
 	public MReportView(Properties ctx, int AD_ReportView_ID, String trxName) {
 		super(ctx, AD_ReportView_ID, trxName);
 	}

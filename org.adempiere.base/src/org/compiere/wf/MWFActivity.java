@@ -143,6 +143,19 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	getActivityInfo
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WF_Activity_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWFActivity(Properties ctx, String AD_WF_Activity_UU, String trxName) {
+        super(ctx, AD_WF_Activity_UU, trxName);
+		if (Util.isEmpty(AD_WF_Activity_UU))
+			throw new IllegalArgumentException ("Cannot create new WF Activity directly");
+		m_state = new StateEngine (getWFState());
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -204,7 +217,12 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			setEndWaitTime(new Timestamp(limitMS + System.currentTimeMillis()));
 		//	Responsible
 		setResponsible(process);
-		saveEx();
+		try {
+			PO.setCrossTenantSafe();
+			saveEx();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
 		//
 		m_audit = new MWFEventAudit(this);
 		m_audit.setAD_Org_ID(getAD_Org_ID());//Add by Hideaki Hagiwara

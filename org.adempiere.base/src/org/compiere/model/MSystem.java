@@ -76,7 +76,12 @@ public class MSystem extends X_AD_System
 		//
 		if (!Ini.isClient() && system.setInfo())
 		{
-			system.saveEx();
+			try {
+				PO.setCrossTenantSafe();
+				system.saveEx();
+			} finally {
+				PO.clearCrossTenantSafe();
+			}
 		}
 		s_system.put(0, new MSystem(Env.getCtx(), system));
 		return system;
@@ -85,6 +90,16 @@ public class MSystem extends X_AD_System
 	/** System - cached					*/
 	private static CCache<Integer,MSystem>	s_system = new CCache<Integer,MSystem>(Table_Name, 1, -1);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_System_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSystem(Properties ctx, String AD_System_UU, String trxName) {
+        super(ctx, AD_System_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Default Constructor
 	 *	@param ctx context

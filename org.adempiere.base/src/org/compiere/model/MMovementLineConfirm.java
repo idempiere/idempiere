@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Inventory Movement Confirmation Line
@@ -37,6 +38,18 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	 */
 	private static final long serialVersionUID = -5447921784818655144L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_MovementLineConfirm_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMovementLineConfirm(Properties ctx, String M_MovementLineConfirm_UU, String trxName) {
+        super(ctx, M_MovementLineConfirm_UU, trxName);
+		if (Util.isEmpty(M_MovementLineConfirm_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx ctx
@@ -47,13 +60,19 @@ public class MMovementLineConfirm extends X_M_MovementLineConfirm
 	{
 		super (ctx, M_MovementLineConfirm_ID, trxName);
 		if (M_MovementLineConfirm_ID == 0)
-		{
-			setConfirmedQty (Env.ZERO);
-			setDifferenceQty (Env.ZERO);
-			setScrappedQty (Env.ZERO);
-			setTargetQty (Env.ZERO);
-			setProcessed (false);
-		}	}	//	M_MovementLineConfirm
+			setInitialDefaults();
+	}	//	M_MovementLineConfirm
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setConfirmedQty (Env.ZERO);
+		setDifferenceQty (Env.ZERO);
+		setScrappedQty (Env.ZERO);
+		setTargetQty (Env.ZERO);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	M_MovementLineConfirm

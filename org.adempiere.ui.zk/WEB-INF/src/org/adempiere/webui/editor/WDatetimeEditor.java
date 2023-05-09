@@ -27,6 +27,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.MClientInfo;
+import org.compiere.model.MOrgInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -36,7 +37,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- *
+ * Default editor for {@link DisplayType#DateTime} and {@link DisplayType#TimestampWithTimeZone}.
+ * Implemented with {@link DatetimeBox} component.
  * @author Low Heng Sin
  */
 public class WDatetimeEditor extends WEditor implements ContextMenuListener
@@ -62,8 +64,10 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     }
     
     /**
-     *
+     * 
      * @param gridField
+     * @param tableEditor
+     * @param editorConfiguration
      */
     public WDatetimeEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
     {
@@ -71,16 +75,15 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
         init();
     }
 
-
 	/**
 	 * Constructor for use if a grid field is unavailable
 	 *
 	 * @param label
-	 *            column name (not displayed)
+	 *            field label
 	 * @param description
-	 *            description of component
+	 *            field description
 	 * @param mandatory
-	 *            whether a selection must be made
+	 *            whether a field is mandatory
 	 * @param readonly
 	 *            whether or not the editor is read only
 	 * @param updateable
@@ -93,6 +96,9 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 		init();
 	}
 
+	/**
+	 * Default constructor
+	 */
 	public WDatetimeEditor()
 	{
 		this(Msg.getMsg(Env.getCtx(), "DateTime"), Msg.getMsg(Env.getCtx(), "DateTime"), false, false, true);
@@ -104,7 +110,7 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 	 * @param mandatory
 	 * @param readonly
 	 * @param updateable
-	 * @param title
+	 * @param title field label
 	 */
 	public WDatetimeEditor(String columnName, boolean mandatory, boolean readonly, boolean updateable,
 			String title)
@@ -113,6 +119,9 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 		init();
 	}
 
+	/**
+	 * Init component and popup context menu
+	 */
 	private void init()
 	{
 		popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
@@ -123,10 +132,14 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 		
 		if (isTimestampWithTimeZone()) 
 		{
-			MClientInfo clientInfo = MClientInfo.get();
-			String timezoneId = clientInfo.getTimeZone();
-			if (Util.isEmpty(timezoneId, true))
-				timezoneId = Env.getContext(Env.getCtx(), Env.CLIENT_INFO_TIME_ZONE);
+			MOrgInfo orgInfo = MOrgInfo.get(Env.getAD_Org_ID(Env.getCtx()));
+			String timezoneId = orgInfo.getTimeZone();
+			if (Util.isEmpty(timezoneId, true)) {
+				MClientInfo clientInfo = MClientInfo.get();
+				timezoneId = clientInfo.getTimeZone();
+				if (Util.isEmpty(timezoneId, true))
+					timezoneId = Env.getContext(Env.getCtx(), Env.CLIENT_INFO_TIME_ZONE);
+			}
 			
 			if (!Util.isEmpty(timezoneId, true))
 			{
@@ -140,6 +153,9 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 		}
 	}
 
+	/**
+	 * @return true if this is for {@link DisplayType#TimestampWithTimeZone}
+	 */
 	private boolean isTimestampWithTimeZone() 
 	{
 		if (gridField != null)
@@ -184,18 +200,14 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
     @Override
     public String getDisplay()
     {
-    	// Elaine 2008/07/29
     	return getComponent().getText();
-    	//
     }
 
     @Override
     public Object getValue()
     {
-    	// Elaine 2008/07/25
     	if(getComponent().getValue() == null) return null;
     	return Timestamp.valueOf(getComponent().getValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-    	//
     }
 
     @Override
@@ -255,17 +267,16 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 		return getComponent().isEnabled();
 	}
 
-
 	@Override
 	public void setReadWrite(boolean readWrite) {
 		getComponent().setEnabled(readWrite);
 	}
 
+	@Override
 	public String[] getEvents()
     {
         return LISTENER_EVENTS;
     }
-
 
 	@Override
 	public void onMenu(ContextMenuEvent evt) {
@@ -279,7 +290,6 @@ public class WDatetimeEditor extends WEditor implements ContextMenuListener
 				ValuePreference.start (getComponent(), this.getGridField(), getValue());
 		}
 	}
-
 
 	/* (non-Javadoc)
 	 * @see org.adempiere.webui.editor.WEditor#setFieldStyle(java.lang.String)

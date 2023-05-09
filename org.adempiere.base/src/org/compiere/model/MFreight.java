@@ -36,6 +36,16 @@ public class MFreight extends X_M_Freight {
 	 */
 	private static final long serialVersionUID = -1280041173155194185L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Freight_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MFreight(Properties ctx, String M_Freight_UU, String trxName) {
+        super(ctx, M_Freight_UU, trxName);
+    }
+
 	/**
      * Default constructor 
      * 

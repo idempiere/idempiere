@@ -31,6 +31,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * 	Performance Goal
@@ -255,6 +256,18 @@ public class MGoal extends X_PA_Goal
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MGoal.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_Goal_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MGoal(Properties ctx, String PA_Goal_UU, String trxName) {
+        super(ctx, PA_Goal_UU, trxName);
+		if (Util.isEmpty(PA_Goal_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -265,16 +278,21 @@ public class MGoal extends X_PA_Goal
 	{
 		super (ctx, PA_Goal_ID, trxName);
 		if (PA_Goal_ID == 0)
-		{
-			setSeqNo (0);
-			setIsSummary (false);
-			setMeasureScope (MEASUREDISPLAY_Year);
-			setGoalPerformance (Env.ZERO);
-			setRelativeWeight (Env.ONE);
-			setMeasureTarget (Env.ZERO);
-			setMeasureActual (Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MGoal
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setSeqNo (0);
+		setIsSummary (false);
+		setMeasureScope (MEASUREDISPLAY_Year);
+		setGoalPerformance (Env.ZERO);
+		setRelativeWeight (Env.ONE);
+		setMeasureTarget (Env.ZERO);
+		setMeasureActual (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

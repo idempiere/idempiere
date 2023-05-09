@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.Adempiere;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.compiere.util.WebUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
@@ -133,6 +134,18 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MSession>	s_sessions = new ImmutableIntPOCache<Integer,MSession>(Table_Name, 20);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Session_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSession(Properties ctx, String AD_Session_UU, String trxName) {
+        super(ctx, AD_Session_UU, trxName);
+		if (Util.isEmpty(AD_Session_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -143,10 +156,15 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	{
 		super(ctx, AD_Session_ID, trxName);
 		if (AD_Session_ID == 0)
-		{
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MSession
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Costructor
@@ -351,6 +369,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 				+ ": " + OldValue + " -> " + NewValue);
 		try
 		{
+			PO.setCrossTenantSafe();
 			MChangeLog cl = new MChangeLog(getCtx(), 
 				AD_ChangeLog_ID, TrxName, getAD_Session_ID(),
 				AD_Table_ID, AD_Column_ID, Record_ID, AD_Client_ID, AD_Org_ID,
@@ -364,6 +383,10 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 				+ ", AD_Session_ID=" + getAD_Session_ID()
 				+ ", AD_Table_ID=" + AD_Table_ID + ", AD_Column_ID=" + AD_Column_ID, e);
 			return null;
+		}
+		finally
+		{
+			PO.clearCrossTenantSafe();
 		}
 		log.log(Level.SEVERE, "AD_ChangeLog_ID=" + AD_ChangeLog_ID
 			+ ", AD_Session_ID=" + getAD_Session_ID()

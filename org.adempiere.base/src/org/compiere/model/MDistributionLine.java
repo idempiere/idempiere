@@ -24,6 +24,7 @@ import java.util.Properties;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	GL Distribution Line Model
@@ -38,6 +39,18 @@ public class MDistributionLine extends X_GL_DistributionLine
 	 */
 	private static final long serialVersionUID = 6148743556518054326L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param GL_DistributionLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDistributionLine(Properties ctx, String GL_DistributionLine_UU, String trxName) {
+        super(ctx, GL_DistributionLine_UU, trxName);
+		if (Util.isEmpty(GL_DistributionLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -48,24 +61,29 @@ public class MDistributionLine extends X_GL_DistributionLine
 	{
 		super (ctx, GL_DistributionLine_ID, trxName);
 		if (GL_DistributionLine_ID == 0)
-		{
-			setOverwriteAcct (false);
-			setOverwriteActivity (false);
-			setOverwriteBPartner (false);
-			setOverwriteCampaign (false);
-			setOverwriteLocFrom (false);
-			setOverwriteLocTo (false);
-			setOverwriteOrg (false);
-			setOverwriteOrgTrx (false);
-			setOverwriteProduct (false);
-			setOverwriteProject (false);
-			setOverwriteSalesRegion (false);
-			setOverwriteUser1 (false);
-			setOverwriteUser2 (false);
-			//
-			setPercent (Env.ZERO);
-		}	
+			setInitialDefaults();
 	}	//	MDistributionLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setOverwriteAcct (false);
+		setOverwriteActivity (false);
+		setOverwriteBPartner (false);
+		setOverwriteCampaign (false);
+		setOverwriteLocFrom (false);
+		setOverwriteLocTo (false);
+		setOverwriteOrg (false);
+		setOverwriteOrgTrx (false);
+		setOverwriteProduct (false);
+		setOverwriteProject (false);
+		setOverwriteSalesRegion (false);
+		setOverwriteUser1 (false);
+		setOverwriteUser2 (false);
+		//
+		setPercent (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

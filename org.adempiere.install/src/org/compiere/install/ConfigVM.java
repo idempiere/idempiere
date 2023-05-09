@@ -71,6 +71,8 @@ public class ConfigVM extends Config
 		if (log.isLoggable(Level.INFO)) log.info("OK: JavaHome=" + javaHome.getAbsolutePath());
 		setProperty(ConfigurationData.JAVA_HOME, javaHome.getAbsolutePath());
 		System.setProperty(ConfigurationData.JAVA_HOME, javaHome.getAbsolutePath());
+		
+		setProperty(ConfigurationData.IDEMPIERE_JAVA_OPTIONS, p_data.getJavaOptions());
 
 		//	Java Version
 		pass = false;

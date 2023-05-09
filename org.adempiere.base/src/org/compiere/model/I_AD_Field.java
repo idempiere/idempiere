@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_Field 
 {
@@ -55,8 +55,8 @@ public interface I_AD_Field
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -75,28 +75,6 @@ public interface I_AD_Field
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException;
 
-    /** Column name AD_Field_ID */
-    public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
-
-	/** Set Field.
-	  * Field on a database table
-	  */
-	public void setAD_Field_ID (int AD_Field_ID);
-
-	/** Get Field.
-	  * Field on a database table
-	  */
-	public int getAD_Field_ID();
-
-    /** Column name AD_Field_UU */
-    public static final String COLUMNNAME_AD_Field_UU = "AD_Field_UU";
-
-	/** Set AD_Field_UU	  */
-	public void setAD_Field_UU (String AD_Field_UU);
-
-	/** Get AD_Field_UU	  */
-	public String getAD_Field_UU();
-
     /** Column name AD_FieldGroup_ID */
     public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
 
@@ -112,6 +90,19 @@ public interface I_AD_Field
 
 	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
 
+    /** Column name AD_Field_ID */
+    public static final String COLUMNNAME_AD_Field_ID = "AD_Field_ID";
+
+	/** Set Field.
+	  * Field on a database table
+	  */
+	public void setAD_Field_ID (int AD_Field_ID);
+
+	/** Get Field.
+	  * Field on a database table
+	  */
+	public int getAD_Field_ID();
+
     /** Column name AD_FieldStyle_ID */
     public static final String COLUMNNAME_AD_FieldStyle_ID = "AD_FieldStyle_ID";
 
@@ -126,6 +117,15 @@ public interface I_AD_Field
 	public int getAD_FieldStyle_ID();
 
 	public org.compiere.model.I_AD_Style getAD_FieldStyle() throws RuntimeException;
+
+    /** Column name AD_Field_UU */
+    public static final String COLUMNNAME_AD_Field_UU = "AD_Field_UU";
+
+	/** Set AD_Field_UU	  */
+	public void setAD_Field_UU (String AD_Field_UU);
+
+	/** Get AD_Field_UU	  */
+	public String getAD_Field_UU();
 
     /** Column name AD_LabelStyle_ID */
     public static final String COLUMNNAME_AD_LabelStyle_ID = "AD_LabelStyle_ID";
@@ -146,12 +146,12 @@ public interface I_AD_Field
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -235,13 +235,13 @@ public interface I_AD_Field
 
 	/** Set Always Updatable Logic.
 	  * Logic to determine if field is Updatable irrespective if record&#039;
-s active status or processed status. This logic Applicable only if Always Updatable is Yes.
+s active status or processed status. This logic Applicable only if Always Updatable is N.
 	  */
 	public void setAlwaysUpdatableLogic (String AlwaysUpdatableLogic);
 
 	/** Get Always Updatable Logic.
 	  * Logic to determine if field is Updatable irrespective if record&#039;
-s active status or processed status. This logic Applicable only if Always Updatable is Yes.
+s active status or processed status. This logic Applicable only if Always Updatable is N.
 	  */
 	public String getAlwaysUpdatableLogic();
 

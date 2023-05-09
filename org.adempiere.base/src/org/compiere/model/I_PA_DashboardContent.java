@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_DashboardContent
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_PA_DashboardContent 
 {
@@ -72,6 +72,21 @@ public interface I_PA_DashboardContent
 	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_PrintFormat_ID */
+    public static final String COLUMNNAME_AD_PrintFormat_ID = "AD_PrintFormat_ID";
+
+	/** Set Print Format.
+	  * Data Print Format
+	  */
+	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID);
+
+	/** Get Print Format.
+	  * Data Print Format
+	  */
+	public int getAD_PrintFormat_ID();
+
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_Process_ID */
     public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
@@ -282,15 +297,6 @@ public interface I_PA_DashboardContent
 	  */
 	public boolean isShowInDashboard();
 
-    /** Column name IsShowTitle */
-    public static final String COLUMNNAME_IsShowTitle = "IsShowTitle";
-
-	/** Set Show Title	  */
-	public void setIsShowTitle (boolean IsShowTitle);
-
-	/** Get Show Title	  */
-	public boolean isShowTitle();
-
     /** Column name IsShowinLogin */
     public static final String COLUMNNAME_IsShowinLogin = "IsShowinLogin";
 
@@ -299,6 +305,15 @@ public interface I_PA_DashboardContent
 
 	/** Get Show on Login	  */
 	public boolean isShowinLogin();
+
+    /** Column name IsShowTitle */
+    public static final String COLUMNNAME_IsShowTitle = "IsShowTitle";
+
+	/** Set Show Title	  */
+	public void setIsShowTitle (boolean IsShowTitle);
+
+	/** Get Show Title	  */
+	public boolean isShowTitle();
 
     /** Column name Line */
     public static final String COLUMNNAME_Line = "Line";

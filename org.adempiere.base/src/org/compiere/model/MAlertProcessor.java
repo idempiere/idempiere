@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 
 /**
@@ -59,6 +60,16 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	private static CLogger	s_log	= CLogger.getCLogger (MAlertProcessor.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_AlertProcessor_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAlertProcessor(Properties ctx, String AD_AlertProcessor_UU, String trxName) {
+        super(ctx, AD_AlertProcessor_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -168,8 +179,18 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	protected boolean beforeSave(boolean newRecord)
 	{
 		if (newRecord || is_ValueChanged("AD_Schedule_ID")) {
+			String timeZoneId = null;
+			if((getAD_Client_ID() == 0 && getAD_Org_ID() == 0) || getAD_Org_ID() > 0) {
+				MOrgInfo orgInfo = MOrgInfo.get(getAD_Org_ID());
+				timeZoneId = orgInfo.getTimeZone();
+			}
+			
+			if(Util.isEmpty(timeZoneId, true)) {
+				MClientInfo clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID());
+				timeZoneId = clientInfo.getTimeZone();
+			}
 			long nextWork = MSchedule.getNextRunMS(System.currentTimeMillis(), getScheduleType(), getFrequencyType(), getFrequency(), getCronPattern(),
-					MClientInfo.get(getCtx(), getAD_Client_ID()).getTimeZone());
+					timeZoneId);
 			if (nextWork > 0)
 				setDateNextRun(new Timestamp(nextWork));
 		}

@@ -43,6 +43,16 @@ public class MCountryGroupCountry extends X_C_CountryGroupCountry
 	@SuppressWarnings("unused")
 	private static CLogger		s_log = CLogger.getCLogger (MCountryGroupCountry.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_CountryGroupCountry_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCountryGroupCountry(Properties ctx, String C_CountryGroupCountry_UU, String trxName) {
+        super(ctx, C_CountryGroupCountry_UU, trxName);
+    }
+
 	/*************************************************************************
 	 *	Create empty Country Group Country
 	 * 	@param ctx context

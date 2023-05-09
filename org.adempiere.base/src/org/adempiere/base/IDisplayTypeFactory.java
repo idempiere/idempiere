@@ -25,6 +25,9 @@ import org.compiere.util.Language;
 public interface IDisplayTypeFactory {
 	
 	public boolean isID(int displayType);
+	public default boolean isUUID(int displayType) {
+		return false;
+	};
 	public boolean isNumeric(int displayType);
 	public Integer getDefaultPrecision(int displayType);
 	public boolean isText(int displayType);

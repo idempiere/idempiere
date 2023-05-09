@@ -79,22 +79,19 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
 /**
- * Allocation Form
+ * Form to create allocation (C_AllocationHdr and C_AllocationLine).
  *
- * @author  Jorg Janke
- * @version $Id: VAllocation.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
- * 
  * Contributor : Fabian Aguilar - OFBConsulting - Multiallocation
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VAllocation")
 public class WAllocation extends Allocation
 	implements IFormController, EventListener<Event>, WTableModelListener, ValueChangeListener
 {
-
+	/** UI form instance */
 	private CustomForm form = new CustomForm();
 	
 	/**
-	 *	Initialize Panel
+	 *	Default constructor
 	 */
 	public WAllocation()
 	{
@@ -116,61 +113,94 @@ public class WAllocation extends Allocation
 		}
 	}	//	init
 	
-	//
+	/** Main layout for {@link #form} */
 	private Borderlayout mainLayout = new Borderlayout();
+	
+	//Parameter
+	/** Parameter panel. North of {@link #mainLayout} */
 	private Panel parameterPanel = new Panel();
-	private Panel allocationPanel = new Panel(); //footer
-	private Grid parameterLayout = GridFactory.newGridLayout();
+	/** Grid layout of {@link #parameterPanel} */
+	private Grid parameterLayout = GridFactory.newGridLayout();		
 	private Label bpartnerLabel = new Label();
+	/** bpartner parameter */
 	private WSearchEditor bpartnerSearch = null;
-	private WListbox invoiceTable = ListboxFactory.newDataTable();
-	private WListbox paymentTable = ListboxFactory.newDataTable();
-	private Borderlayout infoPanel = new Borderlayout();
-	private Panel paymentPanel = new Panel();
-	private Panel invoicePanel = new Panel();
-	private Label paymentLabel = new Label();
-	private Label invoiceLabel = new Label();
-	private Borderlayout paymentLayout = new Borderlayout();
-	private Borderlayout invoiceLayout = new Borderlayout();
-	private Label paymentInfo = new Label();
-	private Label invoiceInfo = new Label();
-	private Grid allocationLayout = GridFactory.newGridLayout();
-	private Label differenceLabel = new Label();
-	private Textbox differenceField = new Textbox();
-	private Button allocateButton = new Button();
-	private Button refreshButton = new Button();
 	private Label currencyLabel = new Label();
+	/** Currency parameter */
 	private WTableDirEditor currencyPick = null;
+	/** Multi currency parameter */
 	private Checkbox multiCurrency = new Checkbox();
 	private Label chargeLabel = new Label();
-	private WTableDirEditor chargePick = null;
-	private Label DocTypeLabel = new Label();
-	private WTableDirEditor DocTypePick = null;
-	private Label allocCurrencyLabel = new Label();
-	private Hlayout statusBar = new Hlayout();
 	private Label dateLabel = new Label();
+	/** Document date parameter */
 	private WDateEditor dateField = new WDateEditor();
+	/** Auto write off parameter */
 	private Checkbox autoWriteOff = new Checkbox();
 	private Label organizationLabel = new Label();
+	/** Organization parameter */
 	private WTableDirEditor organizationPick;
+	/** Number of column for {@link #parameterLayout} */
 	private int noOfColumn;
 	
+	/** Center of {@link #mainLayout}. */
+	private Borderlayout infoPanel = new Borderlayout();
+	/** North of {@link #infoPanel} */
+	private Panel paymentPanel = new Panel();
+	/** Center of {@link #infoPanel} */ 
+	private Panel invoicePanel = new Panel();
+	
+	//Invoice 
+	/** Layout of {@link #invoicePanel} */
+	private Borderlayout invoiceLayout = new Borderlayout();
+	/** North of {@link #invoiceLayout} */
+	private Label invoiceLabel = new Label();
+	/** Center of {@link #invoiceLayout}. List of invoice documents. */
+	private WListbox invoiceTable = ListboxFactory.newDataTable();		
+	/** South of {@link #invoiceLayout} */
+	private Label invoiceInfo = new Label();
+	
+	//Payments	
+	/** Layout of {@link #paymentPanel} */
+	private Borderlayout paymentLayout = new Borderlayout();
+	/** North of {@link #paymentLayout} */
+	private Label paymentLabel = new Label();
+	/** Center of {@link #paymentLayout}. List of payment documents. */
+	private WListbox paymentTable = ListboxFactory.newDataTable();	
+	/** South of {@link #paymentLayout} */
+	private Label paymentInfo = new Label();
+		
+	//Allocation
+	/** South of {@link #mainLayout} */
+	private Panel allocationPanel = new Panel(); //footer
+	/** Grid layout of {@link #allocationPanel} */
+	private Grid allocationLayout = GridFactory.newGridLayout();
+	private Label differenceLabel = new Label();
+	/** Difference between payment and invoice. Part of {@link #allocationLayout}. */
+	private Textbox differenceField = new Textbox();
+	/** Button to apply allocation. Part of {@link #allocationLayout}. */
+	private Button allocateButton = new Button();
+	/** Button to refresh {@link #paymentTable} and {@link #invoiceTable}. Part of {@link #allocationLayout}. */
+	private Button refreshButton = new Button();	
+	/** Charges. Part of {@link #allocationLayout}. */
+	private WTableDirEditor chargePick = null;
+	private Label DocTypeLabel = new Label();
+	/** Document types. Part of {@link #allocationLayout}. */
+	private WTableDirEditor DocTypePick = null;
+	private Label allocCurrencyLabel = new Label();
+	/** Status bar, bottom of {@link #allocationPanel} */
+	private Hlayout statusBar = new Hlayout();	
+	
 	/**
-	 *  Static Init
+	 *  Layout {@link #form}
 	 *  @throws Exception
 	 */
 	private void zkInit() throws Exception
 	{
-		//
 		Div div = new Div();
 		div.setStyle("height: 100%; width: 100%; overflow: auto;");
 		div.appendChild(mainLayout);
 		form.appendChild(div);
 		ZKUpdateUtil.setWidth(mainLayout, "100%");
-		
-		/////
 		mainLayout.setStyle("min-height: 600px");
-		/////
 		
 		dateLabel.setText(Msg.getMsg(Env.getCtx(), "Date"));
 		autoWriteOff.setSelected(false);
@@ -200,8 +230,7 @@ public class WAllocation extends Allocation
 		currencyLabel.setText(Msg.translate(Env.getCtx(), "C_Currency_ID"));
 		multiCurrency.setText(Msg.getMsg(Env.getCtx(), "MultiCurrency"));
 		multiCurrency.addActionListener(this);
-		allocCurrencyLabel.setText(".");
-		
+		allocCurrencyLabel.setText(".");		
 		organizationLabel.setText(Msg.translate(Env.getCtx(), "AD_Org_ID"));
 		
 		// parameters layout
@@ -295,8 +324,11 @@ public class WAllocation extends Allocation
 		center.appendChild(invoicePanel);
 		center.setAutoscroll(true);
 		infoPanel.setStyle("min-height: 300px;");
-	}   //  jbInit
+	}
 
+	/**
+	 * Layout {@link #parameterLayout} and {@link #allocationPanel}.
+	 */
 	protected void layoutParameterAndSummary() {
 		Rows rows = null;
 		Row row = null;
@@ -404,6 +436,9 @@ public class WAllocation extends Allocation
 		}
 	}
 
+	/**
+	 * Setup columns for {@link #parameterLayout}.
+	 */
 	protected void setupParameterColumns() {
 		noOfColumn = 6;
 		if (maxWidth(MEDIUM_WIDTH-1))
@@ -452,11 +487,11 @@ public class WAllocation extends Allocation
 		bpartnerSearch = new WSearchEditor("C_BPartner_ID", true, false, true, lookupBP);
 		bpartnerSearch.addValueChangeListener(this);
 
-		//  Translation
+		//  Status bar
 		statusBar.appendChild(new Label(Msg.getMsg(Env.getCtx(), "AllocateStatus")));
 		ZKUpdateUtil.setVflex(statusBar, "min");
 		
-		//  Date set to Login Date
+		//  Default dateField to Login Date
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(Env.getContextAsDate(Env.getCtx(), Env.DATE));
 		cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -478,10 +513,12 @@ public class WAllocation extends Allocation
 		MLookup lookupDocType = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
 		DocTypePick = new WTableDirEditor("C_DocType_ID", false, false, true, lookupDocType);
 		DocTypePick.setValue(getC_DocType_ID());
-		DocTypePick.addValueChangeListener(this);
-			
+		DocTypePick.addValueChangeListener(this);			
 	}   //  dynInit
 	
+	/**
+	 * Handle onClientInfo event from browser.
+	 */
 	protected void onClientInfo()
 	{
 		if (ClientInfo.isMobile() && form.getPage() != null) 
@@ -512,15 +549,14 @@ public class WAllocation extends Allocation
 		}
 	}
 	
-	/**************************************************************************
-	 *  Action Listener.
-	 *  - MultiCurrency
-	 *  - Allocate
+	/**
+	 *  Event listener
 	 *  @param e event
 	 */
+	@Override
 	public void onEvent(Event e)
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		if (e.getTarget().equals(multiCurrency))
 			loadBPartner();
 		//	Allocate
@@ -543,10 +579,11 @@ public class WAllocation extends Allocation
 	}
 
 	/**
-	 *  Table Model Listener.
+	 *  Table Model Listener for {@link #paymentTable} and {@link #invoiceTable}
 	 *  - Recalculate Totals
 	 *  @param e event
 	 */
+	@Override
 	public void tableChanged(WTableModelEvent e)
 	{
 		boolean isUpdate = (e.getType() == WTableModelEvent.CONTENTS_CHANGED);
@@ -579,12 +616,10 @@ public class WAllocation extends Allocation
 	}   //  tableChanged
 	
 	/**
-	 *  Vetoable Change Listener.
-	 *  - Business Partner
-	 *  - Currency
-	 * 	- Date
+	 *  Value change listener for parameter and allocation fields.
 	 *  @param e event
 	 */
+	@Override
 	public void valueChange (ValueChangeEvent e)
 	{
 		String name = e.getPropertyName();
@@ -631,6 +666,9 @@ public class WAllocation extends Allocation
 			loadBPartner();
 	}   //  vetoableChange
 	
+	/**
+	 * Set {@link #allocateButton} to enable or disable.
+	 */
 	private void setAllocateButton() {
 		if (isOkToAllocate() )
 		{
@@ -649,9 +687,11 @@ public class WAllocation extends Allocation
 	}
 
 	/**
-	 *  Load Business Partner Info
-	 *  - Payments
-	 *  - Invoices
+	 *  Load Business Partner Info.
+	 *  <ul>
+	 *  <li>Payments</li>
+	 *  <li>Invoices</li>
+	 *  </ul>
 	 */
 	private void loadBPartner ()
 	{
@@ -718,8 +758,8 @@ public class WAllocation extends Allocation
 		setAllocateButton();
 	}
 
-	/**************************************************************************
-	 *  Save Data
+	/**
+	 * Save Data to C_AllocationHdr and C_AllocationLine.
 	 */
 	private MAllocationHdr saveData()
 	{
@@ -753,6 +793,7 @@ public class WAllocation extends Allocation
 	 * Called by org.adempiere.webui.panel.ADForm.openForm(int)
 	 * @return {@link ADForm}
 	 */
+	@Override
 	public ADForm getForm()
 	{
 		return form;

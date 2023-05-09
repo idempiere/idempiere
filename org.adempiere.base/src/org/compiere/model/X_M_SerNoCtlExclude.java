@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for M_SerNoCtlExclude
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_SerNoCtlExclude")
-public class X_M_SerNoCtlExclude extends PO implements I_M_SerNoCtlExclude, I_Persistent 
+public class X_M_SerNoCtlExclude extends PO implements I_M_SerNoCtlExclude, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_M_SerNoCtlExclude (Properties ctx, int M_SerNoCtlExclude_ID, String trxName)
@@ -58,6 +58,32 @@ public class X_M_SerNoCtlExclude extends PO implements I_M_SerNoCtlExclude, I_Pe
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_SerNoCtlExclude (Properties ctx, String M_SerNoCtlExclude_UU, String trxName)
+    {
+      super (ctx, M_SerNoCtlExclude_UU, trxName);
+      /** if (M_SerNoCtlExclude_UU == null)
+        {
+			setAD_Table_ID (0);
+			setIsSOTrx (false);
+			setM_SerNoCtlExclude_ID (0);
+			setM_SerNoCtl_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_SerNoCtlExclude (Properties ctx, String M_SerNoCtlExclude_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_SerNoCtlExclude_UU, trxName, virtualColumns);
+      /** if (M_SerNoCtlExclude_UU == null)
+        {
+			setAD_Table_ID (0);
+			setIsSOTrx (false);
+			setM_SerNoCtlExclude_ID (0);
+			setM_SerNoCtl_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_SerNoCtlExclude (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +91,7 @@ public class X_M_SerNoCtlExclude extends PO implements I_M_SerNoCtlExclude, I_Pe
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -128,16 +154,16 @@ public class X_M_SerNoCtlExclude extends PO implements I_M_SerNoCtlExclude, I_Pe
 	public boolean isSOTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSOTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
 	}
 
-	/** Set Exclude SerNo.
+	/** Set Exclude Ser No.
 		@param M_SerNoCtlExclude_ID Exclude the ability to create Serial Numbers in Attribute Sets
 	*/
 	public void setM_SerNoCtlExclude_ID (int M_SerNoCtlExclude_ID)
@@ -148,7 +174,7 @@ public class X_M_SerNoCtlExclude extends PO implements I_M_SerNoCtlExclude, I_Pe
 			set_ValueNoCheck (COLUMNNAME_M_SerNoCtlExclude_ID, Integer.valueOf(M_SerNoCtlExclude_ID));
 	}
 
-	/** Get Exclude SerNo.
+	/** Get Exclude Ser No.
 		@return Exclude the ability to create Serial Numbers in Attribute Sets
 	  */
 	public int getM_SerNoCtlExclude_ID()

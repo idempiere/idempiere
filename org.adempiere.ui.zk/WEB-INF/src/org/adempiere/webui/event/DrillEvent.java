@@ -45,6 +45,9 @@ public class DrillEvent extends Event {
 
 		private Object value;
 
+		/**
+		 * [columnName, displayValue, value, processID - source]
+		 */
 		private Object data;
 
 		public DrillData(MQuery query, String columnName, Object value, String displayValue, Object data) {

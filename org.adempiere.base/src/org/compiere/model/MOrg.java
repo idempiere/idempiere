@@ -25,6 +25,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -113,6 +114,18 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MOrg>	s_cache	= new ImmutableIntPOCache<Integer,MOrg>(Table_Name, 50);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Org_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MOrg(Properties ctx, String AD_Org_UU, String trxName) {
+        super(ctx, AD_Org_UU, trxName);
+		if (Util.isEmpty(AD_Org_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -123,12 +136,17 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 	{
 		super(ctx, AD_Org_ID, trxName);
 		if (AD_Org_ID == 0)
-		{
+			setInitialDefaults();
+	}	//	MOrg
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
 		//	setValue (null);
 		//	setName (null);
-			setIsSummary (false);
-		}
-	}	//	MOrg
+		setIsSummary (false);
+	}
 
 	/**
 	 * 	Load Constructor

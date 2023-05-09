@@ -213,6 +213,16 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 	private static CLogger 	s_log = CLogger.getCLogger(MWarehousePrice.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param RV_WarehousePrice_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWarehousePrice(Properties ctx, String RV_WarehousePrice_UU, String trxName) {
+        super(ctx, RV_WarehousePrice_UU, trxName);
+    }
+
 	/*************************************************************************
 	 * 	Load Constructor
 	 *	@param ctx context

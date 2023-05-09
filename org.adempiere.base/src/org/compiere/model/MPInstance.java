@@ -30,11 +30,13 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
+import org.compiere.print.MPrintFormat;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
 import org.osgi.service.event.Event;
@@ -54,11 +56,23 @@ public class MPInstance extends X_AD_PInstance
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3756494717528301224L;
+	private static final long serialVersionUID = -6414730734415159480L;
 
 	public static final String ON_RUNNING_JOB_CHANGED_TOPIC = "onRunningJobChanged";
 
 	private static CLogger		s_log = CLogger.getCLogger (MPInstance.class);
+
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PInstance_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPInstance(Properties ctx, String AD_PInstance_UU, String trxName) {
+        super(ctx, AD_PInstance_UU, trxName);
+		if (Util.isEmpty(AD_PInstance_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -71,10 +85,15 @@ public class MPInstance extends X_AD_PInstance
 		super (ctx, AD_PInstance_ID, null);
 		//	New Process
 		if (AD_PInstance_ID == 0)
-		{
-			setIsProcessing (false);
-		}
+			setInitialDefaults();
 	}	//	MPInstance
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsProcessing (false);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -629,5 +648,36 @@ public class MPInstance extends X_AD_PInstance
 		public boolean isReport = false;
 		public boolean isDirectPrint = false;
 		public int estimate;
+	}
+	
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (newRecord) {
+			int sessionId = Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID);
+			if (sessionId > 0)
+				setAD_Session_ID(sessionId);
+		}
+		
+		return true;
+	}	//	beforeSave
+	
+	/**
+	 * Set AD_PrintFormat_ID if empty, AD_Language_ID if empty and save the record.
+	 * @param pf
+	 */
+	public void updatePrintFormatAndLanguageIfEmpty(MPrintFormat format) {
+		if(getAD_PrintFormat_ID() <= 0 && format.getAD_PrintFormat_ID() > 0) {
+			setAD_PrintFormat_ID(format.getAD_PrintFormat_ID());
+			saveEx();
+		}
+		if(getAD_Language_ID() <= 0 && format.getLanguage() != null) {
+			setAD_Language_ID(MLanguage.get(Env.getCtx(), format.getLanguage()).getAD_Language_ID());
+			saveEx();
+		}
 	}
 }	//	MPInstance

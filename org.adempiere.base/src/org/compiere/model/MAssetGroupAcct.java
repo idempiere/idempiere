@@ -64,6 +64,16 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 					.list();
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Asset_Group_Acct_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAssetGroupAcct(Properties ctx, String A_Asset_Group_Acct_UU, String trxName) {
+        super(ctx, A_Asset_Group_Acct_UU, trxName);
+    }
+
 	/**
 	 * 	Default ConstructorX_A_Asset_Group_Acct
 	 *	@param ctx context

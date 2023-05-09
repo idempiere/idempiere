@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.TreeSet;
 
+import org.compiere.util.Util;
+
 /**
  *	Alert Model
  *	
@@ -40,6 +42,18 @@ public class MAlert extends X_AD_Alert
 	 */
 	private static final long serialVersionUID = -5684705878618526801L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Alert_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAlert(Properties ctx, String AD_Alert_UU, String trxName) {
+        super(ctx, AD_Alert_UU, trxName);
+		if (Util.isEmpty(AD_Alert_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -50,12 +64,17 @@ public class MAlert extends X_AD_Alert
 	{
 		super (ctx, AD_Alert_ID, trxName);
 		if (AD_Alert_ID == 0)
-		{
-			setEnforceClientSecurity (true);	// Y
-			setEnforceRoleSecurity (true);	// Y
-			setIsValid (true);	// Y
-		}	
+			setInitialDefaults();
 	}	//	MAlert
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEnforceClientSecurity (true);	// Y
+		setEnforceRoleSecurity (true);	// Y
+		setIsValid (true);	// Y
+	}
 
 	/**
 	 * 	Load Constructor

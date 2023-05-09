@@ -144,6 +144,16 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	private static CLogger		s_log = CLogger.getCLogger (MClientInfo.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ClientInfo_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MClientInfo(Properties ctx, String AD_ClientInfo_UU, String trxName) {
+        super(ctx, AD_ClientInfo_UU, trxName);
+    }
+
 	/**************************************************************************
 	 *	Standard Constructor
 	 *	@param ctx context

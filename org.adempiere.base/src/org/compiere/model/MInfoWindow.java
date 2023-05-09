@@ -53,6 +53,16 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	/**	Cache						*/
 	private static ImmutablePOCache<String,MInfoWindow> s_cache = new ImmutablePOCache<String,MInfoWindow>(Table_Name, 20);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_InfoWindow_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInfoWindow(Properties ctx, String AD_InfoWindow_UU, String trxName) {
+        super(ctx, AD_InfoWindow_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -476,14 +486,15 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		
 		// try run sql
 		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(builder.toString(), get_TrxName());
-			pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 		}catch (Exception ex){
 			log.log(Level.WARNING, ex.getMessage());
 			throw new AdempiereException(ex);
 		} finally {
-			DB.close(pstmt);
+			DB.close(rs, pstmt);
 		}
 		
 		// valid state

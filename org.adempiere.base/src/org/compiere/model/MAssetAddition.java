@@ -19,6 +19,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.idempiere.fa.exceptions.AssetAlreadyDepreciatedException;
 import org.idempiere.fa.exceptions.AssetException;
 import org.idempiere.fa.exceptions.AssetNotImplementedException;
@@ -44,16 +45,34 @@ public class MAssetAddition extends X_A_Asset_Addition
 	/** Static Logger */
 	private static CLogger s_log = CLogger.getCLogger(MAssetAddition.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Asset_Addition_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAssetAddition(Properties ctx, String A_Asset_Addition_UU, String trxName) {
+        super(ctx, A_Asset_Addition_UU, trxName);
+		if (Util.isEmpty(A_Asset_Addition_UU))
+			setInitialDefaults();
+    }
+
 	public MAssetAddition (Properties ctx, int A_Asset_Addition_ID, String trxName)
 	{
 		super (ctx, A_Asset_Addition_ID, trxName);
 		if (A_Asset_Addition_ID == 0)
-		{
-			setDocStatus(DOCSTATUS_Drafted);
-			setDocAction(DOCACTION_Complete);
-			setProcessed(false);
-		}
+			setInitialDefaults();
 	}	//	MAssetAddition
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocStatus(DOCSTATUS_Drafted);
+		setDocAction(DOCACTION_Complete);
+		setProcessed(false);
+	}
+
 	public MAssetAddition (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);

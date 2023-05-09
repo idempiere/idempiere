@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.DB;
 
 /**
@@ -63,7 +64,7 @@ public class ImportReportLine extends SvrProcess
 			else if (name.equals("DeleteOldImported"))
 				m_deleteOldImported = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if (m_DateValue == null)
 			m_DateValue = new Timestamp (System.currentTimeMillis());
@@ -434,10 +435,10 @@ public class ImportReportLine extends SvrProcess
 						.append(" WHERE I_ReportLine_ID=").append(I_ReportLine_ID).append(") ")
 						.append("WHERE PA_ReportSource_ID=").append(PA_ReportSource_ID).append(" ")
 						.append(clientCheck);
-					PreparedStatement pstmt_updateSource = DB.prepareStatement
-						(sqlt.toString(), get_TrxName());
+					PreparedStatement pstmt_updateSource = null;
 					try
 					{
+						pstmt_updateSource = DB.prepareStatement(sqlt.toString(), get_TrxName());
 						no = pstmt_updateSource.executeUpdate();
 						if (log.isLoggable(Level.FINEST)) log.finest("Update ReportSource = " + no + ", I_ReportLine_ID=" + I_ReportLine_ID + ", PA_ReportSource_ID=" + PA_ReportSource_ID);
 						noUpdateSource++;
@@ -487,6 +488,8 @@ public class ImportReportLine extends SvrProcess
 			pstmt_insertSource = null;
 			DB.close(pstmt_setImported);
 			pstmt_setImported = null;
+			DB.close(pstmt_deleteSource);
+			pstmt_deleteSource = null;
 		}
 
 		//	Set Error to indicator to not imported

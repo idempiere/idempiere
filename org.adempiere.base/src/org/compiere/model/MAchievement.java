@@ -71,6 +71,16 @@ public class MAchievement extends X_PA_Achievement
 	@SuppressWarnings("unused")
 	private static CLogger s_log = CLogger.getCLogger (MAchievement.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_Achievement_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAchievement(Properties ctx, String PA_Achievement_UU, String trxName) {
+        super(ctx, PA_Achievement_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

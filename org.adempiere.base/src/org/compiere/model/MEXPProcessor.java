@@ -63,6 +63,16 @@ public class MEXPProcessor extends X_EXP_Processor {
 	    return processor;
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param EXP_Processor_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MEXPProcessor(Properties ctx, String EXP_Processor_UU, String trxName) {
+        super(ctx, EXP_Processor_UU, trxName);
+    }
+
 	public MEXPProcessor(Properties ctx, int EXP_Processor_ID, String trxName) {
 		super(ctx, EXP_Processor_ID, trxName);
 	}

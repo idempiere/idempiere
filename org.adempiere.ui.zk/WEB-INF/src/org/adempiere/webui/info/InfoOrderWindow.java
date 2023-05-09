@@ -3,6 +3,8 @@
  */
 package org.adempiere.webui.info;
 
+import org.compiere.model.GridField;
+
 /**
  * @author hengsin
  *
@@ -59,9 +61,9 @@ public class InfoOrderWindow extends InfoWindow {
 	 */
 	public InfoOrderWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
-			int AD_InfoWindow_ID, boolean lookup, String predefinedContextVariables) {
+			int AD_InfoWindow_ID, boolean lookup,  GridField field, String predefinedContextVariables) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
-				whereClause, AD_InfoWindow_ID, lookup, null, predefinedContextVariables);
+				whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
 	}
 
 }

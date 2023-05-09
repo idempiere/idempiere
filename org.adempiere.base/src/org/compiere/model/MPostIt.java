@@ -33,15 +33,25 @@ public class MPostIt extends X_AD_PostIt
 {
 	private static final long serialVersionUID = -5053130533036069784L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PostIt_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPostIt(Properties ctx, String AD_PostIt_UU, String trxName) {
+        super(ctx, AD_PostIt_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param XXA_PostIt_ID id
 	 *	@param trxName transcation
 	 */
-	public MPostIt (Properties ctx, int XXA_PostIt_ID, String trxName)
+	public MPostIt (Properties ctx, int AD_PostIt_ID, String trxName)
 	{
-		super (ctx, XXA_PostIt_ID, trxName);
+		super (ctx, AD_PostIt_ID, trxName);
 	}	//	MPostIt
 
 	/**

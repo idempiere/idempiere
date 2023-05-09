@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for R_Request
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="R_Request")
-public class X_R_Request extends PO implements I_R_Request, I_Persistent 
+public class X_R_Request extends PO implements I_R_Request, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_R_Request (Properties ctx, int R_Request_ID, String trxName)
@@ -90,6 +90,60 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_R_Request (Properties ctx, String R_Request_UU, String trxName)
+    {
+      super (ctx, R_Request_UU, trxName);
+      /** if (R_Request_UU == null)
+        {
+			setConfidentialType (null);
+// C
+			setConfidentialTypeEntry (null);
+// C
+			setDocumentNo (null);
+			setDueType (null);
+// 5
+			setIsEscalated (false);
+			setIsInvoiced (false);
+			setIsSelfService (false);
+// N
+			setPriority (null);
+// 5
+			setProcessed (false);
+			setRequestAmt (Env.ZERO);
+			setR_Request_ID (0);
+			setR_RequestType_ID (0);
+			setSummary (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_R_Request (Properties ctx, String R_Request_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, R_Request_UU, trxName, virtualColumns);
+      /** if (R_Request_UU == null)
+        {
+			setConfidentialType (null);
+// C
+			setConfidentialTypeEntry (null);
+// C
+			setDocumentNo (null);
+			setDueType (null);
+// 5
+			setIsEscalated (false);
+			setIsInvoiced (false);
+			setIsSelfService (false);
+// N
+			setPriority (null);
+// 5
+			setProcessed (false);
+			setRequestAmt (Env.ZERO);
+			setR_Request_ID (0);
+			setR_RequestType_ID (0);
+			setSummary (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_R_Request (Properties ctx, ResultSet rs, String trxName)
     {
@@ -97,7 +151,7 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -540,7 +594,7 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DateCompletePlan);
 	}
 
-	/** Set Date last action.
+	/** Set Date Last Action.
 		@param DateLastAction Date this request was last acted on
 	*/
 	public void setDateLastAction (Timestamp DateLastAction)
@@ -548,7 +602,7 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 		set_ValueNoCheck (COLUMNNAME_DateLastAction, DateLastAction);
 	}
 
-	/** Get Date last action.
+	/** Get Date Last Action.
 		@return Date this request was last acted on
 	  */
 	public Timestamp getDateLastAction()
@@ -572,7 +626,7 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DateLastAlert);
 	}
 
-	/** Set Date next action.
+	/** Set Date Next Action.
 		@param DateNextAction Date that this request should be acted on
 	*/
 	public void setDateNextAction (Timestamp DateNextAction)
@@ -580,7 +634,7 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 		set_Value (COLUMNNAME_DateNextAction, DateNextAction);
 	}
 
-	/** Get Date next action.
+	/** Get Date Next Action.
 		@return Date that this request should be acted on
 	  */
 	public Timestamp getDateNextAction()
@@ -623,7 +677,7 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -683,10 +737,10 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 	public boolean isEscalated()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEscalated);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -706,10 +760,10 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 	public boolean isInvoiced()
 	{
 		Object oo = get_Value(COLUMNNAME_IsInvoiced);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -729,10 +783,10 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 	public boolean isSelfService()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSelfService);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1017,10 +1071,10 @@ public class X_R_Request extends PO implements I_R_Request, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

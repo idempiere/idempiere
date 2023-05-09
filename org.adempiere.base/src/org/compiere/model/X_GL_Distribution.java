@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_Distribution
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="GL_Distribution")
-public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persistent 
+public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_GL_Distribution (Properties ctx, int GL_Distribution_ID, String trxName)
@@ -126,6 +126,96 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_GL_Distribution (Properties ctx, String GL_Distribution_UU, String trxName)
+    {
+      super (ctx, GL_Distribution_UU, trxName);
+      /** if (GL_Distribution_UU == null)
+        {
+			setAnyAcct (true);
+// Y
+			setAnyActivity (true);
+// Y
+			setAnyBPartner (true);
+// Y
+			setAnyCampaign (true);
+// Y
+			setAnyLocFrom (true);
+// Y
+			setAnyLocTo (true);
+// Y
+			setAnyOrg (true);
+// Y
+			setAnyOrgTrx (true);
+// Y
+			setAnyProduct (true);
+// Y
+			setAnyProject (true);
+// Y
+			setAnySalesRegion (true);
+// Y
+			setAnyUser1 (true);
+// Y
+			setAnyUser2 (true);
+// Y
+			setC_AcctSchema_ID (0);
+			setGL_Distribution_ID (0);
+			setIsCreateReversal (true);
+// Y
+			setIsValid (false);
+// N
+			setName (null);
+			setPercentTotal (Env.ZERO);
+			setSeqNo (0);
+// 0
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_Distribution (Properties ctx, String GL_Distribution_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_Distribution_UU, trxName, virtualColumns);
+      /** if (GL_Distribution_UU == null)
+        {
+			setAnyAcct (true);
+// Y
+			setAnyActivity (true);
+// Y
+			setAnyBPartner (true);
+// Y
+			setAnyCampaign (true);
+// Y
+			setAnyLocFrom (true);
+// Y
+			setAnyLocTo (true);
+// Y
+			setAnyOrg (true);
+// Y
+			setAnyOrgTrx (true);
+// Y
+			setAnyProduct (true);
+// Y
+			setAnyProject (true);
+// Y
+			setAnySalesRegion (true);
+// Y
+			setAnyUser1 (true);
+// Y
+			setAnyUser2 (true);
+// Y
+			setC_AcctSchema_ID (0);
+			setGL_Distribution_ID (0);
+			setIsCreateReversal (true);
+// Y
+			setIsValid (false);
+// N
+			setName (null);
+			setPercentTotal (Env.ZERO);
+			setSeqNo (0);
+// 0
+        } */
+    }
+
     /** Load Constructor */
     public X_GL_Distribution (Properties ctx, ResultSet rs, String trxName)
     {
@@ -133,7 +223,7 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -218,10 +308,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyAcct()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyAcct);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -241,10 +331,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyActivity()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyActivity);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -264,10 +354,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyBPartner()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyBPartner);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -287,10 +377,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyCampaign()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyCampaign);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -310,10 +400,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyLocFrom()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyLocFrom);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -333,10 +423,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyLocTo()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyLocTo);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -356,10 +446,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyOrg()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyOrg);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -379,10 +469,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyOrgTrx()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyOrgTrx);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -402,10 +492,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyProduct()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyProduct);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -425,10 +515,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyProject()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyProject);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -448,10 +538,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnySalesRegion()
 	{
 		Object oo = get_Value(COLUMNNAME_AnySalesRegion);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -471,10 +561,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyUser1()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyUser1);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -494,10 +584,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isAnyUser2()
 	{
 		Object oo = get_Value(COLUMNNAME_AnyUser2);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -838,10 +928,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isCreateReversal()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCreateReversal);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -861,10 +951,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isValid()
 	{
 		Object oo = get_Value(COLUMNNAME_IsValid);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -917,13 +1007,13 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
 
 	/** Set Organization.
-		@param Org_ID Organizational entity within client
+		@param Org_ID Organizational entity within tenant
 	*/
 	public void setOrg_ID (int Org_ID)
 	{
@@ -934,7 +1024,7 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	}
 
 	/** Get Organization.
-		@return Organizational entity within client
+		@return Organizational entity within tenant
 	  */
 	public int getOrg_ID()
 	{
@@ -975,7 +1065,7 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public static final String POSTINGTYPE_Reservation = "R";
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
-	/** Set PostingType.
+	/** Set Posting Type.
 		@param PostingType The type of posted amount for the transaction
 	*/
 	public void setPostingType (String PostingType)
@@ -984,7 +1074,7 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 		set_Value (COLUMNNAME_PostingType, PostingType);
 	}
 
-	/** Get PostingType.
+	/** Get Posting Type.
 		@return The type of posted amount for the transaction
 	  */
 	public String getPostingType()
@@ -1005,10 +1095,10 @@ public class X_GL_Distribution extends PO implements I_GL_Distribution, I_Persis
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

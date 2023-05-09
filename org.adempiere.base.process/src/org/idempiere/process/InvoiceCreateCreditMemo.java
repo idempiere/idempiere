@@ -35,6 +35,7 @@ import org.compiere.model.MDocType;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MPeriod;
+import org.compiere.model.MProcessPara;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -84,7 +85,7 @@ public class InvoiceCreateCreditMemo extends SvrProcess {
 				p_IsCreateAllocation = para.getParameterAsBoolean();
 				break;
 			default:
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 		invoice = new MInvoice(getCtx(), getRecord_ID(), get_TrxName());

@@ -36,6 +36,16 @@ public class MAttributeUse extends X_M_AttributeUse
 	 */
 	private static final long serialVersionUID = -9159120094145438975L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_AttributeUse_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAttributeUse(Properties ctx, String M_AttributeUse_UU, String trxName) {
+        super(ctx, M_AttributeUse_UU, trxName);
+    }
+
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context

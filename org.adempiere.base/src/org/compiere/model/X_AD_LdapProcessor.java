@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_LdapProcessor
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_LdapProcessor")
-public class X_AD_LdapProcessor extends PO implements I_AD_LdapProcessor, I_Persistent 
+public class X_AD_LdapProcessor extends PO implements I_AD_LdapProcessor, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_AD_LdapProcessor (Properties ctx, int AD_LdapProcessor_ID, String trxName)
@@ -66,6 +66,38 @@ public class X_AD_LdapProcessor extends PO implements I_AD_LdapProcessor, I_Pers
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_LdapProcessor (Properties ctx, String AD_LdapProcessor_UU, String trxName)
+    {
+      super (ctx, AD_LdapProcessor_UU, trxName);
+      /** if (AD_LdapProcessor_UU == null)
+        {
+			setAD_LdapProcessor_ID (0);
+			setKeepLogDays (0);
+// 7
+			setLdapPort (0);
+// 389
+			setName (null);
+			setSupervisor_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_LdapProcessor (Properties ctx, String AD_LdapProcessor_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_LdapProcessor_UU, trxName, virtualColumns);
+      /** if (AD_LdapProcessor_UU == null)
+        {
+			setAD_LdapProcessor_ID (0);
+			setKeepLogDays (0);
+// 7
+			setLdapPort (0);
+// 389
+			setName (null);
+			setSupervisor_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_LdapProcessor (Properties ctx, ResultSet rs, String trxName)
     {
@@ -73,7 +105,7 @@ public class X_AD_LdapProcessor extends PO implements I_AD_LdapProcessor, I_Pers
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 4 - System
       */
     protected int get_AccessLevel()
     {
@@ -131,7 +163,7 @@ public class X_AD_LdapProcessor extends PO implements I_AD_LdapProcessor, I_Pers
 		return (String)get_Value(COLUMNNAME_AD_LdapProcessor_UU);
 	}
 
-	/** Set Date last run.
+	/** Set Date Last Run.
 		@param DateLastRun Date the process was last run.
 	*/
 	public void setDateLastRun (Timestamp DateLastRun)
@@ -139,7 +171,7 @@ public class X_AD_LdapProcessor extends PO implements I_AD_LdapProcessor, I_Pers
 		set_Value (COLUMNNAME_DateLastRun, DateLastRun);
 	}
 
-	/** Get Date last run.
+	/** Get Date Last Run.
 		@return Date the process was last run.
 	  */
 	public Timestamp getDateLastRun()
@@ -147,7 +179,7 @@ public class X_AD_LdapProcessor extends PO implements I_AD_LdapProcessor, I_Pers
 		return (Timestamp)get_Value(COLUMNNAME_DateLastRun);
 	}
 
-	/** Set Date next run.
+	/** Set Date Next Run.
 		@param DateNextRun Date the process will run next
 	*/
 	public void setDateNextRun (Timestamp DateNextRun)
@@ -155,7 +187,7 @@ public class X_AD_LdapProcessor extends PO implements I_AD_LdapProcessor, I_Pers
 		set_Value (COLUMNNAME_DateNextRun, DateNextRun);
 	}
 
-	/** Get Date next run.
+	/** Get Date Next Run.
 		@return Date the process will run next
 	  */
 	public Timestamp getDateNextRun()
@@ -236,7 +268,7 @@ public class X_AD_LdapProcessor extends PO implements I_AD_LdapProcessor, I_Pers
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -254,10 +286,10 @@ public class X_AD_LdapProcessor extends PO implements I_AD_LdapProcessor, I_Pers
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

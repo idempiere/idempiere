@@ -33,6 +33,16 @@ public class MDunning extends X_C_Dunning
 	 */
 	private static final long serialVersionUID = -3844081441218291895L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Dunning_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDunning(Properties ctx, String C_Dunning_UU, String trxName) {
+        super(ctx, C_Dunning_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

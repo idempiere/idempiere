@@ -61,6 +61,18 @@ public class MTableIndex extends X_AD_TableIndex {
 		return list;
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_TableIndex_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTableIndex(Properties ctx, String AD_TableIndex_UU, String trxName) {
+        super(ctx, AD_TableIndex_UU, trxName);
+		if (Util.isEmpty(AD_TableIndex_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * Standard constructor
 	 * @param ctx context
@@ -71,13 +83,18 @@ public class MTableIndex extends X_AD_TableIndex {
 	{
 		super(ctx, AD_TableIndex_ID, trxName);
 		if (AD_TableIndex_ID == 0)
-		{
-			setEntityType(ENTITYTYPE_UserMaintained);
-			setIsUnique(false);
-			setIsCreateConstraint(false);
-		}
+			setInitialDefaults();
 	}
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setEntityType(ENTITYTYPE_UserMaintained);
+		setIsUnique(false);
+		setIsCreateConstraint(false);
+	}
+
 	/**
 	 * Load constructor
 	 * @param ctx context

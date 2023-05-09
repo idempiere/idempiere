@@ -17,13 +17,13 @@
 
 package org.adempiere.webui.editor;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.logging.Level;
 
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Locationbox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
@@ -37,6 +37,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.MLocation;
 import org.compiere.model.MLocationLookup;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
@@ -45,12 +46,13 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 
 /**
+ * Default editor for {@link DisplayType#Location}.<br/>
+ * Implemented with {@link Locationbox} component and {@link WLocationDialog}.
  * @author Sendy Yagambrum
  * @date July 16, 2007
  * 
- * This class is based on VLocation written by Jorg Janke
- **/
-public class WLocationEditor extends WEditor implements EventListener<Event>, PropertyChangeListener, ContextMenuListener
+ */
+public class WLocationEditor extends WEditor implements EventListener<Event>, PropertyChangeListener, ContextMenuListener, IZoomableEditor
 {
     private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     
@@ -96,6 +98,9 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
         init();
 	}
 
+    /**
+     * Init component and context menu
+     */
     private void init()
     {
     	if (ThemeManager.isUseFontIconForImage())
@@ -103,7 +108,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
     	else
     		getComponent().setButtonImage(ThemeManager.getThemeResource("images/Location16.png"));
     	
-    	popupMenu = new WEditorPopupMenu(false, false, isShowPreference());
+    	popupMenu = new WEditorPopupMenu(true, false, isShowPreference(), false, false, false, gridField != null ? gridField.getLookup() : null);
     	popupMenu.addMenuListener(this);
     	addChangeLogMenu(popupMenu);
 		if (gridField != null)
@@ -163,7 +168,7 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 
 	/**
      *  Return Editor value
-     *  @return value
+     *  @return C_Location_ID
      */
     public int getC_Location_ID()
     {
@@ -171,23 +176,13 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
             return 0;
         return m_value.getC_Location_ID();
     }   
-    
-    /**
-     *  Property Change Listener
-     *  @param evt PropertyChangeEvent
-     */
-    public void propertyChange (PropertyChangeEvent evt)
-    {
-        if (evt.getPropertyName().equals(org.compiere.model.GridField.PROPERTY))
-            setValue(evt.getNewValue());
-    }
-    
+
+    @Override
     public void onEvent(Event event) throws Exception
     {    
-        //
         if ("onClick".equals(event.getName()))
         {
-            if (log.isLoggable(Level.CONFIG)) log.config( "actionPerformed - " + m_value);
+            if (log.isLoggable(Level.CONFIG)) log.config( "onEvent - " + m_value);
             final WLocationDialog ld = new WLocationDialog(Msg.getMsg(Env.getCtx(), "Location"), m_value, gridField);
             final int oldValue = m_value == null ? 0 : m_value.getC_Location_ID();
             ld.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
@@ -265,6 +260,10 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 			if (isShowPreference())
 				ValuePreference.start (getComponent(), this.getGridField(), getValue());
 		}
+		else if (WEditorPopupMenu.ZOOM_EVENT.equals(evt.getContextEvent())) 
+		{
+			actionZoom();
+		}
 	}
 
 	@Override
@@ -272,6 +271,10 @@ public class WLocationEditor extends WEditor implements EventListener<Event>, Pr
 		super.setTableEditor(b);
 		getComponent().setTableEditorMode(b);
 	}
-    
-    
+
+	@Override
+	public void actionZoom() {
+		AEnv.actionZoom(m_Location, getValue());
+	}
+
 }

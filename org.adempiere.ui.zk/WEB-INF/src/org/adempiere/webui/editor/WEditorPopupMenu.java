@@ -41,7 +41,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Menuitem;
 
 /**
- *
+ * Popup context menu for {@link WEditor}.
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 25, 2007
  * @version $Revision: 0.10 $
@@ -49,41 +49,50 @@ import org.zkoss.zul.Menuitem;
 public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = -1632375949585292635L;
+	private static final long serialVersionUID = 6190279880520042885L;
 
+	/** Menu item attribute to store context menu event name (zoom, requery, etc) */
 	public static final String EVENT_ATTRIBUTE = "EVENT";
     public static final String ZOOM_EVENT = "ZOOM";
     public static final String REQUERY_EVENT = "REQUERY";
     public static final String PREFERENCE_EVENT = "VALUE_PREFERENCE";
     public static final String NEW_EVENT = "NEW_RECORD";
-    public static final String UPDATE_EVENT = "UPDATE_RECORD"; // Elaine 2009/02/16 - update record
+    public static final String UPDATE_EVENT = "UPDATE_RECORD";
     public static final String SHOWLOCATION_EVENT = "SHOW_LOCATION";
     public static final String CHANGE_LOG_EVENT = "CHANGE_LOG";
     public static final String EDITOR_EVENT = "EDITOR";
     public static final String RESET_EVENT = "RESET";
     public static final String ASSISTANT_EVENT = "ASSISTANT";
+    public static final String DRILL_EVENT = "DRILL";
    
     private boolean newEnabled = true;
-    private boolean updateEnabled = true; // Elaine 2009/02/16 - update record
+    private boolean updateEnabled = true;
     private boolean zoomEnabled  = true;
     private boolean requeryEnabled = true;
     private boolean preferencesEnabled = true;
 	private boolean showLocation = true;
+	private boolean drillEnabled = true;
     
     private Menuitem zoomItem;
     private Menuitem requeryItem;
     private Menuitem prefItem;
     private Menuitem newItem;
-    private Menuitem updateItem; // Elaine 2009/02/16 - update record   
+    private Menuitem updateItem;   
 	private Menuitem showLocationItem;
+	private Menuitem drillItem;
     
     private ArrayList<ContextMenuListener> menuListeners = new ArrayList<ContextMenuListener>();
     
+    /**
+     * @param zoom
+     * @param requery
+     * @param preferences
+     */
     public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences)
     {
-        this(zoom, requery, preferences, false, false, false, null); // no check zoom
+        this(zoom, requery, preferences, false, false, false, false, null);
     }
     
     @Deprecated
@@ -105,23 +114,39 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     }
 
     /**
+     * @param zoom
+     * @param requery
+     * @param preferences
+     * @param newRecord
+     * @param updateRecord
+     * @param showLocation
+     * @param lookup
+     */
+    public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord, boolean showLocation, Lookup lookup)
+    {
+    	this(zoom, requery, preferences, newRecord, updateRecord, showLocation, false, lookup);
+    }
+    
+    /**
      * @param zoom - enable zoom in menu - disabled if the lookup cannot zoom
      * @param requery - enable requery in menu
      * @param preferences - enable preferences in menu
      * @param newRecord - enable new record (ignored and recalculated if lookup is received)
      * @param updateRecord - enable update record (ignored and recalculated if lookup is received)
      * @param showLocation - enable show location in menu
+     * @param drillEnabled - enable drill assistant menu
      * @param lookup - when this parameter is received then new and update are calculated based on the zoom and quickentry
      */
-    public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord, boolean showLocation, Lookup lookup)
+    public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord, boolean showLocation, boolean drillEnabled, Lookup lookup)
     {
     	super();
     	this.zoomEnabled = zoom;
     	this.requeryEnabled = requery;
     	this.preferencesEnabled = preferences;
     	this.newEnabled = newRecord;
-    	this.updateEnabled = updateRecord; // Elaine 2009/02/16 - update record
+    	this.updateEnabled = updateRecord;
     	this.showLocation = showLocation;
+    	this.drillEnabled = drillEnabled;
 
     	String tableName = null;
     	if (lookup != null && lookup.getColumnName() != null)
@@ -173,7 +198,13 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     	init();
     }
 
-    boolean hasQuickEntryField(int winID, int winIDPO, String tableName) {
+    /**
+     * @param winID
+     * @param winIDPO
+     * @param tableName
+     * @return true if window has quick entry fields (i.e AD_Field.IsQuickEntry=Y)
+     */
+    protected boolean hasQuickEntryField(int winID, int winIDPO, String tableName) {
     	return DB.getSQLValueEx(null,
     			"SELECT COUNT(*) "
     					+ "FROM   AD_Field f "
@@ -188,10 +219,16 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     					winID,winIDPO,tableName) > 0;
     }
 
+    /**
+     * @return true if zoom is enable
+     */
 	public boolean isZoomEnabled() {
     	return zoomEnabled;
     }
     
+	/**
+	 * Init context menu items
+	 */
     private void init()
     {
         if (zoomEnabled)
@@ -247,7 +284,6 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         	this.appendChild(newItem);
         }
         
-        // Elaine 2009/02/16 - update record
         if (updateEnabled)
         {
         	updateItem = new Menuitem();
@@ -274,14 +310,31 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         	this.appendChild(showLocationItem);
         }
         
+        if(drillEnabled)
+        {
+        	drillItem = new Menuitem();
+        	drillItem.setAttribute(EVENT_ATTRIBUTE, DRILL_EVENT);
+        	drillItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "DrillAssistant")).intern());
+        	if (ThemeManager.isUseFontIconForImage())
+        		drillItem.setIconSclass("z-icon-Window");
+            else
+            	drillItem.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
+        	drillItem.addEventListener(Events.ON_CLICK, this);
+        	this.appendChild(drillItem);
+        }
     }
     
+    /**
+     * Add context menu listener
+     * @param listener {@link ContextMenuListener}
+     */
     public void addMenuListener(ContextMenuListener listener)
     {
     	if (!menuListeners.contains(listener))
     		menuListeners.add(listener);
     }
 
+    @Override
     public void onEvent(Event event)
     {
         String evt = (String)event.getTarget().getAttribute(EVENT_ATTRIBUTE);
@@ -299,6 +352,10 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         }
     }
 
+    /**
+     * Add field suggestion context menu item
+     * @param field
+     */
 	public void addSuggestion(final GridField field) {
 		if (!MRole.getDefault().isTableAccessExcluded(MFieldSuggestion.Table_ID)) {
 			Menuitem editor = new Menuitem(Msg.getElement(Env.getCtx(), "AD_FieldSuggestion_ID"));

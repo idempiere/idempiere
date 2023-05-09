@@ -140,10 +140,10 @@ public class WArchive implements EventListener<Event>
 			LayoutUtils.autoDetachOnClose(m_popup);
 		}
 		m_popup.open(invoker, "after_start");
-	}	//	getZoomTargets
+	}	//	getArchives
 	
 	/**
-	 * 	Listner
+	 * 	Listener
 	 *	@param e event
 	 */
 	@Override
@@ -151,6 +151,7 @@ public class WArchive implements EventListener<Event>
 	{
 		if (e.getTarget() instanceof Menuitem) 
 		{
+			//open archive viewer
 			int AD_Form_ID = FORM_ARCHIVEVIEWER;	//	ArchiveViewer
 			ADForm form = ADForm.openForm(AD_Form_ID);
 			

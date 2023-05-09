@@ -1,6 +1,27 @@
-/**
- * 
- */
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ * - hengsin                         								   *
+ **********************************************************************/
 package org.adempiere.webui.info;
 
 import java.sql.PreparedStatement;
@@ -32,6 +53,7 @@ import org.adempiere.webui.panel.InvoiceHistory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
+import org.compiere.model.GridField;
 import org.compiere.model.MDocType;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -125,13 +147,31 @@ public class InfoProductWindow extends InfoWindow {
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
+	 * @param field
+	 */
+	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
+			String queryValue, boolean multipleSelection, String whereClause,
+			int AD_InfoWindow_ID, boolean lookup, GridField field) {
+		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
+				whereClause, AD_InfoWindow_ID, lookup, field);
+	}
+	
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
+	 * @param whereClause
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
 	 * @param predefinedContextVariables
 	 */
 	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
-			int AD_InfoWindow_ID, boolean lookup, String predefinedContextVariables) {
+			int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
-				whereClause, AD_InfoWindow_ID, lookup, null, predefinedContextVariables);
+				whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
 	}
 
 	@Override
@@ -193,9 +233,7 @@ public class InfoProductWindow extends InfoWindow {
 		m_sqlWarehouse += " GROUP BY Warehouse";		
 		warehouseTbl.setMultiSelection(false);
 		warehouseTbl.setShowTotals(true);
-		warehouseTbl.autoSize();
 		warehouseTbl.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() +"|stock");
-//        warehouseTbl.getModel().addTableModelListener(this);
 
         ColumnInfo[] s_layoutSubstitute = new ColumnInfo[]{
         		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "orgname", String.class, true, "orgname"),
@@ -212,9 +250,7 @@ public class InfoProductWindow extends InfoWindow {
         substituteTbl = ListboxFactory.newDataTableAutoSize();
         m_sqlSubstitute = substituteTbl.prepareTable(s_layoutSubstitute, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_SUBSTITUTERELATED_V");        
         substituteTbl.setMultiSelection(false);
-        substituteTbl.autoSize();
         substituteTbl.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() + "|substitute");
-//        substituteTbl.getModel().addTableModelListener(this);
 
         ColumnInfo[] s_layoutRelated = new ColumnInfo[]{
            		new ColumnInfo(Msg.translate(Env.getCtx(), "Warehouse"), "orgname", String.class, true, "orgname"),
@@ -232,7 +268,6 @@ public class InfoProductWindow extends InfoWindow {
         relatedTbl = ListboxFactory.newDataTableAutoSize();
         m_sqlRelated = relatedTbl.prepareTable(s_layoutRelated, s_sqlFrom, s_sqlWhere, false, "M_PRODUCT_SUBSTITUTERELATED_V");
         relatedTbl.setMultiSelection(false);
-        relatedTbl.autoSize();
         relatedTbl.setwListBoxName("AD_InfoWindow_UU|"+ infoWindow.getAD_InfoWindow_UU() + "|related");
         //Available to Promise Tab
 
@@ -272,9 +307,7 @@ public class InfoProductWindow extends InfoWindow {
         productpriceTbl = ListboxFactory.newDataTableAutoSize();
         m_sqlProductprice = productpriceTbl.prepareTable(s_layoutProductPrice, s_sqlFrom, s_sqlWhere, false, "pp") + " ORDER BY plv.ValidFrom DESC";
         productpriceTbl.setMultiSelection(false);
-        productpriceTbl.autoSize();
         productpriceTbl.setwListBoxName("AD_InfoWindow_UU|" + infoWindow.getAD_InfoWindow_UU() + "|price");
-//        productpriceTbl.getModel().addTableModelListener(this);
         
         tabbedPane = new Tabbox();
         ZKUpdateUtil.setHeight(tabbedPane, "100%");
@@ -415,6 +448,9 @@ public class InfoProductWindow extends InfoWindow {
 		m_tableAtp.repaint();
 	}
 
+	/**
+	 * handle on click event for product attribute
+	 */
 	protected void onPAttributeClick() {
 		Integer productInteger = getSelectedRowKey();
 		if (productInteger == null) {
@@ -443,6 +479,10 @@ public class InfoProductWindow extends InfoWindow {
 		});
 	}
 	
+	/**
+	 * 
+	 * @return label for selected warehouse parameter
+	 */
 	protected String getSelectedWarehouseLabel() {
 		for(WEditor editor : editors) {
 			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_Warehouse_ID")) {
@@ -456,6 +496,10 @@ public class InfoProductWindow extends InfoWindow {
 		return "";
 	}
 
+	/**
+	 * 
+	 * @return id for selected price list version parameter
+	 */
 	protected int getSelectedPriceListVersionId() {
 		for(WEditor editor : editors) {
 			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_PriceList_Version_ID")) {
@@ -469,6 +513,10 @@ public class InfoProductWindow extends InfoWindow {
 		return 0;
 	}
 
+	/**
+	 * 
+	 * @return id for selected warehouse parameter
+	 */
 	protected int getSelectedWarehouseId() {
 		for(WEditor editor : editors) {
 			if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_Warehouse_ID")) {
@@ -636,6 +684,8 @@ public class InfoProductWindow extends InfoWindow {
 	
 	/**
 	 * 	Refresh Query
+	 *  @param M_Warehouse_ID
+	 *  @param M_PriceList_Version_ID
 	 */
 	protected void refresh(int M_Warehouse_ID, int M_PriceList_Version_ID)
 	{
@@ -719,7 +769,7 @@ public class InfoProductWindow extends InfoWindow {
 	
 	// Elaine 2008/11/26
 	/**
-	 *	Query ATP
+	 * Query Avaiable to promise (ATP)
 	 * @param m_M_Warehouse_ID
 	 * @param m_M_Product_ID 
 	 */
@@ -873,6 +923,9 @@ public class InfoProductWindow extends InfoWindow {
 		m_tableAtp.setData(model, columnNames);
 	}	//	initAtpTab
 	
+	/**
+	 * @return true if show detail of ATP
+	 */
 	public boolean isShowDetailATP() {
 		return chbShowDetailAtp.isChecked();
 	}

@@ -20,9 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.compiere.model.MPeriod;
 import org.compiere.model.MPeriodControl;
+import org.compiere.model.MProcessPara;
+import org.compiere.model.MRefList;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CacheMgt;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.ValueNamePair;
 
 
 /**
@@ -51,7 +58,7 @@ public class PeriodControlStatus extends SvrProcess
 			else if (name.equals("*RecordIDs*"))
 				;
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_C_PeriodControl_IDs = getRecord_IDs();
 		if (p_C_PeriodControl_IDs == null || p_C_PeriodControl_IDs.size() == 0) {
@@ -67,39 +74,69 @@ public class PeriodControlStatus extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-	  if (log.isLoggable(Level.INFO)) log.info ("C_PeriodControl_ID=" + p_C_PeriodControl_IDs);
-	  for (int p_C_PeriodControl_ID : p_C_PeriodControl_IDs) {
-		MPeriodControl pc = new MPeriodControl (getCtx(), p_C_PeriodControl_ID, get_TrxName());
-		if (pc.get_ID() == 0)
-			throw new AdempiereUserError("@NotFound@  @C_PeriodControl_ID@=" + p_C_PeriodControl_ID);
-		//	Permanently closed
-		if (MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equals(pc.getPeriodStatus()))
-			throw new AdempiereUserError("@PeriodStatus@ = " + pc.getPeriodStatus());
-		//	No Action
-		if (MPeriodControl.PERIODACTION_NoAction.equals(pc.getPeriodAction()))
-			return "@OK@";
-	
-		//	Open
-		if (MPeriodControl.PERIODACTION_OpenPeriod.equals(pc.getPeriodAction()))
-			pc.setPeriodStatus(MPeriodControl.PERIODSTATUS_Open);
-		//	Close
-		if (MPeriodControl.PERIODACTION_ClosePeriod.equals(pc.getPeriodAction()))
-			pc.setPeriodStatus(MPeriodControl.PERIODSTATUS_Closed);
-		//	Close Permanently
-		if (MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equals(pc.getPeriodAction()))
-			pc.setPeriodStatus(MPeriodControl.PERIODSTATUS_PermanentlyClosed);
-		pc.setPeriodAction(MPeriodControl.PERIODACTION_NoAction);
-		//
-		boolean ok = pc.save();
+		if (log.isLoggable(Level.INFO)) log.info ("C_PeriodControl_ID=" + p_C_PeriodControl_IDs);
 		
-		//	Reset Cache
-		CacheMgt.get().reset("C_Period", pc.getC_Period_ID());
+		boolean hasUnpostedDocs = false;
+		ArrayList<MPeriodControl> skipped = new ArrayList<MPeriodControl>();
+		
+		for (int p_C_PeriodControl_ID : p_C_PeriodControl_IDs) {
+			MPeriodControl pc = new MPeriodControl (getCtx(), p_C_PeriodControl_ID, get_TrxName());
+			if (pc.get_ID() == 0)
+				throw new AdempiereUserError("@NotFound@  @C_PeriodControl_ID@=" + p_C_PeriodControl_ID);
+			//	Permanently closed
+			if (MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equals(pc.getPeriodStatus()))
+				throw new AdempiereUserError("@PeriodStatus@ = " + pc.getPeriodStatus());
+			//	No Action
+		
+			MPeriod p = MPeriod.get(pc.getC_Period_ID());
+			if ((   MPeriodControl.PERIODACTION_ClosePeriod.equalsIgnoreCase(pc.getPeriodAction())
+				 || MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equalsIgnoreCase(pc.getPeriodAction()))
+				&& MSysConfig.getBooleanValue(MSysConfig.FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE, true, getAD_Client_ID())
+				&& p.hasUnpostedDocs(p_C_PeriodControl_ID)
+				) {
+				hasUnpostedDocs = true;
+				skipped.add(pc);
+				continue;
+			}
 
-		if (!ok)
-			return "@Error@";
-	  }
-	  CacheMgt.get().reset("C_PeriodControl", 0);
-	  return "@OK@";
+			//	Open
+			if (MPeriodControl.PERIODACTION_OpenPeriod.equals(pc.getPeriodAction()))
+				pc.setPeriodStatus(MPeriodControl.PERIODSTATUS_Open);
+			//	Close
+			if (MPeriodControl.PERIODACTION_ClosePeriod.equals(pc.getPeriodAction()))
+				pc.setPeriodStatus(MPeriodControl.PERIODSTATUS_Closed);
+			//	Close Permanently
+			if (MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equals(pc.getPeriodAction()))
+				pc.setPeriodStatus(MPeriodControl.PERIODSTATUS_PermanentlyClosed);
+			pc.setPeriodAction(MPeriodControl.PERIODACTION_NoAction);
+			//
+			boolean ok = pc.save();
+			
+			//	Reset Cache
+			CacheMgt.get().reset("C_Period", pc.getC_Period_ID());
+	
+			if (!ok)
+				return "@Error@";
+		}
+		String returnVal = "@OK";
+		
+		// return the list of period controls with un-posted documents
+		if (hasUnpostedDocs) {
+			returnVal = Msg.getMsg(getCtx(), "CouldNotClosePeriodControl");
+			for (MPeriodControl pc : skipped) {
+				String displayValue = "a";
+				for (ValueNamePair vnp : MRefList.getList(Env.getCtx(),MPeriodControl.DOCBASETYPE_AD_Reference_ID,false)) {
+					if (vnp.getValue().equals(pc.getDocBaseType())) {
+						displayValue = vnp.getName();
+						break;
+					}
+				}
+				addLog(pc.getC_PeriodControl_ID(), null, null, displayValue, MPeriodControl.Table_ID, pc.getC_PeriodControl_ID());
+			}
+		}
+			
+		CacheMgt.get().reset("C_PeriodControl", 0);
+		return returnVal;
 	}	//	doIt
 
 }	//	PeriodControlStatus

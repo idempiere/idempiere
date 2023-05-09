@@ -24,16 +24,16 @@ import java.util.Properties;
 import org.compiere.util.Env;
 
 /** Generated Model for M_StorageOnHand
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="M_StorageOnHand")
-public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persistent 
+public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_M_StorageOnHand (Properties ctx, int M_StorageOnHand_ID, String trxName)
@@ -63,6 +63,34 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_M_StorageOnHand (Properties ctx, String M_StorageOnHand_UU, String trxName)
+    {
+      super (ctx, M_StorageOnHand_UU, trxName);
+      /** if (M_StorageOnHand_UU == null)
+        {
+			setDateMaterialPolicy (new Timestamp( System.currentTimeMillis() ));
+			setM_AttributeSetInstance_ID (0);
+			setM_Locator_ID (0);
+			setM_Product_ID (0);
+			setQtyOnHand (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_M_StorageOnHand (Properties ctx, String M_StorageOnHand_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, M_StorageOnHand_UU, trxName, virtualColumns);
+      /** if (M_StorageOnHand_UU == null)
+        {
+			setDateMaterialPolicy (new Timestamp( System.currentTimeMillis() ));
+			setM_AttributeSetInstance_ID (0);
+			setM_Locator_ID (0);
+			setM_Product_ID (0);
+			setQtyOnHand (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_M_StorageOnHand (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +98,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -87,11 +115,11 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_M_StorageOnHand[")
-        .append(get_ID()).append("]");
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
-	/** Set Date last inventory count.
+	/** Set Date Last Inventory Count.
 		@param DateLastInventory Date of Last Inventory Count
 	*/
 	public void setDateLastInventory (Timestamp DateLastInventory)
@@ -99,7 +127,7 @@ public class X_M_StorageOnHand extends PO implements I_M_StorageOnHand, I_Persis
 		set_Value (COLUMNNAME_DateLastInventory, DateLastInventory);
 	}
 
-	/** Get Date last inventory count.
+	/** Get Date Last Inventory Count.
 		@return Date of Last Inventory Count
 	  */
 	public Timestamp getDateLastInventory()

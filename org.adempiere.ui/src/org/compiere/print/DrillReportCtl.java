@@ -33,6 +33,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -80,6 +81,9 @@ public class DrillReportCtl {
 
 	private String m_DisplayValue;
 
+	/** Process ID of the source Report */
+	private int m_AD_Process_ID;
+
 	/** Drill Tables Map */
 	private KeyNamePair[] drillTables;
 
@@ -94,20 +98,21 @@ public class DrillReportCtl {
 
 	/**
 	 *
-	 * @param ctx
 	 * @param TableName
 	 * @param query
 	 * @param ColumnName
 	 * @param Value
 	 * @param displayValue
 	 * @param WindowNo
+	 * @param processID
 	 */
-	public DrillReportCtl(String TableName, MQuery query, String ColumnName, Object Value, String displayValue, int WindowNo) {
+	public DrillReportCtl(String TableName, MQuery query, String ColumnName, Object Value, String displayValue, int WindowNo, int processID) {
 		this.m_TableName = TableName;
 		this.m_ColumnName = ColumnName;
 		this.m_Value = Value;
 		this.m_WindowNo = WindowNo;
 		this.m_DisplayValue = displayValue;
+		this.m_AD_Process_ID = processID;
 
 		m_Query = query;
 
@@ -178,9 +183,9 @@ public class DrillReportCtl {
 		if(!Util.isEmpty(m_ColumnName)) {
 			MProcessDrillRule[] processDrillRules = MProcessDrillRule.getByColumnName(Env.getCtx(), m_ColumnName, null);
 			for( MProcessDrillRule drillProcesRule: processDrillRules) {
-				MProcess process = MProcess.get(drillProcesRule.getAD_Process_ID());
-				if(process == null)
+				if (drillProcesRule.getAD_Process_ID() == 0 || drillProcesRule.getAD_Process_ID() == m_AD_Process_ID)
 					continue;
+				MProcess process = MProcess.get(drillProcesRule.getAD_Process_ID());
 
 				drillProcessMap.put(drillProcesRule.getAD_Process_ID(), process.get_Translation(MProcess.COLUMNNAME_Name));
 
@@ -370,10 +375,11 @@ public class DrillReportCtl {
 			if (m_Query.getColumnName(0).equals(m_Query.getTableName()+"_ID")) {
 				Object vrec = m_Query.getCode(0);
 				if (vrec instanceof Integer) {
-					Record_ID = ((Integer)m_Query.getCode(0)).intValue();
+					Record_ID = ((Integer)vrec).intValue();
 				} else {
 					try {
-						Record_ID = Integer.parseInt(m_Query.getCode(0).toString());
+						if(vrec != null)
+							Record_ID = Integer.parseInt(m_Query.getCode(0).toString());
 					} catch (NumberFormatException e) {
 						log.info(e.getMessage());
 					}
@@ -393,8 +399,10 @@ public class DrillReportCtl {
 
 
 	/**
-	 * 	Launch Report Process
-	 * 	@param pf print format
+	 * 
+	 * @param AD_Process_DrillRule_ID
+	 * @param AD_PrintFormat_ID
+	 * @return
 	 * @throws Exception
 	 */
 	public ProcessInfo getDrillProcessProcessInfo (int AD_Process_DrillRule_ID, int AD_PrintFormat_ID) throws Exception
@@ -459,140 +467,160 @@ public class DrillReportCtl {
 	 */
 	protected void fillParameter(ProcessInfo pi, MProcessDrillRule processDrillRule)
 	{
-		boolean isKeyParameterSet= false;
+		boolean isKeyParameterSet = false;
 		MProcessDrillRulePara[] sParams = processDrillRule.getParameters (true);
 		ArrayList<ProcessInfoParameter> iParams = new ArrayList<ProcessInfoParameter>();
-
-		if(sParams.length <= 0) {
-			if(hasMandatoryProcessPara(processDrillRule.getAD_Process_ID()))
-				throw new AdempiereException(Msg.parseTranslation(Env.getCtx(), "@FillMandatoryDrillRulePara@"));
-
+		MProcess process = (MProcess) processDrillRule.getAD_Process();
+		ArrayList<MProcessPara> processParasExclDrillRuleParas = new ArrayList<MProcessPara>(Arrays.asList(process.getParameters()));
+		
+		// Check for key parameter
+		for(int i = 0; i < sParams.length; i++) {
+			if(sParams[i].getAD_Process_Para().getColumnName().equals(m_ColumnName)) {
+				isKeyParameterSet = true;
+			}
+		}
+		
+		if(!isKeyParameterSet) {
 			MProcessDrillRulePara keyPara = new MProcessDrillRulePara(Env.getCtx(), 0, null);
 			keyPara.setAD_Process_DrillRule_ID(processDrillRule.getAD_Process_DrillRule_ID());
 			keyPara.setAD_Process_Para_ID(processDrillRule.getAD_Process_Para_ID());
-			sParams = new MProcessDrillRulePara[] {keyPara};
+			MProcessDrillRulePara[] sParamsTmp = Arrays.stream(sParams).toArray(MProcessDrillRulePara[]::new);;
+			sParams = new MProcessDrillRulePara[sParamsTmp.length+1];
+			int idx = 0;
+			for(idx = 0; idx < sParamsTmp.length; idx++) {
+				sParams[idx] = sParamsTmp[idx];
+			}
+			sParams[idx] = keyPara;
+			isKeyParameterSet = true;
 		}
 		for (int p = 0; p < sParams.length; p++)
+		{
+			MProcessPara processPara = (MProcessPara) sParams[p].getAD_Process_Para();
+			ProcessInfoParameter iPara = new ProcessInfoParameter(processPara.getColumnName(), null, null, null, null);
+			MProcessDrillRulePara sPara = sParams[p];
+			if(processPara.getColumnName().equals(m_ColumnName))
 			{
-				MProcessPara processPara = (MProcessPara) sParams[p].getAD_Process_Para();
-				ProcessInfoParameter iPara = new ProcessInfoParameter(processPara.getColumnName(), null, null, null, null);
-				MProcessDrillRulePara sPara = sParams[p];
-				if(processPara. getColumnName().equals(m_ColumnName))
+				iPara.setParameter(DisplayType.isID(sPara.getDisplayType()) ? new BigDecimal(String.valueOf(m_Value)) : String.valueOf(m_Value));
+				iPara.setInfo(!Util.isEmpty(m_DisplayValue) ? m_DisplayValue : String.valueOf(m_Value));
+				iParams.add(iPara);
+				processParasExclDrillRuleParas.remove(processPara);
+				continue;
+			}
+
+			String paraDesc = sPara.getDescription();
+			if (paraDesc != null && paraDesc.trim().length() > 0)
+				iPara.setInfo(sPara.getDescription());
+			String variable = sPara.getParameterDefault();
+			String toVariable = sPara.getParameterToDefault();
+			if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " = " + variable);
+			//	Value - Constant/Variable
+			Object value = parseVariable(sPara, variable);
+			Object toValue = toVariable != null ? parseVariable(sPara, toVariable) : null;
+
+			//	No Value
+			if (value == null && toValue == null)
+			{
+				if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty");
+				continue;
+			}
+
+			//	Convert to Type
+			try
+			{
+				if (DisplayType.isNumeric(sPara.getDisplayType())
+					|| DisplayType.isID(sPara.getDisplayType()))
 				{
-					iPara.setParameter(DisplayType.isID(sPara.getDisplayType()) ? Integer.valueOf((String) m_Value) : (String) m_Value);
-					iPara.setInfo(!Util.isEmpty(m_DisplayValue) ? m_DisplayValue : (String) m_Value);
-					isKeyParameterSet = true;
-					iParams.add(iPara);
-					continue;
+					DecimalFormat decimalFormat = DisplayType.getNumberFormat(sPara.getDisplayType());
+					BigDecimal bd = toBigDecimal(value);
+					iPara.setParameter(bd);
+					if (toValue != null)
+					{
+						bd = toBigDecimal(toValue);
+						iPara.setParameter_To(bd);
+					}
+					if (Util.isEmpty(paraDesc))
+					{
+						String info = decimalFormat.format(iPara.getParameterAsBigDecimal());
+						if (iPara.getParameter_ToAsBigDecimal() != null)
+							info = info + " - " + decimalFormat.format(iPara.getParameter_ToAsBigDecimal());
+						iPara.setInfo(info);
+					}
+					if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
+						+ " = " + variable + " (=" + bd + "=)");
 				}
-
-					String paraDesc = sPara.getDescription();
-					if (paraDesc != null && paraDesc.trim().length() > 0)
-						iPara.setInfo(sPara.getDescription());
-					String variable = sPara.getParameterDefault();
-					String toVariable = sPara.getParameterToDefault();
-					if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " = " + variable);
-					//	Value - Constant/Variable
-					Object value = parseVariable(sPara, variable);
-					Object toValue = toVariable != null ? parseVariable(sPara, toVariable) : null;
-
-					//	No Value
-					if (value == null && toValue == null)
-					{
-						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty");
-						continue;
+				else if (DisplayType.isDate(sPara.getDisplayType()))
+				{
+					SimpleDateFormat dateFormat = DisplayType.getDateFormat(sPara.getDisplayType());
+					Timestamp ts = toTimestamp(value);
+					iPara.setParameter(ts);
+					if (toValue != null) {
+						ts = toTimestamp(toValue);
+						iPara.setParameter_To(ts);
 					}
-
-					//	Convert to Type
-					try
+					if (Util.isEmpty(paraDesc))
 					{
-						if (DisplayType.isNumeric(sPara.getDisplayType())
-							|| DisplayType.isID(sPara.getDisplayType()))
+						String info = dateFormat.format(iPara.getParameterAsTimestamp());
+						if (iPara.getParameter_ToAsTimestamp() != null)
 						{
-							DecimalFormat decimalFormat = DisplayType.getNumberFormat(sPara.getDisplayType());
-							BigDecimal bd = toBigDecimal(value);
-							iPara.setParameter(bd);
-							if (toValue != null)
-							{
-								bd = toBigDecimal(toValue);
-								iPara.setParameter_To(bd);
-							}
-							if (Util.isEmpty(paraDesc))
-							{
-								String info = decimalFormat.format(iPara.getParameterAsBigDecimal());
-								if (iPara.getParameter_ToAsBigDecimal() != null)
-									info = info + " - " + decimalFormat.format(iPara.getParameter_ToAsBigDecimal());
-								iPara.setInfo(info);
-							}
-							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
-								+ " = " + variable + " (=" + bd + "=)");
+							info = info + " - " + dateFormat.format(iPara.getParameter_ToAsTimestamp());
 						}
-						else if (DisplayType.isDate(sPara.getDisplayType()))
-						{
-							SimpleDateFormat dateFormat = DisplayType.getDateFormat(sPara.getDisplayType());
-							Timestamp ts = toTimestamp(value);
-							iPara.setParameter(ts);
-							if (toValue != null) {
-								ts = toTimestamp(toValue);
-								iPara.setParameter_To(ts);
-							}
-							if (Util.isEmpty(paraDesc))
-							{
-								String info = dateFormat.format(iPara.getParameterAsTimestamp());
-								if (iPara.getParameter_ToAsTimestamp() != null)
-								{
-									info = info + " - " + dateFormat.format(iPara.getParameter_ToAsTimestamp());
-								}
-								iPara.setInfo(info);
-							}
-							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
-								+ " = " + variable + " (=" + ts + "=)");
-						}
-						else
-						{
-							iPara.setParameter(value.toString());
-							if (toValue != null)
-							{
-								iPara.setParameter_To(toValue.toString());
-							}
-							if (Util.isEmpty(paraDesc))
-							{
-								String info = iPara.getParameterAsString();
-								if (iPara.getParameter_ToAsString() != null)
-								{
-									info = info + " - " + iPara.getParameter_ToAsString();
-								}
-								iPara.setInfo(info);
-							}
-							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
-								+ " = " + variable
-								+ " (=" + value + "=) " + value.getClass().getName());
-						}
-						iParams.add(iPara);
+						iPara.setInfo(info);
 					}
-					catch (Exception e)
+					if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
+						+ " = " + variable + " (=" + ts + "=)");
+				}
+				else
+				{
+					iPara.setParameter(value.toString());
+					if (toValue != null)
 					{
-						log.warning(sPara.getColumnName()
-							+ " = " + variable + " (" + value
-							+ ") " + value.getClass().getName()
-							+ " - " + e.getLocalizedMessage());
+						iPara.setParameter_To(toValue.toString());
 					}
-			}	//	Drill Rule Parameter loop
-			pi.setParameter(iParams.toArray(new ProcessInfoParameter[0]));
+					if (Util.isEmpty(paraDesc))
+					{
+						String info = iPara.getParameterAsString();
+						if (iPara.getParameter_ToAsString() != null)
+						{
+							info = info + " - " + iPara.getParameter_ToAsString();
+						}
+						iPara.setInfo(info);
+					}
+					if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
+						+ " = " + variable
+						+ " (=" + value + "=) " + value.getClass().getName());
+				}
+				// Mandatory check
+				if(processPara.isMandatory() && Util.isEmpty(sPara.getParameterDefault()) 
+						&& !MProcessDrillRule.SHOWHELP_ShowHelp.equalsIgnoreCase(processDrillRule.getShowHelp())) {
+					if((!processPara.isRange()) || (processPara.isRange() && Util.isEmpty(sPara.getParameterToDefault())))
+						throw new AdempiereException(Msg.parseTranslation(Env.getCtx(), "@FillMandatoryDrillRulePara@"));
+				}
+				processParasExclDrillRuleParas.remove(processPara);
+				iParams.add(iPara);
+			}
+			catch (Exception e)
+			{
+				log.warning(sPara.getColumnName()
+					+ " = " + variable + " (" + value
+					+ ") " + value.getClass().getName()
+					+ " - " + e.getLocalizedMessage());
+			}
+		}	//	Drill Rule Parameter loop
+		
+		// Mandatory check
+		if(!MProcessDrillRule.SHOWHELP_ShowHelp.equalsIgnoreCase(processDrillRule.getShowHelp())) {
+			for(MProcessPara unsetProcessPara : processParasExclDrillRuleParas) {
+				if(unsetProcessPara.isMandatory()) {
+					throw new AdempiereException(Msg.parseTranslation(Env.getCtx(), "@FillMandatoryDrillRulePara@"));
+				}
+			}
+		}
+		pi.setParameter(iParams.toArray(new ProcessInfoParameter[0]));
 
 		if(!isKeyParameterSet) {
 			throw new AdempiereException(Msg.parseTranslation(Env.getCtx(), "@NoDrillKeyParameterSet@"));
 		}
 	}	//	fillParameter
-
-	private boolean hasMandatoryProcessPara(int processID) {
-		MProcess process = new MProcess(Env.getCtx(), processID, null);
-		for(MProcessPara processPara : process.getParameters()) {
-			if(processPara.isMandatory())
-				return true;
-		}
-		return false;
-	}
 
 	private Timestamp toTimestamp(Object value) {
 		Timestamp ts = null;

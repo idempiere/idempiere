@@ -51,6 +51,19 @@ public class MWFProcess extends X_AD_WF_Process
 	 */
 	private static final long serialVersionUID = 5981488658756275526L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_WF_Process_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MWFProcess(Properties ctx, String AD_WF_Process_UU, String trxName) {
+        super(ctx, AD_WF_Process_UU, trxName);
+		if (Util.isEmpty(AD_WF_Process_UU))
+			throw new IllegalArgumentException ("Cannot create new WF Process directly");
+		m_state = new StateEngine (getWFState());
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

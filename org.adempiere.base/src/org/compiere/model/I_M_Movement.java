@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Movement
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_M_Movement 
 {
@@ -253,12 +253,12 @@ public interface I_M_Movement
     /** Column name DateReceived */
     public static final String COLUMNNAME_DateReceived = "DateReceived";
 
-	/** Set Date received.
+	/** Set Date Received.
 	  * Date a product was received
 	  */
 	public void setDateReceived (Timestamp DateReceived);
 
-	/** Get Date received.
+	/** Get Date Received.
 	  * Date a product was received
 	  */
 	public Timestamp getDateReceived();

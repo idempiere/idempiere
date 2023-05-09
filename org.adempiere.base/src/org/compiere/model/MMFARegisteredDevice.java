@@ -39,6 +39,16 @@ public class MMFARegisteredDevice extends X_MFA_RegisteredDevice {
 	 */
 	private static final long serialVersionUID = 7913538709234444407L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param MFA_RegisteredDevice_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMFARegisteredDevice(Properties ctx, String MFA_RegisteredDevice_UU, String trxName) {
+        super(ctx, MFA_RegisteredDevice_UU, trxName);
+    }
+
 	/**
 	 * Read/Create empty MFA Registered Device
 	 *

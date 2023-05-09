@@ -103,6 +103,8 @@ public class FDialog
     }
 
 	/**
+	 * @deprecated Use {@link Dialog}.warn(windowNo, adMessage, message, null) instead
+	 * 
 	 *	Display warning with warning icon
 	 *	@param	windowNo	Number of Window
      *  @param comp
@@ -377,9 +379,11 @@ public class FDialog
 			weditor = new WNumberEditor();
 			break;
 		case DisplayType.TableDir:
+		case DisplayType.TableDirUU:
 			weditor = new WTableDirEditor(lookup, "", "", true, false, true);
 			break;
 		case DisplayType.Search:
+		case DisplayType.SearchUU:
 			weditor = new WSearchEditor(lookup, "", "", true, false, true);
 			break;
 		case DisplayType.ChosenMultipleSelectionSearch:

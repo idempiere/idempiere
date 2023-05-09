@@ -28,14 +28,14 @@ import org.zkoss.zul.event.ListDataEvent;
 import org.zkoss.zul.ext.Sortable;
 
 /**
- * 
+ * List model for {@link GridTable}
  * @author Low Heng Sin
  *
  */
 public class GridTableListModel extends AbstractListModel<Object> implements TableModelListener, Sortable<Object> {
 	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 698185856751242764L;
 	private GridTable tableModel;
@@ -47,10 +47,10 @@ public class GridTableListModel extends AbstractListModel<Object> implements Tab
 	private int pageSize = -1;
 	private int pageNo = 0;
 
+	/** Edit mode flag. When editing is true, do not fire ListDataEvent.CONTENTS_CHANGED event. **/
 	private boolean editing = false;
 
 	/**
-	 * 
 	 * @param tableModel
 	 * @param windowNo
 	 */
@@ -142,7 +142,7 @@ public class GridTableListModel extends AbstractListModel<Object> implements Tab
 	}
 	
 	/**
-	 * Request components that attached to this model to re-render a row.
+	 * Delegate to {@link #updateComponent(int, int)}.
 	 * @param row
 	 */
 	public void updateComponent(int row) {
@@ -151,6 +151,7 @@ public class GridTableListModel extends AbstractListModel<Object> implements Tab
 	
 	/**
 	 * Request components that attached to this model to re-render a range of row.
+	 * Fire ListDataEvent.CONTENTS_CHANGED event for fromRow to toRow.
 	 * @param fromRow
 	 * @param toRow
 	 */
@@ -162,6 +163,7 @@ public class GridTableListModel extends AbstractListModel<Object> implements Tab
 	}
 
 	/**
+	 * Sort and fire ListDataEvent.CONTENTS_CHANGED event to notify UI component.
 	 * @param cmpr
 	 * @param ascending
 	 */
@@ -178,6 +180,7 @@ public class GridTableListModel extends AbstractListModel<Object> implements Tab
 	}
 
 	/**
+	 * Handle TableModelEvent from GridTable.
 	 * @param e
 	 * @see TableModelListener#tableChanged(TableModelEvent) 
 	 */
@@ -216,6 +219,8 @@ public class GridTableListModel extends AbstractListModel<Object> implements Tab
 	}
 
 	/**
+	 * Set editing to true/false.
+	 * When editing is true, do not fire ListDataEvent.CONTENTS_CHANGED event. 
 	 * @param b
 	 */
 	public void setEditing(boolean b) {

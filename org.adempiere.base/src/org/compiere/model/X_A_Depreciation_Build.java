@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Depreciation_Build
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Depreciation_Build")
-public class X_A_Depreciation_Build extends PO implements I_A_Depreciation_Build, I_Persistent 
+public class X_A_Depreciation_Build extends PO implements I_A_Depreciation_Build, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_A_Depreciation_Build (Properties ctx, int A_Depreciation_Build_ID, String trxName)
@@ -54,6 +54,26 @@ public class X_A_Depreciation_Build extends PO implements I_A_Depreciation_Build
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Depreciation_Build (Properties ctx, String A_Depreciation_Build_UU, String trxName)
+    {
+      super (ctx, A_Depreciation_Build_UU, trxName);
+      /** if (A_Depreciation_Build_UU == null)
+        {
+			setA_Depreciation_Build_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Depreciation_Build (Properties ctx, String A_Depreciation_Build_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Depreciation_Build_UU, trxName, virtualColumns);
+      /** if (A_Depreciation_Build_UU == null)
+        {
+			setA_Depreciation_Build_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Depreciation_Build (Properties ctx, ResultSet rs, String trxName)
     {
@@ -61,7 +81,7 @@ public class X_A_Depreciation_Build extends PO implements I_A_Depreciation_Build
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -106,7 +126,7 @@ public class X_A_Depreciation_Build extends PO implements I_A_Depreciation_Build
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Depreciation_Build_ID()));
     }
@@ -271,7 +291,7 @@ public class X_A_Depreciation_Build extends PO implements I_A_Depreciation_Build
 	public static final String POSTINGTYPE_Reservation = "R";
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
-	/** Set PostingType.
+	/** Set Posting Type.
 		@param PostingType The type of posted amount for the transaction
 	*/
 	public void setPostingType (String PostingType)
@@ -280,7 +300,7 @@ public class X_A_Depreciation_Build extends PO implements I_A_Depreciation_Build
 		set_Value (COLUMNNAME_PostingType, PostingType);
 	}
 
-	/** Get PostingType.
+	/** Get Posting Type.
 		@return The type of posted amount for the transaction
 	  */
 	public String getPostingType()
@@ -302,10 +322,10 @@ public class X_A_Depreciation_Build extends PO implements I_A_Depreciation_Build
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -324,10 +344,10 @@ public class X_A_Depreciation_Build extends PO implements I_A_Depreciation_Build
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

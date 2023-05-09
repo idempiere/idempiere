@@ -191,6 +191,16 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 		}
 	}	//	MClient
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Client_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MClient(Properties ctx, String AD_Client_UU, String trxName) {
+        super(ctx, AD_Client_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 * 	@param ctx context

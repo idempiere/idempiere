@@ -269,9 +269,9 @@ public class Scheduler extends AdempiereServer
 		}
 		
 		List<String> sendErrors = new ArrayList<>();
-		// always notify recipients
+		// notify recipients
 		Integer[] userIDs = scheduler.getRecipientAD_User_IDs(true);
-		if (userIDs.length > 0) 
+		if (userIDs.length > 0 && pi.isNotifyRecipients()) 
 		{
 			ProcessInfoUtil.setLogFromDB(pi);
 			List<File> fileList = new ArrayList<File>();

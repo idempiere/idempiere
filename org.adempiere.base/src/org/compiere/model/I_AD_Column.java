@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Column
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 public interface I_AD_Column 
 {
@@ -220,13 +220,13 @@ public interface I_AD_Column
 
 	/** Set Always Updatable Logic.
 	  * Logic to determine if field is Updatable irrespective if record&#039;
-s active status or processed status. This logic Applicable only if Always Updatable is Yes.
+s active status or processed status. This logic Applicable only if Always Updatable is N.
 	  */
 	public void setAlwaysUpdatableLogic (String AlwaysUpdatableLogic);
 
 	/** Get Always Updatable Logic.
 	  * Logic to determine if field is Updatable irrespective if record&#039;
-s active status or processed status. This logic Applicable only if Always Updatable is Yes.
+s active status or processed status. This logic Applicable only if Always Updatable is N.
 	  */
 	public String getAlwaysUpdatableLogic();
 

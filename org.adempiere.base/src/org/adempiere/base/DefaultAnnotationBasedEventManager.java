@@ -26,7 +26,7 @@ package org.adempiere.base;
 
 import org.osgi.service.component.annotations.Component;
 
-@Component(immediate = true, service = {})
+@Component(immediate = true, service = {DefaultAnnotationBasedEventManager.class})
 public class DefaultAnnotationBasedEventManager extends AnnotationBasedEventManager {
 
 	/**

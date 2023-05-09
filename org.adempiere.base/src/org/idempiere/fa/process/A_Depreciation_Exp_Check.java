@@ -12,6 +12,7 @@ import org.compiere.model.MDepreciationEntry;
 import org.compiere.model.MDepreciationExp;
 import org.compiere.model.MDepreciationWorkfile;
 import org.compiere.model.MPeriod;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -53,6 +54,7 @@ public class A_Depreciation_Exp_Check extends SvrProcess
 			}
 			else
 			{
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 	}

@@ -25,6 +25,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Cash Line Model
@@ -45,6 +46,18 @@ public class MCashLine extends X_C_CashLine
 	private static final long serialVersionUID = 5023249596033465923L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_CashLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCashLine(Properties ctx, String C_CashLine_UU, String trxName) {
+        super(ctx, C_CashLine_UU, trxName);
+		if (Util.isEmpty(C_CashLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -55,13 +68,18 @@ public class MCashLine extends X_C_CashLine
 	{
 		super (ctx, C_CashLine_ID, trxName);
 		if (C_CashLine_ID == 0)
-		{
-			setAmount (Env.ZERO);
-			setDiscountAmt(Env.ZERO);
-			setWriteOffAmt(Env.ZERO);
-			setIsGenerated(false);
-		}
+			setInitialDefaults();
 	}	//	MCashLine
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAmount (Env.ZERO);
+		setDiscountAmt(Env.ZERO);
+		setWriteOffAmt(Env.ZERO);
+		setIsGenerated(false);
+	}
 
 	/**
 	 * 	Load Cosntructor

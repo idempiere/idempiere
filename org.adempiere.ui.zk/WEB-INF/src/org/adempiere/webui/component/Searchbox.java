@@ -12,18 +12,22 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import org.adempiere.webui.apps.form.WTreeMaintenance;
+
 /**
- * 
+ * Search box for {@link WTreeMaintenance} form.
  * @author Low Heng Sin
- *
  */
 public class Searchbox extends EditorBox
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5164796522319002269L;
 
+	/**
+	 * Default constructor
+	 */
 	public Searchbox()
 	{
 	}

@@ -32,6 +32,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Secure;
+import org.compiere.util.Util;
 
 /**
  * 	Issue Report Model
@@ -103,6 +104,18 @@ public class MIssue extends X_AD_Issue
 	/** Answer Delimiter		*/
 	public static String	DELIMITER = "|";
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Issue_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MIssue(Properties ctx, String AD_Issue_UU, String trxName) {
+        super(ctx, AD_Issue_UU, trxName);
+		if (Util.isEmpty(AD_Issue_UU))
+			setInitialDefaults(ctx);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -113,19 +126,24 @@ public class MIssue extends X_AD_Issue
 	{
 		super (ctx, AD_Issue_ID, trxName);
 		if (AD_Issue_ID == 0)
-		{
-			setProcessed (false);	// N
-			setSystemStatus(SYSTEMSTATUS_Evaluation);
-			try
-			{
-				init(ctx);
-			}
-			catch (Exception e)
-			{
-				e.getStackTrace();
-			}
-		}
+			setInitialDefaults(ctx);
 	}	//	MIssue
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults(Properties ctx) {
+		setProcessed (false);	// N
+		setSystemStatus(SYSTEMSTATUS_Evaluation);
+		try
+		{
+			init(ctx);
+		}
+		catch (Exception e)
+		{
+			e.getStackTrace();
+		}
+	}
 
 	/**
 	 * 	Load Constructor

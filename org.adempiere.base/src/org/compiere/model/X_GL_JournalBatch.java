@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_JournalBatch
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="GL_JournalBatch")
-public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persistent 
+public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_GL_JournalBatch (Properties ctx, int GL_JournalBatch_ID, String trxName)
@@ -82,6 +82,52 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
         } */
     }
 
+    /** Standard Constructor */
+    public X_GL_JournalBatch (Properties ctx, String GL_JournalBatch_UU, String trxName)
+    {
+      super (ctx, GL_JournalBatch_UU, trxName);
+      /** if (GL_JournalBatch_UU == null)
+        {
+			setC_DocType_ID (0);
+			setDescription (null);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setGL_JournalBatch_ID (0);
+			setPostingType (null);
+// A
+			setProcessed (false);
+			setProcessing (false);
+			setTotalCr (Env.ZERO);
+			setTotalDr (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_GL_JournalBatch (Properties ctx, String GL_JournalBatch_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, GL_JournalBatch_UU, trxName, virtualColumns);
+      /** if (GL_JournalBatch_UU == null)
+        {
+			setC_DocType_ID (0);
+			setDescription (null);
+			setDocAction (null);
+// CO
+			setDocStatus (null);
+// DR
+			setDocumentNo (null);
+			setGL_JournalBatch_ID (0);
+			setPostingType (null);
+// A
+			setProcessed (false);
+			setProcessing (false);
+			setTotalCr (Env.ZERO);
+			setTotalDr (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_GL_JournalBatch (Properties ctx, ResultSet rs, String trxName)
     {
@@ -89,7 +135,7 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
     }
 
     /** AccessLevel
-      * @return 1 - Org 
+      * @return 1 - Org
       */
     protected int get_AccessLevel()
     {
@@ -386,7 +432,7 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getDocumentNo());
     }
@@ -470,10 +516,10 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
 	public boolean isApproved()
 	{
 		Object oo = get_Value(COLUMNNAME_IsApproved);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -491,7 +537,7 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
 	public static final String POSTINGTYPE_Reservation = "R";
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
-	/** Set PostingType.
+	/** Set Posting Type.
 		@param PostingType The type of posted amount for the transaction
 	*/
 	public void setPostingType (String PostingType)
@@ -500,7 +546,7 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
 		set_Value (COLUMNNAME_PostingType, PostingType);
 	}
 
-	/** Get PostingType.
+	/** Get Posting Type.
 		@return The type of posted amount for the transaction
 	  */
 	public String getPostingType()
@@ -522,10 +568,10 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -544,10 +590,10 @@ public class X_GL_JournalBatch extends PO implements I_GL_JournalBatch, I_Persis
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -238,6 +239,18 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	private static CLogger		s_log = CLogger.getCLogger (MLocator.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Locator_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MLocator(Properties ctx, String M_Locator_UU, String trxName) {
+        super(ctx, M_Locator_UU, trxName);
+		if (Util.isEmpty(M_Locator_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Locator Constructor
 	 *	@param ctx Context
@@ -248,11 +261,16 @@ public class MLocator extends X_M_Locator implements ImmutablePOSupport
 	{
 		super (ctx, M_Locator_ID, trxName);
 		if (M_Locator_ID == 0)
-		{
-			setIsDefault (false);
-			setPriorityNo (50);
-		}
+			setInitialDefaults();
 	}	//	MLocator
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDefault (false);
+		setPriorityNo (50);
+	}
 
 	/**
 	 * 	New Locator Constructor with XYZ=000

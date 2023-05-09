@@ -114,14 +114,23 @@ public class MMovementLineMA extends X_M_MovementLineMA
 	private static CLogger	s_log	= CLogger.getCLogger (MMovementLineMA.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_MovementLineMA_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMovementLineMA(Properties ctx, String M_MovementLineMA_UU, String trxName) {
+        super(ctx, M_MovementLineMA_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_MovementLineMA_ID ignored
 	 *	@param trxName trx
 	 */
-	public MMovementLineMA (Properties ctx, int M_MovementLineMA_ID,
-		String trxName)
+	public MMovementLineMA (Properties ctx, int M_MovementLineMA_ID, String trxName)
 	{
 		super (ctx, M_MovementLineMA_ID, trxName);
 		if (M_MovementLineMA_ID != 0)

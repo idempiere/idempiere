@@ -25,16 +25,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for I_GLJournal
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="I_GLJournal")
-public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent 
+public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_I_GLJournal (Properties ctx, int I_GLJournal_ID, String trxName)
@@ -58,6 +58,28 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_I_GLJournal (Properties ctx, String I_GLJournal_UU, String trxName)
+    {
+      super (ctx, I_GLJournal_UU, trxName);
+      /** if (I_GLJournal_UU == null)
+        {
+			setI_GLJournal_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_I_GLJournal (Properties ctx, String I_GLJournal_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, I_GLJournal_UU, trxName, virtualColumns);
+      /** if (I_GLJournal_UU == null)
+        {
+			setI_GLJournal_ID (0);
+			setI_IsImported (false);
+        } */
+    }
+
     /** Load Constructor */
     public X_I_GLJournal (Properties ctx, ResultSet rs, String trxName)
     {
@@ -65,7 +87,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
     }
 
     /** AccessLevel
-      * @return 2 - Client 
+      * @return 2 - Client
       */
     protected int get_AccessLevel()
     {
@@ -558,16 +580,16 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Client Key.
-		@param ClientValue Key of the Client
+	/** Set Tenant Key.
+		@param ClientValue Key of the Tenant
 	*/
 	public void setClientValue (String ClientValue)
 	{
 		set_Value (COLUMNNAME_ClientValue, ClientValue);
 	}
 
-	/** Get Client Key.
-		@return Key of the Client
+	/** Get Tenant Key.
+		@return Key of the Tenant
 	  */
 	public String getClientValue()
 	{
@@ -1034,7 +1056,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getI_GLJournal_ID()));
     }
@@ -1068,10 +1090,10 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 	public boolean isI_IsImported()
 	{
 		Object oo = get_Value(COLUMNNAME_I_IsImported);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1091,10 +1113,10 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 	public boolean isCreateNewBatch()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCreateNewBatch);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1114,10 +1136,10 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 	public boolean isCreateNewJournal()
 	{
 		Object oo = get_Value(COLUMNNAME_IsCreateNewJournal);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1246,7 +1268,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 	public static final String POSTINGTYPE_Reservation = "R";
 	/** Statistical = S */
 	public static final String POSTINGTYPE_Statistical = "S";
-	/** Set PostingType.
+	/** Set Posting Type.
 		@param PostingType The type of posted amount for the transaction
 	*/
 	public void setPostingType (String PostingType)
@@ -1255,7 +1277,7 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 		set_Value (COLUMNNAME_PostingType, PostingType);
 	}
 
-	/** Get PostingType.
+	/** Get Posting Type.
 		@return The type of posted amount for the transaction
 	  */
 	public String getPostingType()
@@ -1277,10 +1299,10 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -1299,10 +1321,10 @@ public class X_I_GLJournal extends PO implements I_I_GLJournal, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_Processing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

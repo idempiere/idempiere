@@ -29,6 +29,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
  
 /**
 *	Bank Statement Model
@@ -54,6 +55,18 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	private static final long serialVersionUID = -5635804381201264475L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_BankStatement_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBankStatement(Properties ctx, String C_BankStatement_UU, String trxName) {
+        super(ctx, C_BankStatement_UU, trxName);
+		if (Util.isEmpty(C_BankStatement_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -64,19 +77,24 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	{
 		super (ctx, C_BankStatement_ID, trxName);
 		if (C_BankStatement_ID == 0)
-		{ 
-			setStatementDate (new Timestamp(System.currentTimeMillis()));	// @Date@
-			setDocAction (DOCACTION_Complete);	// CO
-			setDocStatus (DOCSTATUS_Drafted);	// DR
-			setBeginningBalance(Env.ZERO);
-			setStatementDifference(Env.ZERO);
-			setEndingBalance (Env.ZERO);
-			setIsApproved (false);	// N
-			setIsManual (true);	// Y
-			setPosted (false);	// N
-			super.setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MBankStatement
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setStatementDate (new Timestamp(System.currentTimeMillis()));	// @Date@
+		setDocAction (DOCACTION_Complete);	// CO
+		setDocStatus (DOCSTATUS_Drafted);	// DR
+		setBeginningBalance(Env.ZERO);
+		setStatementDifference(Env.ZERO);
+		setEndingBalance (Env.ZERO);
+		setIsApproved (false);	// N
+		setIsManual (true);	// Y
+		setPosted (false);	// N
+		super.setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

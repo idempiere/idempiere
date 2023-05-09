@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 
 /**
@@ -36,6 +37,19 @@ public class MResourceAssignment extends X_S_ResourceAssignment
 	 */
 	private static final long serialVersionUID = 4230793339153210998L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param S_ResourceAssignment_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MResourceAssignment(Properties ctx, String S_ResourceAssignment_UU, String trxName) {
+        super(ctx, S_ResourceAssignment_UU, trxName);
+		p_info.setUpdateable(true);		//	default table is not updateable
+		if (Util.isEmpty(S_ResourceAssignment_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Stnadard Constructor
 	 *	@param ctx
@@ -47,13 +61,18 @@ public class MResourceAssignment extends X_S_ResourceAssignment
 		p_info.setUpdateable(true);		//	default table is not updateable
 		//	Default values
 		if (S_ResourceAssignment_ID == 0)
-		{
-			setAssignDateFrom(new Timestamp(System.currentTimeMillis()));
-			setQty(Env.ONE);
-			setName(".");
-			setIsConfirmed(false);
-		}
+			setInitialDefaults();
 	}	//	MResourceAssignment
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAssignDateFrom(new Timestamp(System.currentTimeMillis()));
+		setQty(Env.ONE);
+		setName(".");
+		setIsConfirmed(false);
+	}
 
 	/**
 	 * 	Load Contsructor

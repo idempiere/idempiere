@@ -36,6 +36,16 @@ public class MReportSource extends X_PA_ReportSource
 	private static final long serialVersionUID = 6085437491271873555L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_ReportSource_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MReportSource(Properties ctx, String PA_ReportSource_UU, String trxName) {
+        super(ctx, PA_ReportSource_UU, trxName);
+    }
+
 	/**
 	 * 	Constructor
 	 * 	@param ctx context
@@ -45,9 +55,6 @@ public class MReportSource extends X_PA_ReportSource
 	public MReportSource (Properties ctx, int PA_ReportSource_ID, String trxName)
 	{
 		super (ctx, PA_ReportSource_ID, trxName);
-		if (PA_ReportSource_ID == 0)
-		{
-		}
 	}	//	MReportSource
 
 	/**

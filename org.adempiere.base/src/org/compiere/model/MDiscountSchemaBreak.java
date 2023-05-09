@@ -41,6 +41,16 @@ public class MDiscountSchemaBreak extends X_M_DiscountSchemaBreak implements Imm
 	 */
 	private static final long serialVersionUID = -5405425697628869517L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_DiscountSchemaBreak_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDiscountSchemaBreak(Properties ctx, String M_DiscountSchemaBreak_UU, String trxName) {
+        super(ctx, M_DiscountSchemaBreak_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

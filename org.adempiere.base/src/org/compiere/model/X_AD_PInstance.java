@@ -22,16 +22,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PInstance
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_PInstance")
-public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent 
+public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_AD_PInstance (Properties ctx, int AD_PInstance_ID, String trxName)
@@ -63,6 +63,36 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_PInstance (Properties ctx, String AD_PInstance_UU, String trxName)
+    {
+      super (ctx, AD_PInstance_UU, trxName);
+      /** if (AD_PInstance_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setAD_Process_ID (0);
+			setIsProcessing (false);
+			setIsRunAsJob (false);
+// N
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_PInstance (Properties ctx, String AD_PInstance_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_PInstance_UU, trxName, virtualColumns);
+      /** if (AD_PInstance_UU == null)
+        {
+			setAD_PInstance_ID (0);
+			setAD_Process_ID (0);
+			setIsProcessing (false);
+			setIsRunAsJob (false);
+// N
+			setRecord_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_PInstance (Properties ctx, ResultSet rs, String trxName)
     {
@@ -70,7 +100,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -143,7 +173,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_PInstance_ID()));
     }
@@ -219,6 +249,34 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_AD_Session getAD_Session() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Session)MTable.get(getCtx(), org.compiere.model.I_AD_Session.Table_ID)
+			.getPO(getAD_Session_ID(), get_TrxName());
+	}
+
+	/** Set Session.
+		@param AD_Session_ID User Session Online or Web
+	*/
+	public void setAD_Session_ID (int AD_Session_ID)
+	{
+		if (AD_Session_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_Session_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_Session_ID, Integer.valueOf(AD_Session_ID));
+	}
+
+	/** Get Session.
+		@return User Session Online or Web
+	  */
+	public int getAD_Session_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Session_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -275,10 +333,10 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	public boolean isProcessing()
 	{
 		Object oo = get_Value(COLUMNNAME_IsProcessing);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -297,10 +355,10 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	public boolean isRunAsJob()
 	{
 		Object oo = get_Value(COLUMNNAME_IsRunAsJob);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -320,10 +378,10 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;

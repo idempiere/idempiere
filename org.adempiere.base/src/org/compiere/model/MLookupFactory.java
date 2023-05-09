@@ -194,7 +194,8 @@ public class MLookupFactory
 			needToAddSecurity = false;
 		}
 		//	Table or Search with Reference_Value
-		else if ((AD_Reference_ID == DisplayType.Table || AD_Reference_ID == DisplayType.Search
+		else if ((AD_Reference_ID == DisplayType.Table || AD_Reference_ID == DisplayType.TableUU
+			|| AD_Reference_ID == DisplayType.Search || AD_Reference_ID == DisplayType.SearchUU
 			|| AD_Reference_ID == DisplayType.ChosenMultipleSelectionTable || AD_Reference_ID == DisplayType.ChosenMultipleSelectionSearch)
 			&& AD_Reference_Value_ID != 0)
 		{
@@ -462,10 +463,10 @@ public class MLookupFactory
 		}
 
 		StringBuilder realSQL = new StringBuilder("SELECT ");
-		if (!KeyColumn.endsWith("_ID"))
+		if (!KeyColumn.endsWith("_ID") && !KeyColumn.endsWith("_UU"))
 			realSQL.append("NULL,");
 		
-		boolean showID = DisplayColumn.equals(TableName+"_ID");
+		boolean showID = DisplayColumn.equals(TableName+"_ID") || DisplayColumn.equals(PO.getUUIDColumnName(TableName));
 		
 		ArrayList<LookupDisplayColumn> list = null;
 		if (showID) {
@@ -497,7 +498,7 @@ public class MLookupFactory
 		if (IsTranslated && !Env.isBaseLanguage(language, TableName))
 		{
 			realSQL.append(TableName).append(".").append(KeyColumn).append(",");
-			if (KeyColumn.endsWith("_ID"))
+			if (KeyColumn.endsWith("_ID") || KeyColumn.endsWith("_UU"))
 				realSQL.append("NULL,");
 			if (isValueDisplayed)
 				realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '").append(separator).append("' || ");
@@ -525,7 +526,7 @@ public class MLookupFactory
 		else
 		{
 			realSQL.append(TableName).append(".").append(KeyColumn).append(",");
-			if (KeyColumn.endsWith("_ID"))
+			if (KeyColumn.endsWith("_ID") || KeyColumn.endsWith("_UU"))
 				realSQL.append("NULL,");
 			if (isValueDisplayed)
 				realSQL.append("NVL(").append(TableName).append(".Value,'-1') || '").append(separator).append("' || ");
@@ -601,8 +602,14 @@ public class MLookupFactory
 		if (isValueDisplayed)
 			lookupDisplayColumns.add("Value");
 		lookupDisplayColumns.add(lookupDisplayColumn != null ? lookupDisplayColumn : DisplayColumn);
-		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
 		retValue.lookupDisplayColumns = lookupDisplayColumns;
+		if(list != null) {
+			retValue.lookupDisplayColumnNames = new ArrayList<>();
+			for (LookupDisplayColumn ldc : list) {
+				retValue.lookupDisplayColumnNames.add(ldc.ColumnName);
+			}
+		}
+		s_cacheRefTable.put(key.toString(), retValue.cloneIt());
 		return retValue;
 	}	//	getLookup_Table
 
@@ -614,7 +621,7 @@ public class MLookupFactory
 	 *  @param AD_Reference_Value_ID reference value
 	 *	@return	SELECT Name FROM Table
 	 */
-	static public String getLookup_TableEmbed (Language language,
+	public static String getLookup_TableEmbed (Language language,
 		String BaseColumn, String BaseTable, int AD_Reference_Value_ID)
 	{
 		String sql = "SELECT t.TableName,ck.ColumnName AS KeyColumn,"
@@ -664,9 +671,14 @@ public class MLookupFactory
 			pstmt = null;
 		}
 
-		boolean showID = DisplayColumn.equals(TableName+"_ID");
+		int Column_ID = MColumn.getColumn_ID(BaseTable, BaseColumn);
+		MColumn column = MColumn.get(Env.getCtx(), Column_ID);
+		boolean showID = DisplayColumn.equals(TableName+"_ID") || DisplayColumn.equals(PO.getUUIDColumnName(TableName));
 		if (showID) {
-			return getLookup_TableDirEmbed(language, DisplayColumn, BaseTable, BaseColumn);
+			if (column.isVirtualColumn())
+				return getLookup_TableDirEmbed(language, DisplayColumn, BaseTable, column.getColumnSQL());
+			else
+				return getLookup_TableDirEmbed(language, DisplayColumn, BaseTable, BaseColumn);
 		}
 
 		// If it's self referencing then use other alias - teo_sarca [ 1739544 ]
@@ -725,8 +737,6 @@ public class MLookupFactory
 
 		embedSQL.append(" WHERE ");
 		
-		int Column_ID = MColumn.getColumn_ID(BaseTable, BaseColumn);
-		MColumn column = MColumn.get(Env.getCtx(), Column_ID);
 		// If is not virtual column - teo_sarca [ 1739530 ]
 		if (!column.isVirtualColumn())
 		{
@@ -735,7 +745,7 @@ public class MLookupFactory
 		} else if (translated) {
 			embedSQL.append(TableNameAlias).append(".").append(KeyColumn).append("=").append(column.getColumnSQL(true));
 		} else {
-			embedSQL.append(KeyColumn).append("=").append(column.getColumnSQL(true));
+			embedSQL.append(TableNameAlias).append(".").append(KeyColumn).append("=").append(column.getColumnSQL(true));
 		}
 
 		return embedSQL.toString();
@@ -753,9 +763,9 @@ public class MLookupFactory
 	static private MLookupInfo getLookup_TableDir (Properties ctx, Language language,
 		int WindowNo, String ColumnName)
 	{
-		if (!ColumnName.endsWith("_ID"))
+		if (!ColumnName.endsWith("_ID") && !ColumnName.endsWith("_UU"))
 		{
-			String error = "Key does not end with '_ID': " + ColumnName;
+			String error = "Key does not end with '_ID' or '_UU': " + ColumnName;
 			s_log.log(Level.SEVERE, error, new Exception(error));
 			return null;
 		}
@@ -887,7 +897,8 @@ public class MLookupFactory
 				displayColumn.append(DB.TO_CHAR(columnSQL, ldc.DisplayType, language.getAD_Language()));
 			}
 			//	Table
-			else if ((ldc.DisplayType == DisplayType.Table || ldc.DisplayType == DisplayType.Search) && ldc.AD_Reference_ID != 0)
+			else if ((ldc.DisplayType == DisplayType.Table || ldc.DisplayType == DisplayType.TableUU
+					|| ldc.DisplayType == DisplayType.Search || ldc.DisplayType == DisplayType.SearchUU) && ldc.AD_Reference_ID != 0)
 			{
 				String embeddedSQL;
 				if (ldc.IsVirtual)
@@ -898,8 +909,8 @@ public class MLookupFactory
 					displayColumn.append("(").append(embeddedSQL).append(")");
 			}
 			//  TableDir
-			else if ((ldc.DisplayType == DisplayType.TableDir || ldc.DisplayType == DisplayType.Search)
-				&& ldc.ColumnName.endsWith("_ID"))
+			else if ((ldc.DisplayType == DisplayType.TableDir || ldc.DisplayType == DisplayType.Search) && ldc.ColumnName.endsWith("_ID")
+				  || (ldc.DisplayType == DisplayType.TableDirUU || ldc.DisplayType == DisplayType.SearchUU) && ldc.ColumnName.endsWith("_UU"))
 			{
 				String embeddedSQL;
 				if (ldc.IsVirtual)
@@ -1007,8 +1018,7 @@ public class MLookupFactory
 		// If is not virtual column - teo_sarca [ 1739530 ]
 		if (! BaseColumn.trim().startsWith("(")) {
 			embedSQL.append(BaseTable).append(".").append(BaseColumn);
-		}
-		else {
+		} else {
 			embedSQL.append(BaseColumn);
 		}
 		embedSQL.append("=").append(TableName).append(".").append(ColumnName);

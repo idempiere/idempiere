@@ -214,7 +214,7 @@ public abstract class CreateFromInvoice extends CreateFrom
 			sql.append(" HAVING l.MovementQty-SUM(COALESCE(mi.Qty, 0)) <>0");
 		else
 			sql.append(" HAVING l.MovementQty-SUM(COALESCE(il.QtyInvoiced,0)) <>0");
-		sql.append("ORDER BY l.Line");
+		sql.append(" ORDER BY l.Line");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try

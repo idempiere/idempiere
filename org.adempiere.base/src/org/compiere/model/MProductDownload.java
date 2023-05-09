@@ -106,14 +106,23 @@ public class MProductDownload extends X_M_ProductDownload implements ImmutablePO
 	/**	Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MProductDownload.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_ProductDownload_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProductDownload(Properties ctx, String M_ProductDownload_UU, String trxName) {
+        super(ctx, M_ProductDownload_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
 	 *	@param M_ProductDownload_ID id
 	 *	@param trxName trx
 	 */
-	public MProductDownload (Properties ctx, int M_ProductDownload_ID,
-		String trxName)
+	public MProductDownload (Properties ctx, int M_ProductDownload_ID, String trxName)
 	{
 		super (ctx, M_ProductDownload_ID, trxName);
 	}	//	MProductDownload

@@ -24,16 +24,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for B_SellerFunds
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="B_SellerFunds")
-public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent 
+public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_B_SellerFunds (Properties ctx, int B_SellerFunds_ID, String trxName)
@@ -61,6 +61,32 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_B_SellerFunds (Properties ctx, String B_SellerFunds_UU, String trxName)
+    {
+      super (ctx, B_SellerFunds_UU, trxName);
+      /** if (B_SellerFunds_UU == null)
+        {
+			setAD_User_ID (0);
+			setB_SellerFunds_ID (0);
+			setCommittedAmt (Env.ZERO);
+			setNonCommittedAmt (Env.ZERO);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_B_SellerFunds (Properties ctx, String B_SellerFunds_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, B_SellerFunds_UU, trxName, virtualColumns);
+      /** if (B_SellerFunds_UU == null)
+        {
+			setAD_User_ID (0);
+			setB_SellerFunds_ID (0);
+			setCommittedAmt (Env.ZERO);
+			setNonCommittedAmt (Env.ZERO);
+        } */
+    }
+
     /** Load Constructor */
     public X_B_SellerFunds (Properties ctx, ResultSet rs, String trxName)
     {
@@ -68,7 +94,7 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
     }
 
     /** AccessLevel
-      * @return 3 - Client - Org 
+      * @return 3 - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -120,7 +146,7 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getAD_User_ID()));
     }
@@ -237,7 +263,7 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Not Committed Aount.
+	/** Set Not Committed Amount.
 		@param NonCommittedAmt Amount not committed yet
 	*/
 	public void setNonCommittedAmt (BigDecimal NonCommittedAmt)
@@ -245,7 +271,7 @@ public class X_B_SellerFunds extends PO implements I_B_SellerFunds, I_Persistent
 		set_Value (COLUMNNAME_NonCommittedAmt, NonCommittedAmt);
 	}
 
-	/** Get Not Committed Aount.
+	/** Get Not Committed Amount.
 		@return Amount not committed yet
 	  */
 	public BigDecimal getNonCommittedAmt()

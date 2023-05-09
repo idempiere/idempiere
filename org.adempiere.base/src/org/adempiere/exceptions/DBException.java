@@ -80,6 +80,16 @@ public class DBException extends AdempiereException
 	}
 
 	/**
+	 * Create a new DBException
+	 * @param msg Message
+	 * @param e Exception
+	 */
+	public DBException(String msg, Exception e)
+	{
+		super(msg, e);
+	}
+	
+	/**
 	 * @return SQL Query or null
 	 */
 	public String getSQL()

@@ -24,6 +24,16 @@ public class MAssetClass extends X_A_Asset_Class implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = -7805056592418891872L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Asset_Class_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAssetClass(Properties ctx, String A_Asset_Class_UU, String trxName) {
+        super(ctx, A_Asset_Class_UU, trxName);
+    }
+
 	/**
 	 *
 	 */

@@ -23,16 +23,16 @@ import java.util.Properties;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for A_Asset_Use
- *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="A_Asset_Use")
-public class X_A_Asset_Use extends PO implements I_A_Asset_Use, I_Persistent 
+public class X_A_Asset_Use extends PO implements I_A_Asset_Use, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_A_Asset_Use (Properties ctx, int A_Asset_Use_ID, String trxName)
@@ -62,6 +62,34 @@ public class X_A_Asset_Use extends PO implements I_A_Asset_Use, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_A_Asset_Use (Properties ctx, String A_Asset_Use_UU, String trxName)
+    {
+      super (ctx, A_Asset_Use_UU, trxName);
+      /** if (A_Asset_Use_UU == null)
+        {
+			setA_Asset_ID (0);
+// @A_Asset_ID@
+			setA_Asset_Use_ID (0);
+			setUseDate (new Timestamp( System.currentTimeMillis() ));
+			setUseUnits (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_A_Asset_Use (Properties ctx, String A_Asset_Use_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, A_Asset_Use_UU, trxName, virtualColumns);
+      /** if (A_Asset_Use_UU == null)
+        {
+			setA_Asset_ID (0);
+// @A_Asset_ID@
+			setA_Asset_Use_ID (0);
+			setUseDate (new Timestamp( System.currentTimeMillis() ));
+			setUseUnits (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_A_Asset_Use (Properties ctx, ResultSet rs, String trxName)
     {
@@ -69,7 +97,7 @@ public class X_A_Asset_Use extends PO implements I_A_Asset_Use, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -142,7 +170,7 @@ public class X_A_Asset_Use extends PO implements I_A_Asset_Use, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), String.valueOf(getA_Asset_Use_ID()));
     }
@@ -178,16 +206,16 @@ public class X_A_Asset_Use extends PO implements I_A_Asset_Use, I_Persistent
 		return (String)get_Value(COLUMNNAME_Description);
 	}
 
-	/** Set UseDate.
-		@param UseDate UseDate
+	/** Set Use Date.
+		@param UseDate Use Date
 	*/
 	public void setUseDate (Timestamp UseDate)
 	{
 		set_Value (COLUMNNAME_UseDate, UseDate);
 	}
 
-	/** Get UseDate.
-		@return UseDate	  */
+	/** Get Use Date.
+		@return Use Date	  */
 	public Timestamp getUseDate()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_UseDate);

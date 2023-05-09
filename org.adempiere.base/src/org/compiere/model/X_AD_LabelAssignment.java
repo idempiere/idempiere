@@ -21,16 +21,16 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 /** Generated Model for AD_LabelAssignment
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 11 - $Id$ */
 @org.adempiere.base.Model(table="AD_LabelAssignment")
-public class X_AD_LabelAssignment extends PO implements I_AD_LabelAssignment, I_Persistent 
+public class X_AD_LabelAssignment extends PO implements I_AD_LabelAssignment, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220525L;
+	private static final long serialVersionUID = 20230409L;
 
     /** Standard Constructor */
     public X_AD_LabelAssignment (Properties ctx, int AD_LabelAssignment_ID, String trxName)
@@ -56,6 +56,30 @@ public class X_AD_LabelAssignment extends PO implements I_AD_LabelAssignment, I_
         } */
     }
 
+    /** Standard Constructor */
+    public X_AD_LabelAssignment (Properties ctx, String AD_LabelAssignment_UU, String trxName)
+    {
+      super (ctx, AD_LabelAssignment_UU, trxName);
+      /** if (AD_LabelAssignment_UU == null)
+        {
+			setAD_Label_ID (0);
+			setAD_Table_ID (0);
+			setRecord_ID (0);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_AD_LabelAssignment (Properties ctx, String AD_LabelAssignment_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, AD_LabelAssignment_UU, trxName, virtualColumns);
+      /** if (AD_LabelAssignment_UU == null)
+        {
+			setAD_Label_ID (0);
+			setAD_Table_ID (0);
+			setRecord_ID (0);
+        } */
+    }
+
     /** Load Constructor */
     public X_AD_LabelAssignment (Properties ctx, ResultSet rs, String trxName)
     {
@@ -63,7 +87,7 @@ public class X_AD_LabelAssignment extends PO implements I_AD_LabelAssignment, I_
     }
 
     /** AccessLevel
-      * @return 6 - System - Client 
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {

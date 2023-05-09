@@ -564,7 +564,7 @@ public class Login
 				+" WHERE ra.AD_Role_ID=r.AD_Role_ID AND ra.IsActive='Y')) "
 				+" OR (r.IsUseUserOrgAccess='Y' AND o.AD_Org_ID IN (SELECT AD_Org_ID FROM AD_User_OrgAccess ua" 
 				+" WHERE ua.AD_User_ID=?"
-				+" AND ua.IsActive='Y')))" 
+				+" AND ua.IsActive='Y'))) " 
 				+ "ORDER BY o.Name";
 		//
 		PreparedStatement pstmt = null;
@@ -789,6 +789,8 @@ public class Login
 			if (AD_Client_ID != 0 && MSysConfig.getBooleanValue(MSysConfig.SYSTEM_IN_MAINTENANCE_MODE, false, AD_Client_ID))
 				return Msg.getMsg(m_ctx, "SystemInMaintenance");
 		}
+		
+		Env.setPredefinedVariables(Env.getCtx(), -1, MRole.getDefault().getPredefinedContextVariables());
 
 		return null;
 	}	//	validateLogin
@@ -1361,46 +1363,8 @@ public class Login
 		int MAX_INACTIVE_PERIOD_DAY = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_INACTIVE_PERIOD_DAY, 0);
 		int MAX_PASSWORD_AGE = MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_PASSWORD_AGE_DAY, 0);
 		long now = new Date().getTime();
-		for (MUser user : users) {
-			if (MAX_ACCOUNT_LOCK_MINUTES > 0 && user.isLocked() && user.getDateAccountLocked() != null)
-			{
-				long minutes = (now - user.getDateAccountLocked().getTime()) / (1000 * 60);
-				if (minutes > MAX_ACCOUNT_LOCK_MINUTES)
-				{
-					boolean inactive = false;
-					if (MAX_INACTIVE_PERIOD_DAY > 0 && user.getDateLastLogin() != null && !user.isNoExpire())
-					{
-						long days = (now - user.getDateLastLogin().getTime()) / (1000 * 60 * 60 * 24);
-						if (days > MAX_INACTIVE_PERIOD_DAY)
-							inactive = true;
-					}
-					
-					if (!inactive)
-					{
-						user.setIsLocked(false);
-						user.setDateAccountLocked(null);
-						user.setFailedLoginCount(0);
-						Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, user.getAD_Client_ID());
-						if (!user.save())
-							log.severe("Failed to unlock user account");
-					}
-				}					
-			}
-			
-			if (MAX_INACTIVE_PERIOD_DAY > 0 && !user.isLocked() && user.getDateLastLogin() != null && !user.isNoExpire())
-			{
-				long days = (now - user.getDateLastLogin().getTime()) / (1000 * 60 * 60 * 24);
-				if (days > MAX_INACTIVE_PERIOD_DAY)
-				{
-					user.setIsLocked(true);
-					user.setDateAccountLocked(new Timestamp(now));
-					Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, user.getAD_Client_ID());
-					if (!user.save())
-						log.severe("Failed to lock user account");
-				}
-			}
-		}
-		
+		List<MUser> usersAuthenticated = new ArrayList<MUser>();
+		// Perform first validation of user/password to define the authenticated users
 		boolean validButLocked = false;
 		for (MUser user : users) {
 			if (clientsValidated.contains(user.getAD_Client_ID())) {
@@ -1424,6 +1388,7 @@ public class Login
 			}
 			
 			if (valid ) {
+				usersAuthenticated.add(user);
 				if (user.isLocked())
 				{
 					validButLocked = true;
@@ -1490,7 +1455,53 @@ public class Login
 		if (clientList.size() > 0)
 			authenticated=true;
 
+		// Validate locking/inactivity just on authenticated users
+		for (MUser user : usersAuthenticated) {
+			if (MAX_ACCOUNT_LOCK_MINUTES > 0 && user.isLocked() && user.getDateAccountLocked() != null)
+			{
+				long minutes = (now - user.getDateAccountLocked().getTime()) / (1000 * 60);
+				if (minutes > MAX_ACCOUNT_LOCK_MINUTES)
+				{
+					boolean inactive = false;
+					if (MAX_INACTIVE_PERIOD_DAY > 0 && user.getDateLastLogin() != null && !user.isNoExpire())
+					{
+						long days = (now - user.getDateLastLogin().getTime()) / (1000 * 60 * 60 * 24);
+						if (days > MAX_INACTIVE_PERIOD_DAY)
+							inactive = true;
+					}
+
+					if (!inactive)
+					{
+						user.setIsLocked(false);
+						user.setDateAccountLocked(null);
+						user.setFailedLoginCount(0);
+						Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, user.getAD_Client_ID());
+						if (!user.save())
+							log.severe("Failed to unlock user account");
+					}
+				}
+			}
+
+			if (MAX_INACTIVE_PERIOD_DAY > 0 && !user.isLocked() && user.getDateLastLogin() != null && !user.isNoExpire())
+			{
+				long days = (now - user.getDateLastLogin().getTime()) / (1000 * 60 * 60 * 24);
+				if (days > MAX_INACTIVE_PERIOD_DAY)
+				{
+					user.setIsLocked(true);
+					user.setDateAccountLocked(new Timestamp(now));
+					Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, user.getAD_Client_ID());
+					if (!user.save())
+						log.severe("Failed to lock user account");
+				}
+			}
+		}
+
 		if (authenticated) {
+			if (usersAuthenticated.size() == 1) {
+				// The user/password combination just belongs to a single user, it's clearly identified here
+				Env.setContext(Env.getCtx(), Env.AD_USER_ID, usersAuthenticated.get(0).getAD_User_ID());
+			}
+
 			if (Ini.isClient())
 			{
 				if (MSystem.isSwingRememberUserAllowed())
@@ -1505,7 +1516,7 @@ public class Login
 			clientList.toArray(retValue);
 			if (log.isLoggable(Level.FINE)) log.fine("User=" + app_user + " - roles #" + retValue.length);
 			
-			for (MUser user : users) 
+			for (MUser user : usersAuthenticated)
 			{
 				user.setFailedLoginCount(0);
 				user.setDateLastLogin(new Timestamp(now));
@@ -1522,7 +1533,7 @@ public class Login
 		else 
 		{
 			boolean foundLockedAccount = false;
-			for (MUser user : users) 
+			for (MUser user : usersAuthenticated)
 			{
 				if (user.isLocked())
 				{

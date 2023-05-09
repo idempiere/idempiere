@@ -37,6 +37,16 @@ public class MSerNoCtlExclude extends X_M_SerNoCtlExclude {
 	 */
 	private static final long serialVersionUID = -5338323423136199056L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_SerNoCtlExclude_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSerNoCtlExclude(Properties ctx, String M_SerNoCtlExclude_UU, String trxName) {
+        super(ctx, M_SerNoCtlExclude_UU, trxName);
+    }
+
 	/**
 	 * 
 	 * @param ctx

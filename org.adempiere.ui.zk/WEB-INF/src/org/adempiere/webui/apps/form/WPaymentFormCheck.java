@@ -36,6 +36,7 @@ import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.PaymentFormCheck;
 import org.compiere.model.GridTab;
 import org.compiere.model.MPaymentValidate;
+import org.compiere.model.X_C_Order;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -47,12 +48,11 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Space;
 
 /**
- * 
+ * Form for check payment rule ({@link X_C_Order#PAYMENTRULE_Check}).
  * @author Elaine
- *
  */
 public class WPaymentFormCheck extends PaymentFormCheck implements EventListener<Event> {
-
+	/** Payment form window instance */
 	private WPaymentFormWindow window;
 	
 	private Label sBankAccountLabel = new Label();
@@ -62,14 +62,15 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 	private Label sRoutingLabel = new Label();
 	private Textbox sRoutingField = new Textbox();
 	private Label sNumberLabel = new Label();
+	/** Account number field */
 	private Textbox sNumberField = new Textbox();
+	/** Check number field */
 	private Textbox sCheckField = new Textbox();
 	private Label sCheckLabel = new Label();
 	private Button sOnline = new Button();
 	private Label sStatus = new Label();
 	
 	/**
-	 * 
 	 * @param windowNo
 	 * @param mTab
 	 */
@@ -78,7 +79,10 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}
-	
+
+	/**
+	 * Layout {@link #window}
+	 */
 	protected void init() {
 		Grid sPanelLayout = GridFactory.newGridLayout();
 		window.getPanel().appendChild(sPanelLayout);
@@ -164,6 +168,7 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		updateOnlineButton();
 	}
 	
+	@Override
 	public void onEvent(Event e)
 	{
 		if (e.getTarget() == sAmountField)
@@ -177,6 +182,10 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		}
 	}
 	
+	/**
+	 * Set visibility of {@link #sOnline} depends on the availability of bank account processor
+	 * ({@link #isBankAccountProcessorExist(int, BigDecimal)}).
+	 */
 	private void updateOnlineButton()
 	{
 		boolean exist = isBankAccountProcessorExist(m_C_Currency_ID, (BigDecimal) sAmountField.getValue());

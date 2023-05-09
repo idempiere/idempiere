@@ -29,6 +29,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  * 	Request Model
@@ -82,6 +83,18 @@ public class MRequest extends X_R_Request
 
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_Request_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRequest(Properties ctx, String R_Request_UU, String trxName) {
+        super(ctx, R_Request_UU, trxName);
+		if (Util.isEmpty(R_Request_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Constructor
 	 * 	@param ctx context
@@ -96,17 +109,22 @@ public class MRequest extends X_R_Request
 	public MRequest(Properties ctx, int R_Request_ID, String trxName, String... virtualColumns) {
 		super(ctx, R_Request_ID, trxName, virtualColumns);
 		if (R_Request_ID == 0)
-		{
-			setDueType (DUETYPE_Due);
-			setConfidentialType (CONFIDENTIALTYPE_PublicInformation);	// A
-			setConfidentialTypeEntry (CONFIDENTIALTYPEENTRY_PublicInformation);	// A
-			setProcessed (false);
-			setRequestAmt (Env.ZERO);
-			setPriorityUser (PRIORITY_Low);
-			setIsEscalated (false);
-			setIsSelfService (false);
-			setIsInvoiced (false);
-		}
+			setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDueType (DUETYPE_Due);
+		setConfidentialType (CONFIDENTIALTYPE_PublicInformation);	// A
+		setConfidentialTypeEntry (CONFIDENTIALTYPEENTRY_PublicInformation);	// A
+		setProcessed (false);
+		setRequestAmt (Env.ZERO);
+		setPriorityUser (PRIORITY_Low);
+		setIsEscalated (false);
+		setIsSelfService (false);
+		setIsInvoiced (false);
 	}
 
 	/**

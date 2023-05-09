@@ -96,6 +96,17 @@ public class MAttachment extends X_AD_Attachment
 	private MStorageProvider provider;
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Attachment_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAttachment(Properties ctx, String AD_Attachment_UU, String trxName) {
+        super(ctx, AD_Attachment_UU, trxName);
+		initAttachmentStoreDetails(ctx, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

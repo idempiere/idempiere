@@ -45,34 +45,44 @@ import org.zkoss.zul.TreeNode;
 import org.zkoss.zul.event.TreeDataEvent;
 
 /**
- * Favourite folder add or edit dialog
+ * Favourite add or edit folder dialog
  * 
  * @author Logilite Technologies
  */
 public class FavouriteFolderDialog extends Window implements EventListener<Event>
 {
-
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long		serialVersionUID	= -2838644830113603288L;
-
+	/** Folder name */
 	private Textbox					txtFolder;
+	/** For add mode, true to add to root instead of current selected parent folder node. */
 	private Checkbox				chkAddAsRoot;
+	/** For IsCollapsible */
 	private Checkbox				chkDefaultExpanded;
 	private Label					lblSelectedNodeInfo	= new Label();
 
 	private Borderlayout			mainLayout			= new Borderlayout();
+	/** Center of {@link #mainLayout} */
 	private Panel					centerPanel			= new Panel();
+	/** Grid layout of {@link #centerPanel} */
 	private Grid					grid				= new Grid();
 	private ConfirmPanel			confirmPanel		= new ConfirmPanel(true);
 
+	/** Edit Mode: Node to edit. Add Mode: Parent folder node */
 	private MTreeFavoriteNode		favNodeSummary;
 	private FavoriteSimpleTreeModel	treeModel;
 	private Tree					tree;
 
+	/** True for add mode, false for edit mode */
 	private boolean					isAdd;
 
+	/**
+	 * @param isAdd
+	 * @param treeModel
+	 * @param tree
+	 */
 	public FavouriteFolderDialog(boolean isAdd, FavoriteSimpleTreeModel treeModel, Tree tree)
 	{
 		super();
@@ -86,6 +96,9 @@ public class FavouriteFolderDialog extends Window implements EventListener<Event
 		initAttributes();
 	}
 
+	/**
+	 * Layout dialog
+	 */
 	private void init()
 	{
 		if (isAdd)
@@ -245,6 +258,7 @@ public class FavouriteFolderDialog extends Window implements EventListener<Event
 
 	/**
 	 * Insert Folder as Node to Tree.
+	 * @param folderName
 	 */
 	private void insertFolder(String folderName)
 	{

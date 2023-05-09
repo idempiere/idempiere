@@ -121,6 +121,16 @@ public class MClientShare extends X_AD_ClientShare
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MClientShare.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_ClientShare_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MClientShare(Properties ctx, String AD_ClientShare_UU, String trxName) {
+        super(ctx, AD_ClientShare_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Default Constructor
 	 *	@param ctx context

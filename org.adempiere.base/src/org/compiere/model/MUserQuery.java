@@ -284,6 +284,16 @@ public class MUserQuery extends X_AD_UserQuery
 	/**	Logger	*/
 	private static CLogger s_log = CLogger.getCLogger (MUserQuery.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_UserQuery_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserQuery(Properties ctx, String AD_UserQuery_UU, String trxName) {
+        super(ctx, AD_UserQuery_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

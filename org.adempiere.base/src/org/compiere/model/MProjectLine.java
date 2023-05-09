@@ -25,6 +25,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.IProductPricing;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * 	Project Line Model
@@ -38,6 +39,18 @@ public class MProjectLine extends X_C_ProjectLine
 	 * 
 	 */
 	private static final long serialVersionUID = 2668549463273628848L;
+
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_ProjectLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProjectLine(Properties ctx, String C_ProjectLine_UU, String trxName) {
+        super(ctx, C_ProjectLine_UU, trxName);
+		if (Util.isEmpty(C_ProjectLine_UU))
+			setInitialDefaults();
+    }
 
 	/**
 	 * 	Standard Constructor
@@ -53,18 +66,23 @@ public class MProjectLine extends X_C_ProjectLine
 	public MProjectLine(Properties ctx, int C_ProjectLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_ProjectLine_ID, trxName, virtualColumns);
 		if (C_ProjectLine_ID == 0)
-		{
-			setLine (0);
-			setIsPrinted(true);
-			setProcessed(false);
-			setInvoicedAmt (Env.ZERO);
-			setInvoicedQty (Env.ZERO);
-			//
-			setPlannedAmt (Env.ZERO);
-			setPlannedMarginAmt (Env.ZERO);
-			setPlannedPrice (Env.ZERO);
-			setPlannedQty (Env.ONE);
-		}
+			setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setLine (0);
+		setIsPrinted(true);
+		setProcessed(false);
+		setInvoicedAmt (Env.ZERO);
+		setInvoicedQty (Env.ZERO);
+		//
+		setPlannedAmt (Env.ZERO);
+		setPlannedMarginAmt (Env.ZERO);
+		setPlannedPrice (Env.ZERO);
+		setPlannedQty (Env.ONE);
 	}
 
 	/**

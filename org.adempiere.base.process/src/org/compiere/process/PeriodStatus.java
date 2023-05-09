@@ -20,10 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MPeriod;
 import org.compiere.model.MPeriodControl;
+import org.compiere.model.MProcessPara;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -41,6 +46,8 @@ public class PeriodStatus extends SvrProcess
 	private List<Integer> p_C_PeriodControl_IDs = null;
 	/** Action						*/
 	private String		p_PeriodAction = null;
+	/** Document Base Type Group		*/
+	private int		p_C_DocBaseGroup_ID = 0;
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -55,10 +62,12 @@ public class PeriodStatus extends SvrProcess
 				;
 			else if (name.equals("PeriodAction"))
 				p_PeriodAction = (String)para[i].getParameter();
+			else if (name.equals("C_DocBaseGroup_ID"))
+				p_C_DocBaseGroup_ID = para[i].getParameterAsInt();
 			else if (name.equals("*RecordIDs*"))
 				;
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_C_Period_IDs = getRecord_IDs();
 		if (p_C_Period_IDs == null || p_C_Period_IDs.size() == 0) {
@@ -96,6 +105,26 @@ public class PeriodStatus extends SvrProcess
 		if (Util.isEmpty(p_PeriodAction) || MPeriodControl.PERIODACTION_NoAction.equals(p_PeriodAction)) {
 			return "-";
 		}
+
+		if ((   MPeriodControl.PERIODACTION_ClosePeriod.equalsIgnoreCase(p_PeriodAction)
+			 || MPeriodControl.PERIODACTION_PermanentlyClosePeriod.equalsIgnoreCase(p_PeriodAction))
+			&& MSysConfig.getBooleanValue(MSysConfig.FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE, true, getAD_Client_ID())) {
+			if (p_C_Period_IDs != null) {
+				for (int periodID : p_C_Period_IDs) {
+					MPeriod p = MPeriod.get(periodID);
+					if (p.hasUnpostedDocs())
+						throw new AdempiereException(Msg.getMsg(getCtx(), "PostUnpostedDocs"));
+				}
+			} else {
+				for (int periodControlID : p_C_PeriodControl_IDs) {
+					MPeriodControl pc = new MPeriodControl(getCtx(), periodControlID, get_TrxName());
+					MPeriod p = MPeriod.get(pc.getC_Period_ID());
+					if (p.hasUnpostedDocs(periodControlID))
+						throw new AdempiereException(Msg.getMsg(getCtx(), "PostUnpostedDocs"));
+				}
+			}
+		}
+
 		StringBuilder sql = new StringBuilder ("UPDATE C_PeriodControl SET PeriodStatus=?, PeriodAction='N', Updated=getDate(), UpdatedBy=? WHERE ");
 		//	WHERE
 		StringBuilder wherepc = new StringBuilder();
@@ -121,6 +150,11 @@ public class PeriodStatus extends SvrProcess
 			}
 		}
 		wherepc.append(") AND PeriodStatus<>'P' AND PeriodStatus<>?");
+		if(p_C_DocBaseGroup_ID > 0) {
+			wherepc.append(" AND DocBaseType IN (")
+				.append(" SELECT gl.DocBaseType FROM C_DocBaseGroupLine gl WHERE gl.C_DocBaseGroup_ID = ").append(p_C_DocBaseGroup_ID)
+				.append(")");
+		}
 		sql.append(wherepc);
 		StringBuilder sqlPeriods = new StringBuilder("SELECT DISTINCT C_Period_ID FROM C_PeriodControl WHERE ").append(wherepc);
 		int[] periods = DB.getIDsEx(get_TrxName(), sqlPeriods.toString(), p_PeriodAction);
