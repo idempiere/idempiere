@@ -247,7 +247,7 @@ public class PO_Record
 		KeyNamePair[] tables = s_po_record_tables_cache.get(constraintType);
 		if (tables != null)
 			return tables;
-		List<MTable> listTables = new Query(Env.getCtx(), MTable.Table_Name, "c.AD_Reference_ID=? AND c.FKConstraintType=?", trxName)
+		List<MTable> listTables = new Query(Env.getCtx(), MTable.Table_Name, "c.AD_Reference_ID=? AND c.FKConstraintType=? AND AD_Table.IsView='N'", trxName)
 				.addJoinClause("JOIN AD_Column c ON (c.AD_Table_ID=AD_Table.AD_Table_ID)")
 				.setOnlyActiveRecords(true)
 				.setParameters(DisplayType.RecordID, constraintType)
