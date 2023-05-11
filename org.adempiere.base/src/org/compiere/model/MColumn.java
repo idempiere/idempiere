@@ -1184,6 +1184,18 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 							if (constraintName.length() > 30)
 								constraintName = new StringBuilder(constraintName.substring(0, 30));
 							fkConstraintName = constraintName.toString();
+							
+							int duplicateId = DB.getSQLValueEx(column.get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE Upper(FkConstraintName)=?", fkConstraintName.toUpperCase());
+							int loop = 0;
+							while (duplicateId > 0) 
+							{
+								loop++;
+								String suffix = "" + loop;
+								if (fkConstraintName.length() + suffix.length() > 30)
+									fkConstraintName = fkConstraintName.substring(0, fkConstraintName.length() - (fkConstraintName.length() + suffix.length() - 30));
+								fkConstraintName = fkConstraintName + loop;
+								duplicateId = DB.getSQLValueEx(column.get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE Upper(FkConstraintName)=?", fkConstraintName.toUpperCase());
+							}
 						}
 						
 						StringBuilder fkConstraint = new StringBuilder();
