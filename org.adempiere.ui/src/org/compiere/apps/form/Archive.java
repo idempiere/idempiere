@@ -115,12 +115,12 @@ public class Archive {
 	{
 		//	Internal Users
 		String sql = "SELECT AD_User_ID, Name "
-			+ "FROM AD_User u WHERE u.AD_Client_ID IN(0,?) AND EXISTS "
+			+ "FROM AD_User u WHERE EXISTS "
 				+"(SELECT * FROM AD_User_Roles ur WHERE u.AD_User_ID=ur.AD_User_ID) "
 			+ "ORDER BY 2";
 		MRole role = MRole.getDefault();
 		sql = role.addAccessSQL(sql, "u", true, false);
-		return DB.getKeyNamePairs(m_trxName, sql, true, Env.getAD_Client_ID(Env.getCtx()));
+		return DB.getKeyNamePairs(m_trxName, sql, true);
 	}	//	dynInit
 	
 	/**
