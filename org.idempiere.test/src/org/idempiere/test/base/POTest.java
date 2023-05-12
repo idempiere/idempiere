@@ -237,8 +237,10 @@ public class POTest extends AbstractTestCase
 		}
 		//
 		// Test for old objects
+		MyTestPO test = null;
+		try
 		{
-			MyTestPO test = new MyTestPO(Env.getCtx(), false, null);
+			test = new MyTestPO(Env.getCtx(), false, null);
 			assertTrue(test.save(), "Object *should* be saved -- "+test);
 			//
 			MyTestPO test2 = new MyTestPO(Env.getCtx(), test.get_ID(), null);
@@ -249,6 +251,19 @@ public class POTest extends AbstractTestCase
 			//
 			String name = MyTestPO.getName(test2.get_ID(), null);
 			assertEquals(test.getName(), name, "Object should not be modified(2) -- id="+test2);
+		}
+		finally
+		{
+			// cleanup
+			if (test != null)
+			{
+				if (test.getDependent_ID() > 0)
+				{
+					MyTestPO testDependent = new MyTestPO(Env.getCtx(), test.getDependent_ID(), null);
+					testDependent.deleteEx(true);
+				}
+				test.deleteEx(true);
+			}
 		}
 	}
 
