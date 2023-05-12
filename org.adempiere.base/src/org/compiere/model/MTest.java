@@ -92,7 +92,7 @@ public class MTest extends X_Test
 	 */
 	public MTest (Properties ctx, String testString, int testNo, String trxName)
 	{
-		super(ctx, 0, null);
+		super(ctx, 0, trxName);
 		testString = testString + "_" + testNo;
 		setName(testString);
 		setDescription(testString + " " + testString + " " + testString);
