@@ -66,7 +66,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4206879140460545905L;
+	private static final long serialVersionUID = 6308179531110429747L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -521,6 +521,17 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return (getKeyColumns() != null && getKeyColumns().length == 1 && getKeyColumns()[0].equals(uuColName));
 	}
 	
+	/**
+	 * @return true if table has a UUID key
+	 */
+	public boolean hasUUIDKey()
+	{
+		String uuColName = PO.getUUIDColumnName(getTableName());
+		if (m_columns == null)
+			getColumns(false);
+		return m_columnNameMap.get(uuColName.toUpperCase()) != null;
+	}
+
 	/**
 	 * 	Get Identifier Columns of Table
 	 *	@return Identifier columns

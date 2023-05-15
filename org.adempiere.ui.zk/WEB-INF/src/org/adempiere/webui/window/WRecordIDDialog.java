@@ -115,8 +115,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 			if (editor.getValue() == null)
 				this.recordIDValue = null;
 			else {
-				MTable table = MTable.get(tableIDValue);
-				if (editor.getValue() instanceof String && table != null && table.isUUIDKeyTable())
+				if (editor.getValue() instanceof String && editor.getColumnName().endsWith("_UU"))
 					this.recordIDValue = editor.getValue().toString();
 			}
 		}
@@ -145,7 +144,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		int tableID = tableIDValue != null ? tableIDValue.intValue() : 0;
 		MLookup recordsLookup = editor.getRecordsLookup(tableID);
 		if(recordsLookup != null)
-			recordsEditor = new WSearchEditor("Record_ID", false, false, true, recordsLookup);
+			recordsEditor = new WSearchEditor(editor.getColumnName(), false, false, true, recordsLookup);
 		
 		setPage(page);
 		setClosable(true);
@@ -159,13 +158,13 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		if (editor.getGridField().getGridTab() != null) {
 			parentTextBox = new Textbox();
 			parentTextBox.setReadonly(true);
-			MTable table = MTable.get(tableID);
-			Object recordId;
-			if (table.isUUIDKeyTable())
-				recordId = editor.getGridField().getGridTab().getValue(PO.getUUIDColumnName(table.getTableName()));
+			MTable parentTable = MTable.get(editor.getGridField().getGridTab().getAD_Table_ID());
+			Object parentRecordId;
+			if (parentTable.isUUIDKeyTable())
+				parentRecordId = editor.getGridField().getGridTab().getValue(PO.getUUIDColumnName(parentTable.getTableName()));
 			else
-				recordId = editor.getGridField().getGridTab().getRecord_ID();
-			parentTextBox.setValue(editor.getIdentifier(tableID, recordId));
+				parentRecordId = editor.getGridField().getGridTab().getRecord_ID();
+			parentTextBox.setValue(editor.getParentIdentifier(parentTable.getAD_Table_ID(), parentRecordId));
 		}
 		
 		if (recordsEditor != null)
@@ -234,9 +233,14 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 			int tableID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
 			if (tableID > 0) {
 				MTable table = MTable.get(tableID);
-				if (table.isUUIDKeyTable()) {
-					if (! editor.getColumnName().endsWith("_UU"))
+				if (editor.getColumnName().endsWith("_UU")) {
+					if (! table.hasUUIDKey())
+						throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn"));
+				} else {
+					if (table.isUUIDKeyTable())
 						throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "UUTableNotCompatibleWithRecordID"));
+					if (! table.isIDKeyTable())
+						throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn"));
 				}
 			}
 
@@ -248,7 +252,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 			}
 			MLookup recordsLookup = editor.getRecordsLookup(tableID);
 			if(recordsLookup != null) {
-				recordsEditor = new WSearchEditor("Record_ID", false, false, true, recordsLookup);
+				recordsEditor = new WSearchEditor(editor.getColumnName(), false, false, true, recordsLookup);
 		    	labelsDiv.appendChild(recordsEditorLabel);
 				fieldsDiv.appendChild(recordsEditor.getComponent());
 				recordsEditor.getComponent().focus();

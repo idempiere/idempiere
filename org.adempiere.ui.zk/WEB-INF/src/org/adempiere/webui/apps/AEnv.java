@@ -188,9 +188,10 @@ public final class AEnv
 		if (AD_Window_ID == 0)
 			return;
 		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
-		MQuery query = MQuery.getEqualQuery(PO.getUUIDColumnName(table.getTableName()), Record_UU);
+		String uuColName = PO.getUUIDColumnName(table.getTableName());
+		MQuery query = MQuery.getEqualQuery(uuColName, Record_UU);
 		query.setZoomTableName(table.getTableName());
-		query.setZoomColumnName(table.getUUIDColumnName());
+		query.setZoomColumnName(uuColName);
 		query.setZoomValue(Record_UU);
 		zoom(AD_Window_ID, query);
 	}	//	zoom

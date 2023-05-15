@@ -50,6 +50,7 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -214,8 +215,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	{
 		String s = tableIDValue != null ? String.valueOf(tableIDValue) : "";
 		int tableID = s.length() > 0 ? Integer.parseInt(s) : 0;
-		MTable table = MTable.get(tableID);
-		if (table.isUUIDKeyTable()) {
+		if (getColumnName().endsWith("_UU")) {
 			String recordUU = recordIDValue != null ? recordIDValue.toString() : "";
 			if(tableID <= 0)
 				return;
@@ -276,7 +276,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			int tableID =  tableIDValue != null ? Integer.parseInt(String.valueOf(tableIDValue)) : 0;
 			if (tableID > 0) {
 				MTable table = MTable.get(tableID);
-				if (table.isUUIDKeyTable()) {
+				if (getColumnName().endsWith("_UU")) {
 					String recordUU = Objects.toString(evt.getNewValue(), "");
 					if (tableID > 0 && recordUU.length() > 0)
 						table.getPOByUU(recordUU, null);	// calls po.checkCrossTenant() method
@@ -314,9 +314,8 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			if(value != null && tableIDValue != null) {
 				int tableID = Integer.parseInt(String.valueOf(tableIDValue));
 				if (tableID > 0) {
-					MTable table = MTable.get(tableID);
 					Object recordID;
-					if (table.isUUIDKeyTable())
+					if (getColumnName().endsWith("_UU"))
 						recordID = value.toString();
 					else
 						recordID = Integer.parseInt(String.valueOf(value));
@@ -353,8 +352,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			Object recordID;
 			try {
 				tableID = Integer.parseInt(String.valueOf(tableIDValue));
-				MTable table = MTable.get(tableID);
-				if (table.isUUIDKeyTable())
+				if (getColumnName().endsWith("_UU"))
 					recordID = recordIDValue.toString();
 				else
 					recordID = Integer.parseInt(String.valueOf(recordIDValue));
@@ -379,8 +377,7 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 			Object rowRecordID;
 			try {
 				rowTableID = Integer.parseInt(String.valueOf(rowTableIdValue));
-				MTable table = MTable.get(rowTableID);
-				if (table.isUUIDKeyTable())
+				if (getColumnName().endsWith("_UU"))
 					rowRecordID = value.toString();
 				else
 					rowRecordID = Integer.parseInt(String.valueOf(value));
@@ -410,9 +407,18 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 					}
 					if (tableIDValue != null && tableIDValue instanceof Integer) {
 						MTable table = MTable.get((Integer)tableIDValue);
-						if (table.isUUIDKeyTable()) {
-							if (! getColumnName().endsWith("_UU")) {
+						if (getColumnName().endsWith("_UU")) {
+							if (! table.hasUUIDKey()) {
+								Dialog.error(tableIDGridField.getWindowNo(), "TableHasNoKeyColumn");
+								return;
+							}
+						} else {
+							if (table.isUUIDKeyTable()) {
 								Dialog.error(tableIDGridField.getWindowNo(), "UUTableNotCompatibleWithRecordID");
+								return;
+							}
+							if (! table.isIDKeyTable()) {
+								Dialog.error(tableIDGridField.getWindowNo(), "TableHasNoKeyColumn");
 								return;
 							}
 						}
@@ -434,15 +440,30 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
 	 */
 	public MLookup getRecordsLookup(int tableID) {
+		return getRecordsLookup(tableID, false);
+	}
+
+	/**
+	 * Get Lookup
+	 * @param tableID
+	 * @param tableBased - if the lookup checks for the UUID Key Column based on the table (true), or on the columnName (false)
+	 * @return null if tableID <= 0 or the table doesn't have any key column, else {@link MLookup}
+	 */
+	private MLookup getRecordsLookup(int tableID, boolean tableBased) {
 		if(tableID <= 0)	
 			return null;
 		MTable mTable = MTable.get(Env.getCtx(), tableID, null);
-		String[] keyColumns = mTable.getKeyColumns();
 		String keyColumn = "";
-		if(keyColumns.length > 0)
-			keyColumn = keyColumns[0];
-		else
-			return null;
+		if (   (tableBased && mTable.isUUIDKeyTable())
+			|| (!tableBased && getColumnName().endsWith("_UU") && mTable.hasUUIDKey())) {
+			keyColumn = PO.getUUIDColumnName(mTable.getTableName());
+		} else {
+			String[] keyColumns = mTable.getKeyColumns();
+			if(keyColumns.length > 0)
+				keyColumn = keyColumns[0];
+			else
+				return null;
+		}
 		MColumn mColumn = MColumn.get(Env.getCtx(), mTable.getTableName(), keyColumn);
 			
 		int tabNo = gridTab != null ? gridTab.getTabNo() : FindWindow.TABNO;
@@ -462,6 +483,17 @@ public class WRecordIDEditor extends WEditor implements ContextMenuListener, IZo
 		return lookup != null ? lookup.getDisplay(recordID) : "";
     }
 	
+	/**
+	 * Get Parent Identifier String from AD_Table_ID and Record_ID
+	 * @param tableID
+	 * @param recordID
+	 * @return String
+	 */
+	public String getParentIdentifier(int tableID, Object recordID) {
+		MLookup lookup = getRecordsLookup(tableID, true);
+		return lookup != null ? lookup.getDisplay(recordID) : "";
+    }
+
 	/**
 	 * Get AD_Table_ID
 	 * @return AD_Table_ID value

@@ -133,7 +133,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6216075383041481835L;
+	private static final long serialVersionUID = -3055980415629613992L;
 
 	protected static final String ON_USER_QUERY_ATTR = "ON_USER_QUERY";
 	protected static final String INFO_QUERY_TIME_OUT_ERROR = "InfoQueryTimeOutError";
@@ -1537,6 +1537,26 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 		return key;
 	}   //  getSelectedRowKey
+
+	/**
+	 *  Get the integer key of currently selected row
+	 *  @param tableId
+	 *  @return selected key
+	 */
+	protected Integer getIntSelectedRowKey(int tableId)
+	{
+		Object key = getSelectedRowKey();
+		
+		if (key == null)
+			return Integer.valueOf(-1);
+
+		if (key instanceof Integer)
+			return (Integer) key;
+
+		MTable table = MTable.get(tableId);
+		table.getPOByUU((String) key, null);
+		return Integer.valueOf(table.get_ID());
+	}   //  getIntSelectedRowKey
 
 	/**
      *  Get the keys of selected row/s based on layout defined in prepareTable
