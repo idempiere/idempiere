@@ -18,7 +18,7 @@ INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,Description,AD_Reference_ID,Value,A
 ;
 
 -- May 2, 2023, 8:47:11 AM CEST
-INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,Description,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200638,'Tail','Logs, that are created continuously during the execution of the process.',200242,'T',0,0,'Y',TO_TIMESTAMP('2023-05-02 08:47:11','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-05-02 08:47:11','YYYY-MM-DD HH24:MI:SS'),100,'D','2cc965b7-abf2-413a-930e-eff43afd5f81')
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,Description,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (200638,'Progress','Logs, that are created continuously during the execution of the process.',200242,'P',0,0,'Y',TO_TIMESTAMP('2023-05-02 08:47:11','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2023-05-02 08:47:11','YYYY-MM-DD HH24:MI:SS'),100,'D','2cc965b7-abf2-413a-930e-eff43afd5f81')
 ;
 
 -- May 2, 2023, 8:47:50 AM CEST
@@ -43,5 +43,57 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisp
 
 -- May 2, 2023, 9:10:25 AM CEST
 ALTER TABLE AD_PInstance_Log ADD PInstanceLogType VARCHAR2(3 CHAR) DEFAULT NULL 
+;
+
+-- May 15, 2023, 10:36:39 AM CEST
+UPDATE AD_Column SET IsKey='N',Updated=TO_TIMESTAMP('2023-05-15 10:36:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=8779
+;
+
+-- May 15, 2023, 10:37:36 AM CEST
+ALTER TABLE AD_PInstance_Log MODIFY AD_PInstance_Log_UU VARCHAR2(36 CHAR) DEFAULT NULL 
+;
+
+-- May 15, 2023, 10:37:36 AM CEST
+ALTER TABLE AD_PInstance_Log MODIFY Log_ID NUMBER(10)
+;
+
+-- May 15, 2023, 10:42:19 AM CEST
+UPDATE AD_Column SET AD_Reference_ID=11,Updated=TO_TIMESTAMP('2023-05-15 10:42:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=8779
+;
+
+-- May 15, 2023, 10:42:22 AM CEST
+ALTER TABLE AD_PInstance_Log MODIFY Log_ID NUMBER(10)
+;
+
+-- May 15, 2023, 10:49:33 AM CEST
+UPDATE AD_TableIndex SET Name='ad_pinstance_log_uu', IsKey='Y',Updated=TO_TIMESTAMP('2023-05-15 10:49:33','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_TableIndex_ID=200138
+;
+
+-- May 15, 2023, 10:49:54 AM CEST
+ALTER TABLE AD_PInstance_Log DROP CONSTRAINT ad_pinstance_log_uu_idx CASCADE
+;
+
+-- May 15, 2023, 10:49:54 AM CEST
+ALTER TABLE AD_PInstance_Log DROP CONSTRAINT ad_pinstance_log_pkey CASCADE
+;
+
+-- May 15, 2023, 10:50:19 AM CEST
+ALTER TABLE AD_PInstance_Log ADD CONSTRAINT ad_pinstance_log_uu PRIMARY KEY (AD_PInstance_Log_UU)
+;
+
+-- May 15, 2023, 3:03:52 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201246,'f348e791-5d5e-40f2-89bd-7f8be0850217',TO_TIMESTAMP('2023-05-15 15:03:52','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','ad_pinstance_id_log_id',TO_TIMESTAMP('2023-05-15 15:03:52','YYYY-MM-DD HH24:MI:SS'),100,578,'Y','Y','N','N')
+;
+
+-- May 15, 2023, 3:04:03 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201684,'ecebad1f-2b24-4cae-afbf-dfed57ed4071',TO_TIMESTAMP('2023-05-15 15:04:03','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-05-15 15:04:03','YYYY-MM-DD HH24:MI:SS'),100,8780,201246,10)
+;
+
+-- May 15, 2023, 3:04:08 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201685,'b83c67d5-260d-4b8a-9978-3bd823ecedb5',TO_TIMESTAMP('2023-05-15 15:04:07','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-05-15 15:04:07','YYYY-MM-DD HH24:MI:SS'),100,8779,201246,20)
+;
+
+-- May 15, 2023, 3:04:13 PM CEST
+ALTER TABLE AD_PInstance_Log ADD CONSTRAINT ad_pinstance_id_log_id UNIQUE (AD_PInstance_ID,Log_ID)
 ;
 

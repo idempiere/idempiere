@@ -764,7 +764,7 @@ public class ProcessInfo implements Serializable
 				logEntry.getP_Msg(),
 				logEntry.getAD_Table_ID(), 
 				logEntry.getRecord_ID(),
-				!Util.isEmpty(logEntry.getPInstanceLogType()) ? logEntry.getPInstanceLogType() : X_AD_PInstance_Log.PINSTANCELOGTYPE_Tail);
+				!Util.isEmpty(logEntry.getPInstanceLogType()) ? logEntry.getPInstanceLogType() : X_AD_PInstance_Log.PINSTANCELOGTYPE_Progress);
 		il.save();
 	}	//	saveLog
 	
