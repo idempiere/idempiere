@@ -90,8 +90,7 @@ public class POTest extends AbstractTestCase
 
 		public MyTestPO(Properties ctx, boolean failOnSave, String trxName)
 		{
-			super(ctx, "Test_"+System.currentTimeMillis(), 10);
-			this.set_TrxName(trxName);
+			super(ctx, "Test_"+System.currentTimeMillis(), 10, trxName);
 			this.setDescription(""+getClass());
 			this.failOnSave = failOnSave;
 		}
@@ -140,8 +139,7 @@ public class POTest extends AbstractTestCase
 				"test",
 		};
 		// Create the test PO and save
-		MTest testPO = new MTest(Env.getCtx(), getClass().getName(), 1);
-		testPO.set_TrxName(getTrxName());
+		MTest testPO = new MTest(Env.getCtx(), getClass().getName(), 1, getTrxName());
 
 		for (String str : testStrings)
 		{
@@ -186,8 +184,7 @@ public class POTest extends AbstractTestCase
 		String bigString = sb.toString();
 		//
 		// Create the test PO:
-		MTest testPO = new MTest(Env.getCtx(), getClass().getName(), 1);
-		testPO.set_TrxName(getTrxName());
+		MTest testPO = new MTest(Env.getCtx(), getClass().getName(), 1, getTrxName());
 		//
 		// Getting Max Length:
 		POInfo info = POInfo.getPOInfo(Env.getCtx(), MTest.Table_ID);
@@ -240,8 +237,10 @@ public class POTest extends AbstractTestCase
 		}
 		//
 		// Test for old objects
+		MyTestPO test = null;
+		try
 		{
-			MyTestPO test = new MyTestPO(Env.getCtx(), false, null);
+			test = new MyTestPO(Env.getCtx(), false, null);
 			assertTrue(test.save(), "Object *should* be saved -- "+test);
 			//
 			MyTestPO test2 = new MyTestPO(Env.getCtx(), test.get_ID(), null);
@@ -252,6 +251,19 @@ public class POTest extends AbstractTestCase
 			//
 			String name = MyTestPO.getName(test2.get_ID(), null);
 			assertEquals(test.getName(), name, "Object should not be modified(2) -- id="+test2);
+		}
+		finally
+		{
+			// cleanup
+			if (test != null)
+			{
+				if (test.getDependent_ID() > 0)
+				{
+					MyTestPO testDependent = new MyTestPO(Env.getCtx(), test.getDependent_ID(), null);
+					testDependent.deleteEx(true);
+				}
+				test.deleteEx(true);
+			}
 		}
 	}
 
@@ -475,7 +487,7 @@ public class POTest extends AbstractTestCase
 
 	@Test
 	public void testVirtualColumnLoad() {
-		MTest testPo = new MTest(Env.getCtx(), getClass().getName(), 1);
+		MTest testPo = new MTest(Env.getCtx(), getClass().getName(), 1, getTrxName());
 		testPo.save();
 
 		// asynchronous (default) virtual column loading
