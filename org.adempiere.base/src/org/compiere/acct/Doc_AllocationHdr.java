@@ -190,6 +190,7 @@ public class Doc_AllocationHdr extends Doc
 		Fact factForRGL = new Fact(this, as, Fact.POST_Actual); // dummy fact (not posted) to calculate Realized Gain & Loss
 		boolean isInterOrg = isInterOrg(as);
 		MAccount bpAcct = null;		//	Liability/Receivables
+		ArrayList<Integer> bpAccts = new ArrayList<Integer>();
 
 		for (int i = 0; i < p_lines.length; i++)
 		{
@@ -325,6 +326,8 @@ public class Doc_AllocationHdr extends Doc
 				if (as.isAccrual())
 				{
 					bpAcct = getAccount(Doc.ACCTTYPE_C_Receivable, as);
+					if(!bpAccts.contains(bpAcct.getAccount_ID()))
+						bpAccts.add(bpAcct.getAccount_ID());
 					fl = fact.createLine (line, bpAcct,
 						getC_Currency_ID(), null, allocationSource);		//	payment currency
 					if (fl != null)
@@ -378,6 +381,8 @@ public class Doc_AllocationHdr extends Doc
 				if (as.isAccrual())
 				{
 					bpAcct = getAccount(Doc.ACCTTYPE_V_Liability, as);
+					if(!bpAccts.contains(bpAcct.getAccount_ID()))
+						bpAccts.add(bpAcct.getAccount_ID());
 					fl = fact.createLine (line, bpAcct,
 						getC_Currency_ID(), allocationSource, null);		//	payment currency
 					if (fl != null)
@@ -479,7 +484,7 @@ public class Doc_AllocationHdr extends Doc
 		//	rounding adjustment
 		if (getC_Currency_ID() != as.getC_Currency_ID())
 		{
-			p_Error = createInvoiceRoundingCorrection (as, fact,  bpAcct);
+			p_Error = createInvoiceRoundingCorrection (as, fact,bpAccts);
 			if (p_Error != null)
 				return null;
 			p_Error = createPaymentRoundingCorrection (as, fact);
@@ -1063,10 +1068,19 @@ public class Doc_AllocationHdr extends Doc
 	 *	@param as accounting schema
 	 *	@param fact fact
 	 *	@param acct account
+	 * @param bpAccts 
 	 *	@return Error Message or null if OK
 	 */
-	private String createInvoiceRoundingCorrection (MAcctSchema as, Fact fact, MAccount acct) 
+	// Match based on isSoTrx to create a entry & 
+	private String createInvoiceRoundingCorrection (MAcctSchema as, Fact fact,ArrayList<Integer> bpAccts) 
 	{
+		// Get All the liability & revenue account for business partner
+		String commaseparatedlist = bpAccts.toString();
+		 
+        commaseparatedlist
+            = commaseparatedlist.replace("[", "")
+                  .replace("]", "")
+                  .replace(" ", "");
 		ArrayList<MInvoice> invList = new ArrayList<MInvoice>();
 		Hashtable<Integer, Integer> htInvAllocLine = new Hashtable<Integer, Integer>();
 		for (int i = 0; i < p_lines.length; i++)
@@ -1091,12 +1105,12 @@ public class Doc_AllocationHdr extends Doc
 				.append(" FROM Fact_Acct ")
 				.append("WHERE AD_Table_ID=? AND Record_ID=?")
 				.append(" AND C_AcctSchema_ID=?")
-				.append(" AND Account_ID=?")
+				.append(" AND Account_ID in ( "+commaseparatedlist+" ) ")
 				.append(" AND PostingType='A'");
 
 			// For Invoice
 			List<Object> valuesInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-					MInvoice.Table_ID, invoice.getC_Invoice_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID());
+					MInvoice.Table_ID, invoice.getC_Invoice_ID(), as.getC_AcctSchema_ID());
 			if (valuesInv != null && valuesInv.size() >= 4) {
 				BigDecimal invoiceSource = null;
 				BigDecimal invoiceAccounted = null;
@@ -1140,6 +1154,8 @@ public class Doc_AllocationHdr extends Doc
 				MAllocationLine allocationLine = new MAllocationLine(getCtx(), factLine.getLine_ID(), getTrxName());
 				if (allocationLine.getC_Invoice_ID() > 0)
 				{
+					// Match based on isSoTrx to create is isSoTrx = bpAcct = getAccount(Doc.ACCTTYPE_C_Receivable, as) else bpAcct = getAccount(Doc.ACCTTYPE_Liability, as);
+					MAccount acct = allocationLine.getC_Invoice().isSOTrx() ? getAccount(Doc.ACCTTYPE_C_Receivable, as):getAccount(Doc.ACCTTYPE_V_Liability, as);
 					if (factLine.getAccount_ID() == acct.getAccount_ID())
 					{
 						BigDecimal totalAmtSourceDr = htTotalAmtSourceDr.get(allocationLine.getC_Invoice_ID());
@@ -1244,12 +1260,12 @@ public class Doc_AllocationHdr extends Doc
 					.append("WHERE AD_Table_ID=? AND Record_ID=?")	//	allocation
 					.append(" AND C_AcctSchema_ID=?")
 					.append(" AND PostingType='A'")
-					.append(" AND Account_ID=?")
+					.append(" AND Account_ID in ( "+commaseparatedlist+" ) ")
 					.append(" AND Line_ID IN (SELECT C_AllocationLine_ID FROM C_AllocationLine WHERE C_AllocationHdr_ID=? AND C_Invoice_ID=?)");
 				
 				// For Allocation
 				List<Object> valuesAlloc = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-						MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID(), alloc.get_ID(), invoice.getC_Invoice_ID());
+						MAllocationHdr.Table_ID, alloc.get_ID(), as.getC_AcctSchema_ID(), alloc.get_ID(), invoice.getC_Invoice_ID());
 				if (valuesAlloc != null && valuesAlloc.size() >= 4) {
 					totalAmtSourceDr = (BigDecimal) valuesAlloc.get(0);
 					if (totalAmtSourceDr == null)
@@ -1330,6 +1346,7 @@ public class Doc_AllocationHdr extends Doc
 		
 		for (MInvoice invoice : invList)
 		{
+			MAccount acct = invoice.isSOTrx() ? getAccount(Doc.ACCTTYPE_C_Receivable, as):getAccount(Doc.ACCTTYPE_V_Liability, as);
 			BigDecimal invSource = htInvSource.get(invoice.getC_Invoice_ID());
 			if (invSource == null)
 				invSource = Env.ZERO;
@@ -1368,6 +1385,7 @@ public class Doc_AllocationHdr extends Doc
 			{
 				if (hasDebitTradeAmt(invoice))
 				{
+					// acct = Match based on isSoTrx to create is isSoTrx = bpAcct = getAccount(Doc.ACCTTYPE_C_Receivable, as) else bpAcct = getAccount(Doc.ACCTTYPE_Liability, as);
 					FactLine fl = fact.createLine (null, acct, as.getC_Currency_ID(), acctDifference);
 					fl.setDescription(description.toString());
 					fl.setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
