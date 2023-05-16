@@ -2965,8 +2965,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			
 			cacheOriginalValues(rowIndex);
 			
-			int gridFieldsOffset = 1; // First column is the id, and its not on the infoColumns
-			
 			@SuppressWarnings("unchecked")
 			List<Object> row = (List<Object>)oRow;
 			List<Object> originalSelectedRow = temporarySelectedData.get(keyViewValue);
@@ -2974,15 +2972,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			
 			// While restoring values we dong want to trigger listeners
 			model.removeTableModelListener(this);
-						
-			for(int i=0; i < infoColumns.length; i++)
+			
+			if (originalSelectedRow != null)
 			{
-				if(infoColumns[i].isReadOnly() == false) // Only replace editable column, in case some other data changed on db
+				for(int i=0; i < columnInfos.length; i++)
 				{
-					int colIndex = i + gridFieldsOffset;
-					Object obj = originalSelectedRow.get(colIndex);
-					model.setValueAt( obj, rowIndex, colIndex);
-				}				
+					if(columnInfos[i].isReadOnly() == false) // Only replace editable column, in case some other data changed on db
+					{
+						Object obj = originalSelectedRow.get(i);
+						model.setValueAt( obj, rowIndex, i);
+					}
+				}
 			}
 			
 			// Restore isSelected status on IDColumn

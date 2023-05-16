@@ -72,6 +72,7 @@ import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.editor.WPaymentEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.editor.WYesNoEditor;
 import org.adempiere.webui.editor.WebEditorFactory;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -1842,6 +1843,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                else if (eventTarget.getId().equals(listColumn.getId()) || eventTarget.getId().equals(listOperator.getId())) 
 	                {
 	                	addRowEditor(componentFrom, (ListCell)row.getFellow("cellQueryFrom"+row.getId()));
+	                	if (editorFrom instanceof WYesNoEditor)
+	                		((ListCell)row.getFellow("cellQueryFrom"+row.getId())).setAttribute("value", editorFrom.getValue());
 						if (editorTo != null && editorTo.getGridField() != null && DisplayType.isDate(editorTo.getGridField().getDisplayType()))
 						{
 							Div div = createDateRangeWrapper(editorFrom, editorTo);
@@ -2253,7 +2256,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		            if (field == null || field.isVirtualUIColumn())
 		            	continue;
 		            isProductCategoryField = isProductCategoryField(field.getColumnName());
-		            ColumnSQL = field.getColumnSQL(false);
+		            ColumnSQL = field.getSearchColumnSQL() != null ? field.getSearchColumnSQL() : field.getColumnSQL(false);
 		            if (table.getSelectedItem() != null && !table.getSelectedItem().getValue().equals(m_AD_Tab_UU))
 					{       
 						if (!isCompositeExists) {
@@ -2640,7 +2643,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     GridField field = getTargetMField(ColumnName);
                     
                     boolean isProductCategoryField = isProductCategoryField(field.getColumnName());
-                    StringBuilder ColumnSQL = new StringBuilder(field.getSearchColumnSQL());
+                    StringBuilder ColumnSQL = field.getSearchColumnSQL() != null ? new StringBuilder(field.getSearchColumnSQL()) : new StringBuilder(field.getColumnSQL(false)); 
 
                     // add encryption here if the field is encrypted.
                     if (field.isEncrypted()) {
@@ -2660,9 +2663,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                     	m_query.addRestriction(clause);
                     	continue;
                     }
-                    
-                    isProductCategoryField = isProductCategoryField(field.getColumnName());
-                    ColumnSQL = new StringBuilder(field.getColumnSQL(false));
+
                     //
                     // Be more permissive for String columns
                     if (isSearchLike(field))

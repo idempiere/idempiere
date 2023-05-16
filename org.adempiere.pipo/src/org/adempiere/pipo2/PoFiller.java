@@ -189,6 +189,12 @@ public class PoFiller{
 			}
 			if (po.get_ColumnIndex(columnName) >= 0) {
 				MColumn col = MColumn.get(ctx.ctx, po.get_TableName(), columnName, po.get_TrxName());
+				if (col == null) {
+					POInfo poInfo = POInfo.getPOInfo(ctx.ctx, po.get_Table_ID(), po.get_TrxName());
+					col = new MColumn(ctx.ctx, poInfo.getAD_Column_ID(columnName), po.get_TrxName());
+					if (col.get_ID() == 0)
+						return -1;
+				}
 				MTable foreignTable = null;
 				String refTableName = col.getReferenceTableName();
 				if (refTableName != null) {

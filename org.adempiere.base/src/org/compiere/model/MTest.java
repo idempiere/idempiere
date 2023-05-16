@@ -80,7 +80,19 @@ public class MTest extends X_Test
 	 */
 	public MTest (Properties ctx, String testString, int testNo)
 	{
-		super(ctx, 0, null);
+		this(ctx, testString, testNo, null);
+	}
+
+	/**
+	 * 	Test Object Constructor
+	 *	@param ctx context
+	 *	@param testString test string
+	 *	@param testNo test no
+	 *  @param trxName
+	 */
+	public MTest (Properties ctx, String testString, int testNo, String trxName)
+	{
+		super(ctx, 0, trxName);
 		testString = testString + "_" + testNo;
 		setName(testString);
 		setDescription(testString + " " + testString + " " + testString);

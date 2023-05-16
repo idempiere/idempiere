@@ -104,7 +104,8 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		element.recordId = po.get_ID();
 
 		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, po.get_TableName(), po.get_Table_ID());
-		logImportDetail(ctx, impDetail, 1, po.toString(), element.recordId, action);
+		boolean isMultiKey = po.get_KeyColumns().length > 1;
+		logImportDetail(ctx, impDetail, 1, po.toString(), isMultiKey ? 0 : element.recordId, action);
 
 		if (   I_AD_Window.Table_Name.equals(tableName)
 			|| I_AD_Process.Table_Name.equals(tableName)

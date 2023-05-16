@@ -23,6 +23,7 @@ import org.adempiere.webui.window.WImageDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MImage;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
@@ -34,10 +35,9 @@ import org.zkoss.zul.Cell;
 import org.zkoss.zul.Image;
 
 /**
- * This class is based on org.compiere.grid.ed.VImage written by Jorg Janke.
- * @author Jorg Janke
+ * Default editor for {@link DisplayType#Image}.<br/>
+ * Implemented with {@link Image} component and {@link WImageDialog}.
  * 
- * Modifications - UI Compatibility
  * @author Low Heng Sin
  */
 public class WImageEditor extends WEditor
@@ -94,6 +94,9 @@ public class WImageEditor extends WEditor
     	return (Image) component;
     }
     
+    /**
+     * Init component
+     */
     private void init()
     {
     	AImage img = null;
@@ -189,6 +192,7 @@ public class WImageEditor extends WEditor
         return LISTENER_EVENTS;
     }
 
+	@Override
 	public void onEvent(Event event) throws Exception 
 	{
 		if (Events.ON_CLICK.equals(event.getName()) && readwrite)
@@ -221,8 +225,8 @@ public class WImageEditor extends WEditor
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.adempiere.webui.editor.WEditor#fillHorizontal()
+	/**
+	 * No op., doesn't support stretch of component.
 	 */
 	@Override
 	public void fillHorizontal() {

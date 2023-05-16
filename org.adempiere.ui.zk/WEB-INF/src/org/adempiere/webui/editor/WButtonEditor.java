@@ -47,8 +47,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- * This class is based on org.compiere.grid.ed.VButton written by Jorg Janke.
- * @author Jorg Janke
+ * Default editor for {@link DisplayType#Button}.
  * 
  * Modifications - UI Compatibility
  * @author ashley
@@ -69,7 +68,7 @@ public class WButtonEditor extends WEditor implements IProcessButton
     private String          m_text;
     private boolean         m_mandatory;
     private Object          m_value;
-    /** List of Key/Name        */
+    /** Value:Name. AD_Ref_List values for  PaymentRule, DocAction or Posted reference. */
     private HashMap<String,String>  m_values = null;
    
     /** Description as ToolTip  */
@@ -147,11 +146,17 @@ public class WButtonEditor extends WEditor implements IProcessButton
 		return AD_InfoWindow_ID;
 	}	//	getInfoWindow_ID
 	
+	/**
+	 * @return GridField
+	 */
 	public GridField getGridField()
 	{
 		return gridfield;
 	}
 
+	/**
+	 * Init component
+	 */
     private void init()
     {
         label.setValue(" ");
@@ -232,7 +237,6 @@ public class WButtonEditor extends WEditor implements IProcessButton
     {
         return m_mandatory;
     }
-   
     
     @Override
     public void setMandatory(boolean mandatory)
@@ -288,6 +292,9 @@ public class WButtonEditor extends WEditor implements IProcessButton
 		getComponent().setEnabled(readWrite);
 	}
 
+	/**
+	 * @return AD_Ref_List Value:Name HashMap
+	 */
 	public HashMap<String, String> getValues()
     {
     	return m_values;
@@ -338,12 +345,19 @@ public class WButtonEditor extends WEditor implements IProcessButton
        
     }   //  readReference
     
+    /**
+     * @param actionListener
+     */
     public void addActionListener(ActionListener actionListener)
     {
     	if (!actionListeners.contains(actionListener))
     		actionListeners.add(actionListener);
     }
 
+    /**
+     * @param actionListener
+     * @return true if found and remove
+     */
     public boolean removeActionListener(ActionListener actionListener)
     {
     	return actionListeners.remove(actionListener);
@@ -355,6 +369,7 @@ public class WButtonEditor extends WEditor implements IProcessButton
         return LISTENER_EVENTS;
     }
 
+    @Override
 	public void onEvent(Event event) throws Exception 
 	{
 		if (Events.ON_CLICK.equals(event.getName()))
@@ -369,6 +384,9 @@ public class WButtonEditor extends WEditor implements IProcessButton
 		}
 	}
 	
+    /**
+     * @param adTabpanel
+     */
 	public void setADTabpanel(IADTabpanel adTabpanel) {
 		this.adTabpanel = adTabpanel;
 	}

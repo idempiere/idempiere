@@ -38,6 +38,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -52,7 +53,8 @@ import org.zkoss.zul.Html;
 import org.zkoss.zul.Menuitem;
 
 /**
- *
+ * Default editor for {@link DisplayType#Color}.<br/>
+ * Implemented with {@link EditorBox} component and HTML color type (&lt;input type="color"&gt;).
  * @author Nicolas Micoud (TGI)
  *
  */
@@ -62,10 +64,11 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     public static final String COLOR_PICKER_EVENT = "COLOR_PICKER";
 
+    /** Hex coded color value, for e.g #FF0000 */
 	private String oldValue;
-
+	/** Place holder text for text box */
 	private String placeHolder;
-
+	/** Hidden text box with type set to color. Use to open HTML native color picker. */
 	private Textbox colorbox;
 
 	/**
@@ -160,6 +163,9 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		return null;
 	}
 
+	/**
+	 * Init component and context menu
+	 */
 	private void init()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("Initializing component");
@@ -169,6 +175,10 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		addChangeLogMenu(popupMenu);
 	}
 
+	/**
+	 * Add entries to popup context menu
+	 * @param popupMenu
+	 */
 	protected void addColorEditorMenu(WEditorPopupMenu popupMenu) {
 		Menuitem editor = new Menuitem();
 		editor.setAttribute("EVENT", WEditorPopupMenu.RESET_EVENT);
@@ -191,6 +201,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		popupMenu.appendChild(editor);
 	}
 
+	@Override
 	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.RESET_EVENT.equals(evt.getContextEvent()))
@@ -229,6 +240,9 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		fillTextbox();
 	}
 
+	/**
+	 * Fill half of text box with entered color value
+	 */
 	private void fillTextbox() {
 		String style="background-color: transparent !important;";
 		if (!Util.isEmpty(oldValue, true))
@@ -241,7 +255,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 	}
 
 	/**
-	 * @param color hex color string
+	 * @param color hex coded color string
 	 * @return background fill style
 	 */
 	protected String getBackgroundFillStyle(String color) {
@@ -271,6 +285,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		getComponent().getButton().setEnabled(readWrite);
 	}
 
+	@Override
 	public void onEvent(Event event)
 	{
 		if (Events.ON_CLICK.equalsIgnoreCase(event.getName()))
@@ -283,12 +298,19 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		}
 	}
 
+	/**
+	 * Open HTML native color picker
+	 */
 	public void openColorPicker() {
 		String uid = colorbox.getUuid();
 		String script = "(function(){let wgt = zk.Widget.$('#"+uid+"');wgt.$n().click();})()";
 		Clients.response(new AuScript(script));		
 	}
 
+	/**
+	 * Process newValue from color picker
+	 * @param newValue
+	 */
 	protected void processNewValue(String newValue) {
 		if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
 			return;
@@ -301,6 +323,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		oldValue = getComponent().getTextbox().getValue();                
 	}
 
+	@Override
 	public String[] getEvents()
 	{
 		return LISTENER_EVENTS;

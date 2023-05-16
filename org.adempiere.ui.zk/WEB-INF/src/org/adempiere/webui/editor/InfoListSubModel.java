@@ -40,9 +40,8 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.ListSubModel;
 
 /**
- * 
+ * Model to get filter list from lookup and info window/panel
  * @author hengsin
- *
  */
 public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 
@@ -88,6 +87,7 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 	public ListModel<ValueNamePair> getSubModel(Object value, int nRows) {
 		ListModelList<ValueNamePair> model = new ListModelList<>();
 		if (value != null && !Util.isEmpty(value.toString(), true)) {
+			//build query text from input value
 			String queryText = value.toString().trim();
 			StringBuilder queryBuilder = new StringBuilder(queryText);
 			queryBuilder.append("?autocomplete={");
@@ -108,6 +108,7 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 			queryBuilder.append("}");
 			queryText = queryBuilder.toString();
 			
+			//build model from infopanel/infowindow processing of query text
 			final InfoPanel ip = InfoManager.create(lookup, gridField, tableName, keyColumnName, queryText, false, getWhereClause());
 			if (ip != null && ip.loadedOK()) {
 				int rowCount = ip.getRowCount();

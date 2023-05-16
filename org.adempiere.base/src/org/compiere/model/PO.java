@@ -3965,12 +3965,14 @@ public abstract class PO
 				if (get_ColumnIndex("IsSummary") >= 0) {
 					delete_Tree(MTree_Base.TREETYPE_CustomTable);
 				}
-				//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
-				PO_Record.deleteCascade(AD_Table_ID, Record_ID, localTrxName);
 
-				//delete cascade only for single key column record
 				if (m_KeyColumns != null && m_KeyColumns.length == 1) {
+					//delete cascade only for single key column record
 					PO_Record.deleteModelCascade(p_info.getTableName(), Record_ID, localTrxName);
+					//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
+					PO_Record.deleteRecordIdCascade(AD_Table_ID, Record_ID, localTrxName);
+					// Set referencing Record_ID Null AD_Table_ID/Record_ID
+					PO_Record.setRecordIdNull(AD_Table_ID, Record_ID, localTrxName);
 				}
 		
 				//	The Delete Statement
@@ -5709,6 +5711,8 @@ public abstract class PO
 		if (tableId <= 0)
 			return;
 		MTable ft = MTable.get(getCtx(), tableId);
+		if (ft.getKeyColumns().length > 1)
+			return; // multi-key-table
 		boolean systemAccess = false;
 		String accessLevel = ft.getAccessLevel();
 		if (   MTable.ACCESSLEVEL_All.equals(accessLevel)

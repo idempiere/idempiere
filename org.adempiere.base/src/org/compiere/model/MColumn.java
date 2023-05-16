@@ -1014,7 +1014,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 								else if (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeySetNull)
 									dbDeleteRule = MColumn.FKCONSTRAINTTYPE_SetNull;
 								else if (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyNoAction || dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyRestrict)
-									dbDeleteRule = MColumn.FKCONSTRAINTTYPE_NoAction;
+									dbDeleteRule = MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion;
 								String fkConstraintType = column.getFKConstraintType();
 								if (fkConstraintType == null) {
 									fkConstraintType = dbDeleteRule;
@@ -1024,12 +1024,12 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 											|| "CreatedBy".equals(column.getColumnName())
 											|| "UpdatedBy".equals(column.getColumnName())
 										   )
-											fkConstraintType = MColumn.FKCONSTRAINTTYPE_DoNotCreate;
+											fkConstraintType = MColumn.FKCONSTRAINTTYPE_DoNotCreate_Ignore;
 										else
-											fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction;
+											fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion;
 									}
 								}
-								if (!fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate))
+								if (!fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate_Ignore))
 								{
 									String fkConstraintName = column.getFKConstraintName();						
 									if (fkConstraintName == null || fkConstraintName.trim().length() == 0)
@@ -1051,7 +1051,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 									}
 									fkConstraint.append(")");
 
-									if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_NoAction))
+									if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion))
 										;
 									else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_Cascade))
 										fkConstraint.append(" ON DELETE CASCADE");
@@ -1073,8 +1073,8 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 									if (   dbForeignKey.getKeyName().equalsIgnoreCase(column.getFKConstraintName())
 										&& (   (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyCascade && MColumn.FKCONSTRAINTTYPE_Cascade.equals(column.getFKConstraintType()))
 										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeySetNull && MColumn.FKCONSTRAINTTYPE_SetNull.equals(column.getFKConstraintType()))
-										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyNoAction && MColumn.FKCONSTRAINTTYPE_NoAction.equals(column.getFKConstraintType()))
-										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyRestrict && MColumn.FKCONSTRAINTTYPE_NoAction.equals(column.getFKConstraintType()))
+										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyNoAction && MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion.equals(column.getFKConstraintType()))
+										    || (dbForeignKey.getDeleteRule() == DatabaseMetaData.importedKeyRestrict && MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion.equals(column.getFKConstraintType()))
 										   )
 									   ) {
 										// nothing changed
@@ -1149,9 +1149,9 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		{
 			String fkConstraintType = column.getFKConstraintType();
 			if (fkConstraintType == null)
-				fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction;
+				fkConstraintType = MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion;
 			
-			if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate))
+			if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_DoNotCreate_Ignore))
 				return "";
 
 			int refid = column.getAD_Reference_ID();
@@ -1184,6 +1184,18 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 							if (constraintName.length() > 30)
 								constraintName = new StringBuilder(constraintName.substring(0, 30));
 							fkConstraintName = constraintName.toString();
+							
+							int duplicateId = DB.getSQLValueEx(column.get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE Upper(FkConstraintName)=?", fkConstraintName.toUpperCase());
+							int loop = 0;
+							while (duplicateId > 0) 
+							{
+								loop++;
+								String suffix = "" + loop;
+								if (fkConstraintName.length() + suffix.length() > 30)
+									fkConstraintName = fkConstraintName.substring(0, fkConstraintName.length() - (fkConstraintName.length() + suffix.length() - 30));
+								fkConstraintName = fkConstraintName + loop;
+								duplicateId = DB.getSQLValueEx(column.get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE Upper(FkConstraintName)=?", fkConstraintName.toUpperCase());
+							}
 						}
 						
 						StringBuilder fkConstraint = new StringBuilder();
@@ -1202,7 +1214,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 						}
 						fkConstraint.append(")");
 						
-						if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_NoAction))
+						if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_NoAction_ForbidDeletion))
 							;
 						else if (fkConstraintType.equals(MColumn.FKCONSTRAINTTYPE_Cascade))
 							fkConstraint.append(" ON DELETE CASCADE");
