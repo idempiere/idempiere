@@ -41,12 +41,14 @@ import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  *
  * @author Carlos Ruiz - globalqss - bxservice
  *
  */
+@Isolated
 public class ModelForeignKeyTest extends AbstractTestCase {
 
 	public ModelForeignKeyTest() {
