@@ -2963,12 +2963,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			// While restoring values we dong want to trigger listeners
 			model.removeTableModelListener(this);
 			
-			for(int i=0; i < columnInfos.length; i++)
+			if (originalSelectedRow != null)
 			{
-				if(columnInfos[i].isReadOnly() == false) // Only replace editable column, in case some other data changed on db
+				for(int i=0; i < columnInfos.length; i++)
 				{
-					Object obj = originalSelectedRow.get(i);
-					model.setValueAt( obj, rowIndex, i);
+					if(columnInfos[i].isReadOnly() == false) // Only replace editable column, in case some other data changed on db
+					{
+						Object obj = originalSelectedRow.get(i);
+						model.setValueAt( obj, rowIndex, i);
+					}
 				}
 			}
 			
