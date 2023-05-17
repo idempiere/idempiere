@@ -1191,6 +1191,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		// check translation table
 		MTable mTableTrl = MTable.get(getCtx(), tableName+"_Trl");
 		String tableNameTrl = "";
+		// get languages
 		String tenantLang = tenant.getAD_Language();
 		String reportLang = new MLanguage(getCtx(), getLanguageID(), null).getAD_Language();
 		
@@ -1202,6 +1203,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		else
 			isTrl = false;
 		
+		// load identifier columns
 		for (String idColumnName : mTable.getIdentifierColumns()) {
 			MColumn column = mTable.getColumn(idColumnName);
 			list.add (column);
@@ -1209,18 +1211,24 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		if(list.size() <= 0) {
 			return String.valueOf(recordID);
 		}
+		
 		StringBuilder displayColumn = new StringBuilder();
 		String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
 		
+		// get record identifier from sql
 		for(int i = 0; i < list.size(); i++) {
 			MColumn identifierColumn = list.get(i);
 			if(i > 0)
 				displayColumn.append("||'").append(separator).append("'||");
 			
-			displayColumn.append("NVL(")
+			displayColumn.append("COALESCE(")
 						.append(DB.TO_CHAR(addTrlSuffix(identifierColumn, tableName, isTrl)+"."+identifierColumn.getColumnName(), 
 											identifierColumn.getAD_Reference_ID(), 
 											Env.getAD_Language(Env.getCtx())))
+						.append(",")
+						.append(DB.TO_CHAR(tableName+"."+identifierColumn.getColumnName(), 
+								identifierColumn.getAD_Reference_ID(), 
+								Env.getAD_Language(Env.getCtx())))
 						.append(",'')");
 		}
 		ArrayList<Object> params = new ArrayList<Object>();
@@ -1228,7 +1236,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		sql.append(displayColumn.toString());
 		sql.append(" FROM ").append(tableName);
 		if(isTrl) {
-			sql.append(" JOIN ").append(tableNameTrl).append(" ON ")
+			sql.append(" LEFT JOIN ").append(tableNameTrl).append(" ON ")
 				.append(tableName).append(".").append(tableName).append("_ID = ")
 				.append(tableNameTrl).append(".").append(tableName).append("_ID AND ")
 				.append(tableNameTrl).append(".AD_Language=?");
