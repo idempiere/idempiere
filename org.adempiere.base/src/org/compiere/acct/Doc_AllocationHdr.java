@@ -21,8 +21,9 @@ import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
@@ -1074,8 +1075,8 @@ public class Doc_AllocationHdr extends Doc
 	 */
 	private String createInvoiceRoundingCorrection (MAcctSchema as, Fact fact, MAccount acctAr, MAccount acctAp) 
 	{
-		Hashtable<Integer, MInvoice> invList = new Hashtable<>();
-		Hashtable<Integer, Integer> htInvAllocLine = new Hashtable<Integer, Integer>();
+		Map<Integer, MInvoice> invList = new HashMap<>();
+		Map<Integer, Integer> htInvAllocLine = new HashMap<>();
 		for (int i = 0; i < p_lines.length; i++)
 		{
 			MInvoice invoice = null;
@@ -1085,7 +1086,7 @@ public class Doc_AllocationHdr extends Doc
 				continue;
 
 			if (invList.containsKey(line.getC_Invoice_ID())){
-				log.severe(line.getC_Invoice_ID() + ":same invoice on multi allocation line");
+				log.severe(line.getC_Invoice_ID() + ":same invoice included in more than one allocation line");
 			}else {
 				invoice = new MInvoice (getCtx(), line.getC_Invoice_ID(), getTrxName());
 				invList.put(invoice.getC_Invoice_ID(), invoice);
@@ -1093,8 +1094,8 @@ public class Doc_AllocationHdr extends Doc
 			}
 		}
 
-		Hashtable<Integer, BigDecimal> htInvSource = new Hashtable<Integer, BigDecimal>();
-		Hashtable<Integer, BigDecimal> htInvAccounted = new Hashtable<Integer, BigDecimal>();
+		Map<Integer, BigDecimal> htInvSource = new HashMap<>();
+		Map<Integer, BigDecimal> htInvAccounted = new HashMap<>();
 		for (MInvoice invoice : invList.values())
 		{
 			StringBuilder sql = new StringBuilder()
@@ -1139,10 +1140,10 @@ public class Doc_AllocationHdr extends Doc
 		MAccount gain = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedGain_Acct());
 		MAccount loss = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
 		
-		Hashtable<Integer, BigDecimal> htTotalAmtSourceDr = new Hashtable<Integer, BigDecimal>();
-		Hashtable<Integer, BigDecimal> htTotalAmtAcctDr = new Hashtable<Integer, BigDecimal>();
-		Hashtable<Integer, BigDecimal> htTotalAmtSourceCr = new Hashtable<Integer, BigDecimal>();
-		Hashtable<Integer, BigDecimal> htTotalAmtAcctCr = new Hashtable<Integer, BigDecimal>();
+		Map<Integer, BigDecimal> htTotalAmtSourceDr = new HashMap<>();
+		Map<Integer, BigDecimal> htTotalAmtAcctDr = new HashMap<>();
+		Map<Integer, BigDecimal> htTotalAmtSourceCr = new HashMap<>();
+		Map<Integer, BigDecimal> htTotalAmtAcctCr = new HashMap<>();
 		FactLine[] factlines = fact.getLines();
 		for (FactLine factLine : factlines)
 		{
@@ -1200,8 +1201,8 @@ public class Doc_AllocationHdr extends Doc
 			}
 		}
 		
-		Hashtable<Integer, BigDecimal> htAllocInvSource = new Hashtable<Integer, BigDecimal>();
-		Hashtable<Integer, BigDecimal> htAllocInvAccounted = new Hashtable<Integer, BigDecimal>();
+		Map<Integer, BigDecimal> htAllocInvSource = new HashMap<>();
+		Map<Integer, BigDecimal> htAllocInvAccounted = new HashMap<>();
 		for (MInvoice invoice : invList.values())
 		{
 			BigDecimal allocateSource = Env.ZERO;
@@ -1459,8 +1460,8 @@ public class Doc_AllocationHdr extends Doc
 	 */
 	private String createPaymentRoundingCorrection (MAcctSchema as, Fact fact)
 	{	
-		ArrayList<MPayment> payList = new ArrayList<MPayment>();
-		Hashtable<Integer, Integer> htPayAllocLine = new Hashtable<Integer, Integer>();
+		List<MPayment> payList = new ArrayList<MPayment>();
+		Map<Integer, Integer> htPayAllocLine = new HashMap<>();
 		for (int i = 0; i < p_lines.length; i++)
 		{
 			MPayment payment = null;
@@ -1474,9 +1475,9 @@ public class Doc_AllocationHdr extends Doc
 			}
 		}
 		
-		Hashtable<Integer, MAccount> htPayAcct = new Hashtable<Integer, MAccount>();
-		Hashtable<Integer, BigDecimal> htPaySource = new Hashtable<Integer, BigDecimal>();
-		Hashtable<Integer, BigDecimal> htPayAccounted = new Hashtable<Integer, BigDecimal>();
+		Map<Integer, MAccount> htPayAcct = new HashMap<>();
+		Map<Integer, BigDecimal> htPaySource = new HashMap<>();
+		Map<Integer, BigDecimal> htPayAccounted = new HashMap<>();
 		for (MPayment payment : payList)
 		{
 			htPayAcct.put(payment.getC_Payment_ID(), getPaymentAcct(as, payment.getC_Payment_ID()));
@@ -1509,10 +1510,10 @@ public class Doc_AllocationHdr extends Doc
 		MAccount gain = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedGain_Acct());
 		MAccount loss = MAccount.get (as.getCtx(), as.getAcctSchemaDefault().getRealizedLoss_Acct());
 		
-		Hashtable<Integer, BigDecimal> htTotalAmtSourceDr = new Hashtable<Integer, BigDecimal>();
-		Hashtable<Integer, BigDecimal> htTotalAmtAcctDr = new Hashtable<Integer, BigDecimal>();
-		Hashtable<Integer, BigDecimal> htTotalAmtSourceCr = new Hashtable<Integer, BigDecimal>();
-		Hashtable<Integer, BigDecimal> htTotalAmtAcctCr = new Hashtable<Integer, BigDecimal>();
+		Map<Integer, BigDecimal> htTotalAmtSourceDr = new HashMap<>();
+		Map<Integer, BigDecimal> htTotalAmtAcctDr = new HashMap<>();
+		Map<Integer, BigDecimal> htTotalAmtSourceCr = new HashMap<>();
+		Map<Integer, BigDecimal> htTotalAmtAcctCr = new HashMap<>();
 		FactLine[] factlines = fact.getLines();
 		for (FactLine factLine : factlines)
 		{
@@ -1568,8 +1569,8 @@ public class Doc_AllocationHdr extends Doc
 			}
 		}
 		
-		Hashtable<Integer, BigDecimal> htAllocPaySource = new Hashtable<Integer, BigDecimal>();
-		Hashtable<Integer, BigDecimal> htAllocPayAccounted = new Hashtable<Integer, BigDecimal>();
+		Map<Integer, BigDecimal> htAllocPaySource = new HashMap<>();
+		Map<Integer, BigDecimal> htAllocPayAccounted = new HashMap<>();
 		for (MPayment payment : payList)
 		{
 			BigDecimal allocateSource = Env.ZERO;
