@@ -620,7 +620,7 @@ public abstract class SvrProcess implements ProcessCall
 
 	/**
 	 *  Save Log Entry with exact Log_ID, update if exists
-	 *  @param logId Log_ID
+	 *  @param pInstanceLogUU AD_PInstance_Log_UU
 	 * 	@param id record id or 0
 	 *	@param date date or null
 	 * 	@param number number or null
@@ -628,28 +628,28 @@ public abstract class SvrProcess implements ProcessCall
 	 * 	@param tableId AD_Table_ID
 	 * 	@param recordId Record_ID
 	 */
-	public void saveLog (int logId, int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId)
+	public void updateLog (String pInstanceLogUU, int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId)
 	{
 		if (m_pi != null)
-			m_pi.saveLog(logId, id, date, number, msg, tableId, recordId);
+			m_pi.updateLog(pInstanceLogUU, id, date, number, msg, tableId, recordId);
 		
-		if (log.isLoggable(Level.INFO)) log.info(logId + " - " + id + " - " + date + " - " + number + " - " + msg + " - " + tableId + " - " + recordId);
+		if (log.isLoggable(Level.INFO)) log.info(pInstanceLogUU + " - " + id + " - " + date + " - " + number + " - " + msg + " - " + tableId + " - " + recordId);
 	}	//	saveLog
 	
 	/**
 	 *  Save Log Entry with exact Log_ID, update if exists
-	 *  @param logId Log_ID
+	 *  @param pInstanceLogUU AD_PInstance_Log_UU
 	 * 	@param id record id or 0
 	 *	@param date date or null
 	 * 	@param number number or null
 	 * 	@param msg message or null
 	 */
-	public void saveLog (int logId, int id, Timestamp date, BigDecimal number, String msg)
+	public void updateLog (String pInstanceLogUU, int id, Timestamp date, BigDecimal number, String msg)
 	{
 		if (m_pi != null)
-			m_pi.saveLog(logId, id, date, number, msg);
+			m_pi.updateLog(pInstanceLogUU, id, date, number, msg);
 		
-		if (log.isLoggable(Level.INFO)) log.info(logId + " - " + id + " - " + date + " - " + number + " - " + msg);
+		if (log.isLoggable(Level.INFO)) log.info(pInstanceLogUU + " - " + id + " - " + date + " - " + number + " - " + msg);
 	}	//	saveLog
 	
 	/**
@@ -660,13 +660,15 @@ public abstract class SvrProcess implements ProcessCall
 	 * 	@param msg message or null
 	 * 	@param tableId AD_Table_ID
 	 * 	@param recordId Record_ID
+	 * 	@return String AD_PInstance_Log_UU
 	 */
-	public void saveLog (int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId)
+	public String saveLog (int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId)
 	{
-		if (m_pi != null)
-			m_pi.saveLog(id, date, number, msg,tableId,recordId);
-		
 		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg + " - " + tableId + " - " + recordId);
+		if (m_pi != null)
+			return m_pi.saveLog(id, date, number, msg,tableId,recordId);
+		return "";
+		
 	}	//	saveLog
 
 	/**
@@ -675,12 +677,14 @@ public abstract class SvrProcess implements ProcessCall
 	 *  @param id record id or 0
 	 *  @param number number or null
 	 *  @param msg message or null
+	 *  @return String AD_PInstance_Log_UU
 	 */
-	public void saveLog (int id, Timestamp date, BigDecimal number, String msg)
+	public String saveLog (int id, Timestamp date, BigDecimal number, String msg)
 	{
-		if (m_pi != null)
-			m_pi.saveLog(id, date, number, msg);
 		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
+		if (m_pi != null)
+			return m_pi.saveLog(id, date, number, msg);
+		return "";
 	}	//	saveLog
 
 	/**

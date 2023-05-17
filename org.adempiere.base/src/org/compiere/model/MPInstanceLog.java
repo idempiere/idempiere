@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Process Instance Log Model.
@@ -51,7 +52,7 @@ public class MPInstanceLog
 	}	//	MPInstance_Log
 
 	/**
-	 * Full Constructor
+	 * Constructor without PInstanceLogType
 	 * @param AD_PInstance_ID
 	 * @param Log_ID
 	 * @param P_Date
@@ -68,7 +69,7 @@ public class MPInstanceLog
 	}	//	MPInstance_Log
 	
 	/**
-	 * Full Constructor
+	 * Constructor without AD_PInstance_Log_UU
 	 * @param AD_PInstance_ID
 	 * @param Log_ID
 	 * @param P_Date
@@ -82,6 +83,25 @@ public class MPInstanceLog
 	public MPInstanceLog (int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
 			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID, String PInstanceLogType)
 	{
+		this("", AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, PInstanceLogType);
+	}
+	
+	/**
+	 * Full Constructor
+	 * @param AD_PInstance_Log_UU
+	 * @param AD_PInstance_ID
+	 * @param Log_ID
+	 * @param P_Date
+	 * @param P_ID
+	 * @param P_Number
+	 * @param P_Msg
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param PInstanceLogType Log Type
+	 */
+	public MPInstanceLog (String AD_PInstance_Log_UU, int AD_PInstance_ID, int Log_ID, Timestamp P_Date,
+			int P_ID, BigDecimal P_Number, String P_Msg, int AD_Table_ID, int Record_ID, String PInstanceLogType)
+	{
 		setAD_PInstance_ID(AD_PInstance_ID);
 		setLog_ID(Log_ID);
 		setP_Date(P_Date);
@@ -91,6 +111,8 @@ public class MPInstanceLog
 		setAD_Table_ID(AD_Table_ID);
 		setRecord_ID(Record_ID);
 		setPInstanceLogType(PInstanceLogType);
+		if(!Util.isEmpty(AD_PInstance_Log_UU))
+			setAD_PInstance_Log_UU(AD_PInstance_Log_UU);
 	}	//	MPInstance_Log
 
 	/**
@@ -118,6 +140,7 @@ public class MPInstanceLog
 	private int m_AD_Table_ID;
 	private int m_Record_ID;
 	private String m_PInstanceLogType;
+	private String m_AD_PInstance_Log_UU;
 
 
 	/**
@@ -144,7 +167,7 @@ public class MPInstanceLog
 	private final static String insertSql = "INSERT INTO AD_PInstance_Log "
 			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, AD_PInstance_Log_UU, PInstanceLogType)"
 			+ " VALUES (?,?,?,?,?,?,?,?,?,?) "
-			+ " ON CONFLICT (Log_ID, AD_PInstance_ID) "
+			+ " ON CONFLICT (AD_PInstance_Log_UU) "
 			+ " DO UPDATE "
 			+ " SET AD_PInstance_ID = ?, "
 			+ " P_Date = ?, "
@@ -153,7 +176,6 @@ public class MPInstanceLog
 			+ " P_Msg = ?, "
 			+ " AD_Table_ID = ?, "
 			+ " Record_ID = ?, "
-			+ " AD_PInstance_Log_UU = ?, "
 			+ " PInstanceLogType = ? ";
 
 	/**
@@ -216,8 +238,7 @@ public class MPInstanceLog
 		params.add(value);
 		params2.add(value);
 		
-		params.add(UUID.randomUUID().toString());
-		params2.add(UUID.randomUUID().toString());
+		params.add(getAD_PInstance_Log_UU());
 		
 		params.add(m_PInstanceLogType);
 		params2.add(m_PInstanceLogType);
@@ -384,6 +405,24 @@ public class MPInstanceLog
 	 */
 	public void setPInstanceLogType(String m_PInstanceLogType) {
 		this.m_PInstanceLogType = m_PInstanceLogType;
+	}
+
+	/**
+	 * Set AD_PInstance_Log_UU
+	 * @return Sting AD_PInstance_Log_UU
+	 */
+	public String getAD_PInstance_Log_UU() {
+		if(Util.isEmpty(m_AD_PInstance_Log_UU))
+			m_AD_PInstance_Log_UU = UUID.randomUUID().toString();
+		return m_AD_PInstance_Log_UU;
+	}
+	
+	/**
+	 * Get AD_PInstance_Log_UU
+	 * @param m_AD_PInstance_Log_UU
+	 */
+	public void setAD_PInstance_Log_UU(String m_AD_PInstance_Log_UU) {
+		this.m_AD_PInstance_Log_UU = m_AD_PInstance_Log_UU;
 	}
 
 } //	MPInstance_Log

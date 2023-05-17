@@ -703,10 +703,11 @@ public class ProcessInfo implements Serializable
 	 * @param P_Msg
 	 * @param tableId
 	 * @param recordId
+	 * @return String AD_PInstance_Log_UU
 	 */
-	public void saveLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg,int tableId,int recordId)
+	public String saveLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg,int tableId,int recordId)
 	{
-		saveLog (new ProcessInfoLog (Log_ID, P_ID, P_Date, P_Number, P_Msg, tableId, recordId, X_AD_PInstance_Log.PINSTANCELOGTYPE_Status));
+		return saveLog (new ProcessInfoLog (Log_ID, P_ID, P_Date, P_Number, P_Msg,tableId,recordId));
 	}
 	
 	/**
@@ -717,10 +718,11 @@ public class ProcessInfo implements Serializable
 	 * @param P_Msg
 	 * @param tableId
 	 * @param recordId
+	 * @return String AD_PInstance_Log_UU
 	 */
-	public void saveLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg ,int tableId,int recordId)
+	public String saveLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg ,int tableId,int recordId)
 	{
-		saveLog (new ProcessInfoLog (P_ID, P_Date, P_Number, P_Msg,tableId, recordId));
+		return saveLog (new ProcessInfoLog (P_ID, P_Date, P_Number, P_Msg,tableId, recordId));
 	}
 	
 	/**
@@ -730,10 +732,11 @@ public class ProcessInfo implements Serializable
 	 *	@param P_Date Process Date
 	 *	@param P_Number Process Number
 	 *	@param P_Msg Process Message
+	 *	@return String AD_PInstance_Log_UU
 	 */
-	public void saveLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
+	public String saveLog (int Log_ID, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
 	{
-		saveLog (new ProcessInfoLog (Log_ID, P_ID, P_Date, P_Number, P_Msg, X_AD_PInstance_Log.PINSTANCELOGTYPE_Status));
+		return saveLog (new ProcessInfoLog (Log_ID, P_ID, P_Date, P_Number, P_Msg));
 	}	//	saveLog
 
 	/**
@@ -742,20 +745,22 @@ public class ProcessInfo implements Serializable
 	 *	@param P_Date Process Date
 	 *	@param P_Number Process Number
 	 *	@param P_Msg Process Message
+	 *	@return String AD_PInstance_Log_UU
 	 */
-	public void saveLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
+	public String saveLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
 	{
-		saveLog (new ProcessInfoLog (P_ID, P_Date, P_Number, P_Msg));
+		return saveLog (new ProcessInfoLog (P_ID, P_Date, P_Number, P_Msg));
 	}	//	saveLog
 
 	/**
 	 * 	Save Log to DB immediately
 	 *	@param logEntry log entry
+	 *	@return String AD_PInstance_Log_UU
 	 */
-	public void saveLog (ProcessInfoLog logEntry)
+	public String saveLog (ProcessInfoLog logEntry)
 	{
 		if (logEntry == null)
-			return;
+			return "";
 		MPInstanceLog il = new MPInstanceLog(getAD_PInstance_ID(), 
 				logEntry.getLog_ID(), 
 				logEntry.getP_Date(),
@@ -765,7 +770,59 @@ public class ProcessInfo implements Serializable
 				logEntry.getAD_Table_ID(), 
 				logEntry.getRecord_ID(),
 				!Util.isEmpty(logEntry.getPInstanceLogType()) ? logEntry.getPInstanceLogType() : X_AD_PInstance_Log.PINSTANCELOGTYPE_Progress);
-		il.save();
+		return il.save() ? il.getAD_PInstance_Log_UU() : "";
+	}	//	saveLog
+	
+	/**
+	 * Save Log to DB immediately
+	 * @param pInstanceLogUU AD_PInstance_Log_UU
+	 * @param P_ID Process ID
+	 * @param P_Date Process Date
+	 * @param P_Number Process Number
+	 * @param P_Msg Process Message
+	 * @param tableId AD_Table_ID
+	 * @param recordId Record_ID
+	 * @return true if log is successfully updated
+	 */
+	public boolean updateLog (String pInstanceLogUU, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg,int tableId,int recordId)
+	{
+		return updateLog (new ProcessInfoLog (pInstanceLogUU, P_ID, P_Date, P_Number, P_Msg,tableId,recordId));
+	}	//	updateLog
+	
+	/**
+	 * 	Save Log to DB immediately
+	 *	@param pInstanceLogUU AD_PInstance_Log_UU
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Message
+	 *	@return true if log is successfully updated
+	 */
+	public boolean updateLog (String pInstanceLogUU, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
+	{
+		return updateLog (new ProcessInfoLog (pInstanceLogUU, P_ID, P_Date, P_Number, P_Msg));
+	}	//	updateLog
+	
+	/**
+	 * 	Update existing Log immediately
+	 *	@param logEntry log entry
+	 *	@return true if log is successfully updated
+	 */
+	public boolean updateLog (ProcessInfoLog logEntry)
+	{
+		if (logEntry == null)
+			return false;
+		MPInstanceLog il = new MPInstanceLog(logEntry.getAD_PInstance_Log_UU(),
+				getAD_PInstance_ID(), 
+				logEntry.getLog_ID(), 
+				logEntry.getP_Date(),
+				logEntry.getP_ID(), 
+				logEntry.getP_Number(), 
+				logEntry.getP_Msg(),
+				logEntry.getAD_Table_ID(), 
+				logEntry.getRecord_ID(),
+				!Util.isEmpty(logEntry.getPInstanceLogType()) ? logEntry.getPInstanceLogType() : X_AD_PInstance_Log.PINSTANCELOGTYPE_Status);
+		return il.save();
 	}	//	saveLog
 	
 	/**
