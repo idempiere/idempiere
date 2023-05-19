@@ -209,8 +209,6 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 			Object[] params = new Object[]{helpTextbox.getValue(), ctxHelpMsg.get_ID(), ctxHelpMsg.getAD_Client_ID(), Env.getAD_Language(Env.getCtx())};
 			DB.executeUpdateEx(update.toString(), params, trx.getTrxName());			
 		} else {
-		  try {
-			PO.setCrossTenantSafe();
 			/* this whole block code is forcefully writing records on System tenant */
 			MCtxHelpSuggestion suggestion = new MCtxHelpSuggestion(Env.getCtx(), 0, trx.getTrxName());
 			suggestion.setClientOrg(0, 0);
@@ -221,7 +219,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 				MCtxHelp ctxHelp = new MCtxHelp(Env.getCtx(), 0, trx.getTrxName());
 				setContextHelpInfo(po, ctxHelp);
 				ctxHelp.setClientOrg(0, 0);
-				ctxHelp.saveEx();
+				ctxHelp.saveCrossTenantSafeEx();
 				
 				if (po != null) {
 					if (po.is_Immutable()) {
@@ -229,11 +227,11 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 						MTable table = MTable.get(po.get_Table_ID());
 						PO mutablePO = table.getPO(po.get_ID(), trx.getTrxName());
 						mutablePO.set_ValueOfColumn("AD_CtxHelp_ID", ctxHelp.getAD_CtxHelp_ID());
-						mutablePO.saveEx(trx.getTrxName());
+						mutablePO.saveCrossTenantSafeEx(trx.getTrxName());
 						po.load(trx.getTrxName());
 					} else {
 						po.set_ValueOfColumn("AD_CtxHelp_ID", ctxHelp.getAD_CtxHelp_ID());
-						po.saveEx(trx.getTrxName());
+						po.saveCrossTenantSafeEx(trx.getTrxName());
 					}
 				}
 				
@@ -242,7 +240,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 				msg.setAD_CtxHelp_ID(ctxHelp.getAD_CtxHelp_ID());
 				msg.setClientOrg(0, 0);
 				msg.setMsgText(baseContent);
-				msg.saveEx();
+				msg.saveCrossTenantSafeEx();
 				suggestion.setAD_CtxHelpMsg_ID(msg.getAD_CtxHelpMsg_ID());
 				if (!Util.isEmpty(translatedContent) && !Env.isBaseLanguage(Env.getCtx(), I_AD_CtxHelpMsg.Table_Name)) {
 					int id = DB.getSQLValueEx(trx.getTrxName(), "SELECT AD_CtxHelpMsg_ID FROM AD_CtxHelpMsg_Trl WHERE AD_CtxHelpMsg_ID=? AND AD_Client_ID=? " +
@@ -280,10 +278,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 			suggestion.setMsgText(helpTextbox.getValue());
 			suggestion.setIsSaveAsTenantCustomization(false);
 			
-			suggestion.saveEx();
-		  } finally {
-			  PO.clearCrossTenantSafe();
-		  }
+			suggestion.saveCrossTenantSafeEx();
 		} 
 		this.detach();
 	}
