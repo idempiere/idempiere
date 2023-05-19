@@ -2032,7 +2032,7 @@ public abstract class PO
 			}	//	UUID key search
 		}
 
-		if (m_KeyColumns.length == 0)
+		if (m_KeyColumns == null || m_KeyColumns.length == 0)
 			throw new IllegalStateException("No PK, UU nor FK - " + p_info.getTableName());
 	}	//	setKeyInfo
 
