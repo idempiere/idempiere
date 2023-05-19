@@ -38,6 +38,7 @@ import org.adempiere.webui.editor.WPasswordEditor;
 import org.adempiere.webui.editor.WPaymentEditor;
 import org.adempiere.webui.editor.WRadioGroupEditor;
 import org.adempiere.webui.editor.WRecordIDEditor;
+import org.adempiere.webui.editor.WRecordUUIDEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
@@ -232,9 +233,13 @@ public class DefaultEditorFactory implements IEditorFactory {
         {
         	editor = new WTimeZoneEditor(gridField, tableEditor);
         }
-		else if (displayType == DisplayType.RecordID || displayType == DisplayType.RecordUU)
+		else if (displayType == DisplayType.RecordID)
         {
         	editor = new WRecordIDEditor(gridField, tableEditor, editorConfiguration);
+        }
+		else if (displayType == DisplayType.RecordUU)
+        {
+        	editor = new WRecordUUIDEditor(gridField, tableEditor, editorConfiguration);
         }
         else
         {

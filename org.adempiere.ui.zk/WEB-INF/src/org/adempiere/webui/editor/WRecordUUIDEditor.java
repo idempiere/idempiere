@@ -46,13 +46,13 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- * Default editor for {@link DisplayType#RecordID}.<br/>
+ * Default editor for {@link DisplayType#RecordUU}.<br/>
  * Implemented with composite component of {@link Textbox} and {@link ToolBarButton}.<br/>
  * The editor uses {@link WRecordIDDialog} for edit or viewing. 
  * @author Peter Takacs, Cloudempiere
  *
  */
-public class WRecordIDEditor extends WRecordEditor {
+public class WRecordUUIDEditor extends WRecordEditor {
 
 	/**
 	 * Constructor
@@ -60,7 +60,7 @@ public class WRecordIDEditor extends WRecordEditor {
 	 * @param tableEditor
 	 * @param editorConfiguration
 	 */
-	public WRecordIDEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+	public WRecordUUIDEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
 		super(gridField, tableEditor, editorConfiguration);
 	}
 
@@ -69,13 +69,12 @@ public class WRecordIDEditor extends WRecordEditor {
 	{
 		String s = tableIDValue != null ? String.valueOf(tableIDValue) : "";
 		int tableID = s.length() > 0 ? Integer.parseInt(s) : 0;
-		s = recordIDValue != null ? String.valueOf(recordIDValue) : "";
-		int recordID = s.length() > 0 ? Integer.parseInt(s) : 0;
-		if(tableID <= 0 || recordID < 0)
+		String recordUU = recordIDValue != null ? recordIDValue.toString() : "";
+		if(tableID <= 0)
 			return;
 		if (!MRole.getDefault().isTableAccess(tableID, false))
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccessTableNoView"));
-		AEnv.zoom(tableID, recordID);
+		AEnv.zoomUU(tableID, recordUU);
 	}
 
 	@Override
@@ -86,9 +85,10 @@ public class WRecordIDEditor extends WRecordEditor {
 			int tableID =  tableIDValue != null ? Integer.parseInt(String.valueOf(tableIDValue)) : 0;
 			if (tableID > 0) {
 				MTable table = MTable.get(tableID);
-				int recordID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
-				if (tableID > 0 && recordID >= 0)
-					table.getPO(recordID, null);	// calls po.checkCrossTenant() method
+				String recordUU = Objects.toString(evt.getNewValue(), "");
+				if (tableID > 0 && recordUU.length() > 0)
+					table.getPOByUU(recordUU, null);	// calls po.checkCrossTenant() method
+
 			}
 			setValue(evt.getNewValue(), false);
 		}
@@ -111,11 +111,7 @@ public class WRecordIDEditor extends WRecordEditor {
 					}
 					if (tableIDValue != null && tableIDValue instanceof Integer) {
 						MTable table = MTable.get((Integer)tableIDValue);
-						if (table.isUUIDKeyTable()) {
-							Dialog.error(tableIDGridField.getWindowNo(), "UUTableNotCompatibleWithRecordID");
-							return;
-						}
-						if (! table.isIDKeyTable()) {
+						if (! table.hasUUIDKey()) {
 							Dialog.error(tableIDGridField.getWindowNo(), "TableHasNoKeyColumn");
 							return;
 						}

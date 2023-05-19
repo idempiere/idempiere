@@ -31,7 +31,7 @@ import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WEditor;
-import org.adempiere.webui.editor.WRecordIDEditor;
+import org.adempiere.webui.editor.WRecordEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
@@ -60,14 +60,13 @@ import org.zkoss.zul.Vlayout;
  *
  */
 public class WRecordIDDialog extends Window implements EventListener<Event>, ValueChangeListener {
-
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 8126107952514403099L;
+	private static final long serialVersionUID = 1791159320699080384L;
 	
 	/** Record_ID editor from which the window is opened */
-	private WRecordIDEditor editor;
+	private WRecordEditor editor;
 	/** Current tab's AD_Table_ID GrodField */
 	private GridField tableIDGridField;
 	/** Current Record_ID value from {@link #editor} */
@@ -93,7 +92,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 	 * @param editor
 	 * @param tableIDGridField
 	 */
-	public WRecordIDDialog(Page page, WRecordIDEditor editor, GridField tableIDGridField) {
+	public WRecordIDDialog(Page page, WRecordEditor editor, GridField tableIDGridField) {
 		super();
 
 		this.editor = editor;
