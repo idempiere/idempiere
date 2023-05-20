@@ -113,7 +113,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3153695115162945843L;
+	private static final long serialVersionUID = 1160981281447452309L;
 
 	public static final String LOCAL_TRX_PREFIX = "POSave";
 
@@ -2463,6 +2463,21 @@ public abstract class PO
 	}
 
 	/**
+	 * Update Value or create new record, used when writing a cross tenant record
+	 * @param trxName transaction
+	 * @throws AdempiereException
+	 * @see #saveEx(String)
+	 */
+	public void saveCrossTenantSafeEx() {
+		try {
+			PO.setCrossTenantSafe();
+			saveEx();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
+	}
+
+	/**
 	 * 	Finish Save Process
 	 *	@param newRecord new
 	 *	@param success success
@@ -2577,6 +2592,21 @@ public abstract class PO
 		checkImmutable();
 		setReplication(isFromReplication);
 		saveEx();
+	}
+
+	/**
+	 * Update Value or create new record, used when writing a cross tenant record
+	 * @param trxName transaction
+	 * @throws AdempiereException
+	 * @see #saveEx(String)
+	 */
+	public void saveCrossTenantSafeEx(String trxName) {
+		try {
+			PO.setCrossTenantSafe();
+			saveEx(trxName);
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
 	}
 
 	/**
