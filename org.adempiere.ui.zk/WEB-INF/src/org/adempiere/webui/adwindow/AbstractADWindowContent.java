@@ -3126,6 +3126,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							{
 								statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
 							}
+				            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));
 						}
 						if (postCallback != null)
 							postCallback.onCallback(result);
@@ -3173,6 +3174,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							{
 								statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "Deleted") + ": " + count, false);
 							}
+				            MRecentItem.publishChangedEvent(Env.getAD_User_ID(ctx));
 						}
 						if (postCallback != null)
 							postCallback.onCallback(result.getValue().equals(deleteConfirmationLogic));
