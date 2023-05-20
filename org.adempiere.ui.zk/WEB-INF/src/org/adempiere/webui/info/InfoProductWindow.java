@@ -53,8 +53,10 @@ import org.adempiere.webui.panel.InvoiceHistory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
+import org.compiere.minigrid.EmbedWinInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.MDocType;
+import org.compiere.model.MInfoWindow;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.DB;
@@ -316,7 +318,7 @@ public class InfoProductWindow extends InfoWindow {
 		Tabs tabs = new Tabs();
 		tabbedPane.appendChild(tabs);
 
-		Tab tab = new Tab(Util.cleanAmp(Msg.translate(Env.getCtx(), "Warehouse")));
+		Tab tab = new Tab(Util.cleanAmp(Msg.translate(Env.getCtx(), "WarehouseStock")));
 		tabs.appendChild(tab);
 		Tabpanel desktopTabPanel = new Tabpanel();
 		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
@@ -397,8 +399,8 @@ public class InfoProductWindow extends InfoWindow {
 		ZKUpdateUtil.setHeight(south, detailHeight + "px");
 		south.setCollapsible(true);
 		south.setSplittable(true);
-		south.setTitle(Msg.translate(Env.getCtx(), "WarehouseStock"));
-		south.setTooltiptext(Msg.translate(Env.getCtx(), "WarehouseStock"));
+		south.setTitle(Msg.translate(Env.getCtx(), "Related Information"));
+		south.setTooltiptext(Msg.translate(Env.getCtx(), "Related Information"));
 		south.setSclass("south-collapsible-with-title");
 		if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
 		{
@@ -446,6 +448,22 @@ public class InfoProductWindow extends InfoWindow {
 		relatedTbl.repaint();
 		productpriceTbl.repaint();
 		m_tableAtp.repaint();
+
+		// add related info windows
+		if (embeddedWinList.size() > 0) {
+			for (EmbedWinInfo embeddedWin : embeddedWinList) {
+				if (embeddedWin.getInfoTbl() instanceof WListbox) {
+					tab = new Tab(embeddedWin.getInfowin().get_Translation(MInfoWindow.COLUMNNAME_Name));
+					tabs.appendChild(tab);
+					desktopTabPanel = new Tabpanel();
+					ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
+					desktopTabPanel.appendChild( (WListbox) embeddedWin.getInfoTbl() );
+					tabPanels.appendChild(desktopTabPanel);
+					((WListbox)embeddedWin.getInfoTbl()).repaint();
+				}
+			}
+		}// render embedded
+
 	}
 
 	/**
