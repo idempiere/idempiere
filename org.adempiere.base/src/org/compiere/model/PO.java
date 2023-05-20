@@ -113,7 +113,7 @@ public abstract class PO
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1672197562752270736L;
+	private static final long serialVersionUID = -7758079724744033518L;
 
 	/* String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -2588,6 +2588,21 @@ public abstract class PO
 	}
 
 	/**
+	 * Update Value or create new record, used when writing a cross tenant record
+	 * @param trxName transaction
+	 * @throws AdempiereException
+	 * @see #saveEx(String)
+	 */
+	public void saveCrossTenantSafeEx() {
+		try {
+			PO.setCrossTenantSafe();
+			saveEx();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
+	}
+
+	/**
 	 * 	Finish Save Process
 	 *	@param newRecord new
 	 *	@param success success
@@ -2702,6 +2717,21 @@ public abstract class PO
 		checkImmutable();
 		setReplication(isFromReplication);
 		saveEx();
+	}
+
+	/**
+	 * Update Value or create new record, used when writing a cross tenant record
+	 * @param trxName transaction
+	 * @throws AdempiereException
+	 * @see #saveEx(String)
+	 */
+	public void saveCrossTenantSafeEx(String trxName) {
+		try {
+			PO.setCrossTenantSafe();
+			saveEx(trxName);
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
 	}
 
 	/**
