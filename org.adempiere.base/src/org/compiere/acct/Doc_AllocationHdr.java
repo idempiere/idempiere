@@ -463,11 +463,10 @@ public class Doc_AllocationHdr extends Doc
 			}
 
 			//	Realized Gain & Loss
-			if (invoice != null
+			if (invoice != null && as.isAccrual()
 				&& (getC_Currency_ID() != as.getC_Currency_ID()			//	payment allocation in foreign currency
 					|| getC_Currency_ID() != line.getInvoiceC_Currency_ID()))	//	allocation <> invoice currency
 			{
-				//do need a check here for as.isAccrual()?
 				p_Error = createInvoiceGainLoss (line, as, fact, bpAcct, invoice,
 					allocationSource, allocationAccounted);
 				if (p_Error != null)
