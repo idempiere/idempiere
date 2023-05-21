@@ -2336,11 +2336,6 @@ public abstract class PO
 	 */
 	public boolean save()
 	{
-		checkImmutable();
-		
-		checkValidContext();
-		checkCrossTenant(true);
-		checkRecordIDCrossTenant();
 		CLogger.resetLast();
 		boolean newRecord = is_new();	//	save locally as load resets
 		if (!newRecord && !is_Changed())
@@ -2348,6 +2343,12 @@ public abstract class PO
 			if (log.isLoggable(Level.FINE)) log.fine("Nothing changed - " + p_info.getTableName());
 			return true;
 		}
+
+		checkImmutable();
+		checkValidContext();
+		checkCrossTenant(true);
+		checkRecordIDCrossTenant();
+		checkRecordUUCrossTenant();
 
 		if (m_setErrorsFilled) {
 			for (int i = 0; i < m_setErrors.length; i++) {
@@ -3026,7 +3027,7 @@ public abstract class PO
 				MChangeLog cLog = session.changeLog (
 					m_trxName, AD_ChangeLog_ID,
 					p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-					get_ID(), getAD_Client_ID(), getAD_Org_ID(), oldV, newV, MChangeLog.EVENTCHANGELOG_Update);
+					get_ID(), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), oldV, newV, MChangeLog.EVENTCHANGELOG_Update);
 				if (cLog != null)
 					AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 			}
@@ -3377,7 +3378,7 @@ public abstract class PO
 					MChangeLog cLog = session.changeLog (
 							m_trxName, AD_ChangeLog_ID,
 							p_info.getAD_Table_ID(), p_info.getColumn(ki).AD_Column_ID,
-							get_ID(), getAD_Client_ID(), getAD_Org_ID(), null, id, MChangeLog.EVENTCHANGELOG_Insert);
+							get_ID(), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, id, MChangeLog.EVENTCHANGELOG_Insert);
 					if (cLog != null)
 						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 				}
@@ -3650,7 +3651,7 @@ public abstract class PO
 					MChangeLog cLog = session.changeLog (
 							m_trxName, AD_ChangeLog_ID,
 							p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-							get_ID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert);
+							get_ID(), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert);
 					if (cLog != null)
 						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 				}
@@ -3843,16 +3844,17 @@ public abstract class PO
 	 */
 	public boolean delete (boolean force)
 	{
-		checkImmutable();
-		
-		checkValidContext();
-		checkCrossTenant(true);
 		CLogger.resetLast();
 		if (is_new())
 			return true;
 
+		checkImmutable();
+		checkValidContext();
+		checkCrossTenant(true);
+
 		int AD_Table_ID = p_info.getAD_Table_ID();
 		int Record_ID = get_ID();
+		String Record_UU = get_UUID();
 
 		if (!force)
 		{
@@ -3951,6 +3953,8 @@ public abstract class PO
 			}
 			//	Delete Restrict AD_Table_ID/Record_ID (Requests, ..)
 			String errorMsg = PO_Record.exists(AD_Table_ID, Record_ID, m_trxName);
+			if (errorMsg == null && Record_UU != null)
+				errorMsg = PO_Record.exists(AD_Table_ID, Record_UU, m_trxName);
 			if (errorMsg != null)
 			{
 				log.saveError("CannotDelete", errorMsg);
@@ -4000,9 +4004,14 @@ public abstract class PO
 					//delete cascade only for single key column record
 					PO_Record.deleteModelCascade(p_info.getTableName(), Record_ID, localTrxName);
 					//	Delete Cascade AD_Table_ID/Record_ID (Attachments, ..)
-					PO_Record.deleteRecordIdCascade(AD_Table_ID, Record_ID, localTrxName);
+					PO_Record.deleteRecordCascade(AD_Table_ID, Record_ID, localTrxName);
 					// Set referencing Record_ID Null AD_Table_ID/Record_ID
-					PO_Record.setRecordIdNull(AD_Table_ID, Record_ID, localTrxName);
+					PO_Record.setRecordNull(AD_Table_ID, Record_ID, localTrxName);
+				}
+				if (Record_UU != null) {
+					PO_Record.deleteModelCascade(p_info.getTableName(), Record_UU, localTrxName);
+					PO_Record.deleteRecordCascade(AD_Table_ID, Record_UU, localTrxName);
+					PO_Record.setRecordNull(AD_Table_ID, Record_UU, localTrxName);
 				}
 		
 				//	The Delete Statement
@@ -4082,7 +4091,7 @@ public abstract class PO
 									MChangeLog cLog = session.changeLog (
 										m_trxName != null ? m_trxName : localTrxName, AD_ChangeLog_ID,
 										AD_Table_ID, p_info.getColumn(i).AD_Column_ID,
-										Record_ID, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete);
+										Record_ID, Record_UU, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete);
 									if (cLog != null)
 										AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 								}
@@ -5763,6 +5772,52 @@ public abstract class PO
 		int curcid = getAD_Client_ID();
 		if (pocid > 0 && pocid != curcid)
 			throw new AdempiereException("Cross tenant ID " + recordId + " not allowed in " + ft.getTableName());
+	}
+
+	/**
+	 * Verify Foreign key based on AD_Table_ID+Record_UU for cross tenant
+	 * @return true if all the foreign keys are valid
+	 */
+	private void checkRecordUUCrossTenant() {
+		if (isSafeCrossTenant.get())
+			return;
+		int idxRecordUU = p_info.getColumnIndex("Record_UU");
+		if (idxRecordUU < 0)
+			return;
+		int idxTableId = p_info.getColumnIndex("AD_Table_ID");
+		if (idxTableId < 0)
+			return;
+		if ( ! (is_new() || is_ValueChanged(idxTableId) || is_ValueChanged(idxRecordUU)))
+			return;
+		int tableId = get_ValueAsInt(idxTableId);
+		if (tableId <= 0)
+			return;
+		String recordUU = get_ValueAsString(idxRecordUU);
+		if (Util.isEmpty(recordUU))
+			return;
+		MTable ft = MTable.get(getCtx(), tableId);
+		if (!ft.hasUUIDKey())
+			return; // no UUID key in table
+		boolean systemAccess = false;
+		String accessLevel = ft.getAccessLevel();
+		if (   MTable.ACCESSLEVEL_All.equals(accessLevel)
+			|| MTable.ACCESSLEVEL_SystemOnly.equals(accessLevel)
+			|| MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel)) {
+			systemAccess = true;
+		}
+		StringBuilder sql = new StringBuilder("SELECT AD_Client_ID FROM ")
+				.append(ft.getTableName())
+				.append(" WHERE ")
+				.append(PO.getUUIDColumnName(ft.getTableName()))
+				.append("=?");
+		int pocid = DB.getSQLValue(get_TrxName(), sql.toString(), recordUU);
+		if (pocid < 0)
+			throw new AdempiereException("Foreign UUID " + recordUU + " not found in " + ft.getTableName());
+		if (pocid == 0 && !systemAccess)
+			throw new AdempiereException("System UUID " + recordUU + " cannot be used in " + ft.getTableName());
+		int curcid = getAD_Client_ID();
+		if (pocid > 0 && pocid != curcid)
+			throw new AdempiereException("Cross tenant UUID " + recordUU + " not allowed in " + ft.getTableName());
 	}
 
 	/**

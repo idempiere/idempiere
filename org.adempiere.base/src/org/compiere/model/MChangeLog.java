@@ -37,7 +37,7 @@ public class MChangeLog extends X_AD_ChangeLog
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7262833610411402160L;
+	private static final long serialVersionUID = 3082084206319959526L;
 
 	/**
 	 * 	Do we track changes for this table
@@ -171,6 +171,33 @@ public class MChangeLog extends X_AD_ChangeLog
 		int AD_Client_ID, int AD_Org_ID,
 		Object OldValue, Object NewValue, String event)
 	{
+		this(ctx, AD_ChangeLog_ID, TrxName, AD_Session_ID, 
+			AD_Table_ID, AD_Column_ID, Record_ID, null,
+			AD_Client_ID, AD_Org_ID,
+			OldValue, NewValue, event);
+	}
+
+	/**
+	 * 	Full Constructor
+	 *	@param ctx context
+	 *	@param AD_ChangeLog_ID 0 for new change log
+	 *	@param TrxName transaction
+	 *	@param AD_Session_ID session
+	 *	@param AD_Table_ID table
+	 *	@param AD_Column_ID column
+	 *	@param Record_ID record
+	 *	@param Record_UU record UUID
+	 *	@param AD_Client_ID client
+	 *	@param AD_Org_ID org
+	 *	@param OldValue old
+	 *	@param NewValue new
+	 */
+	public MChangeLog (Properties ctx, 
+		int AD_ChangeLog_ID, String TrxName, int AD_Session_ID, 
+		int AD_Table_ID, int AD_Column_ID, int Record_ID, String Record_UU,
+		int AD_Client_ID, int AD_Org_ID,
+		Object OldValue, Object NewValue, String event)
+	{
 		this (ctx, 0, TrxName);	
 		if (AD_ChangeLog_ID == 0)
 		{
@@ -184,7 +211,9 @@ public class MChangeLog extends X_AD_ChangeLog
 		//
 		setAD_Table_ID (AD_Table_ID);
 		setAD_Column_ID (AD_Column_ID);
-		setRecord_ID (Record_ID);
+		if (Record_ID > 0)
+			setRecord_ID (Record_ID);
+		setRecord_UU (Record_UU);
 		//
 		setClientOrg (AD_Client_ID, AD_Org_ID);
 		//
