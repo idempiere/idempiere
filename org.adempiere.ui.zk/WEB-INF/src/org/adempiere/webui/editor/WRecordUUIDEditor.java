@@ -36,18 +36,19 @@ import org.adempiere.webui.window.WRecordIDDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
 /**
- * Default editor for {@link DisplayType#RecordID}.<br/>
+ * Default editor for {@link DisplayType#RecordUU}.<br/>
  * Implemented with composite component of {@link Textbox} and {@link ToolBarButton}.<br/>
  * The editor uses {@link WRecordIDDialog} for edit or viewing. 
  * @author Peter Takacs, Cloudempiere
  *
  */
-public class WRecordIDEditor extends WRecordEditor<Integer> {
+public class WRecordUUIDEditor extends WRecordEditor<String> {
 
 	/**
 	 * Constructor
@@ -55,7 +56,7 @@ public class WRecordIDEditor extends WRecordEditor<Integer> {
 	 * @param tableEditor
 	 * @param editorConfiguration
 	 */
-	public WRecordIDEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
+	public WRecordUUIDEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration) {
 		super(gridField, tableEditor, editorConfiguration);
 	}
 
@@ -64,13 +65,12 @@ public class WRecordIDEditor extends WRecordEditor<Integer> {
 	{
 		String s = tableIDValue != null ? String.valueOf(tableIDValue) : "";
 		int tableID = s.length() > 0 ? Integer.parseInt(s) : 0;
-		s = recordIDValue != null ? String.valueOf(recordIDValue) : "";
-		int recordID = s.length() > 0 ? Integer.parseInt(s) : 0;
-		if(tableID <= 0 || recordID < 0)
+		String recordUU = recordIDValue != null ? recordIDValue.toString() : "";
+		if(tableID <= 0)
 			return;
 		if (!MRole.getDefault().isTableAccess(tableID, false))
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccessTableNoView"));
-		AEnv.zoom(tableID, recordID);
+		AEnv.zoomUU(tableID, recordUU);
 	}
 
 	@Override
@@ -81,32 +81,30 @@ public class WRecordIDEditor extends WRecordEditor<Integer> {
 			int tableID =  tableIDValue != null ? Integer.parseInt(String.valueOf(tableIDValue)) : 0;
 			if (tableID > 0) {
 				MTable table = MTable.get(tableID);
-				int recordID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
-				if (tableID > 0 && recordID >= 0)
-					table.getPO(recordID, null);	// calls po.checkCrossTenant() method
+				String recordUU = Objects.toString(evt.getNewValue(), "");
+				if (tableID > 0 && recordUU.length() > 0)
+					table.getPOByUU(recordUU, null);	// calls po.checkCrossTenant() method
+
 			}
 			setValue(evt.getNewValue(), false);
 		}
 	}
 
 	@Override
-	public Integer toKeyValue(Object value) {
-		return value != null ? Integer.parseInt(String.valueOf(value)) : null;
+	public String toKeyValue(Object value) {
+		return value != null ? value.toString() : null;
 	}
 
 	@Override
 	protected String getKeyColumn(MTable mTable) {
-		String[] keyColumns = mTable.getKeyColumns();
-		return keyColumns != null && keyColumns.length > 0 ? keyColumns[0] : null;
+		return PO.getUUIDColumnName(mTable.getTableName());		
 	}
 
 	@Override
 	public String validateTableIdValue(int tableId) {
 		MTable table = MTable.get(tableId);
-		if (table.isUUIDKeyTable())
-			return "UUTableNotCompatibleWithRecordID";
-		if (! table.isIDKeyTable())
+		if (! table.hasUUIDKey())
 			return "TableHasNoKeyColumn";
-		return null;
+		return null;		
 	}
 }

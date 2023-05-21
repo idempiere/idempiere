@@ -4,6 +4,7 @@
 package org.adempiere.webui.info;
 
 import org.compiere.model.GridField;
+import org.compiere.model.MInvoice;
 import org.compiere.util.Env;
 
 /**
@@ -76,7 +77,7 @@ public class InfoInvoiceWindow extends InfoWindow {
 		super.saveSelectionDetail();
 
         //  publish for Callout to read
-        Integer ID = getSelectedRowKey();
+        Integer ID = getIntSelectedRowKey(MInvoice.Table_ID);
         Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "C_Invoice_ID", ID == null ? "0" : ID.toString());
 	}
 
