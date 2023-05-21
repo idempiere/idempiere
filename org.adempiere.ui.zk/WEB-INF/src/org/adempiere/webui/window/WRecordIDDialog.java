@@ -44,6 +44,7 @@ import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
@@ -66,7 +67,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 	private static final long serialVersionUID = 1791159320699080384L;
 	
 	/** Record_ID editor from which the window is opened */
-	private WRecordEditor editor;
+	private WRecordEditor<?> editor;
 	/** Current tab's AD_Table_ID GrodField */
 	private GridField tableIDGridField;
 	/** Current Record_ID value from {@link #editor} */
@@ -92,7 +93,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 	 * @param editor
 	 * @param tableIDGridField
 	 */
-	public WRecordIDDialog(Page page, WRecordEditor editor, GridField tableIDGridField) {
+	public WRecordIDDialog(Page page, WRecordEditor<?> editor, GridField tableIDGridField) {
 		super();
 
 		this.editor = editor;
@@ -108,16 +109,7 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 
 
 		this.tableIDGridField = tableIDGridField;
-		if(editor.getValue() instanceof Integer) {
-			this.recordIDValue = (Integer)editor.getValue();
-		} else {
-			if (editor.getValue() == null)
-				this.recordIDValue = null;
-			else {
-				if (editor.getValue() instanceof String && editor.getColumnName().endsWith("_UU"))
-					this.recordIDValue = editor.getValue().toString();
-			}
-		}
+		this.recordIDValue = editor.toKeyValue(editor.getValue());
 
 		init(page);
 	}
@@ -231,15 +223,9 @@ public class WRecordIDDialog extends Window implements EventListener<Event>, Val
 		if (evt.getSource().equals(tableIDEditor)) {
 			int tableID = Integer.parseInt(Objects.toString(evt.getNewValue(), "-1"));
 			if (tableID > 0) {
-				MTable table = MTable.get(tableID);
-				if (editor.getColumnName().endsWith("_UU")) {
-					if (! table.hasUUIDKey())
-						throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn"));
-				} else {
-					if (table.isUUIDKeyTable())
-						throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "UUTableNotCompatibleWithRecordID"));
-					if (! table.isIDKeyTable())
-						throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn"));
+				String error = editor.validateTableIdValue(tableID);
+				if (!Util.isEmpty(error)) {
+					throw new WrongValueException(tableIDEditor.getComponent(), Msg.getMsg(Env.getCtx(), error));
 				}
 			}
 

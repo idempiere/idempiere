@@ -25,8 +25,6 @@
 **********************************************************************/
 package org.adempiere.webui.editor;
 
-import java.beans.PropertyChangeEvent;
-
 import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.component.Textbox;
@@ -35,6 +33,7 @@ import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.FindWindow;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.adempiere.webui.window.WRecordIDDialog;
@@ -45,7 +44,6 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MTable;
-import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -63,7 +61,7 @@ import org.zkoss.zul.Div;
  * @author Peter Takacs, Cloudempiere
  *
  */
-public abstract class WRecordEditor extends WEditor implements ContextMenuListener, IZoomableEditor {
+public abstract class WRecordEditor<T> extends WEditor implements ContextMenuListener, IZoomableEditor {
 
 	/** Is Read/Write enabled on the editor */
 	private boolean m_ReadWrite;
@@ -207,9 +205,6 @@ public abstract class WRecordEditor extends WEditor implements ContextMenuListen
 	}
 
 	@Override
-	public abstract void actionZoom();
-
-	@Override
 	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.REQUERY_EVENT.equals(evt.getContextEvent()))
@@ -245,9 +240,6 @@ public abstract class WRecordEditor extends WEditor implements ContextMenuListen
 	}
 
 	@Override
-	public abstract void propertyChange(PropertyChangeEvent evt);
-
-	@Override
 	public void setValue(Object value) {
 		setValue(value, true);
 	}
@@ -270,11 +262,7 @@ public abstract class WRecordEditor extends WEditor implements ContextMenuListen
 			if(value != null && tableIDValue != null) {
 				int tableID = Integer.parseInt(String.valueOf(tableIDValue));
 				if (tableID > 0) {
-					Object recordID;
-					if (getColumnName().endsWith("_UU"))
-						recordID = value.toString();
-					else
-						recordID = Integer.parseInt(String.valueOf(value));
+					Object recordID = toKeyValue(value);
 					if(recordID != null && tableID > 0)
 						recordTextBox.setValue(getIdentifier(tableID, recordID));
 				}
@@ -308,10 +296,7 @@ public abstract class WRecordEditor extends WEditor implements ContextMenuListen
 			Object recordID;
 			try {
 				tableID = Integer.parseInt(String.valueOf(tableIDValue));
-				if (getColumnName().endsWith("_UU"))
-					recordID = recordIDValue.toString();
-				else
-					recordID = Integer.parseInt(String.valueOf(recordIDValue));
+				recordID = toKeyValue(recordIDValue);
 			} catch (NumberFormatException e) {
 				return recordIDValue.toString();
 			}
@@ -333,10 +318,7 @@ public abstract class WRecordEditor extends WEditor implements ContextMenuListen
 			Object rowRecordID;
 			try {
 				rowTableID = Integer.parseInt(String.valueOf(rowTableIdValue));
-				if (getColumnName().endsWith("_UU"))
-					rowRecordID = value.toString();
-				else
-					rowRecordID = Integer.parseInt(String.valueOf(value));
+				rowRecordID = toKeyValue(value);
 			} catch (NumberFormatException e) {
 				return value.toString();
 			}
@@ -347,7 +329,37 @@ public abstract class WRecordEditor extends WEditor implements ContextMenuListen
 	}
 
 	@Override
-	public abstract void onEvent(Event event) throws Exception;
+	public void onEvent(Event event) throws Exception {
+		if(event.getName().equalsIgnoreCase(Events.ON_CLICK)) {
+			if(event.getTarget().equals(zoomButton)) {
+				actionZoom();
+			}
+			else if(event.getTarget().equals(editButton)) {
+				if (tableIDGridField != null) {
+					//for find window context
+					if (gridTab == null) {
+						String tableIdTxt = Env.getContext(gridField.getVO().ctx, gridField.getWindowNo(), FindWindow.TABNO, "AD_Table_ID", true);
+						if (!Util.isEmpty(tableIdTxt, true)) {
+							tableIDValue = Integer.parseInt(tableIdTxt);
+						}
+					}
+					if (tableIDValue != null && tableIDValue instanceof Integer) {
+						String error = validateTableIdValue((int) tableIDValue);
+						if (!Util.isEmpty(error)) {
+							Dialog.error(tableIDGridField.getWindowNo(), error);
+							return;
+						}
+					}
+					new WRecordIDDialog(recordTextBox.getPage(), this, tableIDGridField);
+				}
+			}
+		}
+		else if(event.getName().equalsIgnoreCase(Events.ON_RIGHT_CLICK)) {
+			if(event.getTarget().equals(getComponent())) {
+				popupMenu.open(getComponent());
+			}
+		}
+	}
 
 	/**
 	 * Get Lookup
@@ -369,16 +381,15 @@ public abstract class WRecordEditor extends WEditor implements ContextMenuListen
 			return null;
 		MTable mTable = MTable.get(Env.getCtx(), tableID, null);
 		String keyColumn = "";
-		if (   (tableBased && mTable.isUUIDKeyTable())
-				|| (!tableBased && getColumnName().endsWith("_UU") && mTable.hasUUIDKey())) {
-			keyColumn = PO.getUUIDColumnName(mTable.getTableName());
-		} else {
+		if (tableBased) {
 			String[] keyColumns = mTable.getKeyColumns();
-			if(keyColumns.length > 0)
-				keyColumn = keyColumns[0];
-			else
-				return null;
+			keyColumn = keyColumns != null && keyColumns.length > 0 ? keyColumns[0] : null;
+		} else {
+			keyColumn = getKeyColumn(mTable);
 		}
+		if (Util.isEmpty(keyColumn))
+			return null;
+
 		MColumn mColumn = MColumn.get(Env.getCtx(), mTable.getTableName(), keyColumn);
 
 		int tabNo = gridTab != null ? gridTab.getTabNo() : FindWindow.TABNO;
@@ -441,4 +452,25 @@ public abstract class WRecordEditor extends WEditor implements ContextMenuListen
 	public Div getComponent() {
 		return (Div) super.getComponent();
 	}
+
+	/**
+	 * @param mTable Reference table
+	 * @return Key column name
+	 */
+	protected abstract String getKeyColumn(MTable mTable);
+
+	/**
+	 * Convert value to key value type
+	 * @param value
+	 * @return key value
+	 */
+	public abstract T toKeyValue(Object value);
+
+	/**
+	 * Validate selected table id value
+	 * @param tableIDEditor
+	 * @param tableId
+	 * @return error message or null
+	 */
+	public abstract String validateTableIdValue(int tableId);		
 }

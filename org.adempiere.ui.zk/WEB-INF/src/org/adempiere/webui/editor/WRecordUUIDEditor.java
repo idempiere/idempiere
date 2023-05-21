@@ -32,18 +32,14 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBarButton;
-import org.adempiere.webui.window.Dialog;
-import org.adempiere.webui.window.FindWindow;
 import org.adempiere.webui.window.WRecordIDDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.Util;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
 
 /**
  * Default editor for {@link DisplayType#RecordUU}.<br/>
@@ -52,7 +48,7 @@ import org.zkoss.zk.ui.event.Events;
  * @author Peter Takacs, Cloudempiere
  *
  */
-public class WRecordUUIDEditor extends WRecordEditor {
+public class WRecordUUIDEditor extends WRecordEditor<String> {
 
 	/**
 	 * Constructor
@@ -95,36 +91,20 @@ public class WRecordUUIDEditor extends WRecordEditor {
 	}
 
 	@Override
-	public void onEvent(Event event) throws Exception {
-		if(event.getName().equalsIgnoreCase(Events.ON_CLICK)) {
-			if(event.getTarget().equals(zoomButton)) {
-				actionZoom();
-			}
-			else if(event.getTarget().equals(editButton)) {
-				if (tableIDGridField != null) {
-					//for find window context
-					if (gridTab == null) {
-						String tableIdTxt = Env.getContext(gridField.getVO().ctx, gridField.getWindowNo(), FindWindow.TABNO, "AD_Table_ID", true);
-						if (!Util.isEmpty(tableIdTxt, true)) {
-							tableIDValue = Integer.parseInt(tableIdTxt);
-						}
-					}
-					if (tableIDValue != null && tableIDValue instanceof Integer) {
-						MTable table = MTable.get((Integer)tableIDValue);
-						if (! table.hasUUIDKey()) {
-							Dialog.error(tableIDGridField.getWindowNo(), "TableHasNoKeyColumn");
-							return;
-						}
-					}
-					new WRecordIDDialog(recordTextBox.getPage(), this, tableIDGridField);
-				}
-			}
-		}
-		else if(event.getName().equalsIgnoreCase(Events.ON_RIGHT_CLICK)) {
-			if(event.getTarget().equals(getComponent())) {
-				popupMenu.open(getComponent());
-			}
-		}
+	public String toKeyValue(Object value) {
+		return value != null ? value.toString() : null;
 	}
 
+	@Override
+	protected String getKeyColumn(MTable mTable) {
+		return PO.getUUIDColumnName(mTable.getTableName());		
+	}
+
+	@Override
+	public String validateTableIdValue(int tableId) {
+		MTable table = MTable.get(tableId);
+		if (! table.hasUUIDKey())
+			return "TableHasNoKeyColumn";
+		return null;		
+	}
 }

@@ -32,8 +32,6 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBarButton;
-import org.adempiere.webui.window.Dialog;
-import org.adempiere.webui.window.FindWindow;
 import org.adempiere.webui.window.WRecordIDDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MRole;
@@ -41,9 +39,6 @@ import org.compiere.model.MTable;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.compiere.util.Util;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
 
 /**
  * Default editor for {@link DisplayType#RecordID}.<br/>
@@ -52,7 +47,7 @@ import org.zkoss.zk.ui.event.Events;
  * @author Peter Takacs, Cloudempiere
  *
  */
-public class WRecordIDEditor extends WRecordEditor {
+public class WRecordIDEditor extends WRecordEditor<Integer> {
 
 	/**
 	 * Constructor
@@ -95,40 +90,23 @@ public class WRecordIDEditor extends WRecordEditor {
 	}
 
 	@Override
-	public void onEvent(Event event) throws Exception {
-		if(event.getName().equalsIgnoreCase(Events.ON_CLICK)) {
-			if(event.getTarget().equals(zoomButton)) {
-				actionZoom();
-			}
-			else if(event.getTarget().equals(editButton)) {
-				if (tableIDGridField != null) {
-					//for find window context
-					if (gridTab == null) {
-						String tableIdTxt = Env.getContext(gridField.getVO().ctx, gridField.getWindowNo(), FindWindow.TABNO, "AD_Table_ID", true);
-						if (!Util.isEmpty(tableIdTxt, true)) {
-							tableIDValue = Integer.parseInt(tableIdTxt);
-						}
-					}
-					if (tableIDValue != null && tableIDValue instanceof Integer) {
-						MTable table = MTable.get((Integer)tableIDValue);
-						if (table.isUUIDKeyTable()) {
-							Dialog.error(tableIDGridField.getWindowNo(), "UUTableNotCompatibleWithRecordID");
-							return;
-						}
-						if (! table.isIDKeyTable()) {
-							Dialog.error(tableIDGridField.getWindowNo(), "TableHasNoKeyColumn");
-							return;
-						}
-					}
-					new WRecordIDDialog(recordTextBox.getPage(), this, tableIDGridField);
-				}
-			}
-		}
-		else if(event.getName().equalsIgnoreCase(Events.ON_RIGHT_CLICK)) {
-			if(event.getTarget().equals(getComponent())) {
-				popupMenu.open(getComponent());
-			}
-		}
+	public Integer toKeyValue(Object value) {
+		return value != null ? Integer.parseInt(String.valueOf(value)) : null;
 	}
 
+	@Override
+	protected String getKeyColumn(MTable mTable) {
+		String[] keyColumns = mTable.getKeyColumns();
+		return keyColumns != null && keyColumns.length > 0 ? keyColumns[0] : null;
+	}
+
+	@Override
+	public String validateTableIdValue(int tableId) {
+		MTable table = MTable.get(tableId);
+		if (table.isUUIDKeyTable())
+			return "UUTableNotCompatibleWithRecordID";
+		if (! table.isIDKeyTable())
+			return "TableHasNoKeyColumn";
+		return null;
+	}
 }
