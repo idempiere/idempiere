@@ -40,20 +40,6 @@ public class PO_Record
 	/* Cache for arrays of KeyNamePair<AD_Table_ID, TableName> for types of deletion: Cascade, Set Null, No Action */
 	private static final CCache<String, KeyNamePair[]> s_po_record_tables_cache = new CCache<>(null, "PORecordTables", 100, 120, false);
 
-	/**	Parent Tables		*/
-	private static int[]	s_parents =	new int[]{
-		X_C_Order.Table_ID
-	};
-	private static String[]	s_parentNames = new String[]{
-		X_C_Order.Table_Name
-	};
-	private static int[]	s_parentChilds = new int[]{
-		X_C_OrderLine.Table_ID
-	};
-	private static String[]	s_parentChildNames = new String[]{
-		X_C_OrderLine.Table_Name
-	};
-
 	/**	Logger	*/
 	private static CLogger log = CLogger.getCLogger (PO_Record.class);
 	
@@ -101,35 +87,6 @@ public class PO_Record
 			}
 			if (count > 0)
 				if (log.isLoggable(Level.CONFIG)) log.config(table.getName() + " (" + AD_Table_ID + "/" + Record_IDorUU + ") #" + count);
-		}
-		//	Parent Loop
-		for (int i = 0; i < s_parents.length; i++)
-		{
-			if (s_parents[i] == AD_Table_ID)
-			{
-				int AD_Table_IDchild = s_parentChilds[i];
-				StringBuilder whereClauseChild = new StringBuilder(" AD_Table_ID=? AND ").append(columnName).append(" IN (SELECT ")
-						.append(s_parentChildNames[i]).append("_ID FROM ")
-						.append(s_parentChildNames[i]).append(" WHERE ")
-						.append(s_parentNames[i]).append("_ID=?)");
-				for (KeyNamePair table : cascades)
-				{
-					List<PO> poList = new Query(Env.getCtx(), table.getName(), whereClauseChild.toString(), trxName)
-							.setParameters(AD_Table_IDchild, Record_IDorUU)
-							.list();
-					
-					int count = 0;
-					for(PO po : poList)
-					{
-						po.deleteEx(true);
-						count++;
-					}
-					if(count > 0) {
-						if (log.isLoggable(Level.CONFIG)) log.config(table.getName() + " " + s_parentNames[i]  
-								+ " (" + AD_Table_ID + "/" + Record_IDorUU + ") #" + count);
-					}
-				}
-			}
 		}
 		return true;
 	}	//	deleteRecordIdCascade
