@@ -3010,7 +3010,6 @@ public abstract class PO
 
 			//	Change Log	- Only
 			if (session != null
-				&& m_IDs.length == 1
 				&& p_info.isAllowLogging(i)		//	logging allowed
 				&& !p_info.isEncrypted(i)		//	not encrypted
 				&& !p_info.isVirtualColumn(i)	//	no virtual column
@@ -3027,7 +3026,7 @@ public abstract class PO
 				MChangeLog cLog = session.changeLog (
 					m_trxName, AD_ChangeLog_ID,
 					p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-					get_ID(), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), oldV, newV, MChangeLog.EVENTCHANGELOG_Update);
+					(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), oldV, newV, MChangeLog.EVENTCHANGELOG_Update);
 				if (cLog != null)
 					AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 			}
@@ -3356,29 +3355,33 @@ public abstract class PO
 			if (withValues && m_IDs.length == 1 && p_info.hasKeyColumn()
 					&& m_KeyColumns[0].endsWith("_ID") && !Env.isUseCentralizedId(p_info.getTableName()))
 			{
-				int id = DB.getSQLValueEx(get_TrxName(), "SELECT " + m_KeyColumns[0] + " FROM "
-						+ p_info.getTableName() + " WHERE " + getUUIDColumnName() + "=?", get_ValueAsString(getUUIDColumnName()));
+				StringBuilder sql = new StringBuilder("SELECT ").append(m_KeyColumns[0]).append(" FROM ").append(p_info.getTableName()).append(" WHERE ").append(getUUIDColumnName()).append("=?");
+				int id = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ValueAsString(getUUIDColumnName()));
 				m_IDs[0] = Integer.valueOf(id);
 				set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
-				
+			}
+
+			if (!Env.isUseCentralizedId(p_info.getTableName()))
+			{
 				int ki = p_info.getColumnIndex(m_KeyColumns[0]);
 				//	Change Log	- Only
 				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
 				if (   session != null
-					&& m_IDs.length == 1
 					&& p_info.isAllowLogging(ki)		//	logging allowed
 					&& !p_info.isEncrypted(ki)		//	not encrypted
 					&& !p_info.isVirtualColumn(ki)	//	no virtual column
 					&& !"Password".equals(p_info.getColumnName(ki))
-					&& (insertLog.equalsIgnoreCase("Y")
-							|| (insertLog.equalsIgnoreCase("K") && p_info.getColumn(ki).IsKey))
-					)
+					&& (   insertLog.equalsIgnoreCase("Y")
+						|| (   insertLog.equalsIgnoreCase("K") 
+							&& (   p_info.getColumn(ki).IsKey
+								|| p_info.getColumn(ki).ColumnName.equals(PO.getUUIDColumnName(p_info.getTableName()))))))
 				{
+					int id = (m_IDs.length == 1 ? get_ID() : 0);
 					// change log on new
 					MChangeLog cLog = session.changeLog (
 							m_trxName, AD_ChangeLog_ID,
 							p_info.getAD_Table_ID(), p_info.getColumn(ki).AD_Column_ID,
-							get_ID(), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, id, MChangeLog.EVENTCHANGELOG_Insert);
+							(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, (id == 0 ? get_UUID() : id), MChangeLog.EVENTCHANGELOG_Insert);
 					if (cLog != null)
 						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 				}
@@ -3638,7 +3641,6 @@ public abstract class PO
 				//	Change Log	- Only
 				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "Y", getAD_Client_ID());
 				if (!generateScriptOnly && session != null
-					&& m_IDs.length == 1
 					&& p_info.isAllowLogging(i)		//	logging allowed
 					&& !p_info.isEncrypted(i)		//	not encrypted
 					&& !p_info.isVirtualColumn(i)	//	no virtual column
@@ -3651,7 +3653,7 @@ public abstract class PO
 					MChangeLog cLog = session.changeLog (
 							m_trxName, AD_ChangeLog_ID,
 							p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-							get_ID(), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert);
+							(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert);
 					if (cLog != null)
 						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 				}
@@ -4091,7 +4093,7 @@ public abstract class PO
 									MChangeLog cLog = session.changeLog (
 										m_trxName != null ? m_trxName : localTrxName, AD_ChangeLog_ID,
 										AD_Table_ID, p_info.getColumn(i).AD_Column_ID,
-										Record_ID, Record_UU, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete);
+										(m_IDs.length == 1 ? Record_ID : 0), Record_UU, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete);
 									if (cLog != null)
 										AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
 								}

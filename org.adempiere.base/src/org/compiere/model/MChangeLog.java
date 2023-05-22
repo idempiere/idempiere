@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 /**
  *	Change Log Model
@@ -211,9 +212,16 @@ public class MChangeLog extends X_AD_ChangeLog
 		//
 		setAD_Table_ID (AD_Table_ID);
 		setAD_Column_ID (AD_Column_ID);
-		if (Record_ID > 0)
+		String saveUUID = MSysConfig.getValue(MSysConfig.AD_CHANGELOG_SAVE_UUID, "B");
+		// B - just based UUID tables (default)
+		// A - always
+		// U - just UUID, not ID
+		if (Record_ID > 0 && (!"U".equals(saveUUID) || Util.isEmpty(Record_UU))) {
 			setRecord_ID (Record_ID);
-		setRecord_UU (Record_UU);
+		}
+		if ("U".equals(saveUUID) || "A".equals(saveUUID) || ("B".equals(saveUUID) && MTable.get(AD_Table_ID).isUUIDKeyTable())) {
+			setRecord_UU (Record_UU);
+		}
 		//
 		setClientOrg (AD_Client_ID, AD_Org_ID);
 		//

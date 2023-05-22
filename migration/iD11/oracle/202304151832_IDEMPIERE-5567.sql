@@ -140,6 +140,10 @@ OR (AD_Ref_List.Value IN (''T'',''O'')     AND @AD_Reference_ID@ IN (200202,2002
 UPDATE AD_Column SET FieldLength=36, FKConstraintType='D',Updated=TO_TIMESTAMP('2023-05-21 16:14:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215833
 ;
 
+-- May 22, 2023, 5:37:16 PM CEST
+INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated,CreatedBy,UpdatedBy,IsActive,Name,Value,Description,EntityType,ConfigurationLevel,AD_SysConfig_UU) VALUES (200228,0,0,TO_TIMESTAMP('2023-05-22 17:37:15','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2023-05-22 17:37:15','YYYY-MM-DD HH24:MI:SS'),100,100,'Y','AD_CHANGELOG_SAVE_UUID','B','Save the AD_ChangeLog.Record_UU ->  B | Just for UUID based tables , A | Always , U | just UUID not ID','D','S','32161230-22c9-43eb-a327-f3b4841eeace')
+;
+
 /*
 SET SERVEROUTPUT on;
 
