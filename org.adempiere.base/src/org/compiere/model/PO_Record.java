@@ -64,7 +64,7 @@ public class PO_Record
 	 *	@param trxName transaction
 	 *	@return false if could not be deleted
 	 */
-	static boolean deleteRecordCascade (int AD_Table_ID, Serializable Record_IDorUU, String trxName)
+	protected static boolean deleteRecordCascade (int AD_Table_ID, Serializable Record_IDorUU, String trxName)
 	{
 		int refId;
 		String columnName;
@@ -75,8 +75,7 @@ public class PO_Record
 			refId = DisplayType.RecordUU;
 			columnName = "Record_UU";
 		} else {
-			log.warning(Record_IDorUU.getClass().getName() + " not supported for ID/UUID");
-			return true;
+			throw new IllegalArgumentException(Record_IDorUU.getClass().getName() + " not supported for ID/UUID");
 		}
 		KeyNamePair[] cascades = getTablesWithConstraintType(refId, MColumn.FKCONSTRAINTTYPE_ModelCascade, trxName);
 		//	Table Loop
@@ -148,8 +147,7 @@ public class PO_Record
 		} else if (Record_IDorUU instanceof String) {
 			refId = DisplayType.RecordUU;
 		} else {
-			log.warning(Record_IDorUU.getClass().getName() + " not supported for ID/UUID");
-			return;
+			throw new IllegalArgumentException(Record_IDorUU.getClass().getName() + " not supported for ID/UUID");
 		}
 		KeyNamePair[] tables = getTablesWithModelCascade(refId, tableName, trxName);
 		for (KeyNamePair table : tables) {
@@ -185,8 +183,7 @@ public class PO_Record
 			refTableId = DisplayType.TableUU;
 			refTableSearchId = DisplayType.SearchUU;
 		} else {
-			log.warning(refId + " not supported for ID/UUID");
-			return null;
+			throw new IllegalArgumentException(refId + " not supported for ID/UUID");
 		}
 		StringBuilder key = new StringBuilder(MColumn.FKCONSTRAINTTYPE_ModelCascade).append("|").append(refId).append("|").append(tableName);
 		KeyNamePair[] tables = s_po_record_tables_cache.get(key.toString());
@@ -241,8 +238,7 @@ public class PO_Record
 			refId = DisplayType.RecordUU;
 			columnName = "Record_UU";
 		} else {
-			log.warning(Record_IDorUU.getClass().getName() + " not supported for ID/UUID");
-			return;
+			throw new IllegalArgumentException(Record_IDorUU.getClass().getName() + " not supported for ID/UUID");
 		}
 		KeyNamePair[] tables = getTablesWithConstraintType(refId, MColumn.FKCONSTRAINTTYPE_ModelSetNull, trxName);
 		// Table loop
@@ -284,7 +280,7 @@ public class PO_Record
 	 *	@param trxName transaction
 	 *	@return error message (Table Name) or null
 	 */
-	static String exists (int AD_Table_ID, Serializable Record_IDorUU, String trxName)
+	protected static String exists (int AD_Table_ID, Serializable Record_IDorUU, String trxName)
 	{
 		int refId;
 		String columnName;
