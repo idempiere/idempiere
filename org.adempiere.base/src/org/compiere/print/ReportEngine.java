@@ -1187,16 +1187,14 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	private String getIdentifier(MTable mTable, String tableName, int recordID) {
 		ArrayList<MColumn> list = new ArrayList<MColumn>();
-		MClient tenant = MClient.get(getCtx(), Env.getAD_Client_ID(getCtx()));
-		// check translation table
+		// get translation table - null if not exists
 		MTable mTableTrl = MTable.get(getCtx(), tableName+"_Trl");
 		String tableNameTrl = "";
-		// get languages
-		String tenantLang = tenant.getAD_Language();
-		String reportLang = new MLanguage(getCtx(), getLanguageID(), null).getAD_Language();
+		// get report language
+		String reportLang = getLanguageID() > 0 ? new MLanguage(getCtx(), getLanguageID(), null).getAD_Language() : Language.getLoginLanguage().getAD_Language();
 		
-		// use Trl table
-		boolean isTrl = !tenantLang.equalsIgnoreCase(reportLang);
+		// use Trl table or base table
+		boolean isTrl = !Env.isBaseLanguage(Language.getLanguage(reportLang), tableName);
 		
 		if(isTrl && mTableTrl != null && getLanguageID() > 0)
 			tableNameTrl = mTableTrl.getTableName();
@@ -1215,7 +1213,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		StringBuilder displayColumn = new StringBuilder();
 		String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
 		
-		// get record identifier from sql
+		// get record identifier from SQL
 		for(int i = 0; i < list.size(); i++) {
 			MColumn identifierColumn = list.get(i);
 			if(i > 0)
