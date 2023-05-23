@@ -166,17 +166,17 @@ public class MPInstanceLog
 
 	private final static String insertSql = "INSERT INTO AD_PInstance_Log "
 			+ "(AD_PInstance_ID, Log_ID, P_Date, P_ID, P_Number, P_Msg, AD_Table_ID, Record_ID, AD_PInstance_Log_UU, PInstanceLogType)"
-			+ " VALUES (?,?,?,?,?,?,?,?,?,?) "
-			+ " ON CONFLICT (AD_PInstance_Log_UU) "
-			+ " DO UPDATE "
-			+ " SET AD_PInstance_ID = ?, "
-			+ " P_Date = ?, "
-			+ " P_ID = ?, "
-			+ " P_Number = ?, "
-			+ " P_Msg = ?, "
-			+ " AD_Table_ID = ?, "
-			+ " Record_ID = ?, "
-			+ " PInstanceLogType = ? ";
+			+ " VALUES (?,?,?,?,?,?,?,?,?,?) ";
+	
+	private final static String updateSql = "UPDATE AD_PInstance_Log "
+			+ " SET P_Date = ?, "
+			+ " 	P_ID = ?, "
+			+ " 	P_Number = ?, "
+			+ " 	P_Msg = ?, "
+			+ " 	AD_Table_ID = ?, "
+			+ " 	Record_ID = ?, "
+			+ " 	PInstanceLogType = ? "
+			+ " WHERE AD_PInstance_Log_UU = ? ";
 
 	/**
 	 *	Save to Database
@@ -184,7 +184,7 @@ public class MPInstanceLog
 	 */
 	public boolean save ()
 	{
-		int no = DB.executeUpdate(insertSql, getInsertParams(), false, null);	//	outside of trx
+		int no = DB.executeUpdate(insertSql, getParams(true), false, null);	//	outside of trx
 		return no == 1;
 	} 	//	save
 
@@ -193,60 +193,70 @@ public class MPInstanceLog
 	 */
 	public void saveEx ()
 	{
-		DB.executeUpdateEx(insertSql, getInsertParams(), null);	//	outside of trx
+		DB.executeUpdateEx(insertSql, getParams(true), null);	//	outside of trx
 	} 	//	saveEx
 
-	private Object[] getInsertParams() {
+	/**
+	 *	Update record in Database
+	 * 	@return true if saved
+	 */
+	public boolean update ()
+	{
+		int no = DB.executeUpdate(updateSql, getParams(false), false, null);	//	outside of trx
+		return no == 1;
+	} 	//	update
+
+	/**
+	 *	Update record in Database, throwing Exception
+	 */
+	public void updateEx ()
+	{
+		DB.executeUpdateEx(updateSql, getParams(false), null);	//	outside of trx
+	} 	//	updateEx
+	
+	/**
+	 * Get parameters for SQL INSERT or UPDATE
+	 * @param isInsert - if true, get parameters for INSERT, else get parameters for UPDATE
+	 * @return Object[] parameters
+	 */
+	private Object[] getParams(boolean isInsert) {
 		MColumn colMsg = MColumn.get(Env.getCtx(), I_AD_PInstance_Log.Table_Name, I_AD_PInstance_Log.COLUMNNAME_P_Msg);
 		int maxMsgLength = colMsg.getFieldLength();
-		ArrayList<Object> params = new ArrayList <Object>();	// insert parameters
-		ArrayList<Object> params2 = new ArrayList <Object>();	// update parameters
-		Object value = null;
+		ArrayList<Object> params = new ArrayList <Object>();
 		
-		params.add(m_AD_PInstance_ID);
-		params2.add(m_AD_PInstance_ID);
 		
-		params.add(m_Log_ID);
+		if(isInsert) {
+			params.add(m_AD_PInstance_ID);
+			params.add(m_Log_ID);
+		}
+		params.add(m_P_Date != null ? m_P_Date : null);
 		
-		value = m_P_Date != null ? m_P_Date : null;
-		params.add(value);
-		params2.add(value);
+		params.add(m_P_ID != 0 ? m_P_ID : null);
 		
-		value = m_P_ID != 0 ? m_P_ID : null;
-		params.add(value);
-		params2.add(value);
-	
-		value = m_P_Number != null ? m_P_Number : null;
-		params.add(value);
-		params2.add(value);
+		params.add(m_P_Number != null ? m_P_Number : null);
 		
 		if (m_P_Msg != null) {
-				value = m_P_Msg.length() > maxMsgLength ? m_P_Msg.substring(0,  maxMsgLength) : m_P_Msg;
-				params.add(value);
-				params2.add(value);
+			params.add(m_P_Msg.length() > maxMsgLength ? m_P_Msg.substring(0,  maxMsgLength) : m_P_Msg);
 		}
 		else {
 			params.add(null);
-			params2.add(null);
 		}
 		
-		value = m_AD_Table_ID != 0 ? m_AD_Table_ID : null;
-		params.add(value);
-		params2.add(value);
+		params.add(m_AD_Table_ID != 0 ? m_AD_Table_ID : null);
 		
-		value = m_Record_ID != 0 ? m_Record_ID : null; 
-		params.add(value);
-		params2.add(value);
+		params.add(m_Record_ID != 0 ? m_Record_ID : null);
 		
-		params.add(getAD_PInstance_Log_UU());
+		if(isInsert)
+			params.add(getAD_PInstance_Log_UU());
 		
 		params.add(m_PInstanceLogType);
-		params2.add(m_PInstanceLogType);
 		
-		params.addAll(params2);
+		if(!isInsert)
+			params.add(getAD_PInstance_Log_UU());
+		
 		return params.toArray();
-	}
-
+	}	//	getParams
+	
 	/**
 	 * 	Get AD_PInstance_ID
 	 *	@return Instance id

@@ -770,11 +770,12 @@ public class ProcessInfo implements Serializable
 				logEntry.getAD_Table_ID(), 
 				logEntry.getRecord_ID(),
 				!Util.isEmpty(logEntry.getPInstanceLogType()) ? logEntry.getPInstanceLogType() : X_AD_PInstance_Log.PINSTANCELOGTYPE_Progress);
-		return il.save() ? il.getAD_PInstance_Log_UU() : "";
+		il.saveEx();
+		return il.getAD_PInstance_Log_UU();
 	}	//	saveLog
 	
 	/**
-	 * Save Log to DB immediately
+	 * Update Log to DB immediately
 	 * @param pInstanceLogUU AD_PInstance_Log_UU
 	 * @param P_ID Process ID
 	 * @param P_Date Process Date
@@ -790,7 +791,7 @@ public class ProcessInfo implements Serializable
 	}	//	updateLog
 	
 	/**
-	 * 	Save Log to DB immediately
+	 * 	Update Log to DB immediately
 	 *	@param pInstanceLogUU AD_PInstance_Log_UU
 	 *	@param P_ID Process ID
 	 *	@param P_Date Process Date
@@ -822,7 +823,7 @@ public class ProcessInfo implements Serializable
 				logEntry.getAD_Table_ID(), 
 				logEntry.getRecord_ID(),
 				!Util.isEmpty(logEntry.getPInstanceLogType()) ? logEntry.getPInstanceLogType() : X_AD_PInstance_Log.PINSTANCELOGTYPE_Status);
-		return il.save();
+		return il.update();
 	}	//	saveLog
 	
 	/**

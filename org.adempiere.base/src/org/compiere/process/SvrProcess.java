@@ -619,7 +619,7 @@ public abstract class SvrProcess implements ProcessCall
 	}
 
 	/**
-	 *  Save Log Entry with exact Log_ID, update if exists
+	 *  Update Log Entry with exact Log_ID, update if exists
 	 *  @param pInstanceLogUU AD_PInstance_Log_UU
 	 * 	@param id record id or 0
 	 *	@param date date or null
@@ -637,7 +637,7 @@ public abstract class SvrProcess implements ProcessCall
 	}	//	saveLog
 	
 	/**
-	 *  Save Log Entry with exact Log_ID, update if exists
+	 *  Update Log Entry with exact Log_ID, update if exists
 	 *  @param pInstanceLogUU AD_PInstance_Log_UU
 	 * 	@param id record id or 0
 	 *	@param date date or null
@@ -653,7 +653,7 @@ public abstract class SvrProcess implements ProcessCall
 	}	//	saveLog
 	
 	/**
-	 *  Save Log Entry with table name
+	 *  Save Log Entry to DB immediately with table name
 	 * 	@param id record id or 0
 	 *	@param date date or null
 	 * 	@param number number or null
@@ -672,7 +672,7 @@ public abstract class SvrProcess implements ProcessCall
 	}	//	saveLog
 
 	/**
-	 *  Save Log Entry
+	 *  Save Log Entry to DB immediately
 	 *  @param date date or null
 	 *  @param id record id or 0
 	 *  @param number number or null
@@ -688,7 +688,7 @@ public abstract class SvrProcess implements ProcessCall
 	}	//	saveLog
 
 	/**
-	 * 	Save Log
+	 * 	Save Log Entry to DB immediately
 	 *	@param msg message
 	 */
 	public void saveLog (String msg)

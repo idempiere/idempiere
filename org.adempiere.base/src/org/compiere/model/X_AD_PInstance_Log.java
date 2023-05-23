@@ -103,6 +103,7 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_PInstance_Log[")
+    	.append(get_ID()).append(", ")
         .append(get_UUID()).append("]");
       return sb.toString();
     }
