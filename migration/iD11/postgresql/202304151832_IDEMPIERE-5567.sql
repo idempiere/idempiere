@@ -141,6 +141,18 @@ UPDATE AD_Column SET FieldLength=36, FKConstraintType='D',Updated=TO_TIMESTAMP('
 INSERT INTO AD_SysConfig (AD_SysConfig_ID,AD_Client_ID,AD_Org_ID,Created,Updated,CreatedBy,UpdatedBy,IsActive,Name,Value,Description,EntityType,ConfigurationLevel,AD_SysConfig_UU) VALUES (200228,0,0,TO_TIMESTAMP('2023-05-22 17:37:15','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2023-05-22 17:37:15','YYYY-MM-DD HH24:MI:SS'),100,100,'Y','AD_CHANGELOG_SAVE_UUID','B','Save the AD_ChangeLog.Record_UU ->  B | Just for UUID based tables , A | Always , U | just UUID not ID','D','S','32161230-22c9-43eb-a327-f3b4841eeace')
 ;
 
+-- May 23, 2023, 5:17:25 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201247,'d0ab3ee4-418c-42e9-acfe-618750685bcc',TO_TIMESTAMP('2023-05-23 17:17:24','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','ad_changelog_record_uu',TO_TIMESTAMP('2023-05-23 17:17:24','YYYY-MM-DD HH24:MI:SS'),100,580,'N','N','N','N')
+;
+
+-- May 23, 2023, 5:17:48 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201686,'6ce73812-0b30-4145-a9c5-ab1c73d4c386',TO_TIMESTAMP('2023-05-23 17:17:47','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2023-05-23 17:17:47','YYYY-MM-DD HH24:MI:SS'),100,215835,201247,10)
+;
+
+-- May 23, 2023, 5:17:53 PM CEST
+CREATE INDEX ad_changelog_record_uu ON AD_ChangeLog (Record_UU)
+;
+
 /*
 -- Set Record_UU for existing records
 DO $$
