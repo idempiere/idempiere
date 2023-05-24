@@ -1618,7 +1618,14 @@ public class GridTable extends AbstractTableModel
 		if (! m_importing) // Just use trx when importing
 			m_trxName = null;
 		if (Record_ID != -1)
-			po = table.getPO(Record_ID, m_trxName);
+		{
+			if (Record_ID == 0 && MTable.isZeroIDTable(table.getTableName())) {
+				String uuidFromZeroID = table.getUUIDFromZeroID();
+				po = table.getPOByUU(uuidFromZeroID, m_trxName);
+			} else {
+				po = table.getPO(Record_ID, m_trxName);
+			}
+		}
 		else	//	Multi - Key
 			po = table.getPO(getWhereClause(rowData), m_trxName);
 		//	No Persistent Object
@@ -3447,7 +3454,14 @@ public class GridTable extends AbstractTableModel
 		PO po = null;
 		int Record_ID = getKeyID(row);
 		if (Record_ID != -1)
-			po = table.getPO(Record_ID, m_trxName);
+		{
+			if (Record_ID == 0 && MTable.isZeroIDTable(table.getTableName())) {
+				String uuidFromZeroID = table.getUUIDFromZeroID();
+				po = table.getPOByUU(uuidFromZeroID, m_trxName);
+			} else {
+				po = table.getPO(Record_ID, m_trxName);
+			}
+		}
 		else	//	Multi - Key
 			po = table.getPO(getWhereClause(getDataAtRow(row)), m_trxName);
 		return po;

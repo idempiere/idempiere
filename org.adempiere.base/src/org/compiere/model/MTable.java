@@ -66,7 +66,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6308179531110429747L;
+	private static final long serialVersionUID = 4325276636597337437L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -916,5 +916,23 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 				+ "WHERE a.IsActive='Y' AND b.IsActive='Y' AND b.AD_Table_ID=? ORDER BY b.TabLevel, a.AD_Window_ID", getAD_Table_ID());
 	}
 
-	
+	/**
+	 * Get the UUID from the Zero ID record
+	 * @return
+	 */
+	public String getUUIDFromZeroID() {
+		if (! MTable.isZeroIDTable(getTableName()))
+			return null;
+		StringBuilder sqluu = new StringBuilder()
+				.append("SELECT ")
+				.append(PO.getUUIDColumnName(getTableName()))
+				.append(" FROM ")
+				.append(getTableName())
+				.append(" WHERE ")
+				.append(getKeyColumns()[0])
+				.append("=0");
+		String uuidFromZeroID = DB.getSQLValueStringEx(get_TrxName(), sqluu.toString());
+		return uuidFromZeroID;
+	}
+
 }	//	MTable
