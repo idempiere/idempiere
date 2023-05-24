@@ -219,7 +219,7 @@ public class MChangeLog extends X_AD_ChangeLog
 		if (Record_ID > 0 && (!"U".equals(saveUUID) || Util.isEmpty(Record_UU))) {
 			setRecord_ID (Record_ID);
 		}
-		if ("U".equals(saveUUID) || "A".equals(saveUUID) || ("B".equals(saveUUID) && MTable.get(AD_Table_ID).isUUIDKeyTable())) {
+		if ("U".equals(saveUUID) || "A".equals(saveUUID) || ("B".equals(saveUUID) && (Record_ID <= 0 || MTable.get(AD_Table_ID).isUUIDKeyTable()))) {
 			setRecord_UU (Record_UU);
 		}
 		//
