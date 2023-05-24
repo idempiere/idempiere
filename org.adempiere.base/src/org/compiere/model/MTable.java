@@ -878,6 +878,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return (tablename.equals("AD_Org") ||
 				tablename.equals("AD_OrgInfo") ||
 				tablename.equals("AD_Client") || // IDEMPIERE-668
+				tablename.equals("AD_ClientInfo") ||
 				tablename.equals("AD_AllClients_V") ||
 				tablename.equals("AD_ReportView") ||
 				tablename.equals("AD_Role") ||
