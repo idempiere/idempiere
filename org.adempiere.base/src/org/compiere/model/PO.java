@@ -2831,6 +2831,18 @@ public abstract class PO
 			log.fine("No Session found");
 		int AD_ChangeLog_ID = 0;
 
+		//uuid secondary key - when updating, if the record doesn't have UUID, assign one
+		int uuidIndex = p_info.getColumnIndex(getUUIDColumnName());
+		if (uuidIndex >= 0)
+		{
+			String value = (String)get_Value(uuidIndex);
+			if (p_info.getColumn(uuidIndex).FieldLength == 36 && (value == null || value.length() == 0))
+			{
+				UUID uuid = UUID.randomUUID();
+				set_ValueNoCheck(p_info.getColumnName(uuidIndex), uuid.toString());
+			}
+		}
+
 		int size = get_ColumnCount();
 		for (int i = 0; i < size; i++)
 		{
