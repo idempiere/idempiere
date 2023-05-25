@@ -2690,7 +2690,7 @@ public abstract class PO
 			m_createNew = false;
 		}
 		if (!newRecord)
-			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID());
+			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_UUID());
 		if (CacheMgt.get().hasCache(p_info.getTableName())) {
 			if (!newRecord)
 				Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
