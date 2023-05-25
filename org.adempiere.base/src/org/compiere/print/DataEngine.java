@@ -1271,10 +1271,10 @@ public class DataEngine
 		if (pd.getRowCount() == 0)
 		{
 			if (CLogMgt.isLevelFiner())
-				log.warning("NO Rows - ms=" + (System.currentTimeMillis()-m_startTime) 
+				log.finer("NO Rows - ms=" + (System.currentTimeMillis()-m_startTime) 
 					+ " - " + pd.getSQL());
 			else
-				log.warning("NO Rows - ms=" + (System.currentTimeMillis()-m_startTime)); 
+				log.info("NO Rows - ms=" + (System.currentTimeMillis()-m_startTime)); 
 		}
 		else
 			if (log.isLoggable(Level.INFO)) log.info("Rows=" + pd.getRowCount()
