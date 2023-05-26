@@ -73,3 +73,15 @@ INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexCol
 CREATE INDEX AD_RecentItem_AD_User_ID ON AD_RecentItem (AD_User_ID,AD_Client_ID)
 ;
 
+-- May 26, 2023, 7:30:07 PM CEST
+UPDATE AD_Column SET IsMandatory='N', IsToolbarButton='N',Updated=TO_TIMESTAMP('2023-05-26 19:30:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=200011
+;
+
+-- May 26, 2023, 7:30:10 PM CEST
+INSERT INTO t_alter_column values('ad_recentitem','Record_ID','NUMERIC(10)',null,'NULL')
+;
+
+-- May 26, 2023, 7:30:10 PM CEST
+INSERT INTO t_alter_column values('ad_recentitem','Record_ID',null,'NULL',null)
+;
+

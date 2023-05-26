@@ -231,7 +231,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 			catch (Exception e) {
 			}
 
-			if (AD_RecentItem_ID > 0) {
+			if ( AD_RecentItem_ID > 0) {
 				MRecentItem ri = MRecentItem.get(Env.getCtx(), AD_RecentItem_ID);
 				String TableName = MTable.getTableName(Env.getCtx(), ri.getAD_Table_ID());
 				MQuery query = MQuery.getEqualQuery(PO.getUUIDColumnName(TableName), ri.getRecord_UU());
