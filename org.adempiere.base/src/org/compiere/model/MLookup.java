@@ -82,7 +82,7 @@ public final class MLookup extends Lookup implements Serializable
 		}
 
 		//  Don't load Search or CreatedBy/UpdatedBy
-		if (m_info.DisplayType == DisplayType.Search 
+		if (m_info.DisplayType == DisplayType.Search || m_info.DisplayType == DisplayType.SearchUU
 			|| m_info.IsCreadedUpdatedBy)
 			return;
 		//  Don't load Parents/Keys
