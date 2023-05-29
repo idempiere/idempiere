@@ -4995,7 +4995,7 @@ public abstract class PO
 	{
 		getAttachment (false);
 		if (m_attachment == null)
-			m_attachment = new MAttachment (getCtx(), p_info.getAD_Table_ID(), get_ID(), null);
+			m_attachment = new MAttachment (getCtx(), p_info.getAD_Table_ID(), get_ID(), get_UUID(), null);
 		return m_attachment;
 	}	//	createAttachment
 

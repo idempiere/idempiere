@@ -45,10 +45,15 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 
 public class LabelsPanel extends Div implements EventListener<Event> {
-	private static final long serialVersionUID = 2232899183255702050L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8776043844483214400L;
+
 	private AbstractADWindowContent abstractADWindowContent;
 	private int AD_Table_ID;
-	private int Record_ID;	
+	private int Record_ID;
+	private String Record_UU;
 	
 	/**
 	 * Standard constructor
@@ -56,10 +61,23 @@ public class LabelsPanel extends Div implements EventListener<Event> {
 	 * @param AD_Table_ID
 	 * @param Record_ID
 	 */
+	@Deprecated
 	public LabelsPanel(AbstractADWindowContent abstractADWindowContent, int AD_Table_ID, int Record_ID) {
+		this(abstractADWindowContent, AD_Table_ID, Record_ID, null);
+	}	
+
+	/**
+	 * Standard constructor
+	 * @param abstractADWindowContent 
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param Record_UU
+	 */
+	public LabelsPanel(AbstractADWindowContent abstractADWindowContent, int AD_Table_ID, int Record_ID, String Record_UU) {
 		this.abstractADWindowContent = abstractADWindowContent;
 		this.AD_Table_ID = AD_Table_ID;
 		this.Record_ID = Record_ID;
+		this.Record_UU = Record_UU;
 		setStyle("padding:0px 5px;");
 		addEventListener(LabelsSearchController.ON_POST_SELECT_LABELITEM_EVENT, this);		
 		update();
@@ -81,6 +99,14 @@ public class LabelsPanel extends Div implements EventListener<Event> {
 		return Record_ID;
 	}
 
+	/**
+	 * Get current record uuid
+	 * @return
+	 */
+	public String getRecord_UU() {
+		return Record_UU;
+	}
+
 	@Override
 	public void onEvent(Event event) throws Exception {
 		if (event.getName().equals(LabelsSearchController.ON_POST_SELECT_LABELITEM_EVENT)) {
@@ -98,8 +124,8 @@ public class LabelsPanel extends Div implements EventListener<Event> {
 		
 		// Query
 		List<MLabelAssignment> assignmentsList = new Query(Env.getCtx(),
-				MLabelAssignment.Table_Name, "AD_Table_ID=? AND Record_ID=?", null)
-			.setParameters(AD_Table_ID, Record_ID)
+				MLabelAssignment.Table_Name, "AD_Table_ID=? AND Record_UU=?", null)
+			.setParameters(AD_Table_ID, Record_UU)
 			.setOrderBy(MLabelAssignment.COLUMNNAME_Created)
 			.list();
 		

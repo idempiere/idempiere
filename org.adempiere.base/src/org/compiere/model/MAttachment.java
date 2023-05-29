@@ -58,7 +58,7 @@ public class MAttachment extends X_AD_Attachment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1685512419870004665L;
+	private static final long serialVersionUID = 1447398065894212273L;
 
 	/**
 	 * 
@@ -127,12 +127,27 @@ public class MAttachment extends X_AD_Attachment
 	 *	@param Record_ID record
 	 *	@param trxName transaction
 	 */
+	@Deprecated
 	public MAttachment(Properties ctx, int AD_Table_ID, int Record_ID, String trxName)
 	{
-		this (ctx, MAttachment.getID(AD_Table_ID, Record_ID) > 0 ? MAttachment.getID(AD_Table_ID, Record_ID) : 0, trxName);
+		this(ctx, AD_Table_ID, Record_ID, null, trxName);
+	}
+
+	/**
+	 * 	New Constructor
+	 *	@param ctx context
+	 *	@param AD_Table_ID table
+	 *	@param Record_ID record
+	 *	@param Record_UU record UUID
+	 *	@param trxName transaction
+	 */
+	public MAttachment(Properties ctx, int AD_Table_ID, int Record_ID, String Record_UU, String trxName)
+	{
+		this (ctx, MAttachment.getID(AD_Table_ID, Record_UU) > 0 ? MAttachment.getID(AD_Table_ID, Record_UU) : 0, trxName);
 		if (get_ID() == 0) {
 			setAD_Table_ID (AD_Table_ID);
 			setRecord_ID (Record_ID);
+			setRecord_UU (Record_UU);
 		}
 	}	//	MAttachment
 
@@ -660,9 +675,23 @@ public class MAttachment extends X_AD_Attachment
 	 * @param Record_ID
 	 * @return AD_Attachment_ID 
 	 */
+	@Deprecated
 	public static int getID(int Table_ID, int Record_ID) {
 		String sql="SELECT AD_Attachment_ID FROM AD_Attachment WHERE AD_Table_ID=? AND Record_ID=?";
 		int attachid = DB.getSQLValue(null, sql, Table_ID, Record_ID);
+		return attachid;
+	}
+
+	/**
+	 * IDEMPIERE-530
+	 * Get the attachment ID based on table_id and record_id
+	 * @param Table_ID
+	 * @param Record_UU record UUID
+	 * @return AD_Attachment_ID 
+	 */
+	public static int getID(int Table_ID, String Record_UU) {
+		String sql="SELECT AD_Attachment_ID FROM AD_Attachment WHERE AD_Table_ID=? AND Record_UU=?";
+		int attachid = DB.getSQLValue(null, sql, Table_ID, Record_UU);
 		return attachid;
 	}
 

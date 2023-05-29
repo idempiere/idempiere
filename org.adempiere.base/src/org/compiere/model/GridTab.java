@@ -2104,7 +2104,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	 */
 	public boolean canHaveAttachment()
 	{
-		if (getKeyColumnName().endsWith("_ID"))
+		if (getKeyColumnName().endsWith("_ID") || getKeyColumnName().endsWith("_UU"))
 			return true;
 		return false;
 	}   //	canHaveAttachment
@@ -2126,8 +2126,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		if (!canHaveAttachment())
 			return 0;
-		int recordID = m_mTable.getKeyID(m_currentRow);
-		return MAttachment.getID(m_vo.AD_Table_ID, recordID);
+		String recordUU = m_mTable.getKeyUUID(m_currentRow);
+		return MAttachment.getID(m_vo.AD_Table_ID, recordUU);
 	}	//	getAttachmentID
 
 	/**
@@ -2147,8 +2147,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		if (!canHaveAttachment())
 			return 0;
-		int recordID = m_mTable.getKeyID(m_currentRow);
-		return MChat.getID(m_vo.AD_Table_ID, recordID);
+		String recordUU = m_mTable.getKeyUUID(m_currentRow);
+		return MChat.getID(m_vo.AD_Table_ID, recordUU);
 	}	//	getCM_ChatID
 	
 	public boolean hasPostIt()
@@ -2164,8 +2164,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		if (!canHaveAttachment())
 			return 0;
-		int recordID = m_mTable.getKeyID(m_currentRow);
-		return MPostIt.getID(m_vo.AD_Table_ID, recordID);
+		String recordUU = m_mTable.getKeyUUID(m_currentRow);
+		return MPostIt.getID(m_vo.AD_Table_ID, recordUU);
 	}	//	getAD_PostIt_ID	
 	
 	/**
@@ -2176,8 +2176,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	{
 		if (!canHaveAttachment())
 			return false;
-		int recordID = m_mTable.getKeyID(m_currentRow);
-		return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordID);
+		String recordUU = m_mTable.getKeyUUID(m_currentRow);
+		return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordUU);
 	}	//	hasLabel
 
 	/**

@@ -94,7 +94,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -710884973406502168L;
+	private static final long serialVersionUID = -8534334828539841412L;
 
 	private static final CLogger log = CLogger.getCLogger(WAttachment.class);
 
@@ -170,12 +170,13 @@ public class WAttachment extends Window implements EventListener<Event>
 	 *  @param Record_ID record key
 	 *  @param trxName transaction
 	 */
+	@Deprecated
 	public WAttachment(	int WindowNo, int AD_Attachment_ID,
 						int AD_Table_ID, int Record_ID, String trxName)
 	{
-		this(WindowNo, AD_Attachment_ID, AD_Table_ID, Record_ID, trxName, (EventListener<Event>)null);
+		this(WindowNo, AD_Attachment_ID, AD_Table_ID, Record_ID, null, trxName, (EventListener<Event>)null);
 	}
-	
+
 	/**
 	 *	Constructor.
 	 *	loads Attachment, if ID &lt;&gt; 0
@@ -186,13 +187,31 @@ public class WAttachment extends Window implements EventListener<Event>
 	 *  @param trxName transaction
 	 *  @param eventListener
 	 */
+	@Deprecated
 	public WAttachment(	int WindowNo, int AD_Attachment_ID,
-						int AD_Table_ID, int Record_ID, String trxName, EventListener<Event> eventListener)
+			int AD_Table_ID, int Record_ID, String trxName, EventListener<Event> eventListener)
+	{
+		this(WindowNo, AD_Attachment_ID, AD_Table_ID, Record_ID, null, trxName, eventListener);
+	}
+
+	/**
+	 *	Constructor.
+	 *	loads Attachment, if ID &lt;&gt; 0
+	 *  @param WindowNo window no
+	 *  @param AD_Attachment_ID attachment
+	 *  @param AD_Table_ID table
+	 *  @param Record_ID record key
+	 *  @param Record_UU record UUID
+	 *  @param trxName transaction
+	 *  @param eventListener
+	 */
+	public WAttachment(	int WindowNo, int AD_Attachment_ID,
+						int AD_Table_ID, int Record_ID, String Record_UU, String trxName, EventListener<Event> eventListener)
 	{
 		super();
 		maxPreviewSize = MSysConfig.getIntValue(MSysConfig.ZK_MAX_ATTACHMENT_PREVIEW_SIZE, 1048576, Env.getAD_Client_ID(Env.getCtx()));
 
-		if (log.isLoggable(Level.CONFIG)) log.config("ID=" + AD_Attachment_ID + ", Table=" + AD_Table_ID + ", Record=" + Record_ID);
+		if (log.isLoggable(Level.CONFIG)) log.config("ID=" + AD_Attachment_ID + ", Table=" + AD_Table_ID + ", Record=" + Record_ID + ", RecordUU=" + Record_UU);
 
 		m_WindowNo = WindowNo;
 		this.addEventListener(DialogEvents.ON_WINDOW_CLOSE, this);
@@ -215,7 +234,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		if (AD_Attachment_ID > 0)
 			m_attachment = new MAttachment (Env.getCtx(), AD_Attachment_ID, trxName);
 		else
-			m_attachment = new MAttachment (Env.getCtx(), AD_Table_ID, Record_ID, trxName);
+			m_attachment = new MAttachment (Env.getCtx(), AD_Table_ID, Record_ID, Record_UU, trxName);
 
 		loadAttachments();
 

@@ -31,9 +31,12 @@ import org.compiere.util.Msg;
  */
 public class MPostIt extends X_AD_PostIt
 {
-	private static final long serialVersionUID = -5053130533036069784L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1450160105051825278L;
 
-    /**
+	/**
     * UUID based Constructor
     * @param ctx  Context
     * @param AD_PostIt_UU  UUID key
@@ -66,6 +69,21 @@ public class MPostIt extends X_AD_PostIt
 		this (ctx, 0, trxName);
 		setAD_Table_ID (AD_Table_ID);
 		setRecord_ID (Record_ID);
+	}	//	MPostIt
+
+	/**
+	 * 	Full Constructor
+	 *	@param ctx context
+	 *	@param AD_Table_ID table
+	 *	@param Record_ID record
+	 *	@param trxName transaction
+	 */
+	public MPostIt (Properties ctx, int AD_Table_ID, int Record_ID, String Record_UU, String trxName)
+	{
+		this (ctx, 0, trxName);
+		setAD_Table_ID (AD_Table_ID);
+		setRecord_ID (Record_ID);
+		setRecord_UU (Record_UU);
 	}	//	MPostIt
 
 	/**
@@ -103,9 +121,27 @@ public class MPostIt extends X_AD_PostIt
 		return retValue;
 	}	//	getUpdatedString
 
+	/**
+	 * @param Table_ID
+	 * @param Record_ID
+	 * @return
+	 */
+	@Deprecated
 	public static int getID(int Table_ID, int Record_ID) {
 		String sql="SELECT AD_PostIt_ID FROM AD_PostIt WHERE AD_Table_ID=? AND Record_ID=?";
 		int postItID = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);
 		return postItID;
 	}
+
+	/**
+	 * @param Table_ID
+	 * @param Record_UU
+	 * @return
+	 */
+	public static int getID(int Table_ID, String Record_UU) {
+		String sql="SELECT AD_PostIt_ID FROM AD_PostIt WHERE AD_Table_ID=? AND Record_UU=?";
+		int postItID = DB.getSQLValueEx(null, sql, Table_ID, Record_UU);
+		return postItID;
+	}
+
 }	//	MPostIt
