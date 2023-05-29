@@ -16,9 +16,6 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import static org.compiere.model.SystemIDs.USER_SUPERUSER;
-import static org.compiere.model.SystemIDs.USER_SYSTEM;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
@@ -53,11 +50,9 @@ import org.adempiere.exceptions.DBException;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
-import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
 import org.compiere.util.MSort;
 import org.compiere.util.Msg;
 import org.compiere.util.SecureEngine;
@@ -103,7 +98,7 @@ public class GridTable extends AbstractTableModel
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5856409718243773243L;
+	private static final long serialVersionUID = -5564364545827057092L;
 
 	protected static final String SORTED_DSE_EVENT = "Sorted";
 	
@@ -1573,17 +1568,6 @@ public class GridTable extends AbstractTableModel
 		//	get updated row data
 		Object[] rowData = getDataAtRow(m_rowChanged);
 
-		// CarlosRuiz - globalqss - fix [1722226] - Usability - Record_ID = 0 on 9 tables can't be modified
-		boolean specialZeroUpdate = false;
-		if (!m_inserting // not inserting, updating a record 
-			&& manualCmd   // in a manual way (pushing the save button)
-			&& (Env.getAD_User_ID(m_ctx) == USER_SYSTEM || Env.getAD_User_ID(m_ctx) == USER_SUPERUSER)  // user must know what is doing -> just allowed to System or SuperUser (Hardcoded)
-			&& getKeyID(m_rowChanged) == 0) { // the record being changed has ID = 0
-			String tablename = getTableName(); // just the allowed tables (HardCoded)
-			if (MTable.isZeroIDTable(tablename))
-				specialZeroUpdate = true;
-		}
-
 		//	Check Mandatory
 		String missingColumns = getMandatory(rowData);
 		if (missingColumns.length() != 0)
@@ -1601,8 +1585,7 @@ public class GridTable extends AbstractTableModel
 			Record_ID = getKeyID(m_rowChanged);
 		try
 		{
-			if (!m_tableName.endsWith("_Trl") && !specialZeroUpdate)	//	translation tables have no model
-				return dataSavePO (Record_ID);
+			return dataSavePO (Record_ID);
 		}
 		catch (Throwable e)
 		{
@@ -1613,552 +1596,9 @@ public class GridTable extends AbstractTableModel
 				log.log(Level.SEVERE, "Persistency Issue - " 
 					+ m_tableName + ": " + e.getLocalizedMessage(), e);
 				log.saveError("Error", e.getLocalizedMessage());
-				return SAVE_ERROR;
 			}
 		}
-		
-		/**	Manual Update of Row (i.e. not via PO class)	**/
-		log.info("NonPO");
-		
-		boolean error = false;
-		lobReset();
-		//
-		String is = null;
-		final String ERROR = "ERROR: ";
-		final String INFO  = "Info: ";
-
-		//	Update SQL with specific where clause
-		StringBuilder select = new StringBuilder("SELECT ");
-		for (int i = 0, addedColumns = 0; i < m_fields.size(); i++)
-		{
-			GridField field = (GridField)m_fields.get(i);
-			if (m_inserting && field.isVirtualColumn())
-				continue;
-			// Add "," if it is not the first added column - teo_sarca [ 1735618 ]
-			if (addedColumns++ > 0)
-				select.append(",");
-			select.append(field.getColumnSQL(true));	//	ColumnName or Virtual Column
-		}
-		//
-		select.append(" FROM ").append(m_tableName);
-		StringBuilder singleRowWHERE = new StringBuilder();
-		StringBuilder multiRowWHERE = new StringBuilder();
-		//	Create SQL	& RowID
-		if (m_inserting)
-			select.append(" WHERE 1=2");
-		else	//  FOR UPDATE causes  -  ORA-01002 fetch out of sequence
-			select.append(" WHERE ").append(getWhereClause(rowData));				
-		try (PreparedStatement pstmt = DB.prepareStatement (select.toString(), 
-				ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE, null);)
-		{			
-			ResultSet rs =  pstmt.executeQuery();
-			//	only one row
-			if (!(m_inserting || rs.next()))
-			{
-				fireDataStatusEEvent("SaveErrorRowNotFound", "", true);
-				dataRefresh(m_rowChanged);
-				return SAVE_ERROR;
-			}
-
-			Object[] rowDataDB = null;
-			//	Prepare
-			boolean manualUpdate = ResultSet.CONCUR_READ_ONLY == rs.getConcurrency();
-			// Manual update if log migration scripts is enabled - teo_sarca BF [ 1901192 ]
-			if(!manualUpdate && Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT))
-				manualUpdate = true;
-			if (manualUpdate)
-				createUpdateSqlReset();
-			if (m_inserting)
-			{
-				if (manualUpdate)
-					log.fine("Prepare inserting ... manual");
-				else
-				{
-					log.fine("Prepare inserting ... RowSet");
-					rs.moveToInsertRow ();
-				}
-			}
-			else
-			{
-				if (log.isLoggable(Level.FINE)) log.fine("Prepare updating ... manual=" + manualUpdate);
-				//	get current Data in DB
-				rowDataDB = readData (rs);
-			}
-
-			/**	Data:
-			 *		m_rowData	= original Data
-			 *		rowData 	= updated Data
-			 *		rowDataDB	= current Data in DB
-			 *	1) Difference between original & updated Data?	N:next
-			 *	2) Difference between original & current Data?	Y:don't update
-			 *	3) Update current Data
-			 *	4) Refresh to get last Data (changed by trigger, ...)
-			 */
-
-			//	Constants for Created/Updated(By)
-			Timestamp now = new Timestamp(System.currentTimeMillis());
-			int user = Env.getContextAsInt(m_ctx, Env.AD_USER_ID);
-
-			/**
-			 *	for every column
-			 */
-			int size = m_fields.size();
-			int colRs = 1;
-			for (int col = 0; col < size; col++)
-			{
-				GridField field = (GridField)m_fields.get (col);
-				if (field.isVirtualColumn())
-				{
-					if (!m_inserting)
-						colRs++;
-					continue;
-				}
-				String columnName = field.getColumnName ();
-
-				//	RowID, Virtual Column
-				if (field.getDisplayType () == DisplayType.RowID
-					|| field.isVirtualColumn())
-					; //	ignore
-
-				//	New Key
-				else if (field.isKey () && m_inserting)
-				{
-					if (columnName.endsWith ("_ID") || columnName.toUpperCase().endsWith ("_ID"))
-					{
-						int insertID = DB.getNextID (m_ctx, m_tableName, null);	//	no trx
-						if (manualUpdate)
-							createUpdateSql (columnName, String.valueOf (insertID));
-						else
-							rs.updateInt (colRs, insertID); 						// ***
-						singleRowWHERE.append (columnName).append ("=").append (insertID);
-						//
-						is = INFO + columnName + " -> " + insertID + " (Key)";
-					}
-					else //	Key with String value
-					{
-						String str = rowData[col].toString ();
-						if (manualUpdate)
-							createUpdateSql (columnName, DB.TO_STRING (str));
-						else
-							rs.updateString (colRs, str); 						// ***
-						singleRowWHERE = new StringBuilder();	//	overwrite
-						singleRowWHERE.append (columnName).append ("=").append (DB.TO_STRING(str));
-						//
-						is = INFO + columnName + " -> " + str + " (StringKey)";
-					}
-					log.fine(is);
-				} //	New Key
-
-				//	New DocumentNo
-				else if (columnName.equals ("DocumentNo"))
-				{
-					boolean newDocNo = false;
-					String docNo = (String)rowData[col];
-					//  we need to have a doc number
-					if (docNo == null || docNo.length () == 0)
-						newDocNo = true;
-						//  Preliminary ID from CalloutSystem
-					else if (docNo.startsWith ("<") && docNo.endsWith (">"))
-						newDocNo = true;
-
-					if (newDocNo || m_inserting)
-					{
-						String insertDoc = null;
-						//  always overwrite if insering with mandatory DocType DocNo
-						if (m_inserting)
-							insertDoc = DB.getDocumentNo (m_ctx, m_WindowNo, 
-								m_tableName, true, null);	//	only doc type - no trx
-						if (log.isLoggable(Level.FINE)) log.fine("DocumentNo entered=" + docNo + ", DocTypeInsert=" + insertDoc + ", newDocNo=" + newDocNo);
-						// can we use entered DocNo?
-						if (insertDoc == null || insertDoc.length () == 0)
-						{
-							if (!newDocNo && docNo != null && docNo.length () > 0)
-								insertDoc = docNo;
-							else //  get a number from DocType or Table
-								insertDoc = DB.getDocumentNo (m_ctx, m_WindowNo, 
-									m_tableName, false, null);	//	no trx
-						}
-						//	There might not be an automatic document no for this document
-						if (insertDoc == null || insertDoc.length () == 0)
-						{
-							//  in case DB function did not return a value
-							if (docNo != null && docNo.length () != 0)
-								insertDoc = (String)rowData[col];
-							else
-							{
-								error = true;
-								is = ERROR + field.getColumnName () + "= " + rowData[col] + " NO DocumentNo";
-								log.fine(is);
-								break;
-							}
-						}
-						//
-						if (manualUpdate)
-							createUpdateSql (columnName, DB.TO_STRING (insertDoc));
-						else
-							rs.updateString (colRs, insertDoc);					//	***
-							//
-						is = INFO + columnName + " -> " + insertDoc + " (DocNo)";
-						log.fine(is);
-					}
-				}	//	New DocumentNo
-
-				//  New Value(key)
-				else if (columnName.equals ("Value") && m_inserting)
-				{
-					String value = (String)rowData[col];
-					//  Get from Sequence, if not entered
-					if (value == null || value.length () == 0)
-					{
-						value = DB.getDocumentNo (m_ctx, m_WindowNo, m_tableName, false, null);
-						//  No Value
-						if (value == null || value.length () == 0)
-						{
-							error = true;
-							is = ERROR + field.getColumnName () + "= " + rowData[col]
-								 + " No Value";
-							log.fine(is);
-							break;
-						}
-					}
-					if (manualUpdate)
-						createUpdateSql (columnName, DB.TO_STRING (value));
-					else
-						rs.updateString (colRs, value); 							//	***
-						//
-					is = INFO + columnName + " -> " + value + " (Value)";
-					log.fine(is);
-				}	//	New Value(key)
-
-				//	Updated		- check database
-				else if (columnName.equals ("Updated"))
-				{
-					if (m_compareDB && !m_inserting && !m_rowData[col].equals (rowDataDB[col]))	//	changed
-					{
-						error = true;
-						is = ERROR + field.getColumnName () + "= " + m_rowData[col]
-							 + " != DB: " + rowDataDB[col];
-						log.fine(is);
-						break;
-					}
-					if (manualUpdate)
-						createUpdateSql (columnName, DB.TO_DATE (now, false));
-					else
-						rs.updateTimestamp (colRs, now); 							//	***
-						//
-					is = INFO + "Updated/By -> " + now + " - " + user;
-					log.fine(is);
-				} //	Updated
-
-				//	UpdatedBy	- update
-				else if (columnName.equals ("UpdatedBy"))
-				{
-					if (manualUpdate)
-						createUpdateSql (columnName, String.valueOf (user));
-					else
-						rs.updateInt (colRs, user); 								//	***
-				} //	UpdatedBy
-
-				//	Created
-				else if (m_inserting && columnName.equals ("Created"))
-				{
-					if (manualUpdate)
-						createUpdateSql (columnName, DB.TO_DATE (now, false));
-					else
-						rs.updateTimestamp (colRs, now); 							//	***
-				} //	Created
-
-				//	CreatedBy
-				else if (m_inserting && columnName.equals ("CreatedBy"))
-				{
-					if (manualUpdate)
-						createUpdateSql (columnName, String.valueOf (user));
-					else
-						rs.updateInt (colRs, user); 								//	***
-				} //	CreatedBy
-
-				//	Nothing changed & null
-				else if (m_rowData[col] == null && rowData[col] == null)
-				{
-					if (m_inserting)
-					{
-						if (manualUpdate)
-							createUpdateSql (columnName, "NULL");
-						else
-							rs.updateNull (colRs); 								//	***
-						is = INFO + columnName + "= NULL";
-						log.fine(is);
-					}
-				}
-
-				//	***	Data changed ***
-				else if (m_inserting
-				  || (m_rowData[col] == null && rowData[col] != null)
-				  || (m_rowData[col] != null && rowData[col] == null)
-				  || !m_rowData[col].equals (rowData[col])) 			//	changed
-				{
-					//	Original == DB
-					if (m_inserting || !m_compareDB
-					  || (m_rowData[col] == null && rowDataDB[col] == null)
-					  || (m_rowData[col] != null && m_rowData[col].equals (rowDataDB[col])))
-					{
-						if (log.isLoggable(Level.FINE)) log.fine(columnName + "=" + rowData[col]
-								+ " " + (rowData[col]==null ? "" : rowData[col].getClass().getName()));
-						//
-						boolean encrypted = field.isEncryptedColumn();
-						//
-						String type = "String";
-						if (rowData[col] == null)
-						{
-							if (manualUpdate)
-								createUpdateSql (columnName, "NULL");
-							else
-								rs.updateNull (colRs); 							//	***
-						}
-						
-						//	ID - int
-						else if (DisplayType.isID (field.getDisplayType()) 
-							|| field.getDisplayType() == DisplayType.Integer)
-						{
-							try
-							{
-								Object dd = rowData[col];
-								Integer iii = null;
-								if (dd instanceof Integer)
-									iii = (Integer)dd;
-								else
-									iii = Integer.valueOf(dd.toString());
-								if (encrypted)
-									iii = (Integer)encrypt(iii, getAD_Client_ID());
-								if (manualUpdate)
-									createUpdateSql (columnName, String.valueOf (iii));
-								else
-									rs.updateInt (colRs, iii.intValue()); 		// 	***
-							}
-							catch (Exception e) //  could also be a String (AD_Language, AD_Message)
-							{
-								if (manualUpdate)
-									createUpdateSql (columnName, DB.TO_STRING (rowData[col].toString ()));
-								else
-									rs.updateString (colRs, rowData[col].toString ()); //	***
-							}
-							type = "Int";
-						}
-						//	Numeric - BigDecimal
-						else if (DisplayType.isNumeric (field.getDisplayType ()))
-						{
-							BigDecimal bd = (BigDecimal)rowData[col];
-							if (encrypted)
-								bd = (BigDecimal)encrypt(bd, getAD_Client_ID());
-							if (manualUpdate)
-								createUpdateSql (columnName, bd.toString ());
-							else
-								rs.updateBigDecimal (colRs, bd); 				//	***
-							type = "Number";
-						}
-						//	Date - Timestamp
-						else if (DisplayType.isDate (field.getDisplayType ()))
-						{
-							Timestamp ts = (Timestamp)rowData[col];
-							if (encrypted)
-								ts = (Timestamp)encrypt(ts, getAD_Client_ID());
-							if (manualUpdate)
-								createUpdateSql (columnName, DB.TO_DATE (ts, false));
-							else
-								rs.updateTimestamp (colRs, ts); 				//	***
-							type = "Date";
-						}
-						//	LOB
-						else if (field.getDisplayType() == DisplayType.TextLong)
-						{
-							PO_LOB lob = new PO_LOB (getTableName(), columnName, 
-								null, field.getDisplayType(), rowData[col]);
-							lobAdd(lob);
-							type = "CLOB";
-						}
-						//	Boolean
-						else if (field.getDisplayType() == DisplayType.YesNo)
-						{
-							String yn = null;
-							if (rowData[col] instanceof Boolean)
-							{
-								Boolean bb = (Boolean)rowData[col];
-								yn = bb.booleanValue() ? "Y" : "N";
-							}
-							else
-								yn = "Y".equals(rowData[col]) ? "Y" : "N"; 
-							if (encrypted)
-								yn = (String)yn;
-							if (manualUpdate)
-								createUpdateSql (columnName, DB.TO_STRING (yn));
-							else
-								rs.updateString (colRs, yn); 					//	***
-						}
-						//	String and others
-						else	
-						{
-							String str = rowData[col].toString ();
-							if (encrypted)
-								str = (String)encrypt(str, getAD_Client_ID());
-							if (manualUpdate)
-								createUpdateSql (columnName, DB.TO_STRING (str));
-							else
-								rs.updateString (colRs, str); 					//	***
-						}
-						//
-						is = INFO + columnName + "= " + m_rowData[col]
-							 + " -> " + rowData[col] + " (" + type + ")";
-						if (encrypted)
-							is += " encrypted";
-						log.fine(is);
-					}
-					//	Original != DB
-					else
-					{
-						error = true;
-						is = ERROR + field.getColumnName () + "= " + m_rowData[col]
-							 + " != DB: " + rowDataDB[col] + " -> " + rowData[col];
-						log.fine(is);
-					}
-				}	//	Data changed
-
-				//	Single Key - retrieval sql
-				if (field.isKey() && !m_inserting)
-				{
-					if (rowData[col] == null)
-						throw new RuntimeException("Key is NULL - " + columnName);
-					if (columnName.endsWith ("_ID"))
-						singleRowWHERE.append (columnName).append ("=").append (rowData[col]);
-					else
-					{
-						singleRowWHERE = new StringBuilder();	//	overwrite
-						singleRowWHERE.append (columnName).append ("=").append (DB.TO_STRING(rowData[col].toString()));
-					}
-				}
-				//	MultiKey Inserting - retrieval sql
-				if (field.isParentColumn())
-				{
-					if (rowData[col] == null)
-						throw new RuntimeException("MultiKey Parent is NULL - " + columnName);
-					if (multiRowWHERE.length() != 0)
-						multiRowWHERE.append(" AND ");
-					if (columnName.endsWith ("_ID"))
-						multiRowWHERE.append (columnName).append ("=").append (rowData[col]);
-					else
-						multiRowWHERE.append (columnName).append ("=").append (DB.TO_STRING(rowData[col].toString()));
-				}
-				//
-				colRs++;
-			}	//	for every column
-
-			if (error)
-			{
-				if (manualUpdate)
-					createUpdateSqlReset();
-				else
-					rs.cancelRowUpdates();
-				fireDataStatusEEvent("SaveErrorDataChanged", "", true);
-				dataRefresh(m_rowChanged);
-				return SAVE_ERROR;
-			}
-
-			/**
-			 *	Save to Database
-			 */
-			//
-			String whereClause = singleRowWHERE.toString();
-			if (whereClause.length() == 0)
-				whereClause = multiRowWHERE.toString();
-			if (m_inserting)
-			{
-				log.fine("Inserting ...");
-				if (manualUpdate)
-				{
-					String sql = createUpdateSql(true, null);
-					int no = DB.executeUpdateEx (sql, null);	//	no Trx
-					if (no != 1)
-						log.log(Level.SEVERE, "Insert #=" + no + " - " + sql);
-				}
-				else
-					rs.insertRow();
-			}
-			else
-			{
-				if (log.isLoggable(Level.FINE)) log.fine("Updating ... " + whereClause);
-				if (manualUpdate)
-				{
-					String sql = createUpdateSql(false, whereClause);
-					int no = DB.executeUpdateEx (sql, null);	//	no Trx
-					if (no != 1)
-						log.log(Level.SEVERE, "Update #=" + no + " - " + sql);
-				}
-				else
-					rs.updateRow();
-			}
-
-			//
-			lobSave(whereClause);
-			
-			//	Need to re-read row to get ROWID, Key, DocumentNo, Trigger, virtual columns
-			if (log.isLoggable(Level.FINE)) log.fine("Reading ... " + whereClause);
-			StringBuilder refreshSQL = new StringBuilder(m_SQL_Select)
-				.append(" WHERE ").append(whereClause);
-			try (PreparedStatement pstmt1 = DB.prepareStatement(refreshSQL.toString(), null);)
-			{
-				rs = pstmt1.executeQuery();
-				if (rs.next())
-				{
-					rowDataDB = readData(rs);
-					//	update buffer
-					setDataAtRow(m_rowChanged, rowDataDB);
-					if (m_virtual)
-					{
-						MSort sort = m_sort.get(m_rowChanged);
-						int oldId = sort.index;
-						int newId = getKeyID(m_rowChanged);
-						if (newId != oldId)
-						{
-							sort.index = newId;
-							Object[] data = m_virtualBuffer.remove(oldId);
-							m_virtualBuffer.put(newId, data);
-						}
-					}
-					fireTableRowsUpdated(m_rowChanged, m_rowChanged);
-				}
-				else
-					log.log(Level.SEVERE, "Inserted row not found");
-			}
-			//
-		}
-		catch (Exception e)
-		{
-
-			String msg = "SaveError";
-			String dbException = DBException.getDefaultDBExceptionMessage(e); 
-			if (!Util.isEmpty(dbException))
-			{
-				log.log(Level.SEVERE, dbException, e);
-				msg = dbException;
-			}
-			else
-				log.log(Level.SEVERE, select.toString(), e);
-			fireDataStatusEEvent(msg, e.getLocalizedMessage(), true);
-			return SAVE_ERROR;
-		}
-		
-		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(m_tableName));
-		
-		//	everything ok
-		m_rowData = null;
-		m_changed = false;
-		m_compareDB = true;
-		m_rowChanged = -1;
-		m_newRow = -1;
-		m_inserting = false;
-		fireDataStatusIEvent("Saved", "");
-		//
-		log.info("fini");
-		return SAVE_OK;
+		return SAVE_ERROR;
 	}	//	dataSave
 
 	/**
@@ -2178,7 +1618,14 @@ public class GridTable extends AbstractTableModel
 		if (! m_importing) // Just use trx when importing
 			m_trxName = null;
 		if (Record_ID != -1)
-			po = table.getPO(Record_ID, m_trxName);
+		{
+			if (Record_ID == 0 && MTable.isZeroIDTable(table.getTableName())) {
+				String uuidFromZeroID = table.getUUIDFromZeroID();
+				po = table.getPOByUU(uuidFromZeroID, m_trxName);
+			} else {
+				po = table.getPO(Record_ID, m_trxName);
+			}
+		}
 		else	//	Multi - Key
 			po = table.getPO(getWhereClause(rowData), m_trxName);
 		//	No Persistent Object
@@ -2462,75 +1909,6 @@ public class GridTable extends AbstractTableModel
 	
 	/*************************************************************************/
 
-	private ArrayList<String>	m_createSqlColumn = new ArrayList<String>();
-	private ArrayList<String>	m_createSqlValue = new ArrayList<String>();
-
-	/**
-	 * 	Prepare SQL creation
-	 * 	@param columnName column name
-	 * 	@param value value
-	 */
-	private void createUpdateSql (String columnName, String value)
-	{
-		m_createSqlColumn.add(columnName);
-		m_createSqlValue.add(value);
-		if (log.isLoggable(Level.FINEST)) log.finest("#" + m_createSqlColumn.size()
-				+ " - " + columnName + "=" + value);
-	}	//	createUpdateSQL
-
-	/**
-	 * 	Create update/insert SQL
-	 * 	@param insert true if insert - update otherwise
-	 * 	@param whereClause where clause for update
-	 * 	@return sql statement
-	 */
-	private String createUpdateSql (boolean insert, String whereClause)
-	{
-		StringBuilder sb = new StringBuilder();
-		if (insert)
-		{
-			sb.append("INSERT INTO ").append(m_tableName).append(" (");
-			for (int i = 0; i < m_createSqlColumn.size(); i++)
-			{
-				if (i != 0)
-					sb.append(",");
-				sb.append(m_createSqlColumn.get(i));
-			}
-			sb.append(") VALUES ( ");
-			for (int i = 0; i < m_createSqlValue.size(); i++)
-			{
-				if (i != 0)
-					sb.append(",");
-				sb.append(m_createSqlValue.get(i));
-			}
-			sb.append(")");
-		}
-		else
-		{
-			sb.append("UPDATE ").append(m_tableName).append(" SET ");
-			for (int i = 0; i < m_createSqlColumn.size(); i++)
-			{
-				if (i != 0)
-					sb.append(",");
-				sb.append(m_createSqlColumn.get(i)).append("=").append(m_createSqlValue.get(i));
-			}
-			sb.append(" WHERE ").append(whereClause);
-		}
-		if (log.isLoggable(Level.FINE)) log.fine(sb.toString());
-		//	reset
-		createUpdateSqlReset();
-		return sb.toString();
-	}	//	createUpdateSql
-
-	/**
-	 * 	Reset Update Data
-	 */
-	private void createUpdateSqlReset()
-	{
-		m_createSqlColumn = new ArrayList<String>();
-		m_createSqlValue = new ArrayList<String>();
-	}	//	createUpdateSqlReset
-
 	/**
 	 *	Get Mandatory empty columns
 	 *  @param rowData row data
@@ -2615,53 +1993,12 @@ public class GridTable extends AbstractTableModel
 	}
 	
 	/*************************************************************************/
-
-	/**	LOB Info				*/
-	private ArrayList<PO_LOB>	m_lobInfo = null;
-
 	// IDEMPIERE-454 Easy import
 	private boolean m_importing = false;
 	private String m_trxName = null;
 
 	private int m_currentRow = -1;
 
-	/**
-	 * 	Reset LOB info
-	 */
-	private void lobReset()
-	{
-		m_lobInfo = null;
-	}	//	resetLOB
-	
-	/**
-	 * 	Prepare LOB save
-	 *	@param lob value 
-	 */	
-	private void lobAdd (PO_LOB lob)
-	{
-		if (log.isLoggable(Level.FINE)) log.fine("LOB=" + lob);
-		if (m_lobInfo == null)
-			m_lobInfo = new ArrayList<PO_LOB>();
-		m_lobInfo.add(lob);
-	}	//	lobAdd
-	
-	/**
-	 * 	Save LOB
-	 * 	@param whereClause where clause
-	 */
-	private void lobSave (String whereClause)
-	{
-		if (m_lobInfo == null)
-			return;
-		for (int i = 0; i < m_lobInfo.size(); i++)
-		{
-			PO_LOB lob = (PO_LOB)m_lobInfo.get(i);
-			lob.save(whereClause, null);		//	no trx
-		}	//	for all LOBs
-		lobReset();
-	}	//	lobSave
-
-	
 	/**************************************************************************
 	 *	New Record after current Row
 	 *  @param currentRow row
@@ -3419,18 +2756,6 @@ public class GridTable extends AbstractTableModel
 	}	//	readData
 
 	/**
-	 *	Encrypt
-	 *	@param xx clear data 
-	 *	@return encrypted value
-	 */
-	private Object encrypt (Object xx, int AD_Client_ID)
-	{
-		if (xx == null)
-			return null;
-		return SecureEngine.encrypt(xx, AD_Client_ID);
-	}	//	encrypt
-	
-	/**
 	 * 	Decrypt
 	 *	@param yy encrypted data
 	 *	@return clear data
@@ -4129,7 +3454,14 @@ public class GridTable extends AbstractTableModel
 		PO po = null;
 		int Record_ID = getKeyID(row);
 		if (Record_ID != -1)
-			po = table.getPO(Record_ID, m_trxName);
+		{
+			if (Record_ID == 0 && MTable.isZeroIDTable(table.getTableName())) {
+				String uuidFromZeroID = table.getUUIDFromZeroID();
+				po = table.getPOByUU(uuidFromZeroID, m_trxName);
+			} else {
+				po = table.getPO(Record_ID, m_trxName);
+			}
+		}
 		else	//	Multi - Key
 			po = table.getPO(getWhereClause(getDataAtRow(row)), m_trxName);
 		return po;
