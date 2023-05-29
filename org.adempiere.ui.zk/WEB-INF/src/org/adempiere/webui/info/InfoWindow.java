@@ -1033,8 +1033,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					if (tableInfo.getTableName().equalsIgnoreCase(lookupInfo.TableName))
 					{
 						displayColumn = displayColumn.replace(lookupInfo.TableName+".", tableInfo.getSynonym()+".");
-						ColumnInfo columnInfo = new ColumnInfo(infoColumn.getNameTrl(), displayColumn, KeyNamePair.class, infoColumn.getSelectClause(), infoColumn.isReadOnly() || haveNotProcess);
+						ColumnInfo columnInfo = new ColumnInfo(infoColumn.getNameTrl(), displayColumn, KeyNamePair.class, infoColumn.getSelectClause(), infoColumn.isReadOnly() || haveNotProcess, displayColumn);
 						return columnInfo;
+					}
+					else
+					{
+				        displayColumn = parseAliases(displayColumn, lookupInfo.TableName);
 					}
 					break;
 				}
@@ -1051,8 +1055,42 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			colSQL += " AS " + infoColumn.getColumnName();
         editorMap.put(colSQL, editor);
         Class<?> colClass = columnName.endsWith("_ID") || columnName.equals("CreatedBy") || columnName.equals("UpdatedBy") ? KeyNamePair.class : String.class;
-		ColumnInfo columnInfo = new ColumnInfo(infoColumn.getNameTrl(), colSQL, colClass, (String)null, infoColumn.isReadOnly() || haveNotProcess);
+        ColumnInfo columnInfo = new ColumnInfo(infoColumn.getNameTrl(), colSQL, colClass, (String)null, infoColumn.isReadOnly() || haveNotProcess, displayColumn);
 		return columnInfo;
+	}
+
+	/**
+	 * Check and parse the correct aliases of the display SQL
+	 * @param displayColumn
+	 * @return parsed displayColumn
+	 */
+	private String parseAliases(String displayColumn, String tableName) {
+		if(Util.isEmpty(displayColumn))
+			return "";
+		String alias = getAlias(tableName);
+		if(!displayColumn.contains(".") && !displayColumn.startsWith("NVL")) {
+			displayColumn = (alias+"."+displayColumn);
+		}
+		else if(displayColumn.contains(tableName+".") && !alias.equalsIgnoreCase(tableName)) {
+			displayColumn = displayColumn.replace(tableName+".", alias+".");
+		}
+
+		return displayColumn;
+	}
+
+	/**
+	 * Get alias of the table, or the table name
+	 * @return String alias
+	 */
+	private String getAlias(String tableName) {
+		if(Util.isEmpty(tableName))
+			return "";
+		String alias = tableName;
+		for(TableInfo tableInfo : tableInfos) {
+			if(tableName.equalsIgnoreCase(tableInfo.getTableName()))
+				alias = !Util.isEmpty(tableInfo.getSynonym()) ? tableInfo.getSynonym() : tableName;
+		}
+		return alias;
 	}
 
 	/* (non-Javadoc)
@@ -2025,15 +2063,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     protected String buildDataSQL(int start, int end) {
 		String dataSql;
 		String dynWhere = getSQLWhere();
+		String orderClause = getUserOrderClause();
+		String dynJoin = getSQLJoin(m_sqlMain);
         StringBuilder sql = new StringBuilder (m_sqlMain);
-        if (dynWhere.length() > 0)
-            sql.append(dynWhere);   //  includes first AND
         
         if (sql.toString().trim().endsWith("WHERE")) {
         	int index = sql.lastIndexOf(" WHERE");
         	sql.delete(index, sql.length());
         }
-        
+        if(dynJoin.length() > 0) {
+		sql.append(dynJoin);
+        }
+        if (dynWhere.length() > 0) {
+			sql.append(" WHERE ");
+			sql.append(dynWhere);   //  includes first AND
+        }
         dataSql = Msg.parseTranslation(Env.getCtx(), sql.toString());    //  Variables
         dataSql = MRole.getDefault().addAccessSQL(dataSql, getTableName(),
             MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
@@ -2043,7 +2087,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         	dataSql = dataSql + " " + otherClause;
         }
         
-        dataSql = dataSql + getUserOrderClause();
+        dataSql = dataSql + orderClause;
         
         if (end > start && isUseDatabasePaging() && DB.getDatabase().isPagingSupported())
         {
@@ -2051,6 +2095,30 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         }
 		return dataSql;
 	}
+
+    /**
+     * Join tables required for the ORDER BY clause
+     * @param orderClause
+     * @return SQL JOIN
+     */
+    private String getSQLJoin(String sqlMain) {
+	if(joinTables.size() <= 0)
+		return "";
+	StringBuilder builder = new StringBuilder();
+	for(String tableName : joinTables) {
+		boolean doJoin = true;
+		for(TableInfo tableInfo : tableInfos) {
+			if(tableName.equalsIgnoreCase(tableInfo.getTableName()))
+				doJoin = false;
+		}
+		if(doJoin && !sqlMain.contains(" JOIN " + tableName)) {
+			builder.append(" JOIN ").append(tableName).append(" ON (")
+				.append(tableName).append(".").append(tableName).append("_ID = ")
+				.append(getTableName()).append(".").append(tableName).append("_ID)");
+		}
+	}
+	return builder.toString();
+    }
 
     private String getOtherClauseParsed() {
     	String otherClause = "";

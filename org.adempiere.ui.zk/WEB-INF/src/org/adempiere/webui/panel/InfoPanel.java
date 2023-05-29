@@ -171,6 +171,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected boolean isIDColumnKeyOfView = false;
 	protected boolean hasRightQuickEntry = true;
 	protected boolean isHasNextPage = false;
+	/* List of table names for SQL JOIN clause */
+	protected ArrayList<String> joinTables = new ArrayList<String>();
 	/**
 	 * store selected record info
 	 * key of map is value of column play as keyView
@@ -1313,14 +1315,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (indexOrderColumn > 0 && (indexOrderColumn + 1 > p_layout.length || !p_layout[indexOrderColumn].getColSQL().trim().equals(sqlOrderColumn))) {
 			// try to find out new index of ordered column, in case has other column is hide or display
 			for (int testIndex = 0; testIndex < p_layout.length; testIndex++) {
-				if (p_layout[testIndex].getColSQL().trim().equals(sqlOrderColumn)) {
+				if (p_layout[testIndex].getColSQL().trim().equals(sqlOrderColumn) || sqlOrderColumn.equals(p_layout[testIndex].getDisplayColumn())) {
 					indexOrderColumn = testIndex;
 					break;
 				}
 			}
 			
 			// index still incorrect and can't find out new index (ordered column become hide column)
-			if (indexOrderColumn > 0 && (indexOrderColumn + 1 > p_layout.length || !p_layout[indexOrderColumn].getColSQL().trim().equals(sqlOrderColumn))) {
+			if (indexOrderColumn > 0 && (indexOrderColumn + 1 > p_layout.length
+					|| (!sqlOrderColumn.equals(p_layout[indexOrderColumn].getColSQL().trim()) && !p_layout[indexOrderColumn].getDisplayColumn().equals(sqlOrderColumn)))) {
 				indexOrderColumn = -1;
 				sqlOrderColumn = null;
 				m_sqlUserOrder = null;
@@ -1351,7 +1354,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * @return
 	 */
 	protected String getUserOrderClause(int col) {
-		String colsql = p_layout[col].getColSQL().trim();
+		String displayColumn = p_layout[col].getDisplayColumn();
+		String colsql = !Util.isEmpty(displayColumn) ? displayColumn : p_layout[col].getColSQL().trim();
 		int lastSpaceIdx = colsql.lastIndexOf(" ");
 		if (lastSpaceIdx > 0)
 		{
@@ -2991,7 +2995,16 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		int col = lsc.getColumnIndex();
 		indexOrderColumn = col;
 		isColumnSortAscending = ascending;
-		sqlOrderColumn = p_layout[col].getColSQL().trim();
+		String displayColumn = p_layout[col].getDisplayColumn();
+		sqlOrderColumn = !Util.isEmpty(displayColumn) ? displayColumn : p_layout[col].getColSQL().trim();
+
+		String columnName = p_layout[col].getColumnName();
+		if(columnName.endsWith("_ID")) {
+			int index = columnName.lastIndexOf("_ID");
+			String tableName = columnName = columnName.substring(0, index);
+			if(!joinTables.contains(tableName))
+				joinTables.add(tableName);
+		}
 		m_sqlUserOrder = null; // clear cache value
 		
 		if (m_useDatabasePaging)

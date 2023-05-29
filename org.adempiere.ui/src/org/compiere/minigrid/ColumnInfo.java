@@ -75,9 +75,24 @@ public class ColumnInfo
 	 */
 	public ColumnInfo (String colHeader, String colSQL, Class<?> colClass, String keyPairColSQL, boolean readOnly)
 	{
-		this(colHeader, colSQL, colClass, readOnly, false, keyPairColSQL);
-	}   //  ColumnInfo	
-	
+		this(colHeader, colSQL, colClass, readOnly, false, keyPairColSQL, null);
+	}
+
+	/**
+	 *  Create Info Column (r/o and not color column)
+	 *
+	 *  @param colHeader Column Header
+	 *  @param colSQL    SQL select code for column
+	 *  @param colClass  class of column - determines display
+	 *  @param keyPairColSQL  SQL select for the ID of the for the displayed column
+	 *  @param readOnly  column is read only
+	 *  @param displayColumn SQL select code for display column
+	 */
+	public ColumnInfo (String colHeader, String colSQL, Class<?> colClass, String keyPairColSQL, boolean readOnly, String displayColumn)
+	{
+		this(colHeader, colSQL, colClass, readOnly, false, keyPairColSQL, null, displayColumn);
+	}   //  ColumnInfo
+
 	/**
 	 *  Create Info Column
 	 *
@@ -88,10 +103,10 @@ public class ColumnInfo
 	 *  @param colorColumn   if true, value of column determines foreground color
 	 *  @param keyPairColSQL  SQL select for the ID of the for the displayed column
 	 */
-	public ColumnInfo (String colHeader, String colSQL, Class<?> colClass, 
+	public ColumnInfo (String colHeader, String colSQL, Class<?> colClass,
 		boolean readOnly, boolean colorColumn, String keyPairColSQL)
 	{
-		this(colHeader, colSQL, colClass, readOnly, false, keyPairColSQL, null);
+		this(colHeader, colSQL, colClass, readOnly, false, keyPairColSQL, null, null);
 	}
 
 	/**
@@ -105,8 +120,25 @@ public class ColumnInfo
 	 *  @param keyPairColSQL  SQL select for the ID of the for the displayed column
 	 *  @param columnName Column Name
 	 */
-	public ColumnInfo (String colHeader, String colSQL, Class<?> colClass, 
-		boolean readOnly, boolean colorColumn, String keyPairColSQL, String columnName)
+	public ColumnInfo (String colHeader, String colSQL, Class<?> colClass,
+		boolean readOnly, boolean colorColumn, String keyPairColSQL, String columnName) {
+		this(colHeader, colSQL, colClass, readOnly, colorColumn, keyPairColSQL, columnName, null);
+	}
+
+	/**
+	 *  Create Info Column
+	 *
+	 *  @param colHeader Column Header
+	 *  @param colSQL    SQL select code for column
+	 *  @param colClass  class of column - determines display
+	 *  @param readOnly  column is read only
+	 *  @param colorColumn   if true, value of column determines foreground color
+	 *  @param keyPairColSQL  SQL select for the ID of the for the displayed column
+	 *  @param columnName Column Name
+	 *  @param displayColumn SQL select code for display column
+	 */
+	public ColumnInfo (String colHeader, String colSQL, Class<?> colClass,
+		boolean readOnly, boolean colorColumn, String keyPairColSQL, String columnName, String displayColumn)
 	{
 		setColHeader(colHeader);
 		setColSQL(colSQL);
@@ -115,6 +147,7 @@ public class ColumnInfo
 		setColorColumn(colorColumn);
 		setColumnName(columnName);
 		setKeyPairColSQL(keyPairColSQL);
+		setDisplayColumn(displayColumn);
 	}   //  ColumnInfo
 
 	/**
@@ -128,7 +161,7 @@ public class ColumnInfo
 	 */
 	public ColumnInfo (String colHeader, String colSQL, Class<?> colClass, boolean readOnly, String columnName)
 	{
-		this(colHeader, colSQL, colClass, readOnly, false, null, columnName); 
+		this(colHeader, colSQL, colClass, readOnly, false, null, columnName, null);
 	}   //  ColumnInfo
 
 	private String      m_colHeader;
@@ -139,9 +172,10 @@ public class ColumnInfo
 	private boolean     m_colorColumn;
 	private String      m_keyPairColSQL = "";
 	private GridField m_gridField;
-	
+
 	private String colDescription;
 	private int AD_Reference_ID;
+	private String m_displayColumn;
 
 	/**
 	 * 	Get Col Class
@@ -297,5 +331,21 @@ public class ColumnInfo
 
 	public void setAD_Reference_ID(int AD_Reference_ID) {
 		this.AD_Reference_ID = AD_Reference_ID;
+	}
+
+	/**
+	 * Get Display Column
+	 * @return DisplayColumn
+	 */
+	public String getDisplayColumn() {
+		return m_displayColumn;
+	}
+
+	/**
+	 * Set Display Column
+	 * @param displayColumn
+	 */
+	public void setDisplayColumn(String displayColumn) {
+		this.m_displayColumn = displayColumn;
 	}
 }   //  infoColumn
