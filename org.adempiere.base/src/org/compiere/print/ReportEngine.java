@@ -1246,12 +1246,13 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		
 		params.add(recordID);		
 		return DB.getSQLValueStringEx(null, sql.toString(), params);
-	} // getIdentifyer
+	} // getIdentifier
 	
 	/**
 	 * Add "_Trl" suffix to table name, if the column is translated
-	 * @param columnName
-	 * @param isTrl isTranslated
+	 * @param column
+	 * @param tableName
+	 * @param isTrl - is translated
 	 * @return String tableName
 	 */
 	private String addTrlSuffix(MColumn column, String tableName, boolean isTrl) {
