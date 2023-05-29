@@ -1196,7 +1196,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		// use Trl table or base table
 		boolean isTrl = !Env.isBaseLanguage(Language.getLanguage(reportLang), tableName);
 		
-		if(isTrl && mTableTrl != null && getLanguageID() > 0)
+		if(isTrl && mTableTrl != null)
 			tableNameTrl = mTableTrl.getTableName();
 		else
 			isTrl = false;
