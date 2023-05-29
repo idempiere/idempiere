@@ -35,6 +35,8 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ZkCssHelper;
 import org.compiere.model.MLabel;
 import org.compiere.model.MLabelAssignment;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.zkoss.zk.ui.Component;
@@ -60,10 +62,16 @@ public class LabelsPanel extends Div implements EventListener<Event> {
 	 * @param abstractADWindowContent 
 	 * @param AD_Table_ID
 	 * @param Record_ID
+ 	 * @deprecated Use {@link LabelsPanel#LabelsPanel(AbstractADWindowContent, int, int, String)} instead
 	 */
 	@Deprecated
 	public LabelsPanel(AbstractADWindowContent abstractADWindowContent, int AD_Table_ID, int Record_ID) {
 		this(abstractADWindowContent, AD_Table_ID, Record_ID, null);
+		if (Record_ID > 0) {
+			MTable table = MTable.get(AD_Table_ID);
+			PO po = table.getPO(Record_ID, null);
+			this.Record_UU = po.get_UUID();
+		}
 	}	
 
 	/**

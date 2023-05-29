@@ -227,9 +227,9 @@ public class MChat extends X_CM_Chat
 	 * Get the chat ID based on table_id and record_id
 	 * @param Table_ID
 	 * @param Record_ID
-	 * @return CM_Chat_ID 
+	 * @return CM_Chat_ID
+ 	 * @deprecated Use {@link MChat#getID(int, String)} instead
 	 */
-	@Deprecated
 	public static int getID(int Table_ID, int Record_ID) {
 		String sql="SELECT CM_Chat_ID FROM CM_Chat WHERE AD_Table_ID=? AND Record_ID=?";
 		int chatID = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);
