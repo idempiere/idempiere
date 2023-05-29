@@ -972,6 +972,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         
         if (paging != null && paging.getParent() == null)
         	insertPagingComponent();
+        
+        this.invalidate();
     }
 
     /**
