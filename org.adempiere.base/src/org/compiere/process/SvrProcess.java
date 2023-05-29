@@ -619,7 +619,7 @@ public abstract class SvrProcess implements ProcessCall
 	}
 
 	/**
-	 *  Update Log Entry with exact Log_ID, update if exists
+	 *  Update Log Entry with the specified AD_PInstance_Log_UU, update if exists
 	 *  @param pInstanceLogUU AD_PInstance_Log_UU
 	 * 	@param id record id or 0
 	 *	@param date date or null
@@ -637,7 +637,7 @@ public abstract class SvrProcess implements ProcessCall
 	}	//	saveLog
 	
 	/**
-	 *  Update Log Entry with exact Log_ID, update if exists
+	 *  Update Log Entry with the specified AD_PInstance_Log_UU, update if exists
 	 *  @param pInstanceLogUU AD_PInstance_Log_UU
 	 * 	@param id record id or 0
 	 *	@param date date or null

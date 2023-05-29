@@ -42,7 +42,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisp
 ;
 
 -- May 2, 2023, 9:10:25 AM CEST
-ALTER TABLE AD_PInstance_Log ADD PInstanceLogType VARCHAR2(3 CHAR) DEFAULT NULL 
+ALTER TABLE AD_PInstance_Log ADD PInstanceLogType VARCHAR2(3 CHAR) DEFAULT 'R' 
 ;
 
 -- May 15, 2023, 10:36:39 AM CEST
@@ -59,10 +59,6 @@ ALTER TABLE AD_PInstance_Log MODIFY Log_ID NUMBER(10)
 
 -- May 15, 2023, 10:42:19 AM CEST
 UPDATE AD_Column SET AD_Reference_ID=11,Updated=TO_TIMESTAMP('2023-05-15 10:42:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=8779
-;
-
--- May 15, 2023, 10:42:22 AM CEST
-ALTER TABLE AD_PInstance_Log MODIFY Log_ID NUMBER(10)
 ;
 
 -- May 15, 2023, 10:49:33 AM CEST
@@ -95,5 +91,9 @@ INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexCol
 
 -- May 15, 2023, 3:04:13 PM CEST
 ALTER TABLE AD_PInstance_Log ADD CONSTRAINT ad_pinstance_id_log_id UNIQUE (AD_PInstance_ID,Log_ID)
+;
+
+-- May 29, 2023, 12:06:17 PM CEST
+UPDATE AD_Column SET DefaultValue='R',Updated=TO_TIMESTAMP('2023-05-29 12:06:17','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215837
 ;
 
