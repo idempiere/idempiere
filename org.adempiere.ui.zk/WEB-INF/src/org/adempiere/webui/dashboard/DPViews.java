@@ -152,7 +152,12 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 
 				if (ThemeManager.isUseFontIconForImage()) 
 				{
-					image = image.replace("16.png", "");
+					if (image.endsWith("16.png"))
+						image = image.replace("16.png", "");
+					else if (image.endsWith("24.png"))
+						image = image.replace("24.png", "");					
+					else if (image.endsWith(".png"))
+						image = image.replace(".png", "");
 					btnViewItem.setIconSclass("z-icon-"+image);
 				}
 				else
