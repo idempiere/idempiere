@@ -160,9 +160,9 @@ import org.zkoss.zul.impl.InputElement;
  */
 public class InfoWindow extends InfoPanel implements ValueChangeListener, EventListener<Event> {
 	/**
-	 * 
+	 * generated serial id
 	 */
-	private static final long serialVersionUID = -2327249405074671115L;
+	private static final long serialVersionUID = 4004251745919433247L;
 
 	private static final String ON_QUERY_AFTER_CHANGE = "onQueryAfterChange";
 	
@@ -212,6 +212,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	protected Menupopup ipMenu;
 	private int noOfParameterColumn;
+	
+	private boolean autoCollapsedParameterPanel = false;
+	
 	/**
 	 * @param WindowNo
 	 * @param tableName
@@ -270,6 +273,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		super(WindowNo, tableName, keyColumn, multipleSelection, whereClause,
 				lookup, AD_InfoWindow_ID, queryValue);		
 		this.m_gridfield = field;
+		this.autoCollapsedParameterPanel = MSysConfig.getBooleanValue(MSysConfig.ZK_INFO_AUTO_COLLAPSED_PARAMETER_PANEL, false, Env.getAD_Client_ID(Env.getCtx()));
 
 		addEventListener(ON_QUERY_AFTER_CHANGE, e -> postQueryAfterChangeEvent());
 		
@@ -2078,6 +2082,9 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     		ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1)) {
     		layout.getNorth().setOpen(false);
     		LayoutUtils.addSclass("slide", layout.getNorth());
+    	}
+    	if (autoCollapsedParameterPanel && m_count > 0) {
+    		layout.getNorth().setOpen(false);
     	}
     }
     
