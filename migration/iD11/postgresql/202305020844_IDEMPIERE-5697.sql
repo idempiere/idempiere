@@ -46,14 +46,6 @@ ALTER TABLE AD_PInstance_Log ADD COLUMN PInstanceLogType VARCHAR(3) DEFAULT 'R'
 UPDATE AD_Column SET IsKey='N',Updated=TO_TIMESTAMP('2023-05-15 10:36:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=8779
 ;
 
--- May 15, 2023, 10:37:36 AM CEST
-INSERT INTO t_alter_column values('ad_pinstance_log','AD_PInstance_Log_UU','VARCHAR(36)',null,'NULL')
-;
-
--- May 15, 2023, 10:37:36 AM CEST
-INSERT INTO t_alter_column values('ad_pinstance_log','Log_ID','NUMERIC(10)',null,null)
-;
-
 -- May 15, 2023, 10:42:19 AM CEST
 UPDATE AD_Column SET AD_Reference_ID=11,Updated=TO_TIMESTAMP('2023-05-15 10:42:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=8779
 ;

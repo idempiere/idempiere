@@ -42,6 +42,7 @@ import org.adempiere.base.event.IEventTopics;
 import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
 import org.compiere.model.PO;
+import org.compiere.model.X_AD_PInstance_Log;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -617,84 +618,54 @@ public abstract class SvrProcess implements ProcessCall
 		}
 		listEntryLog = null; // flushed - to avoid flushing it again in case is called
 	}
-
-	/**
-	 *  Update Log Entry with the specified AD_PInstance_Log_UU, update if exists
-	 *  @param pInstanceLogUU AD_PInstance_Log_UU
-	 * 	@param id record id or 0
-	 *	@param date date or null
-	 * 	@param number number or null
-	 * 	@param msg message or null
-	 * 	@param tableId AD_Table_ID
-	 * 	@param recordId Record_ID
-	 */
-	public void updateLog (String pInstanceLogUU, int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId)
-	{
-		if (m_pi != null)
-			m_pi.updateLog(pInstanceLogUU, id, date, number, msg, tableId, recordId);
-		
-		if (log.isLoggable(Level.INFO)) log.info(pInstanceLogUU + " - " + id + " - " + date + " - " + number + " - " + msg + " - " + tableId + " - " + recordId);
-	}	//	saveLog
 	
 	/**
-	 *  Update Log Entry with the specified AD_PInstance_Log_UU, update if exists
-	 *  @param pInstanceLogUU AD_PInstance_Log_UU
-	 * 	@param id record id or 0
-	 *	@param date date or null
-	 * 	@param number number or null
-	 * 	@param msg message or null
-	 */
-	public void updateLog (String pInstanceLogUU, int id, Timestamp date, BigDecimal number, String msg)
-	{
-		if (m_pi != null)
-			m_pi.updateLog(pInstanceLogUU, id, date, number, msg);
-		
-		if (log.isLoggable(Level.INFO)) log.info(pInstanceLogUU + " - " + id + " - " + date + " - " + number + " - " + msg);
-	}	//	saveLog
-	
-	/**
-	 *  Save Log Entry to DB immediately with table name
-	 * 	@param id record id or 0
-	 *	@param date date or null
-	 * 	@param number number or null
-	 * 	@param msg message or null
-	 * 	@param tableId AD_Table_ID
-	 * 	@param recordId Record_ID
-	 * 	@return String AD_PInstance_Log_UU
-	 */
-	public String saveLog (int id, Timestamp date, BigDecimal number, String msg, int tableId ,int recordId)
-	{
-		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg + " - " + tableId + " - " + recordId);
-		if (m_pi != null)
-			return m_pi.saveLog(id, date, number, msg,tableId,recordId);
-		return "";
-		
-	}	//	saveLog
-
-	/**
-	 *  Save Log Entry to DB immediately
+	 *  Save Progress Log Entry to DB immediately
 	 *  @param date date or null
 	 *  @param id record id or 0
 	 *  @param number number or null
 	 *  @param msg message or null
 	 *  @return String AD_PInstance_Log_UU
 	 */
-	public String saveLog (int id, Timestamp date, BigDecimal number, String msg)
+	public String saveProgress (int id, Timestamp date, BigDecimal number, String msg)
 	{
 		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
 		if (m_pi != null)
-			return m_pi.saveLog(id, date, number, msg);
+			return m_pi.saveLog(id, date, number, msg, X_AD_PInstance_Log.PINSTANCELOGTYPE_Progress);
 		return "";
-	}	//	saveLog
+	}	//	saveProgress
 
 	/**
-	 * 	Save Log Entry to DB immediately
-	 *	@param msg message
+	 *  Save Status Log Entry to DB immediately
+	 *  @param date date or null
+	 *  @param id record id or 0
+	 *  @param number number or null
+	 *  @param msg message or null
+	 *  @return String AD_PInstance_Log_UU
 	 */
-	public void saveLog (String msg)
+	public String saveStatus (int id, Timestamp date, BigDecimal number, String msg)
 	{
-		if (msg != null)
-			saveLog (0, null, null, msg);
+		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
+		if (m_pi != null)
+			return m_pi.saveLog(id, date, number, msg, X_AD_PInstance_Log.PINSTANCELOGTYPE_Status);
+		return "";
+	}	//	saveStatus
+	
+	/**
+	 *  Update Log Entry with the specified AD_PInstance_Log_UU, update if exists.
+	 * 	The type of the given log will be updated to Status.
+	 *  @param pInstanceLogUU AD_PInstance_Log_UU
+	 * 	@param id record id or 0
+	 *	@param date date or null
+	 * 	@param number number or null
+	 * 	@param msg message or null
+	 */
+	public void updateStatus (String pInstanceLogUU, int id, Timestamp date, BigDecimal number, String msg)
+	{
+		if (m_pi != null)
+			m_pi.updateLog(pInstanceLogUU, id, date, number, msg);
+		
+		if (log.isLoggable(Level.INFO)) log.info(pInstanceLogUU + " - " + id + " - " + date + " - " + number + " - " + msg);
 	}	//	saveLog
 	
 	/**************************************************************************
