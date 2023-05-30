@@ -1066,13 +1066,29 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	private String parseAliases(String displayColumn, String tableName) {
 		if(Util.isEmpty(displayColumn))
-			return "";
+			return null;
 		String alias = getAlias(tableName);
-		if(!displayColumn.contains(".") && !displayColumn.startsWith("NVL")) {
+		if(displayColumn.contains(alias+".")){
+			return displayColumn;
+		}
+		else if(displayColumn.contains(tableName+".")) {
+			displayColumn = displayColumn.replace(tableName+".", alias+".");
+		}
+		else if(displayColumn.substring(0, 1).matches("^[a-zA-Z_][a-zA-Z0-9_]*$") 
+				&& !displayColumn.startsWith("NVL")
+				&& !displayColumn.startsWith("COALESCE")
+				&& !displayColumn.startsWith("CASE")
+				&& !displayColumn.startsWith("AVG")
+				&& !displayColumn.startsWith("COUNT")
+				&& !displayColumn.startsWith("FIRST")
+				&& !displayColumn.startsWith("LAST")
+				&& !displayColumn.startsWith("MAX")
+				&& !displayColumn.startsWith("MIN")
+				&& !displayColumn.startsWith("SUM")) {
 			displayColumn = (alias+"."+displayColumn);
 		}
-		else if(displayColumn.contains(tableName+".") && !alias.equalsIgnoreCase(tableName)) {
-			displayColumn = displayColumn.replace(tableName+".", alias+".");
+		else {
+			return null;
 		}
 
 		return displayColumn;

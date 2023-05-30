@@ -2999,11 +2999,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		sqlOrderColumn = !Util.isEmpty(displayColumn) ? displayColumn : p_layout[col].getColSQL().trim();
 
 		String columnName = p_layout[col].getColumnName();
-		if(columnName.endsWith("_ID")) {
-			int index = columnName.lastIndexOf("_ID");
-			String tableName = columnName = columnName.substring(0, index);
-			if(!joinTables.contains(tableName))
-				joinTables.add(tableName);
+		if(!Util.isEmpty(displayColumn) && columnName.endsWith("_ID")) {
+			MTable[] tables = MTable.getByKeyColumns(Env.getCtx(), new String[] {columnName}, null);
+			for(MTable table : tables) {
+				if(!joinTables.contains(table.getTableName()))
+					joinTables.add(table.getTableName());
+			}
 		}
 		m_sqlUserOrder = null; // clear cache value
 		
