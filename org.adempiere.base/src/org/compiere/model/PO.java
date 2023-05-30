@@ -3373,7 +3373,7 @@ public abstract class PO
 				set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
 			}
 
-			if (!Env.isUseCentralizedId(p_info.getTableName()))
+			if (withValues && !Env.isUseCentralizedId(p_info.getTableName()))
 			{
 				int ki = p_info.getColumnIndex(m_KeyColumns[0]);
 				//	Change Log	- Only
@@ -3386,7 +3386,8 @@ public abstract class PO
 					&& (   insertLog.equalsIgnoreCase("Y")
 						|| (   insertLog.equalsIgnoreCase("K") 
 							&& (   p_info.getColumn(ki).IsKey
-								|| p_info.getColumn(ki).ColumnName.equals(PO.getUUIDColumnName(p_info.getTableName()))))))
+								|| (   !p_info.hasKeyColumn() 
+									&& p_info.getColumn(ki).ColumnName.equals(PO.getUUIDColumnName(p_info.getTableName())))))))
 				{
 					int id = (m_IDs.length == 1 ? get_ID() : 0);
 					// change log on new
@@ -3658,7 +3659,10 @@ public abstract class PO
 					&& !p_info.isVirtualColumn(i)	//	no virtual column
 					&& !"Password".equals(p_info.getColumnName(i))
 					&& (insertLog.equalsIgnoreCase("Y")
-							|| (insertLog.equalsIgnoreCase("K") && p_info.getColumn(i).IsKey))
+							|| (insertLog.equalsIgnoreCase("K")
+								&& (   p_info.getColumn(i).IsKey)
+									|| (   !p_info.hasKeyColumn()
+										&& p_info.getColumn(i).ColumnName.equals(PO.getUUIDColumnName(p_info.getTableName())))))
 					)
 				{
 					// change log on new
