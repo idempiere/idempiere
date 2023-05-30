@@ -1,5 +1,5 @@
 /******************************************************************************
-// * Product: Adempiere ERP & CRM Smart Business Solution                       *
+ * Product: Adempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
@@ -328,21 +328,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 			PO po = gridTable.getPO(dse.getCurrentRow());
 			if (po != null) {
 				String uuidcol = po.getUUIDColumnName();
-				if (po.is_new()) {
-					if (Record_ID == 0 && MTable.isZeroIDTable(dbtable.getTableName())) {
-						// Need to read the UUID directly from database because the PO cannot be used with zero ID records
-						StringBuilder sql = new StringBuilder("SELECT ")
-								.append(uuidcol)
-								.append(" FROM ")
-								.append(dbtable.getTableName())
-								.append(" WHERE ")
-								.append(dbtable.getTableName())
-								.append("_ID=0");
-						Record_UU = DB.getSQLValueString(null, sql.toString());
-					}
-				} else {
-					Record_UU = po.get_UUID();
-				}
+				Record_UU = po.get_UUID();
 				if (!Util.isEmpty(Record_UU)) {
 					StringBuilder uuinfo = new StringBuilder(uuidcol).append("=").append(Record_UU);
 					if (! m_info.toString().contains(uuinfo))
