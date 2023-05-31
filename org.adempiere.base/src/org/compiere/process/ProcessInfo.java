@@ -694,16 +694,29 @@ public class ProcessInfo implements Serializable
 	}	//	getLogs
 
 	/**
-	 * 	Save Log to DB immediately
+	 * 	Save Status Log to DB immediately
 	 *	@param P_ID Process ID
 	 *	@param P_Date Process Date
 	 *	@param P_Number Process Number
 	 *	@param P_Msg Process Message
 	 *	@return String AD_PInstance_Log_UU
 	 */
-	public String saveLog (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, String PInstanceLogType)
+	public String saveStatus (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
 	{
-		return saveLog (new ProcessInfoLog (P_ID, P_Date, P_Number, P_Msg, 0, 0, PInstanceLogType));
+		return saveLog (new ProcessInfoLog (P_ID, P_Date, P_Number, P_Msg, 0, 0, X_AD_PInstance_Log.PINSTANCELOGTYPE_Status));
+	}	//	saveLog
+	
+	/**
+	 * 	Save Progress Log to DB immediately
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Message
+	 *	@return String AD_PInstance_Log_UU
+	 */
+	public String saveProgress (int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
+	{
+		return saveLog (new ProcessInfoLog (P_ID, P_Date, P_Number, P_Msg, 0, 0, X_AD_PInstance_Log.PINSTANCELOGTYPE_Progress));
 	}	//	saveLog
 
 	/**
@@ -729,8 +742,7 @@ public class ProcessInfo implements Serializable
 	}	//	saveLog
 	
 	/**
-	 * 	Update Log to DB immediately.
-	 * 	Every updated log is considered as a Status log.
+	 * 	Update Progress Log to DB immediately
 	 *	@param pInstanceLogUU AD_PInstance_Log_UU
 	 *	@param P_ID Process ID
 	 *	@param P_Date Process Date
@@ -738,14 +750,13 @@ public class ProcessInfo implements Serializable
 	 *	@param P_Msg Process Message
 	 *	@return true if log is successfully updated
 	 */
-	public boolean updateLog (String pInstanceLogUU, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
+	public boolean updateProgress (String pInstanceLogUU, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
 	{
-		return updateLog (new ProcessInfoLog (pInstanceLogUU, P_ID, P_Date, P_Number, P_Msg));
+		return updateLog (new ProcessInfoLog (pInstanceLogUU, P_ID, P_Date, P_Number, P_Msg, X_AD_PInstance_Log.PINSTANCELOGTYPE_Progress));
 	}	//	updateLog
 	
 	/**
-	 * 	Update existing Log immediately.
-	 * 	Every updated log is considered as a Status log.
+	 * 	Update existing Log immediately
 	 *	@param logEntry log entry
 	 *	@return true if log is successfully updated
 	 */
@@ -762,7 +773,7 @@ public class ProcessInfo implements Serializable
 				logEntry.getP_Msg(),
 				logEntry.getAD_Table_ID(), 
 				logEntry.getRecord_ID(),
-				X_AD_PInstance_Log.PINSTANCELOGTYPE_Status);
+				logEntry.getPInstanceLogType());
 		return il.update();
 	}	//	saveLog
 	

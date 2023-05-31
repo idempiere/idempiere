@@ -150,6 +150,20 @@ public class ProcessInfoLog implements Serializable
 	 *	@param P_Date Process Date
 	 *	@param P_Number Process Number
 	 *	@param P_Msg Process Message
+	 *	@param PInstanceLogType Log Type
+	 */
+	public ProcessInfoLog (String AD_PInstance_Log_UU, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg, String PInstanceLogType)
+	{
+		this (AD_PInstance_Log_UU, s_Log_ID++, P_ID, P_Date, P_Number, P_Msg, 0, 0, PInstanceLogType);
+	}	//	ProcessInfoLog
+	
+	/**
+	 * 	Create Process Info Log.
+	 *	@param AD_PInstance_Log_UU Log UU
+	 *	@param P_ID Process ID
+	 *	@param P_Date Process Date
+	 *	@param P_Number Process Number
+	 *	@param P_Msg Process Message
 	 */
 	public ProcessInfoLog (String AD_PInstance_Log_UU, int P_ID, Timestamp P_Date, BigDecimal P_Number, String P_Msg)
 	{

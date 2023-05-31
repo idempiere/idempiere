@@ -42,7 +42,6 @@ import org.adempiere.base.event.IEventTopics;
 import org.adempiere.util.IProcessUI;
 import org.compiere.model.MPInstance;
 import org.compiere.model.PO;
-import org.compiere.model.X_AD_PInstance_Log;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -631,7 +630,7 @@ public abstract class SvrProcess implements ProcessCall
 	{
 		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
 		if (m_pi != null)
-			return m_pi.saveLog(id, date, number, msg, X_AD_PInstance_Log.PINSTANCELOGTYPE_Progress);
+			return m_pi.saveProgress(id, date, number, msg);
 		return "";
 	}	//	saveProgress
 
@@ -647,23 +646,22 @@ public abstract class SvrProcess implements ProcessCall
 	{
 		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
 		if (m_pi != null)
-			return m_pi.saveLog(id, date, number, msg, X_AD_PInstance_Log.PINSTANCELOGTYPE_Status);
+			return m_pi.saveStatus(id, date, number, msg);
 		return "";
 	}	//	saveStatus
 	
 	/**
-	 *  Update Log Entry with the specified AD_PInstance_Log_UU, update if exists.
-	 * 	The type of the given log will be updated to Status.
+	 *  Update Progress Log Entry with the specified AD_PInstance_Log_UU, update if exists
 	 *  @param pInstanceLogUU AD_PInstance_Log_UU
 	 * 	@param id record id or 0
 	 *	@param date date or null
 	 * 	@param number number or null
 	 * 	@param msg message or null
 	 */
-	public void updateStatus (String pInstanceLogUU, int id, Timestamp date, BigDecimal number, String msg)
+	public void updateProgress (String pInstanceLogUU, int id, Timestamp date, BigDecimal number, String msg)
 	{
 		if (m_pi != null)
-			m_pi.updateLog(pInstanceLogUU, id, date, number, msg);
+			m_pi.updateProgress(pInstanceLogUU, id, date, number, msg);
 		
 		if (log.isLoggable(Level.INFO)) log.info(pInstanceLogUU + " - " + id + " - " + date + " - " + number + " - " + msg);
 	}	//	saveLog
