@@ -1,3 +1,5 @@
+-- IDEMPIERE-5748 currencyrate - date is not truncated
+
 CREATE OR REPLACE FUNCTION currencyRate(
 	p_CurFrom_ID		NUMERIC,
 	p_CurTo_ID		NUMERIC,
@@ -175,5 +177,5 @@ EXCEPTION WHEN OTHERS THEN
 	
 END;
 
-$body$ LANGUAGE plpgsql STABLE;
-
+$body$ LANGUAGE plpgsql
+;
