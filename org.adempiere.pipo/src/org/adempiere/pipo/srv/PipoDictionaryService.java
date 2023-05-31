@@ -132,7 +132,7 @@ public class PipoDictionaryService implements IDictionaryService {
 				// Add the attachment to the packin for possible reprocessing
 				if (MSysConfig.getBooleanValue(MSysConfig.ATTACH_EMBEDDED_2PACK, true) || ! packIn.isSuccess()) {
 					// TODO: This sometimes fails with error No archive storage provider found - because the IAttachmentStore required is still not loaded
-					MAttachment attachment = new MAttachment (adPackageImp.getCtx(), X_AD_Package_Imp_Proc.Table_ID, adPackageImp.getAD_Package_Imp_Proc_ID(), null);
+					MAttachment attachment = new MAttachment (adPackageImp.getCtx(), X_AD_Package_Imp_Proc.Table_ID, adPackageImp.getAD_Package_Imp_Proc_ID(), adPackageImp.getAD_Package_Imp_Proc_UU(), null);
 					attachment.addEntry(packageFile);
 					attachment.save(); // ignoring exceptions
 				}

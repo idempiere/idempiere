@@ -41,8 +41,11 @@ import org.zkoss.zul.Separator;
  *
  */
 public class WPostIt extends Window implements EventListener<Event>{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9092535255629718710L;
 
-	private static final long serialVersionUID = -3852236029054284848L;
 	private boolean editable;
 	private int maxSize;
 	private String note;
@@ -61,9 +64,10 @@ public class WPostIt extends Window implements EventListener<Event>{
 	 * @param postItID
 	 * @param tableID
 	 * @param recordID
+	 * @param recordUU record UUID
 	 * @param trxName
 	 */
-	public WPostIt(String title, int postItID, int tableID, int recordID, /*String created, String updated,*/ String trxName) {
+	public WPostIt(String title, int postItID, int tableID, int recordID, String recordUU, String trxName) {
 		super();
 		setTitle(title);
 		this.editable = true;
@@ -72,7 +76,7 @@ public class WPostIt extends Window implements EventListener<Event>{
 		if (postItID > 0)
 			m_postIt = new MPostIt (Env.getCtx(), postItID, trxName);
 		else
-			m_postIt = new MPostIt (Env.getCtx(), tableID, recordID, trxName);
+			m_postIt = new MPostIt (Env.getCtx(), tableID, recordID, recordUU, trxName);
 
 		String created = null;
 		if (m_postIt.getAD_PostIt_ID() > 0)

@@ -1043,11 +1043,11 @@ public class GridTable extends AbstractTableModel
 	}	//	getKeyID
 
 	/**
-	 *	Get UUID or null of none
+	 *	Get Key UUID or null of none
 	 *  @param row row
-	 *  @return UUID or null
+	 *  @return ID or null
 	 */
-	public UUID getUUID (int row)
+	public String getKeyUUID (int row)
 	{
 		if (m_indexUUIDColumn != -1)
 		{
@@ -1056,13 +1056,26 @@ public class GridTable extends AbstractTableModel
 				String ii = (String)getValueAt(row, m_indexUUIDColumn);
 				if (ii == null)
 					return null;
-				return UUID.fromString(ii);
+				return ii;
 			}
 			catch (Exception e)
 			{
 				return null;
 			}
 		}
+		return null;
+	}	//	getKeyUUID
+
+	/**
+	 *	Get UUID or null of none
+	 *  @param row row
+	 *  @return UUID or null
+	 */
+	public UUID getUUID (int row)
+	{
+		String keyUUID = getKeyUUID(row);
+		if (keyUUID != null)
+			return UUID.fromString(keyUUID);
 		return null;
 	}	//	getUUID
 
