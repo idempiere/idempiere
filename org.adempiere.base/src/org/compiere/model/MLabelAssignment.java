@@ -35,9 +35,12 @@ import org.compiere.util.DB;
  * Label Assignment Model
  */
 public class MLabelAssignment extends X_AD_LabelAssignment {
-	private static final long serialVersionUID = -964945898771768568L;
+	/**
+	 * 
+	 */
+    private static final long serialVersionUID = 2245405505404999887L;
 
-    /**
+	/**
     * UUID based Constructor
     * @param ctx  Context
     * @param AD_LabelAssignment_UU  UUID key
@@ -66,29 +69,57 @@ public class MLabelAssignment extends X_AD_LabelAssignment {
 	public MLabelAssignment(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
-	
+
 	/**
 	 * Check if record has any label assigned
 	 * @param Table_ID
 	 * @param Record_ID
 	 * @return true if record has any label assigned
+ 	 * @deprecated Use {@link MLabelAssignment#hasAnyAssignment(int, String)} instead
 	 */
 	public static boolean hasAnyAssignment(int Table_ID, int Record_ID) {
 		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Table_ID=? AND Record_ID=?";
 		int counter = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);
 		return counter > 0;
 	}
-	
+
+	/**
+	 * Check if record has any label assigned
+	 * @param Table_ID
+	 * @param Record_UU
+	 * @return true if record has any label assigned
+	 */
+	public static boolean hasAnyAssignment(int Table_ID, String Record_UU) {
+		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Table_ID=? AND Record_UU=?";
+		int counter = DB.getSQLValueEx(null, sql, Table_ID, Record_UU);
+		return counter > 0;
+	}
+
 	/**
 	 * Check if a label is assigned to a record
 	 * @param AD_Label_ID
 	 * @param Table_ID
 	 * @param Record_ID
 	 * @return true if label is assigned
+ 	 * @deprecated Use {@link MLabelAssignment#hasLabelAssignment(int, int, String)} instead
 	 */
 	public static boolean hasLabelAssignment(int AD_Label_ID, int Table_ID, int Record_ID) {
 		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Label_ID = ? AND AD_Table_ID=? AND Record_ID=?";
 		int counter = DB.getSQLValueEx(null, sql, AD_Label_ID, Table_ID, Record_ID);
 		return counter > 0;
 	}
+
+	/**
+	 * Check if a label is assigned to a record
+	 * @param AD_Label_ID
+	 * @param Table_ID
+	 * @param Record_UU
+	 * @return true if label is assigned
+	 */
+	public static boolean hasLabelAssignment(int AD_Label_ID, int Table_ID, String Record_UU) {
+		String sql="SELECT COUNT(*) FROM AD_LabelAssignment WHERE AD_Label_ID = ? AND AD_Table_ID=? AND Record_UU=?";
+		int counter = DB.getSQLValueEx(null, sql, AD_Label_ID, Table_ID, Record_UU);
+		return counter > 0;
+	}
+
 }

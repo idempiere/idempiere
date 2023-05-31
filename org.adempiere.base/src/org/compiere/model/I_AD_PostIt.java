@@ -137,6 +137,15 @@ public interface I_AD_PostIt
 	  */
 	public int getRecord_ID();
 
+    /** Column name Record_UU */
+    public static final String COLUMNNAME_Record_UU = "Record_UU";
+
+	/** Set Record UUID	  */
+	public void setRecord_UU (String Record_UU);
+
+	/** Get Record UUID	  */
+	public String getRecord_UU();
+
     /** Column name Text */
     public static final String COLUMNNAME_Text = "Text";
 

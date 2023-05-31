@@ -74,7 +74,7 @@ public class LabelsSearchController implements EventListener<Event>{
 	private ListModelList<LabelItem> model;
 	/** main layout **/
 	private Vlayout layout;
-	/** label window panel, provider for AD_Table_ID and Record_ID **/
+	/** label window panel, provider for AD_Table_ID and Record_UU **/
 	private LabelsPanel labelsPanel;
 
 	/**
@@ -248,12 +248,13 @@ public class LabelsSearchController implements EventListener<Event>{
 		// Assign
 		if (!MLabelAssignment.hasLabelAssignment(label.get_ID(),
 				labelsPanel.getAD_Table_ID(),
-				labelsPanel.getRecord_ID())) {
+				labelsPanel.getRecord_UU())) {
 			MLabelAssignment assign = new MLabelAssignment(Env.getCtx(), 0, null);
 			assign.setAD_Org_ID(label.getAD_Org_ID());
 			assign.setAD_Label_ID(label.get_ID());
 			assign.setAD_Table_ID(labelsPanel.getAD_Table_ID());
 			assign.setRecord_ID(labelsPanel.getRecord_ID());
+			assign.setRecord_UU(labelsPanel.getRecord_UU());
 			assign.saveEx();
 		}
 		
