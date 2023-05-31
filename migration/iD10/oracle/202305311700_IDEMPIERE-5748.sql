@@ -1,57 +1,57 @@
-CREATE OR REPLACE FUNCTION currencyRate(
-	p_CurFrom_ID		NUMERIC,
-	p_CurTo_ID		NUMERIC,
-	p_ConvDate		timestamp with time zone,
-	p_ConversionType_ID	NUMERIC,
-	p_Client_ID		NUMERIC,
-	p_Org_ID		NUMERIC
-	) 
+SET SQLBLANKLINES ON
+SET DEFINE OFF
 
-RETURNS numeric AS $body$
-	
+SELECT register_migration_script('202305311700_IDEMPIERE-5748.sql') FROM dual;
+-- IDEMPIERE-5748 currencyrate - date is not truncated
+
+CREATE OR REPLACE FUNCTION currencyRate
+(
+	p_CurFrom_ID		IN	NUMBER,
+	p_CurTo_ID		    IN	NUMBER,
+	p_ConvDate		    IN	DATE,
+	p_ConversionType_ID	IN	NUMBER,
+	p_Client_ID		    IN	NUMBER,
+	p_Org_ID			IN	NUMBER
+)
+RETURN NUMBER
 /*************************************************************************
  * The contents of this file are subject to the Compiere License.  You may
- * obtain a copy of the License at    http://www.compiere.org/license.html 
- * Software is on an  "AS IS" basis,  WITHOUT WARRANTY OF ANY KIND, either 
+ * obtain a copy of the License at    http://www.compiere.org/license.html
+ * Software is on an  "AS IS" basis,  WITHOUT WARRANTY OF ANY KIND, either
  * express or implied. See the License for details. Code: Compiere ERP+CRM
  * Copyright (C) 1999-2001 Jorg Janke, ComPiere, Inc. All Rights Reserved.
- *
- * converted to postgreSQL by Karsten Thiemann (Schaeffer AG), 
- * kthiemann@adempiere.org
  *************************************************************************
+ * $Id: C_Currency_Rate.sql,v 1.1 2006/04/21 17:51:58 jjanke Exp $
  ***
  * Title:	Return Conversion Rate
  * Description:
  *		from CurrencyFrom_ID to CurrencyTo_ID
  *		Returns NULL, if rate not found
  * Test
- *		SELECT currencyrate(116, 100, null, null, null, null) FROM AD_System;  => .647169
+ *		SELECT C_Currency_Rate(116, 100, null, null) FROM DUAL;     => .647169
+ *		SELECT C_Currency_Rate(116, 100) FROM DUAL;                 => .647169
  ************************************************************************/
-	
-	
-DECLARE
+AS
 	--	Currency From variables
-	cf_IsEuro		CHAR(1);
+	cf_IsEuro			CHAR(1);
 	cf_IsEMUMember		CHAR(1);
-	cf_EMUEntryDate		timestamp with time zone;
-	cf_EMURate		NUMERIC;
+	cf_EMUEntryDate	DATE;
+	cf_EMURate		NUMBER;
 	--	Currency To variables
-	ct_IsEuro		CHAR(1);
+	ct_IsEuro			CHAR(1);
 	ct_IsEMUMember		CHAR(1);
 	ct_EMUEntryDate	DATE;
-	ct_EMURate		NUMERIC;
+	ct_EMURate		NUMBER;
 	--	Triangle
-	v_CurrencyFrom		NUMERIC;
-	v_CurrencyTo		NUMERIC;
-	v_CurrencyEuro		NUMERIC;
+	v_CurrencyFrom		NUMBER;
+	v_CurrencyTo		NUMBER;
+	v_CurrencyEuro		NUMBER;
 	--
-	v_ConvDate		timestamp with time zone := now();
-	v_ConversionType_ID	NUMERIC := 0;
-	v_Rate			NUMERIC;
-	c			RECORD;			
-
+	v_ConvDate		    DATE := SysDate;
+	v_ConversionType_ID	NUMBER := 0;
+	v_Rate			    NUMBER;
 BEGIN
---	No Conversion
+	--	No Conversion
 	IF (p_CurFrom_ID = p_CurTo_ID) THEN
 		RETURN 1;
 	END IF;
@@ -61,38 +61,41 @@ BEGIN
 	END IF;
     --  Default Conversion Type
 	IF (p_ConversionType_ID IS NULL OR p_ConversionType_ID = 0) THEN
-		BEGIN
-		    SELECT C_ConversionType_ID 
-		      INTO v_ConversionType_ID
-		    FROM C_ConversionType 
-		    WHERE IsActive='Y' AND IsDefault='Y'
-		      AND AD_Client_ID IN (0,p_Client_ID)
-		    ORDER BY AD_Client_ID DESC
-		    LIMIT 1;
-		EXCEPTION WHEN OTHERS THEN
-		    RAISE NOTICE 'Conversion Type Not Found';
-		END;
-    	ELSE
-        	v_ConversionType_ID := p_ConversionType_ID;
+        BEGIN
+            SELECT C_ConversionType_ID 
+            INTO v_ConversionType_ID
+            FROM (
+                SELECT C_ConversionType_ID 
+                FROM C_ConversionType 
+                WHERE IsActive='Y' AND IsDefault='Y'
+                    AND AD_Client_ID IN (0,p_Client_ID)
+                ORDER BY AD_Client_ID DESC
+            )
+            WHERE ROWNUM=1;
+        EXCEPTION WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Conversion Type Not Found');
+        END;
+    ELSE
+        v_ConversionType_ID := p_ConversionType_ID;
 	END IF;
 
 	--	Get Currency Info
-	SELECT	MAX(IsEuro), MAX(IsEMUMember), MAX(EMUEntryDate), MAX(EMURate)
+	SELECT	MAX(TO_CHAR(IsEuro)), MAX(TO_CHAR(IsEMUMember)), MAX(EMUEntryDate), MAX(EMURate)
 	  INTO	cf_IsEuro, cf_IsEMUMember, cf_EMUEntryDate, cf_EMURate
 	FROM		C_Currency
 	  WHERE	C_Currency_ID = p_CurFrom_ID;
 	-- Not Found
 	IF (cf_IsEuro IS NULL) THEN
-		RAISE NOTICE 'From Currency Not Found';
+		DBMS_OUTPUT.PUT_LINE('From Currency Not Found');
 		RETURN NULL;
 	END IF;
-	SELECT	MAX(IsEuro), MAX(IsEMUMember), MAX(EMUEntryDate), MAX(EMURate)
+	SELECT	MAX(TO_CHAR(IsEuro)), MAX(TO_CHAR(IsEMUMember)), MAX(EMUEntryDate), MAX(EMURate)
 	  INTO	ct_IsEuro, ct_IsEMUMember, ct_EMUEntryDate, ct_EMURate
 	FROM		C_Currency
 	  WHERE	C_Currency_ID = p_CurTo_ID;
 	-- Not Found
 	IF (ct_IsEuro IS NULL) THEN
-		RAISE NOTICE 'To Currency Not Found';
+		DBMS_OUTPUT.PUT_LINE('To Currency Not Found');
 		RETURN NULL;
 	END IF;
 
@@ -125,7 +128,7 @@ BEGIN
 		WHERE	IsEuro = 'Y';
 		-- Conversion Rate not Found
 		IF (v_CurrencyEuro IS NULL) THEN
-			RAISE NOTICE 'Euro Not Found';
+			DBMS_OUTPUT.PUT_LINE('Euro Not Found');
 			RETURN NULL;
 		END IF;
 		IF (cf_isEMUMember = 'Y' AND v_ConvDate >= cf_EMUEntryDate) THEN
@@ -136,23 +139,24 @@ BEGIN
 	END IF;
 
 	--	Get Rate
-
-	BEGIN
-		FOR c IN SELECT	MultiplyRate
+	DECLARE
+		CURSOR	CUR_Rate	IS
+			SELECT	MultiplyRate
 			FROM	C_Conversion_Rate
 			WHERE	IsActive='Y' AND C_Currency_ID=v_CurrencyFrom AND C_Currency_ID_To=v_CurrencyTo
 			  AND	C_ConversionType_ID=v_ConversionType_ID
 			  AND	TRUNC(v_ConvDate) BETWEEN ValidFrom AND ValidTo
 			  AND	AD_Client_ID IN (0,p_Client_ID) AND AD_Org_ID IN (0,p_Org_ID)
-			ORDER BY AD_Client_ID DESC, AD_Org_ID DESC, ValidFrom DESC
-		LOOP
+			ORDER BY AD_Client_ID DESC, AD_Org_ID DESC, ValidFrom DESC;
+	BEGIN
+		FOR c IN CUR_Rate LOOP
 			v_Rate := c.MultiplyRate;
 			EXIT;	--	only first
 		END LOOP;
 	END;
 	--	Not found
 	IF (v_Rate IS NULL) THEN
-		RAISE NOTICE 'Conversion Rate Not Found';
+		DBMS_OUTPUT.PUT_LINE('Conversion Rate Not Found');
 		RETURN NULL;
 	END IF;
 
@@ -169,11 +173,8 @@ BEGIN
 	RETURN v_Rate;
 
 EXCEPTION WHEN OTHERS THEN
-	RAISE NOTICE '%', SQLERRM;
+	DBMS_OUTPUT.PUT_LINE(SQLERRM);
 	RETURN NULL;
 
-	
-END;
-
-$body$ LANGUAGE plpgsql STABLE;
-
+END currencyRate;
+/
