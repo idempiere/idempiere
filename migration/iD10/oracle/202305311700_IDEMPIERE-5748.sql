@@ -1,6 +1,7 @@
 SET SQLBLANKLINES ON
 SET DEFINE OFF
 
+SELECT register_migration_script('202305311700_IDEMPIERE-5748.sql') FROM dual;
 -- IDEMPIERE-5748 currencyrate - date is not truncated
 
 CREATE OR REPLACE FUNCTION currencyRate
