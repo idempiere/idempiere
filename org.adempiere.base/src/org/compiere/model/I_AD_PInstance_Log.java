@@ -89,6 +89,19 @@ public interface I_AD_PInstance_Log
 	/** Get Log	  */
 	public int getLog_ID();
 
+    /** Column name PInstanceLogType */
+    public static final String COLUMNNAME_PInstanceLogType = "PInstanceLogType";
+
+	/** Set Log Type.
+	  * Process Audit Log Type
+	  */
+	public void setPInstanceLogType (String PInstanceLogType);
+
+	/** Get Log Type.
+	  * Process Audit Log Type
+	  */
+	public String getPInstanceLogType();
+
     /** Column name P_Date */
     public static final String COLUMNNAME_P_Date = "P_Date";
 
