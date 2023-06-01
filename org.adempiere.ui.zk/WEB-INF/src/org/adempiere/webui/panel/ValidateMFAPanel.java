@@ -123,7 +123,6 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 
 		String registerCookie = getCookie(getCookieName());
 		login = new Login(ctx);
-		this.addEventListener(ON_DEFER_LOGOUT, this);
 		if (login.isMFARequired(registerCookie)) {
 			initComponents(registerCookie != null);
 			init();
