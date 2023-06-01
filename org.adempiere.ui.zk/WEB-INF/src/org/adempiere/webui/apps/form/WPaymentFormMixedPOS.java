@@ -15,16 +15,22 @@ package org.adempiere.webui.apps.form;
 
 import org.compiere.grid.PaymentFormMixedPOS;
 import org.compiere.model.GridTab;
+import org.compiere.model.X_C_Order;
 
 /**
- * 
+ * Form for mixed POS payment rule ({@link X_C_Order#PAYMENTRULE_MixedPOSPayment}).<br/>
+ * As it is, this is a dummy implementation that doesn't do anything.
  * @author Elaine
  *
  */
 public class WPaymentFormMixedPOS extends PaymentFormMixedPOS {
-
+	/** Payment form window instance */
 	private WPaymentFormWindow window;
 	
+	/**
+	 * @param windowNo
+	 * @param mTab
+	 */
 	public WPaymentFormMixedPOS(int windowNo, GridTab mTab) {
 		super(windowNo, mTab);
 		window = new WPaymentFormWindow(this, windowNo);
@@ -57,5 +63,9 @@ public class WPaymentFormMixedPOS extends PaymentFormMixedPOS {
 	@Override
 	public Object getWindow() {
 		return window;
+	}
+	
+	@Override
+	protected void afterSave(boolean success) {		
 	}
 }

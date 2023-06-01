@@ -133,3 +133,89 @@ input[type="checkbox"]:focus
     color: #252525 !important;
     opacity: .8;
 }
+
+.date-picker-container {
+	padding-left: 5px;
+}
+
+.date-picker-component {
+	display: inline-grid;
+	min-height: 25px;
+	border-radius: 5px;
+	margin: 0px 5px 5px 0px !important;
+}
+
+.date-picker-component .z-listbox {
+	border: none;
+}
+
+.date-picker-label {
+	font-weight: bold;
+	margin: 5px;
+}
+
+.recordid-editor {
+	display: inline-block;
+	position: relative;
+}
+.recordid-editor .z-toolbarbutton {
+	padding: 4px 0px 0px 1px;
+    margin: 0px;
+    display: inline-block;
+    background-image: none;
+    position: absolute;
+    background-color: #F7F7F7;
+    width: 22px;
+    height: 24px;
+    min-height: 24px;
+    right: 0px;
+    top: 1px;
+    border: 1px solid #CFCFCF;
+    border-radius: 0;
+}
+
+.recordid-dialog {
+	min-width: 400px;
+}
+
+.recordid-dialog-content {
+	display: flex;
+	padding: 10px;
+}
+
+.recordid-dialog-labels {
+	display: grid;
+    text-align: right;
+    align-items: center;
+}
+
+.recordid-dialog-fields {
+	display: grid;
+	width: 77%;
+}
+
+.recordid-dialog-fields .editor-button {
+	top: 8px !important;
+}
+
+.recordid-dialog-content .z-combobox, .recordid-dialog-content .z-textbox {
+	width: 98% !important;
+	margin: 8px 5px;
+}
+
+.recordid-dialog-confirm {
+	text-align: end;
+    padding: 10px;
+}
+
+.recordid-dialog-confirm .z-button {
+	margin: 0px 5px !important;
+	height: 30px;
+	padding: 0px 10px;
+}
+
+.date-picker-calendar-button {
+	position: absolute;
+    right: 0px;
+    top: 5px;
+}

@@ -2,6 +2,7 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -15,30 +16,51 @@ import org.idempiere.fa.feature.UseLifeImpl;
 public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 	implements UseLife
 {
-
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3458020679308192943L;
+	private static final long serialVersionUID = -2436949294592742530L;
 
 	/**
 	 * Get Asset Group Accountings for given group
 	 */
+	/**
+	 * @param ctx
+	 * @param A_Asset_Group_ID
+	 * @return
+	 * @deprecated use the version with postingType and trxName
+	 */
 	public static List<MAssetGroupAcct> forA_Asset_Group_ID(Properties ctx, int A_Asset_Group_ID)
 	{
-		return new Query(ctx, Table_Name, COLUMNNAME_A_Asset_Group_ID+"=?", null)
-					.setParameters(new Object[]{A_Asset_Group_ID})
-					.list();
+		return forA_Asset_Group_ID(ctx, A_Asset_Group_ID, null, null);
 	}
-	
+
 	/**
-	 * Get Asset Group Accountings for given group
+	 * @param ctx
+	 * @param A_Asset_Group_ID
+	 * @param postingType
+	 * @return
+	 * @deprecated use the version with trxName
 	 */
 	public static List<MAssetGroupAcct>  forA_Asset_Group_ID(Properties ctx, int A_Asset_Group_ID, String postingType)
 	{
-		final String whereClause = COLUMNNAME_A_Asset_Group_ID+"=? AND "+COLUMNNAME_PostingType+"=?";
-		return new Query(ctx, Table_Name, whereClause, null)
-					.setParameters(new Object[]{A_Asset_Group_ID, postingType})
+		return forA_Asset_Group_ID(ctx, A_Asset_Group_ID, postingType, null);
+	}
+
+	/**
+	 * Get Asset Group Accountings for given group
+	 */
+	public static List<MAssetGroupAcct>  forA_Asset_Group_ID(Properties ctx, int A_Asset_Group_ID, String postingType, String trxName)
+	{
+		List<Object> params = new ArrayList<Object>();
+		StringBuilder whereClause = new StringBuilder("A_Asset_Group_ID=?");
+		params.add(A_Asset_Group_ID);
+		if (postingType != null) {
+			whereClause.append(" AND PostingType=?");
+			params.add(postingType);
+		}
+		return new Query(ctx, Table_Name, whereClause.toString(), trxName)
+					.setParameters(params)
 					.list();
 	}
 	
@@ -99,6 +121,10 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 	public boolean beforeSave(boolean newRecord)
 	{
 		if (! UseLifeImpl.get(this).validate())
+		{
+			return false;
+		}
+		if (! UseLifeImpl.get(this, true).validate())
 		{
 			return false;
 		}

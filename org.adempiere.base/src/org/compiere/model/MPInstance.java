@@ -54,7 +54,7 @@ public class MPInstance extends X_AD_PInstance
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3756494717528301224L;
+	private static final long serialVersionUID = -6414730734415159480L;
 
 	public static final String ON_RUNNING_JOB_CHANGED_TOPIC = "onRunningJobChanged";
 
@@ -149,6 +149,25 @@ public class MPInstance extends X_AD_PInstance
 		m_parameters = new MPInstancePara[list.size()];
 		list.toArray(m_parameters);
 		return m_parameters;
+	}	//	getParameters
+	
+	/**
+	 * 	Get Process Parameters
+	 *	@return processParameters array
+	 */
+	public MProcessPara[] getProcessParameters()
+	{
+		final String whereClause = "AD_Process_ID=?";
+		List <MProcessPara> list = new Query(getCtx(), MProcessPara.Table_Name, whereClause, get_TrxName())
+		.setParameters(getAD_Process_ID())
+		.setOnlyActiveRecords(true)
+		.setOrderBy("SeqNo")
+		.list();
+
+		//
+		MProcessPara[] processParameters = new MProcessPara[list.size()];
+		list.toArray(processParameters);
+		return processParameters;
 	}	//	getParameters
 	
 	/**
@@ -611,4 +630,20 @@ public class MPInstance extends X_AD_PInstance
 		public boolean isDirectPrint = false;
 		public int estimate;
 	}
+	
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true
+	 */
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (newRecord) {
+			int sessionId = Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID);
+			if (sessionId > 0)
+				setAD_Session_ID(sessionId);
+		}
+		
+		return true;
+	}	//	beforeSave
 }	//	MPInstance

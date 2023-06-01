@@ -17,8 +17,10 @@
 
 package org.adempiere.webui.component;
 
+import org.zkoss.zul.Comboitem;
+
 /**
- * Bad stuff, cannot overide method equals in AbstractComponent.
+ * Extend {@link Comboitem}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Mar 10, 2007
  * @version $Revision: 0.10 $
@@ -26,15 +28,22 @@ package org.adempiere.webui.component;
 public class ComboItem extends org.zkoss.zul.Comboitem
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8483161780731035079L;
 
+	/**
+	 * @param label
+	 */
 	public ComboItem(String label)
     {
         super(label);
     }
     
+	/**
+	 * @param label
+	 * @param value
+	 */
     public ComboItem(String label, Object value)
     {
         super(label);

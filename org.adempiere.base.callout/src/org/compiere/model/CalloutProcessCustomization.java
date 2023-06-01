@@ -60,10 +60,6 @@ public class CalloutProcessCustomization extends CalloutEngine
 			return "";
 
 		MProcessPara pp = new MProcessPara(ctx, (Integer) value, null);
-
-		// mTab.setValue("Name", pp.get_Translation("Name"));
-		// mTab.setValue("Description", pp.get_Translation("Description"));
-		// mTab.setValue("Help", pp.get_Translation("Help"));
 		mTab.setValue("IsRange", pp.isRange());
 
 		return NO_ERROR;

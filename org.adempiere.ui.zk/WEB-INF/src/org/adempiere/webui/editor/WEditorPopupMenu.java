@@ -51,7 +51,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1632375949585292635L;
+	private static final long serialVersionUID = 6190279880520042885L;
 
 	public static final String EVENT_ATTRIBUTE = "EVENT";
     public static final String ZOOM_EVENT = "ZOOM";
@@ -64,6 +64,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     public static final String EDITOR_EVENT = "EDITOR";
     public static final String RESET_EVENT = "RESET";
     public static final String ASSISTANT_EVENT = "ASSISTANT";
+    public static final String DRILL_EVENT = "DRILL";
    
     private boolean newEnabled = true;
     private boolean updateEnabled = true; // Elaine 2009/02/16 - update record
@@ -71,6 +72,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     private boolean requeryEnabled = true;
     private boolean preferencesEnabled = true;
 	private boolean showLocation = true;
+	private boolean drillEnabled = true;
     
     private Menuitem zoomItem;
     private Menuitem requeryItem;
@@ -78,12 +80,13 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     private Menuitem newItem;
     private Menuitem updateItem; // Elaine 2009/02/16 - update record   
 	private Menuitem showLocationItem;
+	private Menuitem drillItem;
     
     private ArrayList<ContextMenuListener> menuListeners = new ArrayList<ContextMenuListener>();
     
     public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences)
     {
-        this(zoom, requery, preferences, false, false, false, null); // no check zoom
+        this(zoom, requery, preferences, false, false, false, false, null); // no check zoom
     }
     
     @Deprecated
@@ -104,6 +107,11 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     	this(zoom, requery, preferences, newRecord, updateRecord, false, null);
     }
 
+    public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord, boolean showLocation, Lookup lookup)
+    {
+    	this(zoom, requery, preferences, newRecord, updateRecord, showLocation, false, lookup);
+    }
+    
     /**
      * @param zoom - enable zoom in menu - disabled if the lookup cannot zoom
      * @param requery - enable requery in menu
@@ -113,7 +121,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
      * @param showLocation - enable show location in menu
      * @param lookup - when this parameter is received then new and update are calculated based on the zoom and quickentry
      */
-    public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord, boolean showLocation, Lookup lookup)
+    public WEditorPopupMenu(boolean zoom, boolean requery, boolean preferences, boolean newRecord, boolean updateRecord, boolean showLocation, boolean drillEnabled, Lookup lookup)
     {
     	super();
     	this.zoomEnabled = zoom;
@@ -122,6 +130,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
     	this.newEnabled = newRecord;
     	this.updateEnabled = updateRecord; // Elaine 2009/02/16 - update record
     	this.showLocation = showLocation;
+    	this.drillEnabled = drillEnabled;
 
     	String tableName = null;
     	if (lookup != null && lookup.getColumnName() != null)
@@ -274,6 +283,18 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         	this.appendChild(showLocationItem);
         }
         
+        if(drillEnabled)
+        {
+        	drillItem = new Menuitem();
+        	drillItem.setAttribute(EVENT_ATTRIBUTE, DRILL_EVENT);
+        	drillItem.setLabel(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "DrillAssistant")).intern());
+        	if (ThemeManager.isUseFontIconForImage())
+        		drillItem.setIconSclass("z-icon-Window");
+            else
+            	drillItem.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
+        	drillItem.addEventListener(Events.ON_CLICK, this);
+        	this.appendChild(drillItem);
+        }
     }
     
     public void addMenuListener(ContextMenuListener listener)
@@ -289,7 +310,7 @@ public class WEditorPopupMenu extends Menupopup implements EventListener<Event>
         if (evt != null)
         {
             ContextMenuEvent menuEvent = new ContextMenuEvent(evt);
-            
+            menuEvent.setTarget(event.getTarget());
             ContextMenuListener[] listeners = new ContextMenuListener[0];
             listeners = menuListeners.toArray(listeners);
             for (ContextMenuListener listener : listeners)

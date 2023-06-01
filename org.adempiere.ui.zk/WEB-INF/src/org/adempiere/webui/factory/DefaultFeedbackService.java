@@ -74,8 +74,8 @@ public class DefaultFeedbackService implements IFeedbackService {
 			
 			String script = "html2canvas(document.body).then(canvas => " +
 					"{ const dataUrl = canvas.toDataURL();" +
-					"  var widget = zk.Widget.$('#" + SessionManager.getAppDesktop().getComponent().getUuid()+"');"+
-		    		"  var event = new zk.Event(widget, 'onEmailSupport', dataUrl, {toServer: true});" +
+					"  let widget = zk.Widget.$('#" + SessionManager.getAppDesktop().getComponent().getUuid()+"');"+
+		    		"  let event = new zk.Event(widget, 'onEmailSupport', dataUrl, {toServer: true});" +
 		    		"  zAu.send(event);" +
 		    		"});";
 			Clients.response(new AuScript(script));
@@ -151,9 +151,9 @@ public class DefaultFeedbackService implements IFeedbackService {
 			SessionManager.getAppDesktop().getComponent().addEventListener("onCreateFeedbackRequest", this);
 			
 			String script = "html2canvas(document.body).then(canvas => " +
-					"{ var dataUrl = canvas.toDataURL();" +
-					"  var widget = zk.Widget.$('#" + SessionManager.getAppDesktop().getComponent().getUuid()+"');"+
-		    		"  var event = new zk.Event(widget, 'onCreateFeedbackRequest', dataUrl, {toServer: true});" +
+					"{ let dataUrl = canvas.toDataURL();" +
+					"  let widget = zk.Widget.$('#" + SessionManager.getAppDesktop().getComponent().getUuid()+"');"+
+		    		"  let event = new zk.Event(widget, 'onCreateFeedbackRequest', dataUrl, {toServer: true});" +
 		    		"  zAu.send(event); " +
 		    		"});";
 			Clients.response(new AuScript(script));

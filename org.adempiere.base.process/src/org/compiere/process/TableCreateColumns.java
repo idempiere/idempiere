@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.M_Element;
 import org.compiere.model.PO;
@@ -73,7 +74,7 @@ public class TableCreateColumns extends SvrProcess
 			else if (name.equals("AllTables"))
 				p_AllTables = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_AD_Table_ID = getRecord_ID();
 	}	//	prepare
@@ -94,7 +95,7 @@ public class TableCreateColumns extends SvrProcess
 		Connection conn = null;
 		
 		try {
-			conn = DB.getConnectionRO();
+			conn = DB.getConnection();
 			AdempiereDatabase db = DB.getDatabase();
 			DatabaseMetaData md = conn.getMetaData();
 			String catalog = db.getCatalog();
@@ -115,8 +116,13 @@ public class TableCreateColumns extends SvrProcess
 				if (DB.isPostgreSQL())
 				    tableName = tableName.toLowerCase();
 				// end globalqss 2005-10-24
-				ResultSet rs = md.getColumns(catalog, schema, tableName, null);
-				addTableColumn(rs, table);
+				ResultSet rs = null;
+				try {
+					rs = md.getColumns(catalog, schema, tableName, null);
+					addTableColumn(rs, table);
+				} finally {
+					DB.close(rs);
+				}
 			}
 			StringBuilder msgreturn = new StringBuilder("#").append(m_count);
 			return msgreturn.toString();
@@ -191,8 +197,12 @@ public class TableCreateColumns extends SvrProcess
 				if (DB.isPostgreSQL())
 				    tableName = tableName.toLowerCase();
 				// end globalqss 2005-10-24
-				rsC = md.getColumns(catalog, schema, tableName, null);
-				addTableColumn(rsC, table);
+				try {
+					rsC = md.getColumns(catalog, schema, tableName, null);
+					addTableColumn(rsC, table);
+				} finally {
+					DB.close(rsC);
+				}
 			}
 		} catch (Exception e) {
 			throw e;

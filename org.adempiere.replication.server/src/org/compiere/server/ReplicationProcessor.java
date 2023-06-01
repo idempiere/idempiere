@@ -35,6 +35,7 @@ import org.adempiere.server.rpl.IImportProcessor;
 import org.compiere.model.AdempiereProcessor;
 import org.compiere.model.MClient;
 import org.compiere.model.MOrgInfo;
+import org.compiere.model.SystemIDs;
 import org.compiere.model.X_IMP_Processor_Type;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -166,7 +167,7 @@ public class ReplicationProcessor extends AdempiereServer {
 		else if (mImportProcessor.getUpdatedBy() > 0)
 			AD_User_ID = mImportProcessor.getUpdatedBy();
 		else
-			AD_User_ID = 100; //fall back to SuperUser
+			AD_User_ID = SystemIDs.USER_SUPERUSER; //fall back to SuperUser
 			
 		return AD_User_ID;
 	}

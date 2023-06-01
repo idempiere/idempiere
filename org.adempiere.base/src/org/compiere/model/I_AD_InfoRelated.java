@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_InfoRelated
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_InfoRelated 
 {
@@ -44,18 +44,18 @@ public interface I_AD_InfoRelated
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
     /** Column name AD_InfoRelated_ID */
     public static final String COLUMNNAME_AD_InfoRelated_ID = "AD_InfoRelated_ID";
 
-	/** Set InfoRelated	  */
+	/** Set Info Related	  */
 	public void setAD_InfoRelated_ID (int AD_InfoRelated_ID);
 
-	/** Get InfoRelated	  */
+	/** Get Info Related	  */
 	public int getAD_InfoRelated_ID();
 
     /** Column name AD_InfoRelated_UU */
@@ -86,12 +86,12 @@ public interface I_AD_InfoRelated
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 

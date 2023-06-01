@@ -16,6 +16,9 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.form;
 
+import static org.adempiere.webui.ClientInfo.MEDIUM_WIDTH;
+import static org.adempiere.webui.ClientInfo.SMALL_WIDTH;
+import static org.adempiere.webui.ClientInfo.maxWidth;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_CURRENCY_ID;
 import static org.compiere.model.SystemIDs.COLUMN_C_PERIOD_AD_ORG_ID;
@@ -53,7 +56,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.Allocation;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MLookup;
@@ -75,25 +78,20 @@ import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
-import static org.adempiere.webui.ClientInfo.*;
-
 /**
- * Allocation Form
+ * Form to create allocation (C_AllocationHdr and C_AllocationLine).
  *
- * @author  Jorg Janke
- * @version $Id: VAllocation.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
- * 
  * Contributor : Fabian Aguilar - OFBConsulting - Multiallocation
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VAllocation")
 public class WAllocation extends Allocation
 	implements IFormController, EventListener<Event>, WTableModelListener, ValueChangeListener
 {
-
+	/** UI form instance */
 	private CustomForm form = new CustomForm();
 	
 	/**
-	 *	Initialize Panel
+	 *	Default constructor
 	 */
 	public WAllocation()
 	{
@@ -115,61 +113,94 @@ public class WAllocation extends Allocation
 		}
 	}	//	init
 	
-	//
+	/** Main layout for {@link #form} */
 	private Borderlayout mainLayout = new Borderlayout();
+	
+	//Parameter
+	/** Parameter panel. North of {@link #mainLayout} */
 	private Panel parameterPanel = new Panel();
-	private Panel allocationPanel = new Panel(); //footer
-	private Grid parameterLayout = GridFactory.newGridLayout();
+	/** Grid layout of {@link #parameterPanel} */
+	private Grid parameterLayout = GridFactory.newGridLayout();		
 	private Label bpartnerLabel = new Label();
+	/** bpartner parameter */
 	private WSearchEditor bpartnerSearch = null;
-	private WListbox invoiceTable = ListboxFactory.newDataTable();
-	private WListbox paymentTable = ListboxFactory.newDataTable();
-	private Borderlayout infoPanel = new Borderlayout();
-	private Panel paymentPanel = new Panel();
-	private Panel invoicePanel = new Panel();
-	private Label paymentLabel = new Label();
-	private Label invoiceLabel = new Label();
-	private Borderlayout paymentLayout = new Borderlayout();
-	private Borderlayout invoiceLayout = new Borderlayout();
-	private Label paymentInfo = new Label();
-	private Label invoiceInfo = new Label();
-	private Grid allocationLayout = GridFactory.newGridLayout();
-	private Label differenceLabel = new Label();
-	private Textbox differenceField = new Textbox();
-	private Button allocateButton = new Button();
-	private Button refreshButton = new Button();
 	private Label currencyLabel = new Label();
+	/** Currency parameter */
 	private WTableDirEditor currencyPick = null;
+	/** Multi currency parameter */
 	private Checkbox multiCurrency = new Checkbox();
 	private Label chargeLabel = new Label();
-	private WTableDirEditor chargePick = null;
-	private Label DocTypeLabel = new Label();
-	private WTableDirEditor DocTypePick = null;
-	private Label allocCurrencyLabel = new Label();
-	private Hlayout statusBar = new Hlayout();
 	private Label dateLabel = new Label();
+	/** Document date parameter */
 	private WDateEditor dateField = new WDateEditor();
+	/** Auto write off parameter */
 	private Checkbox autoWriteOff = new Checkbox();
 	private Label organizationLabel = new Label();
+	/** Organization parameter */
 	private WTableDirEditor organizationPick;
+	/** Number of column for {@link #parameterLayout} */
 	private int noOfColumn;
 	
+	/** Center of {@link #mainLayout}. */
+	private Borderlayout infoPanel = new Borderlayout();
+	/** North of {@link #infoPanel} */
+	private Panel paymentPanel = new Panel();
+	/** Center of {@link #infoPanel} */ 
+	private Panel invoicePanel = new Panel();
+	
+	//Invoice 
+	/** Layout of {@link #invoicePanel} */
+	private Borderlayout invoiceLayout = new Borderlayout();
+	/** North of {@link #invoiceLayout} */
+	private Label invoiceLabel = new Label();
+	/** Center of {@link #invoiceLayout}. List of invoice documents. */
+	private WListbox invoiceTable = ListboxFactory.newDataTable();		
+	/** South of {@link #invoiceLayout} */
+	private Label invoiceInfo = new Label();
+	
+	//Payments	
+	/** Layout of {@link #paymentPanel} */
+	private Borderlayout paymentLayout = new Borderlayout();
+	/** North of {@link #paymentLayout} */
+	private Label paymentLabel = new Label();
+	/** Center of {@link #paymentLayout}. List of payment documents. */
+	private WListbox paymentTable = ListboxFactory.newDataTable();	
+	/** South of {@link #paymentLayout} */
+	private Label paymentInfo = new Label();
+		
+	//Allocation
+	/** South of {@link #mainLayout} */
+	private Panel allocationPanel = new Panel(); //footer
+	/** Grid layout of {@link #allocationPanel} */
+	private Grid allocationLayout = GridFactory.newGridLayout();
+	private Label differenceLabel = new Label();
+	/** Difference between payment and invoice. Part of {@link #allocationLayout}. */
+	private Textbox differenceField = new Textbox();
+	/** Button to apply allocation. Part of {@link #allocationLayout}. */
+	private Button allocateButton = new Button();
+	/** Button to refresh {@link #paymentTable} and {@link #invoiceTable}. Part of {@link #allocationLayout}. */
+	private Button refreshButton = new Button();	
+	/** Charges. Part of {@link #allocationLayout}. */
+	private WTableDirEditor chargePick = null;
+	private Label DocTypeLabel = new Label();
+	/** Document types. Part of {@link #allocationLayout}. */
+	private WTableDirEditor DocTypePick = null;
+	private Label allocCurrencyLabel = new Label();
+	/** Status bar, bottom of {@link #allocationPanel} */
+	private Hlayout statusBar = new Hlayout();	
+	
 	/**
-	 *  Static Init
+	 *  Layout {@link #form}
 	 *  @throws Exception
 	 */
 	private void zkInit() throws Exception
 	{
-		//
 		Div div = new Div();
 		div.setStyle("height: 100%; width: 100%; overflow: auto;");
 		div.appendChild(mainLayout);
 		form.appendChild(div);
 		ZKUpdateUtil.setWidth(mainLayout, "100%");
-		
-		/////
 		mainLayout.setStyle("min-height: 600px");
-		/////
 		
 		dateLabel.setText(Msg.getMsg(Env.getCtx(), "Date"));
 		autoWriteOff.setSelected(false);
@@ -199,8 +230,7 @@ public class WAllocation extends Allocation
 		currencyLabel.setText(Msg.translate(Env.getCtx(), "C_Currency_ID"));
 		multiCurrency.setText(Msg.getMsg(Env.getCtx(), "MultiCurrency"));
 		multiCurrency.addActionListener(this);
-		allocCurrencyLabel.setText(".");
-		
+		allocCurrencyLabel.setText(".");		
 		organizationLabel.setText(Msg.translate(Env.getCtx(), "AD_Org_ID"));
 		
 		// parameters layout
@@ -294,8 +324,11 @@ public class WAllocation extends Allocation
 		center.appendChild(invoicePanel);
 		center.setAutoscroll(true);
 		infoPanel.setStyle("min-height: 300px;");
-	}   //  jbInit
+	}
 
+	/**
+	 * Layout {@link #parameterLayout} and {@link #allocationPanel}.
+	 */
 	protected void layoutParameterAndSummary() {
 		Rows rows = null;
 		Row row = null;
@@ -403,6 +436,9 @@ public class WAllocation extends Allocation
 		}
 	}
 
+	/**
+	 * Setup columns for {@link #parameterLayout}.
+	 */
 	protected void setupParameterColumns() {
 		noOfColumn = 6;
 		if (maxWidth(MEDIUM_WIDTH-1))
@@ -435,7 +471,7 @@ public class WAllocation extends Allocation
 		int AD_Column_ID = COLUMN_C_INVOICE_C_CURRENCY_ID;    //  C_Invoice.C_Currency_ID
 		MLookup lookupCur = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
 		currencyPick = new WTableDirEditor("C_Currency_ID", true, false, true, lookupCur);
-		currencyPick.setValue(Integer.valueOf(m_C_Currency_ID));
+		currencyPick.setValue(getC_Currency_ID());
 		currencyPick.addValueChangeListener(this);
 
 		// Organization filter selection
@@ -451,11 +487,11 @@ public class WAllocation extends Allocation
 		bpartnerSearch = new WSearchEditor("C_BPartner_ID", true, false, true, lookupBP);
 		bpartnerSearch.addValueChangeListener(this);
 
-		//  Translation
+		//  Status bar
 		statusBar.appendChild(new Label(Msg.getMsg(Env.getCtx(), "AllocateStatus")));
 		ZKUpdateUtil.setVflex(statusBar, "min");
 		
-		//  Date set to Login Date
+		//  Default dateField to Login Date
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(Env.getContextAsDate(Env.getCtx(), Env.DATE));
 		cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -465,23 +501,24 @@ public class WAllocation extends Allocation
 		dateField.setValue(new Timestamp(cal.getTimeInMillis()));
 		dateField.addValueChangeListener(this);
 
-		
 		//  Charge
 		AD_Column_ID = 61804;    //  C_AllocationLine.C_Charge_ID
 		MLookup lookupCharge = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
 		chargePick = new WTableDirEditor("C_Charge_ID", false, false, true, lookupCharge);
-		chargePick.setValue(Integer.valueOf(m_C_Charge_ID));
+		chargePick.setValue(getC_Charge_ID());
 		chargePick.addValueChangeListener(this);
 		
-	//  Charge
-			AD_Column_ID = 212213;    //  C_AllocationLine.C_Charge_ID
-			MLookup lookupDocType = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
-			DocTypePick = new WTableDirEditor("C_DocType_ID", false, false, true, lookupDocType);
-			DocTypePick.setValue(Integer.valueOf(m_C_DocType_ID));
-			DocTypePick.addValueChangeListener(this);
-			
+		//  Doc Type
+		AD_Column_ID = 212213;    //  C_AllocationLine.C_DocType_ID
+		MLookup lookupDocType = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
+		DocTypePick = new WTableDirEditor("C_DocType_ID", false, false, true, lookupDocType);
+		DocTypePick.setValue(getC_DocType_ID());
+		DocTypePick.addValueChangeListener(this);			
 	}   //  dynInit
 	
+	/**
+	 * Handle onClientInfo event from browser.
+	 */
 	protected void onClientInfo()
 	{
 		if (ClientInfo.isMobile() && form.getPage() != null) 
@@ -512,15 +549,14 @@ public class WAllocation extends Allocation
 		}
 	}
 	
-	/**************************************************************************
-	 *  Action Listener.
-	 *  - MultiCurrency
-	 *  - Allocate
+	/**
+	 *  Event listener
 	 *  @param e event
 	 */
+	@Override
 	public void onEvent(Event e)
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		if (e.getTarget().equals(multiCurrency))
 			loadBPartner();
 		//	Allocate
@@ -540,13 +576,14 @@ public class WAllocation extends Allocation
 		{
 			loadBPartner();
 		}
-	}   //  actionPerformed
+	}
 
 	/**
-	 *  Table Model Listener.
+	 *  Table Model Listener for {@link #paymentTable} and {@link #invoiceTable}
 	 *  - Recalculate Totals
 	 *  @param e event
 	 */
+	@Override
 	public void tableChanged(WTableModelEvent e)
 	{
 		boolean isUpdate = (e.getType() == WTableModelEvent.CONTENTS_CHANGED);
@@ -573,18 +610,16 @@ public class WAllocation extends Allocation
 		model.updateComponent(row);
 	    
 		if(msg != null && msg.length() > 0)
-			FDialog.warn(form.getWindowNo(), "AllocationWriteOffWarn");
+			Dialog.warn(form.getWindowNo(), "AllocationWriteOffWarn");
 		
 		calculate();
 	}   //  tableChanged
 	
 	/**
-	 *  Vetoable Change Listener.
-	 *  - Business Partner
-	 *  - Currency
-	 * 	- Date
+	 *  Value change listener for parameter and allocation fields.
 	 *  @param e event
 	 */
+	@Override
 	public void valueChange (ValueChangeEvent e)
 	{
 		String name = e.getPropertyName();
@@ -596,35 +631,34 @@ public class WAllocation extends Allocation
 		// Organization
 		if (name.equals("AD_Org_ID"))
 		{
-			m_AD_Org_ID = ((Integer) value).intValue();
+			setAD_Org_ID((int) value);
 			
 			loadBPartner();
 		}
 		//		Charge
 		else if (name.equals("C_Charge_ID") )
 		{
-			m_C_Charge_ID = value!=null? ((Integer) value).intValue() : 0;
+			setC_Charge_ID(value!=null? ((Integer) value).intValue() : 0);
 			
 			setAllocateButton();
 		}
 
 		else if (name.equals("C_DocType_ID") )
 		{
-			m_C_DocType_ID = value!=null? ((Integer) value).intValue() : 0;
-			
+			setC_DocType_ID(value!=null? ((Integer) value).intValue() : 0);			
 		}
 
 		//  BPartner
 		if (name.equals("C_BPartner_ID"))
 		{
 			bpartnerSearch.setValue(value);
-			m_C_BPartner_ID = ((Integer)value).intValue();
+			setC_BPartner_ID((int) value);
 			loadBPartner();
 		}
 		//	Currency
 		else if (name.equals("C_Currency_ID"))
 		{
-			m_C_Currency_ID = ((Integer)value).intValue();
+			setC_Currency_ID((int) value);
 			loadBPartner();
 		}
 		//	Date for Multi-Currency
@@ -632,33 +666,38 @@ public class WAllocation extends Allocation
 			loadBPartner();
 	}   //  vetoableChange
 	
-	private void setAllocateButton() {
-			if (totalDiff.signum() == 0 ^ m_C_Charge_ID > 0 )
-			{
-				allocateButton.setEnabled(true);
-			// chargePick.setValue(m_C_Charge_ID);
-			}
-			else
-			{
-				allocateButton.setEnabled(false);
-			}
-
-			if ( totalDiff.signum() == 0 )
-			{
-					chargePick.setValue(null);
-					m_C_Charge_ID = 0;
-	   		}
-	}
 	/**
-	 *  Load Business Partner Info
-	 *  - Payments
-	 *  - Invoices
+	 * Set {@link #allocateButton} to enable or disable.
+	 */
+	private void setAllocateButton() {
+		if (isOkToAllocate() )
+		{
+			allocateButton.setEnabled(true);
+		}
+		else
+		{
+			allocateButton.setEnabled(false);
+		}
+
+		if ( getTotalDifference().signum() == 0 )
+		{
+			chargePick.setValue(null);
+			setC_Charge_ID(0);
+   		}
+	}
+
+	/**
+	 *  Load Business Partner Info.
+	 *  <ul>
+	 *  <li>Payments</li>
+	 *  <li>Invoices</li>
+	 *  </ul>
 	 */
 	private void loadBPartner ()
 	{
 		checkBPartner();
 		
-		Vector<Vector<Object>> data = getPaymentData(multiCurrency.isSelected(), dateField.getValue(), paymentTable);
+		Vector<Vector<Object>> data = getPaymentData(multiCurrency.isSelected(), dateField.getValue(), (String)null);
 		Vector<String> columnNames = getPaymentColumnNames(multiCurrency.isSelected());
 		
 		paymentTable.clear();
@@ -673,7 +712,7 @@ public class WAllocation extends Allocation
 		setPaymentColumnClass(paymentTable, multiCurrency.isSelected());
 		//
 
-		data = getInvoiceData(multiCurrency.isSelected(), dateField.getValue(), invoiceTable);
+		data = getInvoiceData(multiCurrency.isSelected(), dateField.getValue(), (String)null);
 		columnNames = getInvoiceColumnNames(multiCurrency.isSelected());
 		
 		invoiceTable.clear();
@@ -688,21 +727,23 @@ public class WAllocation extends Allocation
 		setInvoiceColumnClass(invoiceTable, multiCurrency.isSelected());
 		//
 		
-		calculate(multiCurrency.isSelected());
-		
 		//  Calculate Totals
 		calculate();
 		
 		statusBar.getChildren().clear();
 	}   //  loadBPartner
 	
+	/**
+	 * perform allocation calculation
+	 */
 	public void calculate()
 	{
-		allocDate = null;
+		calculate(paymentTable, invoiceTable, multiCurrency.isSelected());
 		
-		paymentInfo.setText(calculatePayment(paymentTable, multiCurrency.isSelected()));
-		invoiceInfo.setText(calculateInvoice(invoiceTable, multiCurrency.isSelected()));
-
+		paymentInfo.setText(getPaymentInfoText());
+		invoiceInfo.setText(getInvoiceInfoText());
+		differenceField.setText(format.format(getTotalDifference()));
+		
 		//	Set AllocationDate
 		if (allocDate != null) {
 			if (! allocDate.equals(dateField.getValue())) {
@@ -712,21 +753,18 @@ public class WAllocation extends Allocation
 		}
 
 		//  Set Allocation Currency
-		allocCurrencyLabel.setText(currencyPick.getDisplay());
-		//  Difference
-		totalDiff = totalPay.subtract(totalInv);
-		differenceField.setText(format.format(totalDiff));		
+		allocCurrencyLabel.setText(currencyPick.getDisplay());				
 
 		setAllocateButton();
 	}
-	
-	/**************************************************************************
-	 *  Save Data
+
+	/**
+	 * Save Data to C_AllocationHdr and C_AllocationLine.
 	 */
 	private MAllocationHdr saveData()
 	{
-		if (m_AD_Org_ID > 0)
-			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Org_ID", m_AD_Org_ID);
+		if (getAD_Org_ID() > 0)
+			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Org_ID", getAD_Org_ID());
 		else
 			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Org_ID", "");
 		try
@@ -746,15 +784,16 @@ public class WAllocation extends Allocation
 		}
 		catch (Exception e)
 		{
-			FDialog.error(form.getWindowNo(), form, "Error", e.getLocalizedMessage());
+			Dialog.error(form.getWindowNo(), "Error", e.getLocalizedMessage());
 			return null;
 		}
 	}   //  saveData
 	
 	/**
 	 * Called by org.adempiere.webui.panel.ADForm.openForm(int)
-	 * @return
+	 * @return {@link ADForm}
 	 */
+	@Override
 	public ADForm getForm()
 	{
 		return form;

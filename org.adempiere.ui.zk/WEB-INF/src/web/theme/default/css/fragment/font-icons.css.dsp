@@ -45,6 +45,9 @@
 	font-weight: bold;
 	content: "\f068";
 }
+.z-icon-DeSelectAll:before {
+	content: "\f248";
+}
 .z-icon-Detail:before {	
 	content: "\f0d7";
 }
@@ -62,6 +65,9 @@
 	font-size: 32px;
 	color: yellow;
 	font-family: FontAwesome;
+}
+.z-icon-ExcludeSelected:before {
+	content: "\f05e";
 }
 .z-icon-Expand:before {
 	content: "\f0d7";
@@ -113,6 +119,9 @@
 }
 .z-icon-Import:before {
 	content: "\f0ee";		
+}
+.z-icon-IncludeSelected:before {
+	content: "\f05d";
 }
 .z-icon-Info:before {	
 	content: "\f0eb";
@@ -226,6 +235,12 @@
 .z-icon-PostIt:before {
 	content: "\f24a";
 }
+.z-icon-Label:before {
+	content: "\f02b";
+}
+.z-icon-NotAllowed:before {
+	content: "\f05e";
+}
 .z-icon-Preference:before {
 	content: "\f085";
 }
@@ -265,8 +280,11 @@
 .z-icon-Request:before {	
 	content: "\f046";
 }
+.z-icon-ReRun:before {
+	content: "\f144";
+}
 .z-icon-Reset:before {
-	content: "\f0e2";
+	content: "\f12d";
 }
 .z-icon-Save:before {	
 	content: "\f0c7";
@@ -278,7 +296,7 @@
 	content: "\f002";
 }
 .z-icon-SelectAll:before {
-	content: "\f248";
+	content: "\f247";
 }
 .z-icon-SendMail:before {
 	content: "\f003";

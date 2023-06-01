@@ -17,6 +17,8 @@
 
 package org.adempiere.webui.component;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.adempiere.util.Callback;
@@ -25,6 +27,8 @@ import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WStringEditor;
+import org.adempiere.webui.event.ValueChangeEvent;
+import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -35,6 +39,7 @@ import org.compiere.util.Util;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -50,18 +55,17 @@ import org.zkoss.zul.Vbox;
 * @date    Jul 31, 2007
 * @contributor Andreas Sumerauer IDEMPIERE-4702
 */
-
 public class Messagebox extends Window implements EventListener<Event>
 {	
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 8928526331932742124L;
 	
 	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 350pt; min-width: 230pt; max-width: 450pt;";	
 	private static final String SMALLER_MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 350pt; min-width: 180pt; ";
-	private String msg = new String("");
-	private String imgSrc = new String("");
+	private String msg = "";
+	private String imgSrc = "";
 
 	private Text lblMsg = new Text();
 
@@ -73,9 +77,12 @@ public class Messagebox extends Window implements EventListener<Event>
 	private Button btnRetry;
 	private Button btnIgnore;
 	private WEditor inputField;
+	private boolean isInputMandatory;
+	private boolean isExceptionThrown = false;
 
 	private Image img = new Image();
 
+	/** button constant for button pressed by user */
 	private int returnValue;
 	@SuppressWarnings("rawtypes")
 	private Callback callback;
@@ -120,11 +127,17 @@ public class Messagebox extends Window implements EventListener<Event>
 	/** Contains no symbols. */
 	public static final String NONE = null;
 
+	/**
+	 * Default constructor
+	 */
 	public Messagebox()
 	{
 		super();
 	}
 
+	/**
+	 * Layout dialog
+	 */
 	private void init()
 	{
 		setSclass("popup-dialog");
@@ -167,7 +180,7 @@ public class Messagebox extends Window implements EventListener<Event>
 		btnIgnore = ButtonFactory.createNamedButton("Ignore");
 		btnIgnore.addEventListener(Events.ON_CLICK, this);
 		btnIgnore.setId("btnIgnore");
-
+		
 		Panel pnlMessage = new Panel();
 		if (ClientInfo.maxWidth(399))
 		{
@@ -247,22 +260,61 @@ public class Messagebox extends Window implements EventListener<Event>
 		this.setPosition("left, top");
 	}
 
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL sfor message box icon
+	 * @return button constant for button press by user
+	 */
 	public int show(String message, String title, int buttons, String icon)
 	{
 		return show(message, title, buttons, icon, null);
 	}
 	
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param callback
+	 * @return button constant for button press by user
+	 */
 	public int show(String message, String title, int buttons, String icon, Callback<Integer> callback)
 	{
 		return show(message, title, buttons, icon, callback, false);
 	}
 	
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param callback
+	 * @param modal
+	 * @return button constant for button press by user
+	 */
 	public int show(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal)
 	{
-		return show(message, title, buttons, icon, null, callback, modal);
+		return show(message, title, buttons, icon, null, false, callback, modal);
 	}
 
-	public int show(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
+	/**
+	 * Show message box dialog with optional input editor
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param editor optional input editor
+	 * @param isInputMandatory true if editor input is mandatory
+	 * @param callback
+	 * @param modal
+	 * @return button constant for button press by user
+	 */
+	public int show(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal)
 	{
 		this.msg = message;
 		this.imgSrc = icon;
@@ -271,7 +323,8 @@ public class Messagebox extends Window implements EventListener<Event>
 			inputField = new WStringEditor();
 		else
 			inputField = editor;
-
+		this.isInputMandatory = isInputMandatory;
+		
 		init();
 		
 		btnOk.setVisible(false);
@@ -307,8 +360,15 @@ public class Messagebox extends Window implements EventListener<Event>
 		if ((buttons & INPUT) != 0) {
 			inputField.setVisible(true);
 			isInput = true;
+			inputField.addValueChangeListener(new ValueChangeListener() {
+				
+				@Override
+				public void valueChange(ValueChangeEvent evt) {
+					isExceptionThrown = false;
+				}
+			});
 		}
-
+		
 		this.setTitle(title);
 		this.setPosition("center");
 		this.setClosable(true);
@@ -335,28 +395,81 @@ public class Messagebox extends Window implements EventListener<Event>
 		return returnValue;
 	}
 
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons
+	 * @param icon image URL for message box icon
+	 * @return button constant for button press by user
+	 */
 	public static int showDialog(String message, String title, int buttons, String icon) 
 	{
 		return showDialog(message, title, buttons, icon, null);
 	}
 	
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param callback
+	 * @return button constant for button press by user
+	 */
 	public static int showDialog(String message, String title, int buttons, String icon, Callback<Integer> callback)
 	{
 		return showDialog(message, title, buttons, icon, callback, false);
 	}
 	
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param callback
+	 * @param modal
+	 * @return button constant for button press by user
+	 */
 	public static int showDialog(String message, String title, int buttons, String icon, Callback<?> callback, boolean modal) 
 	{
-		return showDialog(message, title, buttons, icon, null, callback, modal);
+		return showDialog(message, title, buttons, icon, null, false, callback, modal);
 	}
 
-	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal)
-	{
-		Messagebox msg = new Messagebox();
-		return msg.show(message, title, buttons, icon, editor, callback, modal);
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param editor
+	 * @param callback
+	 * @param modal
+	 * @return button constant for button press by user
+	 */
+	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, Callback<?> callback, boolean modal) {
+		return showDialog(message, title, buttons, icon, editor, false, callback, modal);
 	}
 	
-    // Andreas Sumerauer IDEMPIERE 4702
+	/**
+	 * Show message box dialog
+	 * @param message
+	 * @param title
+	 * @param buttons buttons to be shown in the dialog. use the | operator to combine multiple button constant.
+	 * @param icon image URL for message box icon
+	 * @param editor optional input editor
+	 * @param isInputMandatory true if input editor is mandatory
+	 * @param callback
+	 * @param modal
+	 * @return button constant for button press by user
+	 */
+	public static int showDialog(String message, String title, int buttons, String icon, WEditor editor, boolean isInputMandatory, Callback<?> callback, boolean modal)
+	{
+		Messagebox msg = new Messagebox();
+		return msg.show(message, title, buttons, icon, editor, isInputMandatory, callback, modal);
+	}
+	
 	@Listen("onCancel")
     public void onCancel() throws Exception
     {
@@ -364,7 +477,7 @@ public class Messagebox extends Window implements EventListener<Event>
     	close();
     }
 
-
+	@Override
 	public void onEvent(Event event) throws Exception
 	{
 		if (event == null)
@@ -398,9 +511,50 @@ public class Messagebox extends Window implements EventListener<Event>
 		{
 			returnValue = IGNORE;
 		}
-		close();
+
+		//TODO
+		else {
+			returnValue = 0;
+		}
+		validateOnClose();
 	}
 	
+	/**
+	 * Perform validation before closing of dialog.<br/>
+	 * Throw {@link WrongValueException} if there's any validation error.
+	 */
+	private void validateOnClose() {
+		
+		// Don't close on OK if input is mandatory while input field is empty 
+		if ((returnValue == CANCEL) || !isInputMandatory || (isInputMandatory && !Util.isEmpty(String.valueOf(inputField.getValue()))))
+			
+			// if Valid Input is defined, don't close on OK until user types the Valid Input
+			if(!Util.isEmpty(inputField.getValidInput())) {
+				
+				if((returnValue == CANCEL) || (inputField.isValid(String.valueOf(inputField.getValue())) && returnValue == OK)) {
+					close();
+				}
+				else {
+					isExceptionThrown = true;
+					returnValue = 0;
+					throw new WrongValueException(inputField.getComponent(), Msg.getMsg(Env.getCtx(), "ValueNotCorrect"));
+				}
+			}
+			else {
+				close();
+			}
+			//
+		else {
+			isExceptionThrown = true;
+			returnValue = 0;
+			throw new WrongValueException(inputField.getComponent(), Msg.getMsg(Env.getCtx(), "AnswerMandatory"));
+		}
+		//
+	}
+	
+	/**
+	 * Close dialog
+	 */
 	private void close() {
 		try {
 			this.detach();
@@ -417,8 +571,12 @@ public class Messagebox extends Window implements EventListener<Event>
 		if (callback != null && !isInput)
 		{
 			callback.onCallback(returnValue);
-		} else if (callback != null && isInput) {
+		} else if (callback != null && isInput && !btnCancel.isVisible() && !btnNo.isVisible()) {
 			callback.onCallback(inputField.getValue());
+		} else if (callback != null && isInput && (btnCancel.isVisible() || btnNo.isVisible())) {
+			Map<Boolean, Object> map = new HashMap<Boolean, Object>();
+			map.put(returnValue == OK || returnValue == YES, isExceptionThrown ? "" : inputField.getValue());
+			callback.onCallback(map.entrySet().iterator().next());
 		}
 	}
 }

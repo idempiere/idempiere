@@ -28,10 +28,11 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
@@ -68,10 +69,12 @@ import org.apache.ecs.xhtml.tr;
 import org.compiere.Adempiere;
 import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.MClient;
+import org.compiere.model.MClientInfo;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.server.AdempiereServerGroup;
 import org.compiere.server.AdempiereServerMgr;
 import org.compiere.server.IServerManager;
@@ -690,7 +693,7 @@ public class AdempiereMonitor extends HttpServlet
 		table.addElement(line);
 		line = new tr();
 		line.addElement(new th().addElement("Start - Elapsed"));
-		line.addElement(new td().addElement(WebEnv.getCellContent(getServerManager().getStartTime())
+		line.addElement(new td().addElement(WebEnv.getCellContent(formatTimestampWithTimeZone(0, getServerManager().getStartTime()))
 			+ " - " + TimeUtil.formatElapsed(getServerManager().getStartTime())));
 		table.addElement(line);
 		line = new tr();
@@ -699,7 +702,7 @@ public class AdempiereMonitor extends HttpServlet
 		table.addElement(line);
 		line = new tr();
 		line.addElement(new th().addElement("Last Updated"));
-		line.addElement(new td().addElement(new Timestamp(System.currentTimeMillis()).toString()));
+		line.addElement(new td().addElement(formatTimestampWithTimeZone(0, new Timestamp(System.currentTimeMillis()))));
 		table.addElement(line);
 		bb.addElement(table);
 		
@@ -837,7 +840,7 @@ public class AdempiereMonitor extends HttpServlet
 				table.addElement(line);
 				line = new tr();
 				line.addElement(new th().addElement("Start - Elapsed"));
-				line.addElement(new td().addElement(WebEnv.getCellContent(server.getStartTime()) 
+				line.addElement(new td().addElement(WebEnv.getCellContent(formatTimestampWithTimeZone(server.getModel().getAD_Client_ID(), server.getStartTime())) 
 					+ " - " + TimeUtil.formatElapsed(server.getStartTime())));
 			}
 			else
@@ -856,7 +859,7 @@ public class AdempiereMonitor extends HttpServlet
 			//
 			line = new tr();
 			line.addElement(new th().addElement("Last Run"));
-			line.addElement(new td().addElement(WebEnv.getCellContent(server.getModel().getDateLastRun())));
+			line.addElement(new td().addElement(WebEnv.getCellContent(formatTimestampWithTimeZone(server.getModel().getAD_Client_ID(), server.getModel().getDateLastRun()))));
 			table.addElement(line);
 			line = new tr();
 			line.addElement(new th().addElement("Info"));
@@ -866,7 +869,7 @@ public class AdempiereMonitor extends HttpServlet
 			line = new tr();
 			line.addElement(new th().addElement("Next Run"));
 			td td = new td();
-			td.addElement(WebEnv.getCellContent(server.getModel().getDateNextRun(false)));
+			td.addElement(WebEnv.getCellContent(formatTimestampWithTimeZone(server.getModel().getAD_Client_ID(), server.getModel().getDateNextRun(false))));
 			td.addElement(" - ");
 			link = new a ("idempiereMonitor?RunNow=" + server.getServerId(), "(Run Now)");
 			td.addElement(link);
@@ -915,11 +918,25 @@ public class AdempiereMonitor extends HttpServlet
 		WebUtil.createResponse (request, response, this, null, doc, false);
 	}	//	createSummaryPage
 
+	private String formatTimestampWithTimeZone(int AD_Client_ID, Timestamp ts) {
+		return formatTimestampWithTimeZone(AD_Client_ID, (Date)ts);
+	}
+	
 	private String formatTimestampWithTimeZone(int AD_Client_ID, Date date) {
 		if (date == null)
 			return "";
 		DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME;
-		formatter = formatter.withZone(ZoneId.systemDefault());
+		MClientInfo clientInfo = MClientInfo.get(AD_Client_ID);
+		if (!Util.isEmpty(clientInfo.getTimeZone())) {
+			try {
+				formatter = formatter.withZone(ZoneId.of(clientInfo.getTimeZone()));
+			} catch (Exception e) {
+				//fallback to default
+				formatter = formatter.withZone(ZoneId.systemDefault());
+			}
+		} else {
+			formatter = formatter.withZone(ZoneId.systemDefault());
+		}
 		return formatter.format(date.toInstant().truncatedTo(ChronoUnit.SECONDS));
 	}
 
@@ -982,7 +999,7 @@ public class AdempiereMonitor extends HttpServlet
 		writer.print(getServerManager().getDescription());
 		writer.println("</description>");
 		writer.print("\t\t<start-time>");
-		writer.print(getServerManager().getStartTime());
+		writer.print(formatTimestampWithTimeZone(0, getServerManager().getStartTime()));
 		writer.println("</start-time>");
 		writer.print("\t\t<server-count>");
 		writer.print(getServerManager().getServerCount());
@@ -1019,13 +1036,13 @@ public class AdempiereMonitor extends HttpServlet
 				writer.print("Stopped");
 			writer.println("</status>");
 			writer.print("\t\t\t<start-time>");
-			writer.print(server.getStartTime());
+			writer.print(formatTimestampWithTimeZone(server.getModel().getAD_Client_ID(), server.getStartTime()));
 			writer.println("</start-time>");
 			writer.print("\t\t\t<last-run>");
-			writer.print(server.getModel().getDateLastRun());
+			writer.print(formatTimestampWithTimeZone(server.getModel().getAD_Client_ID(), server.getModel().getDateLastRun()));
 			writer.println("</last-run>");
 			writer.print("\t\t\t<next-run>");
-			writer.print(server.getModel().getDateNextRun(false));
+			writer.print(formatTimestampWithTimeZone(server.getModel().getAD_Client_ID(), server.getModel().getDateNextRun(false)));
 			writer.println("</next-run>");
 			writer.print("\t\t\t<statistics>");
 			writer.print(server.getStatistics());
@@ -1219,7 +1236,7 @@ public class AdempiereMonitor extends HttpServlet
 		//	
 		line = new tr();
 		MClient[] clients = MClient.getAll(Env.getCtx(), "AD_Client_ID");
-		line.addElement(new th().addElement("Client #" + clients.length + " - EMail Test:"));
+		line.addElement(new th().addElement("Tenant #" + clients.length + " - EMail Test:"));
 		p = new p();
 		for (int i = 0; i < clients.length; i++)
 		{
@@ -1289,7 +1306,7 @@ public class AdempiereMonitor extends HttpServlet
 
 		p = new p();
 		if (isSystemInMaintenance)
-			p.addElement("All clients are in maintenance mode");
+			p.addElement("All tenants are in maintenance mode");
 		else if (inMaintenanceClients.size() > 0) {
 			boolean first = true;
 			for (int clientID : inMaintenanceClients) {
@@ -1303,7 +1320,7 @@ public class AdempiereMonitor extends HttpServlet
 			}
 		}
 		else
-			p.addElement("All clients are in normal operation mode");
+			p.addElement("All tenants are in normal operation mode");
 		if (clients.length == 0)
 			p.addElement("&nbsp;");
 		line.addElement(new td().addElement(p));
@@ -1328,7 +1345,7 @@ public class AdempiereMonitor extends HttpServlet
 			try {
 				Properties ctx = new Properties();
 				Env.setContext(ctx, Env.AD_CLIENT_ID, 0);
-				Env.setContext(ctx, Env.AD_USER_ID, 0);
+				Env.setContext(ctx, Env.AD_USER_ID, SystemIDs.USER_SYSTEM);
 				ServerContext.setCurrentInstance(ctx);
 				
 				int maxSecondsToWait = MSysConfig.getIntValue(MSysConfig.MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS, 180);			

@@ -61,6 +61,7 @@ import org.compiere.wf.MWorkflow;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -70,27 +71,15 @@ import org.junit.jupiter.api.Test;
  */
 public class MProductTest extends AbstractTestCase {
 
-	private static final int BP_PATIO = 121;
-	private static final int DOCTYPE_PO = 126;
-	private static final int DOCTYPE_RECEIPT = 122;
-	private static final int USER_GARDENADMIN = 101;	
-	private static final int MULCH_PRODUCT_ID = 137;
-	private static final int TSHIRT_GL_PRODUCT_ID = 148;
-	private static final int COLOR_ATTRIBUTE_ID = 101;
-	private final static int HOUR_UOM_ID = 101;
-	private final static int FERTILIZER_LOT_ATTRIBUTESET_ID = 101;
-	private final static int PATIO_CHAIR_ATTRIBUTESET_ID = 102;
-	private static final int CHEMICALS_CATEGORY_ID = 109;
-	
 	public MProductTest() {
 	}
 
 	private void createPOAndMRForProduct(int productId) {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_PATIO));
-		order.setC_DocTypeTarget_ID(DOCTYPE_PO);
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
 		order.setIsSOTrx(false);
-		order.setSalesRep_ID(USER_GARDENADMIN);
+		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
@@ -106,11 +95,11 @@ public class MProductTest extends AbstractTestCase {
 		line1.saveEx();
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());		
 		
-		MInOut receipt1 = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());
+		MInOut receipt1 = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
 		receipt1.setDocStatus(DocAction.STATUS_Drafted);
 		receipt1.setDocAction(DocAction.ACTION_Complete);
 		receipt1.saveEx();
@@ -121,7 +110,7 @@ public class MProductTest extends AbstractTestCase {
 		receiptLine1.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(receipt1, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		receipt1.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, receipt1.getDocStatus());
 		if (!receipt1.isPosted()) {
@@ -132,10 +121,10 @@ public class MProductTest extends AbstractTestCase {
 	
 	@Test
 	public void testIsAndGetMethods() {
-		MProduct product = MProduct.get(TSHIRT_GL_PRODUCT_ID);
+		MProduct product = MProduct.get(DictionaryIDs.M_Product.TSHIRT_GL.id);
 		MAttributeInstance attributeInstance = product.getAttributeInstance("Color (R-G-B)", getTrxName());
 		assertNotNull(attributeInstance);
-		assertEquals(COLOR_ATTRIBUTE_ID, attributeInstance.getM_Attribute_ID());
+		assertEquals(DictionaryIDs.M_Attribute.COLOR.id, attributeInstance.getM_Attribute_ID());
 		assertEquals("Green", attributeInstance.getValue());
 		
 		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
@@ -144,8 +133,8 @@ public class MProductTest extends AbstractTestCase {
 		String costingMethod = product.getCostingMethod(as);
 		assertEquals(as.getCostingMethod(), costingMethod);
 		
-		createPOAndMRForProduct(MULCH_PRODUCT_ID);
-		product = new MProduct(Env.getCtx(), MULCH_PRODUCT_ID, getTrxName());
+		createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id);
+		product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
 		MCost mcost = product.getCostingRecord(as, getAD_Org_ID(), 0);
 		assertNotNull(mcost);
 		assertEquals(product.get_ID(), mcost.getM_Product_ID());
@@ -154,15 +143,15 @@ public class MProductTest extends AbstractTestCase {
 		assertEquals(mcost.getM_Cost_UU(), mcost1.getM_Cost_UU());
 		
 		product = new MProduct(Env.getCtx(), 0, getTrxName());
-		product.setC_UOM_ID(HOUR_UOM_ID);
-		product.setM_Product_Category_ID(CHEMICALS_CATEGORY_ID);
-		assertEquals(MUOM.get(HOUR_UOM_ID).getStdPrecision(), product.getUOMPrecision());
-		assertEquals(MUOM.get(HOUR_UOM_ID).getUOMSymbol(), product.getUOMSymbol());
+		product.setC_UOM_ID(DictionaryIDs.C_UOM.HOUR.id);
+		product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.CHEMICALS.id);
+		assertEquals(MUOM.get(DictionaryIDs.C_UOM.HOUR.id).getStdPrecision(), product.getUOMPrecision());
+		assertEquals(MUOM.get(DictionaryIDs.C_UOM.HOUR.id).getUOMSymbol(), product.getUOMSymbol());
 		assertFalse(product.isInstanceAttribute());
-		product.setM_AttributeSet_ID(FERTILIZER_LOT_ATTRIBUTESET_ID);
+		product.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 		assertTrue(product.isInstanceAttribute());
 		assertFalse(product.isSerial());
-		product.setM_AttributeSet_ID(PATIO_CHAIR_ATTRIBUTESET_ID);
+		product.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.PATIO_CHAIR.id);
 		assertTrue(product.isSerial());
 		product.setIsStocked(true);
 		product.setProductType(MProduct.PRODUCTTYPE_Item);
@@ -178,7 +167,7 @@ public class MProductTest extends AbstractTestCase {
 		assertTrue(product.isService());
 		assertFalse(product.isStocked());
 		
-		MAttributeSet attributeSet = new MAttributeSet(Env.getCtx(), PATIO_CHAIR_ATTRIBUTESET_ID, null);
+		MAttributeSet attributeSet = new MAttributeSet(Env.getCtx(), DictionaryIDs.M_AttributeSet.PATIO_CHAIR.id, null);
 		String mandatoryType = attributeSet.getMandatoryType();
 		try {
 			attributeSet.setMandatoryType(MAttributeSet.MANDATORYTYPE_NotMandatory);
@@ -218,7 +207,7 @@ public class MProductTest extends AbstractTestCase {
 		int count = 0;
 		
 		//make sure there's on hand and reservation records
-		MProduct product = new MProduct(Env.getCtx(), MULCH_PRODUCT_ID, getTrxName());
+		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
 		createPOAndMRForProduct(product.get_ID());		
 		Query query = new Query(Env.getCtx(), MStorageOnHand.Table_Name, "M_Product_ID=?", getTrxName());
 		count = query.setParameters(product.get_ID()).count();
@@ -247,7 +236,8 @@ public class MProductTest extends AbstractTestCase {
 	
 	@Test
 	public void testDeactivateProductBOMValidation() {
-		Query query = new Query(Env.getCtx(), MPPProductBOM.Table_Name, MPPProductBOM.COLUMNNAME_PP_Product_BOM_ID+"<1000000", getTrxName());
+		Query query = new Query(Env.getCtx(), MPPProductBOM.Table_Name, MPPProductBOM.COLUMNNAME_PP_Product_BOM_ID+"<1000000"
+				+ " AND M_Product_ID NOT IN (SELECT M_Product_ID FROM PP_Product_BOMLine)", getTrxName());
 		MPPProductBOM bom = query.setClient_ID().setOnlyActiveRecords(true).first();
 		MPPProductBOMLine[] lines = bom.getLines();
 		final MProduct product = new MProduct(Env.getCtx(), lines[0].getM_Product_ID(), getTrxName());

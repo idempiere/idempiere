@@ -29,6 +29,7 @@ import org.compiere.model.MCountry;
  *	Time Utilities
  *
  * 	@author 	Jorg Janke
+ *  @author 	Teo Sarca, SC ARHIPAC SERVICE SRL
  * 	@version 	$Id: TimeUtil.java,v 1.3 2006/07/30 00:54:35 jjanke Exp $
  */
 public class TimeUtil
@@ -79,7 +80,7 @@ public class TimeUtil
 		if (month < 1 || month > 12)
 			throw new IllegalArgumentException("Invalid Month: " + month);
 		if (day < 1 || day > 31)
-			throw new IllegalArgumentException("Invalid Day: " + month);
+			throw new IllegalArgumentException("Invalid Day: " + day);
 		GregorianCalendar cal = new GregorianCalendar (year, month-1, day);
 		return new Timestamp (cal.getTimeInMillis());
 	}	//	getDay
@@ -91,7 +92,6 @@ public class TimeUtil
 	static public Calendar getToday ()
 	{
 		GregorianCalendar cal = new GregorianCalendar(Language.getLoginLanguage().getLocale());
-	//	cal.setTimeInMillis(System.currentTimeMillis());
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
@@ -119,9 +119,9 @@ public class TimeUtil
 	}	//	getNextDay
 	
 	/**
-	 * 	Get earliest time of next day
+	 * 	Get earliest time of previous day
 	 *  @param day day
-	 *  @return next day with 00:00
+	 *  @return previous day with 00:00
 	 */
 	static public Timestamp getPreviousDay (Timestamp day)
 	{
@@ -135,12 +135,12 @@ public class TimeUtil
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
 		return new Timestamp (cal.getTimeInMillis());
-	}	//	getNextDay
+	}	//	getPreviousDay
 
 	/**
 	 * 	Get last date in month
 	 *  @param day day
-	 *  @return last day with 00:00
+	 *  @return last day of month with 00:00
 	 */
 	static public Timestamp getMonthLastDay (Timestamp day)
 	{
@@ -157,7 +157,7 @@ public class TimeUtil
 		cal.set(Calendar.DAY_OF_MONTH, 1);	//	first
 		cal.add(Calendar.DAY_OF_YEAR, -1);	//	previous
 		return new Timestamp (cal.getTimeInMillis());
-	}	//	getNextDay
+	}	//	getMonthLastDay
 
 	/**
 	 * 	Return the day and time
@@ -181,7 +181,6 @@ public class TimeUtil
 			cal_2.get(Calendar.SECOND));
 		cal.set(Calendar.MILLISECOND, 0);
 		Timestamp retValue = new Timestamp(cal.getTimeInMillis());
-	//	log.fine( "TimeUtil.getDayTime", "Day=" + day + ", Time=" + time + " => " + retValue);
 		return retValue;
 	}	//	getDayTime
 
@@ -208,16 +207,13 @@ public class TimeUtil
 		//	case a
 		if (!end_2.after(start_1))		//	end not including
 		{
-	//		log.fine( "TimeUtil.InRange - No", start_1 + "->" + end_1 + " <??> " + start_2 + "->" + end_2);
 			return false;
 		}
 		//	case c
 		if (!start_2.before(end_1))		//	 end not including
 		{
-	//		log.fine( "TimeUtil.InRange - No", start_1 + "->" + end_1 + " <??> " + start_2 + "->" + end_2);
 			return false;
 		}
-	//	log.fine( "TimeUtil.InRange - Yes", start_1 + "->" + end_1 + " <??> " + start_2 + "->" + end_2);
 		return true;
 	}	//	inRange
 
@@ -254,69 +250,55 @@ public class TimeUtil
 		//	On same day
 		if (calStart.get(Calendar.YEAR) == calEnd.get(Calendar.YEAR)
 			&& calStart.get(Calendar.MONTH) == calEnd.get(Calendar.MONTH)
-			&& calStart.get(Calendar.DAY_OF_MONTH) == calEnd.get(Calendar.DAY_OF_YEAR))
+			&& calStart.get(Calendar.DAY_OF_MONTH) == calEnd.get(Calendar.DAY_OF_MONTH))
 		{
-			if ((!OnSaturday && dayStart == Calendar.SATURDAY)
-				|| (!OnSunday && dayStart == Calendar.SUNDAY)
-				|| (!OnMonday && dayStart == Calendar.MONDAY)
-				|| (!OnTuesday && dayStart == Calendar.TUESDAY)
-				|| (!OnWednesday && dayStart == Calendar.WEDNESDAY)
-				|| (!OnThursday && dayStart == Calendar.THURSDAY)
-				|| (!OnFriday && dayStart == Calendar.FRIDAY))
+			if ((OnSaturday && dayStart == Calendar.SATURDAY)
+				|| (OnSunday && dayStart == Calendar.SUNDAY)
+				|| (OnMonday && dayStart == Calendar.MONDAY)
+				|| (OnTuesday && dayStart == Calendar.TUESDAY)
+				|| (OnWednesday && dayStart == Calendar.WEDNESDAY)
+				|| (OnThursday && dayStart == Calendar.THURSDAY)
+				|| (OnFriday && dayStart == Calendar.FRIDAY))
 			{
-		//		log.fine( "TimeUtil.InRange - SameDay - Yes", start + "->" + end + " - "
-		//			+ OnMonday+"-"+OnTuesday+"-"+OnWednesday+"-"+OnThursday+"-"+OnFriday+"="+OnSaturday+"-"+OnSunday);
 				return true;
 			}
-		//	log.fine( "TimeUtil.InRange - SameDay - No", start + "->" + end + " - "
-		//		+ OnMonday+"-"+OnTuesday+"-"+OnWednesday+"-"+OnThursday+"-"+OnFriday+"="+OnSaturday+"-"+OnSunday);
 			return false;
 		}
-		//
-	//	log.fine( "TimeUtil.inRange - WeekDay Start=" + dayStart + ", Incl.End=" + dayEnd);
 
 		//	Calendar.SUNDAY=1 ... SATURDAY=7
 		BitSet days = new BitSet (8);
 		//	Set covered days in BitArray
 		if (dayEnd <= dayStart)
 			dayEnd += 7;
-		for (int i = dayStart; i < dayEnd; i++)
+		for (int i = dayStart; i <= dayEnd; i++)
 		{
 			int index = i;
 			if (index > 7)
 				index -= 7;
 			days.set(index);
-	//		System.out.println("Set index=" + index + " i=" + i);
 		}
 
-	//	for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++)
-	//		System.out.println("Result i=" + i + " - " + days.get(i));
-
 		//	Compare days to availability
-		if ((!OnSaturday && days.get(Calendar.SATURDAY))
-			|| (!OnSunday && days.get(Calendar.SUNDAY))
-			|| (!OnMonday && days.get(Calendar.MONDAY))
-			|| (!OnTuesday && days.get(Calendar.TUESDAY))
-			|| (!OnWednesday && days.get(Calendar.WEDNESDAY))
-			|| (!OnThursday && days.get(Calendar.THURSDAY))
-			|| (!OnFriday && days.get(Calendar.FRIDAY)))
+		if ((OnSaturday && days.get(Calendar.SATURDAY))
+			|| (OnSunday && days.get(Calendar.SUNDAY))
+			|| (OnMonday && days.get(Calendar.MONDAY))
+			|| (OnTuesday && days.get(Calendar.TUESDAY))
+			|| (OnWednesday && days.get(Calendar.WEDNESDAY))
+			|| (OnThursday && days.get(Calendar.THURSDAY))
+			|| (OnFriday && days.get(Calendar.FRIDAY)))
 		{
-	//		log.fine( "MAssignment.InRange - Yes",	start + "->" + end + " - "
-	//			+ OnMonday+"-"+OnTuesday+"-"+OnWednesday+"-"+OnThursday+"-"+OnFriday+"="+OnSaturday+"-"+OnSunday);
 			return true;
 		}
 
-	//	log.fine( "MAssignment.InRange - No", start + "->" + end + " - "
-	//		+ OnMonday+"-"+OnTuesday+"-"+OnWednesday+"-"+OnThursday+"-"+OnFriday+"="+OnSaturday+"-"+OnSunday);
 		return false;
-	}	//	isRange
+	}	//	inRange
 
 
 	/**
 	 * 	Is it the same day
 	 * 	@param one day
 	 * 	@param two compared day
-	 * 	@return true if the same day
+	 * 	@return true if one and two is same day
 	 */
 	static public boolean isSameDay (Timestamp one, Timestamp two)
 	{
@@ -334,10 +316,10 @@ public class TimeUtil
 	}	//	isSameDay
 
 	/**
-	 * 	Is it the same hour
+	 * 	Is it the same day and same hour
 	 * 	@param one day/time
 	 * 	@param two compared day/time
-	 * 	@return true if the same day
+	 * 	@return true if one and two is same day and hour
 	 */
 	static public boolean isSameHour (Timestamp one, Timestamp two)
 	{
@@ -410,8 +392,6 @@ public class TimeUtil
 		calEnd.set(Calendar.MINUTE, 0);
 		calEnd.set(Calendar.SECOND, 0);
 		calEnd.set(Calendar.MILLISECOND, 0);
-
-	//	System.out.println("Start=" + start + ", End=" + end + ", dayStart=" + cal.get(Calendar.DAY_OF_YEAR) + ", dayEnd=" + calEnd.get(Calendar.DAY_OF_YEAR));
 
 		//	in same year
 		if (cal.get(Calendar.YEAR) == calEnd.get(Calendar.YEAR))
@@ -543,17 +523,16 @@ public class TimeUtil
 		long hours = elapsedMS%24;
 		long days = elapsedMS / 24;
 		//
-		if (days != 0)
-			sb.append(days).append("'");
+		sb.append(days).append("'");
 		//	hh
 		if (hours != 0)
 			sb.append(get2digits(hours)).append(":");
-		else if (days != 0)
+		else
 			sb.append("00:");
 		//	mm
 		if (minutes != 0)
 			sb.append(get2digits(minutes)).append(":");
-		else if (hours != 0 || days != 0)
+		else
 			sb.append("00:");
 		//	ss
 		sb.append(get2digits(seconds))
@@ -579,7 +558,7 @@ public class TimeUtil
 	 * 	Is it valid today?
 	 *	@param validFrom valid from
 	 *	@param validTo valid to
-	 *	@return true if walid
+	 *	@return true if today is between validFrom and validTo
 	 */
 	public static boolean isValid (Timestamp validFrom, Timestamp validTo)
 	{
@@ -591,7 +570,7 @@ public class TimeUtil
 	 *	@param validFrom valid from
 	 *	@param validTo valid to
 	 *	@param testDate Date
-	@return true if walid
+	 *  @return true if testDate is null or between validFrom and validTo
 	 */
 	public static boolean isValid (Timestamp validFrom, Timestamp validTo, Timestamp testDate)
 	{
@@ -638,10 +617,10 @@ public class TimeUtil
 	public static final String	TRUNC_YEAR = "Y";
 	
 	/**
-	 * 	Get truncated day/time
+	 * 	Get truncated timestamp (without time)
 	 *  @param dayTime day
-	 *  @param trunc how to truncate TRUNC_*
-	 *  @return next day with 00:00
+	 *  @param trunc {@link #TRUNC_DAY}, {@link #TRUNC_WEEK}, {@link #TRUNC_MONTH}, {@link #TRUNC_QUARTER} or {@link #TRUNC_YEAR}
+	 *  @return truncated timestamp (without time)
 	 */
 	static public Timestamp trunc (Timestamp dayTime, String trunc)
 	{
@@ -670,14 +649,14 @@ public class TimeUtil
 		if (trunc.equals(TRUNC_QUARTER))
 		{
 			int mm = cal.get(Calendar.MONTH);
-			if (mm < 4)
-				mm = 1;
-			else if (mm < 7)
-				mm = 4;
-			else if (mm < 10)
-				mm = 7;
+			if (mm < Calendar.APRIL)
+				mm = Calendar.JANUARY;
+			else if (mm < Calendar.JULY)
+				mm = Calendar.APRIL;
+			else if (mm < Calendar.OCTOBER)
+				mm = Calendar.JULY;
 			else
-				mm = 10;
+				mm = Calendar.OCTOBER;
 			cal.set(Calendar.MONTH, mm);
 			return new Timestamp (cal.getTimeInMillis());
 		}
@@ -686,14 +665,14 @@ public class TimeUtil
 	}	//	trunc
 	
 	/**
-	 * Returns the day border by combining the date part from dateTime and time part form timeSlot.
-	 * If timeSlot is null, then first milli of the day will be used (if end == false)
-	 * or last milli of the day (if end == true).
+	 * Returns timestamp by combining the date part from dateTime and time part form timeSlot.
+	 * If timeSlot is null, then first millisecond of the day will be used (if end == false)
+	 * or last millisecond of the day (if end == true).
 	 * 
 	 * @param dateTime
 	 * @param timeSlot
 	 * @param end
-	 * @return
+	 * @return {@link Timestamp}
 	 */
 	public static Timestamp getDayBorder(Timestamp dateTime, Timestamp timeSlot, boolean end)
 	{
@@ -730,32 +709,11 @@ public class TimeUtil
 	}
 
 	
-	/**
-	 * 	Test
-	 *	@param args ignored
-	 */
-	public static void main (String[] args)
-	{
-		Timestamp t1 = getDay(01, 01, 01);
-		Timestamp t2 = getDay(02, 02, 02);
-		Timestamp t3 = getDay(03, 03, 03);
-		
-		Timestamp t4 = getDay(01, 01, 01);
-		Timestamp t5 = getDay(02, 02, 02);
-		
-		System.out.println(t1 + " - " + t3);
-		System.out.println(t2 + " - " + isValid (t1,t3, t2));
-		System.out.println(isSameDay(t1, t4) + " == true" );
-		System.out.println(isSameDay(t2, t5) + " == true");
-		System.out.println(isSameDay(t3, t5) + " == false");
-	}	//	main
-	
 // ARHIPAC: TEO: ADDITION ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	/**
 	 * [ ARHIPAC ] Gets calendar instance of given date
 	 * @param date calendar initialization date; if null, the current date is used
 	 * @return calendar
-	 * author Teo Sarca, SC ARHIPAC SERVICE SRL
 	 */
 	static public Calendar getCalendar(Timestamp date)
 	{
@@ -791,7 +749,6 @@ public class TimeUtil
 	 * @param day Day; if null current time will be used
 	 * @param offset months offset
 	 * @return Day + offset (time will be 00:00)
-	 * @return Teo Sarca, SC ARHIPAC SERVICE SRL
 	 */
 	static public Timestamp addMonths (Timestamp day, int offset)
 	{
@@ -810,6 +767,12 @@ public class TimeUtil
 		return new Timestamp (cal.getTimeInMillis());
 	}	//	addMonths
 	
+	/**
+	 * 
+	 * @param start
+	 * @param end
+	 * @return number of months between start and end
+	 */
 	public static int getMonthsBetween (Timestamp start, Timestamp end)
 	{
 		Calendar startCal = getCalendar(start);
@@ -819,7 +782,14 @@ public class TimeUtil
 				- (startCal.get(Calendar.YEAR) * 12 + startCal.get(Calendar.MONTH));
 	}
 
-	/** Returns start date + nbDays which cannot be saturday or sunday or non business days */
+	/**
+	 * 
+	 * @param startDate
+	 * @param nbDays number of days
+	 * @param clientID AD_Client_ID
+	 * @param trxName
+	 * @return start date + nbDays which cannot be saturday or sunday or non business days
+	 */
 	public static Timestamp addOnlyBusinessDays(Timestamp startDate, int nbDays, int clientID, String trxName)
 	{
 		Timestamp retValue = startDate;
@@ -832,8 +802,29 @@ public class TimeUtil
 		return retValue;
 	}
 
-	/** Returns number of non business days between 2 dates */
+	/**
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @param clientID
+	 * @param trxName
+	 * @return number of business days between 2 dates for the country based on current default country
+	 */
 	public static int getBusinessDaysBetween(Timestamp startDate, Timestamp endDate, int clientID, String trxName)
+	{
+		return getBusinessDaysBetween(startDate, endDate, clientID, MCountry.getDefault().getC_Country_ID(), trxName);
+	}
+
+	/**
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @param clientID
+	 * @param countryID
+	 * @param trxName
+	 * @return number of business days between 2 dates for a specified country
+	 */
+	public static int getBusinessDaysBetween(Timestamp startDate, Timestamp endDate, int clientID, int countryID, String trxName)
 	{
 		int retValue = 0;
 
@@ -849,7 +840,7 @@ public class TimeUtil
 		}
 
 		final String sql = "SELECT Date1 FROM C_NonBusinessDay WHERE IsActive='Y' AND AD_Client_ID=? AND Date1 BETWEEN ? AND ? AND COALESCE(C_Country_ID,0) IN (0, ?)";
-		List<Object> nbd = DB.getSQLValueObjectsEx(trxName, sql, clientID, startDate, endDate, MCountry.getDefault().getC_Country_ID());
+		List<Object> nbd = DB.getSQLValueObjectsEx(trxName, sql, clientID, startDate, endDate, countryID);
 
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(startDate);
@@ -865,7 +856,7 @@ public class TimeUtil
 		calEnd.set(Calendar.SECOND, 0);
 		calEnd.set(Calendar.MILLISECOND, 0);
 
-		while (cal.before(calEnd) || cal.equals(calEnd)) {
+		while (cal.before(calEnd)) {
 			if (nbd == null || !nbd.contains(new Timestamp(cal.getTimeInMillis()))) {
 				if (cal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
 					retValue++;

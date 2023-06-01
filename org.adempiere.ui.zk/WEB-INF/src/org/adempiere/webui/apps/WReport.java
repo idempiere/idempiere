@@ -19,7 +19,8 @@ package org.adempiere.webui.apps;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.adempiere.webui.window.FDialog;
+
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -39,15 +40,15 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
 
 /**
- * Base on org.compiere.print.AReport
+ * Launch report for table (immediate or through popup menu, depends on number of print format discover
+ * for AD_Table_ID and AD_Window_ID). 
  * @author Low Heng Sin
  *
  */
 public class WReport implements EventListener<Event> {
 
 	/**
-	 *	Constructor
-	 *
+	 *	Call {@link #WReport(int, MQuery, Component, int)}
 	 *  @param AD_Table_ID table
 	 *  @param query query
 	 */
@@ -57,11 +58,10 @@ public class WReport implements EventListener<Event> {
 	}
 	
 	/**
-	 *	Constructor
-	 *
+	 *	Call {@link #WReport(int, MQuery, Component, int, String)}
 	 *  @param AD_Table_ID table
 	 *  @param query query
-	 *  @param parent The invoking parent window
+	 *  @param parent The invoking parent component
 	 *  @param WindowNo The invoking parent window number
 	 */
 	public WReport (int AD_Table_ID, MQuery	query, Component parent, 
@@ -71,7 +71,8 @@ public class WReport implements EventListener<Event> {
 	}
 	
 	/**
-	 *	Constructor
+	 *	Launch report immediately (if only one print format found) or show menu popup 
+	 *  for the list of print formats discover for AD_Table_ID and AD_Window_ID (from WindowNo).
 	 *
 	 *  @param AD_Table_ID table
 	 *  @param query query
@@ -85,7 +86,7 @@ public class WReport implements EventListener<Event> {
 		if (log.isLoggable(Level.CONFIG)) log.config("AD_Table_ID=" + AD_Table_ID + " " + query);
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
-			FDialog.error(0, "AccessCannotReport", query.getTableName());
+			Dialog.error(0, "AccessCannotReport", query.getTableName());
 			return;
 		}
 
@@ -102,25 +103,26 @@ public class WReport implements EventListener<Event> {
 		getPrintFormats (AD_Table_ID, AD_Window_ID);
 	}	//	AReport
 
-	/**	The Query						*/
+	/**	Query parameter **/
 	private MQuery	 	m_query;
+	/** menu popup to show the list of print formats discover **/
 	private Menupopup 	m_popup;
-	/**	The Option List					*/
+	/**	List of KeyNamePair(AD_PrintFormat_ID,Name)	**/
 	private List<KeyNamePair>	m_list = new ArrayList<KeyNamePair>();
-	/**	Logger			*/
+	/**	Logger **/
 	private static final CLogger log = CLogger.getCLogger(WReport.class);
-	/** The parent window for locking/unlocking during process execution */
-	Component parent;
-	/** The parent window number */
-	int WindowNo;
-	/** The filter to apply to this report */
+	/** The invoking parent component **/
+	protected Component parent;
+	/** The parent window number **/
+	protected int WindowNo;
+	/** The filter to apply to this report **/
 	private String whereExtended;
 	
 	/**
-	 * 	Get the Print Formats for the table.
-	 *  Fill the list and the popup menu
+	 * 	Get Print Formats for table and window.
+	 *  If there's only 1 print format found, call {@link #launchReport(KeyNamePair)}, otherwise call {@link #showPopup()}.
 	 * 	@param AD_Table_ID table
-	 *  @param invoker component to display popup (optional)
+	 *  @param AD_Window_ID
 	 */
 	private void getPrintFormats (int AD_Table_ID, int AD_Window_ID)
 	{
@@ -133,6 +135,9 @@ public class WReport implements EventListener<Event> {
 			showPopup();	//	below button
 	}	//	getPrintFormats
 
+	/**
+	 * Show popup menu for the list of print formats found.
+	 */
 	private void showPopup() {
 		m_popup = new Menupopup();		
 		for(int i = 0; i < m_list.size(); i++)
@@ -149,7 +154,7 @@ public class WReport implements EventListener<Event> {
 
 	/**
 	 * 	Launch Report
-	 * 	@param pp Key=AD_PrintFormat_ID
+	 * 	@param pp KeyNamePair(AD_PrintFormat_ID,Name)
 	 */
 	private void launchReport (KeyNamePair pp)
 	{
@@ -195,14 +200,13 @@ public class WReport implements EventListener<Event> {
 		else
 		{
 			// It's a default report using the standard printing engine
-			ReportEngine re = new ReportEngine (Env.getCtx(), pf, m_query, info);
+			ReportEngine re = new ReportEngine (Env.getCtx(), pf, m_query, info, null, WindowNo);
 			re.setWhereExtended(whereExtended);
-			re.setWindowNo(WindowNo);
 			ReportCtl.preview(re);
 		}
 	}	//	launchReport
 
-	/**************************************************************************
+	/**
 	 * 	Get AD_Table_ID for Table Name
 	 * 	@param tableName table name
 	 * 	@return AD_Table_ID or 0
@@ -212,9 +216,11 @@ public class WReport implements EventListener<Event> {
 		return MTable.getTable_ID(tableName);
 	}	//	getAD_Table_ID
 
+	@Override
 	public void onEvent(Event event) {
 		if(event.getTarget() instanceof Menuitem)
 		{
+			//ON_CLICK event from showPopup() menu item. 
 			Menuitem mi = (Menuitem) event.getTarget();
 			launchReport(m_list.get(Integer.parseInt(mi.getValue().toString())));
 		}

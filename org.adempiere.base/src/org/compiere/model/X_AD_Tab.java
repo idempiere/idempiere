@@ -31,7 +31,7 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220119L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Tab (Properties ctx, int AD_Tab_ID, String trxName)
@@ -312,21 +312,6 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set AD_Tab_UU.
-		@param AD_Tab_UU AD_Tab_UU
-	*/
-	public void setAD_Tab_UU (String AD_Tab_UU)
-	{
-		set_Value (COLUMNNAME_AD_Tab_UU, AD_Tab_UU);
-	}
-
-	/** Get AD_Tab_UU.
-		@return AD_Tab_UU	  */
-	public String getAD_Tab_UU()
-	{
-		return (String)get_Value(COLUMNNAME_AD_Tab_UU);
-	}
-
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Table)MTable.get(getCtx(), org.compiere.model.I_AD_Table.Table_ID)
@@ -378,6 +363,21 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		return (String)get_Value(COLUMNNAME_AD_TabType);
 	}
 
+	/** Set AD_Tab_UU.
+		@param AD_Tab_UU AD_Tab_UU
+	*/
+	public void setAD_Tab_UU (String AD_Tab_UU)
+	{
+		set_Value (COLUMNNAME_AD_Tab_UU, AD_Tab_UU);
+	}
+
+	/** Get AD_Tab_UU.
+		@return AD_Tab_UU	  */
+	public String getAD_Tab_UU()
+	{
+		return (String)get_Value(COLUMNNAME_AD_Tab_UU);
+	}
+
 	public org.compiere.model.I_AD_Window getAD_Window() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Window)MTable.get(getCtx(), org.compiere.model.I_AD_Window.Table_ID)
@@ -420,6 +420,21 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 	public String getCommitWarning()
 	{
 		return (String)get_Value(COLUMNNAME_CommitWarning);
+	}
+
+	/** Set Delete Confirmation Logic.
+		@param DeleteConfirmationLogic Delete Confirmation Logic
+	*/
+	public void setDeleteConfirmationLogic (String DeleteConfirmationLogic)
+	{
+		set_Value (COLUMNNAME_DeleteConfirmationLogic, DeleteConfirmationLogic);
+	}
+
+	/** Get Delete Confirmation Logic.
+		@return Delete Confirmation Logic	  */
+	public String getDeleteConfirmationLogic()
+	{
+		return (String)get_Value(COLUMNNAME_DeleteConfirmationLogic);
 	}
 
 	/** Set Description.
@@ -762,7 +777,7 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		return false;
 	}
 
-	/** Set TranslationTab.
+	/** Set Translation Tab.
 		@param IsTranslationTab This Tab contains translation information
 	*/
 	public void setIsTranslationTab (boolean IsTranslationTab)
@@ -770,7 +785,7 @@ public class X_AD_Tab extends PO implements I_AD_Tab, I_Persistent
 		set_Value (COLUMNNAME_IsTranslationTab, Boolean.valueOf(IsTranslationTab));
 	}
 
-	/** Get TranslationTab.
+	/** Get Translation Tab.
 		@return This Tab contains translation information
 	  */
 	public boolean isTranslationTab()

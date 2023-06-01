@@ -129,7 +129,7 @@ public class AbstractService {
 			}
 		}
 		if (!okclient)
-			return "Error logging in - client not allowed for this user";
+			return "Error logging in - tenant not allowed for this user";
 
 		m_cs.getCtx().setProperty(Env.AD_CLIENT_ID, "" + loginRequest.getClientID());
        	Env.setContext(m_cs.getCtx(), Env.AD_CLIENT_ID, (String) selectedClient.getID());
@@ -266,7 +266,7 @@ public class AbstractService {
 			}
 	        if (!bAccess.booleanValue())
 	        {
-	            return "Web Service Error: Login role does not have access to the service type";
+	            return "Web Service Error: Login role does not have access to the service type '" + serviceTypeValue + "'";
 	        }			
 		}
         
@@ -427,7 +427,7 @@ public class AbstractService {
 					int ind = sqlBuilder.lastIndexOf("=");
 					sqlBuilder.replace(ind, sqlBuilder.length(), " Is Null ");
 				}else if (val == null)
-					throw new AdempiereException("Can not resolve varialbe '" + token + "' in sql");
+					throw new AdempiereException("Can not resolve variable '" + token + "' in sql");
 				else{
 					sqlBuilder.append(" ? ");
 					sqlParas.add(val);

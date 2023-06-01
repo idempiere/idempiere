@@ -297,7 +297,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	 */
 	public MPInstance processIt (int Record_ID, Trx trx, boolean managedTrx)
 	{
-		MPInstance pInstance = new MPInstance (this, Record_ID);
+		MPInstance pInstance = new MPInstance (getCtx(), this.getAD_Process_ID(), Record_ID);
 		//	Lock
 		pInstance.setIsProcessing(true);
 		pInstance.saveEx();
@@ -340,7 +340,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	{
 		if (pi.getAD_PInstance_ID() == 0)
 		{
-			MPInstance pInstance = new MPInstance (this, pi.getRecord_ID());
+			MPInstance pInstance = new MPInstance (getCtx(), this.getAD_Process_ID(), pi.getRecord_ID());
 			//	Lock
 			pInstance.setIsProcessing(true);
 			pInstance.saveEx();

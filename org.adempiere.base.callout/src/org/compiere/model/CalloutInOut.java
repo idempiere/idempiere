@@ -569,7 +569,6 @@ public class CalloutInOut extends CalloutEngine
 			return "";
 
 		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
-		//	log.log(Level.WARNING,"qty - init - M_Product_ID=" + M_Product_ID);
 		BigDecimal MovementQty, QtyEntered;
 
 		//	No Product

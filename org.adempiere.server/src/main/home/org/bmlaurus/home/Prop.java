@@ -90,7 +90,7 @@ public final class Prop implements Serializable {
 	public static final String	SOC_7				=	"Social7";
 	
 	/**Defaults*/
-	private static final String CREDITS				=	"Welcome to the iDempiere 9 Horizon Page!";
+	private static final String CREDITS				=	"Welcome to the iDempiere 10 Peace Page!";
 	private static String LOGO_URL 					= 	null;
 	
 	

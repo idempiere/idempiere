@@ -14,6 +14,7 @@
 package org.adempiere.webui.apps.form;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.adwindow.StatusBar;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListModelTable;
@@ -28,7 +29,7 @@ import org.adempiere.webui.event.WTableModelListener;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.CreateFrom;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
@@ -40,26 +41,42 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 
+/**
+ * Window for create from form 
+ * @author hengsin
+ */
 public class WCreateFromWindow extends Window implements EventListener<Event>, WTableModelListener, DialogEvents
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6750121735083748182L;
 
+	/** Create from form controller */
 	private CreateFrom createFrom;
 	private int windowNo;
 	
+	/** Parameter panel. North of window. */
 	private Panel parameterPanel = new Panel();
+	/** Action buttons panel. South of window. */
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
+	/** Status bar. South of window. */
 	private StatusBarPanel statusBar = new StatusBarPanel();
+	/** Data grid. Center of window. */
 	private WListbox dataTable = ListboxFactory.newDataTable();
 
+	/** true if window is cancel by user */
 	private boolean isCancel;
 	
+	/** select all action */
 	public static final String SELECT_DESELECT_ALL = "SelectAll";
 	private boolean checkAllSelected = true;
 
+	/**
+	 * 
+	 * @param createFrom
+	 * @param windowNo
+	 */
 	public WCreateFromWindow(CreateFrom createFrom, int windowNo)
 	{
 		super();
@@ -82,6 +99,10 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		}		
     }
 	
+	/**
+	 * Layout window.
+	 * @throws Exception
+	 */
 	protected void zkInit() throws Exception
 	{
 		Borderlayout contentPane = new Borderlayout();
@@ -135,6 +156,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		ZKUpdateUtil.setHeight(contentPane, "100%");
 	}
 
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		//  OK - Save
@@ -154,7 +176,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 			}
 			catch (Exception ex)
 			{
-				FDialog.error(windowNo, this, "Error", ex.getLocalizedMessage());
+				Dialog.error(windowNo, "Error", ex.getLocalizedMessage());
 			}
 		}
 		//  Cancel
@@ -185,6 +207,7 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		}
 	}
 
+	@Override
 	public void tableChanged (WTableModelEvent e)
 	{
 		int type = -1;
@@ -210,6 +233,12 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		info();
 	}
 	
+	/**
+	 * Save changes.
+	 * Delegate to {@link CreateFrom#save(org.compiere.minigrid.IMiniTable, String)}.
+	 * @param trxName
+	 * @return true if save successfully
+	 */
 	public boolean save(String trxName)
 	{
 		ListModelTable model = dataTable.getModel();
@@ -220,6 +249,10 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		return createFrom.save(dataTable, trxName);
 	}
 
+	/**
+	 * Update {@link #statusBar}.<br/>
+	 * Delegate to {@link CreateFrom#info(org.compiere.minigrid.IMiniTable, org.compiere.apps.IStatusBar)}.
+	 */
 	public void info()
 	{
 		ListModelTable model = dataTable.getModel();
@@ -235,6 +268,12 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		createFrom.info(dataTable, statusBar);
 	}
 	
+	/**
+	 * Update {@link #statusBar}.
+	 * Call {@link StatusBar#setStatusLine(String)}.
+	 * @param selectedRowCount
+	 * @param text
+	 */
 	public void setStatusLine(int selectedRowCount, String text) 
 	{
 		StringBuilder sb = new StringBuilder(String.valueOf(selectedRowCount));
@@ -246,31 +285,50 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 		confirmPanel.getOKButton().setEnabled(selectedRowCount > 0);
 	}
 	
+	/**
+	 * @return {@link StatusBarPanel}
+	 */
 	public StatusBarPanel getStatusBar()
 	{
 		return statusBar;
 	}
 
+	/**
+	 * @param statusBar
+	 */
+	@Deprecated(forRemoval = true, since = "11")
 	public void setStatusBar(StatusBarPanel statusBar)
 	{
 		this.statusBar = statusBar;
 	}
 	
+	/**
+	 * @return {@link WListbox}
+	 */
 	public WListbox getWListbox()
 	{
 		return dataTable;
 	}
 	
+	/**
+	 * @return {@link Panel}
+	 */
 	public Panel getParameterPanel()
 	{
 		return parameterPanel;
 	}
 	
+	/**
+	 * @return {@link ConfirmPanel}
+	 */
 	public ConfirmPanel getConfirmPanel()
 	{
 		return confirmPanel;
 	}
 	
+	/**
+	 * @return true if dialog cancel by user
+	 */
 	public boolean isCancel() 
 	{
 		return isCancel;

@@ -38,14 +38,11 @@ import org.compiere.util.Msg;
  *  @version $Id: Charge.java,v 1.3 2006/07/30 00:51:28 jjanke Exp $
  */
 public class Charge
-{
+{	
 	/**	Window No			*/
-	public int         m_WindowNo = 0;
-//	/**	FormFrame			*/
-//	private FormFrame 	m_frame;
-
+	protected int         m_WindowNo = 0;
 	/** Account Element     */
-	public int         m_C_Element_ID = 0;
+	protected int         m_C_Element_ID = 0;
 	/** AccountSchema       */
 	private int         m_C_AcctSchema_ID = 0;
 	/** Default Charge Tax Category */
@@ -54,12 +51,31 @@ public class Charge
 	private int         m_AD_Org_ID = 0;
 	private MAcctSchema  m_acctSchema = null;
 	/**	Logger			*/
-	public static final CLogger log = CLogger.getCLogger(Charge.class);
+	protected static final CLogger log = CLogger.getCLogger(Charge.class);
 
+	/** optional trx name */
+	private String m_trxName;
+	
 	/**
-	 *  Dynamic Init
-	 *  - Get defaults for primary AcctSchema
-	 *  - Create Table with Accounts
+	 * default constructor
+	 */
+	public Charge() 
+	{
+		findChargeElementID();
+    	findTaxCategoryID();
+	}
+	
+	/**
+	 * set optional trx name
+	 * @param trxName
+	 */
+	public void setTrxName(String trxName)
+	{
+		m_trxName = trxName;
+	}
+	
+	/**
+	 *  @return list of account element(Boolean[Select],KeyNamePair[C_ElementValue_ID,Value],Name,Boolean[IsExpense]) records
 	 */
 	public Vector<Vector<Object>> getData()
 	{
@@ -75,7 +91,7 @@ public class Charge
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, m_trxName);
 			pstmt.setInt(1, m_C_Element_ID);
 			rs = pstmt.executeQuery();
 			while (rs.next())
@@ -105,10 +121,10 @@ public class Charge
 	}
 	
 	/**
-     * Finds the Element Identifier for the current charge.
+     * Finds C_Element_ID of primary accounting schema
      *
      */
-    public void findChargeElementID()
+    protected void findChargeElementID()
     {
     	m_C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), Env.C_ACCTSCHEMA_ID);
         //  get Element
@@ -119,7 +135,7 @@ public class Charge
         ResultSet rs = null;
         try
         {
-            pstmt = DB.prepareStatement(sql, null);
+            pstmt = DB.prepareStatement(sql, m_trxName);
             pstmt.setInt(1, m_C_AcctSchema_ID);
             rs = pstmt.executeQuery();
             if (rs.next())
@@ -139,6 +155,10 @@ public class Charge
         }
     }
 	
+    /**
+     * 
+     * @return column names
+     */
 	public Vector<String> getColumnNames()
 	{
 		//  Header Info
@@ -151,6 +171,10 @@ public class Charge
 		return columnNames;
 	}
 	
+	/**
+	 * set class type of columns
+	 * @param dataTable
+	 */
 	public void setColumnClass(IMiniTable dataTable)
 	{
 		dataTable.setColumnClass(0, Boolean.class, false);      //  0-Selection
@@ -162,9 +186,9 @@ public class Charge
 	}
 	
 	/**
-     * Finds the identifier for the tax category for the client.
+     * Finds default tax category for the client.
      */
-	public void findTaxCategoryID()
+	protected void findTaxCategoryID()
 	{
 		//  Other Defaults
 		m_AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
@@ -178,7 +202,7 @@ public class Charge
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, m_trxName);
 			pstmt.setInt(1, m_AD_Client_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -201,20 +225,24 @@ public class Charge
 	 *  @param value value
 	 *  @param name name
 	 *  @param isExpenseType is expense
-	 *  @return element value
+	 *  @return C_ElementValue_ID or 0 if create fail
 	 */
-	protected int createElementValue (String value, String name, boolean isExpenseType)
+	public int createElementValue (String value, String name, boolean isExpenseType)
 	{
-		log.config(name);
+		if (log.isLoggable(Level.CONFIG)) log.config(name);
 		//
 		MElementValue ev = new MElementValue(Env.getCtx(), value, name, null,
 			isExpenseType ? MElementValue.ACCOUNTTYPE_Expense : MElementValue.ACCOUNTTYPE_Revenue, 
 				MElementValue.ACCOUNTSIGN_Natural,
-				false, false, null);
+				false, false, m_trxName);
 		ev.setAD_Org_ID(m_AD_Org_ID);
 		ev.setC_Element_ID(m_C_Element_ID);
-		if (!ev.save())
-			log.log(Level.WARNING, "C_ElementValue_ID not created");
+		try {
+			ev.saveEx();
+		} catch (Exception e) {
+			log.log(Level.WARNING, "C_ElementValue_ID not created", e);
+			return 0;
+		}
 		return ev.getC_ElementValue_ID();
 	}   //  createElementValue
 
@@ -223,9 +251,9 @@ public class Charge
      *
      *  @param name             charge name
      *  @param elementValueId   element value identifier
-     *  @return charge identifier, or 0 if no charge created.
+     *  @return charge identifier, or 0 if create fail
      */
-    protected int createCharge(String name, int elementValueId)
+    public int createCharge(String name, int elementValueId)
     {
         MCharge charge;
         MAccount account;
@@ -245,13 +273,17 @@ public class Charge
         
         if (log.isLoggable(Level.CONFIG)) log.config(name + " - ");
         // Charge
-        charge = new MCharge(Env.getCtx(), 0, null);
+        charge = new MCharge(Env.getCtx(), 0, m_trxName);
         // IDEMPIERE-1099 - Key must be included in name to avoid name crashes in account schema.
         charge.setName(account.getAccount().getValue() + " " + name);
         charge.setC_TaxCategory_ID(m_C_TaxCategory_ID);
-        if (!charge.save())
+        try 
         {
-            log.log(Level.SEVERE, name + " not created");
+        	charge.saveEx();
+        } 
+        catch (Exception e)
+        {
+            log.log(Level.SEVERE, name + " not created", e);
             return 0;
         }
 
@@ -269,7 +301,7 @@ public class Charge
     {
         StringBuffer sql = createUpdateAccountSql(charge, account);
         //
-        int noAffectedRows = DB.executeUpdate(sql.toString(), null);
+        int noAffectedRows = DB.executeUpdate(sql.toString(), m_trxName);
         if (noAffectedRows != 1)
         {
             log.log(Level.SEVERE, "Update #" + noAffectedRows + "\n" + sql.toString());
@@ -326,7 +358,7 @@ public class Charge
         //  Get AcctSchama
         if (m_acctSchema == null)
         {
-            m_acctSchema = new MAcctSchema(Env.getCtx(), m_C_AcctSchema_ID, null);
+            m_acctSchema = new MAcctSchema(Env.getCtx(), m_C_AcctSchema_ID, m_trxName);
         }
 
         return;
@@ -362,14 +394,18 @@ public class Charge
             defaultAccount.getUser2_ID(),
             defaultAccount.getUserElement1_ID(),
             defaultAccount.getUserElement2_ID(),
-            null);
+            m_trxName);
 
         return account;
     }
 
-	public StringBuffer listCreated;
-	public StringBuffer listRejected;
+	protected StringBuffer listCreated;
+	protected StringBuffer listRejected;
 
+	/**
+	 * create charge from selected account elements
+	 * @param dataTable
+	 */
     public void createAccount(IMiniTable dataTable)
 	{
 		log.config("");
@@ -404,5 +440,69 @@ public class Charge
 			}
 		}
 	}   //  createAccount
+    
+    /**
+     * 
+     * @return comma separated list of account element names (where charge create success)
+     */
+    public String getCreatedAccountNames() {
+    	return listCreated != null ? listCreated.toString() : "";
+    }
+    
+    /**
+     * 
+     * @return comma separated list of account element names (where charge create fail)
+     */
+    public String getRejectedAccountNames() {
+    	return listRejected != null ? listRejected.toString() : "";
+    }
 
+    /** Enumeration of column names and indices. */
+    public enum EColumn
+    {
+        /** Select column to record whether the account is selected. */
+        SELECT(0, "Select"),
+        /** Value column to hold the account key. */
+        VALUE(1, "Value"),
+        /** Name column to hold the account name. */
+        NAME(2, "Name"),
+        /** Expense column to indicate whether or not the account is an expense account. */
+        EXPENSE(3, "Expense");
+
+        /** The column's index. */
+		private final int m_index;
+        /** The column's name. */
+        private final String m_title;
+
+        /**
+         * Constructor.
+         *
+         * @param index index of the column
+         * @param title name of the column
+         */
+        EColumn(int index, String title)
+        {
+            m_index = index;
+            m_title = title;
+        }
+
+        /**
+         * Gets the name of the column.
+         *
+         * @return the column's name
+         */
+        public String title()
+        {
+            return m_title;
+        }
+
+        /**
+         * 
+         * @return column index (start from 0)
+         */
+        public int index() 
+        {
+        	return m_index;
+        }
+    }
 }   //  Charge

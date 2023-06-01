@@ -23,29 +23,30 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.A;
-import org.zkoss.zul.Hlayout;
+import org.zkoss.zul.Span;
 
 /**
- * 
+ * Attachment item UI with Label and Link to remove attachment from container.
  * @author hengsin
- *
  */
-public class AttachmentItem extends Hlayout implements EventListener<Event>{
+public class AttachmentItem extends Span implements EventListener<Event>{
 	/**
 	 * generate serial id
 	 */
-	private static final long serialVersionUID = 9105759170502414466L;
+	private static final long serialVersionUID = -7599391160210459080L;
+	/** Attachment content */
 	private DataSource ds;
+	/** List that contains {@link #ds} */
 	private List<DataSource> list;
 
 	public AttachmentItem(DataSource ds, List<DataSource> list, boolean removable) {
-		setStyle("border: 1px solid #dcdcdc; background-color: #f5f5f5; " +
-				"width: auto !important;display: inline-block; height: 21px; " +
-				"margin-right: 5px; margin-bottom: 5px;padding-left: 5px; padding-right: 5px;");
-		appendChild(new Label(ds.getName()));
+		setSclass("z-attachment-item");
+		Label label = new Label(ds.getName());
+		label.setSclass("z-attachment-item-text");
+		appendChild(label);
 		if (removable) {
 			A x = new A("", ThemeManager.getThemeResource("images/X8.png"));
-			x.setStyle("float: right; background-color: #f5f5f5");
+			x.setSclass("z-attachment-item-del-button");
 			appendChild(x);
 			this.ds = ds;
 			this.list = list;

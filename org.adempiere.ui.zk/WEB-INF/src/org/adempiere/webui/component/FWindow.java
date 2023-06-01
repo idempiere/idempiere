@@ -19,18 +19,23 @@ package org.adempiere.webui.component;
 
 
 /**
- *
+ * Extend {@link org.zkoss.zul.Window}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
+ * @deprecated Just use {@link Window} instead
  */
+@Deprecated
 public class FWindow extends Window
 {
     /**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 7047997664627639977L;
 
+	/**
+	 * Default constructor
+	 */
 	public FWindow()
     {
         super();

@@ -28,7 +28,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Consumer;
 import java.util.logging.Level;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
@@ -644,6 +649,62 @@ public class Query
 		return false;
 	}
 	
+	/**
+	 * Return an Stream implementation to fetch one PO at a time. This method will only create POs on-demand and
+	 * they will become eligible for garbage collection once they have been consumed by the stream, so unlike
+	 * {@link #list()} it doesn't have to hold a copy of all the POs in the result set in memory at one time.
+	 * And unlike {#link #iterate()}, it only creates one ResultSet and iterates over it, creating a PO for each
+	 * row ({@link #iterate()}, on the other hand, has to re-run the query for each element).<br/>
+	 * 
+	 * For situations where you need to iterate over a result set and operate on the results one-at-a-time rather
+	 * than operate on the group as a whole, this method is likely to give better performance than <code>list()</code>
+	 * or <code>iterate()</code>.<br/>
+	 * 
+	 * <strong>However</strong>, because it keeps the underlying {@code ResultSet} open, you need to make sure that the
+	 * stream is properly disposed of using {@code close()} or else you will get resource leaks. As {@link Stream}
+	 * extends {@link AutoCloseable}, you can use it in a try-with-resources statement to automatically close it when
+	 * you are done.
+	 * 
+	 * @return Stream of POs.
+	 * @throws DBException 
+	 */
+	public <T extends PO> Stream<T> stream() throws DBException
+	{
+		String sql = buildSQL(null, true);
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = DB.prepareStatement (sql, trxName);
+			final PreparedStatement finalPstmt = pstmt;
+			rs = createResultSet(pstmt);
+			final ResultSet finalRS = rs;
+			
+			return StreamSupport.stream(new Spliterators.AbstractSpliterator<T>(
+						Long.MAX_VALUE,Spliterator.ORDERED) {
+					@Override
+					public boolean tryAdvance(Consumer<? super T> action) {
+						try {
+							if(!finalRS.next()) return false;
+							@SuppressWarnings("unchecked")
+							final T newRec = (T)table.getPO(finalRS, trxName);
+							action.accept(newRec);
+							return true;
+						} catch(SQLException ex) {
+							log.log(Level.SEVERE, sql, ex);
+							throw new DBException(ex, sql);
+						}
+					}
+				}, false).onClose(() -> DB.close(finalRS, finalPstmt));
+		}
+		catch (SQLException e)
+		{
+			DB.close(rs, pstmt);
+			log.log(Level.SEVERE, sql, e);
+			throw new DBException(e, sql);
+		}
+	}
+
 	/**
 	 * Return an Iterator implementation to fetch one PO at a time. The implementation first retrieve
 	 * all IDS that match the query criteria and issue sql query to fetch the PO when caller want to

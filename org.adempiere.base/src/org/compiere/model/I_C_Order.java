@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Order
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_C_Order 
 {
@@ -44,8 +44,8 @@ public interface I_C_Order
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_C_Order
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -93,19 +93,19 @@ public interface I_C_Order
     /** Column name AmountRefunded */
     public static final String COLUMNNAME_AmountRefunded = "AmountRefunded";
 
-	/** Set AmountRefunded	  */
+	/** Set Amount Refunded	  */
 	public void setAmountRefunded (BigDecimal AmountRefunded);
 
-	/** Get AmountRefunded	  */
+	/** Get Amount Refunded	  */
 	public BigDecimal getAmountRefunded();
 
     /** Column name AmountTendered */
     public static final String COLUMNNAME_AmountTendered = "AmountTendered";
 
-	/** Set AmountTendered	  */
+	/** Set Amount Tendered	  */
 	public void setAmountTendered (BigDecimal AmountTendered);
 
-	/** Get AmountTendered	  */
+	/** Get Amount Tendered	  */
 	public BigDecimal getAmountTendered();
 
     /** Column name Bill_BPartner_ID */
@@ -489,12 +489,12 @@ public interface I_C_Order
     /** Column name DatePrinted */
     public static final String COLUMNNAME_DatePrinted = "DatePrinted";
 
-	/** Set Date printed.
+	/** Set Date Printed.
 	  * Date the document was printed.
 	  */
 	public void setDatePrinted (Timestamp DatePrinted);
 
-	/** Get Date printed.
+	/** Get Date Printed.
 	  * Date the document was printed.
 	  */
 	public Timestamp getDatePrinted();
@@ -803,10 +803,10 @@ public interface I_C_Order
     /** Column name IsPriviledgedRate */
     public static final String COLUMNNAME_IsPriviledgedRate = "IsPriviledgedRate";
 
-	/** Set Priviledged Rate	  */
+	/** Set Privileged Rate	  */
 	public void setIsPriviledgedRate (boolean IsPriviledgedRate);
 
-	/** Get Priviledged Rate	  */
+	/** Get Privileged Rate	  */
 	public boolean isPriviledgedRate();
 
     /** Column name IsSelected */

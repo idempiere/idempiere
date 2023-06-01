@@ -39,6 +39,7 @@ import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MClient;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MImage;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MStorageProvider;
 import org.compiere.model.Query;
 import org.compiere.process.ProcessInfoParameter;
@@ -93,7 +94,7 @@ public class MigrateStorageProvider extends SvrProcess {
 			} else if ("DeleteOld".equals(name)) {
 				p_DeleteOld  = para.getParameterAsBoolean();
 			} else {
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 	}	//	prepare
@@ -359,13 +360,13 @@ public class MigrateStorageProvider extends SvrProcess {
 
 	private void progress(int idxClient, int totalClients, int idxRecord, int cntRecords, String msg) {
 		if (processUI != null) {
-			processUI.statusUpdate("Client " + idxClient + "/" + totalClients + " - " + msg + " " + idxRecord + "/" + cntRecords + " = " + idxRecord*100/cntRecords + "%");
+			processUI.statusUpdate("Tenant " + idxClient + "/" + totalClients + " - " + msg + " " + idxRecord + "/" + cntRecords + " = " + idxRecord*100/cntRecords + "%");
 		}
 	}
 
 	private void status(int idxClient, int totalClients, String msg) {
 		if (processUI != null) {
-			processUI.statusUpdate("Client " + idxClient + "/" + totalClients + " - " + msg);
+			processUI.statusUpdate("Tenant " + idxClient + "/" + totalClients + " - " + msg);
 		}
 	}
 

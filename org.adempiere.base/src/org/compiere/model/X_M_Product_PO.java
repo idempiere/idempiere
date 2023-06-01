@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_Product_PO
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_PO")
 public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_Product_PO (Properties ctx, int M_Product_PO_ID, String trxName)

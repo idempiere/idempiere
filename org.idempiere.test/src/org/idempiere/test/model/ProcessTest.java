@@ -43,6 +43,7 @@ import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProduct;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
@@ -55,6 +56,7 @@ import org.compiere.wf.MWFNodeNext;
 import org.compiere.wf.MWFNodePara;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -74,7 +76,7 @@ public class ProcessTest extends AbstractTestCase {
 		//first test, using MProcess.processIt
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), 118));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -87,12 +89,12 @@ public class ProcessTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), 128));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
 		
-		int Process_Order=104;
+		int Process_Order=SystemIDs.PROCESS_C_ORDER_PROCESS;
 		MProcess process = MProcess.get(Env.getCtx(), Process_Order);
 		ProcessInfo pi = new ProcessInfo(process.getName(), process.get_ID());
 		pi.setAD_Client_ID(getAD_Client_ID());
@@ -122,8 +124,8 @@ public class ProcessTest extends AbstractTestCase {
 	
 	@Test
 	public void testJavaProcess() {
-		int Verify_BOM=136;
-		int Patio_Chair=133;
+		int Verify_BOM=SystemIDs.PROCESS_PP_PRODUCT_BOM;
+		int Patio_Chair=DictionaryIDs.M_Product.P_CHAIR.id;
 		
 		//first, test MProcess.processIt
 		MProcess process = MProcess.get(Env.getCtx(), Verify_BOM);
@@ -271,7 +273,8 @@ public class ProcessTest extends AbstractTestCase {
 			
 			inout.load(getTrxName());
 			assertEquals(DocAction.STATUS_Completed, inout.getDocStatus(), "Expected Completed Status for Shipment");
-		} finally {			
+		} finally {		
+			rollback();
 			docCompleteNodeNext.deleteEx(true);
 			processNodePara.deleteEx(true);
 			processNode.deleteEx(true);

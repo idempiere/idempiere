@@ -34,6 +34,7 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
 import org.compiere.model.MSession;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
@@ -58,7 +59,7 @@ public class ProcessInfo implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = -4648764346588157872L;
-
+	
 	private static final CLogger logger = CLogger.getCLogger(ProcessInfo.class);
 
 	/**
@@ -160,7 +161,10 @@ public class ProcessInfo implements Serializable
 	
 	/**	Export File				*/
 	private File				m_exportFile = null;
-
+	
+	/** Report Override Tab */
+	private boolean				m_IsReplaceTabContent = false;
+	
 	/** Row count */
 	private int m_rowCount;
 
@@ -171,6 +175,13 @@ public class ProcessInfo implements Serializable
 	private boolean isSummary = false;
 	
 	private int languageID = 0;
+	
+	private String showHelp = null;
+
+	private int m_AD_Scheduler_ID = 0;
+	
+	/** For scheduler: true to notify scheduler recipients with process execution result using AD_Scheduler.R_MailTexT_ID mail template (if define). Default is true. **/
+	private boolean isNotifyRecipients = true;
 	
 	public int getLanguageID() {
 		return languageID;
@@ -195,6 +206,22 @@ public class ProcessInfo implements Serializable
 	
 	public boolean isSummary() {
 		return this.isSummary;
+	}
+
+	/**
+	 * Set Show Help
+	 * @param showHelp
+	 */
+	public void setShowHelp(String showHelp) {
+		this.showHelp = showHelp;
+	}
+
+	/**
+	 * Get Show Help
+	 * @return String
+	 */
+	public String getShowHelp() {
+		return this.showHelp;
 	}
 
 	/**
@@ -1010,5 +1037,49 @@ public class ProcessInfo implements Serializable
 	public IProcessUI getProcessUI() {
 		return processUI;
 	}
+
+	/**
+	 * Determines, if current tab content should be replaced, or a new tab should be opened
+	 * @return true, if current tab content should be replaced
+	 */
+	public boolean isReplaceTabContent() {
+		return m_IsReplaceTabContent;
+	}
+
+	/**
+	 * Sets, if current tab content should be replaced, or a new tab should be opened
+	 */
+	public void setReplaceTabContent() {
+		this.m_IsReplaceTabContent = !(MSysConfig.getBooleanValue(MSysConfig.ZK_REPORT_TABLE_OPEN_IN_NEW_TAB, false, Env.getAD_Client_ID(Env.getCtx())));
+	}
+
+	/**
+	 * 
+	 * @return AD_Scheduler_ID or 0 if not running from scheduler
+	 */
+	public int getAD_Scheduler_ID() {
+		return m_AD_Scheduler_ID;
+	}
+
+	/**
+	 * 
+	 * @param AD_Scheduler_ID
+	 */
+	public void setAD_Scheduler_ID(int AD_Scheduler_ID) {
+		this.m_AD_Scheduler_ID = AD_Scheduler_ID;
+	}
 	
+	/**
+	 * @return true if scheduler should notify scheduler recipients with process execution result
+	 */
+	public boolean isNotifyRecipients() {
+		return isNotifyRecipients;
+	}
+
+	/**
+	 * @param isNotifyRecipients if true, scheduler should notify scheduler recipients with process execution result
+	 */
+	public void setNotifyRecipients(boolean isNotifyRecipients) {
+		this.isNotifyRecipients = isNotifyRecipients;
+	}
 }   //  ProcessInfo

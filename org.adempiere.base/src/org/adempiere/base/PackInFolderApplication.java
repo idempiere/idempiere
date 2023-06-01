@@ -30,6 +30,7 @@ import java.util.logging.Level;
 
 import org.compiere.Adempiere;
 import org.compiere.model.MPInstance;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoUtil;
@@ -71,7 +72,7 @@ public class PackInFolderApplication implements IApplication {
 			String directory = commandlineArgs[0];
 			ProcessInfo pi = new ProcessInfo("PackInFolder", 200099);
 			pi.setAD_Client_ID(0);
-			pi.setAD_User_ID(100);
+			pi.setAD_User_ID(SystemIDs.USER_SUPERUSER);
 			MPInstance instance = new MPInstance(ctx, 200099, 0);
 			instance.saveEx();
 			instance.createParameter(10, "Folder", directory);

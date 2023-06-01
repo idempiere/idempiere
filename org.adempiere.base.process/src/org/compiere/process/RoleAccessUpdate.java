@@ -22,8 +22,10 @@ import java.util.logging.Level;
 
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
@@ -65,7 +67,7 @@ public class RoleAccessUpdate extends SvrProcess
 			else if (name.equals("ResetAccess"))
 				p_IsReset = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 
@@ -84,7 +86,7 @@ public class RoleAccessUpdate extends SvrProcess
 		{
 			List<Object> params = new ArrayList<Object>();
 			StringBuilder whereClause = new StringBuilder("1=1");
-			if (p_AD_Role_ID == 0) // System Role
+			if (p_AD_Role_ID == SystemIDs.ROLE_SYSTEM) // System Role
 			{
 				whereClause.append(" AND AD_Role_ID=?");
 				params.add(p_AD_Role_ID);
@@ -126,7 +128,7 @@ public class RoleAccessUpdate extends SvrProcess
 		s_log.info("------------------");
 		ProcessInfo pi = new ProcessInfo("Role Access Update", 295);
 		pi.setAD_Client_ID(0);
-		pi.setAD_User_ID(100);
+		pi.setAD_User_ID(SystemIDs.USER_SUPERUSER);
 		
 		RoleAccessUpdate rau = new RoleAccessUpdate();
 		rau.startProcess(Env.getCtx(), pi, null);

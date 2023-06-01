@@ -29,16 +29,17 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.sys.ComponentCtrl;
 
 /**
- * 
+ * Model for client info from browser
  * @author Low Heng Sin
  *
  */
 public class ClientInfo implements Serializable {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -2686811277627911861L;
 	
+	//values from browser
 	public int colorDepth;
 	public int desktopWidth;
 	public int desktopHeight;
@@ -52,6 +53,7 @@ public class ClientInfo implements Serializable {
 	public boolean tablet;
 	public double devicePixelRatio;
 	
+	//size constants for responsive layout
 	public static final int LARGE_WIDTH = 1200;
 	public static final int MEDIUM_WIDTH = 1000;
 	public static final int SMALL_WIDTH = 700;
@@ -97,7 +99,7 @@ public class ClientInfo implements Serializable {
 	 * @return true if mobile browser
 	 */
 	public static boolean isMobile() {
-		return "Y".equals(Env.getContext(Env.getCtx(), "#clientInfo_mobile"));
+		return "Y".equals(Env.getContext(Env.getCtx(), Env.CLIENT_INFO_MOBILE));
 	}
 
 	/**

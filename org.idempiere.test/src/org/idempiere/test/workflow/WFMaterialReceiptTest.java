@@ -49,6 +49,7 @@ import org.compiere.wf.MWFNodeNext;
 import org.compiere.wf.MWFProcess;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -59,17 +60,11 @@ public class WFMaterialReceiptTest extends AbstractTestCase {
 	public WFMaterialReceiptTest() {
 	}
 
-	private static final int BP_PATIO = 121;
 	private static final int LOCATION_FROM_PATIO = 115;
-	private static final int WAREHOUSE_HQ = 103;
-	private static final int DOCTYPE_RECEIPT = 122;
-	private static final int PRODUCT_SEEDER = 143;
 	private static final int WF_PROCESS_SHIPMENT = 117;
 	private static final int WF_PROCESS_SHIPMENT_NODE_COMPLETE = 190;
 	private static final int PROCESS_SYNC_DOC_TRL = 321;
 	private static final int COLUMN_M_INOUT_ISSOTRX = 3790;
-	private static final int TABLE_M_INOUT = 319;
-	private static final int LOCATOR_HQ = 101;
 
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4186
@@ -152,10 +147,10 @@ public class WFMaterialReceiptTest extends AbstractTestCase {
 			CacheMgt.get().reset();
 
 			MInOut mr = new MInOut(ctx, 0, trxName);
-			mr.setBPartner(MBPartner.get(ctx, BP_PATIO));
+			mr.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
 			mr.setC_BPartner_Location_ID (LOCATION_FROM_PATIO);
-			mr.setM_Warehouse_ID(WAREHOUSE_HQ);
-			mr.setC_DocType_ID(DOCTYPE_RECEIPT);
+			mr.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+			mr.setC_DocType_ID(DictionaryIDs.C_DocType.MM_RECEIPT.id);
 			mr.setIsSOTrx(false);
 			mr.setMovementType(MInOut.MOVEMENTTYPE_VendorReceipts);
 			mr.setDocStatus(DocAction.STATUS_Drafted);
@@ -166,18 +161,18 @@ public class WFMaterialReceiptTest extends AbstractTestCase {
 
 			MInOutLine line1 = new MInOutLine(mr);
 			line1.setLine(10);
-			line1.setProduct(MProduct.get(ctx, PRODUCT_SEEDER));
+			line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.SEEDER.id));
 			line1.setQty(new BigDecimal("1"));
-			line1.setM_Locator_ID(LOCATOR_HQ);
+			line1.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
 			line1.saveEx();
 
 			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(mr, DocAction.ACTION_Complete);
-			assertFalse(info.isError());
+			assertFalse(info.isError(), info.getSummary());
 			mr.load(trxName);
 			assertEquals(DocAction.STATUS_Completed, mr.getDocStatus());
 
 			MWFProcess proc = new Query(ctx, MWFProcess.Table_Name, "AD_Table_ID=? AND Record_ID=?", trxName)
-					.setParameters(TABLE_M_INOUT, mr.getM_InOut_ID())
+					.setParameters(MInOut.Table_ID, mr.getM_InOut_ID())
 					.firstOnly();
 
 			MWFActivity[] acts = proc.getActivities(true, false, trxName);

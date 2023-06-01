@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_InOut
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_M_InOut 
 {
@@ -44,8 +44,8 @@ public interface I_M_InOut
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -53,12 +53,12 @@ public interface I_M_InOut
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -276,6 +276,19 @@ public interface I_M_InOut
 	  */
 	public String getCreateFrom();
 
+    /** Column name CreateLinesFrom */
+    public static final String COLUMNNAME_CreateLinesFrom = "CreateLinesFrom";
+
+	/** Set Create lines from.
+	  * Process which will generate a new document lines based on an existing document
+	  */
+	public void setCreateLinesFrom (String CreateLinesFrom);
+
+	/** Get Create lines from.
+	  * Process which will generate a new document lines based on an existing document
+	  */
+	public String getCreateLinesFrom();
+
     /** Column name CreatePackage */
     public static final String COLUMNNAME_CreatePackage = "CreatePackage";
 
@@ -314,12 +327,12 @@ public interface I_M_InOut
     /** Column name DatePrinted */
     public static final String COLUMNNAME_DatePrinted = "DatePrinted";
 
-	/** Set Date printed.
+	/** Set Date Printed.
 	  * Date the document was printed.
 	  */
 	public void setDatePrinted (Timestamp DatePrinted);
 
-	/** Get Date printed.
+	/** Get Date Printed.
 	  * Date the document was printed.
 	  */
 	public Timestamp getDatePrinted();
@@ -327,12 +340,12 @@ public interface I_M_InOut
     /** Column name DateReceived */
     public static final String COLUMNNAME_DateReceived = "DateReceived";
 
-	/** Set Date received.
+	/** Set Date Received.
 	  * Date a product was received
 	  */
 	public void setDateReceived (Timestamp DateReceived);
 
-	/** Get Date received.
+	/** Get Date Received.
 	  * Date a product was received
 	  */
 	public Timestamp getDateReceived();

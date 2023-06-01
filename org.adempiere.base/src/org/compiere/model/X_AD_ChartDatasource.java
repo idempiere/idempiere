@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ChartDatasource
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_ChartDatasource")
 public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220324L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_ChartDatasource (Properties ctx, int AD_ChartDatasource_ID, String trxName)
@@ -72,7 +72,7 @@ public class X_AD_ChartDatasource extends PO implements I_AD_ChartDatasource, I_
     }
 
     /** AccessLevel
-      * @return 4 - System 
+      * @return 6 - System - Client 
       */
     protected int get_AccessLevel()
     {

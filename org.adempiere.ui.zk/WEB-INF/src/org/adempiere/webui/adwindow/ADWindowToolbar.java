@@ -32,8 +32,8 @@ import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Combobox;
-import org.adempiere.webui.component.FToolbar;
 import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.part.WindowContainer;
@@ -41,7 +41,7 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -77,7 +77,7 @@ import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.impl.LabelImageElement;
 
 /**
- *
+ * Toolbar of AD_Window
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -85,22 +85,30 @@ import org.zkoss.zul.impl.LabelImageElement;
  * @author Cristina Ghita, www.arhipac.ro
  * 				<li>FR [ 2076330 ] Add new methods in CWindowToolbar class
  */
-public class ADWindowToolbar extends FToolbar implements EventListener<Event>
-{
+public class ADWindowToolbar extends ToolBar implements EventListener<Event>
+{	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5151981978053022864L;
 
+	/**
+	 * Attribute for {@link #overflowPopup} to store the last close timestamp in ms.
+	 * Use to prevent too rapid open and close of overflow popup.
+	 */
+	private static final String POPUP_CLOSE_TIMESTAMP_ATTR = "popup.close";
+	
+	/** Prefix for Button Name **/
 	public static final String BTNPREFIX = "Btn";
 	
+	@Deprecated(forRemoval = true, since = "11")
 	public static final String MNITMPREFIX = "Mnitm";
 
     private static final CLogger log = CLogger.getCLogger(ADWindowToolbar.class);
     
-	/** Search messages using translation */
-	private String				m_sNew;	
-
+	/** translated message for new query label (default for en is "** New Query **") */
+	private String	m_sNew;	
+	/** combobox to select user query **/
     private Combobox fQueryName;
 	private MUserQuery[] userQueries;
 	private MUserQuery selectedUserQuery;
@@ -124,6 +132,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     private ToolBarButton btnChat;
     
     private ToolBarButton btnPostIt;
+    
+    private ToolBarButton btnLabel;
 
     private ToolBarButton btnCustomize;
 
@@ -134,25 +144,31 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     private ToolBarButton btnProcess;
     
     private ToolBarButton btnQuickForm;
-
+    /** button to open overflow popup for toolbar buttons with IsShowMore=Y (for non-mobile client) **/
     private ToolBarButton btnShowMore;
-
+    /** Button Name:ToolBarButton. Map for all buttons **/
     private HashMap<String, ToolBarButton> buttons = new HashMap<String, ToolBarButton>();
+    /** 
+     * For mobile client, the list of toolbar button with IsShowMore=Y is first keep here
+     * and move to {@link #overflows} in {@link #onOverflowButton(Event) event} 
+     * */
 	private ArrayList<ToolBarButton> mobileShowMoreButtons = new ArrayList<ToolBarButton>();
-	
-//    private ToolBarButton btnExit;
-
+	/** All register toolbar listener **/
     private ArrayList<ToolbarListener> listeners = new ArrayList<ToolbarListener>();
 
+    /** current ON_Click event that's being handle **/
     private Event event;
-
+    /** shortcut key map without ctrl and alt **/
     private Map<Integer, ToolBarButton> keyMap = new HashMap<Integer, ToolBarButton>();
+    /** alt+key shortcut map **/
     private Map<Integer, ToolBarButton> altKeyMap = new HashMap<Integer, ToolBarButton>();
+    /** ctrl+key shortcut map **/
     private Map<Integer, ToolBarButton> ctrlKeyMap = new HashMap<Integer, ToolBarButton>();
-
+    /** list of custom toolbar button (IsCustomization=Y) **/
     private List<ToolbarCustomButton> toolbarCustomButtons = new ArrayList<ToolbarCustomButton>();
-    
+    /** Restriction list for window, loaded from AD_ToolBarButtonRestrict **/
     private List<String> restrictionList;
+    /** List of toolbar button with IsAdvanced=Y **/
     private List<String> advancedList;
 
 	// Elaine 2008/12/04
@@ -161,34 +177,45 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	private boolean isAllowProductInfo = MRole.getDefault().canAccess_Info_Product();
 
 	private int windowNo = 0;
-
+	/** previous key event time in ms **/
 	private long prevKeyEventTime = 0;
-
+	/** 
+	 * Previous key event.
+	 * Use together with prevKeyEventTime to detect double fire of key event from browser
+	 */
 	private KeyEvent prevKeyEvent;
 	
-	// Maintain hierarchical Quick form by its parent-child tab while open leaf
-	// tab once & dispose and doing same action
-	private int							quickFormTabHrchyLevel		= 0;
-
-	private A overflowButton;
-
+	/**
+	 * Maintain hierarchical Quick form by its parent-child tab while open leaf
+	 * tab once & dispose and doing same action
+	 */
+	private int	quickFormTabHrchyLevel		= 0;
+	/** show more button for mobile client **/
+	private A mobileOverflowButton;
+	/** 
+	 * list of toolbar button overflow to show more popup (or with IsShowMore=Y).
+	 * Use for both mobile and desktop client. 
+	 * */
 	private ArrayList<ToolBarButton> overflows;
-
+	/** Popup for overflow/IsShowMore=Y toolbar buttons. Use for both mobile and desktop client. **/
 	private Popup overflowPopup;
-	
+	/** width of toolbar from previous ON_AFTER_SIZE event **/
 	private int prevWidth;
-
+	/** AD Window content part that own this toolbar **/
 	private AbstractADWindowContent windowContent;
 
-	/**	Last Modifier of Action Event					*/
-//	public int 				lastModifiers;
-	//
-
+	/**
+	 * default constructor
+	 */
     public ADWindowToolbar()
     {
     	this(null, 0);
     }
 
+    /**
+     * @param windowContent
+     * @param windowNo
+     */
     public ADWindowToolbar(AbstractADWindowContent windowContent, int windowNo) {
     	this.windowContent = windowContent;
     	setWindowNo(windowNo);
@@ -198,6 +225,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         }
 	}
 
+    /**
+     * Init components
+     */
 	private void init()
     {
     	LayoutUtils.addSclass("adwindow-toolbar", this);
@@ -232,14 +262,17 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnAttachment = createButton("Attachment", "Attachment", "Attachment");
         btnPostIt = createButton("PostIt", "PostIt", "PostIt");
         btnChat = createButton("Chat", "Chat", "Chat");
+        btnLabel = createButton("Label", "Label", "Label");
         btnGridToggle = createButton("Toggle", "Multi", "Toggle");
         btnGridToggle.setTooltiptext(btnGridToggle.getTooltiptext()+ "    Alt+T");
         btnParentRecord = createButton("ParentRecord", "Parent", "ParentRecord");
         btnParentRecord.setTooltiptext(btnParentRecord.getTooltiptext()+ "   Alt+Up");
         btnDetailRecord = createButton("DetailRecord", "Detail", "DetailRecord");
         btnDetailRecord.setTooltiptext(btnDetailRecord.getTooltiptext()+ "   Alt+Down");
-        btnReport = createButton("Report", "Report", "Report");
-        btnReport.setTooltiptext(btnReport.getTooltiptext()+ "    Alt+R");
+        if (MRole.getDefault().isCanReport()) {
+            btnReport = createButton("Report", "Report", "Report");
+            btnReport.setTooltiptext(btnReport.getTooltiptext()+ "    Alt+R");
+        }
         btnArchive = createButton("Archive", "Archive", "Archive");
         btnPrint = createButton("Print", "Print", "Print");
         btnPrint.setTooltiptext(btnPrint.getTooltiptext()+ "    Alt+P");
@@ -289,6 +322,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
         if (!ClientInfo.isMobile())
         	overflows = new ArrayList<ToolBarButton>();
+        
+        //Window toolbar buttons from AD_ToolBarButton
         MToolBarButton[] officialButtons = MToolBarButton.getToolbarButtons("W", null);
         for (MToolBarButton button : officialButtons) {
         	if (!button.isActive() || !hasAccess(BTNPREFIX+button.getComponentName())) {
@@ -371,7 +406,13 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         ZKUpdateUtil.setWidth(this, "100%");
     }
 
-
+	/**
+	 * Create new toolbar button
+	 * @param name button name (BTNPREFIX+name)
+	 * @param image image name (images/image+suffix) or iconSclass name (z-icon-image)
+	 * @param tooltip
+	 * @return {@link ToolBarButton}
+	 */
     private ToolBarButton createButton(String name, String image, String tooltip)
     {
     	ToolBarButton btn = new ToolBarButton("");
@@ -412,11 +453,21 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         return btn;
     }
     
+    /**
+     * Get ToolBarButton by name
+     * @param name
+     * @return {@link ToolBarButton} or null
+     */
     public ToolBarButton getButton(String name)
     {
     	return buttons.get(name);
     }
     
+    /**
+     * Get ToolBarButton by name
+     * @param name
+     * @return {@link LabelImageElement} or null
+     */
     public LabelImageElement getToolbarItem(String name)
     {
     	return	buttons.get(name);
@@ -450,6 +501,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
     public static final int VK_Y              = 0x59;
     public static final int VK_Z              = 0x5A;
 
+    /**
+     * Configure shortcut key for each button
+     */
     private void configureKeyMap()
     {
 		altKeyMap.put(VK_H, btnHelp);
@@ -464,12 +518,16 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		altKeyMap.put(KeyEvent.DOWN, btnDetailRecord);
 		altKeyMap.put(VK_F, btnFind);
 		altKeyMap.put(VK_Z, btnIgnore);
-		altKeyMap.put(VK_R, btnReport);		
+		if (btnReport != null)
+			altKeyMap.put(VK_R, btnReport);		
 		altKeyMap.put(VK_P, btnPrint);
 		altKeyMap.put(VK_O, btnProcess);
 		altKeyMap.put(VK_L, btnCustomize);
 	}
 
+    /**
+     * Add separator/spacer between button
+     */
 	protected void addSeparator()
     {
 		Space s = new Space();
@@ -478,16 +536,25 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		this.appendChild(s);
     }
 
+	/**
+	 * Add ToolbarListener
+	 * @param toolbarListener
+	 */
     public void addListener(ToolbarListener toolbarListener)
     {
         listeners.add(toolbarListener);
     }
 
+    /**
+     * Remove ToolbarListener
+     * @param toolbarListener
+     */
     public void removeListener(ToolbarListener toolbarListener)
     {
         listeners.remove(toolbarListener);
     }
 
+    @Override
     public void onEvent(Event event)
     {
         String eventName = event.getName();
@@ -544,6 +611,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         }
     }
 
+    /**
+     * Handle ON_Click event for button.
+     * Call register {@link ToolbarListener}.
+     * @param event
+     */
 	private void doOnClick(Event event) {
 		this.event = event;
 		String compName;
@@ -580,133 +652,224 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		    	if (msg == null) {
 		    		msg = "Could not invoke Toolbar listener method: " + methodName + "()";
 		    	}
-		    	FDialog.error(windowNo, this, "Error", msg);
+		    	Dialog.error(windowNo, "Error", msg);
 		    	log.log(Level.SEVERE, msg, e);
 		    }
 		}
 		this.event = null;
 	}
 
+	/**
+	 * Enable/disable buttons for navigation between parent and detail tab
+	 * @param enabled
+	 */
     public void enableTabNavigation(boolean enabled)
     {
         enableTabNavigation(enabled, enabled);
     }
 
+    /**
+     * Enable/disable buttons for navigation between parent and detail tab
+     * @param enableParent
+     * @param enableDetail
+     */
     public void enableTabNavigation(boolean enableParent, boolean enableDetail)
     {
         this.btnParentRecord.setDisabled(!enableParent);
         this.btnDetailRecord.setDisabled(!enableDetail);
     }
 
+    /**
+     * Enable/disable Refresh button
+     * @param enabled
+     */
     public void enableRefresh(boolean enabled)
     {
         this.btnRefresh.setDisabled(!enabled);
     }
 
+    /**
+     * Enable/disable Save button
+     * @param enabled
+     */
     public void enableSave(boolean enabled)
     {
         this.btnSave.setDisabled(!enabled);
-    	this.btnSaveAndCreate.setDisabled(!enabled);
+        this.btnSaveAndCreate.setDisabled(!(isNewEnabled() || isSaveEnable()));
     }
 
+    /**
+     * @return true if Save button is enable
+     */
     public boolean isSaveEnable() {
     	return !btnSave.isDisabled();
     }
 
-//    public void enableExit(boolean enabled)
-//    {
-//    	this.btnExit.setDisabled(!enabled);
-//    }
-
+    /**
+     * Enable/disable Delete button
+     * @param enabled
+     */
     public void enableDelete(boolean enabled)
     {
         this.btnDelete.setDisabled(!enabled);        
     }
     
+    /**
+     * @return true if Delete button is enable
+     */
     public boolean isDeleteEnable()
     {
     	return !btnDelete.isDisabled();
     }
     
+    /**
+     * @return true if New button is enable
+     */
 	public boolean isNewEnabled() {
     	return !btnNew.isDisabled();
 	}
 
+	/**
+     * Enable/disable Ignore/Undo button
+     * @param enabled
+     */
     public void enableIgnore(boolean enabled)
     {
         this.btnIgnore.setDisabled(!enabled);
     }
 
+    /**
+     * Enable/disable New button
+     * @param enabled
+     */
     public void enableNew(boolean enabled)
     {
         this.btnNew.setDisabled(!enabled);
+        this.btnSaveAndCreate.setDisabled(!(isNewEnabled() || isSaveEnable()));
     }
 
+    /**
+     * Enable/disable Copy/Duplicate button
+     * @param enabled
+     */
     public void enableCopy(boolean enabled)
     {
         this.btnCopy.setDisabled(!enabled);
     }
 
+    /**
+     * Enable/disable Attachment button
+     * @param enabled
+     */
     public void enableAttachment(boolean enabled)
     {
         this.btnAttachment.setDisabled(!enabled);
     }
 
+    /**
+     * Enable/disable Chat button
+     * @param enabled
+     */
     public void enableChat(boolean enabled)
     {
         this.btnChat.setDisabled(!enabled);
     }
 
+    /**
+     * Enable/disable Print button
+     * @param enabled
+     */
     public void enablePrint(boolean enabled)
     {
     	this.btnPrint.setDisabled(!enabled);
     }
 
+    /**
+     * Enable/disable Report button
+     * @param enabled
+     */
     public void enableReport(boolean enabled)
     {
-    	this.btnReport.setDisabled(!enabled);
+		if (btnReport != null)
+			this.btnReport.setDisabled(!enabled);
     }
 
+    /**
+     * Enable/disable Find/Query button
+     * @param enabled
+     */
     public void enableFind(boolean enabled)
     {
         this.btnFind.setDisabled(!enabled);
     }
 
+    /**
+     * Enable/disable Toggle button
+     * @param enabled
+     */
     public void enableGridToggle(boolean enabled)
     {
     	btnGridToggle.setDisabled(!enabled);
     }
 
+    /**
+     * Enable/disable Customize Grid button
+     * @param enabled
+     */
     public void enableCustomize(boolean enabled)
     {
     	btnCustomize.setDisabled(!enabled);
     }
     
+    /**
+     * Enable/disable Archive button
+     * @param enabled
+     */
     public void enableArchive(boolean enabled)
     {
     	btnArchive.setDisabled(!enabled);
     }
     
+    /**
+     * Enable/disable Zoom Across button
+     * @param enabled
+     */
     public void enableZoomAcross(boolean enabled)
     {
     	btnZoomAcross.setDisabled(!enabled);
     }
     
+    /**
+     * Enable/disable Active Workflows button
+     * @param enabled
+     */
     public void enableActiveWorkflows(boolean enabled)
     {
     	btnActiveWorkflows.setDisabled(!enabled);
     }
     
+    /**
+     * Enable/disable Requests button
+     * @param enabled
+     */
     public void enableRequests(boolean enabled)
     {
     	btnRequests.setDisabled(!enabled);
     }
     
+    /**
+     * Enable/disable Quick Form button
+     * @param enabled
+     */
 	public void enableQuickForm(boolean enabled)
 	{
 		btnQuickForm.setDisabled(!enabled);
 	}
 
+	/**
+     * Turn on/off Lock button (Pressed=On, Not Pressed=Off)
+     * @param enabled
+     */
     public void lock(boolean locked)
     {
     	setPressed("Lock", locked);
@@ -731,16 +894,36 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
       	}
     }
 
+    /**
+     * Enable/disable Post It Note button
+     * @param enabled
+     */
     public void enablePostIt(boolean enabled)
     {
         this.btnPostIt.setDisabled(!enabled);
     }
+    
+    /**
+     * Enable/disable Label record button
+     * @param enabled
+     */
+    public void enableLabel(boolean enabled)
+    {
+        this.btnLabel.setDisabled(!enabled);
+    }
 
+    /**
+     * @return ON_Click event that's being handle
+     */
     public Event getEvent()
     {
     	return event;
     }
 
+    /**
+     * Handle shortcut key event
+     * @param keyEvent
+     */
 	private void onCtrlKeyEvent(KeyEvent keyEvent) {
 		if (windowContent != null && windowContent.isBlock())
 			return;
@@ -797,6 +980,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		fireButtonClickEvent(keyEvent, btn);
 	}
 
+	/**
+	 * Fire ON_Click event for button, trigger by shortcut key event.
+	 * @param keyEvent source shortcut key event
+	 * @param btn
+	 */
 	private void fireButtonClickEvent(KeyEvent keyEvent, ToolBarButton btn)
 	{
 		if (btn != null) {
@@ -810,7 +998,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 
 	/**
-	 *
+	 * Make all toolbar buttons visible
 	 * @param visible
 	 */
 	public void setVisibleAll(boolean visible)
@@ -822,7 +1010,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 
 	/**
-	 *
 	 * @param buttonName
 	 * @param visible
 	 */
@@ -836,7 +1023,6 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 
 	/**
-	 *
 	 * @param windowNo
 	 */
 	public void setWindowNo(int windowNo) {
@@ -844,7 +1030,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 
 	/**
-	 * Enable/disable export button
+	 * Enable/disable Export button
 	 * @param b
 	 */
 	public void enableExport(boolean b) {
@@ -853,7 +1039,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 
 	/**
-	 * Enable/disable file import button
+	 * Enable/disable File Import button
 	 * @param b
 	 */
 	public void enableFileImport(boolean b) {
@@ -862,7 +1048,7 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 
 	/**
-	 * Enable/disable CSV import button
+	 * Enable/disable CSV Import button
 	 * @param b
 	 */
 	public void enableCSVImport(boolean b) {
@@ -872,6 +1058,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 
 	private boolean ToolBarMenuRestictionLoaded = false;
 	
+	/**
+	 * @param buttonName
+	 * @return true if current login user has access to buttonName
+	 */
 	private boolean hasAccess(String buttonName) {
 		ADWindow adwindow = ADWindow.get(windowNo);
 		if (restrictionList == null)
@@ -891,6 +1081,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		return true;
 	}
 
+	/**
+	 * Initialise the accessibility state of toolbar buttons 
+	 */
 	public void updateToolbarAccess() {
 		if (ToolBarMenuRestictionLoaded)
 			return;
@@ -908,19 +1101,31 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		ToolBarMenuRestictionLoaded = true;
 	}
 
-	/** btnActiveWorkflow should be disabled when table has not workflow defined */
-	boolean hasWorkflow(GridTab gridTab)
+	/** 
+	 * btnActiveWorkflow should be disabled when table has no workflow defined
+	 * @param gridTab
+	 * @return true if has workflow define for gridTab 
+	 */
+	protected boolean hasWorkflow(GridTab gridTab)
 	{
 		String sql = "SELECT COUNT(*) FROM AD_Workflow WHERE IsActive='Y' AND AD_Table_ID=? AND AD_Client_ID IN (0,?)";
 		return (DB.getSQLValueEx(null, sql, gridTab.getAD_Table_ID(), Env.getAD_Client_ID(Env.getCtx())) > 0);
 	}
 
+	/**
+     * Enable/disable Process button
+     * @param enabled
+     */
 	public void enableProcessButton(boolean b) {
 		if (btnProcess != null) {
 			btnProcess.setDisabled(!b);
 		}
 	}
 
+	/**
+	 * Dynamic update of each toolbar button state (Check restrictions).
+	 * For custom button, call {@link ToolbarCustomButton#dynamicDisplay()}, process pressedLogic and readOnlyLogic.
+	 */
 	public void dynamicDisplay() {
 		List<Toolbarbutton> customButtons = new ArrayList<Toolbarbutton>();
 		for(ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons) {
@@ -978,6 +1183,30 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 				}
 			}
 		}
+		pressedLogic();
+		readOnlyLogic();
+	}
+	
+	/**
+	 * Call {@link ToolbarCustomButton#pressedLogic()}
+	 */
+	private void pressedLogic()
+	{
+		for (ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons)
+		{
+			toolbarCustomBtn.pressedLogic();
+		}
+	}
+
+	/**
+	 * Call {@link ToolbarCustomButton#readOnlyLogic()}
+	 */
+	private void readOnlyLogic()
+	{
+		for (ToolbarCustomButton toolbarCustomBtn : toolbarCustomButtons)
+		{
+			toolbarCustomBtn.readOnlyLogic();
+		}
 	}
 
 	@Override
@@ -996,35 +1225,38 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		}
 	}
 	
+	/**
+	 * Init for mobile client only.
+	 */
 	private void mobileInit() {	
 		LayoutUtils.addSclass("mobile", this);
 		addEventListener("onOverflowButton", evt -> onOverflowButton(evt));
 		this.setWidgetOverride("toolbarScrollable", "function (wgt) {\n" + 
-				"	var total = jq(wgt.$n()).width();\n" + 
-				"	var w = wgt.firstChild;\n" + 
-				"	var a = " + !mobileShowMoreButtons.isEmpty() + ";\n" + 
+				"	let total = jq(wgt.$n()).width();\n" + 
+				"	let w = wgt.firstChild;\n" + 
+				"	let a = " + !mobileShowMoreButtons.isEmpty() + ";\n" + 
 				"\n" + 
 				"	// make sure all images are loaded.\n" + 
 				"	if (zUtl.isImageLoading()) {\n" + 
-				"		var f = arguments.callee;\n" + 
+				"		let f = arguments.callee;\n" + 
 				"		setTimeout(function () {\n" + 
 				"			return f(wgt);\n" + 
 				"		}, 20);\n" + 
 				"		return;\n" + 
 				"	}\n" + 
 				"	for (; w; w = w.nextSibling) {\n" + 
-				"		var ow = jq(w.$n()).outerWidth(true);\n" +
+				"		let ow = jq(w.$n()).outerWidth(true);\n" +
 				"		if (typeof ow != 'undefined') {total -= ow;}\n" + 
 				"		if (total < 0 && w.className == 'zul.wgt.Toolbarbutton') {\n" + 
 				"			break;\n" + 
 				"		}\n" + 
 				"	}\n" + 
 				"	if (w && total < 0) {\n" + 
-				"       var event = new zk.Event(wgt, 'onOverflowButton', w.uuid, {toServer: true}); \n" +
+				"       let event = new zk.Event(wgt, 'onOverflowButton', w.uuid, {toServer: true}); \n" +
 				"       zAu.send(event); \n" +
 				"	}\n" +
 				"	else if (a) {\n" + 
-				"       var event = new zk.Event(wgt, 'onOverflowButton', null, {toServer: true}); \n" +
+				"       let event = new zk.Event(wgt, 'onOverflowButton', null, {toServer: true}); \n" +
 				"       zAu.send(event); \n" +
 				"	}\n" +
 				"}");
@@ -1033,6 +1265,9 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		addCallback(AFTER_PAGE_ATTACHED, t -> afterPageAttached());
 	}
 
+	/**
+	 * Mobile specific handling for AFTER_PAGE_ATTACHED callback.
+	 */
 	private void afterPageAttached() {
 		Component p = getParent();
 		while (p != null) {
@@ -1044,12 +1279,16 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * Mobile specific event handling for ON_AFTER_SIZE event.
+	 * @param evt
+	 */
 	private void onAfterSize(AfterSizeEvent evt) {
 		int width = evt.getWidth();
 		if (width != prevWidth) {
 			prevWidth = width;
-			if (overflowButton != null)
-				overflowButton.detach();	
+			if (mobileOverflowButton != null)
+				mobileOverflowButton.detach();	
 			if (overflowPopup != null)
 				overflowPopup.detach();
 			if (overflows != null) {
@@ -1062,6 +1301,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * Handle onOverflowButton event from mobile client.
+	 * @param evt
+	 */
 	private void onOverflowButton(Event evt) {
 		overflows = new ArrayList<>();
 		String uuid = (String) evt.getData();
@@ -1082,11 +1325,15 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		for (ToolBarButton toolbarButton : mobileShowMoreButtons)
 			overflows.add(toolbarButton);
 		if (overflows.size() > 0) {
-			createOverflowButton();
+			createOverflowButtonForMobile();
 			populateOverflowPopup();
 		}
 	}
 
+	/**
+	 * Populate overflow popup.
+	 * Use for both desktop and mobile client.
+	 */
 	private void populateOverflowPopup() {
 		boolean vertical = !ClientInfo.isMobile() && MSysConfig.getBooleanValue(MSysConfig.ZK_TOOLBAR_SHOW_MORE_VERTICAL, true, Env.getAD_Client_ID(Env.getCtx()));
 		if (vertical) {
@@ -1122,9 +1369,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 					cnt++;
 			}
 			if (overflows.size() >= cnt) {
-				String script = "var e = jq('#" + getUuid() + "');";
-				script = script + "var b=zk.Widget.$('#" + overflowPopup.getUuid() + "'); ";
+				String script = "(function(){let e = jq('#" + getUuid() + "');";
+				script = script + "let b=zk.Widget.$('#" + overflowPopup.getUuid() + "'); ";
 				script = script + "b.setWidth(e.css('width'));";
+				script = script + "})()";
 				Clients.evalJavaScript(script);
 			} else {
 				overflowPopup.setWidth(null);
@@ -1132,6 +1380,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		}
 	}
 
+	/**
+	 * Enable show more feature for desktop client.
+	 * Overflow for mobile client is initialise differently in {@link #mobileInit()}.
+	 */
 	private void enableShowMore() {
 		this.appendChild(btnShowMore);
         btnShowMore.setDisabled(false);
@@ -1141,8 +1393,12 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		populateOverflowPopup();
 	}
 
+	/**
+	 * Show overflow popup after {@link #btnShowMore}.
+	 * For desktop client only.
+	 */
 	private void onShowMore() {
-		Long ts = (Long) overflowPopup.removeAttribute("popup.close");
+		Long ts = (Long) overflowPopup.removeAttribute(POPUP_CLOSE_TIMESTAMP_ATTR);
 		if (ts != null) {
 			if (System.currentTimeMillis() - ts.longValue() < 500) {
 				return;
@@ -1151,30 +1407,37 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		overflowPopup.open(btnShowMore, "after_end");
 	}
 	
-	private void createOverflowButton() {
-		overflowButton = new A();
-		overflowButton.setTooltiptext(Msg.getMsg(Env.getCtx(), "ShowMore"));
-		overflowButton.setIconSclass("z-icon-ShowMore");
-		overflowButton.setSclass("font-icon-toolbar-button toolbar-button mobile-overflow-link");
-		appendChild(overflowButton);
+	/**
+	 * Create show more button for mobile client
+	 */
+	private void createOverflowButtonForMobile() {
+		mobileOverflowButton = new A();
+		mobileOverflowButton.setTooltiptext(Msg.getMsg(Env.getCtx(), "ShowMore"));
+		mobileOverflowButton.setIconSclass("z-icon-ShowMore");
+		mobileOverflowButton.setSclass("font-icon-toolbar-button toolbar-button mobile-overflow-link");
+		appendChild(mobileOverflowButton);
 		newOverflowPopup();
 		appendChild(overflowPopup);
-		overflowButton.addEventListener(Events.ON_CLICK, e -> {
-			Long ts = (Long) overflowPopup.removeAttribute("popup.close");
+		mobileOverflowButton.addEventListener(Events.ON_CLICK, e -> {
+			Long ts = (Long) overflowPopup.removeAttribute(POPUP_CLOSE_TIMESTAMP_ATTR);
 			if (ts != null) {
 				if (System.currentTimeMillis() - ts.longValue() < 500) {
 					return;
 				}
 			}
-			overflowPopup.open(overflowButton, "after_end");
+			overflowPopup.open(mobileOverflowButton, "after_end");
 		});
 	}
 
+	/**
+	 * Create overflow popup. 
+	 * For both desktop and mobile client.
+	 */
 	private void newOverflowPopup() {
 		overflowPopup = new Popup();
 		overflowPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
 			if (!oe.isOpen()) {
-				overflowPopup.setAttribute("popup.close", System.currentTimeMillis());
+				overflowPopup.setAttribute(POPUP_CLOSE_TIMESTAMP_ATTR, System.currentTimeMillis());
 				Component[] childrens = overflowPopup.getChildren().toArray(new Component[0]);
 				for (Component child : childrens) {
 					if (child instanceof Grid || child instanceof Toolbarbutton)
@@ -1185,20 +1448,30 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		});
 	}
 	
+	/**
+	 * Post after size event handler for mobile client.
+	 * Calculate which toolbar buttons should overflow to show more popup.
+	 */
 	public void onPostAfterSize() {
 		if (this.getPage() != null) {
-			String script = "var w = zk.Widget.$('#" + getUuid() + "'); w.toolbarScrollable(w);";
+			String script = "(function(){let w = zk.Widget.$('#" + getUuid() + "'); w.toolbarScrollable(w);";
+			script = script + "})()";
 			Clients.evalJavaScript(script);
 		}
 	}
 	
+	/**
+	 * Set button to pressed/not pressed state
+	 * @param buttonName
+	 * @param pressed
+	 */
     public void setPressed(String buttonName, boolean pressed) {
     	if (getButton(buttonName) != null)
     		getButton(buttonName).setPressed(pressed);
     }
 
 	/**
-	 * @return
+	 * @return parent tab level for quick form
 	 */
 	public int getQuickFormTabHrchyLevel()
 	{
@@ -1213,6 +1486,11 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		this.quickFormTabHrchyLevel = quickFormHrchyTabLevel;
 	}
     
+	/**
+	 * Reload user queries and set selected item to AD_UserQuery_ID
+	 * @param AD_Tab_ID
+	 * @param AD_UserQuery_ID
+	 */
     public void refreshUserQuery(int AD_Tab_ID, int AD_UserQuery_ID) {
     	if (AEnv.getOrSetExecutionAttribute(getClass().getName()+".refreshUserQuery")) {
     		return;
@@ -1236,6 +1514,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         	fQueryName.setSelectedIndex(0);
     }
     
+    /**
+     * Set selected user query
+     * @param AD_UserQuery_ID
+     */
 	public void setSelectedUserQuery(int AD_UserQuery_ID) {
 		for (MUserQuery userQuery : userQueries) {
 			if (AD_UserQuery_ID == userQuery.getAD_UserQuery_ID()) {
@@ -1245,12 +1527,19 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		}
 	}
 	
+	/**
+	 * Set selected user query
+	 * @param selectedUserQuery
+	 */
 	public void setSelectedUserQuery(MUserQuery selectedUserQuery) {
 		this.selectedUserQuery = selectedUserQuery;
 		if (selectedUserQuery != null)
 			fQueryName.setValue(selectedUserQuery.getName());
 	}
 
+	/**
+	 * @return AD_UserQuery_ID of selected user query
+	 */
 	public int getAD_UserQuery_ID() {
 		if (selectedUserQuery == null)
 			return 0;
@@ -1258,8 +1547,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 	}
 
 	/**
-	 * Init Default Query in Window Toolbar
-	 * @return true if initialized
+	 * Set selected user query to first default user query (if any)
+	 * @return true if there's a default user query
 	 */
 	public boolean initDefaultQuery() {
 		if(userQueries != null) {

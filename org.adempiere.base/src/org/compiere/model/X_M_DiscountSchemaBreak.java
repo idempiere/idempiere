@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_DiscountSchemaBreak
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_DiscountSchemaBreak")
 public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBreak, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBre
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_DiscountSchemaBreak (Properties ctx, int M_DiscountSchemaBreak_ID, String trxName)
@@ -130,6 +130,25 @@ public class X_M_DiscountSchemaBreak extends PO implements I_M_DiscountSchemaBre
 	public BigDecimal getBreakValue()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_BreakValue);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Fixed Price.
+		@param FixedPrice Fixed Price for Product
+	*/
+	public void setFixedPrice (BigDecimal FixedPrice)
+	{
+		set_Value (COLUMNNAME_FixedPrice, FixedPrice);
+	}
+
+	/** Get Fixed Price.
+		@return Fixed Price for Product
+	  */
+	public BigDecimal getFixedPrice()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_FixedPrice);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;

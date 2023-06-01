@@ -7,6 +7,18 @@ INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_I
 INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('PA_DocumentStatusAccess',1000000,'N','N','Table PA_DocumentStatusAccess','Y','Y',0,0,TO_TIMESTAMP('2021-06-28 22:03:55','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-06-28 22:03:55','YYYY-MM-DD HH24:MI:SS'),100,200347,'Y',1000000,1,200000,'2acedd5c-5629-4413-80bf-d8771566cac7')
 ;
 
+DO $$
+DECLARE
+   isnativeseqon    VARCHAR (1);
+BEGIN
+  isnativeseqon := get_Sysconfig('SYSTEM_NATIVE_SEQUENCE','N',0,0);
+  IF isnativeseqon ='Y' THEN
+    EXECUTE 'CREATE SEQUENCE PA_DocumentStatusAccess_SQ INCREMENT 1 MINVALUE 1000000 MAXVALUE 2147483647 START 1000000';
+  END IF;
+END;
+$$
+;
+
 -- Jun 28, 2021, 10:03:56 PM IST
 INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (203519,0,0,'Y',TO_TIMESTAMP('2021-06-28 22:03:56','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2021-06-28 22:03:56','YYYY-MM-DD HH24:MI:SS'),100,'PA_DocumentStatusAccess_ID','Document Status Access','Document Status Access','D','15432575-63eb-44f7-a095-426f28718de9')
 ;

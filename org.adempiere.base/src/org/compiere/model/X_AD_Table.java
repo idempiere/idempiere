@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Table
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Table")
 public class X_AD_Table extends PO implements I_AD_Table, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Table (Properties ctx, int AD_Table_ID, String trxName)
@@ -470,6 +470,29 @@ public class X_AD_Table extends PO implements I_AD_Table, I_Persistent
 	public boolean isSecurityEnabled()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSecurityEnabled);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show In Drill Options.
+		@param IsShowInDrillOptions This parameter enables the table to be displayed in Drill Assistant - Table tab
+	*/
+	public void setIsShowInDrillOptions (boolean IsShowInDrillOptions)
+	{
+		set_Value (COLUMNNAME_IsShowInDrillOptions, Boolean.valueOf(IsShowInDrillOptions));
+	}
+
+	/** Get Show In Drill Options.
+		@return This parameter enables the table to be displayed in Drill Assistant - Table tab
+	  */
+	public boolean isShowInDrillOptions()
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowInDrillOptions);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

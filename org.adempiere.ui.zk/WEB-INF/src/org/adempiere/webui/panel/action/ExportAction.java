@@ -42,7 +42,7 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -234,8 +234,9 @@ public class ExportAction implements EventListener<Event>
 		else if(event.getTarget().getId().equals(ConfirmPanel.A_OK))
 			exportFile();
 		else if (event.getName().equals(DialogEvents.ON_WINDOW_CLOSE)) {
-			panel.hideBusyMask();			
-		}else if (event.getTarget().equals(cboType) && event.getName().equals(Events.ON_SELECT)) {
+			panel.hideBusyMask();	
+			panel.focusToLastFocusEditor();
+		} else if (event.getTarget().equals(cboType) && event.getName().equals(Events.ON_SELECT)) {
 			displayExportTabSelection();	
 		}else if (event.getTarget() instanceof Checkbox) {
 			// A child is not exportable without its parent
@@ -258,7 +259,7 @@ public class ExportAction implements EventListener<Event>
 				}
 			}
 		}else if (event.getName().equals("onExporterException")){
-			FDialog.error(0, winExportFile, "FileInvalidExtension");
+			Dialog.error(0, "FileInvalidExtension");
 			winExportFile.onClose();
 		}
 	}
@@ -341,7 +342,7 @@ public class ExportAction implements EventListener<Event>
 			media = new AMedia(exporter.getSuggestedFileName(panel.getActiveGridTab()), null, exporter.getContentType(), file, true);
 			Filedownload.save(media);
 		} catch (Exception e) {
-			FDialog.error(0, winExportFile, e.getLocalizedMessage());
+			Dialog.error(0, e.getLocalizedMessage());
 		} finally {
 			if (winExportFile != null)
 				winExportFile.onClose();

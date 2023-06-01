@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoColumn
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoColumn")
 public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -55,7 +55,11 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 // N
 			setIsMandatory (false);
 // N
+			setIsQueryAfterChange (false);
+// N
 			setIsQueryCriteria (false);
+			setIsRange (false);
+// N
 			setIsReadOnly (true);
 // Y
 			setName (null);
@@ -87,7 +91,11 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 // N
 			setIsMandatory (false);
 // N
+			setIsQueryAfterChange (false);
+// N
 			setIsQueryCriteria (false);
+			setIsRange (false);
+// N
 			setIsReadOnly (true);
 // Y
 			setName (null);
@@ -362,6 +370,22 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 		return (String)get_Value(COLUMNNAME_DefaultValue);
 	}
 
+	/** Set Default Logic 2.
+		@param DefaultValue2 Default value hierarchy, separated by ;
+	*/
+	public void setDefaultValue2 (String DefaultValue2)
+	{
+		set_Value (COLUMNNAME_DefaultValue2, DefaultValue2);
+	}
+
+	/** Get Default Logic 2.
+		@return Default value hierarchy, separated by ;
+	  */
+	public String getDefaultValue2()
+	{
+		return (String)get_Value(COLUMNNAME_DefaultValue2);
+	}
+
 	/** Set Description.
 		@param Description Optional short description of the record
 	*/
@@ -430,7 +454,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	}
 
 	/** Set Input field validation.
-		@param InputFieldValidation Input field validaton query
+		@param InputFieldValidation Input field validation query
 	*/
 	public void setInputFieldValidation (String InputFieldValidation)
 	{
@@ -438,23 +462,23 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	}
 
 	/** Get Input field validation.
-		@return Input field validaton query
+		@return Input field validation query
 	  */
 	public String getInputFieldValidation()
 	{
 		return (String)get_Value(COLUMNNAME_InputFieldValidation);
 	}
 
-	/** Set Autocomplete.
-		@param IsAutocomplete Automatic completion for textfields
+	/** Set Auto complete.
+		@param IsAutocomplete Automatic completion for text fields
 	*/
 	public void setIsAutocomplete (boolean IsAutocomplete)
 	{
 		set_Value (COLUMNNAME_IsAutocomplete, Boolean.valueOf(IsAutocomplete));
 	}
 
-	/** Get Autocomplete.
-		@return Automatic completion for textfields
+	/** Get Auto complete.
+		@return Automatic completion for text fields
 	  */
 	public boolean isAutocomplete()
 	{
@@ -583,6 +607,29 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 		return false;
 	}
 
+	/** Set Query After Change.
+		@param IsQueryAfterChange Issues a query request after the user has made changes to the field
+	*/
+	public void setIsQueryAfterChange (boolean IsQueryAfterChange)
+	{
+		set_Value (COLUMNNAME_IsQueryAfterChange, Boolean.valueOf(IsQueryAfterChange));
+	}
+
+	/** Get Query After Change.
+		@return Issues a query request after the user has made changes to the field
+	  */
+	public boolean isQueryAfterChange()
+	{
+		Object oo = get_Value(COLUMNNAME_IsQueryAfterChange);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Query Criteria.
 		@param IsQueryCriteria The column is also used as a query criteria
 	*/
@@ -597,6 +644,29 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isQueryCriteria()
 	{
 		Object oo = get_Value(COLUMNNAME_IsQueryCriteria);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Range.
+		@param IsRange The parameter is a range of values
+	*/
+	public void setIsRange (boolean IsRange)
+	{
+		set_Value (COLUMNNAME_IsRange, Boolean.valueOf(IsRange));
+	}
+
+	/** Get Range.
+		@return The parameter is a range of values
+	  */
+	public boolean isRange()
+	{
+		Object oo = get_Value(COLUMNNAME_IsRange);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 
@@ -666,6 +736,21 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public String getPlaceholder()
 	{
 		return (String)get_Value(COLUMNNAME_Placeholder);
+	}
+
+	/** Set Placeholder2.
+		@param Placeholder2 Placeholder2
+	*/
+	public void setPlaceholder2 (String Placeholder2)
+	{
+		set_Value (COLUMNNAME_Placeholder2, Placeholder2);
+	}
+
+	/** Get Placeholder2.
+		@return Placeholder2	  */
+	public String getPlaceholder2()
+	{
+		return (String)get_Value(COLUMNNAME_Placeholder2);
 	}
 
 	/** Set Query Function.

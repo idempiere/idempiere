@@ -37,8 +37,10 @@ public class DynamicServiceHolder<T> implements IServiceHolder<T>, IServicesHold
 	 */
 	public DynamicServiceHolder(ServiceTracker<T, T> tracker) {
 		serviceTracker = tracker;
-		if (serviceTracker.getTrackingCount() == -1)
-			serviceTracker.open();
+		synchronized (serviceTracker) {
+			if (serviceTracker.getTrackingCount() == -1)
+				serviceTracker.open();
+		}
 	}
 
 	@Override

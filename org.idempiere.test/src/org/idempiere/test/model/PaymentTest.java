@@ -32,6 +32,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -41,8 +42,6 @@ import org.junit.jupiter.api.Test;
  */
 public class PaymentTest extends AbstractTestCase {
 
-	private final static int BP_JOE_BLOCK = 118;
-	
 	public PaymentTest() {
 	}
 
@@ -50,7 +49,7 @@ public class PaymentTest extends AbstractTestCase {
 	public void testClearCreditCardFields() {
 		MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
 		payment.setC_DocType_ID(true);
-		payment.setC_BPartner_ID(BP_JOE_BLOCK);
+		payment.setC_BPartner_ID(DictionaryIDs.C_BPartner.JOE_BLOCK.id);
 		payment.setTenderType(MPayment.TENDERTYPE_CreditCard);
 		payment.setCreditCard(MPayment.TRXTYPE_Sales, MPayment.CREDITCARDTYPE_MasterCard, "5555555555554444", "123", "0122");
 		int C_BankAccount_ID = DB.getSQLValueEx(getTrxName(), "SELECT C_BankAccount_ID FROM C_BankAccount WHERE IsActive='Y' AND AD_Client_ID=? "

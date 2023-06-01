@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRfQ;
 import org.compiere.model.MRfQLine;
 import org.compiere.model.MRfQLineQty;
@@ -27,6 +28,7 @@ import org.compiere.model.MRfQResponse;
 import org.compiere.model.MRfQResponseLine;
 import org.compiere.model.MRfQResponseLineQty;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	Rank RfQ Responses	
@@ -52,11 +54,10 @@ public class RfQResponseRank extends SvrProcess
 		ProcessInfoParameter[] para = getParameter();
 		for (int i = 0; i < para.length; i++)
 		{
-			String name = para[i].getParameterName();
 			if (para[i].getParameter() == null)
 				;
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_C_RfQ_ID = getRecord_ID();
 	}	//	prepare
@@ -90,7 +91,7 @@ public class RfQResponseRank extends SvrProcess
 		{
 			responses[0].setIsSelectedWinner(true);
 			responses[0].saveEx();
-			return "Only one completed RfQ Response found";
+			return	Msg.getMsg(Env.getCtx(), "OnlyOneRfQResponse");
 		}
 			
 		//	Rank

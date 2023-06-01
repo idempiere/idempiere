@@ -160,14 +160,14 @@ public class MenuTreeSearchPanel extends TreeSearchPanel {
         			continue;
         		
         		if (isNew) {
-        			if (!"window".equals(treeItem.getAttribute("menu.type"))) {
+        			if (!"window".equals(treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE))) {
         				continue;
         			}
         		}
         		
         		valueList.add(getLabel(treeItem));
         		descriptionList.add(treeItem.getTooltiptext());
-        		typeList.add(String.valueOf(treeItem.getAttribute("menu.type")));
+        		typeList.add(String.valueOf(treeItem.getAttribute(AbstractMenuPanel.MENU_TYPE_ATTRIBUTE)));
         		String image = getImage(treeItem);
         		if (image == null || image.length() == 0)
         		{

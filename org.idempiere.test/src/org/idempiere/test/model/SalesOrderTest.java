@@ -46,6 +46,7 @@ import org.compiere.model.MInOutLineMA;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MOrderTax;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MPayment;
@@ -53,6 +54,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MStorageReservation;
 import org.compiere.model.MStorageReservationLog;
+import org.compiere.model.MTax;
 import org.compiere.model.MTransaction;
 import org.compiere.model.MUOM;
 import org.compiere.model.MWarehouse;
@@ -67,32 +69,18 @@ import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * @author hengsin
  */
+@Isolated
 public class SalesOrderTest extends AbstractTestCase {
 
 	public SalesOrderTest() {
 	}
-
-	private static final int BP_PATIO = 121;
-	private static final int DOCTYPE_PO = 126;
-	private static final int DOCTYPE_RECEIPT = 122;
-	private final static int BP_JOE_BLOCK = 118;
-	private static final int PRODUCT_OAK_TREE = 123;
-	private static final int PRODUCT_AZALEA = 128;
-	private static final int PRODUCT_FERT50 = 136;
-	private static final int PRODUCT_MARY = 132;
-	private static final int PRODUCT_PCHAIR = 133;
-	private static final int ORG_FERTILIZER = 50001;
-	private static final int WAREHOUSE_FERTILIZER = 50002;
-	private static final int WAREHOUSE_HQ_TRANSIT = 50000;
-	private static final int WAREHOUSE_HQ = 103;
-	private static final int LOCATOR_FERTILIZER = 50001;
-	private static final int UOM_HOUR = 101;
-	private static final int USER_GARDENADMIN = 101;
 
 	@Test
 	/**
@@ -102,7 +90,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		//first test - invalid with completeorder and multiple datepromised
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -114,7 +102,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
@@ -122,7 +110,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		MOrderLine line2 = new MOrderLine(order);
 		line2.setLine(20);
 		//Oak Tree	
-		line2.setProduct(MProduct.get(Env.getCtx(), PRODUCT_OAK_TREE));
+		line2.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.OAK.id));
 		line2.setQty(new BigDecimal("1"));
 		line2.setDatePromised(TimeUtil.addDays(today, 1));
 		line2.saveEx();
@@ -137,7 +125,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		//second test - ok with completeorder and 1 datepromised
 		order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -148,7 +136,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
@@ -156,14 +144,14 @@ public class SalesOrderTest extends AbstractTestCase {
 		line2 = new MOrderLine(order);
 		line2.setLine(20);
 		//Oak Tree	
-		line2.setProduct(MProduct.get(Env.getCtx(), PRODUCT_OAK_TREE));
+		line2.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.OAK.id));
 		line2.setQty(new BigDecimal("1"));
 		line2.setDatePromised(today);
 		line2.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		rollback();
@@ -171,7 +159,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		//test 3 - ok with !completeorder and multiple datepromised
 		order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_Availability);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -182,7 +170,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
@@ -190,14 +178,14 @@ public class SalesOrderTest extends AbstractTestCase {
 		line2 = new MOrderLine(order);
 		line2.setLine(20);
 		//Oak Tree	
-		line2.setProduct(MProduct.get(Env.getCtx(), PRODUCT_OAK_TREE));
+		line2.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.OAK.id));
 		line2.setQty(new BigDecimal("1"));
 		line2.setDatePromised(TimeUtil.addDays(today, 1));
 		line2.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		order.load(getTrxName());
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		
 		rollback();
@@ -207,7 +195,7 @@ public class SalesOrderTest extends AbstractTestCase {
 	public void testQtyReservedForOverAndNegativeShipment() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -220,19 +208,19 @@ public class SalesOrderTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
 		assertEquals(1, line1.getQtyReserved().intValue());
 		
-		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
 		shipment.setDocAction(DocAction.ACTION_Complete);
 		shipment.saveEx();
@@ -244,14 +232,14 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 		
 		line1.load(getTrxName());
 		assertEquals(0, line1.getQtyReserved().intValue());
 		
-		shipment = new MInOut(order, 120, order.getDateOrdered());
+		shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
 		shipment.setDocAction(DocAction.ACTION_Complete);
 		shipment.saveEx();
@@ -263,7 +251,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 		
@@ -275,7 +263,7 @@ public class SalesOrderTest extends AbstractTestCase {
 	public void testQtyReservedForNegativeOrderAndShipment() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -288,19 +276,19 @@ public class SalesOrderTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("-1"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
 		assertEquals(0, line1.getQtyReserved().intValue());
 		
-		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
 		shipment.setDocAction(DocAction.ACTION_Complete);
 		shipment.saveEx();
@@ -312,7 +300,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 		
@@ -326,11 +314,11 @@ public class SalesOrderTest extends AbstractTestCase {
 		String trxName = getTrxName();
 
 		// Get the OpenBalance of Joe Block
-		MBPartner bpartner = new MBPartner(ctx, BP_JOE_BLOCK, trxName);
+		MBPartner bpartner = new MBPartner(ctx, DictionaryIDs.C_BPartner.JOE_BLOCK.id, trxName);
 		BigDecimal initialBalance = bpartner.getTotalOpenBalance();
 
 		MOrder order = new MOrder(ctx, 0, trxName);
-		order.setBPartner(MBPartner.get(ctx, BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_POS);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -342,7 +330,7 @@ public class SalesOrderTest extends AbstractTestCase {
 
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(ctx, PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
@@ -376,11 +364,11 @@ public class SalesOrderTest extends AbstractTestCase {
 		String trxName = getTrxName();
 
 		// Get the OpenBalance of Joe Block
-		MBPartner bpartner = new MBPartner(ctx, BP_JOE_BLOCK, trxName);
+		MBPartner bpartner = new MBPartner(ctx, DictionaryIDs.C_BPartner.JOE_BLOCK.id, trxName);
 		BigDecimal initialBalance = bpartner.getTotalOpenBalance();
 
 		MOrder order = new MOrder(ctx, 0, trxName);
-		order.setBPartner(MBPartner.get(ctx, BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_POS);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -392,7 +380,7 @@ public class SalesOrderTest extends AbstractTestCase {
 
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(ctx, PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
@@ -435,7 +423,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		//test1 with CompleteOrder
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -448,13 +436,13 @@ public class SalesOrderTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -502,7 +490,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		order1.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(order1, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order1.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order1.getDocStatus());
 		line1 = order1.getLines()[0];
@@ -552,7 +540,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		payment.setC_Currency_ID(order1.getC_Currency_ID());
 		payment.saveEx();
 		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		payment.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 		
@@ -592,7 +580,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		order2.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(order2, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order2.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order2.getDocStatus());
 		line1 = order2.getLines()[0];
@@ -600,10 +588,10 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(1, line1.getQtyReserved().intValue());
 		
 		//create invoice
-		instance = new MPInstance(Env.getCtx(), SystemIDs.PROCESS_C_INVOICE_GENERATE, 0);
+		instance = new MPInstance(Env.getCtx(), SystemIDs.PROCESS_C_INVOICE_GENERATE_MANUAL, 0);
 		instance.saveEx();
 		DB.executeUpdateEx(insert, new Object[] {instance.getAD_PInstance_ID(), order2.getC_Order_ID()}, null);		
-		pi = new ProcessInfo ("InvoiceGen", AD_Process_ID);
+		pi = new ProcessInfo ("InvoiceGenerateManual", AD_Process_ID);
 		pi.setAD_PInstance_ID (instance.getAD_PInstance_ID());
 
 		//	Add Parameter - Selection=Y
@@ -636,7 +624,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		payment.setC_Currency_ID(order2.getC_Currency_ID());
 		payment.saveEx();
 		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		payment.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 		
@@ -680,17 +668,17 @@ public class SalesOrderTest extends AbstractTestCase {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
 		
-		MProduct fert50 = new MProduct(ctx, PRODUCT_FERT50, trxName);
+		MProduct fert50 = new MProduct(ctx, DictionaryIDs.M_Product.FERTILIZER_50.id, trxName);
 
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		Timestamp past_month = TimeUtil.addMonths(today, -1);
 
-		MWarehouse wh = new MWarehouse(ctx, WAREHOUSE_FERTILIZER, trxName);
+		MWarehouse wh = new MWarehouse(ctx, DictionaryIDs.M_Warehouse.FERTILIZER.id, trxName);
 		wh.setIsDisallowNegativeInv(true);
 		wh.saveEx();
-		CacheMgt.get().reset(MWarehouse.Table_Name, WAREHOUSE_FERTILIZER);
+		CacheMgt.get().reset(MWarehouse.Table_Name, DictionaryIDs.M_Warehouse.FERTILIZER.id);
 		// Put the modified record into cache
-		MWarehouse.get(ctx, WAREHOUSE_FERTILIZER, trxName);
+		MWarehouse.get(ctx, DictionaryIDs.M_Warehouse.FERTILIZER.id, trxName);
 
 		// create an ASI for Fertilizer Lot with Lot 1010  
 		MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
@@ -698,12 +686,12 @@ public class SalesOrderTest extends AbstractTestCase {
 		asi.setLot("1010");
 		asi.saveEx();
 
-		MStorageOnHand.add(ctx, LOCATOR_FERTILIZER, PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), Env.ONE, past_month, trxName);
-		MStorageOnHand.add(ctx, LOCATOR_FERTILIZER, PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), Env.ONE, today, trxName);
+		MStorageOnHand.add(ctx, DictionaryIDs.M_Locator.FERTILIZER.id, DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), Env.ONE, past_month, trxName);
+		MStorageOnHand.add(ctx, DictionaryIDs.M_Locator.FERTILIZER.id, DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), Env.ONE, today, trxName);
 
 		// Expected to create two entries in storage because of the different dates
-		MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, WAREHOUSE_FERTILIZER,
-				PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), null,
+		MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, DictionaryIDs.M_Warehouse.FERTILIZER.id,
+				DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
 				MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), false,
 				0, trxName);
 		assertEquals(2, storages.length);
@@ -717,11 +705,11 @@ public class SalesOrderTest extends AbstractTestCase {
 		}
 
 		MOrder order = new MOrder(ctx, 0, trxName);
-		order.setAD_Org_ID(ORG_FERTILIZER);
-		order.setBPartner(MBPartner.get(ctx, BP_JOE_BLOCK));
+		order.setAD_Org_ID(DictionaryIDs.AD_Org.FERTILIZER.id);
+		order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
-		order.setM_Warehouse_ID(WAREHOUSE_FERTILIZER);
+		order.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.FERTILIZER.id);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);
 		order.setPaymentRule(MOrder.PAYMENTRULE_OnCredit); // this is the default, just making it explicit
@@ -730,7 +718,7 @@ public class SalesOrderTest extends AbstractTestCase {
 
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(ctx, PRODUCT_FERT50));
+		line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.FERTILIZER_50.id));
 		line1.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
 		line1.setQty(new BigDecimal("2"));
 		line1.setDatePromised(today);
@@ -764,7 +752,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		ip.saveEx();
 		//	Add Parameter - M_Warehouse_ID=x
 		ip = new MPInstancePara(instance, 30);
-		ip.setParameter("M_Warehouse_ID", WAREHOUSE_FERTILIZER);
+		ip.setParameter("M_Warehouse_ID", DictionaryIDs.M_Warehouse.FERTILIZER.id);
 		ip.saveEx();
 		
 		ServerProcessCtl processCtl = new ServerProcessCtl(pi, getTrx());
@@ -778,8 +766,8 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(2, line1.getQtyDelivered().intValue());
 
 		// Expected to have cleared both storage entries on shipment
-		storages = MStorageOnHand.getWarehouse(ctx, WAREHOUSE_FERTILIZER,
-				PRODUCT_FERT50, asi.getM_AttributeSetInstance_ID(), null,
+		storages = MStorageOnHand.getWarehouse(ctx, DictionaryIDs.M_Warehouse.FERTILIZER.id,
+				DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
 				MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), false,
 				0, trxName);
 		assertEquals(0, storages.length);
@@ -793,7 +781,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(line1.getQtyOrdered(), ilines[0].getMovementQty(), "Shipment line doesn't has the expected movement quantity");
 		assertEquals(line1.getM_Product_ID(), ilines[0].getM_Product_ID(), "Shipment line doesn't has the expected product ID");
 		assertEquals(line1.getM_AttributeSetInstance_ID(), ilines[0].getM_AttributeSetInstance_ID(), "Shipment line doesn't has the expected ASI ID");
-		assertEquals(LOCATOR_FERTILIZER, ilines[0].getM_Locator_ID(), "Shipment line doesn't has the expected Locator ID");
+		assertEquals(DictionaryIDs.M_Locator.FERTILIZER.id, ilines[0].getM_Locator_ID(), "Shipment line doesn't has the expected Locator ID");
 	}
 	
 	@Test
@@ -802,17 +790,17 @@ public class SalesOrderTest extends AbstractTestCase {
 	 */
 	public void testUOMDefault() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.saveEx();
 		
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Assembly Area with default UOM = Hour
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_MARY));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MARY.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.saveEx();
 		
-		assertEquals(UOM_HOUR, line1.getC_UOM_ID());
+		assertEquals(DictionaryIDs.C_UOM.HOUR.id, line1.getC_UOM_ID());
 		
 		MOrderLine line2 = new MOrderLine(order);
 		line2.setLine(20);
@@ -826,7 +814,7 @@ public class SalesOrderTest extends AbstractTestCase {
 	public void testQtyReservedLog() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -839,13 +827,13 @@ public class SalesOrderTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -853,13 +841,13 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		Query query = new Query(Env.getCtx(), MStorageReservationLog.Table_Name, "M_Product_ID=? AND IsSOTrx='Y' AND M_Warehouse_ID=?", getTrxName());
 		MStorageReservationLog log = query.setOrderBy(MStorageReservationLog.COLUMNNAME_M_StorageReservationLog_ID+" Desc")
-				.setParameters(PRODUCT_AZALEA, line1.getM_Warehouse_ID()).first();
+				.setParameters(DictionaryIDs.M_Product.AZALEA_BUSH.id, line1.getM_Warehouse_ID()).first();
 		assertNotNull(log, "MStorageReservationLog not created after completion of sales order");
 		assertTrue(log.getDeltaQty().intValue() == 1, "Delta quantity of MStorageReservationLog != 1 ("+log.getDeltaQty().toPlainString()+")");
-		MStorageReservation reservation = MStorageReservation.get(Env.getCtx(), line1.getM_Warehouse_ID(), PRODUCT_AZALEA, 0, true, getTrxName());
+		MStorageReservation reservation = MStorageReservation.get(Env.getCtx(), line1.getM_Warehouse_ID(), DictionaryIDs.M_Product.AZALEA_BUSH.id, 0, true, getTrxName());
 		assertTrue(log.getNewQty().equals(reservation.getQty()), "New Qty from MStorageReservationLog != Qty from MStorageReservation");
 		
-		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
 		shipment.setDocAction(DocAction.ACTION_Complete);
 		shipment.saveEx();
@@ -871,21 +859,21 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 		
 		log = query.first();
 		assertNotNull(log, "MStorageReservationLog not created after completion of shipment");
 		assertTrue(log.getDeltaQty().intValue() == -1, "Delta quantity of MStorageReservationLog != -1 ("+log.getDeltaQty().toPlainString()+")");
-		reservation = MStorageReservation.get(Env.getCtx(), line1.getM_Warehouse_ID(), PRODUCT_AZALEA, 0, true, getTrxName());
+		reservation = MStorageReservation.get(Env.getCtx(), line1.getM_Warehouse_ID(), DictionaryIDs.M_Product.AZALEA_BUSH.id, 0, true, getTrxName());
 		assertTrue(log.getNewQty().equals(reservation.getQty()), "New Qty from MStorageReservationLog != Qty from MStorageReservation");
 	}
 	
 	@Test
 	public void testQtyLostSales() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -897,19 +885,19 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
 		assertEquals(1, line1.getQtyReserved().intValue());		
 		
-		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
 		shipment.setDocAction(DocAction.ACTION_Complete);
 		shipment.saveEx();
@@ -921,12 +909,12 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Closed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -934,7 +922,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(0, line1.getQtyLostSales().intValue());
 		
 		order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -945,19 +933,19 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("2"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
 		
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
 		assertEquals(2, line1.getQtyReserved().intValue());		
 		
-		shipment = new MInOut(order, 120, order.getDateOrdered());
+		shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
 		shipment.setDocAction(DocAction.ACTION_Complete);
 		shipment.saveEx();
@@ -969,12 +957,12 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Closed, order.getDocStatus());
 		line1.load(getTrxName());
@@ -987,34 +975,34 @@ public class SalesOrderTest extends AbstractTestCase {
 	public void testWarehouseChange() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Prepare);
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		order.setDateOrdered(today);
 		order.setDatePromised(today);
-		order.setM_Warehouse_ID(WAREHOUSE_HQ);
+		order.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
 		order.saveEx();
 		
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_AZALEA));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();
 
-		order.setM_Warehouse_ID(WAREHOUSE_HQ_TRANSIT);
+		order.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQT.id);
 		boolean success = order.save();
 		assertEquals(true, success);
 		
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
-		assertFalse(info.isError());
+		assertFalse(info.isError(), info.getSummary());
 		
 		// No change on warehouse allowed if QtyDelivered, QtyInvoice or QtyReserved != 0 on any line
-		order.setM_Warehouse_ID(WAREHOUSE_HQ);
+		order.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
 		success = order.save();
 		assertEquals(false, success);
 	}
@@ -1022,7 +1010,7 @@ public class SalesOrderTest extends AbstractTestCase {
 	@Test
 	public void testSetASIWhenShipping() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -1034,7 +1022,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PCHAIR));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.P_CHAIR.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
@@ -1046,9 +1034,9 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.load(getTrxName());
 		assertEquals(1, line1.getQtyReserved().intValue(), "Unexpected order line qty reserved value");		
 		
-		int originalOnHand = MStorageOnHand.getQtyOnHandWithASIZero(PRODUCT_PCHAIR, getM_Warehouse_ID(), getTrxName()).intValue();
+		int originalOnHand = MStorageOnHand.getQtyOnHandWithASIZero(DictionaryIDs.M_Product.P_CHAIR.id, getM_Warehouse_ID(), getTrxName()).intValue();
 		
-		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
 		shipment.setDocAction(DocAction.ACTION_Complete);
 		shipment.saveEx();
@@ -1057,7 +1045,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.setOrderLine(line1, 0, new BigDecimal("1"));
 		shipmentLine.setQty(new BigDecimal("1"));
 		MAttributeSetInstance asi = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
-		asi.setM_AttributeSet_ID(MProduct.get(PRODUCT_PCHAIR).getM_AttributeSet_ID());
+		asi.setM_AttributeSet_ID(MProduct.get(DictionaryIDs.M_Product.P_CHAIR.id).getM_AttributeSet_ID());
 		asi.setSerNo("PChair Serial #1000000");
 		asi.saveEx();
 		shipmentLine.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
@@ -1068,12 +1056,12 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus(), "Unexpected Shipment document status");
 		
-		int newOnHand = MStorageOnHand.getQtyOnHandWithASIZero(PRODUCT_PCHAIR, getM_Warehouse_ID(), getTrxName()).intValue();
+		int newOnHand = MStorageOnHand.getQtyOnHandWithASIZero(DictionaryIDs.M_Product.P_CHAIR.id, getM_Warehouse_ID(), getTrxName()).intValue();
 		assertEquals(originalOnHand-1, newOnHand, "Unexpected on hand quantity");
 				
-		int asiOnHand = MStorageOnHand.getQtyOnHand(PRODUCT_PCHAIR, getM_Warehouse_ID(), asi.get_ID(), getTrxName()).intValue();
+		int asiOnHand = MStorageOnHand.getQtyOnHand(DictionaryIDs.M_Product.P_CHAIR.id, getM_Warehouse_ID(), asi.get_ID(), getTrxName()).intValue();
 		int asiRecords = 0;
-		MStorageOnHand[] storages = MStorageOnHand.getOfProduct(Env.getCtx(), PRODUCT_PCHAIR, getTrxName());
+		MStorageOnHand[] storages = MStorageOnHand.getOfProduct(Env.getCtx(), DictionaryIDs.M_Product.P_CHAIR.id, getTrxName());
 		for (MStorageOnHand storage : storages) {
 			if (storage.getM_Warehouse_ID()==getM_Warehouse_ID() && storage.getM_AttributeSetInstance_ID()==asi.get_ID()) {
 				asiRecords++;
@@ -1103,11 +1091,11 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Reversed, shipment.getDocStatus(), "Unexpected Shipment document status");
-		newOnHand = MStorageOnHand.getQtyOnHandWithASIZero(PRODUCT_PCHAIR, getM_Warehouse_ID(), getTrxName()).intValue();
+		newOnHand = MStorageOnHand.getQtyOnHandWithASIZero(DictionaryIDs.M_Product.P_CHAIR.id, getM_Warehouse_ID(), getTrxName()).intValue();
 		assertEquals(originalOnHand, newOnHand, "Unexpected on hand quantity no ASI");
-		asiOnHand = MStorageOnHand.getQtyOnHand(PRODUCT_PCHAIR, getM_Warehouse_ID(), asi.get_ID(), getTrxName()).intValue();
+		asiOnHand = MStorageOnHand.getQtyOnHand(DictionaryIDs.M_Product.P_CHAIR.id, getM_Warehouse_ID(), asi.get_ID(), getTrxName()).intValue();
 		assertEquals(0, asiOnHand, "Unexpected on hand quantity for Serial ASI");
-		storages = MStorageOnHand.getOfProduct(Env.getCtx(), PRODUCT_PCHAIR, getTrxName());
+		storages = MStorageOnHand.getOfProduct(Env.getCtx(), DictionaryIDs.M_Product.P_CHAIR.id, getTrxName());
 		for (MStorageOnHand storage : storages) {
 			if (storage.getM_Warehouse_ID() == getM_Warehouse_ID()) {
 				if (storage.getM_AttributeSetInstance_ID() == asi.get_ID()) {
@@ -1137,7 +1125,7 @@ public class SalesOrderTest extends AbstractTestCase {
 	@Test
 	public void testSetASIWhenShipping2() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -1149,7 +1137,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PCHAIR));
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.P_CHAIR.id));
 		line1.setQty(new BigDecimal("2"));
 		line1.setDatePromised(today);
 		line1.saveEx();		
@@ -1161,9 +1149,9 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.load(getTrxName());
 		assertEquals(2, line1.getQtyReserved().intValue(), "Unexpected order line qty reserved value");		
 		
-		int originalOnHand = MStorageOnHand.getQtyOnHandWithASIZero(PRODUCT_PCHAIR, getM_Warehouse_ID(), getTrxName()).intValue();
+		int originalOnHand = MStorageOnHand.getQtyOnHandWithASIZero(DictionaryIDs.M_Product.P_CHAIR.id, getM_Warehouse_ID(), getTrxName()).intValue();
 		
-		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
 		shipment.setDocAction(DocAction.ACTION_Complete);
 		shipment.saveEx();
@@ -1174,11 +1162,11 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipmentLine.saveEx();
 		
 		MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
-		asi1.setM_AttributeSet_ID(MProduct.get(PRODUCT_PCHAIR).getM_AttributeSet_ID());
+		asi1.setM_AttributeSet_ID(MProduct.get(DictionaryIDs.M_Product.P_CHAIR.id).getM_AttributeSet_ID());
 		asi1.setSerNo("PChair Serial #1000000");
 		asi1.saveEx();
 		MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
-		asi2.setM_AttributeSet_ID(MProduct.get(PRODUCT_PCHAIR).getM_AttributeSet_ID());
+		asi2.setM_AttributeSet_ID(MProduct.get(DictionaryIDs.M_Product.P_CHAIR.id).getM_AttributeSet_ID());
 		asi2.setSerNo("PChair Serial #1000000");
 		asi2.saveEx();
 		MInOutLineMA ma1 = new MInOutLineMA(Env.getCtx(), 0, getTrxName());
@@ -1201,12 +1189,12 @@ public class SalesOrderTest extends AbstractTestCase {
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus(), "Unexpected Shipment document status");
 		
-		int newOnHand = MStorageOnHand.getQtyOnHandWithASIZero(PRODUCT_PCHAIR, getM_Warehouse_ID(), getTrxName()).intValue();
+		int newOnHand = MStorageOnHand.getQtyOnHandWithASIZero(DictionaryIDs.M_Product.P_CHAIR.id, getM_Warehouse_ID(), getTrxName()).intValue();
 		assertEquals(originalOnHand-2, newOnHand, "Unexpected on hand quantity");
 				
-		int asiOnHand = MStorageOnHand.getQtyOnHand(PRODUCT_PCHAIR, getM_Warehouse_ID(), asi1.get_ID(), getTrxName()).intValue();
+		int asiOnHand = MStorageOnHand.getQtyOnHand(DictionaryIDs.M_Product.P_CHAIR.id, getM_Warehouse_ID(), asi1.get_ID(), getTrxName()).intValue();
 		int asiRecords = 0;
-		MStorageOnHand[] storages = MStorageOnHand.getOfProduct(Env.getCtx(), PRODUCT_PCHAIR, getTrxName());
+		MStorageOnHand[] storages = MStorageOnHand.getOfProduct(Env.getCtx(), DictionaryIDs.M_Product.P_CHAIR.id, getTrxName());
 		for (MStorageOnHand storage : storages) {
 			if (storage.getM_Warehouse_ID()==getM_Warehouse_ID() && storage.getM_AttributeSetInstance_ID()==asi1.get_ID()) {
 				asiRecords++;
@@ -1215,9 +1203,9 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(0, asiOnHand, "Unexpected on hand quantity for Serial ASI 1");
 		assertEquals(1, asiRecords, "Unexpected number of Serial ASI 1 Storage records");
 		
-		asiOnHand = MStorageOnHand.getQtyOnHand(PRODUCT_PCHAIR, getM_Warehouse_ID(), asi2.get_ID(), getTrxName()).intValue();
+		asiOnHand = MStorageOnHand.getQtyOnHand(DictionaryIDs.M_Product.P_CHAIR.id, getM_Warehouse_ID(), asi2.get_ID(), getTrxName()).intValue();
 		asiRecords = 0;
-		storages = MStorageOnHand.getOfProduct(Env.getCtx(), PRODUCT_PCHAIR, getTrxName());
+		storages = MStorageOnHand.getOfProduct(Env.getCtx(), DictionaryIDs.M_Product.P_CHAIR.id, getTrxName());
 		for (MStorageOnHand storage : storages) {
 			if (storage.getM_Warehouse_ID()==getM_Warehouse_ID() && storage.getM_AttributeSetInstance_ID()==asi2.get_ID()) {
 				asiRecords++;
@@ -1255,12 +1243,12 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertFalse(info.isError(), info.getSummary());
 		shipment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Reversed, shipment.getDocStatus(), "Unexpected Shipment document status");
-		newOnHand = MStorageOnHand.getQtyOnHandWithASIZero(PRODUCT_PCHAIR, getM_Warehouse_ID(), getTrxName()).intValue();
+		newOnHand = MStorageOnHand.getQtyOnHandWithASIZero(DictionaryIDs.M_Product.P_CHAIR.id, getM_Warehouse_ID(), getTrxName()).intValue();
 		assertEquals(originalOnHand, newOnHand, "Unexpected on hand quantity no ASI");
 		
-		asiOnHand = MStorageOnHand.getQtyOnHand(PRODUCT_PCHAIR, getM_Warehouse_ID(), asi1.get_ID(), getTrxName()).intValue();
+		asiOnHand = MStorageOnHand.getQtyOnHand(DictionaryIDs.M_Product.P_CHAIR.id, getM_Warehouse_ID(), asi1.get_ID(), getTrxName()).intValue();
 		assertEquals(0, asiOnHand, "Unexpected on hand quantity for Serial ASI 1");
-		storages = MStorageOnHand.getOfProduct(Env.getCtx(), PRODUCT_PCHAIR, getTrxName());
+		storages = MStorageOnHand.getOfProduct(Env.getCtx(), DictionaryIDs.M_Product.P_CHAIR.id, getTrxName());
 		for (MStorageOnHand storage : storages) {
 			if (storage.getM_Warehouse_ID() == getM_Warehouse_ID()) {
 				if (storage.getM_AttributeSetInstance_ID() == asi1.get_ID()) {
@@ -1269,9 +1257,9 @@ public class SalesOrderTest extends AbstractTestCase {
 			}
 		}
 		
-		asiOnHand = MStorageOnHand.getQtyOnHand(PRODUCT_PCHAIR, getM_Warehouse_ID(), asi2.get_ID(), getTrxName()).intValue();
+		asiOnHand = MStorageOnHand.getQtyOnHand(DictionaryIDs.M_Product.P_CHAIR.id, getM_Warehouse_ID(), asi2.get_ID(), getTrxName()).intValue();
 		assertEquals(0, asiOnHand, "Unexpected on hand quantity for Serial ASI 2");
-		storages = MStorageOnHand.getOfProduct(Env.getCtx(), PRODUCT_PCHAIR, getTrxName());
+		storages = MStorageOnHand.getOfProduct(Env.getCtx(), DictionaryIDs.M_Product.P_CHAIR.id, getTrxName());
 		for (MStorageOnHand storage : storages) {
 			if (storage.getM_Warehouse_ID() == getM_Warehouse_ID()) {
 				if (storage.getM_AttributeSetInstance_ID() == asi2.get_ID()) {
@@ -1312,17 +1300,17 @@ public class SalesOrderTest extends AbstractTestCase {
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		Timestamp tomorrow  = TimeUtil.addDays(today, 1);
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_PATIO));
-		order.setC_DocTypeTarget_ID(DOCTYPE_PO);
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
 		order.setIsSOTrx(false);
-		order.setSalesRep_ID(USER_GARDENADMIN);
+		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);		
 		order.setDateOrdered(today);
 		order.setDatePromised(today);
 		order.saveEx();
 
-		MProduct fert = MProduct.get(Env.getCtx(), PRODUCT_FERT50);
+		MProduct fert = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.FERTILIZER_50.id);
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		line1.setProduct(fert);
@@ -1335,7 +1323,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Order not completed");
 		
-		MInOut receipt = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
 		receipt.setDocStatus(DocAction.STATUS_Drafted);
 		receipt.setDocAction(DocAction.ACTION_Complete);
 		receipt.saveEx();
@@ -1369,10 +1357,10 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 		
 		order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_PATIO));
-		order.setC_DocTypeTarget_ID(DOCTYPE_PO);
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
 		order.setIsSOTrx(false);
-		order.setSalesRep_ID(USER_GARDENADMIN);
+		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);		
 		order.setDateOrdered(tomorrow);
@@ -1391,7 +1379,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Order not completed");
 		
-		receipt = new MInOut(order, DOCTYPE_RECEIPT, order.getDateOrdered());
+		receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
 		receipt.setDocStatus(DocAction.STATUS_Drafted);
 		receipt.setDocAction(DocAction.ACTION_Complete);
 		receipt.saveEx();
@@ -1431,7 +1419,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		//sales and shipment
 		order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
@@ -1454,7 +1442,7 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.load(getTrxName());
 		assertEquals(2, line1.getQtyReserved().intValue());		
 		
-		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
 		shipment.setDocAction(DocAction.ACTION_Prepare);
 		shipment.saveEx();
@@ -1493,5 +1481,49 @@ public class SalesOrderTest extends AbstractTestCase {
 		onHand2 = MStorageOnHand.getQtyOnHand(fert.get_ID(), getM_Warehouse_ID(), asi2.get_ID(), getTrxName()).intValue();
 		assertEquals(onHand1, onHand2);
 		assertEquals(0, onHand1);
+	}
+	
+	@Test
+	public void testOrderWithParentTax() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+		
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.setC_Tax_ID(DictionaryIDs.C_Tax.GST_PST.id);
+		line1.saveEx();
+		
+		MTax tax = new MTax(Env.getCtx(), line1.getC_Tax_ID(), null);
+		MTax[] childs = tax.getChildTaxes(true);
+		MOrderTax[] orderTaxes = order.getTaxes(true);
+		assertEquals(childs.length, orderTaxes.length, "Unexpected number of MOrderTax records");
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Unexpected Order document status");
+		
+		orderTaxes = order.getTaxes(true);
+		assertEquals(childs.length, orderTaxes.length, "Unexpected number of MOrderTax records");
+		int match = 0;
+		for (MOrderTax orderTax : orderTaxes) {
+			for (MTax c : childs) {
+				if (c.getC_Tax_ID() == orderTax.getC_Tax_ID()) {
+					match++;
+					break;
+				}
+			}
+		}
+		assertEquals(orderTaxes.length, match, "MOrdexTax record doesn't match child tax records");
 	}
 }

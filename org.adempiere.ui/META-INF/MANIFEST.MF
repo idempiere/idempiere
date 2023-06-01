@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere UI base
 Bundle-SymbolicName: org.adempiere.ui;singleton:=true
-Bundle-Version: 9.0.0.qualifier
+Bundle-Version: 10.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
 Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
@@ -11,12 +11,13 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
 Export-Package: org.compiere.apps,
  org.compiere.apps.form,
  org.compiere.apps.wf,
+ org.compiere.css,
  org.compiere.grid,
  org.compiere.grid.ed,
- org.compiere.css,
  org.compiere.install,
  org.compiere.minigrid,
  org.compiere.print,
+ org.idempiere.apps.form,
  org.netbeans.api.visual.action,
  org.netbeans.api.visual.anchor,
  org.netbeans.api.visual.border,
@@ -32,3 +33,4 @@ Bundle-ClassPath: .,
  lib/org-openide-util-lookup.jar
 Automatic-Module-Name: org.adempiere.ui
 Bundle-Vendor: iDempiere Community
+Import-Package: com.lowagie.text.pdf

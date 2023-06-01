@@ -488,7 +488,7 @@ public class MMatchPO extends X_M_MatchPO
 							{
 								//check m_matchinv not created with different qty
 								int cnt = DB.getSQLValueEx(sLine.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+sLine.getM_InOutLine_ID()
-										+" AND C_InvoiceLine_ID="+ matchPO.getC_InvoiceLine_ID() + "AND Qty != ?", retValue.getQty());
+										+" AND C_InvoiceLine_ID="+ matchPO.getC_InvoiceLine_ID() + " AND Qty != ?", retValue.getQty());
 								if (cnt <= 0) {
 									if (!matchPO.isPosted() && matchPO.getQty().compareTo(retValue.getQty()) >=0 )  // greater than or equal quantity
 									{
@@ -1419,6 +1419,18 @@ public class MMatchPO extends X_M_MatchPO
 				}
 			}
 			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @return true if this is created to reverse another match po document
+	 */
+	public boolean isReversal() {
+		if (getReversal_ID() > 0) {
+			MMatchPO reversal = new MMatchPO (getCtx(), getReversal_ID(), get_TrxName());
+			if (reversal.getM_MatchPO_ID() < getM_MatchPO_ID())
+				return true;
 		}
 		return false;
 	}

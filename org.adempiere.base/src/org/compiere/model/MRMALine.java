@@ -162,10 +162,14 @@ public class MRMALine extends X_M_RMALine
         		pp.setPriceDate(invoice.getDateInvoiced());
         		
         		precision = invoice.getPrecision();
-        		taxId = Tax.get(getCtx(), getM_Product_ID(), getC_Charge_ID(), invoice.getDateInvoiced(), invoice.getDateInvoiced(),
+        		String deliveryViaRule = null;
+        		if (invoice.getC_Order_ID() > 0) {
+        			deliveryViaRule = new MOrder(getCtx(), invoice.getC_Order_ID(), get_TrxName()).getDeliveryViaRule();
+        		}
+        		taxId = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID(), invoice.getDateInvoiced(), invoice.getDateInvoiced(),
             			getAD_Org_ID(), getParent().getShipment().getM_Warehouse_ID(),
             			invoice.getC_BPartner_Location_ID(),		//	should be bill to
-            			invoice.getC_BPartner_Location_ID(), getParent().isSOTrx(), get_TrxName());
+            			invoice.getC_BPartner_Location_ID(), getParent().isSOTrx(), deliveryViaRule, get_TrxName());
         	}
         	else 
         	{
@@ -176,10 +180,10 @@ public class MRMALine extends X_M_RMALine
         			pp.setPriceDate(order.getDateOrdered());
         			
         			precision = order.getPrecision();
-        			taxId = Tax.get(getCtx(), getM_Product_ID(), getC_Charge_ID(), order.getDateOrdered(), order.getDateOrdered(),
+        			taxId = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID(), order.getDateOrdered(), order.getDateOrdered(),
                 			getAD_Org_ID(), order.getM_Warehouse_ID(),
                 			order.getC_BPartner_Location_ID(),		//	should be bill to
-                			order.getC_BPartner_Location_ID(), getParent().isSOTrx(), get_TrxName());
+                			order.getC_BPartner_Location_ID(), getParent().isSOTrx(), order.getDeliveryViaRule(), get_TrxName());
         		}
             	else
             		throw new IllegalStateException("No Invoice/Order found the Shipment/Receipt associated");
@@ -374,22 +378,69 @@ public class MRMALine extends X_M_RMALine
 		return true;
 	}
     
+    /**
+     * 
+     * @param oldTax true if the old C_Tax_ID should be used
+     * @return true if success, false otherwise
+     */
     protected boolean updateOrderTax(boolean oldTax) 
     {
-		MRMATax tax = MRMATax.get (this, getPrecision(), oldTax, get_TrxName());
-		if (tax != null) 
+    	int C_Tax_ID = getC_Tax_ID();
+		boolean isOldTax = oldTax && is_ValueChanged(MRMALine.COLUMNNAME_C_Tax_ID); 
+		if (isOldTax)
 		{
-			if (!tax.calculateTaxFromLines())
-				return false;
-			if (tax.getTaxAmt().signum() != 0) 
+			Object old = get_ValueOld(MRMALine.COLUMNNAME_C_Tax_ID);
+			if (old == null)
 			{
-				if (!tax.save(get_TrxName()))
-					return false;
+				return true;
 			}
-			else 
+			C_Tax_ID = ((Integer)old).intValue();
+		}
+		if (C_Tax_ID == 0)
+		{
+			return true;
+		}
+		
+		MTax t = MTax.get(C_Tax_ID);
+		if (t.isSummary())
+		{
+			MRMATax[] taxes = MRMATax.getChildTaxes(this, getPrecision(), oldTax, get_TrxName());
+			if (taxes != null && taxes.length > 0)
 			{
-				if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+				for(MRMATax tax : taxes)
+				{
+					if (!tax.calculateTaxFromLines())
+						return false;
+					if (tax.getTaxAmt().signum() != 0) 
+					{
+						if (!tax.save(get_TrxName()))
+							return false;
+					}
+					else 
+					{
+						if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+							return false;
+					}
+				}
+			}
+		}
+		else
+		{
+			MRMATax tax = MRMATax.get (this, getPrecision(), oldTax, get_TrxName());
+			if (tax != null) 
+			{
+				if (!tax.calculateTaxFromLines())
 					return false;
+				if (tax.getTaxAmt().signum() != 0) 
+				{
+					if (!tax.save(get_TrxName()))
+						return false;
+				}
+				else 
+				{
+					if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+						return false;
+				}
 			}
 		}
 		return true;

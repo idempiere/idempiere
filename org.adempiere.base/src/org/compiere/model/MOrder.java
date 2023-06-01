@@ -27,7 +27,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 
 import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
@@ -80,7 +79,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7784588474522162502L;
+	private static final long serialVersionUID = 1298245367836653594L;
 
 	/**
 	 * 	Create new Order by copying
@@ -548,11 +547,13 @@ public class MOrder extends X_C_Order implements DocAction
 			line.setQtyInvoiced(Env.ZERO);
 			line.setQtyReserved(Env.ZERO);
 			line.setQtyLostSales(Env.ZERO);
+			line.setQty(fromLines[i].getQtyEntered());
 			line.setDateDelivered(null);
 			line.setDateInvoiced(null);
-			//
 			line.setOrder(this);
 			line.set_ValueNoCheck ("C_OrderLine_ID", I_ZERO);	//	new
+			if (!counter && MOrder.STATUS_Closed.equals(otherOrder.getDocStatus()))
+				line.setDescription(line.getDescriptionStrippingCloseTag());
 			//	References
 			if (!copyASI)
 			{
@@ -987,12 +988,6 @@ public class MOrder extends X_C_Order implements DocAction
 				log.saveWarning("WarehouseOrgConflict", "");
 		}
 
-		boolean disallowNegInv = wh.isDisallowNegativeInv();
-		String DeliveryRule = getDeliveryRule();
-		if((disallowNegInv && DELIVERYRULE_Force.equals(DeliveryRule)) ||
-				(DeliveryRule == null || DeliveryRule.length()==0))
-			setDeliveryRule(DELIVERYRULE_Availability);
-		
 		//	Reservations in Warehouse
 		if (!newRecord && is_ValueChanged("M_Warehouse_ID"))
 		{
@@ -1023,7 +1018,7 @@ public class MOrder extends X_C_Order implements DocAction
 		{
 			int ii = DB.getSQLValueEx(null,
 				"SELECT M_PriceList_ID FROM M_PriceList "
-				+ "WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive=?"
+				+ "WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive=? "
 				+ "ORDER BY IsDefault DESC", getAD_Client_ID(), isSOTrx(), true);
 			if (ii != 0)
 				setM_PriceList_ID (ii);
@@ -1481,7 +1476,7 @@ public class MOrder extends X_C_Order implements DocAction
 		MClientInfo ci = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
 		if (ci.getC_ChargeFreight_ID() == 0 && ci.getM_ProductFreight_ID() == 0)
 		{
-			m_processMsg = "Product or Charge for Freight is not defined at Client window > Client Info tab";
+			m_processMsg = "Product or Charge for Freight is not defined at Tenant window > Tenant Info tab";
 			return false;
 		}
 		
@@ -1529,7 +1524,7 @@ public class MOrder extends X_C_Order implements DocAction
 				else if (ci.getM_ProductFreight_ID() > 0)
 					freightLine.setM_Product_ID(ci.getM_ProductFreight_ID());
 				else
-					throw new AdempiereException("Product or Charge for Freight is not defined at Client window > Client Info tab");
+					throw new AdempiereException("Product or Charge for Freight is not defined at Tenant window > Tenant Info tab");
 			}
 			
 			freightLine.setC_BPartner_Location_ID(getC_BPartner_Location_ID());
@@ -1542,12 +1537,12 @@ public class MOrder extends X_C_Order implements DocAction
 		{
 			if (ci.getC_UOM_Weight_ID() == 0)
 			{
-				m_processMsg = "UOM for Weight is not defined at Client window > Client Info tab";
+				m_processMsg = "UOM for Weight is not defined at Tenant window > Tenant Info tab";
 				return false;
 			}
 			if (ci.getC_UOM_Length_ID() == 0)
 			{
-				m_processMsg = "UOM for Length is not defined at Client window > Client Info ta";
+				m_processMsg = "UOM for Length is not defined at Tenant window > Tenant Info ta";
 				return false;
 			}
 			
@@ -1595,7 +1590,7 @@ public class MOrder extends X_C_Order implements DocAction
 					else if (ci.getM_ProductFreight_ID() > 0)
 						freightLine.setM_Product_ID(ci.getM_ProductFreight_ID());
 					else
-						throw new AdempiereException("Product or Charge for Freight is not defined at Client window > Client Info tab");
+						throw new AdempiereException("Product or Charge for Freight is not defined at Tenant window > Tenant Info tab");
 				}
 				
 				freightLine.setC_BPartner_Location_ID(getC_BPartner_Location_ID());
@@ -2687,17 +2682,7 @@ public class MOrder extends X_C_Order implements DocAction
 				line.setQtyLostSales(Env.ZERO);
 				//	QtyEntered unchanged
 				
-				// Strip Close() tags from description
-				String desc = line.getDescription();
-				if (desc == null)
-					desc = "";
-				Pattern pattern = Pattern.compile("( \\| )?Close \\(.*\\)");
-				String[] parts = pattern.split(desc);
-				desc = "";
-				for (String s : parts) {
-					desc = desc.concat(s);
-				}
-				line.setDescription(desc);
+				line.setDescription(line.getDescriptionStrippingCloseTag());
 				if (!line.save(get_TrxName()))
 					return "Couldn't save orderline";
 			}
@@ -2767,6 +2752,9 @@ public class MOrder extends X_C_Order implements DocAction
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REACTIVATE);
 		if (m_processMsg != null)
 			return false;	
+		
+		// Test period
+		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
 		
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 		String DocSubTypeSO = dt.getDocSubTypeSO();
@@ -2912,6 +2900,8 @@ public class MOrder extends X_C_Order implements DocAction
 		MOrderLine[] lines = getLines();
 		for (MOrderLine line : lines)
 		{
+			if (line.isDescription())
+				continue;
             MTax tax = new MTax(line.getCtx(), line.getC_Tax_ID(), line.get_TrxName());
             MTaxProvider provider = providers.get(tax.getC_TaxProvider_ID());
             if (provider == null)

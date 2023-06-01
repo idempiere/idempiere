@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_MatchPO
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_MatchPO")
 public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_M_MatchPO extends PO implements I_M_MatchPO, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_MatchPO (Properties ctx, int M_MatchPO_ID, String trxName)

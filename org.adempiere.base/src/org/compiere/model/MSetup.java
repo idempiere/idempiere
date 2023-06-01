@@ -146,10 +146,12 @@ public final class MSetup
 		m_clientName = name;
 		m_client = new MClient(m_ctx, 0, true, m_trx.getTrxName());
 		m_client.setValue(m_clientName);
+		if (MSystem.isUseLoginPrefix())
+			m_client.setLoginPrefix(m_clientName);
 		m_client.setName(m_clientName);
 		if (!m_client.save())
 		{
-			String err = "Client NOT created";
+			String err = "Tenant NOT created";
 			log.log(Level.SEVERE, err);
 			m_info.append(err);
 			m_trx.rollback();
@@ -179,7 +181,7 @@ public final class MSetup
 		//  Trees and Client Info
 		if (!m_client.setupClientInfo(m_lang))
 		{
-			String err = "Client Info NOT created";
+			String err = "Tenant Info NOT created";
 			log.log(Level.SEVERE, err);
 			m_info.append(err);
 			m_trx.rollback();

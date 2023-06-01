@@ -13,112 +13,84 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
-import org.adempiere.util.ContextRunnable;
-import org.adempiere.webui.apps.AEnv;
-import org.adempiere.webui.apps.DesktopRunnable;
 import org.adempiere.webui.apps.graph.WPAPanel;
+import org.adempiere.webui.apps.graph.WPerformanceIndicator;
 import org.adempiere.webui.apps.graph.WPerformanceIndicator.Options;
 import org.adempiere.webui.util.ServerPushTemplate;
-import org.compiere.Adempiere;
 import org.compiere.model.MGoal;
-import org.compiere.model.MSysConfig;
-import org.compiere.util.Env;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
- * Dashboard item: Performance Indicators
+ * Dashboard gadget: Performance Indicators
  * @author Elaine
  * @date November 20, 2008
  */
-public class DPPerformance extends DashboardPanel {
-
-	private static final String ON_POST_RENDER_ATTR = "onPostRender.Event.Posted";
+public class DPPerformance extends DashboardPanel {	
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -8878665031716441912L;
 
+	/** performance chart panel */
 	private WPAPanel paPanel;
+	/** {@link MGoal} performance records */
+	private MGoal[] performanceData;
 	
+	/**
+	 * Default constructor
+	 */
 	public DPPerformance()
 	{
 		super();
 		setSclass("performance-widget");
-		// have to add at least a child component, other it will be remove from DashboardController
-		// and can't update when finish load data
 		paPanel = new WPAPanel();
 		appendChild(paPanel);
-		Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(new LoadPerfomanceData(this), Executions.getCurrent().getDesktop()));
-	}
-	
-	static class LoadPerfomanceData extends ContextRunnable{
-		private DPPerformance parentCtr;
-		public LoadPerfomanceData (DPPerformance parentCtr){
-			this.parentCtr = parentCtr;
-		}
-		
-		@Override
-		protected void doRun() {
-			MGoal [] performanceData = WPAPanel.loadGoal();
-
-			AEnv.executeAsyncDesktopTask(new Runnable() {
-				@Override
-				public void run() {
-					if (performanceData !=  null && performanceData.length > 0){
-						parentCtr.paPanel.setGoals(performanceData, (Options)null);
-						if (parentCtr.getAttribute(ON_POST_RENDER_ATTR) == null) {
-							parentCtr.setAttribute(ON_POST_RENDER_ATTR, Boolean.TRUE);
-							Events.echoEvent("onPostRender", parentCtr, null);
-						}
-					}
-				}
-			});
-			
-		}
-		
-	}
-	
-	public void refresh(ServerPushTemplate template) {
-		super.refresh(template);
-		if (Executions.getCurrent() != null) {
-			if (this.getAttribute(ON_POST_RENDER_ATTR) == null && paPanel.getChildren().size() > 0) {
-				setAttribute(ON_POST_RENDER_ATTR, Boolean.TRUE);
-				Events.echoEvent("onPostRender", this, null);
-			}
-		}
+		paPanel.addEventListener(WPerformanceIndicator.ON_AFTER_RENDER_CHART_EVENT, e -> onPostRender());
 	}
 	
 	@Override
-	public void onPageAttached(Page newpage, Page oldpage) {
-		super.onPageAttached(newpage, oldpage);
-		if (newpage != null) {
-			if (Executions.getCurrent() != null) {
-				if (this.getAttribute(ON_POST_RENDER_ATTR) == null && paPanel.getChildren().size() > 0) {
-					setAttribute(ON_POST_RENDER_ATTR, Boolean.TRUE);
-					Events.echoEvent("onPostRender", this, null);
-				}
-			}
+	public void refresh(ServerPushTemplate template) {
+		performanceData = WPAPanel.loadGoal();
+		//usually, this should be call in non UI/Event listener thread (i.e Executions.getCurrent() should be null)
+		if (Executions.getCurrent() != null) {
+			updateUI();			
+		} else {
+			template.executeAsync(this);
+		}
+	}
+	
+	/**
+	 * Adjust {@link #paPanel} height to match chart/content height
+	 */
+	public void onPostRender() 
+	{
+		if (this.getFirstChild() != null)
+		{
+			//first child of paPanel, the Grid layout
+			Component grid = this.getFirstChild().getFirstChild();
+			String script = "setTimeout(function() { let grid = jq('#" + grid.getUuid() + "');";
+			script = script + "grid.parent().height(grid.css('height'));}, 10);";
+			if (Executions.getCurrent() != null)
+				Clients.response(new AuScript(script));
 		}
 	}
 
-	//adjust window height to match grid height
-	public void onPostRender() 
-	{
-		removeAttribute(ON_POST_RENDER_ATTR);
-		if (this.getFirstChild() != null)
-		{
-			int timeout = MSysConfig.getIntValue(MSysConfig.ZK_DASHBOARD_PERFORMANCE_TIMEOUT, 500, Env.getAD_Client_ID(Env.getCtx()));
-			Component grid = this.getFirstChild().getFirstChild();
-			String script = "setTimeout(function() { var grid = jq('#" + grid.getUuid() + "');";
-			script = script + "grid.parent().height(grid.css('height'));}, " + timeout + ");";
-			if (Executions.getCurrent() != null)
-				Clients.response(new AuScript(script));
-			this.getFirstChild().invalidate();
-		}
+	@Override
+	public void updateUI() {
+		paPanel.setGoals(performanceData, (Options)null);
+		performanceData = null;
+	}
+
+	@Override
+	public boolean isLazy() {
+		return true;
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		return performanceData.length <= 0;
 	}
 }

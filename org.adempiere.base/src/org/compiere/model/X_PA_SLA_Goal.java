@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_SLA_Goal
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PA_SLA_Goal")
 public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PA_SLA_Goal (Properties ctx, int PA_SLA_Goal_ID, String trxName)
@@ -124,7 +124,7 @@ public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Set Date last run.
+	/** Set Date Last Run.
 		@param DateLastRun Date the process was last run.
 	*/
 	public void setDateLastRun (Timestamp DateLastRun)
@@ -132,7 +132,7 @@ public class X_PA_SLA_Goal extends PO implements I_PA_SLA_Goal, I_Persistent
 		set_Value (COLUMNNAME_DateLastRun, DateLastRun);
 	}
 
-	/** Get Date last run.
+	/** Get Date Last Run.
 		@return Date the process was last run.
 	  */
 	public Timestamp getDateLastRun()

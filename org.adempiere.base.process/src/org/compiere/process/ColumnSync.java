@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.MColumn;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
@@ -63,8 +64,7 @@ public class ColumnSync extends SvrProcess
 			switch (name) {
 			case "DateFrom": p_DateFrom = para.getParameterAsTimestamp(); break;
 			default:
-				if (log.isLoggable(Level.INFO))
-					log.log(Level.INFO, "Custom Parameter: " + name + "=" + para.getInfo());
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 				break;
 			}
 		}
@@ -113,7 +113,7 @@ public class ColumnSync extends SvrProcess
 		Connection conn = null;
 		ResultSet rs = null;
 		try {
-			conn = DB.getConnectionRO();
+			conn = DB.getConnection();
 			DatabaseMetaData md = conn.getMetaData();
 			String catalog = DB.getDatabase().getCatalog();
 			String schema = DB.getDatabase().getSchema();

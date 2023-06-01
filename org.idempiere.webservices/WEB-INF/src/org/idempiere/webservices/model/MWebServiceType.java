@@ -57,7 +57,7 @@ public class MWebServiceType extends X_WS_WebServiceType implements ImmutablePOS
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6105547694847198509L;
+	private static final long serialVersionUID = -3735256212187060831L;
 
 	/**	Parameters	*/
 	private MWebServicePara[]	m_para = null;
@@ -343,6 +343,11 @@ public class MWebServiceType extends X_WS_WebServiceType implements ImmutablePOS
 				addWsParameter("AD_Process_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, ""); // can't fill it as the process is unknown
 				addWsParameter("AD_Menu_ID", X_WS_WebService_Para.PARAMETERTYPE_Constant, "0");
 				addWsParameter("AD_Record_ID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+			} else if ("setDocAction".equals(method)) {
+				addWsParameter("tableName", X_WS_WebService_Para.PARAMETERTYPE_Constant, MTable.get(getCtx(), getAD_Table_ID()).getTableName());
+				addWsParameter("docAction", X_WS_WebService_Para.PARAMETERTYPE_Constant, ""); // to be filled manually by user
+				addWsParameter("recordID", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
+				addWsParameter("recordIDVariable", X_WS_WebService_Para.PARAMETERTYPE_Free, "");
 			} else {
 				String value = "";
 				if ("createData".equals(method))

@@ -47,6 +47,7 @@ import org.compiere.model.GridTable;
 import org.compiere.model.GridWindow;
 import org.compiere.model.MImportTemplate;
 import org.compiere.model.MLookup;
+import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -72,7 +73,7 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 			} else if ("ImportMode".equals(name)) {
 				p_ImportMode = para.getParameterAsString();
 			} else {
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 			}
 		}
 	}
@@ -153,6 +154,7 @@ public class ImportCSVProcess extends SvrProcess implements DataStatusListener {
 			processUI.download(outFile);
 		else if( getProcessInfo() != null ){
 			ProcessInfo m_pi = getProcessInfo();
+			m_pi.setExport(true);
 			m_pi.setExportFile(outFile);
 			m_pi.setExportFileExtension("csv");
 		}

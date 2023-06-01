@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_Field 
 {
@@ -41,11 +41,22 @@ public interface I_AD_Field
 
     /** Load Meta Data */
 
+    /** Column name AD_Chart_ID */
+    public static final String COLUMNNAME_AD_Chart_ID = "AD_Chart_ID";
+
+	/** Set Chart	  */
+	public void setAD_Chart_ID (int AD_Chart_ID);
+
+	/** Get Chart	  */
+	public int getAD_Chart_ID();
+
+	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException;
+
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -135,12 +146,12 @@ public interface I_AD_Field
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -218,6 +229,21 @@ public interface I_AD_Field
 	public int getAD_Val_Rule_Lookup_ID();
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException;
+
+    /** Column name AlwaysUpdatableLogic */
+    public static final String COLUMNNAME_AlwaysUpdatableLogic = "AlwaysUpdatableLogic";
+
+	/** Set Always Updatable Logic.
+	  * Logic to determine if field is Updatable irrespective if record&#039;
+s active status or processed status. This logic Applicable only if Always Updatable is N.
+	  */
+	public void setAlwaysUpdatableLogic (String AlwaysUpdatableLogic);
+
+	/** Get Always Updatable Logic.
+	  * Logic to determine if field is Updatable irrespective if record&#039;
+s active status or processed status. This logic Applicable only if Always Updatable is N.
+	  */
+	public String getAlwaysUpdatableLogic();
 
     /** Column name ColumnSpan */
     public static final String COLUMNNAME_ColumnSpan = "ColumnSpan";

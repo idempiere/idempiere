@@ -662,7 +662,7 @@ public abstract class Doc
 			String AD_MessageValue = "PostingError-" + p_Status;
 			int AD_User_ID = p_po.getUpdatedBy();
 			MNote note = new MNote (getCtx(), AD_MessageValue, AD_User_ID,
-				getAD_Client_ID(), getAD_Org_ID(), null);
+				getAD_Client_ID(), getAD_Org_ID(), p_po.get_TrxName());
 			note.setRecord(p_po.get_Table_ID(), p_po.get_ID());
 			//  Reference
 			note.setReference(toString());	//	Document
@@ -1481,7 +1481,7 @@ public abstract class Doc
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, getTrxName());
 			if (para_1 == -1)   //  GL Accounts
 				pstmt.setInt (1, as.getC_AcctSchema_ID());
 			else

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_DashboardContent
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_PA_DashboardContent 
 {
@@ -55,8 +55,8 @@ public interface I_PA_DashboardContent
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -64,14 +64,29 @@ public interface I_PA_DashboardContent
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_PrintFormat_ID */
+    public static final String COLUMNNAME_AD_PrintFormat_ID = "AD_PrintFormat_ID";
+
+	/** Set Print Format.
+	  * Data Print Format
+	  */
+	public void setAD_PrintFormat_ID (int AD_PrintFormat_ID);
+
+	/** Get Print Format.
+	  * Data Print Format
+	  */
+	public int getAD_PrintFormat_ID();
+
+	public org.compiere.model.I_AD_PrintFormat getAD_PrintFormat() throws RuntimeException;
 
     /** Column name AD_Process_ID */
     public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
@@ -102,6 +117,17 @@ public interface I_PA_DashboardContent
 	public int getAD_Role_ID();
 
 	public org.compiere.model.I_AD_Role getAD_Role() throws RuntimeException;
+
+    /** Column name AD_StatusLine_ID */
+    public static final String COLUMNNAME_AD_StatusLine_ID = "AD_StatusLine_ID";
+
+	/** Set Status Line	  */
+	public void setAD_StatusLine_ID (int AD_StatusLine_ID);
+
+	/** Get Status Line	  */
+	public int getAD_StatusLine_ID();
+
+	public org.compiere.model.I_AD_StatusLine getAD_StatusLine() throws RuntimeException;
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
@@ -249,6 +275,15 @@ public interface I_PA_DashboardContent
 	  */
 	public boolean isEmbedReportContent();
 
+    /** Column name IsMaximizable */
+    public static final String COLUMNNAME_IsMaximizable = "IsMaximizable";
+
+	/** Set Maximizable	  */
+	public void setIsMaximizable (boolean IsMaximizable);
+
+	/** Get Maximizable	  */
+	public boolean isMaximizable();
+
     /** Column name IsShowInDashboard */
     public static final String COLUMNNAME_IsShowInDashboard = "IsShowInDashboard";
 
@@ -270,6 +305,15 @@ public interface I_PA_DashboardContent
 
 	/** Get Show on Login	  */
 	public boolean isShowinLogin();
+
+    /** Column name IsShowTitle */
+    public static final String COLUMNNAME_IsShowTitle = "IsShowTitle";
+
+	/** Set Show Title	  */
+	public void setIsShowTitle (boolean IsShowTitle);
+
+	/** Get Show Title	  */
+	public boolean isShowTitle();
 
     /** Column name Line */
     public static final String COLUMNNAME_Line = "Line";

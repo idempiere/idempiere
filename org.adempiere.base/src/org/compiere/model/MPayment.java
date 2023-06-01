@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -41,6 +42,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.IBAN;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
@@ -88,7 +90,7 @@ public class MPayment extends X_C_Payment
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3236788845265387613L;
+	private static final long serialVersionUID = -1581098289090430363L;
 
 	/**
 	 * 	Get Payments Of BPartner
@@ -111,6 +113,24 @@ public class MPayment extends X_C_Payment
 		return retValue;
 	}	//	getOfBPartner
 	
+	/**
+	 * 	Get Payments of Bank Transfer
+	 *	@param ctx context
+	 *	@param C_BankTransfer_ID id
+	 *	@param trxName transaction
+	 *	@return array
+	 */
+	public static MPayment[] getOfBankTransfer (Properties ctx, int C_BankTransfer_ID, String trxName)
+	{
+		final String whereClause = "C_BankTransfer_ID=?";
+		List <MPayment> list = new Query(ctx, Table_Name, whereClause, trxName)
+				.setParameters(C_BankTransfer_ID)
+				.setOrderBy(COLUMNNAME_C_Payment_ID)
+				.list();
+		MPayment[] retValue = new MPayment[list.size()];
+		list.toArray(retValue);
+		return retValue;
+	}	//	getOfBankTransfer
 	
 	/**************************************************************************
 	 *  Default Constructor
@@ -774,14 +794,14 @@ public class MPayment extends X_C_Payment
 			if (getC_Invoice_ID() != 0) {
 				MInvoice inv = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 				if (inv.getC_BPartner_ID() != getC_BPartner_ID()) {
-					log.saveError("Error", Msg.parseTranslation(getCtx(), "BP different from BP Invoice"));
+					log.saveError("Error", Msg.getMsg(getCtx(), "BPDifferentFromBPInvoice"));
 					return false;
 				}
 			}
 			if (getC_Order_ID() != 0) {
 				MOrder ord = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
 				if (ord.getC_BPartner_ID() != getC_BPartner_ID()) {
-					log.saveError("Error", Msg.parseTranslation(getCtx(), "BP different from BP Order"));
+					log.saveError("Error", Msg.getMsg(getCtx(), "BPDifferentFromBPOrder"));
 					return false;
 				}
 			}
@@ -2252,7 +2272,7 @@ public class MPayment extends X_C_Payment
 		counter.setRef_Payment_ID(getC_Payment_ID());
 		//
 		String sql = "SELECT C_BankAccount_ID FROM C_BankAccount "
-			+ "WHERE C_Currency_ID=? AND AD_Org_ID IN (0,?) AND IsActive='Y' AND AD_Client_ID = ?"
+			+ "WHERE C_Currency_ID=? AND AD_Org_ID IN (0,?) AND IsActive='Y' AND AD_Client_ID = ? "
 			+ "ORDER BY IsDefault DESC";
 		int C_BankAccount_ID = DB.getSQLValue(get_TrxName(), sql, getC_Currency_ID(), counterAD_Org_ID,getAD_Client_ID());
 		counter.setC_BankAccount_ID(C_BankAccount_ID);
@@ -2337,7 +2357,7 @@ public class MPayment extends X_C_Payment
 				aLine = new MAllocationLine (alloc, allocationAmt.negate(),
 					pa.getDiscountAmt().negate(), pa.getWriteOffAmt().negate(), pa.getOverUnderAmt().negate());
 			aLine.setDocInfo(pa.getC_BPartner_ID(), 0, pa.getC_Invoice_ID());
-			aLine.setPaymentInfo(getC_Payment_ID(), 0);
+			aLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
 			if (!aLine.save(get_TrxName()))
 				log.warning("P.Allocations - line not saved");
 			else
@@ -2780,7 +2800,7 @@ public class MPayment extends X_C_Payment
 		aLine = new MAllocationLine (alloc, reversal.getPayAmt(true), 
 			Env.ZERO, Env.ZERO, Env.ZERO);
 		aLine.setDocInfo(reversal.getC_BPartner_ID(), 0, 0);
-		aLine.setPaymentInfo(reversal.getC_Payment_ID(), 0);
+		aLine.setPaymentInfo(reversal.getC_Payment_ID(), 0, reversal.getC_BankTransfer_ID());
 		if (!aLine.save(get_TrxName()))
 			log.warning("Automatic allocation - reversal line not saved");
 		
@@ -3108,4 +3128,120 @@ public class MPayment extends X_C_Payment
 		return m_justCreatedAllocInv;
 	}
 	
+	/**
+	 * Index constants for Vector<Object> record return by getUnAllocatedPaymentData.
+	 * Use MULTI_CURRENCY index if isMultiCurrency=true.
+	 * Use SINGLE_CURRENCY index if isMultiCurrency=false;
+	 */
+	//selected row, boolean
+	public static final int UNALLOCATED_PAYMENT_SELECTED=0;
+	//transaction date, timestamp
+	public static final int UNALLOCATED_PAYMENT_TRX_DATE=1;
+	//KeyNamePair, DocumentNo and C_Payment_ID
+	public static final int UNALLOCATED_PAYMENT_DOCUMENT_KEY_NAME_PAIR=2;
+	//multi currency record, currency iso code
+	public static final int UNALLOCATED_PAYMENT_MULTI_CURRENCY_ISO=3;
+	//multi currency record, payment amount
+	public static final int UNALLOCATED_PAYMENT_MULTI_CURRENCY_PAYMENT_AMT=4;
+	//multi currency record, payment amount converted to base currency
+	public static final int UNALLOCATED_PAYMENT_MULTI_CURRENCY_CONVERTED_AMT=5;
+	//multi currency record, open payment amount
+	public static final int UNALLOCATED_PAYMENT_MULTI_CURRENCY_OPEN_AMT=6;
+	//multi currency record, payment applied amount
+	public static final int UNALLOCATED_PAYMENT_MULTI_CURRENCY_APPLIED_AMT=7;
+	//single currency record, payment amount
+	public static final int UNALLOCATED_PAYMENT_SINGLE_CURRENCY_AMT=3;
+	//single currency record, open payment amount
+	public static final int UNALLOCATED_PAYMENT_SINGLE_CURRENCY_OPEN_AMT=4;
+	//single currency record, payment applied amount
+	public static final int UNALLOCATED_PAYMENT_SINGLE_CURRENCY_APPLIED_AMT=5;
+	
+	/**
+	 * 
+	 * @param C_BPartner_ID mandatory bpartner filter
+	 * @param C_Currency_ID 0 to use login currency. use for payment filter if isMultiCurrency=false
+	 * @param isMultiCurrency false to apply currency filter
+	 * @param date payment allocation as at date
+	 * @param AD_Org_ID 0 for all org
+	 * @param trxName optional transaction name
+	 * @return list of unallocated payment records
+	 */
+	public static Vector<Vector<Object>> getUnAllocatedPaymentData(int C_BPartner_ID, int C_Currency_ID, boolean isMultiCurrency, 
+			Timestamp date, int AD_Org_ID, String trxName)
+	{
+		if (C_Currency_ID==0)
+			C_Currency_ID = Env.getContextAsInt(Env.getCtx(), Env.C_CURRENCY_ID);   //  default
+		
+		/********************************
+		 *  Load unallocated Payments
+		 *      1-TrxDate, 2-DocumentNo, (3-Currency, 4-PayAmt,)
+		 *      5-ConvAmt, 6-ConvOpen, 7-Allocated
+		 */
+		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+		StringBuilder sql = new StringBuilder("SELECT p.DateTrx,p.DocumentNo,p.C_Payment_ID,"  //  1..3
+			+ "c.ISO_Code,p.PayAmt,"                            //  4..5
+			+ "currencyConvertPayment(p.C_Payment_ID,?,null,?),"//  6   #1, #2
+			+ "currencyConvertPayment(p.C_Payment_ID,?,paymentAvailable(p.C_Payment_ID),?),"  //  7   #3, #4
+			+ "p.MultiplierAP "
+			+ "FROM C_Payment_v p"		//	Corrected for AP/AR
+			+ " INNER JOIN C_Currency c ON (p.C_Currency_ID=c.C_Currency_ID) "
+			+ "WHERE p.IsAllocated='N' AND p.Processed='Y'"
+			+ " AND p.C_Charge_ID IS NULL"		//	Prepayments OK
+			+ " AND p.C_BPartner_ID=?");                   		//      #5
+		if (!isMultiCurrency)
+			sql.append(" AND p.C_Currency_ID=?");				//      #6
+		if (AD_Org_ID != 0 )
+			sql.append(" AND p.AD_Org_ID=" + AD_Org_ID);
+		sql.append(" ORDER BY p.DateTrx,p.DocumentNo");
+		
+		// role security
+		sql = new StringBuilder( MRole.getDefault(Env.getCtx(), false).addAccessSQL( sql.toString(), "p", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO ) );
+		
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("PaySQL=" + sql.toString());
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql.toString(), trxName);
+			pstmt.setInt(1, C_Currency_ID);
+			pstmt.setTimestamp(2, (Timestamp)date);
+			pstmt.setInt(3, C_Currency_ID);
+			pstmt.setTimestamp(4, (Timestamp)date);
+			pstmt.setInt(5, C_BPartner_ID);
+			if (!isMultiCurrency)
+				pstmt.setInt(6, C_Currency_ID);
+			rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				Vector<Object> line = new Vector<Object>();
+				line.add(Boolean.FALSE);       //  0-Selection
+				line.add(rs.getTimestamp(1));       //  1-TrxDate
+				KeyNamePair pp = new KeyNamePair(rs.getInt(3), rs.getString(2));
+				line.add(pp);                       //  2-DocumentNo
+				if (isMultiCurrency)
+				{
+					line.add(rs.getString(4));      //  3-Currency
+					line.add(rs.getBigDecimal(5));  //  4-PayAmt
+				}
+				line.add(rs.getBigDecimal(6));      //  3/5-ConvAmt
+				BigDecimal available = rs.getBigDecimal(7);
+				if (available == null || available.signum() == 0)	//	nothing available
+					continue;
+				line.add(available);				//  4/6-ConvOpen/Available
+				line.add(Env.ZERO);					//  5/7-Applied
+				//
+				data.add(line);
+			}
+		}
+		catch (SQLException e)
+		{
+			s_log.log(Level.SEVERE, sql.toString(), e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+		}
+		
+		return data;
+	}
 }   //  MPayment

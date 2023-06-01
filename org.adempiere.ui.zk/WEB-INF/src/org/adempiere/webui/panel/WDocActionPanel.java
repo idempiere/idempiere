@@ -35,7 +35,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MBankStatement;
@@ -156,14 +156,14 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		if (wfStatus != null)
 		{
 			if (! fromMenu)
-				FDialog.error(gridTab.getWindowNo(), this, "WFActiveForRecord", wfStatus);
+				Dialog.error(gridTab.getWindowNo(), "WFActiveForRecord", wfStatus);
 			return;
 		}
 
 		//	Status Change
 		if (!checkStatus(gridTab.getTableName(), gridTab.getRecord_ID(), DocStatus))
 		{
-			FDialog.error(gridTab.getWindowNo(), this, "DocumentStatusChanged");
+			Dialog.error(gridTab.getWindowNo(), "DocumentStatusChanged");
 			return;
 		}
 		/*******************
@@ -379,7 +379,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 				String docAction = lstDocAction.getSelectedItem().getLabel();
 				MessageFormat mf = new MessageFormat(Msg.getMsg(Env.getAD_Language(Env.getCtx()), "ConfirmOnDocAction"));
 				Object[] arguments = new Object[]{docAction};
-				FDialog.ask(gridTab.getWindowNo(), this, "", mf.format(arguments), new Callback<Boolean>() {
+				Dialog.ask(gridTab.getWindowNo(), "", mf.format(arguments), new Callback<Boolean>() {
 					@Override
 					public void onCallback(Boolean result) {
 						if(result)

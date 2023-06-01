@@ -579,8 +579,7 @@ public final class WAccountDialog extends Window
 			m_row.setStyle("background-color: transparent");
 			m_rows.appendChild(m_row);
 		}
-//		else
-//			m_gbc.gridx = 2;
+
 		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH-1))
 		{
 			Vlayout vlayout = new Vlayout();
@@ -761,7 +760,7 @@ public final class WAccountDialog extends Window
 				needconfirm = true;
 
 			if (needconfirm) {
-				FDialog.ask(m_WindowNo, this, "CreateNewAccountCombination?", new Callback<Boolean>() {
+				Dialog.ask(m_WindowNo, "CreateNewAccountCombination?", new Callback<Boolean>() {
 					public void onCallback(Boolean result) {
 						if (result) {
 							if (action_Save()) {
@@ -1064,17 +1063,17 @@ public final class WAccountDialog extends Window
 
 		if (sb.length() != 0)
 		{
-			FDialog.error(m_WindowNo, this, "FillMandatory", sb.substring(0, sb.length()-2));
+			Dialog.error(m_WindowNo, "FillMandatory", sb.substring(0, sb.length()-2));
 			return false;
 		}
 		if (f_AD_Org_ID == null || f_AD_Org_ID.getValue() == null)
 		{
-			FDialog.error(m_WindowNo, this, "FillMandatory", Msg.getElement(Env.getCtx(), "AD_Org_ID"));
+			Dialog.error(m_WindowNo, "FillMandatory", Msg.getElement(Env.getCtx(), "AD_Org_ID"));
 			return false;
 		}
 		if (f_Account_ID == null || f_Account_ID.getValue() == null)
 		{
-			FDialog.error(m_WindowNo, this, "FillMandatory", Msg.getElement(Env.getCtx(), "Account_ID"));
+			Dialog.error(m_WindowNo, "FillMandatory", Msg.getElement(Env.getCtx(), "Account_ID"));
 			return false;
 		}
 
@@ -1143,7 +1142,7 @@ public final class WAccountDialog extends Window
 				stmt = null;
 			}
 			if (i == 0)
-				FDialog.error(m_WindowNo, this, "AccountNotUpdated");
+				Dialog.error(m_WindowNo, "AccountNotUpdated");
 		}
 
 		//	load and display

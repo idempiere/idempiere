@@ -101,7 +101,7 @@ public class ExportModelValidator implements ModelValidator {
 			if (log.isLoggable(Level.INFO)) log.info(client.toString());
 			loadReplicationStrategy(engine);
 		} else {
-			log.warning("Export Model Validator cannot be used as a global validator, it needs to be defined in a per-client (tenant) basis");
+			log.warning("Export Model Validator cannot be used as a global validator, it needs to be defined in a per-tenant basis");
 			return;
 		}
 	}

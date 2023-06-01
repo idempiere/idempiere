@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Movement
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_Movement")
 public class X_M_Movement extends PO implements I_M_Movement, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_M_Movement extends PO implements I_M_Movement, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_Movement (Properties ctx, int M_Movement_ID, String trxName)
@@ -408,7 +408,7 @@ public class X_M_Movement extends PO implements I_M_Movement, I_Persistent
 		return (String)get_Value(COLUMNNAME_CreateFrom);
 	}
 
-	/** Set Date received.
+	/** Set Date Received.
 		@param DateReceived Date a product was received
 	*/
 	public void setDateReceived (Timestamp DateReceived)
@@ -416,7 +416,7 @@ public class X_M_Movement extends PO implements I_M_Movement, I_Persistent
 		set_Value (COLUMNNAME_DateReceived, DateReceived);
 	}
 
-	/** Get Date received.
+	/** Get Date Received.
 		@return Date a product was received
 	  */
 	public Timestamp getDateReceived()
@@ -666,6 +666,8 @@ public class X_M_Movement extends PO implements I_M_Movement, I_Persistent
 	public static final String FREIGHTCOSTRULE_FreightIncluded = "I";
 	/** Line = L */
 	public static final String FREIGHTCOSTRULE_Line = "L";
+	/** Customer Account = U */
+	public static final String FREIGHTCOSTRULE_CustomerAccount = "U";
 	/** Set Freight Cost Rule.
 		@param FreightCostRule Method for charging Freight
 	*/

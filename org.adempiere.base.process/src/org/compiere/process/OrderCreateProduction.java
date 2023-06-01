@@ -72,11 +72,7 @@ public class OrderCreateProduction extends SvrProcess {
 		if (!MOrder.DOCSTATUS_Completed.equals(order.getDocStatus()))
 			throw new IllegalArgumentException("Order not completed");
 
-		final String where = "C_OrderLine.C_Order_ID=?"
-				+ " AND C_OrderLine.Processed='Y'"
-				+ " AND p.IsBOM='Y'"
-				+ " AND p.IsVerified='Y'"
-				+ " AND NOT EXISTS (SELECT 1 FROM M_Production pr WHERE pr.C_OrderLine_ID=C_OrderLine.C_OrderLine_ID)";
+		final String where = getOrderLineWhereClause();
 		List<MOrderLine> lines = new Query(getCtx(), MOrderLine.Table_Name, where, get_TrxName())
 				.addJoinClause("JOIN M_Product p ON (C_OrderLine.M_Product_ID=p.M_Product_ID)")
 				.setOnlyActiveRecords(true)
@@ -157,6 +153,20 @@ public class OrderCreateProduction extends SvrProcess {
 		}
 
 		return "@Created@ " + cnt;
+	}
+
+	/**
+	 *  SQL WHERE clause to filter the order lines to be processed
+	 *  @return SQL where clause
+	 */
+	protected String getOrderLineWhereClause() {
+		final String where = "C_OrderLine.C_Order_ID=?"
+				+ " AND C_OrderLine.Processed='Y'"
+				+ " AND p.IsBOM='Y'"
+				+ " AND p.IsVerified='Y'"
+				+ " AND p.IsAutoProduce='N'"
+				+ " AND NOT EXISTS (SELECT 1 FROM M_Production pr WHERE pr.C_OrderLine_ID=C_OrderLine.C_OrderLine_ID)";
+		return where;
 	}
 
 } // OrderCreateShipment

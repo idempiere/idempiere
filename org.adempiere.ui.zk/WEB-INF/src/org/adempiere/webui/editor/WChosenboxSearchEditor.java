@@ -212,6 +212,10 @@ public class WChosenboxSearchEditor extends WEditor implements ContextMenuListen
     		return;
     	}
 		
+		if (value != null && value instanceof Integer) {
+			value = value.toString();
+		}
+
     	if (value != null && value instanceof String && !Util.isEmpty((String) value, true))
         {
     		String[] values = ((String)value).split("[,]");

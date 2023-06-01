@@ -573,7 +573,7 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			}
 		} else {
 			if (!slot.isAssignment()) {
-				FDialog.error(0, this, "No available time slot for the selected day.");
+				Dialog.error(0, "No available time slot for the selected day.");
 				return;
 			}
 			
@@ -660,21 +660,4 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			mask.detach();
 		}
 	}
-	
-	/**
-SELECT o.DocumentNo, ol.Line, ol.Description
-FROM C_OrderLine ol, C_Order o
-WHERE ol.S_ResourceAssignment_ID=1
-  AND ol.C_Order_ID=o.C_Order_ID
-UNION
-SELECT i.DocumentNo, il.Line, il.Description
-FROM C_InvoiceLine il, C_Invoice i
-WHERE il.S_ResourceAssignment_ID=1
-  AND il.C_Invoice_ID=i.C_Invoice_ID
-UNION
-SELECT e.DocumentNo, el.Line, el.Description
-FROM S_TimeExpenseLine el, S_TimeExpense e
-WHERE el.S_ResourceAssignment_ID=1
-  AND el.S_TimeExpense_ID=el.S_TimeExpense_ID
-	 */
 }	//	InfoSchedule

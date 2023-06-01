@@ -228,7 +228,12 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 			ri.setAD_Role_ID(AD_Role_ID);
 			ri.setAD_Window_ID(AD_Window_ID);
 			ri.setAD_Tab_ID(AD_Tab_ID);
-			ri.saveEx();
+			try {
+				PO.setCrossTenantSafe();
+				ri.saveEx();
+			} finally {
+				PO.clearCrossTenantSafe();
+			}
 		} else {
 			if (   ric.getAD_Role_ID() != AD_Role_ID
 				|| ric.getAD_Window_ID() != AD_Window_ID
@@ -237,7 +242,12 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 				ri.setAD_Role_ID(AD_Role_ID);
 				ri.setAD_Window_ID(AD_Window_ID);
 				ri.setAD_Tab_ID(AD_Tab_ID);
-				ri.saveEx();
+				try {
+					PO.setCrossTenantSafe();
+					ri.saveEx();
+				} finally {
+					PO.clearCrossTenantSafe();
+				}
 			} else {
 				DB.executeUpdateEx("UPDATE AD_RecentItem SET Updated=getDate() WHERE AD_RecentItem_ID=?", new Object[] {ric.getAD_RecentItem_ID()}, null);
 			}

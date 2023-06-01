@@ -33,7 +33,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.Merge;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookupFactory;
@@ -49,32 +49,30 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 
 /**
- *	Merge Dialog.
- * 	Restriction - fails for Accounting
- *
- *	@author Jorg Janke
- *	@version $Id: VMerge.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
+ *	Form to Merge source/from record to target/to record (support Organization, User, Business Partner and Product).
+ * 	Restriction - fails for Accounting.
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VMerge")
 public class WMerge extends Merge implements IFormController, EventListener<Event>
-{
-	/**
-	 * 
-	 */
-	@SuppressWarnings("unused")
-	private static final long serialVersionUID = 5797395051958101596L;
-	
+{	
+	/** UI form instance */
 	private WMergeUI form;
 
 	private Label[]	m_label = null;
-	private WEditor[]	m_from = null;
-	private WEditor[]	m_to = null;
+	/** Editor to pick source/from record */
+	private WEditor[] m_from = null;
+	/** Editor to pick target/to record */
+	private WEditor[] m_to = null;
 
+	/** Main layout of {@link #form} */
 	private Borderlayout mainLayout = new Borderlayout();
-	private Panel CenterPanel = new Panel();
+	/** Center of {@link #mainLayout} */
+	private Panel centerPanel = new Panel();
+	/** Grid layout of {@link #centerPanel} */
 	private Grid centerLayout = GridFactory.newGridLayout();
 	private Label mergeFromLabel = new Label();
 	private Label mergeToLabel = new Label();
+	/** Action buttons panel. South of {@link #form} */
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private String m_msg;
 	private boolean m_success;
@@ -82,7 +80,7 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 	private MergeRunnable runnable;
 
 	/**
-	 *	Initialize Panel
+	 *	Default constructor
 	 */
 	public WMerge()
 	{
@@ -99,10 +97,10 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 		{
 			log.log(Level.SEVERE, "", ex);
 		}
-	}	//	init
+	}
 
 	/**
-	 * 	Pre Init
+	 * Prepare m_columnName, {@link #m_label}, {@link #m_from} and {@link #m_to}.
 	 */
 	private void preInit()
 	{
@@ -120,7 +118,7 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 	}	//	preInit
 
 	/**
-	 * 	Pre Init Line
+	 * 	Prepare m_columnName, {@link #m_label}, {@link #m_from} and {@link #m_to}.
 	 *	@param index index
 	 *	@param AD_Column_ID id
 	 *	@param displayType display type
@@ -146,7 +144,7 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 	}	//	preInit
 
 	/**
-	 * 	Static init
+	 * 	Layout {@link #form}
 	 * 	@throws java.lang.Exception
 	 */
 	void zkInit () throws Exception
@@ -160,14 +158,11 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 		south.appendChild(confirmPanel);
 		confirmPanel.addActionListener(this);
 		//
-		Rows rows = centerLayout.newRows();
-		
-		//
-		CenterPanel.appendChild(centerLayout);
-		
+		Rows rows = centerLayout.newRows();		
+		centerPanel.appendChild(centerLayout);		
 		Center center = new Center();
 		mainLayout.appendChild(center);
-		center.appendChild(CenterPanel);
+		center.appendChild(centerPanel);
 		
 		Row row = rows.newRow();
 		row.appendChild(new Label());
@@ -186,10 +181,10 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 			row.appendChild(m_from[i].getComponent());
 			row.appendChild(m_to[i].getComponent());
 		}
-	}	//	jbInit
+	}
 
 	/**
-	 * 	Dispose
+	 * Close window
 	 */
 	public void dispose()
 	{
@@ -197,9 +192,10 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 	}	//	dispose
 
 	/**
-	 *  Action Listener
+	 *  Event Listener
 	 *  @param e event
 	 */
+	@Override
 	public void onEvent (Event e)
 	{
 		if (e.getTarget().getId().equals(ConfirmPanel.A_CANCEL))
@@ -235,8 +231,9 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 					to_Info = m_to[i].getDisplay ();
 				}
 			}
-		}	//	get first merge pair
+		}
 
+		//process first merge pair, ignore the rest
 		if (from_ID == 0 || from_ID == to_ID)
 			return;
 
@@ -246,25 +243,25 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 		final String columnNameRef = columnName;
 		final int fromIdRef = from_ID;
 		final int toIdRef = to_ID;
-		FDialog.ask(m_WindowNo, form, "MergeQuestion", m_msg, new Callback<Boolean>() {
+		Dialog.ask(m_WindowNo, "MergeQuestion", m_msg, new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 
 			{
 				if (result)
 				{
-					updateDeleteTable(columnNameRef);
-
 					Clients.showBusy("");
 					runnable = new MergeRunnable(columnNameRef, fromIdRef, toIdRef);
 					Clients.response(new AuEcho(form, "runProcess", null));
-				}
-				
+				}				
 			}
 		});				
-	}   //  actionPerformed
+	}
 	
-	class MergeRunnable implements Runnable {
+	/**
+	 * Custom runnable to call {@link Merge#merge(String, int, int)}. 
+	 */
+	private class MergeRunnable implements Runnable {
 		private int to_ID;
 		private int from_ID;
 		private String columnName;
@@ -285,29 +282,38 @@ public class WMerge extends Merge implements IFormController, EventListener<Even
 		}		
 	}
 
+	/**
+	 * Handle runProcess event echo from onEvent.
+	 * Call runnable.run() to execute merge.
+	 */
 	public void runProcess() 
 	{
 		runnable.run();
 	}
 	
+	/**
+	 * After execution of merge.
+	 * Show info/error message and close form (if merge is success).
+	 */
 	public void onAfterProcess() 
 	{
 		if (m_success)
 		{
-			FDialog.info (m_WindowNo, form, "MergeSuccess", 
+			Dialog.info (m_WindowNo, "MergeSuccess", 
 				m_msg + " #" + m_totalCount);
 		}
 		else
 		{
-			FDialog.error(m_WindowNo, form, "MergeError", 
+			Dialog.error(m_WindowNo, "MergeError", 
 				m_errorLog.toString());
 			return;
 		}
 		dispose();
 	}
 
+	@Override
 	public ADForm getForm() 
 	{
 		return form;
 	}
-}	//	VMerge
+}

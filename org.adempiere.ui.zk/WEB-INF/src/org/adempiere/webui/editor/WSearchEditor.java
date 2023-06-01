@@ -35,6 +35,7 @@ import org.adempiere.webui.component.ComboEditorBox;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.InfoManager;
@@ -50,6 +51,7 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -195,10 +197,15 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		if (Util.isEmpty(m_tableName))
 			setTableAndKeyColumn();
-
+		
+		boolean enableDrill = false;
+		if(getGridField() != null && getGridField().getGridTab() != null && getGridField().getColumnName().endsWith("_ID")
+				&& MRole.getDefault().isCanReport(getGridField().getGridTab().getAD_Table_ID()))
+			enableDrill = true;
+		
 		if (m_tableName.equals("C_BPartner"))
 		{
-			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true, false, lookup);
+			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), true, true, false, enableDrill, lookup);
 			if (ThemeManager.isUseFontIconForImage())
 				imageUrl = "z-icon-BPartner";
 			else
@@ -206,7 +213,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		}
 		else if (m_tableName.equals("M_Product"))
 		{
-			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
+			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, enableDrill, lookup);
 			if (ThemeManager.isUseFontIconForImage())
 				imageUrl = "z-icon-Product";
 			else
@@ -214,7 +221,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		}
 		else
 		{
-			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, lookup);
+			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, false, enableDrill, lookup);
 			if (ThemeManager.isUseFontIconForImage())
 				imageUrl = "z-icon-More";
 			else
@@ -254,7 +261,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 	{
 		Object curValue = this.value;
         this.value = value;
-		if (value != null && !"".equals(String.valueOf(value)))
+        if (value != null && !"".equals(String.valueOf(value)))
 		{		
 			NamePair namePair = lookup.get(value);
 			if (namePair != null)
@@ -434,6 +441,10 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		{
 			WFieldRecordInfo.start(gridField);
 		}
+		else if (WEditorPopupMenu.DRILL_EVENT.equals(evt.getContextEvent()))
+		{
+			actionDrill();
+		}
 		//
 	}
 
@@ -486,14 +497,27 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 
 		//safety check: if focus is going no where, focus back to self
 		String uid = getComponent().getCombobox().getUuid();
-		String script = "setTimeout(function(){try{var e = zk.Widget.$('#" + uid +
+		String script = "setTimeout(function(){try{let e = zk.Widget.$('#" + uid +
 				"').$n(); if (jq(':focus').size() == 0) e.focus();} catch(error){}}, 100);";
 		Clients.response(new AuScript(script));
 		
 		resetButtonState();
 	}	//	actionText
 
-
+	protected void actionDrill() {
+		if(getGridField() == null || getGridField().getGridTab() == null)
+    		return;
+    	
+		if(!m_keyColumnName.endsWith("_ID"))
+    		return;
+		MQuery query = new MQuery(m_tableName);
+		query.addRestriction(m_keyColumnName, MQuery.EQUAL, value);
+		int windowNo = getGridField().getGridTab().getWindowNo();
+		DrillData data = new DrillData(query, m_keyColumnName, value, null, null);
+		
+		AEnv.actionDrill(data, windowNo);
+	}
+	
 	protected void resetButtonState() {
 		getComponent().getButton().setEnabled(true);
 		if (ThemeManager.isUseFontIconForImage())
@@ -886,7 +910,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		public void onPageAttached(Page newpage, Page oldpage) {
 			super.onPageAttached(newpage, oldpage);
 			if (newpage != null) {
-				String w = "try{var btn=jq('#'+this.parent.uuid+' @button').zk.$();}catch(err){}";
+				String w = "try{let btn=jq('#'+this.parent.uuid+' @button').zk.$();}catch(err){}";
 				if (ThemeManager.isUseFontIconForImage()) {
 					String sclass = "z-icon-spinner z-icon-spin";
 					getCombobox().setWidgetListener("onChange", "try{"+w+"btn.setIconSclass('" + sclass + "');"
@@ -897,6 +921,12 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 						+ "btn.setDisabled(true, {adbs: false, skip: false});}catch(err){}");
 				}
 			}
+		}
+
+		@Override
+		public void onPageDetached(Page page) {
+			setWidgetListener("onChange", null);
+			super.onPageDetached(page);
 		}
 		
 	}	

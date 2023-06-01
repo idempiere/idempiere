@@ -31,7 +31,7 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220119L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Tab (Properties ctx, int AD_UserDef_Tab_ID, String trxName)
@@ -212,6 +212,21 @@ public class X_AD_UserDef_Tab extends PO implements I_AD_UserDef_Tab, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Delete Confirmation Logic.
+		@param DeleteConfirmationLogic Delete Confirmation Logic
+	*/
+	public void setDeleteConfirmationLogic (String DeleteConfirmationLogic)
+	{
+		set_Value (COLUMNNAME_DeleteConfirmationLogic, DeleteConfirmationLogic);
+	}
+
+	/** Get Delete Confirmation Logic.
+		@return Delete Confirmation Logic	  */
+	public String getDeleteConfirmationLogic()
+	{
+		return (String)get_Value(COLUMNNAME_DeleteConfirmationLogic);
 	}
 
 	/** Set Description.

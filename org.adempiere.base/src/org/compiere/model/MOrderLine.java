@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IProductPricing;
@@ -56,7 +57,7 @@ public class MOrderLine extends X_C_OrderLine
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7152360636393521683L;
+	private static final long serialVersionUID = 7994694334621222461L;
 
 	/**
 	 * 	Get Order Unreserved Qty
@@ -329,10 +330,10 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	public boolean setTax()
 	{
-		int ii = Tax.get(getCtx(), getM_Product_ID(), getC_Charge_ID(), getDateOrdered(), getDateOrdered(),
+		int ii = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID(), getDateOrdered(), getDateOrdered(),
 			getAD_Org_ID(), getM_Warehouse_ID(),
 			getC_BPartner_Location_ID(),		//	should be bill to
-			getC_BPartner_Location_ID(), m_IsSOTrx, get_TrxName());
+			getC_BPartner_Location_ID(), m_IsSOTrx, getParent().getDeliveryViaRule(), get_TrxName());
 		if (ii == 0)
 		{
 			log.log(Level.SEVERE, "No Tax found");
@@ -348,7 +349,7 @@ public class MOrderLine extends X_C_OrderLine
 	 */
 	public void setLineNetAmt ()
 	{
-		BigDecimal bd = getPriceActual().multiply(getQtyOrdered()); 
+		BigDecimal bd = getPriceEntered().multiply(getQtyEntered()); 
 		int precision = getPrecision();
 		if (bd.scale() > precision)
 			bd = bd.setScale(precision, RoundingMode.HALF_UP);
@@ -980,17 +981,57 @@ public class MOrderLine extends X_C_OrderLine
 	 * author teo_sarca [ 1583825 ]
 	 */
 	public boolean updateOrderTax(boolean oldTax) {
-		MOrderTax tax = MOrderTax.get (this, getPrecision(), oldTax, get_TrxName());
-		if (tax != null) {
-			if (!tax.calculateTaxFromLines())
-				return false;
-			if (tax.getTaxAmt().signum() != 0) {
-				if (!tax.save(get_TrxName()))
-					return false;
+		int C_Tax_ID = getC_Tax_ID();
+		boolean isOldTax = oldTax && is_ValueChanged(MOrderLine.COLUMNNAME_C_Tax_ID); 
+		if (isOldTax)
+		{
+			Object old = get_ValueOld(MOrderLine.COLUMNNAME_C_Tax_ID);
+			if (old == null)
+			{
+				return true;
 			}
-			else {
-				if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+			C_Tax_ID = ((Integer)old).intValue();
+		}
+		if (C_Tax_ID == 0)
+		{
+			return true;
+		}
+		
+		MTax t = MTax.get(C_Tax_ID);
+		if (t.isSummary())
+		{
+			MOrderTax[] taxes = MOrderTax.getChildTaxes(this, getPrecision(), isOldTax, get_TrxName());
+			if (taxes != null && taxes.length > 0)
+			{
+				for(MOrderTax tax : taxes)
+				{
+					if (!tax.calculateTaxFromLines())
+						return false;
+					if (tax.getTaxAmt().signum() != 0) {
+						if (!tax.save(get_TrxName()))
+							return false;
+					}
+					else {
+						if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+							return false;
+					}
+				}
+			}
+		}
+		else
+		{
+			MOrderTax tax = MOrderTax.get (this, getPrecision(), oldTax, get_TrxName());
+			if (tax != null) {
+				if (!tax.calculateTaxFromLines())
 					return false;
+				if (tax.getTaxAmt().signum() != 0) {
+					if (!tax.save(get_TrxName()))
+						return false;
+				}
+				else {
+					if (!tax.is_new() && !tax.delete(false, get_TrxName()))
+						return false;
+				}
 			}
 		}
 		return true;
@@ -1023,4 +1064,21 @@ public class MOrderLine extends X_C_OrderLine
 	{
 		this.m_parent = null;
 	}
+
+	/**
+	 * Get the description stripping the Close tag that was created when closing the order
+	 * @return
+	 */
+	public String getDescriptionStrippingCloseTag() {
+		String description = getDescription();
+		if (description == null)
+			return description;
+		Pattern pattern = Pattern.compile("( \\| )?Close \\(.*\\)");
+		String[] parts = pattern.split(description);
+		StringBuilder description_sb = new StringBuilder();
+		for (String s : parts)
+			description_sb.append(s);
+		return description_sb.toString();
+	}
+
 }	//	MOrderLine

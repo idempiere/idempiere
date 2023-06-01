@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -131,13 +132,14 @@ public class Trx
 		if (prefix == null || prefix.length() == 0) {
 			prefix = "Trx";
 			if (MSysConfig.getBooleanValue(MSysConfig.TRX_AUTOSET_DISPLAY_NAME, false)) {
-				StackTraceElement[] st = new Throwable().fillInStackTrace().getStackTrace();
-				for (StackTraceElement ste : st) {
-					if (! Trx.class.getName().equals(ste.getClassName())) {
-						displayName = ste.getClassName().concat("_").concat(ste.getMethodName());
-						break;
-					}
-				}
+				StackWalker walker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+				Optional<String> stackName = walker.walk(frames -> frames.map(
+						stackFrame -> stackFrame.getClassName() + "." +
+									  stackFrame.getMethodName() + ":" +
+									  stackFrame.getLineNumber())
+						.filter(f -> ! f.startsWith(Trx.class.getName() + "."))
+						.findFirst());
+				displayName = (stackName.orElse(null));
 			}
 		}
 		prefix += "_" + UUID.randomUUID(); //System.currentTimeMillis();
@@ -496,8 +498,11 @@ public class Trx
 		if (m_connection == null)
 			return true;
 		
-		if (isActive())
-			commit();
+		try {
+			if (isActive() && !m_connection.isReadOnly())
+				commit();
+		} catch (SQLException e) {			
+		}
 			
 		//	Close Connection
 		try
@@ -509,6 +514,18 @@ public class Trx
 		}
 		finally
 		{
+			//ensure connection return to pool with readonly=false
+			try 
+			{
+				if (m_connection.isReadOnly())
+				{
+					m_connection.setReadOnly(false);
+				}
+			}
+			catch (SQLException e)
+			{
+				log.log(Level.SEVERE, m_trxName, e);
+			}	
 			try
 			{
 				m_connection.close();

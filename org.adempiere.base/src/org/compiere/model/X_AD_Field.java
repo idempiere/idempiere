@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_Field")
 public class X_AD_Field extends PO implements I_AD_Field, I_Persistent 
 {
@@ -33,7 +33,7 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_Field (Properties ctx, int AD_Field_ID, String trxName)
@@ -122,6 +122,33 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Chart getAD_Chart() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Chart)MTable.get(getCtx(), org.compiere.model.I_AD_Chart.Table_ID)
+			.getPO(getAD_Chart_ID(), get_TrxName());
+	}
+
+	/** Set Chart.
+		@param AD_Chart_ID Chart
+	*/
+	public void setAD_Chart_ID (int AD_Chart_ID)
+	{
+		if (AD_Chart_ID < 1)
+			set_Value (COLUMNNAME_AD_Chart_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Chart_ID, Integer.valueOf(AD_Chart_ID));
+	}
+
+	/** Get Chart.
+		@return Chart	  */
+	public int getAD_Chart_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Chart_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	public org.compiere.model.I_AD_Column getAD_Column() throws RuntimeException
 	{
@@ -410,6 +437,22 @@ public class X_AD_Field extends PO implements I_AD_Field, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Always Updatable Logic.
+		@param AlwaysUpdatableLogic Logic to determine if field is Updatable irrespective if record&#039;s active status or processed status. This logic Applicable only if Always Updatable is N.
+	*/
+	public void setAlwaysUpdatableLogic (String AlwaysUpdatableLogic)
+	{
+		set_Value (COLUMNNAME_AlwaysUpdatableLogic, AlwaysUpdatableLogic);
+	}
+
+	/** Get Always Updatable Logic.
+		@return Logic to determine if field is Updatable irrespective if record&#039;s active status or processed status. This logic Applicable only if Always Updatable is N.
+	  */
+	public String getAlwaysUpdatableLogic()
+	{
+		return (String)get_Value(COLUMNNAME_AlwaysUpdatableLogic);
 	}
 
 	/** Set Column Span.

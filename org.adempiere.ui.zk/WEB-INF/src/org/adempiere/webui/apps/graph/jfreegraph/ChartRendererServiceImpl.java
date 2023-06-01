@@ -46,8 +46,9 @@ import org.zkoss.zul.Imagemap;
 /**
  * 
  * @author hengsin
- *
+ * @deprecated replace by billboard based implementation
  */
+@Deprecated
 public class ChartRendererServiceImpl implements IChartRendererService {
 
 	private final static CLogger log = CLogger.getCLogger(ChartRendererServiceImpl.class);
@@ -169,10 +170,9 @@ public class ChartRendererServiceImpl implements IChartRendererService {
 	}
 
 	@Override
-	public boolean renderChart(Component parent, int width, int height,
-			ChartModel chartModel) {
+	public boolean renderChart(Component parent, int width, int height, ChartModel chartModel, boolean showTitle) {
 		ChartRenderer renderer = new ChartRenderer(chartModel.chart);
-		renderer.render(parent, width, height);
+		renderer.render(parent, width, height, showTitle);
 		return true;
 	}
 }

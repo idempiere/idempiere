@@ -21,11 +21,14 @@ import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.IFieldEditorContainer;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Button;
@@ -70,7 +73,7 @@ import org.zkoss.zul.impl.XulElement;
  * @date    Mar 11, 2007
  * @version $Revision: 0.10 $
  */
-public abstract class WEditor implements EventListener<Event>, PropertyChangeListener
+public abstract class WEditor implements EventListener<Event>, PropertyChangeListener, IInputValidator
 {
     private static final String[] lISTENER_EVENTS = {};
 
@@ -103,6 +106,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	protected boolean tableEditor;
 	
 	private boolean isProcessParameter;
+	
+	private String sValidInput;
+	
+	private final List<DynamicDisplayListener> dynamicDisplayListeners = new ArrayList<>();
 
 	/**
 	 * call to show context menu of this field.
@@ -332,6 +339,13 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         
         component.addEventListener(INIT_EDIT_EVENT, this);
         component.setAttribute("idempiere.editor", this);
+        
+        component.addEventListener(Events.ON_FOCUS, e -> {
+        	ADWindow adwindow = ADWindow.findADWindow(component);
+        	if (adwindow != null) {
+        		adwindow.getADWindowContent().setLastFocusEditor(component);
+        	}
+        });
     }
 
     /**
@@ -481,12 +495,22 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     public abstract boolean isReadWrite();
 
     /**
+    *
+    * @param visible
+    */
+   public void setVisible(boolean visible)
+   {
+	   this.setVisible(visible, visible);
+   }
+    
+    /**
      *
      * @param visible
+     * @param labelVisible
      */
-    public void setVisible(boolean visible)
+    public void setVisible(boolean visible, boolean labelVisible)
     {
-        label.setVisible(visible);
+    	label.setVisible(labelVisible);
         component.setVisible(visible);
     }
 
@@ -499,6 +523,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         return component.isVisible();
     }
 
+    /**
+     * Indicating error with changing the style.
+     * @param error
+     */
     public void setBackground(boolean error)
     {
 
@@ -538,6 +566,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     abstract public String getDisplay();
     
     public String getDisplayTextForGridView(Object value) {
+    	return getDisplayTextForGridView(null, value);
+    }
+    
+    public String getDisplayTextForGridView(GridRowCtx gridRowCtx, Object value) {
     	this.setValue(value);
     	String s = getDisplay();
     	if ("<0>".equals(s)) {
@@ -594,6 +626,9 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
     	{
     		updateStyle();
     	}
+
+	if (!dynamicDisplayListeners.isEmpty())
+		dynamicDisplayListeners.stream().forEach(e -> e.onDynamicDisplay(ctx, this));
     }
 
 	public void updateStyle(boolean applyDictionaryStyle) {
@@ -934,5 +969,49 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 			return gridField.get_ValueAsString(variableName);
 		}
 		
+	}
+	
+	@Override
+	public String getValidInput() {
+		return this.sValidInput;
+	}
+	
+	@Override
+	public void setValidInput(String validInput) {
+		this.sValidInput = validInput;
+	}
+	
+	@Override
+	public boolean isValid(String input) {
+		return Util.isEmpty(sValidInput) ? true : sValidInput.equals(input);
+	}
+	
+	/**
+	 * add listener
+	 * @param listener
+	 */
+	public void addDynamicDisplayListener(DynamicDisplayListener listener) {
+		dynamicDisplayListeners.add(listener);
+	}
+
+	/**
+	 *
+	 * @param listener
+	 * @return true if listener is found and remove from listener list
+	 */
+	public boolean removeDynamicDisplayListener(DynamicDisplayListener listener) {
+		return dynamicDisplayListeners.remove(listener);
+	}
+
+	/**
+	 * interface for dynamic display event
+	 */
+	public static interface DynamicDisplayListener {
+		/**
+		 * call when editor's dynamicDisplay(ctx) method is call
+		 * @param ctx
+		 * @param editor
+		 */
+		void onDynamicDisplay(Properties ctx, WEditor editor);
 	}
 }

@@ -19,14 +19,12 @@
 package org.compiere.db;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -38,7 +36,8 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import javax.sql.ConnectionPoolDataSource;
@@ -61,7 +60,9 @@ import org.compiere.util.Language;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariPoolMXBean;
 
 /**
  *  PostgreSQL Database Port
@@ -79,7 +80,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
     private static final String P_POSTGRE_SQL_NATIVE = "PostgreSQLNative";
 
-	private static final String POOL_PROPERTIES = "pool.properties";
+	private static final String POOL_PROPERTIES = "hikaricp.properties";
 
 	private static Boolean sysNative = null;
 	
@@ -99,9 +100,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	/**
 	 *  PostgreSQL Database
 	 */
-	public DB_PostgreSQL()
-	{
-	}   //  DB_PostgreSQL
+	public DB_PostgreSQL() {	
+	}
 
 	/** Driver                  */
 	private org.postgresql.Driver   s_driver = null;
@@ -113,12 +113,10 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public static final int         DEFAULT_PORT = 5432;
 
 	/** Data Source				*/
-	private ComboPooledDataSource m_ds = null;
+	private volatile HikariDataSource m_ds;
 
 	/** Statement Converter     */
 	private Convert_PostgreSQL         m_convert = new Convert_PostgreSQL();
-	/** Connection String       */
-	private String          m_connection;
 	/** Cached Database Name	*/
 	private String			m_dbName = null;
 
@@ -131,13 +129,9 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	/**	Logger			*/
 	private static final CLogger			log	= CLogger.getCLogger (DB_PostgreSQL.class);
 
-    private static int              m_maxbusyconnections = 0;
-
     private static final String NATIVE_MARKER = "NATIVE_"+Database.DB_POSTGRESQL+"_KEYWORK";
 
     private CCache<String, String> convertCache = new CCache<String, String>(null, "DB_PostgreSQL_Convert_Cache", 1000, CCache.DEFAULT_EXPIRE_MINUTE, false);
-
-    private Random rand = new Random();
 
     private static final List<String> reservedKeywords = Arrays.asList("limit","action","old","new");
     
@@ -216,8 +210,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
    			sb.append("&").append(urlParameters);  
 	    }
 
-		m_connection = sb.toString();
-		return m_connection;
+		return sb.toString();
 	}   //  getConnectionString
 
 	/**
@@ -244,7 +237,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		return sb.toString();
 	}	//	getConnectionURL
 
-        	/**
+	/**
 	 *  Get Database Connection String
 	 *  @param connectionURL Connection URL
 	 *  @param userName user name
@@ -298,12 +291,14 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		StringBuilder sb = new StringBuilder("DB_PostgreSQL[");
         sb.append(m_connectionURL);
         try
-        {
-            StringBuilder logBuffer = new StringBuilder(50);
-            logBuffer.append("# Connections: ").append(m_ds.getNumConnections());
-            logBuffer.append(" , # Busy Connections: ").append(m_ds.getNumBusyConnections());
-            logBuffer.append(" , # Idle Connections: ").append(m_ds.getNumIdleConnections());
-            logBuffer.append(" , # Orphaned Connections: ").append(m_ds.getNumUnclosedOrphanedConnections());
+        {        	
+            StringBuilder logBuffer = new StringBuilder();
+            HikariPoolMXBean mxBean = m_ds.getHikariPoolMXBean();            
+            
+            logBuffer.append("# Connections: ").append(mxBean.getTotalConnections());
+            logBuffer.append(" , # Busy Connections: ").append(mxBean.getActiveConnections());
+            logBuffer.append(" , # Idle Connections: ").append(mxBean.getIdleConnections());
+            logBuffer.append(" , # Threads waiting on connection: ").append(mxBean.getThreadsAwaitingConnection());
         }
         catch (Exception e)
         {
@@ -327,13 +322,14 @@ public class DB_PostgreSQL implements AdempiereDatabase
         StringBuilder sb = new StringBuilder();
         try
         {
-            sb.append("# Connections: ").append(m_ds.getNumConnections());
-            sb.append(" , # Busy Connections: ").append(m_ds.getNumBusyConnections());
-            sb.append(" , # Idle Connections: ").append(m_ds.getNumIdleConnections());
-            sb.append(" , # Orphaned Connections: ").append(m_ds.getNumUnclosedOrphanedConnections());
-            sb.append(" , # Min Pool Size: ").append(m_ds.getMinPoolSize());
-            sb.append(" , # Max Pool Size: ").append(m_ds.getMaxPoolSize());
-            sb.append(" , # Max Statements Cache Per Session: ").append(m_ds.getMaxStatementsPerConnection());
+            HikariPoolMXBean mxBean = m_ds.getHikariPoolMXBean();            
+            
+            sb.append("# Connections: ").append(mxBean.getTotalConnections());
+            sb.append(" , # Busy Connections: ").append(mxBean.getActiveConnections());
+            sb.append(" , # Idle Connections: ").append(mxBean.getIdleConnections());
+            sb.append(" , # Threads waiting on connection: ").append(mxBean.getThreadsAwaitingConnection());        	        	
+            sb.append(" , # Min Pool Size: ").append(m_ds.getMinimumIdle());
+            sb.append(" , # Max Pool Size: ").append(m_ds.getMaximumPoolSize());
             sb.append(" , # Open Transactions: ").append(Trx.getOpenTransactions().length);
         }
         catch (Exception e)
@@ -591,105 +587,39 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 *	@throws Exception
 	 */
 	public Connection getCachedConnection (CConnection connection,
-		boolean autoCommit, int transactionIsolation)
-		throws Exception
+			boolean autoCommit, int transactionIsolation)
+					throws Exception
 	{
 		Connection conn = null;
-        Exception exception = null;
-        try
-        {
-            if (m_ds == null)
-                getDataSource(connection);
 
-            //
-            try
-            {
-            	int numConnections = m_ds.getNumBusyConnections();
-        		if(numConnections >= m_maxbusyconnections && m_maxbusyconnections > 0)
-        		{
-        			//system is under heavy load, wait between 20 to 40 seconds
-        			int randomNum = rand.nextInt(40 - 20 + 1) + 20;
-        			Thread.sleep(randomNum * 1000);
-        		}
-        		conn = m_ds.getConnection();
-        		if (conn == null) {
-        			//try again after 10 to 30 seconds
-        			int randomNum = rand.nextInt(30 - 10 + 1) + 10;
-        			Thread.sleep(randomNum * 1000);
-        			conn = m_ds.getConnection();
-        		}
+		if (m_ds == null)
+			getDataSource(connection);
 
-                if (conn != null)
-                {
-                    if (conn.getTransactionIsolation() != transactionIsolation)
-                        conn.setTransactionIsolation(transactionIsolation);
-                    if (conn.getAutoCommit() != autoCommit)
-                        conn.setAutoCommit(autoCommit);
-                }
-            }
-            catch (Exception e)
-            {
-                exception = e;
-                conn = null;
-            }
 
-            if (conn == null && exception != null)
-            {
-            	//log might cause infinite loop since it will try to acquire database connection again
-            	/*
-                log.log(Level.SEVERE, exception.toString());
-                log.fine(toString()); */
-            	System.err.println(exception.toString());
-            }
-        }
-        catch (Exception e)
-        {
-            exception = e;
-        }
+		// If HikariCP has no available free connection this call will block until either
+		// a connection becomes available or the configured 'connectionTimeout' value is
+		// reached (after which a SQLException is thrown).
+		conn = m_ds.getConnection();
 
-        try
-        {
-        	if (conn != null) {
-        		boolean trace = "true".equalsIgnoreCase(System.getProperty("org.adempiere.db.traceStatus"));
-        		int numConnections = m_ds.getNumBusyConnections();
-        		if (numConnections > 1)
-        		{
-	    			if (trace)
-	    			{
-	    				log.warning(getStatus());
-	    			}
-	    			if(numConnections >= m_maxbusyconnections && m_maxbusyconnections > 0)
-		            {
-	    				if (!trace)
-	    					log.warning(getStatus());
-		                //hengsin: make a best effort to reclaim leak connection
-		                Runtime.getRuntime().runFinalization();
-		            }
-        		}
-        	} else {
-        		//don't use log.severe here as it will try to access db again
-        		System.err.println("Failed to acquire new connection. Status=" + getStatus());
-        	}
-        }
-        catch (Exception ex)
-        {
-        }
-        if (exception != null)
-            throw exception;
-        return conn;
+		if (conn.getTransactionIsolation() != transactionIsolation)
+		{
+			conn.setTransactionIsolation(transactionIsolation);
+		}
+		if (conn.getAutoCommit() != autoCommit) 
+		{
+			conn.setAutoCommit(autoCommit);
+		}
+
+		return conn;
 	}	//	getCachedConnection
 
-	private String getFileName ()
+	private String getPoolPropertiesFile ()
 	{
-		//
-		String base = null;
-		if (Ini.isClient())
-			base = System.getProperty("user.home");
-		else
-			base = Ini.getAdempiereHome();
+		String base = Ini.getAdempiereHome();
 		
-		if (base != null && !base.endsWith(File.separator))
+		if (base != null && !base.endsWith(File.separator)) {
 			base += File.separator;
+		}
 		
 		//
 		return base + getName() + File.separator + POOL_PROPERTIES;
@@ -702,156 +632,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 */
 	public DataSource getDataSource(CConnection connection)
 	{
-		if (m_ds != null)
-			return m_ds;
-
-		InputStream inputStream = null;
-		
-		//check property file from home
-		String propertyFilename = getFileName();
-		File propertyFile = null;
-		if (!Util.isEmpty(propertyFilename))
-		{
-			propertyFile = new File(propertyFilename);
-			if (propertyFile.exists() && propertyFile.canRead())
-			{
-				try {
-					inputStream = new FileInputStream(propertyFile);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		//fall back to default config
-		URL url = null;
-		if (inputStream == null)
-		{
-			propertyFile = null;
-			url = Ini.isClient()
-	    			? PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/client.default.properties")
-	    			: PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/server.default.properties");
-	    	
-	    	try {
-				inputStream = url.openStream();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}						
-		}
-		
-		Properties poolProperties = new Properties();
-		try {
-			poolProperties.load(inputStream);
-			inputStream.close();
-			inputStream = null;
-		} catch (IOException e) {
-			throw new DBException(e);
-		}
-
-		//auto create property file at home folder from default config
-		if (propertyFile == null)			
-		{
-			String directoryName = propertyFilename.substring(0,  propertyFilename.length() - (POOL_PROPERTIES.length()+1));
-			File dir = new File(directoryName);
-			if (!dir.exists())
-				dir.mkdir();
-			propertyFile = new File(propertyFilename);
-			try {
-				inputStream = url.openStream();
-				Files.copy(inputStream, propertyFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-				inputStream.close();
-				inputStream = null;
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		ensureInitialized(connection);
 			
-		}
-		
-		if (inputStream != null)
-		{
-			try {
-				inputStream.close();
-			} catch (IOException e) {}
-		}
-		
-		int idleConnectionTestPeriod = getIntProperty(poolProperties, "IdleConnectionTestPeriod", 1200);
-		int acquireRetryAttempts = getIntProperty(poolProperties, "AcquireRetryAttempts", 2);
-		int maxIdleTimeExcessConnections = getIntProperty(poolProperties, "MaxIdleTimeExcessConnections", 1200);
-		int maxIdleTime = getIntProperty(poolProperties, "MaxIdleTime", 1200);
-		int unreturnedConnectionTimeout = getIntProperty(poolProperties, "UnreturnedConnectionTimeout", 0);
-		boolean testConnectionOnCheckin = getBooleanProperty(poolProperties, "TestConnectionOnCheckin", false);
-		boolean testConnectionOnCheckout = getBooleanProperty(poolProperties, "TestConnectionOnCheckout", true);
-		String mlogClass = getStringProperty(poolProperties, "com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
-		
-		int checkoutTimeout = getIntProperty(poolProperties, "CheckoutTimeout", 0);
-
-        try
-        {
-            System.setProperty("com.mchange.v2.log.MLog", mlogClass);
-            //System.setProperty("com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL", "ALL");
-            ComboPooledDataSource cpds = new ComboPooledDataSource();
-            cpds.setDataSourceName("iDempiereDS");
-            cpds.setDriverClass(DRIVER);
-            //loads the jdbc driver
-            cpds.setJdbcUrl(getConnectionURL(connection));
-            cpds.setUser(connection.getDbUid());
-            cpds.setPassword(connection.getDbPwd());
-            //cpds.setPreferredTestQuery(DEFAULT_CONN_TEST_SQL);
-            cpds.setIdleConnectionTestPeriod(idleConnectionTestPeriod);
-            cpds.setMaxIdleTimeExcessConnections(maxIdleTimeExcessConnections);
-            cpds.setMaxIdleTime(maxIdleTime);
-            cpds.setTestConnectionOnCheckin(testConnectionOnCheckin);
-            cpds.setTestConnectionOnCheckout(testConnectionOnCheckout);
-            cpds.setAcquireRetryAttempts(acquireRetryAttempts);
-            if (checkoutTimeout > 0)
-            	cpds.setCheckoutTimeout(checkoutTimeout);
-
-            if (Ini.isClient())
-            {
-            	int maxPoolSize = getIntProperty(poolProperties, "MaxPoolSize", 15);
-            	int initialPoolSize = getIntProperty(poolProperties, "InitialPoolSize", 1);
-            	int minPoolSize = getIntProperty(poolProperties, "MinPoolSize", 1);
-                cpds.setInitialPoolSize(initialPoolSize);
-                cpds.setMinPoolSize(minPoolSize);
-                cpds.setMaxPoolSize(maxPoolSize);
-
-                m_maxbusyconnections = (int) (maxPoolSize * 0.9);
-            }
-            else
-            {
-            	int maxPoolSize = getIntProperty(poolProperties, "MaxPoolSize", 400);
-            	int initialPoolSize = getIntProperty(poolProperties, "InitialPoolSize", 10);
-            	int minPoolSize = getIntProperty(poolProperties, "MinPoolSize", 5);
-                cpds.setInitialPoolSize(initialPoolSize);
-                cpds.setInitialPoolSize(initialPoolSize);
-                cpds.setMinPoolSize(minPoolSize);
-                cpds.setMaxPoolSize(maxPoolSize);
-                m_maxbusyconnections = (int) (maxPoolSize * 0.9);
-                
-                //statement pooling
-                int maxStatementsPerConnection = getIntProperty(poolProperties, "MaxStatementsPerConnection", 0);
-                if (maxStatementsPerConnection > 0)
-                	cpds.setMaxStatementsPerConnection(maxStatementsPerConnection);
-            }
-
-            if (unreturnedConnectionTimeout > 0)
-            {
-	            //the following sometimes kill active connection!
-	            cpds.setUnreturnedConnectionTimeout(1200);
-	            cpds.setDebugUnreturnedConnectionStackTraces(true);
-            }
-
-            m_ds = cpds;
-            m_connectionURL = m_ds.getJdbcUrl();
-        }
-        catch (Exception ex)
-        {
-            m_ds = null;
-            log.log(Level.SEVERE, "Could not initialise C3P0 Datasource", ex);
-        }
-
 		return m_ds;
 	}
 
@@ -891,28 +673,121 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		getDriver();
 		return DriverManager.getConnection (dbUrl, dbUid, dbPwd);
 	}	//	getDriverConnection
+	
+	private Properties getPoolProperties() {	
+		//check property file from home
+		File userPropertyFile = new File(getPoolPropertiesFile());
+		URL propertyFileURL = null;
+		
+		if (userPropertyFile.exists() && userPropertyFile.canRead())
+		{			
+			try {
+				propertyFileURL = userPropertyFile.toURI().toURL();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+			
+		if (propertyFileURL == null)
+		{
+			propertyFileURL = PostgreSQLBundleActivator.bundleContext.getBundle().getEntry("META-INF/pool/server.default.properties");						
+		}
 
+		Properties poolProperties = new Properties();
+		try (InputStream propertyFileInputStream = propertyFileURL.openStream()) {
+			poolProperties.load(propertyFileInputStream);
+		} catch (Exception e) {
+			throw new DBException(e);
+		} 
 
+		//auto create property file at home folder from default config
+		if (!userPropertyFile.exists())			
+		{
+			try {				
+				Path directory = userPropertyFile.toPath().getParent();
+				Files.createDirectories(directory);
+								
+				try (InputStream propertyFileInputStream = propertyFileURL.openStream()) {
+					Files.copy(propertyFileInputStream, userPropertyFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				} 
+			
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return poolProperties;
+	}
+	
+	/** Boolean to indicate the PostgreSQL connection pool is either initializing or initialized.*/
+	private final AtomicBoolean initialized = new AtomicBoolean(false);
+	/** Latch which can be used to wait for initialization completion. */
+	private final CountDownLatch initializedLatch = new CountDownLatch(1); 
+	
+	/**
+	 * Allows the connection pool to be lazily initialized. While it might be preferable to do
+	 * this once upon initialization of this class the current design of iDempiere makes this 
+	 * hard.
+	 * 
+	 * Calling this method will block until the pool is configured. This does NOT mean it will
+	 * block until a database connection has been setup.
+	 * 
+	 * @param connection
+	 */
+	private void ensureInitialized(CConnection connection) {
+		if (!initialized.compareAndSet(false, true)) {
+			try {
+				initializedLatch.await();
+			} catch (InterruptedException e) {
+				return;
+			}
+		}
+				
+        try {
+    		Properties poolProperties = getPoolProperties();
+    		// Do not override values which might have been read from the users
+    		// hikaricp.properties file.
+    		if(!poolProperties.containsKey("jdbcUrl")) {
+    			poolProperties.put("jdbcUrl", getConnectionURL(connection));
+    		}
+    		if (!poolProperties.containsKey("username")) {
+    			poolProperties.put("username", connection.getDbUid());
+    		}
+    		if (!poolProperties.containsKey("password")) {
+    			poolProperties.put("password", connection.getDbPwd());
+    		}
+
+    		HikariConfig hikariConfig = new HikariConfig(poolProperties);
+    		hikariConfig.setDriverClassName(DRIVER);
+    		m_ds = new HikariDataSource(hikariConfig);
+
+            m_connectionURL = m_ds.getJdbcUrl();
+            
+            initializedLatch.countDown();
+        }
+        catch (Exception ex) {
+        	throw new IllegalStateException("Could not initialise Hikari Datasource", ex);
+        }		
+	}
+	
 	/**
 	 * 	Close
 	 */
 	public void close()
 	{
-
-		if (log.isLoggable(Level.CONFIG)) log.config(toString());
-
-		if (m_ds != null)
-		{
-			try
-			{
-				m_ds.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+		if (log.isLoggable(Level.CONFIG)) 
+		{ 
+			log.config(toString());
 		}
-		m_ds = null;
+
+		try
+		{
+			m_ds.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}	//	close
 
 
@@ -996,7 +871,24 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	}
 
 	public int getNextID(String name, String trxName) {
-		int m_sequence_id = DB.getSQLValueEx(trxName, "SELECT nextval('"+name.toLowerCase()+"')");
+		Trx trx = null;
+		int m_sequence_id = -1;
+		try {
+			// avoid cannot execute nextval() in a read-only transaction
+			if (trxName == null) {
+				trxName = Trx.createTrxName("getNextval");
+				trx = Trx.get(trxName, true);
+			}
+			m_sequence_id = DB.getSQLValueEx(trxName, "SELECT nextval('"+name.toLowerCase()+"')");
+		} catch (Exception e) {
+			if (trx != null) {
+				trx.rollback();
+			}
+		} finally {
+			if (trx != null) {
+				trx.close();
+			}
+		}
 		return m_sequence_id;
 	}
 
@@ -1065,45 +957,6 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
 	public boolean isPagingSupported() {
 		return true;
-	}
-
-	private int getIntProperty(Properties properties, String key, int defaultValue)
-	{
-		int i = defaultValue;
-		try
-		{
-			String s = properties.getProperty(key);
-			if (s != null && s.trim().length() > 0)
-				i = Integer.parseInt(s);
-		}
-		catch (Exception e) {}
-		return i;
-	}
-
-	private boolean getBooleanProperty(Properties properties, String key, boolean defaultValue)
-	{
-		boolean b = defaultValue;
-		try
-		{
-			String s = properties.getProperty(key);
-			if (s != null && s.trim().length() > 0)
-				b = Boolean.valueOf(s);
-		}
-		catch (Exception e) {}
-		return b;
-	}
-	
-	private String getStringProperty(Properties properties, String key, String defaultValue)
-	{
-		String b = defaultValue;
-		try
-		{
-			String s = properties.getProperty(key);
-			if (s != null && s.trim().length() > 0)
-				b = s.trim();
-		}
-		catch (Exception e) {}
-		return b;
 	}
 
 	@Override
@@ -1213,14 +1066,21 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
 	@Override
 	public String intersectClauseForCSV(String columnName, String csv) {
+		return intersectClauseForCSV(columnName, csv, false);
+	}
+	
+	@Override
+	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("string_to_array(")
+		if(isNotClause)
+			builder.append("NOT");
+		builder.append("(string_to_array(")
 			.append(columnName)
 			.append(",',')");
 		builder.append(" && "); //intersect
 		builder.append("string_to_array(")
 			.append(DB.TO_STRING(csv))
-			.append(",',')");
+			.append(",','))");
 
 		return builder.toString();
 	}
@@ -1296,6 +1156,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		return "TIMESTAMP";
 	}
 
+	@Override
+	public String getTimestampWithTimezoneDataType() {
+		return "TIMESTAMP WITH TIME ZONE";
+	}
+	
 	@Override
 	public String getSQLDDL(MColumn column) {				
 		StringBuilder sql = new StringBuilder ().append(column.getColumnName())

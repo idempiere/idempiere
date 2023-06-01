@@ -28,7 +28,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.CreateFromForm;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -45,29 +45,34 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 
 /**
- * 
+ * Create from form window
  * @author Elaine
- *
  */
 @org.idempiere.ui.zk.annotation.Form
 public class WCreateFromForm extends ADForm implements EventListener<Event>, WTableModelListener, DialogEvents
-{
-	
+{	
 	/**
-	 * 
+	 * generated serial id 
 	 */
 	private static final long serialVersionUID = -3703236565441597403L;
+	/** Form controller */
 	private CreateFromForm form;
-	
+	/** Form parameter panel. North of form. */
 	private Panel parameterPanel = new Panel();
+	/** Action buttons panel. South of form. */
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
+	/** Form status bar. South of form. */
 	private StatusBarPanel statusBar = new StatusBarPanel();
+	/** Data grid. Center of form. */
 	private WListbox dataTable = ListboxFactory.newDataTable();
-
+	/** true if form cancelled by user */
 	private boolean isCancel;
-	
+	/** Select all action button Id */
 	public static final String SELECT_ALL = "SelectAll";
 
+	/**
+	 * @param createFrom
+	 */
 	public WCreateFromForm(CreateFromForm createFrom)
 	{
 		super();
@@ -78,7 +83,8 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		setBorder("normal");		
 		setSclass("create-from-form");
 	}
-		
+	
+	@Override
 	protected void initForm() 
 	{		
 		try
@@ -91,10 +97,14 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		}
 		catch(Exception e)
 		{
-			
+			e.printStackTrace();
 		}		
     }
 	
+	/**
+	 * Layout form.<br/>
+	 * @throws Exception
+	 */
 	protected void zkInit() throws Exception
 	{
 		Borderlayout contentPane = new Borderlayout();
@@ -144,6 +154,7 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		ZKUpdateUtil.setHeight(contentPane, "100%");		
 	}
 
+	@Override
 	public void onEvent(Event e) throws Exception
 	{
 		//  OK - Save
@@ -163,7 +174,7 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 			}
 			catch (Exception ex)
 			{
-				FDialog.error(getWindowNo(), this, "Error", ex.getLocalizedMessage());
+				Dialog.error(getWindowNo(), "Error", ex.getLocalizedMessage());
 			}
 		}
 		//  Cancel
@@ -191,6 +202,7 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		}
 	}
 
+	@Override
 	public void tableChanged (WTableModelEvent e)
 	{
 		int type = -1;
@@ -203,6 +215,11 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		info();
 	}
 	
+	/**
+	 * Call {@link CreateFromForm#save(org.compiere.minigrid.IMiniTable, String, org.compiere.model.GridTab)}.
+	 * @param trxName
+	 * @return true if save success
+	 */
 	public boolean save(String trxName)
 	{
 		ListModelTable model = dataTable.getModel();
@@ -213,6 +230,9 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		return form.save(dataTable, trxName, getGridTab());
 	}
 
+	/**
+	 * update status bar
+	 */
 	public void info()
 	{
 		ListModelTable model = dataTable.getModel();
@@ -228,6 +248,11 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		form.info(dataTable, statusBar);
 	}
 	
+	/**
+	 * set status bar text
+	 * @param selectedRowCount
+	 * @param text
+	 */
 	public void setStatusLine(int selectedRowCount, String text) 
 	{
 		StringBuilder sb = new StringBuilder(String.valueOf(selectedRowCount));
@@ -239,26 +264,41 @@ public class WCreateFromForm extends ADForm implements EventListener<Event>, WTa
 		confirmPanel.getOKButton().setEnabled(selectedRowCount > 0);
 	}
 	
+	/**
+	 * @return {@link WListbox}
+	 */
 	public WListbox getWListbox()
 	{
 		return dataTable;
 	}
 	
+	/**
+	 * @return {@link Panel}
+	 */
 	public Panel getParameterPanel()
 	{
 		return parameterPanel;
 	}
 	
+	/**
+	 * @return {@link ConfirmPanel}
+	 */
 	public ConfirmPanel getConfirmPanel()
 	{
 		return confirmPanel;
 	}
 	
+	/**
+	 * @return true if cancel by user
+	 */
 	public boolean isCancel() 
 	{
 		return isCancel;
 	}
 	
+	/**
+	 * post execute query event
+	 */
 	public void postQueryEvent() 
     {
 		Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));

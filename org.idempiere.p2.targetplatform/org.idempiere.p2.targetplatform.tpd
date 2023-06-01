@@ -1,9 +1,9 @@
 
-target "idempiere-220524"
+target "idempiere-221205"
 
 with source configurePhase allEnvironments
 
-location "https://idempiere.github.io/binary.file/p2.zk/9.6.2" {
+location zk "https://idempiere.github.io/binary.file/p2.zk/9.6.3" {
 	zcommon
 	zel
 	zhtml
@@ -17,7 +17,7 @@ location "https://idempiere.github.io/binary.file/p2.zk/9.6.2" {
 	zweb-dsp
 }
 
-location "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
+location repackaged "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
 	jakarta.xml.ws-api
 	org.atmosphere.runtime
 	com.google.guava
@@ -27,7 +27,13 @@ location "https://idempiere.github.io/binary.file/p2.repackaged/9.0.0" {
 	org.apache.poi.ooxml-schemas	
 }
 
-location "https://download.eclipse.org/eclipse/updates/4.20" {
+location eclipse "https://download.eclipse.org/eclipse/updates/4.20" {
+	//dependency for com.google.http-client.google-http-client
+	org.apache.httpcomponents.httpclient
+	org.apache.httpcomponents.httpcore
+}
+
+location eclipse-2022-03 "https://download.eclipse.org/eclipse/updates/4.23" {
 	// equinox core framework
 	org.eclipse.osgi
 	//<< equinox framework starter kit
@@ -35,14 +41,15 @@ location "https://download.eclipse.org/eclipse/updates/4.20" {
 	org.apache.felix.gogo.runtime
 	org.apache.felix.gogo.shell
 	org.apache.felix.scr
-	org.apache.httpcomponents.httpclient
-	org.apache.httpcomponents.httpcore
+	org.apache.httpcomponents.client5.httpclient5
+	org.apache.httpcomponents.core5.httpcore5
+	org.apache.httpcomponents.core5.httpcore5-h2
 	org.eclipse.core.jobs
 	org.eclipse.ecf
 	org.eclipse.ecf.filetransfer
 	org.eclipse.ecf.identity
 	org.eclipse.ecf.provider.filetransfer
-	org.eclipse.ecf.provider.filetransfer.httpclient45
+	org.eclipse.ecf.provider.filetransfer.httpclient5
 	org.eclipse.ecf.provider.filetransfer.ssl
 	org.eclipse.equinox.app
 	org.eclipse.equinox.common
@@ -61,7 +68,7 @@ location "https://download.eclipse.org/eclipse/updates/4.20" {
 	org.eclipse.equinox.p2.jarprocessor
 	org.eclipse.equinox.p2.metadata
 	org.eclipse.equinox.p2.metadata.repository
-    org.eclipse.equinox.p2.operations
+	org.eclipse.equinox.p2.operations
 	org.eclipse.equinox.p2.repository
 	org.eclipse.equinox.p2.touchpoint.eclipse
 	org.eclipse.equinox.p2.touchpoint.natives
@@ -102,7 +109,7 @@ location "https://download.eclipse.org/eclipse/updates/4.20" {
 	org.eclipse.text	
 }
 
-location "https://download.eclipse.org/eclipse/updates/4.22" {
+location eclipse-2022-03 "https://download.eclipse.org/eclipse/updates/4.23" {
 	//<< for test
 	org.opentest4j
 	org.apiguardian	
@@ -124,7 +131,7 @@ location "https://download.eclipse.org/eclipse/updates/4.22" {
 	org.eclipse.jdt.junit5.runtime
 }
 
-location "https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository" {
+location orbit-2021-06-R20210602031627 "https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository" {
 	org.apache.ant
 	org.apache.xml.resolver
 	org.w3c.css.sac
@@ -138,7 +145,7 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202106020316
 	org.apache.commons.discovery	
 }	
 
-location "https://sourceforge.net/projects/jasperstudio/files/updatesite/6.17.0" {
+location jasperstudio "https://sourceforge.net/projects/jasperstudio/files/updatesite/6.17.0" {
     com.jaspersoft.studio.bundles.barbecue
     com.jaspersoft.studio.bundles.itext
     org.w3c.dom.svg.patch

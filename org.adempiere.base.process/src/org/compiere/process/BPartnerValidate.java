@@ -25,6 +25,7 @@ import org.compiere.model.I_C_BPartner;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MPayment;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.Msg;
@@ -62,7 +63,7 @@ public class BPartnerValidate extends SvrProcess
 			else if (name.equals("C_BP_Group_ID"))
 				p_C_BP_Group_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 

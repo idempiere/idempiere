@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for PA_DashboardContent_Access
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="PA_DashboardContent_Access")
 public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardContent_Access, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_PA_DashboardContent_Access extends PO implements I_PA_DashboardCo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_PA_DashboardContent_Access (Properties ctx, int PA_DashboardContent_Access_ID, String trxName)

@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_WF_Node
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_WF_Node")
 public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_WF_Node (Properties ctx, int AD_WF_Node_ID, String trxName)
@@ -50,6 +50,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 			setDuration (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsAttachedDocumentToEmail (true);
+// Y
 			setIsCentrallyMaintained (true);
 // Y
 			setJoinElement (null);
@@ -79,6 +81,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 			setDuration (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsAttachedDocumentToEmail (true);
+// Y
 			setIsCentrallyMaintained (true);
 // Y
 			setJoinElement (null);
@@ -813,6 +817,29 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	public String getHelp()
 	{
 		return (String)get_Value(COLUMNNAME_Help);
+	}
+
+	/** Set Attached Document.
+		@param IsAttachedDocumentToEmail Attached document to Email
+	*/
+	public void setIsAttachedDocumentToEmail (boolean IsAttachedDocumentToEmail)
+	{
+		set_Value (COLUMNNAME_IsAttachedDocumentToEmail, Boolean.valueOf(IsAttachedDocumentToEmail));
+	}
+
+	/** Get Attached Document.
+		@return Attached document to Email
+	  */
+	public boolean isAttachedDocumentToEmail()
+	{
+		Object oo = get_Value(COLUMNNAME_IsAttachedDocumentToEmail);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Centrally maintained.

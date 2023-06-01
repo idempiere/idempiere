@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InOut
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="M_InOut")
 public class X_M_InOut extends PO implements I_M_InOut, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_M_InOut (Properties ctx, int M_InOut_ID, String trxName)
@@ -502,6 +502,22 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		return (String)get_Value(COLUMNNAME_CreateFrom);
 	}
 
+	/** Set Create lines from.
+		@param CreateLinesFrom Process which will generate a new document lines based on an existing document
+	*/
+	public void setCreateLinesFrom (String CreateLinesFrom)
+	{
+		set_Value (COLUMNNAME_CreateLinesFrom, CreateLinesFrom);
+	}
+
+	/** Get Create lines from.
+		@return Process which will generate a new document lines based on an existing document
+	  */
+	public String getCreateLinesFrom()
+	{
+		return (String)get_Value(COLUMNNAME_CreateLinesFrom);
+	}
+
 	/** Set Create Package.
 		@param CreatePackage Create Package
 	*/
@@ -549,7 +565,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DateOrdered);
 	}
 
-	/** Set Date printed.
+	/** Set Date Printed.
 		@param DatePrinted Date the document was printed.
 	*/
 	public void setDatePrinted (Timestamp DatePrinted)
@@ -557,7 +573,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		set_Value (COLUMNNAME_DatePrinted, DatePrinted);
 	}
 
-	/** Get Date printed.
+	/** Get Date Printed.
 		@return Date the document was printed.
 	  */
 	public Timestamp getDatePrinted()
@@ -565,7 +581,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_DatePrinted);
 	}
 
-	/** Set Date received.
+	/** Set Date Received.
 		@param DateReceived Date a product was received
 	*/
 	public void setDateReceived (Timestamp DateReceived)
@@ -573,7 +589,7 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 		set_Value (COLUMNNAME_DateReceived, DateReceived);
 	}
 
-	/** Get Date received.
+	/** Get Date Received.
 		@return Date a product was received
 	  */
 	public Timestamp getDateReceived()
@@ -958,6 +974,8 @@ public class X_M_InOut extends PO implements I_M_InOut, I_Persistent
 	public static final String FREIGHTCOSTRULE_FreightIncluded = "I";
 	/** Line = L */
 	public static final String FREIGHTCOSTRULE_Line = "L";
+	/** Customer Account = U */
+	public static final String FREIGHTCOSTRULE_CustomerAccount = "U";
 	/** Set Freight Cost Rule.
 		@param FreightCostRule Method for charging Freight
 	*/

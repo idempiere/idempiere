@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for S_TimeExpenseLine
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="S_TimeExpenseLine")
 public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_S_TimeExpenseLine (Properties ctx, int S_TimeExpenseLine_ID, String trxName)
@@ -584,6 +584,26 @@ public class X_S_TimeExpenseLine extends PO implements I_S_TimeExpenseLine, I_Pe
 	public String getNote()
 	{
 		return (String)get_Value(COLUMNNAME_Note);
+	}
+
+	/** Set Price.
+		@param PriceEntered 
+		Price Entered - the price based on the selected price list on header
+	  */
+	public void setPriceEntered (BigDecimal PriceEntered)
+	{
+		set_Value (COLUMNNAME_PriceEntered, PriceEntered);
+	}
+	
+	/** Get Price.
+		@return Price Entered - the price based on the selected price list on header
+	  */
+	public BigDecimal getPriceEntered () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceEntered);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Price Invoiced.

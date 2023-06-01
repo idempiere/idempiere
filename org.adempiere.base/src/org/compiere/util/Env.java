@@ -16,7 +16,9 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import java.beans.Expression;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,6 +47,8 @@ import org.adempiere.util.ServerContext;
 import org.adempiere.util.ServerContextProvider;
 import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
+import org.compiere.dbPort.Convert;
+import org.compiere.model.GridTab;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
@@ -52,6 +56,7 @@ import org.compiere.model.MLookupCache;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
 import org.compiere.model.MRole;
+import org.compiere.model.MSequence;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -102,10 +107,16 @@ public final class Env
 	public static final String C_TAXCATEGORY_ID = "#C_TaxCategory_ID";
 	public static final String C_TAX_ID = "#C_Tax_ID";
 	public static final String C_UOM_ID = "#C_UOM_ID";
+	public static final String CLIENT_INFO_DESKTOP_HEIGHT = "#clientInfo_desktopHeight";
+	public static final String CLIENT_INFO_DESKTOP_WIDTH = "#clientInfo_desktopWidth";
+	public static final String CLIENT_INFO_MOBILE = "#clientInfo_mobile";
+	public static final String CLIENT_INFO_ORIENTATION = "#clientInfo_orientation";
+	public static final String CLIENT_INFO_TIME_ZONE = "#clientInfo_timeZone";
 	public static final String DATE	= "#Date";
 	public static final String DB_TYPE = "#DBType";
 	public static final String GL_CATEGORY_ID = "#GL_Category_ID";
 	public static final String HAS_ALIAS = "$HasAlias";
+	public static final String IS_CAN_APPROVE_OWN_DOC = "#IsCanApproveOwnDoc";
 	public static final String IS_CLIENT_ADMIN = "#IsClientAdmin";
 	/** Context Language identifier */
 	public static final String LANGUAGE = "#AD_Language";
@@ -133,7 +144,6 @@ public final class Env
 	private static final String PREFIX_SYSTEM_VARIABLE = "$env.";
 
 	private final static ContextProvider clientContextProvider = new DefaultContextProvider();
-
 	
 	private static List<IEnvEventListener> eventListeners = new ArrayList<IEnvEventListener>();
 
@@ -174,7 +184,7 @@ public final class Env
 	public static void exitEnv (int status)
 	{
 		//hengsin, avoid unncessary query of session when exit without log in
-		if (DB.isConnected(false)) {
+		if (DB.isConnected()) {
 			//	End Session
 			MSession session = MSession.get(Env.getCtx());	//	finish
 			if (session != null) {
@@ -681,9 +691,6 @@ public final class Env
 		if (ctx == null || context == null)
 			throw new IllegalArgumentException ("Require Context");
 		String s = ctx.getProperty(WindowNo+"|"+TabNo+"|"+context);
-		// If TAB_INFO, don't check Window and Global context - teo_sarca BF [ 2017987 ]
-		if (TAB_INFO == TabNo)
-			return s != null ? s : "";
 		//
 		if (Util.isEmpty(s) && ! onlyTab)
 			return getContext(ctx, WindowNo, context, onlyWindow);
@@ -1591,7 +1598,19 @@ public final class Env
 				token = token.substring(0, idx);
 			}
 
-			String ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
+			String ctxInfo = null;
+			
+			if (token.equalsIgnoreCase(GridTab.CTX_Record_ID))
+			{
+				String keycolumnName = Env.getContext(Env.getCtx(), WindowNo, tabNo, GridTab.CTX_KeyColumnName,
+						onlyTab);
+				ctxInfo = Env.getContext(Env.getCtx(), WindowNo, tabNo, keycolumnName, onlyTab);
+			}
+			else
+			{
+				ctxInfo = getContext(ctx, WindowNo, tabNo, token, onlyTab);	// get context
+			}
+
 			if (ctxInfo.length() == 0 && (token.startsWith("#") || token.startsWith("$")) )
 				ctxInfo = getContext(ctx, token);	// get global context
 
@@ -1651,9 +1670,25 @@ public final class Env
 	 * @param expression
 	 * @param po
 	 * @param trxName
+	 * @param keepUnparseable
 	 * @return String
 	 */
 	public static String parseVariable(String expression, PO po, String trxName, boolean keepUnparseable) {
+		return parseVariable(expression, po, trxName, false, false, keepUnparseable);
+	}
+	
+	/**
+	 * Parse expression, replaces global or PO properties @tag@ with actual value.
+	 * @param expression
+	 * @param po
+	 * @param useColumnDateFormat
+	 * @param useMsgForBoolean
+	 * @param trxName
+	 * @param keepUnparseable
+	 * @return String
+	 */
+	public static String parseVariable(String expression, PO po, String trxName, boolean useColumnDateFormat, 
+			boolean useMsgForBoolean, boolean keepUnparseable) {
 		if (expression == null || expression.length() == 0)
 			return "";
 
@@ -1695,79 +1730,43 @@ public final class Env
 			if (token.startsWith("#") || token.startsWith("$")) {
 				//take from context
 				String v = Env.getContext(ctx, token);
-				if (v != null && v.length() > 0)
-					outStr.append(v);
-				else if (keepUnparseable) {
+				if (v != null && v.length() > 0) {
+					appendValue(ctx, po, trxName, useColumnDateFormat, useMsgForBoolean, token, format, null, v, outStr);
+				} else if (keepUnparseable) {
 					outStr.append("@").append(token);
 					if (!Util.isEmpty(format))
 						outStr.append("<").append(format).append(">");
 					outStr.append("@");
 				}
+			} else if (po != null && token.startsWith("=")) {
+				String property = token.substring(1);
+				char startChar = property.charAt(0);
+				if (startChar != Character.toUpperCase(startChar)) {
+					property = Character.toUpperCase(startChar) + property.substring(1);
+				}
+				String methodName = "get" + property;
+				Expression methodExpression = new Expression(po, methodName, null);
+				Object v = null;
+				try {
+					v = methodExpression.getValue();
+					if (v == null)
+						v = "";
+					appendValue(ctx, po, trxName, useColumnDateFormat, useMsgForBoolean, token, format, null, v, outStr);
+				} catch (Exception e) {
+					if (keepUnparseable) {
+						outStr.append("@").append(token);
+						if (!Util.isEmpty(format))
+							outStr.append("<").append(format).append(">");
+						outStr.append("@");
+					}
+				}
 			} else if (po != null) {
 				//take from po
 				if (po.get_ColumnIndex(token) >= 0) {
 					Object v = po.get_Value(token);
-					MColumn colToken = MColumn.get(ctx, po.get_TableName(), token);
-					String foreignTable = colToken.getReferenceTableName();
+					MColumn colToken = MColumn.get(ctx, po.get_TableName(), token);					
 					if (v != null) {
-						if (format != null && format.length() > 0) {
-							if (v instanceof Integer && (Integer) v >= 0 && (!Util.isEmpty(foreignTable) || token.equalsIgnoreCase(po.get_TableName()+"_ID"))){
-								int tblIndex = format.indexOf(".");
-								String tableName = null;
-								if (tblIndex > 0)
-									tableName = format.substring(0, tblIndex);
-								else
-									tableName = foreignTable;
-								MTable table = MTable.get(ctx, tableName);
-								String keyCol = tableName + "_ID";
-								boolean isSubTypeTable = false;
-								if (! Util.isEmpty(foreignTable) && ! tableName.equalsIgnoreCase(foreignTable)) {
-									// verify if is a subtype table
-									if (   table.getKeyColumns() != null
-										&& table.getKeyColumns().length == 1
-										&& table.getKeyColumns()[0].equals(foreignTable + "_ID")) {
-										isSubTypeTable = true;
-										keyCol = foreignTable + "_ID";
-									}
-								}
-								if (table != null && (isSubTypeTable || tableName.equalsIgnoreCase(foreignTable) || tableName.equalsIgnoreCase(po.get_TableName()))) {
-									String columnName = tblIndex > 0 ? format.substring(tblIndex + 1) : format;
-									MColumn column = table.getColumn(columnName);
-									if (column != null) {
-										if (column.isSecure()) {
-											outStr.append("********");
-										} else {
-											String value = DB.getSQLValueString(trxName,"SELECT " + columnName + " FROM " + tableName + " WHERE " + keyCol + "=?", (Integer)v);
-											if (value != null)
-												outStr.append(value);
-										}
-									}
-								}
-							} else if (v instanceof String && !Util.isEmpty((String) v) && !Util.isEmpty(foreignTable) && foreignTable.equals(MRefList.Table_Name) && !Util.isEmpty(format)) {
-								int refID = colToken.getAD_Reference_Value_ID();
-								if (format.equals("Name"))
-									outStr.append(MRefList.getListName(getCtx(), refID, (String) v));
-								else if (format.equals("Description"))
-									outStr.append(MRefList.getListDescription(getCtx(), DB.getSQLValueStringEx(null, "SELECT Name FROM AD_Reference WHERE AD_Reference_ID = ?", refID), (String) v));
-							} else if (v instanceof Date) {
-								SimpleDateFormat df = new SimpleDateFormat(format);
-								outStr.append(df.format((Date)v));
-							} else if (v instanceof Number) {
-								DecimalFormat df = new DecimalFormat(format);
-								outStr.append(df.format(((Number)v).doubleValue()));
-							} else {
-								MessageFormat mf = new MessageFormat(format);
-								outStr.append(mf.format(v));
-							}
-						} else {
-							if (colToken != null && colToken.isSecure()) {
-								v = "********";
-							} else if (colToken != null && colToken.getAD_Reference_ID() == DisplayType.YesNo && v instanceof Boolean) {
-								v = ((Boolean)v).booleanValue() ? "Y" : "N";
-							} 
-							
-							outStr.append(v.toString());
-						}
+						appendValue(ctx, po, trxName, useColumnDateFormat, useMsgForBoolean, token, format, colToken, v, outStr);
 					}
 					else if (!Util.isEmpty(defaultValue))
 						outStr.append(defaultValue);
@@ -1792,6 +1791,92 @@ public final class Env
 		outStr.append(inStr);						// add the rest of the string
 
 		return outStr.toString();
+	}
+
+	private static void appendValue(Properties ctx, PO po, String trxName, boolean useColumnDateFormat, boolean useMsgForBoolean,
+			String token, String format, MColumn colToken, Object value, StringBuilder outStr) {
+		if (format != null && format.length() > 0) {
+			String foreignTable = colToken != null ? colToken.getReferenceTableName() : null;
+			if (value instanceof String && token.endsWith("_ID") && (token.startsWith("#") || token.startsWith("$"))) {
+				try {
+					int id = Integer.parseInt((String)value);
+					value = id;
+					foreignTable = token.substring(1);
+					foreignTable = foreignTable.substring(0, foreignTable.length()-3);
+					if (MTable.get(Env.getCtx(), foreignTable) == null)
+						foreignTable = null;
+				} catch (Exception ex) {}
+			}
+			if (value instanceof Integer && (Integer) value >= 0 && (!Util.isEmpty(foreignTable) || token.equalsIgnoreCase(po.get_TableName()+"_ID"))) {
+				int tblIndex = format.indexOf(".");
+				String tableName = null;
+				if (tblIndex > 0)
+					tableName = format.substring(0, tblIndex);
+				else
+					tableName = foreignTable;
+				MTable table = MTable.get(ctx, tableName);
+				String keyCol = tableName + "_ID";
+				boolean isSubTypeTable = false;
+				if (! Util.isEmpty(foreignTable) && ! tableName.equalsIgnoreCase(foreignTable)) {
+					// verify if is a subtype table
+					if (   table.getKeyColumns() != null
+						&& table.getKeyColumns().length == 1
+						&& table.getKeyColumns()[0].equals(foreignTable + "_ID")) {
+						isSubTypeTable = true;
+						keyCol = foreignTable + "_ID";
+					}
+				}
+				if (table != null && (isSubTypeTable || tableName.equalsIgnoreCase(foreignTable) || tableName.equalsIgnoreCase(po.get_TableName()))) {
+					String columnName = tblIndex > 0 ? format.substring(tblIndex + 1) : format;
+					MColumn column = table.getColumn(columnName);
+					if (column != null) {
+						if (column.isSecure()) {
+							outStr.append("********");
+						} else {
+							String strValue = DB.getSQLValueString(trxName,"SELECT " + columnName + " FROM " + tableName + " WHERE " + keyCol + "=?", (Integer)value);
+							if (strValue != null)
+								outStr.append(strValue);
+						}
+					}
+				}
+			} else if (value instanceof String && !Util.isEmpty((String) value) && !Util.isEmpty(foreignTable) && foreignTable.equals(MRefList.Table_Name) && !Util.isEmpty(format)) {
+				int refID = colToken.getAD_Reference_Value_ID();
+				if (format.equals("Name"))
+					outStr.append(MRefList.getListName(getCtx(), refID, (String) value));
+				else if (format.equals("Description"))
+					outStr.append(MRefList.getListDescription(getCtx(), DB.getSQLValueStringEx(null, "SELECT Name FROM AD_Reference WHERE AD_Reference_ID = ?", refID), (String) value));
+			} else if (value instanceof Date) {
+				SimpleDateFormat df = new SimpleDateFormat(format);
+				outStr.append(df.format((Date)value));
+			} else if (value instanceof Number) {
+				DecimalFormat df = new DecimalFormat(format);
+				outStr.append(df.format(((Number)value).doubleValue()));
+			} else {
+				MessageFormat mf = new MessageFormat(format);
+				outStr.append(mf.format(value));
+			}
+		} else {
+			if (colToken != null && colToken.isSecure()) {
+				value = "********";
+			} else if (colToken != null && colToken.getAD_Reference_ID() == DisplayType.YesNo && value instanceof Boolean) {
+				if (useMsgForBoolean) {
+					if (((Boolean)value).booleanValue())
+						value = Msg.getMsg(Env.getCtx(), "Yes");
+					else
+						value = Msg.getMsg(Env.getCtx(), "No");
+				} else {
+					value = ((Boolean)value).booleanValue() ? "Y" : "N";
+				}
+			} else if (colToken != null && DisplayType.isDate(colToken.getAD_Reference_ID()) && value instanceof Date && useColumnDateFormat) {
+				SimpleDateFormat sdf = DisplayType.getDateFormat(colToken.getAD_Reference_ID());
+				value = sdf.format (value);
+			} else if (value instanceof BigDecimal) {
+				int precision = MClient.get(Env.getCtx()).getAcctSchema().getStdPrecision();
+				value = ((BigDecimal)value).setScale(precision, RoundingMode.HALF_UP).toPlainString();
+			}
+			
+			outStr.append(value.toString());
+		}
 	}
 
 	/*************************************************************************/
@@ -2038,8 +2123,11 @@ public final class Env
 			MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
 			AD_Window_ID = table.getAD_Window_ID();
 			//  Nothing to Zoom to
-			if (AD_Window_ID == 0)
-				return AD_Window_ID;
+			if (AD_Window_ID == 0) 
+			{
+				AD_Window_ID = table.getWindowIDFromMenu();
+				return AD_Window_ID > 0 ? AD_Window_ID : 0;
+			}
 			
 			//	PO Zoom ?
 			boolean isSOTrx = true;
@@ -2117,4 +2205,51 @@ public final class Env
 		}
 	}
 
+	/**
+	 * @param tableName
+	 * @return true if log migration script is turn on and should be used for tableName
+	 */
+	public static boolean isLogMigrationScript(String tableName) {
+		boolean logMigrationScript = false;
+		if (Ini.isClient()) {
+			logMigrationScript = Ini.isPropertyBool(Ini.P_LOGMIGRATIONSCRIPT);
+		} else {
+			String sysProperty = Env.getCtx().getProperty(Ini.P_LOGMIGRATIONSCRIPT, "N");
+			logMigrationScript = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		}
+		
+		return logMigrationScript ? !Convert.isDontLogTable(tableName) : false;
+	}
+	
+	/**
+	 * @return true if centralized id is turn on and should be used for tableName
+	 */
+	public static boolean isUseCentralizedId(String tableName)
+	{
+		String sysProperty = Env.getCtx().getProperty(Ini.P_ADEMPIERESYS, "N");
+		boolean adempiereSys = "y".equalsIgnoreCase(sysProperty) || "true".equalsIgnoreCase(sysProperty);
+		if (adempiereSys && Env.getAD_Client_ID(Env.getCtx()) > 11)
+			adempiereSys = false;
+		
+		if (adempiereSys)
+		{
+			boolean b = MSysConfig.getBooleanValue(MSysConfig.DICTIONARY_ID_USE_CENTRALIZED_ID, true);
+			if (b)
+				return !MSequence.isExceptionCentralized(tableName);
+			else
+				return b;
+		}
+		else
+		{
+			boolean queryProjectServer = false;
+			if (MSequence.isTableWithEntityType(tableName))
+				queryProjectServer = true;
+			if (!queryProjectServer && MSequence.Table_Name.equalsIgnoreCase(tableName))
+				queryProjectServer = true;
+			if (queryProjectServer && !MSequence.isExceptionCentralized(tableName)) {
+				return MSysConfig.getBooleanValue(MSysConfig.PROJECT_ID_USE_CENTRALIZED_ID, false);
+			}
+		}
+		return false;
+	}
 }   //  Env

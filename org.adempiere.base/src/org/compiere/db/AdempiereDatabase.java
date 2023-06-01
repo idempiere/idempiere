@@ -349,6 +349,14 @@ public interface AdempiereDatabase
 	public String intersectClauseForCSV(String columnName, String csv);
 	
 	/**
+	 * @param columnName
+	 * @param csv comma separated value
+	 * @param isNotClause
+	 * @return subset sql clause
+	 */
+	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause);
+	
+	/**
 	 * Quote column name if necessary (usually to avoid conflict with reserved keywords)
 	 * @param columnName
 	 * @return columnName or quoted columnName
@@ -407,6 +415,11 @@ public interface AdempiereDatabase
 	 */
 	public String getTimestampDataType();
 	
+	/**
+	 * 
+	 * @return timestamp with time zone type name
+	 */
+	public String getTimestampWithTimezoneDataType();
 	/**
 	 * Get SQL Create
 	 * @param table

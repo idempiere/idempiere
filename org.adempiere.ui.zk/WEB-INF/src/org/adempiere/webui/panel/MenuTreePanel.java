@@ -17,6 +17,7 @@ package org.adempiere.webui.panel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.TreeUtils;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -51,11 +52,16 @@ public class MenuTreePanel extends AbstractMenuPanel
 	private Toolbarbutton filterBtn;
 	private EventListener<Event> listener;
     
+	/**
+	 * 
+	 * @param parent
+	 */
     public MenuTreePanel(Component parent)
     {
     	super(parent);
     }
 
+    @Override
     protected void init() 
     {
 		super.init();
@@ -84,8 +90,12 @@ public class MenuTreePanel extends AbstractMenuPanel
 			}
 		};
 		EventQueues.lookup(MenuTreeFilterPanel.MENU_TREE_FILTER_CHECKED_QUEUE, EventQueues.DESKTOP, true).subscribe(listener);
+		
+		if (MSysConfig.getBooleanValue(MSysConfig.ZK_FLAT_VIEW_MENU_TREE, false, Env.getAD_Client_ID(Env.getCtx())))
+        	filterPanel.switchToFlatView();
     }
     
+    @Override
     protected void initComponents()
     {
     	super.initComponents();
@@ -119,6 +129,7 @@ public class MenuTreePanel extends AbstractMenuPanel
         toolbar.appendChild(filterBtn);        
     }
     
+    @Override
     public void onEvent(Event event)
     {
     	super.onEvent(event);

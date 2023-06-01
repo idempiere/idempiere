@@ -34,14 +34,21 @@ import java.util.logging.Level;
 import javax.servlet.ServletRequest;
 
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.ISupportMask;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.event.DialogEvents;
+import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.acct.Doc;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_AD_Window;
@@ -52,6 +59,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.model.MReference;
+import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -71,11 +79,15 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.impl.InputElement;
 
 import com.lowagie.text.DocumentException;
 
 /**
- *  ZK Application Environment and utilities
+ *  Static application environment and utilities methods.
  *
  *  @author 	Jorg Janke
  *  @version 	$Id: AEnv.java,v 1.2 2006/07/30 00:51:27 jjanke Exp $
@@ -84,11 +96,11 @@ import com.lowagie.text.DocumentException;
  */
 public final class AEnv
 {
+	/** Environment context attribute for Locale */
 	public static final String LOCALE = Env.LOCALE;
 	
 	/**
-	 *  Show in the center of the screen.
-	 *  (pack, set location and set visibility)
+	 *  Show window in the center of screen.
 	 * 	@param window Window to position
 	 */
 	public static void showCenterScreen(Window window)
@@ -109,8 +121,7 @@ public final class AEnv
 	}   //  showCenterScreen
 
 	/**
-	 *  Show in the center of the screen.
-	 *  (pack, set location and set visibility)
+	 *  Set window position ({@link org.zkoss.zul.Window#setPosition(String)}) and show it.
 	 * 	@param window Window to position
 	 * 	@param position
 	 */
@@ -120,8 +131,7 @@ public final class AEnv
 	}   //  showScreen
 
 	/**
-	 *	Position in center of the parent window.
-	 *  (pack, set location and set visibility)
+	 *	Position window in center of the parent window.
 	 * 	@param parent Parent Window
 	 * 	@param window Window to position
 	 */
@@ -134,7 +144,7 @@ public final class AEnv
 	/**
 	 *  Get Mnemonic character from text.
 	 *  @param text text with '&amp;'
-	 *  @return Mnemonic or 0
+	 *  @return Mnemonic character or 0
 	 */
 	public static char getMnemonic (String text)
 	{
@@ -148,7 +158,7 @@ public final class AEnv
 
 
 	/*************************************************************************
-	 * 	Zoom
+	 * 	Zoom to AD Window by AD_Table_ID and Record_ID.
 	 *	@param AD_Table_ID
 	 *	@param Record_ID
 	 */
@@ -167,10 +177,11 @@ public final class AEnv
 	}	//	zoom
 
 	/*************************************************************************
-	 * 	Zoom
+	 * 	Zoom to AD Window by AD_Table_ID and Record_ID.
 	 *	@param AD_Table_ID
 	 *	@param Record_ID
-	 *	@param query
+	 *	@param query initial query for destination AD Window
+	 *  @param windowNo
 	 */
 	public static void zoom (int AD_Table_ID, int Record_ID, MQuery query, int windowNo)
 	{
@@ -181,21 +192,28 @@ public final class AEnv
 		zoom(AD_Window_ID, query);
 	}	//	zoom
 
+	/**
+	 * Call {@link #zoom(int, int, MQuery, int)}
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param query
+	 */
 	public static void zoom (int AD_Table_ID, int Record_ID, MQuery query) {
 		zoom (AD_Table_ID, Record_ID, query, 0);
 	}
 
 	/**
-	 *	Exit System
+	 *	Exit System.
 	 *  @param status System exit status (usually 0 for no error)
 	 */
+	@Deprecated(forRemoval = true, since = "11")
 	public static void exit (int status)
 	{
 		Env.exitEnv(status);
 	}	//	exit
 
 	/**
-	 * logout AD_Session
+	 * Logout AD_Session and clear {@link #windowCache}.
 	 */
 	public static void logout()
 	{
@@ -217,13 +235,12 @@ public final class AEnv
 			session.logout();
 		
 		Env.setContext(Env.getCtx(), Env.AD_SESSION_ID, (String)null);
-		//
 	}
 
 	/**
-	 * 	Start Workflow Process Window
-	 *	@param AD_Table_ID optional table
-	 *	@param Record_ID optional record
+	 * 	Open Workflow Process Window for AD_Table_ID and Record_ID
+	 *	@param AD_Table_ID
+	 *	@param Record_ID
 	 */
 	public static void startWorkflowProcess (int AD_Table_ID, int Record_ID)
 	{
@@ -242,28 +259,24 @@ public final class AEnv
 		AEnv.zoom(s_workflow_Window_ID, query);
 	}	//	startWorkflowProcess
 
-
-	/*************************************************************************/
-
-	/** Workflow Window		*/
+	/** Cache Workflow Window ID */
 	private static int		s_workflow_Window_ID = 0;
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(AEnv.class);
 
-	/**	Window Cache		*/
+	/**	Register AD Window Cache */
 	private static Map<String, CCache<Integer,GridWindowVO>> windowCache = new HashMap<String, CCache<Integer,GridWindowVO>>();
 
 	/**
-	 *  Get Window Model
+	 *  Get VO for AD_Window
 	 *
 	 *  @param WindowNo  Window No
 	 *  @param AD_Window_ID window
 	 *  @param AD_Menu_ID menu
-	 *  @return Model Window Value Obkect
+	 *  @return {@link GridWindowVO} instance for AD_Window_ID
 	 */
 	public static GridWindowVO getMWindowVO (int WindowNo, int AD_Window_ID, int AD_Menu_ID)
 	{
-
 		if (log.isLoggable(Level.CONFIG)) log.config("Window=" + WindowNo + ", AD_Window_ID=" + AD_Window_ID);
 		GridWindowVO mWindowVO = null;
 		String sessionID = Env.getContext(Env.getCtx(), Env.AD_SESSION_ID);
@@ -288,7 +301,8 @@ public final class AEnv
 		//  Create Window Model on Client
 		if (mWindowVO == null)
 		{
-			log.config("create local");
+			if (log.isLoggable(Level.CONFIG))
+				log.config("create local");
 			mWindowVO = GridWindowVO.create (Env.getCtx(), WindowNo, AD_Window_ID, AD_Menu_ID);
 			if (mWindowVO != null && Ini.isCacheWindow())
 			{
@@ -307,10 +321,9 @@ public final class AEnv
 		if (mWindowVO == null)
 			return null;
 
-		//  Check (remote) context
+		//  Check context (Just in case, usually both is ServerContextPropertiesWrapper)
 		if (!mWindowVO.ctx.equals(Env.getCtx()))
 		{
-			//  Remote Context is called by value, not reference
 			//  Add Window properties to context
 			Enumeration<Object> keyEnum = mWindowVO.ctx.keys();
 			while (keyEnum.hasMoreElements())
@@ -330,12 +343,13 @@ public final class AEnv
 	}   //  getWindow
 
 	/**
-	 *  Post Immediate
+	 *  Post Immediate.
+	 *  Call {@link Doc#manualPosting(int, int, int, int, boolean)}.
 	 *  @param  WindowNo 		window
 	 *  @param  AD_Table_ID     Table ID of Document
 	 *  @param  AD_Client_ID    Client ID of Document
-	 *  @param  Record_ID       Record ID of this document
-	 *  @param  force           force posting
+	 *  @param  Record_ID       Record ID of Document
+	 *  @param  force           force posting. if false, only post if (Processing='N' OR Processing IS NULL)
 	 *  @return null if success, otherwise error
 	 */
 	public static String postImmediate (int WindowNo, int AD_Client_ID,
@@ -362,6 +376,13 @@ public final class AEnv
 		CacheMgt.get().reset(tableName, Record_ID);
 	}   //  cacheReset
 
+	/**
+	 * Refresh lookup
+	 * @param lookup
+	 * @param value
+	 * @param mandatory
+	 * @param shortList
+	 */
     public static void actionRefresh(Lookup lookup, Object value, boolean mandatory, boolean shortList) // IDEMPIERE 90
     {
         if (lookup == null)
@@ -374,9 +395,9 @@ public final class AEnv
             lookup.fillComboBox(mandatory, true, false, false, shortList); // IDEMPIERE 90
     }
     /**
-     *
-     * @param lookup
-     * @param value
+     * zoom to AD Window
+     * @param lookup lookup for zoom destination table
+     * @param value record key
      */
     public static void actionZoom(Lookup lookup, Object value)
     {
@@ -430,6 +451,57 @@ public final class AEnv
     }
 
     /**
+	 *  Opens the Drill Assistant
+	 * 	@param data query
+	 *  @param windowNo
+	 */
+    public static void actionDrill(DrillData data, int windowNo) {
+	actionDrill(data, windowNo, 0);
+    }
+
+    /**
+	 *  Opens the Drill Assistant
+	 * 	@param data query
+	 *  @param windowNo
+	 *  @param processID Source Report
+	 */
+    public static void actionDrill(DrillData data, int windowNo, int processID) {
+	int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
+		if (AD_Table_ID > 0) {
+			if (!MRole.getDefault().isCanReport(AD_Table_ID))
+			{
+				Dialog.error(windowNo, "AccessCannotReport", data.getQuery().getTableName());
+				return;
+			}
+			WDrillReport drillReport = new WDrillReport(data, windowNo, processID);
+
+			Object window = SessionManager.getAppDesktop().findWindow(windowNo);
+			if (window != null && window instanceof Component && window instanceof ISupportMask){
+				final ISupportMask parent = LayoutUtils.showWindowWithMask(drillReport, (Component)window, LayoutUtils.OVERLAP_PARENT);
+				drillReport.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						parent.hideMask();
+					}
+				});
+			}else if (window != null && window instanceof Component){
+				final Mask mask = LayoutUtils.showWindowWithMask(drillReport, (Component)window, null);
+				drillReport.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+						mask.hideMask();
+					}
+				});
+			}else{
+				drillReport.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+				AEnv.showWindow(drillReport);
+			}
+		}
+		else
+			log.warning("No Table found for " + data.getQuery().getWhereClause(true));
+    }
+    
+    /**
      * open zoom window with query
      * @param AD_Window_ID
      * @param query
@@ -440,7 +512,7 @@ public final class AEnv
     }
     
 	/**
-	 * Zoom to a window with the provided window id and filters according to the
+	 * Zoom to AD window with the provided window id and filters according to the
 	 * query
 	 * @param AD_Window_ID Window on which to zoom
 	 * @param query Filter to be applied on the records.
@@ -451,17 +523,27 @@ public final class AEnv
         showZoomWindow(zoomId > 0 ? zoomId : AD_Window_ID, query);
 	}
 	
+	/**
+	 * Call {@link #zoom(int, MQuery, int)}
+	 * @param AD_Window_ID
+	 * @param query
+	 */
 	public static void zoom(int AD_Window_ID, MQuery query) {
 		zoom(AD_Window_ID, query, 0);
 	}
 
+	/**
+	 * Show window in desktop.
+	 * Call {@link IDesktop#showWindow(Window)}.
+	 * @param win
+	 */
 	public static void showWindow(Window win)
 	{
 		SessionManager.getAppDesktop().showWindow(win);
 	}
 
 	/**
-	 * 	Zoom
+	 * 	Zoom to AD Window with details from query
 	 *	@param query query
 	 */
 	public static void zoom (MQuery query)
@@ -485,7 +567,7 @@ public final class AEnv
 	 *  Get ImageIcon.
 	 *
 	 *  @param fileNameInImageDir full file name in imgaes folder (e.g. Bean16.png)
-	 *  @return image
+	 *  @return image {@link URI}
 	 */
     public static URI getImage(String fileNameInImageDir)
     {
@@ -503,8 +585,7 @@ public final class AEnv
     }   //  getImageIcon
 
     /**
-     *
-     * @return boolean
+     * @return true if client browser is firefox 2+
      */
     public static boolean isFirefox2() {
     	Execution execution = Executions.getCurrent();
@@ -574,10 +655,9 @@ public final class AEnv
     }
 
     /**
-     *
      * @param parent
      * @param child
-     * @return boolean
+     * @return true if parent == child or parent is ancestor of child.
      */
     public static boolean contains(Component parent, Component child) {
     	if (child == parent)
@@ -594,7 +674,7 @@ public final class AEnv
     }
 
     /**
-     *
+     * Merge pdfList to outFile
      * @param pdfList
      * @param outFile
      * @throws IOException
@@ -635,7 +715,7 @@ public final class AEnv
 
 	/**
 	 * @param ctx
-	 * @return Language
+	 * @return {@link Language}
 	 */
 	public static Language getLanguage(Properties ctx) {
 		return Env.getLocaleLanguage(ctx);
@@ -643,7 +723,7 @@ public final class AEnv
 
 	/**
 	 * @param ctx
-	 * @return Locale
+	 * @return {@link Locale}
 	 */
 	public static Locale getLocale(Properties ctx) {
 		return Env.getLocale(ctx);
@@ -689,12 +769,19 @@ public final class AEnv
 		return header;
 	}
 
+	/**
+	 * Call {@link #getDialogHeader(Properties, int, String)}
+	 * @param ctx
+	 * @param windowNo
+	 * @return dialog header
+	 */
 	public static String getDialogHeader(Properties ctx, int windowNo) {
 		return 	getDialogHeader(ctx, windowNo, null);
 	}
 	
 	/**
 	 * Execute synchronous task in UI thread.
+	 * Use {@link Executions#activate(Desktop)} and {@link Executions#deactivate(Desktop)} pair if current thread is not UI/Listener thread.
 	 * @param runnable
 	 */
 	public static void executeDesktopTask(final Runnable runnable) {
@@ -725,7 +812,7 @@ public final class AEnv
 	
 	/**
 	 * Get current desktop
-	 * @return Desktop
+	 * @return {@link Desktop}
 	 */
 	public static Desktop getDesktop() {
 		boolean inUIThread = Executions.getCurrent() != null;
@@ -741,22 +828,18 @@ public final class AEnv
 	 * @deprecated replace by ClientInfo.isMobile()
 	 * @return true if running on a tablet
 	 */
+	@Deprecated(forRemoval = true, since = "11")
 	public static boolean isTablet() {
 		return ClientInfo.isMobile();
 	}
 	
 	/**
-	 * Get adWindowId below gridField
-	 * when field lie in window, it's id of this window
-	 * when field lie in process parameter dialog it's ad_window_id of window open this process
-	 * when field lie in process parameter open in a standalone window (run process from menu) return id of dummy window
+	 * Get AD_Window_ID from windowNo.
 	 * @param windowNo
-	 * @return
+	 * @return AD_Window_ID or {@link Env#adWindowDummyID} (if it is ProcessDialog of InfoWindow)
 	 */
 	public static int getADWindowID (int windowNo){
 		int adWindowID = 0;
-		// form process parameter panel
-		
 		Object  window = SessionManager.getAppDesktop().findWindow(windowNo);
 		// case show a process dialog, window is below window of process dialog
 		if (window != null && window instanceof ADWindow){
@@ -770,6 +853,12 @@ public final class AEnv
 		return adWindowID;
 	}
 	
+	/**
+	 * 
+	 * @param client
+	 * @return {@link WTableDirEditor} for Language if client is with IsMultiLingualDocument=Y
+	 * @throws Exception
+	 */
 	public static WTableDirEditor getListDocumentLanguage (MClient client) throws Exception {
 		WTableDirEditor fLanguageType = null;
 		if (client.isMultiLingualDocument()){
@@ -782,6 +871,10 @@ public final class AEnv
 	}
 
 	private static String m_ApplicationUrl = null;
+	
+	/** 
+	 * @return URL to access application from browser
+	 */
 	public static String getApplicationUrl() {
 		String url = MSysConfig.getValue(MSysConfig.APPLICATION_URL, Env.getAD_Client_ID(Env.getCtx()));
 		if (!Util.isEmpty(url) && !url.equals("USE_HARDCODED"))
@@ -799,20 +892,26 @@ public final class AEnv
 		return m_ApplicationUrl;
 	}
 
-	/** Return the link for direct access to the record using tableID */
+	/**
+	 * @param po
+	 * @return URL link for direct access to the record using AD_Table_ID+Record_ID
+	 */
 	public static String getZoomUrlTableID(PO po)
 	{
 		return getApplicationUrl() + "?Action=Zoom&AD_Table_ID=" + po.get_Table_ID() + "&Record_ID=" + po.get_ID();
 	}
 
-	/** Return the link for direct access to the record using tablename */
+	/**
+	 * @param po
+	 * @return URL link for direct access to the record using TableName+Record_ID
+	 */
 	public static String getZoomUrlTableName(PO po)
 	{
 		return getApplicationUrl() + "?Action=Zoom&TableName" + po.get_TableName() + "&Record_ID=" + po.get_ID();
 	}
 
 	/**
-	 * 
+	 * Set attribute value to Boolean.TRUE if attribute doesn't exists in current execution yet. 
 	 * @param attribute
 	 * @return true if attribute have been set for current executions
 	 */
@@ -823,5 +922,26 @@ public final class AEnv
     		Executions.getCurrent().setAttribute(attribute, Boolean.TRUE);
     	}
     	return false;
+	}
+	
+	/**
+	 * Workaround for detached HTML input element leak.
+	 * <br/>
+	 * Detach all InputElement and Button that's the immediate or not immediate child of parent.
+	 * <br/>
+	 * Note that to remedy the detached HTML element leak issue, we must defer the detach of parent
+	 * with {@link Executions#schedule(Desktop, EventListener, Event)}.
+	 * @param parent {@link Component}
+	 */
+	public static void detachInputElement(Component parent) {
+		if (parent instanceof InputElement || parent instanceof Button) {
+			parent.detach();
+		}
+		if (parent.getChildren().size() > 0) {
+			Component[] childs = parent.getChildren().toArray(new Component[0]);
+			for(Component child : childs) {
+				detachInputElement(child);
+			}
+		}		
 	}
 }	//	AEnv

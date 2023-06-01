@@ -220,8 +220,8 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 			 * but as they are the administrators is not a problem
 			 */
 			if (   (access.getAD_Role_ID() == roleId && access.getAD_User_ID() == userId)
-				|| (access.getAD_Role_ID() == roleId && access.getAD_User_ID() == 0     )
-				|| (access.getAD_Role_ID() == 0      && access.getAD_User_ID() == userId) )
+				|| (access.getAD_Role_ID() == roleId && access.getAD_User_ID() == 0     )   // user not set
+				|| (access.getAD_Role_ID() == 0      && access.getAD_User_ID() == userId) ) // role not set
 				return true;
 		}
 

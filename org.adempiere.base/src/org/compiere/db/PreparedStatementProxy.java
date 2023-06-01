@@ -45,6 +45,17 @@ public class PreparedStatementProxy extends StatementProxy {
 		init();
 	} // PreparedStatementProxy
 	
+	public PreparedStatementProxy(int resultSetType, int resultSetConcurrency,
+			String sql0, Connection connection) {
+		if (sql0 == null || sql0.length() == 0)
+			throw new IllegalArgumentException("sql required");
+
+		p_vo = new CStatementVO(resultSetType, resultSetConcurrency, DB
+				.getDatabase().convertStatement(sql0));
+
+		init(connection);
+	} // PreparedStatementProxy
+	
 	public PreparedStatementProxy(CStatementVO vo)
 	{
 		super(vo);
@@ -74,6 +85,19 @@ public class PreparedStatementProxy extends StatementProxy {
 		}
 	}
 
+	/**
+	 * Initialise the prepared statement wrapper object
+	 */
+	protected void init(Connection connection) {
+		try {
+			p_stmt = connection.prepareStatement(p_vo.getSql(), p_vo
+					.getResultSetType(), p_vo.getResultSetConcurrency());
+		} catch (Exception e) {
+			log.log(Level.SEVERE, p_vo.getSql(), e);
+			throw new DBException(e);
+		}
+	}
+	
 	@Override
 	protected RowSet getRowSet() 
 	{

@@ -26,6 +26,7 @@ import org.compiere.model.AdempiereProcessor;
 import org.compiere.model.AdempiereProcessor2;
 import org.compiere.model.AdempiereProcessorLog;
 import org.compiere.model.MClient;
+import org.compiere.model.MClientInfo;
 import org.compiere.model.MOrgInfo;
 import org.compiere.model.MRole;
 import org.compiere.model.MSchedule;
@@ -33,6 +34,7 @@ import org.compiere.model.MSystem;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -127,7 +129,7 @@ public abstract class AdempiereServer implements Runnable
 		{			
 			m_nextWork = MSchedule.getNextRunMS(now.getTime(),
 					p_model.getScheduleType(), p_model.getFrequencyType(),
-					p_model.getFrequency(), p_model.getCronPattern());
+					p_model.getFrequency(), p_model.getCronPattern(), MClientInfo.get(getCtx(), p_model.getAD_Client_ID()).getTimeZone());
 		}
 
 		if (m_nextWork > now.getTime())
@@ -201,7 +203,7 @@ public abstract class AdempiereServer implements Runnable
 		else if (po.get_ValueAsInt("UpdatedBy") > 0)
 			AD_User_ID = po.get_ValueAsInt("UpdatedBy");
 		else
-			AD_User_ID = 100; //fall back to SuperUser
+			AD_User_ID = SystemIDs.USER_SUPERUSER; //fall back to SuperUser
 		return AD_User_ID;
 	}
 	
@@ -294,7 +296,7 @@ public abstract class AdempiereServer implements Runnable
 
 		m_nextWork = MSchedule.getNextRunMS(lastRun.getTime(),
 				p_model.getScheduleType(), p_model.getFrequencyType(),
-				p_model.getFrequency(), p_model.getCronPattern());
+				p_model.getFrequency(), p_model.getCronPattern(), MClientInfo.get(getCtx(), p_model.getAD_Client_ID()).getTimeZone());
 
 		m_sleepMS = m_nextWork - now;
 		if (m_nextWork == 0) {

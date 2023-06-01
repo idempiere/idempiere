@@ -53,11 +53,26 @@ public class ProcessInfoParameter implements Serializable
 	 */
 	public ProcessInfoParameter (String parameterName, Object parameter, Object parameter_To, String info, String info_To)
 	{
+		this(parameterName, parameter, parameter_To, info, info_To, false);
+	}   //  ProcessInfoParameter
+	
+	/**
+	 *  Construct Parameter
+	 *  @param parameterName parameter name
+	 *  @param parameter parameter
+	 *  @param parameter_To to parameter
+	 *  @param info info
+	 *  @param info_To to info
+	 *  @param isNotClause is not clause
+	 */
+	public ProcessInfoParameter (String parameterName, Object parameter, Object parameter_To, String info, String info_To, boolean isNotClause)
+	{
 		setParameterName (parameterName);
 		setParameter (parameter);
 		setParameter_To (parameter_To);
 		setInfo (info);
 		setInfo_To (info_To);
+		setIsNotClause(isNotClause);
 	}   //  ProcessInfoParameter
 
 	private String 	m_ParameterName;
@@ -65,6 +80,7 @@ public class ProcessInfoParameter implements Serializable
 	private	Object	m_Parameter_To;
 	private String	m_Info = "";
 	private String 	m_Info_To = "";
+	private boolean m_IsNotClause;
 
 	/**
 	 * 	String Representation
@@ -228,6 +244,19 @@ public class ProcessInfoParameter implements Serializable
 	}	//	getParameterAsString
 	
 	/**
+	 * Method getParameter To as BigDecimal
+	 * @return Object
+	 */
+	public BigDecimal getParameter_ToAsBigDecimal ()
+	{
+		if (m_Parameter_To == null)
+			return null;
+		if (m_Parameter_To instanceof BigDecimal)
+			return (BigDecimal) m_Parameter_To;
+		return new BigDecimal(m_Parameter_To.toString());
+	}	//	getParameter_ToAsBigDecimal
+
+	/**
 	 * Method getParameter as BigDecimal
 	 * @return Object
 	 */
@@ -247,6 +276,14 @@ public class ProcessInfoParameter implements Serializable
 	public String getParameterName ()
 	{
 		return m_ParameterName;
+	}
+	
+	/**
+	 * Method isNotClause
+	 * @return boolean
+	 */
+	public boolean isNotClause() {
+		return m_IsNotClause;
 	}
 
 	/**
@@ -298,6 +335,14 @@ public class ProcessInfoParameter implements Serializable
 	public void setParameterName (String ParameterName)
 	{
 		m_ParameterName = ParameterName;
+	}
+	
+	/**
+	 * Method setIsNotClause
+	 * @param IsNotClause boolean
+	 */
+	public void setIsNotClause(boolean IsNotClause) {
+		this.m_IsNotClause = IsNotClause;
 	}
 
 	/**

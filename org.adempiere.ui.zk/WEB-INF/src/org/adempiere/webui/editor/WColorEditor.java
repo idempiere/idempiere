@@ -238,7 +238,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 
 	public void openColorPicker() { // TODO color picker is opening at upper left ; better to open it at center of screen
 		String uid = colorbox.getUuid();
-		String script = "var wgt = zk.Widget.$('#"+uid+"');wgt.$n().click();";
+		String script = "(function(){let wgt = zk.Widget.$('#"+uid+"');wgt.$n().click();})()";
 		Clients.response(new AuScript(script));		
 	}
 

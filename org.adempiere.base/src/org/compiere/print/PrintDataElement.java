@@ -161,6 +161,14 @@ public class PrintDataElement implements Serializable
 	}	//	getValue
 
 	/**
+	 * Set Node Value
+	 * @param value
+	 */
+	public void setValue(Serializable value) {
+		this.m_value = value;
+	}
+
+	/**
 	 * 	Get Function Value
 	 * 	@return length or numeric value
 	 */
@@ -323,6 +331,14 @@ public class PrintDataElement implements Serializable
 		return m_displayType;
 	}	//	getDisplayType
 
+	/**
+	 * 	Set Display Type
+	 */
+	public void setDisplayType(int displayType)
+	{
+		this.m_displayType = displayType;
+	}	//	setDisplayType
+	
 	/**
 	 * 	Is Value numeric
 	 * 	@return true if value is a numeric

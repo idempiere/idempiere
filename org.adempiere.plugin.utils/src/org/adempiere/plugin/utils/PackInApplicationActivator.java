@@ -150,12 +150,14 @@ public class PackInApplicationActivator extends AbstractActivator{
 	private boolean packIn(File packinFile) {
 		if (packinFile != null) {
 			String fileName = packinFile.getName();
-			logger.warning("Installing " + fileName + " ...");
-
 			// The convention for package names is: yyyymmddHHMM_ClientValue_InformationalDescription.zip
 			String [] parts = fileName.split("_");
+			if (parts.length < 2) {
+				logger.warning("Wrong name, ignored " + fileName);
+				return false;
+			}
+			logger.warning("Installing " + fileName + " ...");
 			String clientValue = parts[1];
-			
 			boolean allClients = clientValue.startsWith("ALL-CLIENTS");
 			
 			int[] clientIDs;
@@ -166,7 +168,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 					seedClientValue = clientValue.split("-")[2];
 					seedClientIDs = getClientIDs(seedClientValue);				
 					if (seedClientIDs.length == 0) {
-						logger.log(Level.WARNING, "Seed client does not exist: " + seedClientValue);
+						logger.log(Level.WARNING, "Seed tenant does not exist: " + seedClientValue);
 						return false;
 					}
 				}
@@ -188,7 +190,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 			} else {
 				clientIDs = getClientIDs(clientValue);
 				if (clientIDs.length == 0) {
-					logger.log(Level.WARNING, "Client does not exist: " + clientValue);
+					logger.log(Level.WARNING, "Tenant does not exist: " + clientValue);
 					return false;
 				}
 			}
@@ -196,7 +198,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 			for (int clientID : clientIDs) {
 				MClient client = MClient.get(Env.getCtx(), clientID);
 				if  (allClients) {
-					String message = "Installing " + fileName + " in client " + client.getValue() + "/" + client.getName();
+					String message = "Installing " + fileName + " in tenant " + client.getValue() + "/" + client.getName();
 					statusUpdate(message);
 				}
 				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, client.getAD_Client_ID());

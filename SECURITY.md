@@ -4,8 +4,8 @@
 
 | Version          | Supported          |
 | -----------------| ------------------ |
-| release-9        | :white_check_mark: |
-| master a.k.a. 10 | :white_check_mark: |
+| release-10       | :white_check_mark: |
+| master a.k.a. 11 | :white_check_mark: |
 
 ## Reporting a Vulnerability
 

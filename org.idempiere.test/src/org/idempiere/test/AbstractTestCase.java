@@ -28,7 +28,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Properties;
 
+import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
@@ -71,6 +73,8 @@ public abstract class AbstractTestCase {
 	 * @param testInfo
 	 */
 	protected void init(TestInfo testInfo) {
+		ServerContext.setCurrentInstance(new Properties());
+		
 		String trxName = Trx.createTrxName(getClass().getName()+"_");
 		trx = Trx.get(trxName, true);
 		trx.start();
@@ -147,8 +151,9 @@ public abstract class AbstractTestCase {
 	 * tear down for each test method
 	 */
 	protected void tearDown() {
-		if (trx != null && trx.isActive()) {
-			trx.rollback();
+		if (trx != null) {
+			if (trx.isActive())
+				trx.rollback();
 			trx.close();
 		}
 	}

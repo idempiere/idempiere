@@ -89,7 +89,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	 */
 	public static MWorkflow get (Properties ctx, int AD_Workflow_ID)
 	{
-		String key = Env.getAD_Language(ctx) + "_" + AD_Workflow_ID;
+		String key = Env.getAD_Language(ctx) + "_" + Env.getAD_Client_ID(ctx) + "_" + AD_Workflow_ID;
 		MWorkflow retValue = s_cache.get(ctx, key, e -> new MWorkflow(ctx, e));
 		if (retValue != null)
 			return retValue;
@@ -1088,7 +1088,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		ProcessInfo processInfo = new ProcessInfo (((DocAction)po).getDocumentInfo(),column.getAD_Process_ID(),po.get_Table_ID(),po.get_ID());
 		processInfo.setTransactionName(po.get_TrxName());
 		processInfo.setPO(po);
-		ServerProcessCtl.process(processInfo, Trx.get(processInfo.getTransactionName(), false));
+		ServerProcessCtl.process(processInfo, !Util.isEmpty(processInfo.getTransactionName(), true) ? Trx.get(processInfo.getTransactionName(), false) : null);
 		return processInfo;
 	}
 }	//	MWorkflow_ID

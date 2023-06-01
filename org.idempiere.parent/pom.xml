@@ -10,13 +10,13 @@
 	<name>Maven parent project for idempiere</name>
 
 	<properties>
-		<revision>9.0.0-SNAPSHOT</revision>
+		<revision>10.0.0-SNAPSHOT</revision>
 		<jdk.version>11</jdk.version>
-		<tycho.version>2.7.3</tycho.version>
+		<tycho.version>2.7.5</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.17.0</jp.version>
-		<zk.version>9.6.2</zk.version>
+		<zk.version>9.6.3</zk.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 		<download.maven.version>1.4.1</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
@@ -24,13 +24,14 @@
 		<maven-clean-plugin.version>2.5</maven-clean-plugin.version><!-- get from master, update when mave have update-->
 		<!-- default value of properties, use when run without profile -->
 		<idempiere.target>org.idempiere.p2.targetplatform</idempiere.target>
-		<idempiere-equinox-url>https://download.eclipse.org/eclipse/updates/4.20</idempiere-equinox-url>
-		<idempiere-equinox-repository-id>eclipse-2021-06</idempiere-equinox-repository-id>
+		<idempiere-equinox-url>https://download.eclipse.org/eclipse/updates/4.23</idempiere-equinox-url>
+		<idempiere-equinox-repository-id>eclipse-2022-03</idempiere-equinox-repository-id>
 		<idempiere-orbit-url>https://download.eclipse.org/tools/orbit/downloads/drops/R20210602031627/repository</idempiere-orbit-url>
 		<idempiere-orbit-repository-id>orbit-2021-06-R20210602031627</idempiere-orbit-repository-id>
 		<url.file.srv>https://raw.githubusercontent.com/idempiere/binary.file/master</url.file.srv>
 		<extra.ui.install>org.eclipse.equinox.p2.director, org.idempiere.equinox.p2.director.feature.feature.group, org.idempiere.test.feature.feature.group</extra.ui.install>
 		<idempiere.product.id>org.adempiere.server.product</idempiere.product.id>
+		<skipClean>false</skipClean>
 	</properties>
 
 	<build>
@@ -129,7 +130,7 @@
 											target-platform-configuration
 										</artifactId>
 										<versionRange>
-											[2.7.3,)
+											[2.7.0,)
 										</versionRange>
 										<goals>
 											<goal>target-platform</goal>
@@ -175,6 +176,25 @@
 											<goal>
 												declarative-services
 											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-antrun-plugin
+										</artifactId>
+										<versionRange>
+											[1.8,)
+										</versionRange>
+										<goals>
+											<goal>run</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -228,7 +248,7 @@
 						        <type>eclipse-plugin</type>
 					        </dependency>
 					        <dependency>
-						        <artifactId>org.eclipse.ecf.provider.filetransfer.httpclient45</artifactId>
+						        <artifactId>org.eclipse.ecf.provider.filetransfer.httpclient5</artifactId>
 						        <type>eclipse-plugin</type>
 					        </dependency>
 					        <dependency>
@@ -268,7 +288,11 @@
 						        <type>eclipse-plugin</type>
 					        </dependency>
 					        <dependency>
-						        <artifactId>org.apache.httpcomponents.httpcore</artifactId>
+						        <artifactId>org.apache.httpcomponents.core5.httpcore5</artifactId>
+						        <type>eclipse-plugin</type>
+					        </dependency>
+					        <dependency>
+						        <artifactId>org.apache.httpcomponents.core5.httpcore5-h2</artifactId>
 						        <type>eclipse-plugin</type>
 					        </dependency>
 					        <dependency>
@@ -320,7 +344,7 @@
 						        <type>eclipse-plugin</type>
 					        </dependency>
 					        <dependency>
-						        <artifactId>org.apache.httpcomponents.httpclient</artifactId>
+						        <artifactId>org.apache.httpcomponents.client5.httpclient5</artifactId>
 						        <type>eclipse-plugin</type>
 					        </dependency>
 					        <dependency>
@@ -486,6 +510,14 @@
 				  <artifactId>tycho-surefire-plugin</artifactId>
 				  <version>${tycho.version}</version>
 				</plugin>
+				<plugin>
+				  <groupId>org.eclipse.tycho</groupId>
+				  <artifactId>tycho-ds-plugin</artifactId>
+				  <version>${tycho.version}</version>
+				  <configuration>
+					 <skip>true</skip>
+				  </configuration>
+			    </plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -501,6 +533,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<skip>${skipClean}</skip>
 					<filesets>
 						<fileset>
 							<directory>${project.basedir}/lib</directory>
@@ -623,7 +656,7 @@
 				            <artifact>
 					            <groupId>org.idempiere</groupId>
 					            <artifactId>${idempiere.target}</artifactId>
-					            <version>9.0.0-SNAPSHOT</version>
+					            <version>10.0.0-SNAPSHOT</version>
 				            </artifact>
 			            </target>
 

@@ -50,16 +50,24 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MProductPrice;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
+import org.compiere.model.MShipper;
+import org.compiere.model.MShippingProcessor;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
-import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
+import org.compiere.model.X_C_BP_ShippingAcct;
+import org.compiere.model.X_M_ShippingProcessorCfg;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.ConversionRateHelper;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * @author etantg
@@ -70,26 +78,27 @@ public class InOutTest extends AbstractTestCase {
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4656
 	 */
 	public void testMatReceiptPosting() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
-		int Spot_ConversionType_ID = 114; // Spot;
-		int Company_ConversionType_ID = 201; // Company
+		int Spot_ConversionType_ID = DictionaryIDs.C_ConversionType.SPOT.id; // Spot;
+		int Company_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
 		priceList.setName("Purchase AUD " + System.currentTimeMillis());
-		MCurrency australianDollar = MCurrency.get("AUD"); // Australian Dollar (AUD)
+		MCurrency australianDollar = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // Australian Dollar (AUD)
 		priceList.setC_Currency_ID(australianDollar.getC_Currency_ID());
 		priceList.setPricePrecision(australianDollar.getStdPrecision());
 		priceList.saveEx();
 		
 		MPriceListVersion plv = new MPriceListVersion(priceList);
-		plv.setM_DiscountSchema_ID(101); // Purchase 2001
+		plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.PURCHASE_2001.id); // Purchase 2001
 		plv.setValidFrom(currentDate);
 		plv.saveEx();
 		
@@ -97,13 +106,13 @@ public class InOutTest extends AbstractTestCase {
 		MProductPrice pp = new MProductPrice(plv, product.getM_Product_ID(), priceInAud, priceInAud, Env.ZERO);
 		pp.saveEx();
 		
-		MCurrency usd = MCurrency.get("USD"); // USD
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		BigDecimal audToUsdCompany = new BigDecimal(0.676234);
 		MConversionRate crUsdCompany = createConversionRate(australianDollar.getC_Currency_ID(), usd.getC_Currency_ID(), Company_ConversionType_ID, currentDate, audToUsdCompany);
 		BigDecimal audToUsdSpot = new BigDecimal(0.77);
 		MConversionRate crUsdSpot = createConversionRate(australianDollar.getC_Currency_ID(), usd.getC_Currency_ID(), Spot_ConversionType_ID, currentDate, audToUsdSpot);
 		
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal audToEuroCompany = new BigDecimal(0.746234);
 		MConversionRate crEurCompany = createConversionRate(australianDollar.getC_Currency_ID(), euro.getC_Currency_ID(), Company_ConversionType_ID, currentDate, audToEuroCompany);
 		BigDecimal audToEuroSpot = new BigDecimal(0.64);
@@ -191,6 +200,8 @@ public class InOutTest extends AbstractTestCase {
 				}
 			}
 		} finally {
+			rollback();
+			
 			deleteConversionRate(crUsdCompany);
 			deleteConversionRate(crUsdSpot);
 			deleteConversionRate(crEurCompany);
@@ -198,32 +209,31 @@ public class InOutTest extends AbstractTestCase {
 			
 			pp.deleteEx(true);
 			plv.deleteEx(true);
-			priceList.deleteEx(true);
-			
-			rollback();
+			priceList.deleteEx(true);						
 		}		
 	}
 	
 	@Test
+	@ResourceLock(value = MConversionRate.Table_Name)
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4656
 	 */
 	public void testMatShipmentPosting() {
-		MBPartner bpartner = MBPartner.get(Env.getCtx(), 114); // Tree Farm Inc.
-		MProduct product = MProduct.get(Env.getCtx(), 124); // Elm Tree
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id); // Tree Farm Inc.
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.ELM.id); // Elm Tree
 		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 		
-		int Company_ConversionType_ID = 201; // Company
+		int Company_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id; // Company
 		
 		MPriceList priceList = new MPriceList(Env.getCtx(), 0, null);
 		priceList.setName("Purchase AUD " + System.currentTimeMillis());
-		MCurrency australianDollar = MCurrency.get("AUD"); // Australian Dollar (AUD)
+		MCurrency australianDollar = MCurrency.get(DictionaryIDs.C_Currency.AUD.id); // Australian Dollar (AUD)
 		priceList.setC_Currency_ID(australianDollar.getC_Currency_ID());
 		priceList.setPricePrecision(australianDollar.getStdPrecision());
 		priceList.saveEx();
 		
 		MPriceListVersion plv = new MPriceListVersion(priceList);
-		plv.setM_DiscountSchema_ID(101); // Purchase 2001
+		plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.PURCHASE_2001.id); // Purchase 2001
 		plv.setValidFrom(currentDate);
 		plv.saveEx();
 		
@@ -231,11 +241,11 @@ public class InOutTest extends AbstractTestCase {
 		MProductPrice pp = new MProductPrice(plv, product.getM_Product_ID(), priceInAud, priceInAud, Env.ZERO);
 		pp.saveEx();
 		
-		MCurrency usd = MCurrency.get("USD"); // USD
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); // USD
 		BigDecimal audToUsdCompany = new BigDecimal(0.676234);
 		MConversionRate crUsdCompany = createConversionRate(australianDollar.getC_Currency_ID(), usd.getC_Currency_ID(), Company_ConversionType_ID, currentDate, audToUsdCompany);
 		
-		MCurrency euro = MCurrency.get("EUR"); // EUR
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); // EUR
 		BigDecimal audToEuroCompany = new BigDecimal(0.746234);
 		MConversionRate crEurCompany = createConversionRate(australianDollar.getC_Currency_ID(), euro.getC_Currency_ID(), Company_ConversionType_ID, currentDate, audToEuroCompany);
 		try {
@@ -283,11 +293,11 @@ public class InOutTest extends AbstractTestCase {
 			
 			MRMA rma = new MRMA(Env.getCtx(), 0, getTrxName());
 			rma.setName(order.getDocumentNo());
-			rma.setC_DocType_ID(150); // Vendor Return Material
-			rma.setM_RMAType_ID(100); // Damaged on Arrival
+			rma.setC_DocType_ID(DictionaryIDs.C_DocType.VENDOR_RETURN_MATERIAL.id); // Vendor Return Material
+			rma.setM_RMAType_ID(DictionaryIDs.M_RMAType.DAMAGE_ON_ARRIVAL.id); // Damaged on Arrival
 			rma.setM_InOut_ID(receipt.get_ID());
 			rma.setIsSOTrx(false);
-			rma.setSalesRep_ID(100); // SuperUser
+			rma.setSalesRep_ID(SystemIDs.USER_SUPERUSER); // SuperUser
 			rma.saveEx();
 			
 			MRMALine rmaLine = new MRMALine(Env.getCtx(), 0, getTrxName());
@@ -304,7 +314,7 @@ public class InOutTest extends AbstractTestCase {
 			delivery.setBPartner(bpartner);
 			delivery.setIsSOTrx(false);
 			delivery.setMovementType(MInOut.MOVEMENTTYPE_VendorReturns);
-			delivery.setC_DocType_ID(151); // MM Vendor Return
+			delivery.setC_DocType_ID(DictionaryIDs.C_DocType.MM_VENDOR_RETURN.id); // MM Vendor Return
 			delivery.setDocStatus(DocAction.STATUS_Drafted);
 			delivery.setDocAction(DocAction.ACTION_Complete);
 			delivery.setM_Warehouse_ID(receipt.getM_Warehouse_ID());
@@ -350,14 +360,13 @@ public class InOutTest extends AbstractTestCase {
 				}
 			}
 		} finally {
+			rollback();
 			deleteConversionRate(crUsdCompany);
 			deleteConversionRate(crEurCompany);
 			
 			pp.deleteEx(true);
 			plv.deleteEx(true);
-			priceList.deleteEx(true);
-			
-			rollback();
+			priceList.deleteEx(true);						
 		}		
 	}
 	
@@ -368,34 +377,11 @@ public class InOutTest extends AbstractTestCase {
 	
 	private MConversionRate createConversionRate(int C_Currency_ID, int C_Currency_ID_To, int C_ConversionType_ID, 
 			Timestamp date, BigDecimal rate, boolean isMultiplyRate) {
-		MConversionRate cr = new MConversionRate(Env.getCtx(), 0, null);
-		cr.setC_Currency_ID(C_Currency_ID);
-		cr.setC_Currency_ID_To(C_Currency_ID_To);
-		cr.setC_ConversionType_ID(C_ConversionType_ID);
-		cr.setValidFrom(date);
-		cr.setValidTo(date);
-		if (isMultiplyRate)
-			cr.setMultiplyRate(rate);
-		else
-			cr.setDivideRate(rate);
-		cr.saveEx();
-		return cr;
+		return ConversionRateHelper.createConversionRate(C_Currency_ID, C_Currency_ID_To, C_ConversionType_ID, date, rate, isMultiplyRate);
 	}
 	
 	private void deleteConversionRate(MConversionRate cr) {
-		String whereClause = "ValidFrom=? AND ValidTo=? "
-				+ "AND C_Currency_ID=? AND C_Currency_ID_To=? "
-				+ "AND C_ConversionType_ID=? "
-				+ "AND AD_Client_ID=? AND AD_Org_ID=?";
-		MConversionRate reciprocal = new Query(Env.getCtx(), MConversionRate.Table_Name, whereClause, null)
-				.setParameters(cr.getValidFrom(), cr.getValidTo(), 
-						cr.getC_Currency_ID_To(), cr.getC_Currency_ID(),
-						cr.getC_ConversionType_ID(),
-						cr.getAD_Client_ID(), cr.getAD_Org_ID())
-				.firstOnly();
-		if (reciprocal != null)
-			reciprocal.deleteEx(true);
-		cr.deleteEx(true);
+		ConversionRateHelper.deleteConversionRate(cr);
 	}
 	
 	private MOrder createPurchaseOrder(MBPartner bpartner, Timestamp date, int M_PriceList_ID, int C_ConversionType_ID) {
@@ -424,7 +410,7 @@ public class InOutTest extends AbstractTestCase {
 	}
 	
 	private MInOut createMMReceipt(MOrder order, Timestamp date) {
-		MInOut receipt = new MInOut(order, 122, date); // MM Receipt
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, date); // MM Receipt
 		receipt.saveEx();
 		return receipt;
 	}
@@ -457,5 +443,61 @@ public class InOutTest extends AbstractTestCase {
 		}
 		po.load(getTrxName());
 		assertTrue(po.get_ValueAsBoolean("Posted"));
+	}
+	
+	@Test
+	public void testFreightCostRuleCustomerAccount() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+		
+		X_M_ShippingProcessorCfg cfg = new X_M_ShippingProcessorCfg(Env.getCtx(), 0, getTrxName());
+		cfg.setHostAddress("0.0.0.0");
+		cfg.setName("Test Shipping Processor Config");
+		cfg.setHostPort(0);
+		cfg.saveEx();
+		
+		MShippingProcessor processor = new MShippingProcessor(Env.getCtx(), 0, getTrxName());
+		processor.setM_ShippingProcessorCfg_ID(cfg.get_ID());
+		processor.setUserID("-");
+		processor.setConnectionPassword("-");		
+		processor.setName("Test Shipping Processor");
+		processor.saveEx();
+
+		MShipper shipper = new MShipper(Env.getCtx(), 0, getTrxName());
+		shipper.setName("Test Shipper");
+		shipper.setM_ShipperCfg_ID(cfg.get_ID());
+		shipper.setM_ShippingProcessor_ID(processor.get_ID());
+		shipper.saveEx();
+		
+		final String shipperAccount = "testFreightCostRuleCustomerAccount";
+		
+		MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+		X_C_BP_ShippingAcct acct = new X_C_BP_ShippingAcct(Env.getCtx(), 0, getTrxName());
+		acct.setC_BPartner_ID(bp.getC_BPartner_ID());		
+		acct.setShipperAccount(shipperAccount);
+		acct.setM_ShippingProcessor_ID(processor.get_ID());
+		acct.saveEx();
+		
+		MInOut inout = new MInOut(Env.getCtx(), 0, getTrxName());				
+		inout.setBPartner(bp);
+		inout.setIsSOTrx(true);
+		inout.setC_Order_ID(order.getC_Order_ID());
+		inout.setM_Warehouse_ID(getM_Warehouse_ID());
+		inout.setC_DocType_ID();
+		inout.setDeliveryViaRule(MInOut.DELIVERYVIARULE_Shipper);
+		inout.setM_Shipper_ID(shipper.get_ID());
+		inout.setFreightCostRule(MInOut.FREIGHTCOSTRULE_CustomerAccount);
+		inout.saveEx();
+		
+		assertEquals(shipperAccount, inout.getShipperAccount(), "Unexpected shipper account");
+		assertEquals(MInOut.FREIGHTCHARGES_Collect, inout.getFreightCharges(), "Unexpected freight charges rule");
 	}
 }

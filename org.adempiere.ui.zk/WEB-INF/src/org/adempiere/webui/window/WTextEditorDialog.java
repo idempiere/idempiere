@@ -15,6 +15,7 @@ package org.adempiere.webui.window;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -27,7 +28,9 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
 import org.zkforge.ckez.CKeditor;
@@ -125,7 +128,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 		ZKUpdateUtil.setVflex(tabbox, "1");
 		ZKUpdateUtil.setHflex(tabbox, "1");
 		
-		Tab tab = new Tab("Text");
+		Tab tab = new Tab(Msg.getMsg(Env.getCtx(), "Text"));
 		tabs.appendChild(tab);
 		
 		Tabpanel tabPanel = new Tabpanel();
@@ -219,20 +222,43 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 			onCancel();
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			if (editable) {
+
+				if (maxSize > 0) {
+					int currentSize = 0;
+					if (tabbox.getSelectedIndex() == 0)
+						currentSize = textBox.getText().length();
+					else
+						currentSize = editor.getValue().length();
+
+					if (currentSize > maxSize) {
+						Dialog.error(0, "Error", Msg.getMsg(Env.getCtx(), "TextEditorDialogCurrentSizeExceedMaxSize", new Object[] {currentSize, maxSize}));
+						return;
+					}
+				}
+
 				if (tabbox.getSelectedIndex() == 0) {
 					text = textBox.getText();
 					detach();
 				} else {
-					String script = "var w=zk('#"+editor.getUuid()+"').$();var d=w.getEditor().getData();var t=zk('#" +
-							this.getUuid()+"').$();var e=new zk.Event(t,'onEditorCallback',d,{toServer:true});zAu.send(e);";
+					String script = "(function(){let w=zk('#"+editor.getUuid()+"').$();let d=w.getEditor().getData();let t=zk('#" +
+							this.getUuid()+"').$();let e=new zk.Event(t,'onEditorCallback',d,{toServer:true});zAu.send(e);})()";
 					Clients.response(new AuScript(script));
 				}
 					
 			}			
 		} else if (event.getTarget().getId().equals(ConfirmPanel.A_RESET)) {
-			textBox.setText(text);
-			if (editor != null)
-				editor.setValue(text);
+
+			Dialog.ask(0, "TextEditorDialogResetConfirmation", new Callback<Boolean>() {
+
+				@Override
+				public void onCallback(Boolean result) {
+					if (result) {
+						textBox.setText(text);
+						if (editor != null)
+							editor.setValue(text);
+					}
+				}
+			});
 		} else if (event.getName().equals(Events.ON_SELECT)) {
 			if (editable) {
 				if (tabbox.getSelectedIndex() == 0) {
@@ -258,7 +284,8 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	}
 	
 	private void onSize() {
-		editor.invalidate();
+		if(editor != null)
+			editor.invalidate();
 	}
 	
 	private void updateStatus(int newLength) {

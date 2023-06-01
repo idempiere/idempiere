@@ -18,8 +18,10 @@ package org.compiere.process;
 
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.Util;
 /**
  *	Reset Password
@@ -67,7 +69,7 @@ public class UserPassword extends SvrProcess
 			else if (name.equals("NewEMailConfirm"))
 				p_NewEMailConfirm = (String)para[i].getParameter();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 	}	//	prepare
 
@@ -89,8 +91,8 @@ public class UserPassword extends SvrProcess
 		//	Do we need a password ?
 		if (Util.isEmpty(p_OldPassword))		//	Password required
 		{
-			if (p_AD_User_ID == 0			//	change of System
-					|| p_AD_User_ID == 100		//	change of SuperUser
+			if (p_AD_User_ID == SystemIDs.USER_SYSTEM			//	change of System
+					|| p_AD_User_ID == SystemIDs.USER_SUPERUSER		//	change of SuperUser
 					|| !operator.isAdministrator())
 				throw new IllegalArgumentException("@OldPasswordMandatory@");
 		} else {

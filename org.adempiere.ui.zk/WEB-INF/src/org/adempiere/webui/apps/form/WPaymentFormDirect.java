@@ -30,9 +30,10 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.PaymentFormDirect;
 import org.compiere.model.GridTab;
+import org.compiere.model.MBankAccount;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -44,33 +45,46 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Space;
 
 /**
- * 
+ * Abstract base payment form class for payment rule direct debit and direct deposit.
  * @author Elaine
  *
  */
 public abstract class WPaymentFormDirect extends PaymentFormDirect implements EventListener<Event> {
-
+	/** Payment form window instance */
 	private WPaymentFormWindow window;
 	
 	private Label tAccountLabel = new Label();
+	/** Bank accounts */
 	private Listbox tAccountCombo = ListboxFactory.newDropdownListbox();
 	private Button tOnline = new Button();
+	/** Routing number */
 	private Textbox tRoutingField = new Textbox();
+	/** Account number */
 	private Textbox tNumberField = new Textbox();
 	private Label tStatus = new Label();
+	/** Label for {@link #tRoutingField} */
 	private Label tRoutingText = new Label();
+	/** Label for {@link #tNumberField} */
 	private Label tNumberText = new Label();
 	
+	/**
+	 * @param windowNo
+	 * @param mTab
+	 * @param isDebit true for direct debit, false for direct deposit
+	 */
 	public WPaymentFormDirect(int windowNo, GridTab mTab, boolean isDebit) {
 		super(windowNo, mTab, isDebit);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}
 	
-	public void init() {		
+	/**
+	 * Layout {@link #window}
+	 */
+	protected void init() {		
 		Grid tPanelLayout = GridFactory.newGridLayout();
 		window.getPanel().appendChild(tPanelLayout);
-		tAccountLabel.setText(Msg.translate(Env.getCtx(), "C_BP_BankAccount_ID"));
+		tAccountLabel.setText(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));
 		tRoutingField.setCols(8);
 		tNumberField.setCols(10);
 		tRoutingText.setText(Msg.translate(Env.getCtx(), "RoutingNo"));
@@ -114,6 +128,8 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 
 	@Override
 	public void loadData() {		
+		super.loadData();
+		
 		if (m_C_Payment_ID != 0)
 		{
 			tRoutingField.setText(m_mPayment.getRoutingNo());
@@ -121,7 +137,7 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 			tStatus.setText(m_mPayment.getR_PnRef());
 		}
 		
-		ArrayList<KeyNamePair> list = getBPBankAccountList();
+		ArrayList<KeyNamePair> list = getBankAccountList();
 		for (KeyNamePair pp : list)
 			tAccountCombo.addItem(pp);
 		
@@ -132,6 +148,7 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 		setBankAccountProcessor(bankAccountProcessor);
 	}
 	
+	@Override
 	public void onEvent(Event e)
 	{
 		if (e.getTarget() == tOnline) 
@@ -148,10 +165,10 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 		 */
 		boolean dataOK = true;
 		ListItem selected =  tAccountCombo.getSelectedItem();
-		KeyNamePair bpba = selected != null ? selected.toKeyNamePair() : null;
-		if (bpba == null)
+		KeyNamePair ba = selected != null ? selected.toKeyNamePair() : null;
+		if (ba == null)
 		{
-			FDialog.error(getWindowNo(), window, "PaymentBPBankNotFound");
+			Dialog.error(getWindowNo(), "FillMandatory", Msg.translate(Env.getCtx(), MBankAccount.COLUMNNAME_C_BankAccount_ID));
 			dataOK = false;
 		}
 		//
@@ -161,11 +178,14 @@ public abstract class WPaymentFormDirect extends PaymentFormDirect implements Ev
 
 	@Override
 	public boolean saveChangesInTrx(final String trxName) {		
-		boolean ok = save(0, tRoutingField.getText(), tNumberField.getText(), trxName);		
+		ListItem selected =  tAccountCombo.getSelectedItem();
+		KeyNamePair ba = selected != null ? selected.toKeyNamePair() : null;
+		int C_BankAccount_ID = ba != null ? ba.getKey() : 0;
+		boolean ok = save(C_BankAccount_ID, tRoutingField.getText(), tNumberField.getText(), trxName);		
 		if (!ok)
-			FDialog.error(getWindowNo(), window, "PaymentError", processMsg);
-		else if (processMsg != null)
-			FDialog.info(getWindowNo(), window, "PaymentCreated", m_mPayment.getDocumentNo());
+			Dialog.error(getWindowNo(), "PaymentError", processMsg);
+		else
+			Dialog.info(getWindowNo(), "PaymentCreated", m_mPayment.getDocumentNo());
 		
 		return ok;
 	}

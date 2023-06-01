@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Payment
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="C_Payment")
 public class X_C_Payment extends PO implements I_C_Payment, I_Persistent 
 {
@@ -34,7 +34,7 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_C_Payment (Properties ctx, int C_Payment_ID, String trxName)
@@ -389,6 +389,34 @@ public class X_C_Payment extends PO implements I_C_Payment, I_Persistent
 	public int getC_BankAccount_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankAccount_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_BankTransfer getC_BankTransfer() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_BankTransfer)MTable.get(getCtx(), org.compiere.model.I_C_BankTransfer.Table_ID)
+			.getPO(getC_BankTransfer_ID(), get_TrxName());
+	}
+
+	/** Set Bank Transfer.
+		@param C_BankTransfer_ID Bank Transfer
+	*/
+	public void setC_BankTransfer_ID (int C_BankTransfer_ID)
+	{
+		if (C_BankTransfer_ID < 1)
+			set_Value (COLUMNNAME_C_BankTransfer_ID, null);
+		else
+			set_Value (COLUMNNAME_C_BankTransfer_ID, Integer.valueOf(C_BankTransfer_ID));
+	}
+
+	/** Get Bank Transfer.
+		@return Bank Transfer
+	  */
+	public int getC_BankTransfer_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BankTransfer_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

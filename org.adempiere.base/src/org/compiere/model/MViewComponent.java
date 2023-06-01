@@ -142,6 +142,9 @@ public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSup
 		StringBuilder sb = new StringBuilder("SELECT ");
 		//
 
+		if (isDistinct())
+			sb.append("DISTINCT ");
+
 		for (int i = 0; i < vCols.length; i++)
 		{
 			String colName = vCols[i].getColumnName();

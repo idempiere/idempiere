@@ -19,6 +19,7 @@ package org.compiere.process;
 
 import java.util.logging.Level;
 
+import org.compiere.model.MProcessPara;
 import org.compiere.util.DB;
 
 /**
@@ -50,7 +51,7 @@ public class AD_PrintPaper_Default extends SvrProcess
 			else if (name.equals("AD_Client_ID"))
 				p_AD_Client_ID = para[i].getParameterAsInt();
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		p_Record_ID = getRecord_ID();
 	}	//	prepare

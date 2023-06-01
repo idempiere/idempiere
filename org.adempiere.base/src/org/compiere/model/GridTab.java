@@ -113,7 +113,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2091725732178841608L;
+	private static final long serialVersionUID = 2604313946261586651L;
 
 	public static final String DEFAULT_STATUS_MESSAGE = "NavigateOrUpdate";
 
@@ -230,6 +230,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 	public static final String CTX_FindSQL = "_TabInfo_FindSQL";
 	public static final String CTX_SQL = "_TabInfo_SQL";
 	public static final String CTX_IsSortTab = "_TabInfo_IsSortTab";
+	public static final String CTX_Record_ID = "_TabInfo_Record_ID";
 	public static final String CTX_IsLookupOnlySelection = "_TabInfo_IsLookupOnlySelection";
 	public static final String CTX_IsAllowAdvancedLookup = "_TabInfo_IsAllowAdvancedLookup";
 
@@ -1026,6 +1027,15 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		return false;
 	}   //  dataSave
 
+	/**
+	 * 
+	 * @return true if need save and all mandatory field has value
+	 */
+	public boolean isNeedSaveAndMandatoryFill()
+	{
+		return m_mTable.isNeedSaveAndMandatoryFill();
+	}
+	
 	// Validate if the current tab record has changed in database or any parent record
 	// Return if there are changes
 	public boolean hasChangedCurrentTabAndParents() {
@@ -1867,7 +1877,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					+ " INNER JOIN C_InvoiceLine l ON (o.C_Invoice_ID=l.C_Invoice_ID) "
 					+ "WHERE o.C_Invoice_ID=? ");
 			}
-			sql.append("GROUP BY o.C_Currency_ID, c.ISO_Code, o.TotalLines, o.GrandTotal, o.DateAcct, o.AD_Client_ID, o.AD_Org_ID");
+			sql.append(" GROUP BY o.C_Currency_ID, c.ISO_Code, o.TotalLines, o.GrandTotal, o.DateAcct, o.AD_Client_ID, o.AD_Org_ID");
 
 			if (log.isLoggable(Level.FINE)) log.fine(m_vo.TableName + " - " + Record_ID);
 			MessageFormat mf = null;
@@ -2193,8 +2203,19 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			return 0;
 		int recordID = m_mTable.getKeyID(m_currentRow);
 		return MPostIt.getID(m_vo.AD_Table_ID, recordID);
-	}	//	getAD_PostIt_ID
-
+	}	//	getAD_PostIt_ID	
+	
+	/**
+	 *	Returns true, if current row has Label(s)
+	 *  @return true if record has Label(s)
+	 */
+	public boolean hasLabel()
+	{
+		if (!canHaveAttachment())
+			return false;
+		int recordID = m_mTable.getKeyID(m_currentRow);
+		return MLabelAssignment.hasAnyAssignment(m_vo.AD_Table_ID, recordID);
+	}	//	hasLabel
 
 	/**
 	 *	Returns true, if this tab have templates allowed with current role
@@ -3453,6 +3474,22 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		this.calloutUI = calloutUI;
 	}
 
+	/**
+	 * Get Delete Confirmation Logic
+	 * @return String
+	 */
+	public String getDeleteConfirmationLogic() {
+		return m_vo.deleteConfirmationLogic;
+	}
+	
+	/**
+	 * Set Delete Confirmation Logic
+	 * @param deleteConfirmationLogic
+	 */
+	public void setDeleteConfirmationLogic(String deleteConfirmationLogic) {
+		m_vo.deleteConfirmationLogic = deleteConfirmationLogic;
+	}
+	
 	/** Get Max Query Records.
 	 *  @return If defined, you cannot query more records as defined - the query criteria needs to be changed to query less records
      */

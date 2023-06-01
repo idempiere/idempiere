@@ -43,7 +43,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2268565219001179841L;
+	private static final long serialVersionUID = 4960404895430292476L;
 
 	protected Map<K, V> cache = null;
 	
@@ -76,6 +76,31 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		} catch (Throwable t) {}
 		return 60;
 	}
+
+	/**
+	 * Get the max size for the cache based on a system property
+	 * for example -DCache.MaxSize.AD_Column=15000 will set the max size for AD_Column
+	 * @param name
+	 * @return
+	 */
+	private static int getCacheMaxSize(String name) 
+	{
+		try 
+		{
+			String property = System.getProperty("Cache.MaxSize." + name);
+			if (property != null && property.trim().length() > 0)
+			{
+				int cacheMaxSize = 0;
+				try
+				{
+					cacheMaxSize = Integer.parseInt(property.trim());
+				} catch (Throwable t) {}
+				if (cacheMaxSize > 0)
+					return cacheMaxSize;
+			}
+		} catch (Throwable t) {}
+		return -1;
+	}
 	
 	public CCache (String name, int initialCapacity)
 	{
@@ -100,7 +125,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 * 	Adempiere Cache - expires after 2 hours
 	 * 	@param name (table) name of the cache
-	 * 	@param initialCapacity initial capacity
+	 * 	@param initialCapacity initial capacity // ignored
 	 */
 	public CCache (String tableName, String name, int initialCapacity)
 	{
@@ -120,7 +145,7 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 	/**
 	 * 	Adempiere Cache
 	 * 	@param name (table) name of the cache
-	 * 	@param initialCapacity initial capacity
+	 * 	@param initialCapacity initial capacity // ignored
 	 * 	@param expireMinutes expire after minutes (0=no expire)
 	 *  @param distributed
 	 *  @param maxSize ignore if distributed=true
@@ -130,7 +155,11 @@ public class CCache<K,V> implements CacheInterface, Map<K, V>, Serializable
 		m_name = name;
 		m_tableName = tableName;
 		setExpireMinutes(expireMinutes);
-		m_maxSize = maxSize; 
+		int propMaxSize = getCacheMaxSize(name);
+		if (propMaxSize >= 0)
+			m_maxSize = propMaxSize;
+		else
+			m_maxSize = maxSize; 
 		cache = CacheMgt.get().register(this, distributed);
 		m_distributed = distributed;
 		if (distributed) {

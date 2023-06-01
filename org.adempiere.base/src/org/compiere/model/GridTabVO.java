@@ -105,9 +105,21 @@ public class GridTabVO implements Evaluatee, Serializable
 			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_AD_Tab_UU, vo.AD_Tab_UU);
 			// FR IDEMPIERE-177
 			MUserDefTab userDef = MUserDefTab.get(vo.ctx, vo.AD_Tab_ID, vo.AD_Window_ID);
+			MTab tab = MTab.get(vo.AD_Tab_ID);
 			vo.Name = rs.getString("Name");
-			if (userDef != null && userDef.getName() != null)
-				vo.Name = userDef.getName();
+			if (userDef != null) {
+				if(!Util.isEmpty(userDef.getName()))
+					vo.Name = userDef.getName();
+				
+				if(!Util.isEmpty(userDef.getDeleteConfirmationLogic()))
+					vo.deleteConfirmationLogic = userDef.getDeleteConfirmationLogic();
+				else if((tab != null) && (!Util.isEmpty(tab.getDeleteConfirmationLogic())))
+					vo.deleteConfirmationLogic = tab.getDeleteConfirmationLogic();
+					
+			}
+			else if((tab != null) && (!Util.isEmpty(tab.getDeleteConfirmationLogic()))) {
+				vo.deleteConfirmationLogic = tab.getDeleteConfirmationLogic();
+			}
 			Env.setContext(vo.ctx, vo.WindowNo, vo.TabNo, GridTab.CTX_Name, vo.Name);
 
 			//	Translation Tab	**
@@ -382,39 +394,45 @@ public class GridTabVO implements Evaluatee, Serializable
 		MClient client = MClient.get(ctx);
 		String ASPFilter = "";
 		if (client.isUseASP())
-			ASPFilter =
-				"     AND (   AD_Tab_ID IN ( "
-				// Just ASP subscribed tabs for client "
-				+ "              SELECT t.AD_Tab_ID "
-				+ "                FROM ASP_Tab t, ASP_Window w, ASP_Level l, ASP_ClientLevel cl "
-				+ "               WHERE w.ASP_Level_ID = l.ASP_Level_ID "
-				+ "                 AND cl.AD_Client_ID = " + client.getAD_Client_ID()
-				+ "                 AND cl.ASP_Level_ID = l.ASP_Level_ID "
-				+ "                 AND t.ASP_Window_ID = w.ASP_Window_ID "
-				+ "                 AND t.IsActive = 'Y' "
-				+ "                 AND w.IsActive = 'Y' "
-				+ "                 AND l.IsActive = 'Y' "
-				+ "                 AND cl.IsActive = 'Y' "
-				+ "                 AND t.ASP_Status = 'S') " // Show
-				+ "        OR AD_Tab_ID IN ( "
-				// + show ASP exceptions for client
-				+ "              SELECT AD_Tab_ID "
-				+ "                FROM ASP_ClientException ce "
-				+ "               WHERE ce.AD_Client_ID = " + client.getAD_Client_ID()
-				+ "                 AND ce.IsActive = 'Y' "
-				+ "                 AND ce.AD_Tab_ID IS NOT NULL "
-				+ "                 AND ce.AD_Field_ID IS NULL "
-				+ "                 AND ce.ASP_Status = 'S') " // Show
-				+ "       ) "
-				+ "   AND AD_Tab_ID NOT IN ( "
-				// minus hide ASP exceptions for client
-				+ "          SELECT AD_Tab_ID "
-				+ "            FROM ASP_ClientException ce "
-				+ "           WHERE ce.AD_Client_ID = " + client.getAD_Client_ID()
-				+ "             AND ce.IsActive = 'Y' "
-				+ "             AND ce.AD_Tab_ID IS NOT NULL "
-				+ "             AND ce.AD_Field_ID IS NULL "
-				+ "             AND ce.ASP_Status = 'H')"; // Hide
+		{
+			StringBuilder stringBuilder = new StringBuilder()
+					// Just ASP subscribed tabs for client "
+					.append("     AND (   AD_Tab_ID IN ( ")
+					.append("              SELECT t.AD_Tab_ID ")
+					.append("                FROM ASP_Tab t, ASP_Window w, ASP_Level l, ASP_ClientLevel cl ")
+					.append("               WHERE w.ASP_Level_ID = l.ASP_Level_ID ")
+					.append("                 AND cl.AD_Client_ID = ")
+					.append(client.getAD_Client_ID())
+					.append("                 AND cl.ASP_Level_ID = l.ASP_Level_ID ")
+					.append("                 AND t.ASP_Window_ID = w.ASP_Window_ID ")
+					.append("                 AND t.IsActive = 'Y' ")
+					.append("                 AND w.IsActive = 'Y' ")
+					.append("                 AND l.IsActive = 'Y' ")
+					.append("                 AND cl.IsActive = 'Y' ")
+					.append("                 AND t.ASP_Status = 'S') ") // Show
+					.append("        OR AD_Tab_ID IN ( ")
+					// + show ASP exceptions for client
+					.append("              SELECT AD_Tab_ID ")
+					.append("                FROM ASP_ClientException ce ")
+					.append("               WHERE ce.AD_Client_ID = ")
+					.append(client.getAD_Client_ID())
+					.append("                 AND ce.IsActive = 'Y' ")
+					.append("                 AND ce.AD_Tab_ID IS NOT NULL ")
+					.append("                 AND ce.AD_Field_ID IS NULL ")
+					.append("                 AND ce.ASP_Status = 'S') ") // Show
+					.append("       ) ")
+					.append("   AND AD_Tab_ID NOT IN ( ")
+					// minus hide ASP exceptions for client
+					.append("          SELECT AD_Tab_ID ")
+					.append("            FROM ASP_ClientException ce ")
+					.append("           WHERE ce.AD_Client_ID = ")
+					.append(client.getAD_Client_ID())
+					.append("             AND ce.IsActive = 'Y' ")
+					.append("             AND ce.AD_Tab_ID IS NOT NULL ")
+					.append("             AND ce.AD_Field_ID IS NULL ")
+					.append("             AND ce.ASP_Status = 'H')"); // Hide
+			ASPFilter = stringBuilder.toString(); 
+		}
 		//  View only returns IsActive='Y'
 		MRole role = MRole.getDefault(ctx, false);
 		String advancedFilter=" AND IsAdvancedTab='N' ";
@@ -448,7 +466,7 @@ public class GridTabVO implements Evaluatee, Serializable
 	{
 		ctx = Ctx;
 		WindowNo = windowNo;
-	}   //  MTabVO
+	}
 
 	/** Context - replicated    */
 	public  Properties      ctx;
@@ -547,6 +565,9 @@ public class GridTabVO implements Evaluatee, Serializable
 	private ArrayList<GridFieldVO>	Fields = null;
 
 	private boolean initFields = false;
+
+	/** Delete Confirmation Logic of AD_Tab or AD_UserDef_Tab	 */
+	public String deleteConfirmationLogic = null;
 	
 	public ArrayList<GridFieldVO> getFields()
 	{
@@ -627,6 +648,7 @@ public class GridTabVO implements Evaluatee, Serializable
 		clone.AD_Image_ID = AD_Image_ID;
 		clone.Included_Tab_ID = Included_Tab_ID;
 		clone.ReplicationType = ReplicationType;
+		clone.deleteConfirmationLogic = deleteConfirmationLogic;
 		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_AccessLevel, clone.AccessLevel);
 		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_AD_Table_ID, String.valueOf(clone.AD_Table_ID));
 		Env.setContext(Ctx, windowNo, clone.TabNo, GridTab.CTX_IsLookupOnlySelection, clone.IsLookupOnlySelection);

@@ -17,18 +17,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MTable;
+import org.compiere.model.X_Test;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -38,6 +43,8 @@ import org.junit.jupiter.api.Test;
  */
 public class DBTest extends AbstractTestCase
 {
+	private static final int TEST_RECORD_ID = 103;
+
 	@Test
 	public void test_getSQLValueEx() throws Exception
 	{
@@ -50,6 +57,20 @@ public class DBTest extends AbstractTestCase
 		assertThrows(DBException.class, () -> {
 			DB.getSQLValueEx(null, "SELECT 10 FROM INEXISTENT_TABLE");
 		});
+		
+		int t_integer = DB.getSQLValueEx(null, "select t_integer from test where test_id=?", TEST_RECORD_ID);
+		assertThrows(DBException.class, () -> {
+			DB.getSQLValueEx(null, "update test set t_integer=1 where test_id=?", TEST_RECORD_ID);
+		});
+		int t_integer1 = DB.getSQLValueEx(null, "select t_integer from test where test_id=?", TEST_RECORD_ID);
+		assertEquals(t_integer, t_integer1, "test.t_integer wrongly updated");
+		
+		assertThrows(DBException.class, () -> {
+			DB.getSQLValueEx(getTrxName(), "update test set t_integer=1 where test_id=?;select t_integer from test where test_id=?", TEST_RECORD_ID);
+		});
+		rollback();
+		t_integer1 = DB.getSQLValueEx(null, "select t_integer from test where test_id=?", TEST_RECORD_ID);
+		assertEquals(t_integer, t_integer1, "test.t_integer wrongly updated");
 	}
 	
 	@Test
@@ -204,4 +225,70 @@ public class DBTest extends AbstractTestCase
 		assertEquals(arr[5].getName(), "7");
 	}
 
+	@Test
+	public void test_getSQLValueObjectsEx()
+	{
+		StringBuilder sql = new StringBuilder("SELECT ")
+				.append(X_Test.COLUMNNAME_Test_ID)
+				.append(", ")
+				.append(X_Test.COLUMNNAME_Test_UU)
+				.append(" FROM Test WHERE Test_ID=?");
+		List<Object> objects = DB.getSQLValueObjectsEx(null, sql.toString(), TEST_RECORD_ID);
+		assertEquals(2, objects.size());
+		X_Test test = new X_Test(Env.getCtx(), TEST_RECORD_ID, getTrxName());
+		assertEquals(test.get_ID(), ((Number)objects.get(0)).intValue());
+		assertEquals(test.getTest_UU(), objects.get(1));
+		
+		objects = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(), TEST_RECORD_ID);
+		assertEquals(2, objects.size());
+		assertEquals(test.get_ID(), ((Number)objects.get(0)).intValue());
+		assertEquals(test.getTest_UU(), objects.get(1));
+	}
+	
+	@Test
+	public void test_getSQLArrayObjectsEx()
+	{
+		String sql = "SELECT M_Product_ID, Name FROM M_Product WHERE M_Product_ID IN (?, ?, ?)";
+		List<List<Object>> rows = DB.getSQLArrayObjectsEx(null, sql, DictionaryIDs.M_Product.AZALEA_BUSH.id, DictionaryIDs.M_Product.MULCH.id, DictionaryIDs.M_Product.FERTILIZER_50.id);
+		assertEquals(3, rows.size());
+		int match = 0;
+		for(List<Object> row : rows) {
+			assertEquals(2, row.size());
+			Number id = (Number)row.get(0);
+			if (id.intValue() == DictionaryIDs.M_Product.AZALEA_BUSH.id || 
+				id.intValue() == DictionaryIDs.M_Product.MULCH.id || 
+				id.intValue() == DictionaryIDs.M_Product.FERTILIZER_50.id)
+				match++;
+		}
+		assertEquals(3, match);
+		
+		rows = DB.getSQLArrayObjectsEx(getTrxName(), sql, DictionaryIDs.M_Product.AZALEA_BUSH.id, DictionaryIDs.M_Product.MULCH.id, DictionaryIDs.M_Product.FERTILIZER_50.id);
+		assertEquals(3, rows.size());
+		match = 0;
+		for(List<Object> row : rows) {
+			assertEquals(2, row.size());
+			Number id = (Number)row.get(0);
+			if (id.intValue() == DictionaryIDs.M_Product.AZALEA_BUSH.id || 
+				id.intValue() == DictionaryIDs.M_Product.MULCH.id || 
+				id.intValue() == DictionaryIDs.M_Product.FERTILIZER_50.id)
+				match++;
+		}
+		assertEquals(3, match);
+	}
+
+	@Test
+	public void test_NVL() throws Exception
+	{
+		// multi datatype NVL
+		// numeric, integer
+		BigDecimal result = DB.getSQLValueBDEx(null, "SELECT NVL(GrandTotal, 0) FROM C_Order WHERE C_Order_ID=100");
+		assertTrue(result != null);
+		// integer, numeric
+		result = DB.getSQLValueBDEx(null, "SELECT NVL(10, C_Order_ID) FROM C_Order WHERE C_Order_ID=100");
+		assertTrue(result != null);
+		// Varchar, Text
+		String resultStr = DB.getSQLValueStringEx(null, "SELECT NVL(Description, C_Charge_ID||' ') FROM C_Charge WHERE C_Charge_ID=101");
+		assertTrue(resultStr != null);
+	}
+	
 }

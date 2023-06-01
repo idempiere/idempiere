@@ -15,7 +15,6 @@ package org.adempiere.webui.apps.form;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
@@ -33,12 +32,11 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.editor.WNumberEditor;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.grid.PaymentFormCheck;
 import org.compiere.model.GridTab;
-import org.compiere.model.MBankAccountProcessor;
-import org.compiere.model.MConversionRate;
 import org.compiere.model.MPaymentValidate;
+import org.compiere.model.X_C_Order;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -50,37 +48,42 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Space;
 
 /**
- * 
+ * Form for check payment rule ({@link X_C_Order#PAYMENTRULE_Check}).
  * @author Elaine
- *
  */
 public class WPaymentFormCheck extends PaymentFormCheck implements EventListener<Event> {
-
+	/** Payment form window instance */
 	private WPaymentFormWindow window;
 	
 	private Label sBankAccountLabel = new Label();
 	private Listbox sBankAccountCombo = ListboxFactory.newDropdownListbox();
-	private Label sCurrencyLabel = new Label();
-	private Listbox sCurrencyCombo = ListboxFactory.newDropdownListbox();
-	private Space sCurrencySpace = new Space();
 	private Label sAmountLabel = new Label();
 	private WNumberEditor sAmountField = new WNumberEditor();
 	private Label sRoutingLabel = new Label();
 	private Textbox sRoutingField = new Textbox();
 	private Label sNumberLabel = new Label();
+	/** Account number field */
 	private Textbox sNumberField = new Textbox();
+	/** Check number field */
 	private Textbox sCheckField = new Textbox();
 	private Label sCheckLabel = new Label();
 	private Button sOnline = new Button();
 	private Label sStatus = new Label();
 	
+	/**
+	 * @param windowNo
+	 * @param mTab
+	 */
 	public WPaymentFormCheck(int windowNo, GridTab mTab) {
 		super(windowNo, mTab);
 		window = new WPaymentFormWindow(this, windowNo);
 		init();
 	}
-	
-	public void init() {
+
+	/**
+	 * Layout {@link #window}
+	 */
+	protected void init() {
 		Grid sPanelLayout = GridFactory.newGridLayout();
 		window.getPanel().appendChild(sPanelLayout);
 		sBankAccountLabel.setText(Msg.translate(Env.getCtx(), "C_BankAccount_ID"));
@@ -89,7 +92,6 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		sNumberLabel.setText(Msg.translate(Env.getCtx(), "AccountNo"));
 		sCheckLabel.setText(Msg.translate(Env.getCtx(), "CheckNo"));
 		sCheckField.setCols(8);
-		sCurrencyLabel.setText(Msg.translate(Env.getCtx(), "C_Currency_ID"));
 		ZKUpdateUtil.setWidth(sNumberField, "100pt");
 		ZKUpdateUtil.setWidth(sRoutingField, "70pt");
 		sOnline.setLabel(Msg.getMsg(Env.getCtx(), "Online"));
@@ -114,10 +116,6 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		Row row = rows.newRow();
 		row.appendChild(sBankAccountLabel.rightAlign());
 		row.appendChild(sBankAccountCombo);
-		
-		row = rows.newRow();
-		row.appendChild(sCurrencyLabel.rightAlign());
-		row.appendChild(sCurrencyCombo);
 		
 		row = rows.newRow();
 		row.appendChild(sAmountLabel.rightAlign());
@@ -159,26 +157,6 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 			sAmountField.setValue(m_mPayment.getPayAmt());
 		}
 		
-		//	Is the currency an EMU currency?
-		Integer C_Currency_ID = Integer.valueOf(m_C_Currency_ID);
-		if (s_Currencies.containsKey(C_Currency_ID))
-		{
-			Enumeration<Integer> en = s_Currencies.keys();
-			while (en.hasMoreElements())
-			{
-				Object key = en.nextElement();
-				sCurrencyCombo.addItem(s_Currencies.get(key));
-			}
-			sCurrencyCombo.addActionListener(this);
-			sCurrencyCombo.setSelectedKeyNamePair(s_Currencies.get(C_Currency_ID));
-		}
-		else	//	No EMU Currency
-		{
-			sCurrencyLabel.setVisible(false);	//	Check
-			sCurrencyCombo.setVisible(false);
-			sCurrencySpace.setVisible(false);
-		}
-
 		ArrayList<KeyNamePair> list = getBankAccountList();
 		for (KeyNamePair pp : list)
 			sBankAccountCombo.addItem(pp);
@@ -186,30 +164,15 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		//	Set Selection
 		if (selectedBankAccount != null)
 			sBankAccountCombo.setSelectedKeyNamePair(selectedBankAccount);
-		
-		boolean exist = isBankAccountProcessorExist(m_C_Currency_ID, (BigDecimal) sAmountField.getValue());
-		sOnline.setVisible(exist);
-		
-		if (exist)
-			updateOnlineButton();
+			
+		updateOnlineButton();
 	}
 	
+	@Override
 	public void onEvent(Event e)
 	{
-		if (e.getTarget() == sCurrencyCombo || e.getTarget() == sAmountField)
+		if (e.getTarget() == sAmountField)
 		{
-			int C_Currency_ID = 0;
-			KeyNamePair pp = sCurrencyCombo.getSelectedItem().toKeyNamePair();
-			if (pp != null)
-				C_Currency_ID = pp.getKey();
-					
-			if (e.getTarget() == sCurrencyCombo)
-			{
-				BigDecimal amt = MConversionRate.convert(Env.getCtx(),
-						m_Amount, m_C_Currency_ID, C_Currency_ID, m_AD_Client_ID, m_AD_Org_ID);
-				sAmountField.setValue(amt);
-			}
-			
 			updateOnlineButton();
 		}
 		else if (e.getTarget() == sOnline) 
@@ -219,28 +182,16 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		}
 	}
 	
+	/**
+	 * Set visibility of {@link #sOnline} depends on the availability of bank account processor
+	 * ({@link #isBankAccountProcessorExist(int, BigDecimal)}).
+	 */
 	private void updateOnlineButton()
 	{
-		int C_Currency_ID = 0;
-		KeyNamePair pp = sCurrencyCombo.getSelectedItem().toKeyNamePair();
-		if (pp != null)
-			C_Currency_ID = pp.getKey();
-				
-		BigDecimal PayAmt = (BigDecimal) sAmountField.getValue();
-		
-		if (C_Currency_ID > 0 && PayAmt != null)
-		{
-			MBankAccountProcessor bankAccountProcessor = getBankAccountProcessor(C_Currency_ID, PayAmt);
-			sOnline.setEnabled(bankAccountProcessor != null);
-			setBankAccountProcessor(bankAccountProcessor);
-		}
-		else
-		{
-			sOnline.setEnabled(false);
-			setBankAccountProcessor(null);
-		}
+		boolean exist = isBankAccountProcessorExist(m_C_Currency_ID, (BigDecimal) sAmountField.getValue());
+		sOnline.setVisible(exist);
 	}
-	
+		
 	@Override
 	public boolean checkMandatory() {
 		int C_BankAccount_ID = 0;
@@ -255,26 +206,26 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		String error = MPaymentValidate.validateRoutingNo(sRoutingField.getText());
 		if (error.length() != 0)
 		{
-			FDialog.error(getWindowNo(), window, error);
+			Dialog.error(getWindowNo(), error);
 			dataOK = false;
 		}
 		error = MPaymentValidate.validateAccountNo(sNumberField.getText());
 		if (error.length() != 0)
 		{
-			FDialog.error(getWindowNo(), window, error);
+			Dialog.error(getWindowNo(), error);
 			dataOK = false;
 		}
 		error = MPaymentValidate.validateCheckNo(sCheckField.getText());
 		if (error.length() != 0)
 		{
-			FDialog.error(getWindowNo(), window, error);
+			Dialog.error(getWindowNo(), error);
 			dataOK = false;
 		}
 		
 		// Check & Cash (Payment) must have a bank account
 		if (C_BankAccount_ID == 0)
 		{
-			FDialog.error(getWindowNo(), window, "FillMandatory", sBankAccountLabel.getValue());
+			Dialog.error(getWindowNo(), "FillMandatory", sBankAccountLabel.getValue());
 			dataOK = false;
 		}
 		//
@@ -293,9 +244,9 @@ public class WPaymentFormCheck extends PaymentFormCheck implements EventListener
 		boolean ok = save(newC_BankAccount_ID, sRoutingField.getText(), sNumberField.getText(), 
 				sCheckField.getText(), (BigDecimal) sAmountField.getValue(), trxName);		
 		if (!ok)
-			FDialog.error(getWindowNo(), window, "PaymentError", processMsg);
+			Dialog.error(getWindowNo(), "PaymentError", processMsg);
 		else if (processMsg != null)
-			FDialog.info(getWindowNo(), window, "PaymentCreated", m_mPayment.getDocumentNo());
+			Dialog.info(getWindowNo(), "PaymentCreated", m_mPayment.getDocumentNo());
 		
 		return ok;
 	}

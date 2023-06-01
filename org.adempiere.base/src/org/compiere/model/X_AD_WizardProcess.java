@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_WizardProcess
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_WizardProcess")
 public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_AD_WizardProcess extends PO implements I_AD_WizardProcess, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_WizardProcess (Properties ctx, int AD_WizardProcess_ID, String trxName)

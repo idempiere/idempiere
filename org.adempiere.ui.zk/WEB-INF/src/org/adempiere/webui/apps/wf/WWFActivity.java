@@ -42,7 +42,7 @@ import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -50,6 +50,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MRefList;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.Query;
+import org.compiere.model.SystemIDs;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -76,7 +77,7 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Vlayout;
 
 /**
- * Direct port from WFActivity
+ * Workflow activity form
  * @author hengsin
  *
  */
@@ -84,7 +85,7 @@ import org.zkoss.zul.Vlayout;
 public class WWFActivity extends ADForm implements EventListener<Event>
 {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1658595186719510159L;
 	/**	Window No					*/
@@ -126,12 +127,19 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	private WListbox listbox = new WListbox();
 
 	private final static String HISTORY_DIV_START_TAG = "<div style='overflow-y:scroll;height: 100px; border: 1px solid #7F9DB9;'>";
+	
+	/**
+	 * default constructor
+	 */
 	public WWFActivity()
 	{
 		super();
 		LayoutUtils.addSclass("workflow-activity-form", this);
 	}
 
+	/**
+	 * Load activities and layout form
+	 */
     protected void initForm()
     {
         loadActivities();
@@ -152,7 +160,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		setTooltipText(bRefresh, "Refresh");
 
         MLookup lookup = MLookupFactory.get(Env.getCtx(), m_WindowNo,
-                0, 10443, DisplayType.Search);
+                0, SystemIDs.COLUMN_AD_WF_ACTIVITY_AD_USER_ID, DisplayType.Search);
         fForward = new WSearchEditor(lookup, Msg.translate(
                 Env.getCtx(), "AD_User_ID"), "", true, false, true);
 
@@ -160,12 +168,20 @@ public class WWFActivity extends ADForm implements EventListener<Event>
         display(-1);
     }
 
+    /**
+     * set tooltip text of btn
+     * @param btn
+     * @param key AD_Message key
+     */
 	private void setTooltipText(Button btn, String key) {
 		String text = Util.cleanAmp(Msg.translate(Env.getCtx(), key));
 		if (!Util.isEmpty(text, true))
 			btn.setTooltiptext(text);
 	}
 
+	/**
+	 * Layout form
+	 */
 	private void init()
 	{
 		Grid grid = new Grid();
@@ -302,6 +318,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		this.setStyle("height: 100%; width: 100%; position: relative;");
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception
 	{
 		Component comp = event.getTarget();
@@ -341,7 +358,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 	/**
 	 * Get active activities count
-	 * @return int
+	 * @return pending activities count
 	 */
 	public int getActivitiesCount()
 	{
@@ -356,7 +373,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 	/**
 	 * 	Load Activities
-	 * 	@return int
+	 * 	@return number of activities loaded
 	 */
 	public int loadActivities()
 	{
@@ -421,7 +438,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	}	//	loadActivities
 
 	/**
-	 * 	Reset Display
+	 * 	Reset form and return activity at selIndex
 	 *	@param selIndex select index
 	 *	@return selected activity
 	 */
@@ -435,6 +452,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 		else
 			fAnswerButton.setImage(ThemeManager.getThemeResource("images/mWindow.png"));
 		fTextMsg.setReadonly(!(selIndex >= 0));
+		fTextMsg.setValue("");
 		bZoom.setEnabled(selIndex >= 0);
 		bOK.setEnabled(selIndex >= 0);
 		fForward.setValue(null);
@@ -462,8 +480,8 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	}	//	resetDisplay
 
 	/**
-	 * 	Display.
-	 * 	Fill Editors
+	 * Display activity at index
+	 * @param index
 	 */
 	public void display (int index)
 	{
@@ -535,7 +553,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 
 
 	/**
-	 * 	Zoom
+	 * Zoom to workflow activity window
 	 */
 	private void cmd_zoom()
 	{
@@ -546,7 +564,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 	}	//	cmd_zoom
 
 	/**
-	 * 	Answer Button
+	 * 	Action Button
 	 */
 	private void cmd_button()
 	{
@@ -563,8 +581,9 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 			MQuery query = MQuery.getEqualQuery(ColumnName, Record_ID);
 			boolean IsSOTrx = m_activity.isSOTrx();
 			//
-			log.info("Zoom to AD_Window_ID=" + AD_Window_ID
-				+ " - " + query + " (IsSOTrx=" + IsSOTrx + ")");
+			if (log.isLoggable(Level.INFO))
+				log.info("Zoom to AD_Window_ID=" + AD_Window_ID
+					+ " - " + query + " (IsSOTrx=" + IsSOTrx + ")");
 
 			AEnv.zoom(AD_Window_ID, query);
 		}
@@ -621,7 +640,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				}
 				if (!m_activity.forwardTo(fw, textMsg))
 				{
-					FDialog.error(m_WindowNo, this, "CannotForward");
+					Dialog.error(m_WindowNo, "CannotForward");
 					trx.rollback();
 					trx.close();
 					return;
@@ -642,7 +661,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				}
 				if (value == null || value.length() == 0)
 				{
-					FDialog.error(m_WindowNo, this, "FillMandatory", Msg.getMsg(Env.getCtx(), "Answer"));
+					Dialog.error(m_WindowNo, "FillMandatory", Msg.getMsg(Env.getCtx(), "Answer"));
 					trx.rollback();
 					trx.close();
 					return;
@@ -658,7 +677,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				catch (Exception e)
 				{
 					log.log(Level.SEVERE, node.getName(), e);
-					FDialog.error(m_WindowNo, this, "Error", e.toString());
+					Dialog.error(m_WindowNo, "Error", e.toString());
 					trx.rollback();
 					trx.close();
 					return;
@@ -678,7 +697,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 				catch (Exception e)
 				{
 					log.log(Level.SEVERE, node.getName(), e);
-					FDialog.error(m_WindowNo, this, "Error", e.toString());
+					Dialog.error(m_WindowNo, "Error", e.toString());
 					trx.rollback();
 					trx.close();
 					return;

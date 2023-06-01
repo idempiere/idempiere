@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Column
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 public interface I_AD_Column 
 {
@@ -55,8 +55,8 @@ public interface I_AD_Column
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -97,16 +97,31 @@ public interface I_AD_Column
 
 	public org.compiere.model.I_AD_Element getAD_Element() throws RuntimeException;
 
+    /** Column name AD_InfoWindow_ID */
+    public static final String COLUMNNAME_AD_InfoWindow_ID = "AD_InfoWindow_ID";
+
+	/** Set Info Window.
+	  * Info and search/select Window
+	  */
+	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID);
+
+	/** Get Info Window.
+	  * Info and search/select Window
+	  */
+	public int getAD_InfoWindow_ID();
+
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
+
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
 
@@ -199,6 +214,21 @@ public interface I_AD_Column
 	public int getAD_Val_Rule_Lookup_ID();
 
 	public org.compiere.model.I_AD_Val_Rule getAD_Val_Rule_Lookup() throws RuntimeException;
+
+    /** Column name AlwaysUpdatableLogic */
+    public static final String COLUMNNAME_AlwaysUpdatableLogic = "AlwaysUpdatableLogic";
+
+	/** Set Always Updatable Logic.
+	  * Logic to determine if field is Updatable irrespective if record&#039;
+s active status or processed status. This logic Applicable only if Always Updatable is N.
+	  */
+	public void setAlwaysUpdatableLogic (String AlwaysUpdatableLogic);
+
+	/** Get Always Updatable Logic.
+	  * Logic to determine if field is Updatable irrespective if record&#039;
+s active status or processed status. This logic Applicable only if Always Updatable is N.
+	  */
+	public String getAlwaysUpdatableLogic();
 
     /** Column name Callout */
     public static final String COLUMNNAME_Callout = "Callout";
@@ -410,13 +440,13 @@ public interface I_AD_Column
     /** Column name IsAutocomplete */
     public static final String COLUMNNAME_IsAutocomplete = "IsAutocomplete";
 
-	/** Set Autocomplete.
-	  * Automatic completion for textfields
+	/** Set Auto complete.
+	  * Automatic completion for text fields
 	  */
 	public void setIsAutocomplete (boolean IsAutocomplete);
 
-	/** Get Autocomplete.
-	  * Automatic completion for textfields
+	/** Get Auto complete.
+	  * Automatic completion for text fields
 	  */
 	public boolean isAutocomplete();
 

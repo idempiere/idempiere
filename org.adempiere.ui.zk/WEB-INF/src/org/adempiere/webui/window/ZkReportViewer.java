@@ -22,6 +22,8 @@ import java.io.StringWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,16 +37,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pdf.Document;
-import org.adempiere.util.ContextRunnable;
+import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BusyDialog;
+import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
-import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
 import org.adempiere.webui.component.Mask;
@@ -52,12 +54,14 @@ import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.desktop.IDesktop;
+import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.DrillEvent;
+import org.adempiere.webui.event.DrillEvent.DrillData;
 import org.adempiere.webui.event.ZoomEvent;
 import org.adempiere.webui.panel.ADForm;
-import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.panel.StatusBarPanel;
 import org.adempiere.webui.report.HTMLExtension;
 import org.adempiere.webui.session.SessionManager;
@@ -65,6 +69,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.util.ZkContextRunnable;
 import org.compiere.model.GridField;
 import org.compiere.model.MArchive;
 import org.compiere.model.MAttachment;
@@ -83,6 +88,7 @@ import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
+import org.compiere.process.ProcessInfo;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -99,6 +105,7 @@ import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -110,7 +117,6 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
@@ -118,7 +124,6 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Tab;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Vlayout;
@@ -139,13 +144,13 @@ import org.zkoss.zul.impl.XulElement;
  * @author Teo Sarca, SC ARHIPAC SERVICE SRL
  * 				<li>FR [ 1762466 ] Add "Window" menu to report viewer.
  * 				<li>FR [ 1894640 ] Report Engine: Excel Export support
- * 
+ *
  * @author Low Heng Sin
  */
-public class ZkReportViewer extends Window implements EventListener<Event>, ITabOnCloseHandler, IReportViewerExportSource {
-	
+public class ZkReportViewer extends Window implements EventListener<Event>, IReportViewerExportSource {
+
 	/**
-	 * generated serial id 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 6307014622485159910L;
 	
@@ -168,7 +173,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	/** Table ID					*/
 	private int					m_AD_Table_ID = 0;
 	private boolean				m_isCanExport;
-	
+	/** Process ID					*/
+	private int 				m_AD_Process_ID = 0;
+
 	private MQuery 		m_ddQ = null;
 	private MQuery 		m_daQ = null;
 	private Menuitem 	m_ddM = null;
@@ -188,12 +195,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private ToolBarButton bExport = new ToolBarButton();
 	private ToolBarButton bWizard = new ToolBarButton();
 	private Listbox comboReport = new Listbox();
+	private Listitem previousSelected = new Listitem();
 	private WTableDirEditor wLanguage;
-	private Label labelDrill = new Label();
-	private Listbox comboDrill = new Listbox();
 	protected Listbox previewType = new Listbox();
 	
 	private ToolBarButton bRefresh = new ToolBarButton();
+	private ToolBarButton bReRun = new ToolBarButton();
 	private Iframe iframe;
 	
 	private Checkbox summary = new Checkbox();
@@ -214,7 +221,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	
 	private ToolBarButton bCloudUpload = new ToolBarButton();
 	protected Map<MAuthorizationAccount, IUploadService> uploadServicesMap = new HashMap<>();
-	
+
 	private final ExportFormat[] exportFormats = new ExportFormat[] {
 		new ExportFormat(POSTSCRIPT_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FilePS"), POSTSCRIPT_FILE_EXT, POSTSCRIPT_MIME_TYPE),
 		new ExportFormat(XML_FILE_EXT + " - " + Msg.getMsg(Env.getCtx(), "FileXML"), XML_FILE_EXT, XML_MIME_TYPE),
@@ -238,7 +245,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	 */
 	public ZkReportViewer(ReportEngine re, String title) {		
 		super();
-		
+
 		init = false;
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
@@ -247,7 +254,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		m_AD_Table_ID = re.getPrintFormat().getAD_Table_ID();
 		if (!MRole.getDefault().isCanReport(m_AD_Table_ID))
 		{
-			FDialog.error(m_WindowNo, this, "AccessCannotReport", m_reportEngine.getName());
+			Dialog.error(m_WindowNo, "AccessCannotReport", m_reportEngine.getName());
 			this.onClose();
 		}
 		m_isCanExport = MRole.getDefault().isCanExport(m_AD_Table_ID);
@@ -404,7 +411,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			catch(Exception e)
 			{
 				log.log(Level.SEVERE, "", e);
-				FDialog.error(m_WindowNo, this, "LoadError", e.getLocalizedMessage());
+				Dialog.error(m_WindowNo, "LoadError", e.getLocalizedMessage());
 				this.onClose();
 			}
 		}
@@ -416,6 +423,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		try {
 			SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, this);
 		} catch (Exception e) {}
+		cleanUp();
 	}
 
 	private void init() {
@@ -489,23 +497,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			appendChild(toolbarPopup);	
 			toolbarPopupLayout = new Vlayout();
 			toolbarPopup.appendChild(toolbarPopupLayout);
-		}
-		
-		labelDrill.setValue(Msg.getMsg(Env.getCtx(), "Drill") + ": ");		
-		comboDrill.setMold("select");
-		comboDrill.setTooltiptext(Msg.getMsg(Env.getCtx(), "Drill"));
-		if (toolbarPopup != null)
-		{
-			Hlayout hl = new Hlayout();
-			hl.setValign("middle");
-			hl.appendChild(labelDrill);
-			hl.appendChild(comboDrill);
-			toolbarPopupLayout.appendChild(hl);
-		}
-		else 
-		{
-			toolBar.appendChild(labelDrill);		
-			toolBar.appendChild(comboDrill);
 		}
 		
 		if (toolbarPopup == null)
@@ -694,7 +685,30 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		bRefresh.addEventListener(Events.ON_CLICK, this);
 		if (ThemeManager.isUseFontIconForImage())
 			LayoutUtils.addSclass("medium-toolbarbutton", bRefresh);
-
+		
+		MPrintFormat pf = m_reportEngine.getPrintFormat();
+		if (pf != null) {
+			if((!pf.isForm()) && (pf.getAD_ReportView_ID() > 0)) {
+				bReRun.setName("ReRun");
+				if (ThemeManager.isUseFontIconForImage())
+					bReRun.setIconSclass("z-icon-ReRun");
+				else
+					bReRun.setImage(ThemeManager.getThemeResource("images/ReRun24.png"));
+				bReRun.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ReRun")));
+				if (toolbarPopup != null)
+				{
+					toolbarPopupLayout.appendChild(bReRun);
+					bReRun.setLabel(bReRun.getTooltiptext());
+				}
+				else
+					toolBar.appendChild(bReRun);
+				bReRun.addEventListener(Events.ON_CLICK, this);
+				if (ThemeManager.isUseFontIconForImage())
+					LayoutUtils.addSclass("medium-toolbarbutton", bReRun);
+			}
+		}
+			
+		
 		bWizard.setName("Wizard");
 		if (ThemeManager.isUseFontIconForImage())
 			bWizard.setIconSclass("z-icon-Wizard");
@@ -719,7 +733,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				more.setIconSclass("z-icon-Expand");
 			else
 				more.setImage(ThemeManager.getThemeResource("images/expand-header.png"));
-//			more.setStyle("float: right;");
+
 			toolBar.appendChild(more);
 			LayoutUtils.addSclass("space-between-content", toolBar);
 			more.addEventListener(Events.ON_CLICK, evt -> {
@@ -774,11 +788,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "_WinInfo_AD_Window_ID", true);
 		if (AD_Window_ID == 0)
 			AD_Window_ID = Env.getZoomWindowID(m_reportEngine.getQuery());
-		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
-		updateToolbarAccess(AD_Window_ID, AD_Process_ID);
-		
+		m_AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
+		updateToolbarAccess(AD_Window_ID, m_AD_Process_ID);
+
 		this.setBorder("normal");
-		
+
 		this.addEventListener("onZoom", new EventListener<Event>() {
 			
 			public void onEvent(Event event) throws Exception {
@@ -799,14 +813,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				if (event instanceof DrillEvent) {
 					Clients.clearBusy();
 					DrillEvent de = (DrillEvent) event;
-					if (de.getData() != null && de.getData() instanceof MQuery) {
-						MQuery query = (MQuery) de.getData();
-						Listitem item = comboDrill.getSelectedItem();
-						if (item != null && item.getValue() != null && item.toString().trim().length() > 0)
-						{
-							query.setTableName(item.getValue().toString());
-							executeDrill(query, event.getTarget());
-						}
+					if (de.getData() != null && de.getData() instanceof DrillData) {
+						DrillData data = (DrillData) de.getData();
+						AEnv.actionDrill(data, m_WindowNo, m_AD_Process_ID);
 					}
 				}
 				
@@ -819,9 +828,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				if (event instanceof DrillEvent) {
 					Clients.clearBusy();
 					DrillEvent de = (DrillEvent) event;
-					if (de.getData() != null && de.getData() instanceof MQuery) {
-						MQuery query = (MQuery) de.getData();
-						executeDrill(query, event.getTarget());
+					if (de.getData() != null && de.getData() instanceof DrillData) {
+						DrillData data = (DrillData) de.getData();
+						executeDrillDown(data, event.getTarget());
 					}
 				}
 				
@@ -829,8 +838,23 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		});
 		
 		init = true;
-		
+
 		Events.echoEvent("onPostInit", this, null);
+
+		setTabOnCloseHandler();
+	}
+
+	private void setTabOnCloseHandler() {
+		Component parent = this.getParent();
+		while (parent != null) {
+			if (parent instanceof Tabpanel) {
+				Tabpanel parentTabPanel = (Tabpanel) parent;
+				parentTabPanel.setOnCloseHandler(t -> {
+				});
+				break;
+			}
+			parent = parent.getParent();
+		}
 	}
 
 	/**
@@ -987,66 +1011,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		
 		fillComboReport(m_reportEngine.getPrintFormat().get_ID());
 
-		//	fill Drill Options (Name, TableName)
-		comboDrill.appendItem("", null);
-		String sql = "SELECT t.AD_Table_ID, t.TableName, e.PrintName, NULLIF(e.PO_PrintName,e.PrintName) "
-			+ "FROM AD_Column c "
-			+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
-			+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.IsView='N' AND t.AD_Table_ID <> c.AD_Table_ID)"
-			+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
-			+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName) "
-			+ "WHERE c.AD_Table_ID=? AND c.IsKey='Y' "
-			+ "ORDER BY 3";
-		boolean trl = !Env.isBaseLanguage(Env.getCtx(), "AD_Element");
-		if (trl)
-			sql = "SELECT t.AD_Table_ID, t.TableName, et.PrintName, NULLIF(et.PO_PrintName,et.PrintName) "
-				+ "FROM AD_Column c"
-				+ " INNER JOIN AD_Column used ON (c.ColumnName=used.ColumnName)"
-				+ " INNER JOIN AD_Table t ON (used.AD_Table_ID=t.AD_Table_ID AND t.IsView='N' AND t.AD_Table_ID <> c.AD_Table_ID)"
-				+ " INNER JOIN AD_Column cKey ON (t.AD_Table_ID=cKey.AD_Table_ID AND cKey.IsKey='Y')"
-				+ " INNER JOIN AD_Element e ON (cKey.ColumnName=e.ColumnName)"
-				+ " INNER JOIN AD_Element_Trl et ON (e.AD_Element_ID=et.AD_Element_ID) "
-				+ "WHERE c.AD_Table_ID=? AND c.IsKey='Y'"
-				+ " AND et.AD_Language=? "
-				+ "ORDER BY 3";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setInt(1, m_reportEngine.getPrintFormat().getAD_Table_ID());
-			if (trl)
-				pstmt.setString(2, Env.getAD_Language(Env.getCtx()));
-			rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				String tableName = rs.getString(2);
-				String name = rs.getString(3);
-				String poName = rs.getString(4);
-				if (poName != null)
-					name += "/" + poName;
-				comboDrill.appendItem(name, tableName);
-			}
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		
-		if (comboDrill.getItemCount() == 1)
-		{
-			labelDrill.setVisible(false);
-			comboDrill.setVisible(false);
-		}
-		else
-			comboDrill.addEventListener(Events.ON_SELECT, this);
-
 		revalidate();
 	}	//	dynInit
 	
@@ -1101,6 +1065,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 				{
 					selectValue = pp;
 					if(selectValue != null)
+						previousSelected = comboReport.getSelectedItem();
 						comboReport.setSelectedItem(li);
 				}
 			}
@@ -1123,6 +1088,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
 			KeyNamePair pp = new KeyNamePair(-1, sb.toString());
 			comboReport.appendItem(pp.getName(), pp.getKey());
+			sb = new StringBuffer("** ").append(Msg.getMsg(m_ctx, "CopyReport")).append(" **");
+			pp = new KeyNamePair(-2, sb.toString());
+			comboReport.addItem(pp);
 		}
 		comboReport.addEventListener(Events.ON_SELECT, this);
 	}	//	fillComboReport
@@ -1157,25 +1125,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		cleanUp();
 		super.onClose();
 	}	//	dispose
-
-	@Override
-	public void onClose(Tabpanel tabPanel) {
-		Tab tab = tabPanel.getLinkedTab();
-		tab.close();
-		cleanUp();
-	}
-	
-	
-	@Override
-	public void setParent(Component parent) {
-		super.setParent(parent);
-		if (parent != null) {
-			if (parent instanceof Tabpanel) {
-				Tabpanel tabPanel = (Tabpanel) parent;
-				tabPanel.setOnCloseHandler(this);
-			}
-		}
-	}
 
 	private void cleanUp() {
 		if (m_reportEngine != null || m_WindowNo >= 0)
@@ -1217,6 +1166,19 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	        	this.onCtrlKeyEvent(keyEvent);
         	}
 		}
+        else if (event.getTarget() instanceof ProcessModalDialog)
+        {
+		if(DialogEvents.ON_WINDOW_CLOSE.equals(event.getName()))
+		{
+			hideBusyMask();
+			ProcessModalDialog dialog = (ProcessModalDialog) event.getTarget();
+			if (dialog.isCancel())
+			{
+				if (getDesktop() != null)
+					clearTabOnCloseHandler();
+			}
+		}
+        }
 	}
 
 	private void cmd_upload() {
@@ -1274,6 +1236,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			cmd_Wizard();
 		else if (e.getTarget() == bRefresh)
 			cmd_report();
+		else if (e.getTarget() == bReRun)
+			cmd_reRun();
 		//
 		else if (e.getTarget() == m_ddM)
 			cmd_window(m_ddQ);
@@ -1286,26 +1250,27 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	private void cmd_render() {
 		postRenderReportEvent();		
 	}
-
+	
 	/**
 	 * 	Execute Drill to Query
-	 * 	@param query query
+	 * 	@param data query
 	 *  @param component
 	 */
-	private void executeDrill (MQuery query, Component component)
+	private void executeDrillDown (DrillData data, Component component)
 	{
-		int AD_Table_ID = MTable.getTable_ID(query.getTableName());
+		int AD_Table_ID = MTable.getTable_ID(data.getQuery().getTableName());
 		if (!MRole.getDefault().isCanReport(AD_Table_ID))
 		{
-			FDialog.error(m_WindowNo, this, "AccessCannotReport", query.getTableName());
+			Dialog.error(m_WindowNo, "AccessCannotReport", data.getQuery().getTableName());
 			return;
 		}
-		if (AD_Table_ID != 0)
-			new WReport (AD_Table_ID, query, component, m_WindowNo);
+		if (AD_Table_ID != 0) {
+			new WReport (AD_Table_ID, data.getQuery(), component, m_WindowNo);
+		}
 		else
-			log.warning("No Table found for " + query.getWhereClause(true));
+			log.warning("No Table found for " + data.getQuery().getWhereClause(true));
 	}	//	executeDrill
-	
+
 	/**
 	 * 	Open Window
 	 *	@param query query
@@ -1360,9 +1325,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			success = archive.save();
 		}
 		if (success)
-			FDialog.info(m_WindowNo, this, "Archived");
+			Dialog.info(m_WindowNo, "Archived");
 		else
-			FDialog.error(m_WindowNo, this, "ArchiveError");
+			Dialog.error(m_WindowNo, "ArchiveError");
 	}	//	cmd_archive
 
 	/**
@@ -1383,9 +1348,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		attachment.addEntry(fileName, data);
 		success = attachment.save();
 		if (success)
-			FDialog.info(m_WindowNo, this, "DocumentAttached", fileName);
+			Dialog.info(m_WindowNo, "DocumentAttached", fileName);
 		else
-			FDialog.error(m_WindowNo, this, "AttachError");
+			Dialog.error(m_WindowNo, "AttachError");
 	}	//	cmd_attachment
 
 	/**
@@ -1396,7 +1361,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		log.config("");
 		if (!m_isCanExport)
 		{
-			FDialog.error(m_WindowNo, this, "AccessCannotExport", getTitle());
+			Dialog.error(m_WindowNo, "AccessCannotExport", getTitle());
 			return;
 		}
 		
@@ -1405,7 +1370,18 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		winExportFile.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
 		AEnv.showWindow(winExportFile);
 	}	//	cmd_export
-		
+	
+	/**
+	 * Sets AD_PrintFormat_Trl Name to AD_PrintFormat Name
+	 * @param pf
+	 */
+	private void resetPrintFormatTrl(MPrintFormat pf) {
+		String sql = "UPDATE AD_PrintFormat_Trl pf "
+				+ " SET Name = '" + pf.getName() + "' "
+				+ " WHERE pf.AD_PrintFormat_ID = " + pf.getAD_PrintFormat_ID();
+		DB.executeUpdate(sql, null);
+	}
+	
 	/**
 	 * 	Report Combo - Start other Report or create new one
 	 */
@@ -1417,6 +1393,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		Object pp = li.getValue();
 		if (pp == null)
 			return;
+		
+		setTabOnCloseHandler();
 		//
 		MPrintFormat pf = null;
 		int AD_PrintFormat_ID = Integer.valueOf(pp.toString());
@@ -1424,42 +1402,149 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		//	create new
 		if (AD_PrintFormat_ID == -1)
 		{
-			int AD_ReportView_ID = m_reportEngine.getPrintFormat().getAD_ReportView_ID();
-			if (AD_ReportView_ID != 0)
-			{
-				String name = m_reportEngine.getName();
-				int index = name.lastIndexOf('_');
-				if (index != -1)
-					name = name.substring(0,index);
-				pf = MPrintFormat.createFromReportView(m_ctx, AD_ReportView_ID, name);
-			}
-			else
-			{
-				int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
-				pf = MPrintFormat.createFromTable(m_ctx, AD_Table_ID);
-			}
-			if (pf != null)
-				fillComboReport(pf.get_ID());
-			else
-				return;
+			WEditor editor = new WStringEditor();
+			ZKUpdateUtil.setWidth((HtmlBasedComponent)editor.getComponent(), "98%");
+			Dialog.askForInputWithCancel(m_WindowNo, editor, "CreateNewPrintFormat",  Msg.getMsg(m_ctx, "CreateNewPrintFormatTitle"), new Callback<Map.Entry<Boolean, Object>>() {
+				public void onCallback(Map.Entry<Boolean, Object> result) {
+					if((result == null) || (!(result.getValue() instanceof String)) || (!result.getKey())) {
+						comboReport.setSelectedItem(previousSelected);
+						return;
+					}
+					MPrintFormat pf = null;
+					if (!Util.isEmpty((String)result.getValue())) {
+						int AD_ReportView_ID = m_reportEngine.getPrintFormat().getAD_ReportView_ID();
+						if (AD_ReportView_ID != 0)
+						{
+							String name = (String)result.getValue();
+							pf = MPrintFormat.createFromReportView(m_ctx, AD_ReportView_ID, name);
+						}
+						else
+						{
+							int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
+							pf = MPrintFormat.createFromTable(m_ctx, AD_Table_ID);
+						}
+						if (pf != null) {
+							pf.setName((String)result.getValue());
+							if(!pf.save()) {
+								Calendar cal = Calendar.getInstance();
+								SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+								String dt = sdf.format(cal.getTime());
+								pf.setName(pf.getName() + "_" + dt);
+								pf.saveEx();
+							}
+							resetPrintFormatTrl(pf);
+							fillComboReport(pf.get_ID());
+						}
+						else
+							return;
+//						Get Language from previous - thanks Gunther Hoppe 
+						if (m_reportEngine.getPrintFormat() != null)
+						{
+							setLanguage();
+							pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
+							pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
+						}
+						
+						m_reportEngine.setPrintFormat(pf);
+						m_reportEngine.initName();
+						postRenderReportEvent();
+					}
+					else {
+						comboReport.setSelectedItem(previousSelected);
+					}
+				}
+			});
+		} else if (AD_PrintFormat_ID == -2) {
+			WEditor editor = new WStringEditor();
+			ZKUpdateUtil.setWidth((HtmlBasedComponent)editor.getComponent(), "90%");
+			Dialog.askForInputWithCancel(m_WindowNo, editor, "CreatePrintFormatCopy", Msg.getMsg(m_ctx, "CreatePrintFormatCopyTitle"), new Callback<Map.Entry<Boolean, Object>>() {
+				public void onCallback(Map.Entry<Boolean, Object> result) {
+					if((result == null) || (!(result.getValue() instanceof String)) || (!result.getKey())) {
+						comboReport.setSelectedItem(previousSelected);
+						return;
+					}
+					MPrintFormat pf = null;
+					if (!Util.isEmpty((String)result.getValue())) {
+						MPrintFormat current = m_reportEngine.getPrintFormat();
+						if (current != null) {
+							pf = MPrintFormat.copyToClient(m_ctx,
+									current.getAD_PrintFormat_ID(),
+									Env.getAD_Client_ID(m_ctx));
+
+							if (pf != null) {
+								pf.setName((String)result.getValue());
+								if(!pf.save()) {
+									Calendar cal = Calendar.getInstance();
+									SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+									String dt = sdf.format(cal.getTime());
+									pf.setName(pf.getName() + "_" + dt);
+									pf.saveEx();
+								}
+								resetPrintFormatTrl(pf);
+								fillComboReport(pf.get_ID());
+							}
+							else
+								return;
+						} else
+							return;
+//						Get Language from previous - thanks Gunther Hoppe 
+						if (m_reportEngine.getPrintFormat() != null)
+						{
+							setLanguage();
+							pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
+							pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
+						}
+						m_reportEngine.initName();
+						m_reportEngine.setPrintFormat(pf);
+						postRenderReportEvent();
+					}
+					else {
+						comboReport.setSelectedItem(previousSelected);
+					}
+				}
+			});
 		}
-		else
+		else {
+//			Get Language from previous - thanks Gunther Hoppe 
 			pf = MPrintFormat.get (Env.getCtx(), AD_PrintFormat_ID, true);
-		
-		//	Get Language from previous - thanks Gunther Hoppe 
-		if (m_reportEngine.getPrintFormat() != null)
-		{
-			setLanguage();
-			pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
-			pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
+			if (m_reportEngine.getPrintFormat() != null)
+			{
+				setLanguage();
+				pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
+				pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
+			}
+			m_reportEngine.setPrintFormat(pf);
+			postRenderReportEvent();
 		}
-		m_reportEngine.setPrintFormat(pf);
-		
-		postRenderReportEvent();
 	}	//	cmd_report
 
+	/**
+	 * Refresh With Parameters
+	 */
+	private void cmd_reRun() {
+		int AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
+		if(AD_Process_ID <= 0)
+			return;
+		ProcessInfo pi = new ProcessInfo("RefreshWithParameters", AD_Process_ID);
+		pi.setReplaceTabContent();
+		setTabOnCloseHandler();
+		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi);
+		ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
+		this.getParent().appendChild(processModalDialog);
+		if (ClientInfo.isMobile())
+		{
+			processModalDialog.doHighlighted();
+		}
+		else
+		{
+			showBusyMask(processModalDialog);
+			LayoutUtils.openOverlappedWindow(this, processModalDialog, "middle_center");
+		}
+		processModalDialog.focus();
+}	// cmd_reRun
+	
 	protected void setLanguage (){
-		if (MClient.get(m_ctx).isMultiLingualDocument() && wLanguage.getValue() != null){
+		if (MClient.get(m_ctx).isMultiLingualDocument() && wLanguage != null && wLanguage.getValue() != null){
 			MLanguage language = new MLanguage (m_ctx, (int)wLanguage.getValue(), null);
 			Language lang = new Language(language.getName(), language.getAD_Language(), language.getLocale());
 			m_reportEngine.setLanguageID(language.getAD_Language_ID());
@@ -1691,21 +1776,23 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 	
 	private void showBusyMask(Window window) {
 		getParent().appendChild(getMask());
-		StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
+		StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
 		script.append(getParent().getUuid()).append("');");
 		if (window != null) {
-			script.append("var d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
+			script.append("let d=zk.Widget.$('#").append(window.getUuid()).append("');w.busy=d;");
 		} else {
 			script.append("w.busy=true;");
 		}
+		script.append("})()");
 		Clients.response(new AuScript(script.toString()));
 	}
 	
 	public void hideBusyMask() {
 		if (mask != null && mask.getParent() != null) {
 			mask.detach();
-			StringBuilder script = new StringBuilder("var w=zk.Widget.$('#");
-			script.append(getParent().getUuid()).append("');w.busy=false;");
+			StringBuilder script = new StringBuilder("(function(){let w=zk.Widget.$('#");
+			script.append(getParent().getUuid()).append("');if(w){w.busy=false;}");
+			script.append("})()");
 			Clients.response(new AuScript(script.toString()));
 		}
 	}
@@ -1716,9 +1803,26 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 			progressWindow.dispose();
 			progressWindow = null;
 		}
+
+		if (getDesktop() != null)
+			clearTabOnCloseHandler();
 	}
-	
-	static class PDFRendererRunnable extends ContextRunnable implements IServerPushCallback {
+
+	private void clearTabOnCloseHandler() {
+		Executions.schedule(getDesktop(), e -> {
+			Component parent = this.getParent();
+			while (parent != null) {
+				if (parent instanceof Tabpanel) {
+					Tabpanel parentTabPanel = (Tabpanel) parent;
+					parentTabPanel.setOnCloseHandler(null);
+					break;
+				}
+				parent = parent.getParent();
+			}
+		}, new Event("onClearTabOnCloseHandler"));
+	}
+
+	static class PDFRendererRunnable extends ZkContextRunnable implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
 
@@ -1749,14 +1853,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 		@Override
 		public void updateUI() {
-			viewer.labelDrill.setVisible(false);
-			viewer.comboDrill.setVisible(false);
 			viewer.onPreviewReport();
 		}
 		
 	}
 	
-	static class HTMLRendererRunnable extends ContextRunnable implements IServerPushCallback {
+	static class HTMLRendererRunnable extends ZkContextRunnable implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
 		public HTMLRendererRunnable(ZkReportViewer viewer) {
@@ -1786,16 +1888,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		}
 
 		@Override
-		public void updateUI() {						
-			if (viewer.comboDrill.getItemCount() > 1) {
-				viewer.labelDrill.setVisible(true);
-				viewer.comboDrill.setVisible(true);
-			}
+		public void updateUI() {
 			viewer.onPreviewReport();
 		}		
 	}
 	
-	static class XLSRendererRunnable extends ContextRunnable  implements IServerPushCallback {
+	static class XLSRendererRunnable extends ZkContextRunnable  implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
 
@@ -1826,14 +1924,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 		@Override
 		public void updateUI() {
-			viewer.labelDrill.setVisible(false);
-			viewer.comboDrill.setVisible(false);
 			viewer.onPreviewReport();
 		}
 		
 	}
 
-	static class CSVRendererRunnable extends ContextRunnable  implements IServerPushCallback {
+	static class CSVRendererRunnable extends ZkContextRunnable  implements IServerPushCallback {
 
 		private ZkReportViewer viewer;
 
@@ -1862,14 +1958,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 
 		@Override
 		public void updateUI() {
-			viewer.labelDrill.setVisible(false);
-			viewer.comboDrill.setVisible(false);
 			viewer.onPreviewReport();
 		}
 		
 	}
 	
-	protected static class XLSXRendererRunnable extends ContextRunnable implements IServerPushCallback
+	protected static class XLSXRendererRunnable extends ZkContextRunnable implements IServerPushCallback
 	{
 
 		private ZkReportViewer viewer;
@@ -1910,8 +2004,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, ITab
 		@Override
 		public void updateUI()
 		{
-			viewer.labelDrill.setVisible(false);
-			viewer.comboDrill.setVisible(false);
 			viewer.onPreviewReport();
 		}
 

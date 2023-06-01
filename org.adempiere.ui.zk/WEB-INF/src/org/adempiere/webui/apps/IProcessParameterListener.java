@@ -17,7 +17,7 @@ import org.adempiere.webui.editor.WEditor;
 
 /**
  * Listener interface for process parameter panel.
- * Implementation must be thread safe
+ * Implementation must be thread safe.
  * @author hengsin
  *
  */

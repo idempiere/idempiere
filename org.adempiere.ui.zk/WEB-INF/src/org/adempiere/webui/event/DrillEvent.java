@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.event;
 
+import org.compiere.model.MQuery;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 
@@ -32,6 +33,52 @@ public class DrillEvent extends Event {
 	
 	public DrillEvent(String name, Component target, Object data) {
 		super(name, target, data);
+	}
+
+	public static class DrillData {
+
+		private MQuery query;
+
+		private String columnName;
+
+		private String displayValue;
+
+		private Object value;
+
+		/**
+		 * [columnName, displayValue, value, processID - source]
+		 */
+		private Object data;
+
+		public DrillData(MQuery query, String columnName, Object value, String displayValue, Object data) {
+			this.query = query;
+			this.columnName = columnName;
+			this.value = value;
+			this.data = data;
+			this.displayValue = displayValue;
+		}
+
+		public MQuery getQuery() {
+			return query;
+		}
+
+		public String getColumnName() {
+			return columnName;
+		}
+
+		public Object getValue() {
+			return value;
+		}
+
+		public Object getData() {
+			return data;
+		}
+
+		public String getDisplayValue() {
+			return displayValue;
+		}
+
+
 	}
 
 }

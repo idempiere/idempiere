@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
@@ -51,18 +52,13 @@ import org.adempiere.webui.panel.CustomForm;
 import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.SimplePDFViewer;
 import org.compiere.apps.form.PayPrint;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPaySelectionCheck;
-import org.compiere.model.MPaymentBatch;
-import org.compiere.print.MPrintFormat;
-import org.compiere.print.ReportEngine;
-import org.compiere.process.ProcessInfo;
-import org.compiere.process.ServerProcessCtl;
-import org.compiere.util.DB;
+import org.compiere.model.X_C_Order;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -74,14 +70,9 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.South;
 
-import com.lowagie.text.pdf.PdfReader;
-
 /**
- *  Payment Print and Export
+ *  Form to Print and Export payment.
  *
- * 	@author 	Jorg Janke
- * 	@version 	$Id: VPayPrint.java,v 1.2 2006/07/30 00:51:28 jjanke Exp $
- * 
  *  Contributors:
  *    Carlos Ruiz - GlobalQSS - FR 3132033 - Make payment export class configurable per bank 
  *    Markus Bozem:  IDEMPIERE-1546 / IDEMPIERE-3286 
@@ -89,10 +80,11 @@ import com.lowagie.text.pdf.PdfReader;
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VPayPrint")
 public class WPayPrint extends PayPrint implements IFormController, EventListener<Event>, ValueChangeListener
 {
+	/** Custom form/window instance */
 	private CustomForm form = new CustomForm();
 
 	/**
-	 *	Initialize Panel
+	 *	Default constructor
 	 */
 	public WPayPrint()
 	{
@@ -121,41 +113,54 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		}
 	}	//	WPayPrint
 
-	//  Static Variables
-	protected Panel centerPanel = new Panel();
-	protected ConfirmPanel southPanel = new ConfirmPanel(true, false, false, false, false, false, false);
-	protected Grid centerLayout = GridFactory.newGridLayout();
+	/** Action buttons panel. South of {@link #form} */
+	protected ConfirmPanel southPanel = new ConfirmPanel(true, false, false, false, false, false, false);	
+	/** Button to print check */
 	protected Button bPrint = southPanel.createButton(ConfirmPanel.A_PRINT);
+	/** Button to export payment to file */
 	protected Button bExport = southPanel.createButton(ConfirmPanel.A_EXPORT);
 	protected Button bCancel = southPanel.getButton(ConfirmPanel.A_CANCEL);
+	/** Button to process PAYMENTRULE_DirectDeposit payments */
 	protected Button bProcess = southPanel.createButton(ConfirmPanel.A_PROCESS);
+	
+	/** Center of {@link #form} */
+	protected Panel centerPanel = new Panel();		
+	/** Layout of {@link #centerPanel} */
+	protected Grid centerLayout = GridFactory.newGridLayout();
 	protected Label lPaySelect = new Label();
+	/** Payment selections */
 	protected WSearchEditor paySelectSearch = null;
 	protected Label lBank = new Label();
+	/** Bank name from C_BankAccount.C_Bank_ID */
 	protected Label fBank = new Label();
 	protected Label lPaymentRule = new Label();
+	/** Payment rules */
 	protected Listbox fPaymentRule = ListboxFactory.newDropdownListbox();
 	protected Label lDocumentNo = new Label();
+	/** Bank account document number (C_BankAccountDoc). Usually for check number. */
 	protected WNumberEditor fDocumentNo = new WNumberEditor();
 	protected Label lNoPayments = new Label();
+	/** Number of C_PaySelectionCheck records */
 	protected Label fNoPayments = new Label();
 	protected Label lBalance = new Label();
+	/** C_PaySelection.CurrentBalance */
 	protected WNumberEditor fBalance = new WNumberEditor();
 	protected Label lCurrency = new Label();
+	/** ISO_Code from C_BankAccount.C_Currency_ID */
 	protected Label fCurrency = new Label();
 	protected Label lDepositBatch = new Label();
 	protected WYesNoEditor fDepositBatch = new WYesNoEditor("", "", "Book as one post", false, false, true) ;
 	protected Label lSumPayments = new Label();
+	/** Sum of C_PaySelectionCheck.PayAmt */
 	protected WNumberEditor fSumPayments = new WNumberEditor();
 
 	
 	/**
-	 *  Static Init
+	 *  Layout {@link #form}
 	 *  @throws Exception
 	 */
 	protected void zkInit() throws Exception
 	{
-		//
 		centerPanel.appendChild(centerLayout);
 		//
 		bPrint.addActionListener(this);
@@ -247,11 +252,10 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		MLookup lookupPS = MLookupFactory.get (Env.getCtx(), m_WindowNo, 0, AD_Column_ID, DisplayType.Search);
 		paySelectSearch = new WSearchEditor("C_PaySelection_ID", true, false, true, lookupPS);
 		paySelectSearch.addValueChangeListener(this);
-
 	}   //  dynInit
 
 	/**
-	 * 	Dispose
+	 * Close form.
 	 */
 	public void dispose()
 	{
@@ -273,13 +277,13 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	}	//	setsetPaySelection
 
 
-	/**************************************************************************
-	 *  Action Listener
-	 *  @param e event
+	/**
+	 * Event Listener
+	 * @param e event
 	 */
+	@Override
 	public void onEvent(Event e)
 	{
-		//	log.config( "VPayPrint.actionPerformed" + e.toString());
 		if (e.getTarget() == bCancel)
 			dispose();
 		else if (m_C_PaySelection_ID <= 0)
@@ -293,18 +297,17 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			cmd_EFT();
 		else if (e.getTarget() == bPrint)
 			confirm_cmd_print();
-	}   //  actionPerformed
+	}
 
 	/**
-	 *  PaySelect changed - load Bank
+	 * load pay selection details
 	 */
 	protected void loadPaySelectInfo()
 	{
-		log.info( "VPayPrint.loadPaySelectInfo");
 		if (m_C_PaySelection_ID <= 0)
 			return;
 
-		//  load Banks from PaySelectLine
+		//  load details from PaySelectLine
 		loadPaySelectInfo(m_C_PaySelection_ID);
 
 		fBank.setText(bank);
@@ -319,7 +322,6 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	 */
 	protected void loadPaymentRule()
 	{
-		log.info("");
 		if (m_C_BankAccount_ID == -1)
 			return;
 
@@ -349,7 +351,6 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			return;
 		String PaymentRule = pp.getValue();
 
-		log.info("PaymentRule=" + PaymentRule);
 		fNoPayments.setText(" ");
 
 		String msg = loadPaymentRuleInfo(m_C_PaySelection_ID, PaymentRule);
@@ -359,19 +360,21 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		
 		if(sumPayments != null)
 			fSumPayments.setValue(sumPayments);
-
-		bProcess.setEnabled(PaymentRule.equals("T"));
+		
+		bProcess.setEnabled(PaymentRule.equals(X_C_Order.PAYMENTRULE_DirectDeposit));
 
 		if(documentNo != null)
 			fDocumentNo.setValue(documentNo);
 
 		if(msg != null && msg.length() > 0)
-			FDialog.error(m_WindowNo, form, msg);
+			Dialog.error(m_WindowNo, msg);
 		
 		getPluginFeatures();
 	}   //  loadPaymentRuleInfo
 
-
+	/**
+	 * load payment export class
+	 */
 	protected void getPluginFeatures()
 	{
 		if (m_C_PaySelection_ID!=0)
@@ -406,15 +409,14 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	}   // getPluginFeatures 
 	
 	
-	/**************************************************************************
-	 *  Export payments to file
+	/**
+	 * Export payments to file
 	 */
 	protected void cmd_export()
 	{
 		if (fPaymentRule.getSelectedItem() == null)
 			return;
 		String PaymentRule = fPaymentRule.getSelectedItem().toValueNamePair().getValue();
-		log.info(PaymentRule);
 		if (!getChecks(PaymentRule))
 			return;
 
@@ -442,10 +444,10 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			
 			if (no >= 0) {
 				Filedownload.save(new FileInputStream(tempFile), m_PaymentExport.getContentType(), filenameForDownload);
-				FDialog.info(m_WindowNo, form, "Saved",
+				Dialog.info(m_WindowNo, "Saved",
 						Msg.getMsg(Env.getCtx(), "NoOfLines") + "=" + no);
 
-				FDialog.ask(m_WindowNo, form, "VPayPrintSuccess?", new Callback<Boolean>() {
+				Dialog.ask(m_WindowNo, "VPayPrintSuccess?", new Callback<Boolean>() {
 					
 					@Override
 					public void onCallback(Boolean result) 
@@ -459,7 +461,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 					}
 				});
 			} else {
-				FDialog.error(m_WindowNo, form, "Error", err.toString());
+				Dialog.error(m_WindowNo, "Error", err.toString());
 			}
 			dispose();
 		}
@@ -475,7 +477,6 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	protected void cmd_EFT()
 	{
 		String PaymentRule = fPaymentRule.getSelectedItem().toValueNamePair().getValue();
-		log.info(PaymentRule);
 		if (!getChecks(PaymentRule))
 			return;
 		dispose();
@@ -486,7 +487,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	 */
 	protected void confirm_cmd_print()
 	{
-		FDialog.ask(m_WindowNo, form, "CreatePayments?", new Callback<Boolean>() {
+		Dialog.ask(m_WindowNo, "CreatePayments?", new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 
@@ -506,7 +507,6 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	protected void cmd_print()
 	{
 		String PaymentRule = fPaymentRule.getSelectedItem().toValueNamePair().getValue();
-		log.info(PaymentRule);
 		if (!getChecks(PaymentRule))
 			return;
 		
@@ -515,53 +515,15 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		if (log.isLoggable(Level.CONFIG)) log.config("DocumentNo=" + startDocumentNo);
 
 		//	for all checks
-		List<File> pdfList = new ArrayList<File>();
-		int lastDocumentNo = startDocumentNo;
-		for (int i = 0; i < m_checks.length; i++)
+		List<File> pdfList = null;
+		try
 		{
-			MPaySelectionCheck check = m_checks[i];
-			
-			//	Set new Check Document No
-			check.setDocumentNo(String.valueOf(lastDocumentNo));
-			check.saveEx(); 
-			
-			//	Update BankAccountDoc
-			MPaySelectionCheck.confirmPrint(m_checks[i], m_batch);
-
-			//	ReportCtrl will check BankAccountDoc for PrintFormat
-			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.CHECK, check.get_ID());
-			try
-			{
-				MPrintFormat format = re.getPrintFormat();
-				File pdfFile = null;
-				if (format.getJasperProcess_ID() > 0)	
-				{
-					ProcessInfo pi = new ProcessInfo("", format.getJasperProcess_ID());
-					pi.setRecord_ID(check.get_ID());
-					pi.setIsBatch(true);
-										
-					ServerProcessCtl.process(pi, null);
-					pdfFile = pi.getPDFReport();
-				}
-				else
-				{
-					pdfFile = File.createTempFile("WPayPrint", null);
-					re.getPDF(pdfFile);
-				}
-				
-				if (pdfFile != null)
-				{
-					// increase the check document no by the number of pages of the generated pdf file
-					PdfReader document = new PdfReader(pdfFile.getAbsolutePath());
-					lastDocumentNo += document.getNumberOfPages(); 
-					pdfList.add(pdfFile);
-				}
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				return;
-			}
+			pdfList = createCheckDocuments(startDocumentNo, PaymentRule);
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+			return;
 		}
 
 		SimplePDFViewer chequeViewer = null;
@@ -580,17 +542,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		}
 		final SimplePDFViewer chequeViewerRef = chequeViewer;
 
-		//	Update Check Next Document No		
-		if (startDocumentNo != lastDocumentNo)
-		{
-			StringBuilder sb = new StringBuilder();
-			sb.append("UPDATE C_BankAccountDoc SET CurrentNext=").append(lastDocumentNo)
-				.append(" WHERE C_BankAccount_ID=").append(m_C_BankAccount_ID)
-				.append(" AND PaymentRule='").append(PaymentRule).append("'");
-			DB.executeUpdate(sb.toString(), null);
-		}
-
-		FDialog.ask(m_WindowNo, form, "VPayPrintPrintRemittance", new Callback<Boolean>() {
+		Dialog.ask(m_WindowNo, "VPayPrintPrintRemittance", new Callback<Boolean>() {
 
 			@Override
 			public void onCallback(Boolean result) 
@@ -598,35 +550,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 				SimplePDFViewer remitViewer = null;
 				if (result)
 				{
-					List<File> pdfList = new ArrayList<File>();
-					for (int i = 0; i < m_checks.length; i++)
-					{
-						MPaySelectionCheck check = m_checks[i];
-						ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.REMITTANCE, check.get_ID());
-						try
-						{
-							MPrintFormat format = re.getPrintFormat();
-							if (format.getJasperProcess_ID() > 0)	
-							{
-								ProcessInfo pi = new ProcessInfo("", format.getJasperProcess_ID());
-								pi.setRecord_ID(check.get_ID());
-								pi.setIsBatch(true);
-								
-								ServerProcessCtl.process(pi, null);
-								pdfList.add(pi.getPDFReport());
-							}
-							else
-							{
-								File file = File.createTempFile("WPayPrint", null);
-								re.getPDF(file);
-								pdfList.add(file);
-							}
-						}
-						catch (Exception e)
-						{
-							log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-						}
-					}
+					List<File> pdfList = createRemittanceDocuments();
 	
 					try
 					{
@@ -655,44 +579,31 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 	}   //  cmd_print
 
 
-	/**************************************************************************
+	/**
 	 *  Get Checks
 	 *  @param PaymentRule Payment Rule
 	 *  @return true if payments were created
 	 */
 	protected boolean getChecks(String PaymentRule)
 	{
-		//  do we have values
-		if (m_C_PaySelection_ID <= 0 || m_C_BankAccount_ID == -1
-			|| fPaymentRule.getSelectedIndex() == -1 || fDocumentNo.getValue() == null)
-		{
-			FDialog.error(m_WindowNo, form, "VPayPrintNoRecords",
-				"(" + Msg.translate(Env.getCtx(), "C_PaySelectionLine_ID") + "=0)");
-			return false;
-		}
-
-		if (log.isLoggable(Level.CONFIG)) log.config("C_PaySelection_ID=" + m_C_PaySelection_ID + ", PaymentRule=" +  PaymentRule);
+		AtomicReference<ValueNamePair> error = new AtomicReference<>();
 		
-		//	get payment selection checks without check no assignment
-		m_checks = MPaySelectionCheck.get(m_C_PaySelection_ID, PaymentRule, null);
-
-		//
-		if (m_checks == null || m_checks.length == 0)
+		boolean ok = getChecks(PaymentRule, fDocumentNo.getValue(), error, null);
+		if (!ok) 
 		{
-			FDialog.error(m_WindowNo, form, "VPayPrintNoRecords",
-				"(" + Msg.translate(Env.getCtx(), "C_PaySelectionLine_ID") + " #0");
-			return false;
+			if (error.get() != null)
+				Dialog.error(m_WindowNo, error.get().getValue(), error.get().getName());
 		}
-		m_batch = MPaymentBatch.getForPaySelection (Env.getCtx(), m_C_PaySelection_ID, null);
-		return true;
+		return ok;		
 	}   //  getChecks
 
+	@Override
 	public ADForm getForm() {
 		return form;
 	}
 
 	/**
-	 *  Vetoable Change Listener.
+	 *  Vetoable Change Listener.<br/>
 	 *  - Payment Selection
 	 *  @param e event
 	 */
@@ -712,5 +623,4 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 			loadPaySelectInfo();
 		}
 	}
-
-}   //  PayPrint
+}

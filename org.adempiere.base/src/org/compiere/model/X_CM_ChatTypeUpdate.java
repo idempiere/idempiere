@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for CM_ChatTypeUpdate
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="CM_ChatTypeUpdate")
 public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Persistent 
 {
@@ -30,7 +30,7 @@ public class X_CM_ChatTypeUpdate extends PO implements I_CM_ChatTypeUpdate, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_CM_ChatTypeUpdate (Properties ctx, int CM_ChatTypeUpdate_ID, String trxName)

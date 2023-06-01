@@ -2,7 +2,7 @@
 <feature
       id="org.adempiere.base.feature"
       label="Adempiere Base"
-      version="9.0.0.qualifier"
+      version="10.0.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">

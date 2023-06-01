@@ -47,7 +47,7 @@ public class MRMA extends X_M_RMA implements DocAction
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6196067840638153414L;
+	private static final long serialVersionUID = -8352164928046804628L;
 
 	/**
 	 * 	Standard Constructor
@@ -170,7 +170,7 @@ public class MRMA extends X_M_RMA implements DocAction
        else
        {
            String sqlStmt = "SELECT C_Invoice_ID FROM C_Invoice WHERE C_Order_ID=?";
-           invId = DB.getSQLValueEx(null, sqlStmt, shipment.getC_Order_ID());
+           invId = DB.getSQLValueEx(get_TrxName(), sqlStmt, shipment.getC_Order_ID());
        }
 
        if (invId <= 0)
@@ -952,5 +952,22 @@ public class MRMA extends X_M_RMA implements DocAction
 		MTaxProvider[] retValue = new MTaxProvider[providers.size()];
 		providers.values().toArray(retValue);
 		return retValue;
+	}
+	
+	/**
+	 * Create Line from inoutline
+	 * @param M_InOutLine_ID
+	 * @param MovementQty
+	 * @param Description
+	 */
+	public void createLineFrom(int M_InOutLine_ID, BigDecimal MovementQty, String Description)
+	{
+		MRMALine rmaLine = new MRMALine(Env.getCtx(), 0, get_TrxName());
+		rmaLine.setM_RMA_ID(getM_RMA_ID());
+        rmaLine.setM_InOutLine_ID(M_InOutLine_ID);
+        rmaLine.setQty(MovementQty);
+        rmaLine.setAD_Org_ID(getAD_Org_ID());
+        rmaLine.setDescription(Description);
+        rmaLine.saveEx();
 	}
 }	//	MRMA

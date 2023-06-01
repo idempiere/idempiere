@@ -154,6 +154,8 @@ public class Doc_Movement extends Doc
 							{
 								MMovementLineMA ma = mas[j];
 								BigDecimal QtyMA = ma.getMovementQty();
+								if (QtyMA.signum() != line.getQty().signum())
+									QtyMA = QtyMA.negate();
 								ProductCost pc = line.getProductCost();
 								pc.setQty(QtyMA);
 								pc.setM_M_AttributeSetInstance_ID(ma.getM_AttributeSetInstance_ID());
@@ -212,7 +214,7 @@ public class Doc_Movement extends Doc
 			{
 				//	Set AmtAcctCr from Original Movement
 				if (!cr.updateReverseLine (MMovement.Table_ID,
-						m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
+						m_Reversal_ID, line.getReversalLine_ID(),Env.ONE, dr))
 				{
 					p_Error = "Original Inventory Move not posted yet";
 					return null;

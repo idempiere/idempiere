@@ -26,6 +26,7 @@ import org.compiere.model.MAsset;
 import org.compiere.model.MAssetDelivery;
 import org.compiere.model.MClient;
 import org.compiere.model.MMailText;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MProductDownload;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
@@ -81,7 +82,7 @@ public class AssetDelivery extends SvrProcess
 			else if (name.equals("AttachAsset"))
 				m_AttachAsset = "Y".equals(para[i].getParameter());
 			else
-				log.log(Level.SEVERE, "Unknown Parameter: " + name);
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
 		if (m_GuaranteeDate == null)
 			m_GuaranteeDate = new Timestamp (System.currentTimeMillis());
@@ -101,9 +102,9 @@ public class AssetDelivery extends SvrProcess
 
 		//	Test
 		if (m_client.getSMTPHost() == null || m_client.getSMTPHost().length() == 0)
-			throw new Exception ("No Client SMTP Info");
+			throw new Exception ("No Tenant SMTP Info");
 		if (m_client.getRequestEMail() == null)
-			throw new Exception ("No Client Request User");
+			throw new Exception ("No Tenant Request User");
 
 		//	Asset selected
 		if (m_A_Asset_ID != 0)

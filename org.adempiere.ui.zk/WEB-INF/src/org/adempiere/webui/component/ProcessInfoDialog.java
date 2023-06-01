@@ -14,17 +14,25 @@
 
 package org.adempiere.webui.component;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.factory.ButtonFactory;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.window.SimplePDFViewer;
+import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -34,30 +42,40 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Separator;
 
 /**
- * 
+ * Dialog to display {@link ProcessInfo} details.
  * @author milap.doshi
  * @author Deepak Pansheriya
  */
 public class ProcessInfoDialog extends Window implements EventListener<Event> {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1712025652050086903L;
 
 	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 250pt; min-width: 230pt; max-width: 450pt;";
-
+	
 	private Text lblMsg = new Text();
 	private Button btnOk = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);
+	/** Button to print document from {@link #m_logs} */
+	private Button btnPrint = ButtonFactory.createNamedButton(ConfirmPanel.A_PRINT);
+	/** Info or Error image icon */
 	private Image img = new Image();
+	/** Array of ProcessInfoLog from ProcessInfo */
+	private ProcessInfoLog[] m_logs;
+	
 	public static final String INFORMATION = "~./zul/img/msgbox/info-btn.png";
 	public static final String ERROR = "~./zul/img/msgbox/info-btn.png";
 
+	/** If true, auto close dialog after user has click on zoom to window link */
+	private boolean isAutoCloseAfterZoom = false;
+	
 	/**
 	 * @deprecated Should use {@link #ProcessInfoDialog(String, String, ProcessInfo, boolean)} for flexible show message
 	 * @param title
@@ -71,21 +89,33 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 
 	/**
 	 * show result after run a process
-	 * @param title
-	 * @param header
+	 * @deprecated
+	 * @param title ignore
+	 * @param header ignore
 	 * @param pi
+	 * @param needFillLogFromDb
 	 */
 	public ProcessInfoDialog(String title, String header, ProcessInfo pi, boolean needFillLogFromDb) {
+		this(pi, needFillLogFromDb);
+	}
+	
+	/**
+	 * show result after run a process
+	 * @param pi ProcessInfo
+	 * @param needFillLogFromDb true to load ProcessInfoLog from DB
+	 */
+	public ProcessInfoDialog(ProcessInfo pi, boolean needFillLogFromDb) {
 		if (needFillLogFromDb)
 			ProcessInfoUtil.setLogFromDB(pi);
 		init(pi.getTitle(), null, pi, null);
 	}
 	
 	/**
-	 * 
+	 * Layout dialog
 	 * @param title
 	 * @param header
-	 * @param m_logs
+	 * @param pi ProcessInfo
+	 * @param m_logs ProcessInfoLog[]
 	 */
 	private void init(String title, String header, ProcessInfo pi, ProcessInfoLog[] m_logs) {
 		this.setTitle(title);
@@ -95,12 +125,11 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		this.setBorder("normal");
 		this.setContentStyle("background-color:#ffffff;");
 		
-		//this.setId(title);
-
 		lblMsg.setEncode(false);
 		lblMsg.setValue(header);
 
 		btnOk.addEventListener(Events.ON_CLICK, this);
+		btnPrint.addEventListener(Events.ON_CLICK, this);
 
 		Panel pnlMessage = new Panel();
 		pnlMessage.setStyle(MESSAGE_PANEL_STYLE);
@@ -130,6 +159,8 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		ZKUpdateUtil.setHeight(pnlButtons, "52px");
 		pnlButtons.setAlign("center");
 		pnlButtons.setPack("end");
+		btnPrint.setVisible(false);
+		pnlButtons.appendChild(btnPrint);
 		pnlButtons.appendChild(btnOk);
 
 		Separator separator = new Separator();
@@ -154,7 +185,12 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 				pnlMessage.appendChild(new Text(summary));
 			}
 		}
-				
+		
+		this.m_logs = m_logs;
+
+		if(isPrintable())
+			btnPrint.setVisible(true);
+		
 		if (m_logs != null && m_logs.length > 0){
 			separator = new Separator();
 			ZKUpdateUtil.setWidth(separator, "100%");
@@ -180,7 +216,11 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 							
 					if (log.getAD_Table_ID() > 0		
 							&& log.getRecord_ID() > 0) {
-						DocumentLink recordLink = new DocumentLink(sb.toString(), log.getAD_Table_ID(), log.getRecord_ID());	
+						DocumentLink recordLink = new DocumentLink(sb.toString(), log.getAD_Table_ID(), log.getRecord_ID());
+						recordLink.addEventListener(Events.ON_CLICK, e -> {
+							if (isAutoCloseAfterZoom())
+								this.detach();
+						});
 							
 						pnlMessage.appendChild(recordLink);	
 					} else {		
@@ -194,12 +234,71 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (event == null)
 			return;
 		if (event.getTarget() == btnOk) {
 			this.detach();
 		}
+		if(event.getTarget() == btnPrint) {
+			Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"));
+			Executions.schedule(this.getDesktop(), e -> onPrint(), new Event("onPrint"));
+		}
+	}
+	
+	/**
+	 * Print all printable documents in {@link #m_logs}
+	 */
+	private void onPrint() {		
+		Clients.clearBusy();
+		// Loop through all items
+		List<File> pdfList = new ArrayList<File>();
+		for (int i = 0; i < m_logs.length; i++)
+		{
+			int recordID = m_logs[i].getRecord_ID();
+			int reportEngineType = ReportEngine.getReportEngineType(m_logs[i].getAD_Table_ID());
+			ReportEngine re = null;
+			
+			if((reportEngineType >= 0) && (recordID > 0)) {
+				re = ReportEngine.get (Env.getCtx(), reportEngineType, recordID);
+				pdfList.add(re.getPDF());
+			}
+		}
+		if (pdfList.size() > 1) {
+			try {
+				File outFile = FileUtil.createTempFile(getTitle(), ".pdf");					
+				AEnv.mergePdf(pdfList, outFile);
+
+				Window win = new SimplePDFViewer(getTitle(), new FileInputStream(outFile));
+				SessionManager.getAppDesktop().showWindow(win, "center");
+			} catch (Exception e) {
+				throw new RuntimeException(e.getLocalizedMessage(), e);
+			}
+		} else if (pdfList.size() > 0) {
+			try {
+				Window win = new SimplePDFViewer(getTitle(), new FileInputStream(pdfList.get(0)));
+				SessionManager.getAppDesktop().showWindow(win, "center");
+			} catch (Exception e)
+			{
+				throw new RuntimeException(e.getLocalizedMessage(), e);
+			}
+		}
+		this.detach();
+	}
+	
+	/**
+	 * @return true if there are printable document in {@link #m_logs}
+	 */
+	public boolean isPrintable() {
+		if (m_logs == null)
+			return false;
+
+		for(ProcessInfoLog log : m_logs) {
+			if (log.getAD_Table_ID() > 0 && log.getRecord_ID() > 0 && ReportEngine.getReportEngineType(log.getAD_Table_ID()) >= 0)
+				return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -208,15 +307,31 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 	}
 
 	/**
+	 * enable/disable auto close of dialog after zoom using document link
+	 * @param autoClose
+	 */
+	public void setAutoCloseAfterZoom(boolean autoClose) {
+		isAutoCloseAfterZoom = autoClose;
+	}
+	
+	/**
+	 * 
+	 * @return auto close after zoom state
+	 */
+	public boolean isAutoCloseAfterZoom() {
+		return isAutoCloseAfterZoom;
+	}
+	
+	/**
 	 * after run a process, call this function to show result in a dialog 
-	 * @param pi
+	 * @param pi ProcessInfo
 	 * @param windowNo
-	 * @param comp
+	 * @param comp Component
 	 * @param needFillLogFromDb if ProcessInfoUtil.setLogFromDB(pi) is called by outer function, 
-	 * just pass false, other pass true to avoid duplicate message 
+	 * just pass false, otherwise pass true to avoid duplicate message 
 	 */
 	public static ProcessInfoDialog showProcessInfo (ProcessInfo pi, int windowNo, final Component comp, boolean needFillLogFromDb) {						
-		ProcessInfoDialog dialog = new ProcessInfoDialog(AEnv.getDialogHeader(Env.getCtx(), windowNo),AEnv.getDialogHeader(Env.getCtx(), windowNo), pi, needFillLogFromDb);
+		ProcessInfoDialog dialog = new ProcessInfoDialog(pi, needFillLogFromDb);
 		final ISupportMask supportMask = LayoutUtils.showWindowWithMask(dialog, comp, LayoutUtils.OVERLAP_PARENT);
 		dialog.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 			@Override

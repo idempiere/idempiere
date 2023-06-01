@@ -46,6 +46,7 @@ import org.compiere.model.MOrgInfo;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRefList;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
@@ -80,12 +81,14 @@ import org.compiere.util.Util;
  *  @version $Id: MWFActivity.java,v 1.4 2006/07/30 00:51:05 jjanke Exp $
  */
 public class MWFActivity extends X_AD_WF_Activity implements Runnable
-{
+{	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8180781075902940080L;
 
+	private static final String CURRENT_WORKFLOW_PROCESS_INFO_ATTR = "Workflow.ProcessInfo";
+	
 	/**
 	 * 	Get Activities for table/record
 	 *	@param ctx context
@@ -201,7 +204,12 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			setEndWaitTime(new Timestamp(limitMS + System.currentTimeMillis()));
 		//	Responsible
 		setResponsible(process);
-		saveEx();
+		try {
+			PO.setCrossTenantSafe();
+			saveEx();
+		} finally {
+			PO.clearCrossTenantSafe();
+		}
 		//
 		m_audit = new MWFEventAudit(this);
 		m_audit.setAD_Org_ID(getAD_Org_ID());//Add by Hideaki Hagiwara
@@ -868,7 +876,6 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		m_newValue = null;
 
 
-		//m_trx = Trx.get(, true);
 		Trx trx = null;
 		boolean localTrx = false;
 		if (get_TrxName() == null)
@@ -886,6 +893,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		//
 		try
 		{
+			if (m_process.getProcessInfo() != null)
+				Env.getCtx().put(CURRENT_WORKFLOW_PROCESS_INFO_ATTR, m_process.getProcessInfo());
 			if (!localTrx) {
 				// when cascade workflows, avoid setting a savepoint for each workflow
 				// use the same first savepoint from the transaction
@@ -1007,10 +1016,22 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			{
 				trx.close();
 			}
+			Env.getCtx().remove(CURRENT_WORKFLOW_PROCESS_INFO_ATTR);
 		}
 	}	//	run
 
-
+	/**
+	 * Get ProcessInfo instance of current workflow process
+	 * @return {@link ProcessInfo}
+	 */
+	public static ProcessInfo getCurrentWorkflowProcessInfo() 
+	{
+		Object o = Env.getCtx().get(CURRENT_WORKFLOW_PROCESS_INFO_ATTR);
+		if (o != null && o instanceof ProcessInfo)
+			return (ProcessInfo) o;
+		return null;
+	}
+	
 	/**
 	 * 	Perform Work.
 	 * 	Set Text Msg.
@@ -1112,8 +1133,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				getAD_Table_ID(), getRecord_ID());
 			pi.setAD_User_ID(getAD_User_ID());
 			pi.setAD_Client_ID(getAD_Client_ID());
-			MPInstance pInstance = new MPInstance(process, getRecord_ID());
-			pInstance.set_TrxName(trx != null ? trx.getTrxName() : null);
+			MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), getRecord_ID());
+			pInstance.saveEx();
 			fillParameter(pInstance, trx);
 			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
 			//	Report
@@ -1142,40 +1163,48 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (log.isLoggable(Level.FINE)) log.fine("Process:AD_Process_ID=" + m_node.getAD_Process_ID());
 			//	Process
 			MProcess process = MProcess.get(getCtx(), m_node.getAD_Process_ID());
-			MPInstance pInstance = new MPInstance(process, getRecord_ID());
-			fillParameter(pInstance, trx);
-			//
-			ProcessInfo pi = new ProcessInfo (m_node.getName(true), m_node.getAD_Process_ID(),
-				getAD_Table_ID(), getRecord_ID());
-			
-			//check record id overwrite
-			MWFNodePara[] nParams = m_node.getParameters();
-			for(MWFNodePara p : nParams) 
-			{
-				if (p.getAD_Process_Para_ID() == 0 && p.getAttributeName().equalsIgnoreCase("Record_ID") && !Util.isEmpty(p.getAttributeValue(), true)) 
+			MPInstance pInstance = new MPInstance(getCtx(), process.getAD_Process_ID(), getRecord_ID());
+			pInstance.setIsProcessing(true);
+			pInstance.saveEx();
+			try {
+				fillParameter(pInstance, trx);
+				//
+				ProcessInfo pi = new ProcessInfo (m_node.getName(true), m_node.getAD_Process_ID(),
+					getAD_Table_ID(), getRecord_ID());
+				
+				//check record id overwrite
+				MWFNodePara[] nParams = m_node.getParameters();
+				for(MWFNodePara p : nParams) 
 				{
-					try 
+					if (p.getAD_Process_Para_ID() == 0 && p.getAttributeName().equalsIgnoreCase("Record_ID") && !Util.isEmpty(p.getAttributeValue(), true)) 
 					{
-						Object value = parseNodeParaAttribute(p);
-						if (value == p || value == null)
-							break;
-						int recordId = Integer.valueOf(value.toString());
-						pi.setRecord_ID(recordId);
+						try 
+						{
+							Object value = parseNodeParaAttribute(p);
+							if (value == p || value == null)
+								break;
+							int recordId = Integer.valueOf(value.toString());
+							pi.setRecord_ID(recordId);
+						}
+						catch (NumberFormatException e)
+						{
+							log.log(Level.WARNING, e.getMessage(), e);
+						}
+						break;
 					}
-					catch (NumberFormatException e)
-					{
-						log.log(Level.WARNING, e.getMessage(), e);
-					}
-					break;
 				}
+	
+				pi.setAD_User_ID(getAD_User_ID());
+				pi.setAD_Client_ID(getAD_Client_ID());
+				pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
+				boolean success = process.processItWithoutTrxClose(pi, trx);
+				setTextMsg(pi.getSummary());
+				return success;
 			}
-
-			pi.setAD_User_ID(getAD_User_ID());
-			pi.setAD_Client_ID(getAD_Client_ID());
-			pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
-			boolean success = process.processItWithoutTrxClose(pi, trx);
-			setTextMsg(pi.getSummary());
-			return success;
+			finally {
+				pInstance.setIsProcessing(false);
+				pInstance.saveEx();
+			}
 		}
 
 		/******	Start Task (Probably redundant;
@@ -1634,10 +1663,14 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		getPO(trx);
 		//
 		MWFNodePara[] nParams = m_node.getParameters();
-		MPInstancePara[] iParams = pInstance.getParameters();
-		for (int pi = 0; pi < iParams.length; pi++)
+		MProcessPara[] processParams = pInstance.getProcessParameters();
+		for (int pi = 0; pi < processParams.length; pi++)
 		{
-			MPInstancePara iPara = iParams[pi];
+			MPInstancePara iPara = new MPInstancePara (pInstance, processParams[pi].getSeqNo());
+			iPara.setParameterName(processParams[pi].getColumnName());
+			iPara.setInfo(processParams[pi].getName());
+			iPara.setParameterName(processParams[pi].getColumnName());
+			iPara.setInfo(processParams[pi].getName());
 			for (int np = 0; np < nParams.length; np++)
 			{
 				MWFNodePara nPara = nParams[np];				
@@ -1658,6 +1691,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 							if (log.isLoggable(Level.FINE)) log.fine(nPara.getAttributeName()
 								+ " - empty");
 						break;
+					}
+					if( DisplayType.isText(nPara.getDisplayType())
+							&& Util.isEmpty(String.valueOf(value))) {
+						if (log.isLoggable(Level.FINE)) log.fine(nPara.getAttributeName() + " - empty string");
+							break;
 					}
 
 					//	Convert to Type
@@ -1766,12 +1804,23 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		MMailText text = new MMailText (getCtx(), m_node.getR_MailText_ID(), null);
 		text.setPO(m_po, true);
 		//
-		String subject = doc.getDocumentInfo()
-			+ ": " + text.getMailHeader();
-		String message = text.getMailText(true)
-			+ "\n-----\n" + doc.getDocumentInfo()
-			+ "\n" + doc.getSummary();
-		File pdf = doc.createPDF();
+		String subject = null;
+		String raw = text.getMailHeader(false);
+		int first = raw != null ? raw.indexOf("@") : -1;
+		if (raw != null &&  first >= 0 && raw.indexOf("@", first) > first)
+			subject = text.getMailHeader();
+		else
+			subject = doc.getDocumentInfo() + ": " + text.getMailHeader();
+		String message = null;
+		raw = text.getMailText(true, false);
+		if (raw != null && (raw.contains("@=DocumentInfo") || raw.contains("@=documentInfo")
+				|| raw.contains("@=Summary") || raw.contains("@=summary")))
+			message = text.getMailText(true);
+		else
+			message = text.getMailText(true)
+				+ "\n-----\n" + doc.getDocumentInfo()
+				+ "\n" + doc.getSummary();
+		File pdf = doc != null && m_node.isAttachedDocumentToEmail() ? doc.createPDF() : null;
 		//
 		MClient client = MClient.get(doc.getCtx(), doc.getAD_Client_ID());
 

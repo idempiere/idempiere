@@ -45,6 +45,7 @@ import org.compiere.model.MAddressValidation;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTaxProvider;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PaymentInterface;
@@ -1060,5 +1061,19 @@ public class Core {
 			return serviceHolder.getService();
 		
 		return DefaultReservationTracerFactory.getInstance();
+	}
+	
+	/**
+	 * Get tax lookup service
+	 * @return ITaxLookup service
+	 */
+	public static ITaxLookup getTaxLookup() {
+		String service = MSysConfig.getValue(MSysConfig.TAX_LOOKUP_SERVICE, DefaultTaxLookup.class.getName(), Env.getAD_Client_ID(Env.getCtx()));
+		IServiceHolder<ITaxLookup> serviceHolder = Service.locator().locate(ITaxLookup.class, service, null);
+		if (serviceHolder != null)
+			return serviceHolder.getService();
+
+		//fall back, should not reach here
+		return new DefaultTaxLookup();
 	}
 }

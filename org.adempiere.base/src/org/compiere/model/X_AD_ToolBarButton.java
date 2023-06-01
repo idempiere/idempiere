@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_ToolBarButton
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="AD_ToolBarButton")
 public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220116L;
+	private static final long serialVersionUID = 20221224L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButton (Properties ctx, int AD_ToolBarButton_ID, String trxName)
@@ -406,16 +406,16 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
 		return false;
 	}
 
-	/** Set KeyCode.
-		@param KeyStroke_KeyCode KeyCode for shortcuts
+	/** Set Key Code.
+		@param KeyStroke_KeyCode Key Code for shortcuts
 	*/
 	public void setKeyStroke_KeyCode (int KeyStroke_KeyCode)
 	{
 		set_Value (COLUMNNAME_KeyStroke_KeyCode, Integer.valueOf(KeyStroke_KeyCode));
 	}
 
-	/** Get KeyCode.
-		@return KeyCode for shortcuts
+	/** Get Key Code.
+		@return Key Code for shortcuts
 	  */
 	public int getKeyStroke_KeyCode()
 	{
@@ -467,6 +467,37 @@ public class X_AD_ToolBarButton extends PO implements I_AD_ToolBarButton, I_Pers
     {
         return new KeyNamePair(get_ID(), getName());
     }
+
+	/** Set Pressed Logic.
+		@param PressedLogic Pressed Logic
+	*/
+	public void setPressedLogic (String PressedLogic)
+	{
+		set_Value (COLUMNNAME_PressedLogic, PressedLogic);
+	}
+
+	/** Get Pressed Logic.
+		@return Pressed Logic	  */
+	public String getPressedLogic()
+	{
+		return (String)get_Value(COLUMNNAME_PressedLogic);
+	}
+
+	/** Set Read Only Logic.
+		@param ReadOnlyLogic Logic to determine if field is read only (applies only when field is read-write)
+	*/
+	public void setReadOnlyLogic (String ReadOnlyLogic)
+	{
+		set_Value (COLUMNNAME_ReadOnlyLogic, ReadOnlyLogic);
+	}
+
+	/** Get Read Only Logic.
+		@return Logic to determine if field is read only (applies only when field is read-write)
+	  */
+	public String getReadOnlyLogic()
+	{
+		return (String)get_Value(COLUMNNAME_ReadOnlyLogic);
+	}
 
 	/** Set Sequence.
 		@param SeqNo Method of ordering records; lowest number comes first
