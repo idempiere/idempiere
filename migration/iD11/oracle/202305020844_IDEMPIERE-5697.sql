@@ -62,7 +62,7 @@ ALTER TABLE AD_PInstance_Log DROP CONSTRAINT ad_pinstance_log_uu_idx CASCADE
 ;
 
 -- May 15, 2023, 10:49:54 AM CEST
-ALTER TABLE AD_PInstance_Log DROP CONSTRAINT ad_pinstance_log_pkey CASCADE
+ALTER TABLE AD_PInstance_Log DROP PRIMARY KEY
 ;
 
 -- May 15, 2023, 10:50:19 AM CEST
