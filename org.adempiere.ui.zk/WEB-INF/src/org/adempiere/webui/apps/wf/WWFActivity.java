@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
@@ -659,7 +658,7 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 					wfpr.checkCloseActivities(m_activity.get_TrxName());
 					
 					if (!Util.isEmpty(m_activity.getProcessMsg(), true))
-						throw new AdempiereException(m_activity.getProcessMsg());
+						Dialog.error(m_WindowNo, m_activity.getProcessMsg());
 				}
 				catch (Exception e)
 				{
@@ -680,6 +679,9 @@ public class WWFActivity extends ADForm implements EventListener<Event>
 					m_activity.setUserConfirmation(AD_User_ID, textMsg);
 					MWFProcess wfpr = new MWFProcess(m_activity.getCtx(), m_activity.getAD_WF_Process_ID(), m_activity.get_TrxName());
 					wfpr.checkCloseActivities(m_activity.get_TrxName());
+					
+					if (!Util.isEmpty(m_activity.getProcessMsg(), true))
+						Dialog.error(m_WindowNo, m_activity.getProcessMsg());
 				}
 				catch (Exception e)
 				{
