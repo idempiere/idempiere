@@ -1,3 +1,6 @@
+-- IDEMPIERE-5748 currencyrate - date is not truncated
+SELECT register_migration_script('202305311700_IDEMPIERE-5748.sql') FROM dual;
+
 CREATE OR REPLACE FUNCTION currencyRate(
 	p_CurFrom_ID		NUMERIC,
 	p_CurTo_ID		NUMERIC,
@@ -175,5 +178,5 @@ EXCEPTION WHEN OTHERS THEN
 	
 END;
 
-$body$ LANGUAGE plpgsql STABLE;
-
+$body$ LANGUAGE plpgsql
+;

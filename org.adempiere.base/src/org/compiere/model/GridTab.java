@@ -810,7 +810,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 			+ " INNER JOIN AD_Column cc ON (r.AD_Key=cc.AD_Column_ID) "
 			+ "WHERE c.AD_Reference_ID IN (?,?,?,?)"
 			+ " AND c.ColumnName=?";
-		String refColName = DB.getSQLValueStringEx(null, sql1, DisplayType.Table, DisplayType.Search, DisplayType.TableUU, DisplayType.SearchUU);
+		String refColName = DB.getSQLValueStringEx(null, sql1, DisplayType.Table, DisplayType.Search, DisplayType.TableUU, DisplayType.SearchUU, colName);
 		//	Reference Column found
 		if (refColName != null)
 		{
