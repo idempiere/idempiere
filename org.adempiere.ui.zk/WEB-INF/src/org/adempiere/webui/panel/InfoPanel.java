@@ -79,6 +79,7 @@ import org.compiere.model.MInfoColumn;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
+import org.compiere.model.MRefTable;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -3000,9 +3001,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		String displayColumn = p_layout[col].getDisplayColumn();
 		sqlOrderColumn = !Util.isEmpty(displayColumn) ? displayColumn : p_layout[col].getColSQL().trim();
 
-		String columnName = p_layout[col].getColumnName();
-		if(!Util.isEmpty(displayColumn) && columnName.endsWith("_ID")) {
-			MTable[] tables = MTable.getByKeyColumns(Env.getCtx(), new String[] {columnName}, null);
+		// join tables to sort by display value
+		if(!Util.isEmpty(displayColumn) && (DisplayType.isID(p_layout[col].getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(p_layout[col].getAD_Reference_ID()))) {
+			MTable[] tables = getTables(p_layout[col].getAD_Reference_Value_ID(), p_layout[col].getColumnName());
 			for(MTable table : tables) {
 				if(!joinTables.contains(table.getTableName()))
 					joinTables.add(table.getTableName());
@@ -3021,6 +3022,21 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		renderItems();
 	}
 
+	/**
+	 * Get table name from AD_Ref_Table of Column Name
+	 * @param refValID
+	 * @param columnName
+	 * @return MTable[] tables
+	 */
+	private MTable[] getTables(int refValID, String columnName) {
+		if(refValID > 0) {
+			return new MTable[] {MTable.get(Env.getCtx(), MRefTable.get(Env.getCtx(), refValID).getAD_Table_ID())};
+		}
+		else {
+			return MTable.getByKeyColumns(Env.getCtx(), new String[] {columnName}, null);
+		}
+	}
+	
 	/**
 	 * 
 	 * @return true if it is a lookup dialog

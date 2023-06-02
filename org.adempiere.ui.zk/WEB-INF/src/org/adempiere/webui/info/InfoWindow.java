@@ -983,6 +983,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				}
 				columnInfo.setColDescription(infoColumn.getNameTrl());
 				columnInfo.setAD_Reference_ID(infoColumn.getAD_Reference_ID());
+				columnInfo.setAD_Reference_Value_ID(infoColumn.getAD_Reference_Value_ID());
 				columnInfo.setGridField(gridFields.get(i));
 				columnInfo.setColumnName(infoColumn.getColumnName());
 				list.add(columnInfo);
@@ -1075,20 +1076,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if(displayColumn.contains(alias+".")){
 			return displayColumn;
 		}
-		else if(displayColumn.contains(tableName+".")) {
-			displayColumn = displayColumn.replace(tableName+".", alias+".");
+		else if(displayColumn.contains(tableName+".") && !tableName.equalsIgnoreCase(alias)) {
+			return displayColumn.replace(tableName+".", alias+".");
 		}
-		else if(displayColumn.substring(0, 1).matches("^[a-zA-Z_][a-zA-Z0-9_]*$") 
-				&& !displayColumn.startsWith("NVL")
-				&& !displayColumn.startsWith("COALESCE")
-				&& !displayColumn.startsWith("CASE")
-				&& !displayColumn.startsWith("AVG")
-				&& !displayColumn.startsWith("COUNT")
-				&& !displayColumn.startsWith("FIRST")
-				&& !displayColumn.startsWith("LAST")
-				&& !displayColumn.startsWith("MAX")
-				&& !displayColumn.startsWith("MIN")
-				&& !displayColumn.startsWith("SUM")) {
+		else if(!displayColumn.matches("\\w{1,}\\s{0,}\\((.*?)\\)")) {	// {function name}({*column name*})
 			displayColumn = (alias+"."+displayColumn);
 		}
 		else {
@@ -2131,8 +2122,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			if(tableName.equalsIgnoreCase(tableInfo.getTableName()))
 				doJoin = false;
 		}
-		if(doJoin && !sqlMain.contains(" JOIN " + tableName)) {
-			builder.append(" JOIN ").append(tableName).append(" ON (")
+		if(doJoin && !sqlMain.contains(" LEFT JOIN " + tableName)) {
+			builder.append(" LEFT JOIN ").append(tableName).append(" ON (")
 				.append(tableName).append(".").append(tableName).append("_ID = ")
 				.append(getTableName()).append(".").append(tableName).append("_ID)");
 		}
@@ -2564,6 +2555,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						columnInfo.setColDescription(infoColumn.getDescriptionTrl());
 						columnInfo.setGridField(getGridField(infoColumn));
 						columnInfo.setAD_Reference_ID(infoColumn.getAD_Reference_ID());
+						columnInfo.setAD_Reference_Value_ID(infoColumn.getAD_Reference_Value_ID());
 						list.add(columnInfo);
 					}
 

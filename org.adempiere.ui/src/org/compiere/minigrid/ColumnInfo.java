@@ -176,6 +176,7 @@ public class ColumnInfo
 	private String colDescription;
 	private int AD_Reference_ID;
 	private String m_displayColumn;
+	private int AD_Reference_Value_ID;
 
 	/**
 	 * 	Get Col Class
@@ -347,5 +348,21 @@ public class ColumnInfo
 	 */
 	public void setDisplayColumn(String displayColumn) {
 		this.m_displayColumn = displayColumn;
+	}
+
+	/**
+	 * Get Reference Value
+	 * @return the aD_Reference_Value_ID
+	 */
+	public int getAD_Reference_Value_ID() {
+		return AD_Reference_Value_ID;
+	}
+
+	/**
+	 * Set Reference Value
+	 * @param AD_Reference_Value_ID the AD_Reference_Value_ID to set
+	 */
+	public void setAD_Reference_Value_ID(int AD_Reference_Value_ID) {
+		this.AD_Reference_Value_ID = AD_Reference_Value_ID;
 	}
 }   //  infoColumn
