@@ -703,8 +703,9 @@ public abstract class SvrProcess implements ProcessCall
 		if (log.isLoggable(Level.FINE)) log.fine("AD_PInstance_ID=" + m_pi.getAD_PInstance_ID());
 		try 
 		{
-			DB.executeUpdate("UPDATE AD_PInstance SET IsProcessing='Y' WHERE AD_PInstance_ID=" 
-				+ m_pi.getAD_PInstance_ID(), null);		//	outside trx
+			if(m_pi.getAD_PInstance_ID() > 0)	// Update only when AD_PInstance_ID > 0 (When we Start Process w/o saving process instance (No Process Audit))
+				DB.executeUpdate("UPDATE AD_PInstance SET IsProcessing='Y' WHERE AD_PInstance_ID=" 
+					+ m_pi.getAD_PInstance_ID(), null);		//	outside trx
 		} catch (Exception e)
 		{
 			log.severe("lock() - " + e.getLocalizedMessage());
@@ -731,7 +732,7 @@ public abstract class SvrProcess implements ProcessCall
 			MPInstance mpi = new MPInstance (getCtx(), m_pi.getAD_PInstance_ID(), null);
 			if (mpi.get_ID() == 0)
 			{
-				log.log(Level.SEVERE, "Did not find PInstance " + m_pi.getAD_PInstance_ID());
+				log.log(Level.INFO, "Did not find PInstance " + m_pi.getAD_PInstance_ID());
 				return;
 			}
 			mpi.setIsProcessing(false);
