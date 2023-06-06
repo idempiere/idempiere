@@ -955,6 +955,9 @@ public class MProduction extends X_M_Production implements DocAction {
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		if (getC_DocType_ID() <= 0) {
+			setC_DocType_ID(MDocType.getDocType(MDocType.DOCBASETYPE_MaterialProduction));
+		}
 		if (getM_Product_ID() > 0) {
 			if (isUseProductionPlan()) {
 				setIsUseProductionPlan(false);

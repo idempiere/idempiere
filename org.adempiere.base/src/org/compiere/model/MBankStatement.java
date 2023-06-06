@@ -257,6 +257,9 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 	 */
 	protected boolean beforeSave (boolean newRecord)
 	{
+		if (getC_DocType_ID() <= 0) {
+			setC_DocType_ID(MDocType.getDocType(MDocType.DOCBASETYPE_BankStatement));
+		}
 		if (! isProcessed() && getBeginningBalance().compareTo(Env.ZERO) == 0)
 		{
 			MBankAccount ba = getBankAccount();
