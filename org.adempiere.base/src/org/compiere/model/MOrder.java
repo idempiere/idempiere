@@ -678,7 +678,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**************************************************************************
 	 * 	Get Lines of Order
 	 * 	@param whereClause where clause or null (starting with AND)
-	 * 	@param orderClause order clause
+	 * 	@param orderClause order clause or null
 	 * 	@return lines
 	 */
 	public MOrderLine[] getLines (String whereClause, String orderClause)
@@ -687,7 +687,7 @@ public class MOrder extends X_C_Order implements DocAction
 		StringBuilder whereClauseFinal = new StringBuilder(MOrderLine.COLUMNNAME_C_Order_ID+"=? ");
 		if (!Util.isEmpty(whereClause, true))
 			whereClauseFinal.append(whereClause);
-		if (orderClause.length() == 0)
+		if (Util.isEmpty(orderClause, true))
 			orderClause = MOrderLine.COLUMNNAME_Line;
 		//
 		List<MOrderLine> list = new Query(getCtx(), I_C_OrderLine.Table_Name, whereClauseFinal.toString(), get_TrxName())
