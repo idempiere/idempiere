@@ -52,6 +52,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.ListModelTable;
+import org.adempiere.webui.component.Mask;
 import org.adempiere.webui.component.ProcessInfoDialog;
 import org.adempiere.webui.component.WListItemRenderer;
 import org.adempiere.webui.component.WListbox;
@@ -974,8 +975,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         
         if (paging != null && paging.getParent() == null)
         	insertPagingComponent();
-        
-        this.invalidate();
+
+        Mask mask = getMaskObj();
+        if (mask == null || mask.getParent() == null)
+        	this.invalidate();
     }
 
     /**
@@ -2450,7 +2453,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		m_pi.setAD_PInstance_ID(pInstanceID);		
 		m_pi.setAD_InfoWindow_ID(infoWindow.getAD_InfoWindow_ID());
 		
-		//HengSin - to let process end with message and requery
+		//let process end with message and re-query
 		WProcessCtl.process(p_WindowNo, m_pi, (Trx)null, new EventListener<Event>() {
 
 			@Override
@@ -2494,8 +2497,6 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					}
 					recordSelectedData.clear();
 				}
-				
-		//HengSin -- end --
 			}
 		});   		
     }
