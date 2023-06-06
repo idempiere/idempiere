@@ -451,13 +451,13 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 				if(selectedQuickListItem != null) {
 					String unit = (String) selectedQuickListItem.getAttribute("TimeUnit");
 					int offset = (int) selectedQuickListItem.getAttribute("Offset");
-					Date dateFrom = (Date) selectedQuickListItem.getAttribute("DateFrom");
-					dates = getInterval(unit, unit, offset, false, false, dateFrom);
+					Date dateFromAttr = (Date) selectedQuickListItem.getAttribute("DateFrom");
+					dates = getInterval(unit, unit, offset, false, false, dateFromAttr);
 					this.dateFrom = new Timestamp(dates[0].getTime());
 					this.dateTo = new Timestamp(dates[1].getTime());
-					dates = setTimesOnDates(dateFrom, dateTo);
-					dateFrom = dates[0];
-					dateTo = dates[1];
+					dates = setTimesOnDates(this.dateFrom, this.dateTo);
+					this.dateFrom = dates[0];
+					this.dateTo = dates[1];
 					returnVal = DisplayType.getDateFormat().format(this.dateFrom) + " - " + DisplayType.getDateFormat().format(this.dateTo);
 				}
 				break;
