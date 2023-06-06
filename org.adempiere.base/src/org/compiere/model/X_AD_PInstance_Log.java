@@ -33,7 +33,7 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230409L;
+	private static final long serialVersionUID = 20230515L;
 
     /** Standard Constructor */
     public X_AD_PInstance_Log (Properties ctx, int AD_PInstance_Log_ID, String trxName)
@@ -103,7 +103,8 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
     public String toString()
     {
       StringBuilder sb = new StringBuilder ("X_AD_PInstance_Log[")
-        .append(get_ID()).append("]");
+    	.append(get_ID()).append(", ")
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
 
@@ -197,6 +198,31 @@ public class X_AD_PInstance_Log extends PO implements I_AD_PInstance_Log, I_Pers
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** PInstanceLogType AD_Reference_ID=200242 */
+	public static final int PINSTANCELOGTYPE_AD_Reference_ID=200242;
+	/** Progress = P */
+	public static final String PINSTANCELOGTYPE_Progress = "P";
+	/** Result = R */
+	public static final String PINSTANCELOGTYPE_Result = "R";
+	/** Status = S */
+	public static final String PINSTANCELOGTYPE_Status = "S";
+	/** Set Log Type.
+		@param PInstanceLogType Process Audit Log Type
+	*/
+	public void setPInstanceLogType (String PInstanceLogType)
+	{
+
+		set_Value (COLUMNNAME_PInstanceLogType, PInstanceLogType);
+	}
+
+	/** Get Log Type.
+		@return Process Audit Log Type
+	  */
+	public String getPInstanceLogType()
+	{
+		return (String)get_Value(COLUMNNAME_PInstanceLogType);
 	}
 
 	/** Set Process Date.

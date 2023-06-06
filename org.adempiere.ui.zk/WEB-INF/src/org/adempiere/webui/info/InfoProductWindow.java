@@ -53,8 +53,11 @@ import org.adempiere.webui.panel.InvoiceHistory;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
+import org.compiere.minigrid.EmbedWinInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.MDocType;
+import org.compiere.model.MInfoWindow;
+import org.compiere.model.MProduct;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.DB;
@@ -316,7 +319,7 @@ public class InfoProductWindow extends InfoWindow {
 		Tabs tabs = new Tabs();
 		tabbedPane.appendChild(tabs);
 
-		Tab tab = new Tab(Util.cleanAmp(Msg.translate(Env.getCtx(), "Warehouse")));
+		Tab tab = new Tab(Util.cleanAmp(Msg.translate(Env.getCtx(), "WarehouseStock")));
 		tabs.appendChild(tab);
 		Tabpanel desktopTabPanel = new Tabpanel();
 		ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
@@ -364,7 +367,7 @@ public class InfoProductWindow extends InfoWindow {
 			public void onEvent(Event event) throws Exception {
 				if (contentPanel.getLayout() != null) {
 					int M_Warehouse_ID = getSelectedWarehouseId();
-					Integer m_M_Product_ID = getSelectedRowKey();
+					Integer m_M_Product_ID = getIntSelectedRowKey(MProduct.Table_ID);
 					if (m_M_Product_ID != null)
 						initAtpTab(M_Warehouse_ID, m_M_Product_ID);
 				}
@@ -397,8 +400,8 @@ public class InfoProductWindow extends InfoWindow {
 		ZKUpdateUtil.setHeight(south, detailHeight + "px");
 		south.setCollapsible(true);
 		south.setSplittable(true);
-		south.setTitle(Msg.translate(Env.getCtx(), "WarehouseStock"));
-		south.setTooltiptext(Msg.translate(Env.getCtx(), "WarehouseStock"));
+		south.setTitle(Msg.translate(Env.getCtx(), "Related Information"));
+		south.setTooltiptext(Msg.translate(Env.getCtx(), "Related Information"));
 		south.setSclass("south-collapsible-with-title");
 		if (ClientInfo.maxHeight(ClientInfo.MEDIUM_HEIGHT-1))
 		{
@@ -446,13 +449,29 @@ public class InfoProductWindow extends InfoWindow {
 		relatedTbl.repaint();
 		productpriceTbl.repaint();
 		m_tableAtp.repaint();
+
+		// add related info windows
+		if (embeddedWinList.size() > 0) {
+			for (EmbedWinInfo embeddedWin : embeddedWinList) {
+				if (embeddedWin.getInfoTbl() instanceof WListbox) {
+					tab = new Tab(embeddedWin.getInfowin().get_Translation(MInfoWindow.COLUMNNAME_Name));
+					tabs.appendChild(tab);
+					desktopTabPanel = new Tabpanel();
+					ZKUpdateUtil.setHeight(desktopTabPanel, "100%");
+					desktopTabPanel.appendChild( (WListbox) embeddedWin.getInfoTbl() );
+					tabPanels.appendChild(desktopTabPanel);
+					((WListbox)embeddedWin.getInfoTbl()).repaint();
+				}
+			}
+		}// render embedded
+
 	}
 
 	/**
 	 * handle on click event for product attribute
 	 */
 	protected void onPAttributeClick() {
-		Integer productInteger = getSelectedRowKey();
+		Integer productInteger = getIntSelectedRowKey(MProduct.Table_ID);
 		if (productInteger == null) {
 			m_PAttributeButton.setEnabled(false);
 			return;
@@ -689,7 +708,7 @@ public class InfoProductWindow extends InfoWindow {
 	 */
 	protected void refresh(int M_Warehouse_ID, int M_PriceList_Version_ID)
 	{
-		int m_M_Product_ID = getSelectedRowKey();
+		int m_M_Product_ID = getIntSelectedRowKey(MProduct.Table_ID);
 		String sql = m_sqlWarehouse;
 		if (log.isLoggable(Level.FINEST)) log.finest(sql);
 		PreparedStatement pstmt = null;
@@ -933,7 +952,7 @@ public class InfoProductWindow extends InfoWindow {
 	@Override
 	protected void showHistory() {
 		log.info("");
-		Integer M_Product_ID = getSelectedRowKey();
+		Integer M_Product_ID = getIntSelectedRowKey(MProduct.Table_ID);
 		if (M_Product_ID == null)
 			return;
 		int M_Warehouse_ID = getSelectedWarehouseId();
@@ -973,7 +992,7 @@ public class InfoProductWindow extends InfoWindow {
 				String.valueOf(m_M_Locator_ID));
 		}
         //  publish for Callout to read
-        Integer ID = getSelectedRowKey();
+        Integer ID = getIntSelectedRowKey(MProduct.Table_ID);
         Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "M_Product_ID", ID == null ? "0" : ID.toString());
 	}
 

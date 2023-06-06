@@ -41,12 +41,14 @@ import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  *
  * @author Carlos Ruiz - globalqss - bxservice
  *
  */
+@Isolated
 public class ModelForeignKeyTest extends AbstractTestCase {
 
 	public ModelForeignKeyTest() {
@@ -66,7 +68,6 @@ public class ModelForeignKeyTest extends AbstractTestCase {
 		} finally {
 			PO.clearCrossTenantSafe();
 		}
-		CacheMgt.get().reset();
 
 		MTest test1 = new MTest(ctx, 0, trxName);
 		test1.setName("Test 1");
@@ -78,6 +79,7 @@ public class ModelForeignKeyTest extends AbstractTestCase {
 		test1.setRecord_ID(test2.getTest_ID());
 		test1.saveEx();
 
+		CacheMgt.get().reset();
 		test2.deleteEx(true);
 		test1.load(trxName);
 		assertTrue(test1.get_ID() == 0);

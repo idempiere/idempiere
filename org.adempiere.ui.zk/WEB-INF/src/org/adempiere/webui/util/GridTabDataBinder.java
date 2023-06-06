@@ -104,8 +104,26 @@ public class GridTabDataBinder implements ValueChangeListener {
 			if (newValue instanceof Integer[])
 			{
 				newValues = ((Integer[])newValue);
+			}
+			else if (newValue instanceof Object[])
+			{
+				newValues = new Integer[((Object[])newValue).length];
+				for (int idx=0; idx<((Object[])newValue).length; idx++)
+				{
+					if (((Object[])newValue)[idx] instanceof Integer)
+					{
+						newValues[idx] = (Integer) ((Object[])newValue)[idx];
+					}
+					else
+					{
+						logger.severe("Multiple values can only be processed for IDs (Integer)");
+						throw new IllegalArgumentException("Multiple Selection values not available for this field. " + e.getPropertyName());
+					}
+				}
+			}
+			if (newValue instanceof Integer[] || newValue instanceof Object[])
+			{
 				newValue = newValues[0];
-				
 				if (newValues.length > 1)
 				{
 					Integer valuesCopy[] = new Integer[newValues.length - 1];
@@ -117,12 +135,7 @@ public class GridTabDataBinder implements ValueChangeListener {
 					newValues = null;
 				}
 			}
-			else if (newValue instanceof Object[])
-			{
-				logger.severe("Multiple values can only be processed for IDs (Integer)");
-				throw new IllegalArgumentException("Multiple Selection values not available for this field. " + e.getPropertyName());
-			}
-			
+
 			if (e.isInitEdit())
 				mTable.setValueAt (newValue, row, col, false, true);
 			else

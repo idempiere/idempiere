@@ -270,9 +270,9 @@ public abstract class SvrProcess implements ProcessCall
 			if (msg == null)
 				msg = e.toString();
 			if (e.getCause() != null)
-				log.log(Level.SEVERE, msg, e.getCause());
+				log.log(Level.SEVERE, Msg.parseTranslation(getCtx(), msg), e.getCause());
 			else 
-				log.log(Level.SEVERE, msg, e);
+				log.log(Level.SEVERE, Msg.parseTranslation(getCtx(), msg), e);
 			success = false;
 		//	throw new RuntimeException(e);
 		}
@@ -617,7 +617,55 @@ public abstract class SvrProcess implements ProcessCall
 		}
 		listEntryLog = null; // flushed - to avoid flushing it again in case is called
 	}
+	
+	/**
+	 *  Save Progress Log Entry to DB immediately
+	 *  @param date date or null
+	 *  @param id record id or 0
+	 *  @param number number or null
+	 *  @param msg message or null
+	 *  @return String AD_PInstance_Log_UU
+	 */
+	public String saveProgress (int id, Timestamp date, BigDecimal number, String msg)
+	{
+		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
+		if (m_pi != null)
+			return m_pi.saveProgress(id, date, number, msg);
+		return "";
+	}	//	saveProgress
 
+	/**
+	 *  Save Status Log Entry to DB immediately
+	 *  @param date date or null
+	 *  @param id record id or 0
+	 *  @param number number or null
+	 *  @param msg message or null
+	 *  @return String AD_PInstance_Log_UU
+	 */
+	public String saveStatus (int id, Timestamp date, BigDecimal number, String msg)
+	{
+		if (log.isLoggable(Level.INFO)) log.info(id + " - " + date + " - " + number + " - " + msg);
+		if (m_pi != null)
+			return m_pi.saveStatus(id, date, number, msg);
+		return "";
+	}	//	saveStatus
+	
+	/**
+	 *  Update Progress Log Entry with the specified AD_PInstance_Log_UU, update if exists
+	 *  @param pInstanceLogUU AD_PInstance_Log_UU
+	 * 	@param id record id or 0
+	 *	@param date date or null
+	 * 	@param number number or null
+	 * 	@param msg message or null
+	 */
+	public void updateProgress (String pInstanceLogUU, int id, Timestamp date, BigDecimal number, String msg)
+	{
+		if (m_pi != null)
+			m_pi.updateProgress(pInstanceLogUU, id, date, number, msg);
+		
+		if (log.isLoggable(Level.INFO)) log.info(pInstanceLogUU + " - " + id + " - " + date + " - " + number + " - " + msg);
+	}	//	saveLog
+	
 	/**************************************************************************
 	 * 	Execute function
 	 * 	@param className class

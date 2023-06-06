@@ -5,6 +5,7 @@ package org.adempiere.webui.info;
 
 import org.adempiere.webui.panel.InvoiceHistory;
 import org.compiere.model.GridField;
+import org.compiere.model.MBPartner;
 import org.compiere.util.Env;
 
 /**
@@ -86,7 +87,7 @@ public class InfoBPartnerWindow extends InfoWindow {
 	protected void showHistory()
 	{
 		log.info("");
-		Integer C_BPartner_ID = getSelectedRowKey();
+		Integer C_BPartner_ID = getIntSelectedRowKey(MBPartner.Table_ID);
 		if (C_BPartner_ID == null)
 			return;
 		InvoiceHistory ih = new InvoiceHistory (this, C_BPartner_ID.intValue(), 
@@ -105,7 +106,7 @@ public class InfoBPartnerWindow extends InfoWindow {
  		super.saveSelectionDetail();
 
         //  publish for Callout to read
-        Integer ID = getSelectedRowKey();
+        Integer ID = getIntSelectedRowKey(MBPartner.Table_ID);
         Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "C_BPartner_ID", ID == null ? "0" : ID.toString());
 	}
 	

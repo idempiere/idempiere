@@ -81,6 +81,7 @@ import org.compiere.model.MDunningRunEntry;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInvoice;
+import org.compiere.model.MLanguage;
 import org.compiere.model.MMovement;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPInstance;
@@ -1040,34 +1041,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 												MTable mTable = MTable.get(getCtx(), tableID);
 												String tableName = mTable.getTableName();
 												
-												ArrayList<MColumn> list = new ArrayList<MColumn>();
-												for (String idColumnName : mTable.getIdentifierColumns()) {
-													MColumn column = mTable.getColumn(idColumnName);
-													list.add (column);
-												}
-												if(list.size() > 0) {
-													StringBuilder displayColumn = new StringBuilder();
-													String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
-													
-													for(int i = 0; i < list.size(); i++) {
-														MColumn identifierColumn = list.get(i);
-														if(i > 0)
-															displayColumn.append("||'").append(separator).append("'||");
-														
-														displayColumn.append("NVL(")
-																	.append(DB.TO_CHAR(identifierColumn.getColumnName(), 
-																						identifierColumn.getAD_Reference_ID(), 
-																						Env.getAD_Language(Env.getCtx())))
-																	.append(",'')");
-													}
-													StringBuilder sql = new StringBuilder("SELECT ");
-													sql.append(displayColumn.toString());
-													sql.append(" FROM ").append(tableName);
-													sql.append(" WHERE ")
-														.append(tableName).append(".").append(tableName).append("_ID=?");
-													
-													value = DB.getSQLValueStringEx(null, sql.toString(), Integer.parseInt(value));
-												}
+												value = getIdentifier(mTable, tableName, Integer.parseInt(value));
+												
 												String foreignColumnName = tableName + "_ID";
 												pde.setForeignColumnName(foreignColumnName);
 												isZoom = true;
@@ -1203,7 +1178,90 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		return true;
 	}	//	createHTML
 
-
+	/**
+	 * Get record identifier string
+	 * @param mTable
+	 * @param tableName
+	 * @param recordID
+	 * @return String identifier
+	 */
+	private String getIdentifier(MTable mTable, String tableName, int recordID) {
+		ArrayList<MColumn> list = new ArrayList<MColumn>();
+		// get translation table - null if not exists
+		MTable mTableTrl = MTable.get(getCtx(), tableName+"_Trl");
+		String tableNameTrl = "";
+		// get report language
+		String reportLang = getLanguageID() > 0 ? new MLanguage(getCtx(), getLanguageID(), null).getAD_Language() : Language.getLoginLanguage().getAD_Language();
+		
+		// use Trl table or base table
+		boolean isTrl = !Env.isBaseLanguage(Language.getLanguage(reportLang), tableName);
+		
+		if(isTrl && mTableTrl != null)
+			tableNameTrl = mTableTrl.getTableName();
+		else
+			isTrl = false;
+		
+		// load identifier columns
+		for (String idColumnName : mTable.getIdentifierColumns()) {
+			MColumn column = mTable.getColumn(idColumnName);
+			list.add (column);
+		}
+		if(list.size() <= 0) {
+			return String.valueOf(recordID);
+		}
+		
+		StringBuilder displayColumn = new StringBuilder();
+		String separator = MSysConfig.getValue(MSysConfig.IDENTIFIER_SEPARATOR, "_", Env.getAD_Client_ID(Env.getCtx()));
+		
+		// get record identifier from SQL
+		for(int i = 0; i < list.size(); i++) {
+			MColumn identifierColumn = list.get(i);
+			if(i > 0)
+				displayColumn.append("||'").append(separator).append("'||");
+			
+			displayColumn.append("COALESCE(")
+						.append(DB.TO_CHAR(addTrlSuffix(identifierColumn, tableName, isTrl)+"."+identifierColumn.getColumnName(), 
+											identifierColumn.getAD_Reference_ID(), 
+											Env.getAD_Language(Env.getCtx())))
+						.append(",")
+						.append(DB.TO_CHAR(tableName+"."+identifierColumn.getColumnName(), 
+								identifierColumn.getAD_Reference_ID(), 
+								Env.getAD_Language(Env.getCtx())))
+						.append(",'')");
+		}
+		ArrayList<Object> params = new ArrayList<Object>();
+		StringBuilder sql = new StringBuilder("SELECT ");
+		sql.append(displayColumn.toString());
+		sql.append(" FROM ").append(tableName);
+		if(isTrl) {
+			sql.append(" LEFT JOIN ").append(tableNameTrl).append(" ON ")
+				.append(tableName).append(".").append(tableName).append("_ID = ")
+				.append(tableNameTrl).append(".").append(tableName).append("_ID AND ")
+				.append(tableNameTrl).append(".AD_Language=?");
+			
+			params.add(reportLang);
+		}
+		sql.append(" WHERE ")
+			.append(tableName).append(".").append(tableName).append("_ID=?");
+		
+		params.add(recordID);		
+		return DB.getSQLValueStringEx(null, sql.toString(), params);
+	} // getIdentifier
+	
+	/**
+	 * Add "_Trl" suffix to table name, if the column is translated
+	 * @param column
+	 * @param tableName
+	 * @param isTrl - is translated
+	 * @return String tableName
+	 */
+	private String addTrlSuffix(MColumn column, String tableName, boolean isTrl) {
+		if(column.isTranslated() && isTrl)
+			return tableName + "_Trl";
+		else
+			return tableName;
+	} // addTrlSuffix
+	
 	private String getCSSFontFamily(String fontFamily) {
 		if ("Dialog".equals(fontFamily) || "DialogInput".equals(fontFamily) || 	"Monospaced".equals(fontFamily))
 		{
