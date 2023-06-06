@@ -1632,7 +1632,7 @@ public class GridTable extends AbstractTableModel
 			m_trxName = null;
 		if (Record_ID != -1)
 		{
-			if (Record_ID == 0 && MTable.isZeroIDTable(table.getTableName())) {
+			if (Record_ID == 0 && !m_inserting && MTable.isZeroIDTable(table.getTableName())) {
 				String uuidFromZeroID = table.getUUIDFromZeroID();
 				po = table.getPOByUU(uuidFromZeroID, m_trxName);
 			} else {
