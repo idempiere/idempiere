@@ -30,17 +30,18 @@ import org.idempiere.cache.ImmutablePOSupport;
 /**
  *  Zoom Condition model
  *	
- *  @author Nico
+ *  @author	Nicolas Micoud - TGI
  *  @version $Id: MZoomCondition.java
  */
 public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSupport
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2472970418557589702L;
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 381986049328113973L;
+
+	/**
     * UUID based Constructor
     * @param ctx  Context
     * @param AD_ZoomCondition_UU  UUID key
@@ -402,6 +403,18 @@ public class MZoomCondition extends X_AD_ZoomCondition implements ImmutablePOSup
 
 		makeImmutable();
 		return this;
+	}
+
+	/**
+	 * 	Before Save
+	 *	@param newRecord
+	 *	@return true if ok
+	 */
+	protected boolean beforeSave (boolean newRecord) {
+		if (getSeqNo() == 0)
+			setSeqNo(DB.getSQLValueEx(get_TrxName(), "SELECT COALESCE(MAX(SeqNo), 0) + 10 FROM AD_ZoomCondition WHERE AD_Table_ID = ?", getAD_Table_ID()));
+
+		return true;
 	}
 
 }	//	MZoomCondition
