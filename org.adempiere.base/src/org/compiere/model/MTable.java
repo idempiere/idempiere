@@ -915,7 +915,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 				+ "INNER JOIN AD_Menu m ON (a.AD_Window_ID=m.AD_Window_ID AND m.IsActive='Y' AND m.Action='W') "
 				+ "WHERE a.IsActive='Y' AND b.IsActive='Y' AND b.AD_Table_ID=? ORDER BY b.TabLevel, a.AD_Window_ID", getAD_Table_ID());
 	}
-	
+
 	/**
 	 * Get the UUID from the Zero ID record
 	 * @return
