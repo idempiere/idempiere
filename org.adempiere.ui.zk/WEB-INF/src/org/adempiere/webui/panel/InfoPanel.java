@@ -3031,7 +3031,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			return MTable.get(Env.getCtx(), MRefTable.get(Env.getCtx(), refValID).getAD_Table_ID());
 		}
 		else if (columnName.endsWith("_ID")) {
-			return MTable.get(Env.getCtx(), columnName.substring(0, p_keyColumn.length() - 3));
+			return MTable.get(Env.getCtx(), columnName.substring(0, columnName.length() - 3));
 		}
 		else {
 			return null;
