@@ -1043,11 +1043,7 @@ public class Query
 			rs = null; pstmt = null;
 		}
 		//	Convert to array
-		int[] retValue = new int[list.size()];
-		for (int i = 0; i < retValue.length; i++)
-		{
-			retValue[i] = list.get(i);
-		}
+		int[] retValue = list.stream().mapToInt(Integer::intValue).toArray();
 		return retValue;
 	}	//	get_IDs
 
