@@ -2077,27 +2077,43 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		String orderClause = getUserOrderClause();
 		String dynJoin = getSQLJoin(m_sqlMain);
         StringBuilder sql = new StringBuilder (m_sqlMain);
+        boolean whereTrimmed = false;
         
+        // trim WHERE clause to add dynamic JOIN clauses
+        if(dynJoin.length() > 0 && !Util.isEmpty(p_whereClause) && sql.toString().endsWith(p_whereClause)) {
+        	int index = sql.lastIndexOf(p_whereClause);
+        	sql.delete(index, sql.length());
+        	whereTrimmed = true;
+        }
+        // trim trailing WHERE statement
         if (sql.toString().trim().endsWith("WHERE")) {
         	int index = sql.lastIndexOf(" WHERE");
         	sql.delete(index, sql.length());
         }
+        // add dynamic JOIN clauses
         if(dynJoin.length() > 0) {
-		sql.append(dynJoin);
+        	sql.append(dynJoin);
         }
+        // add trimmed WHERE clause if needed
+        if(whereTrimmed) {
+        	sql.append(" WHERE ").append(p_whereClause);
+        }
+        // add dynamic WHERE CLAUSE
         if (dynWhere.length() > 0) {
-			sql.append(" WHERE ");
+        	if(Util.isEmpty(p_whereClause))
+        		sql.append(" WHERE ");
 			sql.append(dynWhere);   //  includes first AND
         }
         dataSql = Msg.parseTranslation(Env.getCtx(), sql.toString());    //  Variables
         dataSql = MRole.getDefault().addAccessSQL(dataSql, getTableName(),
             MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);
         
+        // add other SQL clause
         String otherClause = getOtherClauseParsed();
         if (otherClause.length() > 0) {
         	dataSql = dataSql + " " + otherClause;
         }
-        
+        // add ORDER BY clause 
         dataSql = dataSql + orderClause;
         
         if (end > start && isUseDatabasePaging() && DB.getDatabase().isPagingSupported())
