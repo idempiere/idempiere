@@ -1069,7 +1069,9 @@ public class GridField
 				SimpleDateFormat dateFormat = DisplayType.getDateFormat_JDBC();
 				SimpleDateFormat timeFormat = DisplayType.getTimeFormat_Default();
 				try {
-					if (m_vo.displayType == DisplayType.Date) {
+					if(Util.isEmpty(value, true)) {
+						return null;
+					} else if (m_vo.displayType == DisplayType.Date) {
 						date = dateFormat.parse (value);
 					} else if (m_vo.displayType == DisplayType.Time) {
 						date = timeFormat.parse (value);
