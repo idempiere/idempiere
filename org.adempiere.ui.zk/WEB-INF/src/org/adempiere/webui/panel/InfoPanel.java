@@ -3003,11 +3003,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 		// join tables to sort by display value
 		if(!Util.isEmpty(displayColumn) && (DisplayType.isID(p_layout[col].getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(p_layout[col].getAD_Reference_ID()))) {
-			MTable[] tables = getTables(p_layout[col].getAD_Reference_Value_ID(), p_layout[col].getColumnName());
-			for(MTable table : tables) {
-				if(!joinTables.contains(table.getTableName()))
-					joinTables.add(table.getTableName());
-			}
+			MTable table = getTable(p_layout[col].getAD_Reference_Value_ID(), p_layout[col].getColumnName());
+			if(table != null && !joinTables.contains(table.getTableName()))
+				joinTables.add(table.getTableName());
 		}
 		m_sqlUserOrder = null; // clear cache value
 		
@@ -3028,12 +3026,15 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * @param columnName
 	 * @return MTable[] tables
 	 */
-	private MTable[] getTables(int refValID, String columnName) {
+	private MTable getTable(int refValID, String columnName) {
 		if(refValID > 0) {
-			return new MTable[] {MTable.get(Env.getCtx(), MRefTable.get(Env.getCtx(), refValID).getAD_Table_ID())};
+			return MTable.get(Env.getCtx(), MRefTable.get(Env.getCtx(), refValID).getAD_Table_ID());
+		}
+		else if (columnName.endsWith("_ID")) {
+			return MTable.get(Env.getCtx(), columnName.substring(0, p_keyColumn.length() - 3));
 		}
 		else {
-			return MTable.getByKeyColumns(Env.getCtx(), new String[] {columnName}, null);
+			return null;
 		}
 	}
 	

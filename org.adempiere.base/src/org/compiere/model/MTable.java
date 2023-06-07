@@ -915,28 +915,6 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 				+ "INNER JOIN AD_Menu m ON (a.AD_Window_ID=m.AD_Window_ID AND m.IsActive='Y' AND m.Action='W') "
 				+ "WHERE a.IsActive='Y' AND b.IsActive='Y' AND b.AD_Table_ID=? ORDER BY b.TabLevel, a.AD_Window_ID", getAD_Table_ID());
 	}
-
-	/**
-	 * Get Tables by key columns 
-	 * @param keyColumns
-	 */
-	public static MTable[] getByKeyColumns(Properties ctx, String[] keyColumns, String trxName) {
-		String columnNames = "";
-		// parse columnNames
-		for(String keyColumm : keyColumns) {
-			if(!Util.isEmpty(columnNames))
-				columnNames += ", ";
-			columnNames += keyColumm;
-		}
-		//
-		String whereClause = " AD_Table.IsView = 'N' ";
-		List<MTable> tables = new Query(ctx, MTable.Table_Name, whereClause, trxName)
-			.addJoinClause(" JOIN AD_Column ON (AD_Table.AD_Table_ID=AD_Column.AD_Table_ID AND AD_Column.ColumnName IN (?) AND AD_Column.IsKey='Y') ")
-			.setParameters(columnNames)
-			.list();
-		
-		return tables.stream().toArray(MTable[]::new);
-	}
 	
 	/**
 	 * Get the UUID from the Zero ID record
