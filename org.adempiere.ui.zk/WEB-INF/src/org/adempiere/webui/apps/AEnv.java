@@ -477,17 +477,17 @@ public final class AEnv
 		zoomQuery.setZoomValue(value);
 		zoomQuery.addRestriction(column, MQuery.EQUAL, value);
 		zoomQuery.setRecordCount(1);    //  guess
-		if (zoomQuery.getZoomTableName() != null) {
+		if (zoomQuery != null && zoomQuery.getZoomTableName() != null) {
 			int tableId = -1;
+			int windowId = lookup.getZoom(zoomQuery);
 			tableId = MTable.getTable_ID(zoomQuery.getZoomTableName());
-	        if (value instanceof Integer && ((Integer) value).intValue() >= 0 && zoomQuery != null && zoomQuery.getZoomTableName() != null) {
-	        	zoom(tableId, ((Integer) value).intValue(), zoomQuery, lookup.getWindowNo());
-	        } else {
-	        	zoomUU(tableId, value.toString(), zoomQuery, lookup.getWindowNo());
-	        }
-		} else {
-        	int windowId = lookup.getZoom(zoomQuery);
-        	zoom(windowId, zoomQuery, lookup.getWindowNo());
+			if (windowId > 0) {
+				zoom(windowId, zoomQuery, lookup.getWindowNo());
+			} else if (value instanceof Integer && ((Integer) value).intValue() >= 0) {
+				zoom(tableId, ((Integer) value).intValue(), zoomQuery, lookup.getWindowNo());
+			} else {
+				zoomUU(tableId, value.toString(), zoomQuery, lookup.getWindowNo());
+			}
 		}
     }
 
