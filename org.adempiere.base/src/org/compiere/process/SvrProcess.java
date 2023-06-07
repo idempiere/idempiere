@@ -731,6 +731,11 @@ public abstract class SvrProcess implements ProcessCall
 			
 			if(m_pi.getAD_PInstance_ID() > 0) {
 				MPInstance mpi = new MPInstance (getCtx(), m_pi.getAD_PInstance_ID(), null);
+				if (mpi.get_ID() == 0)
+				{
+					log.log(Level.INFO, "Did not find PInstance " + m_pi.getAD_PInstance_ID());
+					return;
+				}
 				mpi.setIsProcessing(false);
 				mpi.setResult(!m_pi.isError());
 				mpi.setErrorMsg(m_pi.getSummary());
