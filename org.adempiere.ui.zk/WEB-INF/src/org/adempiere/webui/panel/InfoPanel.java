@@ -172,8 +172,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected boolean isIDColumnKeyOfView = false;
 	protected boolean hasRightQuickEntry = true;
 	protected boolean isHasNextPage = false;
-	/* List of table names for SQL JOIN clause */
-	protected ArrayList<String> joinTables = new ArrayList<String>();
+	/* Table name for SQL JOIN clause used when sorting ID columns by their display value */
+	protected String joinTable = null;
 	/**
 	 * store selected record info
 	 * key of map is value of column play as keyView
@@ -3004,8 +3004,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		// join tables to sort by display value
 		if(!Util.isEmpty(displayColumn) && (DisplayType.isLookup(p_layout[col].getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(p_layout[col].getAD_Reference_ID()))) {
 			MTable table = getTable(p_layout[col].getAD_Reference_Value_ID(), p_layout[col].getColumnName());
-			if(table != null && !joinTables.contains(table.getTableName()))
-				joinTables.add(table.getTableName());
+			if(table != null && !table.getTableName().equals(joinTable))
+				joinTable = table.getTableName();
 		}
 		m_sqlUserOrder = null; // clear cache value
 		

@@ -2129,20 +2129,18 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
      * @return SQL JOIN
      */
     private String getSQLJoin(String sqlMain) {
-		if(joinTables.size() <= 0)
+		if(Util.isEmpty(joinTable))
 			return "";
 		StringBuilder builder = new StringBuilder();
-		for(String tableName : joinTables) {
-			boolean doJoin = true;
-			for(TableInfo tableInfo : tableInfos) {
-				if(tableName.equalsIgnoreCase(tableInfo.getTableName()))
-					doJoin = false;
+		for(TableInfo tableInfo : tableInfos) {
+			if(joinTable.equalsIgnoreCase(tableInfo.getTableName())) {
+				return "";
 			}
-			if(doJoin && !sqlMain.contains(" LEFT JOIN " + tableName)) {
-				builder.append(" LEFT JOIN ").append(tableName).append(" ON (")
-					.append(tableName).append(".").append(tableName).append("_ID = ")
-					.append(getTableName()).append(".").append(tableName).append("_ID)");
-			}
+		}
+		if(!sqlMain.contains(" LEFT JOIN " + joinTable)) {
+			builder.append(" LEFT JOIN ").append(joinTable).append(" ON (")
+				.append(joinTable).append(".").append(joinTable).append("_ID = ")
+				.append(getTableName()).append(".").append(joinTable).append("_ID)");
 		}
 		return builder.toString();
     }
