@@ -140,7 +140,7 @@ public class WArchive implements EventListener<Event>
 			LayoutUtils.autoDetachOnClose(m_popup);
 		}
 		m_popup.open(invoker, "after_start");
-	}	//	getZoomTargets
+	}	//	getArchives
 	
 	/**
 	 * 	Listener

@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -80,6 +81,18 @@ public class MDiscountSchema extends X_M_DiscountSchema implements ImmutablePOSu
 		= new ImmutableIntPOCache<Integer,MDiscountSchema>(Table_Name, 20);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_DiscountSchema_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDiscountSchema(Properties ctx, String M_DiscountSchema_UU, String trxName) {
+        super(ctx, M_DiscountSchema_UU, trxName);
+		if (Util.isEmpty(M_DiscountSchema_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -90,14 +103,19 @@ public class MDiscountSchema extends X_M_DiscountSchema implements ImmutablePOSu
 	{
 		super (ctx, M_DiscountSchema_ID, trxName);
 		if (M_DiscountSchema_ID == 0)
-		{
-			setDiscountType (DISCOUNTTYPE_FlatPercent);
-			setFlatDiscount(Env.ZERO);
-			setIsBPartnerFlatDiscount (false);
-			setIsQuantityBased (true);	// Y
-			setCumulativeLevel(CUMULATIVELEVEL_Line);
-		}	
+			setInitialDefaults();
 	}	//	MDiscountSchema
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDiscountType (DISCOUNTTYPE_FlatPercent);
+		setFlatDiscount(Env.ZERO);
+		setIsBPartnerFlatDiscount (false);
+		setIsQuantityBased (true);	// Y
+		setCumulativeLevel(CUMULATIVELEVEL_Line);
+	}
 
 	/**
 	 * 	Load Constructor

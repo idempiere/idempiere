@@ -66,7 +66,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -7981455044208282721L;
+	private static final long serialVersionUID = 4325276636597337437L;
 
 	public final static int MAX_OFFICIAL_ID = 999999;
 
@@ -246,6 +246,18 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return null;
 	}	//	getClass
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Table_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTable(Properties ctx, String AD_Table_UU, String trxName) {
+        super(ctx, AD_Table_UU, trxName);
+		if (Util.isEmpty(AD_Table_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -256,17 +268,22 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	{
 		super (ctx, AD_Table_ID, trxName);
 		if (AD_Table_ID == 0)
-		{
-			setAccessLevel (ACCESSLEVEL_SystemOnly);	// 4
-			setEntityType (ENTITYTYPE_UserMaintained);	// U
-			setIsChangeLog (false);
-			setIsDeleteable (false);
-			setIsHighVolume (false);
-			setIsSecurityEnabled (false);
-			setIsView (false);	// N
-			setReplicationType (REPLICATIONTYPE_Local);
-		}
+			setInitialDefaults();
 	}	//	MTable
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAccessLevel (ACCESSLEVEL_SystemOnly);	// 4
+		setEntityType (ENTITYTYPE_UserMaintained);	// U
+		setIsChangeLog (false);
+		setIsDeleteable (false);
+		setIsHighVolume (false);
+		setIsSecurityEnabled (false);
+		setIsView (false);	// N
+		setReplicationType (REPLICATIONTYPE_Local);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -318,6 +335,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 
 	/**	Columns				*/
 	private MColumn[]	m_columns = null;
+	/** Key Columns					*/
+	private String[]	m_KeyColumns = null;
 	/** column name to index map **/
 	private Map<String, Integer> m_columnNameMap;
 	/** ad_column_id to index map **/
@@ -455,22 +474,64 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 */
 	public String[] getKeyColumns()
 	{
+		if (m_KeyColumns != null)
+			return m_KeyColumns;
 		getColumns(false);
 		ArrayList<String> list = new ArrayList<String>();
 		//
 		for (int i = 0; i < m_columns.length; i++)
 		{
 			MColumn column = m_columns[i];
-			if (column.isKey())
-				return new String[]{column.getColumnName()};
+			if (column.isKey()) {
+				m_KeyColumns = new String[]{column.getColumnName()};
+				return m_KeyColumns;
+			}
 			if (column.isParent())
 				list.add(column.getColumnName());
 		}
+		//check uuid key
+		if (list.isEmpty()) {
+			MColumn uuColumn = getColumn(PO.getUUIDColumnName(getTableName()));
+			if (uuColumn != null) {
+				m_KeyColumns = new String[]{uuColumn.getColumnName()};
+				return m_KeyColumns;
+			}
+		}
 		String[] retValue = new String[list.size()];
 		retValue = list.toArray(retValue);
-		return retValue;
+		m_KeyColumns = retValue;
+		return m_KeyColumns;
 	}	//	getKeyColumns
 	
+	/**
+	 * @return true if table key is _ID key.
+	 */
+	public boolean isIDKeyTable()
+	{
+		String idColName = getTableName() + "_ID";
+		return (getKeyColumns() != null && getKeyColumns().length == 1 && getKeyColumns()[0].equals(idColName));
+	}
+
+	/**
+	 * @return true if table key is _UU instead of _ID or composite parent key.
+	 */
+	public boolean isUUIDKeyTable()
+	{
+		String uuColName = PO.getUUIDColumnName(getTableName());
+		return (getKeyColumns() != null && getKeyColumns().length == 1 && getKeyColumns()[0].equals(uuColName));
+	}
+	
+	/**
+	 * @return true if table has a UUID key
+	 */
+	public boolean hasUUIDKey()
+	{
+		String uuColName = PO.getUUIDColumnName(getTableName());
+		if (m_columns == null)
+			getColumns(false);
+		return m_columnNameMap.get(uuColName.toUpperCase()) != null;
+	}
+
 	/**
 	 * 	Get Identifier Columns of Table
 	 *	@return Identifier columns
@@ -526,8 +587,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 				{
 					if (po.get_ID() != Record_ID && Record_ID > 0)
 						po = null;
-					else
-						return po;
+					return po;
 				}
 			}
 			s_modelFactoryCache.remove(tableName);
@@ -546,21 +606,19 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 					{
 						if (po.get_ID() != Record_ID && Record_ID > 0)
 							po = null;
-						else
-						{
-							s_modelFactoryCache.put(tableName, factory);
-							break;
-						}
+						s_modelFactoryCache.put(tableName, factory);
+						break;
 					}
 				}
 			}
 		}
 
-		if (po == null)
+		if (po == null && s_modelFactoryCache.get(tableName) == null)
 		{
 			po = new GenericPO(tableName, getCtx(), Record_ID, trxName);
 			if (po.get_ID() != Record_ID && Record_ID > 0)
 				po = null;
+			// TODO: how to add GenericPO to the s_modelFactoryCache ??
 		}
 
 		return po;
@@ -820,6 +878,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return (tablename.equals("AD_Org") ||
 				tablename.equals("AD_OrgInfo") ||
 				tablename.equals("AD_Client") || // IDEMPIERE-668
+				tablename.equals("AD_ClientInfo") ||
 				tablename.equals("AD_AllClients_V") ||
 				tablename.equals("AD_ReportView") ||
 				tablename.equals("AD_Role") ||
@@ -846,5 +905,34 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return this;
 	}
 
-	
+	/**
+	 * Get first AD_Window that's using this table from AD_Menu.
+	 * @return AD_Window_ID or -1 if not found
+	 */
+	public int getWindowIDFromMenu() {
+		return DB.getSQLValueEx(null, "SELECT a.AD_Window_ID FROM AD_Window a "
+				+ "INNER JOIN AD_Tab b ON (a.AD_Window_ID=b.AD_Window_ID) "
+				+ "INNER JOIN AD_Menu m ON (a.AD_Window_ID=m.AD_Window_ID AND m.IsActive='Y' AND m.Action='W') "
+				+ "WHERE a.IsActive='Y' AND b.IsActive='Y' AND b.AD_Table_ID=? ORDER BY b.TabLevel, a.AD_Window_ID", getAD_Table_ID());
+	}
+
+	/**
+	 * Get the UUID from the Zero ID record
+	 * @return
+	 */
+	public String getUUIDFromZeroID() {
+		if (! MTable.isZeroIDTable(getTableName()))
+			return null;
+		StringBuilder sqluu = new StringBuilder()
+				.append("SELECT ")
+				.append(PO.getUUIDColumnName(getTableName()))
+				.append(" FROM ")
+				.append(getTableName())
+				.append(" WHERE ")
+				.append(getKeyColumns()[0])
+				.append("=0");
+		String uuidFromZeroID = DB.getSQLValueStringEx(get_TrxName(), sqluu.toString());
+		return uuidFromZeroID;
+	}
+
 }	//	MTable

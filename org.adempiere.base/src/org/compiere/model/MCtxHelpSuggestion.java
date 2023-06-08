@@ -17,13 +17,22 @@ public class MCtxHelpSuggestion extends X_AD_CtxHelpSuggestion {
 	 */
 	private static final long serialVersionUID = 1940407803562658708L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_CtxHelpSuggestion_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCtxHelpSuggestion(Properties ctx, String AD_CtxHelpSuggestion_UU, String trxName) {
+        super(ctx, AD_CtxHelpSuggestion_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param AD_CtxHelpSuggestion_ID
 	 * @param trxName
 	 */
-	public MCtxHelpSuggestion(Properties ctx, int AD_CtxHelpSuggestion_ID,
-			String trxName) {
+	public MCtxHelpSuggestion(Properties ctx, int AD_CtxHelpSuggestion_ID, String trxName) {
 		super(ctx, AD_CtxHelpSuggestion_ID, trxName);
 	}
 

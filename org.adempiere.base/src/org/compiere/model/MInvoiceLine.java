@@ -34,6 +34,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 
 /**
@@ -110,6 +111,18 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	protected MTax 		m_tax = null;
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_InvoiceLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInvoiceLine(Properties ctx, String C_InvoiceLine_UU, String trxName) {
+        super(ctx, C_InvoiceLine_UU, trxName);
+		if (Util.isEmpty(C_InvoiceLine_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Invoice Line Constructor
 	 * 	@param ctx context
@@ -124,20 +137,25 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	public MInvoiceLine(Properties ctx, int C_InvoiceLine_ID, String trxName, String... virtualColumns) {
 		super(ctx, C_InvoiceLine_ID, trxName, virtualColumns);
 		if (C_InvoiceLine_ID == 0)
-		{
-			setIsDescription(false);
-			setIsPrinted (true);
-			setLineNetAmt (Env.ZERO);
-			setPriceEntered (Env.ZERO);
-			setPriceActual (Env.ZERO);
-			setPriceLimit (Env.ZERO);
-			setPriceList (Env.ZERO);
-			setM_AttributeSetInstance_ID(0);
-			setTaxAmt(Env.ZERO);
-			//
-			setQtyEntered(Env.ZERO);
-			setQtyInvoiced(Env.ZERO);
-		}
+			setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsDescription(false);
+		setIsPrinted (true);
+		setLineNetAmt (Env.ZERO);
+		setPriceEntered (Env.ZERO);
+		setPriceActual (Env.ZERO);
+		setPriceLimit (Env.ZERO);
+		setPriceList (Env.ZERO);
+		setM_AttributeSetInstance_ID(0);
+		setTaxAmt(Env.ZERO);
+		//
+		setQtyEntered(Env.ZERO);
+		setQtyInvoiced(Env.ZERO);
 	}
 
 	/**
@@ -528,7 +546,7 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	public void setLineNetAmt ()
 	{
 		//	Calculations & Rounding
-		BigDecimal bd = getPriceActual().multiply(getQtyInvoiced());
+		BigDecimal bd = getPriceEntered().multiply(getQtyEntered());
 		int precision = getPrecision();
 		if (bd.scale() > precision)
 			bd = bd.setScale(precision, RoundingMode.HALF_UP);

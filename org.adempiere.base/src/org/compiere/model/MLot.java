@@ -118,6 +118,16 @@ public class MLot extends X_M_Lot
 	}	//	getProductLotPairs
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Lot_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MLot(Properties ctx, String M_Lot_UU, String trxName) {
+        super(ctx, M_Lot_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 * 	@param ctx context

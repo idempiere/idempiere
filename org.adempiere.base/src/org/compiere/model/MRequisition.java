@@ -32,6 +32,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *	Requisition Model
@@ -54,6 +55,18 @@ public class MRequisition extends X_M_Requisition implements DocAction
 	 */
 	private static final long serialVersionUID = 898606565778668659L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Requisition_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRequisition(Properties ctx, String M_Requisition_UU, String trxName) {
+        super(ctx, M_Requisition_UU, trxName);
+		if (Util.isEmpty(M_Requisition_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -63,18 +76,23 @@ public class MRequisition extends X_M_Requisition implements DocAction
 	{
 		super (ctx, M_Requisition_ID, trxName);
 		if (M_Requisition_ID == 0)
-		{
-			setDateDoc(new Timestamp(System.currentTimeMillis()));
-			setDateRequired (new Timestamp(System.currentTimeMillis()));
-			setDocAction (DocAction.ACTION_Complete);	// CO
-			setDocStatus (DocAction.STATUS_Drafted);		// DR
-			setPriorityRule (PRIORITYRULE_Medium);	// 5
-			setTotalLines (Env.ZERO);
-			setIsApproved (false);
-			setPosted (false);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MRequisition
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDateDoc(new Timestamp(System.currentTimeMillis()));
+		setDateRequired (new Timestamp(System.currentTimeMillis()));
+		setDocAction (DocAction.ACTION_Complete);	// CO
+		setDocStatus (DocAction.STATUS_Drafted);		// DR
+		setPriorityRule (PRIORITYRULE_Medium);	// 5
+		setTotalLines (Env.ZERO);
+		setIsApproved (false);
+		setPosted (false);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

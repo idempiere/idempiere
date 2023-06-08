@@ -34,6 +34,16 @@ public class MAssetChange extends X_A_Asset_Change
 	/**	Static Logger */
 	private static CLogger s_log = CLogger.getCLogger(MAssetChange.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Asset_Change_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAssetChange(Properties ctx, String A_Asset_Change_UU, String trxName) {
+        super(ctx, A_Asset_Change_UU, trxName);
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context

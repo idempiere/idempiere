@@ -45,6 +45,16 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 	/**	Cache of selected MUserDefField entries 					**/
 	private static ImmutablePOCache<String,MUserDefField> s_cache = new ImmutablePOCache<String,MUserDefField>(Table_Name, 10);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_UserDef_Field_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MUserDefField(Properties ctx, String AD_UserDef_Field_UU, String trxName) {
+        super(ctx, AD_UserDef_Field_UU, trxName);
+    }
+
 	/**
 	 * 	Standard constructor.
 	 * 	You must implement this constructor for Adempiere Persistency

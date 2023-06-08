@@ -64,13 +64,12 @@ import org.zkoss.zul.Space;
 import org.zkoss.zul.Vlayout;
 
 /**
- * 
+ * Form to create shipment lines (M_InOutLine) from Purchase Order, Vendor Invoice or Customer RMA.
  * @author hengsin
- *
  */
 public class WCreateFromShipmentUI extends CreateFromShipment implements EventListener<Event>, ValueChangeListener
 {
-
+	/** Create from window instance */
 	private WCreateFromWindow window;
 	
 	/**
@@ -109,9 +108,11 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	private final static CLogger log = CLogger.getCLogger(WCreateFromShipmentUI.class);
 		
 	protected Label bPartnerLabel = new Label();
+	/** Business partner parameter field */
 	protected WEditor bPartnerField;
 	
 	protected Label orderLabel = new Label();
+	/** Purchase order parameter field */
 	protected Listbox orderField = ListboxFactory.newDropdownListbox();
 
     /** Label for the rma selection */
@@ -120,17 +121,29 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
     protected Listbox rmaField = ListboxFactory.newDropdownListbox();
 	
     protected Label invoiceLabel = new Label();
+    /** Vendor invoice parameter field */
     protected Listbox invoiceField = ListboxFactory.newDropdownListbox();
+    
+    /** True to show only documents from same warehouse with calling M_InOut record */
 	protected Checkbox sameWarehouseCb = new Checkbox();
+	
 	protected Label locatorLabel = new Label();
+	/** Locator parameter field */
 	protected WLocatorEditor locatorField = new WLocatorEditor();
+	
 	protected Label upcLabel = new Label();
+	/** Product UPC field. Use to select product in data grid. */
 	protected WStringEditor upcField = new WStringEditor();
 
+	/** Grid layout for parameter panel */
 	private Grid parameterStdLayout;
 
+	/** Number of column for {@link #parameterStdLayout} */
 	private int noOfParameterColumn;
     
+	/** true when form is handling event */
+	private boolean m_actionActive = false;
+	
 	@Override
 	protected boolean dynInit() throws Exception
 	{
@@ -156,6 +169,10 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		return true;
 	}   //  dynInit
 	
+	/**
+	 * Layout {@link #window}
+	 * @throws Exception
+	 */
 	protected void zkInit() throws Exception
 	{
     	boolean isRMAWindow = ((getGridTab().getAD_Window_ID() == WINDOW_RETURNTOVENDOR) || (getGridTab().getAD_Window_ID() == WINDOW_CUSTOMERRETURN)); 
@@ -225,8 +242,6 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		}
 	}
 
-	private boolean 	m_actionActive = false;
-	
 	@Override
 	public void onEvent(Event e) throws Exception
 	{
@@ -288,8 +303,8 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	}
 	
 	/**
-	 * Checks the UPC value and checks if the UPC matches any of the products in the
-	 * list.
+	 * Find product from data grid ({@link WCreateFromWindow#getWListbox()} with UPC value that matched the value from {@link #upcField}.<br/>
+	 * If a match is found, select the data grid row and set quantity to 1.
 	 */
 	private void checkProductUsingUPC()
 	{
@@ -372,7 +387,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	}   //  initBPartner
 
 	/**
-	 * Init Details - load invoices not shipped
+	 * Load invoices not shipped for C_BPartner_ID
 	 * @param C_BPartner_ID BPartner
 	 */
 	private void initBPInvoiceDetails(int C_BPartner_ID)
@@ -396,7 +411,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	}
 	
 	/**
-	 *  Load BPartner dependent Order Field.
+	 *  Load Orders for C_BPartner_ID
 	 *  @param C_BPartner_ID BPartner
 	 *  @param forInvoice for invoice
 	 */
@@ -430,7 +445,8 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	}   //  initBPOrderDetails
 	
 	/**
-	 * load bpartner related details
+	 * Load bpartner related details. <br/>
+	 * Call {@link #initBPInvoiceDetails(int)} and {@link #initBPRMADetails(int)}.
 	 * @param C_BPartner_ID
 	 */
 	protected void initBPDetails(int C_BPartner_ID) 
@@ -438,7 +454,6 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		initBPInvoiceDetails(C_BPartner_ID);
 		initBPRMADetails(C_BPartner_ID);
 	}
-
 	
 	/**
 	 * Load RMA that are candidates for shipment
@@ -463,7 +478,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	/**
 	 *  Load Order lines
 	 *  @param C_Order_ID Order
-	 *  @param forInvoice true if for invoice vs. delivery qty
+	 *  @param forInvoice true for invoice line, false for shipment line
 	 *  @param M_Locator_ID
 	 */
 	protected void loadOrder (int C_Order_ID, boolean forInvoice, int M_Locator_ID)
@@ -508,7 +523,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 		//
 		
 		configureMiniTable(window.getWListbox());
-	}   //  loadOrder
+	}
 	
 	@Override
 	public void showWindow()
@@ -528,7 +543,7 @@ public class WCreateFromShipmentUI extends CreateFromShipment implements EventLi
 	}
 	
 	/**
-	 * Configure layout of parameter grid
+	 * Setup columns of parameter grid
 	 * @param parameterGrid
 	 */
 	protected void setupColumns(Grid parameterGrid) {

@@ -9,6 +9,7 @@ import java.util.Properties;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -24,6 +25,18 @@ public class MAssetAcct extends X_A_Asset_Acct implements ImmutablePOSupport
 	 */
 	private static final long serialVersionUID = -8898773839204909595L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Asset_Acct_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAssetAcct(Properties ctx, String A_Asset_Acct_UU, String trxName) {
+        super(ctx, A_Asset_Acct_UU, trxName);
+		if (Util.isEmpty(A_Asset_Acct_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * DO NOT USE DIRECTLY
 	 */
@@ -31,11 +44,16 @@ public class MAssetAcct extends X_A_Asset_Acct implements ImmutablePOSupport
 	{
 		super (ctx,X_A_Asset_Acct_ID, trxName);
 		if (X_A_Asset_Acct_ID == 0)
-		{
-			setA_Salvage_Value(Env.ZERO);
-		}
+			setInitialDefaults();
 	}
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setA_Salvage_Value(Env.ZERO);
+	}
+
 	public MAssetAcct (Properties ctx, ResultSet rs, String trxName)
 	{
 		super (ctx, rs, trxName);

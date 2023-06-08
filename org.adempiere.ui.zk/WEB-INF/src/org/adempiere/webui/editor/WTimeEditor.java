@@ -26,11 +26,13 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- *
+ * Default editor for {@link DisplayType#Time}.<br/>
+ * Implemented with {@link Timebox} component.
  * @author Low Heng Sin
  */
 public class WTimeEditor extends WEditor implements ContextMenuListener
@@ -85,11 +87,11 @@ public class WTimeEditor extends WEditor implements ContextMenuListener
 	 * Constructor for use if a grid field is unavailable
 	 *
 	 * @param label
-	 *            column name (not displayed)
+	 *            field label
 	 * @param description
 	 *            description of component
 	 * @param mandatory
-	 *            whether a selection must be made
+	 *            whether field is mandatory
 	 * @param readonly
 	 *            whether or not the editor is read only
 	 * @param updateable
@@ -102,12 +104,18 @@ public class WTimeEditor extends WEditor implements ContextMenuListener
 		init();
 	}
 
+	/**
+	 * Default constructor
+	 */
 	public WTimeEditor()
 	{
 		this("Time", "Time", false, false, true);
 		init();
-	}   // VDate
+	}   
 
+	/**
+	 * Init component and context menu
+	 */
 	private void init()
 	{
 		getComponent().setCols(10);
@@ -118,6 +126,7 @@ public class WTimeEditor extends WEditor implements ContextMenuListener
 			getComponent().setPlaceholder(gridField.getPlaceholder());
 	}
 	
+	@Override
 	public void onEvent(Event event)
     {
 		if (Events.ON_CHANGE.equalsIgnoreCase(event.getName()) || Events.ON_OK.equalsIgnoreCase(event.getName()))
@@ -153,18 +162,14 @@ public class WTimeEditor extends WEditor implements ContextMenuListener
     @Override
     public String getDisplay()
     {
-    	// Elaine 2008/07/29
     	return getComponent().getText();
-    	//
     }
 
     @Override
     public Object getValue()
     {
-    	// Elaine 2008/07/25
     	if(getComponent().getValue() == null) return null;
     	return new Timestamp(getComponent().getValue().getTime());
-    	//
     }
 
     @Override
@@ -195,7 +200,6 @@ public class WTimeEditor extends WEditor implements ContextMenuListener
 	public boolean isReadWrite() {
 		return !getComponent().isReadonly();
 	}
-
 
 	@Override
 	public void setReadWrite(boolean readWrite) {

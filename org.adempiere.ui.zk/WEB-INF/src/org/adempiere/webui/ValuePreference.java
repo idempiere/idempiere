@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.apps.AEnv;
@@ -133,7 +134,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 			AD_Client_ID, AD_Org_ID, AD_User_ID, AD_Window_ID, mField.getAD_Process_ID_Of_Panel(), mField.getAD_InfoWindow_ID_of_Panel(),
 			Attribute, DisplayAttribute, Value, DisplayValue,
 			displayType, AD_Reference_ID, ref);
-	}   //  create
+	}   //  start
 
 	/** The Name of the Dialog      */
 	public static final String      NAME = "ValuePreference";
@@ -438,7 +439,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 	}   //  dynInit
 
 	/**
-	 *  Action Listener
+	 *  Event Listener
 	 *  @param e event
 	 */
 	public void onEvent(Event e) throws Exception
@@ -573,9 +574,9 @@ public class ValuePreference extends Window implements EventListener<Event>
 	}   //  delete
 
 	/**
-	 *  Get Context Key
-	 *  preferences in context update follow key.
-	 *  they load when login, and update when change.
+	 *  Get Context Key.
+	 *  Preferences in context update follow key.
+	 *  They load when login, and update when change.
 	 *  @see Login#loadPreferences(org.compiere.util.KeyNamePair, org.compiere.util.KeyNamePair, java.sql.Timestamp, String)
 	 *  and set to field when display field, {@link GridField#getDefault()}
 	 *  @return Context Key
@@ -642,6 +643,8 @@ public class ValuePreference extends Window implements EventListener<Event>
 		int Client_ID = cbClient.isChecked() ? m_AD_Client_ID : 0;
 		int Org_ID = cbOrg.isChecked() ? m_AD_Org_ID : 0;
 		int AD_Preference_ID = DB.getNextID(m_ctx, "AD_Preference", null);
+		if (AD_Preference_ID < 0)
+			throw new AdempiereException("Cannot obtain sequence for AD_Preference");
 		//
 		StringBuilder sql = new StringBuilder ("INSERT INTO AD_Preference ("
 			+ "AD_Preference_ID, AD_Preference_UU, AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy,Updated,UpdatedBy,"

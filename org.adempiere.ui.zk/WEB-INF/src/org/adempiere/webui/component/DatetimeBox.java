@@ -22,20 +22,23 @@ import java.util.TimeZone;
 import org.zkoss.zk.ui.event.EventListener;
 
 /**
- * 
+ * Composite component with {@link Datebox} and {@link Timebox}
  * @author Low Heng Sin
  *
  */
 public class DatetimeBox extends Panel {
 
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -1075410511739601354L;
 	private Datebox dateBox;
 	private Timebox timeBox;
 	private TimeZone timeZone;
 	
+	/**
+	 * Default constructor
+	 */
 	public DatetimeBox() {
 		dateBox = new Datebox();
 		dateBox.setCols(10);
@@ -47,6 +50,9 @@ public class DatetimeBox extends Panel {
 		initComponents();
 	}
 
+	/**
+	 * Set initial state of component
+	 */
 	private void initComponents() {
 	    this.setSclass("datetime-box");
 	}
@@ -60,7 +66,7 @@ public class DatetimeBox extends Panel {
 	}
 
 	/**
-	 * @param text
+	 * @param text input datetime text. assume date and time part is separated by white space character.
 	 */
 	public void setText(String text) {
 		if (text != null && text.trim().length() > 0) 
@@ -78,25 +84,33 @@ public class DatetimeBox extends Panel {
 	}
 	
 	/**
-	 * @return String
+	 * @return text from {@link #dateBox} and {@link #timeBox}, separated by single white space character
 	 */
 	public String getText() {
 		return dateBox.getText() + " " + timeBox.getText();
 	}
 	
+	/**
+	 * add event listener to {@link #dateBox} and {@link #timeBox}
+	 * @param evtnm
+	 * @param listener
+	 * @return true if added
+	 */
 	@Override
 	public boolean addEventListener(String evtnm, EventListener<?> listener) {
 		return dateBox.addEventListener(evtnm, listener) && timeBox.addEventListener(evtnm, listener);
 	}
 
 	/**
-	 * @return boolean
+	 * @return true if enable, false otherwise
 	 */
 	public boolean isEnabled() {
 		return !dateBox.isReadonly();
 	}
 
 	/**
+	 * Enable/disable {@link #dateBox} and {@link #timeBox}.<br/>
+	 * Hide button of {@link #dateBox} and {@link #timeBox} if disable/readonly.
 	 * @param readWrite
 	 */
 	public void setEnabled(boolean readWrite) {
@@ -107,7 +121,7 @@ public class DatetimeBox extends Panel {
 	}
 
 	/**
-	 * @return date
+	 * @return Date (include date and time)
 	 */
 	public Date getValue() {
 		Date d = null;
@@ -150,7 +164,7 @@ public class DatetimeBox extends Panel {
 	}
 
 	/**
-	 * 
+	 * Set format of {@link #dateBox}
 	 * @param dateFormat
 	 */
 	public void setDateFormat(SimpleDateFormat dateFormat) {
@@ -174,8 +188,8 @@ public class DatetimeBox extends Panel {
 	}
 
 	/**
-	 * 
-	 * @param tz
+	 * Set time zone of {@link #dateBox} and {@link #timeBox}
+	 * @param tz TimeZone
 	 */
 	public void setTimeZone(TimeZone tz) {
 		this.timeZone = tz;
@@ -188,8 +202,7 @@ public class DatetimeBox extends Panel {
 	}
 
 	/**
-	 * 
-	 * @param localTime
+	 * @param localTime LocalDateTime
 	 */
 	public void setValueInLocalDateTime(LocalDateTime localTime) {
 		dateBox.setValueInLocalDateTime(localTime);
@@ -197,8 +210,7 @@ public class DatetimeBox extends Panel {
 	}
 
 	/**
-	 * 
-	 * @param zdt
+	 * @param zdt ZonedDateTime
 	 */
 	public void setValueInZonedDateTime(ZonedDateTime zdt) {
 		dateBox.setValueInZonedDateTime(zdt);

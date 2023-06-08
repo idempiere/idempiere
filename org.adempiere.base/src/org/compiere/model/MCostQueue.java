@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * 	Cost Queue Model
@@ -312,6 +313,18 @@ public class MCostQueue extends X_M_CostQueue
 	private static CLogger 	s_log = CLogger.getCLogger (MCostQueue.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_CostQueue_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCostQueue(Properties ctx, String M_CostQueue_UU, String trxName) {
+        super(ctx, M_CostQueue_UU, trxName);
+		if (Util.isEmpty(M_CostQueue_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -322,13 +335,18 @@ public class MCostQueue extends X_M_CostQueue
 	{
 		super (ctx, ignored, trxName);
 		if (ignored == 0)
-		{
-			setCurrentCostPrice (Env.ZERO);
-			setCurrentQty (Env.ZERO);
-		}
+			setInitialDefaults();
 		else
 			throw new IllegalArgumentException("Multi-Key");
 	}	//	MCostQueue
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setCurrentCostPrice (Env.ZERO);
+		setCurrentQty (Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

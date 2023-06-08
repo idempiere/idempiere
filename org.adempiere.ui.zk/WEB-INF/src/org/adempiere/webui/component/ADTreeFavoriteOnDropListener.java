@@ -57,7 +57,10 @@ public class ADTreeFavoriteOnDropListener implements EventListener<Event>
 
 	private int						mTreeFavID;
 
-	//
+	/**
+	 * @param tree
+	 * @param treeModel
+	 */
 	public ADTreeFavoriteOnDropListener(Tree tree, FavoriteSimpleTreeModel treeModel)
 	{
 		this.tree = tree;

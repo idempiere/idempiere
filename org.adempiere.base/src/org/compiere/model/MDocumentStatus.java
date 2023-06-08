@@ -45,6 +45,16 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 	 */
 	private static final long serialVersionUID = 4028519324986534673L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_DocumentStatus_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDocumentStatus(Properties ctx, String PA_DocumentStatus_UU, String trxName) {
+        super(ctx, PA_DocumentStatus_UU, trxName);
+    }
+
 	public MDocumentStatus(Properties ctx, int PA_DocumentStatus_ID, String trxName) {
 		super(ctx, PA_DocumentStatus_ID, trxName);
 	}

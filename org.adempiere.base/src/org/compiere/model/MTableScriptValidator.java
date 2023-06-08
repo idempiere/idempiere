@@ -130,6 +130,16 @@ public class MTableScriptValidator extends X_AD_Table_ScriptValidator implements
 	private static CCache<MultiKey,List<MTableScriptValidator>> s_cacheTableEvent
 					= new CCache<MultiKey,List<MTableScriptValidator>>(null, Table_Name+"_TableEvent", 20, false);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Table_ScriptValidator_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTableScriptValidator(Properties ctx, String AD_Table_ScriptValidator_UU, String trxName) {
+        super(ctx, AD_Table_ScriptValidator_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

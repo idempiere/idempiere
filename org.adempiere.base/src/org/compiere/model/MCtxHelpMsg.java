@@ -50,6 +50,16 @@ public class MCtxHelpMsg extends X_AD_CtxHelpMsg implements ImmutablePOSupport {
 	/** Context Help Message Cache				*/
 	private static ImmutablePOCache<String, MCtxHelpMsg> s_cache = new ImmutablePOCache<String, MCtxHelpMsg>(Table_Name, 10);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_CtxHelpMsg_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCtxHelpMsg(Properties ctx, String AD_CtxHelpMsg_UU, String trxName) {
+        super(ctx, AD_CtxHelpMsg_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

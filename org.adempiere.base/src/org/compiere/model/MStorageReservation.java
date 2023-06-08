@@ -87,13 +87,21 @@ public class MStorageReservation extends X_M_StorageReservation {
 
 	private static CLogger s_log = CLogger.getCLogger(MStorageReservation.class);
 
-	public MStorageReservation(Properties ctx, int M_StorageReservation_ID,
-			String trxName) {
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_StorageReservation_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MStorageReservation(Properties ctx, String M_StorageReservation_UU, String trxName) {
+        super(ctx, M_StorageReservation_UU, trxName);
+    }
+
+	public MStorageReservation(Properties ctx, int M_StorageReservation_ID, String trxName) {
 		super(ctx, M_StorageReservation_ID, trxName);
 	}
 	
-	public MStorageReservation(Properties ctx, ResultSet rs,
-			String trxName) {
+	public MStorageReservation(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
 	}
 	

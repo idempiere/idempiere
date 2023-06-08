@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * 
@@ -213,6 +214,18 @@ public class MRMATax extends X_M_RMATax
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MRMATax.class);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_RMATax_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRMATax(Properties ctx, String M_RMATax_UU, String trxName) {
+        super(ctx, M_RMATax_UU, trxName);
+		if (Util.isEmpty(M_RMATax_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Persistence Constructor
 	 *	@param ctx context
@@ -224,6 +237,13 @@ public class MRMATax extends X_M_RMATax
 		super(ctx, 0, trxName);
 		if (ignored != 0)
 			throw new IllegalArgumentException("Multi-Key");
+		setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
 		setTaxAmt (Env.ZERO);
 		setTaxBaseAmt (Env.ZERO);
 		setIsTaxIncluded(false);

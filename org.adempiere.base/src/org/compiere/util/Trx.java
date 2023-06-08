@@ -460,20 +460,17 @@ public class Trx
 	 * 	Rollback and End Transaction, Close Connection and Throws an Exception
 	 *	@return true if success
 	 */
-	public synchronized boolean rollbackAndCloseOnTimeout() {
+	public boolean rollbackAndCloseOnTimeout() {
 		s_cache.remove(getTrxName());
 
 		//local
 		if (m_connection == null)
 			return true;
 
-		if (isActive())
-			rollback();
-
 		//	Close Connection
 		try
 		{
-			m_connection.close();
+			m_connection.abort(Runnable::run);
 			m_connection = null;
 			m_active = false;
 			fireAfterCloseEvent();

@@ -34,6 +34,16 @@ public class MAttachmentNote extends X_AD_AttachmentNote
 	 */
 	private static final long serialVersionUID = 5902789937430504039L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_AttachmentNote_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAttachmentNote(Properties ctx, String AD_AttachmentNote_UU, String trxName) {
+        super(ctx, AD_AttachmentNote_UU, trxName);
+    }
+
 	/** 
 	 * 	Standard Constructor
 	 * 	@param ctx context

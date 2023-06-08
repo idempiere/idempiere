@@ -164,9 +164,9 @@ public abstract class CreateFrom implements ICreateFrom
 			sql = sql.append(" AND o.M_Warehouse_ID=? ");
 		}
 		if (forCreditMemo)
-			sql = sql.append("ORDER BY o.DateOrdered DESC,o.DocumentNo DESC");
+			sql = sql.append(" ORDER BY o.DateOrdered DESC,o.DocumentNo DESC");
 		else
-			sql = sql.append("ORDER BY o.DateOrdered,o.DocumentNo");
+			sql = sql.append(" ORDER BY o.DateOrdered,o.DocumentNo");
 		//
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;

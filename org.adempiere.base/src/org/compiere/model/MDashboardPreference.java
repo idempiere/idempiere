@@ -100,12 +100,13 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 		if(lineNo >= 0)
 			parameters.add(lineNo);
 		
-		String orderByClause = (lineNo < 0) ? COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+COLUMNNAME_Line 
-				: COLUMNNAME_Line+","+COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID;
+		String orderByClause = (lineNo < 0) ? COLUMNNAME_ColumnNo+","+COLUMNNAME_Line 
+				: COLUMNNAME_Line+","+COLUMNNAME_ColumnNo;
 		
 		return new Query(ctx, Table_Name, whereClause.toString(), null)
 		.setParameters(parameters)
 		.setOnlyActiveRecords(false)
+		.setClient_ID()
 		.setApplyAccessFilter(true, false)
 		.setOrderBy(orderByClause);
 	}
@@ -138,16 +139,27 @@ public class MDashboardPreference extends X_PA_DashboardPreference
 		
 		String orderByClause = "";
 		if(isCol)
-			orderByClause = COLUMNNAME_ColumnNo+","+COLUMNNAME_AD_Client_ID+","+ COLUMNNAME_Line;
+			orderByClause = COLUMNNAME_ColumnNo+","+COLUMNNAME_Line;
 		else
-			orderByClause = COLUMNNAME_Line+","+COLUMNNAME_AD_Client_ID+","+ COLUMNNAME_ColumnNo; 
+			orderByClause = COLUMNNAME_Line+","+COLUMNNAME_ColumnNo; 
 		
 		return new Query(ctx, Table_Name, whereClause.toString(), null)
 		.setParameters(parameters)
 		.setOnlyActiveRecords(false)
+		.setClient_ID()
 		.setApplyAccessFilter(true, false)
 		.setOrderBy(orderByClause);
 	}
+
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_DashboardPreference_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDashboardPreference(Properties ctx, String PA_DashboardPreference_UU, String trxName) {
+        super(ctx, PA_DashboardPreference_UU, trxName);
+    }
 
 	/**
 	 *

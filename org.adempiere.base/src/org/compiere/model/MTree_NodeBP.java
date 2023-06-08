@@ -74,6 +74,16 @@ public class MTree_NodeBP extends X_AD_TreeNodeBP
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MTree_NodeBP.class);
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_TreeNodeBP_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTree_NodeBP(Properties ctx, String AD_TreeNodeBP_UU, String trxName) {
+        super(ctx, AD_TreeNodeBP_UU, trxName);
+    }
+
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context

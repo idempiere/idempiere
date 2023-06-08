@@ -74,6 +74,16 @@ public class MConversionType extends X_C_ConversionType
 	/**	Cache Client-ID					*/
 	private static CCache<Integer,Integer> s_cache = new CCache<Integer,Integer>(Table_Name, 4);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_ConversionType_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MConversionType(Properties ctx, String C_ConversionType_UU, String trxName) {
+        super(ctx, C_ConversionType_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

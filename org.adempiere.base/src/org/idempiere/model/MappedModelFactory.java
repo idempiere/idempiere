@@ -60,6 +60,7 @@ public class MappedModelFactory implements IModelFactory, IMappedModelFactory {
 
 	private final ConcurrentHashMap<String, Supplier<Class<?>>> classMap = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String, BiFunction<Integer, String, ? extends PO>> recordIdMap = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, BiFunction<String, String, ? extends PO>> recordUUIDMap = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<String, BiFunction<ResultSet, String, ? extends PO>> resultSetMap = new ConcurrentHashMap<>();
 	
 	private static final CLogger s_log = CLogger.getCLogger(MappedModelFactory.class);
@@ -83,6 +84,12 @@ public class MappedModelFactory implements IModelFactory, IMappedModelFactory {
 	}
 
 	@Override
+	public PO getPO(String tableName, String Record_UU, String trxName) {
+		var function = recordUUIDMap.get(tableName);
+		return function != null ? function.apply(Record_UU, trxName) : null;
+	}
+
+	@Override
 	public PO getPO(String tableName, ResultSet rs, String trxName) {
 		var function = resultSetMap.get(tableName);
 		return function != null ? function.apply(rs, trxName) : null;
@@ -91,8 +98,16 @@ public class MappedModelFactory implements IModelFactory, IMappedModelFactory {
 	@Override
 	public void addMapping(String tableName, Supplier<Class<?>> classSupplier, BiFunction<Integer, String, ? extends PO> recordIdFunction, 
 			BiFunction<ResultSet, String, ? extends PO> resultSetFunction) {
+		addMapping(tableName, classSupplier, recordIdFunction, null, resultSetFunction);
+	}
+
+	@Override
+	public void addMapping(String tableName, Supplier<Class<?>> classSupplier, BiFunction<Integer, String, ? extends PO> recordIdFunction, 
+			BiFunction<String, String, ? extends PO> recordUUIDFunction, BiFunction<ResultSet, String, ? extends PO> resultSetFunction) {
 		classMap.put(tableName, classSupplier);
 		recordIdMap.put(tableName, recordIdFunction);
+		if (recordUUIDFunction != null)
+			recordUUIDMap.put(tableName, recordUUIDFunction);
 		resultSetMap.put(tableName, resultSetFunction);
 	}
 	

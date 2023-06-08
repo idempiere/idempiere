@@ -289,8 +289,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		if (value == null)
 			return "";
 
+		GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
 		if (rowIndex >= 0) {
-			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
 			if (!isForceGetValue && !gridField.isDisplayed(gridRowCtx, true)) {
 				return "";
 			}
@@ -303,16 +303,17 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		else if (readOnlyEditors.get(gridField) != null) 
 		{
 			WEditor editor = readOnlyEditors.get(gridField);			
-			return editor.getDisplayTextForGridView(value);
+			return editor.getDisplayTextForGridView(gridRowCtx, value);
 		}
     	else
     		return value.toString();
 	}
 	
 	/**
-	 * get component to display value of a field.
-	 * when display is boolean or button, return correspond component
-	 * other return a label with text get from {@link #getDisplayText(Object, GridField, int, boolean)} 
+	 * Get component to display value of a field.<br/>
+	 * When display type is boolean or button, return corresponding component.<br/>
+	 * Otherwise, use Label or Component from {@link WEditor#getDisplayComponent()} to display text from {@link #getDisplayText(Object, GridField, int, boolean)} 
+	 * (As it is, only {@link Html} is supported for {@link WEditor#getDisplayComponent()}).
 	 * @param rowIndex
 	 * @param value
 	 * @param gridField
@@ -327,6 +328,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		} else if (gridField.isHeading()) {
 			component = createInvisibleComponent();
 		} else if (gridField.getDisplayType() == DisplayType.Button) {
+			// Each row renderer --- ctx per row wise
 			GridRowCtx gridRowCtx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
 			WButtonEditor editor = new WButtonEditor(gridField, rowIndex);
 			editor.setValue(gridTab.getValue(rowIndex, gridField.getColumnName()));
@@ -346,7 +348,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				if (component instanceof Html){
 					((Html)component).setContent(text);
 				}else{
-					throw new UnsupportedOperationException("neet a componet has setvalue function");
+					throw new UnsupportedOperationException("Only implemented for Html component.");
 				}
 			}
 		}
@@ -650,7 +652,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 				}
 				
 				GridRowCtx ctx = new GridRowCtx(Env.getCtx(), gridTab, rowIndex);
-				if (! (gridPanelFields[i].isDisplayed(ctx, true) || gridPanelFields[i].isDisplayedGrid())){
+				if (!gridPanelFields[i].isDisplayedGrid(ctx, true)){
 					// IDEMPIERE-2253 
 					component.setVisible(false);
 				}
@@ -813,7 +815,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 		            Properties ctx = isDetailPane() ? new GridRowCtx(Env.getCtx(), gridTab) 
 		            	: gridPanelFields[i].getVO().ctx;
 		            //check context
-					if (!gridPanelFields[i].isDisplayed(ctx, true)){
+					if (!gridPanelFields[i].isDisplayedGrid(ctx, true)){
 						// IDEMPIERE-2253 
 						editor.getComponent().setVisible(false);
 					}

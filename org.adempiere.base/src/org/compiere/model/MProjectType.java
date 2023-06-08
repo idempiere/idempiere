@@ -78,6 +78,16 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 		= new ImmutableIntPOCache<Integer, MProjectType> (Table_Name, 20);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_ProjectType_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProjectType(Properties ctx, String C_ProjectType_UU, String trxName) {
+        super(ctx, C_ProjectType_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standrad Constructor
 	 *	@param ctx context

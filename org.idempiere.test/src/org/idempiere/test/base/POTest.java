@@ -32,20 +32,29 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Properties;
 
 import org.adempiere.exceptions.DBException;
+import org.compiere.dbPort.Convert;
+import org.compiere.model.I_AD_UserPreference;
+import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MMessage;
+import org.compiere.model.MProduct;
+import org.compiere.model.MProductCategory;
+import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.MTest;
 import org.compiere.model.POInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Ini;
 import org.compiere.util.Trx;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -81,8 +90,7 @@ public class POTest extends AbstractTestCase
 
 		public MyTestPO(Properties ctx, boolean failOnSave, String trxName)
 		{
-			super(ctx, "Test_"+System.currentTimeMillis(), 10);
-			this.set_TrxName(trxName);
+			super(ctx, "Test_"+System.currentTimeMillis(), 10, trxName);
 			this.setDescription(""+getClass());
 			this.failOnSave = failOnSave;
 		}
@@ -131,8 +139,7 @@ public class POTest extends AbstractTestCase
 				"test",
 		};
 		// Create the test PO and save
-		MTest testPO = new MTest(Env.getCtx(), getClass().getName(), 1);
-		testPO.set_TrxName(getTrxName());
+		MTest testPO = new MTest(Env.getCtx(), getClass().getName(), 1, getTrxName());
 
 		for (String str : testStrings)
 		{
@@ -177,8 +184,7 @@ public class POTest extends AbstractTestCase
 		String bigString = sb.toString();
 		//
 		// Create the test PO:
-		MTest testPO = new MTest(Env.getCtx(), getClass().getName(), 1);
-		testPO.set_TrxName(getTrxName());
+		MTest testPO = new MTest(Env.getCtx(), getClass().getName(), 1, getTrxName());
 		//
 		// Getting Max Length:
 		POInfo info = POInfo.getPOInfo(Env.getCtx(), MTest.Table_ID);
@@ -231,8 +237,10 @@ public class POTest extends AbstractTestCase
 		}
 		//
 		// Test for old objects
+		MyTestPO test = null;
+		try
 		{
-			MyTestPO test = new MyTestPO(Env.getCtx(), false, null);
+			test = new MyTestPO(Env.getCtx(), false, null);
 			assertTrue(test.save(), "Object *should* be saved -- "+test);
 			//
 			MyTestPO test2 = new MyTestPO(Env.getCtx(), test.get_ID(), null);
@@ -243,6 +251,19 @@ public class POTest extends AbstractTestCase
 			//
 			String name = MyTestPO.getName(test2.get_ID(), null);
 			assertEquals(test.getName(), name, "Object should not be modified(2) -- id="+test2);
+		}
+		finally
+		{
+			// cleanup
+			if (test != null)
+			{
+				if (test.getDependent_ID() > 0)
+				{
+					MyTestPO testDependent = new MyTestPO(Env.getCtx(), test.getDependent_ID(), null);
+					testDependent.deleteEx(true);
+				}
+				test.deleteEx(true);
+			}
 		}
 	}
 
@@ -466,7 +487,7 @@ public class POTest extends AbstractTestCase
 
 	@Test
 	public void testVirtualColumnLoad() {
-		MTest testPo = new MTest(Env.getCtx(), getClass().getName(), 1);
+		MTest testPo = new MTest(Env.getCtx(), getClass().getName(), 1, getTrxName());
 		testPo.save();
 
 		// asynchronous (default) virtual column loading
@@ -480,4 +501,56 @@ public class POTest extends AbstractTestCase
 		assertEquals(expected, testPo.getTestVirtualQty().setScale(2, RoundingMode.HALF_UP), "Wrong value returned");
 	}
 
+	@Test
+	public void testLogMigrationScript() {
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+		
+		assertFalse(Env.isLogMigrationScript(MProduct.Table_Name), "Unexpected Log Migration Script default for MProduct");
+		Env.getCtx().setProperty(Ini.P_LOGMIGRATIONSCRIPT, "Y");
+		Env.setContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment, "testLogMigrationScript");
+		assertTrue(Env.isLogMigrationScript(MProduct.Table_Name), "Unexpected Log Migration Script Y/N value for MProduct");
+		String fileName = Convert.getMigrationScriptFileName("testLogMigrationScript");
+		String folderPg = Convert.getMigrationScriptFolder("postgresql");
+		String folderOr = Convert.getMigrationScriptFolder("oracle");
+		
+		MProductCategory lotLevel = new MProductCategory(Env.getCtx(), 0, null);
+		lotLevel.setName("testLogMigrationScript");
+		lotLevel.saveEx();
+		MProduct product = null;
+		try {
+			MProductCategoryAcct lotLevelAcct = MProductCategoryAcct.get(lotLevel.get_ID(), as.get_ID());
+			lotLevelAcct = new MProductCategoryAcct(Env.getCtx(), lotLevelAcct);
+			lotLevelAcct.setCostingLevel(MAcctSchema.COSTINGLEVEL_BatchLot);
+			lotLevelAcct.saveEx();
+			
+			product = new MProduct(Env.getCtx(), 0, null);
+			product.setM_Product_Category_ID(lotLevel.get_ID());
+			product.setName("testLogMigrationScript");
+			product.setProductType(MProduct.PRODUCTTYPE_Item);
+			product.setIsStocked(true);
+			product.setIsSold(true);
+			product.setIsPurchased(true);
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			product.saveEx();
+		} finally {
+			rollback();
+			
+			if (product != null) {
+				product.set_TrxName(null);
+				product.deleteEx(true);
+			}
+			
+			lotLevel.deleteEx(true);
+		}
+		
+		File file = new File(folderPg + fileName);
+		assertTrue(file.exists(), "Not found: " + folderPg + fileName);
+		file.delete();
+		file = new File(folderOr + fileName);
+		assertTrue(file.exists(), "Not found: " + folderOr + fileName);
+		file.delete();
+	}
 }

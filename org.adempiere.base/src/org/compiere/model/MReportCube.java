@@ -35,6 +35,16 @@ public class MReportCube extends X_PA_ReportCube {
 	 */
 	private static final long serialVersionUID = -4771117572936231607L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_ReportCube_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MReportCube(Properties ctx, String PA_ReportCube_UU, String trxName) {
+        super(ctx, PA_ReportCube_UU, trxName);
+    }
+
 	public MReportCube(Properties ctx, int PA_ReportCube_ID, String trxName) {
 		super(ctx, PA_ReportCube_ID, trxName);
 	}

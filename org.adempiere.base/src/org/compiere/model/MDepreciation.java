@@ -30,6 +30,16 @@ public class MDepreciation extends X_A_Depreciation implements ImmutablePOSuppor
 	 */
 	private static final long serialVersionUID = -4366354698409595086L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Depreciation_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDepreciation(Properties ctx, String A_Depreciation_UU, String trxName) {
+        super(ctx, A_Depreciation_UU, trxName);
+    }
+
 	/** Standard Constructor */
 	public MDepreciation (Properties ctx, int A_Depreciation_ID, String trxName)
 	{

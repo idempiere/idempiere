@@ -39,6 +39,16 @@ public class MStorageReservationLog extends X_M_StorageReservationLog {
 	 */
 	private static final long serialVersionUID = 4527538966135474314L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_StorageReservationLog_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MStorageReservationLog(Properties ctx, String M_StorageReservationLog_UU, String trxName) {
+        super(ctx, M_StorageReservationLog_UU, trxName);
+    }
+
 	/**
 	 * 
 	 * @param ctx

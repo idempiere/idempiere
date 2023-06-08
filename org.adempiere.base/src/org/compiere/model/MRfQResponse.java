@@ -33,6 +33,7 @@ import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *	RfQ Response Model	
@@ -48,6 +49,18 @@ public class MRfQResponse extends X_C_RfQResponse
 	private static final long serialVersionUID = 1472377321844135042L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_RfQResponse_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRfQResponse(Properties ctx, String C_RfQResponse_UU, String trxName) {
+        super(ctx, C_RfQResponse_UU, trxName);
+		if (Util.isEmpty(C_RfQResponse_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -58,15 +71,20 @@ public class MRfQResponse extends X_C_RfQResponse
 	{
 		super (ctx, C_RfQResponse_ID, trxName);
 		if (C_RfQResponse_ID == 0)
-		{
-			setIsComplete (false);
-			setIsSelectedWinner (false);
-			setIsSelfService (false);
-			setPrice (Env.ZERO);
-			setProcessed(false);
-			setProcessing(false);
-		}
+			setInitialDefaults();
 	}	//	MRfQResponse
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsComplete (false);
+		setIsSelectedWinner (false);
+		setIsSelfService (false);
+		setPrice (Env.ZERO);
+		setProcessed(false);
+		setProcessing(false);
+	}
 
 	/**
 	 * 	Load Constructor

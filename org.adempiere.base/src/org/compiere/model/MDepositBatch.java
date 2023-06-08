@@ -42,6 +42,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Deposit Batch Model
@@ -56,6 +57,18 @@ public class MDepositBatch extends X_C_DepositBatch
 	 */
 	private static final long serialVersionUID = 7691820074981291939L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_DepositBatch_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDepositBatch(Properties ctx, String C_DepositBatch_UU, String trxName) {
+        super(ctx, C_DepositBatch_UU, trxName);
+		if (Util.isEmpty(C_DepositBatch_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 *  Create and Load existing Persistent Object
 	 *  @param ctx context
@@ -66,14 +79,18 @@ public class MDepositBatch extends X_C_DepositBatch
 	{
 		super (ctx, C_DepositBatch_ID, trxName);
 		if (C_DepositBatch_ID == 0)
-		{
-			setDocStatus (DOCSTATUS_Drafted);
-			setProcessed (false);
-			setProcessing (false);
-			setDepositAmt(Env.ZERO);
-		}
+			setInitialDefaults();
 	}	//	MDepositBatch
 	
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocStatus (DOCSTATUS_Drafted);
+		setProcessed (false);
+		setProcessing (false);
+		setDepositAmt(Env.ZERO);
+	}
 
 	/**
 	 * 	Load Constructor

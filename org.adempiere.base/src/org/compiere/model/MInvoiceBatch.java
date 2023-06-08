@@ -25,6 +25,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 
 /**
@@ -42,6 +43,18 @@ public class MInvoiceBatch extends X_C_InvoiceBatch
 	private static final long serialVersionUID = 3449653049236263604L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_InvoiceBatch_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MInvoiceBatch(Properties ctx, String C_InvoiceBatch_UU, String trxName) {
+        super(ctx, C_InvoiceBatch_UU, trxName);
+		if (Util.isEmpty(C_InvoiceBatch_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -52,14 +65,19 @@ public class MInvoiceBatch extends X_C_InvoiceBatch
 	{
 		super (ctx, C_InvoiceBatch_ID, trxName);
 		if (C_InvoiceBatch_ID == 0)
-		{
-			setControlAmt (Env.ZERO);	// 0
-			setDateDoc (new Timestamp(System.currentTimeMillis()));	// @#Date@
-			setDocumentAmt (Env.ZERO);
-			setIsSOTrx (false);	// N
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MInvoiceBatch
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setControlAmt (Env.ZERO);	// 0
+		setDateDoc (new Timestamp(System.currentTimeMillis()));	// @#Date@
+		setDocumentAmt (Env.ZERO);
+		setIsSOTrx (false);	// N
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

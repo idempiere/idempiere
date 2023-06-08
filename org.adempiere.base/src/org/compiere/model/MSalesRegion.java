@@ -73,6 +73,16 @@ public class MSalesRegion extends X_C_SalesRegion implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MSalesRegion>	s_cache	= new ImmutableIntPOCache<Integer,MSalesRegion>(Table_Name, 10);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_SalesRegion_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSalesRegion(Properties ctx, String C_SalesRegion_UU, String trxName) {
+        super(ctx, C_SalesRegion_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Default Constructor
 	 *	@param ctx context

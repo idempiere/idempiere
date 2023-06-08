@@ -29,6 +29,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -243,6 +244,18 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 		super(ctx, rs, trxName);
 	}	//	MBPartner
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_BPartner_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBPartner(Properties ctx, String C_BPartner_UU, String trxName) {
+        super(ctx, C_BPartner_UU, trxName);
+		if (Util.isEmpty(C_BPartner_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Default Constructor
 	 * 	@param ctx context
@@ -259,35 +272,40 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 			C_BPartner_ID = 0;
 		}
 		if (C_BPartner_ID == 0)
-		{
-			//
-			setIsCustomer (true);
-			setIsProspect (true);
-			//
-			setSendEMail (false);
-			setIsOneTime (false);
-			setIsVendor (false);
-			setIsSummary (false);
-			setIsEmployee (false);
-			setIsSalesRep (false);
-			setIsTaxExempt(false);
-			setIsPOTaxExempt(false);
-			setIsDiscountPrinted(false);
-			//
-			setSO_CreditLimit (Env.ZERO);
-			setSO_CreditUsed (Env.ZERO);
-			setTotalOpenBalance (Env.ZERO);
-			setSOCreditStatus(SOCREDITSTATUS_NoCreditCheck);
-			//
-			setFirstSale(null);
-			setActualLifeTimeValue(Env.ZERO);
-			setPotentialLifeTimeValue(Env.ZERO);
-			setAcqusitionCost(Env.ZERO);
-			setShareOfCustomer(0);
-			setSalesVolume(0);
-		}
+			setInitialDefaults();
 		if (log.isLoggable(Level.FINE)) log.fine(toString());
 	}	//	MBPartner
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		//
+		setIsCustomer (true);
+		setIsProspect (true);
+		//
+		setSendEMail (false);
+		setIsOneTime (false);
+		setIsVendor (false);
+		setIsSummary (false);
+		setIsEmployee (false);
+		setIsSalesRep (false);
+		setIsTaxExempt(false);
+		setIsPOTaxExempt(false);
+		setIsDiscountPrinted(false);
+		//
+		setSO_CreditLimit (Env.ZERO);
+		setSO_CreditUsed (Env.ZERO);
+		setTotalOpenBalance (Env.ZERO);
+		setSOCreditStatus(SOCREDITSTATUS_NoCreditCheck);
+		//
+		setFirstSale(null);
+		setActualLifeTimeValue(Env.ZERO);
+		setPotentialLifeTimeValue(Env.ZERO);
+		setAcqusitionCost(Env.ZERO);
+		setShareOfCustomer(0);
+		setSalesVolume(0);
+	}
 
 	/**
 	 * 	Import Constructor
@@ -989,7 +1007,10 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 			//	Trees
 			insert_Tree(MTree_Base.TREETYPE_BPartner);
 			//	Accounting
-			StringBuilder msgacc = new StringBuilder("p.C_BP_Group_ID=").append(getC_BP_Group_ID());
+			StringBuilder msgacc = new StringBuilder("p.C_BP_Group_ID=")
+					.append(getC_BP_Group_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName())
+							? "toRecordId('C_BP_Group',"+DB.TO_STRING(MBPGroup.get(getC_BP_Group_ID()).getC_BP_Group_UU())+")"
+							: getC_BP_Group_ID());
 			insert_Accounting("C_BP_Customer_Acct", "C_BP_Group_Acct", msgacc.toString());
 			insert_Accounting("C_BP_Vendor_Acct", "C_BP_Group_Acct",msgacc.toString());
 		}

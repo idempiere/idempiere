@@ -104,6 +104,16 @@ public class MAddressValidation extends X_C_AddressValidation {
 		return retValue;
 	}
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_AddressValidation_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAddressValidation(Properties ctx, String C_AddressValidation_UU, String trxName) {
+        super(ctx, C_AddressValidation_UU, trxName);
+    }
+
 	public MAddressValidation(Properties ctx, int C_AddressValidation_ID, String trxName) {
 		super(ctx, C_AddressValidation_ID, trxName);
 	}

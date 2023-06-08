@@ -58,6 +58,16 @@ public class MResourceUnAvailable extends X_S_ResourceUnAvailable
 						.match();
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param S_ResourceUnAvailable_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MResourceUnAvailable(Properties ctx, String S_ResourceUnAvailable_UU, String trxName) {
+        super(ctx, S_ResourceUnAvailable_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
 
 /**
@@ -35,6 +36,18 @@ public class MChangeRequest extends X_M_ChangeRequest
 	private static final long serialVersionUID = 8374119541472311165L;
 
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_ChangeRequest_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MChangeRequest(Properties ctx, String M_ChangeRequest_UU, String trxName) {
+        super(ctx, M_ChangeRequest_UU, trxName);
+		if (Util.isEmpty(M_ChangeRequest_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -45,11 +58,16 @@ public class MChangeRequest extends X_M_ChangeRequest
 	{
 		super (ctx, M_ChangeRequest_ID, trxName);
 		if (M_ChangeRequest_ID == 0)
-		{
-			setIsApproved(false);
-			setProcessed(false);
-		}
+			setInitialDefaults();
 	}	//	MChangeRequest
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setIsApproved(false);
+		setProcessed(false);
+	}
 
 	/**
 	 * 	CRM Request Constructor

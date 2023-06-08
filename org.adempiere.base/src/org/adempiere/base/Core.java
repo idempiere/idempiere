@@ -1076,4 +1076,15 @@ public class Core {
 		//fall back, should not reach here
 		return new DefaultTaxLookup();
 	}
+	
+	/**
+	 * @return {@link DefaultAnnotationBasedEventManager}
+	 */
+	public static DefaultAnnotationBasedEventManager getDefaultAnnotationBasedEventManager() {
+		IServiceReferenceHolder<DefaultAnnotationBasedEventManager> serviceReference = Service.locator().locate(DefaultAnnotationBasedEventManager.class).getServiceReference();
+		if (serviceReference != null) {
+			return serviceReference.getService();
+		}
+		return null;
+	}
 }

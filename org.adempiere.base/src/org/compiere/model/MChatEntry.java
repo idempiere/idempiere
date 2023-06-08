@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Util;
+
 /**
  * 	Chat Entry Model
  *	
@@ -32,6 +34,18 @@ public class MChatEntry extends X_CM_ChatEntry
 	 */
 	private static final long serialVersionUID = -158924400098841023L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param CM_ChatEntry_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MChatEntry(Properties ctx, String CM_ChatEntry_UU, String trxName) {
+        super(ctx, CM_ChatEntry_UU, trxName);
+		if (Util.isEmpty(CM_ChatEntry_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx cintext
@@ -42,11 +56,16 @@ public class MChatEntry extends X_CM_ChatEntry
 	{
 		super (ctx, CM_ChatEntry_ID, trxName);
 		if (CM_ChatEntry_ID == 0)
-		{
-			setChatEntryType (CHATENTRYTYPE_NoteFlat);	// N
-			setConfidentialType (CONFIDENTIALTYPE_PublicInformation);
-		}
+			setInitialDefaults();
 	}	//	MChatEntry
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setChatEntryType (CHATENTRYTYPE_NoteFlat);	// N
+		setConfidentialType (CONFIDENTIALTYPE_PublicInformation);
+	}
 
 	/**
 	 * 	Parent Constructor

@@ -41,6 +41,16 @@ public class MAttributeSetExclude extends X_M_AttributeSetExclude {
 	 */
 	private static final long serialVersionUID = -2977401481745176882L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_AttributeSetExclude_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAttributeSetExclude(Properties ctx, String M_AttributeSetExclude_UU, String trxName) {
+        super(ctx, M_AttributeSetExclude_UU, trxName);
+    }
+
 	/**
 	 * @param ctx
 	 * @param M_AttributeSetExclude_ID

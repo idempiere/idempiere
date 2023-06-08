@@ -67,18 +67,24 @@ import org.zkoss.zul.Vbox;
 @org.idempiere.ui.zk.annotation.Form
 public class WPluginManager extends ADForm implements EventListener<Event> {
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = -5661912464378243252L;
 
 	/** Log. */
 	private static final CLogger log = CLogger.getCLogger(WPluginManager.class);
 
+	/** Center of form */
 	private WListbox pluginsTable;
+	/** Available actions for plugins */
 	private Listbox pluginActions;
+	/** Button to apply {@link #pluginActions} to bundle */
 	private Button pluginProcess;
+	/** Data for {@link #pluginsTable} */
 	private Vector<Vector<Object>> pluginData;
+	/** Column headers of {@link #pluginsTable} */
 	private Vector<String> pluginColumnNames;
+	/** filter by bundle symbolic name (using contains) */
 	private Textbox fFilter = new Textbox();
 	private Button btnRefresh = null;
 
@@ -133,7 +139,6 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 		ZKUpdateUtil.setVflex(pluginsTable, "1");
 		ZKUpdateUtil.setHflex(pluginsTable, "1");
 		refreshPluginTable();
-		pluginsTable.autoSize();
 		pluginsTable.addEventListener(Events.ON_SELECT, this);
 
 		pluginActions = new Listbox(new KeyNamePair[] { new KeyNamePair(PLUGIN_ACTION_NONE, ""),
@@ -158,6 +163,10 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 		this.appendChild(vbox);
 	}
 
+	/**
+	 * @param state
+	 * @return Text for bundle state
+	 */
 	private String state(int state) {
 		switch (state) {
 		case Bundle.ACTIVE:
@@ -177,6 +186,9 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 		}
 	}
 
+	/**
+	 * Refresh {@link #pluginActions}
+	 */
 	private void refreshActionList() {
 		pluginActions.getItemAtIndex(PLUGIN_ACTION_UPDATE).setVisible(false); // not implemented yet
 		pluginActions.getItemAtIndex(PLUGIN_ACTION_UNINSTALL).setVisible(false); // not implemented yet
@@ -221,6 +233,9 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 		}
 	}
 
+	/**
+	 * @return selected @link {@link Bundle}
+	 */
 	private Bundle getSelectedBundle() {
 		Bundle retValue = null;
 		int idx = pluginsTable.getSelectedIndex();
@@ -233,6 +248,9 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 		return retValue;
 	}
 
+	/**
+	 * Apply selected {@link #pluginActions} to selected {@link Bundle} (from selected {@link #pluginsTable} row).
+	 */
 	private void processPlugin() {
 		Listitem actionItem = pluginActions.getSelectedItem();
 		if (actionItem != null && actionItem.getValue() instanceof Integer) {
@@ -265,6 +283,10 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 		refreshAll();
 	}
 
+	/**
+	 * Refresh {@link #pluginsTable}.
+	 * Bundle list is loaded from {@link BundleContext#getBundles()}.
+	 */
 	private void refreshPluginTable() {
 		int idx = pluginsTable.getSelectedIndex();
 		pluginsTable.getModel().removeAll(pluginData);
@@ -291,11 +313,15 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 		pluginsTable.setSelectedIndex(idx);
 	}
 
+	/**
+	 * Call {@link #refreshPluginTable()} and {@link #refreshActionList()}.
+	 */
 	private void refreshAll() {
 		refreshPluginTable();
 		refreshActionList();
 	}
 
+	@Override
 	public void onEvent(Event event) throws Exception {
 		if (Events.ON_SELECT.equals(event.getName()) && event.getTarget() == pluginsTable)
 			refreshActionList();
@@ -308,5 +334,4 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 			refreshAll();
 		}
 	}
-
 }

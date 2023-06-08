@@ -189,6 +189,18 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer,MAcctSchema> s_cache = new ImmutableIntPOCache<Integer,MAcctSchema>(Table_Name, 3, 120);	//  3 accounting schemas
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_AcctSchema_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAcctSchema(Properties ctx, String C_AcctSchema_UU, String trxName) {
+        super(ctx, C_AcctSchema_UU, trxName);
+		if (Util.isEmpty(C_AcctSchema_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -199,27 +211,32 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 	{
 		super (ctx, C_AcctSchema_ID, trxName);
 		if (C_AcctSchema_ID == 0)
-		{
-			setAutoPeriodControl (true);
-			setPeriod_OpenFuture(2);
-			setPeriod_OpenHistory(2);
-			setCostingMethod (COSTINGMETHOD_StandardCosting);
-			setCostingLevel(COSTINGLEVEL_Client);
-			setIsAdjustCOGS(false);
-			setGAAP (GAAP_InternationalGAAP);
-			setHasAlias (true);
-			setHasCombination (false);
-			setIsAccrual (true);	// Y
-			setCommitmentType(COMMITMENTTYPE_None);
-			setIsDiscountCorrectsTax (false);
-			setTaxCorrectionType(TAXCORRECTIONTYPE_None);
-			setIsTradeDiscountPosted (false);
-			setIsPostServices(false);
-			setIsExplicitCostAdjustment(false);
-			setSeparator ("-");	// -
-		}
+			setInitialDefaults();
 	}	//	MAcctSchema
-	
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAutoPeriodControl (true);
+		setPeriod_OpenFuture(2);
+		setPeriod_OpenHistory(2);
+		setCostingMethod (COSTINGMETHOD_StandardCosting);
+		setCostingLevel(COSTINGLEVEL_Client);
+		setIsAdjustCOGS(false);
+		setGAAP (GAAP_InternationalGAAP);
+		setHasAlias (true);
+		setHasCombination (false);
+		setIsAccrual (true);	// Y
+		setCommitmentType(COMMITMENTTYPE_None);
+		setIsDiscountCorrectsTax (false);
+		setTaxCorrectionType(TAXCORRECTIONTYPE_None);
+		setIsTradeDiscountPosted (false);
+		setIsPostServices(false);
+		setIsExplicitCostAdjustment(false);
+		setSeparator ("-");	// -
+	}
+
 	/**
 	 * 	Load Constructor
 	 *	@param ctx context

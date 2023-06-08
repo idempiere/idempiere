@@ -41,6 +41,7 @@ import org.adempiere.webui.event.WTableModelEvent;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
+import org.compiere.model.MInOut;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
 import org.compiere.util.DisplayType;
@@ -52,11 +53,11 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.North;
-import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -414,7 +415,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 	public void zoom()
 	{
 		log.info( "InfoInOut.zoom");
-		Integer M_InOut_ID = getSelectedRowKey();
+		Integer M_InOut_ID = getIntSelectedRowKey(MInOut.Table_ID);
 		if (M_InOut_ID == null)
 			return;
 		MQuery query = new MQuery("M_InOut");

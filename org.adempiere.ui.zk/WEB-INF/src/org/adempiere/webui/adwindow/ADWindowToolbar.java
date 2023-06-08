@@ -32,8 +32,8 @@ import org.adempiere.webui.action.Actions;
 import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Combobox;
-import org.adempiere.webui.component.FToolbar;
 import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.part.WindowContainer;
@@ -85,7 +85,7 @@ import org.zkoss.zul.impl.LabelImageElement;
  * @author Cristina Ghita, www.arhipac.ro
  * 				<li>FR [ 2076330 ] Add new methods in CWindowToolbar class
  */
-public class ADWindowToolbar extends FToolbar implements EventListener<Event>
+public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 {	
 	/**
 	 * generated serial id
@@ -269,8 +269,10 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
         btnParentRecord.setTooltiptext(btnParentRecord.getTooltiptext()+ "   Alt+Up");
         btnDetailRecord = createButton("DetailRecord", "Detail", "DetailRecord");
         btnDetailRecord.setTooltiptext(btnDetailRecord.getTooltiptext()+ "   Alt+Down");
-        btnReport = createButton("Report", "Report", "Report");
-        btnReport.setTooltiptext(btnReport.getTooltiptext()+ "    Alt+R");
+        if (MRole.getDefault().isCanReport()) {
+            btnReport = createButton("Report", "Report", "Report");
+            btnReport.setTooltiptext(btnReport.getTooltiptext()+ "    Alt+R");
+        }
         btnArchive = createButton("Archive", "Archive", "Archive");
         btnPrint = createButton("Print", "Print", "Print");
         btnPrint.setTooltiptext(btnPrint.getTooltiptext()+ "    Alt+P");
@@ -516,7 +518,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
 		altKeyMap.put(KeyEvent.DOWN, btnDetailRecord);
 		altKeyMap.put(VK_F, btnFind);
 		altKeyMap.put(VK_Z, btnIgnore);
-		altKeyMap.put(VK_R, btnReport);		
+		if (btnReport != null)
+			altKeyMap.put(VK_R, btnReport);		
 		altKeyMap.put(VK_P, btnPrint);
 		altKeyMap.put(VK_O, btnProcess);
 		altKeyMap.put(VK_L, btnCustomize);
@@ -787,7 +790,8 @@ public class ADWindowToolbar extends FToolbar implements EventListener<Event>
      */
     public void enableReport(boolean enabled)
     {
-    	this.btnReport.setDisabled(!enabled);
+		if (btnReport != null)
+			this.btnReport.setDisabled(!enabled);
     }
 
     /**

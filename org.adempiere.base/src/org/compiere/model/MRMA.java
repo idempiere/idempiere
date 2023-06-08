@@ -33,6 +33,7 @@ import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	RMA Model
@@ -49,6 +50,18 @@ public class MRMA extends X_M_RMA implements DocAction
 	 */
 	private static final long serialVersionUID = -8352164928046804628L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_RMA_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRMA(Properties ctx, String M_RMA_UU, String trxName) {
+        super(ctx, M_RMA_UU, trxName);
+		if (Util.isEmpty(M_RMA_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -59,13 +72,18 @@ public class MRMA extends X_M_RMA implements DocAction
 	{
 		super (ctx, M_RMA_ID, trxName);
 		if (M_RMA_ID == 0)
-		{
-			setDocAction (DOCACTION_Complete);	// CO
-			setDocStatus (DOCSTATUS_Drafted);	// DR
-			setIsApproved(false);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MRMA
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocAction (DOCACTION_Complete);	// CO
+		setDocStatus (DOCSTATUS_Drafted);	// DR
+		setIsApproved(false);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

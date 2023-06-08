@@ -343,7 +343,7 @@ public class M_PriceList_Create extends SvrProcess {
 
 			/** Calculations	**/
 			MProductPrice[] pp = m_plv.getProductPrice(
-					"AND EXISTS (SELECT * FROM T_Selection s "
+					" AND EXISTS (SELECT * FROM T_Selection s "
 							+ "WHERE s.AD_PInstance_ID = " + m_AD_PInstance_ID + " AND s.T_Selection_ID=M_ProductPrice.M_Product_ID)");
 			for (MProductPrice price : pp) {
 				BigDecimal priceList = price.getPriceList();

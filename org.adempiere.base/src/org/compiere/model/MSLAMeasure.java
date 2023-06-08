@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Service Level Agreement Measure
@@ -37,6 +38,18 @@ public class MSLAMeasure extends X_PA_SLA_Measure
 	 */
 	private static final long serialVersionUID = -2844941499854811255L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_SLA_Measure_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSLAMeasure(Properties ctx, String PA_SLA_Measure_UU, String trxName) {
+        super(ctx, PA_SLA_Measure_UU, trxName);
+		if (Util.isEmpty(PA_SLA_Measure_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -47,12 +60,17 @@ public class MSLAMeasure extends X_PA_SLA_Measure
 	{
 		super (ctx, PA_SLA_Measure_ID, trxName);
 		if (PA_SLA_Measure_ID == 0)
-		{
-			setDateTrx (new Timestamp(System.currentTimeMillis()));
-			setMeasureActual (Env.ZERO);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MSLAMeasure
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDateTrx (new Timestamp(System.currentTimeMillis()));
+		setMeasureActual (Env.ZERO);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

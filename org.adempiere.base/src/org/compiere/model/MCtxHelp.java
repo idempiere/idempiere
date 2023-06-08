@@ -39,6 +39,16 @@ public class MCtxHelp extends X_AD_CtxHelp {
 	 */
 	private static final long serialVersionUID = 6004459503884638672L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_CtxHelp_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCtxHelp(Properties ctx, String AD_CtxHelp_UU, String trxName) {
+        super(ctx, AD_CtxHelp_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

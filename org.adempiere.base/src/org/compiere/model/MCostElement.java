@@ -25,6 +25,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
@@ -267,6 +268,18 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	private static CLogger	s_log	= CLogger.getCLogger (MCostElement.class);
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_CostElement_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MCostElement(Properties ctx, String M_CostElement_UU, String trxName) {
+        super(ctx, M_CostElement_UU, trxName);
+		if (Util.isEmpty(M_CostElement_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -277,11 +290,16 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 	{
 		super (ctx, M_CostElement_ID, trxName);
 		if (M_CostElement_ID == 0)
-		{
-			setCostElementType (COSTELEMENTTYPE_Material);
-			setIsCalculated (false);
-		}
+			setInitialDefaults();
 	}	//	MCostElement
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setCostElementType (COSTELEMENTTYPE_Material);
+		setIsCalculated (false);
+	}
 
 	/**
 	 * 	Load Constructor

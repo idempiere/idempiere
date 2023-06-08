@@ -33,6 +33,16 @@ public class MRequestProcessorRoute extends X_R_RequestProcessor_Route
 	 */
 	private static final long serialVersionUID = 8739358607059413339L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param R_RequestProcessor_Route_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRequestProcessorRoute(Properties ctx, String R_RequestProcessor_Route_UU, String trxName) {
+        super(ctx, R_RequestProcessor_Route_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

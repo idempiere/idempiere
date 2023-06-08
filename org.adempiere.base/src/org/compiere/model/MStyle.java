@@ -31,6 +31,16 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
     public static final String SCLASS_PREFIX = "@sclass=";
     public static final String ZCLASS_PREFIX = "@zclass=";
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Style_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MStyle(Properties ctx, String AD_Style_UU, String trxName) {
+        super(ctx, AD_Style_UU, trxName);
+    }
+
 	public MStyle(Properties ctx, int AD_Style_ID, String trxName) {
 		super(ctx, AD_Style_ID, trxName);
 	}

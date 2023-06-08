@@ -281,7 +281,7 @@ public class Incremental2PackActivator extends AbstractActivator {
 	@Override
 	protected void frameworkStarted() {
 		if (service != null) {
-			if (Adempiere.getThreadPoolExecutor() != null) {
+			if (Adempiere.isStarted()) {
 				Adempiere.getThreadPoolExecutor().execute(new Runnable() {			
 					@Override
 					public void run() {

@@ -38,6 +38,16 @@ public class MRfQTopic extends X_C_RfQ_Topic
 	 */
 	private static final long serialVersionUID = 1569514263521190339L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_RfQ_Topic_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRfQTopic(Properties ctx, String C_RfQ_Topic_UU, String trxName) {
+        super(ctx, C_RfQ_Topic_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

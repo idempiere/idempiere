@@ -28,6 +28,16 @@ public class MTaxProvider extends X_C_TaxProvider
 	 */
 	private static final long serialVersionUID = 6621828279540899973L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_TaxProvider_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MTaxProvider(Properties ctx, String C_TaxProvider_UU, String trxName) {
+        super(ctx, C_TaxProvider_UU, trxName);
+    }
+
 	public MTaxProvider(Properties ctx, int C_TaxProvider_ID, String trxName) 
 	{
 		super(ctx, C_TaxProvider_ID, trxName);

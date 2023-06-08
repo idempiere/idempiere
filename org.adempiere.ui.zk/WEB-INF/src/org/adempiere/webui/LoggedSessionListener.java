@@ -49,6 +49,7 @@ import org.compiere.util.WebUtil;
  * Sync state of {@link HttpSession} and AD_Session
  */
 public class LoggedSessionListener implements HttpSessionListener, ServletContextListener, ServerStateChangeListener{
+	/** Http Session Id:HttpSession */
 	private static Hashtable<String, HttpSession> AD_SessionList = new Hashtable<String, HttpSession>();
 	private static final CLogger logger = CLogger.getCLogger(LoggedSessionListener.class);
 	
@@ -77,7 +78,6 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
 	public void contextInitialized(ServletContextEvent arg0) {
 		DestroyAllSession();
 		
-		// bring from depricate class WebUIServlet
 		/** Initialise context for the current thread*/
         Properties serverContext = new Properties();
         serverContext.put(ServerContextURLHandler.SERVER_CONTEXT_URL_HANDLER, new ServerContextURLHandler() {
@@ -91,7 +91,7 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
         File file = new File(propertyFile);
         if (!file.exists())
         {
-        	throw new IllegalStateException("idempiere.properties is not setup. PropertyFile="+propertyFile);
+        	throw new IllegalStateException("idempiere.properties file missing. Path="+file.getAbsolutePath());
         }
         if (!Adempiere.isStarted())
         {
@@ -108,6 +108,9 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
          */
 	}
 	
+	/**
+	 * Update all active AD_Session records (Processed=N) to inactive (Processed=Y)
+	 */
 	private void DestroyAllSession() {
 		if (!Adempiere.isStarted())
 		{
@@ -116,15 +119,25 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
 		}
 
 		String serverName = WebUtil.getServerName();
-		String sql = "UPDATE AD_Session SET Processed='Y' WHERE Processed='N' AND ServerName=?";
+		final String sql = "UPDATE AD_Session SET Processed='Y' WHERE Processed='N' AND ServerName=?";
 		int no = DB.executeUpdate(sql, new Object[] {serverName}, false, null);
 		if (no < 0) {
 			throw new AdempiereException("UpdateSession: Cannot Destroy All Session");
+		}
+		final String sqlp = "UPDATE AD_PInstance SET IsProcessing='N' WHERE IsProcessing='Y' AND EXISTS (SELECT 1 FROM AD_Session s WHERE s.AD_Session_ID=AD_PInstance.AD_Session_ID AND s.ServerName=?)";
+		int nop = DB.executeUpdate(sqlp, new Object[] {serverName}, false, null);
+		if (nop < 0) {
+			throw new AdempiereException("UpdateSession: Cannot Update All Process Instances");
 		}
 		
 		Adempiere.removeServerStateChangeListener(this);
 	}
 	
+	/**
+	 * Update AD_Session record to inactive (Processed=Y) by session id and server name
+	 * @param sessionID Http Session Id
+	 * @param serverName
+	 */
 	private void removeADSession(String sessionID, String serverName) {
 		String sql = "UPDATE AD_Session SET Processed='Y' WHERE WebSession=? AND ServerName=? AND Processed='N'";
 		int no = DB.executeUpdate(sql, new Object[] {sessionID, serverName}, false, null);

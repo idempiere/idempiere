@@ -27,6 +27,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
 
@@ -113,6 +114,18 @@ public class MPackage extends X_M_Package
 		return retValue;
 	}
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Package_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPackage(Properties ctx, String M_Package_UU, String trxName) {
+        super(ctx, M_Package_UU, trxName);
+		if (Util.isEmpty(M_Package_UU))
+			setInitialDefaults(ctx);
+    }
+
 	/**************************************************************************
 	 * 	MPackage
 	 *	@param ctx context
@@ -123,14 +136,19 @@ public class MPackage extends X_M_Package
 	{
 		super (ctx, M_Package_ID, trxName);
 		if (M_Package_ID == 0)
-		{
-			setShipDate (new Timestamp(System.currentTimeMillis()));
-			
-			MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
-			setC_UOM_Weight_ID(clientInfo.getC_UOM_Weight_ID());
-			setC_UOM_Length_ID(clientInfo.getC_UOM_Length_ID());
-		}
+			setInitialDefaults(ctx);
 	}	//	MPackage
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults(Properties ctx) {
+		setShipDate (new Timestamp(System.currentTimeMillis()));
+		
+		MClientInfo clientInfo = MClientInfo.get(ctx, getAD_Client_ID());
+		setC_UOM_Weight_ID(clientInfo.getC_UOM_Weight_ID());
+		setC_UOM_Length_ID(clientInfo.getC_UOM_Length_ID());
+	}
 
 	/**
 	 * 	Load Constructor

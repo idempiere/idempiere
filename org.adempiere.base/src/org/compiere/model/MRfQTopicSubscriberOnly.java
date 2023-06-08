@@ -34,6 +34,16 @@ public class MRfQTopicSubscriberOnly extends X_C_RfQ_TopicSubscriberOnly
 	 */
 	private static final long serialVersionUID = -7744686970311507813L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_RfQ_TopicSubscriberOnly_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRfQTopicSubscriberOnly(Properties ctx, String C_RfQ_TopicSubscriberOnly_UU, String trxName) {
+        super(ctx, C_RfQ_TopicSubscriberOnly_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

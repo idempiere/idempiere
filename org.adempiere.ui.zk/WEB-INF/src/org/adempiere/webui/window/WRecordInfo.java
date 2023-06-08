@@ -1,5 +1,5 @@
 /******************************************************************************
-// * Product: Adempiere ERP & CRM Smart Business Solution                       *
+ * Product: Adempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software; you can redistribute it and/or modify it    *
  * under the terms version 2 of the GNU General Public License as published   *
@@ -317,8 +317,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		int Record_ID = -1;
 		if (dse.Record_ID instanceof Integer)
 			Record_ID = ((Integer)dse.Record_ID).intValue();
-		else
-			log.info("dynInit - Invalid Record_ID=" + dse.Record_ID);
+		String Record_UU = null;
 
 		MTable dbtable = null;
 		if (dse.AD_Table_ID != 0)
@@ -329,27 +328,20 @@ public class WRecordInfo extends Window implements EventListener<Event>
 			PO po = gridTable.getPO(dse.getCurrentRow());
 			if (po != null) {
 				String uuidcol = po.getUUIDColumnName();
-				String uuid = null;
-				if (po.is_new()) {
-					if (Record_ID == 0 && MTable.isZeroIDTable(dbtable.getTableName())) {
-						StringBuilder sql = new StringBuilder("SELECT ")
-								.append(uuidcol)
-								.append(" FROM ")
-								.append(dbtable.getTableName())
-								.append(" WHERE ")
-								.append(dbtable.getTableName())
-								.append("_ID=0");
-						uuid = DB.getSQLValueString(null, sql.toString());
-					}
-				} else {
-					uuid = po.get_ValueAsString(uuidcol);
+				Record_UU = po.get_UUID();
+				if (!Util.isEmpty(Record_UU)) {
+					StringBuilder uuinfo = new StringBuilder(uuidcol).append("=").append(Record_UU);
+					if (! m_info.toString().contains(uuinfo))
+						m_info.append("\n ").append(uuinfo);
 				}
-				if (!Util.isEmpty(uuid))
-					m_info.append("\n ").append(uuidcol).append("=").append(uuid);
 				if (po.get_KeyColumns().length == 1) {
+					String ticketURL;
+					if (Record_ID <= 0)
+						ticketURL = AEnv.getZoomUrlTableUU(po);
+					else
+						ticketURL = AEnv.getZoomUrlTableID(po);
 					m_permalink.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 						public void onEvent(Event event) throws Exception {
-							String ticketURL = AEnv.getZoomUrlTableID(po);
 							StringBuffer sb = new StringBuffer("navigator.clipboard.writeText(\"")
 								.append(ticketURL)
 								.append("\");");
@@ -359,12 +351,13 @@ public class WRecordInfo extends Window implements EventListener<Event>
 					});
 				}
 				m_permalink.setVisible(po.get_KeyColumns().length == 1);
+				final String whereClause = po.get_WhereClause(true, Record_UU);
 				m_copySelect.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
 					public void onEvent(Event event) throws Exception {
 						StringBuffer query = new StringBuffer("navigator.clipboard.writeText(\"SELECT * FROM ")
 							.append(po.get_TableName())
 							.append(" WHERE ")
-							.append(po.get_WhereClause(true));
+							.append(whereClause);
 						query.append("\");");
 						Clients.evalJavaScript(query.toString());
 						Notification.show(Msg.getMsg(Env.getCtx(), "Copied"), Notification.TYPE_INFO, m_copySelect, "end_before", 1000);
@@ -389,13 +382,13 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()))
 			return false;
 		
-		if (Record_ID <= 0)
+		if (Record_ID <= 0 && Util.isEmpty(Record_UU))
 			return false;
 		
 		//	Data
 		String sql = "SELECT AD_Column_ID, Updated, UpdatedBy, OldValue, NewValue "
 			+ "FROM AD_ChangeLog "
-			+ "WHERE AD_Table_ID=? AND Record_ID=? "
+			+ "WHERE AD_Table_ID=? AND (Record_ID=? OR Record_UU=?) "
 			+ "ORDER BY Updated DESC";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -404,6 +397,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, dse.AD_Table_ID);
 			pstmt.setInt (2, Record_ID);
+			pstmt.setString (3, Record_UU);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{

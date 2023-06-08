@@ -59,12 +59,13 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hbox;
 
 /**
- * 
+ * Form to create bank statement line (C_BankStatementLine) from payment transactions.
  * @author Elaine
  *
  */
 public class WCreateFromStatementUI extends CreateFromStatement implements EventListener<Event>
 {
+	/** Create from window instance */
 	private WCreateFromWindow window;
 	
 	/**
@@ -101,6 +102,8 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	/**	Logger			*/
 	private final static CLogger log = CLogger.getCLogger(WCreateFromStatementUI.class);
 
+	/** Parameter fields for {@link #parameterBankLayout} */
+	
 	protected Label bankAccountLabel = new Label();
 	protected WTableDirEditor bankAccountField;
 	
@@ -118,6 +121,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	
 	protected Label amtFromLabel = new Label(Msg.translate(Env.getCtx(), "PayAmt"));
 	protected WNumberEditor amtFromField = new WNumberEditor("AmtFrom", false, false, true, DisplayType.Amount, Msg.translate(Env.getCtx(), "AmtFrom"));
+	
 	protected Label amtToLabel = new Label("-");
 	protected WNumberEditor amtToField = new WNumberEditor("AmtTo", false, false, true, DisplayType.Amount, Msg.translate(Env.getCtx(), "AmtTo"));
 	
@@ -126,15 +130,17 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 
 	protected Label dateFromLabel = new Label(Msg.translate(Env.getCtx(), "DateTrx"));
 	protected WDateEditor dateFromField = new WDateEditor("DateFrom", false, false, true, Msg.translate(Env.getCtx(), "DateFrom"));
+	
 	protected Label dateToLabel = new Label("-");
 	protected WDateEditor dateToField = new WDateEditor("DateTo", false, false, true, Msg.translate(Env.getCtx(), "DateTo"));
 
+	/** Grid layout for parameter panel */
 	protected Grid parameterBankLayout;
 
 	@Override
 	protected boolean dynInit() throws Exception
 	{
-		log.config("");
+		if (log.isLoggable(Level.CONFIG)) log.config("");
 		
 		super.dynInit();
 		
@@ -180,6 +186,10 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		return true;
 	}   //  dynInit
 	
+	/**
+	 * Layout {@link #window}
+	 * @throws Exception
+	 */
 	protected void zkInit() throws Exception
 	{
 		LayoutUtils.addSclass("create-from-bank-statement", window);
@@ -247,7 +257,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	}
 
 	/**
-	 * Configure layout of parameter grid
+	 * Setup columns of {@link #parameterBankLayout}
 	 * @param parameterBankLayout
 	 */
 	protected void setupColumns(Grid parameterBankLayout) {
@@ -280,7 +290,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	}
 
 	/**
-	 *  Action Listener
+	 *  Event Listener
 	 *  @param e event
 	 *  @throws Exception 
 	 */
@@ -296,7 +306,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 	}
 	
 	/**
-	 * load bank account transactions
+	 * load payment transactions
 	 */
 	protected void loadBankAccount()
 	{
@@ -320,8 +330,7 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		ListModelTable model = new ListModelTable(data);
 		model.addTableModelListener(window);
 		window.getWListbox().setData(model, getOISColumnNames());
-		//
-		
+		//		
 		configureMiniTable(window.getWListbox());
 	}
 	
@@ -343,6 +352,9 @@ public class WCreateFromStatementUI extends CreateFromStatement implements Event
 		return window;
 	}
 	
+	/**
+	 * Handle onClientInfo event from browser.
+	 */
 	protected void onClientInfo()
 	{
 		if (ClientInfo.isMobile() && parameterBankLayout != null && parameterBankLayout.getColumns() != null)

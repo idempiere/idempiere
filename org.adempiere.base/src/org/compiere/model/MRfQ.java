@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 /**
  *	RfQ Model
@@ -78,6 +79,18 @@ public class MRfQ extends X_C_RfQ
 		return null;
 	}	//	get
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_RfQ_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRfQ(Properties ctx, String C_RfQ_UU, String trxName) {
+        super(ctx, C_RfQ_UU, trxName);
+		if (Util.isEmpty(C_RfQ_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -88,18 +101,23 @@ public class MRfQ extends X_C_RfQ
 	{
 		super (ctx, C_RfQ_ID, trxName);
 		if (C_RfQ_ID == 0)
-		{
-			setDateResponse (new Timestamp(System.currentTimeMillis()));
-			setDateWorkStart (new Timestamp(System.currentTimeMillis()));
-			setIsInvitedVendorsOnly (false);
-			setQuoteType (QUOTETYPE_QuoteSelectedLines);
-			setIsQuoteAllQty (false);
-			setIsQuoteTotalAmt (false);
-			setIsRfQResponseAccepted (true);
-			setIsSelfService (true);
-			setProcessed (false);
-		}
+			setInitialDefaults();
 	}	//	MRfQ
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDateResponse (new Timestamp(System.currentTimeMillis()));
+		setDateWorkStart (new Timestamp(System.currentTimeMillis()));
+		setIsInvitedVendorsOnly (false);
+		setQuoteType (QUOTETYPE_QuoteSelectedLines);
+		setIsQuoteAllQty (false);
+		setIsQuoteTotalAmt (false);
+		setIsRfQResponseAccepted (true);
+		setIsSelfService (true);
+		setProcessed (false);
+	}
 
 	/**
 	 * 	Load Constructor

@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for I_Movement
  *  @author iDempiere (generated) 
- *  @version Release 10
+ *  @version Release 11
  */
 @SuppressWarnings("all")
 public interface I_I_Movement 

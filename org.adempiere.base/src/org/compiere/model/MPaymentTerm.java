@@ -28,6 +28,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 
 /**
@@ -46,6 +47,18 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	 */
 	private static final long serialVersionUID = -4506224598566445450L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_PaymentTerm_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPaymentTerm(Properties ctx, String C_PaymentTerm_UU, String trxName) {
+        super(ctx, C_PaymentTerm_UU, trxName);
+		if (Util.isEmpty(C_PaymentTerm_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -56,17 +69,23 @@ public class MPaymentTerm extends X_C_PaymentTerm
 	{
 		super(ctx, C_PaymentTerm_ID, trxName);
 		if (C_PaymentTerm_ID == 0)
-		{
-			setAfterDelivery (false);
-			setNetDays (0);
-			setDiscount (Env.ZERO);
-			setDiscount2 (Env.ZERO);
-			setDiscountDays (0);
-			setDiscountDays2 (0);
-			setGraceDays (0);
-			setIsDueFixed (false);
-			setIsValid (false);
-		}	}	//	MPaymentTerm
+			setInitialDefaults();
+	}	//	MPaymentTerm
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setAfterDelivery (false);
+		setNetDays (0);
+		setDiscount (Env.ZERO);
+		setDiscount2 (Env.ZERO);
+		setDiscountDays (0);
+		setDiscountDays2 (0);
+		setGraceDays (0);
+		setIsDueFixed (false);
+		setIsValid (false);
+	}
 
 	/**
 	 * 	Load Constructor

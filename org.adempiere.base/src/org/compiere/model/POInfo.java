@@ -658,6 +658,17 @@ public class POInfo implements Serializable
 	}   //  isEncrypted
 
 	/**
+	 * @param index
+	 * @return true if column is secure
+	 */
+	public boolean isSecure(int index)
+	{
+		if (index < 0 || index >= m_columns.length)
+			return false;
+		return MColumn.get(m_columns[index].AD_Column_ID).isSecure();
+	}
+	
+	/**
 	 * Is allowed logging on this column
 	 * 
 	 * @param index

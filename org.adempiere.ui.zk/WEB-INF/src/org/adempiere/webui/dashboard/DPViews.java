@@ -41,17 +41,19 @@ import org.zkoss.zul.Box;
 import org.zkoss.zul.Vbox;
 
 /**
- * Dashboard item: Info views
+ * Dashboard gadget: List of Info views
  * @author Elaine
  * @date November 20, 2008
  */
 public class DPViews extends DashboardPanel implements EventListener<Event> {
-
 	/**
-	 * 
+	 * generated serial id
 	 */
 	private static final long serialVersionUID = 8375414665766937581L;
 
+	/**
+	 * Default constructor
+	 */
 	public DPViews()
 	{
 		super();
@@ -59,6 +61,10 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 		this.appendChild(createViewPanel());
 	}
 
+	/**
+	 * Layout panel
+	 * @return {@link Box}
+	 */
 	private Box createViewPanel()
 	{
 		Vbox vbox = new Vbox();
@@ -146,7 +152,12 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 
 				if (ThemeManager.isUseFontIconForImage()) 
 				{
-					image = image.replace("16.png", "");
+					if (image.endsWith("16.png"))
+						image = image.replace("16.png", "");
+					else if (image.endsWith("24.png"))
+						image = image.replace("24.png", "");					
+					else if (image.endsWith(".png"))
+						image = image.replace(".png", "");
 					btnViewItem.setIconSclass("z-icon-"+image);
 				}
 				else
@@ -163,6 +174,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 		return vbox;
 	}
 
+	@Override
 	public void onEvent(Event event)
 	{
 		Component comp = event.getTarget();
@@ -202,7 +214,7 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 	}
 
 	/**
-	 * List of Info Windows to be displayed in the panel
+	 * Info Window to be displayed in the panel
 	 * @author nmicoud
 	 */ 
 	private class ListInfoWindow {
@@ -210,15 +222,25 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 		MInfoWindow iw = null;
 		int seqNo = 0;
 
+		/**
+		 * @param infoWindow
+		 * @param seqNo
+		 */
 		public ListInfoWindow(MInfoWindow infoWindow, int seqNo) {
 			iw = infoWindow;
 			this.seqNo = seqNo;
 		}
 
+		/**
+		 * @return Sequence Number
+		 */
 		public int getSeqNo() {
 			return seqNo;
 		}
 
+		/**
+		 * @return MInfoWindow
+		 */
 		public MInfoWindow getInfoWindow() {
 			return iw;
 		}

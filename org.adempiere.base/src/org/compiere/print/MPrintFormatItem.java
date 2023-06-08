@@ -51,6 +51,18 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 	 */
 	private static final long serialVersionUID = 2950704375830865408L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_PrintFormatItem_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPrintFormatItem(Properties ctx, String AD_PrintFormatItem_UU, String trxName) {
+        super(ctx, AD_PrintFormatItem_UU, trxName);
+		if (Util.isEmpty(AD_PrintFormatItem_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 *	Constructor
 	 *  @param ctx context
@@ -62,47 +74,52 @@ public class MPrintFormatItem extends X_AD_PrintFormatItem implements ImmutableP
 		super (ctx, AD_PrintFormatItem_ID, trxName);
 		//	Default Setting
 		if (AD_PrintFormatItem_ID == 0)
-		{
-			setFieldAlignmentType(FIELDALIGNMENTTYPE_Default);
-			setLineAlignmentType(LINEALIGNMENTTYPE_None);
-			setPrintFormatType(PRINTFORMATTYPE_Text);
-			setPrintAreaType(PRINTAREATYPE_Content);
-			setShapeType(SHAPETYPE_NormalRectangle);
-			//
-			setIsCentrallyMaintained(true);
-			setIsRelativePosition(true);
-			setIsNextLine(false);
-			setIsNextPage(false);
-			setIsSetNLPosition(false);
-			setIsFilledRectangle(false);
-			setIsImageField(false);
-			setXSpace(0);
-			setYSpace(0);
-			setXPosition(0);
-			setYPosition(0);
-			setMaxWidth(0);
-			setIsFixedWidth(false);
-			setIsHeightOneLine(false);
-			setMaxHeight(0);
-			setLineWidth(1);
-			setArcDiameter(0);
-			//
-			setIsOrderBy(false);
-			setSortNo(0);
-			setIsGroupBy(false);
-			setIsPageBreak(false);
-			setIsSummarized(false);
-			setIsAveraged(false);
-			setIsCounted(false);
-			setIsMinCalc(false);
-			setIsMaxCalc(false);
-			setIsVarianceCalc(false);
-			setIsDeviationCalc(false);
-			setIsRunningTotal(false);
-			setImageIsAttached(false);
-			setIsSuppressNull(false);
-		}
+			setInitialDefaults();
 	}	//	MPrintFormatItem
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setFieldAlignmentType(FIELDALIGNMENTTYPE_Default);
+		setLineAlignmentType(LINEALIGNMENTTYPE_None);
+		setPrintFormatType(PRINTFORMATTYPE_Text);
+		setPrintAreaType(PRINTAREATYPE_Content);
+		setShapeType(SHAPETYPE_NormalRectangle);
+		//
+		setIsCentrallyMaintained(true);
+		setIsRelativePosition(true);
+		setIsNextLine(false);
+		setIsNextPage(false);
+		setIsSetNLPosition(false);
+		setIsFilledRectangle(false);
+		setIsImageField(false);
+		setXSpace(0);
+		setYSpace(0);
+		setXPosition(0);
+		setYPosition(0);
+		setMaxWidth(0);
+		setIsFixedWidth(false);
+		setIsHeightOneLine(false);
+		setMaxHeight(0);
+		setLineWidth(1);
+		setArcDiameter(0);
+		//
+		setIsOrderBy(false);
+		setSortNo(0);
+		setIsGroupBy(false);
+		setIsPageBreak(false);
+		setIsSummarized(false);
+		setIsAveraged(false);
+		setIsCounted(false);
+		setIsMinCalc(false);
+		setIsMaxCalc(false);
+		setIsVarianceCalc(false);
+		setIsDeviationCalc(false);
+		setIsRunningTotal(false);
+		setImageIsAttached(false);
+		setIsSuppressNull(false);
+	}
 
 	/**
 	 *	Constructor

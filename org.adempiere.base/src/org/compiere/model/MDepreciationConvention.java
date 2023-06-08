@@ -21,6 +21,16 @@ public class MDepreciationConvention extends X_A_Depreciation_Convention impleme
 	 */
 	private static final long serialVersionUID = -3735111030292424391L;
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Depreciation_Convention_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDepreciationConvention(Properties ctx, String A_Depreciation_Convention_UU, String trxName) {
+        super(ctx, A_Depreciation_Convention_UU, trxName);
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context

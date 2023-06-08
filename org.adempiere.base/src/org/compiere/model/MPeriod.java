@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -56,7 +57,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3016788523921605808L;
+	private static final long serialVersionUID = -2625074973303489939L;
 
 	/**
 	 * Get Period from Cache (immutable)
@@ -512,6 +513,18 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	private int 					m_C_Calendar_ID = 0;
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Period_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MPeriod(Properties ctx, String C_Period_UU, String trxName) {
+        super(ctx, C_Period_UU, trxName);
+		if (Util.isEmpty(C_Period_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -522,10 +535,15 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	{
 		super (ctx, C_Period_ID, trxName);
 		if (C_Period_ID == 0)
-		{
-			setPeriodType (PERIODTYPE_StandardCalendarPeriod);
-		}
+			setInitialDefaults();
 	}	//	MPeriod
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setPeriodType (PERIODTYPE_StandardCalendarPeriod);
+	}
 
 	/**
 	 * 	Load Constructor
@@ -1000,4 +1018,65 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 		return this;
 	}
 
+    /**
+     * Has the period un-posted documents
+     * @return boolean - true if there is at least 1 un-posted document in the period
+     */
+    public boolean hasUnpostedDocs() {
+    	return hasUnpostedDocs(0);
+    }
+    
+    /**
+     * Has the period control un-posted documents
+     * @param periodControlID
+     * @return boolean - true if there is at least 1 un-posted document in the period control
+     */
+    public boolean hasUnpostedDocs(int periodControlID) {
+
+		StringBuilder sql = new StringBuilder("SELECT 1 FROM RV_UnPosted up "
+				+ "WHERE up.DocStatus IN('CO', 'CL', 'RE', 'VO') AND up.AD_Client_ID=? AND up.DateAcct BETWEEN ? AND ? ");
+		sql.append(" AND AD_Org_ID IN (SELECT AD_Org_ID FROM AD_OrgInfo WHERE AD_Client_ID=? AND (C_Calendar_ID=?");
+		if (getC_Calendar_ID() == MClientInfo.get().getC_Calendar_ID()) {
+			sql.append(" OR C_Calendar_ID IS NULL");
+		}
+		sql.append(")) ");
+		if (periodControlID > 0)
+			sql.append(" AND up.DocBaseType = ? ");
+		sql.append(" FETCH FIRST 1 ROWS ONLY");
+
+    	PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql.toString(), get_TrxName());
+
+			int idx = 1;
+			pstmt.setInt(idx++, Env.getAD_Client_ID(Env.getCtx()));
+			pstmt.setTimestamp(idx++, getStartDate());
+			pstmt.setTimestamp(idx++, getEndDate());
+			pstmt.setInt(idx++, Env.getAD_Client_ID(Env.getCtx()));
+		pstmt.setInt(idx++, getC_Calendar_ID());
+		if (periodControlID > 0) {
+	    		MPeriodControl pc = new MPeriodControl(getCtx(), periodControlID, get_TrxName()); 
+	    		pstmt.setString(idx++, pc.getDocBaseType());
+	    	}
+	    	
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				return true;
+			}
+		}
+		catch (SQLException e)
+		{
+			throw new DBException(e, sql.toString());
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null; pstmt = null;
+		}
+    	return false;
+    }
+    
 }	//	MPeriod

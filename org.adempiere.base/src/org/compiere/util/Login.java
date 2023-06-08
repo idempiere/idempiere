@@ -564,7 +564,7 @@ public class Login
 				+" WHERE ra.AD_Role_ID=r.AD_Role_ID AND ra.IsActive='Y')) "
 				+" OR (r.IsUseUserOrgAccess='Y' AND o.AD_Org_ID IN (SELECT AD_Org_ID FROM AD_User_OrgAccess ua" 
 				+" WHERE ua.AD_User_ID=?"
-				+" AND ua.IsActive='Y')))" 
+				+" AND ua.IsActive='Y'))) " 
 				+ "ORDER BY o.Name";
 		//
 		PreparedStatement pstmt = null;
@@ -789,6 +789,8 @@ public class Login
 			if (AD_Client_ID != 0 && MSysConfig.getBooleanValue(MSysConfig.SYSTEM_IN_MAINTENANCE_MODE, false, AD_Client_ID))
 				return Msg.getMsg(m_ctx, "SystemInMaintenance");
 		}
+		
+		Env.setPredefinedVariables(Env.getCtx(), -1, MRole.getDefault().getPredefinedContextVariables());
 
 		return null;
 	}	//	validateLogin

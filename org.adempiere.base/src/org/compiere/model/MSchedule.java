@@ -49,14 +49,22 @@ public class MSchedule extends X_AD_Schedule implements ImmutablePOSupport
 	private static final String ipv4Pattern = "(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
     private static final String ipv6Pattern = "([0-9a-f]{1,4}:){7}([0-9a-f]){1,4}";
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Schedule_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MSchedule(Properties ctx, String AD_Schedule_UU, String trxName) {
+        super(ctx, AD_Schedule_UU, trxName);
+    }
+
 	public MSchedule(Properties ctx, int AD_Schedule_ID, String trxName) {
 		super(ctx, AD_Schedule_ID, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
 	public MSchedule(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
-		// TODO Auto-generated constructor stub
 	}
 	
 	/**

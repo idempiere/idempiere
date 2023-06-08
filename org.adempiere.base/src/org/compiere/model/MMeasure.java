@@ -93,6 +93,16 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 	private static ImmutableIntPOCache<Integer, MMeasure> s_cache 
 		= new ImmutableIntPOCache<Integer, MMeasure> (Table_Name, 10);
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param PA_Measure_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MMeasure(Properties ctx, String PA_Measure_UU, String trxName) {
+        super(ctx, PA_Measure_UU, trxName);
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context

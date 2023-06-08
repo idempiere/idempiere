@@ -25,6 +25,7 @@ import java.util.Properties;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
  
 /**
  *	Bank Statement Line Model
@@ -46,6 +47,18 @@ import org.compiere.util.Msg;
 	 */
 	private static final long serialVersionUID = -4479911757321927051L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_BankStatementLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MBankStatementLine(Properties ctx, String C_BankStatementLine_UU, String trxName) {
+        super(ctx, C_BankStatementLine_UU, trxName);
+		if (Util.isEmpty(C_BankStatementLine_UU))
+			setInitialDefaults();
+    }
+
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
@@ -56,15 +69,20 @@ import org.compiere.util.Msg;
 	{
 		super (ctx, C_BankStatementLine_ID, trxName);
 		if (C_BankStatementLine_ID == 0)
-		{
-			setStmtAmt(Env.ZERO);
-			setTrxAmt(Env.ZERO);
-			setInterestAmt(Env.ZERO);
-			setChargeAmt(Env.ZERO);
-			setIsReversal (false);
-		}
+			setInitialDefaults();
 	}	//	MBankStatementLine
-	
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setStmtAmt(Env.ZERO);
+		setTrxAmt(Env.ZERO);
+		setInterestAmt(Env.ZERO);
+		setChargeAmt(Env.ZERO);
+		setIsReversal (false);
+	}
+
 	/**
 	 *	Load Constructor
 	 *	@param ctx context

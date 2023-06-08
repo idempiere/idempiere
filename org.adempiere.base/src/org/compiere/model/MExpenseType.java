@@ -34,6 +34,16 @@ public class MExpenseType extends X_S_ExpenseType
 	 */
 	private static final long serialVersionUID = -5721855125106737886L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param S_ExpenseType_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MExpenseType(Properties ctx, String S_ExpenseType_UU, String trxName) {
+        super(ctx, S_ExpenseType_UU, trxName);
+    }
+
 	/**
 	 * 	Default Constructor
 	 *	@param ctx context

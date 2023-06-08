@@ -129,11 +129,6 @@ import org.zkoss.zul.impl.XulElement;
 /**
  * UI for an AD_Tab content (AD_Tab + AD_Fields).
  *
- * This class is based on org.compiere.grid.GridController written by Jorg Janke.
- * Changes have been brought for UI compatibility.
- *
- * @author Jorg Janke
- *
  * @author <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date Feb 25, 2007
  * @version $Revision: 0.10 $
@@ -654,7 +649,8 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         	
         	// field group
         	String fieldGroup = field.getFieldGroup();
-        	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)) // group changed
+        	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)
+        		&& !X_AD_FieldGroup.FIELDGROUPTYPE_DoNothing.equals(field.getFieldGroupType())) // group changed
         	{
         		currentFieldGroup = fieldGroup;
         		

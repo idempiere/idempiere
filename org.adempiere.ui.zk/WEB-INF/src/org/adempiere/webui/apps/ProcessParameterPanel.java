@@ -19,8 +19,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +43,7 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Urlbox;
+import org.adempiere.webui.editor.DateRangeEditor;
 import org.adempiere.webui.editor.IZoomableEditor;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WEditorPopupMenu;
@@ -61,6 +65,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
@@ -68,6 +73,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Evaluatee;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
@@ -92,11 +98,11 @@ import org.zkoss.zul.impl.XulElement;
  * @version 2006-12-01
  */
 public class ProcessParameterPanel extends Panel implements
-		ValueChangeListener, IProcessParameter, EventListener<Event> {
+		ValueChangeListener, IProcessParameter, EventListener<Event>, Evaluatee {
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -6099317911368929787L;
+	private static final long serialVersionUID = -1398301240136128512L;
 
 	/** Event post from {@link #valueChange(ValueChangeEvent)} **/
 	private static final String ON_POST_EDITOR_VALUE_CHANGE_EVENT = "onPostEditorValueChange";
@@ -168,9 +174,13 @@ public class ProcessParameterPanel extends Panel implements
 	private ArrayList<GridField> m_mFields = new ArrayList<GridField>();
 	/** to parameter field list for range parameter **/
 	private ArrayList<GridField> m_mFields2 = new ArrayList<GridField>();
+	/** list of separators **/
 	private ArrayList<Space> m_separators = new ArrayList<Space>();
 	/** all rows of {@link #centerPanel} **/
 	private ArrayList<Row> m_Rows = new ArrayList<Row>();
+	/** list of all date range editors **/
+	private ArrayList<DateRangeEditor> m_dateRangeEditors = new ArrayList<DateRangeEditor>();
+	//
 	/** layout grid for parameter fields **/
 	private Grid centerPanel = null;
 	/** Group Name:Rows for parameter field **/
@@ -248,12 +258,12 @@ public class ProcessParameterPanel extends Panel implements
 		if (Env.isBaseLanguage(Env.getCtx(), "AD_Process_Para"))
 			sql = "SELECT p.Name, p.Description, p.Help, "
 					+ "p.AD_Reference_ID, p.AD_Process_Para_ID, "
-					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.ColumnName, "
+					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.dateRangeOption, p.ColumnName, "
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern, p.MandatoryLogic, p.Placeholder, p.Placeholder2, p.isAutoComplete, "
 					+ "'' AS ValidationCodeLookup, "
-					+ "fg.Name AS FieldGroup, fg.FieldGroupType, fg.IsCollapsedByDefault "
+					+ "fg.Name AS FieldGroup, fg.FieldGroupType, fg.IsCollapsedByDefault, p.IsShowNegateButton "
 					+ "FROM AD_Process_Para p"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
 					+ " LEFT OUTER JOIN AD_FieldGroup fg ON (p.AD_FieldGroup_ID=fg.AD_FieldGroup_ID) "
@@ -262,12 +272,12 @@ public class ProcessParameterPanel extends Panel implements
 		else
 			sql = "SELECT t.Name, t.Description, t.Help, "
 					+ "p.AD_Reference_ID, p.AD_Process_Para_ID, "
-					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.ColumnName, "
+					+ "p.FieldLength, p.IsMandatory, p.IsRange, p.dateRangeOption, p.ColumnName, "
 					+ "p.DefaultValue, p.DefaultValue2, p.VFormat, p.ValueMin, p.ValueMax, "
 					+ "p.SeqNo, p.AD_Reference_Value_ID, vr.Code AS ValidationCode, "
 					+ "p.ReadOnlyLogic, p.DisplayLogic, p.IsEncrypted, NULL AS FormatPattern,p.MandatoryLogic, t.Placeholder, t.Placeholder2, p.isAutoComplete, "
 					+ "'' AS ValidationCodeLookup, "
-					+ "fgt.Name AS FieldGroup, fg.FieldGroupType, fg.IsCollapsedByDefault "
+					+ "fgt.Name AS FieldGroup, fg.FieldGroupType, fg.IsCollapsedByDefault, p.IsShowNegateButton "
 					+ "FROM AD_Process_Para p"
 					+ " INNER JOIN AD_Process_Para_Trl t ON (p.AD_Process_Para_ID=t.AD_Process_Para_ID)"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
@@ -305,9 +315,11 @@ public class ProcessParameterPanel extends Panel implements
 				GridFieldVO voF = listVO.get(i);
 				GridField field = new GridField(voF);
 				m_mFields.add(field); // add to Fields
+				field.setParentEvaluatee(this);
 				
 				String fieldGroup = field.getFieldGroup();
-	        	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)) // group changed
+	        	if (!Util.isEmpty(fieldGroup) && !fieldGroup.equals(currentFieldGroup)
+	        		&& !X_AD_FieldGroup.FIELDGROUPTYPE_DoNothing.equals(field.getFieldGroupType())) // group changed
 	        	{
 	        		currentFieldGroup = fieldGroup;
 	        		
@@ -496,16 +508,33 @@ public class ProcessParameterPanel extends Panel implements
 			row.appendChild(box);
 			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime)) 
 					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))) {
-				DateRangeButton dateRangeButton = new DateRangeButton(editor, editor2);
-				box.appendChild(dateRangeButton);
+				if(MProcessPara.DATERANGEOPTION_TextAndRangePicker.equalsIgnoreCase(mField.getDateRangeOption())) {
+					editor.setVisible(false, true);
+					editor2.setVisible(false, true);
+					DateRangeEditor dateRangeEditor = new DateRangeEditor(editor, editor2);
+					box.appendChild(dateRangeEditor);
+					dateRangeEditor.setVisible(mField.isDisplayed(true));
+					label.setVisible(dateRangeEditor.isVisible());
+					dateRangeEditor.setReadOnly(!(editor.isReadWrite() && editor2.isReadWrite()));
+					m_dateRangeEditors.add(dateRangeEditor);
+				}
+				else {
+					DateRangeButton dateRangeButton = new DateRangeButton(editor, editor2);
+					box.appendChild(dateRangeButton);
+					m_dateRangeEditors.add(null);
+				}
+			}
+			else {
+				m_dateRangeEditors.add(null);
 			}
 		} else {
 			box.appendChild(editor.getComponent());
 			m_mFields2.add(null);
 			m_wEditors2.add(null);
 			m_separators.add(null);
+			m_dateRangeEditors.add(null);
 			//add not in support for multi selection field
-			if(DisplayType.isChosenMultipleSelection(mField.getDisplayType())) {
+			if(DisplayType.isChosenMultipleSelection(mField.getDisplayType()) && voF.IsShowNegateButton) {
 				Button bNegate = ButtonFactory.createButton("", null, null);
 				bNegate.setTooltiptext(Msg.translate(Env.getCtx(), "IncludeSelectedValues"));
 				bNegate.setIconSclass("z-icon-IncludeSelected");
@@ -1126,6 +1155,10 @@ public class ProcessParameterPanel extends Panel implements
 		for (int i = 0; i < m_wEditors.size(); i++) {
 			WEditor editor = m_wEditors.get(i);
 			GridField mField = editor.getGridField();
+			GridField mField2 = null;
+			if (mField.getVO().isRange) {
+				mField2 = m_wEditors2.get(i).getGridField();
+			}
 			if (mField.isDisplayed(true)) {
 				if (!editor.isVisible()) {
 					editor.setVisible(true);
@@ -1176,6 +1209,25 @@ public class ProcessParameterPanel extends Panel implements
 				// Add mandatory style on label when Parameter To is still blank
 				if (editor.isMandatory() && editor.getLabel() != null && m_wEditors2.get(i).isNullOrEmpty()) {
 					LayoutUtils.addSclass("idempiere-mandatory-label", editor.getLabel());
+				}
+			}
+			// Handle Dynamic Display for Date Range Picker
+			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime))
+					&& mField2 != null
+					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))
+					&& MProcessPara.DATERANGEOPTION_TextAndRangePicker.equalsIgnoreCase(mField.getDateRangeOption())) {
+				DateRangeEditor dateRangeEditor = m_dateRangeEditors.get(i);
+				if(dateRangeEditor != null) {
+					dateRangeEditor.setVisible(editor.isVisible());
+					m_Rows.get(i).setVisible(editor.isVisible());
+					m_Rows.get(i).setAttribute(Group.GROUP_ROW_VISIBLE_KEY, editor.isVisible());
+					editor.setVisible(false, true);
+					if (mField.getVO().isRange) {
+						m_separators.get(i).setVisible(false);
+						m_wEditors2.get(i).setVisible(false ,true);
+					}
+					dateRangeEditor.setFieldMandatoryStyle();
+					dateRangeEditor.setReadOnly(!(editor.isReadWrite() && m_wEditors2.get(i).isReadWrite()));
 				}
 			}
 		}
@@ -1312,6 +1364,47 @@ public class ProcessParameterPanel extends Panel implements
 	 */
 	public int getWindowNo() {
 		return m_WindowNo;
+	}
+
+	@Override
+	public String get_ValueAsString(String variableName) {
+		for(WEditor editor : m_wEditors) {
+			if (editor.getGridField().getColumnName().equals(variableName)) {
+				//base on code in GridField.updateContext() method
+				int displayType = editor.getGridField().getVO().displayType;	
+				if (displayType == DisplayType.Text 
+					|| displayType == DisplayType.Memo
+					|| displayType == DisplayType.TextLong
+					|| displayType == DisplayType.Binary
+					|| displayType == DisplayType.RowID
+					|| editor.getGridField().isEncrypted())
+					return ""; //	ignore
+				
+				Object value = editor.getValue();
+				if (value == null)
+					return "";
+				else if (value instanceof Boolean)
+				{
+					return (((Boolean)value) ? "Y" : "N");
+				}
+				else if (value instanceof Timestamp)
+				{
+					String stringValue = null;
+					if (value != null && !value.toString().equals("")) {
+						Calendar c1 = Calendar.getInstance();
+						c1.setTime((Date) value);
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						stringValue = sdf.format(c1.getTime());
+					}
+					return stringValue;
+				}
+				else
+				{
+					return value.toString();
+				}
+			}
+		}
+		return null;
 	}
 
 } // ProcessParameterPanel

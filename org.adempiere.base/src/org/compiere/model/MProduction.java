@@ -36,16 +36,34 @@ public class MProduction extends X_M_Production implements DocAction {
 	protected int lineno;
 	protected int count;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param M_Production_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MProduction(Properties ctx, String M_Production_UU, String trxName) {
+        super(ctx, M_Production_UU, trxName);
+		if (Util.isEmpty(M_Production_UU))
+			setInitialDefaults();
+    }
+
 	public MProduction(Properties ctx, int M_Production_ID, String trxName) {
 		this (ctx, M_Production_ID, trxName, (String[]) null);
 	}
 
 	public MProduction(Properties ctx, int M_Production_ID, String trxName, String... virtualColumns) {
 		super(ctx, M_Production_ID, trxName, virtualColumns);
-		if (M_Production_ID == 0) {
-			setDocStatus(DOCSTATUS_Drafted);
-			setDocAction (DOCACTION_Prepare);
-		}
+		if (M_Production_ID == 0)
+			setInitialDefaults();
+	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocStatus(DOCSTATUS_Drafted);
+		setDocAction (DOCACTION_Prepare);
 	}
 
 	public MProduction(Properties ctx, ResultSet rs, String trxName) {

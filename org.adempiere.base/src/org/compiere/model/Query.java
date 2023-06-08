@@ -291,6 +291,19 @@ public class Query
 	}
 	
 	/**
+	 * Convenient method to add table direct type of joint.<br/>
+	 * For e.g, if foreignTableName is C_BPartner and TableName for Query is AD_User,<br/>
+	 * this will add join clause of <br/>
+	 * "INNER JOIN C_BPartner ON (AD_User.C_BPartner_ID=C_BPartner.C_BParner_ID)".
+	 * @param foreignTableName
+	 */
+	public void addTableDirectJoin(String foreignTableName) {
+		String foreignId = foreignTableName + "_ID";
+		addJoinClause("INNER JOIN " + foreignTableName + " ON (" + table.getTableName() + "." + foreignId 
+				+ "=" + foreignTableName + "." + foreignId + ")");
+	}
+	
+	/**
 	 * Return a list of all po that match the query criteria.
 	 * @return List
 	 * @throws DBException 
@@ -849,8 +862,12 @@ public class Query
 			//
 			if (whereBuffer.length() > 0)
 				whereBuffer.append(" AND ");
-			whereBuffer.append(" EXISTS (SELECT 1 FROM T_Selection s WHERE s.AD_PInstance_ID=?"
-					+" AND s.T_Selection_ID="+table.getTableName()+"."+keys[0]+")");
+			whereBuffer.append(" EXISTS (SELECT 1 FROM T_Selection s WHERE s.AD_PInstance_ID=? AND s.");
+			if (table.isUUIDKeyTable())
+				whereBuffer.append("T_Selection_UU=");
+			else
+				whereBuffer.append("T_Selection_ID=");
+			whereBuffer.append(table.getTableName()).append(".").append(keys[0]).append(")");
 		}
 		
 		StringBuilder sqlBuffer = new StringBuilder(selectClause);
@@ -1026,11 +1043,7 @@ public class Query
 			rs = null; pstmt = null;
 		}
 		//	Convert to array
-		int[] retValue = new int[list.size()];
-		for (int i = 0; i < retValue.length; i++)
-		{
-			retValue[i] = list.get(i);
-		}
+		int[] retValue = list.stream().mapToInt(Integer::intValue).toArray();
 		return retValue;
 	}	//	get_IDs
 

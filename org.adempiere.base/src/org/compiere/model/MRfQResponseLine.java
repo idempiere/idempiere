@@ -42,6 +42,16 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 	 */
 	private static final long serialVersionUID = 3388579962604552288L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_RfQResponseLine_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MRfQResponseLine(Properties ctx, String C_RfQResponseLine_UU, String trxName) {
+        super(ctx, C_RfQResponseLine_UU, trxName);
+    }
+
 	/**
 	 * 	Persistency Constructor
 	 *	@param ctx context

@@ -14,6 +14,7 @@ import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 
 /**
@@ -30,16 +31,34 @@ implements DocAction
 	private static final long serialVersionUID = -3937514008250840440L;
 	private boolean		m_justPrepared = false;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param A_Asset_Reval_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAssetReval(Properties ctx, String A_Asset_Reval_UU, String trxName) {
+        super(ctx, A_Asset_Reval_UU, trxName);
+		if (Util.isEmpty(A_Asset_Reval_UU))
+			setInitialDefaults();
+    }
+
 	public MAssetReval(Properties ctx, int X_A_Asset_Reval_ID, String trxName)
 	{
 		super(ctx, X_A_Asset_Reval_ID, trxName);
 		if (X_A_Asset_Reval_ID == 0)
-		{
-		    setDocStatus(DOCSTATUS_Drafted);
-			setDocAction(DOCACTION_Complete);
-			setProcessed(false);
-		}
+			setInitialDefaults();
 	}
+
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+	    setDocStatus(DOCSTATUS_Drafted);
+		setDocAction(DOCACTION_Complete);
+		setProcessed(false);
+	}
+
 	public MAssetReval(Properties ctx, ResultSet rs, String trxName)
 	{
        super (ctx, rs, trxName);

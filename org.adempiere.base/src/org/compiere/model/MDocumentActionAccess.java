@@ -34,6 +34,16 @@ public class MDocumentActionAccess extends X_AD_Document_Action_Access {
 	 */
 	private static final long serialVersionUID = -2036011342206732816L;
 
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_Document_Action_Access_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MDocumentActionAccess(Properties ctx, String AD_Document_Action_Access_UU, String trxName) {
+        super(ctx, AD_Document_Action_Access_UU, trxName);
+    }
+
 	/**
 	 * Standard Constructor
 	 * 

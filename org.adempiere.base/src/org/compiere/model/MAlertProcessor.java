@@ -60,6 +60,16 @@ public class MAlertProcessor extends X_AD_AlertProcessor
 	private static CLogger	s_log	= CLogger.getCLogger (MAlertProcessor.class);
 
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param AD_AlertProcessor_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MAlertProcessor(Properties ctx, String AD_AlertProcessor_UU, String trxName) {
+        super(ctx, AD_AlertProcessor_UU, trxName);
+    }
+
 	/**************************************************************************
 	 * 	Standard Constructor
 	 *	@param ctx context

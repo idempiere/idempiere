@@ -122,6 +122,11 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 		int clientId = Env.getAD_Client_ID(Env.getCtx());
 		if (version == null) {
 			String [] parts = fileName.split("_");
+			if (parts.length < 2) {
+				logger.warning("Wrong name, ignored " + fileName);
+				return false;
+			}
+			logger.warning(fileName);
 			String clientValue = parts[1];
 			clientId = DB.getSQLValueEx(null, "SELECT AD_Client_ID FROM AD_Client WHERE Value=?", clientValue);
 			if (clientId < 0)
@@ -258,7 +263,7 @@ public abstract class AbstractActivator implements BundleActivator, ServiceTrack
 			if (isFrameworkStarted())
 				frameworkStarted ();
 		};
-		if (Adempiere.getThreadPoolExecutor() != null) {
+		if (Adempiere.isStarted()) {
 			Adempiere.getThreadPoolExecutor().submit(runnable);
 		} else {
 			MyServerStateChangeListener l = new MyServerStateChangeListener(runnable);

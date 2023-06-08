@@ -29,6 +29,7 @@ package org.adempiere.webui.editor;
 
 import java.util.logging.Level;
 
+import org.adempiere.util.GridRowCtx;
 import org.adempiere.webui.component.EditorBox;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.event.ContextMenuEvent;
@@ -37,18 +38,23 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.theme.ThemeManager;
 import org.compiere.model.GridField;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.sys.ComponentCtrl;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Menuitem;
 
 /**
- *
+ * Default editor for {@link DisplayType#Color}.<br/>
+ * Implemented with {@link EditorBox} component and HTML color type (&lt;input type="color"&gt;).
  * @author Nicolas Micoud (TGI)
  *
  */
@@ -58,10 +64,11 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
     public static final String COLOR_PICKER_EVENT = "COLOR_PICKER";
 
+    /** Hex coded color value, for e.g #FF0000 */
 	private String oldValue;
-
+	/** Place holder text for text box */
 	private String placeHolder;
-
+	/** Hidden text box with type set to color. Use to open HTML native color picker. */
 	private Textbox colorbox;
 
 	/**
@@ -101,7 +108,14 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		colorbox.setClientAttribute("type", "color");
 		colorbox.setStyle("position:absolute;top:0;left:0;height:0px !important;width:0px !important;"
 				+ "border:none !important;margin:0 !important;padding:0 !important;visibility:hidden;");
-		getComponent().appendChild(colorbox);
+		
+		//append colorbox to getComponent doesn't with with table/grid
+		if (!tableEditor) {
+			getComponent().appendChild(colorbox);
+		} else {
+			getComponent().getTextbox().addCallback(ComponentCtrl.AFTER_PAGE_ATTACHED, t -> afterPageAttached());
+			getComponent().getTextbox().addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, t -> afterPageDetached());
+		}
 
 		colorbox.addEventListener("onInput", e -> {
 			processNewValue((String)e.getData());
@@ -121,6 +135,37 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 				+ "}");
 	}
 
+	/**
+	 * Handle after page detached callback. This is use when editor is use within grid/table.
+	 * @return null
+	 */
+	private Object afterPageDetached() {
+		if (colorbox.getPage() != null && colorbox.getParent() != getComponent()) {
+			colorbox.detach();
+		}
+		
+		//need to attach callback again as editor is reuse in grid view
+		getComponent().getTextbox().addCallback(ComponentCtrl.AFTER_PAGE_ATTACHED, t -> afterPageAttached());
+		getComponent().getTextbox().addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, t -> afterPageDetached());
+		
+		return null;
+	}
+
+	/**
+	 * Handle after page attached callback. This is use when editor is use within grid/table.
+	 * @return null
+	 */
+	private Object afterPageAttached() {
+		if (colorbox.getParent() == null) {
+			colorbox.setPage(this.getComponent().getPage());
+		}
+		fillTextbox();
+		return null;
+	}
+
+	/**
+	 * Init component and context menu
+	 */
 	private void init()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("Initializing component");
@@ -130,6 +175,10 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		addChangeLogMenu(popupMenu);
 	}
 
+	/**
+	 * Add entries to popup context menu
+	 * @param popupMenu
+	 */
 	protected void addColorEditorMenu(WEditorPopupMenu popupMenu) {
 		Menuitem editor = new Menuitem();
 		editor.setAttribute("EVENT", WEditorPopupMenu.RESET_EVENT);
@@ -152,6 +201,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		popupMenu.appendChild(editor);
 	}
 
+	@Override
 	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.RESET_EVENT.equals(evt.getContextEvent()))
@@ -190,16 +240,27 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		fillTextbox();
 	}
 
+	/**
+	 * Fill half of text box with entered color value
+	 */
 	private void fillTextbox() {
 		String style="background-color: transparent !important;";
 		if (!Util.isEmpty(oldValue, true))
-			style = "background: linear-gradient(to right, rgba(255,0,0,0) 50%, "
-					+ oldValue + " 50%) !important;";
+			style = getBackgroundFillStyle(oldValue);
 		String script = "jq('#"+getComponent().getTextbox().getUuid()+"').attr('style','"+style+"');";
-		if (Executions.getCurrent() != null)
+		if (Executions.getCurrent() != null && getComponent().getPage() != null)
 			Clients.response(new AuScript(script));
 		else if (getComponent().getDesktop() != null)
 			Executions.schedule(getComponent().getDesktop(), e -> Clients.response(new AuScript(script)), new Event("onFillTextBox"));
+	}
+
+	/**
+	 * @param color hex coded color string
+	 * @return background fill style
+	 */
+	protected String getBackgroundFillStyle(String color) {
+		return "background: linear-gradient(to right, rgba(255,0,0,0) 50%, "
+				+ color + " 50%) !important;";
 	}
 
 	@Override
@@ -224,6 +285,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		getComponent().getButton().setEnabled(readWrite);
 	}
 
+	@Override
 	public void onEvent(Event event)
 	{
 		if (Events.ON_CLICK.equalsIgnoreCase(event.getName()))
@@ -236,12 +298,19 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		}
 	}
 
-	public void openColorPicker() { // TODO color picker is opening at upper left ; better to open it at center of screen
+	/**
+	 * Open HTML native color picker
+	 */
+	public void openColorPicker() {
 		String uid = colorbox.getUuid();
 		String script = "(function(){let wgt = zk.Widget.$('#"+uid+"');wgt.$n().click();})()";
 		Clients.response(new AuScript(script));		
 	}
 
+	/**
+	 * Process newValue from color picker
+	 * @param newValue
+	 */
 	protected void processNewValue(String newValue) {
 		if (oldValue != null && newValue != null && oldValue.equals(newValue)) {
 			return;
@@ -254,6 +323,7 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 		oldValue = getComponent().getTextbox().getValue();                
 	}
 
+	@Override
 	public String[] getEvents()
 	{
 		return LISTENER_EVENTS;
@@ -266,11 +336,19 @@ public class WColorEditor extends WEditor implements ContextMenuListener
 	}
 
 	@Override
-	public String getDisplayTextForGridView(Object value) {
+	public String getDisplayTextForGridView(GridRowCtx gridRowCtx, Object value) {
 		if (value == null) {
 			return "";
 		} else {
-			return (String)value;
+			return "<div class='grid-view-color-fieldtype-display'>"
+					+ "	<div style='background: "+value.toString()+";'></div>"
+					+ "</div>";
 		}
 	}
+
+	@Override
+	public Component getDisplayComponent() {
+		return new Html();
+	}
+	
 }

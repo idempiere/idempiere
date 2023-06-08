@@ -4,6 +4,7 @@
 package org.adempiere.webui.info;
 
 import org.compiere.model.GridField;
+import org.compiere.model.MAsset;
 import org.compiere.util.Env;
 
 /**
@@ -78,7 +79,7 @@ public class InfoAssetWindow extends InfoWindow {
 		super.saveSelectionDetail();
 
         //  publish for Callout to read
-        Integer ID = getSelectedRowKey();
+        Integer ID = getIntSelectedRowKey(MAsset.Table_ID);
         Env.setContext(Env.getCtx(), p_WindowNo, Env.TAB_INFO, "A_Asset_ID", ID == null ? "0" : ID.toString());
 	}
 

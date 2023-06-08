@@ -158,6 +158,18 @@ public class MOrder extends X_C_Order implements DocAction
 	}	//	copyFrom
 	
 	
+    /**
+    * UUID based Constructor
+    * @param ctx  Context
+    * @param C_Order_UU  UUID key
+    * @param trxName Transaction
+    */
+    public MOrder(Properties ctx, String C_Order_UU, String trxName) {
+        super(ctx, C_Order_UU, trxName);
+		if (Util.isEmpty(C_Order_UU))
+			setInitialDefaults();
+    }
+
 	/**************************************************************************
 	 *  Default Constructor
 	 *  @param ctx context
@@ -173,45 +185,50 @@ public class MOrder extends X_C_Order implements DocAction
 		super(ctx, C_Order_ID, trxName, virtualColumns);
 		//  New
 		if (C_Order_ID == 0)
-		{
-			setDocStatus(DOCSTATUS_Drafted);
-			setDocAction (DOCACTION_Prepare);
-			//
-			setDeliveryRule (DELIVERYRULE_Availability);
-			setFreightCostRule (FREIGHTCOSTRULE_FreightIncluded);
-			setInvoiceRule (INVOICERULE_Immediate);
-			setPaymentRule(PAYMENTRULE_OnCredit);
-			setPriorityRule (PRIORITYRULE_Medium);
-			setDeliveryViaRule (DELIVERYVIARULE_Pickup);
-			//
-			setIsDiscountPrinted (false);
-			setIsSelected (false);
-			setIsTaxIncluded (false);
-			setIsSOTrx (true);
-			setIsDropShip(false);
-			setSendEMail (false);
-			//
-			setIsApproved(false);
-			setIsPrinted(false);
-			setIsCreditApproved(false);
-			setIsDelivered(false);
-			setIsInvoiced(false);
-			setIsTransferred(false);
-			setIsSelfService(false);
-			//
-			super.setProcessed(false);
-			setProcessing(false);
-			setPosted(false);
+			setInitialDefaults();
+	}
 
-			setDateAcct (new Timestamp(System.currentTimeMillis()));
-			setDatePromised (new Timestamp(System.currentTimeMillis()));
-			setDateOrdered (new Timestamp(System.currentTimeMillis()));
+	/**
+	 * Set the initial defaults for a new record
+	 */
+	private void setInitialDefaults() {
+		setDocStatus(DOCSTATUS_Drafted);
+		setDocAction (DOCACTION_Prepare);
+		//
+		setDeliveryRule (DELIVERYRULE_Availability);
+		setFreightCostRule (FREIGHTCOSTRULE_FreightIncluded);
+		setInvoiceRule (INVOICERULE_Immediate);
+		setPaymentRule(PAYMENTRULE_OnCredit);
+		setPriorityRule (PRIORITYRULE_Medium);
+		setDeliveryViaRule (DELIVERYVIARULE_Pickup);
+		//
+		setIsDiscountPrinted (false);
+		setIsSelected (false);
+		setIsTaxIncluded (false);
+		setIsSOTrx (true);
+		setIsDropShip(false);
+		setSendEMail (false);
+		//
+		setIsApproved(false);
+		setIsPrinted(false);
+		setIsCreditApproved(false);
+		setIsDelivered(false);
+		setIsInvoiced(false);
+		setIsTransferred(false);
+		setIsSelfService(false);
+		//
+		super.setProcessed(false);
+		setProcessing(false);
+		setPosted(false);
 
-			setFreightAmt (Env.ZERO);
-			setChargeAmt (Env.ZERO);
-			setTotalLines (Env.ZERO);
-			setGrandTotal (Env.ZERO);
-		}
+		setDateAcct (new Timestamp(System.currentTimeMillis()));
+		setDatePromised (new Timestamp(System.currentTimeMillis()));
+		setDateOrdered (new Timestamp(System.currentTimeMillis()));
+
+		setFreightAmt (Env.ZERO);
+		setChargeAmt (Env.ZERO);
+		setTotalLines (Env.ZERO);
+		setGrandTotal (Env.ZERO);
 	}
 
 	/**************************************************************************
@@ -678,7 +695,7 @@ public class MOrder extends X_C_Order implements DocAction
 	/**************************************************************************
 	 * 	Get Lines of Order
 	 * 	@param whereClause where clause or null (starting with AND)
-	 * 	@param orderClause order clause
+	 * 	@param orderClause order clause or null
 	 * 	@return lines
 	 */
 	public MOrderLine[] getLines (String whereClause, String orderClause)
@@ -687,7 +704,7 @@ public class MOrder extends X_C_Order implements DocAction
 		StringBuilder whereClauseFinal = new StringBuilder(MOrderLine.COLUMNNAME_C_Order_ID+"=? ");
 		if (!Util.isEmpty(whereClause, true))
 			whereClauseFinal.append(whereClause);
-		if (orderClause.length() == 0)
+		if (Util.isEmpty(orderClause, true))
 			orderClause = MOrderLine.COLUMNNAME_Line;
 		//
 		List<MOrderLine> list = new Query(getCtx(), I_C_OrderLine.Table_Name, whereClauseFinal.toString(), get_TrxName())
@@ -1018,7 +1035,7 @@ public class MOrder extends X_C_Order implements DocAction
 		{
 			int ii = DB.getSQLValueEx(null,
 				"SELECT M_PriceList_ID FROM M_PriceList "
-				+ "WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive=?"
+				+ "WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive=? "
 				+ "ORDER BY IsDefault DESC", getAD_Client_ID(), isSOTrx(), true);
 			if (ii != 0)
 				setM_PriceList_ID (ii);
