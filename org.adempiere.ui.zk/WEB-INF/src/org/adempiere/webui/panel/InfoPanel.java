@@ -3002,7 +3002,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		sqlOrderColumn = !Util.isEmpty(displayColumn) ? displayColumn : p_layout[col].getColSQL().trim();
 
 		// join tables to sort by display value
-		if(!Util.isEmpty(displayColumn) && (DisplayType.isID(p_layout[col].getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(p_layout[col].getAD_Reference_ID()))) {
+		if(!Util.isEmpty(displayColumn) && (DisplayType.isLookup(p_layout[col].getAD_Reference_ID()) || DisplayType.isChosenMultipleSelection(p_layout[col].getAD_Reference_ID()))) {
 			MTable table = getTable(p_layout[col].getAD_Reference_Value_ID(), p_layout[col].getColumnName());
 			if(table != null && !joinTables.contains(table.getTableName()))
 				joinTables.add(table.getTableName());
