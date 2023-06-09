@@ -13,24 +13,21 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.PeriodClosedException;
-import org.compiere.acct.Doc;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
 public class MProduction extends X_M_Production implements DocAction {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6714776372370644208L;
+	private static final long serialVersionUID = -1185737281702437745L;
 
-	/**
-	 * 
-	 */
 	/** Log								*/
 	protected static CLogger		m_log = CLogger.getCLogger (MProduction.class);
 	protected int lineno;
@@ -100,6 +97,9 @@ public class MProduction extends X_M_Production implements DocAction {
 				return status;
 		}
 
+		// Set the definite document number after completed (if needed)
+		setDefiniteDocumentNo();
+
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
 		if (m_processMsg != null)
 			return DocAction.STATUS_Invalid;
@@ -156,6 +156,26 @@ public class MProduction extends X_M_Production implements DocAction {
 		setProcessed(true);
 		setDocAction(DOCACTION_Close);
 		return DocAction.STATUS_Completed;
+	}
+
+	/**
+	 * 	Set the definite document number after completed
+	 */
+	protected void setDefiniteDocumentNo() {
+		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
+		if (dt.isOverwriteDateOnComplete()) {
+			if (this.getProcessedOn().signum() == 0) {
+				setMovementDate(TimeUtil.getDay(0));
+				MPeriod.testPeriodOpen(getCtx(), getMovementDate(), getC_DocType_ID(), getAD_Org_ID());
+			}
+		}
+		if (dt.isOverwriteSeqOnComplete()) {
+			if (this.getProcessedOn().signum() == 0) {
+				String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
+				if (value != null)
+					setDocumentNo(value);
+			}
+		}
 	}
 
 	private boolean isHaveEndProduct(MProductionLine[] lines) {
@@ -480,7 +500,7 @@ public class MProduction extends X_M_Production implements DocAction {
 			return DocAction.STATUS_Invalid;
 
 		//	Std Period open?
-		MPeriod.testPeriodOpen(getCtx(), getMovementDate(), MDocType.DOCBASETYPE_MaterialProduction, getAD_Org_ID());
+		MPeriod.testPeriodOpen(getCtx(), getMovementDate(), getC_DocType_ID(), getAD_Org_ID());
 
 		if ( getIsCreated().equals("N") )
 		{
@@ -646,7 +666,7 @@ public class MProduction extends X_M_Production implements DocAction {
 			boolean accrual = false;
 			try 
 			{
-				MPeriod.testPeriodOpen(getCtx(), getMovementDate(), Doc.DOCTYPE_MatProduction, getAD_Org_ID());
+				MPeriod.testPeriodOpen(getCtx(), getMovementDate(), getC_DocType_ID(), getAD_Org_ID());
 			}
 			catch (PeriodClosedException e) 
 			{
@@ -722,7 +742,7 @@ public class MProduction extends X_M_Production implements DocAction {
 		if (getC_OrderLine_ID() > 0)
 			setC_OrderLine_ID(0);
 
-		MPeriod.testPeriodOpen(getCtx(), reversalDate, Doc.DOCTYPE_MatProduction, getAD_Org_ID());
+		MPeriod.testPeriodOpen(getCtx(), reversalDate, getC_DocType_ID(), getAD_Org_ID());
 		MProduction reversal = null;
 		reversal = copyFrom (reversalDate);
 
@@ -917,6 +937,9 @@ public class MProduction extends X_M_Production implements DocAction {
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		if (getC_DocType_ID() <= 0) {
+			setC_DocType_ID(MDocType.getDocType(MDocType.DOCBASETYPE_MaterialProduction));
+		}
 		if (getM_Product_ID() > 0) {
 			if (isUseProductionPlan()) {
 				setIsUseProductionPlan(false);
