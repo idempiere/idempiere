@@ -477,7 +477,7 @@ public final class AEnv
 		zoomQuery.setZoomValue(value);
 		zoomQuery.addRestriction(column, MQuery.EQUAL, value);
 		zoomQuery.setRecordCount(1);    //  guess
-		if (zoomQuery != null && zoomQuery.getZoomTableName() != null) {
+		if (zoomQuery.getZoomTableName() != null) {
 			int tableId = -1;
 			int windowId = lookup.getZoom(zoomQuery);
 			tableId = MTable.getTable_ID(zoomQuery.getZoomTableName());
