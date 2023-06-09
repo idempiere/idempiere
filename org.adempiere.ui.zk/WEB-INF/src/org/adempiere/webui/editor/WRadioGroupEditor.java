@@ -508,7 +508,7 @@ public class WRadioGroupEditor extends WEditor implements ContextMenuListener, L
 		/**
 		 * generated serial id
 		 */
-		private static final long serialVersionUID = -8814498538711459900L;
+		private static final long serialVersionUID = 6356574816984519621L;
 		private Radiogroup radioGroup;
 		private boolean enabled;
 		
