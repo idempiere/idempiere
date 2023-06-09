@@ -504,7 +504,7 @@ public class WRadioGroupEditor extends WEditor implements ContextMenuListener, L
 	/**
 	 * Container for {@link Radiogroup}  and {@link Radio} component.
 	 */
-	private static class RadioGroupEditor extends Hlayout {
+	public static class RadioGroupEditor extends Hlayout {
 		/**
 		 * generated serial id
 		 */
