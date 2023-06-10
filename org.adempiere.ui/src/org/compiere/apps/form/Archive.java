@@ -30,6 +30,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Util;
 
 public class Archive {
 	
@@ -43,6 +44,8 @@ public class Archive {
 	protected int 		m_AD_Table_ID = 0;
 	/** Record direct		*/
 	protected int 		m_Record_ID = 0;
+	/** Record UUID		*/
+	protected String	m_Record_UU = null;
 	
 	/**	Logger			*/
 	protected static final CLogger log = CLogger.getCLogger(Archive.class);
@@ -175,6 +178,8 @@ public class Archive {
 			sql.append(" AND ((AD_Table_ID=").append(m_AD_Table_ID);
 			if (m_Record_ID > 0)
 				sql.append(" AND Record_ID=").append(m_Record_ID);
+			if (!Util.isEmpty(m_Record_UU))
+				sql.append(" AND Record_UU=").append(DB.TO_STRING(m_Record_UU));
 			sql.append(")");
 			if (m_AD_Table_ID == MBPartner.Table_ID && m_Record_ID > 0)
 				sql.append(" OR C_BPartner_ID=").append(m_Record_ID);
@@ -182,6 +187,7 @@ public class Archive {
 			//	Reset for query
 			m_AD_Table_ID = 0;
 			m_Record_ID = 0;
+			m_Record_UU = null;
 		}
 		else
 		{

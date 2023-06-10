@@ -3423,7 +3423,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			if (adTabbox.getSelectedGridTab().getRecord_ID() <= 0)
 				return;
 
-			new WArchive(toolbar.getToolbarItem("Archive"), adTabbox.getSelectedGridTab().getAD_Table_ID(), adTabbox.getSelectedGridTab().getRecord_ID());
+			new WArchive(toolbar.getToolbarItem("Archive"),
+					adTabbox.getSelectedGridTab().getAD_Table_ID(),
+					adTabbox.getSelectedGridTab().getRecord_ID(),
+					adTabbox.getSelectedGridTab().getRecord_UU());
 		}
 	}
 

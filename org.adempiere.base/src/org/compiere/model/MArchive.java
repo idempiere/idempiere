@@ -48,7 +48,7 @@ public class MArchive extends X_AD_Archive {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6343913337999164991L;
+	private static final long serialVersionUID = 1195510484179775189L;
 
 	/**
 	 * Get Archives
@@ -402,12 +402,26 @@ public class MArchive extends X_AD_Archive {
 	 * @param Record_ID
 	 * @param trxName
 	 * @return int[], [0] = report count and [1] = document count
+	 * @deprecated - use {@link #getReportAndDocumentCountByRecordId(int, int, String, String)} instead
 	 */
 	public static int[] getReportAndDocumentCountByRecordId(int AD_Table_ID, int Record_ID, String trxName) {
+		return getReportAndDocumentCountByRecordId(AD_Table_ID, Record_ID, null, trxName);
+	}
+
+	/**
+	 * Get number of document and report archive by table and record id
+	 * 
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param Record_UU
+	 * @param trxName
+	 * @return int[], [0] = report count and [1] = document count
+	 */
+	public static int[] getReportAndDocumentCountByRecordId(int AD_Table_ID, int Record_ID, String Record_UU, String trxName) {
 		int reportCount = 0;
 		int documentCount = 0;
 		StringBuilder sql = new StringBuilder("SELECT IsReport, COUNT(*) FROM AD_Archive ")
-				.append("WHERE (AD_Table_ID=? AND Record_ID=?) ");
+				.append("WHERE (AD_Table_ID=? AND Record_UU=?) ");
 		if (AD_Table_ID == MBPartner.Table_ID)
 			sql.append(" OR C_BPartner_ID=?");
 		sql.append(" GROUP BY IsReport"); 
@@ -417,7 +431,7 @@ public class MArchive extends X_AD_Archive {
 		{
 			pstmt = DB.prepareStatement (sql.toString(), trxName);
 			pstmt.setInt(1, AD_Table_ID);
-			pstmt.setInt(2, Record_ID);
+			pstmt.setString(2, Record_UU);
 			if (AD_Table_ID == MBPartner.Table_ID)
 				pstmt.setInt(3, Record_ID);
 			rs = pstmt.executeQuery ();
@@ -448,7 +462,7 @@ public class MArchive extends X_AD_Archive {
 	 * @return Number of report archive for AD_Table_ID
 	 */
 	public static int getReportCountByTableId(int AD_Table_ID, String trxName) {
-		String sql = "SELECT COUNT(*) FROM AD_Archive WHERE AD_Table_ID=? AND IsReport='Y'";
+		final String sql = "SELECT COUNT(*) FROM AD_Archive WHERE AD_Table_ID=? AND IsReport='Y'";
 		return DB.getSQLValueEx(trxName, sql, AD_Table_ID);
 	}
 } // MArchive
