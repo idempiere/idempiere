@@ -2003,7 +2003,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 
 		//  Create Query from Parameters
 		MQuery query = null;
-		if (IsForm && pi.getRecord_ID() != 0		//	Form = one record
+		if (IsForm && pi.getRecord_ID() > 0		//	Form = one record
 				&& !TableName.startsWith("T_") )	//	Not temporary table - teo_sarca, BF [ 2828886 ]
 		{
 			query = MQuery.getEqualQuery(TableName + "_ID", pi.getRecord_ID());
