@@ -54,8 +54,8 @@ public class ProcessInfo implements Serializable
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4648764346588157872L;
-	
+	private static final long serialVersionUID = -795798319865809959L;
+
 	private static final CLogger logger = CLogger.getCLogger(ProcessInfo.class);
 
 	/**
@@ -65,12 +65,26 @@ public class ProcessInfo implements Serializable
 	 *  @param Table_ID AD_Table_ID
 	 *  @param Record_ID Record_ID
 	 */
-	public ProcessInfo (String Title, int AD_Process_ID, int Table_ID, int Record_ID)
+	public ProcessInfo(String Title, int AD_Process_ID, int Table_ID, int Record_ID)
+	{
+		this (Title, AD_Process_ID, Table_ID, Record_ID, null);
+	}
+
+	/**
+	 *  Constructor
+	 *  @param Title Title
+	 *  @param AD_Process_ID AD_Process_ID
+	 *  @param Table_ID AD_Table_ID
+	 *  @param Record_ID Record ID
+	 *  @param Record_UU Record UUID
+	 */
+	public ProcessInfo(String Title, int AD_Process_ID, int Table_ID, int Record_ID, String Record_UU)
 	{
 		setTitle (Title);
 		setAD_Process_ID(AD_Process_ID);
 		setTable_ID (Table_ID);
 		setRecord_ID (Record_ID);
+		setRecord_UU (Record_UU);
 		if (Ini.isPropertyBool(Ini.P_PRINTPREVIEW))
 			m_printPreview = true;
 		else
@@ -98,6 +112,8 @@ public class ProcessInfo implements Serializable
 	private int					m_Table_ID;
 	/** Record ID if the Process    */
 	private int					m_Record_ID;
+	/** Record UUID if the Process    */
+	private String				m_Record_UU;
 	/** User_ID        					*/
 	private Integer	 			m_AD_User_ID;
 	/** Client_ID        				*/
@@ -230,6 +246,8 @@ public class ProcessInfo implements Serializable
 			sb.append(",AD_PInstance_ID=").append(m_AD_PInstance_ID);
 		if (m_Record_ID != 0)
 			sb.append(",Record_ID=").append(m_Record_ID);
+		if (!Util.isEmpty(m_Record_UU))
+			sb.append(",Record_UU=").append(m_Record_UU);
 		if (m_ClassName != null)
 			sb.append(",ClassName=").append(m_ClassName);
 		sb.append(",Error=").append(isError());
@@ -557,6 +575,23 @@ public class ProcessInfo implements Serializable
 	public void setRecord_ID(int Record_ID)
 	{
 		m_Record_ID = Record_ID;
+	}
+
+	/**
+	 * Method getRecord_UU
+	 * @return String
+	 */
+	public String getRecord_UU()
+	{
+		return m_Record_UU;
+	}
+	/**
+	 * Method setRecord_UU
+	 * @param Record_UU int
+	 */
+	public void setRecord_UU(String Record_UU)
+	{
+		m_Record_UU = Record_UU;
 	}
 
 	/**

@@ -705,7 +705,8 @@ public class MAttachment extends X_AD_Attachment
 			return null;
 		}
 
-		String name = MTable.get(Env.getCtx(), getAD_Table_ID()).getTableName() + "_" + getRecord_ID();
+		String name = MTable.get(Env.getCtx(), getAD_Table_ID()).getTableName() + "_"
+				+ (getRecord_ID() > 0 ? getRecord_ID() : getRecord_UU());
 
 		File tempfolder = null; 
 		try {

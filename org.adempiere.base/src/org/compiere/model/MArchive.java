@@ -155,6 +155,7 @@ public class MArchive extends X_AD_Archive {
 		setAD_Process_ID(info.getAD_Process_ID());
 		setAD_Table_ID(info.getAD_Table_ID());
 		setRecord_ID(info.getRecord_ID());
+		setRecord_UU(info.getRecord_UU());
 		setC_BPartner_ID(info.getC_BPartner_ID());
 	} // MArchive
 
@@ -269,6 +270,8 @@ public class MArchive extends X_AD_Archive {
 		}
 		if (this.getRecord_ID() > 0) {
 			path.append(this.getRecord_ID()).append(File.separator);
+		} else {
+			path.append(this.getRecord_UU()).append(File.separator);
 		}
 
 		return path.toString();
@@ -342,7 +345,8 @@ public class MArchive extends X_AD_Archive {
 	 * @return File - the temporary file
 	 */
 	public File saveAsZip() {
-		String name = MTable.get(Env.getCtx(), getAD_Table_ID()).getTableName() + "_" + getRecord_ID();
+		String name = MTable.get(Env.getCtx(), getAD_Table_ID()).getTableName() + "_"
+				+ (getRecord_ID() > 0 ? getRecord_ID() : getRecord_UU());
 
 		File tempfolder = null; 
 		try {

@@ -53,8 +53,8 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -6227339628038418701L;
-	
+	private static final long serialVersionUID = -3116200847404416861L;
+
 	/** 
 	 * Event echo form {@link #onOk()} to defer execution of {@link #onOk()}.
 	 * Execution is defer to happens after the dismiss of modal dialog (usually info window) blocking parameter panel. 
@@ -213,6 +213,20 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	public ProcessModalDialog (EventListener<Event> listener, int WindowNo, int AD_Process_ID, int tableId, int recordId, boolean autoStart)
 	{
 		this(listener, WindowNo, new ProcessInfo("", AD_Process_ID, tableId, recordId), autoStart);
+	}
+
+	/**
+	 * Dialog to start a process/report
+	 * @param WindowNo
+	 * @param AD_Process_ID
+	 * @param tableId
+	 * @param recordId
+	 * @param recordUU
+	 * @param autoStart
+	 */
+	public ProcessModalDialog (EventListener<Event> listener, int WindowNo, int AD_Process_ID, int tableId, int recordId, String recordUU, boolean autoStart)
+	{
+		this(listener, WindowNo, new ProcessInfo("", AD_Process_ID, tableId, recordId, recordUU), autoStart);
 	}
 
 	/**
