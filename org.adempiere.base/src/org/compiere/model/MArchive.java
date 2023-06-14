@@ -345,12 +345,16 @@ public class MArchive extends X_AD_Archive {
 	 * @return File - the temporary file
 	 */
 	public File saveAsZip() {
-		String name = MTable.get(Env.getCtx(), getAD_Table_ID()).getTableName() + "_"
-				+ (getRecord_ID() > 0 ? getRecord_ID() : getRecord_UU());
+		StringBuilder name = new StringBuilder(MTable.get(Env.getCtx(), getAD_Table_ID()).getTableName())
+				.append("_");
+		if (getRecord_ID() > 0)
+			name.append(getRecord_ID()).append("_");
+		else if (!Util.isEmpty(getRecord_UU()))
+			name.append(getRecord_UU()).append("_");
 
 		File tempfolder = null; 
 		try {
-			Path tempPath = Files.createTempDirectory(name);
+			Path tempPath = Files.createTempDirectory(name.toString());
 			tempfolder = tempPath.toFile();
 		} catch (IOException e1) {
 			throw new AdempiereException("Unable to create temp folder", e1);
