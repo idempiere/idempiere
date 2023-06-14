@@ -425,7 +425,7 @@ public class MArchive extends X_AD_Archive {
 		int reportCount = 0;
 		int documentCount = 0;
 		StringBuilder sql = new StringBuilder("SELECT IsReport, COUNT(*) FROM AD_Archive ")
-				.append("WHERE (AD_Table_ID=? AND Record_UU=?) ");
+				.append("WHERE (AD_Table_ID=? AND (Record_ID=? OR Record_UU=?)) ");
 		if (AD_Table_ID == MBPartner.Table_ID)
 			sql.append(" OR C_BPartner_ID=?");
 		sql.append(" GROUP BY IsReport"); 
@@ -435,9 +435,10 @@ public class MArchive extends X_AD_Archive {
 		{
 			pstmt = DB.prepareStatement (sql.toString(), trxName);
 			pstmt.setInt(1, AD_Table_ID);
-			pstmt.setString(2, Record_UU);
+			pstmt.setInt(2, Record_ID);
+			pstmt.setString(3, Record_UU);
 			if (AD_Table_ID == MBPartner.Table_ID)
-				pstmt.setInt(3, Record_ID);
+				pstmt.setInt(4, Record_ID);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
