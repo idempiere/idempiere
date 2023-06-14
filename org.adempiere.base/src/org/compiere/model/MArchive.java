@@ -270,7 +270,7 @@ public class MArchive extends X_AD_Archive {
 		}
 		if (this.getRecord_ID() > 0) {
 			path.append(this.getRecord_ID()).append(File.separator);
-		} else {
+		} else if (!Util.isEmpty(this.getRecord_UU())) {
 			path.append(this.getRecord_UU()).append(File.separator);
 		}
 
