@@ -11,12 +11,12 @@
 
 	<properties>
 		<revision>11.0.0-SNAPSHOT</revision>
-		<jdk.version>11</jdk.version>
-		<tycho.version>3.0.3</tycho.version>
+		<jdk.version>17</jdk.version>
+		<tycho.version>3.0.4</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.17.0</jp.version>
-		<zk.version>9.6.3</zk.version>
+		<zk.version>9.6.4</zk.version>
 		<maven.dependency.version>3.1.1</maven.dependency.version>
 		<download.maven.version>1.4.1</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
@@ -132,7 +132,7 @@
 											target-platform-configuration
 										</artifactId>
 										<versionRange>
-											[2.7.0,)
+											[3.0.0,)
 										</versionRange>
 										<goals>
 											<goal>target-platform</goal>
@@ -151,7 +151,7 @@
 											tycho-compiler-plugin
 										</artifactId>
 										<versionRange>
-											[2.7.3,)
+											[3.0.0,)
 										</versionRange>
 										<goals>
 											<goal>
@@ -172,7 +172,7 @@
 											tycho-ds-plugin
 										</artifactId>
 										<versionRange>
-											[2.7.3,)
+											[3.0.0,)
 										</versionRange>
 										<goals>
 											<goal>

@@ -14,7 +14,6 @@
 package org.adempiere.eclipse.equinox.http.servlet;
 
 import java.io.IOException;
-import java.security.AccessController;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -187,7 +186,7 @@ public class ProxyServlet extends HttpServlet implements Filter {
 			throw new ServletException("This servlet has already been registered."); //$NON-NLS-1$
 
 		ServletRegistration registration = new ServletRegistration(servlet, httpContext);
-		ServletContext wrappedServletContext = new ServletContextAdaptor(proxyContext, getServletContext(), httpContext, AccessController.getContext());
+		ServletContext wrappedServletContext = new ServletContextAdaptor(proxyContext, getServletContext(), httpContext);
 		ServletConfig servletConfig = new ServletConfigImpl(servlet, initparams, wrappedServletContext);
 
 		boolean initialized = false;
@@ -206,7 +205,7 @@ public class ProxyServlet extends HttpServlet implements Filter {
 	//Effective registration of the resources as defined HttpService#registerResources()
 	synchronized void registerResources(String alias, String name, HttpContext httpContext) throws NamespaceException {
 		checkName(name);
-		Servlet resourceServlet = new ResourceServlet(name, httpContext, AccessController.getContext());
+		Servlet resourceServlet = new ResourceServlet(name, httpContext);
 		try {
 			registerServlet(alias, resourceServlet, null, httpContext);
 		} catch (ServletException e) {
@@ -252,7 +251,7 @@ public class ProxyServlet extends HttpServlet implements Filter {
 
 		int filterPriority = findFilterPriority(initparams);
 		FilterRegistration registration = new FilterRegistration(filter, httpContext, alias, filterPriority);
-		ServletContext wrappedServletContext = new ServletContextAdaptor(proxyContext, getServletContext(), httpContext, AccessController.getContext());
+		ServletContext wrappedServletContext = new ServletContextAdaptor(proxyContext, getServletContext(), httpContext);
 		FilterConfig filterConfig = new FilterConfigImpl(filter, initparams, wrappedServletContext);
 
 		boolean initialized = false;
