@@ -32,7 +32,6 @@ public class AdempiereServerGroup extends ThreadGroup
 	 * 	Get Adempiere Server Group
 	 *	@return Server Group
 	 */
-	@SuppressWarnings("removal")
 	public static AdempiereServerGroup get()
 	{
 		if (s_group == null || s_group.isDestroyed())
@@ -46,7 +45,6 @@ public class AdempiereServerGroup extends ThreadGroup
 	/**
 	 * 	AdempiereServerGroup
 	 */
-	@SuppressWarnings("removal")
 	private AdempiereServerGroup ()
 	{
 		super ("AdempiereServers");
@@ -81,7 +79,6 @@ public class AdempiereServerGroup extends ThreadGroup
 	/**
 	 * 	Dump Info
 	 */
-	@SuppressWarnings("removal")
 	public void dump ()
 	{
 		if (log.isLoggable(Level.FINE)) log.fine(getName() + (isDestroyed() ? " (destroyed)" : ""));
