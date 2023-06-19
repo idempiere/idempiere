@@ -48,6 +48,7 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.panel.BroadcastMessageWindow;
 import org.adempiere.webui.panel.HeaderPanel;
 import org.adempiere.webui.panel.HelpController;
+import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.panel.TimeoutPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -1011,6 +1012,11 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	@Override
 	public void updateHelpContext(String ctxType, int recordId) {
+		this.updateHelpContext(ctxType, recordId, null);
+	}
+	
+	@Override
+	public void updateHelpContext(String ctxType, int recordId, InfoPanel infoPanel) {
 		// don't show context for SetupWizard Form, is managed internally using wf and node ctxhelp
 		if (recordId == SystemIDs.FORM_SETUP_WIZARD && X_AD_CtxHelp.CTXTYPE_Form.equals(ctxType))
 			return;
@@ -1024,7 +1030,10 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		if (adwindow != null) {
             gridTab = adwindow.getADWindowContent().getActiveGridTab();
 		}
-		updateHelpQuickInfo(gridTab);
+		if(X_AD_CtxHelp.CTXTYPE_Info.equals(ctxType))
+			updateHelpQuickInfo(infoPanel);
+		else
+			updateHelpQuickInfo(gridTab);
 	}
 
 	@Override
@@ -1037,6 +1046,12 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		helpController.renderToolTip(hdr, desc, help, otherContent);
 	}
 
+	@Override
+	public void updateHelpQuickInfo(InfoPanel infoPanel) {
+		if (isQuickInfoOpen)
+            helpController.renderQuickInfo(infoPanel);
+	}
+	
 	@Override
 	public void updateHelpQuickInfo(GridTab gridTab) {
         this.gridTab = gridTab;
@@ -1061,7 +1076,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	@Override
 	public void openInfo(int infoId) {
 		super.openInfo(infoId);
-		updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoId);
+		// updateHelpContext is already called in InfoPanel onPageAttached method - IDEMPIERE-5772
+//		updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoId);
 	}
 
 	@Override

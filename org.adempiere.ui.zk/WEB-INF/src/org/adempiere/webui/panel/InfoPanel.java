@@ -81,6 +81,7 @@ import org.compiere.model.MInfoWindow;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MRole;
+import org.compiere.model.MStatusLine;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_CtxHelp;
@@ -2276,7 +2277,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT))
     	{
     		if (infoWindow != null)
-				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID());
+				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID(), this);
 			else
 				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
     	}
@@ -3102,9 +3103,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		super.onPageAttached(newpage, oldpage);
 		if (newpage != null) {
 			if (infoWindow != null)
-				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID());
+				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Info, infoWindow.getAD_InfoWindow_ID(), this);
 			else
-				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0);
+				SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Home, 0, this);
 		}
 		SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, this);
 	}
@@ -3175,5 +3176,31 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		if (btnDeSelectAll != null)
 			btnDeSelectAll.setVisible(multipleSelection);
 	}
+	
+
+	
+	/**
+	 *	Widget support
+	 *	Depending on Window/Tab returns widget lines info
+	 *  @return info
+	 */
+	public String getStatusLinesWidget() {
+		if(infoWindow == null)
+			return null;
+		MStatusLine[] wls = MStatusLine.getStatusLinesWidget(0, 0, 0, infoWindow.getAD_InfoWindow_ID());
+		if (wls != null && wls.length > 0)
+		{
+			StringBuilder lines = new StringBuilder();
+			for (MStatusLine wl : wls) {
+				String line = wl.parseLine(getWindowNo());
+				if (line != null) {
+					lines.append(line).append("<br>");
+				}
+			}
+			if (lines.length() > 0)
+				return lines.toString();
+		}
+		return null;
+	} // getWidgetLines
 
 }	//	Info
