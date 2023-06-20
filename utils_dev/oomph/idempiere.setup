@@ -10,7 +10,7 @@
     xmlns:setup="http://www.eclipse.org/oomph/setup/1.0"
     xmlns:setup.workingsets="http://www.eclipse.org/oomph/setup/workingsets/1.0"
     xsi:schemaLocation="http://www.eclipse.org/oomph/setup/jdt/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/JDT.ecore http://www.eclipse.org/oomph/setup/maven/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Maven.ecore http://www.eclipse.org/oomph/setup/pde/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/PDE.ecore http://www.eclipse.org/oomph/predicates/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore http://www.eclipse.org/oomph/setup/workingsets/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/SetupWorkingSets.ecore"
-    name="idempiere.11.230613"
+    name="idempiere.11.230620"
     label="iDempiere 11">
   <setupTask
     xsi:type="setup:PreferenceTask"
@@ -26,7 +26,7 @@
   <setupTask
       xsi:type="setup:VariableTask"
       name="idempiere.target.platform"
-      defaultValue="idempiere-230613"
+      defaultValue="idempiere-230620"
       storageURI="scope://Workspace"
       label="Target Platform"/>
   <setupTask
