@@ -45,11 +45,11 @@
    <feature url="features/org.idempiere.webservices.feature_11.0.0.qualifier.jar" id="org.idempiere.webservices.feature" version="11.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
-   <feature url="features/org.eclipse.equinox.executable_3.8.1200.v20210527-0259.jar" id="org.eclipse.equinox.executable" version="3.8.1500.v20220210-1108">
-      <category name="idempiere.server"/>
-   </feature>
    <feature id="org.idempiere.test.feature">
       <category name="test"/>
+   </feature>
+   <feature id="org.eclipse.equinox.executable">
+      <category name="idempiere.server"/>
    </feature>
    <category-def name="idempiere.repository" label="iDempiere Repository"/>
    <category-def name="idempiere.server" label="iDempiere Server">

@@ -102,7 +102,7 @@ public class LoggedSessionListener implements HttpSessionListener, ServletContex
 	        }
         }
 
-        logger.log(Level.OFF, "context initialized");
+        logger.log(Level.OFF, "context initialized for " + org.zkoss.zk.Version.RELEASE);
         /**
          * End iDempiere Start
          */

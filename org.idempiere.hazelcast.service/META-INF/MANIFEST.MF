@@ -25,8 +25,8 @@ Bundle-ClassPath: .,
  lib/hazelcast-aws.jar,
  lib/hazelcast.jar
 Service-Component: OSGI-INF/*.xml
-Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=11))"
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Require-Bundle: org.eclipse.osgi,
  org.adempiere.base;bundle-version="0.0.0"
 Automatic-Module-Name: org.idempiere.hazelcast.service
